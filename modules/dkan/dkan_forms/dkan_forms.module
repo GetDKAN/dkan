@@ -1,0 +1,187 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_forms_menu() {
+  $items = array();
+  $items['dataset/new'] = array(
+    'title' => 'Create a dataset',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_forms_wizard', 2),
+    'access callback' => TRUE,
+  );
+
+  return $items;
+}
+
+/**
+ * Creates ajax driven submission form.
+ */
+function dkan_forms_wizard($form, &$form_state, $no_js_use = FALSE) {
+  global $user;
+  module_load_include('inc', 'node', 'node.pages');
+
+  $form['#prefix'] = '<div id="wizard-form-wrapper">';
+  $form['#suffix'] = '</div>';
+  $form['#tree'] = TRUE;
+
+  $step = empty($form_state['storage']['step']) ? 'dataset' : $form_state['storage']['step'];
+  $form_state['storage']['step'] = $step;
+
+  drupal_set_title(t('@name', array('@name' => $step)), PASS_THROUGH);
+
+  switch ($step) {
+    case 'dataset':
+      $type = 'dataset';
+      $types = node_type_get_types();
+      $node = (object) array('uid' => $user->uid, 'name' => (isset($user->name) ? $user->name : ''), 'type' => $type, 'language' => LANGUAGE_NONE);
+      $dataset_form = drupal_get_form($type . '_node_form', $node);
+      $form['dataset'] = array(
+        '#type' => 'fieldset',
+        '#title' => '<strong>' . t('Step 1: Create dataset') . '</strong>' . ' > ' . t('Step 2: Add data'),
+      );
+
+      $form['dataset']['title'] = $dataset_form['title'];
+
+      $fields = field_info_instances($entity_type = 'node', $bundle_name = 'dataset');
+      foreach ($fields as $field_name => $instance) {
+        $form['dataset'][$field_name] = $dataset_form[$field_name];
+      }
+      // This fixes the body field description.
+      unset($form['dataset']['body']['und'][0]['format']);
+
+      if (isset($form_state['storage']['values']['dataset'])) {
+        $values = $form_state['storage']['values']['dataset'];
+        $form['dataset']['title']['#value'] = $values['title'];
+        $form['dataset']['body']['und'][0]['#value'] = $values['body']['und'][0]['value'];
+        $form['dataset']['field_license']['und']['#default_value'] = $values['field_license']['und']['select'];
+        $form['dataset']['group_audience']['und']['#value'] = $values['group_audience']['und'][0];
+        $form['dataset']['field_tags']['und']['term_entry']['#value'] = $values['field_tags']['und']['terms'];
+      }
+
+      break;
+
+    case 'resource':
+      $type = 'resource';
+      $types = node_type_get_types();
+      $node = (object) array('uid' => $user->uid, 'name' => (isset($user->name) ? $user->name : ''), 'type' => $type, 'language' => LANGUAGE_NONE);
+      $resource_form = drupal_get_form($type . '_node_form', $node);
+      $form['resource'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Step 1: Create dataset') . ' > ' . '<strong>' . t('Step 2: Add data') . '</strong>',
+      );
+
+      $form['resource']['title'] = $resource_form['title'];
+
+      $fields = field_info_instances($entity_type = 'node', $bundle_name = 'resource');
+      foreach ($fields as $field_name => $instance) {
+        $form['resource'][$field_name] = $resource_form[$field_name];
+      }
+      // This fixes the body field description.
+      unset($form['resource']['body']['und'][0]['format']);
+
+      break;
+
+  }
+  if ($step == 'resource') {
+    $form['prev'] = array(
+      '#type' => 'submit',
+      '#value' => t("Previous step"),
+
+      // Since all info will be discarded, don't validate on 'prev'.
+      '#limit_validation_errors' => array(),
+      // #submit is required to use #limit_validation_errors
+      '#submit' => array('dkan_forms_wizard_submit'),
+      '#ajax' => array(
+        'wrapper' => 'wizard-form-wrapper',
+        'callback' => 'dkan_forms_wizard_callback',
+      ),
+    );
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t("Submit your information"),
+    );
+  }
+  else {
+    $form['next'] = array(
+      '#type' => 'submit',
+      '#value' => t('Next step'),
+      '#ajax' => array(
+        'wrapper' => 'wizard-form-wrapper',
+        'callback' => 'dkan_forms_wizard_callback',
+      ),
+    );
+  }
+
+  if ($no_js_use) {
+    // Remove the #ajax from the above, so ajax.js won't be loaded.
+    // For demonstration only.
+    unset($form['next']['#ajax']);
+    unset($form['prev']['#ajax']);
+  }
+
+  return $form;
+}
+
+function dkan_forms_wizard_callback($form, $form_state) {
+  return $form;
+}
+
+/**
+ * Submit function for dkan_forms_wizard.
+ */
+function dkan_forms_wizard_submit($form, &$form_state) {
+  $clicked_button = $form_state['triggering_element']['#value'];
+
+  // Save away the current information.
+  $current_step = $form_state['storage']['step'];
+  $form_state['storage']['values'][$current_step] = $form_state['input'];
+
+  if ($clicked_button == t('Next step')) {
+    $form_state['storage']['step'] = 'resource';
+  }
+  if ($clicked_button == t('Previous step')) {
+    $form_state['storage']['step'] = 'dataset';
+  }
+
+  // If they're done, submit.
+  if ($clicked_button == t('Submit your information')) {
+    $value_message = t('Your information has been submitted:') . ' ';
+    drupal_set_message($value_message);
+    $form_state['rebuild'] = FALSE;
+    return;
+  }
+
+  // Otherwise, we still have work to do.
+  $form_state['rebuild'] = TRUE;
+}
+
+/**
+
+    $node = new StdClass();
+    $node->type = 'dataset';
+    $node->title = $form_state['input']['title'];
+    // Process tags.
+    if ($form_state['input']['field_tags']['und']) {
+      $vocab = taxonomy_vocabulary_load(1); 
+      $terms = explode(',', $form_state['input']['field_tags']['und']);
+      foreach($terms as $term) { 
+        $tid = taxonomy_get_term_by_name($term, $vocab->machine_name);
+        if (count($tid) > 0) {
+          $tids[] = array_shift(array_keys($tid));
+        }
+        else {
+          $term_object = new stdClass();
+          $term_object->name = ucwords(strtolower($term));
+          $term_object->vid = $vocab->vid;
+          taxonomy_term_save($term_object);
+          $tids[] = $term_object->tid;
+        }
+      }
+      $node->field_tags['und'] = $tids;
+    }
+  //node_save($node);
+  $form_state['storage']['dataset']['node'] = $node;
+
+*/
