@@ -1,187 +1,307 @@
 <?php
 
 /**
- * Implements hook_menu().
+ * @file
+ * Form elements for DKAN.
  */
-function dkan_forms_menu() {
-  $items = array();
-  $items['dataset/new'] = array(
-    'title' => 'Create a dataset',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('dkan_forms_wizard', 2),
-    'access callback' => TRUE,
-  );
-
-  return $items;
-}
 
 /**
- * Creates ajax driven submission form.
+ * Implements hook_field_group_pre_render();
  */
-function dkan_forms_wizard($form, &$form_state, $no_js_use = FALSE) {
-  global $user;
-  module_load_include('inc', 'node', 'node.pages');
-
-  $form['#prefix'] = '<div id="wizard-form-wrapper">';
-  $form['#suffix'] = '</div>';
-  $form['#tree'] = TRUE;
-
-  $step = empty($form_state['storage']['step']) ? 'dataset' : $form_state['storage']['step'];
-  $form_state['storage']['step'] = $step;
-
-  drupal_set_title(t('@name', array('@name' => $step)), PASS_THROUGH);
-
-  switch ($step) {
-    case 'dataset':
-      $type = 'dataset';
-      $types = node_type_get_types();
-      $node = (object) array('uid' => $user->uid, 'name' => (isset($user->name) ? $user->name : ''), 'type' => $type, 'language' => LANGUAGE_NONE);
-      $dataset_form = drupal_get_form($type . '_node_form', $node);
-      $form['dataset'] = array(
-        '#type' => 'fieldset',
-        '#title' => '<strong>' . t('Step 1: Create dataset') . '</strong>' . ' > ' . t('Step 2: Add data'),
+function dkan_forms_field_group_pre_render(&$element, $group, &$form) {
+  if (module_exists('context')) {
+    $contexts = context_active_contexts();
+  }
+  if ($form['#groups'][$group->group_name]->disabled) {
+    if ($group->group_name == 'group_primary') {
+      $element += array(
+        '#type' => 'markup',
+        '#weight' => $group->weight,
+        '#access' => FALSE,
       );
-
-      $form['dataset']['title'] = $dataset_form['title'];
-
-      $fields = field_info_instances($entity_type = 'node', $bundle_name = 'dataset');
-      foreach ($fields as $field_name => $instance) {
-        $form['dataset'][$field_name] = $dataset_form[$field_name];
-      }
-      // This fixes the body field description.
-      unset($form['dataset']['body']['und'][0]['format']);
-
-      if (isset($form_state['storage']['values']['dataset'])) {
-        $values = $form_state['storage']['values']['dataset'];
-        $form['dataset']['title']['#value'] = $values['title'];
-        $form['dataset']['body']['und'][0]['#value'] = $values['body']['und'][0]['value'];
-        $form['dataset']['field_license']['und']['#default_value'] = $values['field_license']['und']['select'];
-        $form['dataset']['group_audience']['und']['#value'] = $values['group_audience']['und'][0];
-        $form['dataset']['field_tags']['und']['term_entry']['#value'] = $values['field_tags']['und']['terms'];
-      }
-
-      break;
-
-    case 'resource':
-      $type = 'resource';
-      $types = node_type_get_types();
-      $node = (object) array('uid' => $user->uid, 'name' => (isset($user->name) ? $user->name : ''), 'type' => $type, 'language' => LANGUAGE_NONE);
-      $resource_form = drupal_get_form($type . '_node_form', $node);
-      $form['resource'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('Step 1: Create dataset') . ' > ' . '<strong>' . t('Step 2: Add data') . '</strong>',
-      );
-
-      $form['resource']['title'] = $resource_form['title'];
-
-      $fields = field_info_instances($entity_type = 'node', $bundle_name = 'resource');
-      foreach ($fields as $field_name => $instance) {
-        $form['resource'][$field_name] = $resource_form[$field_name];
-      }
-      // This fixes the body field description.
-      unset($form['resource']['body']['und'][0]['format']);
-
-      break;
-
-  }
-  if ($step == 'resource') {
-    $form['prev'] = array(
-      '#type' => 'submit',
-      '#value' => t("Previous step"),
-
-      // Since all info will be discarded, don't validate on 'prev'.
-      '#limit_validation_errors' => array(),
-      // #submit is required to use #limit_validation_errors
-      '#submit' => array('dkan_forms_wizard_submit'),
-      '#ajax' => array(
-        'wrapper' => 'wizard-form-wrapper',
-        'callback' => 'dkan_forms_wizard_callback',
-      ),
-    );
-    $form['submit'] = array(
-      '#type' => 'submit',
-      '#value' => t("Submit your information"),
-    );
-  }
-  else {
-    $form['next'] = array(
-      '#type' => 'submit',
-      '#value' => t('Next step'),
-      '#ajax' => array(
-        'wrapper' => 'wizard-form-wrapper',
-        'callback' => 'dkan_forms_wizard_callback',
-      ),
-    );
-  }
-
-  if ($no_js_use) {
-    // Remove the #ajax from the above, so ajax.js won't be loaded.
-    // For demonstration only.
-    unset($form['next']['#ajax']);
-    unset($form['prev']['#ajax']);
-  }
-
-  return $form;
-}
-
-function dkan_forms_wizard_callback($form, $form_state) {
-  return $form;
-}
-
-/**
- * Submit function for dkan_forms_wizard.
- */
-function dkan_forms_wizard_submit($form, &$form_state) {
-  $clicked_button = $form_state['triggering_element']['#value'];
-
-  // Save away the current information.
-  $current_step = $form_state['storage']['step'];
-  $form_state['storage']['values'][$current_step] = $form_state['input'];
-
-  if ($clicked_button == t('Next step')) {
-    $form_state['storage']['step'] = 'resource';
-  }
-  if ($clicked_button == t('Previous step')) {
-    $form_state['storage']['step'] = 'dataset';
-  }
-
-  // If they're done, submit.
-  if ($clicked_button == t('Submit your information')) {
-    $value_message = t('Your information has been submitted:') . ' ';
-    drupal_set_message($value_message);
-    $form_state['rebuild'] = FALSE;
-    return;
-  }
-
-  // Otherwise, we still have work to do.
-  $form_state['rebuild'] = TRUE;
-}
-
-/**
-
-    $node = new StdClass();
-    $node->type = 'dataset';
-    $node->title = $form_state['input']['title'];
-    // Process tags.
-    if ($form_state['input']['field_tags']['und']) {
-      $vocab = taxonomy_vocabulary_load(1); 
-      $terms = explode(',', $form_state['input']['field_tags']['und']);
-      foreach($terms as $term) { 
-        $tid = taxonomy_get_term_by_name($term, $vocab->machine_name);
-        if (count($tid) > 0) {
-          $tids[] = array_shift(array_keys($tid));
-        }
-        else {
-          $term_object = new stdClass();
-          $term_object->name = ucwords(strtolower($term));
-          $term_object->vid = $vocab->vid;
-          taxonomy_term_save($term_object);
-          $tids[] = $term_object->tid;
-        }
-      }
-      $node->field_tags['und'] = $tids;
     }
-  //node_save($node);
-  $form_state['storage']['dataset']['node'] = $node;
+  }
+  if (isset($contexts['dataset-create'])) {
+    if ($group->group_name == 'group_additional') {
+      $element += array(
+        '#type' => 'markup',
+        '#weight' => $group->weight,
+        '#access' => FALSE,
+      );
+    }
+  }
+}
 
-*/
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
+
+  if ($form_id == 'dataset_node_form') {
+    if (arg(1) == 'add') {
+      $form['actions']['next'] = array(
+        '#type' => 'submit',
+        '#value' => t('Next: Add data'),
+        '#weight' => -5,
+        '#ajax' => array(
+          'callback' => 'dkan_forms_dataset_submit_js',
+          'wrapper' => $form['#id'],
+          'method' => 'replace',
+          'effect' => 'fade',
+        ),
+        '#submit' => array('node_form_submit'),
+      );
+      $form['actions']['terms'] = array(
+        '#type' => 'item',
+        '#markup' => '<div id="action-info">' .  t('Important: By submitting content, you agree to release your contributions under the Open Database License.') . '</div>',
+      );
+      unset($form['actions']['submit']);
+    }
+    else {
+      $form['actions']['submit']['#value'] = t('Finish');
+      $form['#action'] = '/node/add/dataset';
+    }
+  }
+  if ($form_id == 'resource_node_form') {
+    if ($query = drupal_get_query_parameters()) {
+      if (isset($query['dataset'])) {
+        $form['book']['bid']['#value']= $query['dataset'];
+      }
+    }
+    // This saves us on the ajax reloading.
+    $form['#action'] = '/node/add/resource';
+    $form['actions']['additional'] = array(
+      '#type' => 'submit',
+      '#value' => t('Next: Additional Info'),
+      '#weight' => -5,
+      '#ajax' => array(
+        'callback' => 'dkan_forms_additional_submit_js',
+        'wrapper' => $form['#id'],
+        'method' => 'replace',
+        'effect' => 'fade',
+      ),
+      '#submit' => array('node_form_submit'),
+    );
+    $form['actions']['another'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save and add another'),
+      '#weight' => 10,
+      '#ajax' => array(
+        'callback' => 'dkan_forms_resource_another_submit_js',
+        'wrapper' => $form['#id'],
+        'method' => 'replace',
+        'effect' => 'fade',
+      ),
+      '#submit' => array('node_form_submit'),
+    );
+    /**
+    $form['actions']['previous'] = array(
+      '#type' => 'submit',
+      '#value' => t('Previous'),
+      '#weight' => 20,
+      '#ajax' => array(
+        'callback' => 'dkan_forms_resource_previous_submit_js',
+        'wrapper' => $form['#id'],
+        'method' => 'replace',
+        'effect' => 'fade',
+      ),
+    );
+    */
+  }
+
+}
+
+module_load_include('inc', 'node', 'node.pages');
+
+/**
+ * Builds the comment.
+ */
+function dkan_forms_additional_submit_js($form, &$form_state) {
+  form_load_include($form_state, 'inc', 'node', 'node.pages');
+  module_load_include('inc', 'node', 'node.pages');
+  $type = 'dataset';
+  $types = node_type_get_types();
+  global $user;
+  $node = node_load($form['book']['bid']['#value']);
+  $dataset_form = drupal_get_form($type . '_node_form', $node);
+
+  $dataset_form['#groups']['group_primary']->disabled = TRUE;
+
+  $stage = dkan_create_stages('dataset-additional', $form_state['node']->nid);
+
+  $commands[] = ajax_command_replace('ol.stages', $stage);
+
+  $commands[] = ajax_command_replace('#' . $form['#id'], drupal_render($dataset_form));
+  $output = array('#type' => 'ajax', '#commands' => $commands);
+  return $output;
+}
+/**
+ * Builds the comment.
+ */
+function dkan_forms_resource_another_submit_js($form, &$form_state) {
+  // Return the actual form if it contains errors.
+  if (form_get_errors()) {
+    return $form;
+  }
+  form_load_include($form_state, 'inc', 'node', 'node.pages');
+  module_load_include('inc', 'node', 'node.pages');
+  $type = 'resource';
+  $types = node_type_get_types();
+  global $user;
+  $resource_node = (object) array('uid' => $user->uid, 'name' => (isset($user->name) ? $user->name : ''), 'type' => $type, 'language' => LANGUAGE_NONE);
+  $new_form_state = array();
+  $new_form_state['build_info']['args'][] = $resource_node;
+  // Don't pull from cache.
+  $new_form_state['input'] = array();
+  $resource_form = drupal_build_form($type . '_node_form', $new_form_state);
+  $stage = dkan_create_stages('resource-edit', $form_state['values']['book']['bid']);
+
+  $commands[] = ajax_command_replace('ol.stages', $stage);
+  $message = '<div id="messages"><div class="messages status"> Your resource <em class="placeholder">' . $form_state['values']['title'] . '</em> has been created. View it here: ' . l($form_state['values']['title'], 'node/' . $form_state['nid']) . ' or add another.</div></div>';
+
+  $resource_form['#node']->book['bid'] = $form_state['values']['book']['bid'];
+  $resource_form['book']['bid']['#value']= $form_state['values']['book']['bid'];
+
+  $commands[] = ajax_command_replace('#' . $form['#id'], drupal_render($resource_form));
+  $commands[] = ajax_command_prepend('ul.nav-simple', '<li>' . l($form_state['values']['title'], 'node/' . $form_state['nid'] . '/edit') . '</li>');
+  $commands[] = ajax_command_prepend('form.node-form', $message);
+  $output = array('#type' => 'ajax', '#commands' => $commands);
+  return $output;
+}
+
+/**
+ * Builds the comment.
+ */
+function dkan_forms_resource_previous_submit_js($form, &$form_state) {
+  form_load_include($form_state, 'inc', 'node', 'node.pages');
+  module_load_include('inc', 'node', 'node.pages');
+  $type = 'dataset';
+  $types = node_type_get_types();
+  global $user;
+  $node = node_load($form['book']['bid']['#value']);
+  $resource_form = drupal_get_form($type . '_node_form', $node);
+  $stage = dkan_create_stages('resource-edit', $form_state['node']->nid);
+
+  $commands[] = ajax_command_replace('ol.stages', $stage);
+  $commands[] = ajax_command_replace('#page-title', '<h1 class="title" id="page-title">Add data</h1>');
+
+  $resource_form['#node']->book['bid'] = $form_state['node']->nid;
+  $resource_form['book']['bid']['#value']= $form_state['node']->nid;
+  $commands[] = ajax_command_replace('#' . $form['#id'], drupal_render($resource_form));
+  $output = array('#type' => 'ajax', '#commands' => $commands);
+  return $output;
+}
+
+/**
+ * Builds the comment.
+ */
+function dkan_forms_dataset_submit_js($form, &$form_state) {
+  // Return the actual form if it contains errors.
+  if (form_get_errors()) {
+    return $form;
+  }
+  form_load_include($form_state, 'inc', 'node', 'node.pages');
+  module_load_include('inc', 'node', 'node.pages');
+  $type = 'resource';
+  $types = node_type_get_types();
+  global $user;
+  $node = (object) array('uid' => $user->uid, 'name' => (isset($user->name) ? $user->name : ''), 'type' => $type, 'language' => LANGUAGE_NONE);
+  $resource_form = drupal_get_form($type . '_node_form', $node);
+
+  // Replacement elements.
+  $stage = dkan_create_stages('resource-edit', $form_state['node']->nid);
+  $breadcrumbs = '<ul class="breadcrumb"><li><a href="/">Home</a></li><li><a href="/datasets">Datasets</a></li><li>' . l($form_state['values']['title'], 'node/' . $form_state['nid']) . '</li><li><a href="/node/add/resource?dataset=' . $form_state['nid'] . '" class="active">Add Resource</a></li></ul>';
+  $resources_block ='<section class="block block-dkan-forms block-dkan-forms-resource-nodes block-dkan-forms-dkan-forms-resource-nodes even" id="block-dkan-forms-dkan-forms-resource-nodes"><div class="block-inner clearfix"><h2 class="block-title">Resources</h2><div class="content clearfix"><div class="item-list"><ul class="nav-simple"></ul></div><a id="context-block-dkan_forms-dkan_forms_resource_nodes" class="context-block editable edit-resource-create"></a></div></div></section>';
+
+  $commands[] = ajax_command_append('#region-sidebar-first .region-inner', $resources_block);
+  $commands[] = ajax_command_replace('ul.breadcrumb', $breadcrumbs);
+  $commands[] = ajax_command_replace('#block-dkan-forms-dkan-forms-dataset-help h2', '<h2 class="block-title">What is data?</h2>');
+  $commands[] = ajax_command_replace('#block-dkan-forms-dkan-forms-dataset-help .content', '<div class="content">' . dkan_forms_resource_form_help() . '</div>');
+  $commands[] = ajax_command_replace('ol.stages', $stage);
+  $commands[] = ajax_command_replace('#page-title', '<h1 class="title" id="page-title">Add data</h1>');
+
+  $resource_form['#node']->book['bid'] = $form_state['node']->nid;
+  $resource_form['book']['bid']['#value']= $form_state['node']->nid;
+  $commands[] = ajax_command_replace('#' . $form['#id'], drupal_render($resource_form));
+  $output = array('#type' => 'ajax', '#commands' => $commands);
+  return $output;
+    $commands[] = ajax_command_append('#comment-wrapper-nid-' . $node->nid, $notify_text . $comment_output);
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function dkan_forms_block_info() {
+  $blocks['dkan_forms_dataset_help'] = array(
+    'info' => t('What are datasets?'),
+  );
+  $blocks['dkan_forms_resource_help'] = array(
+    'info' => t('What is data?'),
+  );
+  $blocks['dkan_forms_resource_nodes'] = array(
+    'info' => t('Resources'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function dkan_forms_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'dkan_forms_dataset_help':
+      $block['subject'] = t('What are datasets?');
+      $block['content'] = dkan_forms_dataset_form_help();
+      break;
+
+    case 'dkan_forms_resource_help':
+      $block['subject'] = t('What is data?');
+      $block['content'] = dkan_forms_resource_form_help();
+      break;
+
+    case 'dkan_forms_resource_nodes':
+      $block['subject'] = t('Resources');
+      $block['content'] = dkan_forms_resource_nodes();
+
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Adds block for dataset edit form.
+ */
+function dkan_forms_dataset_form_help() {
+  return t('Datasets are simply used to group related pieces of data. These can then be found under a single url with a description and licensing information.');
+}
+
+/**
+ * Adds block for resource edit form.
+ */
+function dkan_forms_resource_form_help() {
+  return t('Data can be any file or link to a file containing useful data.');
+}
+
+/**
+ * Returns resources within a dataset.
+ */
+function dkan_forms_resource_nodes() {
+  $output = '';
+  if ($query = drupal_get_query_parameters()) {
+    if (isset($query['dataset'])) {
+      $book_toc = book_toc($query['dataset'], 2);
+      if ($book_toc) {
+        foreach ($book_toc as $mlid => $menu_name) {
+          $menu = book_link_load($mlid);
+          $links[] = l('<span>' . $menu['link_title'] . '</span>', $menu['link_path'] . '/edit', array('html' => TRUE));
+        }
+        array_shift($links);
+        $output = theme('item_list', array('items' => $links, 'attributes' => array('class' => array('nav-simple'))));
+      }
+    }
+  }
+  return $output;
+}
+

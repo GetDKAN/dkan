@@ -50,9 +50,6 @@ dependencies[] = recline
 
 ; DKAN
 dependencies[] = dkan_forms
-
-; Information added by drush on 2012-10-09
-version = "unknown"
-project = "dkan"
-datestamp = "1349809345"
-
+dependencies[] = dkan_content_types
+dependencies[] = dkan_menu
+dependencies[] = dkan_views
