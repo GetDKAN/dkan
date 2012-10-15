@@ -1,0 +1,58 @@
+name = DKAN
+core = 7.x
+
+; Core
+dependencies[] = block
+dependencies[] = book
+dependencies[] = dblog
+dependencies[] = field_ui
+dependencies[] = file
+dependencies[] = image
+dependencies[] = list
+dependencies[] = menu
+dependencies[] = number
+dependencies[] = path
+dependencies[] = rdf
+dependencies[] = taxonomy
+
+; Contrib
+dependencies[] = admin_menu
+dependencies[] = active_tags
+dependencies[] = boxes
+dependencies[] = book_made_simple
+dependencies[] = coder
+dependencies[] = context
+dependencies[] = context_ui
+dependencies[] = ctools
+dependencies[] = devel
+dependencies[] = delta
+dependencies[] = diff
+dependencies[] = entity
+dependencies[] = entity_token
+dependencies[] = features
+dependencies[] = field_group
+dependencies[] = link_iframe_formatter
+dependencies[] = libraries
+dependencies[] = link
+dependencies[] = multistep
+dependencies[] = og
+dependencies[] = og_access
+dependencies[] = og_ui
+dependencies[] = rules
+dependencies[] = rules_admin
+dependencies[] = select_or_other
+dependencies[] = strongarm
+dependencies[] = views
+dependencies[] = views_ui
+
+; Open data
+dependencies[] = recline
+
+; DKAN
+dependencies[] = dkan_forms
+
+; Information added by drush on 2012-10-09
+version = "unknown"
+project = "dkan"
+datestamp = "1349809345"
+
