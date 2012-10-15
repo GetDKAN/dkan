@@ -4,4 +4,6 @@
  * Implements hook_install().
  */
 function dkan_install() {
+  theme_enable(array('dkan'));
+  variable_set('theme_default', 'dkan');
 }
