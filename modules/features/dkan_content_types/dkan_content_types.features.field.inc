@@ -84,6 +84,144 @@ function dkan_content_types_field_default_fields() {
     ),
   );
 
+  // Exported field: 'node-dataset-field_author'.
+  $fields['node-dataset-field_author'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_author',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'dataset',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 5,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_author',
+      'label' => 'Author',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '10',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-dataset-field_custom_field'.
+  $fields['node-dataset-field_custom_field'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_custom_field',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'dataset',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 4,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_custom_field',
+      'label' => 'Custom Field',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '12',
+      ),
+    ),
+  );
+
   // Exported field: 'node-dataset-field_license'.
   $fields['node-dataset-field_license'] = array(
     'field_config' => array(
@@ -169,6 +307,75 @@ uk-ogl|UK Open Government Licence (OGL)',
         ),
         'type' => 'select_or_other',
         'weight' => '3',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-dataset-field_maintainer'.
+  $fields['node-dataset-field_maintainer'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_maintainer',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'dataset',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 6,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_maintainer',
+      'label' => 'Maintainer',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '11',
       ),
     ),
   );
@@ -404,6 +611,86 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
   );
 
+  // Exported field: 'node-group-field_image'.
+  $fields['node-group-field_image'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_image',
+      'foreign keys' => array(
+        'fid' => array(
+          'columns' => array(
+            'fid' => 'fid',
+          ),
+          'table' => 'file_managed',
+        ),
+      ),
+      'indexes' => array(
+        'fid' => array(
+          0 => 'fid',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'image',
+      'settings' => array(
+        'default_image' => 0,
+        'uri_scheme' => 'public',
+      ),
+      'translatable' => '0',
+      'type' => 'image',
+    ),
+    'field_instance' => array(
+      'bundle' => 'group',
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => '',
+          ),
+          'type' => 'image',
+          'weight' => 2,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_image',
+      'label' => 'Image',
+      'required' => 0,
+      'settings' => array(
+        'alt_field' => 0,
+        'default_image' => 0,
+        'file_directory' => '',
+        'file_extensions' => 'png gif jpg jpeg',
+        'max_filesize' => '',
+        'max_resolution' => '',
+        'min_resolution' => '',
+        'title_field' => 0,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'image',
+        'settings' => array(
+          'preview_image_style' => 'thumbnail',
+          'progress_indicator' => 'throbber',
+        ),
+        'type' => 'image_image',
+        'weight' => '1',
+      ),
+    ),
+  );
+
   // Exported field: 'node-group-group_group'.
   $fields['node-group-group_group'] = array(
     'field_config' => array(
@@ -560,6 +847,241 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
   );
 
+  // Exported field: 'node-resource-field_link_api'.
+  $fields['node-resource-field_link_api'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_link_api',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'link',
+      'settings' => array(
+        'attributes' => array(
+          'class' => '',
+          'rel' => '',
+          'target' => 'default',
+        ),
+        'display' => array(
+          'url_cutoff' => 80,
+        ),
+        'enable_tokens' => 1,
+        'title' => 'optional',
+        'title_maxlength' => 128,
+        'title_value' => '',
+        'url' => 0,
+      ),
+      'translatable' => '0',
+      'type' => 'link_field',
+    ),
+    'field_instance' => array(
+      'bundle' => 'resource',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'link_iframe_formatter',
+          'settings' => array(
+            'height' => '480',
+            'width' => '900',
+          ),
+          'type' => 'link_iframe_formatter_iframe',
+          'weight' => '4',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_link_api',
+      'label' => 'Link API',
+      'required' => 0,
+      'settings' => array(
+        'attributes' => array(
+          'class' => '',
+          'configurable_title' => 0,
+          'rel' => '',
+          'target' => 'default',
+          'title' => '',
+        ),
+        'display' => array(
+          'url_cutoff' => '80',
+        ),
+        'enable_tokens' => 1,
+        'title' => 'none',
+        'title_maxlength' => '128',
+        'title_value' => '',
+        'url' => 0,
+        'user_register_form' => FALSE,
+        'validate_url' => 1,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'link',
+        'settings' => array(),
+        'type' => 'link_field',
+        'weight' => '5',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-resource-field_link_file'.
+  $fields['node-resource-field_link_file'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_link_file',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'link',
+      'settings' => array(
+        'attributes' => array(
+          'class' => '',
+          'rel' => '',
+          'target' => 'default',
+        ),
+        'display' => array(
+          'url_cutoff' => 80,
+        ),
+        'enable_tokens' => 1,
+        'title' => 'optional',
+        'title_maxlength' => 128,
+        'title_value' => '',
+        'url' => 0,
+      ),
+      'translatable' => '0',
+      'type' => 'link_field',
+    ),
+    'field_instance' => array(
+      'bundle' => 'resource',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'link',
+          'settings' => array(),
+          'type' => 'link_default',
+          'weight' => '3',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_link_file',
+      'label' => 'Link file',
+      'required' => 0,
+      'settings' => array(
+        'attributes' => array(
+          'class' => '',
+          'configurable_title' => 0,
+          'rel' => '',
+          'target' => 'default',
+          'title' => '',
+        ),
+        'display' => array(
+          'url_cutoff' => '80',
+        ),
+        'enable_tokens' => 1,
+        'title' => 'none',
+        'title_maxlength' => '128',
+        'title_value' => '',
+        'url' => 0,
+        'user_register_form' => FALSE,
+        'validate_url' => 1,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'link',
+        'settings' => array(),
+        'type' => 'link_field',
+        'weight' => '4',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-resource-field_upload'.
+  $fields['node-resource-field_upload'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_upload',
+      'foreign keys' => array(),
+      'indexes' => array(
+        'fid' => array(
+          0 => 'fid',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'recline',
+      'settings' => array(
+        'uri_scheme' => 'public',
+      ),
+      'translatable' => '0',
+      'type' => 'recline_field',
+    ),
+    'field_instance' => array(
+      'bundle' => 'resource',
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'recline',
+          'settings' => array(),
+          'type' => 'recline_default_formatter',
+          'weight' => '2',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_upload',
+      'label' => 'Upload',
+      'required' => 0,
+      'settings' => array(
+        'alt_field' => 0,
+        'description_field' => 0,
+        'file_directory' => '',
+        'file_extensions' => 'csv',
+        'max_filesize' => '',
+        'title_field' => 0,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'recline',
+        'settings' => array(
+          'progress_indicator' => 'throbber',
+        ),
+        'type' => 'recline_widget',
+        'weight' => '6',
+      ),
+    ),
+  );
+
   // Exported field: 'node-resource-group_audience'.
   $fields['node-resource-group_audience'] = array(
     'field_config' => array(
@@ -642,14 +1164,21 @@ uk-ogl|UK Open Government Licence (OGL)',
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Author');
   t('Body');
+  t('Custom Field');
   t('Description');
   t('Determine if this is an OG group.');
   t('Group');
   t('Groups audience');
+  t('Image');
   t('License');
   t('License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>');
+  t('Link API');
+  t('Link file');
+  t('Maintainer');
   t('Tags');
+  t('Upload');
 
   return $fields;
 }
