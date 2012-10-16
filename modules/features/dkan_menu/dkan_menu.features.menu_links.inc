@@ -44,7 +44,7 @@ function dkan_menu_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-7',
+    'weight' => '-6',
   );
   // Exported menu link: main-menu:<front>
   $menu_links['main-menu:<front>'] = array(
@@ -62,7 +62,7 @@ function dkan_menu_menu_default_menu_links() {
     'external' => '1',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-47',
+    'weight' => '-5',
   );
   // Exported menu link: main-menu:groups
   $menu_links['main-menu:groups'] = array(
@@ -80,10 +80,12 @@ function dkan_menu_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-48',
+    'weight' => '-4',
   );
   // Translatables
   // Included for use with string extractors like potx.
+  t('Add dataset');
+  t('Datasets');
   t('About');
   t('Groups');
 
