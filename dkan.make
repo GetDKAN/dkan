@@ -9,6 +9,7 @@ projects[admin_menu][subdir] = contrib
 projects[active_tags][subdir] = contrib
 projects[boxes][subdir] = contrib
 projects[book_made_simple][subdir] = contrib
+projects[book_made_simple][version] = 3.x
 projects[context][subdir] = contrib
 projects[ctools][subdir] = contrib
 projects[delta][subdir] = contrib
@@ -16,6 +17,7 @@ projects[diff][subdir] = contrib
 projects[entity][subdir] = contrib
 projects[features][subdir] = contrib
 projects[field_group][subdir] = contrib
+projects[jquery_update][subdir] = contrib
 projects[libraries][subdir] = contrib
 projects[link][subdir] = contrib
 projects[link_iframe_formatter][subdir] = contrib
@@ -35,7 +37,7 @@ projects[omega][version] = 3.1
 projects[omega][version] = contrib
 
 ;--------------------
-; Custom
+; Open Data
 ;--------------------
 
 projects[recline][subdir] = contrib
