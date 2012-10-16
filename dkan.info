@@ -34,6 +34,7 @@ dependencies[] = field_group
 dependencies[] = link_iframe_formatter
 dependencies[] = libraries
 dependencies[] = link
+dependencies[] = jquery_update
 dependencies[] = multistep
 dependencies[] = og
 dependencies[] = og_access
