@@ -12,3 +12,23 @@ function dkan_install() {
   // Change block titles for selected blocks.
   db_query("UPDATE {block} SET title ='<none>' WHERE delta = 'main-menu' OR delta = 'login'");
 }
+
+/**
+ * Implements hook_install_tasks()
+ */
+function dkan_install_tasks() {
+  // Kick off the tasks.
+  $tasks = array();
+  $tasks['dkan_additional_setup'] = array(
+    'display_name' => 'Cleanup',
+  );
+  return $tasks;
+}
+
+/**
+ * Implements hook_install_tasks()
+ */
+function dkan_additional_setup() {
+  // Change block titles for selected blocks.
+  db_query("UPDATE {block} SET title ='<none>' WHERE delta = 'main-menu' OR delta = 'login'");
+}
