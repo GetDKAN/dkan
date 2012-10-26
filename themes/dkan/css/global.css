@@ -844,6 +844,10 @@ li {
 .form-type-textarea label {
   margin: 10px 0 0 0;
 }
+#dataset-node-form .field-group-fieldset legend {
+  display: none;
+}
+#resource-node-form #edit-body-und-0-value,
 #dataset-node-form #edit-body-und-0-value {
   margin-bottom: 0;
 }
@@ -855,6 +859,7 @@ form-textarea-wrapper textarea {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
+#resource-node-form #body-add-more-wrapper .form-textarea-wrapper,
 #dataset-node-form #body-add-more-wrapper .form-textarea-wrapper {
   margin-left: 130px;
 }
@@ -865,6 +870,47 @@ form-textarea-wrapper textarea {
 #edit-body-und-0-format-guidelines .tips {
   display: none;
 }
+label.for=["edit-field-upload-und-0"] {
+  display: none;
+}
+.horizontal-tabs fieldset.horizontal-tabs-pane {
+  padding: 0;
+}
+#body-add-more-wrapper label::after,
+#resource-edit-title::after {
+  content: ":";
+}
+#resource-edit-title {
+  font-size: 19px;
+  margin: 45px 0 0px 0px;
+}
+#resource-node-form #edit-field-upload-und-0-ajax-wrapper input {
+  width: auto;
+  font-size: 12px;
+  height: auto;
+  margin: 0 5px;
+  display: inline-block;
+}
+.group-data .field-group-htab {
+  padding: 0;
+}
+.group-data input {
+  width: 100%;
+  height: 45px;
+}
+#edit-field-upload-und-0-ajax-wrapper label {
+  text-align: left;
+  float: none;
+  font-weight: normal;
+  width: 100px;
+  display: inline-block;
+}
+#edit-field-upload-und-0-ajax-wrapper label {
+  content: ':';
+}
+input#edit-field-link-api-und-0-url,
+#resource-node-form textarea,
+#resource-node-form input,
 #dataset-node-form textarea,
 #dataset-node-form input {
   font-size: 18px;
@@ -887,6 +933,7 @@ form-textarea-wrapper textarea {
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
+.group-data .horizontal-tabs,
 .form-item-title input {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -894,6 +941,7 @@ form-textarea-wrapper textarea {
   box-sizing: border-box;
   height: auto;
   width: 520px;
+  float: left;
 }
 .form-item-title label {
   margin-top: 10px;
@@ -976,6 +1024,7 @@ html.js input.throbbing {
 }
 .form-item-title label,
 .form-item-body-und-0-value label,
+.field-group-htabs.group-data label,
 #edit-field-tags-und label,
 #edit-field-license label {
   width: 120px;
@@ -986,9 +1035,6 @@ html.js input.throbbing {
 }
 .form-item, .form-actions {
   margin-bottom: 0;
-}
-.vertical-tabs {
-  display: none;
 }
 #action-info {
   float: left;
@@ -1087,7 +1133,47 @@ h2.block-title {
   margin: -7px -25px;
   padding: 7px 25px;
 }
-
 #zone-content #region-sidebar-first #block-dkan-forms-dkan-forms-resource-nodes .content {
   padding: 0;
+}
+/** UI Tabs **/
+#resource-node-form .horizontal-tabs ul.horizontal-tabs-list {
+  background-color: transparent;
+  border: 0;
+}
+#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li #active-horizontal-tab {
+  background: url(http://demo.ckan.org/base/images/sprite-ckan-icons.png) no-repeat -193px 0;
+  display: block;
+  text-indent: -999px;
+  width: 16px;
+  margin: 0 0 0 28px;
+  clip: auto;
+}
+#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li a:hover {
+  background-color: transparent;
+}
+#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li {
+  border: 0;
+  background-color: transparent;
+  min-width: 10em;
+}
+#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-1 .summary{
+  background: url(http://demo.ckan.org/base/images/sprite-ckan-icons.png) no-repeat -160px 0;
+}
+#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-2 .summary{
+  background: url(http://demo.ckan.org/base/images/sprite-ckan-icons.png) no-repeat -160px 0;
+}
+#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li .summary{
+  background: url(http://demo.ckan.org/base/images/sprite-ckan-icons.png) no-repeat -144px 0;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  float: left;
+  margin: 0 3px;
+}
+#resource-node-form .field-group-htabs.group-data div.horizontal-tabs {
+  border: 0;
+}
+#resource-node-form .form-item {
+  margin: 0;
 }

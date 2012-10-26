@@ -22,7 +22,7 @@ function dkan_breadcrumb($variables) {
       $first = array_slice($breadcrumb, 0, 1, true);
       $count = count($breadcrumb);
       $datasets = array($count => '<a href="/dataset">Datasets</a>');
-      $rest = array_slice($breadcrumb, 1, count($breadcrumb) -1, true) + array($count + 1 => $node->title);
+      $rest = array_slice($breadcrumb, 1, count($breadcrumb) -1, true) + array($count + 1 => '<strong>' . $node->title . '</strong>');
       $breadcrumb =  $first + $datasets + $rest;
     }
     if (isset($contexts['dataset-create'])) {
@@ -53,7 +53,7 @@ function dkan_preprocess_page(&$vars) {
   if (module_exists('context')) {
     $contexts = context_active_contexts();
   }
-  if (isset($contexts['dataset-create']) || isset($contexts['resource-create'])) {
+  if (isset($contexts['dataset-create']) || isset($contexts['resource-create']) || isset($contexts['dataset'])) {
     // Remove title on dataset edit and creation pages.
     $vars['title'] = '';
   }
@@ -64,8 +64,8 @@ function dkan_preprocess_page(&$vars) {
  */
 function dkan_preprocess_block(&$vars) {
 
+  // Custom breadcrumb elements for specific contexts.
   if ($vars['block_html_id'] ==  'block-system-main') {
-    // Custom breadcrumb elements for specific contexts.
     if (module_exists('context')) {
       $contexts = context_active_contexts();
     }
@@ -83,8 +83,12 @@ function dkan_preprocess_block(&$vars) {
       $vars['content'] = $stages . $vars['content'];
     }
     if (isset($contexts['dataset-edit'])) {
-      $stages = dkan_create_stages('dataset-edit', $vars['elements']['#node']->nid);
-      $vars['content'] = $stages . $vars['content'];
+      if ($query = drupal_get_query_parameters()) {
+        if (!isset($query['addtional'])) {
+          $stages = dkan_create_stages('dataset-edit', $vars['elements']['#node']->nid);
+          $vars['content'] = $stages . $vars['content'];
+        }
+      }
     }
   }
 }
@@ -103,7 +107,7 @@ function dkan_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL) {
           <span class="highlight">Add data</span>
       </li>
       <li class="last complete">
-          <button class="highlight" name="save" value="go-metadata" type="submit">Additional data</button>
+          <button class="highlight" name="save" value="go-metadata" type="submit">' . l('Additional data', 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
       </li>
     </ol>';
   }
@@ -116,7 +120,7 @@ function dkan_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL) {
           <span class="highlight">Add data</span>
       </li>
       <li class="last active">
-          <button class="highlight" name="save" value="go-metadata" type="submit">Additional data</button>
+          <button class="highlight" name="save" value="go-metadata" type="submit">' . l('Additional data', 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
       </li>
     </ol>';
   }
@@ -143,7 +147,7 @@ function dkan_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL) {
           <span class="highlight">' . l('Add data', 'node/add/resource', array('query' => array('dataset' => $dataset_nid))) . '</span>
       </li>
       <li class="last complete">
-          <button class="highlight" name="save" value="go-metadata" type="submit">Additional data</button>
+          <button class="highlight" name="save" value="go-metadata" type="submit">' . l('Additional data', 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
       </li>
     </ol>';
   }
@@ -153,5 +157,16 @@ function dkan_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL) {
 }
 
 /**
- * 
+ * Implements theme_horizontal_tabs().
  */
+function dkan_horizontal_tabs($variables) {
+  $element = $variables['element'];
+  // Add required JavaScript and Stylesheet.
+  drupal_add_library('field_group', 'horizontal-tabs');
+
+  $output = '<label id="resource-edit-title" for="edit-resource">' . $variables['element']['#title'] . '</label>';
+
+  $output .= '<div class="horizontal-tabs-panes">' . $element['#children'] . '</div>';
+
+  return $output;
+}

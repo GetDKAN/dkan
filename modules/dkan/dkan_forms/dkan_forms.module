@@ -12,7 +12,8 @@ function dkan_forms_field_group_pre_render(&$element, $group, &$form) {
   if (module_exists('context')) {
     $contexts = context_active_contexts();
   }
-  if ($form['#groups'][$group->group_name]->disabled) {
+  $query = drupal_get_query_parameters(); 
+  if ((isset($form['#groups'][$group->group_name]->disabled) && $form['#groups'][$group->group_name]->disabled) || isset($query['additional'])) {
     if ($group->group_name == 'group_primary') {
       $element += array(
         '#type' => 'markup',
@@ -63,6 +64,8 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
     }
   }
   if ($form_id == 'resource_node_form') {
+    $form['field_link_api'][$form['language']['#value']][0]['#title'] = '';
+    $form['field_link_file'][$form['language']['#value']][0]['#title'] = '';
     if ($query = drupal_get_query_parameters()) {
       if (isset($query['dataset'])) {
         $form['book']['bid']['#value']= $query['dataset'];
