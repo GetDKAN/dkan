@@ -455,89 +455,6 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
   );
 
-  // Exported field: 'node-dataset-group_audience'.
-  $fields['node-dataset-group_audience'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '-1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'group_audience',
-      'foreign keys' => array(
-        'og' => array(
-          'columns' => array(
-            'gid' => 'gid',
-          ),
-          'table' => 'og',
-        ),
-      ),
-      'indexes' => array(
-        'gid' => array(
-          0 => 'gid',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'og',
-      'no_ui' => TRUE,
-      'settings' => array(),
-      'translatable' => '0',
-      'type' => 'group',
-    ),
-    'field_instance' => array(
-      'bundle' => 'dataset',
-      'default_value' => NULL,
-      'default_value_function' => 'og_field_audience_default_value',
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'og',
-          'settings' => array(),
-          'type' => 'og_list_default',
-          'weight' => 1,
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'group_audience',
-      'label' => 'Groups audience',
-      'required' => FALSE,
-      'settings' => array(
-        'user_register_form' => FALSE,
-      ),
-      'view modes' => array(
-        'full' => array(
-          'custom settings' => FALSE,
-          'label' => 'Full',
-          'type' => 'og_list_default',
-        ),
-        'teaser' => array(
-          'custom settings' => FALSE,
-          'label' => 'Teaser',
-          'type' => 'og_list_default',
-        ),
-      ),
-      'widget' => array(
-        'module' => 'og',
-        'settings' => array(
-          'autocomplete_match' => 'contains',
-          'autocomplete_path' => 'group/autocomplete',
-          'opt_group' => 'auto',
-          'size' => 60,
-        ),
-        'type' => 'group_audience',
-        'weight' => '4',
-      ),
-      'widget_type' => 'group_audience',
-    ),
-  );
-
   // Exported field: 'node-group-body'.
   $fields['node-group-body'] = array(
     'field_config' => array(
@@ -731,7 +648,9 @@ uk-ogl|UK Open Government Licence (OGL)',
         'default' => array(
           'label' => 'above',
           'module' => 'og_ui',
-          'settings' => array(),
+          'settings' => array(
+            'field_name' => FALSE,
+          ),
           'type' => 'og_group_subscribe',
           'weight' => 0,
         ),
@@ -827,10 +746,10 @@ uk-ogl|UK Open Government Licence (OGL)',
       ),
       'entity_type' => 'node',
       'field_name' => 'body',
-      'label' => 'Body',
+      'label' => 'Description',
       'required' => 0,
       'settings' => array(
-        'display_summary' => 1,
+        'display_summary' => 0,
         'text_processing' => '1',
         'user_register_form' => FALSE,
       ),
@@ -838,11 +757,11 @@ uk-ogl|UK Open Government Licence (OGL)',
         'active' => 1,
         'module' => 'text',
         'settings' => array(
-          'rows' => '5',
+          'rows' => '4',
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
-        'weight' => 1,
+        'weight' => '2',
       ),
     ),
   );
@@ -1082,86 +1001,6 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
   );
 
-  // Exported field: 'node-resource-group_audience'.
-  $fields['node-resource-group_audience'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '-1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'group_audience',
-      'foreign keys' => array(
-        'og' => array(
-          'columns' => array(
-            'gid' => 'gid',
-          ),
-          'table' => 'og',
-        ),
-      ),
-      'indexes' => array(
-        'gid' => array(
-          0 => 'gid',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'og',
-      'no_ui' => TRUE,
-      'settings' => array(),
-      'translatable' => '0',
-      'type' => 'group',
-    ),
-    'field_instance' => array(
-      'bundle' => 'resource',
-      'default_value' => NULL,
-      'default_value_function' => 'og_field_audience_default_value',
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'og',
-          'settings' => array(),
-          'type' => 'og_list_default',
-          'weight' => 0,
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'group_audience',
-      'label' => 'Groups audience',
-      'required' => FALSE,
-      'settings' => array(
-        'user_register_form' => FALSE,
-      ),
-      'view modes' => array(
-        'full' => array(
-          'custom settings' => FALSE,
-          'label' => 'Full',
-          'type' => 'og_list_default',
-        ),
-        'teaser' => array(
-          'custom settings' => FALSE,
-          'label' => 'Teaser',
-          'type' => 'og_list_default',
-        ),
-      ),
-      'widget' => array(
-        'module' => 'og',
-        'settings' => array(
-          'opt_group' => 'auto',
-        ),
-        'type' => 'group_audience',
-        'weight' => 0,
-      ),
-      'widget_type' => 'group_audience',
-    ),
-  );
-
   // Translatables
   // Included for use with string extractors like potx.
   t('Author');
@@ -1170,7 +1009,6 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('Description');
   t('Determine if this is an OG group.');
   t('Group');
-  t('Groups audience');
   t('Image');
   t('License');
   t('License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>');

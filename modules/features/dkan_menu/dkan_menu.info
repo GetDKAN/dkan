@@ -11,3 +11,10 @@ features[features_api][] = api:1
 features[menu_custom][] = main-menu
 features[menu_links][] = main-menu:<front>
 features[menu_links][] = main-menu:groups
+
+
+; Information added by drush on 2012-10-21
+version = "unknown"
+project = "dkan"
+datestamp = "1350848316"
+

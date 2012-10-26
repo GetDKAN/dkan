@@ -51,16 +51,16 @@ function dkan_content_types_field_group_info() {
   $field_group->mode = 'form';
   $field_group->parent_name = '';
   $field_group->data = array(
-    'label' => 'Data',
+    'label' => 'Resource',
     'weight' => '0',
     'children' => array(
-      0 => 'group_link_file',
-      1 => 'group_link_api',
+      0 => 'group_link_api',
+      1 => 'group_link_file',
       2 => 'group_upload',
     ),
     'format_type' => 'htabs',
     'format_settings' => array(
-      'formatter' => '',
+      'label' => 'Resource',
       'instance_settings' => array(
         'classes' => '',
       ),
