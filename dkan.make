@@ -24,6 +24,7 @@ projects[link_iframe_formatter][subdir] = contrib
 projects[link_iframe_formatter][patch][1438682] = http://drupal.org/files/iframe_link_formatter-1438682-all-url-components.patch
 projects[multistep][subdir] = contrib
 projects[og][subdir] = contrib
+projects[og][version] = 2.x
 projects[rules][subdir] = contrib
 projects[select_or_other][subdir] = contrib
 projects[strongarm][subdir] = contrib
