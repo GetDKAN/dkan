@@ -135,6 +135,26 @@ function dkan_context_context_default_contexts() {
   $context = new stdClass();
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
+  $context->name = 'resource';
+  $context->description = '';
+  $context->tag = '';
+  $context->conditions = array(
+    'node' => array(
+      'values' => array(
+        'resource' => 'resource',
+      ),
+      'options' => array(
+        'node_form' => '0',
+      ),
+    ),
+  );
+  $context->reactions = array();
+  $context->condition_mode = 0;
+  $export['resource'] = $context;
+
+  $context = new stdClass();
+  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
+  $context->api_version = 3;
   $context->name = 'resource-create';
   $context->description = '';
   $context->tag = 'Create';
