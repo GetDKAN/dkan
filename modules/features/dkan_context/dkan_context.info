@@ -15,6 +15,7 @@ datestamp = 1350848316
 features[context][] = dataset
 features[context][] = dataset-create
 features[context][] = dataset-edit
+features[context][] = resource
 features[context][] = resource-create
 features[context][] = resource-edit
 features[context][] = sitewide
