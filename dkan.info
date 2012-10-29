@@ -27,8 +27,10 @@ dependencies[] = ctools
 dependencies[] = devel
 dependencies[] = delta
 dependencies[] = diff
+dependencies[] = double_field
 dependencies[] = entity
 dependencies[] = entity_token
+dependencies[] = entityreference
 dependencies[] = features
 dependencies[] = field_group
 dependencies[] = link_iframe_formatter
@@ -45,6 +47,7 @@ dependencies[] = select_or_other
 dependencies[] = strongarm
 dependencies[] = views
 dependencies[] = views_ui
+dependencies[] = views_bulk_operations
 
 ; Open data
 dependencies[] = recline
