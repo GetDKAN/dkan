@@ -14,7 +14,9 @@ projects[context][subdir] = contrib
 projects[ctools][subdir] = contrib
 projects[delta][subdir] = contrib
 projects[diff][subdir] = contrib
+projects[double_field][subdir] = contrib
 projects[entity][subdir] = contrib
+projects[entityreference][subdir] = contrib
 projects[features][subdir] = contrib
 projects[field_group][subdir] = contrib
 projects[jquery_update][subdir] = contrib
@@ -29,6 +31,7 @@ projects[rules][subdir] = contrib
 projects[select_or_other][subdir] = contrib
 projects[strongarm][subdir] = contrib
 projects[views][subdir] = contrib
+projects[views_bulk_operations][subdir] = contrib
 
 ;--------------------
 ; Themes
