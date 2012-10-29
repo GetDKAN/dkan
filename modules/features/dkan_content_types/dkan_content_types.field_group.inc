@@ -23,10 +23,10 @@ function dkan_content_types_field_group_info() {
     'label' => 'Additional',
     'weight' => '5',
     'children' => array(
-      0 => 'group_audience',
+      0 => 'field_author',
       1 => 'field_custom_field',
-      2 => 'field_author',
-      3 => 'field_maintainer',
+      2 => 'field_maintainer',
+      3 => 'field_additional_info',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(

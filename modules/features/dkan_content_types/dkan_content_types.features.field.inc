@@ -50,7 +50,7 @@ function dkan_content_types_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 0,
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -80,6 +80,111 @@ function dkan_content_types_field_default_fields() {
         ),
         'type' => 'text_textarea_with_summary',
         'weight' => '1',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-dataset-field_additional_info'.
+  $fields['node-dataset-field_additional_info'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_additional_info',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'double_field',
+      'settings' => array(
+        'first' => array(
+          'maxlength' => '255',
+        ),
+        'second' => array(
+          'maxlength' => '255',
+        ),
+      ),
+      'translatable' => '0',
+      'type' => 'double_field',
+    ),
+    'field_instance' => array(
+      'bundle' => 'dataset',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'double_field',
+          'settings' => array(
+            'first' => array(
+              'format' => '_none',
+              'hidden' => 0,
+              'prefix' => '',
+              'suffix' => ':&nbsp;',
+            ),
+            'second' => array(
+              'format' => '_none',
+              'hidden' => 0,
+              'prefix' => '',
+              'suffix' => '',
+            ),
+            'table' => array(
+              'first' => array(
+                'column_label' => 'Field',
+              ),
+              'number_column' => 0,
+              'number_column_label' => '№',
+              'second' => array(
+                'column_label' => 'Value',
+              ),
+            ),
+          ),
+          'type' => 'double_field_table',
+          'weight' => '5',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_additional_info',
+      'label' => 'Additional Info',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'double_field',
+        'settings' => array(
+          'first' => array(
+            'general' => array(
+              'prefix' => '',
+              'required' => 0,
+              'suffix' => '',
+            ),
+            'textfield' => array(
+              'size' => '5',
+            ),
+          ),
+          'inline' => 1,
+          'second' => array(
+            'general' => array(
+              'prefix' => '',
+              'required' => 0,
+              'suffix' => '',
+            ),
+            'textfield' => array(
+              'size' => '15',
+            ),
+          ),
+        ),
+        'type' => 'textfield_&_textfield',
+        'weight' => '12',
       ),
     ),
   );
@@ -124,7 +229,7 @@ function dkan_content_types_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 5,
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -149,75 +254,6 @@ function dkan_content_types_field_default_fields() {
         ),
         'type' => 'text_textfield',
         'weight' => '10',
-      ),
-    ),
-  );
-
-  // Exported field: 'node-dataset-field_custom_field'.
-  $fields['node-dataset-field_custom_field'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '-1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_custom_field',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'text',
-      'settings' => array(
-        'max_length' => '255',
-      ),
-      'translatable' => '0',
-      'type' => 'text',
-    ),
-    'field_instance' => array(
-      'bundle' => 'dataset',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => 4,
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_custom_field',
-      'label' => 'Custom Field',
-      'required' => 0,
-      'settings' => array(
-        'text_processing' => '0',
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'size' => '60',
-        ),
-        'type' => 'text_textfield',
-        'weight' => '12',
       ),
     ),
   );
@@ -259,10 +295,9 @@ function dkan_content_types_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'text',
           'settings' => array(),
-          'type' => 'text_default',
-          'weight' => 2,
+          'type' => 'hidden',
+          'weight' => '6',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -351,7 +386,7 @@ uk-ogl|UK Open Government Licence (OGL)',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 6,
+          'weight' => '4',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -421,11 +456,11 @@ uk-ogl|UK Open Government Licence (OGL)',
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'taxonomy',
           'settings' => array(),
           'type' => 'taxonomy_term_reference_link',
-          'weight' => 3,
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -766,6 +801,81 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
   );
 
+  // Exported field: 'node-resource-field_format'.
+  $fields['node-resource-field_format'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_format',
+      'foreign keys' => array(
+        'tid' => array(
+          'columns' => array(
+            'tid' => 'tid',
+          ),
+          'table' => 'taxonomy_term_data',
+        ),
+      ),
+      'indexes' => array(
+        'tid' => array(
+          0 => 'tid',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'taxonomy',
+      'settings' => array(
+        'allowed_values' => array(
+          0 => array(
+            'vocabulary' => 'format',
+            'parent' => '0',
+          ),
+        ),
+      ),
+      'translatable' => '0',
+      'type' => 'taxonomy_term_reference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'resource',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'taxonomy',
+          'settings' => array(),
+          'type' => 'taxonomy_term_reference_link',
+          'weight' => 5,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_format',
+      'label' => 'Format',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'active_tags',
+        'settings' => array(
+          'autocomplete_path' => 'taxonomy/autocomplete',
+          'mode' => 'single',
+          'size' => 60,
+        ),
+        'type' => 'active_tags_taxonomy_autocomplete',
+        'weight' => '7',
+      ),
+    ),
+  );
+
   // Exported field: 'node-resource-field_link_api'.
   $fields['node-resource-field_link_api'] = array(
     'field_config' => array(
@@ -1003,11 +1113,12 @@ uk-ogl|UK Open Government Licence (OGL)',
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Additional Info');
   t('Author');
   t('Body');
-  t('Custom Field');
   t('Description');
   t('Determine if this is an OG group.');
+  t('Format');
   t('Group');
   t('Image');
   t('License');
