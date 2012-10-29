@@ -19,9 +19,18 @@ function dkan_breadcrumb($variables) {
     }
     if (isset($contexts['dataset']) || isset($contexts['resource'])) {
       $node = menu_get_object();
+      if (isset($contexts['resource'])) {
+        $alter = array(
+          'max_length' => 15,
+          'ellipsis' => TRUE,
+          'word_boundary' => TRUE,
+          'trim' => TRUE,
+        );
+        $title = views_trim_text($alter, $title);
+      }
       $first = array_slice($breadcrumb, 0, 1, true);
       $count = count($breadcrumb);
-      $rest = array_slice($breadcrumb, 1, count($breadcrumb) -1, true) + array($count + 1 => '<strong>' . $node->title . '</strong>');
+      $rest = array_slice($breadcrumb, 1, count($breadcrumb) -1, true) + array($count + 1 => '<strong>' . $title . '</strong>');
       $datasets = array($count => '<a href="/dataset">Datasets</a>');
       $breadcrumb =  $first + $datasets + $rest;
     }

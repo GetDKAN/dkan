@@ -157,7 +157,8 @@ function dkan_dataset_license_block() {
         $option = explode("|", $option);
         $options[$option[0]] = $option[1];
       }
-      $label = $options[$key['value']];
+      $key = $key['value'];
+      $label = $options[$key];
 
       $output = l($label, 'http://opendefinition.org/licenses/' . $key) . '<br/>';
       if ($key != 'other-closed') {
@@ -191,10 +192,10 @@ function dkan_dataset_social_block() {
  */
 function dkan_dataset_menu_breadcrumb_alter(&$active_trail, $item) {
   // Trim the length of dataset title if viewing resource node.
-  if (isset($item['page_arguments'][0]) &&
-    is_object($item['page_arguments'][0]) &&
-    isset($item['page_arguments'][0]->type) &&
-    $item['page_arguments'][0]->type == 'resource') {
+  if (module_exists('context')) {
+    $contexts = context_active_contexts();
+  }
+  if (isset($contexts['resource'])) {
     $alter = array(
       'max_length' => 20,
       'ellipsis' => TRUE,
