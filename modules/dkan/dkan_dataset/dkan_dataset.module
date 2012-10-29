@@ -1,0 +1,206 @@
+<?php
+
+/**
+ * @file
+ * Custom elements for datasets.
+ */
+
+/**
+ * Implements hook_node_view().
+ */
+function dkan_dataset_node_view($node, $view_mode, $langcode) {
+  if ($view_mode == 'full' && $node->type == 'dataset') {
+    $node->content['resources'] = array(
+      '#type' => 'item',
+      '#theme' => 'dkan_dataset_resource_view',
+      '#node' => $node,
+      '#enabled' => TRUE,
+      '#title' => t('Data and Resources'),
+      '#label_display' => 'above',
+      '#prefix' => '<div id="data-and-resources">',
+      '#suffix' => '</div>',
+    );
+    unset($node->content['book_navigation']);
+    unset($node->content['links']['book']);
+    unset($node->content['links']['book_made_simple']);
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function dkan_dataset_theme() {
+  $theme = array(
+    'dkan_dataset_resource_view' => array(
+      'variables' => array('node' => NULL),
+    ),
+  );
+  return $theme;
+}
+
+/**
+ * Output the Webform into the node content.
+ *
+ * @param $node
+ *   The webform node object.
+ * @param $enabled
+ *   If the form allowed to be completed by the current user.
+ */
+function theme_dkan_dataset_resource_view($vars) {
+  $book_toc = book_toc($vars['node']->book['bid'], 2);
+  if ($book_toc) {
+    foreach ($book_toc as $mlid => $menu_name) {
+      // TODO: Make more performant way of geting this info.
+      $menu = book_link_load($mlid);
+      $node = node_load($menu['nid']);
+      $alter = array(
+        'max_length' => 80,
+        'ellipsis' => TRUE,
+        'word_boundary' => TRUE,
+        'trim' => TRUE,
+      );
+      $desc = '';
+      if (isset($node->body) && $node->body && isset($node->body[$node->language])) {
+        $desc = '<p class="description">' . views_trim_text($alter, $node->body[$node->language][0]['safe_value']) . '</p>';
+      }
+      $term = '';
+      if (isset($node->field_format) && $node->field_format) {
+        $term = taxonomy_term_load($node->field_format[$node->language][0]['tid']);
+        $term = '<span class="format-label" property="dc:format" data-format="' . $term->name  . '">' . $term->name  .'</span>';
+      }
+      $explore_link = l('Explore Data', $menu['link_path'], array('attributes' => array('class' => array('btn', 'btn-primary'))));
+      $links[] = l($menu['link_title'] . $term , $menu['link_path'], array('html' => TRUE, 'attributes' => array('class' => array('heading'), 'title' => $menu['link_title']))) . $desc . $explore_link;
+    }
+
+    array_shift($links);
+    $output = theme('item_list', array('items' => $links, 'attributes' => array('class' => array('resource-list'))));
+  }
+  return $output;
+}
+/**
+ * Implements hook_field_extra_fields().
+ */
+function dkan_dataset_field_extra_fields() {
+  $extra['node']['dataset'] = array(
+    'form' => array(
+      'resources' => array(
+        'label' => t('Data and Resources'),
+        'description' => t('Shows book children of dataset'),
+        'weight' => 0,
+      ),
+    ),
+    'display' => array(
+      'resources' => array(
+        'label' => t('Data and Resources'),
+        'description' => t('Shows book children of dataset'),
+        'weight' => 0,
+      ),
+    )
+  );
+
+  return $extra;
+}
+
+
+/**
+ * Implements hook_block_info().
+ */
+function dkan_dataset_block_info() {
+  $blocks['dkan_dataset_license'] = array(
+    'info' => t('License'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+  $blocks['dkan_dataset_social'] = array(
+    'info' => t('Social'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function dkan_dataset_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'dkan_dataset_license':
+      $block['subject'] = t('License');
+      $block['content'] = dkan_dataset_license_block();
+      break;
+
+    case 'dkan_dataset_social':
+      $block['subject'] = t('Social');
+      $block['content'] = dkan_dataset_social_block();
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Add license info to block for dataset node.
+ * This is the kind of cool thing you can do int he UI with panels but I don't
+ * wan't the overhead.
+ */
+function dkan_dataset_license_block() {
+  $node = menu_get_object();
+  if ($node->type != 'dataset') {
+    return '';
+  }
+  else {
+    if (isset($node->field_license)) {
+      $key = $node->field_license[$node->language][0];
+      $field = field_info_instance('node', 'field_license', 'dataset');
+      $raw_options = $field['widget']['settings']['available_options'];
+      foreach (explode("\n", $raw_options) as $option) {
+        $option = explode("|", $option);
+        $options[$option[0]] = $option[1];
+      }
+      $label = $options[$key['value']];
+
+      $output = l($label, 'http://opendefinition.org/licenses/' . $key) . '<br/>';
+      if ($key != 'other-closed') {
+        $output .= l('<img class="open-data" src="http://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]">', 'http://opendefinition.org/licenses/' . $key, array('html' => TRUE));
+      }
+
+      return $output;
+    }
+    else {
+      return t('License not specified');
+    }
+  }
+}
+
+/**
+ * Adds social links.
+ */
+function dkan_dataset_social_block() {
+  $path = isset($_GET['q']) ? $_GET['q'] : '<front>';
+  $link = url($path, array('absolute' => TRUE));
+  return '
+    <ul class="nav nav-simple">
+      <li class="nav-item"><a href="https://plus.google.com/share?url=' . $link  .  '" target="_blank"><i class="ckan-icon ckan-icon-gplus"></i> Google+</a></li>
+      <li class="nav-item"><a href="https://twitter.com/share?url=' . $link  . '" target="_blank"><i class="ckan-icon ckan-icon-twitter"></i> Twitter</a></li>
+      <li class="nav-item"><a href="https://www.facebook.com/sharer.php?u=' . $link  . '" target="_blank"><i class="ckan-icon ckan-icon-fb"></i> Facebook</a></li>
+    </ul>';
+}
+
+/**
+ * Implements hook_menu_breadcrumb_alter().
+ */
+function dkan_dataset_menu_breadcrumb_alter(&$active_trail, $item) {
+  // Trim the length of dataset title if viewing resource node.
+  if (isset($item['page_arguments'][0]) &&
+    is_object($item['page_arguments'][0]) &&
+    isset($item['page_arguments'][0]->type) &&
+    $item['page_arguments'][0]->type == 'resource') {
+    $alter = array(
+      'max_length' => 20,
+      'ellipsis' => TRUE,
+      'word_boundary' => TRUE,
+      'trim' => TRUE,
+    );
+    $active_trail[1]['title'] = views_trim_text($alter, $active_trail[1]['title']);
+  }
+}

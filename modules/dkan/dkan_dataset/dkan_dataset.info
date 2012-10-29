@@ -1,0 +1,4 @@
+name = DKAN Dataset
+description = Custom elements for Datasets.
+package = DKAN
+core = 7.x
