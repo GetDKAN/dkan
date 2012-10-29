@@ -391,3 +391,10 @@ settings[alpha_region_footer_second_css] = ''
 settings[alpha_region_footer_second_equal_height_element] = '0'
 settings[alpha_region_footer_second_equal_height_container] = '0'
 version = '1.x'
+
+
+; Information added by drush on 2012-10-21
+version = "unknown"
+project = "dkan"
+datestamp = "1350848316"
+

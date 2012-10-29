@@ -17,12 +17,12 @@ function dkan_breadcrumb($variables) {
     if (module_exists('context')) {
       $contexts = context_active_contexts();
     }
-    if (isset($contexts['dataset'])) {
+    if (isset($contexts['dataset']) || isset($contexts['resource'])) {
       $node = menu_get_object();
       $first = array_slice($breadcrumb, 0, 1, true);
       $count = count($breadcrumb);
-      $datasets = array($count => '<a href="/dataset">Datasets</a>');
       $rest = array_slice($breadcrumb, 1, count($breadcrumb) -1, true) + array($count + 1 => '<strong>' . $node->title . '</strong>');
+      $datasets = array($count => '<a href="/dataset">Datasets</a>');
       $breadcrumb =  $first + $datasets + $rest;
     }
     if (isset($contexts['dataset-create'])) {
@@ -46,14 +46,67 @@ function dkan_breadcrumb($variables) {
 }
 
 /**
+ * Implements template_preprocess_zone().
+ */
+function dkan_preprocess_zone(&$vars) {
+  if (module_exists('context')) {
+    $contexts = context_active_contexts();
+    // Create a template suggestion if we are in the dataset context.
+    if ($vars['zone'] == 'content' && isset($contexts['dataset'])) {
+      $vars['theme_hook_suggestions'][] = 'zone__content__dataset';
+    }
+    elseif ($vars['zone'] == 'content' && isset($contexts['resource'])) {
+      $vars['theme_hook_suggestions'][] = 'zone__content__resource';
+    }
+  }
+}
+
+/**
+ * Implements template_preprocess_zone().
+ */
+function dkan_process_zone(&$vars) {
+  if ($vars['zone'] == 'content') {
+    $node = menu_get_object();
+    $vars['actions'] = '';
+    $action_items = array();
+    // This is pretty sloppy but will do for now. If other profiles use these
+    // faux tabs we should build a real build function and assign weights.
+    if (isset($node)) {
+      if ($node->type == 'resource') {
+        $action_items['items'][] = l('<i class="icon-large icon-caret-left"></i> Back to dataset', 'node/' . $node->book['bid'], array('html' => TRUE, 'attributes' => array('class' => array('btn'))));
+      }
+      if (node_access('update', $node->nid)) {
+        $action_items['items'][] = l('<i class="icon-large icon-wrench"></i> Edit', 'node/' . $node->nid . '/edit', array('html' => TRUE, 'attributes' => array('class' => array('btn'))));
+        if (isset($node) && $node->type == 'dataset') {
+          $action_items['items'][] = l('<i class="icon-large icon-plus"></i> Add Resource', 'node/add/resource', array('html' => TRUE, 'attributes' => array('class' => array('btn')), 'query' => array('dataset' => $node->nid)));
+        }
+      }
+      if ($node->type == 'resource' && isset($node->field_upload)) {
+        $url = file_create_url($node->field_upload[$node->language][0]['uri']);
+        $action_items['items'][] = l('<i class="icon-large icon-download"></i> Download', $url, array('html' => TRUE, 'attributes' => array('class' => array('btn btn-primary resource-url-analytics resource-type-file'))));
+      }
+    }
+    $actions = theme('item_list', $action_items);
+    $vars['actions'] = $actions;
+  }
+}
+/**
+ * Implements template_preprocess_page.
+ */
+function dkan_preprocess_node(&$vars) {
+}
+/**
  * Implements template_preprocess_page.
  */
 function dkan_preprocess_page(&$vars) {
+  if ($vars['user']->uid != 2 && isset($vars['node'])) {
+    $vars['tabs'] = '';
+  }
   // Custom breadcrumb elements for specific contexts.
   if (module_exists('context')) {
     $contexts = context_active_contexts();
   }
-  if (isset($contexts['dataset-create']) || isset($contexts['resource-create']) || isset($contexts['dataset'])) {
+  if (isset($contexts['dataset-create']) || isset($contexts['resource-create']) || isset($contexts['dataset']) || isset($contexts['resource'])) {
     // Remove title on dataset edit and creation pages.
     $vars['title'] = '';
   }
