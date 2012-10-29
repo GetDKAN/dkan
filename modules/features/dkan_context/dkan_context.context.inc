@@ -15,7 +15,7 @@ function dkan_context_context_default_contexts() {
   $context->api_version = 3;
   $context->name = 'dataset';
   $context->description = '';
-  $context->tag = '';
+  $context->tag = ' ';
   $context->conditions = array(
     'node' => array(
       'values' => array(
@@ -27,11 +27,28 @@ function dkan_context_context_default_contexts() {
     ),
   );
   $context->reactions = array(
-    'debug' => array(
-      'debug' => 1,
+    'block' => array(
+      'blocks' => array(
+        'dkan_dataset-dkan_dataset_social' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_social',
+          'region' => 'sidebar_first',
+          'weight' => '-10',
+        ),
+        'dkan_dataset-dkan_dataset_license' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_license',
+          'region' => 'sidebar_first',
+          'weight' => '-9',
+        ),
+      ),
     ),
   );
   $context->condition_mode = 0;
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t(' ');
   $export['dataset'] = $context;
 
   $context = new stdClass();

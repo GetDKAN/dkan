@@ -1,12 +1,17 @@
 name = dkan_context
 core = 7.x
 package = Features
+php = 5.2.4
+version = unknown
+project = dkan
 dependencies[] = book
 dependencies[] = context
 dependencies[] = ctools
 dependencies[] = dkan_content_types
+dependencies[] = dkan_dataset
 dependencies[] = dkan_forms
 dependencies[] = system
+datestamp = 1350848316
 features[context][] = dataset
 features[context][] = dataset-create
 features[context][] = dataset-edit
@@ -15,10 +20,3 @@ features[context][] = resource-edit
 features[context][] = sitewide
 features[ctools][] = context:context:3
 features[features_api][] = api:1
-
-
-; Information added by drush on 2012-10-21
-version = "unknown"
-project = "dkan"
-datestamp = "1350848316"
-
