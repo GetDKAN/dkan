@@ -1,6 +1,6 @@
-name = dkan_context
+name = DKAN Context
 core = 7.x
-package = Features
+package = DKAN Features
 php = 5.2.4
 version = unknown
 project = dkan
