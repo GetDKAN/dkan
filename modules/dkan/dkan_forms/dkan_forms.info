@@ -2,10 +2,3 @@ name = DKAN Forms
 description = Creates and updates forms for DKAN.
 package = DKAN
 core = 7.x
-
-
-; Information added by drush on 2012-10-21
-version = "unknown"
-project = "dkan"
-datestamp = "1350848316"
-
