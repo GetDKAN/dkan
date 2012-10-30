@@ -19,6 +19,7 @@ function dkan_breadcrumb($variables) {
     }
     if (isset($contexts['dataset']) || isset($contexts['resource'])) {
       $node = menu_get_object();
+      $title = $node->title;
       if (isset($contexts['resource'])) {
         $alter = array(
           'max_length' => 15,
@@ -90,7 +91,7 @@ function dkan_process_zone(&$vars) {
           $action_items['items'][] = l('<i class="icon-large icon-plus"></i> Add Resource', 'node/add/resource', array('html' => TRUE, 'attributes' => array('class' => array('btn')), 'query' => array('dataset' => $node->nid)));
         }
       }
-      if ($node->type == 'resource' && isset($node->field_upload)) {
+      if ($node->type == 'resource' && isset($node->field_upload) && $node->field_upload) {
         $url = file_create_url($node->field_upload[$node->language][0]['uri']);
         $action_items['items'][] = l('<i class="icon-large icon-download"></i> Download', $url, array('html' => TRUE, 'attributes' => array('class' => array('btn btn-primary resource-url-analytics resource-type-file'))));
       }
