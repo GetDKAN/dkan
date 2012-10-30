@@ -1,0 +1,4 @@
+name = DKAN Import
+description = Custom elements for importing content
+package = DKAN
+core = 7.x
