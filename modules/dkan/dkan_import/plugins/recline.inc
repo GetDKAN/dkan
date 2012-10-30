@@ -18,7 +18,7 @@ function recline_export_alter(&$node) {
       foreach ($node->{$field_name} as $lang => $items) {
         foreach ($items as $key => $item) {
           $file = drupal_realpath($item['uri']);
-          if ($imgfile && ($handle = fopen($file, 'rb')) && (filesize($file) > 0)) {
+          if ($file && ($handle = fopen($file, 'rb')) && (filesize($file) > 0)) {
             $binary = fread($handle, filesize($file));
             $node->{$field_name}[$lang][$key]['file'] = base64_encode($binary);
           }
@@ -40,9 +40,6 @@ function recline_export_alter(&$node) {
 function recline_import_alter(&$node) {
   $fields = get_recline_fields();
   foreach ($fields as $field_name => $field) {
-    if (isset($node->{$field_name})) {
-      //unset($node->{$field_name});
-    }
     if (isset($node->{$field_name})) {
       foreach ($node->{$field_name} as $lang => $items) {
         foreach ($items as $key => $item) {
@@ -66,6 +63,11 @@ function recline_import_alter(&$node) {
             $file->display = $item['display'];
             $file->description = $item['description'];
           }
+          $file->map = $item['map'];
+          $file->grid = $item['grid'];
+          $file->graph = $item['graph'];
+          $file->timeline = $item['timeline'];
+          $file->transform = $item['transform'];
           file_save($file);
           $node->{$field_name}[$lang][$key] = (array) $file;
         }
