@@ -22,6 +22,9 @@ function dkan_install_tasks() {
   $tasks['dkan_additional_setup'] = array(
     'display_name' => 'Cleanup',
   );
+  $tasks['dkan_additional_terms'] = array(
+    'display_name' => 'Taxonomy Terms',
+  );
   return $tasks;
 }
 
@@ -32,3 +35,23 @@ function dkan_additional_setup() {
   // Change block titles for selected blocks.
   db_query("UPDATE {block} SET title ='<none>' WHERE delta = 'main-menu' OR delta = 'login'");
 }
+
+/**
+ * Adds default taxonomy terms.
+ */
+function dkan_additional_terms() {
+  $tags = array(
+    'country-afghanistan',
+    'election',
+    'politics',
+    'transparency',
+  );
+  foreach ($tags as $tag) {
+    $term = new stdClass();
+    // 'Tags' vid.
+    $term->vid = 2;
+    $term->name = $tag;
+    taxonomy_term_save($term);
+  }
+}
+
