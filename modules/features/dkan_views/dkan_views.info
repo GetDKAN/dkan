@@ -1,6 +1,6 @@
-name = dkan_views
+name = DKAN Views
 core = 7.x
-package = Features
+package = DKAN Features
 php = 5.2.4
 dependencies[] = ctools
 dependencies[] = views
@@ -8,10 +8,3 @@ features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
 features[views_view][] = datasets
 features[views_view][] = groups
-
-
-; Information added by drush on 2012-10-21
-version = "unknown"
-project = "dkan"
-datestamp = "1350848316"
-

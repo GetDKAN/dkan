@@ -1,6 +1,6 @@
 name = DKAN Content Types
 core = 7.x
-package = Features
+package = DKAN Features
 php = 5.2.4
 version = unknown
 project = dkan
