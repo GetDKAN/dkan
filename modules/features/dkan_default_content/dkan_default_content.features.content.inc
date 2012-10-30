@@ -28,7 +28,8 @@ function dkan_default_content_content_defaults() {
 ',
           'summary' => '',
           'format' => 'plain_text',
-          'safe_value' => 'You can see this data plotted on a map, by clicking on \'Map\' below. Individual data records can be seen by clicking on each point.',
+          'safe_value' => '<p>You can see this data plotted on a map, by clicking on &#039;Map&#039; below. Individual data records can be seen by clicking on each point.</p>
+',
           'safe_summary' => '',
         ),
       ),
@@ -44,20 +45,13 @@ function dkan_default_content_content_defaults() {
           'timeline' => '0',
           'transform' => '0',
           'uid' => '1',
-          'filename' => 'district_centerpoints (1).csv',
-          'uri' => 'public://district_centerpoints (1).csv',
+          'filename' => 'district_centerpoints.csv',
+          'uri' => 'public://district_centerpoints.csv',
           'filemime' => 'text/csv',
           'filesize' => '32378',
           'status' => '1',
-          'timestamp' => '1351485718',
+          'timestamp' => '1351611157',
           'rdf_mapping' => array(),
-        ),
-      ),
-    ),
-    'field_format' => array(
-      'und' => array(
-        0 => array(
-          'tid' => '24',
         ),
       ),
     ),
@@ -80,8 +74,17 @@ function dkan_default_content_content_defaults() {
           'value' => 'This data created by the National Democratic Institute (NDI) in partnership with Development Seed, a Washington, D.C.-based online communications consultancy, is designed to make data from the August 20, 2009, Afghanistan presidential election accessible and transparent. We have provided this csv file as there is no download for the whole dataset. There are many more files on the website.',
           'summary' => '',
           'format' => 'plain_text',
-          'safe_value' => 'This data created by the National Democratic Institute (NDI) in partnership with Development Seed, a Washington, D.C.-based online communications consultancy, is designed to make data from the August 20, 2009, Afghanistan presidential election accessible and transparent. We have provided this csv file as there is no download for the whole dataset. There are many more files on the website.',
+          'safe_value' => '<p>This data created by the National Democratic Institute (NDI) in partnership with Development Seed, a Washington, D.C.-based online communications consultancy, is designed to make data from the August 20, 2009, Afghanistan presidential election accessible and transparent. We have provided this csv file as there is no download for the whole dataset. There are many more files on the website.</p>
+',
           'safe_summary' => '',
+        ),
+      ),
+    ),
+    'field_additional_info' => array(
+      'und' => array(
+        0 => array(
+          'first' => 'Source',
+          'second' => 'http://afghanistanelectiondata.org/',
         ),
       ),
     ),
@@ -97,24 +100,16 @@ function dkan_default_content_content_defaults() {
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '20',
+          'tid' => '1',
         ),
         1 => array(
-          'tid' => '21',
+          'tid' => '2',
         ),
         2 => array(
-          'tid' => '22',
+          'tid' => '3',
         ),
         3 => array(
-          'tid' => '23',
-        ),
-      ),
-    ),
-    'field_additional_info' => array(
-      'und' => array(
-        0 => array(
-          'first' => 'Source',
-          'second' => 'http://afghanistanelectiondata.org/',
+          'tid' => '4',
         ),
       ),
     ),
