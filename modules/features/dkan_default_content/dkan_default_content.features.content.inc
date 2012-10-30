@@ -37,21 +37,19 @@ function dkan_default_content_content_defaults() {
     'field_upload' => array(
       'und' => array(
         0 => array(
-          'fid' => '2',
           'service_id' => NULL,
-          'grid' => '1',
-          'graph' => '0',
-          'map' => '1',
-          'timeline' => '0',
-          'transform' => '0',
-          'uid' => '1',
+          'grid' => NULL,
+          'graph' => NULL,
+          'map' => NULL,
+          'timeline' => NULL,
+          'transform' => NULL,
           'filename' => 'district_centerpoints.csv',
           'uri' => 'public://district_centerpoints.csv',
           'filemime' => 'text/csv',
-          'filesize' => '32378',
+          'filesize' => '0',
           'status' => '1',
-          'timestamp' => '1351611157',
           'rdf_mapping' => array(),
+          'file' => 'ImxvbiIsImxhdCIsIlVuaXRfVHlwZSIsIkRpc3RfTmFtZSIsIlByb3ZfTmFtZSIsIkRhcmlfRGlzdCIsIkRhcmlfUHJvdiIsIkRpc3RfSUQiLCJQcm92X0lEIgo2MS4zMywzMi40LCJEaXN0cmljdCIsIlFhbGEtZS1LYWgiLCJGYXJhaCIsItmC2YTYudmHINqp2KfZhyIsItmB2LHYp9mHIiwzMTA2LDMxCjYyLjA2LDMyLjQ5LCJEaXN0cmljdCIsIlB1c2h0IFJvZCIsIkZhcmFoIiwi2b7YtNiqINix2YjYryIsItmB2LHYp9mHIiwzMTA1LDMxCjYxLjM3LDMyLjExLCJEaXN0cmljdCIsIlNoaWIgS29oIiwiRmFyYWgiLCLZjti024zYqCDaqdmI2YciLCLZgdix2KfZhyIsMzEwNywzMQo2Mi4yMywzMi4yNCwiUHJvdmluY2lhbF9DZW50ZXIiLCJGYXJhaCIsIkZhcmFoIiwi2YHYsdin2YciLCLZgdix2KfZhyIsMzEwMSwzMQo2MS44MywzMS4zMiwiRGlzdHJpY3QiLCJLYW5nIiwiTmltcm96Iiwi2qnZhtqvIiwi2YbbjNmF2LHZiNiyIiwzNDAyLDM0CjYyLjA0LDMwLjkxLCJQcm92aW5jaWFsX0NlbnRlciIsIlphcmFuaiIsIk5pbXJveiIsItiy2LHZhtisIiwi2YbbjNmF2LHZiNiyIiwzNDAxLDM0CjYyLjg4LDMyLjIxLCJEaXN0cmljdCIsIkJha3dhIiwiRmFyYWgiLCLYqNqp2YjYp9mHIiwi2YHYsdin2YciLDMxMDIsMzEKNjUuMTcsMzAuMTIsIkRpc3RyaWN0IiwiUmVnIiwiS2FuZGFoYXIiLCLYsduM2q8iLCLaqdmG2K',
         ),
       ),
     ),
@@ -64,7 +62,7 @@ function dkan_default_content_content_defaults() {
     'sticky' => '0',
     'type' => 'dataset',
     'language' => 'und',
-    'created' => '1351485587',
+    'created' => '1351612344',
     'comment' => '0',
     'translate' => '0',
     'machine_name' => 'afghan-election-districts',
@@ -77,14 +75,6 @@ function dkan_default_content_content_defaults() {
           'safe_value' => '<p>This data created by the National Democratic Institute (NDI) in partnership with Development Seed, a Washington, D.C.-based online communications consultancy, is designed to make data from the August 20, 2009, Afghanistan presidential election accessible and transparent. We have provided this csv file as there is no download for the whole dataset. There are many more files on the website.</p>
 ',
           'safe_summary' => '',
-        ),
-      ),
-    ),
-    'field_additional_info' => array(
-      'und' => array(
-        0 => array(
-          'first' => 'Source',
-          'second' => 'http://afghanistanelectiondata.org/',
         ),
       ),
     ),
