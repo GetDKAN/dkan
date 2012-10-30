@@ -31,6 +31,7 @@ dependencies[] = double_field
 dependencies[] = entity
 dependencies[] = entity_token
 dependencies[] = entityreference
+dependencies[] = defaultcontent
 dependencies[] = features
 dependencies[] = field_group
 dependencies[] = link_iframe_formatter
@@ -52,10 +53,13 @@ dependencies[] = views_bulk_operations
 ; Open data
 dependencies[] = recline
 
-; DKAN
+; DKAN Features
 dependencies[] = dkan_content_types
 dependencies[] = dkan_context
-dependencies[] = dkan_dataset
-dependencies[] = dkan_forms
 dependencies[] = dkan_menu
 dependencies[] = dkan_views
+
+; DKAN Modules
+dependencies[] = dkan_dataset
+dependencies[] = dkan_forms
+dependencies[] = dkan_import

@@ -13,6 +13,7 @@ projects[book_made_simple][version] = 3.x
 projects[context][subdir] = contrib
 projects[ctools][subdir] = contrib
 projects[delta][subdir] = contrib
+projects[defaultcontent][subdir] = contrib
 projects[diff][subdir] = contrib
 projects[double_field][subdir] = contrib
 projects[entity][subdir] = contrib
