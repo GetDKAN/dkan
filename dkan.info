@@ -56,6 +56,8 @@ dependencies[] = recline
 ; DKAN Features
 dependencies[] = dkan_content_types
 dependencies[] = dkan_context
+dependencies[] = dkan_default_content
+dependencies[] = dkan_front
 dependencies[] = dkan_menu
 dependencies[] = dkan_views
 
