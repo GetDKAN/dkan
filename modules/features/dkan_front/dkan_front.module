@@ -1,0 +1,21 @@
+<?php
+/**
+ * @file
+ * Code for the dkan_front feature.
+ */
+
+include_once 'dkan_front.features.inc';
+
+/**
+ * Implements hook_views_post_execute().
+ */
+function dkan_front_views_post_execute(&$view) {
+  // This adds the list of datasets to the view of groups. The group nid is used as an argument for group audience.
+  if ($view->name == 'front_page_group_list' && ($view->current_display == 'block' || $view->current_display == 'block_2')) {
+    $nid = $view->result[0]->nid;
+    $group_nodes = views_embed_view('front_page_group_list', 'block_1', $nid);
+    $view->attachment_after = $group_nodes;
+  }
+
+}
+
