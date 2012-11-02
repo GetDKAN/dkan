@@ -398,3 +398,10 @@ version = "unknown"
 project = "dkan"
 datestamp = "1350848316"
 
+
+
+; Information added by drush on 2012-10-30
+version = "unknown"
+project = "dkan"
+datestamp = "1351627959"
+
