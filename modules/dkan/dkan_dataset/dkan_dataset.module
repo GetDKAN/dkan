@@ -149,7 +149,7 @@ function dkan_dataset_license_block() {
     return '';
   }
   else {
-    if (isset($node->field_license)) {
+    if (isset($node->field_license) && $node->field_license) {
       $key = $node->field_license[$node->language][0];
       $field = field_info_instance('node', 'field_license', 'dataset');
       $raw_options = $field['widget']['settings']['available_options'];
@@ -197,7 +197,7 @@ function dkan_dataset_menu_breadcrumb_alter(&$active_trail, $item) {
   }
   if (isset($contexts['resource'])) {
     $alter = array(
-      'max_length' => 20,
+      'max_length' => 25,
       'ellipsis' => TRUE,
       'word_boundary' => TRUE,
       'trim' => TRUE,
