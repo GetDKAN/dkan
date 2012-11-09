@@ -59,6 +59,7 @@ dependencies[] = dkan_context
 dependencies[] = dkan_default_content
 dependencies[] = dkan_front
 dependencies[] = dkan_menu
+dependencies[] = dkan_roles_and_permissions
 dependencies[] = dkan_views
 
 ; DKAN Modules
