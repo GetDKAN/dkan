@@ -19,3 +19,46 @@ function dkan_front_views_post_execute(&$view) {
 
 }
 
+/**
+ * Implements hook_block_info().
+ */
+function dkan_front_block_info() {
+  $blocks['dkan_demo_front'] = array(
+    'info' => t('Welcome to the DKAN Demo'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function dkan_front_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'dkan_demo_front':
+      $block['subject'] = t('Welcome to the DKAN Demo');
+      $block['content'] = dkan_demo_front_block();
+      break;
+    
+  }
+  return $block;
+}
+
+/**
+ * Creates placeholder front block.
+ */
+function dkan_demo_front_block() {
+return
+  '<div class="module-content">
+    <header>
+      <p>Try out standard CKAN functionality in a sandbox environment. Search for datasets directly from the homepage or by navigating to the <a href="dataset">Datasets</a> search page where you can facet by tags, groups and format.</p>
+    </header>
+    <section class="featured media-overlay">
+      <h2 class="media-heading">CKAN‘s data previewing tool has many powerful features</h2>
+      <a class="image" href="/dataset/gold-prices"><img src="/profiles/dkan/themes/dkan/images/homepage-graphic.jpg" width="420" height="219"></a>
+    </section>
+  </div>';
+}

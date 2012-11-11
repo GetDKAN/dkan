@@ -26,6 +26,12 @@ function dkan_front_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
+        'dkan_front-dkan_demo_front' => array(
+          'module' => 'dkan_front',
+          'delta' => 'dkan_demo_front',
+          'region' => 'preface_first',
+          'weight' => '-10',
+        ),
         'views-front_page_group_list-block' => array(
           'module' => 'views',
           'delta' => 'front_page_group_list-block',
