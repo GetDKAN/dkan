@@ -20,8 +20,6 @@ regions[preface_second] = 'Preface Second'
 regions[preface_third] = 'Preface Third'
 regions[postscript_first] = 'Postscript First'
 regions[postscript_second] = 'Postscript Second'
-regions[postscript_third] = 'Postscript Third'
-regions[postscript_fourth] = 'Postscript Fourth'
 regions[footer_first] = 'Footer First'
 regions[footer_second] = 'Footer Second'
 zones[header] = 'Header'
@@ -35,6 +33,7 @@ zones[postscript] = 'Postscript'
 css[global.css][name] = 'Your custom global styles'
 css[global.css][description] = 'This file holds all the globally active custom CSS of your theme.'
 css[global.css][options][weight] = '10'
+
 settings[toggle_logo] = '1'
 settings[toggle_name] = '0'
 settings[toggle_slogan] = '0'
@@ -121,6 +120,7 @@ settings[alpha_debug_grid_toggle] = '1'
 settings[alpha_debug_grid_active] = '0'
 settings[alpha_debug_grid_roles][1] = '1'
 settings[alpha_debug_grid_roles][2] = '2'
+settings[alpha_debug_grid_roles][3] = '0'
 settings[alpha_toggle_messages] = '1'
 settings[alpha_toggle_action_links] = '1'
 settings[alpha_toggle_tabs] = '1'
@@ -323,7 +323,7 @@ settings[alpha_zone_postscript_equal_height_container] = '0'
 settings[alpha_region_postscript_first_force] = '0'
 settings[alpha_region_postscript_first_zone] = 'postscript'
 settings[alpha_region_postscript_first_prefix] = '0'
-settings[alpha_region_postscript_first_columns] = '3'
+settings[alpha_region_postscript_first_columns] = '6'
 settings[alpha_region_postscript_first_suffix] = '0'
 settings[alpha_region_postscript_first_weight] = '1'
 settings[alpha_region_postscript_first_position] = '0'
@@ -333,35 +333,15 @@ settings[alpha_region_postscript_first_equal_height_container] = '0'
 settings[alpha_region_postscript_second_force] = '0'
 settings[alpha_region_postscript_second_zone] = 'postscript'
 settings[alpha_region_postscript_second_prefix] = '0'
-settings[alpha_region_postscript_second_columns] = '3'
+settings[alpha_region_postscript_second_columns] = '6'
 settings[alpha_region_postscript_second_suffix] = '0'
 settings[alpha_region_postscript_second_weight] = '2'
 settings[alpha_region_postscript_second_position] = '0'
 settings[alpha_region_postscript_second_css] = ''
 settings[alpha_region_postscript_second_equal_height_element] = '0'
 settings[alpha_region_postscript_second_equal_height_container] = '0'
-settings[alpha_region_postscript_third_force] = '0'
-settings[alpha_region_postscript_third_zone] = 'postscript'
-settings[alpha_region_postscript_third_prefix] = '0'
-settings[alpha_region_postscript_third_columns] = '3'
-settings[alpha_region_postscript_third_suffix] = '0'
-settings[alpha_region_postscript_third_weight] = '3'
-settings[alpha_region_postscript_third_position] = '0'
-settings[alpha_region_postscript_third_css] = ''
-settings[alpha_region_postscript_third_equal_height_element] = '0'
-settings[alpha_region_postscript_third_equal_height_container] = '0'
-settings[alpha_region_postscript_fourth_force] = '0'
-settings[alpha_region_postscript_fourth_zone] = 'postscript'
-settings[alpha_region_postscript_fourth_prefix] = '0'
-settings[alpha_region_postscript_fourth_columns] = '3'
-settings[alpha_region_postscript_fourth_suffix] = '0'
-settings[alpha_region_postscript_fourth_weight] = '4'
-settings[alpha_region_postscript_fourth_position] = '0'
-settings[alpha_region_postscript_fourth_css] = ''
-settings[alpha_region_postscript_fourth_equal_height_element] = '0'
-settings[alpha_region_postscript_fourth_equal_height_container] = '0'
 settings[alpha_zone_footer_wrapper] = '1'
-settings[alpha_zone_footer_force] = '0'
+settings[alpha_zone_footer_force] = '1'
 settings[alpha_zone_footer_order] = '0'
 settings[alpha_zone_footer_section] = 'footer'
 settings[alpha_zone_footer_weight] = '1'
@@ -390,25 +370,5 @@ settings[alpha_region_footer_second_position] = '0'
 settings[alpha_region_footer_second_css] = ''
 settings[alpha_region_footer_second_equal_height_element] = '0'
 settings[alpha_region_footer_second_equal_height_container] = '0'
+
 version = '1.x'
-
-
-; Information added by drush on 2012-10-21
-version = "unknown"
-project = "dkan"
-datestamp = "1350848316"
-
-
-
-; Information added by drush on 2012-10-30
-version = "unknown"
-project = "dkan"
-datestamp = "1351627959"
-
-
-
-; Information added by drush on 2012-11-09
-version = "unknown"
-project = "dkan"
-datestamp = "1352427927"
-
