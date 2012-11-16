@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the dkan_search_sql feature.
+ */
+
+include_once 'dkan_search_sql.features.inc';
