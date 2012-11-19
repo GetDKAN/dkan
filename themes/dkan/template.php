@@ -13,6 +13,14 @@ function dkan_breadcrumb($variables) {
   $contexts = array();
 
   if (!empty($breadcrumb)) {
+    foreach ($breadcrumb as $num => $item) {
+      if ($item == '<a href="/">Home</a>') {
+        $breadcrumb[$num] = '<a href="/"><i class="icon-large icon-home"></i><span> Home</span></a>';
+      }
+      if ($item == '[all items]') {
+        $breadcrumb[$num] = t('Search Datasets');
+      }
+    }
     // Custom breadcrumb elements for specific contexts.
     if (module_exists('context')) {
       $contexts = context_active_contexts();
@@ -105,11 +113,21 @@ function dkan_process_zone(&$vars) {
  */
 function dkan_preprocess_node(&$vars) {
 }
+
 /**
  * Implements template_preprocess_page.
  */
 function dkan_preprocess_page(&$vars) {
-  if ($vars['user']->uid != 2 && isset($vars['node'])) {
+  $profile_path = drupal_get_path('profile', 'dkan');
+  // Add font-awesome. This is not a GPL library so has to be downloaded separately.
+  if (file_exists($profile_path . '/libraries/font_awesome/css/font-awesome.css')) {
+    drupal_add_css($profile_path . '/libraries/font_awesome/css/font-awesome.css');
+  }
+  if ($vars['is_front']) {
+    drupal_add_js($profile_path . '/themes/dkan/js/front.js');
+  }
+  // TODO: create site admin role that can deal also see tabs.
+  if ($vars['user']->uid != 1 && isset($vars['node'])) {
     $vars['tabs'] = '';
   }
   // Custom breadcrumb elements for specific contexts.
@@ -120,6 +138,7 @@ function dkan_preprocess_page(&$vars) {
     // Remove title on dataset edit and creation pages.
     $vars['title'] = '';
   }
+    $vars['title'] = '';
 }
 
 /**
@@ -232,4 +251,73 @@ function dkan_horizontal_tabs($variables) {
   $output .= '<div class="horizontal-tabs-panes">' . $element['#children'] . '</div>';
 
   return $output;
+}
+
+/**
+ * Implements theme_facetapi_link_active().
+ */
+function dkan_facetapi_link_active($variables) {
+
+  // Sanitizes the link text if necessary.
+  $sanitize = empty($variables['options']['html']);
+  $link_text = ($sanitize) ? check_plain($variables['text']) : $variables['text'];
+
+  // Theme function variables fro accessible markup.
+  // @see http://drupal.org/node/1316580
+  $accessible_vars = array(
+    'text' => $variables['text'],
+    'active' => TRUE,
+  );
+
+  // Builds link, passes through t() which gives us the ability to change the
+  // position of the widget on a per-language basis.
+  $replacements = array(
+    '!facetapi_deactivate_widget' => theme('facetapi_deactivate_widget', $variables),
+    '!facetapi_accessible_markup' => theme('facetapi_accessible_markup', $accessible_vars),
+  );
+  $variables['text'] = t('!facetapi_deactivate_widget !facetapi_accessible_markup', $replacements);
+  $variables['options']['html'] = TRUE;
+  $alter = array(
+    'max_length' => 30,
+    'ellipsis' => TRUE,
+    'word_boundary' => TRUE,
+    'trim' => TRUE,
+  );
+  $link_text = views_trim_text($alter, $link_text);
+  $variables['text'] = $link_text;
+  return theme_link($variables);
+}
+/**
+ * Implements theme_facetapi_link_active().
+ */
+function dkan_facetapi_link_inactive($variables) {
+  // Builds accessible markup.
+  // @see http://drupal.org/node/1316580
+  $alter = array(
+    'max_length' => 30,
+    'ellipsis' => TRUE,
+    'word_boundary' => TRUE,
+    'trim' => TRUE,
+  );
+  $variables['text'] = views_trim_text($alter, $variables['text']);
+  $accessible_vars = array(
+    'text' => $variables['text'],
+    'active' => FALSE,
+  );
+  $accessible_markup = theme('facetapi_accessible_markup', $accessible_vars);
+
+  // Sanitizes the link text if necessary.
+  $sanitize = empty($variables['options']['html']);
+  $variables['text'] = ($sanitize) ? check_plain($variables['text']) : $variables['text'];
+
+  // Adds count to link if one was passed.
+  if (isset($variables['count'])) {
+    $variables['text'] .= ' ' . theme('facetapi_count', $variables);
+  }
+
+  // Resets link text, sets to options to HTML since we already sanitized the
+  // link text and are providing additional markup for accessibility.
+  $variables['text'] .= $accessible_markup;
+  $variables['options']['html'] = TRUE;
+  return theme_link($variables);
 }
