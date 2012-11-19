@@ -23,6 +23,7 @@ dependencies[] = book_made_simple
 dependencies[] = coder
 dependencies[] = context
 dependencies[] = context_ui
+dependencies[] = compact_forms
 dependencies[] = ctools
 dependencies[] = devel
 dependencies[] = delta
