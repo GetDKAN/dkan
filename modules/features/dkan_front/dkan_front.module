@@ -7,24 +7,19 @@
 include_once 'dkan_front.features.inc';
 
 /**
- * Implements hook_views_post_execute().
- */
-function dkan_front_views_post_execute(&$view) {
-  // This adds the list of datasets to the view of groups. The group nid is used as an argument for group audience.
-  if ($view->name == 'front_page_group_list' && ($view->current_display == 'block' || $view->current_display == 'block_2')) {
-    $nid = $view->result[0]->nid;
-    $group_nodes = views_embed_view('front_page_group_list', 'block_1', $nid);
-    $view->attachment_after = $group_nodes;
-  }
-
-}
-
-/**
  * Implements hook_block_info().
  */
 function dkan_front_block_info() {
   $blocks['dkan_demo_front'] = array(
     'info' => t('Welcome to the DKAN Demo'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+  $blocks['dkan_search_front'] = array(
+    'info' => t('Search Your Data'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+  $blocks['dkan_add_front'] = array(
+    'info' => t('Add a Dataset'),
     'cache' => DRUPAL_NO_CACHE
   );
 
@@ -42,7 +37,16 @@ function dkan_front_block_view($delta = '') {
       $block['subject'] = t('Welcome to the DKAN Demo');
       $block['content'] = dkan_demo_front_block();
       break;
-    
+
+    case 'dkan_search_front':
+      $block['subject'] = t('Search Your Data');
+      $block['content'] = dkan_search_front_block();
+      break;
+
+    case 'dkan_add_front':
+      $block['subject'] = t('Add a Dataset');
+      $block['content'] = dkan_add_front_block();
+      break;
   }
   return $block;
 }
@@ -54,11 +58,56 @@ function dkan_demo_front_block() {
 return
   '<div class="module-content">
     <header>
-      <p>Try out standard CKAN functionality in a sandbox environment. Search for datasets directly from the homepage or by navigating to the <a href="dataset">Datasets</a> search page where you can facet by tags, groups and format.</p>
+      <p>Try out standard DKAN functionality in a sandbox environment. Search for datasets directly from the homepage or by navigating to the <a href="dataset">Datasets</a> search page where you can facet by tags, groups and format.</p>
     </header>
     <section class="featured media-overlay">
       <h2 class="media-heading">CKAN‘s data previewing tool has many powerful features</h2>
       <a class="image" href="/dataset/gold-prices"><img src="/profiles/dkan/themes/dkan/images/homepage-graphic.jpg" width="420" height="219"></a>
     </section>
   </div>';
+}
+
+/**
+ * Creates search block for front page.
+ */
+function dkan_search_front_block() {
+  if (module_exists('dkan_search_sql')) {
+    $view = views_get_view('dataset');
+    $view->set_display('page');
+    $view->init_handlers();
+    $exposed_form = $view->display_handler->get_plugin('exposed_form');
+    $exposed_form->view->filter['search_api_views_fulltext']->options['expose']['label'] = t('eg. Gold Prices');
+    return $exposed_form->render_exposed_form(true);
+  }
+}
+
+/**
+ * Creates "Add a Dataset" block for front page.
+ */
+function dkan_add_front_block() {
+  $output = '<div class="add content">';
+  $output .= t('You can add a !dataset to get a sense of publisher workflow. This form can be customised to require many additional fields. In this demo only the most basic fields are required.', array('!dataset' => l('Dataset', 'node/add/dataset')));
+  $output .= '</div><a class="close icon-remove-sign" href="#close"></a>';
+  return $output;
+}
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_front_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'views_exposed_form') {
+    $form['submit']['#type'] = 'image_button';
+    $form['submit']['#src'] = 'profiles/dkan/images/icon-search-27x26.png';
+  }
+}
+
+/**
+ * Implements hook_views_post_execute().
+ */
+function dkan_front_views_post_execute(&$view) {
+  // This adds the list of datasets to the view of groups. The group nid is used as an argument for group audience.
+  if ($view->name == 'front_page_group_list' && ($view->current_display == 'block' || $view->current_display == 'block_2')) {
+    $nid = $view->result[0]->nid;
+    $group_nodes = views_embed_view('front_page_group_list', 'block_1', $nid);
+    $view->attachment_after = $group_nodes;
+  }
 }

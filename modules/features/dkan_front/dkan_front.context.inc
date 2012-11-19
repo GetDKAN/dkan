@@ -32,6 +32,24 @@ function dkan_front_context_default_contexts() {
           'region' => 'preface_first',
           'weight' => '-10',
         ),
+        'dkan_front-dkan_add_front' => array(
+          'module' => 'dkan_front',
+          'delta' => 'dkan_add_front',
+          'region' => 'preface_second',
+          'weight' => '-10',
+        ),
+        'dkan_front-dkan_search_front' => array(
+          'module' => 'dkan_front',
+          'delta' => 'dkan_search_front',
+          'region' => 'preface_second',
+          'weight' => '-9',
+        ),
+        'views-popular_tags-block' => array(
+          'module' => 'views',
+          'delta' => 'popular_tags-block',
+          'region' => 'preface_second',
+          'weight' => '-10',
+        ),
         'views-front_page_group_list-block' => array(
           'module' => 'views',
           'delta' => 'front_page_group_list-block',
