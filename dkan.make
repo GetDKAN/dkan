@@ -11,6 +11,7 @@ projects[boxes][subdir] = contrib
 projects[book_made_simple][subdir] = contrib
 projects[book_made_simple][version] = 3.x
 projects[context][subdir] = contrib
+projects[compact_forms][subdir] = contrib
 projects[ctools][subdir] = contrib
 projects[delta][subdir] = contrib
 projects[defaultcontent][subdir] = contrib
@@ -54,6 +55,11 @@ libraries[recline][type] = libraries
 libraries[recline][download][type] = git
 libraries[recline][download][branch] = master
 libraries[recline][download][url] = "git://github.com/acouch/recline.git"
+
+libraries[font_awesome][type] = libraries
+libraries[font_awesome][download][type] = git
+libraries[font_awesome][download][url] = "https://github.com/FortAwesome/Font-Awesome.git"
+libraries[font_awesome][directory_name] = font_awesome
 
 ;--------------------
 ; Development
