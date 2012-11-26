@@ -857,9 +857,6 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   font-weight: bold;
   font-size: 14px;
 }
-.form-type-textarea label {
-  margin: 10px 0 0 0;
-}
 #dataset-node-form .field-group-fieldset legend {
   display: none;
 }
@@ -875,8 +872,8 @@ form-textarea-wrapper textarea {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
-#resource-node-form #body-add-more-wrapper .form-textarea-wrapper,
-#dataset-node-form #body-add-more-wrapper .form-textarea-wrapper {
+#resource-node-form .form-textarea-wrapper,
+#dataset-node-form .form-textarea-wrapper {
   margin-left: 130px;
 }
 #data-and-resources {
@@ -905,7 +902,15 @@ form-textarea-wrapper textarea {
 .filter-wrapper {
   padding: 0;
 }
-#edit-body-und-0-format-guidelines .tips {
+.form-item-title {
+  height: 65px;
+}
+.form-item-title input {
+  height: 55px;
+  float: none;
+}
+#resource-node-form .filter-guidelines .tips,
+#dataset-node-form .filter-guidelines .tips {
   display: none;
 }
 label.for=["edit-field-upload-und-0"] {
@@ -914,13 +919,11 @@ label.for=["edit-field-upload-und-0"] {
 .horizontal-tabs fieldset.horizontal-tabs-pane {
   padding: 0;
 }
-#body-add-more-wrapper label::after,
-#resource-edit-title::after {
-  content: ":";
-}
 #resource-edit-title {
   font-size: 19px;
-  margin: 45px 0 0px 0px;
+  margin: 53px 0 0px 0px;
+}
+#edit-field-upload {
 }
 #resource-node-form #edit-field-upload-und-0-ajax-wrapper input {
   width: auto;
@@ -942,17 +945,42 @@ label.for=["edit-field-upload-und-0"] {
   font-weight: normal;
   width: 100px;
   display: inline-block;
+  margin: 5px 0;
+  font-size: 13px;
 }
-#edit-field-upload-und-0-ajax-wrapper label {
-  content: ':';
+#resource-node-form #edit-field-upload {
+  font-size: 12px;
+  padding: 12px;
+  width: 495px;
 }
+#resource-node-form #edit-field-upload legend {
+  font-size: 14px;
+  padding: 10px 0 0 0;
+  line-height: 20px;
+  margin: 0;
+}
+#resource-node-form fieldset.collapsible div.fieldset-wrapper {
+  padding: 5px;
+}
+#resource-node-form fieldset.collapsed {
+  padding: 15px 0;
+}
+#resource-node-form input.autocomplete-deluxe-form,
+#dataset-node-form input.autocomplete-deluxe-form {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 14px;
+  margin: 0;
+}
+#edit-field-upload,
 input#edit-field-link-api-und-0-url,
 #resource-node-form textarea,
 #resource-node-form input,
 #dataset-node-form textarea,
 #dataset-node-form input {
-  font-size: 18px;
-  padding: 10px  15px;
+  font-size: 16px;
+  padding: 6px  12px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
@@ -971,37 +999,70 @@ input#edit-field-link-api-und-0-url,
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
+#edit-field-format .description,
+#edit-field-tags .description {
+  top: 10px;
+  left: 145px;
+  font-size: 14px;
+  color: #999;
+}
+#edit-field-format .autocomplete-deluxe-container,
+#edit-field-tags .autocomplete-deluxe-container {
+  width: 505px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #CCC;
+}
 .group-data .horizontal-tabs,
 .form-item-title input {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  height: auto;
   width: 520px;
-  float: left;
+  float: right;
+}
+.form-item-title .description {
+  left: 145px;
+  font-size: 18px;
+  top: 15px;
+  color: #999;
+}
+#edit-body .description {
+  left: 145px;
+  font-size: 15px;
+  top: 4px;
+  color: #999;
+}
+input#edit-title {
+  height: 55px;
+  float: none;
 }
 .form-item-title label {
   margin-top: 10px;
   font-size: 18px;
 }
+#edit-field-format-und-values,
 #dataset-node-form #edit-field-tags-und-term-entry {
-  width: 464px;
   font-size: 16px;
-  padding: 10px;
+  padding: 4px;
   background-position: 99% 8px;
 }
+#edit-field-format label,
 #edit-field-tags-und label {
  margin-top: 15px;
 }
 #edit-field-license-und-select {
   padding: 0 5px;
-  width: 464px;
+}
+.select-or-other .form-item input.select-or-other-other {
+  margin: 0 0 0 130px;
 }
 #dataset-node-form #edit-field-tags-und-add-button {
-font-size: 13px;
-margin: 0px 0 0 15px;
-padding: 5px 7px;
+  font-size: 13px;
+  margin: 0px 0 0 15px;
+  padding: 5px 7px;
 }
 #dataset-node-form input#edit-field-tags-und-term-entry.throbbing {
   background-position: 99% -12px; /* LTR */
@@ -1015,11 +1076,6 @@ html.js input.throbbing {
 }
 .form-autocomplete {
   font-size: 12px;
-}
-.form-item-title input,
-.form-item-body-und-0-value input,
-#edit-field-tags-und input,
-#edit-field-license input {
 }
 .at-term-list {
   margin-bottom: 5px;
@@ -1060,6 +1116,10 @@ html.js input.throbbing {
   position: relative;
   cursor: default;
 }
+#field-tags-wrapper .path-form label,
+#edit-path label,
+#edit-field-tags label,
+#edit-field-format label,
 .form-item-title label,
 .form-item-body-und-0-value label,
 .field-group-htabs.group-data label,
@@ -1067,9 +1127,158 @@ html.js input.throbbing {
 #edit-field-license label {
   width: 120px;
   text-align: right;
+  margin-top: 18px;
+}
+#resource-node-form .form-item-title {
+  clear: both;
+}
+.horizontal-tabs .compact-form-wrapper {
+  position: inherit;
+}
+.horizontal-tabs .compact-form-description {
+  top: 53px;
+  left: 12px;
+}
+#resource-node-form .horizontal-tabs input {
+  height: 55px;
+}
+.form-item .description.compact-form-description {
+  font-size: 16px;
+  color: #999;
+}
+.compact-form-wrapper {
+  position: relative;
+  text-align: left;
+}
+.compact-form-description,
+.compact-form-label {
+  position: absolute;
+  top: 1px;
+  left: 5px;
+  z-index: 1;
+  font-size: .9em;
+}
+.compact-form-description {
+  position: absolute;
+  top: 35px;
+  left: 5px;
+  z-index: 1;
+  font-size: .9em;
+}
+#field-tags-wrapper .path-form {
+  height: 30px;
+}
+#form-item-path-alias {
+  position: relative;
+}
+.form-item-path-alias {
+  margin: 0;
+}
+#field-tags-wrapper .path-form .add-on {
+  position: absolute;
+  top: 3px;
+  left: 130px;
+  -webkit-border-radius: 3px 0 0 3px;
+  -moz-border-radius: 3px 0 0 3px;
+  border-radius: 3px 0 0 3px;
+  display: inline-block;
+  width: auto;
+  min-width: 16px;
+  height: 19px;
+  padding: 4px 6px;
+  font-weight: normal;
+  line-height: 18px;
+  text-align: center;
+  text-shadow: 0 1px 0 white;
+  vertical-align: middle;
+  background-color: #EEE;
+  border: 1px solid #CCC;
+  z-index: 1;
+}
+.compact-form-wrapper {
+  clear: both;
+}
+#dataset-node-form .form-item-path-alias input {
+  top: 3px;
+  font-size: 16px;
+  position: absolute;
+  left: 194px;
+}
+#url-edit-preview {
+  width: 500px;
+  padding: 0px 0 15px 100px;
+  float: left;
+  position: relative;
+  top: 0;
+}
+#url-edit-label,
+#url-edit-prefix,
+#url-slug,
+#url-edit-preview .btn-small {
+  float: left;
+}
+#url-edit-label {
+  padding: 0 5px 0 0;
+  margin: -1px 0 0 0;
+}
+#url-edit-preview .btn-small {
+  padding: 2px 6px 2px;
+  font-size: 12px;
+  margin: -3px 0 0 5px;
+}
+#url-slug {
+  background-color: #EBE2BE;
+  padding: 0 2px;
+  margin: 0 2px;
+}
+#field-tags-wrapper {
+  position: relative;
+}
+#edit-body {
+  clear: both;
+}
+#edit-field-tags label {
+  margin-top: 10px;
+}
+#edit-field-format .autocomplete-deluxe-throbber,
+#edit-field-tags .autocomplete-deluxe-throbber {
+  display: none;
+}
+.form-type-textarea label {
+  margin: 10px 0 0 0;
+}
+#edit-field-license {
+  position: relative;
+  height: 50px;
+}
+#edit-field-license .select-or-other a {
+  text-decoration: none;
+  color: #000;
+}
+#edit-field-license .select-or-other {
+  position: absolute;
+  width: 400px
+}
+#edit-field-license label {
+  margin-top: 3px;
+}
+#edit-field-license .icon-large {
+  position: absolute;
+  right: 240px;
+  font-size: 22px;
+  color: #AEAEAE;
+  top: 19px;
 }
 #edit-field-license .description {
-  margin-left: 130px;
+  position: absolute;
+  width: 230px;
+  right: 0;
+  color: #AEAEAE;
+  top: 7px;
+}
+#dataset-node-form a {
+  color: #AEAEAE;
+  text-decoration: underline;
 }
 .form-item, .form-actions {
   margin-bottom: 0;
@@ -1087,12 +1296,13 @@ html.js input.throbbing {
   margin-left: -25px;
   margin-right: -25px;
   border-top: 1px solid #DDD;
-  padding: 10px;
+  padding: 20px;
 }
 .form-actions input {
   float: right;
 }
 
+#dataset-node-form input#edit-next,
 #dataset-node-form input#edit-submit {
   background-color: #206B82;
   background-image: -moz-linear-gradient(top, #30778D, #085871);
@@ -1898,9 +2108,10 @@ h3.media-heading a {
 #edit-terms {
   box-sizing: border-box;
   font-size: 16px;
-  padding: 14px 10px;
   width: 100%;
   height: auto;
+  padding: 0;
+  margin: 0;
 }
 #block-dkan-front-dkan-search-front {
   padding: 5px;

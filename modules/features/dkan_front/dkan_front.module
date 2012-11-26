@@ -94,7 +94,8 @@ function dkan_add_front_block() {
  * Implements hook_form_alter().
  */
 function dkan_front_form_alter(&$form, &$form_state, $form_id) {
-  if ($form_id == 'views_exposed_form') {
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dataset-page') {
+    unset($form['terms']['#size']);
     $form['submit']['#type'] = 'image_button';
     $form['submit']['#src'] = 'profiles/dkan/images/icon-search-27x26.png';
   }

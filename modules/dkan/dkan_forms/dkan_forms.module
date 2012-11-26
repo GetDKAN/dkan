@@ -6,6 +6,19 @@
  */
 
 /**
+ * Implements hook_field_group_build_pre_render_alter().
+ */
+function dkan_forms_field_group_build_pre_render_alter(&$element) {
+  // Moving path into primary group here since we can't do it on the content
+  // type form. Rearanging weights so path is under title.
+  $element['group_primary']['path'] = $element['path'];
+  $element['group_primary']['title']['#weight'] = '-10';
+  $element['group_primary']['path']['#weight'] = "1";
+  $element['group_primary']['body']['#weight'] = "2";
+  $element['group_primary']['field_tags']['#weight'] = "3";
+  unset($element['path']);
+}
+/**
  * Implements hook_field_group_pre_render();
  */
 function dkan_forms_field_group_pre_render(&$element, $group, &$form) {
@@ -39,7 +52,39 @@ function dkan_forms_field_group_pre_render(&$element, $group, &$form) {
 function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
 
   if ($form_id == 'dataset_node_form') {
+    $form['#attached']['js'][] = 'profiles/dkan/libraries/slugify/jquery.slugify.js';
+    $form['#attached']['js'][] = drupal_get_path('module', 'dkan_forms') . '/dkan_forms.js';
+
+    // Removing path from vertiable tabs.
+    unset($form['path']['#group']);
+    unset($form['path']['#title']);
+    $form['path']['#collapsible'] = FALSE;
+    $form['path']['#collapsed'] = FALSE;
+    $alias = $form['path']['alias']['#default_value'] ? $form['path']['alias']['#default_value']: t('[dataset]');
+    $form['path']['#prefix'] = '<div id="field-tags-wrapper"><div id="url-edit-preview"><div id="url-edit-label"><strong>URL</strong></div> <div id="url-edit-prefix">' . check_plain($_SERVER['HTTP_HOST']) . "/dataset/</div>" . '<span id="url-slug">' . $alias  . '</span>' . $form['path']['alias']['#default_value'] . '<button class="btn btn-small">Edit</button></div>';
+    $form['path']['#suffix'] = '</div>';
+    $form['path']['alias']['#prefix'] = '<span class="add-on">/dataset/</span>';
+    $form['path']['alias']['#title'] = 'URL';
+    // Adding descriptions.
+    $form['title']['#description'] = t('eg. A descriptive title');
+    $form['body'][$form['language']['#value']][0]['#description'] = t('eg. Some useful notes about the data');
+    $form['path']['alias']['#description'] = '';
+    $form['path']['alias']['#title'] = '';
+    $form['field_tags']['und']['#description'] = t('eg. economy, mental health, government');
+
+    // Add icon to license field.
+    $form['field_license']['icon']['#type'] = 'markup';
+    $form['field_license']['icon']['#markup'] = '<i class="icon-large icon-info-sign"></i>';
+
+    // Don't show groups if user doesn't have any groups to add.
+    $groups = $form['og_group_ref'][$form['language']['#value']][0]['default']['#options'];
+    if (count($groups) < 2) {
+      $form['og_group_ref']['#access'] = FALSE;
+    }
     if (arg(1) == 'add') {
+      // We don't need to see revision form when creating a new node.
+      $form['revision_information']['#access'] = FALSE;
+
       $form['actions']['next'] = array(
         '#type' => 'submit',
         '#value' => t('Next: Add data'),
@@ -64,6 +109,15 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
     }
   }
   if ($form_id == 'resource_node_form') {
+    $form['#attached']['js'][] = 'profiles/dkan/libraries/slugify/jquery.slugify.js';
+    $form['#attached']['js'][] = drupal_get_path('module', 'dkan_forms') . '/dkan_forms.js';
+
+    $form['field_link_api'][$form['language']['#value']][0]['#description'] = 'eg. http://example.com/gold-prices-jan-2011.json';
+    $form['field_upload'][$form['language']['#value']][0]['#title'] = '';
+    $form['field_upload'][$form['language']['#value']][0]['view']['#collapsible'] = TRUE;
+    $form['field_upload'][$form['language']['#value']][0]['view']['#collasped'] = TRUE;
+    $form['field_link_file'][$form['language']['#value']][0]['#description'] = 'eg. http://example.com/gold-prices-jan-2011.json';
+    $form['title']['#description'] = 'eg. January Gold Prices';
     $form['field_link_api'][$form['language']['#value']][0]['#title'] = '';
     $form['field_link_file'][$form['language']['#value']][0]['#title'] = '';
     if ($query = drupal_get_query_parameters()) {
