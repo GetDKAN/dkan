@@ -6,7 +6,7 @@ core = 7.x
 ;--------------------
 
 projects[admin_menu][subdir] = contrib
-projects[active_tags][subdir] = contrib
+projects[autocomplete_deluxe][subdir] = contrib
 projects[boxes][subdir] = contrib
 projects[book_made_simple][subdir] = contrib
 projects[book_made_simple][version] = 3.x
