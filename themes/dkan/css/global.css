@@ -314,24 +314,6 @@ label {
   margin-bottom: 5px;
   color: #333333;
 }
-input,
-textarea,
-select,
-.uneditable-input {
-  display: inline-block;
-  width: 210px;
-  height: 18px;
-  padding: 4px;
-  margin-bottom: 9px;
-  font-size: 13px;
-  line-height: 18px;
-  color: #555555;
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
 .uneditable-textarea {
   width: auto;
   height: auto;
@@ -847,6 +829,11 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   color: #eef6ed;
   background: #c5e2c4;
 }
+.node-form .vertical-tabs label {
+  float: none;
+  display: inline;
+  font-weight: normal;
+}
 .node-form label {
   display: block;
   margin-bottom: 5px;
@@ -860,9 +847,11 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 #dataset-node-form .field-group-fieldset legend {
   display: none;
 }
-#resource-node-form #edit-body-und-0-value,
-#dataset-node-form #edit-body-und-0-value {
+#resource-node-form .field-name-body textarea,
+#dataset-node-form .field-name-body textarea {
   margin-bottom: 0;
+  padding: 10px;
+  font-size: 14px;
 }
 form-textarea-wrapper textarea {
   display: block;
@@ -872,8 +861,11 @@ form-textarea-wrapper textarea {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
-#resource-node-form .form-textarea-wrapper,
-#dataset-node-form .form-textarea-wrapper {
+.vertical-tabs fieldset.vertical-tabs-pane {
+  padding: 10px;
+}
+#resource-node-form .field-name-body .form-textarea-wrapper,
+#dataset-node-form .field-name-body .form-textarea-wrapper {
   margin-left: 130px;
 }
 #data-and-resources {
@@ -902,10 +894,12 @@ form-textarea-wrapper textarea {
 .filter-wrapper {
   padding: 0;
 }
-.form-item-title {
+#resource-node-form .form-item-title,
+#dataset-node-form .form-item-title {
   height: 65px;
 }
-.form-item-title input {
+#resource-node-form .form-item-title input,
+#dataset-node-form .form-item-title input {
   height: 55px;
   float: none;
 }
@@ -970,15 +964,56 @@ label.for=["edit-field-upload-und-0"] {
   border: 0;
   background: transparent;
   box-shadow: none;
-  font-size: 14px;
-  margin: 0;
+  height: auto;
 }
+#resource-node-form a {
+  color: #999;
+}
+#resource-node-form input[type="submit"],
+#dataset-node-form input[type="submit"] {
+  margin: 0 2px;
+  font-weight: bold;
+  border-color: #CCC;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  display: inline-block;
+  padding: 4px 10px 4px;
+  margin-bottom: 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: #333;
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: #F7F7F7;
+  background-image: -moz-linear-gradient(top, white, #EAEAEA);
+  background-image: -ms-linear-gradient(top, white, #EAEAEA);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(white), to(#EAEAEA));
+  background-image: -webkit-linear-gradient(top, white, #EAEAEA);
+  background-image: -o-linear-gradient(top, white, #EAEAEA);
+  background-image: linear-gradient(top, white, #EAEAEA);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eaeaea', GradientType=0);
+  border-color: #EAEAEA #EAEAEA #C4C4C4;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  border: 1px solid #CCC;
+  border-bottom-color: #B3B3B3;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
+  -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
+}
+
 #edit-field-upload,
 input#edit-field-link-api-und-0-url,
-#resource-node-form textarea,
+#resource-node-form .field-name-body textarea,
 #resource-node-form input,
 #dataset-node-form textarea,
 #dataset-node-form input {
+  margin: 0;
   font-size: 16px;
   padding: 6px  12px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
@@ -990,7 +1025,6 @@ input#edit-field-link-api-und-0-url,
   -o-transition: border linear 0.2s, box-shadow linear 0.2s;
   transition: border linear 0.2s, box-shadow linear 0.2s;
   display: inline-block;
-  margin-bottom: 9px;
   line-height: 18px;
   color: #555;
   background-color: white;
@@ -999,7 +1033,12 @@ input#edit-field-link-api-und-0-url,
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-#edit-field-format .description,
+#edit-field-format .description {
+  top: 15px;
+  left: 145px;
+  font-size: 13px;
+  color: #999;
+}
 #edit-field-tags .description {
   top: 10px;
   left: 145px;
@@ -1015,7 +1054,8 @@ input#edit-field-link-api-und-0-url,
   border: 1px solid #CCC;
 }
 .group-data .horizontal-tabs,
-.form-item-title input {
+#dataset-node-form .form-item-title input,
+#resource-node-form .form-item-title input {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
@@ -1029,17 +1069,19 @@ input#edit-field-link-api-und-0-url,
   top: 15px;
   color: #999;
 }
-#edit-body .description {
+.field-name-body .description {
   left: 145px;
   font-size: 15px;
   top: 4px;
   color: #999;
 }
-input#edit-title {
+
+#resource-node-form input#edit-title,
+#dataset-node-form input#edit-title {
   height: 55px;
-  float: none;
 }
-.form-item-title label {
+#resource-node-form .form-item-title label,
+#dataset-node-form .form-item-title label {
   margin-top: 10px;
   font-size: 18px;
 }
@@ -1120,8 +1162,10 @@ html.js input.throbbing {
 #edit-path label,
 #edit-field-tags label,
 #edit-field-format label,
-.form-item-title label,
-.form-item-body-und-0-value label,
+#dataset-node-form .form-item-title label,
+#resource-node-form .form-item-title label,
+#resource-node-form .field-name-body label,
+#dataset-node-form .field-name-body label,
 .field-group-htabs.group-data label,
 #edit-field-tags-und label,
 #edit-field-license label {
@@ -2151,14 +2195,11 @@ h3.media-heading a {
   right: 10px;
   top: 12px;
 }
-#block-dkan-front-dkan-search-front .compact-form-label {
-  position: absolute;
-  top: 16px;
-  left: 17px;
-  z-index: 1;
-  color: #999;
-  font-weight: normal;
+#block-dkan-front-dkan-search-front .compact-form-description {
+  top: 15px;
+  left: 23px;
   font-size: 16px;
+  color: #999;
 }
 #block-dkan-front-dkan-search-front h2.block-title {
   border: 0;
