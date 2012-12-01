@@ -21,16 +21,6 @@ function dkan_roles_and_permissions_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: access printer-friendly version.
-  $permissions['access printer-friendly version'] = array(
-    'name' => 'access printer-friendly version',
-    'roles' => array(
-      0 => 'anonymous user',
-      1 => 'authenticated user',
-    ),
-    'module' => 'book',
-  );
-
   // Exported permission: access user profiles.
   $permissions['access user profiles'] = array(
     'name' => 'access user profiles',
@@ -40,29 +30,11 @@ function dkan_roles_and_permissions_user_default_permissions() {
     'module' => 'user',
   );
 
-  // Exported permission: add content to books.
-  $permissions['add content to books'] = array(
-    'name' => 'add content to books',
-    'roles' => array(
-      0 => 'editor',
-    ),
-    'module' => 'book',
-  );
-
   // Exported permission: administer nodes.
   $permissions['administer nodes'] = array(
     'name' => 'administer nodes',
     'roles' => array(
       0 => 'editor',
-    ),
-    'module' => 'node',
-  );
-
-  // Exported permission: create book content.
-  $permissions['create book content'] = array(
-    'name' => 'create book content',
-    'roles' => array(
-      0 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -85,29 +57,11 @@ function dkan_roles_and_permissions_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: create new books.
-  $permissions['create new books'] = array(
-    'name' => 'create new books',
-    'roles' => array(
-      0 => 'editor',
-    ),
-    'module' => 'book',
-  );
-
   // Exported permission: create resource content.
   $permissions['create resource content'] = array(
     'name' => 'create resource content',
     'roles' => array(
       0 => 'authenticated user',
-    ),
-    'module' => 'node',
-  );
-
-  // Exported permission: delete any book content.
-  $permissions['delete any book content'] = array(
-    'name' => 'delete any book content',
-    'roles' => array(
-      0 => 'editor',
     ),
     'module' => 'node',
   );
@@ -135,15 +89,6 @@ function dkan_roles_and_permissions_user_default_permissions() {
     'name' => 'delete any resource content',
     'roles' => array(
       0 => 'editor',
-    ),
-    'module' => 'node',
-  );
-
-  // Exported permission: delete own book content.
-  $permissions['delete own book content'] = array(
-    'name' => 'delete own book content',
-    'roles' => array(
-      0 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -178,15 +123,6 @@ function dkan_roles_and_permissions_user_default_permissions() {
   // Exported permission: delete revisions.
   $permissions['delete revisions'] = array(
     'name' => 'delete revisions',
-    'roles' => array(
-      0 => 'editor',
-    ),
-    'module' => 'node',
-  );
-
-  // Exported permission: edit any book content.
-  $permissions['edit any book content'] = array(
-    'name' => 'edit any book content',
     'roles' => array(
       0 => 'editor',
     ),
@@ -229,15 +165,6 @@ function dkan_roles_and_permissions_user_default_permissions() {
     'module' => 'boxes',
   );
 
-  // Exported permission: edit own book content.
-  $permissions['edit own book content'] = array(
-    'name' => 'edit own book content',
-    'roles' => array(
-      0 => 'authenticated user',
-    ),
-    'module' => 'node',
-  );
-
   // Exported permission: edit own dataset content.
   $permissions['edit own dataset content'] = array(
     'name' => 'edit own dataset content',
@@ -272,33 +199,6 @@ function dkan_roles_and_permissions_user_default_permissions() {
       0 => 'editor',
     ),
     'module' => 'node',
-  );
-
-  // Exported permission: show book reorder tab.
-  $permissions['show book reorder tab'] = array(
-    'name' => 'show book reorder tab',
-    'roles' => array(
-      0 => 'editor',
-    ),
-    'module' => 'book_made_simple',
-  );
-
-  // Exported permission: show core Outline form element.
-  $permissions['show core Outline form element'] = array(
-    'name' => 'show core Outline form element',
-    'roles' => array(
-      0 => 'editor',
-    ),
-    'module' => 'book_made_simple',
-  );
-
-  // Exported permission: show core Outline tab.
-  $permissions['show core Outline tab'] = array(
-    'name' => 'show core Outline tab',
-    'roles' => array(
-      0 => 'editor',
-    ),
-    'module' => 'book_made_simple',
   );
 
   // Exported permission: view own unpublished content.
