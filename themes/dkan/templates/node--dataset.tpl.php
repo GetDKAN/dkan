@@ -5,10 +5,6 @@
   <header>
     <h2<?php print $title_attributes; ?>><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
   </header>
-  <?php elseif ($title): ?>
-  <header>
-    <h1<?php print $title_attributes; ?>><?php print $title ?></h1>
-  </header>
   <?php endif; ?>
   <?php print render($title_suffix); ?>
   <?php if ($display_submitted): ?>

@@ -629,7 +629,7 @@ input[type="checkbox"][readonly] {
   background: none;
   font-size: 20px;
   box-shadow: 0 0 transparent;
-  padding: 7px 14px;
+  padding: 7px 14px 7px 0;
   margin: 0 0 10px;
   list-style: none;
 }
@@ -647,6 +647,7 @@ input[type="checkbox"][readonly] {
 .breadcrumb li:last-of-type::after {
   content: "";
 }
+.breadcrumb li.active-trail,
 .breadcrumb li a.active {
   font-weight: bold;
   color: #505050;
@@ -661,9 +662,15 @@ li {
 }
 li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   width: 1.175em;
+  background-image: none;
+  line-height: 22px;
+}
+.node .field-type-double-field td {
+  width: 50%;
 }
 
 /*** Block ***/
+#zone-postscript .block,
 #zone-content .block {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -1009,7 +1016,7 @@ label.for=["edit-field-upload-und-0"] {
 
 #edit-field-upload,
 input#edit-field-link-api-und-0-url,
-#resource-node-form .field-name-body textarea,
+#resource-node-form textarea,
 #resource-node-form input,
 #dataset-node-form textarea,
 #dataset-node-form input {
@@ -1039,14 +1046,14 @@ input#edit-field-link-api-und-0-url,
   font-size: 13px;
   color: #999;
 }
-#edit-field-tags .description {
+.form-item-field-tags-und .description {
   top: 10px;
   left: 145px;
   font-size: 14px;
   color: #999;
 }
 #edit-field-format .autocomplete-deluxe-container,
-#edit-field-tags .autocomplete-deluxe-container {
+.form-item-field-tags-und .autocomplete-deluxe-container {
   width: 505px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -1095,7 +1102,7 @@ input#edit-field-link-api-und-0-url,
 #edit-field-tags-und label {
  margin-top: 15px;
 }
-#edit-field-license-und-select {
+.field-name-field-license-und-select {
   padding: 0 5px;
 }
 .select-or-other .form-item input.select-or-other-other {
@@ -1160,7 +1167,7 @@ html.js input.throbbing {
 }
 #field-tags-wrapper .path-form label,
 #edit-path label,
-#edit-field-tags label,
+.form-item-field-tags-und label,
 #edit-field-format label,
 #dataset-node-form .form-item-title label,
 #resource-node-form .form-item-title label,
@@ -1168,7 +1175,7 @@ html.js input.throbbing {
 #dataset-node-form .field-name-body label,
 .field-group-htabs.group-data label,
 #edit-field-tags-und label,
-#edit-field-license label {
+.field-name-field-license label {
   width: 120px;
   text-align: right;
   margin-top: 18px;
@@ -1244,9 +1251,11 @@ html.js input.throbbing {
 }
 #dataset-node-form .form-item-path-alias input {
   top: 3px;
-  font-size: 16px;
+  font-size: 13px;
   position: absolute;
+  padding: 13px 12px 14px 12px;
   left: 194px;
+  width: 210px;
 }
 #url-edit-preview {
   width: 500px;
@@ -1281,44 +1290,48 @@ html.js input.throbbing {
 #edit-body {
   clear: both;
 }
-#edit-field-tags label {
+.form-item-field-tags-und label {
   margin-top: 10px;
 }
 #edit-field-format .autocomplete-deluxe-throbber,
-#edit-field-tags .autocomplete-deluxe-throbber {
+.form-item-field-tags-und .autocomplete-deluxe-throbber {
   display: none;
 }
 .form-type-textarea label {
   margin: 10px 0 0 0;
 }
-#edit-field-license {
+.field-name-field-license {
   position: relative;
   height: 50px;
 }
-#edit-field-license .select-or-other a {
+.field-name-field-license .select-or-other a {
   text-decoration: none;
   color: #000;
 }
-#edit-field-license .select-or-other {
+.field-name-field-license .select-or-other {
   position: absolute;
   width: 400px
 }
-#edit-field-license label {
+.field-name-field-license label {
   margin-top: 3px;
 }
-#edit-field-license .icon-large {
+.field-name-field-license .icon-large {
   position: absolute;
   right: 240px;
   font-size: 22px;
   color: #AEAEAE;
   top: 19px;
 }
-#edit-field-license .description {
+.field-name-field-license .description {
   position: absolute;
   width: 230px;
   right: 0;
   color: #AEAEAE;
   top: 7px;
+}
+#dataset-node-form .field-name-field-license .chzn-container-single a {
+  color: #000;
+  text-decoration: none;
 }
 #dataset-node-form a {
   color: #AEAEAE;
@@ -1346,8 +1359,8 @@ html.js input.throbbing {
   float: right;
 }
 
-#dataset-node-form input#edit-next,
-#dataset-node-form input#edit-submit {
+#dataset-node-form input[Value="Next: Add data"],
+#dataset-node-form input[Value="Finish"] {
   background-color: #206B82;
   background-image: -moz-linear-gradient(top, #30778D, #085871);
   background-image: -ms-linear-gradient(top, #30778D, #085871);
@@ -1385,6 +1398,39 @@ html.js input.throbbing {
   -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
 }
+#edit-actions input:hover {
+  text-decoration: none;
+  background-position: 0 -15px;
+  -webkit-transition: background-position 0.1s linear;
+  -moz-transition: background-position 0.1s linear;
+  -ms-transition: background-position 0.1s linear;
+  -o-transition: background-position 0.1s linear;
+  transition: background-position 0.1s linear;
+}
+#dataset-node-form input[Value="Next: Add data"]:hover,
+#dataset-node-form input[Value="Finish"]:hover {
+  background-color: #085871;
+}
+#dataset-node-form input[Value="Delete"]:hover {
+  background-color: #BD362F;
+}
+#dataset-node-form input[Value="Delete"] {
+  color: #FFF;
+  text-shadow: none;
+  float: left;
+  background-color: #DA4F49;
+  background-image: -moz-linear-gradient(top, #EE5F5B, #BD362F);
+  background-image: -ms-linear-gradient(top, #EE5F5B, #BD362F);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#EE5F5B), to(#BD362F));
+  background-image: -webkit-linear-gradient(top, #EE5F5B, #BD362F);
+  background-image: -o-linear-gradient(top, #EE5F5B, #BD362F);
+  background-image: linear-gradient(top, #EE5F5B, #BD362F);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ee5f5b', endColorstr='#bd362f', GradientType=0);
+  border-color: #BD362F #BD362F #802420;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
 
 /** Blocks **/
 h2.block-title {
@@ -1405,7 +1451,20 @@ h2.block-title {
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f5f5f5', endColorstr='#f0f0f0', GradientType=0);
 }
-.block .item-list li,
+.block .item-list .facetapi-facetapi-links li {
+  font-size: 12px;
+  line-height: 1.1666666666666667em;
+  padding: 7px 25px;
+  border-bottom: 1px dotted #CCC;
+  margin: 0;
+}
+.block .item-list li {
+  font-size: 12px;
+  line-height: 1.1666666666666667em;
+  padding: 7px 25px;
+  border-bottom: 1px dotted #CCC;
+  margin: 14px 0;
+}
 .item-list .nav-simple > li {
   font-size: 12px;
   line-height: 1.1666666666666667em;
@@ -1413,13 +1472,19 @@ h2.block-title {
   border-bottom: 1px dotted #CCC;
   margin: 0;
 }
-.block .item-list li > a,
-.nav-simple li > a {
-  padding-left: 15px;
-  padding-right: 15px;
-  position: relative;
+.block .item-list li > a.active {
+  line-height: 27px;
+  color: #005772;
+  font-size: 12px;
+  font-weight: bold;
+}
+.block .item-list li > a {
   display: block;
-  color: #333;
+  margin: -7px -15px -7px 0;
+  padding: 7px 15px;
+}
+.nav-simple li > a {
+  display: block;
   margin: -7px -15px;
   padding: 7px 15px;
 }
@@ -1555,6 +1620,10 @@ a.btn-primary,
   border-color: #B7B7B7;
   line-height: 27px;
 }
+#toolbar li.active-trail {
+  font-weight: bold;
+  color: #505050;
+}
 #toolbar li {
   display: inline-block;
   margin: 0 0 0 10px;
@@ -1562,15 +1631,115 @@ a.btn-primary,
 #toolbar li:last-of-type {
   margin-right: 0;
 }
-.format-label[data-format="csv"], .format-label[data-format*="csv"] {
+.label[data-format=html],
+.label[data-format*=html] {
+  background-color: #55a1ce;
+}
+.label[data-format=json],
+.label[data-format*=json] {
+  background-color: #ef7100;
+}
+.label[data-format=xml],
+.label[data-format*=xml] {
+  background-color: #ef7100;
+}
+.label[data-format=text],
+.label[data-format*=text] {
+  background-color: #74cbec;
+}
+.label[data-format=csv],
+.label[data-format*=csv] {
+  background-color: #dfb100;
+}
+.label[data-format=xls],
+.label[data-format*=xls] {
+  background-color: #2db55d;
+}
+.label[data-format=zip],
+.label[data-format*=zip] {
+  background-color: #686868;
+}
+.label[data-format=api],
+.label[data-format*=api] {
+  background-color: #ec96be;
+}
+.label[data-format=pdf],
+.label[data-format*=pdf] {
+  background-color: #e0051e;
+}
+.label[data-format=rdf],
+.label[data-format*=rdf],
+.label[data-format*=nquad],
+.label[data-format*=ntriples],
+.label[data-format*=turtle] {
+  background-color: #0b4498;
+}
+.format-label[data-format=data],
+.format-label[data-format*=data] {
+  width: 32px;
+  height: 35px;
+  background-position: 0px -62px;
+}
+.format-label[data-format=rdf],
+.format-label[data-format*=rdf] {
+  width: 32px;
+  height: 35px;
+  background-position: -32px -62px;
+}
+.format-label[data-format=pdf],
+.format-label[data-format*=pdf] {
+  width: 32px;
+  height: 35px;
+  background-position: -64px -62px;
+}
+.format-label[data-format=api],
+.format-label[data-format*=api] {
+  width: 32px;
+  height: 35px;
+  background-position: -96px -62px;
+}
+.format-label[data-format=zip],
+.format-label[data-format*=zip] {
+  width: 32px;
+  height: 35px;
+  background-position: -128px -62px;
+}
+.format-label[data-format=xls],
+.format-label[data-format*=xls] {
+  width: 32px;
+  height: 35px;
+  background-position: -160px -62px;
+}
+.format-label[data-format=csv],
+.format-label[data-format*=csv] {
   width: 32px;
   height: 35px;
   background-position: -192px -62px;
 }
-.format-label[data-format="csv"], .format-label[data-format*="csv"] {
+.format-label[data-format=txt],
+.format-label[data-format*=txt] {
   width: 32px;
   height: 35px;
-  background-position: -192px -62px;
+  background-position: -224px -62px;
+}
+.format-label[data-format=xml],
+.format-label[data-format*=xml] {
+  width: 32px;
+  height: 35px;
+  background-position: -256px -62px;
+}
+.format-label[data-format=json],
+.format-label[data-format*=json] {
+  width: 32px;
+  height: 35px;
+  background-position: -288px -62px;
+}
+.format-label[data-format=HTML],
+.format-label[data-format=html],
+.format-label[data-format*=html] {
+  width: 32px;
+  height: 35px;
+  background-position: -320px -62px;
 }
 .format-label:last-child {
 }
@@ -1581,6 +1750,7 @@ ul.resource-list .heading {
 }
 ul.resource-list p {
   margin: 0 0 9px;
+  padding: 0 0 0 15px;
 }
 ul.resource-list {
   margin: 0;
@@ -1668,13 +1838,22 @@ ul.tag-list li {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  margin: 0 0 5px 0;
 }
 .field-name-field-additional-info thead th {
   font-weight: bold;
-  border: 0;
+}
+form .field-multiple-table th.field-label {
+  padding-left: 5px;
+}
+#dataset-node-form .field-name-field-additional-info input[placeholder="value"] {
+  width: 100%;
+  max-width: 498px;
+}
+#dataset-node-form .field-name-field-additional-info input {
+  font-size: 13px;
 }
 .field-name-field-additional-info td, th {
-  width: 50%;
   border-left: 1px solid #DDD;
   border-top: 1px solid #DDD;
 }
@@ -2128,10 +2307,15 @@ h3.media-heading a {
 }
 #zone-content #region-sidebar-first .block-facetapi .content li a {
   margin: 0;
+  position: relative;
+  padding: 6px 10px;
+  color: #555;
 }
 #zone-content #region-sidebar-first .block-facetapi .content li a:hover {
-  background-color: #EEE;
   text-decoration: none;
+}
+#zone-content #region-sidebar-first .block-facetapi .content li:hover {
+  background-color: #EEE;
 }
 #zone-content #region-sidebar-first .block-facetapi .content li a:hover::after {
   display: inline-block;
