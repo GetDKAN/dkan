@@ -21,42 +21,22 @@ function dkan_breadcrumb($variables) {
         $breadcrumb[$num] = t('Search Datasets');
       }
     }
-    // Custom breadcrumb elements for specific contexts.
-    if (module_exists('context')) {
-      $contexts = context_active_contexts();
-    }
-    if (isset($contexts['dataset']) || isset($contexts['resource'])) {
-      $node = menu_get_object();
-      $title = $node->title;
-      if (isset($contexts['resource'])) {
-        $alter = array(
-          'max_length' => 15,
-          'ellipsis' => TRUE,
-          'word_boundary' => TRUE,
-          'trim' => TRUE,
-        );
-        $title = views_trim_text($alter, $title);
-      }
-      $first = array_slice($breadcrumb, 0, 1, true);
-      $count = count($breadcrumb);
-      $rest = array_slice($breadcrumb, 1, count($breadcrumb) -1, true) + array($count + 1 => '<strong>' . $title . '</strong>');
-      $datasets = array($count => '<a href="/dataset">Datasets</a>');
-      $breadcrumb =  $first + $datasets + $rest;
-    }
-    if (isset($contexts['dataset-create'])) {
-      $first = array_slice($breadcrumb, 0, 1, true);
-      $count = count($breadcrumb);
-      $datasets = array($count => l('Datasets', 'datasets'));
-      $rest =  array($count + 1 => l('Create Dataset', 'node/add/dataset', array('class' => array('active'))));
-      $breadcrumb =  $first + $datasets + $rest;
-    }
 
     $output = '<h2 class="element-invisible">' . t('You are here') . '</h2>';
 
     $crumbs = '<ul class="breadcrumb">';
 
+    // Remove null values.
+    $breadcrumb = array_filter($breadcrumb);;
+    $i = 1;
     foreach($breadcrumb as $value) {
-      $crumbs .= '<li>'.$value.'</li>';
+      if ($i == count($breadcrumb)) {
+        $crumbs .= '<li class="active-trail">' . $value . '</li>';
+      }
+      else {
+        $crumbs .= '<li>' . $value . '</li>';
+      }
+      $i++;
     }
     $crumbs .= '</ul>';
     return $crumbs;
@@ -91,7 +71,7 @@ function dkan_process_zone(&$vars) {
     // faux tabs we should build a real build function and assign weights.
     if (isset($node)) {
       if ($node->type == 'resource') {
-        $action_items['items'][] = l('<i class="icon-large icon-caret-left"></i> Back to dataset', 'node/' . $node->book['bid'], array('html' => TRUE, 'attributes' => array('class' => array('btn'))));
+        $action_items['items'][] = l('<i class="icon-large icon-caret-left"></i> Back to dataset', 'node/' . $node->field_dataset_ref['und'][0]['target_id'], array('html' => TRUE, 'attributes' => array('class' => array('btn'))));
       }
       if (node_access('update', $node->nid)) {
         $action_items['items'][] = l('<i class="icon-large icon-wrench"></i> Edit', 'node/' . $node->nid . '/edit', array('html' => TRUE, 'attributes' => array('class' => array('btn'))));
@@ -134,11 +114,8 @@ function dkan_preprocess_page(&$vars) {
   if (module_exists('context')) {
     $contexts = context_active_contexts();
   }
-  if (isset($contexts['dataset-create']) || isset($contexts['resource-create']) || isset($contexts['dataset']) || isset($contexts['resource'])) {
-    // Remove title on dataset edit and creation pages.
-    $vars['title'] = '';
-  }
-    $vars['title'] = '';
+  // Remove title on dataset edit and creation pages.
+  $vars['title'] = '';
 }
 
 /**
@@ -146,31 +123,41 @@ function dkan_preprocess_page(&$vars) {
  */
 function dkan_preprocess_block(&$vars) {
 
-  // Custom breadcrumb elements for specific contexts.
+  $vars['title'] = '';
   if ($vars['block_html_id'] ==  'block-system-main') {
+    $vars['title'] = drupal_get_title();
+
     if (module_exists('context')) {
       $contexts = context_active_contexts();
     }
     if (isset($contexts['dataset-create'])) {
       $stages = dkan_create_stages('dataset-create');
       $vars['content'] = $stages . $vars['content'];
+      $vars['title'] = '';
     }
     if (isset($contexts['resource-create'])) {
       $query = drupal_get_query_parameters();
       $stages = dkan_create_stages('resource-create', $query['dataset']);
       $vars['content'] = $stages . $vars['content'];
+      $vars['title'] = '';
     }
     if (isset($contexts['resource-edit'])) {
-      $stages = dkan_create_stages('resource-edit', $vars['elements']['#node']->book['bid'], $vars['elements']['#node']->nid);
+      $stages = dkan_create_stages('resource-edit', $vars['elements']['field_dataset_ref']['und']['#value'][0], $vars['elements']['#node']->nid);
       $vars['content'] = $stages . $vars['content'];
+      $vars['title'] = '';
     }
     if (isset($contexts['dataset-edit'])) {
       if ($query = drupal_get_query_parameters()) {
-        if (!isset($query['addtional'])) {
+        if (!isset($query['additional'])) {
           $stages = dkan_create_stages('dataset-edit', $vars['elements']['#node']->nid);
           $vars['content'] = $stages . $vars['content'];
         }
+        else {
+          $stages = dkan_create_stages('dataset-additional', $vars['elements']['#node']->nid);
+          $vars['content'] = $stages . $vars['content'];
+        }
       }
+      $vars['title'] = '';
     }
   }
 }
@@ -199,7 +186,7 @@ function dkan_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL) {
           <button class="highlight" name="save" value="go-dataset" type="submit">' . l('Edit dataset', 'node/' . $dataset_nid . '/edit') . '</button>
       </li>
       <li class="middle complete">
-          <span class="highlight">Add data</span>
+          <button class="highlight" name="save" value="go-dataset" type="submit">' . l('Add dataset', 'node/add/resource', array('query' => array('dataset' =>  $dataset_nid))) . '</button>
       </li>
       <li class="last active">
           <button class="highlight" name="save" value="go-metadata" type="submit">' . l('Additional data', 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
@@ -287,6 +274,7 @@ function dkan_facetapi_link_active($variables) {
   $variables['text'] = $link_text;
   return theme_link($variables);
 }
+
 /**
  * Implements theme_facetapi_link_active().
  */
