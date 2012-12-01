@@ -107,22 +107,19 @@ function dkan_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'dkan_forms-dkan_forms_dataset_help' => array(
-          'module' => 'dkan_forms',
-          'delta' => 'dkan_forms_dataset_help',
-          'region' => 'sidebar_first',
-          'weight' => '-10',
-        ),
         'dkan_forms-dkan_forms_resource_nodes' => array(
           'module' => 'dkan_forms',
           'delta' => 'dkan_forms_resource_nodes',
           'region' => 'sidebar_first',
           'weight' => '-10',
         ),
+        'dkan_forms-dkan_forms_dataset_help' => array(
+          'module' => 'dkan_forms',
+          'delta' => 'dkan_forms_dataset_help',
+          'region' => 'sidebar_first',
+          'weight' => '-10',
+        ),
       ),
-    ),
-    'debug' => array(
-      'debug' => 1,
     ),
   );
   $context->condition_mode = 1;
@@ -182,9 +179,6 @@ function dkan_context_context_default_contexts() {
         ),
       ),
     ),
-    'debug' => array(
-      'debug' => 1,
-    ),
   );
   $context->condition_mode = 0;
 
@@ -229,16 +223,7 @@ function dkan_context_context_default_contexts() {
           'region' => 'sidebar_first',
           'weight' => '-9',
         ),
-        'book-navigation' => array(
-          'module' => 'book',
-          'delta' => 'navigation',
-          'region' => 'sidebar_first',
-          'weight' => '-8',
-        ),
       ),
-    ),
-    'debug' => array(
-      'debug' => 1,
     ),
   );
   $context->condition_mode = 1;

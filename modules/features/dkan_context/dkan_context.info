@@ -4,7 +4,6 @@ package = DKAN Features
 php = 5.2.4
 version = unknown
 project = dkan
-dependencies[] = book
 dependencies[] = context
 dependencies[] = ctools
 dependencies[] = dkan_content_types

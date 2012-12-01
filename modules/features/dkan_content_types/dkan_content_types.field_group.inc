@@ -21,12 +21,11 @@ function dkan_content_types_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Additional',
-    'weight' => '5',
+    'weight' => '2',
     'children' => array(
-      0 => 'field_author',
-      1 => 'field_custom_field',
+      0 => 'field_additional_info',
+      1 => 'field_author',
       2 => 'field_maintainer',
-      3 => 'field_additional_info',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
