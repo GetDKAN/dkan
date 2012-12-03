@@ -69,6 +69,7 @@ features[variable][] = book_made_simple_limit_depth
 features[variable][] = book_made_simple_only_on_books
 features[variable][] = book_made_simple_only_on_books_dataset
 features[variable][] = book_made_simple_reorder_link
+features[variable][] = chosen_jquery_selector
 features[variable][] = field_bundle_settings_node__dataset
 features[variable][] = field_bundle_settings_node__group
 features[variable][] = field_bundle_settings_node__resource
