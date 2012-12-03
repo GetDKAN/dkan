@@ -1,6 +1,7 @@
-name = dkan_search_sql
+name = DKAN Search SQL
+description = Adds search component using SQL instead of Solr
 core = 7.x
-package = Features
+package = DKAN Features
 php = 5.2.4
 dependencies[] = context
 dependencies[] = ctools

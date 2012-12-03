@@ -1,7 +1,7 @@
 name = DKAN Roles and Permissions
 description = Defines roles and permissions.
 core = 7.x
-package = Features
+package = DKAN Features
 dependencies[] = boxes
 dependencies[] = features
 dependencies[] = node

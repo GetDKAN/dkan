@@ -86,7 +86,7 @@
   Drupal.behaviors.dkanForms = {
     attach: function (context, settings) {
 
-      var elements = "#edit-field-link-file,#edit-field-link-api,.field-name-body,#views-exposed-form-dataset-page";
+      var elements = "#edit-field-link-file,#edit-field-link-api,.field-name-body,#views-exposed-form-dataset-page,#block-dkan-dataset-dkan-dataset-search-bar";
       $(elements, context).dkanFormsHide();
       var autoDeluxeElements = ".field-name-field-tags,#edit-field-format";
       $(autoDeluxeElements, context).dkanFormsAutoDeluxeHide();
