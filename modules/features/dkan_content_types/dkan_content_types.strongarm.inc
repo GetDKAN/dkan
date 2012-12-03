@@ -13,32 +13,6 @@ function dkan_content_types_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'book_allowed_types';
-  $strongarm->value = array(
-    0 => 'book',
-  );
-  $export['book_allowed_types'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'book_child_type';
-  $strongarm->value = 'book';
-  $export['book_child_type'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'book_made_simple_add_types';
-  $strongarm->value = array(
-    'book' => 0,
-    'group' => 0,
-  );
-  $export['book_made_simple_add_types'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
   $strongarm->name = 'book_made_simple_admin_show_legend';
   $strongarm->value = 1;
   $export['book_made_simple_admin_show_legend'] = $strongarm;
@@ -49,16 +23,6 @@ function dkan_content_types_strongarm() {
   $strongarm->name = 'book_made_simple_admin_use_css';
   $strongarm->value = 0;
   $export['book_made_simple_admin_use_css'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'book_made_simple_auto_main_page';
-  $strongarm->value = array(
-    'book' => 0,
-    'group' => 0,
-  );
-  $export['book_made_simple_auto_main_page'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -260,7 +224,7 @@ function dkan_content_types_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'menu_parent_dataset';
-  $strongarm->value = 'main-menu:0';
+  $strongarm->value = 'main-menu:318';
   $export['menu_parent_dataset'] = $strongarm;
 
   $strongarm = new stdClass();
