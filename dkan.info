@@ -17,7 +17,7 @@ dependencies[] = taxonomy
 
 ; Contrib
 dependencies[] = admin_menu
-dependencies[] = active_tags
+dependencies[] = autocomplete_deluxe
 dependencies[] = boxes
 dependencies[] = book_made_simple
 dependencies[] = coder
