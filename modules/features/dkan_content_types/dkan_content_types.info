@@ -73,6 +73,7 @@ features[variable][] = chosen_jquery_selector
 features[variable][] = field_bundle_settings_node__dataset
 features[variable][] = field_bundle_settings_node__group
 features[variable][] = field_bundle_settings_node__resource
+features[variable][] = jquery_update_jquery_version
 features[variable][] = menu_options_dataset
 features[variable][] = menu_options_group
 features[variable][] = menu_options_resource
