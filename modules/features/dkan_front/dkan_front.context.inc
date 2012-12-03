@@ -15,7 +15,7 @@ function dkan_front_context_default_contexts() {
   $context->api_version = 3;
   $context->name = 'front';
   $context->description = '';
-  $context->tag = '';
+  $context->tag = 'Page';
   $context->conditions = array(
     'path' => array(
       'values' => array(
@@ -38,17 +38,17 @@ function dkan_front_context_default_contexts() {
           'region' => 'preface_second',
           'weight' => '-10',
         ),
-        'dkan_front-dkan_search_front' => array(
-          'module' => 'dkan_front',
-          'delta' => 'dkan_search_front',
-          'region' => 'preface_second',
-          'weight' => '-9',
-        ),
         'views-popular_tags-block' => array(
           'module' => 'views',
           'delta' => 'popular_tags-block',
           'region' => 'preface_second',
           'weight' => '-10',
+        ),
+        'dkan_front-dkan_search_front' => array(
+          'module' => 'dkan_front',
+          'delta' => 'dkan_search_front',
+          'region' => 'preface_second',
+          'weight' => '-9',
         ),
         'views-front_page_group_list-block' => array(
           'module' => 'views',
@@ -66,6 +66,10 @@ function dkan_front_context_default_contexts() {
     ),
   );
   $context->condition_mode = 0;
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Page');
   $export['front'] = $context;
 
   return $export;
