@@ -148,6 +148,14 @@ function dkan_dataset_block_info() {
     'info' => t('Social'),
     'cache' => DRUPAL_NO_CACHE
   );
+  $blocks['dkan_dataset_resource_additional'] = array(
+    'info' => t('Additional Information'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+  $blocks['dkan_dataset_search_bar'] = array(
+    'info' => t('Search'),
+    'cache' => DRUPAL_NO_CACHE
+  );
 
   return $blocks;
 }
@@ -168,8 +176,34 @@ function dkan_dataset_block_view($delta = '') {
       $block['subject'] = t('Social');
       $block['content'] = dkan_dataset_social_block();
       break;
+
+    case 'dkan_dataset_resource_additional':
+      $block['subject'] = t('Additional Information');
+      $block['content'] = dkan_dataset_resource_additional_block();
+      break;
+
+    case 'dkan_dataset_search_bar':
+      $block['subject'] = '';
+      $block['content'] = dkan_dataset_search_bar();
+      break;
   }
   return $block;
+}
+
+function dkan_dataset_resource_additional_block($nid  = '') {
+  $node = $nid ? node_load($nid) : menu_get_object();
+  $dataset_node = entity_metadata_wrapper('node', $node)->field_dataset_ref->value();
+  $additional = isset($dataset_node->field_additional_info[$dataset_node->language]) ? $dataset_node->field_additional_info[$dataset_node->language] : array(array());
+  $file_info = array();
+  if (isset($node->field_upload[$node->language]) && $file = $node->field_upload[$node->language][0]) {
+    $file_info[] = array(t('mimetype'), $file['filemime']);
+    $file_info[] = array(t('filesize'), $file['filesize']);
+    $file_info[] = array(t('resource type'), 'file upload');
+    $file_info[] = array(t('timestamp'), date('M d, Y', $file['timestamp']));
+  }
+  $rows = array_merge($additional, $file_info);
+
+  return $rows[0] ? theme('table', array('rows' => $rows, 'header' => array(t('Field'), t('Value')))) : '';
 }
 
 /**
@@ -301,5 +335,21 @@ function dkan_dataset_menu_breadcrumb_alter(&$active_trail, $item) {
         $active_trail[4] = $active_trail[3];
       }
     }
+  }
+}
+
+/**
+ * Creates search bar.
+ */
+function dkan_dataset_search_bar() {
+  if (module_exists('dkan_search_sql')) {
+    $view = views_get_view('dataset');
+    $view->set_display('page');
+    $view->init_handlers();
+    $exposed_form = $view->display_handler->get_plugin('exposed_form');
+    $exposed_form->view->filter['search_api_views_fulltext']->options['expose']['description'] = t('eg. Gold Prices');
+    $exposed_form->view->filter['search_api_views_fulltext']->options['expose']['label'] = '';
+    drupal_add_js(drupal_get_path('module', 'dkan_forms') . '/dkan_forms.js');
+    return $exposed_form->render_exposed_form(true);
   }
 }
