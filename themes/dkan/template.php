@@ -71,7 +71,8 @@ function dkan_process_zone(&$vars) {
     // faux tabs we should build a real build function and assign weights.
     if (isset($node)) {
       if ($node->type == 'resource') {
-        $action_items['items'][] = l('<i class="icon-large icon-caret-left"></i> Back to dataset', 'node/' . $node->field_dataset_ref['und'][0]['target_id'], array('html' => TRUE, 'attributes' => array('class' => array('btn'))));
+        $target_id = isset($node->field_dataset_ref[$node->language][0]['target_id']) ? $node->field_dataset_ref[$node->language][0]['target_id'] : $node->field_dataset_ref[0]['target_id'];
+        $action_items['items'][] = l('<i class="icon-large icon-caret-left"></i> Back to dataset', 'node/' . $target_id, array('html' => TRUE, 'attributes' => array('class' => array('btn'))));
       }
       if (node_access('update', $node->nid)) {
         $action_items['items'][] = l('<i class="icon-large icon-wrench"></i> Edit', 'node/' . $node->nid . '/edit', array('html' => TRUE, 'attributes' => array('class' => array('btn'))));
@@ -80,7 +81,8 @@ function dkan_process_zone(&$vars) {
         }
       }
       if ($node->type == 'resource' && isset($node->field_upload) && $node->field_upload) {
-        $url = file_create_url($node->field_upload[$node->language][0]['uri']);
+        $uri = isset($node->field_upload[$node->language][0]['uri']) ? $node->field_upload[$node->language][0]['uri'] : $node->field_upload[0]['uri'];
+        $url = file_create_url($uri);
         $action_items['items'][] = l('<i class="icon-large icon-download"></i> Download', $url, array('html' => TRUE, 'attributes' => array('class' => array('btn btn-primary resource-url-analytics resource-type-file'))));
       }
     }

@@ -615,8 +615,8 @@ input[type="checkbox"][readonly] {
   padding: 4px 6px 3px 6px;
 }
 #block-system-main-menu {
-  float: right;
-  margin: 17px 330px 0 0;
+  float: left;
+  margin: 16px 31px 0 343px;
 }
 
 /** Breadcrumb **/
@@ -1831,6 +1831,60 @@ ul.tag-list li {
   right: -11px;
   width: 11px;
 }
+#block-dkan-dataset-dkan-dataset-resource-additional table {
+  border: 1px solid #DDD;
+  border-collapse: separate;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+#block-dkan-dataset-dkan-dataset-resource-additional h2.block-title {
+  background: none;
+  border: 0;
+  font-size: 24px;
+  line-height: 36px;
+  padding: 20px 0 0 25px;
+}
+
+#block-dkan-dataset-dkan-dataset-resource-additional .content {
+  padding: 0 25px 25px 25px;
+}
+#block-dkan-dataset-dkan-dataset-resource-additional tr.even:last-child td {
+  border-bottom: none;
+  background-color: #F2F2F2;
+}
+#block-dkan-dataset-dkan-dataset-resource-additional tr.odd:last-child td {
+  border-bottom: none;
+  background: transparent;
+}
+#block-dkan-dataset-dkan-dataset-resource-additional tr td {
+  border-bottom:1px solid #DDD;
+}
+#block-dkan-dataset-dkan-dataset-resource-additional tr.even, tr.odd {
+  background-color: transparent;
+}
+#block-dkan-dataset-dkan-dataset-resource-additional tr.even td {
+  background-color: #F2F2F2;
+}
+#block-dkan-dataset-dkan-dataset-resource-additional td:last-child,
+#block-dkan-dataset-dkan-dataset-resource-additional thead th:last-child {
+  border-right: 0;
+}
+#block-dkan-dataset-dkan-dataset-resource-additional thead th, th {
+  border-top: none;
+  border-left: none;
+  background-color: transparent;
+}
+#block-dkan-dataset-dkan-dataset-resource-additional thead,
+#block-dkan-dataset-dkan-dataset-resource-additional tr td:first-child {
+  font-weight: bold;
+}
+#block-dkan-dataset-dkan-dataset-resource-additional td, th {
+  padding: 4px 8px;
+  vertical-align: middle;
+  width: auto;
+  border-right: 1px solid #DDD;
+}
 .field-name-field-additional-info table {
   border: 1px solid #DDD;
   border-collapse: separate;
@@ -2333,6 +2387,43 @@ h3.media-heading a {
   right: 5px;
   margin-top: -8px;
 }
+/** Search **/
+#region-branding .views-exposed-form .views-exposed-widget {
+}
+#region-branding #block-dkan-dataset-dkan-dataset-search-bar .compact-form-description {
+  top: 13px;
+  left: 7px;
+  color: #999;
+  font-size: 11px;
+}
+#block-dkan-dataset-dkan-dataset-search-bar {
+  float: left;
+  clear: none;
+  margin: 8px 0 0 0;
+}
+#region-branding #block-dkan-dataset-dkan-dataset-search-bar form {
+  position: relative;
+  width: 200px;
+  float: right;
+  margin: 0;
+}
+#region-branding #block-dkan-dataset-dkan-dataset-search-bar input.form-submit {
+  background: url(http://demo.ckan.org/base/images/sprite-ckan-icons.png);
+  text-indent: -9999px;
+  width: 17px;
+  height: 17px;
+  border: 0;
+  background-position: -51px -16px;
+  position: absolute;
+  right: 9px;
+  top: 14px;
+}
+#region-branding .views-exposed-form #edit-terms {
+  width: 200px;
+  font-size: 11px;
+  padding: 4px;
+  border-radius: 3px;
+}
 #edit-terms {
   box-sizing: border-box;
   font-size: 16px;
@@ -2440,7 +2531,7 @@ h3.media-heading a {
   margin: 30px 0 0 0;
 }
 #block-dkan-front-dkan-add-front::after {
-  top: 0;
+  top: -30px;
   left: 25px;
   border: solid rgba(255, 255, 255, 0);
   content: " ";
@@ -2459,7 +2550,7 @@ h3.media-heading a {
 }
 a.icon-remove-sign {
   position: absolute;
-  top: 35px;
+  top: 5px;
   right: 7px;
   font-size: 20px;
   color: #ADAFAF;
@@ -2547,4 +2638,19 @@ a.icon-remove-sign::before {
 /** Page **/
 #page {
   background-color: #EFEFEF;
+}
+
+/** Groups **/
+#block-views-group-block-block img {
+  border: 1px solid #EAEAEA;
+  margin: -10px 0 0 -5px;
+}
+#block-views-group-block-block .views-field-title {
+  margin: 5px 0;
+}
+#block-views-group-block-block .views-field-title a {
+  color: #005772;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
 }
