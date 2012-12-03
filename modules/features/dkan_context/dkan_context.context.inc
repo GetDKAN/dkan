@@ -15,7 +15,7 @@ function dkan_context_context_default_contexts() {
   $context->api_version = 3;
   $context->name = 'dataset';
   $context->description = '';
-  $context->tag = ' ';
+  $context->tag = 'Node';
   $context->conditions = array(
     'node' => array(
       'values' => array(
@@ -43,12 +43,13 @@ function dkan_context_context_default_contexts() {
         ),
       ),
     ),
+    'breadcrumb' => 'dataset',
   );
   $context->condition_mode = 0;
 
   // Translatables
   // Included for use with string extractors like potx.
-  t(' ');
+  t('Node');
   $export['dataset'] = $context;
 
   $context = new stdClass();
@@ -75,6 +76,7 @@ function dkan_context_context_default_contexts() {
         ),
       ),
     ),
+    'breadcrumb' => 'dataset',
   );
   $context->condition_mode = 0;
 
@@ -107,20 +109,21 @@ function dkan_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'dkan_forms-dkan_forms_resource_nodes' => array(
-          'module' => 'dkan_forms',
-          'delta' => 'dkan_forms_resource_nodes',
-          'region' => 'sidebar_first',
-          'weight' => '-10',
-        ),
         'dkan_forms-dkan_forms_dataset_help' => array(
           'module' => 'dkan_forms',
           'delta' => 'dkan_forms_dataset_help',
           'region' => 'sidebar_first',
           'weight' => '-10',
         ),
+        'dkan_forms-dkan_forms_resource_nodes' => array(
+          'module' => 'dkan_forms',
+          'delta' => 'dkan_forms_resource_nodes',
+          'region' => 'sidebar_first',
+          'weight' => '-10',
+        ),
       ),
     ),
+    'breadcrumb' => 'dataset',
   );
   $context->condition_mode = 1;
 
@@ -134,7 +137,7 @@ function dkan_context_context_default_contexts() {
   $context->api_version = 3;
   $context->name = 'resource';
   $context->description = '';
-  $context->tag = '';
+  $context->tag = 'Node';
   $context->conditions = array(
     'node' => array(
       'values' => array(
@@ -145,8 +148,38 @@ function dkan_context_context_default_contexts() {
       ),
     ),
   );
-  $context->reactions = array();
+  $context->reactions = array(
+    'block' => array(
+      'blocks' => array(
+        'dkan_forms-dkan_forms_resource_nodes' => array(
+          'module' => 'dkan_forms',
+          'delta' => 'dkan_forms_resource_nodes',
+          'region' => 'postscript_first',
+          'weight' => '-10',
+        ),
+        'dkan_dataset-dkan_dataset_social' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_social',
+          'region' => 'postscript_first',
+          'weight' => '-10',
+        ),
+        'dkan_dataset-dkan_dataset_resource_additional' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_resource_additional',
+          'region' => 'postscript_second',
+          'weight' => '-10',
+        ),
+      ),
+    ),
+    'delta' => array(
+      'delta_template' => 'resource_nodes',
+    ),
+  );
   $context->condition_mode = 0;
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Node');
   $export['resource'] = $context;
 
   $context = new stdClass();
@@ -237,8 +270,8 @@ function dkan_context_context_default_contexts() {
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
   $context->name = 'sitewide';
-  $context->description = 'Site-wide context';
-  $context->tag = '';
+  $context->description = '';
+  $context->tag = 'Sitewide';
   $context->conditions = array(
     'sitewide' => array(
       'values' => array(
@@ -253,7 +286,13 @@ function dkan_context_context_default_contexts() {
           'module' => 'system',
           'delta' => 'main-menu',
           'region' => 'branding',
-          'weight' => '-10',
+          'weight' => '-24',
+        ),
+        'dkan_dataset-dkan_dataset_search_bar' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_search_bar',
+          'region' => 'branding',
+          'weight' => '-23',
         ),
       ),
     ),
@@ -262,7 +301,7 @@ function dkan_context_context_default_contexts() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('Site-wide context');
+  t('Sitewide');
   $export['sitewide'] = $context;
 
   return $export;
