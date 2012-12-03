@@ -83,7 +83,7 @@ function dkan_add_front_block() {
   $output .= '</div><a class="close icon-remove-sign" href="#close"></a>';
   return $output;
 }
-/**:q
+/**
  *
  * Implements hook_form_alter().
  */
