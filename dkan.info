@@ -65,7 +65,8 @@ dependencies[] = recline
 ; DKAN Features
 dependencies[] = dkan_content_types
 dependencies[] = dkan_context
-dependencies[] = dkan_default_content
+; removing for now. needs fixing
+;dependencies[] = dkan_default_content
 dependencies[] = dkan_front
 dependencies[] = dkan_menu
 dependencies[] = dkan_search_sql
@@ -76,3 +77,4 @@ dependencies[] = dkan_views
 dependencies[] = dkan_dataset
 dependencies[] = dkan_forms
 dependencies[] = dkan_import
+dependencies[] = dkan_sitewide

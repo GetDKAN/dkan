@@ -294,6 +294,12 @@ function dkan_context_context_default_contexts() {
           'region' => 'branding',
           'weight' => '-23',
         ),
+        'dkan_sitewide-dkan_sitewide_user_menu' => array(
+          'module' => 'dkan_sitewide',
+          'delta' => 'dkan_sitewide_user_menu',
+          'region' => 'branding',
+          'weight' => '-10',
+        ),
       ),
     ),
   );

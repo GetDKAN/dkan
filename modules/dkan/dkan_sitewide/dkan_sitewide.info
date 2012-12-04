@@ -1,0 +1,4 @@
+name = DKAN Sitewide
+description = Sitewide elements for DKAN.
+package = DKAN
+core = 7.x

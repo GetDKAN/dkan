@@ -2154,7 +2154,7 @@ module-narrow .nav-item > a {
   border: 0;
   background: none;
 }
-.zone-postscript-wrapper {
+.front .zone-postscript-wrapper {
   position: relative;
 }
 .front .zone-postscript {
@@ -2418,11 +2418,12 @@ h3.media-heading a {
   right: 9px;
   top: 14px;
 }
-#region-branding .views-exposed-form #edit-terms {
+#region-branding .views-exposed-form .form-item-terms input {
   width: 200px;
   font-size: 11px;
   padding: 4px;
   border-radius: 3px;
+  height: auto;
 }
 #edit-terms {
   box-sizing: border-box;
@@ -2431,6 +2432,32 @@ h3.media-heading a {
   height: auto;
   padding: 0;
   margin: 0;
+}
+#block-dkan-sitewide-dkan-sitewide-user-menu {
+  float: left;
+  position: relative;
+  width: 50px;
+  padding: 15px 0 0 20px;
+  margin: 0 0 0 30px;
+}
+#block-dkan-sitewide-dkan-sitewide-user-menu img {
+  position: absolute;
+  left: 0px;
+  padding: 2px 0 0 0;
+}
+#block-dkan-sitewide-dkan-sitewide-user-menu .links {
+  display: block;
+  position: relative;
+  padding: 0 0 0 15px;
+}
+#block-dkan-sitewide-dkan-sitewide-user-menu .links a {
+  line-height: 13px;
+  float: left;
+}
+#block-dkan-sitewide-dkan-sitewide-user-menu .sub {
+  font-size: 11px;
+  clear: left;
+  color: rgba(255, 255, 255, 0.6);
 }
 #block-dkan-front-dkan-search-front {
   padding: 5px;

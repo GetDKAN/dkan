@@ -9,6 +9,7 @@ dependencies[] = ctools
 dependencies[] = dkan_content_types
 dependencies[] = dkan_dataset
 dependencies[] = dkan_forms
+dependencies[] = dkan_sitewide
 dependencies[] = system
 datestamp = 1350848316
 features[context][] = dataset
