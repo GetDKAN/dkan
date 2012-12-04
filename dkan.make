@@ -68,6 +68,15 @@ libraries[font_awesome][download][type] = git
 libraries[font_awesome][download][url] = "https://github.com/FortAwesome/Font-Awesome.git"
 libraries[font_awesome][directory_name] = font_awesome
 
+libraries[chosen][type] = libraries
+libraries[chosen][download][type] = git
+libraries[chosen][download][url] = "https://github.com/harvesthq/chosen.git"
+libraries[chosen][directory_name] = chosen
+
+libraries[slugify][type] = libraries
+libraries[slugify][download][type] = git
+libraries[slugify][download][url] = "git://github.com/pmcelhaney/jQuery-Slugify-Plugin.git"
+libraries[slugify][directory_name] = slugify
 ;--------------------
 ; Development
 ;--------------------
