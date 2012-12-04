@@ -37,12 +37,15 @@ function dkan_sitewide_block_view($delta = '') {
  */
 function dkan_sitewide_user_menu_block() {
   global $user;
+  $output = '';
   if ($user->uid) {
-    $output = '';
     if (module_exists('gravatar')) {
       $output = l('<img alt="my user picture" src="' . gravatar_get_gravatar($user->mail, array('size' => '25')) . '">' , 'user', array('html' => TRUE));
     }
-    $output.= '<span class="links">' . l($user->name, 'user') . l('Logout', 'logout', array('attributes' => array('class' => array('sub')))) . '</span>';
-    return $output;
+    $output.= '<span class="links">' . l($user->name, 'user') . l('Logout', '/user/logout', array('attributes' => array('class' => array('sub')))) . '</span>';
   }
+  else {
+    $output.= '<span class="links">' . l('Login', 'user/login') . l('Register', '/user/register', array('attributes' => array('class' => array('sub')))) . '</span>';
+  }
+  return $output;
 }

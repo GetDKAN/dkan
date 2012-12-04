@@ -567,7 +567,7 @@ input[type="checkbox"][readonly] {
 }
 #zone-menu-wrapper {
   position: relative;
-  padding-top: 20px;
+  padding-top: 15px;
 }
 #zone-menu-wrapper::before {
   top: 0;
@@ -629,7 +629,7 @@ input[type="checkbox"][readonly] {
   background: none;
   font-size: 20px;
   box-shadow: 0 0 transparent;
-  padding: 7px 14px 7px 0;
+  padding: 7px 14px 5px 0;
   margin: 0 0 10px;
   list-style: none;
 }
@@ -1631,6 +1631,7 @@ a.btn-primary,
 #toolbar li:last-of-type {
   margin-right: 0;
 }
+.label[data-format=HTML],
 .label[data-format=html],
 .label[data-format*=html] {
   background-color: #55a1ce;
@@ -2388,7 +2389,18 @@ h3.media-heading a {
   margin-top: -8px;
 }
 /** Search **/
-#region-branding .views-exposed-form .views-exposed-widget {
+.block .item-list .pager li {
+  margin: 0;
+  padding: 5px 10px;
+  float: left;
+}
+.block .item-list .pager li a {
+  font-size: 10px;
+  padding: 0px;
+  border: 0;
+  background: transparent;
+  margin: 0;
+  width: auto;
 }
 #region-branding #block-dkan-dataset-dkan-dataset-search-bar .compact-form-description {
   top: 13px;
@@ -2418,14 +2430,51 @@ h3.media-heading a {
   right: 9px;
   top: 14px;
 }
-#region-branding .views-exposed-form .form-item-terms input {
+#region-branding .views-exposed-form .form-item-query input {
   width: 200px;
   font-size: 11px;
   padding: 4px;
   border-radius: 3px;
   height: auto;
 }
-#edit-terms {
+#block-system-main #views-exposed-form-dataset-page .views-exposed-form .views-exposed-widget {
+  float: none;
+  margin: -7px 0 20px;
+}
+#block-system-main #views-exposed-form-dataset-page .compact-form-description {
+  top: 21px;
+  font-size: 16px;
+  left: 15px;
+  color: #999;
+}
+#block-system-main #views-exposed-form-dataset-page .views-exposed-form .views-exposed-widget .form-submit {
+  margin-top: 0;
+  top: 18px;
+  position: absolute;
+  right: 25px;
+}
+#block-system-main .view-id-dataset {
+  position: relative;
+}
+#block-system-main .view-id-dataset .view-header  {
+  position: absolute;
+  top: 80px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #000;
+}
+#block-system-main #views-exposed-form-dataset-page .form-type-textfield input {
+  line-height: 18px;
+  color: #555;
+  background-color: white;
+  border: 1px solid #CCC;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  font-size: 16px;
+  padding: 14px 10px;
+}
+#edit-query {
   box-sizing: border-box;
   font-size: 16px;
   width: 100%;
@@ -2534,6 +2583,7 @@ h3.media-heading a {
   height: 405px;
 }
 #block-dkan-front-dkan-add-front {
+  position: relative;
   padding: 20px 25px;
   background: black;
   background: rgba(255, 255, 255, 0.93);
@@ -2665,6 +2715,52 @@ a.icon-remove-sign::before {
 /** Page **/
 #page {
   background-color: #EFEFEF;
+}
+
+/** Teasers **/
+
+.node-teaser h2.node-title a {
+  font-size: 14px;
+  color: #333;
+  font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+  letter-spacing: 0em;
+  padding-bottom: 0px;
+  line-height: 20px;
+}
+
+article.node-teaser {
+  border-bottom: 1px dotted #CCC;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+article.node-teaser p {
+  margin: 0;
+}
+article.node-teaser .form-item {
+  margin: 8px 0;
+}
+article.node-teaser .item-list li {
+  padding: 0;
+  border: 0;
+  margin: 0 20px 0 0;
+  float: left;
+}
+article.node-teaser .data-and-resources .label {
+  display: inline;
+  padding: 1px 4px 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  font-size: 10.998px;
+  font-weight: bold;
+  line-height: 14px;
+  color: white;
+  vertical-align: baseline;
+  white-space: nowrap;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+.label {
+  background-color: #999;
 }
 
 /** Groups **/
