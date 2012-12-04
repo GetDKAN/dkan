@@ -38,7 +38,7 @@ function dkan_sitewide_block_view($delta = '') {
 function dkan_sitewide_user_menu_block() {
   global $user;
   if ($user->uid) {
-    $ouptut = '';
+    $output = '';
     if (module_exists('gravatar')) {
       $output = l('<img alt="my user picture" src="' . gravatar_get_gravatar($user->mail, array('size' => '25')) . '">' , 'user', array('html' => TRUE));
     }
