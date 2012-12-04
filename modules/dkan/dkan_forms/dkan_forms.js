@@ -45,10 +45,8 @@
       desc.click(function () {
         input.focus();
       });
-      input.keyup(function () {
-        if (input.val() != '') {
-          desc.hide();
-        }
+      input.focus(function () {
+        desc.hide();
       });
       if ($('#autocomplete-deluxe-item').html() != null) {
         desc.css('display', 'none');

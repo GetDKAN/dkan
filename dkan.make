@@ -22,6 +22,7 @@ projects[entity][subdir] = contrib
 projects[entityreference][subdir] = contrib
 projects[eva][subdir] = contrib
 projects[facetapi][subdir] = contrib
+projects[facetapi_pretty_paths][subdir] = contrib
 projects[features][subdir] = contrib
 projects[field_group][subdir] = contrib
 projects[gravatar][subdir] = contrib
