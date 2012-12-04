@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * @file
+ * Custom sitewide elements.
+ */
+
+/**
+ * Implements hook_block_info().
+ */
+function dkan_sitewide_block_info() {
+  $blocks['dkan_sitewide_user_menu'] = array(
+    'info' => t('User menu'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function dkan_sitewide_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'dkan_sitewide_user_menu':
+      $block['subject'] = t('');
+      $block['content'] = dkan_sitewide_user_menu_block();
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Adds group block to dataset node.
+ */
+function dkan_sitewide_user_menu_block() {
+  global $user;
+  if ($user->uid) {
+    $ouptut = '';
+    if (module_exists('gravatar')) {
+      $output = l('<img alt="my user picture" src="' . gravatar_get_gravatar($user->mail, array('size' => '25')) . '">' , 'user', array('html' => TRUE));
+    }
+    $output.= '<span class="links">' . l($user->name, 'user') . l('Logout', 'logout', array('attributes' => array('class' => array('sub')))) . '</span>';
+    return $output;
+  }
+}

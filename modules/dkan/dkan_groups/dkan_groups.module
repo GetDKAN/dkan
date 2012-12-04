@@ -4,36 +4,3 @@
  * @file
  * Custom elements for groups.
  */
-
-/**
- * Implements hook_block_info().
- */
-function dkan_groups_block_info() {
-  $blocks['dkan_groups_dataset_block'] = array(
-    'info' => t(''),
-    'cache' => DRUPAL_NO_CACHE
-  );
-
-  return $blocks;
-}
-
-/**
- * Implements hook_block_view().
- */
-function dkan_groups_block_view($delta = '') {
-  $block = array();
-
-  switch ($delta) {
-    case 'dkan_groups_dataset_block':
-      $block['subject'] = t('');
-      $block['content'] = theme('', array('' =>));
-      break;
-    
-  }
-  return $block;
-}
-
-/**
- * Adds group block to dataset node.
- */
-

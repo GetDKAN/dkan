@@ -90,11 +90,13 @@ function dkan_add_front_block() {
 function dkan_front_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dataset-page') {
     unset($form['terms']['#size']);
-    $form['submit']['#type'] = 'image_button';
-    $form['submit']['#src'] = isset($form_state['pager_plugin']) ? 'profiles/dkan/images/icon-search-27x26.png' : '';
     $form['#info']['filter-search_api_views_fulltext']['description'] = t('Search');
     $form['#info']['filter-search_api_views_fulltext']['label'] = '';
     $form['submit']['#title'] = '';
+    if (isset($form_state['pager_plugin'])) {
+      $form['submit']['#type'] = 'image_button';
+      $form['submit']['#src'] = isset($form_state['pager_plugin']) ? 'profiles/dkan/images/icon-search-27x26.png' : '';
+    }
   }
 }
 
