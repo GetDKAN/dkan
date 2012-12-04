@@ -56,7 +56,7 @@ function dkan_dataset_node_view($node, $view_mode, $langcode) {
       '#suffix' => '</div>',
     );
   }
-  elseif ($view_mode = 'teaser' && ($node->type == 'dataset' || $node->type == 'resource')) {
+  elseif ($view_mode == 'teaser' && ($node->type == 'dataset' || $node->type == 'resource')) {
     if (isset($node->content['links']['node']['#links']['node-readmore'])) {
       unset($node->content['links']['node']['#links']['node-readmore']);
     }
