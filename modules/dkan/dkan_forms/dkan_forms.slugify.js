@@ -29,9 +29,9 @@
         // Force URLs to be url friendly.
         $('#edit-path-alias').slugify('#edit-path-alias');
         // Only edit path alias if alias has not been edited.
-        $('.form-type-textfield input').click(function(e) {
-          $('#edit-path-alias').slugify('.form-type-textfield input');
-          $('#url-slug').slugify('.form-type-textfield input');
+        $('.form-item-title input').click(function(e) {
+          $('#edit-path-alias').slugify($(this));
+          $('#url-slug').slugify($(this));
         });
         $('button.btn').click(function(e) {
           e.preventDefault();
