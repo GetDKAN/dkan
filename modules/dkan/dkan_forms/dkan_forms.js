@@ -59,7 +59,6 @@
 
   Drupal.behaviors.dkanAddtional = {
     attach: function (context, settings) {
-      console.log(settings.dkanAdditional);
       if (settings.dkanAdditional && context.context) {
         var pos = $('#zone-content-wrapper').offset();
         $('html, body').animate({ scrollTop: pos.top}, 'fast');
