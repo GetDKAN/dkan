@@ -1,5 +1,5 @@
-api = 2
 core = 7.x
+api = 2
 
 ;--------------------
 ; Contrib
@@ -11,6 +11,7 @@ projects[boxes][subdir] = contrib
 projects[book_made_simple][subdir] = contrib
 projects[book_made_simple][version] = 3.x
 projects[chosen][subdir] = contrib
+projects[chosen][version] = 2.x
 projects[context][subdir] = contrib
 projects[ctools][subdir] = contrib
 projects[ctools][version] = 1.x
