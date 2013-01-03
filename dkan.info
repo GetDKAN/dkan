@@ -19,7 +19,6 @@ dependencies[] = taxonomy
 dependencies[] = admin_menu
 dependencies[] = autocomplete_deluxe
 dependencies[] = boxes
-dependencies[] = book_made_simple
 dependencies[] = coder
 dependencies[] = context
 dependencies[] = context_ui
