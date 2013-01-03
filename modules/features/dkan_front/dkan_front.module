@@ -105,7 +105,7 @@ function dkan_front_form_alter(&$form, &$form_state, $form_id) {
  */
 function dkan_front_views_post_execute(&$view) {
   // This adds the list of datasets to the view of groups. The group nid is used as an argument for group audience.
-  if ($view->name == 'front_page_group_list' && ($view->current_display == 'block' || $view->current_display == 'block_2')) {
+  if ($view->name == 'front_page_group_list' && ($view->current_display == 'block' || $view->current_display == 'block_2') && isset($view->result[0])) {
     $nid = $view->result[0]->nid;
     $group_nodes = views_embed_view('front_page_group_list', 'block_1', $nid);
     $view->attachment_after = $group_nodes;
