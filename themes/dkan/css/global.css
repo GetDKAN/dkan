@@ -2767,6 +2767,7 @@ article.node-teaser .data-and-resources .label {
 #block-views-group-block-block img {
   border: 1px solid #EAEAEA;
   margin: -10px 0 0 -5px;
+  width: 200px;
 }
 #block-views-group-block-block .views-field-title {
   margin: 5px 0;

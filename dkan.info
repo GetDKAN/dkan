@@ -70,6 +70,7 @@ dependencies[] = dkan_context
 ; removing for now. needs fixing
 ;dependencies[] = dkan_default_content
 dependencies[] = dkan_front
+dependencies[] = dkan_groups
 dependencies[] = dkan_menu
 dependencies[] = dkan_search_sql
 dependencies[] = dkan_roles_and_permissions
