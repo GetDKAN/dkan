@@ -7,6 +7,7 @@ api = 2
 
 projects[admin_menu][subdir] = contrib
 projects[autocomplete_deluxe][subdir] = contrib
+projects[autocomplete_deluxe][version] = 2.x
 projects[boxes][subdir] = contrib
 projects[chosen][subdir] = contrib
 projects[chosen][version] = 2.x

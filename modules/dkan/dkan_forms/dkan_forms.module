@@ -147,7 +147,7 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
     $form['og_group_ref']['#title'] = t('Groups');
     $form['og_group_ref']['#type'] = 'fieldset';
 
-//    $form['field_dataset_ref']['#access'] = FALSE;
+    $form['field_dataset_ref']['#access'] = FALSE;
     $action_query = '';
     if ($query = drupal_get_query_parameters()) {
       if (isset($query['dataset'])) {
