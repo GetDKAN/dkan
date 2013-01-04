@@ -1,6 +1,0 @@
-name = DKAN Groups
-description = Custom elements for groups.
-package = DKAN
-core = 7.x
-
-dependencies[] = og
