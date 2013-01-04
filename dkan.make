@@ -63,7 +63,7 @@ projects[recline][subdir] = contrib
 
 libraries[recline][type] = libraries
 libraries[recline][download][type] = git
-libraries[recline][download][tag] = "v0.6"
+libraries[recline][download][branch] = "master"
 libraries[recline][download][url] = "git://github.com/okfn/recline.git"
 
 libraries[font_awesome][type] = libraries
