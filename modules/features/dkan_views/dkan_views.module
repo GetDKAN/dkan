@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the dkan_views feature.
- */
-
-include_once 'dkan_views.features.inc';
