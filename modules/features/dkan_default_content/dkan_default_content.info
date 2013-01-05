@@ -1,6 +1,6 @@
 name = DKAN Default Content
 core = 7.x
-package = DKAN Features
+package = DKAN Default Content
 php = 5.2.4
 version = 7.x-1.0
 project = dkan_default_content
