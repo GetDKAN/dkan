@@ -12,3 +12,4 @@ features[ctools][] = context:context:3
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
 features[views_view][] = group_block
+features[views_view][] = groups_page
