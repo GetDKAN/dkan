@@ -68,13 +68,13 @@ dependencies[] = recline
 dependencies[] = dkan_content_types
 dependencies[] = dkan_context
 ; removing for now. needs fixing
-;dependencies[] = dkan_default_content
+dependencies[] = dkan_groups_content
+dependencies[] = dkan_default_content
 dependencies[] = dkan_front
 dependencies[] = dkan_groups
 dependencies[] = dkan_menu
 dependencies[] = dkan_search_sql
 dependencies[] = dkan_roles_and_permissions
-dependencies[] = dkan_views
 
 ; DKAN Modules
 dependencies[] = dkan_dataset

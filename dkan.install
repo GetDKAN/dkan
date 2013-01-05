@@ -62,7 +62,7 @@ function dkan_additional_terms() {
     $term = new stdClass();
     // 'Formats' vid.
     $term->vid = 1;
-    $term->name = $tag;
+    $term->name = $format;
     taxonomy_term_save($term);
   }
 }
