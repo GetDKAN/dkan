@@ -1,0 +1,8 @@
+name = DKAN Groups Default Content
+core = 7.x
+package = DKAN Default Content 
+dependencies[] = defaultcontent
+dependencies[] = dkan_groups 
+features[content][] = group-data-explorer
+features[content][] = group-geospatial
+features[features_api][] = api:1
