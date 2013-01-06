@@ -836,6 +836,18 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   color: #eef6ed;
   background: #c5e2c4;
 }
+ul.primary {
+  border: 0;
+  margin: 0 0 1px 0;
+}
+ul.primary li a.active {
+  color: #444;
+}
+ul.primary li a {
+  border-radius: 5px 5px 0px 0px;
+  padding: 5px 15px 2px 15px;
+  color: #777;
+}
 .node-form .vertical-tabs label {
   float: none;
   display: inline;

@@ -3,7 +3,6 @@ core = 7.x
 
 ; Core
 dependencies[] = block
-dependencies[] = book
 dependencies[] = dblog
 dependencies[] = field_ui
 dependencies[] = file

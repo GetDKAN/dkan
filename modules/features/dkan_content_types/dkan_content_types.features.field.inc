@@ -289,7 +289,11 @@ function dkan_content_types_field_default_fields() {
     ),
     'field_instance' => array(
       'bundle' => 'dataset',
-      'default_value' => NULL,
+      'default_value' => array(
+        0 => array(
+          'value' => 'notspecified" selected="selected',
+        ),
+      ),
       'deleted' => '0',
       'description' => 'License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>',
       'display' => array(
@@ -323,7 +327,7 @@ cc-by-sa|Creative Commons Attribution Share-Alike
 cc-zero|Creative Commons CCZero
 cc-nc|Creative Commons Non-Commercial (Any)
 gfdl|GNU Free Documentation License
-notspecified" selected="selected|License Not Specified
+notspecified|License Not Specified
 odc-by|Open Data Commons Attribution License
 odc-odbl|Open Data Commons Open Database License (ODbL)
 odc-pddl|Open Data Commons Public Domain Dedication and Licence (PDDL)
