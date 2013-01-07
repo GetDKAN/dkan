@@ -5,6 +5,8 @@
  * Form elements for DKAN.
  */
 
+include_once 'dkan_forms.features.inc';
+
 /**
  * Implements hook_field_group_build_pre_render_alter().
  */
