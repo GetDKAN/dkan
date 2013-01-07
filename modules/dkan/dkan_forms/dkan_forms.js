@@ -15,9 +15,13 @@
       desc.click(function () {
         input.focus();
       });
-      if ($(input).html() == null) {
+      if ($(input).html() == '') {
         var input = $(this).find('textarea');
       }
+      if ($(input).html() == null) {
+        var input = $(this).find('input');
+      }
+      input.addClass('compact-form-input')
       input.blur(function () {
         if (input.val() === '') {
           desc.fadeIn('fast');
