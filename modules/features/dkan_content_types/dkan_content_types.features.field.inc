@@ -291,7 +291,7 @@ function dkan_content_types_field_default_fields() {
       'bundle' => 'dataset',
       'default_value' => array(
         0 => array(
-          'value' => 'notspecified" selected="selected',
+          'value' => 'notspecified',
         ),
       ),
       'deleted' => '0',

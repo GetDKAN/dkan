@@ -55,6 +55,7 @@ features[node][] = resource
 features[taxonomy][] = format
 features[taxonomy][] = tags
 features[variable][] = chosen_jquery_selector
+features[variable][] = chosen_minimum
 features[variable][] = field_bundle_settings_node__dataset
 features[variable][] = field_bundle_settings_node__group
 features[variable][] = field_bundle_settings_node__resource

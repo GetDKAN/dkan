@@ -61,6 +61,12 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
     // Removing path from vertiable tabs.
     unset($form['path']['#group']);
     unset($form['path']['#title']);
+    $form['path']['#weight'] = "-1";
+    // Always use pathauto.
+    $form['path']['pathauto']['#default_value'] = TRUE;
+    $form['path']['pathauto']['#access'] = FALSE;
+    // This could cause problems with programmatic 
+    $form['path']['alias']['#default_value'] = preg_replace('/dataset\//', '', $form['path']['alias']['#default_value']);
     $form['path']['#collapsible'] = FALSE;
     $form['path']['#collapsed'] = FALSE;
     $alias = $form['path']['alias']['#default_value'] ? $form['path']['alias']['#default_value']: t('[dataset]');
@@ -75,11 +81,12 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
     $form['path']['alias']['#title'] = 'URL';
     // Adding descriptions.
     $form['title']['#attributes']['placeholder'] = t('eg. A descriptive title');
+    $form['body'][$form['language']['#value']][0]['#prefix'] = '<div id="prefix">';
+    $form['body'][$form['language']['#value']][0]['#suffix'] = '</div>';
     $form['body'][$form['language']['#value']][0]['#description'] = t('eg. Some useful notes about the data');
     $form['path']['alias']['#description'] = '';
     $form['path']['alias']['#title'] = '';
     $form['field_tags']['und']['#description'] = t('eg. economy, mental health, government');
-
     // Add icon to license field.
     $form['field_license']['icon']['#type'] = 'markup';
     $form['field_license']['icon']['#markup'] = '<i class="icon-large icon-info-sign"></i>';
@@ -141,7 +148,6 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
     $form['field_link_api'][$form['language']['#value']][0]['#title'] = '';
     $form['field_link_file'][$form['language']['#value']][0]['#title'] = '';
     $form['body'][$form['language']['#value']][0]['#description'] = t('eg. Some useful notes about the data');
-    $form['field_format']['und']['#description'] = t('eg. economy, mental health, government');
     // Move groups to vertical tabs.
     $form['og_group_ref']['#group'] = 'additional_settings';
     $form['og_group_ref']['#title'] = t('Groups');

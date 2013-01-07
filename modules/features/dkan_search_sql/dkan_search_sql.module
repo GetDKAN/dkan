@@ -20,6 +20,8 @@ function dkan_search_sql_search_api_ajax_settings() {
       'my_region' => '#zone-content',
       'sidebar_first' => '#region-sidebar-first',
     ),
+
+    'facet_locations' => '#region-sidebar-first',
     
     // optional: if you want to show a spinner image on AJAX
     'spinner' => drupal_get_path('module', 'search_api_ajax') .'/spinner.gif',

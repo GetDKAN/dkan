@@ -615,8 +615,9 @@ input[type="checkbox"][readonly] {
   padding: 4px 6px 3px 6px;
 }
 #block-system-main-menu {
-  float: left;
-  margin: 16px 31px 0 343px;
+  position: absolute;
+  right: 335px;
+  top: 20px;
 }
 
 /** Breadcrumb **/
@@ -883,9 +884,14 @@ form-textarea-wrapper textarea {
 .vertical-tabs fieldset.vertical-tabs-pane {
   padding: 10px;
 }
+#resource-node-form .field-name-body .form-type-textarea label,
+#dataset-node-form .field-name-body .form-type-textarea label {
+  margin-top: 38px;
+}
 #resource-node-form .field-name-body .form-textarea-wrapper,
 #dataset-node-form .field-name-body .form-textarea-wrapper {
   margin-left: 130px;
+  padding-top: 30px;
 }
 #data-and-resources {
   margin-bottom: 25px;
@@ -1088,13 +1094,15 @@ input#edit-field-link-api-und-0-url,
   top: 15px;
   color: #999;
 }
+#edit_field_license_und_select_chzn span {
+  color: #555;
+}
 .field-name-body .description {
   left: 145px;
   font-size: 15px;
-  top: 4px;
+  top: 30px;
   color: #999;
 }
-
 #resource-node-form input#edit-title,
 #dataset-node-form input#edit-title {
   height: 55px;
@@ -1299,8 +1307,12 @@ html.js input.throbbing {
 #field-tags-wrapper {
   position: relative;
 }
-#edit-body {
-  clear: both;
+/** TODO: Fix: http://drupal.stackexchange.com/a/18995/1975 **/
+#body-add-more-wrapper .filter-wrapper {
+  display: none;
+}
+#body-add-more-wrapper {
+  margin: 0 0 5px 0;
 }
 .form-item-field-tags-und label {
   margin-top: 10px;
@@ -1314,14 +1326,20 @@ html.js input.throbbing {
 }
 .field-name-field-license {
   position: relative;
-  height: 50px;
+  min-height: 50px;
+  margin-top: 20px;
 }
 .field-name-field-license .select-or-other a {
   text-decoration: none;
   color: #000;
 }
+#dataset-node-form .field-name-field-license .form-item-field-license-und-other input {
+  margin: 0px;
+  height: 25px;
+  margin-left: 130px;
+  width: 220px;
+}
 .field-name-field-license .select-or-other {
-  position: absolute;
   width: 400px
 }
 .field-name-field-license label {
@@ -1332,14 +1350,14 @@ html.js input.throbbing {
   right: 240px;
   font-size: 22px;
   color: #AEAEAE;
-  top: 19px;
+  top: 3px;
 }
 .field-name-field-license .description {
   position: absolute;
   width: 230px;
   right: 0;
   color: #AEAEAE;
-  top: 7px;
+  top: 0px;
 }
 #dataset-node-form .field-name-field-license .chzn-container-single a {
   color: #000;
@@ -2421,9 +2439,13 @@ h3.media-heading a {
   font-size: 11px;
 }
 #block-dkan-dataset-dkan-dataset-search-bar {
-  float: left;
-  clear: none;
-  margin: 8px 0 0 0;
+  position: absolute;
+  right: 100px;
+  top: 9px;
+}
+/** TODO: fix this stop-gap for responsive **/
+.container-12 .grid-12 {
+  min-width: 800px;
 }
 #region-branding #block-dkan-dataset-dkan-dataset-search-bar form {
   position: relative;
@@ -2494,12 +2516,14 @@ h3.media-heading a {
   padding: 0;
   margin: 0;
 }
+#toolbar {
+  min-height: 50px;
+}
 #block-dkan-sitewide-dkan-sitewide-user-menu {
-  float: left;
-  position: relative;
+  position: absolute;
   width: 50px;
   padding: 15px 0 0 20px;
-  margin: 0 0 0 30px;
+  right: 16px;
 }
 #block-dkan-sitewide-dkan-sitewide-user-menu img {
   position: absolute;
@@ -2773,6 +2797,26 @@ article.node-teaser .data-and-resources .label {
 }
 .label {
   background-color: #999;
+}
+#resource-node-form .bue-ui,
+#dataset-node-form .bue-ui {
+  position: absolute;
+  top: 5px;
+}
+#resource-node-form .bue-ui input,
+#dataset-node-form .bue-ui input {
+  padding: 0 2px;
+  filter: url(filters.svg#grayscale);
+  filter: gray;
+  -webkit-filter: grayscale(1);
+  opacity: .5;
+}
+#resource-node-form .bue-ui input:hover,
+#dataset-node-form .bue-ui input:hover {
+  opacity: 1;
+  filter: url(filters.svg#grayscale);
+  filter: none;
+  -webkit-filter: none;
 }
 
 /** Groups **/

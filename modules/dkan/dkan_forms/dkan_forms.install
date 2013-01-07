@@ -12,7 +12,7 @@ function dkan_forms_install() {
   // Add some weight so other modules editing forms go first.
   db_update('system')
     ->fields(array(
-      'weight' => 1,
+      'weight' => 2,
     ))
     ->condition('type', 'module')
     ->condition('name', 'dkan_forms')
