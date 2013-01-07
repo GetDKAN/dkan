@@ -5,6 +5,8 @@
  * Custom elements for datasets.
  */
 
+include_once 'dkan_dataset.features.inc';
+
 /**
  * Implements hook_page_alter();
  */

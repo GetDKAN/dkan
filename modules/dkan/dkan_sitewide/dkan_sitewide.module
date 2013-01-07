@@ -5,6 +5,8 @@
  * Custom sitewide elements.
  */
 
+include_once 'dkan_sitewide.features.inc';
+
 /**
  * Implements hook_block_info().
  */

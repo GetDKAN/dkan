@@ -14,14 +14,14 @@ function dkan_content_types_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'chosen_jquery_selector';
-  $strongarm->value = '.node-form select:#edit-field-license-und-select';
+  $strongarm->value = '.node-form  select:visible';
   $export['chosen_jquery_selector'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'chosen_minimum';
-  $strongarm->value = '5';
+  $strongarm->value = '0';
   $export['chosen_minimum'] = $strongarm;
 
   $strongarm = new stdClass();
