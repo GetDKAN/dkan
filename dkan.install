@@ -26,6 +26,9 @@ function dkan_install_tasks() {
   $tasks['dkan_additional_terms'] = array(
     'display_name' => 'Taxonomy Terms',
   );
+  $tasks['dkan_bueditor_settings'] = array(
+    'display_name' => 'BUEditor Settings',
+  );
   return $tasks;
 }
 
@@ -67,3 +70,13 @@ function dkan_additional_terms() {
   }
 }
 
+/**
+ * BUEditor doesn't use variables or exportables.
+ */
+function dkan_bueditor_settings() {
+  $data = array(
+    'pages' => "node/* \n comment/* \n system/ajax",
+    'eid' => 5,
+  );
+  drupal_write_record('bueditor_editors', $data, array('eid'));
+}
