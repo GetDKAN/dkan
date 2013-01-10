@@ -1308,7 +1308,7 @@ html.js input.throbbing {
   position: relative;
 }
 /** TODO: Fix: http://drupal.stackexchange.com/a/18995/1975 **/
-#body-add-more-wrapper .filter-wrapper {
+.field-name-body .filter-wrapper {
   display: none;
 }
 #body-add-more-wrapper {
