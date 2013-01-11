@@ -33,6 +33,7 @@ projects[link][subdir] = contrib
 projects[link_iframe_formatter][subdir] = contrib
 projects[r4032login][subdir] = contrib
 projects[markdowneditor][subdir] = contrib
+projects[pathauto][subdir] = contrib
 projects[multistep][subdir] = contrib
 projects[og][subdir] = contrib
 projects[og][version] = 2.x
@@ -46,6 +47,7 @@ projects[search_api_ajax][patch][1719556] = http://drupal.org/files/links-in-sea
 projects[search_api_db][subdir] = contrib
 projects[search_api_db][patch][1346846] = http://drupal.org/files/fix-indexing-of-removed-fields-1346846-16.patch
 projects[strongarm][subdir] = contrib
+projects[token][subdir] = contrib
 projects[views][subdir] = contrib
 projects[views_bulk_operations][subdir] = contrib
 
