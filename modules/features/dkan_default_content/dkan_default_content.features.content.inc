@@ -125,6 +125,65 @@ function dkan_default_content_content_defaults() {
     ),
   );
 
+    $content['about'] = (object) array(
+    'link' => array(
+      'menu_name' => 'main-menu',
+      'link_path' => 'node-name/about',
+      'router_path' => 'node/%',
+      'link_title' => 'About',
+      'options' => array(
+        'attributes' => array(
+          'title' => '',
+        ),
+      ),
+      'module' => 'menu',
+      'hidden' => '0',
+      'external' => '0',
+      'has_children' => '0',
+      'expanded' => '0',
+      'weight' => '-5',
+      'identifier' => 'main-menu:node-name/about',
+    ),
+    'exported_path' => 'about',
+    'title' => 'About',
+    'status' => '1',
+    'promote' => '0',
+    'sticky' => '0',
+    'type' => 'page',
+    'language' => 'und',
+    'created' => '1357935656',
+    'comment' => '0',
+    'translate' => '0',
+    'machine_name' => 'about',
+    'body' => array(
+      'und' => array(
+        0 => array(
+          'value' => 'DKAN is an Open Data Portal built in Drupal.
+<p>
+As an Open Data Portal is designed to be feature-compliant with CKAN: http://ckan.org.
+<p>
+The goal is to combine the utility of the CKAN API with the power of Drupal. 
+<p>
+Development will be done here: http://drupal.org/project/dkan
+<p>
+More documentation coming soon.',
+          'summary' => '',
+          'format' => 'html',
+          'safe_value' => 'DKAN is an Open Data Portal built in Drupal.
+
+As an Open Data Portal is designed to be feature-compliant with CKAN: <a href="http://ckan.org">http://ckan.org</a>.
+
+The goal is to combine the utility of the CKAN API with the power of Drupal. 
+
+Development will be done here: <a href="http://drupal.org/project/dkan">http://drupal.org/project/dkan</a>
+
+More documentation coming soon.',
+          'safe_summary' => '',
+        ),
+      ),
+    ),
+  );
+
 return $content;
 }
 
