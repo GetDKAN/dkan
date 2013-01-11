@@ -45,6 +45,7 @@ function dkan_search_sql_default_search_api_index() {
         "author" : { "type" : "integer", "entity_type" : "user" },
         "field_license" : { "type" : "string" },
         "field_tags" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
+        "og_group_ref" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "node" },
         "field_format" : { "type" : "integer", "entity_type" : "taxonomy_term" },
         "search_api_language" : { "type" : "string" },
         "search_api_viewed" : { "type" : "text" }
@@ -147,6 +148,11 @@ function dkan_search_sql_default_search_api_server() {
             "type" : "text",
             "boost" : "1.0"
           },
+          "field_license" : {
+            "table" : "search_api_db_datasets_field_license",
+            "type" : "string",
+            "boost" : "1.0"
+          },
           "field_tags" : {
             "table" : "search_api_db_datasets_field_tags",
             "type" : "list\\u003Cinteger\\u003E",
@@ -157,9 +163,9 @@ function dkan_search_sql_default_search_api_server() {
             "type" : "integer",
             "boost" : "1.0"
           },
-          "field_license" : {
-            "table" : "search_api_db_datasets_field_license",
-            "type" : "string",
+          "og_group_ref" : {
+            "table" : "search_api_db_datasets_og_group_ref",
+            "type" : "list\\u003Cinteger\\u003E",
             "boost" : "1.0"
           }
         }
