@@ -9,6 +9,9 @@
  * Implements theme_breadcrumb().
  */
 function dkan_breadcrumb($variables) {
+  if (drupal_is_front_page()) {
+    return;
+  }
   $breadcrumb = $variables['breadcrumb'];
   $contexts = array();
 
@@ -111,10 +114,6 @@ function dkan_preprocess_page(&$vars) {
   // TODO: create site admin role that can deal also see tabs.
   if ($vars['user']->uid != 1 && isset($vars['node'])) {
     $vars['tabs'] = '';
-  }
-  // Custom breadcrumb elements for specific contexts.
-  if (module_exists('context')) {
-    $contexts = context_active_contexts();
   }
   // Remove title on dataset edit and creation pages.
   $vars['title'] = '';
