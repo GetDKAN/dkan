@@ -1,10 +1,13 @@
 name = DKAN Sitewide
 description = Sitewide elements for DKAN.
-package = DKAN
 core = 7.x
+package = DKAN
 php = 5.2.4
 dependencies[] = ctools
+dependencies[] = features
+dependencies[] = filter
 dependencies[] = strongarm
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:1
+features[filter][] = html
 features[variable][] = pathauto_node_pattern

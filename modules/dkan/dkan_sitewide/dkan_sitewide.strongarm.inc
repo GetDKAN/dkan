@@ -19,4 +19,3 @@ function dkan_sitewide_strongarm() {
 
   return $export;
 }
-
