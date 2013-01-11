@@ -49,7 +49,7 @@ function dkan_menu_menu_default_menu_links() {
   // Exported menu link: main-menu:<front>
   $menu_links['main-menu:<front>'] = array(
     'menu_name' => 'main-menu',
-    'link_path' => '<front>',
+    'link_path' => 'about',
     'router_path' => '',
     'link_title' => 'About',
     'options' => array(

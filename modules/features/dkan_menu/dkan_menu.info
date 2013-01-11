@@ -9,5 +9,4 @@ dependencies[] = menu
 datestamp = 1350356092
 features[features_api][] = api:1
 features[menu_custom][] = main-menu
-features[menu_links][] = main-menu:<front>
 features[menu_links][] = main-menu:groups
