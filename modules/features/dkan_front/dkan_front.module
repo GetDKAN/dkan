@@ -61,7 +61,7 @@ return
       <p>Try out standard DKAN functionality in a sandbox environment. Search for datasets directly from the homepage or by navigating to the <a href="dataset">Datasets</a> search page where you can facet by tags, groups and format.</p>
     </header>
     <section class="featured media-overlay">
-      <h2 class="media-heading">CKAN‘s data previewing tool has many powerful features</h2>
+      <h2 class="media-heading">DKAN‘s data previewing tool has many powerful features</h2>
       <a class="image" href="/dataset/gold-prices"><img src="/profiles/dkan/themes/dkan/images/homepage-graphic.jpg" width="420" height="219"></a>
     </section>
   </div>';
