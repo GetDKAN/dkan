@@ -8,6 +8,102 @@
 include_once 'dkan_dataset.features.inc';
 
 /**
+ * Implements hook_menu().
+ */
+function dkan_dataset_menu() {
+  $items['node/%node/resource'] = array(
+    'title' => 'Add Resoure',
+    'page callback' => 'dkan_dataset_add_resource',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_add_resource',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/dataset'] = array(
+    'title' => 'Back to dataset',
+    'page callback' => 'dkan_dataset_back',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_dataset_back_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/download'] = array(
+    'title' => 'Download',
+    'page callback' => 'dkan_dataset_download',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_dataset_download_access',
+    'access arguments' => array(1),
+    'weight' => '20',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/api'] = array(
+    'title' => 'Data API',
+    'page callback' => 'dkan_dataset_datastore_api',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_dataset_datastore_api_access',
+    'access arguments' => array(1),
+    'weight' => '20',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+function dkan_dataset_download_access($node) {
+  if ($node->type != 'resource' || !isset($node->field_upload[$node->language][0])) {
+    return NULL;
+  }
+  else {
+    return node_access('view', $node);
+  }
+}
+
+function dkan_dataset_download($node) {
+  $uri = isset($node->field_upload[$node->language][0]['uri']) ? $node->field_upload[$node->language][0]['uri'] : $node->field_upload[0]['uri'];
+  $url = file_create_url($uri);
+  return drupal_goto($url);
+}
+
+/**
+ * 
+ */
+function dkan_dataset_back($node) {
+  if (isset($node->field_dataset_ref[$node->language][0]['target_id'])) {
+    drupal_goto('node/' . $node->field_dataset_ref[$node->language][0]['target_id']);
+  }
+  return '';
+}
+
+function dkan_dataset_back_access($node) {
+  if ($node->type != 'resource') {
+    return NULL;
+  }
+  else {
+    return node_access('view', $node);
+  }
+}
+
+/**
+ * Callback for 'Add Resouce' tab.
+ */
+function dkan_dataset_add_resource($node) {
+  drupal_goto('node/add/resource', array('query' => array('dataset' => $node->nid)));
+}
+
+/**
+ * Access callback for 'Add Resource' tab.
+ */
+function dkan_add_resource($node) {
+  if ($node->type != 'dataset') {
+    return NULL;
+  }
+  else {
+    return _node_add_access();
+  }
+}
+
+
+/**
  * Implements hook_page_alter();
  */
 function dkan_dataset_page_alter(&$page) {
@@ -93,12 +189,7 @@ function dkan_dataset_theme() {
 }
 
 /**
- * Output the Webform into the node content.
- *
- * @param $node
- *   The webform node object.
- * @param $enabled
- *   If the form allowed to be completed by the current user.
+ * Output the resource into the node content.
  */
 function theme_dkan_dataset_resource_view($vars) {
   $nodes = dkan_dataset_get_resource_nodes($vars['node']->nid);
@@ -128,12 +219,7 @@ function theme_dkan_dataset_resource_view($vars) {
 }
 
 /**
- * Output the Webform into the node content.
- *
- * @param $node
- *   The webform node object.
- * @param $enabled
- *   If the form allowed to be completed by the current user.
+ * Output the resource into the node content.
  */
 function theme_dkan_dataset_resource_teaser_view($vars) {
   if ($vars['node']->type == 'dataset') {
