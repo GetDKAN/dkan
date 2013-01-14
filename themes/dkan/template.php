@@ -74,6 +74,9 @@ function dkan_process_zone(&$vars) {
   }
 }
 
+/**
+ * Implements hook_theme().
+ */
 function dkan_theme($existing, $type, $theme, $path) {
   return array(
     'dkan_tabs_local_task' => array(
@@ -82,6 +85,9 @@ function dkan_theme($existing, $type, $theme, $path) {
   );
 }
 
+/**
+ * Updates tab settings.
+ */
 function dkan_theme_process_tabs($tabs) {
   if ($tabs['#primary']) {
     // Remove active tab.
@@ -97,12 +103,14 @@ function dkan_theme_process_tabs($tabs) {
   }
   return $tabs;
 }
-
+/**
+ * Implements theme_dkan_local_task().
+ */
 function dkan_dkan_tabs_local_task($variables) {
   $link = $variables['element']['#link'];
   $icon_type = 'wrench';
   if ($link['page_callback'] == 'devel_load_object') {
-    $icon_type = 'cogs';
+    $icon_type = 'cog';
   }
   elseif ($link['page_callback'] == 'node_page_edit') {
     $icon_type = 'edit';
@@ -120,7 +128,22 @@ function dkan_dkan_tabs_local_task($variables) {
     $icon_type = 'download';
     $link['localized_options']['attributes']['class'][] = 'btn-primary';
   }
-  dpm($link['page_callback']);
+  elseif ($link['page_callback'] == 'dkan_dataset_datastore_api') {
+    $icon_type = 'beaker';
+    $link['localized_options']['attributes']['class'][] = 'btn-success';
+  }
+  elseif ($link['path'] == 'node/%/datastore') {
+    $icon_type = 'cogs';
+  }
+  elseif ($link['path'] == 'node/%/datastore/import') {
+    $icon_type = 'refresh';
+  }
+  elseif ($link['path'] == 'node/%/datastore/delete-items') {
+    $icon_type = 'trash';
+  }
+  elseif ($link['path'] == 'node/%/datastore/unlock') {
+    $icon_type = 'unlock';
+  }
   $icon = '<i class="icon-large icon-' . $icon_type . '"></i> ';
   $link_text = $icon . $link['title'];
   $link['localized_options']['html'] = TRUE;

@@ -42,13 +42,100 @@ function dkan_dataset_menu() {
     'page arguments' => array(1),
     'access callback' => 'dkan_dataset_datastore_api_access',
     'access arguments' => array(1),
-    'weight' => '20',
+    'weight' => '25',
     'type' => MENU_LOCAL_TASK,
+  );
+  // These are copies of Feeds. Moving them to tabs under 'Manage Datastore'.
+  $feed_path = drupal_get_path('module', 'feeds');
+  $items['node/%node/datastore'] = array(
+    'title' => 'Manage Datastore',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('feeds_import_tab_form', 1),
+    'access callback' => 'feeds_access',
+    'access arguments' => array('import', 1),
+    'file' => 'feeds.pages.inc',
+    'file path' => $feed_path,
+    'weight' => '15',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/datastore/import'] = array(
+    'title' => 'Import',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('feeds_import_tab_form', 1),
+    'access callback' => 'feeds_access',
+    'access arguments' => array('import', 1),
+    'file' => 'feeds.pages.inc',
+    'file path' => $feed_path,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 10,
+  );
+  $items['node/%node/datastore/delete-items'] = array(
+    'title' => 'Delete items',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('feeds_delete_tab_form', NULL, 1),
+    'access callback' => 'feeds_access',
+    'access arguments' => array('clear', 1),
+    'file' => 'feeds.pages.inc',
+    'file path' => $feed_path,
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 11,
+  );
+  $items['node/%node/datastore/unlock'] = array(
+    'title' => 'Unlock',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('feeds_unlock_tab_form', NULL, 1),
+    'access callback' => 'feeds_access',
+    'access arguments' => array('unlock', 1),
+    'file' => 'feeds.pages.inc',
+    'file path' => $feed_path,
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 11,
   );
 
   return $items;
 }
 
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_dataset_menu_alter(&$items) {
+  // Removing these here, readding in hook_menu().
+  unset($items['node/%node/delete-items']);
+  unset($items['node/%node/import']);
+  unset($items['node/%node/unlock']);
+}
+
+/**
+ * Callback for Data API instructions.
+ */
+function dkan_dataset_datastore_api($node) {
+  return 'coming soon';
+}
+
+/**
+ * Access callback for Data API instructions.
+ */
+function dkan_dataset_datastore_api_access($node) {
+  if ($node->type != 'resource' || !isset($node->field_upload[$node->language][0])) {
+    return NULL;
+  }
+  else {
+    return node_access('view', $node);
+  }
+}
+
+/**
+ * Callback for download tab.
+ */
+function dkan_dataset_download($node) {
+  $uri = isset($node->field_upload[$node->language][0]['uri']) ? $node->field_upload[$node->language][0]['uri'] : $node->field_upload[0]['uri'];
+  $url = file_create_url($uri);
+  return drupal_goto($url);
+}
+
+/**
+ * Access callback for download tab.
+ */
 function dkan_dataset_download_access($node) {
   if ($node->type != 'resource' || !isset($node->field_upload[$node->language][0])) {
     return NULL;
@@ -58,14 +145,9 @@ function dkan_dataset_download_access($node) {
   }
 }
 
-function dkan_dataset_download($node) {
-  $uri = isset($node->field_upload[$node->language][0]['uri']) ? $node->field_upload[$node->language][0]['uri'] : $node->field_upload[0]['uri'];
-  $url = file_create_url($uri);
-  return drupal_goto($url);
-}
 
 /**
- * 
+ * Callback for back link.
  */
 function dkan_dataset_back($node) {
   if (isset($node->field_dataset_ref[$node->language][0]['target_id'])) {
@@ -74,6 +156,9 @@ function dkan_dataset_back($node) {
   return '';
 }
 
+/**
+ * Access callback for back link.
+ */
 function dkan_dataset_back_access($node) {
   if ($node->type != 'resource') {
     return NULL;
@@ -101,7 +186,6 @@ function dkan_add_resource($node) {
     return _node_add_access();
   }
 }
-
 
 /**
  * Implements hook_page_alter();
