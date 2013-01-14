@@ -68,33 +68,69 @@ function dkan_preprocess_zone(&$vars) {
 function dkan_process_zone(&$vars) {
   if ($vars['zone'] == 'content') {
     $node = menu_get_object();
-    $vars['actions'] = '';
-    $action_items = array();
-    // This is pretty sloppy but will do for now. If other profiles use these
-    // faux tabs we should build a real build function and assign weights.
-    if (isset($node)) {
-      if ($node->type == 'resource') {
-        $target_id = isset($node->field_dataset_ref[$node->language][0]['target_id']) ? $node->field_dataset_ref[$node->language][0]['target_id'] : $node->field_dataset_ref[0]['target_id'];
-        $action_items['items'][] = l('<i class="icon-large icon-caret-left"></i> Back to dataset', 'node/' . $target_id, array('html' => TRUE, 'attributes' => array('class' => array('btn'))));
-      }
-      if (node_access('update', $node->nid)) {
-        $action_items['items'][] = l('<i class="icon-large icon-wrench"></i> Edit', 'node/' . $node->nid . '/edit', array('html' => TRUE, 'attributes' => array('class' => array('btn'))));
-        if (isset($node) && $node->type == 'dataset') {
-          $action_items['items'][] = l('<i class="icon-large icon-plus"></i> Add Resource', 'node/add/resource', array('html' => TRUE, 'attributes' => array('class' => array('btn')), 'query' => array('dataset' => $node->nid)));
-        }
-      }
-      if ($node->type == 'resource' && isset($node->field_upload) && $node->field_upload) {
-        $uri = isset($node->field_upload[$node->language][0]['uri']) ? $node->field_upload[$node->language][0]['uri'] : $node->field_upload[0]['uri'];
-        $url = file_create_url($uri);
-        $action_items['items'][] = l('<i class="icon-large icon-download"></i> Download', $url, array('html' => TRUE, 'attributes' => array('class' => array('btn btn-primary resource-url-analytics resource-type-file'))));
-      }
-    }
-    $actions = theme('item_list', $action_items);
-    $vars['actions'] = $actions;
+    $theme = alpha_get_theme();
+    $tabs = dkan_theme_process_tabs($theme->page['tabs']);
+    $vars['tabs'] = drupal_render($tabs);
   }
 }
+
+function dkan_theme($existing, $type, $theme, $path) {
+  return array(
+    'dkan_tabs_local_task' => array(
+      'render element' => 'element',
+    ),
+  );
+}
+
+function dkan_theme_process_tabs($tabs) {
+  if ($tabs['#primary']) {
+    // Remove active tab.
+    foreach ($tabs['#primary'] as $row_num => $items) {
+      $tabs['#primary'][$row_num]['#theme'] = 'dkan_tabs_local_task';
+    }
+  }
+  if ($tabs['#secondary']) {
+    // Remove active tab.
+    foreach ($tabs['#secondary'] as $row_num => $items) {
+      $tabs['#secondary'][$row_num]['#theme'] = 'dkan_tabs_local_task';
+    }
+  }
+  return $tabs;
+}
+
+function dkan_dkan_tabs_local_task($variables) {
+  $link = $variables['element']['#link'];
+  $icon_type = 'wrench';
+  if ($link['page_callback'] == 'devel_load_object') {
+    $icon_type = 'cogs';
+  }
+  elseif ($link['page_callback'] == 'node_page_edit') {
+    $icon_type = 'edit';
+  }
+  elseif ($link['page_callback'] == 'node_page_view') {
+    $icon_type = 'eye-open';
+  }
+  elseif ($link['page_callback'] == 'dkan_dataset_add_resource') {
+    $icon_type = 'plus';
+  }
+  elseif ($link['page_callback'] == 'dkan_dataset_back') {
+    $icon_type = 'caret-left';
+  }
+  elseif ($link['page_callback'] == 'dkan_dataset_download') {
+    $icon_type = 'download';
+    $link['localized_options']['attributes']['class'][] = 'btn-primary';
+  }
+  dpm($link['page_callback']);
+  $icon = '<i class="icon-large icon-' . $icon_type . '"></i> ';
+  $link_text = $icon . $link['title'];
+  $link['localized_options']['html'] = TRUE;
+  $link['localized_options']['attributes']['class'][] = 'btn';
+
+  return "<li>" . l($link_text, $link['href'], $link['localized_options']) . "</li>\n";
+}
+
 /**
- * Implements template_preprocess_page.
+ * Implements template_preprocess_node.
  */
 function dkan_preprocess_node(&$vars) {
 }
@@ -110,10 +146,6 @@ function dkan_preprocess_page(&$vars) {
   }
   if ($vars['is_front']) {
     drupal_add_js($profile_path . '/themes/dkan/js/front.js');
-  }
-  // TODO: create site admin role that can deal also see tabs.
-  if ($vars['user']->uid != 1 && isset($vars['node'])) {
-    $vars['tabs'] = '';
   }
   // Remove title on dataset edit and creation pages.
   $vars['title'] = '';
@@ -220,8 +252,6 @@ function dkan_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL) {
           <button class="highlight" name="save" value="go-metadata" type="submit">' . l('Additional data', 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
       </li>
     </ol>';
-  }
-  if ($resource_nid && $dataset_nid) {
   }
   return $stages;
 }

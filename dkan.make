@@ -70,7 +70,7 @@ libraries[fdr][directory_name] = fdr
 projects[feeds][subdir] = contrib
 projects[feeds][version] = 2.x
 projects[data][subdir] = contrib
-projects[data][version] = 2.x
+projects[data][version] = 1.x
 
 ;--------------------
 ; Libraries

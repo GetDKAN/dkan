@@ -1,7 +1,10 @@
 <?php if ($wrapper): ?><div<?php print $attributes; ?>><?php endif; ?>  
   <div<?php print $content_attributes; ?>>    
     <?php if ($breadcrumb): ?>
-      <div id="breadcrumb" class="grid-<?php print $columns; ?>"><?php print $breadcrumb; ?></div>
+      <div id="toolbar" class="grid-<?php print $columns; ?>">
+        <div id="breadcrumb"><?php print $breadcrumb; ?></div>
+        <div id="actions"><?php print $tabs; ?></div>
+      </div>
     <?php endif; ?>
     <?php if ($messages): ?>
       <div id="messages" class="grid-<?php print $columns; ?>"><?php print $messages; ?></div>

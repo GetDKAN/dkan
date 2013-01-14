@@ -664,7 +664,7 @@ li {
 li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   width: 1.175em;
   background-image: none;
-  line-height: 22px;
+  line-height: 18px;
 }
 .node .field-type-double-field td {
   width: 50%;
@@ -1562,6 +1562,7 @@ h2.block-title {
 #resource-node-form .form-item {
   margin: 0;
 }
+ul.primary li a.btn,
 .btn {
   display: inline-block;
   padding: 4px 10px 4px;
@@ -1595,6 +1596,27 @@ h2.block-title {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
   font-weight: bold;
 }
+#toolbar .btn:hover {
+  background-color: #E6E6E6;
+}
+ul.primary li a.btn.active:hover,
+#toolbar .btn.active:hover,
+.btn.active:hover {
+  color: #444;
+  background-image: -webkit-linear-gradient(top, white, #F1F1F1);
+  background-image: -o-linear-gradient(top, white, #F1F1F1);
+  background-image: linear-gradient(top, white, #F1F1F1);
+  background-position: 0;
+}
+ul.primary li a.btn.active,
+#toolbar .btn.active,
+.btn.active {
+  color: #666;
+  background-image: -webkit-linear-gradient(top, white, #F1F1F1);
+  background-image: -o-linear-gradient(top, white, #F1F1F1);
+  background-image: linear-gradient(top, white, #F1F1F1);
+}
+
 .btn:hover {
   color: #333;
   text-decoration: none;
@@ -1606,16 +1628,20 @@ h2.block-title {
   -o-transition: background-position 0.1s linear;
   transition: background-position 0.1s linear;
 }
-.btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
+ul.primary li a.btn-primary:hover, .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
   background-color: #085871;
 }
 .btn-primary,
 a.btn-primary,
+ul.primary li a.btn-primary:hover,
+#toolbar ul.primary li a.btn-primary:hover,
 .btn-primary:hover,
 .btn-warning, .btn-warning:hover, .btn-danger, .btn-danger:hover, .btn-success, .btn-success:hover, .btn-info, .btn-info:hover, .btn-inverse, .btn-inverse:hover {
   color: white;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #085871;
 }
+#toolbar ul.primary li a.btn-primary,
 .btn-primary {
   background-color: #206B82;
   background-image: -moz-linear-gradient(top, #30778D, #085871);
@@ -1638,6 +1664,10 @@ a.btn-primary,
 #actions {
   float: right;
   padding: 5px 0 0 0;
+}
+#toolbar ul.primary li a {
+  margin: 0;
+  text-shadow: none;
 }
 #toolbar a.btn {
   color: #333;
