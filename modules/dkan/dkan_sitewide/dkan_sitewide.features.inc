@@ -12,6 +12,9 @@ function dkan_sitewide_ctools_plugin_api() {
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
+  if ($module == "context" && $api == "context") {
+    return array("version" => "3");
+  }
 }
 
 /**
