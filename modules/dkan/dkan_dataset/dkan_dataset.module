@@ -188,44 +188,10 @@ function dkan_add_resource($node) {
 }
 
 /**
- * Implements hook_page_alter();
- */
-function dkan_dataset_page_alter(&$page) {
-  // Adding page title to breadcrumb.
-  // Context module does this in hook_page_alter() so we need to as well if
-  // we want to add this.
-  $breadcrumbs = drupal_get_breadcrumb();
-  if (arg(0) == 'node' && is_numeric(arg(1))) {
-    $node = menu_get_object();
-    if ($node) {
-      if ($node->type == 'resource') {
-        // Resource title gets trimmed.
-        $breadcrumbs[] = dkan_dataset_text_trim($node->title);
-      }
-      else {
-        $breadcrumbs[] = $node->title;
-      }
-    }
-  }
-  else {
-    if (arg(1) != 'add') {
-      $breadcrumbs[] = drupal_get_title();
-    }
-  }
-
-  drupal_set_breadcrumb($breadcrumbs);
-}
-/**
  * Implements hook_node_view().
  */
 function dkan_dataset_node_view($node, $view_mode, $langcode) {
   if ($view_mode == 'full' && $node->type == 'dataset') {
-    $breadcrumbs = drupal_get_breadcrumb();
-    // Add the title without link
-    $breadcrumbs[] = $node->title;
-
-    // Set the new breadcrumb.
-    drupal_set_breadcrumb($breadcrumbs);
 
     $node->content['resources'] = array(
       '#type' => 'item',
@@ -520,38 +486,34 @@ function dkan_dataset_text_trim($title, $number = 25) {
   );
   return views_trim_text($alter, $title);
 }
+
 /**
- * Implements hook_menu_breadcrumb_alter().
+ * Implements hook_page_alter();
  */
-function dkan_dataset_menu_breadcrumb_alter(&$active_trail, $item) {
-  // Trim the length of dataset title if viewing resource node.
-  if (module_exists('context')) {
-    $contexts = context_active_contexts();
+function dkan_dataset_page_alter(&$page) {
+  // Adding page title to breadcrumb.
+  // Context module does this in hook_page_alter() so we need to as well if
+  // we want to add this.
+  $breadcrumbs = drupal_get_breadcrumb();
+  if (arg(0) == 'dataset' && $breadcrumbs[1] == '[all items]') {
+    $breadcrumbs[1] = t('Search Datasets');
   }
-  if (isset($contexts['resource']) || isset($contexts['resource-edit'])) {
-    $nid = isset($item['map'][1]->field_dataset_ref['und'][0]['target_id']) ? $item['map'][1]->field_dataset_ref['und'][0]['target_id'] : 1;
-    $active_trail[2] = menu_get_item('node/' . $nid);
-    $active_trail[2]['title'] = dkan_dataset_text_trim($active_trail[2]['title']);
-    $active_trail[1] = menu_get_item('dataset');
-    $active_trail[1]['title'] = t('Dataset');
-  }
-  if (isset($contexts['resource-create'])) {
-    $active_trail[1] = menu_get_item('dataset');
-    $active_trail[1]['title'] = t('Dataset');
-    if ($query = drupal_get_query_parameters()) {
-      if (isset($query['dataset'])) {
-        // Dataset node.
-        $active_trail[2] = menu_get_item('node/' . $query['dataset']);
-        // Add Resource.
-        $active_trail[3] = menu_get_item('node/add/resource');
-        $active_trail[3]['title'] = t('Add Resource');
-        $active_trail[3]['href'] = 'node/add/resource';
-        $active_trail[3]['localized_options']['query'] = array('dataset' => $query['dataset']);
-        // Add an extra since last one is removed.
-        $active_trail[4] = $active_trail[3];
-      }
+  $node = menu_get_object();
+  if ($node && $node->type == 'resource') {
+    $nid = isset($node->field_dataset_ref[$node->language][0]['target_id']) ? $node->field_dataset_ref[$node->language][0]['target_id'] : 1;
+    $breadcrumbs[] = l(dkan_dataset_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
+    if (arg(2) == 'datastore') {
+      $breadcrumbs[] = l(dkan_dataset_text_trim($node->title), 'node/' . $node->nid);
     }
   }
+  elseif (arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'resource' && $query = drupal_get_query_parameters()) {
+    if (isset($query['dataset'])) {
+      $nid = $query['dataset'];
+      $breadcrumbs[] = l(dkan_dataset_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
+    }
+  }
+  $breadcrumbs[] = drupal_get_title();
+  drupal_set_breadcrumb($breadcrumbs);
 }
 
 /**
