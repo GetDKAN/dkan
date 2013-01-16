@@ -33,6 +33,7 @@ dependencies[] = entity_token
 dependencies[] = eva
 dependencies[] = entityreference
 dependencies[] = defaultcontent
+dependencies[] = feeds
 dependencies[] = facetapi
 dependencies[] = facetapi_pretty_paths
 dependencies[] = features
@@ -70,7 +71,6 @@ dependencies[] = recline
 ; DKAN Features
 dependencies[] = dkan_content_types
 dependencies[] = dkan_context
-; removing for now. needs fixing
 dependencies[] = dkan_groups_content
 dependencies[] = dkan_default_content
 dependencies[] = dkan_front
@@ -81,6 +81,8 @@ dependencies[] = dkan_roles_and_permissions
 
 ; DKAN Modules
 dependencies[] = dkan_dataset
+dependencies[] = dkan_datastore
+dependencies[] = fdr
 dependencies[] = dkan_forms
 dependencies[] = dkan_import
 dependencies[] = dkan_sitewide
