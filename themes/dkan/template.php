@@ -20,9 +20,6 @@ function dkan_breadcrumb($variables) {
       if ($item == '<a href="/">Home</a>') {
         $breadcrumb[$num] = '<a href="/"><i class="icon-large icon-home"></i><span> Home</span></a>';
       }
-      if ($item == '[all items]') {
-        $breadcrumb[$num] = t('Search Datasets');
-      }
     }
 
     $output = '<h2 class="element-invisible">' . t('You are here') . '</h2>';
@@ -93,6 +90,9 @@ function dkan_theme_process_tabs($tabs) {
     // Remove active tab.
     foreach ($tabs['#primary'] as $row_num => $items) {
       $tabs['#primary'][$row_num]['#theme'] = 'dkan_tabs_local_task';
+      if (isset($items['#active'])) {
+        unset($tabs['#primary'][$row_num]);
+      }
     }
   }
   if ($tabs['#secondary']) {
@@ -176,6 +176,7 @@ function dkan_preprocess_page(&$vars) {
 
 /**
  * Implments template_preprocess_block().
+ * TODO: Move this to dkan_dataset module.
  */
 function dkan_preprocess_block(&$vars) {
 
@@ -220,6 +221,7 @@ function dkan_preprocess_block(&$vars) {
 
 /**
  * Creates the part on the node edit form that says what stage you are on.
+ * TODO: Move this to dkan_dataset module.
  */
 function dkan_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL) {
   $stages = '';
@@ -330,7 +332,7 @@ function dkan_facetapi_link_active($variables) {
 }
 
 /**
- * Implements theme_facetapi_link_active().
+ * Implements theme_facetapi_link_inactive().
  */
 function dkan_facetapi_link_inactive($variables) {
   // Builds accessible markup.
