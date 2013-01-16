@@ -46,6 +46,7 @@ dependencies[] = link_iframe_formatter
 dependencies[] = libraries
 dependencies[] = link
 dependencies[] = jquery_update
+dependencies[] = job_scheduler
 dependencies[] = markdowneditor
 dependencies[] = multistep
 dependencies[] = og

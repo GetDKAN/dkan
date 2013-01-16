@@ -71,6 +71,8 @@ projects[feeds][subdir] = contrib
 projects[feeds][version] = 2.x
 projects[data][subdir] = contrib
 projects[data][version] = 1.x
+projects[job_scheduler][subdir] = contrib
+projects[job_scheduler][version] = 1.x
 
 ;--------------------
 ; Libraries
