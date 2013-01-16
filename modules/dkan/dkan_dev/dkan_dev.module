@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * Elements for help with development.
+ */
+
+drupal_set_message('The DKAN distro is rebuilt daily. Any new content will be removed every night.');

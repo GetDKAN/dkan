@@ -1,0 +1,5 @@
+name = DKAN Dev
+description = Development related elements for DKAN. Not for live deployment.
+package = DKAN
+core = 7.x
+php = 5.2.4
