@@ -151,15 +151,15 @@ function dkan_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'dkan_forms-dkan_forms_resource_nodes' => array(
-          'module' => 'dkan_forms',
-          'delta' => 'dkan_forms_resource_nodes',
-          'region' => 'postscript_first',
-          'weight' => '-10',
-        ),
         'dkan_dataset-dkan_dataset_social' => array(
           'module' => 'dkan_dataset',
           'delta' => 'dkan_dataset_social',
+          'region' => 'postscript_first',
+          'weight' => '-10',
+        ),
+        'dkan_forms-dkan_forms_resource_nodes' => array(
+          'module' => 'dkan_forms',
+          'delta' => 'dkan_forms_resource_nodes',
           'region' => 'postscript_first',
           'weight' => '-10',
         ),
@@ -171,8 +171,9 @@ function dkan_context_context_default_contexts() {
         ),
       ),
     ),
-    'delta' => array(
-      'delta_template' => 'resource_nodes',
+    'breadcrumb' => 'dataset',
+    'debug' => array(
+      'debug' => 1,
     ),
   );
   $context->condition_mode = 0;
@@ -212,6 +213,7 @@ function dkan_context_context_default_contexts() {
         ),
       ),
     ),
+    'breadcrumb' => 'dataset',
   );
   $context->condition_mode = 0;
 
@@ -219,6 +221,32 @@ function dkan_context_context_default_contexts() {
   // Included for use with string extractors like potx.
   t('Create');
   $export['resource-create'] = $context;
+
+  $context = new stdClass();
+  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
+  $context->api_version = 3;
+  $context->name = 'resource-datastore';
+  $context->description = '';
+  $context->tag = 'Datastore';
+  $context->conditions = array(
+    'path' => array(
+      'values' => array(
+        'node/*/datastore*' => 'node/*/datastore*',
+      ),
+    ),
+  );
+  $context->reactions = array(
+    'breadcrumb' => 'dataset',
+    'debug' => array(
+      'debug' => 1,
+    ),
+  );
+  $context->condition_mode = 0;
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Datastore');
+  $export['resource-datastore'] = $context;
 
   $context = new stdClass();
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
@@ -258,6 +286,7 @@ function dkan_context_context_default_contexts() {
         ),
       ),
     ),
+    'breadcrumb' => 'dataset',
   );
   $context->condition_mode = 1;
 
