@@ -1,0 +1,8 @@
+name = dkan_datastore
+core = 7.x
+package = Features
+dependencies[] = ctools
+dependencies[] = feeds
+features[ctools][] = feeds:feeds_importer_default:1
+features[features_api][] = api:1
+features[feeds_importer][] = dkan_field_importer
