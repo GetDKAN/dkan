@@ -14,17 +14,20 @@ dependencies[] = path
 dependencies[] = rdf
 dependencies[] = taxonomy
 
+; Development
+dependencies[] = coder
+dependencies[] = dkan_dev
+dependencies[] = devel
+
 ; Contrib
 dependencies[] = admin_menu
 dependencies[] = autocomplete_deluxe
 dependencies[] = boxes
 dependencies[] = bueditor
-dependencies[] = coder
 dependencies[] = context
 dependencies[] = context_ui
 dependencies[] = chosen
 dependencies[] = ctools
-dependencies[] = devel
 dependencies[] = delta
 dependencies[] = diff
 dependencies[] = double_field
