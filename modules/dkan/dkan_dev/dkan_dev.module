@@ -5,4 +5,9 @@
  * Elements for help with development.
  */
 
-drupal_set_message('The DKAN distro is rebuilt daily. Any new content will be removed every night.');
+/**
+ * Implements hook_page_alter().
+ */
+function dkan_dev_page_alter(&$page) {
+  drupal_set_message('The DKAN distro is rebuilt daily. Any new content will be removed every night.');
+}
