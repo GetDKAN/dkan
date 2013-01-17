@@ -155,13 +155,6 @@ function dkan_content_types_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'menu_options_group';
-  $strongarm->value = array();
-  $export['menu_options_group'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
   $strongarm->name = 'menu_options_resource';
   $strongarm->value = array();
   $export['menu_options_resource'] = $strongarm;
@@ -172,13 +165,6 @@ function dkan_content_types_strongarm() {
   $strongarm->name = 'menu_parent_dataset';
   $strongarm->value = 'main-menu:318';
   $export['menu_parent_dataset'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'menu_parent_group';
-  $strongarm->value = 'main-menu:0';
-  $export['menu_parent_group'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -200,16 +186,6 @@ function dkan_content_types_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'node_options_group';
-  $strongarm->value = array(
-    0 => 'status',
-    1 => 'revision',
-  );
-  $export['node_options_group'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
   $strongarm->name = 'node_options_resource';
   $strongarm->value = array(
     0 => 'status',
@@ -226,13 +202,6 @@ function dkan_content_types_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'node_preview_group';
-  $strongarm->value = '0';
-  $export['node_preview_group'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
   $strongarm->name = 'node_preview_resource';
   $strongarm->value = '0';
   $export['node_preview_resource'] = $strongarm;
@@ -243,13 +212,6 @@ function dkan_content_types_strongarm() {
   $strongarm->name = 'node_submitted_dataset';
   $strongarm->value = 0;
   $export['node_submitted_dataset'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'node_submitted_group';
-  $strongarm->value = 0;
-  $export['node_submitted_group'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
