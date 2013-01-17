@@ -11,6 +11,7 @@ include_once 'dkan_dataset.features.inc';
  * Implements hook_menu().
  */
 function dkan_dataset_menu() {
+  $path = drupal_get_path('module', 'dkan_datset');
   $items['node/%node/resource'] = array(
     'title' => 'Add Resoure',
     'page callback' => 'dkan_dataset_add_resource',
@@ -18,6 +19,8 @@ function dkan_dataset_menu() {
     'access callback' => 'dkan_add_resource',
     'access arguments' => array(1),
     'type' => MENU_LOCAL_TASK,
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
   );
   $items['node/%node/dataset'] = array(
     'title' => 'Back to dataset',
@@ -26,6 +29,8 @@ function dkan_dataset_menu() {
     'access callback' => 'dkan_dataset_back_access',
     'access arguments' => array(1),
     'type' => MENU_LOCAL_TASK,
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
   );
   $items['node/%node/download'] = array(
     'title' => 'Download',
@@ -33,6 +38,8 @@ function dkan_dataset_menu() {
     'page arguments' => array(1),
     'access callback' => 'dkan_dataset_download_access',
     'access arguments' => array(1),
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
     'weight' => '20',
     'type' => MENU_LOCAL_TASK,
   );
@@ -42,57 +49,105 @@ function dkan_dataset_menu() {
     'page arguments' => array(1),
     'access callback' => 'dkan_dataset_datastore_api_access',
     'access arguments' => array(1),
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
     'weight' => '25',
     'type' => MENU_LOCAL_TASK,
   );
-  // These are copies of Feeds. Moving them to tabs under 'Manage Datastore'.
-  $feed_path = drupal_get_path('module', 'feeds');
   $items['node/%node/datastore'] = array(
     'title' => 'Manage Datastore',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('feeds_import_tab_form', 1),
+    'page arguments' => array('dkan_dataset_import_tab_form', 1),
     'access callback' => 'feeds_access',
     'access arguments' => array('import', 1),
-    'file' => 'feeds.pages.inc',
-    'file path' => $feed_path,
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
     'weight' => '15',
     'type' => MENU_LOCAL_TASK,
   );
   $items['node/%node/datastore/import'] = array(
     'title' => 'Import',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('feeds_import_tab_form', 1),
+    'page arguments' => array('dkan_dataset_import_tab_form', 1),
     'access callback' => 'feeds_access',
     'access arguments' => array('import', 1),
-    'file' => 'feeds.pages.inc',
-    'file path' => $feed_path,
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => 10,
   );
   $items['node/%node/datastore/delete-items'] = array(
     'title' => 'Delete items',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('feeds_delete_tab_form', NULL, 1),
+    'page arguments' => array('dkan_dataset_delete_tab_form', NULL, 1),
     'access callback' => 'feeds_access',
     'access arguments' => array('clear', 1),
-    'file' => 'feeds.pages.inc',
-    'file path' => $feed_path,
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
     'type' => MENU_LOCAL_TASK,
     'weight' => 11,
   );
   $items['node/%node/datastore/unlock'] = array(
     'title' => 'Unlock',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('feeds_unlock_tab_form', NULL, 1),
+    'page arguments' => array('dkan_dataset_unlock_tab_form', NULL, 1),
     'access callback' => 'feeds_access',
     'access arguments' => array('unlock', 1),
-    'file' => 'feeds.pages.inc',
-    'file path' => $feed_path,
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
     'type' => MENU_LOCAL_TASK,
     'weight' => 11,
   );
 
   return $items;
+}
+
+/**
+ * Access callback for Data API instructions.
+ */
+function dkan_dataset_datastore_api_access($node) {
+  if ($node->type != 'resource' || !isset($node->field_upload[$node->language][0])) {
+    return FALSE;
+  }
+  else {
+    return node_access('view', $node);
+  }
+}
+
+/**
+ * Access callback for download tab.
+ */
+function dkan_dataset_download_access($node) {
+  if ($node->type != 'resource' || !isset($node->field_upload[$node->language][0])) {
+    return FALSE;
+  }
+  else {
+    return node_access('view', $node);
+  }
+}
+
+/**
+ * Access callback for back link.
+ */
+function dkan_dataset_back_access($node) {
+  if ($node->type != 'resource') {
+    return FALSE;
+  }
+  else {
+    return node_access('view', $node);
+  }
+}
+
+/**
+ * Access callback for 'Add Resource' tab.
+ */
+function dkan_add_resource($node) {
+  if ($node->type != 'dataset') {
+    return FALSE;
+  }
+  else {
+    return _node_add_access();
+  }
 }
 
 /**
@@ -103,88 +158,6 @@ function dkan_dataset_menu_alter(&$items) {
   unset($items['node/%node/delete-items']);
   unset($items['node/%node/import']);
   unset($items['node/%node/unlock']);
-}
-
-/**
- * Callback for Data API instructions.
- */
-function dkan_dataset_datastore_api($node) {
-  return 'coming soon';
-}
-
-/**
- * Access callback for Data API instructions.
- */
-function dkan_dataset_datastore_api_access($node) {
-  if ($node->type != 'resource' || !isset($node->field_upload[$node->language][0])) {
-    return NULL;
-  }
-  else {
-    return node_access('view', $node);
-  }
-}
-
-/**
- * Callback for download tab.
- */
-function dkan_dataset_download($node) {
-  $uri = isset($node->field_upload[$node->language][0]['uri']) ? $node->field_upload[$node->language][0]['uri'] : $node->field_upload[0]['uri'];
-  $url = file_create_url($uri);
-  return drupal_goto($url);
-}
-
-/**
- * Access callback for download tab.
- */
-function dkan_dataset_download_access($node) {
-  if ($node->type != 'resource' || !isset($node->field_upload[$node->language][0])) {
-    return NULL;
-  }
-  else {
-    return node_access('view', $node);
-  }
-}
-
-
-/**
- * Callback for back link.
- */
-function dkan_dataset_back($node) {
-  if (isset($node->field_dataset_ref[$node->language][0]['target_id'])) {
-    drupal_goto('node/' . $node->field_dataset_ref[$node->language][0]['target_id']);
-  }
-  return '';
-}
-
-/**
- * Access callback for back link.
- */
-function dkan_dataset_back_access($node) {
-  if ($node->type != 'resource') {
-    return NULL;
-  }
-  else {
-    return node_access('view', $node);
-  }
-}
-
-/**
- * Callback for 'Add Resouce' tab.
- */
-function dkan_dataset_add_resource($node) {
-  drupal_goto('node/add/resource', array('query' => array('dataset' => $node->nid)));
-}
-
-/**
- * Access callback for 'Add Resource' tab.
- */
-function dkan_add_resource($node) {
-  if ($node->type != 'dataset') {
-    return NULL;
-  }
-  else {
-    return _node_add_access();
-  }
 }
 
 /**

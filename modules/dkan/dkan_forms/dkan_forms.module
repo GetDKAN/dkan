@@ -141,6 +141,10 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_forms') . '/dkan_forms.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_forms') . '/dkan_forms.slugify.js';
 
+    if (isset($form['feeds'])) {
+      $form['feeds']['#access'] = FALSE;
+    }
+
     $form['field_link_api'][$form['language']['#value']][0]['#description'] = 'eg. http://example.com/gold-prices-jan-2011.json';
     $form['field_upload'][$form['language']['#value']][0]['#title'] = '';
     $form['field_upload'][$form['language']['#value']][0]['view']['#collapsible'] = TRUE;
@@ -156,7 +160,7 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
     $form['og_group_ref']['#type'] = 'fieldset';
 
     // Don't show users how we connect the dataset to the resource.
-    //$form['field_dataset_ref']['#access'] = FALSE;
+    $form['field_dataset_ref']['#access'] = FALSE;
     $action_query = '';
     if ($query = drupal_get_query_parameters()) {
       if (isset($query['dataset'])) {

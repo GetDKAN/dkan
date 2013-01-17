@@ -1200,6 +1200,15 @@ html.js input.throbbing {
   text-align: right;
   margin-top: 18px;
 }
+.field-name-field-format {
+  padding: 10px 0;
+}
+#resource-node-form  .field-name-field-format label {
+  margin-top: 5px;
+}
+#resource-node-form  .field-name-field-format .chzn-container  {
+  margin-top: 5px;
+}
 #resource-node-form .form-item-title {
   clear: both;
 }
@@ -1704,6 +1713,21 @@ ul.primary li a.btn-primary:hover,
 }
 #toolbar a.btn-primary {
   color: #FFF;
+}
+ul.secondary a.active {
+  border-bottom: 1px solid #999;
+}
+ul.secondary li {
+  border-right: none;
+  padding: 0;
+}
+ul.secondary {
+  border-bottom: none;
+  padding: 0.5em 0;
+  margin: 5px 0;
+}
+ul.primary {
+  padding: 0;
 }
 #toolbar .btn {
   padding: 0 10px 0 8px;
