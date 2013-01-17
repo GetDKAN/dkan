@@ -63,10 +63,10 @@ projects[omega][subdir] = contrib
 ;--------------------
 
 projects[recline][subdir] = contrib
-libraries[fdr][type] = module
-libraries[fdr][download][type] = git
-libraries[fdr][download][url] = "git@github.com:acouch/fdr.git"
-libraries[fdr][directory_name] = fdr
+projects[fdr][type] = module
+projects[fdr][download][type] = git
+projects[fdr][download][url] = "git@github.com:acouch/fdr.git"
+projects[fdr][directory_name] = fdr
 projects[feeds][subdir] = contrib
 projects[feeds][version] = 2.x
 projects[data][subdir] = contrib
