@@ -36,7 +36,7 @@ function dkan_default_content_content_defaults() {
     'field_dataset_ref' => array(
       'und' => array(
         0 => array(
-          'target_id' => '3',
+          'target_id' => '4',
         ),
       ),
     ),

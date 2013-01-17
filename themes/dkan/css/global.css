@@ -1284,6 +1284,13 @@ html.js input.throbbing {
   position: relative;
   top: 0;
 }
+.btn [class^="icon-"].icon-large,
+.nav [class^="icon-"].icon-large,
+.btn [class*=" icon-"].icon-large,
+.nav [class*=" icon-"].icon-large {
+  line-height: 16px;
+}
+
 #url-edit-label,
 #url-edit-prefix,
 #url-slug,
