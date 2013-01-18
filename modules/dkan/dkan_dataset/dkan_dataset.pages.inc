@@ -86,6 +86,7 @@ function dkan_dataset_delete_tab_form($form, &$form_state, $importer_id, $node =
     $source = feeds_source($importer_id, $node->nid);
     $form['#redirect'] = 'node/' . $source->feed_nid;
   }
+  dpm(var_dump($source));
   // Form cannot pass on source object.
   $form['#importer_id'] = $source->id;
   $form['#feed_nid'] = $source->feed_nid;
