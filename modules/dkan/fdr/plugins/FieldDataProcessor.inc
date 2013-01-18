@@ -27,7 +27,7 @@ class FieldDataProcessor extends FeedsProcessor {
     $this->feed_nid = $source->feed_nid;
 
     $schema = $this->fullSchema($this->dataSchema($parser_result->items[0]));
-    $table = $this->table($schema);
+    $table = $this->table($source, $schema);
 
     while ($data = $parser_result->shiftItem()) {
       $data['feed_entity_id'] = $this->feed_nid;
@@ -44,25 +44,13 @@ class FieldDataProcessor extends FeedsProcessor {
       $id = $this->existingItemId($parser_result, $source);
       if ($id != FALSE || $this->config['update_existing']) {
         $data['id'] = $id;
-        $this->handler()->update($data, 'id');
-        $updated++;
+        $this->handler($source)->update($data, 'id');
       }
       else {
-        $this->handler()->save($data);
-        $inserted++;
+        $this->handler($source)->save($data);
       }
     }
 
-    // Set messages.
-    if ($inserted) {
-      drupal_set_message(format_plural($inserted, 'Created @number item.', 'Created @number items.', array('@number' => $inserted)));
-    }
-    if ($updated) {
-      drupal_set_message(format_plural($updated, 'Updated @number item.', 'Updated @number items.', array('@number' => $updated)));
-    }
-    if (!$inserted && !$updated) {
-      drupal_set_message(t('There are no new items.'));
-    }
   }
 
   /**
@@ -71,7 +59,7 @@ class FieldDataProcessor extends FeedsProcessor {
    * Delete all data records for feed_entity_id in this table.
    */
   public function clear(FeedsSource $source) {
-    $table_name = $this->tableName();
+    $table_name = $this->tableName($source);
     $result = db_truncate($table_name)->execute();
     if ($result) {
       drupal_set_message('All items have been deleted.');
@@ -97,7 +85,7 @@ class FieldDataProcessor extends FeedsProcessor {
         FEEDS_REQUEST_TIME - $time,
       ),
     );
-    $num = $this->handler()->delete($clause);
+    $num = $this->handler($source)->delete($clause);
     drupal_set_message(format_plural($num, 'Expired @number record from @table.', 'Expired @number records from @table.', array('@number' => $num, '@table' => $this->tableName())));
     return FEEDS_BATCH_COMPLETE;
   }
@@ -158,7 +146,7 @@ class FieldDataProcessor extends FeedsProcessor {
    */
   protected function existingItemId(FeedsParserResult $parser_result, FeedsSource $source) {
     foreach ($this->uniqueTargets($source, $parser_result) as $target => $value) {
-      if ($records = $this->handler()->load(array('feed_entity_id' => $source->feed_entity_id, $target => $value))) {
+      if ($records = $this->handler($source)->load(array('feed_entity_id' => $source->feed_entity_id, $target => $value))) {
         return $records[0]['id'];
       }
     }
@@ -211,8 +199,8 @@ class FieldDataProcessor extends FeedsProcessor {
   /**
    * Return the data table name for this feed.
    */
-  protected function tableName() {
-    return 'dkan_datastore_' . $this->feed_nid;
+  protected function tableName(FeedsSource $source) {
+    return 'dkan_datastore_' . $source->feed_nid;
   }
 
   /**
@@ -224,12 +212,12 @@ class FieldDataProcessor extends FeedsProcessor {
    * @todo Make *Data module* throw exception when table can't be found or
    *   can't be created.
    */
-  protected function table($schema) {
-    if ($table = data_get_table($this->tableName())) {
+  protected function table(FeedsSource $source, $schema) {
+    if ($table = data_get_table($this->tableName($source))) {
       return $table;
     }
     else {
-      if ($table = data_create_table($this->tableName(), $schema)) {
+      if ($table = data_create_table($this->tableName($source), $schema)) {
         return $table;
       }
     }
@@ -241,10 +229,10 @@ class FieldDataProcessor extends FeedsProcessor {
    *
    * Avoids a call to table() to not unnecessarily instantiate DataTable.
    */
-  protected function handler() {
+  protected function handler(FeedsSource $source) {
     fdr_include('DataHandler');
     feeds_include_library('FeedsDataHandler');
-    return DataHandler::instance($this->tableName(), 'id');
+    return DataHandler::instance($this->tableName($source), 'id');
   }
 
 
