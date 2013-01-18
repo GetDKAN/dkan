@@ -151,19 +151,3 @@ function dkan_dataset_unlock_tab_form($form, &$form_state, $importer_id, $node =
   return $form;
 }
 
-/**
- * Form submit handler. Resets all feeds state.
- */
-function feeds_unlock_tab_form_submit($form, &$form_state) {
-  drupal_set_message(t('Import Unlocked'));
-  $form_state['redirect'] = $form['#redirect'];
-  $feed_nid = empty($form['#feed_nid']) ? 0 : $form['#feed_nid'];
-  $importer_id = $form['#importer_id'];
-
-  //Is there a more API-friendly way to set the state?
-  db_update('feeds_source')
-    ->condition('id', $importer_id)
-    ->condition('feed_nid', $feed_nid)
-    ->fields(array('state' => FALSE))
-    ->execute();
-}
