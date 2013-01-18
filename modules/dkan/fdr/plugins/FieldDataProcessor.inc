@@ -70,12 +70,10 @@ class FieldDataProcessor extends FeedsProcessor {
    *
    * Delete all data records for feed_entity_id in this table.
    */
-  public function clear(FeedsBatch $batch, FeedsSource $source) {
-    $clause = array(
-      'feed_entity_id' => $source->feed_entity_id,
-    );
-    $num = $this->handler()->delete($clause);
-    if ($num) {
+  public function clear(FeedsSource $source) {
+    $table_name = $this->tableName();
+    $result = db_truncate($table_name)->execute();
+    if ($result) {
       drupal_set_message('All items have been deleted.');
     }
     else {
