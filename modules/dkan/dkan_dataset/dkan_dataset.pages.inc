@@ -60,15 +60,24 @@ function dkan_dataset_import_tab_form($form, &$form_state, $node) {
   $form = confirm_form($form, t('Import all content from source?'), 'node/' . $node->nid, '', t('Import'), t('Cancel'), 'confirm feeds update');
   drupal_set_title('Manage Datastore');
   $progress = $source->progressImporting();
+  $form['#count'] = $source->itemCount();
   if ($progress !== FEEDS_BATCH_COMPLETE) {
     $form['actions']['submit']['#disabled'] = TRUE;
     $form['actions']['submit']['#value'] =
       t('Importing (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
   }
-  $form['#submit'] = array('feeds_import_tab_form_submit');
   return $form;
 }
 
+function dkan_dataset_import_tab_form_submit($form, &$form_state) {
+  $form_state['redirect'] = $form['#redirect'];
+  $feed_nid = $form['#feed_nid'];
+  if ($form['#count']) {
+    $table_name = 'dkan_datastore_' . $feed_nid;
+    $result = db_truncate($table_name)->execute();
+  }
+  feeds_source($form['#importer_id'], $feed_nid)->startImport();
+}
 /**
  * Render a feeds delete form.
  *
@@ -86,7 +95,6 @@ function dkan_dataset_delete_tab_form($form, &$form_state, $importer_id, $node =
     $source = feeds_source($importer_id, $node->nid);
     $form['#redirect'] = 'node/' . $source->feed_nid;
   }
-  dpm(var_dump($source));
   // Form cannot pass on source object.
   $form['#importer_id'] = $source->id;
   $form['#feed_nid'] = $source->feed_nid;
