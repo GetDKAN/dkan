@@ -28,11 +28,6 @@ class EntityFieldFetcher extends FeedsFetcher {
       }
     }
 
-    // Might have to look up file from field here!
-    //
-    // Nope, will have the field, just need to grab the file.
-
-
     // Just return a file fetcher result if this is a file.
     if (is_file($source_config['source'])) {
       return new FeedsFileFetcherResult($source_config['source']);

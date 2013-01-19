@@ -52,6 +52,19 @@ class FieldDataProcessor extends FeedsProcessor {
     }
 
   }
+  
+  /**
+   * Count items imported by this source.
+   */
+  public function itemCount(FeedsSource $source) {
+    $table_name = $this->tableName($source);
+    if (db_table_exists($table_name)) {
+      return db_query("SELECT count(*) FROM {" . $table_name . "}")->fetchField();
+    }
+    else {
+      return NULL;
+    }
+  }
 
   /**
    * Implementation of FeedsProcessor::clear().
@@ -230,8 +243,6 @@ class FieldDataProcessor extends FeedsProcessor {
    * Avoids a call to table() to not unnecessarily instantiate DataTable.
    */
   protected function handler(FeedsSource $source) {
-    fdr_include('DataHandler');
-    feeds_include_library('FeedsDataHandler');
     return DataHandler::instance($this->tableName($source), 'id');
   }
 
@@ -243,7 +254,8 @@ class FieldDataProcessor extends FeedsProcessor {
    */
   function dataSchema($first_row) {
     foreach ($first_row as $field => $data) {
-      $data_schema[$field] = data_get_field_definition('bigtext');
+      // Default to bigtext for now.
+      $data_schema[$field] = 'bigtext';
     }
     return $data_schema;
   }
