@@ -1,0 +1,86 @@
+<?php
+
+/**
+ * @file
+ * Data API via services.
+ */
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function dkan_data_api_ctools_plugin_api($owner, $api) {
+  if ($owner == 'services' && $api == 'services') {
+    return array(
+      'version' => 3,
+    );
+  }
+}
+
+/**
+ * Implements hook_services_resources.
+ */
+function dkan_data_api_services_resources() {
+  return array(
+    'dkan_datastore_search' => array(
+      'index' => array(
+        'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/user_resource'),
+        'callback' => '_dkan_data_api_datastore_index',
+        'args' => array(
+          array(
+            'name' => 'resource_id',
+            'optional' => TRUE,
+            'type' => 'string',
+            'description' => 'id or alias of the resource to be searched against.',
+            'default value' => 0,
+            'source' => array('param' => 'resource_id'),
+          ),
+          array(
+            'name' => 'fields',
+            'optional' => TRUE,
+            'type' => 'string',
+            'description' => 'The fields to get.',
+            'default value' => '*',
+            'source' => array('param' => 'fields'),
+          ),
+          array(
+            'name' => 'parameters',
+            'optional' => TRUE,
+            'type' => 'array',
+            'description' => 'Parameters',
+            'default value' => array(),
+            'source' => array('param' => 'parameters'),
+          ),
+          array(
+            'name' => 'pagesize',
+            'optional' => TRUE,
+            'type' => 'int',
+            'description' => 'Number of records to get per page.',
+            'default value' => variable_get('services_user_index_page_size', 20),
+            'source' => array('param' => 'pagesize'),
+          ),
+        ),
+        'access callback' => '_dkan_data_api_datastore_access',
+        'access arguments' => array('view'),
+        'access arguments append' => FALSE,
+      ),
+    ),
+  );
+}
+
+function dkan_data_api_services_resources_alter($resources, $endpoint) {
+}
+
+/**
+ * CRUD retrieve callback.
+ */
+function _dkan_data_api_datastore_index($page, $fields, $parameters, $page_size) {
+
+  return 'CRUD Retrieve ' . $arg1;
+}
+
+/**
+ * Access callback.
+ */
+function _dkan_data_api_datastore_access($op) {
+  return TRUE;
+}
