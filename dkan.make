@@ -76,8 +76,8 @@ projects[job_scheduler][version] = 1.x
 
 libraries[recline][type] = libraries
 libraries[recline][download][type] = git
-libraries[recline][download][branch] = "v0.6"
 libraries[recline][download][url] = "git://github.com/okfn/recline.git"
+libraries[recline][download][revision] = "3610d95e7474f1c5c3752ff2f73447f7be2b5546"
 
 libraries[font_awesome][type] = libraries
 libraries[font_awesome][download][type] = git
