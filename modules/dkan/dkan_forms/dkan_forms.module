@@ -99,15 +99,17 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
       }
     }
 
-    // Don't show groups if user doesn't have any groups to add.
-    $groups = $form['og_group_ref'][$form['language']['#value']][0]['default']['#options'];
-    if (count($groups) < 2) {
-      $form['og_group_ref']['#access'] = FALSE;
+    if (isset($form['og_group_ref'])) {
+      // Don't show groups if user doesn't have any groups to add.
+      $groups = $form['og_group_ref'][$form['language']['#value']][0]['default']['#options'];
+      if (count($groups) < 2) {
+        $form['og_group_ref']['#access'] = FALSE;
+      }
+      // Move groups to vertical tabs.
+      $form['og_group_ref']['#group'] = 'additional_settings';
+      $form['og_group_ref']['#title'] = t('Groups');
+      $form['og_group_ref']['#type'] = 'fieldset';
     }
-    // Move groups to vertical tabs.
-    $form['og_group_ref']['#group'] = 'additional_settings';
-    $form['og_group_ref']['#title'] = t('Groups');
-    $form['og_group_ref']['#type'] = 'fieldset';
 
     if (arg(1) == 'add') {
       // We don't need to see revision form when creating a new node.
