@@ -112,86 +112,95 @@ function dkan_data_api_services_resources() {
  * CRUD retrieve callback.
  */
 function _dkan_data_api_datastore_index($resource_ids, $filters, $query, $language, $offset, $limit, $fields, $sort, $join) {
+  // Don't allow query search and 
   // TODO: Make resource_id optional and format error repsonse.
-
-  // Require N ---
-  // resources_ids
-  // filters
-  // query
-  // fields
-  // sort
-  // Do not N ---
-  // language
-  // limit
-  // offest
 
   if (count($resource_ids) < 2) {
     $resource_id = array_shift(array_values($resource_ids));
-    $data_select = dkan_data_api_build_index_query($resource_id, $filters, $query, $language, $offset, $limit, $fields, $sort, $join);
-    $data_select->condition('t.country', 'AR,CA', '=');
-    $data_select->addJoin('INNER', 'dkan_datastore_13', 'c', 't.country = c.country');
-    $data_select->addField('c', 'squarekm');
-    $data_select->distinct(TRUE);
+    $table = 'dkan_datastore_' . $resource_id;
+    $data_select = dkan_data_api_build_index_query($resource_id, $offset, $limit, $fields, $sort);
+    dkan_data_api_add_index_conditions($data_select, $filters);
+//    $data_select->condition('t.country', services_str_getcsv('AR,CA'), 'IN');
+    //$data_select->addJoin('INNER', 'dkan_datastore_13', 'c', 't.country = c.country');
+    //$data_select->addField('c', 'squarekm');
+    //$data_select->distinct(TRUE);
     $results = services_resource_execute_index_query($data_select);
-    return services_resource_build_index_list($results, 'read/' . $resource_id, array());
+    return dkan_data_api_resource_build_index_list($results, $table, $fields);
   }
   else {
     $i = 0;
-    foreach ($resource_ids as $key => $resource_id) {
+    foreach ($resource_ids as $alias => $resource_id) {
       if (!is_numeric($resource_id)) { //TODO: Check resource exits.
         // TODO: Error.
       }
       if ($i == 0) {
-        $resource_id = array_shift(array_values($resource_ids));
-        $data_select = dkan_data_api_build_index_query($resource_id, $filters, $query, $language, $offset, $limit, $fields, $sort, $join);
-        if (isset($filters[$key])) {
-          die($filters[$key]);
-          $data_select->condition($key . '.' . $filters[$key], 'AR', 'IN');
+        $fields = isset($fields[$alias]) ? $fields[$alias] : $fields;
+        $sort = isset($sort[$alias]) ? $sort[$alias] : $sort;
+        $filters = isset($filters[$alias]) ? $filters[$alias] : $filters;
+        $data_select = dkan_data_api_build_index_query($resource_id, $offset, $limit, $fields, $sort, $alias = 't');
+        dkan_data_api_add_index_conditions($data_select, $filters, $alias);
       }
-     // $results = services_resource_execute_index_query($data_select);
-     // return services_resource_build_index_list($results, 'read/' . $resource_id, array());
+      else {
+        $fields = isset($fields[$alias]) ? $fields[$alias] : $fields;
+        $sort = isset($sort[$alias]) ? $sort[$alias] : $sort;
+        $filters = isset($filters[$alias]) ? $filters[$alias] : $filters;
+        dkan_data_api_build_additional_index_query($data_select, $resource_id, $offset, $limit, $fields, $sort, $alias, $join);
+      }
+      //$data_select = dkan_data_api_build_index_query($resource_id, $offset, $limit, $fields, $sort, $alias);
+      //dkan_data_api_add_index_conditions($data_select, $filters, $alias);
+
+      $i++;
+      // Join
     }
+    $results = services_resource_execute_index_query($data_select);
+    return dkan_data_api_resource_build_index_list($results, $table);
+   // $results = services_resource_execute_index_query($data_select);
+   // return services_resource_build_index_list($results, 'read/' . $resource_id, array());
 
     $data_select->addJoin('INNER', 'dkan_datastore_13', 'c', 't.country = c.country');
     $data_select->addField('c', 'squarekm');
     $data_select->condition('c.country', 'AR', '=');
     $data_select->distinct(TRUE);
-
-
-    }
   }
-
-  $output = array();
-  $output[] = array('Resource ID' => $resource_ids);
-  $output[] = array('Filters' => $filters);
-  $output[] = array('query' => $query);
-  $output[] = array('language' => $language);
-  $output[] = array('limit' => $limit);
-  $output[] = array('offset' => $offset);
-  $output[] = array('fields' => $fields);
-  $output[] = array('sort' => $sort);
-  $output[] = array('join' => $join);
 
   return $output;
 }
-/**
- * same as services version but not adding conditions.
- */
-function dkan_data_api_resource_build_index_query($query, $page, $fields, $parameters, $page_size, $resource) {
-  $default_limit = variable_get("services_{$resource}_index_page_size", 20);
-  if (!user_access('perform unlimited index queries') && $page_size > $default_limit) {
-    $page_size = $default_limit;
-  }
-  $query->range($page * $page_size, $page_size);
-  if ($fields == '*') {
-    $query->fields('t');
-  }
-  else {
-    $query->fields('t', explode(',', $fields));
+
+function dkan_data_api_add_index_conditions(&$data_select, $filters, $alias = 't') {
+  if (is_array($filters)) {
+    foreach($filters as $num => $filter) {
+      if (is_array($filter)) {
+        foreach($filter as $key => $value) {
+          $data_select->condition($num . '.' . $key, $filter, 'IN');
+        }
+      }
+      else {
+        $data_select->condition($alias . '.' . $num, services_str_getcsv($filter), 'IN');
+      }
+    }
   }
 }
+function dkan_data_api_build_additional_index_query(&$data_select, $resource_id, $offset, $limit, $fields, $sort, $alias, $join) {
 
-function dkan_data_api_build_index_query($resource_id, $filters, $query, $language, $offset, $limit, $fields, $sort, $join, $alias = 't') {
+  $data_select->addJoin('INNER', 'dkan_datastore_' . $resource_id, $alias, 't.country = ' . $alias . '.country');
+  if ($fields == '*') {
+    //$data_select->addField($alias, $fields);
+  }
+  else {
+    //$data_select->addField($alias, explode(',', $fields));
+  }
+//    $data_select->condition('t.country', services_str_getcsv('AR,CA'), 'IN');
+    //$data_select->addJoin('INNER', 'dkan_datastore_13', 'c', 't.country = c.country');
+    //$data_select->addField($alias, '*');
+    //$data_select->distinct(TRUE);
+  // 1) Filters
+//    $data_select->condition('t.country', services_str_getcsv('AR,CA'), 'IN');
+  // 1a) Join
+  // 2) Fields
+  // 3) Sort
+  //TODO: Is this need an add, probably, not sure how to do with dbng.
+}
+function dkan_data_api_build_index_query($resource_id, $offset, $limit, $fields, $sort, $alias = 't') {
   $table = 'dkan_datastore_' . $resource_id;
   if (db_table_exists($table)) {
     $data_select = db_select($table, $alias);
@@ -204,13 +213,26 @@ function dkan_data_api_build_index_query($resource_id, $filters, $query, $langua
       $data_select->orderBy('timestamp', 'DESC');
     }
 
-    dkan_data_api_resource_build_index_query($data_select, $offset, $fields, $filters, $limit, $table);
+    dkan_data_api_resource_build_index_query($data_select, $offset, $fields, $limit, $alias, $table);
     return $data_select;
   }
 }
 
-
-function dkan_data_api_services_resources_alter($resources, $endpoint) {
+/**
+ * same as services version but not adding conditions.
+ */
+function dkan_data_api_resource_build_index_query(&$query, $page, $fields, $page_size, $alias, $table) {
+  $default_limit = variable_get("{$table}_index_page_size", 20);
+  if (!user_access('perform unlimited index queries') && $page_size > $default_limit) {
+    $page_size = $default_limit;
+  }
+  $query->range($page * $page_size, $page_size);
+  if ($fields == '*') {
+    $query->fields('t');
+  }
+  else {
+    $query->fields('t', explode(',', $fields));
+  }
 }
 
 /**
@@ -218,4 +240,63 @@ function dkan_data_api_services_resources_alter($resources, $endpoint) {
  */
 function _dkan_data_api_datastore_access($op) {
   return TRUE;
+}
+
+function dkan_data_api_test() {
+  // Require N ---
+  // resources_ids
+  // filters
+  // query
+  // fields
+  // sort
+  // Do not N ---
+  // language
+  // limit
+  // offest
+  $output = array();
+  $output[] = array('Resource ID' => $resource_ids);
+  $output[] = array('Filters' => $filters);
+  $output[] = array('query' => $query);
+  $output[] = array('language' => $language);
+  $output[] = array('limit' => $limit);
+  $output[] = array('offset' => $offset);
+  $output[] = array('fields' => $fields);
+  $output[] = array('sort' => $sort);
+  $output[] = array('join' => $join);
+}
+
+function dkan_data_api_resource_build_index_list($results, $table, $fields) {
+  // Put together array of matching items to return.
+  $items = array();
+  $endpoint_name = services_get_server_info('endpoint');
+  $endpoint = services_endpoint_load($endpoint_name);
+  GLOBAL $base_url;
+  $path = $base_url . '/' . $endpoint->path . '/read/' . $table;
+  foreach ($results as $result) {
+    $result->uri = $path;
+    $items[] = $result;
+  }
+
+  $help = array('help' => dkan_data_api_resource_help());
+  $count = array('count' => count($items));
+  $success = count($items) ? array('success' => true) : array('success' => false);
+  $schema = drupal_get_schema($table);
+  if ($fields == '*') {
+    $fields = array('fields' => $schema['fields']);
+  }
+  else {
+    $used_fields = explode(',', $fields);
+    foreach ($used_fields as $key => $field) {
+      $output_fields[$field] = $schema['fields'][$field];
+    }
+    $fields = array('fields' => $output_fields);
+  }
+
+  return $help + $success + $count + $fields + array('records' => $items);
+
+  return $items;
+}
+
+function dkan_data_api_resource_help() {
+  return t('Search a datastore table. :param resource_id: id or alias of the data that is going to be selected.');
 }
