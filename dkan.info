@@ -85,6 +85,7 @@ dependencies[] = dkan_roles_and_permissions
 
 ; DKAN Modules
 dependencies[] = dkan_dataset
+dependencies[] = dkan_data_api
 dependencies[] = dkan_datastore
 dependencies[] = fdr
 dependencies[] = dkan_forms

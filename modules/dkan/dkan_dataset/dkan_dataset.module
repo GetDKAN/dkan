@@ -58,7 +58,7 @@ function dkan_dataset_menu() {
     'title' => 'Manage Datastore',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_dataset_import_tab_form', 1),
-    'access callback' => 'feeds_access',
+    'access callback' => 'dkan_dataset_feeds_access',
     'access arguments' => array('import', 1),
     'file' => 'dkan_dataset.pages.inc',
     'file path' => $path,
@@ -69,7 +69,7 @@ function dkan_dataset_menu() {
     'title' => 'Import',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_dataset_import_tab_form', 1),
-    'access callback' => 'feeds_access',
+    'access callback' => 'dkan_dataset_feeds_access',
     'access arguments' => array('import', 1),
     'file' => 'dkan_dataset.pages.inc',
     'file path' => $path,
@@ -80,7 +80,7 @@ function dkan_dataset_menu() {
     'title' => 'Delete items',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_dataset_delete_tab_form', NULL, 1),
-    'access callback' => 'feeds_access',
+    'access callback' => 'dkan_dataset_feeds_access',
     'access arguments' => array('clear', 1),
     'file' => 'dkan_dataset.pages.inc',
     'file path' => $path,
@@ -91,7 +91,7 @@ function dkan_dataset_menu() {
     'title' => 'Unlock',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_dataset_unlock_tab_form', NULL, 1),
-    'access callback' => 'feeds_access',
+    'access callback' => 'dkan_dataset_feeds_access',
     'access arguments' => array('unlock', 1),
     'file' => 'dkan_dataset.pages.inc',
     'file path' => $path,
@@ -102,6 +102,30 @@ function dkan_dataset_menu() {
   return $items;
 }
 
+/**
+ * Copy of feeds_access.
+ */
+function dkan_dataset_feeds_access($action, $param) {
+  if (!in_array($action, array('import', 'clear', 'unlock'))) {
+    // If $action is not one of the supported actions, we return access denied.
+    return FALSE;
+  }
+
+  if (is_string($param)) {
+    $importer_id = $param;
+  }
+  elseif ($param->type) {
+    $importer_id = feeds_get_importer_id($param->type);
+  }
+
+  // Check for permissions if feed id is present, otherwise return FALSE.
+  if ($importer_id) {
+    if (user_access('administer feeds') || user_access("{$action} {$importer_id} feeds")) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
 /**
  * Access callback for Data API instructions.
  */
@@ -468,7 +492,7 @@ function dkan_dataset_page_alter(&$page) {
   // Context module does this in hook_page_alter() so we need to as well if
   // we want to add this.
   $breadcrumbs = drupal_get_breadcrumb();
-  if (arg(0) == 'dataset' && $breadcrumbs[1] == '[all items]') {
+  if (arg(0) == 'dataset' && is_array($breadcrumbs) && $breadcrumbs[1] == '[all items]') {
     $breadcrumbs[1] = t('Search Datasets');
   }
   $node = menu_get_object();
