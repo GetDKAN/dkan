@@ -186,7 +186,6 @@ function dkan_data_api_add_index_conditions(&$data_select, $filters, $alias = 't
  * Adds additional fields and join.
  */
 function dkan_data_api_build_additional_index_query(&$data_select, $table, $fields, $sort, $alias, $join) {
-
   $aliases = array_keys($join);
   $joint = $aliases[0] . '.' . $join[$aliases[0]] . ' = ' . $aliases[1] . '.' . $join[$aliases[1]];
   $data_select->addJoin('INNER', $table, $alias, $joint);
@@ -207,7 +206,8 @@ function dkan_data_api_build_additional_index_query(&$data_select, $table, $fiel
  * Returns table name or exeption.
  */
 function dkan_data_api_tablename($resource_id) {
-  $table = 'dkan_datastore_' . $resource_id;
+  $nid = db_query('SELECT nid FROM {node} WHERE uuid = :uuid', array(':uuid' => $resource_id))->fetchField();
+  $table = 'dkan_datastore_' . $nid;
   if (db_table_exists($table)) {
     return $table;
   }

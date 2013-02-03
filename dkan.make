@@ -50,6 +50,8 @@ projects[search_api_db][patch][1346846] = http://drupal.org/files/fix-indexing-o
 projects[strongarm][subdir] = contrib
 projects[services][subdir] = contrib
 projects[token][subdir] = contrib
+projects[uuid][subdir] = contrib
+projects[uuid][version] = 1.x
 projects[views][subdir] = contrib
 projects[views_bulk_operations][subdir] = contrib
 
