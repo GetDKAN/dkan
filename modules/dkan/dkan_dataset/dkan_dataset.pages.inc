@@ -9,7 +9,16 @@
  * Callback for Data API instructions.
  */
 function dkan_dataset_datastore_api($node) {
-  return 'coming soon';
+  $output = '<h2>' . t('DKAN Datastore API') . '</h2>';
+  $output .= t('Access resource data via a web API with powerful query support.');
+  $output .=  '<h3>' . t('Resource ID') . '</h3>';
+  $output .= t('The Resource ID for this resource is ') . $node->uuid;
+  $output .=  '<h3>' . t('Example Query') . '</h3>';
+  GLOBAL $base_url;
+  $url = $base_url . '/api/action/datastore/search.json?resource_id=' . $node->uuid . '&limit=5';
+  $output .= l($url, $url);
+  $output .= '<p>' . t('Query this datastore and return first five results') . '</p>';
+  return $output;
 }
 
 /**
