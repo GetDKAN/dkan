@@ -54,14 +54,6 @@ function dkan_data_api_services_resources() {
             'source' => array('param' => 'query'),
           ),
           array(
-            'name' => 'language',
-            'optional' => TRUE,
-            'type' => 'string',
-            'description' => 'language of the full text query (default: en)',
-            'default value' => 'en',
-            'source' => array('param' => 'language'),
-          ),
-          array(
             'name' => 'offset',
             'optional' => TRUE,
             'type' => 'int',
@@ -114,7 +106,7 @@ function dkan_data_api_services_resources() {
  * Creates index based off of query.
  * For arguments, see: dkan_data_api_services_resources().
  */
-function _dkan_data_api_datastore_index($resource_ids, $filters, $query, $language, $offset, $limit, $fields, $sort, $join) {
+function _dkan_data_api_datastore_index($resource_ids, $filters, $query, $offset, $limit, $fields, $sort, $join) {
   try {
     // Query for a single resource.
     if (count($resource_ids) < 2) {
