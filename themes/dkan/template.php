@@ -188,97 +188,35 @@ function dkan_preprocess_block(&$vars) {
       $contexts = context_active_contexts();
     }
     if (isset($contexts['dataset-create'])) {
-      $stages = dkan_create_stages('dataset-create');
+      $stages = dkan_form_create_stages('dataset-create');
       $vars['content'] = $stages . $vars['content'];
       $vars['title'] = '';
     }
     if (isset($contexts['resource-create'])) {
       $query = drupal_get_query_parameters();
-      $stages = dkan_create_stages('resource-create', $query['dataset']);
+      $stages = dkan_form_create_stages('resource-create', $query['dataset']);
       $vars['content'] = $stages . $vars['content'];
       $vars['title'] = '';
     }
     if (isset($contexts['resource-edit'])) {
-      $stages = dkan_create_stages('resource-edit', $vars['elements']['field_dataset_ref']['und']['#value'][0], $vars['elements']['#node']->nid);
+      $stages = dkan_form_create_stages('resource-edit', $vars['elements']['field_dataset_ref']['und']['#value'][0], $vars['elements']['#node']->nid);
       $vars['content'] = $stages . $vars['content'];
       $vars['title'] = '';
     }
     if (isset($contexts['dataset-edit'])) {
       if ($query = drupal_get_query_parameters()) {
         if (!isset($query['additional'])) {
-          $stages = dkan_create_stages('dataset-edit', $vars['elements']['#node']->nid);
+          $stages = dkan_form_create_stages('dataset-edit', $vars['elements']['#node']->nid);
           $vars['content'] = $stages . $vars['content'];
         }
         else {
-          $stages = dkan_create_stages('dataset-additional', $vars['elements']['#node']->nid);
+          $stages = dkan_form_create_stages('dataset-additional', $vars['elements']['#node']->nid);
           $vars['content'] = $stages . $vars['content'];
         }
       }
       $vars['title'] = '';
     }
   }
-}
-
-/**
- * Creates the part on the node edit form that says what stage you are on.
- * TODO: Move this to dkan_dataset module.
- */
-function dkan_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL) {
-  $stages = '';
-  if ($op == 'resource-edit' || $op == 'resource-create') {
-    $stages = '<ol class="stages stage-3">
-      <li class="first complete">
-          <button class="highlight" name="save" value="go-dataset" type="submit">' . l('Edit dataset', 'node/' . $dataset_nid . '/edit') . '</button>
-      </li>
-      <li class="middle active">
-          <span class="highlight">Add data</span>
-      </li>
-      <li class="last complete">
-          <button class="highlight" name="save" value="go-metadata" type="submit">' . l('Additional data', 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
-      </li>
-    </ol>';
-  }
-  if ($op == 'dataset-additional') {
-    $stages = '<ol class="stages stage-3">
-      <li class="first complete">
-          <button class="highlight" name="save" value="go-dataset" type="submit">' . l('Edit dataset', 'node/' . $dataset_nid . '/edit') . '</button>
-      </li>
-      <li class="middle complete">
-          <button class="highlight" name="save" value="go-dataset" type="submit">' . l('Add dataset', 'node/add/resource', array('query' => array('dataset' =>  $dataset_nid))) . '</button>
-      </li>
-      <li class="last active">
-          <button class="highlight" name="save" value="go-metadata" type="submit">' . l('Additional data', 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
-      </li>
-    </ol>';
-  }
-  if ($op == 'dataset-create') {
-    $stages =
-        '<ol class="stages stage-1">
-          <li class="first active">
-            <span class="highlight">' . t('Create dataset') . '</span>
-          </li>
-          <li class="middle uncomplete">
-            <span class="highlight">' . t('Add data') . ' </span>
-          </li>
-          <li class="last uncomplete">
-            <span class="highlight">' . t('Additional data') . '</span>
-          </li>
-        </ol>';
-  }
-  if ($op == 'dataset-edit') {
-    $stages = '<ol class="stages stage-1">
-        <li class="first active">
-            <span class="highlight">' . t('Create dataset') . '</span>
-      </li>
-      <li class="middle complete">
-          <span class="highlight">' . l('Add data', 'node/add/resource', array('query' => array('dataset' => $dataset_nid))) . '</span>
-      </li>
-      <li class="last complete">
-          <button class="highlight" name="save" value="go-metadata" type="submit">' . l('Additional data', 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
-      </li>
-    </ol>';
-  }
-  return $stages;
 }
 
 /**
