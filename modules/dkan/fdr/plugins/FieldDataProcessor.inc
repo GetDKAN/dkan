@@ -30,24 +30,25 @@ class FieldDataProcessor extends FeedsProcessor {
     $table = $this->table($source, $schema);
 
     while ($data = $parser_result->shiftItem()) {
-      $data['feed_entity_id'] = $this->feed_nid;
+      foreach($data as $label => $value) {
+        $cleaned_data[data_safe_name($label)] = $value;
+      }
+      $cleaned_data['feed_entity_id'] = $this->feed_nid;
       if (!isset($data['timestamp'])) {
-        $data['timestamp'] = FEEDS_REQUEST_TIME;
+        $cleaned_data['timestamp'] = FEEDS_REQUEST_TIME;
       }
 
       // Only save if this item is not expired.
       if ($expiry_time != FEEDS_EXPIRE_NEVER && $data['timestamp'] < (FEEDS_REQUEST_TIME - $expiry_time)) {
         continue;
       }
-      // Not sure if this id will work.
-      // Id is serial in the db_table, so update maybe best determined by row number.
       $id = $this->existingItemId($parser_result, $source);
       if ($id != FALSE || $this->config['update_existing']) {
         $data['id'] = $id;
-        $this->handler($source)->update($data, 'id');
+        $this->handler($source)->update($cleaned_data, 'id');
       }
       else {
-        $this->handler($source)->save($data);
+        $this->handler($source)->save($cleaned_data);
       }
     }
 
