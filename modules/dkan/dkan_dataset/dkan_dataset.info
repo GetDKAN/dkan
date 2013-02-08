@@ -1,7 +1,7 @@
 name = DKAN Dataset
 description = Custom elements for Datasets.
-package = DKAN
 core = 7.x
+package = DKAN
 php = 5.2.4
 dependencies[] = ctools
 dependencies[] = strongarm
@@ -9,3 +9,4 @@ features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:1
 features[variable][] = pathauto_node_dataset_pattern
 features[variable][] = pathauto_node_group_pattern
+features[variable][] = pathauto_node_resource_pattern
