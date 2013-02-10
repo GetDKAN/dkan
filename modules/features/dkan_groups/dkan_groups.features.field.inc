@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * dkan_content_types.features.field.inc
+ * dkan_groups.features.field.inc
  */
 
 /**
@@ -78,7 +78,7 @@ function dkan_groups_field_default_fields() {
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
-        'weight' => 1,
+        'weight' => '6',
       ),
     ),
   );
@@ -158,7 +158,7 @@ function dkan_groups_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'image_image',
-        'weight' => '1',
+        'weight' => '5',
       ),
     ),
   );
@@ -239,7 +239,7 @@ function dkan_groups_field_default_fields() {
           'display_label' => 0,
         ),
         'type' => 'options_onoff',
-        'weight' => 0,
+        'weight' => '2',
       ),
     ),
   );
@@ -247,8 +247,9 @@ function dkan_groups_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Body');
-  t('Image');
   t('Determine if this is an OG group.');
+  t('Group');
+  t('Image');
 
   return $fields;
 }
