@@ -13,12 +13,14 @@ include_once 'dkan_forms.features.inc';
 function dkan_forms_field_group_build_pre_render_alter(&$element) {
   // Moving path into primary group here since we can't do it on the content
   // type form. Rearanging weights so path is under title.
-  $element['group_primary']['path'] = $element['path'];
-  $element['group_primary']['title']['#weight'] = '-10';
-  $element['group_primary']['path']['#weight'] = "1";
-  $element['group_primary']['body']['#weight'] = "2";
-  $element['group_primary']['field_tags']['#weight'] = "3";
-  unset($element['path']);
+  if($element['#bundle'] == 'dataset') {
+    $element['group_primary']['path'] = $element['path'];
+    $element['group_primary']['title']['#weight'] = '-10';
+    $element['group_primary']['path']['#weight'] = "1";
+    $element['group_primary']['body']['#weight'] = "2";
+    $element['group_primary']['field_tags']['#weight'] = "3";
+    unset($element['path']);
+  }
 }
 /**
  * Implements hook_field_group_pre_render();
@@ -39,7 +41,7 @@ function dkan_forms_field_group_pre_render(&$element, $group, &$form) {
       );
     }
   }
-  elseif ($form['#action'] == '/node/add/dataset' && !$additional && $arg2 != 'edit') {
+  elseif (isset($form['#action']) && $form['#action'] == '/node/add/dataset' && !$additional && $arg2 != 'edit') {
     if ($group->group_name == 'group_additional') {
       $element += array(
         '#type' => 'markup',
