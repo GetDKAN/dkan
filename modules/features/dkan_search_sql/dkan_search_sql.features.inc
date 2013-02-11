@@ -22,7 +22,7 @@ function dkan_search_sql_ctools_plugin_api() {
  * Implements hook_views_api().
  */
 function dkan_search_sql_views_api() {
-  return array("version" => "3.0");
+  return array("api" => "3.0");
 }
 
 /**
@@ -37,7 +37,7 @@ function dkan_search_sql_default_search_api_index() {
     "server" : "datasets",
     "item_type" : "node",
     "options" : {
-      "index_directly" : 0,
+      "index_directly" : 1,
       "cron_limit" : "50",
       "fields" : {
         "type" : { "type" : "string" },
@@ -48,7 +48,9 @@ function dkan_search_sql_default_search_api_index() {
         "og_group_ref" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "node" },
         "field_format" : { "type" : "integer", "entity_type" : "taxonomy_term" },
         "search_api_language" : { "type" : "string" },
-        "search_api_viewed" : { "type" : "text" }
+        "search_api_viewed" : { "type" : "text" },
+        "status" : { "type" : "boolean" },
+        "search_api_access_node" : { "type" : "list\\u003Cstring\\u003E" }
       },
       "data_alter_callbacks" : {
         "search_api_alter_bundle_filter" : {
@@ -59,7 +61,7 @@ function dkan_search_sql_default_search_api_index() {
             "bundles" : { "dataset" : "dataset", "resource" : "resource" }
           }
         },
-        "search_api_alter_node_access" : { "status" : 0, "weight" : "0", "settings" : [] },
+        "search_api_alter_node_access" : { "status" : 1, "weight" : "0", "settings" : [] },
         "search_api_alter_node_status" : { "status" : 0, "weight" : "0", "settings" : [] },
         "search_api_alter_add_hierarchy" : { "status" : 0, "weight" : "0", "settings" : { "fields" : [] } },
         "search_api_alter_add_viewed_entity" : { "status" : 1, "weight" : "0", "settings" : { "mode" : "full" } },
@@ -158,14 +160,24 @@ function dkan_search_sql_default_search_api_server() {
             "type" : "list\\u003Cinteger\\u003E",
             "boost" : "1.0"
           },
+          "og_group_ref" : {
+            "table" : "search_api_db_datasets_og_group_ref",
+            "type" : "list\\u003Cinteger\\u003E",
+            "boost" : "1.0"
+          },
           "field_format" : {
             "table" : "search_api_db_datasets_field_format",
             "type" : "integer",
             "boost" : "1.0"
           },
-          "og_group_ref" : {
-            "table" : "search_api_db_datasets_og_group_ref",
-            "type" : "list\\u003Cinteger\\u003E",
+          "status" : {
+            "table" : "search_api_db_datasets_status",
+            "type" : "boolean",
+            "boost" : "1.0"
+          },
+          "search_api_access_node" : {
+            "table" : "search_api_db_datasets_search_api_access_node",
+            "type" : "list\\u003Cstring\\u003E",
             "boost" : "1.0"
           }
         }

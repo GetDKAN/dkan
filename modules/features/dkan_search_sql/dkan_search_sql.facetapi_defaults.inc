@@ -321,7 +321,7 @@ function dkan_search_sql_facetapi_default_facet_settings() {
   $facet->searcher = 'search_api@datasets';
   $facet->realm = 'block';
   $facet->facet = 'title';
-  $facet->enabled = TRUE;
+  $facet->enabled = FALSE;
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
