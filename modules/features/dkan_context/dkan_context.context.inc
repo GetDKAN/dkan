@@ -172,9 +172,6 @@ function dkan_context_context_default_contexts() {
       ),
     ),
     'breadcrumb' => 'dataset',
-    'debug' => array(
-      'debug' => 1,
-    ),
   );
   $context->condition_mode = 0;
 
@@ -237,9 +234,6 @@ function dkan_context_context_default_contexts() {
   );
   $context->reactions = array(
     'breadcrumb' => 'dataset',
-    'debug' => array(
-      'debug' => 1,
-    ),
   );
   $context->condition_mode = 0;
 

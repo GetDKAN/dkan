@@ -15,9 +15,7 @@ dependencies[] = rdf
 dependencies[] = taxonomy
 
 ; Development
-dependencies[] = coder
 dependencies[] = dkan_dev
-dependencies[] = devel
 
 ; Contrib
 dependencies[] = admin_menu
@@ -48,6 +46,7 @@ dependencies[] = link
 dependencies[] = jquery_update
 dependencies[] = job_scheduler
 dependencies[] = markdowneditor
+dependencies[] = markdown
 dependencies[] = multistep
 dependencies[] = og
 dependencies[] = og_access
@@ -64,12 +63,16 @@ dependencies[] = search_api_db
 dependencies[] = search_api_facetapi
 dependencies[] = search_api_views
 dependencies[] = strongarm
+dependencies[] = rest_server
 dependencies[] = r4032login
+dependencies[] = services
+dependencies[] = schema
 dependencies[] = token
 dependencies[] = uuid
 dependencies[] = views
 dependencies[] = views_ui
 dependencies[] = views_bulk_operations
+dependencies[] = uuid
 
 ; Open data
 dependencies[] = recline
@@ -77,6 +80,7 @@ dependencies[] = recline
 ; DKAN Features
 dependencies[] = dkan_content_types
 dependencies[] = dkan_context
+dependencies[] = dkan_data_api
 dependencies[] = dkan_groups_content
 dependencies[] = dkan_default_content
 dependencies[] = dkan_front

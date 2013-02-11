@@ -108,7 +108,7 @@ function dkan_theme_process_tabs($tabs) {
  */
 function dkan_dkan_tabs_local_task($variables) {
   $link = $variables['element']['#link'];
-  $icon_type = 'wrench';
+  $icon_type = '';
   if ($link['page_callback'] == 'devel_load_object') {
     $icon_type = 'cog';
   }
@@ -227,7 +227,10 @@ function dkan_horizontal_tabs($variables) {
   // Add required JavaScript and Stylesheet.
   drupal_add_library('field_group', 'horizontal-tabs');
 
-  $output = '<label id="resource-edit-title" for="edit-resource">' . $variables['element']['#title'] . '</label>';
+  $output = '';
+  if ($element['#id'] == 'node_resource_form_group_data') {
+    $output = '<label id="resource-edit-title" for="edit-resource">' . $variables['element']['#title'] . '</label>';
+  }
 
   $output .= '<div class="horizontal-tabs-panes">' . $element['#children'] . '</div>';
 
