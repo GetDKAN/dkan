@@ -257,10 +257,7 @@ function dkan_data_api_resource_build_index_list($results, $table, $fields) {
   $items = array();
   $endpoint_name = services_get_server_info('endpoint');
   $endpoint = services_endpoint_load($endpoint_name);
-  GLOBAL $base_url;
-  $path = $base_url . '/' . $endpoint->path . '/read/' . $table;
   foreach ($results as $result) {
-    $result->uri = $path;
     $items[] = $result;
   }
 
