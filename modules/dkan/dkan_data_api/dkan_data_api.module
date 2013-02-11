@@ -110,7 +110,8 @@ function _dkan_data_api_datastore_index($resource_ids, $filters, $query, $offset
   try {
     // Query for a single resource.
     if (count($resource_ids) < 2) {
-      $resource_id = array_shift(array_values($resource_ids));
+      $ids = array_values($resource_ids);
+      $resource_id = array_shift($ids);
       $table = dkan_data_api_tablename($resource_id);
       $data_select = dkan_data_api_build_index_query($table, $offset, $limit, $fields, $sort);
       dkan_data_api_add_index_conditions($data_select, $filters);
