@@ -247,7 +247,7 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
   );
   //nid: 7
   $content['gold-prices'] = (object) array(
-    'exported_path' => 'gold-prices-in-london-1950-2008-monthly',
+    'exported_path' => 'dataset/gold-prices-london-1950-2008-monthly',
     'title' => 'Gold Prices in London 1950-2008 (Monthly)',
     'sort_value' => '5',
     'status' => '1',
