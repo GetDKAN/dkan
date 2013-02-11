@@ -2365,7 +2365,6 @@ module-narrow .nav-item > a {
   -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   background-color: white;
-  margin-bottom: 20px
 }
 #zone-postscript .attachment .view-content {
   border: 0;

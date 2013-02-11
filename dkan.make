@@ -35,6 +35,7 @@ projects[link][subdir] = contrib
 projects[link_iframe_formatter][subdir] = contrib
 projects[r4032login][subdir] = contrib
 projects[markdowneditor][subdir] = contrib
+projects[markdown][subdir] = contrib
 projects[pathauto][subdir] = contrib
 projects[multistep][subdir] = contrib
 projects[og][subdir] = contrib
@@ -104,6 +105,4 @@ libraries[slugify][directory_name] = slugify
 ; Development
 ;--------------------
 
-projects[coder][subdir] = contrib
-projects[devel][subdir] = contrib
 projects[omega_tools][subdir] = contrib
