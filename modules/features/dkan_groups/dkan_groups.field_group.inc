@@ -21,7 +21,7 @@ function dkan_groups_field_group_info() {
   $field_group->parent_name = 'group_tabs';
   $field_group->data = array(
     'label' => 'Datasets',
-    'weight' => '13',
+    'weight' => '9',
     'children' => array(
       0 => 'groups_search_entity_view_1_form',
       1 => 'groups_search_entity_view_1',
@@ -49,7 +49,7 @@ function dkan_groups_field_group_info() {
   $field_group->parent_name = 'group_tabs';
   $field_group->data = array(
     'label' => 'Datasets',
-    'weight' => '10',
+    'weight' => '9',
     'children' => array(
       0 => 'groups_search_entity_view_1_form',
       1 => 'groups_search_entity_view_1',
@@ -77,7 +77,7 @@ function dkan_groups_field_group_info() {
   $field_group->parent_name = 'group_tabs';
   $field_group->data = array(
     'label' => 'Members',
-    'weight' => '12',
+    'weight' => '10',
     'children' => array(
       0 => 'dkan_group_members_entity_view_1',
     ),
@@ -104,7 +104,7 @@ function dkan_groups_field_group_info() {
   $field_group->parent_name = 'group_tabs';
   $field_group->data = array(
     'label' => 'Members',
-    'weight' => '12',
+    'weight' => '10',
     'children' => array(
       0 => 'dkan_group_members_entity_view_1',
     ),

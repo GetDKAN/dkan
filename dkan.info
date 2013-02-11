@@ -81,7 +81,6 @@ dependencies[] = recline
 dependencies[] = dkan_content_types
 dependencies[] = dkan_context
 dependencies[] = dkan_data_api
-dependencies[] = dkan_groups_content
 dependencies[] = dkan_default_content
 dependencies[] = dkan_front
 dependencies[] = dkan_groups
