@@ -682,6 +682,54 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   background-color: white;
   margin-bottom: 20px;
 }
+.node-type-group #zone-content .horizontal-tabs ul.horizontal-tabs-list {
+  background-color: transparent;
+  margin: 0 0 -6px;
+  padding: 0 25px;
+}
+.horizontal-tabs ul.horizontal-tabs-list li {
+  border: none;
+  background: transparent;
+}
+.horizontal-tabs ul.horizontal-tabs-list li.selected {
+  background-color: transparent;
+  padding: 0;
+}
+.horizontal-tabs ul.horizontal-tabs-list li.selected a,
+.horizontal-tabs ul.horizontal-tabs-list li a {
+  -webkit-border-radius: 4px 4px 0 0;
+  -moz-border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  line-height: 18px;
+  padding-right: 12px;
+  padding-left: 12px;
+  margin-right: 2px;
+}
+.horizontal-tabs ul.horizontal-tabs-list li.selected a {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  cursor: default;
+  color: #555555;
+}
+.node-type-group #region-content .block {
+  background-color: #f3f3f3;
+}
+.node-type-group div.horizontal-tabs {
+  margin: 0 0 1em 0;
+  padding: 0;
+  border: 0;
+  position: relative;
+  margin: 0 -25px;
+  background-color: transparent;
+}
+.node-type-group div.horizontal-tabs .horizontal-tabs-panes {
+  padding: 0 25px;
+  background-color: #FFF;
+  border-top: 1px solid #ddd;
+}
 #zone-content .block-inner:last-child {
   margin-bottom: 0;
   padding-bottom: 20px;
