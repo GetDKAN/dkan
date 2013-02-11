@@ -114,7 +114,7 @@ class FieldDataProcessor extends FeedsProcessor {
   /**
    * Set target element, bring element in a FeedsDataHandler format.
    */
-  public function setTargetElement(&$target_item, $target_element, $value) {
+  public function setTargetElement(FeedsSource $source, $target_item, $target_element, $value) {
     if (empty($value)) {
       return;
     }
