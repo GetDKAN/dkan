@@ -2889,9 +2889,16 @@ a.icon-remove-sign::before {
 
 /** Teasers **/
 
-.node-teaser h2.node-title a {
+front.node-teaser h2.node-title a {
   font-size: 14px;
   color: #333;
+  font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+  letter-spacing: 0em;
+  padding-bottom: 0px;
+  line-height: 20px;
+}
+node-teaser h2.node-title a {
+  font-size: 1.4em;
   font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
   letter-spacing: 0em;
   padding-bottom: 0px;
@@ -2955,9 +2962,12 @@ article.node-teaser .data-and-resources .label {
 
 /** Groups **/
 
+.view-id-groups_page table {
+  width: auto;
+}
 .view-id-groups_page table td {
-  width: 25%;
   vertical-align: top;
+  max-width: 210px;
 }
 .view-id-groups_page table td img {
   width: 100%;
