@@ -2899,7 +2899,7 @@ a.icon-remove-sign::before {
 
 /** Teasers **/
 
-front.node-teaser h2.node-title a {
+.node-teaser h2.node-title a {
   font-size: 14px;
   color: #333;
   font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -2907,12 +2907,13 @@ front.node-teaser h2.node-title a {
   padding-bottom: 0px;
   line-height: 20px;
 }
-node-teaser h2.node-title a {
-  font-size: 1.4em;
+.view-groups-page h2.node-title a {
   font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #0062A0;
   letter-spacing: 0em;
   padding-bottom: 0px;
   line-height: 20px;
+  font-size: 16px;
 }
 
 article.node-teaser {
@@ -2921,7 +2922,7 @@ article.node-teaser {
   margin-bottom: 20px;
 }
 article.node-teaser p {
-  margin: 0;
+  margin: 10px 0;
 }
 article.node-teaser .form-item {
   margin: 8px 0;
