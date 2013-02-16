@@ -31,6 +31,9 @@ function dkan_groups_strongarm() {
       'diff_standard' => array(
         'custom_settings' => FALSE,
       ),
+      'token' => array(
+        'custom_settings' => FALSE,
+      ),
     ),
     'extra_fields' => array(
       'form' => array(
@@ -45,11 +48,50 @@ function dkan_groups_strongarm() {
             'visible' => TRUE,
           ),
         ),
+        'dkan_group_members_entity_view_1' => array(
+          'teaser' => array(
+            'weight' => '5',
+            'visible' => FALSE,
+          ),
+          'default' => array(
+            'weight' => '10',
+            'visible' => TRUE,
+          ),
+        ),
+        'groups_search_entity_view_1' => array(
+          'teaser' => array(
+            'weight' => '4',
+            'visible' => FALSE,
+          ),
+          'default' => array(
+            'weight' => '10',
+            'visible' => TRUE,
+          ),
+        ),
+        'groups_search_entity_view_1_form' => array(
+          'teaser' => array(
+            'weight' => '6',
+            'visible' => FALSE,
+          ),
+          'default' => array(
+            'weight' => '9',
+            'visible' => TRUE,
+          ),
+        ),
+        'og_count_entity_view_1' => array(
+          'teaser' => array(
+            'weight' => '2',
+            'visible' => TRUE,
+          ),
+          'default' => array(
+            'weight' => '1',
+            'visible' => FALSE,
+          ),
+        ),
       ),
     ),
   );
   $export['field_bundle_settings_node__group'] = $strongarm;
-
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
