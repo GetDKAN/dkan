@@ -56,7 +56,7 @@ function dkan_groups_field_default_fields() {
           'label' => 'hidden',
           'module' => 'text',
           'settings' => array(
-            'trim_length' => 600,
+            'trim_length' => 200,
           ),
           'type' => 'text_summary_or_trimmed',
           'weight' => '1',
@@ -132,8 +132,8 @@ function dkan_groups_field_default_fields() {
           'label' => 'hidden',
           'module' => 'image',
           'settings' => array(
-            'image_link' => '',
-            'image_style' => '',
+            'image_link' => 'content',
+            'image_style' => 'medium',
           ),
           'type' => 'image',
           'weight' => '0',
@@ -214,7 +214,7 @@ function dkan_groups_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '6',
+          'weight' => '3',
         ),
       ),
       'display_label' => 1,
