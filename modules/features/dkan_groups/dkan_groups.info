@@ -35,6 +35,7 @@ features[field_group][] = group_tab_about|node|group|form
 features[field_group][] = group_tabs|node|group|default
 features[field_group][] = group_tabs|node|group|form
 features[node][] = group
+features[variable][] = field_bundle_settings_node__group
 features[variable][] = menu_options_group
 features[variable][] = menu_parent_group
 features[variable][] = node_options_group
