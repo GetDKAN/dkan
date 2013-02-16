@@ -1698,6 +1698,16 @@ ul.primary li a.btn.active,
 ul.primary li a.btn-primary:hover, .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
   background-color: #085871;
 }
+.btn.disabled, .btn[disabled] {
+  cursor: default;
+  background-color: #e6e6e6;
+  background-image: none;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
 .btn-primary,
 a.btn-primary,
 ul.primary li a.btn-primary:hover,
@@ -2987,4 +2997,9 @@ article.node-teaser .data-and-resources .label {
   text-decoration: none;
   font-size: 14px;
   font-weight: bold;
+}
+.view-id-groups_page h2.node-title {
+  font-size: 17px;
+  line-height: 20px;
+  padding: 0 0 15px 0;
 }
