@@ -93,19 +93,19 @@ libraries[font_awesome][type] = libraries
 libraries[font_awesome][download][type] = git
 libraries[font_awesome][download][url] = "https://github.com/FortAwesome/Font-Awesome.git"
 libraries[font_awesome][directory_name] = font_awesome
-libraries[recline][download][revision] = "13d5dd373cbf3f2bddd8ac2ee8df3a1966a62d09"
+libraries[font_awesome][download][revision] = "13d5dd373cbf3f2bddd8ac2ee8df3a1966a62d09"
 
 libraries[chosen][type] = libraries
 libraries[chosen][download][type] = git
 libraries[chosen][download][url] = "https://github.com/harvesthq/chosen.git"
 libraries[chosen][directory_name] = chosen
-libraries[recline][download][revision] = "a0ca7da1ae52235b5abb6f66d9218a20450116c1"
+libraries[chosen][download][revision] = "a0ca7da1ae52235b5abb6f66d9218a20450116c1"
 
 libraries[slugify][type] = libraries
 libraries[slugify][download][type] = git
 libraries[slugify][download][url] = "git://github.com/pmcelhaney/jQuery-Slugify-Plugin.git"
 libraries[slugify][directory_name] = slugify
-libraries[recline][download][revision] = "79133a1bdfd3ac80d500d661a722b85c03a01da3"
+libraries[slugify][download][revision] = "79133a1bdfd3ac80d500d661a722b85c03a01da3"
 
 ;--------------------
 ; Development
