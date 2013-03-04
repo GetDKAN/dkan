@@ -13,7 +13,7 @@ include_once 'dkan_forms.features.inc';
 function dkan_forms_field_group_build_pre_render_alter(&$element) {
   // Moving path into primary group here since we can't do it on the content
   // type form. Rearanging weights so path is under title.
-  if($element['#bundle'] == 'dataset') {
+  if(isset($element['#form_id']) && $element['#form_id'] == 'dataset_node_form') {
     $element['group_primary']['path'] = $element['path'];
     $element['group_primary']['title']['#weight'] = '-10';
     $element['group_primary']['path']['#weight'] = "1";
@@ -61,6 +61,7 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
     $form['#attached']['js'][] = 'profiles/dkan/libraries/slugify/jquery.slugify.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_forms') . '/dkan_forms.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_forms') . '/dkan_forms.slugify.js';
+    $form['#attached']['library'][] = array('beautytips', 'beautytips-jquery');
 
     // Removing path from vertiable tabs.
     unset($form['path']['#group']);

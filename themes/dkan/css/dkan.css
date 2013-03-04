@@ -915,7 +915,7 @@ ul.primary li a {
   font-weight: bold;
   font-size: 14px;
 }
-#dataset-node-form .field-group-fieldset legend {
+#node_dataset_form_group_primary legend {
   display: none;
 }
 #resource-node-form .field-name-body textarea,
@@ -935,10 +935,12 @@ form-textarea-wrapper textarea {
 .vertical-tabs fieldset.vertical-tabs-pane {
   padding: 10px;
 }
+#dataset-node-form .field-name-field-data-dictionary label,
 #resource-node-form .field-name-body .form-type-textarea label,
 #dataset-node-form .field-name-body .form-type-textarea label {
   margin-top: 38px;
 }
+#dataset-node-form .field-name-field-data-dictionary .form-textarea-wrapper,
 #resource-node-form .field-name-body .form-textarea-wrapper,
 #dataset-node-form .field-name-body .form-textarea-wrapper {
   margin-left: 130px;
@@ -1162,6 +1164,8 @@ input#edit-field-link-api-und-0-url,
 #dataset-node-form .form-item-title label {
   margin-top: 10px;
   font-size: 18px;
+  text-align: right;
+  width: 110px;
 }
 #edit-field-format-und-values,
 #dataset-node-form #edit-field-tags-und-term-entry {
@@ -1236,12 +1240,16 @@ html.js input.throbbing {
   position: relative;
   cursor: default;
 }
+#node_dataset_form_group_additional .fieldset {
+  width: 400px;
+  float: right;
+}
+#node_dataset_form_group_additional .field-type-text label,
+#node_dataset_form_group_additional .field-type-list-integer label,
 #field-tags-wrapper .path-form label,
 #edit-path label,
 .form-item-field-tags-und label,
 #edit-field-format label,
-#dataset-node-form .form-item-title label,
-#resource-node-form .form-item-title label,
 #resource-node-form .field-name-body label,
 #dataset-node-form .field-name-body label,
 .field-group-htabs.group-data label,
@@ -1249,7 +1257,35 @@ html.js input.throbbing {
 .field-name-field-license label {
   width: 120px;
   text-align: right;
+}
+#dataset-node-form .form-item-title label,
+#resource-node-form .form-item-title label {
   margin-top: 18px;
+  width: 110px;
+  text-align: right;
+}
+.field-group-fieldset.group-additional legend {
+  border: none;
+  margin: 0;
+}
+#dataset-node-form .field-group-fieldset.group-additional legend a.bt-pop {
+  padding: 0 0 0 5px;
+}
+#dataset-node-form .field-group-fieldset.group-additional a.bt-pop {
+  font-size: .8em;
+  text-decoration: none;
+}
+.field-type-text .field-name-field-author {
+  clear: both;
+}
+.field-group-fieldset.group-additional .fieldset-description i {
+  font-size: 1.8em;
+  padding: 0 10px 10px 0;
+  float: left;
+}
+.field-group-fieldset.group-additional .fieldset-description {
+  color: #999999;
+  font-size: 0.9em;
 }
 .field-name-field-format {
   padding: 10px 0;
@@ -1332,8 +1368,9 @@ html.js input.throbbing {
 #dataset-node-form .form-item-path-alias input {
   top: 3px;
   font-size: 13px;
+  height: 29px;
+  padding: 0 5px;
   position: absolute;
-  padding: 13px 12px 14px 12px;
   left: 194px;
   width: 210px;
 }
@@ -1426,9 +1463,64 @@ html.js input.throbbing {
   color: #AEAEAE;
   top: 0px;
 }
-#dataset-node-form .field-name-field-license .chzn-container-single a {
+.field-type-datetime.field-name-field-temporal-coverage .fieldset-wrapper,
+.field-type-geofield.field-name-field-spatial .fieldset-wrapper {
+  width: 520px;
+  float: right;
+}
+.field-type-datetime.field-name-field-temporal-coverage .form-type-checkbox {
+  margin: 0;
+}
+.field-type-datetime.field-name-field-temporal-coverage .container-inline-date label {
+  display: none;
+}
+#edit-field-temporal-coverage input,
+.field-name-field-temporal-coverage input {
+  margin: 0 10px 0 0;
+}
+.field-type-datetime.field-name-field-temporal-coverage .container-inline-date .date-padding {
+  padding: 10px 0 0 0;
+}
+.field-type-datetime.field-name-field-temporal-coverage label {
+  float: right;
+  font-size: 13px;
+  font-weight: normal;
+  margin: 2px 0 0 5px;
+}
+.field-type-datetime.field-name-field-temporal-coverage {
+  padding: 25px 0 0 0;
+}
+.field-type-geofield.field-name-field-spatial {
+  padding: 15px 0 0 0;
+}
+.field-type-datetime.field-name-field-temporal-coverage legend, 
+.field-type-geofield.field-name-field-spatial legend {
+  color: #333333;
+  display: block;
+  float: left;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  padding: 0 10px 0 0;
+  width: 105px;
+  line-height: 1.4em;
+  border: none;
+  text-align: right;
+}
+#dataset-node-form a.chzn-single {
   color: #000;
   text-decoration: none;
+}
+.chzn-container-single .chzn-single div {
+    background-color: #EAEAEA;
+    border-left: 1px solid #CCCCCC;
+    display: block;
+    height: 100%;
+    padding: 0 0 0 4px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 15px;
 }
 #dataset-node-form a {
   color: #AEAEAE;
