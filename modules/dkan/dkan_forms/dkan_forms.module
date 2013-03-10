@@ -70,7 +70,7 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
     // Always use pathauto.
     $form['path']['pathauto']['#default_value'] = TRUE;
     $form['path']['pathauto']['#access'] = FALSE;
-    // This could cause problems with programmatic 
+    // This could cause problems with programmatic
     $form['path']['alias']['#default_value'] = preg_replace('/dataset\//', '', $form['path']['alias']['#default_value']);
     $form['path']['#collapsible'] = FALSE;
     $form['path']['#collapsed'] = FALSE;

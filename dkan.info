@@ -22,12 +22,15 @@ dependencies[] = admin_menu
 dependencies[] = autocomplete_deluxe
 dependencies[] = boxes
 dependencies[] = bueditor
+dependencies[] = beautytips
 dependencies[] = context
 dependencies[] = context_ui
 dependencies[] = chosen
 dependencies[] = ctools
+dependencies[] = date
 dependencies[] = delta
 dependencies[] = diff
+dependencies[] = date
 dependencies[] = double_field
 dependencies[] = entity
 dependencies[] = entity_token
@@ -38,8 +41,9 @@ dependencies[] = feeds
 dependencies[] = facetapi
 dependencies[] = facetapi_pretty_paths
 dependencies[] = features
-dependencies[] = gravatar
+dependencies[] = field_group_table
 dependencies[] = field_group
+dependencies[] = gravatar
 dependencies[] = link_iframe_formatter
 dependencies[] = libraries
 dependencies[] = link
@@ -76,6 +80,10 @@ dependencies[] = uuid
 
 ; Open data
 dependencies[] = recline
+dependencies[] = rdfx
+dependencies[] = entity_rdf
+dependencies[] = geofield
+dependencies[] = geophp
 
 ; DKAN Features
 dependencies[] = dkan_content_types

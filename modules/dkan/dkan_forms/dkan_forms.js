@@ -60,7 +60,6 @@
       }
     });
   }
-
   Drupal.behaviors.dkanAddtional = {
     attach: function (context, settings) {
       if (settings.dkanAdditional && context.context) {
@@ -131,7 +130,7 @@
     var link = $(that).find('a').attr('href');
     if (link) {
       $(that).html('');
-      $(that).prevAll(label).append('<a class="bt-pop" target="_blank" href="' + link + '" title="#"><i class="icon-small icon-external-link">#</i></a>');
+      $(that).prevAll(label).append('<a class="bt-pop" target="_blank" href="' + link + '" title="#"><i class="icon-small icon-external-link"></i></a>');
       $(that).prevAll(label).find("a.bt-pop").bt(desc, {
        spikeLength: 20,
        spikeGirth: 20,
