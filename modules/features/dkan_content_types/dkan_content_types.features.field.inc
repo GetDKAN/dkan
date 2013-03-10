@@ -111,7 +111,7 @@ function dkan_content_types_field_default_fields() {
       'bundle' => 'dataset',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => '',
+      'description' => 'This is additional information that can be added as a key-value pairing.',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -168,6 +168,7 @@ function dkan_content_types_field_default_fields() {
               'suffix' => '',
             ),
             'textfield' => array(
+              'placeholder' => '',
               'size' => '5',
             ),
           ),
@@ -179,12 +180,13 @@ function dkan_content_types_field_default_fields() {
               'suffix' => '',
             ),
             'textfield' => array(
+              'placeholder' => '',
               'size' => '15',
             ),
           ),
         ),
         'type' => 'textfield_&_textfield',
-        'weight' => '12',
+        'weight' => '3',
       ),
     ),
   );
@@ -222,14 +224,14 @@ function dkan_content_types_field_default_fields() {
       'bundle' => 'dataset',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => '',
+      'description' => 'This is the author of the dataset.',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '3',
+          'weight' => '14',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -254,6 +256,211 @@ function dkan_content_types_field_default_fields() {
         ),
         'type' => 'text_textfield',
         'weight' => '10',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-dataset-field_data_dictionary'.
+  $fields['node-dataset-field_data_dictionary'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_data_dictionary',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'text_long',
+    ),
+    'field_instance' => array(
+      'bundle' => 'dataset',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. . See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--data-dictionary">data dictionary</a> for more info.',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '15',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_data_dictionary',
+      'label' => 'Data Dictionary',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'rows' => '3',
+        ),
+        'type' => 'text_textarea',
+        'weight' => '16',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-dataset-field_frequency'.
+  $fields['node-dataset-field_frequency'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_frequency',
+      'foreign keys' => array(),
+      'indexes' => array(
+        'value' => array(
+          0 => 'value',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'list',
+      'settings' => array(
+        'allowed_values' => array(
+          0 => 'Daily',
+          1 => 'Weekly',
+          2 => 'Monthly',
+          3 => 'Annually',
+          4 => 'Continuously',
+          5 => 'Irregularly',
+        ),
+        'allowed_values_function' => '',
+      ),
+      'translatable' => '0',
+      'type' => 'list_integer',
+    ),
+    'field_instance' => array(
+      'bundle' => 'dataset',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#property--frequency">DCAT frequency</a> for more info.',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'list',
+          'settings' => array(),
+          'type' => 'list_default',
+          'weight' => '8',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_frequency',
+      'label' => 'Frequency',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(
+          'apply_chosen' => 0,
+        ),
+        'type' => 'options_select',
+        'weight' => '12',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-dataset-field_granularity'.
+  $fields['node-dataset-field_granularity'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_granularity',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'dataset',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="http://www.w3.org/TR/vocab-dcat/#property--granularity">DCAT Granularity</a> for more info.',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '13',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_granularity',
+      'label' => 'Granularity',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '15',
       ),
     ),
   );
@@ -298,10 +505,11 @@ function dkan_content_types_field_default_fields() {
       'description' => 'License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
+          'module' => 'select_or_other',
           'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '7',
+          'type' => 'select_or_other_formatter',
+          'weight' => '12',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -350,71 +558,82 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
   );
 
-  // Exported field: 'node-dataset-field_maintainer'.
-  $fields['node-dataset-field_maintainer'] = array(
+  // Exported field: 'node-dataset-field_spatial'.
+  $fields['node-dataset-field_spatial'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_maintainer',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
+      'field_name' => 'field_spatial',
+      'foreign keys' => array(),
+      'indexes' => array(),
       'locked' => '0',
-      'module' => 'text',
-      'settings' => array(
-        'max_length' => '255',
-      ),
+      'module' => 'geofield',
+      'settings' => array(),
       'translatable' => '0',
-      'type' => 'text',
+      'type' => 'geofield',
     ),
     'field_instance' => array(
       'bundle' => 'dataset',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => '',
+      'description' => 'Spatial coverage of the dataset. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--spatial-geographical-coverage">spatial/geographical coverage</a> for more info.',
       'display' => array(
         'default' => array(
-          'label' => 'above',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => '4',
+          'label' => 'hidden',
+          'module' => 'geofield',
+          'settings' => array(
+            'data' => 'full',
+          ),
+          'type' => 'geofield_wkt',
+          'weight' => '10',
         ),
         'teaser' => array(
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '4',
+          'weight' => 0,
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'field_maintainer',
-      'label' => 'Maintainer',
+      'field_name' => 'field_spatial',
+      'label' => 'Spatial / Geographical Coverage',
       'required' => 0,
       'settings' => array(
-        'text_processing' => '0',
+        'local_solr' => array(
+          'enabled' => FALSE,
+          'lat_field' => 'lat',
+          'lng_field' => 'lng',
+        ),
         'user_register_form' => FALSE,
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'text',
+        'module' => 'leaflet_widget',
         'settings' => array(
-          'size' => '60',
+          'draw' => array(
+            'tools' => array(
+              'circle' => 0,
+              'marker' => 'marker',
+              'polygon' => 'polygon',
+              'polyline' => 0,
+              'rectangle' => 'rectangle',
+            ),
+          ),
+          'map' => array(
+            'auto_center' => 1,
+            'base_url' => 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'center' => array(
+              'lat' => '43',
+              'lng' => '-89',
+            ),
+            'zoom' => '6',
+          ),
+          'toggle' => 1,
         ),
-        'type' => 'text_textfield',
-        'weight' => '11',
+        'type' => 'leaflet_widget_widget',
+        'weight' => '13',
       ),
     ),
   );
@@ -485,12 +704,95 @@ uk-ogl|UK Open Government Licence (OGL)',
         'module' => 'autocomplete_deluxe',
         'settings' => array(
           'autocomplete_deluxe_path' => 'autocomplete_deluxe/taxonomy',
-          'autocomplete_path' => 'taxonomy/autocomplete',
-          'mode' => 'single',
-          'size' => 60,
+          'limit' => '10',
+          'min_length' => '0',
+          'size' => '60',
         ),
         'type' => 'autocomplete_deluxe_taxonomy',
         'weight' => '2',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-dataset-field_temporal_coverage'.
+  $fields['node-dataset-field_temporal_coverage'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_temporal_coverage',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'date',
+      'settings' => array(
+        'cache_count' => '4',
+        'cache_enabled' => 1,
+        'granularity' => array(
+          'day' => 'day',
+          'hour' => 'hour',
+          'minute' => 'minute',
+          'month' => 'month',
+          'second' => 'second',
+          'year' => 'year',
+        ),
+        'timezone_db' => 'UTC',
+        'todate' => 'optional',
+        'tz_handling' => 'site',
+      ),
+      'translatable' => '0',
+      'type' => 'datetime',
+    ),
+    'field_instance' => array(
+      'bundle' => 'dataset',
+      'deleted' => '0',
+      'description' => 'The temporal period that the dataset covers. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--temporal-coverage">temporal coverage</a> for more info.',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'date',
+          'settings' => array(
+            'format_type' => 'long',
+            'fromto' => 'both',
+            'multiple_from' => '',
+            'multiple_number' => '',
+            'multiple_to' => '',
+          ),
+          'type' => 'date_default',
+          'weight' => '11',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_temporal_coverage',
+      'label' => 'Temporal Coverage',
+      'required' => 0,
+      'settings' => array(
+        'default_value' => 'now',
+        'default_value2' => 'same',
+        'default_value_code' => '',
+        'default_value_code2' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'date',
+        'settings' => array(
+          'increment' => '1',
+          'input_format' => 'm/d/Y - H:i:s',
+          'input_format_custom' => '',
+          'label_position' => 'above',
+          'text_parts' => array(),
+          'year_range' => '-10:+10',
+        ),
+        'type' => 'date_popup',
+        'weight' => '14',
       ),
     ),
   );
@@ -551,10 +853,13 @@ uk-ogl|UK Open Government Licence (OGL)',
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '6',
+          'label' => 'hidden',
+          'module' => 'entityreference',
+          'settings' => array(
+            'link' => 1,
+          ),
+          'type' => 'entityreference_label',
+          'weight' => '5',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -565,7 +870,7 @@ uk-ogl|UK Open Government Licence (OGL)',
       ),
       'entity_type' => 'node',
       'field_name' => 'og_group_ref',
-      'label' => 'Groups audience',
+      'label' => 'Publisher',
       'required' => 0,
       'settings' => array(
         'behaviors' => array(
@@ -1181,20 +1486,28 @@ uk-ogl|UK Open Government Licence (OGL)',
   // Included for use with string extractors like potx.
   t('Additional Info');
   t('Author');
-  t('Body');
+  t('Data Dictionary');
   t('Dataset');
   t('Description');
-  t('Determine if this is an OG group.');
   t('Format');
-  t('Group');
+  t('Frequency');
+  t('Granularity');
   t('Groups audience');
-  t('Image');
   t('License');
   t('License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>');
   t('Link API');
   t('Link file');
-  t('Maintainer');
+  t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. . See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--data-dictionary">data dictionary</a> for more info.');
+  t('Publisher');
+  t('Spatial / Geographical Coverage');
+  t('Spatial coverage of the dataset. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--spatial-geographical-coverage">spatial/geographical coverage</a> for more info.');
   t('Tags');
+  t('Temporal Coverage');
+  t('The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#property--frequency">DCAT frequency</a> for more info.');
+  t('The temporal period that the dataset covers. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--temporal-coverage">temporal coverage</a> for more info.');
+  t('This is additional information that can be added as a key-value pairing.');
+  t('This is the author of the dataset.');
+  t('This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="http://www.w3.org/TR/vocab-dcat/#property--granularity">DCAT Granularity</a> for more info.');
   t('Upload');
 
   return $fields;

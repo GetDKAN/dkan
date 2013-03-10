@@ -13,6 +13,45 @@ function dkan_content_types_field_group_info() {
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
+  $field_group->identifier = 'group_additional|node|dataset|default';
+  $field_group->group_name = 'group_additional';
+  $field_group->entity_type = 'node';
+  $field_group->bundle = 'dataset';
+  $field_group->mode = 'default';
+  $field_group->parent_name = '';
+  $field_group->data = array(
+    'label' => 'Dataset Info',
+    'weight' => '4',
+    'children' => array(
+      0 => 'field_author',
+      1 => 'field_license',
+      2 => 'og_group_ref',
+      3 => 'field_frequency',
+      4 => 'field_spatial',
+      5 => 'field_temporal_coverage',
+      6 => 'field_granularity',
+      7 => 'field_data_dictionary',
+      8 => 'release_date',
+      9 => 'modified_date',
+      10 => 'identifier',
+    ),
+    'format_type' => 'table',
+    'format_settings' => array(
+      'label' => 'Dataset Info',
+      'instance_settings' => array(
+        'label' => 'hide',
+        'desc' => '<div class="fieldset-description"><i class="icon-large icon-info-sign"></i>These fields are compatible with <a href="http://www.w3.org/TR/vocab-dcat/">DCAT</a>, an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web.</div>',
+        'first_column' => 'Field',
+        'second_column' => 'Value',
+        'cells' => 'empty',
+      ),
+    ),
+  );
+  $export['group_additional|node|dataset|default'] = $field_group;
+
+  $field_group = new stdClass();
+  $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
+  $field_group->api_version = 1;
   $field_group->identifier = 'group_additional|node|dataset|form';
   $field_group->group_name = 'group_additional';
   $field_group->entity_type = 'node';
@@ -20,20 +59,23 @@ function dkan_content_types_field_group_info() {
   $field_group->mode = 'form';
   $field_group->parent_name = '';
   $field_group->data = array(
-    'label' => 'Additional',
+    'label' => 'Dataset Information',
     'weight' => '2',
     'children' => array(
-      0 => 'field_additional_info',
-      1 => 'field_author',
-      2 => 'field_maintainer',
+      0 => 'field_author',
+      1 => 'field_frequency',
+      2 => 'field_spatial',
+      3 => 'field_temporal_coverage',
+      4 => 'field_granularity',
+      5 => 'field_data_dictionary',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
-      'label' => 'Additional',
+      'label' => 'Dataset Information',
       'instance_settings' => array(
         'required_fields' => 1,
         'classes' => '',
-        'description' => '',
+        'description' => '<i class="icon-large icon-info-sign"></i>These fields are compatible with <a href="http://www.w3.org/TR/vocab-dcat/">DCAT</a>, an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web.',
       ),
       'formatter' => 'open',
     ),
