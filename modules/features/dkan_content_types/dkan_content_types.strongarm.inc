@@ -42,6 +42,12 @@ function dkan_content_types_strongarm() {
       'print' => array(
         'custom_settings' => FALSE,
       ),
+      'diff_standard' => array(
+        'custom_settings' => FALSE,
+      ),
+      'token' => array(
+        'custom_settings' => FALSE,
+      ),
     ),
     'extra_fields' => array(
       'form' => array(
@@ -50,6 +56,9 @@ function dkan_content_types_strongarm() {
         ),
         'resources' => array(
           'weight' => '1',
+        ),
+        'path' => array(
+          'weight' => '5',
         ),
       ),
       'display' => array(
@@ -60,6 +69,24 @@ function dkan_content_types_strongarm() {
           ),
           'teaser' => array(
             'weight' => '0',
+            'visible' => TRUE,
+          ),
+        ),
+        'release_date' => array(
+          'default' => array(
+            'weight' => '7',
+            'visible' => TRUE,
+          ),
+        ),
+        'identifier' => array(
+          'default' => array(
+            'weight' => '9',
+            'visible' => TRUE,
+          ),
+        ),
+        'modified_date' => array(
+          'default' => array(
+            'weight' => '6',
             'visible' => TRUE,
           ),
         ),

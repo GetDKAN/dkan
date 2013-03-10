@@ -31,16 +31,6 @@ function dkan_content_types_node_info() {
       'title_label' => t('Title'),
       'help' => '',
     ),
-    'group' => array(
-      'name' => t('Group'),
-      'base' => 'node_content',
-      'description' => t('Groups allow you to group together datasets under a organisation (for example, the Department of Health) or topic (e.g. Transport, Health) so make it easier for users to browse datasets by theme.
-
-Groups also enable you to assign roles and authorisation to members of the group - i.e. individuals can be given the right to publish datasets from a particular organisation.'),
-      'has_title' => '1',
-      'title_label' => t('Title'),
-      'help' => '',
-    ),
     'resource' => array(
       'name' => t('Resource'),
       'base' => 'node_content',
