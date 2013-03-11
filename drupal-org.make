@@ -48,6 +48,7 @@ projects[og_extras][subdir] = contrib
 projects[og_extras][version] = 1.x
 projects[rules][subdir] = contrib
 projects[schema][subdir] = contrib
+projects[schema][patch][1237974] = http://drupal.org/files/schema-support-custom-types-1237974-48.patch
 projects[select_or_other][subdir] = contrib
 projects[search_api][subdir] = contrib
 projects[search_api_ajax][subdir] = contrib
@@ -134,6 +135,11 @@ libraries[Leaflet][type] = libraries
 libraries[Leaflet][download][type] = git
 libraries[Leaflet][download][url] = "git@github.com:Leaflet/Leaflet.git"
 libraries[Leaflet][download][revision] = "81221ae4cd9772a8974b2e3c867d4fb35abd052d"
+
+libraries[arc][type] = libraries
+libraries[arc][download][type] = git
+libraries[arc][download][url] = "https://github.com/semsol/arc2.git"
+libraries[arc][download][revision] = "44c396ab54178086c09499a1704e31a977b836d2"
 
 ;--------------------
 ; Development
