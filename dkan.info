@@ -81,11 +81,12 @@ dependencies[] = views_bulk_operations
 dependencies[] = uuid
 
 ; Open data
-dependencies[] = recline
-dependencies[] = rdfx
 dependencies[] = entity_rdf
 dependencies[] = geofield
 dependencies[] = geophp
+dependencies[] = recline
+dependencies[] = rdfui
+dependencies[] = rdfx
 
 ; DKAN Features
 dependencies[] = dkan_content_types
