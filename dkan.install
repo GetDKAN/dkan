@@ -97,6 +97,8 @@ function dkan_bueditor_settings() {
  */
 function dkan_rdf_settings() {
   require_once('import/rdf.php');
+  include_once libraries_get_path('ARC2') . '/arc/ARC2.php';
+  module_load_include('inc', 'rdfx', 'rdfx.terms');
   rdfx_save_terms('http://www.w3.org/ns/dcat#', 'dcat', $dcat);
   rdfx_save_terms('http://purl.org/dc/terms/', 'dc', $dc);
 
