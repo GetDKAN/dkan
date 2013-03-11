@@ -130,6 +130,11 @@ libraries[Leaflet.draw][download][type] = git
 libraries[Leaflet.draw][download][url] = "git@github.com:Leaflet/Leaflet.draw.git"
 libraries[Leaflet.draw][download][revision] = "82f4d960a44753c3a9d98001e49e03429395b53a"
 
+libraries[Leaflet][type] = libraries
+libraries[Leaflet][download][type] = git
+libraries[Leaflet][download][url] = "git@github.com:Leaflet/Leaflet.git"
+libraries[Leaflet][download][revision] = "81221ae4cd9772a8974b2e3c867d4fb35abd052d"
+
 ;--------------------
 ; Development
 ;--------------------
