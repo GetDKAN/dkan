@@ -125,6 +125,11 @@ libraries[slugify][download][url] = "git://github.com/pmcelhaney/jQuery-Slugify-
 libraries[slugify][directory_name] = slugify
 libraries[slugify][download][revision] = "79133a1bdfd3ac80d500d661a722b85c03a01da3"
 
+libraries[Leaflet.draw][type] = libraries
+libraries[Leaflet.draw][download][type] = git
+libraries[Leaflet.draw][download][url] = "git@github.com:Leaflet/Leaflet.draw.git"
+libraries[Leaflet.draw][download][revision] = "82f4d960a44753c3a9d98001e49e03429395b53a"
+
 ;--------------------
 ; Development
 ;--------------------
