@@ -1672,6 +1672,7 @@ h2.block-title {
   font-size: 12px;
   font-weight: bold;
 }
+.block .item-list li > a,
 .block .item-list li div > a {
   display: block;
   margin: -7px -15px -7px 0;
