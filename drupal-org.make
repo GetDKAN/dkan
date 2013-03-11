@@ -85,14 +85,18 @@ projects[entity_rdf][subdir] = contrib
 projects[geofield][subdir] = contrib
 projects[geophp][subdir] = contrib
 projects[rdfx][subdir] = contrib
+
 projects[field_group_table][subdir] = contrib
 projects[field_group_table][download][type] = git
 projects[field_group_table][download][url] = "git@github.com:nuams/field_group_table.git"
 projects[field_group_table][download][revision] = "770679ad1fcb6f1da0ea32d49052aee9c5c023c0"
+projects[field_group_table][type] = "module"
+
 projects[leaflet_draw_widget][subdir] = contrib
 projects[leaflet_draw_widget][download][type] = git
 projects[leaflet_draw_widget][download][url] = "git://github.com/acouch/leaflet_draw_widget.git"
 projects[leaflet_draw_widget][download][revision] = "33a98b1285d03b3efbce9f1652d3f78e401c3728"
+projects[leaflet_draw_widget][type] = "module"
 
 ;--------------------
 ; Libraries
