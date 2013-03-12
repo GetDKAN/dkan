@@ -10,6 +10,7 @@ projects[autocomplete_deluxe][subdir] = contrib
 projects[autocomplete_deluxe][version] = 2.x
 projects[boxes][subdir] = contrib
 projects[bueditor][subdir] = contrib
+projects[bueditor][patch][1931862] = http://drupal.org/files/dont-render-bueditor-for-plain-text-textareas.patch
 projects[beautytips][subdir] = contrib
 projects[chosen][subdir] = contrib
 projects[chosen][version] = 2.0-alpha1

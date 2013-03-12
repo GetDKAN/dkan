@@ -98,6 +98,12 @@ function dkan_dataset_rdf_default_mappings() {
         0 => 'dc:spatial',
       ),
     ),
+    'field_spatial_geographical_cover' => array(
+      'type' => 'property',
+      'predicates' => array(
+        0 => 'dc:spatial',
+      ),
+    ),
     'field_temporal_coverage' => array(
       'type' => 'property',
       'predicates' => array(

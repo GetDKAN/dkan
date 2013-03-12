@@ -231,7 +231,7 @@ function dkan_content_types_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '14',
+          'weight' => '15',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -298,7 +298,7 @@ function dkan_content_types_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '15',
+          'weight' => '16',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -391,7 +391,7 @@ function dkan_content_types_field_default_fields() {
           'apply_chosen' => 0,
         ),
         'type' => 'options_select',
-        'weight' => '12',
+        'weight' => '11',
       ),
     ),
   );
@@ -436,7 +436,7 @@ function dkan_content_types_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '13',
+          'weight' => '14',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -509,7 +509,7 @@ function dkan_content_types_field_default_fields() {
           'module' => 'select_or_other',
           'settings' => array(),
           'type' => 'select_or_other_formatter',
-          'weight' => '12',
+          'weight' => '13',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -578,7 +578,7 @@ uk-ogl|UK Open Government Licence (OGL)',
       'bundle' => 'dataset',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Spatial coverage of the dataset. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--spatial-geographical-coverage">spatial/geographical coverage</a> for more info.',
+      'description' => 'Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--spatial-geographical-coverage">spatial/geographical coverage</a> for more info.',
       'display' => array(
         'default' => array(
           'label' => 'hidden',
@@ -598,7 +598,7 @@ uk-ogl|UK Open Government Licence (OGL)',
       ),
       'entity_type' => 'node',
       'field_name' => 'field_spatial',
-      'label' => 'Spatial / Geographical Coverage',
+      'label' => 'Spatial / Geographical Coverage Area',
       'required' => 0,
       'settings' => array(
         'local_solr' => array(
@@ -628,11 +628,80 @@ uk-ogl|UK Open Government Licence (OGL)',
               'lat' => '43',
               'lng' => '-89',
             ),
-            'zoom' => '6',
+            'zoom' => '12',
           ),
           'toggle' => 1,
         ),
         'type' => 'leaflet_widget_widget',
+        'weight' => '12',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-dataset-field_spatial_geographical_cover'.
+  $fields['node-dataset-field_spatial_geographical_cover'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_spatial_geographical_cover',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'dataset',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:catalog_spatial">spatial/geographical coverage</a> for more info.',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '11',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_spatial_geographical_cover',
+      'label' => 'Spatial / Geographical Coverage Location',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
         'weight' => '13',
       ),
     ),
@@ -760,7 +829,7 @@ uk-ogl|UK Open Government Licence (OGL)',
             'multiple_to' => '',
           ),
           'type' => 'date_default',
-          'weight' => '11',
+          'weight' => '12',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1499,8 +1568,10 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('Link file');
   t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. . See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--data-dictionary">data dictionary</a> for more info.');
   t('Publisher');
-  t('Spatial / Geographical Coverage');
-  t('Spatial coverage of the dataset. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--spatial-geographical-coverage">spatial/geographical coverage</a> for more info.');
+  t('Spatial / Geographical Coverage Area');
+  t('Spatial / Geographical Coverage Location');
+  t('Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--spatial-geographical-coverage">spatial/geographical coverage</a> for more info.');
+  t('Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:catalog_spatial">spatial/geographical coverage</a> for more info.');
   t('Tags');
   t('Temporal Coverage');
   t('The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#property--frequency">DCAT frequency</a> for more info.');
