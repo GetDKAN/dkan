@@ -60,6 +60,15 @@ function dkan_content_types_strongarm() {
         'path' => array(
           'weight' => '5',
         ),
+        'release_date' => array(
+          'weight' => '0',
+        ),
+        'modified_date' => array(
+          'weight' => '0',
+        ),
+        'identifier' => array(
+          'weight' => '0',
+        ),
       ),
       'display' => array(
         'resources' => array(

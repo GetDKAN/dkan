@@ -36,6 +36,7 @@ features[field][] = node-dataset-field_frequency
 features[field][] = node-dataset-field_granularity
 features[field][] = node-dataset-field_license
 features[field][] = node-dataset-field_spatial
+features[field][] = node-dataset-field_spatial_geographical_cover
 features[field][] = node-dataset-field_tags
 features[field][] = node-dataset-field_temporal_coverage
 features[field][] = node-dataset-og_group_ref
