@@ -70,6 +70,7 @@ dependencies[] = search_api_facetapi
 dependencies[] = search_api_views
 dependencies[] = strongarm
 dependencies[] = rest_server
+dependencies[] = restws
 dependencies[] = r4032login
 dependencies[] = services
 dependencies[] = schema
