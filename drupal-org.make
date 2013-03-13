@@ -90,7 +90,8 @@ projects[entity_rdf][subdir] = contrib
 projects[geofield][subdir] = contrib
 projects[geophp][subdir] = contrib
 projects[rdfx][subdir] = contrib
-
+projects[rdfx][version] = 2.x
+projects[rdfx][patch][1176666] = http://drupal.org/files/find-arc-library-correctly-1176666-14.patch
 projects[field_group_table][subdir] = contrib
 projects[field_group_table][download][type] = git
 projects[field_group_table][download][url] = "git@github.com:nuams/field_group_table.git"
