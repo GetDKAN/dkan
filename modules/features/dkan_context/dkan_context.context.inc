@@ -41,6 +41,12 @@ function dkan_context_context_default_contexts() {
           'region' => 'sidebar_first',
           'weight' => '-9',
         ),
+        'dkan_dataset-dkan_dataset_other_access' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_other_access',
+          'region' => 'sidebar_first',
+          'weight' => '-8',
+        ),
       ),
     ),
     'breadcrumb' => 'dataset',
@@ -288,7 +294,6 @@ function dkan_context_context_default_contexts() {
   // Included for use with string extractors like potx.
   t('Edit');
   $export['resource-edit'] = $context;
-
 
   return $export;
 }

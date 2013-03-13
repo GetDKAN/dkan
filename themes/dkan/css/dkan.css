@@ -1692,7 +1692,7 @@ h2.block-title {
   border: 0;
 }
 #resource-node-form .horizontal-tabs ul.horizontal-tabs-list li #active-horizontal-tab {
-  background: url(http://demo.ckan.org/base/images/sprite-ckan-icons.png) no-repeat -193px 0;
+  background: url(../images/sprite-ckan-icons.png) no-repeat -193px 0;
   display: block;
   text-indent: -9999px;
   width: 16px;
@@ -1708,13 +1708,13 @@ h2.block-title {
   min-width: 10em;
 }
 #resource-node-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-1 .summary{
-  background: url(http://demo.ckan.org/base/images/sprite-ckan-icons.png) no-repeat -160px 0;
+  background: url(../images/sprite-ckan-icons.png) no-repeat -160px 0;
 }
 #resource-node-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-2 .summary{
-  background: url(http://demo.ckan.org/base/images/sprite-ckan-icons.png) no-repeat -160px 0;
+  background: url(../images/sprite-ckan-icons.png) no-repeat -160px 0;
 }
 #resource-node-form .horizontal-tabs ul.horizontal-tabs-list li .summary{
-  background: url(http://demo.ckan.org/base/images/sprite-ckan-icons.png) no-repeat -144px 0;
+  background: url(../images/sprite-ckan-icons.png) no-repeat -144px 0;
   width: 16px;
   height: 16px;
   display: inline-block;
@@ -1726,6 +1726,10 @@ h2.block-title {
 }
 #resource-node-form .form-item {
   margin: 0;
+}
+a.btn {
+  margin: 0 5px 0 0;
+  color: #333;
 }
 ul.primary li a.btn,
 .btn {
@@ -2235,7 +2239,6 @@ form .field-multiple-table th.field-label {
   font-size: 18px;
   line-height: 27px;
 }
-
 .nav-simple .ckan-icon {
   position: relative;
   top: 0px;
@@ -2250,6 +2253,17 @@ form .field-multiple-table th.field-label {
   background-image: url("../images/sprite-ckan-icons.png");
   background-repeat: no-repeat;
   background-position: 16px 16px;
+}
+.ckan-icon-json, .ckan-icon-rdfxml {
+  background-position: 0 0;
+  vertical-align: -1px;
+  margin-right: 2px;
+}
+.ckan-icon-rdfxml {
+  background-image: url(../images/rdf.png);
+}
+.ckan-icon-json {
+  background-image: url(../images/json.png);
 }
 .nav-simple {
   margin: 0;
@@ -2741,7 +2755,7 @@ h3.media-heading a {
   margin: 0;
 }
 #region-branding #block-dkan-dataset-dkan-dataset-search-bar input.form-submit {
-  background: url(http://demo.ckan.org/base/images/sprite-ckan-icons.png);
+  background: url(../images/sprite-ckan-icons.png);
   text-indent: -9999px;
   width: 17px;
   height: 17px;
