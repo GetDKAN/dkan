@@ -438,8 +438,13 @@ function dkan_dataset_block_info() {
     'info' => t('Additional Information'),
     'cache' => DRUPAL_NO_CACHE
   );
+  // TODO: Move to sitewide.
   $blocks['dkan_dataset_search_bar'] = array(
     'info' => t('Search'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+  $blocks['dkan_dataset_other_access'] = array(
+    'info' => t('Other Access'),
     'cache' => DRUPAL_NO_CACHE
   );
 
@@ -471,6 +476,11 @@ function dkan_dataset_block_view($delta = '') {
     case 'dkan_dataset_search_bar':
       $block['subject'] = '';
       $block['content'] = dkan_dataset_search_bar();
+      break;
+
+    case 'dkan_dataset_other_access':
+      $block['subject'] = 'Other Acess';
+      $block['content'] = dkan_dataset_other_access();
       break;
   }
   return $block;
@@ -620,6 +630,18 @@ function dkan_dataset_page_alter(&$page) {
   drupal_set_breadcrumb($breadcrumbs);
 }
 
+/**
+ * Creates "Other Access" block.
+ */
+function dkan_dataset_other_access() {
+  $node = menu_get_object();
+  $output = t('The information on this page (the dataset metadata) is also available in these formats.');
+  $output .= '<p class="btn-group">';
+  $output .= l('<i class="ckan-icon ckan-icon-json"></i> JSON', 'node/' . $node->nid . '/json', array('html' => TRUE, 'attributes' => array('class' => array('btn'), 'title' => 'json view of content',)));
+  $output .= l('<i class="ckan-icon ckan-icon-rdfxml"></i> RDF', 'node/' . $node->nid . '.rdf', array('html' => TRUE, 'attributes' => array('class' => array('btn'), 'title' => 'json view of content',)));
+  $output .= '<p><small>via the <a href="http://docs.getdkan.com">DKAN API</a></small>';
+  return $output;
+}
 /**
  * Creates search bar.
  */
