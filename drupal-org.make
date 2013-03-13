@@ -47,6 +47,7 @@ projects[og][subdir] = contrib
 projects[og][version] = 2.x
 projects[og_extras][subdir] = contrib
 projects[og_extras][version] = 1.x
+projects[restws][subdir] = contrib
 projects[rules][subdir] = contrib
 projects[schema][subdir] = contrib
 projects[schema][patch][1237974] = http://drupal.org/files/schema-support-custom-types-1237974-48.patch
@@ -62,7 +63,9 @@ projects[services][subdir] = contrib
 projects[token][subdir] = contrib
 projects[uuid][subdir] = contrib
 projects[uuid][version] = 1.x
+projects[uuid][patch][1927474] = http://drupal.org/files/unknown-column-in-field-list-fix-1927474-2.patch
 projects[views][subdir] = contrib
+projects[views_datasource][subdir] = contrib
 projects[views_bulk_operations][subdir] = contrib
 
 ;--------------------

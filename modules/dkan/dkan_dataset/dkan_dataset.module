@@ -635,3 +635,18 @@ function dkan_dataset_search_bar() {
     return $exposed_form->render_exposed_form(true);
   }
 }
+
+/**
+ * Implements theme__preprocess_views_views_json_style_simple().
+ */
+function dkan_dataset_preprocess_views_views_json_style_simple(&$vars) {
+  // Adds node values to list of resources.
+  if ($vars['view']->name == 'dkan_dataset_resources_json') {
+    $view = views_get_view('dkan_dataset_json');
+    $view->preview(4);
+    $renderer = $view->style_plugin->row_plugin;
+    foreach ($view->field as $field) {
+      $vars['rows'][check_plain($field->options['label'])] = filter_xss($field->original_value);
+    }
+  }
+}
