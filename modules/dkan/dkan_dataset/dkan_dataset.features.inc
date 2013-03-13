@@ -15,6 +15,13 @@ function dkan_dataset_ctools_plugin_api() {
 }
 
 /**
+ * Implements hook_views_api().
+ */
+function dkan_dataset_views_api() {
+  return array("api" => "3.0");
+}
+
+/**
  * Implements hook_rdf_default_mappings().
  */
 function dkan_dataset_rdf_default_mappings() {
@@ -135,6 +142,12 @@ function dkan_dataset_rdf_default_mappings() {
       'datatype' => 'xsd:string',
       'predicates' => array(
         0 => 'dcat:keyword',
+      ),
+    ),
+    'field_resource' => array(
+      'type' => 'property',
+      'predicates' => array(
+        0 => 'dcat:Distribution',
       ),
     ),
   );
