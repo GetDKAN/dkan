@@ -118,6 +118,10 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
       // We don't need to see revision form when creating a new node.
       $form['revision_information']['#access'] = FALSE;
 
+      $form['prefix']['#type'] = 'item';
+      $form['prefix']['#weight'] = '-20';
+      $form['prefix']['#markup'] = dkan_form_create_stages('dataset-create');
+
       $form['actions']['next'] = array(
         '#type' => 'submit',
         '#value' => t('Next: Add data'),
@@ -172,9 +176,15 @@ function dkan_forms_form_alter(&$form, &$form_state, $form_id) {
         $form['field_dataset_ref']['und']['#default_value'] = $query['dataset'];
         $action_query = '?dataset=' . $query['dataset'];
       }
+      $form['prefix']['#type'] = 'item';
+      $form['prefix']['#weight'] = '-20';
+      $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $query['dataset']);
     }
     elseif (isset($form['#node']->field_dataset_ref['nid'])) {
       $form['field_dataset_ref']['und']['#default_value'] = $form['#node']->field_dataset_ref['nid'];
+      $form['prefix']['#type'] = 'item';
+      $form['prefix']['#weight'] = '-20';
+      $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $form['#node']->field_dataset_ref['nid']);
     }
     // This saves us on the ajax reloading.
     $form['#action'] = '/node/add/resource' . $action_query;
@@ -393,9 +403,9 @@ function dkan_forms_resource_nodes() {
  * Creates the part on the node edit form that says what stage you are on.
  */
 function dkan_form_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL) {
-  $stages = '';
+  $stages = '<div id="dkan-stages">';
   if ($op == 'resource-edit' || $op == 'resource-create') {
-    $stages = '<ol class="stages stage-3">
+    $stages .= '<ol class="stages stage-3">
       <li class="first complete">
           <button class="highlight" name="save" value="go-dataset" type="submit">' . l('Edit dataset', 'node/' . $dataset_nid . '/edit') . '</button>
       </li>
@@ -408,7 +418,7 @@ function dkan_form_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL)
     </ol>';
   }
   if ($op == 'dataset-additional') {
-    $stages = '<ol class="stages stage-3">
+    $stages .= '<ol class="stages stage-3">
       <li class="first complete">
           <button class="highlight" name="save" value="go-dataset" type="submit">' . l('Edit dataset', 'node/' . $dataset_nid . '/edit') . '</button>
       </li>
@@ -421,7 +431,7 @@ function dkan_form_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL)
     </ol>';
   }
   if ($op == 'dataset-create') {
-    $stages =
+    $stages .=
         '<ol class="stages stage-1">
           <li class="first active">
             <span class="highlight">' . t('Create dataset') . '</span>
@@ -435,7 +445,7 @@ function dkan_form_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL)
         </ol>';
   }
   if ($op == 'dataset-edit') {
-    $stages = '<ol class="stages stage-1">
+    $stages .= '<ol class="stages stage-1">
         <li class="first active">
             <span class="highlight">' . t('Create dataset') . '</span>
       </li>
@@ -447,5 +457,6 @@ function dkan_form_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL)
       </li>
     </ol>';
   }
+  $stages .= '</div>';
   return $stages;
 }
