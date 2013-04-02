@@ -63,7 +63,7 @@
   Drupal.behaviors.dkanAddtional = {
     attach: function (context, settings) {
       if (settings.dkanAdditional && context.context) {
-        var pos = $('#zone-content-wrapper').offset();
+        var pos = $('#page').offset();
         $('html, body').animate({ scrollTop: pos.top}, 'fast');
         window.history.pushState("", "", '/node/' +  settings.dkanAdditional.nid + '/edit?additional=1');
         delete settings.dkanAdditional;
@@ -73,7 +73,7 @@
   Drupal.behaviors.dkanPush = {
     attach: function (context, settings) {
       if (settings.dkanPush && context.context) {
-        var pos = $('#zone-content-wrapper').offset();
+        var pos = $('#page').offset();
         $('html, body').animate({ scrollTop: pos.top}, 'fast');
         window.history.pushState("", "", '/node/add/resource?dataset=' + settings.dkanPush.nid);
         // Make sure this doesn't fire again.
@@ -84,6 +84,10 @@
 
   Drupal.behaviors.dkanForms = {
     attach: function (context, settings) {
+      // Causes file to be uploaded automatically.
+      $('input.form-file').change(function() {
+        $(this).next('input[type="submit"]').mousedown();
+      });
 
       // Autohide selected elements.
       var elements = "#edit-field-link-file,#edit-field-link-api,.field-name-body,#views-exposed-form-dataset-page,#block-dkan-dataset-dkan-dataset-search-bar";
@@ -114,12 +118,10 @@
       });
       $(".field-widget-leaflet-widget-widget .fieldset-description").appendTo($(".field-widget-leaflet-widget-widget fieldset"));
       $(".field-widget-leaflet-widget-widget .fieldset-description").each(function() {
-        console.log(this);
         dkanFormsBeautyTipPrepare(this, 'legend');
       });
       $(".field-type-datetime.field-name-field-temporal-coverage .fieldset-description").appendTo($(".field-type-datetime.field-name-field-temporal-coverage fieldset"));
       $(".field-type-datetime.field-name-field-temporal-coverage .fieldset-description").each(function() {
-        console.log(this);
         dkanFormsBeautyTipPrepare(this, 'legend');
       });
     }
