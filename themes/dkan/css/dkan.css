@@ -701,18 +701,11 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   -moz-border-radius: 4px 4px 0 0;
   border-radius: 4px 4px 0 0;
   padding-top: 8px;
-  padding-bottom: 8px;
+  padding-bottom: 3px;
   line-height: 18px;
   padding-right: 12px;
   padding-left: 12px;
   margin-right: 2px;
-}
-.horizontal-tabs ul.horizontal-tabs-list li.selected a {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-bottom-color: transparent;
-  cursor: default;
-  color: #555555;
 }
 .node-type-group #region-content .block {
   background-color: #f3f3f3;
@@ -1696,6 +1689,7 @@ h2.block-title {
   display: block;
   text-indent: -9999px;
   width: 16px;
+  height: 16px;
   margin: 0 0 0 28px;
   clip: auto;
 }
