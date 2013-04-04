@@ -181,42 +181,6 @@ function dkan_preprocess_page(&$vars) {
 function dkan_preprocess_block(&$vars) {
 
   $vars['title'] = '';
-  if ($vars['block_html_id'] ==  'block-system-main') {
-    $vars['title'] = drupal_get_title();
-
-    if (module_exists('context')) {
-      $contexts = context_active_contexts();
-    }
-    if (isset($contexts['dataset-create'])) {
-      $stages = dkan_form_create_stages('dataset-create');
-      $vars['content'] = $stages . $vars['content'];
-      $vars['title'] = '';
-    }
-    if (isset($contexts['resource-create'])) {
-      $query = drupal_get_query_parameters();
-      $stages = dkan_form_create_stages('resource-create', $query['dataset']);
-      $vars['content'] = $stages . $vars['content'];
-      $vars['title'] = '';
-    }
-    if (isset($contexts['resource-edit'])) {
-      $stages = dkan_form_create_stages('resource-edit', $vars['elements']['field_dataset_ref']['und']['#value'][0], $vars['elements']['#node']->nid);
-      $vars['content'] = $stages . $vars['content'];
-      $vars['title'] = '';
-    }
-    if (isset($contexts['dataset-edit'])) {
-      if ($query = drupal_get_query_parameters()) {
-        if (!isset($query['additional'])) {
-          $stages = dkan_form_create_stages('dataset-edit', $vars['elements']['#node']->nid);
-          $vars['content'] = $stages . $vars['content'];
-        }
-        else {
-          $stages = dkan_form_create_stages('dataset-additional', $vars['elements']['#node']->nid);
-          $vars['content'] = $stages . $vars['content'];
-        }
-      }
-      $vars['title'] = '';
-    }
-  }
 }
 
 /**
