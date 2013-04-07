@@ -502,7 +502,6 @@ uk-ogl|UK Open Government Licence (OGL)',
   // Exported field_instance: 'node-dataset-field_temporal_coverage'
   $field_instances['node-dataset-field_temporal_coverage'] = array(
     'bundle' => 'dataset',
-    'default_value' => NULL,
     'deleted' => 0,
     'description' => 'The temporal period that the dataset covers. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--temporal-coverage">temporal coverage</a> for more info.',
     'display' => array(
@@ -531,7 +530,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     'label' => 'Temporal Coverage',
     'required' => 0,
     'settings' => array(
-      'default_value' => 'now',
+      'default_value' => 'blank',
       'default_value2' => 'same',
       'default_value_code' => '',
       'default_value_code2' => '',
@@ -548,7 +547,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'text_parts' => array(),
         'year_range' => '-10:+10',
       ),
-      'type' => 'date_select',
+      'type' => 'date_popup',
       'weight' => 14,
     ),
   );

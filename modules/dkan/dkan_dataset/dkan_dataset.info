@@ -8,6 +8,7 @@ dependencies[] = beautytips
 dependencies[] = chosen
 dependencies[] = ctools
 dependencies[] = date
+dependencies[] = date_popup
 dependencies[] = double_field
 dependencies[] = entity
 dependencies[] = entityreference
