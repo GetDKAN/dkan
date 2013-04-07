@@ -1,7 +1,0 @@
-name = Azure Table Storage Processor
-description = "Provides plugins for Feeds module to import parsed data into an Azure Table."
-core = 7.x
-package = "Feeds"
-
-dependencies[] = feeds
-dependencies[] = data

@@ -1,8 +1,0 @@
-<?php
-
-/**
- * @file
- * Custom elements for groups.
- */
-
-include_once 'dkan_groups.features.inc';
