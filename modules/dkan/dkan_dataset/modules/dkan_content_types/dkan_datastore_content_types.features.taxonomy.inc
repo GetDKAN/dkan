@@ -13,9 +13,9 @@ function dkan_datastore_content_types_taxonomy_default_vocabularies() {
       'name' => 'Format',
       'machine_name' => 'format',
       'description' => 'This is generated automatically, you can edit it if you wish',
-      'hierarchy' => '0',
+      'hierarchy' => 0,
       'module' => 'taxonomy',
-      'weight' => '0',
+      'weight' => 0,
       'rdf_mapping' => array(
         'rdftype' => array(
           0 => 'skos:ConceptScheme',
@@ -36,9 +36,9 @@ function dkan_datastore_content_types_taxonomy_default_vocabularies() {
       'name' => 'Tags',
       'machine_name' => 'tags',
       'description' => 'eg. economy, mental health, government',
-      'hierarchy' => '0',
+      'hierarchy' => 0,
       'module' => 'taxonomy',
-      'weight' => '0',
+      'weight' => 0,
       'rdf_mapping' => array(
         'rdftype' => array(
           0 => 'skos:ConceptScheme',

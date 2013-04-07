@@ -7,6 +7,7 @@
 
 include_once 'dkan_dataset.features.inc';
 include_once 'dkan_dataset.theme.inc';
+include_once 'dkan_dataset.forms.inc';
 
 /**
  * Implements hook_node_view().
@@ -186,4 +187,19 @@ function dkan_dataset_text_trim($title, $number = 25) {
     'trim' => TRUE,
   );
   return views_trim_text($alter, $title);
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function dkan_dataset_libraries_info() {
+  $libraries['slugify'] = array(
+    'name' => 'Slugify',
+    'vendor url' => 'https://github.com/pmcelhaney/jQuery-Slugify-Plugin',
+    'download url' => 'https://github.com/pmcelhaney/jQuery-Slugify-Plugin/archive/master.zip',
+    'files' => array('js' => array('jquery.slugify')),
+    'version' => 'master',
+  );
+
+  return $libraries;
 }

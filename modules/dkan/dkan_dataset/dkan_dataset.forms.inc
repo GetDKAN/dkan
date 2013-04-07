@@ -56,7 +56,7 @@ function dkan_dataset_field_group_pre_render(&$element, $group, &$form) {
 function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
   if ($form_id == 'dataset_node_form') {
-    $form['#attached']['js'][] = 'profiles/dkan/libraries/slugify/jquery.slugify.js';
+    $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.slugify.js';
     $form['#attached']['library'][] = array('beautytips', 'beautytips-jquery');
@@ -144,7 +144,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     }
   }
   if ($form_id == 'resource_node_form') {
-    $form['#attached']['js'][] = 'profiles/dkan/libraries/slugify/jquery.slugify.js';
+    $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.slugify.js';
 
