@@ -1,7 +1,0 @@
-name = Field Data Processor
-description = "Provides plugins for Feeds module to import file info into database files."
-core = 7.x
-package = "Feeds"
-
-dependencies[] = feeds
-dependencies[] = data
