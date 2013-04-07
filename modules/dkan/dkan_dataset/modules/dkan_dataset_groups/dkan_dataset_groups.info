@@ -6,6 +6,7 @@ php = 5.2.4
 dependencies[] = context
 dependencies[] = ctools
 dependencies[] = dkan_content_types
+dependencies[] = dkan_dataset
 dependencies[] = entity
 dependencies[] = eva
 dependencies[] = facetapi

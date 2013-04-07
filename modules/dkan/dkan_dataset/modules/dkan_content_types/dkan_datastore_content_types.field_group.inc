@@ -61,15 +61,16 @@ function dkan_datastore_content_types_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Dataset Information',
-    'weight' => '2',
+    'weight' => '5',
     'children' => array(
       0 => 'field_author',
       1 => 'field_data_dictionary',
       2 => 'field_frequency',
       3 => 'field_granularity',
       4 => 'field_spatial',
-      5 => 'field_temporal_coverage',
-      6 => 'field_spatial_geographical_cover',
+      5 => 'field_spatial_geographical_cover',
+      6 => 'field_temporal_coverage',
+      7 => 'field_additional_info',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(

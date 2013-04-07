@@ -28,9 +28,6 @@ function dkan_dataset_groups_strongarm() {
       'print' => array(
         'custom_settings' => FALSE,
       ),
-      'diff_standard' => array(
-        'custom_settings' => FALSE,
-      ),
       'token' => array(
         'custom_settings' => FALSE,
       ),

@@ -42,9 +42,6 @@ function dkan_datastore_content_types_strongarm() {
       'print' => array(
         'custom_settings' => FALSE,
       ),
-      'diff_standard' => array(
-        'custom_settings' => FALSE,
-      ),
       'token' => array(
         'custom_settings' => FALSE,
       ),
@@ -55,19 +52,19 @@ function dkan_datastore_content_types_strongarm() {
           'weight' => '1',
         ),
         'resources' => array(
-          'weight' => '1',
+          'weight' => '4',
         ),
         'path' => array(
           'weight' => '5',
         ),
         'release_date' => array(
-          'weight' => '0',
+          'weight' => '3',
         ),
         'modified_date' => array(
-          'weight' => '0',
+          'weight' => '2',
         ),
         'identifier' => array(
-          'weight' => '0',
+          'weight' => '1',
         ),
       ),
       'display' => array(
@@ -138,7 +135,7 @@ function dkan_datastore_content_types_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'jquery_update_jquery_version';
-  $strongarm->value = '1.7';
+  $strongarm->value = '1.5';
   $export['jquery_update_jquery_version'] = $strongarm;
 
   $strongarm = new stdClass();
