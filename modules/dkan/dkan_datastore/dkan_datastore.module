@@ -1,0 +1,111 @@
+<?php
+/**
+ * @file
+ * Creates DKAN Datastore
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_datastore_menu() {
+  $path = drupal_get_path('module', 'datastore') . '/dkan_datastore.pages.inc';
+  $items['node/%node/resource'] = array(
+    'title' => 'Add Resoure',
+    'page callback' => 'dkan_dataset_add_resource',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_add_resource',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
+  );
+  $items['node/%node/dataset'] = array(
+    'title' => 'Back to dataset',
+    'page callback' => 'dkan_dataset_back',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_dataset_back_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
+  );
+  $items['node/%node/download'] = array(
+    'title' => 'Download',
+    'page callback' => 'dkan_dataset_download',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_dataset_download_access',
+    'access arguments' => array(1),
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
+    'weight' => '20',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/api'] = array(
+    'title' => 'Data API',
+    'page callback' => 'dkan_dataset_datastore_api',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_dataset_datastore_api_access',
+    'access arguments' => array(1),
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
+    'weight' => '25',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/datastore'] = array(
+    'title' => 'Manage Datastore',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_dataset_import_tab_form', 1),
+    'access callback' => 'dkan_dataset_feeds_access',
+    'access arguments' => array('import', 1),
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
+    'weight' => '15',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/datastore/import'] = array(
+    'title' => 'Import',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_dataset_import_tab_form', 1),
+    'access callback' => 'dkan_dataset_feeds_access',
+    'access arguments' => array('import', 1),
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
+    'weight' => 10,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['node/%node/datastore/delete-items'] = array(
+    'title' => 'Delete items',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_dataset_delete_tab_form', NULL, 1),
+    'access callback' => 'dkan_dataset_feeds_access',
+    'access arguments' => array('clear', 1),
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
+    'weight' => 11,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/datastore/unlock'] = array(
+    'title' => 'Unlock',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_dataset_unlock_tab_form', NULL, 1),
+    'access callback' => 'dkan_dataset_feeds_access',
+    'access arguments' => array('unlock', 1),
+    'file' => 'dkan_dataset.pages.inc',
+    'file path' => $path,
+    'weight' => 11,
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_datastore_menu_alter(&$items) {
+  // Removing these here, readding in hook_menu().
+  unset($items['node/%node/delete-items']);
+  unset($items['node/%node/import']);
+  unset($items['node/%node/unlock']);
+}
+
