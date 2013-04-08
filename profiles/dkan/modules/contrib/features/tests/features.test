@@ -1,0 +1,289 @@
+<?php
+
+/**
+ * User permission component tests for Features
+ */
+class FeaturesUserTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
+  /**
+   * Test info.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => t('Component tests'),
+      'description' => t('Run tests for components of Features.') ,
+      'group' => t('Features'),
+    );
+  }
+
+  /**
+   * Set up test.
+   */
+  public function setUp() {
+    parent::setUp(array(
+      'field',
+      'filter',
+      'image',
+      'taxonomy',
+      'views',
+      'features',
+      'features_test'
+    ));
+
+    // Run a features rebuild to ensure our feature is fully installed.
+    features_rebuild();
+
+    $admin_user = $this->drupalCreateUser(array('administer features'));
+    $this->drupalLogin($admin_user);
+  }
+
+  /**
+   * Run test.
+   */
+  public function test() {
+    module_load_include('inc', 'features', 'features.export');
+
+    $components = array_filter(array(
+      'field' => 'field',
+      'filter' => 'filter',
+      'image' => 'image',
+      'node' => 'node',
+      'user_permission' => 'user',
+      'views_view' => 'views',
+    ), 'module_exists');
+
+    foreach (array_keys($components) as $component) {
+      $callback = "_test_{$component}";
+
+      // Ensure that the component/default is properly available.
+      $object = $this->$callback('load');
+      $this->assertTrue(!empty($object), t('@component present.', array('@component' => $component)));
+
+      // Ensure that the component is defaulted.
+      $states = features_get_component_states(array('features_test'), FALSE, TRUE);
+      $this->assertTrue($states['features_test'][$component] === FEATURES_DEFAULT, t('@component state: Default.', array('@component' => $component)));
+
+      // Override component and test that Features detects the override.
+      $this->$callback('override', $this);
+      $states = features_get_component_states(array('features_test'), FALSE, TRUE);
+      $this->assertTrue($states['features_test'][$component] === FEATURES_OVERRIDDEN, t('@component state: Overridden.', array('@component' => $component)));
+    }
+
+    // Revert component and ensure that component has reverted.
+    // Do this in separate loops so we only have to run
+    // drupal_flush_all_caches() once.
+    foreach (array_keys($components) as $component) {
+      features_revert(array('features_test' => array($component)));
+    }
+    drupal_flush_all_caches();
+    foreach (array_keys($components) as $component) {
+      // Reload so things like Views can clear it's cache
+      $this->$callback('load');
+      $states = features_get_component_states(array('features_test'), FALSE, TRUE);
+      $this->assertTrue($states['features_test'][$component] === FEATURES_DEFAULT, t('@component reverted.', array('@component' => $component)));
+    }
+  }
+
+  protected function _test_field($op = 'load') {
+    switch ($op) {
+      case 'load':
+        return field_info_instance('node', 'field_features_test', 'features_test');
+      case 'override':
+        $field_instance = field_info_instance('node', 'field_features_test', 'features_test');
+        $field_instance['label'] = 'Foo bar';
+        field_update_instance($field_instance);
+        break;
+    }
+  }
+
+  protected function _test_filter($op = 'load') {
+    // So... relying on our own API functions to test is pretty lame.
+    // But these modules don't have APIs either. So might as well use
+    // the ones we've written for them...
+    features_include();
+    switch ($op) {
+      case 'load':
+        return features_filter_format_load('features_test');
+      case 'override':
+        $format = features_filter_format_load('features_test');
+        unset($format->filters['filter_url']);
+        filter_format_save($format);
+        break;
+    }
+  }
+
+  protected function _test_image($op = 'load') {
+    switch ($op) {
+      case 'load':
+        return image_style_load('features_test');
+      case 'override':
+        $style = image_style_load('features_test');
+        $style = image_style_save($style);
+        foreach ($style['effects'] as $effect) {
+          $effect['data']['width'] = '120';
+          image_effect_save($effect);
+        }
+        break;
+    }
+  }
+
+  protected function _test_node($op = 'load') {
+    switch ($op) {
+      case 'load':
+        return node_type_get_type('features_test');
+      case 'override':
+        $type = node_type_get_type('features_test');
+        $type->description = 'Foo bar baz.';
+        $type->modified = TRUE;
+        node_type_save($type);
+        break;
+    }
+  }
+
+  protected function _test_views_view($op = 'load') {
+    switch ($op) {
+      case 'load':
+        return views_get_view('features_test', TRUE);
+      case 'override':
+        $view = views_get_view('features_test', TRUE);
+        $view->set_display('default');
+        $view->display_handler->override_option('title', 'Foo bar');
+        $view->save();
+        // Clear the load cache from above
+        views_get_view('features_test', TRUE);
+        break;
+    }
+  }
+
+  protected function _test_user_permission($op = 'load') {
+    switch ($op) {
+      case 'load':
+        $permissions = user_role_permissions(array(DRUPAL_AUTHENTICATED_RID => 'authenticated user'));
+        return !empty($permissions[DRUPAL_AUTHENTICATED_RID]['create features_test content']);
+      case 'override':
+        user_role_change_permissions(DRUPAL_AUTHENTICATED_RID, array('create features_test content' => 0));
+        break;
+    }
+  }
+}
+
+/**
+ * Tests enabling of feature modules.
+ */
+class FeaturesEnableTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
+  /**
+   * Test info.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => t('Features enable tests'),
+      'description' => t('Run tests for enabling of features.') ,
+      'group' => t('Features'),
+    );
+  }
+
+
+  /**
+   * Run test for features_get_components on enable.
+   */
+  public function testFeaturesGetComponents() {
+
+    // Testing that features_get_components returns correct after enable.
+    $modules = array(
+      'features',
+      'taxonomy',
+      'features_test',
+    );
+
+    // Make sure features_get_components is cached if features already enabled.
+    if (!module_exists('features')) {
+      drupal_load('module', 'features');
+    }
+    features_get_components();
+
+    module_enable($modules);
+
+    // Make sure correct information for enabled modules is now cached.
+    $components = features_get_components();
+    $taxonomy_component_info = taxonomy_features_api();
+    $this->assertTrue(!empty($components['taxonomy']) && $components['taxonomy'] == $taxonomy_component_info['taxonomy'], 'features_get_components returns correct taxonomy information on enable');
+
+    features_rebuild();
+    $this->assertNotNull(taxonomy_vocabulary_machine_name_load('taxonomy_features_test'), 'Taxonomy vocabulary correctly enabled on enable.');
+  }
+}
+
+
+/**
+ * Tests intergration of ctools for features.
+ */
+class FeaturesCtoolsIntegrationTest extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
+  /**
+   * Test info.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => t('Features Chaos Tools integration'),
+      'description' => t('Run tests for ctool integration of features.') ,
+      'group' => t('Features'),
+    );
+  }
+
+  /**
+   * Set up test.
+   */
+  public function setUp() {
+    parent::setUp(array(
+      'features',
+      'ctools',
+    ));
+  }
+
+  /**
+   * Run test.
+   */
+  public function testModuleEnable() {
+    $try = array(
+      'strongarm',
+      'views',
+    );
+
+    // Trigger the first includes and the static to be set.
+    features_include();
+    $function_ends = array(
+      'features_export',
+      'features_export_options',
+      'features_export_render',
+      'features_revert',
+    );
+    foreach ($try as $module) {
+      $function = $module . '_features_api';
+      $this->assertFalse(function_exists($function), 'Chaos tools functions for ' . $module . ' do not exist while it is disabled.');
+      // Module enable will trigger declaring the new functions.
+      module_enable(array($module));
+    }
+
+    // CTools hooks only created when there is an actual feature exportable
+    // enabled.
+    module_enable(array('features_test'));
+
+    foreach ($try as $module) {
+      if (module_exists($module)) {
+        $function_exists = function_exists($function);
+        if ($function_exists) {
+          foreach ($function() as $component_type => $component_info) {
+            foreach ($function_ends as $function_end) {
+              $function_exists = $function_exists && function_exists($component_type . '_' . $function_end);
+            }
+          }
+        }
+        $this->assertTrue($function_exists, 'Chaos tools functions for ' . $module . ' exist when it is enabled.');
+      }
+    }
+  }
+}

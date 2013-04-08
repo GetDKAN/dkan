@@ -1,0 +1,7 @@
+name = Default pattern
+description = This pattern will be used if no starterkit was selected
+core = 7.x
+engine = phptemplate
+screenshot = screenshot.png
+base theme = omega
+version = 1.x

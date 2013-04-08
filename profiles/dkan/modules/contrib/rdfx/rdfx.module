@@ -1,0 +1,416 @@
+<?php
+
+/**
+ * @file
+ * Extends the RDF API of Drupal core to support more RDF seralizations formats
+ * other RDF capabilities.
+ */
+
+/**
+ * Path to the ARC2 PHP library.
+ */
+if (module_exists('libraries')) {
+  define('RDF_ARC2_PATH', libraries_get_path('arc'));
+}
+else {
+  define('RDF_ARC2_PATH', drupal_get_path('module', 'rdfx') . '/vendor/arc');
+}
+
+/**
+ * Implements hook_init().
+ */
+function rdfx_init() {
+  // Attempts to load the ARC2 library, if available.
+  if (!class_exists('ARC2') && file_exists(RDF_ARC2_PATH . '/ARC2.php')) {
+    @include_once RDF_ARC2_PATH . '/ARC2.php';
+  }
+  module_load_include('inc', 'rdfx', 'rdfx.terms');
+  module_load_include('inc', 'rdfx', 'rdfx.import');
+  module_load_include('inc', 'rdfx', 'rdfx.query');
+}
+
+/*
+ * Implements hook_permission().
+ */
+function rdfx_permission() {
+  return array(
+    'administer rdf' => array(
+      'title' => t('Administer RDF'),
+      'description' => t('Configure and setup RDFx module.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function rdfx_menu() {
+  // @todo use access RDF data permission instead of access content.
+//   $items['ns'] = array(
+//     'title' => 'Site vocabulary',
+//     'description' => 'RDF description of the site schema.',
+//     'page callback' => 'drupal_get_form',
+//     'access arguments' => array('access content'),
+//     'file' => 'rdfx.pages.inc',
+//   );
+  // Add config options to the Services block on the config page. RDF is not
+  // technically a service, but neither is RSS. RDF and RSS are very closely
+  // aligned.
+  $config_base = array(
+    'access arguments' => array('administer rdf'),
+    'file'             => 'rdfx.admin.inc',
+  );
+  $items['admin/config/services/rdf'] = array(
+    'title'            => 'RDF publishing settings',
+    'description'      => 'Configure how site content gets published in RDF.',
+    'page callback' => 'rdfx_mapping_overview',
+  ) + $config_base;
+  $items['admin/config/services/rdf/mappings'] = array(
+    'title' => 'RDF Mappings',
+    'description'      => 'Configure how site content gets published in RDF.',
+    'page callback'    => 'rdfx_mapping_overview',
+    'type'             => MENU_DEFAULT_LOCAL_TASK,
+  ) + $config_base;
+  $items['admin/config/services/rdf/namespaces'] = array(
+    'title' => 'RDF namespaces',
+    'description'      => 'See all namespaces and their prefixes.',
+    'page callback'    => 'rdfx_admin_namespaces',
+    'type'             => MENU_LOCAL_TASK,
+  ) + $config_base;
+  return $items;
+}
+
+/**
+ * Implements hook_help().
+ */
+function rdfx_help($path, $arg) {
+  switch($path) {
+    case 'admin/config/services/rdf/namespaces';
+      return '<p>' . t('Manage the namespaces and associated prefixes used by the site. Prefixes allow URIs to be shortened in the form of <a href="http://en.wikipedia.org/wiki/CURIE">CURIEs</a> (Compact URIs). For example, the CURIE %curie represents the URI %uri.', array('%curie' => 'dc:title', '%uri' => 'http://purl.org/dc/terms/title')) . '</p>';
+    case 'admin/config/services/rdf/mappings':
+      if (module_exists('rdfui')) {
+        $message = t('Manage RDF mappings for entity types and field bundles used throughout the site. Some mappings are not editable through the UI. See the core RDF mapping API !documentation to find out how to modify these mappings.', array('!documentation' => l('documentation', 'http://drupal.org/developing/api/rdf')));
+      }
+      else {
+        $message = t('View RDF mappings for entity types and field bundles used throughout the site. Enabling the RDF UI module (bundled with RDFx) will allow you to configure many of these mappings.');
+      }
+      return '<p>' . $message . '</p>';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function rdfx_theme() {
+  return array(
+    'rdfx_mapping_admin_overview' => array(
+      'variables' => array('bundle' => array(), 'rdftype' => array(), 'real_fields' => array(), 'fake_fields' => array()),
+    ),
+    'rdfx_mapping_admin_overview_row' => array(
+      'variables' => array('field' => array()),
+    ),
+  );
+}
+
+/**
+ * @param String $type
+ *   The entity type.
+ *
+ * @param String $id
+ *   The entity instance ID.
+ *
+ * @return ARC2 Object
+ */
+function rdfx_get_rdf_model($type, $id) {
+  // Loads entity and its metadata.
+  $wrapper = entity_metadata_wrapper($type, $id);
+  $entities = entity_load($type, array($id));
+  $entity = $entities[$id];
+  $data = $wrapper->value();
+  $property_info = entity_get_property_info($type);
+  $entity_uri = rdfx_resource_uri($type, $entity);
+
+  // Instantiates node resource as ARC2 class and set base and namespaces.
+  $res = ARC2::getResource();
+  $res->setUri($entity_uri);
+  $res->base = url('', array('absolute' => TRUE));
+  $res->ns = rdf_get_namespaces();
+
+  // Initializes ARC2 index.
+  $index = array();
+
+  // Adds the RDF types of the resource if a mapping exists.
+  if (!empty($data->rdf_mapping['rdftype'])) {
+    $index[$entity_uri]['rdf:type'] = $data->rdf_mapping['rdftype'];
+  }
+
+  foreach ($wrapper as $name => $property) {
+    if ($property->access('view')) {
+      // Substitute the schema field if the key exists.
+      if (!empty($property_info['properties'][$name]['schema field'])) {
+        $name = $property_info['properties'][$name]['schema field'];
+      }
+      try {
+        if ($property instanceof EntityDrupalWrapper || $property instanceof EntityValueWrapper) {
+          rdfx_add_statement($index, $entity_uri, $property, $wrapper, $name);
+        }
+        elseif ($property instanceof EntityListWrapper) {
+          // Iterates through the list and add each of them as statement.
+          $li_filtered = rdfx_property_access_filter($property);
+          foreach ($li_filtered as $li_name => $li_property) {
+            if ($li_property instanceof EntityDrupalWrapper || $li_property instanceof EntityValueWrapper) {
+              rdfx_add_statement($index, $entity_uri, $li_property, $wrapper, $name);
+            }
+          }
+        }
+        elseif ($property instanceof EntityStructureWrapper) {
+          // Entity Structure Wrapper exposes structural elements, such as
+          // text format for fields. We are not interested in this, and adding
+          // the additional information about values means you have to handle
+          // values as blank nodes.
+          $li_filtered = rdfx_property_access_filter($property);
+          foreach ($li_filtered as $li_name => $li_property) {
+            if ($li_property instanceof EntityDrupalWrapper || $li_property instanceof EntityValueWrapper) {
+              // This assumes that all literals have a 'value' array element
+              // and that all resources have a 'uri' array element.
+              if ($li_name == 'value' || $li_name == 'uri'){
+                rdfx_add_statement($index, $entity_uri, $li_property, $wrapper, $name);
+              }
+            }
+          }
+        }
+      }
+      catch (EntityMetadataWrapperException $e) {
+        // Property not supported. Fail silently.
+      }
+    }
+  }
+
+  // Expand all CURIEs and attach the index to the ARC2 resource.
+  $res->index = $res->expandPNames($index);
+  return $res;
+}
+
+function rdfx_property_access_filter($wrapper) {
+  $filtered = array();
+  foreach ($wrapper as $name => $property) {
+    if ($property->access('view')) {
+      $filtered[$name] = $property;
+    }
+  }
+  return $filtered;
+}
+
+/**
+ * Gets the predicates relating the property to the entity.
+ */
+function rdfx_get_predicates(EntityMetadataWrapper $wrapper, $name) {
+  $element = array();
+  if ($wrapper instanceof EntityDrupalWrapper) {
+    $entity = $wrapper->value();
+    if (!empty($entity->rdf_mapping[$name])) {
+      // Just make use of the first predicate for now.
+      // @lin this support all predicates defined in the mapping.
+      $predicates = $entity->rdf_mapping[$name]['predicates'];
+      $element = $predicates;
+    }
+  }
+  // For elements which don't have a mapping, expose them using a local
+  // namespace. @todo site vocabulary.
+  // This functionality is disabled by default as a lot of this data is
+  // irrelevant for outsiders and might contains some data the site owner might
+  // not want to expose.
+  // @todo provide admin setting to enable this functionality.
+  if (!isset($element) && variable_get('rdfx_include_unset_mappings', FALSE)) {
+    $predicate = 'site:' . (is_numeric($name) ? 'item' : $name);
+    $element = array($predicate);
+  }
+  return $element;
+}
+
+/**
+ * Adds an RDF statement between the entity and the property. These statements
+ * can have either resource or literal objects.
+ */
+function rdfx_add_statement(&$index, $uri, $property, EntityMetadataWrapper $wrapper, $name) {
+  if ($property instanceof EntityDrupalWrapper) {
+    // For referenced entities only add the resource's URI
+    rdfx_add_resource($index, $uri, $property, $wrapper, $name);
+  }
+  elseif ($property instanceof EntityValueWrapper) {
+    rdfx_add_literal($index, $uri, $property, $wrapper, $name);
+  }
+}
+
+/**
+ * Adds a resource object.
+ */
+function rdfx_add_resource(&$index, $uri, $property, EntityMetadataWrapper $wrapper, $name) {
+  if ($id = $property->getIdentifier()) {
+    $predicates = rdfx_get_predicates($wrapper, $name);
+    $type = $property->type();
+    $entities = entity_load($type, array($id));
+    $entity = $entities[$id];
+    $object_uri = rdfx_resource_uri($type, $entity);
+    foreach ($predicates as $predicate) {
+      $index[$uri][$predicate][] = $object_uri;
+    }
+  }
+}
+
+/**
+ * Adds a literal object.
+ */
+function rdfx_add_literal(&$index, $uri, $property, EntityMetadataWrapper $wrapper, $name) {
+  $predicates = rdfx_get_predicates($wrapper, $name);
+  $object_value = $property->value();
+
+  // Extracts datatype and callback from the RDF mapping.
+  $datatype = '';
+  if ($wrapper instanceof EntityDrupalWrapper) {
+    $entity = $wrapper->value();
+    if (!empty($entity->rdf_mapping[$name]['datatype'])) {
+      $datatype = $entity->rdf_mapping[$name]['datatype'];
+    }
+    if (!empty($entity->rdf_mapping[$name]['callback']) && function_exists($entity->rdf_mapping[$name]['callback'])) {
+      $object_value = $entity->rdf_mapping[$name]['callback']($object_value);
+    }
+  }
+
+  foreach ($predicates as $predicate) {
+    $index[$uri][$predicate][] = array(
+      'value' => $object_value,
+      'type' => 'literal',
+      'datatype' => $datatype,
+    );
+  }
+}
+
+/**
+ * Returns the URI used for the given resource.
+ *
+ * @param String $type
+ *   The entity type.
+ *
+ * @param Object $entity
+ *
+ * @return String
+ *   An absolute path to the entity instance.
+ */
+function rdfx_resource_uri($type, $entity) {
+  $uri = entity_uri($type, $entity);
+  return url($uri['path'], array('absolute' => TRUE));
+
+}
+
+/**
+ * Lists the RDF serializations format which will be integrated with RestWS.
+ *
+ * Does not implement hook_restws_format_info() because we need to override the
+ * RDF serialization format to use our own ARC2 based serializer.
+ */
+function _rdfx_serialization_formats() {
+  $result['rdf'] = array(
+    'label' => t('RDF/XML'),
+    'class' => 'RDFxRestWSFormatRDFXML',
+    'mime type' => 'application/rdf+xml',
+  );
+  $result['ttl'] = array(
+    'label' => t('Turtle'),
+    'class' => 'RDFxRestWSFormatTurtle',
+    'mime type' => 'application/x-turtle',
+  );
+  $result['nt'] = array(
+    'label' => t('NTriples'),
+    'class' => 'RDFxRestWSFormatNTriples',
+    'mime type' => 'text/plain',
+  );
+  $result['rdfjson'] = array(
+    'label' => t('RDFJSON'),
+    'class' => 'RDFxRestWSFormatRDFJSON',
+    'mime type' => 'application/json',
+  );
+  return $result;
+}
+
+/**
+ * Implements hook_restws_format_info_alter().
+ */
+function rdfx_restws_format_info_alter(&$info) {
+  $info = _rdfx_serialization_formats() + $info;
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function rdfx_requirements($phase) {
+  $requirements = array();
+
+  if ($phase == 'runtime') {
+    if (class_exists('ARC2')) {
+      $value = t('Installed (version @version)', array('@version' => ARC2::getVersion()));
+      $severity = REQUIREMENT_OK;
+      $description = '';
+    }
+    else {
+      $value = t('Not installed');;
+      $severity = REQUIREMENT_ERROR;
+      $path = module_exists('libraries') ? libraries_get_path('ARC2') . '/arc/ARC2.php' : drupal_get_path('module', 'rdfx') . '/vendor/arc/ARC2.php';
+      $description = t('The RDFx module requires the ARC2 library to function properly. The simplest way to install ARC2 is by using the Drush command "drush rdf-download". Alternatively, you can !download the latest package, unzip it, and move/rename the folder so that the path to ARC2.php is %path', array('!download' => l('download', 'http://github.com/semsol/arc2/tarball/master'), '%path' => $path));
+    }
+    $requirements['rdfx_arc'] = array(
+      'title' => t('RDFx ARC2 Library'),
+      'value' => $value,
+      'severity' => $severity,
+      'description' => $description,
+    );
+
+    // If there were any conflicting namespaces...
+    if (rdfx_get_conflicting_namespaces()) {
+      // Add a requirement warning and break.
+      $requirements['rdfx_ns_conflict'] = array(
+        'title' => t('RDFx Namespace Conflict'),
+        'severity' => REQUIREMENT_ERROR,
+        'value' => '',
+        'description' => t('One or more namespaces has conflicts.  See this page for more information:') . ' ' . l(t('RDF publishing settings'), 'admin/config/services/rdf/namespaces')
+      );
+    }
+  }
+  return $requirements;
+}
+
+
+/**
+ * Gets conflicting namespaces.
+ * Returns an array of (prefix => array(uri1, uri2, ...)) items.
+ */
+function rdfx_get_conflicting_namespaces() {
+  $conflicting_namespaces = array();
+
+  $rdf_namespaces = module_invoke_all('rdf_namespaces');
+
+  foreach ($rdf_namespaces as $prefix => $uris) {
+    if (is_array($uris)) {
+      $consolidated_uris = array_unique($uris);
+
+      // A prefix has conflicting namespaces if it has multiple associated URIs.
+      if (count($consolidated_uris) > 1) {
+        $conflicting_namespaces[$prefix] = $consolidated_uris;
+      }
+    }
+  }
+  return $conflicting_namespaces;
+}
+
+/**
+ * Implementation of hook_features_api().
+ */
+function rdfx_features_api() {
+  return array(
+    'rdf_mappings' => array(
+      'name' => t('RDF mappings'),
+      'default_hook' => 'rdf_default_mappings',
+      'file' => drupal_get_path('module', 'rdfx') .'/rdfx.features.inc',
+    ),
+  );
+}

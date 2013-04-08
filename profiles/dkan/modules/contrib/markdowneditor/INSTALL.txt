@@ -1,0 +1,52 @@
+
+Markdown Editor Installation Instructions
+
+To get Markdown Editor up and running, you must carry out the following
+steps:
+
+1. Make sure the BUEditor and Markdown filter modules are installed.
+
+2. Extract the compressed file containing Markdown Editor to the module
+   directory (usually sites/all/modules).
+
+3. Install the module as you would any other.
+
+4. Customize the editor and set up what roles may use it:
+   admin/config/content/bueditor
+
+You can customize the editor, use other icons or captions if you like.
+See the BUEditor readme file for a comprehensive guide to how you can
+customize the Markdown Editor button bar.
+
++-------------------------------------------------------------------------+
+| ############################## WARNING ################################ |
+| Any customizations you make will be lost if you uninstall the editor    |
+| without first exporting your customized buttons as a CSV file. Once     |
+| you have uninstalled Markdown Editor you can restore your buttons using |
+| the CSV file you saved.                                                 |
+| How this is done is explained in the BUEditor readme file.              |
++-------------------------------------------------------------------------+
+
+To uninstall:
+
+1. Uncheck the module on the modules page
+   admin/build/modules
+   to disable it
+
+2. Go to
+   admin/build/modules/uninstall
+   to uninstall the module. UNINSTALLING MARKDOWN EDITOR WILL REMOVE
+   ANY TRACE OF IT FROM THE DATABASE INCLUDING THE MARKDOWNEDITOR
+   BUTTON SET FOR BUEDITOR!
+
+
+-------------------------------------------------------------------------------
+
+KNOWN BUGS:
+Under certain circumstances, the editor may append empty lines at the
+bottom of the editor text area.
+If you experience problems using this editor, please file an issue in its
+project page's issue tracker at drupal.org. Please include detailed
+instructions so that we can recreate the problem and effectively analyze
+and fix it.
+http://drupal.org/project/markdowneditor

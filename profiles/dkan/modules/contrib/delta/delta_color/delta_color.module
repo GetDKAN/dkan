@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * Implements hook_delta_plugins().
+ */
+function delta_color_delta_plugins() {
+  return array(
+    'delta_injection_color' => array(
+      'handler' => array(
+        'path' => drupal_get_path('module', 'delta_color') . '/plugins',
+        'file' => 'delta_injection_color.inc',
+        'class' => 'delta_injection_color',
+        'parent' => 'delta_injection',
+      ),
+    ),
+  );
+}

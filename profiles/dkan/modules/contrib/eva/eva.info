@@ -1,0 +1,14 @@
+name = Eva
+description = Provides a Views display type that can be attached to entities.
+core = 7.x
+dependencies[] = views
+package = Views
+
+files[] = eva_plugin_display_entity.inc
+
+; Information added by drupal.org packaging script on 2012-07-31
+version = "7.x-1.2"
+core = "7.x"
+project = "eva"
+datestamp = "1343701935"
+

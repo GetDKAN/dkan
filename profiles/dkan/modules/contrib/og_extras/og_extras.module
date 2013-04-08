@@ -1,0 +1,223 @@
+<?php
+/**
+ * @file
+ * A collection of helper functions and blocks that provide more information about Organic Groups,
+ * designed especially for sites not using Panels, but also useful for sites that are.
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function og_extras_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'og_extras') . '/includes',
+  );
+}
+
+/**
+ * Implement hook_theme().
+ */
+function og_extras_theme() {
+  $module_path = drupal_get_path('module', 'og_extras');
+
+  $base = array(
+    'file' => 'theme.inc',
+    'path' => "$module_path/theme",
+  );
+
+  return array(
+    'og_extras_group_info' => $base + array(
+      'render element' => 'element',
+      'template' => 'og-extras-group-info',
+    ),
+    'og_extras_group_links' => $base + array(
+      'render element' => 'element',
+      'template' => 'og-extras-group-links',
+    ),
+  );
+}
+
+/**
+ * Create a formatted 'Subscribe' link for this group.
+ * @TODO
+ * Replace with helper function if http://drupal.org/node/1568858 gets in.
+ */
+function og_extras_subscribe($entity_type, $entity) {
+  $display['type'] = 'og_group_subscribe';
+  $group_type = 'node';
+  $group = entity_load_single($group_type, $entity->nid);
+  list(,, $group_bundle) = entity_extract_ids($group_type, $group);
+  $display['settings']['field_name'] = og_get_best_group_audience_field($entity_type, $entity, $group_type, $group_bundle);
+  $elements = og_ui_field_formatter_view($entity_type, $entity, NULL, NULL, NULL, array(), $display);
+  return drupal_render($elements);
+}
+
+/**
+ * Helper function to get a count of the members in a group.
+ */
+function og_extras_subscriber_count($gid) {
+  $memberships = og_membership_load_multiple(FALSE, array('gid' => $gid, 'entity_type' => 'user'));
+  return count($memberships);
+}
+
+
+/**
+ * Get all the users with certain roles in a group.
+ *
+ * @param $gid
+ *   The group unique ID.
+ * @param $roles
+ *   Array with the role IDs to query.
+ */
+function og_extras_get_users_by_roles($gid, $rids = array()) {
+  $query = db_select('og_users_roles', 'og_users_roles');
+  $query->fields('og_users_roles', array('uid'))
+    ->condition('gid', $gid);
+  if (!empty($rids)) {
+    $query->condition('rid', $rids, 'IN');
+  }
+  return $query->execute()
+    ->fetchAll();
+}
+
+/**
+ * Get all the roles in a group.
+ *
+ * @param $gid
+ *   The group unique ID.
+ */
+function og_extras_get_roles($gid = NULL) {
+  $query = db_select('og_users_roles', 'ur');
+  $query->join('og_role', 'r', 'r.rid = ur.rid');
+  $query->fields('r', array('rid', 'name'));
+  if (!empty($gid)) {
+    $query->condition('ur.gid', $gid, '=');
+  }
+  $query->distinct();
+  return $query->execute()->fetchAll();
+}
+
+/**
+ * Helper function to get a list of the member uids in a group.
+ */
+function og_extras_member_ids($gid, $max = 10) {
+  $uids = array();
+  $memberships = og_membership_load_multiple(FALSE, array('gid' => $gid, 'entity_type' => 'user'));
+  foreach ($memberships as $membership) {
+    $uids[] = $membership->etid;
+  }
+  return $uids;
+}
+
+/**
+ * Helper function to get pictures or names of members.
+ */
+function og_extras_members($gid, $type = 'picture', $max = 10) {
+  $members = array();
+  $uids = og_extras_member_ids($gid, $max);
+  $accounts = user_load_multiple($uids);
+  foreach ($accounts as $account) {
+    $members[$account->uid] = $type == 'picture' ?  theme('user_picture', array('account' => $account)) : theme('username', array('account' => $account));
+  }
+  return $members;
+}
+
+/**
+ * Implements hook_og_context_negotiation_info().
+ *
+ * We are adding a new way to set the group context, based on a path like 'group/%/whatever',
+ * so group views and custom pages retain the group context.
+ */
+function og_extras_og_context_negotiation_info() {
+  $providers = array();
+  $providers['og_extras'] = array(
+    'name' => t('Group url'),
+    'description' => t("Select group context for any url that starts with 'group/%'. Make sure that all views and custom pages use paths that start with this value in order for the context to be recognized when viewing those pages, and that nothing that is not a group uses that path."),
+    'callback' => 'og_extras_context_handler_url',
+  );
+  return $providers;
+}
+
+/**
+ * Context handler; Get groups from URL.
+ */
+function og_extras_context_handler_url() {
+  $context = array();
+  if (arg(0) == 'group' && is_numeric(arg(1))) {  
+    $group = og_get_group('group', arg(1));
+    if (!empty($group) && !empty($group->gid)) {
+      $context = array($group->gid);
+    }
+  }
+  return $context;
+}
+
+/**
+ * Implements hook_block_info().
+ *
+ * Add a custom group statistics and attendees blocks.
+ */
+function og_extras_block_info() {
+  $blocks['group_info'] = array(
+    'info' => t('Group details'),
+    'cache' => DRUPAL_NO_CACHE
+    // DRUPAL_CACHE_PER_ROLE will be assumed if not set.
+  );
+  $blocks['node_links'] = array(
+    'info' => t('Node content links'),
+    'cache' => DRUPAL_NO_CACHE
+    // DRUPAL_CACHE_PER_ROLE will be assumed if not set.
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Add a custom group statistics and create content blocks.
+ */
+function og_extras_block_view($delta = '') {
+
+  $block = array();
+
+  switch ($delta) {
+    case 'group_info':
+      // The info block is visible to everyone, group member or not.
+      $content = theme('og_extras_group_info');
+      if (!empty($content)) {
+        $block['subject'] = t('Group details');
+        $block['content'] = $content;
+      }
+      break;
+
+    case 'node_links':
+      // Links are visible to people with permissions.
+      $content = theme('og_extras_group_links');
+      if (!empty($content)) {
+        $block['subject'] = t('Create content');
+        $block['content'] = $content;
+      }
+      break;
+
+  }
+  return $block;
+}
+
+/**
+ * Creates the Group create content links.
+ */
+function og_extras_node_links() {
+  $group = og_context();
+
+  $types = array();
+  foreach (node_type_get_types() as $type) {
+    if (og_is_group_content_type('node', $type->type)) {
+      $types[$type->type] = $type->type;
+    }
+  }
+
+  $content = og_node_create_links($group['group_type'], $group['gid'], OG_AUDIENCE_FIELD, NULL, $types);
+
+  return drupal_render($content);
+}

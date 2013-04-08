@@ -1,0 +1,14 @@
+name = Views JSON
+description = Views style plugin to render node content as JSON.
+package = Views
+core = 7.x
+dependencies[] = views
+
+files[] = views/plugins/views_plugin_style_json.inc
+
+; Information added by drupal.org packaging script on 2012-06-15
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "views_datasource"
+datestamp = "1339721340"
+

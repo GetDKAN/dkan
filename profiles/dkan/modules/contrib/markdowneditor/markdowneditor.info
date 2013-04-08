@@ -1,0 +1,14 @@
+name = Markdown Editor for BUEditor
+description = Provides a toolbar for writing Markdown syntax with BUEditor.
+core = 7.x
+package = Content authoring
+dependencies[] = bueditor
+recommends[] = ajax_markup
+recommends[] = markdown
+
+; Information added by drupal.org packaging script on 2012-11-19
+version = "7.x-1.2"
+core = "7.x"
+project = "markdowneditor"
+datestamp = "1353353806"
+

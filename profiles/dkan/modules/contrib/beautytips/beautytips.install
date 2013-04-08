@@ -1,0 +1,39 @@
+<?php 
+
+/**
+ * @file
+ * beautyTips install/uninstall hooks
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function beautytips_install() {
+  // Display IE warning
+  $path = drupal_get_path('module', 'beautytips');
+  $link_readme = l('BeautyTips Readme.txt', $path . '/README.txt');
+  if (!file_exists($path . '/other_libs/excanvas_r3/excanvas.compiled.js')) {
+    drupal_set_message(t('WARNING! In order for BeautyTips to function correctly in Internet Explorer, the Excanvas library needs to be added. (See the !readme_file for more information.)', array('!readme_file' => $link_readme)), $type = 'warning');
+  }
+
+  // Set basic defaults
+  variable_set('beautytips_defaults', array('cssStyles' => array()));
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function beautytips_uninstall() {
+  $variables = array(
+    'beautytips_always_add',
+    'beautytips_added_selectors_array',
+    'beautytips_default_style',
+    'beautytips_custom_style',
+    'beautytips_defaults',
+  );
+  foreach ($variables as $variable) {
+    variable_del($variable);
+  }
+
+  cache_clear_all('beautytips:beautytips-styles', 'cache');
+}

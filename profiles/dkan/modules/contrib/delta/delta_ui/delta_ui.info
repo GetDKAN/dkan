@@ -1,0 +1,21 @@
+name = Delta UI
+description = The Delta UI provides a user interface to build and edit the contextual theme settings provided by the Delta module.
+package = Theme Tools
+core = 7.x
+version = 7.x-3.x-dev
+
+dependencies[] = delta
+
+; Information added by drupal.org packaging script on 2011-11-12
+version = "7.x-3.x-dev"
+core = "7.x"
+project = "delta"
+datestamp = "1321099837"
+
+
+; Information added by drupal.org packaging script on 2012-07-24
+version = "7.x-3.0-beta11"
+core = "7.x"
+project = "delta"
+datestamp = "1343161343"
+

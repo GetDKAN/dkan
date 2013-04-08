@@ -1,0 +1,81 @@
+/**
+ * @file
+ * CSS for Markdown editor.
+ */
+
+
+/* Scrollbars to allow content that overflows dialog */
+.bue-popup-body {
+  overflow: auto;
+  max-width: 600px;
+  max-height: 400px;
+  padding-bottom: 10px;
+}
+
+#markdowneditor-dialog-form fieldset {
+  border: none;
+}
+
+#markdowneditor-dialog-form .form-text,
+#markdowneditor-dialog-form .form-textarea {
+  min-width: 200px;
+}
+#markdowneditor-dialog-table .form-text {
+  min-width: 100px;
+}
+
+#markdowneditor-dialog-form th {
+  text-transform: none;
+  background: transparent;
+  border: none;
+}
+
+#markdowneditor-dialog-form .markdowneditor-dialog-submit,
+#markdowneditor-dialog-form .markdowneditor-dialog-cancel {
+  float: right;
+  margin-bottom: 0;
+}
+
+/* Fix for Seven admin theme. */
+#markdowneditor-dialog-form td:last-child {
+  border-right: none;
+}
+
+
+/* Definition List */
+
+#markdowneditor-dialog-definition-list .prepend-row-button {
+  visibility: hidden;
+}
+
+#markdowneditor-dialog-definition-list .first .prepend-row-button {
+  visibility: visible;
+}
+
+#markdowneditor-dialog-definition-list td {
+  padding: 0 10px;
+  vertical-align: top;
+}
+
+#markdowneditor-dialog-definition-list .modification {
+  white-space: nowrap;
+}
+
+
+/* Table */
+
+#markdowneditor-dialog-table .header-row .remove-row-button {
+  visibility: hidden;
+}
+
+#markdowneditor-dialog-table .column-modification-cell .prepend-column-button {
+  visibility: hidden;
+}
+
+#markdowneditor-dialog-table .column-modification-cell.first .prepend-column-button {
+  visibility: visible;
+}
+
+#markdowneditor-dialog-table .row-modification-cell {
+  white-space: nowrap;
+}

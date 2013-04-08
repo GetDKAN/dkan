@@ -1,0 +1,171 @@
+<?php
+
+/**
+ * Test the RDF serialization functionality for nodes.
+ */
+class RdfxNodeSerializationTestCase extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'RDF serialization for Nodes',
+      'description' => 'Create a node and test its RDF serialization.',
+      'group' => 'RDFx',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('rdfx');
+
+    // Set default storage backend.
+    variable_set('field_storage_default', 'field_sql_storage');
+
+//     $field_name = drupal_strtolower('rdfx_text_test_field');
+//     $field = array('field_name' => $field_name, 'type' => 'test_field', 'cardinality' => 4);
+//     $field = field_create_field($field);
+//     $field_id = $field['id'];
+//     $instance = array(
+//       'field_name' => $field_name,
+//       'entity_type' => 'test_entity',
+//       'bundle' => 'article',
+//       'label' => $this->randomName() . '_label',
+//       'description' => $this->randomName() . '_description',
+//       'weight' => mt_rand(0, 127),
+//       'settings' => array(
+//         'test_instance_setting' => $this->randomName(),
+//       ),
+//       'widget' => array(
+//         'type' => 'test_field_widget',
+//         'label' => 'Test Field',
+//         'settings' => array(
+//           'test_widget_setting' => $this->randomName(),
+//         )
+//       )
+//     );
+//     field_create_instance($this->instance);
+
+    $web_user = $this->drupalCreateUser(array('create article content', 'create page content'));
+    $this->drupalLogin($web_user);
+  }
+
+  /**
+   * Create a "Article" node and ensure it serialized properly.
+   */
+  function testRdfxNodeCreation() {
+    // Create a node.
+    $edit = array();
+    $langcode = LANGUAGE_NONE;
+    $edit["title"] = $this->randomName(8);
+    $edit["body[$langcode][0][value]"] = $this->randomName(16);
+    $this->drupalPost('node/add/article', $edit, t('Save'));
+
+    // Check that the Article has been created.
+    $this->assertRaw(t('!post %title has been created.', array('!post' => 'Article', '%title' => $edit["title"])), t('Article created.'));
+
+    // Check that the node exists in the database.
+    $node = $this->drupalGetNodeByTitle($edit["title"]);
+    $this->assertTrue($node, t('Node found in database.'));
+
+    // Expected base URI and graph URI.
+    $base_uri = url('', array('absolute' => TRUE));
+    $uri = url('node/' . $node->nid, array('absolute' => TRUE));
+
+    // Get the node as RDF.
+    $g = rdfx_get_rdf_model('node', $node->nid);
+
+    // Inspect the PHP object returned by ARC2.
+    // Test object class.
+    $this->assertTrue(get_class($g) == 'ARC2_Resource', t('Object is of type ARC2_Resource.'));
+    // Test base uri.
+    $this->assertTrue($g->base == $base_uri, t('Base uri set properly by ARC2.'));
+    // Test graph uri.
+    $this->assertTrue($g->uri == $uri, t('Graph uri set properly by ARC2.'));
+
+    // Test if core rdf namespaces are present.
+    // @todo move this into a dedicate test for namespaces.
+    $erroneous_core_ns = FALSE;
+    foreach(rdf_rdf_namespaces() as $prefix => $ns) {
+      if (!isset($g->ns[$prefix]) || $g->ns[$prefix] != $ns) {
+        $erroneous_core_ns = TRUE;
+      }
+    }
+    $this->assertFalse($erroneous_core_ns, t('Core RDF namespaces set properly by ARC2.'));
+
+    // Test RDF types in ARC2 RDF index.
+    $o = array (
+      'value'=> 'http://rdfs.org/sioc/ns#Item',
+      'type'=> 'uri',
+    );
+    $this->assertTrue(in_array($o, $g->index[$uri]['http://www.w3.org/1999/02/22-rdf-syntax-ns#type']), t('sioc:Item type found in ARC2 index.'));
+    $o = array (
+      'value'=> 'http://xmlns.com/foaf/0.1/Document',
+      'type'=> 'uri',
+    );
+    $this->assertTrue(in_array($o, $g->index[$uri]['http://www.w3.org/1999/02/22-rdf-syntax-ns#type']), t('foaf:Document type found in ARC2 index.'));
+
+    // Test title in ARC2 RDF index.
+    $o = array (
+      'value'=> $node->title,
+      'type'=> 'literal',
+      'datatype'=> '',
+    );
+    $this->assertTrue(in_array($o, $g->index[$uri]['http://purl.org/dc/terms/title']), t('dc:title value found in ARC2 index.'));
+
+    // Test date in ARC2 RDF index.
+    $o = array (
+      'value'=> date_iso8601($node->created),
+      'type'=> 'literal',
+      'datatype' => 'xsd:dateTime',
+    );
+    $this->assertTrue(in_array($o, $g->index[$uri]['http://purl.org/dc/terms/date']), t('dc:date value found in ARC2 index.'));
+    $o = array (
+      'value'=> date_iso8601($node->created),
+      'type'=> 'literal',
+      'datatype' => 'xsd:dateTime',
+    );
+    $this->assertTrue(in_array($o, $g->index[$uri]['http://purl.org/dc/terms/created']), t('dc:created value found in ARC2 index.'));
+
+    // Test comment_count in ARC2 RDF index.
+    $o = array (
+      'value'=> $node->comment_count,
+      'type'=> 'literal',
+      'datatype'=> 'xsd:integer',
+    );
+    $this->assertTrue(in_array($o, $g->index[$uri]['http://rdfs.org/sioc/ns#num_replies']), t('sioc:num_replies value found in ARC2 index.'));
+  }
+
+}
+
+/**
+ * Tests the RDF features integration.
+ */
+class RdfxFeaturesIntegrationTestCase extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'RDF Features integration',
+      'description' => 'Enables a feature and check whether the RDF mappings defined by the feature have been saved. (REQUIRES FEATURES)',
+      'group' => 'RDFx',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('rdfx', 'features');
+  }
+
+  /**
+   * Enables a feature and ensures the RDF mappings take effect.
+   */
+  function testFeaturesEnable() {
+    // Checks initial Article RDF mappings.
+    $mappings = rdf_mapping_load('node', 'article');
+    $this->assertTrue($mappings['rdftype'] == array('sioc:Item', 'foaf:Document'), t('Initial RDF type set properly.'));
+    $this->assertTrue($mappings['title']['predicates'] == array('dc:title'), t('Initial property for title set properly.'));
+    $this->assertTrue($mappings['field_tags']['predicates'] == array('dc:subject'), t('Initial property for tags field set properly.'));
+
+    // Checks if mappings defined in the feature have been saved.
+    module_enable(array('rdfx_test'));
+    features_revert(array('rdfx_test' => array('rdf_mappings')));
+    $mappings = rdf_mapping_load('node', 'article');
+    $this->assertTrue($mappings['rdftype'] == array('sioc:Post'), t('sioc:num_replies value found in ARC2 index.'));
+    $this->assertTrue($mappings['title']['predicates'] == array('rdfs:label'), t('sioc:num_replies value found in ARC2 index.'));
+    $this->assertTrue($mappings['field_tags']['predicates'] == array('dc:subject'), t('Initial property for tags field set properly.'));
+  }
+}

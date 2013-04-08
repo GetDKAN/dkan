@@ -1,0 +1,144 @@
+<?php
+
+/**
+ * @file
+ * Provides a Markdown input filter.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function markdown_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#markdown':
+      return t('<p>The Markdown filter allows you to enter content using <a href="http://daringfireball.net/projects/markdown">Markdown</a>, a simple plain-text syntax that is transformed into valid XHTML.</p>');
+  }
+}
+
+/**
+ * Implements hook_filter_info().
+ */
+function markdown_filter_info() {
+  $filters['filter_markdown'] = array(
+    'title' => t('Markdown'),
+    'description' => t('Allows content to be submitted using Markdown, a simple plain-text syntax that is filtered into valid XHTML.'),
+    'process callback' => '_filter_markdown',
+    'settings callback' => '_filter_markdown_settings',
+    'tips callback'  => '_filter_markdown_tips',
+  );
+
+  return $filters;
+}
+
+/**
+ * Returns the markdown input filter tips.
+ * @TODO: make it easier for translators.
+ */
+function _filter_markdown_tips($format, $long = FALSE) {
+  if ($long) {
+    return t('Quick Tips:<ul>
+      <li>Two or more spaces at a line\'s end = Line break</li>
+      <li>Double returns = Paragraph</li>
+      <li>*Single asterisks* or _single underscores_ = <em>Emphasis</em></li>
+      <li>**Double** or __double__ = <strong>Strong</strong></li>
+      <li>This is [a link](http://the.link.example.com "The optional title text")</li>
+      </ul>For complete details on the Markdown syntax, see the <a href="http://daringfireball.net/projects/markdown/syntax">Markdown documentation</a> and <a href="http://michelf.com/projects/php-markdown/extra/">Markdown Extra documentation</a> for tables, footnotes, and more.');
+  }
+  else {
+    return t('You can use <a href="@filter_tips">Markdown syntax</a> to format and style the text. Also see <a href="@markdown_extra">Markdown Extra</a> for tables, footnotes, and more.', array('@filter_tips' => url('filter/tips'), '@markdown_extra' => 'http://michelf.com/projects/php-markdown/extra/'));
+  }
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function markdown_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'markdown_help':
+      $block['title'] = t('Markdown filter tips');
+      $block['content'] = _markdown_help_block();
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function markdown_block_info() {
+  $blocks = array();
+  $blocks['markdown_help'] = array(
+    'info' => t('Markdown filter tips'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Provides content for the markdown help block.
+ */
+function _markdown_help_block() {
+  return '<pre>' . t("
+## Header 2 ##
+### Header 3 ###
+#### Header 4 ####
+##### Header 5 #####
+(Hashes on right are optional)
+
+Link [Drupal](http://drupal.org)
+
+Inline markup like _italics_,
+ **bold**, and `code()`.
+
+> Blockquote. Like email replies
+>> And, they can be nested
+
+* Bullet lists are easy too
+- Another one
++ Another one
+
+1. A numbered list
+2. Which is numbered
+3. With periods and a space
+
+And now some code:
+    // Code is indented text
+    is_easy() to_remember();") . '</pre>';
+}
+
+/**
+ * Filter process callback.
+ */
+function _filter_markdown($text, $format) {
+  if (!empty($text)) {
+    module_load_include('php', 'markdown', 'markdown');
+    $text = Markdown($text);
+  }
+
+  return $text;
+}
+
+/**
+ * Filter settings callback. Just provides a version overview.
+ */
+function _filter_markdown_settings($form, &$form_state, $filter, $format, $defaults) {
+  module_load_include('php', 'markdown', 'markdown');
+
+  $settings['markdown_wrapper'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Markdown'),
+  );
+  $links = array(
+    'Markdown PHP Version: <a href="http://michelf.com/projects/php-markdown/">' . MARKDOWN_VERSION . '</a>',
+    'Markdown Extra Version: <a href="http://michelf.com/projects/php-markdown/">' . MARKDOWNEXTRA_VERSION . '</a>',
+  );
+  $settings['markdown_wrapper']['markdown_status'] = array(
+    '#title' => t('Versions'),
+    '#type' => 'item',
+    '#markup' => theme('item_list', array('items' => $links)),
+  );
+
+  return $settings;
+}

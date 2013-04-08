@@ -1,0 +1,95 @@
+<?php
+/**
+ * @file
+ * Test module for data_ui.test .
+ */
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function data_ui_test_ctools_plugin_api($module, $api) {
+  if ($module == 'data' && $api == 'data_default') {
+    return array(
+      'version' => 1,
+    );
+  }
+}
+
+/**
+ * Implements hook_data_default().
+ */
+function data_ui_test_data_default() {
+  $data_table = new stdClass;
+  $data_table->disabled = FALSE; /* Edit this to true to make a default data_table disabled initially */
+  $data_table->api_version = 1;
+  $data_table->title = 'Kittens';
+  $data_table->name = 'data_table_kittens';
+  $data_table->table_schema = array(
+    'fields' => array(
+      'id' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'disp-width' => '10',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'size' => 'normal',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'age' => array(
+        'type' => 'varchar',
+        'size' => 'normal',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'color' => array(
+        'type' => 'varchar',
+        'size' => 'normal',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+    ),
+    'name' => 'data_table_kittens',
+    'indexes' => array(
+      'id' => array(
+        '0' => 'id',
+      ),
+      'name' => array(
+        '0' => 'name',
+      ),
+    ),
+    'primary key' => array(
+      '0' => 'id',
+    ),
+  );
+  $data_table->meta = array(
+    'fields' => array(
+      'id' => array(
+        'label' => 'Id',
+      ),
+      'name' => array(
+        'label' => 'Name',
+      ),
+      'age' => array(
+        'label' => 'Age',
+      ),
+      'color' => array(
+        'label' => 'Color',
+      ),
+    ),
+    'join' => array(
+      'node' => array(
+        'left_field' => 'nid',
+        'field' => 'id',
+        'inner_join' => '1',
+      ),
+    ),
+  );
+  $data_tables['data_table_kittens'] = $data_table;
+
+  return $data_tables;
+}

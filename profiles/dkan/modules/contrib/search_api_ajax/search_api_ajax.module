@@ -1,0 +1,337 @@
+<?php
+
+/**
+ * @file AJAXifies the Search API search pages, links, ranges, sorts and forms.
+ */
+
+/**
+ * Load AJAX scripts on every page except the listed pages.
+ */
+define('SEARCH_API_AJAX_VISIBILITY_NOTLISTED', 0);
+
+/**
+ * Load AJAX scripts on only the listed pages.
+ */
+define('SEARCH_API_AJAX_VISIBILITY_LISTED', 1);
+
+/**
+ * Implements hook_search_api_ajax_settings().
+ */
+function search_api_ajax_search_api_ajax_settings() {
+  global $theme_key;
+  $settings = array();
+
+  // get all drupal blocks
+  $settings['blocks'] = &drupal_static(__FUNCTION__);
+  if (!isset($settings['blocks'])) {
+    $blocks = array();
+
+    // Drupal blocks
+    // @todo cache this?
+    $regions = system_region_list($theme_key);
+    foreach ($regions as $region_key => $region_name) {
+      $settings['regions'][] = $region_key;
+      $block_list = block_list($region_key);
+
+      // remove inactive blocks (status=0)
+      foreach ($block_list as $key => $block) {
+        if ($block->status == 0) {
+          unset($block_list[$key]);
+        }
+      }
+      $blocks = array_merge(block_list($region_key), $blocks);
+      if (module_exists('context')) {
+        $blocks = array_merge(context_get_plugin('reaction', 'block')->block_list($region_key), $blocks);
+      }
+    }
+
+    $modules = search_api_ajax_modules();
+    foreach ($blocks as $block) {
+      if (in_array($block->module, $modules)) {
+
+        // facetapi block names are strtolowered in html, so do same here
+        if (in_array($block->module, array(
+          'facetapi',
+          'facetapi_tagcloud'
+        ))) {
+          $block->delta = strtolower($block->delta);
+        }
+        $settings['blocks'][$block->module . '_' . $block->delta] = str_replace('_', '-', '#block-' . $block->module . '-' . $block->delta);
+      }
+    }
+  }
+
+  // need to make the current search api page path available as jQuery setting
+  // @see search_api_ajax.js
+  $current_search = search_api_current_search();
+  foreach ($current_search as $key => $search) {
+
+    // break on facet blocks - $path is only useful for pages, avoid blocks
+    if (strpos($key, 'facets_block') !== FALSE || arg(0) == 'admin') {
+      break;
+    }
+    $path_parts = explode(':', $key);
+
+    // is it a view path or a search_api_page?
+    // views paths have 3 parts, search pages only 2
+    if ($path_parts[0] == 'search_api_views') {
+      $trail = menu_set_active_trail();
+
+      // process last entry
+      end($trail);
+      $key = key($trail);
+      $views_path = isset($trail[$key]['link_path']) ? $trail[$key]['link_path'] : $trail[$key]['path'];
+      $path = search_api_ajax_get_views_path($views_path);
+      $settings['view'] = 1;
+    }
+    else {
+      $path = $path_parts[1];
+      $settings['view'] = 0;
+    }
+
+    if (!empty($path)) {
+
+      // needed to add current page path to ajax
+      drupal_add_js(array('search_api_ajax_path' => $path), 'setting');
+    }
+    $settings['path'] = $path;
+  }
+
+  return $settings;
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function search_api_ajax_menu() {
+  $items = array();
+
+  // administration link
+  $items['admin/config/search/search_api_ajax'] = array(
+    'title' => 'Search API Ajax',
+    'description' => 'Page visibility options for Search API Ajax.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('search_api_ajax_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'search_api_ajax.admin.inc',
+  );
+
+  // during uninstallation, this would lead to a fatal error otherwise.
+  if (module_exists('search_api_page')) {
+    foreach (search_api_page_load_multiple(FALSE, array('enabled' => TRUE)) as $page) {
+      $items['search_api_ajax/' . $page->path] = array(
+        'title' => $page->name,
+        'description' => $page->description ? $page->description : '',
+        'page callback' => 'search_api_ajax_proxy',
+        'page arguments' => array((string)$page->id),
+        'access arguments' => array('access search_api_page'),
+        'type' => MENU_CALLBACK,
+        'file' => 'search_api_ajax.pages.inc',
+      );
+    }
+  }
+
+  // similarly, walk through search_api_views with a path (pages)
+  if (module_exists('search_api_views') && function_exists('views_get_enabled_views')) {
+    foreach (views_get_enabled_views() as $view) {
+      if (strpos($view->base_table, 'search_api_index') !== FALSE) {
+        foreach ($view->display as $display_name => $display) {
+          if (isset($display->display_options['path']) && !(empty($display->display_options['path']))) {
+            $items['search_api_ajax/' . $display->display_options['path']] = array(
+              'title' => isset($display->display_title) ? $display->display_title : '',
+              'description' => (string)$view->human_name,
+              'page callback' => 'search_api_ajax_proxy_views',
+              'page arguments' => array(
+                (string)$view->name,
+                (string)$display_name
+              ),
+              'access arguments' => array('access content'),
+              'type' => MENU_CALLBACK,
+              'file' => 'search_api_ajax.pages.inc',
+            );
+          }
+
+          // if i18_page_views module is used for multiple i18n paths
+          if (module_exists('i18n_page_views')) {
+            $enabled_languages = language_list('enabled');
+            foreach ($enabled_languages[1] as $lang_code => $lang_object) {
+              if (isset($display->display_options['path_' . $lang_code]) && !(empty($display->display_options['path_' . $lang_code]))) {
+                $items['search_api_ajax/' . $display->display_options['path_' . $lang_code]] = array(
+                  'title' => isset($display->display_title) ? $display->display_title : '',
+                  'description' => (string)$view->human_name,
+                  'page callback' => 'search_api_ajax_proxy_views',
+                  'page arguments' => array(
+                    (string)$view->name,
+                    (string)$display_name
+                  ),
+                  'access arguments' => array('access content'),
+                  'type' => MENU_CALLBACK,
+                  'file' => 'search_api_ajax.pages.inc',
+                );
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return $items;
+}
+
+/**
+ * Returns the list of modules whose blocks are search api-related.
+ *
+ * @see search_api_ajax_proxy()
+ */
+function search_api_ajax_modules() {
+  static $modules = NULL;
+  if (is_null($modules)) {
+    $modules = array(
+      'search_api_facets',
+      'search_api_facetapi',
+      'search_api_ranges',
+      'search_api_sorts',
+      'facetapi',
+      'facetapi_tagcloud',
+      'current_search',
+    );
+    if (module_exists('search_api_views')) {
+      $modules[] = 'views';
+    }
+
+    drupal_alter('search_api_ajax_modules', $modules);
+  }
+  return $modules;
+}
+
+/**
+ * Implementation of hook_preprocess_page().
+ *
+ * Adds JavaScript files and settings. To successfully configure this module,
+ * another module must implement hook_search_api_ajax_settings(), which must
+ * return an array with the required keys "content", "blocks", "regions" and
+ * the optional key "spinner".
+ *
+ * "content" must be the CSS selector for the HTML node in which the page
+ * content is displayed. In the Zen theme, this is '#content-area'.
+ *
+ * "blocks" must be a map between the block keys and the CSS selectors for
+ * the blocks. Block keys follow the pattern: MODULE_DELTA. In the Zen theme,
+ * this may be: array('node_0' => '#block-node-0', ...). You need only do this
+ * for search-related blocks. If you don't know your blocks, run:
+ *
+ * <pre>
+ * $modules = search_api_ajax_modules();
+ * foreach ($modules as $module) {
+ *   if (module_exists($module)) {
+ *     if ($list = module_invoke($module, 'block', 'list')) {
+ *       foreach (array_keys($list) as $delta) {
+ *         print $module .'_'. $delta;
+ *       }
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
+ * "regions" must be a map between the theme regions and the CSS selectors
+ * for the regions. In the Zen theme, this may be: array('content_top' =>
+ * '.region-content-top'). If you don't know your theme's regions, run:
+ * <code>system_region_list('mytheme');</code>
+ *
+ * (Optional) "spinner" is the path to an animated image to be displayed
+ * while content is loading via AJAX, e.g.: <code>base_path() .
+ * drupal_get_path('module', 'mymodule') .'/images/spinner.gif'</code>
+ *
+ * @see http://developer.yahoo.com/yui/history/
+ */
+function search_api_ajax_preprocess_page(&$vars, $hook) {
+  $return = FALSE;
+  foreach (search_api_current_search() as $key => $search) {
+    if (strpos($key, 'facets_block') !== FALSE) {
+      continue;
+    }
+    $return = TRUE;
+  }
+  if (!$return) {
+    return;
+  }
+
+  // Configuration to enable/disable AJAX by path
+  $pages = variable_get('search_api_ajax_pages', '');
+  $visibility = variable_get('search_api_ajax_visibility', '');
+  if ($pages) {
+    // Convert path to lowercase. This allows comparison of the same path
+    // with different case. Ex: /Page, /page, /PAGE.
+    $pages = drupal_strtolower($pages);
+    // Convert the Drupal path to lowercase
+    $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
+    // Compare the lowercase internal and lowercase path alias (if any).
+    $page_match = drupal_match_path($path, $pages);
+    if ($path != $_GET['q']) {
+      $page_match = $page_match || drupal_match_path($_GET['q'], $pages);
+    }
+    // When $pages has a value of 0 (VISIBILITY_NOTLISTED),
+    // the block is displayed on all pages except those listed in $pages.
+    // When set to 1 (VISIBILITY_LISTED), it is displayed only on those
+    // pages listed in $pages.
+    $page_match = !($visibility xor $page_match);
+  }
+  else {
+    $page_match = TRUE;
+  }
+
+  // No match
+  if (!$page_match) {
+    return;
+  }
+
+  // Loas CSS, JS and libraries
+  drupal_add_css(drupal_get_path('module', 'search_api_ajax') . '/search_api_ajax.css');
+  drupal_add_js(array('search_api_ajax' => module_invoke_all('search_api_ajax_settings')), 'setting');
+  drupal_add_library('system', 'jquery.bbq');
+  drupal_add_js(drupal_get_path('module', 'search_api_ajax') . '/search_api_ajax.js', array('scope' => 'footer'));
+}
+
+/**
+ * Collects debug data to send to the browser with the AJAX response.
+ *
+ * @param mixed $data Debug data you want to send to the browser.
+ */
+function search_api_ajax_debug($data = NULL) {
+  static $debug = array();
+  if (isset($data)) {
+    $debug[] = $data;
+  }
+  return $debug;
+}
+
+/**
+ * Get the actual views path
+ * Filling in '%' arguments in the path with the correct values from arg()
+ *
+ * @param string $views_path
+ *   The views page path, e.g. 'mynodes', 'mynodes/%'
+ *
+ * @param int $skip
+ *   The number of arguments to skip (usually only needed on
+ *   search_api_ajax/* pages).
+ */
+function search_api_ajax_get_views_path($views_path, $skip = 0) {
+  $path = array();
+  $current_path = arg();
+
+  // fill in % paths: we know the views_path, which may contain % arguments
+  // so we need to fill in those % with the current page from arg()
+  // @todo is there a 'Drupal way' to do this?
+  $path = explode('/', $views_path);
+  foreach (arg(NULL, $views_path) as $key => $piece) {
+    if ($piece == '%') {
+      $path[$key] = $current_path[$key + $skip];
+    }
+  }
+
+  $path = implode('/', $path);
+  return $path;
+}

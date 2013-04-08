@@ -1,0 +1,80 @@
+<?php
+
+/**
+* @file
+* Install, update and uninstall functions for the schema module.
+*/
+
+/**
+ * Implementation of hook_requirements().
+ * Checks installation requirements and do status reporting.
+ * @param phase 'install': ignored (no installation requirements)
+ *              'runtime': status reporting for database
+ * @return A keyed array of requirements
+ * @see schema_compare_schemas()
+ */
+function schema_requirements($phase) {
+  $reqs = array();
+  $t = get_t();
+  if ($phase == 'runtime' && variable_get('schema_status_report', TRUE)) {
+    $schema = drupal_get_schema(NULL, TRUE);
+    $info = schema_compare_schemas($schema);
+    // make sure these are defined in increasing-severity order
+    $checks = array(
+      'same' => array(REQUIREMENT_OK, 'Consistent', '@count modules with matching tables'),
+      'extra' => array(REQUIREMENT_OK, 'Extra tables', '@count extra tables'),
+      'warn' => array(REQUIREMENT_WARNING, 'Warning', '@count warnings'),
+      'missing' => array(REQUIREMENT_ERROR, 'Inconsistent', '@count modules with missing tables'),
+      'different' => array(REQUIREMENT_ERROR, 'Inconsistent', '@count modules with mis-matching tables'),
+      );
+
+    $notes = array();
+    $severity = REQUIREMENT_OK;
+    foreach ($checks as $key => $data) {
+      if (!empty($info[$key])) {
+        $severity = $data[0];
+        $status = $data[1];
+        $notes[] = $t($data[2], array('@count' => count($info[$key])));
+      }
+    }
+
+    $desc = ''; // if there is only one note, it is for 'same'
+    if (count($notes) > 1) {
+      $desc = $t('The Schema comparison report shows: ') .
+        theme('item_list', array('items' => $notes));
+    }
+    if ($severity != REQUIREMENT_OK) {
+      $sys_reqs = system_requirements($phase);
+      if ($sys_reqs['update']['severity'] != REQUIREMENT_OK) {
+        $desc .= $t('You should follow the instructions under <strong>@title</strong>
+            now or run the <a href="@compare">database schema comparison report</a>
+            for more details.',
+          array(
+            '@title' => $sys_reqs['update']['title'],
+            '@compare' => url('admin/structure/schema/compare')
+          ));
+      }
+      else {
+        $desc .= $t('The <a href="@compare">database schema comparison report</a>
+            provides more details.',
+          array('@compare' => url('admin/structure/schema/compare')));
+      }
+    }
+    $reqs['schema'] = array(
+      'title' => $t('Database schema'),
+      'value' => $status,
+      'severity' => $severity,
+      'description' => $desc,
+      );
+  }
+
+  return $reqs;
+}
+
+/**
+ * Implementation of hook_uninstall(),
+ */
+function schema_uninstall() {
+  variable_del('schema_status_report');
+  variable_del('schema_suppress_type_warnings');
+}

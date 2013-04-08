@@ -1,0 +1,64 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the geofield module.
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function geofield_field_schema($field) {
+  return array(
+    'columns' => array(
+      'wkt' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'geo_type' => array(
+        'type' => 'text',
+        'size' => 'normal',
+        'not null' => FALSE,
+      ),
+      'lat' => array(
+        'type' => 'float',
+        'not null' => FALSE,
+      ),
+      'lon' => array(
+        'type' => 'float',
+        'not null' => FALSE,
+      ),
+      'left' => array(
+        'type' => 'float',
+        'not null' => FALSE,
+      ),
+      'top' => array(
+        'type' => 'float',
+        'not null' => FALSE,
+      ),
+      'right' => array(
+        'type' => 'float',
+        'not null' => FALSE,
+      ),
+      'bottom' => array(
+        'type' => 'float',
+        'not null' => FALSE,
+      ),
+      'srid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'default' => 4326,
+      ),
+      'accuracy' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+      'source' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+    ),
+  );
+}

@@ -1,0 +1,623 @@
+<?php
+
+/**
+ * @file
+ * Provides functionality to show a diff between two node revisions.
+ */
+
+/**
+ * Number of items on one page of the revision list.
+ */
+define('REVISION_LIST_SIZE', 50);
+
+/**
+ * Exposed sorting options.
+ *
+ * No sorting means sorting by delta value for fields.
+ */
+define('DIFF_SORT_NONE', '0');
+
+/**
+ * Exposed sorting options.
+ *
+ * This normally sorts by the rendered comparison.
+ */
+define('DIFF_SORT_VALUE', '1');
+
+/**
+ * Exposed sorting options.
+ *
+ * It is up to the field / entity to decide how to handle the sort.
+ */
+define('DIFF_SORT_CUSTOM', '-1');
+
+/**
+ * Implements hook_help().
+ */
+function diff_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#diff':
+      $output = '<p>' . t('The Diff module replaces the normal <em>Revisions</em> node tab. Diff enhances the listing of revisions with an option to view the differences between any two content revisions. Access to this feature is controlled with the <em>View revisions</em> permission. The feature can be disabled for an entire content type on the content type configuration page. Diff also provides an optional <em>View changes</em> button while editing a node.') . '</p>';
+      return $output;
+    case 'node/%/revisions/%/view':
+      // The translated strings should match node_help('node/%/revisions').
+      return '<p>' . t('Revisions allow you to track differences between multiple versions of your content, and revert back to older versions.') . '</p>';
+    case 'node/%/revisions/view/%/%':
+      return '<p>' . t('Comparing two revisions:') . '</p>';
+  }
+}
+
+/**
+ * The various states that are available.
+ */
+function diff_available_states($entity_type = NULL) {
+  $states = array(
+    'raw' => t('Standard'),
+    'raw_plain' => t('Marked down'),
+  );
+
+  return $states;
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * @todo: Review this.
+ */
+function diff_menu() {
+  /*
+   * By using MENU_LOCAL_TASK (and 'tab_parent') we can get the various
+   * revision-views to show the View|Edit|Revision-tabs of the node on top,
+   * and have the Revisions-tab open. To avoid creating/showing any extra tabs
+   * or sub-tabs (tasks below top level) for the various paths (i.e. "Diff",
+   * "Show latest" and "Show a specific revision") that need a revision-id (vid)
+   * parameter, we make sure to set 'tab_parent' a bit odd. This solution may
+   * not be the prettiest one, but by avoiding having two _LOCAL_TASKs sharing
+   * a parent that can be accessed by its full path, it seems to work as
+   * desired. Breadcrumbs work decently, at least the node link is among the
+   * crumbs. For some reason any breadcrumbs "before/above" the node is only
+   * seen at 'node/%node/revisions/%/view'.
+   */
+
+  // Not used directly, but was created to get the other menu items to work.
+  $items['node/%node/revisions/list'] = array(
+    'title' => 'List revisions',
+    'page callback' => 'diff_diffs_overview',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'access callback' => 'diff_node_revision_access',
+    'access arguments' => array(1),
+    'file' => 'diff.pages.inc',
+  );
+  $items['node/%node/revisions/view'] = array(
+    'title' => 'Compare revisions',
+    'page callback' => 'diff_diffs_show',
+    'page arguments' => array(1, 4, 5, 6),
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => 'diff_node_revision_access',
+    'access arguments' => array(1),
+    'tab_parent' => 'node/%/revisions/list',
+    'file' => 'diff.pages.inc',
+  );
+
+  $items['node/%node/revisions/view/latest'] = array(
+    'title' => 'Show latest difference',
+    'page callback' => 'diff_latest',
+    'page arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => 'diff_node_revision_access',
+    'access arguments' => array(1),
+    'tab_parent' => 'node/%/revisions/view',
+    'file' => 'diff.pages.inc',
+  );
+
+  // Administrative settings.
+  $items['admin/config/content/diff'] = array(
+    'title' => 'Diff',
+    'description' => 'Diff settings.',
+    'file' => 'diff.admin.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('diff_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+  );
+  $items['admin/config/content/diff/settings'] = array(
+    'title' => 'Settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/config/content/diff/fields'] = array(
+    'title' => 'Fields',
+    'description' => 'Field support and settings overview.',
+    'file' => 'diff.admin.inc',
+    'page callback' => 'diff_admin_field_overview',
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/config/content/diff/fields/%'] = array(
+    'title' => 'Global field settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('diff_admin_global_field_settings', 5),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_VISIBLE_IN_BREADCRUMB,
+    'file' => 'diff.admin.inc',
+  );
+
+  $items['admin/config/content/diff/entities'] = array(
+    'title' => 'Entities',
+    'description' => 'Entity settings.',
+    'file' => 'diff.admin.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('diff_admin_global_entity_settings', 'node'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['admin/config/content/diff/entities/node'] = array(
+    'title' => 'Node',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function diff_menu_alter(&$callbacks) {
+  // Overwrite the default 'Revisions' page.
+  $callbacks['node/%node/revisions']['page callback'] = 'diff_diffs_overview';
+  $callbacks['node/%node/revisions']['module'] = 'diff';
+  $callbacks['node/%node/revisions']['file'] = 'diff.pages.inc';
+
+  $callbacks['node/%node/revisions/%/view']['tab_parent'] = 'node/%/revisions/list';
+  $callbacks['node/%node/revisions/%/revert']['tab_parent'] = 'node/%/revisions/%/view';
+  $callbacks['node/%node/revisions/%/delete']['tab_parent'] = 'node/%/revisions/%/view';
+
+  $callbacks['node/%node/revisions']['access callback']
+      = $callbacks['node/%node/revisions/%/view']['access callback']
+      = $callbacks['node/%node/revisions/%/revert']['access callback']
+      = $callbacks['node/%node/revisions/%/delete']['access callback'] = 'diff_node_revision_access';
+}
+
+/**
+ * Implements hook_admin_paths_alter().
+ */
+function diff_admin_paths_alter(&$paths) {
+  // By default, treat all diff pages as administrative.
+  if (variable_get('diff_admin_path_node', 1)) {
+    $paths['node/*/revisions/view/*/*'] = TRUE;
+  }
+}
+
+/**
+ * Access callback for the node revisions page.
+ */
+function diff_node_revision_access($node, $op = 'view') {
+  $may_revision_this_type = variable_get('diff_enable_revisions_page_node_' . $node->type, TRUE) || user_access('administer nodes');
+  return $may_revision_this_type && _node_revision_access($node, $op);
+}
+
+/**
+ * Implements hook_hook_info().
+ */
+function diff_hook_info() {
+  $hooks['entity_diff'] = array(
+    'group' => 'diff',
+  );
+  $hooks['diff'] = array(
+    'group' => 'diff',
+  );
+  $hooks['field_diff_view_prepare_alter'] = array(
+    'group' => 'diff',
+  );
+  $hooks['field_diff_view_alter'] = array(
+    'group' => 'diff',
+  );
+
+  return $hooks;
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ *
+ * Although the module only provides an UI for comparing nodes, it has an
+ * extendable API for any entity, so we supply two view modes for all entities.
+ * - diff_standard: This view mode is used to tell the module how to compare
+ *                  individual fields. This is used on the revisions page.
+ */
+function diff_entity_info_alter(&$entity_info) {
+  foreach (array_keys($entity_info) as $entity_type) {
+    if (!empty($entity_info[$entity_type]['view modes'])) {
+      $entity_info[$entity_type]['view modes'] += array(
+        'diff_standard' => array(
+          'label' => t('Revision comparison'),
+          'custom settings' => FALSE,
+        ),
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function diff_block_info() {
+  return array(
+    'inline' => array(
+      'info' => t('Inline differences'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function diff_block_configure($delta = '') {
+  $form = array();
+  switch ($delta) {
+    case 'inline':
+      $form['bundles'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Enabled content types'),
+        '#default_value' => variable_get('diff_show_diff_inline_node_bundles', array()),
+        '#options' => node_type_get_names(),
+        '#description' => t('Show this block only on pages that display content of the given type(s).'),
+      );
+      break;
+  }
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function diff_block_save($delta = '', $edit = array()) {
+  switch ($delta) {
+    case 'inline':
+      variable_set('diff_show_diff_inline_node_bundles', $edit['bundles']);
+      break;
+  }
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function diff_block_view($delta) {
+  if ($delta === 'inline' && user_access('view revisions') && ($node = menu_get_object()) && arg(2) !== 'edit') {
+    $enabled_types = variable_get('diff_show_diff_inline_node_bundles', array());
+    if (!empty($enabled_types[$node->type])) {
+      $block = array();
+      $revisions = node_revision_list($node);
+      if (count($revisions) > 1) {
+        $block['subject'] = t('Highlight changes');
+        $block['content'] = drupal_get_form('diff_inline_form', $node, $revisions);
+      }
+      return $block;
+    }
+  }
+}
+
+/**
+ * Implements hook_node_view_alter().
+ */
+function diff_node_view_alter(&$build) {
+  $node = $build['#node'];
+  if (user_access('view revisions') && in_array($node->type, variable_get('diff_show_diff_inline_node_bundles', array()))) {
+    // Ugly but cheap way to check that we are viewing a node's revision page.
+    if (arg(2) === 'revisions' && arg(3) === $node->vid) {
+      module_load_include('inc', 'diff', 'diff.pages');
+      $old_vid = _diff_get_previous_vid(node_revision_list($node), $node->vid);
+      $build = array('#markup' => diff_inline_show($node, $old_vid));
+    }
+    $build['#prefix'] = isset($build['#prefix']) ? "<div id='diff-inline-{$node->nid}'>" . $build['#prefix'] : "<div id='diff-inline-{$node->nid}'>";
+    $build['#suffix'] = isset($build['#suffix']) ? $build['#suffix'] . "</div>" : "</div>";
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function diff_form_node_form_alter(&$form, $form_state) {
+  // Add a 'View changes' button on the node edit form.
+  $node = $form['#node'];
+  if (variable_get('diff_show_preview_changes_node_' . $node->type, TRUE) && !empty($node->nid)) {
+    $form['actions']['preview_changes'] = array(
+      '#type' => 'submit',
+      '#value' => t('View changes'),
+      '#weight' => 12,
+      '#submit' => array('diff_node_form_build_preview_changes'),
+    );
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function diff_form_node_type_form_alter(&$form, $form_state) {
+  if (isset($form['type'])) {
+    $type = $form['#node_type'];
+    $form['diff'] = array(
+      '#title' => t('Compare revisions'),
+      '#type' => 'fieldset',
+      '#group' => 'additional_settings',
+      '#tree' => FALSE,
+    );
+    $form['diff']['diff_show_preview_changes_node'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show <em>View changes</em> button on node edit form'),
+      '#weight' => 10,
+      '#default_value' => variable_get('diff_show_preview_changes_node_' . $type->type, TRUE),
+    );
+    $form['diff']['diff_enable_revisions_page_node'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable the <em>Revisions</em> page for this content type'),
+      '#weight' => 11,
+      '#default_value' => variable_get('diff_enable_revisions_page_node_' . $type->type, TRUE),
+    );
+    $options = array();
+    $info = entity_get_info('node');
+    foreach ($info['view modes'] as $view_mode => $view_mode_info) {
+      $options[$view_mode] = $view_mode_info['label'];
+    }
+    $form['diff']['diff_view_mode_preview_node'] = array(
+      '#type' => 'select',
+      '#title' => t('Standard comparison preview'),
+      '#description' => t('Governs the <em>Current revision</em> view mode when doing standard comparisons.'),
+      '#options' => $options,
+      '#weight' => 13,
+      '#default_value' => variable_get('diff_view_mode_preview_node_' . $type->type, 'full'),
+      '#empty_value' => '',
+      '#empty_option' => t('- Do not display -'),
+    );
+  }
+}
+
+/**
+ * Implements hook_node_type_update().
+ *
+ * This tracks the diff settings in case the node content type is renamed.
+ */
+function diff_node_type_update($info) {
+  if (!empty($info->old_type) && $info->old_type != $info->type) {
+    $type_variables = array(
+      'diff_show_preview_changes_node',
+      'diff_enable_revisions_page_node',
+      'diff_view_mode_preview_node',
+    );
+    foreach ($type_variables as $prefix) {
+      $setting = variable_get($prefix . '_' . $info->old_type, NULL);
+      if (isset($setting)) {
+        variable_del($prefix . '_' . $info->old_type);
+        variable_set($prefix . '_' . $info->type, $setting);
+      }
+    }
+
+    // Block settings are combined in a single variable.
+    $inline_block_types = variable_get('diff_show_diff_inline_node_bundles', array());
+    if (isset($inline_block_types[$info->old_type])) {
+      if (!empty($inline_block_types[$info->old_type])) {
+        $inline_block_types[$info->type] = $info->type;
+      }
+      unset($inline_block_types[$info->old_type]);
+      variable_set('diff_show_diff_inline_node_bundles', $inline_block_types);
+    }
+  }
+}
+
+/**
+ * Implements hook_node_type_delete().
+ */
+function diff_node_type_delete($info) {
+  variable_del('diff_show_preview_changes_node_' . $info->type);
+  variable_del('diff_enable_revisions_page_node_' . $info->type);
+  variable_del('diff_view_mode_preview_node_' . $info->type);
+}
+
+/**
+ * Submit handler for the 'View changes' action.
+ *
+ * @see node_form_build_preview()
+ */
+function diff_node_form_build_preview_changes($form, &$form_state) {
+  module_load_include('inc', 'diff', 'diff.pages');
+  $old_node = clone node_load($form_state['values']['nid']);
+  $node = node_form_submit_build_node($form, $form_state);
+
+  // Create diff of old node and edited node.
+  $rows = _diff_body_rows($old_node, $node);
+
+  $header = _diff_default_header(t('Original'), t('Changes'));
+  $changes = theme('table__diff__preview', array(
+    'header' => $header,
+    'rows' => $rows,
+    'attributes' => array('class' => 'diff'),
+    'colgroups' => _diff_default_cols(),
+    'sticky' => FALSE,
+  ));
+
+  // Prepend diff to edit form.
+  $form_state['node_preview'] = $changes;
+  $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function diff_theme() {
+  return array(
+    'diff_node_revisions' => array(
+      'render element' => 'form',
+      'file' => 'diff.theme.inc',
+    ),
+    'diff_header_line' => array(
+      'arguments' => array('lineno' => NULL),
+      'file' => 'diff.theme.inc',
+    ),
+    'diff_content_line' => array(
+      'arguments' => array('line' => NULL),
+      'file' => 'diff.theme.inc',
+    ),
+    'diff_empty_line' => array(
+      'arguments' => array('line' => NULL),
+      'file' => 'diff.theme.inc',
+    ),
+    'diff_inline_form' => array(
+      'render element' => 'form',
+      'file' => 'diff.theme.inc',
+    ),
+    'diff_inline_metadata' => array(
+      'arguments' => array('node' => NULL),
+      'file' => 'diff.theme.inc',
+    ),
+    'diff_inline_chunk' => array(
+      'arguments' => array('text' => '', 'type' => NULL),
+      'file' => 'diff.theme.inc',
+    ),
+  );
+}
+
+/**
+ * Render the table rows for theme('table').
+ *
+ * @param string $a
+ *   The source string to compare from.
+ * @param string $b
+ *   The target string to compare to.
+ * @param boolean $show_header
+ *   Display diff context headers. For example, "Line x".
+ * @param array $line_stats
+ *   This structure tracks line numbers across multiple calls to DiffFormatter.
+ *
+ * @return array
+ *   Array of rows usable with theme('table').
+ */
+function diff_get_rows($a, $b, $show_header = FALSE, &$line_stats = NULL) {
+  $a = is_array($a) ? $a : explode("\n", $a);
+  $b = is_array($b) ? $b : explode("\n", $b);
+
+  if (!isset($line_stats)) {
+    $line_stats = array(
+      'counter' => array('x' => 0, 'y' => 0),
+      'offset' => array('x' => 0, 'y' => 0),
+    );
+  }
+  $formatter = new DrupalDiffFormatter();
+  // Header is the line counter.
+  $formatter->show_header = $show_header;
+  $formatter->line_stats = &$line_stats;
+  $diff = new Diff($a, $b);
+  return $formatter->format($diff);
+}
+
+/**
+ * Render and markup a diff of two strings into HTML markup.
+ *
+ * @param string $a
+ *   The source string to compare from.
+ * @param string $b
+ *   The target string to compare to.
+ *
+ * @return string
+ *   String containing HTML markup.
+ */
+function diff_get_inline($a, $b) {
+  $diff = new DrupalDiffInline($a, $b);
+  return $diff->render();
+}
+
+/**
+ * Form builder: Inline diff controls.
+ */
+function diff_inline_form($form, $form_state, $node, $revisions) {
+  $form = array();
+  $form['node'] = array(
+    '#type' => 'value',
+    '#value' => $node,
+  );
+  $form['revision'] = array(
+    '#type' => 'select',
+    '#options' => array(0 => t('- No highlighting -')),
+    '#default_value' => (arg(2) === 'revisions' && arg(3) === $node->vid) ? $node->vid : 0,
+    '#ajax' => array(
+      'callback' => 'diff_inline_ajax',
+      'wrapper' => "node-{$node->nid}",
+      'method' => 'replace',
+    ),
+  );
+  foreach ($revisions as $revision) {
+    $form['revision']['#options'][$revision->vid] = t('@revision by @name', array(
+      '@revision' => format_date($revision->timestamp, 'short'),
+      '@name' => format_username($revision),
+    ));
+  }
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('View'),
+    '#submit' => array('diff_inline_form_submit'),
+    '#attributes' => array('class' => array('diff-js-hidden')),
+  );
+  return $form;
+}
+
+/**
+ * AHAH callback for rendering the inline diff of a node.
+ */
+function diff_inline_ajax($form, $form_state) {
+  module_load_include('inc', 'diff', 'diff.pages');
+  $node = $form['node']['#value'];
+  $vid = isset($form_state['values']['revision']) ? $form_state['values']['revision'] : 0;
+  return "<div id='node-{$node->nid}'>" . diff_inline_show($node, $vid) . "</div>";
+}
+
+/**
+ * Form submission handler for diff_inline_form() for JS-disabled clients.
+ */
+function diff_inline_form_submit(&$form, &$form_state) {
+  if (isset($form_state['values']['revision'], $form_state['values']['node'])) {
+    $node = $form_state['values']['node'];
+    $vid = $form_state['values']['revision'];
+    $form_state['redirect'] = "node/{$node->nid}/revisions/{$vid}/view";
+  }
+}
+
+/**
+ * A helper function to normalise system differences.
+ *
+ * This handles differences in:
+ * - line endings: Mac, Windows and UNIX all use different line endings.
+ */
+function diff_normalise_text($text) {
+  $text = str_replace(array("\r\n", "\r"), "\n", $text);
+  return $text;
+}
+
+/**
+ * A wrapper function for filter_xss() to exclude all tags.
+ */
+function diff_filter_xss($string) {
+  return filter_xss($string, array());
+}
+
+/**
+ * Helper function to load any CSS or JScript files required by a page or form.
+ */
+function diff_build_attachments($jscript = FALSE) {
+  $attachments = array();
+  $theme = variable_get('diff_theme', 'default');
+  if ($theme) {
+    $attachments['css'] = array(
+      drupal_get_path('module', 'diff') . "/css/diff.{$theme}.css",
+    );
+  }
+  $type = variable_get('diff_radio_behavior', 'simple');
+  if ($jscript && $type) {
+    $attachments['js'] = array(
+      drupal_get_path('module', 'diff') . "/js/diff.js",
+      array(
+        'data' => array('diffRevisionRadios' => $type),
+        'type' => 'setting',
+      ),
+    );
+  }
+  return $attachments;
+}

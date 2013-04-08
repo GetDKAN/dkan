@@ -1,0 +1,17 @@
+name = Organic groups access control
+description = "Enable access control for private and public groups and group content."
+package = "Organic groups"
+dependencies[] = og
+core = 7.x
+version = VERSION
+files[] = og_access.module
+files[] = og_access.install
+
+; Tests
+files[] = og_access.test
+; Information added by drupal.org packaging script on 2013-04-04
+version = "7.x-2.1+13-dev"
+core = "7.x"
+project = "og"
+datestamp = "1365082705"
+

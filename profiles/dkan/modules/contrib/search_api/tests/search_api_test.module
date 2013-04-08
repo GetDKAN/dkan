@@ -1,0 +1,316 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function search_api_test_menu() {
+  return array(
+    'search_api_test/insert' => array(
+      'title' => 'Insert item',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('search_api_test_insert_item'),
+      'access callback' => TRUE,
+    ),
+    'search_api_test/%search_api_test' => array(
+      'title' => 'View item',
+      'page callback' => 'search_api_test_view',
+      'page arguments' => array(1),
+      'access callback' => TRUE,
+    ),
+    'search_api_test/query/%search_api_index' => array(
+      'title' => 'Search query',
+      'page callback' => 'search_api_test_query',
+      'page arguments' => array(2),
+      'access callback' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Form callback for inserting an item.
+ */
+function search_api_test_insert_item(array $form, array &$form_state) {
+  return array(
+    'id' => array(
+      '#type' => 'textfield',
+    ),
+    'title' => array(
+      '#type' => 'textfield',
+    ),
+    'body' => array(
+      '#type' => 'textarea',
+    ),
+    'type' => array(
+      '#type' => 'textfield',
+    ),
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+    ),
+  );
+}
+
+/**
+ * Submit callback for search_api_test_insert_item().
+ */
+function search_api_test_insert_item_submit(array $form, array &$form_state) {
+  form_state_values_clean($form_state);
+  db_insert('search_api_test')->fields($form_state['values'])->execute();
+  module_invoke_all('entity_insert', search_api_test_load($form_state['values']['id']), 'search_api_test');
+}
+
+/**
+ * Load handler for search_api_test entities.
+ */
+function search_api_test_load($id) {
+  $ret = entity_load('search_api_test', array($id));
+  return $ret ? array_shift($ret) : NULL;
+}
+
+/**
+ * Menu callback for displaying search_api_test entities.
+ */
+function search_api_test_view($entity) {
+  return array('text' => nl2br(check_plain(print_r($entity, TRUE))));
+}
+
+/**
+ * Menu callback for executing a search.
+ */
+function search_api_test_query(SearchApiIndex $index, $keys = 'foo bar', $offset = 0, $limit = 10, $fields = NULL, $sort = NULL, $filters = NULL) {
+  // Slight "hack" for testing complex queries.
+  if ($keys == '|COMPLEX|') {
+    $keys = array(
+      '#conjunction' => 'AND',
+      'test',
+      array(
+        '#conjunction' => 'OR',
+        'baz',
+        'foobar',
+      ),
+      array(
+        '#conjunction' => 'AND',
+        '#negation' => TRUE,
+        'bar',
+      ),
+    );
+  }
+  $query = $index->query()
+    ->keys($keys)
+    ->range($offset, $limit);
+  if ($fields) {
+    $query->fields(explode(',', $fields));
+  }
+  if ($sort) {
+    $sort = explode(',', $sort);
+    $query->sort($sort[0], $sort[1]);
+  }
+  else {
+    $query->sort('search_api_id', 'ASC');
+  }
+  if ($filters) {
+    $filters = explode(',', $filters);
+    foreach ($filters as $filter) {
+      $filter = explode('=', $filter);
+      $query->condition($filter[0], $filter[1]);
+    }
+  }
+  $result = $query->execute();
+
+  $ret = '';
+  $ret .= 'result count = ' . (int) $result['result count'] . '<br/>';
+  $ret .= 'results = (' . (empty($result['results']) ? '' : implode(', ', array_keys($result['results']))) . ')<br/>';
+  $ret .= 'warnings = (' . (empty($result['warnings']) ? '' : '"' . implode('", "', $result['warnings']) . '"') . ')<br/>';
+  $ret .= 'ignored = (' . (empty($result['ignored']) ? '' : implode(', ', $result['ignored'])) . ')<br/>';
+  $ret .= nl2br(check_plain(print_r($result['performance'], TRUE)));
+  return $ret;
+}
+
+/**
+ * Implements hook_entity_info().
+ */
+function search_api_test_entity_info() {
+  return array(
+    'search_api_test' => array(
+      'label' => 'Search API test entity',
+      'base table' => 'search_api_test',
+      'uri callback' => 'search_api_test_uri',
+      'entity keys' => array(
+        'id' => 'id',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_entity_property_info().
+ */
+function search_api_test_entity_property_info() {
+  $info['search_api_test']['properties'] = array(
+    'id' => array(
+      'label' => 'ID',
+      'type' => 'integer',
+      'description' => 'The primary identifier for a server.',
+    ),
+    'title' => array(
+      'label' => 'Title',
+      'type' => 'text',
+      'description' => 'The title of the item.',
+      'required' => TRUE,
+    ),
+    'body' => array(
+      'label' => 'Body',
+      'type' => 'text',
+      'description' => 'A text belonging to the item.',
+      'sanitize' => 'filter_xss',
+      'required' => TRUE,
+    ),
+    'type' => array(
+      'label' => 'Type',
+      'type' => 'text',
+      'description' => 'A string identifying the type of item.',
+      'required' => TRUE,
+    ),
+    'parent' => array(
+      'label' => 'Parent',
+      'type' => 'search_api_test',
+      'description' => "The item's parent.",
+      'getter callback' => 'search_api_test_parent',
+    ),
+  );
+
+  return $info;
+}
+
+/**
+ * URI callback for test entity.
+ */
+function search_api_test_uri($entity) {
+  return array(
+    'path' => 'search_api_test/' . $entity->id,
+  );
+}
+
+/**
+ * Parent callback.
+ */
+function search_api_test_parent($entity) {
+  return search_api_test_load($entity->id - 1);
+}
+
+/**
+ * Implements hook_search_api_service_info().
+ */
+function search_api_test_search_api_service_info() {
+  $services['search_api_test_service'] = array(
+    'name' => 'search_api_test_service',
+    'description' => 'search_api_test_service description',
+    'class' => 'SearchApiTestService',
+  );
+  return $services;
+}
+
+/**
+ * Test service class.
+ */
+class SearchApiTestService extends SearchApiAbstractService {
+
+  public function configurationForm(array $form, array &$form_state) {
+    $form = array(
+      'test' => array(
+        '#type' => 'textfield',
+        '#title' => 'Test option',
+      ),
+    );
+
+    if (!empty($this->options)) {
+      $form['test']['#default_value'] = $this->options['test'];
+    }
+
+    return $form;
+  }
+
+  public function indexItems(SearchApiIndex $index, array $items) {
+    // Refuse to index items with IDs that are multiples of 8 unless the
+    // "search_api_test_index_all" variable is set.
+    if (variable_get('search_api_test_index_all', FALSE)) {
+      return $this->index($index, array_keys($items));
+    }
+    $ret = array();
+    foreach ($items as $id => $item) {
+      if ($id % 8) {
+        $ret[] = $id;
+      }
+    }
+    return $this->index($index, $ret);
+  }
+
+  protected function index(SearchApiIndex $index, array $ids) {
+    $this->options += array('indexes' => array());
+    $this->options['indexes'] += array($index->machine_name => array());
+    $this->options['indexes'][$index->machine_name] += drupal_map_assoc($ids);
+    sort($this->options['indexes'][$index->machine_name]);
+    $this->server->save();
+    return $ids;
+  }
+
+  /**
+   * Override so deleteItems() isn't called which would otherwise lead to the
+   * server being updated and, eventually, to a notice because there is no
+   * server to be updated anymore.
+   */
+  public function preDelete() {}
+
+  public function deleteItems($ids = 'all', SearchApiIndex $index = NULL) {
+    if ($ids == 'all') {
+      if ($index) {
+        $this->options['indexes'][$index->machine_name] = array();
+      }
+      else {
+        $this->options['indexes'] = array();
+      }
+    }
+    else {
+      foreach ($ids as $id) {
+        unset($this->options['indexes'][$index->machine_name][$id]);
+      }
+    }
+    $this->server->save();
+  }
+
+  public function search(SearchApiQueryInterface $query) {
+    $options = $query->getOptions();
+    $ret = array();
+    $index_id = $query->getIndex()->machine_name;
+    if (empty($this->options['indexes'][$index_id])) {
+      return array(
+        'result count' => 0,
+        'results' => array(),
+      );
+    }
+    $items = $this->options['indexes'][$index_id];
+    $min = isset($options['offset']) ? $options['offset'] : 0;
+    $max = $min + (isset($options['limit']) ? $options['limit'] : count($items));
+    $i = 0;
+    $ret['result count'] = count($items);
+    $ret['results'] = array();
+    foreach ($items as $id) {
+      ++$i;
+      if ($i > $max) {
+        break;
+      }
+      if ($i > $min) {
+        $ret['results'][$id] = array(
+          'id' => $id,
+          'score' => 1,
+        );
+      }
+    }
+    return $ret;
+  }
+
+  public function fieldsUpdated(SearchApiIndex $index) {
+    return db_query('SELECT COUNT(*) FROM {search_api_test}')->fetchField() > 0;
+  }
+
+}

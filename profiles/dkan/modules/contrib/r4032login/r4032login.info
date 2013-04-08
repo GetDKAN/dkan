@@ -1,0 +1,15 @@
+name = Redirect 403 to User Login
+description = Redirect anonymous users from 403 Access Denied pages to the /user/login page.
+core = 7.x
+
+files[] = r4032login.install
+files[] = r4032login.module
+
+configure = admin/config/system/site-information
+
+; Information added by drupal.org packaging script on 2012-01-13
+version = "7.x-1.5"
+core = "7.x"
+project = "r4032login"
+datestamp = "1326460543"
+

@@ -1,0 +1,653 @@
+<?php
+/**
+ * @file
+ *
+ * Module file for the Default content module which allow export and import of
+ * default content in a Drupal site.
+ */
+
+/**
+ * Implements hook_node_load().
+ *
+ * Add machine_name
+ */
+function defaultcontent_node_load($nodes, $types) {
+  foreach ($nodes as $key => $node) {
+    $nodes[$key]->machine_name = defaultcontent_get_default($node->nid);
+    $nodes[$key]->sort_value = defaultcontent_get_default_sort_value($node->nid);
+  }
+}
+
+/**
+ * Implements of hook_node_delete().
+ *
+ * Node that the machine_name does not have a node now but we keep it around so
+ * we know not to load the default
+ */
+function defaultcontent_node_delete($node) {
+  if (isset($node->machine_name)) {
+    defaultcontent_set_default($node->machine_name, NULL);
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ *
+ * Record machine name
+ */
+function defaultcontent_node_insert($node) {
+  if (isset($node->machine_name)) {
+    defaultcontent_set_default($node->machine_name, $node->nid, $node->sort_value);
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function defaultcontent_node_update($node) {
+  defaultcontent_node_insert($node);
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Add machine name to node form
+ * TODO: get the machine_name type to work
+ */
+function defaultcontent_form_alter(&$form, &$form_state, $form_id) {
+  if (user_access('edit node machine name') && strpos($form_id, 'node_form')) {
+    $form['machine_name_fs'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Machine Name',
+      '#group' => 'additional_settings',
+    );
+    $form['machine_name_fs']['machine_name'] = array(
+      '#type' => 'machine_name',
+      '#type' => 'textfield',
+      '#title' => 'Machine Name',
+      '#required' => FALSE,
+      '#description' => 'Provide a unique name for this node',
+      '#default_value' => isset($form_state['node']->machine_name) ? $form_state['node']->machine_name : '',
+    );
+    $form['machine_name_fs']['sort_value'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Sort Value',
+      '#required' => FALSE,
+      '#description' => 'Provide a sort value that will be used to sort default node contents. Leave empty if not needed.',
+      '#default_value' => isset($form_state['node']->sort_value) ? $form_state['node']->sort_value : '',
+    );
+  }
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * We are implementing the same functions as a node page but with a machine
+ * name url
+ *
+ * NOTE: this was mainly done before we had the menu plugin and now is most
+ * likely not used this page can cause issue for breadcrumbs that is why this
+ * method was abandoned
+ */
+function defaultcontent_menu() {
+  $items = array();
+
+  $items['node-name/%'] = array(
+    'page callback' => 'defaultcontent_page_view',
+    'page arguments' => array(1),
+    'access callback' => TRUE
+  );
+
+  return $items;
+}
+
+/**
+ * Load up node
+ */
+function defaultcontent_page_view($name) {
+  $node = defaultcontent_get_node($name);
+  if ($node) {
+    $_GET['q'] = 'node/' . $node->nid;
+    return menu_execute_active_handler('node/' . $node->nid, FALSE);
+  }
+  drupal_not_found() ;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function defaultcontent_permission() {
+  return array('edit node machine name' => array(
+    'title' => t('Edit node machine name'),
+    'description' => t('Allow user to edit the machine name associated with a node.'),
+  ));
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * we check to see if there are any defaults
+ * that have not been load in the db. if we have any we load them
+ */
+function defaultcontent_cron($allow_first_content = TRUE) {
+  if ($allow_first_content) {
+    variable_set('node_content_enabled', TRUE);
+  }
+  // I have to load the freature files
+  // I am thinking there should be a way to have features do this but I do not
+  // know what it would be
+  $features = features_get_features();
+  foreach ($features as $f_name => $feature) {
+    if (isset($feature->info['features']['content'])) {
+      module_load_include('inc', $f_name, $f_name . '.features.content');
+    }
+    if (isset($feature->info['features']['content_menu_links'])) {
+      module_load_include('inc', $f_name, $f_name . '.features.content_menu_links');
+    }
+  }
+  // features_include_defaults();
+  $defaults = module_invoke_all('content_defaults');
+  usort($defaults, 'defaultcontent_import_sort');
+  $records = defaultcontent_get_default();
+
+  $current = array();
+  foreach ($records as $record) {
+    $current[] = $record->name;
+  }
+
+  foreach ($defaults as $default) {
+    // we check to see if that default has been loaded (even if the node
+    // has been deleted) before we do a load
+    if (!in_array($default->machine_name, $current)) {
+      defaultcontent_import_node($default);
+    }
+  }
+
+  //Turns out if this isn't called only once after EACH install then we get ourselves in trouble - so
+  //we'll just run one time for each change - Major issue with this approach is that install->uninstalling and reinstalling an app will result in no menu item
+  //added
+  //Yes, its hacky, sorry :(
+  $default_menu_links = module_invoke_all('content_menu_links_defaults');
+  $hashes = variable_get('defaultcontent_hashes', array());
+  //arrays are value copied when assigned in php - so this is safe
+  $inverse = $hashes;
+  foreach ($default_menu_links as $key => $default) {
+    $str = implode(array_keys($default), ',');
+    $hash = md5($key . $str);
+    $run = variable_get('defaultcontent_run_' . $hash, FALSE);
+    if (!$run) {
+      $try = defaultcontent_import_menu_link($key, $default);
+      if ($try) {
+        variable_set('defaultcontent_run_' . $hash, TRUE);
+        array_push($hashes, $hash);
+      }
+    }
+    $key = array_search($hash, $inverse);
+    unset($inverse[$key]);
+  }
+
+  foreach ($inverse as $i => $hash) {
+    variable_del('defaultcontent_run_' . $hash);
+    unset($hashes[$i]);
+  }
+  $hashes = array_values($hashes);
+  variable_set('defaultcontent_hashes', $hashes);
+}
+
+/**
+ * Used to set a default
+ *
+ * @param $name
+ *   The machine name
+ * @param $nid
+ *   The nid of the node
+ */
+function defaultcontent_set_default($name, $nid = NULL, $sort_value = NULL) {
+  $current_nid = defaultcontent_get_default($name);
+  $current_sort_value = defaultcontent_get_default_sort_value($name);
+  if ($nid === FALSE) {
+    db_delete('defaultcontent')->condition('name', $name)->execute();
+  }
+  if ($current_nid === $nid && $current_sort_value === $sort_value) {
+    // nothing to change here
+    return;
+  }
+  $record = (object) array('name' => $name, 'nid' => $nid, 'sort_value' => $sort_value);
+  $primary_keys = $current_nid === FALSE ? array() :array('name');
+
+  drupal_write_record('defaultcontent', $record, $primary_keys);
+}
+
+/**
+ * Used to get a machine name or nid
+ *
+ * @param $id
+ *   An int $nid or a string machine_name
+ *
+ * @return unknown_type
+ *   an nid a machine name are an array of machine_name=>nid
+ */
+function defaultcontent_get_default($id = FALSE) {
+  if (!$id) {
+    return db_select('defaultcontent', 'd')
+      ->fields('d', array('name', 'nid'))
+      ->execute();
+  }
+  $have = is_numeric($id) ? 'nid' : 'name';
+  $want = is_numeric($id) ? 'name' : 'nid';
+  $values = db_select('defaultcontent', 'd')
+    ->condition($have, $id)
+    ->fields('d', array($want))
+    ->execute()
+    ->fetchCol();
+
+  return !empty($values) ? $values[0] : FALSE;
+}
+
+/**
+ * Helper function to get a node when pass a machine name
+ *
+ * TODO: i have to keep a static temp because for some reason node_load returns
+ * 0 the second time around
+ *
+ * @param $name
+ *   A machine name
+ *
+ * @return object
+ *   Node object
+ */
+function defaultcontent_get_node($name) {
+  static $temp;
+  if (is_numeric(defaultcontent_get_default($name))) {
+    $nid = defaultcontent_get_default($name);
+    if (!isset($temp[$nid])) {
+      $temp[$nid] = node_load($nid);
+    }
+    return $temp[$nid];
+  }
+}
+
+/**
+* Used to get a sort_value
+*
+* @param $id
+*   An int $nid or a string machine_name
+*
+* @return unknown_type
+*   an sort_value
+*/
+function defaultcontent_get_default_sort_value($id = FALSE) {
+	if (!$id) {
+		return db_select('defaultcontent', 'd')
+		->fields('d', array('name', 'nid', 'sort_value'))
+		->execute();
+	}
+	$have = is_numeric($id) ? 'nid' : 'name';
+	$want = 'sort_value';
+	$values = db_select('defaultcontent', 'd')
+	->condition($have, $id)
+	->fields('d', array($want))
+	->execute()
+	->fetchCol();
+
+	return !empty($values) ? $values[0] : FALSE;
+}
+
+/**
+ * This function turns a node in to code that can be used in a
+ * hook_defaultcontents
+ */
+function defaultcontent_export_node($node) {
+  $node = defaultcontent_export_node_process($node);
+  return '(object) ' . features_var_export($node, '  ');
+}
+
+/**
+ * Produces an export object form a node object
+ */
+function defaultcontent_export_node_process($node) {
+  $plugins = defaultcontent_get_alter_plugins('export_alter');
+  $export = (object) array();
+  foreach ($plugins as $plugin) {
+    $cb = isset($plugin['export_alter callback']) ? $plugin['export_alter callback'] : $plugin['name'] . '_export_alter';
+    if (function_exists($cb)) {
+      $cb($node, $export);
+    }
+  }
+  return $export;
+}
+
+/**
+ * This function takes a node object from hook_defaultcontents and insert it
+ * into the db
+ * TODO: need to do something fun with files
+ * TODO: need to do something fun with node refs
+ */
+function defaultcontent_import_node($node) {
+  $plugins = defaultcontent_get_alter_plugins();
+  foreach ($plugins as $plugin) {
+    $cb = isset($plugin['import_alter callback']) ? $plugin['import_alter callback'] : $plugin['name'] . '_import_alter';
+    if (function_exists($cb)) {
+      $cb($node);
+    }
+  }
+  if (variable_get('node_content_enabled', FALSE)) {
+    node_save($node);
+  }
+  foreach ($plugins as $plugin) {
+    $cb = isset($plugin['post_import callback']) ? $plugin['post_import callback'] : $plugin['name'] . '_post_import';
+    if (function_exists($cb)) {
+      $cb($node);
+    }
+  }
+}
+
+/**
+ * imports a new menu item
+ */
+function defaultcontent_import_menu_link($key, $link) {
+  module_load_include('inc', 'features', 'includes/features.menu');
+
+  if (variable_get('node_content_enabled', FALSE)) {
+    $key = defaultcontent_alter_identifier($key, FALSE);
+    $existing = features_menu_link_load($key);
+    if ($existing) {
+      $link['mlid'] = $existing['mlid'];
+    }
+    else {
+      $link['mlid'] = 0;
+    }
+    if (isset($link['parent_path'])) {
+      $link['parent_path'] = defaultcontent_alter_path($link['parent_path'], 0);
+    }
+    $link['link_path'] = defaultcontent_alter_path($link['link_path'], 0);
+    $menu_links_prime[$key] = $link;
+    if (!empty($link['parent_path']) && $parent = features_menu_link_load("{$link['menu_name']}:{$link['parent_path']}")) {
+      $link['plid'] = $parent['mlid'];
+    }
+    else {
+      $link['plid'] = 0;
+    }
+
+    if ($mid = menu_link_save($link)) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * use to sort component
+ *
+ *  this ask all alter plugins for a import_sort callback
+ */
+function defaultcontent_import_sort($a, $b) {
+  $plugins = defaultcontent_get_alter_plugins();
+  $cmp = 0;
+  foreach ($plugins as $plugin) {
+    $cb = isset($plugin['import_sort callback']) ? $plugin['import_sort callback'] : $plugin['name'] . '_import_sort';
+    if (function_exists($cb)) {
+      $cmp = $cb($a, $b);
+    }
+  }
+  return $cmp;
+}
+
+/**
+ * Implementats hook_features_api().
+ *
+ * we define the node_content type of export
+ */
+function defaultcontent_features_api() {
+  return array(
+    'content' => array(
+      'name' => t('Content Item'),
+      'default_hook' => 'content_defaults',
+      'default_file' => FEATURES_DEFAULTS_INCLUDED,
+      'features_source' => TRUE,
+      'file' => drupal_get_path('module', 'defaultcontent') . '/defaultcontent.features.inc',
+    ),
+    'content_menu_links' => array(
+      'name' => t('Content Menu links'),
+      'default_hook' => 'content_menu_links_defaults',
+      'default_file' => FEATURES_DEFAULTS_INCLUDED,
+      'features_source' => TRUE,
+      'file' => drupal_get_path('module', 'defaultcontent') . '/defaultcontent.features.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_features_pipe_COMPONENT_alter() for the 'content' component.
+ */
+function defaultcontent_features_pipe_content_alter(&$pipe, $data, $export) {
+  // Ensure that this module is listed as a dependency.
+  if (empty($pipe['dependencies']) || !in_array($pipe['dependencies'], 'defaultcontent')) {
+    $pipe['dependencies'][] = 'defaultcontent';
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_type().
+ */
+function defaultcontent_ctools_plugin_type() {
+  return array(
+    'alter' => array(
+      'defaults' => array(
+        'export_alter weight' => 0,
+      ),
+    )
+  );
+}
+
+/**
+ * Return all alter plugins
+ *
+ * @param $use
+ *   A plugin key that can be used for sorting "$use weight" will be used to
+ *   sort the plugins
+ */
+function defaultcontent_get_alter_plugins($use = FALSE) {
+  ctools_include('plugins');
+  $plugins = ctools_get_plugins('defaultcontent', 'alter');
+
+  // check if the plugin has a enabled callback if so make sure this plugin
+  // is enabled
+  foreach ($plugins as $id => $plugin) {
+    $cb = isset($plugin['enabled callback']) ? $plugin['enabled callback'] : $plugin['name'] . '_enabled';
+    if (function_exists($cb)) {
+      if (!$cb()) {
+        unset($plugins[$id]);
+      }
+    }
+  }
+
+  if ($use) {
+    usort($plugins, create_function('$a, $b', "return \$a['$use weight'] - \$b['$use weight'];"));
+  }
+
+  return $plugins;
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function defaultcontent_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'defaultcontent' && $plugin == 'alter') {
+    return 'plugins';
+  }
+}
+
+/**** Node Blocks *****/
+/*
+ * we are making it so that context uses the machine name of the node
+ * instead of the nid for storing the delta of the block
+ * this way when it is exported it can find the content on import
+ */
+
+/**
+ * Implements hook_context_block_info_alter().
+ *
+ * we change all nodeblock to use a machine name when load into context
+ */
+function defaultcontent_context_block_info_alter(&$blocks) {
+  foreach ($blocks as $key => $block) {
+    if ($block->module == 'nodeblock' && is_numeric($block->delta) && ($machine_name = defaultcontent_get_default($block->delta))) {
+      $block->delta = $machine_name;
+      $block->bid = "nodeblock-$machine_name";
+      $blocks["nodeblock-$machine_name"] = $block;
+      unset($blocks[$key]);
+    }
+  }
+}
+
+/**
+ * Implements hook_context_plugins().
+ * 
+ * Provide a condition based on the machine name.
+ */
+function defaultcontent_context_plugins() {
+  $plugins = array();
+  $plugins['defaultcontent_condition'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'defaultcontent') .'/context/plugins',
+      'file' => 'defaultcontent_condition.inc',
+      'class' => 'defaultcontent_condition',
+      'parent' => 'context_condition',
+    ),
+  );
+  return $plugins;
+}
+
+/*
+ * Implements hook_context_registry().
+ */
+function defaultcontent_context_registry() { 
+  return array(
+    'conditions' => array(
+      'defaultcontent' => array(
+        'title' => t('Machine Name'),
+        'description' => 'Set Context based on a node\'s machine name. Provide one machine name per line.',
+        'plugin' => 'defaultcontent_condition',
+      ),
+    ),
+  );
+}
+
+/*
+ * Implements hook_node_view().
+ */
+function defaultcontent_node_view($node, $view_mode, $langcode) {
+  if (module_exists('context') && $plugin = context_get_plugin('condition', 'defaultcontent')) {
+    $plugin->execute($node);
+  } 
+}
+
+/**
+ * Implements hook_block_view_alter().
+ *
+ *  we turn all nodeblock blocks that use machine name to use nid
+ */
+function defaultcontent_block_view_alter(&$data, $block) {
+  if ($block->module == 'nodeblock' && !is_numeric($block->delta) && ($nid = defaultcontent_get_default($block->delta))) {
+    $data = nodeblock_block_view($nid);
+  }
+}
+
+/**
+ * Implements hook_url_outbound_alter().
+ *
+ * changing the outbound path to the node path
+ */
+function defaultcontent_url_outbound_alter_DISABLED(&$path, &$options, $original_path) {
+  if (preg_match('|node-name/(.*)|', path, $matches) && ($nid = defaultcontent_get_default($matches[1]) ) ) {
+    $path = drupal_get_path_alias('node/' . $nid);
+  }
+}
+
+/**
+ * Implements hook_preprocess_link().
+ *
+ * we are going to preorcess the link function so we can make sure we set it to
+ * active even if we are using the node-name path
+ */
+function defaultcontent_preprocess_link_DISABLED(&$vars) {
+  if (preg_match('|node-name/(.*)|', $vars['path'], $matches) && ($nid = defaultcontent_get_default($matches[1]))) {
+    if ($_GET['q'] == 'node/' . $nid) {
+      $vars['options']['attributes']['class'][] = 'active';
+    }
+  }
+}
+
+/**
+ * Implements hook_modules_disabled().
+ *
+ * we want to remove default content on disable, but only content that has not
+ * been overridden
+ */
+function defaultcontent_modules_disabled($modules) {
+  foreach ($modules as $module) {
+    defaultcontent_remove_default_content($module);
+  }
+}
+
+/**
+ * Implements hook_modules_enable().
+ *
+ * run our cron to insure that all of the new content is turned on
+ */
+function defaultcontent_modules_enabled($modules) {
+  defaultcontent_cron(FALSE);
+}
+
+/**
+ * Removes all nodes that we created from the db
+ */
+// TODO remove menu items
+function defaultcontent_remove_default_content($module_name) {
+  module_load_include('inc', $module_name, $module_name . '.features.content');
+  $components = module_invoke($module_name, 'content_defaults');
+
+  if (!empty($components)) {
+    usort($components, 'defaultcontent_import_sort');
+    foreach (array_reverse($components) as $component) {
+      if ($nid = defaultcontent_get_default($component->machine_name)) {
+        $node = node_load($nid, NULL, TRUE);
+        $node = defaultcontent_export_node_process($node);
+        //check if the node has change before we blow it away
+        //and reimport
+        //For the moment we are going to remove it regardless of its overriden status
+        if (TRUE || $node == $component) {
+          //we have to reset this cache or the node goes not get found by node_delete
+          entity_get_controller('node')->resetCache();
+          node_delete($nid);
+          defaultcontent_set_default($component->machine_name, FALSE);
+        }
+      }
+    }
+  }
+  return TRUE;
+}
+
+function defaultcontent_alter_identifier($identifier, $to_name = TRUE) {
+  list($menu, $path) = explode(':', $identifier);
+  $identifier = $menu . ':' . defaultcontent_alter_path($path, $to_name);
+
+  return $identifier;
+}
+
+function defaultcontent_alter_path($path, $to_name = TRUE) {
+  $parts = explode('/', $path);
+  if ($to_name) {
+    if (($parts[0] == 'node') && is_numeric($parts[1]) && ($name = defaultcontent_get_default($parts[1]))) {
+      $parts[0] = 'node-name';
+      $parts[1] = $name;
+    }
+  }
+  elseif (($parts[0] == 'node-name') && !is_numeric($parts[1]) && ($nid = defaultcontent_get_default($parts[1]))) {
+    $parts[0] = 'node';
+    $parts[1] = $nid;
+  }
+
+  return implode('/', $parts);
+}

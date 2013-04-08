@@ -1,0 +1,11 @@
+name = Markdown filter
+description = Allows content to be submitted using Markdown, a simple plain-text syntax that is transformed into valid XHTML.
+package = "Input filters"
+core = 7.x
+
+; Information added by drupal.org packaging script on 2012-11-26
+version = "7.x-1.1"
+core = "7.x"
+project = "markdown"
+datestamp = "1353934650"
+

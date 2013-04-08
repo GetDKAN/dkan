@@ -1,0 +1,12 @@
+name = Libraries test module
+description = Tests library detection and loading.
+core = 7.x
+dependencies[] = libraries
+hidden = TRUE
+
+; Information added by drupal.org packaging script on 2013-03-09
+version = "7.x-2.1"
+core = "7.x"
+project = "libraries"
+datestamp = "1362848412"
+

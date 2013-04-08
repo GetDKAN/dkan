@@ -1,0 +1,184 @@
+.recline-data-explorer .data-view-container {
+  display: block;
+  margin-right: 225px;
+}
+
+.recline-data-explorer .data-view-sidebar {
+  float: right;
+  margin-left: 8px;
+  width: 220px;
+}
+
+.recline-data-explorer .header .navigation {
+  margin-bottom: 8px;
+}
+
+.recline-data-explorer .header .navigation,
+.recline-data-explorer .header .pagination,
+.recline-data-explorer .header .pagination form
+{
+  display: inline;
+}
+
+.recline-data-explorer .header .navigation {
+  float: left;
+}
+
+.recline-data-explorer .header .menu-right {
+  float: right;
+  margin-left: 5px;
+  padding-left: 5px;
+  border-left: solid 2px #ddd;
+}
+
+.header .recline-results-info {
+  line-height: 28px;
+  margin-left: 20px;
+  float: left;
+}
+
+/**********************************************************
+  * Query Editor
+  *********************************************************/
+
+.header .recline-query-editor {
+  float: right;
+  height: 30px;
+}
+
+.header .input-prepend {
+  margin-bottom: auto;
+}
+
+.header .add-on {
+  float: left;
+}
+
+/* needed for Chrome but not FF */
+.header .add-on {
+  margin-left: -27px;
+}
+
+/* needed for FF but not chrome */
+.header .input-prepend {
+  vertical-align: top;
+}
+
+.header .recline-query-editor form button {
+  vertical-align: top;
+}
+
+/**********************************************************
+  * Pager
+  *********************************************************/
+
+.header .recline-pager {
+  float: left;
+  margin: auto;
+  display: block;
+  margin-left: 20px;
+}
+
+.header .recline-pager .pagination input {
+  width: 30px;
+  height: 18px;
+  padding: 2px 4px;
+  margin: 0;
+  margin-top: -4px;
+}
+
+.header .recline-pager .pagination a {
+  line-height: 26px;
+  padding: 0 6px;
+}
+
+/**********************************************************
+  * Filter Editor
+  *********************************************************/
+
+.recline-filter-editor {
+  padding: 8px;
+}
+
+.recline-filter-editor .filter-term a {
+  font-size: 18px;
+}
+
+.recline-filter-editor input,
+.recline-filter-editor select
+{
+  width: 175px;
+}
+
+
+/**********************************************************
+  * Fields Widget
+  *********************************************************/
+
+.recline-fields-view .fields-list {
+  padding: 0;
+}
+
+.recline-fields-view .fields-list .accordion-heading,
+.recline-fields-view .fields-list h3
+{
+  margin: 3px 0 3px 5px;
+}
+
+.recline-fields-view .fields-list .accordion-heading a,
+.recline-fields-view .fields-list .accordion-heading h4 {
+  display: inline;
+}
+
+.recline-fields-view .fields-list .accordion-heading a {
+  padding: 0;
+}
+
+.recline-fields-view .fields-list .accordion-heading h4 {
+  word-wrap: break-word
+}
+
+.recline-fields-view .clear {
+  clear: both;
+}
+
+.recline-fields-view .facet-items {
+  list-style-type: none;
+  margin-left: 0;
+}
+
+.recline-fields-view .facet-item .term {
+  font-weight: bold;
+}
+
+.recline-fields-view .facet-item .count {
+}
+
+/**********************************************************
+  * Notifications
+  *********************************************************/
+
+.recline-data-explorer .notification-loader {
+  width: 18px;
+  margin-left: 5px;
+  background-image: url(data:image/gif;base64,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%3D%3D);
+  display: inline-block;
+}
+
+.recline-data-explorer .alert-loader {
+  position: absolute;
+  width: 200px;
+  left: 50%;
+  margin-left: -100px;
+  z-index: 10000;
+  padding: 40px 0px 40px 0px;
+  margin-top: -10px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  border-top: none;
+}
+

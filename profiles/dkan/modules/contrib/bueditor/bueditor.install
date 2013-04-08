@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * @file
+ * Installs, updates, and uninstalls BUEditor.
+ */
+
+/**
+ * Implements hook_install()
+ */
+function bueditor_install() {
+  module_load_include('inc', 'bueditor', 'admin/bueditor.admin');
+  bueditor_import_all();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function bueditor_uninstall() {
+  variable_del('bueditor_user1');
+  variable_del('bueditor_user1_alt');
+  variable_del('bueditor_roles');
+  variable_del('bueditor_sprites_dir');
+}
+
+
+/**
+ * Implements hook_schema().
+ */
+function bueditor_schema() {
+  $schema['bueditor_editors'] = array(
+    'description' => 'Stores editors and their settings.',
+    'fields' => array(
+      'eid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique editor ID.',
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => 'Noname',
+        'description' => 'The editor name.',
+      ),
+      'pages' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Drupal paths on which the editor is visible.',
+      ),
+      'excludes' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Textarea ids for which the editor is not visible.',
+      ),
+      'iconpath' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '%BUEDITOR/icons',
+        'description' => 'The directory path where the editor icons reside.',
+      ),
+      'librarypath' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Files to be included with the editor.',
+      ),
+      'spriteon' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The state of CSS sprite support.',
+      ),
+      'spritename' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The CSS sprite name under bueditor-sprites directory.',
+      ),
+    ),
+    'primary key' => array('eid'),
+  );
+
+  $schema['bueditor_buttons'] = array(
+    'description' => 'Stores buttons of {bueditor_editors}.',
+    'fields' => array(
+      'bid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique button ID.',
+      ),
+      'eid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The {bueditor_editors}.eid to which the button belongs.',
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => 'Notitle',
+        'description' => 'The button title.',
+      ),
+      'content' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'The button content.',
+      ),
+      'icon' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The button icon or caption.',
+      ),
+      'accesskey' => array(
+        'type' => 'varchar',
+        'length' => 1,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The button acceskey.',
+      ),
+      'weight' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The button weight that determines the button location in the editor layout.',
+      ),
+    ),
+    'primary key' => array('bid'),
+    'indexes' => array(
+      'eid' => array('eid'),
+    ),
+    'foreign keys' => array(
+      'eid' => array('bueditor_editors' => 'eid'),
+    ),
+  );
+
+  return $schema;
+}

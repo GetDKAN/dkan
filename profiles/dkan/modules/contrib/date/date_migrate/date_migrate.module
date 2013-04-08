@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Migration integration for Date Migrate.
+ */
+
+/**
+ * Implements hook_migrate_api().
+ */
+function date_migrate_migrate_api() {
+  $api = array(
+    'api' => 2,
+  );
+  return $api;
+}

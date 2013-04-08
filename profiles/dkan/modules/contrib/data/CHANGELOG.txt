@@ -1,0 +1,53 @@
+
+Data 6.x 1.0 Alpha 14, 2010-08-28
+---------------------------------
+
+- #883090 batje, alex_b: Fix static caching in data_taxonomy_get_info().
+- #901944 markdorison: Document HTML Fields.
+- #922868 jscm, alex_b: Don't allow commas in tag names.
+
+Data 6.x 1.0 Alpha 13, 2010-07-28
+---------------------------------
+
+- #836878 rsoden, Will White, alex_b: Support mapping of complex terms.
+- #868740 Will White, alex_b: Support exportable vocabularies.
+- #895368 David Goode: data_taxonomy - term_data join for enabled data tables.
+- #693056 David Goode: data_taxonomy - don't override existing relationships.
+- #866476 David Goode: Fix notice with CTools 1.7 upgrade.
+
+Data 6.x 1.0 Alpha 12, 2010-07-28
+---------------------------------
+
+- #866476 Fix CTools 1.7 compatibility issues.
+- #780358 Fix PK and index errors on table changes.
+- #867590 Use Exceptions. NOTE: this may require you to update modules that use
+  Data's DataTable API.
+
+Data 6.x 1.0 Alpha 11, 2010-03-30
+---------------------------------
+
+- #731530 jmiccolis: Add markup field handler.
+- Made the data taxonomy form save on blur.
+
+Data 6.x 1.0 Alpha 10, 2010-01-25
+---------------------------------
+
+- Add observer/visitor hooks for insert/update/delete.
+  hook_data_insert()
+  hook_data_delete()
+  hook_data_delete_query_alter()
+- Rename "manage data relations" to "edit data node relations".
+- #688850 k4ml: Fix incompatible PostgreSQL query.
+
+Data 6.x 1.0 Alpha 9, 2009-11-18
+--------------------------------
+
+- #625092 phayes: Geometry support.
+- #623974 phayes: Big text support.
+- #615078 bec: Fix creating table with varchar field + size.
+- #616324 bec: adopt tables.
+
+Data 6.x 1.0 Alpha 8, 2009-10-20
+---------------------------------
+
+- Initial release.

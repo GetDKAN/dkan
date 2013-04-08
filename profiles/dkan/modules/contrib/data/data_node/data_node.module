@@ -1,0 +1,466 @@
+<?php
+/**
+ * @file
+ * Hooks and API functions for Data Node module.
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function data_node_views_api() {
+  return array(
+    'api' => '2.0',
+    'path' => drupal_get_path('module', 'data_node') . '/views',
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function data_node_theme() {
+  return array(
+    'data_node_label' => array(
+      'variables' => array('table' => NULL, 'id' => NULL, 'nid' => NULL, 'title' => NULL),
+      'file' => 'data_node.theme.inc',
+    ),
+    'data_node_active_form' => array(
+      'render element' => 'form',
+      'file' => 'data_node.theme.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function data_node_block_info() {
+  $blocks = array();
+  $tables = data_get_all_tables();
+  foreach ($tables as $table) {
+    $meta = $table->get('meta');
+    if (!empty($meta['data_node']['content_type'])) {
+      $blocks[$table->get('name')]['info'] = t('Data node: Active node form for !table', array('!table' => $table->get('title')));
+    }
+  }
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function data_node_block_view($delta) {
+  if (user_access('manage data relations') && $table = data_get_table($delta)) {
+    // Grab the node type name
+    $meta = $table->get('meta');
+    $names = node_type_get_names();
+    $type_name = check_plain($names[$meta['data_node']['content_type']]);
+
+    return array(
+      'subject' => t('Active !type', array('!type' => $type_name)),
+      'content' => drupal_get_form('data_node_active_form', $table),
+    );
+  }
+}
+
+/**
+ * Implements hook_block().
+ */
+function data_node_block_OLD($op = 'list', $delta = 0) { }
+
+/**
+ * Implements hook_menu().
+ */
+function data_node_menu() {
+  $items = array();
+  $items['data-node/add/%data_ui_table/%/%/%'] = array(
+    'page callback' => 'data_node_add_page',
+    'page arguments' => array(2, 3, 4, 5),
+    'access callback' => 'user_access',
+    'access arguments' => array('manage data relations'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['data-node/remove/%data_ui_table/%/%/%'] = array(
+    'page callback' => 'data_node_remove_page',
+    'page arguments' => array(2, 3, 4, 5),
+    'access callback' => 'user_access',
+    'access arguments' => array('manage data relations'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['data-node/active/%data_ui_table/%'] = array(
+    'page callback' => 'data_node_active_page',
+    'page arguments' => array(2, 3),
+    'access callback' => 'user_access',
+    'access arguments' => array('manage data relations'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/structure/data/edit/%data_ui_table/node'] = array(
+    'title' => 'Relate to nodes',
+    'description' => 'Administer data tables.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_node_settings_form', 4),
+    'file' => 'data_node.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function data_node_permission() {
+  return array(
+    'edit data node relations' => array(
+      'title' => t('edit data node relations'),
+      'description' => t('TODO Add a description for \'edit data node relations\''),
+    ),
+  );
+}
+
+/**
+ * Form callback for setting the active node.
+ */
+function data_node_active_form($form, &$form_state, $table) {
+  $form = array(
+    '#attributes' => array('class' => 'data-node-active-form'),
+    '#table' => $table,
+    '#theme' => 'data_node_active_form',
+    // These three are here to keep JS from doing reconstructive URL surgery.
+    'ajax_url' => array(
+      '#type' => 'hidden',
+      '#value' => url('data-node/active/' . $table->get('name')),
+      '#attributes' => array('class' => 'data-node-ajax-url'),
+    ),
+    'add_url' => array(
+      '#type' => 'hidden',
+      '#value' => url('data-node/add/' . $table->get('name')),
+      '#attributes' => array('class' => 'data-node-add-url'),
+    ),
+    'remove_url' => array(
+      '#type' => 'hidden',
+      '#value' => url('data-node/remove/' . $table->get('name')),
+      '#attributes' => array('class' => 'data-node-remove-url'),
+    ),
+  );
+
+  $nodes = array(0 => '--' . t('Select') . '--');
+  $nodes += data_node_get_nodes($table);
+
+  // Grab the node type name and provide a creation option
+  $meta = $table->get('meta');
+  $names = node_type_get_names();
+  $type_name = check_plain($names[$meta['data_node']['content_type']]);
+  if (node_access('create', $meta['data_node']['content_type'])) {
+    $nodes['new'] = '< ' . t('New !type', array('!type' => $type_name)) . ' >';
+  }
+
+  $form['nid'] = array(
+    '#type' => 'select',
+    '#title' => t('Active !type', array('!type' => $type_name)),
+    '#options' => $nodes,
+    '#default_value' => data_node_get_active($table->get('name')),
+  );
+
+  if (node_access('create', $meta['data_node']['content_type'])) {
+    $form['new'] = array('#tree' => FALSE);
+    $form['new']['type'] = array(
+      '#type' => 'value',
+      '#value' => $meta['data_node']['content_type'],
+    );
+    $form['new']['title'] = array(
+      '#type' => 'textfield',
+      '#size' => 20,
+    );
+    $form['new']['create'] = array(
+      '#type' => 'submit',
+      '#value' => t('Create'),
+      '#submit' => array('data_node_active_form_create_submit'),
+    );
+  }
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Set'),
+    '#submit' => array('data_node_active_form_submit'),
+  );
+  return $form;
+}
+
+/**
+ * Submit handler for form.
+ */
+function data_node_active_form_submit($form, &$form_state) {
+  data_node_set_active($form['#table']->get('name'), $form_state['values']['nid']);
+
+  // Redirect ourselves because '#redirect' does not support queries.
+  $query = array();
+  foreach ($_GET as $k => $v) {
+    if ($k != 'q') {
+      $query[] = "$k=$v";
+    }
+  }
+  // TODO implode('&', $query) needs to be an array of keys and values instead of a string.
+  drupal_goto($_GET['q'], array('query' => implode('&', $query)));
+}
+
+/**
+ * Create submit handler for form.
+ */
+function data_node_active_form_create_submit($form, &$form_state) {
+  $title = trim($form_state['values']['title']);
+  if (!empty($title)) {
+    global $user;
+    $node = new stdClass();
+    $node->uid = $user->uid;
+    $node->title = $title;
+    $node->type = $form_state['values']['type'];
+    $node->body = '';
+    foreach (variable_get('node_options_' . $node->type, array('status')) as $key) {
+      $node->{$key} = 1;
+    }
+    node_save($node);
+
+    data_node_set_active($form['#table']->get('name'), $node->nid);
+  }
+
+  // Redirect ourselves because '#redirect' does not support queries.
+  $query = array();
+  foreach ($_GET as $k => $v) {
+    if ($k != 'q') {
+      $query[] = "$k=$v";
+    }
+  }
+  // TODO implode('&', $query) needs to be an array of keys and values instead of a string.
+  drupal_goto($_GET['q'], array('query' => implode('&', $query)));
+}
+
+/**
+ * Page callback for adding.
+ *
+ * @todo: add tokenizing drupal_valid_token/drupal_get_token to prevent XSS
+ */
+function data_node_add_page($table, $id, $nid, $token) {
+  if (drupal_valid_token($token, _data_node_hash($table, $id, $nid))) {
+    data_node_remove($table, $id, $nid);
+    data_node_add($table, $id, $nid);
+  }
+  // Handle AJAX requests
+  if (isset($_GET['ajax'])) {
+    $response = array(
+      'status' => TRUE,
+      'table' => $table->get('name'),
+      'id' => $id,
+      'nid' => $nid,
+      'labels' => data_node_render_labels($table, $id),
+      'add_link' => data_node_render_remove_link($table, $id, $nid),
+      'remove_link' => data_node_render_add_link($table, $id, $nid),
+    );
+    drupal_json_output($response);
+    exit;
+  }
+  drupal_goto($_GET['q']);
+}
+
+/**
+ * Page callback for setting the active node.
+ */
+function data_node_active_page($table, $nid) {
+  data_node_set_active($table->get('name'), $nid);
+  // Handle AJAX requests
+  if (isset($_GET['ajax'])) {
+    // Generate new add/remove links to replace stale ones.
+    $stale = isset($_GET['stale']) ?  explode('-', $_GET['stale']) : array();
+    $refresh = array();
+    foreach ($stale as $id) {
+      $node_list = data_node_get_nids($table, $id);
+      $refresh[$id] = in_array($nid, $node_list) ? data_node_render_remove_link($table, $id, $nid) : data_node_render_add_link($table, $id, $nid);
+    }
+    $response = array(
+      'status' => TRUE,
+      'table' => $table->get('name'),
+      'nid' => $nid,
+      'refresh' => $refresh,
+    );
+    drupal_json_output($response);
+    exit;
+  }
+  drupal_goto($_GET['q']);
+}
+
+/**
+ * Page callback for removing.
+ *
+ * @todo: add tokenizing drupal_valid_token/drupal_get_token to prevent XSS
+ */
+function data_node_remove_page($table, $id, $nid, $token) {
+  if (drupal_valid_token($token, _data_node_hash($table, $id, $nid))) {
+    data_node_remove($table, $id, $nid);
+  }
+  // Handle AJAX requests
+  if (isset($_GET['ajax'])) {
+    $response = array(
+      'status' => TRUE,
+      'table' => $table->get('name'),
+      'id' => $id,
+      'nid' => $nid,
+      'labels' => data_node_render_labels($table, $id),
+      'add_link' => data_node_render_remove_link($table, $id, $nid),
+      'remove_link' => data_node_render_add_link($table, $id, $nid),
+    );
+    drupal_json_output($response);
+    exit;
+  }
+  drupal_goto($_GET['q']);
+}
+
+/**
+ * Add a relationship between a data table and a node.
+ */
+function data_node_add($table, $id, $nid) {
+  $save = array(
+    'data_table_name' => $table->get('name'),
+    'id' => $id,
+    'nid' => $nid,
+  );
+  return drupal_write_record('data_table_node', $save);
+}
+
+/**
+ * Get the nids for a given record.
+ */
+function data_node_get_nids($table, $id) {
+  $list = array();
+  $result = db_query("SELECT nid FROM {data_table_node} WHERE data_table_name = :data_table_name AND id = :id", array(':data_table_name' => $table->get('name'), ':id' => $id));
+  while ($row = db_fetch_object($result)) {
+    $list[] = $row->nid;
+  }
+  return $list;
+}
+
+/**
+ * Remove a relationship between a data table and a node.
+ */
+function data_node_remove($table, $id, $nid) {
+  // TODO Please review the conversion of this statement to the D7 database API syntax.
+  /* db_query("DELETE FROM {data_table_node} WHERE data_table_name = '%s' AND id = %d AND nid = %d", $table->get('name'), $id, $nid) */
+  db_delete('data_table_node')
+  ->condition('data_table_name', $table->get('name'))
+  ->condition('id', $id)
+  ->condition('nid', $nid)
+  ->execute();
+}
+
+/**
+ * Get all available nodes for a specific table.
+ */
+function data_node_get_nodes($table) {
+  $nodes = array();
+  $meta = $table->get('meta');
+  if ($meta['data_node']['content_type']) {
+    $result = db_query("SELECT nid, title FROM {node} WHERE type = :type ORDER BY title ASC", array(':type' => $meta['data_node']['content_type']));
+    while ($node = db_fetch_object($result)) {
+      $nodes[$node->nid] = $node->title;
+    }
+  }
+  return $nodes;
+}
+
+/**
+ * Set a specific node as the active node. This is used for the collection workflow.
+ */
+function data_node_set_active($table_name, $nid) {
+  $_SESSION['data_node_active'][$table_name] = $nid;
+}
+
+/**
+ * Get a the current active node. This is used for the collection workflow.
+ */
+function data_node_get_active($table_name) {
+  return $_SESSION['data_node_active'][$table_name];
+}
+
+/**
+ * Create a simple hash of a table name, an id and a nid.
+ */
+function _data_node_hash($table, $id, $nid) {
+  return $table->get('name') . $id . $nid;
+}
+
+/**
+ * Static cache node titles to avoid unnecessary node loading.
+ */
+function _data_node_get_title($nid) {
+  static $nodes = array();
+  if (!isset($nodes[$nid])) {
+    $nodes[$nid] = check_plain(db_query("SELECT title FROM {node} WHERE nid = :nid", array(':nid' => $nid))->fetchField());
+  }
+  return isset($nodes[$nid]) ? $nodes[$nid] : NULL;
+}
+
+/**
+ * Generate the path for a remove link for an item/node pair.
+ */
+function data_node_remove_path($table, $id, $nid) {
+  $token = drupal_get_token(_data_node_hash($table, $id, $nid));
+  $table_name = $table->get('name');
+  return "data-node/remove/{$table_name}/$id/$nid/$token";
+}
+
+/**
+ * Generate the path for an add link for an item/node pair.
+ */
+function data_node_add_path($table, $id, $nid) {
+  $token = drupal_get_token(_data_node_hash($table, $id, $nid));
+  $table_name = $table->get('name');
+  return "data-node/add/{$table_name}/$id/$nid/$token";
+}
+
+/**
+ * Render node-data labels for a given item.
+ */
+function data_node_render_labels($table, $id) {
+  $nids = data_node_get_nids($table, $id);
+  foreach ($nids as $nid) {
+    $title = _data_node_get_title($nid);
+    $output .= theme('data_node_label', array('table' => $table, 'id' => $id, 'nid' => $nid, 'title' => $title));
+  }
+  $table_name = $table->get('name');
+  $class = "data_node_labels-{$table_name}-{$id}";
+  return "<div class='{$class} clear-block'>{$output}</div>";
+}
+
+/**
+ * Render a placeholder when there are no active nodes that can be replaced via AJAX.
+ */
+function data_node_render_placeholder_link($table, $id) {
+  drupal_add_css(drupal_get_path('module', 'data_node') . '/data_node.css');
+  drupal_add_js(drupal_get_path('module', 'data_node') . '/data_node.js');
+  $table_name = $table->get('name');
+  return "<span class='data-node-placeholder data_node_link-{$table_name}-{$id}-0'></span>";
+}
+
+/**
+ * Render an add link for a given item..
+ */
+function data_node_render_add_link($table, $id, $nid) {
+  drupal_add_css(drupal_get_path('module', 'data_node') . '/data_node.css');
+  drupal_add_js(drupal_get_path('module', 'data_node') . '/data_node.js');
+
+  $title = _data_node_get_title($nid);
+  $table_name = $table->get('name');
+  $class = "data_node_link-{$table_name}-{$id}-{$nid}";
+  return l(t('Add to !title', array('!title' => $title)), data_node_add_path($table, $id, $nid), array('attributes' => array('class' => "data-node-add $class"), 'query' => drupal_get_destination()));
+}
+
+/**
+ * Render a remove link for a given item.
+ */
+function data_node_render_remove_link($table, $id, $nid) {
+  drupal_add_css(drupal_get_path('module', 'data_node') . '/data_node.css');
+  drupal_add_js(drupal_get_path('module', 'data_node') . '/data_node.js');
+
+  $title = _data_node_get_title($nid);
+  $table_name = $table->get('name');
+  $class = "data_node_link-{$table_name}-{$id}-{$nid}";
+  return l(t('Remove from !title', array('!title' => $title)), data_node_remove_path($table, $id, $nid), array('attributes' => array('class' => "data-node-remove $class"), 'query' => drupal_get_destination()));
+}

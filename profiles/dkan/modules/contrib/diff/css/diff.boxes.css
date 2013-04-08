@@ -1,0 +1,124 @@
+
+html.js .diff-js-hidden { display: none; }
+
+/* Reset as many core themes as possible */
+table.diff {
+  font-size: 0.923em;
+  margin: 0 0 10px;
+  border: 0 none;
+  width: 98%;
+  border-spacing: 5px;
+  table-layout: fixed ;
+  border-collapse: separate;
+}
+table.diff tr td:last-child {
+  border-right: inherit;
+}
+table.diff td,
+table.diff th {
+  vertical-align: middle;
+  border: 0 none;
+  color: #000;
+  text-transform: none;
+  background: none;
+  border-spacing: 4px;
+  padding: 4px 8px;
+}
+table.diff tr, table.diff tr.even {
+  background: none;
+}
+table.diff tr th, table.diff tr th a, table.diff tr th a:hover {
+  color: inherit;
+  font-weight: bold;
+}
+table.diff tr.even,
+table.diff tr.odd {
+  border-width: 0;
+  border-style: none;
+  background: transparent;
+}
+table.diff th a { display: inline; }
+
+/* Main theming */
+table.diff, td.diff-number {
+  background-color: white
+}
+
+table.diff td.diff-lineno {
+  font-weight: bold
+}
+
+table.diff td.diff-addedline, table.diff td.diff-deletedline, table.diff td.diff-context {
+  font-size: 88%;
+  vertical-align: top;
+  white-space: -moz-pre-wrap;
+  white-space: pre-wrap
+}
+
+table.diff td.diff-addedline, table.diff td.diff-deletedline {
+  border-style: solid;
+  border-width: 1px 1px 1px 4px;
+  border-radius: 0.33em
+}
+
+table.diff td.diff-context {
+  background: #f3f3f3;
+  color: #333333;
+  border-style: solid;
+  border-width: 1px 1px 1px 4px;
+  border-color: #e6e6e6;
+  border-radius: 0.33em;
+}
+table.diff td.diff-addedline {
+  border-color: #a3d3ff;
+  background: #ffffff;
+  border: 1px 1px 1px 3px;
+}
+
+table.diff td.diff-deletedline {
+  border-color: #ffe49c
+}
+
+.diffchange {
+  font-weight: bold;
+  text-decoration: none
+}
+
+table.diff td.diff-addedline .diffchange, table.diff td.diff-deletedline .diffchange {
+  border-radius: 0.33em;
+  padding: 0.25em 0
+}
+
+table.diff td.diff-addedline .diffchange {
+  background: #d8ecff
+}
+
+table.diff td.diff-deletedline .diffchange {
+  background: #feeec8
+}
+
+table.diff table.diff td {
+  padding: 0.33em 0.66em
+}
+
+table.diff td.diff-marker {
+  width: 2%;
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.25em  
+}
+
+table.diff col.diff-content {
+  width: 48%
+}
+
+table.diff table.diff td div {
+  word-wrap: break-word;
+  overflow: auto
+}
+td.diff-prevlink {
+  text-align: left;
+}
+td.diff-nextlink {
+  text-align: right;
+}

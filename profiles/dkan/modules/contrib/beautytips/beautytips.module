@@ -1,0 +1,277 @@
+<?php
+
+/**
+ * @file
+ * Provides API for adding beautytips to pages.
+ */
+
+/**
+ * Implements hook_init().
+ */
+function beautytips_init() {
+  if (variable_get('beautytips_always_add', 0)) {
+    $selectors = array();
+    $options = array();
+    $selectors = variable_get('beautytips_added_selectors_array', array());
+    if (count($selectors)) {
+      foreach ($selectors as $selector) {
+        if (!empty($selector)) {
+          $options[$selector]['cssSelect'] = $selector;
+        }
+      }
+    }
+    $options['.beautytips']['cssSelect'] = '.beautytips';
+    beautytips_add_beautytips($options);
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function beautytips_menu() {
+  $items['admin/config/user-interface/beautytips'] = array(
+    'title' => 'BeautyTips',
+    'description' => 'Configure settings related to the Beautytips module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('beautytips_admin'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'beautytips.admin.inc',
+  );
+  return $items;
+}
+
+ /**
+ * Implements hook_library().
+ */
+function beautytips_library() {
+  $libraries = array();
+  $path = drupal_get_path('module', 'beautytips');
+  $expath = $path .'/other_libs/excanvas_r3';
+
+  $libraries['beautytips-jquery'] = array(
+    'title' => 'BeautyTips Jquery Plugin',
+    'website' => 'http://plugins.jquery.com/project/bt',
+    'version' => '0.9.5-rc1',
+    'js' => array($path .'/js/jquery.bt.min.js' => array()),
+  );
+  $libraries['beautytips-module'] = array(
+    'title' => 'BeautyTips Module',
+    'website' => 'http://drupal.org/project/beautytips',
+    'version' => '7.x-2.x',
+    'js' => array($path .'/js/beautytips.min.js' => array()),
+    'dependencies' => array(
+      array('beautytips', 'beautytips-jquery'),
+    ),
+  );
+  if (file_exists($expath. '/excanvas.compiled.js')) {
+    $libraries['excanvas_r3'] = array(
+      'title' => 'ExplorerCanvas',
+      'website' => 'http://excanvas.sourceforge.net/',
+      'version' => 'r3',
+      'js' => array($expath .'/excanvas.compiled.js' => array()),
+    );
+  }
+
+  $libraries['beautytips-ltr'] = array(
+    'title' => 'BeautyTips Module LTR support',
+    'website' => 'http://drupal.org/project/beautytips',
+    'version' => '7.x-2.x',
+    'css' => array($path .'/css/beautytips-ltr.css' => array()),
+    'dependencies' => array(
+      array('beautytips', 'beautytips-jquery'),
+    ),
+  );
+  
+  return $libraries;
+}
+
+
+/**
+ * This is the API.  Call this function to add beautytips.
+ *
+ * @param array $options - See README.txt for details
+ */
+function beautytips_add_beautytips($options = NULL) {
+  static $added = FALSE;
+  $settings = array('beautytips' => array()); 
+  $js_added = drupal_add_js($data = NULL, 'setting');
+
+  if (count($options)) {
+    foreach ($options as $beautytip => $content) {
+
+      // Ensure the js settings are not added more than once
+      if (isset($js_added['setting']) && is_array($js_added['setting'])) {
+        foreach ($js_added['setting'] as $setting) {
+          if (is_array($setting['beautytips'])) {
+            if (array_key_exists($beautytip, $setting['beautytips'])) {
+              unset($content);
+            }
+          }
+        }
+      }
+
+      // Setup the settings array for adding js
+      if (isset($content) && is_array($content)) {
+        $style = isset($content['style']) ? $content['style'] : 'default';
+        unset($content['style']);
+        $settings['beautytips'][$beautytip] = array_merge(beautytips_get_style($style), $content);
+        $keys_no_add = array('cssSelect', 'style', 'list', 'text', 'preEval', 'ajaxDisableLink', 'animate');
+        foreach ($settings['beautytips'][$beautytip] as $key => $value) {
+          // Ensure that numeric options are not passed as strings.
+          $settings['beautytips'][$beautytip][$key] = is_numeric($value) ? (int) $value : $value;
+          if (!in_array($key, $keys_no_add)) {
+            $settings['beautytips'][$beautytip]['list'][] = $key;
+          }
+        }
+      }
+    }
+
+    if ($added && !empty($settings['beautytips'])) {
+      drupal_add_js($settings, 'setting');
+    }
+  }
+  
+  if (!$added) {
+    // Add beautytips jQuery plugin and module js.
+    drupal_add_library('beautytips', 'beautytips-module');
+    // Add this for ie compatibility
+    drupal_add_library('beautytips', 'excanvas_r3');
+    drupal_add_js($settings, 'setting');
+    if (variable_get('beautytips_ltr', FALSE)) {
+      drupal_add_library('beautytips', 'beautytips-ltr');
+    }
+    $added = TRUE;
+  }
+}
+
+/**
+ * Get all the defined beautytips styles
+ */
+function beautytips_get_styles($reload = FALSE) {
+  $cache = cache_get('beautytips:beautytips-styles');
+  if (!$cache || $reload) {
+    $styles = module_invoke_all('define_beautytips_styles');  
+    // Save the beautytips style registry in the cache.
+    cache_set('beautytips:beautytips-styles', $styles);
+  }
+  else {
+    $styles = $cache->data;
+  }
+  return $styles;
+}
+
+/**
+ * Get an array of options that defines a particular style
+ */
+function beautytips_get_style($style = 'default') {
+  $styles = beautytips_get_styles();
+  return isset($styles[$style]) ? $styles[$style] : array();
+}
+
+/**
+ * Implements hook_define_beautytips_styles().
+ */
+function beautytips_define_beautytips_styles() {
+  $styles['default'] = variable_get('beautytips_defaults', array());
+  // Cleanup any problems with defaults.
+  if (count($styles['default'])) {
+    foreach ($styles['default'] as &$value) {
+      if (!is_array($value)) {
+        $value = check_plain($value);
+      }
+      else if (count($value)) {
+        foreach ($value as &$sub_value) {
+          $sub_value = check_plain($sub_value);
+        }
+      }
+    } 
+  }
+
+  $styles['plain'] = array();
+  $styles['netflix'] = array(
+    'positions' => array('right', 'left'),
+    'fill' => '#FFF',
+    'padding' => 5,
+    'shadow' => TRUE,
+    'shadowBlur' => 12,
+    'strokeStyle' => '#B9090B',
+    'spikeLength' => 50,
+    'spikeGirth' => 60,
+    'cornerRadius' => 10,
+    'centerPointY' => .1,
+    'overlap' => -8,
+    'cssStyles' => array(
+      'fontSize' => '12px',
+      'fontFamily' => 'arial,helvetica,sans-serif',
+    ),
+  );
+  $styles['facebook'] = array(
+    'fill' => '#F7F7F7',
+    'padding' => 8,
+    'strokeStyle' => '#B7B7B7',
+    'cornerRadius' => 0,
+    'cssStyles' => array(
+      'fontFamily' => '"lucida grande",tahoma,verdana,arial,sans-serif', 
+      'fontSize' => '11px',
+    ),
+  );
+  $styles['transparent'] = array(
+    'fill' => 'rgba(0, 0, 0, .8)',
+    'padding' => 20,
+    'strokeStyle' => '#CC0',
+    'strokeWidth' => 3,
+    'spikeLength' => 40,
+    'spikeGirth' => 40,
+    'cornerRadius' => 40,
+    'cssStyles' => array(
+      'color' => '#FFF',
+      'fontWeight' => 'bold',
+    ),
+  );      
+  $styles['big-green'] = array(
+    'fill' => '#00FF4E',
+    'padding' => 20,
+    'strokeWidth' => 0,
+    'spikeLength' => 40,
+    'spikeGirth' => 40,
+    'cornerRadius' => 15,
+    'cssStyles' => array(
+      'fontFamily' => '"lucida grande",tahoma,verdana,arial,sans-serif', 
+      'fontSize' => '14px',
+    ),
+  );       
+  $styles['google-maps'] = array(
+    'positions' => array('top', 'bottom'),
+    'fill' => '#FFF',
+    'padding' => 15,
+    'strokeStyle' => '#ABABAB',
+    'strokeWidth' => 1,
+    'spikeLength' => 65,
+    'spikeGirth' => 40,
+    'cornerRadius' => 25,
+    'centerPointX' => .9,
+    'cssStyles' => array(),
+  );
+  $styles['hulu'] = array(
+    'fill' => '#F4F4F4',
+    'strokeStyle' => '#666666', 
+    'spikeLength' => 20,
+    'spikeGirth' => 10,
+    'width' => 350,
+    'overlap' => 0,
+    'centerPointY' => 1,
+    'cornerRadius' => 0, 
+    'cssStyles' => array(
+      'fontFamily' => '"Lucida Grande",Helvetica,Arial,Verdana,sans-serif', 
+      'fontSize' => '12px',
+      'padding' => '10px 14px'
+    ),
+    'shadow' => TRUE,
+    'shadowColor' => 'rgba(0,0,0,.5)',
+    'shadowBlur' => 8,
+    'shadowOffsetX' => 4,
+    'shadowOffsetY' => 4,
+  );
+  return $styles;
+}
+

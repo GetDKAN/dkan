@@ -1,0 +1,157 @@
+<?php
+
+/**
+ * @file
+ * Test case for CCK link mapper mappers/date.inc.
+ */
+
+/**
+ * Class for testing Feeds <em>link</em> mapper.
+ */
+class FeedsMapperLinkTestCase extends FeedsMapperTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Mapper: Link',
+      'description' => 'Test Feeds Mapper support for Link fields.',
+      'group' => 'Feeds',
+      'dependencies' => array('link'),
+    );
+  }
+
+  public function setUp() {
+    parent::setUp(array('link'));
+  }
+
+  /**
+   * Basic test loading a single entry CSV file.
+   */
+  public function test() {
+    $static_title = $this->randomName();
+
+    // Create content type.
+    $typename = $this->createContentType(array(), array(
+      'alpha' => array(
+        'type' => 'link_field',
+        'instance_settings' => array(
+          'instance[settings][title]' => 'required',
+        ),
+      ),
+      'beta' => array(
+        'type' => 'link_field',
+        'instance_settings' => array(
+          'instance[settings][title]' => 'none',
+        ),
+      ),
+      'gamma' => array(
+        'type' => 'link_field',
+        'instance_settings' => array(
+          'instance[settings][title]' => 'optional',
+        ),
+      ),
+      'omega' => array(
+      'type' => 'link_field',
+        'instance_settings' => array(
+          'instance[settings][title]' => 'value',
+          'instance[settings][title_value]' => $static_title,
+        ),
+      ),
+    ));
+
+    // Create importer configuration.
+    $this->createImporterConfiguration(); //Create a default importer configuration
+    $this->setSettings('syndication', 'FeedsNodeProcessor', array('bundle' => $typename)); //Processor settings
+    $this->addMappings('syndication', array(
+      0 => array(
+        'source' => 'title',
+        'target' => 'title'
+      ),
+      1 => array(
+        'source' => 'timestamp',
+        'target' => 'created'
+      ),
+      2 => array(
+        'source' => 'description',
+        'target' => 'body'
+      ),
+      3 => array(
+        'source' => 'url',
+        'target' => 'field_alpha:url'
+      ),
+      4 => array(
+        'source' => 'title',
+        'target' => 'field_alpha:title'
+      ),
+      5 => array(
+        'source' => 'url',
+        'target' => 'field_beta:url'
+      ),
+      6 => array(
+        'source' => 'url',
+        'target' => 'field_gamma:url'
+      ),
+      7 => array(
+        'source' => 'title',
+        'target' => 'field_gamma:title'
+      ),
+      8 => array(
+        'source' => 'url',
+        'target' => 'field_omega:url'
+      ),
+    ));
+
+    // Import RSS file.
+    $nid = $this->createFeedNode();
+    // Assert 10 items aggregated after creation of the node.
+    $this->assertText('Created 10 nodes');
+
+    // Edit the imported node.
+    $this->drupalGet('node/2/edit');
+
+    $url = 'http://developmentseed.org/blog/2009/oct/06/open-atrium-translation-workflow-two-way-updating';
+    $title = 'Open Atrium Translation Workflow: Two Way Translation Updates';
+    $this->assertNodeFieldValue('alpha', array('url' => $url, 'static' => $title));
+    $this->assertNodeFieldValue('beta', array('url' =>  $url));
+    $this->assertNodeFieldValue('gamma', array('url' => $url, 'static' => $title));
+    $this->assertNodeFieldValue('omega', array('url' => $url, 'static' => $static_title));
+
+    // Test the static title.
+    $this->drupalGet('node/2');
+    $this->assertText($static_title, 'Static title link found.');
+
+  }
+
+  /**
+   * Override parent::getFormFieldsNames().
+   */
+  protected function getFormFieldsNames($field_name, $index) {
+    if (in_array($field_name, array('alpha', 'beta', 'gamma', 'omega'))) {
+      $fields = array("field_{$field_name}[und][{$index}][url]");
+      if (in_array($field_name, array('alpha', 'gamma'))) {
+        $fields[] = "field_{$field_name}[und][{$index}][title]";
+      }
+      return $fields;
+    }
+    else {
+      return parent::getFormFieldsNames($field_name, $index);
+    }
+  }
+
+  /**
+   * Override parent::getFormFieldsValues().
+   */
+  protected function getFormFieldsValues($field_name, $value) {
+    if (in_array($field_name, array('alpha', 'beta', 'gamma', 'omega'))) {
+      if (!is_array($value)) {
+        $value = array('url' => $value);
+      }
+      $values = array($value['url']);
+      if (in_array($field_name, array('alpha', 'gamma'))) {
+        $values[] = isset($value['title']) ? $value['title'] : '';
+      }
+      return $values;
+    }
+    else {
+      return parent::getFormFieldsValues($field_name, $index);
+    }
+  }
+}

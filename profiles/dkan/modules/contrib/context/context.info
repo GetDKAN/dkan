@@ -1,0 +1,17 @@
+name = "Context"
+dependencies[] = "ctools"
+description = "Provide modules with a cache that lasts for a single page request."
+package = "Context"
+core = "7.x"
+
+files[] = context.module
+files[] = tests/context.test
+files[] = tests/context.conditions.test
+files[] = tests/context.reactions.test
+
+; Information added by drupal.org packaging script on 2012-12-19
+version = "7.x-3.0-beta6"
+core = "7.x"
+project = "context"
+datestamp = "1355879811"
+

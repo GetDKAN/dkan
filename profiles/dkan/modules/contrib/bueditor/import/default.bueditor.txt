@@ -1,0 +1,183 @@
+array (
+  'name' => 'Default',
+  'pages' => 'node/*
+comment/*',
+  'excludes' => 'edit-log
+edit-menu-description',
+  'iconpath' => '%BUEDITOR/icons',
+  'spriteon' => '1',
+  'buttons' => 
+  array (
+    0 => 
+    array (
+      'title' => 'Insert/edit image',
+      'content' => 'js:
+var form = [
+ {name: \'src\', title: \'Image URL\', required: true, suffix: E.imce.button(\'attr_src\')},
+ {name: \'width\', title: \'Width x Height\', suffix: \' x \', getnext: true, attributes: {size: 3}},
+ {name: \'height\', attributes: {size: 3}},
+ {name: \'alt\', title: \'Alternative text\', required: true}
+];
+E.tagDialog(\'img\', form, {title: \'Insert/edit image\'});',
+      'icon' => 'image.png',
+      'accesskey' => 'M',
+      'weight' => '0',
+    ),
+    1 => 
+    array (
+      'title' => 'Insert/edit link',
+      'content' => 'js:
+var form = [
+ {name: \'href\', title: \'Link URL\', required: true, suffix: E.imce.button(\'attr_href\')},
+ {name: \'html\', title: \'Link text\'},
+ {name: \'title\', title: \'Link title\'}
+];
+E.tagDialog(\'a\', form, {title: \'Insert/edit link\'});',
+      'icon' => 'link.png',
+      'accesskey' => 'L',
+      'weight' => '1',
+    ),
+    2 => 
+    array (
+      'title' => 'tpl:dot',
+      'content' => '',
+      'icon' => 'dot.png',
+      'accesskey' => '',
+      'weight' => '2',
+    ),
+    3 => 
+    array (
+      'title' => 'Bold',
+      'content' => '<strong>%TEXT%</strong>',
+      'icon' => 'bold.png',
+      'accesskey' => 'B',
+      'weight' => '3',
+    ),
+    4 => 
+    array (
+      'title' => 'Italic',
+      'content' => '<em>%TEXT%</em>',
+      'icon' => 'italic.png',
+      'accesskey' => 'I',
+      'weight' => '4',
+    ),
+    5 => 
+    array (
+      'title' => 'Underline',
+      'content' => '<ins>%TEXT%</ins>',
+      'icon' => 'underline.png',
+      'accesskey' => 'U',
+      'weight' => '5',
+    ),
+    6 => 
+    array (
+      'title' => 'Strikethrough',
+      'content' => '<del>%TEXT%</del>',
+      'icon' => 'strike.png',
+      'accesskey' => 'S',
+      'weight' => '6',
+    ),
+    7 => 
+    array (
+      'title' => 'tpl:dot',
+      'content' => '',
+      'icon' => 'dot.png',
+      'accesskey' => '',
+      'weight' => '7',
+    ),
+    8 => 
+    array (
+      'title' => 'Ordered list. Converts selected lines to a numbered list.',
+      'content' => 'js: E.wrapLines(\'<ol>\\n\', \'  <li>\', \'</li>\', \'\\n</ol>\');',
+      'icon' => 'ol.png',
+      'accesskey' => 'O',
+      'weight' => '8',
+    ),
+    9 => 
+    array (
+      'title' => 'Unordered list. Converts selected lines to a bulleted list.',
+      'content' => 'js: E.wrapLines(\'<ul>\\n\', \'  <li>\', \'</li>\', \'\\n</ul>\');',
+      'icon' => 'ul.png',
+      'accesskey' => 'N',
+      'weight' => '9',
+    ),
+    10 => 
+    array (
+      'title' => 'tpl:dot',
+      'content' => '',
+      'icon' => 'dot.png',
+      'accesskey' => '',
+      'weight' => '10',
+    ),
+    11 => 
+    array (
+      'title' => 'Headings',
+      'content' => 'js: E.tagChooser([
+ [\'h1\', \'Heading1\'],
+ [\'h2\', \'Heading2\'],
+ [\'h3\', \'Heading3\'],
+ [\'h4\', \'Heading4\'],
+ [\'h5\', \'Heading5\'],
+ [\'h6\', \'Heading6\']
+]);',
+      'icon' => 'headers.png',
+      'accesskey' => 'H',
+      'weight' => '11',
+    ),
+    12 => 
+    array (
+      'title' => 'Quote',
+      'content' => '<blockquote>%TEXT%</blockquote>',
+      'icon' => 'quote.png',
+      'accesskey' => 'Q',
+      'weight' => '12',
+    ),
+    13 => 
+    array (
+      'title' => 'Code',
+      'content' => '<code>%TEXT%</code>',
+      'icon' => 'code.png',
+      'accesskey' => 'D',
+      'weight' => '13',
+    ),
+    14 => 
+    array (
+      'title' => 'tpl:dot',
+      'content' => '',
+      'icon' => 'dot.png',
+      'accesskey' => '',
+      'weight' => '14',
+    ),
+    15 => 
+    array (
+      'title' => 'Teaser break',
+      'content' => '<!--break-->',
+      'icon' => 'teaserbr.png',
+      'accesskey' => 'T',
+      'weight' => '15',
+    ),
+    16 => 
+    array (
+      'title' => 'Preview',
+      'content' => 'js: E.prv();',
+      'icon' => 'preview.png',
+      'accesskey' => 'P',
+      'weight' => '16',
+    ),
+    17 => 
+    array (
+      'title' => 'Help',
+      'content' => 'js: E.help(\'fadeIn\');',
+      'icon' => 'help.png',
+      'accesskey' => '1',
+      'weight' => '17',
+    ),
+  ),
+  'icons' => 
+  array (
+  ),
+  'library' => 
+  array (
+    '%BUEDITOR/library/bue.min.default.js' => '',
+  ),
+)

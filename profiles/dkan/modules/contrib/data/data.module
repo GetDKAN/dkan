@@ -1,0 +1,432 @@
+<?php
+/**
+ * @file
+ * Hooks and API functions for data module.
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function data_views_api() {
+  return array(
+    'api' => '2.0',
+    'path' => drupal_get_path('module', 'data'),
+  );
+}
+
+/**
+ * Load all data tables.
+ */
+function data_get_all_tables($reset = FALSE) {
+  $tables = array();
+  if ($tables = _data_load_table(NULL, $reset)) {
+    foreach ($tables as $table_name => $table) {
+      if ($table = data_get_table($table_name)) {
+        $tables[$table_name] = $table;
+      }
+    }
+  }
+  return $tables;
+}
+
+/**
+ * Create a table.
+ *
+ * @see DataTable class.
+ *
+ * @param $name
+ *   String that identifies the data table. It is recommended to use
+ *   data_name() to generate a table name in the data namespace. For
+ *   example: $table = data_get_tabe(data_name('my_table'));
+ * @param $schema
+ *   Schema for the table.
+ * @param $title
+ *   A natural title for the table.
+ *
+ * @return
+ *   A DataTable object if one could be created, FALSE otherwise.
+ */
+function data_create_table($name, $schema, $title = NULL) {
+  $table = DataTable::instance($name);
+  if ($table->create($schema)) {
+    if (!empty($title)) {
+      $table->update(array('title' => $title));
+    }
+    return $table;
+  }
+  return FALSE;
+}
+
+/**
+ * Get a table if it exists.
+ *
+ * @see DataTable class.
+ *
+ * @param $name
+ *   Unique name of the table.
+ *
+ * @return
+ *   A unique DataTable object if defined, FALSE otherwise.
+ *
+ * Note: In some circumstances, a table may be defined while it does not exist
+ * in the database. In these cases, data_get_table() would still return a valid
+ * DataTable object.
+ */
+function data_get_table($name) {
+  $table = DataTable::instance($name);
+  if ($table->defined()) {
+    return $table;
+  }
+  return FALSE;
+}
+
+/**
+ * @deprecated - use $table->drop() instead.
+ * @todo: remove.
+ */
+function data_drop_table($name) {
+  if ($table = data_get_table($name)) {
+    $table->drop();
+  }
+}
+
+/**
+ * Get Data handler for a table.
+ *
+ * @see class DataHandler
+ *
+ * @param $table_name
+ *   String that is the name of a table.
+ *
+ * @return
+ *   DataHandler object that provides access to a table's data.
+ */
+function data_get_handler($table_name) {
+  return DataHandler::instance($table_name);
+}
+
+/**
+ * Get a list of supported field definitions.
+ *
+ * This list is a sub set of Schema API data types
+ * http://drupal.org/node/159605
+ * The keys are simplified handles.
+ */
+function data_get_field_definitions() {
+  $built_in = array(
+    'int' => array(
+      'type' => 'int',
+      'not null' => FALSE,
+    ),
+    'unsigned int' => array(
+      'type' => 'int',
+      'unsigned' => TRUE,
+      'not null' => FALSE,
+    ),
+    'serial' => array(
+      'type' => 'serial',
+      'unsigned' => TRUE,
+      'not null' => TRUE,
+    ),
+    'varchar' => array(
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+    ),
+    'text' => array(
+      'type' => 'text',
+      'not null' => FALSE,
+    ),
+    'bigtext' => array(
+      'type' => 'text',
+      'not null' => FALSE,
+      'size' => 'big',
+    ),
+    'float' => array(
+      'type' => 'float',
+      'size' => 'medium',
+      'not null' => FALSE,
+    ),
+    'double' => array(
+      'type' => 'float',
+      'size' => 'big',
+      'not null' => FALSE,
+    ),
+    'geometry' => array(
+      'type' => 'geometry',
+      'mysql_type' => 'geometry',
+      'pgsql_type' => 'geometry',
+    ),
+  );
+  drupal_alter('data_field_definitions', $built_in);
+  return $built_in;
+}
+
+/**
+ * Get a definition key into a schema API type definition.
+ *
+ * If no type can be found, FALSE will be returned.
+ */
+function data_get_field_definition($key) {
+  $definitions = data_get_field_definitions();
+  if (isset($definitions[$key])) {
+    return $definitions[$key];
+  }
+  return FALSE;
+}
+
+/**
+ * Get schema API field types supported by Data module.
+ */
+function data_get_field_types() {
+  $definitions = data_get_field_definitions();
+  $types = array();
+  foreach ($definitions as $def) {
+    $types[$def['type']] = $def['type'];
+  }
+  return $types;
+}
+
+/**
+ * Get schema API field sizes.
+ */
+function data_get_field_sizes() {
+  $sizes = array('normal', 'tiny', 'small', 'medium', 'big');
+  return drupal_map_assoc($sizes);
+}
+
+/**
+ * Get a Schema API PK definition for a given field type.
+ */
+function data_get_pk_definition($field_name, $spec) {
+  if ($spec['type'] == 'text') {
+    return array($field_name, 255);
+  }
+  else {
+    return $field_name;
+  }
+}
+
+/**
+ * Get a Schema API index definition for a given field type.
+ * @todo: support multiple name/type combinations.
+ */
+function data_get_index_definition($field_name, $spec) {
+  // Default to 255 for now.
+  if ($spec['type'] == 'text') {
+    // @todo: what's the right format here? this is broken.
+    return array(array($field_name, 255));
+  }
+  else {
+    return array($field_name);
+  }
+}
+
+/**
+ * Create a table name in the data namespace.
+ * @todo: make overridable.
+ */
+function data_name($table) {
+  return 'data_table_' . $table;
+}
+
+/**
+ * Create a safe name for MySQL field or table names.
+ *
+ * @todo: IMPROVE.
+ *
+ * - make sure all unsafe characters are removed.
+ * - filter magic words.
+ * - test pgsql.
+ */
+function data_safe_name($name) {
+  $map = array(
+    '.' => '_',
+    ':' => '',
+    '/' => '',
+    '-' => '_',
+    ' ' => '_',
+    ',' => '_',
+  );
+  $simple = trim(strtolower(strip_tags($name)));
+  // Limit length to 64 as per http://dev.mysql.com/doc/refman/5.0/en/identifiers.html
+  $simple = substr(strtr($simple, $map), 0, 64);
+
+  if (is_numeric($simple)) {
+    // We need to escape numerics because Drupal's drupal_write_record()
+    // does not properly escape token MYSQL names.
+    $simple = '__num_' . $simple;
+  }
+  return db_escape_table($simple);
+}
+
+/**
+ * Helper function to create a natural name.
+ * underscored_name -> Underscored name
+ */
+function data_natural_name($name) {
+  return ucfirst(strtolower(str_replace('_', ' ', $name)));
+}
+
+/**
+ * Helper function to generate a schema.
+ *
+ * Example:
+ * $table->create(data_build_schema($keys));
+ *
+ * @todo: check for table name collisions
+ * @todo: add type detection
+ * @todo: add meta info handling
+ * @todo: add primary key handling
+ * @todo: may be add option to add a full fledged schema here?
+ */
+function data_build_schema($keys) {
+  // Build the table definition.
+  // Fall back to varchar if no valid type is given.
+  $fields = $schema = array();
+  foreach ($keys as $k => $key) {
+    if ($definition = data_get_field_definition($key)) {
+      $fields[data_safe_name($k)] = $definition;
+    }
+    else {
+      $fields[data_safe_name($k)] = data_get_field_definition('varchar');
+    }
+  }
+
+  $schema['fields'] = $fields;
+  $schema['indexes'] = array();
+  return $schema;
+}
+
+/**
+ * Build a full schema api field definition.
+ *
+ * @param $stub
+ *   Array with at least one key 'type'.
+ */
+function data_build_field_definition($stub) {
+  $spec = array();
+  $spec['type'] = $stub['type'];
+  $spec['size'] = empty($stub['size']) ? 'normal' : $stub['size'];
+  if ($spec['type'] == 'int') {
+    $spec['unsigned'] = empty($stub['unsigned']) ? FALSE : TRUE;
+  }
+  if ($spec['type'] == 'varchar') {
+    $spec['length'] = 255;
+    unset($spec['size']);
+  }
+  if ($spec['type'] == 'geometry') {
+    $spec['mysql_type'] = 'geometry';
+    $spec['pgsql_type'] = 'GEOMETRY';
+  }
+  return $spec;
+}
+
+/**
+ * Export a data table. This does not export the content of a table - only its schema
+ * and any meta information (title, name, meta...).
+ *
+ * @param $name
+ *   The name of the table to be exported.
+ *
+ * @return
+ *   Exportable code.
+ */
+function data_export($name, $indent = '') {
+  ctools_include('export');
+  $result = ctools_export_load_object('data_tables', 'names', array($name));
+  if (isset($result[$name])) {
+    return ctools_export_object('data_tables', $result[$name], $indent);
+  }
+}
+
+/**
+ * Loads data table info from the database and from CTools exportables.
+ *
+ * @param $name
+ *  The name of a table to load. If NULL or omitted, all tables are loaded.
+ * @param $reset
+ *  Whether to reset CTools' static cache.
+ */
+function _data_load_table($name = NULL, $reset = FALSE) {
+  ctools_include('export');
+  if ($reset) {
+    drupal_static_reset('ctools_export_load_object');
+    drupal_static_reset('ctools_export_load_object_all');
+  }
+  if ($name === NULL) {
+    return ctools_export_load_object('data_tables', 'all', array());
+  }
+  else {
+    $tables = ctools_export_load_object('data_tables', 'names', array($name));
+    if (isset($tables[$name])) {
+      return $tables[$name];
+    }
+    return FALSE;
+  }
+  return FALSE;
+}
+
+/**
+ * Helper function for adjusting a table's real schema.
+ * @todo: this should live in schema module and should use better defined $reason keys.
+ *
+ * @throws DataException on error.
+ */
+function data_alter_table($table, $field_reason) {
+  list($field, $reason) = explode(': ', $field_reason);
+  $schema = $table->get('table_schema');
+
+  switch ($reason) {
+    case 'not in database':
+      if (isset($schema['fields'][$field])) {
+        $table->addField($field, $schema['fields'][$field]);
+      }
+      break;
+
+    case 'missing in database':
+      list($type, $field) = explode(' ', $field);
+      // @todo: support multiple keys.
+      if ($type == 'indexes') {
+        $table->addIndex($field);
+      }
+      elseif ($type == 'unique keys') {
+        $table->addUniqueKey($field);
+      }
+      elseif ($type == 'primary key') {
+        $table->addPrimaryKey($schema['primary keys']);
+      }
+      break;
+
+    case 'primary key:<br />declared': // @todo: yikes!
+      $table->dropPrimaryKey();
+      $table->changePrimaryKey($schema['primary keys']);
+    case 'missing in schema':
+      if ($field == 'primary key') {
+        $table->dropPrimaryKey();
+      }
+      break;
+
+    case 'unexpected column in database':
+      $table->dropField($field);
+      break;
+  }
+}
+
+/**
+ * Starts overriding a data table by copying it from the default definition into the DB.
+ * This function does not have any effect if called on a table that does already exist in
+ * data_tables.
+ */
+function _data_override($name) {
+  if (!db_query("SELECT name FROM {data_tables} WHERE name = :name", array(':name' => $name))->fetchField()) {
+    if ($table = _data_load_table($name)) {
+      drupal_write_record('data_tables', $table);
+    }
+  }
+}
+
+/**
+ * Base class for any exceptions thrown in Data.
+ */
+class DataException extends Exception { }

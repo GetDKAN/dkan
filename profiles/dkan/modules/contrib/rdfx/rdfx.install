@@ -1,0 +1,308 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the rdfx module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function rdfx_schema() {
+  $schema['rdfx_vocabulary_graphs'] = array(
+    'description' => 'Vocabulary graph, including stubs for any external terms.',
+    'fields' => array(
+      'gid' => array(
+        'description' => 'Graph ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'main_ns' => array(
+        'description' => 'The {rdfx_namespaces}.nsid for this vocabulary.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'date_created' => array(
+        'description' => 'The Unix timestamp when the vocabulary was created or imported.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'date_updated' => array(
+        'description' => 'The Unix timestamp when the vocabulary was updated.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('gid'),
+  );
+
+  $schema['rdfx_namespaces'] = array(
+    'description' => 'Namespace mappings defined in the vocabulary graph. Mappings are defined on a per graph basis (i.e. foaf will be defined multiple times, once for each vocabulary graph that uses foaf terms).',
+    'fields' => array(
+      'nsid' => array(
+        'description' => 'Namespace ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'gid' => array(
+        'description' => 'The {rdfx_vocabulary_graphs}.gid of the graph that defined this mapping.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'prefix' => array(
+        'description' => 'The prefix as defined by the user for the main namespace, and by the source file for the additional namespaces.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'uri' => array(
+        'description' => 'The URI as defined by the user for the main namespace, and by the source file for the additional namespaces.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('nsid'),
+    'unique keys' => array(
+      'gid_uri' => array('gid', 'uri'),
+    ),
+  );
+
+  $schema['rdfx_terms'] = array(
+    'description' => 'Terms defined or used in the vocabulary graph. Terms are stored on a per graph basis (i.e. foaf:Person will be stored once for each vocabulary graph that asserts something about it).',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'Term ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'nsid' => array(
+        'description' => 'The {rdfx_namespaces}.nsid for this term.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'local_name' => array(
+        'description' => 'The local name of this term.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('tid'),
+    'unique keys' => array(
+      'nsid_ln' => array('nsid', 'local_name'),
+    ),
+  );
+
+  $schema['rdfx_term_types'] = array(
+    'description' => 'The RDFS and OWL types that apply to the term. Only terms within the main_ns of a vocabulary graph should have term types.',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the term.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'The term type. Types should use defined constants.',
+        'type' => 'varchar',
+        'length' => '32',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('tid', 'type'),
+  );
+
+  $schema['rdfx_vocabulary_details'] = array(
+    'description' => 'Additional information about a vocabulary.',
+    'fields' => array(
+      'gid' => array(
+        'description' => 'The {rdfx_vocabulary_graphs}.gid of the vocabulary graph.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'language' => array(
+        'description' => 'The language code. Language codes should follow the format in _locale_get_predefined_list() in includes/iso.inc.',
+        'type' => 'varchar',
+        'length' => '12',
+        'not null' => TRUE,
+      ),
+      'label' => array(
+        'description' => 'The name of the vocabulary in language.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'description' => array(
+        'description' => 'The description of the vocabulary in language',
+        'type' => 'varchar',
+        'length' => '4095',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('gid', 'language'),
+  );
+
+  $schema['rdfx_term_details'] = array(
+    'description' => 'Additional information about a term. Only terms within the main_ns of a vocabulary graph should have term details.',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the term.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'language' => array(
+        'description' => 'The language code. Language codes should follow the format in _locale_get_predefined_list() in includes/iso.inc.',
+        'type' => 'varchar',
+        'length' => '12',
+        'not null' => TRUE,
+      ),
+      'label' => array(
+        'description' => 'The label for term tid in language.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'comment' => array(
+        'description' => 'The comment for term tid in language',
+        'type' => 'varchar',
+        'length' => '4095',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('tid', 'language'),
+  );
+
+  $schema['rdfx_term_domains'] = array(
+    'description' => 'Domains of properties. Properties within the main_ns can declare classes outside of the main_ns as domains, but not vice versa.',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the property.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'domain_tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the domain class.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('tid', 'domain_tid'),
+  );
+
+  $schema['rdfx_term_inverses'] = array(
+    'description' => 'Inverse properties.',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the property.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'inverse_tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the inverse property.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('tid', 'inverse_tid'),
+  );
+
+  $schema['rdfx_term_ranges'] = array(
+    'description' => 'Ranges of properties. Properties within the main_ns can declare classes outside of the main_ns as ranges, but not vice versa.',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the property.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'range_tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the range class.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('tid', 'range_tid'),
+  );
+
+  $schema['rdfx_term_superclasses'] = array(
+    'description' => 'Superclasses of classes. Classes within the main_ns can declare classes outside of the main_ns as superclasses, but not as subclasses.',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the subclass.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'superclass_tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the superclass.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('tid', 'superclass_tid'),
+  );
+
+  $schema['rdfx_term_superproperties'] = array(
+    'description' => 'Superproperties of properties. Properties within the main_ns can declare properties outside of the main_ns as superproperties, but not as subproperties.',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the subproperty.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'superproperty_tid' => array(
+        'description' => 'The {rdfx_terms}.tid of the superproperty.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('tid', 'superproperty_tid'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Enable entity module (new dependency).
+ */
+function rdfx_update_7001() {
+  module_enable(array(entity));
+  drupal_set_message('The Entity API module is now required by the RDFx module and has been enabled.');
+}
+
+/**
+ * Move the ARC2 library to the new location if the libraries module is used.
+ */
+function rdfx_update_7002() {
+  if (module_exists('libraries') && is_dir(libraries_get_path('arc'))) {
+    if (mkdir(libraries_get_path('ARC2')) && rename(libraries_get_path('arc'), libraries_get_path('ARC2') . '/arc')) {
+      drupal_set_message('The ARC2 library has been moved to its new location.');
+    }
+    else {
+      drupal_set_message('There was a problem while moving the ARC library to its new location.', 'error');
+    }
+  }
+}

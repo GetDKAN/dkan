@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the r4032login module.
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function r4032login_enable() {
+  variable_set('site_403', 'r4032login');
+}
+
+/**
+ * Implements hook_disable().
+ */
+function r4032login_disable() {
+  variable_del('site_403');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function r4032login_uninstall() {
+  variable_del('r4032login_display_denied_message');
+  variable_del('r4032login_access_denied_message');
+}
+
+/**
+ * Drupal 7 has better handling for visiting the user registration page while logged in.
+ */
+function r4032login_update_7000() {
+  variable_del('r4032login_user_register_message');
+}

@@ -1,0 +1,119 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the markdowneditor module.
+ *
+ */
+
+/*
+ * Markdown Editor
+ * by Jakob Persson of NodeOne <jakob@nodeone.se>
+ *
+ * Provides a toolbar for writing Markdown syntax with BUEditor.
+ *
+ * Sponsored by
+ *   NodeOne - www.nodeone.se
+ */
+
+/**
+ * Implements hook_install().
+ */
+function markdowneditor_install() {
+  if (_markdowneditor_insert_latest()) {
+    $t = get_t();
+    drupal_set_message($t('Markdown Editor for BUEditor successfully installed. Go to !buesettings to set up "Role-editor assignments" to select the roles that may use it.', array('!buesettings' => l('Administration > Configuration > BUEditor', 'admin/config/content/bueditor'))));
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function markdowneditor_uninstall() {
+  $eid = variable_get('markdowneditor_eid', FALSE);
+
+  if ($eid) {
+    db_delete('bueditor_buttons')
+      ->condition('eid', $eid)
+      ->execute();
+    db_delete('bueditor_editors')
+      ->condition('eid', $eid)
+      ->execute();
+  }
+
+  // Empty site cache
+  cache_clear_all('*', 'cache', TRUE);
+  cache_clear_all('*', 'cache_filter', TRUE);
+  cache_clear_all('*', 'cache_menu', TRUE);
+  cache_clear_all('*', 'cache_page', TRUE);
+
+  // Clear variables
+  db_delete('variable')
+    ->condition('name', 'markdowneditor_%', 'LIKE')
+    ->execute();
+  cache_clear_all('variables', 'cache');
+}
+
+/**
+ * Insert the latest version of MarkDown editor.
+ */
+function _markdowneditor_insert_latest($name = 'default') {
+
+  // Set up variables
+  $name = 'Markdowneditor';
+  $path = drupal_get_path('module', 'markdowneditor');
+
+  // Set up library paths
+  $library_paths = '';
+  $library_paths .= "$path/library/markdown/markdowneditor.css\n";
+  $library_paths .= "$path/library/markdown/markdowneditor_popup.css\n";
+  $library_paths .= "%BUEDITOR/library/bue.min.default.js\n";
+  $library_paths .= "$path/library/markdown/markdowneditor.js";
+
+  // Add editor
+  $eid = db_insert('bueditor_editors')
+    ->fields(array(
+      'name' => $name,
+      'pages' => "node/*\ncomment/*",
+      'excludes' => "edit-log\nedit-menu-description",
+      'iconpath' => $path . '/icons',
+      'librarypath' => $library_paths,
+    ))
+    ->execute();
+
+  // Include default button definitions
+  require_once DRUPAL_ROOT . '/' . $path . '/markdowneditor.buttons.inc';
+
+  // We store a local copy of the bids so we can update them later as we
+  // then know the button ids (bid)
+  $buttons = array();
+
+  // Add buttons
+  foreach ($mde_buttons as $mde_bkey => $button) {
+    // Insert the button
+    $bid = db_insert('bueditor_buttons')
+      ->fields(array(
+          'eid' => $button['0'],
+          'title' => $button['1'],
+          'content' => $button['2'],
+          'icon' => $button['3'],
+          'accesskey' => $button['4'],
+          'weight' => $button['5'],
+        ))
+      ->execute();
+
+    // Reference bid with MDE button array key so we can update our buttons later if need be
+    $buttons[$mde_bkey] = $bid;
+  }
+
+  // Store bids for updates later
+  variable_set('markdowneditor_buttons', $buttons);
+
+  // Store the eid for uninstallation later
+  variable_set('markdowneditor_eid', $eid);
+
+  // Calculate and store a hash of configuration values so we can detect changes later on
+  $fprint = md5($ajax_markup_exist);
+  variable_set('markdowneditor_content_fprint', $fprint);
+
+  return $eid;
+}

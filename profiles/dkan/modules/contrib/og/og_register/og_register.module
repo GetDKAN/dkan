@@ -1,0 +1,173 @@
+<?php
+
+
+/**
+ * @file
+ * Allow subscribing to groups during the user registration.
+ */
+
+/**
+ * Group register field.
+ */
+define('OG_REGISTER_FIELD', 'group_register');
+
+
+/**
+ * Implements hook_query_og_alter().
+ *
+ * @todo: Filter out groups that don't allow to subscribe, if OG-UI is enabled.
+ */
+function og_register_query_og_alter(QueryAlterableInterface $query) {
+  global $user;
+  if ($user->uid) {
+    // User is authenticated.
+    return;
+  }
+
+  if (!field_info_field(OG_REGISTER_FIELD)) {
+    // No register field exists.
+    return;
+  }
+
+  $handler = $query->alterMetaData['entityreference_selection_handler'];
+  $field = $handler->field;
+  $instance = $handler->instance;
+
+  if ($instance['entity_type'] != 'user') {
+    // Field is not attached to the user entity.
+    return;
+  }
+
+  $group_type = $field['settings']['target_type'];
+  $group_bundles = $field['settings']['handler_settings']['target_bundles'];
+
+  $entity_info = entity_get_info($group_type);
+  $conditions = &$query->conditions();
+
+  // Search the condition that falsified the query.
+  // @see OgHandler_base::buildEntityFieldQuery
+  foreach ($conditions as $key => $condition) {
+    if (!is_array($condition) || !is_string($condition['field'])) {
+      continue;
+    }
+    if ($condition['field'] != $group_type . '.' . $entity_info['entity keys']['id']) {
+      continue;
+    }
+    if ($condition['value'] != -1 || $condition['operator'] != '=') {
+      continue;
+    }
+
+    // Get all the referencable groups.
+    $efq_query = new EntityFieldQuery;
+    $efq_query
+      ->entityCondition('entity_type', $group_type)
+      ->fieldCondition(OG_REGISTER_FIELD, 'value', 1, '=')
+      ->fieldCondition(OG_GROUP_FIELD, 'value', 1, '=');
+
+    if ($group_bundles) {
+      $efq_query->propertyCondition($entity_info['bundle keys']['bundle'], $group_bundles, 'IN');
+    }
+    $result = $efq_query->execute();
+    if (empty($result[$group_type])) {
+      return;
+    }
+
+    $conditions[$key]['value'] = array_keys($result[$group_type]);
+    $conditions[$key]['operator'] = 'IN';
+    return;
+  }
+}
+
+/**
+ * Implements hook_field_attach_form().
+ *
+ * Mark the group-audience fields as ones that are used i registration. This is used
+ * to later on make sure the user is registered according to the allowed permissions (i.e. with or
+ * without administrator approval).
+ */
+function og_register_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
+  global $user;
+  if ($user->uid || $entity_type != 'user') {
+    return;
+  }
+
+  if (!module_exists('og_ui')) {
+    return;
+  }
+
+  if (!$fields = og_get_group_audience_fields()) {
+    return;
+  }
+
+  foreach (array_keys($fields) as $field_name) {
+    if (empty($form[$field_name])) {
+      continue;
+    }
+    $form[$field_name]['#element_validate'][] = 'og_register_og_membership_state_validate';
+  }
+}
+
+/**
+ * Validate handler; Set the state according to the "subscribe" permissions of the group.
+ */
+function og_register_og_membership_state_validate($element, &$form_state) {
+  $langcode = $element['#language'];
+  $field_name = $element[$langcode]['#field_name'];
+
+  if (empty($form_state['values'][$field_name][$langcode])) {
+    return;
+  }
+
+  $field = field_info_field($field_name);
+  $group_type = $field['settings']['target_type'];
+
+  $values = $form_state['values'][$field_name][$langcode];
+  foreach ($values as &$value) {
+    $og_roles = og_roles($group_type, NULL, $value['target_id']);
+    $rid = array_search(OG_ANONYMOUS_ROLE, $og_roles);
+    $og_permissions = og_role_permissions(array($rid => $rid));
+    // State should be pending if "subscribe without approval" is not enabled.
+    $value['state'] = !empty($og_permissions[$rid]['subscribe without approval']) ? OG_STATE_ACTIVE : OG_STATE_PENDING;
+  }
+
+  form_set_value($element, array($langcode => $values), $form_state);
+}
+
+/**
+ * Implements og_fields_info().
+ */
+function og_register_og_fields_info() {
+  $allowed_values = array(
+    0 => 'Do not show on registration page',
+    1 => 'Show on registration page',
+  );
+  $items[OG_REGISTER_FIELD] = array(
+    'type' => array('group'),
+    'description' => t('Add Group register field group types.'),
+    'field' => array(
+      'field_name' => OG_REGISTER_FIELD,
+      'no_ui' => TRUE,
+      'type' => 'list_boolean',
+      'cardinality' => 1,
+      'settings' => array('allowed_values' => $allowed_values, 'allowed_values_function' => ''),
+    ),
+    'instance' => array(
+      'label' => t('Group register'),
+      'default_value' => array(0 => array('value' => 0)),
+      'widget_type' => 'options_select',
+      'required' => TRUE,
+      'view modes' => array(
+        'full' => array(
+          'label' => 'above',
+          'type' => 'options_onoff',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'type' => 'options_onoff',
+        ),
+      ),
+    ),
+  );
+
+  return $items;
+}

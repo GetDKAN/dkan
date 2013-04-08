@@ -1,0 +1,12 @@
+<?php
+
+include_once('og_example.features.inc');
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function og_example_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'entityreference') {
+    return "plugins/entityreference/$plugin";
+  }
+}

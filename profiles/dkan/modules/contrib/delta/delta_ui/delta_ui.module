@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * Implements hook_permission().
+ */
+function delta_ui_permission() {
+  return array(
+    'administer delta' => array(
+      'title' => t('Administer Delta'),
+      'description' => t('Administer settings for the Delta module.'),
+    ),
+  );
+}
+
+/**
+ * Implements of hook_menu().
+ */
+function delta_ui_menu() {
+  $items['admin/appearance/delta/list/%delta/configure'] = array(
+    'title' => 'Settings',
+    'description' => 'Override settings for a layout.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('delta_ui_layout_configure', 4),
+    'access arguments' => array('administer delta'),
+    'file' => 'delta_ui.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  
+  return $items;
+}
+
+/**
+ * Implements of hook_menu_alter().
+ */
+function delta_ui_menu_alter(&$items) {
+  $items['admin/appearance/delta']['type'] = MENU_LOCAL_TASK;
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function delta_ui_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools' && $plugin == 'export_ui') {
+    return 'export_ui';
+  }
+}

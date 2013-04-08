@@ -1,0 +1,19 @@
+name = Data
+description = Provides two dimensional storage space for arbitrary data sets.
+package = Data
+dependencies[] = ctools
+core = 7.x
+
+files[] = data.module
+files[] = includes/DataHandler.inc
+files[] = includes/DataTable.inc
+files[] = tests/data.test
+files[] = tests/data.test.inc
+files[] = views/views_handler_field_data_markup.inc
+
+; Information added by drupal.org packaging script on 2013-03-31
+version = "7.x-1.0-alpha4+2-dev"
+core = "7.x"
+project = "data"
+datestamp = "1364733916"
+

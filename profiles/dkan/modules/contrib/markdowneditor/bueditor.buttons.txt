@@ -1,0 +1,165 @@
+array (
+  'buttons' =>
+  array (
+    0 =>
+    array (
+      'title' => 'Make selected text into a header',
+      'content' => 'js:  markdownEditor.header();',
+      'icon' => 'md-make-header.gif',
+      'accesskey' => 'H',
+      'weight' => '0',
+    ),
+    1 =>
+    array (
+      'title' => 'Italics: Make selected text emphasized',
+      'content' => 'js: markdownEditor.emphasis();',
+      'icon' => 'md-make-em.gif',
+      'accesskey' => 'I',
+      'weight' => '1',
+    ),
+    2 =>
+    array (
+      'title' => 'Make selected text strong',
+      'content' => 'js: markdownEditor.strongEmphasis();',
+      'icon' => 'md-make-strong.gif',
+      'accesskey' => 'B',
+      'weight' => '2',
+    ),
+    3 =>
+    array (
+      'title' => 'Format selected text as code',
+      'content' => 'js: markdownEditor.codeInline();',
+      'icon' => 'md-make-code.gif',
+      'accesskey' => '',
+      'weight' => '3',
+    ),
+    4 =>
+    array (
+      'title' => 'Format selected text as a code block',
+      'content' => 'js: markdownEditor.codeBlock();',
+      'icon' => 'md-make-code-block.gif',
+      'accesskey' => '',
+      'weight' => '4',
+    ),
+    5 =>
+    array (
+      'title' => 'Make selected text into a block quote',
+      'content' => 'js: markdownEditor.blockQuote();',
+      'icon' => 'md-make-quote.gif',
+      'accesskey' => 'Q',
+      'weight' => '5',
+    ),
+    6 =>
+    array (
+      'title' => 'Make selected text into an ordered list (numbered)',
+      'content' => 'js: markdownEditor.orderedList();',
+      'icon' => 'md-make-ol.gif',
+      'accesskey' => 'O',
+      'weight' => '6',
+    ),
+    7 =>
+    array (
+      'title' => 'Make selected text into an unordered list (bullets)',
+      'content' => 'js: markdownEditor.unorderedList();',
+      'icon' => 'md-make-ul.gif',
+      'accesskey' => 'N',
+      'weight' => '7',
+    ),
+    8 =>
+    array (
+      'title' => 'Insert a definition list',
+      'content' => 'js:  new markdownEditor.DefinitionList();',
+      'icon' => 'md-add-dl.gif',
+      'accesskey' => '',
+      'weight' => '8',
+    ),
+    9 =>
+    array (
+      'title' => 'Insert a table',
+      'content' => 'js:  new markdownEditor.Table();',
+      'icon' => 'md-add-table.gif',
+      'accesskey' => '',
+      'weight' => '9',
+    ),
+    10 =>
+    array (
+      'title' => 'Insert an abbreviation (word or acronym with definition)',
+      'content' => 'js:  markdownEditor.abbreviation();',
+      'icon' => 'md-add-abbreviation.gif',
+      'accesskey' => '',
+      'weight' => '10',
+    ),
+    11 =>
+    array (
+      'title' => 'Insert a footnote',
+      'content' => 'js:  markdownEditor.footnote();',
+      'icon' => 'md-add-footnote.gif',
+      'accesskey' => 'F',
+      'weight' => '11',
+    ),
+    12 =>
+    array (
+      'title' => 'Make text into an autolink (turns URLs in links, turns words into section identifiers for navigating the document)',
+      'content' => 'js:  markdownEditor.autoLink();',
+      'icon' => 'md-add-autolink.gif',
+      'accesskey' => 'A',
+      'weight' => '12',
+    ),
+    13 =>
+    array (
+      'title' => 'Make text into a link (turns text into a link with more options)',
+      'content' => 'js:  markdownEditor.link();',
+      'icon' => 'md-make-link.gif',
+      'accesskey' => 'L',
+      'weight' => '13',
+    ),
+    14 =>
+    array (
+      'title' => 'Insert an image',
+      'content' => 'js:  markdownEditor.image();',
+      'icon' => 'md-add-picture.gif',
+      'accesskey' => 'M',
+      'weight' => '14',
+    ),
+    15 =>
+    array (
+      'title' => 'Insert a line break',
+      'content' => 'js: markdownEditor.lineBreak();',
+      'icon' => 'md-add-line.gif',
+      'accesskey' => 'R',
+      'weight' => '15',
+    ),
+    16 =>
+    array (
+      'title' => 'Insert a horizontal ruler (horizontal line)',
+      'content' => 'js: markdownEditor.horizontalRuler();',
+      'icon' => 'md-add-hr.gif',
+      'accesskey' => '',
+      'weight' => '16',
+    ),
+    17 =>
+    array (
+      'title' => 'Teaser break',
+      'content' => '<!--break-->',
+      'icon' => 'teaserbr.png',
+      'accesskey' => 'T',
+      'weight' => '17',
+    ),
+    18 =>
+    array (
+      'title' => 'Preview',
+      'content' => 'js: E.prvAjax();',
+      'icon' => 'preview.png',
+      'accesskey' => 'P',
+      'weight' => '18',
+    ),
+    19 =>
+    array (
+      'title' => 'Help',
+      'content' => 'js: E.help(\'fadeIn\');',
+      'icon' => 'md-help.gif',
+      'accesskey' => '',
+      'weight' => '19',
+    ),
+  ),
+)

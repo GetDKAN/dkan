@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * @file
+ * Tests for entity_rdf.module.
+ */
+
+class EntityRdfMappingHookTestCase extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Entity RDF mapping hook',
+      'description' => 'Tests that mappings defined via hook_rdf_mapping() are added to Entity API property info.',
+      'group' => 'Entity RDF',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('entity', 'entity_rdf', 'entity_rdf_test');
+  }
+
+  /**
+   * Tests that hook_rdf_mapping() correctly returns and processes mapping.
+   */
+  function testMapping() {
+    // Creates node of type article.
+    $node = $this->drupalCreateNode(array('type' => 'article', 'promote' => 1));
+
+    // Loads RDF types from entity property info.
+    $entity_info = entity_get_property_info('node');
+    // Checks that the RDF types mappings are present.
+    $expected = array(
+      'rdf types' => array('http://schema.org/NewsArticle'),
+    );
+    $this->assertIdentical($entity_info['bundles']['article']['rdf mapping'], $expected, t('Found expected RDF types for article bundle.'));
+
+    // Loads property info for the node.
+    $info = entity_metadata_wrapper('node', 1)->getPropertyInfo();
+
+    // Makes sure Entity RDF mappings are present in the entity property info.
+    // Tests title mapping.
+    $expected = array(
+      'rdf properties' => array('http://schema.org/name'),
+    );
+    $this->assertIdentical($info['title']['rdf mapping'], $expected, t('Found expected mapping for node title property.'));
+
+    // Tests node author mapping.
+    $expected = array(
+      'rdf properties' => array('http://schema.org/creator'),
+    );
+    $this->assertIdentical($info['author']['rdf mapping'], $expected, t('Found expected mapping for node author property.'));
+
+    // Tests creation date mapping.
+    $expected = array(
+      'rdf properties' => array('http://schema.org/created'),
+      'rdf value callback' => 'date_iso8601',
+      'rdf value datatype' => 'http://www.w3.org/2001/XMLSchema#dateTime',
+    );
+    $this->assertIdentical($info['created']['rdf mapping'], $expected, t('Found expected mapping for node created property.'));
+
+    // Tests body field: value field property.
+    $expected = array(
+      'rdf properties' => array('http://schema.org/articleBody'),
+    );
+    $this->assertIdentical($info['body']['property info']['value']['rdf mapping'], $expected, t('Found expected mapping for body value field property.'));
+
+    // Tests field_tags mapping.
+    $expected = array(
+      'rdf properties' => array('http://schema.org/keyword'),
+    );
+    $this->assertIdentical($info['field_tags']['rdf mapping'], $expected, t('Found expected mapping for field_tags field.'));
+  }
+}

@@ -1,0 +1,12 @@
+
+.hide, .js-show {
+  display: none;
+}
+
+html.js .js-show {
+  display: block !important;
+}
+
+img#gravatar-imagepreview {
+  float: right;
+}

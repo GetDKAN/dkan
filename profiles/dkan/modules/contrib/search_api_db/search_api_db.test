@@ -1,0 +1,250 @@
+<?php
+
+/**
+ * Class for testing index and search capabilities using the Database search
+ * module.
+ */
+class SearchApiDbTest extends DrupalWebTestCase {
+
+  protected $server_id;
+  protected $index_id;
+
+  protected function assertText($text, $message = '', $group = 'Other') {
+    return parent::assertText($text, $message ? $message : $text, $group);
+  }
+
+  protected function drupalGet($path, array $options = array(), array $headers = array()) {
+    $ret = parent::drupalGet($path, $options, $headers);
+    $this->assertResponse(200, t('HTTP code 200 returned.'));
+    return $ret;
+  }
+
+  protected function drupalPost($path, $edit, $submit, array $options = array(), array $headers = array(), $form_html_id = NULL, $extra_post = NULL) {
+    $ret = parent::drupalPost($path, $edit, $submit, $options, $headers, $form_html_id, $extra_post);
+    $this->assertResponse(200, t('HTTP code 200 returned.'));
+    return $ret;
+  }
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Test "Database search" module',
+      'description' => 'Tests indexing and searching with the "Database search" module.',
+      'group' => 'Search API',
+    );
+  }
+
+  public function setUp() {
+    parent::setUp('entity', 'search_api', 'search_api_db', 'search_api_test');
+  }
+
+  public function testFramework() {
+    $this->drupalLogin($this->drupalCreateUser(array('administer search_api')));
+    $this->insertItems();
+    $this->createServer();
+    $this->createIndex();
+    $this->searchNoResults();
+    $this->indexItems();
+    $this->searchSuccess1();
+    $this->editServer();
+    $this->searchSuccess2();
+    $this->clearIndex();
+    $this->searchNoResults();
+  }
+
+  protected function insertItems() {
+    $this->drupalGet('search_api_test/insert');
+    $count = db_query('SELECT COUNT(*) FROM {search_api_test}')->fetchField();
+    $this->insertItem(array(
+      'id' => 1,
+      'title' => 'foo bar baz',
+      'body' => 'test test',
+      'type' => 'item',
+    ));
+    $this->insertItem(array(
+      'id' => 2,
+      'title' => 'foo test',
+      'body' => 'bar test',
+      'type' => 'item',
+    ));
+    $this->insertItem(array(
+      'id' => 3,
+      'title' => 'bar',
+      'body' => 'test foobar',
+      'type' => 'item',
+    ));
+    $this->insertItem(array(
+      'id' => 4,
+      'title' => 'foo baz',
+      'body' => 'test test test',
+      'type' => 'article',
+    ));
+    $this->insertItem(array(
+      'id' => 5,
+      'title' => 'bar baz',
+      'body' => 'foo',
+      'type' => 'article',
+    ));
+    $count = db_query('SELECT COUNT(*) FROM {search_api_test}')->fetchField() - $count;
+    $this->assertEqual($count, 5, t('@count items inserted.', array('@count' => $count)));
+  }
+
+  protected function insertItem($values) {
+    $this->drupalPost(NULL, $values, t('Save'));
+  }
+
+  protected function createServer() {
+    $this->server_id = 'database_search_server';
+    $values = array(
+      'name' => 'Database search server',
+      'machine_name' => $this->server_id,
+      'enabled' => 1,
+      'description' => 'A server used for testing.',
+      'class' => 'search_api_db_service',
+    );
+    $this->drupalPost('admin/config/search/search_api/add_server', $values, t('Create server'));
+
+    $values2 = array(
+      'options[form][min_chars]' => 3,
+    );
+    $this->drupalPost(NULL, $values2, t('Create server'));
+
+    $this->assertText(t('The server was successfully created.'));
+    $found = strpos($this->getUrl(), '/admin/config/search/search_api/server/' . $this->server_id) !== FALSE;
+    $this->assertTrue($found, t('Correct redirect.'));
+  }
+
+  protected function createIndex() {
+    $this->index_id = $id = 'test_index';
+    $values = array(
+      'name' => 'Test index',
+      'machine_name' => 'test_index',
+      'item_type' => 'search_api_test',
+      'enabled' => 1,
+      'description' => 'An index used for testing.',
+      'server' => $this->server_id,
+      'options[cron_limit]' => 5,
+    );
+    $this->drupalPost('admin/config/search/search_api/add_index', $values, t('Create index'));
+
+    $this->assertText(t('The index was successfully created. Please set up its indexed fields now.'), t('The index was successfully created.'));
+    $found = strpos($this->getUrl(), 'admin/config/search/search_api/index/' . $id) !== FALSE;
+    $this->assertTrue($found, t('Correct redirect.'));
+
+    $values = array(
+      'fields[id][type]' => 'integer',
+      'fields[id][boost]' => '1.0',
+      'fields[id][indexed]' => 1,
+      'fields[title][type]' => 'text',
+      'fields[title][boost]' => '5.0',
+      'fields[title][indexed]' => 1,
+      'fields[body][type]' => 'text',
+      'fields[body][boost]' => '1.0',
+      'fields[body][indexed]' => 1,
+      'fields[type][type]' => 'string',
+      'fields[type][boost]' => '1.0',
+      'fields[type][indexed]' => 1,
+    );
+    $this->drupalPost(NULL, $values, t('Save changes'));
+    $this->assertText(t('The indexed fields were successfully changed. The index was cleared and will have to be re-indexed with the new settings.'), t('Field settings saved.'));
+
+    $this->drupalPost(NULL, array(), t('Save configuration'));
+    $this->assertText(t("The search index' workflow was successfully edited. All content was scheduled for re-indexing so the new settings can take effect."), t('Workflow successfully edited.'));
+
+    $this->drupalGet("admin/config/search/search_api/index/$id/status");
+    $this->assertText(t('The index is currently enabled.'), t('"Enabled" status displayed.'));
+    $this->assertText(t('All items still need to be indexed (@total total).', array('@total' => 5)), t('!field displayed.', array('!field' => t('Correct index status'))));
+  }
+
+  protected function searchNoResults() {
+    $this->drupalGet('search_api_test/query/' . $this->index_id . '/text');
+    $this->assertText('result count = 0', t('No search results returned without indexing.'));
+    $this->assertText('results = ()', t('No search results returned without indexing.'));
+    $this->assertText('ignored = ()', t('No keys were ignored.'));
+    $this->assertText('warnings = ()', t('No warnings were displayed.'));
+  }
+
+  protected function indexItems() {
+    $this->drupalPost("admin/config/search/search_api/index/{$this->index_id}/status", array(), t('Index now'));
+    $this->assertText(t('Successfully indexed @count items.', array('@count' => 5)));
+    $this->assertNoText(t("Some items couldn't be indexed. Check the logs for details."), t("Index errors warning isn't displayed."));
+    $this->assertNoText(t("Couldn't index items. Check the logs for details."), t("Index error isn't displayed."));
+    $this->assertText(t('All items have been indexed (@total / @total).', array('@total' => 5)), t('!field displayed.', array('!field' => t('Correct index status'))));
+  }
+
+  protected function searchSuccess1() {
+    $base ='search_api_test/query/' . $this->index_id;
+    $this->drupalGet($base . '/test/1/2');
+    $this->assertText('result count = 4', t('Search for »!keys« returned correct result.', array('!keys' => 'test')));
+    $this->assertText('results = (2, 3)', t('Search for »!keys« returned correct result.', array('!keys' => 'test')));
+    $this->assertText('ignored = ()', t('No keys were ignored.'));
+    $this->assertText('warnings = ()', t('No warnings were displayed.'));
+
+    $this->drupalGet($base . '/"test foo"/0/10//search_api_relevance,DESC');
+    $this->assertText('result count = 3', t('Search for »!keys« returned correct result.', array('!keys' => '"test foo"')));
+    $this->assertText('results = (2, 4, 1)', t('Search for »!keys« returned correct result.', array('!keys' => '"test foo"')));
+    $this->assertText('ignored = ()', t('No keys were ignored.'));
+    $this->assertText('warnings = ()', t('No warnings were displayed.'));
+
+    $this->drupalGet($base . '/foo/0/10///type=item');
+    $this->assertText('result count = 2', t('Search for »!keys« returned correct result.', array('!keys' => 'foo')));
+    $this->assertText('results = (1, 2)', t('Search for »!keys« returned correct result.', array('!keys' => 'foo')));
+    $this->assertText('ignored = ()', t('No keys were ignored.'));
+    $this->assertText('warnings = ()', t('No warnings were displayed.'));
+
+    $this->drupalGet($base . '/|COMPLEX|');
+    $this->assertText('result count = 1', t('Complex search returned correct result.'));
+    $this->assertText('results = (4)', t('Complex search returned correct result.'));
+    $this->assertText('ignored = ()', t('No keys were ignored.'));
+    $this->assertText('warnings = ()', t('No warnings were displayed.'));
+  }
+
+  protected function editServer() {
+    $values = array(
+      'options[form][min_chars]' => 4,
+    );
+    $this->drupalPost("admin/config/search/search_api/server/{$this->server_id}/edit", $values, t('Save settings'));
+
+    $this->clearIndex();
+    $this->indexItems();
+  }
+
+  protected function searchSuccess2() {
+    $base ='search_api_test/query/' . $this->index_id;
+    $this->drupalGet($base . '/test/1/2');
+    $this->assertText('result count = 4', t('Search for »!keys« returned correct result.', array('!keys' => 'test')));
+    $this->assertText('results = (2, 3)', t('Search for »!keys« returned correct result.', array('!keys' => 'test')));
+    $this->assertText('ignored = ()', t('No keys were ignored.'));
+    $this->assertText('warnings = ()', t('No warnings were displayed.'));
+
+    $this->drupalGet($base . '//0/10//search_api_relevance,DESC/body=test foobar');
+    $this->assertText('result count = 1', t('Search with multi-term fulltext filter returned correct result.', array('!keys' => 'test foobar')));
+    $this->assertText('results = (3)', t('Search with multi-term fulltext filter returned correct result.', array('!keys' => 'test foobar')));
+    $this->assertText('ignored = ()', t('No keys were ignored.'));
+    $this->assertText('warnings = ()', t('No warnings were displayed.'));
+
+    $this->drupalGet($base . '/"test foo"/0/10//search_api_relevance,DESC');
+    $this->assertText('result count = 4', t('Search for »!keys« returned correct result.', array('!keys' => '"test foo"')));
+    $this->assertText('results = (2, 4, 1, 3)', t('Search for »!keys« returned correct result.', array('!keys' => '"test foo"')));
+    $this->assertText('ignored = (foo)', t('Short key was ignored.'));
+    $this->assertText('warnings = ()', t('No warnings were displayed.'));
+
+    $this->drupalGet($base . '/foo/0/10///type=item');
+    $this->assertText('result count = 3', t('Search for »!keys« returned correct result.', array('!keys' => 'foo')));
+    $this->assertText('results = (1, 2, 3)', t('Search for »!keys« returned correct result.', array('!keys' => 'foo')));
+    $this->assertText('ignored = (foo)', t('Short key was ignored.'));
+    $this->assertText('warnings = ("' . t('No valid search keys were present in the query.') . '")', t('Warning displayed.'));
+
+    $this->drupalGet($base . '/|COMPLEX|');
+    $this->assertText('result count = 1', t('Complex search returned correct result.'));
+    $this->assertText('results = (3)', t('Complex search returned correct result.'));
+    $this->assertText('ignored = (baz, bar)', t('No keys were ignored.'));
+    $this->assertText('warnings = ()', t('No warnings were displayed.'));
+  }
+
+  protected function clearIndex() {
+    $this->drupalPost("admin/config/search/search_api/index/{$this->index_id}/status", array(), t('Clear index'));
+    $this->assertText(t('The index was successfully cleared.'));
+    $this->assertText(t('All items still need to be indexed (@total total).', array('@total' => 5)), t('!field displayed.', array('!field' => t('Correct index status'))));
+  }
+
+}

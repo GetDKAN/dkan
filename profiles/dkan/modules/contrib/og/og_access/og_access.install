@@ -1,0 +1,43 @@
+<?php
+
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Organic groups access module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function og_access_uninstall() {
+  $vars = array(
+    'og_access_strict_private',
+  );
+  foreach ($vars as $var) {
+    variable_del($var);
+  }
+}
+
+/**
+ * Implements hook_schema();
+ */
+function og_access_schema() {
+  if (db_table_exists('og_access_post')) {
+    db_rename_table('og_access_post', 'd6_og_access_post');
+  }
+}
+
+/**
+ * Upgrade from Organic groups access 6 to 7.
+ */
+function og_access_update_7000(&$sandbox) {
+  // Nothing to do, just clear cache.
+}
+
+/**
+ * Set variable to show message about "Rebuilding permissions".
+ */
+function og_access_update_7200(&$sandbox) {
+  node_access_needs_rebuild(TRUE);
+  variable_del('group_access_strict_private');
+}

@@ -1,0 +1,15 @@
+name = "rdfx_test"
+description = "A dummy module for testing rdfx.module"
+core = "7.x"
+package = "Features"
+dependencies[] = "rdf"
+dependencies[] = "rdfx"
+features[rdf_mappings][] = "node-article"
+hidden = TRUE
+
+; Information added by drupal.org packaging script on 2012-10-27
+version = "7.x-2.0-alpha4+7-dev"
+core = "7.x"
+project = "rdfx"
+datestamp = "1351301254"
+

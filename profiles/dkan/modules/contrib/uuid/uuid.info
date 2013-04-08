@@ -1,0 +1,13 @@
+name = Universally Unique ID
+description = Extends the entity functionality and adds support for universally unique identifiers.
+core = 7.x
+package = UUID
+configure = admin/config/system/uuid
+files[] = uuid.test
+
+; Information added by drupal.org packaging script on 2013-02-03
+version = "7.x-1.0-alpha3+52-dev"
+core = "7.x"
+project = "uuid"
+datestamp = "1359858369"
+

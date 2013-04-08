@@ -1,0 +1,315 @@
+<?php
+/**
+ * @file
+ * Data UI tests.
+ */
+
+require_once(drupal_get_path('module', 'data') .'/tests/data.test.inc');
+
+/**
+ * Test basic Data API functionality.
+ */
+class DataTestCaseUI extends DataTestCase {
+
+  /**
+   * Describe this test.
+   */
+  public function getInfo() {
+    return array(
+      'name' => t('Data UI'),
+      'description' => t('Tests Data UI module\'s GUI.'),
+      'group' => t('Data'),
+    );
+  }
+
+  /**
+   * Set up test.
+   */
+  public function setUp() {
+    parent::setUp('ctools', 'schema', 'data', 'data_ui', 'data_ui_test');
+
+    $this->drupalLogin(
+      $this->drupalCreateUser(
+        array(
+          'administer data tables',
+        )
+      )
+    );
+  }
+
+  /**
+   * CRUD table tests on UI.
+   */
+  public function testCRUDTable() {
+    $table_name = $this->createTable(5);
+    // @todo: edit table.
+    $this->drupalGet('admin/build/data/export/'. $table_name);
+    $this->dropTable($table_name);
+  }
+
+  /**
+   * Test change management on UI.
+   */
+  public function testChangeManagement() {
+
+    // Check for presence of default table.
+    $this->drupalGet('admin/build/data');
+    $this->assertText('data_table_kittens');
+    $this->assertText('Default');
+    $this->assertText('Override | Export');
+
+    // Go to schema comparisons, verify that table is present and doesn't differ from
+    // schema definition.
+    $this->drupalGet('admin/build/data/compare');
+    $this->assertText('data_table_kittens');
+    $this->assertText('same');
+
+    // Drop the table bypassing the API.
+    $table = data_get_table('data_table_kittens');
+    $ret = array();
+    db_drop_table($ret, $table->get('name'));
+    $this->assertTrue(isset($ret[0]['success']), 'Dropped table bypassing the API.');
+
+    // Go to schema comparisons, now the table should be missing.
+    $this->drupalGet('admin/build/data/compare');
+    $this->assertText('data_table_kittens');
+    $this->assertText('missing - adjust');
+
+    // Go to schema comparison of data_table_kittens.
+    $this->drupalGet('admin/build/data/compare/data_table_kittens');
+    $this->assertText('Adjust data_table_kittens');
+    $this->assertText('Status:');
+    $this->assertText('missing');
+    $this->assertText('Create a new table from schema information.');
+
+    // Create table.
+    $this->drupalPost('admin/build/data/compare/data_table_kittens', array(), t('Create table'));
+    $this->assertText('Created table data_table_kittens');
+    $this->assertTrue(db_table_exists('data_table_kittens'), 'Table data_table_kittens exists in DB.');
+    // TODO upgrade: schema_invoke is deprecated; see commit
+    // 900fda77a8ed95a64afb6bf01448917bf6be77a6 in its repository.
+    $schema = schema_invoke('inspect', db_prefix_tables('{data_table_kittens}'));
+    $this->assertTrue(isset($schema['data_table_kittens']), 'Schema API inspector detects table.');
+    $this->assertTrue(!empty($table), 'Table loaded');
+    $comp = $table->compareSchema();
+    $this->assertEqual($comp['status'], 'same');
+
+    // Drop the table bypassing the API.
+    $ret = array();
+    db_drop_table($ret, $table->get('name'));
+    $this->assertTrue(isset($ret[0]['success']), 'Dropped table bypassing the API.');
+
+    // Override table.
+    $this->drupalGet('admin/build/data');
+    $this->assertText('Override');
+    $edit = array(
+      'new[name]' => 'weight',
+      'new[label]' => 'Weight',
+      'new[type]' => 'int',
+      'new[unsigned]' => TRUE,
+      'new[index]' => TRUE,
+    );
+    $this->drupalPost('admin/build/data/edit/data_table_kittens', $edit, 'Add new');
+    // We are expecting an error here.
+    $this->assertText('Table does not exist in database');
+    $this->assertText('Go to Compare schemas to resolve conflicts.');
+    // Go to admin/build/data/compare and create the table again.
+    $this->drupalPost('admin/build/data/compare/data_table_kittens', array(), t('Create table'));
+    $this->assertText('Created table data_table_kittens');
+    // Repost the new field - this should work now.
+    $this->drupalPost('admin/build/data/edit/data_table_kittens', $edit, 'Add new');
+    $this->assertText('Added field weight');
+    $this->assertText('Added index for field weight');
+    // @todo: Add a new PK configuration - this does not work right now as DB layer writes one thing while schema API it reads another.
+    // $this->drupalPost('admin/build/data/edit/data_table_kittens', array('fields[weight][primary]' => TRUE), 'Save');
+    // $this->assertText('Saved changes');
+    $this->drupalGet('admin/build/data');
+    $this->assertText('Overridden');
+    $this->drupalGet('admin/build/data/compare');
+    $this->assertText('same');
+
+    // Drop field that we just created and try to recreate it.
+    $ret = array();
+    db_drop_field($ret, 'data_table_kittens', 'weight');
+    $this->assertTrue(isset($ret[0]['success']), 'Dropped weight field bypassing the API.');
+    $this->drupalGet('admin/build/data/compare');
+    $this->assertText('different - adjust');
+    $this->drupalGet('admin/build/data/compare/data_table_kittens');
+    $this->assertText('Status:');
+    $this->assertText('different');
+    $this->assertText('Reasons:');
+    $this->assertText('weight: not in database');
+    $this->assertText('indexes weight: missing in database');
+    // First try to alter table.
+    $this->drupalPost('admin/build/data/compare/data_table_kittens', array(), 'Alter table');
+    $this->assertText('Resolved');
+    $this->assertText('weight: not in database');
+    $this->assertText('indexes weight: missing in database');
+    $this->assertText('same');
+    // Drop field again and now try to adjust schema info about table.
+    $ret = array();
+    db_drop_field($ret, 'data_table_kittens', 'weight');
+    $this->assertTrue(isset($ret[0]['success']), 'Dropped weight field bypassing the API.');
+    $this->drupalPost('admin/build/data/compare/data_table_kittens', array(), 'Update schema information');
+    $this->assertText('Updated schema for data_table_kittens');
+    $this->assertText('same');
+  }
+
+  /**
+   * Create a table.
+   */
+  protected function createTable($num_fields = 5) {
+    $table_name = $this->randomName();
+    $edit = array(
+      'name' => $table_name,
+      'title' => 'My table',
+      'field_num' => $num_fields
+      );
+    $this->drupalPost('admin/build/data/create', $edit, 'Next');
+    $this->assertText('Define the fields of the new table.');
+
+    $fields = $this->randomFields($num_fields);
+    $edit = $this->formatEditFields($fields);
+    $this->drupalPost(NULL, $edit, 'Create');
+    $this->assertText('Created table '. $table_name);
+
+    // Test schema in DB.
+    // @todo: why do we need to clear the cache here?
+    if ($schema = drupal_get_schema($table_name, true)) {
+      foreach ($schema['primary key'] as $key) {
+        if (is_array($key)) {
+          $primary_keys[] = $key[0];
+        }
+        else {
+          $primary_keys[] = $key;
+        }
+      }
+      foreach ($schema['fields'] as $field_name => $field) {
+        $this->assertEqual($fields[$field_name]['type'], $field['type'], "Field $field_name has correct type.");
+        if ($field['type'] == 'int') {
+          $this->assertEqual(isset($fields[$field_name]['unsigned']), !empty($field['unsigned']) , "Field $field_name has correct unsigned value.");
+        }
+      }
+      foreach ($fields as $field_name => $config) {
+        if (isset($config['index'])) {
+          $this->assertTrue(isset($schema['indexes'][$field_name]), "Field $field_name indexed.");
+        }
+        if (isset($config['primary'])) {
+          $this->assertTrue(in_array($field_name, $primary_keys), "Field $field_name in primary key.");
+        }
+      }
+    }
+    else {
+      $this->fail('Could not create schema - invalid schema definition?');
+    }
+
+    $this->assertTrue(db_table_exists($table_name), 'Table '. $table_name .' exists in database.');
+
+    return $table_name;
+  }
+
+  /**
+   * Drop a table.
+   */
+  protected function dropTable($table_name) {
+    $this->drupalPost('admin/build/data/drop/'. $table_name, array(), 'Drop');
+    $exists = db_result(db_query('SELECT name FROM {data_tables} WHERE name = "%s"', $table_name));
+    $this->assertFalse($exists, 'Table removed from data_tables table.');
+    $this->assertFalse(drupal_get_schema($table_name, true), 'Table '. $table_name .' removed from schema API.');
+    $this->assertFalse(db_table_exists($table_name), 'Table '. $table_name .' removed from DB.');
+  }
+
+  /**
+   * Format an edit array from the result of randomFields().
+   */
+  protected function formatEditFields($fields) {
+    $edit = array();
+    $fields = array_values($fields);
+    foreach ($fields as $i => $field) {
+      foreach ($field as $k => $v) {
+        $edit["fields[field_$i][$k]"] = $v;
+      }
+    }
+    return $edit;
+  }
+
+  /**
+   * Generate N random fields. Will create at least 1 field.
+   */
+  protected function randomFields($n = 5) {
+    $fields = array();
+    $excluded_types = array();
+
+    for ($i = 0; $i < $n-1; $i++) {
+      $label = $this->uniqueRandomName();
+      $name = data_safe_name($label);
+
+      // Get a random type. Make sure that serial does not occur twice.
+      $type = $this->randomValue(data_get_field_types(), $excluded_types);
+      if ($type == 'serial') {
+        $excluded_types['serial'] = 'serial';
+      }
+
+      if (!empty($type)) {
+        $fields[$name] = array(
+          'name' => $name,
+          'label' => $label,
+          'type' => $type,
+        );
+        if (rand(0, 1)) {
+          $fields[$name]['unsigned'] = 1;
+        }
+        // Auto increment fields must be indexed.
+        if (($fields[$name]['type'] == 'serial') || rand(0, 1)) {
+          $fields[$name]['index'] = 1;
+        }
+        if (rand(0, 1)) {
+          $fields[$name]['primary'] = 1;
+        }
+      }
+    }
+    // Make sure we have at least one field that is text, PK and indexed.
+    $name = $this->uniqueRandomName();
+    $fields[data_safe_name($name)] = array(
+      'name' => data_safe_name($name),
+      'label' => $name,
+      'type' => 'text',
+      'index' => 1,
+      'primary' => 1,
+    );
+
+    return $fields;
+  }
+
+  /**
+   * Get a random value from the given array.
+   *
+   * @param $array
+   *   Array to pick random value from.
+   * @param $exclude
+   *   Values not to pick.
+   *
+   * @return
+   *   A random value from $array that does not exist in $exclude.
+   */
+  protected function randomValue($array, $exclude = array()) {
+    $array = array_diff(array_values($array), $exclude);
+    if (empty($array)) {
+      $this->error('Array for random value selection is empty.');
+    }
+    return $array[rand(0, count($array) - 1)];
+  }
+
+  /**
+   * Create a _unique_ random name.
+   */
+  protected function uniqueRandomName() {
+    static $names;
+    do {
+      $name = $this->randomName();
+    }
+    while (isset($names[$name]));
+    $names[$name] = $name;
+    return $name;
+  }
+}

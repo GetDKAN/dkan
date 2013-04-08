@@ -1,0 +1,646 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function omega_tools_menu() {
+  foreach (list_themes() as $theme) {
+    $items['admin/appearance/settings/' . $theme->name . '/reset'] = array(
+      'title' => $theme->info['name'],
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('omega_tools_theme_reset_confirm', $theme->name),    
+      'type' => MENU_CALLBACK,
+      'access callback' => '_system_themes_access',
+      'access arguments' => array($theme),
+      'file' => 'includes/omega_tools.admin.inc',
+    );
+    
+    $items['admin/appearance/omega-tools/download/' . $theme->name] = array(
+      'title' => $theme->info['name'],
+      'page callback' => 'omega_tools_theme_download',
+      'page arguments' => array($theme->name),    
+      'type' => MENU_CALLBACK,
+      'access callback' => 'user_access',
+      'access arguments' => array('administer themes'),
+      'file' => 'includes/omega_tools.admin.inc',
+    );
+  
+    $items['admin/appearance/settings/' . $theme->name . '/export'] = array(
+      'title' => $theme->info['name'],
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('omega_tools_theme_export', $theme->name),    
+      'type' => MENU_CALLBACK,
+      'access callback' => '_system_themes_access',
+      'access arguments' => array($theme),
+      'file' => 'includes/omega_tools.admin.inc',
+    );
+  }
+    
+  $items['admin/appearance/omega-tools/add'] = array(
+    'title' => 'Create new Omega subtheme',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('omega_tools_subtheme_add'),
+    'type' => MENU_LOCAL_ACTION,
+    'access arguments' => array('administer themes'),
+    'file' => 'includes/omega_tools.admin.inc',
+    'weight' => 100,
+  );
+  
+  $items['admin/appearance/omega-tools/edit/%omega_tools_cache'] = array(
+    'title' => 'Configure subtheme',
+    'page callback' => 'omega_tools_subtheme_wizard',
+    'page arguments' => array(4),
+    'type' => MENU_CALLBACK,
+    'access callback' => '_omega_tools_theme_access',
+    'access arguments' => array(4),
+    'file' => 'includes/omega_tools.wizard.inc',
+  );
+  
+  $items['admin/appearance/omega-tools/edit/%omega_tools_cache/%'] = $items['admin/appearance/omega-tools/edit/%omega_tools_cache'];
+  $items['admin/appearance/omega-tools/edit/%omega_tools_cache/%']['page arguments'] = array(4, 5);
+  
+  return $items;
+}
+
+/**
+ * Implements hook_file_download().
+ */
+function omega_tools_file_download($uri) {
+  if (strpos(file_uri_target($uri), 'omega-tools/') === 0) {
+    return array(
+      'Content-Type' => file_get_mimetype($uri), 
+      'Content-Length' => filesize(drupal_realpath($uri)),
+      'Content-Disposition' => 'attachment; filename="' . basename($uri) . '"',
+    );
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function omega_tools_form_system_theme_settings_alter(&$form, &$form_state) {
+  $form['#validate'][] = 'omega_tools_theme_settings_form_validate';
+  
+  $form['actions']['omega_tools_reset'] = array(
+    '#type' => 'submit',
+    '#value' => t('Revert theme settings'),
+    '#submit' => array('omega_tools_theme_settings_form_submit'),
+  );
+  
+  $form['actions']['omega_tools_export'] = array(
+    '#type' => 'submit',
+    '#value' => t('Export theme settings'),
+    '#submit' => array('omega_tools_theme_settings_form_submit'),
+  );
+  
+  $form['actions']['omega_tools_download'] = array(
+    '#type' => 'submit',
+    '#value' => t('Download this theme'),
+    '#submit' => array('omega_tools_theme_settings_form_submit'),
+  );
+}
+
+/**
+ * @todo
+ */
+function omega_tools_theme_settings_form_validate($form, &$form_state) {
+  unset($form_state['values']['omega_tools_reset'], $form_state['values']['omega_tools_export'], $form_state['values']['omega_tools_download']);
+}
+
+/**
+ * @todo
+ */
+function omega_tools_theme_settings_form_submit($form, &$form_state) {
+  $theme = $form_state['build_info']['args'][0];
+  
+  unset($form_state['values']['omega_tools_reset'], $form_state['values']['omega_tools_export'], $form_state['values']['omega_tools_download']);
+  
+  switch ($form_state['triggering_element']['#value']) {
+    case t('Revert theme settings'):
+      $form_state['redirect'] = 'admin/appearance/settings/' . $theme . '/reset';
+      break;
+    
+    case t('Export theme settings'):
+      $form_state['redirect'] = 'admin/appearance/settings/' . $theme . '/export';
+      break;
+    
+    case t('Download this theme'):
+      $form_state['redirect'] = 'admin/appearance/omega-tools/download/' . $theme;
+      break;
+  }
+}
+
+/**
+ * @todo
+ */
+function omega_tools_cache_load($name) {
+  return omega_tools_cache_get($name);
+}
+
+/**
+ * @todo
+ */
+function omega_tools_cache_get($name) {
+  ctools_include('object-cache');
+
+  $cache = ctools_object_cache_get('omega_tools', $name);
+  
+  if (!$cache) {
+    $themes = list_themes();
+    
+    if (isset($themes[$name])) {
+      $path = drupal_get_path('theme', $name);
+      $info = drupal_parse_info_file($path . '/' . $name . '.info');
+      
+      $cache = new stdClass();
+      $cache->new = FALSE;
+      $cache->machine_name = $name;
+      $cache->automated = file_prepare_directory($path, NULL) && file_prepare_directory(dirname($path), NULL);      
+      $cache->destination = $path;
+      $cache->name = $info['name'];
+      $cache->info = $info;
+      $cache->status = $themes[$name]->status;
+      $cache->default = variable_get('theme_default') == $name;
+      $cache->locked = ctools_object_cache_test('omega_tools', $name);
+      $cache->path = 'temporary://omega-tools/' . $name . '-' . substr(hash('sha256', serialize($cache) . microtime()), 0, 8);
+      
+      file_unmanaged_delete_recursive($cache->path);
+      omega_tools_copy_recursive($cache->destination, $cache->path);      
+    }
+  }
+  
+  return $cache;
+}
+
+/**
+ * Store changes to a task handler in the object cache.
+ */
+function omega_tools_cache_set($name, $subtheme) {
+  ctools_include('object-cache');
+  ctools_object_cache_set('omega_tools', $name, $subtheme);
+}
+
+/**
+ * Remove an item from the object cache.
+ */
+function omega_tools_cache_clear($name) {
+  ctools_include('object-cache');  
+  ctools_object_cache_clear('omega_tools', $name);
+}
+
+/**
+ * @todo
+ */
+function omega_tools_system_themes_page_alter(&$info) {
+  foreach (array('enabled', 'disabled') as $status) {
+    if (isset($info[$status])) {
+      foreach ($info[$status] as &$item) {
+        if (_omega_tools_is_editable($item->name)) {
+          $item->operations[] = array(
+            'title' => t('Edit'), 
+            'href' => 'admin/appearance/omega-tools/edit/' . $item->name, 
+            'attributes' => array('title' => t('This theme belongs to the Omega framework and can be edited.')),
+          );
+        }
+        
+        $item->operations[] = array(
+          'title' => t('Download'), 
+          'href' => 'admin/appearance/omega-tools/download/' . $item->name, 
+          'attributes' => array('title' => t('Download an archive of this theme.')),
+        );
+      }
+    }
+  }
+}
+
+/**
+ * @todo
+ */
+function omega_tools_base_themes() {
+  $themes = list_themes();
+  $options = array();
+
+  foreach (array('alpha', 'omega') as $theme) {
+    if (isset($themes[$theme])) {
+      $options[$theme] = $themes[$theme]->info['name'];
+    }
+  }
+  
+  foreach ($themes as $theme) {
+    if (isset($theme->info['base theme']) && empty($theme->info['starterkit'])) {
+      $base = system_find_base_themes($themes, $theme->name);
+  
+      if (isset($base['alpha'])) {
+        $options[$theme->name] = $theme->info['name'];
+      }
+    }
+  }
+  
+  return $options;
+}
+
+/**
+ * @todo
+ */
+function omega_tools_starterkits($base = NULL) {
+  $bases = omega_tools_base_themes();
+  
+  $options = array();
+  foreach (list_themes() as $name => $theme) {
+    $info = $theme->info;
+    
+    if (!empty($info['starterkit']) && isset($info['base theme']) && array_key_exists($info['base theme'], $bases) && ($info['base theme'] == $base || !isset($base))) {
+      $options[$name] = $info['name'] . '<div class="description">' . $info['description'] . '</div>';
+    }
+  }
+  
+  return $options;
+}
+
+/**
+ * @todo
+ */
+function omega_tools_copy_recursive($source, $destination) {
+  if (is_dir($source)) {
+    if (!file_prepare_directory($destination, FILE_CREATE_DIRECTORY)) {
+      return FALSE;
+    }
+    
+    $directory = dir($source);
+    
+    while (FALSE !== ($read = $directory->read())) {
+      if ($read != '.' && $read != '..' ) {      
+        if (!omega_tools_copy_recursive($source . '/' . $read, $destination . '/' . $read)) {
+          return FALSE;
+        }
+      }
+    }
+    
+    $directory->close();
+  } 
+  else {
+    file_unmanaged_copy($source, $destination);
+  }
+  
+  return TRUE;
+}
+
+/**
+ * @todo
+ */
+function omega_tools_move($source, $destination) {
+  if (omega_tools_copy_recursive($source, $destination)) { 
+    file_unmanaged_delete_recursive($source);
+  
+    return $destination;
+  }
+  
+  return FALSE;
+}
+
+/**
+ * @todo
+ */
+function omega_tools_rewrite_recursive($path, $search, $replace, $rename) {
+  if ($path !== ($new = str_replace($search, $rename, $path))) {
+    if (!$path = file_unmanaged_move($path, $new, FILE_EXISTS_REPLACE)) {
+      return FALSE;
+    };
+  }
+   
+  if (is_dir($path)) {
+    $directory = dir($path);
+    
+    while (FALSE !== ($read = $directory->read())) {
+      if ($read != '.' && $read != '..' ) {        
+        if (!omega_tools_rewrite_recursive($path . '/' . $read, $search, $replace, $rename)) {
+          return FALSE;
+        }
+      }
+    }
+    
+    $directory->close();
+  }
+  else {
+    omega_tools_replace_contents($path, $search, $replace);
+  }
+  
+  return TRUE;
+}
+
+/**
+ * @todo
+ */
+function omega_tools_replace_contents($file, $search, $replace) {
+  if (is_file($file) && filesize($file) > 0) {
+    $before = file_get_contents($file);
+
+    if ($before != ($after = str_replace($search, $replace, $before))) {
+      file_unmanaged_save_data($after, $file, FILE_EXISTS_REPLACE);
+    }
+  }
+}
+
+/**
+ * @todo
+ */
+function omega_tools_build_info_file($array, $prefix = FALSE) {
+  $info = '';
+
+  foreach ($array as $key => $value) {
+    if (is_array($value)) {
+      $info .= omega_tools_build_info_file($value, (!$prefix ? $key : "{$prefix}[{$key}]"));
+    }
+    else {
+      $info .= $prefix ? ("{$prefix}[" . $key .']') : $key;
+      $info .= " = '" . str_replace("'", "\'", $value) . "'\n";
+    }
+  }
+
+  return $info;
+}
+
+/**
+ * @todo
+ */
+function omega_tools_write_info_file($name, $info, $destination = NULL) {
+  $destination = isset($destination) ? $destination : drupal_get_path('theme', $name);
+  
+  if (!empty($destination)) {
+    return file_unmanaged_save_data(omega_tools_build_info_file($info), $destination . '/' . $name . '.info', FILE_EXISTS_REPLACE);
+  }
+  
+  return FALSE;
+}
+
+/**
+ * @todo
+ */
+function omega_tools_subtheme_create(&$subtheme) {  
+  if (is_dir($subtheme->path)) {
+    file_unmanaged_delete_recursive($subtheme->path);
+  }
+  
+  if (!file_prepare_directory($subtheme->path, FILE_CREATE_DIRECTORY)) {
+    drupal_set_message(t('Omega Tools could not create the directory %dir.', array('%dir' => $subtheme->path)), 'error');
+    watchdog('Omega Tools', t('Omega Tools could not create the directory %dir.', array('%dir' => $subtheme->path)), array(), WATCHDOG_ERROR);    
+
+    return FALSE;
+  }
+    
+  if ($subtheme->starterkit) {
+    if (!omega_tools_copy_recursive(drupal_get_path('theme', $subtheme->starterkit), $subtheme->path)) {
+      $themes = list_themes();
+      
+      drupal_set_message(t('Omega Tools could not copy the starterkit %starterkit.', array('%starterkit' => $themes[$subtheme->starterkit]->info['name'])), 'error');
+      watchdog('Omega Tools', t('Omega Tools could not copy the starterkit %starterkit.', array('%starterkit' => $themes[$subtheme->starterkit]->info['name'])), array(), WATCHDOG_ERROR);    
+
+      return FALSE;
+    }
+    
+    $subtheme->info = drupal_parse_info_file($subtheme->path . '/' . $subtheme->starterkit . '.info');
+    
+    file_unmanaged_delete($subtheme->path . '/' . $subtheme->starterkit . '.info');
+  }
+  else {
+    if (!omega_tools_copy_recursive(drupal_get_path('module', 'omega_tools') . '/default', $subtheme->path)) {
+      drupal_set_message(t('Omega Tools could not copy the default pattern.'), 'error');
+      watchdog('Omega Tools', t('Omega Tools could not copy the default pattern.'), array(), WATCHDOG_ERROR);    
+
+      return FALSE;
+    }
+    
+    $base = drupal_parse_info_file(drupal_get_path('theme', $subtheme->base) . '/' . $subtheme->base . '.info');
+    $subtheme->info = drupal_parse_info_file($subtheme->path . '/default.pattern');
+    $subtheme->info['regions'] = isset($base['regions']) ? $base['regions'] : array();
+    $subtheme->info['zones'] = isset($base['zones']) ? $base['zones'] : array();
+    $subtheme->info['settings'] = isset($base['settings']) ? $base['settings'] : array();
+   
+    file_unmanaged_delete($subtheme->path . '/default.pattern');
+  }
+  
+  unset($subtheme->info['starterkit'], $subtheme->info['hidden'], $subtheme->info['locked'], $subtheme->info['project'], $subtheme->info['datestamp']);
+  
+  $subtheme->info['name'] = $subtheme->name;
+  $subtheme->info['description'] = '';
+  $subtheme->info['base theme'] = $subtheme->base;
+  $subtheme->info['engine'] = 'phptemplate';
+  $subtheme->info['core'] = DRUPAL_CORE_COMPATIBILITY;
+  $subtheme->info['version'] = '1.x';
+  $subtheme->info['screenshot'] = 'screenshot.png';
+  $subtheme->info['regions'] = array_merge(_omega_tools_core_regions(), $subtheme->info['regions']);
+  $subtheme->info['zones'] = array_merge(_omega_tools_default_zones(), $subtheme->info['zones']);
+  
+  omega_tools_write_info_file($subtheme->machine_name, $subtheme->info, $subtheme->path);
+  omega_tools_rewrite_recursive($subtheme->path, 'YOURTHEME', $subtheme->machine_name, str_replace('_', '-', $subtheme->machine_name));
+  
+  drupal_set_message(t('You have successfully created the theme %name.', array('%name' => $subtheme->name)));
+  
+  return TRUE;
+}
+
+/**
+ * @todo
+ */
+function omega_tools_subtheme_process($subtheme) {
+  drupal_theme_rebuild();
+  system_rebuild_theme_data();
+
+  if ($subtheme->status) {
+    theme_enable(array($subtheme->machine_name));
+
+    if ($subtheme->default) {
+      variable_set('theme_default', $subtheme->machine_name);
+      drupal_set_message(t('%name is now the default theme.', array('%name' => $subtheme->name)));
+    }
+  }
+  else {
+    theme_disable(array($subtheme->machine_name));
+  }
+}
+
+/**
+ * @todo
+ */
+function omega_tools_sites() {
+  $sites = &drupal_static(__FUNCTION__);
+  
+  if (!isset($sites)) {
+    $sites = array();
+    
+    if (file_exists(DRUPAL_ROOT . '/sites/sites.php')) {
+      include(DRUPAL_ROOT . '/sites/sites.php');
+    }
+    
+    $sites = array('all') + array_values($sites);
+  }
+  
+  return $sites;
+}
+
+/**
+ * @todo
+ */
+function omega_tools_sites_options() {
+  $options = array();
+  
+  if ($sites = omega_tools_sites()) {
+    $options += array_combine($sites, $sites);
+  }
+  
+  $options['all'] = t('Default destination (all)');
+  
+  return $options;
+}
+
+/**
+ * @todo
+ */
+function omega_tools_write_archive($source, $name, $destination = NULL) {
+  $destination = isset($destination) ? $destination : 'temporary://omega-tools';
+  
+  if (!file_prepare_directory($destination, FILE_CREATE_DIRECTORY)) {
+    drupal_set_message(t('Omega Tools could not create the directory %dir', array('%dir' => $destination)), 'error');
+    watchdog('Omega Tools', t('Omega Tools could not create the directory %dir', array('%dir' => $destination)), array(), WATCHDOG_ERROR);    
+
+    return FALSE;
+  }
+  
+  $destination = $destination . '/' . $name . '.tar';
+  $current = getcwd();
+
+  chdir(drupal_realpath(dirname($source)));
+
+  $archiver = new Archive_Tar(drupal_realpath($destination));
+  $archiver->create(basename(rtrim($source, '/')));
+
+  chdir($current);
+  
+  return $destination;
+}
+
+/**
+ * @todo
+ */
+function omega_tools_revert_theme_settings($theme) {
+  $themes = list_themes();
+  
+  variable_del('theme_' . $theme . '_settings');
+
+  drupal_theme_rebuild();
+  system_rebuild_theme_data();
+
+  watchdog('theme', t('Theme settings for %theme reset to default values.', array('%theme' => $themes[$theme]->info['name'])));
+  drupal_set_message(t('The theme settings for %theme have been purged from the database and are now being loaded from the .info file of this theme.', array('%theme' => $themes[$theme]->info['name'])));
+}
+
+/**
+ * @todo
+ */
+function _omega_tools_core_regions() {
+  return array(
+    'page_top' => 'Page Top',
+    'page_bottom' => 'Page Bottom',
+    'content' => 'Content',
+  );
+}
+
+/**
+ * @todo
+ */
+function _omega_tools_default_zones() {
+  return array(
+    'header' => 'Header',
+    'content' => 'Content',
+    'footer' => 'Footer',
+  );
+}
+
+/**
+ * @todo
+ */
+function _omega_tools_theme_exists($theme) {
+  $themes = list_themes();
+  
+  return isset($themes[$theme]);
+}
+
+/**
+ * @todo
+ */
+function _omega_tools_validate_theme_name($element, &$form_state) {
+  system_rebuild_theme_data();
+  
+  if (!preg_match('/^[a-z][a-z0-9_]*$/', $element['#value'])) {
+    form_error($element, t('The theme name is invalid. It may only contain lowercase numbers, letters and underscores and must start with a letter.'));
+  }
+  else if (_omega_tools_theme_exists($element['#value'])) {
+    form_error($element, t('A theme with that name already exists. The machine-readable name must be unique.'));  
+  }
+}
+
+/**
+ * @todo
+ */
+function _omega_tools_validate_theme_settings($element, &$form_state) {
+  $settings = drupal_parse_info_format($element['#value']);
+  
+  foreach ($settings as $key => $value) {
+    if ($key !== 'settings') {
+      form_error($element, t('You may only submit theme settings with this form.'));
+    }
+  }
+}
+
+/**
+ * @todo
+ */
+function _omega_tools_transform_theme_name($name) {
+  $name = preg_replace('/^[^a-z]+/', '', strtolower($name));
+  $name = preg_replace('/[^a-z0-9_]+/', '_', $name);
+  $name = str_replace('__', '_', $name);
+  $name = trim($name, '_');
+  
+  return $name;
+}
+
+/**
+ * @todo
+ */
+function _omega_tools_theme_access($theme) {
+  if ($theme && user_access('administer themes')) {
+    $themes = list_themes();
+
+    if (!isset($themes[$theme->name]) || _omega_tools_is_editable($theme->name)) {
+      return TRUE;
+    }
+  }
+  
+  return FALSE;
+}
+
+/**
+ * @todo
+ */
+function _omega_tools_is_starterkit($theme) {  
+  return array_key_exists($theme, omega_tools_starterkits());
+}
+
+/**
+ * @todo
+ */
+function _omega_tools_is_editable($theme) {
+  $themes = list_themes();
+  
+  if (!in_array($theme, array('omega', 'alpha')) && strpos(drupal_get_path('theme', $theme), 'themes') !== 0) {
+    if (isset($themes[$theme]->info['base theme'])) {
+      $base = system_find_base_themes($themes, $theme);
+      
+      if (!empty($base) && isset($base['alpha']) && empty($themes[$theme]->info['locked'])) {
+        return TRUE;
+      }
+    }
+  }
+  
+  return FALSE;
+}

@@ -1,0 +1,14 @@
+name = Default Content
+description = Allows import/export of default content.
+core = 7.x
+package = Features
+dependencies[] = features
+dependencies[] = ctools
+dependencies[] = menu
+
+; Information added by drupal.org packaging script on 2013-01-23
+version = "7.x-1.0-alpha8+1-dev"
+core = "7.x"
+project = "defaultcontent"
+datestamp = "1358945231"
+

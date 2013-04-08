@@ -1,0 +1,25 @@
+
+.multistep-unsubmitted {
+  font-style: italic;
+}
+
+.multistep-progress-bar-wrapper {
+  width: 100%; 
+  border: 1px solid #7f7f7f;
+  padding: 1px;
+  margin-top: 0.5em;
+}
+
+.multistep-progress-bar {
+  background-color: #ffcccc;
+  color: #a30000;
+  text-align: right;
+  font-size: x-small;
+  height: 1.5em;
+  float: left;
+}
+
+.multistep-progress-bar-100 {
+  background-color: #c7f2c8;
+  color: #33a333;
+}

@@ -1,0 +1,20 @@
+name = Organic groups context
+description = "Get a group from a viewed page."
+package = "Organic groups"
+dependencies[] = og
+core = 7.x
+files[] = og_context.module
+files[] = og_context.install
+
+; Views default arguments
+files[] = includes/views/handlers/og_context_plugin_argument_default_group_context.inc
+
+; Views access plugin
+files[] = includes/views/handlers/og_context_plugin_access_og_perm.inc
+
+; Information added by drupal.org packaging script on 2013-04-04
+version = "7.x-2.1+13-dev"
+core = "7.x"
+project = "og"
+datestamp = "1365082705"
+

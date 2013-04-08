@@ -1,0 +1,167 @@
+<?php
+
+/**
+ * Implements hook_field_group_formatter_info().
+ */
+function field_group_table_field_group_formatter_info() {
+  return array(
+    'display' => array(
+      'table' => array(
+        'label' => t('Table'),
+        'description' => t('This fieldgroup renders fields in a 2-column table with the label in the left column, and the value in the right column.'),
+        'instance_settings' => array('label' => TRUE, 'desc' => '', 'first_column' => '', 'second_column' => '', 'cells' => FALSE),
+      ),
+      'list' => array(
+        'label' => t('List'),
+        'description' => t('This fieldgroup renders fields in a list.'),
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_group_format_settings().
+ */
+function field_group_table_field_group_format_settings($group) {
+  // Add a wrapper for extra settings to use by others.
+  $form = array(
+    'instance_settings' => array(
+      '#tree' => TRUE,
+      '#weight' => 2,
+    ),
+  );
+
+  $field_group_types = field_group_formatter_info();
+  $mode = $group->mode == 'form' ? 'form' : 'display';
+  $formatter = $field_group_types[$mode][$group->format_type];
+
+  // Add optional instance_settings.
+  switch ($group->format_type) {
+    case 'table':
+      $form['instance_settings']['label'] = array(
+        '#title' => t('Show Label'),
+        '#type' => 'select',
+        '#options' => array('hide' => t('Hide'), 'show' => t('Show')),
+        '#default_value' => isset($group->format_settings['instance_settings']['label']) ? $group->format_settings['instance_settings']['label'] : $formatter['instance_settings']['label'],
+        '#weight' => 2,
+      );
+      $form['instance_settings']['desc'] = array(
+        '#title' => t('Description for the group.'),
+        '#type' => 'textarea',
+        '#default_value' => isset($group->format_settings['instance_settings']['desc']) ? $group->format_settings['instance_settings']['desc'] : $formatter['instance_settings']['desc'],
+        '#weight' => 3,
+      );
+      $form['instance_settings']['first_column'] = array(
+        '#title' => t('First column label'),
+        '#type' => 'textfield',
+        '#default_value' => isset($group->format_settings['instance_settings']['first_column']) ? $group->format_settings['instance_settings']['first_column'] : $formatter['instance_settings']['first_column'],
+        '#weight' => 4,
+      );
+      $form['instance_settings']['second_column'] = array(
+        '#title' => t('Second column label'),
+        '#type' => 'textfield',
+        '#default_value' => isset($group->format_settings['instance_settings']['second_column']) ? $group->format_settings['instance_settings']['second_column'] : $formatter['instance_settings']['second_column'],
+        '#weight' => 5,
+      );
+      $form['instance_settings']['cells'] = array(
+        '#title' => t('If no field label, merge cells.'),
+        '#type' => 'select',
+        '#options' => array('empty' => t('Keep empty cell'), 'merge' => t('Merge cells')),
+        '#default_value' => isset($group->format_settings['instance_settings']['cells']) ? $group->format_settings['instance_settings']['cells'] : $formatter['instance_settings']['cells'],
+        '#weight' => 6,
+      );
+      break;
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_field_group_pre_render().
+ */
+function field_group_table_field_group_pre_render(&$element, $group, &$form) {
+  // You can prepare some variables to use in the logic.
+  $view_mode = isset($form['#view_mode']) ? $form['#view_mode'] : 'form';
+  $id = $form['#entity_type'] . '_' . $form['#bundle'] . '_' . $view_mode . '_' . $group->group_name;
+
+  // Each formatter type can have whole different set of element properties.
+  switch ($group->format_type) {
+
+    // Normal or collapsible div.
+    case 'table':
+      $title = '<label>' . check_plain(t($group->label)) . '</label>';
+      $description = '<span class="field-group-table-description">' . field_filter_xss($group->format_settings['instance_settings']['desc'] .  '</span>');
+      $thead = '';
+      if ($group->format_settings['instance_settings']['first_column'] || $group->format_settings['instance_settings']['second_column']) {
+        $thead = '<thead><tr><th>' . $group->format_settings['instance_settings']['first_column'] . '</th><th>'. $group->format_settings['instance_settings']['second_column'] . '</th> </tr></thead>';
+      }
+      if ($group->format_settings['instance_settings']['label'] == 'show') {
+        $caption = '<caption>' . check_plain(t($group->label)) . '</caption>';
+      }
+      else {
+        $caption = NULL;
+      }
+      $add = array(
+        '#type' => 'markup',
+        '#weight' => $group->weight,
+        '#id' => $id,
+        '#prefix' => '<section class="field-group-table ' . $group->group_name . '">' . $title . $description . '<table class="field-group-format ' . $group->group_name . '">' . $thead,
+        '#suffix' => '</table></section>',
+      );
+      $element += $add;
+
+      foreach (element_children($element) as $k) {
+        // Grab rendered version first.
+        
+        $rendered = theme($element[$k]['#theme'], $element[$k]);
+        // Don't render this via the standard field template.
+        unset($element[$k]['#theme']);
+
+        $variables = array('element' => $element[$k]);
+        $variables['field_group']['format_settings']['instance_settings'] = $group->format_settings['instance_settings'];
+        $variables['rendered'] = $rendered;
+        $output = _field_group_table_row_render($variables);
+        $add = array(
+          '#type' => 'markup',
+          '#markup' => $output,
+        );
+        $element[$k] += $add;
+      }
+      break;
+
+    case 'list':
+      $label = '<h2>' . check_plain(t($group->label)) . '</h2>';
+      $add = array(
+        '#type' => 'markup',
+        '#weight' => $group->weight,
+        '#id' => $id,
+        '#prefix' => $label . '<ul class="field-group-format ' . $group->group_name . '">',
+        '#suffix' => '</ul>',
+      );
+      $element += $add;
+
+      foreach (element_children($element) as $k) {
+        $element[$k] += array(
+          '#prefix' => '<li>',
+          '#suffix' => '</li>',
+        );
+      }
+      break;
+  }
+}
+
+/**
+ * Renders a table row.
+ */
+function _field_group_table_row_render($variables) {
+
+  $output = '<th class="field-label">' . $variables['element']['#title'] . '</th>';
+
+  // Render the items.
+  $output .= '<td class="field-items">' . $variables['rendered'] . '</td>';
+
+  // Render the top-level DIV.
+  $output = '<tr>' . $output . '</tr>';
+
+  return $output;
+}

@@ -1,0 +1,33 @@
+
+/**
+ * Labels
+ */
+span.data-node-label {
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+
+  background:#eee;
+  font-size:10px;
+  line-height:10px;
+
+  float:left;
+  margin-right:5px;
+  }
+
+span.data-node-label a {
+  float:left;
+  padding:5px;
+  }
+
+span.data-node-label a.node-link { border-right:1px solid #fff; }
+
+/**
+ * Active node form
+ */
+form.data-node-active-form div.new-node { display:none; }
+form.data-node-active-form div.new-node * { display:inline; }
+
+form.data-node-active-form div.new-node div.form-item {
+  margin:0px;
+  padding:0px;
+  }

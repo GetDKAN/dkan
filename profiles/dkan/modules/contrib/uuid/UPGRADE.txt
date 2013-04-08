@@ -1,0 +1,43 @@
+
+INTRODUCTION
+------------
+
+This document describes how to upgrade between major and minor versions of the
+UUID module.
+
+Upgrading between all major and minor versions have been successfully tested
+when following the steps described in UPGRADE.txt from Drupal core, with
+addition to the notes in this document.
+
+Taking full backups of your files and database is always recommended before
+doing any upgrades.
+
+UPGRADING FROM UUID 6.x to UUID 7.x
+-----------------------------------
+
+In addition to the steps described by UPGRADE.txt from Drupal core, you need to
+follow these notes:
+
+  * Before upgrading, update to the latest UUID 6.x-1.x-dev
+
+  * When doing your upgrade, you must first upgrade to UUID 7.x-1.0-alpha1 in
+    order to not lose any data during the upgrade. The reason is because the
+    sub-modules responsible for the data migration between 6.x and 7.x was
+    removed after the release of UUID 7.x-1.0-alpha1.
+
+  * After upgrading to UUID 7.x-1.0-alpha1 you can proceed upgrading to later
+    versions of UUID.
+
+UPGRADING FROM UUID 7.x-1.0-alpha1 TO LATER VERSION
+---------------------------------------------------
+
+Make sure to follow these notes when upgrading from 7.x-1.0-alpha1 to later
+versions:
+
+  * Before upgrading, disable UUID and all UUID sub-modules.
+
+  * Run update.php.
+
+  * Enable the UUID module. The entity specific UUID sub-modules doesn't exist
+    anymore. They are replaced with more efficient functionality in the UUID
+    module. No data is lost.

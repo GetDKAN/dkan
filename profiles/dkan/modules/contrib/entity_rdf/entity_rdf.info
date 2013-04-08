@@ -1,0 +1,12 @@
+name = Entity RDF
+description = Describes entity properties in RDF.
+core = 7.x
+dependencies[] = entity
+files[] = entity_rdf.test
+
+; Information added by drupal.org packaging script on 2012-08-21
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "entity_rdf"
+datestamp = "1345508320"
+

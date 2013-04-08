@@ -1,0 +1,118 @@
+<?php
+
+class BoxesSpacesTestCase extends BoxesAjaxTestCase {
+  /**
+   * Implementation of getInfo().
+   */
+  public static function getInfo() {
+    return array(
+      'name' => t('Boxes Spaces functionality'),
+      'description' => t('Add custom boxes in Spaces.'),
+      'group' => t('Boxes'),
+    );
+  }
+
+  /**
+   * Implementation of setUp().
+   */
+  function setUp() {
+    parent::setUp('ctools', 'boxes', 'features', 'purl', 'spaces', 'spaces_ui', 'spaces_user', 'taxonomy', 'spaces_taxonomy');
+
+    // Create and login user
+    $admin_user = $this->drupalCreateUser(array(
+      'administer blocks',
+      'administer boxes',
+      'administer spaces',
+      'administer site configuration',
+      'administer taxonomy',
+    ));
+    $this->drupalLogin($admin_user);
+  }
+
+  function runTest($path) {
+    $this->ajaxLoadBoxesBlock('boxes_add__simple', $path);
+    $this->assertResponse('200', 'Response code 200');
+    $this->assertText(t('Add custom box'), 'Found box add form');
+
+    $edit = array(
+      'description' => $this->randomName(),
+      'title' => $this->randomName(),
+      'body' => $this->randomName(32),
+    );
+    $this->drupalPost(NULL, $edit, t('Save'));
+    $response = $this->parseJSON();
+    $delta = null;
+    foreach ($response as $command) {
+      if ($command->command == 'getBlock') {
+        $delta = $command->delta;
+        break;
+      }
+    }
+    if (!$delta) {
+      $this->fail('AJAX block submission failed');
+    }
+
+    $this->ajaxLoadBoxesBlock($delta, $path);
+    $this->assertResponse('200', 'Response code 200');
+    $this->assertText($edit['title'], 'Found box');
+
+    $this->ajaxLoadBoxesBlock($delta, 'node');
+    $this->assertNoText($edit['title'], "Block not available outside spaces.");
+    return $delta;
+  }
+
+  function testUserSpace() {
+    $delta = $this->runTest('user/3');
+
+    // Before this final check we make sure that user/%uid/features/override
+    // path is actually available. Some of our caches are over exuberant.
+    $this->drupalPost('admin/config/development/performance', array(), t('Clear cached data'));
+
+    $this->drupalGet('user/3/features/overrides');
+    $this->assertResponse('200', 'Response code 200');
+    $this->assertText($delta, 'Found overridden box: ' . $delta);
+  }
+
+  function testTermSpace() {
+    // Setup; set the purl type to path.
+    $edit = array('purl_types[path]' => 'path');
+    $this->drupalPost('admin/config/purl/types', $edit, t('Save configuration'));
+
+    // Setup; enable path prefixing for taxonomy spaces.
+    $edit = array('purl_method_spaces_taxonomy' => 'path');
+    $this->drupalPost('admin/config/purl', $edit, t('Save configuration'));
+
+    // Setup; create a vocabulary.
+    $edit = array(
+      'name' => $this->randomName(),
+      'module' => strtolower($this->randomName()),
+    );
+    $this->drupalPost('admin/structure/taxonomy/add/vocabulary', $edit, t('Save'));
+
+    // Setup; Enable this vocab for spaces_taxonomy.
+    $edit = array('spaces_taxonomy_vid' => '1');
+    $this->drupalPost('admin/structure/spaces/taxonomy', $edit, t('Save configuration'));
+
+    // Setup; Create our term space.
+    $edit = array(
+      'name' => $this->randomName(),
+      'purl[value]' => strtolower($this->randomName()),
+    );
+    $this->drupalPost('admin/structure/taxonomy/1/add/term', $edit, t('Save'));
+
+    // Testing!
+    $prefix = $edit['purl[value]'];
+    $this->drupalGet($prefix . '/node');
+    $this->assertResponse('200', 'Response code 200');
+
+    $delta = $this->runTest($prefix . '/node');
+
+    // Before this final check we make sure that user/%uid/features/override
+    // path is actually available. Some of our caches are over exuberant.
+    $this->drupalPost('admin/config/development/performance', array(), t('Clear cached data'));
+
+    $this->drupalGet('taxonomy/term/1/features/overrides');
+    $this->assertResponse('200', 'Response code 200');
+    $this->assertText($delta, 'Found overridden box: ' . $delta);
+  }
+}

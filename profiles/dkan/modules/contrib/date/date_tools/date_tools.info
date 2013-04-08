@@ -1,0 +1,14 @@
+name = Date Tools
+description = Tools to import and auto-create dates and calendars.
+dependencies[] = date
+package = Date/Time
+core = 7.x
+configure = admin/config/date/tools
+files[] = tests/date_tools.test
+
+; Information added by drupal.org packaging script on 2012-08-13
+version = "7.x-2.6"
+core = "7.x"
+project = "date"
+datestamp = "1344850024"
+

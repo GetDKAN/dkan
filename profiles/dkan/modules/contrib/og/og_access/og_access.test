@@ -1,0 +1,257 @@
+<?php
+
+
+/**
+ * @file
+ * Test organic groups access module.
+ */
+
+/**
+ * Test OG access.
+ */
+class OgAccessTestCase extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'OG access',
+      'description' => 'Test the visibility of nodes that are handled by OG access.',
+      'group' => 'Organic groups access',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('og_access');
+    node_access_rebuild();
+
+    $this->user1 = $this->drupalCreateUser();
+    $this->user2 = $this->drupalCreateUser();
+
+    // Create group and group content node types.
+    $this->group_type = $this->drupalCreateContentType()->type;
+    og_create_field(OG_GROUP_FIELD, 'node', $this->group_type);
+    og_create_field(OG_ACCESS_FIELD, 'node', $this->group_type);
+
+    $this->group_content_type = $this->drupalCreateContentType()->type;
+    og_create_field(OG_AUDIENCE_FIELD, 'node', $this->group_content_type);
+
+    // Create a group node and enable access.
+    $settings = array();
+    $settings['type'] = $this->group_type;
+    $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
+    $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = 1;
+    $settings['uid'] = $this->user1->uid;
+    $this->group_node = $this->drupalCreateNode($settings);
+  }
+
+  /**
+   * Group with access field.
+   */
+  function testGroupAccess() {
+    $this->drupalLogin($this->user1);
+    $nid = $this->group_node->nid;
+
+    // Assert the user is a group member.
+    $this->assertTrue(og_is_member('node', $nid, 'user', $this->user1), t('User is a group member.'));
+
+    // Assert the user can view the group.
+    $this->drupalGet('node/' . $nid);
+    $this->assertResponse('200', t('Group member can view group node.'));
+
+    // Assert another user is not a group member.
+    $this->drupalLogin($this->user2);
+    $this->assertFalse(og_is_member('node', $nid, 'user', $this->user2), t('User is not a group member.'));
+
+    // Assert non-member can't view the group.
+    $this->drupalGet('node/' . $nid);
+    $this->assertResponse('403', t('Non group member can not view group node.'));
+  }
+
+  /**
+   * Group with access field and group content with default definition.
+   */
+  function testGroupContentAccessDefault() {
+    og_create_field(OG_CONTENT_ACCESS_FIELD, 'node', $this->group_content_type);
+
+    $this->drupalLogin($this->user1);
+    $nid = $this->group_node->nid;
+
+    // Create a group content node and set default access.
+    $settings = array();
+    $settings['type'] = $this->group_content_type;
+    $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = $nid;
+    $settings[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = OG_CONTENT_ACCESS_DEFAULT;
+    $group_content_node = $this->drupalCreateNode($settings);
+
+    // Assert the user can view the group.
+    // Assert the user is a group member.
+    $this->assertTrue(og_is_member('node', $nid, 'user', $this->user1), t('User is a group member.'));
+    $this->drupalGet('node/' . $group_content_node->nid);
+    $this->assertResponse('200', t('Group member can view group node.'));
+
+    // Assert another user is not a group member.
+    $this->drupalLogin($this->user2);
+    $this->assertFalse(og_is_member('node', $nid, 'user', $this->user2), t('User is not a group member.'));
+
+    // Assert non-member can't view the group.
+    $this->drupalGet('node/' . $group_content_node->nid);
+    $this->assertResponse('403', t('Non group member can not view group node.'));
+  }
+
+  /**
+   * Group with access field and group content with different definition
+   * from the group.
+   */
+  function testGroupContentAccessNotDefault() {
+    og_create_field(OG_CONTENT_ACCESS_FIELD, 'node', $this->group_content_type);
+
+    // Test group content access, one time when the group is set to be
+    // public, and one time set to private.
+    foreach (array(0, 1) as $state) {
+      // Make sure user1 is logged in.
+      $this->drupalLogin($this->user1);
+      // Create a group node and enable access.
+      $settings = array();
+      $settings['type'] = $this->group_type;
+      $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
+      $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = $state;
+      $group_node = $this->drupalCreateNode($settings);
+      $nid = $group_node->nid;
+
+
+      // Create a group content node and set public access.
+      $settings = array();
+      $settings['type'] = $this->group_content_type;
+      $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = $nid;
+      $settings[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = OG_CONTENT_ACCESS_PUBLIC;
+      $public_node = $this->drupalCreateNode($settings);
+
+      // Create a group content node and set private access.
+      $settings[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = OG_CONTENT_ACCESS_PRIVATE;
+      $private_node = $this->drupalCreateNode($settings);
+
+      // Assert the user can view the group.
+      $this->assertTrue(og_is_member('node', $nid, 'user', $this->user1), t('User is a group member.'));
+      $this->drupalGet('node/' . $public_node->nid);
+      $this->assertResponse('200', t('Group member can view public group content node.'));
+      $this->drupalGet('node/' . $private_node->nid);
+      $this->assertResponse('200', t('Group member can view private group content node.'));
+
+      // Assert another user is not a group member.
+      $this->drupalLogin($this->user2);
+      $this->assertFalse(og_is_member('node', $nid, 'user', $this->user2), t('User is not a group member.'));
+
+      // Assert non-member can't view the group.
+      $this->drupalGet('node/' . $public_node->nid);
+      $this->assertResponse('200', t('Non group member can view public group content node.'));
+      $this->drupalGet('node/' . $private_node->nid);
+      $this->assertResponse('403', t('Non group member can not view private group content node.'));
+    }
+  }
+
+  /**
+   * Test group content without access field.
+   */
+  function testGroupContentAccessNotExist() {
+    $this->drupalLogin($this->user1);
+    $nid = $this->group_node->nid;
+
+    // Create a group content node and set default access.
+    $settings = array();
+    $settings['type'] = $this->group_content_type;
+    $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = $nid;
+    $group_content_node = $this->drupalCreateNode($settings);
+
+    // Assert the user can view the group.
+    // Assert the user is a group member.
+    $this->assertTrue(og_is_member('node', $nid, 'user', $this->user1), t('User is a group member.'));
+    $this->drupalGet('node/' . $group_content_node->nid);
+    $this->assertResponse('200', t('Group member can view group node.'));
+
+    // Assert another user is not a group member.
+    $this->drupalLogin($this->user2);
+    $this->assertFalse(og_is_member('node', $nid, 'user', $this->user2), t('User is not a group member.'));
+
+    // Assert non-member can't view the group.
+    $this->drupalGet('node/' . $group_content_node->nid);
+    $this->assertResponse('403', t('Non group member can not view group node.'));
+  }
+
+  /**
+   * Test a group content that belongs to a private and non-private group
+   * results in a private group content.
+   */
+  function testOgStrictPrivate() {
+    $this->drupalLogin($this->user1);
+
+    // Create a group node and set as private.
+    $settings = array();
+    $settings['type'] = $this->group_type;
+    $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
+    $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = 1;
+    $group_node1 = $this->drupalCreateNode($settings);
+
+    // Create a group node and set as public.
+    $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = 0;
+    $group_node2 = $this->drupalCreateNode($settings);
+
+    // Create a group content node and set default access.
+    $settings = array();
+    $settings['type'] = $this->group_content_type;
+    $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = $group_node1->nid;
+    $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][1]['target_id'] = $group_node2->nid;
+    $settings[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = OG_CONTENT_ACCESS_DEFAULT;
+    $node = $this->drupalCreateNode($settings);
+
+    // Assert the user can view the group.
+    $this->assertTrue(og_is_member('node', $group_node1->nid, 'user', $this->user1), t('User is a group member.'));
+    $this->drupalGet('node/' . $node->nid);
+    $this->assertResponse('200', t('Group member can view public group node.'));
+
+    // Assert another user is not a group member.
+    $this->drupalLogin($this->user2);
+    $this->assertFalse(og_is_member('node', $group_node1->nid, 'user', $this->user2), t('User is not a group member.'));
+
+    $this->drupalGet('node/' . $node->nid);
+    $this->assertResponse('403', t('Non group member can not view group content node.'));
+
+    // Assert all groups were registered in {node_access}.
+    $records = db_query('SELECT realm, gid FROM {node_access} WHERE nid = :nid', array(':nid' => $node->nid))->fetchAll();
+    $this->assertEqual(count($records), 2, t('Returned the correct number of rows.'));
+    $this->assertEqual($records[0]->realm, 'og_access:node', t('Grant realm is correct for public group content.'));
+    $this->assertEqual($records[0]->gid, $group_node1->nid, t('First gid is the first group ID.'));
+    $this->assertEqual($records[1]->gid, $group_node2->nid, t('Second gid is the second group ID.'));
+  }
+
+  /**
+   * Test unpublished node.
+   */
+  function testUnpublishedNode() {
+    $user1 = $this->user1;
+    $user2 = $this->user2;
+    $this->drupalLogin($user1);
+
+    // Create a group node and set as private.
+    $settings = array();
+    $settings['type'] = $this->group_type;
+    $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
+    $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = 1;
+    $group_node1 = $this->drupalCreateNode($settings);
+
+    // Create a group content node and set default access.
+    $settings = array();
+    $settings['type'] = $this->group_content_type;
+    $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = $group_node1->nid;
+    $node = $this->drupalCreateNode($settings);
+
+    // Add another user to group.
+    og_group('node', $group_node1->nid, array('entity' => $user2));
+
+    $this->assertTrue(node_access('view', $node, $user2), 'Group member can view published node.');
+
+    $node->status = NODE_NOT_PUBLISHED;
+    node_save($node);
+    drupal_static_reset('node_access');
+
+    $this->assertFalse(node_access('view', $node, $user2), 'Group member can not view unpublished node.');
+  }
+}

@@ -1,0 +1,293 @@
+<?php
+
+/**
+ * @file
+ * The Select (or other) module.
+ *
+ * This file handles the Forms API element, as well as the select_or_other_none
+ * theme which is used by the field widget.
+ */
+
+// Include the inc files.
+module_load_include('inc', 'select_or_other', 'select_or_other.test_form');
+module_load_include('inc', 'select_or_other', 'select_or_other.field_widget');
+
+/**
+ * Implements hook_theme().
+ */
+function select_or_other_theme() {
+  return array(
+    'select_or_other' => array(
+      'render element' => 'element',
+    ),
+    'select_or_other_none' => array(
+      'variables' => array(
+        'instance' => NULL,
+        'option' => NULL,
+      ),
+    ),
+  );
+
+}
+
+/**
+ * Theme a Select (or other) element.
+ */
+function theme_select_or_other($variables) {
+  $element = $variables['element'];
+
+  $output = "<div class=\"select-or-other\">\n";
+  $output .= drupal_render_children($element) . "\n";
+  $output .= "</div>\n";
+  return $output;
+}
+
+/**
+ * Implements hook_element_info().
+ */
+function select_or_other_element_info() {
+  return array(
+    'select_or_other' => array(
+      '#select_type' => 'select',
+      '#input' => TRUE,
+      '#size' => 0,
+      '#multiple' => FALSE,
+      '#disabled' => FALSE,
+      '#default_value' => NULL,
+      '#process' => array('select_or_other_element_process'),
+      '#element_validate' => array('select_or_other_element_validate'),
+      '#other' => t('Other'),
+      '#theme' => 'select_or_other',
+      '#theme_wrappers' => array('form_element'),
+    ),
+  );
+}
+
+/**
+ * Implements form_type_hook_value().
+ */
+function form_type_select_or_other_field_value($element, $edit, $form_state) {
+  if (func_num_args() == 1) {
+    return $element['#default_value'];
+  }
+  return $edit;
+}
+
+/**
+ * Process callback for a Select (or other) element.
+ */
+function select_or_other_element_process($element, &$form_state) {
+  $element['#tree'] = TRUE;
+  $element['#processed'] = TRUE;
+
+  unset($element['#type']);
+
+  // Load the JS file to hide/show the 'other' box when needed.
+  $element['#attached']['js'][] = drupal_get_path('module', 'select_or_other') . '/select_or_other.js';
+
+  // Create the main select box
+  // Note that #title, #title_display, #default_value, #disabled, #multiple,
+  // #required, #size, #options, and #attributes are passed to the select box
+  // from the main element automatically.
+
+  $element['select'] = array(
+    '#type' => $element['#select_type'],
+    '#title' => $element['#title'],
+    '#title_display' => $element['#title_display'],
+    '#default_value' => $element['#default_value'],
+    '#disabled' => $element['#disabled'],
+    '#multiple' => $element['#multiple'],
+    '#required' => $element['#required'],
+    '#size' => $element['#size'],
+    '#options' => $element['#options'],
+    '#attributes' => $element['#attributes'],
+    '#weight' => 10,
+  );
+
+  if (isset($element['#empty_value'])) {
+    $element['select']['#empty_value'] = $element['#empty_value'];
+  };
+
+  // Remove the default value on the container level so it doesn't get rendered there.
+  $element['#value'] = NULL;
+  // Remove the required parameter so FAPI doesn't force us to fill in the textfield.
+  $element['#required'] = NULL;
+
+  // Now we must handle the default values.
+  $other_default = array();
+
+  // Easier to work with the defaults if they are an array.
+  if (!is_array($element['select']['#default_value'])) {
+    $element['select']['#default_value'] = array(
+      $element['select']['#default_value'],
+    );
+  }
+
+
+  // Process the default value.
+  foreach ($element['select']['#default_value'] as $key => $val) {
+
+    if ($val
+      && isset($element['select']['#options'])
+      && is_array($element['select']['#options'])
+      && !select_or_other_multi_array_key_exists($val, $element['select']['#options'])
+      && !in_array($val, $element['select']['#options'])) {
+
+      // Not a valid option - add it to 'other'.
+      if ($element['#other_unknown_defaults'] == 'other') {
+
+        if ($element['#other_delimiter']) {
+          $other_default[] = $val;
+        }
+        else {
+          $other_default = array($val);
+        }
+        // Remove it from the select's default value.
+        unset($element['select']['#default_value'][$key]);
+
+      }
+      // Also checks 'available' because if that setting is newly set, after data is already stored, it should behave like 'append'.
+      elseif ($element['#other_unknown_defaults'] == 'append' || $element['#other_unknown_defaults'] == 'available') {
+        $element['select']['#options'][$val] = $val;
+      }
+
+    }
+  }
+
+  // If the expected default value is a string/integer, remove the array wrapper.
+  if ($element['#select_type'] == 'radios' || ($element['#select_type'] == 'select' && !$element['#multiple'])) {
+    $element['select']['#default_value'] = reset($element['select']['#default_value']);
+  }
+
+  $other_default_string = '';
+  if (!empty($other_default)) {
+    $other_default_string = implode($element['#other_delimiter'], $other_default);
+    if (is_array($element['select']['#default_value'])) {
+      $element['select']['#default_value'][] = 'select_or_other';
+    }
+    else {
+      $element['select']['#default_value'] = 'select_or_other';
+    }
+  }
+
+  // Add in the 'other' option.
+  $element['select']['#options']['select_or_other'] = $element['#other'];
+
+  // Create the 'other' textfield.
+  $element['other'] = array(
+    '#type' => 'textfield',
+    '#weight' => 20,
+    '#default_value' => $other_default_string,
+    '#disabled' => $element['#disabled'],
+    '#attributes' => $element['#attributes'],
+  );
+
+  // Populate properties set specifically as #select_property or #other_property
+  $sub_elements = array('select', 'other');
+  foreach ($sub_elements as $sub_element) {
+    foreach ($element as $key => $value) {
+    if (strpos($key, '#' . $sub_element . '_') === 0) {
+        $element[$sub_element][str_replace('#' . $sub_element . '_', '#', $key)] = $value;
+
+      }
+    }
+    // Also add in a custom class for each.
+    $element[$sub_element]['#attributes']['class'][] = 'select-or-other-' . $sub_element;
+  }
+  if (!empty($element['#maxlength'])) {
+    $element['other']['#maxlength'] = $element['#maxlength'];
+  }
+
+  // Hide the title from the wrapper.
+  $element['#title'] = NULL;
+
+  return $element;
+}
+
+/**
+ * Element validate callback for a Select (or other) element.
+ */
+function select_or_other_element_validate($element, &$form_state) {
+  $other_selected = FALSE;
+  if (is_array($element['select']['#value']) && isset($element['select']['#value']['select_or_other'])) {
+    // This is a multiselect. assoc arrays
+    $other_selected = TRUE;
+    $value = $element['select']['#value'];
+    unset($value['select_or_other']);
+    $value[$element['other']['#value']] = $element['other']['#value'];
+  }
+  elseif (is_string($element['select']['#value']) && $element['select']['#value'] == 'select_or_other') {
+    // This is a single select.
+    $other_selected = TRUE;
+    $value = $element['other']['#value'];
+  }
+  else {
+    $value = $element['select']['#value'];
+  }
+  if ($other_selected && !$element['other']['#value']) {
+    form_error($element['other'], t('!title is required', array('!title' => $element['#title'])));
+  }
+  if (isset($value)) {
+    form_set_value($element, $value, $form_state);
+    $form_state['clicked_button']['#post'][$element['#name']] = $value; // Is this something we should do?
+  }
+  return $element;
+}
+
+/**
+ * Returns HTML for the label for the empty value for options that are not required.
+ *
+ * The default theme will display N/A for a radio list and '- None -' for a select.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - instance: An array representing the widget requesting the options.
+ *   - option: An array representing the widget requesting the options.
+ *
+ */
+function theme_select_or_other_none($variables) {
+  $instance = $variables['instance'];
+
+  $output = '';
+  switch ($instance['widget']['type']) {
+    case 'select_or_other_buttons':
+      $output = t('N/A');
+      break;
+
+    case 'select_or_other':
+    case 'select_or_other_sort':
+      if (!empty($variables['option']) && $variables['option'] == 'option_none') {
+        $output = t('- None -');
+      }
+      else {
+        $output = t('- Select a value -');
+      }
+      break;
+  }
+
+  return $output;
+}
+
+/**
+ * Helper function to check keys in multidimensional array.
+ *
+ * @param $needle
+ *   The key.
+ * @param $haystack
+ *   The array to check.
+ * @return
+ *   Boolean indicating if the key is set.
+ */
+function select_or_other_multi_array_key_exists($needle, $haystack) {
+  if (array_key_exists($needle, $haystack)) {
+    return TRUE;
+  }
+  else {
+    foreach ($haystack as $key => $value) {
+      if (is_array($value) && select_or_other_multi_array_key_exists($needle, $value)) {
+        return TRUE;
+      }
+    }
+  }
+  return FALSE;
+}

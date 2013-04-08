@@ -1,0 +1,18 @@
+{
+
+  "uid": "1",
+  "name": "foo",
+  "mail": "foo.bar@domain.com",
+  "url": "http://drupal-7dev.localhost/user/1",
+  "edit_url": "http://drupal-7dev.localhost/user/1/edit",
+  "last_access": "1344245660",
+  "last_login": "1343821898",
+  "created": "1339609269",
+  "roles": [
+    2,
+    3
+  ],
+  "status": "1",
+  "theme": "bartik"
+
+}

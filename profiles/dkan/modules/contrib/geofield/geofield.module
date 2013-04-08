@@ -1,0 +1,551 @@
+<?php
+
+require_once('geofield.widgets.inc');
+require_once('geofield.formatters.inc');
+require_once('geofield.openlayers.inc');
+require_once('geofield.feeds.inc');
+
+/**
+ * Implements hook_field_info().
+ */
+function geofield_field_info() {
+  return array(
+    'geofield' => array(
+      'label' => 'Geofield',
+      'description' => t('This field stores geo information.'),
+      'default_widget' => 'geofield_wkt',
+      'default_formatter' => 'geofield_wkt',
+      'instance_settings' => array(
+        'local_solr' => array(
+          'enabled' => FALSE,
+          'lat_field' => 'lat',
+          'lng_field' => 'lng',
+        ),
+      ),
+      'property_type' => 'geofield',
+      'property_callbacks' => array('geofield_property_info_callback'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_presave().
+ * PDO throws an error when attempting to insert an empty string into a float
+ * field. Go through all values and convert empty strings to NULL.
+ */
+function geofield_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  if ($field['type'] === 'geofield') {
+    foreach ($items as $delta => $item) {
+      if (!empty($item)) {
+        foreach ($item as $k => $v) {
+          if ($v === '') {
+            $item[$k] = NULL;
+          }
+        }
+        $widget = $instance['widget'];
+        if ($widget['type'] == 'geofield_wkt') {
+          $master_column = 'wkt';
+        }
+        elseif ($widget['type'] == 'geofield_latlon') {
+          $master_column = 'latlon';
+        }
+        elseif ($widget['type'] == 'geofield_bounds') {
+          $master_column = 'bounds';
+        }
+        elseif ($widget['type'] == 'geofield_geolocation') {
+          $master_column = 'latlon';
+        }
+        else {
+          $master_column = 'wkt';
+        }
+        $item += array('master_column' => $master_column);
+        geofield_compute_values($item, $item['master_column']);
+        $items[$delta] = $item;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function geofield_field_is_empty($item, $field) {
+  // TODO: This is ugly. Please fix.
+  if (!empty($item['master_column'])) {
+    switch ($item['master_column']) {
+      case 'wkt';
+        return (empty($item['wkt']));
+      case 'latlon':
+        return (empty($item['lat']) && empty($item['lon']));
+      case 'bounds':
+        return (empty($item['left']) && empty($item['right']) && empty($item['top']) && empty($item['bottom']));
+    }
+  }
+  else {
+    return (empty($item['wkt']));
+  }
+}
+
+/**
+ * Implements hook_view_api().
+ */
+function geofield_views_api() {
+  return array(
+    'api' => '3.0-alpha1',
+    'path' => drupal_get_path('module', 'geofield') . '/views',
+  );
+}
+
+/**
+ * Implements hook_ctools_plugin_type().
+ */
+function geofield_ctools_plugin_type() {
+  return array(
+    'behaviors' => array(
+      'use hooks' => TRUE,
+    )
+  );
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function geofield_ctools_plugin_api($module, $api) {
+  return array('version' => 1);
+}
+
+ /**
+ * Implements hook_field_instance_settings_form().
+ */
+function geofield_field_instance_settings_form($field, $instance) {
+  $form = array();
+  // Add in local solr settings
+  if (module_exists('apachesolr')) {
+
+    if (isset($instance['settings']['solrspatial'])) $setting = $instance['settings']['solrspatial'];
+    else $setting = array();
+
+    $form['solrspatial'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Local Solr Settings'),
+      '#tree' => TRUE,
+    );
+
+    $form['solrspatial']['enabled'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Index field in Solr for spatial search'),
+      '#default_value' => isset($setting['enabled']) ? $setting['enabled'] : '',
+    );
+
+    $form['solrspatial']['lat_field'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Name of the Solr Latitude Field'),
+      '#default_value' => isset($setting['lat_field']) ? $setting['lat_field'] : '',
+    );
+
+    $form['solrspatial']['lng_field'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Name of the Solr Lonitude Field'),
+      '#default_value' => isset($setting['lng_field']) ? $setting['lng_field'] : '',
+    );
+    $form['solrspatial']['latlng_field'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Name of the Solr LatLon Field'),
+      '#default_value' => isset($setting['latlng_field']) ? $setting['latlng_field'] : '',
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Geofield Compute Values
+ *
+ *  Compute all dependant values. We compute all other values from whichever
+ * column is specified in the master_column value
+ *
+ * Steps:
+ * 1. Load the geoPHP library
+ * 2. Load the Geometry object from the master-column
+ * 3. Get out all the computer values from the Geometry object
+ * 4. Set all the values
+ *
+ * Allowed values for master_column are wkt, latlon, bounds
+ */
+function geofield_compute_values(&$values, $master_column = 'wkt') {
+
+  // If only a wkt string has been passed in, then format it correctly by wrapping it in an array
+  if ($master_column == 'wkt' && !is_array($values)) {
+    $values = array('wkt' => $values);
+  }
+
+  // Load up geoPHP to do the conversions
+  $geophp = geophp_load();
+  if (!$geophp) {
+    drupal_set_message(t("Unable to load geoPHP library. Not all values will be calculated correctly"), 'error');
+    return;
+  }
+
+  // Load up the geometry object from the master-column data
+  if ($master_column == 'wkt') {
+    $wkt = $values['wkt'];
+    if ($wkt) {
+      $geometry = geoPHP::load($wkt, 'wkt');
+    }
+  }
+
+  if ($master_column == 'latlon') {
+    $lat = $values['lat'];
+    $lon = $values['lon'];
+    if (is_numeric($lat) && is_numeric($lon)) {
+      $geometry = new Point(floatval($lon), floatval($lat));
+    }
+  }
+
+  if ($master_column == 'bounds') {
+    $top = $values['top'];
+    $bottom = $values['bottom'];
+    $right = $values['right'];
+    $left = $values['left'];
+
+    if (is_numeric($top) && is_numeric($bottom) && is_numeric($right) && is_numeric($left)) {
+      $wkt_bounds_format = 'POLYGON((left bottom,right bottom,right top,left top,left bottom))';
+      $wkt = strtr($wkt_bounds_format, array('top' => $top, 'bottom' => $bottom, 'right' => $right, 'left' => $left));
+      $geometry = geoPHP::load($wkt, 'wkt');
+    }
+  }
+
+  // Get values from geometry
+  if (isset($geometry)) {
+    $values = geofield_get_values_from_geometry($geometry);
+  }
+  else {
+    $values = array();
+  }
+
+  return $values;
+}
+
+/**
+ * Given a geometry object from geoPHP, return a values array
+ */
+function geofield_get_values_from_geometry($geometry) {
+  $centroid = $geometry->getCentroid();
+  $bounding = $geometry->getBBox();
+
+  $values['wkt'] = $geometry->out('wkt');
+  $values['geo_type'] = drupal_strtolower($geometry->getGeomType());
+
+  $values['lat'] = $centroid->getY();
+  $values['lon'] = $centroid->getX();
+
+  $values['top'] = $bounding['maxy'];
+  $values['bottom'] = $bounding['miny'];
+  $values['right'] = $bounding['maxx'];
+  $values['left'] = $bounding['minx'];
+
+  return $values;
+}
+
+/**
+ * Implements hook_apachesolr_field_mappings().
+ */
+function geofield_apachesolr_field_mappings() {
+  return array(
+    'geofield' => array(
+      'indexing_callback' => 'geofield_apachesolr_index',
+      'facets' => TRUE,
+    )
+  );
+}
+
+/**
+ * Name callback for field name
+ */
+function geofield_apachesolr_index($node, $field_name, $index_key, $field_info) {
+  $return = array();
+  if (isset($node->$field_name)) {
+    // Load the instance settings for the field
+    $instance = field_info_instance('node', $field_name, $node->type);
+    if (!empty($instance['settings']['solrspatial'])) {
+      if ($values = field_get_items('node', $node, $field_name)) {
+        $values = reset($values);
+        $return = array(
+          array(
+            'key' => $instance['settings']['solrspatial']['lat_field'],
+            'value' => $values['lat']
+          ),
+          array(
+            'key' => $instance['settings']['solrspatial']['lng_field'],
+            'value' =>  $values['lon']
+          ),
+          array(
+            'key' => $instance['settings']['solrspatial']['latlng_field'],
+            'value' =>  $values['lat'] . ',' . $values['lon']
+          ),
+          array(
+            'key' => 'ss_geo_wkt',
+            'value' => $values['wkt'],
+          ),
+        );
+      }
+    }
+  }
+
+  return $return;
+}
+
+/**
+ * Implements hook_apachesolr_query_alter()
+ */
+function geofield_apachesolr_query_alter($query) {
+  // Add the WKT field field
+  $query->addParam('fl', 'ss_geo_wkt');
+}
+
+
+// Latitude and Longitude string conversion
+// ----------------------------------------
+
+/**
+ * Decimal-Degrees-Seconds to Decimal Degrees
+ *
+ * Converts string to decimal degrees. Has some error correction for messy strings
+ */
+function geofield_latlon_DMStoDEC($dms) {
+  if (is_numeric($dms)) {
+    // It's already decimal degrees, just return it
+    return $dms;
+  }
+
+  // If it contains both an H and M, then it's an angular hours
+  if (stripos($dms, 'H') !== FALSE && stripos($dms, 'M') !== FALSE) {
+    $dms = strtr($dms, "'\"HOURSMINTECNDAhoursmintecnda", "  ");
+    $dms = preg_replace('/\s\s+/', ' ', $dms);
+
+    $dms = explode(" ", $dms);
+    $deg = $dms[0];
+    $min = $dms[1];
+    $sec = $dms[2];
+
+    $dec = floatval(($deg*15) + ($min/4) + ($sec/240));
+
+    return $dec;
+  }
+
+  // If it contains an S or a W, then it's a negative
+  if (stripos($dms, 'S') !== FALSE || stripos($dms, 'W') !== FALSE) {
+    $direction = -1;
+  }
+  else {
+    $direction = 1;
+  }
+
+  // Strip all characters and replace them with empty space
+  $dms = strtr($dms, "�'\"NORTHSEAWnorthseaw'", " ");
+  $dms = preg_replace('/\s\s+/', ' ', $dms);
+
+  $dms = explode(" ", $dms);
+  $deg = $dms[0];
+  $min = $dms[1];
+  $sec = $dms[2];
+
+  // Direction should be checked only for nonnegative coordinates
+  $dec = floatval($deg+((($min*60)+($sec))/3600));
+  if ($dec > 0) {
+    $dec = $direction * $dec;
+  }
+  return $dec;
+}
+
+
+/**
+ * Decimal Degrees to Decimal-Degrees-Seconds
+ *
+ * Converts decimal longitude / latitude to DMS ( Degrees / minutes / seconds )
+ */
+function geofield_latlon_DECtoDMS($dec, $axis) {
+  if ($axis == 'lat') {
+    if ($dec < 0) $direction = 'S';
+    else $direction = 'N';
+  }
+  if ($axis == 'lon') {
+    if ($dec < 0) $direction = 'W';
+    else $direction = 'E';
+  }
+
+  $vars = explode(".", $dec);
+  $deg = abs($vars[0]);
+  if (isset($vars[1])) {
+    $tempma = "0." . $vars[1];
+  }
+  else {
+    $tempma = "0";
+  }
+
+  $tempma = $tempma * 3600;
+  $min = floor($tempma / 60);
+  $sec = $tempma - ($min*60);
+
+  return $deg . "&deg; " . $min . "' " . round($sec, 3) . "\" " . $direction;
+}
+
+/**
+ * Decimal Degrees to Celestial coordinate system (CCS) units
+ *
+ * Converts decimal latitude to DMS ( Degrees / minutes / seconds ) and decimal longitude to Angular Hours / Minutes / Seconds
+ */
+function geofield_latlon_DECtoCCS($dec, $axis) {
+
+  // Declination (celestial latitude) should be representeted in Degrees / minutes / seconds
+  if ($axis == 'lat') {
+    $vars = explode("." , $dec);
+    $deg = $vars[0];
+    if (isset($vars[1])) {
+      $tempma = "0." . $vars[1];
+    }
+    else {
+      $tempma = "0";
+    }
+
+    $tempma = $tempma * 3600;
+    $min = floor($tempma / 60);
+    $sec = $tempma - ($min*60);
+
+    return $deg . "&deg; " . $min . "' " . round($sec, 3) . "\"";
+  }
+
+  // Right ascension (celestial longitude) should be representeted in Hours / Minutes / Seconds
+  if ($axis == 'lon') {
+    $tempma = $dec / 15;
+    $vars = explode(".", $tempma);
+    $hrs = $vars[0];
+    if (isset($vars[1])) {
+      $tempma = "0." . $vars[1];
+    }
+    else {
+      $tempma = "0";
+    }
+    $tempma = $tempma * 60;
+    $vars = explode(".", $tempma);
+    $min = $vars[0];
+    if (isset($vars[1])) {
+      $tempma = "0." . $vars[1];
+    }
+    else {
+      $tempma = "0";
+    }
+    $sec = $tempma * 60;
+
+    return $hrs . "h " . $min . "m " . round($sec, 3) . "s";
+  }
+}
+
+/**
+ * Callback to alter the property info of geofield fields.
+ *
+ * @see geofield_field_info().
+ */
+function geofield_property_info_callback(&$info, $entity_type, $field, $instance, $field_type) {
+  $name = $field['field_name'];
+  $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$name];
+
+  $property['type'] = ($field['cardinality'] != 1) ? 'list<geofield>' : 'geofield';
+  $property['getter callback'] = 'entity_metadata_field_verbatim_get';
+  $property['setter callback'] = 'entity_metadata_field_verbatim_set';
+//  $property['auto creation'] = 'geofield_default_values';
+  $property['property info'] = geofield_data_property_info('Geofield');
+
+  unset($property['query callback']);
+}
+
+/**
+ * Defines info for the properties of the geofield field data structure.
+ */
+function geofield_data_property_info($name = NULL) {
+  // Build an array of basic property information for the geofield field.
+  $properties = array(
+    'wkt' => array(
+      'label' => 'Well-known text',
+      'type' => 'text',
+    ),
+    'geo_type' => array(
+      'label' => 'Geo Type',
+      'options list' => '_geofield_geo_types_options_callback',
+      'required' => TRUE,
+    ),
+    'lat' => array(
+      'label' => 'Latitude',
+      'type' => 'decimal',
+      'required' => TRUE,
+      'setter callback' => 'entity_property_verbatim_set',
+    ),
+    'lon' => array(
+      'label' => 'Longitude',
+      'type' => 'decimal',
+      'required' => TRUE,
+      'setter callback' => 'entity_property_verbatim_set',
+    ),
+    'left' => array(
+      'label' => 'Left Latitude',
+      'type' => 'decimal',
+      'setter callback' => 'entity_property_verbatim_set',
+    ),
+    'top' => array(
+      'label' =>  'Top Longitude',
+      'type' => 'decimal',
+      'setter callback' => 'entity_property_verbatim_set',
+    ),
+    'right' => array(
+      'label' => 'Right Latitude',
+      'type' => 'decimal',
+      'setter callback' => 'entity_property_verbatim_set',
+    ),
+    'bottom' => array(
+      'label' => 'Bottom Longitude',
+      'type' => 'decimal',
+      'setter callback' => 'entity_property_verbatim_set',
+    ),
+    'srid' => array(
+      'label' => 'Projection (SRID)',
+      'type' => 'integer'
+    ),
+    'latlon' => array(
+      'label' => 'LatLong Pair',
+      'type'  => 'string',
+      'getter callback' => 'geofield_return_latlon',
+    ),
+  );
+
+
+  // Add the default values for each of the geofield properties.
+  foreach ($properties as $key => &$value) {
+    $value += array(
+      'description' => !empty($name) ? t('!label of field %name', array('!label' => $value['label'], '%name' => $name)) : '',
+      'getter callback' => 'entity_property_verbatim_get',
+    );
+  }
+
+  return $properties;
+}
+
+
+function _geofield_geo_types_options_callback() {
+
+  $geophp = geophp_load();
+  if (!$geophp) {
+    return;
+  }
+  return geoPHP::geometryList();
+
+}
+
+/**
+ * Gets the a latlong property.
+ */
+function geofield_return_latlon($data, array $options, $name) {
+  if ((is_array($data) || (is_object($data) && $data instanceof ArrayAccess))) {
+    return $data['lat'] . ',' . $data['lon'];
+  }
+  return NULL;
+}

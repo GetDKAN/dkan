@@ -1,0 +1,8 @@
+OG Extras Module 7.x
+====================
+
+===================
+Version 7.x-1.x-dev
+===================
+
+- Avoid PDO errors when groups have no roles defined.

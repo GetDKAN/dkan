@@ -1,0 +1,478 @@
+<?php
+
+/**
+ * @file
+ * RESTful web services tests.
+ */
+
+class RestWSTestCase extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'RESTful web services tests',
+      'description' => 'Tests CRUD operations via the REST web service.',
+      'group' => 'Services',
+    );
+  }
+
+  public function setUp() {
+    parent::setUp('restws');
+  }
+
+  /**
+   * CRUD tests for nodes.
+   */
+  public function testCRUD() {
+    // Test Read.
+    $title = $this->randomName(8);
+    $node = $this->drupalCreateNode(array('title' => $title));
+    $account = $this->drupalCreateUser(array('access resource node'));
+    $this->drupalLogin($account);
+    $result = $this->httpRequest('node/' . $node->nid . '.json', 'GET', $account);
+    $node_array = drupal_json_decode($result);
+    $this->assertEqual($node->title, $node_array['title'], 'Node title was received correctly.');
+    $this->assertResponse('200', 'HTTP response code is correct.');
+    $this->assertEqual(curl_getinfo($this->curlHandle, CURLINFO_CONTENT_TYPE), 'application/json', 'HTTP content type is correct.');
+
+    // Test Create.
+    $account = $this->drupalCreateUser(array('access content',
+      'bypass node access', 'access resource node'));
+    $title = $this->randomName(8);
+    $new_node = array(
+      'body'      => array(LANGUAGE_NONE => array(array())),
+      'title'     => $title,
+      'comment'   => 2,
+      'promote'   => 0,
+      'revision'  => 1,
+      'log'       => '',
+      'status'    => 1,
+      'sticky'    => 0,
+      'type'      => 'page',
+      'language'  => LANGUAGE_NONE,
+      'author'    => $account->uid,
+    );
+    $json = drupal_json_encode($new_node);
+    $result = $this->httpRequest('node', 'POST', $account, $json);
+    $result_array = drupal_json_decode($result);
+    $nid = $result_array['id'];
+    $node = node_load($nid);
+    $this->assertEqual($title, $node->title, 'Node title in DB is equal to the new title.');
+    $this->assertResponse('201', 'HTTP response code is correct.');
+    $this->assertEqual(curl_getinfo($this->curlHandle, CURLINFO_CONTENT_TYPE), 'application/json', 'HTTP content type is correct.');
+
+    // Test Update.
+    $new_title = $this->randomName(8);
+    $json = drupal_json_encode(array('title' => $new_title));
+    $this->httpRequest('node/' . $node->nid, 'PUT', $account, $json);
+    // Clear the static cache, otherwise we won't see the update.
+    $node = node_load($node->nid, NULL, TRUE);
+    $this->assertEqual($new_title, $node->title, 'Node title in DB is equal to the updated title.');
+    $this->assertResponse('200', 'HTTP response code is correct.');
+    $this->assertEqual(curl_getinfo($this->curlHandle, CURLINFO_CONTENT_TYPE), 'application/json', 'HTTP content type is correct.');
+
+    // Test delete.
+    $this->httpRequest('node/' . $node->nid, 'DELETE', $account);
+    // Clear the static cache, otherwise we won't see the update.
+    $node = node_load($node->nid, NULL, TRUE);
+    $this->assertFalse($node, 'Node is not in the DB anymore.');
+    $this->assertResponse('200', 'HTTP response code is correct.');
+    $this->assertEqual(curl_getinfo($this->curlHandle, CURLINFO_CONTENT_TYPE), 'application/json', 'HTTP content type is correct.');
+  }
+
+  /**
+   * Tests bad requests.
+   */
+  public function testBadRequests() {
+    // Assure that nodes without types won't be created.
+    $account = $this->drupalCreateUser(array('access content', 'bypass node access', 'access resource node', 'administer users'));
+    $title = $this->randomName(8);
+    $new_node = array(
+      'body'  => array(LANGUAGE_NONE => array(array())),
+      'title' => $title,
+    );
+    $json = drupal_json_encode($new_node);
+    $result = $this->httpRequest('node', 'POST', $account, $json);
+    $node = entity_load('node', FALSE, array('title' => $title));
+    $this->assertEqual(count($node), 0, "Node wasn't created");
+
+    $this->assertResponse('406', 'Missing bundle: type');
+  }
+
+  /**
+   * Test entity references with an array which contains id, entity type.
+   */
+  public function testResourceArray() {
+    $account = $this->drupalCreateUser(array(
+      'access content', 'bypass node access', 'access resource node',
+    ));
+    $this->drupalLogin($account);
+    $this->createTerm("foo");
+    $this->createTerm("bar");
+
+    // Test json create.
+    $title = $this->randomName(8);
+    $new_node = array(
+      'body' => array(LANGUAGE_NONE => array(array())),
+      'type' => 'article',
+      'title' => 'foo',
+      'field_tags' => array(
+        array(
+          'id' => '2', 'resource' => 'taxonomy_term',
+        ), array(
+          'id' => '1', 'resource' => 'taxonomy_term',
+        ),
+      ),
+      'author' => array(
+        'id' => $account->uid, 'resource' => 'user',
+      ),
+    );
+    $json = drupal_json_encode($new_node);
+    $result = $this->httpRequest('node', 'POST', $account, $json);
+    $result_array = drupal_json_decode($result);
+    $nid = $result_array['id'];
+    $node = node_load($nid);
+    $this->assertEqual($node->field_tags[LANGUAGE_NONE][0]['tid'], 2, 'Taxonomy term 1 was correctly added.');
+    $this->assertEqual($node->field_tags[LANGUAGE_NONE][1]['tid'], 1, 'Taxonomy term 2 was correctly added.');
+
+    // Test XML update.
+    $xml = '
+      <node>
+        <title>bar</title>
+        <type>article</type>
+        <author resource="user" id="1">' . restws_resource_uri('user', 1) . '</author>
+        <field_tags>
+          <item resource="taxonomy_term" id="1">' . restws_resource_uri('taxonomy_term', 1) . '</item>
+          <item resource="taxonomy_term" id="2">' . restws_resource_uri('taxonomy_term', 2) . '</item>
+        </field_tags>
+      </node>';
+    $result = $this->httpRequest('node/' . $nid, 'PUT', $account, $xml, 'xml');
+    $node = node_load($nid, NULL, TRUE);
+    $this->assertEqual($node->field_tags[LANGUAGE_NONE][0]['tid'], 1, 'Taxonomy term 1 was correctly updated.');
+    $this->assertEqual($node->field_tags[LANGUAGE_NONE][1]['tid'], 2, 'Taxonomy term 2 was correctly updated.');
+
+    // Test XML create.
+    $result = $this->httpRequest('node', 'POST', $account, $xml, 'xml');
+    $xml_element = simplexml_load_string($result);
+    $nid = $xml_element->attributes()->id;
+    $node = node_load((int) $nid, NULL, TRUE);
+    $this->assertEqual($node->field_tags[LANGUAGE_NONE][0]['tid'], 1, 'Taxonomy term 1 was correctly added.');
+    $this->assertEqual($node->field_tags[LANGUAGE_NONE][1]['tid'], 2, 'Taxonomy term 2 was correctly added.');
+  }
+
+  /**
+   * Tests using the xml formatter.
+   */
+  public function testXmlFormatter() {
+    // Test Read.
+    $account = $this->drupalCreateUser(array('access content',
+      'bypass node access', 'access resource node')
+    );
+    $this->drupalLogin($account);
+    $title = $this->randomName(8);
+    $node = $this->drupalCreateNode(array('title' => $title));
+
+    $result = $this->drupalGet("node/$node->nid", array(), array('Accept: application/xml'));
+    $this->assertRaw("<title>$title</title>", 'XML has been generated.');
+
+    // Test update.
+    $new_title = 'foo';
+    $result = $this->httpRequest('node/' . $node->nid, 'PUT', $account, "<node><title>$new_title</title></node>", 'xml');
+    // Clear the static cache, otherwise we won't see the update.
+    $node = node_load($node->nid, NULL, TRUE);
+    $this->assertEqual($new_title, $node->title, 'Node title in DB is equal to the updated title.');
+    $this->assertResponse('200', 'HTTP response code is correct.');
+    $this->assertEqual(curl_getinfo($this->curlHandle, CURLINFO_CONTENT_TYPE), 'application/xml', 'HTTP content type is correct.');
+  }
+
+  /**
+   * Test requests to non-existing resources and other errors.
+   */
+  public function testErrors() {
+    // Read non-existing resource.
+    $random_nid = rand(1, 1000);
+    $result = $this->httpRequest('node/' . $random_nid, 'GET');
+    $this->assertResponse('404', 'HTTP response code is correct.');
+
+    // Update a node with an unknown property.
+    $account = $this->drupalCreateUser(array('access content',
+      'bypass node access', 'access resource node')
+    );
+    $node = $this->drupalCreateNode();
+    $property_name = $this->randomName(8);
+    $json = drupal_json_encode(array($property_name => $property_name));
+    $result = $this->httpRequest('node/' . $node->nid, 'PUT', $account, $json);
+    $this->assertEqual($result, "406 Not Acceptable: Unknown data property $property_name.", 'Response body is correct');
+    $this->assertResponse('406', 'HTTP response code is correct.');
+
+    // Create a node with an unknown property.
+    $title = $this->randomName(8);
+    $new_node = array(
+      'body'      => array(LANGUAGE_NONE => array(array())),
+      'title'     => $this->randomName(8),
+      'comment'   => 2,
+      'promote'   => 0,
+      'revision'  => 1,
+      'log'       => '',
+      'status'    => 1,
+      'sticky'    => 0,
+      'type'      => 'page',
+      'language'  => LANGUAGE_NONE,
+      'author'    => $account->uid,
+      $property_name => $property_name,
+    );
+    $json = drupal_json_encode($new_node);
+    $result = $this->httpRequest('node', 'POST', $account, $json);
+    $this->assertEqual($result, "406 Not Acceptable: Unknown data properties: $property_name.", 'Response body is correct');
+    $this->assertResponse('406', 'HTTP response code is correct.');
+
+
+    // Simulate a CSRF attack without the required token.
+    $new_title = 'HACKED!';
+    $json = drupal_json_encode(array('title' => $new_title));
+    $this->curlExec(array(
+      CURLOPT_HTTPGET => FALSE,
+      CURLOPT_POST => TRUE,
+      CURLOPT_CUSTOMREQUEST => 'POST',
+      CURLOPT_POSTFIELDS => $json,
+      CURLOPT_URL => url('node/' . $node->nid, array('absolute' => TRUE)),
+      CURLOPT_NOBODY => FALSE,
+      CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
+    ));
+    $this->assertResponse(403);
+    // Clear the static cache, otherwise we won't see the update.
+    $node = node_load($node->nid, NULL, TRUE);
+    $this->assertNotEqual($node->title, $new_title, 'Node title was not updated in the database.');
+  }
+
+  /**
+   * Tests resource querying.
+   */
+  public function testQuerying() {
+    $account = $this->drupalCreateUser(array('access content',
+        'bypass node access', 'access resource node')
+    );
+    $this->drupalLogin($account);
+
+    $this->createTerm('foo');
+    $nodes = array();
+    for ($i = 0; $i < 5; $i++) {
+      $title = "node$i";
+      $node = array(
+        'title' => $title,
+        'type' => 'article',
+      );
+      // Add tags to the nodes 0 and 3.
+      if ($i % 3 == 0) {
+        $node['field_tags'][LANGUAGE_NONE][]['tid'] = 1;
+      }
+
+      // Set a body and the format to full_html for nodes 0 and 4.
+      if ($i % 4 == 0) {
+        $node['body'] = array(LANGUAGE_NONE => array(array('value' => l('foo', 'node'), 'format' => 'full_html')));
+      }
+      $nodes[$i] = $this->drupalCreateNode($node);
+    }
+
+    // Retrieve a list of nodes with json sorted by the title descending.
+    $result = $this->httpRequest('node.json', 'GET', $account, array('sort' => 'title', 'direction' => 'DESC'));
+    $result_nodes = drupal_json_decode($result);
+
+    // Start by checking if the last node created is the first in the result.
+    $i = 4;
+    foreach ($result_nodes['list'] as $key => $node) {
+      $this->assertEqual($nodes[$i]->title, $node['title'], "Node title $key was received correctly.");
+      $i--;
+    }
+    $this->assertResponse('200', 'HTTP response code is correct.');
+    $this->assertEqual(curl_getinfo($this->curlHandle, CURLINFO_CONTENT_TYPE), 'application/json', 'HTTP content type is correct.');
+
+    // Retrieve a list of nodes with xml.
+    $result = $this->drupalGet('node', array(), array('Accept: application/xml'));
+    $this->assertRaw('<list>', 'XML has been generated.');
+    for ($i = 0; $i < 5; $i++) {
+      $this->assertRaw("<title>node$i</title>", 'XML has been generated.');
+    }
+
+    // Query for a node with the title 'title1'.
+    $result = $this->httpRequest('node.json', 'GET', $account, array('title' => 'node1'));
+    $node = drupal_json_decode($result);
+    $this->assertEqual($node['list'][0]['title'], 'node1', 'Node title was received correctly.');
+
+    // Query for nodes with the taxonomy term foo which has the tid 1.
+    $result = $this->httpRequest('node.json', 'GET', $account, array('field_tags' => '1'));
+    $nodes = drupal_json_decode($result);
+
+    $this->assertEqual($nodes['list'][0]['title'], 'node0', 'Right node title was received.');
+    $this->assertEqual($nodes['list'][0]['field_tags'][0]['id'], 1, 'Node has taxonomy term.');
+
+    $this->assertEqual($nodes['list'][1]['title'], 'node3', 'Right node title was received.');
+    $this->assertEqual($nodes['list'][1]['field_tags'][0]['id'], 1, 'Node has taxonomy term.');
+
+    // Test paging and limiting.
+    $result = $this->httpRequest('node.json', 'GET', $account, array('limit' => 2, 'page' => 0));
+    $result_nodes = drupal_json_decode($result);
+
+    $this->assertTrue(count($result_nodes['list'] > 2), 'Only two elements where returned');
+
+    $this->assertTrue($result_nodes['self'] == url('node', array('absolute' => TRUE, 'query' => array('limit' => 2, 'page' => 0))), 'Self link was generated');
+    $this->assertTrue($result_nodes['first'] == url('node', array('absolute' => TRUE, 'query' => array('limit' => 2, 'page' => 0))), 'First link was generated');
+    $this->assertTrue($result_nodes['last'] == url('node', array('absolute' => TRUE, 'query' => array('limit' => 2, 'page' => 2))), 'Last link was generated');
+    $this->assertTrue($result_nodes['next'] == url('node', array('absolute' => TRUE, 'query' => array('limit' => 2, 'page' => 1))), 'Next link was generated');
+    $this->assertFalse(isset($result_nodes['prev']), 'Prev link was not generated');
+
+    $result = $this->httpRequest('node.json', 'GET', $account, array('limit' => 2, 'page' => 2));
+    $result_nodes = drupal_json_decode($result);
+
+    $this->assertFalse(isset($result_nodes['next']), 'Next link was not generated');
+    $this->assertTrue($result_nodes['prev'] == url('node', array('absolute' => TRUE, 'query' => array('limit' => 2, 'page' => 1))), 'Prev link was generated');
+
+    $result = $this->httpRequest('node.json', 'GET', $account, array('limit' => 2, 'page' => 5));
+    $this->assertResponse('404', 'HTTP response code is correct.');
+
+    // Test meta control full.
+    $result = $this->httpRequest('node.json', 'GET', $account, array('full' => 0));
+    $result_nodes = drupal_json_decode($result);
+
+    foreach ($result_nodes['list'] as $node) {
+      $this->assertTrue($node['uri'] == restws_resource_uri('node', $node['id']), 'Rerence to node ' . $node['id'] . ' was received correctly.');
+    }
+
+    // Test field column queries.
+    $result = $this->httpRequest('node.json', 'GET', $account, array('body[format]' => 'full_html'));
+    $result_nodes = drupal_json_decode($result);
+
+    $this->assertEqual($result_nodes['list'][0]['title'], 'node0', 'Right node title was received.');
+    $this->assertEqual($result_nodes['list'][0]['body']['format'], 'full_html', 'Node has body with full_html.');
+
+    $this->assertEqual($result_nodes['list'][1]['title'], 'node4', 'Right node title was received.');
+    $this->assertEqual($result_nodes['list'][1]['body']['format'], 'full_html', 'Node has body with full_html.');
+  }
+
+  /**
+   * Test that sensitive user data is hidden for the "access user profiles"
+   * permission and unpublished nodes.
+   */
+  public function testPermissions() {
+    // Test other user with "access user profiles" permission.
+    $test_user = $this->drupalCreateUser();
+    $account = $this->drupalCreateUser(array('access resource user', 'access user profiles'));
+    $result = $this->httpRequest('user/' . $test_user->uid . '.json', 'GET', $account);
+    $user_array = drupal_json_decode($result);
+    $this->assertEqual($test_user->name, $user_array['name'], 'User name was received correctly.');
+    $this->assertFalse(isset($user_array['mail']), 'User mail is not present in the response.');
+    $this->assertFalse(isset($user_array['roles']), 'User roles are not present in the response.');
+    $this->assertResponse('200', 'HTTP response code is correct.');
+    $this->assertEqual(curl_getinfo($this->curlHandle, CURLINFO_CONTENT_TYPE), 'application/json', 'HTTP content type is correct.');
+
+    // Test the own user - access to sensitive information should be allowed.
+    $result = $this->httpRequest('user/' . $account->uid . '.json', 'GET', $account);
+    $user_array = drupal_json_decode($result);
+    $this->assertEqual($account->name, $user_array['name'], 'User name was received correctly.');
+    $this->assertEqual($account->mail, $user_array['mail'], 'User mail is present in the response.');
+    $role_keys = array_keys($account->roles);
+    $this->assertEqual(sort($role_keys), sort($user_array['roles']), 'User roles are present in the response.');
+    $this->assertResponse('200', 'HTTP response code is correct.');
+    $this->assertEqual(curl_getinfo($this->curlHandle, CURLINFO_CONTENT_TYPE), 'application/json', 'HTTP content type is correct.');
+
+    // Test node access with an unpublished node.
+    $this->drupalCreateNode(array('title' => 'foo', 'status' => 0));
+
+    $this->drupalLogout();
+
+    $account = $this->drupalCreateUser(array('access resource node'));
+    $this->drupalLogin($account);
+
+    $result = $this->httpRequest('node.json', 'GET', $account);
+    $nodes = drupal_json_decode($result);
+    // No node should be returned.
+    $this->assertEqual(count($nodes['list']), 0, 'Unpublished node was successfully hidden.');
+
+  }
+
+  /**
+   * Test menu path resource setting.
+   */
+  public function testMenuPath() {
+    module_enable(array('restws_test'));
+
+    $account = $this->drupalCreateUser(array('access content',
+        'bypass node access', 'access resource node')
+    );
+    $this->drupalLogin($account);
+
+    $title = $this->randomName(8);
+    $node = $this->drupalCreateNode(array('title' => $title));
+
+    $result = $this->httpRequest('foo/1.json', 'GET', $account);
+    $this->assertEqual($node->title, $title, "Node was received correctly on the right menu path.");
+  }
+
+  /**
+   * Creates a term.
+   */
+  protected function createTerm($term_name) {
+    $term = new stdClass();
+    $term->name = $term_name;
+    $term->vid = 1;
+    taxonomy_term_save($term);
+  }
+
+  /**
+   * Helper function to issue a HTTP request with simpletest's cURL.
+   *
+   * @param array $body
+   *   Either the body for POST and PUT or additional URL parameters for GET.
+   */
+  protected function httpRequest($url, $method, $account = NULL, $body = NULL, $format = 'json') {
+    if (isset($account)) {
+      unset($this->curlHandle);
+      $this->drupalLogin($account);
+    }
+    if (in_array($method, array('POST', 'PUT', 'DELETE'))) {
+      // GET the CSRF token first for writing requests.
+      $token = $this->drupalGet('restws/session/token');
+    }
+    switch ($method) {
+      case 'GET':
+        // Set query if there are addition GET parameters.
+        $options = isset($body) ? array('absolute' => TRUE, 'query' => $body) : array('absolute' => TRUE);
+        return $this->curlExec(array(
+          CURLOPT_HTTPGET => TRUE,
+          CURLOPT_URL => url($url, $options),
+          CURLOPT_NOBODY => FALSE)
+        );
+      case 'POST':
+        return $this->curlExec(array(
+          CURLOPT_HTTPGET => FALSE,
+          CURLOPT_POST => TRUE,
+          CURLOPT_POSTFIELDS => $body,
+          CURLOPT_URL => url($url, array('absolute' => TRUE)),
+          CURLOPT_NOBODY => FALSE,
+          CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/' . $format,
+            'X-CSRF-Token: ' . $token,
+          ),
+        ));
+      case 'PUT':
+        return $this->curlExec(array(
+          CURLOPT_HTTPGET => FALSE,
+          CURLOPT_CUSTOMREQUEST => 'PUT',
+          CURLOPT_POSTFIELDS => $body,
+          CURLOPT_URL => url($url, array('absolute' => TRUE)),
+          CURLOPT_NOBODY => FALSE,
+          CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/' . $format,
+            'X-CSRF-Token: ' . $token,
+          ),
+        ));
+      case 'DELETE':
+        return $this->curlExec(array(
+          CURLOPT_HTTPGET => FALSE,
+          CURLOPT_CUSTOMREQUEST => 'DELETE',
+          CURLOPT_URL => url($url, array('absolute' => TRUE)),
+          CURLOPT_NOBODY => FALSE,
+          CURLOPT_HTTPHEADER => array('X-CSRF-Token: ' . $token),
+        ));
+    }
+  }
+}

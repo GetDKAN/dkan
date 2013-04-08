@@ -1,0 +1,482 @@
+<?php
+
+/**
+ * @file
+ * RESTful web services module.
+ */
+
+/**
+ * Returns info about all defined resources.
+ *
+ * @param string $resource
+ *   By default null, else the info for the given resource will be returned.
+ */
+function restws_get_resource_info($resource = NULL) {
+  $info = &drupal_static(__FUNCTION__);
+  if (!isset($info)) {
+    $info = module_invoke_all('restws_resource_info');
+    drupal_alter('restws_resource_info', $info);
+  }
+  if (!empty($resource)) {
+    return $info[$resource];
+  }
+  return $info;
+}
+
+/**
+ * Returns info about all defined formats.
+ */
+function restws_get_format_info() {
+  $info = &drupal_static(__FUNCTION__);
+  if (!isset($info)) {
+    $info = module_invoke_all('restws_format_info');
+    drupal_alter('restws_format_info', $info);
+  }
+  return $info;
+}
+
+/**
+ * Implements hook_restws_resource_info().
+ *
+ * Provides resources for all entity types.
+ */
+function restws_restws_resource_info() {
+  foreach (entity_get_info() as $entity_type => $info) {
+    $result[$entity_type] = array(
+      'label' => $info['label'],
+      'class' => 'RestWSEntityResourceController',
+    );
+  }
+  return $result;
+}
+
+/**
+ * Returns a instance of a resource controller.
+ *
+ * @return RestWSResourceControllerInterface
+ *   A resource controller object.
+ */
+function restws_resource_controller($name) {
+  $static = &drupal_static(__FUNCTION__);
+  if (!isset($static[$name])) {
+    $info = restws_get_resource_info();
+    $static[$name] = isset($info[$name]) ? new $info[$name]['class']($name, $info[$name]) : FALSE;
+  }
+  return $static[$name];
+}
+
+/**
+ * Implements hook_restws_format_info().
+ *
+ * Provides basic formats.
+ */
+function restws_restws_format_info() {
+  $result = array(
+    'json' => array(
+      'label' => t('JSON'),
+      'class' => 'RestWSFormatJSON',
+      'mime type' => 'application/json',
+    ),
+    'xml' => array(
+      'label' => t('XML'),
+      'class' => 'RestWSFormatXML',
+      'mime type' => 'application/xml',
+    ),
+  );
+  if (module_exists('rdf')) {
+    $result['rdf'] = array(
+      'label' => t('RDF'),
+      'class' => 'RestWSFormatRDF',
+      'mime type' => 'application/rdf+xml',
+    );
+  }
+  return $result;
+}
+
+/**
+ * Returns an instance of a format.
+ *
+ * @return RestWSFormatInterface
+ *   A resource format object.
+ */
+function restws_format($name) {
+  $static = &drupal_static(__FUNCTION__);
+  if (!isset($static[$name])) {
+    $info = restws_get_format_info();
+    $static[$name] = isset($info[$name]) ? new $info[$name]['class']($name, $info[$name]) : FALSE;
+  }
+  return $static[$name];
+}
+
+/**
+ * Handles a request.
+ *
+ * @param string $op
+ *   One of 'create', 'update', 'delete' or 'view'.
+ */
+function restws_handle_request($op, $format, $resource_name, $id = NULL, $payload = NULL) {
+  if ($resource = restws_resource_controller($resource_name)) {
+    // Allow other modules to change the web service request or react upon it.
+    $request = array(
+      'op' => &$op,
+      'format' => &$format,
+      'resource' => &$resource,
+      'id' => &$id,
+      'payload' => &$payload,
+    );
+    drupal_alter('restws_request', $request);
+
+    // Since there is no access callback for query we need to use view.
+    $access_op = $op == 'query' ? 'view' : $op;
+
+    if (user_access('access resource ' . $resource_name) && $resource->access($access_op, $id)) {
+      try {
+        $method = $op . 'Resource';
+        if ($op == 'create') {
+          print $format->$method($resource, $payload);
+          drupal_add_http_header('Status', '201 Created');
+        }
+        elseif ($op == 'query') {
+          if (!$resource instanceof RestWSQueryResourceControllerInterface) {
+            throw new RestWSException('Quering not available for this resources', 501);
+          }
+          print $format->$method($resource, $payload);
+        }
+        else {
+          print $format->$method($resource, $id, $payload);
+        }
+        drupal_add_http_header('Content-Type', $format->mimeType());
+      }
+      catch (RestWSException $e) {
+        echo check_plain($e->getHTTPError()) . ': ' . check_plain($e->getMessage());
+        drupal_add_http_header('Status', $e->getHTTPError());
+      }
+    }
+    else {
+      echo '403 Forbidden';
+      drupal_add_http_header('Status', '403 Forbidden');
+      watchdog('access denied', check_plain($_GET['q']), NULL, WATCHDOG_WARNING);
+    }
+  }
+  else {
+    echo '404 Not Found';
+    drupal_add_http_header('Status', '404 Not Found');
+  }
+  drupal_page_footer();
+  exit;
+}
+
+/**
+ * An exception defining the HTTP error code and message.
+ */
+class RestWSException extends Exception {
+
+  public function getHTTPError() {
+    $code = $this->getCode();
+    switch ($code) {
+      case 404:
+        return '404 Not Found';
+      case 406:
+        return '406 Not Acceptable';
+      case 412:
+        return '412 Precondition Failed';
+      default:
+        return '500 Internal Server Error';
+    }
+  }
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function restws_menu_alter(&$items) {
+  foreach (restws_get_resource_info() as $resource => $info) {
+    // Resource full path (e.g. /node/% or /user/%) for accessing specific
+    // resources.
+    $menu_path = isset($info['menu_path']) ? $info['menu_path'] . '/%' : $resource . '/%';
+    // Replace existing page callbacks with our own (e.g. node/%)
+    if (isset($items[$menu_path])) {
+      // Prepend the page callback and the resource to the page arguments.
+      // So we can re-use it on standard HTML page requests.
+      array_unshift($items[$menu_path]['page arguments'], $resource, $items[$menu_path]['page callback']);
+      $items[$menu_path]['page callback'] = 'restws_page_callback';
+    }
+    // Also replace wildcard loaders (e.g. node/%node)
+    elseif (isset($items[$menu_path . $resource])) {
+      $menu_path = $menu_path . $resource;
+      array_unshift($items[$menu_path]['page arguments'], $resource, $items[$menu_path]['page callback']);
+      $items[$menu_path]['page callback'] = 'restws_page_callback';
+    }
+    else {
+      $items[$menu_path] = array(
+        'page callback' => 'restws_page_callback',
+        'page arguments' => array($resource),
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+      );
+    }
+    // Resource base path (e.g. /node or /user) for creating resources.
+    $menu_path = isset($info['menu_path']) ? substr($menu_path, 0, strlen($menu_path) - 2) : $resource;
+
+    if (isset($items[$menu_path])) {
+      // Prepend the page callback and the resource to the page arguments.
+      if (!isset($items[$menu_path]['page arguments'])) {
+        $items[$menu_path]['page arguments'] = array();
+      }
+      array_unshift($items[$menu_path]['page arguments'], $resource, $items[$menu_path]['page callback']);
+      $items[$menu_path]['page callback'] = 'restws_page_callback';
+    }
+    else {
+      $items[$menu_path] = array(
+        'page callback' => 'restws_page_callback',
+        'page arguments' => array($resource),
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+      );
+    }
+    // Querying menu paths.
+    foreach (array_keys(restws_get_format_info()) as $format) {
+      // Resource base path URLs with the suffixes (e.g. node.json or user.xml)
+      // for querying.
+      if (isset($items["$menu_path.$format"])) {
+        // Prepend the page callback and the resource to the page arguments.
+        if (!isset($items["$menu_path.$format"]['page arguments'])) {
+          $items["$menu_path.$format"]['page arguments'] = array();
+        }
+        array_unshift($items["$menu_path.$format"]['page arguments'], $resource, $items["$menu_path.$format"]['page callback']);
+        $items["$menu_path.$format"]['page callback'] = 'restws_page_callback';
+
+      }
+      else {
+        $items["$menu_path.$format"] = array(
+          'page callback' => 'restws_page_callback',
+          'page arguments' => array($resource),
+          'access callback' => TRUE,
+          'type' => MENU_CALLBACK,
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Menu page callback.
+ */
+function restws_page_callback($resource, $page_callback = NULL) {
+  $id_arg = arg(1);
+  $resource_arg = arg(0);
+  $format = FALSE;
+  $id = NULL;
+  // Check for an appended .format string on GET requests only to avoid CSRF
+  // attacks on POST requests.
+  if ($_SERVER['REQUEST_METHOD'] == 'GET' && ($pos = strpos($id_arg, '.')) && $format_name = substr($id_arg, $pos + 1)) {
+    $id = substr($id_arg, 0, $pos);
+    $format = restws_format($format_name);
+  }
+  elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && ($pos = strpos($resource_arg, '.')) && $format_name = substr($resource_arg, $pos + 1)) {
+    $format = restws_format($format_name);
+  }
+  else {
+    $id = $id_arg;
+    switch ($_SERVER['REQUEST_METHOD']) {
+      case 'POST':
+      case 'PUT':
+        // Get format MIME type form HTTP Content type header.
+        $parts = explode(';', $_SERVER['CONTENT_TYPE'], 2);
+        $format = restws_format_mimetype($parts[0]);
+        break;
+
+      case 'DELETE':
+        if (isset($_SERVER['HTTP_ACCEPT'])) {
+          $parts = explode(',', $_SERVER['HTTP_ACCEPT'], 2);
+          $format = restws_format_mimetype($parts[0]);
+        }
+        if (!$format) {
+          // We don't care about the format, just pick JSON.
+          $format = restws_format('json');
+        }
+        break;
+
+      default:
+        // Get the format MIME type form the HTTP Accept header.
+        // Ignore requests from web browsers that accept HTML.
+        if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'html') === FALSE) {
+          // Use the first MIME type.
+          $parts = explode(',', $_SERVER['HTTP_ACCEPT'], 2);
+          $format = restws_format_mimetype($parts[0]);
+        }
+    }
+  }
+  if ($format) {
+    switch ($_SERVER['REQUEST_METHOD']) {
+      case 'POST':
+        $op = 'create';
+        break;
+
+      case 'PUT':
+        $op = 'update';
+        break;
+
+      case 'DELETE':
+        $op = 'delete';
+        break;
+
+      default:
+        if (!empty($id)) {
+          $op = 'view';
+        }
+        else {
+          $op  = 'query';
+        }
+    }
+
+    // CSRF protection on write operations.
+    if (!in_array($_SERVER['REQUEST_METHOD'], array('GET', 'HEAD', 'OPTIONS', 'TRACE')) && !restws_csrf_validation()) {
+      echo '403 Access Denied: CSRF validation failed';
+      drupal_add_http_header('Status', '403 Forbidden');
+      drupal_page_footer();
+      exit;
+    }
+
+    $payload = file_get_contents('php://input');
+    if ($file = variable_get('restws_debug_log')) {
+      $log = date(DATE_ISO8601) . "\n";
+      $log .= 'Resource: ' . $resource . "\n";
+      $log .= 'Operation: ' . $op . "\n";
+      $log .= 'Format: ' . $format->mimeType() . "\n";
+      $log .= 'Id: ' . $id . "\n";
+      $log .= 'Payload: ' . $payload . "\n";
+      $log .= "----------------------------------------------------------------\n";
+      file_put_contents($file, $log, FILE_APPEND);
+    }
+    restws_handle_request($op, $format, $resource, $id, $payload);
+  }
+
+  // @todo: Determine human readable URIs and redirect, if there is no
+  // page callback.
+  if (isset($page_callback)) {
+    // Further page callback arguments have been appended to our arguments.
+    $args = func_get_args();
+    return call_user_func_array($page_callback, array_slice($args, 2));
+  }
+  echo '404 Not Found';
+  drupal_add_http_header('Status', '404 Not Found');
+  drupal_page_footer();
+  exit;
+}
+
+/**
+ * Returns the URI used for the given resource.
+ *
+ * @param string $resource
+ *   The resource for which the URI should be returned.
+ * @param int $id
+ *   The resource ID or NULL if only the base path should be returned.
+ * @param array $options
+ *   Optional array that is passed to url().
+ */
+function restws_resource_uri($resource, $id = NULL, array $options = array()) {
+  $info = restws_get_resource_info($resource);
+  $basepath = isset($info['menu_path']) ? $info['menu_path'] : $resource;
+  $sub_path = isset($id) ? "/$id" : '';
+
+  // Avoid having the URLs aliased.
+  $base_options = array('absolute' => TRUE, 'alias' => TRUE);
+  $options += $base_options;
+
+  return url($basepath . $sub_path, $options);
+}
+
+/**
+ * Returns the format instance for a given MIME type.
+ *
+ * @param string $mime
+ *   The MIME type, e.g. 'application/json' or 'application/xml'.
+ *
+ * @return bool|RestWSFormatInterface
+ *   The format controller or FALSE if the format was not found.
+ */
+function restws_format_mimetype($mime) {
+  foreach (restws_get_format_info() as $format_name => $info) {
+    if ($info['mime type'] == $mime) {
+      return restws_format($format_name);
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function restws_permission() {
+  $permissions = array();
+  // Create service access permissions per resource type.
+  foreach (restws_get_resource_info() as $type => $info) {
+    $permissions['access resource ' . $type] = array(
+      'title' => t('Access the resource %resource', array('%resource' => $type)),
+    );
+  }
+  return $permissions;
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function restws_module_implements_alter(&$implementations, $hook) {
+  // Make sure that restws runs last.
+  if ($hook == 'menu_alter') {
+    $group = $implementations['restws'];
+    unset($implementations['restws']);
+    $implementations['restws'] = $group;
+  }
+}
+
+/**
+ * Return all available meta controls.
+ */
+function restws_meta_controls() {
+  return array(
+    'sort' => 'sort',
+    'direction' => 'direction',
+    'page' => 'page',
+    'limit' => 'limit',
+    'full' => 'full',
+  );
+}
+
+/**
+ * Ensures that a request with cookies has the required CSRF header set.
+ *
+ * @return bool
+ *   TRUE if the request passed the CSRF protection, FALSE otherwise.
+ */
+function restws_csrf_validation() {
+  // This check only applies if the user was successfully authenticated and the
+  // request comes with a session cookie.
+  if (user_is_logged_in() && !empty($_COOKIE[session_name()])) {
+    return isset($_SERVER['HTTP_X_CSRF_TOKEN']) && drupal_valid_token($_SERVER['HTTP_X_CSRF_TOKEN'], 'restws');
+  }
+  return TRUE;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function restws_menu() {
+  $items['restws/session/token'] = array(
+    'page callback' => 'restws_session_token',
+    // Only authenticated users are allowed to retrieve a session token.
+    'access callback' => 'user_is_logged_in',
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Page callback: returns a session token for the currently active user.
+ */
+function restws_session_token() {
+  drupal_add_http_header('Content-Type', 'text/plain');
+  print drupal_get_token('restws');
+  drupal_exit();
+}

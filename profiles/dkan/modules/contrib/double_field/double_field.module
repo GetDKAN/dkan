@@ -1,0 +1,1128 @@
+<?php
+
+/**
+ * @file
+ * Defines "Double field" field type.
+ *
+ * @TODO: Split admin functions into their own file.
+ */
+
+/**
+ * Implements hook_hook_info().
+ *
+ * hook_hook_info() doesn't work for field related hooks.
+ * See http://drupal.org/node/977052
+ */
+function double_field_hook_info() {
+  $hooks['field_feeds_processor_targets_alter'] = array(
+    'group' => 'feeds',
+  );
+  return $hooks;
+}
+
+/**
+ * Alter the property info of double field subfields.
+ */
+function double_field_property_callback(&$info, $entity_type, $field, $instance, $field_type) {
+  $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$field['field_name']];
+  $property['getter callback'] = 'entity_metadata_field_verbatim_get';
+  $property['setter callback'] = 'entity_metadata_field_verbatim_set';
+
+  foreach (array('first', 'second') as $subfield) {
+    $property['property info'][$subfield] = array(
+      'label' => $subfield == 'first' ? t('First subfield') : t('Second subfield'),
+      'setter callback' => 'entity_property_verbatim_set',
+    );
+
+    switch ($field['settings'][$subfield]['type']) {
+      case 'varchar':
+      case 'text':
+        $property['property info'][$subfield]['type'] = 'text';
+        break;
+
+      case 'int':
+        $property['property info'][$subfield]['type'] = 'integer';
+        break;
+
+      case 'float':
+      case 'decimal':
+        $property['property info'][$subfield]['type'] = 'decimal';
+        break;
+
+    }
+  }
+  unset($property['query callback']);
+}
+
+/**
+ * Implements hook_field_info().
+ */
+function double_field_field_info() {
+  foreach (array('first', 'second') as $subfield) {
+    $settings[$subfield] = array(
+      'type' => 'varchar',
+      'maxlength' => 255,
+      'size' => 'normal',
+      'precision' => 10,
+      'scale' => 2,
+    );
+  }
+  return array(
+    'double_field' => array(
+      'label' => t('Double field'),
+      'description' => t('Double text field'),
+      'default_widget' => 'double_field',
+      'default_formatter' => 'double_field_unformatted_list',
+      'settings' => $settings,
+      // Integrate with the Entity Metadata module.
+      'property_type' => 'double_field',
+      'property_callbacks' => array('double_field_property_callback'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_settings_form().
+ */
+function double_field_field_settings_form($field, $instance, $has_data) {
+  $settings = $field['settings'];
+
+  $type_options = array(
+    'varchar' => t('Varchar'),
+    'text' => t('Text'),
+    'int' => t('Integer'),
+    'float' => t('Float'),
+    'decimal' => t('Decimal'),
+  );
+
+  $size_options = array(
+    'tiny' => t('Tiny'),
+    'small' => t('Small'),
+    'medium' => t('Medium'),
+    'normal' => t('Normal'),
+    'big' => t('Big'),
+  );
+
+  foreach (array('first', 'second') as $subfield) {
+    $form[$subfield] = array(
+      '#type' => 'fieldset',
+      '#title' => $subfield == 'first' ? t('First subfield') : t('Second subfield'),
+      '#collapsible' => TRUE,
+    );
+    $form[$subfield]['type'] = array(
+      '#type' => 'select',
+      '#title' => t('Field type'),
+      '#default_value' => $settings[$subfield]['type'],
+      '#required' => TRUE,
+      '#options' => $type_options ,
+      '#disabled' => $has_data,
+    );
+    $form[$subfield]['maxlength'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum length'),
+      '#default_value' => $settings[$subfield]['maxlength'],
+      '#required' => TRUE,
+      '#description' => t('The maximum length of the subfield in characters.'),
+      '#element_validate' => array('element_validate_integer_positive'),
+      '#disabled' => $has_data,
+      '#size' => 10,
+      '#states' => array(
+        'visible' => array(":input[name='field[settings][$subfield][type]']" => array('value' => 'varchar')),
+      ),
+    );
+    $form[$subfield]['size'] = array(
+      '#type' => 'select',
+      '#title' => t('Size'),
+      '#default_value' => $settings[$subfield]['size'],
+      '#required' => TRUE,
+      '#options' => $size_options,
+      '#disabled' => $has_data,
+      '#states' => array(
+        'visible' => array(
+          ":input[name='field[settings][$subfield][type]']" => array(
+            array('value' => 'int'),
+            array('value' => 'float'),
+          ),
+        ),
+      ),
+    );
+    $form[$subfield]['precision'] = array(
+      '#type' => 'select',
+      '#title' => t('Precision'),
+      '#options' => drupal_map_assoc(range(10, 32)),
+      '#default_value' => $settings[$subfield]['precision'],
+      '#description' => t('The total number of digits to store in the database, including those to the right of the decimal.'),
+      '#disabled' => $has_data,
+      '#states' => array(
+        'visible' => array(":input[name='field[settings][$subfield][type]']" => array('value' => 'decimal')),
+      ),
+    );
+    $form[$subfield]['scale'] = array(
+      '#type' => 'select',
+      '#title' => t('Scale'),
+      '#options' => drupal_map_assoc(range(0, 10)),
+      '#default_value' => $settings[$subfield]['scale'],
+      '#description' => t('The number of digits to the right of the decimal.'),
+      '#disabled' => $has_data,
+      '#states' => array(
+        'visible' => array(":input[name='field[settings][$subfield][type]']" => array('value' => 'decimal')),
+      ),
+    );
+  }
+  return $form;
+}
+
+/**
+ * Implements hook_field_is_empty().
+ *
+ * @see http://drupal.org/node/1489484
+ */
+function double_field_field_is_empty($item, $field) {
+  // Checkbox has own "off value" but there are not any ways to get it.
+  return $item['first'] === '' && $item['second'] === '';
+}
+
+/**
+ * Implements hook_field_validate().
+ */
+function double_field_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
+
+  // Validate numeric subfield types.
+  $overflow_error = array(
+    'error' => 'double_field_out_of_range',
+    'message' => t('%name field value is out of range.', array('%name' => $instance['label'])),
+    'error_element' => array('first' => FALSE, 'second' => FALSE),
+  );
+
+  // This validation is performed after submit the widget configuration
+  // form. Avoid validations here related to required items to be able to
+  // submit an empy field.
+  // We also should not validate widgets provided by other modules.
+  if (!isset($entity) || $instance['widget']['module'] != 'double_field') {
+    return;
+  }
+
+  $settings = $instance['widget']['settings'];
+  $required_error = array(
+    'error' => 'double_field_required',
+    'message' => t('%name field is required.', array('%name' => $instance['label'])),
+    'error_element' => array('first' => FALSE, 'second' => FALSE),
+  );
+
+  $field_is_empty = TRUE;
+  list($widget['first'], $widget['second']) = explode('_&_', $instance['widget']['type']);
+  foreach ($items as $delta => $item) {
+
+    // Checkboxes get value from widget settigns.
+    foreach (array('first', 'second') as $subfield) {
+      $item[$subfield] = ($widget[$subfield] == 'checkbox' && $item[$subfield] == $settings[$subfield]['checkbox']['off_value']) ? '' : $item[$subfield];
+    }
+
+    if ($item['first'] !== '' || $item['second'] !== '') {
+      $field_is_empty = FALSE;
+      $required_error['error_element']['first'] = $settings['first']['general']['required'] && $item['first'] === '';
+      $required_error['error_element']['second'] = $settings['second']['general']['required'] && $item['second'] === '';
+
+      if ($required_error['error_element']['first'] || $required_error['error_element']['second']) {
+        // Do not repeat the error message.
+        if (isset($errors[$field['field_name']][$langcode])) {
+          $required_error['message'] = FALSE;
+        }
+        $errors[$field['field_name']][$langcode][$delta][] = $required_error;
+      }
+    }
+
+  }
+
+  // If the instance is required we should mark only first required element.
+  if ($field_is_empty && $instance['required']) {
+
+    // If there are required subfields mark them as invalid.
+    if ($settings['first']['general']['required'] || $settings['second']['general']['required']) {
+      $required_error['error_element']['first'] = $settings['first']['general']['required'];
+      $required_error['error_element']['second'] = $settings['second']['general']['required'];
+    }
+    // Otherwise mark both subfields.
+    else {
+      $required_error['error_element']['first'] = $required_error['error_element']['second'] = TRUE;
+    }
+
+    $errors[$field['field_name']][$langcode][0][] = $required_error;
+  }
+
+}
+
+/**
+ * Ensure that the integer value is in a given range.
+ */
+function double_field_validate_integer_range($value, $size) {
+  $range = array(
+    'tiny' => 1,
+    'small' => 2,
+    'medium' => 3,
+    'normal' => 4,
+    'big' => 8,
+  );
+  $limit = pow(2, 8 * $range[$size] - 1);
+  return -$limit <= $value && $value < $limit;
+}
+
+/**
+ * Ensure that the decimal value is in a given range.
+ */
+function double_field_validate_decimal_range($value, $precision, $scale) {
+  return strlen(abs((int) $value)) <= $precision - $scale;
+}
+
+/**
+ * Form element validation handler for numeric elements.
+ */
+function double_field_validate_number($element, &$form_state) {
+  if ($element['#value']) {
+    $settings = $element['#subfield_settings'];
+    if ($settings['type'] == 'int' && !preg_match('/^-?\d+$/', $element['#value'])) {
+      form_error($element, t('%name must be an integer.', array('%name' => $element['#title'])));
+    }
+    elseif ($settings['type'] == 'int' && !double_field_validate_integer_range($element['#value'], $settings['size'])) {
+      form_error($element, t('%name out of range.', array('%name' => $element['#title'])));
+    }
+    elseif (($settings['type'] == 'float' || $settings['type'] == 'decimal') && !is_numeric($element['#value'])) {
+      form_error($element, t('%name must be a valid float or decimal.', array('%name' => $element['#title'])));
+    }
+    elseif ($settings['type'] == 'decimal' && !double_field_validate_decimal_range($element['#value'], $settings['precision'], $settings['scale'])) {
+      form_error($element, t('%name out of range.', array('%name' => $element['#title'])));
+    }
+  }
+}
+
+/**
+ * Implements hook_field_presave().
+ */
+function double_field_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  foreach ($items as $delta => $item) {
+    foreach (array('first', 'second') as $subfield) {
+      $type = $field['settings'][$subfield]['type'];
+      // For numeric subfield types we should convert empty string to NULL.
+      $is_numeric = in_array($type, array('int', 'float', 'decimal'));
+      if ($is_numeric && $item[$subfield] === '') {
+        $items[$delta][$subfield] = NULL;
+      }
+      // Let PHP round the value to ensure consistent behavior across
+      // different storage backends.
+      if ($type == 'decimal') {
+        $items[$delta][$subfield] = round($items[$delta][$subfield], $field['settings'][$subfield]['scale']);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_field_field_update_instance().
+ */
+function double_field_field_update_instance($instance, $prior_instance) {
+  // Update widget settings when widget type has been changed.
+  if ($instance['widget']['module'] == 'double_field' && $instance['widget']['type'] != $prior_instance['widget']['type']) {
+    $instance['widget']['settings'] = field_info_widget_settings($instance['widget']['type']);
+    field_update_instance($instance);
+  }
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function double_field_field_widget_info() {
+
+  $settings = array(
+    'general' => array(
+      'required' => TRUE,
+      'prefix' => '',
+      'suffix' => '',
+    ),
+    'textfield' => array(
+      'size' => 10,
+      'placeholder' => '',
+    ),
+    'checkbox' => array(
+      'on_value' => t('Ok'),
+      'off_value' => '',
+    ),
+    'select' => array(
+      'allowed_values' => array(),
+    ),
+    'textarea' => array(
+      'cols' => 10,
+      'rows' => 5,
+      'resizable' => TRUE,
+      'placeholder' => '',
+    ),
+  );
+
+  $weight = 0;
+  $subwidgets = double_field_get_subwidgets();
+  foreach ($subwidgets as $first_subwidget => $first_subwidget_label) {
+    foreach ($subwidgets as $second_subwidget => $second_subwidget_label) {
+      $widgets[$first_subwidget . '_&_' . $second_subwidget] = array(
+        'label' => $first_subwidget_label . ' & ' . $second_subwidget_label,
+        'field types' => array('double_field'),
+        'settings' => array(
+          'inline' => $first_subwidget != 'textarea' && $second_subwidget != 'textarea',
+          'first' => array(
+            'general' => $settings['general'],
+            $first_subwidget => $settings[$first_subwidget],
+          ),
+          'second' => array(
+            'general' => $settings['general'],
+            $second_subwidget => $settings[$second_subwidget],
+          ),
+        ),
+        'weight' => $weight++,
+      );
+    }
+  }
+  return $widgets;
+}
+
+/**
+ * Return all Double Field subwidgets.
+ */
+function double_field_get_subwidgets($subwidget = FALSE) {
+  $subwidgets = array(
+    'textfield' => t('Text field'),
+    'checkbox'  => t('Checkbox'),
+    'select'    => t('Select list'),
+    'textarea'  => t('Textarea'),
+  );
+  return $subwidget ? $subwidgets[$subwidget] : $subwidgets;
+}
+
+/**
+ * Implements hook_field_widget_settings_form().
+ */
+function double_field_field_widget_settings_form($field, $instance) {
+  $settings = $instance['widget']['settings'];
+
+  $form['inline'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display as inline element'),
+    '#default_value' => $settings['inline'],
+  );
+
+  $subfield_types = explode('_&_', $instance['widget']['type']);
+  foreach (array('first', 'second') as $key => $subfield) {
+    $form[$subfield] = array(
+      '#title' => ($subfield == 'first' ? t('First subfield') : t('Second subfield')) . ' (' . double_field_get_subwidgets($subfield_types[$key]) . ')',
+      '#type' => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+
+    switch ($subfield_types[$key]) {
+
+      case 'textfield':
+        $form[$subfield]['textfield']['size'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Size'),
+          '#default_value' => $settings[$subfield]['textfield']['size'],
+          '#element_validate' => array('element_validate_integer_positive'),
+          '#size' => 3,
+        );
+        $form[$subfield]['textfield']['placeholder'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Placeholder attribute'),
+          '#description' => t('Pre-filled value that serves as a hint for the user regarding what to type.'),
+          '#default_value' => $settings[$subfield]['textfield']['placeholder'],
+        );
+        break;
+
+      case 'checkbox':
+        $form[$subfield]['checkbox']['on_value'] = array(
+          '#type' => 'textfield',
+          '#title' => t('On value'),
+          '#default_value' => $settings[$subfield]['checkbox']['on_value'],
+          '#required' => TRUE,
+          '#subfield_settings' => $field['settings'][$subfield],
+          '#element_validate' => array('double_field_validate_number'),
+        );
+        $form[$subfield]['checkbox']['off_value'] = array(
+          // '#type' => 'textfield',
+          '#type' => 'hidden',
+          '#title' => t('Off value'),
+          '#default_value' => $settings[$subfield]['checkbox']['off_value'],
+          '#subfield_settings' => $field['settings'][$subfield],
+          // '#element_validate' => array('double_field_validate_number'),
+        );
+        if ($field['settings'][$subfield]['type'] == 'varchar') {
+          $form[$subfield]['checkbox']['on_value']['#maxlength'] = $field['settings'][$subfield]['maxlength'];
+        }
+        break;
+
+      case 'select':
+        // List is not a core required module.
+        module_load_include('module', 'list');
+        $form[$subfield]['select']['allowed_values'] = array(
+          '#type' => 'textarea',
+          '#subfield' => $subfield,
+          '#title' => t('Allowed values list'),
+          '#default_value' => list_allowed_values_string($settings[$subfield]['select']['allowed_values']),
+          '#element_validate' => array('double_field_allowed_values_setting_validate'),
+          '#subfield_settings' => $field['settings'][$subfield],
+        );
+        $form[$subfield]['select']['allowed_values']['#description'] = '<p>' . t('The possible values this field can contain. Enter one value per line, in the format key|label.');
+        $form[$subfield]['select']['allowed_values']['#description'] .= '<br/>' . t('The key is the stored value. The label will be used in displayed values and edit forms.');
+        $form[$subfield]['select']['allowed_values']['#description'] .= '<br/>' . t('The label is optional: if a line contains a single string, it will be used as key and label.') . '</p>';
+        break;
+
+      case 'textarea':
+        $form[$subfield]['textarea']['cols'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Columns'),
+          '#default_value' => $settings[$subfield]['textarea']['cols'],
+          '#element_validate' => array('element_validate_integer_positive'),
+          '#size' => 3,
+          '#description' => t('How many columns wide the textarea should be'),
+        );
+        $form[$subfield]['textarea']['rows'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Rows'),
+          '#default_value' => $settings[$subfield]['textarea']['rows'],
+          '#element_validate' => array('element_validate_integer_positive'),
+          '#size' => 3,
+          '#description' => t('How many rows high the textarea should be.'),
+        );
+        $form[$subfield]['textarea']['resizable'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Resizable'),
+          '#default_value' => $settings[$subfield]['textarea']['resizable'],
+          '#description' => t('Whether users should be allowed to resize the text area.'),
+        );
+        $form[$subfield]['textarea']['placeholder'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Placeholder attribute'),
+          '#description' => t('Pre-filled value that serves as a hint for the user regarding what to type.'),
+          '#default_value' => $settings[$subfield]['textarea']['placeholder'],
+        );
+        break;
+    }
+
+    $form[$subfield]['general'] = array(
+      '#title' => t('Common settings'),
+      '#type' => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+    $form[$subfield]['general']['required'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Required'),
+      '#default_value' => $settings[$subfield]['general']['required'],
+    );
+    $form[$subfield]['general']['prefix'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Prefix'),
+      '#default_value' => $settings[$subfield]['general']['prefix'],
+    );
+    $form[$subfield]['general']['suffix'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Suffix'),
+      '#default_value' => $settings[$subfield]['general']['suffix'],
+    );
+
+  }
+
+  return $form;
+}
+
+/**
+ * Element validate callback; check that the entered values are valid.
+ */
+function double_field_allowed_values_setting_validate($element, &$form_state) {
+
+  $settings = $form_state['values']['field']['settings'][$element['#subfield']];
+  $type = $settings['type'];
+  $values = list_extract_allowed_values($element['#value'], 'list_text', FALSE);
+  foreach ($values as $key => $value) {
+    if ($type == 'varchar' && drupal_strlen($key) > $settings['maxlength']) {
+      form_error($element, t('Allowed values list: each key must be a string at most !maxlength characters long.', array('!maxlength' => $settings['maxlength'])));
+      break;
+    }
+    elseif ($type == 'int' && !preg_match('/^-?\d+$/', $key)) {
+      form_error($element, t('Allowed values list: keys must be integers.'));
+      break;
+    }
+    elseif ($type == 'int' && !double_field_validate_integer_range($key, $settings['size'])) {
+      form_error($element, t('Allowed values list: keys out of range.'));
+      break;
+    }
+    elseif (($type == 'float' || $type == 'decimal') && !is_numeric($key)) {
+      form_error($element, t('Allowed values list: each key must be a valid integer or float.'));
+      break;
+    }
+    elseif ($type == 'decimal' && !double_field_validate_decimal_range($key, $settings['precision'], $settings['scale'])) {
+      form_error($element, t('Allowed values list: keys out of range.'));
+      break;
+    }
+  }
+  if (!is_array($values)) {
+    form_error($element, t('Allowed values list: invalid input.'));
+  }
+  form_set_value($element, $values, $form_state);
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function double_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+
+  $settings = $instance['widget']['settings'];
+  $subfield_types = explode('_&_', $instance['widget']['type']);
+  $double_field = array(
+    '#theme_wrappers' => array('container', 'form_element'),
+    '#attributes' => array('class' => array('double-field-elements')),
+  );
+
+  foreach (array('first', 'second') as $key => $subfield) {
+    $double_field[$subfield] = array(
+      '#type' => $subfield_types[$key],
+      '#prefix' => $settings[$subfield]['general']['prefix'],
+      '#suffix' => $settings[$subfield]['general']['suffix'],
+      '#default_value' => isset($items[$delta][$subfield]) ? $items[$delta][$subfield] : NULL,
+      '#title' => $instance['label'],
+      '#title_display' => 'invisible',
+      '#subfield_settings' => $field['settings'][$subfield],
+    );
+    $field_type = $field['settings'][$subfield]['type'];
+
+    // Avoid PDOException: String data, right truncated.
+    if ($field_type == 'varchar') {
+      $double_field[$subfield]['#maxlength'] = $field['settings'][$subfield]['maxlength'];
+    }
+    elseif ($field_type == 'int' || $field_type == 'float' || $field_type == 'decimal') {
+      $double_field[$subfield]['#element_validate'][] = 'double_field_validate_number';
+    }
+
+    switch ($subfield_types[$key]) {
+      case 'textfield':
+        $double_field[$subfield]['#size'] = $settings[$subfield]['textfield']['size'];
+        if ($settings[$subfield]['textfield']['placeholder']) {
+          $double_field[$subfield]['#attributes']['placeholder'] = $settings[$subfield]['textfield']['placeholder'];
+        }
+        break;
+
+      case 'checkbox':
+        $double_field[$subfield]['#element_validate'][] = 'double_field_checkbox_to_storage';
+        $double_field[$subfield]['#on_value'] = $settings[$subfield]['checkbox']['on_value'];
+        $double_field[$subfield]['#off_value'] = $settings[$subfield]['checkbox']['off_value'];
+        $double_field[$subfield]['#default_value'] = $double_field[$subfield]['#default_value'] == $double_field[$subfield]['#on_value'];
+        break;
+
+      case 'select':
+        $label = $settings[$subfield]['general']['required'] ? t('- Select a value -') : t('- None -');
+        $double_field[$subfield]['#options'] = array('' => $label) + $settings[$subfield]['select']['allowed_values'];
+        break;
+
+      case 'textarea':
+        $double_field[$subfield]['#cols'] = $settings[$subfield]['textarea']['cols'];
+        $double_field[$subfield]['#rows'] = $settings[$subfield]['textarea']['rows'];
+        $double_field[$subfield]['#resizable'] = $settings[$subfield]['textarea']['resizable'];
+        if ($settings[$subfield]['textarea']['placeholder']) {
+          $double_field[$subfield]['#attributes']['placeholder'] = $settings[$subfield]['textarea']['placeholder'];
+        }
+        break;
+    }
+  }
+
+  if ($settings['inline']) {
+    $double_field['#attributes']['class'][] = 'container-inline';
+  }
+
+  return $element + $double_field;
+}
+
+/**
+ * Transforms submitted checkbox values into field storage format.
+ */
+function double_field_checkbox_to_storage($element, &$form_state) {
+  $element['#value'] = $element['#value'] ? $element['#on_value'] : $element['#off_value'];
+  // Element value can be not numeric, so we need validate it.
+  double_field_validate_number($element, $form_state);
+  form_set_value($element, $element['#value'], $form_state);
+}
+
+/**
+ * Implements hook_field_widget_error().
+ */
+function double_field_field_widget_error($element, $error, $form, &$form_state) {
+  $display_message = TRUE;
+  foreach (array('first', 'second') as $subfield) {
+    if ($error['error_element'][$subfield]) {
+      form_error($element[$subfield], $display_message ? $error['message'] : '');
+      // Display the message only once.
+      $display_message = FALSE;
+    }
+  }
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function double_field_field_formatter_info() {
+  foreach (array('first', 'second') as $subfield) {
+    $settings[$subfield] = array(
+      // Hidden option especially useful to display data with views module.
+      'hidden' => 0,
+      'format' => '_none',
+      'prefix' => '',
+      'suffix' => '',
+    );
+  }
+  // Append non-breaking space to separate subfields.
+  $settings['first']['suffix'] = ':&nbsp;';
+
+  return array(
+    'double_field_unformatted_list' => array(
+      'label' => t('Unformatted list'),
+      'field types' => array('double_field'),
+      'settings' => $settings + array('style' => 'inline'),
+    ),
+    'double_field_html_list' => array(
+      'label' => t('HTML list'),
+      'field types' => array('double_field'),
+      'settings' => $settings + array('style' => 'inline', 'list_type' => 'ul'),
+    ),
+    'double_field_fieldset' => array(
+      'label' => t('Fieldset'),
+      'field types' => array('double_field'),
+      'settings' => $settings + array('collapsible' => TRUE, 'collapsed' => FALSE),
+    ),
+    'double_field_table' => array(
+      'label' => t('Table'),
+      'field types' => array('double_field'),
+      'settings' => $settings + array(
+        'table' => array(
+          'number_column' => FALSE,
+          'number_column_label' => '№',
+          'first' => array('column_label' => ''),
+          'second' => array('column_label' => ''),
+        ),
+      ),
+    ),
+    'double_field_accordion' => array(
+      'label' => t('Accordion'),
+      'field types' => array('double_field'),
+      'settings' => $settings,
+    ),
+    'double_field_tabs' => array(
+      'label' => t('Tabs'),
+      'field types' => array('double_field'),
+      'settings' => $settings,
+    ),
+    'double_field_dialog' => array(
+      'label' => t('Dialog'),
+      'field types' => array('double_field'),
+      'settings' => $settings,
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function double_field_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+
+  $settings = $instance['display'][$view_mode]['settings'];
+  $element = array('#tree' => TRUE);
+
+  $style_settings = array(
+    '#type' => 'select',
+    '#title' => t('Style'),
+    '#options' => array(
+      'inline' => t('Inline'),
+      'block' => t('Block'),
+      'link' => t('Link'),
+    ),
+    '#default_value' => isset($settings['style']) ? $settings['style'] : 'inline',
+  );
+
+  switch ($instance['display'][$view_mode]['type']) {
+    case 'double_field_fieldset':
+      $element['collapsible'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Collapsible'),
+        '#default_value' => $settings['collapsible'],
+      );
+      $element['collapsed'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Collapsed'),
+        '#default_value' => $settings['collapsed'],
+      );
+      break;
+
+    case 'double_field_unformatted_list':
+      $element['style'] = $style_settings;
+      break;
+
+    case 'double_field_html_list':
+      $element['style'] = $style_settings;
+      $element['list_type'] = array(
+        '#type' => 'radios',
+        '#title' => t('List type'),
+        '#options' => array('ul' => t('Unordered list'), 'ol' => t('Ordered list')),
+        '#default_value' => $settings['list_type'],
+      );
+      break;
+
+    case 'double_field_table':
+      $element['table'] = array(
+        '#title' => t('Table'),
+        '#type' => 'fieldset',
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+      $element['table']['number_column'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Enable row number column'),
+        '#default_value' => $settings['table']['number_column'],
+        '#attributes' => array('id' => 'number_column'),
+      );
+      $element['table']['number_column_label'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Number column label'),
+        '#size' => 30,
+        '#default_value' => $settings['table']['number_column_label'],
+        '#states' => array(
+          'visible' => array('#number_column' => array('checked' => TRUE)),
+        ),
+      );
+      foreach (array('first', 'second') as $subfield) {
+        $element['table'][$subfield]['column_label'] = array(
+          '#type' => 'textfield',
+          '#title' => $subfield == 'first' ? t('First column label') : t('Second column label'),
+          '#size' => 30,
+          '#default_value' => $settings['table'][$subfield]['column_label'],
+          '#tree' => TRUE,
+        );
+      }
+      break;
+  }
+
+  // Get a list of formats.
+  $options['_none'] = t('- None -');
+  foreach (filter_formats() as $format) {
+    $options[$format->format] = $format->name;
+  }
+
+  // Common settings.
+  foreach (array('first', 'second') as $subfield) {
+    $element[$subfield] = array(
+      '#title' => $subfield == 'first' ? t('First subfield') : t('Second subfield'),
+      '#type' => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+    $element[$subfield]['hidden'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Hidden'),
+      '#default_value' => $settings[$subfield]['hidden'],
+    );
+    $element[$subfield]['format'] = array(
+      '#type' => 'select',
+      '#title' => t('Text format'),
+      '#options' => $options,
+      '#default_value' => $settings[$subfield]['format'],
+      '#description' => t('Warning: This setting may have security implications.'),
+      '#element_validate' => array('double_field_format_validate'),
+    );
+    $element[$subfield]['prefix'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Prefix'),
+      '#size' => 30,
+      '#default_value' => $settings[$subfield]['prefix'],
+    );
+    $element[$subfield]['suffix'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Suffix'),
+      '#size' => 30,
+      '#default_value' => $settings[$subfield]['suffix'],
+    );
+  }
+  return $element;
+}
+
+/**
+ * Element validate callback.
+ */
+function double_field_format_validate($element, &$form_state, $form) {
+  if ($element['#value'] == 'full_html') {
+    drupal_set_message(t('Using the "Full HTML" format allows HTML to be posted unfiltered. This could represent a severe security risk.<br/>See !link for further information.', array('!link' => '<a href="http://drupal.org/documentation/modules/filter">http://drupal.org/documentation/modules/filter</a>')), 'warning', FALSE);
+  }
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function double_field_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $settings = $instance['display'][$view_mode]['settings'];
+  $type = $instance['display'][$view_mode]['type'];
+
+  $summary = array();
+  switch ($type) {
+
+    case 'double_field_fieldset':
+      $summary[] = t('Collapsible: %value', array('%value' => $settings['collapsible'] ? 'Yes' : 'No'));
+      $summary[] = t('Collapsed: %value', array('%value' => $settings['collapsed'] ? 'Yes' : 'No'));
+      break;
+
+    case 'double_field_unformatted_list':
+    case 'double_field_html_list':
+      $display_styles = array(
+        'inline' => t('Inline'),
+        'block' => t('Block'),
+        'link' => t('Link'),
+      );
+      $summary[] = t('Display style: %value', array('%value' => $display_styles[$settings['style']]));
+      if ($type == 'double_field_html_list') {
+        $summary[] = t('List type: %value', array('%value' => $settings['list_type'] == 'ul' ? t('Unordered') : t('Ordered')));
+      }
+      break;
+
+    case 'double_field_table':
+      $summary[] = t('Row number column: %value', array('%value' => $settings['table']['number_column'] ? 'Yes' : 'No'));
+      if ($settings['table']['first']['column_label']) {
+        $summary[] = t('First column label: %value', array('%value' => $settings['table']['first']['column_label']));
+      }
+      if ($settings['table']['second']['column_label']) {
+        $summary[] = t('Second column label: %value', array('%value' => $settings['table']['second']['column_label']));
+      }
+      break;
+
+  }
+
+  $filter_formats = filter_formats();
+  // Summary of general settings.
+  foreach (array('first', 'second') as $subfield) {
+    $summary[] = '<br/><strong>' . ($subfield == 'first' ? t('First subfield') : t('Second subfield')) . '</strong>';
+    $summary[] = t('Hidden: %value', array('%value' => $settings[$subfield]['hidden'] ? t('Yes') : t('No')));
+    $format = isset($filter_formats[$settings[$subfield]['format']]) ? $filter_formats[$settings[$subfield]['format']]->name : '';
+    $format_color = $settings[$subfield]['format'] == 'full_html' ? 'red' : 'auto';
+    if ($format) {
+      $summary[] = '<span style="color: ' . $format_color . '">' . t('Format: %value', array('%value' => $format)) . '</span>';
+    }
+    if ($settings[$subfield]['prefix']) {
+      $summary[] = t('Prefix: %value', array('%value' => $settings[$subfield]['prefix']));
+    }
+    if ($settings[$subfield]['suffix']) {
+      $summary[] = t('Suffix: %value', array('%value' => $settings[$subfield]['suffix']));
+    }
+  }
+
+  return implode('<br/>', $summary);
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function double_field_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+
+  if (!$items) {
+    return;
+  }
+
+  $settings = $display['settings'];
+  $element = array();
+
+  foreach ($items as $delta => $item) {
+    foreach (array('first', 'second') as $subfield) {
+      if ($settings[$subfield]['hidden']) {
+        $item[$subfield] = FALSE;
+      }
+      else {
+        // Show value pair of allowed values on instead of their key value.
+        if (isset($instance['widget']['settings'][$subfield]['select']['allowed_values'])) {
+          $allowed_values = $instance['widget']['settings'][$subfield]['select']['allowed_values'];
+          $item[$subfield] = empty($allowed_values[$item[$subfield]]) ?
+          $item[$subfield] : $allowed_values[$item[$subfield]];
+        }
+        $item[$subfield] = $settings[$subfield]['format'] == '_none' ?
+        check_plain($item[$subfield]) : check_markup($item[$subfield], $settings[$subfield]['format']);
+
+        // Do not display prefix and suffix for empty subfields.
+        if ($item[$subfield] != '') {
+          $item[$subfield] = $settings[$subfield]['prefix'] . $item[$subfield] . $settings[$subfield]['suffix'];
+        }
+      }
+    }
+    $items[$delta] = $item;
+  }
+
+  switch ($display['type']) {
+
+    case 'double_field_fieldset':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array(
+          '#title' => $item['first'],
+          '#value' => $item['second'],
+          '#theme' => 'fieldset',
+          '#collapsible' => $settings['collapsible'],
+          '#collapsed' => $settings['collapsed'],
+        );
+        // theme_fieldset() doesn't handle '#collapsible'
+        // and  '#collapsed' arguments as claimed.
+        // see http://drupal.org/node/1099132
+        if ($settings['collapsible']) {
+          $element[$delta]['#attached'] = array(
+            'js' => array(
+              'misc/form.js',
+              'misc/collapse.js',
+            ),
+          );
+          $element[$delta]['#attributes'] = array(
+            'class' => $settings['collapsed'] ? array('collapsible', 'collapsed') : array('collapsible'),
+          );
+        }
+      }
+      break;
+
+    case 'double_field_unformatted_list':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array(
+          '#display' => $display,
+          '#item' => $item,
+          '#theme' => 'double_field',
+        );
+      }
+      break;
+
+    case 'double_field_html_list':
+      foreach ($items as $item) {
+        $list_items[] = theme('double_field', array(
+          '#display' => $display,
+          '#item' => $item,
+          '#theme' => 'double_field',
+        ));
+      }
+      $element[0] = array(
+        '#theme' => 'item_list',
+        '#type' => $settings['list_type'],
+        '#items' => $list_items,
+      );
+      break;
+
+    case 'double_field_table':
+      foreach ($items as $delta => $item) {
+        $row = array();
+        if ($settings['table']['number_column']) {
+          $row[] = ++$delta;
+        }
+        $row[] = $item['first'];
+        $row[] = $item['second'];
+        $rows[] = $row;
+      }
+      $header = array();
+      if ($settings['table']['first']['column_label'] || $settings['table']['second']['column_label']) {
+        if ($settings['table']['number_column']) {
+          $header[] = $settings['table']['number_column_label'];
+        }
+        $header[] = $settings['table']['first']['column_label'];
+        $header[] = $settings['table']['second']['column_label'];
+      }
+
+      // Display all values in a single element.
+      $element[0] = array(
+        '#theme' => 'table',
+        '#rows' => $rows,
+        '#header' => $header,
+      );
+      break;
+
+    case 'double_field_accordion':
+    case 'double_field_tabs':
+    case 'double_field_dialog':
+      $element[0] = array(
+        '#theme' => $display['type'],
+        '#items' => $items,
+      );
+      break;
+
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function double_field_theme() {
+  return array(
+    'double_field'           => array('render element' => 'element'),
+    'double_field_accordion' => array('render element' => 'element'),
+    'double_field_tabs'      => array('render element' => 'element'),
+    'double_field_dialog'    => array('render element' => 'element'),
+  );
+}
+
+/**
+ * Implements theme_double_field().
+ */
+function theme_double_field($vars) {
+  $element = $vars['element'];
+  $settings = $element['#display']['settings'];
+
+  if ($settings['style'] == 'link') {
+    $output = l($element['#item']['first'], $element['#item']['second']);
+  }
+  else {
+    $class = $settings['style'] == 'block' ? 'clearfix' : 'container-inline';
+    $output = '<div class="' . $class . '">';
+    $output .= '<div class="double-field-first">' . $element['#item']['first'] . '</div>';
+    $output .= '<div class="double-field-second">' . $element['#item']['second'] . '</div>';
+    $output .= '</div>';
+  }
+  return $output;
+}
+
+/**
+ * Implements theme_double_field_accordion().
+ */
+function theme_double_field_accordion($vars) {
+  drupal_add_library('system', 'ui.accordion');
+  drupal_add_js('jQuery(document).ready(function(){jQuery(".double-field-accordion").accordion({ collapsible: true, active: false });});', 'inline');
+  $output = '<div class="double-field-accordion">';
+  foreach ($vars['element']['#items'] as $item) {
+    $output .= '<h3><a href="#">' . $item['first'] . '</a></h3>';
+    $output .= '<div>' . $item['second'] . '</div>';
+  }
+  $output .= '</div>';
+  return $output;
+}
+
+/**
+ * Implements theme_double_field_tabs().
+ */
+function theme_double_field_tabs($vars) {
+  // Ensure that each passed HTML ID value only exists once on the page.
+  static $instance = 0;
+  $instance++;
+
+  drupal_add_library('system', 'ui.tabs');
+  drupal_add_js('jQuery(document).ready(function(){jQuery(".double-field-tabs").tabs();});', 'inline');
+  $output = '';
+  foreach ($vars['element']['#items'] as $delta => $item) {
+    $id = 'tabs-' . $instance . '-' . $delta;
+    $vars['items'][] = '<a href="#' . $id . '">' . $item['first'] . '</a>';
+    $output .= '<div id="' . $id . '">' . $item['second'] . '</div>';
+  }
+  $output = '<div class="double-field-tabs">' . theme('item_list', $vars) . $output . '</div>';
+  return $output;
+}
+
+/**
+ * Implements theme_double_field_dialog().
+ */
+function theme_double_field_dialog($vars) {
+  drupal_add_library('system', 'ui.dialog');
+  drupal_add_js('jQuery(document).ready(function(){jQuery(".double-field-dialog").dialog();});', 'inline');
+  $output = '';
+  foreach (array_reverse($vars['element']['#items']) as $delta => $item) {
+    $output .= '<div class="double-field-dialog" title="' . $item['first'] . '">' . $item['second'] . '</div>';
+  }
+  return $output;
+}

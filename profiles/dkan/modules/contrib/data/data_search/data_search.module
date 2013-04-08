@@ -1,0 +1,195 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function data_search_menu() {
+  $items = array();
+  $items['admin/structure/data/edit/%data_ui_table/search'] = array(
+    'title' => 'Configure search',
+    'description' => 'Administer data tables.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_search_admin_form', 4),
+    'file' => 'data_search.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function data_search_theme() {
+  return array(
+    'data_search_admin_form' => array(
+      'render element' => 'form',
+    ),
+  );
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Wipe all orphaned search records.
+ *
+ * @todo: Move clean up of deleted records into DataHandler::delete() once there
+ * is a build query > alter query > execute query pattern implemented.
+ */
+function data_search_cron() {
+  $tables = data_search_get_tables();
+
+  foreach ($tables as $table) {
+    data_search_wipe($table);
+  }
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function data_search_views_data_alter(&$data) {
+  $tables = data_search_get_tables();
+  foreach ($tables as $table) {
+    $name = $table->get('name');
+    $schema = $table->get('table_schema');
+    $base_field = current($schema['primary key']);
+
+    // Explain how the search index joins to data tables.
+    $data['search_index']['table']['join'][$name] = array(
+      'left_field' => $base_field,
+      'field' => 'sid',
+    );
+    $data['search_dataset']['table']['join'][$name] = array(
+      'left_table' => 'search_index',
+      'left_field' => 'sid',
+      'field' => 'sid',
+      'extra' => 'search_index.type = search_dataset.type',
+      'type' => 'INNER',
+    );
+  }
+}
+
+/**
+ * Implements hook_update_index().
+ */
+function data_search_update_index() {
+  $limit = (int) variable_get('search_cron_limit', 100);
+
+  $tables = data_search_get_tables();
+  foreach ($tables as $table) {
+    $name = $table->get('name');
+    $schema = $table->get('table_schema');
+
+    $fields = data_search_get_fields($table);
+    $fields = implode(', ', $fields);
+    $base_field = current($schema['primary key']);
+
+    // TODO Please convert this statement to the D7 database API syntax.
+    $result = db_query_range("SELECT dt.{$base_field} id FROM {{$name}} dt LEFT JOIN {search_dataset} d ON d.type = '{$name}' AND d.sid = dt.{$base_field} WHERE d.sid IS NULL OR d.reindex <> 0 ORDER BY d.reindex ASC, dt.{$base_field} ASC");
+
+    while ($row = db_fetch_object($result)) {
+      // TODO Please convert this statement to the D7 database API syntax.
+      $values = db_fetch_array(db_query("SELECT {$fields} FROM {{$name}} WHERE {$base_field} = '%s'", $row->id));
+      $fulltext = '';
+      foreach ($values as $field => $value) {
+        $fulltext .= "{$value}\n\n";
+      }
+      search_index($row->id, $name, $fulltext);
+    }
+    // Delete orphaned data search records, no nodeapi to take care of this as it occurs.
+    // TODO Please convert this statement to the D7 database API syntax.
+    db_query("DELETE sd, si, snl FROM {search_dataset} sd LEFT JOIN {{$name}} dt ON sd.type = '{$name}' AND sd.sid = dt.{$base_field} LEFT JOIN {search_index} si ON sd.sid = si.sid AND sd.type = si.type LEFT JOIN {search_node_links} snl ON sd.sid = snl.sid AND sd.type = snl.type WHERE dt.{$base_field} IS NULL");
+  }
+}
+
+/**
+ * Implements hook_search().
+ */
+function data_search_search($op = 'search', $keys = NULL) {
+  switch ($op) {
+    case 'name':
+      return t('Data');
+
+    case 'reset':
+      $tables = data_search_get_tables();
+      foreach ($tables as $table) {
+        $name = $table->get('name');
+        // TODO Please review the conversion of this statement to the D7 database API syntax.
+        /* db_query("UPDATE {search_dataset} SET reindex = %d WHERE type = '%s'", REQUEST_TIME, $name) */
+        db_update('search_dataset')
+  ->fields(array(
+    'reindex' => REQUEST_TIME,
+  ))
+  ->condition('type', $name)
+  ->execute();
+      }
+      return;
+
+    case 'status':
+      $total = $remaining = 0;
+      $tables = data_search_get_tables();
+      foreach ($tables as $table) {
+        $name = $table->get('name');
+        $schema = $table->get('table_schema');
+        $base_field = current($schema['primary key']);
+
+        // TODO Please convert this statement to the D7 database API syntax.
+        $total = $total + db_query("SELECT COUNT(*) FROM {{$name}}")->fetchField();
+        // TODO Please convert this statement to the D7 database API syntax.
+        $remaining = $remaining + db_query("SELECT COUNT(*) FROM {{$name}} dt LEFT JOIN {search_dataset} d ON d.type = '{$name}' AND d.sid = dt.{$base_field} WHERE (d.sid IS NULL OR d.reindex <> 0)")->fetchField();
+      }
+      return array('remaining' => $remaining, 'total' => $total);
+  }
+}
+
+/**
+ * Wipe all orphaned entries for given Data table. Use instead of search_wipe()
+ * if all items that have been deleted from table $table should be wiped. In
+ * this case, data_search_wipe() is faster than search_wipe().
+ *
+ * Note: Like search_wipe(), this function does not reset the word counts in
+ * search_total.
+ *
+ * @param $table
+ *   DataTable object.
+ */
+function data_search_wipe($table) {
+  $schema = $table->get('table_schema');
+  $name = db_escape_table($table->get('name'));
+  $field = db_escape_string(current($schema['primary key']));
+
+  // TODO Please convert this statement to the D7 database API syntax.
+  db_query("DELETE s FROM {search_dataset} s LEFT JOIN {{$name}} t ON s.sid = t.$field WHERE s.type = '%s' AND t.$field IS NULL", $table->get('name'));
+  // TODO Please convert this statement to the D7 database API syntax.
+  db_query("DELETE s FROM {search_index} s LEFT JOIN {{$name}} t ON s.sid = t.$field WHERE s.type = '%s' AND t.$field IS NULL", $table->get('name'));
+}
+
+/**
+ * Gather all tables which might be eligible for searching.
+ */
+function data_search_get_tables() {
+  $tables = array();
+  foreach (data_get_all_tables() as $table) {
+    $schema = $table->get('table_schema');
+    $fields = data_search_get_fields($table);
+    if (isset($schema['primary key']) && count($schema['primary key']) >= 1 && !empty($fields)) {
+      $tables[] = $table;
+    }
+  }
+  return $tables;
+}
+
+/**
+ * Gather all fields for a particular table which should be added to the search index.
+ */
+function data_search_get_fields($table) {
+  $fields = array();
+  $schema = $table->get('table_schema');
+  $meta = $table->get('meta');
+  foreach (array_keys($schema['fields']) as $field_name) {
+    if (!empty($meta['fields'][$field_name]['search'])) {
+      $fields[] = $field_name;
+    }
+  }
+  return $fields;
+}

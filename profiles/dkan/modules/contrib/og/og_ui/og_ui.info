@@ -1,0 +1,24 @@
+name = Organic groups UI
+description = "Organic groups UI."
+package = "Organic groups"
+dependencies[] = og
+dependencies[] = views_bulk_operations
+core = 7.x
+version = VERSION
+files[] = og_ui.test
+configure = admin/config/group
+
+; Views handlers
+files[] = includes/views/handlers/og_ui_handler_area_og_membership_overview.inc
+
+; Migrate
+files[] = includes/migrate/7000/add_field.inc
+files[] = includes/migrate/7000/populate_field.inc
+files[] = includes/migrate/7000/set_roles.inc
+
+; Information added by drupal.org packaging script on 2013-04-04
+version = "7.x-2.1+13-dev"
+core = "7.x"
+project = "og"
+datestamp = "1365082705"
+

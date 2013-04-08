@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the search_api_ajax module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function search_api_ajax_uninstall() {
+  variable_del('search_api_ajax_pages');
+  variable_del('search_api_ajax_visibility');
+}

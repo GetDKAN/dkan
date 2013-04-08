@@ -1,0 +1,107 @@
+<?php
+
+/**
+ * @file
+ * Implements the necessary hooks for the editor to work properly.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function bueditor_menu() {
+  $items = array();
+  $path = 'admin/config/content/bueditor';
+  $common = array(
+    'access arguments' => array('administer bueditor'),
+    'file' => 'admin/bueditor.admin.inc',
+  );
+  $form = array(
+    'page callback' => 'drupal_get_form',
+    'type' => MENU_VISIBLE_IN_BREADCRUMB,
+  ) + $common;
+  $items[$path] = $common + array(
+    'title' => 'BUEditor',
+    'description' => 'Customize your text editor.',
+    'page callback' => 'bueditor_admin',
+  );
+  $items[$path . '/new'] = $form + array(
+    'title' => 'Add new editor',
+    'page arguments' => array('bueditor_editor_form'),
+  );
+  $items[$path . '/import'] = $form + array(
+    'title' => 'Import editor',
+    'page arguments' => array('bueditor_editor_import_form'),
+  );
+  $items[$path . '/%bueditor_editor'] = $form + array(
+    'title' => 'Editor settings',
+    'page arguments' => array('bueditor_editor_form', 4),
+  );
+  $items[$path . '/%bueditor_editor/delete'] = $form + array(
+    'title' => 'Delete editor',
+    'page arguments' => array('bueditor_delete_form', 4),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function bueditor_permission() {
+  return array(
+    'administer bueditor' => array(
+      'title' => t('Administer BUEditor'),
+      'restrict access' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function bueditor_theme() {
+  $theme['bueditor_admin'] = array('function' => 'bueditor_admin_theme', 'render element' => 'form');
+  $theme['bueditor_editor'] = array('function' => 'bueditor_editor_theme', 'render element' => 'form');
+  return $theme;
+}
+
+/**
+ * Implements hook_element_info().
+ */
+function bueditor_element_info() {
+  $elements['textarea']['#process'] = array('bueditor_textarea');
+  return $elements;
+}
+
+/**
+ * Integrate the editor into a textarea element.
+ */
+function bueditor_textarea($element, $form_state) {
+  bueditor_inc();
+  return _bueditor_textarea($element, $form_state);
+}
+
+/**
+ * Include necessary js and css files for editor settlement.
+ */
+function bueditor_settle($editor) {
+  bueditor_inc();
+  return _bueditor_settle($editor);
+}
+
+/**
+ * Load an editor by id. (Used by menu system)
+ */
+function bueditor_editor_load($eid) {
+  return db_query("SELECT * FROM {bueditor_editors} WHERE eid = :eid", array(':eid' => $eid))->fetchObject();
+}
+
+/**
+ * Load bueditor.inc file
+ */
+function bueditor_inc() {
+  static $loaded;
+  if (!isset($loaded)) {
+    include_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'bueditor') . '/bueditor.inc';
+    $loaded = TRUE;
+  }
+}

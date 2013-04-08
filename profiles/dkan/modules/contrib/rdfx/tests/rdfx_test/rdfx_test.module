@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the rdfx_test feature.
+ */
+
+include_once('rdfx_test.features.inc');

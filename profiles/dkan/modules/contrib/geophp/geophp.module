@@ -1,0 +1,99 @@
+<?php
+
+/**
+* Loads the geoPHP library.
+*
+* @return
+*   Returns the filename of the included geoPHP library when successful, FALSE
+*   otherwise.
+*/
+function geophp_load() {
+  static $static_cache = FALSE;
+  $already_found = FALSE;
+  
+  if (!$static_cache) {
+    // Edge case: Another module (likely Geofield) has already loaded the class from somewhere else.
+    if (class_exists('geoPHP')) {
+      $static_cache = TRUE;
+      $already_found = TRUE;
+    }
+    
+    if (module_exists('libraries')) {
+      $path = libraries_get_path('geoPHP');
+      $file = $path . '/geoPHP.inc';
+      if (file_exists($file) && $static_cache !== TRUE) {
+        include_once($file);
+        $already_found = TRUE;
+      }
+      $static_cache = $file;
+    }
+    // If other options don't exist, load module's copy of geoPHP.
+    if (!$already_found) {
+      $path = drupal_get_path('module', 'geophp');
+      $file = $path . '/geoPHP/geoPHP.inc';
+      if (file_exists($file)) {
+        include_once($file);
+        $static_cache = $file;
+      }
+    }
+  }
+  
+  return $static_cache;
+}
+
+/**
+* Implementation of hook_requirements().
+*/
+function geophp_requirements($phase) {
+  $requirements = array();
+  $local_geophp_version = '1.1'; // @TODO: Find more elegant way to handle this. Load from local library?
+  
+  $geophp = geophp_load();
+  if ($geophp) {
+    try {
+      $geophp_version = geoPHP::version();
+    }
+    catch (Exception $e) {
+      $geophp_version = 0;
+    }
+    if ($geophp_version < $local_geophp_version) {
+      $requirements['geophp'] = array(
+        'title' => t('Old GeoPHP Library'),
+        'severity' => REQUIREMENT_INFO,
+        'value' => t('GeoPHP library version %library_version was found, but you are running an old version. GeoPHP version %local_version is bundled with this module. Please either remove or update your older version of geoPHP found at %path. The newest version of geoPHP can be found at %link.', array('%library_version' => $geophp_version, '%local_version' => $local_geophp_version, '%path' => $geophp, '%link' => 'https://github.com/downloads/phayes/geoPHP/geoPHP.tar.gz')),
+      );
+    }
+    else {
+      $requirements['geophp'] = array(
+        'title' => 'GeoPHP Library Installed',
+        'severity' => REQUIREMENT_OK,
+        'value' => t('GeoPHP %version library installed at %path', array('%path' => $geophp, '%version' => geoPHP::version())),
+      );
+    }
+
+    // GEOS check.
+    if (geoPHP::geosInstalled()) {
+      $requirements['geophp_geos'] = array(
+        'title' => t('GeoPHP and GEOS'),
+        'severity' => REQUIREMENT_OK,
+        'value' => t('GEOS PHP extension Installed'),
+      );
+    }
+    else {
+      $requirements['geophp_geos'] = array(
+        'title' => t('GeoPHP and GEOS'),
+        'severity' => REQUIREMENT_INFO,
+        'value' => t('GeoPHP library installed and OK. However, GEOS is was not found. While not required, you will see performance improvements if you install the GEOS PHP extension. See the following link for more information.') . l('https://github.com/phayes/geoPHP/wiki/GEOS', 'https://github.com/phayes/geoPHP/wiki/GEOS'),
+      );
+    }
+  }
+  else {
+    $requirements['geophp'] = array(
+      'title' => t('GeoPHP and GEOS'),
+      'severity' => REQUIREMENT_ERROR,
+      'value' => t('GeoPHP library was not found. Please either restore this module to a stable release or download a copy of geoPHP at %link and place in the libraries directory.', array('%link' => 'https://github.com/downloads/phayes/geoPHP/geoPHP.tar.gz')),
+    ); 
+  }
+
+  return $requirements;
+}

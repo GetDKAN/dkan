@@ -1,0 +1,137 @@
+<?php
+
+/**
+ * @file
+ * Tests for Double field integration with other contrib modules.
+ */
+
+// Drupal testbot starts with all modules disabled
+// so we cannot autoload the class.
+require_once 'double_field_test_case.inc';
+
+/**
+ * Test integration with contrib modules.
+ * 
+ * Simpletest doesn't resolve module dependencies.
+ * So we need to download the modules manually.
+ * @code
+ * drush dl devel feeds job_scheduler ctools entity
+ * @endcode
+ */
+class DoubleFieldContribTestCase extends DoubleFieldTestCase {
+
+  /**
+   * Information about the test.
+   */
+  public static function getInfo() {
+    return array(
+      'name'  => 'Contrib integration',
+      'description' => 'Test integration with contrib modules',
+      'group' => DoubleFieldTestCase::GROUP,
+      // Feeds requires Job schelduler and Ctools modules.
+      'dependencies' => array(
+        'devel_generate',
+        'feeds',
+        'job_scheduler',
+        'ctools',
+        'entity',
+      ),
+    );
+  }
+
+  /**
+   * Prepare environment.
+   */
+  public function setUp() {
+    $info = self::getInfo();
+    parent::setup(array_merge($info['dependencies'], array('double_field')));
+  }
+
+  /**
+   * Test Devel Generate intergation.
+   */
+  public function testDevelGenerateIntegration() {
+
+    $field_settings_page = "admin/structure/types/manage/{$this->type_name}/fields/{$this->field_name}";
+    $widget_types = array(
+      'checkbox_&_select',
+      'textfield_&_textarea',
+    );
+    foreach ($widget_types as $widget_type) {
+
+      $widget = new DoubleFieldWidget($widget_type, $this->field['settings']);
+
+      // Change widget type.
+      $this->instance['widget']['type'] = $widget_type;
+      field_update_instance($this->instance);
+
+      // Double field populates widget settings with default values after
+      // widget type changing. So we have assign widget settings separately.
+      // See double_field_field_update_instance().
+      $this->instance['widget']['settings'] = $widget->getSettings();
+      field_update_instance($this->instance);
+
+      $input['num_nodes'] = 100;
+      $input['node_types[page]'] = FALSE;
+      $input['node_types[article]'] = FALSE;
+      $input['kill_content'] = TRUE;
+      $this->drupalPost('admin/config/development/generate/content', $input, t('Generate'));
+
+      $query = db_select('node', 'n')
+        ->condition('type', $this->type_name)
+        ->condition('nid', $this->node->nid, '<>')
+        ->fields('n', array('nid'));
+      $nids = $query->execute()->fetchCol();
+
+      $found = 0;
+      foreach (node_load_multiple($nids) as $node) {
+        $value = $node->{$this->field_name}[LANGUAGE_NONE][0];
+
+        if ($widget_type == 'checkbox_&_select') {
+          $checkbox_values = $this->instance['widget']['settings']['first']['checkbox'];
+          $allowed_values = $this->instance['widget']['settings']['second']['select']['allowed_values'];
+
+          if ($value['first'] != $checkbox_values['on_value'] && $value['first'] != $checkbox_values['off_value']) {
+            $this->fail('First value is not allowed');
+          }
+          elseif (!isset($allowed_values[$value['second']])) {
+            $this->fail('Second value is not allowed');
+          }
+          else {
+            $found++;
+          }
+        }
+
+        elseif ('textfield_&_textarea') {
+          if (!$value['first']) {
+            $this->fail('First value is empty');
+          }
+          elseif (!$value['second']) {
+            $this->fail('Second value is empty');
+          }
+          else {
+            $found++;
+          }
+        }
+
+      }
+      $this->assertTrue($found == $input['num_nodes'], 'All field values were found.');
+    }
+
+  }
+
+  /**
+   * Test Feeds intergation.
+   */
+  public function testFeedsIntegration() {
+
+  }
+
+  /**
+   * Test Entity API intergation.
+   */
+  public function testEntityIntegration() {
+
+  }
+
+}

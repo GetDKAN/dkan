@@ -1,0 +1,192 @@
+<?php
+
+/**
+ * @file
+ * Integrates Recline.js visualization tools.
+ */
+
+module_load_include('inc', 'recline', 'recline.field');
+
+/**
+ * Implements hook_theme().
+ */
+function recline_theme() {
+  return array(
+    'recline_default_formatter' => array(
+      'variables' => array('item' => NULL),
+      'file' => 'recline.field.inc',
+    ),
+    'recline_widget' => array(
+      'render element' => 'element',
+      'file' => 'recline.field.inc',
+    ),
+  );
+}
+
+/**
+ * Adds default location if libraries module is not installed or loaded yet.
+ */
+function _recline_library_path() {
+  if (module_exists('libraries')) {
+    $library_path = libraries_get_path('recline');
+  }
+  else {
+    $library_path = 'sites/all/libraries/recline';
+  }
+  return $library_path;
+}
+
+/**
+ *  Implements hook_libraries_info().
+ */
+function recline_libraries_info() {
+  $libraries['recline'] = array(
+    'name' => 'Recline',
+    'vendor url' => 'http://reclinejs.com',
+    'download url' => 'https://github.com/okfn/recline/zipball/master',
+    'path' => '',
+    'version arguments' => array(
+      'file' => 'README.md',
+      'pattern' => '@v+([0-9][.][0-9])@',
+      'lines' => 49,
+    ),
+    'files' => array(
+      'css' => array(
+        'css/grid.css',
+        'css/slickgrid.css',
+        'css/graph.css',
+        'css/transform..css',
+        'css/map.css',
+        'css/multiview.css',
+        'css/site/pygments.css',
+        'css/site/site.css',
+        'vendor/bootstrap/2.0.2/css/bootstrap.css',
+        'vendor/leaflet/0.4.4/leaflet.css',
+        'vendor/slickgrid/2.0.1/slick.grid.css',
+        'vendor/timeline/20120520/css/timeline.css',
+        'vendor/leaflet.markercluster/MarkerCluster.css',
+        'vendor/leaflet.markercluster/MarkerCluster.Default.css',
+      ),
+      'js' => array(
+        // The following could interfere with other libraries.
+        // TODO: Make option for individual downloads.
+        'vendor/underscore/1.4.2/underscore.js',
+        'vendor/backbone/0.9.2/backbone.js',
+        'vendor/mustache/0.5.0-dev/mustache.js',
+        'vendor/bootstrap/2.0.2/bootstrap.js',
+        'vendor/flotr2/flotr2.js',
+        'vendor/leaflet/0.4.4/leaflet.js',
+        'vendor/leaflet.markercluster/leaflet.markercluster-src.js',
+        'vendor/slickgrid/2.0.1/jquery.event.drag-2.0.min.js',
+        'vendor/slickgrid/2.0.1/slick.grid.min.js',
+        'vendor/moment/1.6.2/moment.js',
+        'vendor/timeline/20120520/js/timeline.js',
+        'dist/recline.js',
+      ),
+    ),
+  );
+  $libraries['underscore'] = array(
+    'name' => 'Underscore',
+    'vendor url' => 'http://underscorejs.org',
+    'download url' => 'http://underscorejs.org/underscore-min.js',
+    'path' => 'underscore/underscore-min.js',
+    'version arguments' => array(
+      'file' => 'underscore/underscore-min.js',
+      'pattern' => '@majorVersion[=:]["\'](\d).+?minorVersion[=:]["\']([\d\.]+)@',
+      'lines' => 1,
+      'cols' => 100,
+    ),
+  );
+  $libraries['backbone'] = array(
+    'name' => 'Backbone',
+    'vendor url' => 'http://backbone.org',
+    'download url' => 'http://backbone.org/backbone-min.js',
+    'path' => 'backbone/backbone-min.js',
+    'version arguments' => array(
+      'file' => 'backbone/backbone-min.js',
+      'pattern' => '@majorVersion[=:]["\'](\d).+?minorVersion[=:]["\']([\d\.]+)@',
+      'lines' => 1,
+      'cols' => 100,
+    ),
+  );
+  $libraries['mustache'] = array(
+    'name' => 'Mustache',
+    'vendor url' => 'http://mustache.github.com',
+    'download url' => 'http://mustache.github.com',
+    'path' => 'mustache/mustache.js',
+    'version arguments' => array(
+      'file' => 'mustache/mustache.js',
+      'pattern' => '@majorVersion[=:]["\'](\d).+?minorVersion[=:]["\']([\d\.]+)@',
+      'lines' => 22,
+      'cols' => 100,
+    ),
+  );
+  $libraries['bootstrap_transition'] = array(
+    'name' => 'Bootstrap Transition',
+    'vendor url' => 'http://twitter.github.com/bootstrap',
+    'download url' => 'http://twitter.github.com/bootstrap/assets/bootstrap.zip',
+    'path' => 'bootstrap/js/transition.js',
+    'version arguments' => array(
+      'file' => 'backbone/backbone-min.js',
+      'pattern' => '@majorVersion[=:]["\'](\d).+?minorVersion[=:]["\']([\d\.]+)@',
+      'lines' => 2,
+      'cols' => 100,
+    ),
+    'files' => array(
+      'css' => array(
+        'docs/assests/css/bootstrap.css',
+        'docs/assests/css/bootstrap-responsive.css',
+      ),
+    ),
+  );
+  $libraries['flotr2'] = array(
+    'name' => 'flotr2',
+    'vendor url' => 'https://github.com/HumbleSoftware/Flotr2',
+    'download url' => 'https://github.com/HumbleSoftware/Flotr2',
+    'path' => 'flotr2/flotr2.js',
+    'version arguments' => array(
+      'file' => 'flotr2/flotr2.js',
+      'pattern' => '@majorVersion[=:]["\'](\d).+?minorVersion[=:]["\']([\d\.]+)@',
+      'lines' => 566,
+      'cols' => 100,
+    ),
+  );
+  $libraries['leaflet'] = array(
+    'name' => 'Leaflet',
+    'vendor url' => 'http://leaflet.cloudmade.com',
+    'download url' => 'http://leaflet.cloudmade.com/download.html',
+    'path' => 'leaflet/dist/leaflet.js',
+    'version arguments' => array(
+      'file' => 'leaflet/dist/leaflet.js',
+      'pattern' => '@majorVersion[=:]["\'](\d).+?minorVersion[=:]["\']([\d\.]+)@',
+      'lines' => 6,
+      'cols' => 100,
+    ),
+    'files' => array(
+      'css' => array(
+        'leaflet/dist/leaflet.css',
+      ),
+    ),
+  );
+  $libraries['slickgrid'] = array(
+    'name' => 'SlickGrid',
+    'vendor url' => 'https://github.com/mleibman/SlickGrid/wiki',
+    'download url' => 'https://github.com/mleibman/SlickGrid',
+    'path' => 'slickgrid/slick.grid.js',
+    'version arguments' => array(
+      'file' => 'slickgrid/slick.grid.js',
+      'pattern' => '@majorVersion[=:]["\'](\d).+?minorVersion[=:]["\']([\d\.]+)@',
+      'lines' => 10,
+      'cols' => 100,
+    ),
+    'files' => array(
+      'css' => array(
+        'slickgrid/css/slick.grid.css',
+      ),
+      'js' => array(
+        'slickgrid/lib/jquery.event.drag-2.0.min.js',
+      ),
+    ),
+  );
+  return $libraries;
+}

@@ -1,0 +1,59 @@
+<?php
+/**
+ * @file
+ * Install hooks for Data Taxonomy module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function data_taxonomy_schema() {
+  $schema = array();
+  $schema['data_taxonomy'] = array(
+    'description' => 'Relate data records to taxonomy',
+    'fields' => array(
+      'tid' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'data_table_name' => array(
+        'type' => 'varchar',
+        'size' => 'normal',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
+      'id' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'tid' => array('tid'),
+      'data_table_name' => array('data_table_name'),
+      'id' => array('id'),
+      'name_id' => array('data_table_name', 'id'),
+    ),
+    'primary key' => array('tid', 'data_table_name', 'id'),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function data_taxonomy_install() {
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_install_schema('data_taxonomy')
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function data_taxonomy_uninstall() {
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_uninstall_schema('data_taxonomy')
+}

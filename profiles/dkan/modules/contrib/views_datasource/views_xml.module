@@ -1,0 +1,263 @@
+<?php
+/**
+ * @file
+ * Module definition for views_xml
+ *
+ * @see views_xml.views.inc
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function views_xml_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'views_xml') . '/views',
+  );
+}
+
+/**
+ * We almost duplicate the content_handler_field_multiple::render function
+ * to get the multiple rendered field values in an array
+ * @param $field
+ * @param $values
+ * @return unknown_type
+ */
+function _views_xml_render_multiple_field($field, $values) {
+  $options = $field->options;
+  // If this is not a grouped field, use content_handler_field::render().
+  if (!$field->defer_query) {
+    return $field->render($values);
+  }
+  // We're down to a single node here, so we can retrieve the actual field
+  // definition for the node type being considered.
+  $content_field = content_fields($field->content_field['field_name'], $values->{$field->aliases['type']});
+  $vid = $values->{$field->field_alias};
+  if (isset($field->field_values[$vid])) {
+    // Gather items, respecting the 'Display n values starting from m' settings.
+    $count_skipped = 0;
+    $items = array();
+    foreach ($field->field_values[$vid] as $item) {
+      if (empty($options['multiple']['multiple_from']) || ($count_skipped >= $options['multiple']['multiple_from'])) {
+        if (empty($options['multiple']['multiple_number']) || (count($items) < $options['multiple']['multiple_number'])) {
+          // Grab the nid - needed for render_link().
+          $nid = $item['_nid'];
+          unset($item['_nid']);
+          $items[] = $item;
+        }
+        else {
+          break;
+        }
+      }
+      $count_skipped++;
+    }
+
+    // Build a pseudo-node from the retrieved values.
+    $node = drupal_clone($values);
+    // content_format and formatters will need a 'type'.
+    $node->type = $values->{$field->aliases['type']};
+    $node->nid = $values->{$field->aliases['nid']};
+    $node->vid = $values->{$field->aliases['vid']};
+
+    // Some formatters need to behave differently depending on the build_mode
+    // (for instance: preview), so we provide one.
+    $node->build_mode = NODE_BUILD_NORMAL;
+
+    // Render items.
+    $formatter_name = $options['format'];
+    if ($items && ($formatter = _content_get_formatter($formatter_name, $content_field['type']))) {
+      $rendered = array();
+      if (content_handle('formatter', 'multiple values', $formatter) == CONTENT_HANDLE_CORE) {
+        // Single-value formatter.
+        $n = 0;
+        foreach ($items as $item) {
+          $output = content_format($content_field, $item, $formatter_name, $node);
+          if (!empty($output)) {
+            $rendered[++$n] = $field->render_link($output, (object) array('nid' => $nid));
+          }
+        }
+      }
+      else {
+        // Multiple values formatter.
+        $output = content_format($content_field, $items, $formatter_name, $values);
+        if (!empty($output)) {
+          $rendered[++$n] = $field->render_link($output, (object) array('nid' => $nid));
+        }
+      }
+      if (count($rendered) > 1) {
+        // TODO: could we use generic field display ?
+        //return theme('content_view_multiple_field', $rendered, $content_field, $values);
+        return $rendered;
+      }
+      elseif ($rendered) {
+        return $rendered[1];
+      }
+    }
+  }
+
+  return '';
+}
+
+/**
+ * Takes each field from a row object and renders the field as determined by the field's theme
+ *
+ * @param $view
+ *   View the row belongs to
+ * @param $row
+ *   Row object
+ * @return array
+ *   Object containing all the raw and rendered fields
+ */
+function _views_xml_render_fields($view, $row) {
+  $field_ids = array_keys($view->field);
+  $rendered_fields = array();
+  foreach ($field_ids as $id) {
+    $field = $view->field[$id];
+    $field_is_multiple = FALSE;
+    $field_raw = array();
+    if ((isset($field->options['multiple']['group']))&& isset($field->field_values)) {
+      $field_output = _views_xml_render_multiple_field($field, $row);
+      $n = 0;
+      if (is_array($field_output)) {
+        foreach ($field->field_values[$row->{$field->field_alias}] as $item) {
+          $field_raw[++$n] = $item["value"];
+        }
+        $field_is_multiple = TRUE;
+      }
+      else $field_raw = $view->field[$field->options['id']]->advanced_render($row);
+    }
+    else {
+      $field_output = $view->field[$field->options['id']]->advanced_render($row);
+      $field_raw = (isset($view->field[$id]->field_alias) && isset($row->{$view->field[$id]->field_alias})) ? $row->{$view->field[$id]->field_alias} : NULL;
+    }
+
+    $img_match = array();
+    $src_match = array();
+    if (is_array($field_output)) {
+      foreach ($field_output as $i => $f) {
+        if (preg_match("/<img[^>]+>/i", $f, $img_match)) {
+          if (preg_match('/(src)="([^"]*)"/i', $img_match[0], $src_match))
+          $field_output[$i] = ($src_match[2]);
+        }
+      }
+    }
+    else {
+      if (preg_match("/<img[^>]+>/i", $field_output, $img_match)) {
+        if (preg_match('/(src)="([^"]*)"/i', $img_match[0], $src_match))
+          $field_output = ($src_match[2]);
+      }
+    }
+
+    if (empty($field->options['exclude']) && ($field_output != "") && !empty($field_output)) {
+      $object = new stdClass();
+      $object->id = $id;
+      $object->content = $field_output;
+      $object->raw = $field_raw;
+      $object->class = drupal_clean_css_identifier(strtolower($id));
+      $object->label = check_plain($view->field[$id]->label());
+      $object->is_multiple = $field_is_multiple;
+      $rendered_fields[$id] = $object;
+    }
+  }
+  return $rendered_fields;
+}
+
+/**
+ * Replaces illegal characters in a attribute value string with their encoded entities as well as the " char.
+ *
+ * @param $input
+ *   String to process.
+ * @return
+ *   String with illegal characters stripped away and entities encoded.
+ */
+function _views_xml_strip_illegal_xml_attribute_value_chars($input) {
+  $output = str_replace('<', '&lt;', $input);        // encode left-angled bracket
+  $output = str_replace('>', '&gt;', $output);        // encode right-angled bracket
+  $output = str_replace('"', '&quot;', $output);      // encode quote
+  return $output;
+}
+
+function _views_xml_xmlEntities($str) {
+  $xml = array('&#34;','&#38;','&#38;','&#60;','&#62;','&#160;','&#161;','&#162;','&#163;','&#164;','&#165;','&#166;','&#167;','&#168;','&#169;','&#170;','&#171;','&#172;','&#173;','&#174;','&#175;','&#176;','&#177;','&#178;','&#179;','&#180;','&#181;','&#182;','&#183;','&#184;','&#185;','&#186;','&#187;','&#188;','&#189;','&#190;','&#191;','&#192;','&#193;','&#194;','&#195;','&#196;','&#197;','&#198;','&#199;','&#200;','&#201;','&#202;','&#203;','&#204;','&#205;','&#206;','&#207;','&#208;','&#209;','&#210;','&#211;','&#212;','&#213;','&#214;','&#215;','&#216;','&#217;','&#218;','&#219;','&#220;','&#221;','&#222;','&#223;','&#224;','&#225;','&#226;','&#227;','&#228;','&#229;','&#230;','&#231;','&#232;','&#233;','&#234;','&#235;','&#236;','&#237;','&#238;','&#239;','&#240;','&#241;','&#242;','&#243;','&#244;','&#245;','&#246;','&#247;','&#248;','&#249;','&#250;','&#251;','&#252;','&#253;','&#254;','&#255;');
+  $html = array('&quot;','&amp;','&amp;','&lt;','&gt;','&nbsp;','&iexcl;','&cent;','&pound;','&curren;','&yen;','&brvbar;','&sect;','&uml;','&copy;','&ordf;','&laquo;','&not;','&shy;','&reg;','&macr;','&deg;','&plusmn;','&sup2;','&sup3;','&acute;','&micro;','&para;','&middot;','&cedil;','&sup1;','&ordm;','&raquo;','&frac14;','&frac12;','&frac34;','&iquest;','&Agrave;','&Aacute;','&Acirc;','&Atilde;','&Auml;','&Aring;','&AElig;','&Ccedil;','&Egrave;','&Eacute;','&Ecirc;','&Euml;','&Igrave;','&Iacute;','&Icirc;','&Iuml;','&ETH;','&Ntilde;','&Ograve;','&Oacute;','&Ocirc;','&Otilde;','&Ouml;','&times;','&Oslash;','&Ugrave;','&Uacute;','&Ucirc;','&Uuml;','&Yacute;','&THORN;','&szlig;','&agrave;','&aacute;','&acirc;','&atilde;','&auml;','&aring;','&aelig;','&ccedil;','&egrave;','&eacute;','&ecirc;','&euml;','&igrave;','&iacute;','&icirc;','&iuml;','&eth;','&ntilde;','&ograve;','&oacute;','&ocirc;','&otilde;','&ouml;','&divide;','&oslash;','&ugrave;','&uacute;','&ucirc;','&uuml;','&yacute;','&thorn;','&yuml;');
+  $str = str_replace($html, $xml, $str);
+  $str = str_ireplace($html, $xml, $str);
+  return $str;
+}
+
+/**
+ * Strips characters not matching the XML Name production:
+ *
+ * @param $input
+ *   String to process.
+ * @return
+ *   String with illegal characters stripped.
+ */
+
+function _views_xml_strip_illegal_xml_name_chars($input) {
+  $output = preg_replace("/(^xml)|([^A-Za-z0-9_\-\.:])/", "", $input);
+  return $output;
+}
+
+/**
+ * Creates an author object to use in the headers of OPML and Atom documents
+ * @param $username
+ */
+function _views_xml_format_author($username) {
+  $author = array();
+  $author['uri'] = '';
+  $author['email'] = variable_get('site_mail', 'none@none.info');
+  if (!$username) {
+    $author['name'] = variable_get('anonymous', t('Anonymous'));
+    return $author;
+  }
+
+  if (is_numeric($username)) {
+    $account = user_load($username);
+  }
+  else {
+    $account = user_load_by_name($username);
+  }
+  $author['name'] = check_plain($username);
+  if (!$account) {
+    if (is_numeric($username)) {
+      // Do not let numeric user name.
+      $author['name'] = variable_get('anonymous', t('Anonymous'));
+    }
+    return $author;
+  }
+
+  $author['name'] = check_plain(format_username($account));
+  $author['email'] = check_plain($account->mail);
+  if (user_access('access user profiles')) {
+    $author['uri'] = url('user/' . $account->uid, array('absolute' => TRUE));
+  }
+
+  return $author;
+}
+
+/**
+ * If input is a serialized date array, return a date string
+ *
+ * @param $input
+ *   Input to check.
+ * @return
+ *   Either the original input or a date string.
+ */
+/** may never be used as the properly rendered date strings are available
+function views_xml_is_date($input) {
+  if (strpos($input, 'a:3:{s:5:"month"') !== 0) {
+    return $input;
+  }
+  else {        // serialized date array
+    $date = unserialize($input);
+    return format_date(mktime(0, 0, 0, $date['month'], $date['day'], $date['year']), 'custom', DATE_ISO8601);
+  }
+}
+ */
+
+function _views_xml_debug_stop($var) {
+  var_dump($var);
+  module_Invoke_all('exit');
+  exit;
+}

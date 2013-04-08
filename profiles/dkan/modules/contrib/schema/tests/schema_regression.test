@@ -1,0 +1,69 @@
+<?php
+/**
+ * @file
+ * Regression tests for the Schema module
+ *
+ */
+
+class SchemaRegressionTest extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Schema Regression Tests',
+      'description' => 'Schema Regression Tests',
+      'group' => 'Schema',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('schema');
+  }
+
+  function tearDown() {
+    db_query("DROP TABLE schema_testtbl");
+    db_drop_table('schema_testtbl');
+    parent::tearDown();
+  }
+
+  /**
+   * Test API for adding tables
+   */
+  function testInspectionConflict518210() {
+    // Create an unprefixed table...
+    $tablename = "schema_testtbl";
+    $sql = "CREATE TABLE $tablename (
+              fid INT NOT NULL,
+              destid INT NOT NULL
+            )";
+    db_query($sql);
+
+    // ...and a prefixed table, with a different column list
+    $schema = array(
+      'fields' => array(
+        'sourceid' => array(
+          'type' => 'int',
+          'not null' => TRUE,
+        ),
+        'destid' => array(
+          'type' => 'int',
+          'not null' => TRUE,
+        ),
+      ),
+    );
+    db_create_table($tablename, $schema);
+
+    // Do the full inspection, and get our specified tablename
+    $inspect = schema_dbobject()->inspect();
+    $fields = $inspect[$tablename]['fields'];
+
+    // We should see only the columns from the prefixed version
+    $this->assertFalse(isset($fields['fid']), t('fid does not exist'));
+    $this->assertTrue(isset($fields['sourceid']), t('sourceid exists'));
+    $this->assertTrue(isset($fields['destid']), t('destid exists'));
+
+    // Inspect the table by using schema_compare().
+    $comparison = schema_compare_table($inspect[$tablename]);
+    if (!$this->assertEqual($comparison['status'], 'same', t('Table matches its schema'))) {
+      $this->error(print_r($comparison, TRUE));
+    }
+  }
+}

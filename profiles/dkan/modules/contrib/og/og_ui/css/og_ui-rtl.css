@@ -1,0 +1,8 @@
+/**
+ * RTL support for OG UI.
+ */
+#og-ui-admin-new-role .form-item-name {
+  float: right;
+  margin-right: 0;
+  margin-left: 1em;
+}

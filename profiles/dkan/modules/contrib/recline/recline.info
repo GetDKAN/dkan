@@ -1,0 +1,14 @@
+name = Recline.js Field
+description = Creates file field for visualizing data using Recline.js
+core = 7.x
+
+dependencies[] = libraries
+dependencies[] = file
+dependencies[] = field_ui
+
+; Information added by drupal.org packaging script on 2013-02-02
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "recline"
+datestamp = "1359769458"
+

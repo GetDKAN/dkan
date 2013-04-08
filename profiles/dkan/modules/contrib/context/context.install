@@ -1,0 +1,111 @@
+<?php
+
+/**
+ * Implementation of hook_install().
+ */
+function context_install() {
+  // Nothing todo...
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function context_uninstall() {
+  drupal_uninstall_schema('context');
+  variable_del('context_ui_show_empty_regions');
+  variable_del('context_reaction_block_disable_core');
+  variable_del('context_reaction_block_all_regions');
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function context_schema() {
+  $schema = array();
+  $schema['context'] = array(
+    'description' => 'Storage for normal (user-defined) contexts.',
+    'export' => array(
+      'key' => 'name',
+      'identifier' => 'context',
+      'default hook' => 'context_default_contexts',  // Function hook name.
+      'status' => 'context_status',
+      'api' => array(
+        'owner' => 'context',
+        'api' => 'context',  // Base name for api include files.
+        'minimum_version' => 3,
+        'current_version' => 3,
+      ),
+      'export callback' => 'context_export',
+    ),
+    'fields' => array(
+      'name' => array(
+        'description' => 'The primary identifier for a context.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'description' => array(
+        'description' => 'Description for this context.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'tag' => array(
+        'description' => 'Tag for this context.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'conditions' => array(
+        'description' => 'Serialized storage of all context condition settings.',
+        'type' => 'text',
+        'serialize' => TRUE,
+      ),
+      'reactions' => array(
+        'description' => 'Serialized storage of all context reaction settings.',
+        'type' => 'text',
+        'serialize' => TRUE,
+      ),
+      'condition_mode' => array(
+        'description' => 'Condition mode for this context.',
+        'type' => 'int',
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('name'),
+  );
+  return $schema;
+}
+
+/**
+ * Update 7000: Handle adjustments to split of theme reaction to support D7 preprocess split between _page and _html
+ */
+
+function context_update_7000() {
+  drupal_load('module', 'ctools');
+  drupal_load('module', 'context');
+  $updated = array();
+  $contexts = context_load(NULL, TRUE);
+  foreach ($contexts as $c) {
+    // if the old data is in the old reaction and the new reaction hasn't been saved, migrate the old data to the new reaction
+    if (isset($c->reactions['theme']) &&
+        isset($c->reactions['theme']['class']) &&
+        !empty($c->reactions['theme']['class']) &&
+        !isset($c->reactions['theme_html'])
+    ) {
+      $c->reactions['theme_html']['class'] = $c->reactions['theme']['class'];
+      context_save($c);
+      $updated[] = $c->name;
+    }
+  }
+  if (empty($updated)) {
+    $ret = t('No contexts requiring migration detected');
+  }
+  else {
+    $ret = t('The following contexts had theme reaction data migrated: @names', array('@names' => join(', ', $updated)));
+  }
+  return $ret;
+}

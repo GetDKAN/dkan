@@ -1,0 +1,155 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the double field module.
+ */
+
+
+/**
+ * Implements hook_field_schema().
+ *
+ * @see http://drupal.org/node/159605
+ */
+function double_field_field_schema($field) {
+
+  foreach (array('first', 'second') as $subfield) {
+
+    // Before 7.x-2.x maxlength was stored as "$subfield_maxlength".
+    // This might lead to "Notice: Undefined index" while running update.php.
+    if (empty($field['settings'][$subfield]['maxlength'])) {
+      $field['settings'][$subfield]['maxlength'] = 255;
+    }
+
+    // Before 7.x-2.3 column type was defined according to the field maxlength.
+    // We should prevent changing column type because it already can store
+    // some values. See field_sql_storage_field_update_forbid().
+    if (empty($field['settings'][$subfield]['type'])) {
+      $field['settings'][$subfield]['type'] = $field['settings'][$subfield]['maxlength'] < 16384 / 3 ? 'varchar' : 'text';
+    }
+
+    $type = $field['settings'][$subfield]['type'];
+    $columns[$subfield] = array(
+      'type' => $type == 'decimal' ? 'numeric' : $type,
+      'not null' => FALSE,
+      'description' => ucfirst($subfield) . ' subfield value.',
+    );
+
+    switch ($field['settings'][$subfield]['type']) {
+      case 'varchar':
+        $columns[$subfield]['length'] = $field['settings'][$subfield]['maxlength'];
+        break;
+
+      case 'text':
+        $columns[$subfield]['size'] = 'big';
+        break;
+
+      case 'int':
+      case 'float':
+        $columns[$subfield]['size'] = $field['settings'][$subfield]['size'];
+        break;
+
+      case 'decimal':
+        $columns[$subfield]['precision'] = $field['settings'][$subfield]['precision'];
+        $columns[$subfield]['scale'] = $field['settings'][$subfield]['scale'];
+        break;
+    }
+  }
+
+  return array('columns' => $columns);
+}
+
+/**
+ * Fix fields settings.
+ */
+function double_field_update_7201() {
+
+  $field_names = array();
+  foreach (field_read_fields(array('module' => 'double_field')) as $field) {
+    $field_names[] = $field['field_name'];
+    foreach (array('first', 'second') as $subfield) {
+      $field['settings'][$subfield]['maxlength'] = $field['settings'][$subfield . '_maxlength'];
+      unset($field['settings'][$subfield . '_maxlength']);
+    }
+    field_update_field($field);
+
+    $params = array('field_name' => $field_names);
+    foreach (field_read_instances($params) as $instance) {
+
+      // Update widget type and widget settings.
+      $instance['widget']['type'] = 'textfield_&_textfield';
+      $widget_info = double_field_field_widget_info();
+      foreach (array('first', 'second') as $subfield) {
+        $old_settings = $instance['widget']['settings'][$subfield];
+        $instance['widget']['settings'][$subfield] = $widget_info['textfield_&_textfield']['settings'][$subfield];
+        $instance['widget']['settings'][$subfield]['textfield']['size'] = $old_settings['size'];
+        unset($old_settings['size']);
+        $instance['widget']['settings'][$subfield]['general'] = $old_settings;
+      }
+
+      // Update formatter type and formatter settings.
+      $formatters = double_field_field_formatter_info();
+      foreach ($instance['display'] as &$display) {
+        switch ($display['type']) {
+          case 'double_field_inline':
+            $display['type'] = 'double_field_unformatted_list';
+            $display['settings']['style'] = 'inline';
+            break;
+
+          case 'double_field_block':
+            $display['type'] = 'double_field_unformatted_list';
+            $display['settings']['style'] = 'block';
+            break;
+
+          case 'double_field_fieldset':
+            $display['type'] = 'double_field_fieldset';
+            break;
+
+        }
+        foreach (array('first', 'second') as $subfield) {
+          $display['settings'][$subfield] = array_merge(
+            $formatters[$display['type']]['settings'][$subfield],
+            $display['settings'][$subfield]
+          );
+        }
+      }
+
+      // Save the instance data.
+      field_update_instance($instance);
+    }
+  }
+
+}
+
+/**
+ * Add placeholder attribute setting.
+ */
+function double_field_update_7202() {
+
+  $field_names = array();
+  foreach (field_read_fields(array('module' => 'double_field')) as $field_name => $field) {
+    $field_names[] = $field_name;
+    foreach (array('first', 'second') as $subfield) {
+      // Take type value from field schema.
+      $field['settings'][$subfield]['type'] = $field['columns'][$subfield]['type'];
+      $field['settings'][$subfield]['size'] = 'normal';
+      $field['settings'][$subfield]['precision'] = 10;
+      $field['settings'][$subfield]['scale'] = 2;
+    }
+    field_update_field($field);
+  };
+
+  $params = array('field_name' => $field_names);
+  foreach (field_read_instances($params) as $instance) {
+    foreach (array('first', 'second') as $subfield) {
+      if (isset($instance['widget']['settings'][$subfield]['textfield'])) {
+        $instance['widget']['settings'][$subfield]['textfield']['placeholder'] = '';
+      }
+      elseif (isset($instance['widget']['settings'][$subfield]['textarea'])) {
+        $instance['widget']['settings'][$subfield]['textarea']['placeholder'] = '';
+      }
+    }
+    field_update_instance($instance);
+  };
+
+}

@@ -1,0 +1,210 @@
+<?php
+
+
+/**
+ * @file
+ * Enable access control for private and public groups and group content.
+ */
+
+/**
+ * The access realm of group member.
+ */
+define('OG_ACCESS_REALM', 'og_access');
+
+/**
+ * Group public access field.
+ */
+define('OG_ACCESS_FIELD', 'group_access');
+
+/**
+ * Group public access field.
+ */
+define('OG_CONTENT_ACCESS_FIELD', 'group_content_access');
+
+/**
+ * Define group content access by it's group defaults.
+ */
+define('OG_CONTENT_ACCESS_DEFAULT', 0);
+
+/**
+ * Define group content access public regardless of its group definition.
+ */
+define('OG_CONTENT_ACCESS_PUBLIC', 1);
+
+/**
+ * Define group content access private regardless of its group definition.
+ */
+define('OG_CONTENT_ACCESS_PRIVATE', 2);
+
+
+/**
+ * Implements hook_node_grants().
+ */
+function og_access_node_grants($account, $op) {
+  if ($op != 'view') {
+    return;
+  }
+
+  if ($groups = og_get_entity_groups('user', $account)) {
+    foreach ($groups as $group_type => $gids) {
+      foreach ($gids as $gid) {
+        $realm = OG_ACCESS_REALM . ':' . $group_type;
+        $grants[$realm][] = $gid;
+      }
+    }
+  }
+
+  return !empty($grants) ? $grants : array();
+}
+
+
+/**
+ * Implements hook_node_access_records().
+ */
+function og_access_node_access_records($node) {
+  if (empty($node->status)) {
+    // Node is unpublished, so we don't allow every group member to see
+    // it.
+    return array();
+  }
+
+  // The group IDs, that in case access is granted, will be recorded.
+  $gids = array();
+
+  $wrapper = entity_metadata_wrapper('node', $node);
+
+  if (!empty($wrapper->{OG_ACCESS_FIELD}) && $wrapper->{OG_ACCESS_FIELD}->value() && og_is_group('node', $node)) {
+    // Private group.
+    $gids['node'][] = $node->nid;
+  }
+  // If there is no content access field on the group content, we assume
+  // that the group defaults are needed.
+  // This allows us not to have the content access field on the group
+  // content but still have access control.
+  $content_access = !empty($wrapper->{OG_CONTENT_ACCESS_FIELD}) ? $wrapper->{OG_CONTENT_ACCESS_FIELD}->value() : OG_CONTENT_ACCESS_DEFAULT;
+  switch ($content_access) {
+    case OG_CONTENT_ACCESS_DEFAULT:
+      if (!$entity_groups = og_get_entity_groups('node', $node)) {
+        break;
+      }
+
+      $has_private = FALSE;
+      foreach ($entity_groups as $group_type => $values) {
+        entity_load($group_type, $values);
+        foreach ($values as $gid) {
+          $list_gids[$group_type][] = $gid;
+          $group_wrapper = entity_metadata_wrapper($group_type, $gid);
+          if (!empty($group_wrapper->{OG_ACCESS_FIELD}) && $group_wrapper->{OG_ACCESS_FIELD}->value()) {
+            $has_private = TRUE;
+          }
+        }
+      }
+
+      if ($has_private) {
+        $gids = $gids + $list_gids;
+      }
+      break;
+
+    case OG_CONTENT_ACCESS_PUBLIC:
+      // Do nothing.
+      break;
+
+    case OG_CONTENT_ACCESS_PRIVATE:
+      $gids = $gids + og_get_entity_groups('node', $node);
+      break;
+  }
+
+  foreach ($gids as $group_type => $values) {
+    foreach ($values as $gid) {
+      $grants[] = array (
+        'realm' => OG_ACCESS_REALM . ':' . $group_type,
+        'gid' => $gid,
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+    }
+  }
+
+  return !empty($grants) ? $grants : array();
+}
+
+/**
+ * Implement hook_og_fields_info().
+ */
+function og_access_og_fields_info() {
+  $allowed_values = array(
+    0 => 'Public - accessible to all site users',
+    1 =>  'Private - accessible only to group members',
+  );
+  $items[OG_ACCESS_FIELD] = array(
+    'type' => array('group'),
+    'description' => t('Determine access to the group.'),
+    // Private access can be done only on node entity.
+    'entity' => array('node'),
+    'field' => array(
+      'field_name' => OG_ACCESS_FIELD,
+      'no_ui' => TRUE,
+      'type' => 'list_boolean',
+      'cardinality' => 1,
+      'settings' => array('allowed_values' => $allowed_values, 'allowed_values_function' => ''),
+    ),
+    'instance' => array(
+      'label' => t('Group visibility'),
+      'required' => TRUE,
+      // Default to public.
+      'default_value' => array(0 => array('value' => 0)),
+      'widget_type' => 'options_select',
+      'view modes' => array(
+        'full' => array(
+          'label' => 'above',
+          'type' => 'options_onoff',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'type' => 'options_onoff',
+        ),
+      ),
+    ),
+  );
+
+  $allowed_values = array(
+    0 => 'Use group defaults',
+    1 => 'Public - accessible to all site users',
+    2 => 'Private - accessible only to group members',
+
+  );
+  $items[OG_CONTENT_ACCESS_FIELD] = array(
+    'type' => array('group content'),
+    'description' => t('Determine access to the group content, which may override the group settings.'),
+    // Private access can be done only on node entity.
+    'entity' => array('node'),
+    'field' => array(
+      'field_name' => OG_CONTENT_ACCESS_FIELD,
+      'no_ui' => TRUE,
+      'type' => 'list_integer',
+      'cardinality' => 1,
+      'settings' => array('allowed_values' => $allowed_values, 'allowed_values_function' => ''),
+    ),
+    'instance' => array(
+      'label' => t('Group content visibility'),
+      'required' => TRUE,
+      // Make the group type default.
+      'default_value' => array(0 => array('value' => 0)),
+      'widget_type' => 'options_select',
+      'view modes' => array(
+        'full' => array(
+          'label' => 'above',
+          'type' => 'list_default',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'type' => 'list_default',
+        ),
+      ),
+    ),
+  );
+
+  return $items;
+}

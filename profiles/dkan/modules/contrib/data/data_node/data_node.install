@@ -1,0 +1,71 @@
+<?php
+/**
+ * @file
+ * Install hooks for Data Node module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function data_node_schema() {
+  $schema = array();
+  $schema['data_table_node'] = array(
+    'description' => 'Relate data records to nodes',
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'data_table_name' => array(
+        'type' => 'varchar',
+        'size' => 'normal',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
+      'id' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'data_table_name' => array('data_table_name'),
+      'id' => array('id'),
+      'name_id' => array('data_table_name', 'id'),
+    ),
+    'primary key' => array('nid', 'data_table_name', 'id'),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function data_node_install() {
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_install_schema('data_node')
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function data_node_uninstall() {
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_uninstall_schema('data_node')
+}
+
+/**
+ * Add an index to id and name.
+ */
+function data_node_update_6001() {
+  $ret = array();
+  db_add_index('data_table_node', 'name_id', array('data_table_name', 'id'));
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  return t('TODO Add a descriptive string here to show in the UI.') /* $ret */;
+}

@@ -1,0 +1,200 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the boxes module.
+ *
+ */
+
+
+/**
+ * Implemenation of hook_schema().
+ */
+function boxes_schema() {
+  $schema = array();
+  $schema['box'] = array(
+    'description' => 'Stores contents of custom-made blocks.',
+    'fields' => array(
+      'delta' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'description' => "The block's {block}.delta.",
+      ),
+      'plugin_key' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => "The plugin responsible for this block.",
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => "Block title.",
+      ),
+      'description' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+        'description' => 'Block description.',
+      ),
+      'options' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'Block content configuration.',
+      ),
+    ),
+    'primary key' => array('delta'),
+    'export' => array(
+      'key' => 'delta',
+      'identifier' => 'box',
+      'api' => array(
+        'owner' => 'boxes',
+        'api' => 'box',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function boxes_uninstall() {
+  $result = db_query("SELECT bid FROM {block} WHERE module='boxes'");
+  foreach ($result as $data) {
+    db_query("DELETE FROM {block} WHERE bid = :bid", array(':bid' => $data->bid));
+  }
+  variable_del('boxes_edit_location');
+}
+
+/**
+ * Make boxes content pluggable, move body/format into a serialized options
+ * array, add plugin key field.
+ */
+function boxes_update_6100() {
+  $ret = array();
+  $result = db_query("SELECT delta, body, format FROM {custom_block}");
+  while ($box = db_fetch_object($result)) {
+    $body = array(
+      'body' => $box->body,
+      'format' => $box->format,
+    );
+    $box->body = serialize($body);
+    drupal_write_record('box', $box, 'delta');
+  }
+  $spec =  array(
+    'type' => 'text',
+    'not null' => FALSE,
+    'size' => 'big',
+    'serialize' => TRUE,
+    'description' => 'Block content configuration.',
+  );
+  db_change_field('box', 'body', 'options', $spec);
+  db_drop_field('box', 'format');
+  $spec = array(
+    'type' => 'varchar',
+    'length' => 64,
+    'not null' => TRUE,
+    'description' => "The plugin responsible for this block.",
+  );
+  db_add_field('box', 'plugin_key', $spec);
+  // TODO Please review the conversion of this statement to the D7 database API syntax.
+  /* db_query("UPDATE {custom_block} SET plugin_key = 'simple'") */
+  db_update('custom_block')
+  ->fields(array(
+    'plugin_key' => 'simple',
+  ))
+  ->execute();
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  return t('TODO Add a descriptive string here to show in the UI.') /* $ret */;
+}
+
+/**
+ * If Spaces is installed update existing spaces overrides.
+ */
+function boxes_update_6101() {
+  $ret = array();
+  if (module_exists('spaces')) {
+    $result = db_query("SELECT * FROM {spaces_overrides} WHERE object_type = :object_type", array(':object_type' => 'boxes'));
+    while ($row = db_fetch_object($result)) {
+      $v = unserialize($row->value);
+      $v->plugin_key = 'simple';
+      $v->options = array(
+        'body' => $v->body,
+        'format' => $v->format,
+      );
+      unset($v->body);
+      unset($v->format);
+      $row->value = (array) $v;
+      drupal_write_record('spaces_overrides', $row, array('type', 'id', 'object_type', 'object_id'));
+    }
+    $ret[] = array(
+      'success' => TRUE,
+      'query' => 'Updated Spaces overrides',
+    );
+  }
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  return t('TODO Add a descriptive string here to show in the UI.') /* $ret */;
+}
+
+/**
+ * Make the box.delta column definition match blocks.delta
+ */
+function boxes_update_6102() {
+  $ret = array();
+  $result = db_query('SELECT delta FROM {custom_block} WHERE CHAR_LENGTH(delta) > :CHAR_LENGTH(delta)', array(':CHAR_LENGTH(delta)' => 32))->fetchField();
+  if (empty($result)) {
+    db_drop_primary_key('box');
+    $spec = array(
+      'type' => 'varchar',
+      'length' => 32,
+      'not null' => TRUE,
+    );
+    $new_keys = array('primary key' => array('delta'));
+    db_change_field('box', 'delta', 'delta', $spec, $new_keys);
+  }
+  else {
+    $ret['#abort'] = array(
+      'success' => FALSE,
+      'query' => "Could not resize the `box.delta` field. Some entries are larger than 32 characters and must be manually truncated.",
+    );
+  }
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  return t('TODO Add a descriptive string here to show in the UI.') /* $ret */;
+}
+
+/**
+ * Ensure that Spaces overrides are stored as an object, not  an array.
+ */
+function boxes_update_6103() {
+  $ret = array();
+  if (module_exists('spaces')) {
+    $result = db_query("SELECT * FROM {spaces_overrides} WHERE object_type = :object_type", array(':object_type' => 'boxes'));
+    while ($row = db_fetch_object($result)) {
+      $v = unserialize($row->value);
+      $row->value = (object) $v;
+      drupal_write_record('spaces_overrides', $row, array('type', 'id', 'object_type', 'object_id'));
+    }
+    $ret[] = array(
+      'success' => TRUE,
+      'query' => 'Updated Spaces overrides',
+    );
+  }
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  return t('TODO Add a descriptive string here to show in the UI.') /* $ret */;
+}
+

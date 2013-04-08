@@ -1,0 +1,244 @@
+<?php
+
+// Load theme functions
+module_load_include('inc', 'eva', 'eva.theme');
+
+/**
+ * Implements hook_views_api().
+ */
+function eva_views_api() {
+  return array(
+    'api' => 3,
+  );
+}
+
+
+/**
+ * Implements hook_content_extra_fields().
+ */
+function eva_field_extra_fields() {
+  $extras = array();
+  $views = eva_get_views();
+  
+  foreach ($views as $entity => $data) {
+    foreach ($data as $view) {
+      foreach ($view['bundles'] as $bundle) {
+        $extras[$entity][$bundle]['display'][$view['name'] . '_' . $view['display']] = array(
+          'label' => (empty($view['title'])) ? $view['name'] : $view['title'], 
+          'description' => $view['title'], 
+          'weight' => 10,
+        );
+        // Provide a separate extra field for the exposed form if there is any.
+        if ($view['exposed form']) {
+          $extras[$entity][$bundle]['display'][$view['name'] . '_' . $view['display'] . '_' . 'form'] = array(
+            'label' => ((empty($view['title'])) ? $view['name'] : $view['title']) . ' (' . t('Exposed form') . ')', 
+            'description' => t('The exposed filter form of the view.'),
+            'weight' => 9,
+          );
+        }
+      }
+    }
+  }
+
+  return $extras;
+}
+
+/**
+ * Implements hook_entity_view_alter().
+ *
+ * This is a terrible, terrible hack that should not be necessary; taxonomy and
+ * some other entity types use fields, but don't implement  hook_entity_view().
+ * We have to ALTER those entity types after they're built. For the time being,
+ * we'll use a list of special cases to trigger this special handling. 
+ */
+function eva_entity_view_alter(&$build, $type) {
+  $view_mode = $build['#view_mode'];
+  $language = $build['#language'];
+
+  $entity_data = entity_get_info($type);
+  $entity = _eva_extract_entity_from_build($build);
+
+  $entity_ids = entity_extract_ids($type, $entity);
+  $settings = field_view_mode_settings($type, $entity_ids[2]);
+  $fields = field_extra_fields_get_display($type, $entity_ids[2], $view_mode);
+  $views = eva_get_views($type);
+
+  foreach ($views as $info) {
+    $longname = $info['name'] .'_'. $info['display'];
+    if (isset($fields[$longname]) && $fields[$longname]['visible']) {
+      if ($view = views_get_view($info['name'])) {
+        $view->set_display($info['display']);
+        if ($view->access($info['display'])) {
+          $view->current_entity = $entity;
+
+          if (isset($fields[$longname . '_form']) && $fields[$longname . '_form']['visible']) {
+            $view->init_handlers();
+            $exposed_form = $view->display_handler->get_plugin('exposed_form');
+
+            $build[$longname . '_form'] = array(
+              '#markup' => $exposed_form->render_exposed_form(TRUE),
+            );
+          }
+          $result = $view->execute_display($info['display']);
+          if (!empty($result)) {
+            $build[$longname] = array(
+              '#markup' => $result,
+              '#weight' => $fields[$longname]['weight'],
+            );
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Get a list of views and displays attached to speficic entities.
+ *
+ * This function will cache its results into the views cache, so it gets
+ * cleared by Views appropriately.
+ *
+ * @param $type
+ *   The entity type we want to retrieve views for. If NULL is
+ *   specified, views for all entity types will be returned.
+ * @param $reset
+ *   Force a rebuild of the data.
+ * @return
+ *   An array of view name/display name values, or an empty array().
+ */
+function eva_get_views($type = NULL, $reset = FALSE) {
+  $used_views = &drupal_static(__FUNCTION__);
+
+  if (!isset($used_views) || $reset) {
+    views_include('cache');
+    
+    // If we're not resetting, check the Views cache.
+    if (!$reset) {
+      $cache = views_cache_get("eva");
+      if (isset($cache->data)) {
+        $used_views = $cache->data;
+      }
+    }
+
+    // If it's still empty rebuild it.
+    if (!isset($used_views)) {
+      // Trigger a rebuild of the views object cache, which may not be fully loaded.
+      ctools_include('export');
+      ctools_export_load_object_reset('views_view');
+
+      // Build and cache the data, both in the DB and statically.
+      $views = views_get_applicable_views('uses hook entity view');
+      foreach ($views as $data) {
+        list($view, $display_id) = $data;
+        $view_entity = $view->display_handler->get_option('entity_type');
+        // Initialize handlers, to determine if the view uses exposed filters.
+        $view->init_handlers();
+        $used_views[$view_entity][] = array(
+          'name' => $view->name,
+          'title' => 'EVA: ' . $view->get_human_name() . ' - ' . $view->display[$display_id]->display_title,
+          'display' => $display_id,
+          'bundles' => $view->display_handler->get_option('bundles'),
+          'exposed form' => $view->display_handler->uses_exposed(),
+        );
+        $view->destroy();
+      }
+      views_cache_set("eva", $used_views);
+    }
+  }
+
+  // Now spit back the data.
+  if (isset($type) & isset($used_views)) {
+    return isset($used_views[$type]) ? $used_views[$type] : array();
+  }
+  else {
+    return isset($used_views) ? $used_views : array();
+  }
+}
+
+/**
+ * Extract an actual entity object from its $build array.
+ *
+ * This is a bit more complicated than it should be, since core entities, contrib
+ * entities, and contrib entities based on EntityAPI all store their junk in
+ * different slots of the build array. See http://drupal.org/node/1170198.
+ *
+ * @param $build
+ *   The token string defined by the view.
+ * @param $entity_data
+ *   The token type.
+ *
+ * I hate you, Milkman Dan.
+ */
+function _eva_extract_entity_from_build($build) {
+  // EntityAPI often sticks stuff in here.
+  if (!empty($build['#entity'])) {
+    return $build['#entity'];
+  }
+  
+  // Other entities stick them here!
+  elseif (!empty($build['#' . $build['#entity_type']])) {
+    return $build['#' . $build['#entity_type']];
+  }
+
+  // Some entities are naughty.
+  elseif ($build['#entity_type'] == 'user') {
+    return $build['#account'];
+  }
+  elseif ($build['#entity_type'] == 'taxonomy_term') {
+    return $build['#term'];
+  }
+
+  return FALSE;
+}
+
+/**
+ * Get view arguments array from string that contains tokens
+ *
+ * @param $string
+ *   The token string defined by the view.
+ * @param $type
+ *   The token type.
+ * @param $object
+ *   The object being used for replacement data (typically a node).
+ * @return
+ *   An array of argument values.
+ *
+ * @todo: security?
+ */
+function eva_get_arguments_from_token_string($string, $type, $object) {
+  $args = trim($string);
+  if (empty($args)) {
+    return array();
+  }
+  $args = token_replace($args, array($type => $object), array('sanitize' => FALSE));
+  return explode('/', $args);
+}
+
+/**
+ * Implements hook_modules_enabled().
+ */
+function eva_modules_enabled($modules) {
+  // Reset the static cache in case any of the enabled modules
+  // implement an eva view
+  drupal_static_reset('eva_get_views');
+  cache_clear_all('*', 'cache_views', TRUE);
+}
+
+/**
+ * Implements hook_modules_disabled().
+ */
+function eva_modules_disabled($modules) {
+  // Reset the static cache in case any of the disabled modules
+  // implemented an eva view
+  drupal_static_reset('eva_get_views');
+  cache_clear_all('*', 'cache_views', TRUE);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function eva_form_views_ui_edit_form_alter(&$form, &$form_state, $form_id) {
+  // Clear the field cache when views are saved. This will make sure newly
+  // created EVA views and/or exposed filters will appear.
+  $form['actions']['save']["#submit"][] = 'field_cache_clear';
+}

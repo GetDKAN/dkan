@@ -1,0 +1,3 @@
+Issue #1091288 by jamsilver Check whether nodequeue is around before assuming
+Issue #1087244 by bfroehle: DrupalDefaultEntityController warning 
+Issue #1091300 by jamsilver: Small bug prevented Features UI working on export

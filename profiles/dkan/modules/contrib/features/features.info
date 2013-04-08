@@ -1,0 +1,12 @@
+name = "Features"
+description = "Provides feature management for Drupal."
+core = 7.x
+package = "Features"
+files[] = tests/features.test
+
+; Information added by drupal.org packaging script on 2013-03-29
+version = "7.x-2.0-beta2"
+core = "7.x"
+project = "features"
+datestamp = "1364589018"
+

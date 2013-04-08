@@ -1,0 +1,20 @@
+name = Double field
+description = Provides a field with two text widgets
+package = Fields
+core = 7.x
+
+files[] = tests/double_field_field.test
+files[] = tests/double_field_widgets.test
+files[] = tests/double_field_formatters.test
+files[] = tests/double_field_contrib.test
+files[] = tests/double_field_test_case.inc
+files[] = tests/double_field_field.inc
+files[] = tests/double_field_widget.inc
+files[] = tests/double_field_formatter.inc
+
+; Information added by drupal.org packaging script on 2013-03-17
+version = "7.x-2.3"
+core = "7.x"
+project = "double_field"
+datestamp = "1363511715"
+

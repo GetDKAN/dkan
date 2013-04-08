@@ -1,0 +1,449 @@
+<?php
+/**
+ * @file
+ * Exposes a number of core Drupal elements as blocks.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function delta_blocks_help($path, $arg) {
+  if ($path == 'admin/help#delta_blocks') {
+    return '<p>' . t('This module exposes a number of core Drupal elements as blocks.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_menu()
+ */
+function delta_blocks_menu() {
+  $items = array();
+
+  $items['admin/config/user-interface/delta-blocks'] = array(
+    'title' => 'Delta blocks',
+    'description' => 'Settings for the Delta blocks module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('delta_blocks_admin_settings'),
+    'access arguments' => array('administer delta blocks'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'includes/delta_blocks.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function delta_blocks_permission() {
+  return array(
+    'administer delta blocks' => array(
+      'title' => t('Administer Delta blocks'),
+      'description' => t('Manage settings for Delta blocks module'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function delta_blocks_block_info() {
+  $blocks = array();  
+  foreach (_delta_blocks_get_blocks() as $delta => $info) {
+    if (_delta_blocks_is_enabled($delta)) {
+      $blocks[$delta] = array(
+        'info' => $info['title'],
+        'cache' => $info['cache'],
+      );
+    }
+  }
+  
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function delta_blocks_block_view($delta = '') {
+  $blocks = _delta_blocks_get_blocks();
+  if (isset($blocks[$delta]) && _delta_blocks_is_enabled($delta)) {
+    return array(
+      'subject' => '',
+      'content' => delta_blocks_get_content($delta),
+    );
+  }
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function delta_blocks_block_save($delta = '', $edit = array()) {
+  switch ($delta) {
+    case 'branding':
+      variable_set('delta_blocks_branding_site_name_hidden', $edit['delta_blocks_branding_site_slogan_hidden']);
+      variable_set('delta_blocks_branding_site_slogan_hidden', $edit['delta_blocks_branding_site_slogan_hidden']);
+      variable_set('delta_blocks_branding_logo_linked', $edit['delta_blocks_branding_logo_linked']);
+      variable_set('delta_blocks_branding_logo_render', $edit['delta_blocks_branding_logo_render']);
+      variable_set('delta_blocks_branding_site_name_linked', $edit['delta_blocks_branding_site_name_linked']);
+      break;
+      
+    case 'site-name':
+      variable_set('delta_blocks_site_name_linked', $edit['delta_blocks_site_name_linked']);
+      variable_set('delta_blocks_site_name_hidden', $edit['delta_blocks_site_name_hidden']);
+      break;
+      
+    case 'site-slogan':
+      variable_set('delta_blocks_site_slogan_hidden', $edit['delta_blocks_site_slogan_hidden']);
+      break;
+       
+    case 'page-title':
+      variable_set('delta_blocks_page_title_hidden', $edit['delta_blocks_page_title_hidden']);
+      break;
+           
+    case 'logo':
+      variable_set('delta_blocks_logo_linked', $edit['delta_blocks_logo_linked']);
+      break;
+      
+    case 'breadcrumb':
+      variable_set('delta_blocks_breadcrumb_title_hidden', $edit['delta_blocks_breadcrumb_title_hidden']);
+      variable_set('delta_blocks_breadcrumb_current', $edit['delta_blocks_breadcrumb_current']);
+      break;
+  }
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function delta_blocks_block_configure($delta = '') {
+  $form = array();
+  
+  switch ($delta) {
+    case 'branding':
+      $form['delta_blocks_settings']['delta_blocks_branding_site_name_linked'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Link the site name to your front page'),
+        '#default_value' => variable_get('delta_blocks_branding_site_name_linked', TRUE),
+      );
+      
+      $form['delta_blocks_settings']['delta_blocks_branding_site_name_hidden'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Hide the site name via CSS'),
+        '#default_value' => variable_get('delta_blocks_branding_site_name_hidden', FALSE),
+      );
+      
+      $form['delta_blocks_settings']['delta_blocks_branding_site_slogan_hidden'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Hide site slogan via CSS'),
+        '#default_value' => variable_get('delta_blocks_branding_site_slogan_hidden', FALSE),
+      );
+      
+      $form['delta_blocks_settings']['delta_blocks_branding_logo_render'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show the logo'),
+        '#default_value' => variable_get('delta_blocks_branding_logo_render', TRUE),
+      );
+      
+      $form['delta_blocks_settings']['delta_blocks_branding_logo_linked'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Link the logo to your front page'),
+        '#default_value' => variable_get('delta_blocks_branding_logo_linked', TRUE),
+        '#states' => array(
+          'visible' => array(
+            ':input[name="delta_blocks_branding_logo_render"]' => array('checked' => TRUE),
+          ),
+        ), 
+      );
+      break;
+      
+    case 'site-name':
+      $form['delta_blocks_settings']['delta_blocks_site_name_linked'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Link the site name to your front page'),
+        '#default_value' => variable_get('delta_blocks_site_name_linked', TRUE),
+      );
+      $form['delta_blocks_settings']['delta_blocks_site_name_hidden'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Hide the site name via CSS'),
+        '#default_value' => variable_get('delta_blocks_site_name_hidden', TRUE),
+      );
+      break;
+      
+    case 'site-slogan':
+      $form['delta_blocks_settings']['delta_blocks_site_slogan_hidden'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Hide the site slogan via CSS'),
+        '#default_value' => variable_get('delta_blocks_site_slogan_hidden', TRUE),
+      );
+      break;
+           
+    case 'page-title':
+      $form['delta_blocks_settings']['delta_blocks_page_title_hidden'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Hide page title via CSS'),
+        '#default_value' => variable_get('delta_blocks_page_title_hidden', FALSE),
+      );
+      break;
+           
+    case 'logo':
+      $form['delta_blocks_settings']['delta_blocks_logo_linked'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Link the logo to your front page'),
+        '#default_value' => variable_get('delta_blocks_logo_linked', TRUE),
+      );
+      break;
+      
+    case 'breadcrumb':
+      $form['delta_blocks_settings']['delta_blocks_breadcrumb_title_hidden'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Hide the block title via CSS'),
+        '#default_value' => variable_get('delta_blocks_breadcrumb_title_hidden', TRUE),
+      );
+      $form['delta_blocks_settings']['delta_blocks_breadcrumb_current'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Append the current page to the breadcrumb navigation'),
+        '#default_value' => variable_get('delta_blocks_breadcrumb_current', TRUE),
+      );
+      break;
+  }
+  
+  if (!empty($form)) {
+    $form['delta_blocks_settings'] += array(
+      '#type' => 'fieldset',
+      '#title' => t('Block settings'),
+    );
+  }
+  
+  return $form;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function delta_blocks_theme() {
+  return array(
+    'delta_blocks_logo' => array(
+      'variables' => array('logo' => NULL, 'logo_link' => NULL, 'site_name' => NULL),
+      'file' => 'includes/delta_blocks.theme.inc',
+    ),
+    'delta_blocks_site_name' => array(
+      'variables' => array('site_name' => NULL),
+      'file' => 'includes/delta_blocks.theme.inc',
+    ),
+    'delta_blocks_site_slogan' => array(
+      'variables' => array('site_slogan' => NULL),
+      'file' => 'includes/delta_blocks.theme.inc',
+    ),
+    'delta_blocks_branding' => array(
+      'variables' => array('site_name' => NULL, 'site_slogan' => NULL, 'logo' => NULL, 'logo_link' => NULL, 'site_name_hidden' => NULL, 'site_slogan_hidden' => NULL),
+      'file' => 'includes/delta_blocks.theme.inc',
+    ),
+    'delta_blocks_page_title' => array(
+      'variables' => array('page_title' => NULL),
+      'file' => 'includes/delta_blocks.theme.inc',
+     ),
+    'delta_blocks_breadcrumb' => array(
+      'variables' => array('breadcrumb' => NULL),
+      'file' => 'includes/delta_blocks.theme.inc',
+    ),
+    'delta_blocks_action_links' => array(
+      'variables' => array('action_links' => NULL),
+      'file' => 'includes/delta_blocks.theme.inc',
+    ),
+    'delta_blocks_feed_icons' => array(
+      'variables' => array('feed_icons' => NULL),
+      'file' => 'includes/delta_blocks.theme.inc',
+    ),
+    'delta_blocks_tabs' => array(
+      'variables' => array('primary' => NULL, 'secondary' => NULL),
+      'file' => 'includes/delta_blocks.theme.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu_contextual_links_alter().
+ */
+function delta_blocks_menu_contextual_links_alter(&$links, $router_item, $root_path) {
+  $block = array_pop($router_item['map']);
+
+  if (in_array($block, array('site-slogan', 'site-name', 'branding'))) {
+    $links['site-information'] = array(
+      'title' => t('Site information'),
+      'href' => 'admin/config/system/site-information',
+      'localized_options' => array(),
+    );
+  }
+  
+  if (in_array($block, array('logo', 'branding'))) {
+    $links['logo-settings'] = array(
+      'title' => t('Logo settings'),
+      'href' => module_exists('delta_ui') && !empty($GLOBALS['delta']) ? 'admin/appearance/delta/layouts/configure/' . $GLOBALS['delta']->machine_name : 'admin/appearance/settings/' . $GLOBALS['theme_key'],
+      'localized_options' => array('fragment' => 'edit-logo'),
+    );
+  }
+}
+
+/**
+ * Implements hook_preprocess_block().
+ */
+function delta_blocks_preprocess_block(&$vars) {
+  if ($vars['block']->delta == 'breadcrumb') {
+    if(variable_get('delta_blocks_breadcrumb_title_hidden', TRUE)) {
+      $vars['title_attributes_array']['class'][] = 'element-invisible';
+    }
+  } 
+}
+
+/**
+ * Provides individual block content.
+ */
+function delta_blocks_get_content($delta) {
+  $variables = array();
+
+  switch ($delta) {
+    case 'logo':
+      $variables['logo'] = delta_blocks_logo();
+      $variables['logo_linked'] = variable_get('delta_blocks_logo_linked', TRUE);
+      $variables['site_name'] = filter_xss_admin(variable_get('site_name', 'Drupal'));      
+      return theme('delta_blocks_logo', $variables);
+
+    case 'site-name':
+      $variables['site_name'] = filter_xss_admin(variable_get('site_name'));
+      $variables['site_name_linked'] = variable_get('delta_blocks_site_name_linked', TRUE);
+      $variables['site_name_hidden'] = variable_get('delta_blocks_site_name_hidden', FALSE);
+      return theme('delta_blocks_site_name', $variables);
+
+    case 'site-slogan':
+      $variables['site_slogan'] = filter_xss_admin(variable_get('site_slogan'));
+      $variables['site_slogan_hidden'] = variable_get('delta_blocks_site_slogan_hidden', FALSE);
+      return theme('delta_blocks_site_slogan', $variables);
+      
+    case 'branding':
+      $variables['site_name'] = filter_xss_admin(variable_get('site_name', 'Drupal'));
+      $variables['site_name_linked'] = variable_get('delta_blocks_branding_site_name_linked', TRUE);
+      $variables['site_name_hidden'] = variable_get('delta_blocks_branding_site_name_hidden', FALSE);
+      $variables['site_slogan'] = filter_xss_admin(variable_get('site_slogan', ''));
+      $variables['site_slogan_hidden'] = variable_get('delta_blocks_branding_site_slogan_hidden', FALSE);
+      $variables['logo'] = variable_get('delta_blocks_branding_logo_render', TRUE) ? delta_blocks_logo() : NULL;      
+      $variables['logo_linked'] = variable_get('delta_blocks_branding_logo_linked', TRUE);
+      return theme('delta_blocks_branding', $variables);
+      
+    case 'page-title':
+      $variables['page_title'] = drupal_get_title();
+      $variables['page_title_hidden'] = variable_get('delta_blocks_page_title_hidden', FALSE);
+      return theme('delta_blocks_page_title', $variables);
+
+    case 'breadcrumb':
+      $variables['breadcrumb_title_hidden'] = variable_get('delta_blocks_breadcrumb_title_hidden', TRUE);
+      $variables['breadcrumb_current'] = variable_get('delta_blocks_breadcrumb_current', TRUE);
+      $variables['breadcrumb'] = drupal_get_breadcrumb();
+      return theme('delta_blocks_breadcrumb', $variables);
+
+    case 'messages':
+      return theme('status_messages');
+
+    case 'tabs':
+      $variables['primary'] = menu_primary_local_tasks();
+      $variables['secondary'] = menu_secondary_local_tasks();
+      return theme('delta_blocks_tabs', $variables);
+
+    case 'action-links':
+      $variables['action_links'] = menu_local_actions();
+      return theme('delta_blocks_action_links', $variables);
+
+    case 'feed-icons':
+      $variables['feed_icons'] = drupal_get_feeds();
+      return theme('delta_blocks_feed_icons', $variables);
+  }
+}
+
+/**
+ * @todo
+ */
+function delta_blocks_options() {
+  $output = array();
+  
+  foreach (_delta_blocks_get_blocks() as $block => $info) {
+    $output[$block] = $info['title'];
+  }
+  
+  return $output;
+}
+
+/**
+ * @todo
+ */
+function delta_blocks_logo() {
+  $theme = $GLOBALS['theme_key'];
+   
+  if (theme_get_setting('default_logo', $theme)) {
+    $themes = list_themes();
+    $theme_object = $themes[$theme];
+    
+    return file_create_url(dirname($theme_object->filename) . '/logo.png');
+  }
+  else if ($path = theme_get_setting('logo_path', $theme)) {
+    return file_create_url($path);
+  }
+}
+
+/**
+ * Returns a list of delta_blocks blocks.
+ */
+function _delta_blocks_get_blocks() {
+  return array(
+    'logo' => array(
+      'title' => t('Logo'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
+    'site-name' => array(
+      'title' => t('Site name'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
+    'site-slogan' => array(
+      'title' => t('Site slogan'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
+    'branding' => array(
+      'title' => t('Branding'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
+    'page-title' => array(
+      'title' => t('Page title'),
+      'cache' => DRUPAL_CACHE_PER_PAGE,
+    ),
+    'breadcrumb' => array(
+      'title' => t('Breadcrumb'),
+      'cache' => DRUPAL_CACHE_PER_PAGE,
+    ),
+    'tabs' => array(
+      'title' => t('Tabs'),
+      'cache' => DRUPAL_CACHE_PER_PAGE,
+    ),
+    'messages' => array(
+      'title' => t('Messages'),
+      'cache' => DRUPAL_NO_CACHE,
+    ),
+    'action-links' => array(
+      'title' => t('Action links'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
+    'feed-icons' => array(
+      'title' => t('Feed icons'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
+  );
+}
+
+/**
+ * Verify if a given block is enabled in the admin settings.
+ */
+function _delta_blocks_is_enabled($delta) {
+  $blocks = variable_get('delta_blocks_toggle', array());
+  
+  if (!empty($blocks[$delta]) || !isset($blocks[$delta])) {
+    return TRUE;
+  }
+  
+  return FALSE;
+}

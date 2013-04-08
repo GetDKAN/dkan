@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<user>
+    <uid>1</uid>
+    <name>foo</name>
+    <mail>foo.bar@domain.com</mail>
+    <url>http://drupal-7dev.localhost/user/1</url>
+    <edit_url>http://drupal-7dev.localhost/user/1/edit</edit_url>
+    <last_access>1344245660</last_access>
+    <last_login>1343821898</last_login>
+    <created>1339609269</created>
+    <roles>
+        <item>2</item>
+        <item>3</item>
+    </roles>
+    <status>1</status>
+    <theme>bartik</theme>
+</user>

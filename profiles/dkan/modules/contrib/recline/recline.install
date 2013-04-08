@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * @file
+ * Installation file of the Recline module.
+ */
+
+/**
+ * Implements hook_requirement().
+ */
+function recline_requirements($phase) {
+  $requirements = array();
+
+  if ($phase == 'runtime') {
+    $library_path = _recline_library_path();
+    if (_recline_requirements_installed($library_path)) {
+      $requirements['recline'] = array(
+      'title' => t('Recline library'),
+      'value' => t('Installed'),
+      'severity' => REQUIREMENT_OK,
+      );
+    }
+    else{
+      $requirements['recline'] = array(
+      'title' => t('Recline library'),
+      'value' => t('Not Found'),
+      'severity' => REQUIREMENT_ERROR,
+      'description' => t('You need to download this zip file: !recline and extract the entire contents of the archive into the %path folder of your server.', array('!recline' => l(t('Recline.js'), 'https://github.com/acouch/recline/zipball/master'), '%path' => 'sites/all/libraries/recline')),
+      );
+    }
+  }
+  return $requirements;
+}
+
+/**
+ * Implements hook_field_schema().
+ */
+function recline_field_schema($field) {
+  $columns = array(
+    'fid' => array(
+      'description' => 'The {file_managed}.fid being referenced in this field.',
+      'type' => 'int',
+      'not null' => FALSE,
+      'unsigned' => TRUE,
+    ),
+    'service_id' => array(
+      'description' => "Service ID for parsed file.",
+      'type' => 'varchar',
+      'length' => 1024,
+      'not null' => FALSE,
+    ),
+  );
+  module_load_include('inc', 'recline', 'recline.field');
+  foreach (recline_view_options() as $view => $label) {
+    $columns[$view] = array(
+      'type' => 'int',
+      'not null' => FALSE,
+    );
+  }
+  $indexes = array(
+    'fid' => array('fid'),
+  );
+  $foreign_keys = array(
+    'fid' => array(
+      'table' => 'file_managed',
+      'columns' => array('fid' => 'fid'),
+    ),
+  );
+  return array(
+    'columns' => $columns,
+    'indexes' => $indexes,
+    'foreign_keys' => $foreign_keys,
+  );
+}
+
+/**
+ * Remove variables on uninstall.
+ */
+function recline_uninstall() {
+}
+
+/**
+ * Checks wether Recline.js library exists or not.
+ */
+function _recline_requirements_installed($path) {
+  if (file_exists($path . '/dist/recline.js')) {
+    return TRUE;
+  }
+  return FALSE;
+}

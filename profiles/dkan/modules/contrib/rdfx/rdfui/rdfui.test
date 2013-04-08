@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * Test RDF Mapping UI.
+ */
+class RdfUiTestCase extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'RDF UI',
+      'description' => 'Test the UI for mappings.',
+      'group' => 'RDFx',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('rdfui');
+
+    $web_user = $this->drupalCreateUser(array('create article content', 'create page content', 'administer rdf', 'administer content types',));
+    $this->drupalLogin($web_user);
+  }
+
+  function testPrefixNotification() {
+    $edit = array();
+    $field_settings_form = 'admin/structure/types/manage/page/fields/body';
+
+    $edit['rdf_body_predicates'] = 'foo:bar';
+    $this->drupalPost($field_settings_form, $edit, t('Save settings'));
+    $this->assertText(t('Term foo:bar uses unmapped prefix foo.'), t('Warning displayed for unbound prefix.'));
+  }
+}

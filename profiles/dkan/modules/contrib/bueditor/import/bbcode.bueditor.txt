@@ -1,0 +1,201 @@
+array (
+  'name' => 'BBCode',
+  'pages' => 'node/*
+comment/*',
+  'excludes' => 'edit-log
+edit-menu-description',
+  'iconpath' => '%BUEDITOR/icons',
+  'spriteon' => '1',
+  'buttons' => 
+  array (
+    0 => 
+    array (
+      'title' => 'Insert/edit image',
+      'content' => 'js:
+var S = E.getSelection();
+var M = S.match(new RegExp(\'^\\\\[img(?:=(\\\\d+)x(\\\\d+))?](.+)\\\\[/img]$\')) || [\'\', \'\', \'\', \'\'];
+var form = [
+ {name: \'src\', title: \'Image URL\', value: M[3], suffix: E.imce.button(\'attr_src\'), required: true},
+ {name: \'width\', title: \'Width x Height\', value: M[1], suffix: \' x \', attributes: {size: 3}, getnext: true},
+ {name: \'height\', value: M[2], attributes: {size: 3}}
+];
+var opt = {title: \'Insert/edit image\'};
+opt.submit = function(tag, form) {
+  var el = form.elements;
+  var src = el[\'attr_src\'].value;
+  var w = el[\'attr_width\'].value;
+  var h = el[\'attr_height\'].value;
+  E.replaceSelection(\'[img\'+ (w*1 ? (\'=\'+ w +\'x\'+ h) : \'\') +\']\'+ src +\'[/img]\');
+};
+E.tagDialog(\'img\', form, opt);',
+      'icon' => 'image.png',
+      'accesskey' => 'M',
+      'weight' => '0',
+    ),
+    1 => 
+    array (
+      'title' => 'Insert/edit link',
+      'content' => 'js:
+var S = E.getSelection();
+var M = S.match(new RegExp(\'^\\\\[url(?:=([^\\\\]]*))?]((?:.|[\\r\\n])*)\\\\[/url]$\')) || [\'\', \'\', \'\'];
+var form = [
+ {name: \'href\', title: \'URL\', value: M[1] || M[2], suffix: E.imce.button(\'attr_href\'), required: true},
+ {name: \'text\', value: M[1] ? M[2] : (M[0] ? \'\' : S)}
+];
+var opt = {title: \'Insert/edit link\'};
+opt.submit = function(tag, form) {
+  var el = form.elements;
+  var url = el[\'attr_href\'].value;
+  var txt = el[\'attr_text\'].value;
+  E.replaceSelection(\'[url\'+ (txt ? (\'=\'+ url) : \'\') +\']\'+ (txt || url) +\'[/url]\');
+};
+E.tagDialog(\'a\', form, opt);',
+      'icon' => 'link.png',
+      'accesskey' => 'L',
+      'weight' => '1',
+    ),
+    2 => 
+    array (
+      'title' => 'tpl:dot',
+      'content' => '',
+      'icon' => 'dot.png',
+      'accesskey' => '',
+      'weight' => '2',
+    ),
+    3 => 
+    array (
+      'title' => 'Bold',
+      'content' => '[b]%TEXT%[/b]',
+      'icon' => 'bold.png',
+      'accesskey' => 'B',
+      'weight' => '3',
+    ),
+    4 => 
+    array (
+      'title' => 'Italic',
+      'content' => '[i]%TEXT%[/i]',
+      'icon' => 'italic.png',
+      'accesskey' => 'I',
+      'weight' => '4',
+    ),
+    5 => 
+    array (
+      'title' => 'Underline',
+      'content' => '[u]%TEXT%[/u]',
+      'icon' => 'underline.png',
+      'accesskey' => 'U',
+      'weight' => '5',
+    ),
+    6 => 
+    array (
+      'title' => 'Strikethrough',
+      'content' => '[s]%TEXT%[/s]',
+      'icon' => 'strike.png',
+      'accesskey' => 'S',
+      'weight' => '6',
+    ),
+    7 => 
+    array (
+      'title' => 'tpl:dot',
+      'content' => '',
+      'icon' => 'dot.png',
+      'accesskey' => '',
+      'weight' => '7',
+    ),
+    8 => 
+    array (
+      'title' => 'Ordered list. Converts selected lines to a numbered list.',
+      'content' => 'js: E.wrapLines(\'[list=1]\\n\', \'  [*]\', \'\', \'\\n[/list]\');',
+      'icon' => 'ol.png',
+      'accesskey' => 'O',
+      'weight' => '8',
+    ),
+    9 => 
+    array (
+      'title' => 'Unordered list. Converts selected lines to a bulleted list.',
+      'content' => 'js: E.wrapLines(\'[list]\\n\', \'  [*]\', \'\', \'\\n[/list]\');',
+      'icon' => 'ul.png',
+      'accesskey' => 'N',
+      'weight' => '9',
+    ),
+    10 => 
+    array (
+      'title' => 'tpl:dot',
+      'content' => '',
+      'icon' => 'dot.png',
+      'accesskey' => '',
+      'weight' => '10',
+    ),
+    11 => 
+    array (
+      'title' => 'Headings',
+      'content' => 'js:
+var tags = [[\'h1\', \'Heading1\'], [\'h2\', \'Heading2\'], [\'h3\', \'Heading3\'], [\'h4\', \'Heading4\'], [\'h5\', \'Heading5\'], [\'h6\', \'Heading6\']];
+E.tagChooser(tags);
+$(\'a.choice-link\', E.quickPop).unbind(\'click\').each(function(i, a) {
+  $(a).click(function() {
+    E.tagSelection(\'[\'+ tags[i][0] +\']\', \'[/\'+ tags[i][0] +\']\').focus();
+    return false;
+  });
+});',
+      'icon' => 'headers.png',
+      'accesskey' => 'H',
+      'weight' => '11',
+    ),
+    12 => 
+    array (
+      'title' => 'Quote',
+      'content' => '[quote]%TEXT%[/quote]',
+      'icon' => 'quote.png',
+      'accesskey' => 'Q',
+      'weight' => '12',
+    ),
+    13 => 
+    array (
+      'title' => 'Code',
+      'content' => '[code]%TEXT%[/code]',
+      'icon' => 'code.png',
+      'accesskey' => 'D',
+      'weight' => '13',
+    ),
+    14 => 
+    array (
+      'title' => 'tpl:dot',
+      'content' => '',
+      'icon' => 'dot.png',
+      'accesskey' => '',
+      'weight' => '14',
+    ),
+    15 => 
+    array (
+      'title' => 'Teaser break',
+      'content' => '<!--break-->',
+      'icon' => 'teaserbr.png',
+      'accesskey' => 'T',
+      'weight' => '15',
+    ),
+    16 => 
+    array (
+      'title' => 'Preview',
+      'content' => 'js: E.prvAjax();',
+      'icon' => 'preview.png',
+      'accesskey' => 'P',
+      'weight' => '16',
+    ),
+    17 => 
+    array (
+      'title' => 'Help',
+      'content' => 'js: E.help(\'fadeIn\');',
+      'icon' => 'help.png',
+      'accesskey' => '1',
+      'weight' => '17',
+    ),
+  ),
+  'icons' => 
+  array (
+  ),
+  'library' => 
+  array (
+    '%BUEDITOR/library/bue.min.default.js' => '',
+  ),
+)

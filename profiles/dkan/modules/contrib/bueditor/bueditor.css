@@ -1,0 +1,125 @@
+
+.bue-ui {
+  margin: 1px 0px;
+}
+.bue-button {
+  margin: 1px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  padding: 0;
+}
+.bue-button:hover {
+  border-color: #fc6;
+}
+.bue-text-button {
+  height: 22px;
+  font-size: 11px;
+  font-weight: bold;
+  background-color: #fff;
+  color: #444;
+  text-align: center;
+}
+.bue-sprite-button {
+  background: transparent none no-repeat 0 0;
+}
+.bue-ui .stay-clicked {
+  border-color: #f00;
+}
+.bue-ui span.separator {
+  margin: 0px 1px;
+}
+.bue-ui img, .bue-button {
+  vertical-align: middle;
+}
+/*Popup dialogs*/
+.bue-popup {
+  z-index: 10;
+  position: absolute;
+  font: 12px verdana;
+  width: auto;
+  margin: 0;
+  text-align: left;
+  color: #333;
+  border: none;
+  outline: none;
+}
+.bue-popup-head {
+  cursor: move;
+  font-weight: bold;
+  background-color: #e6e6fa;
+  border: 1px solid #999;
+  margin-bottom: -1px;
+}
+.bue-popup-title {
+  float: left;
+  margin: 0.4em 0.5em;
+}
+.bue-popup-close {
+  float: right;
+  cursor: pointer;
+  margin: 0.2em 0.5em;
+  padding: 0.2em 0.5em;
+  border: 1px solid #bbb;
+  font-size: 0.9em;
+  background: transparent;
+}
+.bue-popup-close:hover {
+  background-color: #f5f5fa;
+}
+.bue-popup-body {
+  background-color: #f5f5fa;
+  border: 1px solid #999;
+}
+.bue-popup-content {
+  margin: 0.5em;
+  overflow: hidden;
+}
+.bue-popup-content table {
+  margin: 0em;
+  border: none;
+}
+.bue-popup-content tbody {
+  border: none;
+}
+.bue-popup .bue-zero, .bue-zero {
+  margin: 0em;
+  padding: 0em;
+  border: none;
+  background: none;
+}
+/*tag chooser*/
+.bue-popup-content ul.tag-chooser {
+  margin: 0em;
+  padding: 0em;
+}
+.bue-popup-content ul.tag-chooser li.choice {
+  background: none;
+  list-style: circle;
+  margin: 0.3em 0.5em 0.3em 1.5em;
+  padding: 0em;
+}
+.bue-popup-content ul.tag-chooser a.choice-link {
+  display: block;
+  color: #000;
+}
+#bue-help {
+  min-width: 200px;
+  max-width: 400px;
+}
+/*Imce popup*/
+#bue-imce-pop iframe {
+  width: 720px;
+  height: 520px;
+  border: none;
+}
+#bue-imce-pop .bue-popup-content {
+  margin: 0em;
+}
+#bue-imce-button {
+  margin: 0 0.2em;
+}
+
+/* Fix bartik : #995948 */
+.page-admin #content .bue-ui img {
+  margin: 0;
+}

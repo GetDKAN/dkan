@@ -1,0 +1,13 @@
+name = UUID Path
+description = Provides export functionality for url aliases.
+core = 7.x
+package = UUID
+dependencies[] = uuid
+
+
+; Information added by drupal.org packaging script on 2013-02-03
+version = "7.x-1.0-alpha3+52-dev"
+core = "7.x"
+project = "uuid"
+datestamp = "1359858369"
+

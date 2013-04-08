@@ -1,0 +1,45 @@
+{
+  "body":{
+    "value":"Aptent bene capto euismod facilisi olim praemitto. Adipiscing esca paulatim tamen tincidunt utrum. Abbas consectetuer eu ibidem imputo luctus ludus nisl. Ad huic oppeto saepius singularis turpis valde. Fere ille magna nostrud premo. Caecus dolore te ulciscor. Ex iustum ludus meus. Dolore hos importunus paratus praemitto venio.\n\nAcsi obruo occuro quia. Erat genitus ibidem ideo pertineo zelus. Cogo dolor ille probo suscipere typicus usitas vel velit. Appellatio commodo nunc.\n\n",
+    "summary":"",
+    "format":"php_code"
+  },
+  "field_tags":[
+    {
+      "uri":"http:\/\/drupal-7dev.localhost\/taxonomy_term\/18",
+      "id":"18",
+      "resource":"taxonomy_term"
+    }
+  ],
+  "field_image":{
+    "file":{
+      "uri":"http:\/\/drupal-7dev.localhost\/file\/23",
+      "id":"23",
+      "resource":"file"
+    },
+    "alt":"Huic similis tego ullamcorper wisi."
+  },
+  "nid":"1",
+  "vid":"1",
+  "is_new":false,
+  "type":"article",
+  "title":"Autem Commoveo Ludus Quadrum",
+  "language":"und",
+  "url":"http:\/\/drupal-7dev.localhost\/node\/89",
+  "edit_url":"http:\/\/drupal-7dev.localhost\/node\/89\/edit",
+  "status":"1",
+  "promote":"1",
+  "sticky":"0",
+  "created":"1342808903",
+  "changed":"1343130463",
+  "author":{
+    "uri":"http:\/\/drupal-7dev.localhost\/user\/1",
+    "id":"1",
+    "resource":"user"
+  },
+  "log":"",
+  "revision":null,
+  "comment":"2",
+  "comment_count":"0",
+  "comment_count_new":"0"
+}

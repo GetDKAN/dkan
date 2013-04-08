@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the UUID Services Example feature.
+ */
+
+include_once('uuid_services_example.features.inc');

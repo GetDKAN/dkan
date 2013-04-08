@@ -1,0 +1,229 @@
+<?php
+
+/**
+ * @file
+ * Main module functions for the uuid module.
+ */
+
+/**
+ * Include main API functions.
+ */
+module_load_include('inc', 'uuid', 'uuid');
+
+/**
+ * Include the Entity API implementation of the UUID API.
+ */
+module_load_include('inc', 'uuid', 'uuid.entity');
+
+/**
+ * Include implementations for all core modules.
+ *
+ * Instead of having separate modules for all core implementations this file
+ * implements all of them in their own name space. In some cases this adds some
+ * unecessary code weight, but instead it saves us from module mania.
+ */
+module_load_include('inc', 'uuid', 'uuid.core');
+
+/**
+ * Implements of hook_menu().
+ */
+function uuid_menu() {
+  $items = array();
+
+  $items['uuid'] = array(
+    'title' => 'UUID redirector',
+    'description' => 'Redirects requests for UUID URIs to the referenced entity.',
+    'page callback' => 'uuid_redirector',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/config/system/uuid'] = array(
+    'title' => 'Universally unique identifiers',
+    'description' => 'Configure universally unique identifiers.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uuid_admin_form'),
+    'access arguments' => array('administer uuid'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'uuid.admin.inc',
+  );
+
+  // Conditional support for Devel. A good thing for developers.
+  if (module_exists('devel')) {
+    $entity_types = array(
+      'user' => array('path' => 'user/%user/devel/load-by-uuid', 'arg' => 1),
+      'node' => array('path' => 'node/%node/devel/load-by-uuid', 'arg' => 1),
+      'comment' => array('path' => 'comment/%comment/devel/load-by-uuid', 'arg' => 1),
+      'taxonomy_term' => array('path' => 'taxonomy/term/%taxonomy_term/devel/load-by-uuid', 'arg' => 2),
+    );
+    foreach ($entity_types as $entity_type => $info) {
+      $items[$info['path']] = array(
+        'title' => 'Load by UUID',
+        'page callback' => 'uuid_devel_load_by_uuid',
+        'page arguments' => array($entity_type, $info['arg']),
+        'access arguments' => array('access devel information'),
+        'type' => MENU_LOCAL_TASK,
+        'file' => 'uuid.admin.inc',
+        'weight' => 100,
+      );
+    }
+  }
+  return $items;
+}
+
+/**
+ * Implements of hook_ctools_plugin_directory().
+ */
+function uuid_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implements of hook_permission().
+ */
+function uuid_permission() {
+  return array(
+    'administer uuid' => array(
+      'title' => t('Administer UUID'),
+      'description' => t('Allows configuration of the UUID module and APIs.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_hook_info().
+ */
+function uuid_hook_info() {
+  $hook_names = array(
+    'uuid_info',
+    'uuid_sync',
+    'entity_uuid_load',
+    'field_uuid_load',
+    'entity_uuid_presave',
+    'entity_uuid_save',
+    'entity_uuid_delete',
+    'field_uuid_presave',
+    'uuid_menu_path_to_uri_alter',
+    'uuid_menu_uri_to_path_alter',
+    'uuid_default_entities',
+    'uuid_entities_pre_rebuild',
+    'uuid_entities_pre_revert',
+    'uuid_entities_post_rebuild',
+    'uuid_entities_post_revert',
+    'uuid_entities_features_export_entity_alter',
+    'uuid_entities_features_export_field_alter',
+    'uuid_uri_data',
+    'uuid_id_uri_data',
+    'uuid_uri_data',
+    'uuid_id_uri_data',
+  );
+
+  return array_fill_keys($hook_names, array('group' => 'uuid'));
+}
+
+
+/**
+ * Implementation of hook_views_api().
+ */
+function uuid_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'uuid'),
+  );
+}
+
+/**
+ * Implements of hook_module_implements_alter().
+ *
+ * Moves implementation of hook_entity_info_alter() to the bottom so it is
+ * invoked after all modules relying on the entity API.
+ *
+ * @see uuid_entity_info_alter()
+ */
+function uuid_module_implements_alter(&$Implementss, $hook) {
+  if ($hook == 'entity_info_alter') {
+    // Move our hook Implements to the bottom.
+    $group = $Implementss['uuid'];
+    unset($Implementss['uuid']);
+    $Implementss['uuid'] = $group;
+  }
+}
+
+/**
+ * Implements of hook_uuid_sync().
+ */
+function uuid_uuid_sync() {
+  foreach (entity_get_info() as $entity_type => $info) {
+    if (isset($info['uuid']) && $info['uuid'] == TRUE && !empty($info['entity keys']['uuid'])) {
+      _uuid_sync_table($info['base table'], $info['entity keys']['id'], $info['entity keys']['uuid']);
+      if (!empty($info['entity keys']['revision uuid'])) {
+        _uuid_sync_table($info['revision table'], $info['entity keys']['revision'], $info['entity keys']['revision uuid']);
+      }
+    }
+  }
+}
+
+/**
+ * Helper function that executes the update on the actual table.
+ */
+function _uuid_sync_table($table, $id_field, $uuid_field) {
+  // Fetch empty records.
+  $result = db_select($table, 't')
+    ->fields('t', array($id_field))
+    ->condition(db_or()->condition($uuid_field, '')->isNull($uuid_field))
+    ->execute();
+
+  // Update empty records.
+  foreach ($result as $record) {
+    db_update($table)
+      ->fields(array($uuid_field => uuid_generate()))
+      ->condition($id_field, $record->{$id_field})
+      ->execute();
+  }
+}
+
+/**
+ * Implementation of hook_features_api().
+ *
+ * The Features support consists of exporting entities from a Deploy
+ * <em>fetch-only</em> plan. Deploy is only required to generate the feature
+ * it self.
+ *
+ * The reason why we depend on Deploy for the generation of the content is
+ * because Deploy has the kind of dependency detection framework we need, to
+ * identify all dependencies for all entities.
+ */
+function uuid_features_api() {
+  return array(
+    'uuid_entities' => array(
+      'name' => t('UUID entities'),
+      'default_hook' => 'uuid_default_entities',
+      'default_file' => FEATURES_DEFAULTS_INCLUDED,
+      'feature_source' => TRUE,
+      'file' => drupal_get_path('module', 'uuid') .'/uuid.features.inc',
+    ),
+  );
+}
+
+/**
+ * Redirects all UUID URI requests to the appropriate entity page.
+ */
+function uuid_redirector() {
+  $entity_data = uuid_uri_array_to_data(arg());
+  
+  $entity_info = entity_get_info($entity_data['entity_type']);
+  if (empty($entity_info['uuid'])) {
+    return drupal_not_found();
+  }
+
+  $entities = entity_uuid_load($entity_data['entity_type'], array($entity_data['uuid']));
+  if (!count($entities)) {
+    return drupal_not_found();
+  }
+
+  $uri = entity_uri($entity_data['entity_type'], current($entities));
+  drupal_goto($uri['path'], array(), 301);
+}
+

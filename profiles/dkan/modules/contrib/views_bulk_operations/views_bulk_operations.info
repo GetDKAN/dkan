@@ -1,0 +1,16 @@
+name = Views Bulk Operations
+description = Provides a way of selecting multiple rows and applying operations to them.
+dependencies[] = entity
+dependencies[] = views
+package = Views
+core = 7.x
+
+files[] = plugins/operation_types/base.class.php
+files[] = views/views_bulk_operations_handler_field_operations.inc
+
+; Information added by drupal.org packaging script on 2012-12-03
+version = "7.x-3.1"
+core = "7.x"
+project = "views_bulk_operations"
+datestamp = "1354500015"
+

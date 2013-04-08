@@ -1,0 +1,42 @@
+/*
+ * 3 field widget display
+ */
+.term {
+  padding: 2px;
+  margin-right: 10px;
+  background-color: #eeeeee;
+}
+
+.term-add {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.term-holder {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.term-remove {
+  cursor: pointer;
+  color: red;
+  font-weight: bold;
+}
+
+/*
+ * Terms autocomplete on administrative screens.
+ */
+.rdf-term-autocomplete {
+  margin: 0;
+  padding: 0;
+  white-space: normal;
+}
+
+.rdf-comment-autocomplete {
+  border-bottom: 1px solid #ccc;
+  color: #666;
+  font-size: .9em;
+  font-style: italic;
+  margin: 0;
+  padding-bottom: 10px;
+}

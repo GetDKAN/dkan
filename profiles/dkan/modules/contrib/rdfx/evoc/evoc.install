@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the evoc module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function evoc_install() {
+  drupal_set_message('You can now ' . l('import the core RDF vocabularies', 'evoc/import_core') . '.');
+}

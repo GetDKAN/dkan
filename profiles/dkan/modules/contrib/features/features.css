@@ -1,0 +1,561 @@
+/**
+ * Features packages.
+ */
+div.features-form-links {
+  width:20%;
+  float:left;
+}
+
+div.features-form-content {
+  width:80%;
+  float:right;
+}
+
+/**
+ * Package links.
+ */
+div.features-form-links ul#features-form-links,
+div.features-form-links ul#features-form-links li,
+div.features-form-links ul#features-form-links li a {
+  display:block;
+  float:none;
+  padding:0px;
+  margin:0px;
+}
+
+div.features-form-links ul#features-form-links {
+  margin:0px 0px 10px;
+}
+
+div.features-form-links ul#features-form-links li a {
+  background:#f8f8f8;
+  padding:5px 5px 4px 4px;
+  border-left:1px solid #eee;
+  border-bottom:1px solid #eee;
+  color: #000;
+  cursor:pointer;
+}
+
+div.features-form-links ul#features-form-links li a.features-package-active {
+  padding:4px 5px 4px 4px;
+  background:#fff;
+  border:1px solid #ccc;
+  border-right:0px;
+  color: #000;
+  margin-right:-1px;
+}
+
+/* Packages */
+div.features-form-package {
+  border:1px solid #ccc;
+  background:#fff;
+  color: #000;
+  padding:10px;
+  margin:0px 0px 20px;
+  display:none;
+}
+
+div.features-package-active {
+  display:block;
+}
+
+/**
+ * Features management form (admin/build/features).
+ */
+div.features-empty {
+  margin:15px 0px;
+  font-size:1.5em;
+  text-align:center;
+  color:#999;
+}
+
+form div.buttons {
+  text-align:center;
+}
+
+table.features .admin-loading,
+table.features tr.disabled {
+  color:#999;
+}
+
+table.features a.configure {
+  float:right;
+  font-style:italic;
+}
+table.features div.feature {
+  float:left; width:85%;
+}
+table.features div.feature strong {
+  font-size:13px;
+}
+table.features div.feature div.description {
+  font-size:11px; margin:0px;
+}
+
+table.features-manage td.name {
+  width:80%;
+}
+table.features-manage td.sign {
+  width:20%;
+}
+
+table.features-admin td.name {
+  width:60%;
+}
+table.features-admin td.sign {
+  width:20%;
+}
+table.features-admin td.state {
+  width:10%;
+}
+table.features-admin td.actions {
+  width:10%;
+}
+
+table.features td.sign {
+  font-size:9px;
+  line-height:15px;
+  white-space:nowrap;
+}
+
+table.features td.sign * {
+  margin:0px;
+}
+
+table.features .admin-check,
+table.features .admin-default,
+table.features .admin-overridden,
+table.features .admin-rebuilding,
+table.features .admin-needs-review {
+  display:none;
+}
+
+/**
+ * Feature export form (admin/build/features/export).
+ */
+form.features-export-form table td {
+  width:50%;
+}
+form.features-export-form table td {
+  vertical-align:top;
+}
+form.features-export-form table div.description {
+  white-space:normal;
+}
+
+table.features-export div.form-item {
+  white-space:normal;
+}
+table.features-export select {
+  width:90%;
+}
+table.features-export td {
+  vertical-align:top;
+}
+
+form.features-export-form div.features-select {
+  display:none;
+}
+
+/*
+form.features-export-form div.form-checkboxes {
+  overflow-x:hidden;
+  overflow-y:auto;
+  height:20em;
+  }
+   */
+
+form.features-export-form div#edit-components-wrapper,
+form.features-export-form div.features-select {
+  padding-right:20px;
+}
+
+/**
+ * Feature component display (admin/build/features/%feature).
+ */
+div.features-components div.column {
+  float:left;
+  width:50%;
+}
+
+div.features-components div.column div.info {
+  padding-right:20px;
+}
+div.features-components div.column div.components {
+  padding-left:20px;
+}
+
+h3.features-download,
+div.features-comparison h3,
+div.features-components h3 {
+  font-size:2em;
+  font-weight:bold;
+  letter-spacing:-1px;
+  margin:15px 0px;
+}
+
+h3.features-download {
+  text-align:center;
+}
+
+div.features-components div.description {
+  font-size:11px;
+  margin:15px 0px;
+}
+
+div.features-components table td {
+  font-size:11px;
+}
+div.features-components table td.component {
+  padding-left:20px;
+}
+
+/**
+ * Features component lists.
+ */
+span.features-component-key {
+  font-size:11px;
+}
+
+a.admin-update,
+a.features-storage,
+span.features-storage,
+span.features-component-list span {
+  white-space:nowrap;
+  margin-right:5px;
+  padding:2px 5px;
+  background:#eee;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+}
+
+div.features-key span.admin-conflict,
+span.features-component-list span.features-conflict {
+  background-color: #c30 !important;
+  color: #fff;
+}
+
+#features-export-wrapper .features-conflict,
+#features-export-wrapper .features-conflict label.option{
+  color: #c30 !important;
+  font-weight: bold !important;
+}
+
+div.conflicts span.admin-disabled {
+  color: #955;
+}
+
+a.admin-update {
+  background:transparent;
+}
+
+/* These pseudo selectors are necessary for themes like Garland. */
+a.admin-overridden:link,
+a.admin-overridden:visited,
+span.admin-overridden {
+  color:#fff;
+  background:#666;
+}
+
+a.admin-needs-review:link,
+a.admin-needs-review:visited,
+span.admin-needs-review {
+  color:#963;
+  background:#fe6;
+}
+
+a.admin-rebuilding:link,
+a.admin-rebuilding:visited,
+span.admin-rebuilding {
+  color:#fff;
+  background:#699;
+}
+
+a.admin-conflict:link,
+a.admin-conflict:visited,
+span.admin-conflict {
+  color:#c30;
+}
+
+table.features-diff td.diff-addedline,
+span.features-component-list .features-detected {
+  color:#68a;
+  background:#def;
+}
+
+table.features-diff td.diff-deletedline,
+span.features-component-list .features-dependency {
+  color:#999;
+  background:#f8f8f8;
+}
+
+/**
+ * Features diff.
+ */
+table.features-diff {
+  font-size:11px;
+}
+
+table.features-diff td {
+  padding:0px 5px;
+}
+
+table.features-diff td.diff-deletedline,
+table.features-diff td.diff-addedline,
+table.features-diff td.diff-context {
+  width:50%;
+  font-family:'Andale Mono',monospace;
+}
+
+/**
+ * New UI component export list
+ */
+#features-export-wrapper div.features-export-parent {
+  clear: both;
+}
+#features-export-form .fieldset-content.fieldset-wrapper {
+  padding-top: 5px;
+}
+html.js #features-export-form fieldset.collapsed {
+  min-height: 2em;
+  margin-bottom: 0;
+  top: 0;
+  padding: 0 0 0 0;
+}
+fieldset.features-export-component  {
+  background: #F3F8FB;
+  margin: 0.5em 0;
+  font-weight: normal;
+  font-size: 12px;
+  top: 0;
+}
+fieldset.features-export-component.collapsed  {
+  background: #F3F8FB;
+}
+fieldset.features-export-component legend {
+  top: 0;
+}
+fieldset.features-export-component.collapsed .fieldset-wrapper {
+  margin: 0;
+  padding: 0 13px 6px 15px;
+}
+fieldset.features-export-component .fieldset-legend {
+  white-space: nowrap;
+}
+fieldset.features-export-component .fieldset-title span {
+  font-size: 11px;
+  text-transform: none;
+  font-weight: normal;
+}
+#features-export-wrapper .fieldset-wrapper  {
+  font-size: 12px;
+}
+div.features-export-list  {
+  font-weight: normal;
+  font-size: 12px;
+  border: 1px solid #CCC;
+  border-top-width: 0;
+  overflow: hidden;
+}
+#features-export-form .fieldset-description {
+  margin: 5px 0;
+  line-height: 1.231em;
+  font-size: 0.923em;
+  color: #666;
+}
+div.features-export-empty {
+  display: none;
+}
+fieldset.features-export-component .fieldset-wrapper .form-checkboxes {
+  max-height: 20em;
+  overflow: auto;
+  min-width: 100px;
+}
+
+#features-export-wrapper .component-select .form-type-checkbox {
+  overflow: hidden;
+  padding: 0 0 0 2px;
+}
+
+#features-export-wrapper .component-added .form-type-checkbox,
+#features-export-wrapper .component-detected .form-type-checkbox,
+#features-export-wrapper .component-included .form-type-checkbox {
+  float: left;
+  white-space: normal;
+  margin: 2px 5px;
+  padding: 0 5px;
+  background: transparent;
+}
+
+#features-export-wrapper .component-added .form-type-checkbox {
+  font-weight: bold;
+  background: #EEE;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#features-export-wrapper div.component-added label.option {
+  font-weight: bold;
+}
+#features-export-wrapper .component-detected .form-type-checkbox {
+  font-style: italic;
+  color:#68a;
+  background:#def;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+#features-export-info {
+  width: 49%;
+  float: left;
+  position: relative;
+}
+#features-export-wrapper {
+  width: 49%;
+  float: right;
+  clear: both;
+  position: relative;
+}
+#features-export-advanced {
+  width: 49%;
+  float: left;
+  clear: left;
+  margin-top: 0.5em;
+  position: relative;
+}
+#features-export-buttons {
+  width: 49%;
+  float: left;
+  margin-top: 0.5em;
+  position: relative;
+  text-align: center;
+}
+#features-export-buttons input {
+  margin: 0 3px;
+}
+
+#features-export-wrapper .component-added label a,
+#features-export-wrapper .component-detected label a,
+#features-export-wrapper .component-included label a {
+  display: inline;
+  float: none;
+}
+#features-export-wrapper label.component-added {
+  font-weight: bold;
+}
+#features-export-form input[size="60"].form-text {
+  width: 100%;
+}
+input.form-submit.features-refresh-button {
+  font-size: 0.7em;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background-color: transparent;
+  margin-left: 1em;
+}
+.features-refresh-wrapper .ajax-progress {
+  font-size: 10px;
+  width: 10em;
+}
+#features-export-advanced .ajax-progress {
+  font-size: 10px;
+  width: 10em;
+}
+#features-export-wrapper div.fieldset-description,
+#features-export-wrapper div.description {
+  clear: both;
+}
+#features-filter input[size="60"].form-text {
+  width: 200px;
+}
+#features-filter .fieldset-content,
+#features-filter .fieldset-wrapper,
+#features-filter fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+#features-filter fieldset legend {
+  display: none;
+}
+#features-filter label,
+#features-filter input {
+  display: inline;
+  width: auto;
+}
+#features-filter .form-item {
+  float: left;
+  margin: 5px 0;
+  padding: 0;
+}
+#features-filter .form-item.form-type-checkbox {
+  margin: 5px 0;
+}
+#features-filter span {
+  float: left;
+  white-space: normal;
+  margin: 5px 5px;
+  padding: 0 5px;
+  background: transparent;
+  background: #EEE;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  cursor: pointer;
+}
+#features-filter span:hover {
+  background:#def;
+}
+#features-autodetect .form-item {
+  float: left;
+  margin: 0 0;
+  padding: 0;
+}
+#features-autodetect .fieldset-content,
+#features-autodetect .fieldset-wrapper,
+#features-autodetect fieldset {
+  border: 0;
+  padding: 0;
+  margin: 1em 0 0 0;
+  top: 0;
+}
+#features-autodetect fieldset legend {
+  display: none;
+}
+#features-export-advanced .form-item.form-item-generate-path {
+  margin-bottom: 0;
+}
+#features-info-file .form-textarea-wrapper,
+#features-info-file textarea {
+  height: 100%;
+}
+
+#features-info-file .form-type-textarea {
+  height: 100%;
+  margin: 0;
+}
+#edit-info-preview {
+  margin: 1em 0;
+}
+#features-legend .fieldset-wrapper span {
+  font-style: normal;
+  color: black;
+  display: inline-block;
+  background: transparent;
+  border: 1px solid #DDD;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  white-space: nowrap;
+  padding: 0 8px;
+  margin: 0 10px 0 0;
+}
+#features-legend .fieldset-wrapper .component-detected {
+  font-style: italic;
+  color:#68a;
+  background:#def;
+  border-width: 0;
+}
+#features-legend .fieldset-wrapper .component-added {
+  font-weight: bold;
+  background: #EEE;
+  border-width: 0;
+}

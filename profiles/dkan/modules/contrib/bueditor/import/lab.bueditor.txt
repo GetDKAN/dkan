@@ -1,0 +1,207 @@
+array (
+  'name' => 'Lab',
+  'pages' => 'node/*
+comment/*',
+  'excludes' => 'edit-log
+edit-menu-description',
+  'iconpath' => '%BUEDITOR/icons',
+  'spriteon' => '0',
+  'buttons' => 
+  array (
+    0 => 
+    array (
+      'title' => 'Tag dialog',
+      'content' => 'js:
+var form = [
+  {
+    name: \'foo\',
+    title: \'Foo\',
+    attributes: {style: \'color: red\', onchange: \'this.form.attr_bar.value = this.value\'},
+    value: \'\',
+    getnext: true,
+    required: true,
+    prefix: \'prefix-\',
+    type: \'select\',
+    options: {\'\': \'no value\', 1: \'value-1\', n: \'value-n\'}
+  },
+  {
+    name: \'bar\',
+    attributes: {value: \'bar\', disabled: \'disabled\'},
+    value: \'bar bar\',
+    suffix: \'-suffix\'
+  },
+  \'baz\'
+];
+var options = {};
+options.title = \'Dialog title\';
+options.stitle = \'Submit it!\';
+options.validate = function(tag, form) {
+  return confirm(\'Confirm?\');
+};
+options.submit = function(tag, form) {
+  var str = \'\\nForm elements name-value pairs\\n\';
+  $.each(form.elements, function(i, el){
+    str += el.name +\'=\'+ el.value +\'\\n\';
+  });
+  E.replaceSelection(str);
+};
+
+E.tagDialog(\'tag\', form, options);',
+      'icon' => 'Custom Form',
+      'accesskey' => 'D',
+      'weight' => '0',
+    ),
+    1 => 
+    array (
+      'title' => 'Toggle tag',
+      'content' => 'js: E.toggleTag(\'strong\', {\'class\': \'error\', style: \'font: courier\'});',
+      'icon' => 'Toggle tag',
+      'accesskey' => 'T',
+      'weight' => '1',
+    ),
+    2 => 
+    array (
+      'title' => 'AjaxPreview',
+      'content' => 'js: E.prvAjax();',
+      'icon' => 'XPreview',
+      'accesskey' => 'E',
+      'weight' => '2',
+    ),
+    3 => 
+    array (
+      'title' => 'Find',
+      'content' => 'js: E.frForm();',
+      'icon' => 'Find',
+      'accesskey' => 'F',
+      'weight' => '3',
+    ),
+    4 => 
+    array (
+      'title' => 'Replace',
+      'content' => 'js: E.frForm({
+  isrep: true, //enable replace
+  iscase: true, //enable case sensitive switch
+  isreg: true, //enable regular expression switch
+  title: \'Replace some text\' //custom title
+});',
+      'icon' => 'Replace',
+      'accesskey' => 'R',
+      'weight' => '4',
+    ),
+    5 => 
+    array (
+      'title' => 'Undo',
+      'content' => 'js: E.undo();',
+      'icon' => 'Undo',
+      'accesskey' => 'Z',
+      'weight' => '5',
+    ),
+    6 => 
+    array (
+      'title' => 'Redo',
+      'content' => 'js: E.redo();',
+      'icon' => 'Redo',
+      'accesskey' => 'Y',
+      'weight' => '6',
+    ),
+    7 => 
+    array (
+      'title' => 'tpl:break',
+      'content' => '<br />',
+      'icon' => '',
+      'accesskey' => '',
+      'weight' => '7',
+    ),
+    8 => 
+    array (
+      'title' => 'Test accessibility',
+      'content' => 'js:
+var $html = $(\'<p>Open this using Ctrl+J</p><p>Use UP, DOWN, ENTER, ESC</p><p><a href="#" title="Option1">Choose Option1</a></p><p><a href="#" title="Option2">Choose Option2</a></p><p><a href="#" title="Option3">Choose Option3</a></p>\');
+
+$html.find(\'a\').click(function(){
+  E.replaceSelection(this.title + \' was chosen\');
+  return false;
+});
+
+E.quickPop.open($html);',
+      'icon' => 'Choose',
+      'accesskey' => 'J',
+      'weight' => '8',
+    ),
+    9 => 
+    array (
+      'title' => 'Direct IMCE',
+      'content' => 'js: E.imce && E.imce.url && 
+E.imce.open({
+  ready: E.imce.readyDefault,
+  sendto: function(file, win, pop) {
+    if (!file.width) return win.imce.setMessage(\'Please select an image file!\', \'error\');
+    pop.close();
+    E.replaceSelection(\'<img src="\'+ file.url +\'" width="\'+ file.width +\'" height="\'+ file.height +\'" alt="\'+ file.name +\'">\').focus();
+  }
+});',
+      'icon' => 'Image(IMCE)',
+      'accesskey' => 'M',
+      'weight' => '9',
+    ),
+    10 => 
+    array (
+      'title' => 'Auto LI',
+      'content' => '<ul>
+  <li>Press enter to insert another list item</li>%TEXT%
+</ul>',
+      'icon' => 'Auto LI',
+      'accesskey' => 'L',
+      'weight' => '10',
+    ),
+    11 => 
+    array (
+      'title' => 'Help',
+      'content' => 'js: E.help();',
+      'icon' => '???',
+      'accesskey' => 'H',
+      'weight' => '11',
+    ),
+    12 => 
+    array (
+      'title' => 'tpl:Extend postprocesses',
+      'content' => 'js:
+BUE.postprocess._lab1 = function(E, $) {
+  E.ACAdd(\'BUE\', \' rocks!\');/*add an autocomplete pair*/
+  E.history.period = 100;/*change state saving period of undo history from 500ms to 100ms*/
+};',
+      'icon' => '',
+      'accesskey' => '',
+      'weight' => '12',
+    ),
+    13 => 
+    array (
+      'title' => 'tpl:Druplicon',
+      'content' => 'js:
+setTimeout(function(){$(\'#edit-demo-value\').val(\'This is the guinea pig editor including all libraries(minified version is %BUEDITOR/library/bue.min.all.js) that come with bueditor. \\nThis text was inserted here by a template button running javascript code.\\n\\nHere you can experience:\\n- CTRL shortcuts(try Ctrl+J when the cursor is in the textarea)\\n- TAB-indent, Shift+TAB-unindent, ENTER-auto indent\\n- Autocomplete (type "BUE" or an html/bbcode tag, e.g. "<em>")\\n- Cross-browser undo/redo\\n- CSS3 popups, shortcuts in popups\\n- Find & Replace inside the textarea\\n- Ajax preview\');});
+
+return \'<img src="\'+ Drupal.settings.basePath +\'misc/druplicon.png" width="16" height="16" title="Me inserted the initial text" alt="druplicon" />\';',
+      'icon' => '',
+      'accesskey' => '',
+      'weight' => '13',
+    ),
+  ),
+  'icons' => 
+  array (
+  ),
+  'library' => 
+  array (
+    '%BUEDITOR/library/bue.popup.js' => '',
+    '%BUEDITOR/library/bue.popup.css' => '',
+    '%BUEDITOR/library/bue.markup.js' => '',
+    '%BUEDITOR/library/bue.preview.js' => '',
+    '%BUEDITOR/library/bue.imce.js' => '',
+    '%BUEDITOR/library/bue.misc.js' => '',
+    '%BUEDITOR/library/bue.autocomplete.js' => '',
+    '%BUEDITOR/library/bue.ctrl.js' => '',
+    '%BUEDITOR/library/bue.find.js' => '',
+    '%BUEDITOR/library/bue.history.js' => '',
+    '%BUEDITOR/library/bue.li.js' => '',
+    '%BUEDITOR/library/bue.tab.js' => '',
+  ),
+)

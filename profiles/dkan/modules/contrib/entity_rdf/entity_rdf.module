@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * @file
+ * Module file for entity RDF.
+ */
+
+/**
+ * Implements hook_entity_property_info_alter().
+ */
+function entity_rdf_entity_property_info_alter(&$info) {
+  // Collect all mappings declared by modules.
+  $mappings = module_invoke_all('entity_rdf_mappings');
+
+  // Loop through all entity types and attach an RDF mapping to each property,
+  // field, and field property if such mapping exists.
+  foreach ($info as $entity_type => &$entity_info) {
+    // Initializes the bundles override for those entity types which only have
+    // one bundle by default, e.g. file.
+    if (empty($entity_info['bundles'])) {
+      $entity_info['bundles'][$entity_type]['properties'] = array();
+    }
+
+    // Bundles loop.
+    foreach ($entity_info['bundles'] as $bundle => &$bundle_info) {
+      // Attach RDF mapping for the bundle (typically RDF types).
+      $key = implode(':', array($entity_type, $bundle));
+      if (!empty($mappings[$key])) {
+        $bundle_info['rdf mapping'] = $mappings[$key];
+      }
+      // Go through each field and see if there exists an RDF mapping for it.
+      foreach ($bundle_info['properties'] as $field => &$field_info) {
+        // Attach RDF mapping for the field.
+        $key = implode(':', array($entity_type, $bundle, $field));
+        if (!empty($mappings[$key])) {
+          $field_info['rdf mapping'] = $mappings[$key];
+          unset($field_info['rdf mapping']['field properties']);
+        }
+        // Attach RDF mapping for each field property.
+        if (!empty($field_info['property info'])) {
+          foreach ($field_info['property info'] as $field_property => &$field_property_info) {
+            if (!empty($mappings[$key]['field properties'][$field_property])) {
+              $field_property_info['rdf mapping'] = $mappings[$key]['field properties'][$field_property];
+            }
+          }
+        }
+      }
+      // Go through each property and see if there exists an RDF mapping.
+      foreach ($entity_info['properties'] as $property => $property_info) {
+        // Each entity type property can have an RDF mapping that is specific
+        // to a particular bundle. For example the mapping of the title for
+        // an 'article' content type might differ from the title mapping
+        // of a 'person' content type. Although entity type properties are
+        // defined at the level of the entity type, they can be overridden
+        // for each bundle.
+        $key = implode(':', array($entity_type, $bundle, $property));
+        if (!empty($mappings[$key])) {
+          // If the bundle override for this property doesn't exist yet, we
+          // initialize it with the content of the entity type property info.
+          if (empty($bundle_info['properties'][$property])) {
+            $bundle_info['properties'][$property] = $property_info;
+          }
+          $bundle_info['properties'][$property]['rdf mapping'] = $mappings[$key];
+        }
+      }
+    }
+  }
+}

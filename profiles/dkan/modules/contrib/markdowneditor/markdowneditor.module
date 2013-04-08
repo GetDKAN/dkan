@@ -1,0 +1,61 @@
+<?php
+/*
+ * Markdown Editor
+ * by Jakob Persson of NodeOne <jakob@nodeone.se>
+ *
+ * Provides a toolbar for writing Markdown syntax with BUEditor.
+ *
+ * Sponsored by
+ *   NodeOne - www.nodeone.se
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function markdowneditor_form_system_modules_alter(&$form, &$form_state, $form_id) {
+  $form['#submit'][] = '_markdowneditor_form_system_modules_submit';
+}
+
+/**
+ * Submit handler
+ */
+function _markdowneditor_form_system_modules_submit($form, &$form_stat) {
+  _markdowneditor_update_buttons();
+}
+
+/**
+ * Update button definitions when moodules MDE depends on are enabled/disabled
+ */
+function _markdowneditor_update_buttons() {
+  // Load buttons
+  $buttons = variable_get('markdowneditor_buttons', FALSE);
+
+  // Get editor's eid
+  $eid = variable_get('markdowneditor_eid');
+
+  // Include default button definitions
+  module_load_include('inc', 'markdowneditor', 'markdowneditor.buttons');
+  //require_once DRUPAL_ROOT . '/' . $path . '/markdowneditor.buttons.inc';
+
+  if ($buttons && !empty($mde_buttons)) {
+    // Calculate table content fingerprint and compare to stored copy
+    // only update table if contents have changed
+    $fprint = md5($ajax_markup_exist);
+
+    if ($fprint != variable_get('markdowneditor_content_fprint', NULL)) {
+
+      // Store new fingerprint
+      variable_set('markdowneditor_content_fprint', $fprint);
+
+      // Update buttons
+      foreach ($buttons as $mde_bkey => $bid) {
+        db_update('bueditor_buttons')
+          ->fields(array(
+            'content' => $mde_buttons[$mde_bkey][2],
+          ))
+          ->condition('bid', $bid)
+          ->execute();
+      }
+    }
+  }
+}

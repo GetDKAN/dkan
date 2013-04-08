@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * @file
+ * Allows to import external Vocabularies in order to map them to Drupal data
+ * structure.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function evoc_menu() {
+  $items['evoc/import'] = array(
+    'title' => 'Import external RDF vocabulary',
+    'description' => 'Import RDF terms of an external vocabulary.',
+    'page callback' => 'evoc_import',
+    'access arguments' => array('administer content types'),
+    'file' => 'evoc.pages.inc',
+  );
+  $items['evoc/import_core'] = array(
+    'title' => 'Import core RDF vocabularies',
+    'description' => 'Perform a batch import of the vocabularies used by core.',
+    'page callback' => 'evoc_import_core',
+    'access arguments' => array('administer content types'),
+    'file' => 'evoc.pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function evoc_rdf_namespaces() {
+  $ns_mappings = array();
+  $query = db_select('rdfx_vocabulary_graphs', 'g');
+  $query->fields('n', array('prefix', 'uri'));
+  $query->join('rdfx_namespaces', 'n', 'g.main_ns = n.nsid');
+  $query->orderBy('n.prefix');
+  $namespaces = $query->execute()->fetchAll();
+  foreach ((array) $namespaces as $namespace) {
+    $ns_mappings[$namespace->prefix] = $namespace->uri;
+  }
+  return $ns_mappings;
+}
+
+/*
+ * Import function for the evoc module.
+ */
+function evoc_import_vocabulary($vocabulary_uri, $vocabulary_prefix) {
+  // Fetch the defined terms and a list of the defined namespaces.
+  $fetched_vocab = evoc_fetch_vocabulary($vocabulary_uri, $vocabulary_prefix);
+  rdfx_save_terms($vocabulary_uri, $vocabulary_prefix, $fetched_vocab);
+
+  // Refresh the static variable that holds the array of namespaces.
+  drupal_static_reset('rdfx_get_namespaces');
+  //_evoc_save_rdf_terms($vocabulary_uri, $vocabulary_prefix, $fetched_terms);
+}
+
+/**
+ * Fetches the classes and properties of an external RDF vocabulary.
+ *
+ * @param $vocabulary_uri
+ *   The namespace of the vocabulary to be fetched. Note most of the time this
+ *   URI should end with / or #, e.g. http://rdfs.org/sioc/ns#
+ * @param $vocabulary_prefix
+ *   Prefix used system-wide for referring to this namespace.
+ * @param $vocabulary_location
+ *   URL of the vocabulary if the vocabulary namespace does not dereference and
+ *   is not available at the namespace. Optionnal.
+ * @return
+ *   An array of fetched terms.
+ */
+function evoc_fetch_vocabulary($vocabulary_uri, $vocabulary_prefix, $vocabulary_location = NULL) {
+  // Uses the vocabulary namespace URI if no specific location is given.
+  $vocabulary_location = $vocabulary_location ? $vocabulary_location : $vocabulary_uri;
+
+  module_load_include('inc', 'evoc', 'evoc.load_vocab');
+  list($triples, $namespaces) = rdfx_fetch_rdf($vocabulary_uri, $vocabulary_prefix);
+  $vocabulary = _rdfx_extract_schema($triples, $namespaces, $vocabulary_prefix, $vocabulary_uri);
+  return $vocabulary;
+}

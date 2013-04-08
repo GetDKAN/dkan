@@ -1,0 +1,166 @@
+
+CHANGELOG for Diff 7.x-2.0+13-dev to 7.x-3.x
+============================================
+
+1) System variable names have been changed
+------------------------------------------
+
+Considerable changes have occurred.
+
+2) hook_diff() was removed
+--------------------------
+
+This has been replaced by hook_entity_diff() as of Diff 7.x-3.x.
+
+3) Field diffs are handled independently by Diff and the field module
+---------------------------------------------------------------------
+
+Field modules SHOULD NOT implement hook_entity_diff().
+
+This is complicated and costly in terms of performance.
+
+Two new field callbacks are defined to handle these.
+
+  a) MODULE_field_diff_view_prepare()
+
+  Optional: If you need to load data, use MODULE_field_diff_view_prepare().
+
+  b) MODULE_field_diff_view()
+
+  Recommended: You should implement this to generate the compared data.
+
+If there is no corresponding hook for a field, the field comparison will try
+to guess the value using $item['safe_value'] or $item['value'] properties.
+
+If you need to make this configurable, there are two additional hooks:
+
+  c) MODULE_field_diff_default_options($field_type)
+  
+  You should define any additioal settings here. This shares a global namespace
+  of the diff module, so you can overwrite core Diff settings here too.
+  
+  In saying that, take care not to accidentially do this.
+  
+  d) MODULE_field_diff_options_form($field_type, $settings)
+  
+  This is where you insert Form API elements to configure your option settings.
+
+4) Field diffs are now configurable
+-----------------------------------
+
+Each field type defined by core have configurable settings to control the
+rendering of the comparison.
+
+  a) Global configuration
+
+  An administration page has been added to handle field type default settings.
+  
+  This is the preferred way to configure field settings are these are global to
+  all fields of this type.
+
+  b) View mode display options
+
+  The display "Diff comparison" is used to control the fields that are displayed 
+  when comparing different revisions.
+
+  The following is a walk-through on how you would configure the Basic page
+  (page) content types field configuration.
+
+  - Enable "Diff comparison" custom view mode
+
+    Navigate to admin/structure/types/manage/page/display and look at the
+    Custom Display Settings for this view mode. Check and save.
+
+  - Configure the display
+
+    After Saving this page, a new tab appears "Diff comparison", click this or
+    navigate directly to admin/structure/types/manage/page/display/diff_standard
+
+    - You can hide or show the fields that you want to display when doing 
+      comparisons.
+    - If the field has no inbuilt diff support, then the renderred field items
+      will be compared.
+
+5) Standard comparison preview / Inline diff view setting
+---------------------------------------------------------
+
+You can set the view modes used to compare the rendered node. This can be found
+in the Diff settings in the Content Type settings page.
+
+6) Optional CSS and new Boxes styles
+------------------------------------
+
+This takes the styles from WikiPedia to really spice up the diff page.
+
+7) Optional JScript extras
+--------------------------
+
+This spices up the revision checkboxes on the revisions page.
+
+8) Simple past revision token support
+-------------------------------------
+
+Use-case, email notifications when content has changes. If these support tokens,
+then you can embed Diffs into these emails.
+
+9) Extensive string review
+--------------------------
+See http://drupal.org/node/1785742
+
+
+10) Inline block settings changes
+---------------------------------
+The inline block settings are now in the block configuration page.
+
+11) And much more...
+--------------------
+
+The complete change log follows:
+
+Diff 7.x-2.x
+    o #888680 by Deciphered, Alan D.: Allow modules to interact via drupal_alter()
+    o #1280892 by Alan D., crea: Diff should track the variables that it defines
+    o #1304658 by Alan D., kari.kaariainen: Remove links and comments from the comparison preview
+    o #1122206 by binford2k, Alan D.: Notices thrown by DiffEngine::process_chunk()
+    o #1175064 by zilverdistel, Alan D.: Provide variables for leading and trailing context
+    o #1673864 by Alan D.: Allow users to bypass the admin theme when viewing comparisons
+    o #1673876 by Alan D.: Use Drupal autoloading for classes
+    o #1673856 by Alan D.: Use hook_form_BASE_FORM_ID_alter() rather than hook_form_alter()
+    o #1673856 by Alan D.: Normalise line endings
+    o #114308 by Alan D.: add jQuery for hiding radios that shouldn't show diffs
+    o #1688840 by Alan D.: Enable new JScript behaviour by default
+    o #372957 by erykmynn, JuliaKM, lsrzj, andrew_rs, alexpott, et al: HTML Strip for Diff, WYSIWYG Friendly
+      (This was refactored in the 7.x-3.x branch from the commited 7.x-2.x code)    
+    o #521212 by Alan D., blakehall: Make diff comparison page themable
+    o #1671484 by Alan D.: Show number of lines changed on revisions page
+    o #114699 by smokris, Alan D.: Diff module should support Token
+    o #372957 by c31ck: display either Hide or Show based on what clicking it will do at any time (HTML Strip for Diff)
+      This was altered for the 7.x-3.x branch.
+    o #1807510 & #1825202: Simplify Diff administration
+    o #1812162 by mitchell, Alan D.: 'Highlight changes' block appears on edit form
+
+    Node to Entity changes
+    ----------------------
+    These are roughly tracked in the meta issue #1365750 Generalize API and Integrate with core field types
+
+    o (no issue) by Alan D.: Use entity specific system variables.
+    o (no issue) by Alan D.: View mode code, new hooks, new API. Massive patch!
+
+    Resolves:
+    o #248778: Taxonomy diff
+    o #1550698: Diff of "select from list" fields shows change in key, not change in value
+    o #1458814: File (and image) field support
+    o #1418760: Optional setting to honour the display settings
+    o #1347316: Selectable view mode for inline diffs and "Current revision" display view mode
+    o #1458906: Improve performances (of existing 7.x-2.x field rendering)
+    o #1424162: Diff in Taxonomy term description
+    o #1211282: Image diff support
+
+The following patches will be posted in the corresponding project queues once
+the 7.x-3.x branch is released:
+    o #1595702 by Alan D., mbilbille: Support of field collection module
+    o #1350604 by Alan D., johaziel: Datetime diff
+    o (no issue) by Alan D.: Email field Diff support
+    o (no issue) by Alan D.: Countries Diff support
+    o (no issue) by Alan D.: Name field Diff support
+    o (no issue) by Alan D.: Link field Diff support

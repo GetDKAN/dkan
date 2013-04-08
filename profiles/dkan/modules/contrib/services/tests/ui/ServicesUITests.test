@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * @file
+ * Tests for UI of Services.
+ */
+
+class ServicesUITest extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'UI tests',
+      'description' => 'Test of Services UI.',
+      'group' => 'Services',
+    );
+  }
+
+  function setUp() {
+    parent::setUp(array('ctools', 'services', 'rest_server'));
+    $web_user = $this->drupalCreateUser(array('administer services', 'administer site configuration'));
+    $this->drupalLogin($web_user);
+  }
+
+  function testEndpointMachineName() {
+    // Try to create endpoint with bad machine name.
+    $edit = array(
+      'name' => 're st',
+      'server' => 'rest_server',
+      'path' => 'rest',
+    );
+    $this->drupalPost('admin/structure/services/add', $edit, t('Save'));
+    $this->assertText(t('The endpoint name can only consist of lowercase letters, underscores, and numbers.'), t('It is not possible to create endpoint with bad machine name.'));
+
+    // Create endpoint properly.
+    $edit = array(
+      'name' => 'rest',
+      'server' => 'rest_server',
+      'path' => 'rest',
+    );
+    $this->drupalPost('admin/structure/services/add', $edit, t('Save'));
+    $this->assertText('rest', t('Endpoint create successfully.'));
+
+    // Try to create endpoint with same machine name.
+    $edit = array(
+      'name' => 'rest',
+      'server' => 'rest_server',
+      'path' => 'rest1',
+    );
+    $this->drupalPost('admin/structure/services/add', $edit, t('Save'));
+    $this->assertText(t('The machine-readable name is already in use. It must be unique.'), t('It is not possible to create endpoint with existing machine name.'));
+
+    // Try to create endpoint with same path.
+    $edit = array(
+      'name' => 'rest1',
+      'server' => 'rest_server',
+      'path' => 'rest',
+    );
+    $this->drupalPost('admin/structure/services/add', $edit, t('Save'));
+    $this->assertText(t('Endpoint path must be unique.'), t('It is not possible to create endpoint with existing path.'));
+  }
+}

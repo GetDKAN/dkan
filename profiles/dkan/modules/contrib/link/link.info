@@ -1,0 +1,26 @@
+name = Link
+description = Defines simple link field types.
+core = 7.x
+package = Fields
+
+files[] = link.module
+files[] = link.migrate.inc
+
+; Tests
+files[] = tests/link.test
+files[] = tests/link.attribute.test
+files[] = tests/link.crud.test
+files[] = tests/link.crud_browser.test
+files[] = tests/link.token.test
+files[] = tests/link.validate.test
+
+; Views Handlers
+files[] = views/link_views_handler_argument_target.inc
+files[] = views/link_views_handler_filter_protocol.inc
+
+; Information added by drupal.org packaging script on 2013-02-09
+version = "7.x-1.1"
+core = "7.x"
+project = "link"
+datestamp = "1360444361"
+

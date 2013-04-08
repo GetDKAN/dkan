@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * RESTful web services test module.
+ */
+
+/**
+ * Implements hook_restws_resource_info_alter().
+ *
+ * @see RestWSTestCase::testMenuPath().
+ */
+function restws_test_restws_resource_info_alter(&$resource_info) {
+  $resource_info['node']['menu_path'] = 'foo';
+}

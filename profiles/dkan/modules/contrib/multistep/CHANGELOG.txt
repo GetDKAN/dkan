@@ -1,0 +1,110 @@
+
+Multistep 7.x-1.x-dev
+---------------------
+Change $form_state['clicked_button'] to $form_state['triggering_element'].
+Upgraded integration with Rules module.
+Fixed status update functions.
+Added support for AJAX-enabled form elements.
+Added static caching for multistep_get_steps().
+Return block progress bar as a renderable array.
+Return block navigation links as a renderable array.
+Removed unnecessary anchor point for multistep group.
+Changed database schema to support machine name for steps.
+Fixed the block system.
+Fixed way of getting multistep-enabled content types in the reset admin page.
+#1038708: Initialize empty $blocks array in hook_block_info().
+Added dependency on field_group.
+Initial development snapshot for Drupal 7.
+
+Multistep 6.x-1.5
+-----------------
+#844798: Node should be marked as complete when submitting the entire form at once.
+#901420 by Sansui: Add documentation on integrating modules with Multistep.
+Added an API documentation file.
+Skip field access if there is no node loaded.
+#868826 by adan: HTTP 403 error when use with autocomplete fields.
+#889924 by iamer: Add compatibility with Prepopulate module.
+#742992 by WorldFallz: Convert dashes to underscores in node type machine names.
+#870896 by WorldFallz: Fields disappearing from views.
+#844624: Attempt to make block accept a user profile as its context.
+#825392: Verify access for fields that are set to view only during node edit.
+#756734 by WorldFallz: Default value fields disappearing from field settings.
+#824406 by galaxor: Add indexes to multistep table.
+#833586 by chey: Add support for Rules.
+#839560: Make default button labels translatable.
+#839594: Disable link in menu block if node has not yet been created.
+#817180 by chey: Next unsubmitted step in block not linking on Wizard mode.
+Fixed some translation strings.
+#782534: Body needs to validate on the first step when minimum word count is enabled.
+#799158 by VladSavitsky: Calls to variable_get should have consistent defaults.
+#785656 by VladSavitsky: Theming and configuration options for navigation block.
+Split the admin settings form into multiple tabs.
+#660540 by GuyPaddock: Fields with AJAX calls should use a properly formatted name.
+#742992: Display block on the first step.
+#707384 by lelizondob: Make buttons optional.
+#684188 by neilnz: Add support for PostgreSQL.
+#703452 by smk-ka: Fix PHP notices.
+#566682 by arbel: Add support for Hierarchical Select module.
+#683808: Add text above multistep progress bar.
+#682390 by drenton: Always show fields that are set to All steps.
+Added Views module integration.
+#659496: Set Published option at node edit depending on status flag.
+
+Multistep 6.x-1.4
+-----------------
+#656588 by drenton: Fix the code for content types with underscores in name.
+#622844: Increased the weight of the submit buttons.
+#530848: Verify whether the Published checkbox is checked.
+#579126 by garrizaldy: Verify whether there is a step for multigroups.
+#542498 by drupalprojects: Multistep integration for Content Profile.
+Use $form_state for functions that are called at validation/submission.
+#585610 by mesh: Make fieldgroup-less fields available on different steps.
+Added a hook to allow third-party modules to override the status of a step.
+#579126: Added support for multi-value fields and multigroups.
+#555822: Allows splitting of taxonomy vocabularies into different steps.
+#530848: Add settings for node revisioning and publishing.
+#560748: Removed unsetting the Delete button. Use node permissions instead.
+Fixed misnamed variable and added more information to multistep_help().
+#548114 by BWPanda: Support multistep for all extra fields.
+#550982 by BWPanda: Enable removal of Ubercart's "Save and continue" button.
+#551944: Allow users to select which groups appear in the menu block.
+#554304 by BWPanda: Rename multistep blocks to make them easier to find.
+#555814: Removed unneeded $account argument in multistep_field_access().
+
+Multistep 6.x-1.3
+-----------------
+Changed a small redirection glitch when going through the steps.
+Added an option for selecting the default display of the form.
+Allow the user to select which step should taxonomy belong to.
+Moved button label settings to the admin settings page.
+#412994: Now it redirects to the original "destination" after the last step.
+Remove all multistep variables when uninstalling the module.
+Added an admin settings page with the option of resetting step data.
+Added configuration options for the block.
+Added a progress bar.
+Added a way to keep track of submitted steps in a node.
+
+Multistep 6.x-1.1
+-----------------
+Changed access restriction at field level instead of at widget level.
+#412994 Disable redirection through "destination" parameter.
+#435090 by liquidcms: Bypass form alters for node types without multistep.
+#397404 Added basic support for taxonomy fields.
+#389792 Fixed module weight to allow other widgets to load first.
+#350387 Created a new version compatible with Drupal 6.x.
+
+Multistep 5.x-1.2
+-----------------
+#363852 Added hook_perm() for handling administration permissions.
+#364225 New option to show/hide Delete and Preview buttons.
+#364178 and #389792 added support for new field types.
+#394166 Clear content_type_info cache at (un)install.
+
+Multistep 5.x-1.1
+-----------------
+#348142 Form can now handle required fields.
+#347340 Removed jQuery and everything is PHP.
+
+Multistep 5.x-1.0
+-----------------
+Initial release of multistep module. Already supporting Drupal 5.14.

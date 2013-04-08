@@ -1,0 +1,896 @@
+<?php
+
+/**
+ * @file
+ * The Schema module provides functionality built on the Schema API.
+ */
+
+//////////////////////////////////////////////////////////////////////
+// Schema print functions
+//////////////////////////////////////////////////////////////////////
+
+/**
+ * Builds a pretty ASCII-formatted version of a $schema array.
+ *
+ * This is nothing more than a specialized variation of var_dump and
+ * similar functions and is used only as a convenience to generate the
+ * PHP for existing database tables (to bootstrap support for modules
+ * that previously used CREATE TABLE explicitly) and for debugging.
+ */
+function schema_phpprint($schema) {
+  $out = '';
+  foreach ($schema as $name => $table) {
+    $out .= schema_phpprint_table($name, $table);
+  }
+  return $out;
+}
+
+function schema_phpprint_table($name, $table) {
+  $cols = array();
+  if (isset($table['fields'])) {
+    foreach ($table['fields'] as $colname => $col) {
+      $cols[] = "'$colname' => " . schema_phpprint_column($col, TRUE);
+    }
+  }
+  $unique = $index = array();
+  if (isset($table['unique keys'])) {
+    foreach ($table['unique keys'] as $keyname => $key) {
+      $unique[] = "'$keyname' => " . schema_phpprint_key($key);
+    }
+  }
+  if (isset($table['indexes'])) {
+    foreach ($table['indexes'] as $keyname => $key) {
+      $index[] = "'$keyname' => " . schema_phpprint_key($key);
+    }
+  }
+  if ($table['description']) {
+    $description = $table['description'];
+  }
+  else {
+    $description = t('TODO: please describe this table!');
+  }
+  $out = '';
+  $out .= "\$schema['" . $name . "'] = array(\n";
+  $out .= "  'description' => '$description',\n";
+  $out .= "  'fields' => array(\n    ";
+  $out .= implode(",\n    ", $cols);
+  $out .= ",\n  ),\n";
+  if (isset($table['primary key'])) {
+    $out .= "  'primary key' => array('" . implode("', '", $table['primary key']) . "'),\n";
+  }
+  if (count($unique) > 0) {
+    $out .= "  'unique keys' => array(\n    ";
+    $out .= implode(",\n    ", $unique);
+    $out .= "\n  ),\n";
+  }
+  if (count($index) > 0) {
+    $out .= "  'indexes' => array(\n    ";
+    $out .= implode(",\n    ", $index);
+    $out .= ",\n  ),\n";
+  }
+  $out .= ");\n";
+  return $out;
+}
+
+function schema_phpprint_column($col, $multiline=FALSE) {
+  $attrs = array();
+  if (isset($col['description']) && $col['description']) {
+    $description = $col['description'];
+  }
+  else {
+    $description = t('TODO: please describe this field!');
+  }
+  unset($col['description']);
+  $attrs[] = "'description' => '$description'";
+  if ($col['type'] == 'varchar' || $col['size'] == 'normal') {
+    unset($col['size']);
+  }
+  foreach (array('type', 'unsigned', 'size', 'length', 'not null', 'default') as $attr) {
+    if (isset($col[$attr])) {
+      if (is_string($col[$attr])) {
+        $attrs[] = "'$attr' => '$col[$attr]'";
+      }
+      elseif (is_bool($col[$attr])) {
+        $attrs[] = "'$attr' => " . ($col[$attr] ? 'TRUE' : 'FALSE');
+      }
+      else {
+        $attrs[] = "'$attr' => $col[$attr]";
+      }
+      unset($col[$attr]);
+    }
+  }
+  foreach (array_keys($col) as $attr) {
+    if (is_string($col[$attr])) {
+      $attrs[] = "'$attr' => '$col[$attr]'";
+    }
+    else {
+      $attrs[] = "'$attr' => $col[$attr]";
+    }
+  }
+  if ($multiline) {
+    return "array(\n      " . implode(",\n      ", $attrs) . ",\n    )";
+  }
+  return "array(" . implode(', ', $attrs) . ")";
+}
+
+function schema_phpprint_key($keys) {
+  $ret = array();
+  foreach ($keys as $key) {
+    if (is_array($key)) {
+      $ret[] = "array('$key[0]', $key[1])";
+    }
+    else {
+      $ret[] = "'$key'";
+    }
+  }
+  return "array(" . implode(", ", $ret) . ")";
+}
+
+//////////////////////////////////////////////////////////////////////
+// Schema comparison functions
+//////////////////////////////////////////////////////////////////////
+
+function schema_unprefix_table($name) {
+  // TODO: Deal with D7 prefixing
+  global $db_prefix;
+  static $_db_prefix;
+
+  if (is_array($db_prefix)) {
+    if (!isset($_db_prefix)) {
+      foreach ($db_prefix as $key => $val) {
+        $_db_prefix[$val . $key] = $key;
+      }
+    }
+    if (isset($_db_prefix[$name])) {
+      return $_db_prefix[$name];
+    }
+    elseif (!empty($db_prefix['default']) && preg_match('@^' . $db_prefix['default'] . '(.*)@', $name, $m)) {
+      return $m[1];
+    }
+    else {
+      // On pgsql, key and index names are also prefixed
+      // (e.g. 'prefix_blocks_roles_rid_idx').
+      foreach ($db_prefix as $key => $val) {
+        if (($key != 'default' && preg_match('@^' . $val . '(' . $key . '.*)@', $name, $m)) ||
+          ($key == 'default' && preg_match('@^' . $val . '(.*)@', $name, $m))) {
+          return $m[1];
+        }
+      }
+      return $name;
+    }
+  }
+  elseif (!empty($db_prefix) && preg_match('@^' . $db_prefix . '(.*)@', $name, $m)) {
+      return $m[1];
+  }
+  elseif (empty($_db_prefix)) {
+    $info = Database::getConnectionInfo($connection = 'default'); // FIXME: obtain the correct connection
+    $_db_prefix = empty($info['default']['prefix'])
+      ? ''
+      : reset($info['default']['prefix']);
+    $db_prefix = $_db_prefix;
+    $name = drupal_substr($name, drupal_strlen($_db_prefix));
+  }
+  return $name;
+}
+
+function schema_dbobject() {
+  static $engines = array();
+  $class_name = 'SchemaDatabaseSchema_' . db_driver();
+  if (!isset($engines[$class_name])) {
+    $engines[$class_name] = new $class_name(Database::getConnection());
+  }
+  return $engines[$class_name];
+}
+
+/**
+ * Converts a column's Schema type into an engine-specific data type.
+ */
+function schema_engine_type($col, $table, $field, $engine = NULL) {
+  $map = schema_dbobject()->getFieldTypeMap();
+  $size = (isset($col['size']) ? $col['size'] : 'normal');
+  $type = $col['type'] . ':' . $size;
+  if (isset($map[$type])) {
+    return $map[$type];
+  }
+  else {
+    drupal_set_message(t('%table.%field: no %engine type for Schema type %type.',
+                         array('%engine' => $engine, '%type' => $type, '%table' => $table, '%field' => $field)),
+      'warning');
+    return $col['type'];
+  }
+}
+
+/**
+ * Convert an engine-specific data type into a Schema type.
+ */
+function schema_schema_type($type, $table, $field, $engine = NULL) {
+  $map = schema_dbobject()->schema_type_map();
+  $type = strtolower($type);
+  if (isset($map[$type])) {
+    return explode(':', $map[$type]);
+  }
+  else {
+    if (!variable_get('schema_suppress_type_warnings', FALSE)) {
+      drupal_set_message(t('Field @table.@field: no Schema type for @engine type @type.', array('@engine' => $engine, '@type' => $type, '@table' => $table, '@field' => $field)), 'warning');
+    }
+    return array($type, 'normal');
+  }
+}
+
+/**
+ * Compares two complete schemas.
+ * @param $ref is considered the reference copy
+ * @param $inspect is compared against it.  If $inspect is NULL, a
+ *         schema for the active database is generated and used.
+ */
+function schema_compare_schemas($ref, $inspect = NULL) {
+  if (!isset($inspect)) {
+    $inspect = schema_dbobject()->inspect(variable_get('schema_database_connection', 'default'));
+  }
+
+  $info = array();
+
+  // Error checks to consider adding:
+  // All type serial columns must be in an index or key.
+  // All columns in a primary or unique key must be NOT NULL.
+
+  // Error check: column type and default type must match
+  foreach ($ref as $t_name => $table) {
+    if (!isset($table['fields']) || !is_array($table['fields'])) {
+      drupal_set_message(t('Table %table: Missing or invalid \'fields\' array.', array('%table' => $t_name)), 'warning');
+      continue;
+    }
+
+    foreach ($table['fields'] as $c_name => $col) {
+      switch ($col['type']) {
+        case 'int':
+        case 'float':
+        case 'numeric':
+          if (isset($col['default']) &&
+            (! is_numeric($col['default']) || is_string($col['default']))) {
+            $info['warn'][] = t('%table.%column is type %type but its default %default is PHP type %phptype', array('%table' => $t_name, '%column' => $c_name, '%type' => $col['type'], '%default' => $col['default'], '%phptype' => gettype($col['default'])));
+          }
+          break;
+
+        default:
+          if (isset($col['default']) && !is_string($col['default'])) {
+            $info['warn'][] = t('%table.%column is type %type but its default %default is PHP type %phptype', array('%table' => $t_name, '%column' => $c_name, '%type' => $col['type'], '%default' => $col['default'], '%phptype' => gettype($col['default'])));
+          }
+          break;
+      }
+    }
+  }
+
+  // Error check: 'text' and 'blob' columns cannot have a default value
+  foreach ($ref as $t_name => $table) {
+    if (!isset($table['fields'])) {
+      continue;
+    }
+
+    foreach ($table['fields'] as $c_name => $col) {
+      switch ($col['type']) {
+        case 'text':
+        case 'blob':
+          if (isset($col['default'])) {
+            $info['warn'][] = t('%table.%column is type %type and may not have a default value', array('%table' => $t_name, '%column' => $c_name, '%type' => $col['type']));
+          }
+          break;
+      }
+    }
+  }
+
+  // Error check: primary keys must be 'not null'
+  foreach ($ref as $t_name => $table) {
+    if (isset($table['primary key'])) {
+      $keys = db_field_names($table['primary key']);
+      foreach ($keys as $key) {
+        if (!isset($table['fields'][$key]['not null']) || $table['fields'][$key]['not null'] != TRUE) {
+          $info['warn'][] = t('%table.%column is part of the primary key but is not specified to be \'not null\'.', array('%table' => $t_name, '%column' => $key));
+        }
+      }
+    }
+  }
+
+  foreach ($ref as $name => $table) {
+    if (isset($table['module'])) {
+      $module = $table['module'];
+    }
+    else {
+      $module = '';
+    }
+    if (!isset($inspect[$name])) {
+      $info['missing'][$module][$name] = array('status' => 'missing');
+    }
+    else {
+      $status = schema_compare_table($table, $inspect[$name]);
+      $info[$status['status']][$module][$name] = $status;
+      unset($inspect[$name]);
+    }
+  }
+
+  foreach ($inspect as $name => $table) {
+    $info['extra'][] = $name;
+  }
+  return $info;
+}
+
+/**
+ * Compares a reference specification (such as one returned by a
+ * module's hook_schema) to an inspected specification from the
+ * database.
+ * @param $inspect if not provided, the database is inspected.
+ */
+function schema_compare_table($ref, $inspect = NULL) {
+  $_db_type = db_driver();
+
+  if (!isset($inspect)) {
+    // TODO: Handle prefixing the D7 way
+//    $ref_name = db_prefix_tables('{' . $ref['name'] . '}');
+    $ref_name = $ref['name'];
+    $inspect = schema_dbobject()->inspect(
+      variable_get('schema_database_connection', 'default'), $ref_name);
+    $inspect = $inspect[$ref['name']];
+  }
+  if (!isset($inspect)) {
+    return array('status' => 'missing');
+  }
+
+  $reasons = $notes = array();
+  $col_keys = array_flip(
+    array('type', 'size', 'not null', 'length', 'unsigned', 'default', 'scale', 'precision'));
+  foreach ($ref['fields'] as $colname => $col) {
+
+    // Many Schema types can map to the same engine type (e.g. in
+    // PostgresSQL, text:{small,medium,big} are all just text).  When
+    // we inspect the database, we see the common type, but the
+    // reference we are comparing against can have a specific type.
+    // We therefore run the reference's specific type through the
+    // type conversion cycle to get its common type for comparison.
+    //
+    // Sadly, we need a special-case hack for 'serial'.
+    $serial = ($col['type'] == 'serial' ? TRUE : FALSE);
+    $name = isset($ref['name']) ? $ref['name'] : '';
+    $dbtype = schema_engine_type($col, $name, $colname);
+    list($col['type'], $col['size']) = schema_schema_type($dbtype, $name, $colname);
+    if ($serial) {
+      $col['type'] = 'serial';
+    }
+
+    // If an engine-specific type is specified, use it.  XXX $inspect
+    // will contain the schema type for the engine type, if one
+    // exists, whereas dbtype_type contains the engine type.
+    if (isset($col[$_db_type . '_type'])) {
+      $col['type'] = $col[$_db_type . '_type'];
+    }
+
+    $col = array_intersect_key($col, $col_keys);
+    if (!isset($inspect['fields'][$colname])) {
+      $reasons[] = "$colname: not in database";
+      continue;
+    }
+
+    // Account for schemas that contain unnecessary 'default' => NULL
+    if (!isset($col['default']) ||
+        (is_null($col['default']) && !isset($inspect['fields'][$colname]['default']))) {
+      unset($col['default']);
+    }
+
+    $kdiffs = array();
+    foreach ($col_keys as $key => $val) {
+
+      if (!(
+          // First part tests that item exists for both and has same value in both places
+           (isset($col[$key]) && !is_null($col[$key]) && $col[$key] !== FALSE
+          && isset($inspect['fields'][$colname][$key]) && $inspect['fields'][$colname][$key] !== FALSE
+          && $col[$key] == $inspect['fields'][$colname][$key] )
+          // Second test is that it does not exist or exists but is null in both places
+       || ((!isset($col[$key]) || is_null($col[$key]) || $col[$key] === FALSE)
+             && (!isset($inspect['fields'][$colname][$key]) || $inspect['fields'][$colname][$key] === FALSE) ) ) ) {
+        // One way or another, difference between the two so note it to explicitly identify it later.
+        $kdiffs[] = $key;
+      }
+    }
+    if (count($kdiffs) != 0) {
+      $reasons[] = "column $colname - difference" .
+          ( count($kdiffs) > 1 ? 's' : '') . " on: " .
+          implode(', ', $kdiffs) . "<br/>declared: " .
+          schema_phpprint_column($col) . '<br/>actual: ' .
+          schema_phpprint_column($inspect['fields'][$colname]);
+    }
+    unset($inspect['fields'][$colname]);
+  }
+  foreach ($inspect['fields'] as $colname => $col) {
+    $reasons[] = "$colname: unexpected column in database";
+  }
+
+  if (isset($ref['primary key'])) {
+    if (!isset($inspect['primary key'])) {
+      $reasons[] = "primary key: missing in database";
+    }
+    elseif ($ref['primary key'] !== $inspect['primary key']) {
+      $reasons[] = ("primary key:<br />declared: " .
+        schema_phpprint_key($ref['primary key']) . '<br />actual: ' .
+        schema_phpprint_key($inspect['primary key']));
+    }
+  }
+  elseif (isset($inspect['primary key'])) {
+    $reasons[] = "primary key: missing in schema";
+  }
+
+  foreach (array('unique keys', 'indexes') as $type) {
+    if (isset($ref[$type])) {
+      foreach ($ref[$type] as $keyname => $key) {
+        if (!isset($inspect[$type][$keyname])) {
+          $reasons[] = "$type $keyname: missing in database";
+          continue;
+        }
+        // $key is column list
+        if ($key !== $inspect[$type][$keyname]) {
+          $reasons[] = ("$type $keyname:<br />declared: " .
+            schema_phpprint_key($key) . '<br />actual: ' .
+            schema_phpprint_key($inspect[$type][$keyname]));
+        }
+        unset($inspect[$type][$keyname]);
+      }
+    }
+    if (isset($inspect[$type])) {
+      foreach ($inspect[$type] as $keyname => $col) {
+        // this is not an error, the dba might have added it on purpose
+        $notes[] = "$type $keyname: unexpected (not an error)";
+      }
+    }
+  }
+
+  $status = (count($reasons) ? 'different' : 'same');
+  return array('status' => $status, 'reasons' => $reasons,
+    'notes' => $notes);
+}
+
+//////////////////////////////////////////////////////////////////////
+// Schema administration and UI
+//////////////////////////////////////////////////////////////////////
+
+/**
+ * Implement of hook_init().
+ * Perform setup tasks.
+ */
+/**
+ * TODO: Remove this unless someone can explain its purpose. Is it a means for
+ * other modules to add support for other engines? In that case, it is unnecessary -
+ * defining a SchemaDatabaseSchema_<driver> class will do the trick.
+ */
+/*
+function schema_init() {
+  schema_require();
+}
+
+function schema_require() {
+  static $done = 0;
+  if ($done++) {
+    return;
+  }
+
+  // Load all our module 'on behalfs' so they will be available for
+  // any module (including this one) that needs them.
+  // TODO: What precisely is the purpose of this? To allow other
+  $path = drupal_get_path('module', 'schema');
+  $files = drupal_system_listing('/schema_.*\.inc$/', $path . '/modules', 'name', 0);
+  foreach ($files as $file) {
+    // The filename format is very specific. It must be schema_MODULENAME.inc
+    $module = substr_replace($file->name, '', 0, 7);
+    require_once("./$file->filename");
+  }
+}
+*/
+
+/**
+ * Implement of hook_permission().
+ */
+function schema_permission() {
+  return array(
+    'administer schema' => array(
+      'title' => t('Administer schema module'),
+    ),
+  );
+}
+
+/**
+ * Implement of hook_menu().
+ * Define menu items and page callbacks.
+ * admin/structure/schema           calls local task(default): schema_compare()
+ * admin/structure/schema/compare    calls local task: schema_compare()
+ * admin/structure/schema/describe  calls local task: schema_describe()
+ * admin/structure/schema/inspect   calls local task: schema_inspect()
+ * admin/structure/schema/sql       calls local task: schema_sql()
+ * admin/structure/schema/show      calls local task: schema_show()
+ */
+function schema_menu() {
+  $items['admin/structure/schema'] = array(
+    'title' => 'Schema',
+    'description' => 'Manage the database schema for this system.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('schema_compare'),
+    'access arguments' => array('administer schema'),
+    );
+
+  $items['admin/structure/schema/compare'] = array(
+    'title' => 'Compare',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('schema_compare'),
+    'weight' => -10,
+    'access arguments' => array('administer schema'),
+    );
+
+  $items['admin/structure/schema/describe'] = array(
+    'title' => 'Describe',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('schema_describe'),
+    'weight' => -8,
+    'access arguments' => array('administer schema'),
+    );
+
+  $items['admin/structure/schema/inspect'] = array(
+    'title' => 'Inspect',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('schema_inspect'),
+    'weight' => -6,
+    'access arguments' => array('administer schema'),
+    );
+
+  $items['admin/structure/schema/sql'] = array(
+    'title' => 'SQL',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'schema_sql',
+    'weight' => -4,
+    'access arguments' => array('administer schema'),
+    );
+
+  // This can't work unless we rename the functions in database.*.inc.
+  global $_schema_engines;
+  if (FALSE && isset($_schema_engines) && is_array($_schema_engines)) {
+    foreach ($_schema_engines as $engine) {
+      $items['admin/structure/schema/sql/' . $engine] = array(
+        'title' => $engine,
+        'type' => ($engine == db_driver() ? MENU_DEFAULT_LOCAL_TASK :
+          MENU_LOCAL_TASK),
+        'page callback' => 'schema_sql',
+        'callback arguments' => $engine,
+        'access arguments' => array('administer schema'),
+        );
+    }
+  }
+
+  $items['admin/structure/schema/show'] = array(
+    'title' => 'Show',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'schema_show',
+    'weight' => -2,
+    'access arguments' => array('administer schema'),
+    );
+
+  $items['admin/structure/schema/settings'] = array(
+    'title' => 'Settings',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('schema_settings'),
+    'weight' => 0,
+    'access arguments' => array('administer schema'),
+    );
+
+  return $items;
+}
+
+function _schema_process_description($desc) {
+  return preg_replace('@{([a-z_]+)}@i', '<a href="#" onclick="Drupal.toggleFieldset($(\'#table-$1\')[0]); return false;">$1</a>', $desc);
+}
+
+/**
+ * "Compare" menu callback.
+ * This function just massages the data returned by
+ * schema_compare_schemas() into HTML.
+ */
+function schema_compare() {
+  $form = array();
+  $form['description'] = array(
+    '#prefix' => '<div>',
+    '#markup' => t('This page compares the live database as it currently exists against
+          the combination of all schema information provided by all enabled modules'),
+    '#suffix' => '</div>',
+  );
+
+  $states = array(
+    'same' => t('Match'),
+    'different' => t('Mismatch'),
+    'missing' => t('Missing'),
+    );
+  $descs = array(
+    'same' => 'Tables for which the schema and database agree.',
+    'different' => 'Tables for which the schema and database are different.',
+    'missing' => 'Tables in the schema that are not present in the database.',
+    );
+
+  $schema = drupal_get_schema(NULL, TRUE);
+  $info = schema_compare_schemas($schema);
+
+  // The info array is keyed by state (same/different/missing/extra/warn). For missing,
+  // the value is a simple array of table names. For warn, it is a simple array of warnings.
+  // Get those out of the way first
+  if (isset($info['warn'])) {
+    foreach ($info['warn'] as $message) {
+      drupal_set_message($message, 'warning');
+    }
+    unset($info['warn']);
+  }
+
+  $form['extra'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Extra (@count)',
+        array('@count' => isset($info['extra']) ? count($info['extra']) : 0)),
+    '#description' => t('Tables in the database that are not present in the schema.  This
+        indicates previously installed modules that are disabled but not un-installed or
+        modules that do not use the Schema API.'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#weight' => 50, // This goes last
+  );
+  $form['extra']['tablelist'] = array(
+    '#theme' => 'item_list',
+    '#items' => isset($info['extra']) ? $info['extra'] : array(),
+  );
+  unset($info['extra']);
+
+  // For the other states, the value is an array keyed by module name. Each value
+  // in that array is an array keyed by tablename, and each of those values is an
+  // array containing 'status' (same as the state), an array of reasons, and an array of notes.
+  $weight = 0;
+  foreach ($info as $state => $modules) {
+    // We'll fill in the fieldset title below, once we have the counts
+    $form[$state] = array(
+      '#type' => 'fieldset',
+      '#description' => t($descs[$state]),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#weight' => $weight++,
+    );
+    $counts[$state] = 0;
+
+    foreach ($modules as $module => $tables) {
+      $counts[$state] += count($tables);
+      $form[$state][$module] = array(
+        '#type' => 'fieldset',
+        '#title' => $module,
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+      switch ($state) {
+        case 'same':
+        case 'missing':
+          $form[$state][$module]['tablelist'] = array(
+            '#theme' => 'item_list',
+            '#items' => array_keys($tables),
+          );
+          break;
+
+        case 'different':
+          $items = array();
+          foreach ($tables as $name => $stuff) {
+            $form[$state][$module][$name] = array(
+              '#type' => 'fieldset',
+              '#collapsible' => TRUE,
+              '#collapsed' => TRUE,
+              '#title' => $name,
+            );
+            $form[$state][$module][$name]['reasons'] = array(
+              '#theme' => 'item_list',
+              '#items' => array_merge($tables[$name]['reasons'], $tables[$name]['notes']),
+            );
+          }
+          break;
+      }
+    }
+  }
+
+  // Fill in counts in titles
+  foreach ($states as $state => $description) {
+    $form[$state]['#title'] = t('@state (@count)',
+        array('@state' => $states[$state], '@count' => isset($counts[$state]) ? $counts[$state] : 0));
+  }
+
+  return $form;
+}
+
+/**
+ * "Describe" menu callback.
+ */
+function schema_describe() {
+  $schema = drupal_get_schema(NULL, TRUE);
+  ksort($schema);
+  $row_hdrs = array(t('Name'), t('Type[:Size]'), t('Null?'), t('Default'));
+
+  $form = array();
+  $form['description'] = array(
+    '#prefix' => '<div>',
+    '#markup' => "This page describes the Drupal database schema.  Click on a table name
+to see that table's description and fields.  Table names within a table or
+field description are hyperlinks to that table's description.",
+    '#suffix' => '</div>',
+  );
+
+  $default_table_description = t('TODO: please describe this table!');
+  $default_field_description = t('TODO: please describe this field!');
+  foreach ($schema as $t_name => $t_spec) {
+    $rows = array();
+    foreach ($t_spec['fields'] as $c_name => $c_spec) {
+      $row = array();
+      $row[] = $c_name;
+      $type = $c_spec['type'];
+      if (!empty($c_spec['length'])) {
+        $type .= '(' . $c_spec['length'] . ')';
+      }
+      if (!empty($c_spec['scale']) && !empty($c_spec['precision'])) {
+        $type .= '(' . $c_spec['precision'] . ', ' . $c_spec['scale'] . ' )';
+      }
+      if (!empty($c_spec['size']) && $c_spec['size'] != 'normal') {
+        $type .= ':' . $c_spec['size'];
+      }
+      if ($c_spec['type'] == 'int' && !empty($c_spec['unsigned'])) {
+        $type .= ', unsigned';
+      }
+      $row[] = $type;
+      $row[] = !empty($c_spec['not null']) ? 'NO' : 'YES';
+      $row[] = isset($c_spec['default']) ? (is_string($c_spec['default']) ? '\'' . $c_spec['default'] . '\'' : $c_spec['default']) : '';
+      $rows[] = $row;
+      if (!empty($c_spec['description']) && $c_spec['description'] != $default_field_description) {
+        $desc = _schema_process_description($c_spec['description']);
+        $rows[] = array(array('colspan' => count($row_hdrs), 'data' => $desc));
+      }
+      else {
+        drupal_set_message(_schema_process_description(t('Field {!table}.@field has no description.', array('!table' => $t_name, '@field' => $c_name))), 'warning');
+      }
+    }
+
+    if (empty($t_spec['description']) || $t_spec['description'] == $default_table_description) {
+      drupal_set_message(_schema_process_description(t('Table {!table} has no description.', array('!table' => $t_name))), 'warning');
+    }
+
+    $form[$t_name] = array(
+      '#type' => 'fieldset',
+      '#title' => t('@table (@module module)',
+        array('@table' => $t_name, '@module' => isset($t_spec['module']) ? $t_spec['module'] : '')),
+      '#description' => !empty($t_spec['description']) ? _schema_process_description($t_spec['description']) : '',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#attributes' => array('id' => 'table-' . $t_name),
+    );
+    $form[$t_name]['content'] = array(
+      '#theme' => 'table',
+      '#header' => $row_hdrs,
+      '#rows' => $rows,
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * "Inspect" menu callback.
+ */
+function schema_inspect() {
+  $form = array();
+  $form['description'] = array(
+    '#prefix' => '<div>',
+    '#markup' => t("This page shows the live database schema as it currently
+      exists on this system.  Known tables are grouped by the module that
+      defines them; unknown tables are all grouped together.</div>
+
+      <div>To implement hook_schema() for a module that has existing tables, copy
+      the schema structure for those tables directly into the module's
+      hook_schema() and return \$schema."),
+    '#suffix' => '</div>',
+  );
+
+  $mods = module_list();
+  sort($mods);
+  $mods = array_flip($mods);
+  $schema = drupal_get_schema(NULL, TRUE);
+  $inspect = schema_dbobject()->inspect(variable_get('schema_database_connection', 'default'));
+  foreach ($inspect as $name => $table) {
+    $module = isset($schema[$name]['module']) ? $schema[$name]['module'] : 'Unknown';
+    if (!isset($form[$module])) {
+      $form[$module] = array(
+        '#type' => 'fieldset',
+        '#access' => TRUE,
+        '#title' => check_plain($module),
+        '#collapsible' => TRUE,
+        '#collapsed' => ($module != 'Unknown'),
+        '#weight' => ($module == 'Unknown' ? 0 : $mods[$module]+1),
+      );
+    }
+    $form[$module][$name] = array(
+      '#type' => 'markup',
+      '#markup' => '<textarea style="width:100%" rows="10">' .
+          check_plain(schema_phpprint_table($name, $table)) . '</textarea>');
+  }
+
+  return $form;
+}
+
+
+/**
+ *  "SQL" menu callback.
+ */
+function schema_sql($engine = NULL) {
+  $schema = drupal_get_schema(NULL, TRUE);
+  $connection = Database::getConnection();
+  $sql = '';
+  foreach ($schema as $name => $table) {
+    if (substr($name, 0, 1) == '#') {
+      continue;
+    }
+    if ($engine) {
+      $stmts = call_user_func('schema_' . $engine . '_create_table_sql', $table);
+    }
+    else {
+      $stmts = schema_dbobject()->getCreateTableSql($name, $table);
+    }
+
+    $sql .= implode(";\n", $stmts) . ";\n\n";
+  }
+
+  $output = t('<p>This page shows the CREATE TABLE statements that the Schema API
+               generates for the selected database engine for each table defined by a
+               module.  It is for debugging purposes.</p>');
+  $output .= "<textarea style=\"width:100%\" rows=\"30\">$sql</textarea>";
+
+  return $output;
+}
+
+/**
+ * "Show" menu callback.
+ * Displays drupal schema as php code, so you can reuse it
+ * as you need.
+ */
+function schema_show() {
+  $schema = drupal_get_schema(NULL, TRUE);
+  $show = var_export($schema, 1);
+
+  $output = t('<p>This page displays the Drupal database schema data structure.  It is for
+    debugging purposes.</p>');
+
+  $output .= "<textarea style=\"width:100%\" rows=\"30\">$show</textarea>";
+
+  return $output;
+}
+
+function schema_settings($form, &$form_state) {
+  global $databases;
+  if (count($databases) > 1) {
+    $form['schema_database_connection'] = array(
+      '#type' => 'select',
+      '#title' => t('Database connection to use'),
+      '#default_value' => variable_get('schema_database_connection', 'default'),
+      '#options' => array_combine(array_keys($databases), array_keys($databases)),
+      '#description' => t('If you use a secondary database other than the default
+        Drupal database you can select it here and use schema\'s "compare" and
+        "inspect" functions on that other database.'),
+    );
+  }
+  $form['schema_status_report'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Include schema comparison reports in site status report'),
+    '#default_value' => variable_get('schema_status_report', TRUE),
+    '#description' => t('When checked, schema comparison reports are run on
+      the Administer page, and included in the site status report.'),
+  );
+  $form['schema_suppress_type_warnings'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Suppress schema warnings.'),
+    '#default_value' => variable_get('schema_suppress_type_warnings', FALSE),
+    '#description' => t('When checked, missing schema type warnings will be suppressed.'),
+  );
+  return system_settings_form($form);
+}
+

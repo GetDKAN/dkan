@@ -1,0 +1,84 @@
+<?php
+
+/**
+ * @file
+ * Defines a formatter that renders a link like an iframe
+ */
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function link_iframe_formatter_field_formatter_info() {
+  return array(
+    'link_iframe_formatter_iframe' => array(
+      'label' => t('Iframe'),
+      'field types' => array('link_field'),
+      'settings' => array(
+        'width' => '640',
+        'height' => '480',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function link_iframe_formatter_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $settings = $instance['display'][$view_mode]['settings'];
+
+  $element = array();
+
+  $element['width'] = array(
+    '#title' => t('Width'),
+    '#type' => 'textfield',
+    '#default_value' => $settings['width'],
+    '#required' => TRUE,
+  );
+
+  $element['height'] = array(
+    '#title' => t('Height'),
+    '#type' => 'textfield',
+    '#default_value' => $settings['height'],
+    '#required' => TRUE,
+  );
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function link_iframe_formatter_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $settings = $instance['display'][$view_mode]['settings'];
+
+  $summary = t('Width : @width, Height : @height', array('@width' => $settings['width'], '@height' => $settings['height']));
+
+  return $summary;
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function link_iframe_formatter_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $elements = array();
+  foreach ($items as $delta => $item) {
+    if ($display['type'] == 'link_iframe_formatter_iframe') {
+      $link_options = $item;
+      unset($link_options['title']);
+      unset($link_options['url']);
+      $elements[$delta] = array(
+        '#type' => 'html_tag',
+        '#tag' => 'iframe',
+        '#attributes' => array(
+          'height' => $display['settings']['height'],
+          'name' => $item['title'],
+          'src' => url($item['url'], $link_options),
+          'width' => $display['settings']['width'],
+        ),
+        '#value' => ''
+      );
+    }
+  }
+  return $elements;
+}

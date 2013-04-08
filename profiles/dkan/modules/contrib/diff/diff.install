@@ -1,0 +1,124 @@
+<?php
+
+/**
+ * @file
+ * Provides uninstallation functions.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function diff_uninstall() {
+  // Bulk delete entity based variables.
+  $prefixes = array(
+    'diff_enable_revisions_page_',
+    'diff_show_',
+    'diff_view_mode_',
+    'diff_admin_path_',
+    'diff_default_state_',
+  );
+  foreach ($prefixes as $prefix) {
+    db_delete('variable')
+      ->condition('name', db_like($prefix) . '%', 'LIKE')
+      ->execute();
+  }
+
+  // Delete global variables.
+  variable_del('diff_context_lines_trailing');
+  variable_del('diff_context_lines_leading');
+  variable_del('diff_theme');
+  variable_del('diff_radio_behavior', '');
+
+  foreach (field_info_fields() as $field) {
+    variable_del("diff_{$field['module']}_field_{$field['type']}_default_options");
+  }
+}
+
+/**
+ * Updates the existing system variables to target the entity type and bundle.
+ */
+function diff_update_7300() {
+  $node_types = array_keys(node_type_get_types());
+  foreach ($node_types as $bundle) {
+    $type_variables = array(
+      'show_preview_changes',
+      'enable_revisions_page',
+      'show_diff_inline',
+    );
+    foreach ($type_variables as $prefix) {
+      $setting = variable_get($prefix . '_' . $bundle, NULL);
+      if (isset($setting)) {
+        variable_del($prefix . '_' . $bundle);
+        variable_set('diff_' . $prefix . '_node_' . $bundle, $setting);
+      }
+    }
+  }
+}
+
+/**
+ * Removed diff_update_7301().
+ */
+
+/**
+ * Removed diff_update_7302().
+ */
+
+/**
+ * Renames some internal settings names.
+ */
+function diff_update_7303() {
+  // Get current values
+  $radio = variable_get('diff_script_revisioning', 'simple');
+  $leading = variable_get('diff_leading_context_lines', 2);
+  $trailing = variable_get('diff_trailing_context_lines', 2);
+  // Create new variable names
+  variable_set('diff_radio_behavior', $radio);
+  variable_set('diff_context_lines_leading', $leading);
+  variable_set('diff_context_lines_trailing', $trailing);
+  // Delete old variables
+  variable_del('diff_script_revisioning');
+  variable_del('diff_leading_context_lines');
+  variable_del('diff_trailing_context_lines');
+}
+
+/**
+ * Removes unused variable settings and merges inline diff block settings.
+ */
+function diff_update_7304() {
+  // This is now always applied to text fields.
+  variable_del('diff_normalise_text');
+
+  // Merge the content type settings for the inline diff block into a single variable.
+  // diff_update_7300() - show_diff_inline_TYPE to diff_show_diff_inline_node_TYPE
+  $node_types = array_keys(node_type_get_types());
+  $enabled_types = array();
+  foreach ($node_types as $node_type) {
+    if (variable_get('diff_show_diff_inline_node_' . $node_type, FALSE)) {
+      $enabled_types[$node_type] = $node_type;
+    }
+    variable_del('diff_show_diff_inline_node_' . $node_type);
+  }
+  variable_set('diff_show_diff_inline_node_bundles', $enabled_types);
+
+  // Warn users that these settings are altered.
+  drupal_set_message(t('Diff <em>Inline differences</em> content type settings are now located within the <em>Inline differences</em> block settings.'));
+}
+
+/**
+ * Updates to normalize the new view mode settings.
+ */
+function diff_update_7305() {
+  // Rebuild the menus.
+  variable_set('menu_rebuild_needed', TRUE);
+
+  // Removed the enforced entity view mode.
+  db_delete('variable')
+      ->condition('name', db_like('diff_view_mode_standard_node_') . '%', 'LIKE')
+      ->execute();
+
+  // Removes the configurable view mode for the inline diff block, as this
+  // is fairly meaningless and confusing to users.
+  db_delete('variable')
+      ->condition('name', db_like('diff_view_mode_inline_') . '%', 'LIKE')
+      ->execute();
+}

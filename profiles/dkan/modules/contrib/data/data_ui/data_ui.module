@@ -1,0 +1,272 @@
+<?php
+/**
+ * @file
+ * Hooks and API functions for Data UI module.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function data_ui_help($path, $arg) {
+  $no_primary_key_text = '<p>' .
+    t("Some tables may not have a 'view' link; this happens when a table doesn't have a primary key or is not joined to another table with a primary key. You can add a primary key field or a join from the table's 'Edit schema' page.") .
+    '</p>';
+
+  switch ($path) {
+    case 'admin/content/data':
+      $output = '<p>' . t('View content in data tables. If you would like to edit these tables, visit the !data_manage_page.', array('!data_manage_page' => l(t('Data table management page'), 'admin/structure/data'))) . '</p>';
+      $output .= $no_primary_key_text;
+      return $output;
+    case 'admin/structure/data/adopt':
+      $output = '<p>' . t('Manage database tables that aren\'t claimed by other modules. Adopting tables listed here will add them to Data\'s list of tables.') . '</p>';
+      return $output;
+    case 'admin/structure/data':
+      if (module_exists('views')) {
+        $output = '<p>' . t('Manage data tables. If you would like to view the content of these tables, visit the !data_view_page.', array('!data_view_page' => l(t('Data table content page'), 'admin/content/data'))) . '</p>';
+        $output .= $no_primary_key_text;
+      }
+      else {
+        $output = '<p>' . t('Manage data tables.') . '</p>';
+      }
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function data_ui_menu() {
+  $items = array();
+  if (module_exists('views')) {
+    $items['admin/content/data'] = array(
+      'title' => 'Data tables',
+      'description' => 'View data tables.',
+      'page callback' => 'data_ui_view',
+      'file' => 'data_ui.admin.inc',
+      'access arguments' => array('administer data tables'),
+    );
+  }
+  $items['admin/structure/data'] = array(
+    'title' => 'Data tables',
+    'description' => 'Create, modify and delete data tables.',
+    'page callback' => 'data_ui_manage',
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+  );
+  $items['admin/structure/data/overview'] = array(
+    'title' => 'Overview',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/structure/data/compare'] = array(
+    'title' => 'Compare schemas',
+    'description' => 'Administer data tables.',
+    'page callback' => 'data_ui_compare',
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/structure/data/compare/%data_ui_table'] = array(
+    'title' => 'Adjust schema',
+    'description' => 'Administer data tables.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_ui_adjust_form', 4),
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/structure/data/adopt'] = array(
+    'title' => 'Adopt tables',
+    'description' => 'Adopt data tables that aren\'t claimed by any module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_ui_adopt_form'),
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
+  );
+  $items['admin/structure/data/create'] = array(
+    'title' => 'Create a table',
+    'description' => 'Create a data table.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_ui_create_form'),
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/structure/data/drop/%data_ui_table'] = array(
+    'title' => 'Drop table',
+    'description' => 'Drop a data table.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_ui_drop_form', 4),
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/structure/data/disown/%data_ui_table'] = array(
+    'title' => 'Disown table',
+    'description' => 'Disown a data table.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_ui_disown_form', 4),
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/structure/data/edit/%data_ui_table'] = array(
+    'title' => 'Data table',
+    'description' => 'Administer data tables.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_ui_edit_form', 4),
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/structure/data/edit/%data_ui_table/edit'] = array(
+    'title' => 'Edit schema',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/structure/data/edit/%data_ui_table/title'] = array(
+    'title' => 'Edit title',
+    'description' => 'Edit the title of the table.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_ui_edit_title_form', 4),
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -9,
+  );
+  if (module_exists('views')) {
+    $items['admin/structure/data/edit/%data_ui_table/views'] = array(
+      'title' => 'Configure views',
+      'description' => 'Administer data tables.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('data_ui_views_form', 4),
+      'file' => 'data_ui.admin.inc',
+      'access arguments' => array('administer data tables'),
+      'type' => MENU_LOCAL_TASK,
+    );
+  }
+  if (module_exists('devel')) {
+    $items['admin/structure/data/edit/%data_ui_table/view-schema'] = array(
+      'title' => 'Devel load',
+      'description' => 'Administer data tables.',
+      'page callback' => 'data_ui_view_schema',
+      'page arguments' => array(4),
+      'file' => 'data_ui.admin.inc',
+      'access arguments' => array('administer data tables'),
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 10,
+    );
+  }
+  $items['admin/structure/data/edit/%data_ui_table/join'] = array(
+    'title' => 'Join tables',
+    'description' => 'Administer data tables.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_ui_join_form', 4, 6),
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/structure/data/revert/%data_ui_table'] = array(
+    'title' => 'Revert data table',
+    'description' => 'Administer data tables.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_ui_revert_form', 4),
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/structure/data/export/%data_ui_table'] = array(
+    'title' => 'Data table',
+    'description' => 'Export data table.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_ui_export_form', 4),
+    'file' => 'data_ui.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Menu loader callback.
+ */
+function data_ui_table_load($table_name) {
+  return data_get_table($table_name);
+}
+
+/**
+ * Title callback.
+ */
+function data_ui_title($title) {
+  return t('Edit table @table', array('@table' => $table->get('title')));
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function data_ui_views_api() {
+  return array(
+    'api' => '2.0',
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function data_ui_theme() {
+  return array(
+    'data_ui_edit_form' => array(
+      'render element' => 'form',
+    ),
+    'data_ui_views_form' => array(
+      'render element' => 'form',
+    ),
+    'data_ui_create_form' => array(
+      'render element' => 'form',
+    ),
+    'data_ui_schema_compare_table' => array(
+      'variables' => array('comparison' => array()),
+    ),
+  );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function data_ui_permission() {
+  return array(
+    'administer data tables' => array(
+      'title' => t('administer data tables'),
+      'description' => t('Adopt and configure data tables.'),
+      'restrict access' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Creates the default path for a data table.
+ */
+function data_ui_get_default_path($name) {
+  if ($table = data_get_table($name)) {
+    // Check whether this can be a Views base table.
+    $table_schema = $table->get('table_schema');
+    if (isset($table_schema['primary key'])) {
+      return 'admin/content/data/view/' . $name;
+    }
+
+    // Check whether there is a data mananged table to the left.
+    // @todo: go all the way to the left.
+    $path = '';
+    $meta = $table->get('meta');
+    if (isset($meta['join']) && is_array($meta['join']) && !empty($meta['join'])) {
+      $left_table_name = key($meta['join']);
+      if ($left_table = data_get_table($left_table_name)) {
+        $path .= $left_table_name . '/';
+      }
+      return 'admin/content/data/view/' . $path . $name;
+    }
+  }
+  return '';
+}

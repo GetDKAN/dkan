@@ -1,0 +1,202 @@
+<?php
+/**
+ * @file
+ * Data module tests.
+ */
+
+require_once(drupal_get_path('module', 'data') .'/tests/data.test.inc');
+
+/**
+ * Test basic Data API functionality.
+ */
+class DataTestCaseAPI extends DataTestCase {
+
+  /**
+   * Describe this test.
+   */
+  public function getInfo() {
+    return array(
+      'name' => t('Data API'),
+      'description' => t('Unit tests for Data module\'s API. Turn off views module in your local site to run these tests.'),
+      'group' => t('Data'),
+    );
+  }
+
+  /**
+   * Set up test.
+   */
+  public function setUp() {
+    parent::setUp('ctools', 'data');
+  }
+
+  /**
+   * Run CRUD tests.
+   */
+  public function testCRUD() {
+    // Create table.
+    $table_name = data_name($this->randomName(5, 'crud'));
+    if (!$table = data_create_table($table_name, $this->testSchema())) {
+      $this->error('Could not create table.');
+      return;
+    }
+    else {
+      $this->assertTrue(db_table_exists($table->get('name')), 'Created table '. $table->get('name'));
+      $schema = drupal_get_schema($table->get('name'));
+      $this->assertTrue(!empty($schema), 'Schema information is available.');
+    }
+
+    // Save data.
+    $handler = data_get_handler($table->get('name'));
+    $test_data = $this->testData();
+    $handler->save($test_data[0], array('id'));
+    $handler->save($test_data[1], array('id'));
+    $handler->save($test_data[1], array('id'));
+
+    // Load second record.
+    $data = $handler->load(array('id' => 1));
+    $this->assertEqual($data[0], $test_data[1], 'Loaded data matches saved data.');
+
+    // Manipulate second record, save and load.
+    $data[0]['char0'] = 'test';
+    $handler->save($data[0], array('id'));
+    $data = $handler->load(array('id' => 1));
+    $this->assertEqual($data[0]['char0'], 'test', 'Saved data matches changed data.');
+
+    // Manipulate second record, update and load.
+    $data[0]['char0'] = 'test_update';
+    $handler->update($data[0], array('id'));
+    $data = $handler->load(array('id' => 1));
+    $this->assertEqual($data[0]['char0'], 'test_update', 'Updated data matches changed data.');
+
+    // Delete first record and insert it again.
+    $data = $handler->load(array('id' => 0));
+    $handler->delete(array('id' => 0));
+    $this->assertFalse($handler->load(array('id' => 0)), 'Data deleted.');
+    $handler->insert($data[0]);
+    $data = $handler->load(array('id' => 0));
+    $this->assertEqual($data[0]['char0'], 'test00', 'Inserted data matches.');
+
+    // Load a record by string.
+    $data = $handler->load(array('char0' => 'test_update'));
+    $this->assertEqual($data[0]['id'], 1, 'Loaded data by string type key.');
+
+    // Delete table.
+    $table->drop($table_name);
+    $this->assertFalse(db_table_exists($table_name), 'Dropped table.');
+
+    // Create table and drop it again.
+    $table = data_create_table($table_name, $this->testSchema());
+    $this->assertTrue(!empty($table), 'Created table with same name '. $table_name);
+
+    // Delete table.
+    $table->drop($table_name);
+    $this->assertFalse(db_table_exists($table_name), 'Dropped table.');
+  }
+
+  /**
+   * Test API functions of DataTable and DataHandler.
+   */
+  public function testAPIFunctions() {
+
+    // Test data_create_table() API function.
+    $tablename = data_name($this->randomName(5, 'apifunc'));
+    $table = data_create_table($tablename, $this->testSchema());
+    $num_of_tables = db_result(db_query("SELECT COUNT(*) FROM {data_tables}"));
+    $this->assertTrue($num_of_tables == 1, "{data_create_table}: Exactly one table is created");
+    $db_tablename = db_result(db_query("SELECT name FROM {data_tables}"));
+    $result = db_query("SELECT * FROM {%s}", $db_tablename);
+    $this->assertTrue($result != FALSE, "{data_create_table}: The table exists in the database");
+
+    // Test data_get_table() API function.
+    $this->assertFalse(data_get_table(''), "{data_get_table}: Empty named table does not exist");
+    $this->assertFalse(data_get_table($tablename . $this->randomName(5, 'apifunc')), "{data_get_table}: Non-existing named table does not exist");
+    $table = data_get_table($tablename);
+    $this->assertTrue($table instanceof DataTable, "{data_get_table}: A DataTable object is returned by getting an existing table.");
+
+    // Test data_drop_table() API function
+    data_drop_table('');
+    data_drop_table('%');
+    data_drop_table('.');
+    data_drop_table('\%');
+    $num_of_tables = db_result(db_query("SELECT COUNT(*) FROM {data_tables}"));
+    $this->assertTrue($num_of_tables == 1, "{data_drop_table}: It's not possible to delete tables with special (non-existing) table names.");
+    data_drop_table($tablename);
+    $num_of_tables = db_result(db_query("SELECT COUNT(*) FROM {data_tables}"));
+    $this->assertTrue($num_of_tables == 0, "{data_drop_table}: The table is destroyed.");
+    $this->assertFalse(db_table_exists($db_tablename), "{data_drop_table}: The table does not exist in the database");
+
+    // Test data_get_all_tables() API function.
+    $start = count(data_get_all_tables(TRUE));
+    for ($i = 0; $i < 5; $i++) {
+      $name = data_name($this->randomName(20, 'apifunc'));
+      if (!data_create_table($name, $this->testSchema())) {
+        $this->fail('Could not create table.');
+      }
+    }
+    $tables = data_get_all_tables(TRUE);
+    $this->assertTrue(count($tables) == ($start + $i), "{data_get_all_tables}: Proper number of table entries are returned.");
+
+    // Test data_export() API function.
+    if (module_exists('ctools')) {
+      $table = array_pop(data_get_all_tables());
+      $exported = data_export($table->get('name'));
+      $this->assertTrue(strstr($exported, 'array'), "{data_export}: The schema has been exported");
+    }
+    else {
+      $msg = data_export('foo');
+      $this->assertEqual($msg, 'Export requires CTools http://drupal.org/project/ctools', 'Notification message is appeared');
+    }
+
+    // Test DataTable::get().
+    $table = array_pop(data_get_all_tables());
+    $result = $table->get('nonexistingproperty');
+    $this->assertTrue(empty($result), "DataTable::get(): Non-existing property does not return anything.");
+    $result = $table->get('name');
+    $this->assertTrue(!empty($result), "DataTable::get(): Existing property returns non-empty value.");
+
+    // Test DataTable::addField().
+    // Note: this test causes a notice if views is enabled on the system that
+    // runs the test.
+    $name = 'newfield'; // See data.test.inc and the testSchema(). It's safe to use hard-coded field name.
+    $spec = array(
+      'type' => 'int',
+      'unsigned' => TRUE,
+      'not null' => TRUE,
+    );
+    $return = $table->addField($name, $spec);
+    $this->assertEqual($name, $return, "DataTable::addField(): Returned correct field name.");
+    $result = db_query("SELECT %s FROM {%s}", $name, $table->get('name'));
+    $this->assertTrue($result != FALSE, "DataTable::addField(): The new column exists in the database");
+
+    $table->dropField($name);
+    // This query will cause an error, suppress it.
+    @$result = db_query("SELECT %s FROM {%s}", $name, $table->get('name'));
+    $this->assertFalse($result, "DataTable::dropField(): The column is dropped");
+
+    // Test DataHandler::save(), DataHandler::truncate() and DataHandler::delete().
+    $test_data = $this->testData();
+    $table->handler()->save($test_data[0], array('id'));
+    $num_of_rows_before = db_result(db_query("SELECT COUNT(*) FROM {%s}", $table->get('name')));
+    $table->handler()->truncate();
+    $num_of_rows_after = db_result(db_query("SELECT COUNT(*) FROM {%s}", $table->get('name')));
+    $this->assertEqual($num_of_rows_before, 1, "DataTable::truncate(): One row is in the table before executing it");
+    $this->assertEqual($num_of_rows_after, 0, "DataTable::truncate(): The table is empty after executing it.");
+
+    $test_data = $this->testData();
+    $table->handler()->save($test_data[0], array('id'));
+    $table->handler()->save($test_data[1], array('id'));
+    $table->handler()->delete(array('id' => $test_data[0]['id']));
+    $count = db_result(db_query("SELECT COUNT(*) FROM {%s} WHERE id = '%d'", $table->get('name'), $test_data[0]['id']));
+    $this->assertEqual($count, 0, 'The given entry is deleted');
+    $count = db_result(db_query("SELECT COUNT(*) FROM {%s} WHERE id = '%d'", $table->get('name'), $test_data[1]['id']));
+    $this->assertEqual($count, 1, 'The other entry is still there.');
+
+    // Test DataTable::link().
+    // @todo: test removing/adding a link.
+    $meta_before = $table->get('meta');
+    $table->link('node', 'nid');
+    $meta_after = $table->get('meta');
+    $this->assertTrue(empty($meta_before), "DataTable::link(): The meta is empty before executing it");
+    $this->assertTrue(!empty($meta_after), "DataTable::link(): The meta is not empty after executing it");
+  }
+}

@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * @file
+ * Basic authentication login - install file.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function restws_basic_auth_uninstall() {
+  variable_del('restws_basic_auth_user_regex');
+}
+
+/**
+ * Set the user name regex to accept all for backwards compatibility.
+ */
+function restws_basic_auth_update_7100() {
+  // Set the user name regex to accept all.
+  variable_set('restws_basic_auth_user_regex', '/.*/');
+}

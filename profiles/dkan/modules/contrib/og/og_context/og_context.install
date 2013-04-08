@@ -1,0 +1,20 @@
+<?php
+
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Group context module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function og_context_uninstall() {
+  $vars = array(
+    'og_context_negotiation_group_context',
+    'og_context_providers_weight_group_context',
+  );
+  foreach ($vars as $var) {
+    variable_del($var);
+  }
+}

@@ -1,0 +1,93 @@
+<?php
+
+/**
+ * @file
+ *   UUID path module functions.
+ */
+
+/**
+ * Implements hook_entity_uuid_load().
+ */
+function uuid_path_entity_uuid_load(&$entities, $entity_type) {
+  _uuid_path_load_url_aliases($entities, $entity_type);
+}
+
+/**
+ * Implements hook_entity_uuid_save().
+ */
+function uuid_path_entity_uuid_save(&$entity, $entity_type) {
+  _uuid_path_save_url_aliases($entity, $entity_type);
+}
+
+/**
+ * Loads url aliases in the corresponding entity.
+ */
+function _uuid_path_load_url_aliases(&$entities, $entity_type) {
+  $info = entity_get_info($entity_type);
+  // we only care about entities with URLs.
+  if (!isset($info['uri callback'])) {
+    return;
+  }
+
+  $callback = $info['uri callback'];
+  foreach ($entities as $id => $entity) {
+    $path = $callback($entity);
+    $aliases = _uuid_path_url_alias_load($path['path']);
+
+    // Ignore local IDs.
+    foreach($aliases as &$alias) {
+      unset($alias->pid);
+      unset($alias->source);
+    }
+
+    $entities[$id]->url_alias = $aliases;
+  }
+}
+
+/**
+ * Saves the received url aliases.
+ */
+function _uuid_path_save_url_aliases(&$entity, $entity_type) {
+  $info = entity_get_info($entity_type);
+
+  // We only care when there is a url callback
+  if (!isset($info['uri callback'])) {
+    return FALSE;
+  }
+
+  $callback = $info['uri callback'];
+  $uri = $callback($entity);
+  $path = $uri['path'];
+
+  // Delete existing aliases.
+  path_delete(array('source' => $path));
+
+  // Continue if aliases are present.
+  if(empty($entity->url_alias)) {
+    return FALSE;
+  }
+
+  foreach ($entity->url_alias as $alias) {
+    $entry = (array) $alias;
+    $entry['source'] = $path;
+    path_save($entry);
+  }
+}
+
+/**
+ * Loads all aliases associated with a path.
+ *
+ * @param $path
+ *   The source path to look up.
+ *
+ * @return
+ *   Array of paths or NULL if none found.
+ */
+function _uuid_path_url_alias_load($path) {
+  return db_select('url_alias')
+    ->condition('source', $path)
+    ->fields('url_alias')
+    ->execute()
+    ->fetchAll(PDO::FETCH_OBJ);
+}
+

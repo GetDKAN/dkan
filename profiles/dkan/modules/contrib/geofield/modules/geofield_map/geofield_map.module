@@ -1,0 +1,343 @@
+<?php
+
+/**
+ * Implements hook_views_api().
+ */
+
+function geofield_map_views_api() {
+  return array(
+    'api' => '3.0-alpha1',
+    'path' => drupal_get_path('module', 'geofield_map') . '/includes',
+  );
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+
+function geofield_map_field_formatter_info() {
+  return array(
+    'geofield_map_map' => array(
+      'label' => t('Geofield Map'),
+      'field types' => array('geofield'),
+      'settings' => array(
+        'geofield_map_width' => '100%',
+        'geofield_map_height' => '300px',
+        'geofield_map_zoom' => '8',
+        'geofield_map_controltype' => 'default',
+        'geofield_map_mtc' => 'standard',
+        'geofield_map_pancontrol' => 1,
+        'geofield_map_maptype' => 'map',
+        'geofield_map_baselayers_map' => 1,
+        'geofield_map_baselayers_satellite' => 1,
+        'geofield_map_baselayers_hybrid' => 1,
+        'geofield_map_baselayers_physical' => 0,
+        'geofield_map_scale' => 0,
+        'geofield_map_overview' => 0,
+        'geofield_map_overview_opened' => 0,
+        'geofield_map_scrollwheel' => 0,
+        'geofield_map_draggable' => 0,
+        'geofield_map_streetview_show' => 0,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+
+function geofield_map_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  list($entity_id) = entity_extract_ids($entity_type, $entity);
+
+  $settings = $display['settings'];
+
+  $map_settings = geofield_map_settings_do($settings);
+  geophp_load();
+  $data = array();
+
+  foreach ($items as $item) {
+    $geometry = geoPHP::load($item['wkt'], 'wkt');
+    if (!empty($geometry)) {
+      $datum = json_decode($geometry->out('json'));
+      $datum->properties = array(
+        'description' => entity_label($entity_type, $entity),
+      );
+      $data[] = $datum;
+    }
+  }
+
+  if (!empty($data)) {
+    $map_id = drupal_html_id("geofield_map_entity_{$entity_type}_{$entity_id}_{$field['field_name']}");
+
+    $js_settings = array(
+      $map_id => array(
+        'map_settings' => $map_settings,
+        'data' => count($data) == 1 ?
+          $data[0] :
+          array( 'type' => 'GeometryCollection', 'geometries' => $data),
+
+      ),
+    );
+
+    $container_attributes = array(
+      //No need for defaults here - these are populated from the field defaults.
+      'style' => "height:{$settings['geofield_map_height']}; width:{$settings['geofield_map_width']}",
+      'id' => $map_id,
+      'class' => 'geofieldMap',
+    );
+
+    $element[0] = array(
+      '#attached' => array(
+        'js' => array(
+          'http://maps.googleapis.com/maps/api/js?sensor=false' => array('type' => 'external'),
+          drupal_get_path('module', 'geofield_map') . '/js/GeoJSON.js',
+          drupal_get_path('module', 'geofield_map') . '/js/geofield_map.js',
+          array('data' => array('geofieldMap' => $js_settings), 'type' => 'setting'),
+        )
+      ),
+      '#markup' => '<div' . drupal_attributes($container_attributes) . '></div>',
+    );
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function geofield_map_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $element = geofield_map_settings_form($settings);
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function geofield_map_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $summary = array();
+
+  if ($settings['geofield_map_width']) {
+    $summary[] = t('Width: @w', array('@w' => $settings['geofield_map_width']));
+  }
+  if ($settings['geofield_map_height']) {
+    $summary[] = t('Height: @h', array('@h' => $settings['geofield_map_height']));
+  }
+  if ($settings['geofield_map_zoom']) {
+    $summary[] = t('Zoom: @z', array('@z' => $settings['geofield_map_zoom']));
+  }
+  if ($settings['geofield_map_controltype']) {
+    $summary[] = t('Zoom Control Type: @z', array('@z' => $settings['geofield_map_controltype']));
+  }
+  if ($settings['geofield_map_mtc']) {
+    $summary[] = t('Map Control Type: @m', array('@m' => $settings['geofield_map_mtc']));
+  }
+  if ($settings['geofield_map_pancontrol']) {
+    $summary[] = t('Show Pan Control: @yn', array('@yn' => ($settings['geofield_map_pancontrol'] ? 'Yes' : 'No')));
+  }
+  if ($settings['geofield_map_maptype']) {
+    $summary[] = t('Default Map Type: @m', array('@m' => $settings['geofield_map_maptype']));
+  }
+  if ($settings['geofield_map_scale']) {
+    $summary[] = t('Show Scale: @yn', array('@yn' => ($settings['geofield_map_scale'] ? 'Yes' : 'No')));
+  }
+  if ($settings['geofield_map_overview']) {
+    $summary[] = t('Overview Map: @yn', array('@yn' => ($settings['geofield_map_overview'] ? 'Yes' : 'No')));
+  }
+  if ($settings['geofield_map_scrollwheel']) {
+    $summary[] = t('Scrollwheel: @yn', array('@yn' => ($settings['geofield_map_scrollwheel'] ? 'Yes' : 'No')));
+  }
+  if ($settings['geofield_map_draggable']) {
+    $summary[] = t('Draggable: @yn', array('@yn' => ($settings['geofield_map_draggable'] ? 'Yes' : 'No')));
+  }
+  if ($settings['geofield_map_streetview_show']) {
+    $summary[] = t('Show streetview button: @yn', array('@yn' => ($settings['geofield_map_streetview_show'] ? 'Yes' : 'No')));
+  }
+
+  return implode('<br />', $summary);
+
+}
+
+function geofield_map_settings_form($settings, $element = array()) {
+  $element['geofield_map_width'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Map width'),
+    '#default_value' => $settings['geofield_map_width'],
+    '#size' => 25,
+    '#maxlength' => 25,
+    '#description' => t('The default width of a Google map, as a CSS length or percentage. Examples: <em>50px</em>, <em>5em</em>, <em>2.5in</em>, <em>95%</em>'),
+    '#required' => TRUE,
+  );
+  $element['geofield_map_height'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Map height'),
+    '#default_value' => $settings['geofield_map_height'],
+    '#size' => 25,
+    '#maxlength' => 25,
+    '#description' => t('The default height of a Google map, as a CSS length or percentage. Examples: <em>50px</em>, <em>5em</em>, <em>2.5in</em>, <em>95%</em>'),
+    '#required' => TRUE,
+  );
+  $element['geofield_map_zoom'] = array(
+    '#type' => 'select',
+    '#title' => t('Zoom'),
+    '#default_value' => $settings['geofield_map_zoom'],
+    '#options' => drupal_map_assoc(range(0, 17)),
+    '#description' => t('The default zoom level of a Google map.'),
+  );
+  $element['geofield_map_controltype'] = array(
+    '#type' => 'select',
+    '#title' => t('Zoom Control Type'),
+    '#options' => array(
+      'none' => t('None'),
+      'default' => t('Default'),
+      'small' => t('Small'),
+      'large' => t('Large'),
+    ),
+    '#default_value' => $settings['geofield_map_controltype'],
+  );
+  $element['geofield_map_mtc'] = array(
+    '#type' => 'select',
+    '#title' => t('Map Control Type'),
+    '#options' => array(
+      'none' => t('None'),
+      'standard' => t('Horizontal bar'),
+      'menu' => t('Dropdown'),
+    ),
+    '#default_value' => $settings['geofield_map_mtc'],
+  );
+  $element['geofield_map_pancontrol'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show Pan control'),
+    '#default_value' => $settings['geofield_map_pancontrol'],
+    '#return_value' => 1,
+  );
+
+  $mapopts = array('map' => t('Standard street map'));
+  if ($settings['geofield_map_baselayers_satellite']) {
+    $mapopts['satellite'] =  t('Standard satellite map');
+  }
+  if ($settings['geofield_map_baselayers_hybrid']) {
+    $mapopts['hybrid'] = t('Hybrid satellite map');
+  }
+  if ($settings['geofield_map_baselayers_physical']) {
+    $mapopts['physical'] = t('Terrain map');
+  }
+
+
+  $element['geofield_map_maptype'] = array(
+    '#type' => 'select',
+    '#title' => t('Default Map Type'),
+    '#default_value' => $settings['geofield_map_maptype'],
+    '#options' => array(
+      'map' => t('Standard street map'),
+      'satellite' => t('Standard satellite map'),
+      'hybrid' => t('Hybrid satellite map'),
+      'physical' => t('Terrain map'),
+    ),
+  );
+  $element['geofield_map_baselayers_map'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Standard street map'),
+    '#description' => t('The standard default street map.'),
+    '#default_value' => $settings['geofield_map_baselayers_map'],
+    '#return_value' => 1,
+    '#prefix' => '<fieldset><legend>' . t('Enable map types') . '</legend>',
+  );
+  $element['geofield_map_baselayers_satellite'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Standard satellite map'),
+    '#description' => t('Satellite view without street overlay.'),
+    '#default_value' => $settings['geofield_map_baselayers_satellite'],
+    '#return_value' => 1,
+  );
+  $element['geofield_map_baselayers_hybrid'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Hybrid satellite map'),
+    '#description' => t('Satellite view with street overlay.'),
+    '#default_value' => $settings['geofield_map_baselayers_hybrid'],
+    '#return_value' => 1,
+  );
+  $element['geofield_map_baselayers_physical'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Terrain map'),
+    '#description' => t('Map with physical data (terrain, vegetation.)'),
+    '#default_value' => $settings['geofield_map_baselayers_physical'],
+    '#return_value' => 1,
+    '#suffix' => '</fieldset>',
+  );
+  $element['geofield_map_scale'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Scale'),
+    '#description' => t('Show scale'),
+    '#default_value' =>  $settings['geofield_map_scale'],
+    '#return_value' => 1,
+  );
+  $element['geofield_map_overview'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Overview map'),
+    '#description' => t('Show overview map'),
+    '#default_value' =>  $settings['geofield_map_overview'],
+    '#return_value' => 1,
+  );
+
+  $element['geofield_map_overview_opened'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Overview map state'),
+    '#description' => t('Show overview map as open by default'),
+    '#default_value' =>  $settings['geofield_map_overview_opened'],
+    '#return_value' => 1,
+  );
+  $element['geofield_map_scrollwheel'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Scrollwheel'),
+    '#description' => t('Enable scrollwheel zooming'),
+    '#default_value' =>  $settings['geofield_map_scrollwheel'],
+    '#return_value' => 1,
+  );
+  $element['geofield_map_draggable'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Draggable'),
+    '#description' => t('Enable dragging on the map'),
+    '#default_value' =>  $settings['geofield_map_draggable'],
+    '#return_value' => 1,
+  );
+  $element['geofield_map_streetview_show'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show streetview button'),
+    '#default_value' =>  $settings['geofield_map_streetview_show'],
+    '#return_value' => 1,
+  );
+
+  return $element;
+
+}
+
+function geofield_map_settings_do($settings) {
+
+  $map_settings = array(
+    'zoom' => $settings['geofield_map_zoom'],
+    'controltype' => $settings['geofield_map_controltype'],
+    'mtc' => $settings['geofield_map_mtc'],
+    'pancontrol' => $settings['geofield_map_pancontrol'],
+    'maptype' => $settings['geofield_map_maptype'],
+    'baselayers_map' => $settings['geofield_map_baselayers_map'],
+    'baselayers_satellite' => $settings['geofield_map_baselayers_satellite'],
+    'baselayers_hybrid' => $settings['geofield_map_baselayers_hybrid'],
+    'baselayers_physical' => $settings['geofield_map_baselayers_physical'],
+    'scale' => $settings['geofield_map_scale'],
+    'overview' => $settings['geofield_map_overview'],
+    'overview_opened' => $settings['geofield_map_overview_opened'],
+    'scrollwheel' => $settings['geofield_map_scrollwheel'],
+    'draggable' => $settings['geofield_map_draggable'],
+    'streetview_show' => $settings['geofield_map_streetview_show'],
+  );
+  return $map_settings;
+
+}

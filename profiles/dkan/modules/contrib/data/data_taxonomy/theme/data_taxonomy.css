@@ -1,0 +1,25 @@
+
+/**
+ * Hide & show tags/forms.
+ */
+.data-taxonomy-tagging-form .data-taxonomy-form { display:none; }
+.data-taxonomy-editing .data-taxonomy-tags { display:none; }
+.data-taxonomy-editing .data-taxonomy-form { display:block; }
+
+/**
+ * Basic styling / aesthetics.
+ */
+.data-taxonomy-edited a { opacity:.5; }
+
+.data-taxonomy-tags { margin:10px 0px; }
+
+.data-taxonomy-tags a {
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  margin:0px 5px 0px 0px;
+  padding:3px 5px;
+  }
+
+.data-taxonomy-tags ul.data-taxonomy-tags { float:left; }
+.data-taxonomy-tags ul.data-taxonomy-tags a { background:#fe9; }
+.data-taxonomy-tags a.data-taxonomy-edit { float:right; }

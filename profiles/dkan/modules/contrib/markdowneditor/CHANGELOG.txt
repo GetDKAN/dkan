@@ -1,0 +1,24 @@
+2009-02-07
+ - Added: POT file.
+ - Committed version 1.0
+
+2009-02-04
+ - Fixed: A bug causing IMCE "Browse..." button not to show due to checking for
+   a non-existing permission.
+ - Added: Improved installer that keeps track of dependencies without limiting
+   the site admin's options with regards to altering button icons and titles.
+
+2009-02-02b:
+ - Fixed: Inline links do not require text to be previously selected for them 
+   to have text, they can now be created without any pre-typed link text.
+ - Fixed: IMCE file browser dialog now opens when clicking "Browse...".
+ - Added: Installer now updates button JS code in case the site path changes
+   or the module configuration changes in a way that affects Markdown Editor.
+
+2009-02-02
+ - Added: Manual import of the button CSV file is no longer required, the
+   module installer handles everything.
+ - Fixed: Updated CSS to work with new BUE dialog markup.
+
+2009-02-01
+ - Added #360297 by ciberligre: Inline links are now supported

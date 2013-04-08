@@ -1,0 +1,184 @@
+<?php
+
+/**
+ * @file
+ * Helper module for Feeds tests.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function feeds_tests_menu() {
+  $items['testing/feeds/flickr.xml'] = array(
+    'page callback' => 'feeds_tests_flickr',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['testing/feeds/files.csv'] = array(
+    'page callback' => 'feeds_tests_files',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function feeds_tests_theme() {
+  return array(
+    'feeds_tests_flickr' => array(
+      'variables' => array('image_urls' => array()),
+      'path' => drupal_get_path('module', 'feeds_tests') . '/feeds',
+      'template' => 'feeds-tests-flickr',
+    ),
+    'feeds_tests_files' => array(
+      'variables' => array('files' => array()),
+      'path' => drupal_get_path('module', 'feeds_tests') . '/feeds',
+      'template' => 'feeds-tests-files',
+    ),
+  );
+}
+
+/**
+ * Outputs flickr test feed.
+ */
+function feeds_tests_flickr() {
+  $images = array(
+    0 => "tubing.jpeg",
+    1 => "foosball.jpeg",
+    2 => "attersee.jpeg",
+    3 => "hstreet.jpeg",
+    4 => "la fayette.jpeg",
+  );
+  $path = drupal_get_path('module', 'feeds_tests') . '/feeds/assets';
+  foreach ($images as &$image) {
+    $image = url("$path/$image", array('absolute' => TRUE));
+  }
+  drupal_add_http_header('Content-Type', 'application/rss+xml; charset=utf-8');
+  print theme('feeds_tests_flickr', array('image_urls' => $images));
+}
+
+/**
+ * Outputs a CSV file pointing to files.
+ */
+function feeds_tests_files() {
+  $images = array(
+    0 => "tubing.jpeg",
+    1 => "foosball.jpeg",
+    2 => "attersee.jpeg",
+    3 => "hstreet.jpeg",
+    4 => "la fayette.jpeg",
+  );
+  foreach ($images as &$image) {
+    $image = "public://images/$image";
+  }
+  drupal_add_http_header('Content-Type', 'text/plain; charset=utf-8');
+  print theme('feeds_tests_files', array('files' => $images));
+}
+
+/**
+ * Implements hook_feeds_processor_targets_alter()
+ */
+function feeds_tests_feeds_processor_targets_alter(&$targets, $entity_type, $bundle_name) {
+  $targets['test_target'] = array(
+    'name' => t('Test Target'),
+    'description' => t('This is a test target.'),
+    'callback' => 'feeds_tests_mapper_set_target',
+    'summary_callback' => 'feeds_tests_mapper_summary',
+    'form_callback' => 'feeds_tests_mapper_form',
+  );
+}
+
+/**
+ * Set target value on entity.
+ *
+ * @see my_module_set_target()
+ */
+function feeds_tests_mapper_set_target($source, $entity, $target, $value, $mapping) {
+  $entity->body['und'][0]['value'] = serialize($mapping); 
+}
+
+/**
+ * Provides setting summary for the mapper.
+ *
+ * @see my_module_summary_callback()
+ */
+function feeds_tests_mapper_summary($mapping, $target, $form, $form_state) {
+  $options = array(
+    'option1' => t('Option 1'), 
+    'option2' => t('Another Option'),
+    'option3' => t('Option for select'), 
+    'option4' => t('Another One')
+  );
+
+  $items = array();
+  if (!empty($mapping['checkbox']) && $mapping['checkbox']) {
+    $items[] = t('Checkbox active.');
+  }
+  else {
+    $items[] = t('Checkbox inactive.');
+  }
+  if (!empty($mapping['textfield'])) {
+    $items[] = t('<strong>Textfield value</strong>: %textfield', array('%textfield' => $mapping['textfield']));
+  }
+  if (!empty($mapping['textarea'])) {
+    $items[] = t('<strong>Textarea value</strong>: %textarea', array('%textarea' => $mapping['textarea']));
+  }
+  if (!empty($mapping['radios'])) {
+    $items[] = t('<strong>Radios value</strong>: %radios', array('%radios' => $options[$mapping['radios']]));
+  }
+  if (!empty($mapping['select'])) {
+    $items[] = t('<strong>Select value</strong>: %select', array('%select' => $options[$mapping['select']]));
+  }
+  $list = array(
+    '#type' => 'ul',
+    '#theme' => 'item_list',
+    '#items' => $items,
+  );
+  return drupal_render($list);
+}
+
+/*
+ * Provides the form with mapper settings.
+ */
+function feeds_tests_mapper_form($mapping, $target, $form, $form_state) {
+  $mapping += array(
+    'checkbox' => FALSE,
+    'textfield' => '',
+    'textarea' => '',
+    'radios' => NULL,
+    'select' => NULL,
+  );
+  return array(
+    'checkbox' => array(
+      '#type' => 'checkbox',
+      '#title' => t('A checkbox'),
+      '#default_value' => !empty($mapping['checkbox']),
+    ),
+    'textfield' => array(
+      '#type' => 'textfield',
+      '#title' => t('A text field'),
+      '#default_value' => $mapping['textfield'],
+      '#required' => TRUE,
+    ),
+    'textarea' => array(
+      '#type' => 'textarea',
+      '#title' => t('A textarea'),
+      '#default_value' => $mapping['textarea'],
+    ),
+    'radios' => array(
+      '#type' => 'radios',
+      '#title' => t('Some radios'),
+      '#options' => array('option1' => t('Option 1'), 'option2' => t('Another Option')),
+      '#default_value' => $mapping['radios'],
+    ),
+    'select' => array(
+      '#type' => 'select',
+      '#title' => t('A select list'),
+      '#options' => array('option3' => t('Option for select'), 'option4' => t('Another One')),
+      '#default_value' => $mapping['select'],
+    ),
+  );
+}
+

@@ -1,0 +1,14 @@
+name = RDF UI
+description = User interface for altering the RDF mapping of Drupal data structure.
+package = RDF
+version = VERSION
+core = 7.x
+dependencies[] = rdfx
+files[] = rdfui.test
+
+; Information added by drupal.org packaging script on 2012-10-27
+version = "7.x-2.0-alpha4+7-dev"
+core = "7.x"
+project = "rdfx"
+datestamp = "1351301254"
+

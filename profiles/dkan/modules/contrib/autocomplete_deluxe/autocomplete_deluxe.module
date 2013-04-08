@@ -1,0 +1,381 @@
+<?php
+
+/**
+ * @file
+ * Define enhanced autocomplete wdiget.
+ */
+
+/**
+ * Implements hook_field_info().
+ */
+function autocomplete_deluxe_field_widget_info() {
+  return array(
+    'autocomplete_deluxe_taxonomy' => array(
+      'label' => t('Autocomplete Deluxe'),
+      'field types' => array('taxonomy_term_reference'),
+      'settings' => array(
+        'size' => 60,
+        'autocomplete_deluxe_path' => 'autocomplete_deluxe/taxonomy',
+      ),
+      'behaviors' => array(
+        'multiple values' => FIELD_BEHAVIOR_CUSTOM,
+      ),
+    ),
+  );
+}
+
+/**
+ * Custom taxonomy callback, which also accepts an empty string search.
+ */
+function taxonomy_autocomplete_deluxe($field_name, $tags_typed = '', $limit = 10) {
+  $field = field_info_field($field_name);
+  $use_synonyms = !empty($_GET['synonyms']);
+
+  // The user enters a comma-separated list of tags. We only autocomplete the last tag.
+  $tags_typed = drupal_explode_tags($tags_typed);
+  $tag_last = drupal_strtolower(array_pop($tags_typed));
+
+  $matches = array();
+
+  // Part of the criteria for the query come from the field's own settings.
+  $vids = array();
+  $vocabularies = taxonomy_vocabulary_get_names();
+  foreach ($field['settings']['allowed_values'] as $tree) {
+    // If the content taxonomy setting content_taxonomy_ignore_in_suggestions
+    // is set, then the vocabulary is ignored.
+    if (empty($tree['content_taxonomy_ignore_in_suggestions'])) {
+      $vids[] = $vocabularies[$tree['vocabulary']]->vid;
+    }
+  }
+
+  $query = db_select('taxonomy_term_data', 't');
+  $query->addTag('translatable');
+  $query->addTag('term_access');
+
+  if (module_exists('synonyms') && !empty($use_synonyms)) {
+    $query->leftJoin('field_data_synonyms_synonym', 'fdss', 'fdss.entity_id = t.tid');
+  }
+
+  if ($tag_last != '') {
+    // Do not select already entered terms.
+    if (!empty($tags_typed)) {
+      $query->condition('t.name', $tags_typed, 'NOT IN');
+    }
+    // Select rows that match by term name.
+    $query
+      ->fields('t', array('tid', 'name'))
+      ->condition('t.vid', $vids);
+
+    if (module_exists('synonyms') && !empty($use_synonyms)) {
+      $or = db_or();
+      $or->condition('fdss.synonyms_synonym_value', '%' . db_like($tag_last) . '%', 'LIKE');
+      $or->condition('t.name', '%' . db_like($tag_last) . '%', 'LIKE');
+      $query->condition($or);
+    }
+    else {
+      $query->condition('t.name', '%' . db_like($tag_last) . '%', 'LIKE');
+    }
+
+    if (isset($limit) && $limit > 0) {
+      $query->range(0, $limit);
+    }
+
+    $tags_return = $query->execute()
+      ->fetchAllKeyed();
+  }
+  else {
+    $query
+      ->fields('t', array('tid', 'name'))
+      ->condition('t.vid', $vids);
+
+    if (isset($limit) && $limit > 0) {
+      $query->range(0, $limit);
+    }
+
+    $tags_return = $query->execute()
+      ->fetchAllKeyed();
+  }
+
+  $prefix = count($tags_typed) ? drupal_implode_tags($tags_typed) . ', ' : '';
+
+  $term_matches = array();
+  foreach ($tags_return as $tid => $name) {
+    $n = $name;
+    // Term names containing commas or quotes must be wrapped in quotes.
+    if (strpos($name, ',') !== FALSE || strpos($name, '"') !== FALSE) {
+      $n = '"' . str_replace('"', '""', $name) . '"';
+    }
+    $term_matches[$prefix . $n] = check_plain($name);
+  }
+
+  drupal_json_output($term_matches);
+}
+
+/**
+ * Returns all allowed terms for a field without any prefix.
+ */
+function autocomplete_deluxe_allowed_terms($field) {
+  $options = array();
+  foreach ($field['settings']['allowed_values'] as $tree) {
+    if ($vocabulary = taxonomy_vocabulary_machine_name_load($tree['vocabulary'])) {
+      if ($terms = taxonomy_get_tree($vocabulary->vid, $tree['parent'])) {
+        foreach ($terms as $term) {
+          $options[$term->name] = $term->name;
+        }
+      }
+    }
+  }
+  return $options;
+}
+
+/**
+ * Implements hook_field_widget_settings_form().
+ */
+function autocomplete_deluxe_field_widget_settings_form($field, $instance) {
+  $widget = $instance['widget'];
+  $settings = $widget['settings'];
+
+  $form['size'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Size of textfield'),
+    '#default_value' => isset($settings['size']) ? $settings['size'] : 6,
+    '#element_validate' => array('_element_validate_integer_positive'),
+    '#required' => TRUE,
+  );
+  $form['limit'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Limit of the output.'),
+    '#description' => t('If set to zero no limit will be used'),
+    '#default_value' => isset($settings['limit']) ? $settings['limit'] : 10,
+    '#element_validate' => array('_element_validate_integer'),
+  );
+  $form['min_length'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Mininum length.'),
+    '#description' => t('The minimum length of characters to enter to open the suggestion list.'),
+    '#default_value' => isset($settings['min_length']) ? $settings['min_length'] : 0,
+    '#element_validate' => array('_element_validate_integer'),
+  );
+
+  if (module_exists('synonyms')) {
+    $form['use_synonyms'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Allow synonyms'),
+      '#description' => t('Should users be able to search for synonyms of terms?'),
+      '#default_value' => isset($settings['use_synonyms']) ? $settings['use_synonyms'] : FALSE,
+    );
+  }
+  return $form;
+}
+
+/**
+ * Implodes the tags from the taxonomy module.
+ *
+ * This function is essentially the same as axonomy_implode_tags, with the
+ * difference, that it uses only a comma instead of a comma and a space to
+ * implode the tags. It will help keep problems with delimiters to a minimum.
+ */
+function autocomplete_deluxe_taxonomy_implode_tags($tags, $vid = NULL) {
+  $typed_tags = array();
+  foreach ($tags as $tag) {
+    // Extract terms belonging to the vocabulary in question.
+    if (!isset($vid) || $tag->vid == $vid) {
+      // Make sure we have a completed loaded taxonomy term.
+      if (isset($tag->name)) {
+        // Commas and quotes in tag names are special cases, so encode 'em.
+        if (strpos($tag->name, ',') !== FALSE || strpos($tag->name, '"') !== FALSE) {
+          $tag->name = '"' . str_replace('"', '""', $tag->name) . '"';
+        }
+
+        $typed_tags[] = $tag->name;
+      }
+    }
+  }
+  return implode(',', $typed_tags);
+}
+
+/**
+ * Implements hook_field_widget_error().
+ */
+function autocomplete_deluxe_field_widget_error($element, $error, $form, &$form_state) {
+  form_error($element, $error['message']);
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function autocomplete_deluxe_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $element += array(
+    '#type' => 'autocomplete_deluxe',
+    '#size' => $instance['widget']['settings']['size'],
+    '#limit' => isset($instance['widget']['settings']['limit']) ? $instance['widget']['settings']['limit'] : 10,
+    '#min_length' => isset($instance['widget']['settings']['min_length']) ? $instance['widget']['settings']['min_length'] : 0,
+    '#use_synonyms' =>isset($instance['widget']['settings']['use_synonyms']) ? $instance['widget']['settings']['use_synonyms'] : 0,
+  );
+
+  $multiple = $field['cardinality'] > 1 || $field['cardinality'] == FIELD_CARDINALITY_UNLIMITED ? TRUE : FALSE;
+
+  $tags = array();
+  foreach ($items as $item) {
+    $tags[$item['tid']] = isset($item['taxonomy_term']) ? $item['taxonomy_term'] : taxonomy_term_load($item['tid']);
+  }
+
+  $element['#element_validate'] = array('taxonomy_autocomplete_validate');
+  $element += array(
+    '#multiple' => $multiple,
+    '#autocomplete_deluxe_path' => url($instance['widget']['settings']['autocomplete_deluxe_path'] . '/' . $field['field_name'], array('absolute' => TRUE)),
+    '#default_value' => autocomplete_deluxe_taxonomy_implode_tags($tags),
+  );
+
+  return $element;
+}
+
+/**
+ * Generates the basic form elements and javascript settings.
+ */
+function autocomplete_deluxe_element_process($element) {
+  $element['#attached'] = array(
+    'library' => array(array('system', 'ui.autocomplete'), array('system', 'ui.button')),
+    'js' => array(drupal_get_path('module', 'autocomplete_deluxe') . '/autocomplete_deluxe.js'),
+    'css' => array(drupal_get_path('module', 'autocomplete_deluxe') . '/autocomplete_deluxe.css'),
+  );
+  // Workaround for problems with jquery css in seven theme.
+  if ($GLOBALS['theme'] == 'seven') {
+    $element['#attached']['css'][] = drupal_get_path('module', 'autocomplete_deluxe') . '/autocomplete_deluxe.seven.css';
+  }
+
+  $html_id = drupal_html_id('autocomplete-deluxe-input');
+
+  $element['#after_build'][] = 'autocomplete_deluxe_after_build';
+
+  // Set default options for multiple values.
+  $element['#multiple'] = isset($element['#multiple']) ? $element['#multiple'] : FALSE;
+
+  $element['textfield'] = array(
+    '#type' => 'textfield',
+    '#size' => isset($element['#size']) ? $element['#size'] : '',
+    '#attributes' => array('class' => array('autocomplete-deluxe-form'), 'id' => array($html_id)),
+    '#default_value' => '',
+    '#prefix' => '<div class="autocomplete-deluxe-container">',
+    '#suffix' => '</div>',
+  );
+
+  $js_settings['autocomplete_deluxe'][$html_id] = array(
+    'input_id' => $html_id,
+    'min_length' => isset($element['#autocomplete_min_length']) ? $element['#autocomplete_min_length'] : 0,
+    'multiple' => $element['#multiple'],
+    'required' => $element['#required'],
+    'limit' => isset($element['#limit']) ? $element['#limit'] : 10,
+    'min_length' => isset($element['#min_length']) ? $element['#min_length'] : 0,
+    'use_synonyms' => isset($element['#use_synonyms']) ? $element['#use_synonyms'] : 0,
+  );
+
+  if (isset($element['#autocomplete_deluxe_path'])) {
+    if (isset($element['#default_value'])) {
+      // Split on the comma only if that comma has zero, or an even number of
+      // quotes in ahead of it.
+      // http://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
+      $default_value = preg_replace('/,(?=([^\"]*\"[^\"]*\")*[^\"]*$)/i', '"" ""', $element['#default_value']);
+      $default_value = '""' . $default_value . '""';
+    }
+    else {
+      $default_value = '';
+    }
+
+    if ($element['#multiple']) {
+      $element['value_field'] = array(
+        '#type' => 'textfield',
+        '#attributes' => array('class' => array('autocomplete-deluxe-value-field')),
+        '#default_value' => $default_value,
+        '#prefix' => '<div class="autocomplete-deluxe-value-container">',
+        '#suffix' => '</div>',
+      );
+      $element['textfield']['#attributes']['style'] = array('display:none');
+    }
+    else {
+      $element['textfield']['#default_value'] = isset($element['#default_value']) ? $element['#default_value'] : '';
+    }
+
+    $js_settings['autocomplete_deluxe'][$html_id] += array(
+      'type' => 'ajax',
+      'uri' => $element['#autocomplete_deluxe_path'],
+    );
+  }
+  else {
+    // If there is no source (path or data), we don't want to add the js
+    // settings and so the functions will be abborted.
+    return $element;
+  }
+  $element['#attached']['js'][] = array('data' => $js_settings, 'type' => 'setting');
+
+  return $element;
+}
+
+/**
+ * Helper function to determine the value for a autocomplete deluxe form
+ * element.
+ */
+function autocomplete_deluxe_value(&$element, $input = FALSE, $form_state = NULL) {
+  // This runs before child elements are processed, so we cannot calculate the
+  // value here. But we have to make sure the value is an array, so the form
+  // API is able to proccess the children to set their values in the array. Thus
+  // once the form API has finished processing the element, the value is an
+  // array containing the child element values. Then finally the after build
+  // callback converts it back to the numeric value and sets that.
+  return array();
+}
+
+/**
+ * FAPI after build callback for the duration parameter type form.
+ * Fixes up the form value by applying the multiplier.
+ */
+function autocomplete_deluxe_after_build($element, &$form_state) {
+  // By default drupal sets the maxlength to 128 if the property isn't
+  // specified, but since the limit isn't useful in some cases,
+  // we unset the property.
+  unset($element['textfield']['#maxlength']);
+
+  // Set the elements value from either the value field or text field input.
+  $element['#value'] = isset($element['value_field']) ? $element['value_field']['#value'] : $element['textfield']['#value'];
+
+  if (isset($element['value_field'])) {
+    $element['#value'] = trim($element['#value']);
+    // Replace all double double quotes and space with a comma. This will allows
+    // us to keep entries in double quotes.
+    $element['#value'] = str_replace('"" ""', ',', $element['#value']);
+    // Remove the double quotes at the beginning and the end from the first and
+    // the last term.
+    $element['#value'] = substr($element['#value'], 2, strlen($element['#value']) - 4);
+    unset($element['value_field']['#maxlength']);
+  }
+
+
+  form_set_value($element, $element['#value'], $form_state);
+  return $element;
+}
+
+/**
+ * Implements hook_element_info().
+ */
+function autocomplete_deluxe_element_info() {
+  $types['autocomplete_deluxe'] = array(
+    '#input' => TRUE,
+    '#value_callback' => 'autocomplete_deluxe_value',
+    '#pre_render' => array('form_pre_render_conditional_form_element'),
+    '#process' => array('autocomplete_deluxe_element_process'),
+  );
+  return $types;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function autocomplete_deluxe_menu() {
+  $items['autocomplete_deluxe/taxonomy'] = array(
+    'title' => 'Autocomplete deluxe taxonomy',
+    'page callback' => 'taxonomy_autocomplete_deluxe',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}

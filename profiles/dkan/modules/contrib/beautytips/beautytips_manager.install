@@ -1,0 +1,273 @@
+<?php
+
+/**
+ * @file
+ * Code related to the installation and uninstallation of 
+ *   custom beautytip and style administration.
+ */
+
+/**
+ * Implementation of hook_schema().
+ */
+function beautytips_manager_schema() {
+  $schema = array();
+  $schema['beautytips_custom_tips'] = array(
+    'description' => t('Store custom defined beautytips.'), 
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => t('The unique id for the custom beautytip.'),
+      ),
+      'element' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('The element to which this beautytips will be applied.'),
+      ), 
+      'content_type' => array(
+        'type' => 'varchar',
+        'length' => 64, 
+        'description' => t('What kind of content will be grabbed for the display.'),
+      ),
+      'content' => array(
+        'type' => 'text',
+        'description' => t('The content that will be displayed. Depends on content type.'),
+      ),
+      'disable_link' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'decription' => t('Whether to disable link or not.'),
+      ),
+      'trigger_on' => array(
+        'type' => 'varchar',
+        'length' => 32, 
+        'description' => t('The event that will turn the beautytips on.'),
+      ),
+      'trigger_off' => array(
+        'type' => 'varchar',
+        'length' => 32, 
+        'description' => t('The event that will turn the beautytips off.'),
+      ),
+      'style' => array(
+        'type' => 'varchar',
+        'length' => 64, 
+        'description' => t('The style of the beautytip.'),
+      ),
+      'shrink' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+        'decription' => t('Whether or to shrink to fit.'),
+      ),
+      'positions' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'default' => '',
+        'description' => t('The position order in which this beautytip should display.'),
+      ),
+      'animation_on' => array(
+        'type' => 'varchar',
+        'length' => 255, 
+        'description' => t('The animation that will occurs when the beautytips turns on.'),
+      ),
+      'animation_off' => array(
+        'type' => 'varchar',
+        'length' => 255, 
+        'description' => t('The animation that will occurs when the beautytips turns off.'),
+      ),
+      'visibility' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+        'description' => t('Flag to indicate how to show beautytips on pages. (0 = Show on all pages except listed pages, 1 = Show only on listed pages, 2 = Use custom PHP code to determine visibility)'),
+      ),
+      'pages' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => t('Contains a list of paths on which to include/exclude the beautytip, depending on "visibility" setting.'),
+      ),
+      'enabled' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'description' => t('Whether or not this tip is enabled'),
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  $schema['beautytips_custom_styles'] = array(
+    'description' => t('Store custom defined beautytip styles.'), 
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => t('The unique id for the custom beautytip style.'),
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 255, 
+        'description' => t('The unique name for this style.'),
+      ), 
+      'fill' => array(
+        'description' => t('background color (string - html color)'),
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => FALSE,
+      ),
+      'stroke_width' => array(
+        'type' => 'varchar',
+        'description' => t('width of border (integer)'),
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'stroke_style' => array(
+        'description' => t('color of border (string - html color)'),
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => FALSE,
+      ),
+      'width' => array(
+        'description' => t('width of popup (number in px)'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'padding' => array(
+        'description' => t('space between content and border (number in px)'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'corner_radius' => array(
+        'description' => t('Controls roundness of corners (integer)'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'spike_girth' => array(
+        'description' => t('thickness of spike (integer)'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'spike_length' => array(
+        'description' => t('length of spike (integer)'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'shadow' => array(
+        'description' => t('Whether the shadow should be on, off, or default.'),
+        'type' => 'varchar',
+        'length' => 16,
+        'default' => 'default',
+      ),
+      'shadow_blur' => array(
+        'description' => t('Size of popup shadow (integer)'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'shadow_color' => array(
+        'description' => t('Color of popup shadow (string - html color)'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'css_class' => array(
+        'description' => t('css class of beautytip popup.'),
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => FALSE,
+      ),
+      'css_color' => array(
+        'description' => t('The color of the text.'), 
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'css_font_family' => array(
+        'description' => t('The font family of the text.'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'css_font_weight' => array(
+        'description' => t('The font weight of the text.'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'css_font_size' => array(
+        'description' => t('The font size of the text.'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}
+
+/**
+ * Update to add enabled field.
+ */
+function beautytips_manager_update_7000() {
+  $ret = array();
+
+  // Make sure this field doesn't already exist.
+  if (db_field_exists('beautytips_custom_tips', 'enabled')) {
+    return $ret;
+  }
+
+  $spec = array(
+    'type' => 'int',
+    'size' => 'tiny',
+    'unsigned' => TRUE,
+    'description' => t('Whether or not this tip is enabled'),
+  );
+  db_add_field('beautytips_custom_tips', 'enabled', $spec);
+  return $ret;
+}
+
+/**
+ * Update to add enabled field.
+ */
+function beautytips_manager_update_7001() {
+  $ret = array();
+
+  // Make sure this field doesn't already exist.
+  if (db_field_exists('beautytips_custom_tips', 'disable_link')) {
+    return $ret;
+  }
+  $spec = array(
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+    'size' => 'tiny',
+    'unsigned' => TRUE,
+    'decription' => t('Whether to disable link or not.'),
+  );
+
+  db_add_field('beautytips_custom_tips', 'disable_link', $spec);
+  return $ret;
+}
+
+/**
+ * Extend the length of the element field.
+ */
+function beautytips_manager_update_7002() {
+  db_change_field('beautytips_custom_tips', 'element', 'element', array(
+    'type' => 'varchar',
+    'length' => 255,
+    'description' => t('The element to which this beautytips will be applied.'),
+    'not null' => TRUE,
+  ));
+}

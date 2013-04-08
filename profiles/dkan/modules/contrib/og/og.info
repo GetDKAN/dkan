@@ -1,0 +1,63 @@
+name = Organic groups
+description = "API to allow associating content with groups."
+package = "Organic groups"
+dependencies[] = options
+dependencies[] = list
+dependencies[] = text
+dependencies[] = entity
+dependencies[] = entityreference
+core = 7.x
+
+; Entity API controllers
+files[] = og.info.inc
+files[] = includes/og.admin.inc
+files[] = includes/og.exception.inc
+files[] = includes/og.membership.inc
+files[] = includes/og.membership_type.inc
+files[] = includes/views/og.views.inc
+
+; Test files
+files[] = og.test
+
+; Views plugins
+files[] = includes/views/handlers/og_plugin_argument_validate_group.inc
+files[] = includes/views/handlers/og_plugin_argument_default_user_groups.inc
+
+; Views fields
+files[] = includes/views/handlers/og_handler_field_group_member_count.inc
+files[] = includes/views/handlers/og_handler_field_group_audience_state.inc
+files[] = includes/views/handlers/og_handler_field_prerender_list.inc
+files[] = includes/views/handlers/og_handler_field_user_roles.inc
+files[] = includes/views/handlers/og_handler_field_group_permissions.inc
+files[] = includes/views/handlers/og_handler_field_og_membership_link_edit.inc
+
+; Views filters
+files[] = includes/views/handlers/og_handler_filter_group_audience_state.inc
+files[] = includes/views/handlers/og_handler_filter_user_roles.inc
+
+; Views relationships
+files[] = includes/views/handlers/og_handler_relationship.inc
+
+; Migrate destinations
+files[] = includes/migrate/plugins/destinations/og_membership.inc
+
+; Migrate from 6.x to 7.x
+files[] = includes/migrate/7000/og_add_fields.inc
+files[] = includes/migrate/7000/og_content.inc
+files[] = includes/migrate/7000/og_group.inc
+files[] = includes/migrate/7000/og_user.inc
+
+; Migrate from 7.x-1.x to 7.x-2.x
+files[] = includes/migrate/og.migrate.inc
+files[] = includes/migrate/7200/og_og_membership.migrate.inc
+files[] = includes/migrate/7200/og_roles.migrate.inc
+files[] = includes/migrate/7200/og_user_roles.migrate.inc
+
+
+
+; Information added by drupal.org packaging script on 2013-04-04
+version = "7.x-2.1+13-dev"
+core = "7.x"
+project = "og"
+datestamp = "1365082705"
+

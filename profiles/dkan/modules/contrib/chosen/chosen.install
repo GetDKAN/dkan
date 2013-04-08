@@ -1,0 +1,48 @@
+<?php
+/**
+ * @file
+ * Installation and uninstallation functions.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function chosen_requirements($phase) {
+  $requirements = array();
+
+  if ($phase == 'runtime') {
+    $t = get_t();
+    $library = libraries_detect('chosen');
+
+    if (empty($library['installed'])) {
+      $requirements['chosen_js'] = array(
+        'title' => $t('Chosen JavaScript file'),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => $t('You need to download the !chosen and extract the entire contents of the archive into the %path directory on your server.', array('!chosen' => l($t('Chosen JavaScript file'), $library['download url']), '%path' => 'sites/all/libraries')),
+      );
+    }
+    else {
+      $requirements['chosen_js'] = array(
+        'title' => $t('Chosen JavaScript file'),
+        'severity' => REQUIREMENT_OK,
+        'value' => $library['version'],
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function chosen_uninstall() {
+  // Delete created variables.
+  variable_del('chosen_minimum');
+  variable_del('chosen_minimum_width');
+  variable_del('chosen_search_contains');
+  variable_del('chosen_jquery_selector');
+  variable_del('chosen_placeholder_text_multiple');
+  variable_del('chosen_placeholder_text_single');
+  variable_del('chosen_no_results_text');
+}

@@ -1,0 +1,63 @@
+<?php
+
+/**
+ * @file
+ *
+ * Installation file for Default Content module
+ */
+
+/**
+ * Implements hook_install().
+ */
+function defaultcontent_install() {
+  //drupal_install_schema('defaultcontent');
+  db_update('system')
+    ->fields(array(
+      'weight' => 1,
+    ))
+    ->condition('type', 'module')
+    ->condition('name', 'defaultcontent_install')
+    ->execute();
+}
+
+/**
+ * Implements hook_schema().
+ */
+function defaultcontent_schema() {
+  $schema['defaultcontent'] = array(
+    'description' => 'Store state of default content nodes',
+    'fields' => array(
+      'name' => array(
+        'description' => 'Then machine name of the node',
+        'type' => 'varchar',
+        'length' => 225,
+        'not null' => TRUE,
+      ),
+      'nid' => array(
+        'description' => 'Node id or NULL if there is no current node',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+      'sort_value' => array(
+        'description' => 'Sort number used when sorting default contents from multiple hooks',
+        'type' => 'varchar',
+        'length' => 225,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('name'),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function defaultcontent_uninstall() {
+  // Remove module variables.
+  $result = db_query("SELECT name FROM {variable} WHERE name LIKE 'defaultcontent_%'");
+  foreach ($result as $record) {
+    variable_del($record->name);
+  }
+}

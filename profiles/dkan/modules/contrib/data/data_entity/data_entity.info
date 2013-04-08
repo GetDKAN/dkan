@@ -1,0 +1,20 @@
+name = Data entity
+description = Defines data tables as entity types.
+package = Data
+dependencies[] = data
+dependencies[] = entity
+dependencies[] = data_ui
+core = 7.x
+files[] = data_entity.module
+files[] = data_entity.pages.inc
+files[] = data_entity.admin.inc
+files[] = data_entity.entity.inc
+files[] = views/data_entity.views.inc
+files[] = views/data_entity_views_handler_field_edit_link.inc
+
+; Information added by drupal.org packaging script on 2013-03-31
+version = "7.x-1.0-alpha4+2-dev"
+core = "7.x"
+project = "data"
+datestamp = "1364733916"
+

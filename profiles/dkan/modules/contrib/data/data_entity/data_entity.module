@@ -1,0 +1,206 @@
+<?php
+/**
+ * @file data_entity.module
+ * TODO: Enter file description here.
+ */
+
+/**
+ * Get all data tables which are declared as entities.
+ *
+ * @todo This is just a wrapper around data_get_all_tables() for now;
+ *  add an admin UI later.
+ */
+function data_entity_get_entity_tables() {
+  return data_get_all_tables();
+}
+
+/**
+ * Adds our default values to a table's meta information.
+ */
+function data_entity_meta_add_defaults(&$meta) {
+  foreach ($meta['fields'] as $field => $data) {
+    $meta['fields'][$field] += array(
+      'locked' => FALSE,
+      'required' => FALSE,
+    );
+  }
+}
+
+/**
+ * Get the name of a table entity's id.
+ *
+ * @todo: consider moving this to the DataTable class.
+ */
+function data_entity_get_id_field($table) {
+  if (isset($table->table_schema['primary key'])) {
+    // @todo: whopping assumption that there's a single primary key field.
+    $id_field = $table->table_schema['primary key'][0];
+    return $id_field;
+  }
+}
+
+/**
+ * Implements hook_entity_info().
+ *
+ * Declare every data table as an entity.
+ *
+ * @todo Add an admin UI to request tables for this rather than do all.
+ */
+function data_entity_entity_info() {
+  $tables = data_entity_get_entity_tables();
+  $info = array();
+
+  foreach ($tables as $table_name => $table) {
+    if (!isset($table->table_schema['primary key'])) {
+      // Skip tables that don't have a primary key.
+      continue;
+    }
+
+    $id_field = data_entity_get_id_field($table);
+    $entity_type = 'data_' . $table_name;
+
+    $info[$entity_type] = array(
+      'label' => $table->title,
+      'controller class' => 'DataEntityController',
+      'base table'  => $table_name,
+      'fieldable' => TRUE,
+      'entity keys' => array(
+        'id' => $id_field,
+      ),
+      'bundles' => array(
+        $entity_type => array(
+          'label' => $table->title,
+          'admin' => array(
+            'path'      => 'admin/structure/data/edit/%data_ui_table',
+            'real path' => 'admin/structure/data/edit/' . $table_name,
+            'bundle argument' => 4,
+            'access arguments' => array('administer data tables'),
+          ),
+        ),
+      ),
+      'view modes' => array(),
+      'uri callback' => 'data_entity_uri',
+      // Entity API properties.
+      'module' => 'data_entity',
+      'views controller class' => FALSE, // This prevents EntityAPI trying to
+        // provide views integration because we've specified 'module'.
+    );
+  }
+
+  return $info;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function data_entity_menu() {
+  $items['admin/structure/data/edit/%data_ui_table/entity-form'] = array(
+    'title' => 'Configure entity form',
+    'description' => 'Administer data tables.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_entity_admin_entity_form', 4),
+    'file' => 'data_entity.admin.inc',
+    'access arguments' => array('administer data tables'),
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['admin/content/data/entity/%data_ui_table/%data_entity_item'] = array(
+    'title' => 'Edit data item',
+    'load arguments' => array(4),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('data_entity_entity_edit_form', 4, 5),
+    'file' => 'data_entity.pages.inc',
+    'access callback' => 'data_entity_table_menu_access',
+    'access arguments' => array(4),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function data_entity_menu_alter(&$items) {
+  // Attempt at fixing tab parentage for Field UI items.
+  // @see data_entity_entity_info() for more details.
+  $tables = data_entity_get_entity_tables();
+  $info = array();
+
+  /*
+  // This breaks access on these menu items!
+  foreach ($tables as $table_name => $table) {
+    $field_ui_base_path = "admin/structure/data/edit/$table_name";
+    foreach (array('fields', 'fields/%', 'display') as $path_suffix) {
+      $items[$field_ui_base_path . '/' . $path_suffix]['tab_parent']  = 'admin/structure/data/edit/%';
+      $items[$field_ui_base_path . '/' . $path_suffix]['tab_root']    = 'admin/structure/data/edit/%';
+    }
+  }
+  */
+}
+
+/**
+ * Menu access callback.
+ */
+function data_entity_table_menu_access($table) {
+  return user_access('edit data in table ' . $table->name);
+}
+
+/**
+ * Menu loader callback.
+ *
+ * Called 'data_entity_item_load' to avoid being data's hook_entity_load()!
+ */
+function data_entity_item_load($deid, $table_name) {
+  $entity_type = 'data_' . $table_name;
+  $data_entity = entity_load($entity_type, array($deid));
+  return $data_entity ? reset($data_entity) : FALSE;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function data_entity_permission() {
+  $tables = data_entity_get_entity_tables();
+  $permissions = array();
+
+  foreach ($tables as $table_name => $table) {
+    $permissions['edit data in table ' . $table_name] = array(
+      'title' => t('Edit data in the %table_name table', array('%table_name' => $table->title)), 
+    );
+  }
+
+  return $permissions;
+}
+
+/**
+ * Entity URI callback.
+ */
+function data_entity_uri($data_entity) {
+  $entity_type = $data_entity->entity_type;
+  list($id, ) = entity_extract_ids($entity_type, $data_entity);
+  return array(
+    'path' => 'admin/content/data/entity/' . $data_entity->data_table . '/' . $id,
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function data_entity_theme($existing, $type, $theme, $path) {
+  return array(
+    'data_entity_admin_entity_form' => array(
+      'render element' => 'form',
+    ),
+  );
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function data_entity_views_api() {
+  return array(
+    'api' => '3.0-alpha1',
+    'path' => drupal_get_path('module', 'data_entity') . '/views',
+  );
+}
+

@@ -1,0 +1,128 @@
+
+.button-table {
+  width: 100%;
+  font-size: 0.9em;
+}
+.button-table * {
+  font-size: 1em;
+}
+
+.button-table .th-title {
+  width: 12em;
+}
+.button-table .input-title {
+  width: 8.8em;
+}
+.button-table a.tabledrag-handle {
+  padding-right: 0.8em;
+}
+
+.button-table .th-content {
+}
+
+.button-table .th-icon {
+  width: 5em;
+}
+.button-table .input-icon {
+  width: 3em;
+}
+
+.button-table .th-key {
+  width: 3em;
+}
+.button-table .input-key {
+  width: 2em;
+}
+
+.button-table th.select-all {
+  width: 2em;
+}
+
+.button-table td {
+  vertical-align: top;
+}
+.button-table tr.new-button {
+  background-color: #feebed;
+}
+
+.button-table div.form-item {
+  display: inline;
+  margin: 0em;
+  padding: 0em;
+  white-space: normal;/*override system.css*/
+}
+.button-table div.resizable-textarea {
+  width: 98%;
+}
+.js .button-table div.resizable-textarea textarea {
+  height: 1.6em;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+.button-table div.grippie {
+  height: 0.4em;
+  background-position: 50% 0%;
+}
+
+.button-table img.icon-selector-opener {
+  margin: 0.2em 0.5em 0 0 !important;
+  cursor: pointer;
+  border-bottom: 0.1em solid #000;
+  vertical-align: top;
+}
+.button-table img.icon-selector-opener:hover {
+  border-color: #f00;
+}
+
+.selector-table {
+  position: absolute;
+  margin: 0em;
+  width: auto;
+  z-index: 1;
+}
+.selector-table td {
+  border: 0.1em solid #e1e1e1;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.4em 0.6em;
+}
+.selector-table td:hover {
+  background-color: #fff;
+}
+.selector-table img {
+  vertical-align: middle;
+  max-width: 40px;
+  max-height: 40px;
+}
+.selector-table input {
+  width: 1em;
+  cursor: pointer;
+}
+#key-selector td {
+  padding: 0.3em 0.7em;
+  color: #000;
+}
+#key-selector td.used {
+  color: #f99;
+  cursor: default;
+}
+
+#sel-action-wrapper {
+  float: right;
+  margin: 0.5em;
+}
+#sel-action-wrapper .form-item {
+  float: left;
+  margin: 0 0.2em;
+  padding: 0 0.2em;
+}
+#sel-action-wrapper select, #sel-action-wrapper input {
+  margin: 0em;
+}
+
+#edit-submit {
+  margin: 0.5em;
+}

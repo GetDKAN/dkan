@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the strongarm module.
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function strongarm_enable() {
+  // Weight strongarm exceptionally light.
+  db_update('system')
+    ->fields(array('weight' =>  -1000))
+    ->condition('name', 'strongarm')
+    ->condition('type', 'module')
+    ->execute();
+}
+
+/**
+ * Transition Strongarm variables from code to the database.
+ */
+function strongarm_update_7201() {
+  module_load_include('module', 'strongarm');
+  $variables = strongarm_vars_load(TRUE, TRUE);
+  if (!empty($variables)) {
+    foreach ($variables as $var_name => $var) {
+      $exists = db_query("SELECT name FROM {variable} WHERE name = :name", array(':name' => $var_name))->fetchField();
+      if (!$exists) {
+        variable_set($var_name, $var->value);
+      }
+    }
+  }
+}

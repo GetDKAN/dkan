@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @file
+ * Tests Entity API integration with the Entity RDF module.
+ */
+
+/**
+ * Implements hook_entity_rdf_mappings().
+ */
+function entity_rdf_test_entity_rdf_mappings() {
+  return array(
+    // node article mappings (bundle, property and field property mappings).
+    'node:article' => array(
+      'rdf types' => array('http://schema.org/NewsArticle'),
+    ),
+    'node:article:title' => array(
+      'rdf properties' => array('http://schema.org/name'),
+    ),
+    'node:article:author' => array(
+      'rdf properties' => array('http://schema.org/creator'),
+    ),
+    'node:article:created' => array(
+      'rdf properties' => array('http://schema.org/created'),
+      'rdf value callback' => 'date_iso8601',
+      'rdf value datatype' => 'http://www.w3.org/2001/XMLSchema#dateTime',
+    ),
+    'node:article:body' => array(
+      'field properties' => array(
+        'value' => array(
+          'rdf properties' => array('http://schema.org/articleBody'),
+        ),
+      ),
+    ),
+    'node:article:field_tags' => array(
+      'rdf properties' => array('http://schema.org/keyword'),
+    ),
+  );
+}

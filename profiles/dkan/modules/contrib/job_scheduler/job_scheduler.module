@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * job scheduler module.
+ */
+
+/**
+ * Implementation of hook_cron().
+ */
+function job_scheduler_cron() {
+  // Reschedule stuck periodic jobs after one hour.
+  db_update('job_schedule')
+    ->fields(array(
+      'scheduled' => 0,
+    ))
+    ->condition('scheduled', REQUEST_TIME - 3600, '<')
+    ->condition('periodic', 1)
+    ->execute();
+
+  // Query and dispatch scheduled jobs.
+  // Process a maximum of 200 jobs in a maximum of 30 seconds.
+  $start = time();
+  $total =
+  $failed = 0;
+  $jobs = db_select('job_schedule', NULL, array('fetch' => PDO::FETCH_ASSOC))
+            ->fields('job_schedule')
+            ->condition('scheduled', 0)
+            ->condition('next', REQUEST_TIME, '<')
+            ->orderBy('next', 'ASC')
+            ->range(0, 200)
+            ->execute();
+  foreach ($jobs as $job) {
+    try {
+      JobScheduler::get($job['name'])->dispatch($job);
+    }
+    catch (Exception $e) {
+      watchdog('job_scheduler', $e->getMessage(), array(), WATCHDOG_ERROR);
+      $failed++;
+    }
+    $total++;
+    if (time() > ($start + 30)) {
+      break;
+    }
+  }
+
+  // Leave a note on how much time we spent processing.
+  watchdog('job_scheduler', 'Finished processing scheduled jobs (!time s, !total total, !failed failed).', array('!time' => format_interval(time() - $start), '!total' => $total, '!failed' => $failed));
+}

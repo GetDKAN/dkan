@@ -1,0 +1,219 @@
+<?php
+
+/**
+ * @file
+ * Tests for Double field formatters.
+ */
+
+// Drupal testbot starts with all modules disabled
+// so we cannot autoload the class.
+require_once 'double_field_test_case.inc';
+
+/**
+ * Test case for Double field formatters.
+ */
+class DoubleFieldFormattersTestCase extends DoubleFieldTestCase {
+
+  /**
+   * Information about the test.
+   */
+  public static function getInfo() {
+    return array(
+      'name'  => 'Formatters',
+      'description' => 'Test formatters',
+      'group' => DoubleFieldTestCase::GROUP,
+    );
+  }
+
+  /**
+   * Test formatters.
+   */
+  public function testFormmaters() {
+
+    $this->drupalGet("admin/structure/types/manage/{$this->type_name}/display");
+
+    $formatters = DoubleFieldFormatter::getAllFormatterTypes();
+
+    // Check whether double field formatters are accessible.
+    foreach ($formatters as $formatter_type => $label) {
+      $found = $this->xpath("//select[@name='fields[{$this->field_name}][type]']/option[@value='$formatter_type' and text()='$label']");
+      $this->assertTrue($found, '«' . $label . '» formatter was found');
+    }
+
+    $this->assertTrue(
+      count($formatters) == count($this->xpath("//select[@name='fields[{$this->field_name}][type]']/option[@value != 'hidden']")),
+      'All double field formatters were found'
+    );
+
+    // Iterate through all supported formatter types.
+    foreach ($formatters as $formatter_type => $label) {
+
+      $this->drupalGet("admin/structure/types/manage/{$this->type_name}/display");
+
+      $formatter = new DoubleFieldFormatter($formatter_type);
+
+      // Change the formatter and verify that it is selected.
+      $edit = array(
+        "fields[{$this->field_name}][type]" => $formatter->getType(),
+        'refresh_rows' => $this->field_name,
+      );
+      $this->drupalPostAJAX(NULL, $edit, array('op' => t('Refresh')));
+
+      $this->assertFieldByName("fields[{$this->field_name}][type]", $formatter->getType(), t('The expected formatter is selected.'));
+
+      $this->drupalPostAJAX(NULL, array(), $this->field_name . '_formatter_settings_edit');
+      $input = $formatter->getSettingsFormInput($this->field_name);
+      $this->drupalPostAJAX(NULL, $input, array($this->field_name . '_formatter_settings_update' => t('Update')));
+
+      $this->drupalPostAJAX(NULL, array(), $this->field_name . '_formatter_settings_edit');
+
+      $this->verbose("Ending URL: {$this->url}<hr/>" . $this->drupalGetContent());
+
+      $validators = $formatter->getSettingsFormValidators($this->field_name);
+      $this->validate($validators, "«{$label}» formatter settings form is valid.");
+
+      $this->drupalPost(NULL, array(), t('Save'));
+      $this->assertRaw('Your settings have been saved.');
+
+      $this->assertRaw($formatter->getSummary(), "«{$label}» formatter summary is valid.");
+
+      $this->drupalGet('node/' . $this->node->nid);
+
+      $items = field_get_items('node', $this->node, $this->field_name);
+      $validators = $formatter->getFormatterValidators($this->field_name, $items);
+      $this->validate($validators, "«{$label}» formatter is valid");
+
+    }
+  }
+
+  /**
+   * Test that content is filtred with appropriate format.
+   */
+  public function testTextFormats() {
+
+    // Unlock node settings.
+    node_delete(1);
+
+    $this->field['settings'] = DoubleFieldField::getFieldSettings('varchar_&_varchar');
+    field_update_field($this->field);
+
+    // Create a node with actual data for the field.
+    $widget = new DoubleFieldWidget('textfield_&_textfield', $this->field['settings']);
+    $edit = array(
+      'type' => $this->type_name,
+      'uid' => $this->user->uid,
+    );
+    $edit[$this->field_name][LANGUAGE_NONE][0] = $widget->getValue();
+    $test_node = $this->drupalCreateNode($edit);
+
+    $this->drupalGet("admin/structure/types/manage/{$this->type_name}/display");
+    $formatter = new DoubleFieldFormatter('double_field_unformatted_list');
+
+    $edit = array(
+      "fields[{$this->field_name}][type]" => $formatter->getType(),
+      'refresh_rows' => $this->field_name,
+    );
+    $this->drupalPostAJAX(NULL, $edit, array('op' => t('Refresh')));
+    $this->drupalPostAJAX(NULL, array(), $this->field_name . '_formatter_settings_edit');
+    $input = $formatter->getSettingsFormInput($this->field_name);
+    $input["fields[{$this->field_name}][settings_edit_form][settings][style]"] = 'block';
+
+    $input["fields[{$this->field_name}][settings_edit_form][settings][first][format]"] = 'full_html';
+    $this->drupalPostAJAX(NULL, $input, array($this->field_name . '_formatter_settings_update' => t('Update')));
+    $this->drupalPostAJAX(NULL, array(), $this->field_name . '_formatter_settings_edit');
+
+    $this->verbose($this->drupalGetContent());
+
+    // Verify that full HTML format is choosen for first subfield.
+    $this->assertTrue(
+      $this->xpath(
+        '//select[@name=:name]//option[@selected and  @value="full_html" and text()=:label]',
+        array(':name' => "fields[{$this->field_name}][settings_edit_form][settings][first][format]", ':label' => t('Full HTML'))
+      ),
+      'Full HTML format is selected..'
+    );
+
+    $this->drupalPost(NULL, array(), t('Save'));
+
+    $this->assertText(t('Using the "Full HTML" format allows HTML to be posted unfiltered. This could represent a severe security risk.'), 'Warning message was found.');
+    $this->assertTrue($this->xpath("//span[@style='color: red']//em[text()=:text]", array(':text' => 'Full HTML')), 'Full HTML format was highlighted');
+
+    // Add some unsecure text to the node.
+    $text = '<em>text</em><span style="color: red">text</span>';
+    $test_node->{$this->field_name}[LANGUAGE_NONE][0] = array(
+      'first' => $text,
+      'second' => $text,
+    );
+    node_save($test_node);
+
+    $this->drupalGet('node/' . $test_node->nid);
+
+    $em_xpath = "//div[@class='double-field-first']//em";
+    $span_xpath = "//div[@class='double-field-first']//span";
+
+    $this->assertTrue($this->xpath($em_xpath) && $this->xpath($span_xpath), 'The text is filtred with full HTML format.');
+
+    $this->instance['display']['default']['settings']['first']['format'] = 'filtered_html';
+    field_update_instance($this->instance);
+    $this->drupalGet('node/' . $test_node->nid);
+    $this->assertTrue($this->xpath($em_xpath) && !$this->xpath($span_xpath), 'The text is filtred with filtered HTML format.');
+
+    $this->instance['display']['default']['settings']['first']['format'] = 'plain_text';
+    field_update_instance($this->instance);
+    $this->drupalGet('node/' . $test_node->nid);
+    $this->assertTrue(!$this->xpath($em_xpath) && !$this->xpath($span_xpath), 'The text is filtred with plain HTML format.');
+
+    $this->instance['display']['default']['settings']['first']['format'] = '_none';
+    field_update_instance($this->instance);
+    $this->drupalGet('node/' . $test_node->nid);
+    $this->assertTrue(!$this->xpath($em_xpath) && !$this->xpath($span_xpath), 'The text is filtred with check_plain() function.');
+
+  }
+
+  /**
+   * Test hidden setting.
+   */
+  public function testHiddenSetting() {
+    foreach (array('first', 'second') as $hidden_subfield) {
+      $this->drupalGet("admin/structure/types/manage/{$this->type_name}/display");
+      $formatter = new DoubleFieldFormatter('double_field_table');
+
+      $edit = array(
+        "fields[{$this->field_name}][type]" => $formatter->getType(),
+        'refresh_rows' => $this->field_name,
+      );
+      $this->drupalPostAJAX(NULL, $edit, array('op' => t('Refresh')));
+      $this->drupalPostAJAX(NULL, array(), $this->field_name . '_formatter_settings_edit');
+      $input = $formatter->getSettingsFormInput($this->field_name);
+
+      $input["fields[{$this->field_name}][settings_edit_form][settings][table][number_column]"] = FALSE;
+      $input["fields[{$this->field_name}][settings_edit_form][settings][first][hidden]"] = $hidden_subfield == 'first';
+      $input["fields[{$this->field_name}][settings_edit_form][settings][second][hidden]"] = $hidden_subfield == 'second';
+      $this->drupalPostAJAX(NULL, $input, array($this->field_name . '_formatter_settings_update' => t('Update')));
+      $this->drupalPostAJAX(NULL, array(), $this->field_name . '_formatter_settings_edit');
+
+      $this->verbose($this->drupalGetContent());
+
+      $this->drupalPost(NULL, array(), t('Save'));
+
+      $this->drupalGet('node/' . $this->node->nid);
+
+      $settings = $formatter->getSettings();
+
+      $first_td = $this->xpath(
+        "//div[@class='field-items']//table/tbody/tr/td[position()=1 and text()=:text]",
+        array(':text' => $settings['first']['prefix'] . $this->value['first'] . $settings['first']['suffix'])
+      );
+
+      $second_td = $this->xpath(
+        "//div[@class='field-items']//table/tbody/tr/td[position()=2 and text()=:text]",
+        array(':text' => $settings['second']['prefix'] . $this->value['second'] . $settings['second']['suffix'])
+      );
+
+      $this->assertFalse($hidden_subfield == 'first' ? $first_td : $second_td, 'Subfiled is not displayed');
+      $this->assertTrue($hidden_subfield == 'first' ? $second_td : $first_td, 'Subfiled is  displayed');
+    }
+
+  }
+
+}

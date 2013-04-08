@@ -1,0 +1,17 @@
+/* Popup styles */
+.bue-popup {
+  box-shadow: 0 0 1em #999;
+  border-radius: 5px;
+}
+.bue-popup-head {
+  border-radius: 5px 5px 0 0;
+}
+.bue-popup-close {
+  border-radius: 5px 0 5px 0;
+}
+.bue-popup-body {
+  border-radius: 0 0 5px 5px;
+}
+#bue-quick-pop .bue-popup-body {
+  border-radius: 5px;
+}

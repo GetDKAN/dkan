@@ -1,0 +1,690 @@
+<?php
+
+/**
+ * @file
+ * Test suite for UUID module.
+ */
+
+/**
+ * Base class with some helper methods.
+ */
+class UUIDTestCase extends DrupalWebTestCase {
+
+  function setUp() {
+    parent::setUp(func_get_args());
+  }
+
+  /**
+   * Helper function that asserts a UUID.
+   */
+  function assertUUID($uuid, $message = NULL) {
+    $this->assertTrue(uuid_is_valid($uuid), $message);
+  }
+}
+
+/**
+ * Tests the UUID API functions.
+ */
+class UUIDAPITestCase extends UUIDTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'UUID API',
+      'description' => 'Tests the UUID API functions.',
+      'group' => 'UUID',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('uuid');
+  }
+
+  function testAPIFunctions() {
+    // This is a valid UUID, we know that.
+    $valid_uuid = '0ab26e6b-f074-4e44-9da6-1205fa0e9761';
+    // Test the uuid_is_valid() function.
+    $this->assertUUID($valid_uuid, 'UUID validation works.');
+
+    // The default generator is 'php'.
+    $uuid = uuid_generate();
+    $this->assertUUID($uuid, 'PHP generator works.');
+
+    // Test the 'mysql' generator.
+    variable_set('uuid_generator', 'mysql');
+    drupal_static_reset('uuid_generate');
+    $uuid = uuid_generate();
+    $this->assertUUID($uuid, 'MySQL generator works.');
+  }
+}
+
+/**
+ * Tests the Entity API functions.
+ */
+class UUIDEntityTestCase extends UUIDTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Entity API functions',
+      'description' => 'Tests the Entity API functions.',
+      'group' => 'UUID',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('uuid');
+  }
+
+  /**
+   * Tests Entity API's UUID functions.
+   */
+  function testEntityAPIFunctions() {
+    // Create some entities that we will work with.
+    $user = $this->drupalCreateUser();
+    $node = $this->drupalCreateNode(array('title' => 'original title', 'uid' => $user->uid));
+
+    // Test entity_get_id_by_uuid().
+    $nids = entity_get_id_by_uuid('node', array($node->uuid), FALSE);
+    $this->assertTrue(in_array($node->nid, $nids), 'Lookup of entity ID works.');
+    $vids = entity_get_id_by_uuid('node', array($node->vuuid), TRUE);
+    $this->assertTrue(in_array($node->vid, $vids), 'Lookup of entity revision ID works.');
+
+    // Test entity_get_uuid_by_id().
+    $uuids = entity_get_uuid_by_id('node', array($node->nid), FALSE);
+    $this->assertTrue(in_array($node->uuid, $uuids), 'Lookup of entity UUID works.');
+    $vuuids = entity_get_uuid_by_id('node', array($node->vid), TRUE);
+    $this->assertTrue(in_array($node->vuuid, $vuuids), 'Lookup of entity revision UUID works.');
+  }
+}
+
+/**
+ * Tests the User implementation.
+ */
+class UUIDUserTestCase extends UUIDTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'User implementation',
+      'description' => 'Tests the User implementation.',
+      'group' => 'UUID',
+    );
+  }
+
+  function setUp() {
+    // Some tests depends on the optional Entity API module.
+    if (module_exists('entity')) {
+      parent::setUp('uuid', 'entity');
+    }
+    else {
+      parent::setUp('uuid');
+    }
+  }
+
+  /**
+   * Test CRUD on users with UUID functions.
+   */
+  function testUserCRUD() {
+    $user = $this->drupalCreateUser();
+    $this->assertUUID($user->uuid, 'User UUID was generated.');
+
+    // Test updating user.
+    $user_test = clone $user;
+    user_save($user_test, array('name' => 'new name'));
+    $user_test = user_load($user->uid, TRUE);
+    $this->assertEqual($user_test->uuid, $user->uuid, 'User UUID was intact after update.');
+
+    // Test entity_uuid_load().
+    $users = entity_uuid_load('user', array($user->uuid), array(), TRUE);
+    $user_test = reset($users);
+    $this->assertEqual($user_test->uid, $user->uid, 'User was correctly loaded with UUID.');
+
+    // The following tests depends on the optional Entity API module.
+    if (module_exists('entity')) {
+      // Test entity_uuid_save() for users.
+      $user_test = clone $user;
+      $user_test->uid = rand();
+      $user_test->name = 'new name';
+      entity_uuid_save('user', $user_test);
+      $user_test = user_load($user->uid, TRUE);
+      $this->assertEqual($user_test->name, 'new name', 'Saving user with UUID mapped to correct user.');
+      $this->assertEqual($user_test->uuid, $user->uuid, 'User UUID was intact after saving with UUID.');
+
+      // Test entity_uuid_delete() for users.
+      entity_uuid_delete('user', $user->uuid);
+      $user_test = user_load($user->uid);
+      $this->assertFalse($user_test, 'Deleting user with UUID worked.');
+    }
+  }
+}
+
+/**
+ * Tests the Node implementation.
+ */
+class UUIDNodeTestCase extends UUIDTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Node implementation',
+      'description' => 'Tests the Node implementation.',
+      'group' => 'UUID',
+    );
+  }
+
+  function setUp() {
+    // Some tests depends on the optional Entity API module.
+    if (module_exists('entity')) {
+      parent::setUp('uuid', 'entity');
+    }
+    else {
+      parent::setUp('uuid');
+    }
+  }
+
+  /**
+   * Tests CRUD on nodes with UUID functions.
+   */
+  function testNodeCRUD() {
+    // Create some entities that we will work with.
+    $user = $this->drupalCreateUser();
+    $node = $this->drupalCreateNode(array('title' => 'original title', 'uid' => $user->uid));
+
+    $this->assertUUID($node->uuid, 'Node UUID was generated.');
+    $this->assertUUID($node->vuuid, 'Node revision UUID was generated.');
+
+    // Test node update, without creating new revision.
+    $node_test = clone $node;
+    $node_test->title = 'new title';
+    $node_test->revision = FALSE;
+    node_save($node_test);
+    $node_test = node_load($node->nid, FALSE, TRUE);
+    $this->assertEqual($node_test->uuid, $node->uuid, 'Node UUID was intact after update, when not creating new revision.');
+    $this->assertEqual($node_test->vuuid, $node->vuuid, 'Node revision UUID was intact after updating, when not creating new revision.');
+
+    // Test node update, with new revision.
+    $node_test = clone $node;
+    $node_test->title = 'newer title';
+    $node_test->revision = TRUE;
+    node_save($node_test);
+    $node_test = node_load($node->nid, FALSE, TRUE);
+    $this->assertEqual($node_test->uuid, $node->uuid, 'Node UUID was intact after updating, when creating new revision.');
+    $this->assertNotEqual($node_test->vuuid, $node->vuuid, 'A new node revision UUID was generated, when creating new revision.');
+    $this->assertUUID($node_test->vuuid, 'The new node revision UUID was valid.');
+
+    // Test entity_uuid_load().
+    $nodes = entity_uuid_load('node', array($node->uuid), array(), TRUE);
+    $node_test = reset($nodes);
+    $this->assertEqual($node_test->nid, $node->nid, 'Node was correctly loaded with UUID.');
+    $this->assertEqual($node_test->uid, $user->uuid, "Node property 'uid' was transformed to UUID when loaded with UUID.");
+
+    // The following tests depends on the optional Entity API module.
+    if (module_exists('entity')) {
+      // Reload the node again because we have created new revisions above.
+      $node = node_load($node->nid, FALSE, TRUE);
+      // Test entity_uuid_save() for nodes.
+      $nodes = entity_uuid_load('node', array($node->uuid), array(), TRUE);
+      $node_test = reset($nodes);
+      $node_test->nid = rand();
+      $node_test->vid = rand();
+      $node_test->title = 'new title';
+      $node_test->revision = FALSE;
+      entity_uuid_save('node', $node_test);
+      $node_test = node_load($node->nid, FALSE, TRUE);
+      $this->assertEqual($node_test->title, 'new title', 'Saving node with UUID mapped to correct node, when not creating new revision.');
+      $this->assertEqual($node_test->uuid, $node->uuid, 'Node UUID was intact after saving with UUID, when not creating new revision.');
+      $this->assertEqual($node_test->vuuid, $node->vuuid, 'Node revison UUID was intact after saving with UUID, when not creating new revision.');
+      $this->assertEqual($node_test->uid, $node->uid, "Node property 'uid' was intact after saving with UUID, when not creating new revision.");
+
+      // Test the same thing again, but now triggering a new revision.
+      $nodes = entity_uuid_load('node', array($node->uuid), array(), TRUE);
+      $node_test = reset($nodes);
+      $node_test->nid = rand();
+      $node_test->vid = rand();
+      $node_test->title = 'newer title';
+      $node_test->revision = TRUE;
+      entity_uuid_save('node', $node_test);
+      $node_test = node_load($node->nid, FALSE, TRUE);
+      $this->assertEqual($node_test->title, 'newer title', 'Saving node with UUID mapped to correct node, when creating new revision.');
+      $this->assertEqual($node_test->uuid, $node->uuid, 'Node UUID was intact after saving with UUID, when creating new revision.');
+      $this->assertNotEqual($node_test->vuuid, $node->vuuid, 'A new node revison UUID was generated after saving with UUID, when creating new revision.');
+      $this->assertUUID($node_test->vuuid, 'New node revision UUID was valid.');
+      $this->assertEqual($node_test->uid, $node->uid, "Node property 'uid' was intact after saving with UUID, when creating new revision.");
+
+      // Test entity_uuid_delete() for nodes.
+      entity_uuid_delete('node', $node->uuid);
+      $node_test = node_load($node->nid);
+      $this->assertFalse($node_test, 'Deleting node with UUID worked.');
+    }
+  }
+}
+
+/**
+ * Tests the Comment implementation.
+ *
+ * @todo
+ *   Contribute patch to CommentHelperCase::setUp() to make it extendable.
+ */
+class UUIDCommentTestCase extends CommentHelperCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Comment implementation',
+      'description' => 'Tests the Comment implementation.',
+      'group' => 'UUID',
+    );
+  }
+
+  /**
+   * Helper function that asserts a UUID.
+   *
+   * We have duplicated this function from UUIDTestCase since we have to extend
+   * CommentHelperCase instead.
+   */
+  function assertUUID($uuid, $message = NULL) {
+    $this->assertTrue(uuid_is_valid($uuid), $message);
+  }
+
+  /**
+   * Test CRUD on comments with UUID functions.
+   */
+  function testCommentCRUD() {
+    // This is sub optimal, but due to how CommentHelperCase::setUp() is
+    // constructed we are enforced to do this. So unfortunately this test
+    // depends on 'entity' module for now.
+    module_enable(array('uuid', 'entity'), TRUE);
+    $user = $this->drupalCreateUser();
+    $this->drupalLogin($user);
+    $node = $this->drupalCreateNode();
+    $return = $this->postComment($node, 'Lorem ipsum');
+
+    $comment = comment_load($return->id);
+    $this->assertUUID($comment->uuid, 'Comment UUID was generated.');
+
+    // Test updating comment.
+    $comment_test = clone $comment;
+    $comment_test->subject = 'new subject';
+    comment_save($comment_test);
+    $comment_test = comment_load($comment->cid);
+    $this->assertEqual($comment_test->uuid, $comment->uuid, 'Comment UUID was intact after update.');
+
+    // Test entity_uuid_load().
+    $comments = entity_uuid_load('comment', array($comment->uuid), array(), TRUE);
+    $comment_test = reset($comments);
+    $this->assertEqual($comment_test->cid, $return->id, 'Comment was correctly loaded with UUID.');
+    $this->assertEqual($comment_test->uid, $user->uuid, "Comment property 'uid' was transformed to UUID when loaded with UUID.");
+    $this->assertEqual($comment_test->nid, $node->uuid, "Comment property 'nid' was transformed to UUID when loaded with UUID.");
+
+    // The following tests depends on the optional Entity API module.
+    if (module_exists('entity')) {
+      // Test entity_uuid_save() for comments.
+      $comments = entity_uuid_load('comment', array($comment->uuid), array(), TRUE);
+      $comment_test = reset($comments);
+      $comment_test->cid = rand();
+      $comment_test->subject = 'newer subject';
+      entity_uuid_save('comment', $comment_test);
+      $comment_test = comment_load($comment->cid);
+      $this->assertEqual($comment_test->subject, 'newer subject', 'Saving comment with UUID mapped to correct comment.');
+      $this->assertEqual($comment_test->uuid, $comment->uuid, 'Comment UUID was intact after saving with UUID.');
+      $this->assertEqual($comment_test->uid, $user->uid, "Comment property 'uid' was after saving with UUID.");
+      $this->assertEqual($comment_test->nid, $node->nid, "Comment property 'nid' was after saving with UUID.");
+
+      // Test entity_uuid_delete() for comments.
+      entity_uuid_delete('comment', $comment->uuid);
+      $comment_test = comment_load($comment->cid);
+      $this->assertFalse($comment_test, 'Deleting comment with UUID worked.');
+    }
+  }
+}
+
+/**
+ * Tests the Taxonomy implementation.
+ */
+class UUIDTaxonomyTestCase extends TaxonomyWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Taxonomy implementation',
+      'description' => 'Tests the Taxonomy implementation.',
+      'group' => 'UUID',
+    );
+  }
+
+  /**
+   * A lot of code here is taken from TaxonomyTermTestCase::setUp().
+   */
+  function setUp() {
+    // Some tests depends on the optional Entity API module.
+    if (module_exists('entity')) {
+      parent::setUp('taxonomy', 'uuid', 'entity');
+    }
+    else {
+      parent::setUp('taxonomy', 'uuid');
+    }
+  }
+
+  /**
+   * Helper function that asserts a UUID.
+   *
+   * We have duplicated this function from UUIDTestCase since we have to extend
+   * TaxonomyWebTestCase instead.
+   */
+  function assertUUID($uuid, $message = NULL) {
+    $this->assertTrue(uuid_is_valid($uuid), $message);
+  }
+
+  /**
+   * Test CRUD on comments with UUID functions.
+   */
+  function testTaxonomyCRUD() {
+    $user = $this->drupalCreateUser(array('administer taxonomy', 'administer nodes', 'bypass node access'));
+    $this->drupalLogin($user);
+
+    // Create a term by tagging a node. We'll use this node later too.
+    $vocabulary = new stdClass;
+    $vocabulary->vid = 1;
+    $term = $this->createTerm($vocabulary);
+    $this->assertUUID($term->uuid, 'Term UUID was generated.');
+
+    // Test updating term.
+    $term_test = clone $term;
+    $term_test->name = 'new name';
+    taxonomy_term_save($term_test);
+    $term_test = taxonomy_term_load($term->tid);
+    $this->assertEqual($term_test->uuid, $term->uuid, 'Term UUID was intact after update.');
+
+    // Test entity_uuid_load().
+    $terms = entity_uuid_load('taxonomy_term', array($term->uuid), array(), TRUE);
+    $term_test = reset($terms);
+    $this->assertEqual($term_test->tid, $term->tid, 'Term was correctly loaded with UUID.');
+
+    // The following tests depends on the Entity API module.
+    if (module_exists('entity')) {
+      // Test entity_uuid_save() for terms.
+      $terms = entity_uuid_load('taxonomy_term', array($term->uuid), array(), TRUE);
+      $term_test = reset($terms);
+      $term_test->tid = rand();
+      $term_test->name = 'newer name';
+      entity_uuid_save('taxonomy_term', $term_test);
+      $term_test = taxonomy_term_load($term->tid);
+      $this->assertEqual($term_test->name, 'newer name', 'Saving term with UUID mapped to correct term.');
+      $this->assertEqual($term_test->uuid, $term->uuid, 'Term UUID was intact after saving with UUID.');
+
+      // Test entity_uuid_delete() for nodes.
+      entity_uuid_delete('taxonomy_term', $term->uuid);
+      $term_test = taxonomy_term_load($term->tid);
+      $this->assertFalse($term_test, 'Deleting term with UUID worked.');
+    }
+  }
+}
+
+/**
+ * Tests for the UUID synchronization.
+ */
+class UUIDSyncTestCase extends UUIDTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'UUID sync',
+      'description' => 'Tests the UUID synchronization.',
+      'group' => 'UUID',
+    );
+  }
+
+  /**
+   * Helper function that asserts that a database table column exists.
+   *
+   * @todo
+   *   There are something weird around this assertion.
+   */
+  function assertTableColumn($table, $column, $message) {
+    $result = db_query("SHOW COLUMNS FROM {$table}");
+    $exists = FALSE;
+    foreach ($result as $record) {
+      if ($record->field == $column) {
+        $exists = TRUE;
+        break;
+      }
+    }
+    $this->assertTrue($exists, $message);
+  }
+
+  function testSync() {
+    // These entities will not have UUID from the start, since the UUID module
+    // isn't installed yet.
+    $user = $this->drupalCreateUser();
+    $node = $this->drupalCreateNode();
+
+    $this->assertTrue(!isset($node->uuid), "Node has no UUID before installation of UUID module.");
+    $this->assertTrue(!isset($node->vuuid), "Node has no revision UUID before installation of UUID module.");
+    $this->assertTrue(!isset($user->uuid), "User has no UUID before installation of UUID module.");
+
+    // Now enable the UUID module.
+    module_enable(array('uuid'), TRUE);
+    drupal_flush_all_caches();
+    drupal_static_reset();
+
+    // Check that the UUID column was generated for {node}.
+    $this->assertTableColumn('node', 'uuid', 'UUID column was generated for the node table.');
+    $this->assertTableColumn('node_revision', 'vuuid', 'Revision UUID column was generated for the node_revision table.');
+    $this->assertTableColumn('users', 'uuid', 'UUID column was generated for the user table.');
+
+    // Login with a user and click the sync button.
+    $web_user = $this->drupalCreateUser(array('administer uuid'));
+    $this->drupalLogin($web_user);
+    $this->drupalPost('admin/config/system/uuid', array(), t('Create missing UUIDs'));
+
+    // Test if UUID was generated for nodes.
+    $node_test = node_load($node->nid, FALSE, TRUE);
+    $this->assertUUID($node_test->uuid, 'Node UUID was generated when clicking the sync button.');
+    $this->assertUUID($node_test->vuuid, 'Node revision UUID was generated when clicking the sync button.');
+
+    // Test if UUID was generated for users.
+    $user_test = user_load($user->uid, TRUE);
+    $this->assertUUID($user_test->uuid, 'User UUID was generated when clicking the sync button.');
+  }
+}
+
+class UUIDExportEntitiesWithDeploy extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Export UUID entities',
+      'description' => 'Test exporting UUID entities with Deploy and Features.',
+      'group' => 'UUID',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('taxonomy', 'uuid', 'entity', 'features', 'deploy', 'deploy_example');
+  }
+
+  function testExport() {
+    $test_user = $this->drupalCreateUser();
+    $test_node = $this->drupalCreateNode(array(
+      'uid' => $test_user->uid,
+    ));
+    deploy_manager_add_to_plan('deploy_example_plan', 'node', $test_node);
+    // TODO: Test the actual insert.
+    $this->assertTrue(TRUE, 'Added a node with a user dependency to be exported as a Feature module.');
+
+    // Login and recreate the example feature. The feature isn't installed. But
+    // Features can still export the code, and we can test it.
+    $web_user = $this->drupalCreateUser(array('administer features'));
+    $this->drupalLogin($web_user);
+    $code = $this->drupalPost('admin/structure/features/uuid_default_entities_example/recreate', array(), t('Download feature'));
+    $this->assertTrue($code, 'Feature module was exported.');
+
+    // Ensure that we find what we expect in the exported code.
+    $node_test1 = preg_match('/' . $test_node->title . '/', $code);
+    $node_test2 = preg_match("/'uri' => 'node\/" . $test_node->uuid . "'/", $code);
+    $this->assertTrue($node_test1, 'Node title was found in the expoted code.');
+    $this->assertTrue($node_test2, 'Node URI was found in the expoted code.');
+    $user_test1 = preg_match('/' . $test_user->name . '/', $code);
+    $user_test2 = preg_match("/'uri' => 'user\/" . $test_user->uuid . "'/", $code);
+    $this->assertTrue($user_test1, 'User was found in the expoted code.');
+    $this->assertTrue($user_test2, 'User URI was found in the expoted code.');
+  }
+}
+
+/**
+ * Tests for the UUID synchronization.
+ */
+class UUIDImportEntitiesTestCase extends UUIDTestCase {
+
+  /**
+   * Representation of the UUIDs that is exported in our example feature, that
+   * we use for testing.
+   */
+  public $term1_uuid = 'bcb92ce8-2236-e264-65c8-0c163ae716d1';
+  public $term2_uuid = '4293a15c-531a-6164-7d1b-668ed019a6bd';
+  public $term3_uuid = 'af738a46-f278-cf84-d94d-9e03879fd71e';
+  public $node1_uuid = 'b0558664-c94b-3674-d9df-3e1696b2e471';
+  public $node2_uuid = '5e3d8bbe-a1f2-f2d4-fdc0-71e6c23aa837';
+  public $user1_uuid = '7cf875e6-dc15-4404-f190-5a7c3e91d14c';
+
+  /**
+   * Helper method to assert the uuid_entities component in any features.
+   */
+  function assertFeatureState($feature, $state, $message = '') {
+    if (empty($message)) {
+      switch ($state) {
+        case FEATURES_DEFAULT:
+          $readable_state = 'default';
+          break;
+        case FEATURES_OVERRIDDEN:
+          $readable_state = 'overridden';
+          break;
+        default:
+          $readable_state = 'unknown';
+          break;
+      }
+      $message = format_string('%component in %feature had state: %state', array('%component' => 'uuid_entities', '%feature' => $feature, '%state' => $readable_state));
+    }
+    // Ensure that the features we used is in default state.
+    $states = features_get_component_states(array($feature), TRUE, TRUE);
+    if (!$this->assertEqual($states[$feature]['uuid_entities'], $state, $message)) {
+      debug(format_string('Enabling functionality to show diff output for debug purposes.'));
+      $success = module_enable(array('diff'));
+      if ($success) {
+        // Make sure we run on cold caches.
+        drupal_flush_all_caches();
+        drupal_static_reset();
+
+        $user = $this->drupalCreateUser(array('administer features'));
+        $this->drupalLogin($user);
+        $this->drupalGet('admin/structure/features/' . $feature . '/diff');
+      }
+      else {
+        debug(format_string('Download !module to see diff output for debug purposes.', array('!module' => 'diff.module')));
+      }
+    }
+  }
+
+  function getEntityByUuid($entity_type, $uuid) {
+    $ids = entity_get_id_by_uuid($entity_type, array($uuid));
+    $entities = entity_load($entity_type, $ids, NULL, TRUE);
+    return reset($entities);
+  }
+
+  function enableFeature($feature) {
+    $success = module_enable(array($feature), TRUE);
+    $this->assertTrue($success, t('Enabled modules: %modules', array('%modules' => implode(', ', array($feature)))));
+    // Make sure we run on cold caches.
+    drupal_flush_all_caches();
+    drupal_static_reset();
+  }
+
+  function revertFeature($feature) {
+    features_revert(array($feature => array('uuid_entities')));
+    $this->assertTrue(TRUE, format_string('Reverted feature: %feature', array('%feature' => $feature)));
+  }
+
+  function testImport() {
+    $term1 = $this->getEntityByUuid('taxonomy_term', $this->term1_uuid);
+    $term2 = $this->getEntityByUuid('taxonomy_term', $this->term2_uuid);
+    $term3 = $this->getEntityByUuid('taxonomy_term', $this->term3_uuid);
+    $node1 = $this->getEntityByUuid('node', $this->node1_uuid);
+    $node2 = $this->getEntityByUuid('node', $this->node2_uuid);
+    $user1 = $this->getEntityByUuid('user', $this->user1_uuid);
+
+    // Ensure that we don't have our entities yet.
+    $this->assertTrue(empty($term1), 'Term 1 has not been created yet.');
+    $this->assertTrue(empty($term2), 'Term 2 has not been created yet.');
+    $this->assertTrue(empty($term3), 'Term 3 has not been created yet.');
+    $this->assertTrue(empty($node1), 'Node 1 has not been created yet.');
+    $this->assertTrue(empty($node2), 'Node 2 has not been created yet.');
+    $this->assertTrue(empty($user1), 'User 1 has not been created yet.');
+
+    $this->enableFeature('uuid_default_entities_example');
+
+    $term1 = $this->getEntityByUuid('taxonomy_term', $this->term1_uuid);
+    $term2 = $this->getEntityByUuid('taxonomy_term', $this->term2_uuid);
+    $term3 = $this->getEntityByUuid('taxonomy_term', $this->term3_uuid);
+    $node1 = $this->getEntityByUuid('node', $this->node1_uuid);
+    $node2 = $this->getEntityByUuid('node', $this->node2_uuid);
+    $user1 = $this->getEntityByUuid('user', $this->user1_uuid);
+
+    // Ensure that our entities was created.
+    $this->assertEqual($term1->uuid, $this->term1_uuid, 'Term 1 was created.');
+    $this->assertEqual($term2->uuid, $this->term2_uuid, 'Term 2 was created.');
+    $this->assertEqual($term3->uuid, $this->term3_uuid, 'Term 3 was created.');
+    $this->assertEqual($node1->uuid, $this->node1_uuid, 'Node 1 was created.');
+    $this->assertEqual($node2->uuid, $this->node2_uuid, 'Node 2 was created.');
+    $this->assertEqual($user1->uuid, $this->user1_uuid, 'User 1 was created.');
+
+    // Check the features state.
+    $this->assertFeatureState('uuid_default_entities_example', FEATURES_DEFAULT);
+
+    // New property.
+    $new = 'foo bar';
+    // Change a term.
+    $term1->name = $new;
+    $status = taxonomy_term_save($term1);
+    $this->assertEqual($status, SAVED_UPDATED, 'Updated term 1.');
+    // Change a node.
+    $node1->title = $new;
+    node_save($node1);
+    $this->assertEqual($node1->title, $new, 'Updated node 1.');
+    // Change a user.
+    $user1->name = $new;
+    $updated_user = user_save($user1);
+    $this->assertEqual($user1->name, $updated_user->name, 'Updated user 1.');
+
+    // Check the features state.
+    $this->assertFeatureState('uuid_default_entities_example', FEATURES_OVERRIDDEN);
+
+    // Revert the feature.
+    $this->revertFeature('uuid_default_entities_example');
+
+    // Check the features state.
+    $this->assertFeatureState('uuid_default_entities_example', FEATURES_DEFAULT);
+  }
+}
+
+class UUIDImportEntitiesWithDeploy extends UUIDImportEntitiesTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Import UUID entities, with Deploy',
+      'description' => 'Test importing UUID entities with Features and Deploy.',
+      'group' => 'UUID',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('taxonomy', 'uuid', 'entity', 'features', 'deploy', 'deploy_example');
+  }
+}
+
+class UUIDImportEntitiesWithoutDeploy extends UUIDImportEntitiesTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Import UUID entities, without Deploy',
+      'description' => 'Test importing UUID entities with Features only.',
+      'group' => 'UUID',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('taxonomy', 'uuid', 'entity', 'features');
+  }
+}

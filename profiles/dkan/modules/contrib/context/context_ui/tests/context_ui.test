@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * Functional Test for Context UI
+ *
+ * TODO Test if menu and blocks respond.
+ */
+
+class ContextUiTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Context UI functional tests',
+      'description' => 'Create and save a context.',
+      'group' => 'Context UI',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('ctools', 'context', 'context_ui', 'blog', 'menu');
+
+    // Create and login user
+    $admin_user = $this->drupalCreateUser(array(
+      'access administration pages',
+      'administer site configuration',
+      'access content',
+      'create blog content'
+    ));
+    $this->drupalLogin($admin_user);
+  }
+
+  function testCreateContext() {
+    // Create context
+    $context = new stdClass();
+    $context->name = strtolower($this->randomName(15));
+    $context->description = strtolower($this->randomName(15));
+    $context->tag = strtolower($this->randomName(15));
+    $this->context = $context;
+
+    $this->drupalGet('admin');
+    $this->drupalGet('admin/structure');
+    $this->drupalGet('admin/structure/context');
+
+    $edit = array(
+      'name' => $context->name,
+      'description' => $context->description,
+      'tag' => $context->tag,
+      'conditions[plugins][node][values][blog]' => 'blog',
+      'reactions[plugins][menu]' => 'node/add/blog',
+    );
+    $this->drupalPost('admin/structure/context/add', $edit, 'Save');
+    $this->assertText($context->name . ' has been created.', 'Context saved.');
+
+    $edit = array();
+    // export_ui confirm delete
+    $this->drupalPost('admin/structure/context/list/' . $context->name . '/edit', $edit, 'Delete');
+    $this->assertTrue(strpos($this->getUrl(), 'admin/structure/context/list/' . $context->name . '/delete') !== FALSE, 'Context deletion confirmation page displayed');
+  }
+}

@@ -1,0 +1,221 @@
+features DRUPAL-7--1-0
+----------------------
+
+#1647894 by tim.plunkett: Fixed Features with page manager components are perpetually overridden.
+#1635662 by donquixote: Fixed Undefined index: feature in features_get_info().
+Add missing taxonomy test file
+
+features DRUPAL-7--1-0-RC3
+--------------------------
+
+#1429262 by joelcollinsdc, neochief: Added Allow component level reverting (without needing to go to interactive mode) in drush fr.
+#1272586 by alexweber | stevector: Added Increment or directly set version number directly with drush features-update.
+#1532422 by nadavoid: Fixed If the custom sort order of 'format_handlers()' is not maintained, some things can break.
+#1564864 by jeffschuler: Fixed Mixup in hook_features_export_render() example.
+#1567506 by Dave Reid: Fixed Unable to properly export or provide a locked field in a feature.
+#1597792 by jessehs: Make sure all comments in created features end period.
+#1599188 by jessehs: Move inline comment for empty feature .module file to @file doc block.
+#1587200 by ericduran: Fixed Test module should be hidden.
+#1574716 by bojanz: Fixed Avoid unnecessary cache rebuilds when creating and updating fields.
+#1530386 by exratione, bojanz, kotnik: Avoid unnecessary cache rebuilds and improve installation performance.
+#1489480 by Xen | dema502: Fixed drush:features-export Ambiguous component.
+#1159390 by hefox | brad.bulger: Fixed incorrect revert hook name in features.api.php?.
+#1493274 by hefox, neochief: Fixed Feature installed before Strongarm blocks all other variable imports.
+#1537838 by hefox, JvE | Gisle: Fixed Upgrading to 7.x-1.0-rc2 (from rc1) breaks taxonomy creation.
+#1447656 by bcmiller0, smk-ka: Added drush features-revert-all performance improvement.
+
+features DRUPAL-7--1-0-RC2
+--------------------------
+
+#1529202 by mpotter, mstrelan: Fixed Unable to revert overrides because clear-block is now clearfix.
+#1505044 by neochief: Fixed features_var_export() adds additional prefix to multiline strings contained in objects.
+#1510710 by neochief: Fixed Incorrect key in features_include_defaults() with reset parameters.
+#1402262 by hefox: Fixed features.api.php mentions 'features_source()' key, but the actual key in use is 'feature_source()'.
+#939254 by hefox, fago: Added Return the () to hook_features_pipe_component_alter().
+#894572 by pearcec, eporama, Grayside, andrewlevine: Added Features with only module dependencies not recognized as features.
+#1231118 by tim.plunkett, jhedstrom, nielsonm, arnested: Fixed Generate code according to coding standards.
+#1493274 by neochief, hefox: Fixed Feature installed before Strongarm blocks all other variable imports.
+#1287594 by tim.plunkett: Don't wrap .info file values in double quotes.
+#1437388 by hefox: Fixed check if file exists before including it in features_include().
+#1496322 by hefox, dajjen: Added Make package autocomplete search string case insensitive .
+#1279938 by derhasi, helmo: Added Features support for languages.
+#1305048 by mongolito404: Fixed Undefined index error in user_permission_features_export_render().
+#1063204 by careernerd, davidwhthomas, hefox | mrfree: Fixed Adding a new permission causes integrity constraint violation.
+#1432264 by ezra-g, tim.plunkett | samhassell: Fixed Changes to hook_views_api() cause Views plugins to be undefined.
+Revert "Issue #1432264 by ezra-g, tim.plunkett | samhassell: Fixed Changes to hook_views_api() cause Views plugins to be undefined."
+
+features DRUPAL-7--1-0-RC1
+--------------------------
+
+#1331278 by Xen, tim.plunkett, joelcollinsdc, mpotter: Drush features-add and features-export are confusingly simi
+#1475780 by rggoode: Added Prevent starting features machine name starting with numeric.
+#1402826 by mpotter: Added Make 'Checking...' a link.
+#1478808 by mpotter: Added Why is Description field required?.
+#1279938 by derhasi, helmo: Added Features support for languages.
+#1009900 by DamienMcKenna: Check if a variable is empty before comparing it to a known value.
+#1426452 by mpotter, rypit: Added Conflicts with disabled modules should be colored differently.
+#984472 by hefox, goron, Sarenc, mpotter: Added hook_node_info_alter(), and alter_type(), alter_hook() to features
+#1478808 by mpotter: Added Why is Description field required?.
+#1479068 by mpotter: Added Allow exportable code written to different files.
+#1058778 by dajjen | nymo: Added ability to edit package of feature when creating/editing features via the UI.
+#1429408 by joelcollinsdc: Fixed Diff page does not show component titles.
+#1264826 by Volx, hefox | mortendk: Fixed revert views calls views delete() & throws a fatal error .
+#1432264 by ezra-g, tim.plunkett | samhassell: Fixed Changes to hook_views_api() cause Views plugins to be undefin
+#1479068 by mpotter: Added Allow exportable code written to different files.
+#1437370 by hefox: Fixed . is being mapped to ord(',') instead of ord('.') in features_dom_encode_options()/featur
+Added a README section about security concerns
+Updated some docs, specifically the maintainers
+#1231118 by jhedstrom: Generate code according to coding standards when using include_once.
+#1305194 by hefox,Xen,mpotter: Provide support for exporting of altering of components
+#1305194 by smk-ka,jief: Taxonomy reference field export recursion
+#1390848: Fixing a slight bug from the previous patch that lead to wrong components being shown as being able to b
+#1390848 by hefox: Centralize the call to hook_features_api()
+Updated the features_test Feature
+#1399440 by hefox: Fixed Feature tests failure on image against drupal 7.10.
+
+features DRUPAL-7--1-0-BETA6
+----------------------------
+
+#1382156 by tim.plunkett | davidn: Fixed PHP Fatal error: Call to undefined function ctools_features_declare_funct
+
+features DRUPAL-7--1-0-BETA5
+----------------------------
+
+#1363284 by tim.plunkett, mpotter: Fixed Drush --force option is declared wrong.
+#1079440 by mpotter, mrf, tobby, acrollet, donquixote: Fixed Module name check prevents panels custom content pane
+#1152908 by greg.1.anderson, msonnabaum, smk-ka, rbayliss: Fixed Remove calls to drush_backend_invoke()
+#813760 by galooph, tim.plunkett, Volx, raphaelhuefner | greg.harvey: Fixed CTools Page manager pages do not rever
+#904558 by hefox, voxpelli, Raines37 | loze: Fixed Multiple features and strongarm conflicts.
+#1170846 by Ravi.J: Fixed Disabling a feature does not disable dependent modules.
+#1313744 by TravisCarden: Fixed Sort 'Edit components' SELECT alphabetically.
+Made the Features Test not hidden, b/c if it is hidden it wont enable/install the content type
+#1300780 by Dave Reid: Added Provide an actual hook_features_pipe_alter() for general altering.
+#1178884 by YaderV | altfuns: Fixed Wrong  word (with) in a description text.
+#893360 by Xen, Raines37, Grayside, franz: Added Drush update/recreate (add components).
+#913890 by Grayside, joshuajabbour, tim.plunkett | webchick: Added Generate .info file properties in order consist
+#1288028 by DamienMcKenna: Fixed D7 branch refers to D6 CCK hook.
+#1187232 by Ravi.J, rickvug: Fixed Hidden and disabled features should not be displayed in UI and should not be co
+
+features DRUPAL-7--1-0-BETA4
+----------------------------
+
+Fixing naming conflict b/w hook_enable and hook_disable
+#1187858 by smk-ka, febbraro: Fixed Node permissions fail to import.
+#1191558 by clemens.tolboom, Raines37: Allow for drush --destination while exporting a feature.
+#1188066 by smk-ka, febbraro: Fixed Excessive rebuilding if installing more than one feature at a time.
+#1260040 by tim.plunkett | hefox: Fixed features.css does not follow coding standards.
+#1195432: Fixing admin screen regression
+#1195432 by smk-ka: Use dependency information when importing
+#1186874 by dixon_: Better support for switching field storage types
+#1175684 by sagannotcarl, rocket.nova: Add legend/help to features-diff
+#1210604 by catch: drush features-revert-all does not respect --force argument
+#954062 by irakli, hefox: Incorrect Component Labels in the Components Dropdown
+#1186694 by tunic, fearlsgroove: Features orders exportes recursivally; fields allowed_values array alphabetized,
+#935152 by adamdicarlo, hadsie, hefox: Menu Items missing from Menu Links due to access callback user_is_anonymous
+#1258072 by hefox: Add suggestion for vocabulary when exporting a taxonomy field
+#1279212: add Features Breadcrumb
+Fixed the display of conflicting features. It was borked big time.
+#1219932 bu acrollet, t-dub, Nico Heulsen: Problems when dependencies have version numbers in them
+#1055460 by nedjo, hefox, fabsor, others...: Disabling a feature does not allow user to delete content type
+#994602 by franz: Misleading example on hook_features_export_alter() documentation
+#1264462 by Dave Reid, skwashd: template_preprocess_features_admin_components() calls D6-style theme() arguments
+#1131062: scripts/stylesheets manually added to info file have the path broken
+#946068 by rvilar, hefox: The machine name isn't updating correctly
+#1079440 by mrf, DamienMcKenna, dereine: Allow export of Custom Content Panes
+#1231118 by arnested, tim.plunkett: Coder fixes
+
+features DRUPAL-7--1-0-BETA3
+----------------------------
+
+#1177582 by paulsheldrake: Missing ctools plugin include
+#1191670: Undefined FEATURES_COMPONENT_NOT_FOUND in features.drush.inc
+#1157048 by dixon_: Features appear overridden
+#1124422 by anantagati: Wrong links in README
+#932104 by aaronbauman, hefox, etc.: Improve help for feature export drush command
+#1094940 by webflo: Features unit test are broken
+#1134202: Overridden views not reverting
+#1097560 by nedjo: Features incompatible with latest version of views
+
+features DRUPAL-7--1-0-BETA2
+----------------------------
+
+#1111714 by paranojik: _features_restore() does not properly revert components.
+#1070912 by bdragon: features_get_info() hands back original objects, can get corrupted.
+#1073988 by mikewink: File formats should be labeled text formats for consistency.
+removing unnecessary and typo-including check on plugin_api_hook_name
+removed duplicate ctools_plugin_api_get_hook function since new ctools is now released and it's unnecessary
+#1097560 by floretan, quartsize, merlinofchaos: Features incompatible with the latest version of views.
+Fixing unit test for permissions that broke as a result of #1063204
+Fixed the sanitize as it was incorrectly misidentifying a one item associative array as non-associative.
+Merge branch '7.x-1.x' of git.drupal.org:project/features into 7.x-1.x
+#1063204 by mrfree, careernerd, hadsie, irakli: Adding a new user role causes integrity constraing violation.
+Fixed E_STRICT warnings
+Merge branch '7.x-1.x' of git.drupal.org:project/features into 7.x-1.x
+#973836 by fmitchell, Grayside: Add @file to the generated files
+#1078972 by bdragon: Quoting problems on key side.
+Removing translation directories
+Stripping CVS keywords
+
+features DRUPAL-7--1-0-BETA1
+----------------------------
+
+#993314 by das-peter: Notice 'undefined index' in features_export_build_form_populate.
+adding warning @TODO to note an edge case that is not covered by existing code when checking if .module includes feature
+#1053336 by tema: Translatables are not exported for fields.
+#970788 by mori, das_peter, steinmb: Notice: Undefined index: api in _ctools_features_get_info() // error from featu
+#1062526 by fago, dasjo: components appear always overriden if the default hook makes use of hook-group.
+#954536 by klausi: Unsetting ids on vocabulary object breaks Entity Cache.
+#1014066 by brenk28: Improper use of t().
+#994122 by hadsie: Feature conflicts report displays conflicting features as Array instead of proper feature name.
+#953236 by isolesen, grobot : Make the Manage Features page more descriptive when there are no features.
+cleaning up previous somewhat extraneous commit and making first attempt towards fixing: #986118. Full fix of that one s
+#944584 by  Rok Žlender, pcambra: Features diff in drush is broken.
+#1056422 by EclipseGc: Attribute Classes are Arrays in D7.
+Follow up to previous commit, actually ordering array correctly.
+Fix tab rendering on admin/build/features.
+Updated the filter test
+Utilize filter format machine names which core now provides.
+
+features DRUPAL-7--1-0-ALPHA3
+-----------------------------
+
+Update filter component to make use of machine names if available.
+PHP declaration.
+Update features_test field export to match changes in core.
+Several test fixes.
+Use features_get_default() rather than module_invoke().
+Remove old schema check.
+#925628 by thill_: Fix example version strings.
+#925332 by joshuajabbour: Cleaner export render for ctools components.
+
+features DRUPAL-7--1-0-ALPHA2
+-----------------------------
+
+Update features.api.php.
+#919500 by fago: Enable generic feature implementations. Introduces 'base' key in hook_features_api().
+#912132 by das-peter, fago: Implement hook_hook_info() entry for 'features_api'.
+Properly support 'hidden' key in D7.
+Fix function signature of features_export_prepare().
+Fix for menu links export options.
+Exclude bundles info from field config.
+Exclude 'module' key from image style export.
+Prevent features from going haywire when attempting to detect conflict with components it doesn't know about.
+Sorting field definitions before exporting.
+Removing non-class files from files[] in fino.
+Revert addition of files array to features.
+#912018 by das-peter: Fix for duplicate files[] entries.
+Remove unneeded context features hooks.
+Fix features_get_orphans().
+#908390: Generate files[] array for features.
+
+features DRUPAL-7--1-0-ALPHA1
+-----------------------------
+
+D7: Update image styles component.
+D7: Update hook_permission().
+D7: Remove _features_get_roles().
+D7: user_role and user_permission component upgrades.
+D7: Update list of component includes.
+D7: Filter format API updates.
+D7: Fix for diff integration.
+D7 fixes for menu_custom and menu_links components.

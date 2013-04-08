@@ -1,0 +1,18 @@
+name = External RDF Vocabulary Importer
+description = Allows to import external Vocabularies in order to map them to Drupal data structure.
+dependencies[] = rdfx
+package = RDF
+version = VERSION
+core = 7.x
+files[] = evoc.module
+files[] = evoc.pages.inc
+files[] = evoc.load_vocab.inc
+files[] = evoc.install
+files[] = evoc.test
+
+; Information added by drupal.org packaging script on 2012-10-27
+version = "7.x-2.0-alpha4+7-dev"
+core = "7.x"
+project = "rdfx"
+datestamp = "1351301254"
+

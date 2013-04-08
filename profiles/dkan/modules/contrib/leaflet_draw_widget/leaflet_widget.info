@@ -1,0 +1,12 @@
+name = Leaflet Widget for Geofield
+description = "A Geofield widget that provides a Leaflet map and geometry creation tools."
+core = 7.x
+dependencies[] = geofield (1.x)
+dependencies[] = libraries (2.x)
+
+; Information added by drupal.org packaging script on 2012-11-07
+version = "7.x-1.0-beta2"
+core = "7.x"
+project = "leaflet_widget"
+datestamp = "1352313404"
+

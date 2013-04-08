@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * @file
+ * Tests Evoc functionality.
+ */
+
+class VocabularyImportTestCase extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Vocab import',
+      'description' => 'Test vocabulary import.',
+      'group' => 'Evoc',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('rdf', 'rdfx', 'evoc', 'evoc_test');
+    $this->prefix = array();
+    $this->vocab_uri = array();
+  }
+
+  /**
+   * Functional test for vocabulary import.
+   *
+   * NOTE: This test requires having evoc_test manually enabled. Even when it is
+   * enabled in setUp, the parser fails to intialize. It may be that the headers
+   * aren't sent properly when accessed within site.
+   */
+  function testImport() {
+    $format = 'rdf_xml';
+    $this->importVocabulary($format);
+    $namespaces = array(
+      $this->prefix[$format] => $this->vocab_uri[$format],
+      'xml' => 'http://www.w3.org/XML/1998/namespace',
+      'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+      'rdfs' => 'http://www.w3.org/2000/01/rdf-schema#',
+      'owl' => 'http://www.w3.org/2002/07/owl#',
+      'vs' => 'http://www.w3.org/2003/06/sw-vocab-status/ns#',
+      'foaf' => 'http://xmlns.com/foaf/0.1/',
+      'dc' => 'http://purl.org/dc/elements/1.1/',
+    );
+    // Test that namespaces have been imported and placed in correct
+    // vocabulary graph.
+    foreach ($namespaces as $prefix => $namespace) {
+      $records = db_query("SELECT uri, prefix, gid FROM {rdfx_namespaces} WHERE uri='$namespace' AND prefix='$prefix'")->fetchAll();
+      if (count($records) == 1) {
+        $record = $records[0];
+        $this->assertEqual($record->gid, 1, t("Vocabulary $record->prefix is imported as part of correct vocabulary graph."));
+      }
+      else {
+        $this->assert(FALSE, t("Vocabulary $record->prefix is imported ."));
+      }
+    }
+
+    // Test that user defined prefix was used, per issue #925520.
+    $records = db_query("SELECT uri, prefix, gid FROM {rdfx_namespaces} WHERE prefix='doap'")->fetchAll();
+    $this->assert(count($records) == 0, t('The user defined prefix was used.'));
+  }
+
+  /*
+   * Test that vocabulary is updated.
+   */
+  function testUpdate() {
+  }
+  
+  protected function importVocabulary($format) {
+    $absolute_url = $this->getAbsoluteUrl("evoc_test/vocabulary_$format");
+    $this->vocab_uri[$format] = "$absolute_url#";
+    $this->prefix[$format] = "test_$format";
+    $this->edit = array(
+      'prefix' => $this->prefix[$format],
+      'ns_uri' => $this->vocab_uri[$format] ,
+    );
+    $user = $this->drupalCreateUser(array('administer content types'));
+    $this->drupalLogin($user);
+    $this->drupalPost('evoc/import', $this->edit, t('Submit'));
+  }
+}

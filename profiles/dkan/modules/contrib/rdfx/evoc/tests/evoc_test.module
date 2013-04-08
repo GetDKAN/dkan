@@ -1,0 +1,102 @@
+<?php
+
+/**
+ * @file
+ * Test vocabulary import.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function evoc_test_menu() {
+  $items['evoc_test/vocabulary_rdf_xml'] = array(
+    'title'           => 'RDF/XML vocabulary',
+    'description'     => 'Fake RDF/XML vocabulary for import testing.',
+    'page callback'   => '_vocabulary_rdf_xml',
+    'access callback' => TRUE,
+  );
+  $items['evoc_test/vocabulary_n3'] = array(
+    'title'           => 'N3 vocabulary',
+    'description'     => 'Fake N3 vocabulary for import testing.',
+    'page callback'   => '_vocabulary_n3',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+function _vocabulary_n3() {
+  global $base_url;
+  $vocab_uri = $base_url . '/evoc_test/vocabulary_n3#';
+  // We fake an n3 vocabulary to feed into the importer.
+  print '@prefix : <' . $vocab_uri . '> .
+     @prefix dc: <http://purl.org/dc/elements/1.1/> .
+     @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+     @prefix owl: <http://www.w3.org/2002/07/owl#> .
+     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+     @prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+    
+    :     a owl:Ontology;
+         dc:description "El vocabulario Descripti\u00F3n of a Project (DOAP, Descripci\u00F3n de un Proyecto), descrito usando RDF Schema de W3C y Web Ontology Language."@es,
+                "The Description of a Project (DOAP) vocabulary, described using W3C RDF Schema and the Web Ontology Language.";
+         dc:title "Description of a Project (DOAP) vocabulary" .
+    
+    :Project     a rdfs:Class;
+         rdfs:isDefinedBy :;
+         rdfs:label "Project"@en,
+                "Proyecto"@es;
+         rdfs:subClassOf foaf:Project,
+                <http://xmlns.com/wordnet/1.6/Project> .
+    
+    :homepage     a rdf:Property,
+                owl:InverseFunctionalProperty;
+         rdfs:comment "El URL de la p\u00E1gina de un proyecto, asociada con exactamente un proyecto."@es,
+                "URL of a project\'s homepage, associated with exactly one project."@en;
+         rdfs:domain <http://usefulinc.com/ns/doap#Project>;
+         rdfs:isDefinedBy :;
+         rdfs:label "homepage"@en,
+                "p\u00E1gina web"@es;
+         rdfs:subPropertyOf foaf:homepage .';
+  return;
+}
+/**
+ * Menu callback ( see evoc_test_menu() ).
+ */
+function _vocabulary_rdf_xml() {
+  global $base_url;
+  $vocab_uri = $base_url . '/evoc_test/vocabulary_rdf_xml#';
+  // We fake an RDF/XML vocabulary to feed into the importer.
+  drupal_add_http_header('Content-Type', 'application/rdf+xml; charset=utf-8');
+  print '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:vs="http://www.w3.org/2003/06/sw-vocab-status/ns#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:doap="' . $vocab_uri . '"
+    >
+      <owl:Ontology rdf:about="' . $vocab_uri . '">
+        <dc:title>Description of a Project (DOAP) vocabulary</dc:title>
+	<dc:description>The Description of a Project (DOAP) vocabulary, described using W3C RDF Schema and the Web Ontology Language.</dc:description>
+        <dc:description xml:lang="es">El vocabulario Descripti&#243;n of a Project (DOAP, Descripci&#243;n de un Proyecto), descrito usando RDF Schema de W3C y Web Ontology Language.</dc:description>
+      </owl:Ontology>
+      <rdfs:Class rdf:about="' . $vocab_uri . 'Project">
+	<rdfs:isDefinedBy rdf:resource="' . $vocab_uri . '" />
+	<rdfs:label xml:lang="en">Project</rdfs:label>
+	<rdfs:label xml:lang="es">Proyecto</rdfs:label>
+	<rdfs:subClassOf rdf:resource="http://xmlns.com/wordnet/1.6/Project" />
+	<rdfs:subClassOf rdf:resource="http://xmlns.com/foaf/0.1/Project" />
+      </rdfs:Class>
+
+      <rdf:Property rdf:about="' . $vocab_uri . 'homepage">
+	<rdfs:isDefinedBy rdf:resource="' . $vocab_uri . '" />
+	<rdfs:label xml:lang="en">homepage</rdfs:label>
+	<rdfs:label xml:lang="es">p&#225;gina web</rdfs:label>
+	<rdfs:comment xml:lang="en">URL of a project\'s homepage, associated with exactly one project.</rdfs:comment>
+	<rdfs:comment xml:lang="es">El URL de la p&#225;gina de un proyecto, asociada con exactamente un proyecto.</rdfs:comment>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty" />
+	<rdfs:domain rdf:resource="http://usefulinc.com/ns/doap#Project" />
+	<rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/homepage" />
+      </rdf:Property>
+    </rdf:RDF>';
+return;
+}

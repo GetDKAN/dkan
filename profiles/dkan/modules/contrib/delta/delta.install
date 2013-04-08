@@ -1,0 +1,231 @@
+<?php
+
+/**
+ * @file
+ * Contains install, update, and uninstall functions for Skinr.
+ */
+
+/**
+ * Implementats hook_schema().
+ */
+function delta_schema() {
+  $schema['delta'] = array(
+    'description' => t('Stores theme-settings templates that allow overriding the theme settings used based on various contexts.'),
+    'export' => array(
+      'key' => 'machine_name',
+      'key name' => 'name',
+      'primary key' => 'machine_name',
+      'identifier' => 'delta',
+      'default hook' => 'delta_default_templates',
+      'status' => 'delta_status',
+      'api' => array(
+        'owner' => 'delta',
+        'api' => 'delta',
+        'minimum_version' => 3,
+        'current_version' => 3,
+      ),
+      'export callback' => 'delta_export',
+    ),
+    'fields' => array(
+      'machine_name' => array(
+        'description' => 'The system name of this theme settings template.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'The friendly name of this theme settings template.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+      'description' => array(
+        'description' => 'A brief description of this theme settings template.',
+        'type' => 'text',
+        'size' => 'medium',
+        'not null' => TRUE,
+      ),
+      'theme' => array(
+        'description' => 'The theme for which this theme settings template is relevant.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+      'mode' => array(
+        'description' => 'The mode that this template operrates in.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ),
+      'parent' => array(
+        'description' => 'The system name of the parent of this theme settings template.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ),
+      'settings' => array(
+        'description' => 'Serialized data which is a copy of the theme settings array stored in the system table based on these overrides',
+        'type' => 'blob',
+        'size' => 'big',
+        'not null' => FALSE,
+        'serialize' => TRUE,
+      ),
+    ),
+    'primary key' => array('machine_name'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Rename the delta_theme_settings table to delta only and adjust it to be compatible with Delta 3.x.
+ */
+function delta_update_7301(&$sandbox) { 
+  if (!isset($sandbox['progress'])) {
+    $sandbox['#finished'] = 0;
+    $sandbox['progress'] = 0;    
+    $sandbox['max'] = db_select('delta_theme_settings', 'dt')->countQuery()->execute()->fetchField();
+
+    foreach (array('tid', 'theme', 'system_name') as $item) {
+      db_drop_index('delta_theme_settings', $item);
+    }
+    
+    db_drop_field('delta_theme_settings', 'tid');
+    
+    db_change_field('delta_theme_settings', 'data', 'settings', array(
+  	'description' => 'Serialized data which is a copy of the theme settings array stored in the system table based on these overrides',
+      'type' => 'blob',
+      'size' => 'big',
+      'not null' => FALSE,
+      'serialize' => TRUE,
+    ));
+    
+    db_change_field('delta_theme_settings', 'system_name', 'machine_name', array(
+      'description' => 'The system name of this theme settings template.',
+      'type' => 'varchar',
+      'length' => 32,
+      'not null' => TRUE,
+    ), array(
+      'primary key' => array('machine_name'),
+    ));
+    
+    db_change_field('delta_theme_settings', 'theme', 'theme', array(
+      'description' => 'The theme for which this theme settings template is relevant.',
+      'type' => 'varchar',
+      'length' => 128,
+      'not null' => TRUE,
+    ));
+    
+    db_change_field('delta_theme_settings', 'name', 'name', array(
+      'description' => 'The friendly name of this theme settings template.',
+      'type' => 'varchar',
+      'length' => 128,
+      'not null' => TRUE,
+    ));
+    
+    db_add_field('delta_theme_settings', 'mode', array(
+      'description' => 'The mode that this template operrates in.',
+      'type' => 'varchar',
+      'length' => 32,
+      'not null' => TRUE,
+      'initial' => 'override',
+    ));
+
+    db_rename_table('delta_theme_settings', 'delta');
+  }
+
+  $templates = db_select('delta', 'd')
+    ->fields('d', array('machine_name'))
+    ->orderBy('machine_name')
+    ->range($sandbox['progress'], 10)    
+    ->execute()
+    ->fetchCol();
+  
+  foreach ($templates as $name) {
+    $key = 'theme_delta_' . $name . '_settings';
+    $settings = variable_get($key, array());
+    
+    variable_del($key);
+        
+    unset($settings['delta_template']);
+    
+    db_update('delta')
+      ->fields(array('settings' => serialize($settings)))
+      ->condition('machine_name', $name)
+      ->execute();
+
+    $sandbox['progress']++;
+  }
+
+  $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress'] / $sandbox['max']);
+  
+  if ($sandbox['#finished'] >= 1) {
+    return t("The Delta module's database table has been updated successfully and can now be used with Delta 3.x.");
+  }  
+}
+
+/**
+ * Add a description field to the Delta database table.
+ */
+function delta_update_7302(&$sandbox) {
+  db_add_field('delta', 'description', array(
+    'description' => 'A brief description of this theme settings template.',
+    'type' => 'text',
+    'size' => 'medium',
+    'not null' => TRUE,
+    'initial' => '',
+  ));
+
+  return t("Successfully added a description field to the Delta database table.");
+}
+
+/**
+ * Add a parent field to the Delta database table.
+ */
+function delta_update_7303(&$sandbox) {
+  db_add_field('delta', 'parent', array(
+    'description' => 'The system name of the parent of this theme settings template.',
+    'type' => 'varchar',
+    'length' => 32,
+    'not null' => TRUE,
+    'initial' => '',
+  ));
+
+  return t("Successfully added a parent field to the Delta database table.");
+}
+
+/**
+ * Add keys to the settings arrays.
+ */
+function delta_update_7304(&$sandbox) {
+  if (!isset($sandbox['progress'])) {
+    $sandbox['#finished'] = 0;
+    $sandbox['progress'] = 0;    
+    $sandbox['max'] = db_select('delta', 'dt')->countQuery()->execute()->fetchField();
+  }
+  
+  $templates = db_select('delta', 'd')
+    ->fields('d', array('machine_name', 'settings', 'theme'))
+    ->orderBy('machine_name')
+    ->range($sandbox['progress'], 10)    
+    ->execute();
+  
+  foreach ($templates as $item) {
+    $settings = array('theme_' . $item->theme . '_settings' => unserialize($item->settings));
+
+    db_update('delta')
+      ->fields(array('settings' => serialize($settings)))
+      ->condition('machine_name', $item->machine_name)
+      ->execute();
+
+    $sandbox['progress']++;
+  }
+
+  $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress'] / $sandbox['max']);
+  
+  if ($sandbox['#finished'] >= 1) {
+    cache_clear_all();
+    
+    return t("The Delta template settings have been successfully updated.");
+  }
+}

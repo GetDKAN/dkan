@@ -1,0 +1,847 @@
+<?php
+
+/**
+ *  Edit locations.
+ */
+define('BOXES_EDIT_IN_PLACE', 1);
+define('BOXES_EDIT_SEPARATE_PAGE', 2);
+
+/**
+ * Implements hook_menu().
+ */
+function boxes_menu() {
+  $items = array();
+  ctools_include('plugins');
+  $plugins = ctools_get_plugins('boxes', 'plugins');
+  foreach ($plugins as $key => $info) {
+    if (isset($info['title'])) {
+      $items['admin/structure/block/box-add/' . $key] = array(
+        'title' => 'Add ' . strtolower($info['title']),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('boxes_add_form', 4),
+        'access arguments' => array('administer boxes'),
+        'type' => MENU_LOCAL_ACTION,
+        'file' => 'boxes.admin.inc',
+      );
+    }
+  }
+  $items['admin/structure/block/manage/boxes/%boxes_box/delete'] = array(
+    'title' => 'Delete box',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('boxes_delete_form', 5),
+    'access arguments' => array('administer boxes'),
+    'type' => MENU_CALLBACK,
+    'file' => 'boxes.admin.inc',
+  );
+  $items['admin/config/user-interface/boxes'] = array(
+    'title' => 'Boxes',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('boxes_settings'),
+    'access arguments' => array('administer boxes'),
+    'file' => 'boxes.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Access check for whether current user is able to edit boxes.
+ */
+function boxes_access_edit() {
+  return user_access('administer boxes') || user_access('edit boxes');
+}
+
+/**
+ * Access check for whether current user should be able to administer boxes.
+ */
+function boxes_access_admin() {
+  return user_access('administer boxes') || (module_exists('spaces') && spaces_access_admin());
+}
+
+/**
+ * Implements hook_permission().
+ */
+function boxes_permission() {
+  return array(
+    'edit boxes' => array(
+      'title' => t('Edit boxes'),
+      'description' => t('Edit existing boxes'),
+    ),
+    'administer boxes' => array(
+      'title' => t('Administer boxes'),
+      'description' => t('Administer boxes'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function boxes_theme($existing, $type, $theme, $path) {
+  return array(
+    'boxes_box' => array(
+      'variables' => array('block' => NULL),
+      'path' => drupal_get_path('module', 'boxes'),
+      'file' => 'boxes.admin.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function boxes_block_info() {
+  ctools_include('plugins');
+  $plugins = ctools_get_plugins('boxes', 'plugins');
+
+  $boxes = boxes_box_load();
+  $blocks = array();
+  foreach ($boxes as $box) {
+    $blocks[$box->delta]['info'] = $box->description;
+    // Let context group the instances together
+    $blocks[$box->delta]['context_group'] = t('Boxes for @plugin', array('@plugin' => $plugins[$box->plugin_key]['title']));
+    // Let each box determine how it is cached
+    $blocks[$box->delta]['cache'] = $box->cache_setting();
+  }
+
+  // 'Add' blocks for editing a page inline
+  foreach ($plugins as $key => $info) {
+    if (isset($info['title'])) {
+      $blocks["boxes_add__$key"]['info'] = t('Add custom @title', array('@title' => strtolower($info['title'])));
+      $blocks["boxes_add__$key"]['cache'] = DRUPAL_CACHE_CUSTOM;
+    }
+  }
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function boxes_block_configure($delta) {
+  if ($delta && strpos($delta, 'boxes_add__') !== 0) {
+    if ($box = boxes_box_load($delta)) {
+      $form_state = array('box' => $box);
+      if ($box->options_form($form_state)) {
+        $form = boxes_box_form(array(), $form_state);
+        unset($form['submit']);
+        return $form;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function boxes_block_save($delta, $edit) {
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function boxes_block_view($delta) {
+  // Add boxes JS.
+  boxes_add_js();
+
+  ctools_include('export');
+
+  // If the 'add' box was requested, replace the delta with a unique delta.
+  if (strpos($delta, 'boxes_add__') === 0) {
+    $plugin_key = str_replace('boxes_add__', '', $delta);
+    $identifier = (module_exists('spaces') && $space = spaces_get_space()) ? "{$space->type}-{$space->id}" : 'box';
+    $hash = boxes_create_hash($identifier);
+    $delta = $identifier . "-" . $hash;
+    $box = boxes_factory($plugin_key, array('delta' => $delta));
+    $form_state = array(
+      'box' => $box,
+      'plugin_key' => $plugin_key,
+      'custom_action' => TRUE,
+      'no_redirect' => TRUE,
+    );
+
+    // We need to explicitly set the form input as empty to avoid the form being
+    // processed. The actual form submission is handled in the footer.
+    $form_state['input'] = array();
+    $form_state['init_form'] = TRUE;
+    $form = drupal_build_form('boxes_box_form', $form_state);
+
+    $block['delta'] = $delta;
+    $block['content'] = '';
+    $block['editing'] = $form;
+    $block['content'] = theme('boxes_box', array('block' => $block));
+    $plugin = ctools_get_plugins('boxes', 'plugins', $plugin_key);
+    $block['subject'] = t('Add custom @title', array('@title' => strtolower($plugin['title'])));
+    $block['boxes_plugin'] = $box->plugin_key;
+    return $block;
+  }
+  elseif ($box = boxes_box_load($delta)) {
+    // Generate content and provide an editing form if user has proper
+    // permissions.
+    $block = $box->render();
+    if (boxes_access_edit()) {
+      if (variable_get('boxes_edit_location', BOXES_EDIT_IN_PLACE) == BOXES_EDIT_IN_PLACE) {
+        $edit_link = array(
+          'title' => t('Edit Box'),
+          'href' => $_GET['q'],
+          'query' => array(
+            'plugin_key' => $box->plugin_key,
+            'boxes_delta' => $block['delta'],
+          ),
+          'attributes' => array('class' => array('use-ajax')),
+        );
+      }
+      else {
+        $edit_link = array(
+          'title' => t('Edit Box'),
+          'href' => 'admin/structure/block/manage/boxes/' . $block['delta'] . '/configure',
+          'query' => drupal_get_destination(),
+        );
+
+      }
+      $block['controls'] = theme('links', array(
+        'links' => array(
+          'edit' => $edit_link,
+          'cancel' => array(
+            'title' => t('Cancel'),
+            'href' => $_GET['q'],
+          ),
+        ),
+      ));
+    }
+    // Add additional_classes
+    if (!empty($box->options['additional_classes'])) {
+      $block['additional_classes'] = $box->options['additional_classes'];
+    }
+    $block['content'] = theme('boxes_box', array('block' => $block));
+    $block['boxes_plugin'] = $box->plugin_key;
+    return $block;
+  }
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function boxes_page_alter(&$page) {
+  $page['page_bottom']['boxes'] = array(
+    '#markup' => boxes_footer(),
+  );
+}
+
+/**
+ * Implements hook_footer().
+ *
+ * All ajax requests are targeted back to the current page so that the proper
+ * environment can be re-setup. Here in hook_footer we then detect that this is
+ * an ajax submission and handle it.
+ */
+function boxes_footer() {
+
+   // if ckeditor is used, the base path needs to be set on the original
+   // page load, or ckeditor will set it incorrectly to the root.
+   // while this is loaded on every page it is just a single set of a variable.
+   if (module_exists("wysiwyg") && ($editor = wysiwyg_get_editor('ckeditor'))) {
+     $base = base_path();
+     drupal_add_js("window.CKEDITOR_BASEPATH = '$base{$editor['library path']}/'", 'inline');
+   }
+
+  // Besure the page isn't a 404 or 403.
+  $headers = drupal_get_http_header();
+  foreach ($headers as $header) {
+    if ($header == "HTTP/1.1 404 Not Found" || $header == "HTTP/1.1 403 Forbidden") {
+      return;
+    }
+  }
+  if (!empty($_GET['boxes_delta']) && boxes_access_edit()) {
+    include_once('includes/ajax.inc');
+    $output = array();
+    if (isset($_GET['plugin_key'])) {
+      $plugin_key = $_GET['plugin_key'];
+      $delta = $_GET['boxes_delta'];
+      $box = boxes_box_load($delta);
+      if (!$box && $plugin_key) {
+        $box = boxes_factory($plugin_key, array('delta' => $delta));
+        $form_state = array(
+          'box' => $box,
+          'plugin_key' => $plugin_key,
+          'custom_action' => TRUE,
+          'no_redirect' => TRUE,
+        );
+      }
+      elseif (!$box) {
+        return;
+      }
+      else {
+        $form_state = array(
+          'box' => $box,
+          'no_redirect' => TRUE,
+        );
+      }
+      $form = drupal_build_form('boxes_box_form', $form_state);
+      $errors = form_set_error();
+
+      if (!empty($errors)) { /* validation error */
+        $msg_and_form = theme('status_messages') . drupal_render($form);
+        $output[] = array(
+          'command' => 'showBoxForm', 
+          'method' => 'html', 
+          'selector' => '#block-boxes-' . $delta, 
+          'data' => $msg_and_form, 
+          'settings' => NULL,
+        );
+      }
+      //  if we are comming from a init form and need to continue then lets render the form again
+      else if (empty($form_state['submitted']) || isset($_GET['init_form_continue'])) {
+        $output[] = array(
+          'command' => 'showBoxForm', 
+          'method' => 'html', 
+          'selector' => '#boxes-box-' . $delta, 
+          'data' => drupal_render($form), 
+          'settings' => NULL,
+        );
+      }
+      else {
+        $output[] = array(
+          'selector' => '#block-boxes-' . $delta,
+          'command' => 'getBlock',
+          'method' => 'replaceWith',
+          'delta' => $delta,
+          'url' => url($_GET['q'], array('absolute' => TRUE)),
+        );
+
+      }
+    }
+    else {
+      $block = boxes_block_view($_GET['boxes_delta']);
+      $block['module'] = 'boxes';
+      $block['region'] = 'page_bottom';
+      $block['content'] = array('#markup' => $block['content']);
+      $block = (object) $block;
+
+      $renderable = _block_get_renderable_array(_block_render_blocks(array('boxes_' . $_GET['boxes_delta'] => $block)));
+      $markup = trim(drupal_render($renderable));
+
+      $id = 'block-boxes-' . $_GET['boxes_delta'];
+      // We cannot use drupal_html_id() here because it will increment the id on
+      // pages where a box is already present. So we do its other transforms
+      // manually.
+      $id = strtr(drupal_strtolower($id), array(' ' => '-', '_' => '-', '[' => '-', ']' => ''));
+      $id = preg_replace('/[^A-Za-z0-9\-_]/', '', $id);
+      $id = preg_replace('/\-+/', '-', $id);
+
+
+      $output[] = ajax_command_replace('#' . $id, $markup);
+      if (module_exists('context')) {
+        array_unshift($output, array(
+          'selector' => '#' . $id,
+          'command' => 'preReplaceContextBlock',
+          'id' => $id,
+        ));
+        $output[] = array(
+          'selector' => '#' . $id,
+          'command' => 'postReplaceContextBlock',
+          'id' => $id,
+        );
+      }
+    }
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $output));
+    exit();
+  }
+}
+
+/**
+ * Instantiate box object.
+ *
+ * @param $plugin_key
+ *   The string id of the boxes plugin.
+ * @param $values
+ *   The values to set on the box.
+ *
+ * @return a box object.
+ */
+function boxes_factory($plugin_key, $values = array()) {
+  module_load_include('inc', 'boxes', 'plugins/boxes_box');
+  return boxes_box::factory($plugin_key, $values);
+}
+
+/**
+ * Load a box.
+ */
+function boxes_box_load($delta = NULL) {
+  if (isset($delta)) {
+    $box = boxes_box::load($delta);
+    drupal_alter('boxes_box_load', $box, $delta);
+    return $box;
+  }
+  ctools_include('export');
+  $boxes = array();
+  foreach (ctools_export_load_object('box') as $box) {
+    $box = boxes_box::load($box->delta);
+    if($box) {
+      drupal_alter('boxes_box_load', $box, $delta);
+      $boxes[$box->delta] = $box;
+    }
+  }
+  return $boxes;
+}
+
+/**
+ * Reset boxes load caches.
+ */
+function boxes_box_load_reset() {
+  boxes_box::reset();
+}
+
+/**
+ * Common element of the box form
+ */
+function boxes_box_form($form, &$form_state) {
+  $box = $form_state['box'];
+  if(method_exists($box, "box_form")) {
+    return $box->box_form($form, $form_state);
+  }
+  // For hook_block_save()
+  $form['plugin_key'] = array(
+    '#type' => 'value',
+    '#value' => $box->plugin_key,
+  );
+  $form['delta'] = array(
+    '#type' => 'value',
+    '#value' => $box->delta,
+  );
+  $form['description'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Box description'),
+    '#default_value' => $box->description,
+    '#maxlength' => 64,
+    '#description' => t('A brief description of your box. Used for administrative purposes.'),
+    '#required' => TRUE,
+    '#weight' => -19,
+  );
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Box title'),
+    '#maxlength' => 64,
+    '#description' => t('The rendered title of the box as shown to the user.'),
+    '#default_value' => $box->title,
+    '#weight' => -18,
+  );
+  $form['options'] = $box->options_form($form_state);
+  $form['options']['#weight'] = -17;
+
+  $form['boxes_adv'] = array(
+    '#type'=> 'fieldset',
+    '#collapsed' => TRUE,
+    '#collapsible' => TRUE,
+    '#title' => t('Advanced Settings'),
+  );
+  $form['boxes_adv']['additional_classes'] = array(
+    '#title' => t('Additional CSS classes'),
+    '#description' => t('Optional CSS classes that will be added to the top-level div container for this box. Separate them with spaces.'),
+    '#type' => 'textfield',
+    '#default_value' => isset($box->options['additional_classes']) ? $box->options['additional_classes'] : '',
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#attributes' => array('class' => array('boxes-ajax', 'use-ajax-submit')),
+  );
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#limit_validation_errors' => array(),
+    '#attributes' => array('class' => array('boxes-ajax', 'use-ajax-submit')),
+  );
+
+  if (!empty($form_state['custom_action'])) {
+    $form['#action'] = url($_GET['q'], array('query' => array(
+        'boxes_delta' => $box->delta,
+        'plugin_key' => $form_state['plugin_key'],
+      )));
+  }
+  if (isset($form_state['init_form']) && $box->use_multistep_create()) {
+    unset($form['options']);
+    unset($form['cancel']);
+    $form['submit']['#value'] = t('Continue');
+    if (!empty($form_state['custom_action'])) {
+      $form['#action'] = url($_GET['q'], array(
+        'query' => array(
+          'boxes_delta' => $box->delta,
+          'init_form_continue' => TRUE,
+          'plugin_key' => $form_state['plugin_key'],
+        )
+      ));
+    }
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function boxes_form_alter(&$form, &$form_state, $form_id) {
+  $path = implode('/', array_slice(arg(), 0, 5));
+  if (($form_id != 'block_admin_configure' || $path != 'admin/structure/block/manage/boxes') && 
+      ($form_id != 'boxes_add_form' || arg(3) != 'box-add')) {
+    return;
+  }
+  
+  // Use the Box form submit handler and properly redirect to the correct admin page
+  array_unshift($form['#submit'], 'boxes_box_form_submit');
+  $form['#action'] = '?destination=admin/structure/block';
+  
+  // Cancel behavior is different here
+  unset($form['cancel']['#attributes']);
+  $form['cancel']['#submit'] = array('boxes_block_cancel_submit');
+}
+
+/**
+ * Submit handler for the inline form.
+ */
+function boxes_box_form_submit($form, $form_state) {
+  if ($form_state['clicked_button']['#value'] == t('Cancel')) {
+    return;
+  }
+  $box = boxes_factory($form_state['values']['plugin_key'], $form_state['values']);
+
+  // if options_submit is defined let the box process the submit
+  if (method_exists($box, 'options_submit')) {
+    $box->options_submit($form, $form_state);
+  }
+  // Let's set the additional_classes as an option
+  $box->options['additional_classes'] = isset($form_state['values']['additional_classes']) ?
+    $form_state['values']['additional_classes'] : array();
+    
+  if (module_exists('spaces') && $space = spaces_get_space()) {
+    $space->controllers->boxes->set($box->delta, $box);
+  }
+  else {
+    $box->save();
+  }
+}
+
+/**
+ * Implements hook_form_alter for block_admin_configure().
+ */
+function boxes_form_block_admin_configure_alter(&$form, &$form_state) {
+  if ($form['module']['#value'] == 'boxes') {
+    $box = boxes_box_load($form['delta']['#value']);
+    if (($box->export_type & EXPORT_IN_DATABASE) && ($box->export_type & EXPORT_IN_CODE)) {
+      $form['actions']['revert'] = array(
+        '#type' => 'submit',
+        '#value' => t('Revert'),
+        '#submit' => array('boxes_block_delete_submit'),
+      );
+    }
+    elseif (!($box->export_type & EXPORT_IN_CODE)) {
+      $form['actions']['delete'] = array(
+        '#type' => 'submit',
+        '#value' => t('Delete'),
+        '#submit' => array('boxes_block_delete_submit'),
+      );
+    }
+    
+    // Cancel behavior is different on admin/structure page
+    unset($form['settings']['cancel']);
+    $form['actions']['cancel'] = array(
+      '#type' => 'submit',
+      '#value' => t('Cancel'),
+      '#submit' => array('boxes_block_cancel_submit'),
+    );    
+  }
+}
+
+/**
+ * Submit handler for box cancel from the block/manage/boxes/[MACHINE-NAME]/configure
+ */ 
+function boxes_block_cancel_submit($form, &$form_state) {
+  if (module_exists('overlay')) {
+    overlay_close_dialog();
+  }
+  else {
+    drupal_goto('/admin/structure/block');
+  }
+}
+
+// Submit handler for box deletion.
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function boxes_block_delete_submit($form, &$form_state) {
+  // $form_state['redirect'] will not work here since we are using $form['#action'] with destination
+  $_GET['destination'] = 'admin/structure/block/manage/boxes/' . $form_state['values']['delta'] . '/delete';
+}
+
+/**
+ * Alters the block admin form to add delete links next to boxes blocks.
+ */
+function boxes_form_block_admin_display_form_alter(&$form, $form_state) {
+  foreach (element_children($form['blocks']) as $i) {
+    if (isset($form['blocks'][$i]['module']['#value']) && $form['blocks'][$i]['module']['#value'] == 'boxes') {
+      $delta = $form['blocks'][$i]['delta']['#value'];
+      if (strpos($delta, 'boxes_add__') !== 0) {
+        $box = boxes_box_load($delta);
+        if (($box->export_type & EXPORT_IN_DATABASE) && ($box->export_type & EXPORT_IN_CODE)) {
+          $form['blocks'][$i]['delete'] = array(
+            '#title' => t('revert'),
+            '#type' => 'link',
+            '#href' => 'admin/structure/block/manage/boxes/' . $delta . '/delete'
+          );
+        }
+        elseif (!($box->export_type & EXPORT_IN_CODE)) {
+          $form['blocks'][$i]['delete'] = array(
+            '#title' => t('delete'),
+            '#type' => 'link',
+            '#href' => 'admin/structure/block/manage/boxes/' . $delta . '/delete'
+          );
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function boxes_ctools_plugin_api($module, $api) {
+  if ($module == 'spaces' && $api == 'plugins') {
+    return array('version' => 3);
+  }
+  elseif ($module == 'boxes' && $api == 'plugins') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_plugins().
+ */
+function boxes_ctools_plugin_type() {
+  return array(
+    'plugins' => array(
+      'cache' => TRUE,
+      'use hooks' => TRUE,
+      'classes' => array('handler'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_boxes_plugins().
+ */
+function boxes_boxes_plugins() {
+  $info = array();
+  $path = drupal_get_path('module', 'boxes') . '/plugins';
+  $info['box'] = array(
+    'handler' => array(
+      'class' => 'boxes_box',
+      'file' => 'boxes_box.inc',
+      'path' => $path,
+    ),
+  );
+  $info['simple'] = array(
+    'title' => 'Box',
+    'handler' => array(
+      'parent' => 'box',
+      'class' => 'boxes_simple',
+      'file' => 'boxes_simple.inc',
+      'path' => $path,
+    ),
+  );
+  return $info;
+}
+
+/**
+ * Implements hook_spaces_plugins().
+ */
+function boxes_spaces_plugins() {
+  $plugins = array();
+  $plugins['spaces_controller_boxes'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'boxes') . '/plugins',
+      'file' => 'spaces_controller_boxes.inc',
+      'class' => 'spaces_controller_boxes',
+      'parent' => 'spaces_controler',
+    ),
+  );
+  return $plugins;
+}
+
+/**
+ * Implements hook_spaces_registry().
+ */
+function boxes_spaces_registry() {
+  return array(
+    'controllers' => array(
+      'boxes' => array(
+        'title' => t('Boxes'),
+        'plugin' => 'spaces_controller_boxes',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_spaces_dashboard_block_access_alter().
+ *
+ * Provides access to blocks specific to each space.
+ */
+function boxes_spaces_dashboard_block_access_alter(&$access) {
+  foreach (array_keys($access) as $bid) {
+    list($module, $delta) = explode('-', $bid, 2);
+    if ($module === 'boxes') {
+      // This is the add block, give access to admins.
+      if (strpos($delta, 'boxes_add__') === 0) {
+        $access[$bid] = boxes_access_admin();
+      }
+      // If this box is specific to the current space, allow access.
+      elseif (module_exists('spaces') && $space = spaces_get_space()) {
+        $in_space = $space->controllers->boxes->get($delta, 'space');
+        $access[$bid] = $access[$bid] || !empty($in_space);
+      }
+      // Outside of spaces, give admins access to all boxes.
+      // @todo boxes_access_admin() may need to be boxes_access_edit().
+      else {
+        $access[$bid] = boxes_access_admin();
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_context_block_info_alter().
+ *
+ * Provides spaces integration when working with blocks using context.
+ */
+function boxes_context_block_info_alter(&$blocks) {
+  // Add boxes JS. If this is getting called, it's highly likely a context
+  // inline editor is on the page.
+  boxes_add_js();
+
+  if (module_exists('spaces') && $space = spaces_get_space()) {
+    $item = menu_get_item();
+    // Prevent space-specific blocks from appearing on the dashboard settings
+    // page within a space.
+    if (!(isset($item['page_callback'], $item['page_arguments'][0]) && $item['page_callback'] === 'drupal_get_form' && $item['page_arguments'][0] === 'spaces_dashboard_admin_form')) {
+      foreach ($space->controllers->boxes->get() as $box) {
+        $add = new stdClass();
+        $add->bid = "boxes-{$box->delta}";
+        $add->delta = $box->delta;
+        $add->info = $box->description;
+        $add->cache = DRUPAL_CACHE_CUSTOM;
+        $add->module = 'boxes';
+        $blocks[$add->bid] = $add;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_boxes_box_load_alter().
+ *
+ * Provides spaces integration for per-space overrides of a given box.
+ */
+function boxes_boxes_box_load_alter(&$box, $delta) {
+  if (!$delta) {
+    $delta = $box->delta;
+  }
+  if (module_exists('spaces') && $space = spaces_get_space()) {
+    if ($space_box = $space->controllers->boxes->get($delta)) {
+      // Some older overrides may be stored as an array, check for these and
+      // convert them to objects.
+      if (is_array($space_box)) {
+        $space_box = (object) $space_box;
+      }
+      $box = boxes_factory($space_box->plugin_key, $space_box);
+      $box->new = FALSE;
+    }
+  }
+}
+
+/**
+ * Implements hook_features_pipe_MODULE_alter().
+ */
+function boxes_features_pipe_block_alter(&$more, $data, $export) {
+  foreach ($data as $bid) {
+    $split = explode('-', $bid);
+    $module = array_shift($split);
+    $delta = implode('-', $split);
+
+    if ($module == 'boxes') {
+      $more['box'][] = $delta;
+    }
+  }
+}
+
+/**
+ * Add JavaScript to the page.
+ */
+function boxes_add_js() {
+  static $added = FALSE;
+  if ($added || (!boxes_access_admin() && !boxes_access_edit())) {
+    return;
+  }
+  $added = TRUE;
+  drupal_add_library('system', 'jquery.form', TRUE);
+  drupal_add_library('system', 'drupal.form', TRUE);
+  drupal_add_library('system', 'drupal.progress', TRUE);
+  drupal_add_library('system', 'drupal.ajax', TRUE);
+  drupal_add_library('system', 'ui.dialog');
+
+  drupal_add_js(drupal_get_path('module', 'boxes') . '/boxes.js');
+  drupal_add_css(drupal_get_path('module', 'boxes') . '/boxes.css');
+  drupal_add_js(array('getQ' => $_GET['q']), array('type' => 'setting', 'scope' => JS_DEFAULT));
+}
+
+/**
+ * Create a hash for a block id.
+ */
+function boxes_create_hash($identifier) {
+  global $user;
+  $boxes = boxes_block_info();
+  $hash = dechex(crc32($user->sid . microtime()));
+  while (isset($boxes["{$identifier}-{$hash}"])) {
+    $hash = dechex(crc32($user->sid . microtime()));
+  }
+  return $hash;
+}
+
+/**
+ * Preprocessor for theme('block').
+ */
+function boxes_preprocess_block(&$vars) {
+  $vars['classes_array'] = isset($vars['classes_array']) ? $vars['classes_array'] : array();
+  if ($vars['block']->module === 'boxes') {
+  }
+  if ($vars['block']->module === 'boxes' && isset($vars['block']->boxes_plugin)) {
+    $vars['classes_array'][] = 'block-boxes-' . $vars['block']->boxes_plugin;
+  }
+  if ($vars['block']->module === 'boxes' && isset($vars['block']->additional_classes)) {
+    $vars['classes_array'] = array_merge($vars['classes_array'], explode(' ', $vars['block']->additional_classes));
+  }
+}
+
+/**
+ * Preprocessor for theme('panels_pane').
+ */
+function boxes_preprocess_panels_pane(&$vars) {
+  if ($vars['pane']->type == 'block') {
+    list($module, $delta) = explode('-', $vars['pane']->subtype, 2);
+    // Load up the actual box to check for additional classes.
+    $box = boxes_box_load($delta);
+
+    if (isset($box->plugin_key)) {
+      $vars['classes_array'][] = 'block-boxes-' . $box->plugin_key;
+    }
+    if (isset($box->options['additional_classes'])) {
+      $vars['classes_array'] = array_merge($vars['classes_array'], explode(' ', $box->options['additional_classes']));
+    }
+  }
+}
+
+/**
+ * Implements hook_ctools_block_info().
+ */
+function boxes_ctools_block_info($module, $delta, &$info) {
+  $info['category'] = t('Boxes');
+}
+

@@ -1,0 +1,29 @@
+<?php
+/**
+ * @file
+ * Install, uninstall and update the rest server module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function rest_server_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break at install time
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    module_load_include('module', 'rest_server');
+    module_load_include('module', 'libraries');
+    if (($library = libraries_load('spyc')) && empty($library['loaded'])) {
+      $requirements['rest_server'] = array(
+        'description' => 'The spyc library is missing, thus YAML is disabled',
+        'severity' => REQUIREMENT_INFO,
+        'value' => $t('To enable YAML HTTP requets/responses, please download <a href="@download">spyc</a> and create a file called spyc.php in rest_server/lib or use Libraries to retrieve spyc.', 
+                      array('@download' =>  'http://code.google.com/p/spyc/downloads/list')),
+        'title' => t('Missing spyc library'),
+      );
+    }
+  }
+  return $requirements;
+}

@@ -1,0 +1,95 @@
+<?php
+
+/**
+ * @file
+ * Provide field access based on group.
+ */
+
+/**
+ * Implements hook_field_access().
+ */
+function og_field_access_field_access($op, $field, $entity_type, $entity, $account) {
+  if (empty($entity)) {
+    // $entity might be NULL, so return early.
+    // @see field_access().
+    return;
+  }
+
+  if (user_access('administer group')) {
+    return TRUE;
+  }
+
+  $perm = $op == 'view' ? 'view ' . $field['field_name'] . ' field' : 'update ' . $field['field_name'] . ' field';
+  list($id,, $bundle) = entity_extract_ids($entity_type, $entity);
+  // Show fields in user registration form.
+  if ($entity_type == 'user' && !$id) {
+    return;
+  }
+  if (!$id && $op == 'edit' && (og_is_group($entity_type, $entity) || og_is_group_content_type($entity_type, $bundle))) {
+    // This is create form of a non-saved entity, so we check
+    // permissions to access the field, for all the groups the user is a
+    // member.
+    foreach (og_get_entity_groups() as $group_type => $gids) {
+      foreach ($gids as $gid) {
+        if (og_user_access($group_type, $gid, $perm)) {
+          return TRUE;
+        }
+      }
+    }
+    return FALSE;
+  }
+
+  // Return result only if the entity is related to OG.
+  $access = og_user_access_entity($perm, $entity_type, $entity, $account);
+  if (!is_null($access)) {
+    return $access;
+  }
+}
+
+
+/**
+ * Implements hook_og_permission().
+ *
+ * Add view/ edit permissions to all existing fields.
+ */
+function og_field_access_og_permission() {
+  $perms = array();
+  foreach (field_info_instances() as $entity => $bundles) {
+    foreach ($bundles as $bundle => $bundle_value) {
+      if (empty($bundle_value)) {
+        continue;
+      }
+
+      if (!og_is_group_type($entity, $bundle) && !og_is_group_content_type($entity, $bundle)) {
+        continue;
+      }
+
+      foreach ($bundle_value as $field_name => $value) {
+        $label = $value['label'];
+
+        $perm = 'view ' . $field_name . ' field';
+        $perms[$perm] = array(
+          'title' => t('View @label field', array('@label' => $label)),
+          'description' => t('View the %fieldname field for existing groups.', array('%fieldname' => $field_name)),
+          'roles' => array(OG_ANONYMOUS_ROLE, OG_AUTHENTICATED_ROLE),
+          'default role' => array(
+            OG_ANONYMOUS_ROLE,
+            OG_AUTHENTICATED_ROLE,
+            OG_ADMINISTRATOR_ROLE,
+          ),
+          'module' => 'og_field_access',
+        );
+
+        $perm = 'update ' . $field_name . ' field';
+        $perms[$perm] = array(
+          'title' => t('Edit @label field', array('@label' => $label)),
+          'description' => t('Edit the %fieldname field for existing groups.', array('%fieldname' => $field_name)),
+          'roles' => array(OG_ANONYMOUS_ROLE, OG_AUTHENTICATED_ROLE),
+          'default role' => array(OG_ADMINISTRATOR_ROLE),
+          'module' => 'og_field_access',
+        );
+      }
+    }
+  }
+  return $perms;
+}

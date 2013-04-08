@@ -1,0 +1,6 @@
+/**
+ * File for supporting ltr in beautytips.
+ */
+.bt-wrapper canvas {
+  left: 0;
+}

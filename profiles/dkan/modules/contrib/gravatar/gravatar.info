@@ -1,0 +1,15 @@
+name = Gravatar
+description = "Integrate Gravatar pictures registered at Gravatar.com in Drupal sites"
+core = 7.x
+files[] = gravatar.module
+files[] = gravatar.install
+files[] = gravatar.admin.inc
+files[] = views_handler_gravatar.inc
+configure = admin/config/people/gravatar
+
+; Information added by drupal.org packaging script on 2012-01-01
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "gravatar"
+datestamp = "1325420084"
+

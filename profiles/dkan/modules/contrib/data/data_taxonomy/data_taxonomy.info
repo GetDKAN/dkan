@@ -1,0 +1,15 @@
+name = Data Taxonomy
+description = Relate data table entries to taxonomy terms.
+package = Data
+dependencies[] = data
+dependencies[] = data_ui
+dependencies[] = taxonomy
+core = 6.x
+
+
+; Information added by drupal.org packaging script on 2013-03-31
+version = "7.x-1.0-alpha4+2-dev"
+core = "7.x"
+project = "data"
+datestamp = "1364733916"
+

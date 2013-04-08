@@ -1,0 +1,104 @@
+array (
+  'name' => 'Commenter',
+  'pages' => 'node/*
+comment/*',
+  'excludes' => 'edit-log
+edit-menu-description',
+  'iconpath' => '%BUEDITOR/icons',
+  'spriteon' => '1',
+  'buttons' => 
+  array (
+    0 => 
+    array (
+      'title' => 'Bold',
+      'content' => '<strong>%TEXT%</strong>',
+      'icon' => 'bold.png',
+      'accesskey' => 'B',
+      'weight' => '0',
+    ),
+    1 => 
+    array (
+      'title' => 'Italic',
+      'content' => '<em>%TEXT%</em>',
+      'icon' => 'italic.png',
+      'accesskey' => 'I',
+      'weight' => '1',
+    ),
+    2 => 
+    array (
+      'title' => 'tpl:dot',
+      'content' => '',
+      'icon' => 'dot.png',
+      'accesskey' => '',
+      'weight' => '2',
+    ),
+    3 => 
+    array (
+      'title' => 'Quote',
+      'content' => '<blockquote>%TEXT%</blockquote>',
+      'icon' => 'quote.png',
+      'accesskey' => 'Q',
+      'weight' => '3',
+    ),
+    4 => 
+    array (
+      'title' => 'Code',
+      'content' => '<code>%TEXT%</code>',
+      'icon' => 'code.png',
+      'accesskey' => 'D',
+      'weight' => '4',
+    ),
+    5 => 
+    array (
+      'title' => 'tpl:dot',
+      'content' => '',
+      'icon' => 'dot.png',
+      'accesskey' => '',
+      'weight' => '5',
+    ),
+    6 => 
+    array (
+      'title' => 'Number list',
+      'content' => 'js:
+var pos = E.replaceSelection(\'<ol>\\n  <li>\' + E.getSelection().replace(/\\r\\n?|\\n/g, \'</li>\\n  <li>\') + \'</li>\\n</ol>\').posSelection().end - 11;
+E.makeSelection(pos, pos);',
+      'icon' => 'ol.png',
+      'accesskey' => 'O',
+      'weight' => '6',
+    ),
+    7 => 
+    array (
+      'title' => 'Bullet list',
+      'content' => 'js:
+var pos = E.replaceSelection(\'<ul>\\n  <li>\' + E.getSelection().replace(/\\r\\n?|\\n/g, \'</li>\\n  <li>\') + \'</li>\\n</ul>\').posSelection().end - 11;
+E.makeSelection(pos, pos);',
+      'icon' => 'ul.png',
+      'accesskey' => 'N',
+      'weight' => '7',
+    ),
+    8 => 
+    array (
+      'title' => 'tpl:dot',
+      'content' => '',
+      'icon' => 'dot.png',
+      'accesskey' => '',
+      'weight' => '8',
+    ),
+    9 => 
+    array (
+      'title' => 'Insert link',
+      'content' => 'js:
+var url = prompt(\'Enter the link address\', \'http://www.example.com\');
+url && E.tagSelection(\'<a href="\'+ url +\'">\', \'</a>\');',
+      'icon' => 'link.png',
+      'accesskey' => 'L',
+      'weight' => '9',
+    ),
+  ),
+  'icons' => 
+  array (
+  ),
+  'library' => 
+  array (
+  ),
+)

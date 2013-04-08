@@ -1,0 +1,42 @@
+<?php
+/**
+ * @file
+ * Install/uninstall functions for the Delta blocks module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function delta_blocks_uninstall() {
+  variable_del('delta_blocks_blocks');
+  variable_del('delta_blocks_logo_linked');
+  variable_del('delta_blocks_page_title_hidden');
+  variable_del('delta_blocks_site_name_linked');
+  variable_del('delta_blocks_site_name_hidden');
+  variable_del('delta_blocks_site_slogan_hidden');
+  variable_del('delta_blocks_branding_logo_linked');
+  variable_del('delta_blocks_branding_logo_render');
+  variable_del('delta_blocks_branding_site_name_linked');
+  variable_del('delta_blocks_branding_site_name_hidden');
+  variable_del('delta_blocks_branding_site_slogan_hidden');
+  variable_del('delta_blocks_breadcrumb_title_hidden');
+  variable_del('delta_blocks_breadcrumb_current');
+}
+
+/**
+ * Implements hook_install().
+ */
+function delta_blocks_install() {
+  variable_set('delta_blocks_logo_linked', TRUE);
+  variable_set('delta_blocks_page_title_hidden', FALSE);
+  variable_set('delta_blocks_site_name_linked', TRUE);
+  variable_set('delta_blocks_site_name_hidden', FALSE);
+  variable_set('delta_blocks_site_slogan_hidden', FALSE);
+  variable_set('delta_blocks_branding_logo_linked', TRUE);
+  variable_set('delta_blocks_branding_logo_render', TRUE);
+  variable_set('delta_blocks_branding_site_name_linked', TRUE);
+  variable_set('delta_blocks_branding_site_name_hidden', FALSE);
+  variable_set('delta_blocks_branding_site_slogan_hidden', FALSE);
+  variable_set('delta_blocks_breadcrumb_title_hidden', TRUE);
+  variable_set('delta_blocks_breadcrumb_current', TRUE);
+}

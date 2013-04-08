@@ -1,0 +1,22 @@
+name = RDFx
+description = Extends the RDF mapping API of Drupal core to provide more RDF seralization formats and other RDF capabilities.
+package = RDF
+version = VERSION
+core = 7.x
+dependencies[] = rdf
+dependencies[] = entity
+files[] = rdfx.install
+files[] = rdfx.module
+files[] = rdfx.inc
+files[] = rdfx.terms.inc
+files[] = rdfx.import.inc
+files[] = rdfx.query.inc
+files[] = rdfx.restws.formats.inc
+files[] = rdfx.test
+
+; Information added by drupal.org packaging script on 2012-10-27
+version = "7.x-2.0-alpha4+7-dev"
+core = "7.x"
+project = "rdfx"
+datestamp = "1351301254"
+

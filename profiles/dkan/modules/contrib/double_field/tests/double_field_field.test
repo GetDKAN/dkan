@@ -1,0 +1,112 @@
+<?php
+
+/**
+ * @file
+ * Tests for Double Field schema and field settings.
+ */
+
+// Drupal testbot starts with all modules disabled
+// so we cannot autoload the class.
+require_once 'double_field_test_case.inc';
+
+/**
+ * Test case for Double field schema.
+ */
+class DoubleFieldFieldTestCase extends DoubleFieldTestCase {
+
+  /**
+   * Information about the test.
+   */
+  public static function getInfo() {
+    return array(
+      'name'  => 'Field settings',
+      'description' => 'Test global field settings',
+      'group' => DoubleFieldTestCase::GROUP,
+    );
+  }
+
+  /**
+   * Test widgets in field admin UI.
+   */
+  public function testInstanceSettings() {
+
+    // Delete the node to unlock field settings form.
+    node_delete(1);
+
+    // Iterate through all field types.
+    foreach (DoubleFieldField::getAllFieldTypes() as $field_type => $field_label) {
+      $instance = new DoubleFieldField($field_type);
+
+      // Test widget form.
+      $input = $instance->getSettingsFormInput($this->field_name);
+      $this->drupalPost($this->field_settings_page, $input, t('Save settings'));
+
+      // Test field settings form.
+      $this->drupalGet($this->field_settings_page);
+      $validators = $instance->getSettingsFormValidators();
+      $this->validate($validators, 'Field settings form is valid');
+
+      // Check form elements states.
+      $drupal_settings = $this->drupalGetSettings();
+      foreach (array('first', 'second') as $subfield) {
+        $result[] = $drupal_settings['states']["#edit-field-settings-$subfield-maxlength"]['visible'][":input[name='field[settings][$subfield][type]']"]['value'] == 'varchar';
+        $result[] = $drupal_settings['states']["#edit-field-settings-$subfield-size"]['visible'][":input[name='field[settings][$subfield][type]']"][0]['value'] == 'int';
+        $result[] = $drupal_settings['states']["#edit-field-settings-$subfield-size"]['visible'][":input[name='field[settings][$subfield][type]']"][1]['value'] == 'float';
+        $result[] = $drupal_settings['states']["#edit-field-settings-$subfield-precision"]['visible'][":input[name='field[settings][$subfield][type]']"]['value'] == 'decimal';
+        $result[] = $drupal_settings['states']["#edit-field-settings-$subfield-scale"]['visible'][":input[name='field[settings][$subfield][type]']"]['value'] == 'decimal';
+      }
+      $this->assertTrue(count($result) == count(array_filter($result)), 'Form states is correct');
+    }
+
+  }
+
+  /**
+   * Test widgets in field admin UI.
+   */
+  public function testFieldCreation() {
+
+    $field_name = strtolower($this->randomName(8));
+    $field_label = $this->randomName(8);
+    $field_ui_path = "admin/structure/types/manage/{$this->type_name}/";
+    $this->drupalGet($field_ui_path . 'fields');
+
+    // Check whether double field type is accessible.
+    $this->assertFieldByXPath(
+      '//select[@id="edit-fields-add-new-field-type"]/option',
+      'double_field',
+      'Element «edit-fields-add-new-field-type» exists.'
+    );
+
+    // Check whether double field widgets are accessible.
+    $widgets = $this->xpath('//select[@id="edit-fields-add-new-field-widget-type"]/optgroup[@label="Double field"]/option/@value');
+    foreach ($widgets as $widget) {
+      $widget = (string) $widget;
+      if (empty($this->widgets[$widget])) {
+        $this->fail('Widget «' . $widget . '» exists.');
+      }
+    }
+    $this->assertTrue(count($this->widgets) == count($widgets), 'All widgets exist.');
+
+    // Add new field via admin UI.
+    $edit = array(
+      'fields[_add_new_field][label]' => $field_label,
+      'fields[_add_new_field][field_name]' => $field_name,
+      'fields[_add_new_field][type]' => 'double_field',
+      'fields[_add_new_field][widget_type]' => 'textfield_&_textfield',
+    );
+    $this->drupalPost($field_ui_path . 'fields', $edit, t('Save'));
+
+    // Drupal prepends «field_» prefix to all custom fields.
+    $field_name = 'field_' . $field_name;
+    $edit = array(
+      'field[settings][first][maxlength]' => 50,
+      'field[settings][second][maxlength]' => 50,
+    );
+    $this->drupalPost("{$field_ui_path}fields/{$field_name}/field-settings", $edit, t('Save field settings'));
+    $this->assertText(t('Updated field !label field settings.', array('!label' => $field_label)), 'Success message exists');
+
+    $this->assertTrue(field_read_field($field_name), 'The field persists in database.');
+
+  }
+
+}

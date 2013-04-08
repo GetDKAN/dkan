@@ -1,0 +1,29 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the data_ui_test module.
+ *
+ */
+
+
+/**
+ * Implements hook_install().
+ */
+function data_ui_test_install() {
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_install_schema('data_ui_test')
+}
+
+/**
+ * Implements hook_schema().
+ */
+function data_ui_test_schema() {
+  // Pull defaults and expose schema to Drupal.
+  drupal_load('module', 'data_ui_test');
+  $data_tables = data_ui_test_data_default();
+  $schema = array();
+  foreach ($data_tables as $name => $table) {
+    $schema[$name] = $table->table_schema;
+  }
+  return $schema;
+}

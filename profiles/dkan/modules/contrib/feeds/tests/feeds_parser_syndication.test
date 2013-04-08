@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * @file
+ * Tests for plugins/FeedsSyndicationParser.inc.
+ */
+
+/**
+ * Test single feeds.
+ */
+class FeedsSyndicationParserTestCase extends FeedsWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Syndication parsers',
+      'description' => 'Regression tests for syndication parsers Common syndication and SimplePie. Tests parsers against a set of feeds in the context of Feeds module. <strong>Requires SimplePie parser to be configured correctly.</strong>',
+      'group' => 'Feeds',
+      'dependencies' => array('libraries'),
+    );
+  }
+
+  /**
+   * Set up test.
+   */
+  public function setUp() {
+    parent::setUp(array('libraries'));
+  }
+
+  /**
+   * Run tests.
+   */
+  public function test() {
+    $this->createImporterConfiguration('Syndication', 'syndication');
+
+    foreach (array('FeedsSyndicationParser', 'FeedsSimplePieParser') as $parser) {
+      $this->setPlugin('syndication', $parser);
+      foreach ($this->feedUrls() as $url => $assertions) {
+        $this->createFeedNode('syndication', $url);
+        $this->assertText('Created ' . $assertions['item_count'] . ' nodes');
+      }
+    }
+  }
+
+  /**
+   * Return an array of test feeds.
+   */
+  protected function feedUrls() {
+    $path = $GLOBALS['base_url'] . '/' . drupal_get_path('module', 'feeds') . '/tests/feeds/';
+    return array(
+      "{$path}developmentseed.rss2" => array(
+        'item_count' => 10,
+      ),
+      "{$path}feed_without_guid.rss2" => array(
+        'item_count' => 10,
+      ),
+    );
+  }
+}

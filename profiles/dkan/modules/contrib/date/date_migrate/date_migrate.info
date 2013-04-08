@@ -1,0 +1,16 @@
+name = Date Migration
+description = Provides support for importing into date fields with the Migrate module.
+core = 7.x
+package = Date/Time
+
+dependencies[] = migrate
+dependencies[] = date
+files[] = date.migrate.inc
+files[] = date_migrate.test
+
+; Information added by drupal.org packaging script on 2012-08-13
+version = "7.x-2.6"
+core = "7.x"
+project = "date"
+datestamp = "1344850024"
+

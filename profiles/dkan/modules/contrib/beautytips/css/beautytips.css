@@ -1,0 +1,45 @@
+
+/*hover here bubble*/
+#beautytips-site-wide-popup {
+  background: transparent url(../images/beauty-bubble.png) no-repeat scroll 0 0;
+  float: right;
+  height: 160px;
+  width: 241px;
+  margin-top: -192px;
+  margin-right: 397px;
+}
+#beautytips-site-wide-popup #beauty-text {
+  color: #EAEAEA;
+  font-style: italic;
+  line-height: 14px;
+  padding-left: 58px;
+  padding-top: 41px;
+  width: 140px;
+  font-size: .8em;
+}
+
+/*click here bubble*/
+#beautytips-popup-changes {
+  background: transparent url(../images/blue-bubble.png) no-repeat scroll 0 0;
+  float: right;
+  height: 160px;
+  width: 321px;
+  margin-right: 702px;
+}
+#beautytips-popup-changes #beauty-click-text {
+  color: #EAEAEA;
+  font-style: italic;
+  line-height: 14px;
+  padding-left: 48px;
+  padding-top: 37px;
+  width: 140px;
+  font-size: .8em;
+}
+
+.beautytips-fixed-beautytips {
+  position: fixed;
+}
+
+.fieldset-wrapper {
+  position: relative;
+}

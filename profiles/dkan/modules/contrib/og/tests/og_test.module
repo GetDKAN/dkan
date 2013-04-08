@@ -1,0 +1,91 @@
+<?php
+
+/**
+ * @file
+ * Test module for OG.
+ */
+
+/**
+ * Implements hook_node_presave().
+ */
+function og_test_node_presave($node) {
+  if (!empty($node->nid) && !empty($node->og_group_on_save)) {
+    $values = $node->og_group_on_save;
+    og_group($values['group_type'], $values['gid'], array('entity_type' => 'node', 'entity' => $node));
+  }
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function og_test_module_implements_alter(&$implementations, $hook) {
+  if ($hook != 'entity_delete') {
+    return;
+  }
+
+  // Switch the orders of the implementations.
+  $og = $implementations['og'];
+  $og_test = $implementations['og_test'];
+
+  unset($implementations['og'], $implementations['og_test']);
+
+  $implementations['og_test'] = $og_test;
+  $implementations['og'] = $og;
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function og_test_entity_delete($entity, $type) {
+  if (!og_is_group($type, $entity) || $entity->title != 'move' ) {
+    return;
+  }
+
+  // The children nodes of the deleted group need another group to be associated
+  // with. Using entity field query for getting the NID of another group.
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('nid', $entity->nid, '<>')
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  $nid = reset(array_keys($result['node']));
+
+  $entity->og_orphans = array(
+    'move' => array(
+      'group_type' => 'node',
+      'gid' => $nid,
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * @see OgBehaviorHandlerTestCase::testSetStateOnInsert()
+ */
+function og_test_form_alter(&$form, $form_state) {
+  if (empty($form['#node_edit_form']) || $form['#bundle'] != 'behavior') {
+    return;
+  }
+
+  $form[OG_AUDIENCE_FIELD]['#element_validate'][] = 'og_test_form_behavior_validate';
+}
+
+/**
+ * Validate handler; Add state to the field values, if title is "state-pending".
+. */
+function og_test_form_behavior_validate($element, &$form_state) {
+  if ($form_state['values']['title'] != 'state-pending') {
+    return;
+  }
+
+  $value = $form_state['values'][OG_AUDIENCE_FIELD];
+  $value[LANGUAGE_NONE][0]['state'] = OG_STATE_PENDING;
+
+  form_set_value($element, $value, $form_state);
+}

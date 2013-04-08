@@ -1,0 +1,67 @@
+<?php
+
+/**
+ * Implements hook_uninstall().
+ */
+function search_api_db_uninstall() {
+  if (module_exists('search_api')) {
+    db_delete('search_api_server')
+      ->condition('class', 'search_api_db_service')
+      ->execute();
+  }
+  foreach (db_find_tables(Database::getConnection()->prefixTables('{search_api_db}') . '%') as $table) {
+    if (preg_match('/search_api_db_.*$/', $table, $matches)) {
+      db_drop_table($matches[0]);
+    }
+  }
+}
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function search_api_db_update_dependencies() {
+  // This update should run after primary IDs have been changed to machine names in the framework.
+  $dependencies['search_api_db'][7101] = array(
+    'search_api' => 7102,
+  );
+  return $dependencies;
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Re-arranges the $server->options['indexes'] array to be keyed by machine_name
+ * instead of by id.
+ */
+function search_api_db_update_7101() {
+  $query = db_select('search_api_server', 's');
+  $query->addField('s', 'machine_name');
+  $query->condition('class', 'search_api_db_service');
+  $index_names = db_select('search_api_index', 'i')
+    ->fields('i', array('id', 'machine_name'))
+    ->condition('server', clone $query, 'IN')
+    ->execute()
+    ->fetchAllKeyed();
+  $query->addField('s', 'options');
+  $servers = $query->execute();
+  foreach ($servers->fetchAllKeyed() as $name => $options) {
+    $options = unserialize($options);
+    if (empty($options['indexes'])) {
+      continue;
+    }
+    $indexes = array();
+    foreach ($options['indexes'] as $id => $info) {
+      if (isset($index_names[$id])) {
+        $indexes[$index_names[$id]] = $info;
+      }
+    }
+    $options['indexes'] = $indexes;
+    $options = serialize($options);
+    db_update('search_api_server')
+      ->fields(array(
+        'options' => $options,
+      ))
+      ->condition('machine_name', $name)
+      ->execute();
+  }
+}
