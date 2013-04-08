@@ -24,6 +24,7 @@ projects[og][subdir] = contrib
 projects[og][version] = 2.x
 projects[og_extras][subdir] = contrib
 projects[og_extras][version] = 1.x
+projects[ref_field][subdir] = contrib
 projects[restws][subdir] = contrib
 projects[select_or_other][subdir] = contrib
 projects[strongarm][subdir] = contrib
