@@ -1,0 +1,117 @@
+name = DKAN
+core = 7.x
+
+; Core
+dependencies[] = block
+dependencies[] = dblog
+dependencies[] = field_ui
+dependencies[] = file
+dependencies[] = image
+dependencies[] = list
+dependencies[] = menu
+dependencies[] = number
+dependencies[] = path
+dependencies[] = rdf
+dependencies[] = taxonomy
+
+; Development
+dependencies[] = dkan_dev
+
+; Contrib
+dependencies[] = admin_menu
+dependencies[] = autocomplete_deluxe
+dependencies[] = boxes
+dependencies[] = bueditor
+dependencies[] = beautytips
+dependencies[] = context
+dependencies[] = context_ui
+dependencies[] = chosen
+dependencies[] = ctools
+dependencies[] = date
+dependencies[] = date_api
+dependencies[] = date_popup
+dependencies[] = delta
+dependencies[] = diff
+dependencies[] = date
+dependencies[] = double_field
+dependencies[] = entity
+dependencies[] = entity_token
+dependencies[] = eva
+dependencies[] = entityreference
+dependencies[] = defaultcontent
+dependencies[] = feeds
+dependencies[] = facetapi
+dependencies[] = facetapi_pretty_paths
+dependencies[] = features
+dependencies[] = field_group_table
+dependencies[] = field_group
+dependencies[] = gravatar
+dependencies[] = link_iframe_formatter
+dependencies[] = libraries
+dependencies[] = link
+dependencies[] = jquery_update
+dependencies[] = job_scheduler
+dependencies[] = markdowneditor
+dependencies[] = markdown
+dependencies[] = multistep
+dependencies[] = og
+dependencies[] = og_access
+dependencies[] = og_extras
+dependencies[] = og_ui
+dependencies[] = pathauto
+dependencies[] = rules
+dependencies[] = rules_admin
+dependencies[] = select_or_other
+dependencies[] = search_api
+dependencies[] = services
+dependencies[] = search_api_ajax
+dependencies[] = search_api_db
+dependencies[] = search_api_facetapi
+dependencies[] = search_api_views
+dependencies[] = strongarm
+dependencies[] = rest_server
+dependencies[] = restws
+dependencies[] = r4032login
+dependencies[] = services
+dependencies[] = schema
+dependencies[] = token
+dependencies[] = uuid
+dependencies[] = views
+dependencies[] = views_ui
+dependencies[] = views_bulk_operations
+dependencies[] = uuid
+
+; Open data
+dependencies[] = entity_rdf
+dependencies[] = geofield
+dependencies[] = geophp
+dependencies[] = recline
+dependencies[] = rdfui
+dependencies[] = rdfx
+
+; DKAN Features
+dependencies[] = dkan_content_types
+dependencies[] = dkan_context
+dependencies[] = dkan_data_api
+dependencies[] = dkan_default_content
+dependencies[] = dkan_front
+dependencies[] = dkan_groups
+dependencies[] = dkan_menu
+dependencies[] = dkan_search_sql
+dependencies[] = dkan_roles_and_permissions
+
+; DKAN Modules
+dependencies[] = dkan_dataset
+dependencies[] = dkan_data_api
+dependencies[] = dkan_datastore
+dependencies[] = fdr
+dependencies[] = dkan_forms
+dependencies[] = dkan_import
+dependencies[] = dkan_sitewide
+
+
+; Information added by drush on 2013-04-05
+version = "unknown"
+project = "dkan"
+datestamp = "1365124642"
+

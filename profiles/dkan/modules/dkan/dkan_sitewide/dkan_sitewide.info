@@ -1,0 +1,34 @@
+name = DKAN Sitewide
+description = Sitewide elements for DKAN.
+core = 7.x
+package = DKAN
+php = 5.2.4
+dependencies[] = ctools
+dependencies[] = context
+
+dependencies[] = features
+dependencies[] = field_sql_storage
+dependencies[] = filter
+dependencies[] = node
+dependencies[] = strongarm
+dependencies[] = text
+features[ctools][] = strongarm:strongarm:1
+features[ctools][] = context:context:3
+features[features_api][] = api:1
+features[field][] = node-page-body
+features[filter][] = html
+features[node][] = page
+features[context][] = sitewide
+features[variable][] = menu_options_page
+features[variable][] = menu_parent_page
+features[variable][] = node_options_page
+features[variable][] = node_preview_page
+features[variable][] = node_submitted_page
+features[variable][] = pathauto_node_pattern
+
+
+; Information added by drush on 2013-04-05
+version = "unknown"
+project = "dkan"
+datestamp = "1365124642"
+

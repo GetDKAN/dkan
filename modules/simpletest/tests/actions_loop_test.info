@@ -1,0 +1,12 @@
+name = Actions loop test
+description = Support module for action loop testing.
+package = Testing
+version = VERSION
+core = 7.x
+hidden = TRUE
+
+; Information added by drupal.org packaging script on 2013-03-07
+version = "7.21"
+project = "drupal"
+datestamp = "1362616996"
+

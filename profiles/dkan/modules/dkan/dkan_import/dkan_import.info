@@ -1,0 +1,11 @@
+name = DKAN Import
+description = Custom elements for importing content
+package = DKAN
+core = 7.x
+
+
+; Information added by drush on 2013-04-05
+version = "unknown"
+project = "dkan"
+datestamp = "1365124642"
+

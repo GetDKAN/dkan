@@ -1,0 +1,13 @@
+name = DKAN Data API
+description = Access datastore info over json.
+package = DKAN API
+core = 7.x
+php = 5.2.4
+dependencies[] = services
+
+
+; Information added by drush on 2013-04-05
+version = "unknown"
+project = "dkan"
+datestamp = "1365124642"
+

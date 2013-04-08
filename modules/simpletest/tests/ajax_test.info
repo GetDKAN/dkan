@@ -1,0 +1,12 @@
+name = AJAX Test
+description = Support module for AJAX framework tests.
+package = Testing
+version = VERSION
+core = 7.x
+hidden = TRUE
+
+; Information added by drupal.org packaging script on 2013-03-07
+version = "7.21"
+project = "drupal"
+datestamp = "1362616996"
+

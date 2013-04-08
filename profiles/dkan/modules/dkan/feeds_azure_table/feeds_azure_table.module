@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @File
+ *  Declares ctools plugins and other configuration.
+ */
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function feeds_azure_table_ctools_plugin_api($owner, $api) {
+  if ($owner == 'feeds' && $api == 'plugins') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_type().
+ */
+function feeds_azure_table_ctools_plugin_type() {
+  return array(
+    'plugins' => array(
+      'cache' => TRUE,
+      'use hooks' => TRUE,
+      'classes' => array('handler'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_feeds_plugins().
+ */
+function feeds_azure_table_feeds_plugins() {
+  $path = drupal_get_path('module', 'feeds_azure_table');
+
+  return array(
+    'AzureTableProcessor' => array(
+      'name' => 'Azure Table Data Processor',
+      'description' => 'Imports source data into unique database tables in Azure Tables',
+      'help' => 'Imports source data into unique database tables identified by the entity id Azure Tables.',
+      'handler' => array(
+        'parent' => 'FeedsProcessor',
+        'class' => 'AzureTableProcessor',
+        'file' => 'AzureTableProcessor.inc',
+        'path' => $path,
+      ),
+    ),
+  );
+}
