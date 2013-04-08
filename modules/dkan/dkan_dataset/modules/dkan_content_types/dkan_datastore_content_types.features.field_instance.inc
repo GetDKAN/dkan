@@ -81,7 +81,7 @@ function dkan_datastore_content_types_field_default_field_instances() {
           'style' => 'inline',
         ),
         'type' => 'double_field_unformatted_list',
-        'weight' => 17,
+        'weight' => 4,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -353,6 +353,46 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
   );
 
+  // Exported field_instance: 'node-dataset-field_resources'
+  $field_instances['node-dataset-field_resources'] = array(
+    'bundle' => 'dataset',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 5,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_resources',
+    'label' => 'Resources',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'entityreference',
+      'settings' => array(
+        'match_operator' => 'CONTAINS',
+        'path' => '',
+        'size' => 60,
+      ),
+      'type' => 'entityreference_autocomplete',
+      'weight' => 7,
+    ),
+  );
+
   // Exported field_instance: 'node-dataset-field_spatial'
   $field_instances['node-dataset-field_spatial'] = array(
     'bundle' => 'dataset',
@@ -468,7 +508,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'label' => 'hidden',
         'module' => 'taxonomy',
         'settings' => array(),
-        'type' => 'taxonomy_term_reference_link',
+        'type' => 'taxonomy_term_reference_plain',
         'weight' => 2,
       ),
       'teaser' => array(
@@ -610,7 +650,7 @@ uk-ogl|UK Open Government Licence (OGL)',
       'module' => 'og',
       'settings' => array(),
       'type' => 'og_complex',
-      'weight' => 7,
+      'weight' => 6,
     ),
   );
 
@@ -682,11 +722,12 @@ uk-ogl|UK Open Government Licence (OGL)',
     'entity_type' => 'node',
     'field_name' => 'field_dataset_ref',
     'label' => 'Dataset',
-    'required' => FALSE,
+    'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
     ),
     'widget' => array(
+      'active' => 1,
       'module' => 'options',
       'settings' => array(
         'apply_chosen' => 0,
@@ -966,6 +1007,7 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('Link file');
   t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. . See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--data-dictionary">data dictionary</a> for more info.');
   t('Publisher');
+  t('Resources');
   t('Spatial / Geographical Coverage Area');
   t('Spatial / Geographical Coverage Location');
   t('Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--spatial-geographical-coverage">spatial/geographical coverage</a> for more info.');

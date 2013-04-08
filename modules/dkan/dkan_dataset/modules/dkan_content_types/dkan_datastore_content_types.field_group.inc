@@ -21,7 +21,7 @@ function dkan_datastore_content_types_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Dataset Info',
-    'weight' => '4',
+    'weight' => '3',
     'children' => array(
       0 => 'field_author',
       1 => 'field_data_dictionary',
@@ -29,9 +29,9 @@ function dkan_datastore_content_types_field_group_info() {
       3 => 'field_granularity',
       4 => 'field_license',
       5 => 'field_spatial',
-      6 => 'field_temporal_coverage',
-      7 => 'og_group_ref',
-      8 => 'field_spatial_geographical_cover',
+      6 => 'field_spatial_geographical_cover',
+      7 => 'field_temporal_coverage',
+      8 => 'og_group_ref',
       9 => 'release_date',
       10 => 'modified_date',
       11 => 'identifier',
@@ -176,7 +176,7 @@ function dkan_datastore_content_types_field_group_info() {
   $field_group->mode = 'form';
   $field_group->parent_name = '';
   $field_group->data = array(
-    'label' => 'Primary',
+    'label' => '',
     'weight' => '0',
     'children' => array(
       0 => 'body',
@@ -186,7 +186,7 @@ function dkan_datastore_content_types_field_group_info() {
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
-      'label' => 'Primary',
+      'label' => '',
       'instance_settings' => array(
         'required_fields' => 1,
         'classes' => '',

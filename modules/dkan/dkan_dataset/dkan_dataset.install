@@ -17,6 +17,20 @@ function dkan_dataset_install() {
     ->condition('type', 'module')
     ->condition('name', 'dkan_dataset')
     ->execute();
+
+  dkan_dataset_rdf_add_dcat();
 }
 
+/**
+ * RDFx imports new vocabs on a normal site. We are skipping that step.
+ */
+function dkan_dataset_rdf_add_dcat() {
+  require_once 'import/rdf.php';
+  require_once libraries_get_path('ARC2') . 'libraries/arc/ARC2.php';
+  module_load_include('inc', 'rdfx', 'rdfx.terms');
+  rdfx_save_terms('http://www.w3.org/ns/dcat#', 'dcat', $dcat);
+  rdfx_save_terms('http://purl.org/dc/terms/', 'dc', $dc);
 
+  // Refresh the static variable that holds the array of namespaces.
+  drupal_static_reset('rdfx_get_namespaces');
+}
