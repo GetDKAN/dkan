@@ -43,11 +43,13 @@ projects[geophp][subdir] = contrib
 projects[rdfx][subdir] = contrib
 projects[rdfx][version] = 2.x
 projects[rdfx][patch][1176666] = http://drupal.org/files/find-arc-library-correctly-1176666-14.patch
+
 projects[field_group_table][subdir] = contrib
 projects[field_group_table][download][type] = git
-projects[field_group_table][download][url] = "git@github.com:nuams/field_group_table.git"
-projects[field_group_table][download][revision] = "770679ad1fcb6f1da0ea32d49052aee9c5c023c0"
+projects[field_group_table][download][url] = "git://github.com/nuams/field_group_table.git"
+projects[field_group_table][download][revision] = "770679a"
 projects[field_group_table][type] = "module"
+
 projects[leaflet_draw_widget][subdir] = contrib
 projects[leaflet_draw_widget][download][type] = git
 projects[leaflet_draw_widget][download][url] = "git://github.com/acouch/leaflet_draw_widget.git"
