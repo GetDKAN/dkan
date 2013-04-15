@@ -12,3 +12,10 @@ features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
 features[views_view][] = front_page_group_list
 features[views_view][] = popular_tags
+
+
+; Information added by drush on 2013-04-15
+version = "temp-reorg-dev"
+project = "dkan"
+datestamp = "1366033194"
+

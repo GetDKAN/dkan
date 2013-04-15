@@ -34,3 +34,10 @@ features[features_api][] = api:1
 features[search_api_index][] = datasets
 features[search_api_server][] = datasets
 features[views_view][] = dataset
+
+
+; Information added by drush on 2013-04-15
+version = "temp-reorg-dev"
+project = "dkan"
+datestamp = "1366033194"
+

@@ -18,3 +18,10 @@ features[content][] = afghan-election-districts
 features[content][] = group-data-explorer
 features[content][] = group-geospatial
 features[features_api][] = api:1
+
+
+; Information added by drush on 2013-04-15
+version = "temp-reorg-dev"
+project = "dkan"
+datestamp = "1366033194"
+

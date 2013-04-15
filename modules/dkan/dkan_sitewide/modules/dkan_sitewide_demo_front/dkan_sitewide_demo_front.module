@@ -71,7 +71,7 @@ return
  * Creates search block for front page.
  */
 function dkan_search_front_block() {
-  return dkan_dataset_search_bar();
+  return dkan_sitewide_search_bar();
 }
 
 /**
