@@ -21,6 +21,7 @@ projects[delta][subdir] = contrib
 projects[defaultcontent][subdir] = contrib
 projects[defaultcontent][version] = 1.x
 projects[defaultcontent][patch][1436094] = http://drupal.org/files/node_sort_value-1436094-3.patch
+projects[diff][subdir] = contrib
 projects[facetapi][subdir] = contrib
 projects[facetapi_pretty_paths][subdir] = contrib
 projects[gravatar][subdir] = contrib
@@ -36,6 +37,7 @@ projects[search_api_ajax][patch][1858530] = http://drupal.org/files/search_api_a
 projects[search_api_ajax][patch][1719556] = http://drupal.org/files/links-in-search-results-clickable-1719556-4.patch
 projects[search_api_db][subdir] = contrib
 projects[search_api_db][patch][1346846] = http://drupal.org/files/fix-indexing-of-removed-fields-1346846-16.patch
+projects[rules][subdir] = contrib
 
 libraries[font_awesome][type] = libraries
 libraries[font_awesome][download][type] = git
