@@ -707,6 +707,17 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   padding-left: 12px;
   margin-right: 2px;
 }
+.horizontal-tabs ul.horizontal-tabs-list li.selected a {
+  background-color: #fff;
+  border: 1px solid #CCC;
+  border-bottom: 0;
+}
+#node_group_full_group_tab_datasets {
+  padding: 0 0 20px 0;
+}
+.node-type-group #region-content .block-inner:first-child {
+  padding-bottom: 0;
+}
 .node-type-group #region-content .block {
   background-color: #f3f3f3;
 }
@@ -992,7 +1003,7 @@ label.for=["edit-field-upload-und-0"] {
   display: none;
 }
 .horizontal-tabs fieldset.horizontal-tabs-pane {
-  padding: 0;
+  padding: 15px 0 0 0;
 }
 #resource-edit-title {
   font-size: 19px;
@@ -2785,11 +2796,26 @@ h3.media-heading a {
   float: none;
   margin: -7px 0 20px;
 }
+#node_group_full_group_tab_datasets .compact-form-description {
+  top: 53px;
+  font-size: 16px;
+  left: 40px;
+  color: #999;
+}
 #block-system-main #views-exposed-form-dataset-page .compact-form-description {
   top: 21px;
   font-size: 16px;
   left: 15px;
   color: #999;
+}
+#node_group_full_group_tab_datasets .views-exposed-widget {
+  float: none;
+}
+#node_group_full_group_tab_datasets .views-exposed-widget .form-submit {
+  margin-top: 0;
+  top: 50px;
+  position: absolute;
+  right: 50px;
 }
 #block-system-main #views-exposed-form-dataset-page .views-exposed-form .views-exposed-widget .form-submit {
   margin-top: 0;
@@ -2807,6 +2833,7 @@ h3.media-heading a {
   font-weight: bold;
   color: #000;
 }
+#node_group_full_group_tab_datasets .views-widget-filter-search_api_views_fulltext input,
 #block-system-main #views-exposed-form-dataset-page .form-type-textfield input {
   line-height: 18px;
   color: #555;
