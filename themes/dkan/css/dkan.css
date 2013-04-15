@@ -852,7 +852,7 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   background: #ffffff;
 }
 .stages li.complete:before {
-  color: #c5e2c4;
+  color: rgb(55, 95, 54);
   background: #eef6ed;
 }
 .stages li .highlight {
@@ -870,13 +870,25 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   line-height: 27px;
   z-index: -1;
 }
+.stages li.uncomplete .highlight {
+  background-color: #ededed;
+}
+.stages li button.highlight {
+  background: transparent;
+}
+.stages li.uncomplete:before, .stages li.uncomplete a {
+  color: #FFF;
+}
 .stages li.active .highlight {
   color: #ffffff;
   background: #8cc68a;
 }
+#resource-node-form .stages li.complete .highlight a {
+  color: #FFF;
+  text-shadow: none;
+}
 .stages li.complete .highlight {
-  color: #eef6ed;
-  background: #c5e2c4;
+  background: rgb(55, 95, 54);
 }
 ul.primary {
   border: 0;
@@ -935,6 +947,7 @@ form-textarea-wrapper textarea {
 #dataset-node-form .field-name-body .form-textarea-wrapper {
   margin-left: 130px;
   padding-top: 30px;
+  position: relative;
 }
 #data-and-resources {
   margin-bottom: 25px;
@@ -1384,7 +1397,9 @@ html.js input.throbbing {
 .nav [class*=" icon-"].icon-large {
   line-height: 16px;
 }
-
+#edit-prefix {
+  margin-top: 0;
+}
 #url-edit-label,
 #url-edit-prefix,
 #url-slug,
@@ -2526,7 +2541,7 @@ module-narrow .nav-item > a {
   border: 0;
   visibility: visible;
 }
-#block-dkan-front-dkan-demo-front {
+#block-dkan-sitewide-demo-front-dkan-demo-front {
   margin-top: 30px;
   -webkit-border-radius: 3px 3px 0 0;
   -moz-border-radius: 3px 3px 0 0;
@@ -2540,21 +2555,21 @@ module-narrow .nav-item > a {
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   background-color: white;
 }
-#block-dkan-front-dkan-demo-front .block-inner {
+#block-dkan-sitewide-demo-front-dkan-demo-front .block-inner {
   padding: 20px 25px;
   margin: 0 0 -2px 0;
 }
-#block-dkan-front-dkan-demo-front .block-inner h2.block-title {
+#block-dkan-sitewide-demo-front-dkan-demo-front .block-inner h2.block-title {
   font-size: 18px;
   border: 0;
   background: none;
   padding: 0;
   line-height: 36px;
 }
-#block-dkan-front-dkan-demo-front .media-overlay {
+#block-dkan-sitewide-demo-front-dkan-demo-front .media-overlay {
   position: relative;
 }
-#block-dkan-front-dkan-demo-front .media-overlay .media-heading {
+#block-dkan-sitewide-demo-front-dkan-demo-front .media-overlay .media-heading {
   position: absolute;
   left: 0;
   right: 0;
@@ -2727,13 +2742,13 @@ h3.media-heading a {
   margin: 0;
   width: auto;
 }
-#region-branding #block-dkan-dataset-dkan-dataset-search-bar .compact-form-description {
+#region-branding #block-dkan-sitewide-dkan-sitewide-search-bar .compact-form-description {
   top: 13px;
   left: 7px;
   color: #999;
   font-size: 11px;
 }
-#block-dkan-dataset-dkan-dataset-search-bar {
+#block-dkan-sitewide-dkan-sitewide-search-bar {
   position: absolute;
   right: 100px;
   top: 9px;
@@ -2742,13 +2757,13 @@ h3.media-heading a {
 .container-12 .grid-12 {
   min-width: 800px;
 }
-#region-branding #block-dkan-dataset-dkan-dataset-search-bar form {
+#region-branding #block-dkan-sitewide-dkan-sitewide-search-bar form {
   position: relative;
   width: 200px;
   float: right;
   margin: 0;
 }
-#region-branding #block-dkan-dataset-dkan-dataset-search-bar input.form-submit {
+#region-branding #block-dkan-sitewide-dkan-sitewide-search-bar input.form-submit {
   background: url(../images/sprite-ckan-icons.png);
   text-indent: -9999px;
   width: 17px;
@@ -2839,7 +2854,7 @@ h3.media-heading a {
   clear: left;
   color: rgba(255, 255, 255, 0.6);
 }
-#block-dkan-front-dkan-search-front {
+#block-dkan-sitewide-demo-front-dkan-search-front {
   padding: 5px;
   margin-bottom: 10px;
   color: white;
@@ -2854,42 +2869,42 @@ h3.media-heading a {
   bottom: 60px;
   position: absolute;
 }
-#block-dkan-front-dkan-search-front .block-inner {
+#block-dkan-sitewide-demo-front-dkan-search-front .block-inner {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
   background-color: #005D7A;
   padding: 5px;
 }
-#block-dkan-front-dkan-search-front .views-exposed-form .views-exposed-widget {
+#block-dkan-sitewide-demo-front-dkan-search-front .views-exposed-form .views-exposed-widget {
   float: none;
   padding: 0px 10px;
 }
 .views-exposed-form .views-exposed-widget .form-submit {
   margin-top: 0;
 }
-#block-dkan-front-dkan-search-front form {
+#block-dkan-sitewide-demo-front-dkan-search-front form {
   position: relative;
   margin: 0;
 }
-#block-dkan-front-dkan-search-front .views-submit-button {
+#block-dkan-sitewide-demo-front-dkan-search-front .views-submit-button {
   position: absolute;
   right: 10px;
   top: 12px;
 }
-#block-dkan-front-dkan-search-front .compact-form-description {
+#block-dkan-sitewide-demo-front-dkan-search-front .compact-form-description {
   top: 15px;
   left: 23px;
   font-size: 16px;
   color: #999;
 }
-#block-dkan-front-dkan-search-front h2.block-title {
+#block-dkan-sitewide-demo-front-dkan-search-front h2.block-title {
   border: 0;
   background: transparent;
   font-size: 18px;
   padding: 7px 15px 10px 15px;
 }
-#block-dkan-front-dkan-search-front input.form-text {
+#block-dkan-sitewide-demo-front-dkan-search-front input.form-text {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
@@ -2913,7 +2928,7 @@ h3.media-heading a {
   position: relative;
   height: 405px;
 }
-#block-dkan-front-dkan-add-front {
+#block-dkan-sitewide-demo-front-dkan-add-front {
   position: relative;
   padding: 20px 25px;
   background: black;
@@ -2938,7 +2953,7 @@ h3.media-heading a {
   background-color: white;
   margin: 30px 0 0 0;
 }
-#block-dkan-front-dkan-add-front::after {
+#block-dkan-sitewide-demo-front-dkan-add-front::after {
   top: -30px;
   left: 25px;
   border: solid rgba(255, 255, 255, 0);
@@ -2951,7 +2966,7 @@ h3.media-heading a {
   border-width: 12px;
   margin-top: 7px;
 }
-#block-dkan-front-dkan-add-front h2.block-title {
+#block-dkan-sitewide-demo-front-dkan-add-front h2.block-title {
   border: 0;
   background: transparent;
   padding: 0 0 5px 0;

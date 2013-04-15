@@ -116,7 +116,7 @@ settings[alpha_exclude][modules/tracker/tracker.css] = '0'
 settings[alpha_exclude][modules/update/update.css] = '0'
 settings[alpha_debug_block_toggle] = '0'
 settings[alpha_debug_block_active] = '0'
-settings[alpha_debug_grid_toggle] = '1'
+settings[alpha_debug_grid_toggle] = '0'
 settings[alpha_debug_grid_active] = '0'
 settings[alpha_debug_grid_roles][1] = '1'
 settings[alpha_debug_grid_roles][2] = '2'
@@ -372,3 +372,10 @@ settings[alpha_region_footer_second_equal_height_element] = '0'
 settings[alpha_region_footer_second_equal_height_container] = '0'
 
 version = '1.x'
+
+
+; Information added by drush on 2013-04-15
+version = "temp-reorg-dev"
+project = "dkan"
+datestamp = "1366033194"
+

@@ -84,18 +84,15 @@ function dkan_sitewide_block_view($delta = '') {
  */
 function dkan_sitewide_resource_additional_block($nid  = '') {
   $node = $nid ? node_load($nid) : menu_get_object();
-  $dataset_node = entity_metadata_wrapper('node', $node)->field_dataset_ref->value();
-  $additional = isset($dataset_node->field_additional_info[$dataset_node->language]) ? $dataset_node->field_additional_info[$dataset_node->language] : array(array());
   $file_info = array();
   if (isset($node->field_upload[$node->language]) && $file = $node->field_upload[$node->language][0]) {
     $file_info[] = array(t('mimetype'), $file['filemime']);
     $file_info[] = array(t('filesize'), $file['filesize']);
     $file_info[] = array(t('resource type'), 'file upload');
     $file_info[] = array(t('timestamp'), date('M d, Y', $file['timestamp']));
+    return theme('table', array('rows' => $file_info, 'header' => array(t('Field'), t('Value'))));
   }
-  $rows = array_merge($additional, $file_info);
 
-  return $rows[0] ? theme('table', array('rows' => $rows, 'header' => array(t('Field'), t('Value')))) : '';
 }
 
 /**
@@ -162,7 +159,7 @@ function dkan_sitewide_other_access() {
  * Creates search bar.
  */
 function dkan_sitewide_search_bar() {
-  if (module_exists('dkan_search_sql')) {
+  if (module_exists('dkan_sitewide_search_db')) {
     $view = views_get_view('dataset');
     $view->set_display('page');
     $view->init_handlers();
