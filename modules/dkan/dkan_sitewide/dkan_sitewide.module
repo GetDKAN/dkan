@@ -40,15 +40,15 @@ function dkan_sitewide_page_alter(&$page) {
   $node = menu_get_object();
   if ($node && $node->type == 'resource') {
     $nid = isset($node->field_dataset_ref[$node->language][0]['target_id']) ? $node->field_dataset_ref[$node->language][0]['target_id'] : 1;
-    $breadcrumbs[] = l(dkan_sitewide_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
+    $breadcrumbs[] = l(dkan_dataset_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
     if (arg(2) == 'datastore') {
-      $breadcrumbs[] = l(dkan_sitewide_text_trim($node->title), 'node/' . $node->nid);
+      $breadcrumbs[] = l(dkan_dataset_text_trim($node->title), 'node/' . $node->nid);
     }
   }
   elseif (arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'resource' && $query = drupal_get_query_parameters()) {
     if (isset($query['dataset'])) {
       $nid = $query['dataset'];
-      $breadcrumbs[] = l(dkan_sitewide_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
+      $breadcrumbs[] = l(dkan_dataset_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
     }
   }
   $breadcrumbs[] = drupal_get_title();

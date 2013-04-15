@@ -29,23 +29,23 @@ function dkan_sitewide_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'dkan_dataset-dkan_dataset_social' => array(
-          'module' => 'dkan_dataset',
-          'delta' => 'dkan_dataset_social',
-          'region' => 'sidebar_first',
-          'weight' => '-10',
-        ),
-        'dkan_dataset-dkan_dataset_license' => array(
-          'module' => 'dkan_dataset',
-          'delta' => 'dkan_dataset_license',
+        'dkan_sitewide-dkan_sitewide_social' => array(
+          'module' => 'dkan_sitewide',
+          'delta' => 'dkan_sitewide_social',
           'region' => 'sidebar_first',
           'weight' => '-9',
         ),
-        'dkan_dataset-dkan_dataset_other_access' => array(
-          'module' => 'dkan_dataset',
-          'delta' => 'dkan_dataset_other_access',
+        'dkan_sitewide-dkan_sitewide_license' => array(
+          'module' => 'dkan_sitewide',
+          'delta' => 'dkan_sitewide_license',
           'region' => 'sidebar_first',
           'weight' => '-8',
+        ),
+        'dkan_sitewide-dkan_sitewide_other_access' => array(
+          'module' => 'dkan_sitewide',
+          'delta' => 'dkan_sitewide_other_access',
+          'region' => 'sidebar_first',
+          'weight' => '-7',
         ),
       ),
     ),
@@ -74,9 +74,9 @@ function dkan_sitewide_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'dkan_forms-dkan_forms_dataset_help' => array(
-          'module' => 'dkan_forms',
-          'delta' => 'dkan_forms_dataset_help',
+        'dkan_dataset-dkan_dataset_dataset_help' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_dataset_help',
           'region' => 'sidebar_first',
           'weight' => '-10',
         ),
@@ -157,21 +157,21 @@ function dkan_sitewide_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'dkan_dataset-dkan_dataset_social' => array(
+        'dkan_dataset-dkan_dataset_resource_nodes' => array(
           'module' => 'dkan_dataset',
-          'delta' => 'dkan_dataset_social',
+          'delta' => 'dkan_dataset_resource_nodes',
           'region' => 'postscript_first',
           'weight' => '-10',
         ),
-        'dkan_forms-dkan_forms_resource_nodes' => array(
-          'module' => 'dkan_forms',
-          'delta' => 'dkan_forms_resource_nodes',
+        'dkan_sitewide-dkan_sitewide_social' => array(
+          'module' => 'dkan_sitewide',
+          'delta' => 'dkan_sitewide_social',
           'region' => 'postscript_first',
-          'weight' => '-10',
+          'weight' => '-9',
         ),
-        'dkan_dataset-dkan_dataset_resource_additional' => array(
-          'module' => 'dkan_dataset',
-          'delta' => 'dkan_dataset_resource_additional',
+        'dkan_sitewide-dkan_sitewide_resource_add' => array(
+          'module' => 'dkan_sitewide',
+          'delta' => 'dkan_sitewide_resource_add',
           'region' => 'postscript_second',
           'weight' => '-10',
         ),
@@ -202,17 +202,17 @@ function dkan_sitewide_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'dkan_forms-dkan_forms_resource_help' => array(
-          'module' => 'dkan_forms',
-          'delta' => 'dkan_forms_resource_help',
+        'dkan_dataset-dkan_dataset_resource_help' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_resource_help',
           'region' => 'sidebar_first',
-          'weight' => '-13',
+          'weight' => '-10',
         ),
-        'dkan_forms-dkan_forms_resource_nodes' => array(
-          'module' => 'dkan_forms',
-          'delta' => 'dkan_forms_resource_nodes',
+        'dkan_dataset-dkan_dataset_resource_nodes' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_resource_nodes',
           'region' => 'sidebar_first',
-          'weight' => '-12',
+          'weight' => '-9',
         ),
       ),
     ),
@@ -272,15 +272,15 @@ function dkan_sitewide_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'dkan_forms-dkan_forms_resource_help' => array(
-          'module' => 'dkan_forms',
-          'delta' => 'dkan_forms_resource_help',
+        'dkan_dataset-dkan_dataset_resource_help' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_resource_help',
           'region' => 'sidebar_first',
           'weight' => '-10',
         ),
-        'dkan_forms-dkan_forms_resource_nodes' => array(
-          'module' => 'dkan_forms',
-          'delta' => 'dkan_forms_resource_nodes',
+        'dkan_dataset-dkan_dataset_resource_nodes' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_resource_nodes',
           'region' => 'sidebar_first',
           'weight' => '-9',
         ),

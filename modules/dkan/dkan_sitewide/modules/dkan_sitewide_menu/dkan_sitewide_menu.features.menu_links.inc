@@ -28,7 +28,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '-7',
   );
-  // Exported menu link: main-menu:<front>
+  // Exported menu link: main-menu:dataset
   $menu_links['main-menu:dataset'] = array(
     'menu_name' => 'main-menu',
     'link_path' => 'dataset',
@@ -46,8 +46,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '-6',
   );
-  // Exported menu link: main-menu:<front>
-  $menu_links['main-menu:<front>'] = array(
+  // Exported menu link: main-menu:about
+  $menu_links['main-menu:about'] = array(
     'menu_name' => 'main-menu',
     'link_path' => 'about',
     'router_path' => '',
