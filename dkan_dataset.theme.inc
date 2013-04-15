@@ -67,19 +67,19 @@ function theme_dkan_dataset_resource_view($vars) {
       }
       if (isset($node->field_format) && $node->field_format) {
         $term = taxonomy_term_load($node->field_format[$node->language][0]['tid']);
-        $term = '<span class="format-label" property="dc:format" data-format="' . $term->name  . '">' . $term->name  .'</span>';
+        $term = '<span class="format-label" property="dc:format" data-format="' . $term->name . '">' . $term->name  . '</span>';
       }
       else {
         $term = '<span class="format-label" property="dc:format" data-format="data">Data</span>';
       }
-      $explore_link = l('Explore Data', 'node/' . $node->nid, array('attributes' => array('class' => array('btn', 'btn-primary'))));
+      $explore_link = l(t('Explore Data'), 'node/' . $node->nid, array('attributes' => array('class' => array('btn', 'btn-primary'))));
       $dcat = '<div property="dcat:Distribution">';
-      $links[] = $dcat. l($node->title . $term , 'node/' . $node->nid, array(
+      $links[] = $dcat . l($node->title . $term, 'node/' . $node->nid, array(
         'html' => TRUE,
         'attributes' => array(
           'class' => array('heading'),
           'title' => $node->title,
-          'property' => 'dcat:accessURL'
+          'property' => 'dcat:accessURL',
         ))
       ) . $desc . $explore_link . '</div>';
     }
@@ -105,7 +105,13 @@ function theme_dkan_dataset_resource_teaser_view($vars) {
       $term = '';
       if (isset($node->field_format) && $node->field_format) {
         $term = taxonomy_term_load($node->field_format[$node->language][0]['tid']);
-        $links[] = l($term->name , 'node/' . $node->nid, array('attributes' => array('class' => array('label'), 'title' => $node->title, 'data-format' => $term->name)));
+        $links[] = l($term->name, 'node/' . $node->nid, array(
+          'attributes' => array(
+            'class' => array('label'),
+            'title' => $node->title,
+            'data-format' => $term->name,
+          ),
+        ));
       }
     }
 
@@ -113,4 +119,3 @@ function theme_dkan_dataset_resource_teaser_view($vars) {
   }
   return $output;
 }
-

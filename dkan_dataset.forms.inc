@@ -11,7 +11,7 @@
 function dkan_dataset_field_group_build_pre_render_alter(&$element) {
   // Moving path into primary group here since we can't do it on the content
   // type form. Rearanging weights so path is under title.
-  if(isset($element['#form_id']) && $element['#form_id'] == 'dataset_node_form') {
+  if (isset($element['#form_id']) && $element['#form_id'] == 'dataset_node_form') {
     $element['group_primary']['path'] = $element['path'];
     $element['group_primary']['title']['#weight'] = '-10';
     $element['group_primary']['path']['#weight'] = "1";
@@ -20,8 +20,9 @@ function dkan_dataset_field_group_build_pre_render_alter(&$element) {
     unset($element['path']);
   }
 }
+
 /**
- * Implements hook_field_group_pre_render();
+ * Implements hook_field_group_pre_render().
  */
 function dkan_dataset_field_group_pre_render(&$element, $group, &$form) {
   if (module_exists('context')) {
@@ -62,6 +63,8 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.slugify.js';
     $form['#attached']['library'][] = array('beautytips', 'beautytips-jquery');
 
+    $form['#after_build']['dkan_dataset'] = 'dkan_dataset_resource_form_after_build';
+
     // Removing path from vertiable tabs.
     unset($form['path']['#group']);
     unset($form['path']['#title']);
@@ -69,11 +72,10 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     // Always use pathauto.
     $form['path']['pathauto']['#default_value'] = TRUE;
     $form['path']['pathauto']['#access'] = FALSE;
-    // This could cause problems with programmatic
     $form['path']['alias']['#default_value'] = preg_replace('/dataset\//', '', $form['path']['alias']['#default_value']);
     $form['path']['#collapsible'] = FALSE;
     $form['path']['#collapsed'] = FALSE;
-    $alias = $form['path']['alias']['#default_value'] ? $form['path']['alias']['#default_value']: t('[dataset]');
+    $alias = $form['path']['alias']['#default_value'] ? $form['path']['alias']['#default_value'] : t('[dataset]');
     $form['path']['#prefix'] = '<div id="field-tags-wrapper">
                                   <div id="url-edit-preview">
                                     <div id="url-edit-label"><strong>URL</strong></div>
@@ -95,7 +97,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['field_license']['icon']['#type'] = 'markup';
     $form['field_license']['icon']['#markup'] = '<i class="icon-large icon-info-sign"></i>';
     foreach ($form['field_additional_info']['und'] as $key => $values) {
-      if (is_integer($key)) {
+      if (is_int($key)) {
         $form['field_additional_info']['und'][$key]['first']['#attributes']['placeholder'] = t('key');
         $form['field_additional_info']['und'][$key]['second']['#attributes']['placeholder'] = t('value');
       }
@@ -161,15 +163,17 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       $form['feeds']['#access'] = FALSE;
     }
 
-    $form['field_link_api'][$form['language']['#value']][0]['#description'] = 'eg. http://example.com/gold-prices-jan-2011.json';
+    $form['#after_build']['dkan_dataset'] = 'dkan_dataset_resource_form_after_build';
+
     $form['field_upload'][$form['language']['#value']][0]['#title'] = '';
     $form['field_upload'][$form['language']['#value']][0]['view']['#collapsible'] = TRUE;
     $form['field_upload'][$form['language']['#value']][0]['view']['#collasped'] = TRUE;
-    $form['field_link_file'][$form['language']['#value']][0]['#description'] = 'eg. http://example.com/gold-prices-jan-2011.json';
+    $form['field_link_file'][$form['language']['#value']][0]['#description'] = 'Link to a CSV file that will be imported into the DKAN datastore.';
+    $form['field_link_api'][$form['language']['#value']][0]['#description'] = 'Link to a public API or information source.';
     $form['title']['#attributes']['placeholder'] = t('eg. January Gold Prices');
+
     $form['field_link_api'][$form['language']['#value']][0]['#title'] = '';
     $form['field_link_file'][$form['language']['#value']][0]['#title'] = '';
-    $form['body'][$form['language']['#value']][0]['#description'] = t('eg. Some useful notes about the data');
     // Move groups to vertical tabs.
     $form['og_group_ref']['#group'] = 'additional_settings';
     $form['og_group_ref']['#title'] = t('Groups');
@@ -193,6 +197,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       $form['prefix']['#weight'] = '-20';
       $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $form['#node']->field_dataset_ref['nid']);
     }
+    $form['#validate'][] = 'dkan_dataset_resource_node_form_validate';
     // This saves us on the ajax reloading.
     $form['#action'] = '/node/add/resource' . $action_query;
     $form['actions']['additional'] = array(
@@ -219,6 +224,51 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       '#submit' => array('node_form_submit'),
     );
   }
+}
+
+/**
+ * Validation function for resource node form.
+ */
+function dkan_dataset_resource_node_form_validate($form, &$form_state) {
+  $link = $form_state['values']['field_link_file'][$form['language']['#value']][0]['url'];
+  $api = $form_state['values']['field_link_api'][$form['language']['#value']][0]['url'];
+  $fid = $form_state['values']['field_upload'][$form['language']['#value']][0]['fid'];
+  // Ensure that only one type of resource is uploaded or linked to.
+  if ($link && ($api || $fid) || $api && ($link || $fid) || $fid && ($api || $link)) {
+    form_set_error('field_link_file', 'Only one resource type can be added.');
+  }
+  // Autodetect file type.
+  if ($fid || $link) {
+    if ($fid) {
+      $file = file_load($fid);
+      $type = substr($file->filename, strrpos($file->filename, '.') + 1);
+    }
+    else {
+      $type = substr($link, strrpos($link, '.') + 1);
+    }
+    $form_state['values']['field_format'][$form['language']['#value']][0]['vid'] = 2;
+    if ($tax = taxonomy_get_term_by_name($type, 'format')) {
+      $tax = array_values($tax);
+      $form_state['values']['field_format'][$form['language']['#value']][0]['tid'] = $tax[0]->tid;
+      $form_state['values']['field_format'][$form['language']['#value']][0]['name'] = $tax[0]->name;
+    }
+    else {
+      $form_state['values']['field_format'][$form['language']['#value']][0]['tid'] = 'autocreate';
+      $form_state['values']['field_format'][$form['language']['#value']][0]['name'] = $type;
+    }
+  }
+}
+
+/**
+ * After build function for resource and dataset nodes.
+ */
+function dkan_dataset_resource_form_after_build($form, &$form_state) {
+  if (isset($form['field_link_file'])) {
+    $form['field_link_file'][$form['language']['#value']][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
+    $form['field_link_api'][$form['language']['#value']][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011';
+  }
+  $form['body'][$form['language']['#value']][0]['value']['#attributes']['placeholder'] = t('eg. Some useful notes about the data');
+  return $form;
 }
 
 module_load_include('inc', 'node', 'node.pages');
@@ -287,7 +337,7 @@ function dkan_dataset_dataset_submit_js($form, &$form_state) {
   // Replacement elements.
   $stage = dkan_form_create_stages('resource-edit', $form_state['node']->nid);
   $breadcrumbs = '<ul class="breadcrumb"><li><a href="/">Home</a></li><li><a href="/dataset">Datasets</a></li><li>' . l($form_state['values']['title'], 'node/' . $form_state['nid']) . '</li><li><a href="/node/add/resource?dataset=' . $form_state['nid'] . '" class="active">Add Resource</a></li></ul>';
-  $resources_block ='<section class="block block-dkan-forms block-dkan-forms-resource-nodes block-dkan-forms-dkan-forms-resource-nodes even" id="block-dkan-forms-dkan-forms-resource-nodes"><div class="block-inner clearfix"><h2 class="block-title">Resources</h2><div class="content clearfix"><div class="item-list"><ul class="nav-simple"><li class="last"></li></ul></div><a id="context-block-dkan_dataset-dkan_forms_resource_nodes" class="context-block editable edit-resource-create"></a></div></div></section>';
+  $resources_block = '<section class="block block-dkan-forms block-dkan-forms-resource-nodes block-dkan-forms-dkan-forms-resource-nodes even" id="block-dkan-forms-dkan-forms-resource-nodes"><div class="block-inner clearfix"><h2 class="block-title">Resources</h2><div class="content clearfix"><div class="item-list"><ul class="nav-simple"><li class="last"></li></ul></div><a id="context-block-dkan_dataset-dkan_forms_resource_nodes" class="context-block editable edit-resource-create"></a></div></div></section>';
 
   $commands[] = ajax_command_append('#region-sidebar-first .region-inner', $resources_block);
   $commands[] = ajax_command_replace('ul.breadcrumb', $breadcrumbs);
@@ -302,6 +352,9 @@ function dkan_dataset_dataset_submit_js($form, &$form_state) {
   return $output;
 }
 
+/**
+ * Creates initial resource node form.
+ */
 function dkan_dataset_prepare_resource_form($nid) {
   $type = 'resource';
   global $user;

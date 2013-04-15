@@ -82,6 +82,18 @@
     }
   }
 
+  Drupal.behaviors.dkanFieldGroup = {
+    attach: function (context, settings) {
+
+      $('fieldset.horizontal-tabs-pane', context).once('fieldgroup-effects', function(i) {
+        // Make tab with any value in it focus.
+        if ($(this).find('input').val()) {
+          $(this).data('horizontalTab').focus();
+        }
+      });
+    }
+  }
+
   Drupal.behaviors.dkanForms = {
     attach: function (context, settings) {
       // Causes file to be uploaded automatically.
@@ -90,7 +102,7 @@
       });
 
       // Autohide selected elements.
-      var elements = "#edit-field-link-file,#edit-field-link-api,.field-name-body,#views-exposed-form-dataset-page,#block-dkan-dataset-dkan-dataset-search-bar";
+      var elements = "#views-exposed-form-dataset-page,#block-dkan-dataset-dkan-dataset-search-bar";
       $(elements, context).dkanFormsHide();
       var autoDeluxeElements = ".field-name-field-tags";
       $(autoDeluxeElements, context).dkanFormsAutoDeluxeHide();
@@ -118,7 +130,6 @@
       });
       $(".field-widget-leaflet-widget-widget .fieldset-description").appendTo($(".field-widget-leaflet-widget-widget fieldset"));
       $(".field-widget-leaflet-widget-widget .fieldset-description").each(function() {
-        console.log(this);
         dkanFormsBeautyTipPrepare(this, 'legend');
       });
       $(".field-type-datetime.field-name-field-temporal-coverage .fieldset-description").appendTo($(".field-type-datetime.field-name-field-temporal-coverage fieldset"));
@@ -147,5 +158,6 @@
        cssStyles: {color: '#666', width: 'auto'}});
     }
   }
+
 
 })(jQuery);

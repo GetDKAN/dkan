@@ -27,7 +27,7 @@ function dkan_dataset_views_api() {
 function dkan_dataset_rdf_default_mappings() {
   $rdf_mappings = array();
 
-  // Exported RDF mapping: dataset
+  // Exported RDF mapping: dataset.
   $rdf_mappings['node']['dataset'] = array(
     'rdftype' => array(
       0 => 'sioc:Item',

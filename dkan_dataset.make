@@ -85,4 +85,3 @@ libraries[arc][type] = libraries
 libraries[arc][download][type] = git
 libraries[arc][download][url] = "https://github.com/semsol/arc2.git"
 libraries[arc][download][revision] = "44c396ab54178086c09499a1704e31a977b836d2"
-

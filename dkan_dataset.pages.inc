@@ -9,6 +9,7 @@
  * Callback for back link.
  */
 function dkan_dataset_back($node) {
+  dpm($node);
   if (isset($node->field_dataset_ref[$node->language][0]['target_id'])) {
     drupal_goto('node/' . $node->field_dataset_ref[$node->language][0]['target_id']);
   }
