@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the DKAN Content Types feature.
+ */
+
+include_once 'dkan_dataset_content_types.features.inc';
