@@ -11,4 +11,4 @@ projects[drupal][patch][995156] = http://drupal.org/files/issues/995156-5_portab
 projects[dkan][type] = profile
 projects[dkan][download][type] = git
 projects[dkan][download][url] = http://git.drupal.org/project/dkan.git
-projects[dkan][download][version] = temp-reorg
+projects[dkan][download][branch] = temp-reorg
