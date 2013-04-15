@@ -27,7 +27,7 @@ function dkan_dataset_views_api() {
 function dkan_dataset_rdf_default_mappings() {
   $rdf_mappings = array();
 
-  // Exported RDF mapping: dataset.
+  // Exported RDF mapping: dataset
   $rdf_mappings['node']['dataset'] = array(
     'rdftype' => array(
       0 => 'sioc:Item',
@@ -57,7 +57,7 @@ function dkan_dataset_rdf_default_mappings() {
     ),
     'body' => array(
       'predicates' => array(
-        0 => 'content:encoded',
+        0 => 'dc:description',
       ),
       'type' => 'property',
     ),
@@ -145,6 +145,18 @@ function dkan_dataset_rdf_default_mappings() {
       ),
     ),
     'field_resource' => array(
+      'type' => 'property',
+      'predicates' => array(
+        0 => 'dcat:Distribution',
+      ),
+    ),
+    'field_dataset_ref' => array(
+      'type' => 'property',
+      'predicates' => array(
+        0 => 'dcat:Distribution',
+      ),
+    ),
+    'field_resources' => array(
       'type' => 'property',
       'predicates' => array(
         0 => 'dcat:Distribution',

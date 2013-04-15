@@ -45,6 +45,7 @@ function dkan_datastore_content_types_field_group_info() {
         'first_column' => 'Field',
         'second_column' => 'Value',
         'cells' => 'empty',
+        'classes' => ' group-additional field-group-table',
       ),
     ),
   );
@@ -71,13 +72,14 @@ function dkan_datastore_content_types_field_group_info() {
       5 => 'field_spatial_geographical_cover',
       6 => 'field_temporal_coverage',
       7 => 'field_additional_info',
+      8 => 'field_resources',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
       'label' => 'Dataset Information',
       'instance_settings' => array(
         'required_fields' => 1,
-        'classes' => '',
+        'classes' => ' group-additional field-group-fieldset',
         'description' => '<i class="icon-large icon-info-sign"></i>These fields are compatible with <a href="http://www.w3.org/TR/vocab-dcat/">DCAT</a>, an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web.',
       ),
       'formatter' => 'open',
@@ -106,7 +108,7 @@ function dkan_datastore_content_types_field_group_info() {
     'format_settings' => array(
       'label' => 'Resource',
       'instance_settings' => array(
-        'classes' => '',
+        'classes' => ' group-data field-group-htabs',
       ),
     ),
   );
@@ -129,12 +131,13 @@ function dkan_datastore_content_types_field_group_info() {
     ),
     'format_type' => 'htab',
     'format_settings' => array(
-      'formatter' => 'closed',
+      'label' => 'Link to an API',
       'instance_settings' => array(
-        'description' => '',
-        'classes' => '',
         'required_fields' => 1,
+        'classes' => 'htab_link_api group-link-api field-group-htab',
+        'description' => '',
       ),
+      'formatter' => 'closed',
     ),
   );
   $export['group_link_api|node|resource|form'] = $field_group;
@@ -156,12 +159,13 @@ function dkan_datastore_content_types_field_group_info() {
     ),
     'format_type' => 'htab',
     'format_settings' => array(
-      'formatter' => 'closed',
+      'label' => 'Link to a file',
       'instance_settings' => array(
-        'description' => '',
-        'classes' => '',
         'required_fields' => 1,
+        'classes' => 'htab_link_file group-link-file field-group-htab',
+        'description' => '',
       ),
+      'formatter' => 'closed',
     ),
   );
   $export['group_link_file|node|resource|form'] = $field_group;
@@ -189,7 +193,7 @@ function dkan_datastore_content_types_field_group_info() {
       'label' => '',
       'instance_settings' => array(
         'required_fields' => 1,
-        'classes' => '',
+        'classes' => ' group-primary field-group-fieldset',
         'description' => '',
       ),
       'formatter' => 'open',
@@ -214,12 +218,13 @@ function dkan_datastore_content_types_field_group_info() {
     ),
     'format_type' => 'htab',
     'format_settings' => array(
-      'formatter' => 'closed',
+      'label' => 'Upload a file',
       'instance_settings' => array(
-        'description' => '',
-        'classes' => '',
         'required_fields' => 1,
+        'classes' => 'htab_link_upload group-upload field-group-htab',
+        'description' => '',
       ),
+      'formatter' => 'closed',
     ),
   );
   $export['group_upload|node|resource|form'] = $field_group;

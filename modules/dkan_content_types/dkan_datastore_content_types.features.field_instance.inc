@@ -175,7 +175,7 @@ function dkan_datastore_content_types_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. . See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--data-dictionary">data dictionary</a> for more info.',
+    'description' => 'Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--data-dictionary">data dictionary</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -389,7 +389,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'size' => 60,
       ),
       'type' => 'entityreference_autocomplete',
-      'weight' => 7,
+      'weight' => 18,
     ),
   );
 
@@ -448,7 +448,7 @@ uk-ogl|UK Open Government Licence (OGL)',
             'lat' => 43,
             'lng' => -89,
           ),
-          'zoom' => 12,
+          'zoom' => 4,
         ),
         'toggle' => 1,
       ),
@@ -766,7 +766,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'options',
+      'module' => 'autocomplete_deluxe',
       'settings' => array(
         'apply_chosen' => 0,
         'autocomplete_deluxe_path' => 'autocomplete_deluxe/taxonomy',
@@ -774,7 +774,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'mode' => 'single',
         'size' => 60,
       ),
-      'type' => 'options_select',
+      'type' => 'autocomplete_deluxe_taxonomy',
       'weight' => 7,
     ),
   );
@@ -916,7 +916,7 @@ uk-ogl|UK Open Government Licence (OGL)',
       'alt_field' => 0,
       'description_field' => 0,
       'file_directory' => '',
-      'file_extensions' => 'csv',
+      'file_extensions' => 'csv html xls json xlsx doc rdf txt jpg png gif tiff pdf odf',
       'max_filesize' => '',
       'title_field' => 0,
       'user_register_form' => FALSE,
@@ -1005,7 +1005,7 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>');
   t('Link API');
   t('Link file');
-  t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. . See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--data-dictionary">data dictionary</a> for more info.');
+  t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--data-dictionary">data dictionary</a> for more info.');
   t('Publisher');
   t('Resources');
   t('Spatial / Geographical Coverage Area');
