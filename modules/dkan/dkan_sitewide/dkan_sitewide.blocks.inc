@@ -8,25 +8,29 @@
 /**
  * Implements hook_block_info().
  */
-function dkan_site_core_block_info() {
-  $blocks['dkan_site_core_license'] = array(
+function dkan_sitewide_block_info() {
+  $blocks['dkan_sitewide_license'] = array(
     'info' => t('License'),
     'cache' => DRUPAL_NO_CACHE
   );
-  $blocks['dkan_site_core_social'] = array(
+  $blocks['dkan_sitewide_social'] = array(
     'info' => t('Social'),
     'cache' => DRUPAL_NO_CACHE
   );
-  $blocks['dkan_site_core_resource_additional'] = array(
+  $blocks['dkan_sitewide_resource_add'] = array(
     'info' => t('Additional Information'),
     'cache' => DRUPAL_NO_CACHE
   );
-  $blocks['dkan_site_core_search_bar'] = array(
+  $blocks['dkan_sitewide_search_bar'] = array(
     'info' => t('Search'),
     'cache' => DRUPAL_NO_CACHE
   );
-  $blocks['dkan_site_core_other_access'] = array(
+  $blocks['dkan_sitewide_other_access'] = array(
     'info' => t('Other Access'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+  $blocks['dkan_sitewide_user_menu'] = array(
+    'info' => t('User menu'),
     'cache' => DRUPAL_NO_CACHE
   );
 
@@ -36,34 +40,40 @@ function dkan_site_core_block_info() {
 /**
  * Implements hook_block_view().
  */
-function dkan_site_core_block_view($delta = '') {
+function dkan_sitewide_block_view($delta = '') {
   $block = array();
 
   switch ($delta) {
-    case 'dkan_site_core_license':
+    case 'dkan_sitewide_license':
       $block['subject'] = t('License');
-      $block['content'] = dkan_site_core_license_block();
+      $block['content'] = dkan_sitewide_license_block();
       break;
 
-    case 'dkan_site_core_social':
+    case 'dkan_sitewide_social':
       $block['subject'] = t('Social');
-      $block['content'] = dkan_site_core_social_block();
+      $block['content'] = dkan_sitewide_social_block();
       break;
 
-    case 'dkan_site_core_resource_additional':
+    case 'dkan_sitewide_resource_add':
       $block['subject'] = t('Additional Information');
-      $block['content'] = dkan_site_core_resource_additional_block();
+      $block['content'] = dkan_sitewide_resource_additional_block();
       break;
 
-    case 'dkan_site_core_search_bar':
+    case 'dkan_sitewide_search_bar':
       $block['subject'] = '';
-      $block['content'] = dkan_site_core_search_bar();
+      $block['content'] = dkan_sitewide_search_bar();
       break;
 
-    case 'dkan_site_core_other_access':
+    case 'dkan_sitewide_other_access':
       $block['subject'] = 'Other Acess';
-      $block['content'] = dkan_site_core_other_access();
+      $block['content'] = dkan_sitewide_other_access();
       break;
+
+    case 'dkan_sitewide_user_menu':
+      $block['subject'] = t('');
+      $block['content'] = dkan_sitewide_user_menu_block();
+      break;
+
   }
   return $block;
 }
@@ -72,7 +82,7 @@ function dkan_site_core_block_view($delta = '') {
  * Creates "Additional" block for resources.
  * TODO: Make this a faux field as well attached to resource node.
  */
-function dkan_site_core_resource_additional_block($nid  = '') {
+function dkan_sitewide_resource_additional_block($nid  = '') {
   $node = $nid ? node_load($nid) : menu_get_object();
   $dataset_node = entity_metadata_wrapper('node', $node)->field_dataset_ref->value();
   $additional = isset($dataset_node->field_additional_info[$dataset_node->language]) ? $dataset_node->field_additional_info[$dataset_node->language] : array(array());
@@ -91,7 +101,7 @@ function dkan_site_core_resource_additional_block($nid  = '') {
 /**
  * Add license info to block for dataset node.
  */
-function dkan_site_core_license_block() {
+function dkan_sitewide_license_block() {
   $node = menu_get_object();
   if ($node->type != 'dataset') {
     return '';
@@ -124,7 +134,7 @@ function dkan_site_core_license_block() {
 /**
  * Adds social links.
  */
-function dkan_site_core_social_block() {
+function dkan_sitewide_social_block() {
   $path = isset($_GET['q']) ? $_GET['q'] : '<front>';
   $link = url($path, array('absolute' => TRUE));
   return '
@@ -138,7 +148,7 @@ function dkan_site_core_social_block() {
 /**
  * Creates "Other Access" block.
  */
-function dkan_site_core_other_access() {
+function dkan_sitewide_other_access() {
   $node = menu_get_object();
   $output = t('The information on this page (the dataset metadata) is also available in these formats.');
   $output .= '<p class="btn-group">';
@@ -151,7 +161,7 @@ function dkan_site_core_other_access() {
 /**
  * Creates search bar.
  */
-function dkan_site_core_search_bar() {
+function dkan_sitewide_search_bar() {
   if (module_exists('dkan_search_sql')) {
     $view = views_get_view('dataset');
     $view->set_display('page');

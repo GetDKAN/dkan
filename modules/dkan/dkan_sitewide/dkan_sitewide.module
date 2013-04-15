@@ -9,33 +9,6 @@ include_once 'dkan_sitewide.features.inc';
 include_once 'dkan_sitewide.blocks.inc';
 
 /**
- * Implements hook_block_info().
- */
-function dkan_sitewide_block_info() {
-  $blocks['dkan_sitewide_user_menu'] = array(
-    'info' => t('User menu'),
-    'cache' => DRUPAL_NO_CACHE
-  );
-
-  return $blocks;
-}
-
-/**
- * Implements hook_block_view().
- */
-function dkan_sitewide_block_view($delta = '') {
-  $block = array();
-
-  switch ($delta) {
-    case 'dkan_sitewide_user_menu':
-      $block['subject'] = t('');
-      $block['content'] = dkan_sitewide_user_menu_block();
-      break;
-  }
-  return $block;
-}
-
-/**
  * Adds group block to dataset node.
  */
 function dkan_sitewide_user_menu_block() {
@@ -56,7 +29,7 @@ function dkan_sitewide_user_menu_block() {
 /**
  * Implements hook_page_alter();
  */
-function dkan_site_core_page_alter(&$page) {
+function dkan_sitewide_page_alter(&$page) {
   // Adding page title to breadcrumb.
   // Context module does this in hook_page_alter() so we need to as well if
   // we want to add this.
@@ -67,15 +40,15 @@ function dkan_site_core_page_alter(&$page) {
   $node = menu_get_object();
   if ($node && $node->type == 'resource') {
     $nid = isset($node->field_dataset_ref[$node->language][0]['target_id']) ? $node->field_dataset_ref[$node->language][0]['target_id'] : 1;
-    $breadcrumbs[] = l(dkan_site_core_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
+    $breadcrumbs[] = l(dkan_sitewide_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
     if (arg(2) == 'datastore') {
-      $breadcrumbs[] = l(dkan_site_core_text_trim($node->title), 'node/' . $node->nid);
+      $breadcrumbs[] = l(dkan_sitewide_text_trim($node->title), 'node/' . $node->nid);
     }
   }
   elseif (arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'resource' && $query = drupal_get_query_parameters()) {
     if (isset($query['dataset'])) {
       $nid = $query['dataset'];
-      $breadcrumbs[] = l(dkan_site_core_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
+      $breadcrumbs[] = l(dkan_sitewide_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
     }
   }
   $breadcrumbs[] = drupal_get_title();
@@ -85,10 +58,10 @@ function dkan_site_core_page_alter(&$page) {
 /**
  * Implements theme_preprocess_views_views_json_style_simple().
  */
-function dkan_site_core_preprocess_views_views_json_style_simple(&$vars) {
+function dkan_sitewide_preprocess_views_views_json_style_simple(&$vars) {
   // Adds node values to list of resources.
-  if ($vars['view']->name == 'dkan_site_core_resources_json') {
-    $view = views_get_view('dkan_site_core_json');
+  if ($vars['view']->name == 'dkan_sitewide_resources_json') {
+    $view = views_get_view('dkan_sitewide_json');
     $view->preview(4);
     $renderer = $view->style_plugin->row_plugin;
     foreach ($view->field as $field) {

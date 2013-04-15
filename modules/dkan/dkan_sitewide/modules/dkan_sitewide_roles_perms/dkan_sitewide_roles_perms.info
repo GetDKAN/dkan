@@ -4,6 +4,8 @@ core = 7.x
 package = DKAN
 php = 5.2.4
 dependencies[] = ctools
+dependencies[] = dkan_dataset
+dependencies[] = dkan_dataset_content_types
 dependencies[] = features
 dependencies[] = node
 dependencies[] = strongarm
@@ -44,3 +46,10 @@ features[variable][] = user_picture_guidelines
 features[variable][] = user_picture_path
 features[variable][] = user_picture_style
 features[variable][] = user_pictures
+
+
+; Information added by drush on 2013-04-15
+version = "temp-reorg-dev"
+project = "dkan"
+datestamp = "1366033194"
+

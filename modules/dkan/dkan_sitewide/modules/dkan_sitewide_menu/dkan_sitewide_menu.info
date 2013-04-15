@@ -10,3 +10,10 @@ datestamp = 1350356092
 features[features_api][] = api:1
 features[menu_custom][] = main-menu
 features[menu_links][] = main-menu:groups
+
+
+; Information added by drush on 2013-04-15
+version = "temp-reorg-dev"
+project = "dkan"
+datestamp = "1366033194"
+
