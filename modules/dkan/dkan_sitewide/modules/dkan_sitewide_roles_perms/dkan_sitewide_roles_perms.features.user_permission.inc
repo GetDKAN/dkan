@@ -156,15 +156,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: edit boxes.
-  $permissions['edit boxes'] = array(
-    'name' => 'edit boxes',
-    'roles' => array(
-      0 => 'editor',
-    ),
-    'module' => 'boxes',
-  );
-
   // Exported permission: edit own dataset content.
   $permissions['edit own dataset content'] = array(
     'name' => 'edit own dataset content',
