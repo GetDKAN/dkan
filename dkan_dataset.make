@@ -46,8 +46,7 @@ projects[rdfx][patch][1176666] = http://drupal.org/files/find-arc-library-correc
 
 projects[field_group_table][subdir] = contrib
 projects[field_group_table][download][type] = git
-projects[field_group_table][download][url] = "git://github.com/nuams/field_group_table.git"
-projects[field_group_table][download][revision] = "770679a"
+projects[field_group_table][download][url] = "https://github.com/nuams/field_group_table.git"
 projects[field_group_table][type] = "module"
 
 projects[leaflet_draw_widget][subdir] = contrib
