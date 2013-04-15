@@ -34,6 +34,8 @@ css[dkan.css][name] = 'DKAN Style Sheet'
 css[dkan.css][description] = 'This file holds all the dkan CSS.'
 css[dkan.css][options][weight] = '9'
 
+scripts[] = js/sitewide.js
+
 settings[toggle_logo] = '1'
 settings[toggle_name] = '0'
 settings[toggle_slogan] = '0'

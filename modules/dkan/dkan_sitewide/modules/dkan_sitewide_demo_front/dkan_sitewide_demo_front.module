@@ -88,7 +88,8 @@ function dkan_add_front_block() {
  * Implements hook_form_alter().
  */
 function dkan_sitewide_demo_front_form_alter(&$form, &$form_state, $form_id) {
-  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dataset-page') {
+  // TODO: Move out of front module.
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dataset-page' || $form['#id'] == 'views-exposed-form-groups-search-entity-view-1') {
     unset($form['terms']['#size']);
     $form['#info']['filter-search_api_views_fulltext']['description'] = t('Search');
     $form['#info']['filter-search_api_views_fulltext']['label'] = '';

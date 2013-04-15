@@ -166,7 +166,6 @@ function dkan_sitewide_search_bar() {
     $exposed_form = $view->display_handler->get_plugin('exposed_form');
     $exposed_form->view->filter['search_api_views_fulltext']->options['expose']['description'] = t('eg. Gold Prices');
     $exposed_form->view->filter['search_api_views_fulltext']->options['expose']['label'] = '';
-    drupal_add_js(drupal_get_path('module', 'dkan_forms') . '/dkan_forms.js');
     return $exposed_form->render_exposed_form(true);
   }
 }

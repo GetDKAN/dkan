@@ -98,3 +98,4 @@ dependencies[] = dkan_sitewide_search_db
 dependencies[] = dkan_sitewide
 dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
+dependencies[] = dkan_datastore_api

@@ -47,3 +47,4 @@ libraries[font_awesome][download][revision] = "13d5dd373cbf3f2bddd8ac2ee8df3a196
 
 projects[omega][version] = 3.1
 projects[omega][subdir] = contrib
+projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
