@@ -26,7 +26,7 @@ function dkan_dataset_install() {
  */
 function dkan_dataset_rdf_add_dcat() {
   require_once 'import/rdf.php';
-  require_once libraries_get_path('ARC2') . 'libraries/arc/ARC2.php';
+  require_once libraries_get_path('arc') . '/ARC2.php';
   module_load_include('inc', 'rdfx', 'rdfx.terms');
   rdfx_save_terms('http://www.w3.org/ns/dcat#', 'dcat', $dcat);
   rdfx_save_terms('http://purl.org/dc/terms/', 'dc', $dc);
