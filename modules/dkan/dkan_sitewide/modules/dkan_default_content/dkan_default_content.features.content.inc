@@ -549,9 +549,9 @@ Click on Graph button under Preview and plot date (x-axis) against price (y-axis
         0 => array(
           'value' => 'DKAN is the Drupal-based version of CKAN, the world\'s leading open-source open data publishing platform. It provides a complete open source software solution for data publishers, and adheres to the API, data, and functionality standards of CKAN. The goal of the project combine the utility of CKAN with the ease of maintenance and extensibility of Drupal.
 
-          Developers: see http://drupal.org/project/dkan for code, documentation, and to contribute.
+Developers: see http://drupal.org/project/dkan for code, documentation, and to contribute.
 
-          Customers: see http://getdkan.com for more information.',
+Customers: see http://getdkan.com for more information.',
           'summary' => '',
           'format' => 'html',
           'safe_value' => 'DKAN is an Open Data Portal built in Drupal.
