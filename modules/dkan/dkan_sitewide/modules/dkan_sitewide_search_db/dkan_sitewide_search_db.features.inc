@@ -135,6 +135,11 @@ function dkan_sitewide_search_db_default_search_api_server() {
             "type" : "string",
             "boost" : "1.0"
           },
+          "status" : {
+            "table" : "search_api_db_datasets_status",
+            "type" : "boolean",
+            "boost" : "1.0"
+          },
           "author" : {
             "table" : "search_api_db_datasets_author",
             "type" : "integer",
@@ -148,6 +153,11 @@ function dkan_sitewide_search_db_default_search_api_server() {
           "search_api_viewed" : {
             "table" : "search_api_db_datasets_search_api_viewed",
             "type" : "text",
+            "boost" : "1.0"
+          },
+          "search_api_access_node" : {
+            "table" : "search_api_db_datasets_search_api_access_node",
+            "type" : "list\\u003Cstring\\u003E",
             "boost" : "1.0"
           },
           "field_license" : {
@@ -168,16 +178,6 @@ function dkan_sitewide_search_db_default_search_api_server() {
           "field_format" : {
             "table" : "search_api_db_datasets_field_format",
             "type" : "integer",
-            "boost" : "1.0"
-          },
-          "status" : {
-            "table" : "search_api_db_datasets_status",
-            "type" : "boolean",
-            "boost" : "1.0"
-          },
-          "search_api_access_node" : {
-            "table" : "search_api_db_datasets_search_api_access_node",
-            "type" : "list\\u003Cstring\\u003E",
             "boost" : "1.0"
           }
         }
