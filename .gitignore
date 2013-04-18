@@ -1,3 +1,5 @@
 libraries
 modules/contrib
+modules/dkan/dkan_dataset
+modules/dkan/dkan_datastore
 themes/contrib
