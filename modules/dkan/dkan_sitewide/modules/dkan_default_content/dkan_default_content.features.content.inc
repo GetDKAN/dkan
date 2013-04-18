@@ -43,17 +43,17 @@ function dkan_default_content_content_defaults() {
         ),
       ),
     ),
-    'og_group_ref' => array(
-      'und' => array(
-        0 => array(
-          'target_id' => '1',
-        ),
-      ),
-    ),
     'field_tags' => array(
       'und' => array(
         0 => array(
           'tid' => '9',
+        ),
+      ),
+    ),
+    'og_group_ref' => array(
+      'und' => array(
+        0 => array(
+          'target_id' => '1',
         ),
       ),
     ),
@@ -106,13 +106,6 @@ https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr
 <a href="https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr">https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr</a></p>
 ',
           'safe_summary' => '',
-        ),
-      ),
-    ),
-    'field_dataset_ref' => array(
-      'und' => array(
-        0 => array(
-          'target_id' => '11',
         ),
       ),
     ),
@@ -180,6 +173,13 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
         ),
       ),
     ),
+    'og_group_ref' => array(
+      'und' => array(
+        0 => array(
+          'target_id' => '2',
+        ),
+      ),
+    ),
     'field_tags' => array(
       'und' => array(
         0 => array(
@@ -190,13 +190,6 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
         ),
         2 => array(
           'tid' => '9',
-        ),
-      ),
-    ),
-  'og_group_ref' => array(
-      'und' => array(
-        0 => array(
-          'target_id' => '2',
         ),
       ),
     ),
@@ -224,13 +217,6 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
           'format' => 'html',
           'safe_value' => '<p>US National Foreclosure Statistics - By State - January 2012</p>',
           'safe_summary' => '',
-        ),
-      ),
-    ),
-    'field_dataset_ref' => array(
-      'und' => array(
-        0 => array(
-          'target_id' => '9',
         ),
       ),
     ),
@@ -359,13 +345,6 @@ Click on Graph button under Preview and plot date (x-axis) against price (y-axis
         ),
       ),
     ),
-    'field_dataset_ref' => array(
-      'und' => array(
-        0 => array(
-          'target_id' => '7',
-        ),
-      ),
-    ),
     'field_format' => array(
       'und' => array(
         0 => array(
@@ -417,13 +396,6 @@ Click on Graph button under Preview and plot date (x-axis) against price (y-axis
           'safe_value' => '<p>You can see this data plotted on a map, by clicking on &#039;Map&#039; below. Individual data records can be seen by clicking on each point.</p>
 ',
           'safe_summary' => '',
-        ),
-      ),
-    ),
-    'field_dataset_ref' => array(
-      'und' => array(
-        0 => array(
-          'target_id' => '4',
         ),
       ),
     ),

@@ -115,15 +115,9 @@ function dkan_sitewide_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'dkan_forms-dkan_forms_dataset_help' => array(
-          'module' => 'dkan_forms',
-          'delta' => 'dkan_forms_dataset_help',
-          'region' => 'sidebar_first',
-          'weight' => '-10',
-        ),
-        'dkan_forms-dkan_forms_resource_nodes' => array(
-          'module' => 'dkan_forms',
-          'delta' => 'dkan_forms_resource_nodes',
+        'dkan_dataset-dkan_dataset_dataset_help' => array(
+          'module' => 'dkan_dataset',
+          'delta' => 'dkan_dataset_dataset_help',
           'region' => 'sidebar_first',
           'weight' => '-10',
         ),
