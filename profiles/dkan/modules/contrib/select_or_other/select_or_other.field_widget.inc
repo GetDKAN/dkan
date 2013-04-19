@@ -22,6 +22,7 @@ function select_or_other_field_widget_info() {
     'other' => t('Other'),
     'other_title' => '',
     'other_unknown_defaults' => 'other',
+    'other_size' => 60,
   );
   return array(
     'select_or_other' => array(
@@ -32,6 +33,7 @@ function select_or_other_field_widget_info() {
         'default value' => FIELD_BEHAVIOR_DEFAULT,
       ),
       'settings' => $settings,
+      'weight' => 2,
     ),
     'select_or_other_sort' => array(
       'label' => t('Select (or other) drag and drop lists [deprecated in favor of Field Collection]'),
@@ -41,6 +43,7 @@ function select_or_other_field_widget_info() {
         'default value' => FIELD_BEHAVIOR_DEFAULT,
       ),
       'settings' => $settings,
+      'weight' => 2,
     ),
     'select_or_other_buttons' => array(
       'label' => t('Select (or other) check boxes/radio buttons'),
@@ -50,6 +53,7 @@ function select_or_other_field_widget_info() {
         'default value' => FIELD_BEHAVIOR_DEFAULT,
       ),
       'settings' => $settings,
+      'weight' => 2,
     ),
   );
 }
@@ -114,11 +118,12 @@ function select_or_other_field_widget_form_prepare_options($field, $instance, $h
     || ($instance['widget']['type'] == 'select_or_other_sort'));
   $multiple_checkbox = ($instance['widget']['type'] == 'select_or_other_buttons' && $field['cardinality'] == -1);
 
+  $empty_option = array('_none' => theme('select_or_other_none', array('instance' => $instance)));
   // Multiple select.
   if ($multiple) {
     // Add a 'none' option for non-required fields.
     if (!$required) {
-      $options = array('' => theme('select_or_other_none', array('instance' => $instance))) + $options;
+      $options = $empty_option + $options;
     }
   }
   // Single select.
@@ -126,10 +131,7 @@ function select_or_other_field_widget_form_prepare_options($field, $instance, $h
     // Add a 'none' option for non-required fields, and a 'select a value'
     // option for required fields that do not come with a value selected.
     if (!$required) {
-      $options = array('' => theme('select_or_other_none', array('instance' => $instance))) + $options;
-    }
-    elseif (!$has_value) {
-      $options = array('' => theme('select_or_other_none', array('instance' => $instance, 'option' => 'option_select'))) + $options;
+      $options = $empty_option + $options;
     }
   }
 
@@ -151,7 +153,8 @@ function select_or_other_field_widget_form(&$form, &$form_state, $field, $instan
     '#title' => isset($instance['label']) ? $instance['label'] : NULL,
     '#other' => isset($instance['widget']['settings']['other']) ? $instance['widget']['settings']['other'] : t('Other'),
     '#other_title' => !empty($instance['widget']['settings']['other_title']) ? $instance['widget']['settings']['other_title'] : NULL,
-    '#default_value' => !empty($items[$delta]) ? $items[$delta] : NULL,
+    '#other_size' => $instance['widget']['settings']['other_size'],
+    '#default_value' => !empty($items[$delta]['value']) ? $items[$delta]['value'] : NULL,
     '#options' => select_or_other_field_widget_form_prepare_options($field, $instance, !empty($items[$delta])),
     '#description' => isset($instance['description']) ? $instance['description'] : '',
     '#multiple' => $field['cardinality'] == 1 ? FALSE : $field['cardinality'],
@@ -259,6 +262,13 @@ function select_or_other_field_widget_settings_form($field, $instance) {
     '#default_value' => isset($settings['other_unknown_defaults']) ? $settings['other_unknown_defaults'] : 'other',
     '#required' => TRUE,
   );
+  $form['other_size'] = array(
+    '#type' => 'textfield',
+    '#title' => t('<em>Other</em> field size'),
+    '#default_value' => $settings['other_size'],
+    '#required' => TRUE,
+    '#element_validate' => array('element_validate_integer_positive'),
+  );
   $form['sort_options'] = array(
     '#type' => 'checkbox',
     '#title' => t('Sort options'),
@@ -292,6 +302,21 @@ function select_or_other_field_widget_settings_validate($element, &$form_state, 
 }
 
 /**
+ * Transforms submitted form values into field storage format.
+ * Align with Drupal core select list, NULL (-None-) value.
+ * http://drupal.org/node/1830090
+ */
+function _select_or_other_options_form_to_storage($value) {
+  if (isset($value[0])) {
+    $index = array_search('_none', $value[0], TRUE);
+    if ($index !== FALSE) {
+      unset($value[0][$index]);
+    }
+  }
+  return $value;
+}
+
+/**
  * Element validate callback for a Select (or other) field widget.
  */
 function select_or_other_field_widget_validate($element, &$form_state) {
@@ -317,7 +342,7 @@ function select_or_other_field_widget_validate($element, &$form_state) {
     $value = $element['select']['#value'];
   }
   if ($other_selected && !$element['other']['#value']) {
-    form_error($element['other'], t('%name: @title is required', array('%name' => t($element['select']['#title']), '@title' => $element['#other'])));
+    form_error($element['other'], t('!name: !title is required', array('!name' => t($element['select']['#title']), '!title' => $element['#other'])));
   }
   if (isset($value) && $value !== "") {
     if (in_array($element['#field_widget'], array('select_or_other', 'select_or_other_buttons'))) {
@@ -326,21 +351,21 @@ function select_or_other_field_widget_validate($element, &$form_state) {
         unset($items[0]);
       }
       if ($element['#multiple'] >= 2 && count($value) > $element['#multiple']) {
-        form_error($element['select'], t('%name: this field cannot hold more than @count values.', array('%name' => t($element['select']['#title']), '@count' => $element['#multiple'])));
+        form_error($element['select'], t('!name: cannot hold more than @count values.', array('!name' => t($element['select']['#title']), '@count' => $element['#multiple'])));
       }
       $delta = 0;
       $values = array();
       foreach ((array)$value as $v) {
         if ($field_info['type'] == 'number_integer' && !preg_match('/^-?\d+$/', $v)) {
-          form_error($element, t('Value must be a valid integer.'));
+          form_error($element, t('!name field must be a valid integer.', array('%name' => t($element['select']['#title']))));
           break;
         }
         if (($field_info['type'] == 'number_float' || $field_info['type'] == 'number_decimal') && !is_numeric($v)) {
-          form_error($element, t('Value must be a valid integer or decimal.'));
+          form_error($element, t('!name field must be a valid integer or decimal.', array('!name' => t($element['select']['#title']))));
           break;
         }
         elseif ($field_info['type'] == 'text' && drupal_strlen($v) > $field_info['settings']['max_length']) {
-          form_error($element, t('Value must be a string at most @max characters long.', array('@max' => $field_info['settings']['max_length'])));
+          form_error($element, t('!name field must be a string at most @max characters long.', array('!name' => t($element['select']['#title']), '@max' => $field_info['settings']['max_length'])));
           break;
         }
         $values[$delta++]['value'] = $v;
@@ -350,6 +375,11 @@ function select_or_other_field_widget_validate($element, &$form_state) {
     elseif ($element['#field_widget'] == 'select_or_other_sort') {
       $value = array('value' => $value);
     }
+
+    // Align with Drupal core select list, NULL (-None-) value.
+    // http://drupal.org/node/1830090
+    $value = _select_or_other_options_form_to_storage($value);
+
     form_set_value($element, $value, $form_state);
     $form_state['clicked_button']['#post'][$element['#name']] = $value; // Is this something we should do?
   }
@@ -401,17 +431,20 @@ function select_or_other_field_formatter_info() {
 function select_or_other_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
   $settings = $display['settings'];
+  $field_options = array();
 
-  $field_options = explode("\n", $instance['widget']['settings']['available_options']);
-  $pos = strpos($instance['widget']['settings']['available_options'], '|');
+  if (isset($instance['widget']['settings']['available_options'])) {
+    $field_options = explode("\n", $instance['widget']['settings']['available_options']);
+    $pos = strpos($instance['widget']['settings']['available_options'], '|');
 
-  if ($pos !== FALSE) {
-    // There are keys.
-    foreach ($field_options as $field_item) {
-      $exploded = explode('|', $field_item);
-      $temp_options[$exploded[0]] = $exploded[1];
+    if ($pos !== FALSE) {
+      // There are keys.
+      foreach ($field_options as $field_item) {
+        $exploded = explode('|', $field_item);
+        $temp_options[$exploded[0]] = $exploded[1];
+      }
+      $field_options = $temp_options;
     }
-    $field_options = $temp_options;
   }
 
   foreach ($items as $delta => $item) {

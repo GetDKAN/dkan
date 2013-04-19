@@ -15,7 +15,9 @@
     }
     if (jQuery(ele).find(".select-or-other-select option:selected[value=select_or_other], .select-or-other-select:checked[value=select_or_other]").length) {
       jQuery(ele).find(".select-or-other-other").parent("div.form-item").show(speed, function() {
-        $(this).find(".select-or-other-other").focus();
+        if(!page_init) {
+          $(this).find(".select-or-other-other").focus();
+        }
       });
     }
     else {

@@ -242,6 +242,23 @@ class RestWSTestCase extends DrupalWebTestCase {
     // Clear the static cache, otherwise we won't see the update.
     $node = node_load($node->nid, NULL, TRUE);
     $this->assertNotEqual($node->title, $new_title, 'Node title was not updated in the database.');
+
+    // Simulate a cache poisoning attack where JSON could get into the page
+    // cache.
+    // Grant node resource access to anonymous users.
+    user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access resource node'));
+    // Enable page caching.
+    variable_set('cache', 1);
+    // Reset cURL here to delete any stored request settings.
+    unset($this->curlHandle);
+    // Request the JSON representation of the node.
+    $this->drupalGet("node/$node->nid", array(), array('Accept: application/json'));
+    $this->assertUrl("node/$node->nid.json", array(), 'Requesting a resource with JSON Accept header redirects to the .json URL.');
+    // Now request the HTML representation.
+    $result = $this->drupalGet("node/$node->nid");
+    $content_type = $this->drupalGetHeader('content-type');
+    $this->assertNotEqual($content_type, 'application/json', 'Content type header is not JSON after requesting HTML.');
+    $this->assertNull(drupal_json_decode($result), 'Response body is not JSON after requesting HTML.');
   }
 
   /**

@@ -364,7 +364,7 @@ class OgMetaData extends DrupalWebTestCase {
     $settings = array();
     $settings['type'] = 'article';
 
-    // Create group enteties.
+    // Create group entities.
     foreach (og_group_content_states() as $state => $value) {
       $node = $this->drupalCreateNode($settings);
 

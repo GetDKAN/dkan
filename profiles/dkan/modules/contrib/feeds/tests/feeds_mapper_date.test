@@ -39,11 +39,33 @@ class FeedsMapperDateTestCase extends FeedsMapperTestCase {
       //'datetime' => 'datetime', // REMOVED because the field is broken ATM.
     ));
 
+    // Hack to get date fields to not round to every 15 minutes.
+    foreach (array('date', 'datestamp') as $field) {
+      $field = 'field_' . $field;
+      $edit = array(
+        'widget_type' => 'date_select',
+      );
+      $this->drupalPost('admin/structure/types/manage/' . $typename . '/fields/' . $field . '/widget-type', $edit, 'Continue');
+      $edit = array(
+        'instance[widget][settings][increment]' => 1,
+      );
+      $this->drupalPost('admin/structure/types/manage/' . $typename . '/fields/' . $field, $edit, 'Save settings');
+      $edit = array(
+        'widget_type' => 'date_text',
+      );
+      $this->drupalPost('admin/structure/types/manage/' . $typename . '/fields/' . $field . '/widget-type', $edit, 'Continue');
+    }
+
     // Create and configure importer.
     $this->createImporterConfiguration('Date RSS', 'daterss');
-    $this->setSettings('daterss', NULL, array('content_type' => '', 'import_period' => FEEDS_SCHEDULE_NEVER));
+    $this->setSettings('daterss', NULL, array(
+      'content_type' => '',
+      'import_period' => FEEDS_SCHEDULE_NEVER,
+    ));
     $this->setPlugin('daterss', 'FeedsFileFetcher');
-    $this->setSettings('daterss', 'FeedsNodeProcessor', array('bundle' => $typename));
+    $this->setSettings('daterss', 'FeedsNodeProcessor', array(
+      'bundle' => $typename,
+    ));
     $this->addMappings('daterss', array(
       0 => array(
         'source' => 'title',

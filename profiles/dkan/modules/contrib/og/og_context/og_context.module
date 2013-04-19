@@ -194,9 +194,13 @@ function og_context($group_type = 'node', $group = NULL) {
   global $user;
   $context = &drupal_static(__FUNCTION__, FALSE);
 
-  if (empty($group) && !empty($context) && $context['group_type'] == $group_type) {
+  if (empty($group) && $context !== FALSE && (empty($context)) || (!empty($context['group_type']) && $context['group_type'] == $group_type)) {
     return $context;
   }
+
+  // Set the context to array, so we can now this function has been already
+  // executed.
+  $context = array();
 
   if (!empty($group)) {
     // Set the group.
@@ -552,7 +556,7 @@ function _group_context_handler_entity($entity_type = 'node', $entity = NULL, $p
  *   TRUE if user is allowed access to the page.
  */
 function _og_context_views_page_access($group_type, $perm, $group_id_arg = FALSE) {
-  if ($group_id_arg !== FALSE) {
+  if ($group_id_arg !== '') {
     $gid = arg($group_id_arg);
     if (is_numeric($gid)) {
       return og_user_access($group_type, $gid, $perm);

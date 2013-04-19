@@ -3058,7 +3058,6 @@ function form_process_radios($element) {
  */
 function theme_checkbox($variables) {
   $element = $variables['element'];
-  $t = get_t();
   $element['#attributes']['type'] = 'checkbox';
   element_set_attributes($element, array('id', 'name', '#return_value' => 'value'));
 
@@ -3662,35 +3661,6 @@ function form_pre_render_fieldset($element) {
 /**
  * Creates a group formatted as vertical tabs.
  *
- * Note that autocomplete callbacks should include special handling as the
- * user's input may contain forward slashes. If the user-submitted string has a
- * '/' in the text that is sent in the autocomplete request, the menu system
- * will split the text and pass it to the callback as multiple arguments.
- *
- * Suppose your autocomplete path in the menu system is 'mymodule_autocomplete.'
- * In your form you have:
- * @code
- * '#autocomplete_path' => 'mymodule_autocomplete/' . $some_key . '/' . $some_id,
- * @endcode
- * The user types in "keywords" so the full path called is:
- * 'mymodule_autocomplete/$some_key/$some_id/keywords'
- *
- * You should include code similar to the following to handle slashes in the
- * input:
- * @code
- * function mymodule_autocomplete_callback($arg1, $arg2, $keywords) {
- *   $args = func_get_args();
- *   // We need to remove $arg1 and $arg2 from the beginning of the array so we
- *   // are left with the keywords.
- *   array_shift($args);
- *   array_shift($args);
- *   // We store the user's original input in $keywords, including any slashes.
- *   $keywords = implode('/', $args);
- *
- *   // Your code here.
- * }
- * @endcode
- *
  * @param $element
  *   An associative array containing the properties and children of the
  *   fieldset.
@@ -4039,8 +4009,6 @@ function theme_file($variables) {
  */
 function theme_form_element($variables) {
   $element = &$variables['element'];
-  // This is also used in the installer, pre-database setup.
-  $t = get_t();
 
   // This function is invoked as theme wrapper, but the rendered form element
   // may not necessarily have been processed by form_builder().
@@ -4199,7 +4167,7 @@ function _form_set_class(&$element, $class = array()) {
   if (!empty($element['#required'])) {
     $element['#attributes']['class'][] = 'required';
   }
-  if (isset($element['#parents']) && form_get_error($element) !== NULL) {
+  if (isset($element['#parents']) && form_get_error($element) !== NULL && !empty($element['#validated'])) {
     $element['#attributes']['class'][] = 'error';
   }
 }

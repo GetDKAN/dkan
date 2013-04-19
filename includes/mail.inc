@@ -93,7 +93,9 @@ define('MAIL_LINE_ENDINGS', isset($_SERVER['WINDIR']) || strpos($_SERVER['SERVER
  *   will be {$module}_{$key}.
  * @param $to
  *   The e-mail address or addresses where the message will be sent to. The
- *   formatting of this string must comply with RFC 2822. Some examples are:
+ *   formatting of this string will be validated with the
+ *   @link http://php.net/manual/filter.filters.validate.php PHP e-mail validation filter. @endlink
+ *   Some examples are:
  *   - user@example.com
  *   - user@example.com, anotheruser@example.com
  *   - User <user@example.com>
@@ -212,9 +214,9 @@ function drupal_mail($module, $key, $to, $language, $params = array(), $from = N
  * 'mail_system', which is a keyed array.  The default implementation
  * is the class whose name is the value of 'default-system' key. A more specific
  * match first to key and then to module will be used in preference to the
- * default. To specificy a different class for all mail sent by one module, set
+ * default. To specify a different class for all mail sent by one module, set
  * the class name as the value for the key corresponding to the module name. To
- * specificy a class for a particular message sent by one module, set the class
+ * specify a class for a particular message sent by one module, set the class
  * name as the value for the array key that is the message id, which is
  * "${module}_${key}".
  *
@@ -307,19 +309,21 @@ interface MailSystemInterface {
    *   - id: A unique identifier of the e-mail type. Examples: 'contact_user_copy',
    *     'user_password_reset'.
    *   - to: The mail address or addresses where the message will be sent to.
-   *     The formatting of this string must comply with RFC 2822. Some examples:
+   *     The formatting of this string will be validated with the
+   *     @link http://php.net/manual/filter.filters.validate.php PHP e-mail validation filter. @endlink
+   *     Some examples are:
    *     - user@example.com
    *     - user@example.com, anotheruser@example.com
    *     - User <user@example.com>
    *     - User <user@example.com>, Another User <anotheruser@example.com>
-   *    - subject: Subject of the e-mail to be sent. This must not contain any
-   *      newline characters, or the mail may not be sent properly.
-   *    - body: Message to be sent. Accepts both CRLF and LF line-endings.
-   *      E-mail bodies must be wrapped. You can use drupal_wrap_mail() for
-   *      smart plain text wrapping.
-   *    - headers: Associative array containing all additional mail headers not
-   *      defined by one of the other parameters.  PHP's mail() looks for Cc
-   *      and Bcc headers and sends the mail to addresses in these headers too.
+   *   - subject: Subject of the e-mail to be sent. This must not contain any
+   *     newline characters, or the mail may not be sent properly.
+   *   - body: Message to be sent. Accepts both CRLF and LF line-endings.
+   *     E-mail bodies must be wrapped. You can use drupal_wrap_mail() for
+   *     smart plain text wrapping.
+   *   - headers: Associative array containing all additional mail headers not
+   *     defined by one of the other parameters.  PHP's mail() looks for Cc and
+   *     Bcc headers and sends the mail to addresses in these headers too.
    *
    * @return
    *   TRUE if the mail was successfully accepted for delivery, otherwise FALSE.

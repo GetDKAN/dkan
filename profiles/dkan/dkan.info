@@ -14,13 +14,9 @@ dependencies[] = path
 dependencies[] = rdf
 dependencies[] = taxonomy
 
-; Development
-dependencies[] = dkan_dev
-
 ; Contrib
 dependencies[] = admin_menu
 dependencies[] = autocomplete_deluxe
-dependencies[] = boxes
 dependencies[] = bueditor
 dependencies[] = beautytips
 dependencies[] = context
@@ -90,28 +86,17 @@ dependencies[] = rdfui
 dependencies[] = rdfx
 
 ; DKAN Features
-dependencies[] = dkan_content_types
-dependencies[] = dkan_context
-dependencies[] = dkan_data_api
+dependencies[] = dkan_sitewide_menu
+dependencies[] = dkan_sitewide_user
+dependencies[] = dkan_sitewide_roles_perms
+dependencies[] = dkan_sitewide_context
 dependencies[] = dkan_default_content
-dependencies[] = dkan_front
-dependencies[] = dkan_groups
-dependencies[] = dkan_menu
-dependencies[] = dkan_search_sql
-dependencies[] = dkan_roles_and_permissions
+dependencies[] = dkan_sitewide_demo_front
+dependencies[] = dkan_dataset_groups
+dependencies[] = dkan_sitewide_search_db
 
 ; DKAN Modules
-dependencies[] = dkan_dataset
-dependencies[] = dkan_data_api
-dependencies[] = dkan_datastore
-dependencies[] = fdr
-dependencies[] = dkan_forms
-dependencies[] = dkan_import
 dependencies[] = dkan_sitewide
-
-
-; Information added by drush on 2013-04-05
-version = "unknown"
-project = "dkan"
-datestamp = "1365124642"
-
+dependencies[] = dkan_dataset
+dependencies[] = dkan_datastore
+dependencies[] = dkan_datastore_api

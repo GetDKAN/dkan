@@ -167,7 +167,7 @@ function recline_field_widget_form(&$form, &$form_state, $field, $instance, $lan
       $default_value = $elements[$delta]['#default_value'][$view];
     }
     // If file is already uploaded, but removed.
-    elseif (isset($element['#entity']->{$element['#field_name']})) {
+    elseif (isset($element['#entity']->{$element['#field_name']}) && $element['#entity']->{$element['#field_name']}) {
       $default_value = $element['#entity']->{$element['#field_name']}[$element['#entity']->language][$delta][$view];
     }
     // If selections are made, then file is uploaded.
@@ -289,24 +289,24 @@ function theme_recline_default_formatter($variables) {
     $link_text = $file->description;
     $options['attributes']['title'] = check_plain($file['filename']);
   }
-  drupal_add_library('system', 'ui.sortable');
-  $recline = libraries_load('recline');
-  $module_path = drupal_get_path('module', 'recline');
-  drupal_add_js($module_path . '/recline.app.js');
-  drupal_add_css($module_path . '/recline.css');
-  $file_path = file_create_url($variables['item']['uri']);
-  $settings['recline'] = array(
-    'file' => $file_path,
-    'grid' => (int)$variables['item']['grid'],
-    'graph' => (int)$variables['item']['graph'],
-    'map' => (int)$variables['item']['map'],
-    'timeline' => (int)$variables['item']['timeline'],
-    'transform' => (int)$variables['item']['transform'],
-  );
-  drupal_add_js($settings, 'setting');
+  if ($variables['item']['grid'] || $variables['item']['graph'] || $variables['item']['map']) {
+    drupal_add_library('system', 'ui.sortable');
+    $recline = libraries_load('recline');
+    $module_path = drupal_get_path('module', 'recline');
+    drupal_add_js($module_path . '/recline.app.js');
+    drupal_add_css($module_path . '/recline.css');
+    $file_path = file_create_url($variables['item']['uri']);
+    $settings['recline'] = array(
+      'file' => $file_path,
+      'grid' => (int)$variables['item']['grid'],
+      'graph' => (int)$variables['item']['graph'],
+      'map' => (int)$variables['item']['map'],
+    );
+    drupal_add_js($settings, 'setting');
+  }
 
   $file = l('Download', $url, $options);
-  return '<div class="download">' . $file . '</div><span class="data-explorer-here"></span>';
+  return '<div class="download">' . $file . '</div><span class="data-explorer"></span>';
 }
 
 /**
@@ -338,8 +338,6 @@ function recline_view_options() {
     'grid' => t('Grid'),
     'graph' => t('Graph'),
     'map' => t('Map'),
-    'timeline' => t('Timeline'),
-    'transform' => t('Transform'),
   );
 }
 

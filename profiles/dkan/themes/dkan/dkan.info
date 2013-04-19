@@ -4,6 +4,7 @@ core = '7.x'
 engine = 'phptemplate'
 screenshot = 'screenshot.png'
 base theme = 'omega'
+regions[help] = Help
 regions[page_top] = 'Page Top'
 regions[page_bottom] = 'Page Bottom'
 regions[content] = 'Content'
@@ -33,6 +34,8 @@ zones[postscript] = 'Postscript'
 css[dkan.css][name] = 'DKAN Style Sheet'
 css[dkan.css][description] = 'This file holds all the dkan CSS.'
 css[dkan.css][options][weight] = '9'
+
+scripts[] = js/sitewide.js
 
 settings[toggle_logo] = '1'
 settings[toggle_name] = '0'
@@ -116,7 +119,7 @@ settings[alpha_exclude][modules/tracker/tracker.css] = '0'
 settings[alpha_exclude][modules/update/update.css] = '0'
 settings[alpha_debug_block_toggle] = '0'
 settings[alpha_debug_block_active] = '0'
-settings[alpha_debug_grid_toggle] = '1'
+settings[alpha_debug_grid_toggle] = '0'
 settings[alpha_debug_grid_active] = '0'
 settings[alpha_debug_grid_roles][1] = '1'
 settings[alpha_debug_grid_roles][2] = '2'
@@ -374,8 +377,8 @@ settings[alpha_region_footer_second_equal_height_container] = '0'
 version = '1.x'
 
 
-; Information added by drush on 2013-04-05
-version = "unknown"
+; Information added by drush on 2013-04-15
+version = "temp-reorg-dev"
 project = "dkan"
-datestamp = "1365124642"
+datestamp = "1366033194"
 

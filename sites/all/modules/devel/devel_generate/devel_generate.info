@@ -1,0 +1,14 @@
+name = Devel generate
+description = Generate dummy users, nodes, and taxonomy terms.
+package = Development
+core = 7.x
+dependencies[] = devel
+tags[] = developer
+configure = admin/config/development/generate
+
+; Information added by drupal.org packaging script on 2012-06-05
+version = "7.x-1.3"
+core = "7.x"
+project = "devel"
+datestamp = "1338940281"
+

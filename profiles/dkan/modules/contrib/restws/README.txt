@@ -68,8 +68,6 @@ Design goals and concept
        set to the MIME type of <format>)
 
      * Read: HTTP GET /<entity type name>/<entity id>.<format>
-       or    HTTP GET /<entity type name>/<entity id> (requires HTTP Accept
-       header set to the MIME type of <format>)
 
      * Update: HTTP PUT /<entity type name>/<entity id>.<format>
        or      HTTP PUT /<entity type name>/<entity id> (requires HTTP
@@ -98,8 +96,6 @@ The module also supports querying for resources:
 
   Query: HTTP GET /<entity type name>.<format>?<filter>=<value1>&
   <meta_control>=<value2>
-  or     HTTP GET /<entity type name>?<filter>=<value1>&<meta_control>=
-  <value2> (requires HTTP Accept header set to the MIME type of <format>)
 
 By default RestWS simply outputs all resources available for the given type:
 

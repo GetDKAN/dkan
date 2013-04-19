@@ -98,7 +98,7 @@ abstract class FeedsPlugin extends FeedsConfigurable implements FeedsSourceInter
    *
    * @todo: Use CTools Plugin API.
    */
-  protected static function loadMappers() {
+  public static function loadMappers() {
     static $loaded = FALSE;
     if (!$loaded) {
       $path = drupal_get_path('module', 'feeds') . '/mappers';

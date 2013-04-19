@@ -52,13 +52,13 @@ class og_context_plugin_access_og_perm extends views_plugin_access {
     );
 
     $current_display = $this->view->current_display;
-    if ($this->view->display[$current_display]->display_plugin == 'page') {
+    if ($this->view->display[$current_display]->handler->has_path()) {
       // Show the group ID argument position only for "Page" displays.
       $form['group_id_arg'] = array(
         '#type' => 'select',
         '#title' => t('Argument position for group ID'),
         '#default_value' => $this->options['group_id_arg'],
-        '#options' => array(FALSE => t('None')) + range(0, 9),
+        '#options' => array(NULL => t('None')) + range(0, 9),
         '#description' => t('Group ID argument position with arg() function. e.g. if your dynamic path is "node/%/group/%/overview" and you are using the second "%" for group IDs you have to choose "3" like "arg(3)".'),
       );
     }

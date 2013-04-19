@@ -2,13 +2,26 @@
 
 /**
  * @file
- * Mapper that exposes a node's taxonomy vocabularies as mapping targets.
+ * On behalf implementation of Feeds mapping API for taxonomy.module.
  */
 
 /**
+ * Search by term name.
+ */
+define('FEEDS_TAXONOMY_SEARCH_TERM_NAME', 0);
+
+/**
+ * Search by term id.
+ */
+define('FEEDS_TAXONOMY_SEARCH_TERM_ID', 1);
+
+/**
+ * Search by GUID.
+ */
+define('FEEDS_TAXONOMY_SEARCH_TERM_GUID', 2);
+
+/**
  * Implements hook_feeds_parser_sources_alter().
- *
- * @todo: Upgrade to 7.
  */
 function taxonomy_feeds_parser_sources_alter(&$sources, $content_type) {
   if (!empty($content_type)) {
@@ -36,6 +49,7 @@ function taxonomy_feeds_get_source(FeedsSource $source, FeedsParserResult $resul
         $result[] = new FeedsTermElement($term);
       }
     }
+
     return $result;
   }
 }
@@ -50,7 +64,9 @@ function taxonomy_feeds_processor_targets_alter(&$targets, $entity_type, $bundle
       $targets[$name] = array(
         'name' => check_plain($instance['label']),
         'callback' => 'taxonomy_feeds_set_target',
-        'description' => t('The @label field of the node.', array('@label' => $instance['label'])),
+        'description' => t('The @label field of the entity.', array('@label' => $instance['label'])),
+        'summary_callback' => 'taxonomy_feeds_summary_callback',
+        'form_callback' => 'taxonomy_feeds_form_callback',
       );
     }
   }
@@ -61,7 +77,7 @@ function taxonomy_feeds_processor_targets_alter(&$targets, $entity_type, $bundle
  *
  * @todo Do not create new terms for non-autotag fields.
  */
-function taxonomy_feeds_set_target($source, $entity, $target, $terms) {
+function taxonomy_feeds_set_target($source, $entity, $target, $terms, $mapping = array()) {
   if (empty($terms)) {
     return;
   }
@@ -71,42 +87,98 @@ function taxonomy_feeds_set_target($source, $entity, $target, $terms) {
     $terms = array($terms);
   }
 
+  // Add in default values.
+  $mapping += array(
+    'term_search' => FEEDS_TAXONOMY_SEARCH_TERM_NAME,
+    'autocreate' => FALSE,
+  );
+
   $info = field_info_field($target);
 
-  // See http://drupal.org/node/881530
-  if (isset($info['settings']['allowed_values'][0]['vocabulary'])) {
-    $vocabulary = taxonomy_vocabulary_machine_name_load($info['settings']['allowed_values'][0]['vocabulary']);
-  }
-  else {
-    $vocabulary = taxonomy_vocabulary_load($info['settings']['allowed_values'][0]['vid']);
+  $cache = &drupal_static(__FUNCTION__);
+  if (!isset($cache['allowed_values'][$target])) {
+    $cache['allowed_values'][$target] = taxonomy_allowed_values($info);
   }
 
-  $i = 0;
-  $entity->$target = isset($entity->$target) ? $entity->$target : array();
+  if (!isset($cache['allowed_vocabularies'][$target])) {
+    foreach ($info['settings']['allowed_values'] as $tree) {
+      if ($vocabulary = taxonomy_vocabulary_machine_name_load($tree['vocabulary'])) {
+        $cache['allowed_vocabularies'][$target][$vocabulary->vid] = $vocabulary->machine_name;
+      }
+    }
+  }
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'taxonomy_term')
+    ->entityCondition('bundle', $cache['allowed_vocabularies'][$target])
+    ->range(0, 1);
+
+
+  $field = isset($entity->$target) ? $entity->$target : array('und' => array());
+
+  // Allow for multiple mappings to the same target.
+  $delta = count($field['und']);
+
+  // Iterate over all values.
   foreach ($terms as $term) {
-    $tid = 0;
+
+    if ($info['cardinality'] == $delta) {
+      break;
+    }
+
+    $tid = FALSE;
+
+    // FeedsTermElement already is a term.
     if ($term instanceof FeedsTermElement) {
       $tid = $term->tid;
     }
-    elseif (is_numeric($term)) {
-      $tid = $term;
-    }
-    elseif (is_string($term)) {
-      $tid = taxonomy_term_check_term($term, $vocabulary->vid);
-    }
-    if ($tid) {
-      $entity->{$target}['und'][$i]['tid'] = $tid;
+    else {
+      switch ($mapping['term_search']) {
+
+        // Lookup by name.
+        case FEEDS_TAXONOMY_SEARCH_TERM_NAME:
+          $name_query = clone $query;
+          if ($tids = $name_query->propertyCondition('name', $term)->execute()) {
+            $tid = key($tids['taxonomy_term']);
+          }
+          elseif ($mapping['autocreate']) {
+            $term = (object) array(
+              'name' => $term,
+              'vid' => key($cache['allowed_vocabularies'][$target]),
+              'vocabulary_machine_name' => reset($cache['allowed_vocabularies'][$target]),
+            );
+            taxonomy_term_save($term);
+            $tid = $term->tid;
+            // Add to the list of allowed values.
+            $cache['allowed_values'][$target][$tid] = $term->name;
+          }
+          break;
+
+        // Lookup by tid.
+        case FEEDS_TAXONOMY_SEARCH_TERM_ID:
+          if (is_numeric($term)) {
+            $tid = $term;
+          }
+          break;
+
+        // Lookup by GUID.
+        case FEEDS_TAXONOMY_SEARCH_TERM_GUID:
+          $tid = taxonomy_feeds_term_lookup_term_by_guid($term);
+          break;
+      }
     }
 
-    if ($info['cardinality'] == 1) {
-      break;
+    if ($tid && isset($cache['allowed_values'][$target][$tid])) {
+      $field['und'][$delta]['tid'] = $tid;
+      $delta++;
     }
-    $i++;
   }
+
+  $entity->$target = $field;
 }
 
 /**
- * Find all terms associated with the given node, within one vocabulary.
+ * Finds all terms associated with the given node, within one vocabulary.
  */
 function taxonomy_feeds_node_get_terms($node, $key = 'tid') {
   $terms = &drupal_static(__FUNCTION__);
@@ -118,7 +190,7 @@ function taxonomy_feeds_node_get_terms($node, $key = 'tid') {
     foreach ($fields as $field_name => $field) {
       if ($field['type'] == 'taxonomy_term_reference' && field_info_instance('node', $field_name, $node->type)) {
         if (($items = field_get_items('node', $node, $field_name)) && is_array($items)) {
-          $tids = array_merge($tids, array_map('_taxonomy_extract_tid', $items));
+          $tids = array_merge($tids, array_map('_taxonomy_feeds_extract_tid', $items));
         }
       }
     }
@@ -134,53 +206,106 @@ function taxonomy_feeds_node_get_terms($node, $key = 'tid') {
 }
 
 /**
- * Helper function used in taxonomy_feeds_node_get_terms(). Extracts
- * tid from array item returned by field_get_items().
+ * Extracts tid from array item returned by field_get_items().
  *
- * @param $item tid information in a form of single element array (key == 'tid', value == tid we're looking for)
+ * @param array $item
+ *   Tid information in the form of a single element array
+ *   (key == 'tid', value == tid we're looking for)
  *
- * @return tid extracted from $item.
+ * @return int
+ *   Term id extracted from $item.
  *
  * @see taxonomy_feeds_node_get_terms()
  * @see field_get_items()
  */
-function _taxonomy_extract_tid($item) {
+function _taxonomy_feeds_extract_tid($item) {
   return $item['tid'];
 }
 
 /**
- * Checks whether a term identified by name and vocabulary exists. Creates a
- * new term if it does not exist.
+ * Looks up a term by GUID, assumes SQL storage backend.
  *
- * @param $name
- *   A term name.
- * @param $vid
- *   A vocabulary id.
+ * @param string $guid
+ *   The Feeds GUID to compare against.
  *
- * @return
- *   A term id.
+ * @return int|FALSE
+ *   The term id, or FALSE if one was not found.
  */
-function taxonomy_term_check_term($name, $vid) {
-  $name = trim($name);
-  $term = taxonomy_term_lookup_term($name, $vid);
-  if (empty($term)) {
-    $term = new stdClass();
-    $term->name = $name;
-    $term->vid = $vid;
-    taxonomy_term_save($term);
-    return $term->tid;
-  }
-  return $term->tid;
+function taxonomy_feeds_term_lookup_term_by_guid($guid) {
+  return db_select('feeds_item')
+    ->fields('feeds_item', array('entity_id'))
+    ->condition('entity_type', 'taxonomy_term')
+    ->condition('guid', $guid)
+    ->execute()
+    ->fetchField();
 }
 
 /**
- * Looks up a term, assumes SQL storage backend.
+ * Mapping configuration summary for taxonomy.module.
+ *
+ * @param array $mapping
+ *   Associative array of the mapping settings.
+ * @param array $target
+ *   Array of target settings, as defined by the processor or
+ *   hook_feeds_processor_targets_alter().
+ * @param array $form
+ *   The whole mapping form.
+ * @param array $form_state
+ *   The form state of the mapping form.
+ *
+ * @return string
+ *   Returns, as a string that may contain HTML, the summary to display while
+ *   the full form isn't visible.
+ *   If the return value is empty, no summary and no option to view the form
+ *   will be displayed.
  */
-function taxonomy_term_lookup_term($name, $vid) {
-  return db_select('taxonomy_term_data', 'td')
-    ->fields('td', array('tid', 'name'))
-    ->condition('name', $name)
-    ->condition('vid', $vid)
-    ->execute()
-    ->fetchObject();
+function taxonomy_feeds_summary_callback($mapping, $target, $form, $form_state) {
+  $options = _taxonomy_feeds_form_callback_options();
+  if (empty($mapping['term_search'])) {
+    return t('Search taxonomy terms by: <strong>@search</strong>', array('@search' => $options[FEEDS_TAXONOMY_SEARCH_TERM_NAME]));
+  }
+  return t('Search taxonomy terms by: <strong>@search</strong>', array('@search' => $options[$mapping['term_search']]));
+}
+
+/**
+ * Settings form callback.
+ *
+ * @return array
+ *   The per mapping configuration form. Once the form is saved, $mapping will
+ *   be populated with the form values.
+ */
+function taxonomy_feeds_form_callback($mapping, $target, $form, $form_state) {
+  return array(
+    'term_search' => array(
+      '#type' => 'select',
+      '#title' => t('Search taxonomy terms by'),
+      '#options' => _taxonomy_feeds_form_callback_options(),
+      '#default_value' => !empty($mapping['term_search']) ? $mapping['term_search'] : FEEDS_TAXONOMY_SEARCH_TERM_NAME,
+    ),
+    'autocreate' => array(
+      '#type' => 'checkbox',
+      '#title' => t('Auto create'),
+      '#description' => t("Create the term if it doesn't exist."),
+      '#default_value' => !empty($mapping['autocreate']) ? $mapping['autocreate'] : 0,
+      '#states' => array(
+        'visible' => array(
+          ':input[name$="[settings][term_search]"]' => array('value' => FEEDS_TAXONOMY_SEARCH_TERM_NAME),
+        ),
+      ),
+    ),
+  );
+}
+
+/**
+ * Returns the list of available term search methods.
+ *
+ * @return array
+ *   An array of taxonomy search option titles.
+ */
+function _taxonomy_feeds_form_callback_options() {
+  return array(
+    FEEDS_TAXONOMY_SEARCH_TERM_NAME => 'Term name',
+    FEEDS_TAXONOMY_SEARCH_TERM_ID => 'Term ID',
+    FEEDS_TAXONOMY_SEARCH_TERM_GUID => 'GUID',
+  );
 }

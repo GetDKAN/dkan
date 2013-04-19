@@ -2330,7 +2330,7 @@ function og_is_group_content_type($entity_type, $bundle_name) {
 }
 
 /**
- * Return all the enteties that are a group.
+ * Return all the entities that are a group.
  *
  * @return
  *   Array keyed with the entity type machine name and the entity human readable
@@ -2373,7 +2373,7 @@ function og_get_all_group_bundle() {
  *
  * @return
  *   Array keyed with the entity type machine name and the entity human readable
- *   name as the value, or an empty array if no enteties are defined as group
+ *   name as the value, or an empty array if no entities are defined as group
  *   content.
  */
 function og_get_all_group_content_entity() {
@@ -2564,6 +2564,8 @@ function og_roles($group_type, $bundle, $gid = 0, $force_group = FALSE, $include
  * Get array of default roles, keyed by their declaring module.
  *
  * @param $include
+ *   (optional) If TRUE also anonymous and authenticated roles will be returned.
+ *   Defaults to TRUE.
  *
  * @return
  *   Array of default roles, grouped by module name.
@@ -2589,13 +2591,16 @@ function og_get_default_roles($include = TRUE) {
 /**
  * Get all roles of a user in a certain group.
  *
+ * @param $group_type
+ *   The entity type of the group.
  * @param $gid
  *   The group ID.
  * @param $uid
- *   The user ID.
+ *   (optional) Integer specifying the user ID. By default an ID of current
+ *   logged in user will be used.
  * @param $include
- *   Optional; If TRUE also anonymous or authenticated role ID will be returned.
- *   Defaults to TRUE.
+ *   (optional) If TRUE also anonymous or authenticated role ID will be
+ *   returned. Defaults to TRUE.
  *
  * @return
  *   Array with the role IDs of the user as the key, and the role name as
@@ -2657,9 +2662,16 @@ function og_get_user_roles($group_type, $gid, $uid = NULL, $include = TRUE) {
  * Create a stub OG role object.
  *
  * @param $name
- * @param $gid
+ *   A name of the role.
  * @param $group_type
+ *   (optional) The entity type of the group.
+ * @param $gid
+ *   (optional) The group ID.
  * @param $group_bundle
+ *   (optional) The bundle of the group.
+ *
+ * @return
+ *   A stub OG role object.
  */
 function og_role_create($name, $group_type = '', $gid = 0, $group_bundle = '') {
   $role = new stdClass;
@@ -2673,12 +2685,12 @@ function og_role_create($name, $group_type = '', $gid = 0, $group_bundle = '') {
 /**
  * Fetch a user role from database.
  *
- * @param $role
+ * @param $rid
  *   An integer with the role ID.
  *
  * @return
- *   A fully-loaded role object if a role with the given name or ID
- *   exists, FALSE otherwise.
+ *   A fully-loaded role object if a role with the given ID exists,
+ *   FALSE otherwise.
  */
 function og_role_load($rid) {
   return db_select('og_role', 'r')
@@ -3059,7 +3071,7 @@ function og_get_default_permissions() {
 }
 
 /**
- * Get all the modules fields that can be assigned to fieldable enteties.
+ * Get all the modules fields that can be assigned to fieldable entities.
  *
  * @param $field_name
  *   The field name that was registered for the definition.

@@ -197,8 +197,12 @@ function select_or_other_element_process($element, &$form_state) {
   if (!empty($element['#maxlength'])) {
     $element['other']['#maxlength'] = $element['#maxlength'];
   }
+  if (isset($element['#other_size'])) {
+    $element['other']['#size'] = $element['#other_size'];
+  }
 
   // Hide the title from the wrapper.
+  $element['#title_error'] = $element['#title'];
   $element['#title'] = NULL;
 
   return $element;
@@ -225,7 +229,7 @@ function select_or_other_element_validate($element, &$form_state) {
     $value = $element['select']['#value'];
   }
   if ($other_selected && !$element['other']['#value']) {
-    form_error($element['other'], t('!title is required', array('!title' => $element['#title'])));
+    form_error($element['other'], t('!title field is required.', array('!title' => $element['select']['#title'])));
   }
   if (isset($value)) {
     form_set_value($element, $value, $form_state);
@@ -279,7 +283,7 @@ function theme_select_or_other_none($variables) {
  *   Boolean indicating if the key is set.
  */
 function select_or_other_multi_array_key_exists($needle, $haystack) {
-  if (array_key_exists($needle, $haystack)) {
+  if (array_key_exists(html_entity_decode($needle, ENT_QUOTES), $haystack)) {
     return TRUE;
   }
   else {

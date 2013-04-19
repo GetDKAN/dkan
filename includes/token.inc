@@ -113,13 +113,13 @@ function token_replace($text, array $data = array(), array $options = array()) {
  */
 function token_scan($text) {
   // Matches tokens with the following pattern: [$type:$name]
-  // $type and $name may not contain  [ ] or whitespace characters.
-  // $type may not contain : characters, but $name may.
+  // $type and $name may not contain  [ ] characters.
+  // $type may not contain : or whitespace characters, but $name may.
   preg_match_all('/
     \[             # [ - pattern start
     ([^\s\[\]:]*)  # match $type not containing whitespace : [ or ]
     :              # : - separator
-    ([^\s\[\]]*)   # match $name not containing whitespace [ or ]
+    ([^\[\]]*)     # match $name not containing [ or ]
     \]             # ] - pattern end
     /x', $text, $matches);
 
@@ -190,10 +190,10 @@ function token_generate($type, array $tokens, array $data = array(), array $opti
 }
 
 /**
- * Given a list of tokens, returns those that begin with a specific prefix.
+ * Returns a list of tokens that begin with a specific prefix.
  *
- * Used to extract a group of 'chained' tokens (such as [node:author:name]) from
- * the full list of tokens found in text. For example:
+ * Used to extract a group of 'chained' tokens (such as [node:author:name])
+ * from the full list of tokens found in text. For example:
  * @code
  *   $data = array(
  *     'author:name' => '[node:author:name]',
@@ -230,8 +230,10 @@ function token_find_with_prefix(array $tokens, $prefix, $delimiter = ':') {
 /**
  * Returns metadata describing supported tokens.
  *
- * The metadata array contains token type, name, and description data as well as
- * an optional pointer indicating that the token chains to another set of tokens.
+ * The metadata array contains token type, name, and description data as well
+ * as an optional pointer indicating that the token chains to another set of
+ * tokens.
+ *
  * For example:
  * @code
  *   $data['types']['node'] = array(

@@ -235,31 +235,36 @@ class FeedsNodeProcessor extends FeedsProcessor {
    * Override setTargetElement to operate on a target item that is a node.
    */
   public function setTargetElement(FeedsSource $source, $target_node, $target_element, $value) {
+    if ($ids = feeds_get_importer_ids($this->config['content_type'], $source->feed_nid)) {
+      foreach ($ids as $id) {
+        if ($target_element == 'feeds_source_' . $id) {
+          // Get the class of the feed node importer's fetcher and set the source
+          // property. See feeds_node_update() how $node->feeds gets stored.
+          $class = get_class(feeds_importer($id)->fetcher);
+          $target_node->feeds[$id][$class]['source'] = $value;
+          // This effectively suppresses 'import on submission' feature.
+          // See feeds_node_insert().
+          $target_node->feeds[$id]['suppress_import'] = TRUE;
+        }
+      }
+    }
     switch ($target_element) {
       case 'created':
         $target_node->created = feeds_to_unixtime($value, REQUEST_TIME);
         break;
-      case 'feeds_source':
-        // Get the class of the feed node importer's fetcher and set the source
-        // property. See feeds_node_update() how $node->feeds gets stored.
-        if ($id = feeds_get_importer_id($this->bundle())) {
-          $class = get_class(feeds_importer($id)->fetcher);
-          $target_node->feeds[$class]['source'] = $value;
-          // This effectively suppresses 'import on submission' feature.
-          // See feeds_node_insert().
-          $target_node->feeds['suppress_import'] = TRUE;
-        }
-        break;
+
       case 'user_name':
         if ($user = user_load_by_name($value)) {
           $target_node->uid = $user->uid;
         }
         break;
+
       case 'user_mail':
         if ($user = user_load_by_mail($value)) {
           $target_node->uid = $user->uid;
         }
         break;
+
       default:
         parent::setTargetElement($source, $target_node, $target_element, $value);
         break;
@@ -331,13 +336,15 @@ class FeedsNodeProcessor extends FeedsProcessor {
     }
 
     // If the target content type is a Feed node, expose its source field.
-    if ($id = feeds_get_importer_id($this->bundle())) {
-      $name = feeds_importer($id)->config['name'];
-      $targets['feeds_source'] = array(
-        'name' => t('Feed source'),
-        'description' => t('The content type created by this processor is a Feed Node, it represents a source itself. Depending on the fetcher selected on the importer "@importer", this field is expected to be for example a URL or a path to a file.', array('@importer' => $name)),
-        'optional_unique' => TRUE,
-      );
+    if ($ids = feeds_get_importer_ids($this->config['bundle'])) {
+      foreach ($ids as $id) {
+        $name = feeds_importer($id)->config['name'];
+        $targets['feeds_source_' . $id] = array(
+          'name' => t('Feed source'),
+          'description' => t('The content type created by this processor is a Feed Node, it represents a source itself. Depending on the fetcher selected on the importer "@importer", this field is expected to be for example a URL or a path to a file.', array('@importer' => $name)),
+          'optional_unique' => TRUE,
+        );
+      }
     }
 
     // Let other modules expose mapping targets.
@@ -352,7 +359,7 @@ class FeedsNodeProcessor extends FeedsProcessor {
   /**
    * Get nid of an existing feed item node if available.
    */
-  protected function existingEntityId(FeedsSource $source, FeedsParserResult $result) {
+  function existingEntityId(FeedsSource $source, FeedsParserResult $result) {
     if ($nid = parent::existingEntityId($source, $result)) {
       return $nid;
     }
@@ -367,11 +374,13 @@ class FeedsNodeProcessor extends FeedsProcessor {
         case 'title':
           $nid = db_query("SELECT nid FROM {node} WHERE title = :title AND type = :type", array(':title' => $value, ':type' => $this->bundle()))->fetchField();
           break;
-        case 'feeds_source':
-          if ($id = feeds_get_importer_id($this->bundle())) {
+      }
+      if ($ids = feeds_get_importer_ids($this->config['content_type'])) {
+        foreach ($ids as $id) {
+          if ($target == 'feeds_source_' . $id) {
             $nid = db_query("SELECT fs.feed_nid FROM {node} n JOIN {feeds_source} fs ON n.nid = fs.feed_nid WHERE fs.id = :id AND fs.source = :source", array(':id' => $id, ':source' => $value))->fetchField();
           }
-          break;
+        }
       }
       if ($nid) {
         // Return with the first nid found.

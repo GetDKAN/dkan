@@ -176,7 +176,7 @@ class FacetapiUrlProcessorPrettyPaths extends FacetapiUrlProcessorStandard {
   public function constructPath(array $segments) {
     if (!empty($this->options['sort_path_segments'])) {
       // Sort to avoid multiple urls with duplicate content.
-      ksort($segments);
+      uksort($segments, 'strnatcmp');
     }
     $path = $this->getBasePath();
     // Add all path segments.

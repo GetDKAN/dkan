@@ -7,6 +7,11 @@
 
 /**
  * Menu callback: Prints a listing of all books.
+ *
+ * @return string
+ *   A HTML-formatted string with the listing of all books content.
+ *
+ * @see book_menu()
  */
 function book_render() {
   $book_list = array();
@@ -36,6 +41,8 @@ function book_render() {
  * @return
  *   A string representing the node and its children in the book hierarchy in a
  *   format determined by the $type parameter.
+ *
+ * @see book_menu()
  */
 function book_export($type, $nid) {
   // Check that the node exists and that the current user has access to it.
@@ -79,7 +86,6 @@ function book_export($type, $nid) {
  */
 function book_export_html($nid) {
   if (user_access('access printer-friendly version')) {
-    $export_data = array();
     $node = node_load($nid);
     if (isset($node->book)) {
       $tree = book_menu_subtree_data($node->book);
@@ -100,6 +106,11 @@ function book_export_html($nid) {
  *
  * @param $node
  *   The book node for which to show the outline.
+ *
+ * @return string
+ *   A HTML-formatted string with the outline form for a single node.
+ *
+  * @see book_menu()
  */
 function book_outline($node) {
   drupal_set_title($node->title);

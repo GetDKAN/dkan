@@ -80,6 +80,14 @@ interface RestWSFormatInterface {
    * 'application/xml'.
    */
   public function mimeType();
+
+  /**
+   * Returns the short name of this format.
+   *
+   * @return string
+   *   The format name, example: "json".
+   */
+  public function getName();
 }
 
 /**
@@ -182,6 +190,10 @@ abstract class RestWSBaseFormat implements RestWSFormatInterface {
 
   public function mimeType() {
     return $this->formatInfo['mime type'];
+  }
+
+  public function getName() {
+    return $this->formatName;
   }
 
   /**

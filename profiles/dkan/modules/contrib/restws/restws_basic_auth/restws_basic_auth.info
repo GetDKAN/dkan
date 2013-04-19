@@ -1,10 +1,10 @@
 name = Basic authentication login
-description = User login from HTTP authorization headers.
+description = User login from HTTP authorization headers (part of RESTful web services).
 core = 7.x
 
-; Information added by drupal.org packaging script on 2013-01-16
-version = "7.x-2.0-alpha4"
+; Information added by drupal.org packaging script on 2013-04-10
+version = "7.x-2.0-alpha5"
 core = "7.x"
 project = "restws"
-datestamp = "1358347779"
+datestamp = "1365608718"
 

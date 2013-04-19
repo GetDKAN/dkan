@@ -8,7 +8,7 @@
 /**
  * The current system version.
  */
-define('VERSION', '7.21');
+define('VERSION', '7.22');
 
 /**
  * Core API compatibility.
@@ -716,7 +716,6 @@ function drupal_settings_initialize() {
   if (isset($base_url)) {
     // Parse fixed base URL from settings.php.
     $parts = parse_url($base_url);
-    $http_protocol = $parts['scheme'];
     if (!isset($parts['path'])) {
       $parts['path'] = '';
     }
@@ -811,7 +810,7 @@ function drupal_settings_initialize() {
  *   than by consulting the database.
  *
  * @return
- *   The filename of the requested item.
+ *   The filename of the requested item or NULL if the item is not found.
  */
 function drupal_get_filename($type, $name, $filename = NULL) {
   // The location of files will not change during the request, so do not use
@@ -1186,10 +1185,11 @@ function _drupal_set_preferred_header_name($name = NULL) {
  * Headers are set in drupal_add_http_header(). Default headers are not set
  * if they have been replaced or unset using drupal_add_http_header().
  *
- * @param $default_headers
- *   An array of headers as name/value pairs.
- * @param $single
- *   If TRUE and headers have already be sent, send only the specified header.
+ * @param array $default_headers
+ *   (optional) An array of headers as name/value pairs.
+ * @param bool $only_default
+ *   (optional) If TRUE and headers have already been sent, send only the
+ *   specified headers.
  */
 function drupal_send_headers($default_headers = array(), $only_default = FALSE) {
   $headers_sent = &drupal_static(__FUNCTION__, FALSE);
@@ -1212,7 +1212,7 @@ function drupal_send_headers($default_headers = array(), $only_default = FALSE) 
       header($_SERVER['SERVER_PROTOCOL'] . ' ' . $value);
     }
     // Skip headers that have been unset.
-    elseif ($value) {
+    elseif ($value !== FALSE) {
       header($header_names[$name_lower] . ': ' . $value);
     }
   }
@@ -1420,8 +1420,9 @@ function drupal_unpack($obj, $field = 'data') {
  * Basically, you can put variables like @name into your string, and t() will
  * substitute their sanitized values at translation time. (See the
  * Localization API pages referenced above and the documentation of
- * format_string() for details.) Translators can then rearrange the string as
- * necessary for the language (e.g., in Spanish, it might be "blog de @name").
+ * format_string() for details about how to define variables in your string.)
+ * Translators can then rearrange the string as necessary for the language
+ * (e.g., in Spanish, it might be "blog de @name").
  *
  * During the Drupal installation phase, some resources used by t() wil not be
  * available to code that needs localization. See st() and get_t() for
@@ -1484,21 +1485,34 @@ function t($string, array $args = array(), array $options = array()) {
 }
 
 /**
- * Replaces placeholders with sanitized values in a string.
+ * Formats a string for HTML display by replacing variable placeholders.
+ *
+ * This function replaces variable placeholders in a string with the requested
+ * values and escapes the values so they can be safely displayed as HTML. It
+ * should be used on any unknown text that is intended to be printed to an HTML
+ * page (especially text that may have come from untrusted users, since in that
+ * case it prevents cross-site scripting and other security problems).
+ *
+ * In most cases, you should use t() rather than calling this function
+ * directly, since it will translate the text (on non-English-only sites) in
+ * addition to formatting it.
  *
  * @param $string
  *   A string containing placeholders.
  * @param $args
  *   An associative array of replacements to make. Occurrences in $string of
- *   any key in $args are replaced with the corresponding value, after
- *   sanitization. The sanitization function depends on the first character of
- *   the key:
- *   - !variable: Inserted as is. Use this for text that has already been
- *     sanitized.
- *   - @variable: Escaped to HTML using check_plain(). Use this for anything
- *     displayed on a page on the site.
- *   - %variable: Escaped as a placeholder for user-submitted content using
- *     drupal_placeholder(), which shows up as <em>emphasized</em> text.
+ *   any key in $args are replaced with the corresponding value, after optional
+ *   sanitization and formatting. The type of sanitization and formatting
+ *   depends on the first character of the key:
+ *   - @variable: Escaped to HTML using check_plain(). Use this as the default
+ *     choice for anything displayed on a page on the site.
+ *   - %variable: Escaped to HTML and formatted using drupal_placeholder(),
+ *     which makes it display as <em>emphasized</em> text.
+ *   - !variable: Inserted as is, with no sanitization or formatting. Only use
+ *     this for text that has already been prepared for HTML display (for
+ *     example, user-supplied text that has already been run through
+ *     check_plain() previously, or is expected to contain some limited HTML
+ *     tags and has already been run through filter_xss() previously).
  *
  * @see t()
  * @ingroup sanitization

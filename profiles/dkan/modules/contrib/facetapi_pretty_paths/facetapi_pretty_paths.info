@@ -10,9 +10,9 @@ files[] = plugins/coders/facetapi_pretty_paths_coder_default.inc
 files[] = plugins/coders/facetapi_pretty_paths_coder_taxonomy.inc
 files[] = plugins/coders/facetapi_pretty_paths_coder_taxonomy_pathauto.inc
 
-; Information added by drupal.org packaging script on 2013-01-23
-version = "7.x-1.0-beta2"
+; Information added by drupal.org packaging script on 2013-04-16
+version = "7.x-1.0"
 core = "7.x"
 project = "facetapi_pretty_paths"
-datestamp = "1358959010"
+datestamp = "1366140254"
 

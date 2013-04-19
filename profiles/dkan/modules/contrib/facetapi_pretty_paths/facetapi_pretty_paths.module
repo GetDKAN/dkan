@@ -262,7 +262,7 @@ function facetapi_pretty_paths_facetapi_facet_info_alter(array &$facet_info, arr
       $taxonomy_coder = 'taxonomy_pathauto';
     }
     // Check for Apache Solr Taxonomy Term fields.
-    if (!empty($facet_info['map options']['module_name']) && $facet_info['map options']['module_name'] == 'Taxonomy') {
+    if (!empty($facet['map options']['module_name']) && $facet['map options']['module_name'] == 'Taxonomy') {
       $facet['facetapi pretty paths coder'] = $taxonomy_coder;
     }
     // Check for Search API Taxonomy Term fields.

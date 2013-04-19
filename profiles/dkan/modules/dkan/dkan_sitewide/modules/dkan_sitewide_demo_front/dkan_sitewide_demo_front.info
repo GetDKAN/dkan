@@ -1,0 +1,21 @@
+name = DKAN Sitewide Demo Front
+core = 7.x
+package = DKAN
+php = 5.2.4
+dependencies[] = context
+dependencies[] = ctools
+dependencies[] = views
+descriptions = Customizations to DKAN home page.
+features[context][] = front
+features[ctools][] = context:context:3
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:1
+features[views_view][] = front_page_group_list
+features[views_view][] = popular_tags
+
+
+; Information added by drush on 2013-04-15
+version = "temp-reorg-dev"
+project = "dkan"
+datestamp = "1366033194"
+

@@ -125,6 +125,31 @@ function hook_feeds_before_import(FeedsSource $source) {
 }
 
 /**
+ * Invoked after a feed item has been saved.
+ *
+ * @param $source
+ *  FeedsSource object that describes the source that is being imported.
+ * @param $entity
+ *   The entity object that has just been saved.
+ * @param $item
+ *   The parser result for this entity.
+ */
+function hook_feeds_after_save(FeedsSource $source, $entity, $item) {
+  // Use $entity->nid of the saved node.
+
+  // Although the $entity object is passed by reference, any changes made in
+  // this function will be ignored by the FeedsProcessor.
+  $config = $source->importer()->getConfig();
+
+  if ($config['processor']['config']['purge_unseen_items'] && isset($entity->feeds_item)) {
+    $feeds_item = $entity->feeds_item;
+    $feeds_item->batch_id = feeds_delete_get_current_batch($feeds_item->feed_nid);
+
+    drupal_write_record('feeds_delete_item', $feeds_item);
+  }
+}
+
+/**
  * Invoked after a feed source has been imported.
  *
  * @param $source

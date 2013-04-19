@@ -154,7 +154,10 @@ function hook_hook_info_alter(&$hooks) {
  *       the name of the bundle object.
  *   - bundles: An array describing all bundles for this object type. Keys are
  *     bundles machine names, as found in the objects' 'bundle' property
- *     (defined in the 'entity keys' entry above). Elements:
+ *     (defined in the 'entity keys' entry above). This entry can be omitted if
+ *     this entity type exposes a single bundle (all entities have the same
+ *     collection of fields). The name of this single bundle will be the same as
+ *     the entity type. Elements:
  *     - label: The human-readable name of the bundle.
  *     - uri callback: Same as the 'uri callback' key documented above for the
  *       entity type, but for the bundle only. When determining the URI of an
@@ -1201,6 +1204,10 @@ function hook_menu_get_item_alter(&$router_item, $path, $original_map) {
  *     same weight are ordered alphabetically.
  *   - "menu_name": Optional. Set this to a custom menu if you don't want your
  *     item to be placed in Navigation.
+ *   - "expanded": Optional. If set to TRUE, and if a menu link is provided for
+ *     this menu item (as a result of other properties), then the menu link is
+ *     always expanded, equivalent to its 'always expanded' checkbox being set
+ *     in the UI.
  *   - "context": (optional) Defines the context a tab may appear in. By
  *     default, all tabs are only displayed as local tasks when being rendered
  *     in a page context. All tabs that should be accessible as contextual links
@@ -1412,7 +1419,7 @@ function hook_menu_link_delete($link) {
  * - #link: An associative array containing:
  *   - title: The localized title of the link.
  *   - href: The system path to link to.
- *   - localized_options: An array of options to pass to url().
+ *   - localized_options: An array of options to pass to l().
  * - #active: Whether the link should be marked as 'active'.
  *
  * @param $data
@@ -1929,8 +1936,9 @@ function hook_image_toolkits() {
  *     The drupal_mail() id of the message. Look at module source code or
  *     drupal_mail() for possible id values.
  *  - 'to':
- *     The address or addresses the message will be sent to. The
- *     formatting of this string must comply with RFC 2822.
+ *     The address or addresses the message will be sent to. The formatting of
+ *     this string will be validated with the
+ *     @link http://php.net/manual/filter.filters.validate.php PHP e-mail validation filter. @endlink
  *  - 'from':
  *     The address the message will be marked as being from, which is
  *     either a custom address or the site-wide default email address.
@@ -2100,7 +2108,9 @@ function hook_permission() {
  * specify how a particular render array is to be rendered as HTML (this is
  * usually the case if the theme function is assigned to the render array's
  * #theme property), or they return the HTML that should be returned by an
- * invocation of theme().
+ * invocation of theme(). See
+ * @link http://drupal.org/node/933976 Using the theme layer Drupal 7.x @endlink
+ * for more information on how to implement theme hooks.
  *
  * The following parameters are all optional.
  *
@@ -2196,6 +2206,8 @@ function hook_permission() {
  *     'module', 'theme_engine', or 'theme'.
  *   - theme path: (automatically derived) The directory path of the theme or
  *     module, so that it doesn't need to be looked up.
+ *
+ * @see hook_theme_registry_alter()
  */
 function hook_theme($existing, $type, $theme, $path) {
   return array(
@@ -2290,7 +2302,8 @@ function hook_theme_registry_alter(&$theme_registry) {
  * @return
  *   The machine-readable name of the theme that should be used for the current
  *   page request. The value returned from this function will only have an
- *   effect if it corresponds to a currently-active theme on the site.
+ *   effect if it corresponds to a currently-active theme on the site. Do not 
+ *   return a value if you do not wish to set a custom theme.
  */
 function hook_custom_theme() {
   // Allow the user to request a particular theme via a query parameter.
@@ -2476,8 +2489,9 @@ function hook_watchdog(array $log_entry) {
  *   An array to be filled in. Elements in this array include:
  *   - id: An ID to identify the mail sent. Look at module source code
  *     or drupal_mail() for possible id values.
- *   - to: The address or addresses the message will be sent to. The
- *     formatting of this string must comply with RFC 2822.
+ *   - to: The address or addresses the message will be sent to. The formatting
+ *     of this string will be validated with the
+ *     @link http://php.net/manual/filter.filters.validate.php PHP e-mail validation filter. @endlink
  *   - subject: Subject of the e-mail to be sent. This must not contain any
  *     newline characters, or the mail may not be sent properly. drupal_mail()
  *     sets this to an empty string when the hook is invoked.
@@ -3092,44 +3106,48 @@ function hook_schema() {
         'description' => 'The primary identifier for a node.',
         'type' => 'serial',
         'unsigned' => TRUE,
-        'not null' => TRUE),
+        'not null' => TRUE,
+      ),
       'vid' => array(
         'description' => 'The current {node_revision}.vid version identifier.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
-        'default' => 0),
+        'default' => 0,
+      ),
       'type' => array(
         'description' => 'The {node_type} of this node.',
         'type' => 'varchar',
         'length' => 32,
         'not null' => TRUE,
-        'default' => ''),
+        'default' => '',
+      ),
       'title' => array(
         'description' => 'The title of this node, always treated as non-markup plain text.',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
-        'default' => ''),
+        'default' => '',
       ),
+    ),
     'indexes' => array(
       'node_changed'        => array('changed'),
       'node_created'        => array('created'),
-      ),
+    ),
     'unique keys' => array(
       'nid_vid' => array('nid', 'vid'),
-      'vid'     => array('vid')
-      ),
+      'vid'     => array('vid'),
+    ),
     'foreign keys' => array(
       'node_revision' => array(
         'table' => 'node_revision',
         'columns' => array('vid' => 'vid'),
-        ),
+      ),
       'node_author' => array(
         'table' => 'users',
-        'columns' => array('uid' => 'uid')
-        ),
-       ),
+        'columns' => array('uid' => 'uid'),
+      ),
+    ),
     'primary key' => array('nid'),
   );
   return $schema;
@@ -3236,8 +3254,7 @@ function hook_query_TAG_alter(QueryAlterableInterface $query) {
  * a hook_update_N() is added to the module, this function needs to be updated
  * to reflect the current version of the database schema.
  *
- * See the Schema API documentation at
- * @link http://drupal.org/node/146843 http://drupal.org/node/146843 @endlink
+ * See the @link http://drupal.org/node/146843 Schema API documentation @endlink
  * for details on hook_schema and how database tables are defined.
  *
  * Note that since this function is called from a full bootstrap, all functions
@@ -3621,6 +3638,9 @@ function hook_registry_files_alter(&$files, $modules) {
  * inspect later. It is important to remove any temporary variables using
  * variable_del() before your last task has completed and control is handed
  * back to the installer.
+ * 
+ * @param array $install_state
+ *   An array of information about the current installation state.
  *
  * @return
  *   A keyed array of tasks the profile will perform during the final stage of
@@ -3679,7 +3699,7 @@ function hook_registry_files_alter(&$files, $modules) {
  * @see install_state_defaults()
  * @see batch_set()
  */
-function hook_install_tasks() {
+function hook_install_tasks(&$install_state) {
   // Here, we define a variable to allow tasks to indicate that a particular,
   // processor-intensive batch process needs to be triggered later on in the
   // installation.

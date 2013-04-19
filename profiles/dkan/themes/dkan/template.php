@@ -124,11 +124,11 @@ function dkan_dkan_tabs_local_task($variables) {
   elseif ($link['page_callback'] == 'dkan_dataset_back') {
     $icon_type = 'caret-left';
   }
-  elseif ($link['page_callback'] == 'dkan_dataset_download') {
+  elseif ($link['page_callback'] == 'dkan_datastore_download') {
     $icon_type = 'download';
     $link['localized_options']['attributes']['class'][] = 'btn-primary';
   }
-  elseif ($link['page_callback'] == 'dkan_dataset_datastore_api') {
+  elseif ($link['page_callback'] == 'dkan_datastore_datastore_api') {
     $icon_type = 'beaker';
     $link['localized_options']['attributes']['class'][] = 'btn-success';
   }
@@ -269,4 +269,12 @@ function dkan_facetapi_link_inactive($variables) {
   $variables['text'] .= $accessible_markup;
   $variables['options']['html'] = TRUE;
   return theme_link($variables);
+}
+
+/**
+ * Implements theme_preprocess_user_profile().
+ */
+function dkan_preprocess_user_profile(&$variables) {
+  // Remove user pic on profile.
+  unset($variables['user_profile']['user_picture']);
 }

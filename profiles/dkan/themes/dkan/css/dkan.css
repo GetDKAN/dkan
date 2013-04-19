@@ -1,6 +1,3 @@
-/* This file will hold styles for the mobile version of your website (mobile first). */
-/* This also can include ANY global CSS that applies site-wide. Unless overwritten by a more specific style rule, CSS declarations in global.css will apply site-wide. */
-
 body {
   margin: 0;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -682,6 +679,7 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   background-color: white;
   margin-bottom: 20px;
 }
+.page-user #zone-content .horizontal-tabs ul.horizontal-tabs-list,
 .node-type-group #zone-content .horizontal-tabs ul.horizontal-tabs-list {
   background-color: transparent;
   margin: 0 0 -6px;
@@ -707,9 +705,37 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   padding-left: 12px;
   margin-right: 2px;
 }
+.horizontal-tabs ul.horizontal-tabs-list li.selected a {
+  background-color: #fff;
+  border: 1px solid #CCC;
+  border-bottom: 0;
+}
+#dataset-node-form a.bt-pop {
+  background: none;
+}
+.field-name-field-temporal-coverage legend span.fieldset-legend,
+.field-widget-leaflet-widget-widget legend span.fieldset-legend {
+  padding: 0;
+  margin: 0;
+  float: left;
+  width: 100px;
+}
+.node-type-group #region-content .block-inner:first-child {
+  padding-bottom: 0;
+}
+.page-user #region-content .block,
 .node-type-group #region-content .block {
   background-color: #f3f3f3;
+  padding-top: 5px;
+  -webkit-border-radius: 3px 3px 0 0;
+  -moz-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
 }
+.page-user #region-content .block-inner,
+.node-type-group #region-content .block-inner {
+  background-color: #f3f3f3;
+}
+.page-user div.horizontal-tabs,
 .node-type-group div.horizontal-tabs {
   margin: 0 0 1em 0;
   padding: 0;
@@ -718,14 +744,14 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   margin: 0 -25px;
   background-color: transparent;
 }
+.page-user div.horizontal-tabs .horizontal-tabs-panes,
 .node-type-group div.horizontal-tabs .horizontal-tabs-panes {
-  padding: 0 25px;
+  padding: 0 25px 15px;
   background-color: #FFF;
   border-top: 1px solid #ddd;
 }
 #zone-content .block-inner:last-child {
   margin-bottom: 0;
-  padding-bottom: 20px;
 }
 #zone-content .block-inner:first-child {
   margin-top: 0;
@@ -852,7 +878,7 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   background: #ffffff;
 }
 .stages li.complete:before {
-  color: #c5e2c4;
+  color: rgb(55, 95, 54);
   background: #eef6ed;
 }
 .stages li .highlight {
@@ -870,13 +896,25 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   line-height: 27px;
   z-index: -1;
 }
+.stages li.uncomplete .highlight {
+  background-color: #ededed;
+}
+.stages li button.highlight {
+  background: transparent;
+}
+.stages li.uncomplete:before, .stages li.uncomplete a {
+  color: #FFF;
+}
 .stages li.active .highlight {
   color: #ffffff;
   background: #8cc68a;
 }
+#resource-node-form .stages li.complete .highlight a {
+  color: #FFF;
+  text-shadow: none;
+}
 .stages li.complete .highlight {
-  color: #eef6ed;
-  background: #c5e2c4;
+  background: rgb(55, 95, 54);
 }
 ul.primary {
   border: 0;
@@ -925,16 +963,22 @@ form-textarea-wrapper textarea {
 .vertical-tabs fieldset.vertical-tabs-pane {
   padding: 10px;
 }
-#dataset-node-form .field-name-field-data-dictionary label,
 #resource-node-form .field-name-body .form-type-textarea label,
 #dataset-node-form .field-name-body .form-type-textarea label {
   margin-top: 38px;
 }
-#dataset-node-form .field-name-field-data-dictionary .form-textarea-wrapper,
+#dataset-node-form .field-name-field-data-dictionary .form-textarea-wrapper {
+  margin-left: 130px;
+  position: relative;
+}
+#dataset-node-form .field-name-field-data-dictionary .form-textarea-wrapper textarea {
+  margin-top: -20px;
+}
 #resource-node-form .field-name-body .form-textarea-wrapper,
 #dataset-node-form .field-name-body .form-textarea-wrapper {
   margin-left: 130px;
   padding-top: 30px;
+  position: relative;
 }
 #data-and-resources {
   margin-bottom: 25px;
@@ -979,7 +1023,7 @@ label.for=["edit-field-upload-und-0"] {
   display: none;
 }
 .horizontal-tabs fieldset.horizontal-tabs-pane {
-  padding: 0;
+  padding: 15px 0 0 0;
 }
 #resource-edit-title {
   font-size: 19px;
@@ -1262,7 +1306,8 @@ html.js input.throbbing {
   margin: 0;
 }
 #dataset-node-form .field-group-fieldset.group-additional legend a.bt-pop {
-  padding: 0 0 0 5px;
+  margin: 0;
+  height: 0;
 }
 #dataset-node-form .field-group-fieldset.group-additional a.bt-pop {
   font-size: .8em;
@@ -1384,7 +1429,9 @@ html.js input.throbbing {
 .nav [class*=" icon-"].icon-large {
   line-height: 16px;
 }
-
+#edit-prefix {
+  margin-top: 0;
+}
 #url-edit-label,
 #url-edit-prefix,
 #url-slug,
@@ -1441,24 +1488,22 @@ html.js input.throbbing {
   width: 220px;
 }
 .field-name-field-license .select-or-other {
-  width: 400px
+  float: left;
+  margin-right: 10px;
 }
 .field-name-field-license label {
   margin-top: 3px;
 }
 .field-name-field-license .icon-large {
-  position: absolute;
-  right: 240px;
+  float: left;
   font-size: 22px;
   color: #AEAEAE;
-  top: 3px;
+  padding: 5px 10px;
 }
 .field-name-field-license .description {
-  position: absolute;
   width: 230px;
-  right: 0;
   color: #AEAEAE;
-  top: 0px;
+  float: right;
 }
 .field-type-datetime.field-name-field-temporal-coverage .fieldset-wrapper,
 .field-type-geofield.field-name-field-spatial .fieldset-wrapper {
@@ -1486,10 +1531,22 @@ html.js input.throbbing {
   margin: 2px 0 0 5px;
 }
 .field-type-datetime.field-name-field-temporal-coverage {
-  padding: 25px 0 0 0;
+  position: relative;
+  padding: 5px 0 0 0;
+  clear: both;
+}
+.field-name-field-spatial-geographical-cover {
+  padding-top: 10px;
+}
+.date-float .form-item, .form-actions {
+  margin-top: 0;
 }
 .field-type-geofield.field-name-field-spatial {
-  padding: 15px 0 0 0;
+  position: relative;
+  padding: 10px 0 0 0;
+}
+.field-name-field-temporal-coverage legend, .field-widget-leaflet-widget-widget legend {
+  position: initial;
 }
 .field-type-datetime.field-name-field-temporal-coverage legend, 
 .field-type-geofield.field-name-field-spatial legend {
@@ -1499,8 +1556,8 @@ html.js input.throbbing {
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 5px;
-  padding: 0 10px 0 0;
-  width: 105px;
+  padding: 0px 10px 0 0;
+  width: 120px;
   line-height: 1.4em;
   border: none;
   text-align: right;
@@ -2526,7 +2583,7 @@ module-narrow .nav-item > a {
   border: 0;
   visibility: visible;
 }
-#block-dkan-front-dkan-demo-front {
+#block-dkan-sitewide-demo-front-dkan-demo-front {
   margin-top: 30px;
   -webkit-border-radius: 3px 3px 0 0;
   -moz-border-radius: 3px 3px 0 0;
@@ -2540,21 +2597,21 @@ module-narrow .nav-item > a {
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   background-color: white;
 }
-#block-dkan-front-dkan-demo-front .block-inner {
+#block-dkan-sitewide-demo-front-dkan-demo-front .block-inner {
   padding: 20px 25px;
   margin: 0 0 -2px 0;
 }
-#block-dkan-front-dkan-demo-front .block-inner h2.block-title {
+#block-dkan-sitewide-demo-front-dkan-demo-front .block-inner h2.block-title {
   font-size: 18px;
   border: 0;
   background: none;
   padding: 0;
   line-height: 36px;
 }
-#block-dkan-front-dkan-demo-front .media-overlay {
+#block-dkan-sitewide-demo-front-dkan-demo-front .media-overlay {
   position: relative;
 }
-#block-dkan-front-dkan-demo-front .media-overlay .media-heading {
+#block-dkan-sitewide-demo-front-dkan-demo-front .media-overlay .media-heading {
   position: absolute;
   left: 0;
   right: 0;
@@ -2727,13 +2784,13 @@ h3.media-heading a {
   margin: 0;
   width: auto;
 }
-#region-branding #block-dkan-dataset-dkan-dataset-search-bar .compact-form-description {
+#region-branding #block-dkan-sitewide-dkan-sitewide-search-bar .compact-form-description {
   top: 13px;
   left: 7px;
   color: #999;
   font-size: 11px;
 }
-#block-dkan-dataset-dkan-dataset-search-bar {
+#block-dkan-sitewide-dkan-sitewide-search-bar {
   position: absolute;
   right: 100px;
   top: 9px;
@@ -2742,13 +2799,13 @@ h3.media-heading a {
 .container-12 .grid-12 {
   min-width: 800px;
 }
-#region-branding #block-dkan-dataset-dkan-dataset-search-bar form {
+#region-branding #block-dkan-sitewide-dkan-sitewide-search-bar form {
   position: relative;
   width: 200px;
   float: right;
   margin: 0;
 }
-#region-branding #block-dkan-dataset-dkan-dataset-search-bar input.form-submit {
+#region-branding #block-dkan-sitewide-dkan-sitewide-search-bar input.form-submit {
   background: url(../images/sprite-ckan-icons.png);
   text-indent: -9999px;
   width: 17px;
@@ -2770,11 +2827,29 @@ h3.media-heading a {
   float: none;
   margin: -7px 0 20px;
 }
+#views-exposed-form-user-profile-search-entity-view-1 .compact-form-description,
+#views-exposed-form-groups-search-entity-view-1 .compact-form-description {
+  top: 65px;
+  font-size: 16px;
+  left: 40px;
+  color: #999;
+}
 #block-system-main #views-exposed-form-dataset-page .compact-form-description {
   top: 21px;
   font-size: 16px;
   left: 15px;
   color: #999;
+}
+#views-exposed-form-user-profile-search-entity-view-1 .views-exposed-widget,
+#views-exposed-form-groups-search-entity-view-1 .views-exposed-widget {
+  float: none;
+}
+#views-exposed-form-user-profile-search-entity-view-1 .views-exposed-widget .form-submit,
+#views-exposed-form-groups-search-entity-view-1 .views-exposed-widget .form-submit {
+  margin-top: 0;
+  top: 65px;
+  position: absolute;
+  right: 50px;
 }
 #block-system-main #views-exposed-form-dataset-page .views-exposed-form .views-exposed-widget .form-submit {
   margin-top: 0;
@@ -2792,6 +2867,9 @@ h3.media-heading a {
   font-weight: bold;
   color: #000;
 }
+#views-exposed-form-user-profile-search-entity-view-1 .views-widget-filter-search_api_views_fulltext input,
+#views-exposed-form-groups-search-entity-view-1 .views-widget-filter-search_api_views_fulltext input,
+#node_group_full_group_tab_datasets .views-widget-filter-search_api_views_fulltext input,
 #block-system-main #views-exposed-form-dataset-page .form-type-textfield input {
   line-height: 18px;
   color: #555;
@@ -2839,7 +2917,7 @@ h3.media-heading a {
   clear: left;
   color: rgba(255, 255, 255, 0.6);
 }
-#block-dkan-front-dkan-search-front {
+#block-dkan-sitewide-demo-front-dkan-search-front {
   padding: 5px;
   margin-bottom: 10px;
   color: white;
@@ -2854,42 +2932,42 @@ h3.media-heading a {
   bottom: 60px;
   position: absolute;
 }
-#block-dkan-front-dkan-search-front .block-inner {
+#block-dkan-sitewide-demo-front-dkan-search-front .block-inner {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
   background-color: #005D7A;
   padding: 5px;
 }
-#block-dkan-front-dkan-search-front .views-exposed-form .views-exposed-widget {
+#block-dkan-sitewide-demo-front-dkan-search-front .views-exposed-form .views-exposed-widget {
   float: none;
   padding: 0px 10px;
 }
 .views-exposed-form .views-exposed-widget .form-submit {
   margin-top: 0;
 }
-#block-dkan-front-dkan-search-front form {
+#block-dkan-sitewide-demo-front-dkan-search-front form {
   position: relative;
   margin: 0;
 }
-#block-dkan-front-dkan-search-front .views-submit-button {
+#block-dkan-sitewide-demo-front-dkan-search-front .views-submit-button {
   position: absolute;
   right: 10px;
   top: 12px;
 }
-#block-dkan-front-dkan-search-front .compact-form-description {
+#block-dkan-sitewide-demo-front-dkan-search-front .compact-form-description {
   top: 15px;
   left: 23px;
   font-size: 16px;
   color: #999;
 }
-#block-dkan-front-dkan-search-front h2.block-title {
+#block-dkan-sitewide-demo-front-dkan-search-front h2.block-title {
   border: 0;
   background: transparent;
   font-size: 18px;
   padding: 7px 15px 10px 15px;
 }
-#block-dkan-front-dkan-search-front input.form-text {
+#block-dkan-sitewide-demo-front-dkan-search-front input.form-text {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
@@ -2913,7 +2991,7 @@ h3.media-heading a {
   position: relative;
   height: 405px;
 }
-#block-dkan-front-dkan-add-front {
+#block-dkan-sitewide-demo-front-dkan-add-front {
   position: relative;
   padding: 20px 25px;
   background: black;
@@ -2938,7 +3016,7 @@ h3.media-heading a {
   background-color: white;
   margin: 30px 0 0 0;
 }
-#block-dkan-front-dkan-add-front::after {
+#block-dkan-sitewide-demo-front-dkan-add-front::after {
   top: -30px;
   left: 25px;
   border: solid rgba(255, 255, 255, 0);
@@ -2951,7 +3029,7 @@ h3.media-heading a {
   border-width: 12px;
   margin-top: 7px;
 }
-#block-dkan-front-dkan-add-front h2.block-title {
+#block-dkan-sitewide-demo-front-dkan-add-front h2.block-title {
   border: 0;
   background: transparent;
   padding: 0 0 5px 0;
@@ -3072,6 +3150,9 @@ article.node-teaser {
   padding-bottom: 20px;
   margin-bottom: 20px;
 }
+article.node-teaser:last-child {
+  margin-bottom: 0;
+}
 article.node-teaser p {
   margin: 10px 0;
 }
@@ -3154,4 +3235,10 @@ article.node-teaser .data-and-resources .label {
   font-size: 17px;
   line-height: 20px;
   padding: 0 0 15px 0;
+}
+.profile {
+  margin: 0;
+}
+.node-links ul li a, .comment-links ul li a {
+  float: right;
 }

@@ -242,6 +242,7 @@ class FeedsImporter extends FeedsConfigurable {
         'plugin_key' => 'FeedsNodeProcessor',
       ),
       'content_type' => '',
+      'weight' => 0,
       'update' => 0,
       'import_period' => 1800, // Refresh every 30 minutes by default.
       'expire_period' => 3600, // Expire every hour by default, this is a hidden setting.
@@ -268,6 +269,12 @@ class FeedsImporter extends FeedsConfigurable {
       '#title' => t('Description'),
       '#description' => t('A description of this importer.'),
       '#default_value' => $config['description'],
+    );
+    $form['weight'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Weight'),
+      '#description' => t('Determines the effective processing order of this feed relative to others that might run at the same time.'),
+      '#default_value' => $config['weight'],
     );
     $node_types = node_type_get_names();
     array_walk($node_types, 'check_plain');

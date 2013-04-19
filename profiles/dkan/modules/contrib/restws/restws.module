@@ -305,6 +305,15 @@ function restws_page_callback($resource, $page_callback = NULL) {
           $parts = explode(',', $_SERVER['HTTP_ACCEPT'], 2);
           $format = restws_format_mimetype($parts[0]);
         }
+        // Consumers should not use this URL if page caching is enabled.
+        // Drupal's page cache IDs are only determined by URL path, so this
+        // could poison the HTML page cache. A browser request to /node/1 could
+        // suddenly return JSON if the cache was primed with this RESTWS
+        // response.
+        if ($format && !isset($_COOKIE[session_name()]) && variable_get('cache')) {
+          // Redirect to the URL path containing the format name instead.
+          drupal_goto($_GET['q'] . '.' . $format->getName(), array(), 301);
+        }
     }
   }
   if ($format) {

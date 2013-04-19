@@ -1,0 +1,117 @@
+<?php
+/**
+ * @file
+ * Code for the dkan_sitewide_demo_front feature.
+ */
+
+include_once 'dkan_sitewide_demo_front.features.inc';
+
+/**
+ * Implements hook_block_info().
+ */
+function dkan_sitewide_demo_front_block_info() {
+  $blocks['dkan_demo_front'] = array(
+    'info' => t('Welcome to the DKAN Demo'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+  $blocks['dkan_search_front'] = array(
+    'info' => t('Search Your Data'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+  $blocks['dkan_add_front'] = array(
+    'info' => t('Add a Dataset'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function dkan_sitewide_demo_front_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'dkan_demo_front':
+      $block['subject'] = t('Welcome to the DKAN Demo');
+      $block['content'] = dkan_demo_front_block();
+      break;
+
+    case 'dkan_search_front':
+      $block['subject'] = t('Search Your Data');
+      $block['content'] = dkan_search_front_block();
+      break;
+
+    case 'dkan_add_front':
+      $block['subject'] = t('Add a Dataset');
+      $block['content'] = dkan_add_front_block();
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Creates placeholder front block.
+ */
+function dkan_demo_front_block() {
+return
+  '<div class="module-content">
+    <header>
+      <p>Try out standard DKAN functionality in a sandbox environment. Search for datasets directly from the homepage or by navigating to the <a href="dataset">Datasets</a> search page where you can facet by tags, groups and format.</p>
+    </header>
+    <section class="featured media-overlay">
+      <h2 class="media-heading">DKAN‘s data previewing tool has many powerful features</h2>
+      <a class="image" href="/dataset/gold-prices-london-1950-2008-monthly"><img src="/profiles/dkan/themes/dkan/images/homepage-graphic.jpg" width="420" height="219"></a>
+    </section>
+  </div>';
+}
+
+/**
+ * Creates search block for front page.
+ */
+function dkan_search_front_block() {
+  return dkan_sitewide_search_bar();
+}
+
+/**
+ * Creates "Add a Dataset" block for front page.
+ */
+function dkan_add_front_block() {
+  $output = '<div class="add content">';
+  $output .= t('You can add a !dataset to get a sense of publisher workflow. This form can be customised to require many additional fields. In this demo only the most basic fields are required.', array('!dataset' => l('Dataset', 'node/add/dataset')));
+  $output .= '</div><a class="close icon-remove-sign" href="#close"></a>';
+  return $output;
+}
+/**
+ *
+ * Implements hook_form_alter().
+ */
+function dkan_sitewide_demo_front_form_alter(&$form, &$form_state, $form_id) {
+  // TODO: Move out of front module.
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dataset-page' ||
+    $form['#id'] == 'views-exposed-form-user-profile-search-entity-view-1' ||
+    $form['#id'] == 'views-exposed-form-groups-search-entity-view-1') {
+    unset($form['terms']['#size']);
+    $form['#info']['filter-search_api_views_fulltext']['description'] = t('Search');
+    $form['#info']['filter-search_api_views_fulltext']['label'] = '';
+    $form['submit']['#title'] = '';
+    if (isset($form_state['pager_plugin'])) {
+      $form['submit']['#type'] = 'image_button';
+      $form['submit']['#src'] = isset($form_state['pager_plugin']) ? 'profiles/dkan/images/icon-search-27x26.png' : '';
+    }
+  }
+}
+
+/**
+ * Implements hook_views_post_execute().
+ */
+function dkan_sitewide_demo_front_views_post_execute(&$view) {
+  // This adds the list of datasets to the view of groups. The group nid is used
+  // as an argument for group audience.
+  if ($view->name == 'front_page_group_list' && ($view->current_display == 'block' || $view->current_display == 'block_2') && isset($view->result[0])) {
+    $nid = $view->result[0]->nid;
+    $group_nodes = views_embed_view('front_page_group_list', 'block_1', $nid);
+    $view->attachment_after = $group_nodes;
+  }
+}

@@ -1,0 +1,39 @@
+<?php
+/**
+ * @file
+ * Code for the dkan_sitewide_search_db feature.
+ */
+
+include_once 'dkan_sitewide_search_db.features.inc';
+
+/**
+ * Implements hook_search_api_ajax_settings().
+ */
+function dkan_sitewide_search_db_search_api_ajax_settings() {
+  $settings = array(
+
+    // required: CSS ID for the main content (search results html)
+    'content' => '#region-content #block-system-main .content',
+
+    // required: array of regions with search-related blocks => CSS ID's
+    'regions' => array(
+      'my_region' => '#zone-content',
+      'sidebar_first' => '#region-sidebar-first',
+    ),
+
+    'facet_locations' => '#region-sidebar-first',
+
+    // optional: if you want to show a spinner image on AJAX
+    'spinner' => drupal_get_path('module', 'search_api_ajax') .'/spinner.gif',
+
+    // optional: if you want to scroll-back-to-top on paging search results
+    'scrolltarget' => '#main-content',
+    'scrollspeed' => 1000,
+
+    // optional: fade main content on AJAX (fade=1 for true)
+    'fade' => 1,
+    'opacity' => 0.3,
+  );
+
+  return $settings;
+}

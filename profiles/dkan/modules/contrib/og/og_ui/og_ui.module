@@ -724,6 +724,10 @@ function og_ui_field_formatter_view($entity_type, $entity, $field, $instance, $l
             '#type' => 'link',
             '#title' => $wrapper->label(),
             '#href' => $wrapper->url->value(),
+            // Add the group type and group ID, so it's easier for implementing
+            // modules to extend the formatter.
+            '#group_type' => $group_type,
+            '#gid' => $wrapper->getIdentifier(),
           );
         }
       }

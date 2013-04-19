@@ -185,8 +185,9 @@ class OgSelectionHandler extends EntityReference_SelectionHandler_Generic {
     if (!module_exists('entityreference_prepopulate') || empty($this->instance['settings']['behaviors']['prepopulate'])) {
       return array();
     }
+
     // Don't try to validate the IDs.
-    if (!$ids = entityreference_prepopulate_get_values($this->field, $this->instance, TRUE, FALSE)) {
+    if (!$ids = entityreference_prepopulate_get_values($this->field, $this->instance, FALSE)) {
       return array();
     }
     $node_type = $this->instance['bundle'];

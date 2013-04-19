@@ -855,7 +855,7 @@ function theme_og_ui_admin_permissions($variables) {
 }
 
 /**
- * Allow site admin to add or remove group fields from fieldable enteies.
+ * Allow site admin to add or remove group fields from fieldable entities.
  */
 function og_ui_field_settings($form, &$form_state) {
   $form = array();

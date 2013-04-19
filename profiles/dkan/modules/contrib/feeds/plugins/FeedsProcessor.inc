@@ -235,6 +235,10 @@ abstract class FeedsProcessor extends FeedsPlugin {
         $this->entitySaveAccess($entity);
         $this->entitySave($entity);
 
+        // Allow modules to perform operations using the saved entity data.
+        // $entity contains the updated entity after saving.
+        module_invoke_all('feeds_after_save', $source, $entity, $item);
+
         // Track progress.
         if (empty($entity_id)) {
           $state->created++;
@@ -248,11 +252,7 @@ abstract class FeedsProcessor extends FeedsPlugin {
       catch (Exception $e) {
         $state->failed++;
         drupal_set_message($e->getMessage(), 'warning');
-        $message = $e->getMessage();
-        $message .= '<h3>Original item</h3>';
-        $message .= '<pre>' . var_export($item, TRUE) . '</pre>';
-        $message .= '<h3>Entity</h3>';
-        $message .= '<pre>' . var_export($entity, TRUE) . '</pre>';
+        $message = $this->createLogMessage($e, $entity, $item);
         $source->log('import', $message, array(), WATCHDOG_ERROR);
       }
     }
@@ -780,6 +780,30 @@ abstract class FeedsProcessor extends FeedsPlugin {
     }
     return '';
   }
+
+  /**
+   * Creates a log message for when an exception occured during import.
+   *
+   * @param Exception $e
+   *   The exception that was throwned during processing the item.
+   * @param $entity
+   *   The entity object.
+   * @param $item
+   *   The parser result for this entity.
+   *
+   * @return string
+   *   The message to log.
+   */
+  protected function createLogMessage(Exception $e, $entity, $item) {
+    include_once DRUPAL_ROOT . '/includes/utility.inc';
+    $message = $e->getMessage();
+    $message .= '<h3>Original item</h3>';
+    $message .= '<pre>' . drupal_var_export($item). '</pre>';
+    $message .= '<h3>Entity</h3>';
+    $message .= '<pre>' . drupal_var_export($entity) . '</pre>';
+    return $message;
+  }
+
 }
 
 class FeedsProcessorBundleNotDefined extends Exception {}

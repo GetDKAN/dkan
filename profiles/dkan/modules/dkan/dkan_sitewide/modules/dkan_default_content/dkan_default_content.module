@@ -1,0 +1,28 @@
+<?php
+/**
+ * @file
+ * Custom elements for importing content.
+ */
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function dkan_default_content_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'defaultcontent' && $plugin == 'alter') {
+    return 'plugins';
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_type().
+ */
+function dkan_default_content_ctools_plugin_type() {
+  return array(
+    'alter' => array(
+      'defaults' => array(
+        'export_alter weight' => 10,
+      ),
+    )
+  );
+}
+

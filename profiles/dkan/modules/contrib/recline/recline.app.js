@@ -10,11 +10,9 @@
       grid = Drupal.settings.recline.grid;
       graph = Drupal.settings.recline.graph;
       map = Drupal.settings.recline.map;
-      timeline = Drupal.settings.recline.timeline;
-      transform = Drupal.settings.recline.transform;
 
       window.dataExplorer = null;
-      window.explorerDiv = $('.data-explorer-here');
+      window.explorerDiv = $('.data-explorer');
 
       // This is some fancy stuff to allow configuring the multiview from
       // parameters in the query string
@@ -43,9 +41,10 @@
       } else {
         var dataset = new recline.Model.Dataset({
            url: file,
-           backend: 'csv',
+           backend: 'dataproxy',
         });
       }
+      dataset.fetch();
       createExplorer(dataset, state);
     }
   }
@@ -94,17 +93,6 @@
         view: new recline.View.Map({
           model: dataset
         }),
-      }
-      );
-    }
-    if (transform) {
-      views.push(
-      {
-        id: 'transform',
-        label: 'Transform',
-        view: new recline.View.Transform({
-          model: dataset
-        })
       }
       );
     }

@@ -1078,3 +1078,103 @@ function theme_feeds_ui_mapping_form($variables) {
   drupal_add_tabledrag('feeds-ui-mapping-overview', 'order', 'sibling', 'feeds-ui-mapping-weight');
   return $output;
 }
+
+/**
+ * Page callback to import a Feeds importer.
+ */
+function feeds_ui_importer_import($form, &$form_state) {
+  $form['id'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Importer id'),
+    '#description' => t('Enter the id to use for this importer if it is different from the source importer. Leave blank to use the id of the importer.'),
+  );
+  $form['id_override'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Replace an existing importer if one exists with the same id.'),
+  );
+  $form['bypass_validation'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Bypass importer validation'),
+    '#description' => t('Bypass the validation of plugins when importing.'),
+  );
+  $form['importer'] = array(
+    '#type' => 'textarea',
+    '#rows' => 10,
+  );
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Import'),
+  );
+  return $form;
+}
+
+/**
+ * Form validation handler for feeds_ui_importer_import().
+ *
+ * @see feeds_ui_importer_import_submit()
+ */
+function feeds_ui_importer_import_validate($form, &$form_state) {
+  $form_state['values']['importer'] = trim($form_state['values']['importer']);
+  $form_state['values']['id'] = trim($form_state['values']['id']);
+
+  if (!empty($form_state['values']['id']) && preg_match('/[^a-zA-Z0-9_]/', $form_state['values']['id'])) {
+    form_error($form['id'], t('Feeds importer id must be alphanumeric with underscores only.'));
+  }
+
+  if (substr($form_state['values']['importer'], 0, 5) == '<?php') {
+    $form_state['values']['importer'] = substr($form_state['values']['importer'], 5);
+  }
+
+  $feeds_importer = NULL;
+  ob_start();
+  eval($form_state['values']['importer']);
+  ob_end_clean();
+
+  if (!is_object($feeds_importer)) {
+    return form_error($form['importer'], t('Unable to interpret Feeds importer code.'));
+  }
+
+  if (empty($feeds_importer->api_version) || $feeds_importer->api_version < 1) {
+    form_error($form['importer'], t('The importer is not compatible with this version of Feeds.'));
+  }
+  elseif (version_compare($feeds_importer->api_version, feeds_api_version(), '>')) {
+    form_error($form['importer'], t('That importer is created for the version %import_version of Feeds, but you only have version %api_version.', array(
+      '%import_version' => $feeds_importer->api_version,
+      '%api_version' => feeds_api_version())));
+  }
+
+  $existing = feeds_importer($feeds_importer->id);
+  if ($existing && !$form_state['values']['id_override'] && $existing->export_type != EXPORT_IN_CODE) {
+    return form_error($form['id'], t('Feeds importer already exists with that id.'));
+  }
+
+  if (!$form_state['values']['bypass_validation']) {
+    foreach (array('fetcher', 'parser', 'processor') as $type) {
+      $plugin = feeds_plugin($feeds_importer->config[$type]['plugin_key'], $feeds_importer->id);
+      if (get_class($plugin) == 'FeedsMissingPlugin') {
+        form_error($form['importer'], t('The plugin %plugin is unavailable.', array('%plugin' => $feeds_importer->config[$type]['plugin_key'])));
+      }
+    }
+  }
+
+  $form_state['importer'] = $feeds_importer;
+}
+
+/**
+ * Form submission handler for feeds_ui_importer_import().
+ *
+ * @see feeds_ui_importer_import_validate()
+ */
+function feeds_ui_importer_import_submit($form, &$form_state) {
+  $importer = $form_state['importer'];
+  $importer = feeds_importer($importer->id);
+  $importer->setConfig($importer->config);
+  foreach (array('fetcher', 'parser', 'processor') as $type) {
+    $importer->$type->setConfig($importer->config[$type]['config']);
+  }
+  $importer->save();
+
+  drupal_set_message(t('Successfully imported the %id feeds importer.', array('%id' => $importer->id)));
+  $form_state['redirect'] = 'admin/structure/feeds';
+}

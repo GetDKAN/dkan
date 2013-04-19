@@ -64,7 +64,7 @@ function feeds_import_form($form, &$form_state, $importer_id) {
 
   $source_form = $source->configForm($form_state);
   if (!empty($source_form)) {
-    $form['feeds'] = array(
+    $form['feeds'][$importer_id] = array(
       '#type' => 'fieldset',
       '#title' => t('Import'),
       '#tree' => TRUE,
@@ -99,8 +99,8 @@ function feeds_import_form_submit($form, &$form_state) {
   // Save source and import.
   $source = feeds_source($form['#importer_id']);
 
-  if (!empty($form_state['values']['feeds']) && is_array($form_state['values']['feeds'])) {
-    $source->addConfig($form_state['values']['feeds']);
+  if (!empty($form_state['values']['feeds'][$form['#importer_id']]) && is_array($form_state['values']['feeds'][$form['#importer_id']])) {
+    $source->addConfig($form_state['values']['feeds'][$form['#importer_id']]);
     $source->save();
   }
 
@@ -118,25 +118,60 @@ function feeds_import_form_submit($form, &$form_state) {
  * Render a feeds import form on node/id/import pages.
  */
 function feeds_import_tab_form($form, &$form_state, $node) {
-  $importer_id = feeds_get_importer_id($node->type);
-  $source = feeds_source($importer_id, $node->nid);
+  $total_progress = 0;
+
+  $importer_ids = feeds_get_importer_ids($node->type, $node->nid);
 
   $form = array();
-  $form['#feed_nid'] = $node->nid;
-  $form['#importer_id'] = $importer_id;
-  $form['#redirect'] = 'node/' . $node->nid;
-  $form['source_status'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Status'),
-    '#tree' => TRUE,
-    '#value' => feeds_source_status($source),
-  );
-  $form = confirm_form($form, t('Import all content from source?'), 'node/' . $node->nid, '', t('Import'), t('Cancel'), 'confirm feeds update');
-  $progress = $source->progressImporting();
-  if ($progress !== FEEDS_BATCH_COMPLETE) {
-    $form['actions']['submit']['#disabled'] = TRUE;
-    $form['actions']['submit']['#value'] =
-      t('Importing (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
+  if ($importer_ids) {
+    $form['#feed_nid'] = $node->nid;
+    $form['#redirect'] = 'node/' . $node->nid;
+    $form = confirm_form($form, t('Import all content from source?'), 'node/' . $node->nid, '', t('Import'), t('Cancel'), 'confirm feeds update');
+    foreach ($importer_ids as $importer_id => $weight) {
+      $source = feeds_source($importer_id, $node->nid);
+      $form[$importer_id]['source_status'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('@source_name: Status', array('@source_name' => $source->importer->config['name'])),
+        '#tree' => TRUE,
+        '#value' => feeds_source_status($source),
+      );
+      $progress = $source->progressImporting();
+      $total_progress += $progress;
+    }
+    if (count($importer_ids) == 1) {
+      $form['importer_ids'] = array(
+        '#type' => 'value',
+        '#value' => array($importer_id),
+      );
+    }
+    else {
+      $options = array();
+      foreach ($importer_ids as $importer_id => $weight) {
+        $source = feeds_source($importer_id, $node->nid);
+        $options[$importer_id] = $source->importer->config['name'];
+      }
+      $form['importer_ids'] = array(
+        '#type' => 'checkboxes',
+        '#options' => $options,
+        '#default_value' => array_keys($options),
+        '#title' => t('Sources'),
+        '#description' => t('Select the sources to import.'),
+      );
+    }
+
+    if (count($importer_ids)) {
+      $progress = $total_progress / count($importer_ids);
+      if ($progress !== FEEDS_BATCH_COMPLETE) {
+        $form['actions']['submit']['#disabled'] = TRUE;
+        $form['actions']['submit']['#value'] =
+          t('Importing (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
+      }
+    }
+  }
+  else {
+    $form['no_source'] = array(
+      '#markup' => t('No feeds sources added to node.'),
+    );
   }
   return $form;
 }
@@ -146,7 +181,9 @@ function feeds_import_tab_form($form, &$form_state, $node) {
  */
 function feeds_import_tab_form_submit($form, &$form_state) {
   $form_state['redirect'] = $form['#redirect'];
-  feeds_source($form['#importer_id'], $form['#feed_nid'])->startImport();
+  foreach (array_filter($form_state['values']['importer_ids']) as $importer_id) {
+    feeds_source($importer_id, $form['#feed_nid'])->startImport();
+  }
 }
 
 /**
@@ -156,31 +193,72 @@ function feeds_import_tab_form_submit($form, &$form_state) {
  * Therefore $node may be missing.
  */
 function feeds_delete_tab_form($form, &$form_state, $importer_id, $node = NULL) {
+  $total_progress = 0;
+
+  $form = array();
   if (empty($node)) {
     $source = feeds_source($importer_id);
     $form['#redirect'] = 'import/' . $source->id;
+    $importer_ids = array($importer_id);
   }
   else {
-    $importer_id = feeds_get_importer_id($node->type);
-    $source = feeds_source($importer_id, $node->nid);
-    $form['#redirect'] = 'node/' . $source->feed_nid;
+    $importer_ids = feeds_get_importer_ids($node->type, $node->nid);
+    $form['#redirect'] = 'node/' . $node->nid;
   }
-  // Form cannot pass on source object.
-  $form['#importer_id'] = $source->id;
-  $form['#feed_nid'] = $source->feed_nid;
-  $form['source_status'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Status'),
-    '#tree' => TRUE,
-    '#value' => feeds_source_status($source),
-  );
-  $form = confirm_form($form, t('Delete all items from source?'), $form['#redirect'], '', t('Delete'), t('Cancel'), 'confirm feeds update');
-  $progress = $source->progressClearing();
-  if ($progress !== FEEDS_BATCH_COMPLETE) {
-    $form['actions']['submit']['#disabled'] = TRUE;
-    $form['actions']['submit']['#value'] =
-      t('Deleting (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
+
+  if ($importer_ids) {
+    // Form cannot pass on source object.
+    $form['#feed_nid'] = $node->nid;
+    foreach ($importer_ids as $importer_id => $weight) {
+      $source = feeds_source($importer_id, $node->nid);
+      $form[$importer_id]['source_status'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('@source_name: Status', array('@source_name' => $source->importer->config['name'])),
+        '#tree' => TRUE,
+        '#value' => feeds_source_status($source),
+      );
+      $progress = $source->progressClearing();
+      $total_progress += $progress;
+    }
+
+    if (count($importer_ids) == 1) {
+      $form['importer_ids'] = array(
+        '#type' => 'value',
+        '#value' => array($importer_id),
+      );
+    }
+    else {
+      $options = array();
+      foreach ($importer_ids as $importer_id => $weight) {
+        $source = feeds_source($importer_id, $node->nid);
+        $options[$importer_id] = $source->importer->config['name'];
+      }
+      $form['importer_ids'] = array(
+        '#type' => 'checkboxes',
+        '#options' => $options,
+        '#default_value' => array_keys($options),
+        '#title' => t('Sources'),
+        '#description' => t('Select the sources to delete items from.'),
+      );
+    }
+
+    $form = confirm_form($form, t('Delete all items from source?'), $form['#redirect'], '', t('Delete'), t('Cancel'), 'confirm feeds update');
+
+    if (count($importer_ids)) {
+      $progress = $total_progress / count($importer_ids);
+      if ($progress !== FEEDS_BATCH_COMPLETE) {
+        $form['actions']['submit']['#disabled'] = TRUE;
+        $form['actions']['submit']['#value'] =
+          t('Deleting (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
+      }
+    }
   }
+  else {
+    $form['no_source'] = array(
+      '#markup' => t('No feeds sources added to node.'),
+    );
+  }
+
   return $form;
 }
 
@@ -190,7 +268,9 @@ function feeds_delete_tab_form($form, &$form_state, $importer_id, $node = NULL) 
 function feeds_delete_tab_form_submit($form, &$form_state) {
   $form_state['redirect'] = $form['#redirect'];
   $feed_nid = empty($form['#feed_nid']) ? 0 : $form['#feed_nid'];
-  feeds_source($form['#importer_id'], $feed_nid)->startClear();
+  foreach (array_filter($form_state['values']['importer_ids']) as $importer_id) {
+    feeds_source($importer_id, $feed_nid)->startClear();
+  }
 }
 
 /**
