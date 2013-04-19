@@ -270,3 +270,11 @@ function dkan_facetapi_link_inactive($variables) {
   $variables['options']['html'] = TRUE;
   return theme_link($variables);
 }
+
+/**
+ * Implements theme_preprocess_user_profile().
+ */
+function dkan_preprocess_user_profile(&$variables) {
+  // Remove user pic on profile.
+  unset($variables['user_profile']['user_picture']);
+}

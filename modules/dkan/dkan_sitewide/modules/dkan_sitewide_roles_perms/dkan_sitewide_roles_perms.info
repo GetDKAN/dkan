@@ -3,6 +3,8 @@ description = Defines roles and permissions.
 core = 7.x
 package = DKAN
 php = 5.2.4
+version = temp-reorg-dev
+project = dkan
 dependencies[] = ctools
 dependencies[] = dkan_dataset
 dependencies[] = dkan_dataset_content_types
@@ -10,6 +12,7 @@ dependencies[] = features
 dependencies[] = node
 dependencies[] = strongarm
 dependencies[] = user
+datestamp = 1366033194
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:1
 features[user_permission][] = access content
@@ -46,10 +49,3 @@ features[variable][] = user_picture_guidelines
 features[variable][] = user_picture_path
 features[variable][] = user_picture_style
 features[variable][] = user_pictures
-
-
-; Information added by drush on 2013-04-15
-version = "temp-reorg-dev"
-project = "dkan"
-datestamp = "1366033194"
-

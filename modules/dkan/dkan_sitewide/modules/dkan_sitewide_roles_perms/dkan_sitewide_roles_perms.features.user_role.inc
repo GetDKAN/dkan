@@ -13,7 +13,7 @@ function dkan_sitewide_roles_perms_user_default_roles() {
   // Exported role: editor.
   $roles['editor'] = array(
     'name' => 'editor',
-    'weight' => '2',
+    'weight' => 2,
   );
 
   return $roles;

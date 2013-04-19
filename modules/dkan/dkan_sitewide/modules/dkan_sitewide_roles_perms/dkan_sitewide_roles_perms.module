@@ -1,5 +1,7 @@
 <?php
 /**
  * @file
- * Drupal needs this blank file.
+ * Code for the DKAN Sitewide Roles and Permissions feature.
  */
+
+include_once 'dkan_sitewide_roles_perms.features.inc';
