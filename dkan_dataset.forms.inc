@@ -89,13 +89,11 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['title']['#attributes']['placeholder'] = t('eg. A descriptive title');
     $form['body'][$form['language']['#value']][0]['#prefix'] = '<div id="prefix">';
     $form['body'][$form['language']['#value']][0]['#suffix'] = '</div>';
-    $form['body'][$form['language']['#value']][0]['#description'] = t('eg. Some useful notes about the data');
     $form['path']['alias']['#description'] = '';
     $form['path']['alias']['#title'] = '';
-    $form['field_tags']['und']['#description'] = t('eg. economy, mental health, government');
+    $form['field_tags'][$form['language']['#value']]['#description'] = t('eg. economy, mental health, government');
     // Add icon to license field.
-    $form['field_license']['icon']['#type'] = 'markup';
-    $form['field_license']['icon']['#markup'] = '<i class="icon-large icon-info-sign"></i>';
+    $form['field_license'][$form['language']['#value']]['#description'] = '<i class="icon-large icon-info-sign"></i>License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>';
     foreach ($form['field_additional_info']['und'] as $key => $values) {
       if (is_int($key)) {
         $form['field_additional_info']['und'][$key]['first']['#attributes']['placeholder'] = t('key');
@@ -267,6 +265,10 @@ function dkan_dataset_resource_form_after_build($form, &$form_state) {
     $form['field_link_file'][$form['language']['#value']][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
     $form['field_link_api'][$form['language']['#value']][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011';
   }
+  if (isset($form['field_format'])) {
+    $form['field_format'][$form['language']['#value']]['textfield']['#attributes']['placeholder'] = 'eg. csv, json';
+    $form['field_format'][$form['language']['#value']]['textfield']['#description'] = t('File format will be autodetected');
+  }
   $form['body'][$form['language']['#value']][0]['value']['#attributes']['placeholder'] = t('eg. Some useful notes about the data');
   return $form;
 }
@@ -370,7 +372,7 @@ function dkan_dataset_prepare_resource_form($nid) {
   // Don't pull from cache.
   $new_form_state['input'] = array();
   $resource_form = drupal_build_form($type . '_node_form', $new_form_state);
-  $resource_form['#action'] = '/node/add/resource?dateset=' . $nid;
+  $resource_form['#action'] = '/node/add/resource?dataset=' . $nid;
   return $resource_form;
 }
 

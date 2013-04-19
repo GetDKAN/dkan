@@ -253,6 +253,12 @@ function dkan_dataset_groups_views_default_views() {
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['path'] = 'groups';
+  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['title'] = 'Groups';
+  $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['menu']['name'] = 'main-menu';
+  $handler->display->display_options['menu']['context'] = 0;
+  $handler->display->display_options['menu']['context_only_inline'] = 0;
   $export['groups_page'] = $view;
 
   $view = new view();
@@ -305,7 +311,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['fields']['body_summary']['alter']['trim'] = TRUE;
   $handler->display->display_options['fields']['body_summary']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['body_summary']['link_to_entity'] = 0;
-  /* Contextual filter: Indexed Node: Groups audience */
+  /* Contextual filter: Indexed Node: Publisher */
   $handler->display->display_options['arguments']['og_group_ref']['id'] = 'og_group_ref';
   $handler->display->display_options['arguments']['og_group_ref']['table'] = 'search_api_index_datasets';
   $handler->display->display_options['arguments']['og_group_ref']['field'] = 'og_group_ref';
