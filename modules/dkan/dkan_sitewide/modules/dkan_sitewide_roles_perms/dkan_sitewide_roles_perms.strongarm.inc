@@ -28,7 +28,7 @@ function dkan_sitewide_roles_perms_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'gravatar_size';
-  $strongarm->value = '100';
+  $strongarm->value = 190;
   $export['gravatar_size'] = $strongarm;
 
   $strongarm = new stdClass();

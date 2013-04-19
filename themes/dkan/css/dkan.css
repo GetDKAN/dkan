@@ -679,6 +679,7 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   background-color: white;
   margin-bottom: 20px;
 }
+.page-user #zone-content .horizontal-tabs ul.horizontal-tabs-list,
 .node-type-group #zone-content .horizontal-tabs ul.horizontal-tabs-list {
   background-color: transparent;
   margin: 0 0 -6px;
@@ -712,7 +713,8 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 #dataset-node-form a.bt-pop {
   background: none;
 }
-.field-name-field-temporal-coverage legend span.fieldset-legend, .field-widget-leaflet-widget-widget legend span.fieldset-legend {
+.field-name-field-temporal-coverage legend span.fieldset-legend,
+.field-widget-leaflet-widget-widget legend span.fieldset-legend {
   padding: 0;
   margin: 0;
   float: left;
@@ -721,13 +723,19 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 .node-type-group #region-content .block-inner:first-child {
   padding-bottom: 0;
 }
+.page-user #region-content .block,
 .node-type-group #region-content .block {
-  background-color: #fff;
-  padding-bottom: 5px;
+  background-color: #f3f3f3;
+  padding-top: 5px;
+  -webkit-border-radius: 3px 3px 0 0;
+  -moz-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
 }
+.page-user #region-content .block-inner,
 .node-type-group #region-content .block-inner {
   background-color: #f3f3f3;
 }
+.page-user div.horizontal-tabs,
 .node-type-group div.horizontal-tabs {
   margin: 0 0 1em 0;
   padding: 0;
@@ -736,6 +744,7 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   margin: 0 -25px;
   background-color: transparent;
 }
+.page-user div.horizontal-tabs .horizontal-tabs-panes,
 .node-type-group div.horizontal-tabs .horizontal-tabs-panes {
   padding: 0 25px 15px;
   background-color: #FFF;
@@ -743,7 +752,6 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 }
 #zone-content .block-inner:last-child {
   margin-bottom: 0;
-  padding-bottom: 20px;
 }
 #zone-content .block-inner:first-child {
   margin-top: 0;
@@ -2819,6 +2827,7 @@ h3.media-heading a {
   float: none;
   margin: -7px 0 20px;
 }
+#views-exposed-form-user-profile-search-entity-view-1 .compact-form-description,
 #views-exposed-form-groups-search-entity-view-1 .compact-form-description {
   top: 65px;
   font-size: 16px;
@@ -2831,9 +2840,11 @@ h3.media-heading a {
   left: 15px;
   color: #999;
 }
+#views-exposed-form-user-profile-search-entity-view-1 .views-exposed-widget,
 #views-exposed-form-groups-search-entity-view-1 .views-exposed-widget {
   float: none;
 }
+#views-exposed-form-user-profile-search-entity-view-1 .views-exposed-widget .form-submit,
 #views-exposed-form-groups-search-entity-view-1 .views-exposed-widget .form-submit {
   margin-top: 0;
   top: 65px;
@@ -2856,6 +2867,7 @@ h3.media-heading a {
   font-weight: bold;
   color: #000;
 }
+#views-exposed-form-user-profile-search-entity-view-1 .views-widget-filter-search_api_views_fulltext input,
 #views-exposed-form-groups-search-entity-view-1 .views-widget-filter-search_api_views_fulltext input,
 #node_group_full_group_tab_datasets .views-widget-filter-search_api_views_fulltext input,
 #block-system-main #views-exposed-form-dataset-page .form-type-textfield input {
@@ -3140,8 +3152,6 @@ article.node-teaser {
 }
 article.node-teaser:last-child {
   margin-bottom: 0;
-  border: none;
-  padding-bottom: 10px;
 }
 article.node-teaser p {
   margin: 10px 0;
@@ -3225,4 +3235,10 @@ article.node-teaser .data-and-resources .label {
   font-size: 17px;
   line-height: 20px;
   padding: 0 0 15px 0;
+}
+.profile {
+  margin: 0;
+}
+.node-links ul li a, .comment-links ul li a {
+  float: right;
 }

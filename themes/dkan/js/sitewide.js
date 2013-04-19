@@ -63,9 +63,8 @@
 
   Drupal.behaviors.dkanSite = {
     attach: function (context, settings) {
-
       // Autohide selected elements.
-      var elements = "#views-exposed-form-dataset-page,#block-dkan-sitewide-dkan-sitewide-search-bar,#views-exposed-form-groups-search-entity-view-1";
+      var elements = "#views-exposed-form-dataset-page,#block-dkan-sitewide-dkan-sitewide-search-bar,#views-exposed-form-groups-search-entity-view-1,#views-exposed-form-user-profile-search-entity-view-1";
       $(elements, context).dkanFormsHide();
       var autoDeluxeElements = ".field-name-field-tags";
       $(autoDeluxeElements, context).dkanFormsAutoDeluxeHide();

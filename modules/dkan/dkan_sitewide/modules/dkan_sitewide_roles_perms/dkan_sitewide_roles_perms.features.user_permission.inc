@@ -14,9 +14,9 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['access content'] = array(
     'name' => 'access content',
     'roles' => array(
-      0 => 'anonymous user',
-      1 => 'authenticated user',
-      2 => 'editor',
+      'anonymous user' => 'anonymous user',
+      'authenticated user' => 'authenticated user',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -25,7 +25,9 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['access user profiles'] = array(
     'name' => 'access user profiles',
     'roles' => array(
-      0 => 'editor',
+      'anonymous user' => 'anonymous user',
+      'authenticated user' => 'authenticated user',
+      'editor' => 'editor',
     ),
     'module' => 'user',
   );
@@ -34,7 +36,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['administer nodes'] = array(
     'name' => 'administer nodes',
     'roles' => array(
-      0 => 'editor',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -43,7 +45,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['create dataset content'] = array(
     'name' => 'create dataset content',
     'roles' => array(
-      0 => 'authenticated user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -52,7 +54,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['create group content'] = array(
     'name' => 'create group content',
     'roles' => array(
-      0 => 'authenticated user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -61,7 +63,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['create resource content'] = array(
     'name' => 'create resource content',
     'roles' => array(
-      0 => 'authenticated user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -70,7 +72,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['delete any dataset content'] = array(
     'name' => 'delete any dataset content',
     'roles' => array(
-      0 => 'editor',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -79,7 +81,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['delete any group content'] = array(
     'name' => 'delete any group content',
     'roles' => array(
-      0 => 'editor',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -88,7 +90,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['delete any resource content'] = array(
     'name' => 'delete any resource content',
     'roles' => array(
-      0 => 'editor',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -97,7 +99,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['delete own dataset content'] = array(
     'name' => 'delete own dataset content',
     'roles' => array(
-      0 => 'authenticated user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -106,7 +108,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['delete own group content'] = array(
     'name' => 'delete own group content',
     'roles' => array(
-      0 => 'authenticated user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -115,7 +117,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['delete own resource content'] = array(
     'name' => 'delete own resource content',
     'roles' => array(
-      0 => 'authenticated user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -124,7 +126,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['delete revisions'] = array(
     'name' => 'delete revisions',
     'roles' => array(
-      0 => 'editor',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -133,7 +135,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['edit any dataset content'] = array(
     'name' => 'edit any dataset content',
     'roles' => array(
-      0 => 'editor',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -142,7 +144,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['edit any group content'] = array(
     'name' => 'edit any group content',
     'roles' => array(
-      0 => 'editor',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -151,7 +153,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['edit any resource content'] = array(
     'name' => 'edit any resource content',
     'roles' => array(
-      0 => 'editor',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -160,7 +162,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['edit own dataset content'] = array(
     'name' => 'edit own dataset content',
     'roles' => array(
-      0 => 'authenticated user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -169,7 +171,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['edit own group content'] = array(
     'name' => 'edit own group content',
     'roles' => array(
-      0 => 'authenticated user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -178,7 +180,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['edit own resource content'] = array(
     'name' => 'edit own resource content',
     'roles' => array(
-      0 => 'authenticated user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -187,7 +189,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['revert revisions'] = array(
     'name' => 'revert revisions',
     'roles' => array(
-      0 => 'editor',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -196,7 +198,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['view own unpublished content'] = array(
     'name' => 'view own unpublished content',
     'roles' => array(
-      0 => 'editor',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -205,7 +207,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   $permissions['view revisions'] = array(
     'name' => 'view revisions',
     'roles' => array(
-      0 => 'editor',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );

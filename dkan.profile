@@ -72,6 +72,9 @@ function dkan_additional_setup() {
     $query->values($record);
   }
   $query->execute();
+
+  variable_set('node_access_needs_rebuild', FALSE);
+  variable_set('gravatar_size', 190);
 }
 
 /**
