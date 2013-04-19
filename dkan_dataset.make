@@ -86,3 +86,7 @@ libraries[arc][type] = libraries
 libraries[arc][download][type] = git
 libraries[arc][download][url] = "https://github.com/semsol/arc2.git"
 libraries[arc][download][revision] = "44c396ab54178086c09499a1704e31a977b836d2"
+
+libraries[excanvas][download][type] = "file"
+libraries[excanvas][download][url] = "https://explorercanvas.googlecode.com/files/excanvas_r3.zip"
+libraries[excanvas][download][sha1] = "f1b9f7a44428eb0c7b27fe8ac0242d34ec94a385"
