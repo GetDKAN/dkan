@@ -17,9 +17,10 @@ name = "Feeds News"
 package = "Feeds"
 php = "5.2.4"
 
-; Information added by drupal.org packaging script on 2013-04-17
-version = "7.x-2.0-alpha7+41-dev"
+
+; Information added by drush on 2013-04-22
+version = "7.x-2.0-alpha7+45-dev"
 core = "7.x"
 project = "feeds"
-datestamp = "1366204433"
+datestamp = "1366638286"
 

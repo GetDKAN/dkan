@@ -1,0 +1,462 @@
+.stages {
+  margin: 0;
+  list-style: none;
+  *zoom: 1;
+  counter-reset: stage;
+  margin: -20px -25px 20px;
+  overflow: hidden;
+}
+.stages a:link,
+.stages a:visited,
+.stages a {
+  color: #FFF;
+}
+.stages:before,
+.stages:after {
+  display: table;
+  content: "";
+}
+.stages:after {
+  clear: both;
+}
+.stages li {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  line-height: 27px;
+  counter-increment: stage;
+  width: 33.33%;
+  /** */
+  background-color: #ededed;
+  background-color: rgb(200, 200, 200);
+  float: left;
+  padding: 10px 20px;
+  position: relative;
+  z-index: 0;
+}
+.stages li:before {
+  -webkit-border-radius: 14px;
+  -moz-border-radius: 14px;
+  border-radius: 14px;
+  content: counter(stage);
+  display: inline-block;
+  width: 27px;
+  height: 27px;
+  margin-right: 5px;
+  font-weight: bold;
+  text-align: center;
+  color: #ffffff;
+  background-color: #aeaeae;
+  z-index: 1;
+}
+.stages li:after {
+  left: 0;
+  border: solid rgba(237, 237, 237, 0);
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-top-color: #ededed;
+  border-bottom-color: #ededed;
+  /* */
+  border-top-color: rgb(200, 200, 200);
+  border-bottom-color: rgb(200, 200, 200);
+  border-width: 29px;
+  top: 50%;
+  margin-top: -29px;
+  margin-left: -30px;
+}
+.stages li.first,
+.stages li.first .highlight {
+  -webkit-border-radius: 3px 0 0 0;
+  -moz-border-radius: 3px 0 0 0;
+  border-radius: 3px 0 0 0;
+}
+.stages li.last {
+  position: relative;
+  right: -1px;
+}
+.stages li.last,
+.stages li.last .highlight {
+  -webkit-border-radius: 0 3px 0 0;
+  -moz-border-radius: 0 3px 0 0;
+  border-radius: 0 3px 0 0;
+}
+.stages li.first:after {
+  content: none;
+  border: none;
+}
+.stages li.complete:after {
+  border-color: rgba(197, 226, 196, 0);
+  border-top-color: #c5e2c4;
+  border-bottom-color: #c5e2c4;
+  border-top-color: rgb(150, 150, 150);
+  border-bottom-color: rgb(150, 150, 150);
+}
+.stages.stage-3 li.complete:first-child:after {
+  content: none;
+}
+.stages li.uncomplete {
+  background-color: rgb(200, 200, 200);
+}
+.stages li.uncomplete:before,
+.stages li.uncomplete a {
+  color: rgb(75, 75, 75);
+}
+.stages li.uncomplete .highlight {
+  background-color: rgb(200, 200, 200);
+}
+.stages li.complete .highlight {
+  background-color: rgb(200, 200, 200);
+}
+.stages li.complete {
+  background-color: rgb(150, 150, 150);
+}
+.stages li.active {
+  background-color: rgb(75, 75, 75);
+}
+.stages li.active:after {
+  border-top-color: rgb(75, 75, 75);
+  border-bottom-color: rgb(75, 75, 75);
+}
+.stages li.active:before {
+/**  color: #8cc68a; **/
+  color: rgb(75, 75, 75);
+  background: #ffffff;
+}
+.stages li.complete:before {
+  /* color: #c5e2c4; */
+  background: rgb(150, 150, 150)
+  background: #eef6ed;
+}
+.stages li .highlight {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 52px;
+  border: none;
+  text-align: left;
+  text-decoration: none;
+  line-height: 27px;
+  z-index: -1;
+}
+.stages li.active .highlight {
+  color: #ffffff;
+  background: rgb(75, 75, 75);
+  /*background: #8cc68a;*/
+}
+.stages li.complete .highlight {
+  color: #eef6ed;
+  /*background: #c5e2c4;*/
+  background: rgb(150, 150, 150)
+}
+#dataset-node-form a.bt-pop {
+  background: url(images/sprite-ckan-icons.png) no-repeat -242px -34px;
+  display: inline-block;
+  height: 17px;
+  width: 17px;
+}
+.field-name-field-temporal-coverage legend span.fieldset-legend,
+.field-widget-leaflet-widget-widget legend span.fieldset-legend {
+  float: left;
+  position: relative;
+}
+.field-name-field-temporal-coverage legend a.bt-pop,
+.field-widget-leaflet-widget-widget legend a.bt-pop {
+  float: right;
+  display: block;
+  position: relative;
+  margin: 5px 0 0 5px;
+}
+.field-name-field-temporal-coverage legend,
+.field-widget-leaflet-widget-widget legend {
+  position: absolute;
+  top: 0;
+}
+#field-tags-wrapper .path-form .add-on {
+  float: left;
+  -webkit-border-radius: 3px 0 0 3px;
+  -moz-border-radius: 3px 0 0 3px;
+  border-radius: 3px 0 0 3px;
+  display: inline-block;
+  width: auto;
+  min-width: 16px;
+  height: 19px;
+  padding: 1px 6px;
+  font-weight: normal;
+  line-height: 18px;
+  text-align: center;
+  text-shadow: 0 1px 0 white;
+  vertical-align: middle;
+  background-color: #EEE;
+  border: 1px solid #CCC;
+  z-index: 1;
+}
+#edit-path-alias {
+position: absolute;
+top: 0;
+padding: 4px 6px;
+}
+.form-item-path-alias {
+  position: relative;
+}
+#url-slug {
+  background-color: #EBE2BE;
+  padding: 0 2px;
+  margin: 0 2px;
+}
+#url-edit-label, #url-edit-prefix, #url-slug, #url-edit-preview .btn-small {
+  float: left;
+}
+.field-type-text-with-summary {
+  clear: both;
+}
+#url-edit-prefix {
+  padding: 0 0 0 10px;
+}
+.label[data-format=HTML],
+.label[data-format=html],
+.label[data-format*=html] {
+  background-color: #55a1ce;
+}
+.label[data-format=json],
+.label[data-format*=json] {
+  background-color: #ef7100;
+}
+.label[data-format=xml],
+.label[data-format*=xml] {
+  background-color: #ef7100;
+}
+.label[data-format=text],
+.label[data-format*=text] {
+  background-color: #74cbec;
+}
+.label[data-format=csv],
+.label[data-format*=csv] {
+  background-color: #dfb100;
+}
+.label[data-format=xls],
+.label[data-format*=xls] {
+  background-color: #2db55d;
+}
+.label[data-format=zip],
+.label[data-format*=zip] {
+  background-color: #686868;
+}
+.label[data-format=api],
+.label[data-format*=api] {
+  background-color: #ec96be;
+}
+.label[data-format=pdf],
+.label[data-format*=pdf] {
+  background-color: #e0051e;
+}
+.label[data-format=rdf],
+.label[data-format*=rdf],
+.label[data-format*=nquad],
+.label[data-format*=ntriples],
+.label[data-format*=turtle] {
+  background-color: #0b4498;
+}
+.format-label[data-format=data],
+.format-label[data-format*=data] {
+  width: 32px;
+  height: 35px;
+  background-position: 0px -62px;
+}
+.format-label[data-format=rdf],
+.format-label[data-format*=rdf] {
+  width: 32px;
+  height: 35px;
+  background-position: -32px -62px;
+}
+.format-label[data-format=pdf],
+.format-label[data-format*=pdf] {
+  width: 32px;
+  height: 35px;
+  background-position: -64px -62px;
+}
+.format-label[data-format=api],
+.format-label[data-format*=api] {
+  width: 32px;
+  height: 35px;
+  background-position: -96px -62px;
+}
+.format-label[data-format=zip],
+.format-label[data-format*=zip] {
+  width: 32px;
+  height: 35px;
+  background-position: -128px -62px;
+}
+.format-label[data-format=xls],
+.format-label[data-format*=xls] {
+  width: 32px;
+  height: 35px;
+  background-position: -160px -62px;
+}
+.format-label[data-format=txt],
+.format-label[data-format*=txt] {
+  width: 32px;
+  height: 35px;
+  background-position: -224px -62px;
+}
+.format-label[data-format=xml],
+.format-label[data-format*=xml] {
+  width: 32px;
+  height: 35px;
+  background-position: -256px -62px;
+}
+.format-label[data-format=json],
+.format-label[data-format*=json] {
+  width: 32px;
+  height: 35px;
+  background-position: -288px -62px;
+}
+.format-label[data-format=CSV],
+.format-label[data-format=csv],
+.format-label[data-format*=csv] {
+  width: 32px;
+  height: 35px;
+  background-position: -192px -62px;
+}
+.format-label[data-format=HTML],
+.format-label[data-format=html],
+.format-label[data-format*=html] {
+  width: 32px;
+  height: 35px;
+  background-position: -320px -62px;
+}
+.format-label {
+  display: inline-block;
+  vertical-align: text-bottom;
+  position: relative;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  background-image: url(images/sprite-ckan-icons.png");
+  background-repeat: no-repeat;
+  background-position: 16px 16px;
+  text-indent: -900em;
+  background: url("images/sprite-resource-icons.png") no-repeat 0 0;
+}
+.block .item-list li > a {
+  display: block;
+  margin: -7px -15px -7px 0;
+  padding: 7px 15px;
+}
+.resource-list .btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: block;
+  margin: -7px -15px -7px 0;
+  padding: 7px 15px;
+}
+ul.primary li a.btn, .btn {
+  display: inline-block;
+  padding: 4px 10px 4px;
+  margin-bottom: 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: #333;
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: #F7F7F7;
+  background-image: -moz-linear-gradient(top, white, #EAEAEA);
+  background-image: -ms-linear-gradient(top, white, #EAEAEA);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(white), to(#EAEAEA));
+  background-image: -webkit-linear-gradient(top, white, #EAEAEA);
+  background-image: -o-linear-gradient(top, white, #EAEAEA);
+  background-image: linear-gradient(top, white, #EAEAEA);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eaeaea', GradientType=0);
+  border-color: #EAEAEA #EAEAEA #C4C4C4;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  border: 1px solid #CCC;
+  border-bottom-color: #B3B3B3;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
+  -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
+  font-weight: bold;
+}
+.btn-primary, a.btn-primary, ul.primary li a.btn-primary:hover, #toolbar ul.primary li a.btn-primary:hover, .btn-primary:hover, .btn-warning, .btn-warning:hover, .btn-danger, .btn-danger:hover, .btn-success, .btn-success:hover, .btn-info, .btn-info:hover, .btn-inverse, .btn-inverse:hover {
+  color: white;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #085871;
+  background-color: #206B82;
+  background-image: -moz-linear-gradient(top, #30778D, #085871);
+  background-image: -ms-linear-gradient(top, #30778D, #085871);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#30778D), to(#085871));
+  background-image: -webkit-linear-gradient(top, #30778D, #085871);
+  background-image: -o-linear-gradient(top, #30778D, #085871);
+  background-image: linear-gradient(top, #30778D, #085871);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#30778d', endColorstr='#085871', GradientType=0);
+  border-color: #085871 #085871 #03202A;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+ul.resource-list .heading {
+  color: black;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 0 0 0 15px;
+}
+ul.resource-list p {
+  margin: 0 0 9px;
+  padding: 0 0 0 15px;
+}
+.item-list ul.resource-list {
+  margin: 0;
+  padding: 0;
+}
+.item-list ul.resource-list li {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 40px;
+  font-size: 12px;
+  line-height: 1.1666666666666667em;
+  padding: 7px 25px;
+  border-bottom: 1px dotted #CCC;
+  margin: 14px 0;
+  list-style: none;
+}
+.resource-list li .format-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.format-label {
+  width: 32px;
+  height: 35px;
+  background-position: 0px -62px;
+}
+.node-dataset .field-name-field-tags {
+  margin: 0;
+  list-style: none;
+  padding: 10px;
+  min-height: 26px;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: whiteSmoke;
+  border: 1px solid #EEE;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}

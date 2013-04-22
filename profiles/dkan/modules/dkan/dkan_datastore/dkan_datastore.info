@@ -1,0 +1,24 @@
+name = DKAN Datastore
+description = Creates a datastore designed to make it easy to share open data.
+core = 7.x
+package = DKAN
+dependencies[] = ctools
+dependencies[] = data
+dependencies[] = dkan_dataset
+dependencies[] = feeds
+dependencies[] = feeds_field_fetcher
+dependencies[] = feeds_flatstore_processor
+dependencies[] = rest_server
+dependencies[] = schema
+dependencies[] = services
+
+features[ctools][] = feeds:feeds_importer_default:1
+features[features_api][] = api:1
+features[feeds_importer][] = dkan_file
+
+
+; Information added by drush on 2013-04-22
+version = "unknown"
+project = "dkan_datastore"
+datestamp = "1366638243"
+

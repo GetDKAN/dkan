@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Select (or other) module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function select_or_other_install() {
+  // Increase the module weight, so that Select (or other) widget and formatter
+  // values appear below text default values.
+  $weight = db_select('system', 's')
+    ->fields('s', array('weight'))
+    ->condition('name', 'text', '=')
+    ->execute()
+    ->fetchField();
+  
+  db_update('system')
+    ->fields(array('weight' => $weight + 1))
+    ->condition('type', 'module')
+    ->condition('name', 'select_or_other')
+    ->execute();
+}
+
+/**
+ * Increase the module weight.
+ *
+ * @see select_or_other_install()
+ */
+function select_or_other_update_7201() {
+  $weight = db_select('system', 's')
+    ->fields('s', array('weight'))
+    ->condition('name', 'text', '=')
+    ->execute()
+    ->fetchField();
+  
+  db_update('system')
+    ->fields(array('weight' => $weight + 1))
+    ->condition('type', 'module')
+    ->condition('name', 'select_or_other')
+    ->execute();
+}

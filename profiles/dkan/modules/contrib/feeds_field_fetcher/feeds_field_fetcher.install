@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * @file
+ * Installation file for feeds_field_fetcher.
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function feeds_field_fetcher_enable() {
+  // Clears ctools cache to avoid missing plugin error message.
+  cache_clear_all('plugins:feeds:plugins', 'cache');
+}

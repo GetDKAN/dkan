@@ -1,0 +1,187 @@
+<?php
+/**
+ * @file
+ * Creates DKAN Datastore
+ */
+
+ include_once('dkan_datastore.features.inc');
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_datastore_menu() {
+  $items['node/%node/download'] = array(
+    'title' => 'Download',
+    'page callback' => 'dkan_datastore_download',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_datastore_download_access',
+    'access arguments' => array(1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => '20',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/api'] = array(
+    'title' => 'Data API',
+    'page callback' => 'dkan_datastore_datastore_api',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_datastore_datastore_api_access',
+    'access arguments' => array(1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => '25',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/datastore'] = array(
+    'title' => 'Manage Datastore',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_datastore_import_tab_form', 1),
+    'access callback' => 'dkan_datastore_feeds_access',
+    'access arguments' => array('import', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => '15',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/datastore/import'] = array(
+    'title' => 'Import',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_datastore_import_tab_form', 1),
+    'access callback' => 'dkan_datastore_feeds_access',
+    'access arguments' => array('import', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => 10,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['node/%node/datastore/delete-items'] = array(
+    'title' => 'Delete items',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_datastore_delete_tab_form', NULL, 1),
+    'access callback' => 'dkan_datastore_feeds_access',
+    'access arguments' => array('clear', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => 11,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/datastore/unlock'] = array(
+    'title' => 'Unlock',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_datastore_unlock_tab_form', NULL, 1),
+    'access callback' => 'dkan_datastore_feeds_access',
+    'access arguments' => array('unlock', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => 11,
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_datastore_menu_alter(&$items) {
+  // Removing these here, readding in hook_menu().
+  unset($items['node/%node/delete-items']);
+  unset($items['node/%node/import']);
+  unset($items['node/%node/unlock']);
+}
+
+/**
+ * Copy of feeds_access.
+ */
+function dkan_datastore_feeds_access($action, $node) {
+  if (!in_array($action, array('import', 'clear', 'unlock'))) {
+    // If $action is not one of the supported actions, we return access denied.
+    return FALSE;
+  }
+  if ($action != 'import') {
+    if ($importer_id = feeds_get_importer_id($node->type)) {
+      $source_config = feeds_source($importer_id, $node->nid);
+      $fetcher = get_class($source_config->importer->fetcher);
+      $source = isset($source_config->config[$fetcher]['source']) ? $source_config->config[$fetcher]['source'] : '';
+      if (!$source) {
+        return FALSE;
+      }
+    }
+    else {
+      return FALSE;
+    }
+  }
+
+  if (is_string($node)) {
+    $importer_id = $node;
+  }
+  elseif ($node->type) {
+    $importer_id = feeds_get_importer_id($node->type);
+  }
+
+  // Check for permissions if feed id is present, otherwise return FALSE.
+  if ($importer_id) {
+    if (user_access('administer feeds') || user_access("{$action} {$importer_id} feeds")) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Access callback for Data API instructions.
+ */
+function dkan_datastore_datastore_api_access($node) {
+  if ($node->type != 'resource' || !isset($node->field_upload[$node->language][0])) {
+    return FALSE;
+  }
+  else {
+    return node_access('view', $node);
+  }
+}
+
+/**
+ * Access callback for download tab.
+ */
+function dkan_datastore_download_access($node) {
+  if ($node->type != 'resource' || !isset($node->field_upload[$node->language][0])) {
+    return FALSE;
+  }
+  else {
+    return node_access('view', $node);
+  }
+}
+
+/**
+ * Access callback for back link.
+ */
+function dkan_datastore_back_access($node) {
+  if ($node->type != 'resource') {
+    return FALSE;
+  }
+  else {
+    return node_access('view', $node);
+  }
+}
+
+/**
+ * Access callback for 'Add Resource' tab.
+ */
+function dkan_add_resource($node) {
+  if ($node->type != 'dataset') {
+    return FALSE;
+  }
+  else {
+    return _node_add_access();
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function dkan_datastore_node_update($node) {
+  // Source attached to node.
+  if (isset($node->feeds) && $node->type == 'resource' && $importer_ids = feeds_get_importer_ids($node->type)) {
+    $fid = $node->field_upload[$node->language][0]['fid'];
+    if ($fid) {
+      $file = file_load($fid);
+      if ($file->filemime != 'text/csv') {
+        feeds_node_delete($node);
+      }
+    }
+  }
+}

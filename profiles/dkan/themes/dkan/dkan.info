@@ -382,3 +382,10 @@ version = "temp-reorg-dev"
 project = "dkan"
 datestamp = "1366033194"
 
+
+
+; Information added by drush on 2013-04-22
+version = "temp-reorg-dev"
+project = "dkan"
+datestamp = "1366638208"
+

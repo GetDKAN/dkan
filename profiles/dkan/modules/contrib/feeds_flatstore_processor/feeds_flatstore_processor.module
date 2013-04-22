@@ -1,0 +1,261 @@
+<?php
+
+/**
+ * @file
+ * Creates Feeds fetcher for storing Feeds results in a unique tables.
+ */
+
+/**
+ * Implements hook_ctools_plugin_type().
+ */
+function feeds_flatstore_processor_ctools_plugin_type() {
+  return array(
+    'plugins' => array(
+      'cache' => TRUE,
+      'use hooks' => TRUE,
+      'classes' => array('handler'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function feeds_flatstore_processor_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'feeds_ui_mapping_form') {
+    $form['help'] = array(
+      '#type' => 'item',
+      '#title' => t('No Mapping Options'),
+      '#markup' => t('NOTE: This processor does not have any mapping options. All items in results are saved into rows in table.'),
+    );
+  }
+}
+
+/**
+ * Implements hook_feeds_before_import().
+ */
+function feeds_flatstore_processor_feeds_before_import(FeedsSource $source) {
+  // If the import it complete then we are re-importing.
+  $progress_importing = $source->progressImporting();
+  $count = $source->itemCount();
+  if ($progress_importing == FEEDS_BATCH_COMPLETE && $count) {
+    $table_name = feeds_flatstore_processor_table_name($source->id, $source->feed_nid);
+    db_truncate($table_name)->execute();
+  }
+}
+
+/**
+ * Implements hook_feeds_after_import().
+ */
+function feeds_flatstore_processor_feeds_after_import(FeedsSource $source) {
+  // Unschedule for import if completed. TODO: only if periodic import on.
+  $progress_importing = $source->progressImporting();
+  $count = $source->itemCount();
+  if ($progress_importing == FEEDS_BATCH_COMPLETE && $count) {
+    $table_name = feeds_flatstore_processor_table_name($source->id, $source->feed_nid);
+    $job = array(
+      'type' => $source->id,
+      'id' => $source->feed_nid,
+    );
+//    JobScheduler::get('feeds_source_import')->remove($job);
+  }
+}
+
+/**
+ * Implements hook_feeds_after_parse().
+ */
+function feeds_flatstore_processor_feeds_after_parse(FeedsSource $source, FeedsParserResult $result) {
+  // Creates table for feed source if it doesn't exist.
+  feeds_flatstore_processor_table($source, $result);
+}
+
+/**
+ * Creates table name based on source id and entity id.
+ */
+function feeds_flatstore_processor_table_name($source_id, $entity_id, $prefix = 'feeds_datastore') {
+  return $prefix . '_' . $source_id . '_' . $entity_id;
+}
+
+/**
+ * Retrieves table definition or creates one if table does not exist.
+ */
+function feeds_flatstore_processor_table(FeedsSource $source, $parser_result) {
+  $table_name = feeds_flatstore_processor_table_name($source->id, $source->feed_nid);
+  // If table exists, just return it.
+  if ($table = data_get_table($table_name)) {
+    return $table;
+  }
+  else {
+    $title = '';
+    $title_result = db_select('node', 'n')
+      ->fields('n', array('title'))
+      ->condition('nid', $source->feed_nid, '=')
+      ->execute()
+      ->fetchAssoc();
+    if (isset($title_result['title'])) {
+      $title = $title_result['title'];
+    }
+    // If this is a CSV file, get more info.
+    if ($source->importer->parser instanceof FeedsCSVParser) {
+      $fetcher = get_class($source->importer->fetcher);
+      $source = $source->config[$fetcher]['source'];
+      if ($source) {
+        // This gives us a better range of results for finding data types.
+        $example_data = feeds_flatstore_processor_get_csv_results($source);
+      }
+      else {
+        $example_data = $parser_result;
+      }
+      $headers = $example_data[0];
+      unset($example_data[0]);
+      $types = feeds_flatstore_processor_find_columns($example_data, $headers);
+    }
+    else {
+      $types = feeds_flatstore_processor_find_columns($parser_result->items);
+    }
+    $schema = feeds_flatstore_processsor_base_schema();
+    $field_schema = data_build_schema($types);
+    $schema['fields'] = array_merge($field_schema['fields'], $schema['fields']);
+
+    $table = data_create_table($table_name, $schema, $title);
+    return $table;
+  }
+}
+
+/**
+ * Creates base schema for flatstore table.
+ */
+function feeds_flatstore_processsor_base_schema() {
+  return array(
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'size' => 'normal',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'timestamp' => array(
+        'description' => 'The Unix timestamp for the data.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+    ),
+    'indexes' => array(
+      'id' => array('id'),
+      'timestamp' => array('timestamp'),
+    ),
+    'primary key' => array(
+      '0' => 'id',
+    ),
+  );
+}
+
+/**
+ * Opens csv file and grabs set amount of rows.
+ *
+ * This is used for finding database schema since the results of a parsed
+ * feeds result will be only 50 rows by default. This is an in relatively
+ * inexpensive operation that should only be run once per feed source.
+ */
+function feeds_flatstore_processor_get_csv_results($filepath, $separator = ",", $limit = 1000) {
+  static $size = 10000;
+  $handle = fopen($filepath, 'r');
+  if ($handle === FALSE) {
+    drupal_set_message(t('Could not open !filename', array('!filename' => $filepath)));
+    return FALSE;
+  }
+
+  $parsed_results = array();
+  $rowcount = 0;
+  while (($data = fgetcsv($handle, $size, ',')) !== FALSE) {
+    $result[] = $data;
+    $rowcount++;
+    if ($rowcount > $limit) {
+      break;
+    }
+  }
+  fclose($handle);
+  return $result;
+}
+
+/**
+ * Finds the schema type for values in an array.
+ */
+function feeds_flatstore_processor_find_columns($parsed_result, $headers = array()) {
+  $rowcount = count($parsed_result);
+  if (!$headers) {
+    foreach ($parsed_result[0] as $key => $value) {
+      $headers[$key] = $key;
+    }
+  }
+  $colcount = count($headers);
+
+  $type_counter = array();
+  foreach ($parsed_result as $row) {
+    foreach ($row as $key => $value) {
+      if ($value == '') {
+        continue;
+      }
+      // TODO: Determine if default data sizes are sufficient.
+      // Int.
+      if (preg_match('/^-?\d+$/', $value)) {
+        $type_counter[$key]['int']++;
+      }
+      // Float.
+      elseif (preg_match('/^-?(?:\d+|\d*\.\d+)$/', trim($value))) {
+        $type_counter[$key]['float']++;
+      }
+      // Datetime.
+      elseif (preg_match("/\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:\d{2}/", trim($value)) ||
+              preg_match("/\d{2}\-\d{2}\-\d{4} \d{2}:\d{2}:\d{2}/", trim($value)) ||
+              preg_match("/\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}/", trim($value)) ||
+              preg_match("/\d{2}\-\d{2}\-\d{4} \d{2}:\d{2}/", trim($value)) ||
+              preg_match("/\d{4}\/\d{2}\/\d{2}/", trim($value)) ||
+              preg_match("/\d{2}\.\d{2}\.\d{4}/", trim($value))) {
+        $type_counter[$key]['datetime']++;
+      }
+      else {
+        $type_counter[$key]['bigtext']++;
+      }
+    }
+  }
+  foreach ($headers as $key => $header) {
+    $max = max($type_counter[$key]);
+
+    if ($max == 0 || !$max) {
+      $result['type'][$header] = 'bigtext';
+    }
+    else {
+      foreach ($type_counter[$key] as $type => $count) {
+        if ($count == $max) {
+          $result['type'][$header] = $type;
+        }
+      }
+    }
+  }
+  $schema = $result['type'];
+  return $schema;
+}
+
+
+/**
+ * Implements hook_feeds_plugins().
+ */
+function feeds_flatstore_processor_feeds_plugins() {
+  $path = drupal_get_path('module', 'feeds_flatstore_processor');
+
+  return array(
+    'FeedsFlatstoreProcessor' => array(
+      'name' => 'Field Data Processor',
+      'description' => 'Imports source data into unique database tables identified by the entity id they are attached to.',
+      'help' => 'Imports source data into unique database tables identified by the entity id they are attached to.',
+      'handler' => array(
+        'parent' => 'FeedsProcessor',
+        'class' => 'FeedsFlatstoreProcessor',
+        'file' => 'FeedsFlatstoreProcessor.inc',
+        'path' => $path,
+      ),
+    ),
+  );
+}

@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the RESTWS module.
+ */
+
+/**
+ * Clear the page cache to throw out any RESTWS responses that could be
+ * delivered on HTML requests.
+ */
+function restws_update_7001() {
+  cache_clear_all(NULL, 'cache_page');
+}

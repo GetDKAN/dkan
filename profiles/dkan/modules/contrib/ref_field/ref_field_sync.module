@@ -1,0 +1,354 @@
+<?php
+/**
+ * @file
+ * Hooks and main functions for ref_field module.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function ref_field_sync_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#ref_field_sync':
+      return '<p>' . t('With Entity Reference Field Synchronized you can link 2 fields so that they can back-reference their entities. When one of them is updated, a reference is created/updated/deleted in the other to keep a 2-way reference.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_field_info_alter().
+ */
+function ref_field_sync_field_info_alter(&$info) {
+  // Inform Drupal we have a "sync" setting for ref_field.
+  if (isset($info['entityreference'])) {
+    $info['entityreference']['settings']['sync'] = '';
+  }
+}
+
+/**
+ * Implements hook_form_FORM-ID_alter
+ */
+function ref_field_sync_form_field_ui_field_edit_form_alter(&$form, &$form_state, $form_id) {
+  if ($form['#field']['type'] == 'entityreference' && count($form['#field']['bundles']) == 1) {
+    // Get fields of type entityreference.
+    $fields = field_read_fields(array('type' => 'entityreference'));
+    // Remove current field.
+    unset($fields[$form['#field']['field_name']]);
+
+    // Get referenceable entity type and entity info.
+    if (isset($form_state['values']['field']['settings']['target_type'])) {
+      $entity = $form_state['values']['field']['settings']['target_type'];
+      if (isset($form_state['values']['field']['settings']['handler_settings']['target_bundles'])) {
+        $bundles = $form_state['values']['field']['settings']['handler_settings']['target_bundles'];
+      }
+    }
+    else {
+      $entity = $form['#field']['settings']['target_type'];
+      $bundles = $form['#field']['settings']['handler_settings']['target_bundles'];
+    }
+
+    // Entity must support entity_save().
+    if (!entity_type_supports($entity, 'save')) {
+      continue;
+    }
+    $entity_info = entity_get_info($entity);
+
+    // If no bundles selected, all are referenceable.
+    $bundles = empty($bundles) ? $entity_info['bundles'] : $bundles;
+
+    // Init options array.
+    $options = array(
+      '' => t('- Select -'),
+    );
+
+    // Loop through every field.
+    foreach ($fields as $field_name => $field) {
+
+      // Get more info for the field (bundles where exist)
+      $field = field_info_field_by_id($field['id']);
+      // Update fields array with new info.
+      $fields[$field_name] = $field;
+
+      // For now we can only deal with fields that have multiple or single values
+      // TODO: Figure out how to deal with fields with multiple values.
+      if ($field['cardinality'] > 1) {
+        continue;
+      }
+
+      // Field must only exist in referenced entity.
+      if (count($field['bundles']) > 1) {
+        continue;
+      }
+
+      foreach ($bundles as $bundle => $data) {
+        // Field must exist in all referenceable bundle.
+        if (!isset($field['bundles'][$entity]) || !in_array($bundle, $field['bundles'][$entity])) {
+          continue 2;
+        }
+      }
+
+      // Entity info for entity being referenced.
+      $ref_entity = $field['settings']['target_type'];
+      // Entity must support entity_save().
+      if (!entity_type_supports($ref_entity, 'save')) {
+        continue;
+      }
+
+      $ref_entity_info = entity_get_info($ref_entity);
+      // If no bundles selected, all are referenceable.
+      $ref_bundles = empty($field['settings']['handler_settings']['target_bundles']) ? $ref_entity_info['bundles'] : $field['settings']['handler_settings']['target_bundles'];
+
+      foreach ($ref_bundles as $bundle => $data) {
+        // Field must reference all/only bundles where this field exist.
+        if (!isset($form['#field']['bundles'][$ref_entity]) || !in_array($bundle, $form['#field']['bundles'][$ref_entity])) {
+          continue 2;
+        }
+      }
+
+      $in_sync = '';
+      if (isset($field['settings']['sync']) && $field['settings']['sync']) {
+        $sync_field = field_read_field($field['settings']['sync']);
+        $in_sync = ' - ' . t('Currently syncing with: @field', array('@field' => $sync_field['field_name']));
+      }
+      // If perfect back reference is found, add field as avaibale for sync.
+      $options[$field_name] = $field_name . $in_sync;
+    }
+    // Get referenceable entity type and entity info.
+    if (isset($form_state['values']['field']['settings']['sync'])) {
+      $default = $form_state['values']['field']['settings']['sync'];
+    }
+    elseif (isset($form['#field']['settings']['sync'])) {
+      $default = $form['#field']['settings']['sync'];
+    }
+    else {
+      $default = '';
+    }
+    $form['field']['settings']['sync'] = array(
+      '#default_value' => $default,
+      '#type' => 'select',
+      '#title' => 'Synchronize with',
+      '#options' => $options,
+      '#description' => t('Select a field to syncronize references with. Any changes made to a relationship on this field will automaticaly update the referenced entity on the selected field. If the selecetd field is being synced already, the current link for that field will be lost.'),
+      '#element_validate' => array('ref_field_sync_form_field_ui_field_edit_form_validate'),
+    );
+  }
+}
+
+/**
+ * Element validation function.
+ */
+function ref_field_sync_form_field_ui_field_edit_form_validate($element, &$form_state, $form) {
+  // Make sure reference possible.
+  if ($form_state['values']['field']['cardinality'] > 1 && $form_state['values']['field']['settings']['sync']) {
+    form_error($element, t('Only fields with unlimited or single values can be kept in sync. please change "Number of values" to "1" or "unlimited" or remove the syncronization option.'));
+  }
+}
+
+/**
+ * Implements hook_field_update_field().
+ *
+ * Link fields back automatically
+ * And remove old link if one existed
+ */
+function ref_field_sync_field_update_field($field, $prior_field, $has_data) {
+  // Add new association
+  // Only add association if the sync field is not poiting to this one already.
+  if (isset($field['settings']['sync'])) {
+    $sync_field_name = $field['settings']['sync'];
+    $sync_field = field_read_field($sync_field_name);
+
+    if ($sync_field && $sync_field['settings']['sync'] != $field['field_name']) {
+      $sync_field['settings']['sync'] = $field['field_name'];
+      field_update_field($sync_field);
+    }
+  }
+
+  // Check old association
+  // If there was an association, call old sync field and remove association to
+  // this one.
+  if ($prior_field['settings']['sync'] && $prior_field['settings']['sync'] != $field['settings']['sync']) {
+    $prior_sync_field_name = $prior_field['settings']['sync'];
+    $prior_sync_field = field_read_field($prior_sync_field_name);
+
+    if ($prior_sync_field && $prior_sync_field['settings']['sync'] == $field['field_name']) {
+      $prior_sync_field['settings']['sync'] = FALSE;
+      field_update_field($prior_sync_field);
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function ref_field_sync_entity_insert($entity, $type) {
+  $info = entity_get_info($type);
+  // If entity support entity_save() and is not called by this module.
+  if (entity_type_supports($type, 'save') && (!isset($entity->ref_field_caller) || $entity->ref_field_caller != TRUE)) {
+
+    // Get fields of type ref_field
+    $fields = field_read_fields(array('type' => 'entityreference'));
+
+    // Loop through every field.
+    foreach ($fields as $field_name => $field) {
+
+      // Get more info for the field (bundles where exist)
+      $field = field_info_field_by_id($field['id']);
+
+      // Update fields array with new info.
+      $fields[$field_name] = $field;
+
+      // Go through fields that exist in this entity/bundle
+      if (isset($entity->$field_name) && isset($field['settings']['sync']) && $field['settings']['sync']) {
+        $new = array();
+
+        // Save values from new entity.
+        $fields_name = field_get_items($type, $entity, $field_name);
+        if (isset($fields_name)) {
+          foreach ($fields_name as $value) {
+            $new[] = $value['target_id'];
+          }
+        }
+        foreach ($new as $target_id) {
+          $entities = entity_load($field['settings']['target_type'], array($target_id));
+          // Add reference to synced field.
+          ref_field_sync_add_reference($field['settings']['target_type'], $entities[$target_id], $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function ref_field_sync_entity_update($entity, $type) {
+  $info = entity_get_info($type);
+  // If entity support entity_save()
+  if (entity_type_supports($type, 'save')) {
+    // Save original entity in variable.
+    $original = $entity->original;
+
+    // Get fields of type ref_field
+    $fields = field_read_fields(array('type' => 'entityreference'));
+
+    // Loop through every field.
+    foreach ($fields as $field_name => $field) {
+
+      // Get more info for the field (bundles where exist)
+      $field = field_info_field_by_id($field['id']);
+
+      // Update fields array with new info.
+      $fields[$field_name] = $field;
+
+      // Go through fields that exist in this entity/bundle
+      if (isset($entity->$field_name) && isset($field['settings']['sync']) && $field['settings']['sync']) {
+        $new = $old = array();
+
+        // Save values from new entity.
+        $items = field_get_items($type, $entity, $field_name);
+        if ($items) {
+          foreach ($items as $value) {
+            // Do not modify calling entity.
+            if (!isset($entity->ref_field_caller) || $entity->ref_field_caller != $value['target_id']) {
+              $new[] = $value['target_id'];
+            }
+          }
+        }
+
+        // Save values from original entity.
+        if ($items = field_get_items($type, $original, $field_name)) {
+          foreach ($items as $value) {
+            // Do not modify calling entity.
+            if (!isset($entity->ref_field_caller) || $entity->ref_field_caller != $value['target_id']) {
+              $old[] = $value['target_id'];
+            }
+          }
+        }
+
+        // Get removed values.
+        $removed = array_diff($old, $new);
+        if ($removed) {
+          foreach ($removed as $target_id) {
+            $entities = entity_load($field['settings']['target_type'], array($target_id));
+            // Remove reference from synced field.
+            if (isset($entities[$target_id])) {
+              ref_field_sync_remove_reference($field['settings']['target_type'], $entities[$target_id], $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
+            }
+          }
+        }
+        // Get added values.
+        $added = array_diff($new, $old);
+        if ($added) {
+          foreach ($added as $target_id) {
+            $entities = entity_load($field['settings']['target_type'], array($target_id));
+            // Add reference to synced field.
+            ref_field_sync_add_reference($field['settings']['target_type'], $entities[$target_id], $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Remove a ref_field value form an entity
+ *
+ * @param string $type
+ *   The type of entity being modified
+ * @param object $entity
+ *   The entity being modified
+ * @param int $target_id
+ *   The ID of the entity who's reference should be removed
+ * @param string $field_name
+ *   Name of the field to remove the reference from
+ */
+function ref_field_sync_remove_reference($type, $entity, $target_id, $field_name) {
+  $lng = field_language($type, $entity, $field_name);
+  if ($items = field_get_items($type, $entity, $field_name)) {
+    foreach ($items as $key => $value) {
+      if ($value['target_id'] == $target_id) {
+        unset($entity->{$field_name}[$lng][$key]);
+        // Set flag to not process the calling entity again.
+        $entity->ref_field_caller = $target_id;
+        entity_save($type, $entity);
+      }
+    }
+  }
+}
+
+/**
+ * Add a ref_field value form an entity
+ *
+ * @param string $type
+ *   The type of entity being modified
+ * @param object $entity
+ *   The entity being modified
+ * @param int $target_id
+ *   The ID of the entity to reference to
+ * @param string $field_name
+ *   Name of the field to add the reference to
+ */
+function ref_field_sync_add_reference($type, $entity, $target_id, $field_name) {
+  $lng = field_language($type, $entity, $field_name);
+  $field = field_info_field($field_name);
+
+  // Remove previous references if limited to 1 value.
+  if ($field['cardinality'] == 1) {
+    $entity->{$field_name}[$lng] = array();
+  }
+
+  // Do not reference if already referenced.
+  if ($items = field_get_items($type, $entity, $field_name)) {
+    foreach ($items as $key => $value) {
+      if ($value['target_id'] == $target_id) {
+        return;
+      }
+    }
+  }
+
+  $entity->{$field_name}[$lng][] = array(
+    'target_id' => $target_id,
+  );
+  // Set flag to not process the calling entity again.
+  $entity->ref_field_caller = $target_id;
+  entity_save($type, $entity);
+}

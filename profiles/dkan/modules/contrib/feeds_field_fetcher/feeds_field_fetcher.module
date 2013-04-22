@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * @file
+ * Declares field fetchers for Feeds module.
+ */
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function feeds_field_fetcher_ctools_plugin_api($owner, $api) {
+  if ($owner == 'feeds' && $api == 'plugins') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_type().
+ */
+function feeds_field_fetcher_ctools_plugin_type() {
+  return array(
+    'plugins' => array(
+      'cache' => TRUE,
+      'use hooks' => TRUE,
+      'classes' => array('handler'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_feeds_plugins().
+ */
+function feeds_field_fetcher_feeds_plugins() {
+  $path = drupal_get_path('module', 'feeds_field_fetcher');
+
+  return array(
+    'FeedsFileFieldFetcher' => array(
+      'name' => 'File Field Fetcher',
+      'description' => 'Fetches records from a field attached to an entity.',
+      'help' => 'Fetches records from a field attached to an entity.',
+      'handler' => array(
+        'parent' => 'FeedsFileFetcher',
+        'class' => 'FeedsFileFieldFetcher',
+        'file' => 'FeedsFileFieldFetcher.inc',
+        'path' => $path,
+      ),
+    ),
+    'FeedsLinkFieldFetcher' => array(
+      'name' => 'Link Field Fetcher',
+      'description' => 'Fetches records from a link field attached to an entity.',
+      'help' => 'Fetches records from a link field attached to an entity.',
+      'handler' => array(
+        'parent' => 'FeedsHTTPFetcher',
+        'class' => 'FeedsLinkFieldFetcher',
+        'file' => 'FeedsLinkFieldFetcher.inc',
+        'path' => $path,
+      ),
+    ),
+  );
+}

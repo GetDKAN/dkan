@@ -64,10 +64,10 @@ class MigrateDestinationOGMembership extends MigrateDestination {
       throw new MigrateException('Missing group ID.');
     }
     if (empty($entity->entity_type)) {
-      throw new MigrateException('Missing enity type.');
+      throw new MigrateException('Missing entity type.');
     }
     if (empty($entity->etid)) {
-      throw new MigrateException('Missing enity ID.');
+      throw new MigrateException('Missing entity ID.');
     }
 
      // Set state, make sure legacy states from OG6 are converted to

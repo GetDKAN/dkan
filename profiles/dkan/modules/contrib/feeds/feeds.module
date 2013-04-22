@@ -27,7 +27,12 @@ define('FEEDS_BATCH_ACTIVE', 0.0);
  */
 function feeds_hook_info() {
   $hooks = array(
+    'feeds_plugins',
     'feeds_after_parse',
+    'feeds_before_import',
+    'feeds_before_update',
+    'feeds_presave',
+    'feeds_after_save',
     'feeds_after_import',
     'feeds_after_clear',
     'feeds_processor_targets_alter',

@@ -183,6 +183,8 @@ abstract class FeedsProcessor extends FeedsPlugin {
       $entity_id = $this->existingEntityId($source, $parser_result);
       $skip_existing = $this->config['update_existing'] == FEEDS_SKIP_EXISTING;
 
+      module_invoke_all('feeds_before_update', $source, $item, $entity_id);
+
       // If it exists, and we are not updating, pass onto the next item.
       if ($entity_id && $skip_existing) {
         continue;
@@ -208,6 +210,7 @@ abstract class FeedsProcessor extends FeedsPlugin {
           // recently processed entity. The only carryover is the entity_id.
           $this->newItemInfo($entity, $source->feed_nid, $hash);
           $entity->feeds_item->entity_id = $entity_id;
+          $entity->feeds_item->is_new = FALSE;
         }
 
         // Build a new entity.
@@ -221,7 +224,7 @@ abstract class FeedsProcessor extends FeedsPlugin {
         $this->entityValidate($entity);
 
         // Allow modules to alter the entity before saving.
-        module_invoke_all('feeds_presave', $source, $entity, $item);
+        module_invoke_all('feeds_presave', $source, $entity, $item, $entity_id);
         if (module_exists('rules')) {
           rules_invoke_event('feeds_import_'. $source->importer()->id, $entity);
         }
@@ -237,7 +240,7 @@ abstract class FeedsProcessor extends FeedsPlugin {
 
         // Allow modules to perform operations using the saved entity data.
         // $entity contains the updated entity after saving.
-        module_invoke_all('feeds_after_save', $source, $entity, $item);
+        module_invoke_all('feeds_after_save', $source, $entity, $item, $entity_id);
 
         // Track progress.
         if (empty($entity_id)) {
@@ -723,6 +726,7 @@ abstract class FeedsProcessor extends FeedsPlugin {
    */
   protected function newItemInfo($entity, $feed_nid, $hash = '') {
     $entity->feeds_item = new stdClass();
+    $entity->feeds_item->is_new = TRUE;
     $entity->feeds_item->entity_id = 0;
     $entity->feeds_item->entity_type = $this->entityType();
     $entity->feeds_item->id = $this->id;

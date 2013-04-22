@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/47/tags/m3/testcases
+END
+gradient.html
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/47/tags/m3/testcases/gradient.html
+END
+stroke-should-not-close-path.html
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/47/tags/m3/testcases/stroke-should-not-close-path.html
+END
+gradient2.html
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/47/tags/m3/testcases/gradient2.html
+END
+saverestorepath.html
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/47/tags/m3/testcases/saverestorepath.html
+END
+drawimage.html
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/47/tags/m3/testcases/drawimage.html
+END
+quadraticcurve.html
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/47/tags/m3/testcases/quadraticcurve.html
+END
+overflow.html
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/47/tags/m3/testcases/overflow.html
+END
+clearpath.html
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/47/tags/m3/testcases/clearpath.html
+END
+arc.html
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/47/tags/m3/testcases/arc.html
+END
+linewidth.html
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/47/tags/m3/testcases/linewidth.html
+END
+stroke-scale-rotate.html
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/47/tags/m3/testcases/stroke-scale-rotate.html
+END
+resizing.html
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/47/tags/m3/testcases/resizing.html
+END

@@ -93,18 +93,13 @@ function feeds_ui_overview_form($form, &$form_status) {
     $importer_form['status'] = array(
       '#markup' => $status,
     );
-    if (!$importer->disabled) {
-      $importer_form['operations'] = array(
-        '#markup' =>
-          l($edit, 'admin/structure/feeds/' . $importer->id) . ' | ' .
-          l(t('Export'), 'admin/structure/feeds/' . $importer->id . '/export') . ' | ' .
-          l(t('Clone'), 'admin/structure/feeds/' . $importer->id . '/clone') .
-          (empty($delete) ? '' :  ' | ' . l($delete, 'admin/structure/feeds/' . $importer->id . '/delete')),
-      );
-    }
-    else {
-      $importer_form['operations']['#markup'] = '&nbsp;';
-    }
+    $importer_form['operations'] = array(
+      '#markup' =>
+        l($edit, 'admin/structure/feeds/' . $importer->id) . ' | ' .
+        l(t('Export'), 'admin/structure/feeds/' . $importer->id . '/export') . ' | ' .
+        l(t('Clone'), 'admin/structure/feeds/' . $importer->id . '/clone') .
+        (empty($delete) ? '' :  ' | ' . l($delete, 'admin/structure/feeds/' . $importer->id . '/delete')),
+    );
 
     $importer_form[$importer->id] = array(
       '#type' => 'checkbox',
