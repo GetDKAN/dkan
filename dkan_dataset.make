@@ -51,13 +51,13 @@ projects[field_group_table][type] = "module"
 
 projects[leaflet_draw_widget][subdir] = contrib
 projects[leaflet_draw_widget][download][type] = git
-projects[leaflet_draw_widget][download][url] = "git://github.com/acouch/leaflet_draw_widget.git"
+projects[leaflet_draw_widget][download][url] = "https://github.com/acouch/leaflet_draw_widget.git"
 projects[leaflet_draw_widget][download][revision] = "33a98b1285d03b3efbce9f1652d3f78e401c3728"
 projects[leaflet_draw_widget][type] = "module"
 
 libraries[recline][type] = libraries
 libraries[recline][download][type] = git
-libraries[recline][download][url] = "git://github.com/okfn/recline.git"
+libraries[recline][download][url] = "https://github.com/okfn/recline.git"
 libraries[recline][download][revision] = "3610d95e7474f1c5c3752ff2f73447f7be2b5546"
 
 libraries[chosen][type] = libraries
@@ -68,18 +68,18 @@ libraries[chosen][download][revision] = "a0ca7da1ae52235b5abb6f66d9218a20450116c
 
 libraries[slugify][type] = libraries
 libraries[slugify][download][type] = git
-libraries[slugify][download][url] = "git://github.com/pmcelhaney/jQuery-Slugify-Plugin.git"
+libraries[slugify][download][url] = "https://github.com/pmcelhaney/jQuery-Slugify-Plugin.git"
 libraries[slugify][directory_name] = slugify
 libraries[slugify][download][revision] = "79133a1bdfd3ac80d500d661a722b85c03a01da3"
 
 libraries[Leaflet.draw][type] = libraries
 libraries[Leaflet.draw][download][type] = git
-libraries[Leaflet.draw][download][url] = "git@github.com:Leaflet/Leaflet.draw.git"
+libraries[Leaflet.draw][download][url] = "https://github.com/Leaflet/Leaflet.draw.git"
 libraries[Leaflet.draw][download][revision] = "82f4d960a44753c3a9d98001e49e03429395b53a"
 
 libraries[Leaflet][type] = libraries
 libraries[Leaflet][download][type] = git
-libraries[Leaflet][download][url] = "git@github.com:Leaflet/Leaflet.git"
+libraries[Leaflet][download][url] = "https://github.com/Leaflet/Leaflet.git"
 libraries[Leaflet][download][revision] = "81221ae4cd9772a8974b2e3c867d4fb35abd052d"
 
 libraries[arc][type] = libraries
