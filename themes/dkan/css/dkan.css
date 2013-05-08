@@ -768,6 +768,9 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 #zone-content #region-sidebar-first .content {
   padding: 20px 15px;
 }
+#zone-content #region-sidebar-first #block-dkan-sitewide-dkan-sitewide-social .content {
+  padding: 0;
+}
 
 /*** Forms ***/
 .stages {
@@ -2853,9 +2856,12 @@ h3.media-heading a {
 }
 #block-system-main #views-exposed-form-dataset-page .views-exposed-form .views-exposed-widget .form-submit {
   margin-top: 0;
-  top: 18px;
+  top: 14px;
   position: absolute;
-  right: 25px;
+  right: 18px;
+  background-color: transparent;
+  background-image: none;
+  border: none;
 }
 #block-system-main .view-id-dataset {
   position: relative;
