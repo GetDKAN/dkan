@@ -93,3 +93,10 @@ features[variable][] = node_preview_dataset
 features[variable][] = node_preview_resource
 features[variable][] = node_submitted_dataset
 features[variable][] = node_submitted_resource
+
+
+; Information added by drush on 2013-05-30
+version = "unknown"
+project = "dkan_dataset"
+datestamp = "1369928388"
+
