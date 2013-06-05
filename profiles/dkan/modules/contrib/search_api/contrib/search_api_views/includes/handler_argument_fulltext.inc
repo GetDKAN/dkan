@@ -3,7 +3,7 @@
 /**
  * Views argument handler class for handling fulltext fields.
  */
-class SearchApiViewsHandlerArgumentFulltext extends SearchApiViewsHandlerArgumentText {
+class SearchApiViewsHandlerArgumentFulltext extends SearchApiViewsHandlerArgument {
 
   /**
    * Specify the options this filter uses.
@@ -19,6 +19,8 @@ class SearchApiViewsHandlerArgumentFulltext extends SearchApiViewsHandlerArgumen
    */
   public function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
+
+    $form['help']['#markup'] = t('Note: You can change how search keys are parsed under "Advanced" > "Query settings".');
 
     $fields = $this->getFulltextFields();
     if (!empty($fields)) {

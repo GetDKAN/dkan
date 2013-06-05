@@ -960,6 +960,14 @@ function entity_flush_caches() {
  * Implements hook_theme().
  */
 function entity_theme() {
+  // Build a pattern in the form of "(type1|type2|...)(\.|__)" such that all
+  // templates starting with an entity type or named like the entity type
+  // are found.
+  // This has to match the template suggestions provided in
+  // template_preprocess_entity().
+  $types = array_keys(entity_crud_get_info());
+  $pattern = '(' . implode('|', $types) . ')(\.|__)';
+
   return array(
     'entity_status' => array(
       'variables' => array('status' => NULL, 'html' => TRUE),
@@ -967,6 +975,7 @@ function entity_theme() {
     'entity' => array(
       'render element' => 'elements',
       'template' => 'entity',
+      'pattern' => $pattern,
     ),
     'entity_ui_overview_item' => array(
       'variables' => array('label' => NULL, 'entity_type' => NULL, 'url' => FALSE, 'name' => FALSE),
@@ -1358,7 +1367,10 @@ function _entity_info_add_metadata(&$entity_info) {
   // Set access callbacks.
   $entity_info['node']['access callback'] = 'entity_metadata_no_hook_node_access';
   $entity_info['user']['access callback'] = 'entity_metadata_user_access';
-  $entity_info['file']['access callback'] = 'entity_metadata_file_access';
+  // File entity has it's own entity_access function.
+  if (!module_exists('file_entity')) {
+    $entity_info['file']['access callback'] = 'entity_metadata_file_access';
+  }
 
   // CRUD function callbacks.
   $entity_info['node']['creation callback'] = 'entity_metadata_create_node';

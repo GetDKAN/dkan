@@ -30,6 +30,7 @@ class Entity {
   protected $entityType;
   protected $entityInfo;
   protected $idKey, $nameKey, $statusKey;
+  protected $defaultLabel = FALSE;
 
   /**
    * Creates a new entity.
@@ -119,10 +120,18 @@ class Entity {
    * @see entity_label()
    */
   public function label() {
-    if (isset($this->entityInfo['label callback']) && $this->entityInfo['label callback'] == 'entity_class_label') {
+    // If the default label flag is enabled, this is being invoked recursively.
+    // In this case we need to use our default label callback directly. This may
+    // happen if a module provides a label callback implementation different
+    // from ours, but then invokes Entity::label() or entity_class_label() from
+    // there.
+    if ($this->defaultLabel || (isset($this->entityInfo['label callback']) && $this->entityInfo['label callback'] == 'entity_class_label')) {
       return $this->defaultLabel();
     }
-    return entity_label($this->entityType, $this);
+    $this->defaultLabel = TRUE;
+    $label = entity_label($this->entityType, $this);
+    $this->defaultLabel = FALSE;
+    return $label;
   }
 
   /**
@@ -253,7 +262,8 @@ class Entity {
    */
   public function getTranslation($property, $langcode = NULL) {
     $all_info = entity_get_all_property_info($this->entityType);
-    $property_info = $all_info[$property];
+    // Assign by reference to avoid triggering notices if metadata is missing.
+    $property_info = &$all_info[$property];
 
     if (!empty($property_info['translatable'])) {
       if (!empty($property_info['field'])) {

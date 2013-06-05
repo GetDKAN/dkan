@@ -337,7 +337,7 @@ function og_views_default_views() {
   $handler->display->display_options['arguments']['etid']['ui_name'] = 'We pass the user ID as the Entity ID.';
   $handler->display->display_options['arguments']['etid']['default_action'] = 'default';
   $handler->display->display_options['arguments']['etid']['title_enable'] = 1;
-  $handler->display->display_options['arguments']['etid']['title'] = '%1 groups';
+  $handler->display->display_options['arguments']['etid']['title'] = '%1\'s groups';
   $handler->display->display_options['arguments']['etid']['default_argument_type'] = 'current_user';
   $handler->display->display_options['arguments']['etid']['default_argument_skip_url'] = 0;
   $handler->display->display_options['arguments']['etid']['summary']['number_of_records'] = '0';

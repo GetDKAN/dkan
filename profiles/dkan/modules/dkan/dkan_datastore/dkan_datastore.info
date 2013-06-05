@@ -15,10 +15,3 @@ dependencies[] = services
 features[ctools][] = feeds:feeds_importer_default:1
 features[features_api][] = api:1
 features[feeds_importer][] = dkan_file
-
-
-; Information added by drush on 2013-04-22
-version = "unknown"
-project = "dkan_datastore"
-datestamp = "1366638243"
-

@@ -9,8 +9,9 @@
 interface SearchApiServiceInterface {
 
   /**
-   * Constructor for a service class, setting the server configuration used with
-   * this service.
+   * Constructs a service object.
+   *
+   * This will set the server configuration used with this service.
    *
    * @param SearchApiServer $server
    *   The server object for this service.
@@ -57,9 +58,10 @@ interface SearchApiServiceInterface {
   public function configurationFormSubmit(array $form, array &$values, array &$form_state);
 
   /**
-   * Determines whether this service class implementation supports a given
-   * feature. Features are optional extensions to Search API functionality and
-   * usually defined and used by third-party modules.
+   * Determines whether this service class supports a given feature.
+   *
+   * Features are optional extensions to Search API functionality and usually
+   * defined and used by third-party modules.
    *
    * There are currently three features defined directly in the Search API
    * project:
@@ -72,7 +74,7 @@ interface SearchApiServiceInterface {
    * @param string $feature
    *   The name of the optional feature.
    *
-   * @return boolean
+   * @return bool
    *   TRUE if this service knows and supports the specified feature. FALSE
    *   otherwise.
    */
@@ -121,15 +123,15 @@ interface SearchApiServiceInterface {
   public function addIndex(SearchApiIndex $index);
 
   /**
-   * Notify the server that the indexed field settings for the index have
-   * changed.
+   * Notify the server that the field settings for the index have changed.
+   *
    * If any user action is necessary as a result of this, the method should
    * use drupal_set_message() to notify the user.
    *
    * @param SearchApiIndex $index
    *   The updated index.
    *
-   * @return
+   * @return bool
    *   TRUE, if this change affected the server in any way that forces it to
    *   re-index the content. FALSE otherwise.
    */
@@ -234,6 +236,10 @@ interface SearchApiServiceInterface {
 
 /**
  * Abstract class with generic implementation of most service methods.
+ *
+ * For creating your own service class extending this class, you only need to
+ * implement indexItems(), deleteItems() and search() from the
+ * SearchApiServiceInterface interface.
  */
 abstract class SearchApiAbstractService implements SearchApiServiceInterface {
 
@@ -250,13 +256,9 @@ abstract class SearchApiAbstractService implements SearchApiServiceInterface {
   protected $options = array();
 
   /**
-   * Constructor for a service class, setting the server configuration used with
-   * this service.
+   * Implements SearchApiServiceInterface::__construct().
    *
    * The default implementation sets $this->server and $this->options.
-   *
-   * @param SearchApiServer $server
-   *   The server object for this service.
    */
   public function __construct(SearchApiServer $server) {
     $this->server = $server;
@@ -264,46 +266,28 @@ abstract class SearchApiAbstractService implements SearchApiServiceInterface {
   }
 
   /**
-   * Form callback. Might be called on an uninitialized object - in this case,
-   * the form is for configuring a newly created server.
+   * Implements SearchApiServiceInterface::__construct().
    *
    * Returns an empty form by default.
-   *
-   * @return array
-   *   A form array for setting service-specific options.
    */
   public function configurationForm(array $form, array &$form_state) {
     return array();
   }
 
   /**
-   * Validation callback for the form returned by configurationForm().
+   * Implements SearchApiServiceInterface::__construct().
    *
    * Does nothing by default.
-   *
-   * @param array $form
-   *   The form returned by configurationForm().
-   * @param array $values
-   *   The part of the $form_state['values'] array corresponding to this form.
-   * @param array $form_state
-   *   The complete form state.
    */
   public function configurationFormValidate(array $form, array &$values, array &$form_state) {
     return;
   }
 
   /**
-   * Submit callback for the form returned by configurationForm().
+   * Implements SearchApiServiceInterface::__construct().
    *
    * The default implementation just ensures that additional elements in
    * $options, not present in the form, don't get lost at the update.
-   *
-   * @param array $form
-   *   The form returned by configurationForm().
-   * @param array $values
-   *   The part of the $form_state['values'] array corresponding to this form.
-   * @param array $form_state
-   *   The complete form state.
    */
   public function configurationFormSubmit(array $form, array &$values, array &$form_state) {
     if (!empty($this->options)) {
@@ -313,32 +297,16 @@ abstract class SearchApiAbstractService implements SearchApiServiceInterface {
   }
 
   /**
-   * Determines whether this service class implementation supports a given
-   * feature. Features are optional extensions to Search API functionality and
-   * usually defined and used by third-party modules.
+   * Implements SearchApiServiceInterface::__construct().
    *
-   * There are currently three features defined directly in the Search API
-   * project:
-   * - "search_api_facets", by the search_api_facetapi module.
-   * - "search_api_facets_operator_or", also by the search_api_facetapi module.
-   * - "search_api_mlt", by the search_api_views module.
-   * Other contrib modules might define additional features. These should always
-   * be properly documented in the module by which they are defined.
-   *
-   * @param string $feature
-   *   The name of the optional feature.
-   *
-   * @return boolean
-   *   TRUE if this service knows and supports the specified feature. FALSE
-   *   otherwise.
+   * The default implementation always returns FALSE.
    */
   public function supportsFeature($feature) {
     return FALSE;
   }
 
   /**
-   * View this server's settings. Output can be HTML or a render array, a <dl>
-   * listing all relevant settings is preferred.
+   * Implements SearchApiServiceInterface::__construct().
    *
    * The default implementation does a crude output as a definition list, with
    * option names taken from the configuration form.
@@ -364,8 +332,7 @@ abstract class SearchApiAbstractService implements SearchApiServiceInterface {
   }
 
   /**
-   * Called once, when the server is first created. Allows it to set up its
-   * necessary infrastructure.
+   * Implements SearchApiServiceInterface::__construct().
    *
    * Does nothing, by default.
    */
@@ -374,23 +341,16 @@ abstract class SearchApiAbstractService implements SearchApiServiceInterface {
   }
 
   /**
-   * Notifies this server that its fields are about to be updated. The server's
-   * $original property can be used to inspect the old property values.
+   * Implements SearchApiServiceInterface::__construct().
    *
-   * @return
-   *   TRUE, if the update requires reindexing of all content on the server.
+   * The default implementation always returns FALSE.
    */
   public function postUpdate() {
     return FALSE;
   }
 
   /**
-   * Notifies this server that it is about to be deleted from the database and
-   * should therefore clean up, if appropriate.
-   *
-   * Note that you shouldn't call the server's save() method, or any
-   * methods that might do that, from inside of this method as the server isn't
-   * present in the database anymore at this point.
+   * Implements SearchApiServiceInterface::__construct().
    *
    * By default, deletes all indexes from this server.
    */
@@ -402,65 +362,36 @@ abstract class SearchApiAbstractService implements SearchApiServiceInterface {
   }
 
   /**
-   * Add a new index to this server.
+   * Implements SearchApiServiceInterface::__construct().
    *
    * Does nothing, by default.
-   *
-   * @param SearchApiIndex $index
-   *   The index to add.
    */
   public function addIndex(SearchApiIndex $index) {
     return;
   }
 
   /**
-   * Notify the server that the indexed field settings for the index have
-   * changed.
-   * If any user action is necessary as a result of this, the method should
-   * use drupal_set_message() to notify the user.
+   * Implements SearchApiServiceInterface::__construct().
    *
-   * @param SearchApiIndex $index
-   *   The updated index.
-   *
-   * @return
-   *   TRUE, if this change affected the server in any way that forces it to
-   *   re-index the content. FALSE otherwise.
+   * The default implementation always returns FALSE.
    */
   public function fieldsUpdated(SearchApiIndex $index) {
     return FALSE;
   }
 
   /**
-   * Remove an index from this server.
-   *
-   * This might mean that the index has been deleted, or reassigned to a
-   * different server. If you need to distinguish between these cases, inspect
-   * $index->server.
+   * Implements SearchApiServiceInterface::__construct().
    *
    * By default, removes all items from that index.
-   *
-   * @param $index
-   *   Either an object representing the index to remove, or its machine name
-   *   (if the index was completely deleted).
    */
   public function removeIndex($index) {
     $this->deleteItems('all', $index);
   }
 
   /**
-   * Create a query object for searching on an index lying on this server.
+   * Implements SearchApiServiceInterface::__construct().
    *
-   * @param SearchApiIndex $index
-   *   The index to search on.
-   * @param $options
-   *   Associative array of options configuring this query. See
-   *   SearchApiQueryInterface::__construct().
-   *
-   * @return SearchApiQueryInterface
-   *   An object for searching the given index.
-   *
-   * @throws SearchApiException
-   *   If the server is currently disabled.
+   * The default implementation returns a SearchApiQuery object.
    */
   public function query(SearchApiIndex $index, $options = array()) {
     return new SearchApiQuery($index, $options);

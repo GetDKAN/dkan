@@ -20,9 +20,9 @@ function search_api_views_views_data() {
         'help' => t('Use the %name search index for filtering and retrieving data.', array('%name' => $index->name)),
         'query class' => 'search_api_views_query',
       );
-      if (isset($entity_types[$index->item_type])) {
+      if (isset($entity_types[$index->getEntityType()])) {
         $table['table'] += array(
-          'entity type' => $index->item_type,
+          'entity type' => $index->getEntityType(),
           'skip entity load' => TRUE,
         );
       }
@@ -105,6 +105,31 @@ function search_api_views_views_data() {
       $table['search_api_views_more_like_this']['title'] = t('More like this');
       $table['search_api_views_more_like_this']['help'] = t('Find similar content.');
       $table['search_api_views_more_like_this']['argument']['handler'] = 'SearchApiViewsHandlerArgumentMoreLikeThis';
+
+      // If there are taxonomy term references indexed in the index, include the
+      // "Indexed taxonomy term fields" contextual filter. We also save for all
+      // fields whether they contain only terms of a certain vocabulary, keying
+      // that information by vocabulary for later ease of use.
+      $vocabulary_fields = array();
+      foreach ($index->getFields() as $key => $field) {
+        if (isset($field['entity_type']) && $field['entity_type'] === 'taxonomy_term') {
+          $field_id = ($pos = strrpos($key, ':')) ? substr($key, $pos + 1) : $key;
+          $field_info = field_info_field($field_id);
+          if (isset($field_info['settings']['allowed_values'][0]['vocabulary'])) {
+            $vocabulary_fields[$field_info['settings']['allowed_values'][0]['vocabulary']][] = $key;
+          }
+          else {
+            $vocabulary_fields[''][] = $key;
+          }
+        }
+      }
+      if ($vocabulary_fields) {
+        $table['search_api_views_taxonomy_term']['group'] = t('Search');
+        $table['search_api_views_taxonomy_term']['title'] = t('Indexed taxonomy term fields');
+        $table['search_api_views_taxonomy_term']['help'] = t('Search in all indexed taxonomy term fields.');
+        $table['search_api_views_taxonomy_term']['argument']['handler'] = 'SearchApiViewsHandlerArgumentTaxonomyTerm';
+        $table['search_api_views_taxonomy_term']['argument']['vocabulary_fields'] = $vocabulary_fields;
+      }
     }
     return $data;
   }
@@ -130,7 +155,7 @@ function _search_api_views_add_handlers($id, array $field, EntityMetadataWrapper
   if ($inner_type == 'text') {
     $table[$id] += array(
       'argument' => array(
-        'handler' => 'SearchApiViewsHandlerArgumentText',
+        'handler' => 'SearchApiViewsHandlerArgument',
       ),
       'filter' => array(
         'handler' => 'SearchApiViewsHandlerFilterText',

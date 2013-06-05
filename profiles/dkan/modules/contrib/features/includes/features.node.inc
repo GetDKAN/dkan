@@ -43,7 +43,6 @@ function node_features_export($data, &$export, $module_name = '') {
 
       $fields = field_info_instances('node', $type);
       foreach ($fields as $name => $field) {
-        $pipe['field'][] = "node-{$field['bundle']}-{$field['field_name']}";
         $pipe['field_instance'][] = "node-{$field['bundle']}-{$field['field_name']}";
       }
     }

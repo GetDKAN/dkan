@@ -705,9 +705,6 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   padding-left: 12px;
   margin-right: 2px;
 }
-#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li.selected a {
-  border: 0;
-}
 .horizontal-tabs ul.horizontal-tabs-list li.selected a {
   background-color: #fff;
   border: 1px solid #CCC;
@@ -770,6 +767,9 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 }
 #zone-content #region-sidebar-first .content {
   padding: 20px 15px;
+}
+#zone-content #region-sidebar-first #block-dkan-sitewide-dkan-sitewide-social .content {
+  padding: 0;
 }
 
 /*** Forms ***/
@@ -1024,9 +1024,6 @@ form-textarea-wrapper textarea {
 }
 label.for=["edit-field-upload-und-0"] {
   display: none;
-}
-#resource-node-form .horizontal-tabs fieldset.horizontal-tabs-pane {
-  padding: 0;
 }
 .horizontal-tabs fieldset.horizontal-tabs-pane {
   padding: 15px 0 0 0;
@@ -1294,15 +1291,9 @@ html.js input.throbbing {
 #dataset-node-form .field-name-body label,
 .field-group-htabs.group-data label,
 #edit-field-tags-und label,
-.field-name-field-dataset-ref label,
 .field-name-field-license label {
   width: 120px;
   text-align: right;
-}
-.field-name-field-dataset-ref .description {
-  text-align: left;
-  width: 100%;
-  padding: 0 0 0 130px;
 }
 #node_dataset_form_group_additional .field-type-text .description {
   padding: 0 0 0 130px;
@@ -2865,9 +2856,12 @@ h3.media-heading a {
 }
 #block-system-main #views-exposed-form-dataset-page .views-exposed-form .views-exposed-widget .form-submit {
   margin-top: 0;
-  top: 18px;
+  top: 14px;
   position: absolute;
-  right: 25px;
+  right: 18px;
+  background-color: transparent;
+  background-image: none;
+  border: none;
 }
 #block-system-main .view-id-dataset {
   position: relative;

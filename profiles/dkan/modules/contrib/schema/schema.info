@@ -2,15 +2,14 @@ name = Schema
 description = "The Schema module provides functionality built on the Schema API."
 package = Database
 core = 7.x
-files[] = schema.module
-files[] = schema.install
+configure = admin/structure/schema/settings
 files[] = engines/mysql.inc
 files[] = engines/pgsql.inc
 files[] = tests/schema_regression.test
 
-; Information added by drupal.org packaging script on 2012-09-08
-version = "7.x-1.0-beta4"
+; Information added by drupal.org packaging script on 2013-05-16
+version = "7.x-1.0-rc1"
 core = "7.x"
 project = "schema"
-datestamp = "1347125610"
+datestamp = "1368727525"
 

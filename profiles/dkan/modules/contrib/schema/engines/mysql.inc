@@ -28,21 +28,26 @@ class SchemaDatabaseSchema_mysql extends DatabaseSchema_mysql {
     return $map;
   }
 
-  public function inspect($connection = 'default', $name = NULL) {
+  public function inspect($connection = NULL, $table_name = NULL) {
+    // Support the deprecated connection parameter.
+    if (isset($connection) && $connection != $this->connection->getKey()) {
+      $this->connection = Database::getConnection('default', $connection);
+    }
+
     // Get the current database name
-    $info = Database::getConnectionInfo($connection);
-    $database = $info['default']['database'];
+    $info = $this->connection->getConnectionOptions();
+    $database = $info['database'];
 
     $tables = array();
     $args = array(':database' => $database);
     $sql = 'SELECT table_name, table_comment
             FROM information_schema.tables
             WHERE table_schema=:database ';
-    if (isset($name)) {
+    if (isset($table_name)) {
       $sql .= 'AND table_name = :table ';
-      $args[':table'] = $name;
+      $args[':table'] = $table_name;
     }
-    $res = db_query($sql, $args);
+    $res = $this->connection->query($sql, $args);
     foreach ($res as $r) {
       $tables[$r->table_name]['description'] = $r->table_comment;
     }
@@ -51,12 +56,12 @@ class SchemaDatabaseSchema_mysql extends DatabaseSchema_mysql {
                    extra, is_nullable, numeric_scale, column_comment
             FROM information_schema.columns
             WHERE table_schema=:database ';
-    if (isset($name)) {
+    if (isset($table_name)) {
       $sql .= 'AND table_name = :table ';
     }
     $sql .= 'ORDER BY table_name, ordinal_position';
 
-    $res = db_query($sql, $args);
+    $res = $this->connection->query($sql, $args);
     foreach ($res as $r) {
       $r->new_table_name = schema_unprefix_table($r->table_name);
 
@@ -102,12 +107,12 @@ class SchemaDatabaseSchema_mysql extends DatabaseSchema_mysql {
     $sql = 'SELECT table_name, column_name, index_name, sub_part, non_unique
             FROM information_schema.statistics
             WHERE table_schema=:database ';
-    if (isset($name)) {
+    if (isset($table_name)) {
       $sql .= 'AND table_name = :table ';
     }
     $sql .= 'ORDER BY table_name, index_name, seq_in_index';
 
-    $res = db_query($sql, $args);
+    $res = $this->connection->query($sql, $args);
     foreach ($res as $r) {
       if (isset($r->sub_part) && !is_null($r->sub_part)) {
         $col = array($r->column_name, intval($r->sub_part));

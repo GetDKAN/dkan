@@ -115,20 +115,24 @@ class SearchApiFacetapiDate extends SearchApiFacetapiTerm implements FacetapiQue
       }
     }
 
+    // Get the finest level of detail we're allowed to drill down to.
+    $settings = $facet->getSettings()->settings;
+    $granularity = isset($settings['date_granularity']) ? $settings['date_granularity'] : FACETAPI_DATE_MINUTE;
+
     // Gets active facets, starts building hierarchy.
     $parent = $gap = NULL;
     foreach ($this->adapter->getActiveItems($this->facet) as $value => $item) {
       // If the item is active, the count is the result set count.
       $build[$value] = array('#count' => $total);
 
-      // Gets next "gap" increment, minute being the lowest we can go.
+      // Gets next "gap" increment.
       if ($value[0] != '[' || $value[strlen($value) - 1] != ']' || !($pos = strpos($value, ' TO '))) {
         continue;
       }
       $start = substr($value, 1, $pos);
       $end = substr($value, $pos + 4, -1);
       $date_gap = facetapi_get_date_gap($start, $end);
-      $gap = facetapi_get_next_date_gap($date_gap, FACETAPI_DATE_MINUTE);
+      $gap = facetapi_get_next_date_gap($date_gap, $granularity);
 
       // If there is a previous item, there is a parent, uses a reference so the
       // arrays are populated when they are updated.
@@ -150,9 +154,24 @@ class SearchApiFacetapiDate extends SearchApiFacetapiTerm implements FacetapiQue
     if (NULL === $parent) {
       if (count($raw_values) > 1) {
         $gap = facetapi_get_timestamp_gap(min($timestamps), max($timestamps));
+        // Array of numbers used to determine whether the next gap is smaller than
+        // the minimum gap allowed in the drilldown.
+        $gap_numbers = array(
+          FACETAPI_DATE_YEAR => 6,
+          FACETAPI_DATE_MONTH => 5,
+          FACETAPI_DATE_DAY => 4,
+          FACETAPI_DATE_HOUR => 3,
+          FACETAPI_DATE_MINUTE => 2,
+          FACETAPI_DATE_SECOND => 1,
+        );
+        // Gets gap numbers for both the gap and minimum gap, checks if the gap
+        // is within the limit set by the $granularity parameter.
+        if ($gap_numbers[$gap] < $gap_numbers[$granularity]) {
+          $gap = $granularity;
+        }
       }
       else {
-        $gap = FACETAPI_DATE_HOUR;
+        $gap = $granularity;
       }
     }
 

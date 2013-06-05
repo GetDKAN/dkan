@@ -22,7 +22,7 @@ class SearchApiAlterNodeStatus extends SearchApiAbstractAlterCallback {
    *   TRUE if the callback can run on the given index; FALSE otherwise.
    */
   public function supportsIndex(SearchApiIndex $index) {
-    return $index->item_type === 'node';
+    return $index->getEntityType() === 'node';
   }
 
   /**

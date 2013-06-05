@@ -24,23 +24,23 @@ function og_example_default_message_type() {
     "description" : "OG new content",
     "argument_keys" : [],
     "argument" : [],
-    "category" : "message_type_email",
-    "data" : { "purge" : { "override" : 0, "enabled" : 0, "quota" : "", "days" : "" } },
+    "category" : "message_type",
+    "data" : {
+      "token options" : { "clear" : 0 },
+      "purge" : { "override" : 0, "enabled" : 0, "quota" : "", "days" : "" }
+    },
     "language" : "",
     "arguments" : null,
     "message_text" : { "und" : [
         {
+          "value" : "New post in group -- [message:field-node-reference:title]",
+          "format" : "full_html",
+          "safe_value" : "\\u003Cp\\u003ENew post in group -- [message:field-node-reference:title]\\u003C\\/p\\u003E\\n"
+        },
+        {
           "value" : "Hello [message:user:name],\\r\\n\\r\\nThere is a new post called \\u003Ca href=\\u0022[message:field-node-reference:url]\\u0022\\u003E[message:field-node-reference:title]\\u003C\\/a\\u003E that belongs to one of the groups you are subscribed to.\\r\\n\\r\\nCheers,\\r\\n[site:name]",
           "format" : "full_html",
           "safe_value" : "\\u003Cp\\u003EHello [message:user:name],\\u003C\\/p\\u003E\\n\\u003Cp\\u003EThere is a new post called \\u003Ca href=\\u0022[message:field-node-reference:url]\\u0022\\u003E[message:field-node-reference:title]\\u003C\\/a\\u003E that belongs to one of the groups you are subscribed to.\\u003C\\/p\\u003E\\n\\u003Cp\\u003ECheers,\\u003Cbr \\/\\u003E\\n[site:name]\\u003C\\/p\\u003E\\n"
-        }
-      ]
-    },
-    "message_text_subject" : { "und" : [
-        {
-          "value" : "New post in group -- [message:field-node-reference:title]",
-          "format" : null,
-          "safe_value" : "New post in group -- [message:field-node-reference:title]"
         }
       ]
     },

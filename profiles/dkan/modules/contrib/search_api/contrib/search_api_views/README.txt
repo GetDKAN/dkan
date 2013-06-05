@@ -63,6 +63,50 @@ Note: If you want to display the block not only on a few pages, you should in
 any case take care that it isn't displayed on the search page, since that might
 confuse users.
 
+Access features
+---------------
+Search views created with this module contain two query settings (located in
+the "Advanced" fieldset) which let you control the access checks executed for
+search results displayed in the view.
+
+- Bypass access checks
+This option allows you to deactivate access filters that would otherwise be
+added to the search, if the index supports this. This is, for instance, the case
+for indexes on the "Node" item type, when the "Node access" data alteration is
+activated.
+Use this either to slightly speed up searches where additional checks are
+unnecessary (e.g., because you already filter on "Node: Published") and there is
+no other node access mechanism on your site) or to show certain data that users
+normally wouldn't have access to (e.g., a list of all matching node titles,
+published or not).
+
+- Additional access checks on result entities
+When this option is activated, all result entities will be passed to an
+additional access check, even if search-time access checks are available for
+this index. The advantage is that access rules are guaranteed to be enforced –
+stale data in the index, which might make other access checks incorrect, won't
+influence this access check. You can also use it for item types for which no
+other access mechanisms are available.
+However, note that results filtered out this way will mess up paging, result
+counts and possibly other things too (like facet counts), as the result row is
+only hidden from display after the search has been executed. Where possible,
+you should therefore only use this in combination with appropriate filter
+settings ensuring that only when the index isn't up-to-date items will be
+filtered out this way.
+This option is only available for indexes on entity types.
+
+Other features
+--------------
+- Change parse mode
+You can determine how search keys entered by the user will be parsed by going to
+"Advanced" > "Query settings" within your View's settings. "Direct" can be
+useful, e.g., when you want to give users the full power of Solr. In other
+cases, "Multiple terms" is usually what you want / what users expect.
+Caution: For letting users use fulltext searches, always use the "Search:
+Fulltext search" filter or contextual filter – using a normal filter on a
+fulltext field won't parse the search keys, which means multiple words will only
+be found when they appear as that exact phrase.
+
 FAQ: Why „*Indexed* Node“?
 --------------------------
 The group name used for the search result itself (in fields, filters, etc.) is

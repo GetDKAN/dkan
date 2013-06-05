@@ -237,6 +237,14 @@ interface SearchApiDataSourceControllerInterface {
    */
   public function getIndexStatus(SearchApiIndex $index);
 
+  /**
+   * Get the entity type of items from this datasource.
+   *
+   * @return string|null
+   *   An entity type string if the items provided by this datasource are
+   *   entities; NULL otherwise.
+   */
+  public function getEntityType();
 }
 
 /**
@@ -263,6 +271,15 @@ abstract class SearchApiAbstractDataSourceController implements SearchApiDataSou
    * The item type for this controller instance.
    */
   protected $type;
+
+  /**
+   * The entity type for this controller instance.
+   *
+   * @var string|null
+   *
+   * @see getEntityType()
+   */
+  protected $entityType = NULL;
 
   /**
    * The info array for the item type, as specified via
@@ -314,6 +331,21 @@ abstract class SearchApiAbstractDataSourceController implements SearchApiDataSou
   public function __construct($type) {
     $this->type = $type;
     $this->info = search_api_get_item_type_info($type);
+
+    if (!empty($this->info['entity_type'])) {
+      $this->entityType = $this->info['entity_type'];
+    }
+  }
+
+  /**
+   * Get the entity type of items from this datasource.
+   *
+   * @return string|null
+   *   An entity type string if the items provided by this datasource are
+   *   entities; NULL otherwise.
+   */
+  public function getEntityType() {
+    return $this->entityType;
   }
 
   /**
@@ -333,19 +365,55 @@ abstract class SearchApiAbstractDataSourceController implements SearchApiDataSou
    */
   public function getMetadataWrapper($item = NULL, array $info = array()) {
     $info += $this->getPropertyInfo();
-    return entity_metadata_wrapper($this->type, $item, $info);
+    return entity_metadata_wrapper($this->entityType ? $this->entityType : $this->type, $item, $info);
   }
 
   /**
-   * Helper method that can be used by subclasses to specify the property
-   * information to use when creating a metadata wrapper.
+   * Get the property info for this item type.
+   *
+   * This is a helper method for getMetadataWrapper() that can be used by
+   * subclasses to specify the property information to use when creating a
+   * metadata wrapper.
+   *
+   * The data structure uses largely the format specified in
+   * hook_entity_property_info(). However, the first level of keys (containing
+   * the entity types) is omitted, and the "property" key is called
+   * "property info" instead. So, an example return value would look like this:
+   *
+   * @code
+   * return array(
+   *   'property info' => array(
+   *     'foo' => array(
+   *       'label' => t('Foo'),
+   *       'type' => 'text',
+   *     ),
+   *     'bar' => array(
+   *       'label' => t('Bar'),
+   *       'type' => 'list<integer>',
+   *     ),
+   *   ),
+   * );
+   * @endcode
+   *
+   * SearchApiExternalDataSourceController::getPropertyInfo() contains a working
+   * example of this method.
+   *
+   * If the item type is an entity type, no additional property information is
+   * required, the method will thus just return an empty array. You can still
+   * use this to append additional properties to the entities, or the like,
+   * though.
    *
    * @return array
-   *   Property information as specified by hook_entity_property_info().
+   *   Property information as specified by entity_metadata_wrapper().
    *
+   * @see getMetadataWrapper()
    * @see hook_entity_property_info()
    */
   protected function getPropertyInfo() {
+    // If this is an entity type, no additional property info is needed.
+    if ($this->entityType) {
+      return array();
+    }
     throw new SearchApiDataSourceException(t('No known property information for type @type.', array('@type' => $this->type)));
   }
 
@@ -689,8 +757,10 @@ abstract class SearchApiAbstractDataSourceController implements SearchApiDataSou
     if ($index->item_type != $this->type) {
       $index_type = search_api_get_item_type_info($index->item_type);
       $index_type = empty($index_type['name']) ? $index->item_type : $index_type['name'];
-      $msg = t('Invalid index @index of type @index_type passed to data source controller for type @this_type.',
-          array('@index' => $index->name, '@index_type' => $index_type, '@this_type' => $this->info['name']));
+      $msg = t(
+        'Invalid index @index of type @index_type passed to data source controller for type @this_type.',
+        array('@index' => $index->name, '@index_type' => $index_type, '@this_type' => $this->info['name'])
+      );
       throw new SearchApiDataSourceException($msg);
     }
   }

@@ -130,7 +130,22 @@
     this.multiple = settings.multiple;
     this.required = settings.required;
     this.limit = settings.limit;
-    this.synonyms = settings.use_synonyms === undefined ? false : settings.use_synonyms;
+    this.synonyms = typeof settings.use_synonyms == 'undefined' ? false : settings.use_synonyms;
+
+    // User set
+    if (typeof settings.delimiter == 'undefined') {
+      this.delimiter = true;
+      this.wrapper = '"""';
+    } else {
+      this.delimiter =  settings.delimiter.charCodeAt(0);
+      if (this.delimiter == 44) {
+        this.wrapper = '""';
+      } else {
+        this.wrapper = '"""';
+      }
+    }
+
+
     this.items = {};
 
     var self = this;
@@ -313,6 +328,7 @@
     jqObject.data("autocomplete")._resizeMenu = function()  {};
 
     jqObject.show();
+
     value_container.hide();
 
     // Add the default values to the box.
@@ -346,7 +362,7 @@
       var item = new Drupal.autocomplete_deluxe.MultipleWidget.Item(self, ui_item);
       item.element.insertBefore(jqObject);
       items[ui_item.value] = item;
-      var new_value = ' ""' + ui_item.value + '""';
+      var new_value = ' ' + self.wrapper + ui_item.value + self.wrapper;
       var values = value_input.val();
       value_input.val(values + new_value);
       jqObject.val('');
@@ -375,13 +391,13 @@
 
     var clear = false;
 
-    jqObject.keydown(function (event) {
+    jqObject.keypress(function (event) {
       var value = jqObject.val();
       // If a comma was entered and there is none or more then one comma,or the
       // enter key was entered, then enter the new term.
-      if ((event.which == 188 && (value.split('"').length - 1) != 1) || (event.which == 13 && jqObject.val() != "")) {
+      if ((event.which == self.delimiter && (value.split('"').length - 1) != 1) || (event.which == 13 && jqObject.val() != "")) {
         value = value.substr(0, value.length);
-        if (self.items[value] === undefined && value != '') {
+        if (typeof self.items[value] == 'undefined' && value != '') {
           var ui_item = {
             label: value,
             value: value

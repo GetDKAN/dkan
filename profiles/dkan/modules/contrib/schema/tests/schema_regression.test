@@ -56,14 +56,12 @@ class SchemaRegressionTest extends DrupalWebTestCase {
     $fields = $inspect[$tablename]['fields'];
 
     // We should see only the columns from the prefixed version
-    $this->assertFalse(isset($fields['fid']), t('fid does not exist'));
-    $this->assertTrue(isset($fields['sourceid']), t('sourceid exists'));
-    $this->assertTrue(isset($fields['destid']), t('destid exists'));
+    $this->assertFalse(isset($fields['fid']), 'Column fid does not exist');
+    $this->assertTrue(isset($fields['sourceid']), 'Column sourceid exists.');
+    $this->assertTrue(isset($fields['destid']), 'Column destid exists.');
 
     // Inspect the table by using schema_compare().
     $comparison = schema_compare_table($inspect[$tablename]);
-    if (!$this->assertEqual($comparison['status'], 'same', t('Table matches its schema'))) {
-      $this->error(print_r($comparison, TRUE));
-    }
+    $this->assertEqual($comparison['status'], 'different', 'Table does not match its schema.');
   }
 }

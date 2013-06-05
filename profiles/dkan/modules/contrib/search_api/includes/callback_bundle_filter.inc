@@ -7,11 +7,11 @@
 class SearchApiAlterBundleFilter extends SearchApiAbstractAlterCallback {
 
   public function supportsIndex(SearchApiIndex $index) {
-    return ($info = entity_get_info($index->item_type)) && self::hasBundles($info);
+    return $index->getEntityType() && ($info = entity_get_info($index->getEntityType())) && self::hasBundles($info);
   }
 
   public function alterItems(array &$items) {
-    $info = entity_get_info($this->index->item_type);
+    $info = entity_get_info($this->index->getEntityType());
     if (self::hasBundles($info) && isset($this->options['bundles'])) {
       $bundles = array_flip($this->options['bundles']);
       $default = (bool) $this->options['default'];
@@ -25,7 +25,7 @@ class SearchApiAlterBundleFilter extends SearchApiAbstractAlterCallback {
   }
 
   public function configurationForm() {
-    $info = entity_get_info($this->index->item_type);
+    $info = entity_get_info($this->index->getEntityType());
     if (self::hasBundles($info)) {
       $options = array();
       foreach ($info['bundles'] as $bundle => $bundle_info) {

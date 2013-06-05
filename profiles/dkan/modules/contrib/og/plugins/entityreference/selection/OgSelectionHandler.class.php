@@ -182,6 +182,11 @@ class OgSelectionHandler extends EntityReference_SelectionHandler_Generic {
       return array();
     }
 
+    if (!empty($this->entity->nid)) {
+      // Existing node.
+      return array();
+    }
+
     if (!module_exists('entityreference_prepopulate') || empty($this->instance['settings']['behaviors']['prepopulate'])) {
       return array();
     }

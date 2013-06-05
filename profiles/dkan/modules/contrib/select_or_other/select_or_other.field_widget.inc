@@ -148,9 +148,8 @@ function select_or_other_field_widget_form_prepare_options($field, $instance, $h
  */
 function select_or_other_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   // Construct the element.
-  $element = array(
+  $element = $element + array(
     '#type' => 'select_or_other',
-    '#title' => isset($instance['label']) ? $instance['label'] : NULL,
     '#other' => isset($instance['widget']['settings']['other']) ? $instance['widget']['settings']['other'] : t('Other'),
     '#other_title' => !empty($instance['widget']['settings']['other_title']) ? $instance['widget']['settings']['other_title'] : NULL,
     '#other_size' => $instance['widget']['settings']['other_size'],
@@ -357,7 +356,7 @@ function select_or_other_field_widget_validate($element, &$form_state) {
       $values = array();
       foreach ((array)$value as $v) {
         if ($field_info['type'] == 'number_integer' && !preg_match('/^-?\d+$/', $v)) {
-          form_error($element, t('!name field must be a valid integer.', array('%name' => t($element['select']['#title']))));
+          form_error($element, t('!name field must be a valid integer.', array('!name' => t($element['select']['#title']))));
           break;
         }
         if (($field_info['type'] == 'number_float' || $field_info['type'] == 'number_decimal') && !is_numeric($v)) {

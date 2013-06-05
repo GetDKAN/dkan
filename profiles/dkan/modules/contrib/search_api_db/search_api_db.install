@@ -28,8 +28,6 @@ function search_api_db_update_dependencies() {
 }
 
 /**
- * Implements hook_update_N().
- *
  * Re-arranges the $server->options['indexes'] array to be keyed by machine_name
  * instead of by id.
  */
@@ -63,5 +61,32 @@ function search_api_db_update_7101() {
       ))
       ->condition('machine_name', $name)
       ->execute();
+  }
+}
+
+/**
+ * Solves index problems with umlauts, accented characters, etc. on MySQL servers.
+ */
+function search_api_db_update_7102() {
+  global $databases;
+
+  $server_options = db_select('search_api_server', 's')
+    ->fields('s', array('options'))
+    ->condition('class', 'search_api_db_service')
+    ->execute()
+    ->fetchCol();
+  foreach ($server_options as $options) {
+    $options = unserialize($options);
+    list($key, $target) = explode(':', $options['database'], 2);
+    $db_driver = $databases[$key][$target]['driver'];
+    if ($db_driver === 'mysql' && !empty($options['indexes'])) {
+      $prev_db = db_set_active($key);
+      foreach ($options['indexes'] as $fields) {
+        foreach ($fields as $field) {
+          db_query("ALTER TABLE {{$field['table']}} CONVERT TO CHARACTER SET 'utf8' COLLATE 'utf8_bin'", array(), array('target' => $target));
+        }
+      }
+      db_set_active($prev_db);
+    }
   }
 }

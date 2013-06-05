@@ -34,8 +34,9 @@ function dkan_sitewide_page_alter(&$page) {
   // Context module does this in hook_page_alter() so we need to as well if
   // we want to add this.
   $breadcrumbs = drupal_get_breadcrumb();
-  if (arg(0) == 'dataset' && is_array($breadcrumbs) && $breadcrumbs[1] == '[all items]') {
-    $breadcrumbs[1] = t('Search Datasets');
+  if (arg(0) == 'dataset' && is_array($breadcrumbs)) {
+    $breadcrumbs[1] = t('Datasets');
+    $breadcrumbs[2] = t('Search');
   }
   $node = menu_get_object();
   if ($node && $node->type == 'resource') {

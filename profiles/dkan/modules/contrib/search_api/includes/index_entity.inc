@@ -44,6 +44,15 @@ class SearchApiIndex extends Entity {
   protected $added_properties = NULL;
 
   /**
+   * Static cache for the results of getFields().
+   *
+   * Can be accessed as follows: $this->fields[$only_indexed][$get_additional].
+   *
+   * @var array
+   */
+  protected $fields = array();
+
+  /**
    * An array containing two arrays.
    *
    * At index 0, all fulltext fields of this index. At index 1, all indexed
@@ -357,6 +366,17 @@ class SearchApiIndex extends Entity {
   }
 
   /**
+   * Get the entity type of items in this index.
+   *
+   * @return string|null
+   *   An entity type string if the items in this index are entities; NULL
+   *   otherwise.
+   */
+  public function getEntityType() {
+    return $this->datasource()->getEntityType();
+  }
+
+  /**
    * Get the server this index lies on.
    *
    * @param $reset
@@ -528,8 +548,8 @@ class SearchApiIndex extends Entity {
           'options list' => 'entity_metadata_language_list',
         ),
       );
-      // We use the reverse order here so the hierarchy for overwriting property infos is the same
-      // as for actually overwriting the properties.
+      // We use the reverse order here so the hierarchy for overwriting property
+      // infos is the same as for actually overwriting the properties.
       foreach (array_reverse($this->getAlterCallbacks()) as $callback) {
         $props = $callback->propertyInfo();
         if ($props) {
@@ -543,16 +563,14 @@ class SearchApiIndex extends Entity {
     return $property_info;
   }
 
-   /**
-   * Fills the $processors array for use by the pre-/postprocessing functions.
+  /**
+   * Loads all enabled data alterations for this index in proper order.
    *
-   * @return SearchApiIndex
-   *   The called object.
    * @return array
    *   All enabled callbacks for this index, as SearchApiAlterCallbackInterface
    *   objects.
    */
-  protected function getAlterCallbacks() {
+  public function getAlterCallbacks() {
     if (isset($this->callbacks)) {
       return $this->callbacks;
     }
@@ -585,11 +603,13 @@ class SearchApiIndex extends Entity {
   }
 
   /**
+   * Loads all enabled processors for this index in proper order.
+   *
    * @return array
    *   All enabled processors for this index, as SearchApiProcessorInterface
    *   objects.
    */
-  protected function getProcessors() {
+  public function getProcessors() {
     if (isset($this->processors)) {
       return $this->processors;
     }
@@ -721,140 +741,160 @@ class SearchApiIndex extends Entity {
    *   "additional fields" key.
    */
   public function getFields($only_indexed = TRUE, $get_additional = FALSE) {
-    $fields = empty($this->options['fields']) ? array() : $this->options['fields'];
-    $wrapper = $this->entityWrapper();
-    $additional = array();
-    $entity_types = entity_get_info();
+    $only_indexed = $only_indexed ? 1 : 0;
+    $get_additional = $get_additional ? 1 : 0;
 
-    // First we need all already added prefixes.
-    $added = ($only_indexed || empty($this->options['additional fields'])) ? array() : $this->options['additional fields'];
-    foreach (array_keys($fields) as $key) {
-      $len = strlen($key) + 1;
-      $pos = $len;
-      // The third parameter ($offset) to strrpos has rather weird behaviour,
-      // necessitating this rather awkward code. It will iterate over all
-      // prefixes of each field, beginning with the longest, adding all of them
-      // to $added until one is encountered that was already added (which means
-      // all shorter ones will have already been added, too).
-      while ($pos = strrpos($key, ':', $pos - $len)) {
-        $prefix = substr($key, 0, $pos);
-        if (isset($added[$prefix])) {
-          break;
-        }
-        $added[$prefix] = $prefix;
+    // First, try the static cache and the persistent cache bin.
+    if (empty($this->fields[$only_indexed][$get_additional])) {
+      $cid = $this->getCacheId() . "-$only_indexed-$get_additional";
+      $cache = cache_get($cid);
+      if ($cache) {
+        $this->fields[$only_indexed][$get_additional] = $cache->data;
       }
     }
 
-    // Then we walk through all properties and look if they are already
-    // contained in one of the arrays.
-    // Since this uses an iterative instead of a recursive approach, it is a bit
-    // complicated, with three arrays tracking the current depth.
+    // Otherwise, we have to compute the result.
+    if (empty($this->fields[$only_indexed][$get_additional])) {
+      $fields = empty($this->options['fields']) ? array() : $this->options['fields'];
+      $wrapper = $this->entityWrapper();
+      $additional = array();
+      $entity_types = entity_get_info();
 
-    // A wrapper for a specific field name prefix, e.g. 'user:' mapped to the user wrapper
-    $wrappers = array('' => $wrapper);
-    // Display names for the prefixes
-    $prefix_names = array('' => '');
-      // The list nesting level for entities with a certain prefix
-    $nesting_levels = array('' => 0);
-
-    $types = search_api_default_field_types();
-    $flat = array();
-    while ($wrappers) {
-      foreach ($wrappers as $prefix => $wrapper) {
-        $prefix_name = $prefix_names[$prefix];
-        // Deal with lists of entities.
-        $nesting_level = $nesting_levels[$prefix];
-        $type_prefix = str_repeat('list<', $nesting_level);
-        $type_suffix = str_repeat('>', $nesting_level);
-        if ($nesting_level) {
-          $info = $wrapper->info();
-          // The real nesting level of the wrapper, not the accumulated one.
-          $level = search_api_list_nesting_level($info['type']);
-          for ($i = 0; $i < $level; ++$i) {
-            $wrapper = $wrapper[0];
+      // First we need all already added prefixes.
+      $added = ($only_indexed || empty($this->options['additional fields'])) ? array() : $this->options['additional fields'];
+      foreach (array_keys($fields) as $key) {
+        $len = strlen($key) + 1;
+        $pos = $len;
+        // The third parameter ($offset) to strrpos has rather weird behaviour,
+        // necessitating this rather awkward code. It will iterate over all
+        // prefixes of each field, beginning with the longest, adding all of them
+        // to $added until one is encountered that was already added (which means
+        // all shorter ones will have already been added, too).
+        while ($pos = strrpos($key, ':', $pos - $len)) {
+          $prefix = substr($key, 0, $pos);
+          if (isset($added[$prefix])) {
+            break;
           }
+          $added[$prefix] = $prefix;
         }
-        // Now look at all properties.
-        foreach ($wrapper as $property => $value) {
-          $info = $value->info();
-          // We hide the complexity of multi-valued types from the user here.
-          $type = search_api_extract_inner_type($info['type']);
-          // Treat Entity API type "token" as our "string" type.
-          // Also let text fields with limited options be of type "string" by default.
-          if ($type == 'token' || ($type == 'text' && !empty($info['options list']))) {
-            // Inner type is changed to "string".
-            $type = 'string';
-            // Set the field type accordingly.
-            $info['type'] = search_api_nest_type('string', $info['type']);
-          }
-          $info['type'] = $type_prefix . $info['type'] . $type_suffix;
-          $key = $prefix . $property;
-          if ((isset($types[$type]) || isset($entity_types[$type])) && (!$only_indexed || !empty($fields[$key]))) {
-            if (!empty($fields[$key])) {
-              // This field is already known in the index configuration.
-              $flat[$key] = $fields[$key] + array(
-                'name' => $prefix_name . $info['label'],
-                'description' => empty($info['description']) ? NULL : $info['description'],
-                'boost' => '1.0',
-                'indexed' => TRUE,
-              );
-              // Update the type and its nesting level for non-entity properties.
-              if (!isset($entity_types[$type])) {
-                $flat[$key]['type'] = search_api_nest_type(search_api_extract_inner_type($flat[$key]['type']), $info['type']);
-                if (isset($flat[$key]['real_type'])) {
-                  $real_type = search_api_extract_inner_type($flat[$key]['real_type']);
-                  $flat[$key]['real_type'] = search_api_nest_type($real_type, $info['type']);
-                }
-              }
-            }
-            else {
-              $flat[$key] = array(
-                'name'    => $prefix_name . $info['label'],
-                'description' => empty($info['description']) ? NULL : $info['description'],
-                'type'    => $info['type'],
-                'boost' => '1.0',
-                'indexed' => FALSE,
-              );
-            }
-            if (isset($entity_types[$type])) {
-              $base_type = isset($entity_types[$type]['entity keys']['name']) ? 'string' : 'integer';
-              $flat[$key]['type'] = search_api_nest_type($base_type, $info['type']);
-              $flat[$key]['entity_type'] = $type;
-            }
-          }
-          if (empty($types[$type])) {
-            if (isset($added[$key])) {
-              // Visit this entity/struct in a later iteration.
-              $wrappers[$key . ':'] = $value;
-              $prefix_names[$key . ':'] = $prefix_name . $info['label'] . ' » ';
-              $nesting_levels[$key . ':'] = search_api_list_nesting_level($info['type']);
-            }
-            else {
-              $name = $prefix_name . $info['label'];
-              // Add machine names to discern fields with identical labels.
-              if (isset($used_names[$name])) {
-                if ($used_names[$name] !== FALSE) {
-                  $additional[$used_names[$name]] .= ' [' . $used_names[$name] . ']';
-                  $used_names[$name] = FALSE;
-                }
-                $name .= ' [' . $key . ']';
-              }
-              $additional[$key] = $name;
-              $used_names[$name] = $key;
-            }
-          }
-        }
-        unset($wrappers[$prefix]);
       }
+
+      // Then we walk through all properties and look if they are already
+      // contained in one of the arrays.
+      // Since this uses an iterative instead of a recursive approach, it is a bit
+      // complicated, with three arrays tracking the current depth.
+
+      // A wrapper for a specific field name prefix, e.g. 'user:' mapped to the user wrapper
+      $wrappers = array('' => $wrapper);
+      // Display names for the prefixes
+      $prefix_names = array('' => '');
+        // The list nesting level for entities with a certain prefix
+      $nesting_levels = array('' => 0);
+
+      $types = search_api_default_field_types();
+      $flat = array();
+      while ($wrappers) {
+        foreach ($wrappers as $prefix => $wrapper) {
+          $prefix_name = $prefix_names[$prefix];
+          // Deal with lists of entities.
+          $nesting_level = $nesting_levels[$prefix];
+          $type_prefix = str_repeat('list<', $nesting_level);
+          $type_suffix = str_repeat('>', $nesting_level);
+          if ($nesting_level) {
+            $info = $wrapper->info();
+            // The real nesting level of the wrapper, not the accumulated one.
+            $level = search_api_list_nesting_level($info['type']);
+            for ($i = 0; $i < $level; ++$i) {
+              $wrapper = $wrapper[0];
+            }
+          }
+          // Now look at all properties.
+          foreach ($wrapper as $property => $value) {
+            $info = $value->info();
+            // We hide the complexity of multi-valued types from the user here.
+            $type = search_api_extract_inner_type($info['type']);
+            // Treat Entity API type "token" as our "string" type.
+            // Also let text fields with limited options be of type "string" by default.
+            if ($type == 'token' || ($type == 'text' && !empty($info['options list']))) {
+              // Inner type is changed to "string".
+              $type = 'string';
+              // Set the field type accordingly.
+              $info['type'] = search_api_nest_type('string', $info['type']);
+            }
+            $info['type'] = $type_prefix . $info['type'] . $type_suffix;
+            $key = $prefix . $property;
+            if ((isset($types[$type]) || isset($entity_types[$type])) && (!$only_indexed || !empty($fields[$key]))) {
+              if (!empty($fields[$key])) {
+                // This field is already known in the index configuration.
+                $flat[$key] = $fields[$key] + array(
+                  'name' => $prefix_name . $info['label'],
+                  'description' => empty($info['description']) ? NULL : $info['description'],
+                  'boost' => '1.0',
+                  'indexed' => TRUE,
+                );
+                // Update the type and its nesting level for non-entity properties.
+                if (!isset($entity_types[$type])) {
+                  $flat[$key]['type'] = search_api_nest_type(search_api_extract_inner_type($flat[$key]['type']), $info['type']);
+                  if (isset($flat[$key]['real_type'])) {
+                    $real_type = search_api_extract_inner_type($flat[$key]['real_type']);
+                    $flat[$key]['real_type'] = search_api_nest_type($real_type, $info['type']);
+                  }
+                }
+              }
+              else {
+                $flat[$key] = array(
+                  'name'    => $prefix_name . $info['label'],
+                  'description' => empty($info['description']) ? NULL : $info['description'],
+                  'type'    => $info['type'],
+                  'boost' => '1.0',
+                  'indexed' => FALSE,
+                );
+              }
+              if (isset($entity_types[$type])) {
+                $base_type = isset($entity_types[$type]['entity keys']['name']) ? 'string' : 'integer';
+                $flat[$key]['type'] = search_api_nest_type($base_type, $info['type']);
+                $flat[$key]['entity_type'] = $type;
+              }
+            }
+            if (empty($types[$type])) {
+              if (isset($added[$key])) {
+                // Visit this entity/struct in a later iteration.
+                $wrappers[$key . ':'] = $value;
+                $prefix_names[$key . ':'] = $prefix_name . $info['label'] . ' » ';
+                $nesting_levels[$key . ':'] = search_api_list_nesting_level($info['type']);
+              }
+              else {
+                $name = $prefix_name . $info['label'];
+                // Add machine names to discern fields with identical labels.
+                if (isset($used_names[$name])) {
+                  if ($used_names[$name] !== FALSE) {
+                    $additional[$used_names[$name]] .= ' [' . $used_names[$name] . ']';
+                    $used_names[$name] = FALSE;
+                  }
+                  $name .= ' [' . $key . ']';
+                }
+                $additional[$key] = $name;
+                $used_names[$name] = $key;
+              }
+            }
+          }
+          unset($wrappers[$prefix]);
+        }
+      }
+
+      if (!$get_additional) {
+        $this->fields[$only_indexed][$get_additional] = $flat;
+      }
+      else {
+        $options = array();
+        $options['fields'] = $flat;
+        $options['additional fields'] = $additional;
+        $this->fields[$only_indexed][$get_additional] =  $options;
+      }
+      cache_set($cid, $this->fields[$only_indexed][$get_additional]);
     }
 
-    if (!$get_additional) {
-      return $flat;
-    }
-    $options = array();
-    $options['fields'] = $flat;
-    $options['additional fields'] = $additional;
-    return $options;
+    return $this->fields[$only_indexed][$get_additional];
   }
 
   /**
@@ -879,6 +919,19 @@ class SearchApiIndex extends Entity {
       }
     }
     return $this->fulltext_fields[$i];
+  }
+
+  /**
+   * Get the cache ID prefix used for this index's caches.
+   *
+   * @param $type
+   *   The type of cache. Currently only "fields" is used.
+   *
+   * @return
+   *   The cache ID (prefix) for this index's caches.
+   */
+  public function getCacheId($type = 'fields') {
+    return 'search_api:index-' . $this->machine_name . '--' . $type;
   }
 
   /**
@@ -930,6 +983,7 @@ class SearchApiIndex extends Entity {
     $this->callbacks = NULL;
     $this->processors = NULL;
     $this->added_properties = NULL;
+    $this->fields = array();
     $this->fulltext_fields = array();
   }
 

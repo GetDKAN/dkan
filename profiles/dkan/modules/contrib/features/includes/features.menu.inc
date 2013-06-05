@@ -135,7 +135,8 @@ function menu_links_features_export_options() {
   // Need to set this to TRUE in order to get menu links that the
   // current user may not have access to (i.e. user/login)
   $menu_admin = TRUE;
-  $menu_links = menu_parent_options(menu_get_menus(), array('mlid' => 0));
+  $use_menus = array_intersect_key(menu_get_menus(), array_flip(array_filter(variable_get('features_admin_menu_links_menus', array_keys(menu_get_menus())))));
+  $menu_links = menu_parent_options($use_menus, array('mlid' => 0));
   $options = array();
   foreach ($menu_links as $key => $name) {
     list($menu_name, $mlid) = explode(':', $key, 2);

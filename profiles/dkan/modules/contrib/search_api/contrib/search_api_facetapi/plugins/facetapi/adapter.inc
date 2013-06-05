@@ -172,16 +172,6 @@ class SearchApiFacetapiAdapter extends FacetapiAdapter {
       // properly.
       $keys = '[' . t('complex query') . ']';
     }
-    elseif (!$keys) {
-      // If a base path other than the current one is set, we assume that we
-      // shouldn't report on the current search. Highly hack-y, of course.
-      if ($search[0]->getOption('search_api_base_path', $_GET['q']) !== $_GET['q']) {
-        return NULL;
-      }
-      // Work-around since Facet API won't show the "Current search" block
-      // without keys.
-      $keys = '[' . t('all items') . ']';
-    }
     drupal_alter('search_api_facetapi_keys', $keys, $search[0]);
     return $keys;
   }
@@ -236,6 +226,26 @@ class SearchApiFacetapiAdapter extends FacetapiAdapter {
       $form['global']['facet_search_ids'] = array(
         '#type' => 'value',
         '#value' => array(),
+      );
+    }
+
+    // Add a granularity option to date query types.
+    if (isset($facet['query type']) && $facet['query type'] == 'date') {
+      $granularity_options = array(
+        FACETAPI_DATE_YEAR => t('Years'),
+        FACETAPI_DATE_MONTH => t('Months'),
+        FACETAPI_DATE_DAY => t('Days'),
+        FACETAPI_DATE_HOUR => t('Hours'),
+        FACETAPI_DATE_MINUTE => t('Minutes'),
+        FACETAPI_DATE_SECOND => t('Seconds'),
+      );
+
+      $form['global']['date_granularity'] = array(
+        '#type' => 'select',
+        '#title' => t('Granularity'),
+        '#description' => t('Determine the maximum drill-down level'),
+        '#options' => $granularity_options,
+        '#default_value' => isset($options['date_granularity']) ? $options['date_granularity'] : FACETAPI_DATE_MINUTE,
       );
     }
   }

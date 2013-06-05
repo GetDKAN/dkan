@@ -278,7 +278,7 @@ class SearchApiWebTest extends DrupalWebTestCase {
     $this->assertText(t('The search index was successfully edited.'));
     $this->assertText('Search API test server', t('!field displayed.', array('!field' => t('Server'))));
 
-    $this->drupalGet("admin/config/search/search_api/index/{$this->index_id}/enable");
+    $this->clickLink(t('enable'));
     $this->assertText(t('The index was successfully enabled.'));
   }
 

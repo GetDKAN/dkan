@@ -418,7 +418,7 @@ function entity_metadata_field_property_get($entity, array $options, $name, $ent
 /**
  * Callback for setting field property values.
  */
-function entity_metadata_field_property_set($entity, $name, $value, $langcode, $entity_type) {
+function entity_metadata_field_property_set($entity, $name, $value, $langcode, $entity_type, $info) {
   $field = field_info_field($name);
   $columns = array_keys($field['columns']);
   $langcode = entity_metadata_field_get_language($entity_type, $entity, $field, $langcode);
@@ -428,6 +428,10 @@ function entity_metadata_field_property_set($entity, $name, $value, $langcode, $
   foreach ($values as $delta => $value) {
     if (isset($value)) {
       $items[$delta][$columns[0]] = $value;
+      if ($info['type'] == 'boolean' || $info['type'] == 'list<boolean>') {
+        // Convert boolean values back to an integer for writing.
+        $items[$delta][$columns[0]] = (integer) $items[$delta][$columns[0]] = $value;
+      }
     }
   }
   $entity->{$name}[$langcode] = $items;
@@ -576,7 +580,7 @@ function entity_metadata_field_file_set(&$item, $property_name, $value) {
  */
 function entity_metadata_field_file_create_item($property_name, $context) {
   // 'fid' is required, so 'file' has to be set as initial property.
-  return array('display' => $context['field']['settings']['display_default']);
+  return array('display' => isset($context['field']['settings']['display_default']) ? $context['field']['settings']['display_default'] : 0);
 }
 
 /**

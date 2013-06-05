@@ -6,7 +6,10 @@
 class SearchApiIgnoreCase extends SearchApiAbstractProcessor {
 
   protected function process(&$value) {
-    $value = drupal_strtolower($value);
+    // We don't touch integers, NULL values or the like.
+    if (is_string($value)) {
+      $value = drupal_strtolower($value);
+    }
   }
 
 }

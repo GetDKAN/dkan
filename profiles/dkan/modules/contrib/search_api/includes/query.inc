@@ -91,6 +91,7 @@ interface SearchApiQueryInterface {
    * @return SearchApiQueryInterface
    *   The called object.
    */
+  // @todo Allow calling with NULL.
   public function fields(array $fields);
 
   /**
@@ -684,6 +685,7 @@ class SearchApiQuery implements SearchApiQueryInterface {
    *   Additional metadata may be returned in other keys. Only 'result count'
    *   and 'result' always have to be set, all other entries are optional.
    */
+  // @todo Remove "final"?
   public final function execute() {
     $start = microtime(TRUE);
 

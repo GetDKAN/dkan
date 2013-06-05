@@ -24,9 +24,11 @@ function features_uninstall() {
   variable_del('features_codecache');
   variable_del('features_semaphore');
   variable_del('features_ignored_orphans');
-  db_delete('menu_custom')
-    ->condition('menu_name', 'features')
-    ->execute();
+  if (db_table_exists('menu_custom')) {
+    db_delete('menu_custom')
+      ->condition('menu_name', 'features')
+      ->execute();
+  }
   db_delete('menu_links')
     ->condition('module', 'features')
     ->execute();

@@ -154,6 +154,42 @@ function search_api_menu() {
 }
 
 /**
+ * Implements hook_hook_info().
+ */
+function search_api_hook_info() {
+  // We use the same group for all hooks, so save code lines.
+  $hook_info = array(
+    'group' => 'search_api',
+  );
+  return array(
+    'search_api_service_info' => $hook_info,
+    'search_api_service_info_alter' => $hook_info,
+    'search_api_item_type_info' => $hook_info,
+    'search_api_item_type_info_alter' => $hook_info,
+    'search_api_data_type_info' => $hook_info,
+    'search_api_data_type_info_alter' => $hook_info,
+    'search_api_alter_callback_info' => $hook_info,
+    'search_api_processor_info' => $hook_info,
+    'search_api_index_items_alter' => $hook_info,
+    'search_api_items_indexed' => $hook_info,
+    'search_api_query_alter' => $hook_info,
+    'search_api_server_load' => $hook_info,
+    'search_api_server_insert' => $hook_info,
+    'search_api_server_update' => $hook_info,
+    'search_api_server_delete' => $hook_info,
+    'default_search_api_server' => $hook_info,
+    'default_search_api_server_alter' => $hook_info,
+    'search_api_index_load' => $hook_info,
+    'search_api_index_insert' => $hook_info,
+    'search_api_index_update' => $hook_info,
+    'search_api_index_reindex' => $hook_info,
+    'search_api_index_delete' => $hook_info,
+    'default_search_api_index' => $hook_info,
+    'default_search_api_index_alter' => $hook_info,
+  );
+}
+
+/**
  * Implements hook_theme().
  */
 function search_api_theme() {
@@ -227,7 +263,9 @@ function search_api_cron() {
     if ($limit) {
       try {
         $task = array('index' => $index->machine_name);
-        $ids = search_api_get_items_to_index($index, -1);
+        // Fetch items to index, do not fetch more than the configured amount
+        // of batches to be created per cron run to avoid timeouts.
+        $ids = search_api_get_items_to_index($index, $limit > 0 ? $limit * variable_get('search_api_batch_per_cron', 10) : -1);
         if (!$ids) {
           continue;
         }
@@ -557,15 +595,26 @@ function search_api_search_api_index_update(SearchApiIndex $index) {
   }
 
   // If the fields were changed, call the appropriate service class hook method
-  // and re-index the content, if necessary.
+  // and re-index the content, if necessary. Also, clear the fields cache.
   $old_fields = $index->original->options + array('fields' => array());
   $old_fields = $old_fields['fields'];
   $new_fields = $index->options + array('fields' => array());
   $new_fields = $new_fields['fields'];
   if ($old_fields != $new_fields) {
+    cache_clear_all($index->getCacheId(), 'cache', TRUE);
     if ($index->server && $index->server()->fieldsUpdated($index)) {
       _search_api_index_reindex($index);
     }
+  }
+
+  // If additional fields changed, clear the index's specific cache which
+  // includes them.
+  $old_additional = $index->original->options + array('additional fields' => array());
+  $old_additional = $old_additional['additional fields'];
+  $new_additional = $index->options + array('additional fields' => array());
+  $new_additional = $new_additional['additional fields'];
+  if ($old_additional != $new_additional) {
+    cache_clear_all($index->getCacheId() . '-0-1', 'cache', TRUE);
   }
 
   // If the index's enabled or read-only status is being changed, queue or
@@ -603,6 +652,7 @@ function search_api_search_api_index_update(SearchApiIndex $index) {
  * Removes all data for indexes not available any more.
  */
 function search_api_search_api_index_delete(SearchApiIndex $index) {
+  cache_clear_all($index->getCacheId(''), 'cache', TRUE);
   $index->postDelete();
 }
 
@@ -725,6 +775,7 @@ function search_api_search_api_item_type_info() {
       $types[$type] = array(
         'name' => $info['label'],
         'datasource controller' => 'SearchApiEntityDataSourceController',
+        'entity_type' => $type,
       );
     }
   }
@@ -817,6 +868,14 @@ function search_api_search_api_processor_info() {
     'class' => 'SearchApiHtmlFilter',
     'weight' => 10,
   );
+  if (module_exists('transliteration')) {
+    $processors['search_api_transliteration'] = array(
+      'name' => t('Transliteration'),
+      'description' => t('This processor will make searches insensitive to accents and other non-ASCII characters.'),
+      'class' => 'SearchApiTransliteration',
+      'weight' => 15,
+    );
+  }
   $processors['search_api_tokenizer'] = array(
     'name' => t('Tokenizer'),
     'description' => t('Tokenizes fulltext data by stripping whitespace. ' .
@@ -922,6 +981,7 @@ function search_api_track_item_queued(SearchApiIndex $index, array $item_ids) {
  */
 function search_api_track_item_indexed(SearchApiIndex $index, array $item_ids) {
   $index->datasource()->trackItemIndexed($item_ids, $index);
+  module_invoke_all('search_api_items_indexed', $index, $item_ids);
 }
 
 /**
@@ -1605,25 +1665,27 @@ function search_api_extract_fields(EntityMetadataWrapper $wrapper, array $fields
       // Set "defaults" in case an error occurs later.
       $info['value'] = NULL;
       $info['original_type'] = $info['type'];
-      try {
-        $info['value'] = $wrapper->$field->value($value_options);
-        // For fulltext fields with options, also include the option labels.
-        if (search_api_is_text_type($info['type']) && $wrapper->$field->optionsList('view')) {
-          _search_api_add_option_values($info['value'], $wrapper->$field->optionsList('view'));
+      if (isset($wrapper->$field)) {
+        try {
+          $info['value'] = $wrapper->$field->value($value_options);
+          // For fulltext fields with options, also include the option labels.
+          if (search_api_is_text_type($info['type']) && $wrapper->$field->optionsList('view')) {
+            _search_api_add_option_values($info['value'], $wrapper->$field->optionsList('view'));
+          }
+          $property_info = $wrapper->$field->info();
+          $info['original_type'] = $property_info['type'];
+          // For entities, we extract the entity ID instead of the whole object.
+          // @todo Use 'identifier' => TRUE instead of always loading the object.
+          $t = search_api_extract_inner_type($property_info['type']);
+          if (isset($entity_infos[$t])) {
+            // If no object is set, set this field to NULL.
+            $info['value'] = $info['value'] ? _search_api_extract_entity_value($wrapper->$field, search_api_is_text_type($info['type'])) : NULL;
+          }
         }
-        $property_info = $wrapper->$field->info();
-        $info['original_type'] = $property_info['type'];
-        // For entities, we extract the entity ID instead of the whole object.
-        // @todo Use 'identifier' => TRUE instead of always loading the object.
-        $t = search_api_extract_inner_type($property_info['type']);
-        if (isset($entity_infos[$t])) {
-          // If no object is set, set this field to NULL.
-          $info['value'] = $info['value'] ? _search_api_extract_entity_value($wrapper->$field, search_api_is_text_type($info['type'])) : NULL;
+        catch (EntityMetadataWrapperException $e) {
+          // This might happen for entity-typed properties that are NULL, e.g.,
+          // for comments without parent.
         }
-      }
-      catch (EntityMetadataWrapperException $e) {
-        // This might happen for entity-typed properties that are NULL, e.g.,
-        // for comments without parent.
       }
     }
     else {

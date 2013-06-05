@@ -30,28 +30,33 @@ class SchemaDatabaseSchema_pgsql extends DatabaseSchema_pgsql {
     return $map;
   }
 
-  public function inspect($connection = 'default', $tbl_name = NULL) {
+  public function inspect($connection = NULL, $table_name = NULL) {
+    // Support the deprecated connection parameter.
+    if (isset($connection) && $connection != $this->connection->getKey()) {
+      $this->connection = Database::getConnection('default', $connection);
+    }
+
     // Get the current database name
-    $info = Database::getConnectionInfo($connection);
-    $database = $info['default']['database'];
+    $info = $this->connection->getConnectionOptions();
+    $database = $info['database'];
 
     //
     // Retrieve information about all columns in the database from the
     // 'columns' table of 'information_schema'.  In pgsql, TABLE_CATALOG
-    // is the database name and we provide $database to db_query below.
+    // is the database name and we provide $database to query() below.
     // We sort the columns by table_name and ordinal_position so the get
     // added to our array in the same order.
     //
     $sql = ('SELECT * FROM information_schema.COLUMNS ' .
             'WHERE table_catalog=:database AND table_schema=current_schema()');
     $tokens = array(':database' => $database);
-    if (isset($tbl_name)) {
+    if (isset($table_name)) {
       $sql .= 'AND table_name = :table ';
-      $tokens[':table'] = $tblname;
+      $tokens[':table'] = $table_name;
     }
     $sql .= 'ORDER BY table_name, ordinal_position';
 
-    $res = db_query($sql, $tokens);
+    $res = $this->connection->query($sql, $tokens);
 
     //
     // Add an entry to $tables[<tablename>]['fields'] for each column.  $r
@@ -156,7 +161,7 @@ class SchemaDatabaseSchema_pgsql extends DatabaseSchema_pgsql {
     // Make sur we caught all the unsigned columns.  I could not get
     // this to work as a left join on the previous query.
     //
-    $res = db_query('SELECT ccu.*, cc.check_clause
+    $res = $this->connection->query('SELECT ccu.*, cc.check_clause
                      FROM information_schema.constraint_column_usage ccu
                      INNER JOIN information_schema.check_constraints cc ON ccu.constraint_name=cc.constraint_name
                      WHERE table_schema=current_schema()');
@@ -176,7 +181,7 @@ class SchemaDatabaseSchema_pgsql extends DatabaseSchema_pgsql {
     // the CREATE INDEX statement to create the index; we parse it to
     // produce our data structure.  Ick.
     //
-    $res = db_query('SELECT n.nspname, c.relname AS tblname, ' .
+    $res = $this->connection->query('SELECT n.nspname, c.relname AS tblname, ' .
       '   c2.relname AS indname, i.indisprimary, i.indisunique, ' .
       '   pg_get_indexdef(i.indexrelid) AS inddef ' .
       'FROM pg_class c, pg_class c2, pg_index i, pg_namespace n ' .

@@ -286,13 +286,18 @@ function ctools_block_content_type_admin_info($subtype, $conf) {
   list($module, $delta) = _ctools_block_get_module_delta($subtype, $conf);
   $block = (object) module_invoke($module, 'block_view', $delta);
 
-  // Sanitize the block because <script> tags can hose javascript up:
-  if (!empty($block->content)) {
-    $block->content = filter_xss_admin($block->content);
-  }
+  if (!empty($block)) {
+    // Sanitize the block because <script> tags can hose javascript up:
+    if (!empty($block->content)) {
+      $block->content = filter_xss_admin(render($block->content));
+    }
 
-  if (!empty($block) && !empty($block->subject)) {
-    $block->title = $block->subject;
+    if (!empty($block->subject)) {
+      $block->title = $block->subject;
+    }
+    elseif (empty($block->title)) {
+      $block->title = t('No title');
+    }
     return $block;
   }
 }

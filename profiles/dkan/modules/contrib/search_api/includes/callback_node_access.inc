@@ -22,7 +22,7 @@ class SearchApiAlterNodeAccess extends SearchApiAbstractAlterCallback {
    */
   public function supportsIndex(SearchApiIndex $index) {
     // Currently only node access is supported.
-    return $index->item_type === 'node';
+    return $index->getEntityType() === 'node';
   }
 
   /**

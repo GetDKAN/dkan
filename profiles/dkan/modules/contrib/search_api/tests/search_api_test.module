@@ -89,14 +89,15 @@ function search_api_test_query(SearchApiIndex $index, $keys = 'foo bar', $offset
         'foobar',
       ),
       array(
-        '#conjunction' => 'AND',
+        '#conjunction' => 'OR',
         '#negation' => TRUE,
         'bar',
+        'fooblob',
       ),
     );
   }
   $query = $index->query()
-    ->keys($keys)
+    ->keys($keys ? $keys : NULL)
     ->range($offset, $limit);
   if ($fields) {
     $query->fields(explode(',', $fields));

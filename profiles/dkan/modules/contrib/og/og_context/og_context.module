@@ -409,10 +409,23 @@ function og_context_handler_url() {
   foreach ($fields as $field_name => $label) {
     $field = field_info_field($field_name);
     $instance = field_info_instance('node', $field_name, $node_type);
-    if ($ids = entityreference_prepopulate_get_values_from_url($field, $instance, TRUE)) {
+    if ($ids = entityreference_prepopulate_get_values_from_url($field, $instance)) {
+      // We need to validate those values ourself, as we called
+      // entityreference_prepopulate_get_values_from_url() directly, bypassing
+      // entityreference_prepopulate_get_values().
       $target_type = $field['settings']['target_type'];
-      $gids += array($target_type => array());
-      $gids[$target_type] = array_merge($gids[$target_type], $ids);
+      $valid_ids = array();
+      $entities = entity_load($target_type, $ids);
+      foreach ($entities as $id => $entity) {
+        if (entity_access('view', $target_type, $entity)) {
+          $valid_ids[] = $id;
+        }
+      }
+
+      if ($valid_ids) {
+        $gids += array($target_type => array());
+        $gids[$target_type] = array_merge($gids[$target_type], $valid_ids);
+      }
     }
   }
   return $gids;

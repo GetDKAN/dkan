@@ -78,3 +78,10 @@ function schema_uninstall() {
   variable_del('schema_status_report');
   variable_del('schema_suppress_type_warnings');
 }
+
+/**
+ * Moved menu callbacks to include files.
+ */
+function schema_update_7100() {
+  variable_set('menu_rebuild_needed', TRUE);
+}

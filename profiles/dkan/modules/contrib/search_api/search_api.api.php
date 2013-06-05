@@ -95,6 +95,9 @@ function hook_search_api_service_info_alter(array &$service_info) {
  *   - datasource controller: A class implementing the
  *     SearchApiDataSourceControllerInterface interface which will be used as
  *     the data source controller for this type.
+ *   - entity_type: (optional) If the type represents entities, the entity type.
+ *     This is used by SearchApiAbstractDataSourceController for determining the
+ *     entity type of items. Other datasource controllers might ignore this.
  *   Other, datasource-specific settings might also be placed here. These should
  *   be specified with the data source controller in question.
  *
@@ -109,6 +112,7 @@ function hook_search_api_item_type_info() {
       $types[$type] = array(
         'name' => $info['label'],
         'datasource controller' => 'SearchApiEntityDataSourceController',
+        'entity_type' => $type,
       );
     }
   }
@@ -279,14 +283,32 @@ function hook_search_api_index_items_alter(array &$items, SearchApiIndex $index)
 }
 
 /**
+ * Allows modules to react after items were indexed.
+ *
+ * @param SearchApiIndex $index
+ *   The used index.
+ * @param array $item_ids
+ *   An array containing the indexed items' IDs.
+ */
+function hook_search_api_items_indexed(SearchApiIndex $index, array $item_ids) {
+  if ($index->getEntityType() == 'node') {
+    // Flush page cache of the search page.
+    cache_clear_all(url('search'), 'cache_page');
+  }
+}
+
+/**
  * Lets modules alter a search query before executing it.
  *
  * @param SearchApiQueryInterface $query
  *   The SearchApiQueryInterface object representing the search query.
  */
 function hook_search_api_query_alter(SearchApiQueryInterface $query) {
-  $info = entity_get_info($index->item_type);
-  $query->condition($info['entity keys']['id'], 0, '!=');
+  // Exclude entities with ID 0. (Assume the ID field is always indexed.)
+  if ($query->getIndex()->getEntityType()) {
+    $info = entity_get_info($query->getIndex()->getEntityType());
+    $query->condition($info['entity keys']['id'], 0, '!=');
+  }
 }
 
 /**

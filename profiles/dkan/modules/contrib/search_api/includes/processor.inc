@@ -329,10 +329,20 @@ abstract class SearchApiAbstractProcessor implements SearchApiProcessorInterface
    */
   protected function processFilters(array &$filters) {
     $fields = $this->index->options['fields'];
-    foreach ($filters as &$f) {
+    foreach ($filters as $key => &$f) {
       if (is_array($f)) {
         if (isset($fields[$f[0]]) && $this->testField($f[0], $fields[$f[0]])) {
+          // We want to allow processors also to easily remove complete filters.
+          // However, we can't use empty() or the like, as that would sort out
+          // filters for 0 or NULL. So we specifically check only for the empty
+          // string, and we also make sure the filter value was actually changed
+          // by storing whether it was empty before.
+          $empty_string = $f[1] === '';
           $this->processFilterValue($f[1]);
+
+          if ($f[1] === '' && !$empty_string) {
+            unset($filters[$key]);
+          }
         }
       }
       else {

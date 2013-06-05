@@ -162,7 +162,7 @@ function og_ui_add_users($form, &$form_state, $group_type, $gid) {
     );
   }
 
-  $field_names = og_get_group_audience_fields();
+  $field_names = og_get_group_audience_fields('user', 'user', $group_type);
   $field_name = !empty($form_state['values']['field_name']) ? $form_state['values']['field_name'] : key($field_names);
 
   if (count($field_names) > 1) {

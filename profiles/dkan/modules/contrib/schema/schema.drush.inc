@@ -60,7 +60,7 @@ function drush_schema_inspect() {
     $connection = 'default';
   }
   foreach ($names as $name) {
-    if ($table = schema_dbobject()->inspect($connection, $name)) {
+    if ($table = schema_dbobject($connection)->inspect(NULL, $name)) {
       $output = schema_phpprint_table($name, $table[$name]);
       drush_print($output);
     }

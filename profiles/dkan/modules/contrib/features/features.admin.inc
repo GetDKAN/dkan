@@ -5,6 +5,52 @@
  * Forms for Features admin screens
  */
 
+
+/**
+ * Settings form for features
+ */
+function features_settings_form($form, $form_state) {
+  $form = array();
+
+  $components = features_get_components();
+  uasort($components, 'features_compare_component_name');
+  $form['show_components'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Show components on create/edit feature form.'),
+    '#description' => t('Components with no options will not be shown no matter the setting below. Disabled components cannot be used with admin form.')
+  );
+  foreach ($components as $compontent => $info) {
+    if (empty($info['feature_source']) && empty($info['features_source'])) {
+      continue;
+    }
+    $form['show_components']['features_admin_show_component_' . $compontent] = array(
+      '#title' => t('@name (@machine)', array('@name' => $info['name'], '@machine' => $compontent)),
+      '#type' => 'checkbox',
+      '#default_value' => variable_get('features_admin_show_component_' . $compontent, TRUE),
+    );
+    if ($compontent == 'menu_links' && ($menus = menu_get_menus())) {
+      $form['show_components']['features_admin_menu_links'] = array(
+        '#title' => t('Advanced Menu Link Settings'),
+        '#type' => 'fieldset',
+        '#collapsed' => TRUE,
+        '#collapsible' => TRUE,
+        '#states' => array(
+          'invisible' => array(
+            'input[name="features_admin_show_component_menu_links"]' => array('checked' => FALSE),
+          ),
+        ),
+      );
+      $form['show_components']['features_admin_menu_links']['features_admin_menu_links_menus'] = array(
+        '#title' => t('Allowed menus for menu links'),
+        '#type' => 'checkboxes',
+        '#options' =>  array_map('check_plain', $menus),
+        '#default_value' => variable_get('features_admin_menu_links_menus', array_keys(menu_get_menus())),
+      );
+    }
+  }
+  return system_settings_form($form);
+}
+
 /**
  * Form constructor for features export form.
  *
@@ -278,6 +324,9 @@ function _features_export_form_components(&$form, &$form_state) {
 
   $sections = array('included', 'detected', 'added');
   foreach ($export['components'] as $component => $component_info) {
+    if (!variable_get('features_admin_show_component_' . $component, TRUE)) {
+      continue;
+    }
     $label = (isset($component_info['name']) ?
       $component_info['name'] . " <span>(" . check_plain($component) . ")</span>" : check_plain($component));
 
@@ -438,6 +487,10 @@ function _features_export_build($feature, &$form_state) {
   foreach ($components as $component => $component_info) {
     if ($reset) {
       unset($form_state['values'][$component]);
+    }
+    if (!variable_get('features_admin_show_component_' . $component, TRUE)) {
+      unset($components[$component]);
+      continue;
     }
     // User-selected components take precedence.
     $stub[$component] = array();
@@ -927,14 +980,14 @@ function features_admin_form($form, $form_state) {
         }
       }
       if (!empty($unmet_dependencies)) {
-        $description .= "<div class='dependencies'>" . t('Unmet dependencies: @dependencies', array('@dependencies' => implode(', ', $unmet_dependencies))) . "</div>";
+        $description .= "<div class='dependencies'>" . t('Unmet dependencies: !dependencies', array('!dependencies' => implode(', ', $unmet_dependencies))) . "</div>";
         $disabled = TRUE;
       }
     }
 
     if (!empty($module->dependents)) {
       $disabled = TRUE;
-      $description .= "<div class='requirements'>". t('Required by: @dependents', array('@dependents' => implode(', ', $module->dependents))) ."</div>";
+      $description .= "<div class='requirements'>". t('Required by: !dependents', array('!dependents' => implode(', ', $module->dependents))) ."</div>";
     }
 
     // Detect potential conflicts

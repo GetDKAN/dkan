@@ -65,6 +65,9 @@ function search_api_facetapi_facetapi_searcher_info() {
         'supports facet mincount' => TRUE,
         'include default facets' => FALSE,
       );
+      if (($entity_type = $index->getEntityType()) && $entity_type !== $index->item_type) {
+        $info[$searcher_name]['types'][] = $entity_type;
+      }
     }
   }
   return $info;
@@ -80,7 +83,7 @@ function search_api_facetapi_facetapi_facet_info(array $searcher_info) {
     if (!empty($index->options['fields'])) {
       $wrapper = $index->entityWrapper();
       $bundle_key = NULL;
-      if (($entity_info = entity_get_info($index->item_type)) && !empty($entity_info['bundle keys']['bundle'])) {
+      if ($index->getEntityType() && ($entity_info = entity_get_info($index->getEntityType())) && !empty($entity_info['bundle keys']['bundle'])) {
         $bundle_key = $entity_info['bundle keys']['bundle'];
       }
 
@@ -144,7 +147,7 @@ function search_api_facetapi_facetapi_facet_info(array $searcher_info) {
         if ($bundle_key) {
           if ($key === $bundle_key) {
             // Set entity type this field contains bundle information for.
-            $facet_info[$key]['field api bundles'][] = $index->item_type;
+            $facet_info[$key]['field api bundles'][] = $index->getEntityType();
           }
           else {
             // Add "bundle" as possible dependency plugin.

@@ -85,11 +85,21 @@ function og_field_widget_form(&$form, &$form_state, $field, $instance, $langcode
       $mocked_instance['required'] = FALSE;
       if ($field_mode == 'default') {
         $mocked_instance['label'] = t('Your groups');
-        $mocked_instance['description'] = t('Associate this content with groups you belong to.');
+        if ($entity_type == 'user') {
+          $mocked_instance['description'] = t('Associate this user with groups you belong to.');
+        }
+        else {
+          $mocked_instance['description'] = t('Associate this content with groups you belong to.');
+        }
       }
       else {
         $mocked_instance['label'] = t('Other groups');
-        $mocked_instance['description'] = t('As groups administrator, associate this content with groups you do <em>not</em> belong to.');
+        if ($entity_type == 'user') {
+          $mocked_instance['description'] = t('As groups administrator, associate this user with groups you do <em>not</em> belong to.');
+        }
+        else {
+          $mocked_instance['description'] = t('As groups administrator, associate this content with groups you do <em>not</em> belong to.');
+        }
       }
 
       if ($id) {
@@ -245,6 +255,14 @@ function og_complex_widget_element_validate($element, &$form_state, $form) {
   // last element that contains the delta 0, as $ids is already keyed with
   // deltas.
   drupal_array_set_nested_value($form_state['values'], array_slice($element['#parents'], 0, -1), $ids, TRUE);
+
+  // If the element is required, ensure that at least one group has been chosen.
+  if ($element['#required']) {
+    $subform = drupal_array_get_nested_value($form_state['values'], $element['#array_parents']);
+    if (empty($subform)) {
+      form_error($element, t('!name field is required.', array('!name' => $element['#title'])));
+    }
+  }
 }
 
 /**

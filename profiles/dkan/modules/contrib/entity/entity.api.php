@@ -325,7 +325,7 @@ function entity_metadata_hook_entity_info() {
  *       entity_property_values_create_entity().
  *     - field: (optional) A boolean indicating whether a property is stemming
  *       from a field.
- *     - computed: (optional) A boolean indiciating whether a property is
+ *     - computed: (optional) A boolean indicating whether a property is
  *       computed, i.e. the property value is not stored or loaded by the
  *       entity's controller but determined on the fly by the getter callback.
  *       Defaults to FALSE.
@@ -370,7 +370,7 @@ function entity_metadata_hook_entity_info() {
  *     the same way as the entity properties array.
  *
  *  @see hook_entity_property_info_alter()
- *  @see entity_metadata_get_info()
+ *  @see entity_get_property_info()
  *  @see entity_metadata_wrapper()
  */
 function hook_entity_property_info() {

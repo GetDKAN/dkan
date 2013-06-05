@@ -64,6 +64,7 @@ class SearchApiViewsHandlerArgument extends views_handler_argument {
     $options = parent::option_definition();
 
     $options['break_phrase'] = array('default' => FALSE);
+    $options['not'] = array('default' => FALSE);
 
     return $options;
   }
@@ -79,6 +80,14 @@ class SearchApiViewsHandlerArgument extends views_handler_argument {
       '#default_value' => $this->options['break_phrase'],
       '#fieldset' => 'more',
     );
+
+    $form['not'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Exclude'),
+      '#description' => t('If selected, the numbers entered for the filter will be excluded rather than limiting the view.'),
+      '#default_value' => !empty($this->options['not']),
+      '#fieldset' => 'more',
+    );
   }
 
   /**
@@ -86,7 +95,6 @@ class SearchApiViewsHandlerArgument extends views_handler_argument {
    *
    * The argument sent may be found at $this->argument.
    */
-  // @todo Provide options to select the operator, instead of always using '='?
   public function query($group_by = FALSE) {
     if (!empty($this->options['break_phrase'])) {
       views_break_phrase($this->argument, $this);
@@ -95,28 +103,21 @@ class SearchApiViewsHandlerArgument extends views_handler_argument {
       $this->value = array($this->argument);
     }
 
+    $operator = empty($this->options['not']) ? '=' : '<>';
+
     if (count($this->value) > 1) {
       $filter = $this->query->createFilter(drupal_strtoupper($this->operator));
       // $filter will be NULL if there were errors in the query.
       if ($filter) {
         foreach ($this->value as $value) {
-          $filter->condition($this->real_field, $value, '=');
+          $filter->condition($this->real_field, $value, $operator);
         }
         $this->query->filter($filter);
       }
     }
     else {
-      $this->query->condition($this->real_field, reset($this->value));
+      $this->query->condition($this->real_field, reset($this->value), $operator);
     }
-  }
-
-  /**
-   * Get the title this argument will assign the view, given the argument.
-   *
-   * This usually needs to be overridden to provide a proper title.
-   */
-  public function title() {
-    return t('Search @field for "@arg"', array('@field' => $this->definition['title'], '@arg' => $this->argument));
   }
 
 }

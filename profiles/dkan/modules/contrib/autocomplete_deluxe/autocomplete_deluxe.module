@@ -156,6 +156,13 @@ function autocomplete_deluxe_field_widget_settings_form($field, $instance) {
     '#default_value' => isset($settings['min_length']) ? $settings['min_length'] : 0,
     '#element_validate' => array('_element_validate_integer'),
   );
+  $form['delimiter'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Delimiter.'),
+    '#description' => t('A character which should be used beside the enter key, to seperate terms.'),
+    '#default_value' => isset($settings['delimiter']) ? $settings['delimiter'] : '',
+    '#size' => 1,
+  );
 
   if (module_exists('synonyms')) {
     $form['use_synonyms'] = array(
@@ -211,6 +218,7 @@ function autocomplete_deluxe_field_widget_form(&$form, &$form_state, $field, $in
     '#limit' => isset($instance['widget']['settings']['limit']) ? $instance['widget']['settings']['limit'] : 10,
     '#min_length' => isset($instance['widget']['settings']['min_length']) ? $instance['widget']['settings']['min_length'] : 0,
     '#use_synonyms' =>isset($instance['widget']['settings']['use_synonyms']) ? $instance['widget']['settings']['use_synonyms'] : 0,
+    '#delimiter' =>isset($instance['widget']['settings']['delimiter']) ? $instance['widget']['settings']['delimiter'] : '',
   );
 
   $multiple = $field['cardinality'] > 1 || $field['cardinality'] == FIELD_CARDINALITY_UNLIMITED ? TRUE : FALSE;
@@ -268,6 +276,7 @@ function autocomplete_deluxe_element_process($element) {
     'limit' => isset($element['#limit']) ? $element['#limit'] : 10,
     'min_length' => isset($element['#min_length']) ? $element['#min_length'] : 0,
     'use_synonyms' => isset($element['#use_synonyms']) ? $element['#use_synonyms'] : 0,
+    'delimiter' => isset($element['#delimiter']) ? $element['#delimiter'] : '',
   );
 
   if (isset($element['#autocomplete_deluxe_path'])) {
@@ -346,6 +355,7 @@ function autocomplete_deluxe_after_build($element, &$form_state) {
     // Remove the double quotes at the beginning and the end from the first and
     // the last term.
     $element['#value'] = substr($element['#value'], 2, strlen($element['#value']) - 4);
+
     unset($element['value_field']['#maxlength']);
   }
 

@@ -234,7 +234,7 @@ class SearchApiAlterAddHierarchy extends SearchApiAbstractAlterCallback {
     $v = $wrapper->value(array('identifier' => TRUE));
     if ($v && !isset($values[$v])) {
       $values[$v] = $v;
-      if (isset($wrapper->$property) && $wrapper->$property->value()) {
+      if (isset($wrapper->$property) && $wrapper->value() && $wrapper->$property->value()) {
         $this->extractHierarchy($wrapper->$property, $property, $values);
       }
     }

@@ -12,7 +12,7 @@ a.autocomplete-deluxe-single:hover {
   text-decoration: none;
 }
 
-.ui-state-hover {
+.ui-autocomplete .ui-state-hover {
   background-color: #3875d7;
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(20%, #3875d7), color-stop(90%, #2a62bc));
   background-image: -webkit-linear-gradient(top, #3875d7 20%, #2a62bc 90%);

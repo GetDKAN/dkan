@@ -27,7 +27,7 @@ class SearchApiViewsHandlerFilterFulltext extends SearchApiViewsHandlerFilterTex
       '#title' => t('Use as'),
       '#type' => 'radios',
       '#options' => array(
-        'keys' => t('Search keys – multiple words will be split and the filter will influence relevance.'),
+        'keys' => t('Search keys – multiple words will be split and the filter will influence relevance. You can change how search keys are parsed under "Advanced" > "Query settings".'),
         'filter' => t("Search filter – use as a single phrase that restricts the result set but doesn't influence relevance."),
       ),
       '#default_value' => $this->options['mode'],

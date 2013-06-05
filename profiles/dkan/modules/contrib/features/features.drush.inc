@@ -18,6 +18,9 @@ function features_drush_command() {
 
   $items['features-list'] = array(
     'description' => "List all the available features for your site.",
+    'options' => array(
+      'status' => "Feature status, can be 'enabled', 'disabled'  or 'all'",
+    ),
     'drupal dependencies' => array('features'),
     'aliases' => array('fl', 'features'),
   );
@@ -160,6 +163,11 @@ Lastly, a pattern without a colon is interpreted as having \":%\" appended, for 
  * Get a list of all feature modules.
  */
 function drush_features_list() {
+  $status = drush_get_option('status') ? drush_get_option('status') : 'all';
+  if (!in_array($status, array('enabled', 'disabled', 'all'))) {
+    return drush_set_error('', dt('!status is not valid', array('!status' => $status)));
+  }
+
   module_load_include('inc', 'features', 'features.export');
   $rows = array(array(dt('Name'), dt('Feature'), dt('Status'), dt('Version'), dt('State')));
   foreach (features_get_features(NULL, TRUE) as $k => $m) {
@@ -175,13 +183,18 @@ function drush_features_list() {
         $storage = dt('Needs review');
         break;
     }
-    $rows[] = array(
-      $m->info['name'],
-      $m->name,
-      $m->status ? dt('Enabled') : dt('Disabled'),
-      $m->info['version'],
-    $storage
-    );
+    if (
+      ($m->status == 0 && ($status == 'all' || $status == 'disabled')) ||
+      ($m->status == 1 && ($status == 'all' || $status == 'enabled'))
+    ) {
+      $rows[] = array(
+        $m->info['name'],
+        $m->name,
+        $m->status ? dt('Enabled') : dt('Disabled'),
+        $m->info['version'],
+        $storage
+      );
+    }
   }
   drush_print_table($rows, TRUE);
 }
@@ -581,7 +594,20 @@ function _drush_features_generate_export(&$info, &$module_name) {
     $version_minor = array_pop($version_explode);
     // Increment minor version number if numeric or not a dev release.
     if (is_numeric($version_minor) || strpos($version_minor, 'dev') !== (strlen($version_minor) - 3)) {
-      ++$version_minor;
+      // Check for prefixed versions (alpha, beta, rc).
+      if (ctype_digit($version_minor)) {
+        ++$version_minor;
+      }
+      else {
+        // Split version number parts.
+        $pattern = '/([0-9]-[a-z]+([0-9])+)/';
+        $matches = array();
+        preg_match($pattern, $version_minor, $matches);
+        $number = array_pop($matches);
+        ++$number;
+        $pattern = '/[0-9]+$/';
+        $version_minor = preg_replace($pattern, $number, $version_minor);
+      }
     }
     array_push($version_explode, $version_minor);
     // Rebuild version string.

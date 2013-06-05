@@ -5,10 +5,3 @@ core = 7.x
 php = 5.2.4
 dependencies[] = dkan_datastore
 dependencies[] = services
-
-
-; Information added by drush on 2013-04-22
-version = "unknown"
-project = "dkan_datastore"
-datestamp = "1366638243"
-

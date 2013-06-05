@@ -5,6 +5,13 @@
  */
 class SearchApiStopWords extends SearchApiAbstractProcessor {
 
+  /**
+   * Holds all words ignored for the last query.
+   *
+   * @var array
+   */
+  protected $ignored = array();
+
   public function configurationForm() {
     $form = parent::configurationForm();
 
@@ -50,7 +57,7 @@ class SearchApiStopWords extends SearchApiAbstractProcessor {
 
   public function process(&$value) {
     $stopwords = $this->getStopWords();
-    if (empty($stopwords)) {
+    if (empty($stopwords) && !is_string($value)) {
       return;
     }
     $words = preg_split('/\s+/', $value);
@@ -63,12 +70,19 @@ class SearchApiStopWords extends SearchApiAbstractProcessor {
     $value = implode(' ', $words);
   }
 
+  public function preprocessSearchQuery(SearchApiQuery $query) {
+    $this->ignored = array();
+    parent::preprocessSearchQuery($query);
+  }
+
   public function postprocessSearchResults(array &$response, SearchApiQuery $query) {
-    if (isset($this->ignored)) {
+    if ($this->ignored) {
       if (isset($response['ignored'])) {
         $response['ignored'] = array_merge($response['ignored'], $this->ignored);
       }
-      else $response['ignored'] = $this->ignored;
+      else {
+        $response['ignored'] = $this->ignored;
+      }
     }
   }
 

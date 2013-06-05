@@ -1,6 +1,41 @@
 Search API 1.x, dev (xx/xx/xxxx):
 ---------------------------------
 
+Search API 1.6 (05/29/2013):
+----------------------------
+- #1649976 by Berdir, ilari.stenroth, drunken monkey: Fixed memory error during
+  crons run for large indexes.
+- #1346276 by drunken monkey: Fixed Tokenizer should only run on fulltext
+  fields.
+- #1697246 by drunken monkey: Added 'Parse mode' option to views.
+- #1993536 by drunken monkey, jpieck: Fixed handling of empty values in
+  processors.
+- #1992228 by drunken monkey: Fixed current search block for empty keys.
+- #1696434 by orakili, ldweeks, drunken monkey: Added Views argument handler for
+  all indexed taxonomy term fields.
+- #1988238 by esbenvb, drunken monkey: Fixed Views result display for deleted
+  entities.
+- #872912 by drunken monkey: Expanded and fixed test cases.
+- #1760706 by jgraham, das-peter, drunken monkey: Added a flexible way for
+  determining whether an index contains entities.
+
+Search API 1.5 (05/04/2013):
+----------------------------
+- #1169254 by cslavoie, drunken monkey, DYdave: Added transliteration processor.
+- #1959088 by drunken monkey: Fixed titles for contextual filters.
+- #1792296 by andrewbelcher, drunken monkey: Added a group for Search API hooks.
+- #1407844 by nbucknor: Added "exclude" option for Views contextual filters.
+- #1278942 by Simon Georges, drunken monkey: Added an option to apply
+  entity_access() to Views results.
+- #1819412 by drunken monkey: Added clean way for retrieving an index's data
+  alterations and processors.
+- #1838134 by das-peter, drunken monkey: Added hook_search_api_items_indexed().
+- #1471310 by drunken monkey: Fixed handling of unset fields when indexing.
+- #1944394 by drunken monkey: Added caching to SearchApiIndex::getFields().
+- #1594762 by drunken monkey, alanom, esclapes: Fixed detection of deleted items
+  in the Hierarchy data alteration.
+- #1702604 by JvE, slucero: Added option for maximum date facet depth.
+
 Search API 1.4 (01/09/2013):
 ----------------------------
 - #1827272 by drunken monkey: Fixed regression introduced by #1777710.

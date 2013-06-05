@@ -20,8 +20,8 @@ class SearchApiEntityDataSourceController extends SearchApiAbstractDataSourceCon
    *     search_api_field_types(). List types ("list<*>") are not allowed.
    */
   public function getIdFieldInfo() {
-    $info = entity_get_info($this->type);
-    $properties = entity_get_property_info($this->type);
+    $info = entity_get_info($this->entityType);
+    $properties = entity_get_property_info($this->entityType);
     if (empty($info['entity keys']['id'])) {
       throw new SearchApiDataSourceException(t("Entity type @type doesn't specify an ID key.", array('@type' => $info['label'])));
     }
@@ -52,7 +52,7 @@ class SearchApiEntityDataSourceController extends SearchApiAbstractDataSourceCon
    *   The loaded items, keyed by ID.
    */
   public function loadItems(array $ids) {
-    $items = entity_load($this->type, $ids);
+    $items = entity_load($this->entityType, $ids);
     // If some items couldn't be loaded, remove them from tracking.
     if (count($items) != count($ids)) {
       $ids = array_flip($ids);
@@ -80,7 +80,7 @@ class SearchApiEntityDataSourceController extends SearchApiAbstractDataSourceCon
    * @see entity_metadata_wrapper()
    */
   public function getMetadataWrapper($item = NULL, array $info = array()) {
-    return entity_metadata_wrapper($this->type, $item, $info);
+    return entity_metadata_wrapper($this->entityType, $item, $info);
   }
 
   /**
@@ -93,7 +93,7 @@ class SearchApiEntityDataSourceController extends SearchApiAbstractDataSourceCon
    *   Either the unique ID of the item, or NULL if none is available.
    */
   public function getItemId($item) {
-    $id = entity_id($this->type, $item);
+    $id = entity_id($this->entityType, $item);
     return $id ? $id : NULL;
   }
 
@@ -107,7 +107,7 @@ class SearchApiEntityDataSourceController extends SearchApiAbstractDataSourceCon
    *   Either a human-readable label for the item, or NULL if none is available.
    */
   public function getItemLabel($item) {
-    $label = entity_label($this->type, $item);
+    $label = entity_label($this->entityType, $item);
     return $label ? $label : NULL;
   }
 
@@ -123,7 +123,7 @@ class SearchApiEntityDataSourceController extends SearchApiAbstractDataSourceCon
    *   item has no URL of its own.
    */
   public function getItemUrl($item) {
-    if ($this->type == 'file') {
+    if ($this->entityType == 'file') {
       return array(
         'path' => file_create_url($item->uri),
         'options' => array(
@@ -132,7 +132,7 @@ class SearchApiEntityDataSourceController extends SearchApiAbstractDataSourceCon
         ),
       );
     }
-    $url = entity_uri($this->type, $item);
+    $url = entity_uri($this->entityType, $item);
     return $url ? $url : NULL;
   }
 
@@ -158,7 +158,7 @@ class SearchApiEntityDataSourceController extends SearchApiAbstractDataSourceCon
     // all items again without any key conflicts.
     $this->stopTracking($indexes);
 
-    $entity_info = entity_get_info($this->type);
+    $entity_info = entity_get_info($this->entityType);
 
     if (!empty($entity_info['base table'])) {
       // Use a subselect, which will probably be much faster than entity_load().
@@ -200,7 +200,7 @@ class SearchApiEntityDataSourceController extends SearchApiAbstractDataSourceCon
    *   An array containing all item IDs for this type.
    */
   protected function getAllItemIds() {
-    return array_keys(entity_load($this->type));
+    return array_keys(entity_load($this->entityType));
   }
 
 }
