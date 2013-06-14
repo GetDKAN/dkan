@@ -5,7 +5,6 @@ package = DKAN
 php = 5.2.4
 dependencies[] = ctools
 dependencies[] = context
-
 dependencies[] = features
 dependencies[] = dkan_dataset
 dependencies[] = field_sql_storage
@@ -14,12 +13,10 @@ dependencies[] = node
 dependencies[] = strongarm
 dependencies[] = text
 features[ctools][] = strongarm:strongarm:1
-features[ctools][] = context:context:3
 features[features_api][] = api:1
 features[field][] = node-page-body
 features[filter][] = html
 features[node][] = page
-features[context][] = sitewide
 features[variable][] = bueditor_roles
 features[variable][] = bueditor_user1
 features[variable][] = markdowneditor_buttons
@@ -29,10 +26,3 @@ features[variable][] = node_options_page
 features[variable][] = node_preview_page
 features[variable][] = node_submitted_page
 features[variable][] = pathauto_node_pattern
-
-
-; Information added by drush on 2013-04-15
-version = "temp-reorg-dev"
-project = "dkan"
-datestamp = "1366033194"
-

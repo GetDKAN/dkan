@@ -289,5 +289,49 @@ function dkan_sitewide_context_context_default_contexts() {
   t('Edit');
   $export['resource-edit'] = $context;
 
+  $context = new stdClass();
+  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
+  $context->api_version = 3;
+  $context->name = 'sitewide';
+  $context->description = '';
+  $context->tag = 'Sitewide';
+  $context->conditions = array(
+    'sitewide' => array(
+      'values' => array(
+        1 => 1,
+      ),
+    ),
+  );
+  $context->reactions = array(
+    'block' => array(
+      'blocks' => array(
+        'system-main-menu' => array(
+          'module' => 'system',
+          'delta' => 'main-menu',
+          'region' => 'branding',
+          'weight' => '-10',
+        ),
+        'dkan_sitewide-dkan_sitewide_search_bar' => array(
+          'module' => 'dkan_sitewide',
+          'delta' => 'dkan_sitewide_search_bar',
+          'region' => 'branding',
+          'weight' => '-9',
+        ),
+        'dkan_sitewide-dkan_sitewide_user_menu' => array(
+          'module' => 'dkan_sitewide',
+          'delta' => 'dkan_sitewide_user_menu',
+          'region' => 'branding',
+          'weight' => '-8',
+        ),
+      ),
+    ),
+  );
+  $context->condition_mode = 0;
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Sitewide');
+  $export['sitewide'] = $context;
+
   return $export;
 }
