@@ -688,43 +688,44 @@ function og_ui_admin_permissions($form, $form_state, $group_type = '', $gid = 0,
 
   // Get a list of all the modules implementing a hook_permission() and sort by
   // display name.
-  $modules = array();
-  foreach (module_implements('og_permission') as $module) {
-    $modules[$module] = $module_info[$module]['name'];
+  $permissions_by_module = array();
+  foreach (og_get_permissions() as $perm => $value) {
+    $module = $value['module'];
+    $permissions_by_module[$module][$perm] = $value;
   }
-  asort($modules);
 
-  foreach ($modules as $module => $display_name) {
-    if ($permissions = module_invoke($module, 'og_permission')) {
-      $form['permission'][] = array(
-        '#markup' => $module_info[$module]['name'],
-        '#id' => $module,
+  asort($permissions_by_module);
+
+  foreach ($permissions_by_module as $module => $permissions) {
+    $form['permission'][] = array(
+      '#markup' => $module_info[$module]['name'],
+      '#id' => $module,
+    );
+
+    foreach ($permissions as $perm => $perm_item) {
+      // Fill in default values for the permission.
+      $perm_item += array(
+        'description' => '',
+        'restrict access' => FALSE,
+        'warning' => !empty($perm_item['restrict access']) ? t('Warning: Give to trusted roles only; this permission has security implications in the group context.') : '',
       );
-      foreach ($permissions as $perm => $perm_item) {
-        // Fill in default values for the permission.
-        $perm_item += array(
-          'description' => '',
-          'restrict access' => FALSE,
-          'warning' => !empty($perm_item['restrict access']) ? t('Warning: Give to trusted roles only; this permission has security implications in the group context.') : '',
-        );
-        // If the user can manage permissions, but does not have administer
-        // group permission, hide restricted permissions from them. This
-        // prevents users from escalating their privileges.
-        if ($gid && ($perm_item['restrict access'] && !og_user_access($group_type, $gid, 'administer group'))) {
-          continue;
-        }
+      // If the user can manage permissions, but does not have administer
+      // group permission, hide restricted permissions from them. This
+      // prevents users from escalating their privileges.
+      if ($gid && ($perm_item['restrict access'] && !og_user_access($group_type, $gid, 'administer group'))) {
+        continue;
+      }
 
-        $options[$perm] = '';
-        $form['permission'][$perm] = array(
-          '#type' => 'item',
-          '#markup' => $perm_item['title'],
-          '#description' => theme('user_permission_description', array('permission_item' => $perm_item)),
-        );
-        foreach ($role_names as $rid => $name) {
-          // Builds arrays for checked boxes for each role
-          if (isset($role_permissions[$rid][$perm])) {
-            $status[$rid][] = $perm;
-          }
+      $options[$perm] = '';
+      $form['permission'][$perm] = array(
+        '#type' => 'item',
+        '#markup' => $perm_item['title'],
+        '#description' => theme('user_permission_description', array('permission_item' => $perm_item)),
+      );
+      foreach ($role_names as $rid => $name) {
+        // Builds arrays for checked boxes for each role
+        if (isset($role_permissions[$rid][$perm])) {
+          $status[$rid][] = $perm;
         }
       }
     }

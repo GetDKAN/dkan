@@ -47,9 +47,9 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => t('Resource File'),
-      'description' => t('Test the resource File methods.'),
-      'group' => t('Services'),
+      'name' => 'Resource File',
+      'description' => 'Test the resource File methods.',
+      'group' => 'Services',
     );
   }
 
@@ -66,16 +66,17 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
     $retrieved_files = array();
     for ($page = 0; $page < $page_count; $page++) {
       $responseArray = $this->servicesGet($this->endpoint->path . '/file', array('page' => $page, 'fields' => 'fid,filename'));
-      $this->assertTrue(count($responseArray['body']) <= 20, t('Correct number of items returned'));
+      $this->assertTrue(count($responseArray['body']) <= 20, 'Correct number of items returned');
 
       // Store the returned file IDs.
       foreach ($responseArray['body'] as $file) {
         if (isset($retrieved_files[$file->fid])) {
-          $this->fail(t('Duplicate files @fid returned.', array('@fid' => $file->fid)));
+          $this->fail(format_string('Duplicate files @fid returned.', array('@fid' => $file->fid)));
         }
         $retrieved_files[$file->fid] = TRUE;
 
-        $this->assertTrue($files[$file->fid]->filename == $file->filename, t('Successfully received File info'), 'FileResource: Index');
+        $this->assertTrue($files[$file->fid]->filename == $file->filename,
+          'Successfully received File info', 'FileResource: Index');
       }
     }
     // We should have got all the files.
@@ -84,11 +85,11 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
     $retrieved_fids = array_keys($retrieved_files);
     sort($retrieved_fids);
 
-    $this->assertEqual($expected_fids, $retrieved_fids, t('Retrieved all files'));
+    $this->assertEqual($expected_fids, $retrieved_fids, 'Retrieved all files');
 
     // The n+1 page should be empty.
     $responseArray = $this->servicesGet($this->endpoint->path . '/file', array('page' => $page_count + 1));
-    $this->assertEqual(count($responseArray['body']), 0, t('The n+1 page is empty'));
+    $this->assertEqual(count($responseArray['body']), 0, 'The n+1 page is empty');
   }
 
   /**
@@ -107,12 +108,13 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
 
     // Create file with call.
     $result = $this->servicesPost($this->endpoint->path . '/file', $file);
-    $this->assertEqual($result['code'], 200, t('File created.'), 'FileResource: Create');
+    $this->assertEqual($result['code'], 200, 'File created.', 'FileResource: Create');
 
     // Load file and assert that it exists.
     $file_load = file_load($result['body']['fid']);
-    $this->assertTrue(is_file($file_load->uri), t('New file saved to disk.'), 'FileResource: Create');
-    $this->assertEqual($file_load->uri, $filepath, t('The path of newly created file placed into directory with random name.'), 'FileResource: Create');
+    $this->assertTrue(is_file($file_load->uri), 'New file saved to disk.', 'FileResource: Create');
+    $this->assertEqual($file_load->uri, $filepath,
+      'The path of newly created file placed into directory with random name.', 'FileResource: Create');
   }
   /**
    * Test create_raw method.
@@ -120,11 +122,11 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
   public function testResourceFileCreateRaw() {
     // Create file with call.
     $result = $this->servicesPostFile($this->endpoint->path . '/file/create_raw', $this->testfile->uri);
-    $this->assertEqual($result['code'], 200, t('File created.'), 'FileResource: Create');
+    $this->assertEqual($result['code'], 200, 'File created.', 'FileResource: Create');
 
     // Load file and assert that it exists.
     $file_load = file_load($result['body'][0]['fid']);
-    $this->assertTrue(is_file($file_load->uri), t('New file saved to disk.'), 'FileResource: Create');
+    $this->assertTrue(is_file($file_load->uri), 'New file saved to disk.', 'FileResource: Create');
   }
   /**
    * Test create method (Legacy).
@@ -143,11 +145,11 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
 
     // Create file with call.
     $result = $this->servicesPost($this->endpoint->path . '/file', array('file' => $file));
-    $this->assertEqual($result['code'], 200, t('File created.'), 'FileResource: Create (Legacy)');
+    $this->assertEqual($result['code'], 200, 'File created.', 'FileResource: Create (Legacy)');
 
     // Load file and assert that it exists.
     $file_load = file_load($result['body']['fid']);
-    $this->assertTrue(is_file($file_load->uri), t('New file saved to disk.'), 'FileResource: Create (Legacy)');
+    $this->assertTrue(is_file($file_load->uri), 'New file saved to disk.', 'FileResource: Create (Legacy)');
   }
 
   /**
@@ -168,7 +170,7 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
     $this->assertTrue($file->fid == $testfile->fid
                    && $file->filesize == $testfile->filesize
                    && $file->uri == $testfile->uri,
-      t('File retrieved.'), 'FileResource: Retrieve');
+      'File retrieved.', 'FileResource: Retrieve');
   }
 
   /**
@@ -186,7 +188,7 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
 
     // Try to load file.
     $file_load = file_load($testfile->fid);
-    $this->assertTrue(empty($file_load), t('File deleted.'), 'FileResource: Delete');
+    $this->assertTrue(empty($file_load), 'File deleted.', 'FileResource: Delete');
   }
 
   /**
@@ -212,7 +214,7 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
 
     // Try to delete the file and ensure that it is not possible.
     $file_delete_result = file_delete($file_load);
-    $this->assertTrue($file_delete_result !== TRUE, t('It is not possible to delete file managed by services using file_delete().'));
+    $this->assertTrue($file_delete_result !== TRUE, 'It is not possible to delete file managed by services using file_delete().');
 
 
     // Create file that is not managed by services.
@@ -245,17 +247,17 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
 
     $node_load = node_load($nid, NULL, TRUE);
 
-    $this->assertEqual($fid, $node_load->field_image[LANGUAGE_NONE][0]['fid'], t('File added to the node successfully.'));
+    $this->assertEqual($fid, $node_load->field_image[LANGUAGE_NONE][0]['fid'], 'File added to the node successfully.');
 
     // Now file should be managed by node. Lets try to delete it and ensure
     // that it is not possible.
     $file_delete_result = file_delete($file_load);
-    $this->assertTrue($file_delete_result !== TRUE, t('It is not possible to delete file managed by node using file_delete().'));
+    $this->assertTrue($file_delete_result !== TRUE, 'It is not possible to delete file managed by node using file_delete().');
 
     // Delete the node and assert that file can be deleted.
     node_delete($nid);
 
     $file_delete_result = file_delete($file_load);
-    $this->assertTrue($file_delete_result === TRUE, t('File can be deleted after node has been removed.'));
+    $this->assertTrue($file_delete_result === TRUE, 'File can be deleted after node has been removed.');
   }
 }

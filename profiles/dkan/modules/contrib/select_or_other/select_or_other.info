@@ -2,9 +2,9 @@ name = Select (or other)
 description = "Provides a select box form element with additional option 'Other' to give a textfield."
 core = 7.x
 package = Fields
-; Information added by drupal.org packaging script on 2013-05-28
-version = "7.x-2.17"
+; Information added by drupal.org packaging script on 2013-06-24
+version = "7.x-2.18"
 core = "7.x"
 project = "select_or_other"
-datestamp = "1369722663"
+datestamp = "1372112750"
 

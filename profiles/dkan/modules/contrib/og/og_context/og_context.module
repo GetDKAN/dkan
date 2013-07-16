@@ -463,22 +463,30 @@ function og_context_handler_node($node = NULL) {
 
   // The path may not be %node, but in fact is a ctools-context, so extract the
   // node from it. We check only the 1st position (e.g. node/%/foo).
-  $item = menu_get_item();
-  if (empty($item['map'][1]) || !is_object($item['map'][1]) || !($item['map'][1] instanceof ctools_context)) {
+  if (empty($item['map'][1]) || !is_object($item['map'][1])) {
     return;
   }
+
+  $context = clone $item['map'][1];
 
   // Check the context is a node type. We check only path similar to node/%/foo
   // and don't traverse over the whole arguments, as it might be a page manager
   // page passing multiple nodes (e.g. some/path/with/%node/%node). Implementing
   // modules wanting to handle the above example, should implement their own
   // context handler.
-  $context = clone $item['map'][1];
-  if (empty($context->type[0]) || $context->type[0] != 'entity:node') {
-    return;
+  if ($item['map'][1] instanceof ctools_context) {
+    if (empty($context->type[0]) || $context->type[0] != 'entity:node') {
+      return;
+    }
+    return _group_context_handler_entity('node', $context->data);
   }
-  return _group_context_handler_entity('node', $context->data);
-
+  // We might have the node object as part of menu_get_item(), like in Webform
+  // module nodes.
+  // Check for vid and nid to make sure that this is a node, and not just an
+  // entity that has an "nid" property.
+  if (isset($context->vid) && isset($context->nid)) {
+    return _group_context_handler_entity('node', $context);
+  }
 }
 
 /**

@@ -13,6 +13,7 @@ function _taxonomy_resource_definition() {
     'taxonomy_term' => array(
       'operations' => array(
         'retrieve' => array(
+          'help' => 'Retrieve a term',
           'callback' => '_taxonomy_term_resource_retrieve',
           'args' => array(
             array(
@@ -27,6 +28,7 @@ function _taxonomy_resource_definition() {
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
         ),
         'create' => array(
+          'help' => 'Create a term',
           'callback' => '_taxonomy_term_resource_create',
           'args' => array(
             array(
@@ -42,6 +44,7 @@ function _taxonomy_resource_definition() {
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
         ),
         'update' => array(
+          'help' => 'Update a term',
           'callback' => '_taxonomy_term_resource_update',
           'args' => array(
             array(
@@ -64,6 +67,7 @@ function _taxonomy_resource_definition() {
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
         ),
         'delete' => array(
+          'help' => 'Delete the term',
           'callback' => '_taxonomy_term_resource_delete',
           'args' => array(
             array(
@@ -78,6 +82,7 @@ function _taxonomy_resource_definition() {
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
         ),
         'index' => array(
+          'help' => 'List all terms',
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
           'callback' => '_taxonomy_term_resource_index',
           'args' => array(
@@ -120,7 +125,7 @@ function _taxonomy_resource_definition() {
       'actions' => array(
         'selectNodes' => array(
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
-          'help'   => t('This method returns all nodes with provided taxonomy id.'),
+          'help'   => t('Returns all nodes with provided taxonomy id.'),
           'access arguments' => array('access content'),
           'callback' => 'taxonomy_service_select_nodes',
           'args'     => array(
@@ -163,6 +168,7 @@ function _taxonomy_resource_definition() {
       'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
       'operations' => array(
         'retrieve' => array(
+          'help' => 'Retrieve a taxonomy vocabulary',
           'callback' => '_taxonomy_vocabulary_resource_retrieve',
           'args' => array(
             array(
@@ -177,6 +183,7 @@ function _taxonomy_resource_definition() {
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
         ),
         'create' => array(
+          'help' => 'Create a taxonomy vocabulary',
           'callback' => '_taxonomy_vocabulary_resource_create',
           'args' => array(
             array(
@@ -191,6 +198,7 @@ function _taxonomy_resource_definition() {
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
         ),
         'update' => array(
+          'help' => 'Update a taxonomy vocabulary',
           'callback' => '_taxonomy_vocabulary_resource_update',
           'args' => array(
             array(
@@ -212,6 +220,7 @@ function _taxonomy_resource_definition() {
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
         ),
         'delete' => array(
+          'help' => 'Delete a taxonomy vocabulary',
           'callback' => '_taxonomy_vocabulary_resource_delete',
           'args' => array(
             array(
@@ -225,6 +234,7 @@ function _taxonomy_resource_definition() {
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
         ),
         'index' => array(
+          'help' => 'List all taxonomy vocabularies',
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
           'callback' => '_taxonomy_vocabulary_resource_index',
           'args' => array(
@@ -267,7 +277,7 @@ function _taxonomy_resource_definition() {
       'actions' => array(
         'getTree' => array(
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/taxonomy_resource'),
-          'help'   => t('This method returns a full list of taxonomy terms.'),
+          'help'   => t('Returns a full list of taxonomy terms.'),
           'access arguments' => array('access content'),
           'callback' => 'taxonomy_service_get_tree',
           'args'     => array(
@@ -292,6 +302,14 @@ function _taxonomy_resource_definition() {
               'description'  => t('The number of levels of the tree to return. Leave NULL to return all levels.'),
               'source'       => array('data' => 'maxdepth'),
               'default value' => NULL,
+              'optional'     => TRUE,
+            ),
+            array(
+              'name'         => 'load_entities',
+              'type'         => 'int',
+              'description'  => t('Whether the tree of terms should contain full term entity objects. If 1 (TRUE), a full entity load will occur on the term objects. Otherwise they are partial objects to save execution time and memory consumption. Defaults to 0 (FALSE).'),
+              'source'       => array('data' => 'load_entities'),
+              'default value' => 0,
               'optional'     => TRUE,
             ),
           ),
@@ -462,8 +480,8 @@ function _taxonomy_vocabulary_resource_delete($vid) {
  *
  * @see taxonomy_get_tree()
  */
-function taxonomy_service_get_tree($vid, $parent = 0, $max_depth = NULL) {
-  $terms = taxonomy_get_tree($vid, $parent, $max_depth);
+function taxonomy_service_get_tree($vid, $parent = 0, $max_depth = NULL, $load_entities = 0) {
+  $terms = taxonomy_get_tree($vid, $parent, $max_depth, $load_entities);
   if (empty($terms)) {
     return services_error(t('No vocabulary with id @vid found.', array('@vid' => $vid)), 404);
   }
@@ -506,7 +524,7 @@ function taxonomy_service_select_nodes($tid = '', $pager, $limit,  $order) {
 function _taxonomy_resource_update_access($tid, $term) {
   // Adds backwards compatability with regression fixed in #1083242
   $term = _services_arg_value($term, 'term');
-  
+
   $term = (object) $term;
   if (!isset($term->vid)) {
     return services_error(t('Term object needs vid property.'), 406);

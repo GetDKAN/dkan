@@ -17,9 +17,9 @@ class ServicesResourceDisabledTest extends ServicesWebTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => t('Services Disabled Resource Test'),
-      'description' => t('Assert that a resource is disabled when a request is made to it.'),
-      'group' => t('Services'),
+      'name' => 'Services Disabled Resource Test',
+      'description' => 'Assert that a resource is disabled when a request is made to it.',
+      'group' => 'Services',
     );
   }
 
@@ -80,7 +80,7 @@ class ServicesResourceDisabledTest extends ServicesWebTestCase {
     $endpoint->export_type = FALSE;
     services_endpoint_save($endpoint);
     $endpoint = services_endpoint_load($endpoint->name);
-    $this->assertTrue($endpoint->name == $edit['name'], t('Endpoint successfully created'));
+    $this->assertTrue($endpoint->name == $edit['name'], 'Endpoint successfully created');
     return $endpoint;
   }
 
@@ -91,7 +91,7 @@ class ServicesResourceDisabledTest extends ServicesWebTestCase {
     $path = $this->endpoint->path;
     // Call as authenticated user.
     $response = $this->servicesPost($path . '/system/connect');
-    $this->assertEqual($response['code'], 404, t('Services returned not found response code for disabled resource: %code.', array('%code' => $response['code'])));
+    $this->assertEqual($response['code'], 404, format_string('Services returned not found response code for disabled resource: %code.', array('%code' => $response['code'])));
     $this->drupalLogout();
   }
 }

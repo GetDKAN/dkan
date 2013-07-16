@@ -41,8 +41,7 @@ function defaultcontent_schema() {
       ),
       'sort_value' => array(
         'description' => 'Sort number used when sorting default contents from multiple hooks',
-        'type' => 'varchar',
-        'length' => 225,
+        'type' => 'int',
         'not null' => FALSE,
       ),
     ),

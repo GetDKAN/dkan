@@ -13,9 +13,9 @@ class ServicesArgumentsTestCase extends ServicesWebtestCase {
    */
   public static function getInfo() {
    return array(
-     'name'        => t('Arguments handling'),
-     'description' => t('Test of arguments handling.'),
-     'group'       => t('Services'),
+     'name'        => 'Arguments handling',
+     'description' => 'Test of arguments handling.',
+     'group'       => 'Services',
    );
   }
 
@@ -33,11 +33,15 @@ class ServicesArgumentsTestCase extends ServicesWebtestCase {
     $arg2 = $this->randomName();
     $arg3 = $this->randomName();
     $result = $this->servicesGet($this->endpoint->path . '/services_arguments_test/' . $arg1 . '/' . $arg2 . '/' . $arg3);
-    $this->assertEqual($result['body'], 'Services arguments test ' . $arg1 . ' ' . $arg2 . ' ' . $arg3, t('Path arguments work properly.'), 'Arguments');
+    $this->assertEqual($result['body'],
+      format_string('Services arguments test @arg1 @arg2 @arg3', array('@arg1' => $arg1, '@arg2' => $arg2, '@arg3' => $arg3)),
+      'Path arguments work properly.', 'Arguments');
     $result = $this->servicesGet($this->endpoint->path . '/services_arguments_test/' . $arg1 . '/' . $arg2);
-    $this->assertEqual($result['body'], 'Services arguments test ' . $arg1 . ' ' . $arg2 . ' 0', t('Path arguments with default value work properly.'), 'Arguments');
+    $this->assertEqual($result['body'],
+      format_string('Services arguments test @arg1 @arg2 0', array('@arg1' => $arg1, '@arg2' => $arg2)),
+      'Path arguments with default value work properly.', 'Arguments');
     $result = $this->servicesGet($this->endpoint->path . '/services_arguments_test/' . $arg1);
-    $this->assertEqual($result['status'], 'HTTP/1.1 404 Not found: Could not find the controller.', t('Error triggered when required argument is missing.'), 'Arguments');
+    $this->assertEqual($result['status'], 'HTTP/1.1 404 Not found: Could not find the controller.', 'Error triggered when required argument is missing.', 'Arguments');
   }
 
   public function saveNewEndpoint() {
@@ -134,7 +138,7 @@ class ServicesArgumentsTestCase extends ServicesWebtestCase {
     $endpoint->export_type = FALSE;
     services_endpoint_save($endpoint);
     $endpoint = services_endpoint_load($endpoint->name);
-    $this->assertTrue($endpoint->name == $edit['name'], t('Endpoint successfully created'));
+    $this->assertTrue($endpoint->name == $edit['name'], 'Endpoint successfully created');
     return $endpoint;
   }
 

@@ -182,7 +182,7 @@ function _uuid_services_entity_access($op, $args) {
       entity_make_entity_local($entity_type, $entity);
     }
     // Fetch the local entity if we've got an id.
-    elseif (!empty($entity_id)) {
+    elseif (!empty($entity_ids)) {
       $entities = entity_load($entity_type, $entity_ids);
       $entity = reset($entities);
     }

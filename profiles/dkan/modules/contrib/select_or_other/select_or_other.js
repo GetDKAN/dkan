@@ -14,19 +14,19 @@
       ele = jQuery(ele).parents(".select-or-other")[0];
     }
     if (jQuery(ele).find(".select-or-other-select option:selected[value=select_or_other], .select-or-other-select:checked[value=select_or_other]").length) {
-      jQuery(ele).find(".select-or-other-other").parent("div.form-item").show(speed, function() {
+      jQuery(ele).find(".select-or-other-other").parents("div.form-item").first().show(speed, function() {
         if(!page_init) {
           $(this).find(".select-or-other-other").focus();
         }
       });
     }
     else {
-      jQuery(ele).find(".select-or-other-other").parent("div.form-item").hide(speed);
+      jQuery(ele).find(".select-or-other-other").parents("div.form-item").first().hide(speed);      
       if (page_init)
       {
         // Special case, when the page is loaded, also apply 'display: none' in case it is
         // nested inside an element also hidden by jquery - such as a collapsed fieldset.
-        jQuery(ele).find(".select-or-other-other").parent("div.form-item").css("display", "none");
+        jQuery(ele).find(".select-or-other-other").parents("div.form-item").first().css("display", "none");
       }
     }
   }

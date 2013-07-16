@@ -3,3 +3,4 @@ description = Saves Feeds results to flat database tables.
 package = Feeds
 core = 7.x
 dependencies[] = feeds
+dependencies[] = data

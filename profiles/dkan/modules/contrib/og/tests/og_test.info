@@ -4,9 +4,9 @@ core = 7.x
 dependencies[] = og
 hidden = TRUE
 
-; Information added by drupal.org packaging script on 2013-06-02
-version = "7.x-2.2+23-dev"
+; Information added by drupal.org packaging script on 2013-06-10
+version = "7.x-2.2+29-dev"
 core = "7.x"
 project = "og"
-datestamp = "1370178424"
+datestamp = "1370874273"
 

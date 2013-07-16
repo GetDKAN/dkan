@@ -5,7 +5,7 @@ core = 7.x
 php = 5.x
 configure = admin/structure/services
 
-files[] = services.runtime.inc
+files[] = includes/services.runtime.inc
 files[] = tests/functional/NoAuthEndpointTestRunner.test
 files[] = tests/functional/ServicesResourceNodeTests.test
 files[] = tests/functional/ServicesResourceUserTests.test
@@ -20,16 +20,17 @@ files[] = tests/functional/ServicesAliasTests.test
 files[] = tests/functional/ServicesXMLRPCTests.test
 files[] = tests/functional/ServicesVersionTests.test
 files[] = tests/functional/ServicesArgumentsTests.test
-files[] = tests/unit/TestServicesModule.test
+files[] = tests/functional/ServicesSecurityTests.test
+files[] = tests/unit/ServicesSpycLibraryTests.test
 files[] = tests/ui/ServicesUITests.test
 files[] = tests/services.test
 
 dependencies[] = ctools
 
 
-; Information added by drupal.org packaging script on 2012-11-15
-version = "7.x-3.3"
+; Information added by drupal.org packaging script on 2013-06-05
+version = "7.x-3.4"
 core = "7.x"
 project = "services"
-datestamp = "1353015205"
+datestamp = "1370415954"
 

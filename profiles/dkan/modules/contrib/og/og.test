@@ -258,6 +258,34 @@ class OgNodeAccess extends DrupalWebTestCase {
   }
 
   /**
+   * Test non-strict access permissions for creating group node.
+   *
+   * A member of a group who has no core node access create permission is
+   * allowed access.
+   */
+  function testNoStrictAccessNodeCreate() {
+    // Set Node access strict variable.
+    variable_set('og_node_access_strict', FALSE);
+
+    $this->group_editor_user = $this->drupalCreateUser(array('access content'));
+    $this->drupalLogin($this->group_editor_user);
+
+    // Test OG's create permission for a group member.
+    og_group('node', $this->group1, array('entity' => $this->group_editor_user));
+    $roles = array_flip(og_roles('node', 'page'));
+
+    // Add create permission.
+    $permissions = array(
+      'create article content' => 1,
+      'update own article content' => 0,
+      'update any article content' => 0,
+    );
+    og_role_change_permissions($roles[OG_AUTHENTICATED_ROLE], $permissions);
+    $this->drupalGet('node/add/article');
+    $this->assertResponse('200', 'Group member can create node.');
+  }
+
+  /**
    * Assert a user cannot assign an existing node to a group they don't
    * have "create" permissions.
    */

@@ -34,9 +34,9 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
    */
   public static function getInfo() {
    return array(
-     'name'        => t('Resource Taxonomy'),
-     'description' => t('Test the resource Taxonomy methods and actions.'),
-     'group'       => t('Services'),
+     'name'        => 'Resource Taxonomy',
+     'description' => 'Test the resource Taxonomy methods and actions.',
+     'group'       => 'Services',
    );
   }
     public function testTaxonomyVocabularyIndex() {
@@ -62,16 +62,17 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $retrieved_terms = array();
     for ($page = 0; $page < $page_count; $page++) {
       $responseArray = $this->servicesGet($this->endpoint->path . '/taxonomy_vocabulary', array('page' => $page, 'fields' => 'vid,name'));
-      $this->assertTrue(count($responseArray['body']) <= 20, t('Correct number of items returned'));
+      $this->assertTrue(count($responseArray['body']) <= 20, 'Correct number of items returned');
 
       // Store the returned comment IDs.
       foreach ($responseArray['body'] as $vocabulary) {
         if (isset($retrieved_vocabularys[$vocabulary->vid])) {
-          $this->fail(t('Duplicate vocabulary @vid returned.', array('@vid' => $vocabulary->vid)));
+          $this->fail(format_string('Duplicate vocabulary @vid returned.', array('@vid' => $vocabulary->vid)));
         }
         $retrieved_vocabularys[$vocabulary->vid] = TRUE;
 
-        $this->assertTrue($vocabularys[$vocabulary->vid]['name'] == $vocabulary->name, t('Successfully received vocabulary Name info'), 'TaxonomyVocabularyResource: Index');
+        $this->assertTrue($vocabularys[$vocabulary->vid]['name'] == $vocabulary->name,
+          'Successfully received vocabulary Name info', 'TaxonomyVocabularyResource: Index');
       }
     }
     // We should have got all the comments.
@@ -79,11 +80,11 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     sort($expected_vids);
     $retrieved_vids = array_keys($retrieved_vocabularys);
     sort($retrieved_vids);
-    $this->assertEqual($expected_vids, $retrieved_vids, t('Retrieved all vocabularys'));
+    $this->assertEqual($expected_vids, $retrieved_vids, 'Retrieved all vocabularys');
 
     // The n+1 page should be empty.
     $responseArray = $this->servicesGet($this->endpoint->path . '/taxonomy_vocabulary', array('page' => $page_count + 1));
-    $this->assertEqual(count($responseArray['body']), 0, t('The n+1 page is empty'));
+    $this->assertEqual(count($responseArray['body']), 0, 'The n+1 page is empty');
   }
   public function testTaxonomyTermIndex() {
     // Create and log in our privileged user.
@@ -108,16 +109,16 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $retrieved_terms = array();
     for ($page = 0; $page < $page_count; $page++) {
       $responseArray = $this->servicesGet($this->endpoint->path . '/taxonomy_term', array('page' => $page, 'fields' => 'tid,name'));
-      $this->assertTrue(count($responseArray['body']) <= 20, t('Correct number of items returned'));
+      $this->assertTrue(count($responseArray['body']) <= 20, 'Correct number of items returned');
 
       // Store the returned comment IDs.
       foreach ($responseArray['body'] as $term) {
         if (isset($retrieved_terms[$term->tid])) {
-          $this->fail(t('Duplicate term @tid returned.', array('@tid' => $term->tid)));
+          $this->fail(format_string('Duplicate term @tid returned.', array('@tid' => $term->tid)));
         }
         $retrieved_terms[$term->tid] = TRUE;
 
-        $this->assertTrue($terms[$term->tid]['name'] == $term->name, t('Successfully received Term Name info'), 'TaxonomyTermResource: Index');
+        $this->assertTrue($terms[$term->tid]['name'] == $term->name, 'Successfully received Term Name info', 'TaxonomyTermResource: Index');
       }
     }
     // We should have got all the comments.
@@ -125,11 +126,11 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     sort($expected_tids);
     $retrieved_tids = array_keys($retrieved_terms);
     sort($retrieved_tids);
-    $this->assertEqual($expected_tids, $retrieved_tids, t('Retrieved all terms'));
+    $this->assertEqual($expected_tids, $retrieved_tids, 'Retrieved all terms');
 
     // The n+1 page should be empty.
     $responseArray = $this->servicesGet($this->endpoint->path . '/taxonomy_term', array('page' => $page_count + 1));
-    $this->assertEqual(count($responseArray['body']), 0, t('The n+1 page is empty'));
+    $this->assertEqual(count($responseArray['body']), 0, 'The n+1 page is empty');
     taxonomy_vocabulary_delete($vocabulary['vid']);
   }
 
@@ -158,7 +159,7 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $vocabulary_load = (array)taxonomy_vocabulary_load($vid);
     $vocabulary_intersect = array_intersect_assoc($vocabulary, $vocabulary_load);
 
-    $this->assertEqual($vocabulary, $vocabulary_intersect, t('Taxonomy vocabulary created properly.'), 'TaxonomyVocabularyResource: Create');
+    $this->assertEqual($vocabulary, $vocabulary_intersect, 'Taxonomy vocabulary created properly.', 'TaxonomyVocabularyResource: Create');
   }
 
   /**
@@ -189,7 +190,7 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $vocabulary_load = (array)taxonomy_vocabulary_load($vid);
     $vocabulary_intersect = array_intersect_assoc($vocabulary, $vocabulary_load);
 
-    $this->assertEqual($vocabulary, $vocabulary_intersect, t('Taxonomy vocabulary created properly.'), 'TaxonomyVocabularyResource: Create (Legacy)');
+    $this->assertEqual($vocabulary, $vocabulary_intersect, 'Taxonomy vocabulary created properly.', 'TaxonomyVocabularyResource: Create (Legacy)');
   }
 
   /**
@@ -206,7 +207,7 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
 
     $vocabulary_intersect = array_intersect_assoc($vocabulary, $vocabulary_retrieve);
 
-    $this->assertEqual($vocabulary, $vocabulary_intersect, t('Taxonomy vocabulary retrieved properly.'), 'TaxonomyVocabularyResource: Retrieve');
+    $this->assertEqual($vocabulary, $vocabulary_intersect, 'Taxonomy vocabulary retrieved properly.', 'TaxonomyVocabularyResource: Retrieve');
   }
 
   /**
@@ -228,7 +229,7 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $vocabulary_load = (array)array_pop($vocabularies_load);
 
     $vocabulary_intersect = array_intersect_assoc($vocabulary, $vocabulary_load);
-    $this->assertEqual($vocabulary, $vocabulary_intersect, t('Taxonomy vocabulary updated properly.'), 'TaxonomyVocabularyResource: Update');
+    $this->assertEqual($vocabulary, $vocabulary_intersect, 'Taxonomy vocabulary updated properly.', 'TaxonomyVocabularyResource: Update');
   }
 
   /**
@@ -253,7 +254,8 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $vocabulary_load = (array)array_pop($vocabularies_load);
 
     $vocabulary_intersect = array_intersect_assoc($vocabulary, $vocabulary_load);
-    $this->assertEqual($vocabulary, $vocabulary_intersect, t('Taxonomy vocabulary updated properly.'), 'TaxonomyVocabularyResource: Update (Legacy)');
+    $this->assertEqual($vocabulary, $vocabulary_intersect,
+      'Taxonomy vocabulary updated properly.', 'TaxonomyVocabularyResource: Update (Legacy)');
   }
 
   /**
@@ -270,7 +272,7 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $vocabularies_load = entity_load('taxonomy_vocabulary', array($vid), array(), TRUE);
     $vocabulary_load = (array)array_pop($vocabularies_load);
 
-    $this->assertTrue(empty($vocabulary_load), t('Taxonomy vocabulary deleted properly.'), 'TaxonomyVocabularyResource: Delete');
+    $this->assertTrue(empty($vocabulary_load), 'Taxonomy vocabulary deleted properly.', 'TaxonomyVocabularyResource: Delete');
   }
 
   /**
@@ -314,22 +316,41 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
 
     // Compare full tree.
     $vocabulary_tree = taxonomy_get_tree($vid);
-
     $response = $this->servicesPost($path . '/taxonomy_vocabulary/getTree', array('vid' => $vid));
     $vocabulary_tree_response = $response['body'];
-    $this->assertEqual($vocabulary_tree, $vocabulary_tree_response, t('Vocabulary full tree received properly.'), 'TaxonomyVocabularyResource: getTree');
+    $this->assertEqual($vocabulary_tree, $vocabulary_tree_response,
+      'Vocabulary full tree received properly.', 'TaxonomyVocabularyResource: getTree');
+
+    // Compare full tree with loading of full entities.
+    $vocabulary_tree = taxonomy_get_tree($vid, 0, NULL, TRUE);
+    $response = $this->servicesPost($path . '/taxonomy_vocabulary/getTree', array('vid' => $vid, 'load_entities' => 1));
+    $vocabulary_tree_response = $response['body'];
+    $this->assertEqual($vocabulary_tree, $vocabulary_tree_response,
+      'Vocabulary full tree with loaded entities received properly.', 'TaxonomyVocabularyResource: getTree');
 
     // Compare part tree.
     $vocabulary_tree = taxonomy_get_tree($vid, $part_tree_parent);
-    $response = $this->servicesPost($path . '/taxonomy_vocabulary/getTree', array('vid' => $vid, 'parent' => $part_tree_parent));
+    $response = $this->servicesPost($path . '/taxonomy_vocabulary/getTree',
+      array('vid' => $vid, 'parent' => $part_tree_parent));
     $vocabulary_tree_response = $response['body'];
-    $this->assertEqual($vocabulary_tree, $vocabulary_tree_response, t('Vocabulary part tree received properly.'), 'TaxonomyVocabularyResource: getTree');
+    $this->assertEqual($vocabulary_tree, $vocabulary_tree_response,
+      'Vocabulary part tree received properly.', 'TaxonomyVocabularyResource: getTree');
 
     // Compare part tree with maxdepth = 1.
     $vocabulary_tree = taxonomy_get_tree($vid, $part_tree_parent, 1);
-    $response = $this->servicesPost($path . '/taxonomy_vocabulary/getTree', array('vid' => $vid, 'parent' => $part_tree_parent, 'maxdepth' => 1));
+    $response = $this->servicesPost($path . '/taxonomy_vocabulary/getTree',
+      array('vid' => $vid, 'parent' => $part_tree_parent, 'maxdepth' => 1));
     $vocabulary_tree_response = $response['body'];
-    $this->assertEqual($vocabulary_tree, $vocabulary_tree_response, t('Vocabulary part tree with depth received properly.'), 'TaxonomyVocabularyResource: getTree');
+    $this->assertEqual($vocabulary_tree, $vocabulary_tree_response,
+      'Vocabulary part tree with depth received properly.', 'TaxonomyVocabularyResource: getTree');
+
+    // Compare part tree with maxdepth = 1 and loading of full entities.
+    $vocabulary_tree = taxonomy_get_tree($vid, $part_tree_parent, 1, TRUE);
+    $response = $this->servicesPost($path . '/taxonomy_vocabulary/getTree',
+      array('vid' => $vid, 'parent' => $part_tree_parent, 'maxdepth' => 1, 'load_entities' => 1));
+    $vocabulary_tree_response = $response['body'];
+    $this->assertEqual($vocabulary_tree, $vocabulary_tree_response,
+      'Vocabulary part tree with depth and loaded entities received properly.', 'TaxonomyVocabularyResource: getTree');
   }
 
   /**
@@ -358,7 +379,7 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $term_data = $term;
     unset($term_data['parent']);
 
-    $this->assertEqual($term_data, $term_intersect, t('Taxonomy term created properly.'), 'TaxonomyTermResource: Create');
+    $this->assertEqual($term_data, $term_intersect, 'Taxonomy term created properly.', 'TaxonomyTermResource: Create');
   }
 
   /**
@@ -390,7 +411,8 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $term_data = $term;
     unset($term_data['parent']);
 
-    $this->assertEqual($term_data, $term_intersect, t('Taxonomy term created properly.'), 'TaxonomyTermResource: Create (Legacy)');
+    $this->assertEqual($term_data, $term_intersect,
+      'Taxonomy term created properly.', 'TaxonomyTermResource: Create (Legacy)');
   }
 
   /**
@@ -405,7 +427,7 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $response = $this->servicesGet($path . '/taxonomy_term/' . $term['tid']);
     $term_retrieve = (array)$response['body'];
 
-    $this->assertEqual($term_retrieve, $term, t('Taxonomy term retrieved properly.'), 'TaxonomyTermResource: Retrieve');
+    $this->assertEqual($term_retrieve, $term, 'Taxonomy term retrieved properly.', 'TaxonomyTermResource: Retrieve');
   }
 
   /**
@@ -427,7 +449,8 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $term_update = (array)current(entity_load('taxonomy_term', array($term['tid']), array(), TRUE));
 
     // Ensure that terms have different names but same tid.
-    $this->assertTrue(($term['tid'] == $term_update['tid']) && ($term['name'] != $term_update['name']), t('Taxonomy term updated properly.'), 'TaxonomyTermResource: Update');
+    $this->assertTrue(($term['tid'] == $term_update['tid']) && ($term['name'] != $term_update['name']),
+      'Taxonomy term updated properly.', 'TaxonomyTermResource: Update');
   }
 
   /**
@@ -452,7 +475,8 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $term_update = (array)current(entity_load('taxonomy_term', array($term['tid']), array(), TRUE));
 
     // Ensure that terms have different names but same tid.
-    $this->assertTrue(($term['tid'] == $term_update['tid']) && ($term['name'] != $term_update['name']), t('Taxonomy term updated properly.'), 'TaxonomyTermResource: Update (Legacy)');
+    $this->assertTrue(($term['tid'] == $term_update['tid']) && ($term['name'] != $term_update['name']),
+      'Taxonomy term updated properly.', 'TaxonomyTermResource: Update (Legacy)');
   }
 
   /**
@@ -467,7 +491,7 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $this->servicesDelete($path . '/taxonomy_term/' . $term['tid']);
 
     $term_load = entity_load('taxonomy_term', array($term['tid']), array(), TRUE);
-    $this->assertTrue(empty($term_load), t('Taxonomy term deleted properly.'), 'TaxonomyTermResource: Delete');
+    $this->assertTrue(empty($term_load), 'Taxonomy term deleted properly.', 'TaxonomyTermResource: Delete');
   }
 
   /**
@@ -585,11 +609,11 @@ class ServicesResourceTaxonomyTests extends ServicesWebtestCase {
     $term1_nodes = array_merge($nodes_term1, $nodes_term1_term2);
     sort($term1_nodes);
 
-    $this->assertEqual($response_nodes, $term1_nodes, t('selectNodes selected proper nodes by one term.'), 'TaxonomyTermResource: selectNodes');
+    $this->assertEqual($response_nodes, $term1_nodes, 'selectNodes selected proper nodes by one term.', 'TaxonomyTermResource: selectNodes');
 
     // Ensure pager works.
     $response = $this->servicesPost($path . '/taxonomy_term/selectNodes', array('tid' => $term1['tid'], 'pager' => TRUE));
-    $this->assertEqual(count($response['body']), 10, t('selectNodes pager works.'), 'TaxonomyTermResource: selectNodes');
+    $this->assertEqual(count($response['body']), 10, 'selectNodes pager works.', 'TaxonomyTermResource: selectNodes');
 
     // AND or OR tests are not applicable as taxonomy_select_nodes() does not accept operators.
   }

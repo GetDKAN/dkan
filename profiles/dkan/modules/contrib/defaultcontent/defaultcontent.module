@@ -377,20 +377,18 @@ function defaultcontent_import_menu_link($key, $link) {
 }
 
 /**
- * use to sort component
- *
- *  this ask all alter plugins for a import_sort callback
+ * Sorts by sort_value.
  */
 function defaultcontent_import_sort($a, $b) {
-  $plugins = defaultcontent_get_alter_plugins();
-  $cmp = 0;
-  foreach ($plugins as $plugin) {
-    $cb = isset($plugin['import_sort callback']) ? $plugin['import_sort callback'] : $plugin['name'] . '_import_sort';
-    if (function_exists($cb)) {
-      $cmp = $cb($a, $b);
-    }
+  if ($a->sort_value < $b->sort_value) {
+    return -1;
   }
-  return $cmp;
+  elseif ($b->sort_value < $a->sort_value) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
 }
 
 /**

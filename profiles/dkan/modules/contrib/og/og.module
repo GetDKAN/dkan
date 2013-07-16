@@ -507,7 +507,14 @@ function og_og_default_roles() {
 function og_node_access($node, $op, $account) {
   $type = is_string($node) ? $node : (is_array($node) ? $node['type'] : $node->type);
 
-  if ($op == 'create' && og_is_group_content_type('node', $type) && variable_get('og_node_access_strict', TRUE)) {
+  if ($op == 'create' && og_is_group_content_type('node', $type)) {
+    // Save some legwork if the user has the core permission and strict node
+    // access is not set.
+    if (!variable_get('og_node_access_strict', TRUE) && user_access("create $type content", $account)) {
+      // We just ignore: core access will take care of it.
+      return NODE_ACCESS_IGNORE;
+    }
+
     if (user_access('administer group', $account)) {
       return NODE_ACCESS_ALLOW;
     }
@@ -522,7 +529,7 @@ function og_node_access($node, $op, $account) {
       // Set the "field mode" to default, before passing it to the
       // selection handler.
       $instance['field_mode'] = 'default';
-      if (entityreference_get_selection_handler($field, $instance)->getReferencableEntities()) {
+      if (entityreference_get_selection_handler($field, $instance)->getReferencableEntities(NULL, 'CONTAINS', 1)) {
         return NODE_ACCESS_ALLOW;
       }
 
@@ -532,9 +539,13 @@ function og_node_access($node, $op, $account) {
         $required = TRUE;
       }
     }
-    // If no group audience field is required, we igonre, otherwise we
-    // deny node creation.
-    return !$required ? NODE_ACCESS_IGNORE : NODE_ACCESS_DENY;
+    // If no group audience field is required, we ignore.
+    if (!$required) {
+      return NODE_ACCESS_IGNORE;
+    }
+
+    // Otherwise, ignore or deny based on whether strict node access is set.
+    return variable_get('og_node_access_strict', TRUE) ? NODE_ACCESS_DENY : NODE_ACCESS_IGNORE;
   }
   elseif (in_array($op, array('update', 'delete'))) {
     $access = og_user_access_entity('administer group', 'node', $node, $account);
@@ -548,7 +559,7 @@ function og_node_access($node, $op, $account) {
         // Any content.
         og_user_access_entity("$op any $type content", 'node', $node, $account) ||
         // Own content.
-        (og_user_access_entity("$op own $type content", 'node', $node, $account) && $account->uid == $node->uid);
+        ($account->uid == $node->uid && og_user_access_entity("$op own $type content", 'node', $node, $account));
     }
 
     if (!$access && $op == 'update' && og_is_group('node', $node)) {

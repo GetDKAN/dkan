@@ -11,6 +11,11 @@ class ServicesWebTestCase extends DrupalWebTestCase {
     array_unshift($modules, 'ctools', 'services', 'rest_server');
 
     parent::setUp($modules);
+    // Use a cookie file, so login sessions will survive, even if we
+    // reinitialize Curl.
+    $this->cookieFile = drupal_tempnam(variable_get('file_temporary_path'), 'services_cookiejar');
+    // Load the cookie file when initializing Curl.
+    $this->additionalCurlOptions[CURLOPT_COOKIEFILE] = $this->cookieFile;
   }
 
 
@@ -41,6 +46,7 @@ class ServicesWebTestCase extends DrupalWebTestCase {
    * Post file as multipart/form-data.
    */
   protected function servicesPostFile($url, $filepath, $headers = array(), $additional_arguments = array()) {
+    $this->addCSRFHeader($headers);
     if (!is_array($filepath)) {
       $filepath = array($filepath);
     }
@@ -81,6 +87,7 @@ class ServicesWebTestCase extends DrupalWebTestCase {
   }
 
   protected function servicesPost($url, $data = array(), $headers = array(), $call_type = 'php') {
+    $this->addCSRFHeader($headers);
     $options = array();
 
     switch ($call_type) {
@@ -124,6 +131,7 @@ class ServicesWebTestCase extends DrupalWebTestCase {
   }
 
   protected function servicesPut($url, $data = NULL, $headers = array(), $call_type = 'php') {
+    $this->addCSRFHeader($headers);
     switch ($call_type) {
       case 'php':
         // Add .php to get serialized response.
@@ -172,12 +180,14 @@ class ServicesWebTestCase extends DrupalWebTestCase {
   }
 
   protected function servicesDelete($url, $data = NULL, $headers = array()) {
+    $this->addCSRFHeader($headers);
     $options = array('query' => $data);
     $url = url($this->getAbsoluteUrl($url) . '.php', $options);
 
     $content = $this->curlExec(array(
       CURLOPT_URL => $url,
       CURLOPT_CUSTOMREQUEST => "DELETE",
+      CURLOPT_HEADER => TRUE,
       CURLOPT_HTTPHEADER => $headers,
       CURLOPT_RETURNTRANSFER => TRUE
     ));
@@ -222,6 +232,16 @@ class ServicesWebTestCase extends DrupalWebTestCase {
         break;
     }
     return array($info, $header, $status, $code, $body);
+  }
+
+  /**
+   * Retrieve and set CSFR token header.
+   *
+   * @param array $headers
+   */
+  function addCSRFHeader(&$headers) {
+    $csrf_token = $this->drupalGet('services/session/token');
+    $headers[] = 'X-CSRF-Token: ' . $csrf_token;
   }
 
   /**
@@ -456,7 +476,7 @@ class ServicesWebTestCase extends DrupalWebTestCase {
     $endpoint->export_type = FALSE;
     services_endpoint_save($endpoint);
     $endpoint = services_endpoint_load($endpoint->name);
-    $this->assertTrue($endpoint->name == $edit['name'], t('Endpoint successfully created'));
+    $this->assertTrue($endpoint->name == $edit['name'], 'Endpoint successfully created');
     return $endpoint;
   }
 
@@ -488,7 +508,7 @@ class ServicesWebTestCase extends DrupalWebTestCase {
         'application/plist+xml' => TRUE,
         'application/vnd.php.serialized' => TRUE,
         'multipart/form-data' => TRUE,
-        'application/x-www-form-urlencoded' => FALSE,
+        'application/x-www-form-urlencoded' => TRUE,
       ),
     );
     $endpoint->resources = array(
@@ -652,6 +672,11 @@ class ServicesWebTestCase extends DrupalWebTestCase {
         'actions' => array(
           'login' => array(
             'enabled' => '1',
+            'settings' => array(
+              'services' => array(
+                'resource_api_version' => $version,
+              ),
+            ),
           ),
           'logout' => array(
             'enabled' => '1',
@@ -685,7 +710,7 @@ class ServicesWebTestCase extends DrupalWebTestCase {
     $endpoint->export_type = FALSE;
     services_endpoint_save($endpoint);
     $endpoint = services_endpoint_load($endpoint->name);
-    $this->assertTrue($endpoint->name == $edit['name'], t('Endpoint successfully created'));
+    $this->assertTrue($endpoint->name == $edit['name'], 'Endpoint successfully created');
     return $endpoint;
   }
 
@@ -698,6 +723,11 @@ class ServicesWebTestCase extends DrupalWebTestCase {
    *   Content returned from the exec.
    */
   protected function curlExec($curl_options, $redirect = FALSE) {
+    // Some Curl options might leave the handle in a state where subsequent
+    // request can cause warnings or even weird failures, so to be on the safe
+    // side we reinitialize Curl for each request.
+    $this->curlClose();
+
     $this->curlInitialize();
 
     // cURL incorrectly handles URLs with a fragment by including the
@@ -720,6 +750,7 @@ class ServicesWebTestCase extends DrupalWebTestCase {
       // not overwritten by Curl.
       $curl_options[CURLOPT_HTTPHEADER][] = 'Expect:';
     }
+
     curl_setopt_array($this->curlHandle, $this->additionalCurlOptions + $curl_options);
 
     if (!$redirect) {
@@ -772,8 +803,8 @@ class ServicesWebTestCase extends DrupalWebTestCase {
       '@status' => $status,
       '!length' => format_size(drupal_strlen($this->drupalGetContent()))
     );
-    $message = t('!method @url returned @status (!length).', $message_vars);
-    $this->assertTrue($this->drupalGetContent() !== FALSE, $message, t('Browser'));
+    $message = format_string('!method @url returned @status (!length).', $message_vars);
+    $this->assertTrue($this->drupalGetContent() !== FALSE, $message, 'Browser');
     return $this->drupalGetContent();
   }
     /**

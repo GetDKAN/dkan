@@ -74,7 +74,7 @@ function _services_oauth_authenticate_call($settings, $method, $args) {
     }
     else if ($cred == 'consumer') {
       if ($consumer->uid) {
-        // This authenticates as the user who owns 'key';  It is for 2-stage 
+        // This authenticates as the user who owns 'key';  It is for 2-stage
         // OAuth and is vastly inferior to 3-stage OAuth.
         global $user;
         $user = user_load($consumer->uid);
@@ -100,15 +100,14 @@ function _services_oauth_security_settings($settings, &$form_state) {
   $form['oauth_context'] = array(
     '#type'          => 'select',
     '#options'       => array('' => t('-- Select an OAuth context')),
-    '#default_value' => $settings['oauth_context'],
+    '#default_value' => isset($settings['oauth_context']) ? $settings['oauth_context'] : '',
     '#title'         => t('OAuth context'),
     '#description'   => t('The OAuth contexts provides a scope for consumers and authorizations and have their own authorization levels. Different services endpoints may share OAuth contexts and thereby allow the use of consumers and tokens across the services endpoint boundraries.'),
   );
-
   $form['authorization'] = array(
     '#type'          => 'select',
     '#options'       => array(),
-    '#default_value' => $settings['authorization'],
+    '#default_value' => isset($settings['authorization']) ? $settings['authorization'] : '',
     '#title'         => t('Default required OAuth Authorization level'),
     '#description'   => t('The default OAuth authorization level that will be required to access resources.'),
   );
@@ -166,15 +165,12 @@ function _services_oauth_controller_settings($settings, $controller, $endpoint, 
      $cc = $controller['endpoint']['services_oauth'] + $cc;
   }
   $auth_levels = array();
-  if (is_array($settings)) {
-    $context = oauth_common_context_load($settings['oauth_context']);
-  }
-  else {
-    $context = new StdClass();
-  }
-  if (isset($context->authorization_levels)) {
-    foreach ($context->authorization_levels as $name => $level) {
-      $auth_levels[$name] = t($level['title']);
+  if (is_array($endpoint) && isset($endpoint['oauth_context'])) {
+    $context = oauth_common_context_load($endpoint['oauth_context']);
+    if (isset($context->authorization_levels)) {
+      foreach ($context->authorization_levels as $name => $level) {
+        $auth_levels[$name] = t($level['title']);
+      }
     }
   }
 
@@ -187,7 +183,7 @@ function _services_oauth_controller_settings($settings, $controller, $endpoint, 
       'consumer'          => t('Consumer key'),
       'token'             => t('Consumer key and access token'),
     ),
-    '#default_value' => $cc['credentials'],
+    '#default_value' => isset($settings['credentials']) ? $settings['credentials'] : '',
     '#title'         => t('Required authentication'),
     '#description'   => t('Authorization levels will <em>not</em> be applied if the consumer isn\'t required to supply a access token.'),
   );
@@ -197,7 +193,7 @@ function _services_oauth_controller_settings($settings, $controller, $endpoint, 
     '#options'       => array(
       '' => t('Default'),
     ) + $auth_levels,
-    '#default_value' => $cc['authorization'],
+    '#default_value' => isset($settings['authorization']) ? $settings['authorization'] : '',
     '#title'         => t('Required authorization'),
   );
 

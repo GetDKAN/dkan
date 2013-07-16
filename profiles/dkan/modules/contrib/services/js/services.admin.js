@@ -4,7 +4,6 @@
    */
   Drupal.behaviors.resourceMenuCollapse = {
     attach: function (context, settings) {
-      console.log(settings);
       var timeout = null,
         arrowImageHTML = function(collapsed) {
           return settings.services.images[collapsed ? 'collapsed' : 'expanded'];

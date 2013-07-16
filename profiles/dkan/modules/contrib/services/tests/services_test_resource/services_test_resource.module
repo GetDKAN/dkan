@@ -177,5 +177,5 @@ function _services_test_resource_access($op) {
  * Retrieve method of services_arguments_test resource.
  */
 function _services_arguments_test_resource_retrieve($arg1, $arg2, $arg3) {
-  return t('Services arguments test @arg1 @arg2 @arg3', array('@arg1' => $arg1, '@arg2' => $arg2, '@arg3' => $arg3));
+  return format_string('Services arguments test @arg1 @arg2 @arg3', array('@arg1' => $arg1, '@arg2' => $arg2, '@arg3' => $arg3));
 }

@@ -38,9 +38,9 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
    */
   public static function getInfo() {
    return array(
-     'name'        => t('Resource Comment'),
-     'description' => t('Test the resource Comment methods and actions.'),
-     'group'       => t('Services'),
+     'name'        => 'Resource Comment',
+     'description' => 'Test the resource Comment methods and actions.',
+     'group'       => 'Services',
    );
   }
   public function testCommentIndex() {
@@ -69,16 +69,16 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
     $retrieved_comments = array();
     for ($page = 0; $page < $page_count; $page++) {
       $responseArray = $this->servicesGet($this->endpoint->path . '/comment', array('page' => $page, 'fields' => 'cid,subject'));
-      $this->assertTrue(count($responseArray['body']) <= 20, t('Correct number of items returned'));
+      $this->assertTrue(count($responseArray['body']) <= 20, 'Correct number of items returned');
 
       // Store the returned comment IDs.
       foreach ($responseArray['body'] as $comment) {
         if (isset($retrieved_comments[$comment->cid])) {
-          $this->fail(t('Duplicate comment @cid returned.', array('@cid' => $comment->cid)));
+          $this->fail(format_string('Duplicate comment @cid returned.', array('@cid' => $comment->cid)));
         }
         $retrieved_comments[$comment->cid] = TRUE;
 
-        $this->assertTrue($comments[$comment->cid]->subject == $comment->subject, t('Successfully received Comment info'), 'CommentResource: Index');
+        $this->assertTrue($comments[$comment->cid]->subject == $comment->subject, 'Successfully received Comment info', 'CommentResource: Index');
       }
     }
     // We should have got all the comments.
@@ -87,11 +87,11 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
     $retrieved_cids = array_keys($retrieved_comments);
     sort($retrieved_cids);
     
-    $this->assertEqual($expected_cids, $retrieved_cids, t('Retrieved all comments'));
+    $this->assertEqual($expected_cids, $retrieved_cids, 'Retrieved all comments');
 
     // The n+1 page should be empty.
     $responseArray = $this->servicesGet($this->endpoint->path . '/comment', array('page' => $page_count + 1));
-    $this->assertEqual(count($responseArray['body']), 0, t('The n+1 page is empty'));
+    $this->assertEqual(count($responseArray['body']), 0, 'The n+1 page is empty');
   }
 
   /**
@@ -105,12 +105,14 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
 
     $response_array = $this->servicesPost($this->endpoint->path . '/comment', $comment);
     $commentResourceCreateReturn = $response_array['body'];
-    $this->assertTrue(isset($commentResourceCreateReturn['cid']), t('Comment was successfully created'), 'CommentResource: Create');
+    $this->assertTrue(isset($commentResourceCreateReturn['cid']),
+      'Comment was successfully created', 'CommentResource: Create');
 
     // Assert subject and body of comment are the same as we created.
     $newComment = comment_load($commentResourceCreateReturn['cid']);
-    $this->assertTrue($newComment->subject == $comment['subject'], t('Subject was the same'), 'CommentResource: Create');
-    $this->assertTrue($newComment->comment_body[LANGUAGE_NONE][0]['value'] == $comment['comment_body'][LANGUAGE_NONE][0]['value'], t('Body was the same'), 'CommentResource: Create');
+    $this->assertTrue($newComment->subject == $comment['subject'], 'Subject was the same', 'CommentResource: Create');
+    $this->assertTrue($newComment->comment_body[LANGUAGE_NONE][0]['value'] == $comment['comment_body'][LANGUAGE_NONE][0]['value'],
+      'Body was the same', 'CommentResource: Create');
 
     // Try to create comment with full_html filter that is disabled by default.
     $comment = array(
@@ -132,7 +134,8 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
     );
     $response_array = $this->servicesPost($this->endpoint->path . '/comment', $comment);
 
-    $this->assertTrue(strpos($response_array['status'], t('An illegal choice has been detected.')), t('User cannot post comment with full_html filter chosen.'), 'CommentResource: Create');
+    $this->assertTrue(strpos($response_array['status'], 'An illegal choice has been detected.'),
+      'User cannot post comment with full_html filter chosen.', 'CommentResource: Create');
   }
 
   /**
@@ -149,12 +152,15 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
 
     $response_array = $this->servicesPost($this->endpoint->path . '/comment', array('comment' => $comment));
     $commentResourceCreateReturn = $response_array['body'];
-    $this->assertTrue(isset($commentResourceCreateReturn['cid']), t('Comment was successfully created'), 'CommentResource: Create (Legacy)');
+    $this->assertTrue(isset($commentResourceCreateReturn['cid']),
+      'Comment was successfully created', 'CommentResource: Create (Legacy)');
 
     // Assert subject and body of comment are the same as we created.
     $newComment = comment_load($commentResourceCreateReturn['cid']);
-    $this->assertTrue($newComment->subject == $comment['subject'], t('Subject was the same'), 'CommentResource: Create (Legacy)');
-    $this->assertTrue($newComment->comment_body[LANGUAGE_NONE][0]['value'] == $comment['comment_body'][LANGUAGE_NONE][0]['value'], t('Body was the same'), 'CommentResource: Create (Legacy)');
+    $this->assertTrue($newComment->subject == $comment['subject'],
+      'Subject was the same', 'CommentResource: Create (Legacy)');
+    $this->assertTrue($newComment->comment_body[LANGUAGE_NONE][0]['value'] == $comment['comment_body'][LANGUAGE_NONE][0]['value'],
+      'Body was the same', 'CommentResource: Create (Legacy)');
 
     // Try to create comment with full_html filter that is disabled by default.
     $comment = array(
@@ -176,7 +182,8 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
     );
     $response_array = $this->servicesPost($this->endpoint->path . '/comment', array('comment' => $comment));
 
-    $this->assertTrue(strpos($response_array['status'], t('An illegal choice has been detected.')), t('User cannot post comment with full_html filter chosen.'), 'CommentResource: Create (Legacy)');
+    $this->assertTrue(strpos($response_array['status'], 'An illegal choice has been detected.'),
+      'User cannot post comment with full_html filter chosen.', 'CommentResource: Create (Legacy)');
   }
 
   /**
@@ -204,7 +211,7 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
     // Unset save_value as we don't have this key in arguments.
     unset($comment_intersect['comment_body'][LANGUAGE_NONE][0]['safe_value']);
 
-    $this->assertEqual($comment_args, $comment_intersect, t('Comment retrieved properly.'), 'CommentResource: Retrieve');
+    $this->assertEqual($comment_args, $comment_intersect, 'Comment retrieved properly.', 'CommentResource: Retrieve');
   }
 
   /**
@@ -237,7 +244,7 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
     // Unset save_value as we don't have this key in arguments.
     unset($comment_intersect['comment_body'][LANGUAGE_NONE][0]['safe_value']);
 
-    $this->assertEqual($comment_update, $comment_intersect, t('Comment updated properly.'), 'CommentResource: Update');
+    $this->assertEqual($comment_update, $comment_intersect, 'Comment updated properly.', 'CommentResource: Update');
   }
 
   /**
@@ -273,7 +280,7 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
     // Unset save_value as we don't have this key in arguments.
     unset($comment_intersect['comment_body'][LANGUAGE_NONE][0]['safe_value']);
 
-    $this->assertEqual($comment_update, $comment_intersect, t('Comment updated properly.'), 'CommentResource: Update');
+    $this->assertEqual($comment_update, $comment_intersect, 'Comment updated properly.', 'CommentResource: Update');
   }
 
   /**
@@ -297,7 +304,7 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
 
     $comment_load = comment_load($cid);
 
-    $this->assertTrue(empty($comment_load), t('Comment deleted properly.'), 'CommentResource: Delete');
+    $this->assertTrue(empty($comment_load), 'Comment deleted properly.', 'CommentResource: Delete');
   }
 
 
@@ -315,7 +322,7 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
     }
 
     $response = $this->servicesPost($path . '/comment/countAll', array('nid' => $node->nid));
-    $this->assertEqual($response['body'], 5, t('Counted number of comments properly.'), 'CommentResource: countAll');
+    $this->assertEqual($response['body'], 5, 'Counted number of comments properly.', 'CommentResource: countAll');
   }
 
   /**
@@ -334,11 +341,11 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
     }
 
     $response = $this->servicesPost($path . '/comment/countNew', array('nid' => $node->nid));
-    $this->assertEqual($response['body'], 5, t('Received number of all new comments.'), 'CommentResource: countNew');
+    $this->assertEqual($response['body'], 5, 'Received number of all new comments.', 'CommentResource: countNew');
 
     $since = $comments[2]->created;
 
     $response = $this->servicesPost($path . '/comment/countNew', array('nid' => $node->nid, 'since' => $since));
-    $this->assertEqual($response['body'], 2, t('Received number of new comments.'), 'CommentResource: countNew');
+    $this->assertEqual($response['body'], 2, 'Received number of new comments.', 'CommentResource: countNew');
   }
 }

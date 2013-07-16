@@ -16,7 +16,7 @@ function _file_resource_definition() {
       'operations' => array(
         'create' => array(
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/file_resource'),
-          'help' => 'Creates a file with base64 encoded data',
+          'help' => 'Create a file with base64 encoded data',
           'callback' => '_file_resource_create',
           'access callback' => '_file_resource_access',
           'access arguments' => array('create'),
@@ -33,7 +33,7 @@ function _file_resource_definition() {
         ),
         'retrieve' => array(
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/file_resource'),
-          'help' => 'Retrieves a file',
+          'help' => 'Retrieve a file',
           'callback' => '_file_resource_retrieve',
           'access callback' => '_file_resource_access',
           'access arguments' => array('view'),
@@ -66,7 +66,7 @@ function _file_resource_definition() {
         ),
         'delete' => array(
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/file_resource'),
-          'help' => 'Deletes a file',
+          'help' => 'Delete a file',
           'callback' => '_file_resource_delete',
           'access callback' => '_file_resource_access',
           'access arguments' => array('delete'),
@@ -84,7 +84,7 @@ function _file_resource_definition() {
         'index' => array(
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/file_resource'),
           'callback' => '_file_resource_index',
-          'help' => 'Lists all files',
+          'help' => 'List all files',
           'args' => array(
             array(
               'name' => 'page',
@@ -126,7 +126,7 @@ function _file_resource_definition() {
       ),
       'actions' => array(
         'create_raw' => array(
-          'help' => 'Creates a file with raw data.',
+          'help' => 'Create a file with raw data.',
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/file_resource'),
           'callback' => '_file_resource_create_raw',
           'access callback' => '_file_resource_access',

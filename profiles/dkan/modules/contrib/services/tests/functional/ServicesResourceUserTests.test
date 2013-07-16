@@ -38,9 +38,9 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
    */
   public static function getInfo() {
    return array(
-     'name'        => t('Resource User'),
-     'description' => t('Test the resource User methods and actions.'),
-     'group'       => t('Services'),
+     'name'        => 'Resource User',
+     'description' => 'Test the resource User methods and actions.',
+     'group'       => 'Services',
    );
   }
 
@@ -59,11 +59,11 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
 
     $response = $this->servicesPost($this->endpoint->path . '/user', $user);
     $account = $response['body'];
-    $this->assertTrue(!empty($account['uid']), t('User has been create successfully.'), 'UserResource: Create');
+    $this->assertTrue(!empty($account['uid']), 'User has been create successfully.', 'UserResource: Create');
 
     // Load user.
     $user_load = user_load($account['uid']);
-    $this->assertTrue(!empty($user_load), t('Newly created user has been loaded successfully.'), 'UserResource: Create');
+    $this->assertTrue(!empty($user_load), 'Newly created user has been loaded successfully.', 'UserResource: Create');
 
     // Try to create user without email.
     $user = array();
@@ -71,7 +71,8 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
     $user['pass']   = user_password();
     $user['status'] = 1;
     $response = $this->servicesPost($this->endpoint->path . '/user', $user);
-    $this->assertTrue(strpos($response['status'], 'E-mail address field is required') !== FALSE, t('It is not possible to create user without email.'), 'UserResource: Create');
+    $this->assertTrue(strpos($response['status'], 'E-mail address field is required') !== FALSE,
+      'It is not possible to create user without email.', 'UserResource: Create');
   }
 
   /**
@@ -90,11 +91,11 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
 
     $response = $this->servicesPost($this->endpoint->path . '/user', array('account' => $user));
     $account = $response['body'];
-    $this->assertTrue(!empty($account['uid']), t('User has been create successfully.'), 'UserResource: Create (Legacy)');
+    $this->assertTrue(!empty($account['uid']), 'User has been create successfully.', 'UserResource: Create (Legacy)');
 
     // Load user.
     $user_load = user_load($account['uid']);
-    $this->assertTrue(!empty($user_load), t('Newly created user has been loaded successfully.'), 'UserResource: Create (Legacy)');
+    $this->assertTrue(!empty($user_load), 'Newly created user has been loaded successfully.', 'UserResource: Create (Legacy)');
 
     // Try to create user without email.
     $user = array();
@@ -102,7 +103,8 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
     $user['pass']   = user_password();
     $user['status'] = 1;
     $response = $this->servicesPost($this->endpoint->path . '/user', array('account' => $user));
-    $this->assertTrue(strpos($response['status'], 'E-mail address field is required') !== FALSE, t('It is not possible to create user without email.'), 'UserResource: Create (Legacy)');
+    $this->assertTrue(strpos($response['status'], 'E-mail address field is required') !== FALSE,
+      'It is not possible to create user without email.', 'UserResource: Create (Legacy)');
   }
 
   /**
@@ -132,11 +134,11 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
     $response = $this->servicesPost($this->endpoint->path . '/user/register', $user);
     $account = $response['body'];
 
-    $this->assertTrue(!empty($account['uid']), t('User has been create successfully.'), 'UserResource: Create');
+    $this->assertTrue(!empty($account['uid']), 'User has been create successfully.', 'UserResource: Create');
 
     // Load user.
     $user_load = user_load($account['uid']);
-    $this->assertTrue(!empty($user_load), t('Newly created user has been loaded successfully.'), 'UserResource: Create');
+    $this->assertTrue(!empty($user_load), 'Newly created user has been loaded successfully.', 'UserResource: Create');
     $this->drupalLogin($this->privileged_user);
   }
 
@@ -168,11 +170,11 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
     $response = $this->servicesPost($this->endpoint->path . '/user/register', array('account' => $user));
     $account = $response['body'];
 
-    $this->assertTrue(!empty($account['uid']), t('User has been create successfully.'), 'UserResource: Create (Legacy)');
+    $this->assertTrue(!empty($account['uid']), 'User has been create successfully.', 'UserResource: Create (Legacy)');
 
     // Load user.
     $user_load = user_load($account['uid']);
-    $this->assertTrue(!empty($user_load), t('Newly created user has been loaded successfully.'), 'UserResource: Create (Legacy)');
+    $this->assertTrue(!empty($user_load), 'Newly created user has been loaded successfully.', 'UserResource: Create (Legacy)');
     $this->drupalLogin($this->privileged_user);
   }
 
@@ -186,7 +188,7 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
     $users_are_the_same =  ($account->name == $this->privileged_user->name)
                         && ($account->mail = $this->privileged_user->mail)
                         && ($account->roles = $this->privileged_user->roles);
-    $this->assertTrue($users_are_the_same, t('Retrieved user is the same as created.'), 'UserResource: Retrieve');
+    $this->assertTrue($users_are_the_same, 'Retrieved user is the same as created.', 'UserResource: Retrieve');
   }
 
   /**
@@ -206,8 +208,10 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
     $response = $this->servicesPut($this->endpoint->path . '/user/' . $account->uid, $updated_account);
 
     $user_load = user_load($account->uid);
-    $this->assertEqual($updated_account['mail'], $user_load->mail, t('User details have been updated successfully'), 'UserResource: Update');
-    $this->assertTrue(user_check_password($updated_account['pass'], $user_load), t('Password check succeeds.'), 'UserResource: Update');
+    $this->assertEqual($updated_account['mail'], $user_load->mail,
+      'User details have been updated successfully', 'UserResource: Update');
+    $this->assertTrue(user_check_password($updated_account['pass'], $user_load),
+      'Password check succeeds.', 'UserResource: Update');
   }
 
   /**
@@ -228,8 +232,10 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
     $response = $this->servicesPut($this->endpoint->path . '/user/' . $account->uid, array('data' => $updated_account));
 
     $user_load = user_load($account->uid);
-    $this->assertEqual($updated_account['mail'], $user_load->mail, t('User details have been updated successfully'), 'UserResource: Update (Legacy)');
-    $this->assertTrue(user_check_password($updated_account['pass'], $user_load), t('Password check succeeds.'), 'UserResource: Update (Legacy)');
+    $this->assertEqual($updated_account['mail'], $user_load->mail,
+      'User details have been updated successfully', 'UserResource: Update (Legacy)');
+    $this->assertTrue(user_check_password($updated_account['pass'], $user_load),
+      'Password check succeeds.', 'UserResource: Update (Legacy)');
   }
 
   /**
@@ -243,7 +249,7 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
     $response = $this->servicesDelete($this->endpoint->path . '/user/' . $account->uid);
 
     $user_load = user_load($account->uid);
-    $this->assertTrue(empty($user_load), t('User has been deleted successfully.'), 'UserResource: Delete');
+    $this->assertTrue(empty($user_load), 'User has been deleted successfully.', 'UserResource: Delete');
   }
 
   /**
@@ -278,10 +284,11 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
       }
     }
 
-    $this->assertTrue(empty($accounts_copy), t('Users were listed properly.'), 'UserResource: Index');
+    $this->assertTrue(empty($accounts_copy), 'Users were listed properly.', 'UserResource: Index');
 
     // Retrieve all the users using a list of uids.
-    $response = $this->servicesGet($this->endpoint->path . '/user', array('parameters' => array('uid' => implode(',', array_keys($accounts)))));
+    $response = $this->servicesGet($this->endpoint->path . '/user',
+      array('parameters' => array('uid' => implode(',', array_keys($accounts)))));
 
     $response_accounts = $response['body'];
 
@@ -297,7 +304,7 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
       }
     }
 
-    $this->assertTrue(empty($accounts_copy), t('Users were listed properly.'), 'UserResource: Index');
+    $this->assertTrue(empty($accounts_copy), 'Users were listed properly.', 'UserResource: Index');
 
     $accounts_copy = $accounts;
     $account = array_pop($accounts_copy);
@@ -309,7 +316,7 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
 
     $proper_answer = count($response_accounts) == 1
                   && $response_account->name == $account->name;
-    $this->assertTrue($proper_answer, t('User was listed by name properly.'), 'UserResource: Index');
+    $this->assertTrue($proper_answer, 'User was listed by name properly.', 'UserResource: Index');
   }
 
   /**
@@ -331,11 +338,11 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
     $proper_answer = isset($response_data->sessid)
                   && isset($response_data->user)
                   && $response_data->user->name == $account->name;
-    $this->assertTrue($proper_answer, t('User successfully logged in.'), 'UserResource: Login');
+    $this->assertTrue($proper_answer, 'User successfully logged in.', 'UserResource: Login');
 
     // Make sure the session exists in the database.
     $result = db_query("SELECT * FROM {sessions} WHERE :uid=uid", array(':uid' => $account->uid))->fetchObject();
-    $this->assertTrue(!empty($result), t('Session found'), 'UserResource: Login');
+    $this->assertTrue(!empty($result), 'Session found', 'UserResource: Login');
 
     // Save session details.
     $this->session_id = $response_data->sessid;
@@ -345,16 +352,58 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
     // Try to login with another user to get error.
     $account2 = $this->drupalCreateUser();
     $response = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account2->name, 'password' => $account2->pass_raw));
-    $this->assertTrue(strpos($response['status'], 'Already logged in as ' . $account->name) !== FALSE, t('Session is properly opened for logged in user.'), 'UserResource: Login');
+    $this->assertTrue(strpos($response['status'], 'Already logged in as ' . $account->name) !== FALSE,
+      'Session is properly opened for logged in user.', 'UserResource: Login');
 
     // Logout.
     $this->drupalLogout();
 
     // Try to login with wrong credentials.
-    $response = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account->name, 'password' => $this->randomString()));
-    $this->assertTrue(strpos($response['status'], 'Wrong username or password') !== FALSE, t('User cannot login with wrong username / password.'), 'UserResource: Login');
+    $response = $this->servicesPost($this->endpoint->path . '/user/login',
+      array('username' => $account->name, 'password' => $this->randomString()));
+    $this->assertTrue(strpos($response['status'], 'Wrong username or password') !== FALSE,
+      'User cannot login with wrong username / password.', 'UserResource: Login');
   }
+  /**
+   * Test login method. API VERsion 1.1
+   *
+   * Create user. Login. Try to login with another user (to get error).
+   * Login with wrong credentials (to get error).
+   */
+  function testUserLoginMethodAPI_1_1() {
+    $this->endpoint = $this->saveNewVersionEndpoint('1.1');
+    $path = $this->endpoint->path;
+    $account = $this->drupalCreateUser();
 
+    // Logout first.
+    $this->drupalLogout();
+
+    $response = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account->name, 'password' => $account->pass_raw));
+
+    $response_data = $response['body'];
+    $this->assertTrue(strpos($response['status'], 'Missing required argument name') !== FALSE,
+      'User Resource is rejecting old parameter names.', 'UserResource: Login');
+
+    $responseArray = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account->name, 'password' => $account->pass_raw),
+      array('services_user_login_version: 1.0'));
+    $this->assertTrue($responseArray['code'] == '200', 'Arguments should be old arguments and we should be logged in.',
+      'Services Version System');
+    $response_data = $responseArray['body'];
+    $proper_answer = isset($response_data->sessid)
+                  && isset($response_data->user)
+                  && $response_data->user->name == $account->name;
+    $this->assertTrue($proper_answer, 'User successfully logged in.', 'UserResource: Login');
+    $this->drupalLogout();
+    $responseArray = $this->servicesPost($this->endpoint->path . '/user/login', array('name' => $account->name, 'pass' => $account->pass_raw),
+      array('services_user_login_version: 1.1'));
+    $this->assertTrue($responseArray['code'] == '200', 'Arguments should be old arguments and we should be logged in.',
+      'Services Version System');
+    $response_data = $responseArray['body'];
+    $proper_answer = isset($response_data->sessid)
+                  && isset($response_data->user)
+                  && $response_data->user->name == $account->name;
+    $this->assertTrue($proper_answer, 'User successfully logged in.', 'UserResource: Login');
+  }
   /**
    * Test logout method.
    */
@@ -363,13 +412,14 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
     $response = $this->servicesPost($this->endpoint->path . '/user/logout');
     // Try logout second time.
     $this->drupalGet('user/logout');
-    $this->assertText(t('You are not authorized to access this page'), t('User logout successfully.'), 'UserResource: Logout');
+    $this->assertText('You are not authorized to access this page', 'User logout successfully.', 'UserResource: Logout');
     // Login again.
     $this->drupalLogin($this->privileged_user);
     // Logout via REST call.
     $response = $this->servicesPost($this->endpoint->path . '/user/logout');
     // Try to logout second time via REST call.
     $response = $this->servicesPost($this->endpoint->path . '/user/logout');
-    $this->assertTrue(strpos($response['status'], 'User is not logged in'), t('User cannot logout when is anonymous'), 'UserResource: Logout');
+    $this->assertTrue(strpos($response['status'], 'User is not logged in'),
+      'User cannot logout when is anonymous', 'UserResource: Logout');
   }
 }

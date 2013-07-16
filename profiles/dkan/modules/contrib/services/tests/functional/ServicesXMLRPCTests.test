@@ -13,9 +13,9 @@ class ServicesXMLRPCTestCase extends DrupalWebTestCase {
    */
   public static function getInfo() {
    return array(
-     'name'        => t('XMLRPC Server'),
-     'description' => t('Test XMLRPC server.'),
-     'group'       => t('Services'),
+     'name'        => 'XMLRPC Server',
+     'description' => 'Test XMLRPC server.',
+     'group'       => 'Services',
    );
   }
 
@@ -32,7 +32,7 @@ class ServicesXMLRPCTestCase extends DrupalWebTestCase {
    */
   function testlistMethods() {
     $result = $this->servicesXMLRPC('system.listMethods', array());
-    $this->assertTrue(in_array('node.index', $result['body']), t('node.index method found.'), 'XMLRPC: listMethods');
+    $this->assertTrue(in_array('node.index', $result['body']), 'node.index method found.', 'XMLRPC: listMethods');
   }
 
   /**
@@ -47,7 +47,7 @@ class ServicesXMLRPCTestCase extends DrupalWebTestCase {
     );
     $result = $this->servicesXMLRPC('user.login', $args);
     $this->assertEqual($result['body']['user']['uid'], $user->uid,
-      t('User %user logged in successfully.', array('%user' => $user->name)), 'XMLRPC: UserLogin');
+      format_string('User %user logged in successfully.', array('%user' => $user->name)), 'XMLRPC: UserLogin');
 
     $this->sessid = $result['body']['sessid'];
     $this->session_name = $result['body']['session_name'];
@@ -60,7 +60,7 @@ class ServicesXMLRPCTestCase extends DrupalWebTestCase {
     );
     $result = $this->servicesXMLRPC('user.index', $args);
     // There should be three users available: anonymous, admin and newly created.
-    $this->assertTrue(count($result['body']) == 3, t('Users listed properly.'), 'XMLRPC: UserLogin');
+    $this->assertTrue(count($result['body']) == 3, 'Users listed properly.', 'XMLRPC: UserLogin');
   }
 
   /**
@@ -71,7 +71,8 @@ class ServicesXMLRPCTestCase extends DrupalWebTestCase {
   function testPrecedence() {
     $args = array('arg1' => $this->randomName());
     $result = $this->servicesXMLRPC('services_test.retrieve', $args);
-    $this->assertEqual($result['body'], 'CRUD Retrieve ' . $args['arg1'], t('XMLRPC precedence works properly (CRUD higher priority than action).'), 'XMLRPC: Precedence');
+    $this->assertEqual($result['body'], 'CRUD Retrieve ' . $args['arg1'],
+      'XMLRPC precedence works properly (CRUD higher priority than action).', 'XMLRPC: Precedence');
   }
 
   public function saveNewEndpoint() {
@@ -168,7 +169,7 @@ class ServicesXMLRPCTestCase extends DrupalWebTestCase {
     $endpoint->export_type = FALSE;
     services_endpoint_save($endpoint);
     $endpoint = services_endpoint_load($endpoint->name);
-    $this->assertTrue($endpoint->name == $edit['name'], t('Endpoint successfully created'));
+    $this->assertTrue($endpoint->name == $edit['name'], 'Endpoint successfully created');
     return $endpoint;
   }
 
@@ -203,18 +204,24 @@ class ServicesXMLRPCTestCase extends DrupalWebTestCase {
       $args = array($args);
     }
 
+    $options = array('headers' => array());
+
     // Set up cookies.
-    $options = array();
     if ($sessid && !empty($this->sessid)) {
-      $options = array('headers' => array('Cookie' => $this->session_name . '=' . $this->sessid));
+      $options['headers']['Cookie'] = $this->session_name . '=' . $this->sessid;
     }
+
+    // Use drupal_http_request to fetch token instead of $this->drupalGet() because
+    // we need to pass session cookie as token is session based.
+    $csrf_token_response = drupal_http_request(url('services/session/token', array('absolute' => TRUE)), $options);
+    $options['headers']['X-CSRF-Token'] = $csrf_token_response->data;
 
     $output = xmlrpc(url($this->endpoint->path, array('absolute' => TRUE)), array($method => $args), $options);
 
     $error_message = xmlrpc_error_msg();
 
     if ($assert_no_error) {
-      $this->assertTrue(empty($error_message), t('XMLRPC call %method run without errors.', array('%method' => $method)), 'XMLRPC call');
+      $this->assertTrue(empty($error_message), format_string('XMLRPC call %method run without errors.', array('%method' => $method)), 'XMLRPC call');
     }
     $this->verbose('XMLRPC request to: ' . $method .
                    '<hr />Arguments: ' . highlight_string('<?php ' . var_export($args, TRUE), TRUE) .

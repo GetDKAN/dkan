@@ -93,6 +93,11 @@ function og_access_node_access_records($node) {
         entity_load($group_type, $values);
         foreach ($values as $gid) {
           $list_gids[$group_type][] = $gid;
+          if ($has_private) {
+            // We already know we have a private group, so we can avoid
+            // re-checking it.
+            continue;
+          }
           $group_wrapper = entity_metadata_wrapper($group_type, $gid);
           if (!empty($group_wrapper->{OG_ACCESS_FIELD}) && $group_wrapper->{OG_ACCESS_FIELD}->value()) {
             $has_private = TRUE;

@@ -70,7 +70,7 @@ $plugin = array(
  */
 function services_ctools_export_ui_form(&$form, &$form_state) {
   // Loading runtime include as needed by services_auth_info().
-  module_load_include('runtime.inc', 'services');
+  module_load_include('inc', 'services', 'includes/services.runtime');
   $endpoint = $form_state['item'];
 
   $form['info']['name'] = array_merge($form['info']['name'], array(

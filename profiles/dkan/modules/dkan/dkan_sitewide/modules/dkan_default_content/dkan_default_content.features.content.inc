@@ -13,7 +13,7 @@ function dkan_default_content_content_defaults() {
  //nid: 11
   $content['polling'] = (object) array(
     'title' => 'Wisconsin Polling Places',
-    'sort_value' => '1',
+    'sort_value' => '11',
     'status' => '1',
     'promote' => '0',
     'sticky' => '0',
@@ -81,7 +81,7 @@ function dkan_default_content_content_defaults() {
     'exported_path' => 'dataset/wisconsin-polling-places/resource/0a6ef5bc-340c-40d7-b8ea-f7f12c390b1f',
     'title' => 'Madison Polling Places',
     'status' => '1',
-    'sort_value' => '2',
+    'sort_value' => '10',
     'promote' => '0',
     'sticky' => '0',
     'type' => 'resource',
@@ -140,7 +140,7 @@ https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr
   //nid: 9
   $content['national-foreclose'] = (object) array(
     'exported_path' => 'us-national-foreclosure-statistics-january-2012',
-    'sort_value' => '3',
+    'sort_value' => '9',
     'title' => 'US National Foreclosure Statistics January 2012',
     'status' => '1',
     'promote' => '0',
@@ -199,7 +199,7 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
   $content['foreclosure-jan-state'] = (object) array(
     'exported_path' => 'dataset/us-national-foreclosure-statistics-january-2012/resource/d9ed9373-4371-4f94-a17d',
     'title' => '1-2012-Foreclosures-by-State',
-    'sort_value' => '4',
+    'sort_value' => '8',
     'status' => '1',
     'promote' => '0',
     'sticky' => '0',
@@ -252,7 +252,7 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
   $content['gold-prices'] = (object) array(
     'exported_path' => 'dataset/gold-prices-london-1950-2008-monthly',
     'title' => 'Gold Prices in London 1950-2008 (Monthly)',
-    'sort_value' => '5',
+    'sort_value' => '7',
     'status' => '1',
     'promote' => '0',
     'sticky' => '0',
@@ -377,7 +377,7 @@ Click on Graph button under Preview and plot date (x-axis) against price (y-axis
   //nid: 5
   $content['aed-district-names'] = (object) array(
     'title' => 'District Names',
-    'sort_value' => '7',
+    'sort_value' => '5',
     'status' => '1',
     'promote' => '0',
     'sticky' => '0',
@@ -429,7 +429,7 @@ Click on Graph button under Preview and plot date (x-axis) against price (y-axis
   //nid: 4
   $content['afghan-election-districts'] = (object) array(
     'title' => 'Afghanistan Election Districts',
-    'sort_value' => '8',
+    'sort_value' => '4',
     'status' => '1',
     'promote' => '0',
     'sticky' => '0',
@@ -504,7 +504,7 @@ Click on Graph button under Preview and plot date (x-axis) against price (y-axis
       'weight' => '-5',
       'identifier' => 'main-menu:node-name/about',
     ),
-    'sort_value' => '9',
+    'sort_value' => '3',
     'exported_path' => 'about',
     'title' => 'About',
     'status' => '1',
@@ -544,7 +544,7 @@ More documentation coming soon.',
   $content['group-data-explorer'] = (object) array(
     'title' => 'Data Explorer Examples',
     'status' => '1',
-    'sort_value' => '10',
+    'sort_value' => '2',
     'promote' => '0',
     'sticky' => '0',
     'type' => 'group',
@@ -587,7 +587,7 @@ More documentation coming soon.',
   $content['group-geospatial'] = (object) array(
     'title' => 'Geospatial Data Explorer Examples',
     'status' => '1',
-    'sort_value' => '11',
+    'sort_value' => '1',
     'promote' => '0',
     'sticky' => '0',
     'type' => 'group',

@@ -200,6 +200,10 @@ function _geofield_set_target($source, $entity, $target, $value) {
   $i = 0;
   $field = isset($entity->$target) ? $entity->$target : array();
   foreach ($value as $v) {
+    // Check if field value is empty.
+    if(empty($v)){
+      continue;
+    }
     if (is_array($v) || is_object($v)) {
       $field['und'][$i] = $v;
     }

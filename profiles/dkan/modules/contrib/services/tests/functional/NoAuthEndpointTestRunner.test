@@ -21,10 +21,9 @@ class NoAuthEndpointTestRunner extends ServicesEndpointTests {
    */
   public static function getInfo() {
     return array(
-      'name' => t('Services Endpoint tests, no auth'),
-      'description' =>
-      t('Test the endpoint functionality when no authentication is turned on'),
-      'group' => t('Services'),
+      'name'        => 'Services Endpoint tests, no auth',
+      'description' => 'Test the endpoint functionality when no authentication is turned on',
+      'group'       => 'Services',
     );
   }
 

@@ -92,11 +92,14 @@ function geofield_map_field_formatter_view($entity_type, $entity, $field, $insta
     $element[0] = array(
       '#attached' => array(
         'js' => array(
-          'http://maps.googleapis.com/maps/api/js?sensor=false' => array('type' => 'external'),
+          '//maps.googleapis.com/maps/api/js?sensor=false' => array('type' => 'external'),
           drupal_get_path('module', 'geofield_map') . '/js/GeoJSON.js',
           drupal_get_path('module', 'geofield_map') . '/js/geofield_map.js',
           array('data' => array('geofieldMap' => $js_settings), 'type' => 'setting'),
-        )
+        ),
+        'css' => array(
+          drupal_get_path('module', 'geofield_map') . '/css/geofield_map.css',
+        ),
       ),
       '#markup' => '<div' . drupal_attributes($container_attributes) . '></div>',
     );

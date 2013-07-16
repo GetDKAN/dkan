@@ -65,7 +65,7 @@ class ServicesParserTests extends ServicesWebTestCase {
     $endpoint->export_type = FALSE;
     services_endpoint_save($endpoint);
     $endpoint = services_endpoint_load($endpoint->name);
-    $this->assertTrue($endpoint->name == $edit['name'], t('Endpoint successfully created'));
+    $this->assertTrue($endpoint->name == $edit['name'], 'Endpoint successfully created');
     $this->endpoint = $endpoint;
   }
 
@@ -74,9 +74,9 @@ class ServicesParserTests extends ServicesWebTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => t('Parser'),
-      'description' => t('Test the Parser functionality.'),
-      'group' => t('Services'),
+      'name' => 'Parser',
+      'description' => 'Test the Parser functionality.',
+      'group' => 'Services',
     );
   }
 
@@ -94,7 +94,7 @@ class ServicesParserTests extends ServicesWebTestCase {
     $response = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account->name, 'password' => $account->pass_raw));
 
     $this->assertTrue(strpos($response['header'], '406 Not Acceptable: Unsupported request content type application/x-www-form-urlencoded') !== FALSE,
-      t('Do not accept application/x-www-form-urlencoded if disabled.'), 'Parser');
+      'Do not accept application/x-www-form-urlencoded if disabled.', 'Parser');
   }
 
   /**
@@ -114,6 +114,6 @@ class ServicesParserTests extends ServicesWebTestCase {
     $proper_answer = isset($body->sessid)
                   && isset($body->user)
                   && $body->user->name == $account->name;
-    $this->assertTrue($proper_answer, t('User successfully logged in via JSON call.'), 'JSON Call: Login');
+    $this->assertTrue($proper_answer, 'User successfully logged in via JSON call.', 'JSON Call: Login');
   }
 }

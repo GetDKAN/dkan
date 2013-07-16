@@ -352,6 +352,7 @@ function autocomplete_deluxe_after_build($element, &$form_state) {
     // Replace all double double quotes and space with a comma. This will allows
     // us to keep entries in double quotes.
     $element['#value'] = str_replace('"" ""', ',', $element['#value']);
+    $element['#value'] = str_replace('""  ""', ',', $element['#value']);
     // Remove the double quotes at the beginning and the end from the first and
     // the last term.
     $element['#value'] = substr($element['#value'], 2, strlen($element['#value']) - 4);

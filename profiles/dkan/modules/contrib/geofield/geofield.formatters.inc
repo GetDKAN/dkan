@@ -222,7 +222,7 @@ function geofield_field_formatter_view($entity_type, $entity, $field, $instance,
     }
     if ($display['settings']['data'] == 'bounding') {
       foreach ($items as $delta => $item) {
-        $envelope_wkt = 'POLYGON ((' . $item['left'] . ' ' . $item['top'] . ', ' . $item['right'] . ' ' . $item['top'] . ', ' . $item['right'] . ' ' . $item['bottom'] . ', ' . $item['left'] . ' ' . $item['bottom'] . ', ' . $item['left'] . ' ' . $item['top'] . ')))';
+        $envelope_wkt = 'POLYGON ((' . $item['left'] . ' ' . $item['top'] . ', ' . $item['right'] . ' ' . $item['top'] . ', ' . $item['right'] . ' ' . $item['bottom'] . ', ' . $item['left'] . ' ' . $item['bottom'] . ', ' . $item['left'] . ' ' . $item['top'] . '))';
         $envelope = geoPHP::load($envelope_wkt, 'wkt');
         $items[$delta] = geofield_get_values_from_geometry($envelope);
       }
@@ -331,7 +331,7 @@ function _geofield_openlayers_formatter($map_name, $items) {
   foreach ($items as $delta) {
     $features[] = array(
       'wkt' => $delta['wkt'],
-      'projection' => '4326',
+      'projection' => 'EPSG:4326',
     );
   }
 
@@ -365,7 +365,7 @@ function _geofield_def_list_formatter($item, $settings) {
   $geometry = geoPHP::load($item['wkt'], 'wkt');
 
   // Single types
-  $single_types = array('Point', 'LineStrnig', 'Polygon');
+  $single_types = array('Point', 'LineString', 'Polygon');
 
   if (in_array($geometry->geometryType(), $single_types)) {
     $centroid = new Point($item['lon'], $item['lat']);

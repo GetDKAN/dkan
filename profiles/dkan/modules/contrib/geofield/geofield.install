@@ -46,10 +46,8 @@ function geofield_field_schema($field) {
         'not null' => FALSE,
       ),
       'srid' => array(
-        'type' => 'int',
-        'unsigned' => TRUE,
+        'type' => 'text',
         'not null' => FALSE,
-        'default' => 4326,
       ),
       'accuracy' => array(
         'type' => 'int',
@@ -61,4 +59,45 @@ function geofield_field_schema($field) {
       ),
     ),
   );
+}
+
+/**
+ * Changing srid from int to text
+ */
+function geofield_update_7100() {
+  $fields = field_info_fields();
+  foreach ($fields as $field_name => $field) {
+    if ($field['type'] == 'geofield' && $field['storage']['type'] == 'field_sql_storage') {
+      // get new schema
+      $schema = geofield_field_schema(array());
+      foreach ($field['storage']['details']['sql'] as $type => $table_info) {
+        foreach ($table_info as $table_name => $columns) {
+          $column_name = _field_sql_storage_columnname($field_name, 'srid');
+          // Get srid int values
+          $values = db_select($table_name, 'f')
+            ->fields('f', array($column_name, 'entity_type', 'bundle', 'entity_id'))
+            ->execute()
+            ->fetchAssoc();
+          db_change_field($table_name, $column_name, $column_name, $schema['columns']['srid']);
+          if (!empty($values)) {
+            // Put the values back as text
+            foreach ($values as $value) {
+              if ($value->{$column_name}) {
+                $new_value = 'EPSG:'.$value->{$column_name};
+                db_update($table_name)
+                  ->fields(array(
+                    $column_name => $new_value
+                  ))
+                  ->condition('entity_type', $value->entity_type)
+                  ->condition('bundle', $value->bundle)
+                  ->condition('entity_id', $value->entity_id)
+                  ->execute();
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  field_cache_clear();
 }

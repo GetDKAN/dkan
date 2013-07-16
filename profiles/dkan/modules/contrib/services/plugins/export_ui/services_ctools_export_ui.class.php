@@ -62,7 +62,7 @@ class services_ctools_export_ui extends ctools_export_ui {
 function services_edit_form_endpoint_authentication($form, &$form_state) {
   list($endpoint) = $form_state['build_info']['args'];
   // Loading runtime include as needed by services_authentication_info().
-  module_load_include('runtime.inc', 'services');
+  module_load_include('inc', 'services', 'includes/services.runtime');
 
   $auth_modules = module_implements('services_authentication_info');
 
@@ -235,8 +235,8 @@ function services_edit_endpoint_resources($endpoint) {
  * @return Form
  */
 function services_edit_form_endpoint_resources($form, &$form_state, $endpoint) {
-  module_load_include('resource_build.inc', 'services');
-  module_load_include('runtime.inc', 'services');
+  module_load_include('inc', 'services', 'includes/services.resource_build');
+  module_load_include('inc', 'services', 'includes/services.runtime');
 
   $form = array();
   $form['endpoint_object'] = array(
@@ -324,6 +324,10 @@ function services_edit_form_endpoint_resources($form, &$form_state, $endpoint) {
           $default_value = 0;
           if (isset($resource_conf[$class][$op_name]['enabled'])) {
             $default_value = $resource_conf[$class][$op_name]['enabled'];
+          }
+          // If any component of a resource is enabled, expand the resource.
+          if ($default_value) {
+            $res_item['#collapsed'] = FALSE;
           }
           $res_item[$class][$op_name] = array(
             '#type' => 'item',

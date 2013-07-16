@@ -9,7 +9,7 @@ function _comment_resource_definition() {
     'comment' => array(
       'operations' => array(
         'create' => array(
-          'help' => 'Creates a comment',
+          'help' => 'Create a comment',
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/comment_resource'),
           'callback' => '_comment_resource_create',
           'access callback' => '_comment_resource_access',
@@ -27,7 +27,7 @@ function _comment_resource_definition() {
         ),
 
         'retrieve' => array(
-          'help' => 'Retrieves a comment',
+          'help' => 'Retrieve a comment',
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/comment_resource'),
           'callback' => '_comment_resource_retrieve',
           'access callback' => '_comment_resource_access',
@@ -45,7 +45,7 @@ function _comment_resource_definition() {
         ),
 
         'update' => array(
-          'help' => 'Updates a comment',
+          'help' => 'Update a comment',
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/comment_resource'),
           'callback' => '_comment_resource_update',
           'access callback' => '_comment_resource_access',
@@ -70,7 +70,7 @@ function _comment_resource_definition() {
         ),
 
         'delete' => array(
-          'help' => 'Deletes a comment',
+          'help' => 'Delete a comment',
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/comment_resource'),
           'callback' => '_comment_resource_delete',
           'access callback' => '_comment_resource_access',
@@ -131,7 +131,7 @@ function _comment_resource_definition() {
       'actions' => array(
         'countAll' => array(
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/comment_resource'),
-          'help'   => t('This method returns the number of comments on a given node.'),
+          'help'   => t('Return number of comments on a given node.'),
           'access callback' => '_comment_resource_access',
           'access arguments' => array('view'),
           'access arguments append' => TRUE,
@@ -148,7 +148,7 @@ function _comment_resource_definition() {
         ),
         'countNew' => array(
           'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/comment_resource'),
-          'help'   => t('This method returns the number of new comments on a given node since a given timestamp.'),
+          'help'   => t('Returns number of new comments on a given node since a given timestamp.'),
           'access callback' => '_comment_resource_access',
           'access arguments' => array('view'),
           'access arguments append' => TRUE,

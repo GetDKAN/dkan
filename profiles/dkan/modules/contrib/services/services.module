@@ -63,7 +63,7 @@ function services_permission() {
     // Query-limiting permissions
     'perform unlimited index queries' => array(
       'title' => t('Perform unlimited index queries'),
-      'description' => t(''),
+      'description' => t('This permission will allow user to perform index queries with unlimited number of results.'),
     ),
   );
 }
@@ -99,8 +99,16 @@ function services_menu() {
       }
     }
   }
+
+  $items['services/session/token'] = array(
+    'page callback' => '_services_session_token',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
+
 /**
  * Implements of hook_ctools_plugin_api().
  */
@@ -183,7 +191,13 @@ function services_get_servers($reset = FALSE) {
  * @return void
  */
 function services_endpoint_callback($endpoint_name) {
-  module_load_include('runtime.inc', 'services');
+  module_load_include('inc', 'services', 'includes/services.runtime');
+
+  // Explicitly set the title to avoid expensive menu calls in token
+  // and elsewhere.
+  if (!($title = drupal_set_title())) {
+    drupal_set_title('Services endpoint');
+  }
 
   $endpoint = services_endpoint_load($endpoint_name);
   $server = $endpoint->server;
@@ -314,10 +328,24 @@ function services_get_resources($endpoint_name = '') {
     $resources = $cache->data;
   }
   else {
-    module_load_include('resource_build.inc', 'services');
+    module_load_include('inc', 'services', 'includes/services.resource_build');
     $resources = _services_build_resources($endpoint_name);
     cache_set($cache_key, $resources);
   }
+
+  return $resources;
+}
+
+/**
+ * Load the resources of the endpoint.
+ *
+ * @return array
+ */
+function services_get_resources_apply_settings($endpoint_name) {
+  $resources = services_get_resources($endpoint_name);
+  module_load_include('inc', 'services', 'includes/services.resource_build');
+  $endpoint = services_endpoint_load($endpoint_name);
+  _services_apply_endpoint($resources, $endpoint, TRUE);
 
   return $resources;
 }
@@ -346,7 +374,7 @@ function services_resource_api_version_info() {
  * Implements hook_services_resources().
  */
 function services_services_resources() {
-  module_load_include('resource_build.inc', 'services');
+  module_load_include('inc', 'services', 'includes/services.resource_build');
   // Return resources representing legacy services
   return _services_core_resources();
 }
@@ -368,24 +396,18 @@ function services_services_authentication_info() {
  * @return void
  */
 function _services_sessions_authenticate_call() {
-  $arg = func_get_args();
   global $user;
   $original_user = services_get_server_info('original_user');
-  //If the user is logged in already and the callback contains the string login
-  //we need to set it to the original user so that the already logged in as @user message
-  //is displayed
-  if (strpos($arg[1]['callback'], 'login') !== FALSE) {
-    if($original_user->uid != 0) {
-      $user = $original_user;
+
+  if ($original_user->uid != 0) {
+    $non_safe_method_called = !in_array($_SERVER['REQUEST_METHOD'], array('GET', 'HEAD', 'OPTIONS', 'TRACE'));
+    $csrf_token_invalid = !isset($_SERVER['HTTP_X_CSRF_TOKEN']) || !drupal_valid_token($_SERVER['HTTP_X_CSRF_TOKEN'], 'services');
+    if ($non_safe_method_called && $csrf_token_invalid) {
+      return t('CSRF validation failed');
     }
   }
-  //For every callback that has nothing to do with login we need to
-  //set it to the original user so that they are no longer anonymous
-  
-  if (strpos($arg[1]['callback'], 'login') === FALSE) {
-    // The account should be restored to the session's user.
-    $user = $original_user;
-  }
+
+  $user = $original_user;
 }
 
 /**
@@ -473,7 +495,7 @@ function services_controller_get($name, $endpoint) {
     }
     else {
       $class_info = services_operation_class_info();
-      // Handle extended operatios
+      // Handle extended operations
       foreach ($class_info as $class => $info) {
         if (isset($res[$class]) && isset($res[$class][$method])) {
           return $res[$class][$method];
@@ -482,6 +504,7 @@ function services_controller_get($name, $endpoint) {
     }
   }
 }
+
 /**
  * Returns an array of available updates versions for a resource.
  *
@@ -493,7 +516,7 @@ function services_get_updates() {
   $updates = &drupal_static(__FUNCTION__, array());
   if (!isset($updates) || empty($updates)) {
     $updates = array();
-    module_load_include('resource_build.inc', 'services');
+    module_load_include('inc', 'services', 'includes/services.resource_build');
     // Load the resources for services.
     _services_core_resources();
     // Prepare regular expression to match all possible defined
@@ -511,7 +534,11 @@ function services_get_updates() {
       // If this function is a service update function, add it to the list of
       // services updates.
       if (preg_match($regexp, $function, $matches)) {
-        extract($matches);
+        $resource = $matches['resource'];
+        $method   = $matches['method'];
+        $major    = $matches['major'];
+        $minor    = $matches['minor'];
+
         $updates[$resource][$method][] = array(
           'version'  => $major .'_'. $minor,
           'major'    => $major,
@@ -756,6 +783,11 @@ function services_remove_user_data(&$account) {
     unset($account->init);
   }
   drupal_alter('services_account_object', $account);
+
+  // Add the full URL to the user picture, if one is present.
+  if (variable_get('user_pictures', FALSE) && isset($account->picture->uri)) {
+    $account->picture->url = file_create_url($account->picture->uri);
+  }
 }
 
 /**
@@ -788,4 +820,13 @@ if (!function_exists('getallheaders')) {
 
     return $headers;
   }
+}
+
+/**
+ * Page callback to generate token.
+ */
+function _services_session_token() {
+  drupal_add_http_header('Content-Type', 'text/plain');
+  print drupal_get_token('services');
+  drupal_exit();
 }

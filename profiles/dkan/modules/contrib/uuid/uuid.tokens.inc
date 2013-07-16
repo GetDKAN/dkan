@@ -29,6 +29,20 @@ function uuid_token_info() {
 }
 
 /**
+ * Implements hook_token_info_alter()
+ */
+function uuid_token_info_alter(&$data) {
+  foreach (entity_get_info() as $entity_type => $info) {
+    if (isset($info['uuid']) && $info['uuid'] == TRUE && !empty($info['entity keys']['uuid'])) {
+      $token_type = !empty($info['token type']) ? $info['token type'] : $entity_type;
+      if (empty($data['types'][$token_type])) {
+        unset($data['tokens'][$token_type]);
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_tokens().
  */
 function uuid_tokens($token_type, $tokens, $data = array(), $options = array()) {

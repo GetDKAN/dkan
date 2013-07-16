@@ -32,9 +32,9 @@ class ServicesVersionTests extends ServicesWebtestCase {
    */
   public static function getInfo() {
     return array(
-      'name'        => t('Version System'),
-      'description' => t('Test the Version system'),
-      'group'       => t('Services'),
+      'name'        => 'Version System',
+      'description' => 'Test the Version system',
+      'group'       => 'Services',
     );
   }
 
@@ -64,31 +64,46 @@ class ServicesVersionTests extends ServicesWebtestCase {
 
     $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa');
     //In version 1.0 of services_test resource theres only 1 argument
-    $this->assertTrue('CRUD Retrieve AjSHa' == $responseArray['body'], t('Successfully received sent param on version 1.0 api'));
+    $this->assertTrue('CRUD Retrieve AjSHa' == $responseArray['body'], 'Successfully received sent param on version 1.0 api');
     $this->endpoint = $this->saveNewVersionEndpoint('1.0');
     //Test the ability to say I want 1.1 api by passing in the header.
-    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa', NULL,  array('services_services_test_retrieve_version: 1.1'));
-    $this->assertTrue($responseArray['code'] == '401', t('Successfully was rejected hopefully more missing parameters'), 'Services Version System');
-    $this->assertTrue(strpos($responseArray['status'], 'Missing required argument arg2'), t('Yay, looks like were missing a required argument'), 'Services Version System');
+    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa', NULL,
+      array('services_services_test_retrieve_version: 1.1'));
+    $this->assertTrue($responseArray['code'] == '401', 'Successfully was rejected hopefully more missing parameters',
+      'Services Version System');
+    $this->assertTrue(strpos($responseArray['status'], 'Missing required argument arg2'),
+      'Yay, looks like were missing a required argument', 'Services Version System');
 
-    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa', NULL,  array('services_services_test_retrieve_version: 1.2'));
-    $this->assertTrue($responseArray['code'] == '200', t('Argument two should be optional now. Looks like it was.'), 'Services Version System');
-    $this->assertTrue($responseArray['body'] == 'AjSHa:0', t('Our response looks good, and its a default argument'), 'Services Version System');
-    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa', array('arg2' => 'test'),  array('services_services_test_retrieve_version: 1.2'));
-    $this->assertTrue($responseArray['code'] == '200', t('Argument two should be optional now. Looks like it was.'), 'Services Version System');
-    $this->assertTrue($responseArray['body'] == 'AjSHa:test', t('Our response looks good, and its our passed arguments'), 'Services Version System');
+    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa', NULL,
+      array('services_services_test_retrieve_version: 1.2'));
+    $this->assertTrue($responseArray['code'] == '200', 'Argument two should be optional now. Looks like it was.',
+      'Services Version System');
+    $this->assertTrue($responseArray['body'] == 'AjSHa:0', 'Our response looks good, and its a default argument',
+      'Services Version System');
+    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa', array('arg2' => 'test'),
+      array('services_services_test_retrieve_version: 1.2'));
+    $this->assertTrue($responseArray['code'] == '200',
+      'Argument two should be optional now. Looks like it was.', 'Services Version System');
+    $this->assertTrue($responseArray['body'] == 'AjSHa:test',
+      'Our response looks good, and its our passed arguments', 'Services Version System');
 
     $this->endpoint = $this->saveNewVersionEndpoint('1.1');
     //Test the ability to say I want 1.1 api by passing in the header.
     $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa');
-    $this->assertTrue($responseArray['code'] == '401', t('Successfully was rejected hopefully more missing parameters'), 'Services Version System');
-    $this->assertTrue(strpos($responseArray['status'], 'Missing required argument arg2'), t('Yay, looks like were missing a required argument'), 'Services Version System');
+    $this->assertTrue($responseArray['code'] == '401',
+      'Successfully was rejected hopefully more missing parameters', 'Services Version System');
+    $this->assertTrue(strpos($responseArray['status'], 'Missing required argument arg2'),
+      'Yay, looks like were missing a required argument', 'Services Version System');
     $this->endpoint = $this->saveNewVersionEndpoint('1.2');
     $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa');
-    $this->assertTrue($responseArray['code'] == '200', t('Argument two should be optional now. Looks like it was.'), 'Services Version System');
-    $this->assertTrue($responseArray['body'] == 'AjSHa:0', t('Our response looks good, and its a default argument'), 'Services Version System');
+    $this->assertTrue($responseArray['code'] == '200',
+      'Argument two should be optional now. Looks like it was.', 'Services Version System');
+    $this->assertTrue($responseArray['body'] == 'AjSHa:0', 'Our response looks good, and its a default argument',
+      'Services Version System');
     $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa', array('arg2' => 'test'));
-    $this->assertTrue($responseArray['code'] == '200', t('Argument two should be optional now. Looks like it was.'), 'Services Version System');
-    $this->assertTrue($responseArray['body'] == 'AjSHa:test', t('Our response looks good, and its our passed arguments'), 'Services Version System');
+    $this->assertTrue($responseArray['code'] == '200',
+      'Argument two should be optional now. Looks like it was.', 'Services Version System');
+    $this->assertTrue($responseArray['body'] == 'AjSHa:test',
+      'Our response looks good, and its our passed arguments', 'Services Version System');
   }
 }

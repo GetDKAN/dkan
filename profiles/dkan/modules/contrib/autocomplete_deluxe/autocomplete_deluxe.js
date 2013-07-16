@@ -132,17 +132,12 @@
     this.limit = settings.limit;
     this.synonyms = typeof settings.use_synonyms == 'undefined' ? false : settings.use_synonyms;
 
-    // User set
+    this.wrapper = '""';
+
     if (typeof settings.delimiter == 'undefined') {
       this.delimiter = true;
-      this.wrapper = '"""';
     } else {
       this.delimiter =  settings.delimiter.charCodeAt(0);
-      if (this.delimiter == 44) {
-        this.wrapper = '""';
-      } else {
-        this.wrapper = '"""';
-      }
     }
 
 

@@ -38,9 +38,9 @@ class ServicesResourceSystemTests extends ServicesWebtestCase {
    */
   public static function getInfo() {
     return array(
-      'name'        => t('Resource System'),
-      'description' => t('Test the resource System methods.'),
-      'group'       => t('Services'),
+      'name'        => 'Resource System',
+      'description' => 'Test the resource System methods.',
+      'group'       => 'Services',
     );
   }
 
@@ -52,13 +52,13 @@ class ServicesResourceSystemTests extends ServicesWebtestCase {
     // Call as authenticated user.
     $response = $this->servicesPost($path . '/system/connect');
     $response_user = $response['body']->user;
-    $this->assertEqual($response_user->uid, $this->privileged_user->uid, t('User account received for authenticated user.'), 'SystemResource: Connect');
+    $this->assertEqual($response_user->uid, $this->privileged_user->uid, 'User account received for authenticated user.', 'SystemResource: Connect');
 
     $this->drupalLogout();
     // Call as anonymous user.
     $response = $this->servicesPost($path . '/system/connect');
     $response_user = $response['body']->user;
-    $this->assertEqual($response_user->uid, 0, t('User account received for anonymous user.'), 'SystemResource: Connect');
+    $this->assertEqual($response_user->uid, 0, 'User account received for anonymous user.', 'SystemResource: Connect');
   }
 
   /**
@@ -73,14 +73,14 @@ class ServicesResourceSystemTests extends ServicesWebtestCase {
 
     // Get already set variable.
     $response = $this->servicesPost($path . '/system/get_variable', array('name' => $name, 'default' => $this->randomString()));
-    $this->assertEqual($value, $response['body'], t('Variable get value.'), 'SystemResource: get_variable');
+    $this->assertEqual($value, $response['body'], 'Variable get value.', 'SystemResource: get_variable');
 
     $name = $this->randomName();
     $default = $this->randomString();
 
     // Get not defined variable. Ensure we get back default value.
     $response = $this->servicesPost($path . '/system/get_variable', array('name' => $name, 'default' => $default));
-    $this->assertEqual($default, $response['body'], t('Variable get value default.'), 'SystemResource: get_variable');
+    $this->assertEqual($default, $response['body'], 'Variable get value default.', 'SystemResource: get_variable');
   }
 
   /**
@@ -97,7 +97,7 @@ class ServicesResourceSystemTests extends ServicesWebtestCase {
     // We can't use variable_get as variables get cached to global variable.
     $variable = unserialize(db_query('SELECT value FROM {variable} WHERE name = :name', array(':name' => $name))->fetchField());
 
-    $this->assertEqual($value, $variable, t('Variable set value.'), 'SystemResource: set_variable');
+    $this->assertEqual($value, $variable, 'Variable set value.', 'SystemResource: set_variable');
   }
 
   /**
@@ -117,6 +117,6 @@ class ServicesResourceSystemTests extends ServicesWebtestCase {
     // We can't use variable_get as variables get cached to global variable.
     $newvalue = $this->randomString();
     $response = $this->servicesPost($path . '/system/get_variable', array('name' => $name, 'default' => $newvalue));
-    $this->assertEqual($newvalue, $response['body'], t('Variable deleted.'), 'SystemResource: get_variable');
+    $this->assertEqual($newvalue, $response['body'], 'Variable deleted.', 'SystemResource: get_variable');
   }
 }
