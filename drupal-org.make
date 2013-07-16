@@ -31,6 +31,7 @@ projects[markdowneditor][subdir] = contrib
 projects[markdown][subdir] = contrib
 projects[pathauto][subdir] = contrib
 projects[r4032login][subdir] = contrib
+projects[search_api][version] = 1.6
 projects[search_api][subdir] = contrib
 projects[search_api_ajax][subdir] = contrib
 projects[search_api_ajax][patch][1858530] = http://drupal.org/files/search_api_ajax-search-query.patch
