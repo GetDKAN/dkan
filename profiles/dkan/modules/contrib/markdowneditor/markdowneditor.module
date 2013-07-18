@@ -17,6 +17,16 @@ function markdowneditor_form_system_modules_alter(&$form, &$form_state, $form_id
 }
 
 /**
+ * Implements hook_help().
+ */
+function markdowneditor_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#markdowneditor':
+      return t('Go to !buesettings to set up "Role-editor assignments" to select the roles that may use it.', array('!buesettings' => l('Administration > Configuration > BUEditor', 'admin/config/content/bueditor')));
+  }
+}
+
+/**
  * Submit handler
  */
 function _markdowneditor_form_system_modules_submit($form, &$form_stat) {

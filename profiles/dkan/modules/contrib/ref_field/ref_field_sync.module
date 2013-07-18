@@ -156,7 +156,7 @@ function ref_field_sync_field_update_field($field, $prior_field, $has_data) {
     $sync_field_name = $field['settings']['sync'];
     $sync_field = field_read_field($sync_field_name);
 
-    if ($sync_field && $sync_field['settings']['sync'] != $field['field_name']) {
+    if ($sync_field && isset($sync_field['settings']['sync']) && $sync_field['settings']['sync'] != $field['field_name']) {
       $sync_field['settings']['sync'] = $field['field_name'];
       field_update_field($sync_field);
     }
@@ -165,7 +165,7 @@ function ref_field_sync_field_update_field($field, $prior_field, $has_data) {
   // Check old association
   // If there was an association, call old sync field and remove association to
   // this one.
-  if ($prior_field['settings']['sync'] && $prior_field['settings']['sync'] != $field['settings']['sync']) {
+  if (isset($prior_field['settings']['sync']) && $prior_field['settings']['sync'] != $field['settings']['sync']) {
     $prior_sync_field_name = $prior_field['settings']['sync'];
     $prior_sync_field = field_read_field($prior_sync_field_name);
 
@@ -284,6 +284,44 @@ function ref_field_sync_entity_update($entity, $type) {
             ref_field_sync_add_reference($field['settings']['target_type'], $entities[$target_id], $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
           }
         }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function ref_field_sync_entity_delete($entity, $type) {
+  $info = entity_get_info($type);
+
+  // Get fields of type ref_field
+  $fields = field_read_fields(array('type' => 'entityreference'));
+
+  // Loop through every field.
+  foreach ($fields as $field_name => $field) {
+
+    // Get more info for the field (bundles where exist)
+    $field = field_info_field_by_id($field['id']);
+
+    // Update fields array with new info.
+    $fields[$field_name] = $field;
+
+    // Go through fields that exist in this entity/bundle
+    if (isset($entity->$field_name) && !empty($field['settings']['sync'])) {
+      $delete = array();
+
+      // Get values from deleted entity.
+      $items = field_get_items($type, $entity, $field_name);
+      if (isset($items)) {
+        foreach ($items as $item) {
+          $delete[] = $item['target_id'];
+        }
+      }
+      foreach ($delete as $target_id) {
+        $entities = entity_load($field['settings']['target_type'], array($target_id));
+        // Remove reference from synced field.
+        ref_field_sync_remove_reference($field['settings']['target_type'], $entities[$target_id], $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
       }
     }
   }

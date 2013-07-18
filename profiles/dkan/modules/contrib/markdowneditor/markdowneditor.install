@@ -16,16 +16,6 @@
  */
 
 /**
- * Implements hook_install().
- */
-function markdowneditor_install() {
-  if (_markdowneditor_insert_latest()) {
-    $t = get_t();
-    drupal_set_message($t('Markdown Editor for BUEditor successfully installed. Go to !buesettings to set up "Role-editor assignments" to select the roles that may use it.', array('!buesettings' => l('Administration > Configuration > BUEditor', 'admin/config/content/bueditor'))));
-  }
-}
-
-/**
  * Implements hook_uninstall().
  */
 function markdowneditor_uninstall() {

@@ -1,7 +1,7 @@
 
 /**
  * Defines the default beautytip and adds them to the content on the page
- */ 
+ */
 (function ($) {
   Drupal.behaviors.beautytips = {
     attach: function(context, settings) {
@@ -11,43 +11,18 @@
       }
       jQuery.bt.options.closeWhenOthersOpen = true;
       var beautytips = Drupal.settings.beautytips;
+      var styles = Drupal.settings.beautytipStyles;
 
-      // On ajax page loads, if the same settings are added
-      // to the page, then it can mess up the settings.
-      // If this is fixed in Drupal, then this can be removed.
-      function fixArray(originalArray, count) {
-        for (var key in originalArray) {
-          if (key == 'cssStyles') {
-            originalArray[key] = fixArray(originalArray[key], count);
-          }
-          else if (originalArray[key].length == count) {
-            originalArray[key] = originalArray[key][0];
-          }
-          else {
-            length = Math.round(originalArray[key].length / count);
-            originalArray[key] = originalArray[key].slice(0, length);
-          }
-        }
-        return originalArray;
-      }
-
-      // Add the the tooltips to the page
+      // Add the tooltips to the page
       for (var key in beautytips) {
-        // If there's an ajax page load on a page, drupal can add these
-        // settings more than once and it adds the settings instead of replaces.
-        // We have to fix these here.
-        if (typeof(Drupal.settings.beautytips[key]['cssSelect']) == 'object') {
-          var count = Drupal.settings.beautytips[key]['cssSelect'].length;
-          beautytips[key] = fixArray(beautytips[key], count);
-          Drupal.settings.beautytips[key] = beautytips[key];
-        }
         // Build array of options that were passed to beautytips_add_beautyips
-        var btOptions = new Array();
+        var btOptions = styles[beautytips[key]['style']];
         if (beautytips[key]['list']) {
           for ( var k = 0; k < beautytips[key]['list'].length; k++) {
             btOptions[beautytips[key]['list'][k]] = beautytips[key][beautytips[key]['list'][k]];
           }
         }
+
         if (beautytips[key]['cssSelect']) {
           if (beautytips[key]['animate']) {
             btOptions = beautytipsAddAnimations(beautytips[key]['animate'], btOptions);
@@ -60,13 +35,18 @@
               }
             });
           }
+          // Run this if the content is straight text being passed.
           if (beautytips[key]['text']) {
             $(beautytips[key]['cssSelect']).each(function() {
               if (!beautytipsProcessed(this)) {
+                if (beautytipsOffsetParentEval(beautytips[key], btOptions)) {
+                  btOptions['offsetParent'] = eval(btOptions['offsetParent']);
+                }
                 $(this).bt(beautytips[key]['text'], btOptions);
               }
             });
           }
+          // Run this if we are grabbing ajax loaded content.
           else if (beautytips[key]['ajaxPath']) {
             $(beautytips[key]['cssSelect']).each(function() {
               if (!beautytipsProcessed(this)) {
@@ -75,18 +55,26 @@
                     event.preventDefault();
                   });
                 }
+                if (beautytipsOffsetParentEval(beautytips[key], btOptions)) {
+                  btOptions['offsetParent'] = eval(btOptions['offsetParent']);
+                }
                 $(this).bt(btOptions);
               }
             });
           }
-          else { 
+          // Run this if we are grabbing content from some place on the page.
+          else {
             $(beautytips[key]['cssSelect']).each(function() {
               if (!beautytipsProcessed(this)) {
+                if (beautytipsOffsetParentEval(beautytips[key], btOptions)) {
+                  btOptions['offsetParent'] = eval(btOptions['offsetParent']);
+                }
                 $(this).bt(btOptions);
               }
             });
           }
         }
+        // Clear out the options for the next tip.
         btOptions.length = 0;
       }
     }
@@ -104,6 +92,17 @@
     }
     return false;
   }
+
+  /**
+   * Determine if the offsetParent needs to be found.
+   *  doing this allows us to choose adifferent offset parent per
+   *  individual beautytip, or to choose and to choose an offset
+   *  based on its relationship to the element.
+   */
+  function beautytipsOffsetParentEval(beautytip, btOptions) {
+    return (beautytip['offsetParentEval'] === "always" || (beautytip['offsetParentEval'] === "once" && jQuery.type(btOptions['offsetParent']) === "string"));
+  }
+
 
   function beautytipsAddAnimations(animations, btOptions) {
     switch (animations['on']) {

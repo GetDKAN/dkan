@@ -3,10 +3,10 @@
   ------------------------------------------------------------------------------------
   In order for this module to work properly with IE, you will need to download the 
   ExplorerCanvas library, which can be found here - http://excanvas.sourceforge.net/.
-  Place the downloaded directory 'excanvas_r3' inside the 'beautytips/other_libs' directory.
+  Place the downloaded directory 'excanvas' inside the 'sites/all/libraries' directory.
   Also, make sure that this file is accessable (readable).  A standard permission setting 
-  of 755 should work for the excanvas_r3 folder (755 means permission settings - rwxr-xr-x)
-  On Linux or Mac, you can do this with the command 'sudo chmod -R 755 excanvas_r3'
+  of 755 should work for the excanvas folder (755 means permission settings - rwxr-xr-x)
+  On Linux or Mac, you can do this with the command 'sudo chmod -R 755 excanvas'
 
   Other than that, you just need to turn the module on in the usual Drupal way.
 
@@ -121,7 +121,17 @@
   
   Any defined style will also show up on the beautytips settings page and
   can be set as the default style.
-  
+
+  ------------------------------------------------------------------------------------
+                               Beautytips Manager
+  ------------------------------------------------------------------------------------
+  You can setup custom styles and custom tooltips using the beautytips_manage module.
+  **TODO: The Rest**
+
+  All styles are added into javascript settings in Drupal.settings.beautytipStyles
+  in case you want to use the setup styles, but want to add you tooltips through
+  javascript.
+  **TODO: The Rest**
   
 ******************************************************************************
 Beautytips options and defaults (Copied and pasted from the jQuery.bt.js file)

@@ -193,7 +193,7 @@ $mde_buttons[$i++] = array(
   t("Teaser break"),
   "<!--break-->",
   "teaserbr.png",
-  "T",
+  "",
   7,
 );
 

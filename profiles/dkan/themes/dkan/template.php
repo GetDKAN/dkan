@@ -171,7 +171,9 @@ function dkan_preprocess_page(&$vars) {
     drupal_add_js($profile_path . '/themes/dkan/js/front.js');
   }
   // Remove title on dataset edit and creation pages.
-  $vars['title'] = '';
+  if (!empty($vars['node']) && in_array($vars['node']->type, array('dataset', 'resource'))) {
+    $vars['title'] = '';
+  }
 }
 
 /**

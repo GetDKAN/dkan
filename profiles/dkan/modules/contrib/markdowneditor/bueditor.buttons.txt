@@ -78,7 +78,7 @@ array (
       'title' => 'Insert a table',
       'content' => 'js:  new markdownEditor.Table();',
       'icon' => 'md-add-table.gif',
-      'accesskey' => '',
+      'accesskey' => 'T',
       'weight' => '9',
     ),
     10 =>
@@ -142,7 +142,7 @@ array (
       'title' => 'Teaser break',
       'content' => '<!--break-->',
       'icon' => 'teaserbr.png',
-      'accesskey' => 'T',
+      'accesskey' => '',
       'weight' => '17',
     ),
     18 =>

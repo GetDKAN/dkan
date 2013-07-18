@@ -1,17 +1,17 @@
-
 name = BeautyTips API
 description = API for implementing jQuery beautyTips tooltip plugin
 core = 7.x
-package = User interface 
+dependencies[] = libraries
+package = User interface
 files[] = beautytips.module
 files[] = beautytips.admin.inc
 files[] = beautytips.install
 configure = admin/config/user-interface/beautytips
 
 
-; Information added by drupal.org packaging script on 2012-05-04
-version = "7.x-2.0-beta2"
+; Information added by drupal.org packaging script on 2012-09-06
+version = "7.x-2.0-beta2+9-dev"
 core = "7.x"
 project = "beautytips"
-datestamp = "1336148452"
+datestamp = "1346890054"
 

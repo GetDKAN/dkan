@@ -115,10 +115,14 @@ function beautytips_manager_init() {
 }
 
 /**
- * Implements hook_perm().
+ * Implements hook_permission().
  */
-function beautytips_manager_perm() {
-  return array('use Javascript for custom beautytip display');
+function beautytips_manager_permission() {
+  return array(
+    'use Javascript for custom beautytip display' => array(
+      'title' => t('Use Javascript for custom beautytip display'),
+    ),
+  );
 }
 
 /**
@@ -327,7 +331,7 @@ function beautytips_manager_define_beautytips_styles() {
   $styles = array();
   $custom_styles = beautytips_manager_get_custom_styles();
   $style_map = beautytips_manager_style_mapping();
-  $style_options = array_flip($style_map['options']); 
+  $style_options = array_flip($style_map['options']);
   $css_style_options = array_flip($style_map['css_options']);
 
   if (count($custom_styles)) {
@@ -341,7 +345,8 @@ function beautytips_manager_define_beautytips_styles() {
             }
           }
           else if (!is_null($value) && $value != '') {
-            $options[$style_options[$key]] = check_plain($value);
+            // Add the setting and make sure integers stay as integers.
+            $options[$style_options[$key]]= (ctype_digit($value) || is_int($value)) ? (int) $value : check_plain($value);
           }
         }
         else if (isset($css_style_options[$key])) {

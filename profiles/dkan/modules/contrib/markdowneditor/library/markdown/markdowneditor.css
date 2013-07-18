@@ -6,9 +6,6 @@
 
 /* Scrollbars to allow content that overflows dialog */
 .bue-popup-body {
-  overflow: auto;
-  max-width: 600px;
-  max-height: 400px;
   padding-bottom: 10px;
 }
 
