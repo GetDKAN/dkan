@@ -3,7 +3,9 @@ api = 2
 
 projects[autocomplete_deluxe][subdir] = contrib
 projects[autocomplete_deluxe][version] = 2.x
+projects[beautytips][subdir] = 2.x
 projects[beautytips][subdir] = contrib
+projects[beautytips][patch][849232] = https://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch
 projects[chosen][subdir] = contrib
 projects[chosen][version] = 2.0-alpha1
 projects[ctools][subdir] = contrib
