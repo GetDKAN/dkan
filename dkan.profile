@@ -9,12 +9,6 @@ function dkan_install_tasks() {
   $tasks['dkan_additional_setup'] = array(
     'display_name' => 'Cleanup',
   );
-  $tasks['dkan_additional_terms'] = array(
-    'display_name' => 'Taxonomy Terms',
-  );
-  $tasks['dkan_bueditor_settings'] = array(
-    'display_name' => 'BUEditor Settings',
-  );
   return $tasks;
 }
 
@@ -75,12 +69,7 @@ function dkan_additional_setup() {
 
   variable_set('node_access_needs_rebuild', FALSE);
   variable_set('gravatar_size', 190);
-}
 
-/**
- * Adds default taxonomy terms.
- */
-function dkan_additional_terms() {
   $tags = array(
     'country-afghanistan',
     'election',
@@ -105,16 +94,9 @@ function dkan_additional_terms() {
     $term->name = $format;
     taxonomy_term_save($term);
   }
-}
-
-/**
- * BUEditor doesn't use variables or exportables.
- */
-function dkan_bueditor_settings() {
   $data = array(
     'pages' => "node/*\ncomment/*\nsystem/ajax",
     'eid' => 5,
   );
   drupal_write_record('bueditor_editors', $data, array('eid'));
 }
-
