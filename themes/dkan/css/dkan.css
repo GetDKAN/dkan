@@ -273,6 +273,7 @@ pre code {
 }
 form {
   margin: 0 0 18px;
+  position: relative;
 }
 fieldset {
   padding: 0;
@@ -773,6 +774,16 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 }
 
 /*** Forms ***/
+#resource-node-form,
+#dataset-node-form {
+  padding: 30px 0 0 0;
+  position: relative;
+}
+#dkan-stages {
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
 .stages {
   margin: 0;
   list-style: none;
@@ -851,9 +862,10 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 }
 .stages li.last,
 .stages li.last .highlight {
-  -webkit-border-radius: 0 3px 0 0;
-  -moz-border-radius: 0 3px 0 0;
-  border-radius: 0 3px 0 0;
+  -webkit-border-radius: 0 5px 0 0;
+  -moz-border-radius: 0 5px 0 0;
+  border-radius: 0 5px 0 0;
+  overflow: hidden;
 }
 .stages li.first:after {
   content: none;
@@ -968,7 +980,7 @@ form-textarea-wrapper textarea {
 }
 #resource-node-form .field-name-body .form-type-textarea label,
 #dataset-node-form .field-name-body .form-type-textarea label {
-  margin-top: 38px;
+  margin-top: 10px;
 }
 #dataset-node-form .field-name-field-data-dictionary .form-textarea-wrapper {
   margin-left: 130px;
@@ -980,7 +992,6 @@ form-textarea-wrapper textarea {
 #resource-node-form .field-name-body .form-textarea-wrapper,
 #dataset-node-form .field-name-body .form-textarea-wrapper {
   margin-left: 130px;
-  padding-top: 30px;
   position: relative;
 }
 #data-and-resources {
@@ -1026,7 +1037,7 @@ label.for=["edit-field-upload-und-0"] {
   display: none;
 }
 .horizontal-tabs fieldset.horizontal-tabs-pane {
-  padding: 15px 0 0 0;
+  padding: 0 0 0 0;
 }
 #resource-edit-title {
   font-size: 19px;
@@ -1083,6 +1094,7 @@ label.for=["edit-field-upload-und-0"] {
 }
 #resource-node-form a {
   color: #999;
+  border: 0;
 }
 #resource-node-form input[type="submit"],
 #dataset-node-form input[type="submit"] {
@@ -1495,7 +1507,7 @@ html.js input.throbbing {
   margin-right: 10px;
 }
 .field-name-field-license label {
-  margin-top: 3px;
+  margin-top: 15px;
 }
 .field-name-field-license .icon-large {
   float: left;
