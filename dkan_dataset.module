@@ -1,5 +1,7 @@
 <?php
 
+define('DKAN_FIELD_LANG', 'und');
+
 /**
  * @file
  * Custom elements for datasets.

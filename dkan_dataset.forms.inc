@@ -57,7 +57,6 @@ function dkan_dataset_field_group_pre_render(&$element, $group, &$form) {
 function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
   if ($form_id == 'dataset_node_form') {
-    $lang = $form['language']['#value'];
 
     $form['#attached']['css'][] = drupal_get_path('module', 'dkan_dataset') . '/dkan_dataset.css';
     $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
@@ -89,23 +88,23 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['path']['alias']['#title'] = 'URL';
     // Adding descriptions.
     $form['title']['#attributes']['placeholder'] = t('eg. A descriptive title');
-    $form['body'][$lang][0]['#prefix'] = '<div id="prefix">';
-    $form['body'][$lang][0]['#suffix'] = '</div>';
+    $form['body'][DKAN_FIELD_LANG][0]['#prefix'] = '<div id="prefix">';
+    $form['body'][DKAN_FIELD_LANG][0]['#suffix'] = '</div>';
     $form['path']['alias']['#description'] = '';
     $form['path']['alias']['#title'] = '';
-    $form['field_tags'][$lang]['#description'] = t('eg. economy, mental health, government');
+    $form['field_tags'][DKAN_FIELD_LANG]['#description'] = t('eg. economy, mental health, government');
     // Add icon to license field.
-    $form['field_license'][$lang]['#description'] = '<i class="icon-large icon-info-sign"></i>License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>';
-    foreach ($form['field_additional_info'][$lang] as $key => $values) {
+    $form['field_license'][DKAN_FIELD_LANG]['#description'] = '<i class="icon-large icon-info-sign"></i>License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>';
+    foreach ($form['field_additional_info'][DKAN_FIELD_LANG] as $key => $values) {
       if (is_int($key)) {
-        $form['field_additional_info'][$lang][$key]['first']['#attributes']['placeholder'] = t('key');
-        $form['field_additional_info'][$lang][$key]['second']['#attributes']['placeholder'] = t('value');
+        $form['field_additional_info'][DKAN_FIELD_LANG][$key]['first']['#attributes']['placeholder'] = t('key');
+        $form['field_additional_info'][DKAN_FIELD_LANG][$key]['second']['#attributes']['placeholder'] = t('value');
       }
     }
 
     if (isset($form['og_group_ref'])) {
       // Don't show groups if user doesn't have any groups to add.
-      $groups = $form['og_group_ref'][$lang][0]['default']['#options'];
+      $groups = $form['og_group_ref'][DKAN_FIELD_LANG][0]['default']['#options'];
       if (count($groups) < 2) {
         $form['og_group_ref']['#access'] = FALSE;
       }
@@ -154,7 +153,6 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     }
   }
   if ($form_id == 'resource_node_form') {
-    $lang = $form['language']['#value'];
     $form['#attached']['css'][] = drupal_get_path('module', 'dkan_dataset') . '/dkan_dataset.css';
     $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.js';
@@ -166,22 +164,18 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     $form['#after_build']['dkan_dataset'] = 'dkan_dataset_resource_form_after_build';
 
-    $form['field_dataset_ref'][$lang]['#description'] = t('Dataset that this resource is attached to.');
-    if (arg(1) == 'add') {
-      // Don't show users how we connect the dataset to the resource.
-      $form['field_dataset_ref']['#disabled'] = TRUE;
-    }
+    $form['field_dataset_ref'][DKAN_FIELD_LANG]['#description'] = t('Dataset that this resource is attached to.');
 
-    $form['field_upload'][$lang][0]['#title'] = '';
-    $form['field_upload'][$lang][0]['view']['#collapsible'] = TRUE;
-    $form['field_upload'][$lang][0]['view']['#collasped'] = TRUE;
-    $form['field_link_file'][$lang][0]['#description'] = 'Link to a CSV file that will be imported into the DKAN datastore.';
-    $form['field_link_api'][$lang][0]['#description'] = 'Link to a public API or information source.';
+    $form['field_upload'][DKAN_FIELD_LANG][0]['#title'] = '';
+    $form['field_upload'][DKAN_FIELD_LANG][0]['view']['#collapsible'] = TRUE;
+    $form['field_upload'][DKAN_FIELD_LANG][0]['view']['#collasped'] = TRUE;
+    $form['field_link_file'][DKAN_FIELD_LANG][0]['#description'] = 'Link to a CSV file that will be imported into the DKAN datastore.';
+    $form['field_link_api'][DKAN_FIELD_LANG][0]['#description'] = 'Link to a public API or information source.';
     $form['title']['#attributes']['placeholder'] = t('eg. January Gold Prices');
     $form['title']['#required'] = TRUE;
 
-    $form['field_link_api'][$lang][0]['#title'] = '';
-    $form['field_link_file'][$lang][0]['#title'] = '';
+    $form['field_link_api'][DKAN_FIELD_LANG][0]['#title'] = '';
+    $form['field_link_file'][DKAN_FIELD_LANG][0]['#title'] = '';
     // Move groups to vertical tabs.
     $form['og_group_ref']['#group'] = 'additional_settings';
     $form['og_group_ref']['#title'] = t('Groups');
@@ -190,7 +184,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $action_query = '';
     if ($query = drupal_get_query_parameters()) {
       if (isset($query['dataset'])) {
-        $form['field_dataset_ref']['und']['#default_value'] = $query['dataset'];
+        $form['field_dataset_ref'][DKAN_FIELD_LANG]['#default_value'] = $query['dataset'];
         $action_query = '?dataset=' . $query['dataset'];
       }
       $form['prefix']['#type'] = 'item';
@@ -198,7 +192,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $query['dataset']);
     }
     elseif (isset($form['#node']->field_dataset_ref['nid'])) {
-      $form['field_dataset_ref']['und']['#default_value'] = $form['#node']->field_dataset_ref['nid'];
+      $form['field_dataset_ref'][DKAN_FIELD_LANG]['#default_value'] = $form['#node']->field_dataset_ref['nid'];
       $form['prefix']['#type'] = 'item';
       $form['prefix']['#weight'] = '-20';
       $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $form['#node']->field_dataset_ref['nid']);
@@ -236,10 +230,9 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
  * Validation function for resource node form.
  */
 function dkan_dataset_resource_node_form_validate($form, &$form_state) {
-  $lang = $form['language']['#value'];
-  $link = $form_state['values']['field_link_file'][$lang][0]['url'];
-  $api = $form_state['values']['field_link_api'][$lang][0]['url'];
-  $fid = $form_state['values']['field_upload'][$lang][0]['fid'];
+  $link = $form_state['values']['field_link_file'][DKAN_FIELD_LANG][0]['url'];
+  $api = $form_state['values']['field_link_api'][DKAN_FIELD_LANG][0]['url'];
+  $fid = $form_state['values']['field_upload'][DKAN_FIELD_LANG][0]['fid'];
   // Ensure that only one type of resource is uploaded or linked to.
   if ($link && ($api || $fid) || $api && ($link || $fid) || $fid && ($api || $link)) {
     form_set_error('field_link_file', 'Only one resource type can be added.');
@@ -253,15 +246,15 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
     else {
       $type = substr($link, strrpos($link, '.') + 1);
     }
-    $form_state['values']['field_format'][$lang][0]['vid'] = 2;
+    $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['vid'] = 2;
     if ($tax = taxonomy_get_term_by_name($type, 'format')) {
       $tax = array_values($tax);
-      $form_state['values']['field_format'][$lang][0]['tid'] = $tax[0]->tid;
-      $form_state['values']['field_format'][$lang][0]['name'] = $tax[0]->name;
+      $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['tid'] = $tax[0]->tid;
+      $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['name'] = $tax[0]->name;
     }
     else {
-      $form_state['values']['field_format'][$lang][0]['tid'] = 'autocreate';
-      $form_state['values']['field_format'][$lang][0]['name'] = $type;
+      $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['tid'] = 'autocreate';
+      $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['name'] = $type;
     }
   }
 }
@@ -270,16 +263,15 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
  * After build function for resource and dataset nodes.
  */
 function dkan_dataset_resource_form_after_build($form, &$form_state) {
-  $lang = $form['language']['#value'];
   if (isset($form['field_link_file'])) {
-    $form['field_link_file'][$lang][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
-    $form['field_link_api'][$lang][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011';
+    $form['field_link_file'][DKAN_FIELD_LANG][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
+    $form['field_link_api'][DKAN_FIELD_LANG][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011';
   }
   if (isset($form['field_format'])) {
-    $form['field_format'][$lang]['textfield']['#attributes']['placeholder'] = 'eg. csv, json';
-    $form['field_format'][$lang]['textfield']['#description'] = t('File format will be autodetected');
+    $form['field_format'][DKAN_FIELD_LANG]['textfield']['#attributes']['placeholder'] = 'eg. csv, json';
+    $form['field_format'][DKAN_FIELD_LANG]['textfield']['#description'] = t('File format will be autodetected');
   }
-  $form['body'][$lang][0]['value']['#attributes']['placeholder'] = t('eg. Some useful notes about the data');
+  $form['body'][DKAN_FIELD_LANG][0]['value']['#attributes']['placeholder'] = t('eg. Some useful notes about the data');
   return $form;
 }
 
@@ -297,7 +289,7 @@ function dkan_dataset_additional_submit_js($form, &$form_state) {
   if (isset($_SESSION['messages']['error'])) {
     unset($_SESSION['messages']['error']);
   }
-  $nid = $form_state['values']['field_dataset_ref']['und'][0]['target_id'];
+  $nid = $form_state['values']['field_dataset_ref'][DKAN_FIELD_LANG][0]['target_id'];
   $node = node_load($nid);
   $dataset_form = drupal_get_form($type . '_node_form', $node);
 
@@ -321,7 +313,7 @@ function dkan_dataset_resource_another_submit_js($form, &$form_state) {
   if (form_get_errors()) {
     return $form;
   }
-  $nid = isset($form_state['build_info']['args'][0]->field_dataset_ref['nid']) ? $form_state['build_info']['args'][0]->field_dataset_ref['nid'] : $form_state['values']['field_dataset_ref']['und'][0]['target_id'];
+  $nid = isset($form_state['build_info']['args'][0]->field_dataset_ref['nid']) ? $form_state['build_info']['args'][0]->field_dataset_ref['nid'] : $form_state['values']['field_dataset_ref'][DKAN_FIELD_LANG][0]['target_id'];
   $resource_form = dkan_dataset_prepare_resource_form($nid);
   $stage = dkan_form_create_stages('resource-edit', $nid);
 
@@ -374,7 +366,6 @@ function dkan_dataset_prepare_resource_form($nid) {
     'uid' => $user->uid,
     'name' => (isset($user->name) ? $user->name : ''),
     'type' => $type,
-    'language' => LANGUAGE_NONE,
   );
   $node->field_dataset_ref['nid'] = $nid;
   $new_form_state = array();
@@ -449,8 +440,8 @@ function dkan_dataset_resource_nodes() {
   $output = '';
   $nodes = array();
   $current_node = menu_get_object();
-  if (isset($current_node->type) && $current_node->type == 'resource') {
-    $nodes = dkan_dataset_get_resource_nodes($current_node->field_dataset_ref['und'][0]['target_id']);
+  if (isset($current_node->type) && $current_node->type == 'resource' && isset($current_node->field_dataset_ref[DKAN_FIELD_LANG])) {
+    $nodes = dkan_dataset_get_resource_nodes($current_node->field_dataset_ref[DKAN_FIELD_LANG][0]['target_id']);
   }
   else {
     if ($query = drupal_get_query_parameters()) {
