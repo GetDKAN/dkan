@@ -42,7 +42,7 @@ function dkan_datastore_datastore_api($node) {
  * Callback for download tab.
  */
 function dkan_datastore_download($node) {
-  $uri = isset($node->field_upload[$node->language][0]['uri']) ? $node->field_upload[$node->language][0]['uri'] : $node->field_upload[0]['uri'];
+  $uri = isset($node->field_upload[DKAN_FIELD_LANG][0]['uri']) ? $node->field_upload[DKAN_FIELD_LANG][0]['uri'] : $node->field_upload[0]['uri'];
   $url = file_create_url($uri);
   return drupal_goto($url);
 }
@@ -51,8 +51,8 @@ function dkan_datastore_download($node) {
  * Callback for back link.
  */
 function dkan_datastore_back($node) {
-  if (isset($node->field_dataset_ref[$node->language][0]['target_id'])) {
-    drupal_goto('node/' . $node->field_dataset_ref[$node->language][0]['target_id']);
+  if (isset($node->field_dataset_ref[DKAN_FIELD_LANG][0]['target_id'])) {
+    drupal_goto('node/' . $node->field_dataset_ref[DKAN_FIELD_LANG][0]['target_id']);
   }
   return '';
 }

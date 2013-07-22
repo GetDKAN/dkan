@@ -14,6 +14,7 @@ function search_api_db_uninstall() {
       db_drop_table($matches[0]);
     }
   }
+  variable_del('search_api_db_autocomplete_max_occurrences');
 }
 
 /**
