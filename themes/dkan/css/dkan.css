@@ -980,7 +980,7 @@ form-textarea-wrapper textarea {
 }
 #resource-node-form .field-name-body .form-type-textarea label,
 #dataset-node-form .field-name-body .form-type-textarea label {
-  margin-top: 10px;
+  margin-top: 30px;
 }
 #dataset-node-form .field-name-field-data-dictionary .form-textarea-wrapper {
   margin-left: 130px;
@@ -993,6 +993,7 @@ form-textarea-wrapper textarea {
 #dataset-node-form .field-name-body .form-textarea-wrapper {
   margin-left: 130px;
   position: relative;
+  padding-top: 30px;
 }
 #data-and-resources {
   margin-bottom: 25px;
