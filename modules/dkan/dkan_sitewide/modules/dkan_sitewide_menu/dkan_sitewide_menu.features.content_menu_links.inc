@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_sitewide_menu.features.menu_links.inc
+ * dkan_sitewide_menu.features.content_menu_links.inc
  */
 
 /**
- * Implements hook_menu_default_menu_links().
+ * Implements hook_content_menu_links_defaults().
  */
-function dkan_sitewide_menu_menu_default_menu_links() {
+function dkan_sitewide_menu_content_menu_links_defaults() {
   $menu_links = array();
 
   // Exported menu link: main-menu:dataset
@@ -49,7 +49,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   // Exported menu link: main-menu:node/3
   $menu_links['main-menu:node/3'] = array(
     'menu_name' => 'main-menu',
-    'link_path' => 'node/3',
+    'link_path' => 'node-name/about',
     'router_path' => 'node/%',
     'link_title' => 'About',
     'options' => array(
