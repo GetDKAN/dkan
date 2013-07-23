@@ -20,7 +20,7 @@ function dkan_default_content_content_defaults() {
     'type' => 'dataset',
     'language' => 'und',
     'created' => '1360559620',
-    'comment' => '0',
+    'comment' => '1',
     'translate' => '0',
     'machine_name' => 'polling',
     'body' => array(
@@ -148,7 +148,7 @@ https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr
     'type' => 'dataset',
     'language' => 'und',
     'created' => '1360557746',
-    'comment' => '0',
+    'comment' => '1',
     'translate' => '0',
     'machine_name' => 'national-foreclose',
     'body' => array(
@@ -259,7 +259,7 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
     'type' => 'dataset',
     'language' => 'und',
     'created' => '1360555545',
-    'comment' => '0',
+    'comment' => '1',
     'translate' => '0',
     'machine_name' => 'gold-prices',
     'body' => array(
@@ -436,7 +436,7 @@ Click on Graph button under Preview and plot date (x-axis) against price (y-axis
     'type' => 'dataset',
     'language' => 'und',
     'created' => '1351612344',
-    'comment' => '0',
+    'comment' => '1',
     'translate' => '0',
     'machine_name' => 'afghan-election-districts',
     'body' => array(
