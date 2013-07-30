@@ -17,6 +17,13 @@ function markdowneditor_form_system_modules_alter(&$form, &$form_state, $form_id
 }
 
 /**
+ * Implements hook_enable().
+ */
+function markdowneditor_enabel() {
+  _markdowneditor_insert_latest();
+}
+
+/**
  * Implements hook_help().
  */
 function markdowneditor_help($path, $arg) {

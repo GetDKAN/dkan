@@ -1,4 +1,4 @@
-name = dkan_dataset_groups
+name = DKAN Dataset Groups
 description = Custom elements for groups.
 core = 7.x
 package = DKAN Features
@@ -27,7 +27,7 @@ features[ctools][] = context:context:3
 features[ctools][] = field_group:field_group:1
 features[ctools][] = strongarm:strongarm:1
 features[ctools][] = views:views_default:3.0
-features[features_api][] = api:1
+features[features_api][] = api:2
 features[field][] = node-group-body
 features[field][] = node-group-field_image
 features[field][] = node-group-group_group

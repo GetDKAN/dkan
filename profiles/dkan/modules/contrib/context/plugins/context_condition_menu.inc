@@ -41,8 +41,10 @@ class context_condition_menu extends context_condition {
    */
   function condition_form($context) {
     $form = parent::condition_form($context);
+    $menu_count = count($form['#options'], COUNT_RECURSIVE);
     $form['#type'] = 'select';
     $form['#multiple'] = TRUE;
+    $form['#attributes'] = array('size' => $menu_count > 20 ? 20 : $menu_count);
     return $form;
   }
 

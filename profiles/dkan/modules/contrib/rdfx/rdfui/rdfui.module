@@ -276,7 +276,7 @@ function rdfui_admin_rdf_overview_form_validate($form, &$form_state) {
   _rdfui_validate_terms($form_state);
 
   // Validate title predicate(s).
-  if ((isset($form_state['input']['rdf_title_type']))) {
+  if ((isset($form_state['values']['rdf_title_type']))) {
     $field_name = 'title';
     _rdfui_validate_terms($form_state, $field_name);
     _rdfui_validate_datatype($form_state, $field_name);
@@ -294,7 +294,7 @@ function rdfui_form_node_type_form_validate($form, &$form_state) {
   _rdfui_validate_terms($form_state);
 
   // Validate title predicate(s).
-  if ((isset($form_state['input']['rdf_title_type']))) {
+  if ((isset($form_state['values']['rdf_title_type']))) {
     $field_name = 'title';
     _rdfui_validate_terms($form_state, $field_name);
     _rdfui_validate_datatype($form_state, $field_name);
@@ -341,7 +341,7 @@ function rdfui_form_field_ui_field_edit_form_submit($form, &$form_state) {
  */
 function rdfui_form_node_type_form_submit($form, &$form_state) {
   $entity_type = 'node';
-  $bundle = $form_state['input']['type'];
+  $bundle = $form_state['values']['type'];
   // We only need to call _rdfui_mapping_save once because it checks whether
   // rdf_type is set in the form before saving the field value.
   _rdfui_mapping_save($form_state, $entity_type, $bundle, 'title');
@@ -566,7 +566,7 @@ function _rdfui_mapping_save($form_state, $entity_type, $bundle, $field_name) {
     $mapping['rdftype'] = rdfui_extract_curies($form_state['values']['rdf_rdftype']);
   }
   // Turn the predicates string into an array.
-  if (isset($form_state['input']['rdf_title_type']) || $field_name != 'title') {
+  if (isset($form_state['values']['rdf_title_type']) || $field_name != 'title') {
     $form_state['values']['rdf_'. $field_name .'_predicates'] = rdfui_extract_curies($form_state['values']['rdf_'. $field_name .'_predicates']);
   }
   

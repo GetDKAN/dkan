@@ -367,7 +367,7 @@ function context_ui_page_alter(&$page) {
  */
 function context_ui_menu_contextual_links_alter(&$links, $router_item, $root_path) {
   if(context_ui_dialog_is_enabled()  &&
-     !context_isset('context_ui', 'context_ui_editor_present')) {
+     !context_isset('context_ui', 'context_ui_editor_present') && user_access('administer contexts')) {
     $links['layout'] = array(
       'href' => 'context-ui/activate',
       'title' => t('Configure Layout'),

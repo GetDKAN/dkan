@@ -272,7 +272,7 @@ class context_reaction_block extends context_reaction {
     static $requirements;
     if (!isset($requirements) || $reset) {
       global $user;
-      if ($user->uid) {
+      if ($user->uid && user_access('administer contexts') && variable_get('context_ui_dialog_enabled', FALSE)) {
         $requirements = TRUE;
         drupal_add_library('system', 'ui.droppable');
         drupal_add_library('system', 'ui.sortable');
@@ -520,7 +520,6 @@ class context_reaction_block extends context_reaction {
             $block_info["{$row->module}-{$row->delta}"] = (object) array_merge((array) $row, (array) $block_info["{$row->module}-{$row->delta}"]);
             unset($block_info["{$row->module}-{$row->delta}"]->status);
             unset($block_info["{$row->module}-{$row->delta}"]->visibility);
-            unset($block_info["{$row->module}-{$row->delta}"]->cache);
           }
         }
       }

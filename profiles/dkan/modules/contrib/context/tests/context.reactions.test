@@ -46,6 +46,7 @@ class ContextReactionBlockTest extends DrupalWebTestCase {
     // Test title override of code provided block
     $edit = array('title' => 'Context Online Block');
     $this->drupalPost('admin/structure/block/manage/user/online/configure', $edit, t('Save block'));
+    $this->drupalPost('admin/config/development/performance', array(), t('Clear all caches'));
     $this->drupalGet('node');
     $this->assertText('Context Online Block');
 
@@ -88,15 +89,18 @@ class ContextReactionBlockAjaxTest extends DrupalWebTestCase {
 
   function setUp() {
     parent::setUp('context', 'ctools');
+    $admin_user = $this->drupalCreateUser(array('administer site configuration'));
+    $this->drupalLogin($admin_user);
   }
 
   function test() {
+    $token = drupal_hmac_base64('user-online', $this->session_id . drupal_get_private_key() . drupal_get_hash_salt());
     $this->drupalGet('node', array(
-      'query' => array('context_block' => 'user-online,testcontext')
+      'query' => array('context_block' => 'user-online,testcontext', 'context_token' => $token)
     ));
 
-    $this->assertText('"status":1');
-    $this->assertText("Who's online");
+    $this->assertText('"status":1', 'Successful return status. $drupal_hash_salt must be set explicitly for this test to pass');
+    $this->assertText('Who\\u0027s online', 'Expected text in block data. drupal_hash_salt must be set explicitly for this test to pass');
   }
 }
 

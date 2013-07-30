@@ -202,6 +202,7 @@ class ContextConditionLanguageTest extends DrupalWebTestCase {
     parent::setUp('context', 'ctools', 'locale');
     $admin_user = $this->drupalCreateUser(array('administer site configuration', 'administer languages'));
     $this->drupalLogin($admin_user);
+    $this->drupalPost('admin/config/development/performance', array(), t('Clear all caches'));
 
     // Set up Spanish as second language.
     $this->drupalPost('admin/config/regional/language/add', array('langcode' => 'es'), t('Add language'));

@@ -45,6 +45,10 @@ function og_uninstall() {
     ->condition('name', 'og_group_manager_default_rids_%', 'LIKE')
     ->execute();
 
+  db_delete('variable')
+    ->condition('name', 'og_is_group_default_access__%__%', 'LIKE')
+    ->execute();
+
   $vars = array(
     'og_context',
     'og_group_manager_full_access',

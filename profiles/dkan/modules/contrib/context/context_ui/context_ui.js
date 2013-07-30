@@ -98,7 +98,7 @@ Drupal.behaviors.context_ui = { attach: function(context) {
   });
 
   // Initialize context editor.
-  if (jQuery().pageEditor) {
+  if ($().pageEditor) {
     $('form.context-editor:not(.context-ui-processed)')
       .addClass('context-ui-processed')
       .pageEditor()

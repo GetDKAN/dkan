@@ -197,7 +197,7 @@ class OgSelectionHandler extends EntityReference_SelectionHandler_Generic {
     }
     $node_type = $this->instance['bundle'];
     foreach ($ids as $delta => $id) {
-      if (!is_numeric($id) || !$id || !og_user_access('node', $id, "create $node_type content")) {
+      if (!is_numeric($id) || !$id || !og_user_access($this->field['settings']['target_type'], $id, "create $node_type content")) {
         unset($ids[$delta]);
       }
     }

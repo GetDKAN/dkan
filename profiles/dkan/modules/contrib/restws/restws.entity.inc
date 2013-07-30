@@ -216,7 +216,12 @@ class RestWSEntityResourceController implements RestWSQueryResourceControllerInt
     foreach ($meta_controls as $control_name => $value) {
       switch ($control_name) {
         case $rest_controls['sort']:
-          $direction = isset($meta_controls[$rest_controls['direction']]) ? $meta_controls[$rest_controls['direction']] : 'ASC';
+          if (isset($meta_controls[$rest_controls['direction']]) && strtolower($meta_controls[$rest_controls['direction']]) == 'desc') {
+            $direction = 'DESC';
+          }
+          else {
+            $direction = 'ASC';
+          }
           $this->propertyQueryOperation($query, 'OrderBy', $value, $direction);
           break;
 
@@ -241,7 +246,7 @@ class RestWSEntityResourceController implements RestWSQueryResourceControllerInt
       $query_result = $query->execute();
     }
     catch (PDOException $exception) {
-      throw new RestWSException($exception->getMessage(), 412);
+      throw new RestWSException('Query failed.', 400);
     }
     $query_result = isset($query_result[$this->resource()]) ? $query_result[$this->resource()] : array();
 

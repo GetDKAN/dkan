@@ -363,6 +363,11 @@ class RestWSTestCase extends DrupalWebTestCase {
 
     $this->assertEqual($result_nodes['list'][1]['title'], 'node4', 'Right node title was received.');
     $this->assertEqual($result_nodes['list'][1]['body']['format'], 'full_html', 'Node has body with full_html.');
+
+    // Test SQL injection via order direction.
+    $this->httpRequest('node.json', 'GET', $account, array('sort' => 'title', 'direction' => 'ASC; DELETE FROM ' . $this->databasePrefix . 'node WHERE nid = 1; --'));
+    $node = node_load(1, NULL, TRUE);
+    $this->assertNotEqual($node, FALSE, 'Node has not been deleted through SQL injection.');
   }
 
   /**

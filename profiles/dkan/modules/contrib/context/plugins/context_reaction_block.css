@@ -48,7 +48,7 @@
   border-radius:5px;
   -moz-border-radius:5px;
   -moz-user-select:none;
--  -webkit-user-select:none;
+  -webkit-user-select:none;
 }
 
 
@@ -114,7 +114,6 @@ body.context-editing div.context-block-region {
     font-size:18px;
     color:#fff;
     white-space:nowrap;
-    padding:;
     display:block;
     -moz-user-select:none;
     -webkit-user-select:none;
@@ -260,9 +259,4 @@ a.context-ui-add-link, a:link.context-ui-add-link, a:visited.context-ui-add-link
   font-size:24px;
   margin:10px 0px;
   padding:0;
-}
-
-.ui-sortable-helper {
-  max-width: 300px;
-  max-height: 300px;
 }

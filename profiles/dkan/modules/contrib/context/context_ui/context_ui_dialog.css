@@ -7,11 +7,11 @@
   color: #222;
 }
 #context_ui_dialog-context-ui ul {
-	margin: 0;
+  margin: 0;
 }
 #context_ui_dialog-context-ui ul li {
-	padding: 4px 0;
-	list-style: none;
+  padding: 4px 0;
+  list-style: none;
 }
 
 #context_ui_dialog-context-ui .buttons {
@@ -21,7 +21,7 @@
 #context_ui_dialog-context-ui div.admin-pane-condition,
 #context_ui_dialog-context-ui div.admin-pane-reaction-theme,
 #context_ui_dialog-context-ui div.admin-pane-reaction-theme_html {
-	display: none;
+  display: none;
 }
 
 .boxes-box-editing {
@@ -31,8 +31,8 @@
 }
 
 body.context-editing div.contextual-links-wrapper {
-	right: 0;
-	top: 40px;
+  right: 0;
+  top: 40px;
 }
 
 #context_ui_dialog-context-ui a.context_ui_dialog-stop,
@@ -70,6 +70,7 @@ form.context-editing li.context-editing {
   background:#fff;
   color:#222;
   top:140px;
+  left: 0px;
   display:none;
   z-index:400;
   padding:10px;

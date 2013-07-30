@@ -1753,6 +1753,11 @@ function og_membership_access($op, $entity, $account = NULL, $entity_type = 'og_
  */
 function og_is_group($entity_type, $entity) {
   $wrapper = entity_metadata_wrapper($entity_type, $entity);
+  $bundle = $wrapper->getBundle();
+
+  if (!field_info_instance($entity_type, OG_GROUP_FIELD, $bundle)) {
+    return variable_get("og_is_group__{$entity_type}__{$bundle}", FALSE);
+  }
   return !empty($wrapper->{OG_GROUP_FIELD}) && $wrapper->{OG_GROUP_FIELD}->value();
 }
 
@@ -2287,11 +2292,15 @@ function og_is_group_audience_field($field_name) {
  *   The bundle name to be checked.
  * @param $group_type
  *   Filter list to only include fields referencing a specific group type.
+ * @param $group_bundle
+ *   Filter list to only include fields referencing a specific group bundle.
+ *   Fields that do not specify any bundle restrictions at all are also
+ *   included.
  *
  * @return
  *   Array keyed with the field name and the field label as the value.
  */
-function og_get_group_audience_fields($entity_type = 'user', $bundle_name = 'user', $group_type = NULL) {
+function og_get_group_audience_fields($entity_type = 'user', $bundle_name = 'user', $group_type = NULL, $group_bundle = NULL) {
   $return = &drupal_static(__FUNCTION__, array());
   $identifier = $entity_type . ':' . $bundle_name . ':' . $group_type;
   if (isset($return[$identifier])) {
@@ -2305,6 +2314,9 @@ function og_get_group_audience_fields($entity_type = 'user', $bundle_name = 'use
     }
     $field_info = field_info_field($instance['field_name']);
     if (isset($group_type) && $field_info['settings']['target_type'] != $group_type) {
+      continue;
+    }
+    if ($group_bundle && !empty($field_info['settings']['handler_settings']['target_bundles']) && !in_array($group_bundle, $field_info['settings']['handler_settings']['target_bundles'])) {
       continue;
     }
     $return[$identifier][$field_name] = $instance['label'];
@@ -2481,12 +2493,13 @@ function og_is_member($group_type, $gid, $entity_type = 'user', $entity = NULL, 
  *   TRUE if group should use default roles and permissions.
  */
 function og_is_group_default_access($group_type, $gid) {
-  if (!field_info_field(OG_DEFAULT_ACCESS_FIELD)) {
-    // Don't bother loading entity if field does not exist.
-    return TRUE;
+  $wrapper = entity_metadata_wrapper($group_type, $gid);
+  $bundle = $wrapper->getBundle();
+
+  if (!field_info_instance($group_type, OG_DEFAULT_ACCESS_FIELD, $bundle)) {
+    return variable_get("og_is_group_default_access__{$group_type}__{$bundle}", TRUE);
   }
 
-  $wrapper = entity_metadata_wrapper($group_type, $gid);
   if (empty($wrapper->{OG_DEFAULT_ACCESS_FIELD})) {
     return TRUE;
   }

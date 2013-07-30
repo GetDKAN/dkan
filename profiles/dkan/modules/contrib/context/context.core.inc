@@ -339,7 +339,7 @@ function context_context_page_reaction() {
 }
 
 /**
- * Implementation of hook_page_alter().
+ * Implementation of hook_preprocess_page().
  */
 function context_preprocess_page(&$vars) {
   if ($plugin = context_get_plugin('reaction', 'menu')) {

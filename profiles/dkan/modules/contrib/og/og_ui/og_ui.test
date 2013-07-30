@@ -229,7 +229,7 @@ class OgUiManagePeopleTestCase extends DrupalWebTestCase {
   function setUp() {
     parent::setUp('og_ui', 'entity_feature');
     // Add OG group field.
-    og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
+    og_create_field(OG_GROUP_FIELD, 'entity_test', 'test');
   }
 
   /**
@@ -240,7 +240,7 @@ class OgUiManagePeopleTestCase extends DrupalWebTestCase {
     $this->drupalLogin($user1);
 
     // Create a group.
-    $entity = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $entity = entity_create('entity_test', array('name' => 'test', 'uid' => $user1->uid));
     $wrapper = entity_metadata_wrapper('entity_test', $entity);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
@@ -253,7 +253,7 @@ class OgUiManagePeopleTestCase extends DrupalWebTestCase {
     $this->drupalPost('group/entity_test/' . $entity->pid . '/admin/people/add-user', $edit, t('Add users'));
 
     // Reload user.
-  og_membership_invalidate_cache();
+    og_membership_invalidate_cache();
     $this->assertTrue(og_is_member('entity_test', $entity->pid, 'user', $user2), 'User was added to the group.');
 
     // Add the same user twice.
@@ -265,6 +265,118 @@ class OgUiManagePeopleTestCase extends DrupalWebTestCase {
     $edit['name'] = $this->randomName();
     $this->drupalPost('group/entity_test/' . $entity->pid . '/admin/people/add-user', $edit, t('Add users'));
     $this->assertText(t('You have entered an invalid user name.'), t('Invalid user name not added to group.'));
+  }
+
+  /**
+   * Test that only the correct group audience fields are shown.
+   */
+  function testOgUiAddPeopleMultipleAudienceFields() {
+    $user1 = $this->drupalCreateUser();
+    $this->drupalLogin($user1);
+
+    // Delete the default group audience field
+    field_delete_field('og_user_entity_test');
+
+    // Create three group audience fields and corresponding instances on users:
+    // - Two for the two bundles on the 'entity_test' entity type.
+    // - One for the 'entity_test2' entity type.
+    $fields['group_audience_entity_test_test'] = field_create_field(array(
+      'field_name' => 'group_audience_entity_test_test',
+      'type' => 'entityreference',
+      'settings' => array(
+        'target_type' => 'entity_test',
+        'handler' => 'og',
+        'handler_settings' => array(
+          'target_bundles' => array('test'),
+          'membership_type' => 'og_membership_type_default',
+        ),
+      ),
+    ));
+    field_create_instance(array(
+      'field_name' => 'group_audience_entity_test_test',
+      'entity_type' => 'user',
+      'bundle' => 'user',
+    ));
+
+    $field['group_audience_entity_test_test2'] = field_create_field(array(
+      'field_name' => 'group_audience_entity_test_test2',
+      'type' => 'entityreference',
+      'settings' => array(
+        'target_type' => 'entity_test',
+        'handler' => 'og',
+        'handler_settings' => array(
+          'target_bundles' => array('test2'),
+          'membership_type' => 'og_membership_type_default',
+        ),
+      ),
+    ));
+    field_create_instance(array(
+      'field_name' => 'group_audience_entity_test_test2',
+      'entity_type' => 'user',
+      'bundle' => 'user',
+    ));
+
+    $field['group_audience_entity_test2'] = field_create_field(array(
+      'field_name' => 'group_audience_entity_test2',
+      'type' => 'entityreference',
+      'settings' => array(
+        'target_type' => 'entity_test2',
+        'handler' => 'og',
+        'handler_settings' => array(
+          'membership_type' => 'og_membership_type_default',
+        ),
+      ),
+    ));
+    field_create_instance(array(
+      'field_name' => 'group_audience_entity_test2',
+      'entity_type' => 'user',
+      'bundle' => 'user',
+    ));
+
+    // Create a group belonging to the 'test' bundle of the 'entity_test' entity
+    // type.
+    $entity = entity_create('entity_test', array('name' => 'test', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('entity_test', $entity);
+    $wrapper->{OG_GROUP_FIELD}->set(1);
+    $wrapper->save();
+
+    // Because only one of the three fields applies to this entity type and
+    // bundle, no select box should be shown.
+    $this->drupalGet('group/entity_test/' . $entity->pid . '/admin/people/add-user');
+    $this->assertNoField('edit-field-name');
+
+
+    // Temporarily change the second field to apply to this bundle. Now the
+    // select box should be shown.
+    $field['group_audience_entity_test_test2']['settings']['handler_settings']['target_bundles'] = array('test');
+    field_update_field($field['group_audience_entity_test_test2']);
+    $this->drupalGet('group/entity_test/' . $entity->pid . '/admin/people/add-user');
+    $this->assertField('edit-field-name');
+    $elements = $this->xpath('//select[@id="edit-field-name"]//option');
+    $this->assertEqual(count($elements), 2, '2 options available for selection');
+    $elements = $this->xpath('//select[@id="edit-field-name"]//option[@value="group_audience_entity_test_test"]');
+    $this->assertTrue(isset($elements[0]), '<em>group_audience_entity_test_test</em> field available for selection');
+    $elements = $this->xpath('//select[@id="edit-field-name"]//option[@value="group_audience_entity_test_test2"]');
+    $this->assertTrue(isset($elements[0]), '<em>group_audience_entity_test_test2</em> field available for selection');
+
+    // Revert the field settings to the previous state.
+    $field['group_audience_entity_test_test2']['settings']['handler_settings']['target_bundles'] = array('test2');
+    field_update_field($field['group_audience_entity_test_test2']);
+    $this->drupalGet('group/entity_test/' . $entity->pid . '/admin/people/add-user');
+    $this->assertNoField('edit-field-name');
+
+    // Change the third field to apply to this entity type. In this case the
+    // select box should be shown, as well.
+    $field['group_audience_entity_test2']['settings']['target_type'] = 'entity_test';
+    field_update_field($field['group_audience_entity_test2']);
+    $this->drupalGet('group/entity_test/' . $entity->pid . '/admin/people/add-user');
+    $this->assertField('edit-field-name');
+    $elements = $this->xpath('//select[@id="edit-field-name"]//option');
+    $this->assertEqual(count($elements), 2, '2 options available for selection');
+    $elements = $this->xpath('//select[@id="edit-field-name"]//option[@value="group_audience_entity_test_test"]');
+    $this->assertTrue(isset($elements[0]), '<em>group_audience_entity_test_test</em> field available for selection');
+    $elements = $this->xpath('//select[@id="edit-field-name"]//option[@value="group_audience_entity_test2"]');
+    $this->assertTrue(isset($elements[0]), '<em>group_audience_entity_test2</em> field available for selection');
   }
 }
 
