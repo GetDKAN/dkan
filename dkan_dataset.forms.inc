@@ -246,15 +246,18 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
     else {
       $type = substr($link, strrpos($link, '.') + 1);
     }
-    $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['vid'] = 2;
-    if ($tax = taxonomy_get_term_by_name($type, 'format')) {
-      $tax = array_values($tax);
-      $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['tid'] = $tax[0]->tid;
-      $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['name'] = $tax[0]->name;
-    }
-    else {
-      $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['tid'] = 'autocreate';
-      $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['name'] = $type;
+    $vocabs = taxonomy_vocabulary_get_names();
+    if (isset($vocabs['format'])) {
+      $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['vid'] = $vocabs['format']->vid;
+      if ($tax = taxonomy_get_term_by_name($type, 'format')) {
+        $tax = array_values($tax);
+        $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['tid'] = $tax[0]->tid;
+        $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['name'] = $tax[0]->name;
+      }
+      else {
+        $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['tid'] = 'autocreate';
+        $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['name'] = $type;
+      }
     }
   }
 }
@@ -298,8 +301,8 @@ function dkan_dataset_additional_submit_js($form, &$form_state) {
 
   $stage = dkan_form_create_stages('dataset-additional', $nid);
 
-  $commands[] = ajax_command_replace('ol.stages', $stage);
   $commands[] = ajax_command_replace('#' . $form['#id'], drupal_render($dataset_form));
+  $commands[] = ajax_command_prepend('.node-dataset-form', $stage);
   $commands[] = ajax_command_settings(array('dkanAdditional' => array('nid' => $nid)), TRUE);
   $output = array('#type' => 'ajax', '#commands' => $commands);
   return $output;
@@ -320,7 +323,7 @@ function dkan_dataset_resource_another_submit_js($form, &$form_state) {
   $commands[] = ajax_command_replace('ol.stages', $stage);
   $message = '<div id="messages"><div class="messages status"> Your resource <em class="placeholder">' . $form_state['values']['title'] . '</em> has been created. View it here: ' . l($form_state['values']['title'], 'node/' . $form_state['nid']) . ' or add another.</div></div>';
 
-  $commands[] = ajax_command_replace('#' . $form['#id'], drupal_render($resource_form));
+  $commands[] = ajax_command_replace('.node-resource-form', drupal_render($resource_form));
   $commands[] = ajax_command_prepend('ul.nav-simple', '<li>' . l($form_state['values']['title'], 'node/' . $form_state['nid'] . '/edit') . '</li>');
   $commands[] = ajax_command_prepend('form.node-form', $message);
   $commands[] = ajax_command_settings(array('dkanPush' => array('nid' => $nid)), TRUE);
