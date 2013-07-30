@@ -708,7 +708,7 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 }
 .horizontal-tabs ul.horizontal-tabs-list li.selected a {
   background-color: #fff;
-  border: 1px solid #CCC;
+  border: none;
   border-bottom: 0;
 }
 #dataset-node-form a.bt-pop {
@@ -774,7 +774,7 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 }
 
 /*** Forms ***/
-#resource-node-form,
+.node-resource-form,
 #dataset-node-form {
   padding: 30px 0 0 0;
   position: relative;
@@ -797,6 +797,8 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 .stages a:visited,
 .stages a {
   color: #FFF;
+  text-decoration: none;
+  text-shadow: none;
 }
 .stages:before,
 .stages:after {
@@ -819,6 +821,7 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   padding: 10px 20px;
   position: relative;
   z-index: 0;
+  color: #666
 }
 .stages li:before {
   -webkit-border-radius: 14px;
@@ -832,7 +835,7 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   font-weight: bold;
   text-align: center;
   color: #ffffff;
-  background-color: #aeaeae;
+  background-color: #D5D5D5;
   z-index: 1;
 }
 .stages li:after {
@@ -865,7 +868,6 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   -webkit-border-radius: 0 5px 0 0;
   -moz-border-radius: 0 5px 0 0;
   border-radius: 0 5px 0 0;
-  overflow: hidden;
 }
 .stages li.first:after {
   content: none;
@@ -888,12 +890,15 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 .stages li.complete {
   background: none;
 }
+.stages li.complete a {
+  color: #444;
+}
 .stages li.active:before {
   color: #8cc68a;
   background: #ffffff;
 }
 .stages li.complete:before {
-  color: rgb(55, 95, 54);
+  color: #666;
   background: #eef6ed;
 }
 .stages li .highlight {
@@ -918,18 +923,18 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
   background: transparent;
 }
 .stages li.uncomplete:before, .stages li.uncomplete a {
-  color: #FFF;
+  color: #666;
 }
 .stages li.active .highlight {
   color: #ffffff;
   background: #8cc68a;
 }
-#resource-node-form .stages li.complete .highlight a {
-  color: #FFF;
+.node-resource-form .stages li.complete .highlight a {
+  color: #666;
   text-shadow: none;
 }
 .stages li.complete .highlight {
-  background: rgb(55, 95, 54);
+  background: #c5e2c4;
 }
 ul.primary {
   border: 0;
@@ -942,6 +947,9 @@ ul.primary li a {
   border-radius: 5px 5px 0px 0px;
   padding: 5px 15px 2px 15px;
   color: #777;
+}
+.group-data .messages.status {
+  display: none;
 }
 .node-form .vertical-tabs label {
   float: none;
@@ -961,7 +969,7 @@ ul.primary li a {
 #node_dataset_form_group_primary legend {
   display: none;
 }
-#resource-node-form .field-name-body textarea,
+.node-resource-form .field-name-body textarea,
 #dataset-node-form .field-name-body textarea {
   margin-bottom: 0;
   padding: 10px;
@@ -978,7 +986,7 @@ form-textarea-wrapper textarea {
 .vertical-tabs fieldset.vertical-tabs-pane {
   padding: 10px;
 }
-#resource-node-form .field-name-body .form-type-textarea label,
+.node-resource-form .field-name-body .form-type-textarea label,
 #dataset-node-form .field-name-body .form-type-textarea label {
   margin-top: 30px;
 }
@@ -989,7 +997,7 @@ form-textarea-wrapper textarea {
 #dataset-node-form .field-name-field-data-dictionary .form-textarea-wrapper textarea {
   margin-top: -20px;
 }
-#resource-node-form .field-name-body .form-textarea-wrapper,
+.node-resource-form .field-name-body .form-textarea-wrapper,
 #dataset-node-form .field-name-body .form-textarea-wrapper {
   margin-left: 130px;
   position: relative;
@@ -1021,16 +1029,16 @@ form-textarea-wrapper textarea {
 .filter-wrapper {
   padding: 0;
 }
-#resource-node-form .form-item-title,
+.node-resource-form .form-item-title,
 #dataset-node-form .form-item-title {
   height: 65px;
 }
-#resource-node-form .form-item-title input,
+.node-resource-form .form-item-title input,
 #dataset-node-form .form-item-title input {
   height: 55px;
   float: none;
 }
-#resource-node-form .filter-guidelines .tips,
+.node-resource-form .filter-guidelines .tips,
 #dataset-node-form .filter-guidelines .tips {
   display: none;
 }
@@ -1044,9 +1052,7 @@ label.for=["edit-field-upload-und-0"] {
   font-size: 19px;
   margin: 53px 0 0px 0px;
 }
-#edit-field-upload {
-}
-#resource-node-form #edit-field-upload-und-0-ajax-wrapper input {
+.node-resource-form #edit-field-upload-und-0-ajax-wrapper input {
   width: auto;
   font-size: 12px;
   height: auto;
@@ -1069,35 +1075,36 @@ label.for=["edit-field-upload-und-0"] {
   margin: 5px 0;
   font-size: 13px;
 }
-#resource-node-form #edit-field-upload {
+.node-resource-form #edit-field-upload {
   font-size: 12px;
   padding: 12px;
   width: 495px;
 }
-#resource-node-form #edit-field-upload legend {
+.node-resource-form #edit-field-upload legend {
   font-size: 14px;
   padding: 10px 0 0 0;
   line-height: 20px;
   margin: 0;
 }
-#resource-node-form fieldset.collapsible div.fieldset-wrapper {
+.node-resource-form fieldset.collapsible div.fieldset-wrapper {
   padding: 5px;
 }
-#resource-node-form fieldset.collapsed {
+.node-resource-form fieldset.collapsed {
   padding: 15px 0;
 }
-#resource-node-form input.autocomplete-deluxe-form,
+body .node-resource-form input.autocomplete-deluxe-form,
 #dataset-node-form input.autocomplete-deluxe-form {
   border: 0;
   background: transparent;
   box-shadow: none;
   height: auto;
+  padding: 10px 5px;
 }
-#resource-node-form a {
+.node-resource-form a {
   color: #999;
   border: 0;
 }
-#resource-node-form input[type="submit"],
+.node-resource-form input[type="submit"],
 #dataset-node-form input[type="submit"] {
   margin: 0 2px;
   font-weight: bold;
@@ -1137,8 +1144,8 @@ label.for=["edit-field-upload-und-0"] {
 
 #edit-field-upload,
 input#edit-field-link-api-und-0-url,
-#resource-node-form textarea,
-#resource-node-form input,
+.node-resource-form textarea,
+.node-resource-form input,
 #dataset-node-form textarea,
 #dataset-node-form input {
   margin: 0;
@@ -1161,7 +1168,8 @@ input#edit-field-link-api-und-0-url,
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-#edit-field-format .description {
+
+.field-name-field-format .description {
   top: 15px;
   left: 145px;
   font-size: 13px;
@@ -1173,17 +1181,24 @@ input#edit-field-link-api-und-0-url,
   font-size: 14px;
   color: #999;
 }
-#edit-field-format .autocomplete-deluxe-container,
-.form-item-field-tags-und .autocomplete-deluxe-container {
+.field-name-field-tags .autocomplete-deluxe-container {
   width: 505px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
   border: 1px solid #CCC;
 }
+.field-name-field-format .autocomplete-deluxe-container {
+  width: 505px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #CCC;
+  margin-top: 10px;
+}
 .group-data .horizontal-tabs,
 #dataset-node-form .form-item-title input,
-#resource-node-form .form-item-title input {
+.node-resource-form.form-item-title input {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
@@ -1206,26 +1221,30 @@ input#edit-field-link-api-und-0-url,
   top: 30px;
   color: #999;
 }
-#resource-node-form input#edit-title,
+.node-resource-form input[name="title"] {
+  margin-left: 10px;
+  width: 520px;
+}
+.node-resource-form input#edit-title,
 #dataset-node-form input#edit-title {
   height: 55px;
 }
-#resource-node-form .form-item-title label,
+.node-resource-form .form-item-title label,
 #dataset-node-form .form-item-title label {
   margin-top: 10px;
   font-size: 18px;
   text-align: right;
   width: 110px;
 }
-#edit-field-format-und-values,
+.field-name-field-format,
 #dataset-node-form #edit-field-tags-und-term-entry {
   font-size: 16px;
   padding: 4px;
   background-position: 99% 8px;
 }
-#edit-field-format label,
+.field-name-field-format label,
 #edit-field-tags-und label {
- margin-top: 15px;
+ margin-top: 20px;
 }
 .field-name-field-license-und-select {
   padding: 0 5px;
@@ -1294,13 +1313,38 @@ html.js input.throbbing {
   width: 400px;
   float: right;
 }
+.field-name-field-dataset-ref {
+  padding-top: 10px;
+}
+.field-name-field-dataset-ref ul {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+  transition: border linear 0.2s, box-shadow linear 0.2s;
+  border-radius: 3px;
+}
+.field-name-field-dataset-ref .description {
+  width: inherit;
+  margin-left: 135px;
+  float: none;
+  text-align: left;
+  padding: 5px 0;
+}
+.field-name-field-dataset-ref label {
+  width: 120px;
+  text-align: right;
+}
 #node_dataset_form_group_additional .field-type-text label,
 #node_dataset_form_group_additional .field-type-list-integer label,
 #field-tags-wrapper .path-form label,
 #edit-path label,
 .form-item-field-tags-und label,
-#edit-field-format label,
-#resource-node-form .field-name-body label,
+.field-name-field-format label,
+.node-resource-form .field-name-body label,
 #dataset-node-form .field-name-body label,
 .field-group-htabs.group-data label,
 #edit-field-tags-und label,
@@ -1312,7 +1356,7 @@ html.js input.throbbing {
   padding: 0 0 0 130px;
 }
 #dataset-node-form .form-item-title label,
-#resource-node-form .form-item-title label {
+.node-resource-form .form-item-title label {
   margin-top: 18px;
   width: 110px;
   text-align: right;
@@ -1348,13 +1392,13 @@ html.js input.throbbing {
 .field-name-field-format {
   padding: 10px 0;
 }
-#resource-node-form  .field-name-field-format label {
+.node-resource-form .field-name-field-format label {
+  margin-top: 20px;
+}
+.node-resource-form .field-name-field-format .chzn-container  {
   margin-top: 5px;
 }
-#resource-node-form  .field-name-field-format .chzn-container  {
-  margin-top: 5px;
-}
-#resource-node-form .form-item-title {
+.node-resource-form .form-item-title {
   clear: both;
 }
 .horizontal-tabs .compact-form-wrapper {
@@ -1364,7 +1408,7 @@ html.js input.throbbing {
   top: 53px;
   left: 12px;
 }
-#resource-node-form .horizontal-tabs input {
+.node-resource-form .horizontal-tabs input {
   height: 55px;
 }
 .form-item .description.compact-form-description {
@@ -1481,7 +1525,7 @@ html.js input.throbbing {
 .form-item-field-tags-und label {
   margin-top: 10px;
 }
-#edit-field-format .autocomplete-deluxe-throbber,
+.field-name-field-format .autocomplete-deluxe-throbber,
 .form-item-field-tags-und .autocomplete-deluxe-throbber {
   display: none;
 }
@@ -1593,7 +1637,7 @@ html.js input.throbbing {
     top: 0;
     width: 15px;
 }
-#dataset-node-form a {
+.node-dataset-form a {
   color: #AEAEAE;
   text-decoration: underline;
 }
@@ -1753,11 +1797,11 @@ h2.block-title {
   padding: 0;
 }
 /** UI Tabs **/
-#resource-node-form .horizontal-tabs ul.horizontal-tabs-list {
+.node-resource-form .horizontal-tabs ul.horizontal-tabs-list {
   background-color: transparent;
   border: 0;
 }
-#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li #active-horizontal-tab {
+.node-resource-form .horizontal-tabs ul.horizontal-tabs-list li #active-horizontal-tab {
   background: url(../images/sprite-ckan-icons.png) no-repeat -193px 0;
   display: block;
   text-indent: -9999px;
@@ -1766,21 +1810,21 @@ h2.block-title {
   margin: 0 0 0 28px;
   clip: auto;
 }
-#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li a:hover {
+.node-resource-form .horizontal-tabs ul.horizontal-tabs-list li a:hover {
   background-color: transparent;
 }
-#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li {
+.node-resource-form .horizontal-tabs ul.horizontal-tabs-list li {
   border: 0;
   background-color: transparent;
   min-width: 10em;
 }
-#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-1 .summary{
+.node-resource-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-1 .summary{
   background: url(../images/sprite-ckan-icons.png) no-repeat -160px 0;
 }
-#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-2 .summary{
+.node-resource-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-2 .summary{
   background: url(../images/sprite-ckan-icons.png) no-repeat -160px 0;
 }
-#resource-node-form .horizontal-tabs ul.horizontal-tabs-list li .summary{
+.node-resource-form .horizontal-tabs ul.horizontal-tabs-list li .summary{
   background: url(../images/sprite-ckan-icons.png) no-repeat -144px 0;
   width: 16px;
   height: 16px;
@@ -1788,10 +1832,10 @@ h2.block-title {
   float: left;
   margin: 0 3px;
 }
-#resource-node-form .field-group-htabs.group-data div.horizontal-tabs {
+.node-resource-form .field-group-htabs.group-data div.horizontal-tabs {
   border: 0;
 }
-#resource-node-form .form-item {
+.node-resource-form .form-item {
   margin: 0;
 }
 a.btn {
@@ -3201,12 +3245,12 @@ article.node-teaser .data-and-resources .label {
 .label {
   background-color: #999;
 }
-#resource-node-form .bue-ui,
+.node-resource-form .bue-ui,
 #dataset-node-form .bue-ui {
   position: absolute;
   top: 5px;
 }
-#resource-node-form .bue-ui input,
+.node-resource-form .bue-ui input,
 #dataset-node-form .bue-ui input {
   padding: 0 2px;
   filter: url(filters.svg#grayscale);
@@ -3214,7 +3258,7 @@ article.node-teaser .data-and-resources .label {
   -webkit-filter: grayscale(1);
   opacity: .5;
 }
-#resource-node-form .bue-ui input:hover,
+.node-resource-form .bue-ui input:hover,
 #dataset-node-form .bue-ui input:hover {
   opacity: 1;
   filter: url(filters.svg#grayscale);
