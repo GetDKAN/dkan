@@ -47,15 +47,11 @@ function dkan_sitewide_search_db_default_search_api_index() {
         "field_license" : { "type" : "string" },
         "field_tags" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
         "og_group_ref" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "node" },
-        "field_format" : { "type" : "integer", "entity_type" : "taxonomy_term" },
         "search_api_language" : { "type" : "string" },
         "search_api_viewed" : { "type" : "text" },
         "search_api_access_node" : { "type" : "list\\u003Cstring\\u003E" },
         "field_resources:title" : { "type" : "list\\u003Ctext\\u003E" },
-        "field_resources:field_tags" : {
-          "type" : "list\\u003Clist\\u003Cinteger\\u003E\\u003E",
-          "entity_type" : "taxonomy_term"
-        },
+        "field_resources:field_format" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
         "field_resources:body:value" : { "type" : "list\\u003Ctext\\u003E" }
       },
       "data_alter_callbacks" : {
@@ -123,8 +119,7 @@ function dkan_sitewide_search_db_default_search_api_server() {
     "options" : {
       "database" : "default:default",
       "min_chars" : "1",
-      "indexes" : {
-        "datasets" : {
+      "indexes" : { "datasets" : {
           "type" : {
             "table" : "search_api_db_datasets_type",
             "type" : "string",
@@ -175,16 +170,6 @@ function dkan_sitewide_search_db_default_search_api_server() {
             "type" : "list\\u003Cinteger\\u003E",
             "boost" : "1.0"
           },
-          "field_format" : {
-            "table" : "search_api_db_datasets_field_format",
-            "type" : "integer",
-            "boost" : "1.0"
-          },
-          "field_resources:field_tags" : {
-            "table" : "search_api_db_datasets_field_resources_field_tags",
-            "type" : "list\\u003Clist\\u003Cinteger\\u003E\\u003E",
-            "boost" : "1.0"
-          },
           "field_resources:body:value" : {
             "table" : "search_api_db_datasets_field_resources_body_value",
             "type" : "list\\u003Ctext\\u003E",
@@ -194,9 +179,13 @@ function dkan_sitewide_search_db_default_search_api_server() {
             "table" : "search_api_db_datasets_field_resources_title",
             "type" : "list\\u003Ctext\\u003E",
             "boost" : "1.0"
+          },
+          "field_resources:field_format" : {
+            "table" : "search_api_db_datasets_field_resources_field_format",
+            "type" : "list\\u003Cinteger\\u003E",
+            "boost" : "1.0"
           }
-        },
-        "test_file" : []
+        }
       }
     },
     "enabled" : "1",
