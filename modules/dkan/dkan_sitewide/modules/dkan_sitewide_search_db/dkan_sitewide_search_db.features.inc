@@ -42,6 +42,7 @@ function dkan_sitewide_search_db_default_search_api_index() {
       "fields" : {
         "type" : { "type" : "string" },
         "title" : { "type" : "string" },
+        "status" : { "type" : "boolean" },
         "author" : { "type" : "integer", "entity_type" : "user" },
         "field_license" : { "type" : "string" },
         "field_tags" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
@@ -49,17 +50,19 @@ function dkan_sitewide_search_db_default_search_api_index() {
         "field_format" : { "type" : "integer", "entity_type" : "taxonomy_term" },
         "search_api_language" : { "type" : "string" },
         "search_api_viewed" : { "type" : "text" },
-        "status" : { "type" : "boolean" },
-        "search_api_access_node" : { "type" : "list\\u003Cstring\\u003E" }
+        "search_api_access_node" : { "type" : "list\\u003Cstring\\u003E" },
+        "field_resources:title" : { "type" : "list\\u003Ctext\\u003E" },
+        "field_resources:field_tags" : {
+          "type" : "list\\u003Clist\\u003Cinteger\\u003E\\u003E",
+          "entity_type" : "taxonomy_term"
+        },
+        "field_resources:body:value" : { "type" : "list\\u003Ctext\\u003E" }
       },
       "data_alter_callbacks" : {
         "search_api_alter_bundle_filter" : {
           "status" : 1,
           "weight" : "-10",
-          "settings" : {
-            "default" : "0",
-            "bundles" : { "dataset" : "dataset", "resource" : "resource" }
-          }
+          "settings" : { "default" : "0", "bundles" : { "dataset" : "dataset" } }
         },
         "search_api_alter_node_access" : { "status" : 1, "weight" : "0", "settings" : [] },
         "search_api_alter_node_status" : { "status" : 0, "weight" : "0", "settings" : [] },
@@ -87,11 +90,7 @@ function dkan_sitewide_search_db_default_search_api_index() {
         "search_api_tokenizer" : {
           "status" : 0,
           "weight" : "20",
-          "settings" : {
-            "fields" : { "title" : true },
-            "spaces" : "[^[:alnum:]]",
-            "ignorable" : "[\\u0027]"
-          }
+          "settings" : { "fields" : [], "spaces" : "[^[:alnum:]]", "ignorable" : "[\\u0027]" }
         },
         "search_api_stopwords" : {
           "status" : 0,
@@ -124,7 +123,8 @@ function dkan_sitewide_search_db_default_search_api_server() {
     "options" : {
       "database" : "default:default",
       "min_chars" : "1",
-      "indexes" : { "datasets" : {
+      "indexes" : {
+        "datasets" : {
           "type" : {
             "table" : "search_api_db_datasets_type",
             "type" : "string",
@@ -179,8 +179,24 @@ function dkan_sitewide_search_db_default_search_api_server() {
             "table" : "search_api_db_datasets_field_format",
             "type" : "integer",
             "boost" : "1.0"
+          },
+          "field_resources:field_tags" : {
+            "table" : "search_api_db_datasets_field_resources_field_tags",
+            "type" : "list\\u003Clist\\u003Cinteger\\u003E\\u003E",
+            "boost" : "1.0"
+          },
+          "field_resources:body:value" : {
+            "table" : "search_api_db_datasets_field_resources_body_value",
+            "type" : "list\\u003Ctext\\u003E",
+            "boost" : "1.0"
+          },
+          "field_resources:title" : {
+            "table" : "search_api_db_datasets_field_resources_title",
+            "type" : "list\\u003Ctext\\u003E",
+            "boost" : "1.0"
           }
-        }
+        },
+        "test_file" : []
       }
     },
     "enabled" : "1",
