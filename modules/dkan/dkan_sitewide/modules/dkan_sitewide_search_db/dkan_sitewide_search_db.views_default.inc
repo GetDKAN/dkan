@@ -76,6 +76,7 @@ function dkan_sitewide_search_db_views_default_views() {
   );
   $handler->display->display_options['filters']['search_api_views_fulltext']['fields'] = array(
     'search_api_viewed' => 'search_api_viewed',
+    'field_resources:body:value' => 'field_resources:body:value',
   );
 
   /* Display: Page */
