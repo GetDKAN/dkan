@@ -62,7 +62,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.slugify.js';
-    beautytips_add_beautytips();;
+    beautytips_add_beautytips();
 
     $form['#after_build']['dkan_dataset'] = 'dkan_dataset_resource_form_after_build';
 
@@ -81,30 +81,47 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
                                   <div id="url-edit-preview">
                                     <div id="url-edit-label"><strong>URL</strong></div>
                                     <div id="url-edit-prefix">' . check_plain($_SERVER['HTTP_HOST']) . '/dataset/</div>' .
-                                    '<span id="url-slug">' . $alias  . '</span>' . $form['path']['alias']['#default_value'] . '<button class="btn btn-small">Edit</button>
+      '<span id="url-slug">' . $alias . '</span>' . $form['path']['alias']['#default_value'] . '<button class="btn btn-small">Edit</button>
                                   </div>';
     $form['path']['#suffix'] = '</div>';
     $form['path']['alias']['#prefix'] = '<span class="add-on">/dataset/</span>';
     $form['path']['alias']['#title'] = 'URL';
     // Adding descriptions.
     $form['title']['#attributes']['placeholder'] = t('eg. A descriptive title');
-    $form['body'][DKAN_FIELD_LANG][0]['#prefix'] = '<div id="prefix">';
-    $form['body'][DKAN_FIELD_LANG][0]['#suffix'] = '</div>';
+
+    // Get langcode for body.
+    $body_langcode = dkan_dataset_form_field_language($form, 'body');
+
+    $form['body'][$body_langcode][0]['#prefix'] = '<div id="prefix">';
+    $form['body'][$body_langcode][0]['#suffix'] = '</div>';
     $form['path']['alias']['#description'] = '';
     $form['path']['alias']['#title'] = '';
-    $form['field_tags'][DKAN_FIELD_LANG]['#description'] = t('eg. economy, mental health, government');
+
+    // Get langcode for field_tags.
+    $field_tags_langcode = dkan_dataset_form_field_language($form, 'field_tags');
+
+    $form['field_tags'][$field_tags_langcode]['#description'] = t('eg. economy, mental health, government');
+
+    // Get langcode for field_license.
+    $field_license_langcode = dkan_dataset_form_field_language($form, 'field_license');
     // Add icon to license field.
-    $form['field_license'][DKAN_FIELD_LANG]['#description'] = '<i class="icon-large icon-info-sign"></i>License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>';
-    foreach ($form['field_additional_info'][DKAN_FIELD_LANG] as $key => $values) {
+    $form['field_license'][$field_license_langcode]['#description'] = '<i class="icon-large icon-info-sign"></i>License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>';
+
+    // Get langcode for field_additional_info.
+    $field_additional_info_langcode = dkan_dataset_form_field_language($form, 'field_additional_info');
+    foreach ($form['field_additional_info'][$field_additional_info_langcode] as $key => $values) {
       if (is_int($key)) {
-        $form['field_additional_info'][DKAN_FIELD_LANG][$key]['first']['#attributes']['placeholder'] = t('key');
-        $form['field_additional_info'][DKAN_FIELD_LANG][$key]['second']['#attributes']['placeholder'] = t('value');
+        $form['field_additional_info'][$field_additional_info_langcode][$key]['first']['#attributes']['placeholder'] = t('key');
+        $form['field_additional_info'][$field_additional_info_langcode][$key]['second']['#attributes']['placeholder'] = t('value');
       }
     }
 
     if (isset($form['og_group_ref'])) {
+      // Get langcode for og_group_ref.
+      $og_group_ref_langcode = dkan_dataset_form_field_language($form, 'og_group_ref');
+
       // Don't show groups if user doesn't have any groups to add.
-      $groups = $form['og_group_ref'][DKAN_FIELD_LANG][0]['default']['#options'];
+      $groups = $form['og_group_ref'][$og_group_ref_langcode][0]['default']['#options'];
       if (count($groups) < 2) {
         $form['og_group_ref']['#access'] = FALSE;
       }
@@ -136,7 +153,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       );
       $form['actions']['terms'] = array(
         '#type' => 'item',
-        '#markup' => '<div id="action-info">' .  t('Important: By submitting content, you agree to release your contributions under the Open Database License.') . '</div>',
+        '#markup' => '<div id="action-info">' . t('Important: By submitting content, you agree to release your contributions under the Open Database License.') . '</div>',
       );
       unset($form['actions']['submit']);
     }
@@ -164,18 +181,34 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     $form['#after_build']['dkan_dataset'] = 'dkan_dataset_resource_form_after_build';
 
-    $form['field_dataset_ref'][DKAN_FIELD_LANG]['#description'] = t('Dataset that this resource is attached to.');
+    // Get langcode for field_dataset_ref.
+    $field_dataset_ref_langcode = dkan_dataset_form_field_language($form, 'field_dataset_ref');
+    $form['field_dataset_ref'][$field_dataset_ref_langcode]['#description'] = t('Dataset that this resource is attached to.');
 
-    $form['field_upload'][DKAN_FIELD_LANG][0]['#title'] = '';
-    $form['field_upload'][DKAN_FIELD_LANG][0]['view']['#collapsible'] = TRUE;
-    $form['field_upload'][DKAN_FIELD_LANG][0]['view']['#collasped'] = TRUE;
-    $form['field_link_file'][DKAN_FIELD_LANG][0]['#description'] = 'Link to a CSV file that will be imported into the DKAN datastore.';
-    $form['field_link_api'][DKAN_FIELD_LANG][0]['#description'] = 'Link to a public API or information source.';
+    // Get langcode for field_upload.
+    $field_upload_langcode = dkan_dataset_form_field_language($form, 'field_upload');
+
+    $form['field_upload'][$field_upload_langcode][0]['#title'] = '';
+    $form['field_upload'][$field_upload_langcode][0]['view']['#collapsible'] = TRUE;
+    $form['field_upload'][$field_upload_langcode][0]['view']['#collasped'] = TRUE;
+
+    // Get langcode for field_link_file.
+    $field_link_file_langcode = dkan_dataset_form_field_language($form, 'field_link_file');
+    $form['field_link_file'][$field_link_file_langcode][0]['#description'] = 'Link to a CSV file that will be imported into the DKAN datastore.';
+
+    // Get langcode for field_link_file.
+    $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_link_api');
+    $form['field_link_api'][$field_link_api_langcode][0]['#description'] = 'Link to a public API or information source.';
+
     $form['title']['#attributes']['placeholder'] = t('eg. January Gold Prices');
     $form['title']['#required'] = TRUE;
 
-    $form['field_link_api'][DKAN_FIELD_LANG][0]['#title'] = '';
-    $form['field_link_file'][DKAN_FIELD_LANG][0]['#title'] = '';
+    $form['field_link_api'][$field_link_api_langcode][0]['#title'] = '';
+
+    // Get langcode for field_link_file.
+    $field_link_file_langcode = dkan_dataset_form_field_language($form, 'field_link_file');
+    $form['field_link_file'][$field_link_file_langcode][0]['#title'] = '';
+
     // Move groups to vertical tabs.
     $form['og_group_ref']['#group'] = 'additional_settings';
     $form['og_group_ref']['#title'] = t('Groups');
@@ -184,7 +217,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $action_query = '';
     if ($query = drupal_get_query_parameters()) {
       if (isset($query['dataset'])) {
-        $form['field_dataset_ref'][DKAN_FIELD_LANG]['#default_value'] = $query['dataset'];
+        $form['field_dataset_ref'][$field_dataset_ref_langcode]['#default_value'] = $query['dataset'];
         $action_query = '?dataset=' . $query['dataset'];
       }
       $form['prefix']['#type'] = 'item';
@@ -192,7 +225,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $query['dataset']);
     }
     elseif (isset($form['#node']->field_dataset_ref['nid'])) {
-      $form['field_dataset_ref'][DKAN_FIELD_LANG]['#default_value'] = $form['#node']->field_dataset_ref['nid'];
+      $form['field_dataset_ref'][$field_dataset_ref_langcode]['#default_value'] = $form['#node']->field_dataset_ref['nid'];
       $form['prefix']['#type'] = 'item';
       $form['prefix']['#weight'] = '-20';
       $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $form['#node']->field_dataset_ref['nid']);
@@ -230,9 +263,18 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
  * Validation function for resource node form.
  */
 function dkan_dataset_resource_node_form_validate($form, &$form_state) {
-  $link = $form_state['values']['field_link_file'][DKAN_FIELD_LANG][0]['url'];
-  $api = $form_state['values']['field_link_api'][DKAN_FIELD_LANG][0]['url'];
-  $fid = $form_state['values']['field_upload'][DKAN_FIELD_LANG][0]['fid'];
+  // Get langcode for field_link_file.
+  $field_link_file_langcode = dkan_dataset_form_field_language($form, 'field_link_file');
+  // Get langcode for field_link_api.
+  $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_link_api');
+  // Get langcode for field_upload.
+  $field_upload_langcode = dkan_dataset_form_field_language($form, 'field_upload');
+  // Get langcode for field_format.
+  $field_format_langcode = dkan_dataset_form_field_language($form, 'field_format');
+
+  $link = $form_state['values']['field_link_file'][$field_link_file_langcode][0]['url'];
+  $api = $form_state['values']['field_link_api'][$field_link_api_langcode][0]['url'];
+  $fid = $form_state['values']['field_upload'][$field_upload_langcode][0]['fid'];
   // Ensure that only one type of resource is uploaded or linked to.
   if ($link && ($api || $fid) || $api && ($link || $fid) || $fid && ($api || $link)) {
     form_set_error('field_link_file', 'Only one resource type can be added.');
@@ -248,15 +290,15 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
     }
     $vocabs = taxonomy_vocabulary_get_names();
     if (isset($vocabs['format'])) {
-      $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['vid'] = $vocabs['format']->vid;
+      $form_state['values']['field_format'][$field_format_langcode][0]['vid'] = $vocabs['format']->vid;
       if ($tax = taxonomy_get_term_by_name($type, 'format')) {
         $tax = array_values($tax);
-        $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['tid'] = $tax[0]->tid;
-        $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['name'] = $tax[0]->name;
+        $form_state['values']['field_format'][$field_format_langcode][0]['tid'] = $tax[0]->tid;
+        $form_state['values']['field_format'][$field_format_langcode][0]['name'] = $tax[0]->name;
       }
       else {
-        $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['tid'] = 'autocreate';
-        $form_state['values']['field_format'][DKAN_FIELD_LANG][0]['name'] = $type;
+        $form_state['values']['field_format'][$field_format_langcode][0]['tid'] = 'autocreate';
+        $form_state['values']['field_format'][$field_format_langcode][0]['name'] = $type;
       }
     }
   }
@@ -267,14 +309,24 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
  */
 function dkan_dataset_resource_form_after_build($form, &$form_state) {
   if (isset($form['field_link_file'])) {
-    $form['field_link_file'][DKAN_FIELD_LANG][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
-    $form['field_link_api'][DKAN_FIELD_LANG][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011';
+    // Get langcode for field_link_file.
+    $field_link_file_langcode = dkan_dataset_form_field_language($form, 'field_link_file');
+    // Get langcode for field_link_api.
+    $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_link_api');
+
+    $form['field_link_file'][$field_link_file_langcode][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
+    $form['field_link_api'][$field_link_api_langcode][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011';
   }
   if (isset($form['field_format'])) {
-    $form['field_format'][DKAN_FIELD_LANG]['textfield']['#attributes']['placeholder'] = 'eg. csv, json';
-    $form['field_format'][DKAN_FIELD_LANG]['textfield']['#description'] = t('File format will be autodetected');
+    // Get langcode for field_format.
+    $field_format_langcode = dkan_dataset_form_field_language($form, 'field_format');
+
+    $form['field_format'][$field_format_langcode]['textfield']['#attributes']['placeholder'] = 'eg. csv, json';
+    $form['field_format'][$field_format_langcode]['textfield']['#description'] = t('File format will be autodetected');
   }
-  $form['body'][DKAN_FIELD_LANG][0]['value']['#attributes']['placeholder'] = t('eg. Some useful notes about the data');
+  // Get langcode for body.
+  $body_langcode = dkan_dataset_form_field_language($form, 'body');
+  $form['body'][$body_langcode][0]['value']['#attributes']['placeholder'] = t('eg. Some useful notes about the data');
   return $form;
 }
 
@@ -292,7 +344,11 @@ function dkan_dataset_additional_submit_js($form, &$form_state) {
   if (isset($_SESSION['messages']['error'])) {
     unset($_SESSION['messages']['error']);
   }
-  $nid = $form_state['values']['field_dataset_ref'][DKAN_FIELD_LANG][0]['target_id'];
+
+  // Get langcode for field_dataset_ref.
+  $field_dataset_ref_langcode = dkan_dataset_form_field_language($form, 'field_dataset_ref');
+
+  $nid = $form_state['values']['field_dataset_ref'][$field_dataset_ref_langcode][0]['target_id'];
   $node = node_load($nid);
   $dataset_form = drupal_get_form($type . '_node_form', $node);
 
@@ -316,7 +372,10 @@ function dkan_dataset_resource_another_submit_js($form, &$form_state) {
   if (form_get_errors()) {
     return $form;
   }
-  $nid = isset($form_state['build_info']['args'][0]->field_dataset_ref['nid']) ? $form_state['build_info']['args'][0]->field_dataset_ref['nid'] : $form_state['values']['field_dataset_ref'][DKAN_FIELD_LANG][0]['target_id'];
+  // Get langcode for field_dataset_ref.
+  $field_dataset_ref_langcode = dkan_dataset_form_field_language($form, 'field_dataset_ref');
+
+  $nid = isset($form_state['build_info']['args'][0]->field_dataset_ref['nid']) ? $form_state['build_info']['args'][0]->field_dataset_ref['nid'] : $form_state['values']['field_dataset_ref'][$field_dataset_ref_langcode][0]['target_id'];
   $resource_form = dkan_dataset_prepare_resource_form($nid);
   $stage = dkan_form_create_stages('resource-edit', $nid);
 
@@ -366,9 +425,9 @@ function dkan_dataset_prepare_resource_form($nid) {
   $type = 'resource';
   global $user;
   $node = (object) array(
-    'uid' => $user->uid,
-    'name' => (isset($user->name) ? $user->name : ''),
-    'type' => $type,
+      'uid' => $user->uid,
+      'name' => (isset($user->name) ? $user->name : ''),
+      'type' => $type,
   );
   $node->field_dataset_ref['nid'] = $nid;
   $new_form_state = array();
@@ -443,8 +502,14 @@ function dkan_dataset_resource_nodes() {
   $output = '';
   $nodes = array();
   $current_node = menu_get_object();
-  if (isset($current_node->type) && $current_node->type == 'resource' && isset($current_node->field_dataset_ref[DKAN_FIELD_LANG])) {
-    $nodes = dkan_dataset_get_resource_nodes($current_node->field_dataset_ref[DKAN_FIELD_LANG][0]['target_id']);
+
+  if (isset($current_node->type) && $current_node->type == 'resource' && isset($current_node->field_dataset_ref)) {
+    $wrapper = entity_metadata_wrapper('node', $current_node);
+    $target = $wrapper->field_dataset_ref->value();
+    $target_id = $target[0]->nid;
+    if ($target_id) {
+      $nodes = dkan_dataset_get_resource_nodes($target_id);
+    }
   }
   else {
     if ($query = drupal_get_query_parameters()) {
@@ -463,4 +528,16 @@ function dkan_dataset_resource_nodes() {
     $output = theme('item_list', array('items' => $links, 'attributes' => array('class' => array('nav-simple'))));
   }
   return $output;
+}
+
+/**
+ * Returns the display language for the fields attached to the given form.
+ */
+function dkan_dataset_form_field_language($form, $field_name = NULL) {
+  $langcode = 'und';
+  if ($field_name && isset($form[$field_name]) && !empty($form[$field_name]['#language'])) {
+    $langcode = $form[$field_name]['#language'];
+  }
+  $langcode = field_valid_language($langcode, FALSE);
+  return $langcode;
 }
