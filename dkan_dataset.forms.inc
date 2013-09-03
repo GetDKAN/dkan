@@ -194,9 +194,11 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     // Get langcode for field_link_file.
     $field_link_file_langcode = dkan_dataset_form_field_language($form, 'field_link_file');
+    $field_link_remote_file_langcode = dkan_dataset_form_field_language($form, 'field_link_remote_file');
     $form['field_link_file'][$field_link_file_langcode][0]['#description'] = 'Link to a CSV file that will be imported into the DKAN datastore.';
+    $form['field_link_remote_file'][$field_link_file_langcode][0]['#description'] = 'Link to a CSV file that will be imported into the DKAN datastore.';
 
-    // Get langcode for field_link_file.
+    // Get langcode for field_link_api.
     $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_link_api');
     $form['field_link_api'][$field_link_api_langcode][0]['#description'] = 'Link to a public API or information source.';
 
@@ -205,9 +207,8 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     $form['field_link_api'][$field_link_api_langcode][0]['#title'] = '';
 
-    // Get langcode for field_link_file.
-    $field_link_file_langcode = dkan_dataset_form_field_language($form, 'field_link_file');
     $form['field_link_file'][$field_link_file_langcode][0]['#title'] = '';
+    $form['field_link_remote_file'][$field_link_file_langcode][0]['#title'] = '';
 
     // Move groups to vertical tabs.
     $form['og_group_ref']['#group'] = 'additional_settings';
@@ -265,6 +266,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 function dkan_dataset_resource_node_form_validate($form, &$form_state) {
   // Get langcode for field_link_file.
   $field_link_file_langcode = dkan_dataset_form_field_language($form, 'field_link_file');
+  $field_link_remote_file_langcode = dkan_dataset_form_field_language($form, 'field_link_remote_file');
   // Get langcode for field_link_api.
   $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_link_api');
   // Get langcode for field_upload.
@@ -274,15 +276,20 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
 
   $link = $form_state['values']['field_link_file'][$field_link_file_langcode][0]['url'];
   $api = $form_state['values']['field_link_api'][$field_link_api_langcode][0]['url'];
-  $fid = $form_state['values']['field_upload'][$field_upload_langcode][0]['fid'];
+  $upload_fid = $form_state['values']['field_upload'][$field_upload_langcode][0]['fid'];
+  $link_fid = $form_state['values']['field_link_remote_file'][$field_upload_langcode][0]['fid'];
   // Ensure that only one type of resource is uploaded or linked to.
-  if ($link && ($api || $fid) || $api && ($link || $fid) || $fid && ($api || $link)) {
+  if ($link && ($api || $upload_fid || $link_fid) || $api && ($link || $upload_fid || $link_fid) || ($upload_fid && $api || $link) || ($link_fid && $api || $link)) {
     form_set_error('field_link_file', 'Only one resource type can be added.');
   }
   // Autodetect file type.
-  if ($fid || $link) {
-    if ($fid) {
-      $file = file_load($fid);
+  if ($upload_fid || $link_fid) {
+    if ($upload_fid) {
+      $file = file_load($upload_fid);
+      $type = substr($file->filename, strrpos($file->filename, '.') + 1);
+    }
+    elseif ($link_fid) {
+      $file = file_load($link_fid);
       $type = substr($file->filename, strrpos($file->filename, '.') + 1);
     }
     else {
@@ -311,10 +318,13 @@ function dkan_dataset_resource_form_after_build($form, &$form_state) {
   if (isset($form['field_link_file'])) {
     // Get langcode for field_link_file.
     $field_link_file_langcode = dkan_dataset_form_field_language($form, 'field_link_file');
+    $field_link_remote_file_langcode = dkan_dataset_form_field_language($form, 'field_link_file');
     // Get langcode for field_link_api.
     $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_link_api');
 
     $form['field_link_file'][$field_link_file_langcode][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
+    $form['field_link_remote_file'][$field_link_file_langcode][0]['filefield_remotefile']['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
+    $form['field_link_remote_file'][$field_link_file_langcode][0]['filefield_remotefile']['select']['#suffix'] = '';
     $form['field_link_api'][$field_link_api_langcode][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011';
   }
   if (isset($form['field_format'])) {

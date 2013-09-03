@@ -2,6 +2,7 @@ name = DKAN Dataset Groups
 description = Custom elements for groups.
 core = 7.x
 package = DKAN Features
+version = alpha1
 php = 5.2.4
 dependencies[] = context
 dependencies[] = ctools
