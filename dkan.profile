@@ -94,9 +94,14 @@ function dkan_additional_setup() {
     $term->name = $format;
     taxonomy_term_save($term);
   }
+
+  // Make sure markdown editor installs correctly.
+  module_load_include('install', 'markdowneditor', 'markdowneditor');
+  _markdowneditor_insert_latest();
   $data = array(
     'pages' => "node/*\ncomment/*\nsystem/ajax",
     'eid' => 5,
   );
   drupal_write_record('bueditor_editors', $data, array('eid'));
+
 }

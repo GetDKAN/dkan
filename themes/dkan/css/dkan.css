@@ -1062,9 +1062,33 @@ label.for=["edit-field-upload-und-0"] {
 .group-data .field-group-htab {
   padding: 0;
 }
+.node-resource-form div.filefield-source input.form-text, div.filefield-source select.form-select,
+.node-resource-form .group-link-file input,
 .group-data input {
   width: 100%;
-  height: 45px;
+  height: 53px;
+  border: 0;
+  padding: 0;
+  padding: 0 0 0 12px;
+}
+.node-resource-form .group-link-file .form-managed-file .file {
+  margin: 17px 0 0 10px;
+  display: inline-block;
+}
+.node-resource-form .group-link-file .form-managed-file {
+  height: 53px;
+  border: 1px solid #ccc;
+  padding: 0px;
+  border-radius: 3px;
+}
+.node-resource-form .group-link-file input[type="submit"] {
+  width: auto;
+  font-size: .9em;
+  height: 25px;
+  float: right;
+  position: absolute;
+  right: 15px;
+  top: 50px;
 }
 #edit-field-upload-und-0-ajax-wrapper label {
   text-align: left;
