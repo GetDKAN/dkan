@@ -85,7 +85,11 @@ function dkan_sitewide_block_view($delta = '') {
 function dkan_sitewide_resource_additional_block($nid  = '') {
   $node = $nid ? node_load($nid) : menu_get_object();
   $file_info = array();
-  if (isset($node->field_upload[$node->language]) && $file = $node->field_upload[$node->language][0]) {
+  $lang = $node->language ? $node->language : 'und';
+  $link = $node->field_link_remote_file ? $node->field_link_remote_file[$lang][0] : NULL;
+  $upload = $node->field_upload ? $node->field_upload[$lang][0] : NULL;
+
+  if (($file = $link) || ($file = $upload)) {
     $file_info[] = array(t('mimetype'), $file['filemime']);
     $file_info[] = array(t('filesize'), $file['filesize']);
     $file_info[] = array(t('resource type'), 'file upload');

@@ -18,16 +18,26 @@ function dkan_sitewide_user_menu_block() {
     if (module_exists('gravatar')) {
       $output = l('<img alt="my user picture" src="' . gravatar_get_gravatar($user->mail, array('size' => '25')) . '">' , 'user', array('html' => TRUE));
     }
-    $output.= '<span class="links">' . l($user->name, 'user') . l('Logout', 'user/logout', array('attributes' => array('class' => array('sub')))) . '</span>';
+    $output .= '<span class="links">' . l($user->name, 'user') . l('Logout', 'user/logout', array('attributes' => array('class' => array('sub')))) . '</span>';
   }
   else {
-    $output.= '<span class="links">' . l('Login', 'user/login') . l('Register', 'user/register', array('attributes' => array('class' => array('sub')))) . '</span>';
+    $output .= '<span class="links">' . l('Login', 'user/login') . l('Register', 'user/register', array('attributes' => array('class' => array('sub')))) . '</span>';
   }
   return $output;
 }
 
 /**
- * Implements hook_page_alter();
+ * Implements hook_cron().
+ */
+function dkan_sitewide_cron() {
+  if (module_exists('defaultcontent')) {
+    module_disable(array('dkan_default_content', 'defaultcontent'));
+    drupal_uninstall_modules(array('dkan_default_content', 'defaultcontent'));
+  }
+}
+
+/**
+ * Implements hook_page_alter().
  */
 function dkan_sitewide_page_alter(&$page) {
   // Adding page title to breadcrumb.
