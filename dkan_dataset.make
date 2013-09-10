@@ -1,6 +1,5 @@
 core = 7.x
 api = 2
-version = beta1 
 
 projects[autocomplete_deluxe][subdir] = contrib
 projects[autocomplete_deluxe][version] = 2.x
