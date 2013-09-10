@@ -20,6 +20,7 @@ projects[field_group][subdir] = contrib
 projects[field_group][version] = 1.x
 projects[field_group][patch][2042681] = http://drupal.org/files/field-group-show-ajax-2042681-6.patch
 projects[filefield_sources'] = contrib
+projects[filefield_sources][version] = 1.8
 projects[jquery_update][subdir] = contrib
 projects[libraries][subdir] = contrib
 projects[link][subdir] = contrib
