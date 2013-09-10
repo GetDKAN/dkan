@@ -44,6 +44,10 @@ projects[uuid][version] = 1.x
 projects[uuid][patch][1927474] = http://drupal.org/files/unknown-column-in-field-list-fix-1927474-2.patch
 projects[views][subdir] = contrib
 projects[views_datasource][subdir] = contrib
+projects[views_datasource][download][type] = git
+projects[views_datasource][download][url] = "http://git.drupal.org/project/views_datasource.git"
+projects[views_datasource][download][branch] = "7.x-1.x"
+projects[views_datasource][type] = "module"
 projects[views_bulk_operations][subdir] = contrib
 
 projects[recline][subdir] = contrib
