@@ -62,17 +62,21 @@ function dkan_dataset_content_types_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Dataset Information',
-    'weight' => '5',
+    'weight' => '1',
     'children' => array(
-      0 => 'field_author',
-      1 => 'field_data_dictionary',
-      2 => 'field_frequency',
-      3 => 'field_granularity',
-      4 => 'field_spatial',
-      5 => 'field_spatial_geographical_cover',
-      6 => 'field_temporal_coverage',
-      7 => 'field_additional_info',
-      8 => 'field_resources',
+      0 => 'field_additional_info',
+      1 => 'field_author',
+      2 => 'field_data_dictionary',
+      3 => 'field_frequency',
+      4 => 'field_granularity',
+      5 => 'field_resources',
+      6 => 'field_spatial',
+      7 => 'field_spatial_geographical_cover',
+      8 => 'field_temporal_coverage',
+      9 => 'og_group_ref',
+      10 => 'field_contact_name',
+      11 => 'field_contact_email',
+      12 => 'field_public_access_level',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
@@ -80,7 +84,7 @@ function dkan_dataset_content_types_field_group_info() {
       'instance_settings' => array(
         'required_fields' => 1,
         'classes' => ' group-additional field-group-fieldset',
-        'description' => '<i class="icon-large icon-info-sign"></i>These fields are compatible with <a href="http://www.w3.org/TR/vocab-dcat/">DCAT</a>, an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web.',
+        'description' => '<i class="icon-large icon-info-sign"></i>These fields are compatible with <a href="http://www.w3.org/TR/vocab-dcat/">DCAT</a>, an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web. These fields are also compatible with the Common Core metadata schema from <a href="http://project-open-data.github.io/schema/">Project Open Data</a>.',
       ),
       'formatter' => 'open',
     ),
@@ -98,7 +102,7 @@ function dkan_dataset_content_types_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Resource',
-    'weight' => '0',
+    'weight' => '2',
     'children' => array(
       0 => 'group_link_api',
       1 => 'group_link_file',
@@ -155,7 +159,7 @@ function dkan_dataset_content_types_field_group_info() {
     'label' => 'Link to a file',
     'weight' => '9',
     'children' => array(
-      0 => 'field_link_file',
+      0 => 'field_link_remote_file',
     ),
     'format_type' => 'htab',
     'format_settings' => array(
@@ -180,7 +184,7 @@ function dkan_dataset_content_types_field_group_info() {
   $field_group->mode = 'form';
   $field_group->parent_name = '';
   $field_group->data = array(
-    'label' => '',
+    'label' => 'Primary',
     'weight' => '0',
     'children' => array(
       0 => 'body',
@@ -190,7 +194,7 @@ function dkan_dataset_content_types_field_group_info() {
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
-      'label' => '',
+      'label' => 'Primary',
       'instance_settings' => array(
         'required_fields' => 1,
         'classes' => ' group-primary field-group-fieldset',

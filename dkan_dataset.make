@@ -1,5 +1,6 @@
 core = 7.x
 api = 2
+version = beta1 
 
 projects[autocomplete_deluxe][subdir] = contrib
 projects[autocomplete_deluxe][version] = 2.x
@@ -19,6 +20,7 @@ projects[features][subdir] = contrib
 projects[field_group][subdir] = contrib
 projects[field_group][version] = 1.x
 projects[field_group][patch][2042681] = http://drupal.org/files/field-group-show-ajax-2042681-6.patch
+projects[filefield_sources'] = contrib
 projects[jquery_update][subdir] = contrib
 projects[libraries][subdir] = contrib
 projects[link][subdir] = contrib
@@ -31,6 +33,8 @@ projects[og_extras][version] = 1.x
 projects[ref_field][subdir] = contrib
 projects[ref_field][version] = 2.x
 projects[ref_field][patch][1670356] = http://drupal.org/files/removed_notice-1670356-1.patch
+projects[remote_file_source][subdir] = contrib
+projects[remote_stream_wrapper][subdir] = contrib
 projects[restws][subdir] = contrib
 projects[select_or_other][subdir] = contrib
 projects[strongarm][subdir] = contrib
