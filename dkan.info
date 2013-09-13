@@ -102,11 +102,3 @@ dependencies[] = dkan_sitewide
 dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
 dependencies[] = dkan_datastore_api
-
-
-; Information added by drush on 2013-06-05
-version = "7.x-1.x-dev"
-core = "7.x"
-project = "dkan"
-datestamp = "1370469113"
-
