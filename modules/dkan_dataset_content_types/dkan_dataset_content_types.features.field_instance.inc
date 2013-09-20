@@ -178,7 +178,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'description' => 'Contact person’s email address. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'hidden',
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
@@ -215,10 +215,10 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Contact person’s name for the asset. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.',
+    'description' => 'Contact person’s name for the asset. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info. Name should be formatted as Last, First.',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'hidden',
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
@@ -442,7 +442,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     'description' => 'The degree to which this dataset <em>could</em> be made publicly-available, regardless of whether it has been made available. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'hidden',
         'module' => 'list',
         'settings' => array(),
         'type' => 'list_default',
@@ -470,6 +470,60 @@ uk-ogl|UK Open Government Licence (OGL)',
       ),
       'type' => 'options_select',
       'weight' => 20,
+    ),
+  );
+
+  // Exported field_instance: 'node-dataset-field_related_content'
+  $field_instances['node-dataset-field_related_content'] = array(
+    'bundle' => 'dataset',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => 'An internal link or link to an outside resource that provides additional context to the dataset.',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'link',
+        'settings' => array(),
+        'type' => 'link_default',
+        'weight' => 20,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_related_content',
+    'label' => 'Related Content',
+    'required' => 0,
+    'settings' => array(
+      'attributes' => array(
+        'class' => '',
+        'configurable_title' => 0,
+        'rel' => '',
+        'target' => 'default',
+        'title' => '',
+      ),
+      'display' => array(
+        'url_cutoff' => 80,
+      ),
+      'enable_tokens' => 1,
+      'rel_remove' => 'default',
+      'title' => 'optional',
+      'title_maxlength' => 128,
+      'title_value' => '',
+      'url' => 0,
+      'user_register_form' => FALSE,
+      'validate_url' => 1,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'link',
+      'settings' => array(),
+      'type' => 'link_field',
+      'weight' => 2,
     ),
   );
 
@@ -955,60 +1009,6 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
   );
 
-  // Exported field_instance: 'node-resource-field_link_file'
-  $field_instances['node-resource-field_link_file'] = array(
-    'bundle' => 'resource',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'hidden',
-        'module' => 'link',
-        'settings' => array(),
-        'type' => 'link_default',
-        'weight' => 2,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'field_link_file',
-    'label' => 'Link file',
-    'required' => 0,
-    'settings' => array(
-      'attributes' => array(
-        'class' => '',
-        'configurable_title' => 0,
-        'rel' => '',
-        'target' => 'default',
-        'title' => '',
-      ),
-      'display' => array(
-        'url_cutoff' => 80,
-      ),
-      'enable_tokens' => 0,
-      'rel_remove' => 'default',
-      'title' => 'none',
-      'title_maxlength' => 128,
-      'title_value' => '',
-      'url' => 0,
-      'user_register_form' => FALSE,
-      'validate_url' => 1,
-    ),
-    'widget' => array(
-      'active' => 0,
-      'module' => 'link',
-      'settings' => array(),
-      'type' => 'link_field',
-      'weight' => 7,
-    ),
-  );
-
   // Exported field_instance: 'node-resource-field_link_remote_file'
   $field_instances['node-resource-field_link_remote_file'] = array(
     'bundle' => 'resource',
@@ -1017,10 +1017,10 @@ uk-ogl|UK Open Government Licence (OGL)',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'dkan_datastore_recline',
+        'module' => 'recline',
         'settings' => array(),
-        'type' => 'dkan_datastore_recline_default_formatter',
-        'weight' => 7,
+        'type' => 'recline_default_formatter',
+        'weight' => 1,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -1031,12 +1031,12 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
     'entity_type' => 'node',
     'field_name' => 'field_link_remote_file',
-    'label' => 'Link',
+    'label' => 'Link File',
     'required' => 0,
     'settings' => array(
       'description_field' => 0,
       'file_directory' => '',
-      'file_extensions' => 'csv html xls json xlsx doc rdf txt jpg png gif tiff pdf odf',
+      'file_extensions' => 'txt',
       'max_filesize' => '',
       'user_register_form' => FALSE,
     ),
@@ -1068,7 +1068,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'progress_indicator' => 'throbber',
       ),
       'type' => 'file_generic',
-      'weight' => 1,
+      'weight' => 10,
     ),
   );
 
@@ -1080,9 +1080,9 @@ uk-ogl|UK Open Government Licence (OGL)',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'dkan_datastore_recline',
+        'module' => 'recline',
         'settings' => array(),
-        'type' => 'dkan_datastore_recline_default_formatter',
+        'type' => 'recline_default_formatter',
         'weight' => 1,
       ),
       'teaser' => array(
@@ -1177,11 +1177,12 @@ uk-ogl|UK Open Government Licence (OGL)',
   // Translatables
   // Included for use with string extractors like potx.
   t('Additional Info');
+  t('An internal link or link to an outside resource that provides additional context to the dataset.');
   t('Author');
   t('Contact Email');
   t('Contact Name');
   t('Contact person’s email address. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.');
-  t('Contact person’s name for the asset. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.');
+  t('Contact person’s name for the asset. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info. Name should be formatted as Last, First.');
   t('Data Dictionary');
   t('Dataset');
   t('Description');
@@ -1191,12 +1192,12 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('Groups audience');
   t('License');
   t('License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>');
-  t('Link');
   t('Link API');
-  t('Link file');
+  t('Link File');
   t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See Project Open Data <a href="http://project-open-data.github.io/schema/#common-core-required-if-applicable-fields">data dictionary</a> for more info.');
   t('Public Access Level');
   t('Publisher');
+  t('Related Content');
   t('Resources');
   t('Spatial / Geographical Coverage Area');
   t('Spatial / Geographical Coverage Location');

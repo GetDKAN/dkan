@@ -51,6 +51,9 @@ function dkan_dataset_content_types_strongarm() {
       'search_result' => array(
         'custom_settings' => FALSE,
       ),
+      'diff_standard' => array(
+        'custom_settings' => FALSE,
+      ),
     ),
     'extra_fields' => array(
       'form' => array(
@@ -58,19 +61,19 @@ function dkan_dataset_content_types_strongarm() {
           'weight' => '1',
         ),
         'resources' => array(
-          'weight' => '5',
-        ),
-        'path' => array(
           'weight' => '6',
         ),
+        'path' => array(
+          'weight' => '7',
+        ),
         'release_date' => array(
-          'weight' => '4',
+          'weight' => '5',
         ),
         'modified_date' => array(
-          'weight' => '3',
+          'weight' => '4',
         ),
         'identifier' => array(
-          'weight' => '2',
+          'weight' => '3',
         ),
       ),
       'display' => array(
