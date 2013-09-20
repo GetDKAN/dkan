@@ -92,6 +92,11 @@ libraries[Leaflet][download][type] = git
 libraries[Leaflet][download][url] = "https://github.com/Leaflet/Leaflet.git"
 libraries[Leaflet][download][revision] = "81221ae4cd9772a8974b2e3c867d4fb35abd052d"
 
+libraries[recline][type] = libraries
+libraries[recline][download][type] = git
+libraries[recline][download][url] = "https://github.com/okfn/recline.git"
+libraries[recline][download][revision] = "e007fff15ac6e3853d96f095986cae6e4b192471"
+
 libraries[arc][type] = libraries
 libraries[arc][download][type] = git
 libraries[arc][download][url] = "https://github.com/semsol/arc2.git"
