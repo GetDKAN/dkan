@@ -435,9 +435,9 @@ function dkan_dataset_prepare_resource_form($nid) {
   $type = 'resource';
   global $user;
   $node = (object) array(
-      'uid' => $user->uid,
-      'name' => (isset($user->name) ? $user->name : ''),
-      'type' => $type,
+    'uid' => $user->uid,
+    'name' => (isset($user->name) ? $user->name : ''),
+    'type' => $type,
   );
   $node->field_dataset_ref['nid'] = $nid;
   $new_form_state = array();
@@ -513,7 +513,7 @@ function dkan_dataset_resource_nodes() {
   $nodes = array();
   $current_node = menu_get_object();
 
-  if (isset($current_node->type) && $current_node->type == 'resource' && isset($current_node->field_dataset_ref)) {
+  if (isset($current_node->type) && $current_node->type == 'resource' && isset($current_node->field_dataset_ref[0])) {
     $wrapper = entity_metadata_wrapper('node', $current_node);
     $target = $wrapper->field_dataset_ref->value();
     $target_id = $target[0]->nid;

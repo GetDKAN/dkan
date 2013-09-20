@@ -59,15 +59,17 @@ function theme_dkan_dataset_resource_view($vars) {
 
   if (isset($nodes)) {
     foreach ($nodes as $node) {
-      if (isset($node->body) && $node->body && isset($node->body[DKAN_FIELD_LANG])) {
-        $desc = '<p class="description">' . dkan_dataset_text_trim($node->body[DKAN_FIELD_LANG][0]['safe_value'], 80) . '</p>';
+      $node_wrapper = entity_metadata_wrapper('node', $node);
+      $body = $node_wrapper->body->value();
+      $term = '';
+      if (isset($body['safe_value'])) {
+        $desc = '<p class="description">' . dkan_dataset_text_trim($body['safe_value'], 80) . '</p>';
       }
       else {
         $desc = '<p class="description"></p>';
       }
       if (isset($node->field_format) && $node->field_format) {
-        $term = taxonomy_term_load($node->field_format[DKAN_FIELD_LANG][0]['tid']);
-        $term = '<span class="format-label" property="dc:format" data-format="' . $term->name . '">' . $term->name  . '</span>';
+        $term .= '<span class="format-label" property="dc:format" data-format="' . $node_wrapper->field_format->value()->name . '">' . $node_wrapper->field_format->value()->name  . '</span>';
       }
       else {
         $term = '<span class="format-label" property="dc:format" data-format="data">Data</span>';
@@ -101,34 +103,35 @@ function theme_dkan_dataset_resource_teaser_view($vars) {
   }
   $links = array();
   if (isset($nodes)) {
-    $links_data = array(); // data links for generate grouping resources link
+    // Data links for generate grouping resources link.
+    $links_data = array();
     foreach ($nodes as $node) {
+      $node_wrapper = entity_metadata_wrapper('node', $node);
       $term = '';
       if (isset($node->field_format) && $node->field_format) {
-        $term = taxonomy_term_load($node->field_format[DKAN_FIELD_LANG][0]['tid']);
-        if(!isset($links_data[$term->name])){
-          $links_data[$term->name] = array(
-            'term_name' => $term->name,
+        if (!isset($links_data[$node_wrapper->field_format->value()->name])) {
+          $name = $node_wrapper->field_format->value()->name;
+          $links_data[$name] = array(
+            'term_name' => $name,
             'count' => 1,
             'url' => 'node/' . $vars['node']->nid,
             'link' => array(
               'attributes' => array(
                 'class' => array('label'),
-                'title' => t('Resources') .': '. $vars['node']->title,
-                'data-format' => $term->name,
-              )
-            )
+                'title' => t('Resources') . ': ' . $vars['node']->title,
+                'data-format' => $name,
+              ),
+            ),
           );
         }
         else {
-          $links_data[$term->name]['count'] = $links_data[$term->name]['count'] + 1;
+          $links_data[$name]['count'] = $links_data[$name]['count'] + 1;
         }
       }
 
     }
-
-    foreach($links_data as $term_name => $link ){
-      $links[] = '<span class="count-resource">'.$link['count'].'x</span>'.l($term_name, $link['url'], $link['link'] );
+    foreach ($links_data as $term_name => $link) {
+      $links[] = '<span class="count-resource">' . $link['count'] . 'x</span>' . l($term_name, $link['url'], $link['link']);
     }
     $output = theme('item_list', array('items' => $links, 'attributes' => array('class' => array('resource-list'))));
   }
