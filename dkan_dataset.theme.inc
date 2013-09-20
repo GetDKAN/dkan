@@ -101,20 +101,35 @@ function theme_dkan_dataset_resource_teaser_view($vars) {
   }
   $links = array();
   if (isset($nodes)) {
+    $links_data = array(); // data links for generate grouping resources link
     foreach ($nodes as $node) {
       $term = '';
       if (isset($node->field_format) && $node->field_format) {
         $term = taxonomy_term_load($node->field_format[DKAN_FIELD_LANG][0]['tid']);
-        $links[] = l($term->name, 'node/' . $node->nid, array(
-          'attributes' => array(
-            'class' => array('label'),
-            'title' => $node->title,
-            'data-format' => $term->name,
-          ),
-        ));
+        if(!isset($links_data[$term->name])){
+          $links_data[$term->name] = array(
+            'term_name' => $term->name,
+            'count' => 1,
+            'url' => 'node/' . $vars['node']->nid,
+            'link' => array(
+              'attributes' => array(
+                'class' => array('label'),
+                'title' => t('Resources') .': '. $vars['node']->title,
+                'data-format' => $term->name,
+              )
+            )
+          );
+        }
+        else {
+          $links_data[$term->name]['count'] = $links_data[$term->name]['count'] + 1;
+        }
       }
+
     }
 
+    foreach($links_data as $term_name => $link ){
+      $links[] = '<span class="count-resource">'.$link['count'].'x</span>'.l($term_name, $link['url'], $link['link'] );
+    }
     $output = theme('item_list', array('items' => $links, 'attributes' => array('class' => array('resource-list'))));
   }
   return $output;
