@@ -70,11 +70,6 @@ projects[leaflet_draw_widget][download][url] = "https://github.com/acouch/leafle
 projects[leaflet_draw_widget][download][revision] = "33a98b1285d03b3efbce9f1652d3f78e401c3728"
 projects[leaflet_draw_widget][type] = "module"
 
-libraries[recline][type] = libraries
-libraries[recline][download][type] = git
-libraries[recline][download][url] = "https://github.com/okfn/recline.git"
-libraries[recline][download][revision] = "3610d95e7474f1c5c3752ff2f73447f7be2b5546"
-
 libraries[chosen][type] = libraries
 libraries[chosen][download][type] = git
 libraries[chosen][download][url] = "https://github.com/harvesthq/chosen.git"
