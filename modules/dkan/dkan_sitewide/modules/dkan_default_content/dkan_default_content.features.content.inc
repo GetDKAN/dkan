@@ -519,7 +519,7 @@ Click on Graph button under Preview and plot date (x-axis) against price (y-axis
     'body' => array(
       'und' => array(
         0 => array(
-          'value' => 'DKAN is the Drupal-based version of CKAN, the world\'s leading open-source open data publishing platform. It provides a complete open source software solution for data publishers, and adheres to the API, data, and functionality standards of CKAN. The goal of the project combine the utility of CKAN with the ease of maintenance and extensibility of Drupal.
+          'value' => 'DKAN is the Drupal-based version of DKAN, the world\'s leading open-source open data publishing platform. It provides a complete open source software solution for data publishers, and adheres to the API, data, and functionality standards of DKAN. The goal of the project combine the utility of DKAN with the ease of maintenance and extensibility of Drupal.
 
 Developers: see http://drupal.org/project/dkan for code, documentation, and to contribute.
 
@@ -528,9 +528,9 @@ Customers: see http://getdkan.com for more information.',
           'format' => 'html',
           'safe_value' => 'DKAN is an Open Data Portal built in Drupal.
 
-As an Open Data Portal is designed to be feature-compliant with CKAN: <a href="http://ckan.org">http://ckan.org</a>.
+As an Open Data Portal is designed to be feature-compliant with DKAN: <a href="http://ckan.org">http://ckan.org</a>.
 
-The goal is to combine the utility of the CKAN API with the power of Drupal. 
+The goal is to combine the utility of the DKAN API with the power of Drupal. 
 
 Development will be done here: <a href="http://drupal.org/project/dkan">http://drupal.org/project/dkan</a>
 
@@ -556,10 +556,10 @@ More documentation coming soon.',
     'body' => array(
       'und' => array(
         0 => array(
-          'value' => 'This group contains various real datasets that show CKAN\'s data previewer in action. The previewer shows a configurable grid view of tabular data, plots columns of data on a graph, and shows geo-coded data on an interactive map.',
+          'value' => 'This group contains various real datasets that show DKAN\'s data previewer in action. The previewer shows a configurable grid view of tabular data, plots columns of data on a graph, and shows geo-coded data on an interactive map.',
           'summary' => '',
           'format' => 'plain_text',
-          'safe_value' => '<p>This group contains various real datasets that show CKAN&#039;s data previewer in action. The previewer shows a configurable grid view of tabular data, plots columns of data on a graph, and shows geo-coded data on an interactive map.</p>
+          'safe_value' => '<p>This group contains various real datasets that show DKAN&#039;s data previewer in action. The previewer shows a configurable grid view of tabular data, plots columns of data on a graph, and shows geo-coded data on an interactive map.</p>
 ',
           'safe_summary' => '',
         ),
@@ -599,10 +599,10 @@ More documentation coming soon.',
     'body' => array(
       'und' => array(
         0 => array(
-          'value' => 'CKAN can plot both latitude and longitude as well as GeoJSON on a map. For more information, see ',
+          'value' => 'DKAN can plot both latitude and longitude as well as GeoJSON on a map. For more information, see ',
           'summary' => '',
           'format' => 'plain_text',
-          'safe_value' => '<p>CKAN can plot both latitude and longitude as well as GeoJSON on a map. For more information, see</p>
+          'safe_value' => '<p>DKAN can plot both latitude and longitude as well as GeoJSON on a map. For more information, see</p>
 ',
           'safe_summary' => '',
         ),
