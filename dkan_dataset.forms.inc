@@ -220,10 +220,10 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       if (isset($query['dataset'])) {
         $form['field_dataset_ref'][$field_dataset_ref_langcode]['#default_value'] = $query['dataset'];
         $action_query = '?dataset=' . $query['dataset'];
+        $form['prefix']['#type'] = 'item';
+        $form['prefix']['#weight'] = '-20';
+        $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $query['dataset']);
       }
-      $form['prefix']['#type'] = 'item';
-      $form['prefix']['#weight'] = '-20';
-      $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $query['dataset']);
     }
     elseif (isset($form['#node']->field_dataset_ref['nid'])) {
       $form['field_dataset_ref'][$field_dataset_ref_langcode]['#default_value'] = $form['#node']->field_dataset_ref['nid'];
@@ -274,10 +274,10 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
   // Get langcode for field_format.
   $field_format_langcode = dkan_dataset_form_field_language($form, 'field_format');
 
-  $link = $form_state['values']['field_link_file'][$field_link_file_langcode][0]['url'];
+  $link = isset($form_state['values']['field_link_file'][$field_link_file_langcode]) ? $form_state['values']['field_link_file'][$field_link_file_langcode][0]['url'] : NULL;
   $api = $form_state['values']['field_link_api'][$field_link_api_langcode][0]['url'];
   $upload_fid = $form_state['values']['field_upload'][$field_upload_langcode][0]['fid'];
-  $link_fid = $form_state['values']['field_link_remote_file'][$field_upload_langcode][0]['fid'];
+  $link_fid = isset($form_state['values']['field_link_remote_file'][$field_upload_langcode]) ? $form_state['values']['field_link_remote_file'][$field_upload_langcode][0]['fid'] : NULL;
   // Ensure that only one type of resource is uploaded or linked to.
   if ($link && ($api || $upload_fid || $link_fid) || $api && ($link || $upload_fid || $link_fid) || ($upload_fid && $api || $link) || ($link_fid && $api || $link)) {
     form_set_error('field_link_file', 'Only one resource type can be added.');
