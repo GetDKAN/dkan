@@ -50,10 +50,13 @@ function dkan_sitewide_page_alter(&$page) {
   }
   $node = menu_get_object();
   if ($node && $node->type == 'resource') {
-    $nid = isset($node->field_dataset_ref[DKAN_FIELD_LANG][0]['target_id']) ? $node->field_dataset_ref[DKAN_FIELD_LANG][0]['target_id'] : 1;
-    $breadcrumbs[] = l(dkan_dataset_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
-    if (arg(2) == 'datastore') {
-      $breadcrumbs[] = l(dkan_dataset_text_trim($node->title), 'node/' . $node->nid);
+    $node_wrapper = entity_metadata_wrapper('node', $node);
+    $dataset = $node_wrapper->field_dataset_ref->value();
+    if ($dataset) {
+      $breadcrumbs[] = l($dataset[0]->title, 'node/' . $dataset[0]->nid);
+      if (arg(2) == 'datastore') {
+        $breadcrumbs[] = l(dkan_dataset_text_trim($node->title), 'node/' . $node->nid);
+      }
     }
   }
   elseif (arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'resource' && $query = drupal_get_query_parameters()) {
