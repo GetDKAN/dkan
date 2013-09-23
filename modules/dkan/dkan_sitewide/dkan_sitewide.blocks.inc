@@ -87,15 +87,16 @@ function dkan_sitewide_resource_additional_block($nid = '') {
   $node = $nid ? node_load($nid) : menu_get_object();
   $file_info = array();
   $lang = $node->language ? $node->language : 'und';
-  $link = isset($node->field_link_remote_file) ? $node->field_link_remote_file[$lang][0] : NULL;
-  $upload = $node->field_upload ? $node->field_upload[$lang][0] : NULL;
+  $link = isset($node->field_link_remote_file[$lang][0]) ? $node->field_link_remote_file[$lang][0] : NULL;
+  $upload = isset($node->field_upload[$lang][0]) ? $node->field_upload[$lang][0] : NULL;
 
   if (($file = $link) || ($file = $upload)) {
     $file_info[] = array(t('mimetype'), $file['filemime']);
     $file_info[] = array(t('filesize'), $file['filesize']);
     $file_info[] = array(t('resource type'), 'file upload');
     $file_info[] = array(t('timestamp'), date('M d, Y', $file['timestamp']));
-    return theme('table', array('rows' => $file_info, 'header' => array(t('Field'), t('Value'))));
+    return theme('table',
+      array('rows' => $file_info, 'header' => array(t('Field'), t('Value'))));
   }
 
 }
