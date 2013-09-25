@@ -1,7 +1,7 @@
 name = DKAN Datastore Content Types
 core = 7.x
 package = DKAN Features
-version = unknown
+version = beta1
 project = dkan_dataset
 dependencies[] = autocomplete_deluxe
 dependencies[] = ctools
@@ -26,7 +26,7 @@ dependencies[] = select_or_other
 dependencies[] = strongarm
 dependencies[] = taxonomy
 dependencies[] = text
-datestamp = 1378850291
+datestamp = 1379707733
 features[ctools][] = field_group:field_group:1
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:2

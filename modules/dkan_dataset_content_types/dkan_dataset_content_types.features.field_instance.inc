@@ -523,7 +523,7 @@ uk-ogl|UK Open Government Licence (OGL)',
       'module' => 'link',
       'settings' => array(),
       'type' => 'link_field',
-      'weight' => 2,
+      'weight' => 23,
     ),
   );
 
