@@ -108,19 +108,9 @@ function dkan_additional_setup() {
   $record = array(
     'id' => 'dkan_file',
     'feed_nid' => '10',
-    'source' => 'public://Polling_Places_Madison.csv',
+    'source' => 'public://Polling_Places_Madison_4.csv',
     'state' => '0',
-    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0), 'FeedsFileFieldFetcher' => array('fid'=> '36', 'source' => 'public://Polling_Places_Madison.csv'), 'FeedsFlatstoreProcessor' => array()),
-    'fetcher_result' => '0',
-    'imported' => '0',
-  );
-  drupal_write_record('feeds_source', $record);
-  $record = array(
-    'id' => 'dkan_link',
-    'feed_nid' => '10',
-    'source' => '',
-    'state' => '0',
-    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0), 'FeedsFileFieldFetcher' => array('fid'=>'', 'source' =>''), 'FeedsFlatstoreProcessor' => array()),
+    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0, 'encoding' => 'UTF-8'), 'FeedsFileFieldFetcher' => array('fid'=> '36', 'source' => 'public://Polling_Places_Madison_4.csv'), 'FeedsFlatstoreProcessor' => array()),
     'fetcher_result' => '0',
     'imported' => '0',
   );
@@ -128,19 +118,9 @@ function dkan_additional_setup() {
   $record = array(
     'id' => 'dkan_file',
     'feed_nid' => '5',
-    'source' => 'public://district_centerpoints.csv',
+    'source' => 'public://district_centerpoints_4.csv',
     'state' => '0',
-    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0), 'FeedsFileFieldFetcher' => array('fid'=> '30', 'source' => 'public://public://district_centerpoints.csv'), 'FeedsFlatstoreProcessor' => array()),
-    'fetcher_result' => '0',
-    'imported' => '0',
-  );
-  drupal_write_record('feeds_source', $record);
-  $record = array(
-    'id' => 'dkan_link',
-    'feed_nid' => '5',
-    'source' => '',
-    'state' => '0',
-    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0), 'FeedsFileFieldFetcher' => array('fid'=>'', 'source' =>''), 'FeedsFlatstoreProcessor' => array()),
+    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0, 'encoding' => 'UTF-8'), 'FeedsFileFieldFetcher' => array('fid'=> '30', 'source' => 'public://district_centerpoints_4.csv'), 'FeedsFlatstoreProcessor' => array()),
     'fetcher_result' => '0',
     'imported' => '0',
   );
@@ -148,19 +128,9 @@ function dkan_additional_setup() {
   $record = array(
     'id' => 'dkan_file',
     'feed_nid' => '8',
-    'source' => 'public://us_foreclosures_jan_2012_by_state.csv',
+    'source' => 'public://us_foreclosures_jan_2012_by_state_4.csv',
     'state' => '0',
-    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0), 'FeedsFileFieldFetcher' => array('fid'=> '30', 'source' => 'public://public://district_centerpoints.csv'), 'FeedsFlatstoreProcessor' => array()),
-    'fetcher_result' => '0',
-    'imported' => '0',
-  );
-  drupal_write_record('feeds_source', $record);
-  $record = array(
-    'id' => 'dkan_link',
-    'feed_nid' => '8',
-    'source' => '',
-    'state' => '0',
-    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0), 'FeedsFileFieldFetcher' => array('fid'=>'', 'source' =>''), 'FeedsFlatstoreProcessor' => array()),
+    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0, 'encoding' => 'UTF-8'), 'FeedsFileFieldFetcher' => array('fid'=> '30', 'source' => 'public://district_centerpoints_4.csv'), 'FeedsFlatstoreProcessor' => array()),
     'fetcher_result' => '0',
     'imported' => '0',
   );
@@ -168,22 +138,11 @@ function dkan_additional_setup() {
   $record = array(
     'id' => 'dkan_file',
     'feed_nid' => '6',
-    'source' => 'public://data.csv',
+    'source' => 'public://data_4.csv',
     'state' => '0',
-    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0), 'FeedsFileFieldFetcher' => array('fid'=> '30', 'source' => 'public://public://district_centerpoints.csv'), 'FeedsFlatstoreProcessor' => array()),
+    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0, 'encoding' => 'UTF-8'), 'FeedsFileFieldFetcher' => array('fid'=> '30', 'source' => 'public://district_centerpoints_4.csv'), 'FeedsFlatstoreProcessor' => array()),
     'fetcher_result' => '0',
     'imported' => '0',
   );
   drupal_write_record('feeds_source', $record);
-  $record = array(
-    'id' => 'dkan_link',
-    'feed_nid' => '6',
-    'source' => '',
-    'state' => '0',
-    'config' => array('FeedsCSVParser'=>array('delimiter' => ",", 'no_headers' => 0), 'FeedsFileFieldFetcher' => array('fid'=>'', 'source' =>''), 'FeedsFlatstoreProcessor' => array()),
-    'fetcher_result' => '0',
-    'imported' => '0',
-  );
-  drupal_write_record('feeds_source', $record);
-
 }
