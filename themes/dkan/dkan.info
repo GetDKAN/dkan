@@ -1,6 +1,7 @@
 name = 'DKAN'
 description = ''
 core = '7.x'
+version = 'beta1'
 engine = 'phptemplate'
 screenshot = 'screenshot.png'
 base theme = 'omega'
@@ -373,5 +374,3 @@ settings[alpha_region_footer_second_position] = '0'
 settings[alpha_region_footer_second_css] = ''
 settings[alpha_region_footer_second_equal_height_element] = '0'
 settings[alpha_region_footer_second_equal_height_container] = '0'
-
-version = '1.x'
