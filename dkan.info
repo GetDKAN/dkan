@@ -1,7 +1,7 @@
 name = DKAN
 core = 7.x
 exclusive = TRUE
-version = beta1
+version = 7.x-1.0-beta1
 
 ; Core
 dependencies[] = block
@@ -102,11 +102,3 @@ dependencies[] = dkan_sitewide
 dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
 dependencies[] = dkan_datastore_api
-
-
-; Information added by drush on 2013-09-30
-version = "7.x-1.x-dev"
-core = "7.x"
-project = "dkan"
-datestamp = "1380556212"
-
