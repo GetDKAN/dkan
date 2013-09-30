@@ -433,6 +433,9 @@ ul.resource-list p {
   margin: 14px 0;
   list-style: none;
 }
+.item-list ul.resource-list li.last {
+  border: none;
+}
 .resource-list li .format-label {
   position: absolute;
   top: 0;

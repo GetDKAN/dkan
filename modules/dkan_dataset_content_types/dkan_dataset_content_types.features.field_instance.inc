@@ -1036,7 +1036,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     'settings' => array(
       'description_field' => 0,
       'file_directory' => '',
-      'file_extensions' => 'txt',
+      'file_extensions' => 'csv html xls json xlsx doc rdf txt jpg png gif tiff pdf odf',
       'max_filesize' => '',
       'user_register_form' => FALSE,
     ),
