@@ -1,0 +1,3 @@
+7.x-1.0-beta
+--------------------
+- First tagged release. Further tags will include a changelog.
