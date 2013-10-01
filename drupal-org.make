@@ -4,13 +4,13 @@ api = 2
 ; DKAN
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
-projects[dkan_dataset][download][tag] = 1.0-beta2
+projects[dkan_dataset][download][tag] = 7.x-1.0-beta2
 projects[dkan_dataset][download][url] = "http://git.drupal.org/project/dkan_dataset.git"
 projects[dkan_dataset][type] = "module"
 
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
-projects[dkan_datastore][download][tag] = 1.0-beta1
+projects[dkan_datastore][download][tag] = 7.x-1.0-beta1
 projects[dkan_datastore][download][url] = "http://git.drupal.org/project/dkan_datastore.git"
 projects[dkan_datastore][type] = "module"
 
