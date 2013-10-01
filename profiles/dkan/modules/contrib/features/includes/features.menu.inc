@@ -301,6 +301,7 @@ function features_menu_link_load($identifier) {
     ->fields('menu_links', array('menu_name', 'mlid', 'plid', 'link_path', 'router_path', 'link_title', 'options', 'module', 'hidden', 'external', 'has_children', 'expanded', 'weight'))
     ->condition('menu_name', $menu_name)
     ->condition('link_path', $link_path)
+    ->addTag('features_menu_link')
     ->execute()
     ->fetchAssoc();
   if ($link) {

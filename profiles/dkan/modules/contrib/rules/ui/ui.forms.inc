@@ -78,7 +78,6 @@ function rules_ui_form_edit_rules_config_submit($form, &$form_state) {
 function rules_ui_form_clone_rules_config($form, &$form_state, $rules_config, $base_path) {
   RulesPluginUI::$basePath = $base_path;
   $rules_config = clone $rules_config;
-  $rules_config->module = 'rules';
   $rules_config->id = NULL;
   $rules_config->name = '';
   $rules_config->label .= ' (' . t('cloned') . ')';
@@ -394,43 +393,20 @@ function rules_ui_edit_element_submit($form, &$form_state) {
 }
 
 /**
- * Add a new event.
+ * Form builder for the "add event" page.
  */
-function rules_ui_add_event($form, &$form_state, RulesReactionRule $rules_config, $base_path) {
+function rules_ui_add_event_page($form, &$form_state, RulesTriggerableInterface $rules_config, $base_path) {
   RulesPluginUI::$basePath = $base_path;
-  $form_state += array('rules_config' => $rules_config);
-  $events = array_diff_key(rules_fetch_data('event_info'), array_flip($rules_config->events()));
-
-  $form['help'] = array(
-    '#markup' => t('Select the event to add. However note that all added events need to provide all variables that should be available to your rule.'),
-  );
-  $form['event'] = array(
-    '#type' => 'select',
-    '#title' => t('React on event'),
-    '#options' => RulesPluginUI::getOptions('event', $events),
-    '#description' => t('Whenever the event occurs, rule evaluation is triggered.'),
-  );
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Add'),
-  );
-  $form_state['redirect'] = RulesPluginUI::path($rules_config->name);
+  RulesPluginUI::formDefaults($form, $form_state);
+  $form = rules_ui_add_event($form, $form_state, $rules_config, $base_path);
+  $form['#validate'][] = 'rules_ui_add_event_validate';
   return $form;
-}
-
-/**
- * Submit callback that just adds the selected event.
- *
- * @see rules_admin_add_reaction_rule()
- */
-function rules_ui_add_event_apply($form, &$form_state) {
-  $form_state['rules_config']->event($form_state['values']['event']);
 }
 
 /**
  * Submit the event configuration.
  */
-function rules_ui_add_event_submit($form, &$form_state) {
+function rules_ui_add_event_page_submit($form, &$form_state) {
   rules_ui_add_event_apply($form, $form_state);
   $rules_config = $form_state['rules_config'];
 
@@ -453,13 +429,71 @@ function rules_ui_add_event_submit($form, &$form_state) {
 }
 
 /**
+ * Add a new event.
+ */
+function rules_ui_add_event($form, &$form_state, RulesReactionRule $rules_config, $base_path) {
+  $form_state += array('rules_config' => $rules_config);
+  $events = array_diff_key(rules_fetch_data('event_info'), array_flip($rules_config->events()));
+
+  $form['help'] = array(
+    '#markup' => t('Select the event to add. However note that all added events need to provide all variables that should be available to your rule.'),
+  );
+  $form['event'] = array(
+    '#type' => 'select',
+    '#title' => t('React on event'),
+    '#options' => RulesPluginUI::getOptions('event', $events),
+    '#description' => t('Whenever the event occurs, rule evaluation is triggered.'),
+    '#ajax' => rules_ui_form_default_ajax(),
+    '#required' => TRUE,
+  );
+  if (!empty($form_state['values']['event'])) {
+    $handler = rules_get_event_handler($form_state['values']['event']);
+    $form['event_settings'] = $handler->buildForm($form_state);
+  }
+  else {
+    $form['event_settings'] = array();
+  }
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add'),
+  );
+  $form_state['redirect'] = RulesPluginUI::path($rules_config->name);
+  return $form;
+}
+
+/**
+ * Validation callback for adding an event.
+ */
+function rules_ui_add_event_validate($form, $form_state) {
+  $handler = rules_get_event_handler($form_state['values']['event']);
+  $handler->extractFormValues($form['event_settings'], $form_state);
+  try {
+    $handler->validate();
+  }
+  catch (RulesIntegrityException $e) {
+    form_set_error(implode('][', $e->keys), $e->getMessage());
+  }
+}
+
+/**
+ * Submit callback that just adds the selected event.
+ *
+ * @see rules_admin_add_reaction_rule()
+ */
+function rules_ui_add_event_apply($form, &$form_state) {
+  $handler = rules_get_event_handler($form_state['values']['event']);
+  $handler->extractFormValues($form['event_settings'], $form_state);
+  $form_state['rules_config']->event($form_state['values']['event'], $handler->getSettings());
+}
+
+/**
  * Form to remove a event from a rule.
  */
 function rules_ui_remove_event($form, &$form_state, $rules_config, $event, $base_path) {
   RulesPluginUI::$basePath = $base_path;
   $form_state += array('rules_config' => $rules_config, 'rules_event' => $event);
-  $events = rules_fetch_data('event_info');
-  $form_state['event_label'] = $events[$event]['label'];
+  $event_info = rules_get_event_info($event);
+  $form_state['event_label'] = $event_info['label'];
   $confirm_question = t('Are you sure you want to remove the event?');
   return confirm_form($form, $confirm_question, RulesPluginUI::path($rules_config->name), t('You are about to remove the event %event.', array('%event' => $form_state['event_label'])), t('Remove'), t('Cancel'));
 }

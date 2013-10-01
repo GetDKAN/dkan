@@ -206,6 +206,11 @@ function rules_log($msg, $args = array(), $priority = RulesLog::INFO, RulesPlugi
  */
 function rules_fetch_data($hook) {
   $data = &drupal_static(__FUNCTION__, array());
+  static $discover = array(
+    'action_info' => 'RulesActionHandlerInterface',
+    'condition_info' => 'RulesConditionHandlerInterface',
+    'event_info' => 'RulesEventHandlerInterface',
+  );
 
   if (!isset($data[$hook])) {
     foreach (module_implements('rules_' . $hook) as $module) {
@@ -217,9 +222,81 @@ function rules_fetch_data($hook) {
         }
       }
     }
+    // Support class discovery.
+    if (isset($discover[$hook])) {
+      $data[$hook] += rules_discover_plugins($discover[$hook]);
+    }
     drupal_alter('rules_'. $hook, $data[$hook]);
   }
   return $data[$hook];
+}
+
+/**
+ * Discover plugin implementations.
+ *
+ * Class based plugin handlers must be loaded when rules caches are rebuilt,
+ * such that they get discovered properly. You have the following options:
+ *  - Put it into a regular module file (discouraged)
+ *  - Put it into your module.rules.inc file
+ *  - Put it in any file and declare it using hook_rules_file_info()
+ *  - Put it in any file and declare it using hook_rules_directory()
+ *
+ * In addition to that, the class must be loadable via regular class
+ * auto-loading, thus put the file holding the class in your info file or use
+ * another class-loader.
+ *
+ * @param string $class
+ *   The class or interface the plugins must implement. For a plugin to be
+ *   discovered it must have a static getInfo() method also.
+ *
+ * @return array
+ *   An info-hook style array containing info about discovered plugins.
+ *
+ * @see RulesActionHandlerInterface
+ * @see RulesConditionHandlerInterface
+ * @see RulesEventHandlerInterface
+ */
+function rules_discover_plugins($class) {
+  // Make sure all files possibly holding plugins are included.
+  RulesAbstractPlugin::includeFiles();
+
+  $items = array();
+  foreach (get_declared_classes() as $plugin_class) {
+    if (is_subclass_of($plugin_class, $class) && method_exists($plugin_class, 'getInfo')) {
+      $info = call_user_func(array($plugin_class, 'getInfo'));
+      $info['class'] = $plugin_class;
+      $info['module'] = _rules_discover_module($plugin_class);
+      $items[$info['name']] = $info;
+    }
+  }
+  return $items;
+}
+
+/**
+ * Determines the module providing the given class.
+ */
+function _rules_discover_module($class) {
+  $paths = &drupal_static(__FUNCTION__);
+
+  if (!isset($paths)) {
+    // Build up a map of modules keyed by their directory.
+    foreach (system_list('module_enabled') as $name => $module_info) {
+      $paths[dirname($module_info->filename)] = $name;
+    }
+  }
+
+  // Retrieve the class file and convert its absolute path to a regular Drupal
+  // path relative to the installation root.
+  $reflection = new ReflectionClass($class);
+  $path = str_replace(realpath(DRUPAL_ROOT) . DIRECTORY_SEPARATOR, '', realpath(dirname($reflection->getFileName())));
+  $path = DIRECTORY_SEPARATOR != '/' ? str_replace(DIRECTORY_SEPARATOR, '/', $path) : $path;
+
+  // Go up the path until we match a module up.
+  $parts = explode('/', $path);
+  while (!isset($paths[$path]) && array_pop($parts)) {
+    $path = dirname($path);
+  }
+  return isset($paths[$path]) ? $paths[$path] : FALSE;
 }
 
 /**
@@ -250,12 +327,10 @@ function &rules_get_cache($cid = 'data') {
     elseif (strpos($cid, 'comp_') === 0) {
       $cache[$cid] = FALSE;
       _rules_rebuild_component_cache();
-      return $cache[$cid];
     }
     elseif (strpos($cid, 'event_') === 0) {
       $cache[$cid] = FALSE;
       RulesEventSet::rebuildEventCache();
-      return $cache[$cid];
     }
     else {
       $cache[$cid] = FALSE;
@@ -322,7 +397,7 @@ function _rules_rebuild_component_cache() {
  *
  * In addition to calling cache_set(), this function makes sure the cache item
  * is immediately available via rules_get_cache() by keeping all cache items
- * in memory. That way we can garantuee rules_get_cache() is able to retrieve
+ * in memory. That way we can guarantee rules_get_cache() is able to retrieve
  * any cache item, even if all cache gets fail.
  *
  * @see rules_get_cache()
@@ -337,7 +412,6 @@ function rules_set_cache($cid, $data) {
  * Implements hook_flush_caches().
  */
 function rules_flush_caches() {
-  variable_del('rules_empty_sets');
   return array('cache_rules');
 }
 
@@ -346,7 +420,7 @@ function rules_flush_caches() {
  */
 function rules_clear_cache() {
   cache_clear_all('*', 'cache_rules', TRUE);
-  variable_del('rules_empty_sets');
+  variable_del('rules_event_whitelist');
   drupal_static_reset('rules_get_cache');
   drupal_static_reset('rules_fetch_data');
   drupal_static_reset('rules_config_update_dirty_flag');
@@ -458,6 +532,67 @@ function rules_unwrap_data(array $data, $info = array()) {
     }
   }
   return $data;
+}
+
+/**
+ * Gets event info for a given event.
+ *
+ * @param string $event_name
+ *   A (configured) event name.
+ *
+ * @return array
+ *   An array of event info. If the event is unknown, a suiting info array is
+ *   generated and returned
+ */
+function rules_get_event_info($event_name) {
+  $base_event_name = rules_get_event_base_name($event_name);
+  $events = rules_fetch_data('event_info');
+  if (isset($events[$base_event_name])) {
+    return $events[$base_event_name] + array('name' => $base_event_name);
+  }
+  return array(
+    'label' => t('Unknown event "!event_name"', array('!event_name' => $base_event_name)),
+    'name' => $base_event_name,
+  );
+}
+
+/**
+ * Returns the base name of a configured event name.
+ *
+ * For a configured event name like node_view--article the base event name
+ * node_view is returned.
+ *
+ * @return string
+ *   The event base name.
+ */
+function rules_get_event_base_name($event_name) {
+  // Cut off any suffix from a configured event name.
+  if (strpos($event_name, '--') !== FALSE) {
+    $parts = explode('--', $event_name, 2);
+    return $parts[0];
+  }
+  return $event_name;
+}
+
+/**
+ * Returns the rule event handler for the given event.
+ *
+ * Events having no settings are handled via the class RulesEventSettingsNone.
+ *
+ * @param string $event_name
+ *   The event name (base or configured).
+ * @param array $settings
+ *   (optional) An array of event settings to set on the handler.
+ *
+ * @return RulesEventHandlerInterface
+ *   The event handler.
+ */
+function rules_get_event_handler($event_name, array $settings = NULL) {
+  $event_name = rules_get_event_base_name($event_name);
+  $event_info = rules_get_event_info($event_name);
+  $class = !empty($event_info['class']) ? $event_info['class'] : 'RulesEventDefaultHandler';
+  $handler = new $class($event_name, $event_info);
+  return isset($settings) ? $handler->setSettings($settings) : $handler;
 }
 
 /**
@@ -630,7 +765,7 @@ function rules_entity_info() {
  * Implementation of hook_hook_info().
  */
 function rules_hook_info() {
-  foreach(array('plugin_info', 'data_info', 'condition_info', 'action_info', 'event_info', 'file_info', 'evaluator_info', 'data_processor_info') as $hook) {
+  foreach(array('plugin_info', 'rules_directory', 'data_info', 'condition_info', 'action_info', 'event_info', 'file_info', 'evaluator_info', 'data_processor_info') as $hook) {
     $hooks['rules_' . $hook] = array(
       'group' => 'rules',
     );
@@ -827,9 +962,11 @@ function rules_invoke_event() {
   $args = func_get_args();
   $event_name = $args[0];
   unset($args[0]);
-  // For invoking the rules event we directly acccess the global $conf. This is
-  // fast without having to introduce another static cache.
-  if (!defined('MAINTENANCE_MODE') && !isset($conf['rules_empty_sets'][$event_name]) && $event = rules_get_cache('event_' . $event_name)) {
+  // We maintain a whitelist of configured events to reduces the number of cache
+  // reads. We access it directly via the global $conf as this is fast without
+  // having to introduce another static cache. Then, if the whitelist is unset,
+  // we ignore it so cache rebuilding is triggered.
+  if (!defined('MAINTENANCE_MODE') && (!isset($conf['rules_event_whitelist']) || isset($conf['rules_event_whitelist'][$event_name])) && $event = rules_get_cache('event_' . $event_name)) {
     $event->executeByArgs($args);
   }
 }
@@ -854,9 +991,11 @@ function rules_invoke_event() {
 function rules_invoke_event_by_args($event_name, $args = array()) {
   global $conf;
 
-  // For invoking the rules event we directly acccess the global $conf. This is
-  // fast without having to introduce another static cache.
-  if (!defined('MAINTENANCE_MODE') && !isset($conf['rules_empty_sets'][$event_name]) && $event = rules_get_cache('event_' . $event_name)) {
+  // We maintain a whitelist of configured events to reduces the number of cache
+  // reads. We access it directly via the global $conf as this is fast without
+  // having to introduce another static cache. Then, if the whitelist is unset,
+  // we ignore it so cache rebuilding is triggered.
+  if (!defined('MAINTENANCE_MODE') && (!isset($conf['rules_event_whitelist']) || isset($conf['rules_event_whitelist'][$event_name])) && $event = rules_get_cache('event_' . $event_name)) {
     $event->executeByArgs($args);
   }
 }
@@ -1198,6 +1337,10 @@ function rules_show_debug_output() {
  * Implements hook_exit().
  */
 function rules_exit() {
+  // Bail out if this is cached request and modules are not loaded.
+  if (!module_exists('rules') || !module_exists('user')) {
+    return;
+  }
   if (rules_show_debug_output()) {
     if ($log = RulesLog::logger()->render()) {
       // Keep the log in the session so we can show it on the next page.
@@ -1315,10 +1458,32 @@ function rules_config_access($op, $rules_config = NULL, $account = NULL) {
   if (user_access('bypass rules access', $account)) {
     return TRUE;
   }
-  if (!isset($rules_config) || (isset($account) && $account->uid != $GLOBALS['user']->uid)) {
+  // Allow modules to grant / deny access.
+  $access = module_invoke_all('rules_config_access', $op, $rules_config, $account);
+
+  // Only grant access if at least one module granted access and no one denied
+  // access.
+  if (in_array(FALSE, $access, TRUE)) {
     return FALSE;
   }
-  return user_access('administer rules', $account) && ($op == 'view' || $rules_config->access());
+  elseif (in_array(TRUE, $access, TRUE)) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_rules_config_access().
+ */
+function rules_rules_config_access($op, $rules_config = NULL, $account = NULL) {
+  // Instead of returning FALSE return nothing, so others still can grant
+  // access.
+  if (!isset($rules_config) || (isset($account) && $account->uid != $GLOBALS['user']->uid)) {
+    return;
+  }
+  if (user_access('administer rules', $account) && ($op == 'view' || $rules_config->access())) {
+    return TRUE;
+  }
 }
 
 /**
@@ -1447,4 +1612,25 @@ function rules_tokens($type, $tokens, $data, $options = array()) {
     $wrapper = entity_metadata_wrapper('struct', array('value' => $data[$type]), $info);
     return entity_token_tokens('struct', $tokens, array('struct' => $wrapper), $options);
   }
+}
+
+/**
+ * Helper function that retrieves a metadata wrapper with all properties.
+ *
+ * Note that without this helper, bundle-specific properties aren't added.
+ */
+function rules_get_entity_metadata_wrapper_all_properties(RulesAbstractPlugin $element) {
+  return entity_metadata_wrapper($element->settings['type'], NULL, array(
+    'property info alter' => 'rules_entity_metadata_wrapper_all_properties_callback',
+  ));
+}
+
+/**
+ * Callback that returns a metadata wrapper with all properties.
+ */
+function rules_entity_metadata_wrapper_all_properties_callback(EntityMetadataWrapper $wrapper, $property_info) {
+  $info = $wrapper->info();
+  $properties = entity_get_all_property_info($info['type']);
+  $property_info['properties'] += $properties;
+  return $property_info;
 }

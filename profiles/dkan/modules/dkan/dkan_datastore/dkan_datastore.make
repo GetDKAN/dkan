@@ -1,21 +1,19 @@
 core = 7.x
 api = 2
 
-projects[feeds][subdir] = contrib
-projects[feeds][version] = 2.x
-projects[feeds][patch][1127696] = http://drupal.org/files/feeds-1127696-multiple-importers-per-content-type-45.patch
-
 projects[feeds][subdir] = "contrib"
 projects[feeds][version] = "2.x"
 projects[feeds][download][type] = "git"
 projects[feeds][download][url] = "http://git.drupal.org/project/feeds.git"
-projects[feeds][download][revision] = 54025f9
+projects[feeds][download][revision] = 1383713
 projects[feeds][download][branch] = 7.x-2.x
 projects[feeds][type] = "module"
+projects[feeds][patch][1428272] = http://drupal.org/files/feeds-encoding_support_CSV-1428272-52.patch
+projects[feeds][patch][1127696] = http://drupal.org/files/feeds-1127696-multiple-importers-per-content-type-59.patch
 
 projects[feeds_field_fetcher][subdir] = contrib
 projects[feeds_field_fetcher][download][type] = git
-projects[feeds_field_fetcher][download][url] = "http://git.drupal.org/sandbox/acouch/1952744.git"
+projects[feeds_field_fetcher][download][url] = "http://git.drupal.org/project/feeds_field_fetcher.git"
 projects[feeds_field_fetcher][download][branch] = master
 projects[feeds_field_fetcher][type] = "module"
 

@@ -552,7 +552,7 @@ abstract class FeedsProcessor extends FeedsPlugin {
       $form['bundle'] = array(
         '#type' => 'select',
         '#options' => $this->bundleOptions(),
-        '#title' => t('Bundle'),
+        '#title' => !empty($info['bundle name']) ? $info['bundle name'] : t('Bundle'),
         '#required' => TRUE,
         '#default_value' => $this->bundle(),
       );
@@ -619,6 +619,16 @@ abstract class FeedsProcessor extends FeedsPlugin {
    *   FALSE otherwise.
    */
   public function getMappingTargets() {
+
+    // The bundle has not been selected.
+    if (!$this->bundle()) {
+      $info = $this->entityInfo();
+      $bundle_name = !empty($info['bundle name']) ? drupal_strtolower($info['bundle name']) : t('bundle');
+      $plugin_key = feeds_importer($this->id)->config['processor']['plugin_key'];
+      $url = url('admin/structure/feeds/' . $this->id . '/settings/' . $plugin_key);
+      drupal_set_message(t('Please <a href="@url">select a @bundle_name</a>.', array('@url' => $url, '@bundle_name' => $bundle_name)), 'warning', FALSE);
+    }
+
     return array(
       'url' => array(
         'name' => t('URL'),

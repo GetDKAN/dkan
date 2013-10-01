@@ -248,10 +248,12 @@ function features_theme() {
  * Implements hook_flush_caches().
  */
 function features_flush_caches() {
-  features_rebuild();
-  // Don't flush the modules cache during installation, for performance reasons.
-  if (variable_get('install_task') == 'done') {
-    features_get_modules(NULL, TRUE);
+  if (variable_get('features_rebuild_on_flush', TRUE)) {
+    features_rebuild();
+    // Don't flush the modules cache during installation, for performance reasons.
+    if (variable_get('install_task') == 'done') {
+      features_get_modules(NULL, TRUE);
+    }
   }
   return array();
 }
@@ -271,10 +273,17 @@ function features_permission() {
     'administer features' => array(
       'title' => t('Administer features'),
       'description' => t('Perform administration tasks on features.'),
+      'restrict access' => TRUE,
     ),
     'manage features' => array(
       'title' => t('Manage features'),
       'description' => t('View, enable and disable features.'),
+      'restrict access' => TRUE,
+    ),
+    'generate features' => array(
+      'title' => t('Generate features'),
+      'description' => t('Allow feature exports to be generated and written directly to site.'),
+      'restrict access' => TRUE,
     ),
   );
 }
@@ -402,7 +411,9 @@ function features_include_defaults($components = NULL, $reset = FALSE) {
         $features = isset($features) ? $features : features_get_features(NULL, $reset);
         foreach ($features as $feature) {
           $filename = isset($info['default_file']) && $info['default_file'] == FEATURES_DEFAULTS_CUSTOM ? $info['default_filename'] : "features.{$component}";
-          module_load_include('inc', $feature->name, "{$feature->name}.$filename");
+          if (module_exists($feature->name) && isset($feature->info['features'][$component])) {
+            module_load_include('inc', $feature->name, "{$feature->name}.$filename");
+          }
         }
       }
       $included[$component] = TRUE;
@@ -618,6 +629,10 @@ function features_get_info($type = 'module', $name = NULL, $reset = FALSE) {
     $files = system_rebuild_module_data();
 
     foreach ($files as $row) {
+      // Avoid false-reported feature overrides for php = 5.2.4 line in .info file.
+      if (isset($row->info['php'])) {
+        unset($row->info['php']);
+      }
       // If module is no longer enabled, remove it from the ignored orphans list.
       if (in_array($row->name, $ignored, TRUE) && !$row->status) {
         $key = array_search($row->name, $ignored, TRUE);
@@ -633,6 +648,18 @@ function features_get_info($type = 'module', $name = NULL, $reset = FALSE) {
         }
         if (!empty($row->info['scripts'])) {
           $row->info['scripts'] = array_keys($row->info['scripts']);
+        }
+        // Rework the features array, to change the vocabulary permission
+        // features.
+        foreach ($row->info['features'] as $component => $features) {
+          if ($component == 'user_permission') {
+            foreach ($features as $key => $feature) {
+              // Export vocabulary permissions using the machine name, instead
+              // of vocabulary id.
+              _user_features_change_term_permission($feature);
+              $row->info['features'][$component][$key] = $feature;
+            }
+          }
         }
         $data['feature'][$row->name] = $row;
       }
@@ -843,6 +870,11 @@ function features_form_system_modules_alter(&$form) {
  * Restore the specified modules to the default state.
  */
 function _features_restore($op, $items = array()) {
+  // Set this variable in $conf if having timeout issues during install/rebuild.
+  if (variable_get('features_restore_time_limit_' . $op, FALSE) !== FALSE) {
+    drupal_set_time_limit(variable_get('features_restore_time_limit_' . $op, FALSE));
+  }
+
   module_load_include('inc', 'features', 'features.export');
   features_include();
 
@@ -924,6 +956,25 @@ function features_rebuild($rebuild = array()) {
 }
 
 /**
+ * Revert a single features module.
+ *
+ * @param string $module
+ *   A features module machine name. This module must be a
+ *   features module and enabled.
+ */
+function features_revert_module($module) {
+  if (($feature = feature_load($module, TRUE)) && module_exists($module)) {
+    $components = array();
+    foreach (array_keys($feature->info['features']) as $component) {
+      if (features_hook($component, 'features_revert')) {
+        $components[] = $component;
+      }
+    }
+    features_revert(array($module => $components));
+  }
+}
+
+/**
  * Utility functions ==================================================
  */
 
@@ -961,6 +1012,30 @@ function features_hook_info() {
     'features_export_alter',
   );
   return array_fill_keys($hooks, array('group' => 'features'));
+}
+
+/**
+ * Change vocabularies permission, from vocab id to machine name and vice versa.
+ */
+function _user_features_change_term_permission(&$perm, $type = 'vid') {
+  // Export vocabulary permissions using the machine name, instead of vocabulary
+  // id.
+  if (strpos($perm, 'edit terms in ') !== FALSE || strpos($perm, 'delete terms in ') !== FALSE) {
+    preg_match("/(?<=\040)([^\s]+?)$/", trim($perm), $voc_id);
+    $vid = $voc_id[0];
+    if (is_numeric($vid) && $type == 'vid') {
+      if (function_exists('taxonomy_vocabulary_load')) {
+        if ($voc = taxonomy_vocabulary_load($vid)) {
+          $perm = str_replace($vid, $voc->machine_name, $perm);
+        }
+      }
+    }
+    elseif ($type == 'machine_name') {
+      if ($voc = taxonomy_vocabulary_machine_name_load($vid)) {
+        $perm = str_replace($vid, $voc->vid, $perm);
+      }
+    }
+  }
 }
 
 /**

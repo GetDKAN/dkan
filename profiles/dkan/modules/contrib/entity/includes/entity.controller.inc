@@ -587,6 +587,20 @@ class EntityAPIController extends DrupalDefaultEntityController implements Entit
     $entity->content = $content;
     $langcode = isset($langcode) ? $langcode : $GLOBALS['language_content']->language;
 
+    // By default add in properties for all defined extra fields.
+    if ($extra_field_controller = entity_get_extra_fields_controller($this->entityType)) {
+      $wrapper = entity_metadata_wrapper($this->entityType, $entity);
+      $extra = $extra_field_controller->fieldExtraFields();
+      $type_extra = &$extra[$this->entityType][$this->entityType]['display'];
+      $bundle_extra = &$extra[$this->entityType][$wrapper->getBundle()]['display'];
+
+      foreach ($wrapper as $name => $property) {
+        if (isset($type_extra[$name]) || isset($bundle_extra[$name])) {
+          $this->renderEntityProperty($wrapper, $name, $property, $view_mode, $langcode, $entity->content);
+        }
+      }
+    }
+
     // Add in fields.
     if (!empty($this->entityInfo['fieldable'])) {
       // Perform the preparation tasks if they have not been performed yet.
@@ -606,6 +620,24 @@ class EntityAPIController extends DrupalDefaultEntityController implements Entit
     $build = $entity->content;
     unset($entity->content);
     return $build;
+  }
+
+  /**
+   * Renders a single entity property.
+   */
+  protected function renderEntityProperty($wrapper, $name, $property, $view_mode, $langcode, &$content) {
+    $info = $property->info();
+
+    $content[$name] = array(
+      '#label_hidden' => FALSE,
+      '#label' => $info['label'],
+      '#entity_wrapped' => $wrapper,
+      '#theme' => 'entity_property',
+      '#property_name' => $name,
+      '#access' => $property->access('view'),
+      '#entity_type' => $this->entityType,
+    );
+    $content['#attached']['css']['entity.theme'] = drupal_get_path('module', 'entity') . '/theme/entity.theme.css';
   }
 
   /**

@@ -15,17 +15,17 @@ function recline_requirements($phase) {
     $library_path = _recline_library_path();
     if (_recline_requirements_installed($library_path)) {
       $requirements['recline'] = array(
-      'title' => t('Recline library'),
-      'value' => t('Installed'),
-      'severity' => REQUIREMENT_OK,
+        'title' => t('Recline library'),
+        'value' => t('Installed'),
+        'severity' => REQUIREMENT_OK,
       );
     }
     else{
       $requirements['recline'] = array(
-      'title' => t('Recline library'),
-      'value' => t('Not Found'),
-      'severity' => REQUIREMENT_ERROR,
-      'description' => t('You need to download this zip file: !recline and extract the entire contents of the archive into the %path folder of your server.', array('!recline' => l(t('Recline.js'), 'https://github.com/acouch/recline/zipball/master'), '%path' => 'sites/all/libraries/recline')),
+        'title' => t('Recline library'),
+        'value' => t('Not Found'),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => t('You need to download this zip file: !recline and extract the entire contents of the archive into the %path folder of your server.', array('!recline' => l(t('Recline.js'), 'https://github.com/acouch/recline/zipball/master'), '%path' => 'sites/all/libraries/recline')),
       );
     }
   }
@@ -71,12 +71,6 @@ function recline_field_schema($field) {
     'indexes' => $indexes,
     'foreign_keys' => $foreign_keys,
   );
-}
-
-/**
- * Remove variables on uninstall.
- */
-function recline_uninstall() {
 }
 
 /**

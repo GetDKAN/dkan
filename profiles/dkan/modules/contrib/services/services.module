@@ -393,13 +393,14 @@ function services_services_authentication_info() {
 /**
  * Authenticates a call using Drupal's built in sessions
  *
- * @return void
+ * @return string
+ *   Error message in case error occured.
  */
-function _services_sessions_authenticate_call() {
+function _services_sessions_authenticate_call($module, $controller) {
   global $user;
   $original_user = services_get_server_info('original_user');
 
-  if ($original_user->uid != 0) {
+  if ($original_user->uid != 0 && $controller['callback'] != '_user_resource_get_token') {
     $non_safe_method_called = !in_array($_SERVER['REQUEST_METHOD'], array('GET', 'HEAD', 'OPTIONS', 'TRACE'));
     $csrf_token_invalid = !isset($_SERVER['HTTP_X_CSRF_TOKEN']) || !drupal_valid_token($_SERVER['HTTP_X_CSRF_TOKEN'], 'services');
     if ($non_safe_method_called && $csrf_token_invalid) {

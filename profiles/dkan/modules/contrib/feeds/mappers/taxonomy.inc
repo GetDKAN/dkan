@@ -78,7 +78,9 @@ function taxonomy_feeds_processor_targets_alter(&$targets, $entity_type, $bundle
  * @todo Do not create new terms for non-autotag fields.
  */
 function taxonomy_feeds_set_target($source, $entity, $target, $terms, $mapping = array()) {
-  if (empty($terms)) {
+
+  // Allow mapping the string '0' to a term name.
+  if (empty($terms) && $terms != 0) {
     return;
   }
 

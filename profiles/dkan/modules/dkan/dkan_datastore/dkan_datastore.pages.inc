@@ -9,27 +9,37 @@
  * Callback for Data API instructions.
  */
 function dkan_datastore_datastore_api($node) {
-  $importer_id = feeds_get_importer_id($node->type);
-  $source_config = feeds_source($importer_id, $node->nid);
-  $fetcher = get_class($source_config->importer->fetcher);
-  $source = isset($source_config->config[$fetcher]['source']) ? $source_config->config[$fetcher]['source'] : '';
   $output = '<h2>' . t('DKAN Datastore API') . '</h2>';
-  if ($source) {
-    $progress = $source_config->progressImporting();
-    if ($progress != FEEDS_BATCH_COMPLETE) {
-      $output .= t('This data source has not yet completed importing. Import is at @progress%. The API for this data source will be available upon the completion of the import process.', array('@progress' => number_format(100 * $progress, 0)));
-    }
-    else {
-      $output .= t('Access resource data via a web API with powerful query support.');
-      $output .= '<h3>' . t('Resource ID') . '</h3>';
-      $output .= t('The Resource ID for this resource is ') . $node->uuid;
-      $output .= '<h3>' . t('Example Query') . '</h3>';
-      global $base_url;
-      $url = $base_url . '/api/action/datastore/search.json?resource_id=' . $node->uuid . '&limit=5';
-      $output .= '<p>' . l($url, $url) . '</p>';
-      $output .= '<p>' . t('Query this datastore and return first five results') . '</p>';
-      $output .= '<h3>' . t('Documentation') . '</h3>';
-      $output .= '<p>' . t('See DKAN API documentation for more details: ') . l(t('DKAN Datastore API'), 'http://docs.getdkan.com/docs/dkan-documentation/dkan-api/datastore-api') . '</p>';
+  if ($importer_ids = feeds_get_importer_ids($node->type, $node->nid)) {
+    foreach ($importer_ids as $importer_id) {
+      $source_config = feeds_source($importer_id, $node->nid);
+      $fetcher = get_class($source_config->importer->fetcher);
+      $source = isset($source_config->config[$fetcher]['source']) ? $source_config->config[$fetcher]['source'] : '';
+      if ($source) {
+        $table_name = feeds_flatstore_processor_table_name($source_config->id, $source_config->feed_nid);
+        if (!db_table_exists($table_name)) {
+          $output .= t('This resources has a file that has not been added to the datastore.');
+        }
+        else {
+          $progress = $source_config->progressImporting();
+          if ($progress != FEEDS_BATCH_COMPLETE) {
+            $output .= t('This data source has not yet completed importing. Import is at @progress%. The API for this data source will be available upon the completion of the import process.', array('@progress' => number_format(100 * $progress, 0)));
+          }
+          else {
+            $output .= t('Access resource data via a web API with powerful query support.');
+            $output .= '<h3>' . t('Resource ID') . '</h3>';
+            $output .= t('The Resource ID for this resource is ') . $node->uuid;
+            $output .= '<h3>' . t('Example Query') . '</h3>';
+            global $base_url;
+            $url = $base_url . '/api/action/datastore/search.json?resource_id=' . $node->uuid . '&limit=5';
+            $output .= '<p>' . l($url, $url) . '</p>';
+            $output .= '<p>' . t('Query this datastore and return first five results') . '</p>';
+            $output .= '<h3>' . t('Documentation') . '</h3>';
+            $output .= '<p>' . t('See DKAN API documentation for more details: ') . l(t('DKAN Datastore API'), 'http://docs.getdkan.com/docs/dkan-documentation/dkan-api/datastore-api') . '</p>';
+          }
+        }
+        return $output;
+      }
     }
   }
   else {
@@ -42,17 +52,25 @@ function dkan_datastore_datastore_api($node) {
  * Callback for download tab.
  */
 function dkan_datastore_download($node) {
-  $uri = isset($node->field_upload[DKAN_FIELD_LANG][0]['uri']) ? $node->field_upload[DKAN_FIELD_LANG][0]['uri'] : $node->field_upload[0]['uri'];
-  $url = file_create_url($uri);
-  return drupal_goto($url);
+  $node_wrapper = entity_metadata_wrapper('node', $node);
+  if ($node_wrapper->field_upload->value()) {
+    $url = file_create_url($node_wrapper->field_upload->value()->uri);
+    return drupal_goto($url);
+  }
+  else {
+    drupal_set_message(t('No download available for this resource'));
+    return '';
+  }
 }
 
 /**
  * Callback for back link.
  */
 function dkan_datastore_back($node) {
-  if (isset($node->field_dataset_ref[DKAN_FIELD_LANG][0]['target_id'])) {
-    drupal_goto('node/' . $node->field_dataset_ref[DKAN_FIELD_LANG][0]['target_id']);
+  $node_wrapper = entity_metadata_wrapper('node', $node);
+  $dataset = $node_wrapper->field_dataset_ref->value();
+  if ($dataset) {
+    drupal_goto('node/' . $dataset->nid);
   }
   return '';
 }
@@ -69,34 +87,70 @@ function dkan_datastore_add_resource($node) {
  */
 function dkan_datastore_import_tab_form($form, &$form_state, $node) {
   module_load_include('inc', 'feeds', 'feeds.pages');
-  $importer_id = feeds_get_importer_id($node->type);
-  $source_config = feeds_source($importer_id, $node->nid);
-  $fetcher = get_class($source_config->importer->fetcher);
-  $source = isset($source_config->config[$fetcher]['source']) ? $source_config->config[$fetcher]['source'] : '';
+
+  $total_progress = 0;
+
+  $importer_ids = feeds_get_importer_ids($node->type, $node->nid);
+
   $form = array();
-  if ($source) {
+  $form['source_status'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Datastore Status'),
+    '#tree' => TRUE,
+  );
+  if ($importer_ids) {
     $form['#feed_nid'] = $node->nid;
-    $form['#importer_id'] = $importer_id;
     $form['#redirect'] = 'node/' . $node->nid;
-    $form['source_status'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Datastore Status'),
-      '#tree' => TRUE,
-      '#description' => t('Click "Import" below to import or re-import the data from your file into the datastore'),
-      '#value' => feeds_source_status($source_config),
-    );
     $form = confirm_form($form, t('Import all content from source?'), 'node/' . $node->nid, '', t('Import'), t('Cancel'), 'confirm feeds update');
-    drupal_set_title('Manage Datastore');
-    $progress = $source_config->progressImporting();
-    $form['#count'] = $source_config->itemCount();
-    if ($progress !== FEEDS_BATCH_COMPLETE) {
-      $form['actions']['submit']['#disabled'] = TRUE;
-      $form['actions']['submit']['#value'] = t('Importing (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
+    foreach ($importer_ids as $importer_id => $weight) {
+      $source = feeds_source($importer_id, $node->nid);
+      $source_input = isset($source->config[$source->importer->config['fetcher']['plugin_key']]['source']) ? $source->config[$source->importer->config['fetcher']['plugin_key']]['source'] : '';
+      if ($source_input) {
+        $form[$importer_id]['source_status'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('@source_name', array('@source_name' => $source->importer->config['name'])),
+          '#tree' => TRUE,
+          '#value' => feeds_source_status($source),
+        );
+        $form[$importer_id]['#count'] = $source->itemCount();
+        $progress = $source->progressImporting();
+        $total_progress += $progress;
+      }
+      else {
+        unset($importer_ids[$importer_id]);
+      }
+    }
+    if (count($importer_ids) == 1) {
+      $form['importer_ids'] = array(
+        '#type' => 'value',
+        '#value' => $importer_ids,
+      );
+    }
+    else {
+      $options = array();
+      foreach ($importer_ids as $importer_id => $weight) {
+        $source = feeds_source($importer_id, $node->nid);
+        $options[$importer_id] = $source->importer->config['name'];
+      }
+      $form['importer_ids'] = array(
+        '#type' => 'checkboxes',
+        '#options' => $options,
+        '#default_value' => array_keys($options),
+        '#title' => t('Sources'),
+        '#description' => t('Select the sources to import.'),
+      );
+    }
+
+    if (count($importer_ids)) {
+      $progress = $total_progress / count($importer_ids);
+      if ($progress !== FEEDS_BATCH_COMPLETE) {
+        $form['actions']['submit']['#disabled'] = TRUE;
+        $form['actions']['submit']['#value'] = t('Importing (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
+      }
     }
   }
   else {
     $form['no_source'] = array(
-      '#type' => 'item',
       '#markup' => t('There is nothing to manage! You need to upload or link to a file in order to use the datastore.'),
     );
   }
@@ -108,12 +162,9 @@ function dkan_datastore_import_tab_form($form, &$form_state, $node) {
  */
 function dkan_datastore_import_tab_form_submit($form, &$form_state) {
   $form_state['redirect'] = $form['#redirect'];
-  $feed_nid = $form['#feed_nid'];
-  if ($form['#count']) {
-    $table_name = 'dkan_datastore_' . $feed_nid;
-    $result = db_truncate($table_name)->execute();
+  foreach (array_filter($form_state['values']['importer_ids']) as $importer_id) {
+    feeds_source($importer_id, $form['#feed_nid'])->startImport();
   }
-  feeds_source($form['#importer_id'], $feed_nid)->startImport();
 }
 
 /**
@@ -124,31 +175,72 @@ function dkan_datastore_import_tab_form_submit($form, &$form_state) {
  */
 function dkan_datastore_delete_tab_form($form, &$form_state, $importer_id, $node = NULL) {
   module_load_include('inc', 'feeds', 'feeds.pages');
+  $total_progress = 0;
+
+  $form = array();
   if (empty($node)) {
     $source = feeds_source($importer_id);
     $form['#redirect'] = 'import/' . $source->id;
+    $importer_ids = array($importer_id);
   }
   else {
-    $importer_id = feeds_get_importer_id($node->type);
-    $source = feeds_source($importer_id, $node->nid);
-    $form['#redirect'] = 'node/' . $source->feed_nid;
+    $importer_ids = feeds_get_importer_ids($node->type, $node->nid);
+    $form['#redirect'] = 'node/' . $node->nid;
   }
-  // Form cannot pass on source object.
-  $form['#importer_id'] = $source->id;
-  $form['#feed_nid'] = $source->feed_nid;
-  $form['source_status'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Delete Datatsore Records'),
-    '#tree' => TRUE,
-    '#value' => feeds_source_status($source),
-  );
-  $form = confirm_form($form, t('Delete all items from source?'), $form['#redirect'], '', t('Delete'), t('Cancel'), 'confirm feeds update');
-  drupal_set_title('Manage Datastore');
-  $progress = $source->progressClearing();
-  if ($progress !== FEEDS_BATCH_COMPLETE) {
-    $form['actions']['submit']['#disabled'] = TRUE;
-    $form['actions']['submit']['#value'] = t('Deleting (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
+
+  if ($importer_ids) {
+    // Form cannot pass on source object.
+    $form['#feed_nid'] = $node->nid;
+    foreach ($importer_ids as $importer_id => $weight) {
+      $source = feeds_source($importer_id, $node->nid);
+      $form[$importer_id]['source_status'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('@source_name: Status', array('@source_name' => $source->importer->config['name'])),
+        '#tree' => TRUE,
+        '#value' => feeds_source_status($source),
+      );
+      $progress = $source->progressClearing();
+      $total_progress += $progress;
+    }
+
+    if (count($importer_ids) == 1) {
+      $form['importer_ids'] = array(
+        '#type' => 'value',
+        '#value' => array($importer_id),
+      );
+    }
+    else {
+      $options = array();
+      foreach ($importer_ids as $importer_id => $weight) {
+        $source = feeds_source($importer_id, $node->nid);
+        $options[$importer_id] = $source->importer->config['name'];
+      }
+      $form['importer_ids'] = array(
+        '#type' => 'checkboxes',
+        '#options' => $options,
+        '#default_value' => array_keys($options),
+        '#title' => t('Sources'),
+        '#description' => t('Select the sources to delete items from.'),
+      );
+    }
+
+    $form = confirm_form($form, t('Delete all items from source?'), $form['#redirect'], '', t('Delete'), t('Cancel'), 'confirm feeds update');
+
+    if (count($importer_ids)) {
+      $progress = $total_progress / count($importer_ids);
+      if ($progress !== FEEDS_BATCH_COMPLETE) {
+        $form['actions']['submit']['#disabled'] = TRUE;
+        $form['actions']['submit']['#value'] =
+          t('Deleting (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
+      }
+    }
   }
+  else {
+    $form['no_source'] = array(
+      '#markup' => t('No feeds sources added to node.'),
+    );
+  }
+
   $form['#submit'] = array('feeds_delete_tab_form_submit');
   return $form;
 }

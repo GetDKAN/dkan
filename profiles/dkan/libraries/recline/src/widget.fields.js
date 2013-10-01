@@ -20,7 +20,8 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
-
+  "use strict";
+  
 my.Fields = Backbone.View.extend({
   className: 'recline-fields-view', 
   template: ' \
@@ -38,7 +39,7 @@ my.Fields = Backbone.View.extend({
             </small> \
           </h4> \
         </div> \
-        <div id="collapse{{id}}" class="accordion-body collapse in"> \
+        <div id="collapse{{id}}" class="accordion-body collapse"> \
           <div class="accordion-inner"> \
             {{#facets}} \
             <div class="facet-summary" data-facet="{{id}}"> \
@@ -57,18 +58,14 @@ my.Fields = Backbone.View.extend({
     </div> \
   ',
 
-  events: {
-    'click .js-show-hide': 'onShowHide'
-  },
   initialize: function(model) {
     var self = this;
-    this.el = $(this.el);
     _.bindAll(this, 'render');
 
     // TODO: this is quite restrictive in terms of when it is re-run
     // e.g. a change in type will not trigger a re-run atm.
     // being more liberal (e.g. binding to all) can lead to being called a lot (e.g. for change:width)
-    this.model.fields.bind('reset', function(action) {
+    this.listenTo(this.model.fields, 'reset', function(action) {
       self.model.fields.each(function(field) {
         field.facets.unbind('all', self.render);
         field.facets.bind('all', self.render);
@@ -77,6 +74,7 @@ my.Fields = Backbone.View.extend({
       self.model.getFieldsSummary();
       self.render();
     });
+    this.$el.find('.collapse').collapse();
     this.render();
   },
   render: function() {
@@ -90,26 +88,8 @@ my.Fields = Backbone.View.extend({
       tmplData.fields.push(out);
     });
     var templated = Mustache.render(this.template, tmplData);
-    this.el.html(templated);
-    this.el.find('.collapse').collapse('hide');
-  },
-  onShowHide: function(e) {
-    e.preventDefault();
-    var $target  = $(e.target);
-    // weird collapse class seems to have been removed (can watch this happen
-    // if you watch dom) but could not work why. Absence of collapse then meant
-    // we could not toggle.
-    // This seems to fix the problem.
-    this.el.find('.accordion-body').addClass('collapse');;
-    if ($target.text() === '+') {
-      this.el.find('.collapse').collapse('show');
-      $target.text('-');
-    } else {
-      this.el.find('.collapse').collapse('hide');
-      $target.text('+');
-    }
+    this.$el.html(templated);
   }
 });
 
 })(jQuery, recline.View);
-

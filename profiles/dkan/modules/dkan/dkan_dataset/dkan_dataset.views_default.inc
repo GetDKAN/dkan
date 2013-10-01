@@ -252,11 +252,11 @@ function dkan_dataset_views_default_views() {
   $handler->display->display_options['fields']['field_link_api']['click_sort_column'] = 'url';
   $handler->display->display_options['fields']['field_link_api']['type'] = 'link_absolute';
   /* Field: Content: Link file */
-  $handler->display->display_options['fields']['field_link_file']['id'] = 'field_link_file';
-  $handler->display->display_options['fields']['field_link_file']['table'] = 'field_data_field_link_file';
-  $handler->display->display_options['fields']['field_link_file']['field'] = 'field_link_file';
-  $handler->display->display_options['fields']['field_link_file']['label'] = 'file_link';
-  $handler->display->display_options['fields']['field_link_file']['click_sort_column'] = 'url';
+  $handler->display->display_options['fields']['field_link_remote_file']['id'] = 'field_link_remote_file';
+  $handler->display->display_options['fields']['field_link_remote_file']['table'] = 'field_data_field_link_remote_file';
+  $handler->display->display_options['fields']['field_link_remote_file']['field'] = 'field_link_remote_file';
+  $handler->display->display_options['fields']['field_link_remote_file']['label'] = 'file_link';
+  $handler->display->display_options['fields']['field_link_remote_file']['click_sort_column'] = 'fid';
   /* Field: Content: Post date */
   $handler->display->display_options['fields']['created']['id'] = 'created';
   $handler->display->display_options['fields']['created']['table'] = 'node';

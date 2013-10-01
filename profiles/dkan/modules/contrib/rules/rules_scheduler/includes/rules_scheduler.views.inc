@@ -71,7 +71,7 @@ function rules_scheduler_views_data() {
           'click sortable' => TRUE,
         ),
         'filter' => array(
-          'handler' => 'views_handler_filter',
+          'handler' => 'views_handler_filter_string',
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',

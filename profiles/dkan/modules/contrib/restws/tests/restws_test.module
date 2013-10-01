@@ -13,3 +13,16 @@
 function restws_test_restws_resource_info_alter(&$resource_info) {
   $resource_info['node']['menu_path'] = 'foo';
 }
+
+/**
+ * Implements hook_field_access().
+ *
+ * @see RestWSTestCase::testFieldAccess()
+ */
+function restws_test_field_access($op, $field, $entity_type, $entity, $account) {
+  if ($field['field_name'] == 'field_text' && $op == 'edit') {
+    // Only allow edit access for a higher level permission.
+    return user_access('administer users', $account);
+  }
+  return TRUE;
+}

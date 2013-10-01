@@ -184,10 +184,6 @@ function select_or_other_element_process($element, &$form_state) {
   // Populate properties set specifically as #select_property or #other_property
   $sub_elements = array('select', 'other');
   foreach ($sub_elements as $sub_element) {
-    if($sub_element == 'select') {
-      // Hide title from the select options as it is already in the wrapper.
-      $element[$sub_element]['#title'] = NULL;
-    }
     foreach ($element as $key => $value) {
     if (strpos($key, '#' . $sub_element . '_') === 0) {
         $element[$sub_element][str_replace('#' . $sub_element . '_', '#', $key)] = $value;
@@ -205,7 +201,7 @@ function select_or_other_element_process($element, &$form_state) {
   }
 
   // Hide the title from the wrapper.
-  $element['#title_error'] = $element['#title'];
+  $element['#title'] = NULL;
 
   return $element;
 }

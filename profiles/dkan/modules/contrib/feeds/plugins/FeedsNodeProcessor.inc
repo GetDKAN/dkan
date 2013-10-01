@@ -182,8 +182,6 @@ class FeedsNodeProcessor extends FeedsProcessor {
   public function configForm(&$form_state) {
     $form = parent::configForm($form_state);
 
-    $form['bundle']['#title'] = t('Content type');
-
     $author = user_load($this->config['author']);
     $form['author'] = array(
       '#type' => 'textfield',
@@ -235,18 +233,15 @@ class FeedsNodeProcessor extends FeedsProcessor {
    * Override setTargetElement to operate on a target item that is a node.
    */
   public function setTargetElement(FeedsSource $source, $target_node, $target_element, $value) {
-    if ($ids = feeds_get_importer_ids($this->config['content_type'], $source->feed_nid)) {
-      foreach ($ids as $id) {
-        if ($target_element == 'feeds_source_' . $id) {
-          // Get the class of the feed node importer's fetcher and set the source
-          // property. See feeds_node_update() how $node->feeds gets stored.
-          $class = get_class(feeds_importer($id)->fetcher);
-          $target_node->feeds[$id][$class]['source'] = $value;
-          // This effectively suppresses 'import on submission' feature.
-          // See feeds_node_insert().
-          $target_node->feeds[$id]['suppress_import'] = TRUE;
-        }
-      }
+    $id = $this->bundle();
+    if ($target_element == 'feeds_source_' . $id) {
+      // Get the class of the feed node importer's fetcher and set the source
+      // property. See feeds_node_update() how $node->feeds gets stored.
+      $class = get_class(feeds_importer($id)->fetcher);
+      $target_node->feeds[$id][$class]['source'] = $value;
+      // This effectively suppresses 'import on submission' feature.
+      // See feeds_node_insert().
+      $target_node->feeds['suppress_import'] = TRUE;
     }
     switch ($target_element) {
       case 'created':
@@ -278,7 +273,7 @@ class FeedsNodeProcessor extends FeedsProcessor {
     $type = node_type_get_type($this->bundle());
 
     $targets = parent::getMappingTargets();
-    if ($type->has_title) {
+    if ($type && $type->has_title) {
       $targets['title'] = array(
         'name' => t('Title'),
         'description' => t('The title of the node.'),
@@ -340,7 +335,7 @@ class FeedsNodeProcessor extends FeedsProcessor {
       foreach ($ids as $id) {
         $name = feeds_importer($id)->config['name'];
         $targets['feeds_source_' . $id] = array(
-          'name' => t('Feed source'),
+          'name' => t('Feed source ' . $name),
           'description' => t('The content type created by this processor is a Feed Node, it represents a source itself. Depending on the fetcher selected on the importer "@importer", this field is expected to be for example a URL or a path to a file.', array('@importer' => $name)),
           'optional_unique' => TRUE,
         );
@@ -375,7 +370,7 @@ class FeedsNodeProcessor extends FeedsProcessor {
           $nid = db_query("SELECT nid FROM {node} WHERE title = :title AND type = :type", array(':title' => $value, ':type' => $this->bundle()))->fetchField();
           break;
       }
-      if ($ids = feeds_get_importer_ids($this->config['content_type'])) {
+      if (isset($this->config['content_type']) && $ids = feeds_get_importer_ids($this->config['content_type'])) {
         foreach ($ids as $id) {
           if ($target == 'feeds_source_' . $id) {
             $nid = db_query("SELECT fs.feed_nid FROM {node} n JOIN {feeds_source} fs ON n.nid = fs.feed_nid WHERE fs.id = :id AND fs.source = :source", array(':id' => $id, ':source' => $value))->fetchField();

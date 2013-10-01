@@ -19,6 +19,11 @@ function feeds_tests_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
+  $items['testing/feeds/files-remote.csv'] = array(
+    'page callback' => 'feeds_tests_files_remote',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 
@@ -53,7 +58,7 @@ function feeds_tests_flickr() {
   );
   $path = drupal_get_path('module', 'feeds_tests') . '/feeds/assets';
   foreach ($images as &$image) {
-    $image = url("$path/$image", array('absolute' => TRUE));
+    $image = file_create_url("$path/$image");
   }
   drupal_add_http_header('Content-Type', 'application/rss+xml; charset=utf-8');
   print theme('feeds_tests_flickr', array('image_urls' => $images));
@@ -78,7 +83,26 @@ function feeds_tests_files() {
 }
 
 /**
- * Implements hook_feeds_processor_targets_alter()
+ * Outputs a CSV file pointing to files to download.
+ */
+function feeds_tests_files_remote() {
+  $images = array(
+    0 => 'tubing.jpeg',
+    1 => 'foosball.jpeg',
+    2 => 'attersee.jpeg',
+    3 => 'hstreet.jpeg',
+    4 => 'la fayette.jpeg',
+  );
+  $path = drupal_get_path('module', 'feeds_tests') . '/feeds/assets';
+  foreach ($images as &$image) {
+    $image = file_create_url("$path/$image");
+  }
+  drupal_add_http_header('Content-Type', 'text/plain; charset=utf-8');
+  print theme('feeds_tests_files', array('files' => $images));
+}
+
+/**
+ * Implements hook_feeds_processor_targets_alter().
  */
 function feeds_tests_feeds_processor_targets_alter(&$targets, $entity_type, $bundle_name) {
   $targets['test_target'] = array(
@@ -96,7 +120,7 @@ function feeds_tests_feeds_processor_targets_alter(&$targets, $entity_type, $bun
  * @see my_module_set_target()
  */
 function feeds_tests_mapper_set_target($source, $entity, $target, $value, $mapping) {
-  $entity->body['und'][0]['value'] = serialize($mapping); 
+  $entity->body['und'][0]['value'] = serialize($mapping);
 }
 
 /**
@@ -106,10 +130,10 @@ function feeds_tests_mapper_set_target($source, $entity, $target, $value, $mappi
  */
 function feeds_tests_mapper_summary($mapping, $target, $form, $form_state) {
   $options = array(
-    'option1' => t('Option 1'), 
+    'option1' => t('Option 1'),
     'option2' => t('Another Option'),
-    'option3' => t('Option for select'), 
-    'option4' => t('Another One')
+    'option3' => t('Option for select'),
+    'option4' => t('Another One'),
   );
 
   $items = array();
@@ -139,7 +163,7 @@ function feeds_tests_mapper_summary($mapping, $target, $form, $form_state) {
   return drupal_render($list);
 }
 
-/*
+/**
  * Provides the form with mapper settings.
  */
 function feeds_tests_mapper_form($mapping, $target, $form, $form_state) {
@@ -181,4 +205,3 @@ function feeds_tests_mapper_form($mapping, $target, $form, $form_state) {
     ),
   );
 }
-

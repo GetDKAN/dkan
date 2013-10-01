@@ -47,15 +47,15 @@ function field_base_features_export_options() {
  */
 function field_instance_features_export_options() {
   $options = array();
-  $instances = field_info_instances();
-  foreach ($instances as $entity_type => $bundles) {
-    foreach ($bundles as $bundle => $fields) {
-      foreach ($fields as $field) {
-        $identifier = "{$entity_type}-{$bundle}-{$field['field_name']}";
+  foreach (field_info_fields() as $field_name => $field) {
+    foreach ($field['bundles'] as $entity_type => $bundles) {
+      foreach ($bundles as $bundle) {
+        $identifier = "{$entity_type}-{$bundle}-{$field_name}";
         $options[$identifier] = $identifier;
       }
     }
   }
+  ksort($options);
   return $options;
 }
 
@@ -295,11 +295,21 @@ function field_instance_features_rebuild($module) {
       if (isset($existing_instances[$field_instance['entity_type']][$field_instance['bundle']][$field_instance['field_name']])) {
         $existing_instance = $existing_instances[$field_instance['entity_type']][$field_instance['bundle']][$field_instance['field_name']];
         if ($field_instance + $existing_instance != $existing_instance) {
-          field_update_instance($field_instance);
+          try {
+            field_update_instance($field_instance);
+          }
+          catch (FieldException $e) {
+            watchdog('features', 'Attempt to update field instance %label (in %entity entity type %bundle bundle) failed: %message', array('%label' => $field_instance['field_name'], '%entity' => $field_instance['entity_type'], '%bundle' => $field_instance['bundle'], '%message' => $e->getMessage()), WATCHDOG_ERROR);
+          }
         }
       }
       else {
-        field_create_instance($field_instance);
+        try {
+          field_create_instance($field_instance);
+        }
+        catch (FieldException $e) {
+          watchdog('features', 'Attempt to create field instance %label (in %entity entity type %bundle bundle) failed: %message', array('%label' => $field_instance['field_name'], '%entity' => $field_instance['entity_type'], '%bundle' => $field_instance['bundle'], '%message' => $e->getMessage()), WATCHDOG_ERROR);
+        }
         $existing_instances[$field_instance['entity_type']][$field_instance['bundle']][$field_instance['field_name']] = $field_instance;
       }
     }
@@ -363,48 +373,8 @@ function field_features_export_options() {
  */
 function field_features_export($data, &$export, $module_name = '') {
   $pipe = array();
-  $map = features_get_default_map('field');
-
-  // The field_default_fields() hook integration is provided by the
-  // features module so we need to add it as a dependency.
-  $export['dependencies']['features'] = 'features';
-
-  foreach ($data as $identifier) {
-    if ($field = features_field_load($identifier)) {
-      // If this field is already provided by another module, remove the field
-      // and add the other module as a dependency.
-      if (isset($map[$identifier]) && $map[$identifier] != $module_name) {
-        if (isset($export['features']['field'][$identifier])) {
-          unset($export['features']['field'][$identifier]);
-        }
-        $module = $map[$identifier];
-        $export['dependencies'][$module] = $module;
-      }
-      // If the field has not yet been exported, add it
-      else {
-        $export['features']['field'][$identifier] = $identifier;
-        $export['dependencies'][$field['field_config']['module']] = $field['field_config']['module'];
-        if ($field['field_config']['storage']['type'] != variable_get('field_storage_default', 'field_sql_storage')) {
-          $export['dependencies'][$field['field_config']['storage']['module']] = $field['field_config']['storage']['module'];
-        }
-        $export['dependencies'][$field['field_instance']['widget']['module']] = $field['field_instance']['widget']['module'];
-        foreach ($field['field_instance']['display'] as $key => $display) {
-          if (isset($display['module'])) {
-            $export['dependencies'][$display['module']] = $display['module'];
-            // @TODO: handle the pipe to image styles
-          }
-        }
-        // If taxonomy field, add in the vocabulary
-        if ($field['field_config']['type'] == 'taxonomy_term_reference' && !empty($field['field_config']['settings']['allowed_values'])) {
-          foreach ($field['field_config']['settings']['allowed_values'] as $allowed_values) {
-            if (!empty($allowed_values['vocabulary'])) {
-              $pipe['taxonomy'][] = $allowed_values['vocabulary'];
-            }
-          }
-        }
-      }
-    }
-  }
+  // Convert 'field' to 'field_instance' on features-update.
+  $pipe['field_instance'] = $data;
   return $pipe;
 }
 
@@ -500,11 +470,21 @@ function field_features_rebuild($module) {
       if (isset($existing_fields[$field_config['field_name']])) {
         $existing_field = $existing_fields[$field_config['field_name']];
         if ($field_config + $existing_field != $existing_field) {
-          field_update_field($field_config);
+          try {
+            field_update_field($field_config);
+          }
+          catch (FieldException $e) {
+            watchdog('features', 'Attempt to update field %label failed: %message', array('%label' => $field_config['field_name'], '%message' => $e->getMessage()), WATCHDOG_ERROR);
+          }
         }
       }
       else {
-        field_create_field($field_config);
+        try {
+          field_create_field($field_config);
+        }
+        catch (FieldException $e) {
+          watchdog('features', 'Attempt to create field %label failed: %message', array('%label' => $field_config['field_name'], '%message' => $e->getMessage()), WATCHDOG_ERROR);
+        }
         $existing_fields[$field_config['field_name']] = $field_config;
       }
 

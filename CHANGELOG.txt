@@ -1,4 +1,52 @@
 
+Drupal 7.23, 2013-08-07
+-----------------------
+- Fixed a fatal error on PostgreSQL databases when updating the Taxonomy module
+  from Drupal 6 to Drupal 7.
+- Fixed the default ordering of CSS files for sites using right-to-left
+  languages, to consistently place the right-to-left override file immediately
+  after the CSS it is overriding (API change: https://drupal.org/node/2058463).
+- Added a drupal_check_memory_limit() API function to allow the memory limit to
+  be checked consistently (API addition).
+- Changed the default web.config file for IIS servers to allow favicon.ico
+  files which are present in the filesystem to be accessed.
+- Fixed inconsistent support for the 'tel' protocol in Drupal's URL filtering
+  functions.
+- Performance improvement: Allowed all hooks to be included in the
+  module_implements() cache, even those that are only invoked on HTTP POST
+  requests.
+- Made the database system replace truncate queries with delete queries when
+  inside a transaction, to fix issues with PostgreSQL and other databases.
+- Fixed a bug which caused nested contextual links to display improperly.
+- Fixed a bug which prevented cached image derivatives from being flushed for
+  private files and other non-default file schemes.
+- Fixed drupal_render() to always return an empty string when there is no
+  output, rather than sometimes returning NULL (minor API change).
+- Added protection to cache_clear_all() to ensure that non-cache tables cannot
+  be truncated (API addition: a new isValidBin() method has been added to the
+  default database cache implementation).
+- Changed the default .htaccess file to support HTTP authorization in CGI
+  environments.
+- Changed the password reset form to pre-fill the username when requested via a
+  URL query parameter, and used this in the error message that appears after a
+  failed login attempt (minor data structure and behavior change).
+- Fixed broken support for foreign keys in the field API.
+- Fixed "No active batch" error when a user cancels their own account.
+- Added a description to the "access content overview" permission on the
+  permissions page (string change).
+- Added a drupal_array_diff_assoc_recursive() function to allow associative
+  arrays to be compared recursively (API addition).
+- Added human-readable labels to image styles, in addition to the existing
+  machine-readable name (API change: https://drupal.org/node/2058503).
+- Moved the drupal_get_hash_salt() function to bootstrap.inc and used it in
+  additional places in the code, for added security in the case where there is
+  no hash salt in settings.php.
+- Fixed a regression in Drupal 7.22 that caused internal server errors for
+  sites running on very old Apache 1.x web servers.
+- Numerous small bug fixes.
+- Numerous API documentation improvements.
+- Additional automated test coverage.
+
 Drupal 7.22, 2013-04-03
 -----------------------
 - Allowed the drupal_http_request() function to be overridden so that
@@ -53,7 +101,7 @@ Drupal 7.22, 2013-04-03
   downloaded via the Update Manager (UI change).
 - Added an optional "exclusive" flag to installation profile .info files which
   allows Drupal distributions to force a profile to be selected during
-  installation (API addition).
+  installation (API addition: http://drupal.org/node/1961012).
 - Fixed a bug which caused the database API to not properly close database
   connections.
 - Added a link to the URL for running cron from outside the site to the Cron

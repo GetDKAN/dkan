@@ -4,9 +4,11 @@ core = 7.x
 package = "Features"
 files[] = tests/features.test
 
-; Information added by drupal.org packaging script on 2013-05-21
-version = "7.x-2.0-rc1"
+configure = admin/structure/features/settings
+
+; Information added by drupal.org packaging script on 2013-08-26
+version = "7.x-2.0-rc3"
 core = "7.x"
 project = "features"
-datestamp = "1369094412"
+datestamp = "1377548845"
 

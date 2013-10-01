@@ -265,7 +265,7 @@ function _node_resource_retrieve($nid) {
 /**
  * Creates a new node based on submitted values.
  *
- * Note that this function uses drupal_execute() to create new nodes,
+ * Note that this function uses drupal_form_submit() to create new nodes,
  * which may require very specific formatting. The full implications of this
  * are beyond the scope of this comment block. The Googles are your friend.
  *
@@ -275,7 +275,7 @@ function _node_resource_retrieve($nid) {
  *   An associative array contained the new node's nid and, if applicable,
  *   the fully qualified URI to this resource.
  *
- * @see drupal_execute()
+ * @see drupal_form_submit()
  */
 function _node_resource_create($node) {
   // Adds backwards compatability with regression fixed in #1083242
@@ -293,7 +293,7 @@ function _node_resource_create($node) {
   // so code below won't be executed.
   _node_resource_validate_type($node);
 
-  // Load the required includes for drupal_execute
+  // Load the required includes for drupal_form_submit
   module_load_include('inc', 'node', 'node.pages');
 
   $node_type = $node['type'];
@@ -344,7 +344,7 @@ function _node_resource_validate_type($node) {
 /**
  * Updates a new node based on submitted values.
  *
- * Note that this function uses drupal_execute() to create new nodes,
+ * Note that this function uses drupal_form_submit() to create new nodes,
  * which may require very specific formatting. The full implications of this
  * are beyond the scope of this comment block. The Googles are your friend.
  *
@@ -355,7 +355,7 @@ function _node_resource_validate_type($node) {
  * @return
  *   The node's nid.
  *
- * @see drupal_execute()
+ * @see drupal_form_submit()
  */
 function _node_resource_update($nid, $node) {
   // Adds backwards compatability with regression fixed in #1083242
@@ -381,7 +381,7 @@ function _node_resource_update($nid, $node) {
   // so code below won't be executed.
   _node_resource_validate_type($node);
 
-  // Load the required includes for drupal_execute
+  // Load the required includes for drupal_form_submit
   module_load_include('inc', 'node', 'node.pages');
 
   $node_type = $node['type'];

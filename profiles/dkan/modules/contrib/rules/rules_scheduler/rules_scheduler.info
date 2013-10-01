@@ -8,13 +8,14 @@ files[] = rules_scheduler.module
 files[] = rules_scheduler.install
 files[] = rules_scheduler.rules.inc
 files[] = rules_scheduler.test
+files[] = includes/rules_scheduler.handler.inc
 files[] = includes/rules_scheduler.views_default.inc
 files[] = includes/rules_scheduler.views.inc
 files[] = includes/rules_scheduler_views_filter.inc
 
-; Information added by drupal.org packaging script on 2013-03-27
-version = "7.x-2.3"
+; Information added by drupal.org packaging script on 2013-09-19
+version = "7.x-2.5"
 core = "7.x"
 project = "rules"
-datestamp = "1364401818"
+datestamp = "1379579047"
 

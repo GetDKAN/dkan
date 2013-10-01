@@ -91,7 +91,6 @@ class RulesReactionRuleUI extends RulesRuleUI {
       '#access' => empty($options['init']),
     );
 
-    $event_info = rules_fetch_data('event_info');
     $form['events']['table'] = array(
       '#theme' => 'table',
       '#caption' => 'Events',
@@ -100,10 +99,31 @@ class RulesReactionRuleUI extends RulesRuleUI {
     );
     $form['events']['table']['#attributes']['class'][] = 'rules-elements-table';
     foreach ($this->rule->events() as $event_name) {
-      $event_info += array($event_name => array('label' => t('Unknown event "!event_name"', array('!event_name' => $event_name))));
+      $event_handler = rules_get_event_handler($event_name, $this->rule->getEventSettings($event_name));
+
+      $event_operations = array(
+        '#theme' => 'links__rules',
+        '#attributes' => array(
+          'class' => array(
+            'rules-operations',
+            'action-links',
+            'rules_rule_event',
+          ),
+        ),
+        '#links' => array(
+          'delete_event' => array(
+            'title' => t('delete'),
+            'href' => RulesPluginUI::path($this->rule->name, 'delete/event/' . $event_name),
+            'query' => drupal_get_destination(),
+          ),
+        ),
+      );
+
       $form['events']['table']['#rows'][$event_name] = array(
-        check_plain($event_info[$event_name]['label']),
-        '<span class="rules_rule_event">' . l(t('delete'), RulesPluginUI::path($this->rule->name, 'delete/event/' . $event_name)) . '</span>',
+        'data' => array(
+          $event_handler->summary(),
+          array('data' => $event_operations),
+        ),
       );
     }
 

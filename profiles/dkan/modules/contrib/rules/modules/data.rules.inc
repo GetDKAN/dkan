@@ -8,6 +8,19 @@
  */
 
 /**
+ * Implements hook_rules_category_info() on behalf of the pseudo data module.
+ */
+function rules_data_category_info() {
+  return array(
+    'rules_data' => array(
+      'label' => t('Data'),
+      'equals group' => t('Data'),
+      'weight' => -50,
+    ),
+  );
+}
+
+/**
  * Implements hook_rules_file_info() on behalf of the pseudo data module.
  * @see rules_core_modules()
  */
@@ -442,6 +455,8 @@ function rules_action_data_calc_operator_options(RulesPlugin $element, $param_na
     '-' => '( - )',
     '*' => '( * )',
     '/' => '( / )',
+    'min' => 'min',
+    'max' => 'max',
   );
   // Only show +/- in case a date has been selected.
   if (($info = $element->getArgumentInfo('input_1')) && $info['type'] == 'date') {

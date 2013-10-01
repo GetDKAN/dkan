@@ -46,23 +46,28 @@ function date_feeds_processor_targets_alter(&$targets, $entity_type, $bundle_nam
  */
 function date_feeds_set_target($source, $entity, $target, $feed_element) {
   list($field_name, $sub_field) = explode(':', $target, 2);
-  if (!($feed_element instanceof FeedsDateTimeElement)) {
-    if (!is_array($feed_element)) {
-      $feed_element = array($feed_element);
-    }
-    $delta = 0;
-    foreach ($feed_element as $f) {
-      if (empty($f) || !is_numeric($f) && !date_create($f)) {
-        $array_element = new FeedsDateTimeElement(NULL, NULL);
+
+  if (!is_array($feed_element)) {
+    $feed_element = array($feed_element);
+  }
+
+  $delta = 0;
+  foreach ($feed_element as $f) {
+
+    if (!($feed_element instanceof FeedsDateTimeElement)) {
+
+      if (empty($f) || !is_numeric($f) && is_string($f) && !date_create($f)) {
+        $f = new FeedsDateTimeElement(NULL, NULL);
       }
       elseif ($sub_field == 'end') {
-        $array_element = new FeedsDateTimeElement(NULL, $f);
+        $f = new FeedsDateTimeElement(NULL, $f);
       }
       else {
-        $array_element = new FeedsDateTimeElement($f, NULL);
+        $f = new FeedsDateTimeElement($f, NULL);
       }
-      $array_element->buildDateField($entity, $field_name, $delta);
-      $delta++;
     }
+
+    $f->buildDateField($entity, $field_name, $delta);
+    $delta++;
   }
 }

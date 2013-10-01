@@ -130,7 +130,11 @@ class SearchApiDbService extends SearchApiAbstractService {
     }
     foreach ($this->options['indexes'] as $index) {
       foreach ($index as $field) {
-        db_drop_table($field['table']);
+        // Some fields share a de-normalized table, brute force since
+        // everything is going.
+        if (db_table_exists($field['table'])) {
+          db_drop_table($field['table']);
+        }
       }
     }
   }
@@ -168,8 +172,16 @@ class SearchApiDbService extends SearchApiAbstractService {
    * Helper method for finding free table names for fields.
    *
    * MySQL 5.0 imposes a 64 characters length limit for table names, PostgreSQL
-   * 8.3 only allows 63 bytes. Therefore, always return a name at most 63
+   * 8.3 only allows 62 bytes. Therefore, always return a name at most 62
    * bytes long.
+   *
+   * @param string $prefix
+   *   Prefix to start the table name.
+   * @param string $name
+   *   Name to base the table name on.
+   *
+   * @return string
+   *   A database table name that isn't in use yet.
    */
   protected function findFreeTable($prefix, $name) {
     // A DB prefix might further reduce the maximum length of the table name.
@@ -191,77 +203,137 @@ class SearchApiDbService extends SearchApiAbstractService {
   }
 
   /**
-   * Helper method for creating the table for a field.
+   * Helper method for finding free column names for fields.
+   *
+   * MySQL 5.0 imposes a 64 characters length limit for identifier names,
+   * PostgreSQL 8.3 only allows 62 bytes. Therefore, always return a name at
+   * most 62 bytes long.
+   *
+   * @param string $table
+   *   Name of the table.
+   * @param string $column
+   *   If adding a column to $name, the name to base the column name on.
+   *
+   * @return string
+   *   A column name that isn't in use in the specified table yet.
    */
-  protected function createFieldTable(SearchApiIndex $index, $field, $name) {
-    $table = array(
-      'name' => $name,
-      'module' => 'search_api_db',
-      'fields' => array(
-        'item_id' => array(
-          'description' => 'The primary identifier of the item.',
-          'not null' => TRUE,
+  protected function findFreeColumn($table, $column) {
+    $maxbytes = 62;
+
+    $base = $name = mb_strcut(drupal_strtolower(preg_replace('/[^a-z0-9]/i', '_', $column)), 0, $maxbytes);
+    // If the table does not exist yet, the initial name is not taken.
+    if (db_table_exists($table)) {
+      $i = 0;
+      while (db_field_exists($table, $name)) {
+        $suffix = '_' . ++$i;
+        $name = mb_strcut($base, 0, $maxbytes - strlen($suffix)) . $suffix;
+      }
+    }
+    return $name;
+  }
+
+  /**
+   * Helper method for creating tables and fields.
+   *
+   * @param SearchApiIndex $index
+   *   Search API index for this field.
+   * @param array $field
+   *   Single field definition from SearchApiIndex::getFields().
+   * @param array $db
+   *   Associative array containing the following:
+   *   - table: The table to use for the field.
+   *   - column: (optional) The column to use in that table. Defaults to
+   *     "value".
+   */
+  protected function createFieldTable(SearchApiIndex $index, $field, &$db) {
+    $type = search_api_extract_inner_type($field['type']);
+    $set = $this->setDb();
+    $new_table = !db_table_exists($db['table']);
+    if ($new_table) {
+      $table = array(
+        'name' => $db['table'],
+        'module' => 'search_api_db',
+        'fields' => array(
+          'item_id' => array(
+            'description' => 'The primary identifier of the item.',
+            'not null' => TRUE,
+          ),
         ),
-      ),
-    );
-    // The type of the item_id field depends on the ID field's type.
-    $id_field = $index->datasource()->getIdFieldInfo();
-    $table['fields']['item_id'] += $this->sqlType($id_field['type'] == 'text' ? 'string' : $id_field['type']);
-    if (isset($table['fields']['item_id']['length'])) {
-      // A length of 255 is overkill for IDs. 50 should be more than enough.
-      $table['fields']['item_id']['length'] = 50;
+      );
+      // The type of the item_id field depends on the ID field's type.
+      $id_field = $index->datasource()->getIdFieldInfo();
+      $table['fields']['item_id'] += $this->sqlType($id_field['type'] == 'text' ? 'string' : $id_field['type']);
+      if (isset($table['fields']['item_id']['length'])) {
+        // A length of 255 is overkill for IDs. 50 should be more than enough.
+        $table['fields']['item_id']['length'] = 50;
+      }
+
+      db_create_table($db['table'], $table);
+
+      // Some DBMSs will need a character encoding and collation set.
+      global $databases;
+      list($key, $target) = explode(':', $this->options['database'], 2);
+      $db_driver = $databases[$key][$target]['driver'];
+
+      switch ($db_driver) {
+        case 'mysql':
+          db_query("ALTER TABLE {{$db['table']}} CONVERT TO CHARACTER SET 'utf8' COLLATE 'utf8_bin'");
+          break;
+
+          // @todo Add fixes for other DBMSs.
+        case 'oracle':
+        case 'pgsql':
+        case 'sqlite':
+        case 'sqlsrv':
+          break;
+      }
     }
 
-    $type = search_api_extract_inner_type($field['type']);
     if ($type == 'text') {
-      $table['fields']['word'] = array(
+      // Text columns are always a separate table.
+      db_add_field($db['table'], 'word', array(
         'description' => 'The text of the indexed token.',
         'type' => 'varchar',
         'length' => 50,
         'not null' => TRUE,
-      );
-      $table['fields']['score'] = array(
+      ));
+      db_add_field($db['table'], 'score', array(
         'description' => 'The score associated with this token.',
         'type' => 'float',
         'not null' => TRUE,
-      );
-      $table['primary key'] = array('item_id', 'word');
-      $table['indexes']['word'] = array(array('word', 10));
+      ));
+      db_add_index($db['table'], 'word', array(array('word', 10)));
+      if ($new_table) {
+        // Add a covering index since word is not repeated for each item.
+        db_add_primary_key($db['table'], array('item_id', 'word'));
+      }
     }
     else {
-      $table['fields']['value'] = $this->sqlType($type);
-      $table['fields']['value'] += array(
+      if (!isset($db['column'])) {
+        $db['column'] = 'value';
+      }
+      $db_field = $this->sqlType($type);
+      $db_field += array(
         'description' => "The field's value for this item.",
-        'not null' => TRUE,
       );
-      if ($type != $field['type']) {
-        // This is a list type.
-        $table['primary key'] = array('item_id', 'value');
+      db_add_field($db['table'], $db['column'], $db_field);
+      if ($db_field['type'] === 'varchar') {
+        db_add_index($db['table'], $db['column'], array(array($db['column'], 10)));
       }
       else {
-        $table['primary key'] = array('item_id');
+        db_add_index($db['table'], $db['column'], array($db['column']));
       }
-      $table['indexes']['value'] = $table['fields']['value'] == 'varchar' ? array(array('value', 10)) : array('value');
-    }
-
-    $set = $this->setDb();
-    db_create_table($name, $table);
-
-    //Some DBMSs will need a character encoding and collation set.
-    global $databases;
-    list($key, $target) = explode(':', $this->options['database'], 2);
-    $db_driver = $databases[$key][$target]['driver'];
-
-    switch ($db_driver) {
-      case 'mysql':
-        db_query("ALTER TABLE {{$name}} CONVERT TO CHARACTER SET 'utf8' COLLATE 'utf8_bin'");
-        break;
-      // @todo Add fixes for other DBMSs.
-      case 'oracle':
-      case 'pgsql':
-      case 'sqlite':
-      case 'sqlsrv':
-        break;
+      if ($new_table) {
+        if (search_api_is_list_type($field['type'])) {
+          // Add a covering index for list
+          db_add_primary_key($db['table'], array('item_id', $db['column']));
+        }
+        else {
+          // Otherwise, a denormalized table with many columns, where we can't
+          // predict the best covering index.
+          db_add_primary_key($db['table'], array('item_id'));
+        }
+      }
     }
 
     if ($set) {
@@ -306,7 +378,8 @@ class SearchApiDbService extends SearchApiAbstractService {
 
     foreach ($fields as $name => $field) {
       if (!isset($new_fields[$name])) {
-        db_drop_table($field['table']);
+        // The field is no longer in the index, drop the data.
+        $this->removeFieldStorage($field);
         unset($fields[$name]);
         $change = TRUE;
         continue;
@@ -328,12 +401,13 @@ class SearchApiDbService extends SearchApiAbstractService {
             $cleared = TRUE;
             $this->deleteItems('all', $index);
           }
-          db_drop_table($field['table']);
-          $this->createFieldTable($index, $new_fields[$name], $field['table']);
+          $this->removeFieldStorage($field);
+          // Keep the table in $new_fields to create the new storage.
+          continue;
         }
         elseif ($this->sqlType($old_inner_type) != $this->sqlType($new_inner_type)) {
           // There is a change in SQL type. We don't have to clear the index, since types can be converted.
-          db_change_field($field['table'], 'value', 'value', $this->sqlType($new_type) + array('description' => "The field's value for this item."));
+          db_change_field($field['table'], $field['column'], $field['column'], $this->sqlType($new_type) + array('description' => "The field's value for this item."));
           $reindex = TRUE;
         }
         elseif ($old_inner_type == 'date' || $new_inner_type == 'date') {
@@ -350,21 +424,26 @@ class SearchApiDbService extends SearchApiAbstractService {
             ->execute();
         }
       }
-      // Make sure the set table now exists. (Especially important when we
-      // actually add the index for the first time.)
-      if (!db_table_exists($field['table'])) {
-        $this->createFieldTable($index, $new_fields[$name], $field['table']);
+      // Make sure the table and column now exist. (Especially important when
+      // we actually add the index for the first time.)
+      if (!db_table_exists($field['table']) || (isset($field['column']) && !db_field_exists($field['table'], $field['column']))) {
+        $this->createFieldTable($index, $new_fields[$name], $field);
       }
       unset($new_fields[$name]);
     }
 
-    $prefix = 'search_api_db_' . $index->machine_name. '_';
+    $prefix = 'search_api_db_' . $index->machine_name;
     // These are new fields that were previously not indexed.
     foreach ($new_fields as $name => $field) {
       $reindex = TRUE;
-      $table = $this->findFreeTable($prefix, $name);
-      $this->createFieldTable($index, $field, $table);
-      $fields[$name]['table'] = $table;
+      if ($this->canDenormalize($field)) {
+        $fields[$name]['table'] = $prefix;
+        $fields[$name]['column'] = $this->findFreeColumn($fields[$name]['table'], $name);
+      }
+      else {
+        $fields[$name]['table'] = $this->findFreeTable($prefix . '_', $name);
+      }
+      $this->createFieldTable($index, $field, $fields[$name]);
       $fields[$name]['type']  = $field['type'];
       $fields[$name]['boost'] = $field['boost'];
       $change = TRUE;
@@ -381,6 +460,39 @@ class SearchApiDbService extends SearchApiAbstractService {
   }
 
   /**
+   * Checks if a field can be denormalized.
+   *
+   * List fields have multiple values, so cannot be denormalized. Text fields
+   * are tokenized into words, so cannot be denormalized either.
+   *
+   * @param array $field
+   *   Single field definition from SearchApiIndex::getFields().
+   *
+   * @return bool
+   *   TRUE if the field can be stored in a table with other fields (i.e., will
+   *   only need a single row), FALSE otherwise.
+   */
+  protected function canDenormalize($field) {
+    return !search_api_is_list_type($field['type']) && !search_api_is_text_type($field['type']);
+  }
+
+  /**
+   * Drops a field's table or column for storage.
+   *
+   * @param array $field
+   *   Single field definition from SearchApiIndex::getFields().
+   */
+  protected function removeFieldStorage($field) {
+    // Legacy non-denormalized fields will not have a column.
+    if ($this->canDenormalize($field) && isset($field['column'])) {
+      db_drop_field($field['table'], $field['column']);
+    }
+    else {
+      db_drop_table($field['table']);
+    }
+  }
+
+  /**
    * Overrides SearchApiAbstractService::removeIndex().
    */
   public function removeIndex($index) {
@@ -392,7 +504,11 @@ class SearchApiDbService extends SearchApiAbstractService {
     if (!is_object($index) || empty($index->read_only)) {
       $set = $this->setDb();
       foreach ($this->options['indexes'][$id] as $field) {
-        db_drop_table($field['table']);
+        // Some fields share a de-normalized table, brute force since
+        // everything is going.
+        if (db_table_exists($field['table'])) {
+          db_drop_table($field['table']);
+        }
       }
       if ($set) {
         $this->resetDb();
@@ -429,10 +545,11 @@ class SearchApiDbService extends SearchApiAbstractService {
   }
 
   protected function indexItem(SearchApiIndex $index, $id, array $item) {
-    $fields = $this->options['indexes'][$index->machine_name];
+    $fields = $this->getFieldInfo($index);
     $fields_updated = FALSE;
     $txn = db_transaction('search_api_indexing', $this->query_options);
     try {
+      $inserts = array();
       foreach ($item as $name => $field) {
         // Sometimes index changes are not triggering the update hooks
         // correctly. Therefore, to avoid DB errors, we re-check the tables
@@ -514,24 +631,24 @@ class SearchApiDbService extends SearchApiAbstractService {
           }
           if ($values) {
             $insert = db_insert($table, $this->query_options)
-              ->fields(array('item_id', 'value'));
+              ->fields(array('item_id', $fields[$name]['column']));
             foreach ($values as $v) {
               $insert->values(array(
                 'item_id' => $id,
-                'value'   => $v,
+                $fields[$name]['column'] => $v,
               ));
             }
             $insert->execute();
           }
         }
         elseif (isset($value)) {
-          db_insert($table, $this->query_options)
-            ->fields(array(
-              'item_id' => $id,
-              'value'   => $value,
-            ))
-            ->execute();
+          $inserts[$table][$fields[$name]['column']] = $value;
         }
+      }
+      foreach ($inserts as $table => $data) {
+        db_insert($table, $this->query_options)
+          ->fields(array_merge($data, array('item_id' => $id)))
+          ->execute();
       }
     }
     catch (Exception $e) {
@@ -705,7 +822,7 @@ class SearchApiDbService extends SearchApiAbstractService {
       throw new SearchApiException(t('Unknown index @id.', array('@id' => $index->machine_name)));
     }
     $set = $this->setDb();
-    $fields = $this->options['indexes'][$index->machine_name];
+    $fields = $this->getFieldInfo($index);
 
     $db_query = $this->createDbQuery($query, $fields);
 
@@ -753,7 +870,7 @@ class SearchApiDbService extends SearchApiAbstractService {
             throw new SearchApiException(t('Cannot sort on fulltext field @field.', array('@field' => $field_name)));
           }
           $alias = $this->getTableAlias($field, $db_query);
-          $db_query->orderBy($alias . '.value', $order);
+          $db_query->orderBy($alias . '.' . $fields[$field_name]['column'], $order);
         }
       }
       else {
@@ -1221,7 +1338,7 @@ class SearchApiDbService extends SearchApiAbstractService {
             $tables[$f[0]] = $this->getTableAlias($field, $db_query, $new_join);
             $first_join[$f[0]] = TRUE;
           }
-          $cond->condition($tables[$f[0]] . '.value', $f[1], $f[2]);
+          $cond->condition($tables[$f[0]] . '.' . $field['column'], $f[1], $f[2]);
         }
       }
     }
@@ -1275,7 +1392,7 @@ class SearchApiDbService extends SearchApiAbstractService {
       return array();
     }
 
-    $fields = $this->options['indexes'][$query->getIndex()->machine_name];
+    $fields = $this->getFieldInfo($query->getIndex());
     $ret = array();
     foreach ($query->getOption('search_api_facets') as $key => $facet) {
       if (empty($fields[$facet['field']])) {
@@ -1283,11 +1400,15 @@ class SearchApiDbService extends SearchApiAbstractService {
         continue;
       }
       $field = $fields[$facet['field']];
-      $missing_count = 0;
 
       $select = db_select($table, 't');
       $alias = $this->getTableAlias($field, $select, TRUE, $facet['missing'] ? 'leftJoin' : 'innerJoin');
-      $select->addField($alias, search_api_is_text_type($field['type']) ? 'word' : 'value', 'value');
+      $select->addField($alias, search_api_is_text_type($field['type']) ? 'word' : $field['column'], 'value');
+      // Facets without missing make sure a value is present with an inner join
+      // and not null for shared tables.
+      if (!$facet['missing'] && !search_api_is_text_type($field['type'])) {
+        $select->isNotNull($alias . '.' . $field['column']);
+      }
       $select->addExpression('COUNT(DISTINCT t.item_id)', 'num');
       $select->groupBy('value');
       $select->orderBy('num', 'DESC');
@@ -1363,7 +1484,7 @@ class SearchApiDbService extends SearchApiAbstractService {
       throw new SearchApiException(t('Unknown index @id.', array('@id' => $index->machine_name)));
     }
     $set = $this->setDb();
-    $fields = $this->options['indexes'][$index->machine_name];
+    $fields = $this->getFieldInfo($index);
 
     $suggestions = array();
     $passes = array();
@@ -1462,6 +1583,27 @@ class SearchApiDbService extends SearchApiAbstractService {
     }
 
     return $suggestions;
+  }
+
+  /**
+   * Retrieves the internal field information.
+   *
+   * @param SearchApiIndex $index
+   *   The index whose fields should be retrieved.
+   *
+   * @return array $fields
+   *   An array of arrays. The outer array is keyed by field name. Each value
+   *   is an associative array with information on the field.
+   */
+  protected function getFieldInfo(SearchApiIndex $index) {
+    $fields = $this->options['indexes'][$index->machine_name];
+    foreach ($fields as $key => $field) {
+      // Legacy fields do not have column set.
+      if (!isset($field['column'])) {
+        $fields[$key]['column'] = 'value';
+      }
+    }
+    return $fields;
   }
 
   /**

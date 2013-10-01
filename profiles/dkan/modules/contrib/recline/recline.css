@@ -1,7 +1,18 @@
 .recline-slickgrid {
   height: 550px;
 }
-
 .recline-timeline .vmm-timeline {
   height: 550px;
+}
+.recline-data-explorer {
+  padding: 0 0 50px 0;
+}
+.recline-data-explorer .panel.graph {
+  height: 650px;
+  width: 600px;
+}
+.recline-data-explorer .legend {
+  position: absolute;
+  bottom: 0px;
+  right: 50px;
 }

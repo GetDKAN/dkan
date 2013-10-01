@@ -536,6 +536,57 @@ class EntityAPIRulesIntegrationTestCase extends EntityWebTestCase {
 }
 
 /**
+ * Tests comments with node access.
+ */
+class EntityAPICommentNodeAccessTestCase extends CommentHelperCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Entity API comment node access',
+      'description' => 'Test viewing comments on nodes with node access.',
+      'group' => 'Entity API',
+    );
+  }
+
+  function setUp() {
+    DrupalWebTestCase::setUp('comment', 'entity', 'node_access_test');
+    node_access_rebuild();
+
+    // Create test node and user with simple node access permission. The
+    // 'node test view' permission is implemented and granted by the
+    // node_access_test module.
+    $this->accessUser = $this->drupalCreateUser(array('access comments', 'post comments', 'edit own comments', 'node test view'));
+    $this->noAccessUser = $this->drupalCreateUser(array('administer comments'));
+    $this->node = $this->drupalCreateNode(array('type' => 'article', 'uid' => $this->accessUser->uid));
+  }
+
+  /**
+   * Tests comment access when node access is enabled.
+   */
+  function testCommentNodeAccess() {
+    // Post comment.
+    $this->drupalLogin($this->accessUser);
+    $comment_text = $this->randomName();
+    $comment = $this->postComment($this->node, $comment_text);
+    $comment_loaded = comment_load($comment->id);
+    $this->assertTrue($this->commentExists($comment), 'Comment found.');
+    $this->drupalLogout();
+
+    // Check access to node and associated comment for access user.
+    $this->assertTrue(entity_access('view', 'node', $this->node, $this->accessUser), 'Access to view node was granted for access user');
+    $this->assertTrue(entity_access('view', 'comment', $comment_loaded, $this->accessUser), 'Access to view comment was granted for access user');
+    $this->assertTrue(entity_access('update', 'comment', $comment_loaded, $this->accessUser), 'Access to update comment was granted for access user');
+    $this->assertFalse(entity_access('delete', 'comment', $comment_loaded, $this->accessUser), 'Access to delete comment was denied for access user');
+
+    // Check access to node and associated comment for no access user.
+    $this->assertFalse(entity_access('view', 'node', $this->node, $this->noAccessUser), 'Access to view node was denied for no access user');
+    $this->assertFalse(entity_access('view', 'comment', $comment_loaded, $this->noAccessUser), 'Access to view comment was denied for no access user');
+    $this->assertFalse(entity_access('update', 'comment', $comment_loaded, $this->noAccessUser), 'Access to update comment was denied for no access user');
+    $this->assertFalse(entity_access('delete', 'comment', $comment_loaded, $this->noAccessUser), 'Access to delete comment was denied for no access user');
+  }
+}
+
+/**
  * Test the i18n integration.
  */
 class EntityAPIi18nItegrationTestCase extends EntityWebTestCase {

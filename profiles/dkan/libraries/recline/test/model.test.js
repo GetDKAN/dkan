@@ -60,6 +60,20 @@ test('Field: type mapping', function () {
   });
 });
 
+test('Field: getFieldValue', function () {
+  var doc = new recline.Model.Record({
+    x: 12.3
+  });
+  var field = new recline.Model.Field({id: 'x'});
+  var out = doc.getFieldValue(field);
+  var exp = 12.3;
+  equal(out, exp);
+
+  // bad value 
+  var out = doc.getFieldValue();
+  equal(out, '');
+});
+
 test('Field: default renderers', function () {
   var doc = new recline.Model.Record({
     x: 12.3,
@@ -113,8 +127,10 @@ test('Field: custom deriver and renderer', function () {
   var field = new recline.Model.Field({id: 'computed', is_derived: true}, {
     deriver: deriver
   });
+  var out1 = doc.getFieldValueUnrendered(field);
   var out = doc.getFieldValue(field);
   var exp = 246;
+  equal(out1, exp);
   equal(out, exp);
 
   var field = new recline.Model.Field({id: 'x'}, {
@@ -159,6 +175,26 @@ test('Dataset getFieldsSummary', function () {
     ];
     deepEqual(facet.get('terms'), exp);
   });
+});
+
+test('fetch without and with explicit fields', function () {
+  var dataset = new recline.Model.Dataset({
+    backend: 'csv',
+    data: 'A,B\n1,2\n3,4'
+  });
+  dataset.fetch();
+  equal(dataset.fields.at(0).id, 'A');
+  equal(dataset.fields.at(0).get('type'), 'string');
+
+  var dataset = new recline.Model.Dataset({
+    fields: [{id: 'X', type: 'number'}, {id: 'Y'}],
+    backend: 'csv',
+    data: 'A,B\n1,2\n3,4'
+  });
+  dataset.fetch();
+  equal(dataset.fields.at(0).id, 'X');
+  equal(dataset.fields.at(0).get('type'), 'number');
+  equal(dataset.records.at(0).get('X'), 1);
 });
 
 test('_normalizeRecordsAndFields', function () {
@@ -263,7 +299,7 @@ test('_normalizeRecordsAndFields', function () {
         fields: [{id: 'col1'}, {id: 'col2'}],
         records: [
           {col1: 1, col2: 2},
-          {col1: 3, col2: 4},
+          {col1: 3, col2: 4}
         ]
       },
       exp: {
@@ -311,6 +347,30 @@ test('Query', function () {
   deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
 });
 
+test('Query.addFacet', function () {
+  var query = new recline.Model.Query();
+  query.addFacet('xyz', 25);
+  deepEqual({terms: {field: 'xyz', "size": 25}}, query.get('facets')['xyz']);
+});
+
+test('Query.removeFacet', function () {
+  var query = new recline.Model.Query();
+  query.addFacet('xyz');
+  deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
+  query.removeFacet('xyz');
+  equal(undefined, query.get('facets')['xyz']);
+});
+
+test('Query.clearFacets', function () {
+  var query = new recline.Model.Query();
+  query.addFacet('abc');
+  query.addFacet('xyz');
+  deepEqual({terms: {field: 'xyz'}}, query.get('facets')['xyz']);
+  deepEqual({terms: {field: 'abc'}}, query.get('facets')['abc']);
+  query.clearFacets();
+  deepEqual({}, query.get('facets'));
+});
+
 test('Query.addFilter', function () {
   var query = new recline.Model.Query();
   query.addFilter({type: 'term', field: 'xyz'});
@@ -336,6 +396,26 @@ test('Query.addFilter', function () {
     type: 'geo_distance'
   };
   deepEqual(exp, query.get('filters')[2]);
+});
+
+test('Query.replaceFilter', function () {
+  var query = new recline.Model.Query();
+  query.addFilter({type: 'term', field: 'xyz'});
+  var exp = {
+    field: 'xyz',
+    type: 'term',
+    term: ''
+  };
+  deepEqual(query.get('filters')[0], exp);
+
+  query.replaceFilter({type: 'term', field: 'abc'});
+  exp = {
+    field: 'abc',
+    type: 'term',
+    term: ''
+  };
+  deepEqual(query.get('filters')[0], exp);
+
 });
 
 })(this.jQuery);

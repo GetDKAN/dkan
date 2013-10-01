@@ -84,25 +84,23 @@ function hook_hook_info_alter(&$hooks) {
  *     Defaults to TRUE.
  *   - load hook: The name of the hook which should be invoked by
  *     DrupalDefaultEntityController:attachLoad(), for example 'node_load'.
- *   - uri callback: A function taking an entity as argument and returning the
- *     URI elements of the entity, e.g. 'path' and 'options'. The actual entity
- *     URI can be constructed by passing these elements to url().
- *   - label callback: (optional) A function taking an entity and an entity type
- *     as arguments and returning the label of the entity. The entity label is
- *     the main string associated with an entity; for example, the title of a
- *     node or the subject of a comment. If there is an entity object property
- *     that defines the label, use the 'label' element of the 'entity keys'
- *     return value component to provide this information (see below). If more
- *     complex logic is needed to determine the label of an entity, you can
- *     instead specify a callback function here, which will be called to
- *     determine the entity label. See also the entity_label() function, which
- *     implements this logic.
- *   - language callback: (optional) A function taking an entity and an entity
- *     type as arguments and returning a language code. In most situations, when
- *     needing to determine this value, inspecting a property named after the
- *     'language' element of the 'entity keys' should be enough. The language
- *     callback is meant to be used primarily for temporary alterations of the
- *     property value: entity-defining modules are encouraged to always define a
+ *   - uri callback: The name of an implementation of
+ *     callback_entity_info_uri().
+ *   - label callback: (optional) The name of an implementation of
+ *     callback_entity_info_label(), which returns the label of the entity. The
+ *     entity label is the main string associated with an entity; for example,
+ *     the title of a node or the subject of a comment. If there is an entity
+ *     object property that defines the label, then using the 'label' element of
+ *     the 'entity keys' return value component suffices to provide this
+ *     information (see below). Alternatively, specifying this callback allows
+ *     more complex logic to determine the label of an entity. See also the
+ *     entity_label() function, which implements this logic.
+ *   - language callback: (optional) The name of an implementation of
+ *     callback_entity_info_language(). In most situations, when needing to
+ *     determine this value, inspecting a property named after the 'language'
+ *     element of the 'entity keys' should be enough. The language callback is
+ *     meant to be used primarily for temporary alterations of the property
+ *     value: entity-defining modules are encouraged to always define a
  *     language property, instead of using the callback as main entity language
  *     source. In fact not having a language property defined is likely to
  *     prevent an entity from being queried by language. Moreover, given that
@@ -709,9 +707,10 @@ function hook_element_info_alter(&$type) {
 /**
  * Perform cleanup tasks.
  *
- * This hook is run at the end of each page request. It is often used for
- * page logging and specialized cleanup. This hook MUST NOT print anything
- * because by the time it runs the response is already sent to the browser.
+ * This hook is run at the end of most regular page requests. It is often
+ * used for page logging and specialized cleanup. This hook MUST NOT print
+ * anything because by the time it runs the response is already sent to
+ * the browser.
  *
  * Only use this hook if your code must run even for cached page views.
  * If you have code which must run once on all non-cached pages, use
@@ -958,6 +957,7 @@ function hook_menu_get_item_alter(&$router_item, $path, $original_map) {
  * paths and whose values are an associative array of properties for each
  * path. (The complete list of properties is in the return value section below.)
  *
+ * @section sec_callback_funcs Callback Functions
  * The definition for each path may include a page callback function, which is
  * invoked when the registered path is requested. If there is no other
  * registered path that fits the requested path better, any further path
@@ -982,6 +982,7 @@ function hook_menu_get_item_alter(&$router_item, $path, $original_map) {
  * $jkl will be 'foo'. Note that this automatic passing of optional path
  * arguments applies only to page and theme callback functions.
  *
+ * @subsection sub_callback_arguments Callback Arguments
  * In addition to optional path arguments, the page callback and other callback
  * functions may specify argument lists as arrays. These argument lists may
  * contain both fixed/hard-coded argument values and integers that correspond
@@ -1024,6 +1025,8 @@ function hook_menu_get_item_alter(&$router_item, $path, $original_map) {
  * @endcode
  * See @link form_api Form API documentation @endlink for details.
  *
+ * @section sec_path_wildcards Wildcards in Paths
+ * @subsection sub_simple_wildcards Simple Wildcards
  * Wildcards within paths also work with integer substitution. For example,
  * your module could register path 'my-module/%/edit':
  * @code
@@ -1036,6 +1039,7 @@ function hook_menu_get_item_alter(&$router_item, $path, $original_map) {
  * with 'foo' and passed to the callback function. Note that wildcards may not
  * be used as the first component.
  *
+ * @subsection sub_autoload_wildcards Auto-Loader Wildcards
  * Registered paths may also contain special "auto-loader" wildcard components
  * in the form of '%mymodule_abc', where the '%' part means that this path
  * component is a wildcard, and the 'mymodule_abc' part defines the prefix for a
@@ -1067,6 +1071,7 @@ function hook_menu_get_item_alter(&$router_item, $path, $original_map) {
  * return FALSE for the path 'node/999/edit' if a node with a node ID of 999
  * does not exist. The menu routing system will return a 404 error in this case.
  *
+ * @subsection sub_argument_wildcards Argument Wildcards
  * You can also define a %wildcard_to_arg() function (for the example menu
  * entry above this would be 'mymodule_abc_to_arg()'). The _to_arg() function
  * is invoked to retrieve a value that is used in the path in place of the
@@ -1091,6 +1096,7 @@ function hook_menu_get_item_alter(&$router_item, $path, $original_map) {
  * are called when the menu system is generating links to related paths, such
  * as the tabs for a set of MENU_LOCAL_TASK items.
  *
+ * @section sec_render_tabs Rendering Menu Items As Tabs
  * You can also make groups of menu items to be rendered (by default) as tabs
  * on a page. To do that, first create one menu item of type MENU_NORMAL_ITEM,
  * with your chosen path, such as 'foo'. Then duplicate that menu item, using a
@@ -2302,7 +2308,7 @@ function hook_theme_registry_alter(&$theme_registry) {
  * @return
  *   The machine-readable name of the theme that should be used for the current
  *   page request. The value returned from this function will only have an
- *   effect if it corresponds to a currently-active theme on the site. Do not 
+ *   effect if it corresponds to a currently-active theme on the site. Do not
  *   return a value if you do not wish to set a custom theme.
  */
 function hook_custom_theme() {
@@ -2826,7 +2832,15 @@ function hook_file_insert($file) {
  * @see file_save()
  */
 function hook_file_update($file) {
+  $file_user = user_load($file->uid);
+  // Make sure that the file name starts with the owner's user name.
+  if (strpos($file->filename, $file_user->name) !== 0) {
+    $old_filename = $file->filename;
+    $file->filename = $file_user->name . '_' . $file->filename;
+    $file->save();
 
+    watchdog('file', t('%source has been renamed to %destination', array('%source' => $old_filename, '%destination' => $file->filename)));
+  }
 }
 
 /**
@@ -2840,7 +2854,14 @@ function hook_file_update($file) {
  * @see file_copy()
  */
 function hook_file_copy($file, $source) {
+  $file_user = user_load($file->uid);
+  // Make sure that the file name starts with the owner's user name.
+  if (strpos($file->filename, $file_user->name) !== 0) {
+    $file->filename = $file_user->name . '_' . $file->filename;
+    $file->save();
 
+    watchdog('file', t('Copied file %source has been renamed to %destination', array('%source' => $source->filename, '%destination' => $file->filename)));
+  }
 }
 
 /**
@@ -2854,7 +2875,14 @@ function hook_file_copy($file, $source) {
  * @see file_move()
  */
 function hook_file_move($file, $source) {
+  $file_user = user_load($file->uid);
+  // Make sure that the file name starts with the owner's user name.
+  if (strpos($file->filename, $file_user->name) !== 0) {
+    $file->filename = $file_user->name . '_' . $file->filename;
+    $file->save();
 
+    watchdog('file', t('Moved file %source has been renamed to %destination', array('%source' => $source->filename, '%destination' => $file->filename)));
+  }
 }
 
 /**
@@ -3006,8 +3034,9 @@ function hook_file_url_alter(&$uri) {
  *     status report page.
  *
  * @return
- *   A keyed array of requirements. Each requirement is itself an array with
- *   the following items:
+ *   An associative array where the keys are arbitrary but must be unique (it
+ *   is suggested to use the module short name as a prefix) and the values are
+ *   themselves associative arrays with the following elements:
  *   - title: The name of the requirement.
  *   - value: The current value (e.g., version, time, level, etc). During
  *     install phase, this should only be used for version numbers, do not set
@@ -3165,6 +3194,8 @@ function hook_schema() {
  *
  * @param $schema
  *   Nested array describing the schemas for all modules.
+ *
+ * @ingroup schemaapi
  */
 function hook_schema_alter(&$schema) {
   // Add field to existing schema.
@@ -3638,63 +3669,56 @@ function hook_registry_files_alter(&$files, $modules) {
  * inspect later. It is important to remove any temporary variables using
  * variable_del() before your last task has completed and control is handed
  * back to the installer.
- * 
+ *
  * @param array $install_state
  *   An array of information about the current installation state.
  *
- * @return
+ * @return array
  *   A keyed array of tasks the profile will perform during the final stage of
  *   the installation. Each key represents the name of a function (usually a
  *   function defined by this profile, although that is not strictly required)
  *   that is called when that task is run. The values are associative arrays
  *   containing the following key-value pairs (all of which are optional):
- *     - 'display_name'
- *       The human-readable name of the task. This will be displayed to the
- *       user while the installer is running, along with a list of other tasks
- *       that are being run. Leave this unset to prevent the task from
- *       appearing in the list.
- *     - 'display'
- *       This is a boolean which can be used to provide finer-grained control
- *       over whether or not the task will display. This is mostly useful for
- *       tasks that are intended to display only under certain conditions; for
- *       these tasks, you can set 'display_name' to the name that you want to
- *       display, but then use this boolean to hide the task only when certain
- *       conditions apply.
- *     - 'type'
- *       A string representing the type of task. This parameter has three
- *       possible values:
- *       - 'normal': This indicates that the task will be treated as a regular
- *       callback function, which does its processing and optionally returns
- *       HTML output. This is the default behavior which is used when 'type' is
- *       not set.
- *       - 'batch': This indicates that the task function will return a batch
- *       API definition suitable for batch_set(). The installer will then take
- *       care of automatically running the task via batch processing.
- *       - 'form': This indicates that the task function will return a standard
+ *   - display_name: The human-readable name of the task. This will be
+ *     displayed to the user while the installer is running, along with a list
+ *     of other tasks that are being run. Leave this unset to prevent the task
+ *     from appearing in the list.
+ *   - display: This is a boolean which can be used to provide finer-grained
+ *     control over whether or not the task will display. This is mostly useful
+ *     for tasks that are intended to display only under certain conditions;
+ *     for these tasks, you can set 'display_name' to the name that you want to
+ *     display, but then use this boolean to hide the task only when certain
+ *     conditions apply.
+ *   - type: A string representing the type of task. This parameter has three
+ *     possible values:
+ *     - normal: (default) This indicates that the task will be treated as a
+ *       regular callback function, which does its processing and optionally
+ *       returns HTML output.
+ *     - batch: This indicates that the task function will return a batch API
+ *       definition suitable for batch_set(). The installer will then take care
+ *       of automatically running the task via batch processing.
+ *     - form: This indicates that the task function will return a standard
  *       form API definition (and separately define validation and submit
  *       handlers, as appropriate). The installer will then take care of
  *       automatically directing the user through the form submission process.
- *     - 'run'
- *       A constant representing the manner in which the task will be run. This
- *       parameter has three possible values:
- *       - INSTALL_TASK_RUN_IF_NOT_COMPLETED: This indicates that the task will
- *       run once during the installation of the profile. This is the default
- *       behavior which is used when 'run' is not set.
- *       - INSTALL_TASK_SKIP: This indicates that the task will not run during
+ *   - run: A constant representing the manner in which the task will be run.
+ *     This parameter has three possible values:
+ *     - INSTALL_TASK_RUN_IF_NOT_COMPLETED: (default) This indicates that the
+ *       task will run once during the installation of the profile.
+ *     - INSTALL_TASK_SKIP: This indicates that the task will not run during
  *       the current installation page request. It can be used to skip running
  *       an installation task when certain conditions are met, even though the
  *       task may still show on the list of installation tasks presented to the
  *       user.
- *       - INSTALL_TASK_RUN_IF_REACHED: This indicates that the task will run
- *       on each installation page request that reaches it. This is rarely
+ *     - INSTALL_TASK_RUN_IF_REACHED: This indicates that the task will run on
+ *       each installation page request that reaches it. This is rarely
  *       necessary for an installation profile to use; it is primarily used by
  *       the Drupal installer for bootstrap-related tasks.
- *     - 'function'
- *       Normally this does not need to be set, but it can be used to force the
- *       installer to call a different function when the task is run (rather
- *       than the function whose name is given by the array key). This could be
- *       used, for example, to allow the same function to be called by two
- *       different tasks.
+ *   - function: Normally this does not need to be set, but it can be used to
+ *     force the installer to call a different function when the task is run
+ *     (rather than the function whose name is given by the array key). This
+ *     could be used, for example, to allow the same function to be called by
+ *     two different tasks.
  *
  * @see install_state_defaults()
  * @see batch_set()
@@ -4686,6 +4710,77 @@ function hook_filetransfer_info_alter(&$filetransfer_info) {
 
 /**
  * @} End of "addtogroup hooks".
+ */
+
+/**
+ * @addtogroup callbacks
+ * @{
+ */
+
+/**
+ * Return the URI for an entity.
+ *
+ * Callback for hook_entity_info().
+ *
+ * @param $entity
+ *   The entity to return the URI for.
+ *
+ * @return
+ *   An associative array with the following elements:
+ *   - 'path': The URL path for the entity.
+ *   - 'options': (optional) An array of options for the url() function.
+ *   The actual entity URI can be constructed by passing these elements to
+ *   url().
+ */
+function callback_entity_info_uri($entity) {
+  return array(
+    'path' => 'node/' . $entity->nid,
+  );
+}
+
+/**
+ * Return the label of an entity.
+ *
+ * Callback for hook_entity_info().
+ *
+ * @param $entity
+ *   The entity for which to generate the label.
+ * @param $entity_type
+ *   The entity type; e.g., 'node' or 'user'.
+ *
+ * @return
+ *   An unsanitized string with the label of the entity.
+ *
+ * @see entity_label()
+ */
+function callback_entity_info_label($entity, $entity_type) {
+  return empty($entity->title) ? 'Untitled entity' : $entity->title;
+}
+
+/**
+ * Return the language code of the entity.
+ *
+ * Callback for hook_entity_info().
+ *
+ * The language callback is meant to be used primarily for temporary alterations
+ * of the property value.
+ *
+ * @param $entity
+ *   The entity for which to return the language.
+ * @param $entity_type
+ *   The entity type; e.g., 'node' or 'user'.
+ *
+ * @return
+ *   The language code for the language of the entity.
+ *
+ * @see entity_language()
+ */
+function callback_entity_info_language($entity, $entity_type) {
+  return $entity->language;
+}
+
+/**
+ * @} End of "addtogroup callbacks".
  */
 
 /**

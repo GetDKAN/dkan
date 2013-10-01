@@ -190,7 +190,7 @@ function features_export_prepare($export, $module_name, $reset = FALSE, $add_dep
   }
 
   // Prepare info string -- if module exists, merge into its existing info file
-  $defaults = $existing ? $existing->info : array('core' => '7.x', 'package' => 'Features');
+  $defaults = !empty($existing->info) ? $existing->info : array('core' => '7.x', 'package' => 'Features');
   $export = array_merge($defaults, $export);
 
   $deprecated = features_get_deprecated();
@@ -213,11 +213,15 @@ function features_export_prepare($export, $module_name, $reset = FALSE, $add_dep
 
   // Order info array.
   $standard_info = array();
-  foreach (array_merge(array('name', 'description', 'core', 'package', 'php', 'version', 'project', 'dependencies'), $copy_list) as $item) {
+  foreach (array_merge(array('name', 'description', 'core', 'package', 'version', 'project', 'dependencies'), $copy_list) as $item) {
     if (isset($export[$item])) {
       $standard_info[$item] = $export[$item];
     }
   }
+  if (isset($export['php']) && ($export['php'] != DRUPAL_MINIMUM_PHP)) {
+    $standard_info['php'] = $export['php'];
+  }
+  unset($export['php']);
 
   $export = features_array_diff_assoc_recursive($export, $standard_info);
   ksort($export);
@@ -331,28 +335,38 @@ function features_export_render($export, $module_name, $reset = FALSE) {
       }
     }
 
-    // Deprecated files. Display a message for any of these files letting the
-    // user know that they may be removed.
-    $deprecated = array(
-      "{$module_name}.defaults",
-      "{$module_name}.features.views",
-      "{$module_name}.features.node"
-    );
-    foreach (file_scan_directory(drupal_get_path('module', $module_name), '/.*/') as $file) {
-      if (in_array($file->name, $deprecated, TRUE)) {
-        features_log(t('The file @filename has been deprecated and can be removed.', array('@filename' => $file->filename)), 'status');
+    if ($reset) {
+      // only check for deprecated files on final export
+
+      // Deprecated files. Display a message for any of these files letting the
+      // user know that they may be removed.
+      $deprecated_files = array(
+        "{$module_name}.defaults",
+        "{$module_name}.features.views",
+        "{$module_name}.features.node"
+      );
+      // add deprecated components
+      foreach ($deprecated as $component) {
+        $info = features_get_components($component);
+        $filename = isset($info['default_file']) && $info['default_file'] == FEATURES_DEFAULTS_CUSTOM ? $info['default_filename'] : "features.{$component}";
+        $deprecated_files[] = "{$module_name}.$filename";
       }
-      elseif ($file->name === "{$module_name}.features" && empty($code['features'])) {
-        // Try and remove features.inc include.
-        if (strpos($code['module'], "{$module_name}.features.inc")) {
-          $code['module'] = str_replace($modulefile_features_inc, $modulefile_blank, $code['module']);
+      foreach (file_scan_directory(drupal_get_path('module', $module_name), '/.*/') as $file) {
+        if (in_array($file->name, $deprecated_files, TRUE)) {
+          features_log(t('The file @filename has been deprecated and can be removed.', array('@filename' => $file->filename)), 'status');
         }
-        // If unable to remove the include, add a message to remove.
-        if (strpos($code['module'], "{$module_name}.features.inc")) {
-          $code['features'] = "<?php\n\n// This file is deprecated and can be removed.\n// Please remove include_once('{$module_name}.features.inc') in {$module_name}.module as well.\n";
-        }
-        else {
-          $code['features'] = "<?php\n\n// This file is deprecated and can be removed.\n";
+        elseif ($file->name === "{$module_name}.features" && empty($code['features'])) {
+          // Try and remove features.inc include.
+          if (strpos($code['module'], "{$module_name}.features.inc")) {
+            $code['module'] = str_replace($modulefile_features_inc, $modulefile_blank, $code['module']);
+          }
+          // If unable to remove the include, add a message to remove.
+          if (strpos($code['module'], "{$module_name}.features.inc")) {
+            $code['features'] = "<?php\n\n// This file is deprecated and can be removed.\n// Please remove include_once('{$module_name}.features.inc') in {$module_name}.module as well.\n";
+          }
+          else {
+            $code['features'] = "<?php\n\n// This file is deprecated and can be removed.\n";
+          }
         }
       }
     }
@@ -540,9 +554,14 @@ function features_tar_create($name, $contents) {
 /**
  * Export var function -- from Views.
  */
-function features_var_export($var, $prefix = '', $init = TRUE) {
+function features_var_export($var, $prefix = '', $init = TRUE, $count = 0) {
+  if ($count > 50) {
+    watchdog('features', 'Recursion depth reached in features_var_export', array());
+    return '';
+  }
+
   if (is_object($var)) {
-    $output = method_exists($var, 'export') ? $var->export() : features_var_export((array) $var, '', FALSE);
+    $output = method_exists($var, 'export') ? $var->export() : features_var_export((array) $var, '', FALSE, $count+1);
   }
   else if (is_array($var)) {
     if (empty($var)) {
@@ -552,7 +571,7 @@ function features_var_export($var, $prefix = '', $init = TRUE) {
       $output = "array(\n";
       foreach ($var as $key => $value) {
         // Using normal var_export on the key to ensure correct quoting.
-        $output .= "  " . var_export($key, TRUE) . " => " . features_var_export($value, '  ', FALSE) . ",\n";
+        $output .= "  " . var_export($key, TRUE) . " => " . features_var_export($value, '  ', FALSE, $count+1) . ",\n";
       }
       $output .= ')';
     }
@@ -951,7 +970,8 @@ function _features_linetrim($code) {
  */
 function _features_sanitize(&$array) {
   if (is_array($array)) {
-    if (_features_is_assoc($array)) {
+    $is_assoc = _features_is_assoc($array);
+    if ($is_assoc) {
       ksort($array, SORT_STRING);
       $array = array_filter($array);
     }
@@ -961,6 +981,9 @@ function _features_sanitize(&$array) {
     foreach ($array as $k => $v) {
       if (is_array($v)) {
         _features_sanitize($array[$k]);
+        if ($is_assoc && empty($array[$k])) {
+          unset($array[$k]);
+        }
       }
     }
   }

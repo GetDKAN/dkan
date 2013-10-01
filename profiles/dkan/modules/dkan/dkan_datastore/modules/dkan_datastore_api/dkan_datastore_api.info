@@ -1,6 +1,7 @@
 name = DKAN Data API
 description = Access datastore info over json.
 package = DKAN API
+version = 7.x-1.0-beta1
 core = 7.x
 php = 5.2.4
 dependencies[] = dkan_datastore

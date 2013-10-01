@@ -610,8 +610,39 @@ function module_disable($module_list, $disable_dependents = TRUE) {
  * just models that you can modify. Only the hooks implemented within modules
  * are executed when running Drupal.
  *
- * See also @link themeable the themeable group page. @endlink
+ * @see themeable
+ * @see callbacks
  */
+
+ /**
+  * @defgroup callbacks Callbacks
+  * @{
+  * Callback function signatures.
+  *
+  * Drupal's API sometimes uses callback functions to allow you to define how
+  * some type of processing happens. A callback is a function with a defined
+  * signature, which you define in a module. Then you pass the function name as
+  * a parameter to a Drupal API function or return it as part of a hook
+  * implementation return value, and your function is called at an appropriate
+  * time. For instance, when setting up batch processing you might need to
+  * provide a callback function for each processing step and/or a callback for
+  * when processing is finished; you would do that by defining these functions
+  * and passing their names into the batch setup function.
+  *
+  * Callback function signatures, like hook definitions, are described by
+  * creating and documenting dummy functions in a *.api.php file; normally, the
+  * dummy callback function's name should start with "callback_", and you should
+  * document the parameters and return value and provide a sample function body.
+  * Then your API documentation can refer to this callback function in its
+  * documentation. A user of your API can usually name their callback function
+  * anything they want, although a standard name would be to replace "callback_"
+  * with the module name.
+  *
+  * @see hooks
+  * @see themeable
+  *
+  * @}
+  */
 
 /**
  * Determines whether a module implements a hook.
@@ -803,10 +834,7 @@ function module_hook_info() {
  */
 function module_implements_write_cache() {
   $implementations = &drupal_static('module_implements');
-  // Check whether we need to write the cache. We do not want to cache hooks
-  // which are only invoked on HTTP POST requests since these do not need to be
-  // optimized as tightly, and not doing so keeps the cache entry smaller.
-  if (isset($implementations['#write_cache']) && ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'HEAD')) {
+  if (isset($implementations['#write_cache'])) {
     unset($implementations['#write_cache']);
     cache_set('module_implements', $implementations, 'cache_bootstrap');
   }
@@ -814,6 +842,9 @@ function module_implements_write_cache() {
 
 /**
  * Invokes a hook in a particular module.
+ *
+ * All arguments are passed by value. Use drupal_alter() if you need to pass
+ * arguments by reference.
  *
  * @param $module
  *   The name of the module (without the .module extension).
@@ -824,6 +855,8 @@ function module_implements_write_cache() {
  *
  * @return
  *   The return value of the hook implementation.
+ *
+ * @see drupal_alter()
  */
 function module_invoke($module, $hook) {
   $args = func_get_args();
@@ -837,6 +870,9 @@ function module_invoke($module, $hook) {
 /**
  * Invokes a hook in all enabled modules that implement it.
  *
+ * All arguments are passed by value. Use drupal_alter() if you need to pass
+ * arguments by reference.
+ *
  * @param $hook
  *   The name of the hook to invoke.
  * @param ...
@@ -845,6 +881,8 @@ function module_invoke($module, $hook) {
  * @return
  *   An array of return values of the hook implementations. If modules return
  *   arrays from their implementations, those are merged into one array.
+ *
+ * @see drupal_alter()
  */
 function module_invoke_all($hook) {
   $args = func_get_args();

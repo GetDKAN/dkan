@@ -104,10 +104,12 @@ function feeds_flatstore_processor_table(FeedsSource $source, $parser_result) {
     // If this is a CSV file, get more info.
     if ($source->importer->parser instanceof FeedsCSVParser) {
       $fetcher = get_class($source->importer->fetcher);
+      $delimiter = $source->config['FeedsCSVParser']['delimiter'];
       $source = $source->config[$fetcher]['source'];
+
       if ($source) {
         // This gives us a better range of results for finding data types.
-        $example_data = feeds_flatstore_processor_get_csv_results($source);
+        $example_data = feeds_flatstore_processor_get_csv_results($source, $delimiter);
       }
       else {
         $example_data = $parser_result;
@@ -121,8 +123,8 @@ function feeds_flatstore_processor_table(FeedsSource $source, $parser_result) {
     }
     $schema = feeds_flatstore_processsor_base_schema();
     $field_schema = data_build_schema($types);
+    feeds_flatstore_clean_reserved_words($field_schema);
     $schema['fields'] = array_merge($field_schema['fields'], $schema['fields']);
-    feeds_flatstore_clean_reserved_words($schema);
 
     $table = data_create_table($table_name, $schema, $title);
     return $table;
@@ -130,15 +132,14 @@ function feeds_flatstore_processor_table(FeedsSource $source, $parser_result) {
 }
 
 /**
- * Cleans reserved words for mysql. See: http://dev.mysql.com/doc/refman/4.1/en/reserved-words.html
+ * Cleans reserved words for mysql.
+ *
+ * See: http://dev.mysql.com/doc/refman/4.1/en/reserved-words.html
  */
 function feeds_flatstore_clean_reserved_words(&$schema) {
-  $reserved = feeds_flatstore_reserved_words();
-  foreach ($schema['fields'] as $field_name => $type) {
-    if (in_array(strtolower($field_name), $reserved)) {
-      unset($schema['fields'][$field_name]);
-      $schema['fields'][$field_name . '_'] = $type;
-    }
+  foreach ($schema['fields'] as $label => $value) {
+    unset($schema['fields'][$label]);
+    $schema['fields'][feeds_flatstore_processor_safe_name($label)] = $value;
   }
 }
 
@@ -148,7 +149,7 @@ function feeds_flatstore_clean_reserved_words(&$schema) {
 function feeds_flatstore_processsor_base_schema() {
   return array(
     'fields' => array(
-      'id' => array(
+      'feeds_flatstore_entry_id' => array(
         'type' => 'serial',
         'size' => 'normal',
         'unsigned' => TRUE,
@@ -168,11 +169,11 @@ function feeds_flatstore_processsor_base_schema() {
       ),
     ),
     'indexes' => array(
-      'id' => array('id'),
+      'feeds_flatstore_entry_id' => array('feeds_flatstore_entry_id'),
       'timestamp' => array('timestamp'),
     ),
     'primary key' => array(
-      '0' => 'id',
+      '0' => 'feeds_flatstore_entry_id',
     ),
   );
 }
@@ -194,7 +195,7 @@ function feeds_flatstore_processor_get_csv_results($filepath, $separator = ",", 
 
   $parsed_results = array();
   $rowcount = 0;
-  while (($data = fgetcsv($handle, $size, ',')) !== FALSE) {
+  while (($data = fgetcsv($handle, $size, $separator)) !== FALSE) {
     $result[] = $data;
     $rowcount++;
     if ($rowcount > $limit) {
@@ -298,11 +299,11 @@ function feeds_flatstore_processor_safe_name($name) {
     ',' => '_',
   );
   $simple = trim(strtolower(strip_tags($name)));
-  // Limit length to 64 as per http://dev.mysql.com/doc/refman/5.0/en/identifiers.html
+  // Limit length to 64 http://dev.mysql.com/doc/refman/5.0/en/identifiers.html
   $simple = substr(strtr($simple, $map), 0, 64);
 
   $reserved = feeds_flatstore_reserved_words();
-  if (isset($reserved[$simple])) {
+  if (in_array($simple, $reserved)) {
     $simple = $simple . '_';
   }
 
@@ -314,6 +315,15 @@ function feeds_flatstore_processor_safe_name($name) {
  */
 function feeds_flatstore_reserved_words() {
   return array(
+    // This is not a reserved word, but used by feeds flatstore as the
+    // autoincrement id.
+    'feeds_flatstore_entry_id',
+    // This is not a reserved word, but used by feeds flatstore as the
+    // itentifier for the feed entity id.
+    'feeds_entity_id',
+    // This is not a reserved word, but used by feeds flatstore as the
+    // timestamp.
+    'timestamp',
     'accessible',
     'add',
     'all',

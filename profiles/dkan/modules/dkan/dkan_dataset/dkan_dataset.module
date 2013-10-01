@@ -1,7 +1,5 @@
 <?php
 
-define('DKAN_FIELD_LANG', 'und');
-
 /**
  * @file
  * Custom elements for datasets.
@@ -18,7 +16,7 @@ include_once 'dkan_dataset.forms.inc';
 function dkan_dataset_menu() {
   $path = drupal_get_path('module', 'dkan_datset');
   $items['node/%node/resource'] = array(
-    'title' => 'Add Resoure',
+    'title' => 'Add Resource',
     'page callback' => 'dkan_dataset_add_resource',
     'page arguments' => array(1),
     'access callback' => 'dkan_dataset_add_resource_access',

@@ -211,10 +211,8 @@ class ServicesXMLRPCTestCase extends DrupalWebTestCase {
       $options['headers']['Cookie'] = $this->session_name . '=' . $this->sessid;
     }
 
-    // Use drupal_http_request to fetch token instead of $this->drupalGet() because
-    // we need to pass session cookie as token is session based.
-    $csrf_token_response = drupal_http_request(url('services/session/token', array('absolute' => TRUE)), $options);
-    $options['headers']['X-CSRF-Token'] = $csrf_token_response->data;
+    $csrf_token_response = xmlrpc(url($this->endpoint->path, array('absolute' => TRUE)), array('user.token' => array()), $options);
+    $options['headers']['X-CSRF-Token'] = $csrf_token_response['token'];
 
     $output = xmlrpc(url($this->endpoint->path, array('absolute' => TRUE)), array($method => $args), $options);
 

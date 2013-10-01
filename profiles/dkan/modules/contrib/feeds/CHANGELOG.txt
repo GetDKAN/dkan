@@ -1,3 +1,199 @@
+Feeds 7.x 2.0 Alpha 8, 2012-04-22
+---------------------------------
+
+- Issue #1555974 by twistor | andyg5000: Fixed Save button should also add field
+  mapping; Add button should also save config changes.
+- Allow 0 as a term name.
+- Issue #630288 by kulfi: Added import date compatibility issues with Google
+  Groups' feeds.
+- Issue #1878254 by facine: Fixed SimplePie download page url.
+- Issue #1166100 by twistor | Niklas Fiekas: Fixed Notices and warnings on
+  mapping page, when no content type is selected for NodeProcessor.
+- Issue #1941302 by jshimota01: Fixed Radio buttons hidden in IE 7.
+- Fix formatting of feeds_ui.css
+- Issue #1362378 by gordon, colan, Sutharsan, MegaChriz | mukesh.agarwal17:
+  Added is_new addtribute to feeds_item.
+- Fixed: missing comma.
+- Issue #1961998 by gordon: Added new hook hook_feeds_before_update().
+- Issue #1025468 by 30equals: Added Allow operations to be performed on disabled
+  Importers.
+- Issue #1953008 by MegaChriz | carn1x: Fixed PHP Fatal error:  Nesting level
+  too deep - recursive dependency? in FeedsProcessor.inc on line 199.
+- git commit -m Issue
+- Fix capitalization of Feeds on Importer import page.
+- Issue #777888 by WorldFallz, liquidcms, firfin | timwood: Added UI to import
+  views-style exportable (a.k.a. How to import importers?).
+- Issue #697842 by eiriksm, franz, Webmaster Perpignan: Added Support array of
+  values for dates.
+- Tests for #1019688.
+- Issue #1019688 by johnv, philipz, twistor, sin, ts145nera, David Hernández:
+  Fixed Taxonomy mapper options: term name +tid, term name, tid, guid (avoids
+  mapping error for Numeric taxonomy term, too).
+- Issue #1958864 by DamienMcKenna: Fixed 'Division by zero' error in
+  feeds_update_7208.
+- Issue #1147734 by philipnorton42, znerol, David_Rothstein, twistor | johnv:
+  Added Import files in public://feeds/ vs. private://feeds/.
+- Issue #857216 by yareckon, wuinfo: behavior on importing empty/NULL/invalid
+  dates.
+- Fix coding standards.
+- Ensure that headers is always set.
+- Fix uid validation for Node processor.
+- Issue #1201638 by rfay: Fixed Plugins should be listed in info file.
+- Issue #1848726 by ojohansson, twistor: Fixed Hash check fails when running
+  multiple importers on cron.
+- Issue #1620110 by Cottser, JvE | Alan D.: Fixed Update default views fixes
+  'Missing text format: 1.' in watchdog.
+- Issue #1156982 by dooug, dotman: Fixed SQLSTATE[HY000]: General error: 1366
+  Incorrect integer value: '' for column 'last_comment_uid()' at row 1.
+- Issue #1660950 by valthebald: Fixed FeedsSource expects stored  to be array,
+  which is not always the case.
+- Use bundle() method.
+- Use plugin key rather than class name.
+- Issue #1300940 by colin_young: Fixed Undefined Index: unique in
+  FeedsCSVParser.inc.
+- Issue #1874322: Remove PHP version check from Common Syndication Parser.
+- Issue #1870528 by cmriley: Fixed Undefined index: content_type() in
+  feeds_rules_event_info() (line 56 feeds/feeds.rules.inc.
+- Issue #1711648 Upgrade path.
+- Issue #1711648 by twistor: Fixes for tests.
+- Issue #1711648 by twistor: Abstract bundle handling.
+- Issue #1827780 by pfrenssen: Type hinting missing from
+  hook_feeds_parser_sources_alter() callback example.
+- Issue #1825016 by David_Rothstein: Make it easier for the FeedsCSVParser
+  source form to be altered.
+- Issue #1744570 by Staratel: Added Invoke Before import event before start
+  import.
+- Move static method to member method.
+- Issue #1843146 by twistor: Add pluginType() method to be able to determine the
+  plugin type without having to lookup the inheritance.
+- Always set is_new on node create rather than node_save().
+- Re-fix replace existing behavior.
+- Fix replace existing behavior.
+- Issue #1165506 by Mile23 | 7wonders: Added pipe delimiter to csv parser.
+- Use user_delete_multiple()
+- Issue #1835106 by twistor: Make entity loading generic.
+- Issue #1480902 by Staratel | faunt: Added Are there timeouts on Feed
+  importers?.
+- Issue #912682 by alex_b, snyderp, dman | dwhogg: Added CSV Parser: Support
+  Mac-style line endings.
+- Issue #1817992 by OnkelTem: Fixed Notice: Undefined property: stdClass:: in
+  feeds_tokens()
+
+Feeds 7.x 2.0 Alpha 7, 2012-10-12
+---------------------------------
+
+- Make sure target array is always initialized.
+- Issue #1807920 by Rob_Feature: Fixed Imported nodes have NULL format.
+- Make datetime tests fake unit tests.
+
+Feeds 7.x 2.0 Alpha 6, 2012-10-10
+---------------------------------
+
+- Port authorization from 6.x to 7.x.
+- Make FeedsDateTimeTest a real unit test.
+- Don't hard code delta to 10.
+- Issue #1567508 by kruser, beansboxchrispang: Fixed User import is incorrectly
+  changing passwords.
+- Fix failing test after making them stricter.
+- Issue #837922 by twistor, andrewlevine: Added removeMappings() to test suite
+  and more extensive addMapping testing.
+- Issue #1074520 by ccheu: Commit #783098 not included in 7.x-2.0-alpha3.
+- Fix for mapping ui and multiple mappings with configuration.
+- Re-organize FeedsProcessor::process() so that it is clearer.
+- Issue #1191498 by dooug, twistor: Set drupal_set_message() to not repeat
+  'Missing Feeds plugin...'.
+- Allow for 0 to be used in the number mapping.
+- Issue #1420360 by anarchocoder: Fixed Common Syndication Parser sometimes
+  creates php warning when feed item title is empty.
+- Issue #1728634 by David_Rothstein: Fixed User and node 'created' dates (from
+  feeds_to_unixtime()) default to the wrong timezone.
+- Coder review fixes.
+- Dang it. Add feeds_alter() back because contrib depends on it.
+- Remove stupid feeds_alter().
+- Issue #1466170 by peter.sogaard: Added Text format support in taxonomy term
+  fields.
+- Use consistent set target callbacks.
+- Move text and numeric mappers to their own include.
+- Simplify forced updating.
+- Make link mapper less retarded.
+- Issue #1551852 by Sergii: Fixed Text field mapper: support for FeedsElement
+  object.
+- Issue #1715124 by theduke: Fixed feeds_importer() 'config' column to short -
+  change size to big.
+- Issue #1784436 by stefan.norman: Fixed FeedsTermProcessor existingEntityId
+  doesn't honour id column in feeds_item().
+- Issue #1792318 by psynaptic: Fixed Invalid multibyte sequence in
+  tests/feeds.test.
+- Add quick test for skip_hash_check.
+- Issue #1364116 by axel.rutz | Les Lim: Added Option to skip hash check on
+  re-import.
+- Revert term specific forced updating.
+- Remove debug statements.
+- Issue #1410296 by logaritmisk, vinmassaro: Added Reorder mappings.
+- Don't set unique flag for things that don't have it.
+- Add test for new mapping config.
+- Issue #860748 by Niklas Fiekas, franz, twistor | infojunkie: Added Config for
+  mappers?.
+- Add support for SimplePie 1.3
+- Fix path alias test for taxonomy terms.
+- Un-prefix node path test.
+- Move path mapping to path.inc and add tests.
+- Issue #1724200 by balazs.hegedus: Added Support for drupal_http_request()
+  timeout.
+- Issue #1736976 by Chaulky: Added Trim feed urls to remove accidental spaces.
+- Issue #1110762 by vaartio, franz, bancarddata, axel.rutz: Fixed Feeds does not
+  catch file exceptions properly in file mapper and FeedsParser.inc getFile()
+  function.
+- Issue #1742740 by Staratel: Fixed Add magic method __isset() to
+  FeedsConfigurable to use default entity wrapping.
+- Issue #1739704 by axel.rutz: Fixed Node lookup by title in Nodeprocessor does
+  not respect nodetype.
+- Issue #1690434 by twistor | jzornig: Fixed Notice: Undefined variable: job in
+  FeedsSource->scheduleClear() (line 319 of sites/all/modules/feeds/includes/FeedsSource.inc).
+- Issue #1703074 by theduke: Added Include parser result in
+  hook_feeds_presave().
+- Issue #1070604 by Bobík: Added Feed's nid in mappings.
+- Issue #1300500 by milesw | derekwormdahl: Fixed Not loading node status in
+  FeedsNodeProcessor.inc is causing issue with Content Access module.
+- Coder review fixes.
+- Add stricter test for integer value.
+- Fix doc strings.
+- Issue #1112876 by chx: Added Support digest auth.
+- Get FeedsMapperFileTestCase tests to pass.
+- Issue #1688294 by twistor | Rob_Feature: Fixed Invalid URL (even though it's
+  valid).
+- Issue #1402788 by tbosviel | Cottser: Added All files are imported as MIME
+  application/octet-stream.
+- Issue #1271502 by twistor | oobie11: Fixed Im getting an error when I run
+  cron.
+- Issue #1460282 by elliotttf, MegaChriz | jday: Fixed Call to undefined method
+  FeedsMissingPlugin::entityType() .
+- Use entity type if entity label is not set.
+- Issue #1661014 by twistor | johnv: Fixed feeds_entity_load() called too often
+  / is not cached.
+- Issue #1665450: Path alias target when using pathauto.
+- Fixed: feeds_mapper_file.test.
+- Method for downloading and extracting the simplepie library during tests.
+- Try to shut up SimplePie.
+- Allow setting a variable for the library path.
+- Fix for taxonomy mapper test.
+- Make descriptions in taxonomy term processor consistent.
+- Make labels for taxonomy processor consistent.
+- Issue #1044874 by marek.trunkat, bdragon | seth.vincent: Fixed Debug message:
+  missing handler: feeds_log() feed_nid() field.
+- Issue #1424992 by stevector: Added implementation of hook_entity_info_alter()
+  so that ->feed_nid() is available to Rules.
+- Issue #1662550 by pvhee: Fixed Invoke hook_feeds_after_import() after writing
+  to the logs.
+- Issue #1454666: Fixing unlock feature to also work with locked imports.
+- Issue #1241754: Add targets for author name and email in node processor.
+- Issue #1454666: Add tool to reset locked feeds
+- Issue #1612246: Fixing introduced error on filepath generation.
+- Small fix on comment alignment
+- Issue #1632286 by facine: Fixed Cannot redeclare
+  FeedsTermProcessor::setTargetElement().
+- Issue #1001590 by tristanoneil, twistor, Bevan: Path alias mapping target.
+
 Feeds 7.x 2.0 Alpha 5, 2012-05-28
 ---------------------------------
 

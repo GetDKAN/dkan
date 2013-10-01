@@ -366,8 +366,8 @@ class FeedsRSStoNodesTest extends FeedsWebTestCase {
   /**
    * Test validation of feed URLs.
    */
-  function testFeedURLValidation() {
-    $edit['feeds[FeedsHTTPFetcher][source]'] = 'invalid://url';
+  function testFeedURLValidation($id = 'syndication') {
+    $edit['feeds[' . $id . '][FeedsHTTPFetcher][source]'] = 'invalid://url';
     $this->drupalPost('node/add/page', $edit, 'Save');
     $this->assertText('The URL invalid://url is invalid.');
   }
@@ -375,7 +375,7 @@ class FeedsRSStoNodesTest extends FeedsWebTestCase {
   /**
    * Test using non-normal URLs like feed:// and webcal://.
    */
-  function testOddFeedSchemes() {
+  function testOddFeedSchemes($id = 'syndication') {
     $url = $GLOBALS['base_url'] . '/' . drupal_get_path('module', 'feeds') . '/tests/feeds/developmentseed.rss2';
 
     $schemes = array('feed', 'webcal');
@@ -383,7 +383,7 @@ class FeedsRSStoNodesTest extends FeedsWebTestCase {
     foreach ($schemes as $scheme) {
       $feed_url = strtr($url, array('http://' => $scheme . '://', 'https://' => $scheme . '://'));
 
-      $edit['feeds[FeedsHTTPFetcher][source]'] = $feed_url;
+      $edit['feeds[' . $id  . '][FeedsHTTPFetcher][source]'] = $feed_url;
       $this->drupalPost('node/add/page', $edit, 'Save');
       $this->assertText('Basic page Development Seed - Technological Solutions for Progressive Organizations has been created.');
       $this->assertText('Created 10 nodes.');
@@ -395,7 +395,7 @@ class FeedsRSStoNodesTest extends FeedsWebTestCase {
   /**
    * Test that feed elements and links are not found on non-feed nodes.
    */
-  function testNonFeedNodeUI() {
+  function testNonFeedNodeUI($id = 'syndication') {
     // There should not be feed links on an article node.
     $non_feed_node = $this->drupalCreateNode(array('type' => 'article'));
     $this->drupalGet('node/' . $non_feed_node->nid);
@@ -404,7 +404,7 @@ class FeedsRSStoNodesTest extends FeedsWebTestCase {
 
     // Navigate to a non-feed node form, there should be no Feed field visible.
     $this->drupalGet('node/add/article');
-    $this->assertNoFieldByName('feeds[FeedsHTTPFetcher][source]');
+    $this->assertNoFieldByName('feeds[' . $id . '][FeedsHTTPFetcher][source]');
   }
 
   /**

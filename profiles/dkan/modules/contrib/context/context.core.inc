@@ -105,7 +105,8 @@ function context_ctools_render_alter($info, $page, $data) {
 function context_entity_prepare_view($prepare, $entity_type) {
   if ($entity_type === 'taxonomy_term' && count($prepare) === 1) {
     $term = reset($prepare);
-    if ($term === menu_get_object('taxonomy_term', 2) && $plugin = context_get_plugin('condition', 'taxonomy_term')) {
+    $menu = menu_get_object('taxonomy_term', 2);
+    if ($term->tid == $menu->tid && $plugin = context_get_plugin('condition', 'taxonomy_term')) {
       $plugin->execute($term, 'view');
     }
   }

@@ -4,6 +4,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+  "use strict";
 
 my.FilterEditor = Backbone.View.extend({
   className: 'recline-filter-editor well', 
@@ -88,11 +89,9 @@ my.FilterEditor = Backbone.View.extend({
     'submit form.js-add': 'onAddFilter'
   },
   initialize: function() {
-    this.el = $(this.el);
     _.bindAll(this, 'render');
-    this.model.fields.bind('all', this.render);
-    this.model.queryState.bind('change', this.render);
-    this.model.queryState.bind('change:filters:new-blank', this.render);
+    this.listenTo(this.model.fields, 'all', this.render);
+    this.listenTo(this.model.queryState, 'change change:filters:new-blank', this.render);
     this.render();
   },
   render: function() {
@@ -108,13 +107,13 @@ my.FilterEditor = Backbone.View.extend({
       return Mustache.render(self.filterTemplates[this.type], this);
     };
     var out = Mustache.render(this.template, tmplData);
-    this.el.html(out);
+    this.$el.html(out);
   },
   onAddFilterShow: function(e) {
     e.preventDefault();
     var $target = $(e.target);
     $target.hide();
-    this.el.find('form.js-add').show();
+    this.$el.find('form.js-add').show();
   },
   onAddFilter: function(e) {
     e.preventDefault();
@@ -123,8 +122,6 @@ my.FilterEditor = Backbone.View.extend({
     var filterType = $target.find('select.filterType').val();
     var field      = $target.find('select.fields').val();
     this.model.queryState.addFilter({type: filterType, field: field});
-    // trigger render explicitly as queryState change will not be triggered (as blank value for filter)
-    this.render();
   },
   onRemoveFilter: function(e) {
     e.preventDefault();
@@ -141,7 +138,7 @@ my.FilterEditor = Backbone.View.extend({
       var $input = $(input);
       var filterType  = $input.attr('data-filter-type');
       var fieldId     = $input.attr('data-filter-field');
-      var filterIndex = parseInt($input.attr('data-filter-id'));
+      var filterIndex = parseInt($input.attr('data-filter-id'), 10);
       var name        = $input.attr('name');
       var value       = $input.val();
 
@@ -162,7 +159,7 @@ my.FilterEditor = Backbone.View.extend({
           break;
       }
     });
-    self.model.queryState.set({filters: filters});
+    self.model.queryState.set({filters: filters, from: 0});
     self.model.queryState.trigger('change');
   }
 });

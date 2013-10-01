@@ -20,9 +20,7 @@ See the instructions in the [basic views tutorial](tutorial-views.html).
 
 ### Creating a Dataset
 
-Again like the views tutorial:
-
-Here's some example data We are going to work with:
+Just like in the main tutorial, here's some example data We are going to work with:
 
 {% highlight javascript %}
 {% include data.js %}
@@ -103,4 +101,31 @@ view.featureparse = function (e) {
   }
 };
 {% endhighlight %}
+
+
+### Turning on clustering
+
+You can turn on clustering of markers by setting the cluster option:
+
+    var map = new recline.View.Map({
+      model: dataset
+      state: {
+        cluster: true;
+      }
+    });
+
+You could also enable marker clustering only if you have more than a
+certain number of markers. Here's an example:
+
+    // var map is recline.View.Map instance
+    // marker cluster threshold
+    var threshold = 65;
+      
+    // enable clustering if there is a large number of markers
+    var countAfter = 0;
+    map.features.eachLayer(function(){countAfter++;});
+    if (countAfter > threshold) {
+      // note the map will auto-redraw when you change state!
+      map.state.set({cluster: true});
+    }
 

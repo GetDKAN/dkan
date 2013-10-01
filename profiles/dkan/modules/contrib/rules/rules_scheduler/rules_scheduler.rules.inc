@@ -89,7 +89,7 @@ function rules_scheduler_action_schedule($args, $element) {
     rules_scheduler_schedule_task(array(
       'date' => $args['date'],
       'config' => $args['component'],
-      'state' => $new_state,
+      'data' => $new_state,
       'identifier' => $args['identifier'],
     ));
   }

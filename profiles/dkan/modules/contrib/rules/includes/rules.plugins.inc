@@ -184,7 +184,7 @@ class Rule extends RulesActionContainer {
 
   /**
    * Get an iterator over all contained actions. Note that this iterator also
-   * implements the ArrayAcces interface.
+   * implements the ArrayAccess interface.
    *
    * @return RulesRecursiveElementIterator
    */
@@ -348,21 +348,17 @@ class Rule extends RulesActionContainer {
 class RulesReactionRule extends Rule implements RulesTriggerableInterface {
 
   protected $itemName = 'reaction rule';
-  protected $events = array();
+  protected $events = array(), $eventSettings = array();
 
   /**
-   * Returns the array of events associated with that Rule.
+   * Implements RulesTriggerableInterface::events().
    */
-  public function &events() {
+  public function events() {
     return $this->events;
   }
 
   /**
-   * Removes an event from the rule configuration.
-   *
-   * @param $event
-   *   The name of the event to remove.
-   * @return RulesReactionRule
+   * Implements RulesTriggerableInterface::removeEvent().
    */
   public function removeEvent($event) {
     if (($id = array_search($event, $this->events)) !== FALSE) {
@@ -372,10 +368,43 @@ class RulesReactionRule extends Rule implements RulesTriggerableInterface {
   }
 
   /**
-   * @return RulesReactionRule
+   * Implements RulesTriggerableInterface::event().
    */
-  public function event($event) {
-    $this->events[] = $event;
+  public function event($event_name, array $settings = NULL) {
+    // Process any settings and determine the configured event's name.
+    if ($settings) {
+      $handler = rules_get_event_handler($event_name, $settings);
+      if ($suffix = $handler->getEventNameSuffix()) {
+        $event_name .= '--' . $suffix;
+        $this->eventSettings[$event_name] = $settings;
+      }
+      else {
+        // Do not store settings if there is no suffix.
+        unset($this->eventSettings[$event_name]);
+      }
+    }
+    if (array_search($event_name, $this->events) === FALSE) {
+      $this->events[] = $event_name;
+    }
+    return $this;
+  }
+
+  /**
+   * Implements RulesTriggerableInterface::getEventSettings().
+   */
+  public function getEventSettings($event_name) {
+    if (isset($this->eventSettings[$event_name])) {
+      return $this->eventSettings[$event_name];
+    }
+  }
+
+  public function integrityCheck() {
+    parent::integrityCheck();
+    // Check integrity of the configured events.
+    foreach ($this->events as $event_name) {
+      $handler = rules_get_event_handler($event_name, $this->getEventSettings($event_name));
+      $handler->validate();
+    }
     return $this;
   }
 
@@ -394,9 +423,9 @@ class RulesReactionRule extends Rule implements RulesTriggerableInterface {
   }
 
   public function access() {
-    $event_info = rules_fetch_data('event_info');
-    foreach ($this->events as $event) {
-      if (!empty($event_info[$event]['access callback']) && !call_user_func($event_info[$event]['access callback'], 'event', $event)) {
+    foreach ($this->events as $event_name) {
+      $event_info = rules_get_event_info($event_name);
+      if (!empty($event_info['access callback']) && !call_user_func($event_info['access callback'], 'event', $event_info['name'])) {
         return FALSE;
       }
     }
@@ -405,10 +434,10 @@ class RulesReactionRule extends Rule implements RulesTriggerableInterface {
 
   public function dependencies() {
     $modules = array_flip(parent::dependencies());
-    $event_info = rules_fetch_data('event_info');
-    foreach ($this->events as $event) {
-      if (isset($event_info[$event]['module'])) {
-        $modules[$event_info[$event]['module']] = TRUE;
+    foreach ($this->events as $event_name) {
+      $event_info = rules_get_event_info($event_name);
+      if (isset($event_info['module'])) {
+        $modules[$event_info['module']] = TRUE;
       }
     }
     return array_keys($modules);
@@ -433,15 +462,20 @@ class RulesReactionRule extends Rule implements RulesTriggerableInterface {
       else {
         // The intersection of the variables provided by the events are
         // available.
-        $event_info = rules_fetch_data('event_info');
-        $events = array_intersect($this->events, array_keys($event_info));
-        foreach ($events as $event) {
-          $event_info[$event] += array('variables' => array());
+        foreach ($this->events as $event_name) {
+          $handler = rules_get_event_handler($event_name, $this->getEventSettings($event_name));
+
           if (isset($this->availableVariables)) {
-            $this->availableVariables = array_intersect_key($this->availableVariables, $event_info[$event]['variables']);
+            $event_vars = $handler->availableVariables();
+            // Merge variable info by intersecting the variable-info keys also,
+            // so we have only metadata available that is valid for all of the
+            // provided variables.
+            foreach (array_intersect_key($this->availableVariables, $event_vars) as $name => $variable_info) {
+              $this->availableVariables[$name] = array_intersect_key($variable_info, $event_vars[$name]);
+            }
           }
           else {
-            $this->availableVariables = $event_info[$event]['variables'];
+            $this->availableVariables = $handler->availableVariables();
           }
         }
         $this->availableVariables = isset($this->availableVariables) ? RulesState::defaultVariables() + $this->availableVariables : RulesState::defaultVariables();
@@ -451,17 +485,36 @@ class RulesReactionRule extends Rule implements RulesTriggerableInterface {
   }
 
   public function __sleep() {
-    return parent::__sleep() + drupal_map_assoc(array('events'));
+    return parent::__sleep() + drupal_map_assoc(array('events', 'eventSettings'));
   }
 
   protected function exportChildren($key = 'ON') {
-    $export[$key] = array_values($this->events);
+    foreach ($this->events as $event_name) {
+      $export[$key][$event_name] = (array) $this->getEventSettings($event_name);
+    }
     return $export + parent::exportChildren();
   }
 
   protected function importChildren($export, $key = 'ON') {
-    $this->events = $export[$key];
+    // Detect and support old-style exports: a numerically indexed array of
+    // event names.
+    if (is_string(reset($export[$key])) && is_numeric(key($export[$key]))) {
+      $this->events = $export[$key];
+    }
+    else {
+      $this->events = array_keys($export[$key]);
+      $this->eventSettings = array_filter($export[$key]);
+    }
     parent::importChildren($export);
+  }
+
+  /**
+   * Overrides optimize().
+   */
+  public function optimize() {
+    parent::optimize();
+    // No need to keep event settings for evaluation.
+    $this->eventSettings = array();
   }
 }
 
@@ -711,18 +764,27 @@ class RulesEventSet extends RulesRuleSet {
     $rules = rules_config_load_multiple(FALSE, array('plugin' => 'reaction rule', 'active' => TRUE));
 
     foreach ($rules as $name => $rule) {
-      foreach ($rule->events() as $event) {
+      foreach ($rule->events() as $event_name) {
+        $event_base_name = rules_get_event_base_name($event_name);
         // Skip not defined events.
-        if (empty($events[$event])) {
+        if (empty($events[$event_base_name])) {
           continue;
         }
         // Create an event set if not yet done.
-        if (!isset($sets[$event])) {
-          $event_info = $events[$event] + array(
-            'variables' => isset($events[$event]['arguments']) ? $events[$event]['arguments'] : array(),
-          );
-          $sets[$event] = new RulesEventSet($event_info);
-          $sets[$event]->name = $event;
+        if (!isset($sets[$event_name])) {
+          $handler = rules_get_event_handler($event_name, $rule->getEventSettings($event_name));
+
+          // Start the event dispatcher for this event, if any.
+          if ($handler instanceof RulesEventDispatcherInterface && !$handler->isWatching()) {
+            $handler->startWatching();
+          }
+
+          // Update the event info with the variables available based on the
+          // event settings.
+          $event_info = $events[$event_base_name];
+          $event_info['variables'] = $handler->availableVariables();
+          $sets[$event_name] = new RulesEventSet($event_info);
+          $sets[$event_name]->name = $event_name;
         }
 
         // If a rule is marked as dirty, check if this still applies.
@@ -732,23 +794,22 @@ class RulesEventSet extends RulesRuleSet {
         if (!$rule->dirty) {
           // Clone the rule to avoid modules getting the changed version from
           // the static cache.
-          $sets[$event]->rule(clone $rule);
+          $sets[$event_name]->rule(clone $rule);
         }
       }
     }
 
     // Create cache items for all created sets.
-    foreach ($sets as $event => $set) {
+    foreach ($sets as $event_name => $set) {
       $set->sortChildren();
       $set->optimize();
       // Allow modules to alter the cached event set.
-      drupal_alter('rules_event_set', $event, $set);
-      rules_set_cache('event_' . $event, $set);
+      drupal_alter('rules_event_set', $event_name, $set);
+      rules_set_cache('event_' . $event_name, $set);
     }
-    // Cache a list of empty sets so we can use it to speed up later calls.
-    // See rules_get_event_set().
-    $empty_events = array_keys(array_diff_key($events, $sets));
-    variable_set('rules_empty_sets', array_flip($empty_events));
+    // Cache a whitelist of configured events so we can use it to speed up later
+    // calls. See rules_invoke_event().
+    variable_set('rules_event_whitelist', array_flip(array_keys($sets)));
   }
 
   protected function stateVariables($element = NULL) {

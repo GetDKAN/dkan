@@ -24,17 +24,20 @@ function dkan_dataset_content_types_field_group_info() {
     'weight' => '3',
     'children' => array(
       0 => 'field_author',
-      1 => 'field_data_dictionary',
-      2 => 'field_frequency',
-      3 => 'field_granularity',
-      4 => 'field_license',
-      5 => 'field_spatial',
-      6 => 'field_spatial_geographical_cover',
-      7 => 'field_temporal_coverage',
-      8 => 'og_group_ref',
-      9 => 'release_date',
-      10 => 'modified_date',
-      11 => 'identifier',
+      1 => 'field_contact_email',
+      2 => 'field_contact_name',
+      3 => 'field_data_dictionary',
+      4 => 'field_frequency',
+      5 => 'field_granularity',
+      6 => 'field_license',
+      7 => 'field_public_access_level',
+      8 => 'field_spatial',
+      9 => 'field_spatial_geographical_cover',
+      10 => 'field_temporal_coverage',
+      11 => 'og_group_ref',
+      12 => 'release_date',
+      13 => 'modified_date',
+      14 => 'identifier',
     ),
     'format_type' => 'table',
     'format_settings' => array(
@@ -62,17 +65,22 @@ function dkan_dataset_content_types_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Dataset Information',
-    'weight' => '5',
+    'weight' => '1',
     'children' => array(
-      0 => 'field_author',
-      1 => 'field_data_dictionary',
-      2 => 'field_frequency',
-      3 => 'field_granularity',
-      4 => 'field_spatial',
-      5 => 'field_spatial_geographical_cover',
-      6 => 'field_temporal_coverage',
-      7 => 'field_additional_info',
-      8 => 'field_resources',
+      0 => 'field_additional_info',
+      1 => 'field_author',
+      2 => 'field_contact_email',
+      3 => 'field_contact_name',
+      4 => 'field_data_dictionary',
+      5 => 'field_frequency',
+      6 => 'field_granularity',
+      7 => 'field_public_access_level',
+      8 => 'field_related_content',
+      9 => 'field_resources',
+      10 => 'field_spatial',
+      11 => 'field_spatial_geographical_cover',
+      12 => 'field_temporal_coverage',
+      13 => 'og_group_ref',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
@@ -80,7 +88,7 @@ function dkan_dataset_content_types_field_group_info() {
       'instance_settings' => array(
         'required_fields' => 1,
         'classes' => ' group-additional field-group-fieldset',
-        'description' => '<i class="icon-large icon-info-sign"></i>These fields are compatible with <a href="http://www.w3.org/TR/vocab-dcat/">DCAT</a>, an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web.',
+        'description' => '<i class="icon-large icon-info-sign"></i>These fields are compatible with <a href="http://www.w3.org/TR/vocab-dcat/">DCAT</a>, an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web. These fields are also compatible with the Common Core metadata schema from <a href="http://project-open-data.github.io/schema/">Project Open Data</a>.',
       ),
       'formatter' => 'open',
     ),
@@ -98,7 +106,7 @@ function dkan_dataset_content_types_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Resource',
-    'weight' => '0',
+    'weight' => '2',
     'children' => array(
       0 => 'group_link_api',
       1 => 'group_link_file',
@@ -125,7 +133,7 @@ function dkan_dataset_content_types_field_group_info() {
   $field_group->parent_name = 'group_data';
   $field_group->data = array(
     'label' => 'Link to an API',
-    'weight' => '10',
+    'weight' => '11',
     'children' => array(
       0 => 'field_link_api',
     ),
@@ -155,7 +163,7 @@ function dkan_dataset_content_types_field_group_info() {
     'label' => 'Link to a file',
     'weight' => '9',
     'children' => array(
-      0 => 'field_link_file',
+      0 => 'field_link_remote_file',
     ),
     'format_type' => 'htab',
     'format_settings' => array(
@@ -180,7 +188,7 @@ function dkan_dataset_content_types_field_group_info() {
   $field_group->mode = 'form';
   $field_group->parent_name = '';
   $field_group->data = array(
-    'label' => '',
+    'label' => 'Primary',
     'weight' => '0',
     'children' => array(
       0 => 'body',
@@ -190,7 +198,7 @@ function dkan_dataset_content_types_field_group_info() {
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
-      'label' => '',
+      'label' => 'Primary',
       'instance_settings' => array(
         'required_fields' => 1,
         'classes' => ' group-primary field-group-fieldset',
@@ -212,7 +220,7 @@ function dkan_dataset_content_types_field_group_info() {
   $field_group->parent_name = 'group_data';
   $field_group->data = array(
     'label' => 'Upload a file',
-    'weight' => '11',
+    'weight' => '12',
     'children' => array(
       0 => 'field_upload',
     ),

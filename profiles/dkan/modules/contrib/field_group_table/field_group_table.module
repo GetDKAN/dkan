@@ -112,7 +112,6 @@ function field_group_table_field_group_pre_render(&$element, $group, &$form) {
 
       foreach (element_children($element) as $k) {
         // Grab rendered version first.
-        
         $rendered = theme($element[$k]['#theme'], $element[$k]);
         // Don't render this via the standard field template.
         unset($element[$k]['#theme']);
@@ -125,7 +124,10 @@ function field_group_table_field_group_pre_render(&$element, $group, &$form) {
           '#type' => 'markup',
           '#markup' => $output,
         );
-        $element[$k] += $add;
+        // If a theme function still exists, make sure the key still exists.
+        if (isset($element[$k])) {
+          $element[$k] += $add;
+        }
       }
       break;
 

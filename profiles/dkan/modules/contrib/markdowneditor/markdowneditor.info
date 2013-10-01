@@ -6,9 +6,9 @@ dependencies[] = bueditor
 recommends[] = ajax_markup
 recommends[] = markdown
 
-; Information added by drupal.org packaging script on 2013-01-07
+; Information added by drupal.org packaging script on 2013-10-01
 version = "7.x-1.2+2-dev"
 core = "7.x"
 project = "markdowneditor"
-datestamp = "1357565144"
+datestamp = "1380585932"
 

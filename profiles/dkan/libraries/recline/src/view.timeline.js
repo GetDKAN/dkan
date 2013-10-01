@@ -4,6 +4,7 @@ this.recline = this.recline || {};
 this.recline.View = this.recline.View || {};
 
 (function($, my) {
+  "use strict";
 // turn off unnecessary logging from VMM Timeline
 if (typeof VMM !== 'undefined') {
   VMM.debug = false;
@@ -27,18 +28,21 @@ my.Timeline = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    this.el = $(this.el);
-    this.timeline = new VMM.Timeline();
+    this.timeline = new VMM.Timeline(this.elementId);
     this._timelineIsInitialized = false;
-    this.model.fields.bind('reset', function() {
+    this.listenTo(this.model.fields, 'reset', function() {
       self._setupTemporalField();
     });
-    this.model.records.bind('all', function() {
+    this.listenTo(this.model.records, 'all', function() {
       self.reloadData();
     });
     var stateData = _.extend({
         startField: null,
-        endField: null
+        endField: null,
+        // by default timelinejs (and browsers) will parse ambiguous dates in US format (mm/dd/yyyy)
+        // set to true to interpret dd/dd/dddd as dd/mm/yyyy
+        nonUSDates: false,
+        timelineJSOptions: {}
       },
       options.state
     );
@@ -49,7 +53,7 @@ my.Timeline = Backbone.View.extend({
   render: function() {
     var tmplData = {};
     var htmls = Mustache.render(this.template, tmplData);
-    this.el.html(htmls);
+    this.$el.html(htmls);
     // can only call _initTimeline once view in DOM as Timeline uses $
     // internally to look up element
     if ($(this.elementId).length > 0) {
@@ -65,15 +69,10 @@ my.Timeline = Backbone.View.extend({
   },
 
   _initTimeline: function() {
-    var $timeline = this.el.find(this.elementId);
-    // set width explicitly o/w timeline goes wider that screen for some reason
-    var width = Math.max(this.el.width(), this.el.find('.recline-timeline').width());
-    if (width) {
-      $timeline.width(width);
-    }
-    var config = {};
     var data = this._timelineJSON();
-    this.timeline.init(data, this.elementId, config);
+    var config = this.state.get("timelineJSOptions");
+    config.id = this.elementId;
+    this.timeline.init(config, data);
     this._timelineIsInitialized = true
   },
 
@@ -135,24 +134,33 @@ my.Timeline = Backbone.View.extend({
     return out;
   },
 
+  // convert dates into a format TimelineJS will handle
+  // TimelineJS does not document this at all so combo of read the code +
+  // trial and error
+  // Summary (AFAICt):
+  // Preferred: [-]yyyy[,mm,dd,hh,mm,ss]
+  // Supported: mm/dd/yyyy
   _parseDate: function(date) {
     if (!date) {
       return null;
     }
-    var out = date.trim();
+    var out = $.trim(date);
     out = out.replace(/(\d)th/g, '$1');
     out = out.replace(/(\d)st/g, '$1');
-    out = out.trim() ? moment(out) : null;
-    if (out.toDate() == 'Invalid Date') {
-      return null;
-    } else {
-      // fix for moment weirdness around date parsing and time zones
-      // moment('1914-08-01').toDate() => 1914-08-01 00:00 +01:00
-      // which in iso format (with 0 time offset) is 31 July 1914 23:00
-      // meanwhile native new Date('1914-08-01') => 1914-08-01 01:00 +01:00
-      out = out.subtract('minutes', out.zone());
-      return out.toDate();
+    out = $.trim(out);
+    if (out.match(/\d\d\d\d-\d\d-\d\d(T.*)?/)) {
+      out = out.replace(/-/g, ',').replace('T', ',').replace(':',',');
     }
+    if (out.match(/\d\d-\d\d-\d\d.*/)) {
+      out = out.replace(/-/g, '/');
+    }
+    if (this.state.get('nonUSDates')) {
+      var parts = out.match(/(\d\d)\/(\d\d)\/(\d\d.*)/);
+      if (parts) {
+        out = [parts[2], parts[1], parts[3]].join('/');
+      }
+    }
+    return out;
   },
 
   _setupTemporalField: function() {

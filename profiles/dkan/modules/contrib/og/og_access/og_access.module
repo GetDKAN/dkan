@@ -73,6 +73,12 @@ function og_access_node_access_records($node) {
 
   $wrapper = entity_metadata_wrapper('node', $node);
 
+  // Verify that a group content with visibility field can't create when there
+  // isn't an OG access field attached to the group entity.
+  if (!empty($wrapper->{OG_CONTENT_ACCESS_FIELD}) && $wrapper->{OG_CONTENT_ACCESS_FIELD}->value() == OG_CONTENT_ACCESS_DEFAULT) {
+    _og_access_verify_access_field_existence($node);
+  }
+
   if (!empty($wrapper->{OG_ACCESS_FIELD}) && $wrapper->{OG_ACCESS_FIELD}->value() && og_is_group('node', $node)) {
     // Private group.
     $gids['node'][] = $node->nid;
@@ -212,4 +218,37 @@ function og_access_og_fields_info() {
   );
 
   return $items;
+}
+
+/**
+ * Verify that the OG field access is attached to the group.
+ *
+ * @param $node
+ *  The node object.
+ *
+ * @throws OgException
+ *  When the OG access field isn't attached to the group's node but the
+ *  visibility field attached to the node.
+ */
+function _og_access_verify_access_field_existence($node) {
+  // Verify that the OG access field is attached to the group(s) content.
+  $fields_names = og_get_group_audience_fields('node', $node->type);
+
+  foreach (array_keys($fields_names) as $field_name) {
+    $field_info = field_info_field($field_name);
+    $groups_bundles = og_get_all_group_bundle();
+    $target_type = $field_info['settings']['target_type'];
+
+    foreach (array_keys($groups_bundles[$target_type]) as $bundle) {
+      $instances = field_info_instances('node', $bundle);
+      // Verify that the OG access field is attached to the group bundles.
+      if (empty($instances[OG_ACCESS_FIELD])) {
+        $params = array(
+          '@nid' => $node->nid,
+          '@bundle' => $bundle,
+        );
+        throw new OgException(format_string('Cannot set visibility of node ID @nid as the group node of type "@bundle" does not have the "Group visibility" field attached to it.', $params));
+      }
+    }
+  }
 }

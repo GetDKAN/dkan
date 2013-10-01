@@ -174,12 +174,16 @@ class RestWSException extends Exception {
   public function getHTTPError() {
     $code = $this->getCode();
     switch ($code) {
+      case 403:
+        return '403 Forbidden';
       case 404:
         return '404 Not Found';
       case 406:
         return '406 Not Acceptable';
       case 412:
         return '412 Precondition Failed';
+      case 422:
+        return '422 Unprocessable Entity';
       default:
         return '500 Internal Server Error';
     }
@@ -433,7 +437,8 @@ function restws_permission() {
  */
 function restws_module_implements_alter(&$implementations, $hook) {
   // Make sure that restws runs last.
-  if ($hook == 'menu_alter') {
+  // @todo remove entity_info_alter once https://drupal.org/node/1780646 is fixed.
+  if ($hook == 'menu_alter' || $hook == 'entity_info_alter') {
     $group = $implementations['restws'];
     unset($implementations['restws']);
     $implementations['restws'] = $group;
@@ -488,4 +493,65 @@ function restws_session_token() {
   drupal_add_http_header('Content-Type', 'text/plain');
   print drupal_get_token('restws');
   drupal_exit();
+}
+
+/**
+ * Access callback for the node entity.
+ *
+ * Replacement for entity_metadata_no_hook_node_access() because it does not
+ * work with the create operation.
+ *
+ * @todo Remove this once https://drupal.org/node/1780646 is fixed.
+ *
+ * @see restws_entity_info_alter()
+ * @see entity_metadata_no_hook_node_access()
+ */
+function restws_entity_node_access($op, $node = NULL, $account = NULL) {
+  // First deal with the case where a $node is provided.
+  if (isset($node)) {
+    // Ugly hack to handle field access, because entity_api does not distinguish
+    // between 'create' and 'update' permissions for fields. This should rather
+    // be fixed in EntityStructureWrapper::propertyAccess() (entity.wrapper.inc).
+    if ($op == 'update' && empty($node->nid)) {
+      $op = 'create';
+    }
+    if ($op == 'create') {
+      if (isset($node->type)) {
+        return node_access($op, $node->type, $account);
+      }
+      else {
+        throw new EntityMalformedException('Permission to create a node was requested but no node type was given.');
+      }
+    }
+    // If a non-default revision is given, incorporate revision access.
+    $default_revision = node_load($node->nid);
+    if ($node->vid !== $default_revision->vid) {
+      return _node_revision_access($node, $op, $account);
+    }
+    else {
+      return node_access($op, $node, $account);
+    }
+  }
+  // No node is provided. Check for access to all nodes.
+  if (user_access('bypass node access', $account)) {
+    return TRUE;
+  }
+  if (!user_access('access content', $account)) {
+    return FALSE;
+  }
+  if ($op == 'view' && node_access_view_all_nodes($account)) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ *
+ * @todo Remove this once https://drupal.org/node/1780646 is fixed.
+ */
+function restws_entity_info_alter(&$info) {
+  // In order for this to work we have to make sure we run after entity_api.
+  // @see restws_module_implements_alter().
+  $info['node']['access callback'] = 'restws_entity_node_access';
 }

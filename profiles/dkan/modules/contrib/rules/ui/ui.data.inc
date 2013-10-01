@@ -29,6 +29,31 @@ interface RulesDataDirectInputFormInterface {
 }
 
 /**
+ * Interface for data UI classes providing an options list.
+ */
+interface RulesDataInputOptionsListInterface extends RulesDataDirectInputFormInterface {
+
+  /**
+   * Returns the options list for the data type.
+   *
+   * @param RulesPlugin $element
+   *   The rules element to get the options for.
+   * @param string $name
+   *   The name of the parameter for which to get options.
+   *
+   * For retrieving information about the used data type and parameter, the
+   * helper RulesDataUI::getTypeInfo() may be used as following:
+   * @code
+   *   list($type, $parameter_info) = RulesDataUI::getTypeInfo($element, $name);
+   * @endcode
+   *
+   * @return
+   *   An array of options as used by hook_options_list().
+   */
+  public static function optionsList(RulesPlugin $element, $name);
+}
+
+/**
  * Default UI related class for data types.
  */
 class RulesDataUI {
@@ -127,7 +152,7 @@ class RulesDataUI {
   public static function renderOptionsLabel($value, $name, $info, RulesPlugin $element) {
     if (!empty($info['options list'])) {
       $element->call('loadBasicInclude');
-      $options = entity_property_options_flatten($info['options list']($element, $name));
+      $options = entity_property_options_flatten(call_user_func($info['options list'], $element, $name));
       if (!is_array($value) && isset($options[$value])) {
         $value = $options[$value];
       }
@@ -144,6 +169,17 @@ class RulesDataUI {
         '#attributes' => array('class' => array('rules-parameter-options-entry')),
       );
     }
+  }
+
+  /**
+   * Returns the data type and parameter information for the given arguments.
+   *
+   * This helper may be used by options list callbacks operation at data-type
+   * level, see RulesDataInputOptionsListInterface.
+   */
+  public static function getTypeInfo(RulesPlugin $element, $name) {
+    $parameters = $element->pluginParameterInfo();
+    return array($parameters[$name]['type'], $parameters[$name]);
   }
 }
 
@@ -472,25 +508,49 @@ class RulesDataUIEntityExportable extends RulesDataUIEntity {
 }
 
 /**
- * UI for taxonomy vocabularies.
+ * Data UI variant displaying a select list of available bundle entities.
  *
- * @see RulesTaxonomyVocabularyWrapper
+ * This is used for "bundle entities" implemented via the 'bundle of' feature
+ * of entity.module.
  */
-class RulesDataUITaxonomyVocabulary extends RulesDataUIEntity {
+class RulesDataUIBundleEntity extends RulesDataUIEntity implements RulesDataInputOptionsListInterface {
 
   public static function getDefaultMode() {
     return 'input';
   }
 
-  public static function inputForm($name, $info, $settings, RulesPlugin $element) {
-    // Add an options list of all vocabularies if there is none yet.
-    if (!isset($info['options list'])) {
-      $info['options list'] = array('RulesDataUITaxonomyVocabulary', 'optionsList');
+  /**
+   * Implements RulesDataInputOptionsListInterface::optionsList().
+   */
+  public static function optionsList(RulesPlugin $element, $name) {
+    list($data_type, $parameter_info) = RulesDataUI::getTypeInfo($element, $name);
+    $bundles = array();
+    $entity_info = entity_get_info();
+    $bundle_of_type = $entity_info[$data_type]['bundle of'];
+    if (isset($entity_info[$bundle_of_type]['bundles'])) {
+      foreach ($entity_info[$bundle_of_type]['bundles'] as $bundle_name => $bundle_info) {
+        $bundles[$bundle_name] = $bundle_info['label'];
+      }
     }
-    return parent::inputForm($name, $info, $settings, $element);
+    return $bundles;
+  }
+}
+
+/**
+ * UI for taxonomy vocabularies.
+ *
+ * @see RulesTaxonomyVocabularyWrapper
+ */
+class RulesDataUITaxonomyVocabulary extends RulesDataUIEntity implements RulesDataInputOptionsListInterface {
+
+  public static function getDefaultMode() {
+    return 'input';
   }
 
-  public static function optionsList() {
+  /**
+   * Implements RulesDataInputOptionsListInterface::optionsList().
+   */
+  public static function optionsList(RulesPlugin $element, $name) {
     $options = array();
     foreach (taxonomy_vocabulary_get_names() as $machine_name => $vocab) {
       $options[$machine_name] = $vocab->name;

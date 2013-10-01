@@ -18,7 +18,7 @@ function rules_install() {
  * Implements hook_uninstall().
  */
 function rules_uninstall() {
-  variable_del('rules_empty_sets');
+  variable_del('rules_event_whitelist');
   variable_del('rules_debug');
 }
 
@@ -86,6 +86,13 @@ function rules_schema() {
         'type' => 'varchar',
         'length' => 255,
         'not null' => FALSE,
+      ),
+      'owner' => array(
+        'description' => 'The name of the module via which the rule has been configured.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => 'rules',
       ),
       'access_exposed' => array(
         'type' => 'int',
@@ -439,4 +446,34 @@ function rules_update_7209() {
     'size' => 'tiny',
     'description' => 'Whether to use a permission to control access for using components.',
   ));
+}
+
+/**
+ * Deletes the unused rules_empty_sets variable.
+ */
+function rules_update_7210() {
+  variable_del('rules_empty_sets');
+}
+
+/**
+ * Creates the "owner" column.
+ */
+function rules_update_7211() {
+  // Create a owner column.
+  db_add_field('rules_config', 'owner', array(
+    'description' => 'The name of the module via which the rule has been configured.',
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => TRUE,
+    'default' => 'rules',
+  ));
+}
+
+/**
+ * Make sure registry gets rebuilt to avoid upgrade troubles.
+ */
+function rules_update_7212() {
+  // Make sure module information gets refreshed and registry is rebuilt.
+  drupal_static_reset('system_rebuild_module_data');
+  registry_rebuild();
 }

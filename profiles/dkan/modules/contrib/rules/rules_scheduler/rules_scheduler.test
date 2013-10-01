@@ -16,7 +16,7 @@ class RulesSchedulerTestCase extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('rules_scheduler');
+    parent::setUp('rules_scheduler', 'rules_scheduler_test');
     RulesLog::logger()->clear();
     variable_set('rules_debug_log', 1);
   }
@@ -95,6 +95,27 @@ class RulesSchedulerTestCase extends DrupalWebTestCase {
     $text2 = RulesTestCase::t('Not evaluating reaction rule %unlabeled to prevent recursion.', array('unlabeled' => $rule->name));
     $this->assertTrue((strpos($text1, $text2) !== FALSE), "Scheduled recursion prevented.");
     RulesLog::logger()->checkLog();
+  }
+
+  /**
+   * Tests that custom task handlers are properly invoked.
+   */
+  public function testCustomTaskHandler() {
+    // Set up a scheduled task that will simply write a variable when executed.
+    $variable = 'rules_schedule_task_handler_variable';
+    rules_scheduler_schedule_task(array(
+      'date' => REQUEST_TIME,
+      'identifier' => '',
+      'config' => '',
+      'data' => array('variable' => $variable),
+      'handler' => 'RulesTestTaskHandler',
+    ));
+
+    // Run cron to let the rules scheduler do its work.
+    drupal_cron_run();
+
+    // The task handler should have set the variable to TRUE now.
+    $this->assertTrue(variable_get($variable));
   }
 }
 

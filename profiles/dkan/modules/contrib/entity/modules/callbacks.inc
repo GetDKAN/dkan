@@ -681,8 +681,24 @@ function entity_metadata_user_properties_access($op, $property, $entity = NULL, 
  * Access callback for the comment entity.
  */
 function entity_metadata_comment_access($op, $entity = NULL, $account = NULL) {
-  if (isset($entity) && !isset($account) && comment_access($op, $entity)) {
-    return TRUE;
+  // When determining access to a comment, 'comment_access' does not take any
+  // access restrictions to the comment's associated node into account. If a
+  // comment has an associated node, the user must be able to view it in order
+  // to access the comment.
+  if (isset($entity->nid)) {
+    if (!entity_access('view', 'node', node_load($entity->nid), $account)) {
+      return FALSE;
+    }
+  }
+  if (isset($entity) && $op == 'update') {
+    // Because 'comment_access' only checks the current user, we need to do our
+    // own access checking if an account was specified.
+    if (!isset($account)) {
+      return comment_access('edit', $entity);
+    }
+    else {
+      return ($account->uid && $account->uid == $entity->uid && $entity->status == COMMENT_PUBLISHED && user_access('edit own comments', $account)) || user_access('administer comments', $account);
+    }
   }
   if (user_access('administer comments', $account) || user_access('access comments', $account) && $op == 'view') {
     return TRUE;

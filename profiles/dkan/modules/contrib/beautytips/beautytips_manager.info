@@ -5,9 +5,9 @@ package = User interface
 dependencies[] = beautytips
 core = 7.x
 
-; Information added by drupal.org packaging script on 2012-09-06
+; Information added by drupal.org packaging script on 2013-09-30
 version = "7.x-2.0-beta2+9-dev"
 core = "7.x"
 project = "beautytips"
-datestamp = "1346890054"
+datestamp = "1380555807"
 

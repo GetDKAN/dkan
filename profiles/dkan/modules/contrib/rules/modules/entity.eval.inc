@@ -65,7 +65,7 @@ function rules_action_entity_query_info_alter(&$element_info, RulesAbstractPlugi
     $element_info['parameter']['property']['options list'] = 'rules_action_entity_query_property_options_list';
 
     if ($element->settings['property']) {
-      $wrapper = entity_metadata_wrapper($element->settings['type']);
+      $wrapper = rules_get_entity_metadata_wrapper_all_properties($element);
       if (isset($wrapper->{$element->settings['property']}) && $property = $wrapper->{$element->settings['property']}) {
         $element_info['parameter']['value']['type'] = $property->type();
         $element_info['parameter']['value']['options list']  = $property->optionsList() ? 'rules_action_entity_query_value_options_list' : FALSE;

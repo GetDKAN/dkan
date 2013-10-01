@@ -126,7 +126,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         ),
       ),
       'type' => 'textfield_&_textfield',
-      'weight' => 17,
+      'weight' => 21,
     ),
   );
 
@@ -170,12 +170,92 @@ function dkan_dataset_content_types_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-dataset-field_contact_email'
+  $field_instances['node-dataset-field_contact_email'] = array(
+    'bundle' => 'dataset',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => 'Contact person’s email address. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 18,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_contact_email',
+    'label' => 'Contact Email',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 19,
+    ),
+  );
+
+  // Exported field_instance: 'node-dataset-field_contact_name'
+  $field_instances['node-dataset-field_contact_name'] = array(
+    'bundle' => 'dataset',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => 'Contact person’s name for the asset. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info. Name should be formatted as Last, First.',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 17,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_contact_name',
+    'label' => 'Contact Name',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 18,
+    ),
+  );
+
   // Exported field_instance: 'node-dataset-field_data_dictionary'
   $field_instances['node-dataset-field_data_dictionary'] = array(
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--data-dictionary">data dictionary</a> for more info.',
+    'description' => 'Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See Project Open Data <a href="http://project-open-data.github.io/schema/#common-core-required-if-applicable-fields">data dictionary</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -206,7 +286,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'rows' => 3,
       ),
       'type' => 'text_textarea',
-      'weight' => 16,
+      'weight' => 17,
     ),
   );
 
@@ -215,7 +295,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#property--frequency">DCAT frequency</a> for more info.',
+    'description' => 'The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency">DCAT frequency</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -245,7 +325,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 11,
+      'weight' => 13,
     ),
   );
 
@@ -254,7 +334,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="http://www.w3.org/TR/vocab-dcat/#property--granularity">DCAT Granularity</a> for more info.',
+    'description' => 'This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="http://project-open-data.github.io/schema/#expanded-fields">DCAT Granularity</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -285,7 +365,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 15,
+      'weight' => 16,
     ),
   );
 
@@ -354,6 +434,99 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
   );
 
+  // Exported field_instance: 'node-dataset-field_public_access_level'
+  $field_instances['node-dataset-field_public_access_level'] = array(
+    'bundle' => 'dataset',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => 'The degree to which this dataset <em>could</em> be made publicly-available, regardless of whether it has been made available. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 19,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_public_access_level',
+    'label' => 'Public Access Level',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
+      'type' => 'options_select',
+      'weight' => 20,
+    ),
+  );
+
+  // Exported field_instance: 'node-dataset-field_related_content'
+  $field_instances['node-dataset-field_related_content'] = array(
+    'bundle' => 'dataset',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => 'An internal link or link to an outside resource that provides additional context to the dataset.',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'link',
+        'settings' => array(),
+        'type' => 'link_default',
+        'weight' => 20,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_related_content',
+    'label' => 'Related Content',
+    'required' => 0,
+    'settings' => array(
+      'attributes' => array(
+        'class' => '',
+        'configurable_title' => 0,
+        'rel' => '',
+        'target' => 'default',
+        'title' => '',
+      ),
+      'display' => array(
+        'url_cutoff' => 80,
+      ),
+      'enable_tokens' => 1,
+      'rel_remove' => 'default',
+      'title' => 'optional',
+      'title_maxlength' => 128,
+      'title_value' => '',
+      'url' => 0,
+      'user_register_form' => FALSE,
+      'validate_url' => 1,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'link',
+      'settings' => array(),
+      'type' => 'link_field',
+      'weight' => 23,
+    ),
+  );
+
   // Exported field_instance: 'node-dataset-field_resources'
   $field_instances['node-dataset-field_resources'] = array(
     'bundle' => 'dataset',
@@ -390,7 +563,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'size' => 60,
       ),
       'type' => 'entityreference_autocomplete',
-      'weight' => 18,
+      'weight' => 22,
     ),
   );
 
@@ -399,7 +572,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--spatial-geographical-coverage">spatial/geographical coverage</a> for more info.',
+    'description' => 'Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -454,7 +627,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'toggle' => 1,
       ),
       'type' => 'leaflet_widget_widget',
-      'weight' => 12,
+      'weight' => 11,
     ),
   );
 
@@ -463,7 +636,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:catalog_spatial">spatial/geographical coverage</a> for more info.',
+    'description' => 'Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -494,7 +667,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 13,
+      'weight' => 12,
     ),
   );
 
@@ -544,7 +717,7 @@ uk-ogl|UK Open Government Licence (OGL)',
   $field_instances['node-dataset-field_temporal_coverage'] = array(
     'bundle' => 'dataset',
     'deleted' => 0,
-    'description' => 'The temporal period that the dataset covers. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--temporal-coverage">temporal coverage</a> for more info.',
+    'description' => 'The temporal period that the dataset covers. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal">temporal coverage</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -589,7 +762,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'year_range' => '-10:+10',
       ),
       'type' => 'date_popup',
-      'weight' => 14,
+      'weight' => 15,
     ),
   );
 
@@ -651,7 +824,7 @@ uk-ogl|UK Open Government Licence (OGL)',
       'module' => 'og',
       'settings' => array(),
       'type' => 'og_complex',
-      'weight' => 6,
+      'weight' => 14,
     ),
   );
 
@@ -696,7 +869,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'summary_rows' => 5,
       ),
       'type' => 'text_textarea_with_summary',
-      'weight' => 2,
+      'weight' => 4,
     ),
   );
 
@@ -734,7 +907,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 9,
+      'weight' => 8,
     ),
   );
 
@@ -776,7 +949,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'size' => 60,
       ),
       'type' => 'autocomplete_deluxe_taxonomy',
-      'weight' => 7,
+      'weight' => 5,
     ),
   );
 
@@ -836,19 +1009,18 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
   );
 
-  // Exported field_instance: 'node-resource-field_link_file'
-  $field_instances['node-resource-field_link_file'] = array(
+  // Exported field_instance: 'node-resource-field_link_remote_file'
+  $field_instances['node-resource-field_link_remote_file'] = array(
     'bundle' => 'resource',
-    'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'link',
+        'module' => 'recline',
         'settings' => array(),
-        'type' => 'link_default',
-        'weight' => 2,
+        'type' => 'recline_default_formatter',
+        'weight' => 1,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -858,34 +1030,45 @@ uk-ogl|UK Open Government Licence (OGL)',
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'field_link_file',
-    'label' => 'Link file',
+    'field_name' => 'field_link_remote_file',
+    'label' => 'Link File',
     'required' => 0,
     'settings' => array(
-      'attributes' => array(
-        'class' => '',
-        'configurable_title' => 0,
-        'rel' => '',
-        'target' => 'default',
-        'title' => '',
-      ),
-      'display' => array(
-        'url_cutoff' => 80,
-      ),
-      'enable_tokens' => 1,
-      'title' => 'none',
-      'title_maxlength' => 128,
-      'title_value' => '',
-      'url' => 0,
+      'description_field' => 0,
+      'file_directory' => '',
+      'file_extensions' => 'csv html xls json xlsx doc rdf txt jpg png gif tiff pdf odf',
+      'max_filesize' => '',
       'user_register_form' => FALSE,
-      'validate_url' => 1,
     ),
     'widget' => array(
-      'active' => 0,
-      'module' => 'link',
-      'settings' => array(),
-      'type' => 'link_field',
-      'weight' => 4,
+      'active' => 1,
+      'module' => 'file',
+      'settings' => array(
+        'filefield_sources' => array(
+          'filefield_sources' => array(
+            'attach' => 0,
+            'clipboard' => 0,
+            'reference' => 0,
+            'remote' => 0,
+            'remotefile' => 'remotefile',
+            'upload' => 0,
+          ),
+          'source_attach' => array(
+            'absolute' => 0,
+            'attach_mode' => 'move',
+            'path' => 'file_attach',
+          ),
+          'source_imce' => array(
+            'imce_mode' => 0,
+          ),
+          'source_reference' => array(
+            'autocomplete' => 0,
+          ),
+        ),
+        'progress_indicator' => 'throbber',
+      ),
+      'type' => 'file_generic',
+      'weight' => 10,
     ),
   );
 
@@ -987,14 +1170,19 @@ uk-ogl|UK Open Government Licence (OGL)',
       'module' => 'og',
       'settings' => array(),
       'type' => 'og_complex',
-      'weight' => 8,
+      'weight' => 6,
     ),
   );
 
   // Translatables
   // Included for use with string extractors like potx.
   t('Additional Info');
+  t('An internal link or link to an outside resource that provides additional context to the dataset.');
   t('Author');
+  t('Contact Email');
+  t('Contact Name');
+  t('Contact person’s email address. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.');
+  t('Contact person’s name for the asset. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info. Name should be formatted as Last, First.');
   t('Data Dictionary');
   t('Dataset');
   t('Description');
@@ -1005,20 +1193,23 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('License');
   t('License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>');
   t('Link API');
-  t('Link file');
-  t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--data-dictionary">data dictionary</a> for more info.');
+  t('Link File');
+  t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See Project Open Data <a href="http://project-open-data.github.io/schema/#common-core-required-if-applicable-fields">data dictionary</a> for more info.');
+  t('Public Access Level');
   t('Publisher');
+  t('Related Content');
   t('Resources');
   t('Spatial / Geographical Coverage Area');
   t('Spatial / Geographical Coverage Location');
-  t('Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--spatial-geographical-coverage">spatial/geographical coverage</a> for more info.');
-  t('Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:catalog_spatial">spatial/geographical coverage</a> for more info.');
+  t('Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.');
+  t('Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.');
   t('Tags');
   t('Temporal Coverage');
-  t('The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#property--frequency">DCAT frequency</a> for more info.');
-  t('The temporal period that the dataset covers. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#property--temporal-coverage">temporal coverage</a> for more info.');
+  t('The degree to which this dataset <em>could</em> be made publicly-available, regardless of whether it has been made available. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.');
+  t('The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency">DCAT frequency</a> for more info.');
+  t('The temporal period that the dataset covers. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal">temporal coverage</a> for more info.');
   t('This is the author of the dataset.');
-  t('This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="http://www.w3.org/TR/vocab-dcat/#property--granularity">DCAT Granularity</a> for more info.');
+  t('This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="http://project-open-data.github.io/schema/#expanded-fields">DCAT Granularity</a> for more info.');
   t('Upload');
 
   return $field_instances;

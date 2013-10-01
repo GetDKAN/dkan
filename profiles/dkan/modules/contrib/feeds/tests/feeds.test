@@ -18,11 +18,11 @@ class FeedsWebTestCase extends DrupalWebTestCase {
     // array of module names to setUp().
     if (isset($args[0])) {
       if (is_array($args[0])) {
-      $modules = $args[0];
-    }
+        $modules = $args[0];
+      }
       else {
-      $modules = $args;
-    }
+        $modules = $args;
+      }
     }
     else {
       $modules = array();
@@ -248,7 +248,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
 
     // If content type not given, retrieve it.
     if (!$content_type) {
-      $result= db_select('feeds_importer', 'f')
+      $result = db_select('feeds_importer', 'f')
         ->condition('f.id', $id, '=')
         ->fields('f', array('config'))
         ->execute();
@@ -260,7 +260,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
     // Create a feed node.
     $edit = array(
       'title' => $title,
-      'feeds[FeedsHTTPFetcher][source]' => $feed_url,
+      'feeds[' . $id  . '][FeedsHTTPFetcher][source]' => $feed_url,
     );
     $this->drupalPost('node/add/' . str_replace('_', '-', $content_type), $edit, 'Save');
     $this->assertText('has been created.');
@@ -296,10 +296,10 @@ class FeedsWebTestCase extends DrupalWebTestCase {
    * @param $title
    *   Optional parameter to change title of feed node.
    */
-  public function editFeedNode($nid, $feed_url, $title = '') {
+  public function editFeedNode($nid, $feed_url, $id = 'syndication', $title = '') {
     $edit = array(
       'title' => $title,
-      'feeds[FeedsHTTPFetcher][source]' => $feed_url,
+      'feeds[' . $id . '][FeedsHTTPFetcher][source]' => $feed_url,
     );
     // Check that the update was saved.
     $this->drupalPost('node/' . $nid . '/edit', $edit, 'Save');
@@ -409,7 +409,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
       $mapping = array('source' => $mapping['source'], 'target' => $mapping['target']);
 
       // Add mapping.
-      $this->drupalPost($path, $mapping, t('Add'));
+      $this->drupalPost($path, $mapping, t('Save'));
 
       // If there are other configuration options, set them.
       if ($config) {
@@ -433,8 +433,6 @@ class FeedsWebTestCase extends DrupalWebTestCase {
 
   /**
    * Remove mappings from a given configuration.
-   *
-   * This function mimicks the Javascript behavior in feeds_ui.js
    *
    * @param array $mappings
    *   An array of mapping arrays. Each mapping array must have a source and

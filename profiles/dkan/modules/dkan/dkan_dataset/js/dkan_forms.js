@@ -75,7 +75,13 @@
       if (settings.dkanPush && context.context) {
         var pos = $('#page').offset();
         $('html, body').animate({ scrollTop: pos.top}, 'fast');
-        window.history.pushState("", "", '/node/add/resource?dataset=' + settings.dkanPush.nid);
+        console.log(settings.dkanPush);
+        if (settings.dkanPush.lang) {
+          window.history.pushState("", "", '/' + settings.dkanPush.lang + '/node/add/resource?dataset=' + settings.dkanPush.nid);
+        }
+        else {
+          window.history.pushState("", "", '/node/add/resource?dataset=' + settings.dkanPush.nid);
+        }
         // Make sure this doesn't fire again.
         delete settings.dkanPush;
       }

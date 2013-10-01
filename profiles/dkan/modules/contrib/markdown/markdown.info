@@ -3,9 +3,9 @@ description = Allows content to be submitted using Markdown, a simple plain-text
 package = "Input filters"
 core = 7.x
 
-; Information added by drupal.org packaging script on 2012-11-26
-version = "7.x-1.1"
+; Information added by drupal.org packaging script on 2013-08-15
+version = "7.x-1.2"
 core = "7.x"
 project = "markdown"
-datestamp = "1353934650"
+datestamp = "1376552801"
 

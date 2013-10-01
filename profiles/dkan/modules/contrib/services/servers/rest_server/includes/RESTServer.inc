@@ -481,6 +481,11 @@ class RESTServer {
     $operation_type = NULL;
     $operation = NULL;
 
+    // For any HEAD request return response "200 OK".
+    if ($request_method == 'HEAD') {
+      return services_error('OK', 200);
+    }
+
     // We do not group "if" conditions on purpose for better readability.
 
     // 'index' method.
@@ -552,7 +557,7 @@ class RESTServer {
     }
 
     // 'actions'
-    // Forst path element should be action name
+    // First path element should be action name
     if (   $request_method == 'POST'
         && $canon_path_count >= 1
         && isset($resource['actions'][$canonical_path_array[0]])
@@ -583,7 +588,6 @@ class RESTServer {
     if (isset($resource['file']) && empty($controller['file'])) {
       $controller['file'] = $resource['file'];
     }
-
 
     return $controller;
   }
@@ -643,6 +647,9 @@ class RESTServer {
         break;
       case 406:
         $error_header_status_message = '406 Not Acceptable: ' . $error_message;
+        break;
+      case 200:
+        $error_header_status_message = '200 ' . $error_message;
         break;
       default:
         if ($error_code >= 400 && $error_code < 600) {

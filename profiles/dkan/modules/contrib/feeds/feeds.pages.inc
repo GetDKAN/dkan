@@ -64,7 +64,7 @@ function feeds_import_form($form, &$form_state, $importer_id) {
 
   $source_form = $source->configForm($form_state);
   if (!empty($source_form)) {
-    $form['feeds'][$importer_id] = array(
+    $form['feeds'] = array(
       '#type' => 'fieldset',
       '#title' => t('Import'),
       '#tree' => TRUE,
@@ -99,8 +99,8 @@ function feeds_import_form_submit($form, &$form_state) {
   // Save source and import.
   $source = feeds_source($form['#importer_id']);
 
-  if (!empty($form_state['values']['feeds'][$form['#importer_id']]) && is_array($form_state['values']['feeds'][$form['#importer_id']])) {
-    $source->addConfig($form_state['values']['feeds'][$form['#importer_id']]);
+  if (!empty($form_state['values']['feeds']) && is_array($form_state['values']['feeds'])) {
+    $source->addConfig($form_state['values']['feeds']);
     $source->save();
   }
 
@@ -208,23 +208,35 @@ function feeds_delete_tab_form($form, &$form_state, $importer_id, $node = NULL) 
 
   if ($importer_ids) {
     // Form cannot pass on source object.
-    $form['#feed_nid'] = $node->nid;
-    foreach ($importer_ids as $importer_id => $weight) {
-      $source = feeds_source($importer_id, $node->nid);
-      $form[$importer_id]['source_status'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('@source_name: Status', array('@source_name' => $source->importer->config['name'])),
-        '#tree' => TRUE,
-        '#value' => feeds_source_status($source),
-      );
+    $form['#feed_nid'] = empty($node) ? '' : $node->nid;
+    foreach ($importer_ids as $import_id => $weight) {
+      $source = empty($node) ? $source : feeds_source($import_id, $node->nid);
+      if (!empty($node)) {
+        $form[$import_id]['source_status'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('@source_name: Status', array('@source_name' => $source->importer->config['name'])),
+          '#tree' => TRUE,
+          '#value' => feeds_source_status($source),
+        );
+      }
+      else {
+        $form['source_status'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('@source_name: Status', array('@source_name' => $source->importer->config['name'])),
+          '#tree' => TRUE,
+          '#value' => feeds_source_status($source),
+        );
+      }
       $progress = $source->progressClearing();
       $total_progress += $progress;
     }
 
-    if (count($importer_ids) == 1) {
+    // Set importer ids. If this is a stand-alone form then importer_id will be
+    // passed.
+    if ($importer_id) {
       $form['importer_ids'] = array(
         '#type' => 'value',
-        '#value' => array($importer_id),
+        '#value' => array($importer_id => $importer_id),
       );
     }
     else {

@@ -70,7 +70,7 @@ function dkan_sitewide_block_view($delta = '') {
       break;
 
     case 'dkan_sitewide_user_menu':
-      $block['subject'] = t('');
+      $block['subject'] = '';
       $block['content'] = dkan_sitewide_user_menu_block();
       break;
 
@@ -80,17 +80,23 @@ function dkan_sitewide_block_view($delta = '') {
 
 /**
  * Creates "Additional" block for resources.
+ *
  * TODO: Make this a faux field as well attached to resource node.
  */
-function dkan_sitewide_resource_additional_block($nid  = '') {
+function dkan_sitewide_resource_additional_block($nid = '') {
   $node = $nid ? node_load($nid) : menu_get_object();
   $file_info = array();
-  if (isset($node->field_upload[$node->language]) && $file = $node->field_upload[$node->language][0]) {
+  $lang = $node->language ? $node->language : 'und';
+  $link = isset($node->field_link_remote_file[$lang][0]) ? $node->field_link_remote_file[$lang][0] : NULL;
+  $upload = isset($node->field_upload[$lang][0]) ? $node->field_upload[$lang][0] : NULL;
+
+  if (($file = $link) || ($file = $upload)) {
     $file_info[] = array(t('mimetype'), $file['filemime']);
     $file_info[] = array(t('filesize'), $file['filesize']);
     $file_info[] = array(t('resource type'), 'file upload');
     $file_info[] = array(t('timestamp'), date('M d, Y', $file['timestamp']));
-    return theme('table', array('rows' => $file_info, 'header' => array(t('Field'), t('Value'))));
+    return theme('table',
+      array('rows' => $file_info, 'header' => array(t('Field'), t('Value'))));
   }
 
 }

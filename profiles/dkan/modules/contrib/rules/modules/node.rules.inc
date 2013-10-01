@@ -8,6 +8,18 @@
  */
 
 /**
+ * Implements hook_rules_category_info() on behalf of the node module.
+ */
+function rules_node_category_info() {
+  return array(
+    'node' => array(
+      'label' => t('Node'),
+      'equals group' => t('Node'),
+    ),
+  );
+}
+
+/**
  * Implements hook_rules_file_info() on behalf of the node module.
  */
 function rules_node_file_info() {
@@ -21,25 +33,28 @@ function rules_node_event_info() {
   $items = array(
     'node_insert' => array(
       'label' => t('After saving new content'),
-      'group' => t('Node'),
+      'category' => 'node',
       'variables' => rules_events_node_variables(t('created content')),
       'access callback' => 'rules_node_integration_access',
+      'class' => 'RulesNodeEventHandler',
     ),
     'node_update' => array(
       'label' => t('After updating existing content'),
-      'group' => t('Node'),
+      'category' => 'node',
       'variables' => rules_events_node_variables(t('updated content'), TRUE),
       'access callback' => 'rules_node_integration_access',
+      'class' => 'RulesNodeEventHandler',
     ),
     'node_presave' => array(
       'label' => t('Before saving content'),
-      'group' => t('Node'),
+      'category' => 'node',
       'variables' => rules_events_node_variables(t('saved content'), TRUE),
       'access callback' => 'rules_node_integration_access',
+      'class' => 'RulesNodeEventHandler',
     ),
     'node_view' => array(
       'label' => t('Content is viewed'),
-      'group' => t('Node'),
+      'category' => 'node',
       'help' => t("Note that if drupal's page cache is enabled, this event won't be generated for pages served from cache."),
       'variables' => rules_events_node_variables(t('viewed content')) + array(
         'view_mode' => array(
@@ -51,12 +66,14 @@ function rules_node_event_info() {
         ),
       ),
       'access callback' => 'rules_node_integration_access',
+      'class' => 'RulesNodeEventHandler',
     ),
     'node_delete' => array(
       'label' => t('After deleting content'),
-      'group' => t('Node'),
+      'category' => 'node',
       'variables' => rules_events_node_variables(t('deleted content')),
       'access callback' => 'rules_node_integration_access',
+      'class' => 'RulesNodeEventHandler',
     ),
   );
   // Specify that on presave the node is saved anyway.
@@ -84,51 +101,6 @@ function rules_events_node_variables($node_label, $update = FALSE) {
 }
 
 /**
- * Implements hook_rules_condition_info() on behalf of the node module.
- */
-function rules_node_condition_info() {
-  $defaults = array(
-    'parameter' => array(
-      'node' => array('type' => 'node', 'label' => t('Content')),
-    ),
-    'group' => t('Node'),
-    'access callback' => 'rules_node_integration_access',
-  );
-  $items['node_is_of_type'] = $defaults + array(
-    'label' => t('Content is of type'),
-    'help' => t('Evaluates to TRUE if the given content is of one of the selected content types.'),
-    'base' => 'rules_condition_node_is_of_type',
-  );
-  $items['node_is_of_type']['parameter']['type'] = array(
-    'type' => 'list<text>',
-    'label' => t('Content types'),
-    'options list' => 'node_type_get_names',
-    'description' => t('The content type(s) to check for.'),
-    'restriction' => 'input',
-  );
-  $items['node_is_published'] = $defaults + array(
-    'label' => t('Content is published'),
-    'base' => 'rules_condition_node_is_published',
-  );
-  $items['node_is_sticky'] = $defaults + array(
-    'label' => t('Content is sticky'),
-    'base' => 'rules_condition_node_is_sticky',
-  );
-  $items['node_is_promoted'] = $defaults + array(
-    'label' => t('Content is promoted to frontpage'),
-    'base' => 'rules_condition_node_is_promoted',
-  );
-  return $items;
-}
-
-/**
- * Provides the content type of a node as asserted metadata.
- */
-function rules_condition_node_is_of_type_assertions($element) {
-  return array('node' => array('bundle' => $element->settings['type']));
-}
-
-/**
  * Implements hook_rules_action_info() on behalf of the node module.
  */
 function rules_node_action_info() {
@@ -136,7 +108,7 @@ function rules_node_action_info() {
     'parameter' => array(
       'node' => array('type' => 'node', 'label' => t('Content'), 'save' => TRUE),
     ),
-    'group' => t('Node'),
+    'category' => 'node',
     'access callback' => 'rules_node_admin_access',
   );
   // Add support for hand-picked core actions.
@@ -166,6 +138,22 @@ function rules_node_integration_access($type, $name) {
  */
 function rules_node_admin_access() {
   return user_access('administer nodes');
+}
+
+
+/**
+ * Event handler support node bundle event settings.
+ */
+class RulesNodeEventHandler extends RulesEventHandlerEntityBundle {
+
+  /**
+   * Returns the label to use for the bundle property.
+   *
+   * @return string
+   */
+  protected function getBundlePropertyLabel() {
+    return t('type');
+  }
 }
 
 /**

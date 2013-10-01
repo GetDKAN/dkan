@@ -52,7 +52,7 @@ class RulesUIController {
       'title callback' => 'rules_get_title',
       'title arguments' => array('Adding event to !plugin "!label"', $base_count + 1),
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('rules_ui_add_event', $base_count + 1, $base_path),
+      'page arguments' => array('rules_ui_add_event_page', $base_count + 1, $base_path),
       'access callback' => 'rules_config_access',
       'access arguments' => array('update', $base_count + 1),
       'load arguments' => array($base_count + 1),
@@ -192,6 +192,10 @@ class RulesUIController {
       'show events' => isset($conditions['plugin']) && $conditions['plugin'] == 'reaction rule',
       'show execution op' => !(isset($conditions['plugin']) && $conditions['plugin'] == 'reaction rule'),
     );
+    // By default show only configurations owned by rules.
+    $conditions += array(
+      'owner' => 'rules',
+    );
     if (!empty($options['base path'])) {
       RulesPluginUI::$basePath = $options['base path'];
     }
@@ -257,8 +261,8 @@ class RulesUIController {
       $events = array();
       if ($config instanceof RulesTriggerableInterface) {
         foreach ($config->events() as $event_name) {
-          $this->event_info += array($event_name => array('label' => t('Unknown event "!event_name"', array('!event_name' => $event_name))));
-          $events[] = check_plain($this->event_info[$event_name]['label']);
+          $event_handler = rules_get_event_handler($event_name, $config->getEventSettings($event_name));
+          $events[] = $event_handler->summary();
         }
       }
       $row[] = implode(", ", $events);
@@ -276,11 +280,15 @@ class RulesUIController {
     // Add operations depending on the options and the exportable status.
     if (!$config->hasStatus(ENTITY_FIXED)) {
       $row[] =  l(t('edit'), RulesPluginUI::path($name), array('attributes' => array('class' => array('edit', 'action'))));
-      $row[] =  l(t('translate'), RulesPluginUI::path($name, 'translate'), array('attributes' => array('class' => array('translate', 'action'))));
+      if (module_exists('rules_i18n')) {
+        $row[] =  l(t('translate'), RulesPluginUI::path($name, 'translate'), array('attributes' => array('class' => array('translate', 'action'))));
+      }
     }
     else {
       $row[] = '';
-      $row[] = '';
+      if (module_exists('rules_i18n')) {
+        $row[] = '';
+      }
     }
 
     if (!$options['hide status op']) {

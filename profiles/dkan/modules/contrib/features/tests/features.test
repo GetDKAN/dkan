@@ -45,7 +45,7 @@ class FeaturesUserTestCase extends DrupalWebTestCase {
     module_load_include('inc', 'features', 'features.export');
 
     $components = array_filter(array(
-      'field' => 'field',
+      'field_instance' => 'field',
       'filter' => 'filter',
       'image' => 'image',
       'node' => 'node',
@@ -85,7 +85,7 @@ class FeaturesUserTestCase extends DrupalWebTestCase {
     }
   }
 
-  protected function _test_field($op = 'load') {
+  protected function _test_field_instance($op = 'load') {
     switch ($op) {
       case 'load':
         return field_info_instance('node', 'field_features_test', 'features_test');

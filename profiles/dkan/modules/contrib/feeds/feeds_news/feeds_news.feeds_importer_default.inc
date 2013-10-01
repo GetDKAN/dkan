@@ -106,7 +106,7 @@ function feeds_news_feeds_importer_default() {
           ),
           1 => array(
             'source' => 'xmlurl',
-            'target' => 'feeds_source',
+            'target' => 'feeds_source_feed',
             'unique' => 1,
           ),
         ),

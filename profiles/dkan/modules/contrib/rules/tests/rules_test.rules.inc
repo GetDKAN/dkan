@@ -4,6 +4,15 @@
  * @file Includes any rules integration provided by the module.
  */
 
+/**
+ * Implements hook_rules_event_info().
+ */
+function rules_test_rules_event_info() {
+  return array('rules_test_event' => array(
+    'label' => t('Test event'),
+    'class' => 'RulesTestEventHandler',
+  ));
+}
 
 /**
  * Implements hook_rules_file_info().
@@ -204,6 +213,36 @@ function rules_test_action() {
 }
 
 /**
+ * Action for testing writing class-based actions.
+ */
+class RulesTestClassAction extends RulesActionHandlerBase {
+
+  /**
+   * Defines the action.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'rules_test_class_action',
+      'label' => t('Test class based action'),
+      'group' => t('Node'),
+      'parameter' => array(
+        'node' => array(
+          'type' => 'node',
+          'label' => t('Node'),
+        ),
+      ),
+    );
+  }
+
+  /**
+   * Executes the action.
+   */
+  public function execute($node) {
+    rules_log('Action called with node ' . $node->nid);
+  }
+}
+
+/**
  * Implements hook_rules_data_info().
  */
 function rules_test_rules_data_info() {
@@ -241,4 +280,66 @@ class RulesTestTypeWrapper extends RulesIdentifiableDataWrapper implements Rules
   public function save() {
     node_save($this->value());
   }
+}
+
+/**
+ * Implements hook_rules_plugin_info().
+ */
+function rules_test_rules_plugin_info() {
+  return array(
+    'rules test container' => array(
+      'label' => t('Test container'),
+      'class' => 'RulesTestContainer',
+      'embeddable' => 'RulesActionContainer',
+    ),
+  );
+}
+
+/**
+ * Test container plugin.
+ */
+class RulesTestContainer extends RulesContainerPlugin {
+  protected $itemName = 'rules test container';
+
+  /**
+   * Evaluate the element on a given rules evaluation state.
+   */
+  public function evaluate(RulesState $state) {
+    // Do nothing.
+  }
+}
+
+/**
+ * Test event handler class.
+ */
+class RulesTestEventHandler extends RulesEventDefaultHandler implements RulesEventDispatcherInterface {
+
+  /**
+   * Name of the variable in which to store the state of the event handler.
+   *
+   * @var string
+   */
+  protected $variableName = 'rules_test_event_handler_watch';
+
+  /**
+   * Implements RulesEventDispatcherInterface::startWatching().
+   */
+  public function startWatching() {
+    variable_set($this->variableName, TRUE);
+  }
+
+  /**
+   * Implements RulesEventDispatcherInterface::stopWatching().
+   */
+  public function stopWatching() {
+    variable_set($this->variableName, FALSE);
+  }
+
+  /**
+   * Implements RulesEventDispatcherInterface::isWatching().
+   */
+  public function isWatching() {
+    return (bool) variable_get($this->variableName);
+  }
+
 }

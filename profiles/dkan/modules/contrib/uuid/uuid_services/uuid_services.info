@@ -7,9 +7,9 @@ dependencies[] = services
 dependencies[] = uuid
 dependencies[] = entity
 
-; Information added by drupal.org packaging script on 2013-07-07
-version = "7.x-1.0-alpha4+2-dev"
+; Information added by drupal.org packaging script on 2013-07-12
+version = "7.x-1.0-alpha5"
 core = "7.x"
 project = "uuid"
-datestamp = "1373208453"
+datestamp = "1373620283"
 

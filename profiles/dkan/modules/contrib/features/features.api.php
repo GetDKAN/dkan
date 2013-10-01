@@ -61,7 +61,7 @@ function hook_features_api() {
 }
 
 /**
- * Component hook. The hook should be implemented using the name ot the
+ * Component hook. The hook should be implemented using the name of the
  * component, not the module, eg. [component]_features_export() rather than
  * [module]_features_export().
  *
@@ -118,7 +118,7 @@ function hook_features_export($data, &$export, $module_name) {
 }
 
 /**
- * Component hook. The hook should be implemented using the name ot the
+ * Component hook. The hook should be implemented using the name of the
  * component, not the module, eg. [component]_features_export() rather than
  * [module]_features_export().
  *
@@ -137,7 +137,7 @@ function hook_features_export_options() {
 }
 
 /**
- * Component hook. The hook should be implemented using the name ot the
+ * Component hook. The hook should be implemented using the name of the
  * component, not the module, eg. [component]_features_export() rather than
  * [module]_features_export().
  *
@@ -171,7 +171,7 @@ function hook_features_export_render($module_name, $data, $export = NULL) {
 }
 
 /**
- * Component hook. The hook should be implemented using the name ot the
+ * Component hook. The hook should be implemented using the name of the
  * component, not the module, eg. [component]_features_export() rather than
  * [module]_features_export().
  *
@@ -194,7 +194,7 @@ function hook_features_revert($module_name) {
 }
 
 /**
- * Component hook. The hook should be implemented using the name ot the
+ * Component hook. The hook should be implemented using the name of the
  * component, not the module, eg. [component]_features_export() rather than
  * [module]_features_export().
  *

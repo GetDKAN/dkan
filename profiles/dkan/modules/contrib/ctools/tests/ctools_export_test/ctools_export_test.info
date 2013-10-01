@@ -7,9 +7,9 @@ hidden = TRUE
 
 files[] = ctools_export.test
 
-; Information added by drupal.org packaging script on 2013-07-05
-version = "7.x-1.3+4-dev"
+; Information added by drupal.org packaging script on 2013-04-03
+version = "7.x-1.3"
 core = "7.x"
 project = "ctools"
-datestamp = "1373028420"
+datestamp = "1365013512"
 

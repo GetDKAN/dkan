@@ -10,7 +10,13 @@
  * Implements hook_uninstall().
  */
 function og_ui_uninstall() {
-  variable_del('og_ui_admin_people_view');
+  $vars = array(
+    'og_ui_admin_people_view',
+    'og_ui_deny_subscribe_without_approval',
+  );
+  foreach ($vars as $var) {
+    variable_del($var);
+  }
 }
 
 /**

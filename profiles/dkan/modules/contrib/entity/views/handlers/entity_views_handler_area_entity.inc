@@ -10,6 +10,7 @@ class entity_views_handler_area_entity extends views_handler_area {
     $options['entity_type'] = array('default' => 'node');
     $options['entity_id'] = array('default' => '');
     $options['view_mode'] = array('default' => 'full');
+    $options['bypass_access'] = array('default' => FALSE);
     return $options;
   }
 
@@ -73,6 +74,12 @@ class entity_views_handler_area_entity extends views_handler_area {
         );
       }
     }
+    $form['bypass_access'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Bypass access checks'),
+      '#description' => t('If enabled, access permissions for rendering the entity are not checked.'),
+      '#default_value' => !empty($this->options['bypass_access']),
+    );
     return $form;
   }
 
@@ -99,10 +106,12 @@ class entity_views_handler_area_entity extends views_handler_area {
    */
   public function render_entity($entity_type, $entity_id, $view_mode) {
     if (!empty($entity_type) && !empty($entity_id) && !empty($view_mode)) {
-      $entities = entity_load($entity_type, array($entity_id));
-      $render = entity_view($entity_type, $entities, $view_mode);
-      $render_entity = reset($render);
-      return drupal_render($render_entity);
+      $entity = entity_load_single($entity_type, $entity_id);
+      if (!empty($this->options['bypass_access']) || entity_access('view', $entity_type, $entity)) {
+        $render = entity_view($entity_type, array($entity), $view_mode);
+        $render_entity = reset($render);
+        return drupal_render($render_entity);
+      }
     }
     else {
       return '';

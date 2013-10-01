@@ -157,6 +157,7 @@ class FeedsSchedulerTestCase extends FeedsWebTestCase {
     $this->drupalLogout();
     sleep(1);
     $this->cronRun();
+    sleep(1);
     // There should be a feeds_importer_expire job now, and all last fields should be reset.
     $this->assertEqual(1, db_query("SELECT COUNT(*) FROM {job_schedule} WHERE type = 'syndication' AND name = 'feeds_importer_expire' AND last <> 0 AND scheduled = 0 AND period = 3600")->fetchField());
     $new_max_last = db_query("SELECT MAX(last) FROM {job_schedule} WHERE type = 'syndication' AND name = 'feeds_source_import' AND period = 0")->fetchField();

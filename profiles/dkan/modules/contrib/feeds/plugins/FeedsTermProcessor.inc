@@ -22,6 +22,7 @@ class FeedsTermProcessor extends FeedsProcessor {
   protected function entityInfo() {
     $info = parent::entityInfo();
     $info['label plural'] = t('Terms');
+    $info['bundle name'] = t('Vocabulary');
     return $info;
   }
 
@@ -41,7 +42,7 @@ class FeedsTermProcessor extends FeedsProcessor {
    * Validates a term.
    */
   protected function entityValidate($term) {
-    if (empty($term->name)) {
+    if (drupal_strlen($term->name) == 0) {
       throw new FeedsValidationException(t('Term name missing.'));
     }
   }
@@ -80,15 +81,6 @@ class FeedsTermProcessor extends FeedsProcessor {
     return array(
       'vocabulary' => 0,
     ) + parent::configDefaults();
-  }
-
-  /**
-   * Override parent::configForm().
-   */
-  public function configForm(&$form_state) {
-    $form = parent::configForm($form_state);
-    $form['bundle']['#title'] = t('Vocabulary');
-    return $form;
   }
 
   /**

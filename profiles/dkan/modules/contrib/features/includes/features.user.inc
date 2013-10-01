@@ -29,8 +29,12 @@ function user_permission_features_export($data, &$export, $module_name = '') {
   // Ensure the modules that provide the given permissions are included as dependencies.
   $map = user_permission_get_modules();
   foreach ($data as $perm) {
-    if (isset($map[$perm])) {
-      $perm_module = $map[$perm];
+    $perm_name = $perm;
+    // Export vocabulary permissions using the machine name, instead of
+    // vocabulary id.
+    _user_features_change_term_permission($perm_name, 'machine_name');
+    if (isset($map[$perm_name])) {
+      $perm_module = $map[$perm_name];
       $export['dependencies'][$perm_module] = $perm_module;
       $export['features']['user_permission'][$perm] = $perm;
     }
@@ -54,6 +58,9 @@ function user_permission_features_export_options() {
   foreach ($modules as $display_name => $module) {
     if ($permissions = module_invoke($module, 'permission')) {
       foreach ($permissions as $perm => $perm_item) {
+        // Export vocabulary permissions using the machine name, instead of
+        // vocabulary id.
+        _user_features_change_term_permission($perm);
         $options[$perm] = strip_tags("{$display_name}: {$perm_item['title']}");
       }
     }
@@ -78,7 +85,11 @@ function user_permission_features_export_render($module, $data) {
 
   foreach ($data as $perm_name) {
     $permission = array();
-    $permission['name'] = $perm_name;
+    // Export vocabulary permissions using the machine name, instead of
+    // vocabulary id.
+    $perm = $perm_name;
+    _user_features_change_term_permission($perm_name, 'machine_name');
+    $permission['name'] = $perm;
     if (!empty($permissions[$perm_name])) {
       sort($permissions[$perm_name]);
       $permission['roles'] = drupal_map_assoc($permissions[$perm_name]);
@@ -89,9 +100,9 @@ function user_permission_features_export_render($module, $data) {
     if (isset($perm_modules[$perm_name])) {
       $permission['module'] = $perm_modules[$perm_name];
     }
-    $perm_identifier = features_var_export($perm_name);
+    $perm_identifier = features_var_export($perm);
     $perm_export = features_var_export($permission, '  ');
-    $code[] = "  // Exported permission: {$perm_name}.";
+    $code[] = "  // Exported permission: {$perm_identifier}.";
     $code[] = "  \$permissions[{$perm_identifier}] = {$perm_export};";
     $code[] = "";
   }
@@ -122,10 +133,20 @@ function user_permission_features_rebuild($module) {
     // or via drush.
     node_types_rebuild();
 
+    $modules = user_permission_get_modules();
     $roles = _user_features_get_roles();
     $permissions_by_role = _user_features_get_permissions(FALSE);
     foreach ($defaults as $permission) {
       $perm = $permission['name'];
+      _user_features_change_term_permission($perm, 'machine_name');
+      if (empty($modules[$perm])) {
+        $args = array('!name' => $perm, '!module' => $module,);
+        $msg = t('Warning in features rebuild of !module. No module defines permission "!name".', $args);
+        drupal_set_message($msg, 'warning');
+        continue;
+      }
+      // Export vocabulary permissions using the machine name, instead of
+      // vocabulary id.
       foreach ($roles as $role) {
         if (in_array($role, $permission['roles'])) {
           $permissions_by_role[$role][$perm] = TRUE;

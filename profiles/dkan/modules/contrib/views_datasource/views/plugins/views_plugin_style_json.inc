@@ -100,6 +100,7 @@ class views_plugin_style_json extends views_plugin_style {
       '#options' => array(
         'default' => t('Default: application/json'),
         'text/json' => t('text/json'),
+        'application/javascript' => t('application/javascript'),
       ),
       '#default_value' => $this->options['content_type'],
       '#description' => t('The Content-Type header that will be sent with the JSON output.')

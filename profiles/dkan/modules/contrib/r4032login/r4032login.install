@@ -25,6 +25,7 @@ function r4032login_disable() {
 function r4032login_uninstall() {
   variable_del('r4032login_display_denied_message');
   variable_del('r4032login_access_denied_message');
+  variable_del('r4032login_user_login_path');
 }
 
 /**

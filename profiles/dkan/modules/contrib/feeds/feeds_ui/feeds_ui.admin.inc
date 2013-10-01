@@ -104,7 +104,6 @@ function feeds_ui_overview_form($form, &$form_status) {
     $importer_form[$importer->id] = array(
       '#type' => 'checkbox',
       '#default_value' => !$importer->disabled,
-      '#attributes' => array('class' => array('feeds-ui-trigger-submit')),
     );
 
     if ($importer->disabled) {
@@ -117,7 +116,6 @@ function feeds_ui_overview_form($form, &$form_status) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
-    '#attributes' => array('class' => array('feeds-ui-hidden-submit')),
   );
   return $form;
 }
@@ -145,7 +143,6 @@ function feeds_ui_overview_form_submit($form, &$form_state) {
  *   of $from_importer.
  */
 function feeds_ui_create_form($form, &$form_state, $from_importer = NULL) {
-  $form['#attached']['js'][] = drupal_get_path('module', 'feeds_ui') . '/feeds_ui.js';
   $form['#from_importer'] = $from_importer;
   $form['name'] = array(
     '#type' => 'textfield',
@@ -422,7 +419,6 @@ function feeds_ui_edit_page($importer, $active = 'help', $plugin_key = '') {
 function feeds_ui_plugin_form($form, &$form_state, $importer, $type) {
   $plugins = FeedsPlugin::byType($type);
 
-  $form = array();
   $form['#importer'] = $importer->id;
   $form['#plugin_type'] = $type;
 
@@ -442,7 +438,6 @@ function feeds_ui_plugin_form($form, &$form_state, $importer, $type) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
-    '#attributes' => array('class' => array('feeds-ui-hidden-submit')),
   );
   return $form;
 }
@@ -463,7 +458,6 @@ function feeds_ui_plugin_form_submit($form, &$form_state) {
  */
 function theme_feeds_ui_plugin_form($variables) {
   $form = $variables['form'];
-  drupal_add_js(drupal_get_path('module', 'feeds_ui') . '/feeds_ui.js');
   $output = '';
 
   foreach (element_children($form['plugin_key']) as $key) {
@@ -493,9 +487,6 @@ function theme_feeds_ui_plugin_form($variables) {
  *   FeedsProcessor, a flag can tell whether mapping is supported or not.
  */
 function feeds_ui_mapping_form($form, &$form_state, $importer) {
-  drupal_add_js(drupal_get_path('module', 'feeds_ui') . '/feeds_ui.js');
-
-  $form = array();
   $form['#importer'] = $importer->id;
   $form['#mappings'] = $mappings = $importer->processor->getMappings();
   $form['help']['#markup'] = feeds_ui_mapping_help();
@@ -570,31 +561,36 @@ function feeds_ui_mapping_form($form, &$form_state, $importer) {
   if (isset($source_options)) {
     $form['source'] = array(
       '#type' => 'select',
-      '#options' => array('' => t('Select a source')) + $source_options,
+      '#title' => t('Source'),
+      '#title_display' => 'invisible',
+      '#options' => $source_options,
+      '#empty_option' => t('- Select a source -'),
+      '#description' => t('An element from the feed.'),
     );
   }
   else {
     $form['source'] = array(
       '#type' => 'textfield',
+      '#title' => t('Source'),
+      '#title_display' => 'invisible',
       '#size' => 20,
-      '#default_value' => t('Name of source field'),
-      '#attributes' => array('class' => array('hide-text-on-focus')),
+      '#default_value' => '',
+      '#description' => t('The name of source field.'),
     );
   }
   $form['target'] = array(
     '#type' => 'select',
-    '#options' => array('' => t('Select a target')) + $target_options,
+    '#title' => t('Target'),
+    '#title_display' => 'invisible',
+    '#options' => $target_options,
+    '#empty_option' => t('- Select a target -'),
+    '#description' => t('The field that stores the data.'),
   );
-  $form['add'] = array(
-    '#type' => 'submit',
-    '#value' => t('Add'),
-    '#submit' => array('feeds_ui_mapping_form_add_submit'),
-    '#validate' => array('feeds_ui_mapping_form_add_validate'),
-  );
-  $form['save'] = array(
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
-    '#attributes' => array('class' => array('feeds-ui-hidden-submit')),
   );
   return $form;
 }
@@ -719,40 +715,36 @@ function feeds_ui_mapping_settings_form_callback($form, $form_state) {
 }
 
 /**
- * Validation for source and target selection.
+ * Validation handler for feeds_ui_mapping_form().
  */
-function feeds_ui_mapping_form_add_validate($form, &$form_state) {
-  if ($form_state['values']['source'] == '') {
-    form_set_error('source', t('You must select a mapping source.'));
-  }
-  if ($form_state['values']['target'] == '') {
-    form_set_error('target', t('You must select a mapping target.'));
+function feeds_ui_mapping_form_validate($form, &$form_state) {
+  if (!strlen($form_state['values']['source']) xor !strlen($form_state['values']['target'])) {
+
+    // Check triggering_element here so we can react differently for ajax
+    // submissions.
+    switch ($form_state['triggering_element']['#name']) {
+
+      // Regular form submission.
+      case 'op':
+        if (!strlen($form_state['values']['source'])) {
+          form_error($form['source'], t('You must select a mapping source.'));
+        }
+        else {
+          form_error($form['target'], t('You must select a mapping target.'));
+        }
+        break;
+
+      // Be more relaxed on ajax submission.
+      default:
+        form_set_value($form['source'], '', $form_state);
+        form_set_value($form['target'], '', $form_state);
+        break;
+    }
   }
 }
 
 /**
- * Submit handler for add button on feeds_ui_mapping_form().
- */
-function feeds_ui_mapping_form_add_submit($form, &$form_state) {
-  $importer = feeds_importer($form['#importer']);
-  try {
-    $mappings = $form['#mappings'];
-    $mappings[] = array(
-      'source' => $form_state['values']['source'],
-      'target' => $form_state['values']['target'],
-      'unique' => FALSE,
-    );
-    $importer->processor->addConfig(array('mappings' => $mappings));
-    $importer->save();
-    drupal_set_message(t('Mapping has been added.'));
-  }
-  catch (Exception $e) {
-    drupal_set_message($e->getMessage(), 'error');
-  }
-}
-
-/**
- * Submit handler for save button on feeds_ui_mapping_form().
+ * Submission handler for feeds_ui_mapping_form().
  */
 function feeds_ui_mapping_form_submit($form, &$form_state) {
   $importer = feeds_importer($form['#importer']);
@@ -785,6 +777,7 @@ function feeds_ui_mapping_form_submit($form, &$form_state) {
     foreach ($remove_flags as $k) {
       unset($mappings[$k]);
       unset($form_state['values']['mapping_weight'][$k]);
+      drupal_set_message(t('Mapping has been removed.'), 'status', FALSE);
     }
   }
 
@@ -796,6 +789,23 @@ function feeds_ui_mapping_form_submit($form, &$form_state) {
   }
 
   $processor->addConfig(array('mappings' => $mappings));
+
+  if (strlen($form_state['values']['source']) && strlen($form_state['values']['target'])) {
+    try {
+      $mappings = $processor->getMappings();
+      $mappings[] = array(
+        'source' => $form_state['values']['source'],
+        'target' => $form_state['values']['target'],
+        'unique' => FALSE,
+      );
+      $processor->addConfig(array('mappings' => $mappings));
+      drupal_set_message(t('Mapping has been added.'));
+    }
+    catch (Exception $e) {
+      drupal_set_message($e->getMessage(), 'error');
+    }
+  }
+
   $importer->save();
   drupal_set_message(t('Your changes have been saved.'));
 }
@@ -860,7 +870,6 @@ function feeds_ui_mapping_settings_optional_unique_form($mapping, $target, $form
  */
 function theme_feeds_ui_overview_form($variables) {
   $form = $variables['form'];
-  drupal_add_js(drupal_get_path('module', 'feeds_ui') . '/feeds_ui.js');
   drupal_add_css(drupal_get_path('module', 'feeds_ui') . '/feeds_ui.css');
 
   // Iterate through all importers and build a table.
@@ -1139,9 +1148,17 @@ function feeds_ui_importer_import_validate($form, &$form_state) {
       '%api_version' => feeds_api_version())));
   }
 
-  $existing = feeds_importer($feeds_importer->id);
-  if ($existing && !$form_state['values']['id_override'] && $existing->export_type != EXPORT_IN_CODE) {
-    return form_error($form['id'], t('Feeds importer already exists with that id.'));
+  // Change to user-supplied id.
+  if ($form_state['values']['id']) {
+    $feeds_importer->id = $form_state['values']['id'];
+  }
+
+  $exists = feeds_ui_importer_machine_name_exists($feeds_importer->id);
+
+  if ($exists && !$form_state['values']['id_override']) {
+    if (feeds_importer($feeds_importer->id)->export_type != EXPORT_IN_CODE) {
+      return form_error($form['id'], t('Feeds importer already exists with that id.'));
+    }
   }
 
   if (!$form_state['values']['bypass_validation']) {
@@ -1163,12 +1180,14 @@ function feeds_ui_importer_import_validate($form, &$form_state) {
  */
 function feeds_ui_importer_import_submit($form, &$form_state) {
   $importer = $form_state['importer'];
-  $importer = feeds_importer($importer->id);
-  $importer->setConfig($importer->config);
+
+  // Create a copy of the importer to preserve config.
+  $save = feeds_importer($importer->id);
+  $save->setConfig($importer->config);
   foreach (array('fetcher', 'parser', 'processor') as $type) {
-    $importer->$type->setConfig($importer->config[$type]['config']);
+    $save->$type->setConfig($importer->config[$type]['config']);
   }
-  $importer->save();
+  $save->save();
 
   drupal_set_message(t('Successfully imported the %id feeds importer.', array('%id' => $importer->id)));
   $form_state['redirect'] = 'admin/structure/feeds';

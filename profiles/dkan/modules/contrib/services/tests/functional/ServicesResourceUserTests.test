@@ -253,6 +253,23 @@ class ServicesResourceUsertests extends ServicesWebtestCase {
   }
 
   /**
+   * Test delete system user method.
+   */
+  function testDeleteSystemUser() {
+    // Delete user 0.
+    $response = $this->servicesDelete($this->endpoint->path . '/user/0');
+
+    $this->assertTrue(strpos($response['code'], '404') !== FALSE,
+      'Anonymous user was not deleted.', 'UserResource: Delete');
+
+    // Delete user 1.
+    $response = $this->servicesDelete($this->endpoint->path . '/user/1');
+
+    $this->assertTrue(strpos($response['status'], 'The admin user cannot be deleted.') !== FALSE,
+      'Admin user was not deleted.', 'UserResource: Delete');
+  }
+
+  /**
    * Test index method.
    *
    * Create several users list them. List one user by name.

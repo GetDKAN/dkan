@@ -84,6 +84,9 @@ class RulesTestCase extends DrupalWebTestCase {
     $action = rules_action('rules_node_publish_action');
     $this->assertEqual($action->dependencies(), array('rules_test'), 'Providing module is returned as dependency.');
 
+    $container = new RulesTestContainer();
+    $this->assertEqual($container->dependencies(), array('rules_test'), 'Providing module for container plugin is returned as dependency.');
+
     // Test handling unmet dependencies.
     $rule = rules_config_load('rules_export_test');
     $this->assertTrue(in_array('comment', $rule->dependencies) && !$rule->dirty, 'Dependencies have been imported.');
@@ -206,6 +209,26 @@ class RulesTestCase extends DrupalWebTestCase {
     $this->assertEqual($node2->status, 1, 'Action executed correctly on node2.');
     $this->assertEqual($node1->status, 0, 'Action not executed on node1.');
 
+    RulesLog::logger()->checkLog();
+  }
+
+  /**
+   * Tests making use of class based actions.
+   */
+  function testClassBasedActions() {
+    $cache = rules_get_cache();
+    $this->assertTrue(!empty($cache['action_info']['rules_test_class_action']), 'Action has been discovered.');
+    $action = rules_action('rules_test_class_action');
+
+    $parameters = $action->parameterInfo();
+    $this->assertTrue($parameters['node'], 'Action parameter needs a value.');
+
+    $node = $this->drupalCreateNode();
+    $action->execute($node);
+    $log = RulesLog::logger()->get();
+    $last = array_pop($log);
+    $last = array_pop($log);
+    $this->assertEqual($last[0], 'Action called with node ' . $node->nid, 'Action called');
     RulesLog::logger()->checkLog();
   }
 
@@ -1054,7 +1077,6 @@ class RulesTestDataCase extends DrupalWebTestCase {
   }
 }
 
-
 /**
  * Test triggering rules.
  */
@@ -1094,14 +1116,13 @@ class RulesTriggerTestCase extends DrupalWebTestCase {
     $result = db_query("SELECT event FROM {rules_trigger} WHERE id = :id", array(':id' => $rule->id));
     $this->assertEqual($result->fetchField(), 'node_presave', 'Associated event has been saved.');
     // Try updating.
-    $events =& $rule->events();
-    unset($events[0]);
-    $events[] = 'node_insert';
-    $events[] = 'node_update';
+    $rule->removeEvent('node_presave');
+    $rule->event('node_insert');
+    $rule->event('node_update');
     $rule->active = FALSE;
     $rule->integrityCheck()->save();
     $result = db_query("SELECT event FROM {rules_trigger} WHERE id = :id", array(':id' => $rule->id));
-    $this->assertEqual($result->fetchCol(), array_values($events), 'Updated associated events.');
+    $this->assertEqual($result->fetchCol(), array_values($rule->events()), 'Updated associated events.');
     // Try deleting.
     $rule->delete();
     $result = db_query("SELECT event FROM {rules_trigger} WHERE id = :id", array(':id' => $rule->id));
@@ -1250,6 +1271,33 @@ class RulesTriggerTestCase extends DrupalWebTestCase {
 
     $msg = drupal_get_messages();
     $this->assertEqual($msg['status'][0], 'A node has been updated.', 'Default rule has been triggered.');
+  }
+
+  /**
+   * Tests creating and triggering a reaction rule with event settings.
+   */
+  function testEventSettings() {
+    $rule = rules_reaction_rule();
+    $rule->event('node_presave', array('bundle' => 'article'))
+      ->condition('data_is_empty', array('data:select' => 'node:field-tags'))
+      ->action('node_publish', array('node:select' => 'node'));
+    $rule->integrityCheck()->save();
+
+    $node = $this->drupalCreateNode(array('type' => 'page', 'status' => 0));
+    $this->assertEqual($node->status, 0, 'Rule has not been triggered.');
+    $node = $this->drupalCreateNode(array('type' => 'article', 'status' => 0));
+    $this->assertEqual($node->status, 1, 'Rule has been triggered.');
+    RulesLog::logger()->checkLog();
+
+    // Make sure an invalid bundle raises integrity problems.
+    $rule->event('node_presave', array('bundle' => 'invalid'));
+    try {
+      $rule->integrityCheck();
+      $this->fail('Integrity check failed.');
+    }
+    catch (RulesIntegrityException $e) {
+      $this->pass('Integrity check failed: ' . $e);
+    }
   }
 }
 
@@ -1982,5 +2030,72 @@ class RulesIntegrationTestCase extends DrupalWebTestCase {
     $this->assertTrue($path['alias'] == 'term-test', 'Term URL alias has been created.');
 
     RulesLog::logger()->checkLog();
+  }
+}
+
+/**
+ * Test event dispatcher functionality.
+ */
+class RulesEventDispatcherTestCase extends DrupalWebTestCase {
+
+  static function getInfo() {
+    return array(
+      'name' => 'Rules event dispatchers',
+      'description' => 'Tests event dispatcher functionality.',
+      'group' => 'Rules',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('rules', 'rules_test');
+  }
+
+  /**
+   * Tests start and stop functionality.
+   */
+  public function testStartAndStop() {
+    $handler = rules_get_event_handler('rules_test_event');
+    $rule = rules_reaction_rule();
+    $rule->event('rules_test_event');
+
+    // The handler should not yet be watching.
+    $this->assertFalse($handler->isWatching());
+
+    // Once saved, the event cache rebuild should start the watcher.
+    $rule->save();
+    RulesEventSet::rebuildEventCache();
+    $this->assertTrue($handler->isWatching());
+
+    // Deleting should stop the watcher.
+    $rule->delete();
+    $this->assertFalse($handler->isWatching());
+  }
+
+  /**
+   * Tests start and stop functionality when used with multiple events.
+   */
+  public function testStartAndStopMultiple() {
+    $handler = rules_get_event_handler('rules_test_event');
+
+    // Initially, the task handler should not be watching.
+    $this->assertFalse($handler->isWatching());
+
+    // Set up five rules that all use the same event.
+    $rules = array();
+    foreach (array(1, 2, 3, 4, 5) as $key) {
+      $rules[$key] = rules_reaction_rule();
+      $rules[$key]->event('rules_test_event');
+      $rules[$key]->save();
+    }
+
+    // Once saved, the event cache rebuild should start the watcher.
+    RulesEventSet::rebuildEventCache();
+    $this->assertTrue($handler->isWatching());
+
+    // It should continue watching until all events are deleted.
+    foreach ($rules as $key => $rule) {
+      $rule->delete();
+      $this->assertEqual($key !== 5, $handler->isWatching());
+    }
   }
 }

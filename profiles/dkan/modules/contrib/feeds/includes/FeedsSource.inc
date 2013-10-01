@@ -490,24 +490,25 @@ class FeedsSource extends FeedsConfigurable {
 
     // Store the source property of the fetcher in a separate column so that we
     // can do fast lookups on it.
+    // Only save if there is a source so they can be optional on enities.
     $source = '';
-    if (isset($config[get_class($this->importer->fetcher)]['source'])) {
-      $source = $config[get_class($this->importer->fetcher)]['source'];
-    }
-    $object = array(
-      'id' => $this->id,
-      'feed_nid' => $this->feed_nid,
-      'imported' => $this->imported,
-      'config' => $config,
-      'source' => $source,
-      'state' => isset($this->state) ? $this->state : FALSE,
-      'fetcher_result' => isset($this->fetcher_result) ? $this->fetcher_result : FALSE,
-    );
-    if (db_query_range("SELECT 1 FROM {feeds_source} WHERE id = :id AND feed_nid = :nid", 0, 1, array(':id' => $this->id, ':nid' => $this->feed_nid))->fetchField()) {
-      drupal_write_record('feeds_source', $object, array('id', 'feed_nid'));
-    }
-    else {
-      drupal_write_record('feeds_source', $object);
+    if (isset($config[get_class($this->importer->fetcher)]['source']) &&
+      $source = $config[get_class($this->importer->fetcher)]['source']) {
+      $object = array(
+        'id' => $this->id,
+        'feed_nid' => $this->feed_nid,
+        'imported' => $this->imported,
+        'config' => $config,
+        'source' => $source,
+        'state' => isset($this->state) ? $this->state : FALSE,
+        'fetcher_result' => isset($this->fetcher_result) ? $this->fetcher_result : FALSE,
+      );
+      if (db_query_range("SELECT 1 FROM {feeds_source} WHERE id = :id AND feed_nid = :nid", 0, 1, array(':id' => $this->id, ':nid' => $this->feed_nid))->fetchField()) {
+        drupal_write_record('feeds_source', $object, array('id', 'feed_nid'));
+      }
+      else {
+        drupal_write_record('feeds_source', $object);
+      }
     }
   }
 

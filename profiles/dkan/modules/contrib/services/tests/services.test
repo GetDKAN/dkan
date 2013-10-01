@@ -3,10 +3,7 @@
 class ServicesWebTestCase extends DrupalWebTestCase {
 
   public function setUp() {
-    $args = func_get_args();
-
-    $modules = array();
-    $modules = $args;
+    $modules = func_get_args();
     // Add the required module dependencies.
     array_unshift($modules, 'ctools', 'services', 'rest_server');
 
@@ -18,7 +15,9 @@ class ServicesWebTestCase extends DrupalWebTestCase {
     $this->additionalCurlOptions[CURLOPT_COOKIEFILE] = $this->cookieFile;
   }
 
-
+  /**
+   * Perform GET request.
+   */
   protected function servicesGet($url, $data = NULL, $headers = array()) {
     $options = array('query' => $data);
     $url = url($this->getAbsoluteUrl($url) . '.php', $options);
@@ -50,7 +49,6 @@ class ServicesWebTestCase extends DrupalWebTestCase {
     if (!is_array($filepath)) {
       $filepath = array($filepath);
     }
-    $options = array();
     // Add .php to get serialized response.
     $url = $this->getAbsoluteUrl($url) . '.php';
 
@@ -86,9 +84,11 @@ class ServicesWebTestCase extends DrupalWebTestCase {
     return array('header' => $header, 'status' => $status, 'code' => $code, 'body' => $body);
   }
 
+  /**
+   * Perform POST request.
+   */
   protected function servicesPost($url, $data = array(), $headers = array(), $call_type = 'php') {
     $this->addCSRFHeader($headers);
-    $options = array();
 
     switch ($call_type) {
       case 'php':
@@ -130,6 +130,9 @@ class ServicesWebTestCase extends DrupalWebTestCase {
     return array('header' => $header, 'status' => $status, 'code' => $code, 'body' => $body);
   }
 
+  /**
+   * Perform PUT request.
+   */
   protected function servicesPut($url, $data = NULL, $headers = array(), $call_type = 'php') {
     $this->addCSRFHeader($headers);
     switch ($call_type) {
@@ -179,6 +182,9 @@ class ServicesWebTestCase extends DrupalWebTestCase {
     return array('header' => $header, 'status' => $status, 'code' => $code, 'body' => $body);
   }
 
+  /**
+   * Perform DELETE request.
+   */
   protected function servicesDelete($url, $data = NULL, $headers = array()) {
     $this->addCSRFHeader($headers);
     $options = array('query' => $data);
@@ -200,6 +206,28 @@ class ServicesWebTestCase extends DrupalWebTestCase {
                    '<hr />Response: ' . highlight_string('<?php ' . var_export($body, TRUE), TRUE) .
                    '<hr />Curl info: ' . highlight_string('<?php ' . var_export($info, TRUE), TRUE) .
                    '<hr />Raw response: ' . $content);
+    return array('header' => $header, 'status' => $status, 'code' => $code, 'body' => $body);
+  }
+
+  /**
+   * Perform HEAD request.
+   */
+  protected function servicesHead($url) {
+    $url = url($this->getAbsoluteUrl($url) . '.php');
+
+    $content = $this->curlExec(array(
+      CURLOPT_URL => $url,
+      CURLOPT_CUSTOMREQUEST => 'HEAD',
+      CURLOPT_HEADER => TRUE,
+      CURLOPT_RETURNTRANSFER => TRUE
+    ));
+
+    // Parse response.
+    list($info, $header, $status, $code, $body) = $this->parseHeader($content);
+
+    $this->verbose('HEAD request to: ' . $url .
+      '<hr />Curl info: ' . highlight_string('<?php ' . var_export($info, TRUE), TRUE) .
+      '<hr />Raw response: ' . $content);
     return array('header' => $header, 'status' => $status, 'code' => $code, 'body' => $body);
   }
 

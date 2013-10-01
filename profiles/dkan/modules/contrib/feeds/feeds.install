@@ -44,7 +44,7 @@ function feeds_requirements($phase) {
       $requirements['simplepie']['severity'] = REQUIREMENT_WARNING;
       $requirements['simplepie']['description'] .= ' ' . t(
         'Download the compiled version of the library from <a href="@simplepie-download-url">SimplePie download page</a>.',
-        array('@simplepie-download-page' => 'http://simplepie.org/downloads/')
+        array('@simplepie-download-url' => 'http://simplepie.org/downloads/')
       );
     }
   }

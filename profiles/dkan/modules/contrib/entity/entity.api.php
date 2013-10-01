@@ -95,9 +95,12 @@
  *   - path: A path where the UI should show up as expected by hook_menu().
  *   - controller class: (optional) A controller class name for providing the
  *     UI. Defaults to EntityDefaultUIController, which implements an admin UI
- *     suiting for managing configuration entities.
- *     For customizing the UI inherit from the default class and overide methods
- *     as suiting and specify your class as controller class.
+ *     suiting for managing configuration entities. Other provided controllers
+ *     suiting for content entities are EntityContentUIController or
+ *     EntityBundleableUIController (which work fine despite the poorly named
+ *     'admin ui' key).
+ *     For customizing the UI inherit from the default class and override
+ *     methods as suiting and specify your class as controller class.
  *   - file: (optional) The name of the file in which the entity form resides
  *     as it is required by hook_menu().
  *   - file path: (optional) The path to the file as required by hook_menu. If
@@ -119,6 +122,13 @@
  *   Override the controller class to adapt the defaults and to improve and
  *   complete the generated metadata. Set it to FALSE to disable this feature.
  *   Defaults to the EntityDefaultMetadataController class.
+ * - extra fields controller class: (optional) A controller class for providing
+ *   field API extra fields. Defaults to none.
+ *   The class must implement the EntityExtraFieldsControllerInterface. Display
+ *   extra fields that are exposed that way are rendered by default by the
+ *   EntityAPIController. The EntityDefaultExtraFieldsController class may be
+ *   used to generate extra fields based upon property metadata, which in turn
+ *   get rendered by default by the EntityAPIController.
  * - features controller class: (optional) A controller class for providing
  *   Features module integration for exportable entities. The given class has to
  *   inherit from the default class being EntityDefaultFeaturesController. Set

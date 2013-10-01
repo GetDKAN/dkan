@@ -15,6 +15,7 @@ function rules_taxonomy_event_info() {
     'group' => t('Taxonomy'),
     'access callback' => 'rules_taxonomy_term_integration_access',
     'module' => 'taxonomy',
+    'class' => 'RulesTaxonomyEventHandler',
   );
   $defaults_vocab = array(
     'group' => t('Taxonomy'),
@@ -92,6 +93,21 @@ function rules_taxonomy_term_integration_access($type, $name) {
 function rules_taxonomy_vocabulary_integration_access($type, $name) {
   if ($type == 'event' || $type == 'condition') {
     return entity_access('view', 'taxonomy_vocabulary');
+  }
+}
+
+/**
+ * Event handler support taxonomy bundle event settings.
+ */
+class RulesTaxonomyEventHandler extends RulesEventHandlerEntityBundle {
+
+  /**
+   * Returns the label to use for the bundle property.
+   *
+   * @return string
+   */
+  protected function getBundlePropertyLabel() {
+    return t('vocabulary');
   }
 }
 

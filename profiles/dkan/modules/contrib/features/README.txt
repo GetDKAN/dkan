@@ -34,6 +34,13 @@ new equivalents (e.g. CCK to fields, imagecache to core image styles).
 - imagecache > image
 - content > field
 
+Note on the "Generate Feature" capability
+-----------------------------------------
+Features 7.x-2.x includes the ability to "Generate a feature" which saves it
+to the server disk. This can be a time-saving task in development. It requires
+the webserver to be able to write to the very code running the site and is
+not recommended for any environment other than a firewalled-off, local
+development environment (e.g. a person working alone on their laptop).
 
 Features 1.x for Drupal 7.x
 ---------------------------

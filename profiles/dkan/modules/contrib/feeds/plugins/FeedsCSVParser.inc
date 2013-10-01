@@ -22,6 +22,7 @@ class FeedsCSVParser extends FeedsParser {
     $parser = new ParserCSV();
     $delimiter = $source_config['delimiter'] == 'TAB' ? "\t" : $source_config['delimiter'];
     $parser->setDelimiter($delimiter);
+    $parser->setEncoding($source_config['encoding']);
 
     $iterator = new ParserCSVIterator($fetcher_result->getFilePath());
     if (empty($source_config['no_headers'])) {
@@ -106,6 +107,7 @@ class FeedsCSVParser extends FeedsParser {
   public function sourceDefaults() {
     return array(
       'delimiter' => $this->config['delimiter'],
+      'encoding' => $this->config['encoding'],
       'no_headers' => $this->config['no_headers'],
     );
   }
@@ -164,6 +166,7 @@ class FeedsCSVParser extends FeedsParser {
       '#description' => t('Check if the imported CSV file does not start with a header row. If checked, mapping sources must be named \'0\', \'1\', \'2\' etc.'),
       '#default_value' => isset($source_config['no_headers']) ? $source_config['no_headers'] : 0,
     );
+    $form['encoding'] = $this->configEncodingForm();
     return $form;
   }
 
@@ -173,6 +176,7 @@ class FeedsCSVParser extends FeedsParser {
   public function configDefaults() {
     return array(
       'delimiter' => ',',
+      'encoding' => 'UTF-8',
       'no_headers' => 0,
     );
   }
@@ -201,6 +205,31 @@ class FeedsCSVParser extends FeedsParser {
       '#description' => t('Check if the imported CSV file does not start with a header row. If checked, mapping sources must be named \'0\', \'1\', \'2\' etc.'),
       '#default_value' => $this->config['no_headers'],
     );
+    $form['encoding'] = $this->configEncodingForm();
+    return $form;
+  }
+
+  public function configEncodingForm() {
+    if (extension_loaded('mbstring')) {
+      // Get the system's list of available encodings.
+      $options = mb_list_encodings();
+      // Make the key/values the same in the array.
+      $options = array_combine($options, $options);
+      // Sort alphabetically not-case sensitive.
+      natcasesort($options);
+      return array(
+        '#type' => 'select',
+        '#title' => t('File encoding'),
+        '#description' => t('Performs character encoding conversion from selected option to UTF-8.'),
+        '#options' => $options,
+        '#default_value' => $this->config['encoding'],
+      );
+    }
+    else {
+      return array(
+        '#markup' => '<em>' . t('PHP <em>mbstring</em> extension must be available for character encoding conversion.') . '</em>',
+      );
+    }
     return $form;
   }
 

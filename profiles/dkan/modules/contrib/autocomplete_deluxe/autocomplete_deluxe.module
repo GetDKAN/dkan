@@ -270,7 +270,6 @@ function autocomplete_deluxe_element_process($element) {
 
   $js_settings['autocomplete_deluxe'][$html_id] = array(
     'input_id' => $html_id,
-    'min_length' => isset($element['#autocomplete_min_length']) ? $element['#autocomplete_min_length'] : 0,
     'multiple' => $element['#multiple'],
     'required' => $element['#required'],
     'limit' => isset($element['#limit']) ? $element['#limit'] : 10,
@@ -316,6 +315,7 @@ function autocomplete_deluxe_element_process($element) {
     return $element;
   }
   $element['#attached']['js'][] = array('data' => $js_settings, 'type' => 'setting');
+  $element['#tree'] = TRUE;
 
   return $element;
 }

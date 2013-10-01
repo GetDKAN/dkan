@@ -7,9 +7,9 @@ core = 7.x
 files[] = rules_i18n.i18n.inc
 files[] = rules_i18n.rules.inc
 files[] = rules_i18n.test
-; Information added by drupal.org packaging script on 2013-03-27
-version = "7.x-2.3"
+; Information added by drupal.org packaging script on 2013-09-19
+version = "7.x-2.5"
 core = "7.x"
 project = "rules"
-datestamp = "1364401818"
+datestamp = "1379579047"
 

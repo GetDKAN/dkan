@@ -31,7 +31,7 @@ function features_drush_command() {
       'components' => 'Patterns of components to include, see features-components for the format of patterns.'
     ),
     'options' => array(
-      'destination' => "Destination path (from Drupal root) of the exported feature. Defaults to 'sites/all/modules'",
+      'destination' => "Destination path (from Drupal root) of the exported feature. Defaults to 'sites/all/modules/features'",
       'version-set' => "Specify a version number for the feature.",
       'version-increment' => "Increment the feature's version number.",
     ),
@@ -117,6 +117,9 @@ function features_drush_command() {
     'arguments' => array(
       'feature' => 'The feature in question.',
     ),
+    'options' => array(
+      'lines' => 'Generate diffs with <n> lines of context instead of the usual two.',
+    ),
     'drupal dependencies' => array('features', 'diff'),
     'aliases' => array('fd'),
   );
@@ -132,7 +135,7 @@ function features_drush_help($section) {
     case 'drush:features':
       return dt("List all the available features for your site.");
     case 'drush:features-export':
-      return dt("Export a feature from your site into a module. If called with no arguments, display a list of available components. If called with a single argument, attempt to create a feature including the given component with the same name. The option '--destination=foo' may be used to specify the path (from Drupal root) where the feature should be created. The default destination is 'sites/all/modules'. The option '--version-set=foo' may be used to specify a version number for the feature or the option '--version-increment' may also to increment the feature's version number.");
+      return dt("Export a feature from your site into a module. If called with no arguments, display a list of available components. If called with a single argument, attempt to create a feature including the given component with the same name. The option '--destination=foo' may be used to specify the path (from Drupal root) where the feature should be created. The default destination is 'sites/all/modules/features'. The option '--version-set=foo' may be used to specify a version number for the feature or the option '--version-increment' may also to increment the feature's version number.");
     case 'drush:features-components':
       return dt("List feature components matching patterns. The listing may be limited to exported/not-exported components.
 
@@ -170,7 +173,12 @@ function drush_features_list() {
 
   module_load_include('inc', 'features', 'features.export');
   $rows = array(array(dt('Name'), dt('Feature'), dt('Status'), dt('Version'), dt('State')));
-  foreach (features_get_features(NULL, TRUE) as $k => $m) {
+
+  // Sort the Features list before compiling the output.
+  $features = features_get_features(NULL, TRUE);
+  ksort($features);
+
+  foreach ($features as $k => $m) {
     switch (features_get_storage($m->name)) {
       case FEATURES_DEFAULT:
       case FEATURES_REBUILDABLE:
@@ -442,7 +450,7 @@ function drush_features_export() {
     }
     else {
       // Same logic as in _drush_features_export. Should be refactored.
-      $destination = drush_get_option(array('destination'), 'sites/all/modules');
+      $destination = drush_get_option(array('destination'), 'sites/all/modules/features');
       $directory = isset($directory) ? $directory : $destination . '/' . $module;
       drush_print(dt('Will create a new module in !dir', array('!dir' => $directory)));
       if (!drush_confirm(dt('Do you really want to continue?'))) {
@@ -465,8 +473,8 @@ function drush_features_export() {
  * This is DEPRECATED, but keeping it around for a bit longer for user migration
  */
 function drush_features_add() {
-  drush_print(dt('features_add is DEPRECATED.'));
-  drush_print(dt('Calling features_export instead.'));
+  drush_print(dt('features-add is DEPRECATED.'));
+  drush_print(dt('Calling features-export instead.'));
   drush_features_export();
 }
 
@@ -532,7 +540,7 @@ function drush_features_update_all() {
 function _drush_features_export($info, $module_name = NULL, $directory = NULL) {
   $root = drush_get_option(array('r', 'root'), drush_locate_root());
   if ($root) {
-    $destination = drush_get_option(array('destination'), 'sites/all/modules');
+    $destination = drush_get_option(array('destination'), 'sites/all/modules/features');
     $directory = isset($directory) ? $directory : $destination . '/' . $module_name;
     if (is_dir($directory)) {
       drush_print(dt('Module appears to already exist in !dir', array('!dir' => $directory)));
@@ -632,7 +640,9 @@ function drush_features_revert() {
     // Parse list of arguments.
     $modules = array();
     foreach ($args as $arg) {
-      list($module, $component) = explode('.', $arg);
+      $arg = explode('.', $arg);
+      $module = array_shift($arg);
+      $component = array_shift($arg);
 
       if (isset($module)) {
         if (empty($component)) {
@@ -790,9 +800,12 @@ function drush_features_diff() {
     module_load_include('inc', 'diff', 'diff.engine');
   }
 
+  $lines = (int) drush_get_option('lines');
+  $lines = $lines > 0 ? $lines : 2;
+
   $formatter = new DiffFormatter();
-  $formatter->leading_context_lines = 2;
-  $formatter->trailing_context_lines = 2;
+  $formatter->leading_context_lines = $lines;
+  $formatter->trailing_context_lines = $lines;
   $formatter->show_header = FALSE;
 
   if (drush_get_context('DRUSH_NOCOLOR')) {

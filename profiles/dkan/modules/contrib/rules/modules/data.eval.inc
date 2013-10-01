@@ -71,6 +71,12 @@ function rules_action_data_calc($input1, $op, $input2, $settings, $state, $eleme
     case '/':
       $result = $input1 / $input2;
       break;
+    case 'min':
+      $result = min($input1, $input2);
+      break;
+    case 'max':
+      $result = max($input1, $input2);
+      break;
   }
   if (isset($result)) {
     // Ensure results are valid integer values if necessary.
@@ -285,7 +291,7 @@ function rules_action_data_create_info_alter(&$element_info, RulesAbstractPlugin
       // Add the data type's properties as parameters.
       foreach ($type_info['property info'] as $property => $property_info) {
         // Prefix parameter names to avoid name clashes with existing parameters.
-        $element_info['parameter']['param_' . $property] = array_intersect_key($property_info, array_flip(array('type', 'label')));
+        $element_info['parameter']['param_' . $property] = array_intersect_key($property_info, array_flip(array('type', 'label', 'allow null')));
         if (empty($property_info['required'])) {
           $element_info['parameter']['param_' . $property]['optional'] = TRUE;
         }

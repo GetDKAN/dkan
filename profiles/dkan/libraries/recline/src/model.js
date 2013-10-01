@@ -2,7 +2,11 @@
 this.recline = this.recline || {};
 this.recline.Model = this.recline.Model || {};
 
-(function($, my) {
+(function(my) {
+  "use strict";
+
+// use either jQuery or Underscore Deferred depending on what is available
+var Deferred = (typeof jQuery !== "undefined" && jQuery.Deferred) || _.Deferred;
 
 // ## <a id="dataset">Dataset</a>
 my.Dataset = Backbone.Model.extend({
@@ -12,6 +16,7 @@ my.Dataset = Backbone.Model.extend({
 
   // ### initialize
   initialize: function() {
+    var self = this;
     _.bindAll(this, 'query');
     this.backend = null;
     if (this.get('backend')) {
@@ -31,8 +36,9 @@ my.Dataset = Backbone.Model.extend({
     this.facets = new my.FacetList();
     this.recordCount = null;
     this.queryState = new my.Query();
-    this.queryState.bind('change', this.query);
-    this.queryState.bind('facet:add', this.query);
+    this.queryState.bind('change facet:add', function () {
+      self.query(); // We want to call query() without any arguments.
+    });
     // store is what we query and save against
     // store will either be the backend or be a memory store if Backend fetch
     // tells us to use memory store
@@ -47,13 +53,13 @@ my.Dataset = Backbone.Model.extend({
   // Retrieve dataset and (some) records from the backend.
   fetch: function() {
     var self = this;
-    var dfd = $.Deferred();
+    var dfd = new Deferred();
 
     if (this.backend !== recline.Backend.Memory) {
       this.backend.fetch(this.toJSON())
         .done(handleResults)
-        .fail(function(arguments) {
-          dfd.reject(arguments);
+        .fail(function(args) {
+          dfd.reject(args);
         });
     } else {
       // special case where we have been given data directly
@@ -65,7 +71,13 @@ my.Dataset = Backbone.Model.extend({
     }
 
     function handleResults(results) {
-      var out = self._normalizeRecordsAndFields(results.records, results.fields);
+      // if explicitly given the fields
+      // (e.g. var dataset = new Dataset({fields: fields, ...})
+      // use that field info over anything we get back by parsing the data
+      // (results.fields)
+      var fields = self.get('fields') || results.fields;
+
+      var out = self._normalizeRecordsAndFields(results.records, fields);
       if (results.useMemoryStore) {
         self._store = new recline.Backend.Memory.Store(out.records, out.fields);
       }
@@ -76,8 +88,8 @@ my.Dataset = Backbone.Model.extend({
         .done(function() {
           dfd.resolve(self);
         })
-        .fail(function(arguments) {
-          dfd.reject(arguments);
+        .fail(function(args) {
+          dfd.reject(args);
         });
     }
 
@@ -156,20 +168,6 @@ my.Dataset = Backbone.Model.extend({
     return this._store.save(this._changes, this.toJSON());
   },
 
-  transform: function(editFunc) {
-    var self = this;
-    if (!this._store.transform) {
-      alert('Transform is not supported with this backend: ' + this.get('backend'));
-      return;
-    }
-    this.trigger('recline:flash', {message: "Updating all visible docs. This could take a while...", persist: true, loader: true});
-    this._store.transform(editFunc).done(function() {
-      // reload data as records have changed
-      self.query();
-      self.trigger('recline:flash', {message: "Records updated successfully"});
-    });
-  },
-
   // ### query
   //
   // AJAX method with promise API to get records from the backend.
@@ -181,7 +179,7 @@ my.Dataset = Backbone.Model.extend({
   // also returned.
   query: function(queryObj) {
     var self = this;
-    var dfd = $.Deferred();
+    var dfd = new Deferred();
     this.trigger('query:start');
 
     if (queryObj) {
@@ -195,9 +193,9 @@ my.Dataset = Backbone.Model.extend({
         self.trigger('query:done');
         dfd.resolve(self.records);
       })
-      .fail(function(arguments) {
-        self.trigger('query:fail', arguments);
-        dfd.reject(arguments);
+      .fail(function(args) {
+        self.trigger('query:fail', args);
+        dfd.reject(args);
       });
     return dfd.promise();
   },
@@ -245,7 +243,7 @@ my.Dataset = Backbone.Model.extend({
     this.fields.each(function(field) {
       query.addFacet(field.id);
     });
-    var dfd = $.Deferred();
+    var dfd = new Deferred();
     this._store.query(query.toJSON(), this.toJSON()).done(function(queryResult) {
       if (queryResult.facets) {
         _.each(queryResult.facets, function(facetResult, facetId) {
@@ -306,9 +304,11 @@ my.Record = Backbone.Model.extend({
   //
   // For the provided Field get the corresponding rendered computed data value
   // for this record.
+  //
+  // NB: if field is undefined a default '' value will be returned
   getFieldValue: function(field) {
-    val = this.getFieldValueUnrendered(field);
-    if (field.renderer) {
+    var val = this.getFieldValueUnrendered(field);
+    if (field && !_.isUndefined(field.renderer)) {
       val = field.renderer(val, field, this.toJSON());
     }
     return val;
@@ -318,7 +318,12 @@ my.Record = Backbone.Model.extend({
   //
   // For the provided Field get the corresponding computed data value
   // for this record.
+  //
+  // NB: if field is undefined a default '' value will be returned
   getFieldValueUnrendered: function(field) {
+    if (!field) {
+      return '';
+    }
     var val = this.get(field.id);
     if (field.deriver) {
       val = field.deriver(val, field, this);
@@ -440,7 +445,7 @@ my.Field = Backbone.Model.extend({
         if (val && typeof val === 'string') {
           val = val.replace(/(https?:\/\/[^ ]+)/g, '<a href="$1">$1</a>');
         }
-        return val
+        return val;
       }
     }
   }
@@ -499,15 +504,28 @@ my.Query = Backbone.Model.extend({
     var ourfilter = JSON.parse(JSON.stringify(filter));
     // not fully specified so use template and over-write
     if (_.keys(filter).length <= 3) {
-      ourfilter = _.extend(
-        // crude deep copy
-        JSON.parse(JSON.stringify(this._filterTemplates[filter.type])),
-        ourfilter
-      );
+      ourfilter = _.defaults(ourfilter, this._filterTemplates[filter.type]);
     }
     var filters = this.get('filters');
     filters.push(ourfilter);
     this.trigger('change:filters:new-blank');
+  },
+  replaceFilter: function(filter) {
+    // delete filter on the same field, then add
+    var filters = this.get('filters');
+    var idx = -1;
+    _.each(this.get('filters'), function(filter, key, list) {
+      if (filter.field == filter.field) {
+        idx = key;
+      }
+    });
+    // trigger just one event (change:filters:new-blank) instead of one for remove and 
+    // one for add
+    if (idx >= 0) {
+      filters.splice(idx, 1);
+      this.set({filters: filters});
+    }
+    this.addFilter(filter);
   },
   updateFilter: function(index, value) {
   },
@@ -525,7 +543,7 @@ my.Query = Backbone.Model.extend({
   // Add a Facet to this query
   //
   // See <http://www.elasticsearch.org/guide/reference/api/search/facets/>
-  addFacet: function(fieldId) {
+  addFacet: function(fieldId, size, silent) {
     var facets = this.get('facets');
     // Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)
     if (_.contains(_.keys(facets), fieldId)) {
@@ -534,8 +552,13 @@ my.Query = Backbone.Model.extend({
     facets[fieldId] = {
       terms: { field: fieldId }
     };
+    if (!_.isUndefined(size)) {
+      facets[fieldId].terms.size = size;
+    }
     this.set({facets: facets}, {silent: true});
-    this.trigger('facet:add', this);
+    if (!silent) {
+      this.trigger('facet:add', this);
+    }
   },
   addHistogramFacet: function(fieldId) {
     var facets = this.get('facets');
@@ -547,7 +570,30 @@ my.Query = Backbone.Model.extend({
     };
     this.set({facets: facets}, {silent: true});
     this.trigger('facet:add', this);
+  },
+  removeFacet: function(fieldId) {
+    var facets = this.get('facets');
+    // Assume id and fieldId should be the same (TODO: this need not be true if we want to add two different type of facets on same field)
+    if (!_.contains(_.keys(facets), fieldId)) {
+      return;
+    }
+    delete facets[fieldId];
+    this.set({facets: facets}, {silent: true});
+    this.trigger('facet:remove', this);
+  },
+  clearFacets: function() {
+    var facets = this.get('facets');
+    _.each(_.keys(facets), function(fieldId) {
+      delete facets[fieldId];
+    });
+    this.trigger('facet:remove', this);
+  },
+  // trigger a facet add; use this to trigger a single event after adding
+  // multiple facets
+  refreshFacets: function() {
+    this.trigger('facet:add', this);
   }
+
 });
 
 
@@ -589,5 +635,5 @@ Backbone.sync = function(method, model, options) {
   return model.backend.sync(method, model, options);
 };
 
-}(jQuery, this.recline.Model));
+}(this.recline.Model));
 

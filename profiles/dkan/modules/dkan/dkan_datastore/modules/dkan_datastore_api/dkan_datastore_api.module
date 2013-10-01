@@ -7,6 +7,60 @@
  */
 
 /**
+ * Implements hook_menu().
+ */
+function dkan_datastore_api_menu() {
+  $items = array();
+
+  $items['api/3/action/%'] = array(
+    'title' => 'API Redirect',
+    'page callback' => 'dkan_datastore_api_redirect',
+    'page arguments' => array(3),
+    // TODO: use services permissions?
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['api/3/action/datastore_search/%'] = array(
+    'title' => 'API Redirect',
+    'page callback' => 'dkan_datastore_api_redirect',
+    'page arguments' => array(5),
+    // TODO: use services permissions?
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Redirects from CKAN API url to DKAN.
+ *
+ * Necessary since Services wouldn't accept datastore_search as an endpoint.
+ */
+function dkan_datastore_api_redirect($path) {
+  $args = '';
+  if ($path == 'datastore_search') {
+    foreach ($_GET as $key => $value) {
+      if ($key != 'q') {
+        $args[$key] = $value;
+      }
+    }
+    drupal_goto('api/action/datastore/search.json', array('query' => $args));
+  }
+}
+
+/**
+ * Implements hook_init().
+ */
+function dkan_datastore_api_boot() {
+  // This is required for compatability with the CKAN API which uses 'q' which
+  // drupal also uses.
+  if (!$_GET['q'] && isset($_GET['limit'])) {
+    $_GET['q'] = 'api/action/datastore/search.json';
+  }
+}
+
+/**
  * Implements hook_ctools_plugin_api().
  */
 function dkan_datastore_api_ctools_plugin_api($owner, $api) {
@@ -34,7 +88,7 @@ function dkan_datastore_api_services_resources() {
         'args' => array(
           array(
             'name' => 'resource_id',
-            'optional' => FALSE,
+            'optional' => TRUE,
             'type' => 'array',
             'description' => 'id or alias of the resource to be searched against.',
             'default value' => 0,
@@ -106,8 +160,9 @@ function dkan_datastore_api_services_resources() {
 }
 
 /**
- * Creates index based off of query. For arguments, see:
- * dkan_datastore_api_services_resources().
+ * Creates index based off of query.
+ *
+ * For arguments, see: dkan_datastore_api_services_resources().
  */
 function _dkan_datastore_api_datastore_index($resource_ids, $filters, $query, $offset, $limit, $fields, $sort, $join) {
   try {
@@ -155,9 +210,7 @@ function _dkan_datastore_api_datastore_index($resource_ids, $filters, $query, $o
     return array('Caught exception: ' . $ex->getMessage());
   }
   $results = services_resource_execute_index_query($data_select);
-  return dkan_datastore_api_resource_build_index_list($results, $table, $fields);
-
-  return $output;
+  return dkan_datastore_api_resource_build_index_list($results, $table, $fields, $resource_ids);
 }
 
 /**
@@ -203,7 +256,7 @@ function dkan_datastore_api_build_additional_index_query(&$data_select, $table, 
  */
 function dkan_datastore_api_tablename($resource_id) {
   $nid = db_query('SELECT nid FROM {node} WHERE uuid = :uuid', array(':uuid' => $resource_id))->fetchField();
-  $source_id = db_query('SELECT id FROM {feeds_source} WHERE feed_nid = :nid', array(':nid' => $nid))->fetchField();
+  $source_id = dkan_datastore_api_get_feeds_source($nid);
   $table = feeds_flatstore_processor_table_name($source_id, $nid);
   if (db_table_exists($table)) {
     return $table;
@@ -212,7 +265,13 @@ function dkan_datastore_api_tablename($resource_id) {
     throw new Exception('Resource ' . $resource_id . ' does not exist.');
   }
 }
-
+/**
+ * Retrieves source_id from feeds_source.
+ */
+function dkan_datastore_api_get_feeds_source($nid) {
+  $source_id = db_query("SELECT id FROM {feeds_source} WHERE feed_nid = :nid AND source != ''", array(':nid' => $nid))->fetchField();
+  return $source_id ? $source_id : NULL;
+}
 /**
  * Builds index query.
  */
@@ -235,10 +294,10 @@ function dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, 
  */
 function dkan_datastore_api_resource_build_index_query(&$query, $page, $fields, $page_size, $alias, $table) {
   $default_limit = variable_get("{$table}_index_page_size", 20);
-  if (!user_access('perform unlimited index queries') && $page_size > $default_limit) {
+  if ((!user_access('perform unlimited index queries') && $page_size > $default_limit) || !$page_size) {
     $page_size = $default_limit;
   }
-  $query->range($page * $page_size, $page_size);
+  $query->range($page, $page_size);
   if ($fields == '*') {
     $query->fields($alias);
   }
@@ -257,7 +316,7 @@ function _dkan_datastore_api_datastore_access($op) {
 /**
  * Builds index link with results of the query.
  */
-function dkan_datastore_api_resource_build_index_list($results, $table, $fields) {
+function dkan_datastore_api_resource_build_index_list($results, $table, $fields, $resource_ids) {
   // Put together array of matching items to return.
   $items = array();
   $endpoint_name = services_get_server_info('endpoint');
@@ -267,23 +326,32 @@ function dkan_datastore_api_resource_build_index_list($results, $table, $fields)
   }
 
   $help = array('help' => dkan_datastore_api_resource_help());
-  $count = array('count' => count($items));
+  $count = array('limit' => count($items));
   $success = count($items) ? array('success' => TRUE) : array('success' => FALSE);
   $schema = drupal_get_schema($table);
+  $return = new stdClass();
   if ($fields == '*') {
-    $fields = array('fields' => $schema['fields']);
+    foreach ($schema['fields'] as $name => $field) {
+      // Don't include fields added by feeds_flatstore_processor.
+      if ($name != 'feeds_flatstore_entry_id' && $name != 'timestamp' && $name != 'feeds_entity_id') {
+        $return->fields[] = array('id' => $name, 'type' => $field['type']);
+      }
+    }
   }
   else {
     $used_fields = explode(',', $fields);
     foreach ($used_fields as $key => $field) {
       $output_fields[$field] = $schema['fields'][$field];
+      $output_fields[$field]['label'] = $field;
     }
-    $fields = array('fields' => $output_fields);
+    $fields = $output_fields;
   }
+  $return->resource_id = $resource_ids;
+  $return->limit = $count['limit'];
+  $return->total = db_query("SELECT feeds_flatstore_entry_id from {$table}")->rowCount();
+  $return->records = $items;
 
-  return $help + $success + $count + $fields + array('records' => $items);
-
-  return $items;
+  return $help + $success + array('result' => $return);
 }
 
 /**

@@ -179,3 +179,84 @@ function _entity_metadata_convert_schema_type($type) {
       return 'text';
   }
 }
+
+/**
+ * Interface for extra fields controller.
+ *
+ * Note: Displays extra fields exposed by this controller are rendered by
+ * default by the EntityAPIController.
+ */
+interface EntityExtraFieldsControllerInterface {
+
+  /**
+   * Returns extra fields for this entity type.
+   *
+   * @see hook_field_extra_fields().
+   */
+  public function fieldExtraFields();
+}
+
+/**
+ * Default controller for generating extra fields based on property metadata.
+ *
+ * By default a display extra field for each property not being a field, ID or
+ * bundle is generated.
+ */
+class EntityDefaultExtraFieldsController implements EntityExtraFieldsControllerInterface {
+
+  /**
+   * @var string
+   */
+  protected $entityType;
+
+  /**
+   * @var array
+   */
+  protected $entityInfo;
+
+  /**
+   * Constructor.
+   */
+  public function __construct($type) {
+    $this->entityType = $type;
+    $this->entityInfo = entity_get_info($type);
+    $this->propertyInfo = entity_get_property_info($type);
+  }
+
+  /**
+   * Implements EntityExtraFieldsControllerInterface::fieldExtraFields().
+   */
+  public function fieldExtraFields() {
+    $extra = array();
+    foreach ($this->propertyInfo['properties'] as $name => $property_info) {
+      // Skip adding the ID or bundle.
+      if ($this->entityInfo['entity keys']['id'] == $name || $this->entityInfo['entity keys']['bundle'] == $name) {
+        continue;
+      }
+      $extra[$this->entityType][$this->entityType]['display'][$name] = $this->generateExtraFieldInfo($name, $property_info);
+    }
+
+    // Handle bundle properties.
+    $this->propertyInfo += array('bundles' => array());
+    foreach ($this->propertyInfo['bundles'] as $bundle_name => $info) {
+      foreach ($info['properties'] as $name => $property_info) {
+        $extra[$this->entityType][$bundle_name]['display'][$name] = $this->generateExtraFieldInfo($name, $property_info);
+      }
+    }
+    return $extra;
+  }
+
+  /**
+   * Generates the display field info for a given property.
+   */
+  protected function generateExtraFieldInfo($name, $property_info) {
+    $info = array(
+      'label' => $property_info['label'],
+      'weight' => 0,
+    );
+    if (!empty($property_info['description'])) {
+      $info['description'] = $property_info['description'];
+    }
+    return $info;
+  }
+}

@@ -76,6 +76,8 @@ class ParserCSV {
 
   public function __construct() {
     $this->delimiter = ',';
+    $this->from_encoding = 'UTF-8';
+    $this->to_encoding = 'UTF-8';
     $this->skipFirstLine = FALSE;
     $this->columnNames = FALSE;
     $this->timeout = FALSE;
@@ -92,6 +94,14 @@ class ParserCSV {
    */
   public function setDelimiter($delimiter) {
     $this->delimiter = $delimiter;
+  }
+
+  /**
+   * Set the source file encoding.
+   * By default, UTF-8.
+   */
+  public function setEncoding($encoding) {
+    $this->from_encoding = $encoding;
   }
 
   /**
@@ -197,7 +207,7 @@ class ParserCSV {
     for ($lineIterator->rewind($this->startByte); $lineIterator->valid(); $lineIterator->next()) {
 
       // Make really sure we've got lines without trailing newlines.
-      $line = trim($lineIterator->current(), "\r\n");
+      $line = trim($this->fixEncoding($lineIterator->current()), "\r\n");
 
       // Skip empty lines.
       if (empty($line)) {
@@ -237,7 +247,7 @@ class ParserCSV {
             }
             // Ok, so, on with fetching the next line, as mentioned above.
             $currentField .= "\n";
-            $line = trim($lineIterator->current(), "\r\n");
+            $line = trim($this->fixEncoding($lineIterator->current()), "\r\n");
             $currentIndex = 0;
             continue;
           }
@@ -324,5 +334,31 @@ class ParserCSV {
       }
     }
     return $rows;
+  }
+
+  /**
+   * Converts encoding of input data
+   *
+   * @param $data
+   *   A chunk of data
+   * @return
+   *   Data in correct encoding or throws exceptions if
+   *   detected encoding doesn't match.
+   */
+  private function fixEncoding($data) {
+
+    if (extension_loaded('mbstring')) {
+      $detected_encoding = mb_detect_encoding($data, $this->from_encoding);
+
+      if ($detected_encoding) {
+        // Always convert encoding to UTF-8 protect from SQL errors.
+        $data = mb_convert_encoding($data, $this->to_encoding, $detected_encoding);
+      }
+      else {
+        throw new Exception(t('Source file is not in %encoding encoding.', array('%encoding' => $this->from_encoding)));
+      }
+    }
+
+    return $data;
   }
 }

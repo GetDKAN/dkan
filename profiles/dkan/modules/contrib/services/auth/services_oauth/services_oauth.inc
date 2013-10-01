@@ -19,7 +19,8 @@
  */
 function _services_oauth_authenticate_call($settings, $method, $args) {
   $endpoint = array();
-  if (isset($method['endpoint']['services_oauth'])) {
+  // Grep the specific settings for this method
+  if (!empty($method['endpoint']['services_oauth']['credentials'])) {
     $endpoint += array_filter($method['endpoint']['services_oauth']);
   }
   $endpoint += $settings;

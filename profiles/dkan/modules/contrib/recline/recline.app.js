@@ -10,42 +10,95 @@
       grid = Drupal.settings.recline.grid;
       graph = Drupal.settings.recline.graph;
       map = Drupal.settings.recline.map;
+      uuid = Drupal.settings.recline.uuid;
+      dkan = Drupal.settings.recline.dkan;
+      fileType = Drupal.settings.recline.fileType;
 
       window.dataExplorer = null;
       window.explorerDiv = $('.data-explorer');
 
-      // This is some fancy stuff to allow configuring the multiview from
-      // parameters in the query string
-      //
-      // For more on state see the view documentation.
-      var state = recline.View.parseQueryString(decodeURIComponent(window.location.search));
-      if (state) {
-        _.each(state, function(value, key) {
-          try {
-            value = JSON.parse(value);
-          } catch(e) {}
-          state[key] = value;
-        });
-      } else {
-        state.url = 'demo';
+      // This is the very basic state collection.
+      var state = recline.View.parseQueryString(decodeURIComponent(window.location.hash));
+      if ('#map' in state) {
+        state['currentView'] = 'map';
+      } else if ('#graph' in state) {
+        state['currentView'] = 'graph';
+      } else if ('#timeline' in state) {
+        state['currentView'] = 'timeline';
       }
-      var dataset = null;
-      if (state.dataset || state.url) {
-        var datasetInfo = _.extend({
-            url: state.url,
-            backend: state.backend
+      // Checks if dkan_datastore is installed.
+      if (dkan) {
+        var DKAN_API = '/api/action/datastore/search.json';
+        var url = window.location.origin + DKAN_API + '?resource_id=' + uuid;
+        var DkanDatastore = false;
+        var DkanApi = $.ajax({
+          type: 'GET',
+          url: url,
+          dataType: 'json',
+          success: function(data, status) {
+            if ('success' in data && data.success) {
+              var dataset = new recline.Model.Dataset({
+                endpoint: window.location.origin + '/api',
+                url: url,
+                id: uuid,
+                backend: 'ckan',
+              });
+              dataset.fetch();
+              return createExplorer(dataset, state);
+            }
+            else {
+              $('.data-explorer').append('<div class="messages status">Error returned from datastore: ' + data + '.</div>');
+            }
+
           },
-          state.dataset
-        );
-        dataset = new recline.Model.Dataset(datasetInfo);
-      } else {
-        var dataset = new recline.Model.Dataset({
-           url: file,
-           backend: 'dataproxy',
+          error: function(data, status) {
+            $('.data-explorer').append('<div class="messages status">Unable to connect to the datastore.</div>');
+          },
         });
       }
-      dataset.fetch();
-      createExplorer(dataset, state);
+      else if (fileType == 'text/csv') {
+        $.ajax({
+          url: file,
+          timeout: 1000,
+          success: function(data) {
+            // Changes "^M" to new line if "^M" is present with no lines.
+            if (data.indexOf("\r") != -1 && data.indexOf("\n") == -1) {
+              data = data.replace(/(\r)/g, '\n');
+            }
+            var dataset = new recline.Model.Dataset({
+               records: recline.Backend.CSV.parseCSV(data),
+            });
+            dataset.fetch();
+            var views = createExplorer(dataset, state);
+            // The map needs to get redrawn when we are delivering from the ajax
+            // call.
+            $.each(views, function(i, view) {
+              if (view.id == 'map') {
+                view.view.redraw('refresh');
+              }
+            });
+          },
+          error: function(x, t, m) {
+            if (t === "timeout") {
+              $('.data-explorer').append('<div class="messages status">File was too large or unavailable for preview.</div>');
+            } else {
+              $('.data-explorer').append('<div class="messages status">Data preview unavailable.</div>');
+            }
+          }
+        });
+      }
+       // Checks if xls.
+      else if (fileType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || fileType == 'application/vnd.ms-excel') {
+        var dataset = new recline.Model.Dataset({
+          url: file,
+          backend: 'dataproxy',
+        });
+        dataset.fetch();
+        var views = createExplorer(dataset, state);
+      }
+      else {
+        $('.data-explorer').append('<div class="messages status">File type ' + fileType + ' not supported for preview.</div>');
+      }
     }
   }
 
@@ -103,6 +156,6 @@
       state: state,
       views: views
     });
+    return views;
   }
-
 })(jQuery);

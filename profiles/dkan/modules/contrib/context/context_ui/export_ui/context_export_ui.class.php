@@ -73,6 +73,7 @@ class context_export_ui extends ctools_export_ui {
     if (!empty($this->plugin['form']['submit'])) {
       $this->plugin['form']['submit']($form, $form_state);
     }
+    context_invalidate_cache();
   }
 
   /**

@@ -251,7 +251,11 @@ function entity_property_verify_data_type($data, $type) {
       return TRUE;
     }
     elseif (isset($info[$type]['entity keys']['name'])) {
-      return entity_property_verify_data_type($data, 'token');
+      // Read the data type of the name key from the metadata if available.
+      $key = $info[$type]['entity keys']['name'];
+      $property_info = entity_get_property_info($type);
+      $property_type = isset($property_info['properties'][$key]['type']) ? $property_info['properties'][$key]['type'] : 'token';
+      return entity_property_verify_data_type($data, $property_type);
     }
     return entity_property_verify_data_type($data, empty($info[$type]['fieldable']) ? 'text' : 'integer');
   }

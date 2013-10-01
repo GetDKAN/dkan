@@ -6,9 +6,12 @@ files[] = rules.features.inc
 files[] = tests/rules.test
 files[] = includes/faces.inc
 files[] = includes/rules.core.inc
+files[] = includes/rules.event.inc
 files[] = includes/rules.processor.inc
 files[] = includes/rules.plugins.inc
 files[] = includes/rules.state.inc
+files[] = includes/rules.dispatcher.inc
+files[] = modules/node.eval.inc
 files[] = modules/php.eval.inc
 files[] = modules/rules_core.eval.inc
 files[] = modules/system.eval.inc
@@ -19,9 +22,9 @@ files[] = ui/ui.plugins.inc
 dependencies[] = entity_token
 dependencies[] = entity
 
-; Information added by drupal.org packaging script on 2013-03-27
-version = "7.x-2.3"
+; Information added by drupal.org packaging script on 2013-09-19
+version = "7.x-2.5"
 core = "7.x"
 project = "rules"
-datestamp = "1364401818"
+datestamp = "1379579047"
 

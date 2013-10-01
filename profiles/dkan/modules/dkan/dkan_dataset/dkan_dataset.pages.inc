@@ -9,8 +9,14 @@
  * Callback for back link.
  */
 function dkan_dataset_back($node) {
-  if (isset($node->field_dataset_ref[DKAN_FIELD_LANG][0]['target_id'])) {
-    drupal_goto('node/' . $node->field_dataset_ref[DKAN_FIELD_LANG][0]['target_id']);
+  $node_wrapper = entity_metadata_wrapper('node', $node);
+  $ref = $node_wrapper->field_dataset_ref->value();
+
+  if (isset($ref[0])) {
+    drupal_goto('node/' . $ref[0]->nid);
+  }
+  else {
+    drupal_set_message(t('There is no dataset associated with this resource.'));
   }
   return '';
 }

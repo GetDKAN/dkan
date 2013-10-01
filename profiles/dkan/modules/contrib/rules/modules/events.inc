@@ -36,13 +36,18 @@ function rules_events_entity_unchanged($arguments, $name, $info) {
  * Implements hook_entity_view().
  */
 function rules_entity_view($entity, $type, $view_mode, $langcode) {
-  $entity_types = array(
-    'comment' => TRUE,
-    'node' => TRUE,
-    'user' => TRUE,
-  );
-  if (isset($entity_types[$type])) {
-    rules_invoke_event($type . '_view', $entity, $view_mode);
+  switch ($type) {
+    case 'comment':
+      rules_invoke_event('comment_view--' . $entity->node_type, $entity, $view_mode);
+      rules_invoke_event('comment_view', $entity, $view_mode);
+      break;
+    case 'node':
+      rules_invoke_event('node_view--' . $entity->type, $entity, $view_mode);
+      rules_invoke_event('node_view', $entity, $view_mode);
+      break;
+    case 'user':
+      rules_invoke_event('user_view', $entity, $view_mode);
+      break;
   }
 }
 
@@ -50,15 +55,23 @@ function rules_entity_view($entity, $type, $view_mode, $langcode) {
  * Implements hook_entity_presave().
  */
 function rules_entity_presave($entity, $type) {
-  $entity_types = array(
-    'comment' => TRUE,
-    'node' => TRUE,
-    'taxonomy_term' => TRUE,
-    'taxonomy_vocabulary' => TRUE,
-    'user' => TRUE,
-  );
-  if (isset($entity_types[$type])) {
-    rules_invoke_event($type . '_presave', $entity);
+  switch ($type) {
+    case 'comment':
+      rules_invoke_event('comment_presave--' . $entity->node_type, $entity);
+      rules_invoke_event('comment_presave', $entity);
+      break;
+    case 'node':
+      rules_invoke_event('node_presave--' . $entity->type, $entity);
+      rules_invoke_event('node_presave', $entity);
+      break;
+    case 'taxonomy_term':
+      rules_invoke_event('taxonomy_term_presave--' . $entity->vocabulary_machine_name, $entity);
+      rules_invoke_event('taxonomy_term_presave', $entity);
+      break;
+    case 'taxonomy_vocabulary':
+    case 'user':
+      rules_invoke_event($type . '_presave', $entity);
+      break;
   }
 }
 
@@ -66,15 +79,23 @@ function rules_entity_presave($entity, $type) {
  * Implements hook_entity_update().
  */
 function rules_entity_update($entity, $type) {
-  $entity_types = array(
-    'comment' => TRUE,
-    'node' => TRUE,
-    'taxonomy_term' => TRUE,
-    'taxonomy_vocabulary' => TRUE,
-    'user' => TRUE,
-  );
-  if (isset($entity_types[$type])) {
-    rules_invoke_event($type . '_update', $entity);
+  switch ($type) {
+    case 'comment':
+      rules_invoke_event('comment_update--' . $entity->node_type, $entity);
+      rules_invoke_event('comment_update', $entity);
+      break;
+    case 'node':
+      rules_invoke_event('node_update--' . $entity->type, $entity);
+      rules_invoke_event('node_update', $entity);
+      break;
+    case 'taxonomy_term':
+      rules_invoke_event('taxonomy_term_update--' . $entity->vocabulary_machine_name, $entity);
+      rules_invoke_event('taxonomy_term_update', $entity);
+      break;
+    case 'taxonomy_vocabulary':
+    case 'user':
+      rules_invoke_event($type . '_update', $entity);
+      break;
   }
 }
 
@@ -82,15 +103,23 @@ function rules_entity_update($entity, $type) {
  * Implements hook_entity_insert().
  */
 function rules_entity_insert($entity, $type) {
-  $entity_types = array(
-    'comment' => TRUE,
-    'node' => TRUE,
-    'taxonomy_term' => TRUE,
-    'taxonomy_vocabulary' => TRUE,
-    'user' => TRUE,
-  );
-  if (isset($entity_types[$type])) {
-    rules_invoke_event($type . '_insert', $entity);
+  switch ($type) {
+    case 'comment':
+      rules_invoke_event('comment_insert--' . $entity->node_type, $entity);
+      rules_invoke_event('comment_insert', $entity);
+      break;
+    case 'node':
+      rules_invoke_event('node_insert--' . $entity->type, $entity);
+      rules_invoke_event('node_insert', $entity);
+      break;
+    case 'taxonomy_term':
+      rules_invoke_event('taxonomy_term_insert--' . $entity->vocabulary_machine_name, $entity);
+      rules_invoke_event('taxonomy_term_insert', $entity);
+      break;
+    case 'taxonomy_vocabulary':
+    case 'user':
+      rules_invoke_event($type . '_insert', $entity);
+      break;
   }
 }
 
@@ -98,15 +127,23 @@ function rules_entity_insert($entity, $type) {
  * Implements hook_entity_delete().
  */
 function rules_entity_delete($entity, $type) {
-  $entity_types = array(
-    'comment' => TRUE,
-    'node' => TRUE,
-    'taxonomy_term' => TRUE,
-    'taxonomy_vocabulary' => TRUE,
-    'user' => TRUE,
-  );
-  if (isset($entity_types[$type])) {
-    rules_invoke_event($type . '_delete', $entity);
+  switch ($type) {
+    case 'comment':
+      rules_invoke_event('comment_delete--' . $entity->node_type, $entity);
+      rules_invoke_event('comment_delete', $entity);
+      break;
+    case 'node':
+      rules_invoke_event('node_delete--' . $entity->type, $entity);
+      rules_invoke_event('node_delete', $entity);
+      break;
+    case 'taxonomy_term':
+      rules_invoke_event('taxonomy_term_delete--' . $entity->vocabulary_machine_name, $entity);
+      rules_invoke_event('taxonomy_term_delete', $entity);
+      break;
+    case 'taxonomy_vocabulary':
+    case 'user':
+      rules_invoke_event($type . '_delete', $entity);
+      break;
   }
 }
 

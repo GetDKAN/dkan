@@ -16,15 +16,16 @@ function recline_field_info() {
       'settings' => array(
         'uri_scheme' => variable_get('file_default_scheme', 'public'),
       ),
-     'instance_settings' => array(
-       'file_extensions' => 'csv, xml',
-       'file_directory' => '',
-       'max_filesize' => '',
-       'title_field' => 0,
-       'alt_field' => 0,
+      'instance_settings' => array(
+        'file_extensions' => 'csv',
+        'file_directory' => '',
+        'max_filesize' => '',
+        'title_field' => 0,
+        'alt_field' => 0,
       ),
-     'default_widget' => 'recline_widget',
-     'default_formatter' => 'recline_default_formatter',
+      'property_type' => 'file',
+      'default_widget' => 'recline_widget',
+      'default_formatter' => 'recline_default_formatter',
     ),
   );
 }
@@ -36,7 +37,7 @@ function recline_field_formatter_info() {
   $formatters = array(
     'recline_default_formatter' => array(
       'label' => t('Recline.js visualization'),
-      'field types' => array('recline_field'),
+      'field types' => array('recline_field', 'file'),
       // TODO: add some settings.
       'settings' => array(),
     ),
@@ -161,7 +162,6 @@ function recline_field_widget_form(&$form, &$form_state, $field, $instance, $lan
     // This gives us the value if someone clicks on a view and then uploads
     // a file. We lose any new values if someone removes the file. We
     // could fix this by writing our own insert function.
-
     // If file is already uploaded.
     if (isset($elements[$delta]['#default_value'][$view])) {
       $default_value = $elements[$delta]['#default_value'][$view];
@@ -247,6 +247,7 @@ function recline_field_formatter_view($entity_type, $entity, $field, $instance, 
   $element = array();
 
   foreach ($items as $delta => $item) {
+    $item['entity'] = $entity;
     $element[$delta] = array(
       '#theme' => 'recline_default_formatter',
       '#item' => $item,
@@ -259,13 +260,12 @@ function recline_field_formatter_view($entity_type, $entity, $field, $instance, 
 /**
  * Returns HTML for an recline field formatter.
  *
- * @param $variables
+ * @param array $variables
  *   An associative array containing:
  *   - item: Associative array of recline field
  *
  * @ingroup themeable
  */
-
 function theme_recline_default_formatter($variables) {
   $file = $variables['item'];
 
@@ -289,36 +289,77 @@ function theme_recline_default_formatter($variables) {
     $link_text = $file->description;
     $options['attributes']['title'] = check_plain($file['filename']);
   }
-  if ($variables['item']['grid'] || $variables['item']['graph'] || $variables['item']['map']) {
+  $dkan = $table = FALSE;
+  // See if datastore is loaded, if so, prepare recline to view from it.
+  if (module_exists('dkan_datastore_api') && module_exists('feeds_flatstore_processor') && function_exists('dkan_datastore_api_get_feeds_source')) {
+    $source_id = dkan_datastore_api_get_feeds_source($variables['item']['entity']->nid);
+    if ($table = feeds_flatstore_processor_table_name($source_id, $variables['item']['entity']->nid)) {
+      if (db_table_exists($table)) {
+        $dkan = $table;
+      }
+    }
+  }
+  if (isset($variables['item']['grid'])) {
+    if ($variables['item']['grid'] || $variables['item']['graph'] || $variables['item']['map']) {
+      $uuid = isset($variables['item']['entity']->uuid) ? $variables['item']['entity']->uuid : FALSE;
+      drupal_add_library('system', 'ui.sortable');
+      $recline = libraries_load('recline');
+      $module_path = drupal_get_path('module', 'recline');
+      drupal_add_js($module_path . '/backend.ckan_get.js');
+      drupal_add_js($module_path . '/recline.app.js');
+      drupal_add_css($module_path . '/recline.css');
+      $file_path = file_create_url($variables['item']['uri']);
+      $settings['recline'] = array(
+        'file' => $file_path,
+        'grid' => (int) $variables['item']['grid'],
+        'graph' => (int) $variables['item']['graph'],
+        'map' => (int) $variables['item']['map'],
+        'uuid' => $uuid,
+        'fileType' => $variables['item']['filemime'],
+        'dkan' => $dkan,
+      );
+      drupal_add_js($settings, 'setting');
+    }
+  }
+  else {
+    $uuid = isset($variables['item']['entity']->uuid) ? $variables['item']['entity']->uuid : FALSE;
     drupal_add_library('system', 'ui.sortable');
     $recline = libraries_load('recline');
     $module_path = drupal_get_path('module', 'recline');
+    drupal_add_js($module_path . '/backend.ckan_get.js');
     drupal_add_js($module_path . '/recline.app.js');
     drupal_add_css($module_path . '/recline.css');
     $file_path = file_create_url($variables['item']['uri']);
     $settings['recline'] = array(
       'file' => $file_path,
-      'grid' => (int)$variables['item']['grid'],
-      'graph' => (int)$variables['item']['graph'],
-      'map' => (int)$variables['item']['map'],
+      'uuid' => $uuid,
+      'grid' => 1,
+      'graph' => 1,
+      'map' => 1,
+      'fileType' => $variables['item']['filemime'],
+      'dkan' => $dkan,
     );
     drupal_add_js($settings, 'setting');
   }
+  if ($recline) {
+    // Necessary to fix https://github.com/mapbox/mapbox.js/issues/339
+    $leaflet_imgs = $recline['library path'] . '/vendor/leaflet/0.4.4/images';
+    drupal_add_js('L.Icon.Default.imagePath = "/' . $leaflet_imgs . '"', 'inline');
+  }
 
-  $file = l('Download', $url, $options);
+  $file = l(t('Download'), $url, $options);
   return '<div class="download">' . $file . '</div><span class="data-explorer"></span>';
 }
 
 /**
  * Returns HTML for an recline field widget.
  *
- * @param $variables
+ * @param array $variables
  *   An associative array containing:
  *   - item: Associative array of recline field
  *
  * @ingroup themeable
  */
-
 function theme_recline_widget($variables) {
   $element = $variables['element'];
 
@@ -340,4 +381,3 @@ function recline_view_options() {
     'map' => t('Map'),
   );
 }
-

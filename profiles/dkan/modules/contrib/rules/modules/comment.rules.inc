@@ -15,6 +15,7 @@ function rules_comment_event_info() {
     'group' => t('comment'),
     'module' => 'comment',
     'access callback' => 'rules_comment_integration_access',
+    'class' => 'RulesCommentEventHandler',
   );
   return array(
     'comment_insert' => $defaults + array(
@@ -59,6 +60,21 @@ function rules_comment_event_info() {
 function rules_comment_integration_access($type, $name) {
   if ($type == 'event' || $type == 'condition') {
     return entity_access('view', 'comment');
+  }
+}
+
+/**
+ * Event handler support comment bundle event settings.
+ */
+class RulesCommentEventHandler extends RulesEventHandlerEntityBundle {
+
+  /**
+   * Returns the label to use for the bundle property.
+   *
+   * @return string
+   */
+  protected function getBundlePropertyLabel() {
+    return t('type');
   }
 }
 
