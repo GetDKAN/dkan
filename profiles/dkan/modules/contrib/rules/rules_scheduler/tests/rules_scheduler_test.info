@@ -1,0 +1,13 @@
+name = "Rules Scheduler Tests"
+description = "Support module for the Rules Scheduler tests."
+package = Testing
+core = 7.x
+files[] = rules_scheduler_test.inc
+hidden = TRUE
+
+; Information added by drupal.org packaging script on 2013-09-19
+version = "7.x-2.5"
+core = "7.x"
+project = "rules"
+datestamp = "1379579047"
+
