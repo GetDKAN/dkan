@@ -1,0 +1,12 @@
+name = File Field Sources
+description = Extends File fields to allow referencing of existing files, remote files, and server files.
+dependencies[] = file
+package = Fields
+core = 7.x
+
+; Information added by drupal.org packaging script on 2013-04-24
+version = "7.x-1.8"
+core = "7.x"
+project = "filefield_sources"
+datestamp = "1366782913"
+

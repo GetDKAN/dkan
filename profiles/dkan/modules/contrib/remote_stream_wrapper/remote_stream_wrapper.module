@@ -1,0 +1,308 @@
+<?php
+
+/**
+ * @file
+ * Provides a remote stream wrapper and file field integration.
+ *
+ * @todo Add a 'Remote URL' file field widget.
+ */
+
+/**
+ * Stream wrapper type flag -- visible and readable using remote files that act like local files.
+ */
+define('STREAM_WRAPPERS_REMOTE', STREAM_WRAPPERS_LOCAL | STREAM_WRAPPERS_READ | STREAM_WRAPPERS_VISIBLE);
+
+/**
+ * Implements hook_menu().
+ */
+function remote_stream_wrapper_menu() {
+  $items = array();
+
+  $items['file/add/remote'] = array(
+    'title' => 'Remote',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('remote_stream_wrapper_file_add_form'),
+    'access callback' => 'remote_stream_wrapper_media_browser_plugin_access',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  // Add image style generation paths for external URLs.
+  if (module_exists('image')) {
+    $wrappers = file_get_remote_stream_wrappers();
+    $directory_path = file_stream_wrapper_get_instance_by_scheme(file_default_scheme())->getDirectoryPath();
+    $pos = count(explode('/', $directory_path)) + 1;
+    $item = array(
+      'page callback' => 'remote_stream_wrapper_image_style_deliver',
+      'page arguments' => array($pos, $pos + 1),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+      'file' => 'remote_stream_wrapper.image.inc',
+    );
+    foreach (array_keys($wrappers) as $scheme) {
+      $items[$directory_path . '/styles/%image_style/' . $scheme] = $item;
+    }
+  }
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function remote_stream_wrapper_permission() {
+  $permission = array();
+
+  if (module_exists('media')) {
+    $permission['add media from remote urls'] = array(
+      'title' => t('Add media from remote URLs'),
+      'description' => t('Add media from remote URLs.'),
+    );
+  }
+
+  return $permission;
+}
+
+/**
+ * Implements hook_stream_wrappers().
+ */
+function remote_stream_wrapper_stream_wrappers() {
+  $info['http'] = array(
+    'name' => t('HTTP URLs'),
+    'class' => 'DrupalRemoteStreamWrapper',
+    'description' => t('Remote files.'),
+    'type' => STREAM_WRAPPERS_REMOTE,
+    'remote' => TRUE,
+  );
+  $info['https'] = $info['http'];
+  $info['https']['name'] = t('HTTPS URLs');
+  $info['feed'] = $info['http'];
+  $info['feed']['name'] = t('Feed URLs');
+
+  return $info;
+}
+
+/**
+ * Return a list of remote stream wrappers.
+ */
+function file_get_remote_stream_wrappers() {
+  $wrappers = file_get_stream_wrappers(STREAM_WRAPPERS_REMOTE);
+  foreach ($wrappers as $scheme => $wrapper) {
+    if (empty($wrapper['remote'])) {
+      unset($wrappers[$scheme]);
+    }
+  }
+  //$wrappers = array_diff_key($wrappers, file_get_stream_wrappers(STREAM_WRAPPERS_LOCAL_NORMAL));
+  return $wrappers;
+}
+
+/**
+ * Check if a stream wrapper scheme is a remote stream wrapper.
+ */
+function file_is_scheme_remote($scheme) {
+  $wrappers = file_get_remote_stream_wrappers();
+  return isset($wrappers[$scheme]);
+}
+
+/**
+ * Implements hook_preprocess_image().
+ */
+function remote_stream_wrapper_preprocess_image(&$variables) {
+  static $regex;
+
+  if (!empty($variables['style_name'])) {
+    if (!isset($regex)) {
+      $wrappers = file_get_remote_stream_wrappers();
+      $schemes = implode('|', array_keys($wrappers));
+      $regex = "#^($schemes)://styles/#";
+    }
+    $variables['path'] = preg_replace($regex, file_default_scheme() . '://styles/', $variables['path'], 1);
+  }
+}
+
+/**
+ * Copy of image_style_path() for use with remote images.
+ *
+ * When image_style_path() is give a file like 'http://example.com/image.png'
+ * it is converted into 'http://styles/stylename/http/example.com/image.png'
+ * which will fail image_style_deliver().
+ */
+function remote_stream_wrapper_image_style_path($style_name, $uri) {
+  // Force the image style to be returned with the default file scheme, but
+  // with the file's original scheme in the path.
+  return file_default_scheme() . '://styles/' . $style_name . '/' . file_uri_scheme($uri) . '/' . file_uri_target($uri);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Manually add support for the remote stream wrapper in file fields since
+ * it is read-only.
+ */
+function remote_stream_wrapper_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
+  if ($form['#field']['type'] == 'file' || $form['#field']['type'] == 'image') {
+    $form['field']['settings']['uri_scheme']['#description'] .= ' ' . t('This only applies to uploaded files and not remote files.');
+  }
+}
+
+/**
+ * Validation callback for remote URLs.
+ */
+function remote_stream_wrapper_validate_url($element, &$form_state) {
+  $value = $element['#value'];
+  if ($value != '' && !valid_url($value, TRUE)) {
+    form_error($element, t('Invalid URL %url.', array('%url' => $value)));
+  }
+  elseif (!file_stream_wrapper_valid_scheme(file_uri_scheme($value))) {
+    // Check that the scheme is supported.
+    form_error($element, t('Remote URLs with the %scheme scheme are not supported.', array('%scheme' => file_uri_scheme($value))));
+  }
+  else {
+    // Check that the file exists.
+    $request = drupal_http_request($value, array('method' => 'HEAD'));
+    if (!empty($request->error)) {
+      form_error($element, t('Unable to fetch file from URL %url (error @code: %error).', array('%url' => $value, '@code' => $request->code, '%error' => $request->error)));
+    }
+  }
+}
+
+/**
+ * Load a file object by URI.
+ *
+ * @param string $uri
+ *   A string containing the URI, path, or filename.
+ *
+ * @return
+ *   A file object, or FALSE if not found.
+ */
+function remote_stream_wrapper_file_load_by_uri($uri) {
+  $uri = file_stream_wrapper_uri_normalize($uri);
+  $files = entity_load('file', FALSE, array('uri' => $uri));
+  return !empty($files) ? reset($files) : FALSE;
+}
+
+/**
+ * Helper functon to assemble a new file entity object by URI.
+ *
+ * @param string $uri
+ *   A string containing the URI, path, or filename.
+ */
+function remote_stream_wrapper_file_create_by_uri($uri) {
+  $uri = file_stream_wrapper_uri_normalize($uri);
+
+  $file = new stdClass();
+  $file->fid = NULL;
+  $file->uri = $uri;
+  $file->filename = basename($file->uri);
+  $file->filemime = file_get_mimetype($file->uri);
+  $file->uid = $GLOBALS['user']->uid;
+  $file->status = FILE_STATUS_PERMANENT;
+  return $file;
+}
+
+/**
+ * Implements hook_media_browser_plugin_info().
+ */
+function remote_stream_wrapper_media_browser_plugin_info() {
+  $plugins['remote_file'] = array(
+    'title' => t('Remote URL'),
+    'class' => 'RemoteStreamWrapperMediaBrowser',
+    // Support for Media 1.x browser plugin API.
+    '#title' => t('Remote URL'),
+    'access callback' => 'remote_stream_wrapper_media_browser_plugin_access',
+  );
+  return $plugins;
+}
+
+/**
+ * Media 1.x browser plugin access callback.
+ *
+ * Duplicate of RemoteStreamWrapperMediaBrowser::access().
+ */
+function remote_stream_wrapper_media_browser_plugin_access() {
+  return user_access('administer files') || user_access('add media from remote urls');
+}
+
+/**
+ * Implements hook_media_browser_plugin_view().
+ */
+function remote_stream_wrapper_media_browser_plugin_view($plugin_name, $params) {
+  if ($plugin_name == 'remote_file') {
+    if (remote_stream_wrapper_media_browser_plugin_access()) {
+      $params += array('types' => array());
+      $form = drupal_get_form('remote_stream_wrapper_file_add_form', $params);
+      return array(
+        '#title' => t('Remote URL'),
+        'form' => array($form),
+      );
+    }
+  }
+}
+
+/**
+ * Provides a form for adding media items from remote URLs.
+ *
+ * @see remote_stream_wrapper_media_browser_form_submit()
+ */
+function remote_stream_wrapper_file_add_form($form, &$form_state, array $options = array()) {
+  $form['url'] = array(
+    '#type' => 'textfield',
+    '#title' => 'URL',
+    '#attributes' => array('class' => array('media-add-from-remote-url')),
+    '#maxlength' => 255, // Maximum length of {file_managed}.uri
+    '#element_validate' => array('remote_stream_wrapper_validate_url'),
+    '#required' => TRUE,
+  );
+
+  // @todo Validate against file field allowed types.
+  $form['#validators'] = array();
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+  return $form;
+}
+
+/**
+ * Save a file record based on a remote URL.
+ *
+ * @see remote_stream_wrapper_media_browser_form()
+ * @see file_save()
+ * @see DrupalRemoteStreamWrapper
+ */
+function remote_stream_wrapper_file_add_form_submit($form, &$form_state) {
+  $uri = $url = $form_state['values']['url'];
+
+  try {
+    $file = remote_stream_wrapper_file_load_by_uri($uri);
+    if (!$file) {
+      $file = remote_stream_wrapper_file_create_by_uri($uri);
+      file_save($file);
+    }
+  }
+  catch (Exception $e) {
+    form_set_error('url', $e->getMessage());
+    return;
+  }
+
+  if (empty($file->fid)) {
+    form_set_error('url', t('Unable to add file from URL %file.', array('%file' => $url)));
+    return;
+  }
+  else {
+    $form_state['file'] = $file;
+  }
+
+  if (drupal_valid_path('file/' . $file->fid . '/edit')) {
+    $destination = array('destination' => 'admin/content/file');
+    if (isset($_GET['destination'])) {
+      $destination = drupal_get_destination();
+      unset($_GET['destination']);
+    }
+    $form_state['redirect'] = array('file/' . $file->fid . '/edit', array('query' => $destination));
+  }
+  else {
+    $form_state['redirect'] = 'admin/content/file';
+  }
+}

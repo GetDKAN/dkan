@@ -1,0 +1,122 @@
+<?php
+
+/**
+ * Tests for the remote_stream_wrapper module.
+ */
+
+class RemoteStreamWrapperTestCase extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Remote stream wrapper',
+      'description' => 'Tests functionality for remote stream wrappers.',
+      'group' => 'Remote steam wrapper',
+    );
+  }
+
+  function setUp() {
+    parent::setUp(array('remote_stream_wrapper', 'image'));
+  }
+
+  /**
+   * Override DrupalWebTestCase::drupalGetTestFiles to return 'external' files.
+   */
+  protected function drupalGetTestFiles($type, $size = NULL) {
+    $files = parent::drupalGetTestFiles($type, $size);
+    foreach ($files as $file) {
+      $file->original_uri = $file->uri;
+      $file->uri = file_create_url($file->uri);
+    }
+    return $files;
+  }
+
+  /**
+   * Test STREAM_WRAPPERS_REMOTE bitmask and file_get_remote_stream_wrappers().
+   */
+  function testBitMasks() {
+    $cases = array(
+      array('filter' => STREAM_WRAPPERS_ALL, 'result' => TRUE),
+      array('filter' => STREAM_WRAPPERS_LOCAL, 'result' => TRUE),
+      array('filter' => STREAM_WRAPPERS_READ, 'result' => TRUE),
+      array('filter' => STREAM_WRAPPERS_WRITE, 'result' => FALSE),
+      array('filter' => STREAM_WRAPPERS_VISIBLE, 'result' => TRUE),
+      array('filter' => STREAM_WRAPPERS_HIDDEN, 'result' => FALSE),
+      array('filter' => STREAM_WRAPPERS_LOCAL_HIDDEN, 'result' => FALSE),
+      array('filter' => STREAM_WRAPPERS_WRITE_VISIBLE, 'result' => FALSE),
+      array('filter' => STREAM_WRAPPERS_READ_VISIBLE, 'result' => TRUE),
+      array('filter' => STREAM_WRAPPERS_NORMAL, 'result' => FALSE),
+      array('filter' => STREAM_WRAPPERS_LOCAL_NORMAL, 'result' => FALSE),
+    );
+
+    foreach ($cases as $case) {
+      $wrappers = file_get_stream_wrappers($case['filter']);
+      $this->assertEqual(isset($wrappers['http']), $case['result']);
+    }
+
+    $wrappers = file_get_remote_stream_wrappers();
+    $this->assertEqual(count($wrappers), 3, 'Correct number of remote stream wrappers returned.');
+  }
+
+  /**
+   * Check that basic-level file functions return expected values.
+   */
+  function testFileStat() {
+    $files = $this->drupalGetTestFiles('image');
+    $file = $files[0];
+
+    $this->assertTrue(is_file($file->uri));
+    $this->assertFalse(is_dir($file->uri));
+    $this->assertEqual(filesize($file->uri), 125);
+    $this->assertEqual(image_get_info($file->uri), array(
+      'width' => 40,
+      'height' => 20,
+      'extension' => 'png',
+      'mime_type' => 'image/png',
+      'file_size' => 125,
+    ));
+  }
+
+  /**
+   * Test file CRUD functions with remote files.
+   */
+  function testFileCrud() {
+    $files = $this->drupalGetTestFiles('image');
+
+    $file = remote_stream_wrapper_file_load_by_uri($files[0]->uri);
+    $this->assertFalse($file, 'Remote file not yet saved as a managed file.');
+    $file = remote_stream_wrapper_file_create_by_uri($files[0]->uri);
+    file_save($file);
+    $this->assertTrue(!empty($file->fid), 'Remote file saved successfully.');
+    $this->assertEqual($file->filesize, filesize($files[0]->original_uri));
+    $this->assertEqual($file->filemime, file_get_mimetype($files[0]->original_uri));
+
+    $loaded_file = remote_stream_wrapper_file_load_by_uri($files[0]->uri);
+    $this->assertEqual($loaded_file->fid, $file->fid, 'Remote file managed record loaded by URI.');
+
+    // Delete the managed file record.
+    $result = file_delete($file);
+    $this->assertIdentical($result, TRUE, 'Remote file record deleted successfully.');
+    $this->assertFalse(remote_stream_wrapper_file_load_by_uri($files[0]->uri), 'Remote file managed record no longer exists.');
+  }
+
+  /**
+   * Test that remote images can be used with image styles.
+   */
+  function testRemoteImageStyles() {
+    $files = $this->drupalGetTestFiles('image');
+    $file = remote_stream_wrapper_file_create_by_uri($files[0]->uri);
+    file_save($file);
+    $generated_uri = remote_stream_wrapper_image_style_path('thumbnail', $file->uri);
+
+    $output = theme('image_style', array('style_name' => 'thumbnail', 'path' => $file->uri));
+    $this->drupalSetContent($output);
+    $elements = $this->xpath('//img');
+    $this->drupalGet($elements[0]['src']);
+    $this->assertResponse(200);
+
+    $this->assertTrue(is_file($generated_uri), t('Generated file does exist after we accessed it.'));
+    $this->assertRaw(file_get_contents($generated_uri), t('URL returns expected file.'));
+    $generated_image_info = image_get_info($generated_uri);
+    $this->assertEqual($this->drupalGetHeader('Content-Type'), $generated_image_info['mime_type'], t('Expected Content-Type was reported.'));
+    $this->assertEqual($this->drupalGetHeader('Content-Length'), $generated_image_info['file_size'], t('Expected Content-Length was reported.'));
+  }
+}

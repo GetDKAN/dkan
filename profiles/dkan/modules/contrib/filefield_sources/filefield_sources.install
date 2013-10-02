@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Update and install functions for FileField Sources.
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function filefield_sources_install() {
+  // FileField Sources needs to load after both ImageField and FileField.
+  db_query("UPDATE {system} SET weight = 5 WHERE type = 'module' AND name = 'filefield_sources'");
+}
+
+/**
+ * Enable FileField Sources on all current fields (as was the previous default).
+ */
+function filefield_sources_update_6001() {
+  $ret = array();
+
+  drupal_load('module', 'content');
+  module_load_include('inc', 'content', 'includes/content.crud');
+
+  foreach (content_fields() as $field) {
+    foreach (node_get_types('types') as $node_type => $type_info) {
+      if ($type_field = content_fields($field['field_name'], $node_type)) {
+        $type_field['widget']['filefield_sources'] = array(
+          'imce' => 'imce',
+          'reference' => 'reference',
+          'remote' => 'remote',
+        );
+        content_field_instance_update($type_field);
+      }
+    }
+  }
+
+  // FileField Sources needs to load after both ImageField and FileField.
+  $ret[] = update_sql("UPDATE {system} SET weight = 5 WHERE type = 'module' AND name = 'filefield_sources'");
+
+  return $ret;
+}

@@ -1,0 +1,135 @@
+<?php
+
+/**
+ * @file
+ * Provides a remote stream wrapper and filefield source integration.
+ */
+
+define('REMOTE_FILE_SOURCE_HINT_TEXT', 'http://example.com/files/file.zip');
+
+/**
+ * Implements hook_filefield_sources_info().
+ */
+function remote_file_source_filefield_sources_info() {
+  $source = array();
+  $source['remotefile'] = array(
+    'name' => t('Remote File'),
+    'label' => t('Remote File'),
+    'description' => t('Link to a file located on a remote server.'),
+    'process' => 'filefield_source_remotefile_process',
+    'value' => 'filefield_source_remotefile_value',
+    'weight' => 3,
+  );
+  return $source;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function remote_file_source_theme() {
+  return array(
+    'filefield_source_remotefile_element' => array(
+      'render element' => 'element',
+    ),
+  );
+}
+
+/**
+ * Theme the output of the autocomplete field.
+ */
+function theme_filefield_source_remotefile_element($variables) {
+  $element = $variables['element'];
+
+  $element['url']['#field_suffix'] = drupal_render($element['select']);
+  return '<div class="filefield-source filefield-source-remotefile clear-block">' . drupal_render($element['url']) . '</div>';
+
+}
+
+/**
+ * A #process callback to extend the filefield_widget element type.
+ */
+function filefield_source_remotefile_process($element, &$form_state, $form) {
+
+  $element['filefield_remotefile'] = array(
+    '#weight' => 100.5,
+    '#theme' => 'filefield_source_remotefile_element',
+    '#filefield_source' => TRUE, // Required for proper theming.
+    '#filefield_sources_hint_text' => REMOTE_FILE_SOURCE_HINT_TEXT,
+  );
+
+  $element['filefield_remotefile']['url'] = array(
+    '#type' => 'textfield',
+    '#maxlength' => NULL,
+  );
+
+  $element['filefield_remotefile']['select'] = array(
+    '#name' => implode('_', $element['#array_parents']) . '_select',
+    '#type' => 'submit',
+    '#value' => t('Select'),
+    '#validate' => array(),
+    '#submit' => array('filefield_sources_field_submit'),
+    '#limit_validation_errors' => array($element['#parents']),
+    '#ajax' => array(
+      'path' => 'file/ajax/' . implode('/', $element['#array_parents']) . '/' . $form['form_build_id']['#value'],
+      'wrapper' => $element['#id'] . '-ajax-wrapper',
+      'effect' => 'fade',
+      'method' => 'replace',
+    ),
+    '#suffix' => '<div class="description">' . t('This field will ignore the file size limitation') . '</div>',
+  );
+
+  return $element;
+}
+
+/**
+ * A #filefield_value_callback function.
+ */
+function filefield_source_remotefile_value($element, &$item) {
+  if (isset($item['filefield_remotefile']['url']) && drupal_strlen($item['filefield_remotefile']['url']) > 0 && $item['filefield_remotefile']['url'] != REMOTE_FILE_SOURCE_HINT_TEXT) {    
+    $value = $item['filefield_remotefile']['url'];
+    if (!valid_url($value, TRUE)) {
+      form_error($element, t('Invalid Remote File URL.'));
+      return;
+    }
+    elseif (!file_stream_wrapper_valid_scheme(file_uri_scheme($value))) {
+      // Check that the scheme is supported.
+      form_error($element, t('Remote File URLs with the %scheme scheme are not supported.', array('%scheme' => $scheme)));
+      return;
+    }
+    else {
+      // Check that the file exists.
+      $request = drupal_http_request($value, array('method' => 'HEAD'));
+      if (!empty($request->error)) {
+        form_error($element, t('Unable to fetch file from Remote File URL %url (error @code: %error).', array('%url' => $value, '@code' => $request->code, '%error' => $request->error)));
+        return;
+      }
+    }
+    
+    try {
+      $file = remote_stream_wrapper_file_load_by_uri($value);
+      if (!$file) {
+        $file = remote_stream_wrapper_file_create_by_uri($value);
+        $file->status = FALSE;
+        file_save($file);
+      }
+    }
+    catch (Exception $e) {
+      form_set_error('url', $e->getMessage());
+      return;
+    }
+  
+    if (empty($file->fid)) {
+      form_set_error($element, t('Unable to add file from URL %file.', array('%file' => $value)));
+      return;
+    }
+    
+    // Run all the normal validations, minus file size restrictions.
+    if (isset($element['#upload_validators']['file_validate_size'])) {
+      unset($element['#upload_validators']['file_validate_size']);
+    }
+
+    if (filefield_sources_element_validate($element, (object) $file)) {
+      $item = array_merge($item, (array) $file);
+    }    
+  }
+}

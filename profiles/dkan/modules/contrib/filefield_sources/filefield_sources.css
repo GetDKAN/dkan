@@ -1,0 +1,45 @@
+
+/* Generic display for all sources. */
+
+div.filefield-source input.form-text,
+div.filefield-source select.form-select {
+  display: inline;
+  width: 20em;
+}
+
+div.filefield-source .form-item {
+  white-space: normal;
+}
+
+div.filefield-source .hint {
+  color: #999;
+}
+
+div.filefield-sources-list a.active {
+  font-weight: bold;
+}
+
+/* Clipboard source. */
+div.filefield-source-clipboard-capture {
+  border: 1px solid #CCC;
+  width: 20em;
+  height: 1.4em;
+  padding: 2px;
+  display: inline-block;
+  vertical-align: top;
+  overflow: hidden;
+}
+div.filefield-source-clipboard-capture img {
+  display: none;
+}
+
+/* Reference source. */
+div.filefield-source-reference-item {
+  font-size: 90%;
+}
+
+/* Remote source. */
+div.filefield-source-remote input.form-text {
+  /* Helps with display consistency since references has a background. */
+  background-image: inherit;
+}

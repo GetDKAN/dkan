@@ -1,0 +1,16 @@
+name = Remote stream wrapper
+description = Provides the ability to use external files with filefields without saving the files to your local files directory.
+core = 7.x
+files[] = remote_stream_wrapper.inc
+files[] = RemoteStreamWrapperMediaBrowser.inc
+files[] = remote_stream_wrapper.test
+suggests[] = file
+suggests[] = media
+suggests[] = image
+
+; Information added by drupal.org packaging script on 2012-03-13
+version = "7.x-1.0-beta4"
+core = "7.x"
+project = "remote_stream_wrapper"
+datestamp = "1331680243"
+
