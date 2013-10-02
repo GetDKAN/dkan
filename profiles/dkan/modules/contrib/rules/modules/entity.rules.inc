@@ -16,19 +16,6 @@ function rules_entity_file_info() {
 }
 
 /**
- * Implements hook_rules_category_info() on behalf of the pseudo entity module.
- */
-function rules_entity_category_info() {
-  return array(
-    'rules_entity' => array(
-      'label' => t('Entities'),
-      'equals group' => t('Entities'),
-      'weight' => -50,
-    ),
-  );
-}
-
-/**
  * Implements hook_rules_action_info() on behalf of the entity module.
  * @see rules_core_modules()
  */
@@ -240,7 +227,7 @@ function rules_action_entity_query_value_options_list(RulesAbstractPlugin $eleme
   // Get the possible values for the selected property.
   $element->settings += array('type' => NULL, 'property' => NULL);
   if ($element->settings['type'] && $element->settings['property']) {
-    $wrapper = rules_get_entity_metadata_wrapper_all_properties($element);
+    $wrapper = entity_metadata_wrapper($element->settings['type']);
 
     if (isset($wrapper->{$element->settings['property']}) && $property = $wrapper->{$element->settings['property']}) {
       return $property->optionsList('view');

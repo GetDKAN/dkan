@@ -59,13 +59,6 @@ function rules_rules_file_info() {
 }
 
 /**
- * Implements hook_rules_category_info().
- */
-function rules_rules_category_info() {
-  return _rules_rules_collect_items('category_info');
-}
-
-/**
  * Implements hook_rules_action_info().
  */
 function rules_rules_action_info() {
