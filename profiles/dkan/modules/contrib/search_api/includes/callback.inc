@@ -1,6 +1,14 @@
 <?php
 
 /**
+ * @file
+ * Contains base definitions for data alterations.
+ *
+ * Contains the SearchApiAlterCallbackInterface interface and the
+ * SearchApiAbstractAlterCallback class.
+ */
+
+/**
  * Interface representing a Search API data-alter callback.
  */
 interface SearchApiAlterCallbackInterface {
@@ -85,10 +93,15 @@ interface SearchApiAlterCallbackInterface {
   public function alterItems(array &$items);
 
   /**
-   * Declare the properties that are (or can be) added to items with this
-   * callback. If a property with this name already exists for an entity it
-   * will be overridden, so keep a clear namespace by prefixing the properties
-   * with the module name if this is not desired.
+   * Declare the properties that are added to items by this callback.
+   *
+   * If one of the specified properties already exists for an entity it will be
+   * overridden, so keep a clear namespace by prefixing the properties with the
+   * module name if this is not desired.
+   *
+   * CAUTION: Since this method is used when calling
+   * SearchApiIndex::getFields(), calling that method from inside propertyInfo()
+   * will lead to a recursion and should therefore be avoided.
    *
    * @see hook_entity_property_info()
    *
@@ -101,8 +114,10 @@ interface SearchApiAlterCallbackInterface {
 }
 
 /**
- * Abstract base class for data-alter callbacks, implementing most methods with
- * sensible defaults.
+ * Abstract base class for data-alter callbacks.
+ *
+ * This class implements most methods with sensible defaults.
+ *
  * Extending classes will at least have to implement the alterItems() method to
  * make this work. If that method adds additional fields to the items,
  * propertyInfo() has to be overridden, too.
@@ -124,12 +139,7 @@ abstract class SearchApiAbstractAlterCallback implements SearchApiAlterCallbackI
   protected $options;
 
   /**
-   * Construct a data-alter callback.
-   *
-   * @param SearchApiIndex $index
-   *   The index whose items will be altered.
-   * @param array $options
-   *   The callback options set for this index.
+   * Implements SearchApiAlterCallbackInterface::__construct().
    */
   public function __construct(SearchApiIndex $index, array $options = array()) {
     $this->index = $index;
@@ -137,64 +147,28 @@ abstract class SearchApiAbstractAlterCallback implements SearchApiAlterCallbackI
   }
 
   /**
-   * Check whether this data-alter callback is applicable for a certain index.
-   *
-   * This can be used for hiding the callback on the index's "Workflow" tab. To
-   * avoid confusion, you should only use criteria that are immutable, such as
-   * the index's entity type. Also, since this is only used for UI purposes, you
-   * should not completely rely on this to ensure certain index configurations
-   * and at least throw an exception with a descriptive error message if this is
-   * violated on runtime.
+   * Implements SearchApiAlterCallbackInterface::supportsIndex().
    *
    * The default implementation always returns TRUE.
-   *
-   * @param SearchApiIndex $index
-   *   The index to check for.
-   *
-   * @return boolean
-   *   TRUE if the callback can run on the given index; FALSE otherwise.
    */
   public function supportsIndex(SearchApiIndex $index) {
     return TRUE;
   }
 
   /**
-   * Display a form for configuring this callback.
-   *
-   * @return array
-   *   A form array for configuring this callback, or FALSE if no configuration
-   *   is possible.
+   * Implements SearchApiAlterCallbackInterface::configurationForm().
    */
   public function configurationForm() {
     return array();
   }
 
   /**
-   * Validation callback for the form returned by configurationForm().
-   *
-   * @param array $form
-   *   The form returned by configurationForm().
-   * @param array $values
-   *   The part of the $form_state['values'] array corresponding to this form.
-   * @param array $form_state
-   *   The complete form state.
+   * Implements SearchApiAlterCallbackInterface::configurationFormValidate().
    */
   public function configurationFormValidate(array $form, array &$values, array &$form_state) { }
 
   /**
-   * Submit callback for the form returned by configurationForm().
-   *
-   * This method should both return the new options and set them internally.
-   *
-   * @param array $form
-   *   The form returned by configurationForm().
-   * @param array $values
-   *   The part of the $form_state['values'] array corresponding to this form.
-   * @param array $form_state
-   *   The complete form state.
-   *
-   * @return array
-   *   The new options array for this callback.
+   * Implements SearchApiAlterCallbackInterface::configurationFormSubmit().
    */
   public function configurationFormSubmit(array $form, array &$values, array &$form_state) {
     $this->options = $values;
@@ -202,16 +176,7 @@ abstract class SearchApiAbstractAlterCallback implements SearchApiAlterCallbackI
   }
 
   /**
-   * Declare the properties that are (or can be) added to items with this
-   * callback. If a property with this name already exists for an entity it
-   * will be overridden, so keep a clear namespace by prefixing the properties
-   * with the module name if this is not desired.
-   *
-   * @see hook_entity_property_info()
-   *
-   * @return array
-   *   Information about all additional properties, as specified by
-   *   hook_entity_property_info() (only the inner "properties" array).
+   * Implements SearchApiAlterCallbackInterface::propertyInfo().
    */
   public function propertyInfo() {
     return array();

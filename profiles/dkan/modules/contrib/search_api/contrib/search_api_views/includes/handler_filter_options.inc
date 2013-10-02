@@ -15,12 +15,18 @@ class SearchApiViewsHandlerFilterOptions extends SearchApiViewsHandlerFilter {
    * Provide a list of options for the operator form.
    */
   public function operator_options() {
-    return array(
+    $options = array(
       '=' => t('Is one of'),
-      '<>' => t('Is not one of'),
+      'all of' => t('Is all of'),
+      '<>' => t('Is none of'),
       'empty' => t('Is empty'),
       'not empty' => t('Is not empty'),
     );
+    // "Is all of" doesn't make sense for single-valued fields.
+    if (empty($this->definition['multi-valued'])) {
+      unset($options['all of']);
+    }
+    return $options;
   }
 
   /**
@@ -99,12 +105,10 @@ class SearchApiViewsHandlerFilterOptions extends SearchApiViewsHandlerFilter {
       '#options' => $options,
       '#multiple' => TRUE,
       '#size' => min(4, count($this->definition['options'])),
-      '#default_value' => isset($this->value) ? $this->value : array(),
+      '#default_value' => is_array($this->value) ? $this->value : array(),
     );
-
     // Hide the value box if operator is 'empty' or 'not empty'.
     // Radios share the same selector so we have to add some dummy selector.
-    // #states replace #dependency (http://drupal.org/node/1595022).
     $form['value']['#states']['visible'] = array(
       ':input[name="options[operator]"],dummy-empty' => array('!value' => 'empty'),
       ':input[name="options[operator]"],dummy-not-empty' => array('!value' => 'not empty'),
@@ -142,11 +146,21 @@ class SearchApiViewsHandlerFilterOptions extends SearchApiViewsHandlerFilter {
     }
     // Choose different kind of ouput for 0, a single and multiple values.
     if (count($this->value) == 0) {
-      return $this->operator == '=' ? t('none') : t('any');
+      return $this->operator != '<>' ? t('none') : t('any');
     }
     elseif (count($this->value) == 1) {
+      switch ($this->operator) {
+        case '=':
+        case 'all of':
+          $operator = '=';
+          break;
+
+        case '<>':
+          $operator = '<>';
+          break;
+      }
       // If there is only a single value, use just the plain operator, = or <>.
-      $operator = check_plain($this->operator);
+      $operator = check_plain($operator);
       $values = check_plain($this->definition['options'][reset($this->value)]);
     }
     else {
@@ -171,33 +185,56 @@ class SearchApiViewsHandlerFilterOptions extends SearchApiViewsHandlerFilter {
   public function query() {
     if ($this->operator === 'empty') {
       $this->query->condition($this->real_field, NULL, '=', $this->options['group']);
+      return;
     }
-    elseif ($this->operator === 'not empty') {
+    if ($this->operator === 'not empty') {
       $this->query->condition($this->real_field, NULL, '<>', $this->options['group']);
+      return;
     }
-    else {
-      while (is_array($this->value) && count($this->value) == 1) {
-        $this->value = reset($this->value);
+
+    // Extract the value.
+    while (is_array($this->value) && count($this->value) == 1) {
+      $this->value = reset($this->value);
+    }
+
+    // Determine operator and conjunction.
+    switch ($this->operator) {
+      case '=':
+        $operator = '=';
+        $conjunction = 'OR';
+        break;
+
+      case 'all of':
+        $operator = '=';
+        $conjunction = 'AND';
+        break;
+
+      case '<>':
+        $operator = '<>';
+        $conjunction = 'AND';
+        break;
+    }
+
+    // If the value is an empty array, we either want no filter at all (for
+    // "is none of", or want to find only items with no value for the field.
+    if ($this->value === array()) {
+      if ($this->operator != '<>') {
+        $this->query->condition($this->real_field, NULL, '=', $this->options['group']);
       }
-      if (is_scalar($this->value) && $this->value !== '') {
-        $this->query->condition($this->real_field, $this->value, $this->operator, $this->options['group']);
-      }
-      elseif ($this->value) {
-        if ($this->operator == '=') {
-          $filter = $this->query->createFilter('OR');
-          // $filter will be NULL if there were errors in the query.
-          if ($filter) {
-            foreach ($this->value as $v) {
-              $filter->condition($this->real_field, $v, '=');
-            }
-            $this->query->filter($filter, $this->options['group']);
-          }
+      return;
+    }
+
+    if (is_scalar($this->value) && $this->value !== '') {
+      $this->query->condition($this->real_field, $this->value, $operator, $this->options['group']);
+    }
+    elseif ($this->value) {
+      $filter = $this->query->createFilter($conjunction);
+      // $filter will be NULL if there were errors in the query.
+      if ($filter) {
+        foreach ($this->value as $v) {
+          $filter->condition($this->real_field, $v, $operator);
         }
-        else {
-          foreach ($this->value as $v) {
-            $this->query->condition($this->real_field, $v, $this->operator, $this->options['group']);
-          }
-        }
+        $this->query->filter($filter, $this->options['group']);
       }
     }
   }

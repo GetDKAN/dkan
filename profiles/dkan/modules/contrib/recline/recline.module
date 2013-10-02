@@ -155,7 +155,7 @@ function recline_libraries_info() {
     'name' => 'Leaflet',
     'vendor url' => 'http://leaflet.cloudmade.com',
     'download url' => 'http://leaflet.cloudmade.com/download.html',
-    'path' => 'Leaflet/dist/leaflet.js',
+    'path' => 'Leaflet/src/Leaflet.js',
     'version arguments' => array(
       'file' => 'Leaflet/dist/leaflet.js',
       'pattern' => '@majorVersion[=:]["\'](\d).+?minorVersion[=:]["\']([\d\.]+)@',

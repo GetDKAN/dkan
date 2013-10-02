@@ -1,6 +1,67 @@
 Search API 1.x, dev (xx/xx/xxxx):
 ---------------------------------
 
+Search API 1.8 (09/01/2013):
+----------------------------
+- #1414048 by drunken monkey: Fixed exception in views.inc removes all Search
+  API tables.
+- #1921690 by drunken monkey: Fixed stale Views cache when indexed fields
+  change.
+- #2077035 by maciej.zgadzaj: Fixed whitespace recognition for search keys.
+- #2071229 by drunken monkey: Fixed use of core search constant.
+- #2069023 by drunken monkey: Fixed reaction to disabled modules.
+- #2057867 by drunken monkey: Fixed multiple values for taxonomy contextual
+  filter.
+- #2052701 by drunken monkey, erdos: Fixed cron queue state when disabling the
+  module.
+- #1878606 by drunken monkey: Fixed labels for boolean facets.
+- #2053171 by drunken monkey: Improved tests.
+- #1433720 by davidwbarratt, drunken monkey, JvE: Fixed handling of empty
+  selection for checkboxes.
+- #1414078 by drunken monkey, jaxxed: Fixed revert of exportables.
+- #2011396 by drunken monkey: Fixed support for several facets on a single
+  field.
+- #2050117 by izus, drunken monkey: Updated README.txt to reflect removed
+  sub-modules.
+- #2041365 by drunken monkey: Fixed error reporting for the MLT contextual
+  filter.
+- #2044711 by stBorchert, drunken monkey: Fixed facet adapter's
+  getCurrentSearch() method to not cache failed attempts.
+- #1411712 by Krasnyj, drunken monkey: Fixed notices in Views with groups.
+- #1959506 by jantoine, drunken monkey: Fixed "search id" for Views facets
+  block display.
+- #1902168 by rbruhn, drunken monkey, mpv: Fixed fatal error during Features
+  import.
+- #2040111 by arpieb: Fixed Views URL argument handler to allow multiple values.
+- #1064520 by drunken monkey: Added a processor for highlighting.
+
+Search API 1.7 (07/01/2013):
+----------------------------
+- #1612708 by drunken monkey: Fixed Views caching with facet blocks.
+- #2024189 by drunken monkey: Improved serialization of the query class.
+- #1311260 by drunken monkey: Fixed tokenizing of string fields.
+- #1246998 by drunken monkey: Fixed deletion of items in read-only indexes.
+- #1310970 by drunken monkey: Added improved UI help for determining which
+  fields are available for sorting.
+- #1886738 by chx, Jelle_S, drunken monkey: Added Role filter data alteration.
+- #1837782 by drunken monkey: Fixed enabling of indexes through the Status tab.
+- #1382170 by orakili, lliss, drunken monkey: Added OR filtering for Views
+  option filter.
+- #2012706 by drunken monkey: Fixed $reset parameter for load functions.
+- #1851204 by mvc: Fixed exception when indexing book hierarchy.
+- #1926030 by stella: Added field machine name to indexes' "Fields" tabs.
+- #1879102 by fearlsgroove: Fixed Drush attempting to index 0 items.
+- #1999858 by drunken monkey: Cleaned up API documentation for data alterations.
+- #2010116 by drunken monkey: Enabled "Index items immediately" for the default
+  node index.
+- #2013581 by drunken monkey: Added multi-valued field to test module.
+- #1288724 by brunodbo, drunken monkey, fearlsgroove: Added option for using OR
+  in Views fulltext search.
+- #1694832 by drunken monkey: Fixed index field settings getting stale when
+  Field API field settings change.
+- #1285794 by drunken monkey: Fixed "All" option in Views' exposed "Items per
+  page" setting.
+
 Search API 1.6 (05/29/2013):
 ----------------------------
 - #1649976 by Berdir, ilari.stenroth, drunken monkey: Fixed memory error during

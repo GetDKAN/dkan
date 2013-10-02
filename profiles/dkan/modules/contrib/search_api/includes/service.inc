@@ -146,6 +146,9 @@ interface SearchApiServiceInterface {
    *
    * If the index wasn't added to the server, the method call should be ignored.
    *
+   * Implementations of this method should also check whether $index->read_only
+   * is set, and don't delete any indexed data if it is.
+   *
    * @param $index
    *   Either an object representing the index to remove, or its machine name
    *   (if the index was completely deleted).
@@ -385,7 +388,9 @@ abstract class SearchApiAbstractService implements SearchApiServiceInterface {
    * By default, removes all items from that index.
    */
   public function removeIndex($index) {
-    $this->deleteItems('all', $index);
+    if (is_object($index) && empty($index->read_only)) {
+      $this->deleteItems('all', $index);
+    }
   }
 
   /**

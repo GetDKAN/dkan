@@ -6,11 +6,12 @@ dependencies[] = views
 core = 7.x
 package = Search
 
-; Views handlers
+; Views handlers/plugins
 files[] = includes/display_facet_block.inc
 files[] = includes/handler_argument.inc
 files[] = includes/handler_argument_fulltext.inc
 files[] = includes/handler_argument_more_like_this.inc
+files[] = includes/handler_argument_string.inc
 files[] = includes/handler_argument_taxonomy_term.inc
 files[] = includes/handler_filter.inc
 files[] = includes/handler_filter_boolean.inc
@@ -20,11 +21,12 @@ files[] = includes/handler_filter_language.inc
 files[] = includes/handler_filter_options.inc
 files[] = includes/handler_filter_text.inc
 files[] = includes/handler_sort.inc
+files[] = includes/plugin_cache.inc
 files[] = includes/query.inc
 
-; Information added by drupal.org packaging script on 2013-05-29
-version = "7.x-1.6"
+; Information added by drupal.org packaging script on 2013-09-01
+version = "7.x-1.8"
 core = "7.x"
 project = "search_api"
-datestamp = "1369840267"
+datestamp = "1378025826"
 

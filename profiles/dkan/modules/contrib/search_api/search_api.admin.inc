@@ -953,7 +953,10 @@ function search_api_admin_index_status_form_submit(array $form, array &$form_sta
   $pre = 'admin/config/search/search_api/index/' . $index->machine_name;
   switch ($values['op']) {
     case t('Enable'):
-      $redirect = $pre . '/enable';
+      $redirect = array(
+        $pre . '/enable',
+        array('query' => array('token' => drupal_get_token($index->machine_name))),
+      );
       break;
     case t('Disable'):
       $redirect = $pre . '/disable';
@@ -1488,7 +1491,7 @@ function search_api_admin_index_fields(array $form, array &$form_state, SearchAp
   $form['description'] = array(
     '#type' => 'item',
     '#title' => t('Select fields to index'),
-    '#description' => t('<p>The datatype of a field determines how it can be used for searching and filtering. ' .
+    '#description' => t('<p>The datatype of a field determines how it can be used for searching and filtering. Fields indexed with type "Fulltext" and multi-valued fields (marked with <sup>1</sup>) cannot be used for sorting. ' .
         'The boost is used to give additional weight to certain fields, e.g. titles or tags. It only takes effect for fulltext fields.</p>' .
         '<p>Whether detailed field types are supported depends on the type of server this index resides on. ' .
         'In any case, fields of type "Fulltext" will always be fulltext-searchable.</p>'),
@@ -1499,6 +1502,11 @@ function search_api_admin_index_fields(array $form, array &$form_state, SearchAp
   }
   foreach ($fields as $key => $info) {
     $form['fields'][$key]['title']['#markup'] = check_plain($info['name']);
+    if (search_api_is_list_type($info['type'])) {
+      $form['fields'][$key]['title']['#markup'] .= ' <sup><a href="#note-multi-valued" class="note-ref">1</a></sup>';
+      $multi_valued_field_present = TRUE;
+    }
+    $form['fields'][$key]['machine_name']['#markup'] = check_plain($key);
     if (isset($info['description'])) {
       $form['fields'][$key]['description'] = array(
         '#type' => 'value',
@@ -1585,6 +1593,10 @@ function search_api_admin_index_fields(array $form, array &$form_state, SearchAp
       $form['fields'][$key]['indexed']['#default_value'] = 1;
       $form['fields'][$key]['indexed']['#disabled'] = TRUE;
     }
+  }
+
+  if (!empty($multi_valued_field_present)) {
+    $form['note']['#markup'] = '<div id="note-multi-valued"><small><sup>1</sup> ' . t('Multi-valued field') . '</small></div>';
   }
 
   $form['submit'] = array(
@@ -1745,7 +1757,7 @@ function _search_api_admin_get_fields(SearchApiIndex $index, EntityMetadataWrapp
  */
 function theme_search_api_admin_fields_table($variables) {
   $form = $variables['element'];
-  $header = array(t('Field'), t('Indexed'), t('Type'), t('Boost'));
+  $header = array(t('Field'), t('Machine name'), t('Indexed'), t('Type'), t('Boost'));
 
   $rows = array();
   foreach (element_children($form['fields']) as $name) {
@@ -1766,11 +1778,13 @@ function theme_search_api_admin_fields_table($variables) {
     }
   }
 
+  $note = isset($form['note']) ? $form['note'] : '';
   $submit = $form['submit'];
   $additional = isset($form['additional']) ? $form['additional'] : FALSE;
-  unset($form['submit'], $form['additional']);
+  unset($form['note'], $form['submit'], $form['additional']);
   $output = drupal_render_children($form);
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
+  $output .= render($note);
   $output .= render($submit);
   if ($additional) {
     $output .= render($additional);

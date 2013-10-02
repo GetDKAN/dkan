@@ -85,8 +85,8 @@ class SearchApiFacetapiDate extends SearchApiFacetapiTerm implements FacetapiQue
     // this method.
 
     // Executes query, iterates over results.
-    if (isset($results['search_api_facets']) && isset($results['search_api_facets'][$this->facet['field']])) {
-      $values = $results['search_api_facets'][$this->facet['field']];
+    if (isset($results['search_api_facets']) && isset($results['search_api_facets'][$this->facet['name']])) {
+      $values = $results['search_api_facets'][$this->facet['name']];
       foreach ($values as $value) {
         if ($value['count']) {
           $filter = $value['filter'];

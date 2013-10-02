@@ -177,7 +177,6 @@ class SearchApiViewsFacetsBlockDisplay extends views_plugin_display_block {
         'min_count' => 1,
       );
     }
-    $query_options['search id'] = 'search_api_views:' . $this->view->name . '-facets_block';
     $query_options['search_api_base_path'] = $base_path;
     $this->view->query->range(0, 0);
 

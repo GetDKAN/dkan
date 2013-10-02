@@ -316,25 +316,49 @@ function search_api_facetapi_facet_map_callback(array $values, array $options = 
 
 /**
  * Creates a human-readable label for single facet filter values.
+ *
+ * @param array $values
+ *   The values for which labels should be returned.
+ * @param array $options
+ *   An associative array containing the following information about the facet:
+ *   - field: Field information, as stored in the index, but with an additional
+ *     "key" property set to the field's internal name.
+ *   - index id: The machine name of the index for this facet.
+ *   - map callback: (optional) A callback that will be called at the beginning,
+ *     which allows initial mapping of filters. Only values not mapped by that
+ *     callback will be processed by this method.
+ *   - value callback: A callback used to map single values and the limits of
+ *     ranges. The signature is the same as for this function, but all values
+ *     will be single values.
+ *   - missing label: (optional) The label used for the "missing" facet.
+ *
+ * @return array
+ *   An array mapping raw facet values to their labels.
  */
 function _search_api_facetapi_facet_create_label(array $values, array $options) {
   $field = $options['field'];
+  $map = array();
+  $n = count($values);
+
   // For entities, we can simply use the entity labels.
   if (isset($field['entity_type'])) {
     $type = $field['entity_type'];
     $entities = entity_load($type, $values);
-    $map = array();
     foreach ($entities as $id => $entity) {
       $label = entity_label($type, $entity);
       if ($label) {
         $map[$id] = $label;
       }
     }
-    return $map;
+    if (count($map) == $n) {
+      return $map;
+    }
   }
+
   // Then, we check whether there is an options list for the field.
   $index = search_api_index_load($options['index id']);
   $wrapper = $index->entityWrapper();
+  $values = drupal_map_assoc($values);
   foreach (explode(':', $field['key']) as $part) {
     if (!isset($wrapper->$part)) {
       $wrapper = NULL;
@@ -345,12 +369,18 @@ function _search_api_facetapi_facet_create_label(array $values, array $options) 
       $wrapper = $wrapper[0];
     }
   }
-  if ($wrapper && ($options = $wrapper->optionsList('view'))) {
-    return $options;
+  if ($wrapper && ($options_list = $wrapper->optionsList('view'))) {
+    // We have no use for empty strings, as then the facet links would be
+    // invisible.
+    $map += array_intersect_key(array_filter($options_list, 'strlen'), $values);
+    if (count($map) == $n) {
+      return $map;
+    }
   }
-  // As a "last resort" we try to create a label based on the field type.
-  $map = array();
-  foreach ($values as $value) {
+
+  // As a "last resort" we try to create a label based on the field type, for
+  // all values that haven't got a mapping yet.
+  foreach (array_diff_key($values, $map) as $value) {
     switch ($field['type']) {
       case 'boolean':
         $map[$value] = $value ? t('true') : t('false');

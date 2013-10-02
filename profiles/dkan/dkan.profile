@@ -145,4 +145,6 @@ function dkan_additional_setup() {
     'imported' => '0',
   );
   drupal_write_record('feeds_source', $record);
+  features_revert(array('dkan_sitewide_search_db' => array('search_api_index')));
+  unset($_SESSION['messages']['warning']);
 }

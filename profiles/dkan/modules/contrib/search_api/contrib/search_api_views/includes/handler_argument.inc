@@ -13,6 +13,17 @@ class SearchApiViewsHandlerArgument extends views_handler_argument {
   public $query;
 
   /**
+   * The operator to use for multiple arguments.
+   *
+   * Either "and" or "or".
+   *
+   * @var string
+   *
+   * @see views_break_phrase
+   */
+  public $operator;
+
+  /**
    * Determine if the argument can generate a breadcrumb
    *
    * @return boolean
@@ -96,11 +107,13 @@ class SearchApiViewsHandlerArgument extends views_handler_argument {
    * The argument sent may be found at $this->argument.
    */
   public function query($group_by = FALSE) {
-    if (!empty($this->options['break_phrase'])) {
-      views_break_phrase($this->argument, $this);
-    }
-    else {
-      $this->value = array($this->argument);
+    if (empty($this->value)) {
+      if (!empty($this->options['break_phrase'])) {
+        views_break_phrase($this->argument, $this);
+      }
+      else {
+        $this->value = array($this->argument);
+      }
     }
 
     $operator = empty($this->options['not']) ? '=' : '<>';

@@ -128,8 +128,10 @@ class SearchApiFacetapiAdapter extends FacetapiAdapter {
    *   search_api_current_search(). Or NULL, if no match was found.
    */
   public function getCurrentSearch() {
+    // Even if this fails once, there might be a search query later in the page
+    // request. We therefore don't store anything in $this->current_search in
+    // case of failure, but just try again if the method is called again.
     if (!isset($this->current_search)) {
-      $this->current_search = FALSE;
       $index_id = $this->info['instance'];
       // There is currently no way to configure the "current search" block to
       // show on a per-searcher basis as we do with the facets. Therefore we
@@ -143,7 +145,7 @@ class SearchApiFacetapiAdapter extends FacetapiAdapter {
         }
       }
     }
-    return $this->current_search ? $this->current_search : NULL;
+    return $this->current_search;
   }
 
   /**

@@ -14,13 +14,13 @@ class SearchApiWebTest extends DrupalWebTestCase {
 
   protected function drupalGet($path, array $options = array(), array $headers = array()) {
     $ret = parent::drupalGet($path, $options, $headers);
-    $this->assertResponse(200, t('HTTP code 200 returned.'));
+    $this->assertResponse(200, 'HTTP code 200 returned.');
     return $ret;
   }
 
   protected function drupalPost($path, $edit, $submit, array $options = array(), array $headers = array(), $form_html_id = NULL, $extra_post = NULL) {
     $ret = parent::drupalPost($path, $edit, $submit, $options, $headers, $form_html_id, $extra_post);
-    $this->assertResponse(200, t('HTTP code 200 returned.'));
+    $this->assertResponse(200, 'HTTP code 200 returned.');
     return $ret;
   }
 
@@ -54,6 +54,7 @@ class SearchApiWebTest extends DrupalWebTestCase {
     $this->clearIndex();
     $this->searchNoResults();
     $this->deleteServer();
+    $this->disableModules();
   }
 
   protected function deleteDefaultIndex() {
@@ -93,7 +94,7 @@ class SearchApiWebTest extends DrupalWebTestCase {
       'type' => 'Page',
     ));
     $count = db_query('SELECT COUNT(*) FROM {search_api_test}')->fetchField() - $count;
-    $this->assertEqual($count, 5, t('@count items inserted.', array('@count' => $count)));
+    $this->assertEqual($count, 5, '5 items successfully inserted.');
   }
 
   protected function insertItem($values) {
@@ -104,7 +105,7 @@ class SearchApiWebTest extends DrupalWebTestCase {
     // This test fails for no apparent reason for drupal.org test bots.
     // Commenting them out for now.
     //$this->drupalGet('admin/config/search/search_api');
-    //$this->assertText(t('There are no search servers or indexes defined yet.'), t('"No servers" message is displayed.'));
+    //$this->assertText(t('There are no search servers or indexes defined yet.'), '"No servers" message is displayed.');
   }
 
   protected function createIndex() {
@@ -132,23 +133,23 @@ class SearchApiWebTest extends DrupalWebTestCase {
     );
     $this->drupalPost(NULL, $values, t('Create index'));
 
-    $this->assertText(t('The index was successfully created. Please set up its indexed fields now.'), t('The index was successfully created.'));
+    $this->assertText(t('The index was successfully created. Please set up its indexed fields now.'), 'The index was successfully created.');
     $found = strpos($this->getUrl(), 'admin/config/search/search_api/index/' . $id) !== FALSE;
-    $this->assertTrue($found, t('Correct redirect.'));
+    $this->assertTrue($found, 'Correct redirect.');
     $index = search_api_index_load($id, TRUE);
-    $this->assertEqual($index->name, $values['name'], t('Name correctly inserted.'));
-    $this->assertEqual($index->item_type, $values['item_type'], t('Index item type correctly inserted.'));
-    $this->assertFalse($index->enabled, t('Status correctly inserted.'));
-    $this->assertEqual($index->description, $values['description'], t('Description correctly inserted.'));
-    $this->assertNull($index->server, t('Index server correctly inserted.'));
-    $this->assertEqual($index->options['cron_limit'], $values['options[cron_limit]'], t('Cron batch size correctly inserted.'));
+    $this->assertEqual($index->name, $values['name'], 'Name correctly inserted.');
+    $this->assertEqual($index->item_type, $values['item_type'], 'Index item type correctly inserted.');
+    $this->assertFalse($index->enabled, 'Status correctly inserted.');
+    $this->assertEqual($index->description, $values['description'], 'Description correctly inserted.');
+    $this->assertNull($index->server, 'Index server correctly inserted.');
+    $this->assertEqual($index->options['cron_limit'], $values['options[cron_limit]'], 'Cron batch size correctly inserted.');
 
     $values = array(
       'additional[field]' => 'parent',
     );
     $this->drupalPost("admin/config/search/search_api/index/$id/fields", $values, t('Add fields'));
-    $this->assertText(t('The available fields were successfully changed.'), t('Successfully added fields.'));
-    $this->assertText('Parent » ID', t('!field displayed.', array('!field' => t('Added fields are'))));
+    $this->assertText(t('The available fields were successfully changed.'), 'Successfully added fields.');
+    $this->assertText('Parent » ID', 'Added fields are displayed.');
 
     $values = array(
       'fields[id][type]' => 'integer',
@@ -177,7 +178,7 @@ class SearchApiWebTest extends DrupalWebTestCase {
       'fields[parent:type][indexed]' => 1,
     );
     $this->drupalPost(NULL, $values, t('Save changes'));
-    $this->assertText(t('The indexed fields were successfully changed. The index was cleared and will have to be re-indexed with the new settings.'), t('Field settings saved.'));
+    $this->assertText(t('The indexed fields were successfully changed. The index was cleared and will have to be re-indexed with the new settings.'), 'Field settings saved.');
 
     $values = array(
       'callbacks[search_api_alter_add_url][status]' => 1,
@@ -209,16 +210,16 @@ class SearchApiWebTest extends DrupalWebTestCase {
       'callbacks[search_api_alter_add_aggregation][settings][fields][search_api_aggregation_1][fields][parent:body]' => 1,
     );
     $this->drupalPost(NULL, $values, t('Save configuration'));
-    $this->assertText(t("The search index' workflow was successfully edited. All content was scheduled for re-indexing so the new settings can take effect."), t('Workflow successfully edited.'));
+    $this->assertText(t("The search index' workflow was successfully edited. All content was scheduled for re-indexing so the new settings can take effect."), 'Workflow successfully edited.');
 
     $this->drupalGet("admin/config/search/search_api/index/$id");
-    $this->assertTitle('Search API test index | Drupal', t('Correct title when viewing index.'));
-    $this->assertText('An index used for testing.', t('!field displayed.', array('!field' => t('Description'))));
-    $this->assertText('Search API test entity', t('!field displayed.', array('!field' => t('Item type'))));
-    $this->assertText(format_plural(1, '1 item per cron batch.', '@count items per cron batch.'), t('!field displayed.', array('!field' => t('Cron batch size'))));
+    $this->assertTitle('Search API test index | Drupal', 'Correct title when viewing index.');
+    $this->assertText('An index used for testing.', 'Description displayed.');
+    $this->assertText('Search API test entity', 'Item type displayed.');
+    $this->assertText(format_plural(1, '1 item per cron batch.', '@count items per cron batch.'), 'Cron batch size displayed.');
 
     $this->drupalGet("admin/config/search/search_api/index/$id/status");
-    $this->assertText(t('The index is currently disabled.'), t('"Disabled" status displayed.'));
+    $this->assertText(t('The index is currently disabled.'), '"Disabled" status displayed.');
   }
 
   protected function createServer() {
@@ -249,25 +250,25 @@ class SearchApiWebTest extends DrupalWebTestCase {
 
     $this->assertText(t('The server was successfully created.'));
     $found = strpos($this->getUrl(), 'admin/config/search/search_api/server/' . $id) !== FALSE;
-    $this->assertTrue($found, t('Correct redirect.'));
+    $this->assertTrue($found, 'Correct redirect.');
     $server = search_api_server_load($id, TRUE);
-    $this->assertEqual($server->name, $values['name'], t('Name correctly inserted.'));
-    $this->assertTrue($server->enabled, t('Status correctly inserted.'));
-    $this->assertEqual($server->description, $values['description'], t('Description correctly inserted.'));
-    $this->assertEqual($server->class, $values['class'], t('Service class correctly inserted.'));
-    $this->assertEqual($server->options['test'], $values2['options[form][test]'], t('Service options correctly inserted.'));
-    $this->assertTitle('Search API test server | Drupal', t('Correct title when viewing server.'));
-    $this->assertText('A server used for testing.', t('!field displayed.', array('!field' => t('Description'))));
-    $this->assertText('search_api_test_service', t('!field displayed.', array('!field' => t('Service name'))));
-    $this->assertText('search_api_test_service description', t('!field displayed.', array('!field' => t('Service description'))));
-    $this->assertText('search_api_test foo bar', t('!field displayed.', array('!field' => t('Service options'))));
+    $this->assertEqual($server->name, $values['name'], 'Name correctly inserted.');
+    $this->assertTrue($server->enabled, 'Status correctly inserted.');
+    $this->assertEqual($server->description, $values['description'], 'Description correctly inserted.');
+    $this->assertEqual($server->class, $values['class'], 'Service class correctly inserted.');
+    $this->assertEqual($server->options['test'], $values2['options[form][test]'], 'Service options correctly inserted.');
+    $this->assertTitle('Search API test server | Drupal', 'Correct title when viewing server.');
+    $this->assertText('A server used for testing.', 'Description displayed.');
+    $this->assertText('search_api_test_service', 'Service name displayed.');
+    $this->assertText('search_api_test_service description', 'Service description displayed.');
+    $this->assertText('search_api_test foo bar', 'Service options displayed.');
   }
 
   protected function checkOverview2() {
     $this->drupalGet('admin/config/search/search_api');
-    $this->assertText('Search API test server', t('!field displayed.', array('!field' => t('Server'))));
-    $this->assertText('Search API test index', t('!field displayed.', array('!field' => t('Index'))));
-    $this->assertNoText(t('There are no search servers or indexes defined yet.'), t('"No servers" message not displayed.'));
+    $this->assertText('Search API test server', 'Server displayed.');
+    $this->assertText('Search API test index', 'Index displayed.');
+    $this->assertNoText(t('There are no search servers or indexes defined yet.'), '"No servers" message not displayed.');
   }
 
   protected function enableIndex() {
@@ -276,7 +277,7 @@ class SearchApiWebTest extends DrupalWebTestCase {
     );
     $this->drupalPost("admin/config/search/search_api/index/{$this->index_id}/edit", $values, t('Save settings'));
     $this->assertText(t('The search index was successfully edited.'));
-    $this->assertText('Search API test server', t('!field displayed.', array('!field' => t('Server'))));
+    $this->assertText('Search API test server', 'Server displayed.');
 
     $this->clickLink(t('enable'));
     $this->assertText(t('The index was successfully enabled.'));
@@ -284,17 +285,17 @@ class SearchApiWebTest extends DrupalWebTestCase {
 
   protected function searchNoResults() {
     $this->drupalGet('search_api_test/query/' . $this->index_id);
-    $this->assertText('result count = 0', t('No search results returned without indexing.'));
-    $this->assertText('results = ()', t('No search results returned without indexing.'));
+    $this->assertText('result count = 0', 'No search results returned without indexing.');
+    $this->assertText('results = ()', 'No search results returned without indexing.');
   }
 
   protected function indexItems() {
     $this->drupalGet("admin/config/search/search_api/index/{$this->index_id}/status");
-    $this->assertText(t('The index is currently enabled.'), t('"Enabled" status displayed.'));
-    $this->assertText(t('All items still need to be indexed (@total total).', array('@total' => 10)), t('!field displayed.', array('!field' => t('Correct index status'))));
-    $this->assertText(t('Index now'), t('"Index now" button found.'));
-    $this->assertText(t('Clear index'), t('"Clear index" button found.'));
-    $this->assertNoText(t('Re-index content'), t('"Re-index" button not found.'));
+    $this->assertText(t('The index is currently enabled.'), '"Enabled" status displayed.');
+    $this->assertText(t('All items still need to be indexed (@total total).', array('@total' => 10)), 'Correct index status displayed.');
+    $this->assertText(t('Index now'), '"Index now" button found.');
+    $this->assertText(t('Clear index'), '"Clear index" button found.');
+    $this->assertNoText(t('Re-index content'), '"Re-index" button not found.');
 
     // Here we test the indexing + the warning message when some items
     // can not be indexed.
@@ -305,10 +306,10 @@ class SearchApiWebTest extends DrupalWebTestCase {
     );
     $this->drupalPost(NULL, $values, t('Index now'));
     $this->assertText(t('Successfully indexed @count items.', array('@count' => 7)));
-    $this->assertText(t('1 item could not be indexed. Check the logs for details.'), t('Index errors warning is displayed.'));
-    $this->assertNoText(t("Couldn't index items. Check the logs for details."), t("Index error isn't displayed."));
-    $this->assertText(t('About @percentage% of all items have been indexed in their latest version (@indexed / @total).', array('@indexed' => 7, '@total' => 10, '@percentage' => 70)), t('!field displayed.', array('!field' => t('Correct index status'))));
-    $this->assertText(t('Re-indexing'), t('"Re-index" button found.'));
+    $this->assertText(t('1 item could not be indexed. Check the logs for details.'), 'Index errors warning is displayed.');
+    $this->assertNoText(t("Couldn't index items. Check the logs for details."), "Index error isn't displayed.");
+    $this->assertText(t('About @percentage% of all items have been indexed in their latest version (@indexed / @total).', array('@indexed' => 7, '@total' => 10, '@percentage' => 70)), 'Correct index status displayed.');
+    $this->assertText(t('Re-indexing'), '"Re-index" button found.');
 
     // Here we're testing the error message when no item could be indexed.
     // The item with ID 8 is still not indexed.
@@ -316,9 +317,9 @@ class SearchApiWebTest extends DrupalWebTestCase {
       'limit' => 1,
     );
     $this->drupalPost(NULL, $values, t('Index now'));
-    $this->assertNoPattern('/' . str_replace('144', '-?\d*', t('Successfully indexed @count items.', array('@count' => 144))) . '/', t('No items could be indexed.'));
-    $this->assertNoText(t('1 item could not be indexed. Check the logs for details.'), t("Index errors warning isn't displayed."));
-    $this->assertText(t("Couldn't index items. Check the logs for details."), t('Index error is displayed.'));
+    $this->assertNoPattern('/' . str_replace('144', '-?\d*', t('Successfully indexed @count items.', array('@count' => 144))) . '/', 'No items could be indexed.');
+    $this->assertNoText(t('1 item could not be indexed. Check the logs for details.'), "Index errors warning isn't displayed.");
+    $this->assertText(t("Couldn't index items. Check the logs for details."), 'Index error is displayed.');
 
     // Here we test the indexing of all the remaining items.
     variable_set('search_api_test_index_all', TRUE);
@@ -327,20 +328,20 @@ class SearchApiWebTest extends DrupalWebTestCase {
     );
     $this->drupalPost(NULL, $values, t('Index now'));
     $this->assertText(t('Successfully indexed @count items.', array('@count' => 3)));
-    $this->assertNoText(t("Some items couldn't be indexed. Check the logs for details."), t("Index errors warning isn't displayed."));
-    $this->assertNoText(t("Couldn't index items. Check the logs for details."), t("Index error isn't displayed."));
-    $this->assertText(t('All items have been indexed (@indexed / @total).', array('@indexed' => 10, '@total' => 10)), t('!field displayed.', array('!field' => t('Correct index status'))));
-    $this->assertNoText(t('Index now'), t('"Index now" button no longer displayed.'));
+    $this->assertNoText(t("Some items couldn't be indexed. Check the logs for details."), "Index errors warning isn't displayed.");
+    $this->assertNoText(t("Couldn't index items. Check the logs for details."), "Index error isn't displayed.");
+    $this->assertText(t('All items have been indexed (@indexed / @total).', array('@indexed' => 10, '@total' => 10)), 'Correct index status displayed.');
+    $this->assertNoText(t('Index now'), '"Index now" button no longer displayed.');
   }
 
   protected function searchSuccess() {
     $this->drupalGet('search_api_test/query/' . $this->index_id);
-    $this->assertText('result count = 10', t('Correct search result count returned after indexing.'));
-    $this->assertText('results = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)', t('Correct search results returned after indexing.'));
+    $this->assertText('result count = 10', 'Correct search result count returned after indexing.');
+    $this->assertText('results = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)', 'Correct search results returned after indexing.');
 
     $this->drupalGet('search_api_test/query/' . $this->index_id . '/foo/2/4');
-    $this->assertText('result count = 10', t('Correct search result count with ranged query.'));
-    $this->assertText('results = (3, 4, 5, 6)', t('Correct search results with ranged query.'));
+    $this->assertText('result count = 10', 'Correct search result count with ranged query.');
+    $this->assertText('results = (3, 4, 5, 6)', 'Correct search results with ranged query.');
   }
 
   protected function editServer() {
@@ -351,22 +352,40 @@ class SearchApiWebTest extends DrupalWebTestCase {
     );
     $this->drupalPost("admin/config/search/search_api/server/{$this->server_id}/edit", $values, t('Save settings'));
     $this->assertText(t('The search server was successfully edited.'));
-    $this->assertText('test-name-foo', t('!field changed.', array('!field' => t('Name'))));
-    $this->assertText('test-description-bar', t('!field changed.', array('!field' => t('Description'))));
-    $this->assertText('test-test-baz', t('!field changed.', array('!field' => t('Service options'))));
+    $this->assertText('test-name-foo', 'Name changed.');
+    $this->assertText('test-description-bar', 'Description changed.');
+    $this->assertText('test-test-baz', 'Service options changed.');
   }
 
   protected function clearIndex() {
     $this->drupalPost("admin/config/search/search_api/index/{$this->index_id}/status", array(), t('Clear index'));
     $this->assertText(t('The index was successfully cleared.'));
-    $this->assertText(t('All items still need to be indexed (@total total).', array('@total' => 10)), t('!field displayed.', array('!field' => t('Correct index status'))));
+    $this->assertText(t('All items still need to be indexed (@total total).', array('@total' => 10)), 'Correct index status displayed.');
   }
 
   protected function deleteServer() {
     $this->drupalPost("admin/config/search/search_api/server/{$this->server_id}/delete", array(), t('Confirm'));
-    $this->assertNoText('test-name-foo', t('Server no longer listed.'));
+    $this->assertNoText('test-name-foo', 'Server no longer listed.');
     $this->drupalGet("admin/config/search/search_api/index/{$this->index_id}/status");
-    $this->assertText(t('The index is currently disabled.'), t('The index was disabled and removed from the server.'));
+    $this->assertText(t('The index is currently disabled.'), 'The index was disabled and removed from the server.');
+  }
+
+  protected function disableModules() {
+    module_disable(array('search_api_test'), FALSE);
+    $this->assertFalse(module_exists('search_api_test'), 'Test module was successfully disabled.');
+    module_disable(array('search_api'), FALSE);
+    $this->assertFalse(module_exists('search_api'), 'Search API module was successfully disabled.');
+
+    drupal_uninstall_modules(array('search_api_test'), FALSE);
+    $this->assertEqual(drupal_get_installed_schema_version('search_api_test', TRUE), SCHEMA_UNINSTALLED, 'Test module was successfully uninstalled.');
+    $this->assertFalse(db_table_exists('search_api_test'), 'Test module table was successfully removed.');
+    drupal_uninstall_modules(array('search_api'), FALSE);
+    $this->assertEqual(drupal_get_installed_schema_version('search_api', TRUE), SCHEMA_UNINSTALLED, 'Search API module was successfully uninstalled.');
+    $this->assertFalse(db_table_exists('search_api_server'), 'Search server table was successfully removed.');
+    $this->assertFalse(db_table_exists('search_api_index'), 'Search index table was successfully removed.');
+    $this->assertFalse(db_table_exists('search_api_item'), 'Index items table was successfully removed.');
+    $this->assertNull(variable_get('search_api_tasks'), 'Tasks variable was correctly removed.');
+    $this->assertNull(variable_get('search_api_index_worker_callback_runtime'), 'Worker runtime variable was correctly removed.');
   }
 
 }
@@ -446,41 +465,38 @@ class SearchApiUnitTest extends DrupalWebTestCase {
   public function checkQueryParseKeys() {
     $options['parse mode'] = 'direct';
     $mode = &$options['parse mode'];
-    $num = 1;
     $query = new SearchApiQuery($this->index, $options);
     $modes = $query->parseModes();
 
     $query->keys('foo');
-    $this->assertEqual($query->getKeys(), 'foo', t('"@mode" parse mode, test !num.', array('@mode' => $modes[$mode]['name'], '!num' => $num++)));
+    $this->assertEqual($query->getKeys(), 'foo', '"Direct query" parse mode, test 1.');
     $query->keys('foo bar');
-    $this->assertEqual($query->getKeys(), 'foo bar', t('"@mode" parse mode, test !num.', array('@mode' => $modes[$mode]['name'], '!num' => $num++)));
+    $this->assertEqual($query->getKeys(), 'foo bar', '"Direct query" parse mode, test 2.');
     $query->keys('(foo bar) OR "bar baz"');
-    $this->assertEqual($query->getKeys(), '(foo bar) OR "bar baz"', t('"@mode" parse mode, test !num.', array('@mode' => $modes[$mode]['name'], '!num' => $num++)));
+    $this->assertEqual($query->getKeys(), '(foo bar) OR "bar baz"', '"Direct query" parse mode, test 3.');
 
     $mode = 'single';
-    $num = 1;
     $query = new SearchApiQuery($this->index, $options);
 
     $query->keys('foo');
-    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', 'foo'), t('"@mode" parse mode, test !num.', array('@mode' => $modes[$mode]['name'], '!num' => $num++)));
+    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', 'foo'), '"Single term" parse mode, test 1.');
     $query->keys('foo bar');
-    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', 'foo bar'), t('"@mode" parse mode, test !num.', array('@mode' => $modes[$mode]['name'], '!num' => $num++)));
+    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', 'foo bar'), '"Single term" parse mode, test 2.');
     $query->keys('(foo bar) OR "bar baz"');
-    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', '(foo bar) OR "bar baz"'), t('"@mode" parse mode, test !num.', array('@mode' => $modes[$mode]['name'], '!num' => $num++)));
+    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', '(foo bar) OR "bar baz"'), '"Single term" parse mode, test 3.');
 
     $mode = 'terms';
-    $num = 1;
     $query = new SearchApiQuery($this->index, $options);
 
     $query->keys('foo');
-    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', 'foo'), t('"@mode" parse mode, test !num.', array('@mode' => $modes[$mode]['name'], '!num' => $num++)));
+    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', 'foo'), '"Multiple terms" parse mode, test 1.');
     $query->keys('foo bar');
-    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', 'foo', 'bar'), t('"@mode" parse mode, test !num.', array('@mode' => $modes[$mode]['name'], '!num' => $num++)));
+    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', 'foo', 'bar'), '"Multiple terms" parse mode, test 2.');
     $query->keys('(foo bar) OR "bar baz"');
-    $this->assertEqual($query->getKeys(), array('(foo', 'bar)', 'OR', 'bar baz', '#conjunction' => 'AND'), t('"@mode" parse mode, test !num.', array('@mode' => $modes[$mode]['name'], '!num' => $num++)));
+    $this->assertEqual($query->getKeys(), array('(foo', 'bar)', 'OR', 'bar baz', '#conjunction' => 'AND'), '"Multiple terms" parse mode, test 3.');
     // http://drupal.org/node/1468678
     $query->keys('"Münster"');
-    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', 'Münster'), t('"@mode" parse mode, test !num.', array('@mode' => $modes[$mode]['name'], '!num' => $num++)));
+    $this->assertEqual($query->getKeys(), array('#conjunction' => 'AND', 'Münster'), '"Multiple terms" parse mode, test 4.');
   }
 
   public function checkIgnoreCaseProcessor() {
@@ -524,30 +540,30 @@ class SearchApiUnitTest extends DrupalWebTestCase {
     $processor = new SearchApiIgnoreCase($this->index, array('fields' => array('name' => 'name')));
     $tmp = $items;
     $processor->preprocessIndexItems($tmp);
-    $this->assertEqual($tmp[1]['name']['value'], $processed, t('!type field was processed.', array('!type' => 'name')));
-    $this->assertEqual($tmp[1]['mail']['value'], $orig, t("!type field wasn't processed.", array('!type' => 'mail')));
+    $this->assertEqual($tmp[1]['name']['value'], $processed, 'Name field was processed.');
+    $this->assertEqual($tmp[1]['mail']['value'], $orig, "Mail field wasn't processed.");
 
     $query = new SearchApiQuery($this->index);
     $query->keys('Foo "baR BaZ" fOObAr1');
     $query->condition('name', 'FOO');
     $query->condition('mail', 'BAR');
     $processor->preprocessSearchQuery($query);
-    $this->assertEqual($query->getKeys(), $keys1, t('Search keys were processed correctly.'));
-    $this->assertEqual($query->getFilter()->getFilters(), $filters1, t('Filters were processed correctly.'));
+    $this->assertEqual($query->getKeys(), $keys1, 'Search keys were processed correctly.');
+    $this->assertEqual($query->getFilter()->getFilters(), $filters1, 'Filters were processed correctly.');
 
     $processor = new SearchApiIgnoreCase($this->index, array('fields' => array('name' => 'name', 'mail' => 'mail')));
     $tmp = $items;
     $processor->preprocessIndexItems($tmp);
-    $this->assertEqual($tmp[1]['name']['value'], $processed, t('!type field was processed.', array('!type' => 'name')));
-    $this->assertEqual($tmp[1]['mail']['value'], $processed, t('!type field was processed.', array('!type' => 'mail')));
+    $this->assertEqual($tmp[1]['name']['value'], $processed, 'Name field was processed.');
+    $this->assertEqual($tmp[1]['mail']['value'], $processed, 'Mail field was processed.');
 
     $query = new SearchApiQuery($this->index);
     $query->keys('Foo "baR BaZ" fOObAr1');
     $query->condition('name', 'FOO');
     $query->condition('mail', 'BAR');
     $processor->preprocessSearchQuery($query);
-    $this->assertEqual($query->getKeys(), $keys2, t('Search keys were processed correctly.'));
-    $this->assertEqual($query->getFilter()->getFilters(), $filters2, t('Filters were processed correctly.'));
+    $this->assertEqual($query->getKeys(), $keys2, 'Search keys were processed correctly.');
+    $this->assertEqual($query->getFilter()->getFilters(), $filters2, 'Filters were processed correctly.');
   }
 
   public function checkTokenizer() {
@@ -614,22 +630,22 @@ class SearchApiUnitTest extends DrupalWebTestCase {
     $processor = new SearchApiTokenizer($this->index, array('fields' => array('name' => 'name'), 'spaces' => '[^\p{L}\p{N}]', 'ignorable' => '[-]'));
     $tmp = $items;
     $processor->preprocessIndexItems($tmp);
-    $this->assertEqual($tmp[1]['name']['value'], $processed1, t('Value was correctly tokenized with default settings.'));
+    $this->assertEqual($tmp[1]['name']['value'], $processed1, 'Value was correctly tokenized with default settings.');
 
     $query = new SearchApiQuery($this->index, array('parse mode' => 'direct'));
     $query->keys("foo \"bar-baz\" \n\t foobar1");
     $processor->preprocessSearchQuery($query);
-    $this->assertEqual($query->getKeys(), 'foo barbaz foobar1', t('Search keys were processed correctly.'));
+    $this->assertEqual($query->getKeys(), 'foo barbaz foobar1', 'Search keys were processed correctly.');
 
     $processor = new SearchApiTokenizer($this->index, array('fields' => array('name' => 'name'), 'spaces' => '[-a]', 'ignorable' => '\s'));
     $tmp = $items;
     $processor->preprocessIndexItems($tmp);
-    $this->assertEqual($tmp[1]['name']['value'], $processed2, t('Value was correctly tokenized with custom settings.'));
+    $this->assertEqual($tmp[1]['name']['value'], $processed2, 'Value was correctly tokenized with custom settings.');
 
     $query = new SearchApiQuery($this->index, array('parse mode' => 'direct'));
     $query->keys("foo \"bar-baz\" \n\t foobar1");
     $processor->preprocessSearchQuery($query);
-    $this->assertEqual($query->getKeys(), 'foo"b r b z"foob r1', t('Search keys were processed correctly.'));
+    $this->assertEqual($query->getKeys(), 'foo"b r b z"foob r1', 'Search keys were processed correctly.');
   }
 
   public function checkHtmlFilter() {
@@ -694,7 +710,7 @@ END;
     $processor->preprocessIndexItems($tmp);
     $processor = new SearchApiTokenizer($this->index, array('fields' => array('name' => 'name'), 'spaces' => '[\s.:]', 'ignorable' => ''));
     $processor->preprocessIndexItems($tmp);
-    $this->assertEqual($tmp[1]['name']['value'], $processed1, t('Text was correctly processed.'));
+    $this->assertEqual($tmp[1]['name']['value'], $processed1, 'Text was correctly processed.');
   }
 
 }

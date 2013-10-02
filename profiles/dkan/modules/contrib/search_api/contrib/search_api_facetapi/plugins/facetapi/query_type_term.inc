@@ -120,8 +120,8 @@ class SearchApiFacetapiTerm extends FacetapiQueryType implements FacetapiQueryTy
     $search = search_api_current_search($search_id);
     $build = array();
     $results = $search[1];
-    if (isset($results['search_api_facets']) && isset($results['search_api_facets'][$this->facet['field']])) {
-      $values = $results['search_api_facets'][$this->facet['field']];
+    if (isset($results['search_api_facets']) && isset($results['search_api_facets'][$this->facet['name']])) {
+      $values = $results['search_api_facets'][$this->facet['name']];
       foreach ($values as $value) {
         $filter = $value['filter'];
         // As Facet API isn't really suited for our native facet filter

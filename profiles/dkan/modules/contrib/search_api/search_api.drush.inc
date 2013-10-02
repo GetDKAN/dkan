@@ -184,6 +184,10 @@ function drush_search_api_index($index_id = NULL, $limit = NULL, $batch_size = N
     $datasource = $index->datasource();
     $index_status = $datasource->getIndexStatus($index);
     $remaining = $index_status['total'] - $index_status['indexed'];
+    if ($remaining <= 0) {
+      drush_log(dt("The index !index is up to date.", array('!index' => $index->name)), 'ok');
+      continue;
+    }
 
     // Get the number of items to index per batch run.
     if (!isset($batch_size)) {

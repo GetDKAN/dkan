@@ -14,12 +14,14 @@ files[] = includes/callback_bundle_filter.inc
 files[] = includes/callback_language_control.inc
 files[] = includes/callback_node_access.inc
 files[] = includes/callback_node_status.inc
+files[] = includes/callback_role_filter.inc
 files[] = includes/datasource.inc
 files[] = includes/datasource_entity.inc
 files[] = includes/datasource_external.inc
 files[] = includes/exception.inc
 files[] = includes/index_entity.inc
 files[] = includes/processor.inc
+files[] = includes/processor_highlight.inc
 files[] = includes/processor_html_filter.inc
 files[] = includes/processor_ignore_case.inc
 files[] = includes/processor_stopwords.inc
@@ -31,9 +33,9 @@ files[] = includes/service.inc
 
 configure = admin/config/search/search_api
 
-; Information added by drupal.org packaging script on 2013-05-29
-version = "7.x-1.6"
+; Information added by drupal.org packaging script on 2013-09-01
+version = "7.x-1.8"
 core = "7.x"
 project = "search_api"
-datestamp = "1369840267"
+datestamp = "1378025826"
 

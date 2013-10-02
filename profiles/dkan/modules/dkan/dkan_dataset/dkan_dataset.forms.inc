@@ -25,6 +25,7 @@ function dkan_dataset_field_group_build_pre_render_alter(&$element) {
  * Implements hook_field_group_pre_render().
  */
 function dkan_dataset_field_group_pre_render(&$element, $group, &$form) {
+  global $base_path;
   if (module_exists('context')) {
     $contexts = context_active_contexts();
   }
@@ -40,7 +41,7 @@ function dkan_dataset_field_group_pre_render(&$element, $group, &$form) {
       );
     }
   }
-  elseif (isset($form['#action']) && $form['#action'] == '/node/add/dataset' && !$additional && $arg2 != 'edit') {
+  elseif (isset($form['#action']) && $form['#action'] == $base_path . 'node/add/dataset' && !$additional && $arg2 != 'edit') {
     if ($group->group_name == 'group_additional') {
       $element += array(
         '#type' => 'markup',
@@ -55,6 +56,7 @@ function dkan_dataset_field_group_pre_render(&$element, $group, &$form) {
  * Implements hook_form_FORM_ID_alter().
  */
 function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
+  global $base_path;
 
   if ($form_id == 'dataset_node_form') {
 
@@ -166,7 +168,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     }
     else {
       $form['actions']['submit']['#value'] = t('Finish');
-      $form['#action'] = '/node/add/dataset';
+      $form['#action'] = $base_path .  'node/add/dataset';
     }
   }
   if ($form_id == 'resource_node_form') {
@@ -233,7 +235,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     }
     $form['#validate'][] = 'dkan_dataset_resource_node_form_validate';
     // This saves us on the ajax reloading.
-    $form['#action'] = '/node/add/resource' . $action_query;
+    $form['#action'] = $base_path . 'node/add/resource' . $action_query;
     $form['actions']['additional'] = array(
       '#type' => 'submit',
       '#value' => t('Next: Additional Info'),
@@ -412,6 +414,7 @@ function dkan_dataset_resource_another_submit_js($form, &$form_state) {
  * Builds the resource form after the dataset submit.
  */
 function dkan_dataset_dataset_submit_js($form, &$form_state) {
+  global $base_path;
   // Return the actual form if it contains errors.
   if (form_get_errors()) {
     return $form;
@@ -420,7 +423,7 @@ function dkan_dataset_dataset_submit_js($form, &$form_state) {
 
   // Replacement elements.
   $stage = dkan_form_create_stages('resource-edit', $form_state['node']->nid);
-  $breadcrumbs = '<ul class="breadcrumb"><li><a href="/">Home</a></li><li><a href="/dataset">Datasets</a></li><li>' . l($form_state['values']['title'], 'node/' . $form_state['nid']) . '</li><li><a href="/node/add/resource?dataset=' . $form_state['nid'] . '" class="active">Add Resource</a></li></ul>';
+  $breadcrumbs = '<ul class="breadcrumb"><li><a href="/">Home</a></li><li><a href="/dataset">Datasets</a></li><li>' . l($form_state['values']['title'], 'node/' . $form_state['nid']) . '</li><li><a href=' . $base_path . '"node/add/resource?dataset=' . $form_state['nid'] . '" class="active">Add Resource</a></li></ul>';
   $resources_block = '<section class="block block-dkan-forms block-dkan-forms-resource-nodes block-dkan-forms-dkan-forms-resource-nodes even" id="block-dkan-forms-dkan-forms-resource-nodes"><div class="block-inner clearfix"><h2 class="block-title">Resources</h2><div class="content clearfix"><div class="item-list"><ul class="nav-simple"><li class="last"></li></ul></div><a id="context-block-dkan_dataset-dkan_forms_resource_nodes" class="context-block editable edit-resource-create"></a></div></div></section>';
 
   $commands[] = ajax_command_append('#region-sidebar-first .region-inner', $resources_block);
@@ -448,6 +451,7 @@ function dkan_dataset_dataset_submit_js($form, &$form_state) {
  * Creates initial resource node form.
  */
 function dkan_dataset_prepare_resource_form($nid) {
+  global $base_path;
   $type = 'resource';
   global $user;
   $node = (object) array(
@@ -461,7 +465,7 @@ function dkan_dataset_prepare_resource_form($nid) {
   // Don't pull from cache.
   $new_form_state['input'] = array();
   $resource_form = drupal_build_form($type . '_node_form', $new_form_state);
-  $resource_form['#action'] = '/node/add/resource?dataset=' . $nid;
+  $resource_form['#action'] = $base_path . 'node/add/resource?dataset=' . $nid;
   return $resource_form;
 }
 

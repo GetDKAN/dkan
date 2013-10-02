@@ -15,8 +15,6 @@
  *
  * Note: The ids should be valid PHP identifiers.
  *
- * @see hook_search_api_service_info_alter()
- *
  * @return array
  *   An associative array of search service classes, keyed by a unique
  *   identifier and containing associative arrays with the following keys:
@@ -27,6 +25,8 @@
  *     the "direct" parse mode and other specific things to keep in mind.
  *   - class: The service class, which has to implement the
  *     SearchApiServiceInterface interface.
+ *
+ * @see hook_search_api_service_info_alter()
  */
 function hook_search_api_service_info() {
   $services['example_some'] = array(
@@ -49,13 +49,14 @@ function hook_search_api_service_info() {
  * Alter the Search API service info.
  *
  * Modules may implement this hook to alter the information that defines Search
- * API service. All properties that are available in
- * hook_search_api_service_info() can be altered here.
- *
- * @see hook_search_api_service_info()
+ * API services. All properties that are available in
+ * hook_search_api_service_info() can be altered here, with the addition of the
+ * "module" key specifying the module that originally defined the service class.
  *
  * @param array $service_info
  *   The Search API service info array, keyed by service id.
+ *
+ * @see hook_search_api_service_info()
  */
 function hook_search_api_service_info_alter(array &$service_info) {
   foreach ($service_info as $id => $info) {
@@ -125,7 +126,8 @@ function hook_search_api_item_type_info() {
  *
  * Modules may implement this hook to alter the information that defines an
  * item type. All properties that are available in
- * hook_search_api_item_type_info() can be altered here.
+ * hook_search_api_item_type_info() can be altered here, with the addition of
+ * the "module" key specifying the module that originally defined the type.
  *
  * @param array $infos
  *   The item type info array, keyed by type identifier.

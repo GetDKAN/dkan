@@ -10,9 +10,9 @@ files[] = search_api_test.module
 
 hidden = TRUE
 
-; Information added by drupal.org packaging script on 2013-05-29
-version = "7.x-1.6"
+; Information added by drupal.org packaging script on 2013-09-01
+version = "7.x-1.8"
 core = "7.x"
 project = "search_api"
-datestamp = "1369840267"
+datestamp = "1378025826"
 

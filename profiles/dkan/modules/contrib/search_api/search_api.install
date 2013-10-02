@@ -214,6 +214,7 @@ function search_api_install() {
     'server' => NULL,
     'item_type' => 'node',
     'options' => array(
+      'index_directly' => 1,
       'cron_limit' => '50',
       'data_alter_callbacks' => array(
         'search_api_alter_node_access' => array(
@@ -321,9 +322,15 @@ function search_api_disable() {
     $types[$index->item_type][] = $index;
   }
   foreach ($types as $type => $indexes) {
-    $controller = search_api_get_datasource_controller($type);
-    $controller->stopTracking($indexes);
+    try {
+      $controller = search_api_get_datasource_controller($type);
+      $controller->stopTracking($indexes);
+    }
+    catch (SearchApiException $e) {
+      // Modules defining entity or item types might have been disabled. Ignore.
+    }
   }
+  DrupalQueue::get('search_api_indexing_queue')->deleteQueue();
 }
 
 /**

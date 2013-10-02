@@ -12,6 +12,13 @@
  * They are used for loading items, extracting item data, keeping track of the
  * item status, etc.
  *
+ * Modules providing implementations of this interface that use a different way
+ * (either different table or different method altogether) of keeping track of
+ * indexed/dirty items than SearchApiAbstractDataSourceController should be
+ * aware that indexes' numerical IDs can change due to feature reverts. It is
+ * therefore recommended to use search_api_index_update_datasource(), or similar
+ * code, in a hook_search_api_index_update() implementation.
+ *
  * All methods of the data source may throw exceptions of type
  * SearchApiDataSourceException if any exception or error state is encountered.
  */

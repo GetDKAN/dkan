@@ -22,7 +22,7 @@ function search_api_test_schema() {
         'description' => 'The title of the item.',
         'type' => 'varchar',
         'length' => 50,
-        'not null' => TRUE,
+        'not null' => FALSE,
       ),
       'body' => array(
         'description' => 'A text belonging to the item.',
@@ -33,7 +33,13 @@ function search_api_test_schema() {
         'description' => 'A string identifying the type of item.',
         'type' => 'varchar',
         'length' => 50,
-        'not null' => TRUE,
+        'not null' => FALSE,
+      ),
+      'keywords' => array(
+        'description' => 'A comma separated list of keywords.',
+        'type' => 'varchar',
+        'length' => 200,
+       'not null' => FALSE,
       ),
     ),
     'primary key' => array('id'),

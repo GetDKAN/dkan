@@ -51,6 +51,13 @@ class SearchApiViewsQuery extends views_plugin_query {
   protected $errors;
 
   /**
+   * Whether to abort the search instead of executing it.
+   *
+   * @var bool
+   */
+  protected $abort = FALSE;
+
+  /**
    * The names of all fields whose value is required by a handler.
    *
    * The format follows the same as Search API field identifiers (parent:child).
@@ -209,6 +216,7 @@ class SearchApiViewsQuery extends views_plugin_query {
       // Add a nested filter for each filter group, with its set conjunction.
       foreach ($this->where as $group_id => $group) {
         if (!empty($group['conditions']) || !empty($group['filters'])) {
+          $group += array('type' => 'AND');
           // For filters without a group, we want to always add them directly to
           // the query.
           $filter = ($group_id === '') ? $this->query : $this->query->createFilter($group['type']);
@@ -235,6 +243,21 @@ class SearchApiViewsQuery extends views_plugin_query {
     $view->init_pager();
     $this->pager->query();
 
+    // Views passes sometimes NULL and sometimes the integer 0 for "All" in a
+    // pager. If set to 0 items, a string "0" is passed. Therefore, we unset
+    // the limit if an empty value OTHER than a string "0" was passed.
+    if (!$this->limit && $this->limit !== '0') {
+      $this->limit = NULL;
+    }
+    // Set the range. (We always set this, as there might even be an offset if
+    // all items are shown.)
+    $this->query->range($this->offset, $this->limit);
+
+    // Set the search ID, if it was not already set.
+    if ($this->query->getOption('search id') == get_class($this->query)) {
+      $this->query->setOption('search id', 'search_api_views:' . $view->name . ':' . $view->current_display);
+    }
+
     // Add the "search_api_bypass_access" option to the query, if desired.
     if (!empty($this->options['search_api_bypass_access'])) {
       $this->query->setOption('search_api_bypass_access', TRUE);
@@ -249,7 +272,7 @@ class SearchApiViewsQuery extends views_plugin_query {
    * $view->pager['current_page'].
    */
   public function execute(&$view) {
-    if ($this->errors) {
+    if ($this->errors || $this->abort) {
       if (error_displayable()) {
         foreach ($this->errors as $msg) {
           drupal_set_message(check_plain($msg), 'error');
@@ -263,11 +286,6 @@ class SearchApiViewsQuery extends views_plugin_query {
 
     try {
       $start = microtime(TRUE);
-      // Add range and search ID (if it wasn't already set).
-      $this->query->range($this->offset, $this->limit);
-      if ($this->query->getOption('search id') == get_class($this->query)) {
-        $this->query->setOption('search id', 'search_api_views:' . $view->name . ':' . $view->current_display);
-      }
 
       // Execute the search.
       $results = $this->query->execute();
@@ -292,6 +310,16 @@ class SearchApiViewsQuery extends views_plugin_query {
       // Recursion to get the same error behaviour as above.
       return $this->execute($view);
     }
+  }
+
+  /**
+   * Aborts this search query.
+   *
+   * Used by handlers to flag a fatal error which shouldn't be displayed but
+   * still lead to the view returning empty and the search not being executed.
+   */
+  public function abort() {
+    $this->abort = TRUE;
   }
 
   /**

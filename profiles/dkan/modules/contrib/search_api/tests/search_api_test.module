@@ -43,6 +43,9 @@ function search_api_test_insert_item(array $form, array &$form_state) {
     'type' => array(
       '#type' => 'textfield',
     ),
+    'keywords' => array(
+      '#type' => 'textfield',
+    ),
     'submit' => array(
       '#type' => 'submit',
       '#value' => t('Save'),
@@ -55,7 +58,7 @@ function search_api_test_insert_item(array $form, array &$form_state) {
  */
 function search_api_test_insert_item_submit(array $form, array &$form_state) {
   form_state_values_clean($form_state);
-  db_insert('search_api_test')->fields($form_state['values'])->execute();
+  db_insert('search_api_test')->fields(array_filter($form_state['values']))->execute();
   module_invoke_all('entity_insert', search_api_test_load($form_state['values']['id']), 'search_api_test');
 }
 
@@ -78,24 +81,6 @@ function search_api_test_view($entity) {
  * Menu callback for executing a search.
  */
 function search_api_test_query(SearchApiIndex $index, $keys = 'foo bar', $offset = 0, $limit = 10, $fields = NULL, $sort = NULL, $filters = NULL) {
-  // Slight "hack" for testing complex queries.
-  if ($keys == '|COMPLEX|') {
-    $keys = array(
-      '#conjunction' => 'AND',
-      'test',
-      array(
-        '#conjunction' => 'OR',
-        'baz',
-        'foobar',
-      ),
-      array(
-        '#conjunction' => 'OR',
-        '#negation' => TRUE,
-        'bar',
-        'fooblob',
-      ),
-    );
-  }
   $query = $index->query()
     ->keys($keys ? $keys : NULL)
     ->range($offset, $limit);
@@ -178,6 +163,12 @@ function search_api_test_entity_property_info() {
       'description' => "The item's parent.",
       'getter callback' => 'search_api_test_parent',
     ),
+    'keywords' => array(
+      'label' => 'Keywords',
+      'type' => 'list<string>',
+      'description' => 'An optional collection of keywords describing the item.',
+      'getter callback' => 'search_api_test_list_callback',
+    ),
   );
 
   return $info;
@@ -197,6 +188,20 @@ function search_api_test_uri($entity) {
  */
 function search_api_test_parent($entity) {
   return search_api_test_load($entity->id - 1);
+}
+
+/**
+ * List callback.
+ */
+function search_api_test_list_callback($data) {
+  //return is_array($entity->keywords) ? $entity->keywords : explode(',', $entity->keywords);
+  if (is_array($data)) {
+    $res = is_array($data['keywords']) ? $data['keywords'] : explode(',', $data['keywords']);
+  }
+  else {
+    $res = is_array($data->keywords) ? $data->keywords : explode(',', $data->keywords);
+  }
+  return array_filter($res);
 }
 
 /**
