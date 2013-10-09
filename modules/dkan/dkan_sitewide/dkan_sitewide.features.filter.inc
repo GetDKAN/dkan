@@ -18,6 +18,11 @@ function dkan_sitewide_filter_default_formats() {
     'status' => '1',
     'weight' => '0',
     'filters' => array(
+      'filter_markdown' => array(
+        'weight' => '-11',
+        'status' => '1',
+        'settings' => array(),
+      ),
       'filter_html' => array(
         'weight' => '-10',
         'status' => '1',
@@ -33,11 +38,6 @@ function dkan_sitewide_filter_default_formats() {
         'settings' => array(
           'filter_url_length' => '72',
         ),
-      ),
-      'filter_markdown' => array(
-        'weight' => '0',
-        'status' => '1',
-        'settings' => array(),
       ),
       'filter_htmlcorrector' => array(
         'weight' => '10',
