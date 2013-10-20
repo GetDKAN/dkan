@@ -62,7 +62,7 @@ return
     </header>
     <section class="featured media-overlay">
       <h2 class="media-heading">DKAN‘s data previewing tool has many powerful features</h2>
-      <a class="image" href="/dataset/gold-prices-london-1950-2008-monthly"><img src="/profiles/dkan/themes/dkan/images/homepage-graphic.jpg" width="420" height="219"></a>
+      <a class="image" href="/dataset/gold-prices-london-1950-2008-monthly"><img src="/profiles/dkan/themes/dkan/images/homepage-graphic.jpg" style="width: 100%"></a>
     </section>
   </div>';
 }
