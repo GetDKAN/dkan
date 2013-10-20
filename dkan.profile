@@ -1,11 +1,14 @@
 <?php
+/**
+ * @file
+ * Additional setup tasks for DKAN.
+ */
 
 /**
- * Implements hook_install_tasks()
+ * Implements hook_install_tasks().
  */
 function dkan_install_tasks() {
   $tasks = array();
-  // TODO: Move these to .profile
   $tasks['dkan_additional_setup'] = array(
     'display_name' => 'Cleanup',
   );
@@ -13,7 +16,7 @@ function dkan_install_tasks() {
 }
 
 /**
- * Implements hook_install_tasks()
+ * Implements hook_install_tasks().
  */
 function dkan_additional_setup() {
   // Change block titles for selected blocks.
@@ -75,6 +78,7 @@ function dkan_additional_setup() {
     'election',
     'politics',
     'transparency',
+    'municipal',
   );
   foreach ($tags as $tag) {
     $term = new stdClass();
@@ -145,4 +149,6 @@ function dkan_additional_setup() {
     'imported' => '0',
   );
   drupal_write_record('feeds_source', $record);
+  features_revert(array('dkan_sitewide_search_db' => array('search_api_index')));
+  unset($_SESSION['messages']['warning']);
 }
