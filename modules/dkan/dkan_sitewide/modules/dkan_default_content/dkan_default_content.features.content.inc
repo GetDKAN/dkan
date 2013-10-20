@@ -46,7 +46,7 @@ function dkan_default_content_content_defaults() {
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '9',
+          'tid' => '2',
         ),
       ),
     ),
@@ -112,7 +112,7 @@ https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr
     'field_format' => array(
       'und' => array(
         0 => array(
-          'tid' => '5',
+          'tid' => '6',
         ),
       ),
     ),
@@ -183,13 +183,10 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '7',
+          'tid' => '4',
         ),
         1 => array(
-          'tid' => '8',
-        ),
-        2 => array(
-          'tid' => '9',
+          'tid' => '3',
         ),
       ),
     ),
@@ -223,7 +220,7 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
     'field_format' => array(
       'und' => array(
         0 => array(
-          'tid' => '5',
+          'tid' => '6',
         ),
       ),
     ),
@@ -348,7 +345,7 @@ Click on Graph button under Preview and plot date (x-axis) against price (y-axis
     'field_format' => array(
       'und' => array(
         0 => array(
-          'tid' => '5',
+          'tid' => '6',
         ),
       ),
     ),
@@ -402,7 +399,7 @@ Click on Graph button under Preview and plot date (x-axis) against price (y-axis
     'field_format' => array(
       'und' => array(
         0 => array(
-          'tid' => '5',
+          'tid' => '6',
         ),
       ),
     ),
@@ -519,7 +516,7 @@ Click on Graph button under Preview and plot date (x-axis) against price (y-axis
     'body' => array(
       'und' => array(
         0 => array(
-          'value' => 'DKAN is the Drupal-based version of CKAN, the world\'s leading open-source open data publishing platform. It provides a complete open source software solution for data publishers, and adheres to the API, data, and functionality standards of DKAN. The goal of the project combine the utility of DKAN with the ease of maintenance and extensibility of Drupal.
+          'value' => 'DKAN is the Drupal-based version of CKAN, the world\'s leading open-source open data publishing platform. It provides a complete open source software solution for data publishers, and adheres to the API, data, and functionality standards of CKAN. The goal of the project combine the utility of CKAN with the ease of maintenance and extensibility of Drupal.
 
 Developers: see http://drupal.org/project/dkan for code, documentation, and to contribute.
 
