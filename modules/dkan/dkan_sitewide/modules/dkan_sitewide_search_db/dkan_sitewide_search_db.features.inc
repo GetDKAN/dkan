@@ -7,12 +7,10 @@
 /**
  * Implements hook_ctools_plugin_api().
  */
-function dkan_sitewide_search_db_ctools_plugin_api() {
-  list($module, $api) = func_get_args();
+function dkan_sitewide_search_db_ctools_plugin_api($module = NULL, $api = NULL) {
   if ($module == "context" && $api == "context") {
     return array("version" => "3");
   }
-  list($module, $api) = func_get_args();
   if ($module == "facetapi" && $api == "facetapi_defaults") {
     return array("version" => "1");
   }
@@ -21,7 +19,7 @@ function dkan_sitewide_search_db_ctools_plugin_api() {
 /**
  * Implements hook_views_api().
  */
-function dkan_sitewide_search_db_views_api() {
+function dkan_sitewide_search_db_views_api($module = NULL, $api = NULL) {
   return array("api" => "3.0");
 }
 
@@ -43,14 +41,14 @@ function dkan_sitewide_search_db_default_search_api_index() {
         "type" : { "type" : "string" },
         "title" : { "type" : "string" },
         "status" : { "type" : "boolean" },
+        "changed" : { "type" : "date" },
         "author" : { "type" : "integer", "entity_type" : "user" },
-        "field_license" : { "type" : "string" },
+        "field_license" : { "type" : "text" },
         "field_tags" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
         "og_group_ref" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "node" },
         "search_api_language" : { "type" : "string" },
         "search_api_viewed" : { "type" : "text" },
         "search_api_access_node" : { "type" : "list\\u003Cstring\\u003E" },
-        "field_resources:title" : { "type" : "list\\u003Ctext\\u003E" },
         "field_resources:field_format" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
         "field_resources:body:value" : { "type" : "list\\u003Ctext\\u003E" }
       },
@@ -155,34 +153,38 @@ function dkan_sitewide_search_db_default_search_api_server() {
             "type" : "list\\u003Cstring\\u003E",
             "boost" : "1.0"
           },
-          "field_license" : {
-            "table" : "search_api_db_datasets_field_license",
-            "type" : "string",
-            "boost" : "1.0"
-          },
           "field_tags" : {
             "table" : "search_api_db_datasets_field_tags",
+            "column" : "value",
             "type" : "list\\u003Cinteger\\u003E",
+            "boost" : "1.0"
+          },
+          "changed" : {
+            "table" : "search_api_db_datasets",
+            "column" : "changed",
+            "type" : "date",
+            "boost" : "1.0"
+          },
+          "field_license" : {
+            "table" : "search_api_db_datasets_field_license",
+            "type" : "text",
             "boost" : "1.0"
           },
           "og_group_ref" : {
             "table" : "search_api_db_datasets_og_group_ref",
+            "column" : "value",
+            "type" : "list\\u003Cinteger\\u003E",
+            "boost" : "1.0"
+          },
+          "field_resources:field_format" : {
+            "table" : "search_api_db_datasets_field_resources_field_format",
+            "column" : "value",
             "type" : "list\\u003Cinteger\\u003E",
             "boost" : "1.0"
           },
           "field_resources:body:value" : {
             "table" : "search_api_db_datasets_field_resources_body_value",
             "type" : "list\\u003Ctext\\u003E",
-            "boost" : "1.0"
-          },
-          "field_resources:title" : {
-            "table" : "search_api_db_datasets_field_resources_title",
-            "type" : "list\\u003Ctext\\u003E",
-            "boost" : "1.0"
-          },
-          "field_resources:field_format" : {
-            "table" : "search_api_db_datasets_field_resources_field_format",
-            "type" : "list\\u003Cinteger\\u003E",
             "boost" : "1.0"
           }
         }
