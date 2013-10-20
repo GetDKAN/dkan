@@ -88,7 +88,9 @@ function dkan_sitewide_resource_additional_block($nid = '') {
   $file_info = array();
   $lang = $node->language ? $node->language : 'und';
   $link = isset($node->field_link_remote_file[$lang][0]) ? $node->field_link_remote_file[$lang][0] : NULL;
+  $link = !$link && isset($node->field_link_remote_file['und'][0]) ? $node->field_link_remote_file['und'][0] : $link;
   $upload = isset($node->field_upload[$lang][0]) ? $node->field_upload[$lang][0] : NULL;
+  $upload = !$upload && isset($node->field_upload['und'][0]) ? $node->field_upload['und'][0] : $upload;
 
   if (($file = $link) || ($file = $upload)) {
     $file_info[] = array(t('mimetype'), $file['filemime']);
