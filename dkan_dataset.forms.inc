@@ -143,14 +143,19 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
         '#type' => 'submit',
         '#value' => t('Next: Add data'),
         '#weight' => -5,
-        '#ajax' => array(
+        '#submit' => array('node_form_submit'),
+      );
+      if (variable_get('dkan_dataset_form_ajax', 0)) {
+        $form['actions']['next']['#ajax'] = array(
           'callback' => 'dkan_dataset_dataset_submit_js',
           'wrapper' => $form['#id'],
           'method' => 'replace',
           'effect' => 'fade',
-        ),
-        '#submit' => array('node_form_submit'),
-      );
+        );
+      }
+      else {
+        $form['actions']['next']['#submit'] = array('node_form_submit', 'dkan_dataset_dataset_form_submit');
+      }
       $form['actions']['terms'] = array(
         '#type' => 'item',
         '#markup' => '<div id="action-info">' . t('Important: By submitting content, you agree to release your contributions under the Open Database License.') . '</div>',
@@ -257,6 +262,15 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       ),
       '#submit' => array('node_form_submit'),
     );
+  }
+}
+
+/**
+ * Dataset node form submit handler.
+ */
+function dkan_dataset_dataset_form_submit($form, &$form_state) {
+  if (isset($form_state['node']->nid)) {
+    drupal_goto('node/add/resource', array('query' => array('dataset' => $form_state['node']->nid)));
   }
 }
 

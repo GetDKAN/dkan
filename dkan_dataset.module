@@ -35,8 +35,29 @@ function dkan_dataset_menu() {
     'file' => 'dkan_dataset.pages.inc',
     'file path' => $path,
   );
+  $items['admin/dkan/forms'] = array(
+    'title' => 'DKAN Settings',
+    'description' => 'Settings for DKAN Dataset form.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_dataset_site_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+  );
 
   return $items;
+}
+
+/**
+ * Menu Callback for DKAN Dataset settings.
+ */
+function dkan_dataset_site_settings() {
+  $form = array();
+  $form['dkan_dataset_form_ajax'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use Ajax on dataset node.'),
+    '#default_value' => variable_get('dkan_dataset_form_ajax', 0),
+  );
+  return system_settings_form($form);
 }
 
 /**
