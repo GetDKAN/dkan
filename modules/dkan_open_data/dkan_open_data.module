@@ -14,7 +14,7 @@ function dkan_open_data_menu() {
   // Put your menu items here.
   $items['data.json'] = array(
     'page callback' => 'dkan_open_data_json',
-    'access arguments' => array('access_content'),
+    'access arguments' => array('access content'),
     'type' => MENU_SUGGESTED_ITEM,
   );
 
