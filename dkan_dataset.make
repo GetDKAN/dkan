@@ -68,7 +68,6 @@ projects[geophp][subdir] = contrib
 projects[geophp][version] = 1.7
 projects[rdfx][subdir] = contrib
 projects[rdfx][version] = 2.x
-projects[rdfx][patch][1176666] = http://drupal.org/files/find-arc-library-correctly-1176666-14.patch
 projects[rdfx][patch][1271498] = http://drupal.org/files/issues/1271498_3_rdfui_form_values.patch
 
 projects[field_group_table][subdir] = contrib
