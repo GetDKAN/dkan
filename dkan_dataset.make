@@ -61,6 +61,7 @@ projects[views_datasource][type] = "module"
 projects[views_bulk_operations][subdir] = contrib
 
 projects[recline][subdir] = contrib
+projects[recline][version] = 1.x 
 projects[entity_rdf][subdir] = contrib
 projects[geofield][subdir] = contrib
 projects[geofield][version] = 1.2
