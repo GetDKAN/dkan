@@ -1,0 +1,213 @@
+<?php
+
+/**
+ * @file
+ * Module file for DKAN Dataset API.
+ /
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_dataset_api_menu() {
+  $items = array();
+  // Settings form.
+  $items['admin/dkan/dataset_api'] = array(
+    'title' => 'DKAN Dataset API',
+    'description' => 'Settings for DKAN Dataset APIs.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_dataset_api_settings'),
+    'access arguments' => array('administer site configuration'),
+  );
+
+  // API callbacks.
+  $items['api/3/action/site_read'] = array(
+    'page callback' => 'dkan_dataset_api_site_read',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+  $items['api/action/site_read'] = array(
+    'page callback' => 'dkan_dataset_api_site_read',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+
+  $items['api/3/action/package_list'] = array(
+    'page callback' => 'dkan_dataset_api_package_list',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+  $items['api/action/package_list'] = array(
+    'page callback' => 'dkan_dataset_api_package_list',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+  $items['api/2/rest/dataset'] = array(
+    'page callback' => 'dkan_dataset_api_package_list',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+  $items['api/rest/dataset'] = array(
+    'page callback' => 'dkan_dataset_api_package_list',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+
+  $items['data.json'] = array(
+    'page callback' => 'dkan_open_data_json',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+    'file' => 'dkan_dataset_api.inc',
+  );
+  $items['api/3/action/current_package_list_with_resources'] = array(
+    'page callback' => 'dkan_dataset_api_current_package_list_with_resources',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Menu Callback for DKAN Dataset settings.
+ */
+function dkan_dataset_api_settings() {
+  $form = array();
+  $form['dkan_dataset_api'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Enabled Dataset APIs.'),
+    '#description' => t('Toggle public APIs below.'),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_site_read'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('site_read'),
+    '#description' => t('More information on !url.', array('!url' => l('site_read', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.site_read'))),
+    '#default_value' => variable_get('dkan_dataset_api_site_read', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_package_list'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('package_list'),
+    '#description' => t('More information on !url. This also mirrors the deprecated !legacy.', array(
+      '!url' => l('package_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'),
+      '!legacy' => l('rest/dataset', 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
+    '#default_value' => variable_get('dkan_dataset_api_package_list', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_data_json'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('data.json'),
+    '#description' => t('More information on !url.', array('!url' => l('data.json', 'http://project-open-data.github.io'))),
+    '#default_value' => variable_get('dkan_dataset_api_data_json', 0),
+  );
+  $form['dkan_dataset_api']['current_package_list_with_resources'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('current_package_list_with_resources'),
+    '#description' => t('More information on !url.', array('!url' => l('current_package_list_with_resources', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'))),
+    '#default_value' => variable_get('current_package_list_with_resources', 1),
+  );
+  return system_settings_form($form);
+}
+
+/**
+ * Callback function for data.json retrieval.
+ */
+function dkan_open_data_json() {
+  if (!variable_get('dkan_dataset_api_data_json', 0)) {
+    return drupal_access_denied();
+  }
+
+  $nodes = dkan_dataset_api_get_datasets();
+  $rows = dkan_open_data_build_rows($nodes);
+
+  drupal_json_output($rows);
+}
+
+/**
+ * Callback function fordata retrieval.
+ */
+function dkan_dataset_api_current_package_list_with_resources() {
+  if (!variable_get('current_package_list_with_resources', 0)) {
+    return drupal_access_denied();
+  }
+  $limit = isset($_GET['limit']) ? $_GET['limit'] : 0;
+  $offset = isset($_GET['offset']) && $_GET['offset'] ? $_GET['offset'] : 0;
+
+  $nodes = dkan_dataset_api_get_datasets($limit, $offset);
+  // TODO: Replace with CKAN specific.
+  $rows = dkan_open_data_build_rows($nodes);
+
+  drupal_json_output($rows);
+}
+
+/**
+ * Returns a list of uuids of published datasts.
+ */
+function dkan_dataset_api_package_list() {
+  if (!variable_get('dkan_dataset_api_package_list', 1)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return a list of the names of the site's datasets (packages).\n\n    :rtype: list of strings\n\n"),
+  );
+  try {
+    $limit = isset($_GET['limit']) ? $_GET['limit'] : '';
+    $offset = isset($_GET['offset']) && $_GET['offset'] ? $_GET['offset'] : 0;
+    $query = db_select('node', 'n')
+      ->fields('n', array('uuid'))
+      ->condition('n.type', 'dataset')
+      ->condition('n.status', 1)
+      ->orderBy('n.changed', 'DESC');
+    if ($limit) {
+      $query->range($offset, $limit);
+    }
+    $uuids = $query->execute()->fetchCol();
+    $output['success'] = TRUE;
+    $output['result'] = $uuids;
+
+  }
+  catch (EntityMetadataWrapperException $e) {
+    $output['success'] = FALSE;
+    $output['result'] = array();
+  }
+
+  drupal_json_output($output);
+}
+
+/**
+ * Callback function fordata retrieval.
+ */
+function dkan_dataset_api_site_read() {
+  if (!variable_get('dkan_dataset_api_site_read', 1)) {
+    return drupal_access_denied();
+  }
+  $output = array(
+    'help' => t("Return ``True``.\n\n    :rtype: boolean\n\n"),
+    'success' => TRUE,
+    'result' => TRUE,
+  );
+  drupal_json_output($output);
+}
+
+/**
+ * Retrieves public, published dataset nodes.
+ *
+ * @return array
+ *   An array of dataset nodes.
+ */
+function dkan_dataset_api_get_datasets($limit = 0, $offset = 0) {
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'dataset')
+    ->propertyCondition('status', 1)
+    ->propertyOrderBy('created', 'DESC')
+    // Run the query as user 1.
+    ->addMetaData('account', user_load(1));
+  if ($limit) {
+    $query->range($limit, $offset);
+  }
+  $entities = $query->execute();
+  $nids = array_keys($entities['node']);
+  $nodes = node_load_multiple($nids);
+
+  return $nodes;
+}
+
