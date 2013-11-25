@@ -239,17 +239,19 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['#validate'][] = 'dkan_dataset_resource_node_form_validate';
     // This saves us on the ajax reloading.
     $form['#action'] = '/node/add/resource' . $action_query;
-    $form['actions']['additional'] = array(
-      '#type' => 'submit',
-      '#value' => t('Next: Additional Info'),
-      '#weight' => -5,
-      '#ajax' => array(
-        'callback' => 'dkan_dataset_additional_submit_js',
-        'wrapper' => $form['#id'],
-        'method' => 'replace',
-        'effect' => 'fade',
-      ),
-    );
+    if (isset($query['dataset']) || (isset($form['#node']->field_dataset_ref) && $form['#node']->field_dataset_ref)) {
+      $form['actions']['additional'] = array(
+        '#type' => 'submit',
+        '#value' => t('Next: Additional Info'),
+        '#weight' => -5,
+        '#ajax' => array(
+          'callback' => 'dkan_dataset_additional_submit_js',
+          'wrapper' => $form['#id'],
+          'method' => 'replace',
+          'effect' => 'fade',
+        ),
+      );
+    }
     $form['actions']['another'] = array(
       '#type' => 'submit',
       '#value' => t('Save and add another'),
