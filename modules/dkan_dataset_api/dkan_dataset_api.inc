@@ -37,11 +37,11 @@ function dkan_open_data_build_rows($nodes) {
       else {
         $row->publisher = $publisher[0]->title;
       }
-      $row->person = dkan_open_data_get_field_value($node, 'field_contact_name', 'value');
+      $row->contactPoint = dkan_open_data_get_field_value($node, 'field_contact_name', 'value');
       $row->mbox = dkan_open_data_get_field_value($node, 'field_contact_email', 'value');
       $row->identifier = dkan_open_data_get_field_value($node, 'uuid', 'value');
       $access_level = dkan_open_data_get_field_value($node, 'field_public_access_level', 'label');
-      $row->accessLevel = $access_level ? $access_level : t('Public');
+      $row->accessLevel = $access_level ? $access_level : t('public');
 
       // Common Core (Required if Applicable) fields.
       $row->accessURL = url('node/' . $node->nid, array('absolute' => TRUE));

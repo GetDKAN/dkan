@@ -35,13 +35,22 @@ function dkan_dataset_menu() {
     'file' => 'dkan_dataset.pages.inc',
     'file path' => $path,
   );
-  $items['admin/dkan/forms'] = array(
-    'title' => 'DKAN Settings',
-    'description' => 'Settings for DKAN Dataset form.',
+  $items['admin/dkan'] = array(
+    'title' => 'DKAN',
+    'description' => 'DKAN Settings and Administration.',
+    'weight' => -8,
+    'position' => 'left',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+  $items['admin/dkan/dataset_forms'] = array(
+    'title' => 'DKAN Dataset Forms',
+    'description' => 'Form settings for DKAN Datasets.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('dkan_dataset_site_settings'),
+    'page arguments' => array('dkan_dataset_form_settings'),
     'access arguments' => array('administer site configuration'),
-    'type' => MENU_LOCAL_TASK,
   );
 
   return $items;
@@ -50,7 +59,7 @@ function dkan_dataset_menu() {
 /**
  * Menu Callback for DKAN Dataset settings.
  */
-function dkan_dataset_site_settings() {
+function dkan_dataset_form_settings() {
   $form = array();
   $form['dkan_dataset_form_ajax'] = array(
     '#type' => 'checkbox',

@@ -53,7 +53,7 @@ function dkan_dataset_api_menu() {
   );
 
   $items['data.json'] = array(
-    'page callback' => 'dkan_open_data_json',
+    'page callback' => 'dkan_dataset_api_open_data_json',
     'access arguments' => array('access content'),
     'type' => MENU_SUGGESTED_ITEM,
     'file' => 'dkan_dataset_api.inc',
@@ -108,7 +108,7 @@ function dkan_dataset_api_settings() {
 /**
  * Callback function for data.json retrieval.
  */
-function dkan_open_data_json() {
+function dkan_dataset_api_open_data_json() {
   if (!variable_get('dkan_dataset_api_data_json', 0)) {
     return drupal_access_denied();
   }
