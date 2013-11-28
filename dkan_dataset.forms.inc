@@ -299,7 +299,7 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
     form_set_error('field_link_file', 'Only one resource type can be added.');
   }
   // Autodetect file type.
-  if ($upload_fid || $link_fid) {
+  if ($upload_fid || $link_fid || $api) {
     if ($upload_fid) {
       $file = file_load($upload_fid);
       $type = substr($file->filename, strrpos($file->filename, '.') + 1);
@@ -307,6 +307,18 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
     elseif ($link_fid) {
       $file = file_load($link_fid);
       $type = substr($file->filename, strrpos($file->filename, '.') + 1);
+    }
+    elseif ($api) {
+      $request = drupal_http_request($api);
+      include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+      $mapping = file_mimetype_mapping();
+      $offset = array_search($request->headers['content-type'], $mapping['mimetypes']);
+      if ($offset) {
+        $type = array_search($offset, $mapping['extensions']);
+      }
+      else {
+        $type = 'data';
+      }
     }
     else {
       $type = substr($link, strrpos($link, '.') + 1);

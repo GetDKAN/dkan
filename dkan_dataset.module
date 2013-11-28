@@ -368,3 +368,13 @@ function dkan_dataset_preprocess_views_views_json_style_simple(&$vars) {
     }
   }
 }
+
+/**
+ * Implements hook_file_mimetype_mapping_alter().
+ */
+function dkan_dataset_file_mimetype_mapping_alter(&$mapping) {
+  $mapping['extensions']['json'] = 999;
+  $mapping['extensions']['html'] = 998;
+  $mapping['mimetypes'][999] = 'application/json';
+  $mapping['mimetypes'][998] = 'text/html; charset=utf-8';
+}

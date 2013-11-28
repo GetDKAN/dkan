@@ -53,7 +53,8 @@ function theme_dkan_dataset_release_date_view($vars) {
  * Output the resource into the node content.
  */
 function theme_dkan_dataset_resource_view($vars) {
-  $nodes = dkan_dataset_get_resource_nodes($vars['node']->nid);
+  $node = entity_metadata_wrapper('node', $vars['node']);
+  $nodes = $node->field_resources->value();
   $links = array();
   $output = '<div property="dcat:distribution">';
 
@@ -96,7 +97,8 @@ function theme_dkan_dataset_resource_view($vars) {
  */
 function theme_dkan_dataset_resource_teaser_view($vars) {
   if ($vars['node']->type == 'dataset') {
-    $nodes = dkan_dataset_get_resource_nodes($vars['node']->nid);
+    $node = entity_metadata_wrapper('node', $vars['node']);
+    $nodes = $node->field_resources->value();
   }
   else {
     $nodes = array($vars['node']);
