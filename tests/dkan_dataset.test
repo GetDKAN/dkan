@@ -1,0 +1,254 @@
+<?php
+
+/**
+ * @file
+ * Common functionality for DKAN Dataset tests.
+ */
+
+/**
+ * Test basic Data API functionality.
+ */
+class DkanDatasetWebTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
+  const GROUP = 'DKAN Dataset';
+  /**
+   * Information about the test.
+   */
+  public static function getInfo() {
+    return array(
+      'name'  => 'DKAN Dataset Test',
+      'description' => 'Test DKAN Dataset functions',
+      'group' => 'DKAN Dataset',
+    );
+  }
+
+  public function setUp() {
+    $args = func_get_args();
+
+    // Build the list of required modules which can be altered by passing in an
+    // array of module names to setUp().
+    if (isset($args[0])) {
+      if (is_array($args[0])) {
+        $modules = $args[0];
+      }
+      else {
+        $modules = $args;
+      }
+    }
+    else {
+      $modules = array();
+    }
+
+    $modules[] = 'autocomplete_deluxe';
+    $modules[] = 'beautytips';
+    $modules[] = 'chosen';
+    $modules[] = 'ctools';
+    $modules[] = 'date';
+    $modules[] = 'date_popup';
+    $modules[] = 'double_field';
+    $modules[] = 'dkan_dataset';
+    $modules[] = 'dkan_dataset_content_types';
+    $modules[] = 'entity';
+    $modules[] = 'entityreference';
+    $modules[] = 'eva';
+    $modules[] = 'features';
+    $modules[] = 'features';
+    $modules[] = 'field_group';
+    $modules[] = 'field_group_table';
+    $modules[] = 'filefield_sources';
+    $modules[] = 'jquery_update';
+    $modules[] = 'libraries';
+    $modules[] = 'link';
+    $modules[] = 'link_iframe_formatter';
+    $modules[] = 'multistep';
+    $modules[] = 'og';
+    $modules[] = 'og_extras';
+    $modules[] = 'path';
+    $modules[] = 'pathauto';
+    $modules[] = 'rdfx';
+    $modules[] = 'ref_field_sync';
+    $modules[] = 'remote_file_source';
+    $modules[] = 'remote_stream_wrapper';
+    $modules[] = 'restws';
+    $modules[] = 'select_or_other';
+    $modules[] = 'strongarm';
+    $modules[] = 'token';
+    $modules[] = 'uuid';
+    $modules[] = 'views';
+    $modules[] = 'views_json';
+    $modules = array_unique($modules);
+    parent::setUp($modules);
+
+    $obj = features_get_features('dkan_dataset');
+    $this->assertTrue(is_object($obj), 'FEATURES OBJECT: ' . print_r($obj, 1));
+
+    $obj = features_get_features('dkan_dataset_content_types');
+    $this->assertTrue(is_object($obj), 'FEATURES OBJECT: ' . print_r($obj, 1));
+
+    // Run a features rebuild to ensure our feature is fully installed.
+    features_rebuild();
+
+    // Add text formats Directly.
+    $filtered_html_format = array(
+      'format' => 'filtered_html',
+      'name' => 'Filtered HTML',
+      'weight' => 0,
+      'filters' => array(
+        // URL filter.
+        'filter_url' => array(
+          'weight' => 0,
+          'status' => 1,
+        ),
+        // HTML filter.
+        'filter_html' => array(
+          'weight' => 1,
+          'status' => 1,
+        ),
+        // Line break filter.
+        'filter_autop' => array(
+          'weight' => 2,
+          'status' => 1,
+        ),
+        // HTML corrector filter.
+        'filter_htmlcorrector' => array(
+          'weight' => 10,
+          'status' => 1,
+        ),
+      ),
+    );
+    $filtered_html_format = (object) $filtered_html_format;
+    filter_format_save($filtered_html_format);
+
+    // Build the list of required administration permissions. Additional
+    // permissions can be passed as an array into setUp()'s second parameter.
+    if (isset($args[1]) && is_array($args[1])) {
+      $permissions = $args[1];
+    }
+    else {
+      $permissions = array();
+    }
+
+    // TODO: wouldn't it be better to create a role?
+    // Admin Permissions.
+    $admin_perms = array(
+      'access content',
+      'administer site configuration',
+      'administer content types',
+      'administer features',
+      'administer nodes',
+      'bypass node access',
+      'administer users',
+    );
+    $this->verbose('Creating admin user with permissions: ' . var_export($admin_perms, TRUE));
+    // Create an admin user and log in.
+    $this->admin_user = $this->drupalCreateUser($admin_perms);
+    $this->drupalLogin($this->admin_user);
+
+  }
+
+  /**
+   * Helper function, retrieves node id from a URL.
+   */
+  public function getNid($url) {
+    $matches = array();
+    preg_match('/node\/(\d+?)$/', $url, $matches);
+    $nid = $matches[1];
+
+    // Test for actual integerness.
+    $this->assertTrue($nid === (string) (int) $nid, 'Node id is an integer.');
+
+    return $nid;
+  }
+
+  /**
+   * Create a test dataset node.
+   *
+   * @param string $title
+   *   Node title.
+   * @param array $create
+   *   Args: title, body, field_tags, field_license, path, og_group_ref
+   * @param array $additional
+   *   Args: field_author, field_spatial, field_spatial_geographical_cover,
+   *   field_frequency, field_temporal_coverage, field_granularity,
+   *   field_data_dictionary, field_contact_name, field_contact_email,
+   *   field_public_access_level, field_additional_info, field_resources,
+   *   field_related_content
+   * @param array $resources
+   *   Multi-dimensional array for each resource.
+   *   Args: title, body, field_link_remote_file, field_upload, field_format,
+   *   og_group_ref
+   * @param bool $two_forms
+   *   Wheter or not the dataset form is split across two forms.
+   *
+   * @return
+   *   The node id of the node created.
+   */
+  public function createDataset($title = '', $create = array(), $additional = array(), $resources = array(), $two_forms = TRUE) {
+    if ($two_forms) {
+      // Create a Dataset node.
+      $edit = array(
+        'title' => $title,
+      );
+      foreach ($create as $key => $value) {
+        $edit[$key] = $value;
+      }
+      if (!$two_forms) {
+        foreach ($additional as $key => $value) {
+          $edit[$key] = $value;
+        }
+      }
+
+      $this->drupalGet('admin/structure/features');
+      $this->drupalGet('node/add');
+      $this->drupalPost('node/add/dataset', $edit, 'Next: Add data');
+      $this->assertText('has been created.');
+      $this->assertText('Create Resource');
+
+      // Get the node id from URL.
+      $nid = $this->getNid($this->getUrl());
+
+      // Add Resources.
+      if ($resources) {
+        foreach ($resources as $num => $resource) {
+          // Click final "Save" if last resource and using single dataset form.
+          if ($num == count($resources) && !$two_forms) {
+            $this->drupalPost($this->getUrl(), $edit, 'Save');
+            $this->assertText('has been created.');
+            foreach ($resource as $key => $value) {
+              $this->assertText($value);
+            }
+          }
+          else {
+            $this->drupalPost($this->getUrl(), $edit, 'Save and add another');
+            $this->assertText('has been created.');
+            $this->assertText('Create Resource');
+          }
+        }
+      }
+
+      // Click
+      $this->drupalPostAJAX(NULL, array(), array('op' => t('Next: Additional Info')));
+      $this->assertText('These fields are compatible with');
+
+      if ($two_forms) {
+        $this->drupalPost('node/' . $nid . '/edit?additional=1', $additional, 'Save');
+        foreach ($additional as $key => $value) {
+          $this->assertText($value);
+        }
+      }
+    }
+
+    return $nid;
+  }
+
+  /**
+   * Tests creating a dataste.
+   */
+  public function testDkanDataset() {
+    $title = $this->randomName(32);
+    $nid = $this->createDataset($title);
+    $dataset_node = node_load($nid);
+    $this->assertText($node->title, $title);
+  }
+}

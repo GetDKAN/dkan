@@ -47,3 +47,4 @@ features[variable][] = pathauto_node_group_pattern
 features[variable][] = pathauto_node_resource_pattern
 features[views_view][] = dkan_dataset_json
 features[views_view][] = dkan_dataset_resources_json
+files[] = tests/dkan_dataset.test
