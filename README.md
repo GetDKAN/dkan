@@ -20,6 +20,7 @@ Nuams' [NuData](http://nucivic.com/products/nudata/) platform offers 24/7, secur
 
 *   [FAQs »](http://nucivic.com/products/nudata/nudata-faqs/)
 *   [ Live demo » ](http://demo.getdkan.com/)
+*   [ Docs » ](http://docs.getdkan.com//)
 
 ## Installation
 
