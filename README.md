@@ -71,52 +71,7 @@ DKAN is currently on version 7.x-1.0-beta1.
 
 ### Full Release Blockers
 
-We hope to have a full release ready this winter. Here are the list of release-blockers:
-
-**DKAN Distro Bugs and Features:**
-[#2033147]
-[#2042585]
-[#2042637]
-[#2043309]
-[#2042653]
-[#2042651]
-[#2061031]
-[#2042581]
-[#2063905]
-[#2063913]
-[#1810098]
-
-**Testing**
-DKAN Dataset Tests
-[#2042639]
-
-DKAN Datastore Tests
-[#2143819]
-[#2143817]
-
-DKAN Sitewide Tests
-[#2143821]
-
-**CKAN API Read Compliance**
-[#2125111]
-[#2125125]
-[#2125145]
-[#2143831]
-[#2143841]
-[#2143867]
-[#2143871]
-[#2143883]
-
-**DKAN to CKAN Harvesting Example**
-[#2125147]
-
-**CKAN or DKAN to DKAN Harvesting (Migrate)**
-[#2064473]
-
-### Post Full release features:
-
-[#2064477]
-[#2064475]
+See: http://drupal.org/project/dkan#release
 
 Contact us if you want to get involved!
 
