@@ -39,9 +39,44 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
       $modules = array();
     }
 
+    $modules[] = 'autocomplete_deluxe';
+    $modules[] = 'beautytips';
+    $modules[] = 'chosen';
+    $modules[] = 'ctools';
+    $modules[] = 'date';
+    $modules[] = 'date_popup';
+    $modules[] = 'double_field';
     $modules[] = 'dkan_dataset';
     $modules[] = 'dkan_dataset_groups';
     $modules[] = 'dkan_dataset_content_types';
+    $modules[] = 'entity';
+    $modules[] = 'entityreference';
+    $modules[] = 'eva';
+    $modules[] = 'features';
+    $modules[] = 'features';
+    $modules[] = 'field_group';
+    $modules[] = 'field_group_table';
+    $modules[] = 'filefield_sources';
+    $modules[] = 'jquery_update';
+    $modules[] = 'libraries';
+    $modules[] = 'link';
+    $modules[] = 'link_iframe_formatter';
+    $modules[] = 'multistep';
+    $modules[] = 'og';
+    $modules[] = 'og_extras';
+    $modules[] = 'path';
+    $modules[] = 'pathauto';
+    $modules[] = 'rdfx';
+    $modules[] = 'ref_field_sync';
+    $modules[] = 'remote_file_source';
+    $modules[] = 'remote_stream_wrapper';
+    $modules[] = 'restws';
+    $modules[] = 'select_or_other';
+    $modules[] = 'strongarm';
+    $modules[] = 'token';
+    $modules[] = 'uuid';
+    $modules[] = 'views';
+    $modules[] = 'views_json';
     $modules = array_unique($modules);
     parent::setUp($modules);
 
