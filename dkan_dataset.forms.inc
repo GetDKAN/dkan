@@ -256,14 +256,30 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       '#type' => 'submit',
       '#value' => t('Save and add another'),
       '#weight' => 10,
-      '#ajax' => array(
+      '#submit' => array('node_form_submit'),
+    );
+    if (variable_get('dkan_resource_form_ajax', 0)) {
+      $form['actions']['another']['#ajax'] = array(
         'callback' => 'dkan_dataset_resource_another_submit_js',
         'wrapper' => $form['#id'],
         'method' => 'replace',
         'effect' => 'fade',
-      ),
-      '#submit' => array('node_form_submit'),
-    );
+      );
+    }
+    else {
+      $form['actions']['another']['#submit'] = array('node_form_submit', 'dkan_dataset_resource_form_submit');
+    }
+  }
+}
+
+/**
+ * Resource node form submit handler.
+ */
+function dkan_dataset_resource_form_submit($form, &$form_state) {
+  if ($query = drupal_get_query_parameters()) {
+    if (isset($query['dataset'])) {
+      drupal_goto('node/add/resource', array('query' => array('dataset' => $query['dataset'])));
+    }
   }
 }
 
@@ -311,14 +327,14 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
     elseif ($api) {
       $request = drupal_http_request($api);
       include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
-      $mapping = file_mimetype_mapping();
-      $offset = array_search($request->headers['content-type'], $mapping['mimetypes']);
-      if ($offset) {
-        $type = array_search($offset, $mapping['extensions']);
+      if (!isset($request->error)) {
+        $mapping = file_mimetype_mapping();
+        $offset = array_search($request->headers['content-type'], $mapping['mimetypes']);
+        if ($offset) {
+          $type = array_search($offset, $mapping['extensions']);
+        }
       }
-      else {
-        $type = 'data';
-      }
+      $type = 'data';
     }
     else {
       $type = substr($link, strrpos($link, '.') + 1);

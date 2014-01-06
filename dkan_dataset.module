@@ -66,6 +66,11 @@ function dkan_dataset_form_settings() {
     '#title' => t('Use Ajax on dataset node.'),
     '#default_value' => variable_get('dkan_dataset_form_ajax', 0),
   );
+  $form['dkan_resource_form_ajax'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use Ajax on resource node.'),
+    '#default_value' => variable_get('dkan_resource_form_ajax', 0),
+  );
   return system_settings_form($form);
 }
 
