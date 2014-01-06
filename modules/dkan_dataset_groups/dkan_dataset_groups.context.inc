@@ -68,36 +68,6 @@ function dkan_dataset_groups_context_default_contexts() {
           'module' => 'views',
           'delta' => 'group_block-block',
           'region' => 'sidebar_first',
-          'weight' => '-23',
-        ),
-        'facetapi-Mpg7iEG3Hm2flFXehMZeicnSO5efkqgl' => array(
-          'module' => 'facetapi',
-          'delta' => 'Mpg7iEG3Hm2flFXehMZeicnSO5efkqgl',
-          'region' => 'sidebar_first',
-          'weight' => '-22',
-        ),
-        'facetapi-YS5bB6HT1ceVd06CYT1Lm4DvMx1nNd5M' => array(
-          'module' => 'facetapi',
-          'delta' => 'YS5bB6HT1ceVd06CYT1Lm4DvMx1nNd5M',
-          'region' => 'sidebar_first',
-          'weight' => '-21',
-        ),
-        'facetapi-dqCRnp6cKP1cSzAsNB6zqFtY9AVEa0mp' => array(
-          'module' => 'facetapi',
-          'delta' => 'dqCRnp6cKP1cSzAsNB6zqFtY9AVEa0mp',
-          'region' => 'sidebar_first',
-          'weight' => '-20',
-        ),
-        'facetapi-wsVI1ENUXwf4Rz08n9fg2WvfQ0Gs5h2a' => array(
-          'module' => 'facetapi',
-          'delta' => 'wsVI1ENUXwf4Rz08n9fg2WvfQ0Gs5h2a',
-          'region' => 'sidebar_first',
-          'weight' => '-18',
-        ),
-        'facetapi-y0bmt1wN50B9oCuMeoazc1hpKiMkSQ2A' => array(
-          'module' => 'facetapi',
-          'delta' => 'y0bmt1wN50B9oCuMeoazc1hpKiMkSQ2A',
-          'region' => 'sidebar_first',
           'weight' => '-17',
         ),
         'og_extras-group_info' => array(
@@ -105,6 +75,24 @@ function dkan_dataset_groups_context_default_contexts() {
           'delta' => 'group_info',
           'region' => 'sidebar_first',
           'weight' => '-16',
+        ),
+        'facetapi-lzvCI5xSUC94irLWjBH4WoOTqXVxs8FR' => array(
+          'module' => 'facetapi',
+          'delta' => 'lzvCI5xSUC94irLWjBH4WoOTqXVxs8FR',
+          'region' => 'sidebar_first',
+          'weight' => '-10',
+        ),
+        'facetapi-xNAidW9x2foW6UGpYpK8MzTaBT8ebK4D' => array(
+          'module' => 'facetapi',
+          'delta' => 'xNAidW9x2foW6UGpYpK8MzTaBT8ebK4D',
+          'region' => 'sidebar_first',
+          'weight' => '-8',
+        ),
+        'facetapi-n9S7gglvd3lMrVMu760QrIyeZAKByKsX' => array(
+          'module' => 'facetapi',
+          'delta' => 'n9S7gglvd3lMrVMu760QrIyeZAKByKsX',
+          'region' => 'sidebar_first',
+          'weight' => '-7',
         ),
       ),
     ),
@@ -115,7 +103,6 @@ function dkan_dataset_groups_context_default_contexts() {
   // Included for use with string extractors like potx.
   t('Group');
   t('Group content type');
-  $export['group_group'] = $context;
 
   return $export;
 }

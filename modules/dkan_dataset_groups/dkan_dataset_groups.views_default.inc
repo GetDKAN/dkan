@@ -45,7 +45,6 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['fields']['user_gravatar_picture']['field'] = 'user_gravatar_picture';
   $handler->display->display_options['fields']['user_gravatar_picture']['label'] = '';
   $handler->display->display_options['fields']['user_gravatar_picture']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['user_gravatar_picture']['picture'] = TRUE;
   /* Field: User: Name */
   $handler->display->display_options['fields']['name']['id'] = 'name';
   $handler->display->display_options['fields']['name']['table'] = 'users';
@@ -264,7 +263,7 @@ function dkan_dataset_groups_views_default_views() {
   $view->name = 'groups_search';
   $view->description = '';
   $view->tag = 'default';
-  $view->base_table = 'search_api_index_datasets';
+  $view->base_table = 'search_api_index_groups_di';
   $view->human_name = 'Groups Search';
   $view->core = 7;
   $view->api_version = '3.0';
@@ -296,31 +295,30 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['empty']['area']['format'] = 'plain_text';
   /* Field: Indexed Node: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'search_api_index_datasets';
+  $handler->display->display_options['fields']['title']['table'] = 'search_api_index_groups_di';
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['title']['link_to_entity'] = 1;
   /* Field: Indexed Node: The main body text » Summary */
   $handler->display->display_options['fields']['body_summary']['id'] = 'body_summary';
-  $handler->display->display_options['fields']['body_summary']['table'] = 'search_api_index_datasets';
+  $handler->display->display_options['fields']['body_summary']['table'] = 'search_api_index_groups_di';
   $handler->display->display_options['fields']['body_summary']['field'] = 'body_summary';
   $handler->display->display_options['fields']['body_summary']['label'] = '';
   $handler->display->display_options['fields']['body_summary']['alter']['max_length'] = '100';
   $handler->display->display_options['fields']['body_summary']['alter']['trim'] = TRUE;
   $handler->display->display_options['fields']['body_summary']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['body_summary']['link_to_entity'] = 0;
   /* Contextual filter: Indexed Node: Publisher */
   $handler->display->display_options['arguments']['og_group_ref']['id'] = 'og_group_ref';
-  $handler->display->display_options['arguments']['og_group_ref']['table'] = 'search_api_index_datasets';
+  $handler->display->display_options['arguments']['og_group_ref']['table'] = 'search_api_index_groups_di';
   $handler->display->display_options['arguments']['og_group_ref']['field'] = 'og_group_ref';
   $handler->display->display_options['arguments']['og_group_ref']['default_action'] = 'default';
   $handler->display->display_options['arguments']['og_group_ref']['default_argument_type'] = 'node';
   $handler->display->display_options['arguments']['og_group_ref']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['og_group_ref']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['og_group_ref']['not'] = 0;
   /* Filter criterion: Search: Fulltext search */
   $handler->display->display_options['filters']['search_api_views_fulltext']['id'] = 'search_api_views_fulltext';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['table'] = 'search_api_index_datasets';
+  $handler->display->display_options['filters']['search_api_views_fulltext']['table'] = 'search_api_index_groups_di';
   $handler->display->display_options['filters']['search_api_views_fulltext']['field'] = 'search_api_views_fulltext';
   $handler->display->display_options['filters']['search_api_views_fulltext']['exposed'] = TRUE;
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['operator_id'] = 'search_api_views_fulltext_op';
@@ -334,6 +332,7 @@ function dkan_dataset_groups_views_default_views() {
   );
   $handler->display->display_options['filters']['search_api_views_fulltext']['fields'] = array(
     'search_api_viewed' => 'search_api_viewed',
+    'field_resources:body:value' => 'field_resources:body:value',
   );
 
   /* Display: EVA Field */
@@ -343,6 +342,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['bundles'] = array(
     0 => 'group',
   );
+
   $export['groups_search'] = $view;
 
   $view = new view();

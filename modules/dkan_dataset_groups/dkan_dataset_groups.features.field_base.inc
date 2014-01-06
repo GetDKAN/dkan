@@ -33,7 +33,7 @@ function dkan_dataset_groups_field_default_field_bases() {
     'locked' => 0,
     'module' => 'image',
     'settings' => array(
-      'default_image' => 0,
+      'default_image' => FALSE,
       'uri_scheme' => 'public',
     ),
     'translatable' => 0,
