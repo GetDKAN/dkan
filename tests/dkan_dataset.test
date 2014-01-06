@@ -9,9 +9,8 @@
  * Test basic Data API functionality.
  */
 class DkanDatasetWebTestCase extends DrupalWebTestCase {
-  protected $profile = 'testing';
+  protected $profile = 'standard';
 
-  const GROUP = 'DKAN Dataset';
   /**
    * Information about the test.
    */
@@ -40,43 +39,9 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
       $modules = array();
     }
 
-    $modules[] = 'autocomplete_deluxe';
-    $modules[] = 'beautytips';
-    $modules[] = 'chosen';
-    $modules[] = 'ctools';
-    $modules[] = 'date';
-    $modules[] = 'date_popup';
-    $modules[] = 'double_field';
     $modules[] = 'dkan_dataset';
+    $modules[] = 'dkan_dataset_groups';
     $modules[] = 'dkan_dataset_content_types';
-    $modules[] = 'entity';
-    $modules[] = 'entityreference';
-    $modules[] = 'eva';
-    $modules[] = 'features';
-    $modules[] = 'features';
-    $modules[] = 'field_group';
-    $modules[] = 'field_group_table';
-    $modules[] = 'filefield_sources';
-    $modules[] = 'jquery_update';
-    $modules[] = 'libraries';
-    $modules[] = 'link';
-    $modules[] = 'link_iframe_formatter';
-    $modules[] = 'multistep';
-    $modules[] = 'og';
-    $modules[] = 'og_extras';
-    $modules[] = 'path';
-    $modules[] = 'pathauto';
-    $modules[] = 'rdfx';
-    $modules[] = 'ref_field_sync';
-    $modules[] = 'remote_file_source';
-    $modules[] = 'remote_stream_wrapper';
-    $modules[] = 'restws';
-    $modules[] = 'select_or_other';
-    $modules[] = 'strongarm';
-    $modules[] = 'token';
-    $modules[] = 'uuid';
-    $modules[] = 'views';
-    $modules[] = 'views_json';
     $modules = array_unique($modules);
     parent::setUp($modules);
 
@@ -84,6 +49,9 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
     $this->assertTrue(is_object($obj), 'FEATURES OBJECT: ' . print_r($obj, 1));
 
     $obj = features_get_features('dkan_dataset_content_types');
+    $this->assertTrue(is_object($obj), 'FEATURES OBJECT: ' . print_r($obj, 1));
+
+    $obj = features_get_features('dkan_dataset_groups');
     $this->assertTrue(is_object($obj), 'FEATURES OBJECT: ' . print_r($obj, 1));
 
     // Run a features rebuild to ensure our feature is fully installed.
@@ -162,6 +130,23 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
   }
 
   /**
+   * Creates a group.
+   */
+  public function createGroup($title, $body = '', $image = '') {
+    $edit = array(
+      'title' => $title,
+    );
+    $this->drupalPost('node/add/group', $edit, 'Save');
+    $this->assertText('has been created.');
+
+    //$nid = $this->getNid($this->getUrl());
+    return array(
+      'title' => $title,
+      //'nid' => $nid,
+    );
+  }
+
+  /**
    * Create a test dataset node.
    *
    * @param string $title
@@ -199,28 +184,29 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
         }
       }
 
-      $this->drupalGet('admin/structure/features');
-      $this->drupalGet('node/add');
       $this->drupalPost('node/add/dataset', $edit, 'Next: Add data');
       $this->assertText('has been created.');
       $this->assertText('Create Resource');
 
+      $url = $this->getUrl();
       // Get the node id from URL.
-      $nid = $this->getNid($this->getUrl());
+      $matches = array();
+      preg_match('/node\/add\/resource\?dataset\=(\d+?)$/', $url, $matches);
+      $nid = $matches[1];
 
       // Add Resources.
       if ($resources) {
         foreach ($resources as $num => $resource) {
           // Click final "Save" if last resource and using single dataset form.
           if ($num == count($resources) && !$two_forms) {
-            $this->drupalPost($this->getUrl(), $edit, 'Save');
+            $this->drupalPost($this->getUrl(), $resource, 'Save');
             $this->assertText('has been created.');
             foreach ($resource as $key => $value) {
               $this->assertText($value);
             }
           }
           else {
-            $this->drupalPost($this->getUrl(), $edit, 'Save and add another');
+            $this->drupalPost($this->getUrl(), $resource, 'Save and add another');
             $this->assertText('has been created.');
             $this->assertText('Create Resource');
           }
@@ -228,11 +214,11 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
       }
 
       // Click
-      $this->drupalPostAJAX(NULL, array(), array('op' => t('Next: Additional Info')));
-      $this->assertText('These fields are compatible with');
+      //$this->drupalPostAJAX(NULL, array(), array('op' => t('Next: Additional Info')));
+      //$this->assertText('These fields are compatible with');
 
       if ($two_forms) {
-        $this->drupalPost('node/' . $nid . '/edit?additional=1', $additional, 'Save');
+        $this->drupalPost('node/' . $nid . '/edit', $additional, 'Save', array('query' => array('additional' => '1')));
         foreach ($additional as $key => $value) {
           $this->assertText($value);
         }
@@ -245,10 +231,44 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
   /**
    * Tests creating a dataste.
    */
-  public function testDkanDataset() {
+  public function testDkanDatasetResource() {
+    // Add group.
     $title = $this->randomName(32);
-    $nid = $this->createDataset($title);
+    $this->createGroup($title);
+    // Prepare dataset.
+    $title = $this->randomName(32);
+    $create = array(
+      'field_tags[und][textfield]' => $this->randomName(8),
+      'field_license[und][select]' => 'cc-by',
+    );
+    // Prepare resources.
+    $resources = array();
+    $resources[] = array(
+      'title' => $this->randomName(32),
+      'body[und][0][value]' => $this->randomName(256),
+      'field_link_api[und][0][url]' => 'http://nuams.com',
+    );
+    $nid = $this->createDataset($title, $create, array(), $resources);
     $dataset_node = node_load($nid);
-    $this->assertText($node->title, $title);
+    $this->assertText($dataset_node->title, $title);
+  }
+
+  /**
+   * Tests creating a dataste.
+   */
+  public function testDkanDatasetEdit() {
+    return;
+    $title = $this->randomName(32);
+    $desc = $this->randomName(8);
+    $edit = array(
+      'title' => $title,
+      'field_tags[und][textfield]' => $desc,
+      'field_license[und][select]' => 'cc-by',
+    );
+    $this->drupalPost('node/add/dataset', $edit, 'Next: Add data');
+    $this->assertText('has been created.');
+    $this->assertText('Create Resource');
+
   }
 }
+
