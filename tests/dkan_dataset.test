@@ -39,15 +39,9 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
       $modules = array();
     }
 
-
     $modules[] = 'ctools';
     $modules[] = 'context';
     $modules[] = 'block';
-    $modules[] = 'color';
-    $modules[] = 'comment';
-    $modules[] = 'contextual';
-    $modules[] = 'dashboard';
-    $modules[] = 'dblog';
     $modules[] = 'field';
     $modules[] = 'field_sql_storage';
     $modules[] = 'field_ui';
@@ -63,7 +57,6 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
     $modules[] = 'path';
     $modules[] = 'rdf';
     $modules[] = 'search';
-    $modules[] = 'shortcut';
     $modules[] = 'system';
     $modules[] = 'taxonomy';
     $modules[] = 'text';
@@ -85,9 +78,9 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
     $modules[] = 'link';
     $modules[] = 'link_iframe_formatter';
     $modules[] = 'multistep';
-    $modules[] = 'for';
+    $modules[] = 'ref_field_sync';
     $modules[] = 'remote_file_source';
-    $modules[] = 'or';
+    $modules[] = 'select_or_other';
     $modules[] = 'og';
     $modules[] = 'og_context';
     $modules[] = 'og_extras';
