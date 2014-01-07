@@ -39,8 +39,30 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
       $modules = array();
     }
 
+    $modules[] = 'autocomplete_deluxe';
+    $modules[] = 'beautytips';
+    $modules[] = 'block';
+    $modules[] = 'chosen';
+    $modules[] = 'context';
     $modules[] = 'ctools';
+    $modules[] = 'date';
+    $modules[] = 'date_api';
+    $modules[] = 'date_popup';
+    $modules[] = 'double_field';
+    $modules[] = 'entity';
+    $modules[] = 'entityreference';
+    $modules[] = 'eva';
+    $modules[] = 'facetapi';
     $modules[] = 'features';
+    $modules[] = 'field';
+    $modules[] = 'field_group';
+    $modules[] = 'field_group_table';
+    $modules[] = 'field_sql_storage';
+    $modules[] = 'field_ui';
+    $modules[] = 'file';
+    $modules[] = 'filefield_sources';
+    $modules[] = 'filter';
+    $modules[] = 'geofield';
 
     $modules = array_unique($modules);
     parent::setUp($modules);
