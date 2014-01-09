@@ -90,7 +90,7 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
     $modules[] = 'remote_file_source';
     $modules[] = 'remote_stream_wrapper';
     $modules[] = 'restws';
-    //$modules[] = 'search_api';
+    $modules[] = 'search_api';
     //$modules[] = 'search_api_db';
     //$modules[] = 'search_api_views';
     //$modules[] = 'select_or_other';
