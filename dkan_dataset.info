@@ -31,6 +31,7 @@ dependencies[] = ref_field_sync
 dependencies[] = remote_file_source
 dependencies[] = remote_stream_wrapper
 dependencies[] = restws
+dependencies[] = search_api
 dependencies[] = select_or_other
 dependencies[] = strongarm
 dependencies[] = token
