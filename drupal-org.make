@@ -25,6 +25,7 @@ projects[chosen][subdir] = contrib
 projects[chosen][version] = 2.0-alpha1
 projects[ctools][subdir] = contrib
 projects[ctools][version] = 1.3
+projects[diff][subdir] = contrib
 projects[date][subdir] = contrib
 projects[double_field][subdir] = contrib
 projects[double_field][version] = 2.3
