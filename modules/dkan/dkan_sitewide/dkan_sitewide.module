@@ -27,16 +27,6 @@ function dkan_sitewide_user_menu_block() {
 }
 
 /**
- * Implements hook_cron().
- */
-function dkan_sitewide_cron() {
-  if (module_exists('defaultcontent')) {
-    module_disable(array('dkan_default_content', 'defaultcontent'));
-    drupal_uninstall_modules(array('dkan_default_content', 'defaultcontent'));
-  }
-}
-
-/**
  * Implements hook_page_alter().
  */
 function dkan_sitewide_page_alter(&$page) {
