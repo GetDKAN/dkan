@@ -4,25 +4,41 @@
  * Custom elements for importing content.
  */
 
-/**
- * Implements hook_ctools_plugin_directory().
- */
-function dkan_default_content_ctools_plugin_directory($module, $plugin) {
-  if ($module == 'defaultcontent' && $plugin == 'alter') {
-    return 'plugins';
+function dkan_default_content_base_install(){
+  ctools_include('pages', 'dkan_default_content');
+  ctools_include('groups', 'dkan_default_content');
+  ctools_include('datasets', 'dkan_default_content');
+  ctools_include('file', 'defaultcontent', 'plugins');
+  ctools_include('Dataset', 'dkan_default_content');
+  // Save pages
+  $pages = dkan_default_content_available_pages();
+  foreach($pages as $loadable){
+    $page = call_user_func('dkan_default_content_' . $loadable . '_page');
+    $page = (object) $page;
+    node_save($page);
+  }
+  // Save OGs
+  $groups = dkan_default_content_available_groups();
+  foreach ($groups as $loadable) {
+    $group = call_user_func('dkan_default_content_' . $loadable . '_group');
+    $group = (object) $group;
+    file_import_alter($group);
+    node_save($group);
+  }
+  // Save Datasets and Resources
+  $datasets = dkan_default_content_available_datasets();
+  foreach($datasets as $loadable){
+    $dataset = call_user_func('dkan_default_content_' . $loadable . '_dataset');
+    $resources = call_user_func('dkan_default_content_' . $loadable . '_resources');
+    // Instantiate Dataset
+    $instance = Dataset::instance($dataset['title']);
+    $instance->attachFields($dataset);
+    foreach($resources as $resource){
+      $instance->attachResource($resource);
+    }
+    $instance->save();
   }
 }
 
-/**
- * Implements hook_ctools_plugin_type().
- */
-function dkan_default_content_ctools_plugin_type() {
-  return array(
-    'alter' => array(
-      'defaults' => array(
-        'export_alter weight' => 10,
-      ),
-    )
-  );
-}
+
 
