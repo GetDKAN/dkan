@@ -317,7 +317,10 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
    * Tests creating a dataste.
    */
   public function testDkanDatasetEdit() {
-    return;
+    // Make sure Dataset edit form is broken up into two sections.
+    $this->drupalGet('node/add/dataset');
+    // Dataset Information should not be visible.
+    $this->assertNoText('Dataset Information');
     $title = $this->randomName(32);
     $desc = $this->randomName(8);
     $edit = array(
@@ -328,7 +331,73 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
     $this->drupalPost('node/add/dataset', $edit, 'Next: Add data');
     $this->assertText('has been created.');
     $this->assertText('Create Resource');
+    $this->clickLink('Edit dataset');
+    // Clicking "edit" should reveal the node edit form.
+    $this->assertText($title);
+    // Dataset Information should now be visible.
+    $this->assertText('Dataset Information');
+    $author = 'Rebecca';
+    $spatial = 'Philadelphia, PA';
+    $temporal_coverate_date1 = '2014-01-24';
+    $temporal_coverate_time1 = '-01:00:00';
+    $data_dictionary = 'http://nuams.com';
+    $contact_name = 'Rebecca';
+    $contact_email = 'rebecca@nuams.com';
+    $access_level = 'public';
+    $additional_first = 'this';
+    $additional_second = 'that';
+    $related_title = 'Nuams';
+    $related_url = $data_dictionary;
+    $edit = array(
+      'title' => $title,
+      'field_tags[und][textfield]' => $desc,
+      'field_license[und][select]' => 'cc-by',
+      // Additional dataset information.
+      // Author.
+      'field_author[und][0][value]' => $author,
+      // Spatial / Geographical Coverage Area.
+      // TODO: add geojson field collection.
+      // Spatial / Geographical Coverage Location.
+      'field_spatial_geographical_cover[und][0][value]' => $spatial,
+      // Frequency.
+      'field_frequency[und]' => 1,
+      // Temporal Coverage.
+      // TODO: get date format to work correctly.
+      //'field_temporal_coverage[und][0][value][date]' =>  '2014-01-30 10:00:00',
+      //'field_temporal_coverage[und][0][value][time]' => $temporal_coverate_time1,
+      //'field_temporal_coverage[und][0][value2][date]' => '',
+      //'field_temporal_coverage[und][0][value2][time]' => '',
+      // Data Dictionary.
+      'field_data_dictionary[und][0][value]' => $data_dictionary,
+      // Contact Name.
+      'field_contact_name[und][0][value]' => $contact_name,
+      // Contact Email.
+      'field_contact_email[und][0][value]' => $contact_email,
+      // Public Access Level.
+      'field_public_access_level[und]' => $access_level,
+      // Additional Info.
+      'field_additional_info[und][0][first]' => $additional_first,
+      'field_additional_info[und][0][second]' => $additional_second,
+      // Related Content.
+      'field_related_content[und][0][title]' => $related_title,
+      'field_related_content[und][0][url]' => $related_url,
+    );
+
+    $this->drupalPost($this->getUrl(), $edit, 'Finish');
+
+    $this->assertText('Weekly');
+    $this->assertText($author);
+    $this->assertText($spatial);
+    // TODO: get date format to work correctly.
+    // $this->assertText('Thursday, January 30, 2014');
+    // $this->assertText($temporal_coverate_time1);
+    $this->assertText($data_dictionary);
+    $this->assertText($contact_name);
+    $this->assertText($contact_email);
+    $this->assertText('Public');
+    $this->assertText($additional_first);
+    $this->assertText($additional_second);
+    $this->assertText($related_title);
 
   }
 }
-
