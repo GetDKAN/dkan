@@ -1,7 +1,6 @@
 name = dkan_sitewide_user
 core = 7.x
 package = Features
-php = 5.2.4
 version = 7.x-1.0-beta1
 dependencies[] = context
 dependencies[] = ctools
@@ -16,7 +15,7 @@ features[context][] = profile
 features[ctools][] = context:context:3
 features[ctools][] = field_group:field_group:1
 features[ctools][] = views:views_default:3.0
-features[features_api][] = api:1
+features[features_api][] = api:2
 features[field_base][] = field_about
 features[field_group][] = group_user_about|user|user|default
 features[field_group][] = group_user_datasets|user|user|default
