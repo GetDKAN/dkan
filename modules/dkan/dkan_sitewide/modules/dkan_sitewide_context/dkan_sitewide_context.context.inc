@@ -29,6 +29,12 @@ function dkan_sitewide_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
+        'views-group_block-block' => array(
+          'module' => 'views',
+          'delta' => 'group_block-block',
+          'region' => 'sidebar_first',
+          'weight' => '-10',
+        ),
         'dkan_sitewide-dkan_sitewide_social' => array(
           'module' => 'dkan_sitewide',
           'delta' => 'dkan_sitewide_social',
