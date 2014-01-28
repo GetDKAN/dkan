@@ -179,12 +179,6 @@ function dkan_dataset_groups_default_search_api_server() {
             "type" : "integer",
             "boost" : "1.0"
           },
-          "field_tags" : {
-            "table" : "search_api_db_groups_di_field_tags",
-            "column" : "value",
-            "type" : "list\\u003Cinteger\\u003E",
-            "boost" : "1.0"
-          },
           "search_api_language" : {
             "table" : "search_api_db_groups_di",
             "column" : "search_api_language",
@@ -200,6 +194,12 @@ function dkan_dataset_groups_default_search_api_server() {
             "table" : "search_api_db_groups_di_search_api_access_node",
             "column" : "value",
             "type" : "list\\u003Cstring\\u003E",
+            "boost" : "1.0"
+          },
+          "field_tags" : {
+            "table" : "search_api_db_groups_di_field_tags",
+            "column" : "value",
+            "type" : "list\\u003Cinteger\\u003E",
             "boost" : "1.0"
           },
           "og_group_ref" : {

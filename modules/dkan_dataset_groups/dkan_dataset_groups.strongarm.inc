@@ -37,6 +37,9 @@ function dkan_dataset_groups_strongarm() {
       'search_result' => array(
         'custom_settings' => FALSE,
       ),
+      'diff_standard' => array(
+        'custom_settings' => FALSE,
+      ),
     ),
     'extra_fields' => array(
       'form' => array(
@@ -57,7 +60,7 @@ function dkan_dataset_groups_strongarm() {
             'visible' => FALSE,
           ),
           'default' => array(
-            'weight' => '10',
+            'weight' => '1',
             'visible' => TRUE,
           ),
         ),
@@ -87,7 +90,7 @@ function dkan_dataset_groups_strongarm() {
             'visible' => TRUE,
           ),
           'default' => array(
-            'weight' => '1',
+            'weight' => '2',
             'visible' => FALSE,
           ),
         ),
