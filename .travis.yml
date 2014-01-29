@@ -31,7 +31,7 @@ before_script:
   # reference and enable travis_ci_drupal_module_example in build site
   - cp -r dkan_dataset dkan_dataset_test/drupal/sites/all/modules/dkan_dataset
   - cd dkan_dataset_test/drupal
-  - drush make --no-core --yes sites/all/modules/dkan_dataset/dkan_dataset.make
+  - drush make -v --no-core --yes sites/all/modules/dkan_dataset/dkan_dataset.make
   - drush --yes pm-enable dkan_dataset
 
   # start a web server on port 8080, run in the background; wait for initialization
