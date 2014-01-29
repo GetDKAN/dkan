@@ -166,6 +166,10 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
       'administer features',
       'administer nodes',
       'bypass node access',
+      'create dataset content',
+      'create resource content',
+      'edit any dataset content',
+      'edit any resource content',
       'administer users',
     );
     $this->verbose('Creating admin user with permissions: ' . var_export($admin_perms, TRUE));
