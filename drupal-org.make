@@ -15,7 +15,6 @@ projects[dkan_datastore][download][url] = "http://git.drupal.org/project/dkan_da
 projects[dkan_datastore][type] = "module"
 
 ; Contrib Modules
-
 projects[autocomplete_deluxe][subdir] = contrib
 projects[autocomplete_deluxe][version] = 2.0-beta3
 projects[beautytips][version] = 2.x
@@ -204,6 +203,7 @@ libraries[arc][type] = libraries
 libraries[arc][download][type] = git
 libraries[arc][download][url] = "https://github.com/semsol/arc2.git"
 libraries[arc][download][revision] = "44c396ab54178086c09499a1704e31a977b836d2"
+libraries[arc][subdir] = "ARC2"
 
 libraries[excanvas][download][type] = "file"
 libraries[excanvas][download][url] = "https://explorercanvas.googlecode.com/files/excanvas_r3.zip"
