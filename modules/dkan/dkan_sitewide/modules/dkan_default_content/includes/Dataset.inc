@@ -80,8 +80,8 @@ class Dataset {
           $file = file_save_data($item['file'], $item['uri']);
           $data = base64_decode($item['file']);
           $file = file_save_data($data, $item['uri']);
-          $file->display = $item['display'];
-          $file->description = $item['description'];
+          $file->display = isset($item['display']) ? $item['display'] : '';
+          $file->description = isset($item['description']) ? $item['description'] : '';
           $file->map = $item['map'];
           $file->grid = $item['grid'];
           $file->graph = $item['graph'];
