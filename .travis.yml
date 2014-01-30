@@ -26,7 +26,7 @@ before_script:
   - php -d sendmail_path=`which true` `pear config-get php_dir`/drush/drush.php --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/dkan_dataset_test --enable=simpletest dkan_dataset_test
 
   # copy drupal
-  - git clone --branch 7.x-1.x git@github.com:nuams/dkan_dataset.git 
+  - git clone --branch 7.x-1.x https://github.com/nuams/dkan_dataset.git
 
   # reference and enable travis_ci_drupal_module_example in build site
   - cp -r dkan_dataset dkan_dataset_test/drupal/sites/all/modules/dkan_dataset
