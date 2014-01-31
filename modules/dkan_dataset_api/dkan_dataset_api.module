@@ -86,6 +86,17 @@ function dkan_dataset_api_menu() {
     'type' => MENU_SUGGESTED_ITEM,
     'file' => 'dkan_dataset_api.inc',
   );
+  
+  $items['api/3/action/revision_list'] = array(
+    'page callback' => 'dkan_dataset_api_revision_list',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+  $items['api/2/search/revision'] = array(
+    'page callback' => 'dkan_dataset_api_revision_list',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
   return $items;
 }
 
@@ -133,6 +144,12 @@ function dkan_dataset_api_settings() {
     '#description' => t('More information on !url.', array('!url' => l('data.json', 'http://project-open-data.github.io'))),
     '#default_value' => variable_get('dkan_dataset_api_data_json', 0),
   );
+  $form['dkan_dataset_api']['dkan_dataset_api_revision_list'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('revision_list'),
+    '#description' => t('More information on !url.', array('!url' => l('dkan_dataset_revision_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.revision_list'))),
+    '#default_value' => variable_get('dkan_dataset_api_revision_list', 1),
+  );
   return system_settings_form($form);
 }
 
@@ -149,6 +166,7 @@ function dkan_dataset_api_open_data_json() {
 
   drupal_json_output($rows);
 }
+
 
 /**
  * Returns a list of uuids of published datasts.
@@ -184,6 +202,63 @@ function dkan_dataset_api_package_list() {
 
   drupal_json_output($output);
 }
+
+/**
+ * Returns a list of vuuids of datasets revisions.
+ */
+function dkan_dataset_api_revision_list() {
+  if (!variable_get('dkan_dataset_api_revision_list', 1)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return a list of the IDs of the site's revisions.\n\n    :rtype: list of strings\n\n")
+  );
+
+  try {
+    $limit = isset($_GET['limit']) ? $_GET['limit'] : 0;
+    $offset = isset($_GET['offset']) && $_GET['offset'] ? $_GET['offset'] : 0;
+
+    // Get all datasets for cross reference with revision query
+    $datasets = new EntityFieldQuery();
+    $datasets->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'dataset')
+      ->propertyCondition('status', 1);
+    $datasets = $datasets->execute();
+    $datasets = array_keys($datasets['node']);
+
+    // Get all revisions for this site
+    $entity_info = entity_get_info('node');
+    $table = $entity_info['revision table'];
+    $fields = array(
+      $entity_info['entity keys']['id'],
+      $entity_info['entity keys']['revision'],
+      'vuuid'
+    );
+    $query = db_select($table, 'revision');
+    $query->fields('revision', $fields);
+    if($limit){
+      $query->range($offset, $limit);
+    }
+    $revisions = $query->execute()->fetchAll();
+    
+    $result = array();
+    // Double cross revisions with datasets nids
+    foreach($revisions as $key => $revision) {
+      if (in_array((int)$revision->nid, $datasets)) {
+        $result[] = $revision->vuuid;
+      }
+    }
+    $output['success'] = TRUE;
+    $output['result'] = $result;
+  }
+  catch (EntityMetadataWrapperException $e) {
+    $output['success'] = FALSE;
+    $output['result'] = array();
+  }
+  drupal_json_output($output);
+}
+
 
 /**
  * Callback function fordata retrieval.
