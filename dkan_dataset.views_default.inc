@@ -251,7 +251,7 @@ function dkan_dataset_views_default_views() {
   $handler->display->display_options['fields']['field_link_api']['label'] = 'link_to_api';
   $handler->display->display_options['fields']['field_link_api']['click_sort_column'] = 'url';
   $handler->display->display_options['fields']['field_link_api']['type'] = 'link_absolute';
-  /* Field: Content: Link file */
+  /* Field: Content: Link File */
   $handler->display->display_options['fields']['field_link_remote_file']['id'] = 'field_link_remote_file';
   $handler->display->display_options['fields']['field_link_remote_file']['table'] = 'field_data_field_link_remote_file';
   $handler->display->display_options['fields']['field_link_remote_file']['field'] = 'field_link_remote_file';
@@ -269,39 +269,6 @@ function dkan_dataset_views_default_views() {
   $handler->display->display_options['fields']['changed']['field'] = 'changed';
   $handler->display->display_options['fields']['changed']['label'] = 'modified';
   $handler->display->display_options['fields']['changed']['date_format'] = 'long';
-  /* Field: File: File UUID */
-  $handler->display->display_options['fields']['uuid_1']['id'] = 'uuid_1';
-  $handler->display->display_options['fields']['uuid_1']['table'] = 'file_managed';
-  $handler->display->display_options['fields']['uuid_1']['field'] = 'uuid';
-  $handler->display->display_options['fields']['uuid_1']['relationship'] = 'node_to_file';
-  $handler->display->display_options['fields']['uuid_1']['label'] = 'file_id';
-  /* Field: File: Mime type */
-  $handler->display->display_options['fields']['filemime']['id'] = 'filemime';
-  $handler->display->display_options['fields']['filemime']['table'] = 'file_managed';
-  $handler->display->display_options['fields']['filemime']['field'] = 'filemime';
-  $handler->display->display_options['fields']['filemime']['relationship'] = 'node_to_file';
-  $handler->display->display_options['fields']['filemime']['label'] = 'mime_type';
-  $handler->display->display_options['fields']['filemime']['element_label_colon'] = FALSE;
-  /* Field: File: Name */
-  $handler->display->display_options['fields']['filename']['id'] = 'filename';
-  $handler->display->display_options['fields']['filename']['table'] = 'file_managed';
-  $handler->display->display_options['fields']['filename']['field'] = 'filename';
-  $handler->display->display_options['fields']['filename']['relationship'] = 'node_to_file';
-  $handler->display->display_options['fields']['filename']['label'] = 'file_name';
-  $handler->display->display_options['fields']['filename']['element_label_colon'] = FALSE;
-  /* Field: File: Path */
-  $handler->display->display_options['fields']['uri']['id'] = 'uri';
-  $handler->display->display_options['fields']['uri']['table'] = 'file_managed';
-  $handler->display->display_options['fields']['uri']['field'] = 'uri';
-  $handler->display->display_options['fields']['uri']['relationship'] = 'node_to_file';
-  $handler->display->display_options['fields']['uri']['label'] = 'file_url';
-  $handler->display->display_options['fields']['uri']['file_download_path'] = TRUE;
-  /* Field: File: Size */
-  $handler->display->display_options['fields']['filesize']['id'] = 'filesize';
-  $handler->display->display_options['fields']['filesize']['table'] = 'file_managed';
-  $handler->display->display_options['fields']['filesize']['field'] = 'filesize';
-  $handler->display->display_options['fields']['filesize']['relationship'] = 'node_to_file';
-  $handler->display->display_options['fields']['filesize']['label'] = 'file_size';
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
@@ -324,16 +291,6 @@ function dkan_dataset_views_default_views() {
   $handler->display->display_options['filters']['status']['value'] = 1;
   $handler->display->display_options['filters']['status']['group'] = 1;
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-
-  /* Display: Page */
-  $handler = $view->new_display('page', 'Page', 'page');
-  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
-  $handler->display->display_options['defaults']['relationships'] = FALSE;
-  /* Relationship: File Usage: File */
-  $handler->display->display_options['relationships']['node_to_file']['id'] = 'node_to_file';
-  $handler->display->display_options['relationships']['node_to_file']['table'] = 'file_usage';
-  $handler->display->display_options['relationships']['node_to_file']['field'] = 'node_to_file';
-  $handler->display->display_options['path'] = 'node/%/json';
   $export['dkan_dataset_resources_json'] = $view;
 
   return $export;

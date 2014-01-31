@@ -8,10 +8,9 @@
  * Manages dataset access and manipulation for a single dataset
  */
 class Dataset {
-
   // Class variables.
-  protected $title, $dataset;
-  protected $resources = array();
+  public $title, $dataset;
+  public $resources = array();
   public $created = FALSE;
   protected $dataset_updated = FALSE;
   protected $resources_updated = FALSE;
@@ -146,6 +145,29 @@ class Dataset {
   }
 
   /**
+   * Preloads dataset and resources based on dataset nid.
+   *
+   * @param string $nid
+   *   A string that represents the dataset node id
+   *
+   */
+
+  protected function preload($nid) {
+    $node = node_load($nid);
+    if ($node) {
+      $this->title = $node->title;
+      $this->dataset = $node;
+      $this->resources = array();
+      // Load resources 
+      foreach($this->dataset->field_resources[$this->dataset->language] as $key => $resource){
+        $this->resources[] = node_load($resource['target_id']);
+      }
+      // unset($this->dataset->field_resources);
+      $this->created = TRUE;
+    }
+  }
+
+  /**
    * Constructor. Do not call directly, but use Dataset::instance($title_or_nid) instead.
    *
    * @param string $title_or_nid
@@ -165,20 +187,12 @@ class Dataset {
             ->propertyCondition('title', $this->title)
             ->range(0, 1);
       $result = $query->execute();
-      if(isset($result['node'])){
-        $this->created = TRUE;
+      if (isset($result['node'])) {
+        $this->preload($result['node']);
       }
     }
     else {
-      $nid = $title_or_nid;
-      $node = node_load($nid);
-      if($node) {
-        $this->title = $node->title;
-        $this->dataset = $node;
-        // Logic to preload resources in the resources array
-        // should be put here
-        $this->created = TRUE;
-      }
+      $this->preload($title_or_nid);
     }
   }
 

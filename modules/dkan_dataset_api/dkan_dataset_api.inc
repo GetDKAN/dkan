@@ -15,6 +15,7 @@ function dkan_open_data_build_rows($nodes) {
 
   foreach ($nodes as $node) {
     $node_wrapper = entity_metadata_wrapper('node', $node);
+    
     try {
       $row = new stdClass();
 
@@ -50,7 +51,7 @@ function dkan_open_data_build_rows($nodes) {
       if ($data_dictionary = dkan_open_data_get_field_value($node, 'field_data_dictionary', 'value')) {
         $row->dataDictionary = $data_dictionary;
       }
-      $row->webService = url('node/' . $node->nid . '/json', array('absolute' => TRUE));
+      $row->webService = url('api/3/action/package_show', array('query' => array('id' => $node->uuid), 'absolute' => TRUE));
       if ($dist = dkan_open_data_build_distributions($node)) {
         $row->distribution = $dist;
       }
@@ -77,6 +78,115 @@ function dkan_open_data_build_rows($nodes) {
 }
 
 /**
+ * Build PHP array and object structure in preparation for JSON output.
+ *
+ * @param object $node
+ *   A dataset node.
+ *
+ * @return object
+ *   An object formatted as per Open Data schema specifications.
+ */
+function dkan_open_data_build_dataset($node) {
+  $node_wrapper = entity_metadata_wrapper('node', $node);
+  
+  try {
+    $row = new stdClass();
+    // Common Core fields. These are required, so we don't check for empty.
+    $row->title = $node_wrapper->title->value();
+    $row->description = isset($node->body[$node->language]) ? $node_wrapper->body->value->value(array('sanitize' => TRUE)) : '';
+    $row->id = dkan_open_data_get_field_value($node, 'uuid', 'value');
+    $row->license_title = dkan_open_data_get_field_value($node, 'field_license', 'value');
+    $row->metadata_created = format_date($node_wrapper->created->value(), 'custom', 'Y-m-d\TH:i:s.u');
+    $row->metadata_modified = format_date($node_wrapper->changed->value(), 'custom', 'Y-m-d\TH:i:s.u');
+
+    $row->author = dkan_open_data_get_field_value($node, 'field_contact_name', 'value');
+    $row->author_email = dkan_open_data_get_field_value($node, 'field_contact_email', 'value');
+    $row->type = 'dataset';
+
+    $access_level = dkan_open_data_get_field_value($node, 'field_public_access_level', 'label');
+    $access_level = $access_level ? $access_level : t('public');
+    $row->private = $access_level == t('public') ? false : true;
+
+    $resources = array();
+    foreach($node->field_resources['und'] as $key => $resource){
+      $resources[] = $resource['target_id'];
+    }
+    $resources = node_load_multiple($resources);
+    $row->resources = dkan_open_data_build_dataset_resources($resources);
+    $row->num_resources = count($resources);
+
+    $tags = array();
+    if (isset($node_wrapper->field_tags)) {
+      foreach ($node_wrapper->field_tags->getIterator() as $tag) {
+        $tags[] = (object) array(
+          'name' => $tag->name->value(),
+          'display_name' => $tag->name->value(),
+          'id' => $tag->uuid->value(),
+          // 'revision_timestamp' => format_date($tag->created->value(), 'custom', 'Y-m-d\TH:i:s.u'),
+        );
+      }
+    }
+    $row->tags = $tags;
+  }
+  catch (EntityMetadataWrapperException $e) {
+    $row = new stdClass();
+  }
+  return $row;
+}
+
+
+/**
+ * Build PHP array and object structure in preparation for JSON output.
+ *
+ * @param $node
+ *   A dataset node
+ *
+ * @return array
+ *   An array of resource objects formatted as per Open Data schema specifications.
+ */
+function dkan_open_data_build_dataset_resources($nodes) {
+  $resources = array();
+  foreach ($nodes as $node) {
+    $node_wrapper = entity_metadata_wrapper('node', $node);
+    try {
+      $row = new stdClass();
+      $row->title = $node_wrapper->title->value();
+      $row->description = isset($node->body[$node->language]) ? $node_wrapper->body->value->value(array('sanitize' => TRUE)) : '';
+      $row->id = $node_wrapper->uuid->value();
+      $row->revision_id = $node_wrapper->vuuid->value();
+      $row->created = format_date($node_wrapper->created->value(), 'custom', 'Y-m-d\TH:i:s.u');
+      $row->last_modified = format_date($node_wrapper->changed->value(), 'custom', 'Y-m-d\TH:i:s.u');
+      if (isset($node_wrapper->field_upload)) {
+        $row->resource_type = 'file';
+        $file = $node->field_upload[$node->language][0];
+        $row->url = file_create_url($file['uri']);
+        if (!empty($file['filesize'])) {
+          $size = format_size($file['filesize']);
+          $size = str_replace(' ', '', $size);
+          $size = str_replace('bytes', 'b', $size);
+          $row->size = $size;
+        }
+        $row->mimetype = isset($file['filemime']) ? $file['filemime'] : '';
+        $row->active = $file['status'] ? true : false;
+      }
+      elseif (isset($node_wrapper->field_link_remote_file)) {
+        $row->resource_type = 'remote_file';
+        $row->url = $node_wrapper->field_link_remote_file->value();
+      }
+      elseif (isset($node_wrapper->field_link_api)) {
+        $row->resource_type = 'api';
+        $row->url = $node_wrapper->field_link_api->value();
+      }
+    }
+    catch (EntityMetadataWrapperException $e) {
+      $row = new stdClass();
+    }
+    $resources[] = $row;
+  }
+  return $resources;
+}
+
+/**
  * Build the distributions property for a JSON row.
  *
  * @param object $node
@@ -90,6 +200,7 @@ function dkan_open_data_build_distributions($node) {
 
   $nid = $node->nid;
   $nodes = dkan_dataset_get_resource_nodes($nid);
+
   if (!empty($nodes)) {
     foreach ($nodes as $node) {
       $row = new stdClass();

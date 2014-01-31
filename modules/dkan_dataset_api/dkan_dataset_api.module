@@ -3,7 +3,7 @@
 /**
  * @file
  * Module file for DKAN Dataset API.
- /
+ */
 
 /**
  * Implements hook_menu().
@@ -52,6 +52,20 @@ function dkan_dataset_api_menu() {
     'type' => MENU_SUGGESTED_ITEM,
   );
 
+  $items['api/3/action/package_show'] = array(
+    'page callback' => 'dkan_dataset_api_package_show',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+    'file' => 'dkan_dataset_api.inc',
+  );
+  $items['api/2/rest/dataset/%'] = array(
+    'page callback' => 'dkan_dataset_api_package_show',
+    'access arguments' => array('access content'),
+    'page arguments' => array(4),
+    'type' => MENU_SUGGESTED_ITEM,
+    'file' => 'dkan_dataset_api.inc',
+  );
+
   $items['data.json'] = array(
     'page callback' => 'dkan_dataset_api_open_data_json',
     'access arguments' => array('access content'),
@@ -63,6 +77,7 @@ function dkan_dataset_api_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_SUGGESTED_ITEM,
   );
+  
   return $items;
 }
 
@@ -89,6 +104,14 @@ function dkan_dataset_api_settings() {
       '!url' => l('package_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'),
       '!legacy' => l('rest/dataset', 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
     '#default_value' => variable_get('dkan_dataset_api_package_list', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_package_show'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('package_show'),
+    '#description' => t('More information on !url. This also mirrors the deprecated !legacy.', array(
+      '!url' => l('package_show', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_show'),
+      '!legacy' => l('rest/dataset', 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
+    '#default_value' => variable_get('dkan_dataset_api_package_show', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_data_json'] = array(
     '#type' => 'checkbox',
@@ -172,6 +195,58 @@ function dkan_dataset_api_package_list() {
 }
 
 /**
+ * Return the metadata of a dataset (package) and its resources
+ */
+function dkan_dataset_api_package_show($uuid=null) {
+  if (!variable_get('dkan_dataset_api_package_show', 1)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return the metadata of a dataset (package) and its resources.\n\n :param id: the id or name of the dataset :type id: string \n\n:rtype: dictionary "),
+  );
+
+  if(!isset($uuid)) {
+    $uuid = isset($_GET['id']) ? $_GET['id'] : null;
+  }
+
+  if(isset($uuid)) {
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'dataset')
+      ->propertyCondition('status', 1)
+      ->propertyCondition('uuid', $uuid)
+      // Run the query as user 1.
+      ->addMetaData('account', user_load(1));
+
+    $dataset = $query->execute();
+
+    if(count(array_keys($dataset['node']))){
+      $dataset = node_load(array_keys($dataset['node'])[0]);
+      $row = dkan_open_data_build_dataset($dataset);
+      $output['success'] = TRUE;
+      $output['result'] = $row;
+    }
+    else{
+      $output['success'] = FALSE;
+      $output['error'] = array(
+        '__type' => t('Not Found Error'),
+        'message' => t('Not Found')
+      );
+    }
+  }
+  else {
+    $output['success'] = FALSE;
+    $output['error'] = array(
+      '__type' => t('Validation Error'),
+      'uuid' => array(t('Missing Value'))
+    );
+  }
+
+  drupal_json_output($output);
+}
+
+/**
  * Callback function fordata retrieval.
  */
 function dkan_dataset_api_site_read() {
@@ -210,4 +285,3 @@ function dkan_dataset_api_get_datasets($limit = 0, $offset = 0) {
 
   return $nodes;
 }
-
