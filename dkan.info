@@ -36,7 +36,6 @@ dependencies[] = entity
 dependencies[] = entity_token
 dependencies[] = eva
 dependencies[] = entityreference
-dependencies[] = defaultcontent
 dependencies[] = feeds
 dependencies[] = facetapi
 dependencies[] = facetapi_pretty_paths
