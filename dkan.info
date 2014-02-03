@@ -31,6 +31,7 @@ dependencies[] = date_popup
 dependencies[] = delta
 dependencies[] = diff
 dependencies[] = date
+dependencies[] = defaultcontent
 dependencies[] = double_field
 dependencies[] = entity
 dependencies[] = entity_token
