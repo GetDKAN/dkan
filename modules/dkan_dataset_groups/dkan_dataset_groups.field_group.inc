@@ -104,7 +104,7 @@ function dkan_dataset_groups_field_group_info() {
   $field_group->mode = 'default';
   $field_group->parent_name = 'group_tabs';
   $field_group->data = array(
-    'label' => 'Datasets',
+    'label' => 'Members',
     'weight' => '2',
     'children' => array(
       0 => 'dkan_group_members_entity_view_1',
