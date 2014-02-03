@@ -281,27 +281,25 @@ function dkan_form_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL)
   $stages = '<div id="dkan-stages">';
   if ($op == 'resource-edit' || $op == 'resource-create') {
     $stages .= '<ol class="stages stage-3">
-      <li class="first complete">
-          <button class="highlight" name="save" value="go-dataset" type="submit">' . l(t('Edit dataset'), 'node/' . $dataset_nid . '/edit') . '</button>
-      </li>
+      <li class="first complete"><span class="highlight">' . l(t('Edit dataset'), 'node/' . $dataset_nid . '/edit') .'</span></li>
       <li class="middle active">
           <span class="highlight">Add data</span>
       </li>
       <li class="last uncomplete">
-          <button class="highlight" name="save" value="go-metadata" type="submit">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
+          <span class="highlight">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</span>
       </li>
     </ol>';
   }
   if ($op == 'dataset-additional') {
     $stages .= '<ol class="stages stage-3">
       <li class="first complete">
-          <button class="highlight" name="save" value="go-dataset" type="submit">' . l(t('Edit dataset'), 'node/' . $dataset_nid . '/edit') . '</button>
+          <span class="highlight">' . l(t('Edit dataset'), 'node/' . $dataset_nid . '/edit') . '</span>
       </li>
       <li class="middle complete">
-          <button class="highlight" name="save" value="go-dataset" type="submit">' . l(t('Add dataset'), 'node/add/resource', array('query' => array('dataset' => $dataset_nid))) . '</button>
+          <span class="highlight">' . l(t('Add dataset'), 'node/add/resource', array('query' => array('dataset' => $dataset_nid))) . '</span>
       </li>
       <li class="last active">
-          <button class="highlight" name="save" value="go-metadata" type="submit">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
+        <span class="highlight" name="save" value="go-metadata" type="submit">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</span>
       </li>
     </ol>';
   }
@@ -328,7 +326,7 @@ function dkan_form_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL)
           <span class="highlight">' . l(t('Add data'), 'node/add/resource', array('query' => array('dataset' => $dataset_nid))) . '</span>
       </li>
       <li class="last complete">
-          <button class="highlight" name="save" value="go-metadata" type="submit">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
+          <span class="highlight">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</span>
       </li>
     </ol>';
   }
