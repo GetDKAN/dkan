@@ -911,6 +911,7 @@ label.for=["edit-field-upload-und-0"] {
   height: auto;
   margin: 0 5px;
   display: inline-block;
+  padding: 5px;
 }
 .group-data .field-group-htab {
   padding: 0;
@@ -922,7 +923,7 @@ label.for=["edit-field-upload-und-0"] {
   height: 53px;
   border: 0;
   padding: 0;
-  padding: 0 0 0 12px;
+  padding: 0 0 0 10px;
 }
 .node-resource-form .group-link-file .form-managed-file .file {
   margin: 17px 0 0 10px;
@@ -941,7 +942,7 @@ label.for=["edit-field-upload-und-0"] {
   float: right;
   position: absolute;
   right: 15px;
-  top: 50px;
+  top: 58px;
 }
 #edit-field-upload-und-0-ajax-wrapper label {
   text-align: left;
@@ -1027,7 +1028,7 @@ input#edit-field-link-api-und-0-url,
 #dataset-node-form input {
   margin: 0;
   font-size: 12px;
-  padding: 0 0 0 3px;
+  padding: 0 0 0 10px;
   -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
   -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
   -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
@@ -1060,6 +1061,7 @@ input#edit-field-link-api-und-0-url,
   -moz-border-radius: 3px;
   border-radius: 3px;
   border: 1px solid #CCC;
+  background: no-repeat 8px 0px, -webkit-linear-gradient(bottom, #eeeeee 1%, #ffffff 25%)
 }
 .field-name-field-format .autocomplete-deluxe-container {
   width: 505px;
@@ -1068,6 +1070,7 @@ input#edit-field-link-api-und-0-url,
   border-radius: 3px;
   border: 1px solid #CCC;
   margin-top: 10px;
+  background: no-repeat -38px 0px, -webkit-linear-gradient(top, #eeeeee 1%, #ffffff 15%)
 }
 .group-data .horizontal-tabs,
 #dataset-node-form .form-item-title input,
@@ -1101,6 +1104,8 @@ input#edit-field-link-api-und-0-url,
 .node-resource-form input#edit-title,
 #dataset-node-form input#edit-title {
   height: 55px;
+  padding-left: 10px;
+  font-size: 16px;
 }
 .node-resource-form .form-item-title label,
 #dataset-node-form .form-item-title label {
@@ -1425,8 +1430,9 @@ html.js input.throbbing {
   width: 220px;
 }
 .field-name-field-license .select-or-other {
-  float: left;
   margin-right: 10px;
+  float: left;
+  width: 60%;
 }
 .field-name-field-license label {
   margin-top: 5px;
@@ -2207,11 +2213,14 @@ form .field-multiple-table th.field-label {
   padding-left: 5px;
 }
 #dataset-node-form .field-name-field-additional-info input[placeholder="value"] {
-  width: 100%;
   max-width: 498px;
 }
 #dataset-node-form .field-name-field-additional-info input {
   font-size: 13px;
+  width: 50%;
+}
+#dataset-node-form .field-name-field-additional-info input.form-submit {
+  width: auto;
 }
 .field-group-format tr:hover {
   background: #FFFEEE;
@@ -2754,7 +2763,7 @@ h3.media-heading a {
   font-size: 11px;
   padding: 4px;
   border-radius: 3px;
-  height: auto;
+  height: 30px;
 }
 #block-system-main #views-exposed-form-dataset-page .views-exposed-form .views-exposed-widget {
   float: none;
