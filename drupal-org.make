@@ -5,7 +5,7 @@ api = 2
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][version] = 1.x
-projects[dkan_dataset][download][url] = "git@github.com:nuams/dkan_dataset.git"
+projects[dkan_dataset][download][url] = "https://github.com/nuams/dkan_dataset.git"
 projects[dkan_dataset][type] = "module"
 
 projects[dkan_datastore][subdir] = dkan
