@@ -68,6 +68,10 @@
         window.history.pushState("", "", '/node/' +  settings.dkanAdditional.nid + '/edit?additional=1');
         delete settings.dkanAdditional;
       }
+      $("#edit-addtional").click(function(e) {
+        var params = $.deparam.querystring();
+        document.location.href='/node/' + params.dataset + '/edit?additional=1';
+      });
     }
   }
   Drupal.behaviors.dkanPush = {

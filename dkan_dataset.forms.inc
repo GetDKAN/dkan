@@ -66,26 +66,28 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     $form['#after_build']['dkan_dataset'] = 'dkan_dataset_resource_form_after_build';
 
-    // Removing path from vertiable tabs.
-    unset($form['path']['#group']);
-    unset($form['path']['#title']);
-    $form['path']['#weight'] = "-1";
-    // Always use pathauto.
-    $form['path']['pathauto']['#default_value'] = TRUE;
-    $form['path']['pathauto']['#access'] = FALSE;
-    $form['path']['alias']['#default_value'] = preg_replace('/dataset\//', '', $form['path']['alias']['#default_value']);
-    $form['path']['#collapsible'] = FALSE;
-    $form['path']['#collapsed'] = FALSE;
-    $alias = $form['path']['alias']['#default_value'] ? $form['path']['alias']['#default_value'] : t('[dataset]');
-    $form['path']['#prefix'] = '<div id="field-tags-wrapper">
-                                  <div id="url-edit-preview">
-                                    <div id="url-edit-label"><strong>URL</strong></div>
-                                    <div id="url-edit-prefix">' . check_plain($_SERVER['HTTP_HOST']) . '/dataset/</div>' .
-      '<span id="url-slug">' . $alias . '</span>' . $form['path']['alias']['#default_value'] . '<button class="btn btn-small">Edit</button>
-                                  </div>';
-    $form['path']['#suffix'] = '</div>';
-    $form['path']['alias']['#prefix'] = '<span class="add-on">/dataset/</span>';
-    $form['path']['alias']['#title'] = 'URL';
+    if (variable_get('dkan_dataset_form_pathauto_alter', 0)) {
+      // Removing path from vertiable tabs.
+      unset($form['path']['#group']);
+      unset($form['path']['#title']);
+      $form['path']['#weight'] = "-1";
+      // Always use pathauto.
+      $form['path']['pathauto']['#default_value'] = TRUE;
+      $form['path']['pathauto']['#access'] = FALSE;
+      $form['path']['alias']['#default_value'] = preg_replace('/dataset\//', '', $form['path']['alias']['#default_value']);
+      $form['path']['#collapsible'] = FALSE;
+      $form['path']['#collapsed'] = FALSE;
+      $alias = $form['path']['alias']['#default_value'] ? $form['path']['alias']['#default_value'] : t('[dataset]');
+      $form['path']['#prefix'] = '<div id="field-tags-wrapper">
+                                    <div id="url-edit-preview">
+                                      <div id="url-edit-label"><strong>URL</strong></div>
+                                      <div id="url-edit-prefix">' . check_plain($_SERVER['HTTP_HOST']) . '/dataset/</div>' .
+        '<span id="url-slug">' . $alias . '</span>' . $form['path']['alias']['#default_value'] . '<button class="btn btn-small">Edit</button>
+                                    </div>';
+      $form['path']['#suffix'] = '</div>';
+      $form['path']['alias']['#prefix'] = '<span class="add-on">/dataset/</span>';
+      $form['path']['alias']['#title'] = 'URL';
+    }
     // Adding descriptions.
     $form['title']['#attributes']['placeholder'] = t('eg. A descriptive title');
 
@@ -175,6 +177,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     }
   }
   if ($form_id == 'resource_node_form') {
+    drupal_add_library('system', 'jquery.bbq');
     $form['#attached']['css'][] = drupal_get_path('module', 'dkan_dataset') . '/dkan_dataset.css';
     $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.js';
@@ -239,18 +242,27 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['#validate'][] = 'dkan_dataset_resource_node_form_validate';
     // This saves us on the ajax reloading.
     $form['#action'] = '/node/add/resource' . $action_query;
-    if (isset($query['dataset']) || (isset($form['#node']->field_dataset_ref) && $form['#node']->field_dataset_ref)) {
-      $form['actions']['additional'] = array(
-        '#type' => 'submit',
-        '#value' => t('Next: Additional Info'),
-        '#weight' => -5,
-        '#ajax' => array(
-          'callback' => 'dkan_dataset_additional_submit_js',
-          'wrapper' => $form['#id'],
-          'method' => 'replace',
-          'effect' => 'fade',
-        ),
-      );
+    if (isset($query['dataset']) || (isset($form_state['input']['field_dataset_ref']['und'][0]))) {
+      if (variable_get('dkan_resource_form_ajax', 0)) {
+        $form['actions']['additional'] = array(
+          '#type' => 'submit',
+          '#value' => t('Next: Additional Info'),
+          '#weight' => -5,
+          '#ajax' => array(
+             'callback' => 'dkan_dataset_additional_submit_js',
+             'wrapper' => $form['#id'],
+             'method' => 'replace',
+             'effect' => 'fade',
+           ),
+        );
+      }
+      else {
+        // We are doing it this way to keep validation from happening.
+        $form['actions']['additional'] = array(
+          '#markup' => '<input type="button" id="edit-addtional" name="op" value="' . t('Next: Additional Info') . '" class="form-submit">',
+          '#weight' => -5,
+        );
+      }
     }
     $form['actions']['another'] = array(
       '#type' => 'submit',
@@ -411,7 +423,7 @@ function dkan_dataset_additional_submit_js($form, &$form_state) {
 
   $stage = dkan_form_create_stages('dataset-additional', $nid);
 
-  $commands[] = ajax_command_replace('#' . $form['#id'], drupal_render($dataset_form));
+  $commands[] = ajax_command_replace('.node-resource-form', drupal_render($dataset_form));
   $commands[] = ajax_command_prepend('.node-dataset-form', $stage);
   $commands[] = ajax_command_settings(array('dkanAdditional' => array('nid' => $nid)), TRUE);
   $output = array('#type' => 'ajax', '#commands' => $commands);
