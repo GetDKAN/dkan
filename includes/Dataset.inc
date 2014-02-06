@@ -83,7 +83,6 @@ class Dataset {
       foreach($resource->field_upload as $lang => $items){
         foreach($items as $key => $item){
           $file = (object) $item;
-          $query = new EntityFieldQuery();
           $fids = db_select('file_managed', 'f')
             ->condition('uri', $file->uri)
             ->fields('f', array('fid'))

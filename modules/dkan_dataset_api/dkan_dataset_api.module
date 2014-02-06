@@ -19,65 +19,73 @@ function dkan_dataset_api_menu() {
     'access arguments' => array('administer site configuration'),
   );
 
-  // API callbacks.
-  $items['api/3/action/site_read'] = array(
-    'page callback' => 'dkan_dataset_api_site_read',
-    'access arguments' => array('access content'),
-    'type' => MENU_SUGGESTED_ITEM,
-  );
-  $items['api/action/site_read'] = array(
-    'page callback' => 'dkan_dataset_api_site_read',
-    'access arguments' => array('access content'),
-    'type' => MENU_SUGGESTED_ITEM,
-  );
+  // API callbacks
 
-  $items['api/3/action/package_list'] = array(
-    'page callback' => 'dkan_dataset_api_package_list',
-    'access arguments' => array('access content'),
-    'type' => MENU_SUGGESTED_ITEM,
+  // -> site_read callbacks
+  $site_read_aliases = array(
+    'api/3/action/site_read',
+    'api/action/site_read'
   );
-  $items['api/action/package_list'] = array(
-    'page callback' => 'dkan_dataset_api_package_list',
-    'access arguments' => array('access content'),
-    'type' => MENU_SUGGESTED_ITEM,
-  );
-  $items['api/2/rest/dataset'] = array(
-    'page callback' => 'dkan_dataset_api_package_list',
-    'access arguments' => array('access content'),
-    'type' => MENU_SUGGESTED_ITEM,
-  );
-  $items['api/rest/dataset'] = array(
-    'page callback' => 'dkan_dataset_api_package_list',
-    'access arguments' => array('access content'),
-    'type' => MENU_SUGGESTED_ITEM,
-  );
+  foreach ($site_read_aliases as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_site_read',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+    );  
+  }
 
-  $items['api/3/action/package_show'] = array(
-    'page callback' => 'dkan_dataset_api_package_show',
-    'access arguments' => array('access content'),
-    'type' => MENU_SUGGESTED_ITEM,
-    'file' => 'dkan_dataset_api.inc',
+  // -> package_list callbacks
+  $package_list_aliases = array(
+    'api/3/action/package_list',
+    'api/action/package_list',
+    'api/2/rest/dataset',
+    'api/rest/dataset'
   );
-  $items['api/2/rest/dataset/%'] = array(
-    'page callback' => 'dkan_dataset_api_package_show',
-    'access arguments' => array('access content'),
-    'page arguments' => array(4),
-    'type' => MENU_SUGGESTED_ITEM,
-    'file' => 'dkan_dataset_api.inc',
+  foreach ($package_list_aliases as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_package_list',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+    );  
+  }
+  
+  // -> package_show callbacks
+  $package_show_aliases = array(
+    'api/3/action/package_show',
+    'api/2/rest/dataset/%',
   );
+  foreach ($package_show_aliases as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_package_show',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+      'file' => 'dkan_dataset_api.inc',
+    );
+    if (strpos($alias,'%') !== false) {
+      $items[$alias]['page arguments'] = array_keys(explode('/', $alias), '%');
+    }
+  }
 
+  // -> package_show callbacks
+  $package_list_with_resources_aliases = array(
+    'api/3/action/current_package_list_with_resources',
+  );
+  foreach ($package_list_with_resources_aliases as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_current_package_list_with_resources',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+      'file' => 'dkan_dataset_api.inc',
+    );
+  }
+
+  // -> data.json callback
   $items['data.json'] = array(
     'page callback' => 'dkan_dataset_api_open_data_json',
     'access arguments' => array('access content'),
     'type' => MENU_SUGGESTED_ITEM,
     'file' => 'dkan_dataset_api.inc',
   );
-  $items['api/3/action/current_package_list_with_resources'] = array(
-    'page callback' => 'dkan_dataset_api_current_package_list_with_resources',
-    'access arguments' => array('access content'),
-    'type' => MENU_SUGGESTED_ITEM,
-  );
-  
   return $items;
 }
 
@@ -113,17 +121,17 @@ function dkan_dataset_api_settings() {
       '!legacy' => l('rest/dataset', 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
     '#default_value' => variable_get('dkan_dataset_api_package_show', 1),
   );
-  $form['dkan_dataset_api']['dkan_dataset_api_data_json'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('data.json'),
-    '#description' => t('More information on !url.', array('!url' => l('data.json', 'http://project-open-data.github.io'))),
-    '#default_value' => variable_get('dkan_dataset_api_data_json', 0),
-  );
   $form['dkan_dataset_api']['current_package_list_with_resources'] = array(
     '#type' => 'checkbox',
     '#title' => t('current_package_list_with_resources'),
     '#description' => t('More information on !url.', array('!url' => l('current_package_list_with_resources', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'))),
     '#default_value' => variable_get('current_package_list_with_resources', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_data_json'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('data.json'),
+    '#description' => t('More information on !url.', array('!url' => l('data.json', 'http://project-open-data.github.io'))),
+    '#default_value' => variable_get('dkan_dataset_api_data_json', 0),
   );
   return system_settings_form($form);
 }
@@ -137,23 +145,6 @@ function dkan_dataset_api_open_data_json() {
   }
 
   $nodes = dkan_dataset_api_get_datasets();
-  $rows = dkan_open_data_build_rows($nodes);
-
-  drupal_json_output($rows);
-}
-
-/**
- * Callback function fordata retrieval.
- */
-function dkan_dataset_api_current_package_list_with_resources() {
-  if (!variable_get('current_package_list_with_resources', 0)) {
-    return drupal_access_denied();
-  }
-  $limit = isset($_GET['limit']) ? $_GET['limit'] : 0;
-  $offset = isset($_GET['offset']) && $_GET['offset'] ? $_GET['offset'] : 0;
-
-  $nodes = dkan_dataset_api_get_datasets($limit, $offset);
-  // TODO: Replace with CKAN specific.
   $rows = dkan_open_data_build_rows($nodes);
 
   drupal_json_output($rows);
@@ -195,6 +186,44 @@ function dkan_dataset_api_package_list() {
 }
 
 /**
+ * Callback function fordata retrieval.
+ */
+function dkan_dataset_api_current_package_list_with_resources() {
+  if (!variable_get('current_package_list_with_resources', 0)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return a list of the site's datasets (packages) and their resources.\n\n    The list is sorted most-recently-modified first.\n\n    :param limit: if given, the list of datasets will be broken into pages of\n        at most ``limit`` datasets per page and only one page will be returned\n        at a time (optional)\n    :type limit: int\n    :param offset: when ``limit`` is given, the offset to start returning packages from\n    :type offset: int\n    :param page: when ``limit`` is given, which page to return, Deprecated use ``offset``\n    :type page: int\n\n    :rtype: list of dictionaries\n\n"),
+  );
+  
+  $limit = isset($_GET['limit']) ? $_GET['limit'] : 0;
+  $offset = isset($_GET['offset']) && $_GET['offset'] ? $_GET['offset'] : 0;
+
+
+  $nodes = dkan_dataset_api_get_datasets($limit, $offset);
+
+  if(count($nodes)) {
+    $output['success'] = TRUE;
+    $output['result'] = dkan_open_data_build_datasets($nodes);
+  }
+  else {
+    if($offset != 0) {
+      $output['success'] = FALSE;
+      $output['error'] = array(
+        '__type' => t('Query offset out of range'),
+        'message' => t('Offset parameter is out of range')
+      );
+    }
+    else {
+      $output['success'] = TRUE;
+      $output['result'] = array();
+    }
+  }
+  drupal_json_output($output);
+}
+
+/**
  * Return the metadata of a dataset (package) and its resources
  */
 function dkan_dataset_api_package_show($uuid=null) {
@@ -221,13 +250,13 @@ function dkan_dataset_api_package_show($uuid=null) {
 
     $dataset = $query->execute();
 
-    if(count(array_keys($dataset['node']))){
+    if (count(array_keys($dataset['node']))) {
       $dataset = node_load(array_keys($dataset['node'])[0]);
-      $row = dkan_open_data_build_dataset($dataset);
+      $row = dkan_open_data_build_datasets($dataset);
       $output['success'] = TRUE;
       $output['result'] = $row;
     }
-    else{
+    else {
       $output['success'] = FALSE;
       $output['error'] = array(
         '__type' => t('Not Found Error'),
