@@ -337,17 +337,18 @@ padding: 4px 6px;
   background-position: -320px -62px;
 }
 .format-label {
+  background-image: url("images/sprite-ckan-icons.png");
+  background-repeat: no-repeat;
+  background-position: 16px 16px;
+  text-indent: -900em;
+  background: url("images/sprite-resource-icons.png") no-repeat 0 0;
+  font-size: 16px;
   display: inline-block;
   vertical-align: text-bottom;
   position: relative;
   top: 2px;
   width: 16px;
   height: 16px;
-  background-image: url(images/sprite-ckan-icons.png");
-  background-repeat: no-repeat;
-  background-position: 16px 16px;
-  text-indent: -900em;
-  background: url("images/sprite-resource-icons.png") no-repeat 0 0;
 }
 .block .item-list li > a {
   display: block;
@@ -444,6 +445,36 @@ ul.resource-list p {
   position: absolute;
   top: 0;
   left: 0;
+}
+ul.resource-list .heading {
+  color: black;
+  font-size: 14px;
+  font-weight: bold;
+}
+ul.resource-list p {
+  margin: 0 0 9px;
+  padding: 0 0 0 15px;
+}
+ul.resource-list {
+  margin: 0;
+  padding: 0;
+}
+ul.resource-list li {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 40px;
+}
+.resource-list li .format-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.download a.format-label {
+  text-indent: 40px;
+  margin-bottom: 20px;
+  padding-top: 8px;
+  font-weight: bold;
+  white-space: nowrap;
 }
 .format-label {
   width: 32px;
