@@ -11,27 +11,31 @@
 function dkan_sitewide_block_info() {
   $blocks['dkan_sitewide_license'] = array(
     'info' => t('License'),
-    'cache' => DRUPAL_NO_CACHE
+    'cache' => DRUPAL_CACHE_PER_PAGE
   );
   $blocks['dkan_sitewide_social'] = array(
     'info' => t('Social'),
-    'cache' => DRUPAL_NO_CACHE
+    'cache' => DRUPAL_CACHE_PER_PAGE
   );
   $blocks['dkan_sitewide_resource_add'] = array(
     'info' => t('Additional Information'),
     'cache' => DRUPAL_NO_CACHE
   );
+  $blocks['dkan_sitewide_footer_author'] = array(
+    'info' => t('Powered by DKAN'),
+    'cache' => DRUPAL_CACHE_GLOBAL
+  );
   $blocks['dkan_sitewide_search_bar'] = array(
     'info' => t('Search'),
-    'cache' => DRUPAL_NO_CACHE
+    'cache' => DRUPAL_CACHE_GLOBAL
   );
   $blocks['dkan_sitewide_other_access'] = array(
     'info' => t('Other Access'),
-    'cache' => DRUPAL_NO_CACHE
+    'cache' => DRUPAL_CACHE_PER_PAGE
   );
   $blocks['dkan_sitewide_user_menu'] = array(
     'info' => t('User menu'),
-    'cache' => DRUPAL_NO_CACHE
+    'cache' => DRUPAL_CACHE_GLOBAL
   );
 
   return $blocks;
@@ -54,6 +58,11 @@ function dkan_sitewide_block_view($delta = '') {
       $block['content'] = dkan_sitewide_social_block();
       break;
 
+    case 'dkan_sitewide_footer_author':
+      $block['subject'] = '';
+      $block['content'] = dkan_sitewide_footer_author();
+      break;
+
     case 'dkan_sitewide_resource_add':
       $block['subject'] = t('Additional Information');
       $block['content'] = dkan_sitewide_resource_additional_block();
@@ -65,7 +74,7 @@ function dkan_sitewide_block_view($delta = '') {
       break;
 
     case 'dkan_sitewide_other_access':
-      $block['subject'] = 'Other Acess';
+      $block['subject'] = t('Other Access');
       $block['content'] = dkan_sitewide_other_access();
       break;
 
@@ -137,17 +146,68 @@ function dkan_sitewide_license_block() {
 }
 
 /**
+ * Adds Powered by.
+ */
+function dkan_sitewide_footer_author() {
+  return t("powered by !dkan, a project of !nuams", array("!dkan" => l('DKAN', 'http://drupal.org/project/dkan'), '!nuams' => l('Nuams', 'http://nuams.com')));
+}
+
+/**
  * Adds social links.
  */
 function dkan_sitewide_social_block() {
   $path = isset($_GET['q']) ? $_GET['q'] : '<front>';
   $link = url($path, array('absolute' => TRUE));
-  return '
-    <ul class="nav nav-simple">
-      <li class="nav-item"><a href="https://plus.google.com/share?url=' . $link  .  '" target="_blank"><i class="ckan-icon ckan-icon-gplus"></i> Google+</a></li>
-      <li class="nav-item"><a href="https://twitter.com/share?url=' . $link  . '" target="_blank"><i class="ckan-icon ckan-icon-twitter"></i> Twitter</a></li>
-      <li class="nav-item"><a href="https://www.facebook.com/sharer.php?u=' . $link  . '" target="_blank"><i class="ckan-icon ckan-icon-fb"></i> Facebook</a></li>
-    </ul>';
+
+  $output = array(
+    '#theme' => 'item_list',
+    '#items' => array(
+      'googleplus' => array(
+        'data' => l('<i class="ckan-icon ckan-icon-gplus"></i> ' . t('Google+'),
+          'https://plus.google.com/share', array(
+          'query' => array(
+            'url' => $link
+           ),
+          'attributes' => array(
+            'target' => '_blank',
+          ),
+          'html' => TRUE,
+        )),
+        'class' => array('nav-item'),
+      ),
+      'twitter' => array(
+        'data' => l('<i class="ckan-icon ckan-icon-twitter"></i> ' . t('Twitter'),
+          'https://twitter.com/share', array(
+          'query' => array(
+            'url' => $link
+          ),
+          'attributes' => array(
+            'target' => '_blank',
+          ),
+          'html' => TRUE,
+        )),
+        'class' => array('nav-item'),
+      ),
+      'facebook' => array(
+        'data' => l('<i class="ckan-icon ckan-icon-fb"></i> ' . t('Facebook'),
+          'https://www.facebook.com/sharer.php', array(
+          'query' => array(
+            'u' => $link
+          ),
+          'attributes' => array(
+            'target' => '_blank',
+          ),
+          'html' => TRUE,
+        )),
+        'class' => array('nav-item'),
+      ),
+    ),
+    '#attributes' => array(
+      'class' => array('nav', 'nav-simple', 'social-links'),
+    ),
+  );
+
+  return $output;
 }
 
 /**
@@ -155,12 +215,48 @@ function dkan_sitewide_social_block() {
  */
 function dkan_sitewide_other_access() {
   $node = menu_get_object();
-  $output = t('The information on this page (the dataset metadata) is also available in these formats.');
-  $output .= '<p class="btn-group">';
-  $output .= l('<i class="ckan-icon ckan-icon-json"></i> JSON', 'node/' . $node->nid . '/json', array('html' => TRUE, 'attributes' => array('class' => array('btn'), 'title' => 'json view of content',)));
-  $output .= l('<i class="ckan-icon ckan-icon-rdfxml"></i> RDF', 'node/' . $node->nid . '.rdf', array('html' => TRUE, 'attributes' => array('class' => array('btn'), 'title' => 'json view of content',)));
-  $output .= '<p><small>via the <a href="http://docs.getdkan.com">DKAN API</a></small>';
-  return $output;
+  if (!empty($node->nid)) {
+    $output = array(
+      'formats' => array(
+        '#type' => 'markup',
+        '#markup' => t('The information on this page (the dataset metadata) is also available in these formats.'),
+      ),
+      'buttons' => array(
+        '#prefix' => '<p class="btn-group">',
+        '#suffix' => '</p>',
+        'children' => array(
+          'json' => array(
+            '#type' => 'markup',
+            '#markup' => l('<i class="ckan-icon ckan-icon-json"></i> JSON',
+              'node/' . $node->nid . '/json',
+              array(
+                'html' => TRUE,
+                'attributes' => array(
+                  'class' => array('btn'),
+                  'title' => 'json view of content'
+            ))),
+          ),
+          'rdf' => array(
+            '#type' => 'markup',
+            '#markup' => l('<i class="ckan-icon ckan-icon-rdfxml"></i> RDF',
+              'node/' . $node->nid . '.rdf',
+              array(
+                'html' => TRUE,
+                'attributes' => array(
+                  'class' => array('btn'),
+                  'title' => 'rdf view of content'
+            ))),
+          ),
+        ),
+      ),
+      'dkan_api' => array(
+        '#type' => 'markup',
+        '#markup' => '<p><small>via the <a href="http://docs.getdkan.com">DKAN API</a></small></p>',
+      )
+    );
+
+    return $output;
+  }
 }
 
 /**
