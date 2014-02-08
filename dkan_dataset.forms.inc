@@ -243,25 +243,22 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     // This saves us on the ajax reloading.
     $form['#action'] = '/node/add/resource' . $action_query;
     if (isset($query['dataset']) || (isset($form_state['input']['field_dataset_ref']['und'][0]))) {
+      $form['actions']['additional'] = array(
+        '#type' => 'submit',
+        '#value' => t('Next: Additional Info'),
+        '#weight' => -5,
+        '#submit' => array('node_form_submit'),
+      );
       if (variable_get('dkan_resource_form_ajax', 0)) {
-        $form['actions']['additional'] = array(
-          '#type' => 'submit',
-          '#value' => t('Next: Additional Info'),
-          '#weight' => -5,
-          '#ajax' => array(
-             'callback' => 'dkan_dataset_additional_submit_js',
-             'wrapper' => $form['#id'],
-             'method' => 'replace',
-             'effect' => 'fade',
-           ),
+        $form['actions']['additional']['#ajax'] = array(
+           'callback' => 'dkan_dataset_additional_submit_js',
+           'wrapper' => $form['#id'],
+           'method' => 'replace',
+           'effect' => 'fade',
         );
       }
       else {
-        // We are doing it this way to keep validation from happening.
-        $form['actions']['additional'] = array(
-          '#markup' => '<input type="button" id="edit-addtional" name="op" value="' . t('Next: Additional Info') . '" class="form-submit">',
-          '#weight' => -5,
-        );
+        $form['actions']['additional']['#submit'] = array('node_form_submit', 'dkan_dataset_resource_additional_form_submit');
       }
     }
     $form['actions']['another'] = array(
@@ -291,6 +288,17 @@ function dkan_dataset_resource_form_submit($form, &$form_state) {
   if ($query = drupal_get_query_parameters()) {
     if (isset($query['dataset'])) {
       drupal_goto('node/add/resource', array('query' => array('dataset' => $query['dataset'])));
+    }
+  }
+}
+
+/**
+ * Resource next form submit handler.
+ */
+function dkan_dataset_resource_additional_form_submit($form, &$form_state) {
+  if ($query = drupal_get_query_parameters()) {
+    if (isset($query['dataset'])) {
+      drupal_goto('node/' . $query['dataset'] . '/edit', array('query' => array('additional' => 1)));
     }
   }
 }
@@ -406,11 +414,10 @@ function dkan_dataset_additional_submit_js($form, &$form_state) {
   module_load_include('inc', 'node', 'node.pages');
   $type = 'dataset';
   global $user;
-  // Title field is required. We are not actually submitting the form.
-  if (isset($_SESSION['messages']['error'])) {
-    unset($_SESSION['messages']['error']);
+  // Return the actual form if it contains errors.
+  if (form_get_errors()) {
+    return $form;
   }
-
   // Get langcode for field_dataset_ref.
   $field_dataset_ref_langcode = dkan_dataset_form_field_language($form, 'field_dataset_ref');
 
