@@ -1491,7 +1491,7 @@ html.js input.throbbing {
 .field-name-field-temporal-coverage legend, .field-widget-leaflet-widget-widget legend {
   position: initial;
 }
-.field-type-datetime.field-name-field-temporal-coverage legend, 
+.field-type-datetime.field-name-field-temporal-coverage legend,
 .field-type-geofield.field-name-field-spatial legend {
   color: #333333;
   display: block;
@@ -1658,6 +1658,9 @@ h2.block-title {
   padding: 7px 25px;
   border-bottom: 1px dotted #CCC;
   margin: 0;
+}
+.item-list .nav-simple.social-links li {
+  padding-left: 0;
 }
 .block .item-list li > a.active {
   line-height: 27px;
@@ -3035,6 +3038,10 @@ a.icon-remove-sign::before {
 /** Footer **/
 #section-footer {
   color: #CCDEE3;
+}
+#section-footer a {
+  color: #fff;
+  text-decoration: underline;
 }
 #section-footer {
   background-color: #005974;
