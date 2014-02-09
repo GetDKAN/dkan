@@ -329,6 +329,12 @@ function dkan_sitewide_context_context_default_contexts() {
           'region' => 'branding',
           'weight' => '-8',
         ),
+        'dkan_sitewide-dkan_sitewide_footer_author' => array(
+          'module' => 'dkan_sitewide',
+          'delta' => 'dkan_sitewide_footer_author',
+          'region' => 'footer_first',
+          'weight' => '-10',
+        ),
       ),
     ),
   );
