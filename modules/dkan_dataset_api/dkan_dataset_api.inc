@@ -167,10 +167,7 @@ function dkan_open_data_build_dataset_resources($nodes) {
         $file = $node->field_upload[$node->language][0];
         $row->url = file_create_url($file['uri']);
         if (!empty($file['filesize'])) {
-          $size = format_size($file['filesize']);
-          $size = str_replace(' ', '', $size);
-          $size = str_replace('bytes', 'b', $size);
-          $row->size = $size;
+          $row->size = (int) $file['filesize'];
         }
         $row->mimetype = isset($file['filemime']) ? $file['filemime'] : '';
         $row->active = $file['status'] ? true : false;
@@ -213,10 +210,7 @@ function dkan_open_data_build_distributions($node) {
       if (isset($node->field_upload[$node->language][0])) {
         $row->accessURL = file_create_url($node->field_upload[$node->language][0]['uri']);
         if (!empty($node->field_upload[$node->language][0]['filesize'])) {
-          $size = format_size($node->field_upload[$node->language][0]['filesize']);
-          $size = str_replace(' ', '', $size);
-          $size = str_replace('bytes', 'b', $size);
-          $row->size = $size;
+          $row->size = (int) $node->field_upload[$node->language][0]['filesize'];
         }
         $row->format = $node->field_upload[$node->language][0]['filemime'];
 
