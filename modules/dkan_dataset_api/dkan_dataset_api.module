@@ -33,7 +33,7 @@ function dkan_dataset_api_menu() {
     );
   }
 
-  // -> package_list callbacks.
+  // Package_list callbacks.
   $package_list_aliases = array(
     'api/3/action/package_list',
     'api/action/package_list',
@@ -47,8 +47,8 @@ function dkan_dataset_api_menu() {
       'type' => MENU_SUGGESTED_ITEM,
     );
   }
-
-  // -> package_show callbacks.
+  
+  // Package_show callbacks.
   $package_show_aliases = array(
     'api/3/action/package_show',
     'api/2/rest/dataset/%',
@@ -65,7 +65,7 @@ function dkan_dataset_api_menu() {
     }
   }
 
-  // -> package_list_with_resources callbacks.
+  // Package_list_with_resources callbacks.
   $package_list_with_resources_aliases = array(
     'api/3/action/current_package_list_with_resources',
   );
@@ -78,7 +78,7 @@ function dkan_dataset_api_menu() {
     );
   }
 
-  // -> revision_list callbacks.
+  // Revision_list callbacks.
   $revision_list_aliases = array(
     'api/3/action/revision_list',
     'api/2/search/revision',
@@ -91,7 +91,7 @@ function dkan_dataset_api_menu() {
     );
   }
 
-  // -> package_revision_list callbacks
+  // Package_revision_list callbacks.
   $package_revision_list_aliases = array(
     'api/3/action/package_revision_list',
   );
@@ -103,7 +103,7 @@ function dkan_dataset_api_menu() {
     );
   }
 
-  // -> data.json callback
+  // Data.json callback.
   $items['data.json'] = array(
     'page callback' => 'dkan_dataset_api_open_data_json',
     'access arguments' => array('access content'),
@@ -282,8 +282,8 @@ function dkan_dataset_api_revision_list() {
 
     $result = array();
     // Double cross revisions with datasets nids.
-    foreach ($revisions as $key => $revision) {
-      if (in_array((int) $revision->nid, $datasets)) {
+    foreach($revisions as $key => $revision) {
+      if (in_array((int)$revision->nid, $datasets)) {
         $result[] = $revision->vuuid;
       }
     }
