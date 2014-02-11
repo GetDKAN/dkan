@@ -91,7 +91,19 @@ function dkan_dataset_api_menu() {
     );
   }
 
-  // -> data.json callback.
+  // -> package_revision_list callbacks
+  $package_revision_list_aliases = array(
+    'api/3/action/package_revision_list',
+  );
+  foreach ($package_revision_list_aliases as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_package_revision_list',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+    );
+  }
+
+  // -> data.json callback
   $items['data.json'] = array(
     'page callback' => 'dkan_dataset_api_open_data_json',
     'access arguments' => array('access content'),
@@ -153,6 +165,13 @@ function dkan_dataset_api_settings() {
       '!url' => l(t('package_show'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_show'),
       '!legacy' => l(t('rest/dataset'), 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
     '#default_value' => variable_get('dkan_dataset_api_package_show', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_package_revision_list'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('package_revision_list'),
+    '#description' => t('More information on !url.', array(
+      '!url' => l('package_revision_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_revision_list'))),
+    '#default_value' => variable_get('dkan_dataset_api_package_revision_list', 1),
   );
   return system_settings_form($form);
 }
@@ -278,7 +297,6 @@ function dkan_dataset_api_revision_list() {
   drupal_json_output($output);
 }
 
-
 /**
  * Returns a list of datasets with resources.
  */
@@ -369,6 +387,68 @@ function dkan_dataset_api_package_show($uuid = NULL) {
 }
 
 /**
+ * Returns a list of objects representing specific dataset's revisions.
+ */
+function dkan_dataset_api_package_revision_list($uuid=null) {
+  if (!variable_get('dkan_dataset_api_package_revision_list', 1)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return a dataset (package)'s revisions as a list of dictionaries.\n\n    :param id: the id or name of the dataset\n    :type id: string\n\n")
+  );
+
+  if (!isset($uuid)) {
+    $uuid = isset($_GET['id']) ? $_GET['id'] : null;
+  }
+
+  if (isset($uuid)) {
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'dataset')
+      ->propertyCondition('status', 1)
+      ->propertyCondition('uuid', $uuid)
+      // Run the query as user 1.
+      ->addMetaData('account', user_load(1));
+
+    $dataset = $query->execute();
+
+    if (count(array_keys($dataset['node']))) {
+      $dataset = node_load(array_keys($dataset['node'])[0]);
+      
+      $revisions = array();
+      foreach (dkan_dataset_api_node_revision_list($dataset) as $key => $revision) {
+        $revisions[] = array(
+          'timestamp' => format_date($revision->timestamp, 'custom', 'Y-m-d\TH:i:s.u'),
+          'message' => $revision->log,
+          'author' => $revision->name,
+          'id' => $revision->vuuid,
+        );
+      }
+
+      $output['success'] = TRUE;
+      $output['result'] = $revisions;
+    }
+    else {
+      $output['success'] = FALSE;
+      $output['error'] = array(
+        '__type' => t('Not Found Error'),
+        'message' => t('Not Found')
+      );
+    }
+  }
+  else {
+    $output['success'] = FALSE;
+    $output['error'] = array(
+      '__type' => t('Validation Error'),
+      'uuid' => array(t('Missing Value'))
+    );
+  }
+  drupal_json_output($output);
+}
+
+
+/**
  * Retrieves public, published dataset nodes.
  *
  * @return array
@@ -391,4 +471,22 @@ function dkan_dataset_api_get_datasets($limit = 0, $offset = 0) {
   $nodes = node_load_multiple($nids);
 
   return $nodes;
+}
+
+/**
+ * Retrieves node revisions with vuuid
+ *
+ * @param stdobject $node
+ *   A node object
+ *
+ * @return array
+ *   An array of the node revisions
+ */
+function dkan_dataset_api_node_revision_list($node) {
+  $revisions = array();
+  $result = db_query('SELECT r.vid, r.title, r.log, r.uid, r.vuuid, n.vid AS current_vid, r.timestamp, u.name FROM {node_revision} r LEFT JOIN {node} n ON n.vid = r.vid INNER JOIN {users} u ON u.uid = r.uid WHERE r.nid = :nid ORDER BY r.vid DESC', array(':nid' => $node->nid));
+  foreach ($result as $revision) {
+    $revisions[$revision->vid] = $revision;
+  }
+  return $revisions;
 }
