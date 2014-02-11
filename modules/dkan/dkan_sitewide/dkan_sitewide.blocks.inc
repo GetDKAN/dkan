@@ -228,7 +228,7 @@ function dkan_sitewide_other_access() {
           'json' => array(
             '#type' => 'markup',
             '#markup' => l('<i class="ckan-icon ckan-icon-json"></i> JSON',
-              'node/' . $node->nid . '/json',
+              url('/api/3/action/package_show', array('query' => array('id' => $node->uuid), 'absolute' => TRUE)),
               array(
                 'html' => TRUE,
                 'attributes' => array(
