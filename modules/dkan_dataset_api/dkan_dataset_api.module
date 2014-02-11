@@ -66,7 +66,7 @@ function dkan_dataset_api_menu() {
     }
   }
 
-  // -> package_show callbacks
+  // -> package_list_with_resources callbacks
   $package_list_with_resources_aliases = array(
     'api/3/action/current_package_list_with_resources',
   );
@@ -79,6 +79,19 @@ function dkan_dataset_api_menu() {
     );
   }
 
+  // -> revision_list callbacks
+  $revision_list_aliases = array(
+    'api/3/action/revision_list',
+    'api/2/search/revision',
+  );
+  foreach ($revision_list_aliases as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_revision_list',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+    );
+  }
+
   // -> data.json callback
   $items['data.json'] = array(
     'page callback' => 'dkan_dataset_api_open_data_json',
@@ -86,17 +99,7 @@ function dkan_dataset_api_menu() {
     'type' => MENU_SUGGESTED_ITEM,
     'file' => 'dkan_dataset_api.inc',
   );
-  
-  $items['api/3/action/revision_list'] = array(
-    'page callback' => 'dkan_dataset_api_revision_list',
-    'access arguments' => array('access content'),
-    'type' => MENU_SUGGESTED_ITEM,
-  );
-  $items['api/2/search/revision'] = array(
-    'page callback' => 'dkan_dataset_api_revision_list',
-    'access arguments' => array('access content'),
-    'type' => MENU_SUGGESTED_ITEM,
-  );
+
   return $items;
 }
 
@@ -113,30 +116,10 @@ function dkan_dataset_api_settings() {
   $form['dkan_dataset_api']['dkan_dataset_api_site_read'] = array(
     '#type' => 'checkbox',
     '#title' => t('site_read'),
-    '#description' => t('More information on !url.', array('!url' => l('site_read', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.site_read'))),
+    '#description' => t('More information on !url.', array(
+      '!url' => l('site_read', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.site_read'))
+    ),
     '#default_value' => variable_get('dkan_dataset_api_site_read', 1),
-  );
-  $form['dkan_dataset_api']['dkan_dataset_api_package_list'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('package_list'),
-    '#description' => t('More information on !url. This also mirrors the deprecated !legacy.', array(
-      '!url' => l('package_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'),
-      '!legacy' => l('rest/dataset', 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
-    '#default_value' => variable_get('dkan_dataset_api_package_list', 1),
-  );
-  $form['dkan_dataset_api']['dkan_dataset_api_package_show'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('package_show'),
-    '#description' => t('More information on !url. This also mirrors the deprecated !legacy.', array(
-      '!url' => l('package_show', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_show'),
-      '!legacy' => l('rest/dataset', 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
-    '#default_value' => variable_get('dkan_dataset_api_package_show', 1),
-  );
-  $form['dkan_dataset_api']['current_package_list_with_resources'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('current_package_list_with_resources'),
-    '#description' => t('More information on !url.', array('!url' => l('current_package_list_with_resources', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'))),
-    '#default_value' => variable_get('current_package_list_with_resources', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_data_json'] = array(
     '#type' => 'checkbox',
@@ -150,7 +133,44 @@ function dkan_dataset_api_settings() {
     '#description' => t('More information on !url.', array('!url' => l('dkan_dataset_revision_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.revision_list'))),
     '#default_value' => variable_get('dkan_dataset_api_revision_list', 1),
   );
+  $form['dkan_dataset_api']['dkan_dataset_api_package_list'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('package_list'),
+    '#description' => t('More information on !url. This also mirrors the deprecated !legacy.', array(
+      '!url' => l('package_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'),
+      '!legacy' => l('rest/dataset', 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
+    '#default_value' => variable_get('dkan_dataset_api_package_list', 1),
+  );
+  $form['dkan_dataset_api']['current_package_list_with_resources'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('current_package_list_with_resources'),
+    '#description' => t('More information on !url.', array('!url' => l('current_package_list_with_resources', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'))),
+    '#default_value' => variable_get('current_package_list_with_resources', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_package_show'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('package_show'),
+    '#description' => t('More information on !url. This also mirrors the deprecated !legacy.', array(
+      '!url' => l('package_show', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_show'),
+      '!legacy' => l('rest/dataset', 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
+    '#default_value' => variable_get('dkan_dataset_api_package_show', 1),
+  );
   return system_settings_form($form);
+}
+
+/**
+ * Callback function for data retrieval.
+ */
+function dkan_dataset_api_site_read() {
+  if (!variable_get('dkan_dataset_api_site_read', 1)) {
+    return drupal_access_denied();
+  }
+  $output = array(
+    'help' => t("Return ``True``.\n\n    :rtype: boolean\n\n"),
+    'success' => TRUE,
+    'result' => TRUE,
+  );
+  drupal_json_output($output);
 }
 
 /**
@@ -261,10 +281,10 @@ function dkan_dataset_api_revision_list() {
 
 
 /**
- * Callback function fordata retrieval.
+ * Returns a list of datasets with resources.
  */
 function dkan_dataset_api_current_package_list_with_resources() {
-  if (!variable_get('current_package_list_with_resources', 0)) {
+  if (!variable_get('current_package_list_with_resources', 1)) {
     return drupal_access_denied();
   }
 
@@ -347,21 +367,6 @@ function dkan_dataset_api_package_show($uuid=null) {
     );
   }
 
-  drupal_json_output($output);
-}
-
-/**
- * Callback function fordata retrieval.
- */
-function dkan_dataset_api_site_read() {
-  if (!variable_get('dkan_dataset_api_site_read', 1)) {
-    return drupal_access_denied();
-  }
-  $output = array(
-    'help' => t("Return ``True``.\n\n    :rtype: boolean\n\n"),
-    'success' => TRUE,
-    'result' => TRUE,
-  );
   drupal_json_output($output);
 }
 

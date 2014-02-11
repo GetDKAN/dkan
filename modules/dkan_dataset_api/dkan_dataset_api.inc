@@ -102,7 +102,7 @@ function dkan_open_data_build_datasets($nodes) {
       $row->license_title = dkan_open_data_get_field_value($node, 'field_license', 'value');
       $row->metadata_created = format_date($node_wrapper->created->value(), 'custom', 'Y-m-d\TH:i:s.u');
       $row->metadata_modified = format_date($node_wrapper->changed->value(), 'custom', 'Y-m-d\TH:i:s.u');
-
+      $row->url = url('node/' . $node->nid, array('absolute' => TRUE));
       $row->author = dkan_open_data_get_field_value($node, 'field_contact_name', 'value');
       $row->author_email = dkan_open_data_get_field_value($node, 'field_contact_email', 'value');
       $row->type = 'dataset';
