@@ -103,6 +103,19 @@ function dkan_dataset_api_menu() {
     );
   }
 
+  // Group_list callbacks.
+  $group_list_aliases = array(
+    'api/3/action/group_list',
+    'api/2/rest/group',
+  );
+  foreach ($group_list_aliases as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_group_list',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+    );
+  }
+
   // Data.json callback.
   $items['data.json'] = array(
     'page callback' => 'dkan_dataset_api_open_data_json',
@@ -172,6 +185,13 @@ function dkan_dataset_api_settings() {
     '#description' => t('More information on !url.', array(
       '!url' => l('package_revision_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_revision_list'))),
     '#default_value' => variable_get('dkan_dataset_api_package_revision_list', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_group_list'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('group_list'),
+    '#description' => t('More information on !url.', array(
+      '!url' => l('group_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.group_list'))),
+    '#default_value' => variable_get('dkan_dataset_api_group_list', 1),
   );
   return system_settings_form($form);
 }
@@ -447,6 +467,109 @@ function dkan_dataset_api_package_revision_list($uuid=null) {
   drupal_json_output($output);
 }
 
+/**
+ * Returns a list of published groups.
+ */
+function dkan_dataset_api_group_list() {
+  if (!variable_get('dkan_dataset_api_group_list', 1)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return a list of the names of the site's groups.\n\n    :param order_by: the field to sort the list by, must be ``'name'`` or\n      ``'packages'`` (optional, default: ``'name'``) Deprecated use sort.\n    :type order_by: string\n    :param sort: sorting of the search results.  Optional.  Default:\n        \"name asc\" string of field name and sort-order. The allowed fields are\n        'name' and 'packages'\n    :type sort: string\n    :param all_fields: return full group dictionaries instead of  just names\n        (optional, default: ``False``)\n    :type all_fields: boolean\n\n    :rtype: list of strings"),
+  );
+
+  $validation_errors = array(
+    '__type' => t('Validation Error')
+  );
+
+  // Validate order_by parameter.
+  $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : 'name';
+  switch ($order_by) {
+      case 'name':
+      case 'packages':
+        break;
+      default:
+        $validation_errors['order_by'] = $order_by . t(': not a valid value for argument `order_by`. Only `name` and `packages` are permitted');
+        break;
+  }
+  // Validate sort parameter.
+  $sort = isset($_GET['sort']) ? $_GET['sort'] : 'name asc';
+  switch ($sort) {
+      case 'name asc':
+      case 'name desc':
+      case 'package asc':
+      case 'package desc':
+        break;
+      default:
+        $validation_errors['sort'] = $sort . t(': not a valid value for argument `sort`. Only `name asc`, `name desc`, `package asc` and `package desc` are permitted'); 
+        break;
+  }
+  // Combine order and sort parameters
+  if (!isset($validation_errors['sort']) && !isset($validation_errors['order_by'])) {
+    if ($sort == 'name asc' && $order_by != 'name') {
+      $sort = str_replace('name', $order_by, $sort);
+    }
+    $order_by = explode(' ', $sort)[0];
+    $sort = strtoupper(explode(' ', $sort)[1]);
+    switch ($order_by) {
+      case 'name':
+        $order_by = 'title';
+        break;
+    }
+  }
+
+  // Validate all_fields parameter
+  $all_fields = isset($_GET['all_fields']) ? $_GET['all_fields'] : 'False';
+  $all_fields = strtolower($all_fields);
+  switch ($all_fields) {
+    case 'true':
+    case 'false':
+      $all_fields = $all_fields === 'true' ? True : False;
+      break;
+    default:
+      $validation_errors['all_fields'] = $sort . t(': not a valid value for argument `all_fields`. Only `true` and `false`');
+  }
+  if(count($validation_errors) === 1) {
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'group')
+      ->propertyCondition('status', 1)
+      ->propertyOrderBy($order_by, $sort)
+      // Run the query as user 1.
+      ->addMetaData('account', user_load(1));
+    $groups = $query->execute();
+    $rows = array();
+    if (count(array_keys($groups['node']))) {
+      $groups = node_load_multiple(array_keys($groups['node']));
+      foreach ($groups as $group) {
+        $row = new stdClass();
+        $row->uuid = $group->uuid;
+        if ($all_fields) {
+          $row->title = $group->title;
+          $row->display_name = $group->title;
+          $row->created = format_date($group->created, 'custom', 'Y-m-d\TH:i:s.u');
+          $row->updated = format_date($group->changed, 'custom', 'Y-m-d\TH:i:s.u');
+          $row->image = file_create_url($group->field_image['und'][0]['uri']);
+          $row->status = $group->status ? 'active' : 'disabled';
+          $row->revision_id = $group->vuuid;
+          $rows[] = $row;
+        }
+        else {
+          $rows[] = $row->uuid;
+        }
+      }
+    }
+    $output['success'] = TRUE;
+    $output['result'] = $rows;
+  }
+  else {
+    $output['success'] = FALSE;
+    $output['result'] = array();
+    $output['error'] = $validation_errors;
+  }
+  drupal_json_output($output);
+}
 
 /**
  * Retrieves public, published dataset nodes.
