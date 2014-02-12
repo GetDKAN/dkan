@@ -104,6 +104,20 @@ function dkan_dataset_api_menu() {
     );
   }
 
+  // Group package show callbacks
+  $group_package_show_aliases = array(
+    'api/3/action/group_package_show',
+  );
+  foreach ($group_package_show_aliases  as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_group_package_show',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+      'file' => 'dkan_dataset_api.inc',
+    );
+  }
+
+  // -> data.json callback
   // Package_revision_list callbacks.
   $package_revision_list_aliases = array(
     'api/3/action/package_revision_list',
@@ -198,6 +212,13 @@ function dkan_dataset_api_settings() {
     '#description' => t('More information on !url.', array(
       '!url' => l('package_show', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.resource_show'))),
     '#default_value' => variable_get('dkan_dataset_api_resource_show', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_group_package_show'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('group_package_show'),
+    '#description' => t('More information on !url.', array(
+      '!url' => l('package_show', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.group_package_show'))),
+    '#default_value' => variable_get('dkan_dataset_api_group_package_show', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_package_revision_list'] = array(
     '#type' => 'checkbox',
@@ -374,6 +395,75 @@ function dkan_dataset_api_current_package_list_with_resources() {
   drupal_json_output($output);
 }
 
+
+/**
+ * Returns a list of datasets with resources.
+ */
+function dkan_dataset_api_group_package_show() {
+  if (!variable_get('dkan_dataset_api_group_package_show', 1)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return the datasets (packages) of a group.\n\n    :param id: the id of the group\n    :type id: string\n    :param limit: the maximum number of datasets to return (optional)\n    :type limit: int\n\n    :rtype: list of dictionaries\n\n"),
+  );
+
+  if (isset($_GET['id'])) {
+    $uuid = $_GET['id'];
+    $limit = isset($_GET['limit']) ? $_GET['limit'] : 0;
+    $offset = isset($_GET['offset']) && $_GET['offset'] ? $_GET['offset'] : 0;
+
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'group')
+      ->propertyCondition('status', 1)
+      ->propertyCondition('uuid', $uuid)
+      // Run the query as user 1.
+      ->addMetaData('account', user_load(1));
+
+    $group = $query->execute();
+    if (count(array_keys($group['node']))) {
+      $group = array_keys($group['node'])[0];
+
+      $nodes = dkan_dataset_api_get_datasets($limit, $offset, $group);
+
+      if(count($nodes)) {
+        $output['success'] = TRUE;
+        $output['result'] = dkan_open_data_build_datasets($nodes);
+      }
+      else {
+        if($offset != 0) {
+          $output['success'] = FALSE;
+          $output['error'] = array(
+            '__type' => t('Query offset out of range'),
+            'message' => t('Offset parameter is out of range')
+          );
+        }
+        else {
+          $output['success'] = TRUE;
+          $output['result'] = array();
+        }
+      }  
+    }
+    else {
+      $output['success'] = FALSE;
+      $output['error'] = array(
+        '__type' => t('Not Found Error'),
+        'message' => t('Not Found')
+      );
+    }
+  }
+  else {
+    $output['success'] = FALSE;
+    $output['error'] = array(
+      '__type' => t('Validation Error'),
+      'id' => array(t('Missing Value'))
+    );
+  }
+  drupal_json_output($output);
+}
+
+
 /**
  * Return the metadata of a dataset (package) and its resources.
  */
@@ -476,6 +566,7 @@ function dkan_dataset_api_resource_show($uuid=null) {
 
   drupal_json_output($output);
 }
+
 
 /**
  * Returns a list of objects representing specific dataset's revisions.
@@ -648,7 +739,7 @@ function dkan_dataset_api_group_list() {
  * @return array
  *   An array of dataset nodes.
  */
-function dkan_dataset_api_get_datasets($limit = 0, $offset = 0) {
+function dkan_dataset_api_get_datasets($limit = 0, $offset = 0, $group_id = null) {
   $query = new EntityFieldQuery();
 
   $query->entityCondition('entity_type', 'node')
@@ -657,6 +748,11 @@ function dkan_dataset_api_get_datasets($limit = 0, $offset = 0) {
     ->propertyOrderBy('created', 'DESC')
     // Run the query as user 1.
     ->addMetaData('account', user_load(1));
+
+  if ($group_id) {
+    $query->fieldCondition('og_group_ref', 'target_id', $group_id);
+  }
+
   if ($limit) {
     $query->range($limit, $offset);
   }
