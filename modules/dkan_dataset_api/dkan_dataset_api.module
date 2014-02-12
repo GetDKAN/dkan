@@ -91,6 +91,19 @@ function dkan_dataset_api_menu() {
     );
   }
 
+  // Resource show callbacks
+  $resource_show_aliases = array(
+    'api/3/action/resource_show',
+  );
+  foreach ($resource_show_aliases  as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_resource_show',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+      'file' => 'dkan_dataset_api.inc',
+    );
+  }
+
   // Package_revision_list callbacks.
   $package_revision_list_aliases = array(
     'api/3/action/package_revision_list',
@@ -178,6 +191,13 @@ function dkan_dataset_api_settings() {
       '!url' => l(t('package_show'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_show'),
       '!legacy' => l(t('rest/dataset'), 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
     '#default_value' => variable_get('dkan_dataset_api_package_show', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_resource_show'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('resource_show'),
+    '#description' => t('More information on !url.', array(
+      '!url' => l('package_show', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.resource_show'))),
+    '#default_value' => variable_get('dkan_dataset_api_resource_show', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_package_revision_list'] = array(
     '#type' => 'checkbox',
@@ -400,6 +420,57 @@ function dkan_dataset_api_package_show($uuid = NULL) {
     $output['error'] = array(
       '__type' => t('Validation Error'),
       'uuid' => array(t('Missing Value')),
+    );
+  }
+
+  drupal_json_output($output);
+}
+
+/**
+ * Return the metadata of a dataset resource.
+ */
+function dkan_dataset_api_resource_show($uuid=null) {
+  if (!variable_get('dkan_dataset_api_resource_show', 1)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return the metadata of a dataset resource.\n\n :param id: the id or name of the resource :type id: string \n\n:rtype: dictionary "),
+  );
+
+  if(!isset($uuid)) {
+    $uuid = isset($_GET['id']) ? $_GET['id'] : null;
+  }
+
+  if(isset($uuid)) {
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'resource')
+      ->propertyCondition('status', 1)
+      ->propertyCondition('uuid', $uuid)
+      // Run the query as user 1.
+      ->addMetaData('account', user_load(1));
+
+    $resource = $query->execute();
+    if (count(array_keys($resource['node']))) {
+      $resource = node_load(array_keys($resource['node'])[0]);
+      $row = dkan_open_data_build_dataset_resources(array($resource))[0];
+      $output['success'] = TRUE;
+      $output['result'] = $row;
+    }
+    else {
+      $output['success'] = FALSE;
+      $output['error'] = array(
+        '__type' => t('Not Found Error'),
+        'message' => t('Not Found')
+      );
+    }
+  }
+  else {
+    $output['success'] = FALSE;
+    $output['error'] = array(
+      '__type' => t('Validation Error'),
+      'id' => array(t('Missing Value'))
     );
   }
 
