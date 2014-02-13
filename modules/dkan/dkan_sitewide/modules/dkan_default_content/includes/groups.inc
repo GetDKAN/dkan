@@ -39,7 +39,7 @@ function dkan_default_content_data_explorer_group(){
     'field_image' => array(
       'und' => array(
         0 => array(
-          'alt' => '',
+          'alt' => 'image',
           'title' => '',
           'width' => '800',
           'height' => '477',
@@ -83,7 +83,7 @@ function dkan_default_content_geospatial_group(){
     'field_image' => array(
       'und' => array(
         0 => array(
-          'alt' => '',
+          'alt' => 'image',
           'title' => '',
           'width' => '500',
           'height' => '189',
