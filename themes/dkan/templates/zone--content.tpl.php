@@ -9,6 +9,7 @@
     <?php if ($messages): ?>
       <div id="messages" class="grid-<?php print $columns; ?>"><?php print $messages; ?></div>
     <?php endif; ?>
+    <a id="main-content"></a>
     <?php if (!$is_front): ?>
       <?php print $content; ?>
     <?php endif; ?>
