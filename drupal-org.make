@@ -146,15 +146,11 @@ projects[markdowneditor][patch][2045225] = http://drupal.org/files/remove-dsm-fr
 projects[markdown][subdir] = contrib
 projects[pathauto][subdir] = contrib
 projects[r4032login][subdir] = contrib
-projects[search_api][subdir] = contrib
-projects[search_api_ajax][patch][1858530] = http://drupal.org/files/search_api_ajax-search-query.patch
-projects[search_api_ajax][subdir] = contrib
 projects[search_api_db][subdir] = contrib
 projects[rules][subdir] = contrib
 projects[rules][version] = 2.3
 
 ; Themes
-
 projects[omega][version] = 3.1
 projects[omega][subdir] = contrib
 projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch

@@ -62,7 +62,6 @@ dependencies[] = rules_admin
 dependencies[] = select_or_other
 dependencies[] = search_api
 dependencies[] = services
-dependencies[] = search_api_ajax
 dependencies[] = search_api_db
 dependencies[] = search_api_facetapi
 dependencies[] = search_api_views

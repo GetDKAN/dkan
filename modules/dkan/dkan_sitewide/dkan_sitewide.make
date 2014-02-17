@@ -19,9 +19,6 @@ projects[markdown][subdir] = contrib
 projects[pathauto][subdir] = contrib
 projects[r4032login][subdir] = contrib
 projects[search_api][subdir] = contrib
-projects[search_api_ajax][subdir] = contrib
-projects[search_api_ajax][patch][1858530] = http://drupal.org/files/search_api_ajax-search-query.patch
-projects[search_api_ajax][patch][1719556] = http://drupal.org/files/links-in-search-results-clickable-1719556-4.patch
 projects[search_api_db][subdir] = contrib
 projects[search_api_db][patch][1346846] = http://drupal.org/files/fix-indexing-of-removed-fields-1346846-16.patch
 
