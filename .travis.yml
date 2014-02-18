@@ -22,7 +22,7 @@ before_script:
 
   # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
   - mysql -e 'create database dkan_dataset_test'
-  - php -d sendmail_path=`which true` drush --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/dkan_dataset_test --enable=simpletest dkan_dataset_test
+  - drush --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/dkan_dataset_test --enable=simpletest dkan_dataset_test
 
   # copy drupal
   - git clone --branch 7.x-1.x https://github.com/nuams/dkan_dataset.git
