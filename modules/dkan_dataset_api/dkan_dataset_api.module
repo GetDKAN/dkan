@@ -346,7 +346,7 @@ function dkan_dataset_api_package_show($uuid=null) {
     $dataset = $query->execute();
 
     if (count(array_keys($dataset['node']))) {
-      $dataset = node_load(array_keys($dataset['node'])[0]);
+      $dataset = node_load(array_keys($dataset['node']));
       $row = dkan_open_data_build_datasets($dataset);
       $output['success'] = TRUE;
       $output['result'] = $row;
