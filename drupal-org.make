@@ -146,6 +146,7 @@ projects[markdowneditor][patch][2045225] = http://drupal.org/files/remove-dsm-fr
 projects[markdown][subdir] = contrib
 projects[pathauto][subdir] = contrib
 projects[r4032login][subdir] = contrib
+projects[search_api][subdir] = contrib
 projects[search_api_db][subdir] = contrib
 projects[rules][subdir] = contrib
 projects[rules][version] = 2.3
