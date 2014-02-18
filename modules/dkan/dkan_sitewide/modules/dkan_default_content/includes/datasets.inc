@@ -40,9 +40,9 @@ function dkan_default_content_wisconsin_polling_dataset(){
     'field_license' => array(
       'und' => array(
         0 => array(
-          'value' => 'notspecified',
+          'value' => 'cc-by',
           'format' => NULL,
-          'safe_value' => 'notspecified',
+          'safe_value' => 'cc-by',
         ),
       ),
     ),
