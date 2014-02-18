@@ -12,10 +12,9 @@ before_script:
   # navigate out of module directory to prevent blown stack by recursive module lookup
   - cd ../..
 
-  # install drush
-  - pear channel-discover pear.drush.org
-  - pear install drush/drush-5.8.0
-  - phpenv rehash
+  # install latest Drush 6.
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - composer global require --no-interaction drush/drush:6.*
 
   # install php packages required for running a web server from drush on php 5.3
   - sudo apt-get update > /dev/null
