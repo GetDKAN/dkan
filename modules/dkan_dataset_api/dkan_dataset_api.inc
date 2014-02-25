@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Helper functions for DKAN Dataset API.
+ * Helper functions file for DKAN Dataset API.
  */
 
 /**
@@ -85,7 +85,7 @@ function dkan_open_data_build_rows($nodes) {
 /**
  * Build PHP array and object structure in preparation for JSON output.
  *
- * @param object $nodes or array $nodes
+ * @param object|array $nodes
  *   A dataset node.
  *
  * @return array
@@ -116,13 +116,15 @@ function dkan_open_data_build_datasets($nodes) {
       $access_level = $access_level ? $access_level : t('public');
       $row->private = $access_level == t('public') ? FALSE : TRUE;
 
-      $resources = array();
-      foreach ($node->field_resources['und'] as $key => $resource) {
-        $resources[] = $resource['target_id'];
+      if (isset($node->field_resources[LANGUAGE_NONE])) {
+        $resources = array();
+        foreach ($node->field_resources[LANGUAGE_NONE] as $key => $resource) {
+          $resources[] = $resource['target_id'];
+        }
+        $resources = node_load_multiple($resources);
+        $row->resources = dkan_open_data_build_dataset_resources($resources);
+        $row->num_resources = count($resources);
       }
-      $resources = node_load_multiple($resources);
-      $row->resources = dkan_open_data_build_dataset_resources($resources);
-      $row->num_resources = count($resources);
 
       $tags = array();
       if (isset($node_wrapper->field_tags)) {
@@ -131,8 +133,6 @@ function dkan_open_data_build_datasets($nodes) {
             'name' => $tag->name->value(),
             'display_name' => $tag->name->value(),
             'id' => $tag->uuid->value(),
-            // Removed 'revision_timestamp' =>
-            // format_date($tag->created->value(), 'custom', 'Y-m-d\TH:i:s.u'),
           );
         }
       }
@@ -150,8 +150,8 @@ function dkan_open_data_build_datasets($nodes) {
 /**
  * Build PHP array and object structure in preparation for JSON output.
  *
- * @param array $nodes
- *   A dataset node
+ * @param object $nodes
+ *   A dataset node.
  *
  * @return array
  *   An array of resource objects formatted as per CKAN API specifications.
@@ -208,8 +208,8 @@ function dkan_open_data_build_distributions($node) {
   $distributions = array();
 
   $nid = $node->nid;
-  $nodes = dkan_dataset_get_resource_nodes($nid);
 
+  $nodes = dkan_dataset_get_resource_nodes($nid);
   if (!empty($nodes)) {
     foreach ($nodes as $node) {
       $row = new stdClass();
@@ -254,7 +254,7 @@ function dkan_open_data_get_field_value($node, $field_name, $column_name) {
         $option = explode("|", $option);
         $options[$option[0]] = $option[1];
       }
-      $field_value = trim($options[$key]);
+      $field_value = isset($options[$key]) ? trim($options[$key]) : NULL;
     }
     // Link field, can be external or external path, preparing url if present.
     elseif ($field_name == 'field_related_content') {

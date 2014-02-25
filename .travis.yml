@@ -44,6 +44,7 @@ before_script:
   # Enable modules
   - drush --yes pm-enable dkan_dataset
   - drush --yes pm-enable dkan_dataset_groups
+  - drush --yes pm-enable dkan_dataset_api
 
   # start a web server on port 8080, run in the background; wait for initialization
   - drush runserver 127.0.0.1:8080 &
