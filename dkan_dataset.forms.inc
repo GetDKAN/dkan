@@ -59,14 +59,15 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'dataset_node_form') {
 
     $form['#attached']['css'][] = drupal_get_path('module', 'dkan_dataset') . '/dkan_dataset.css';
-    $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.js';
-    $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.slugify.js';
     beautytips_add_beautytips();
 
     $form['#after_build']['dkan_dataset'] = 'dkan_dataset_resource_form_after_build';
 
-    if (variable_get('dkan_dataset_form_pathauto_alter', 0)) {
+    // Slugify pathauto in a jazzy but brittle manner.
+    if (variable_get('dkan_dataset_form_pathauto_alter', 1)) {
+      $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
+      $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.slugify.js';
       // Removing path from vertiable tabs.
       unset($form['path']['#group']);
       unset($form['path']['#title']);
@@ -179,9 +180,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'resource_node_form') {
     drupal_add_library('system', 'jquery.bbq');
     $form['#attached']['css'][] = drupal_get_path('module', 'dkan_dataset') . '/dkan_dataset.css';
-    $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.js';
-    $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.slugify.js';
 
     if (isset($form['feeds'])) {
       $form['feeds']['#access'] = FALSE;
