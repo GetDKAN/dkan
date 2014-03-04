@@ -96,9 +96,9 @@ function dkan_sitewide_demo_front_form_alter(&$form, &$form_state, $form_id) {
     $form['#info']['filter-search_api_views_fulltext']['description'] = t('Search');
     $form['#info']['filter-search_api_views_fulltext']['label'] = '';
     $form['submit']['#title'] = '';
-    if (isset($form_state['pager_plugin'])) {
+    if (!isset($form_state['pager_plugin'])) {
       $form['submit']['#type'] = 'image_button';
-      $form['submit']['#src'] = isset($form_state['pager_plugin']) ? 'profiles/dkan/images/icon-search-27x26.png' : '';
+      $form['submit']['#src'] = !isset($form_state['pager_plugin']) ? 'profiles/dkan/images/icon-search-27x26.png' : '';
     }
   }
 }
