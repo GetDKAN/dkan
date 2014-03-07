@@ -155,6 +155,10 @@ projects[rules][version] = 2.3
 projects[omega][version] = 3.1
 projects[omega][subdir] = contrib
 projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
+projects[bootstrap][version] = 3.0
+projects[bootstrap][subdir] = contrib
+projects[nuboot][version] = 1.0-beta1
+projects[nuboot][subdir] = contrib
 
 ; Libraries
 libraries[recline][type] = libraries
