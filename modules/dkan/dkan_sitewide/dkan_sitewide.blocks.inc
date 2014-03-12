@@ -163,7 +163,7 @@ function dkan_sitewide_social_block() {
     '#theme' => 'item_list',
     '#items' => array(
       'googleplus' => array(
-        'data' => l('<i class="ckan-icon ckan-icon-gplus"></i> ' . t('Google+'),
+        'data' => l('<i class="ckan-icon ckan-icon-gplus fa fa-lg fa-google-plus-square"></i> ' . t('Google+'),
           'https://plus.google.com/share', array(
           'query' => array(
             'url' => $link
@@ -176,7 +176,7 @@ function dkan_sitewide_social_block() {
         'class' => array('nav-item'),
       ),
       'twitter' => array(
-        'data' => l('<i class="ckan-icon ckan-icon-twitter"></i> ' . t('Twitter'),
+        'data' => l('<i class="ckan-icon ckan-icon-twitter fa fa-lg fa-twitter-square"></i> ' . t('Twitter'),
           'https://twitter.com/share', array(
           'query' => array(
             'url' => $link
@@ -189,7 +189,7 @@ function dkan_sitewide_social_block() {
         'class' => array('nav-item'),
       ),
       'facebook' => array(
-        'data' => l('<i class="ckan-icon ckan-icon-fb"></i> ' . t('Facebook'),
+        'data' => l('<i class="ckan-icon ckan-icon-fb fa fa-lg fa-facebook-square"></i> ' . t('Facebook'),
           'https://www.facebook.com/sharer.php', array(
           'query' => array(
             'u' => $link
@@ -238,7 +238,7 @@ function dkan_sitewide_other_access() {
           ),
           'rdf' => array(
             '#type' => 'markup',
-            '#markup' => l('<i class="ckan-icon ckan-icon-rdfxml"></i> RDF',
+            '#markup' => l('<i class="ckan-icon ckan-icon-rdfxml "></i> RDF',
               'node/' . $node->nid . '.rdf',
               array(
                 'html' => TRUE,
