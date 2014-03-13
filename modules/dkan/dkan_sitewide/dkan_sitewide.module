@@ -16,12 +16,12 @@ function dkan_sitewide_user_menu_block() {
   $output = '';
   if ($user->uid) {
     if (module_exists('gravatar')) {
-      $output = l('<img alt="my user picture" src="' . gravatar_get_gravatar($user->mail, array('size' => '25')) . '">' , 'user', array('html' => TRUE));
+      $output = l('<img alt="my user picture" src="' . gravatar_get_gravatar($user->mail, array('size' => '25')) . '">', 'user', array('html' => TRUE));
     }
-    $output .= '<span class="links">' . l($user->name, 'user') . l('Logout', 'user/logout', array('attributes' => array('class' => array('sub')))) . '</span>';
+    $output .= '<span class="links">' . l($user->name, 'user') . l(t('Logout'), 'user/logout', array('attributes' => array('class' => array('sub')))) . '</span>';
   }
   else {
-    $output .= '<span class="links">' . l('Login', 'user/login') . l('Register', 'user/register', array('attributes' => array('class' => array('sub')))) . '</span>';
+    $output .= '<span class="links">' . l(t('Login'), 'user/login') . l(t('Register'), 'user/register', array('attributes' => array('class' => array('sub')))) . '</span>';
   }
   return $output;
 }
