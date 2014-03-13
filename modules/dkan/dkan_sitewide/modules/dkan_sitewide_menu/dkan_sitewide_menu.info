@@ -1,8 +1,9 @@
 name = DKAN Sitewide Menu
+description = Default menu settings for DKAN
 core = 7.x
 package = DKAN Features
 version = 7.x-1.0-beta1
-description = Default menu settings for DKAN
+dependencies[] = defaultcontent
 dependencies[] = dkan_dataset
 dependencies[] = dkan_dataset_groups
 dependencies[] = dkan_datastore
@@ -17,5 +18,4 @@ features[features_api][] = api:2
 features[menu_custom][] = main-menu
 features[menu_links][] = main-menu:dataset
 features[menu_links][] = main-menu:groups
-features[menu_links][] = main-menu:node/3
 features[menu_links][] = main-menu:node/add/dataset
