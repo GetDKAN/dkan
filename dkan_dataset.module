@@ -1,5 +1,5 @@
 <?php
- 
+
 /**
  * @file
  * Custom elements for datasets.
@@ -281,7 +281,7 @@ function dkan_form_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL)
   $stages = '<div id="dkan-stages">';
   if ($op == 'resource-edit' || $op == 'resource-create') {
     $stages .= '<ol class="stages stage-3">
-      <li class="first complete"><span class="highlight">' . l(t('Edit dataset'), 'node/' . $dataset_nid . '/edit') .'</span></li>
+      <li class="first complete"><span class="highlight">' . l(t('Edit dataset'), 'node/' . $dataset_nid . '/edit') . '</span></li>
       <li class="middle active">
           <span class="highlight">Add data</span>
       </li>

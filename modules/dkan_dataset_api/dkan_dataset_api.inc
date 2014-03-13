@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Helper functions for DKAN Dataset API.
+ */
+
+/**
  * Build PHP array and object structure in preparation for JSON output.
  *
  * @param array $nodes
@@ -15,7 +20,7 @@ function dkan_open_data_build_rows($nodes) {
 
   foreach ($nodes as $node) {
     $node_wrapper = entity_metadata_wrapper('node', $node);
-    
+
     try {
       $row = new stdClass();
 
@@ -109,10 +114,10 @@ function dkan_open_data_build_datasets($nodes) {
 
       $access_level = dkan_open_data_get_field_value($node, 'field_public_access_level', 'label');
       $access_level = $access_level ? $access_level : t('public');
-      $row->private = $access_level == t('public') ? false : true;
+      $row->private = $access_level == t('public') ? FALSE : TRUE;
 
       $resources = array();
-      foreach($node->field_resources['und'] as $key => $resource){
+      foreach ($node->field_resources['und'] as $key => $resource) {
         $resources[] = $resource['target_id'];
       }
       $resources = node_load_multiple($resources);
@@ -126,7 +131,8 @@ function dkan_open_data_build_datasets($nodes) {
             'name' => $tag->name->value(),
             'display_name' => $tag->name->value(),
             'id' => $tag->uuid->value(),
-            // 'revision_timestamp' => format_date($tag->created->value(), 'custom', 'Y-m-d\TH:i:s.u'),
+            // Removed 'revision_timestamp' =>
+            // format_date($tag->created->value(), 'custom', 'Y-m-d\TH:i:s.u'),
           );
         }
       }
@@ -144,7 +150,7 @@ function dkan_open_data_build_datasets($nodes) {
 /**
  * Build PHP array and object structure in preparation for JSON output.
  *
- * @param $node
+ * @param array $nodes
  *   A dataset node
  *
  * @return array
@@ -170,7 +176,7 @@ function dkan_open_data_build_dataset_resources($nodes) {
           $row->size = (int) $file['filesize'];
         }
         $row->mimetype = isset($file['filemime']) ? $file['filemime'] : '';
-        $row->active = $file['status'] ? true : false;
+        $row->active = $file['status'] ? TRUE : FALSE;
       }
       elseif (isset($node_wrapper->field_link_remote_file)) {
         $row->resource_type = 'remote_file';

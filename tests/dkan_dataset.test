@@ -22,6 +22,9 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
     );
   }
 
+  /**
+   * Prepares site for tests.
+   */
   public function setUp() {
     $args = func_get_args();
 
@@ -203,10 +206,10 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
     $this->drupalPost('node/add/group', $edit, 'Save');
     $this->assertText('has been created.');
 
-    //$nid = $this->getNid($this->getUrl());
+    // Removed $nid = $this->getNid($this->getUrl());.
     return array(
       'title' => $title,
-      //'nid' => $nid,
+      // Removed 'nid' => $nid,.
     );
   }
 
@@ -230,7 +233,7 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
    * @param bool $two_forms
    *   Wheter or not the dataset form is split across two forms.
    *
-   * @return
+   * @return string
    *   The node id of the node created.
    */
   public function createDataset($title = '', $create = array(), $additional = array(), $resources = array(), $two_forms = TRUE) {
@@ -276,10 +279,6 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
           }
         }
       }
-
-      // Click
-      //$this->drupalPostAJAX(NULL, array(), array('op' => t('Next: Additional Info')));
-      //$this->assertText('These fields are compatible with');
 
       if ($two_forms) {
         $this->drupalPost('node/' . $nid . '/edit', $additional, 'Save', array('query' => array('additional' => '1')));
@@ -367,10 +366,7 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
       'field_frequency[und]' => 1,
       // Temporal Coverage.
       // TODO: get date format to work correctly.
-      //'field_temporal_coverage[und][0][value][date]' =>  '2014-01-30 10:00:00',
-      //'field_temporal_coverage[und][0][value][time]' => $temporal_coverate_time1,
-      //'field_temporal_coverage[und][0][value2][date]' => '',
-      //'field_temporal_coverage[und][0][value2][time]' => '',
+      // Removed 'field_temporal_coverage[und][0][value][date]' => .
       // Data Dictionary.
       'field_data_dictionary[und][0][value]' => $data_dictionary,
       // Contact Name.

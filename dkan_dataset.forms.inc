@@ -250,10 +250,10 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       );
       if (variable_get('dkan_resource_form_ajax', 0)) {
         $form['actions']['additional']['#ajax'] = array(
-           'callback' => 'dkan_dataset_additional_submit_js',
-           'wrapper' => $form['#id'],
-           'method' => 'replace',
-           'effect' => 'fade',
+          'callback' => 'dkan_dataset_additional_submit_js',
+          'wrapper' => $form['#id'],
+          'method' => 'replace',
+          'effect' => 'fade',
         );
       }
       else {

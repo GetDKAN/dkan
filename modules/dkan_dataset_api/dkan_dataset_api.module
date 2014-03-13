@@ -19,37 +19,36 @@ function dkan_dataset_api_menu() {
     'access arguments' => array('administer site configuration'),
   );
 
-  // API callbacks
-
-  // -> site_read callbacks
+  // API callbacks.
+  // -> site_read callbacks.
   $site_read_aliases = array(
     'api/3/action/site_read',
-    'api/action/site_read'
+    'api/action/site_read',
   );
   foreach ($site_read_aliases as $alias) {
     $items[$alias] = array(
       'page callback' => 'dkan_dataset_api_site_read',
       'access arguments' => array('access content'),
       'type' => MENU_SUGGESTED_ITEM,
-    );  
+    );
   }
 
-  // -> package_list callbacks
+  // -> package_list callbacks.
   $package_list_aliases = array(
     'api/3/action/package_list',
     'api/action/package_list',
     'api/2/rest/dataset',
-    'api/rest/dataset'
+    'api/rest/dataset',
   );
   foreach ($package_list_aliases as $alias) {
     $items[$alias] = array(
       'page callback' => 'dkan_dataset_api_package_list',
       'access arguments' => array('access content'),
       'type' => MENU_SUGGESTED_ITEM,
-    );  
+    );
   }
-  
-  // -> package_show callbacks
+
+  // -> package_show callbacks.
   $package_show_aliases = array(
     'api/3/action/package_show',
     'api/2/rest/dataset/%',
@@ -61,12 +60,12 @@ function dkan_dataset_api_menu() {
       'type' => MENU_SUGGESTED_ITEM,
       'file' => 'dkan_dataset_api.inc',
     );
-    if (strpos($alias,'%') !== false) {
+    if (strpos($alias, '%') !== FALSE) {
       $items[$alias]['page arguments'] = array_keys(explode('/', $alias), '%');
     }
   }
 
-  // -> package_list_with_resources callbacks
+  // -> package_list_with_resources callbacks.
   $package_list_with_resources_aliases = array(
     'api/3/action/current_package_list_with_resources',
   );
@@ -79,7 +78,7 @@ function dkan_dataset_api_menu() {
     );
   }
 
-  // -> revision_list callbacks
+  // -> revision_list callbacks.
   $revision_list_aliases = array(
     'api/3/action/revision_list',
     'api/2/search/revision',
@@ -92,7 +91,7 @@ function dkan_dataset_api_menu() {
     );
   }
 
-  // -> data.json callback
+  // -> data.json callback.
   $items['data.json'] = array(
     'page callback' => 'dkan_dataset_api_open_data_json',
     'access arguments' => array('access content'),
@@ -117,42 +116,42 @@ function dkan_dataset_api_settings() {
     '#type' => 'checkbox',
     '#title' => t('site_read'),
     '#description' => t('More information on !url.', array(
-      '!url' => l('site_read', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.site_read'))
+      '!url' => l(t('site_read'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.site_read'))
     ),
     '#default_value' => variable_get('dkan_dataset_api_site_read', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_data_json'] = array(
     '#type' => 'checkbox',
     '#title' => t('data.json'),
-    '#description' => t('More information on !url.', array('!url' => l('data.json', 'http://project-open-data.github.io'))),
+    '#description' => t('More information on !url.', array('!url' => l(t('data.json'), 'http://project-open-data.github.io'))),
     '#default_value' => variable_get('dkan_dataset_api_data_json', 0),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_revision_list'] = array(
     '#type' => 'checkbox',
     '#title' => t('revision_list'),
-    '#description' => t('More information on !url.', array('!url' => l('dkan_dataset_revision_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.revision_list'))),
+    '#description' => t('More information on !url.', array('!url' => l(t('dkan_dataset_revision_list'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.revision_list'))),
     '#default_value' => variable_get('dkan_dataset_api_revision_list', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_package_list'] = array(
     '#type' => 'checkbox',
     '#title' => t('package_list'),
     '#description' => t('More information on !url. This also mirrors the deprecated !legacy.', array(
-      '!url' => l('package_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'),
-      '!legacy' => l('rest/dataset', 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
+      '!url' => l(t('package_list'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'),
+      '!legacy' => l(t('rest/dataset'), 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
     '#default_value' => variable_get('dkan_dataset_api_package_list', 1),
   );
   $form['dkan_dataset_api']['current_package_list_with_resources'] = array(
     '#type' => 'checkbox',
     '#title' => t('current_package_list_with_resources'),
-    '#description' => t('More information on !url.', array('!url' => l('current_package_list_with_resources', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'))),
+    '#description' => t('More information on !url.', array('!url' => l(t('current_package_list_with_resources'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'))),
     '#default_value' => variable_get('current_package_list_with_resources', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_package_show'] = array(
     '#type' => 'checkbox',
     '#title' => t('package_show'),
     '#description' => t('More information on !url. This also mirrors the deprecated !legacy.', array(
-      '!url' => l('package_show', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_show'),
-      '!legacy' => l('rest/dataset', 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
+      '!url' => l(t('package_show'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_show'),
+      '!legacy' => l(t('rest/dataset'), 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
     '#default_value' => variable_get('dkan_dataset_api_package_show', 1),
   );
   return system_settings_form($form);
@@ -232,14 +231,14 @@ function dkan_dataset_api_revision_list() {
   }
 
   $output = array(
-    'help' => t("Return a list of the IDs of the site's revisions.\n\n    :rtype: list of strings\n\n")
+    'help' => t("Return a list of the IDs of the site's revisions.\n\n    :rtype: list of strings."),
   );
 
   try {
     $limit = isset($_GET['limit']) ? $_GET['limit'] : 0;
     $offset = isset($_GET['offset']) && $_GET['offset'] ? $_GET['offset'] : 0;
 
-    // Get all datasets for cross reference with revision query
+    // Get all datasets for cross reference with revision query.
     $datasets = new EntityFieldQuery();
     $datasets->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'dataset')
@@ -247,25 +246,25 @@ function dkan_dataset_api_revision_list() {
     $datasets = $datasets->execute();
     $datasets = array_keys($datasets['node']);
 
-    // Get all revisions for this site
+    // Get all revisions for this site.
     $entity_info = entity_get_info('node');
     $table = $entity_info['revision table'];
     $fields = array(
       $entity_info['entity keys']['id'],
       $entity_info['entity keys']['revision'],
-      'vuuid'
+      'vuuid',
     );
     $query = db_select($table, 'revision');
     $query->fields('revision', $fields);
-    if($limit){
+    if ($limit) {
       $query->range($offset, $limit);
     }
     $revisions = $query->execute()->fetchAll();
-    
+
     $result = array();
-    // Double cross revisions with datasets nids
-    foreach($revisions as $key => $revision) {
-      if (in_array((int)$revision->nid, $datasets)) {
+    // Double cross revisions with datasets nids.
+    foreach ($revisions as $key => $revision) {
+      if (in_array((int) $revision->nid, $datasets)) {
         $result[] = $revision->vuuid;
       }
     }
@@ -291,23 +290,22 @@ function dkan_dataset_api_current_package_list_with_resources() {
   $output = array(
     'help' => t("Return a list of the site's datasets (packages) and their resources.\n\n    The list is sorted most-recently-modified first.\n\n    :param limit: if given, the list of datasets will be broken into pages of\n        at most ``limit`` datasets per page and only one page will be returned\n        at a time (optional)\n    :type limit: int\n    :param offset: when ``limit`` is given, the offset to start returning packages from\n    :type offset: int\n    :param page: when ``limit`` is given, which page to return, Deprecated use ``offset``\n    :type page: int\n\n    :rtype: list of dictionaries\n\n"),
   );
-  
+
   $limit = isset($_GET['limit']) ? $_GET['limit'] : 0;
   $offset = isset($_GET['offset']) && $_GET['offset'] ? $_GET['offset'] : 0;
 
-
   $nodes = dkan_dataset_api_get_datasets($limit, $offset);
 
-  if(count($nodes)) {
+  if (count($nodes)) {
     $output['success'] = TRUE;
     $output['result'] = dkan_open_data_build_datasets($nodes);
   }
   else {
-    if($offset != 0) {
+    if ($offset != 0) {
       $output['success'] = FALSE;
       $output['error'] = array(
         '__type' => t('Query offset out of range'),
-        'message' => t('Offset parameter is out of range')
+        'message' => t('Offset parameter is out of range'),
       );
     }
     else {
@@ -319,22 +317,22 @@ function dkan_dataset_api_current_package_list_with_resources() {
 }
 
 /**
- * Return the metadata of a dataset (package) and its resources
+ * Return the metadata of a dataset (package) and its resources.
  */
-function dkan_dataset_api_package_show($uuid=null) {
+function dkan_dataset_api_package_show($uuid = NULL) {
   if (!variable_get('dkan_dataset_api_package_show', 1)) {
     return drupal_access_denied();
   }
 
   $output = array(
-    'help' => t("Return the metadata of a dataset (package) and its resources.\n\n :param id: the id or name of the dataset :type id: string \n\n:rtype: dictionary "),
+    'help' => t("Return the metadata of a dataset (package) and its resources.\n\n :param id: the id or name of the dataset :type id: string \n\n:rtype: dictionary."),
   );
 
-  if(!isset($uuid)) {
-    $uuid = isset($_GET['id']) ? $_GET['id'] : null;
+  if (!isset($uuid)) {
+    $uuid = isset($_GET['id']) ? $_GET['id'] : NULL;
   }
 
-  if(isset($uuid)) {
+  if (isset($uuid)) {
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'dataset')
@@ -355,7 +353,7 @@ function dkan_dataset_api_package_show($uuid=null) {
       $output['success'] = FALSE;
       $output['error'] = array(
         '__type' => t('Not Found Error'),
-        'message' => t('Not Found')
+        'message' => t('Not Found'),
       );
     }
   }
@@ -363,7 +361,7 @@ function dkan_dataset_api_package_show($uuid=null) {
     $output['success'] = FALSE;
     $output['error'] = array(
       '__type' => t('Validation Error'),
-      'uuid' => array(t('Missing Value'))
+      'uuid' => array(t('Missing Value')),
     );
   }
 
