@@ -355,6 +355,14 @@ padding: 4px 6px;
   margin: -7px -15px -7px 0;
   padding: 7px 15px;
 }
+.resource-list .btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: block;
+  margin: -7px -15px -7px 0;
+  padding: 7px 15px;
+}
 
 ul.resource-list .heading {
   color: black;
