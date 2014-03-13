@@ -104,5 +104,6 @@ function dkan_additional_setup() {
   drupal_write_record('feeds_source', $record);
   features_revert(array('dkan_sitewide_search_db' => array('search_api_index')));
   features_revert(array('dkan_dataset_groups' => array('search_api_index')));
+  features_revert(array('dkan_sitewide_roles_perms' => array('user_permission')));
   unset($_SESSION['messages']['warning']);
 }
