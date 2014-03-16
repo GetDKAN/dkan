@@ -74,6 +74,7 @@ projects[views_datasource][download][url] = "http://git.drupal.org/project/views
 projects[views_datasource][download][branch] = "7.x-1.x"
 projects[views_datasource][type] = "module"
 projects[views_bulk_operations][subdir] = contrib
+projects[views_responsive_grid][subdir] = contrib
 
 projects[recline][subdir] = contrib
 projects[recline][version] = 1.x
