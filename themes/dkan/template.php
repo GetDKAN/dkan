@@ -169,6 +169,8 @@ function dkan_preprocess_page(&$vars) {
   }
   if ($vars['is_front']) {
     drupal_add_js($profile_path . '/themes/dkan/js/front.js');
+    unset($vars['page']['content']['content']['content']['system_main']['default_message']);
+    $vars['title'] = '';
   }
   // Remove title on dataset edit and creation pages.
   if (!empty($vars['node']) && in_array($vars['node']->type, array('dataset', 'resource')) || arg(1) == 'add') {

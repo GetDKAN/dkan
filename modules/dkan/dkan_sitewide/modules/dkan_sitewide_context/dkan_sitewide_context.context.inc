@@ -332,7 +332,7 @@ function dkan_sitewide_context_context_default_contexts() {
         'dkan_sitewide-dkan_sitewide_footer_author' => array(
           'module' => 'dkan_sitewide',
           'delta' => 'dkan_sitewide_footer_author',
-          'region' => 'footer_first',
+          'region' => 'footer',
           'weight' => '-10',
         ),
       ),

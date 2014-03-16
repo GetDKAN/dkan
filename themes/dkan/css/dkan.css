@@ -2486,6 +2486,9 @@ module-narrow .nav-item > a {
 }
 
 /** Front page **/
+.front #block-system-main {
+  display: none;
+}
 .front #zone-menu-wrapper {
   padding: 0;
 }
@@ -2502,7 +2505,7 @@ module-narrow .nav-item > a {
 }
 .zone-postscript-wrapper::before,
 .zone-postscript-wrapper::after,
-.zone-preface-wrapper::after {
+.zone-jumbotron-wrapper::after {
   content: "";
   position: absolute;
   left: 0;
@@ -2515,12 +2518,26 @@ module-narrow .nav-item > a {
   top: 0;
   border-bottom-width: 1px;
 }
-.front .zone-preface-wrapper {
+.front .zone-jumbotron-wrapper {
   background: url(../images/homepage_background.png) 100% 75% repeat-y;
   padding-bottom: 0;
   min-height: 0;
   position: relative;
   padding-top: 27px;
+}
+#block-views-front-page-group-grid-block {
+  margin:20px 0;
+}
+.page-groups #block-system-main .block-inner,
+#block-views-front-page-group-grid-block .block-inner:first-child,
+#block-views-front-page-group-grid-block .block-inner {
+  padding:0;
+}
+.page-groups #block-system-main .grid-6 article,
+#block-views-front-page-group-grid-block .block-inner span {
+  border:none;
+  display: block;
+  padding:15px;
 }
 #section-header {
   background-color: #FFF;
@@ -2622,7 +2639,7 @@ h3.media-heading a {
 }
 .media-heading {
   font-size: 14px;
-  margin: 5px 0 2px 0;
+  margin: 0 0 2px 0;
 }
 .media-image img {
   border: 1px solid #ccc;
@@ -2749,6 +2766,10 @@ h3.media-heading a {
   width: 200px;
   float: right;
   margin: 0;
+}
+#region-branding #block-dkan-sitewide-dkan-sitewide-search-bar label,
+#views-exposed-form-dataset-page label {
+  display: none;
 }
 #region-branding #block-dkan-sitewide-dkan-sitewide-search-bar input.form-submit {
   background: url(../images/sprite-ckan-icons.png);

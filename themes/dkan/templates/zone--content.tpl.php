@@ -10,8 +10,8 @@
       <div id="messages" class="grid-<?php print $columns; ?>"><?php print $messages; ?></div>
     <?php endif; ?>
     <a id="main-content"></a>
-    <?php if (!$is_front): ?>
+    <?php //if (!$is_front): ?>
       <?php print $content; ?>
-    <?php endif; ?>
+    <?php //endif; ?>
   </div>
 <?php if ($wrapper): ?></div><?php endif; ?>
