@@ -2643,8 +2643,6 @@ h3.media-heading a {
 }
 .media-image img {
   border: 1px solid #ccc;
-  width: 100px;
-  height: 60px;
 }
 #zone-content #region-sidebar-first .block-facetapi .content {
   padding: 0;
