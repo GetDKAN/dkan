@@ -50,16 +50,10 @@ function dkan_sitewide_demo_front_context_default_contexts() {
           'region' => 'preface_second',
           'weight' => '-9',
         ),
-        'views-front_page_group_list-block' => array(
+        'views-front_page_group_grid-block' => array(
           'module' => 'views',
-          'delta' => 'front_page_group_list-block',
-          'region' => 'postscript_first',
-          'weight' => '-10',
-        ),
-        'views-front_page_group_list-block_2' => array(
-          'module' => 'views',
-          'delta' => 'front_page_group_list-block_2',
-          'region' => 'postscript_second',
+          'delta' => 'front_page_group_grid-block',
+          'region' => 'content',
           'weight' => '-10',
         ),
       ),
