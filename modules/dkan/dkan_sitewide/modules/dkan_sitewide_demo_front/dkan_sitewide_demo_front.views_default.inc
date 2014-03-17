@@ -110,7 +110,7 @@ function dkan_sitewide_demo_front_views_default_views() {
   $handler->display->display_options['fields']['field_image']['element_default_classes'] = FALSE;
   $handler->display->display_options['fields']['field_image']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['field_image']['settings'] = array(
-    'image_style' => 'group_medium',
+    'image_style' => 'group_thumbnail',
     'image_link' => 'content',
   );
   /* Field: Content: Title */

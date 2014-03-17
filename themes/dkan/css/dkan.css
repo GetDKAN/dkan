@@ -629,7 +629,7 @@ input[type="checkbox"][readonly] {
   padding: 0;
   border: none;
   background: none;
-  font-size: 20px;
+  font-size: 16px;
   box-shadow: 0 0 transparent;
   padding: 7px 14px 5px 0;
   margin: 0 0 10px;
@@ -1863,6 +1863,7 @@ ul.primary li a.btn-primary:hover,
 }
 #actions {
   padding: 5px 0 0 0;
+  display: inline-block;
 }
 #toolbar ul.primary li a {
   margin: 0;
@@ -2538,6 +2539,7 @@ module-narrow .nav-item > a {
   border:none;
   display: block;
   padding:15px;
+  min-height: 105px;
 }
 #section-header {
   background-color: #FFF;
@@ -2546,7 +2548,7 @@ module-narrow .nav-item > a {
   box-shadow: 0px 0px 10px #DDD;
 }
 #block-dkan-sitewide-demo-front-dkan-demo-front {
-  margin-top: 30px;
+  margin-top: 20px;
   -webkit-border-radius: 3px 3px 0 0;
   -moz-border-radius: 3px 3px 0 0;
   border-radius: 3px 3px 0 0;
@@ -2765,6 +2767,7 @@ h3.media-heading a {
   float: right;
   margin: 0;
 }
+#views-exposed-form-groups-search-entity-view-1 label,
 #region-branding #block-dkan-sitewide-dkan-sitewide-search-bar label,
 #views-exposed-form-dataset-page label {
   display: none;
@@ -3009,7 +3012,7 @@ h3.media-heading a {
   -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   background-color: white;
-  margin: 30px 0 0 0;
+  margin: 20px 0 0 0;
 }
 #block-dkan-sitewide-demo-front-dkan-add-front::after {
   top: -30px;
@@ -3135,6 +3138,14 @@ a.icon-remove-sign::before {
   padding-bottom: 0px;
   line-height: 20px;
 }
+
+.view-groups-page .node-group .field-name-field-image img {
+  border:1px solid #eeeeee;
+}
+.view-groups-page article.node-teaser {
+  border:none;
+  padding:20px;
+}
 .view-groups-page h2.node-title a {
   font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #0062A0;
@@ -3218,8 +3229,9 @@ article.node-teaser .data-and-resources .label {
 }
 #block-views-group-block-block img {
   border: 1px solid #EAEAEA;
-  margin: -10px 0 0 -5px;
-  width: 100%;
+  display: block;
+  margin: -10px auto 10px;
+  width: 200px;
 }
 #block-views-group-block-block .views-field-title {
   margin: 5px 0;
@@ -3282,6 +3294,13 @@ article.node-teaser .data-and-resources .label {
   }
   #actions {
     float: none;
+    display: inline-block;
+  }
+  #actions ul.primary {
+    white-space: normal;
+  }
+  #actions ul.primary li {
+    margin: 5px 5px 0 5px;
   }
   #zone-branding-wrapper {
     height: auto;
