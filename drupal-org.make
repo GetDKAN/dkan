@@ -159,6 +159,7 @@ projects[omega][subdir] = contrib
 projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
 projects[bootstrap][version] = 3.0
 projects[bootstrap][subdir] = contrib
+projects[bootstrap][patch][2177089] = https://drupal.org/files/issues/bootstrap-undefined-index-2177089-1.patch
 projects[nuboot][version] = 1.x-dev
 projects[nuboot][subdir] = contrib
 
