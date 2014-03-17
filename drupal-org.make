@@ -152,6 +152,8 @@ projects[search_api][subdir] = contrib
 projects[search_api_db][subdir] = contrib
 projects[rules][subdir] = contrib
 projects[rules][version] = 2.3
+projects[imagecache_actions][subdir] = contrib
+projects[imagecache_actions][version] = 1.4
 
 ; Themes
 projects[omega][version] = 3.1
