@@ -762,7 +762,7 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 }
 .page-user div.horizontal-tabs .horizontal-tabs-panes,
 .node-type-group div.horizontal-tabs .horizontal-tabs-panes {
-  padding: 0 25px 15px;
+  padding: 15px 25px;
   background-color: #FFF;
   border-top: 1px solid #ddd;
 }
@@ -784,8 +784,24 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 #zone-content #region-sidebar-first .content {
   padding: 20px 15px;
 }
-#zone-content #region-sidebar-first #block-dkan-sitewide-dkan-sitewide-social .content {
-  padding: 0;
+#zone-content #region-sidebar-first #block-dkan-sitewide-dkan-sitewide-social .content,
+.node-type-group #zone-content #region-sidebar-first .block-group-block-block .content,
+.node-type-dataset #zone-content #region-sidebar-first .block-group-block-block .content {
+  padding: 10px 0 0 0;
+}
+.node-type-dataset .block-group-block-block .content .views-field-title,
+.node-type-dataset .block-group-block-block .content .views-field-body,
+.node-type-group .block-group-block-block .content .views-field-title,
+.node-type-group .block-group-block-block .content .views-field-body {
+  padding:0 15px;
+}
+.node-type-group .horizontal-tabs ul.horizontal-tabs-list li.selected a, 
+.node-type-group .horizontal-tabs ul.horizontal-tabs-list li a {
+  font-size:18px;
+  padding:10px 16px;
+}
+.node-type-group #zone-content .block-inner:first-child {
+  padding-top:0;
 }
 
 /*** Forms ***/
@@ -2521,6 +2537,7 @@ module-narrow .nav-item > a {
 }
 .front .zone-jumbotron-wrapper {
   background: url(../images/homepage_background.png) 100% 75% repeat-y;
+  background-size: cover;
   padding-bottom: 0;
   min-height: 0;
   position: relative;
@@ -2767,6 +2784,7 @@ h3.media-heading a {
   float: right;
   margin: 0;
 }
+#views-exposed-form-user-profile-search-entity-view-1 label,
 #views-exposed-form-groups-search-entity-view-1 label,
 #region-branding #block-dkan-sitewide-dkan-sitewide-search-bar label,
 #views-exposed-form-dataset-page label {
@@ -2799,13 +2817,13 @@ h3.media-heading a {
 }
 #views-exposed-form-user-profile-search-entity-view-1 .compact-form-description,
 #views-exposed-form-groups-search-entity-view-1 .compact-form-description {
-  top: 55px;
+  top: 75px;
   font-size: 16px;
   left: 40px;
   color: #999;
 }
 #views-exposed-form-user-profile-search-entity-view-1 .compact-form-description {
-  top: 55px;
+  top: 65px;
 }
 #block-system-main #views-exposed-form-dataset-page .compact-form-description {
   top: 21px;
@@ -2848,7 +2866,10 @@ h3.media-heading a {
 #views-exposed-form-groups-search-entity-view-1 .views-exposed-form .views-exposed-widget .form-submit,
 #views-exposed-form-user-profile-search-entity-view-1 .views-exposed-form .views-exposed-widget .form-submit {
   right: 40px;
-  top: 47px;
+  top: 72px;
+}
+#views-exposed-form-user-profile-search-entity-view-1 .views-exposed-form .views-exposed-widget .form-submit {
+  top: 63px;
 }
 #block-system-main #views-exposed-form-dataset-page .views-exposed-form .views-exposed-widget .form-submit {
   right: 20px;
@@ -3138,7 +3159,7 @@ a.icon-remove-sign::before {
   padding-bottom: 0px;
   line-height: 20px;
 }
-
+.page-groups .field-name-field-image img,
 .view-groups-page .node-group .field-name-field-image img {
   border:1px solid #eeeeee;
 }
@@ -3146,7 +3167,8 @@ a.icon-remove-sign::before {
   border:none;
   padding:20px;
 }
-.view-groups-page h2.node-title a {
+article.node-teaser h2.node-title,
+article.node-teaser h2.node-title a {
   font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #0062A0;
   letter-spacing: 0em;
@@ -3154,10 +3176,13 @@ a.icon-remove-sign::before {
   line-height: 20px;
   font-size: 16px;
 }
-
+article.node-teaser img {
+  margin-bottom: 10px;
+}
 article.node-teaser {
   border-bottom: 1px dotted #CCC;
   padding-bottom: 20px;
+  padding-top:10px;
   margin-bottom: 20px;
 }
 article.node-teaser:last-child {
@@ -3230,7 +3255,7 @@ article.node-teaser .data-and-resources .label {
 #block-views-group-block-block img {
   border: 1px solid #EAEAEA;
   display: block;
-  margin: -10px auto 10px;
+  margin: 0 auto 10px;
   width: 200px;
 }
 #block-views-group-block-block .views-field-title {
@@ -3241,11 +3266,6 @@ article.node-teaser .data-and-resources .label {
   text-decoration: none;
   font-size: 14px;
   font-weight: bold;
-}
-.view-id-groups_page h2.node-title {
-  font-size: 17px;
-  line-height: 20px;
-  padding: 0 0 15px 0;
 }
 .profile {
   margin: 0;
