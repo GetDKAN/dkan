@@ -9,6 +9,7 @@ dependencies[] = dkan_dataset_content_types
 dependencies[] = facetapi
 dependencies[] = field_group
 dependencies[] = gravatar
+dependencies[] = imagecache_canvasactions
 dependencies[] = search_api_db
 dependencies[] = search_api_views
 dependencies[] = views_responsive_grid
