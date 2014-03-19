@@ -328,7 +328,8 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['style_plugin'] = 'responsive_grid';
-  $handler->display->display_options['style_options']['column_classes'] = 'grid-4 col-sm-12 col-md-4 col-lg-3';
+  $handler->display->display_options['style_options']['columns'] = '3';
+  $handler->display->display_options['style_options']['column_classes'] = 'grid-4 col-sm-12 col-md-4';
   $handler->display->display_options['style_options']['row_classes'] = 'row container-12';
   $handler->display->display_options['row_plugin'] = 'node';
   $handler->display->display_options['row_options']['links'] = FALSE;
