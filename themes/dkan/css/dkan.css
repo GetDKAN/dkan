@@ -3166,6 +3166,7 @@ a.icon-remove-sign::before {
 .view-groups-page article.node-teaser {
   border:none;
   padding:20px;
+  height:365px;
 }
 article.node-teaser h2.node-title,
 article.node-teaser h2.node-title a {
