@@ -40,7 +40,7 @@ function dkan_dataset_groups_image_default_styles() {
     'name' => 'group_medium',
     'label' => 'Group Medium',
     'effects' => array(
-      6 => array(
+      2 => array(
         'label' => 'Scale',
         'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
         'effect callback' => 'image_scale_effect',
@@ -51,12 +51,12 @@ function dkan_dataset_groups_image_default_styles() {
         'name' => 'image_scale',
         'data' => array(
           'width' => 200,
-          'height' => 200,
+          'height' => '',
           'upscale' => 0,
         ),
-        'weight' => -10,
+        'weight' => 2,
       ),
-      8 => array(
+      3 => array(
         'label' => 'Define canvas',
         'help' => 'Define the size of the working canvas and background color, this controls the dimensions of the output image.',
         'effect callback' => 'canvasactions_definecanvas_effect',
@@ -83,9 +83,9 @@ function dkan_dataset_groups_image_default_styles() {
             'bottomdiff' => '',
           ),
         ),
-        'weight' => -9,
+        'weight' => 2,
       ),
-      7 => array(
+      4 => array(
         'label' => 'Crop',
         'help' => 'Cropping will remove portions of an image to make it the specified dimensions.',
         'effect callback' => 'image_crop_effect',
@@ -99,7 +99,7 @@ function dkan_dataset_groups_image_default_styles() {
           'height' => 200,
           'anchor' => 'center-center',
         ),
-        'weight' => -8,
+        'weight' => 3,
       ),
     ),
   );
@@ -109,7 +109,7 @@ function dkan_dataset_groups_image_default_styles() {
     'name' => 'group_thumbnail',
     'label' => 'Group Thumbnail',
     'effects' => array(
-      4 => array(
+      6 => array(
         'label' => 'Scale',
         'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
         'effect callback' => 'image_scale_effect',
@@ -120,12 +120,12 @@ function dkan_dataset_groups_image_default_styles() {
         'name' => 'image_scale',
         'data' => array(
           'width' => 100,
-          'height' => 100,
+          'height' => '',
           'upscale' => 0,
         ),
-        'weight' => -10,
+        'weight' => 2,
       ),
-      9 => array(
+      7 => array(
         'label' => 'Define canvas',
         'help' => 'Define the size of the working canvas and background color, this controls the dimensions of the output image.',
         'effect callback' => 'canvasactions_definecanvas_effect',
@@ -152,9 +152,9 @@ function dkan_dataset_groups_image_default_styles() {
             'bottomdiff' => '',
           ),
         ),
-        'weight' => -9,
+        'weight' => 2,
       ),
-      5 => array(
+      8 => array(
         'label' => 'Crop',
         'help' => 'Cropping will remove portions of an image to make it the specified dimensions.',
         'effect callback' => 'image_crop_effect',
@@ -168,7 +168,7 @@ function dkan_dataset_groups_image_default_styles() {
           'height' => 100,
           'anchor' => 'center-center',
         ),
-        'weight' => -8,
+        'weight' => 3,
       ),
     ),
   );
