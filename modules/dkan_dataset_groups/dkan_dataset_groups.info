@@ -10,6 +10,7 @@ dependencies[] = facetapi
 dependencies[] = field_group
 dependencies[] = gravatar
 dependencies[] = imagecache_canvasactions
+dependencies[] = og_extras
 dependencies[] = search_api_db
 dependencies[] = search_api_views
 dependencies[] = views_responsive_grid
