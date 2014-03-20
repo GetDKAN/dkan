@@ -1,18 +1,23 @@
+<?php
+/**
+ * @file
+ * Custom group node template.
+ */
+?>
 <?php if ($teaser): ?>
   <?php
     $node = node_load($nid);
-    //group image
+    // Group image.
     $image = field_get_items('node', $node, 'field_image');
-    if(!empty($image)) {
+    if($image):
       $group_logo = field_view_value('node', $node, 'field_image', $image[0], array(
         'type' => 'image',
         'settings' => array(
           'image_style' => 'group_medium',
           'image_link' => 'content',
-          'image_alt' => 'logo',
         ),
       ));
-    }
+    endif;
   ?> 
   <article class="node-teaser">
     <div class="field-name-field-image"><?php print render($group_logo); ?></div>
@@ -20,10 +25,10 @@
     <div class="content">
       <p>
         <?php print render(field_view_field('node', $node, 'body', array(
-            'label'=>'hidden',
+            'label' => 'hidden',
             'type' => 'text_summary_or_trimmed',
-            'settings'=>array('trim_length' => 150),
-          )));  
+            'settings' => array('trim_length' => 150),
+          )));
         ?>
       </p>
     </div>
@@ -62,5 +67,5 @@
       <?php print render($content['comments']); ?>
     </div>
   </article>
-  
+
 <?php endif; ?>
