@@ -7,8 +7,7 @@
 /**
  * Implements hook_ctools_plugin_api().
  */
-function dkan_dataset_ctools_plugin_api() {
-  list($module, $api) = func_get_args();
+function dkan_dataset_ctools_plugin_api($module = NULL, $api = NULL) {
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
@@ -17,7 +16,7 @@ function dkan_dataset_ctools_plugin_api() {
 /**
  * Implements hook_views_api().
  */
-function dkan_dataset_views_api() {
+function dkan_dataset_views_api($module = NULL, $api = NULL) {
   return array("api" => "3.0");
 }
 
@@ -27,7 +26,7 @@ function dkan_dataset_views_api() {
 function dkan_dataset_rdf_default_mappings() {
   $rdf_mappings = array();
 
-  // Exported RDF mapping: dataset
+  // Exported RDF mapping: dataset.
   $rdf_mappings['node']['dataset'] = array(
     'rdftype' => array(
       0 => 'sioc:Item',

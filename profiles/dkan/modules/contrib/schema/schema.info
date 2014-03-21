@@ -7,9 +7,9 @@ files[] = engines/mysql.inc
 files[] = engines/pgsql.inc
 files[] = tests/schema_regression.test
 
-; Information added by drupal.org packaging script on 2013-05-16
-version = "7.x-1.0-rc1"
+; Information added by Drupal.org packaging script on 2014-03-21
+version = "7.x-1.0"
 core = "7.x"
 project = "schema"
-datestamp = "1368727525"
+datestamp = "1395371957"
 

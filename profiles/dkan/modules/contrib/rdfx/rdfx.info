@@ -14,9 +14,9 @@ files[] = rdfx.query.inc
 files[] = rdfx.restws.formats.inc
 files[] = rdfx.test
 
-; Information added by drupal.org packaging script on 2013-05-25
-version = "7.x-2.0-alpha4+7-dev"
+; Information added by Drupal.org packaging script on 2014-02-18
+version = "7.x-2.0-alpha4+9-dev"
 core = "7.x"
 project = "rdfx"
-datestamp = "1369451430"
+datestamp = "1392730412"
 

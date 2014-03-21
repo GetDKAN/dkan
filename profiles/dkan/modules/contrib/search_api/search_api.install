@@ -191,6 +191,47 @@ function search_api_schema() {
     'primary key' => array('item_id', 'index_id'),
   );
 
+  $schema['search_api_task'] = array(
+    'description' => 'Stores pending tasks for servers.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'An integer identifying this task.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'server_id' => array(
+        'description' => 'The {search_api_server}.machine_name for which this task should be executed.',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'A keyword identifying the type of task that should be executed.',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+      ),
+      'index_id' => array(
+        'description' => 'The {search_api_index}.machine_name to which this task pertains, if applicable for this type.',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => FALSE,
+      ),
+      'data' => array(
+        'description' => 'Some data needed for the task, might be optional depending on the type.',
+        'type' => 'text',
+        'size' => 'medium',
+        'serialize' => TRUE,
+        'not null' => FALSE,
+      ),
+    ),
+    'indexes' => array(
+      'server' => array('server_id'),
+    ),
+    'primary key' => array('id'),
+  );
+
   return $schema;
 }
 
@@ -214,6 +255,7 @@ function search_api_install() {
     'server' => NULL,
     'item_type' => 'node',
     'options' => array(
+      'index_directly' => 1,
       'cron_limit' => '50',
       'data_alter_callbacks' => array(
         'search_api_alter_node_access' => array(
@@ -321,8 +363,13 @@ function search_api_disable() {
     $types[$index->item_type][] = $index;
   }
   foreach ($types as $type => $indexes) {
-    $controller = search_api_get_datasource_controller($type);
-    $controller->stopTracking($indexes);
+    try {
+      $controller = search_api_get_datasource_controller($type);
+      $controller->stopTracking($indexes);
+    }
+    catch (SearchApiException $e) {
+      // Modules defining entity or item types might have been disabled. Ignore.
+    }
   }
 }
 
@@ -330,7 +377,6 @@ function search_api_disable() {
  * Implements hook_uninstall().
  */
 function search_api_uninstall() {
-  variable_del('search_api_tasks');
   variable_del('search_api_index_worker_callback_runtime');
 }
 
@@ -605,7 +651,7 @@ function search_api_update_7106() {
       $callbacks['search_api_alter_add_aggregation'] = $callbacks['search_api_alter_add_fulltext'];
       unset($callbacks['search_api_alter_add_fulltext']);
       if (!empty($callbacks['search_api_alter_add_aggregation']['settings']['fields'])) {
-        foreach ($callbacks['search_api_alter_add_aggregation']['settings']['fields'] as $field => &$info) {
+        foreach ($callbacks['search_api_alter_add_aggregation']['settings']['fields'] as &$info) {
           if (!isset($info['type'])) {
             $info['type'] = 'fulltext';
           }
@@ -804,5 +850,145 @@ function search_api_update_7114() {
     catch (Exception $e) {
       throw new DrupalUpdateException(t('An exception occurred during the update: @msg.', array('@msg' => $e->getMessage())));
     }
+  }
+}
+
+/**
+ * Switch to indexing without the use of a cron queue.
+ */
+function search_api_update_7115() {
+  variable_del('search_api_batch_per_cron');
+  DrupalQueue::get('search_api_indexing_queue')->deleteQueue();
+  db_update('search_api_item')
+    ->fields(array(
+      'changed' => 1,
+    ))
+    ->condition('changed', 0, '<')
+    ->execute();
+}
+
+/**
+ * Transfers the tasks for disabled servers to a separate database table.
+ */
+function search_api_update_7116() {
+  // Create table.
+  $table = array(
+    'description' => 'Stores pending tasks for servers.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'An integer identifying this task.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'server_id' => array(
+        'description' => 'The {search_api_server}.machine_name for which this task should be executed.',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'A keyword identifying the type of task that should be executed.',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+      ),
+      'index_id' => array(
+        'description' => 'The {search_api_index}.machine_name to which this task pertains, if applicable for this type.',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => FALSE,
+      ),
+      'data' => array(
+        'description' => 'Some data needed for the task, might be optional depending on the type.',
+        'type' => 'text',
+        'size' => 'medium',
+        'serialize' => TRUE,
+        'not null' => FALSE,
+      ),
+    ),
+    'indexes' => array(
+      'server' => array('server_id'),
+    ),
+    'primary key' => array('id'),
+  );
+  db_create_table('search_api_task', $table);
+
+  // Collect old tasks.
+  $tasks = array();
+  foreach (variable_get('search_api_tasks', array()) as $server => $indexes) {
+    foreach ($indexes as $index => $old_tasks) {
+      if (in_array('clear all', $old_tasks)) {
+        $tasks[] = array(
+          'server_id' => $server,
+          'type' => 'deleteItems',
+        );
+      }
+      if (in_array('remove', $old_tasks)) {
+        $tasks[] = array(
+          'server_id' => $server,
+          'type' => 'removeIndex',
+          'index_id' => $index,
+        );
+      }
+    }
+  }
+  variable_del('search_api_tasks');
+
+  $select = db_select('search_api_index', 'i')
+    ->fields('i', array('machine_name', 'server'));
+  $select->innerJoin('search_api_server', 's', 'i.server = s.machine_name AND s.enabled = 0');
+  $index_ids = array();
+  foreach ($select->execute() as $index) {
+    $index_ids[] = $index->machine_name;
+    $tasks[] = array(
+      'server_id' => $index->server,
+      'type' => 'removeIndex',
+      'index_id' => $index->machine_name,
+    );
+  }
+  if ($index_ids) {
+    db_update('search_api_index')
+      ->fields(array(
+        'enabled' => 0,
+        'server' => NULL,
+      ))
+      ->condition('machine_name', $index_ids)
+      ->execute();
+  }
+
+  if ($tasks) {
+    $insert = db_insert('search_api_task')
+      ->fields(array('server_id', 'type', 'index_id', 'data'));
+    foreach ($tasks as $task) {
+      $insert->values($task);
+    }
+    $insert->execute();
+  }
+}
+
+/**
+ * Checks the database for illegal {search_api_index}.server values.
+ */
+function search_api_update_7117() {
+  $servers = db_select('search_api_server', 's')
+    ->fields('s', array('machine_name'))
+    ->condition('enabled', 1);
+  $indexes = db_select('search_api_index', 'i')
+    ->fields('i', array('id'))
+    ->condition('server', $servers, 'NOT IN')
+    ->execute()
+    ->fetchCol();
+  if ($indexes) {
+    db_delete('search_api_item')
+      ->condition('index_id', $indexes)
+      ->execute();
+    db_update('search_api_index')
+      ->fields(array(
+        'server' => NULL,
+        'enabled' => 0,
+      ))
+      ->condition('id', $indexes)
+      ->execute();
   }
 }

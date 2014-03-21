@@ -46,8 +46,8 @@ function dkan_sitewide_menu_content_menu_links_defaults() {
     'expanded' => 0,
     'weight' => -48,
   );
-  // Exported menu link: main-menu:node/3
-  $menu_links['main-menu:node/3'] = array(
+  // Exported menu link: main-menu:node/1
+  $menu_links['main-menu:node/1'] = array(
     'menu_name' => 'main-menu',
     'link_path' => 'node-name/about',
     'router_path' => 'node/%',

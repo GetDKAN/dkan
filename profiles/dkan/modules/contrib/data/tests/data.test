@@ -14,7 +14,7 @@ class DataTestCaseAPI extends DataTestCase {
   /**
    * Describe this test.
    */
-  public function getInfo() {
+  public static function getInfo() {
     return array(
       'name' => t('Data API'),
       'description' => t('Unit tests for Data module\'s API. Turn off views module in your local site to run these tests.'),

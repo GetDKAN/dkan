@@ -952,7 +952,7 @@ class FileDirectoryTest extends FileTestCase {
     $this->assertTrue(is_file(file_default_scheme() . '://.htaccess'), 'Successfully re-created the .htaccess file in the files directory.', 'File');
     // Verify contents of .htaccess file.
     $file = file_get_contents(file_default_scheme() . '://.htaccess');
-    $this->assertEqual($file, "SetHandler Drupal_Security_Do_Not_Remove_See_SA_2006_006\nOptions None\nOptions +FollowSymLinks", 'The .htaccess file contains the proper content.', 'File');
+    $this->assertEqual($file, file_htaccess_lines(FALSE), 'The .htaccess file contains the proper content.', 'File');
   }
 
   /**
@@ -2388,7 +2388,7 @@ class FileDownloadTest extends FileTestCase {
     $this->assertEqual($headers['x-foo'], 'Bar', 'Found header set by file_test module on private download.');
     $this->assertResponse(200, 'Correctly allowed access to a file when file_test provides headers.');
 
-    // Test that the file transfered correctly.
+    // Test that the file transferred correctly.
     $this->assertEqual($contents, $this->content, 'Contents of the file are correct.');
 
     // Deny access to all downloads via a -1 header.

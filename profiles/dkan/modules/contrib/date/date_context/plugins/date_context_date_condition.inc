@@ -41,7 +41,7 @@ class date_context_date_condition extends context_condition_node {
       '#description' => t("The value the field should contain to meet the condition. This can either be an absolute date in ISO format (YYYY-MM-DDTHH:MM:SS) or a relative string like '12AM today'. Examples: 2011-12-31T00:00:00, now, now +1 day, 12AM today, Monday next week. <a href=\"@relative_format\">More examples of relative date formats in the PHP documentation</a>.", array('@relative_format' => 'http://www.php.net/manual/en/datetime.formats.relative.php')),
       '#default_value' => isset($defaults['value']) ? $defaults['value'] : '',
       '#process' => array('ctools_dependent_process'),
-      '#dependency' => array(':input[name="conditions[plugins][date_context_date_condition][options][operation]"]' => array('<', '<=', '>', '>=', '=', '!=')),
+      '#dependency' => array('edit-conditions-plugins-date-context-date-condition-options-operation' => array('<', '<=', '>', '>=', '=', '!=')),
     );
     return $form;
   }

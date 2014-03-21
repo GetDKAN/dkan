@@ -53,7 +53,8 @@ function theme_dkan_dataset_release_date_view($vars) {
  * Output the resource into the node content.
  */
 function theme_dkan_dataset_resource_view($vars) {
-  $nodes = dkan_dataset_get_resource_nodes($vars['node']->nid);
+  $node = entity_metadata_wrapper('node', $vars['node']);
+  $nodes = $node->field_resources->value();
   $links = array();
   $output = '<div property="dcat:distribution">';
 
@@ -96,7 +97,8 @@ function theme_dkan_dataset_resource_view($vars) {
  */
 function theme_dkan_dataset_resource_teaser_view($vars) {
   if ($vars['node']->type == 'dataset') {
-    $nodes = dkan_dataset_get_resource_nodes($vars['node']->nid);
+    $node = entity_metadata_wrapper('node', $vars['node']);
+    $nodes = $node->field_resources->value();
   }
   else {
     $nodes = array($vars['node']);
@@ -107,28 +109,25 @@ function theme_dkan_dataset_resource_teaser_view($vars) {
     $links_data = array();
     foreach ($nodes as $node) {
       $node_wrapper = entity_metadata_wrapper('node', $node);
+      $name = isset($node->field_format['und']) ? $node_wrapper->field_format->value()->name : '';
       $term = '';
-      if (isset($node->field_format) && $node->field_format) {
-        if (!isset($links_data[$node_wrapper->field_format->value()->name])) {
-          $name = $node_wrapper->field_format->value()->name;
-          $links_data[$name] = array(
-            'term_name' => $name,
-            'count' => 1,
-            'url' => 'node/' . $vars['node']->nid,
-            'link' => array(
-              'attributes' => array(
-                'class' => array('label'),
-                'title' => t('Resources') . ': ' . $vars['node']->title,
-                'data-format' => $name,
-              ),
+      if (!isset($links_data[$name])) {
+        $links_data[$name] = array(
+          'term_name' => $name,
+          'count' => 1,
+          'url' => 'node/' . $vars['node']->nid,
+          'link' => array(
+            'attributes' => array(
+              'class' => array('label'),
+              'title' => t('Resources') . ': ' . $vars['node']->title,
+              'data-format' => $name,
             ),
-          );
-        }
-        else {
-          $links_data[$name]['count'] = $links_data[$name]['count'] + 1;
-        }
+          ),
+        );
       }
-
+      else {
+        $links_data[$name]['count'] = $links_data[$name]['count'] + 1;
+      }
     }
     foreach ($links_data as $term_name => $link) {
       $links[] = '<span class="count-resource">' . $link['count'] . 'x</span>' . l($term_name, $link['url'], $link['link']);

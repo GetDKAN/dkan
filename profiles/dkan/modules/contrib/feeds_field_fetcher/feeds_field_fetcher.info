@@ -3,3 +3,10 @@ description = Offers Link and File Field Fetchers for Feeds module.
 package = Feeds
 core = 7.x
 dependencies[] = feeds
+
+
+; Information added by drush on 2014-03-21
+version = "master-dev"
+project = "feeds_field_fetcher"
+datestamp = "1395440907"
+

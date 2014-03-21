@@ -1,6 +1,6 @@
 <?php
 
-if (module_exists('profile') && !is_null(profile_user_categories())) {
+if (module_exists('profile') && !(defined('MAINTENANCE_MODE') && MAINTENANCE_MODE == 'update') && !is_null(profile_user_categories())) {
   /**
    * Plugins are described by creating a $plugin array which will be used
    * by the system that includes this file.

@@ -1,4 +1,74 @@
 
+Drupal 7.26, 2014-01-15
+----------------------
+- Fixed security issues (multiple vulnerabilities). See SA-CORE-2014-001.
+
+Drupal 7.25, 2014-01-02
+-----------------------
+- Fixed a bug in node_save() which prevented the saved node from being updated
+  in hook_node_insert() and other similar hooks.
+- Added a meta tag to install.php to prevent it from being indexed by search
+  engines even when Drupal is installed in a subfolder (minor markup change).
+- Fixed a bug in the database API that caused frequent deadlock errors when
+  running merge queries on some servers.
+- Performance improvement: Prevented block rehashing from writing blocks to the
+  database on every cache clear and cron run when the blocks have not changed.
+  This fix results in an extra 'saved' key which is added and set to TRUE for
+  each block returned by _block_rehash() that actually is saved to the database
+  (data structure change).
+- Added an optional 'skip on cron' parameter to hook_cron_queue_info() to allow
+  queues to avoid being automatically processed on cron runs (API addition).
+- Fixed a bug which caused hook_block_view_MODULE_DELTA_alter() to never be
+  invoked if the block delta had a hyphen in it. To implement the hook when the
+  block delta has a hyphen, modules should now replace hyphens with underscores
+  when constructing the function name for the hook implementation.
+- Fixed a bug which caused cached pages to sometimes be sent to the browser
+  with incorrect compression. The fix adds a new 'page_compressed' key to the
+  $cache->data array returned by drupal_page_get_cache() (minor data structure
+  change).
+- Fixed broken tests on PHP 5.5.
+- Made the File and Image modules more robust when saving entities that have
+  deleted files attached. The code in file_field_presave() will now remove the
+  record of the deleted file from the entity before saving (minor data
+  structure change).
+- Standardized menu callback functions throughout Drupal core to return
+  MENU_NOT_FOUND and MENU_ACCESS_DENIED rather than printing their own "page
+  not found" or "access denied" pages (minor API change in the return value of
+  these functions under some circumstances).
+- Fixed a bug in which caches were not properly cleared when a node was deleted
+  via the administrative interface.
+- Changed the Bartik theme to render content contained in <pre>, <code> and
+  similar tags in a larger font size, so it is easier to read.
+- Fixed a bug in the Search module that caused exceptions to be thrown during
+  searches if the server was not configured to represent decimal points as a
+  period.
+- Fixed a regression in the Image module that made image_style_url() not work
+  when a relative path (rather than a complete file URI) was passed to it.
+- Added an optional feature to the Statistics module to allow node views to be
+  tracked by Ajax requests rather than during the server-side generation of the
+  page. This allows the node counter to work on sites that use external page
+  caches (string change and new administrative option:
+  https://drupal.org/node/2164069).
+- Added a link to the drupal.org documentation page for cron to the Cron
+  settings page (string change).
+- Added a 'drupal_anonymous_user_object' variable to allow the anonymous user
+  object returned by drupal_anonymous_user() to be overridden with a classed
+  object (API addition).
+- Changed the database API to allow inserts based on a SELECT * query to work
+  correctly.
+- Changed the database schema of the {file_managed} table to allow Drupal to
+  manage files larger than 4 GB.
+- Changed the File module's hook_field_load() implementation to prevent file
+  entity properties which have the same name as file or image field properties
+  from overwriting the field properties (minor API change).
+- Numerous small bug fixes.
+- Numerous API documentation improvements.
+- Additional automated test coverage.
+
+Drupal 7.24, 2013-11-20
+----------------------
+- Fixed security issues (multiple vulnerabilities), see SA-CORE-2013-003.
+
 Drupal 7.23, 2013-08-07
 -----------------------
 - Fixed a fatal error on PostgreSQL databases when updating the Taxonomy module

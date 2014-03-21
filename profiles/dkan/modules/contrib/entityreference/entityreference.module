@@ -791,6 +791,11 @@ function entityreference_query_entityreference_alter(QueryAlterableInterface $qu
  * Implements hook_field_widget_form().
  */
 function entityreference_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  // Ensure that the entity target type exists before displaying the widget.
+  $entity_info = entity_get_info($field['settings']['target_type']);
+  if (empty($entity_info)){
+    return;
+  }
   $entity_type = $instance['entity_type'];
   $entity = isset($element['#entity']) ? $element['#entity'] : NULL;
   $handler = entityreference_get_selection_handler($field, $instance, $entity_type, $entity);
@@ -975,6 +980,18 @@ function entityreference_autocomplete_access_callback($type, $field_name, $entit
  *   The label of the entity to query by.
  */
 function entityreference_autocomplete_callback($type, $field_name, $entity_type, $bundle_name, $entity_id = '', $string = '') {
+  // If the request has a '/' in the search text, then the menu system will have
+  // split it into multiple arguments and $string will only be a partial. We want
+  //  to make sure we recover the intended $string.
+  $args = func_get_args();
+  // Shift off the $type, $field_name, $entity_type, $bundle_name, and $entity_id args.
+  array_shift($args);
+  array_shift($args);
+  array_shift($args);
+  array_shift($args);
+  array_shift($args);
+  $string = implode('/', $args);
+
   $field = field_info_field($field_name);
   $instance = field_info_instance($entity_type, $field_name, $bundle_name);
 
@@ -1007,7 +1024,9 @@ function entityreference_autocomplete_callback_get_matches($type, $field, $insta
   $entity = NULL;
   if ($entity_id !== 'NULL') {
     $entity = entity_load_single($entity_type, $entity_id);
-    if (!$entity || !entity_access('view', $entity_type, $entity)) {
+    $has_view_access = (entity_access('view', $entity_type, $entity) !== FALSE);
+    $has_update_access = (entity_access('update', $entity_type, $entity) !== FALSE);
+    if (!$entity || !($has_view_access || $has_update_access)) {
       return MENU_ACCESS_DENIED;
     }
   }
@@ -1073,7 +1092,7 @@ function entityreference_field_formatter_info() {
       'description' => t('Display the referenced entities rendered by entity_view().'),
       'field types' => array('entityreference'),
       'settings' => array(
-        'view_mode' => '',
+        'view_mode' => 'default',
         'links' => TRUE,
       ),
     ),
@@ -1097,21 +1116,20 @@ function entityreference_field_formatter_settings_form($field, $instance, $view_
 
   if ($display['type'] == 'entityreference_entity_view') {
     $entity_info = entity_get_info($field['settings']['target_type']);
-    $options = array();
+    $options = array('default' => t('Default'));
     if (!empty($entity_info['view modes'])) {
       foreach ($entity_info['view modes'] as $view_mode => $view_mode_settings) {
         $options[$view_mode] = $view_mode_settings['label'];
       }
     }
 
-    if (count($options) > 1) {
-      $element['view_mode'] = array(
-        '#type' => 'select',
-        '#options' => $options,
-        '#title' => t('View mode'),
-        '#default_value' => $settings['view_mode'],
-      );
-    }
+    $element['view_mode'] = array(
+      '#type' => 'select',
+      '#options' => $options,
+      '#title' => t('View mode'),
+      '#default_value' => $settings['view_mode'],
+      '#access' => count($options) > 1,
+    );
 
     $element['links'] = array(
       '#type' => 'checkbox',
@@ -1138,7 +1156,11 @@ function entityreference_field_formatter_settings_summary($field, $instance, $vi
 
   if ($display['type'] == 'entityreference_entity_view') {
     $entity_info = entity_get_info($field['settings']['target_type']);
-    $summary[] = t('Rendered as @mode', array('@mode' => isset($entity_info['view modes'][$settings['view_mode']]['label']) ? $entity_info['view modes'][$settings['view_mode']]['label'] : $settings['view_mode']));
+    $view_mode_label = $settings['view_mode'] == 'default' ? t('Default') : $settings['view_mode'];
+    if (isset($entity_info['view modes'][$settings['view_mode']]['label'])) {
+      $view_mode_label = $entity_info['view modes'][$settings['view_mode']]['label'];
+    }
+    $summary[] = t('Rendered as @mode', array('@mode' => $view_mode_label));
     $summary[] = !empty($settings['links']) ? t('Display links') : t('Do not display links');
   }
 
@@ -1177,7 +1199,9 @@ function entityreference_field_formatter_prepare_view($entity_type, $entities, $
         // Replace the instance value with the term data.
         $items[$id][$delta]['entity'] = $target_entities[$item['target_id']];
         // Check whether the user has access to the referenced entity.
-        $items[$id][$delta]['access'] = entity_access('view', $field['settings']['target_type'], $target_entities[$item['target_id']]);
+        $has_view_access = (entity_access('view', $field['settings']['target_type'], $target_entities[$item['target_id']]) !== FALSE);
+        $has_update_access = (entity_access('update', $field['settings']['target_type'], $target_entities[$item['target_id']]) !== FALSE);
+        $items[$id][$delta]['access'] = ($has_view_access || $has_update_access);
       }
       // Otherwise, unset the instance value, since the entity does not exist.
       else {

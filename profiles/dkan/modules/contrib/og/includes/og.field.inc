@@ -125,13 +125,28 @@ function og_field_widget_form(&$form, &$form_state, $field, $instance, $langcode
         }
       }
     }
-    else {
-      // Non-admin user.
-      $mocked_instance_other_groups = $mocked_instance;
-      $mocked_instance_other_groups['field_mode'] = 'admin';
-      if ($other_groups_ids && $valid_ids = entityreference_get_selection_handler($field, $mocked_instance_other_groups, $entity_type, $dummy_entity)->validateReferencableEntities($other_groups_ids)) {
-        foreach ($valid_ids as $id) {
-          $element['#other_groups_ids'][] = array('target_id' => $id);
+    elseif ($other_groups_ids) {
+      foreach ($other_groups_ids as $id) {
+        $element['#other_groups_ids'][] = array(
+          'target_id' => $id,
+          'field_mode' => 'admin',
+        );
+      }
+
+      if (!empty($dummy_entity->{$field_name}[$langcode])) {
+        // Non-admin user.
+        $ids = array();
+        foreach ($dummy_entity->{$field_name}[$langcode] as $delta => $value) {
+          $id = $value['target_id'];
+          if (!in_array($id, $other_groups_ids)) {
+            $ids[] = $id;
+          }
+        }
+
+        // Rekey the field items.
+        $dummy_entity->{$field_name}[$langcode] = array();
+        foreach ($ids as $id) {
+          $dummy_entity->{$field_name}[$langcode][] = array('target_id' => $id);
         }
       }
     }
@@ -141,7 +156,7 @@ function og_field_widget_form(&$form, &$form_state, $field, $instance, $langcode
       // Form is "fresh" (i.e. not call from field_add_more_submit()), so
       // re-set the items-count, to show the correct amount for the mocked
       // instance.
-      $dummy_form_state['field'][$field_name][LANGUAGE_NONE]['items_count'] = !empty($dummy_entity->{$field_name}[LANGUAGE_NONE]) ? count($dummy_entity->{$field_name}[LANGUAGE_NONE]) : 0;
+      $dummy_form_state['field'][$field_name][$langcode]['items_count'] = !empty($dummy_entity->{$field_name}[$langcode]) ? count($dummy_entity->{$field_name}[$langcode]) : 0;
     }
 
     $new_element = ctools_field_invoke_field($mocked_instance, 'form', $entity_type, $dummy_entity, $form, $dummy_form_state, array('default' => TRUE));
@@ -172,6 +187,7 @@ function og_field_widget_form(&$form, &$form_state, $field, $instance, $langcode
   }
 
   $form['#after_build']['og'] = 'og_complex_widget_after_build';
+  $form['#validate'][] = 'og_validate_widgets';
 
   return $element;
 }
@@ -202,6 +218,31 @@ function _og_field_widget_replace_autocomplete_path(&$element, $field_mode) {
     // Add the text.
     $element['#autocomplete_path'] .= "/$path[7]";
   }
+}
+
+
+/**
+ * Register group audience field related form errors.
+ *
+ * @param $field_name
+ *   The group audience field
+ * @param $errors
+ *   Array with errors.
+ *
+ * @return
+ *   Return the cached values.
+ *
+ * @see og_validate_widgets()
+ * @see OgBehaviorHandler::validate()
+ */
+function og_field_widget_register_errors($field_name = NULL, $errors = NULL) {
+  $cache = &drupal_static(__FUNCTION__, array());
+
+  if (!empty($field_name)) {
+    $cache[$field_name] = $errors;
+  }
+
+  return $cache;
 }
 
 /**
@@ -237,18 +278,25 @@ function og_get_mocked_instance($instance, $field_mode) {
  */
 function og_complex_widget_element_validate($element, &$form_state, $form) {
   $subform = drupal_array_get_nested_value($form_state['values'], $element['#array_parents']);
-  $ids = $element['#other_groups_ids'];
-  foreach (array('default', 'admin') as $type) {
-    if (empty($subform[$type])) {
+  $ids = array();
+  foreach (array('default', 'admin') as $field_mode) {
+    if (empty($subform[$field_mode])) {
       continue;
     }
 
-    foreach ($subform[$type] as $delta => $value) {
+    foreach ($subform[$field_mode] as $value) {
       if (!empty($value['target_id']) && is_numeric($value['target_id'])) {
-        $ids[] = array('target_id' => $value['target_id']);
+        $ids[] = array(
+          'target_id' => $value['target_id'],
+          // Add the field mode so we can later validate it in
+          // OgBehaviorHandler::validate()
+          'field_mode' => $field_mode,
+        );
       }
     }
   }
+
+  $ids = array_merge($ids, $element['#other_groups_ids']);
 
   // Set the form values by directly using drupal_array_set_nested_values(),
   // which allows us to control the element parents. In this case we cut off the
@@ -261,6 +309,26 @@ function og_complex_widget_element_validate($element, &$form_state, $form) {
     $subform = drupal_array_get_nested_value($form_state['values'], $element['#array_parents']);
     if (empty($subform)) {
       form_error($element, t('!name field is required.', array('!name' => $element['#title'])));
+    }
+  }
+}
+
+/**
+ * Validate handler; Assert group audience fields reference valid groups.
+ *
+ * @see field_default_form_errors().
+ */
+function og_validate_widgets($form, &$form_state) {
+  if (!$errors = og_field_widget_register_errors()) {
+    return;
+  }
+
+  foreach ($errors as $field_name => $field_modes) {
+    foreach ($field_modes as $field_mode => $error_items) {
+      foreach ($error_items as $error_item) {
+        $element = $form[$field_name][LANGUAGE_NONE][0][$field_mode];
+        form_error($element, $error_item['message']);
+      }
     }
   }
 }

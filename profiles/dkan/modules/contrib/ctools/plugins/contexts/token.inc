@@ -51,8 +51,9 @@ function ctools_context_token_convert_list() {
 function ctools_context_token_convert($context, $token) {
   $tokens = token_info();
   list($type, $token) = explode(':', $token, 2);
+  $parts = explode(':', $token, 2);
   $real_type = isset($tokens['types'][$type]['type']) ? $tokens['types'][$type]['type'] : $type;
-  if (isset($tokens['tokens'][$real_type][$token])) {
+  if (isset($tokens['tokens'][$real_type][$parts[0]])) {
     $values = token_generate($type, array($token => $token));
     if (isset($values[$token])) {
       return $values[$token];

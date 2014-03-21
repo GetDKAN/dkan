@@ -22,6 +22,32 @@ function search_api_drush_command() {
     'aliases' => array('sapi-l'),
   );
 
+  $items['search-api-enable'] = array(
+    'description' => 'Enable one or all disabled search_api indexes.',
+    'examples' => array(
+      'drush searchapi-enable' => dt('Enable all disabled indexes.'),
+      'drush sapi-en' => dt('Alias to enable all disabled indexes.'),
+      'drush sapi-en 1' => dt('Enable index with the ID !id.', array('!id' => 1)),
+    ),
+    'arguments' => array(
+      'index_id' => dt('The numeric ID or machine name of an index to enable.'),
+    ),
+    'aliases' => array('sapi-en'),
+  );
+
+  $items['search-api-disable'] = array(
+    'description' => 'Disable one or all enabled search_api indexes.',
+    'examples' => array(
+      'drush searchapi-disable' => dt('Disable all enabled indexes.'),
+      'drush sapi-dis' => dt('Alias to disable all enabled indexes.'),
+      'drush sapi-dis 1' => dt('Disable index with the ID !id.', array('!id' => 1)),
+    ),
+    'arguments' => array(
+      'index_id' => dt('The numeric ID or machine name of an index to disable.'),
+    ),
+    'aliases' => array('sapi-dis'),
+  );
+
   $items['search-api-status'] = array(
     'description' => 'Show the status of one or all search indexes.',
     'examples' => array(
@@ -73,8 +99,8 @@ function search_api_drush_command() {
     'examples' => array(
       'drush searchapi-clear' => dt('Clear all search indexes.'),
       'drush sapi-c' => dt('Alias to clear all search indexes.'),
-      'drush sapi-r 1' => dt('Clear the search index with the ID !id.', array('!id' => 1)),
-      'drush sapi-r default_node_index' => dt('Clear the search index with the machine name !name.', array('!name' => 'default_node_index')),
+      'drush sapi-c 1' => dt('Clear the search index with the ID !id.', array('!id' => 1)),
+      'drush sapi-c default_node_index' => dt('Clear the search index with the machine name !name.', array('!name' => 'default_node_index')),
     ),
     'arguments' => array(
       'index_id' => dt('The numeric ID or machine name of an index.'),
@@ -125,6 +151,65 @@ function drush_search_api_list() {
     $rows[] = $row;
   }
   drush_print_table($rows);
+}
+
+/**
+ * Enable index(es).
+ *
+ * @param string|integer $index_id
+ *   The index name or id which should be enabled.
+ */
+function drush_search_api_enable($index_id = NULL) {
+  if (search_api_drush_static(__FUNCTION__)) {
+    return;
+  }
+  $indexes = search_api_drush_get_index($index_id);
+  if (empty($indexes)) {
+    return;
+  }
+  foreach ($indexes as $index) {
+    if (!$index->enabled) {
+      drush_log(dt("Enabling index !index and queueing items for indexing.", array('!index' => $index->name)), 'notice');
+      if (search_api_index_enable($index->id)) {
+        drush_log(dt("The index !index was successfully enabled.", array('!index' => $index->name)), 'ok');
+      }
+      else {
+        drush_log(dt("Error enabling index !index.", array('!index' => $index->name)), 'error');
+      }
+    }
+    else {
+      drush_log(dt("The index !index is already enabled.", array('!index' => $index->name)), 'error');
+    }
+  }
+}
+
+/**
+ * Disable index(es).
+ *
+ * @param string|integer $index_id
+ *   The index name or id which should be disabled.
+ */
+function drush_search_api_disable($index_id = NULL) {
+  if (search_api_drush_static(__FUNCTION__)) {
+    return;
+  }
+  $indexes = search_api_drush_get_index($index_id);
+  if (empty($indexes)) {
+    return;
+  }
+  foreach ($indexes as $index) {
+    if ($index->enabled) {
+      if (search_api_index_disable($index->id)) {
+        drush_log(dt("The index !index was successfully disabled.", array('!index' => $index->name)), 'ok');
+      }
+      else {
+        drush_log(dt("Error disabling index !index.", array('!index' => $index->name)), 'error');
+      }
+    }
+    else {
+      drush_log(dt("The index !index is already disabled.", array('!index' => $index->name)), 'error');
+    }
+  }
 }
 
 /**
@@ -184,6 +269,10 @@ function drush_search_api_index($index_id = NULL, $limit = NULL, $batch_size = N
     $datasource = $index->datasource();
     $index_status = $datasource->getIndexStatus($index);
     $remaining = $index_status['total'] - $index_status['indexed'];
+    if ($remaining <= 0) {
+      drush_log(dt("The index !index is up to date.", array('!index' => $index->name)), 'ok');
+      continue;
+    }
 
     // Get the number of items to index per batch run.
     if (!isset($batch_size)) {

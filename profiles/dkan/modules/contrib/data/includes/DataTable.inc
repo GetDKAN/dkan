@@ -521,11 +521,9 @@ class DataTable {
       $this->update(array('table_schema' => array()));
       drupal_get_schema($this->name, TRUE);
 
-      // TODO Please review the conversion of this statement to the D7 database API syntax.
-      /* db_query('DELETE FROM {data_tables} WHERE name = "%s"', $this->name) */
       db_delete('data_tables')
-  ->condition('name', $this->name)
-  ->execute();
+        ->condition('name', $this->name)
+        ->execute();
       $this->title = '';
       $this->table_schema = $this->meta = array();
       return TRUE;
@@ -543,11 +541,9 @@ class DataTable {
    */
   public function revert() {
     if ($this->export_type & EXPORT_IN_CODE) {
-      // TODO Please review the conversion of this statement to the D7 database API syntax.
-      /* db_query('DELETE FROM {data_tables} WHERE name = "%s"', $this->name) */
       db_delete('data_tables')
-  ->condition('name', $this->name)
-  ->execute();
+        ->condition('name', $this->name)
+        ->execute();
       return TRUE;
     }
     return FALSE;

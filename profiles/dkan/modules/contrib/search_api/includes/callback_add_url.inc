@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
+ * Contains SearchApiAlterAddUrl.
+ */
+
+/**
  * Search API data alteration callback that adds an URL field for all items.
  */
 class SearchApiAlterAddUrl extends SearchApiAbstractAlterCallback {
 
   public function alterItems(array &$items) {
-    foreach ($items as $id => &$item) {
+    foreach ($items as &$item) {
       $url = $this->index->datasource()->getItemUrl($item);
       if (!$url) {
         $item->search_api_url = NULL;

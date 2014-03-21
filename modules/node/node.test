@@ -1363,6 +1363,22 @@ class NodeSaveTestCase extends DrupalWebTestCase {
     $node = node_load($node->nid);
     $this->assertEqual($node->title, 'updated_presave', 'Static cache has been cleared.');
   }
+
+  /**
+   * Tests saving a node on node insert.
+   *
+   * This test ensures that a node has been fully saved when hook_node_insert()
+   * is invoked, so that the node can be saved again in a hook implementation
+   * without errors.
+   *
+   * @see node_test_node_insert()
+   */
+  function testNodeSaveOnInsert() {
+    // node_test_node_insert() tiggers a save on insert if the title equals
+    // 'new'.
+    $node = $this->drupalCreateNode(array('title' => 'new'));
+    $this->assertEqual($node->title, 'Node ' . $node->nid, 'Node saved on node insert.');
+  }
 }
 
 /**
@@ -2753,5 +2769,80 @@ class NodeEntityViewModeAlterTest extends NodeWebTestCase {
     // Test that the correct build mode has been set.
     $build = node_view($node);
     $this->assertEqual($build['#view_mode'], 'teaser', 'The view mode has correctly been set to teaser.');
+  }
+}
+
+/**
+ * Tests the cache invalidation of node operations.
+ */
+class NodePageCacheTest extends NodeWebTestCase {
+
+  /**
+   * An admin user with administrative permissions for nodes.
+   */
+  protected $admin_user;
+
+  public static function getInfo() {
+    return array(
+        'name' => 'Node page cache test',
+        'description' => 'Test cache invalidation of node operations.',
+        'group' => 'Node',
+    );
+  }
+
+  function setUp() {
+    parent::setUp();
+
+    variable_set('cache', 1);
+    variable_set('page_cache_maximum_age', 300);
+
+    $this->admin_user = $this->drupalCreateUser(array(
+        'bypass node access',
+        'access content overview',
+        'administer nodes',
+    ));
+  }
+
+  /**
+   * Tests deleting nodes clears page cache.
+   */
+  public function testNodeDelete() {
+    $node_path = 'node/' . $this->drupalCreateNode()->nid;
+
+    // Populate page cache.
+    $this->drupalGet($node_path);
+
+    // Login and delete the node.
+    $this->drupalLogin($this->admin_user);
+    $this->drupalPost($node_path . '/delete', array(), t('Delete'));
+
+    // Logout and check the node is not available.
+    $this->drupalLogout();
+    $this->drupalGet($node_path);
+    $this->assertResponse(404);
+
+    // Create two new nodes.
+    $nodes[0] = $this->drupalCreateNode();
+    $nodes[1] = $this->drupalCreateNode();
+    $node_path = 'node/' . $nodes[0]->nid;
+
+    // Populate page cache.
+    $this->drupalGet($node_path);
+
+    // Login and delete the nodes.
+    $this->drupalLogin($this->admin_user);
+    $this->drupalGet('admin/content');
+    $edit = array(
+        'operation' => 'delete',
+        'nodes[' . $nodes[0]->nid . ']' => TRUE,
+        'nodes[' . $nodes[1]->nid . ']' => TRUE,
+    );
+    $this->drupalPost(NULL, $edit, t('Update'));
+    $this->drupalPost(NULL, array(), t('Delete'));
+
+    // Logout and check the node is not available.
+    $this->drupalLogout();
+    $this->drupalGet($node_path);
+    $this->assertResponse(404);
   }
 }

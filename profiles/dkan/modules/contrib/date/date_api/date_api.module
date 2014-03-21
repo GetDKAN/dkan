@@ -276,18 +276,17 @@ class DateObject extends DateTime {
         $this->setGranularityFromTime($time, $tz);
       }
     }
-    // If this tz was given as just an offset or the timezone
-    // was invalid, we need to do some tweaking.
+
+    // If we haven't got a valid timezone name yet, we need to set one or
+    // we will get undefined index errors.
+    // This can happen if $time had an offset or no timezone.
     if (!$this->getTimezone() || !preg_match('/[a-zA-Z]/', $this->getTimezone()->getName())) {
 
-      // If the timezone name is an offset and the original
-      // $tz has a name, use it. This happens if you pass in
-      // a date string with an offset along with a specific timezone name.
-      if (!preg_match('/[a-zA-Z]/', $this->getTimezone()->getName()) && preg_match('/[a-zA-Z]/', $tz->getName())) {
+      // If the original $tz has a name, use it.
+      if (preg_match('/[a-zA-Z]/', $tz->getName())) {
         $this->setTimezone($tz);
       }
-      // If we get this far, we have no information about the timezone name,
-      // but we will get undefined index errors without any name.
+      // We have no information about the timezone so must fallback to a default.
       else {
         $this->setTimezone(new DateTimeZone("UTC"));
         $this->errors['timezone'] = t('No valid timezone name was provided.');
@@ -459,8 +458,8 @@ class DateObject extends DateTime {
     $true = $this->hasGranularity() && (!$granularity || $flexible || $this->hasGranularity($granularity));
     if (!$true && $granularity) {
       foreach ((array) $granularity as $part) {
-        if (!$this->hasGranularity($part)) {
-          $this->errors[$part] = t("The @part is missing.", array('@part' => $part));
+        if (!$this->hasGranularity($part) && in_array($part, array('second', 'minute', 'hour', 'day', 'month', 'year'))) {
+          $this->errors[$part] = t("The $part is missing.");
         }
       }
     }
@@ -574,7 +573,7 @@ class DateObject extends DateTime {
     $regex2 = preg_replace($patterns, $repl2, $format_regexp, 1);
     $regex2 = str_replace('A', '(AM|PM)', $regex2);
     $regex2 = str_replace('a', '(am|pm)', $regex2);
-    preg_match('`^' . $regex2 . '$`', $date, $values);
+    preg_match('`^' . $regex2 . '$`u', $date, $values);
     array_shift($values);
     // If we did not find all the values for the patterns in the format, abort.
     if (count($letters) != count($values)) {
@@ -951,6 +950,11 @@ class DateObject extends DateTime {
           if ($year_diff == 0) {
             return intval($item2 - $item1);
           }
+          elseif ($year_diff < 0) {
+            $item_diff = 0 - $item1;
+            $item_diff -= intval((abs($year_diff) - 1) * 12);
+            return $item_diff - (12 - $item2);
+          }
           else {
             $item_diff = 12 - $item1;
             $item_diff += intval(($year_diff - 1) * 12);
@@ -965,6 +969,14 @@ class DateObject extends DateTime {
           if ($year_diff == 0) {
             return intval($item2 - $item1);
           }
+          elseif ($year_diff < 0) {
+            $item_diff = 0 - $item1;
+            for ($i = 1; $i < abs($year_diff); $i++) {
+              date_modify($date1, '-1 year');
+              $item_diff -= date_days_in_year($date1);
+            }
+            return $item_diff - (date_days_in_year($date2) - $item2);
+          }
           else {
             $item_diff = date_days_in_year($date1) - $item1;
             for ($i = 1; $i < $year_diff; $i++) {
@@ -978,9 +990,12 @@ class DateObject extends DateTime {
         case 'weeks':
           $week_diff = date_format($date2, 'W') - date_format($date1, 'W');
           $year_diff = date_format($date2, 'o') - date_format($date1, 'o');
-          for ($i = 1; $i <= $year_diff; $i++) {
-            date_modify($date1, '+1 year');
-            $week_diff += date_iso_weeks_in_year($date1);
+
+          $sign = ($year_diff < 0) ? -1 : 1;
+
+          for ($i = 1; $i <= abs($year_diff); $i++) {
+            date_modify($date1, (($sign > 0) ? '+': '-').'1 year');
+            $week_diff += (date_iso_weeks_in_year($date1) * $sign);
           }
           return $week_diff;
       }
@@ -1705,13 +1720,21 @@ function date_format_interval($date, $granularity = 2, $display_ago = TRUE) {
  *   (optional) Optionally force time to a specific timezone, defaults to user
  *   timezone, if set, otherwise site timezone. Defaults to NULL.
  *
+ * @param boolean $reset [optional]
+ *  Static cache reset
+ *
  * @return object
  *   The current time as a date object.
  */
-function date_now($timezone = NULL) {
-  return new DateObject('now', $timezone);
-}
+function date_now($timezone = NULL, $reset = FALSE) {
+  $now = &drupal_static(__FUNCTION__);
 
+  if (!isset($now) || $reset) {
+    $now = new DateObject('now', $timezone);
+  }
+
+  return $now;
+}
 /**
  * Determines if a timezone string is valid.
  *
@@ -2100,6 +2123,17 @@ function date_part_format($part, $format) {
  *   The format string with all other elements removed.
  */
 function date_limit_format($format, $granularity) {
+  // Use the advanced drupal_static() pattern to improve performance.
+  static $drupal_static_fast;
+  if (!isset($drupal_static_fast)) {
+    $drupal_static_fast['formats'] = &drupal_static(__FUNCTION__);
+  }
+  $formats = &$drupal_static_fast['formats'];
+  $format_granularity_cid = $format .'|'. implode(',', $granularity);
+  if (isset($formats[$format_granularity_cid])) {
+    return $formats[$format_granularity_cid];
+  }
+
   // If punctuation has been escaped, remove the escaping. Done using strtr()
   // because it is easier than getting the escape character extracted using
   // preg_replace().
@@ -2169,10 +2203,13 @@ function date_limit_format($format, $granularity) {
   // After removing the non-desired parts of the format, test if the only things
   // left are escaped, non-date, characters. If so, return nothing.
   // Using S instead of w to pick up non-ASCII characters.
-  $test = trim(preg_replace('(\\\\\S{1,3})', '', $format));
+  $test = trim(preg_replace('(\\\\\S{1,3})u', '', $format));
   if (empty($test)) {
     $format = '';
   }
+
+  // Store the return value in the static array for performance.
+  $formats[$format_granularity_cid] = $format;
 
   return $format;
 }

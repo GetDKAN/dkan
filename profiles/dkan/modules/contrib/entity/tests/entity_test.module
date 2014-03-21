@@ -267,8 +267,15 @@ function entity_test_entity_getter($node) {
   if (empty($node->entity)) {
     $node->entity = array('type' => 'user', 'id' => $node->uid);
   }
+
   // We have to return the entity wrapped.
-  return entity_metadata_wrapper($node->entity['type'], $node->entity['id']);
+  // Special handling for anonymous user.
+  if ($node->entity['type'] === 'user' && empty($node->entity['id'])) {
+    return entity_metadata_wrapper('user', drupal_anonymous_user());
+  }
+  else {
+    return entity_metadata_wrapper($node->entity['type'], $node->entity['id']);
+  }
 }
 
 /**

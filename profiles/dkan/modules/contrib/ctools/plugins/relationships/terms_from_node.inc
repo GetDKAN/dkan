@@ -35,7 +35,7 @@ function ctools_terms_from_node_context($context, $conf) {
   $fields = field_info_instances('node', $node->type);
   foreach ($fields as $name => $info) {
     $field_info = field_info_field($name);
-    if ($field_info['type'] == 'taxonomy_term_reference' && (empty($conf['vocabulary']) || $conf['vocabulary'][$field_info['settings']['allowed_values'][0]['vocabulary']])) {
+    if ($field_info['type'] == 'taxonomy_term_reference' && (empty($conf['vocabulary']) || !empty($conf['vocabulary'][$field_info['settings']['allowed_values'][0]['vocabulary']]))) {
       $items = field_get_items('node', $node, $name);
       if (is_array($items)) {
         foreach ($items as $item) {

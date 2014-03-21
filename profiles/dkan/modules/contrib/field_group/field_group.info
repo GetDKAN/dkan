@@ -9,10 +9,11 @@ files[] = field_group.module
 files[] = field_group.field_ui.inc
 files[] = field_group.form.inc
 files[] = field_group.features.inc
-files[] = field_group.test
-; Information added by drupal.org packaging script on 2011-10-19
-version = "7.x-1.1"
+files[] = tests/field_group.ui.test
+files[] = tests/field_group.display.test
+; Information added by drupal.org packaging script on 2013-09-25
+version = "7.x-1.3"
 core = "7.x"
 project = "field_group"
-datestamp = "1319051133"
+datestamp = "1380124361"
 

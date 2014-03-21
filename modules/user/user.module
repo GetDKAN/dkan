@@ -717,10 +717,14 @@ function user_password($length = 10) {
 
   // Loop the number of times specified by $length.
   for ($i = 0; $i < $length; $i++) {
+    do {
+      // Find a secure random number within the range needed.
+      $index = ord(drupal_random_bytes(1));
+    } while ($index > $len);
 
     // Each iteration, pick a random character from the
     // allowable string and append it to the password:
-    $pass .= $allowable_characters[mt_rand(0, $len)];
+    $pass .= $allowable_characters[$index];
   }
 
   return $pass;
@@ -1728,14 +1732,14 @@ function user_menu() {
 
   // Administration pages.
   $items['admin/config/people'] = array(
-   'title' => 'People',
-   'description' => 'Configure user accounts.',
-   'position' => 'left',
-   'weight' => -20,
-   'page callback' => 'system_admin_menu_block_page',
-   'access arguments' => array('access administration pages'),
-   'file' => 'system.admin.inc',
-   'file path' => drupal_get_path('module', 'system'),
+    'title' => 'People',
+    'description' => 'Configure user accounts.',
+    'position' => 'left',
+    'weight' => -20,
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
   );
   $items['admin/config/people/accounts'] = array(
     'title' => 'Account settings',
@@ -2118,7 +2122,7 @@ function user_login_default_validators() {
  * A FAPI validate handler. Sets an error if supplied username has been blocked.
  */
 function user_login_name_validate($form, &$form_state) {
-  if (isset($form_state['values']['name']) && user_is_blocked($form_state['values']['name'])) {
+  if (!empty($form_state['values']['name']) && user_is_blocked($form_state['values']['name'])) {
     // Blocked in user administration.
     form_set_error('name', t('The username %name has not been activated or is blocked.', array('%name' => $form_state['values']['name'])));
   }
@@ -2314,7 +2318,10 @@ function user_external_login_register($name, $module) {
  * Generates a unique URL for a user to login and reset their password.
  *
  * @param object $account
- *   An object containing the user account.
+ *   An object containing the user account, which must contain at least the
+ *   following properties:
+ *   - uid: The user ID number.
+ *   - login: The UNIX timestamp of the user's last login.
  *
  * @return
  *   A unique URL that provides a one-time log in for the user, from which
@@ -2331,9 +2338,9 @@ function user_pass_reset_url($account) {
  * @param object $account
  *   The user account object, which must contain at least the following
  *   properties:
- *   - uid: The user uid number.
+ *   - uid: The user ID number.
  *   - pass: The hashed user password string.
- *   - login: The user login name.
+ *   - login: The UNIX timestamp of the user's last login.
  *
  * @return
  *   A unique URL that may be used to confirm the cancellation of the user
@@ -2355,15 +2362,15 @@ function user_cancel_url($account) {
  * order to validate the URL, the same hash can be generated again, from the
  * same information, and compared to the hash value from the URL. The URL
  * normally contains both the time stamp and the numeric user ID. The login
- * name and hashed password are retrieved from the database as necessary. For a
- * usage example, see user_cancel_url() and user_cancel_confirm().
+ * timestamp and hashed password are retrieved from the database as necessary.
+ * For a usage example, see user_cancel_url() and user_cancel_confirm().
  *
- * @param $password
+ * @param string $password
  *   The hashed user account password value.
- * @param $timestamp
- *   A unix timestamp.
- * @param $login
- *   The user account login name.
+ * @param int $timestamp
+ *   A UNIX timestamp, typically REQUEST_TIME.
+ * @param int $login
+ *   The UNIX timestamp of the user's last login.
  *
  * @return
  *   A string that is safe for use in URLs and SQL statements.
@@ -2834,7 +2841,7 @@ Your account on [site:name] has been canceled.
  *   An associative array of token replacement values. If the 'user' element
  *   exists, it must contain a user account object with the following
  *   properties:
- *   - login: The account login name.
+ *   - login: The UNIX timestamp of the user's last login.
  *   - pass: The hashed account login password.
  * @param $options
  *   Unused parameter required by the token_replace() function.
@@ -3670,7 +3677,14 @@ function user_action_info() {
 }
 
 /**
- * Blocks the current user.
+ * Blocks a specific user or the current user, if one is not specified.
+ *
+ * @param $entity
+ *   (optional) An entity object; if it is provided and it has a uid property,
+ *   the user with that ID is blocked.
+ * @param $context
+ *   (optional) An associative array; if no user ID is found in $entity, the
+ *   'uid' element of this array determines the user to block.
  *
  * @ingroup actions
  */

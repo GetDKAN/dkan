@@ -529,7 +529,7 @@ function og_node_access($node, $op, $account) {
       // Set the "field mode" to default, before passing it to the
       // selection handler.
       $instance['field_mode'] = 'default';
-      if (entityreference_get_selection_handler($field, $instance)->getReferencableEntities(NULL, 'CONTAINS', 1)) {
+      if (entityreference_get_selection_handler($field, $instance)->countReferencableEntities()) {
         return NODE_ACCESS_ALLOW;
       }
 
@@ -717,19 +717,68 @@ function og_field_delete_instance($instance) {
 }
 
 /**
- * Implements hook_form_alter().
+ * Implements hook_field_attach_form().
  */
-function og_form_alter(&$form, $form_state, $form_id) {
-  if (empty($form['#entity_type']) || empty($form['#bundle'])) {
-    return;
+function og_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
+  list(,, $bundle) = entity_extract_ids($entity_type, $entity);
+
+  if (og_get_group_audience_fields($entity_type, $bundle)) {
+    $form['#validate'][] = 'og_form_group_reference_validate';
   }
-  $entity_type = $form['#entity_type'];
-  $bundle = $form['#bundle'];
 
   if ($entity_type == 'user' || !og_is_group_type($entity_type, $bundle)) {
     return;
   }
   $form['#validate'][] = 'og_form_group_manager_validate';
+}
+
+/**
+ * Validate handler; Make sure group-only content permissions are honored.
+ *
+ * If a user does not have site-wide node permissions, throw an error if they
+ * try to post site-wide instead of within a group.
+ *
+ * Note: This function does not check group -access- just if a group has been
+ * Selected.
+ */
+function og_form_group_reference_validate($form, &$form_state) {
+  global $user;
+  $entity_type = $form['#entity_type'];
+  if (empty($form_state[$entity_type])) {
+    // We are inside field settings page.
+    return;
+  }
+
+  $account = user_load($user->uid);
+  $bundle = $form['#bundle'];
+  $entity = $form['#entity'];
+  list($id) = entity_extract_ids($entity_type, $entity);
+
+  $op = empty($id) ? 'create' : 'update';
+
+  if ($entity_type == 'node') {
+    $node = empty($id) ? $bundle : $entity;
+    // We call node_node_access() directly as we just want to check the
+    // permissions using user_acces().
+    if (node_node_access($node, $op, $account)) {
+      // User has site-wide permissions to create or edit the node.
+      return;
+    }
+  }
+  elseif (entity_access($op, $entity_type, $entity, $account)) {
+    // User has site-wide permissions to create or edit the entity.
+    return;
+  }
+
+  foreach (array_keys(og_get_group_audience_fields($entity_type, $bundle)) as $field_name) {
+    // If there is at least one group selected, return.
+    if (!empty($form_state['values'][$field_name][LANGUAGE_NONE])) {
+      return;
+    }
+  }
+
+  // No group selected, throw an error.
+  form_set_error('og', t('You must select one or more groups for this content.'));
 }
 
 /**
@@ -845,10 +894,10 @@ function og_entity_update($entity, $entity_type) {
       }
     }
   }
-  $origianl_entity = $entity->original;
+  $original_entity = $entity->original;
   $property = OG_DEFAULT_ACCESS_FIELD;
 
-  if (!empty($entity->{$property}) && $entity->{$property} != $origianl_entity->{$property}) {
+  if (!empty($entity->{$property}) && $entity->{$property} != $original_entity->{$property}) {
     if (!og_is_group_default_access($entity_type, $entity)) {
       // Override default roles.
       og_roles_override($entity_type, $bundle, $id);
@@ -2372,7 +2421,7 @@ function og_is_group_content_type($entity_type, $bundle_name) {
 }
 
 /**
- * Return all the entities that are a group.
+ * Return all entity types that have bundles that are a group type.
  *
  * @return
  *   Array keyed with the entity type machine name and the entity human readable
@@ -2931,7 +2980,7 @@ function og_role_grant($group_type, $gid, $uid, $rid) {
     return;
   }
 
-  // Get the existiong user roles.
+  // Get the existing user roles.
   $user_roles = og_get_user_roles($group_type, $gid, $uid);
   if (empty($user_roles[$rid])) {
     $role = new stdClass();
@@ -2943,6 +2992,10 @@ function og_role_grant($group_type, $gid, $uid, $rid) {
     drupal_write_record('og_users_roles', $role);
     og_invalidate_cache();
     module_invoke_all('og_role_grant', $group_type, $gid, $uid, $rid);
+
+    if (module_exists('rules'))  {
+      rules_invoke_event('og_role_grant', og_get_membership($group_type, $gid, 'user', $uid), entity_metadata_wrapper('user', $uid), $rid);
+    }
   }
 }
 
@@ -2968,6 +3021,10 @@ function og_role_revoke($group_type, $gid, $uid, $rid) {
       ->condition('gid', $gid)
       ->execute();
     module_invoke_all('og_role_revoke', $group_type, $gid, $uid, $rid);
+
+    if (module_exists('rules'))  {
+      rules_invoke_event('og_role_revoke', og_get_membership($group_type, $gid, 'user', $uid), entity_metadata_wrapper('user', $uid), $rid);
+    }
   }
 }
 
@@ -3332,7 +3389,7 @@ function og_list_permissions($type) {
  * @param $destination
  *   (optional) The destiantion after a node is created. Defaults to the
  *   destination passed in the URL if exists, otherwise back to the current
- *   page.
+ *   page. FALSE to not append any destination to node create links.
  * @param $types
  *   (optional) An array of type names. Restrict the created links to the given
  *   types.
@@ -3371,7 +3428,7 @@ function og_node_create_links($group_type, $gid, $field_name, $destination = NUL
   if ($destination) {
     $options['query']['destination'] = $destination;
   }
-  else {
+  elseif ($destination !== FALSE) {
     $options['query'] += drupal_get_destination();
   }
 
@@ -3541,6 +3598,12 @@ function og_migrate_api() {
         'class_name' => 'OgMigrateGroup',
         'bundle' => $bundle,
       );
+    }
+
+    if (db_table_exists('d6_og_users_roles')) {
+      // OG user roles (OGUR) related migrations.
+      $migrations['OgMigrateOgurRoles'] = array('class_name' => 'OgMigrateOgurRoles');
+      $migrations['OgMigrateOgur'] = array('class_name' => 'OgMigrateOgur');
     }
   }
   elseif (db_field_exists('og_membership', 'group_type') && db_table_exists('og') && !db_table_exists('d6_og')) {

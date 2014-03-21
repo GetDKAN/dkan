@@ -77,7 +77,16 @@ function dkan_datastore_menu() {
     'weight' => 11,
     'type' => MENU_LOCAL_TASK,
   );
-
+  $items['node/%node/datastore/drop'] = array(
+    'title' => 'Drop Datastore',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_datastore_drop_tab_form', 1),
+    'access callback' => 'dkan_datastore_feeds_access',
+    'access arguments' => array('drop', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => 12,
+    'type' => MENU_LOCAL_TASK,
+  );
   return $items;
 }
 
@@ -95,9 +104,12 @@ function dkan_datastore_menu_alter(&$items) {
  * Copy of feeds_access.
  */
 function dkan_datastore_feeds_access($action, $node) {
-  if (!in_array($action, array('import', 'clear', 'unlock'))) {
+  if (!in_array($action, array('import', 'clear', 'unlock', 'drop'))) {
     // If $action is not one of the supported actions, we return access denied.
     return FALSE;
+  }
+  if ($action == 'drop' && user_access('manage datastore')){
+    return TRUE;
   }
   if ($action != 'import') {
     if ($importer_ids = feeds_get_importer_ids($node->type, $node->nid)) {
@@ -204,14 +216,20 @@ function dkan_datastore_node_update($node) {
   if (isset($node->feeds) && $node->type == 'resource' && $importer_ids = feeds_get_importer_ids($node->type, $node->nid)) {
     $wrapper = entity_metadata_wrapper('node', $node);
     $file = $wrapper->field_upload->value();
-    $link = $wrapper->field_link_remote_file->value();
-    if ($file) {
-      if ($file->filemime != 'text/csv') {
-        feeds_node_delete($node);
+    if (!$file) {
+      $link = $wrapper->field_link_remote_file->value();
+      if (isset($link) && isset($link['fid'])) {
+        $file = file_load($link['fid']);
+      }
+      elseif (isset($link) && isset($link->fid)) {
+        $file = $link;
+      }
+      else {
+        $file = '';
       }
     }
-    elseif ($link) {
-      if ($link->filemime != 'text/csv') {
+    if ($file) {
+      if ($file->filemime != 'text/csv') {
         feeds_node_delete($node);
       }
     }
@@ -228,7 +246,6 @@ function dkan_datastore_permission() {
     ),
   );
 }
-
 
 /**
  * Implements hook_node_view().
@@ -252,7 +269,7 @@ function dkan_datastore_node_view($node, $view_mode, $langcode) {
  */
 function dkan_datastore_status($node) {
   if ($file = dkan_datastore_file_field($node)) {
-    if ($file->filemime == 'text/csv') {
+    if ((is_object($file) && $file->filemime == 'text/csv') || (is_array($file) && $file['filemime'] == 'text/csv')) {
       if (dkan_datastore_records($node->nid)) {
         return DKAN_DATASTORE_EXISTS;
       }
@@ -278,7 +295,7 @@ function dkan_datastore_records($nid) {
     $source_id = dkan_datastore_api_get_feeds_source($nid);
     if ($table = feeds_flatstore_processor_table_name($source_id, $nid)) {
       if (db_table_exists($table)) {
-        if ($result = db_query("SELECT timestamp FROM {$table} LIMIT 1")->fetchCol()) {
+        if ($result = db_query_range("SELECT timestamp FROM {$table}", 0, 1)) {
           return TRUE;
         }
       }
@@ -366,3 +383,22 @@ function theme_dkan_datastore_status_formatter($variables) {
   }
   return '<span class="circle na">' . t('Correct file type not attached to resource') . '</span>';
 }
+
+ /**
+ * Gets a datastore instance.
+ *
+ * @param $id
+ *   The unique id of the importer object.
+ *
+ * @return
+ *   A Datastore object or an object of a class defined by the Drupal
+ *   variable 'dkan_datastore_class'. There is only one importer object
+ *   per $id system-wide.
+ */
+function dkan_datastore_go($id, $class = NULL) {
+  if (!$class) {
+    $class = variable_get('dkan_datastore_class', 'DkanDatastore');
+  }
+  return Datastore::instance($class, $id);
+}
+

@@ -113,6 +113,9 @@ function hook_field_extra_fields_alter(&$info) {
 /**
  * Define Field API field types.
  *
+ * Along with this hook, you also need to implement other hooks. See
+ * @link field_types Field Types API @endlink for more information.
+ *
  * @return
  *   An array whose keys are field type names and whose values are arrays
  *   describing the field type, with the following key/value pairs:
@@ -199,8 +202,11 @@ function hook_field_info_alter(&$info) {
 /**
  * Define the Field API schema for a field structure.
  *
- * This hook MUST be defined in .install for it to be detected during
- * installation and upgrade.
+ * This is invoked when a field is created, in order to obtain the database
+ * schema from the module that defines the field's type.
+ *
+ * This hook must be defined in the module's .install file for it to be detected
+ * during installation and upgrade.
  *
  * @param $field
  *   A field structure.

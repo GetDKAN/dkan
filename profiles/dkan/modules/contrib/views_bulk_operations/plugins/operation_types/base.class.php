@@ -173,8 +173,10 @@ abstract class ViewsBulkOperationsBaseOperation {
    * @param $dom_id
    *   The dom path to the level where the admin options form is embedded.
    *   Needed for #dependency.
+   * @param $field_handler
+   *   The Views field handler object for the VBO field.
    */
-  public function adminOptionsForm($dom_id) {
+  public function adminOptionsForm($dom_id, $field_handler) {
     $label = $this->getAdminOption('label', '');
 
     $form = array();

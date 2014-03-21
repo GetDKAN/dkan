@@ -78,7 +78,7 @@ define('LANGUAGE_NEGOTIATION_DEFAULT', 'language-default');
  * function mymodule_language_negotiation_info_alter(&$negotiation_info) {
  *   // Replace the core function with our own function.
  *   module_load_include('language', 'inc', 'language.negotiation');
- *   $negotiation_info[LANGUAGE_NEGOTIATION_URL]['callbacks']['negotiation'] = 'mymodule_from_url';
+ *   $negotiation_info[LANGUAGE_NEGOTIATION_URL]['callbacks']['language'] = 'mymodule_from_url';
  *   $negotiation_info[LANGUAGE_NEGOTIATION_URL]['file'] = drupal_get_path('module', 'mymodule') . '/mymodule.module';
  * }
  *
@@ -94,7 +94,6 @@ define('LANGUAGE_NEGOTIATION_DEFAULT', 'language-default');
  *   }
  *   return $langcode;
  * }
- * ?>
  * @endcode
  *
  * For more information, see
@@ -314,7 +313,7 @@ function language_negotiation_get_switch_links($type, $path) {
 }
 
 /**
- * Removes any unused language negotation providers from the configuration.
+ * Removes any unused language negotiation providers from the configuration.
  */
 function language_negotiation_purge() {
   // Ensure that we are getting the defined language negotiation information. An

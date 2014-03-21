@@ -135,7 +135,7 @@ function gravatar_preprocess_user_picture(&$variables) {
 
     if (!empty($filepath)) {
       $alt = t("@user's picture", array('@user' => format_username($account)));
-      if (module_exists('image') && file_valid_uri($filepath) && $style = variable_get('user_picture_style', '')) {
+      if (module_exists('image') && file_valid_uri($filepath) && ($style = variable_get('user_picture_style', '')) && isset($account->picture) && $account->picture) {
         $variables['user_picture'] = theme('image_style', array('style_name' => $style, 'path' => $filepath, 'alt' => $alt, 'title' => $alt));
       }
       else {

@@ -264,6 +264,10 @@ function services_edit_form_endpoint_resources($form, &$form_state, $endpoint) {
   // Call _services_build_resources() directly instead of
   // services_get_resources to bypass caching.
   $resources = _services_build_resources($endpoint->name);
+  // Sort the resources by the key, which is the string used for grouping each
+  // resource in theme_services_resource_table().
+  ksort($resources);
+
   $form['instructions'] = array(
     '#type' => 'item',
     '#title' => t('Resources'),
@@ -350,8 +354,9 @@ function services_edit_form_endpoint_resources($form, &$form_state, $endpoint) {
           );
           $options = array_merge($options, $update_versions);
           $default_api_value = 0;
-          if (isset($endpoint->resources[$resource_key][$class][$op_name]['endpoint']['services'])) {
-            $default_api_value = $endpoint->resources[$resource_key][$class][$op_name]['endpoint']['services'];
+
+          if (isset($op['endpoint']) && isset($op['endpoint']['services'])) {
+            $default_api_value = $op['endpoint']['services']['resource_api_version'];
           }
           $disabled = (count($options) == 1);
           // Add the version information if it has any
@@ -409,9 +414,9 @@ function services_edit_form_endpoint_resources_validate($form, $form_state) {
 
   // Validate aliases.
   foreach ($input['resources'] as $resource_name => $resource) {
-    if (!empty($resource['alias']) && !preg_match('/^[a-z-]+$/', $resource['alias'])) {
+    if (!empty($resource['alias']) && !preg_match('/^[a-z-_]+$/', $resource['alias'])) {
       // Still this doesn't highlight needed form element.
-      form_set_error("resources][{$resource_name}][alias", t("The alias for the !name resource may only contain lower case a-z and dashes.", array(
+      form_set_error("resources][{$resource_name}][alias", t("The alias for the !name resource may only contain lower case a-z, underscores and dashes.", array(
         '!name' => $resource_name,
       )));
     }

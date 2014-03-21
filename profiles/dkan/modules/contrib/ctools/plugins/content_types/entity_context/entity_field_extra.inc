@@ -25,6 +25,11 @@ function ctools_entity_field_extra_content_type_content_type($subtype) {
  */
 function ctools_entity_field_extra_content_type_content_types() {
   // This will hold all the individual field content types.
+  $types = &drupal_static(__FUNCTION__);
+  if (isset($types)) {
+    return $types;
+  }
+
   $types = array();
   $context_types = array();
   $entities = entity_get_info();
@@ -97,13 +102,20 @@ function ctools_entity_field_extra_content_type_render($subtype, $conf, $panel_a
   $entity = clone $context->data;
   list($entity_type, $field_name) = explode(':', $subtype, 2);
   list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
-
-  // Invoke the view-hook to get the extra field.
-  $entity->content = array();
   $langcode = $GLOBALS['language_content']->language;
 
-  module_invoke_all($entity_type . '_view', $entity, $conf['view_mode'], $langcode);
-  module_invoke_all('entity_view', $entity, $entity_type, $conf['view_mode'], $langcode);
+  $function = $entity_type . '_view';
+  if (in_array($entity_type, array('node', 'taxonomy_term', 'user')) && function_exists($function)) {
+    // Call known ENTITY_view() to get the extra field.
+    $entity->content = $function($entity, $conf['view_mode'], $langcode);
+  }
+  else {
+    // Invoke the view-hook to get the extra field.
+    $entity->content = array();
+
+    module_invoke_all($entity_type . '_view', $entity, $conf['view_mode'], $langcode);
+    module_invoke_all('entity_view', $entity, $entity_type, $conf['view_mode'], $langcode);
+  }
 
   if (isset($entity->content[$field_name])) {
     // Build the content type block.

@@ -148,7 +148,11 @@ function entity_features_api() {
 /**
  * Features component callback.
  */
-function entity_features_export_options($entity_type) {
+function entity_features_export_options($a1, $a2 = NULL) {
+  // Due to a change in the Features API the first parameter might be a feature
+  // object or an entity type, depending on the Features version. This check is
+  // for backwards compatibility.
+  $entity_type = is_string($a1) ? $a1 : $a2;
   return entity_features_get_controller($entity_type)->export_options();
 }
 

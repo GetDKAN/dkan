@@ -31,12 +31,12 @@ dependencies[] = date_popup
 dependencies[] = delta
 dependencies[] = diff
 dependencies[] = date
+dependencies[] = defaultcontent
 dependencies[] = double_field
 dependencies[] = entity
 dependencies[] = entity_token
 dependencies[] = eva
 dependencies[] = entityreference
-dependencies[] = defaultcontent
 dependencies[] = feeds
 dependencies[] = facetapi
 dependencies[] = facetapi_pretty_paths
@@ -62,7 +62,6 @@ dependencies[] = rules_admin
 dependencies[] = select_or_other
 dependencies[] = search_api
 dependencies[] = services
-dependencies[] = search_api_ajax
 dependencies[] = search_api_db
 dependencies[] = search_api_facetapi
 dependencies[] = search_api_views
@@ -70,8 +69,6 @@ dependencies[] = strongarm
 dependencies[] = rest_server
 dependencies[] = restws
 dependencies[] = r4032login
-dependencies[] = services
-dependencies[] = schema
 dependencies[] = token
 dependencies[] = uuid
 dependencies[] = views
@@ -102,3 +99,11 @@ dependencies[] = dkan_sitewide
 dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
 dependencies[] = dkan_datastore_api
+
+
+; Information added by drush on 2014-03-21
+version = "7.x-1.0-beta1+74-dev"
+core = "7.x"
+project = "dkan"
+datestamp = "1395440876"
+

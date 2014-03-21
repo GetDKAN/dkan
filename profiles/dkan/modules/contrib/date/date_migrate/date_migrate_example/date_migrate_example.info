@@ -2,7 +2,6 @@ core = "7.x"
 dependencies[] = "date"
 dependencies[] = "date_repeat"
 dependencies[] = "date_repeat_field"
-dependencies[] = "date_migrate"
 dependencies[] = "features"
 dependencies[] = "migrate"
 description = "Examples of migrating with the Date module"
@@ -21,9 +20,9 @@ package = "Features"
 project = "date_migrate_example"
 version = "7.x-2.0"
 
-; Information added by drupal.org packaging script on 2012-08-13
-version = "7.x-2.6"
+; Information added by Drupal.org packaging script on 2013-12-21
+version = "7.x-2.7"
 core = "7.x"
 project = "date"
-datestamp = "1344850024"
+datestamp = "1387659206"
 

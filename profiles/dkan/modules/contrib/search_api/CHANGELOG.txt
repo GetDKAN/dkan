@@ -1,5 +1,149 @@
-Search API 1.x, dev (xx/xx/xxxx):
----------------------------------
+Search API 1.11 (12/25/2013):
+-----------------------------
+- #1879196 by drunken monkey: Fixed invalid old indexes causing errors.
+- #2155127 by drunken monkey: Clarified the scope of the "Node access" and
+  "Exclude unpublished nodes" data alterations.
+- #2155575 by drunken monkey: Fixed incorrect "Server index status" warnings.
+- #2159011 by idebr, drunken monkey: Fixed highlighting of keywords with PCRE
+  special characters.
+- #2155721 by rjacobs, drunken monkey: Added support for Views' get_total_rows
+  property.
+- #2158873 by drumm, drunken monkey: Fixed "all of" operator of Views entity
+  filter handler.
+- #2156021 by jgullstr: Fixed confirm message when disabling servers.
+- #2146435 by timkang: Fixed Views paging with custom pager add-ons.
+- #2150347 by drunken monkey: Added access callbacks for indexes and servers.
+
+Search API 1.10 (12/09/2013):
+-----------------------------
+- #2130819 by drunken monkey, Bojhan: Added UI improvements for the "View" tabs.
+- #2152327 by sirtet, miro_dietiker: Fixed typo in help text for drush sapi-c.
+- #2144531 by drunken monkey: Fixed cloning of queries to clone filters, too.
+- #2100671 by drunken monkey: Fixed stopwords processor to ignore missing
+  stopwords.
+- #2139239 by drunken monkey: Fixed highlighting for the last word of a field.
+- #1925114 by azinck: Fixed Views Facet Block integration with Panels.
+- #2139215 by drunken monkey: Fixed $context parameter of batch callback.
+- #2143659 by khiminrm: Fixed typo in update function 7116.
+- #2134509 by kscheirer, drunken monkey: Removed unused variables and
+  parameters.
+- #2136019 by drunken monkey: Fixed mapping callback for taxonomy term facets.
+- #2128001 by drunken monkey: Fixed the logic of the "contains none of these
+  words" fulltext operator.
+- #2128947 by stBorchert, drunken monkey: Fixed facet handling for multiple
+  searches on a page.
+- #2128529 by Frando, drunken monkey: Added a way for facet query type plugins
+  to pass options to the search query.
+- #1551302 by drunken monkey: Fixed the server tasks system.
+- #2135363 by drumm, drunken monkey: Added support for Views' use_count_query()
+  method.
+- #1390598 by Damien Tournoud, drunken monkey: Added the concept of query filter
+  tags.
+- #2135255 by dww: Fixed missing pager on first page of search results.
+- #1832334 by Damien Tournoud, drunken monkey: Fixed performance issues of
+  Views options filter handler for huge options lists.
+- #2118589 by mxr576, drunken monkey: Added node access for comment indexes.
+- #1961120 by drunken monkey: Fixed Views handling of short fulltext keywords.
+- #2100231 by drunken monkey: Renamed "Workflow" tab to "Filters".
+- #2100193 by drunken monkey: Turned operations in overview into D8 dropbuttons.
+- #2100199 by drunken monkey: Merged index tabs for a cleaner look.
+- #2115127 by drunken monkey: Fixed cron indexing logic to keep the right order.
+- #1750144 by jsacksick, drunken monkey: Fixed missing Boost option for custom
+  fulltext field types.
+- #1956650 by drunken monkey, wwhurley: Fixed trackItemChange not checking for
+  empty $item_ids.
+- #2100191 by drunken monkey, Bojhan: Added an admin description to the Search
+  API landing page.
+
+Search API 1.9 (10/23/2013):
+----------------------------
+- #2113277 by moonray, drunken monkey: Fixed date facet count for active item.
+- #2086783 by drunken monkey: Removed Views field handlers for "virtual" fields.
+- #2114593 by drunken monkey: Added list of floats to test module.
+- #2109247 by mmikitka, drunken monkey: Exposed the status and module
+  properties to Entity API.
+- #2091499 by sammys, drunken monkey: Added Views contextual filter handler for
+  dates.
+- #2109537 by hefox, drunken monkey: Added alter hooks for workflow plugin
+  definitions.
+- #2102111 by sergei_brill: Added hook_search_api_views_query_alter().
+- #2110315 by drumm, drunken monkey: Added specialized Views filters for users
+  and terms.
+- #2111273 by drunken monkey: Fixed Javascript states for exposed filter
+  operator.
+- #2102353 by aaronbauman: Fixed "smaller than" to read "less than".
+- #2097559 by thijsvdanker: Fixed the language of created search excerpts.
+- #2096275 by andrewbelcher: Fixed calling of Views pager pre/post execute
+  callbacks.
+- #2093023 by maciej.zgadzaj: Added Drush commands to enable and disable
+  indexes.
+- #2088905 by queenvictoria, drunken monkey: Fixed handling of Views
+  override_path option.
+- #2083481 by drunken monkey, nickgs: Added "exclude" option for facets.
+- #2084953 by Yaron Tal: Fixed issue with theme initialization.
+- #2075839 by leeomara, drunken monkey: Added descriptions to field lists for
+  'Aggregated Fields'.
+
+Search API 1.8 (09/01/2013):
+----------------------------
+- #1414048 by drunken monkey: Fixed exception in views.inc removes all Search
+  API tables.
+- #1921690 by drunken monkey: Fixed stale Views cache when indexed fields
+  change.
+- #2077035 by maciej.zgadzaj: Fixed whitespace recognition for search keys.
+- #2071229 by drunken monkey: Fixed use of core search constant.
+- #2069023 by drunken monkey: Fixed reaction to disabled modules.
+- #2057867 by drunken monkey: Fixed multiple values for taxonomy contextual
+  filter.
+- #2052701 by drunken monkey, erdos: Fixed cron queue state when disabling the
+  module.
+- #1878606 by drunken monkey: Fixed labels for boolean facets.
+- #2053171 by drunken monkey: Improved tests.
+- #1433720 by davidwbarratt, drunken monkey, JvE: Fixed handling of empty
+  selection for checkboxes.
+- #1414078 by drunken monkey, jaxxed: Fixed revert of exportables.
+- #2011396 by drunken monkey: Fixed support for several facets on a single
+  field.
+- #2050117 by izus, drunken monkey: Updated README.txt to reflect removed
+  sub-modules.
+- #2041365 by drunken monkey: Fixed error reporting for the MLT contextual
+  filter.
+- #2044711 by stBorchert, drunken monkey: Fixed facet adapter's
+  getCurrentSearch() method to not cache failed attempts.
+- #1411712 by Krasnyj, drunken monkey: Fixed notices in Views with groups.
+- #1959506 by jantoine, drunken monkey: Fixed "search id" for Views facets
+  block display.
+- #1902168 by rbruhn, drunken monkey, mpv: Fixed fatal error during Features
+  import.
+- #2040111 by arpieb: Fixed Views URL argument handler to allow multiple values.
+- #1064520 by drunken monkey: Added a processor for highlighting.
+
+Search API 1.7 (07/01/2013):
+----------------------------
+- #1612708 by drunken monkey: Fixed Views caching with facet blocks.
+- #2024189 by drunken monkey: Improved serialization of the query class.
+- #1311260 by drunken monkey: Fixed tokenizing of string fields.
+- #1246998 by drunken monkey: Fixed deletion of items in read-only indexes.
+- #1310970 by drunken monkey: Added improved UI help for determining which
+  fields are available for sorting.
+- #1886738 by chx, Jelle_S, drunken monkey: Added Role filter data alteration.
+- #1837782 by drunken monkey: Fixed enabling of indexes through the Status tab.
+- #1382170 by orakili, lliss, drunken monkey: Added OR filtering for Views
+  option filter.
+- #2012706 by drunken monkey: Fixed $reset parameter for load functions.
+- #1851204 by mvc: Fixed exception when indexing book hierarchy.
+- #1926030 by stella: Added field machine name to indexes' "Fields" tabs.
+- #1879102 by fearlsgroove: Fixed Drush attempting to index 0 items.
+- #1999858 by drunken monkey: Cleaned up API documentation for data alterations.
+- #2010116 by drunken monkey: Enabled "Index items immediately" for the default
+  node index.
+- #2013581 by drunken monkey: Added multi-valued field to test module.
+- #1288724 by brunodbo, drunken monkey, fearlsgroove: Added option for using OR
+  in Views fulltext search.
+- #1694832 by drunken monkey: Fixed index field settings getting stale when
+  Field API field settings change.
+- #1285794 by drunken monkey: Fixed "All" option in Views' exposed "Items per
+  page" setting.
 
 Search API 1.6 (05/29/2013):
 ----------------------------

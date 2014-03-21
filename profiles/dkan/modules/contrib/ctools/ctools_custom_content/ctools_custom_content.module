@@ -37,6 +37,26 @@ function ctools_custom_content_ctools_plugin_directory($module, $plugin) {
 }
 
 /**
+ * Implements hook_get_pane_links_alter().
+ */
+function ctools_custom_content_get_pane_links_alter(&$links, $pane, $content_type) {
+  if ($pane->type == 'custom') {
+    if(!isset($pane->configuration['name'])) {
+      $name_of_pane = $pane->subtype;
+    }
+    else {
+      $name_of_pane = $pane->configuration['name'];
+    }
+
+    $links['top']['edit_custom_content'] = array(
+      'title' => t('Edit custom content pane'),
+      'href' => url('admin/structure/ctools-content/list/' . $name_of_pane . '/edit', array('absolute' => TRUE)),
+      'attributes' => array('target' => array('_blank')),
+    );
+  }
+}
+
+/**
  * Create callback for creating a new CTools custom content type.
  *
  * This ensures we get proper defaults from the plugin for its settings.

@@ -41,8 +41,30 @@ function og_rules_event_info() {
     'og_user_delete' => $defaults + array(
       'label' => t('User has been removed from group'),
       'help' => t("A user has been removed from group and is no longer a group member."),
-   ),
- );
+    ),
+    'og_role_grant' => array_merge_recursive($defaults, array(
+      'label' => t('OG role granted to user'),
+      'help' => t("An OG role has been granted to this user."),
+      'variables' => array(
+        'og_rid' => array(
+          'type' => 'integer',
+          'label' => t('OG role ID'),
+          'description' => t('The id of the OG user role.'),
+        ),
+      ),
+    )),
+    'og_role_revoke' => array_merge_recursive($defaults, array(
+      'label' => t('OG role revoked from user'),
+      'help' => t("An OG role has been revoked from this user."),
+      'variables' => array(
+        'og_rid' => array(
+          'type' => 'integer',
+          'label' => t('OG role ID'),
+          'description' => t('The id of the OG user role.'),
+        ),
+      ),
+    )),
+  );
 }
 
 /**

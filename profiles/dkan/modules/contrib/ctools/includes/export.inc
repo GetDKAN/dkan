@@ -945,7 +945,13 @@ function ctools_export_object($table, $object, $indent = '', $identifier = NULL,
     else {
       $value = $object->$field;
       if ($info['type'] == 'int') {
-        $value = (isset($info['size']) && $info['size'] == 'tiny') ? (bool) $value : (int) $value;
+        if (isset($info['size']) && $info['size'] == 'tiny') {
+          $info['boolean'] = (!isset($info['boolean'])) ? $schema['export']['boolean'] : $info['boolean'];
+          $value = ($info['boolean']) ? (bool) $value : (int) $value;
+        }
+        else {
+          $value = (int) $value;
+        }
       }
 
       $output .= $indent . '$' . $identifier . '->' . $field . ' = ' . ctools_var_export($value, $indent) . ";\n";
@@ -967,7 +973,12 @@ function ctools_export_object($table, $object, $indent = '', $identifier = NULL,
  * that it's easily available.
  */
 function ctools_export_get_schema($table) {
-  $cache = &drupal_static(__FUNCTION__);
+  static $drupal_static_fast;
+  if (!isset($drupal_static_fast)) {
+    $drupal_static_fast['cache'] = &drupal_static(__FUNCTION__);
+  }
+  $cache = &$drupal_static_fast['cache'];
+
   if (empty($cache[$table])) {
     $schema = drupal_get_schema($table);
 
@@ -1003,6 +1014,7 @@ function ctools_export_get_schema($table) {
       'cache defaults' => FALSE,
       'default cache bin' => 'cache',
       'export type string' => 'type',
+      'boolean' => TRUE,
     );
 
     // If the export definition doesn't have the "primary key" then the CRUD

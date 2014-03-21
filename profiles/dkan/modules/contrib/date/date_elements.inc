@@ -77,7 +77,7 @@ function date_field_widget_form(&$form, &$form_state, $field, $instance, $langco
   // lose all but the first value by doing this, so store the original values in case we need to replace them later.
   if (!empty($field['settings']['repeat'])) {
     if ($delta == 0) {
-      $form['#after_build'] = array('date_repeat_after_build');
+      $form['#after_build'][] = 'date_repeat_after_build';
       $form_state['storage']['repeat_fields'][$field_name] = array_merge($form['#parents'], array($field_name));
       $form_state['storage']['date_items'][$field_name][$langcode] = $items;
     }
@@ -320,7 +320,7 @@ function date_combo_element_process($element, &$form_state, $form) {
     '#field'         => $field,
     '#instance'      => $instance,
     '#weight'        => $instance['widget']['weight'],
-    '#required'      => ($instance['required'] && $delta == 0) ? 1 : 0,
+    '#required'      => ($element['#required'] && $delta == 0) ? 1 : 0,
     '#default_value' => isset($element['#default_value'][$from_field]) ? $element['#default_value'][$from_field] : '',
     '#delta'         => $delta,
     '#date_timezone' => $element['#date_timezone'],
@@ -331,7 +331,8 @@ function date_combo_element_process($element, &$form_state, $form) {
     '#date_label_position' => $instance['widget']['settings']['label_position'],
     );
 
-  $description =  !empty($instance['description']) ? t($instance['description']) : '';
+  $description =  !empty($element['#description']) ? t($element['#description']) : '';
+  unset($element['#description']);
 
   // Give this element the right type, using a Date API
   // or a Date Popup element type.
@@ -363,8 +364,8 @@ function date_combo_element_process($element, &$form_state, $form) {
   // is the 'Start' and which is the 'End' .
 
   if (!empty($field['settings']['todate'])) {
-    $element[$from_field]['#title'] = '';
     $element[$to_field] = $element[$from_field];
+    $element[$from_field]['#title_display'] = 'none';
     $element[$to_field]['#title'] = t('to:');
     $element[$from_field]['#wrapper_attributes']['class'][] = 'start-date-wrapper';
     $element[$to_field]['#wrapper_attributes']['class'][] = 'end-date-wrapper';
@@ -451,8 +452,8 @@ function date_combo_validate($element, &$form_state) {
     return;
   }
 
-  $item = $form_values[$field_name][$langcode][$delta];
-  $posted = $form_input[$field_name][$langcode][$delta];
+  $item = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
+  $posted = drupal_array_get_nested_value($form_state['input'], $element['#parents']);
 
   $field = field_widget_field($element, $form_state);
   $instance = field_widget_instance($element, $form_state);

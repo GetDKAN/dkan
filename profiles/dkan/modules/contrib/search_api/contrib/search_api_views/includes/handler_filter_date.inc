@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains SearchApiViewsHandlerFilterDate.
+ */
+
+/**
  * Views filter handler base class for handling all "normal" cases.
  */
 class SearchApiViewsHandlerFilterDate extends SearchApiViewsHandlerFilter {

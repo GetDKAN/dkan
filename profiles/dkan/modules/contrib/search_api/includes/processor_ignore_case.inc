@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains SearchApiIgnoreCase.
+ */
+
+/**
  * Processor for making searches case-insensitive.
  */
 class SearchApiIgnoreCase extends SearchApiAbstractProcessor {

@@ -30,53 +30,66 @@ class SearchApiFacetapiTerm extends FacetapiQueryType implements FacetapiQueryTy
     // Return terms for this facet.
     $this->adapter->addFacet($this->facet, $query);
 
-    $settings = $this->adapter->getFacet($this->facet)->getSettings();
-    // Adds the operator parameter.
-    $operator = $settings->settings['operator'];
+    $settings = $this->adapter->getFacet($this->facet)->getSettings()->settings;
 
-    // Add active facet filters.
+    // First check if the facet is enabled for this search.
+    $default_true = isset($settings['default_true']) ? $settings['default_true'] : TRUE;
+    $facet_search_ids = isset($settings['facet_search_ids']) ? $settings['facet_search_ids'] : array();
+    if ($default_true != empty($facet_search_ids[$query->getOption('search id')])) {
+      // Facet is not enabled for this search ID.
+      return;
+    }
+
+    // Retrieve the active facet filters.
     $active = $this->adapter->getActiveItems($this->facet);
     if (empty($active)) {
       return;
     }
 
-    if (FACETAPI_OPERATOR_OR == $operator) {
-      // If we're dealing with an OR facet, we need to use a nested filter.
-      $facet_filter = $query->createFilter('OR');
+    // Create the facet filter, and add a tag to it so that it can be easily
+    // identified down the line by services when they need to exclude facets.
+    $operator = $settings['operator'];
+    if ($operator == FACETAPI_OPERATOR_AND) {
+      $conjunction = 'AND';
+    }
+    elseif ($operator == FACETAPI_OPERATOR_OR) {
+      $conjunction = 'OR';
     }
     else {
-      // Otherwise we set the conditions directly on the query.
-      $facet_filter = $query;
+      throw new SearchApiException(t('Unknown facet operator %operator.', array('%operator' => $operator)));
     }
+    $tags = array('facet:' . $this->facet['field']);
+    $facet_filter = $query->createFilter($conjunction, $tags);
 
     foreach ($active as $filter => $filter_array) {
       $field = $this->facet['field'];
       $this->addFacetFilter($facet_filter, $field, $filter);
     }
 
-    // For OR facets, we now have to add the filter to the query.
-    if (FACETAPI_OPERATOR_OR == $operator) {
-      $query->filter($facet_filter);
-    }
+    // Now add the filter to the query.
+    $query->filter($facet_filter);
   }
 
   /**
    * Helper method for setting a facet filter on a query or query filter object.
    */
   protected function addFacetFilter($query_filter, $field, $filter) {
+    // Test if this filter should be negated.
+    $settings = $this->adapter->getFacet($this->facet)->getSettings();
+    $exclude = !empty($settings->settings['exclude']);
     // Integer (or other nun-string) filters might mess up some of the following
     // comparison expressions.
     $filter = (string) $filter;
     if ($filter == '!') {
-      $query_filter->condition($field, NULL);
+      $query_filter->condition($field, NULL, $exclude ? '<>' : '=');
     }
     elseif ($filter[0] == '[' && $filter[strlen($filter) - 1] == ']' && ($pos = strpos($filter, ' TO '))) {
       $lower = trim(substr($filter, 1, $pos));
       $upper = trim(substr($filter, $pos + 4, -1));
       if ($lower == '*' && $upper == '*') {
-        $query_filter->condition($field, NULL, '<>');
+        $query_filter->condition($field, NULL, $exclude ? '=' : '<>');
       }
-      else {
+      elseif (!$exclude) {
         if ($lower != '*') {
           // Iff we have a range with two finite boundaries, we set two
           // conditions (larger than the lower bound and less than the upper
@@ -92,9 +105,22 @@ class SearchApiFacetapiTerm extends FacetapiQueryType implements FacetapiQueryTy
           $query_filter->condition($field, $upper, '<=');
         }
       }
+      else {
+        // Same as above, but with inverted logic.
+        if ($lower != '*') {
+          if ($upper != '*' && ($query_filter instanceof SearchApiQueryInterface || $query_filter->getConjunction() === 'AND')) {
+            $original_query_filter = $query_filter;
+            $query_filter = new SearchApiQueryFilter('OR');
+          }
+          $query_filter->condition($field, $lower, '<');
+        }
+        if ($upper != '*') {
+          $query_filter->condition($field, $upper, '>');
+        }
+      }
     }
     else {
-      $query_filter->condition($field, $filter);
+      $query_filter->condition($field, $filter, $exclude ? '<>' : '=');
     }
     if (isset($original_query_filter)) {
       $original_query_filter->filter($query_filter);
@@ -120,8 +146,8 @@ class SearchApiFacetapiTerm extends FacetapiQueryType implements FacetapiQueryTy
     $search = search_api_current_search($search_id);
     $build = array();
     $results = $search[1];
-    if (isset($results['search_api_facets']) && isset($results['search_api_facets'][$this->facet['field']])) {
-      $values = $results['search_api_facets'][$this->facet['field']];
+    if (isset($results['search_api_facets']) && isset($results['search_api_facets'][$this->facet['name']])) {
+      $values = $results['search_api_facets'][$this->facet['name']];
       foreach ($values as $value) {
         $filter = $value['filter'];
         // As Facet API isn't really suited for our native facet filter

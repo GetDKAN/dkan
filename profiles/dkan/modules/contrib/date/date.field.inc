@@ -125,7 +125,15 @@ function date_field_formatter_view($entity_type, $entity, $field, $instance, $la
     'attributes' => array(),
     'rdf_mapping' => array(),
     'add_rdf' => module_exists('rdf'),
+    'microdata' => array(),
+    'add_microdata' => module_exists('microdata'),
   );
+
+  // If the microdata module is enabled, the microdata mapping will have been
+  // passed in via the entity.
+  if ($variables['add_microdata'] && isset($entity->microdata[$field['field_name']])) {
+    $variables['microdata'] = $entity->microdata[$field['field_name']];
+  }
 
   // If there is an RDf mapping for this date field, pass it down to the theme.
   $rdf_mapping = array();

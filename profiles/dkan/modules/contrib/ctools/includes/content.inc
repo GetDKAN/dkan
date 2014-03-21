@@ -687,6 +687,11 @@ function ctools_content_get_available_types($contexts = NULL, $has_content = FAL
         }
       }
 
+      // Check if the content type provides an access callback.
+      if (isset($subtype['create content access']) && function_exists($subtype['create content access']) && !$subtype['create content access']($plugin, $subtype)) {
+        continue;
+      }
+
       // If we made it through all the tests, then we can use this content.
       $available[$id][$subtype_id] = $subtype;
     }

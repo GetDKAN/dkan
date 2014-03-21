@@ -9,12 +9,13 @@ include_once 'dkan_dataset.features.inc';
 include_once 'dkan_dataset.theme.inc';
 // TODO: make optional through admin settings.
 include_once 'dkan_dataset.forms.inc';
+include_once 'dkan_dataset.triggers.inc';
 
 /**
  * Implements hook_menu().
  */
 function dkan_dataset_menu() {
-  $path = drupal_get_path('module', 'dkan_datset');
+  $path = drupal_get_path('module', 'dkan_dataset');
   $items['node/%node/resource'] = array(
     'title' => 'Add Resource',
     'page callback' => 'dkan_dataset_add_resource',
@@ -35,8 +36,43 @@ function dkan_dataset_menu() {
     'file' => 'dkan_dataset.pages.inc',
     'file path' => $path,
   );
+  $items['admin/dkan'] = array(
+    'title' => 'DKAN',
+    'description' => 'DKAN Settings and Administration.',
+    'weight' => -8,
+    'position' => 'left',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+  $items['admin/dkan/dataset_forms'] = array(
+    'title' => 'DKAN Dataset Forms',
+    'description' => 'Form settings for DKAN Datasets.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_dataset_form_settings'),
+    'access arguments' => array('administer site configuration'),
+  );
 
   return $items;
+}
+
+/**
+ * Menu Callback for DKAN Dataset settings.
+ */
+function dkan_dataset_form_settings() {
+  $form = array();
+  $form['dkan_dataset_form_ajax'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use Ajax on dataset node.'),
+    '#default_value' => variable_get('dkan_dataset_form_ajax', 0),
+  );
+  $form['dkan_resource_form_ajax'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use Ajax on resource node.'),
+    '#default_value' => variable_get('dkan_resource_form_ajax', 0),
+  );
+  return system_settings_form($form);
 }
 
 /**
@@ -245,27 +281,25 @@ function dkan_form_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL)
   $stages = '<div id="dkan-stages">';
   if ($op == 'resource-edit' || $op == 'resource-create') {
     $stages .= '<ol class="stages stage-3">
-      <li class="first complete">
-          <button class="highlight" name="save" value="go-dataset" type="submit">' . l(t('Edit dataset'), 'node/' . $dataset_nid . '/edit') . '</button>
-      </li>
+      <li class="first complete"><span class="highlight">' . l(t('Edit dataset'), 'node/' . $dataset_nid . '/edit') . '</span></li>
       <li class="middle active">
           <span class="highlight">Add data</span>
       </li>
       <li class="last uncomplete">
-          <button class="highlight" name="save" value="go-metadata" type="submit">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
+          <span class="highlight">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</span>
       </li>
     </ol>';
   }
   if ($op == 'dataset-additional') {
     $stages .= '<ol class="stages stage-3">
       <li class="first complete">
-          <button class="highlight" name="save" value="go-dataset" type="submit">' . l(t('Edit dataset'), 'node/' . $dataset_nid . '/edit') . '</button>
+          <span class="highlight">' . l(t('Edit dataset'), 'node/' . $dataset_nid . '/edit') . '</span>
       </li>
       <li class="middle complete">
-          <button class="highlight" name="save" value="go-dataset" type="submit">' . l(t('Add dataset'), 'node/add/resource', array('query' => array('dataset' => $dataset_nid))) . '</button>
+          <span class="highlight">' . l(t('Add dataset'), 'node/add/resource', array('query' => array('dataset' => $dataset_nid))) . '</span>
       </li>
       <li class="last active">
-          <button class="highlight" name="save" value="go-metadata" type="submit">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
+        <span class="highlight" name="save" value="go-metadata" type="submit">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</span>
       </li>
     </ol>';
   }
@@ -292,7 +326,7 @@ function dkan_form_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL)
           <span class="highlight">' . l(t('Add data'), 'node/add/resource', array('query' => array('dataset' => $dataset_nid))) . '</span>
       </li>
       <li class="last complete">
-          <button class="highlight" name="save" value="go-metadata" type="submit">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</button>
+          <span class="highlight">' . l(t('Additional data'), 'node/' . $dataset_nid . '/edit', array('query' => array('additional' => TRUE))) . '</span>
       </li>
     </ol>';
   }
@@ -337,4 +371,14 @@ function dkan_dataset_preprocess_views_views_json_style_simple(&$vars) {
       $vars['rows'][check_plain($field->options['label'])] = filter_xss($field->original_value);
     }
   }
+}
+
+/**
+ * Implements hook_file_mimetype_mapping_alter().
+ */
+function dkan_dataset_file_mimetype_mapping_alter(&$mapping) {
+  $mapping['extensions']['json'] = 999;
+  $mapping['extensions']['html'] = 998;
+  $mapping['mimetypes'][999] = 'application/json';
+  $mapping['mimetypes'][998] = 'text/html; charset=utf-8';
 }

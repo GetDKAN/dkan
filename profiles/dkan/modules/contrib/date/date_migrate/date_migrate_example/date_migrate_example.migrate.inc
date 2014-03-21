@@ -13,8 +13,8 @@ class DateExampleMigration extends XMLMigration {
   /**
    * Sets up the migration.
    */
-  public function __construct() {
-    parent::__construct();
+  public function __construct($arguments = array()) {
+    parent::__construct($arguments);
     $this->description = t('Example migration into date fields');
 
     $this->map = new MigrateSQLMap($this->machineName,
@@ -66,28 +66,34 @@ class DateExampleMigration extends XMLMigration {
 
     // For date ranges, we add the "end" value in prepareRow() below.
     $this->addFieldMapping('field_date_range', 'date_range_from');
+    $this->addFieldMapping('field_date_range:to', 'date_range_to');
 
     // RRULEs on repeat fields are also done in prepareRow().
     $this->addFieldMapping('field_date_repeat', 'date_repeat');
+    $this->addFieldMapping('field_date_repeat:rrule', 'date_repeat_rrule');
 
     $this->addFieldMapping('field_datestamp', 'datestamp')
       ->xpath('datestamp');
     $this->addFieldMapping('field_datestamp_range', 'datestamp_range_from');
+    $this->addFieldMapping('field_datestamp_range:to', 'datestamp_range_to');
 
     // You can specify a timezone to be applied to all values going into the
     // field (Tokyo is UTC+9, no DST)
-    $arguments = DateMigrateFieldHandler::arguments('Asia/Tokyo');
     $this->addFieldMapping('field_datetime', 'datetime')
-      ->xpath('datetime')
-      ->arguments($arguments);
+      ->xpath('datetime');
+    $this->addFieldMapping('field_datetime:timezone')
+      ->defaultValue('Asia/Tokyo');
 
     // You can also get the timezone from the source data - it can be different
     // for each instance of the field. Like To and RRULE values, it is added
     // in prepareRow().
     $this->addFieldMapping('field_datetime_range', 'datetime_range_from');
+    $this->addFieldMapping('field_datetime_range:to', 'datetime_range_to');
+    $this->addFieldMapping('field_datetime_range:timezone', 'datetime_range_timezone');
 
     // Unmapped destination fields.
-    $this->addUnmigratedDestinations(array('is_new', 'status', 'promote', 'revision', 'language', 'sticky', 'created', 'changed', 'revision_uid'));
+    $this->addUnmigratedDestinations(array('is_new', 'status', 'promote',
+      'revision', 'language', 'sticky', 'created', 'changed', 'revision_uid'));
   }
 
   /**
@@ -101,30 +107,25 @@ class DateExampleMigration extends XMLMigration {
     // The date range field can have multiple values.
     $current_row->date_range_from = array();
     foreach ($current_row->xml->date_range as $range) {
-      $date_data = array(
-        'from' => (string) $range->from[0],
-        'to' => (string) $range->to[0],
-      );
-      $current_row->date_range_from[] = drupal_json_encode($date_data);
+      $current_row->date_range_from[] = (string)$range->from[0];
+      $current_row->date_range_to[] = (string)$range->to[0];
     }
 
-    $date_data = array(
-      'from' => (string) $current_row->xml->datestamp_range->from[0],
-      'to' => (string) $current_row->xml->datestamp_range->to[0],
-    );
-    $current_row->datestamp_range_from = drupal_json_encode($date_data);
+    $current_row->datestamp_range_from =
+      (string) $current_row->xml->datestamp_range->from[0];
+    $current_row->datestamp_range_to =
+      (string) $current_row->xml->datestamp_range->to[0];
 
-    $date_data = array(
-      'from' => (string) $current_row->xml->datetime_range->from[0],
-      'to' => (string) $current_row->xml->datetime_range->to[0],
-      'timezone' => (string) $current_row->xml->datetime_range->timezone[0],
-    );
-    $current_row->datetime_range_from = drupal_json_encode($date_data);
+    $current_row->datetime_range_from =
+      (string) $current_row->xml->datetime_range->from[0];
+    $current_row->datetime_range_to =
+      (string) $current_row->xml->datetime_range->to[0];
+    $current_row->datetime_range_timezone =
+      (string) $current_row->xml->datetime_range->timezone[0];
 
-    $date_data = array(
-      'from' => (string) $current_row->xml->date_repeat->date[0],
-      'rrule' => (string) $current_row->xml->date_repeat->rule[0],
-    );
-    $current_row->date_repeat = drupal_json_encode($date_data);
+    $current_row->date_repeat =
+      (string) $current_row->xml->date_repeat->date[0];
+    $current_row->date_repeat_rrule =
+      (string) $current_row->xml->date_repeat->rule[0];
   }
 }

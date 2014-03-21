@@ -89,6 +89,10 @@ div.ctools-modal-content .form-checkboxes {
   clear: left;
 }
 
+div.ctools-modal-content .vertical-tabs-panes > fieldset {
+  clear: none;
+}
+
 div.ctools-modal-content .resizable-textarea {
   width: auto;
   margin-left: 15em;

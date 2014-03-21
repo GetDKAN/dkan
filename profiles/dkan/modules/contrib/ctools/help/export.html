@@ -156,6 +156,9 @@ function mymodule_schema() {
 <dt>to hook code callback</dt>
 <dd>Function used to generate an export for the bulk export process. This is only necessary if the export is more complicated than simply listing the fields. Defaults to $module . '_' . $table . '_to_hook_code'.</dt>
 
+<dt>boolean</dt>
+<dd>Explicitly indicate if a table field contains a boolean or not. The Schema API does not model the
+difference between a tinyint and a boolean type. Boolean values are stored in tinyint fields. This may cause mismatch errors when exporting a non-boolean value from a tinyint field. Add this to a tinyint field if it contains boolean data and can be exported. Defaults to TRUE.
 
 <dt>create callback</dt>
 <dd>CRUD callback to use to create a new exportable item in memory. If not provided, the default function will be used. The single argument is a boolean used to determine if defaults should be set on the object. This object will not be written to the database by this callback.</dd>

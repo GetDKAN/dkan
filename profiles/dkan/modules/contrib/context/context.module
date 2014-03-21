@@ -165,7 +165,13 @@ function context_context_registry() {
  * Implementation of hook_init().
  */
 function context_init() {
+  if ($plugin = context_get_plugin('condition', 'sitewide')) {
+    $plugin->execute(1);
+  }
   if ($plugin = context_get_plugin('condition', 'path')) {
+    $plugin->execute();
+  }
+  if ($plugin = context_get_plugin('condition', 'query_string')) {
     $plugin->execute();
   }
   if ($plugin = context_get_plugin('condition', 'language')) {
@@ -458,7 +464,7 @@ function context_empty($element) {
     }
   }
   else {
-    $empty = $empty && empty($element);
+    $empty = $empty && !isset($element);
   }
   return $empty;
 }

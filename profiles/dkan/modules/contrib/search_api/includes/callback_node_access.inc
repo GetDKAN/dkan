@@ -10,15 +10,9 @@
 class SearchApiAlterNodeAccess extends SearchApiAbstractAlterCallback {
 
   /**
-   * Check whether this data-alter callback is applicable for a certain index.
+   * Overrides SearchApiAbstractAlterCallback::supportsIndex().
    *
    * Returns TRUE only for indexes on nodes.
-   *
-   * @param SearchApiIndex $index
-   *   The index to check for.
-   *
-   * @return boolean
-   *   TRUE if the callback can run on the given index; FALSE otherwise.
    */
   public function supportsIndex(SearchApiIndex $index) {
     // Currently only node access is supported.
@@ -26,15 +20,9 @@ class SearchApiAlterNodeAccess extends SearchApiAbstractAlterCallback {
   }
 
   /**
-   * Declare the properties that are (or can be) added to items with this callback.
+   * Overrides SearchApiAbstractAlterCallback::propertyInfo().
    *
    * Adds the "search_api_access_node" property.
-   *
-   * @see hook_entity_property_info()
-   *
-   * @return array
-   *   Information about all additional properties, as specified by
-   *   hook_entity_property_info() (only the inner "properties" array).
    */
   public function propertyInfo() {
     return array(
@@ -47,15 +35,7 @@ class SearchApiAlterNodeAccess extends SearchApiAbstractAlterCallback {
   }
 
   /**
-   * Alter items before indexing.
-   *
-   * Items which are removed from the array won't be indexed, but will be marked
-   * as clean for future indexing. This could for instance be used to implement
-   * some sort of access filter for security purposes (e.g., don't index
-   * unpublished nodes or comments).
-   *
-   * @param array $items
-   *   An array of items to be altered, keyed by item IDs.
+   * {@inheritdoc}
    */
   public function alterItems(array &$items) {
     static $account;
@@ -65,30 +45,39 @@ class SearchApiAlterNodeAccess extends SearchApiAbstractAlterCallback {
       $account = drupal_anonymous_user();
     }
 
-    foreach ($items as $nid => &$item) {
+    foreach ($items as $id => $item) {
+      $node = $this->getNode($item);
       // Check whether all users have access to the node.
-      if (!node_access('view', $item, $account)) {
+      if (!node_access('view', $node, $account)) {
         // Get node access grants.
-        $result = db_query('SELECT * FROM {node_access} WHERE (nid = 0 OR nid = :nid) AND grant_view = 1', array(':nid' => $item->nid));
+        $result = db_query('SELECT * FROM {node_access} WHERE (nid = 0 OR nid = :nid) AND grant_view = 1', array(':nid' => $node->nid));
 
-        // Store all grants together with it's realms in the item.
+        // Store all grants together with their realms in the item.
         foreach ($result as $grant) {
-          if (!isset($items[$nid]->search_api_access_node)) {
-            $items[$nid]->search_api_access_node = array();
-          }
-          $items[$nid]->search_api_access_node[] = "node_access_$grant->realm:$grant->gid";
+          $items[$id]->search_api_access_node[] = "node_access_{$grant->realm}:{$grant->gid}";
         }
       }
       else {
         // Add the generic view grant if we are not using node access or the
         // node is viewable by anonymous users.
-        $items[$nid]->search_api_access_node = array('node_access__all');
+        $items[$id]->search_api_access_node = array('node_access__all');
       }
     }
   }
 
   /**
-   * Submit callback for the configuration form.
+   * Retrieves the node related to a search item.
+   *
+   * In the default implementation for nodes, the item is already the node.
+   * Subclasses may override this to easily provide node access checks for
+   * items related to nodes.
+   */
+  protected function getNode($item) {
+    return $item;
+  }
+
+  /**
+   * Overrides SearchApiAbstractAlterCallback::configurationFormSubmit().
    *
    * If the data alteration is being enabled, set "Published" and "Author" to
    * "indexed", because both are needed for the node access filter.

@@ -22,7 +22,7 @@ class context_reaction_breadcrumb extends context_reaction_menu {
             $parent = menu_link_load($plid);
             if ($parent && $parent['access'] && empty($parent['hidden']) && !empty($parent['title'])) {
               $set = TRUE;
-              $breadcrumb[] = l($parent['title'], $parent['href']);
+              $breadcrumb[] = l($this->get_link_title($parent), $parent['href']);
             }
           }
           // Only set the breadcrumb if one or more links were added to the
@@ -35,5 +35,10 @@ class context_reaction_breadcrumb extends context_reaction_menu {
       }
     }
   }
+  /**
+   * Return the title to be used for the current menu item.
+   */
+  function get_link_title($item) {
+    return module_exists('i18n_menu') ? _i18n_menu_link_title($item) : $item['title'];
+  }
 }
-

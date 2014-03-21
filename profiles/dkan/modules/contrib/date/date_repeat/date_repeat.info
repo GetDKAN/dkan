@@ -7,9 +7,9 @@ php = 5.2
 files[] = tests/date_repeat.test
 files[] = tests/date_repeat_form.test
 
-; Information added by drupal.org packaging script on 2012-08-13
-version = "7.x-2.6"
+; Information added by Drupal.org packaging script on 2013-12-21
+version = "7.x-2.7"
 core = "7.x"
 project = "date"
-datestamp = "1344850024"
+datestamp = "1387659206"
 

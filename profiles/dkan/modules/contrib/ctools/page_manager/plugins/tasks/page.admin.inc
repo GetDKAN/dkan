@@ -237,7 +237,7 @@ function page_manager_page_add_subtask($task_name = NULL, $step = NULL) {
   if ($task_name) {
     $page = page_manager_get_page_cache($task_name);
     if (empty($page)) {
-      return drupal_not_found();
+      return MENU_NOT_FOUND;
     }
 
     $form_info['path'] = "admin/structure/pages/add/$task_name/%step";

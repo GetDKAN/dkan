@@ -45,6 +45,11 @@ function ctools_custom_content_type_content_type($subtype_id) {
  * Return all custom content types available.
  */
 function ctools_custom_content_type_content_types() {
+  $types = &drupal_static(__FUNCTION__);
+  if (isset($types)) {
+    return $types;
+  }
+
   ctools_include('export');
   $types = array();
   $types['custom'] = _ctools_default_content_type_content_type();

@@ -361,9 +361,7 @@ function schema_engine_type($col, $table, $field, $engine = NULL) {
     return $map[$type];
   }
   else {
-    drupal_set_message(t('%table.%field: no %engine type for Schema type %type.',
-                         array('%engine' => $engine, '%type' => $type, '%table' => $table, '%field' => $field)),
-      'warning');
+    trigger_error(t('@table.@field: no @engine type for schema type @type.', array('@engine' => $engine, '@type' => $type, '@table' => $table, '@field' => $field)), E_USER_WARNING);
     return $col['type'];
   }
 }
@@ -379,7 +377,7 @@ function schema_schema_type($type, $table, $field, $engine = NULL) {
   }
   else {
     if (!variable_get('schema_suppress_type_warnings', FALSE)) {
-      drupal_set_message(t('Field @table.@field: no Schema type for @engine type @type.', array('@engine' => $engine, '@type' => $type, '@table' => $table, '@field' => $field)), 'warning');
+      trigger_error(t('@table.@field: no schema type for @engine type @type.', array('@engine' => $engine, '@type' => $type, '@table' => $table, '@field' => $field)), E_USER_WARNING);
     }
     return array($type, 'normal');
   }
@@ -610,4 +608,36 @@ function schema_compare_table($ref, $inspect = NULL) {
 
   $status = (count($reasons) ? 'different' : 'same');
   return array('status' => $status, 'reasons' => $reasons, 'notes' => $notes);
+}
+
+/**
+ * Implements hook_schema_field_type_map_alter() on behalf of field.module.
+ */
+function field_schema_field_type_map_alter(array &$map, DatabaseSchema $schema, DatabaseConnection $connection) {
+  $db_type = $connection->databaseType() . '_type';
+
+  // Load all fields in order to inspect each field's schema.
+  $include_additional = array(
+    'include_deleted' => TRUE,
+    'include_inactive' => TRUE,
+  );
+  $fields = field_read_fields(array(), $include_additional);
+
+  foreach ($fields as $field) {
+    $cols = $field['columns'];
+
+    // Loop through each field column and add any missing mappings.
+    foreach ($cols as $col) {
+      if (!isset($col['type'])) {
+        continue;
+      }
+      $size = isset($col['size']) ? $col['size'] : 'normal';
+      $generic_type = $col['type'] . ':' . $size;
+      if (!isset($map[$generic_type])) {
+        // Use engine specific type if it exists.
+        $map[$generic_type] = isset($col[$db_type]) ? $col[$db_type] : $col['type'];
+        $map[$generic_type] = drupal_strtoupper($map[$generic_type]);
+      }
+    }
+  }
 }

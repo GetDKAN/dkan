@@ -105,30 +105,85 @@ function feeds_flatstore_processor_table(FeedsSource $source, $parser_result) {
     if ($source->importer->parser instanceof FeedsCSVParser) {
       $fetcher = get_class($source->importer->fetcher);
       $delimiter = $source->config['FeedsCSVParser']['delimiter'];
-      $source = $source->config[$fetcher]['source'];
+      $source_orig = $source->config[$fetcher]['source'];
 
-      if ($source) {
+      if ($source_orig) {
         // This gives us a better range of results for finding data types.
-        $example_data = feeds_flatstore_processor_get_csv_results($source, $delimiter);
+        $example_data = feeds_flatstore_processor_get_csv_results($source_orig, $delimiter);
       }
       else {
         $example_data = $parser_result;
       }
       $headers = $example_data[0];
       unset($example_data[0]);
-      $types = feeds_flatstore_processor_find_columns($example_data, $headers);
+      $types = feeds_flatstore_processor_find_columns($example_data, $limit, $headers);
     }
     else {
-      $types = feeds_flatstore_processor_find_columns($parser_result->items);
+      $types = feeds_flatstore_processor_find_columns($parser_result->items, $limit);
     }
+    drupal_alter('feeds_flatstore_types', $types, $headers, $table_name);
     $schema = feeds_flatstore_processsor_base_schema();
     $field_schema = data_build_schema($types);
     feeds_flatstore_clean_reserved_words($field_schema);
     $schema['fields'] = array_merge($field_schema['fields'], $schema['fields']);
+    $x = 0;
+    $meta = array();
+    foreach ($schema['fields'] as $name => $data) {
+      $meta['fields'][$name]['label'] = $headers[$x];
+      $x++;
+    }
+    $driver = db_driver();
+    if ($driver == 'mysql') {
+      $schema['mysql_engine'] = 'MYISAM';
+    }
+    // Add lat/lon fields if 'geolocation' is turned on.
+    $processor = $source->importer->config['processor']['plugin_key'];
+    if (module_exists('geocoder') && isset($source->config['FeedsFlatstoreProcessor']['geolocate']) && $source->config['FeedsFlatstoreProcessor']['geolocate']) {
+      feeds_flatstore_processor_add_geo($schema);
+      $meta['fields']['latitude']['label'] = t('lat');
+      $meta['fields']['longitude']['label'] = t('lon');
+    }
 
     $table = data_create_table($table_name, $schema, $title);
+    $table->update(array('meta' => $meta));
+
+    // Adding limited search with default MySQL installs.
+    if ($driver == 'mysql' && $fulltext = feeds_flatstore_fulltext_fields($schema)) {
+      $fulltext = explode(',', $fulltext);
+      // The number of indexes depends on the MySQL version and installation.
+      $fulltext = array_splice($fulltext, 0, variable_get('feeds_flatstore_mysql_index_length', 15));
+      $fulltext = implode(',', $fulltext);
+      Database::getConnection()->query("ALTER TABLE {$table_name} ADD FULLTEXT INDEX $table_name" . "_index ($fulltext)");
+    }
     return $table;
   }
+}
+
+/**
+ * Adds geolocation fields to schema.
+ */
+function feeds_flatstore_processor_add_geo(&$schema) {
+  $schema['fields']['latitude'] = array(
+    'type' => 'float',
+    'not null' => FALSE,
+  );
+  $schema['fields']['longitude'] = array(
+    'type' => 'float',
+    'not null' => FALSE,
+  );
+}
+
+/**
+ * Returns a string of fulltext fields from database schema.
+ */
+function feeds_flatstore_fulltext_fields($schema) {
+  $fulltext = "";
+  foreach ($schema['fields'] as $name => $elements) {
+    if ($elements['type'] == 'char' || $elements['type'] == 'varchar' || $elements['type'] == 'text') {
+      $fulltext = $fulltext ? $fulltext . ',' . $name : $name;
+    }
+  }
+  return $fulltext;
 }
 
 /**
@@ -209,7 +264,7 @@ function feeds_flatstore_processor_get_csv_results($filepath, $separator = ",", 
 /**
  * Finds the schema type for values in an array.
  */
-function feeds_flatstore_processor_find_columns($parsed_result, $headers = array()) {
+function feeds_flatstore_processor_find_columns($parsed_result, $limit, $headers = array()) {
   $rowcount = count($parsed_result);
   if (!$headers) {
     foreach ($parsed_result[0] as $key => $value) {
@@ -227,11 +282,11 @@ function feeds_flatstore_processor_find_columns($parsed_result, $headers = array
       // TODO: Determine if default data sizes are sufficient.
       // Int.
       if (preg_match('/^-?\d+$/', $value)) {
-        $type_counter[$key]['int']++;
+        isset($type_counter[$key]['int']) ? $type_counter[$key]['int']++ : $type_counter[$key]['int'] = 1;
       }
       // Float.
       elseif (preg_match('/^-?(?:\d+|\d*\.\d+)$/', trim($value))) {
-        $type_counter[$key]['float']++;
+        isset($type_counter[$key]['float']) ? $type_counter[$key]['float']++ : $type_counter[$key]['float'] = 1;
       }
       // Datetime.
       elseif (preg_match("/\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:\d{2}/", trim($value)) ||
@@ -240,29 +295,32 @@ function feeds_flatstore_processor_find_columns($parsed_result, $headers = array
               preg_match("/\d{2}\-\d{2}\-\d{4} \d{2}:\d{2}/", trim($value)) ||
               preg_match("/\d{4}\/\d{2}\/\d{2}/", trim($value)) ||
               preg_match("/\d{2}\.\d{2}\.\d{4}/", trim($value))) {
-        $type_counter[$key]['datetime']++;
+        isset($type_counter[$key]['datetime']) ? $type_counter[$key]['datetime']++ : $type_counter[$key]['datetime'] = 1;
       }
       else {
-        $type_counter[$key]['bigtext']++;
+        isset($type_counter[$key]['bigtext']) ? $type_counter[$key]['bigtext']++ : $type_counter[$key]['bigtext'] = 1;
       }
     }
   }
+  $max = 0;
   foreach ($headers as $key => $header) {
-    $max = max($type_counter[$key]);
-
-    if ($max == 0 || !$max) {
-      $result['type'][$header] = 'bigtext';
+    // Skip empty columns.
+    if (!$header) {
+      NEXT;
+    }
+    $max = isset($type_counter[$key]) ? max($type_counter[$key]) : '';
+    if ($max != $limit) {
+      $type = array_keys($type_counter[$key]);
+      $result['type'][$header] = $type[0];
     }
     else {
-      foreach ($type_counter[$key] as $type => $count) {
-        if ($count == $max) {
-          $result['type'][$header] = $type;
-        }
-      }
+      $result['type'][$header] = 'bigtext';
     }
   }
+
   $schema = $result['type'];
   return $schema;
+
 }
 
 /**
@@ -301,6 +359,12 @@ function feeds_flatstore_processor_safe_name($name) {
   $simple = trim(strtolower(strip_tags($name)));
   // Limit length to 64 http://dev.mysql.com/doc/refman/5.0/en/identifiers.html
   $simple = substr(strtr($simple, $map), 0, 64);
+
+  if (is_numeric($simple)) {
+    // We need to escape numerics because Drupal's drupal_write_record()
+    // does not properly escape token MYSQL names.
+    $simple = '__num_' . $simple;
+  }
 
   $reserved = feeds_flatstore_reserved_words();
   if (in_array($simple, $reserved)) {

@@ -89,5 +89,6 @@
   else {
     drupal_add_http_header("Content-Type", "$content_type; charset=utf-8");
     print $xhtml;
+    drupal_page_footer();
     exit;
   }

@@ -1400,8 +1400,7 @@ function ctools_get_relevant_access_plugins($contexts) {
  * Create a context for the logged in user.
  */
 function ctools_access_get_loggedin_context() {
-  global $user;
-  $context = ctools_context_create('entity:user', $user);
+  $context = ctools_context_create('entity:user', array('type' => 'current'), TRUE);
   $context->identifier = t('Logged in user');
   $context->keyword    = 'viewer';
   $context->id         = 0;

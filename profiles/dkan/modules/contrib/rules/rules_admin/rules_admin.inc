@@ -26,9 +26,7 @@ function rules_admin_reaction_overview($form, &$form_state, $base_path) {
   }
   else {
     $event = $_GET['event'];
-    // Filter using a wildcard suffix so configured event names with suffixes
-    // are found also.
-    $conditions['event'] = $event . '%';
+    $conditions['event'] = $event;
     $collapsed = FALSE;
   }
   $form['help'] = array(
@@ -314,7 +312,7 @@ function rules_admin_settings_cache_rebuild_submit($form, &$form_state) {
 function rules_admin_add_reaction_rule($form, &$form_state, $base_path) {
   RulesPluginUI::formDefaults($form, $form_state);
 
-  $rules_config = isset($form_state['rules_config']) ? $form_state['rules_config'] : rules_reaction_rule();
+  $rules_config = rules_reaction_rule();
   $rules_config->form($form, $form_state, array('show settings' => TRUE, 'button' => TRUE));
 
   $form['settings']['#collapsible'] = FALSE;
@@ -331,32 +329,16 @@ function rules_admin_add_reaction_rule($form, &$form_state, $base_path) {
   // Incorporate the form to add the first event.
   $form['settings'] += rules_ui_add_event(array(), $form_state, $rules_config, $base_path);
   $form['settings']['event']['#tree'] = FALSE;
-  $form['settings']['event_settings']['#tree'] = FALSE;
   unset($form['settings']['help']);
 
   unset($form['settings']['submit']);
   $form['submit']['#value'] = t('Save');
 
   $form_state += array('rules_config' => $rules_config);
-  $form['#validate'][] = 'rules_ui_add_reaction_rule_validate';
   $form['#validate'][] = 'rules_ui_edit_element_validate';
-  $form['#submit'][] = 'rules_ui_add_reaction_rule_submit';
+  $form['#submit'][] = 'rules_ui_add_event_apply';
+  $form['#submit'][] = 'rules_ui_edit_element_submit';
   return $form;
-}
-
-/**
- * Form validation callback.
- */
-function rules_ui_add_reaction_rule_validate(&$form, &$form_state) {
-  rules_ui_add_event_validate($form['settings'], $form_state);
-}
-
-/**
- * Form submit callback.
- */
-function rules_ui_add_reaction_rule_submit(&$form, &$form_state) {
-  rules_ui_add_event_apply($form['settings'], $form_state);
-  rules_ui_edit_element_submit($form, $form_state);
 }
 
 /**

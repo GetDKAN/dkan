@@ -11,9 +11,9 @@ files[] = tests/data.test
 files[] = tests/data.test.inc
 files[] = views/views_handler_field_data_markup.inc
 
-; Information added by drupal.org packaging script on 2013-09-30
-version = "7.x-1.0-alpha4+2-dev"
+; Information added by Drupal.org packaging script on 2014-01-26
+version = "7.x-1.0-alpha6+1-dev"
 core = "7.x"
 project = "data"
-datestamp = "1380568625"
+datestamp = "1390767806"
 

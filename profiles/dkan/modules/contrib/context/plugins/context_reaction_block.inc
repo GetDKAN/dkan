@@ -42,13 +42,19 @@ class context_reaction_block extends context_reaction {
       $group = isset($block->context_group) ? $block->context_group : $block->module;
       if (!isset($form['selector'][$group])) {
         $form['selector'][$group] = array(
-          '#type' => 'checkboxes',
+          '#type' => 'fieldset',
+          '#collapsible' => TRUE, 
+          '#collapsed' => TRUE,
           '#title' => isset($block->context_group) ? $block->context_group : $modules[$block->module],
+        );
+        $form['selector'][$group]['checkboxes'] = array(
+          '#type' => 'checkboxes',
           '#options' => array(),
         );
       }
-      $form['selector'][$group]['#options'][$block->bid] = check_plain($block->info);
+      $form['selector'][$group]['checkboxes']['#options'][$block->bid] = check_plain($block->info);
     }
+
     ksort($form['selector']);
 
     /**
@@ -299,15 +305,7 @@ class context_reaction_block extends context_reaction {
    */
   protected function editable_block($block) {
     if (!empty($block->content)) {
-      $block->content = array(
-        'content' => $block->content,
-        'context' => array('#markup' => "<a id='context-block-{$block->module}-{$block->delta}' class='context-block editable edit-{$block->context}'></a>"),
-      );
-      //Contextual links are in the wrong spot in the render array once we've nested them
-      if (isset($block->content['content']['#contextual_links'])) {
-        $block->content['#contextual_links'] = $block->content['content']['#contextual_links'];
-        unset($block->content['content']['#contextual_links']);
-      }
+      $block->content['#theme_wrappers'][] = 'context_block_edit_wrap';
     }
     else {
       // the block alter in context.module should ensure that blocks are never
@@ -586,50 +584,9 @@ class context_reaction_block extends context_reaction {
     if (function_exists('json_decode')) {
       return json_decode($json, $assoc);
     }
-    return context_reaction_block::_json_decode($json);
-  }
-
-  /**
-   * From http://www.php.net/manual/en/function.json-decode.php#91216
-   * with modifications for consistency with output of json_decode().
-   *
-   * Original author: walidator.info 2009.
-   */
-  static function _json_decode($json) {
-    $comment = FALSE;
-    $out = '$x = ';
-    for ($i=0; $i < strlen($json); $i++) {
-      if (!$comment) {
-        switch ($json[$i]) {
-          case '{':
-            $out .= ' (object) array(';
-            break;
-          case '}':
-            $out .= ')';
-            break;
-          case '[':
-            $out .= ' array(';
-            break;
-          case ']':
-            $out .= ')';
-            break;
-          case ':';
-            $out .= '=>';
-            break;
-          default:
-            $out .= $json[$i];
-            break;
-        }
-      }
-      else {
-        $out .= $json[$i];
-      }
-      if ($json[$i] == '"') {
-        $comment = !$comment;
-      }
+    else {
+      watchdog('context', 'Please upgrade your PHP version to one that supports json_decode.');
     }
-    eval($out . ';');
-    return $x;
   }
 
   /**
@@ -650,7 +607,7 @@ class context_reaction_block extends context_reaction {
       list($bid, $context) = explode(',', $param);
       list($module, $delta) = explode('-', $bid, 2);
       // Check token to make sure user has access to block.
-      if (empty($_GET['context_token']) || $_GET['context_token'] != drupal_get_token($bid)) {
+      if (!(user_access('administer contexts') || user_access('context ajax block access') || $this->context_block_ajax_rendering_allowed($bid))) {
         echo drupal_json_encode(array('status' => 0));
         exit;
       }
@@ -695,5 +652,19 @@ class context_reaction_block extends context_reaction {
       $cache[$theme_key][$show] = system_region_list($theme_key, $show);
     }
     return $cache[$theme_key][$show];
+  }
+
+  /**
+   * Allow modules to selectively allow ajax rendering of a specific block
+   */
+  private function context_block_ajax_rendering_allowed($bid) {
+    $allowed = FALSE;
+    foreach (module_invoke_all('context_allow_ajax_block_access', $bid) as $module_allow) {
+      $allowed = $allow || $module_allow;
+      if ($allowed) {
+        break;
+      }
+    }
+    return $allowed;
   }
 }

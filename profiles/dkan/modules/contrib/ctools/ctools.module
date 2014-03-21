@@ -368,6 +368,59 @@ function ctools_set_no_blocks($blocks = FALSE) {
 }
 
 /**
+ * Wrapper function to create UUIDs via ctools, falls back on UUID module
+ * if it is enabled. This code is a copy of uuid.inc from the uuid module.
+ * @see http://php.net/uniqid#65879
+ */
+
+function ctools_uuid_generate() {
+  if (!module_exists('uuid')) {
+    ctools_include('uuid');
+
+    $callback = drupal_static(__FUNCTION__);
+
+    if (empty($callback)) {
+      if (function_exists('uuid_create') && !function_exists('uuid_make')) {
+        $callback = '_ctools_uuid_generate_pecl';
+      }
+      elseif (function_exists('com_create_guid')) {
+        $callback = '_ctools_uuid_generate_com';
+      }
+      else {
+        $callback = '_ctools_uuid_generate_php';
+      }
+    }
+    return $callback();
+  }
+  else {
+    return uuid_generate();
+  }
+}
+
+/**
+ * Check that a string appears to be in the format of a UUID.
+ * @see http://drupal.org/project/uuid
+ *
+ * @param $uuid
+ *   The string to test.
+ *
+ * @return
+ *   TRUE if the string is well formed.
+ */
+function ctools_uuid_is_valid($uuid = '') {
+  if (empty($uuid)) {
+    return FALSE;
+  }
+  if (function_exists('uuid_is_valid') || module_exists('uuid')) {
+    return uuid_is_valid($uuid);
+  }
+  else {
+    ctools_include('uuid');
+    return uuid_is_valid($uuid);
+  }
+}
+
+/**
  * Add an array of classes to the body.
  *
  * @param mixed $classes

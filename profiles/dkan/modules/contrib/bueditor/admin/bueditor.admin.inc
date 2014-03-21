@@ -19,7 +19,7 @@ function bueditor_admin() {
   $rows = array();
   foreach ($editors as $eid => $editor) {
     $rows[] = array(
-      $editor->name,
+      check_plain($editor->name),
       l(t('Edit'), $path . '/' . $eid) . ' | ' .
       l(t('Delete'), $path . '/' . $eid . '/delete', array('attributes' => array('class' => array('eop-delete')))) . ' | ' .
       l(t('Copy'), $path, array('attributes' => array('class' => array('eop-copy'), 'name' => 'Copy of ' . $editor->name), 'query' => array('eop' => 'copy', 'eid' => $eid, 'token' => $token))) . ' | ' .
@@ -131,7 +131,7 @@ function bueditor_admin_submit($form, &$form_state) {
  */
 function bueditor_role_form($role, $weight = TRUE, $core = TRUE) {
   $form['name'] = array(
-    '#markup' => $role['name'],
+    '#markup' => check_plain($role['name']),
   );
   if ($weight) {
     $form['weight'] = $core ? array(

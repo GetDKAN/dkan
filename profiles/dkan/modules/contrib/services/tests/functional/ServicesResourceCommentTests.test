@@ -47,6 +47,7 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
     // Create and log in our privileged user.
     $this->privilegedUser = $this->drupalCreateUser(array(
       'administer services',
+      'administer comments',
     ));
     $this->drupalLogin($this->privilegedUser);
 
@@ -219,7 +220,11 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
    */
   function testCommentUpdate() {
     $path = $this->endpoint->path;
-
+    $this->privilegedUser = $this->drupalCreateUser(array(
+      'administer services',
+      'administer comments',
+    ));
+    $this->drupalLogin($this->privilegedUser);
     // Create node.
     $node = $this->drupalCreateNode();
 
@@ -255,7 +260,11 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
    */
   function testCommentUpdateLegacy() {
     $path = $this->endpoint->path;
-
+    $this->privilegedUser = $this->drupalCreateUser(array(
+      'administer services',
+      'administer comments',
+    ));
+    $this->drupalLogin($this->privilegedUser);
     // Create node.
     $node = $this->drupalCreateNode();
 
@@ -288,7 +297,11 @@ class ServicesResourceCommentTests extends ServicesWebTestCase {
    */
   function testCommentDelete() {
     $path = $this->endpoint->path;
-
+    $this->privilegedUser = $this->drupalCreateUser(array(
+      'administer services',
+      'administer comments',
+    ));
+    $this->drupalLogin($this->privilegedUser);
     // Create node with commenting.
     $node = $this->drupalCreateNode();
 

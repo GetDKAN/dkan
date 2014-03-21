@@ -34,24 +34,10 @@ function data_views_data() {
       $table_data[$field_name] = array(
         'title' => $title,
         'help' => $title,
-        'field' => array(
-          'handler' => data_get_views_handler('field', $table, $field_name),
-          'help' => $title,
-          'click sortable' => TRUE,
-        ),
-        'filter' => array(
-          'handler' => data_get_views_handler('filter', $table, $field_name),
-          'allow empty' => TRUE,
-          'help' => t('Filter on %field', array('%field' => $title)),
-        ),
-        'argument' => array(
-          'handler' => data_get_views_handler('argument', $table, $field_name),
-          'help' => $title,
-        ),
-        'sort' => array(
-          'handler' => data_get_views_handler('sort', $table, $field_name),
-          'help' => t('Sort by %field', array('%field' => $title)),
-        ),
+        'field' => data_get_table_field_views_data('field', $table, $field_name),
+        'filter' => data_get_table_field_views_data('filter', $table, $field_name),
+        'argument' => data_get_table_field_views_data('argument', $table, $field_name),
+        'sort' => data_get_table_field_views_data('sort', $table, $field_name),
       );
     }
 
@@ -89,6 +75,74 @@ function data_views_data() {
   }
 
   return $data;
+}
+
+/**
+ * Get the hook_views_data() declaration for a field and handler type.
+ *
+ * Helper for our hook_views_data().
+ *
+ * @param $type
+ *   The view handler type ('field', 'filter', 'sort', 'argument').
+ * @param $table
+ *   A data table object.
+ * @param $field_name
+ *   String: name of the field.
+ * @param $default
+ *   Boolean for whether to return the default handler for the given
+ *   db column type.
+ *
+ * @return
+ *   An array for a hook_views_data() handler declaration.
+ *
+ * @see data_views_data()
+ */
+function data_get_table_field_views_data($type, $table, $field_name, $default = FALSE) {
+  $schema = $table->get('table_schema');
+  $meta = $table->get('meta');
+
+  // If there is no label, generate one from field name.
+  $title = empty($meta['fields'][$field_name]['label']) ? data_natural_name($field_name) : $meta['fields'][$field_name]['label'];
+
+  switch ($type) {
+    case 'field':
+      $views_data = array(
+        'handler' => data_get_views_handler('field', $table, $field_name),
+        'help' => $title,
+        'click sortable' => TRUE,
+      );
+      break;
+
+    case 'filter':
+      $views_data = array(
+        'handler' => data_get_views_handler('filter', $table, $field_name),
+        'allow empty' => TRUE,
+        'help' => t('Filter on %field', array('%field' => $title)),
+      );
+      break;
+
+    case 'argument':
+      $views_data = array(
+        'handler' => data_get_views_handler('argument', $table, $field_name),
+        'help' => $title,
+      );
+      break;
+
+    case 'sort':
+      $views_data = array(
+        'handler' => data_get_views_handler('sort', $table, $field_name),
+        'help' => t('Sort by %field', array('%field' => $title)),
+      );
+      break;
+  }
+
+  if (isset($meta['fields'][$field_name]['date'])) {
+    if (!empty($meta['fields'][$field_name]['date']['sql_type'])) {
+      $views_data['is date'] = TRUE;
+    }
+  }
+
+  return $views_data;
 }
 
 /**

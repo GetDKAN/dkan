@@ -327,11 +327,6 @@ DrupalContextBlockEditor.prototype = {
       // Construct query params for our AJAX block request.
       var params = Drupal.settings.contextBlockEditor.params;
       params.context_block = bid + ',' + context;
-      if (!Drupal.settings.contextBlockEditor.block_tokens || !Drupal.settings.contextBlockEditor.block_tokens[bid]) {
-        alert(Drupal.t('An error occurred trying to retrieve block content. Please contact a site administer.'));
-        return;
-     }
-     params.context_token = Drupal.settings.contextBlockEditor.block_tokens[bid];
 
       // Replace item with loading block.
       //ui.sender.append(ui.item);
@@ -443,7 +438,7 @@ DrupalContextBlockEditor.prototype = {
         dropOnEmpty: true,
         placeholder: 'draggable-placeholder',
         forcePlaceholderSize: true,
-        items: '> .block:has(a.context-block.editable)',
+        items: '> *:has(a.context-block.editable)',
         handle: 'a.context-block-handle',
         start: function(event, ui) { self.scriptFix(event, ui, editor, context); },
         stop: function(event, ui) { self.addBlock(event, ui, editor, context); },

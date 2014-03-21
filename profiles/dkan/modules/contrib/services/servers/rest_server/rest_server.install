@@ -9,21 +9,27 @@
  */
 function rest_server_requirements($phase) {
   $requirements = array();
-  // Ensure translations don't break at install time
-  $t = get_t();
 
+  // Report the version of libraries.
   if ($phase == 'runtime') {
-    module_load_include('module', 'rest_server');
-    module_load_include('module', 'libraries');
-    if (($library = libraries_load('spyc')) && empty($library['loaded'])) {
-      $requirements['rest_server'] = array(
-        'description' => 'The spyc library is missing, thus YAML is disabled',
-        'severity' => REQUIREMENT_INFO,
-        'value' => $t('To enable YAML HTTP requets/responses, please download <a href="@download">spyc</a> and create a file called spyc.php in rest_server/lib or use Libraries to retrieve spyc.', 
-                      array('@download' =>  'http://code.google.com/p/spyc/downloads/list')),
-        'title' => t('Missing spyc library'),
+    drupal_load('module', 'libraries');
+    $libraries = rest_server_libraries_info();
+    foreach ($libraries as $name => $info) {
+      $library = libraries_detect($name);
+      $requirements[$name] = array(
+        'title' => $library['name'],
+        'severity' => $library['installed'] ? REQUIREMENT_OK : REQUIREMENT_WARNING,
+        'value' => $library['installed'] ? l($library['version'], $library['vendor url']) : $library['error message'],
       );
     }
   }
+  
   return $requirements;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function rest_server_uninstall() {
+  variable_del('rest_server_default_response_format');
 }

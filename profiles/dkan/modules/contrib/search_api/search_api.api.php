@@ -15,8 +15,6 @@
  *
  * Note: The ids should be valid PHP identifiers.
  *
- * @see hook_search_api_service_info_alter()
- *
  * @return array
  *   An associative array of search service classes, keyed by a unique
  *   identifier and containing associative arrays with the following keys:
@@ -24,9 +22,12 @@
  *   - description: A translated string to be shown to administrators when
  *     selecting a service class. Should contain all peculiarities of the
  *     service class, like field type support, supported features (like facets),
- *     the "direct" parse mode and other specific things to keep in mind.
+ *     the "direct" parse mode and other specific things to keep in mind. The
+ *     text can contain HTML.
  *   - class: The service class, which has to implement the
  *     SearchApiServiceInterface interface.
+ *
+ * @see hook_search_api_service_info_alter()
  */
 function hook_search_api_service_info() {
   $services['example_some'] = array(
@@ -49,13 +50,14 @@ function hook_search_api_service_info() {
  * Alter the Search API service info.
  *
  * Modules may implement this hook to alter the information that defines Search
- * API service. All properties that are available in
- * hook_search_api_service_info() can be altered here.
- *
- * @see hook_search_api_service_info()
+ * API services. All properties that are available in
+ * hook_search_api_service_info() can be altered here, with the addition of the
+ * "module" key specifying the module that originally defined the service class.
  *
  * @param array $service_info
  *   The Search API service info array, keyed by service id.
+ *
+ * @see hook_search_api_service_info()
  */
 function hook_search_api_service_info_alter(array &$service_info) {
   foreach ($service_info as $id => $info) {
@@ -125,7 +127,8 @@ function hook_search_api_item_type_info() {
  *
  * Modules may implement this hook to alter the information that defines an
  * item type. All properties that are available in
- * hook_search_api_item_type_info() can be altered here.
+ * hook_search_api_item_type_info() can be altered here, with the addition of
+ * the "module" key specifying the module that originally defined the type.
  *
  * @param array $infos
  *   The item type info array, keyed by type identifier.
@@ -190,6 +193,8 @@ function hook_search_api_data_type_info_alter(array &$infos) {
 }
 
 /**
+ * Define available data alterations.
+ *
  * Registers one or more callbacks that can be called at index time to add
  * additional data to the indexed items (e.g. comments or attachments to nodes),
  * alter the data in other forms or remove items from the array.
@@ -225,6 +230,21 @@ function hook_search_api_alter_callback_info() {
 }
 
 /**
+ * Alter the available data alterations.
+ *
+ * @param array $callbacks
+ *   The callback information to be altered, keyed by callback IDs.
+ *
+ * @see hook_search_api_alter_callback_info()
+ */
+function hook_search_api_alter_callback_info_alter(array &$callbacks) {
+  if (!empty($callbacks['example_random_alter'])) {
+    $callbacks['example_random_alter']['name'] = t('Even more random alteration');
+    $callbacks['example_random_alter']['class'] = 'ExampleUltraRandomAlter';
+  }
+}
+
+/**
  * Registers one or more processors. These are classes implementing the
  * SearchApiProcessorInterface interface which can be used at index and search
  * time to pre-process item data or the search query, and at search time to
@@ -257,6 +277,20 @@ function hook_search_api_processor_info() {
   );
 
   return $callbacks;
+}
+
+/**
+ * Alter the available processors.
+ *
+ * @param array $processors
+ *   The processor information to be altered, keyed by processor IDs.
+ *
+ * @see hook_search_api_processor_info()
+ */
+function hook_search_api_processor_info_alter(array &$processors) {
+  if (!empty($processors['example_processor'])) {
+    $processors['example_processor']['weight'] = -20;
+  }
 }
 
 /**

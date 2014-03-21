@@ -139,6 +139,12 @@ function ctools_entity_field_value_ctools_access_settings_submit($form, &$form_s
  * Check for access.
  */
 function ctools_entity_field_value_ctools_access_check($conf, $context, $plugin) {
+  if (!isset($context->data)) {
+    // If the context doesn't exist -- for example, a newly added entity
+    // reference is used as a pane visibility criteria -- we deny access.
+    return FALSE;
+  }
+
   list($parent, $entity_type, $bundle_type, $field_name) = explode(':', $plugin['name']);
 
   if ($field_items = field_get_items($entity_type, $context->data, $field_name)) {

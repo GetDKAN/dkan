@@ -13,6 +13,9 @@ include_once 'date_migrate_example.features.inc';
 function date_migrate_example_migrate_api() {
   $api = array(
     'api' => 2,
+    'migrations' => array(
+      'DateExample' => array('class_name' => 'DateExampleMigration')
+    ),
   );
   return $api;
 }

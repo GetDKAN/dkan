@@ -47,6 +47,10 @@ files[] = includes/migrate/7000/og_content.inc
 files[] = includes/migrate/7000/og_group.inc
 files[] = includes/migrate/7000/og_user.inc
 
+; Migrate OGUR data from 6.x to 7.x-2.x
+files[] = includes/migrate/7000/og_ogur_roles.migrate.inc
+files[] = includes/migrate/7000/og_ogur.migrate.inc
+
 ; Migrate from 7.x-1.x to 7.x-2.x
 files[] = includes/migrate/og.migrate.inc
 files[] = includes/migrate/7200/og_og_membership.migrate.inc
@@ -55,9 +59,9 @@ files[] = includes/migrate/7200/og_user_roles.migrate.inc
 
 
 
-; Information added by drupal.org packaging script on 2013-08-07
-version = "7.x-2.3"
+; Information added by  packaging script on 2013-11-20
+version = "7.x-2.4"
 core = "7.x"
 project = "og"
-datestamp = "1375899483"
+datestamp = "1384971519"
 

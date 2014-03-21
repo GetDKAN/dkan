@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains SearchApiViewsQuery.
+ */
+
+/**
  * Views query class using a Search API index as the data source.
  */
 class SearchApiViewsQuery extends views_plugin_query {
@@ -49,6 +54,13 @@ class SearchApiViewsQuery extends views_plugin_query {
    * @var array
    */
   protected $errors;
+
+  /**
+   * Whether to abort the search instead of executing it.
+   *
+   * @var bool
+   */
+  protected $abort = FALSE;
 
   /**
    * The names of all fields whose value is required by a handler.
@@ -173,7 +185,6 @@ class SearchApiViewsQuery extends views_plugin_query {
       '#options' => array(),
       '#default_value' => $this->options['parse_mode'],
     );
-    $modes = array();
     foreach ($this->query->parseModes() as $key => $mode) {
       $form['parse_mode']['#options'][$key] = $mode['name'];
       if (!empty($mode['description'])) {
@@ -209,6 +220,7 @@ class SearchApiViewsQuery extends views_plugin_query {
       // Add a nested filter for each filter group, with its set conjunction.
       foreach ($this->where as $group_id => $group) {
         if (!empty($group['conditions']) || !empty($group['filters'])) {
+          $group += array('type' => 'AND');
           // For filters without a group, we want to always add them directly to
           // the query.
           $filter = ($group_id === '') ? $this->query : $this->query->createFilter($group['type']);
@@ -235,10 +247,29 @@ class SearchApiViewsQuery extends views_plugin_query {
     $view->init_pager();
     $this->pager->query();
 
+    // Set the search ID, if it was not already set.
+    if ($this->query->getOption('search id') == get_class($this->query)) {
+      $this->query->setOption('search id', 'search_api_views:' . $view->name . ':' . $view->current_display);
+    }
+
     // Add the "search_api_bypass_access" option to the query, if desired.
     if (!empty($this->options['search_api_bypass_access'])) {
       $this->query->setOption('search_api_bypass_access', TRUE);
     }
+
+    // If the View and the Panel conspire to provide an overridden path then
+    // pass that through as the base path.
+    if (!empty($this->view->override_path) && strpos(current_path(), $this->view->override_path) !== 0) {
+      $this->query->setOption('search_api_base_path', $this->view->override_path);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function alter(&$view) {
+    parent::alter($view);
+    drupal_alter('search_api_views_query', $view, $this);
   }
 
   /**
@@ -249,7 +280,7 @@ class SearchApiViewsQuery extends views_plugin_query {
    * $view->pager['current_page'].
    */
   public function execute(&$view) {
-    if ($this->errors) {
+    if ($this->errors || $this->abort) {
       if (error_displayable()) {
         foreach ($this->errors as $msg) {
           drupal_set_message(check_plain($msg), 'error');
@@ -261,24 +292,42 @@ class SearchApiViewsQuery extends views_plugin_query {
       return;
     }
 
+    // Calculate the "skip result count" option, if it wasn't already set to
+    // FALSE.
+    $skip_result_count = $this->query->getOption('skip result count', TRUE);
+    if ($skip_result_count) {
+      $skip_result_count = !$this->pager->use_count_query() && empty($view->get_total_rows);
+      $this->query->setOption('skip result count', $skip_result_count);
+    }
+
     try {
-      $start = microtime(TRUE);
-      // Add range and search ID (if it wasn't already set).
-      $this->query->range($this->offset, $this->limit);
-      if ($this->query->getOption('search id') == get_class($this->query)) {
-        $this->query->setOption('search id', 'search_api_views:' . $view->name . ':' . $view->current_display);
+      // Trigger pager pre_execute().
+      $this->pager->pre_execute($this->query);
+
+      // Views passes sometimes NULL and sometimes the integer 0 for "All" in a
+      // pager. If set to 0 items, a string "0" is passed. Therefore, we unset
+      // the limit if an empty value OTHER than a string "0" was passed.
+      if (!$this->limit && $this->limit !== '0') {
+        $this->limit = NULL;
       }
+      // Set the range. (We always set this, as there might even be an offset if
+      // all items are shown.)
+      $this->query->range($this->offset, $this->limit);
+
+      $start = microtime(TRUE);
 
       // Execute the search.
       $results = $this->query->execute();
       $this->search_api_results = $results;
 
       // Store the results.
-      $this->pager->total_items = $view->total_rows = $results['result count'];
-      if (!empty($this->pager->options['offset'])) {
-        $this->pager->total_items -= $this->pager->options['offset'];
+      if (!$skip_result_count) {
+        $this->pager->total_items = $view->total_rows = $results['result count'];
+        if (!empty($this->pager->options['offset'])) {
+          $this->pager->total_items -= $this->pager->options['offset'];
+        }
+        $this->pager->update_page_info();
       }
-      $this->pager->update_page_info();
       $view->result = array();
       if (!empty($results['results'])) {
         $this->addResults($results['results'], $view);
@@ -286,12 +335,31 @@ class SearchApiViewsQuery extends views_plugin_query {
       // We shouldn't use $results['performance']['complete'] here, since
       // extracting the results probably takes considerable time as well.
       $view->execute_time = microtime(TRUE) - $start;
+
+      // Trigger pager post_execute().
+      $this->pager->post_execute($view->result);
     }
     catch (Exception $e) {
       $this->errors[] = $e->getMessage();
       // Recursion to get the same error behaviour as above.
       return $this->execute($view);
     }
+  }
+
+  /**
+   * Aborts this search query.
+   *
+   * Used by handlers to flag a fatal error which shouldn't be displayed but
+   * still lead to the view returning empty and the search not being executed.
+   *
+   * @param string|null $msg
+   *   Optionally, a translated, unescaped error message to display.
+   */
+  public function abort($msg = NULL) {
+    if ($msg) {
+      $this->errors[] = $msg;
+    }
+    $this->abort = TRUE;
   }
 
   /**
@@ -492,9 +560,9 @@ class SearchApiViewsQuery extends views_plugin_query {
   // Query interface methods (proxy to $this->query)
   //
 
-  public function createFilter($conjunction = 'AND') {
+  public function createFilter($conjunction = 'AND', $tags = array()) {
     if (!$this->errors) {
-      return $this->query->createFilter($conjunction);
+      return $this->query->createFilter($conjunction, $tags);
     }
   }
 

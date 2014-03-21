@@ -242,7 +242,7 @@ class ServicesResourceNodetests extends ServicesWebTestCase {
 
     $responseArray = $this->servicesPost($this->endpoint->path . '/node', array('node' => $node));
 
-    $this->assertTrue($responseArray['code'] == 401, 'User with not sufficient permissions cannot create node', 'NodeResource: Create');
+    $this->assertTrue($responseArray['code'] == 403, 'User with not sufficient permissions cannot create node', 'NodeResource: Create');
   }
 
   /**
@@ -319,6 +319,16 @@ class ServicesResourceNodetests extends ServicesWebTestCase {
     $node = node_load($node->nid, TRUE);
     $this->assertTrue(($testfile1->filename == $node->field_image[LANGUAGE_NONE][0]['filename']) &&
                       ($testfile2->filename == $node->field_image[LANGUAGE_NONE][1]['filename']), 'Multiple files uploaded.');
+
+    // Verify total file count == 2 and also proper delta sequence in db.
+    $query = db_select('field_data_field_image', 'fd');
+    $deltas = $query->condition('entity_type', 'node')
+      ->condition('bundle', $node->type)
+      ->condition('entity_id', $node->nid)
+      ->fields('fd', array('delta'))
+      ->execute()
+      ->fetchCol(0);
+    $this->assertTrue($deltas == array(0,1), 'Attached file deltas are sequential.');
   }
 
   /**
