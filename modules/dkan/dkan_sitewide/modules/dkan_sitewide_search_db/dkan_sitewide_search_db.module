@@ -5,3 +5,21 @@
  */
 
 include_once 'dkan_sitewide_search_db.features.inc';
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function dkan_sitewide_search_db_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if ($root_path == 'dataset') {
+    // Add "Add Dataset" link to 
+    $item = menu_get_item('node/add/dataset');
+    if ($item['access']) {
+      // Reword link name in case display name was overwritten
+      $item['title'] = t('Add @groupname', array('@groupname' => $item['title']));
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
+}
