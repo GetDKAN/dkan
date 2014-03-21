@@ -21,10 +21,11 @@ files[] = views/entityreference_plugin_row_fields.inc
 files[] = tests/entityreference.handlers.test
 files[] = tests/entityreference.taxonomy.test
 files[] = tests/entityreference.admin.test
+files[] = tests/entityreference.feeds.test
 
-; Information added by drupal.org packaging script on 2012-11-18
-version = "7.x-1.0"
+; Information added by  packaging script on 2013-11-20
+version = "7.x-1.1"
 core = "7.x"
 project = "entityreference"
-datestamp = "1353230808"
+datestamp = "1384973110"
 

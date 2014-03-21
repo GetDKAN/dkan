@@ -1,10 +1,20 @@
 <?php
 
 /**
+ * @file
+ * Contains SearchApiServiceInterface and SearchApiAbstractService.
+ */
+
+/**
  * Interface defining the methods search services have to implement.
  *
  * Before a service object is used, the corresponding server's data will be read
  * from the database (see SearchApiAbstractService for a list of fields).
+ *
+ * Most methods in this interface (where any change in data occurs) can throw a
+ * SearchApiException. The server entity class SearchApiServer catches these
+ * exceptions and uses the server tasks system to assure that the action is
+ * later retried.
  */
 interface SearchApiServiceInterface {
 
@@ -19,8 +29,15 @@ interface SearchApiServiceInterface {
   public function __construct(SearchApiServer $server);
 
   /**
-   * Form callback. Might be called on an uninitialized object - in this case,
-   * the form is for configuring a newly created server.
+   * Form constructor for the server configuration form.
+   *
+   * Might be called with an incomplete server (no ID). In this case, the form
+   * is displayed for the initial creation of the server.
+   *
+   * @param array $form
+   *   The server options part of the form.
+   * @param array $form_state
+   *   The current form state.
    *
    * @return array
    *   A form array for setting service-specific options.
@@ -81,29 +98,36 @@ interface SearchApiServiceInterface {
   public function supportsFeature($feature);
 
   /**
-   * View this server's settings. Output can be HTML or a render array, a <dl>
-   * listing all relevant settings is preferred.
+   * Displays this server's settings.
+   *
+   * Output can be HTML or a render array, a <dl> listing all relevant settings
+   * is preferred.
    */
   public function viewSettings();
 
   /**
+   * Reacts to the server's creation.
+   *
    * Called once, when the server is first created. Allows it to set up its
    * necessary infrastructure.
    */
   public function postCreate();
 
   /**
-   * Notifies this server that its fields are about to be updated. The server's
-   * $original property can be used to inspect the old property values.
+   * Notifies this server that its fields are about to be updated.
    *
-   * @return
+   * The server's $original property can be used to inspect the old property
+   * values.
+   *
+   * @return bool
    *   TRUE, if the update requires reindexing of all content on the server.
    */
   public function postUpdate();
 
   /**
-   * Notifies this server that it is about to be deleted from the database and
-   * should therefore clean up, if appropriate.
+   * Notifies this server that it is about to be deleted from the database.
+   *
+   * This should execute any necessary cleanup operations.
    *
    * Note that you shouldn't call the server's save() method, or any
    * methods that might do that, from inside of this method as the server isn't
@@ -112,18 +136,21 @@ interface SearchApiServiceInterface {
   public function preDelete();
 
   /**
-   * Add a new index to this server.
+   * Adds a new index to this server.
    *
    * If the index was already added to the server, the object should treat this
    * as if removeIndex() and then addIndex() were called.
    *
    * @param SearchApiIndex $index
    *   The index to add.
+   *
+   * @throws SearchApiException
+   *   If an error occurred while adding the index.
    */
   public function addIndex(SearchApiIndex $index);
 
   /**
-   * Notify the server that the field settings for the index have changed.
+   * Notifies the server that the field settings for the index have changed.
    *
    * If any user action is necessary as a result of this, the method should
    * use drupal_set_message() to notify the user.
@@ -134,11 +161,14 @@ interface SearchApiServiceInterface {
    * @return bool
    *   TRUE, if this change affected the server in any way that forces it to
    *   re-index the content. FALSE otherwise.
+   *
+   * @throws SearchApiException
+   *   If an error occurred while reacting to the change of fields.
    */
   public function fieldsUpdated(SearchApiIndex $index);
 
   /**
-   * Remove an index from this server.
+   * Removes an index from this server.
    *
    * This might mean that the index has been deleted, or reassigned to a
    * different server. If you need to distinguish between these cases, inspect
@@ -146,14 +176,20 @@ interface SearchApiServiceInterface {
    *
    * If the index wasn't added to the server, the method call should be ignored.
    *
+   * Implementations of this method should also check whether $index->read_only
+   * is set, and don't delete any indexed data if it is.
+   *
    * @param $index
    *   Either an object representing the index to remove, or its machine name
    *   (if the index was completely deleted).
+   *
+   * @throws SearchApiException
+   *   If an error occurred while removing the index.
    */
   public function removeIndex($index);
 
   /**
-   * Index the specified items.
+   * Indexes the specified items.
    *
    * @param SearchApiIndex $index
    *   The search index for which items should be indexed.
@@ -184,7 +220,7 @@ interface SearchApiServiceInterface {
   public function indexItems(SearchApiIndex $index, array $items);
 
   /**
-   * Delete items from an index on this server.
+   * Deletes indexed items from this server.
    *
    * Might be either used to delete some items (given by their ids) from a
    * specified index, or all items from that index, or all items from all
@@ -197,11 +233,14 @@ interface SearchApiServiceInterface {
    * @param SearchApiIndex $index
    *   The index from which items should be deleted, or NULL if all indexes on
    *   this server should be cleared (then, $ids has to be 'all').
+   *
+   * @throws SearchApiException
+   *   If an error occurred while trying to delete the items.
    */
   public function deleteItems($ids = 'all', SearchApiIndex $index = NULL);
 
   /**
-   * Create a query object for searching on an index lying on this server.
+   * Creates a query object for searching on an index lying on this server.
    *
    * @param SearchApiIndex $index
    *   The index to search on.
@@ -332,6 +371,30 @@ abstract class SearchApiAbstractService implements SearchApiServiceInterface {
   }
 
   /**
+   * Returns additional, service-specific information about this server.
+   *
+   * If a service class implements this method and supports the
+   * "search_api_service_extra" option, this method will be used to add extra
+   * information to the server's "View" tab.
+   *
+   * In the default theme implementation this data will be output in a table
+   * with two columns along with other, generic information about the server.
+   *
+   * @return array
+   *   An array of additional server information, with each piece of information
+   *   being an associative array with the following keys:
+   *   - label: The human-readable label for this data.
+   *   - info: The information, as HTML.
+   *   - status: (optional) The status associated with this information. One of
+   *     "info", "ok", "warning" or "error". Defaults to "info".
+   *
+   * @see supportsFeature()
+   */
+  public function getExtraInformation() {
+    return array();
+  }
+
+  /**
    * Implements SearchApiServiceInterface::__construct().
    *
    * Does nothing, by default.
@@ -385,7 +448,9 @@ abstract class SearchApiAbstractService implements SearchApiServiceInterface {
    * By default, removes all items from that index.
    */
   public function removeIndex($index) {
-    $this->deleteItems('all', $index);
+    if (is_object($index) && empty($index->read_only)) {
+      $this->deleteItems('all', $index);
+    }
   }
 
   /**

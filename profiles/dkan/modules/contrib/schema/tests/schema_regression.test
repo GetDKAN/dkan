@@ -15,28 +15,16 @@ class SchemaRegressionTest extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('schema');
-  }
-
-  function tearDown() {
-    db_query("DROP TABLE schema_testtbl");
-    db_drop_table('schema_testtbl');
-    parent::tearDown();
+    parent::setUp('schema', 'schema_test');
   }
 
   /**
    * Test API for adding tables
    */
   function testInspectionConflict518210() {
-    // Create an unprefixed table...
-    $tablename = "schema_testtbl";
-    $sql = "CREATE TABLE $tablename (
-              fid INT NOT NULL,
-              destid INT NOT NULL
-            )";
-    db_query($sql);
-
-    // ...and a prefixed table, with a different column list
+    // Drop the test table and re-create it with different columns.
+    $table = 'schema_test_1';
+    db_drop_table($table);
     $schema = array(
       'fields' => array(
         'sourceid' => array(
@@ -49,11 +37,11 @@ class SchemaRegressionTest extends DrupalWebTestCase {
         ),
       ),
     );
-    db_create_table($tablename, $schema);
+    db_create_table($table, $schema);
 
     // Do the full inspection, and get our specified tablename
     $inspect = schema_dbobject()->inspect();
-    $fields = $inspect[$tablename]['fields'];
+    $fields = $inspect[$table]['fields'];
 
     // We should see only the columns from the prefixed version
     $this->assertFalse(isset($fields['fid']), 'Column fid does not exist');
@@ -61,7 +49,8 @@ class SchemaRegressionTest extends DrupalWebTestCase {
     $this->assertTrue(isset($fields['destid']), 'Column destid exists.');
 
     // Inspect the table by using schema_compare().
-    $comparison = schema_compare_table($inspect[$tablename]);
+    $schema = drupal_get_schema('schema_test_1');
+    $comparison = schema_compare_table($schema);
     $this->assertEqual($comparison['status'], 'different', 'Table does not match its schema.');
   }
 }

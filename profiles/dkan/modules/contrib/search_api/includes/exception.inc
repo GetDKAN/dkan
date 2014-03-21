@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains SearchApiException.
+ */
+
+/**
  * Represents an exception or error that occurred in some part of the Search API
  * framework.
  */

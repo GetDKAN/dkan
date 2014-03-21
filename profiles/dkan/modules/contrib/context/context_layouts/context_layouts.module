@@ -49,7 +49,7 @@ function context_layouts_theme() {
         if (!empty($layout['template'])) {
           $info["page__context_layouts_{$theme->name}_{$layout['layout']}"] = array(
             'template' => $layout['template'],
-            'path' => drupal_get_path('theme', $theme->name),
+            'path' => $layout['path'],
           );
         }
       }
@@ -107,10 +107,12 @@ function context_layouts_get_layouts($theme = NULL, $reset = FALSE) {
 
     // Merge layout info into a single array.
     foreach ($themes as $key => $info) {
+      $path = drupal_get_path('theme', $key);
       if (!empty($info['layouts'])) {
         foreach ($info['layouts'] as $layout => $layout_info) {
           $layout_info['layout'] = str_replace('-', '_', $layout);
           $layout_info['theme'] = $key;
+          $layout_info['path'] = $path;
           $layouts[$theme][$layout] = $layout_info;
         }
       }

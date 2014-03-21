@@ -1260,7 +1260,7 @@ class OgMigrate7200TestCase extends UpdatePathTestCase {
 
     // Assert field name was registered in the OG membership.
     $og_membership = entity_load_single('og_membership', 1);
-    $this->assertEqual($og_membership->field_name, 'og_node', 'Field name was registered in the OG membership.');
+    $this->assertTrue($og_membership->field_name, 'Field name was registered in the OG membership.');
   }
 }
 
@@ -1865,5 +1865,227 @@ class OgNonMembersPublishingContentTestCase extends DrupalWebTestCase {
     // group.
     $this->drupalpost('node/' . $nid . '/edit', array(), t('Save'));
     $this->assertText($this->group->title, 'The node is still referenced to the group.');
+  }
+}
+
+/**
+ * Verify that users only with OG permissions can post only inside a group
+ *
+ */
+class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
+  public $group;
+  public $site_user;
+  public $group_user;
+  public $group_content;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'User can publish group content only inside group',
+      'description' => "User with permission to create a group content only in a group can't publish outside of a group.",
+      'group' => 'Organic groups',
+    );
+  }
+
+  public function setUp() {
+    parent::setUp('og');
+
+    // Create a group content type.
+    $group = $this->drupalCreateContentType();
+    og_create_field(OG_GROUP_FIELD, 'node', $group->type);
+
+    // Create the group.
+    $settings = array(
+      'type' => $group->type,
+      OG_GROUP_FIELD . '[und][0][value]' => 1,
+      'uid' => 1,
+    );
+    $this->group = $this->drupalCreateNode($settings);
+
+    // Create the group content content type.
+    $this->group_content = $this->drupalCreateContentType();
+
+    // Attach the audience field.
+    og_create_field(OG_AUDIENCE_FIELD, 'node', $this->group_content->type);
+
+    // Add permission to the group.
+    $og_roles = og_roles('node', $group->type);
+    $rid = array_search(OG_AUTHENTICATED_ROLE, $og_roles);
+    og_role_change_permissions($rid, array(
+      'create ' . $this->group_content->type . ' content' => 1,
+      'update own ' . $this->group_content->type . ' content' => 1,
+    ));
+
+    // Creating users.
+    $this->group_user = $this->drupalCreateUser();
+    $this->site_user = $this->drupalCreateUser(array('create ' . $this->group_content->type . ' content', 'edit own ' . $this->group_content->type . ' content'));
+
+    og_group('node', $this->group->nid, array('entity' => $this->group_user));
+  }
+
+  /**
+   * Grant to a user the permission to publish a node of a group content and
+   * verify that he can't create a node of that content type outside a group.
+   */
+  public function testGroupUserCanPostGroupContentOnlyInGroup() {
+    $node_title = $this->randomName();
+    $this->drupalLogin($this->group_user);
+    $this->drupalPost('node/add', array('title' => $node_title), t('Save'));
+    $this->assertText("You must select one or more groups for this content", "The user can't publish a content outside a group");
+
+    // Check the user can publish node inside the group.
+    $edit = array(
+      'title' => $node_title,
+      'og_group_ref[und][0][default][]' => array($this->group->nid),
+    );
+    $this->drupalPost('node/add', $edit, t('Save'));
+
+    $this->assertText($this->group_content->type . " " . $node_title . " has been created.", "The user can create content inside a group.");
+
+    // Check the user can edit the node.
+    $query = new entityFieldQuery();
+    $result = $query
+      ->entityCondition('entity_type', 'node')
+      ->propertyCondition('title', $node_title)
+      ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $this->group->nid)
+      ->execute();
+    $node_title = $this->randomName();
+
+    $edit = array(
+      'title' => $node_title,
+      'og_group_ref[und][0][default][]' => array(),
+    );
+    $this->drupalPost('node/' . reset($result['node'])->nid . '/edit', $edit, t('Save'));
+    $this->assertText("You must select one or more groups for this content", "The user can't edit a content outside a group");
+
+    $edit = array(
+      'title' => $node_title,
+      'og_group_ref[und][0][default][]' => array($this->group->nid),
+    );
+    $this->drupalPost('node/' . reset($result['node'])->nid . '/edit', $edit, t('Save'));
+    $this->assertText($this->group_content->type . " " . $node_title . " has been updated.", "The user can edit content inside a group.");
+  }
+
+  /**
+   * Verify that non-group user can post group content outside of a group.
+   */
+  public function testNonGroupUserCanPostGroupContentOutsideGroup() {
+    $this->drupalLogin($this->site_user);
+
+    // Set node access strict variable to FALSE for posting outside groups.
+    variable_set('og_node_access_strict', FALSE);
+
+    // Verify that the user can publish group content outside a group.
+    $node_title = $this->randomName();
+    $this->drupalPost('node/add', array('title' => $node_title), t('Save'));
+
+    $params = array(
+      '@type' => $this->group_content->type,
+      '@title' => $node_title,
+    );
+    $this->assertText(format_string("@type @title has been created.", $params), "The user can create content outside a group.");
+
+    // Check the user can edit the node.
+    $query = new entityFieldQuery();
+    $result = $query
+      ->entityCondition('entity_type', 'node')
+      ->propertyCondition('title', $node_title)
+      ->execute();
+
+    $node_title = $this->randomName();
+    $edit = array(
+      'title' => $node_title,
+    );
+    $this->drupalPost('node/' . reset($result['node'])->nid . '/edit', $edit, t('Save'));
+    $this->assertText($this->group_content->type . " " . $node_title . " has been updated.", "The user can edit content outside a group.");
+  }
+}
+
+/**
+ * Test for publishing content into group the user is not a member.
+ */
+class OgAutoCompleteAccessibleGroupsValidation extends DrupalWebTestCase {
+
+  var $dummy_content_type;
+
+  var $group_node_1;
+  var $group_node_2;
+
+  var $group_owner;
+  var $group_member;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Auto complete for non accessible groups',
+      'description' => "Verify the user cannot fill in the auto complete field with the name of a un-accessible group name.",
+      'group' => 'Organic groups',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('og');
+
+    // Create group content.
+    $this->drupalCreateContentType(array( 'name' => 'Group content', 'type' => 'group_content'));
+    $this->drupalCreateContentType(array( 'name' => 'Group', 'type' => 'group'));
+
+    $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+    $og_field['instance']['settings']['behaviors']['og_widget']['default']['widget_type'] = 'entityreference_autocomplete';
+    og_create_field(OG_AUDIENCE_FIELD, 'node', 'group_content', $og_field);
+    og_create_field(OG_GROUP_FIELD, 'node', 'group');
+
+    // Create users.
+    $this->group_owner = $this->drupalCreateUser(array('create group_content content', 'administer group'));
+    $this->group_member = $this->drupalCreateUser(array('create group_content content'));
+
+    // Create a group node.
+    $settings = array();
+    $settings['type'] = 'group';
+    $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = TRUE;
+    $settings['uid'] = $this->group_owner->uid;
+    $this->group_node_1 = $this->drupalCreateNode($settings);
+    og_group('node', $this->group_node_1, array(
+      'entity' => $this->group_member,
+    ));
+
+    $settings = array();
+    $settings['type'] = 'group';
+    $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = TRUE;
+    $settings['uid'] = $this->drupalCreateUser()->uid;
+    $this->group_node_2 = $this->drupalCreateNode($settings);
+  }
+
+  /**
+   * Verify that a user can't publish content into group that he isn't a member.
+   */
+  function testAuthenticatedUserCantReferenceToPrivateGroup() {
+    $this->drupalLogin($this->group_member);
+
+    // Try to publish content into group the user is not a member.
+    $this->drupalPost('node/add/group_content', array('title' => 'New group content', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_2->title . '(' . $this->group_node_2->nid . ')'), 'Save');
+    $this->assertText('The referenced group (node: ' . $this->group_node_2->nid . ') is invalid.', 'The reference to group the user is not accessible has achieved');
+
+    // Try to publish content into group that doesn't exist.
+    $this->drupalPost('node/add/group_content', array('title' => 'New group content', 'og_group_ref[und][0][default][0][target_id]' => 'foo (900)'), 'Save');
+    $this->assertText('The referenced group (node: 900) is invalid.', 'The reference to group the user is not accessible has achieved');
+
+    // Try to publish content into the group the user is a member of.
+    $this->drupalPost('node/add/group_content', array('title' => 'New group content 2', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_1->title . '(' . $this->group_node_1->nid . ')'), 'Save');
+    $this->assertText('Group content New group content 2 has been created.', 'The group content created successfully');
+
+    // Testing the widgets my group and other groups.
+    $this->drupalLogin($this->group_owner);
+
+    $this->drupalPost('node/add/group_content', array('title' => 'New group content 3', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_2->title . '(' . $this->group_node_2->nid . ')'), 'Save');
+    $this->assertText('The referenced group (node: ' . $this->group_node_2->nid . ') is invalid.', 'The reference to group the user is not accessible has achieved');
+
+    $this->drupalPost('node/add/group_content', array('title' => 'New group content 3', 'og_group_ref[und][0][admin][0][target_id]' => $this->group_node_2->title . '(' . $this->group_node_2->nid . ')'), 'Save');
+    $this->assertText('Group content New group content 3 has been created.', 'The group content created successfully');
+
+    $this->drupalPost('node/add/group_content', array('title' => 'New group content 3', 'og_group_ref[und][0][admin][0][target_id]' => 'foo (900)'), 'Save');
+    $this->assertText('The referenced group (node: 900) is invalid.', 'The reference to group the user is not accessible has achieved');
+
+    // Try to publish content into the group the user is a member of.
+    $this->drupalPost('node/add/group_content', array('title' => 'New group content 4', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_1->title . '(' . $this->group_node_1->nid . ')'), 'Save');
+    $this->assertText('Group content New group content 4 has been created.', 'The group content created successfully');
   }
 }

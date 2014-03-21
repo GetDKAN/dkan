@@ -212,6 +212,7 @@
           content.slideToggle(100, afterToggle);
         }
 
+        $container.toggleClass('ctools-collapsed');
         toggle.toggleClass('ctools-toggle-collapsed');
 
         // If we're supposed to remember the state of this class, do so.

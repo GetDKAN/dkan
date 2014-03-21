@@ -9,14 +9,16 @@
 /**
  * Subscribe the current user to a group.
  *
- * @param $node
- *   The group node entity.
- * @param $uid
- *   Optional; The user ID of the subscribing user. If empty the current user
- *   will be used.
+ * @param $entity_type
+ *   The group entity type.
+ * @param $etid
+ *   The group entity ID.
+ * @param $field_name
+ *   Optional; Group audience field name. Defaults to first best matching field.
  */
 function og_ui_subscribe($entity_type, $etid, $field_name = NULL) {
   global $user;
+
   $entity_info = entity_get_info($entity_type);
   if (!$entity_type || !$entity_info) {
     // Not a valid entity type.

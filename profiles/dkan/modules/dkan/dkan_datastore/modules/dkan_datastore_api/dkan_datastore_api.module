@@ -33,6 +33,17 @@ function dkan_datastore_api_menu() {
 }
 
 /**
+ * Implements hook_init().
+ */
+function dkan_datastore_api_init() {
+  if (isset($_GET['resource_id']) && $_GET['q'] != 'api/action/datastore/search.json') {
+    $_GET['query'] = $_GET['q'];
+    unset($_GET['q']);
+    drupal_goto('api/action/datastore/search.json', array('query' => $_GET));
+  }
+}
+
+/**
  * Redirects from CKAN API url to DKAN.
  *
  * Necessary since Services wouldn't accept datastore_search as an endpoint.
@@ -171,11 +182,12 @@ function _dkan_datastore_api_datastore_index($resource_ids, $filters, $query, $o
       $ids = array_values($resource_ids);
       $resource_id = array_shift($ids);
       $table = dkan_datastore_api_tablename($resource_id);
+      $sort = dkan_datastore_api_sort_clean($sort);
       $data_select = dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, $sort);
       dkan_datastore_api_add_index_conditions($data_select, $filters);
     }
+    // Query for a multiple resources.
     else {
-      // Query for a multiple resources.
       $i = 0;
       foreach ($resource_ids as $alias => $resource_id) {
         // We can't have multiple resources if we can't join them.
@@ -205,6 +217,9 @@ function _dkan_datastore_api_datastore_index($resource_ids, $filters, $query, $o
         $i++;
       }
     }
+    if ($query && $query != 'api/3/action/datastore_search') {
+      dkan_datastore_api_add_index_query($data_select, $table, $query);
+    }
   }
   catch(Exception $ex) {
     return array('Caught exception: ' . $ex->getMessage());
@@ -232,6 +247,45 @@ function dkan_datastore_api_add_index_conditions(&$data_select, $filters, $alias
 }
 
 /**
+ * Add search terms ("query") to query.
+ *
+ * @todo Add SQL server support
+ */
+function dkan_datastore_api_add_index_query(&$data_select, $table, $query) {
+  if (db_driver() == 'mysql') {
+    // Get fulltext fields
+    $ft_result = db_query("SHOW INDEX IN $table WHERE Index_type = 'FULLTEXT'");
+    $ft_fields = array();
+    foreach($ft_result as $ft_row) {
+      $ft_fields[] = $ft_row->Column_name;
+    }
+    if (count($ft_fields)) {
+      $field_list = implode(', ', $ft_fields);
+      $data_select->where("MATCH($field_list) AGAINST (:query)", array(':query' => $query));
+      return;
+    }
+  }
+  // If no FULLTEXT indexes, try concat method if on mysql or postgres
+  if ($field_list = feeds_flatstore_fulltext_fields(drupal_get_schema($table))) {
+    if (db_driver() == 'mysql' || db_driver() == 'pgsql') {
+      $data_select->where("CONCAT_WS(' ', $field_list) LIKE :query", array(':query' => "%$query%"));
+    }
+    // For MS SQL Server, use alternate concat syntax
+    elseif (db_driver() == 'sqlsrv') {
+      $ft_fields = explode(',', $field_list);
+      $field_list = implode("+' '+", $ft_fields);
+      $data_select->where("$field_list LIKE :query", array(':query' => "%$query%"));
+    }
+    else {
+      throw new Exception('Text search currently only works with MySQL, PostgresSQL or SQL Server datastore.');
+    }
+  }
+  else {
+    throw new Exception('No text search compatable fields on this datastore.');
+  }
+}
+
+/**
  * Adds additional fields and join.
  */
 function dkan_datastore_api_build_additional_index_query(&$data_select, $table, $fields, $sort, $alias, $join) {
@@ -249,6 +303,27 @@ function dkan_datastore_api_build_additional_index_query(&$data_select, $table, 
   else {
     $data_select->addField($alias, explode(',', $fields));
   }
+}
+
+/**
+ * Makes sure we are using column names for sorts.
+ */
+function dkan_datastore_api_sort_clean($sort) {
+  if (strpos($sort,' asc') !== false) {
+    $type = 'asc';
+  }
+  elseif (strpos($sort,' desc') !== false) {
+    $type = 'desc';
+  }
+  else {
+    return $sort;
+  }
+  $sort = explode(" $type", $sort);
+  foreach ($sort as $key => $value) {
+    $sort[$key] = feeds_flatstore_processor_safe_name($value);
+  }
+  $sort = implode(" $type", $sort);
+  return $sort;
 }
 
 /**
@@ -276,14 +351,15 @@ function dkan_datastore_api_get_feeds_source($nid) {
  * Builds index query.
  */
 function dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, $sort, $alias = 't') {
+  $sort = explode(" ", $sort);
   $data_select = db_select($table, $alias);
-  if (isset($sort) && is_array($sort)) {
-    foreach ($sort as $field => $type) {
-      $data_select->orderBy($alias . ' .' . $field, $type);
+  if (isset($sort) && !empty($sort[0])) {
+    foreach (explode(",", $sort[0]) as $field) {
+      $data_select->orderBy($alias . '.' . $field, $sort[1]);
     }
   }
   else {
-    $data_select->orderBy($alias . '.timestamp', 'DESC');
+    $data_select->orderBy($alias . '.feeds_flatstore_entry_id', 'ASC');
   }
   dkan_datastore_api_resource_build_index_query($data_select, $offset, $fields, $limit, $alias, $table);
   return $data_select;
@@ -293,7 +369,7 @@ function dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, 
  * Same as services version but not adding conditions.
  */
 function dkan_datastore_api_resource_build_index_query(&$query, $page, $fields, $page_size, $alias, $table) {
-  $default_limit = variable_get("{$table}_index_page_size", 20);
+  $default_limit = variable_get("dkan_datastore_default_page_size", 100);
   if ((!user_access('perform unlimited index queries') && $page_size > $default_limit) || !$page_size) {
     $page_size = $default_limit;
   }
@@ -328,12 +404,35 @@ function dkan_datastore_api_resource_build_index_list($results, $table, $fields,
   $help = array('help' => dkan_datastore_api_resource_help());
   $count = array('limit' => count($items));
   $success = count($items) ? array('success' => TRUE) : array('success' => FALSE);
-  $schema = drupal_get_schema($table);
+  // Use labels from data module if available.
+  if ($data_table = data_get_table($table)) {
+    $schema = $data_table->table_schema;
+    $meta = $data_table->meta;
+    $new_items = array();
+    foreach ($items as $item) {
+      $new_item = new stdClass();
+      foreach ($item as $name => $data) {
+        if (isset($meta['fields'][$name]['label']) && $new_name = $meta['fields'][$name]['label']) {
+          $new_item->$new_name = $data;
+        }
+        else {
+          $new_item->$name = $data;
+        }
+      }
+      $new_items[] = $new_item;
+    }
+    $items = $new_items;
+  }
+  else {
+    $schema = drupal_get_schema($table);
+    $meta = '';
+  }
   $return = new stdClass();
   if ($fields == '*') {
     foreach ($schema['fields'] as $name => $field) {
       // Don't include fields added by feeds_flatstore_processor.
       if ($name != 'feeds_flatstore_entry_id' && $name != 'timestamp' && $name != 'feeds_entity_id') {
+        $name = $meta ? $meta['fields'][$name]['label'] : $name;
         $return->fields[] = array('id' => $name, 'type' => $field['type']);
       }
     }
@@ -342,13 +441,14 @@ function dkan_datastore_api_resource_build_index_list($results, $table, $fields,
     $used_fields = explode(',', $fields);
     foreach ($used_fields as $key => $field) {
       $output_fields[$field] = $schema['fields'][$field];
-      $output_fields[$field]['label'] = $field;
+      $output_fields[$field]['label'] = $meta ? $meta['fields'][$field]['label'] : $field;
     }
     $fields = $output_fields;
   }
   $return->resource_id = $resource_ids;
   $return->limit = $count['limit'];
-  $return->total = db_query("SELECT feeds_flatstore_entry_id from {$table}")->rowCount();
+  $total = db_query("SELECT count(feeds_flatstore_entry_id) from {$table}")->fetchCol();
+  $return->total = $total[0];
   $return->records = $items;
 
   return $help + $success + array('result' => $return);

@@ -41,6 +41,10 @@ class SearchApiViewsHandlerFilterLanguage extends SearchApiViewsHandlerFilterOpt
    */
   public function query() {
     global $language_content;
+
+    if (!is_array($this->value)) {
+      $this->value = $this->value ? array($this->value) : array();
+    }
     foreach ($this->value as $i => $v) {
       if ($v == 'current') {
         $this->value[$i] = $language_content->language;

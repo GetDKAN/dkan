@@ -427,6 +427,73 @@ function _data_override($name) {
 }
 
 /**
+ * Implements hook_date_views_fields().
+ *
+ * All modules that create custom fields that use the
+ * 'views_handler_field_date' handler can provide
+ * additional information here about the type of
+ * date they create so the date can be used by
+ * the Date API views date argument and date filter.
+ *
+ * @todo: remove the above comment when this hook is properly documented in
+ * Date module: https://drupal.org/node/2171345
+ *
+ * For fields to be considered by Date's compound filter and argument handlers,
+ * they must have the 'is date' property set. This is taken care of by our
+ * hook_views_data(), via data_get_table_field_views_data().
+ */
+function data_date_views_fields($field) {
+  // $field is of the form "TABLE.FIELD".
+  list($table_name, $field_name) = explode('.', $field);
+
+  $tables = data_get_all_tables();
+
+  // If this is being called for a field that's not on one of our data tables,
+  // then we have nothing to say.
+  if (!isset($tables[$table_name])) {
+    return;
+  }
+
+  $table = $tables[$table_name];
+
+  $meta = $table->get('meta');
+
+  // We require the field to be configured for its date properties.
+  // See data_ui_date_form().
+  if (!isset($meta['fields'][$field_name]['date'])) {
+    return;
+  }
+
+  // Default values; cribbed from date_views_date_views_fields().
+  $values = array(
+    // The type of date: DATE_UNIX, DATE_ISO, DATE_DATETIME.
+    'sql_type' => DATE_UNIX,
+    // Timezone handling options: 'none', 'site', 'date', 'utc' .
+    'tz_handling' => 'site',
+    // Needed only for dates that use 'date' tz_handling.
+    'timezone_field' => '',
+    // Needed only for dates that use 'date' tz_handling.
+    'offset_field' => '',
+    // Array of "table.field" values for related fields that should be
+    // loaded automatically in the Views SQL.
+    'related_fields' => array(),
+    // Granularity of this date field's db data.
+    'granularity' => array('year', 'month', 'day', 'hour', 'minute', 'second'),
+  );
+
+  // Override any properties that may have been set in the table metadata.
+  foreach (array_keys($values) as $property) {
+    // The use of '' as the empty value in the form select elements in
+    // data_ui_date_form() means we can use empty() here.
+    if (!empty($meta['fields'][$field_name]['date'][$property])) {
+      $values[$property] = $meta['fields'][$field_name]['date'][$property];
+    }
+  }
+
+  return $values;
+}
+
+/**
  * Base class for any exceptions thrown in Data.
  */
 class DataException extends Exception { }

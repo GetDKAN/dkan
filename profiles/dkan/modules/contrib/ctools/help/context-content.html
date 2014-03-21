@@ -116,6 +116,10 @@ The first form will always have required configuration added to it. These forms 
   <dt>required context [Optional]</dt>
 
   <dd>Either a ctools_context_required or ctools_context_optional or array of contexts for this content. If omitted, no contexts are used.</dd>
+
+  <dt>create content access [Optional]</dt>
+
+  <dd>An optional callback to determine if a user can access this subtype. The callback will receive two arguments, the type and subtype.</dd>
 </dl>
 
 <h2>Rendered content</h2>

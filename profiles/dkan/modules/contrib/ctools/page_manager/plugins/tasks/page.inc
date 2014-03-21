@@ -321,7 +321,7 @@ function page_manager_page_execute($subtask_id) {
   ctools_include('context-task-handler');
   $output = ctools_context_handler_render($task, $subtask, $contexts, $args);
   if ($output === FALSE) {
-    return drupal_not_found();
+    return MENU_NOT_FOUND;
   }
 
   return $output;

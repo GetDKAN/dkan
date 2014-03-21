@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains SearchApiHtmlFilter.
+ */
+
+/**
  * Processor for stripping HTML from indexed fulltext data. Supports assigning
  * custom boosts for any HTML element.
  */

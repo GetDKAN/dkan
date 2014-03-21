@@ -1,9 +1,33 @@
 <?php
 
 /**
+ * @file
+ * Contains SearchApiViewsHandlerFilterFulltext.
+ */
+
+/**
  * Views filter handler class for handling fulltext fields.
  */
 class SearchApiViewsHandlerFilterFulltext extends SearchApiViewsHandlerFilterText {
+
+  /**
+   * Displays the operator form, adding a description.
+   */
+  public function show_operator_form(&$form, &$form_state) {
+    $this->operator_form($form, $form_state);
+    $form['operator']['#description'] = t('This operator is only useful when using \'Search keys\'.');
+  }
+
+  /**
+   * Provide a list of options for the operator form.
+   */
+  public function operator_options() {
+    return array(
+      'AND' => t('Contains all of these words'),
+      'OR' => t('Contains any of these words'),
+      'NOT' => t('Contains none of these words'),
+    );
+  }
 
   /**
    * Specify the options this filter uses.
@@ -11,7 +35,10 @@ class SearchApiViewsHandlerFilterFulltext extends SearchApiViewsHandlerFilterTex
   public function option_definition() {
     $options = parent::option_definition();
 
+    $options['operator']['default'] = 'AND';
+
     $options['mode'] = array('default' => 'keys');
+    $options['min_length'] = array('default' => '');
     $options['fields'] = array('default' => array());
 
     return $options;
@@ -54,6 +81,55 @@ class SearchApiViewsHandlerFilterFulltext extends SearchApiViewsHandlerFilterTex
     if (isset($form['expose'])) {
       $form['expose']['#weight'] = -5;
     }
+
+    $form['min_length'] = array(
+      '#title' => t('Minimum keyword length'),
+      '#description' => t('Minimum length of each word in the search keys. Leave empty to allow all words.'),
+      '#type' => 'textfield',
+      '#element_validate' => array('element_validate_integer_positive'),
+      '#default_value' => $this->options['min_length'],
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function exposed_validate(&$form, &$form_state) {
+    // Only validate exposed input.
+    if (empty($this->options['exposed']) || empty($this->options['expose']['identifier'])) {
+      return;
+    }
+
+    // We only need to validate if there is a minimum word length set.
+    if ($this->options['min_length'] < 2) {
+      return;
+    }
+
+    $identifier = $this->options['expose']['identifier'];
+    $input = &$form_state['values'][$identifier];
+
+    if ($this->options['is_grouped'] && isset($this->options['group_info']['group_items'][$input])) {
+      $this->operator = $this->options['group_info']['group_items'][$input]['operator'];
+      $input = &$this->options['group_info']['group_items'][$input]['value'];
+    }
+
+    // If there is no input, we're fine.
+    if (!trim($input)) {
+      return;
+    }
+
+    $words = preg_split('/\s+/', $input);
+    foreach ($words as $i => $word) {
+      if (drupal_strlen($word) < $this->options['min_length']) {
+        unset($words[$i]);
+      }
+    }
+    if (!$words) {
+      $vars['@count'] = $this->options['min_length'];
+      $msg = t('You must include at least one positive keyword with @count characters or more.', $vars);
+      form_error($form[$identifier], $msg);
+    }
+    $input = implode(' ', $words);
   }
 
   /**
@@ -87,10 +163,16 @@ class SearchApiViewsHandlerFilterFulltext extends SearchApiViewsHandlerFilterTex
       return;
     }
 
+    // If the operator was set to OR or NOT, set OR as the conjunction. (It is
+    // also set for NOT since otherwise it would be "not all of these words".)
+    if ($this->operator != 'AND') {
+      $this->query->setOption('conjunction', $this->operator);
+    }
+
     $this->query->fields($fields);
     $old = $this->query->getOriginalKeys();
     $this->query->keys($this->value);
-    if ($this->operator != '=') {
+    if ($this->operator == 'NOT') {
       $keys = &$this->query->getKeys();
       if (is_array($keys)) {
         $keys['#negation'] = TRUE;

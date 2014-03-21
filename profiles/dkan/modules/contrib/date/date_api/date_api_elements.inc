@@ -239,7 +239,8 @@ function date_timezone_element_process($element, &$form_state, $form) {
   $label = theme('date_part_label_timezone', array('part_type' => 'select', 'element' => $element));
   $element['timezone'] = array(
     '#type' => 'select',
-    '#title' => $element['#date_label_position'] == 'above' ? $label : '',
+    '#title' => $label,
+    '#title_display' => $element['#date_label_position'] == 'above' ? 'before' : 'invisible',
     '#options' => date_timezone_names($element['#required']),
     '#value' => $element['#value'],
     '#weight' => $element['#weight'],
@@ -320,6 +321,8 @@ function date_text_element_process($element, &$form_state, $form) {
   $element['date']['#weight'] = !empty($element['date']['#weight']) ? $element['date']['#weight'] : $element['#weight'];
   $element['date']['#attributes'] = array('class' => isset($element['#attributes']['class']) ? $element['#attributes']['class'] += array('date-date') : array('date-date'));
   $now = date_example_date();
+  $element['date']['#title'] = t('Date');
+  $element['date']['#title_display'] = 'invisible';
   $element['date']['#description'] = ' ' . t('Format: @date', array('@date' => date_format_date(date_example_date(), 'custom', $element['#date_format'])));
   $element['date']['#ajax'] = !empty($element['#ajax']) ? $element['#ajax'] : FALSE;
 
@@ -585,6 +588,8 @@ function date_parts_element($element, $date, $format) {
       $sub_element[$field]['#type'] = 'textfield';
       $sub_element[$field]['#theme'] = 'date_textfield_element';
       $sub_element[$field]['#size'] = 7;
+      $sub_element[$field]['#title'] = $label;
+      $sub_element[$field]['#title_display'] = in_array($element['#date_label_position'], array('within', 'none')) ? 'invisible' : 'before';
       if ($element['#date_label_position'] == 'within') {
         if (!empty($sub_element[$field]['#options']) && is_array($sub_element[$field]['#options'])) {
           $sub_element[$field]['#options'] = array(
@@ -594,19 +599,15 @@ function date_parts_element($element, $date, $format) {
           $sub_element[$field]['#default_value'] = '-' . $label;
         }
       }
-      elseif ($element['#date_label_position'] != 'none') {
-        $sub_element[$field]['#title'] = $label;
-      }
     }
     else {
       $sub_element[$field]['#type'] = 'select';
       $sub_element[$field]['#theme'] = 'date_select_element';
+      $sub_element[$field]['#title'] = $label;
+      $sub_element[$field]['#title_display'] = in_array($element['#date_label_position'], array('within', 'none')) ? 'invisible' : 'before';
       if ($element['#date_label_position'] == 'within') {
         $sub_element[$field]['#options'] = array(
           '' => '-' . $label) + $sub_element[$field]['#options'];
-      }
-      elseif ($element['#date_label_position'] != 'none') {
-        $sub_element[$field]['#title'] = $label;
       }
     }
   }
@@ -621,9 +622,12 @@ function date_parts_element($element, $date, $format) {
   }
 
   if (($hours_format == 'g' || $hours_format == 'h') && date_has_time($granularity)) {
+    $label = theme('date_part_label_ampm', array('part_type' => 'ampm', 'element' => $element));
     $sub_element['ampm'] = array(
       '#type' => 'select',
       '#theme' => 'date_select_element',
+      '#title' => $label,
+      '#title_display' => in_array($element['#date_label_position'], array('within', 'none')) ? 'invisible' : 'before',
       '#default_value' => is_object($date) ? (date_format($date, 'G') >= 12 ? 'pm' : 'am') : '',
       '#options' => drupal_map_assoc(date_ampm($part_required)),
       '#required' => $part_required,
@@ -631,10 +635,7 @@ function date_parts_element($element, $date, $format) {
       '#attributes' => array('class' => array('date-ampm')),
     );
     if ($element['#date_label_position'] == 'within') {
-      $sub_element['ampm']['#options'] = array('' => '-' . theme('date_part_label_ampm', array('part_type' => 'ampm', 'eleement' => $element))) + $sub_element['ampm']['#options'];
-    }
-    elseif ($element['#date_label_position'] != 'none') {
-      $sub_element['ampm']['#title'] = theme('date_part_label_ampm', array('part_type' => 'ampm', 'element' => $element));
+      $sub_element['ampm']['#options'] = array('' => '-' . $label) + $sub_element['ampm']['#options'];
     }
   }
 

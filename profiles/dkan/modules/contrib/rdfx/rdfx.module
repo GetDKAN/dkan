@@ -7,22 +7,20 @@
  */
 
 /**
- * Path to the ARC2 PHP library.
- */
-if (module_exists('libraries')) {
-  define('RDF_ARC2_PATH', libraries_get_path('arc'));
-}
-else {
-  define('RDF_ARC2_PATH', drupal_get_path('module', 'rdfx') . '/vendor/arc');
-}
-
-/**
  * Implements hook_init().
  */
 function rdfx_init() {
+  // Get the path to the library.
+  if (module_exists('libraries')) {
+    $path = libraries_get_path('ARC2') . '/arc';
+  }
+  else {
+    $path = drupal_get_path('module', 'rdfx') . '/vendor/arc';
+  }
+
   // Attempts to load the ARC2 library, if available.
-  if (!class_exists('ARC2') && file_exists(RDF_ARC2_PATH . '/ARC2.php')) {
-    @include_once RDF_ARC2_PATH . '/ARC2.php';
+  if (!class_exists('ARC2') && file_exists($path . '/ARC2.php')) {
+    @include_once $path . '/ARC2.php';
   }
   module_load_include('inc', 'rdfx', 'rdfx.terms');
   module_load_include('inc', 'rdfx', 'rdfx.import');
@@ -186,8 +184,21 @@ function rdfx_get_rdf_model($type, $id) {
     }
   }
 
-  // Expand all CURIEs and attach the index to the ARC2 resource.
-  $res->index = $res->expandPNames($index);
+  // Attach the index to the ARC2 resource.
+  $res->index = $index;
+
+  // Allow other modules to alter the RDF data model before serialization.
+  // For example, a module could add elements which are not supported by the
+  // Entity API.
+  // This should only be used in special cases. The data is not added to
+  // Drupal's internal model, and is thus not accessible to other modules or
+  // during Drupal's normal rendering stream. It will only show up in non-RDFa
+  // serializations of the entity.
+  drupal_alter('rdf_model', $res, $type, $id);
+
+  // Expand all CURIEs.
+  $res->index = $res->expandPNames($res->index);
+
   return $res;
 }
 

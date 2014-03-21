@@ -240,7 +240,9 @@ class EntityDefaultExtraFieldsController implements EntityExtraFieldsControllerI
     $this->propertyInfo += array('bundles' => array());
     foreach ($this->propertyInfo['bundles'] as $bundle_name => $info) {
       foreach ($info['properties'] as $name => $property_info) {
-        $extra[$this->entityType][$bundle_name]['display'][$name] = $this->generateExtraFieldInfo($name, $property_info);
+        if (empty($property_info['field'])) {
+          $extra[$this->entityType][$bundle_name]['display'][$name] = $this->generateExtraFieldInfo($name, $property_info);
+        }
       }
     }
     return $extra;

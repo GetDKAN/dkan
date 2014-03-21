@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains SearchApiAlterAddAggregation.
+ */
+
+/**
  * Search API data alteration callback that adds an URL field for all items.
  */
 class SearchApiAlterAddAggregation extends SearchApiAbstractAlterCallback {
@@ -11,7 +16,11 @@ class SearchApiAlterAddAggregation extends SearchApiAbstractAlterCallback {
     $fields = $this->index->getFields(FALSE);
     $field_options = array();
     foreach ($fields as $name => $field) {
-      $field_options[$name] = $field['name'];
+      $field_options[$name] = check_plain($field['name']);
+      $field_properties[$name] = array(
+        '#attributes' => array('title' => $name),
+        '#description' => check_plain($field['description']),
+      );
     }
     $additional = empty($this->options['fields']) ? array() : $this->options['fields'];
 
@@ -63,14 +72,14 @@ class SearchApiAlterAddAggregation extends SearchApiAbstractAlterCallback {
       foreach (array_keys($types) as $type) {
         $form['fields'][$name]['type_descriptions'][$type]['#states']['visible'][':input[name="callbacks[search_api_alter_add_aggregation][settings][fields][' . $name . '][type]"]']['value'] = $type;
       }
-      $form['fields'][$name]['fields'] = array(
+      $form['fields'][$name]['fields'] = array_merge($field_properties, array(
         '#type' => 'checkboxes',
         '#title' => t('Contained fields'),
         '#options' => $field_options,
         '#default_value' => drupal_map_assoc($field['fields']),
         '#attributes' => array('class' => array('search-api-alter-add-aggregation-fields')),
         '#required' => TRUE,
-      );
+      ));
       $form['fields'][$name]['actions'] = array(
         '#type' => 'actions',
         'remove' => array(

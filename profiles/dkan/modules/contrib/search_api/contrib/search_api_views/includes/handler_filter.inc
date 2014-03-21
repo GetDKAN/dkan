@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains SearchApiViewsHandlerFilter.
+ */
+
+/**
  * Views filter handler base class for handling all "normal" cases.
  */
 class SearchApiViewsHandlerFilter extends views_handler_filter {
@@ -31,8 +36,8 @@ class SearchApiViewsHandlerFilter extends views_handler_filter {
    */
   public function operator_options() {
     return array(
-      '<' => t('Is smaller than'),
-      '<=' => t('Is smaller than or equal to'),
+      '<' => t('Is less than'),
+      '<=' => t('Is less than or equal to'),
       '=' => t('Is equal to'),
       '<>' => t('Is not equal to'),
       '>=' => t('Is greater than or equal to'),
@@ -46,8 +51,8 @@ class SearchApiViewsHandlerFilter extends views_handler_filter {
    * Provide a form for setting the filter value.
    */
   public function value_form(&$form, &$form_state) {
-    while (is_array($this->value)) {
-      $this->value = $this->value ? array_shift($this->value) : NULL;
+    while (is_array($this->value) && count($this->value) < 2) {
+      $this->value = $this->value ? reset($this->value) : NULL;
     }
     $form['value'] = array(
       '#type' => 'textfield',
@@ -58,10 +63,19 @@ class SearchApiViewsHandlerFilter extends views_handler_filter {
 
     // Hide the value box if the operator is 'empty' or 'not empty'.
     // Radios share the same selector so we have to add some dummy selector.
-    $form['value']['#states']['visible'] = array(
-      ':input[name="options[operator]"],dummy-empty' => array('!value' => 'empty'),
-      ':input[name="options[operator]"],dummy-not-empty' => array('!value' => 'not empty'),
-    );
+    if (empty($form_state['exposed'])) {
+      $form['value']['#states']['visible'] = array(
+        ':input[name="options[operator]"],dummy-empty' => array('!value' => 'empty'),
+        ':input[name="options[operator]"],dummy-not-empty' => array('!value' => 'not empty'),
+      );
+    }
+    elseif (!empty($this->options['expose']['use_operator'])) {
+      $name = $this->options['expose']['operator_id'];
+      $form['value']['#states']['visible'] = array(
+        ':input[name="' . $name . '"],dummy-empty' => array('!value' => 'empty'),
+        ':input[name="' . $name . '"],dummy-not-empty' => array('!value' => 'not empty'),
+      );
+    }
   }
 
   /**

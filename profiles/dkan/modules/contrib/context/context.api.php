@@ -128,3 +128,14 @@ function hook_context_load_alter(&$context) {
     );
   }
 }
+
+/**
+ * Allows for finer grained access mechanisms to using the json
+ * rendering capabilities of the block reaction when a user isn't
+ * granted the administer contexts or context ajax block access
+ * permission
+ * @param $block_id
+ *   ID of block in module-delta format
+ */
+function hook_context_allow_ajax_block_access($block_id) {
+}

@@ -114,14 +114,12 @@ function data_search_search($op = 'search', $keys = NULL) {
       $tables = data_search_get_tables();
       foreach ($tables as $table) {
         $name = $table->get('name');
-        // TODO Please review the conversion of this statement to the D7 database API syntax.
-        /* db_query("UPDATE {search_dataset} SET reindex = %d WHERE type = '%s'", REQUEST_TIME, $name) */
         db_update('search_dataset')
-  ->fields(array(
-    'reindex' => REQUEST_TIME,
-  ))
-  ->condition('type', $name)
-  ->execute();
+          ->fields(array(
+            'reindex' => REQUEST_TIME,
+          ))
+          ->condition('type', $name)
+          ->execute();
       }
       return;
 

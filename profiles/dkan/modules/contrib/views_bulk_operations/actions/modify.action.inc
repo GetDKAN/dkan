@@ -29,15 +29,19 @@ function views_bulk_operations_modify_action_info() {
  */
 function views_bulk_operations_modify_action($entity, $context) {
   list(,,$bundle_name) = entity_extract_ids($context['entity_type'], $entity);
-
   // Handle Field API fields.
   if (!empty($context['selected']['bundle_' . $bundle_name])) {
     // The pseudo entity is cloned so that changes to it don't get carried
     // over to the next execution.
     $pseudo_entity = clone $context['entities'][$bundle_name];
     foreach ($context['selected']['bundle_' . $bundle_name] as $key) {
+      // Get this field's language. We can just pull it from the pseudo entity
+      // as it was created using field_attach_form and entity_language so it's
+      // already been figured out if this field is translatable or not and
+      // applied the appropriate language code to the field
+      $language = key($pseudo_entity->{$key});
       // Replace any tokens that might exist in the field columns.
-      foreach ($pseudo_entity->{$key}[LANGUAGE_NONE] as $delta => &$item) {
+      foreach ($pseudo_entity->{$key}[$language] as $delta => &$item) {
         foreach ($item as $column => $value) {
           if (is_string($value)) {
             $item[$column] = token_replace($value, array($context['entity_type'] => $entity), array('sanitize' => FALSE));
@@ -46,11 +50,11 @@ function views_bulk_operations_modify_action($entity, $context) {
       }
 
       if (in_array($key, $context['append']['bundle_' . $bundle_name]) && !empty($entity->$key)) {
-        $entity->{$key}[LANGUAGE_NONE] = array_merge($entity->{$key}[LANGUAGE_NONE], $pseudo_entity->{$key}[LANGUAGE_NONE]);
+        $entity->{$key}[$language] = array_merge($entity->{$key}[$language], $pseudo_entity->{$key}[$language]);
 
         // Check if we breached cardinality, and notify the user.
         $field_info = field_info_field($key);
-        $field_count = count($entity->{$key}[LANGUAGE_NONE]);
+        $field_count = count($entity->{$key}[$language]);
         if ($field_info['cardinality'] != FIELD_CARDINALITY_UNLIMITED && $field_count > $field_info['cardinality']) {
           $entity_label = entity_label($context['entity_type'], $entity);
           $warning = t('Tried to set !field_count values for field !field_name that supports a maximum of !cardinality.',
@@ -59,9 +63,14 @@ function views_bulk_operations_modify_action($entity, $context) {
                              '!cardinality' => $field_info['cardinality']));
           drupal_set_message($warning, 'warning', FALSE);
         }
+
+        // Prevent storing duplicate references.
+        if (strpos($field_info['type'], 'reference') !== FALSE) {
+          $entity->{$key}[$language] = array_unique($entity->{$key}[LANGUAGE_NONE], SORT_REGULAR);
+        }
       }
       else {
-        $entity->$key = $pseudo_entity->$key;
+        $entity->{$key}[$language] = $pseudo_entity->{$key}[$language];
       }
     }
   }
@@ -148,6 +157,11 @@ function views_bulk_operations_modify_action_form($context, &$form_state) {
           ),
         ),
       );
+      // The default #maxlength for textfields is 128, while most varchar
+      // columns hold 255 characters, which makes it a saner default here.
+      if ($determined_type == 'textfield') {
+        $form['properties'][$key]['#maxlength'] = 255;
+      }
 
       if (!empty($property['options list'])) {
         $form['properties'][$key]['#type'] = 'select';
@@ -170,6 +184,8 @@ function views_bulk_operations_modify_action_form($context, &$form_state) {
     }
   }
 
+  // Going to need this for multilingual nodes
+  global $language;
   foreach ($bundles as $bundle_name => $bundle) {
     $bundle_key = $info['entity keys']['bundle'];
     $default_values = array();
@@ -177,6 +193,7 @@ function views_bulk_operations_modify_action_form($context, &$form_state) {
     if (!empty($bundle_key)) {
       $default_values[$bundle_key] = $bundle_name;
     }
+    $default_values['language'] = $language->language;
     $entity = entity_create($context['entity_type'], $default_values);
     $form_state['entities'][$bundle_name] = $entity;
 
@@ -195,7 +212,7 @@ function views_bulk_operations_modify_action_form($context, &$form_state) {
       '#title' => $label,
       '#parents' => array($form_key),
     );
-    field_attach_form($context['entity_type'], $entity, $form[$form_key], $form_state, LANGUAGE_NONE);
+    field_attach_form($context['entity_type'], $entity, $form[$form_key], $form_state, entity_language($context['entity_type'], $entity));
     // Now that all the widgets have been added, sort them by #weight.
     // This ensures that they will stay in the correct order when they get
     // assigned new weights.
@@ -206,8 +223,10 @@ function views_bulk_operations_modify_action_form($context, &$form_state) {
     $weight = 0;
     foreach (element_get_visible_children($form[$form_key]) as $field_name) {
       // For our use case it makes no sense for any field widget to be required.
-      $language = $form[$form_key][$field_name]['#language'];
-      _views_bulk_operations_modify_action_unset_required($form[$form_key][$field_name][$language]);
+      if (isset($form[$form_key][$field_name]['#language'])) {
+        $field_language = $form[$form_key][$field_name]['#language'];
+        _views_bulk_operations_modify_action_unset_required($form[$form_key][$field_name][$field_language]);
+      }
 
       // The admin has specified which fields to display, but this field didn't
       // make the cut. Hide it with #access => FALSE and move on.
@@ -216,32 +235,34 @@ function views_bulk_operations_modify_action_form($context, &$form_state) {
         continue;
       }
 
-      $field = $instances[$field_name];
-      $form[$form_key]['show_value'][$field_name] = array(
-        '#type' => 'checkbox',
-        '#title' => $field['label'],
-      );
-      $form[$form_key][$field_name]['#states'] = array(
-        'visible' => array(
-          '#edit-bundle-' . str_replace('_', '-', $bundle_name) . '-show-value-' . str_replace('_', '-', $field_name) => array('checked' => TRUE),
-        ),
-      );
-      // All field widgets get reassigned weights so that additional elements
-      // added between them (such as "_append") can be properly ordered.
-      $form[$form_key][$field_name]['#weight'] = $weight++;
-
-      $field_info = field_info_field($field_name);
-      if ($field_info['cardinality'] != 1) {
-        $form[$form_key]['_append::' . $field_name] = array(
+      if (isset($instances[$field_name])) {
+        $field = $instances[$field_name];
+        $form[$form_key]['show_value'][$field_name] = array(
           '#type' => 'checkbox',
-          '#title' => t('Add new value(s) to %label, instead of overwriting the existing values.', array('%label' => $field['label'])),
-          '#states' => array(
-            'visible' => array(
-              '#edit-bundle-' . str_replace('_', '-', $bundle_name) . '-show-value-' . str_replace('_', '-', $field_name) => array('checked' => TRUE),
-            ),
-          ),
-          '#weight' => $weight++,
+          '#title' => $field['label'],
         );
+        $form[$form_key][$field_name]['#states'] = array(
+          'visible' => array(
+            '#edit-bundle-' . str_replace('_', '-', $bundle_name) . '-show-value-' . str_replace('_', '-', $field_name) => array('checked' => TRUE),
+          ),
+        );
+        // All field widgets get reassigned weights so that additional elements
+        // added between them (such as "_append") can be properly ordered.
+        $form[$form_key][$field_name]['#weight'] = $weight++;
+
+        $field_info = field_info_field($field_name);
+        if ($field_info['cardinality'] != 1) {
+          $form[$form_key]['_append::' . $field_name] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Add new value(s) to %label, instead of overwriting the existing values.', array('%label' => $field['label'])),
+            '#states' => array(
+              'visible' => array(
+                '#edit-bundle-' . str_replace('_', '-', $bundle_name) . '-show-value-' . str_replace('_', '-', $field_name) => array('checked' => TRUE),
+              ),
+            ),
+            '#weight' => $weight++,
+          );
+        }
       }
     }
 
@@ -411,8 +432,12 @@ function _views_bulk_operations_modify_action_get_properties($entity_type, $disp
   // List of supported types.
   $supported_types = array('text', 'token', 'integer', 'decimal', 'date', 'duration',
                            'boolean', 'uri', 'list');
-
   $property_info = entity_get_property_info($entity_type);
+  if (empty($property_info['properties'])) {
+    // Stop here if no properties were found.
+    return array();
+  }
+
   foreach ($property_info['properties'] as $key => $property) {
     if (in_array($key, $disabled_properties)) {
       continue;
@@ -463,27 +488,38 @@ function _views_bulk_operations_modify_action_get_bundles($entity_type, $context
   $bundles = array();
 
   $view = $context['view'];
+  $vbo = _views_bulk_operations_get_field($view);
   $display_values = $context['settings']['display_values'];
   $info = entity_get_info($entity_type);
   $bundle_key = $info['entity keys']['bundle'];
+
   // Check if this View has a filter on the bundle key and assemble a list
   // of allowed bundles according to the filter.
-  $filtered_bundles = array();
-  if (!empty($bundle_key) && isset($view->filter[$bundle_key]) && !empty($view->filter[$bundle_key]->value)) {
-    $operator = $view->filter[$bundle_key]->operator;
-    if ($operator == 'in') {
-      $filtered_bundles = $view->filter[$bundle_key]->value;
-    }
-    elseif ($operator == 'not in') {
-      $bundle_names = array_keys($info['bundles']);
-      $filtered_bundles = array_diff($bundle_names, $view->filter[$bundle_key]->value);
+  $filtered_bundles = array_keys($info['bundles']);
+
+  // Go over all the filters and find any relevant ones.
+  foreach ($view->filter as $key => $filter) {
+    // Check it's the right field on the right table.
+    if ($filter->table == $vbo->table && $filter->field == $bundle_key) {
+      // Exposed filters may have no bundles, so check that there is a value.
+      if (empty($filter->value)) {
+        continue;
+      }
+
+      $operator = $filter->operator;
+      if ($operator == 'in') {
+        $filtered_bundles = array_intersect($filtered_bundles, $filter->value);
+      }
+      elseif ($operator == 'not in') {
+        $filtered_bundles = array_diff($filtered_bundles, $filter->value);
+      }
     }
   }
 
   foreach ($info['bundles'] as $bundle_name => $bundle) {
     // The view is limited to specific bundles, but this bundle isn't one of
     // them. Ignore it.
-    if (!empty($filtered_bundles) && !in_array($bundle_name, $filtered_bundles)) {
+    if (!in_array($bundle_name, $filtered_bundles)) {
       continue;
     }
 
@@ -575,6 +611,7 @@ function views_bulk_operations_modify_action_views_bulk_operations_form($options
     '#multiple' => TRUE,
     '#description' => t('Select which values the action form should present to the user.'),
     '#default_value' => $options['display_values'],
+    '#size' => 10,
   );
   return $form;
 }

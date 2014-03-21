@@ -9,16 +9,20 @@ dependencies[] = feeds
 dependencies[] = feeds_field_fetcher
 dependencies[] = feeds_flatstore_processor
 dependencies[] = rest_server
-dependencies[] = schema
-dependencies[] = strongarm
 dependencies[] = views
 datestamp = 1373951381
 features[ctools][] = feeds:feeds_importer_default:1
-features[ctools][] = strongarm:strongarm:1
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2
 features[feeds_importer][] = dkan_file
 features[feeds_importer][] = dkan_link
-features[variable][] = schema_status_report
-features[variable][] = schema_suppress_type_warnings
 features[views_view][] = datasets
+files[] = includes/Datastore.inc
+files[] = includes/DkanDatastore.inc
+
+
+; Information added by drush on 2014-03-21
+version = "unknown"
+project = "dkan_datastore"
+datestamp = "1395440884"
+

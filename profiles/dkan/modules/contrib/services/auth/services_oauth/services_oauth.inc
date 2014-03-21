@@ -37,6 +37,10 @@ function _services_oauth_authenticate_call($settings, $method, $args) {
 
     list($signed, $consumer, $token) = oauth_common_verify_request();
 
+    // if we have no oauth info - pass this one through
+    if (!$signed && is_null($consumer) && is_null($token)) {
+      return FALSE;
+    }
     if (!$signed && ($cred == 'consumer' || $cred == 'token')) {
       throw new OAuthException('The request must be signed');
     }

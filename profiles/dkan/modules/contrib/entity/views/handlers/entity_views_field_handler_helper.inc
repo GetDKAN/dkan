@@ -157,10 +157,10 @@ class EntityFieldHandlerHelper {
     }
 
     if (method_exists($handler->query, 'get_result_wrappers')) {
-      list($handler->entity_type, $handler->wrappers) = $handler->query->get_result_wrappers($values, $handler->relationship, $handler->real_field);
+      list($handler->entity_type, $handler->wrappers) = $handler->query->get_result_wrappers($values, NULL, $handler->real_field);
     }
     else {
-      list($handler->entity_type, $entities) = $handler->query->get_result_entities($values, $handler->relationship, $handler->real_field);
+      list($handler->entity_type, $entities) = $handler->query->get_result_entities($values, NULL, $handler->real_field);
       $handler->wrappers = array();
       foreach ($entities as $id => $entity) {
         $handler->wrappers[$id] = entity_metadata_wrapper($handler->entity_type, $entity);
@@ -196,8 +196,14 @@ class EntityFieldHandlerHelper {
     if ($handler->relationship) {
       $current_handler = $handler;
       $view = $current_handler->view;
-      while (!empty($current_handler->relationship) && !empty($view->relationship[$current_handler->relationship])) {
-        $current_handler = $view->relationship[$current_handler->relationship];
+      $relationships = array();
+      // Collect all relationships, keyed by alias.
+      foreach ($view->relationship as $key => $relationship) {
+        $key = $relationship->alias ? $relationship->alias : $key;
+        $relationships[$key] = $relationship;
+      }
+      while (!empty($current_handler->relationship) && !empty($relationships[$current_handler->relationship])) {
+        $current_handler = $relationships[$current_handler->relationship];
         $return = $current_handler->real_field . ($return ? ":$return" : '');
       }
     }

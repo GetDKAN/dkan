@@ -30,6 +30,18 @@ class SchemaDatabaseSchema_pgsql extends DatabaseSchema_pgsql {
     return $map;
   }
 
+  /**
+   * Overrides DatabaseSchema_pgsql::getFieldTypeMap().
+   */
+  public function getFieldTypeMap() {
+    $map = &drupal_static('SchemaDatabaseSchema_pgsql::getFieldTypeMap');
+    if (!isset($map)) {
+      $map = parent::getFieldTypeMap();
+      drupal_alter('schema_field_type_map', $map, $this, $this->connection);
+    }
+    return $map;
+  }
+
   public function inspect($connection = NULL, $table_name = NULL) {
     // Support the deprecated connection parameter.
     if (isset($connection) && $connection != $this->connection->getKey()) {
@@ -39,6 +51,13 @@ class SchemaDatabaseSchema_pgsql extends DatabaseSchema_pgsql {
     // Get the current database name
     $info = $this->connection->getConnectionOptions();
     $database = $info['database'];
+
+    // Apply table prefixes.
+    if (isset($table_name)) {
+      $table_info = $this->connection->schema()->getPrefixInfo($table_name);
+      // @todo What do we do with $table_info['schema']?
+      $table_name = $table_info['table'];
+    }
 
     //
     // Retrieve information about all columns in the database from the

@@ -29,4 +29,4 @@ projects[services][subdir] = contrib
 projects[data][subdir] = contrib
 projects[data][version] = 1.x
 projects[job_scheduler][subdir] = contrib
-projects[job_scheduler][version] = 1.x
+projects[job_scheduler][version] = 2.x

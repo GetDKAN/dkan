@@ -138,7 +138,7 @@ function page_manager_term_view_page($term, $depth = NULL) {
   $contexts = ctools_context_handler_get_task_contexts($task, '', array($term, $depth));
 
   if (empty($contexts)) {
-    return drupal_not_found();
+    return MENU_NOT_FOUND;
   }
 
   // Build the full output using the configured CTools plugin.

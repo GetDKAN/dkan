@@ -6,9 +6,16 @@ dependencies[] = libraries
 dependencies[] = file
 dependencies[] = field_ui
 
-; Information added by drupal.org packaging script on 2013-09-20
-version = "7.x-1.0-beta2"
+; Information added by Drupal.org packaging script on 2013-12-11
+version = "7.x-1.0-beta2+6-dev"
 core = "7.x"
 project = "recline"
-datestamp = "1379707872"
+datestamp = "1386802709"
+
+
+; Information added by Drupal.org packaging script on 2014-03-10
+version = "7.x-1.0-beta2+12-dev"
+core = "7.x"
+project = "recline"
+datestamp = "1394459629"
 

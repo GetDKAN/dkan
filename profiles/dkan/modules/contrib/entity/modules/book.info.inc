@@ -20,4 +20,11 @@ function entity_metadata_book_entity_property_info_alter(&$info) {
     'description' => t("If part of a book, the book to which this book page belongs."),
     'getter callback' => 'entity_metadata_book_get_properties',
   );
+  $properties['book_ancestors'] = array(
+    'label' => t("Book ancestors"),
+    'type' => 'list<node>',
+    'computed' => TRUE,
+    'description' => t("If part of a book, a list of all book pages upwards in the book hierarchy."),
+    'getter callback' => 'entity_metadata_book_get_properties',
+  );
 }

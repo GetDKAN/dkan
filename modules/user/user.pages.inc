@@ -137,7 +137,7 @@ function user_pass_reset($form, &$form_state, $uid, $timestamp, $hashed_pass, $a
           watchdog('user', 'User %name used one-time login link at time %timestamp.', array('%name' => $account->name, '%timestamp' => $timestamp));
           drupal_set_message(t('You have just used your one-time login link. It is no longer necessary to use this link to log in. Please change your password.'));
           // Let the user's password be changed without the current password check.
-          $token = drupal_hash_base64(drupal_random_bytes(55));
+          $token = drupal_random_key();
           $_SESSION['pass_reset_' . $user->uid] = $token;
           drupal_goto('user/' . $user->uid . '/edit', array('query' => array('pass-reset-token' => $token)));
         }
@@ -159,6 +159,7 @@ function user_pass_reset($form, &$form_state, $uid, $timestamp, $hashed_pass, $a
       // Deny access, no more clues.
       // Everything will be in the watchdog's URL for the administrator to check.
       drupal_access_denied();
+      drupal_exit();
     }
   }
 }
@@ -534,14 +535,20 @@ function user_cancel_confirm($account, $timestamp = 0, $hashed_pass = '') {
       drupal_goto("user/$account->uid/cancel");
     }
   }
-  drupal_access_denied();
+  return MENU_ACCESS_DENIED;
 }
 
 /**
- * Access callback for path /user.
+ * Page callback: Displays the user page.
  *
  * Displays user profile if user is logged in, or login form for anonymous
  * users.
+ *
+ * @return
+ *   A render array for either a user profile or a login form.
+ *
+ * @see user_view_page()
+ * @see user_login()
  */
 function user_page() {
   global $user;

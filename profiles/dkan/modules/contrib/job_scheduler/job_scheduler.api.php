@@ -16,6 +16,9 @@
  *   - 'queue name': The name of the queue to use to queue this task. Must
  *     contain a valid queue name, declared by hook_cron_queue_info().
  *   If queue name is given, worker callback will be ignored.
+ *   - 'jobs': (optional) An array defining jobs for this scheduler. The key is
+ *     immaterial. Each job item is itself a job array, whose properties should
+ *     be the same as the parameter to JobScheduler::set().
  *
  * @see hook_cron_job_scheduler_info_alter()
  * @see hook_cron_queue_info()

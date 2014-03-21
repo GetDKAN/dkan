@@ -24,13 +24,14 @@ function dkan_sitewide_user_field_group_info() {
     'weight' => '3',
     'children' => array(
       0 => 'field_about',
+      1 => 'summary',
     ),
     'format_type' => 'htab',
     'format_settings' => array(
       'formatter' => 'closed',
       'instance_settings' => array(
         'description' => '',
-        'classes' => '',
+        'classes' => ' group-user-about field-group-htab',
       ),
     ),
   );
@@ -57,7 +58,7 @@ function dkan_sitewide_user_field_group_info() {
       'formatter' => 'closed',
       'instance_settings' => array(
         'description' => '',
-        'classes' => '',
+        'classes' => ' group-user-datasets field-group-htab',
       ),
     ),
   );
@@ -82,7 +83,7 @@ function dkan_sitewide_user_field_group_info() {
     'format_settings' => array(
       'label' => 'Groups',
       'instance_settings' => array(
-        'classes' => '',
+        'classes' => ' group-user-group field-group-htab',
         'description' => '',
       ),
       'formatter' => 'closed',
@@ -103,15 +104,15 @@ function dkan_sitewide_user_field_group_info() {
     'label' => 'Profile',
     'weight' => '0',
     'children' => array(
-      0 => 'group_user_datasets',
-      1 => 'group_user_group',
-      2 => 'group_user_about',
+      0 => 'group_user_about',
+      1 => 'group_user_datasets',
+      2 => 'group_user_group',
     ),
     'format_type' => 'htabs',
     'format_settings' => array(
       'formatter' => '',
       'instance_settings' => array(
-        'classes' => '',
+        'classes' => ' group-user-tabs field-group-htabs',
       ),
     ),
   );

@@ -304,7 +304,8 @@ class EntityReference_SelectionHandler_Generic implements EntityReference_Select
    * Implements EntityReferenceHandler::getLabel().
    */
   public function getLabel($entity) {
-    return entity_label($this->field['settings']['target_type'], $entity);
+    $target_type = $this->field['settings']['target_type'];
+    return entity_access('view', $target_type, $entity) ? entity_label($target_type, $entity) : t('- Restricted access -');
   }
 
   /**
@@ -340,7 +341,7 @@ class EntityReference_SelectionHandler_Generic implements EntityReference_Select
     $entity_info = entity_get_info($target_type);
     $id = $entity_info['entity keys']['id'];
     // Return the alias of the table.
-    return $query->innerJoin($target_type, NULL, "$target_type.$id = $alias.entity_id");
+    return $query->innerJoin($target_type, NULL, "%alias.$id = $alias.entity_id");
   }
 }
 
@@ -540,7 +541,7 @@ class EntityReference_SelectionHandler_Generic_taxonomy_term extends EntityRefer
 
     foreach ($bundles as $bundle) {
       if ($vocabulary = taxonomy_vocabulary_machine_name_load($bundle)) {
-        if ($terms = taxonomy_get_tree($vocabulary->vid, 0)) {
+        if ($terms = taxonomy_get_tree($vocabulary->vid, 0, NULL, TRUE)) {
           foreach ($terms as $term) {
             $options[$vocabulary->machine_name][$term->tid] = str_repeat('-', $term->depth) . check_plain($term->name);
           }

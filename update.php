@@ -178,7 +178,8 @@ function update_results_page() {
     $output = '<p>Updates were attempted. If you see no failures below, you may proceed happily back to your <a href="' . base_path() . '">site</a>. Otherwise, you may need to update your database manually.' . $log_message . '</p>';
   }
   else {
-    list($module, $version) = array_pop(reset($_SESSION['updates_remaining']));
+    $updates_remaining = reset($_SESSION['updates_remaining']);
+    list($module, $version) = array_pop($updates_remaining);
     $output = '<p class="error">The update process was aborted prematurely while running <strong>update #' . $version . ' in ' . $module . '.module</strong>.' . $log_message;
     if (module_exists('dblog')) {
       $output .= ' You may need to check the <code>watchdog</code> database table manually.';
@@ -467,13 +468,13 @@ if (update_access_allowed()) {
     // update.php ops.
 
     case 'selection':
-      if (isset($_GET['token']) && $_GET['token'] == drupal_get_token('update')) {
+      if (isset($_GET['token']) && drupal_valid_token($_GET['token'], 'update')) {
         $output = update_selection_page();
         break;
       }
 
     case 'Apply pending updates':
-      if (isset($_GET['token']) && $_GET['token'] == drupal_get_token('update')) {
+      if (isset($_GET['token']) && drupal_valid_token($_GET['token'], 'update')) {
         // Generate absolute URLs for the batch processing (using $base_root),
         // since the batch API will pass them to url() which does not handle
         // update.php correctly by default.

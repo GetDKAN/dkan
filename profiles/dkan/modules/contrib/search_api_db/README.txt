@@ -13,8 +13,6 @@ The "direct" parse mode for queries will result in a simple splitting of the
 query string into keys. Additionally, search keys containing whitespace will be
 split, as searching for phrases is currently not supported.
 
-Due to SQL limitations, fulltext searches are always case-insensitive.
-
 Supported optional features
 ---------------------------
 

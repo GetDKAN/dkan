@@ -39,7 +39,7 @@ else {
     $content_type = ($options['content_type'] == 'default') ? 'application/json' : $options['content_type'];
     drupal_add_http_header("Content-Type", "$content_type; charset=utf-8");
     print $json;
-    //Don't think this is needed in .tpl.php files: module_invoke_all('exit');
+    drupal_page_footer();
     exit;
   }
 }

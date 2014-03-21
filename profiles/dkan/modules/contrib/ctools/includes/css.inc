@@ -77,9 +77,9 @@ function ctools_css_store($id, $css, $filter = TRUE) {
 
   $filename = ctools_css_cache($css, $filter);
 
-  db_insert('ctools_css_cache')
+  db_merge('ctools_css_cache')
+    ->key(array('cid' => $id))
     ->fields(array(
-      'cid' => $id,
       'filename' => $filename,
       'css' => $css,
       'filter' => intval($filter),

@@ -52,11 +52,34 @@ class FeedsFlatstoreProcessor extends FeedsProcessor {
       if (!isset($cleaned_data['timestamp'])) {
         $cleaned_data['timestamp'] = FEEDS_REQUEST_TIME;
       }
+      $source_config = $source->getConfigFor($this);
+      if (module_exists('geocoder') && $source_config['geolocate']) {
+        $cleaned_data = $this->geocode($cleaned_data, $source_config['geolocate_addresses'], $source_config['geolocater']);
+      }
 
       // We only save, never update, since there is only a flat table.
       $this->handler($source)->save($cleaned_data);
     }
 
+  }
+
+  /**
+   * Adds geolocation to data array.
+   */
+  function geocode($data, $address_fields, $service = 'mapquest_nominatim') {
+    $address = '';
+    if (!is_array($address_fields)) {
+      $address_fields = explode(',', $address_fields);
+    }
+    foreach ($data as $label => $value) {
+      if (in_array($label, $address_fields)) {
+        $address = $value . ' ' . $address;
+      }
+    }
+    $geo = geocoder($service, $address);
+    $data['latitude'] = $geo->coords['1'];
+    $data['longitude'] = $geo->coords['0'];
+    return $data;
   }
 
   /**
@@ -116,6 +139,9 @@ class FeedsFlatstoreProcessor extends FeedsProcessor {
       'mappings' => array(),
       'delete_with_source' => FALSE,
       'truncate' => FALSE,
+      'geolocate' => FALSE,
+      'geolocate_addresses' => '',
+      'geolocater' => 'google',
     );
   }
 
@@ -128,6 +154,53 @@ class FeedsFlatstoreProcessor extends FeedsProcessor {
       '#title' => t('Clear entries upon import'),
       '#description' => t('Because this creates flat tables there is not a good way of updating individual entries without creating a mapping which is only possible if the import source is the same for every node. This module does not assume that they are. If selected this module will truncate the table and start fresh if a source is being re-imported.'),
       '#default_value' => $this->config['truncate'],
+    );
+    return $form;
+  }
+
+  /**
+   * Define defaults.
+   */
+  public function sourceDefaults() {
+    return array(
+      'geolocate' => $this->config['geolocate'],
+      'geolocate_addresses' => $this->config['geolocate_addresses'],
+      'geolocater' => $this->config['geolocater'],
+    );
+  }
+
+  /**
+   * Override parent::sourceForm().
+   */
+  public function sourceForm($source_config) {
+    $form['geolocate'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Geolocate'),
+      '#description' => t('Attempt to provide goelocation information. Warning: this will slow import. Use of this also depends on rate limits and ToS for services.'),
+      '#default_value' => isset($source_config['geolocate']) ? $source_config['geolocate'] : FALSE,
+    );
+    $form['geolocater'] = array(
+      '#type' => 'select',
+      '#title' => t('Geolocation Service'),
+      '#description' => t('Headers to use when attempting to geolocate.'),
+      '#options' => array('google' => t('Google'), 'yahoo' => t('Yahoo'), 'mapquest_nominatim' => t('Nominatim'), 'yandex' => t('Yandex')),
+      '#default_value' => isset($source_config['geolocater']) ? $source_config['geolocater'] : 'google',
+      '#states' => array(
+        'visible' => array(
+          ':input[name="FeedsFlatstoreProcessor[geolocate]"]' => array('checked' => TRUE),
+        ),
+      ),
+    );
+    $form['geolocate_addresses'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Geolocate Addresses'),
+      '#description' => t('Headers to use when attempting to geolocate. To add multiple comma separate values.'),
+      '#default_value' => isset($source_config['geolocate_addresses']) ? $source_config['geolocate_addresses'] : '',
+      '#states' => array(
+        'visible' => array(
+          ':input[name="FeedsFlatstoreProcessor[geolocate]"]' => array('checked' => TRUE),
+        ),
+      ),
     );
     return $form;
   }

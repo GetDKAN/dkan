@@ -16,3 +16,11 @@ files[] = "feeds_news.test"
 name = "Feeds News"
 package = "Feeds"
 php = "5.2.4"
+
+
+; Information added by drush on 2014-03-21
+version = "7.x-2.0-alpha8+8-dev"
+core = "7.x"
+project = "feeds"
+datestamp = "1395440906"
+

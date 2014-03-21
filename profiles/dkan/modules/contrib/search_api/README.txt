@@ -90,7 +90,7 @@ IMPORTANT: Access checks
   results are displayed – either by only indexing such items, or by filtering
   appropriately at search time.
   For search on general site content (item type "Node"), this is already
-  supported by the Search API. To enable this, go to the index's "Workflow" tab
+  supported by the Search API. To enable this, go to the index's "Filters" tab
   and activate the "Node access" data alteration. This will add the necessary
   field, "Node access information", to the index (which you have to leave as
   "indexed"). If both this field and "Published" are set to be indexed, access
@@ -105,8 +105,10 @@ IMPORTANT: Access checks
   specific search types, if available.
 
 As stated above, you will need at least one other module to use the Search API,
-namely one that defines a service class (e.g. search_api_db ("Database search"),
-provided with this module).
+namely one that defines a service class (e.g., search_api_db ("Database search")
+which can be found at [3]).
+
+[3] http://drupal.org/project/search_api_db
 
 - Creating a server
   (Configuration > Search API > Add server)
@@ -169,8 +171,8 @@ form at the bottom of the page. For instance, you might want to index the
 author's username to the indexed data of a node, and you need to add the "Body"
 entity to the node when you want to index the actual text it contains.
 
-- Index workflow
-  (Configuration > Search API > [Index name] > Workflow)
+- Indexing workflow
+  (Configuration > Search API > [Index name] > Filters)
 
 This page lets you customize how the created index works, and what metadata will
 be available, by selecting data alterations and processors (see the glossary for
@@ -208,12 +210,6 @@ search_api_index_worker_callback_runtime:
   API will spend indexing (for all indexes combined) in each cron run. The
   default is 15 seconds.
 
-search_api_batch_per_cron:
-  By changing this variable, you can define how many batch items are created on
-  a single cron run. The value is per index, so on a site with 5 indexes with a
-  cron limit of 100 each, the default value of 10 will load and queue up to 5000
-  search items in up to 50 batch items.
-
 
 Information for developers
 --------------------------
@@ -227,9 +223,9 @@ Information for developers
  | For custom field types to be available for indexing, provide a
  | "property_type" key in hook_field_info(), and optionally a callback at the
  | "property_callbacks" key.
- | Both processes are explained in [1].
+ | Both processes are explained in [4].
  |
- | [1] http://drupal.org/node/1021466
+ | [4] http://drupal.org/node/1021466
 
 Apart from improving the module itself, developers can extend search
 capabilities provided by the Search API by providing implementations for one (or
@@ -263,7 +259,9 @@ service class.
 The central methods here are the indexItems() and the search() methods, which
 always have to be overridden manually. The configurationForm() method allows
 services to provide custom settings for the user.
-See the SearchApiDbService class for an example implementation.
+See the SearchApiDbService class provided by [5] for an example implementation.
+
+[5] http://drupal.org/project/search_api_db
 
 - Query class
   Interface: SearchApiQueryInterface
@@ -342,15 +340,6 @@ See the processors in includes/processor.inc for examples.
 Included components
 -------------------
 
-- Service classes
-
-  * Database search
-    A search server implementation that uses the normal database for indexing
-    data. It isn't very fast and the results might also be less accurate than
-    with third-party solutions like Solr, but it's very easy to set up and good
-    for smaller applications or testing.
-    See contrib/search_api_db/README.txt for details.
-
 - Data alterations
 
   * URL field
@@ -399,14 +388,12 @@ Included components
 
 - Additional modules
 
-  * Search pages
-    This module lets you create simple search pages for indexes.
   * Search views
-    This integrates the Search API with the Views module [1], enabling the user
+    This integrates the Search API with the Views module [6], enabling the user
     to create views which display search results from any Search API index.
   * Search facets
     For service classes supporting this feature (e.g. Solr search), this module
     automatically provides configurable facet blocks on pages that execute
     a search query.
 
-[1] http://drupal.org/project/views
+[6] http://drupal.org/project/views

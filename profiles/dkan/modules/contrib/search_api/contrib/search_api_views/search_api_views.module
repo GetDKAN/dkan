@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Integrates the Search API with Views.
+ */
+
+/**
  * Implements hook_views_api().
  */
 function search_api_views_views_api() {
@@ -12,7 +17,7 @@ function search_api_views_views_api() {
 /**
  * Implements hook_search_api_index_insert().
  */
-function search_api_views_search_api_index_insert(SearchApiIndex $index) {
+function search_api_views_search_api_index_insert() {
   // Make the new index available for views.
   views_invalidate_cache();
 }
@@ -21,8 +26,18 @@ function search_api_views_search_api_index_insert(SearchApiIndex $index) {
  * Implements hook_search_api_index_update().
  */
 function search_api_views_search_api_index_update(SearchApiIndex $index) {
+  // Check whether index was disabled.
   if (!$index->enabled && $index->original->enabled) {
     _search_api_views_index_unavailable($index);
+  }
+
+  // Check whether the indexed fields changed.
+  $old_fields = $index->original->options + array('fields' => array());
+  $old_fields = $old_fields['fields'];
+  $new_fields = $index->options + array('fields' => array());
+  $new_fields = $new_fields['fields'];
+  if ($old_fields != $new_fields) {
+    views_invalidate_cache();
   }
 }
 

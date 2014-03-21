@@ -152,7 +152,7 @@ class ctools_export_ui {
     if (isset($input['op']) && $input['op'] == t('Reset')) {
       unset($_SESSION['ctools_export_ui'][$this->plugin['name']]);
       if (!$js) {
-        return drupal_goto($_GET['q']);
+        drupal_goto($_GET['q']);
       }
       // clear everything but form id, form build id and form token:
       $keys = array_keys($input);
@@ -665,7 +665,7 @@ class ctools_export_ui {
     );
 
     $output = $this->edit_execute_form($form_state);
-    if (!empty($form_state['executed'])) {
+    if (!empty($form_state['executed']) && empty($form_state['rebuild'])) {
       $this->redirect($form_state['op'], $form_state['item']);
     }
 
@@ -701,7 +701,7 @@ class ctools_export_ui {
     );
 
     $output = $this->edit_execute_form($form_state);
-    if (!empty($form_state['executed'])) {
+    if (!empty($form_state['executed']) && empty($form_state['rebuild'])) {
       $this->redirect($form_state['op'], $form_state['item']);
     }
 
@@ -749,7 +749,7 @@ class ctools_export_ui {
     );
 
     $output = $this->edit_execute_form($form_state);
-    if (!empty($form_state['executed'])) {
+    if (!empty($form_state['executed']) && empty($form_state['rebuild'])) {
       $this->redirect($form_state['op'], $form_state['item']);
     }
 
@@ -778,7 +778,7 @@ class ctools_export_ui {
    */
   function edit_execute_form_standard(&$form_state) {
     $output = drupal_build_form('ctools_export_ui_edit_item_form', $form_state);
-    if (!empty($form_state['executed'])) {
+    if (!empty($form_state['executed']) && empty($form_state['rebuild'])) {
       $this->edit_save_form($form_state);
     }
 

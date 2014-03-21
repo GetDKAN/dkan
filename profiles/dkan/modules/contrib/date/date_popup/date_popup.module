@@ -87,7 +87,7 @@ function date_popup_library() {
       $path . '/jquery.timeentry.pack.js' => array(),
     ),
     'css' => array(
-      $path . '/themes/jquery.timeentry.css' => array('preprocess' => FALSE),
+      $path . '/themes/jquery.timeentry.css' => array(),
     ),
   );
   return $libraries;
@@ -352,7 +352,8 @@ function date_popup_process_date_part(&$element) {
   $parents = array_merge($element['#parents'], array('date'));
   $sub_element = array(
     '#type' => 'textfield',
-    '#title' => $element['#date_label_position'] == 'above' ? theme('date_part_label_date', array('part_type' => 'date', 'element' => $element)) : '',
+    '#title' => theme('date_part_label_date', array('part_type' => 'date', 'element' => $element)),
+    '#title_display' => $element['#date_label_position'] == 'above' ? 'before' : 'invisible',
     '#default_value' => $element['#value']['date'],
     '#id' => $id,
     '#input' => FALSE,
@@ -427,7 +428,8 @@ function date_popup_process_time_part(&$element) {
   $parents = array_merge($element['#parents'], array('time'));
   $sub_element = array(
     '#type' => 'textfield',
-    '#title' => $element['#date_label_position'] == 'above' ? theme('date_part_label_time', array('part_type' => 'time', 'element' => $element)) : '',
+    '#title' => theme('date_part_label_time', array('part_type' => 'time', 'element' => $element)),
+    '#title_display' => $element['#date_label_position'] == 'above' ? 'before' : 'invisible',
     '#default_value' => $element['#value']['time'],
     '#id' => $id,
     '#size' => 15,

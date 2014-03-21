@@ -997,6 +997,36 @@ class EntityMetadataTestCase extends EntityWebTestCase {
 
     // Test field level access.
     $this->assertTrue($wrapper->{$this->field_name}->access('view'), 'Field access granted.');
+
+    // Create node owned by anonymous and test access() method on each of its
+    // properties.
+    $node = $this->drupalCreateNode(array('type' => 'page', 'uid' => 0));
+    $wrapper = entity_metadata_wrapper('node', $node->nid);
+    foreach ($wrapper as $name => $property) {
+      $property->access('view');
+    }
+
+    // Property access of entity references takes entity access into account.
+    $node = $this->drupalCreateNode(array('type' => 'article'));
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $unprivileged_user = $this->drupalCreateUser();
+    $privileged_user = $this->drupalCreateUser(array('access user profiles'));
+
+    $this->assertTrue($wrapper->author->access('view', $privileged_user));
+    $this->assertFalse($wrapper->author->access('view', $unprivileged_user));
+
+    // Ensure the same works with multiple entity references by testing the
+    // $node->field_tags example.
+    $privileged_user = $this->drupalCreateUser(array('administer taxonomy'));
+    // Terms are view-able with access content, so make sure to remove this
+    // permission first.
+    user_role_revoke_permissions(DRUPAL_ANONYMOUS_RID, array('access content'));
+    $unprivileged_user = drupal_anonymous_user();
+
+    $this->assertTrue($wrapper->field_tags->access('view', $privileged_user), 'Privileged user has access.');
+    $this->assertTrue($wrapper->field_tags->access('view', $unprivileged_user), 'Unprivileged user has access.');
+    $this->assertTrue($wrapper->field_tags[0]->access('view', $privileged_user), 'Privileged user has access.');
+    $this->assertFalse($wrapper->field_tags[0]->access('view', $unprivileged_user), 'Unprivileged user has no access.');
   }
 
   /**
@@ -1084,6 +1114,231 @@ class EntityMetadataTestCase extends EntityWebTestCase {
 
     $value = unserialize($s)->value();
     $this->assertNull($value, 'Tried to load not existing node.');
+  }
+}
+
+/**
+ * Tests basic entity_access() functionality for nodes.
+ *
+ * This code is a modified version of NodeAccessTestCase.
+ *
+ * @see NodeAccessTestCase
+ */
+class EntityMetadataNodeAccessTestCase extends EntityWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Entity Metadata Node Access',
+      'description' => 'Test entity_access() for nodes',
+      'group' => 'Entity API',
+    );
+  }
+
+  /**
+   * Asserts node_access() correctly grants or denies access.
+   */
+  function assertNodeMetadataAccess($ops, $node, $account) {
+    foreach ($ops as $op => $result) {
+      $msg = t("entity_access() returns @result with operation '@op'.", array('@result' => $result ? 'TRUE' : 'FALSE', '@op' => $op));
+      $access = entity_access($op, 'node', $node, $account);
+      $this->assertEqual($result, $access, $msg);
+    }
+  }
+
+  function setUp() {
+    parent::setUp('entity', 'node');
+    // Clear permissions for authenticated users.
+    db_delete('role_permission')
+      ->condition('rid', DRUPAL_AUTHENTICATED_RID)
+      ->execute();
+  }
+
+  /**
+   * Runs basic tests for entity_access() function.
+   */
+  function testNodeMetadataAccess() {
+    // Author user.
+    $node_author_account = $this->drupalCreateUser(array());
+    // Make a node object.
+    $settings = array(
+      'uid' => $node_author_account->uid,
+      'type' => 'page',
+      'title' => 'Node ' . $this->randomName(32),
+    );
+    $node = $this->drupalCreateNode($settings);
+
+    // Ensures user without 'access content' permission can do nothing.
+    $web_user1 = $this->drupalCreateUser(array('create page content', 'edit any page content', 'delete any page content'));
+    $this->assertNodeMetadataAccess(array('create' => FALSE, 'view' => FALSE, 'update' => FALSE, 'delete' => FALSE), $node, $web_user1);
+
+    // Ensures user with 'bypass node access' permission can do everything.
+    $web_user2 = $this->drupalCreateUser(array('bypass node access'));
+    $this->assertNodeMetadataAccess(array('create' => TRUE, 'view' => TRUE, 'update' => TRUE, 'delete' => TRUE), $node, $web_user2);
+
+    // User cannot 'view own unpublished content'.
+    $web_user3 = $this->drupalCreateUser(array('access content'));
+    // Create an unpublished node.
+    $settings = array('type' => 'page', 'status' => 0, 'uid' => $web_user3->uid);
+    $node_unpublished = $this->drupalCreateNode($settings);
+    $this->assertNodeMetadataAccess(array('view' => FALSE), $node_unpublished, $web_user3);
+    // User cannot create content without permission.
+    $this->assertNodeMetadataAccess(array('create' => FALSE), $node, $web_user3);
+
+    // User can 'view own unpublished content', but another user cannot.
+    $web_user4 = $this->drupalCreateUser(array('access content', 'view own unpublished content'));
+    $web_user5 = $this->drupalCreateUser(array('access content', 'view own unpublished content'));
+    $node4 = $this->drupalCreateNode(array('status' => 0, 'uid' => $web_user4->uid));
+    $this->assertNodeMetadataAccess(array('view' => TRUE, 'update' => FALSE), $node4, $web_user4);
+    $this->assertNodeMetadataAccess(array('view' => FALSE), $node4, $web_user5);
+
+    // Tests the default access provided for a published node.
+    $node5 = $this->drupalCreateNode();
+    $this->assertNodeMetadataAccess(array('view' => TRUE, 'update' => FALSE, 'delete' => FALSE, 'create' => FALSE), $node5, $web_user3);
+  }
+}
+
+/**
+ * Test user permissions for node creation.
+ */
+class EntityMetadataNodeCreateAccessTestCase extends EntityWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Entity Metadata Node Create Access',
+      'description' => 'Test entity_access() for nodes',
+      'group' => 'Entity API',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('entity', 'node');
+  }
+
+  /**
+   * Addresses the special case of 'create' access for nodes.
+   */
+  public function testNodeMetadataCreateAccess() {
+    // Create some users. One with super-powers, one with create perms,
+    // and one with no perms, and a different one to author the node.
+    $admin_account = $this->drupalCreateUser(array(
+      'bypass node access',
+    ));
+    $creator_account = $this->drupalCreateUser(array(
+      'create page content',
+    ));
+    $auth_only_account = $this->drupalCreateUser(array());
+    $node_author_account = $this->drupalCreateUser(array());
+
+    // Make a node object with Entity API (contrib)
+    $settings = array(
+      'uid' => $node_author_account->uid,
+      'type' => 'page',
+      'title' => $this->randomName(32),
+      'body' => array(LANGUAGE_NONE => array(array($this->randomName(64)))),
+    );
+    $node = entity_create('node', $settings);
+
+    // Test the populated wrapper.
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $this->assertTrue($wrapper->entityAccess('create', $admin_account), 'Create access allowed for ADMIN, for populated wrapper.');
+    $this->assertTrue($wrapper->entityAccess('create', $creator_account), 'Create access allowed for CREATOR, for populated wrapper.');
+    $this->assertFalse($wrapper->entityAccess('create', $auth_only_account), 'Create access denied for USER, for populated wrapper.');
+
+    // Test entity_acces().
+    $this->assertTrue(entity_access('create', 'node', $node, $admin_account), 'Create access allowed for ADMIN, for entity_access().');
+    $this->assertTrue(entity_access('create', 'node', $node, $creator_account), 'Create access allowed for CREATOR, for entity_access().');
+    $this->assertFalse(entity_access('create', 'node', $node, $auth_only_account), 'Create access denied for USER, for entity_access().');
+  }
+}
+
+/**
+ * Tests user permissions for node revisions.
+ *
+ * Based almost entirely on NodeRevisionPermissionsTestCase.
+ */
+class EntityMetadataNodeRevisionAccessTestCase extends DrupalWebTestCase {
+  protected $node_revisions = array();
+  protected $accounts = array();
+
+  // Map revision permission names to node revision access ops.
+  protected $map = array(
+    'view' => 'view revisions',
+    'update' => 'revert revisions',
+    'delete' => 'delete revisions',
+  );
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Entity Metadata Node Revision Access',
+      'description' => 'Tests user permissions for node revision operations.',
+      'group' => 'Entity API',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('entity', 'node');
+
+    // Create a node with several revisions.
+    $node = $this->drupalCreateNode();
+    $this->node_revisions[] = $node;
+
+    for ($i = 0; $i < 3; $i++) {
+      // Create a revision for the same nid and settings with a random log.
+      $revision = node_load($node->nid);
+      $revision->revision = 1;
+      $revision->log = $this->randomName(32);
+      node_save($revision);
+      $this->node_revisions[] = node_load($revision->nid);
+    }
+
+    // Create three users, one with each revision permission.
+    foreach ($this->map as $op => $permission) {
+      // Create the user.
+      $account = $this->drupalCreateUser(
+        array(
+          'access content',
+          'edit any page content',
+          'delete any page content',
+          $permission,
+        )
+      );
+      $account->op = $op;
+      $this->accounts[] = $account;
+    }
+
+    // Create an admin account (returns TRUE for all revision permissions).
+    $admin_account = $this->drupalCreateUser(array('access content', 'administer nodes'));
+    $admin_account->is_admin = TRUE;
+    $this->accounts['admin'] = $admin_account;
+
+    // Create a normal account (returns FALSE for all revision permissions).
+    $normal_account = $this->drupalCreateUser();
+    $normal_account->op = FALSE;
+    $this->accounts[] = $normal_account;
+  }
+
+  /**
+   * Tests the entity_access() function for revisions.
+   */
+  function testNodeRevisionAccess() {
+    // $node_revisions[1] won't be the latest revision.
+    $revision = $this->node_revisions[1];
+
+    $parameters = array(
+      'op' => array_keys($this->map),
+      'account' => $this->accounts,
+    );
+
+    $permutations = $this->generatePermutations($parameters);
+    $entity_type = 'node';
+    foreach ($permutations as $case) {
+      if (!empty($case['account']->is_admin) || $case['op'] == $case['account']->op) {
+        $access = entity_access($case['op'], $entity_type, $revision, $case['account']);
+        $this->assertTrue($access, "{$this->map[$case['op']]} granted on $entity_type.");
+      }
+      else {
+        $access = entity_access($case['op'], $entity_type, $revision, $case['account']);
+        $this->assertFalse($access, "{$this->map[$case['op']]} NOT granted on $entity_type.");
+      }
+    }
   }
 }
 
@@ -1202,18 +1457,21 @@ class EntityMetadataIntegrationTestCase extends EntityWebTestCase {
    */
   function testBookModule() {
     $title = 'Book 1';
-    $node = $this->drupalCreateNode(array('title' => $title, 'type' => 'book'));
-    $node2 = $this->drupalCreateNode(array('type' => 'book', 'book' => array('bid' => $node->nid)));
+    $node = $this->drupalCreateNode(array('title' => $title, 'type' => 'book', 'book' => array('bid' => 'new')));
+    $book = array('bid' => $node->nid, 'plid' => $node->book['mlid']);
+    $node2 = $this->drupalCreateNode(array('type' => 'book', 'book' => $book));
     $node3 = $this->drupalCreateNode(array('type' => 'page'));
 
     // Test whether the properties work.
     $wrapper = entity_metadata_wrapper('node', $node2);
-    $this->assertEqual("Book 1", $wrapper->book->title->value(), "Book title returned.");
+    $this->assertEqual($title, $wrapper->book->title->value(), "Book title returned.");
+    $this->assertEqual(array($node->nid), $wrapper->book_ancestors->value(array('identifier' => TRUE)), "Book ancestors returned.");
     $this->assertEqual($node->nid, $wrapper->book->nid->value(), "Book id returned.");
 
     // Try using book properties for no book nodes.
     $wrapper = entity_metadata_wrapper('node', $node3);
     $this->assertException($wrapper, 'book');
+    $this->assertException($wrapper, 'book_ancestors');
   }
 
   /**
@@ -1222,11 +1480,11 @@ class EntityMetadataIntegrationTestCase extends EntityWebTestCase {
   function testComments() {
     $title = 'Node 1';
     $node = $this->drupalCreateNode(array('title' => $title, 'type' => 'page'));
-    $account = $this->drupalCreateUser();
+    $author = $this->drupalCreateUser(array('access comments', 'post comments', 'edit own comments'));
     $comment = (object)array(
       'subject' => 'topic',
       'nid' => $node->nid,
-      'uid' => $account->uid,
+      'uid' => $author->uid,
       'cid' => FALSE,
       'pid' => 0,
       'homepage' => '',
@@ -1242,6 +1500,71 @@ class EntityMetadataIntegrationTestCase extends EntityWebTestCase {
       }
     }
     $this->assertEmpty($wrapper, 'parent');
+
+    // Test comment entity access.
+    $admin_user = $this->drupalCreateUser(array('access comments', 'administer comments'));
+    // Also grant access to view user accounts to test the comment author
+    // property.
+    $unprivileged_user = $this->drupalCreateUser(array('access comments', 'access user profiles'));
+    // Published comments can be viewed and edited by the author.
+    $this->assertTrue($wrapper->access('view', $author), 'Comment author is allowed to view the published comment.');
+    $this->assertTrue($wrapper->access('edit', $author), 'Comment author is allowed to edit the published comment.');
+    // We cannot use $wrapper->access('delete') here because it only understands
+    // view and edit.
+    $this->assertFalse(entity_access('delete', 'comment', $comment, $author), 'Comment author is not allowed to delete the published comment.');
+
+    // Administrators can do anything with published comments.
+    $this->assertTrue($wrapper->access('view', $admin_user), 'Comment administrator is allowed to view the published comment.');
+    $this->assertTrue($wrapper->access('edit', $admin_user), 'Comment administrator is allowed to edit the published comment.');
+    $this->assertTrue(entity_access('delete', 'comment', $comment, $admin_user), 'Comment administrator is allowed to delete the published comment.');
+
+    // Unpriviledged users can only view the published comment.
+    $this->assertTrue($wrapper->access('view', $unprivileged_user), 'Unprivileged user is allowed to view the published comment.');
+    $this->assertFalse($wrapper->access('edit', $unprivileged_user), 'Unprivileged user is not allowed to edit the published comment.');
+    $this->assertFalse(entity_access('delete', 'comment', $comment, $unprivileged_user), 'Unprivileged user is not allowed to delete the published comment.');
+
+    // Test property view access.
+    $view_access = array('name', 'homepage', 'subject', 'created', 'author', 'node', 'parent', 'url', 'edit_url');
+    foreach ($view_access as $property_name) {
+      $this->assertTrue($wrapper->{$property_name}->access('view', $unprivileged_user), "Unpriviledged user can view the $property_name property.");
+    }
+
+    $view_denied = array('hostname', 'mail', 'status');
+    foreach ($view_denied as $property_name) {
+      $this->assertFalse($wrapper->{$property_name}->access('view', $unprivileged_user), "Unpriviledged user can not view the $property_name property.");
+      $this->assertTrue($wrapper->{$property_name}->access('view', $admin_user), "Admin user can view the $property_name property.");
+    }
+
+    // The author is allowed to edit the comment subject if they have the
+    // 'edit own comments' permission.
+    $this->assertTrue($wrapper->subject->access('edit', $author), "Author can edit the subject property.");
+    $this->assertFalse($wrapper->subject->access('edit', $unprivileged_user), "Unpriviledged user cannot edit the subject property.");
+    $this->assertTrue($wrapper->subject->access('edit', $admin_user), "Admin user can edit the subject property.");
+
+    $edit_denied = array('hostname', 'mail', 'status', 'name', 'homepage', 'created', 'parent', 'node', 'author');
+    foreach ($edit_denied as $property_name) {
+      $this->assertFalse($wrapper->{$property_name}->access('edit', $author), "Author cannot edit the $property_name property.");
+      $this->assertTrue($wrapper->{$property_name}->access('edit', $admin_user), "Admin user can edit the $property_name property.");
+    }
+
+    // Test access to unpublished comments.
+    $comment->status = COMMENT_NOT_PUBLISHED;
+    comment_save($comment);
+
+    // Unpublished comments cannot be accessed by the author.
+    $this->assertFalse($wrapper->access('view', $author), 'Comment author is not allowed to view the unpublished comment.');
+    $this->assertFalse($wrapper->access('edit', $author), 'Comment author is not allowed to edit the unpublished comment.');
+    $this->assertFalse(entity_access('delete', 'comment', $comment, $author), 'Comment author is not allowed to delete the unpublished comment.');
+
+    // Administrators can do anything with unpublished comments.
+    $this->assertTrue($wrapper->access('view', $admin_user), 'Comment administrator is allowed to view the unpublished comment.');
+    $this->assertTrue($wrapper->access('edit', $admin_user), 'Comment administrator is allowed to edit the unpublished comment.');
+    $this->assertTrue(entity_access('delete', 'comment', $comment, $admin_user), 'Comment administrator is allowed to delete the unpublished comment.');
+
+    // Unpriviledged users cannot access unpublished comments.
+    $this->assertFalse($wrapper->access('view', $unprivileged_user), 'Unprivileged user is not allowed to view the unpublished comment.');
+    $this->assertFalse($wrapper->access('edit', $unprivileged_user), 'Unprivileged user is not allowed to edit the unpublished comment.');
+    $this->assertFalse(entity_access('delete', 'comment', $comment, $unprivileged_user), 'Unprivileged user is not allowed to delete the unpublished comment.');
   }
 
   /**
@@ -1252,14 +1575,33 @@ class EntityMetadataIntegrationTestCase extends EntityWebTestCase {
     $node = $this->drupalCreateNode(array('title' => $title, 'type' => 'page'));
     $wrapper = entity_metadata_wrapper('node', $node);
     foreach ($wrapper as $key => $value) {
-      if ($key != 'book' && $key != 'source' && $key != 'last_view') {
+      if ($key != 'book' && $key != 'book_ancestors' && $key != 'source' && $key != 'last_view') {
         $this->assertValue($wrapper, $key);
       }
     }
     $this->assertException($wrapper, 'book');
+    $this->assertException($wrapper, 'book_ancestors');
     $this->assertEmpty($wrapper, 'source');
     $this->assertException($wrapper->source, 'title');
     $this->assertEmpty($wrapper, 'last_view');
+
+    // Test statistics module integration access.
+    $unpriviledged_user = $this->drupalCreateUser(array('access content'));
+    $this->assertTrue($wrapper->access('view', $unpriviledged_user), 'Unpriviledged user can view the node.');
+    $this->assertFalse($wrapper->access('edit', $unpriviledged_user), 'Unpriviledged user can not edit the node.');
+    $count_access_user = $this->drupalCreateUser(array('view post access counter'));
+    $admin_user = $this->drupalCreateUser(array('access content', 'view post access counter', 'access statistics'));
+
+    $this->assertFalse($wrapper->views->access('view', $unpriviledged_user), "Unpriviledged user cannot view the statistics counter property.");
+    $this->assertTrue($wrapper->views->access('view', $count_access_user), "Count access user can view the statistics counter property.");
+    $this->assertTrue($wrapper->views->access('view', $admin_user), "Admin user can view the statistics counter property.");
+
+    $admin_properties = array('day_views', 'last_view');
+    foreach ($admin_properties as $property_name) {
+      $this->assertFalse($wrapper->{$property_name}->access('view', $unpriviledged_user), "Unpriviledged user cannot view the $property_name property.");
+      $this->assertFalse($wrapper->{$property_name}->access('view', $count_access_user), "Count access user cannot view the $property_name property.");
+      $this->assertTrue($wrapper->{$property_name}->access('view', $admin_user), "Admin user can view the $property_name property.");
+    }
   }
 
   /**
@@ -1354,12 +1696,43 @@ class EntityMetadataIntegrationTestCase extends EntityWebTestCase {
    * Test all properties of a user.
    */
   function testUserProperties() {
-    $account = $this->drupalCreateUser();
+    $account = $this->drupalCreateUser(array('access user profiles', 'change own username'));
     $account->login = REQUEST_TIME;
     $account->access = REQUEST_TIME;
     $wrapper = entity_metadata_wrapper('user', $account);
     foreach ($wrapper as $key => $value) {
       $this->assertValue($wrapper, $key);
+    }
+
+    // Test property view access.
+    $unpriviledged_user = $this->drupalCreateUser(array('access user profiles'));
+    $admin_user = $this->drupalCreateUser(array('administer users'));
+    $this->assertTrue($wrapper->access('view', $unpriviledged_user), 'Unpriviledged account can view the user.');
+    $this->assertFalse($wrapper->access('edit', $unpriviledged_user), 'Unpriviledged account can not edit the user.');
+
+    $view_access = array('name', 'url', 'edit_url', 'created');
+    foreach ($view_access as $property_name) {
+      $this->assertTrue($wrapper->{$property_name}->access('view', $unpriviledged_user), "Unpriviledged user can view the $property_name property.");
+    }
+
+    $view_denied = array('mail', 'last_access', 'last_login', 'roles', 'status', 'theme');
+    foreach ($view_denied as $property_name) {
+      $this->assertFalse($wrapper->{$property_name}->access('view', $unpriviledged_user), "Unpriviledged user can not view the $property_name property.");
+      $this->assertTrue($wrapper->{$property_name}->access('view', $admin_user), "Admin user can view the $property_name property.");
+    }
+
+    // Test property edit access.
+    $edit_own_allowed = array('name', 'mail');
+    foreach ($edit_own_allowed as $property_name) {
+      $this->assertTrue($wrapper->{$property_name}->access('edit', $account), "Account owner can edit the $property_name property.");
+    }
+
+    $this->assertTrue($wrapper->roles->access('view', $account), "Account owner can view their own roles.");
+
+    $edit_denied = array('last_access', 'last_login', 'created', 'roles', 'status', 'theme');
+    foreach ($edit_denied as $property_name) {
+      $this->assertFalse($wrapper->{$property_name}->access('edit', $account), "Account owner cannot edit the $property_name property.");
+      $this->assertTrue($wrapper->{$property_name}->access('edit', $admin_user), "Admin user can edit the $property_name property.");
     }
   }
 

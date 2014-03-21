@@ -28,6 +28,18 @@ class SchemaDatabaseSchema_mysql extends DatabaseSchema_mysql {
     return $map;
   }
 
+  /**
+   * Overrides DatabaseSchema_mysql::getFieldTypeMap().
+   */
+  public function getFieldTypeMap() {
+    $map = &drupal_static('SchemaDatabaseSchema_mysql::getFieldTypeMap');
+    if (!isset($map)) {
+      $map = parent::getFieldTypeMap();
+      drupal_alter('schema_field_type_map', $map, $this, $this->connection);
+    }
+    return $map;
+  }
+
   public function inspect($connection = NULL, $table_name = NULL) {
     // Support the deprecated connection parameter.
     if (isset($connection) && $connection != $this->connection->getKey()) {
@@ -37,6 +49,15 @@ class SchemaDatabaseSchema_mysql extends DatabaseSchema_mysql {
     // Get the current database name
     $info = $this->connection->getConnectionOptions();
     $database = $info['database'];
+
+    // Apply table prefixes.
+    if (isset($table_name)) {
+      $table_info = $this->connection->schema()->getPrefixInfo($table_name);
+      if (!empty($table_info['database'])) {
+        $database = $table_info['database'];
+      }
+      $table_name = $table_info['table'];
+    }
 
     $tables = array();
     $args = array(':database' => $database);

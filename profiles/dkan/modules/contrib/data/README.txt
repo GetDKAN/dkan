@@ -52,6 +52,19 @@ opposed to escaped when using views.
 4. Identify the field that contains HTML. For the 'Field handler' column, select
    the 'views_handler_field_data_markup'
 
+Working with Views and date fields
+
+A field on your table can be declared as a date field to Date Views module if
+it contains data in one of the following formats:
+- Unix timestamp
+- MySQL DATETIME format
+- ISO date format (as supported by Date module)
+Once a Data table field has had its date settings configured, it will be
+available in the combined date filter and argument handlers.
+
+For the field handler, use the views_handler_field_date handler. Fields whose
+formats is other than unix timestamp will need the patch to Views at
+http://drupal.org/node/2178287.
 
 Recommendations
 ===============

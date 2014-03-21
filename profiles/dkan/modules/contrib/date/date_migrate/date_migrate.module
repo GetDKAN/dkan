@@ -2,15 +2,5 @@
 
 /**
  * @file
- * Migration integration for Date Migrate.
+ * Obsolete migration integration for Date - now in Date itself.
  */
-
-/**
- * Implements hook_migrate_api().
- */
-function date_migrate_migrate_api() {
-  $api = array(
-    'api' => 2,
-  );
-  return $api;
-}

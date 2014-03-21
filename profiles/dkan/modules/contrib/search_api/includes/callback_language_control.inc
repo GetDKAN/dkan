@@ -1,18 +1,18 @@
 <?php
 
 /**
+ * @file
+ * Contains SearchApiAlterLanguageControl.
+ */
+
+/**
  * Search API data alteration callback that filters out items based on their
  * bundle.
  */
 class SearchApiAlterLanguageControl extends SearchApiAbstractAlterCallback {
 
   /**
-   * Construct a data-alter callback.
-   *
-   * @param SearchApiIndex $index
-   *   The index whose items will be altered.
-   * @param array $options
-   *   The callback options set for this index.
+   * {@inheritdoc}
    */
   public function __construct(SearchApiIndex $index, array $options = array()) {
     $options += array(
@@ -23,15 +23,9 @@ class SearchApiAlterLanguageControl extends SearchApiAbstractAlterCallback {
   }
 
   /**
-   * Check whether this data-alter callback is applicable for a certain index.
+   * Overrides SearchApiAbstractAlterCallback::supportsIndex().
    *
    * Only returns TRUE if the system is multilingual.
-   *
-   * @param SearchApiIndex $index
-   *   The index to check for.
-   *
-   * @return boolean
-   *   TRUE if the callback can run on the given index; FALSE otherwise.
    *
    * @see drupal_multilingual()
    */
@@ -40,10 +34,7 @@ class SearchApiAlterLanguageControl extends SearchApiAbstractAlterCallback {
   }
 
   /**
-   * Display a form for configuring this data alteration.
-   *
-   * @return array
-   *   A form array for configuring this data alteration.
+   * {@inheritdoc}
    */
   public function configurationForm() {
     $form = array();
@@ -98,19 +89,7 @@ class SearchApiAlterLanguageControl extends SearchApiAbstractAlterCallback {
   }
 
   /**
-   * Submit callback for the form returned by configurationForm().
-   *
-   * This method should both return the new options and set them internally.
-   *
-   * @param array $form
-   *   The form returned by configurationForm().
-   * @param array $values
-   *   The part of the $form_state['values'] array corresponding to this form.
-   * @param array $form_state
-   *   The complete form state.
-   *
-   * @return array
-   *   The new options array for this callback.
+   * {@inheritdoc}
    */
   public function configurationFormSubmit(array $form, array &$values, array &$form_state) {
     $values['languages'] = array_filter($values['languages']);
@@ -118,15 +97,7 @@ class SearchApiAlterLanguageControl extends SearchApiAbstractAlterCallback {
   }
 
   /**
-   * Alter items before indexing.
-   *
-   * Items which are removed from the array won't be indexed, but will be marked
-   * as clean for future indexing. This could for instance be used to implement
-   * some sort of access filter for security purposes (e.g., don't index
-   * unpublished nodes or comments).
-   *
-   * @param array $items
-   *   An array of items to be altered, keyed by item IDs.
+   * {@inheritdoc}
    */
   public function alterItems(array &$items) {
     foreach ($items as $i => &$item) {

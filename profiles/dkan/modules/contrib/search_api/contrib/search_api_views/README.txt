@@ -54,8 +54,7 @@ linked to for the filter to have an effect.
 Since the block will trigger a search on pages where it is set to appear, you
 can also enable additional „normal“ facet blocks for that search, via the
 „Facets“ tab for the index. They will automatically also point to the same
-search that you specified for the display. The Search ID of the „Facets blocks“
-display can easily be recognized by the "-facet_block" suffix.
+search that you specified for the display.
 If you want to use only the normal facets and not display anything at all in
 the Views block, just activate the display's „Hide block“ option.
 

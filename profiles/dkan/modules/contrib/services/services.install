@@ -219,6 +219,7 @@ function services_update_7399() {
  * Update 7400 reduces nesting in the way server settings are stored
  */
 function services_update_7400() {
+  module_load_include('module','services');
   $server_names = array_keys(services_get_servers());
   foreach (services_endpoint_load_all() as $endpoint) {
     $settings = $endpoint->server_settings;

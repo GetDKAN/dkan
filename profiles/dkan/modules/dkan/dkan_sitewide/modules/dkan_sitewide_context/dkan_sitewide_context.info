@@ -3,7 +3,7 @@ description = Contexts for DKAN.
 core = 7.x
 package = DKAN
 version = 7.x-1.0-beta1
-php = 5.2.4
+project = dkan_sitewide_context
 dependencies[] = context
 dependencies[] = ctools
 dependencies[] = dkan_dataset
@@ -11,7 +11,6 @@ dependencies[] = dkan_dataset_content_types
 dependencies[] = dkan_sitewide
 dependencies[] = entityreference
 dependencies[] = field_group
-dependencies[] = system
 features[context][] = dataset
 features[context][] = dataset-create
 features[context][] = dataset-edit
@@ -23,3 +22,11 @@ features[context][] = sitewide
 features[ctools][] = context:context:3
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:2
+
+
+; Information added by drush on 2014-03-21
+version = "7.x-1.0-beta1+74-dev"
+core = "7.x"
+project = "dkan"
+datestamp = "1395440876"
+

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Provides a flexible framework for implementing search servives.
+ */
+
+/**
  * Default number of items indexed per cron batch for each enabled index.
  */
 define('SEARCH_API_DEFAULT_CRON_LIMIT', 50);
@@ -53,8 +58,8 @@ function search_api_menu() {
   );
   $items[$pre . '/server/%search_api_server/view'] = array(
     'title' => 'View',
-    'weight' => -10,
     'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
   );
   $items[$pre . '/server/%search_api_server/edit'] = array(
     'title' => 'Edit',
@@ -65,6 +70,19 @@ function search_api_menu() {
     'file' => 'search_api.admin.inc',
     'weight' => -1,
     'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_INLINE | MENU_CONTEXT_PAGE,
+  );
+  $items[$pre . '/server/%search_api_server/disable'] = array(
+    'title' => 'Disable',
+    'description' => 'Disable index.',
+    'page callback' => 'search_api_admin_server_view',
+    'page arguments' => array(5, 6),
+    'access callback' => 'search_api_access_disable_page',
+    'access arguments' => array(5),
+    'file' => 'search_api.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_INLINE,
+    'weight' => 8,
   );
   $items[$pre . '/server/%search_api_server/delete'] = array(
     'title' => 'Delete',
@@ -77,6 +95,8 @@ function search_api_menu() {
     'access arguments' => array(5),
     'file' => 'search_api.admin.inc',
     'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_INLINE,
+    'weight' => 10,
   );
   $items[$pre . '/index/%search_api_index'] = array(
     'title' => 'View index',
@@ -93,27 +113,16 @@ function search_api_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -10,
   );
-  $items[$pre . '/index/%search_api_index/status'] = array(
-    'title' => 'Status',
-    'description' => 'Display and work on index status.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('search_api_admin_index_status_form', 5),
-    'access arguments' => array('administer search_api'),
-    'file' => 'search_api.admin.inc',
-    'weight' => -8,
-    'type' => MENU_LOCAL_TASK,
-    'context' => MENU_CONTEXT_INLINE | MENU_CONTEXT_PAGE,
-  );
   $items[$pre . '/index/%search_api_index/edit'] = array(
-    'title' => 'Settings',
+    'title' => 'Edit',
     'description' => 'Edit index settings.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('search_api_admin_index_edit', 5),
     'access arguments' => array('administer search_api'),
     'file' => 'search_api.admin.inc',
-    'weight' => -6,
     'type' => MENU_LOCAL_TASK,
     'context' => MENU_CONTEXT_INLINE | MENU_CONTEXT_PAGE,
+    'weight' => -6,
   );
   $items[$pre . '/index/%search_api_index/fields'] = array(
     'title' => 'Fields',
@@ -122,20 +131,32 @@ function search_api_menu() {
     'page arguments' => array('search_api_admin_index_fields', 5),
     'access arguments' => array('administer search_api'),
     'file' => 'search_api.admin.inc',
-    'weight' => -4,
     'type' => MENU_LOCAL_TASK,
     'context' => MENU_CONTEXT_INLINE | MENU_CONTEXT_PAGE,
+    'weight' => -4,
   );
   $items[$pre . '/index/%search_api_index/workflow'] = array(
-    'title' => 'Workflow',
-    'description' => 'Edit index workflow.',
+    'title' => 'Filters',
+    'description' => 'Edit indexing workflow.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('search_api_admin_index_workflow', 5),
     'access arguments' => array('administer search_api'),
     'file' => 'search_api.admin.inc',
-    'weight' => -2,
     'type' => MENU_LOCAL_TASK,
     'context' => MENU_CONTEXT_INLINE | MENU_CONTEXT_PAGE,
+    'weight' => -2,
+  );
+  $items[$pre . '/index/%search_api_index/disable'] = array(
+    'title' => 'Disable',
+    'description' => 'Disable index.',
+    'page callback' => 'search_api_admin_index_view',
+    'page arguments' => array(5, 6),
+    'access callback' => 'search_api_access_disable_page',
+    'access arguments' => array(5),
+    'file' => 'search_api.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_INLINE,
+    'weight' => 8,
   );
   $items[$pre . '/index/%search_api_index/delete'] = array(
     'title' => 'Delete',
@@ -148,9 +169,35 @@ function search_api_menu() {
     'access arguments' => array(5),
     'file' => 'search_api.admin.inc',
     'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_INLINE,
+    'weight' => 10,
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_help().
+ */
+function search_api_help($path) {
+  switch ($path) {
+    case 'admin/help#search_api':
+      $classes = array();
+      foreach (search_api_get_service_info() as $id => $info) {
+        $id = drupal_clean_css_identifier($id);
+        $name = check_plain($info['name']);
+        $description = isset($info['description']) ? $info['description'] : '';
+        $classes[] = "<h2 id=\"$id\">$name</h2>\n$description";
+      }
+      $output = '';
+      if ($classes) {
+        $output .= '<p>' . t('The following service classes are available for creating a search server.') . "</p>\n";
+        $output .= implode("\n\n", $classes);
+      }
+      return $output;
+    case 'admin/config/search/search_api':
+      return '<p>' . t('A search server and search index are used to execute searches. Several indexes can exist per server.<br />You need at least one server and one index to create searches on your site.') . '</p>';
+  }
 }
 
 /**
@@ -193,6 +240,12 @@ function search_api_hook_info() {
  * Implements hook_theme().
  */
 function search_api_theme() {
+  $themes['search_api_dropbutton'] = array(
+    'variables' => array(
+      'links' => array(),
+    ),
+    'file' => 'search_api.admin.inc',
+  );
   $themes['search_api_server'] = array(
     'variables' => array(
       'id' => NULL,
@@ -200,10 +253,13 @@ function search_api_theme() {
       'machine_name' => '',
       'description' => NULL,
       'enabled' => NULL,
+      'class_id' => NULL,
       'class_name' => NULL,
       'class_description' => NULL,
+      'indexes' => array(),
       'options' => array(),
       'status' => ENTITY_CUSTOM,
+      'extra' => array(),
     ),
     'file' => 'search_api.admin.inc',
   );
@@ -219,6 +275,7 @@ function search_api_theme() {
       'options' => array(),
       'fields' => array(),
       'indexed_items' => 0,
+      'on_server' => 0,
       'total_items' => 0,
       'status' => ENTITY_CUSTOM,
       'read_only' => 0,
@@ -252,51 +309,76 @@ function search_api_permission() {
 /**
  * Implements hook_cron().
  *
- * Will index $options['cron-limit'] items for each enabled index.
+ * This will first execute any pending server tasks. After that, items will
+ * be indexed on all enabled indexes with a non-zero cron limit. Indexing will
+ * run for the time set in the search_api_index_worker_callback_runtime variable
+ * (defaulting to 15 seconds), but will at least index one batch of items on
+ * each index.
+ *
+ * @see search_api_server_tasks_check()
  */
 function search_api_cron() {
-  $queue = DrupalQueue::get('search_api_indexing_queue');
-  foreach (search_api_index_load_multiple(FALSE, array('enabled' => TRUE, 'read_only' => 0)) as $index) {
-    $limit = isset($index->options['cron_limit'])
+  // Execute pending server tasks.
+  search_api_server_tasks_check();
+
+  // Load all enabled, not read-only indexes.
+  $conditions = array(
+    'enabled' => TRUE,
+    'read_only' => 0
+  );
+  $indexes = search_api_index_load_multiple(FALSE, $conditions);
+  if (!$indexes) {
+    return;
+  }
+  // Remember servers which threw an exception.
+  $ignored_servers = array();
+  // Continue indexing, one batch from each index, until the time is up, but at
+  // least index one batch per index.
+  $end = time() + variable_get('search_api_index_worker_callback_runtime', 15);
+  $first_pass = TRUE;
+  while (TRUE) {
+    if (!$indexes) {
+      break;
+    }
+    foreach ($indexes as $id => $index) {
+      if (!$first_pass && time() >= $end) {
+        break 2;
+      }
+      if (!empty($ignored_servers[$index->server])) {
+        continue;
+      }
+
+      $limit = isset($index->options['cron_limit'])
         ? $index->options['cron_limit']
         : SEARCH_API_DEFAULT_CRON_LIMIT;
-    if ($limit) {
-      try {
-        $task = array('index' => $index->machine_name);
-        // Fetch items to index, do not fetch more than the configured amount
-        // of batches to be created per cron run to avoid timeouts.
-        $ids = search_api_get_items_to_index($index, $limit > 0 ? $limit * variable_get('search_api_batch_per_cron', 10) : -1);
-        if (!$ids) {
-          continue;
+      $num = 0;
+      if ($limit) {
+        try {
+          $num = search_api_index_items($index, $limit);
+          if ($num) {
+            $variables = array(
+              '@num' => $num,
+              '%name' => $index->name
+            );
+            watchdog('search_api', 'Indexed @num items for index %name.', $variables, WATCHDOG_INFO);
+          }
         }
-        $batches = $limit > 0 ? array_chunk($ids, $limit, TRUE) : array($ids);
-        foreach ($batches as $batch) {
-          $task['items'] = $batch;
-          $queue->createItem($task);
+        catch (SearchApiException $e) {
+          // Exceptions will probably be caused by the server in most cases.
+          // Therefore, don't index for any index on this server.
+          $ignored_servers[$index->server] = TRUE;
+          $vars['%index'] = $index->name;
+          watchdog_exception('search_api', $e, '%type while trying to index items on %index: !message in %function (line %line of %file).', $vars);
         }
-        // Mark items as queued so they won't be inserted into the queue again
-        // on the next cron run.
-        search_api_track_item_queued($index, $ids);
       }
-      catch (SearchApiException $e) {
-        watchdog_exception('search_api', $e);
+      if  (!$num) {
+        // Couldn't index any items => stop indexing for this index in this
+        // cron run.
+        unset($indexes[$id]);
       }
     }
+    $first_pass = FALSE;
   }
-}
-
-/**
- * Implements hook_cron_queue_info().
- *
- * Defines a queue for saved searches that should be checked for new items.
- */
-function search_api_cron_queue_info() {
-  return array(
-    'search_api_indexing_queue' => array(
-      'worker callback' => '_search_api_indexing_queue_process',
-      'time' => variable_get('search_api_index_worker_callback_runtime', 15),
-    ),
-  );
 }
 
 /**
@@ -310,6 +392,7 @@ function search_api_entity_info() {
     'entity class' => 'SearchApiServer',
     'base table' => 'search_api_server',
     'uri callback' => 'search_api_server_url',
+    'access callback' => 'search_api_entity_access',
     'module' => 'search_api',
     'exportable' => TRUE,
     'entity keys' => array(
@@ -325,6 +408,7 @@ function search_api_entity_info() {
     'entity class' => 'SearchApiIndex',
     'base table' => 'search_api_index',
     'uri callback' => 'search_api_index_url',
+    'access callback' => 'search_api_entity_access',
     'module' => 'search_api',
     'exportable' => TRUE,
     'entity keys' => array(
@@ -382,6 +466,19 @@ function search_api_entity_property_info() {
       'type' => 'boolean',
       'description' => t('A flag indicating whether the server is enabled.'),
       'schema field' => 'enabled',
+    ),
+    'status' => array(
+      'label' => t('Status'),
+      'type' => 'integer',
+      'description' => t('Search API server status property'),
+      'schema field' => 'status',
+      'options list' => 'search_api_status_options_list',
+    ),
+    'module' => array(
+      'label' => t('Module'),
+      'type' => 'text',
+      'description' => t('The name of the module from which this server originates.'),
+      'schema field' => 'module',
     ),
   );
   $info['search_api_index']['properties'] = array(
@@ -444,6 +541,19 @@ function search_api_entity_property_info() {
       'description' => t('A flag indicating whether the index is read-only.'),
       'schema field' => 'read_only',
     ),
+    'status' => array(
+      'label' => t('Status'),
+      'type' => 'integer',
+      'description' => t('Search API index status property'),
+      'schema field' => 'status',
+      'options list' => 'search_api_status_options_list',
+    ),
+    'module' => array(
+      'label' => t('Module'),
+      'type' => 'text',
+      'description' => t('The name of the module from which this index originates.'),
+      'schema field' => 'module',
+    ),
   );
 
   return $info;
@@ -455,6 +565,15 @@ function search_api_entity_property_info() {
  * Calls the postCreate() method for the server.
  */
 function search_api_search_api_server_insert(SearchApiServer $server) {
+  // Check whether this is actually part of a revert.
+  $reverts = &drupal_static('search_api_search_api_server_delete', array());
+  if (isset($reverts[$server->machine_name])) {
+    $server->original = $reverts[$server->machine_name];
+    unset($reverts[$server->machine_name]);
+    search_api_search_api_server_update($server);
+    unset($server->original);
+    return;
+  }
   $server->postCreate();
 }
 
@@ -470,51 +589,13 @@ function search_api_search_api_server_update(SearchApiServer $server) {
       $index->reindex();
     }
   }
-  if ($server->enabled != $server->original->enabled) {
+  if (!empty($server->original) && $server->enabled != $server->original->enabled) {
     if ($server->enabled) {
-      // Were there any changes in the server's indexes while it was disabled?
-      $tasks = variable_get('search_api_tasks', array());
-      if (isset($tasks[$server->machine_name])) {
-        foreach ($tasks[$server->machine_name] as $index_id => $index_tasks) {
-          $index = search_api_index_load($index_id);
-          foreach ($index_tasks as $task) {
-            switch ($task) {
-              case 'add':
-                $server->addIndex($index);
-                break;
-              case 'clear':
-                $server->deleteItems('all', $index);
-                break;
-              case 'clear all':
-                // Would normally be used with a fake index ID of "", since it doesn't matter.
-                $server->deleteItems('all');
-                break;
-              case 'fields':
-                if ($server->fieldsUpdated($index)) {
-                  _search_api_index_reindex($index);
-                }
-                break;
-              case 'remove':
-                $server->removeIndex($index ? $index : $index_id);
-                break;
-              default:
-                if (substr($task, 0, 7) == 'delete-') {
-                  $id = substr($task, 7);
-                  $server->deleteItems(array($id), $index);
-                }
-                else {
-                  watchdog('search_api', t('Unknown task "@task" for server "@name".', array('@task' => $task, '@name' => $server->machine_name)), NULL, WATCHDOG_WARNING);
-                }
-            }
-          }
-        }
-        unset($tasks[$server->machine_name]);
-        variable_set('search_api_tasks', $tasks);
-      }
+      search_api_server_tasks_check($server);
     }
     else {
-      foreach (search_api_index_load_multiple(FALSE, array('server' => $server->machine_name, 'enabled' => 1)) as $index) {
-        $index->update(array('enabled' => 0));
+      foreach (search_api_index_load_multiple(FALSE, array('server' => $server->machine_name)) as $index) {
+        $index->update(array('enabled' => 0, 'server' => NULL));
       }
     }
   }
@@ -526,19 +607,19 @@ function search_api_search_api_server_update(SearchApiServer $server) {
  * Calls the preDelete() method for the server.
  */
 function search_api_search_api_server_delete(SearchApiServer $server) {
-  $server->preDelete();
-
-
   // Only react on real delete, not revert.
-  if (!$server->hasStatus(ENTITY_IN_CODE)) {
-    foreach (search_api_index_load_multiple(FALSE, array('server' => $server->machine_name)) as $index) {
-      $index->update(array('server' => NULL, 'enabled' => FALSE));
-    }
+  if ($server->hasStatus(ENTITY_IN_CODE)) {
+    $reverts = &drupal_static(__FUNCTION__, array());
+    $reverts[$server->machine_name] = $server;
+    return;
   }
 
-  $tasks = variable_get('search_api_tasks', array());
-  unset($tasks[$server->machine_name]);
-  variable_set('search_api_tasks', $tasks);
+  $server->preDelete();
+  foreach (search_api_index_load_multiple(FALSE, array('server' => $server->machine_name)) as $index) {
+    $index->update(array('server' => NULL, 'enabled' => FALSE));
+  }
+
+  search_api_server_tasks_delete(NULL, $server);
 }
 
 /**
@@ -548,6 +629,16 @@ function search_api_search_api_server_delete(SearchApiServer $server) {
  * the index is enabled).
  */
 function search_api_search_api_index_insert(SearchApiIndex $index) {
+  // Check whether this is actually part of a revert.
+  $reverts = &drupal_static('search_api_search_api_index_delete', array());
+  if (isset($reverts[$index->machine_name])) {
+    $index->original = $reverts[$index->machine_name];
+    unset($reverts[$index->machine_name]);
+    search_api_search_api_index_update($index);
+    unset($index->original);
+    return;
+  }
+
   $index->postCreate();
 }
 
@@ -555,6 +646,9 @@ function search_api_search_api_index_insert(SearchApiIndex $index) {
  * Implements hook_search_api_index_update().
  */
 function search_api_search_api_index_update(SearchApiIndex $index) {
+  // Call the datasource update function with the table this module provides.
+  search_api_index_update_datasource($index, 'search_api_item');
+
   // If the server was changed, we have to call the appropriate service class
   // hook methods.
   if ($index->server != $index->original->server) {
@@ -563,34 +657,17 @@ function search_api_search_api_index_update(SearchApiIndex $index) {
       $old_server = search_api_server_load($index->original->server);
       // The server might have changed because the old one was deleted:
       if ($old_server) {
-        if ($old_server->enabled) {
-          $old_server->removeIndex($index);
-        }
-        else {
-          $tasks = variable_get('search_api_tasks', array());
-          // When we add or remove an index, we can ignore all other tasks.
-          $tasks[$old_server->machine_name][$index->machine_name] = array('remove');
-          variable_set('search_api_tasks', $tasks);
-        }
+        $old_server->removeIndex($index);
       }
     }
 
     if ($index->server) {
       $new_server = $index->server(TRUE);
       // If the server is enabled, we call addIndex(); otherwise, we save the task.
-      if ($new_server->enabled) {
-        $new_server->addIndex($index);
-      }
-      else {
-        $tasks = variable_get('search_api_tasks', array());
-        // When we add or remove an index, we can ignore all other tasks.
-        $tasks[$new_server->machine_name][$index->machine_name] = array('add');
-        variable_set('search_api_tasks', $tasks);
-        unset($new_server);
-      }
+      $new_server->addIndex($index);
     }
 
-    // We also have to re-index all content
+    // We also have to re-index all content.
     _search_api_index_reindex($index);
   }
 
@@ -602,8 +679,8 @@ function search_api_search_api_index_update(SearchApiIndex $index) {
   $new_fields = $new_fields['fields'];
   if ($old_fields != $new_fields) {
     cache_clear_all($index->getCacheId(), 'cache', TRUE);
-    if ($index->server && $index->server()->fieldsUpdated($index)) {
-      _search_api_index_reindex($index);
+    if ($index->server) {
+      $index->server()->fieldsUpdated($index);
     }
   }
 
@@ -614,7 +691,7 @@ function search_api_search_api_index_update(SearchApiIndex $index) {
   $new_additional = $index->options + array('additional fields' => array());
   $new_additional = $new_additional['additional fields'];
   if ($old_additional != $new_additional) {
-    cache_clear_all($index->getCacheId() . '-0-1', 'cache', TRUE);
+    cache_clear_all($index->getCacheId() . '-0-1', 'cache');
   }
 
   // If the index's enabled or read-only status is being changed, queue or
@@ -635,15 +712,6 @@ function search_api_search_api_index_update(SearchApiIndex $index) {
       $index->queueItems();
     }
   }
-
-  // If the cron batch size changed, empty the cron queue for this index.
-  $old_cron = $index->original->options + array('cron_limit' => NULL);
-  $old_cron = $old_cron['cron_limit'];
-  $new_cron = $index->options + array('cron_limit' => NULL);
-  $new_cron = $new_cron['cron_limit'];
-  if ($old_cron !== $new_cron) {
-    _search_api_empty_cron_queue($index, TRUE);
-  }
 }
 
 /**
@@ -652,6 +720,12 @@ function search_api_search_api_index_update(SearchApiIndex $index) {
  * Removes all data for indexes not available any more.
  */
 function search_api_search_api_index_delete(SearchApiIndex $index) {
+  // Only react on real delete, not revert.
+  if ($index->hasStatus(ENTITY_IN_CODE)) {
+    $reverts = &drupal_static(__FUNCTION__, array());
+    $reverts[$index->machine_name] = $index;
+    return;
+  }
   cache_clear_all($index->getCacheId(''), 'cache', TRUE);
   $index->postDelete();
 }
@@ -661,7 +735,7 @@ function search_api_search_api_index_delete(SearchApiIndex $index) {
  *
  * Adds dependency information for exported servers.
  */
-function search_api_features_export_alter(&$export, $module_name) {
+function search_api_features_export_alter(&$export) {
   if (isset($export['features']['search_api_server'])) {
     // Get a list of the modules that provide storage engines.
     $hook = 'search_api_service_info';
@@ -693,15 +767,81 @@ function search_api_features_export_alter(&$export, $module_name) {
 }
 
 /**
+ * Implements hook_system_info_alter().
+ *
+ * Checks if the module provides any search item types or service classes. If it
+ * does, and there are search indexes using those item types, respectively
+ * servers using those service classes, the module is set to "required".
+ *
+ * Heavily borrowed from field_system_info_alter().
+ *
+ * @see hook_search_api_item_type_info()
+ */
+function search_api_system_info_alter(&$info, $file, $type) {
+  if ($type != 'module' || $file->name == 'search_api') {
+    return;
+  }
+  // Check for defined item types.
+  if (module_hook($file->name, 'search_api_item_type_info')) {
+    $types = array();
+    foreach (search_api_get_item_type_info() as $type => $type_info) {
+      if ($type_info['module'] == $file->name) {
+        $types[] = $type;
+      }
+    }
+    if ($types) {
+      $sql = 'SELECT machine_name, name FROM {search_api_index} WHERE item_type IN (:types)';
+      $indexes = db_query($sql, array(':types' => $types))->fetchAllKeyed();
+      if ($indexes) {
+        $info['required'] = TRUE;
+
+        $links = array();
+        foreach ($indexes as $id => $name) {
+          $url = url("admin/config/search/search_api/index/$id");
+          $links[] = '<a href="' . check_plain($url) . '">' . check_plain($name) . '</a>';
+        }
+
+        $args = array('!indexes' => implode(', ', $links));
+        $info['explanation'] = format_plural(count($indexes), 'Item type in use by the following index: !indexes.', 'Item type(s) in use by the following indexes: !indexes.', $args);
+      }
+    }
+  }
+  // Check for defined service classes.
+  if (module_hook($file->name, 'search_api_service_info')) {
+    $classes = array();
+    foreach (search_api_get_service_info() as $class => $class_info) {
+      if ($class_info['module'] == $file->name) {
+        $classes[] = $class;
+      }
+    }
+    if ($classes) {
+      $sql = 'SELECT machine_name, name FROM {search_api_server} WHERE class IN (:classes)';
+      $servers = db_query($sql, array(':classes' => $classes))->fetchAllKeyed();
+      if ($servers) {
+        $info['required'] = TRUE;
+
+        $links = array();
+        foreach ($servers as $id => $name) {
+          $url = url("admin/config/search/search_api/server/$id");
+          $links[] = '<a href="' . check_plain($url) . '">' . check_plain($name) . '</a>';
+        }
+
+        $args = array('!servers' => implode(', ', $links));
+        $explanation = format_plural(count($servers), 'Service class in use by the following server: !servers.', 'Service class(es) in use by the following servers: !servers.', $args);
+        $info['explanation'] = (!empty($info['explanation']) ? $info['explanation'] . ' ' : '') . $explanation;
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_entity_insert().
  *
- * Marks the new item as to-index for all indexes on entities of the specified
- * type.
+ * This is implemented on behalf of the SearchApiEntityDataSourceController
+ * datasource controller and calls search_api_track_item_insert() for the
+ * inserted items.
  *
- * @param $entity
- *   The new entity.
- * @param $type
- *   The entity's type.
+ * @see search_api_search_api_item_type_info()
  */
 function search_api_entity_insert($entity, $type) {
   // When inserting a new search index, the new index was already inserted into
@@ -721,12 +861,11 @@ function search_api_entity_insert($entity, $type) {
 /**
  * Implements hook_entity_update().
  *
- * Marks the item as changed for all indexes on entities of the specified type.
+ * This is implemented on behalf of the SearchApiEntityDataSourceController
+ * datasource controller and calls search_api_track_item_change() for the
+ * updated items.
  *
- * @param $entity
- *   The updated entity.
- * @param $type
- *   The entity's type.
+ * @see search_api_search_api_item_type_info()
  */
 function search_api_entity_update($entity, $type) {
   // We only react on entity operations for types with property information, as
@@ -743,12 +882,11 @@ function search_api_entity_update($entity, $type) {
 /**
  * Implements hook_entity_delete().
  *
- * Removes the item from the tracking table and deletes it from all indexes.
+ * This is implemented on behalf of the SearchApiEntityDataSourceController
+ * datasource controller and calls search_api_track_item_delete() for the
+ * deleted items.
  *
- * @param $entity
- *   The updated entity.
- * @param $type
- *   The entity's type.
+ * @see search_api_search_api_item_type_info()
  */
 function search_api_entity_delete($entity, $type) {
   // We only react on entity operations for types with property information, as
@@ -760,6 +898,32 @@ function search_api_entity_delete($entity, $type) {
   if (isset($id)) {
     search_api_track_item_delete($type, array($id));
   }
+}
+
+/**
+ * Implements hook_field_update_field().
+ *
+ * Recalculates fields settings if the cardinality of the field has changed from
+ * or to 1.
+ */
+function search_api_field_update_field($field, $prior_field) {
+  $before = $prior_field['cardinality'];
+  $after = $field['cardinality'];
+  if ($before != $after && ($before == 1 || $after == 1)) {
+    // Unfortunately, we cannot call this right away since the field information
+    // is only stored after the hook is called.
+    drupal_register_shutdown_function('search_api_index_recalculate_fields');
+  }
+}
+
+/**
+ * Implements hook_flush_caches().
+ *
+ * Recalculates fields settings in case the schema (in most cases: the
+ * multiplicity) of a property has changed.
+ */
+function search_api_flush_caches() {
+  search_api_index_recalculate_fields();
 }
 
 /**
@@ -786,19 +950,21 @@ function search_api_search_api_item_type_info() {
 /**
  * Implements hook_modules_enabled().
  */
-function search_api_modules_enabled(array $modules) {
-  // New modules might offer additional entity types, invalidating the cached
-  // item type information.
+function search_api_modules_enabled() {
+  // New modules might offer additional item types or service classes,
+  // invalidating the cached information.
   drupal_static_reset('search_api_get_item_type_info');
+  drupal_static_reset('search_api_get_service_info');
 }
 
 /**
  * Implements hook_modules_disabled().
  */
-function search_api_modules_disabled(array $modules) {
-  // The disabled modules might have offered entity types, which are now
-  // invalid. Therefore, clear the cached item type informaiton.
+function search_api_modules_disabled() {
+  // The disabled modules might have offered item types or service classes,
+  // invalidating the cached information.
   drupal_static_reset('search_api_get_item_type_info');
+  drupal_static_reset('search_api_get_service_info');
 }
 
 /**
@@ -809,6 +975,13 @@ function search_api_search_api_alter_callback_info() {
     'name' => t('Bundle filter'),
     'description' => t('Exclude items from indexing based on their bundle (content type, vocabulary, …).'),
     'class' => 'SearchApiAlterBundleFilter',
+    // Filters should be executed first.
+    'weight' => -10,
+  );
+  $callbacks['search_api_alter_role_filter'] = array(
+    'name' => t('Role filter'),
+    'description' => t('Exclude users from indexing based on their role.'),
+    'class' => 'SearchApiAlterRoleFilter',
     // Filters should be executed first.
     'weight' => -10,
   );
@@ -839,12 +1012,17 @@ function search_api_search_api_alter_callback_info() {
   );
   $callbacks['search_api_alter_node_access'] = array(
     'name' => t('Node access'),
-    'description' => t('Add node access information to the index.'),
+    'description' => t('Add node access information to the index. <strong>Caution:</strong> This only affects the indexed nodes themselves, not any node reference fields that are indexed with them, or displayed in search results.'),
     'class' => 'SearchApiAlterNodeAccess',
+  );
+  $callbacks['search_api_alter_comment_access'] = array(
+    'name' => t('Access check'),
+    'description' => t('Add node access information to the index. <strong>Caution:</strong> This only affects the indexed nodes themselves, not any node reference fields that are indexed with them, or displayed in search results.'),
+    'class' => 'SearchApiAlterCommentAccess',
   );
   $callbacks['search_api_alter_node_status'] = array(
     'name' => t('Exclude unpublished nodes'),
-    'description' => t('Exclude unpublished nodes from the index.'),
+    'description' => t('Exclude unpublished nodes from the index. <strong>Caution:</strong> This only affects the indexed nodes themselves. If an enabled node has references to disabled nodes, those will still be indexed (or displayed) normally.'),
     'class' => 'SearchApiAlterNodeStatus',
   );
 
@@ -857,7 +1035,7 @@ function search_api_search_api_alter_callback_info() {
 function search_api_search_api_processor_info() {
   $processors['search_api_case_ignore'] = array(
     'name' => t('Ignore case'),
-    'description' => t('This processor will make searches case-insensitive for all fulltext fields (and, optionally, also for filters on string fields).'),
+    'description' => t('This processor will make searches case-insensitive for fulltext or string fields.'),
     'class' => 'SearchApiIgnoreCase',
   );
   $processors['search_api_html_filter'] = array(
@@ -891,6 +1069,12 @@ function search_api_search_api_processor_info() {
     'class' => 'SearchApiStopWords',
     'weight' => 30,
   );
+  $processors['search_api_highlighting'] = array(
+    'name' => t('Highlighting'),
+    'description' => t('Adds highlighting for search results.'),
+    'class' => 'SearchApiHighlight',
+    'weight' => 35,
+  );
 
   return $processors;
 }
@@ -898,9 +1082,9 @@ function search_api_search_api_processor_info() {
 /**
  * Inserts new unindexed items for all indexes on the specified type.
  *
- * @param $type
+ * @param string $type
  *   The item type of the new items.
- * @param array $item_id
+ * @param array $item_ids
  *   The IDs of the new items.
  */
 function search_api_track_item_insert($type, array $item_ids) {
@@ -918,7 +1102,7 @@ function search_api_track_item_insert($type, array $item_ids) {
 
   foreach ($indexes as $index) {
     if (!empty($index->options['index_directly'])) {
-      $indexed = search_api_index_specific_items_delayed($index, $item_ids);
+      search_api_index_specific_items_delayed($index, $item_ids);
     }
   }
 }
@@ -966,6 +1150,12 @@ function search_api_track_item_change($type, array $item_ids) {
  *   The index on which items were queued.
  * @param array $item_ids
  *   The ids of the queued items.
+ *
+ * @deprecated
+ *   As of Search API 1.10, the cron queue is not used for indexing anymore,
+ *   therefore this function has become useless. It will, along with
+ *   SearchApiDataSourceControllerInterface::trackItemQueued(), be removed in
+ *   the Drupal 8 version of this module.
  */
 function search_api_track_item_queued(SearchApiIndex $index, array $item_ids) {
   $index->datasource()->trackItemQueued($item_ids, $index);
@@ -1010,68 +1200,261 @@ function search_api_track_item_delete($type, array $item_ids) {
   foreach (search_api_index_load_multiple(FALSE, $conditions) as $index) {
     if ($index->server) {
       $server = $index->server();
-      if ($server->enabled) {
-        $server->deleteItems($item_ids, $index);
-      }
-      else {
-        $tasks = variable_get('search_api_tasks', array());
-        foreach ($item_ids as $id) {
-          $tasks[$server->machine_name][$index->machine_name][] = 'delete-' . $id;
-        }
-        variable_set('search_api_tasks', $tasks);
-      }
+      $server->deleteItems($item_ids, $index);
     }
   }
 }
 
 /**
- * Indexes items for the specified index. Only items marked as changed are
- * indexed, in their order of change (if known).
+ * Checks for pending tasks on one or all enabled search servers.
+ *
+ * @param SearchApiServer|null $server
+ *   (optional) The server whose tasks should be checked. If not given, the
+ *   tasks for all enabled servers are checked.
+ *
+ * @return bool
+ *   TRUE if all tasks (for the specific server, if $server was given) were
+ *   executed successfully, or if there were no tasks. FALSE if there are still
+ *   pending tasks.
+ */
+function search_api_server_tasks_check(SearchApiServer $server = NULL) {
+  $select = db_select('search_api_task', 't')
+    ->fields('t')
+    // Only retrieve tasks we can handle.
+    ->condition('t.type', array('addIndex', 'fieldsUpdated', 'removeIndex', 'deleteItems'));
+  if ($server) {
+    $select->condition('t.server_id', $server->machine_name);
+  }
+  else {
+    $select->innerJoin('search_api_server', 's', 't.server_id = s.machine_name AND s.enabled = 1');
+    // By ordering by the server, we can later just load them when we reach them
+    // while looping through the tasks. It is very unlikely there will be tasks
+    // for more than one or two servers, so a *_load_multiple() probably
+    // wouldn't bring any significant advantages, but complicate the code.
+    $select->orderBy('t.server_id');
+  }
+  // Store a count query for later checking whether all tasks were processed
+  // successfully.
+  $count_query = $select->countQuery();
+
+  // Sometimes the order of tasks might be important, so make sure to order by
+  // the task ID (which should be in order of insertion).
+  $select->orderBy('t.id');
+  $tasks = $select->execute();
+
+  $executed_tasks = array();
+  foreach ($tasks as $task) {
+    if (!$server || $server->machine_name != $task->server_id) {
+      $server = search_api_server_load($task->server_id);
+      if (!$server) {
+        continue;
+      }
+    }
+    switch ($task->type) {
+      case 'addIndex':
+        $index = search_api_index_load($task->index_id);
+        if ($index) {
+          $server->addIndex($index);
+        }
+        break;
+
+      case 'fieldsUpdated':
+        $index = search_api_index_load($task->index_id);
+        if ($index) {
+          if ($task->data) {
+            $index->original = unserialize($task->data);
+          }
+          $server->fieldsUpdated($index);
+        }
+        break;
+
+      case 'removeIndex':
+        $index = search_api_index_load($task->index_id);
+        if ($index) {
+          $server->removeIndex($index ? $index : $task->index_id);
+        }
+        break;
+
+      case 'deleteItems':
+        $ids = $task->data ? unserialize($task->data) : 'all';
+        $index = $task->index_id ? search_api_index_load($task->index_id) : NULL;
+        // Since a failed load returns (for stupid menu handler reasons) FALSE,
+        // not NULL, we have to make doubly sure here not to pass an invalid
+        // value (and cause a fatal error).
+        $index = $index ? $index : NULL;
+        $server->deleteItems($ids, $index);
+        break;
+
+      default:
+        // This should never happen.
+        continue;
+    }
+    $executed_tasks[] = $task->id;
+  }
+
+  // If there were no tasks (we recognized), return TRUE.
+  if (!$executed_tasks) {
+    return TRUE;
+  }
+  // Otherwise, delete the executed tasks and check if new tasks were created.
+  search_api_server_tasks_delete($executed_tasks);
+  return $count_query->execute()->fetchField() === 0;
+}
+
+/**
+ * Adds an entry into a server's list of pending tasks.
+ *
+ * @param SearchApiServer $server
+ *   The server for which a task should be remembered.
+ * @param $type
+ *   The type of task to perform.
+ * @param SearchApiIndex|string|null $index
+ *   (optional) If applicable, the index to which the task pertains (or its
+ *   machine name).
+ * @param mixed $data
+ *   (optional) If applicable, some further data necessary for the task.
+ */
+function search_api_server_tasks_add(SearchApiServer $server, $type, $index = NULL, $data = NULL) {
+  db_insert('search_api_task')
+    ->fields(array(
+      'server_id' => $server->machine_name,
+      'type' => $type,
+      'index_id' => $index ? (is_object($index) ? $index->machine_name : $index) : NULL,
+      'data' => isset($data) ? serialize($data) : NULL,
+    ))
+    ->execute();
+}
+
+/**
+ * Removes pending server tasks from the list.
+ *
+ * @param array|null $ids
+ *   (optional) The IDs of the pending server tasks to delete. Set to NULL
+ *   to not filter by IDs.
+ * @param SearchApiServer|null $server
+ *   (optional) A server for which the tasks should be deleted. Set to NULL to
+ *   delete tasks from all servers.
+ * @param SearchApiIndex|string|null $index
+ *   (optional) An index (or its machine name) for which the tasks should be
+ *   deleted. Set to NULL to delete tasks for all indexes.
+ */
+function search_api_server_tasks_delete(array $ids = NULL, SearchApiServer $server = NULL, $index = NULL) {
+  $delete = db_delete('search_api_task');
+  if ($ids) {
+    $delete->condition('id', $ids);
+  }
+  if ($server) {
+    $delete->condition('server_id', $server->machine_name);
+  }
+  if ($index) {
+    $delete->condition('index_id', $index->machine_name);
+  }
+  $delete->execute();
+}
+
+/**
+ * Recalculates the saved fields of an index.
+ *
+ * This is mostly necessary when the multiplicity of the underlying properties
+ * change. The method will re-examine the data structure of the entities in each
+ * index and, if a discrepancy is spotted, re-save that index with updated
+ * fields options (thus, of course, also triggering a re-indexing operation).
+ *
+ * @param SearchApiIndex[]|false $indexes
+ *   An array of SearchApiIndex objects on which to perform the operation, or
+ *   FALSE to perform it on all indexes.
+ */
+function search_api_index_recalculate_fields($indexes = FALSE) {
+  if (!is_array($indexes)) {
+    $indexes = search_api_index_load_multiple(FALSE);
+  }
+  $stored_keys = drupal_map_assoc(array('type', 'entity_type', 'real_type', 'boost'));
+  foreach ($indexes as $index) {
+    if (empty($index->options['fields'])) {
+      continue;
+    }
+    // We have to clear the cache, both static and stored, before using
+    // getFields(). Otherwise, we'd just use the stale data which the fields
+    // options are probably already based on.
+    cache_clear_all($index->getCacheId() . '-1-0', 'cache');
+    $index->resetCaches();
+    // getFields() automatically uses the actual data types to correct possible
+    // stale data.
+    $fields = $index->getFields();
+    foreach ($fields as $key => $field) {
+      $fields[$key] = array_intersect_key($field, $stored_keys);
+      if (isset($fields[$key]['boost']) && $fields[$key]['boost'] == '1.0') {
+        unset($fields[$key]['boost']);
+      }
+    }
+    // Use a more accurate method of determining if the fields settings are
+    // equal to avoid needlessly re-indexing the whole index.
+    if (!_search_api_settings_equals($fields, $index->options['fields'])) {
+      $options = $index->options;
+      $options['fields'] = $fields;
+      $index->update(array('options' => $options));
+    }
+  }
+}
+
+/**
+ * Test two setting arrays (or individual settings) for equality.
+ *
+ * While a simple == also works in some cases, this function takes into account
+ * that the order of keys (usually) doesn't matter in settings arrays.
+ *
+ * @param mixed $setting1
+ *   The first setting (array).
+ * @param mixed $setting2
+ *   The second setting (array).
+ *
+ * @return bool
+ *   TRUE if both settings are identical, FALSE otherwise.
+ */
+function _search_api_settings_equals($setting1, $setting2) {
+  if (!is_array($setting1) || !is_array($setting2)) {
+    return $setting1 == $setting2;
+  }
+  foreach ($setting1 as $key => $value) {
+    if (!array_key_exists($key, $setting2)) {
+      return FALSE;
+    }
+    if (!_search_api_settings_equals($value, $setting2[$key])) {
+      return FALSE;
+    }
+    unset($setting2[$key]);
+  }
+  // If any keys weren't unset previously, they are not present in $setting1 and
+  // the two are different.
+  return !$setting2;
+}
+
+/**
+ * Indexes items for the specified index.
+ *
+ * Only items marked as changed are indexed, in their order of change (if
+ * known).
  *
  * @param SearchApiIndex $index
  *   The index on which items should be indexed.
- * @param $limit
- *   The number of items which should be indexed at most. -1 means no limit.
+ * @param int $limit
+ *   (optional) The number of items which should be indexed at most. Defaults to
+ *   -1, which means that all changed items should be indexed.
+ *
+ * @return int
+ *   Number of successfully indexed items.
  *
  * @throws SearchApiException
  *   If any error occurs during indexing.
- *
- * @return
- *   Number of successfully indexed items.
  */
 function search_api_index_items(SearchApiIndex $index, $limit = -1) {
-  // Don't try to index read-only indexes.
+  // Don't try to index on read-only indexes.
   if ($index->read_only) {
     return 0;
   }
 
-  $queue = DrupalQueue::get('search_api_indexing_queue');
-  $queue->createQueue();
-  $indexed = 0;
-  $unlimited = $limit < 0;
-  $release_items = array();
-  while (($unlimited || $indexed < $limit) && ($item = $queue->claimItem(30))) {
-    if ($item->data['index'] === $index->machine_name) {
-      $indexed += _search_api_indexing_queue_process($item->data);
-      $queue->deleteItem($item);
-    }
-    else {
-      $release_items[] = $item;
-    }
-  }
-
-  foreach ($release_items as $item) {
-    $queue->releaseItem($item);
-  }
-
-  if ($unlimited || $indexed < $limit) {
-    $ids = search_api_get_items_to_index($index, $unlimited ? -1 : $limit - $indexed);
-    if ($ids) {
-      $indexed += count(search_api_index_specific_items($index, $ids));
-    }
-  }
-
-  return $indexed;
+  $ids = search_api_get_items_to_index($index, $limit);
+  return $ids ? count(search_api_index_specific_items($index, $ids)) : 0;
 }
 
 /**
@@ -1084,18 +1467,39 @@ function search_api_index_items(SearchApiIndex $index, $limit = -1) {
  * @param array $ids
  *   The IDs of the items which should be indexed.
  *
+ * @return array
+ *   The IDs of all successfully indexed items.
+ *
  * @throws SearchApiException
  *   If any error occurs during indexing.
- *
- * @return
- *   The IDs of all successfully indexed items.
  */
 function search_api_index_specific_items(SearchApiIndex $index, array $ids) {
+  // Before doing anything else, check whether there are pending tasks that need
+  // to be executed on the server. It might be important that they are executed
+  // before any indexing occurs.
+  if (!search_api_server_tasks_check($index->server())) {
+    throw new SearchApiException(t('Could not index items since important pending server tasks could not be performed.'));
+  }
+
   $items = $index->loadItems($ids);
   // Clone items because data alterations may alter them.
   $cloned_items = array();
   foreach ($items as $id => $item) {
-    $cloned_items[$id] = clone $item;
+    if (is_object($item)) {
+      $cloned_items[$id] = clone $item;
+    }
+    else {
+      // Normally, items that can't be loaded shouldn't be returned by
+      // entity_load (and other loadItems() implementations). Therefore, this is
+      // an extremely rare case, which seems to happen during installation for
+      // some specific setups.
+      $type = search_api_get_item_type_info($index->item_type);
+      $type = $type ? $type['name'] : $index->item_type;
+      watchdog('search_api',
+          "Error during indexing: invalid item loaded for @type with ID @id.",
+          array('@id' => $id, '@type' => $type),
+          WATCHDOG_WARNING);
+    }
   }
   $indexed = $items ? $index->index($cloned_items) : array();
   if ($indexed) {
@@ -1319,22 +1723,48 @@ function search_api_get_data_type_info($type = NULL) {
  *
  * @see hook_search_api_service_info()
  *
- * @param $id
+ * @param string|null $id
  *   The ID of the service info to retrieve.
  *
  * @return array
  *   If $id was not specified, an array of all available service classes.
  *   Otherwise, either the service info with the specified id (if it exists),
- *   or NULL.
+ *   or NULL. Service class information is formatted as specified by
+ *   hook_search_api_service_info(), with the addition of a "module" key
+ *   specifying the module that adds a certain class.
  */
 function search_api_get_service_info($id = NULL) {
   $services = &drupal_static(__FUNCTION__);
 
   if (!isset($services)) {
-    $services = module_invoke_all('search_api_service_info');
+    // Inlined version of module_invoke_all() to add "module" keys.
+    $services = array();
+    foreach (module_implements('search_api_service_info') as $module) {
+      $function = $module . '_search_api_service_info';
+      if (function_exists($function)) {
+        $new_services = $function();
+        if (isset($new_services) && is_array($new_services)) {
+          foreach ($new_services as $service => $info) {
+            $new_services[$service] += array('module' => $module);
+          }
+        }
+        $services += $new_services;
+      }
+    }
 
-    // Allow other modules to alter definitions
-    drupal_alter('search_api_service_info', $services);
+    // Same for drupal_alter().
+    foreach (module_implements('search_api_service_info_alter') as $module) {
+      $function = $module . '_search_api_service_info_alter';
+      if (function_exists($function)) {
+        $old = $services;
+        $function($services);
+        if ($new_services = array_diff_key($services, $old)) {
+          foreach ($new_services as $service => $info) {
+            $services[$service] += array('module' => $module);
+          }
+        }
+      }
+    }
   }
 
   if (isset($id)) {
@@ -1346,15 +1776,15 @@ function search_api_get_service_info($id = NULL) {
 /**
  * Returns information for either all item types, or a specific one.
  *
- * @param $type
+ * @param string|null $type
  *   If set, the item type whose information should be returned.
  *
- * @return
+ * @return array|null
  *   If $type is given, either an array containing the information of that item
  *   type, or NULL if it is unknown. Otherwise, an array keyed by type IDs
  *   containing the information for all item types. Item type information is
- *   formatted as specified by hook_search_api_item_type_info(), and has all
- *   optional fields filled with the defaults.
+ *   formatted as specified by hook_search_api_item_type_info(), with the
+ *   addition of a "module" key specifying the module that adds a certain type.
  *
  * @see hook_search_api_item_type_info()
  */
@@ -1362,8 +1792,34 @@ function search_api_get_item_type_info($type = NULL) {
   $types = &drupal_static(__FUNCTION__);
 
   if (!isset($types)) {
-    $types = module_invoke_all('search_api_item_type_info');
-    drupal_alter('search_api_item_type_info', $types);
+    // Inlined version of module_invoke_all() to add "module" keys.
+    $types = array();
+    foreach (module_implements('search_api_item_type_info') as $module) {
+      $function = $module . '_search_api_item_type_info';
+      if (function_exists($function)) {
+        $new_types = $function();
+        if (isset($new_types) && is_array($new_types)) {
+          foreach ($new_types as $id => $info) {
+            $new_types[$id] += array('module' => $module);
+          }
+        }
+        $types += $new_types;
+      }
+    }
+
+    // Same for drupal_alter().
+    foreach (module_implements('search_api_item_type_info_alter') as $module) {
+      $function = $module . '_search_api_item_type_info_alter';
+      if (function_exists($function)) {
+        $old = $types;
+        $function($types);
+        if ($new_types = array_diff_key($types, $old)) {
+          foreach ($new_types as $id => $info) {
+            $types[$id] += array('module' => $module);
+          }
+        }
+      }
+    }
   }
 
   if (isset($type)) {
@@ -1413,10 +1869,13 @@ function search_api_get_alter_callbacks() {
   if (!isset($callbacks)) {
     $callbacks = module_invoke_all('search_api_alter_callback_info');
 
-    // Initialization of optional entries with default values
+    // Fill optional settings with default values.
     foreach ($callbacks as $id => $callback) {
-      $callbacks[$id] += array('enabled' => TRUE, 'weight' => 0);
+      $callbacks[$id] += array('weight' => 0);
     }
+
+    // Invoke alter hook.
+    drupal_alter('search_api_alter_callback_info', $callbacks);
   }
 
   return $callbacks;
@@ -1436,10 +1895,13 @@ function search_api_get_processors() {
   if (!isset($processors)) {
     $processors = module_invoke_all('search_api_processor_info');
 
-    // Initialization of optional entries with default values
+    // Fill optional settings with default values.
     foreach ($processors as $id => $processor) {
-      $processors[$id] += array('enabled pre' => TRUE, 'enabled post' => TRUE, 'weight' => 0);
+      $processors[$id] += array('weight' => 0);
     }
+
+    // Invoke alter hook.
+    drupal_alter('search_api_processor_info', $processors);
   }
 
   return $processors;
@@ -1454,39 +1916,68 @@ function search_api_get_processors() {
  *   The SearchApiQueryInterface object representing the search query.
  */
 function search_api_search_api_query_alter(SearchApiQueryInterface $query) {
+  global $user;
   $index = $query->getIndex();
   // Only add node access if the necessary fields are indexed in the index, and
   // unless disabled explicitly by the query.
-  $fields = $index->options['fields'];
-  if (!empty($fields['search_api_access_node']) && !empty($fields['status']) && !empty($fields['author']) && !$query->getOption('search_api_bypass_access')) {
-    $account = $query->getOption('search_api_access_account', $GLOBALS['user']);
+  $type = $index->getEntityType();
+  if (!empty($index->options['data_alter_callbacks']["search_api_alter_{$type}_access"]['status']) && !$query->getOption('search_api_bypass_access')) {
+    $account = $query->getOption('search_api_access_account', $user);
     if (is_numeric($account)) {
       $account = user_load($account);
     }
     if (is_object($account)) {
       try {
-        _search_api_query_add_node_access($account, $query);
+        _search_api_query_add_node_access($account, $query, $type);
       }
       catch (SearchApiException $e) {
         watchdog_exception('search_api', $e);
       }
     }
     else {
-      watchdog('search_api', 'An illegal user UID was given for node access: @uid.', array('@uid' => $query->getOption('search_api_access_account', $GLOBALS['user'])), WATCHDOG_WARNING);
+      watchdog('search_api', 'An illegal user UID was given for node access: @uid.', array('@uid' => $query->getOption('search_api_access_account', $user)), WATCHDOG_WARNING);
     }
   }
 }
 
 /**
-  * Build a node access subquery.
-  *
-  * @param $account
-  *   The user object, who searches.
-  *
-  * @return SearchApiQueryFilter
-  */
-function _search_api_query_add_node_access($account, SearchApiQueryInterface $query) {
-  if (!user_access('access content', $account)) {
+ * Adds a node access filter to a search query, if applicable.
+ *
+ * @param object $account
+ *   The user object, who searches.
+ * @param SearchApiQueryInterface $query
+ *   The query to which a node access filter should be added, if applicable.
+ * @param string $type
+ *   (optional) The type of search – either "node" or "comment". Defaults to
+ *   "node".
+ *
+ * @throws SearchApiException
+ *   If not all necessary fields are indexed on the index.
+ */
+function _search_api_query_add_node_access($account, SearchApiQueryInterface $query, $type = 'node') {
+  // Don't do anything if the user can access all content.
+  if (user_access('bypass node access', $account)) {
+    return;
+  }
+
+  $is_comment = ($type == 'comment');
+
+  // Check whether the necessary fields are indexed.
+  $fields = $query->getIndex()->options['fields'];
+  $required = array('search_api_access_node', 'status');
+  if (!$is_comment) {
+    $required[] = 'author';
+  }
+  foreach ($required as $field) {
+    if (empty($fields[$field])) {
+      $vars['@field'] = $field;
+      $vars['@index'] = $query->getIndex()->name;
+      throw new SearchApiException(t('Required field @field not indexed on index @index. Could not perform access checks.', $vars));
+    }
+  }
+
+  // If the user cannot access content/comments at all, return no results.
+  if (!user_access('access content', $account) || ($is_comment && !user_access('access content', $account))) {
     // Simple hack for returning no results.
     $query->condition('status', 0);
     $query->condition('status', 1);
@@ -1494,43 +1985,45 @@ function _search_api_query_add_node_access($account, SearchApiQueryInterface $qu
     return;
   }
 
-  // Only filter for user which don't have full node access.
-  if (!user_access('bypass node access', $account)) {
-    // Filter by node "published" status.
-    if (user_access('view own unpublished content')) {
-      $filter = $query->createFilter('OR');
-      $filter->condition('status', NODE_PUBLISHED);
-      $filter->condition('author', $account->uid);
-      $query->filter($filter);
-    }
-    else {
-      $query->condition('status', NODE_PUBLISHED);
-    }
-    // Filter by node access grants.
+  // Filter by the "published" status.
+  $published = $is_comment ? COMMENT_PUBLISHED : NODE_PUBLISHED;
+  if (!$is_comment && user_access('view own unpublished content')) {
     $filter = $query->createFilter('OR');
-    $grants = node_access_grants('view', $account);
-    foreach ($grants as $realm => $gids) {
-      foreach ($gids as $gid) {
-        $filter->condition('search_api_access_node', "node_access_$realm:$gid");
-      }
-    }
-    $filter->condition('search_api_access_node', 'node_access__all');
+    $filter->condition('status', $published);
+    $filter->condition('author', $account->uid);
     $query->filter($filter);
   }
+  else {
+    $query->condition('status', $published);
+  }
+
+  // Filter by node access grants.
+  $filter = $query->createFilter('OR');
+  $grants = node_access_grants('view', $account);
+  foreach ($grants as $realm => $gids) {
+    foreach ($gids as $gid) {
+      $filter->condition('search_api_access_node', "node_access_$realm:$gid");
+    }
+  }
+  $filter->condition('search_api_access_node', 'node_access__all');
+  $query->filter($filter);
 }
 
 /**
- * Utility function for determining whether a field of the given type contains
- * text data.
+ * Determines whether a field of the given type contains text data.
  *
- * @param $type
- *   A string containing the type to check.
+ * Can also be used to find other types.
+ *
+ * @param string $type
+ *   The type for which to check.
  * @param array $allowed
  *   Optionally, an array of allowed types.
  *
  * @return
  *   TRUE if $type is either one of the specified types, or a list of such
  *   values. FALSE otherwise.
+ *
+ * @see search_api_extract_inner_type()
  */
 function search_api_is_text_type($type, array $allowed = array('text')) {
   return array_search(search_api_extract_inner_type($type), $allowed) !== FALSE;
@@ -1613,33 +2106,63 @@ function search_api_extract_inner_type($type) {
 }
 
 /**
- * Utility function for extracting specific fields from an EntityMetadataWrapper
- * object.
+ * Helper function for reacting to index updates with regards to the datasource.
+ *
+ * When an overridden index is reverted, its numerical ID will sometimes change.
+ * Since the default datasource implementation uses that for referencing
+ * indexes, the index ID in the items table must be updated accordingly. This is
+ * implemented in this function.
+ *
+ * Modules implementing other datasource controllers, that use a table other
+ * than {search_api_item}, can use this function, too. It should be called
+ * uncoditionally in a hook_search_api_index_update() implementation. If this
+ * function isn't used, similar code should be added there.
+ *
+ * However, note that this is only necessary (and this function should only be
+ * called) if the indexes are referenced by numerical ID in the items table.
+ *
+ * @param SearchApiIndex $index
+ *   The index that was changed.
+ * @param string $table
+ *   The table containing items information, analogous to {search_api_item}.
+ * @param string $column
+ *   The column in $table that holds the index's numerical ID.
+ */
+function search_api_index_update_datasource(SearchApiIndex $index, $table, $column = 'index_id') {
+  if ($index->id != $index->original->id) {
+    db_update($table)
+      ->fields(array($column => $index->id))
+      ->condition($column, $index->original->id)
+      ->execute();
+  }
+}
+
+/**
+ * Extracts specific field values from an EntityMetadataWrapper object.
  *
  * @param EntityMetadataWrapper $wrapper
  *   The wrapper from which to extract fields.
  * @param array $fields
  *   The fields to extract, as stored in an index. I.e., the array keys are
- *   field names, the values are arrays with the keys "name", "type", "boost"
- *   and "indexed" (although only "type" is used by this function).
+ *   field names, the values are arrays with at least a "type" key present.
  * @param array $value_options
  *   An array of options that should be passed to the
  *   EntityMetadataWrapper::value() method (see there).
  *
- * @return
+ * @return array
  *   The $fields array with additional "value" and "original_type" keys set.
  */
 function search_api_extract_fields(EntityMetadataWrapper $wrapper, array $fields, array $value_options = array()) {
   // If $wrapper is a list of entities, we have to aggregate their field values.
   $wrapper_info = $wrapper->info();
   if (search_api_is_list_type($wrapper_info['type'])) {
-    foreach ($fields as $field => &$info) {
+    foreach ($fields as &$info) {
       $info['value'] = array();
       $info['original_type'] = $info['type'];
     }
     unset($info);
     try {
-      foreach ($wrapper as $i => $w) {
+      foreach ($wrapper as $w) {
         $nested_fields = search_api_extract_fields($w, $fields, $value_options);
         foreach ($nested_fields as $field => $info) {
           if (isset($info['value'])) {
@@ -1703,7 +2226,7 @@ function search_api_extract_fields(EntityMetadataWrapper $wrapper, array $fields
       }
     }
     else {
-      foreach ($nested_fields as $field => &$info) {
+      foreach ($nested_fields as &$info) {
         $info['value'] = NULL;
         $info['original_type'] = $info['type'];
       }
@@ -1774,19 +2297,20 @@ function search_api_server_load($id, $reset = FALSE) {
  *
  * @see entity_load()
  *
- * @param $ids
+ * @param array|false $ids
  *   An array of server IDs or machine names, or FALSE to load all servers.
- * @param $conditions
+ * @param array $conditions
  *   An array of conditions on the {search_api_server} table in the form
  *   'field' => $value.
- * @param $reset
+ * @param bool $reset
  *   Whether to reset the internal entity_load cache.
  *
- * @return array
+ * @return SearchApiServer[]
  *   An array of server objects keyed by machine name.
  */
 function search_api_server_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
-  return entity_load_multiple_by_name('search_api_server', $ids, $conditions, $reset);
+  $servers = entity_load('search_api_server', $ids, $conditions, $reset);
+  return entity_key_array_by_property($servers, 'machine_name');
 }
 
 /**
@@ -1814,6 +2338,19 @@ function search_api_title_delete_page(Entity $entity) {
 }
 
 /**
+ * Determines whether the current user can disable a server or index.
+ *
+ * @param Entity $entity
+ *   The server or index for which the access to the "disable" page is checked.
+ *
+ * @return bool
+ *   TRUE if the "disable" page can be accessed by the user, FALSE otherwise.
+ */
+function search_api_access_disable_page(Entity $entity) {
+  return user_access('administer search_api') && !empty($entity->enabled);
+}
+
+/**
  * Access callback for determining if a server's or index' "delete" page should
  * be accessible.
  *
@@ -1825,6 +2362,15 @@ function search_api_title_delete_page(Entity $entity) {
  */
 function search_api_access_delete_page(Entity $entity) {
   return user_access('administer search_api') && $entity->hasStatus(ENTITY_CUSTOM);
+}
+
+/**
+ * Determines whether a user can access a certain search server or index.
+ *
+ * Used as an access callback in search_api_entity_info().
+ */
+function search_api_entity_access() {
+  return user_access('administer search_api');
 }
 
 /**
@@ -1846,13 +2392,13 @@ function search_api_server_insert(array $values) {
 /**
  * Changes a server's settings.
  *
- * @param $id
+ * @param string|int $id
  *   The ID or machine name of the server whose values should be changed.
  * @param array $fields
  *   The new field values to set. The enabled field can't be set this way, use
  *   search_api_server_enable() and search_api_server_disable() instead.
  *
- * @return
+ * @return int|false
  *   1 if fields were changed, 0 if the fields already had the desired values.
  *   FALSE on failure.
  */
@@ -1863,13 +2409,14 @@ function search_api_server_edit($id, array $fields) {
 }
 
 /**
- * Enables a search server. Will also check for remembered tasks for this server
- * and execute them.
+ * Enables a search server.
  *
- * @param $id
+ * Will also check for remembered tasks for this server and execute them.
+ *
+ * @param string|int $id
  *   The ID or machine name of the server to enable.
  *
- * @return
+ * @return int|false
  *   1 on success, 0 or FALSE on failure.
  */
 function search_api_server_enable($id) {
@@ -1879,18 +2426,44 @@ function search_api_server_enable($id) {
 }
 
 /**
- * Disables a search server, along with all associated indexes.
+ * Disables a search server.
  *
- * @param $id
+ * Will also disable all associated indexes and remove them from the server.
+ *
+ * @param string|int $id
  *   The ID or machine name of the server to disable.
  *
- * @return
+ * @return int|false
  *   1 on success, 0 or FALSE on failure.
  */
 function search_api_server_disable($id) {
   $server = search_api_server_load($id, TRUE);
   $ret = $server->update(array('enabled' => 0));
   return $ret ? 1 : $ret;
+}
+
+/**
+ * Clears a search server.
+ *
+ * Will delete all items stored on the server and mark all associated indexes
+ * for re-indexing.
+ *
+ * @param int|string $id
+ *   The ID or machine name of the server to clear.
+ *
+ * @return bool
+ *   TRUE on success, FALSE on failure.
+ */
+function search_api_server_clear($id) {
+  $server = search_api_server_load($id);
+  $success = TRUE;
+  foreach (search_api_index_load_multiple(FALSE, array('server' => $server->machine_name)) as $index) {
+    $success &= $index->reindex();
+  }
+  if ($success) {
+    $server->deleteItems();
+  }
+  return $success;
 }
 
 /**
@@ -1916,12 +2489,12 @@ function search_api_server_delete($id) {
  * @param $reset
  *   Whether to reset the internal cache.
  *
- * @return SearchApiIndex
- *   A completely loaded index object, or NULL if no such index exists.
+ * @return SearchApiIndex|false
+ *   A completely loaded index object, or FALSE if no such index exists.
  */
 function search_api_index_load($id, $reset = FALSE) {
   $ret = search_api_index_load_multiple(array($id), array(), $reset);
-  return $ret ? reset($ret) : FALSE;
+  return reset($ret);
 }
 
 /**
@@ -1930,22 +2503,23 @@ function search_api_index_load($id, $reset = FALSE) {
  *
  * @see entity_load()
  *
- * @param $ids
+ * @param array|false $ids
  *   An array of index IDs or machine names, or FALSE to load all indexes.
- * @param $conditions
+ * @param array $conditions
  *   An array of conditions on the {search_api_index} table in the form
  *   'field' => $value.
- * @param $reset
+ * @param bool $reset
  *   Whether to reset the internal entity_load cache.
  *
- * @return array
+ * @return SearchApiIndex[]
  *   An array of index objects keyed by machine name.
  */
 function search_api_index_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
   // This line is a workaround for a weird PDO bug in PHP 5.2.
   // See http://drupal.org/node/889286.
   new SearchApiIndex();
-  return entity_load_multiple_by_name('search_api_index', $ids, $conditions, $reset);
+  $indexes = entity_load('search_api_index', $ids, $conditions, $reset);
+  return entity_key_array_by_property($indexes, 'machine_name');
 }
 
 /**
@@ -1974,14 +2548,37 @@ function search_api_index_url(SearchApiIndex $index) {
 }
 
 /**
- * Property callback.
+ * Returns an index's server.
+ *
+ * Used as a property getter callback for the index's "server_entity" prioperty
+ * in search_api_entity_property_info().
+ *
+ * @param SearchApiIndex $index
+ *   The index whose server should be returned.
  *
  * @return SearchApiServer
- *   The server this index currently resides on, or NULL if the index
- *   is currently unassigned.
+ *   The server this index currently resides on, or NULL if the index is
+ * currently unassigned.
  */
 function search_api_index_get_server(SearchApiIndex $index) {
   return $index->server();
+}
+
+/**
+ * Returns an options list for the "status" property.
+ *
+ * Used as an options list callback in search_api_entity_property_info().
+ *
+ * @return array
+ *   An array of options, as defined by hook_options_list().
+ */
+function search_api_status_options_list() {
+  return array(
+    ENTITY_CUSTOM => t('Custom'),
+    ENTITY_IN_CODE => t('Default'),
+    ENTITY_OVERRIDDEN => t('Overridden'),
+    ENTITY_FIXED => t('Fixed'),
+  );
 }
 
 /**
@@ -2003,12 +2600,12 @@ function search_api_index_insert(array $values) {
 /**
  * Changes an index' settings.
  *
- * @param $id
- *   The edited index' id.
+ * @param int|string $id
+ *   The edited index' ID or machine name.
  * @param array $fields
  *   The new field values to set.
  *
- * @return
+ * @return int|false
  *   1 if fields were changed, 0 if the fields already had the desired values.
  *   FALSE on failure.
  */
@@ -2021,12 +2618,12 @@ function search_api_index_edit($id, array $fields) {
 /**
  * Changes an index' indexed field settings.
  *
- * @param $id
+ * @param int|string $id
  *   The ID or machine name of the index whose fields should be changed.
  * @param array $fields
  *   The new indexed field settings.
  *
- * @return
+ * @return int|false
  *   1 if the field settings were changed, 0 if they already had the desired
  *   values. FALSE on failure.
  */
@@ -2093,42 +2690,6 @@ function search_api_index_reindex($id) {
  */
 function _search_api_index_reindex(SearchApiIndex $index) {
   $index->datasource()->trackItemChange(FALSE, array($index), TRUE);
-  _search_api_empty_cron_queue($index);
-}
-
-/**
- * Helper method for removing all of an index's jobs from the cron queue.
- *
- * @param SearchApiIndex $index
- *   The index whose jobs should be removed.
- * @param $mark_changed
- *   If TRUE, mark all items in the queue as "changed" again. Defaults to FALSE.
- */
-function _search_api_empty_cron_queue(SearchApiIndex $index, $mark_changed = FALSE) {
-  $index_id = $index->machine_name;
-  $queue = DrupalQueue::get('search_api_indexing_queue');
-  $queue->createQueue();
-  $ids = array();
-  $release_items = array();
-  while ($item = $queue->claimItem()) {
-    if ($item->data['index'] === $index_id) {
-      $queue->deleteItem($item);
-      if ($mark_changed) {
-        $ids = array_merge($ids, $item->data['items']);
-      }
-    }
-    else {
-      $release_items[] = $item;
-    }
-  }
-
-  foreach ($release_items as $item) {
-    $queue->releaseItem($item);
-  }
-
-  if ($ids) {
-    $index->datasource()->trackItemChange($ids, array($index), TRUE);
-  }
 }
 
 /**
@@ -2178,42 +2739,6 @@ function search_api_index_options_list() {
     $ret[$id] = $index->name;
   }
   return $ret;
-}
-
-/**
- * Cron queue worker callback for indexing some items.
- *
- * @param array $task
- *   An associative array containing:
- *   - index: The ID of the index on which items should be indexed.
- *   - items: The items that should be indexed.
- *
- * @return
- *   The number of successfully indexed items.
- */
-function _search_api_indexing_queue_process(array $task) {
-  $index = search_api_index_load($task['index']);
-  try {
-    if ($index && $index->enabled && !$index->read_only && $task['items']) {
-      $indexed = search_api_index_specific_items($index, $task['items']);
-      $num = count($indexed);
-      // If some items couldn't be indexed, mark them as dirty again.
-      if ($num < count($task['items'])) {
-        // Believe it or not but this is actually quite faster than the equivalent
-        // $diff = array_diff($task['items'], $indexed);
-        $diff = array_keys(array_diff_key(array_flip($task['items']), array_flip($indexed)));
-        // Mark the items as dirty again.
-        $index->datasource()->trackItemChange($diff, array($index), TRUE);
-      }
-      if ($num) {
-        watchdog('search_api', t('Indexed @num items for index @name', array('@num' => $num, '@name' => $index->name)), NULL, WATCHDOG_INFO);
-      }
-      return $num;
-    }
-  }
-  catch (SearchApiException $e) {
-    watchdog_exception('search_api', $e);
-  }
 }
 
 /**
@@ -2273,18 +2798,78 @@ function _search_api_convert_custom_type($callback, $value, $original_type, $typ
 }
 
 /**
- * Create and set a batch for indexing items.
+ * Determines the number of items indexed on a server for a certain index.
+ *
+ * Used as a helper function in search_api_admin_index_view().
+ *
+ * @param SearchApiIndex $index
+ *   The index
+ *
+ * @return int
+ *   The number of items found on the server for this index, if the latter is
+ *   enabled. 0 otherwise.
+ */
+function _search_api_get_items_on_server(SearchApiIndex $index) {
+  if (!$index->enabled) {
+    return 0;
+  }
+  // We want the raw count, without facets or other filters. Therefore we don't
+  // use the query's execute() method but pass it straight to the server for
+  // evaluation. Since this circumvents the normal preprocessing, which sets the
+  // fields (on which some service classes might even rely when there are no
+  // keywords), we set them manually here.
+  $query = $index->query()
+    ->fields(array())
+    ->range(0, 0);
+  $response = $index->server()->search($query);
+  return $response['result count'];
+}
+
+/**
+ * Returns a deep copy of the input array.
+ *
+ * The behavior of PHP regarding arrays with references pointing to it is rather
+ * weird. Therefore, we use this helper function in theme_search_api_index() to
+ * create safe copies of such arrays.
+ *
+ * @param array $array
+ *   The array to copy.
+ *
+ * @return array
+ *   A deep copy of the array.
+ */
+function _search_api_deep_copy(array $array) {
+  $copy = array();
+  foreach ($array as $k => $v) {
+    if (is_array($v)) {
+      $copy[$k] = _search_api_deep_copy($v);
+    }
+    elseif (is_object($v)) {
+      $copy[$k] = clone $v;
+    }
+    elseif ($v) {
+      $copy[$k] = $v;
+    }
+  }
+  return $copy;
+}
+
+/**
+ * Creates and sets a batch for indexing items.
  *
  * @param SearchApiIndex $index
  *   The index for which items should be indexed.
- * @param $batch_size
+ * @param int $batch_size
  *   Number of items to index per batch.
- * @param $limit
- *   Maximum number of items to index.
- * @param $remaining
+ * @param int $limit
+ *   Maximum number of items to index. Negative values mean "no limit".
+ * @param int $remaining
  *   Remaining items to index.
- * @param $drush
+ * @param bool $drush
  *   Boolean specifying whether this was called from drush or not.
+ *
+ * @return bool
+ *   Whether the batch was created and set successfully.
  */
 function _search_api_batch_indexing_create(SearchApiIndex $index, $batch_size, $limit, $remaining, $drush = FALSE) {
   if ($limit !== 0 && $batch_size !== 0) {
@@ -2322,10 +2907,10 @@ function _search_api_batch_indexing_create(SearchApiIndex $index, $batch_size, $
  *   Maximum number of items to index.
  * @param boolean $drush
  *   Boolean specifying whether this was called from drush or not.
- * @param array $context
- *   The batch context.
+ * @param $context
+ *   An array (or object implementing ArrayAccess) containing the batch context.
  */
-function _search_api_batch_indexing_callback(SearchApiIndex $index, $batch_size, $limit, $drush = FALSE, array &$context) {
+function _search_api_batch_indexing_callback(SearchApiIndex $index, $batch_size, $limit, $drush = FALSE, &$context) {
   // Persistent data among batch runs.
   if (!isset($context['sandbox']['limit'])) {
     $context['sandbox']['limit'] = $limit;
@@ -2344,8 +2929,18 @@ function _search_api_batch_indexing_callback(SearchApiIndex $index, $batch_size,
   $to_index = min($context['sandbox']['limit'] - $context['sandbox']['progress'], $context['sandbox']['batch_size']);
 
   // Index the items.
-  $indexed = search_api_index_items($index, $to_index);
-  $context['results']['indexed'] += $indexed;
+  try {
+    $indexed = search_api_index_items($index, $to_index);
+    $context['results']['indexed'] += $indexed;
+  }
+  catch (SearchApiException $e) {
+    watchdog_exception('search_api', $e);
+    $vars['@message'] = $e->getMessage();
+    $context['message'] = t('An error occurred during indexing: @message.', $vars);
+    $context['finished'] = 1;
+    $context['results']['not indexed'] += $context['sandbox']['limit'] - $context['sandbox']['progress'];
+    return;
+  }
 
   // Display progress message.
   if ($indexed > 0) {
@@ -2373,13 +2968,11 @@ function _search_api_batch_indexing_callback(SearchApiIndex $index, $batch_size,
  * Batch API finishing callback for the indexing functionality.
  *
  * @param boolean $success
- *   Result of the batch operation.
+ *   Whether the batch finished successfully.
  * @param array $results
- *   Results.
- * @param array $operations
- *   Remaining batch operation to process.
+ *   Detailed informations about the result.
  */
-function _search_api_batch_indexing_finished($success, $results, $operations) {
+function _search_api_batch_indexing_finished($success, $results) {
   // Check if called from drush.
   if (!empty($results['drush'])) {
     $drupal_set_message = 'drush_log';

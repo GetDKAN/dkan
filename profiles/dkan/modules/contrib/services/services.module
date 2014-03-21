@@ -399,8 +399,11 @@ function services_services_authentication_info() {
 function _services_sessions_authenticate_call($module, $controller) {
   global $user;
   $original_user = services_get_server_info('original_user');
+  if ($original_user->uid == 0) {
+    return;
+  }
 
-  if ($original_user->uid != 0 && $controller['callback'] != '_user_resource_get_token') {
+  if ($controller['callback'] != '_user_resource_get_token') {
     $non_safe_method_called = !in_array($_SERVER['REQUEST_METHOD'], array('GET', 'HEAD', 'OPTIONS', 'TRACE'));
     $csrf_token_invalid = !isset($_SERVER['HTTP_X_CSRF_TOKEN']) || !drupal_valid_token($_SERVER['HTTP_X_CSRF_TOKEN'], 'services');
     if ($non_safe_method_called && $csrf_token_invalid) {
@@ -408,7 +411,9 @@ function _services_sessions_authenticate_call($module, $controller) {
     }
   }
 
-  $user = $original_user;
+  if ($user->uid != $original_user->uid) {
+    $user = $original_user;
+  }
 }
 
 /**
@@ -777,12 +782,23 @@ function services_resource_build_index_list($results, $type, $field) {
  *    Object user object.
  */
 function services_remove_user_data(&$account) {
-  // Remove the users password from the account object.
+  global $user;
+
+  // Remove the user password from the account object.
   unset($account->pass);
-  if (!user_access('administer users')) {
+
+  // Remove the user mail, if current user don't have "administer users"
+  // permission, and the requested account not match the current user.
+  if (!user_access('administer users') && $account->uid !== $user->uid) {
     unset($account->mail);
+  }
+
+  // Remove the user init, if current user don't have "administer users"
+  // permission.
+  if (!user_access('administer users')) {
     unset($account->init);
   }
+
   drupal_alter('services_account_object', $account);
 
   // Add the full URL to the user picture, if one is present.

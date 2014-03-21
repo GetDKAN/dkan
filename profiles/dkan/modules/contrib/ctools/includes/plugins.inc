@@ -343,8 +343,13 @@ function ctools_get_plugins($module, $type, $id = NULL) {
  *   name and each inner array keyed on plugin type name.
  */
 function ctools_plugin_get_plugin_type_info($flush = FALSE) {
-  $info_loaded = &drupal_static('ctools_plugin_type_info_loaded', FALSE);
-  $all_type_info = &drupal_static('ctools_plugin_type_info', array());
+  static $drupal_static_fast;
+  if (!isset($drupal_static_fast)) {
+    $drupal_static_fast['info_loaded'] = &drupal_static('ctools_plugin_type_info_loaded', FALSE);
+    $drupal_static_fast['all_type_info'] = &drupal_static('ctools_plugin_type_info', array());
+  }
+  $info_loaded = &$drupal_static_fast['info_loaded'];
+  $all_type_info = &$drupal_static_fast['all_type_info'];
 
   // Only trigger info loading once.
   if ($info_loaded && !$flush) {

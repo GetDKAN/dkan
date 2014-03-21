@@ -87,7 +87,7 @@ function hook_field_group_formatter_info() {
     'form' => array(
       'fieldset' => array(
         'label' => t('Fieldset'),
-        'description' => t('This fieldgroup renders the inner content in a fieldset with the titel as legend.'),
+        'description' => t('This fieldgroup renders the inner content in a fieldset with the title as legend.'),
         'format_types' => array('open', 'collapsible', 'collapsed'),
         'instance_settings' => array('classes' => ''),
         'default_formatter' => 'collapsible',
@@ -96,7 +96,7 @@ function hook_field_group_formatter_info() {
     'display' => array(
       'div' => array(
         'label' => t('Div'),
-        'description' => t('This fieldgroup renders the inner content in a simple div with the titel as legend.'),
+        'description' => t('This fieldgroup renders the inner content in a simple div with the title as legend.'),
         'format_types' => array('open', 'collapsible', 'collapsed'),
         'instance_settings' => array('effect' => 'none', 'speed' => 'fast', 'classes' => ''),
         'default_formatter' => 'collapsible',
@@ -346,6 +346,18 @@ function hook_field_group_info() {
 }
 
 /**
+ * Alter the field group definitions provided by other modules.
+ *
+ * @param array $groups
+ *   Reference to an array of field group definition objects.
+ */
+function hook_field_group_info_alter(&$groups) {
+  if (!empty($groups['group_issue_metadata|node|project_issue|form'])) {
+    $groups['group_issue_metadata|node|project_issue|form']->data['children'][] = 'taxonomy_vocabulary_9';
+  }
+}
+
+/**
  * Implements hook_field_group_update_field_group().
  *
  * This hook is invoked by ctools export API.
@@ -421,12 +433,25 @@ function field_group_info_groups($entity_type = NULL, $bundle = NULL, $view_mode
  *
  * @param Array $params
  *   The Entity type where field groups are requested.
+ * @param $enabled
+ *   Return enabled or disabled groups.*
  *
  * @see field_group_info_groups()
  * @see ctools_export_load_object()
  */
-function field_group_read_groups($params = array()) {
+function field_group_read_groups($conditions = array(), $enabled = TRUE) {
   // This function loads the requested groups through ctools export api.
+}
+
+/**
+ * Hides field groups including children in a render array.
+ *
+ * @param array $element
+ *   A render array. Can be a form, node, user, ...
+ * @param array $group_names
+ *   An array of field group names that should be hidden.
+ */
+function field_group_hide_field_groups(&$element, $group_names) {
 }
 
 /**

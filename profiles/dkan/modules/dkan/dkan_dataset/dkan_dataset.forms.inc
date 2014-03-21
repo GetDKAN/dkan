@@ -59,33 +59,36 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'dataset_node_form') {
 
     $form['#attached']['css'][] = drupal_get_path('module', 'dkan_dataset') . '/dkan_dataset.css';
-    $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.js';
-    $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.slugify.js';
     beautytips_add_beautytips();
 
     $form['#after_build']['dkan_dataset'] = 'dkan_dataset_resource_form_after_build';
 
-    // Removing path from vertiable tabs.
-    unset($form['path']['#group']);
-    unset($form['path']['#title']);
-    $form['path']['#weight'] = "-1";
-    // Always use pathauto.
-    $form['path']['pathauto']['#default_value'] = TRUE;
-    $form['path']['pathauto']['#access'] = FALSE;
-    $form['path']['alias']['#default_value'] = preg_replace('/dataset\//', '', $form['path']['alias']['#default_value']);
-    $form['path']['#collapsible'] = FALSE;
-    $form['path']['#collapsed'] = FALSE;
-    $alias = $form['path']['alias']['#default_value'] ? $form['path']['alias']['#default_value'] : t('[dataset]');
-    $form['path']['#prefix'] = '<div id="field-tags-wrapper">
-                                  <div id="url-edit-preview">
-                                    <div id="url-edit-label"><strong>URL</strong></div>
-                                    <div id="url-edit-prefix">' . check_plain($_SERVER['HTTP_HOST']) . '/dataset/</div>' .
-      '<span id="url-slug">' . $alias . '</span>' . $form['path']['alias']['#default_value'] . '<button class="btn btn-small">Edit</button>
-                                  </div>';
-    $form['path']['#suffix'] = '</div>';
-    $form['path']['alias']['#prefix'] = '<span class="add-on">/dataset/</span>';
-    $form['path']['alias']['#title'] = 'URL';
+    // Slugify pathauto in a jazzy but brittle manner.
+    if (variable_get('dkan_dataset_form_pathauto_alter', 1)) {
+      $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
+      $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.slugify.js';
+      // Removing path from vertiable tabs.
+      unset($form['path']['#group']);
+      unset($form['path']['#title']);
+      $form['path']['#weight'] = "-1";
+      // Always use pathauto.
+      $form['path']['pathauto']['#default_value'] = TRUE;
+      $form['path']['pathauto']['#access'] = FALSE;
+      $form['path']['alias']['#default_value'] = preg_replace('/dataset\//', '', $form['path']['alias']['#default_value']);
+      $form['path']['#collapsible'] = FALSE;
+      $form['path']['#collapsed'] = FALSE;
+      $alias = $form['path']['alias']['#default_value'] ? $form['path']['alias']['#default_value'] : t('[dataset]');
+      $form['path']['#prefix'] = '<div id="field-tags-wrapper">
+                                    <div id="url-edit-preview">
+                                      <div id="url-edit-label"><strong>URL</strong></div>
+                                      <div id="url-edit-prefix">' . check_plain($_SERVER['HTTP_HOST']) . '/dataset/</div>' .
+        '<span id="url-slug">' . $alias . '</span>' . $form['path']['alias']['#default_value'] . '<button class="btn btn-small">Edit</button>
+                                    </div>';
+      $form['path']['#suffix'] = '</div>';
+      $form['path']['alias']['#prefix'] = '<span class="add-on">/dataset/</span>';
+      $form['path']['alias']['#title'] = 'URL';
+    }
     // Adding descriptions.
     $form['title']['#attributes']['placeholder'] = t('eg. A descriptive title');
 
@@ -143,14 +146,19 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
         '#type' => 'submit',
         '#value' => t('Next: Add data'),
         '#weight' => -5,
-        '#ajax' => array(
+        '#submit' => array('node_form_submit'),
+      );
+      if (variable_get('dkan_dataset_form_ajax', 0)) {
+        $form['actions']['next']['#ajax'] = array(
           'callback' => 'dkan_dataset_dataset_submit_js',
           'wrapper' => $form['#id'],
           'method' => 'replace',
           'effect' => 'fade',
-        ),
-        '#submit' => array('node_form_submit'),
-      );
+        );
+      }
+      else {
+        $form['actions']['next']['#submit'] = array('node_form_submit', 'dkan_dataset_dataset_form_submit');
+      }
       $form['actions']['terms'] = array(
         '#type' => 'item',
         '#markup' => '<div id="action-info">' . t('Important: By submitting content, you agree to release your contributions under the Open Database License.') . '</div>',
@@ -170,10 +178,9 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     }
   }
   if ($form_id == 'resource_node_form') {
+    drupal_add_library('system', 'jquery.bbq');
     $form['#attached']['css'][] = drupal_get_path('module', 'dkan_dataset') . '/dkan_dataset.css';
-    $form['#attached']['js'][] = libraries_get_path('slugify') . '/jquery.slugify.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.js';
-    $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.slugify.js';
 
     if (isset($form['feeds'])) {
       $form['feeds']['#access'] = FALSE;
@@ -234,29 +241,73 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['#validate'][] = 'dkan_dataset_resource_node_form_validate';
     // This saves us on the ajax reloading.
     $form['#action'] = '/node/add/resource' . $action_query;
-    $form['actions']['additional'] = array(
-      '#type' => 'submit',
-      '#value' => t('Next: Additional Info'),
-      '#weight' => -5,
-      '#ajax' => array(
-        'callback' => 'dkan_dataset_additional_submit_js',
-        'wrapper' => $form['#id'],
-        'method' => 'replace',
-        'effect' => 'fade',
-      ),
-    );
+    if (isset($query['dataset']) || (isset($form_state['input']['field_dataset_ref']['und'][0]))) {
+      $form['actions']['additional'] = array(
+        '#type' => 'submit',
+        '#value' => t('Next: Additional Info'),
+        '#weight' => -5,
+        '#submit' => array('node_form_submit'),
+      );
+      if (variable_get('dkan_resource_form_ajax', 0)) {
+        $form['actions']['additional']['#ajax'] = array(
+          'callback' => 'dkan_dataset_additional_submit_js',
+          'wrapper' => $form['#id'],
+          'method' => 'replace',
+          'effect' => 'fade',
+        );
+      }
+      else {
+        $form['actions']['additional']['#submit'] = array('node_form_submit', 'dkan_dataset_resource_additional_form_submit');
+      }
+    }
     $form['actions']['another'] = array(
       '#type' => 'submit',
       '#value' => t('Save and add another'),
       '#weight' => 10,
-      '#ajax' => array(
+      '#submit' => array('node_form_submit'),
+    );
+    if (variable_get('dkan_resource_form_ajax', 0)) {
+      $form['actions']['another']['#ajax'] = array(
         'callback' => 'dkan_dataset_resource_another_submit_js',
         'wrapper' => $form['#id'],
         'method' => 'replace',
         'effect' => 'fade',
-      ),
-      '#submit' => array('node_form_submit'),
-    );
+      );
+    }
+    else {
+      $form['actions']['another']['#submit'] = array('node_form_submit', 'dkan_dataset_resource_form_submit');
+    }
+  }
+}
+
+/**
+ * Resource node form submit handler.
+ */
+function dkan_dataset_resource_form_submit($form, &$form_state) {
+  if ($query = drupal_get_query_parameters()) {
+    if (isset($query['dataset'])) {
+      drupal_goto('node/add/resource', array('query' => array('dataset' => $query['dataset'])));
+    }
+  }
+}
+
+/**
+ * Resource next form submit handler.
+ */
+function dkan_dataset_resource_additional_form_submit($form, &$form_state) {
+  if ($query = drupal_get_query_parameters()) {
+    if (isset($query['dataset'])) {
+      drupal_goto('node/' . $query['dataset'] . '/edit', array('query' => array('additional' => 1)));
+    }
+  }
+}
+
+/**
+ * Dataset node form submit handler.
+ */
+function dkan_dataset_dataset_form_submit($form, &$form_state) {
+  if (isset($form_state['node']->nid)) {
+    drupal_goto('node/add/resource', array('query' => array('dataset' => $form_state['node']->nid)));
   }
 }
 
@@ -283,7 +334,7 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
     form_set_error('field_link_file', 'Only one resource type can be added.');
   }
   // Autodetect file type.
-  if ($upload_fid || $link_fid) {
+  if ($upload_fid || $link_fid || $api) {
     if ($upload_fid) {
       $file = file_load($upload_fid);
       $type = substr($file->filename, strrpos($file->filename, '.') + 1);
@@ -291,6 +342,18 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
     elseif ($link_fid) {
       $file = file_load($link_fid);
       $type = substr($file->filename, strrpos($file->filename, '.') + 1);
+    }
+    elseif ($api) {
+      $request = drupal_http_request($api);
+      include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+      if (!isset($request->error)) {
+        $mapping = file_mimetype_mapping();
+        $offset = array_search($request->headers['content-type'], $mapping['mimetypes']);
+        if ($offset) {
+          $type = array_search($offset, $mapping['extensions']);
+        }
+      }
+      $type = 'data';
     }
     else {
       $type = substr($link, strrpos($link, '.') + 1);
@@ -350,11 +413,10 @@ function dkan_dataset_additional_submit_js($form, &$form_state) {
   module_load_include('inc', 'node', 'node.pages');
   $type = 'dataset';
   global $user;
-  // Title field is required. We are not actually submitting the form.
-  if (isset($_SESSION['messages']['error'])) {
-    unset($_SESSION['messages']['error']);
+  // Return the actual form if it contains errors.
+  if (form_get_errors()) {
+    return $form;
   }
-
   // Get langcode for field_dataset_ref.
   $field_dataset_ref_langcode = dkan_dataset_form_field_language($form, 'field_dataset_ref');
 
@@ -367,7 +429,7 @@ function dkan_dataset_additional_submit_js($form, &$form_state) {
 
   $stage = dkan_form_create_stages('dataset-additional', $nid);
 
-  $commands[] = ajax_command_replace('#' . $form['#id'], drupal_render($dataset_form));
+  $commands[] = ajax_command_replace('.node-resource-form', drupal_render($dataset_form));
   $commands[] = ajax_command_prepend('.node-dataset-form', $stage);
   $commands[] = ajax_command_settings(array('dkanAdditional' => array('nid' => $nid)), TRUE);
   $output = array('#type' => 'ajax', '#commands' => $commands);

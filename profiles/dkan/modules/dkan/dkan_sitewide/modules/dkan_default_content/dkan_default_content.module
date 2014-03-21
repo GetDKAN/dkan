@@ -4,25 +4,100 @@
  * Custom elements for importing content.
  */
 
-/**
- * Implements hook_ctools_plugin_directory().
- */
-function dkan_default_content_ctools_plugin_directory($module, $plugin) {
-  if ($module == 'defaultcontent' && $plugin == 'alter') {
-    return 'plugins';
+function dkan_default_content_base_install(){
+  ctools_include('pages', 'dkan_default_content');
+  ctools_include('groups', 'dkan_default_content');
+  ctools_include('datasets', 'dkan_default_content');
+  ctools_include('file', 'defaultcontent', 'plugins');
+  ctools_include('Dataset', 'dkan_dataset');
+  // Save pages
+  $pages = dkan_default_content_available_pages();
+  foreach($pages as $loadable){
+    $page = call_user_func('dkan_default_content_' . $loadable . '_page');
+    $page = (object) $page;
+    node_save($page);
+  }
+  // Save OGs
+  $groups = dkan_default_content_available_groups();
+  foreach ($groups as $loadable) {
+    $group = call_user_func('dkan_default_content_' . $loadable . '_group');
+    $group = (object) $group;
+    dkan_default_content_file_import_alter($group);
+    node_save($group);
+  }
+  // Save Datasets and Resources
+  $datasets = dkan_default_content_available_datasets();
+  foreach($datasets as $loadable){
+    $dataset = call_user_func('dkan_default_content_' . $loadable . '_dataset');
+    $resources = call_user_func('dkan_default_content_' . $loadable . '_resources');
+    // Instantiate Dataset
+    $instance = Dataset::instance($dataset['title']);
+    $instance->attachFields($dataset);
+    foreach($resources as $resource){
+      $instance->attachResource($resource);
+    }
+    $instance->save();
   }
 }
 
 /**
- * Implements hook_ctools_plugin_type().
+ * Prepares file field for import
+ *
+ * Create the file and attached the new file object in the file field
  */
-function dkan_default_content_ctools_plugin_type() {
-  return array(
-    'alter' => array(
-      'defaults' => array(
-        'export_alter weight' => 10,
-      ),
-    )
-  );
+function dkan_default_content_file_import_alter(&$node) {
+  $fields = dkan_default_content_get_file_fields();
+  foreach ($fields as $field_name => $field) {
+    if (isset($node->{$field_name})) {
+      //unset($node->{$field_name});
+    }
+    if (isset($node->{$field_name})) {
+      foreach ($node->{$field_name} as $lang => $items) {
+        foreach ($items as $key => $item) {
+          $file = (object) $item;
+          $query = new EntityFieldQuery();
+          $fids = db_select('file_managed', 'f')
+            ->condition('uri', $file->uri)
+            ->fields('f', array('fid'))
+            ->execute()
+            ->fetchCol();
+          if (!empty($fids) && isset($fids[0]) && is_object($fids[0])) {
+            file_delete($fid[0]);
+          }
+          $file = file_save_data($item['image'], $item['uri']);
+          // Decode image data. Older versions exported binary data
+          // so if this fails we asume that is the reason.
+          $data = base64_decode($item['image']);
+          if (!$data) {
+            $data = $item['image'];
+          }
+          $file = file_save_data($data, $item['uri']);
+          if ($field['type'] == 'image') {
+            $file->alt = $item['alt'];
+            $file->title = $item['title'];
+          }
+          elseif ($field['type'] == 'file') {
+            $file->display = $item['display'];
+            $file->description = $item['description'];
+          }
+          file_save($file);
+          $node->{$field_name}[$lang][$key] = (array) $file;
+          //unset($node->{$field_name}[$lang][$key]);
+        }
+      }
+    }
+  }
 }
 
+/**
+ * Helper function to get all file fields
+ */
+function dkan_default_content_get_file_fields() {
+  $ref_fields = array();
+  foreach (field_info_fields() as $id => $field) {
+    if (in_array($field['type'], array('image', 'file'))) {
+      $ref_fields[$id] = $field;
+    }
+  }
+  return $ref_fields;
+}

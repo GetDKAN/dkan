@@ -39,7 +39,8 @@ function r4032login_form_system_site_information_settings_alter(&$form, &$form_s
     '#default_value' => variable_get('r4032login_display_denied_message', TRUE),
   );
   $form['error_page']['r4032login_access_denied_message'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
+    '#rows' => 1,
     '#weight' => 6,
     '#title' => t("User login 'access denied' message"),
     '#default_value' => variable_get('r4032login_access_denied_message', t('Access denied. You must log in to view this page.')),
@@ -62,6 +63,28 @@ function r4032login_form_system_site_information_settings_alter(&$form, &$form_s
     '#title' => t("Path to user login form"),
     '#description' => t('The path to the user login form. Omit the beginning slash, ie: user/login'),
     '#default_value' => variable_get('r4032login_user_login_path', 'user/login'),
+  );
+  $options = array('301' => '301 Moved Permanently', '302' => '302 Found');
+  $form['error_page']['r4032login_default_redirect_code'] = array(
+    '#type' => 'select',
+    '#weight' => 9,
+    '#title' => t("HTTP redirect code"),
+    '#description' => t('The redirect code to send. 301 responses may be cached by browsers and proxies, so 302 is normally the correct choice.'),
+    '#options' => $options,
+    '#default_value' => variable_get('r4032login_default_redirect_code', 302),
+  );
+  $form['error_page']['matching_paths'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Skip redirect for matching pages'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#weight' => 10,
+  );
+  $form['error_page']['matching_paths']['r4032login_match_noredirect_pages'] = array(
+    '#type' => 'textarea',
+    '#title' => '<span class="element-invisible">' . t('Only the listed pages') . '</span>',
+    '#default_value' => variable_get('r4032login_match_noredirect_pages', ''),
+    '#description' => t('Instead of redirecting, the user will get an access deined response and see the standard login form. This may be useful when the response code is important - such as for removing outdated content from search engines.  Use the path node/* for all content.') . ' ' . t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
   );
   return system_settings_form($form);
 }
@@ -87,13 +110,41 @@ function r4032login_theme() {
 function r4032login_redirect() {
   global $user, $language;
   if (user_is_anonymous()) {
-    if (variable_get('r4032login_display_denied_message', TRUE)) {
+    // Show the access denied message.
+    if (variable_get('r4032login_display_denied_message', TRUE) && empty($_POST)) {
       $message = variable_get('r4032login_access_denied_message', t('Access denied. You must log in to view this page.'));
-      drupal_set_message(t($message), 'error');
+      drupal_set_message($message, 'error');
     }
+    $page_match = FALSE;
+    $pages = variable_get('r4032login_match_noredirect_pages', '');
+    if ($pages) {
+      // When on an access denied page, Drupal stores the original path in
+      // $_GET['destination'] in drupal_deliver_html_page().
+      // Convert the Drupal path to lowercase.
+      $path = drupal_strtolower(drupal_get_path_alias($_GET['destination']));
+      // Compare the lowercase internal and lowercase path alias (if any).
+      $page_match = drupal_match_path($path, $pages);
+      if ($path != $_GET['destination']) {
+        $page_match = $page_match || drupal_match_path($_GET['destination'], $pages);
+      }
+    }
+    if ($page_match) {
+      // Display the default login page.
+      return drupal_get_form('user_login');
+    }
+    // Handle redirection to the login form.
     // using drupal_goto() with destination set causes a recursive redirect loop
     $login_path = variable_get('r4032login_user_login_path', 'user/login');
-    header('Location: ' . url($login_path, array('query' => drupal_get_destination(), 'absolute' => TRUE)), TRUE, 302);
+    $code = variable_get('r4032login_default_redirect_code', 302);
+    // The code in drupal_get_destination() doesn't preserve any query string
+    // on 403 pages, so reproduce the part we want here.
+    $path = $_GET['destination'];
+    $query = drupal_http_build_query(drupal_get_query_parameters(NULL, array('q', 'destination')));
+    if ($query != '') {
+      $path .= '?' . $query;
+    }
+    $destination = array('destination' => $path);
+    header('Location: ' . url($login_path, array('query' => $destination, 'absolute' => TRUE)), TRUE, $code);
     drupal_exit();
   }
   else {

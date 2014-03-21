@@ -40,7 +40,7 @@ function data_entity_entity_edit_form($form, &$form_state, $table, $data_entity 
     $label = !empty($table->meta['fields'][$field_name]['label']) ? $table->meta['fields'][$field_name]['label'] : $field_name;
     $description = '';
 
-    $id_field = data_entity_get_id_field($table);
+    $id_field = $table->meta['entity_id'];
     if ($id_field == $field_name) {
       $disabled = TRUE;
       $description .= t('The id field can not be edited.');

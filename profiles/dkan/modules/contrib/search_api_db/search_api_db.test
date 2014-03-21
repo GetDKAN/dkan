@@ -45,11 +45,13 @@ class SearchApiDbTest extends DrupalWebTestCase {
     $this->searchNoResults();
     $this->indexItems();
     $this->searchSuccess1();
+    $this->regressionTests();
     $this->editServer();
     $this->searchSuccess2();
-    $this->regressionTests();
     $this->clearIndex();
     $this->searchNoResults();
+    $this->regressionTests2();
+    $this->uninstallModule();
   }
 
   protected function insertItems() {
@@ -98,69 +100,72 @@ class SearchApiDbTest extends DrupalWebTestCase {
 
   protected function createServer() {
     $this->server_id = 'database_search_server';
+    global $databases;
+    $database = 'default:default';
+    // Make sure to pick an available connection and to not rely on any
+    // defaults.
+    foreach ($databases as $key => $targets) {
+      foreach ($targets as $target => $info) {
+        $database = "$key:$target";
+        break;
+      }
+    }
     $values = array(
       'name' => 'Database search server',
       'machine_name' => $this->server_id,
       'enabled' => 1,
       'description' => 'A server used for testing.',
       'class' => 'search_api_db_service',
+      'options' => array(
+        'min_chars' => 3,
+        'database' => $database,
+      ),
     );
-    $this->drupalPost('admin/config/search/search_api/add_server', $values, t('Create server'));
-
-    $values2 = array(
-      'options[form][min_chars]' => 3,
-    );
-    $this->drupalPost(NULL, $values2, t('Create server'));
-
-    $this->assertText(t('The server was successfully created.'));
-    $found = strpos($this->getUrl(), 'admin/config/search/search_api/server/' . $this->server_id) !== FALSE;
-    $this->assertTrue($found, 'Correct redirect.');
+    $success = (bool) entity_create('search_api_server', $values)->save();
+    $this->assertTrue($success, 'The server was successfully created.');
   }
 
   protected function createIndex() {
-    $this->index_id = $id = 'test_index';
+    $this->index_id = 'test_index';
     $values = array(
       'name' => 'Test index',
-      'machine_name' => 'test_index',
+      'machine_name' => $this->index_id,
       'item_type' => 'search_api_test',
       'enabled' => 1,
       'description' => 'An index used for testing.',
       'server' => $this->server_id,
-      'options[cron_limit]' => 5,
+      'options' => array(
+        'cron_limit' => -1,
+        'index_directly' => TRUE,
+        'fields' => array(
+          'id' => array(
+            'type' => 'integer',
+          ),
+          'title' => array(
+            'type' => 'text',
+            'boost' => '5.0',
+          ),
+          'body' => array(
+            'type' => 'text',
+          ),
+          'type' => array(
+            'type' => 'string',
+          ),
+          'keywords' => array(
+            'type' => 'list<string>',
+          ),
+          'search_api_language' => array(
+            'type' => 'string',
+          ),
+        ),
+      ),
     );
-    $this->drupalPost('admin/config/search/search_api/add_index', $values, t('Create index'));
-
-    $this->assertText(t('The index was successfully created. Please set up its indexed fields now.'), 'The index was successfully created.');
-    $found = strpos($this->getUrl(), 'admin/config/search/search_api/index/' . $id) !== FALSE;
-    $this->assertTrue($found, 'Correct redirect.');
-
-    $values = array(
-      'fields[id][type]' => 'integer',
-      'fields[id][boost]' => '1.0',
-      'fields[id][indexed]' => 1,
-      'fields[title][type]' => 'text',
-      'fields[title][boost]' => '5.0',
-      'fields[title][indexed]' => 1,
-      'fields[body][type]' => 'text',
-      'fields[body][boost]' => '1.0',
-      'fields[body][indexed]' => 1,
-      'fields[type][type]' => 'string',
-      'fields[type][boost]' => '1.0',
-      'fields[type][indexed]' => 1,
-      'fields[keywords][type]' => 'list<string>',
-      'fields[keywords][boost]' => '1.0',
-      'fields[keywords][indexed]' => 1,
-    );
-
-    $this->drupalPost(NULL, $values, t('Save changes'));
-    $this->assertText(t('The indexed fields were successfully changed. The index was cleared and will have to be re-indexed with the new settings.'), 'Field settings saved.');
-
-    $this->drupalPost(NULL, array(), t('Save configuration'));
-    $this->assertText(t("The search index' workflow was successfully edited. All content was scheduled for re-indexing so the new settings can take effect."), 'Workflow successfully edited.');
-
-    $this->drupalGet("admin/config/search/search_api/index/$id/status");
-    $this->assertText(t('The index is currently enabled.'), '"Enabled" status displayed.');
-    $this->assertText(t('All items still need to be indexed (@total total).', array('@total' => 5)), 'Correct index status displayed.');
+    $index = entity_create('search_api_index', $values);
+    $success = (bool) $index->save();
+    $this->assertTrue($success, 'The index was successfully created.');
+    $status = search_api_index_status($index);
+    $this->assertEqual($status['total'], 5, 'Correct item count.');
+    $this->assertEqual($status['indexed'], 0, 'All items still need to be indexed.');
   }
 
   protected function buildSearch($keys = NULL, array $filters = array(), array $fields = array()) {
@@ -181,7 +186,7 @@ class SearchApiDbTest extends DrupalWebTestCase {
   }
 
   protected function searchNoResults() {
-    $results = $this->buildSearch('text')->execute();
+    $results = $this->buildSearch('test')->execute();
     $this->assertEqual($results['result count'], 0, 'No search results returned without indexing.');
     $this->assertEqual(array_keys($results['results']), array(), 'No search results returned without indexing.');
     $this->assertEqual($results['ignored'], array(), 'No keys were ignored.');
@@ -189,11 +194,7 @@ class SearchApiDbTest extends DrupalWebTestCase {
   }
 
   protected function indexItems() {
-    $this->drupalPost("admin/config/search/search_api/index/{$this->index_id}/status", array(), t('Index now'));
-    $this->assertText(t('Successfully indexed @count items.', array('@count' => 5)));
-    $this->assertNoText(t("Some items couldn't be indexed. Check the logs for details."), 'Index errors warning isn\'t displayed.');
-    $this->assertNoText(t("Couldn't index items. Check the logs for details."), 'Index error isn\'t displayed.');
-    $this->assertText(t('All items have been indexed (@total / @total).', array('@total' => 5)), 'Correct index status displayed.');
+    search_api_index_items(search_api_index_load($this->index_id));
   }
 
   protected function searchSuccess1() {
@@ -238,16 +239,15 @@ class SearchApiDbTest extends DrupalWebTestCase {
   }
 
   protected function editServer() {
-    $values = array(
-      'options[form][min_chars]' => 4,
-    );
-    $this->drupalPost("admin/config/search/search_api/server/{$this->server_id}/edit", $values, t('Save settings'));
+    $server = search_api_server_load($this->server_id, TRUE);
+    $server->options['min_chars'] = 4;
+    $success = (bool) $server->save();
+    $this->assertTrue($success, 'The server was successfully edited.');
 
     $this->clearIndex();
     $this->indexItems();
 
     // Reset the internal cache so the new values will be available.
-    search_api_server_load($this->server_id, TRUE);
     search_api_index_load($this->index_id, TRUE);
   }
 
@@ -441,12 +441,193 @@ class SearchApiDbTest extends DrupalWebTestCase {
     );
     $facet_match = _search_api_settings_equals($results['search_api_facets']['type'], $expected);
     $this->assertTrue($facet_match, 'Correct facets were returned');
+
+    // Regression tests for #2111753.
+    $keys = array(
+      '#conjunction' => 'OR',
+      'foo',
+      'test',
+    );
+    $query = $this->buildSearch($keys, array(), array('title'));
+    $query->sort('id', 'ASC');
+    $results = $query->execute();
+    $this->assertEqual($results['result count'], 3, 'OR keywords returned correct number of results.');
+    $this->assertEqual(array_keys($results['results']), array(1, 2, 4), 'OR keywords returned correct result.');
+    $this->assertEqual($results['ignored'], array(), 'No keys were ignored.');
+    $this->assertEqual($results['warnings'], array(), 'No warnings were displayed.');
+
+    $query = $this->buildSearch($keys, array(), array('title', 'body'));
+    $query->range(0, 0);
+    $results = $query->execute();
+    $this->assertEqual($results['result count'], 5, 'Multi-field OR keywords returned correct number of results.');
+    $this->assertTrue(empty($results['results']), 'Multi-field OR keywords returned correct result.');
+    $this->assertEqual($results['ignored'], array(), 'No keys were ignored.');
+    $this->assertEqual($results['warnings'], array(), 'No warnings were displayed.');
+
+    $keys = array(
+      '#conjunction' => 'OR',
+      'foo',
+      'test',
+      array(
+        '#conjunction' => 'AND',
+        'bar',
+        'baz',
+      ),
+    );
+    $query = $this->buildSearch($keys, array(), array('title'));
+    $query->sort('id', 'ASC');
+    $results = $query->execute();
+    $this->assertEqual($results['result count'], 4, 'Nested OR keywords returned correct number of results.');
+    $this->assertEqual(array_keys($results['results']), array(1, 2, 4, 5), 'Nested OR keywords returned correct result.');
+    $this->assertEqual($results['ignored'], array(), 'No keys were ignored.');
+    $this->assertEqual($results['warnings'], array(), 'No warnings were displayed.');
+
+    $keys = array(
+      '#conjunction' => 'OR',
+      array(
+        '#conjunction' => 'AND',
+        'foo',
+        'test',
+      ),
+      array(
+        '#conjunction' => 'AND',
+        'bar',
+        'baz',
+      ),
+    );
+    $query = $this->buildSearch($keys, array(), array('title', 'body'));
+    $query->sort('id', 'ASC');
+    $results = $query->execute();
+    $this->assertEqual($results['result count'], 4, 'Nested multi-field OR keywords returned correct number of results.');
+    $this->assertEqual(array_keys($results['results']), array(1, 2, 4, 5), 'Nested multi-field OR keywords returned correct result.');
+    $this->assertEqual($results['ignored'], array(), 'No keys were ignored.');
+    $this->assertEqual($results['warnings'], array(), 'No warnings were displayed.');
+
+    // Regression tests for #2127001.
+    $keys = array(
+      '#conjunction' => 'AND',
+      '#negation' => TRUE,
+      'foo',
+      'bar',
+    );
+    $results = $this->buildSearch($keys)->sort('search_api_id', 'ASC')->execute();
+    $this->assertEqual($results['result count'], 2, 'Negated AND fulltext search returned correct number of results.');
+    $this->assertEqual(array_keys($results['results']), array(3, 4), 'Negated AND fulltext search returned correct result.');
+    $this->assertEqual($results['ignored'], array(), 'No keys were ignored.');
+    $this->assertEqual($results['warnings'], array(), 'No warnings were displayed.');
+
+    $keys = array(
+      '#conjunction' => 'OR',
+      '#negation' => TRUE,
+      'foo',
+      'baz',
+    );
+    $results = $this->buildSearch($keys)->execute();
+    $this->assertEqual($results['result count'], 1, 'Negated OR fulltext search returned correct number of results.');
+    $this->assertEqual(array_keys($results['results']), array(3), 'Negated OR fulltext search returned correct result.');
+    $this->assertEqual($results['ignored'], array(), 'No keys were ignored.');
+    $this->assertEqual($results['warnings'], array(), 'No warnings were displayed.');
+
+    $keys = array(
+      '#conjunction' => 'AND',
+      'test',
+      array(
+        '#conjunction' => 'AND',
+        '#negation' => TRUE,
+        'foo',
+        'bar',
+      ),
+    );
+    $results = $this->buildSearch($keys)->sort('search_api_id', 'ASC')->execute();
+    $this->assertEqual($results['result count'], 2, 'Nested NOT AND fulltext search returned correct number of results.');
+    $this->assertEqual(array_keys($results['results']), array(3, 4), 'Nested NOT AND fulltext search returned correct result.');
+    $this->assertEqual($results['ignored'], array(), 'No keys were ignored.');
+    $this->assertEqual($results['warnings'], array(), 'No warnings were displayed.');
+
+    // Regression tests for #2136409
+    $query = $this->buildSearch();
+    $query->condition('type', NULL);
+    $query->sort('id', 'ASC');
+    $results = $query->execute();
+    $this->assertEqual($results['result count'], 1, 'NULL filter returned correct number of results.');
+    $this->assertEqual(array_keys($results['results']), array(3), 'NULL filter returned correct result.');
+
+    $query = $this->buildSearch();
+    $query->condition('type', NULL, '<>');
+    $query->sort('id', 'ASC');
+    $results = $query->execute();
+    $this->assertEqual($results['result count'], 4, 'NOT NULL filter returned correct number of results.');
+    $this->assertEqual(array_keys($results['results']), array(1, 2, 4, 5), 'NOT NULL filter returned correct result.');
   }
 
   protected function clearIndex() {
-    $this->drupalPost("admin/config/search/search_api/index/{$this->index_id}/status", array(), t('Clear index'));
-    $this->assertText(t('The index was successfully cleared.'));
-    $this->assertText(t('All items still need to be indexed (@total total).', array('@total' => 5)), 'Correct index status displayed.');
+    $success = search_api_index_load($this->index_id)->clear();
+    $this->assertTrue($success, 'The index was successfully cleared.');
+  }
+
+  /**
+   * Executes regression tests which are unpractical to run in between.
+   */
+  protected function regressionTests2() {
+    // Regression test for #1916474.
+    $index = search_api_index_load($this->index_id, TRUE);
+    $index->options['fields']['prices']['type'] = 'list<decimal>';
+    $success = $index->save();
+    $this->assertTrue($success, 'The index field settings were successfully changed.');
+
+    // Reset the internal cache so the new values will be available.
+    search_api_server_load($this->server_id, TRUE);
+    search_api_index_load($this->index_id, TRUE);
+
+    $this->indexItems();
+
+    $this->drupalGet('search_api_test/insert');
+    $this->insertItem(array(
+      'id' => 6,
+      'prices' => '3.5,3.25,3.75,3.5',
+    ));
+
+    $query = $this->buildSearch(NULL, array('prices,3.25'));
+    $results = $query->execute();
+    $this->assertEqual($results['result count'], 1, 'Filter on decimal field returned correct number of results.');
+    $this->assertEqual(array_keys($results['results']), array(6), 'Filter on decimal field returned correct result.');
+    $this->assertEqual($results['warnings'], array(), 'No warnings were displayed.');
+
+    $query = $this->buildSearch(NULL, array('prices,3.5'));
+    $results = $query->execute();
+    $this->assertEqual($results['result count'], 1, 'Filter on decimal field returned correct number of results.');
+    $this->assertEqual(array_keys($results['results']), array(6), 'Filter on decimal field returned correct result.');
+    $this->assertEqual($results['warnings'], array(), 'No warnings were displayed.');
+  }
+
+  /**
+   * Tests whether removing the configuration again works as it should.
+   */
+  protected function uninstallModule() {
+    // See whether clearing the server works.
+    // Regression test for #2156151.
+    $server = search_api_server_load($this->server_id, TRUE);
+    $server->deleteItems();
+    $query = $this->buildSearch();
+    $results = $query->execute();
+    $this->assertEqual($results['result count'], 0, 'Clearing the server worked correctly.');
+    $table = 'search_api_db_' . $this->index_id;
+    $this->assertTrue(db_table_exists($table), 'The index tables were left in place.');
+
+    // Remove first the index and then the server.
+    $index = search_api_index_load($this->index_id, TRUE);
+    $index->update(array('server' => NULL));
+    $server = search_api_server_load($this->server_id, TRUE);
+    $this->assertEqual($server->options['indexes'], array(), 'The index was successfully removed from the server.');
+    $this->assertFalse(db_table_exists($table), 'The index tables were deleted.');
+    $server->delete();
+
+    // Uninstall the module.
+    module_disable(array('search_api_db'), FALSE);
+    $this->assertFalse(module_exists('search_api_db'), 'The Database Search module was successfully disabled.');
+    drupal_uninstall_modules(array('search_api_db'), FALSE);
+    $prefix = Database::getConnection()->prefixTables('{search_api_db_}') . '%';
+    $this->assertEqual(db_find_tables($prefix), array(), 'The Database Search module was successfully uninstalled.');
   }
 
 }

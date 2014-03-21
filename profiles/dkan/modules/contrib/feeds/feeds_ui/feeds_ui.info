@@ -6,3 +6,11 @@ dependencies[] = feeds
 configure = admin/structure/feeds
 
 files[] = feeds_ui.test
+
+
+; Information added by drush on 2014-03-21
+version = "7.x-2.0-alpha8+8-dev"
+core = "7.x"
+project = "feeds"
+datestamp = "1395440906"
+

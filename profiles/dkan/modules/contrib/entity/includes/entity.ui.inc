@@ -725,31 +725,6 @@ function entity_ui_controller_form_submit($form, &$form_state) {
 }
 
 /**
- * Gets the page title for the passed operation.
- */
-function entity_ui_get_page_title($op, $entity_type, $entity = NULL) {
-  $label = entity_label($entity_type, $entity);
-  switch ($op) {
-    case 'view':
-      return $label;
-    case 'edit':
-      return t('Edit @label', array('@label' => $label));
-    case 'clone':
-      return t('Clone @label', array('@label' => $label));
-    case 'revert':
-      return t('Revert @label', array('@label' => $label));
-    case 'delete':
-      return t('Delete @label', array('@label' => $label));
-    case 'export':
-      return t('Export @label', array('@label' => $label));
-  }
-  if (isset($entity)) {
-    list(, , $bundle) = entity_extract_ids($entity_type, $entity);
-  }
-  return entity_ui_get_action_title($op, $entity_type, $bundle);
-}
-
-/**
  * Gets the page/menu title for local action operations.
  *
  * @param $op
@@ -820,15 +795,3 @@ function theme_entity_ui_overview_item($variables) {
   return $output;
 }
 
-/**
- * Page callback for viewing an entity.
- *
- * @param Entity $entity
- *   The entity to be rendered.
- *
- * @return array
- *   A renderable array of the entity in full view mode.
- */
-function entity_ui_entity_page_view($entity) {
-  return $entity->view('full', NULL, TRUE);
-}

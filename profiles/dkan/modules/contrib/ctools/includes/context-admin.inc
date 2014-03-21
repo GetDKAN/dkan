@@ -416,12 +416,19 @@ function ctools_context_ajax_item_add($mechanism = NULL, $type = NULL, $cache_ke
     ctools_cache_operation($mechanism, $cache_key, 'finalize', $object);
 
     // Very irritating way to update the form for our contexts.
-    $arg_form_state = array('values' => array());
+    $arg_form_state = array(
+      'values' => array(),
+      'programmed' => FALSE,
+      'process_input' => FALSE,
+      'complete form' => array(),
+    );
 
     $arg_form = array(
       '#post' => array(),
       '#programmed' => FALSE,
       '#tree' => FALSE,
+      '#parents' => array(),
+      '#array_parents' => array(),
     );
 
     // Build a chunk of the form to merge into the displayed form
@@ -446,6 +453,8 @@ function ctools_context_ajax_item_add($mechanism = NULL, $type = NULL, $cache_ke
       '#post' => array(),
       '#programmed' => FALSE,
       '#tree' => FALSE,
+      '#parents' => array(),
+      '#array_parents' => array(),
     );
 
     $rel_form['relationship'] = array(

@@ -175,21 +175,21 @@ function _rest_server_add_default_and_remove_unknown(&$array, $keys, $default) {
 
 /**
  * Implements hook_libraries_info().
- * @note : Libraries 2.x
  */
 function rest_server_libraries_info() {
   $libraries['spyc'] = array(
-    'name' => 'Spyc (A simple YAML loader/dumper class for PHP)',
-    'vendor url' => 'https://code.google.com/p/spyc/',
-    'download url' => 'https://code.google.com/p/spyc/downloads/list',
+    'name' => 'Spyc',
+    'version' => '0.5.1',
+    'vendor url' => 'https://github.com/mustangostang/spyc',
+    'download url' => 'https://raw2.github.com/mustangostang/spyc/master/Spyc.php',
     'version arguments' => array(
-      'file' => 'spyc.php',
+      'file' => 'Spyc.php',
       'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
-      'lines' => 4
     ),
     'files' => array(
-      'php' => array('spyc.php'),
+      'php' => array('Spyc.php'),
     ),
   );
+
   return $libraries;
 }

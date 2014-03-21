@@ -62,7 +62,7 @@ return
     </header>
     <section class="featured media-overlay">
       <h2 class="media-heading">DKAN‘s data previewing tool has many powerful features</h2>
-      <a class="image" href="/dataset/gold-prices-london-1950-2008-monthly"><img src="/profiles/dkan/themes/dkan/images/homepage-graphic.jpg" width="420" height="219"></a>
+      <a class="image" href="/dataset/gold-prices-london-1950-2008-monthly"><img src="/profiles/dkan/themes/dkan/images/homepage-graphic.jpg" style="width: 100%"></a>
     </section>
   </div>';
 }
@@ -94,12 +94,8 @@ function dkan_sitewide_demo_front_form_alter(&$form, &$form_state, $form_id) {
     $form['#id'] == 'views-exposed-form-groups-search-entity-view-1') {
     unset($form['terms']['#size']);
     $form['#info']['filter-search_api_views_fulltext']['description'] = t('Search');
-    $form['#info']['filter-search_api_views_fulltext']['label'] = '';
+    $form['#info']['filter-search_api_views_fulltext']['label'] = t('Search');
     $form['submit']['#title'] = '';
-    if (isset($form_state['pager_plugin'])) {
-      $form['submit']['#type'] = 'image_button';
-      $form['submit']['#src'] = isset($form_state['pager_plugin']) ? 'profiles/dkan/images/icon-search-27x26.png' : '';
-    }
   }
 }
 

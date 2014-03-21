@@ -6,13 +6,19 @@
  */
 
 /**
- * Implementation of hook_schema().
+ * Implements hook_schema().
  */
 function job_scheduler_schema() {
   $schema = array();
   $schema['job_schedule'] = array(
     'description' => 'Schedule of jobs to be executed.',
     'fields' => array(
+      'item_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique item ID.',
+      ),
       'name' => array(
         'type' => 'varchar',
         'length' => 128,
@@ -34,13 +40,6 @@ function job_scheduler_schema() {
         'unsigned' => TRUE,
         'description' => 'Numeric identifier of the job.',
       ),
-      'last' => array(
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'default' => 0,
-        'not null' => TRUE,
-        'description' => 'Timestamp when a job was last executed.',
-      ),
       'period' => array(
         'type' => 'int',
         'unsigned' => TRUE,
@@ -48,12 +47,32 @@ function job_scheduler_schema() {
         'not null' => TRUE,
         'description' => 'Time period after which job is to be executed.',
       ),
-      'next' => array(
+      'crontab' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Crontab line in *NIX format.',
+      ),
+      'data' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'The arbitrary data for the item.',
+      ),
+      'expire' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Timestamp when job expires.',
+      ),
+      'last' => array(
         'type' => 'int',
         'unsigned' => TRUE,
         'default' => 0,
         'not null' => TRUE,
-        'description' => 'Timestamp when a job is to be executed (next = last + period), used for fast ordering.',
+        'description' => 'Timestamp when a job was last executed.',
       ),
       'periodic' => array(
         'type' => 'int',
@@ -61,7 +80,14 @@ function job_scheduler_schema() {
         'unsigned' => TRUE,
         'default' => 0,
         'not null' => TRUE,
-        'description' => 'If true job will be automatically rescheduled with same period.',
+        'description' => 'If true job will be automatically rescheduled.',
+      ),
+      'next' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+        'not null' => TRUE,
+        'description' => 'Timestamp when a job is to be executed (next = last + period), used for fast ordering.',
       ),
       'scheduled' => array(
         'type' => 'int',
@@ -71,6 +97,7 @@ function job_scheduler_schema() {
         'description' => 'Timestamp when a job was scheduled. 0 if a job is currently not scheduled.',
       ),
     ),
+    'primary key' => array('item_id'),
     'indexes' => array(
       'name_type_id' => array('name', 'type', 'id'),
       'name_type' => array('name', 'type'),
@@ -108,4 +135,49 @@ function job_scheduler_update_7100() {
   db_change_field('job_schedule', 'callback', 'name', $spec);
   db_add_index('job_schedule', 'name_type_id', array('name', 'type', 'id'));
   db_add_index('job_schedule', 'name_type', array('name', 'type'));
+}
+
+/**
+ * Add fields: item_id, crontab, data, expire
+ */
+function job_scheduler_update_7101() {
+  $spec = array(
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => TRUE,
+    'default' => '',
+    'description' => 'Crontab line in *NIX format.',
+  );
+  db_add_field('job_schedule', 'crontab', $spec);
+  $spec = array(
+    'type' => 'blob',
+    'not null' => FALSE,
+    'size' => 'big',
+    'serialize' => TRUE,
+    'description' => 'The arbitrary data for the item.',
+  );
+  db_add_field('job_schedule', 'data', $spec);
+  $spec = array(
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+    'description' => 'Timestamp when job expires.',
+  );
+  db_add_field('job_schedule', 'expire', $spec);
+  $spec = array(
+    'type' => 'serial',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'description' => 'Primary Key: Unique item ID.',
+  );
+  db_add_field('job_schedule', 'item_id', $spec, array('primary key' => array('item_id')));
+}
+
+/**
+ * Drop field: created.
+ */
+function job_scheduler_update_7102() {
+  if (db_field_exists('job_schedule', 'created')) {
+    db_drop_field('job_schedule', 'created');
+  }
 }

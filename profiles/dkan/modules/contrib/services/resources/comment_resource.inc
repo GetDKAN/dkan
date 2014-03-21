@@ -208,7 +208,7 @@ function _comment_resource_create($comment) {
   }
 
   $comment_empty = (object) $comment_empty;
-
+  $form_state['programmed_bypass_access_check'] = FALSE;
   $ret = drupal_form_submit('comment_form', $form_state, $comment_empty);
 
   // Error if needed.
@@ -260,7 +260,8 @@ function _comment_resource_update($cid, $comment) {
   $form_state['values'] = $comment;
   $form_state['values']['op'] = variable_get('services_comment_save_button_resource_update', t('Save'));
   $form_state['comment'] = $old_comment;
-
+  $form_state['programmed_bypass_access_check'] = FALSE;
+  
   drupal_form_submit('comment_form', $form_state, $old_comment);
 
   if ($errors = form_get_errors()) {
@@ -389,9 +390,11 @@ function _comment_resource_access($op = 'view', $args = array()) {
     case 'view':
       // Check if the user has access to comments
       return user_access('access comments');
-    case 'create':
     case 'delete':
+      return user_access('administer comments');
     case 'edit':
+      return comment_access('edit', $comment);
+    case 'create':
       // Check if the user may post comments, node has comments enabled
       // and that the user has access to the node.
       return user_access('post comments') && ($node->comment == COMMENT_NODE_OPEN);

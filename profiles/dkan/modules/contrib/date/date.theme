@@ -74,6 +74,8 @@ function theme_date_display_combination($variables) {
   $attributes  = $variables['attributes'];
   $rdf_mapping = $variables['rdf_mapping'];
   $add_rdf     = $variables['add_rdf'];
+  $microdata   = $variables['microdata'];
+  $add_microdata = $variables['add_microdata'];
   $precision   = date_granularity_precision($field['settings']['granularity']);
 
   $output = '';
@@ -162,6 +164,8 @@ function theme_date_display_combination($variables) {
       'attributes' => $attributes,
       'rdf_mapping' => $rdf_mapping,
       'add_rdf' => $add_rdf,
+      'microdata' => $microdata,
+      'add_microdata' => $add_microdata,
       'dates' => $dates,
     ));
   }
@@ -179,6 +183,8 @@ function theme_date_display_combination($variables) {
       'attributes' => $attributes,
       'rdf_mapping' => $rdf_mapping,
       'add_rdf' => $add_rdf,
+      'microdata' => $microdata,
+      'add_microdata' => $add_microdata,
       'dates' => $dates,
     ));
     $replaced = str_replace($time1, $time, $date1);
@@ -200,6 +206,8 @@ function theme_date_display_combination($variables) {
       'attributes' => $attributes,
       'rdf_mapping' => $rdf_mapping,
       'add_rdf' => $add_rdf,
+      'microdata' => $microdata,
+      'add_microdata' => $add_microdata,
       'dates' => $dates,
     ));
   }
@@ -211,7 +219,7 @@ function theme_date_display_combination($variables) {
  * Template preprocess function for displaying a single date.
  */
 function template_preprocess_date_display_single(&$variables) {
-  if ($variables['add_rdf']) {
+  if ($variables['add_rdf'] || $variables['add_microdata']) {
     // Pass along the rdf mapping for this field, if any. Add some default rdf
     // attributes that will be used if not overridden by attributes passed in.
     $rdf_mapping = $variables['rdf_mapping'];
@@ -221,6 +229,24 @@ function template_preprocess_date_display_single(&$variables) {
       'content' => $variables['dates']['value']['formatted_iso'],
     );
     $variables['attributes'] = $variables['attributes'] + $base_attributes;
+  }
+
+  // Pass along microdata attributes, or set display to false if none are set.
+  if (!empty($variables['add_microdata'])) {
+    // Because the Entity API integration for Date has a variable data
+    // structure depending on whether there is an end value, the attributes
+    // could be attached to the field or to the value property.
+    if(!empty($variables['microdata']['#attributes']['itemprop'])) {
+      $variables['microdata']['value']['#attributes'] = $variables['microdata']['#attributes'];
+    }
+
+    // Add the machine readable time using the content attribute.
+    if(!empty($variables['microdata']['value']['#attributes'])) {
+      $variables['microdata']['value']['#attributes']['content'] = $variables['dates']['value']['formatted_iso'];
+    }
+    else {
+      $variables['add_microdata'] = FALSE;
+    }
   }
 }
 
@@ -233,7 +259,13 @@ function theme_date_display_single($variables) {
   $attributes = $variables['attributes'];
 
   // Wrap the result with the attributes.
-  return '<span class="date-display-single"' . drupal_attributes($attributes) . '>' . $date . $timezone . '</span>';
+  $output = '<span class="date-display-single"' . drupal_attributes($attributes) . '>' . $date . $timezone . '</span>';
+
+  if ($variables['add_microdata']) {
+    $output .= '<meta' . drupal_attributes($variables['microdata']['value']['#attributes']) . '/>';
+  }
+
+  return $output;
 }
 
 /**
@@ -247,7 +279,6 @@ function template_preprocess_date_display_range(&$variables) {
   if ($variables['add_rdf']) {
     // Pass along the rdf mapping for this field, if any. Add some default rdf
     // attributes that will be used if not overridden by attributes passed in.
-    $rdf_mapping = $variables['rdf_mapping'];
     $dates = $variables['dates'];
     $base_attributes = array(
       'property' => array('dc:date'),
@@ -259,6 +290,17 @@ function template_preprocess_date_display_range(&$variables) {
     $variables['attributes_end']['content'] = $dates['value2']['formatted_iso'];
     foreach ($variables['attributes_end']['property'] as $delta => $property) {
       $variables['attributes_end']['property'][$delta] = str_replace('start', 'end', $property);
+    }
+  }
+
+  // Pass along microdata attributes, or set display to false if none are set.
+  if ($variables['add_microdata']) {
+    if (!empty($variables['microdata']['value']['#attributes'])) {
+      $variables['microdata']['value']['#attributes']['content'] = $variables['dates']['value']['formatted_iso'];
+      $variables['microdata']['value2']['#attributes']['content'] = $variables['dates']['value2']['formatted_iso'];
+    }
+    else {
+      $variables['add_microdata'] = FALSE;
     }
   }
 }
@@ -273,10 +315,20 @@ function theme_date_display_range($variables) {
   $attributes_start = $variables['attributes_start'];
   $attributes_end = $variables['attributes_end'];
 
+  $start_date = '<span class="date-display-start"' . drupal_attributes($attributes_start) . '>' . $date1 . '</span>';
+  $end_date = '<span class="date-display-end"' . drupal_attributes($attributes_end) . '>' . $date2 . $timezone . '</span>';
+
+  // If microdata attributes for the start date property have been passed in,
+  // add the microdata in meta tags.
+  if (!empty($variables['add_microdata'])) {
+    $start_date .= '<meta' . drupal_attributes($variables['microdata']['value']['#attributes']) . '/>';
+    $end_date .= '<meta' . drupal_attributes($variables['microdata']['value2']['#attributes']) . '/>';
+  }
+
   // Wrap the result with the attributes.
   return t('!start-date to !end-date', array(
-    '!start-date' => '<span class="date-display-start"' . drupal_attributes($attributes_start) . '>' . $date1 . '</span>',
-    '!end-date' => '<span class="date-display-end"' . drupal_attributes($attributes_end) . '>' . $date2 . $timezone . '</span>',
+    '!start-date' => $start_date,
+    '!end-date' => $end_date,
   ));
 }
 
@@ -326,6 +378,10 @@ function theme_date_combo($variables) {
     '#attributes' => array(),
     '#children' => $element['#children'],
   );
+  // Add marker to required date fields.
+  if ($element['#required']) {
+    $fieldset['#title'] .= " " . theme('form_required_marker');
+  }
   return theme('fieldset', array('element' => $fieldset));
 }
 

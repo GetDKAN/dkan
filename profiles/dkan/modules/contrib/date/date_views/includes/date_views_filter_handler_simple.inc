@@ -42,6 +42,17 @@ class date_views_filter_handler_simple extends views_handler_filter_date {
     return $options;
   }
 
+  function operators() {
+    $operators = parent::operators();
+    $operators['contains'] = array(
+      'title' => t('Contains'),
+      'method' => 'op_contains',
+      'short' => t('contains'),
+      'values' => 1,
+    );
+    return $operators;
+  }
+
   /**
    * Helper function to find a default value.
    */
@@ -53,8 +64,8 @@ class date_views_filter_handler_simple extends views_handler_filter_date {
     // If this is a remembered value, use the value from the SESSION.
     if (!empty($this->options['expose']['remember'])) {
       $display_id = ($this->view->display_handler->is_defaulted('filters')) ? 'default' : $this->view->current_display;
-      if (!empty($_SESSION['views'][$this->view->name][$display_id]['date_filter'][$prefix])) {
-        return $_SESSION['views'][$this->view->name][$display_id]['date_filter'][$prefix];
+      if (!empty($_SESSION['views'][$this->view->name][$display_id][$this->options['expose']['identifier']][$prefix])) {
+        return $_SESSION['views'][$this->view->name][$display_id][$this->options['expose']['identifier']][$prefix];
       }
     }
 
@@ -104,8 +115,12 @@ class date_views_filter_handler_simple extends views_handler_filter_date {
       $element_input['value'] = $this->get_filter_value('value', !empty($element_input['value']) ? $element_input['value'] : '');
       $element_input['min'] = $this->get_filter_value('min', !empty($element_input['min']) ? $element_input['min'] : '');
       $element_input['max'] = $this->get_filter_value('max', !empty($element_input['max']) ? $element_input['max'] : '');
-      unset($element_input['default_date']);
-      unset($element_input['default_to_date']);
+      if (is_array($element_input) && isset($element_input['default_date'])) {
+        unset($element_input['default_date']);
+      }
+      if (is_array($element_input) && isset($element_input['default_to_date'])) {
+        unset($element_input['default_to_date']);
+      }
 
       $input[$this->options['expose']['identifier']] = $element_input;
     }
@@ -161,6 +176,29 @@ class date_views_filter_handler_simple extends views_handler_filter_date {
     $placeholder = $this->placeholder();
     $group = !empty($this->options['date_group']) ? $this->options['date_group'] : $this->options['group'];
     $this->query->add_where_expression($group, "$field $this->operator $placeholder", array($placeholder => $value));
+  }
+
+  function op_contains($field) {
+
+    // Add the delta field to the view so we can later find the value that matched our query.
+    list($table_name, $field_name) = explode('.', $field);
+    if (!empty($this->options['add_delta']) && (substr($field_name, -6) == '_value' || substr($field_name, -7) == '_value2')) {
+      $this->query->add_field($table_name, 'delta');
+    }
+
+    $value = $this->get_filter_value('value', $this->value['value']);
+    $comp_date = new DateObject($value, date_default_timezone(), $this->format);
+    $fields = date_views_fields($this->base_table);
+    $fields = $fields['name'];
+    $fromto = $fields[$field]['fromto'];
+    $field_min = $this->date_handler->sql_field($fromto[0], NULL, $comp_date);
+    $field_min = $this->date_handler->sql_format($this->format, $field_min);
+    $field_max = $this->date_handler->sql_field($fromto[1], NULL, $comp_date);
+    $field_max = $this->date_handler->sql_format($this->format, $field_max);
+    $placeholder_min = $this->placeholder();
+    $placeholder_max = $this->placeholder();
+    $group = !empty($this->options['date_group']) ? $this->options['date_group'] : $this->options['group'];
+    $this->query->add_where_expression($group, "$field_max >= $placeholder_min AND $field_min <= $placeholder_max", array($placeholder_min => $value, $placeholder_max => $value));
   }
 
   /**
@@ -316,7 +354,7 @@ class date_views_filter_handler_simple extends views_handler_filter_date {
       $type = 'date_text';
     }
 
-    $format = $this->date_handler->views_formats($this->options['granularity'], 'sql');
+    $format = $this->date_handler->views_formats($this->options['granularity'], 'display');
     $granularity = array_keys($this->date_handler->date_parts($this->options['granularity']));
     $relative_value = ($prefix == 'max' ? $this->options['default_to_date'] : $this->options['default_date']);
 

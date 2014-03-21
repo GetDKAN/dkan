@@ -1020,6 +1020,9 @@ function og_update_7200() {
   // See http://drupal.org/node/996236
   entity_info_cache_clear();
 
+  // Temporary variable to indicate we need to migrate OGUR data.
+  variable_set('og_7200_ogur_roles', TRUE);
+
   return t('Enable "Migrate-UI" module to continue the migration of data. Once migration is done you may disable "Migrate" module');
 }
 

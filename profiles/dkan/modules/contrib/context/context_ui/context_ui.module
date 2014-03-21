@@ -80,6 +80,10 @@ function context_ui_permission() {
     'title' => 'Administer contexts',
     'description' => 'Associate menus, views, blocks, etc. with different contexts to structure your site.'
   );
+  $permissions['context ajax block access'] = array(
+    'title' => t('Access All Blocks'),
+    'description' => t('Allows users to access all rendered blocks via an AJAX callback. If you have some blocks that should not be rendered for some users but need those users to be able to use context UI, then implement hook_context_allow_ajax_block_access with the necessary logic.'),
+  );
   return $permissions;
 }
 

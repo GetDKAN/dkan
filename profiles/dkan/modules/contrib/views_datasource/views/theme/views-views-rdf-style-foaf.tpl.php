@@ -59,5 +59,6 @@ elseif ($options['using_views_api_mode']) {     // We're in Views API mode.
 else {
   drupal_add_http_header("Content-Type", "$content_type; charset=utf-8");
   print $xml;
+  drupal_page_footer();
   exit;
 }

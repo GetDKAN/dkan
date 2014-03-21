@@ -89,7 +89,7 @@ function field_group_table_field_group_pre_render(&$element, $group, &$form) {
 
     // Normal or collapsible div.
     case 'table':
-      $title = '<label>' . check_plain(t($group->label)) . '</label>';
+      $title = '<h2>' . check_plain(t($group->label)) . '</h2>';
       $description = '<span class="field-group-table-description">' . field_filter_xss($group->format_settings['instance_settings']['desc'] .  '</span>');
       $thead = '';
       if ($group->format_settings['instance_settings']['first_column'] || $group->format_settings['instance_settings']['second_column']) {

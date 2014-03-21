@@ -7,9 +7,9 @@ files[] = xmlrpc_server.module
 dependencies[] = services
 
 core = 7.x
-; Information added by drupal.org packaging script on 2013-07-31
-version = "7.x-3.5"
+; Information added by Drupal.org packaging script on 2014-01-31
+version = "7.x-3.7"
 core = "7.x"
 project = "services"
-datestamp = "1375238610"
+datestamp = "1391207946"
 

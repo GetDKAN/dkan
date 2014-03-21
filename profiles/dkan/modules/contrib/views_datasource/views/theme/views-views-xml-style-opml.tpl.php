@@ -58,5 +58,6 @@
     $content_type = $options["content_type"];
     drupal_add_http_header("Content-Type", "$content_type; charset=utf-8");
     print $xml;
+    drupal_page_footer();
     exit;
   }

@@ -151,11 +151,9 @@ class SearchApiViewsFacetsBlockDisplay extends views_plugin_display_block {
     }
   }
 
-  public function execute() {
-    if (substr($this->view->base_table, 0, 17) != 'search_api_index_') {
-      form_set_error('', t('The "Facets block" display can only be used with base tables based on Search API indexes.'));
-      return NULL;
-    }
+  public function query(){
+    parent::query();
+
     $facet_field = $this->get_option('facet_field');
     if (!$facet_field) {
       return NULL;
@@ -165,7 +163,7 @@ class SearchApiViewsFacetsBlockDisplay extends views_plugin_display_block {
     if (!$base_path) {
       $base_path = $_GET['q'];
     }
-    $this->view->build();
+
     $limit = empty($this->view->query->pager->options['items_per_page']) ? 10 : $this->view->query->pager->options['items_per_page'];
     $query_options = &$this->view->query->getOptions();
     if (!$this->get_option('hide_block')) {
@@ -177,9 +175,19 @@ class SearchApiViewsFacetsBlockDisplay extends views_plugin_display_block {
         'min_count' => 1,
       );
     }
-    $query_options['search id'] = 'search_api_views:' . $this->view->name . '-facets_block';
     $query_options['search_api_base_path'] = $base_path;
     $this->view->query->range(0, 0);
+  }
+
+  public function render() {
+    if (substr($this->view->base_table, 0, 17) != 'search_api_index_') {
+      form_set_error('', t('The "Facets block" display can only be used with base tables based on Search API indexes.'));
+      return NULL;
+    }
+    $facet_field = $this->get_option('facet_field');
+    if (!$facet_field) {
+      return NULL;
+    }
 
     $this->view->execute();
 
@@ -230,7 +238,7 @@ class SearchApiViewsFacetsBlockDisplay extends views_plugin_display_block {
       // Initializes variables passed to theme hook.
       $variables = array(
         'text' => $name,
-        'path' => $base_path,
+        'path' => $this->view->query->getOption('search_api_base_path'),
         'count' => $term['count'],
         'options' => array(
           'attributes' => array('class' => 'facetapi-inactive'),
@@ -250,10 +258,16 @@ class SearchApiViewsFacetsBlockDisplay extends views_plugin_display_block {
       return NULL;
     }
 
-    $info['content']['facets'] = array(
+    return array(
+      'facets' => array(
       '#theme'  => 'item_list',
       '#items'  => $facets,
+      )
     );
+  }
+
+  public function execute(){
+    $info['content'] = $this->render();
     $info['content']['more'] = $this->render_more_link();
     $info['subject'] = filter_xss_admin($this->view->get_title());
     return $info;

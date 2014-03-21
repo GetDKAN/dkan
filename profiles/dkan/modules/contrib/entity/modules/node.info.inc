@@ -118,6 +118,7 @@ function entity_metadata_node_entity_property_info() {
     'label' => t("Author"),
     'type' => 'user',
     'description' => t("The author of the node."),
+    'getter callback' => 'entity_metadata_node_get_properties',
     'setter callback' => 'entity_property_verbatim_set',
     'setter permission' => 'administer nodes',
     'required' => TRUE,

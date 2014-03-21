@@ -19,6 +19,7 @@ function entity_metadata_statistics_entity_property_info_alter(&$info) {
     'type' => 'integer',
     'getter callback' => 'entity_metadata_statistics_node_get_properties',
     'computed' => TRUE,
+    'access callback' => 'entity_metadata_statistics_properties_access',
   );
   $properties['day_views'] = array(
     'label' => t("Views today"),
@@ -26,6 +27,7 @@ function entity_metadata_statistics_entity_property_info_alter(&$info) {
     'type' => 'integer',
     'getter callback' => 'entity_metadata_statistics_node_get_properties',
     'computed' => TRUE,
+    'access callback' => 'entity_metadata_statistics_properties_access',
   );
   $properties['last_view'] = array(
     'label' => t("Last view"),
@@ -33,5 +35,6 @@ function entity_metadata_statistics_entity_property_info_alter(&$info) {
     'type' => 'date',
     'getter callback' => 'entity_metadata_statistics_node_get_properties',
     'computed' => TRUE,
+    'access callback' => 'entity_metadata_statistics_properties_access',
   );
 }

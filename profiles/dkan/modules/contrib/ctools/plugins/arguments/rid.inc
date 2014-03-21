@@ -39,7 +39,7 @@ function ctools_argument_rid_context($arg = NULL, $conf = NULL, $empty = FALSE) 
     return FALSE;
   }
 
-  $nid = db_query('SELECT nid FROM {node_revisions} WHERE vid = :vid', array(':vid' => $arg))->fetchField();
+  $nid = db_query('SELECT nid FROM {node_revision} WHERE vid = :vid', array(':vid' => $arg))->fetchField();
   $node = node_load($nid, $arg);
   if (!$node) {
     return FALSE;

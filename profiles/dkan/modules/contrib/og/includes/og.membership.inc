@@ -78,6 +78,11 @@ class OgMembership extends Entity {
     og_membership_invalidate_cache();
     // Clear the group content entity field cache.
     cache_clear_all('field:'. $entity_type . ':' . $etid, 'cache_field');
+
+    // Supporting the entity cache module.
+    if (module_exists('entitycache')) {
+      cache_clear_all($etid, 'cache_entity_' . $entity_type);
+    }
   }
 
   public function delete() {
@@ -86,6 +91,11 @@ class OgMembership extends Entity {
     og_membership_invalidate_cache();
     // Clear the group content entity field cache.
     cache_clear_all('field:'. $this->entity_type . ':' . $this->etid, 'cache_field');
+
+    // Supporting the entity cache module.
+    if (module_exists('entitycache')) {
+      cache_clear_all($this->etid, 'cache_entity_' . $this->entity_type);
+    }
   }
 
   /**

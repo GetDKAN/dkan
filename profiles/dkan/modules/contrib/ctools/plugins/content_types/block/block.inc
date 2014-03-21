@@ -40,6 +40,11 @@ function ctools_block_content_type_content_type($subtype_id) {
  * of the form "$module . '_ctools_block_info'".
  */
 function ctools_block_content_type_content_types() {
+  $types = &drupal_static(__FUNCTION__);
+  if (isset($types)) {
+    return $types;
+  }
+
   $types = array();
   foreach (module_implements('block_info') as $module) {
     $module_blocks = module_invoke($module, 'block_info');
@@ -156,14 +161,16 @@ function ctools_block_content_type_render($subtype, $conf) {
   $block->module = $module;
   $block->delta = $delta;
 
-  if ($module == 'block' && !empty($info) && isset($info->title)) {
-    $block->title = $info->title;
-  }
-  else if (isset($block->subject)) {
-    $block->title = $block->subject;
-  }
-  else {
-    $block->title = NULL;
+  if (!isset($block->title)) {
+    if ($module == 'block' && !empty($info) && isset($info->title)) {
+      $block->title = $info->title;
+    }
+    else if (isset($block->subject)) {
+      $block->title = $block->subject;
+    }
+    else {
+      $block->title = NULL;
+    }
   }
 
   if (module_exists('block') && user_access('administer blocks')) {
@@ -286,13 +293,18 @@ function ctools_block_content_type_admin_info($subtype, $conf) {
   list($module, $delta) = _ctools_block_get_module_delta($subtype, $conf);
   $block = (object) module_invoke($module, 'block_view', $delta);
 
-  // Sanitize the block because <script> tags can hose javascript up:
-  if (!empty($block->content)) {
-    $block->content = filter_xss_admin($block->content);
-  }
+  if (!empty($block)) {
+    // Sanitize the block because <script> tags can hose javascript up:
+    if (!empty($block->content)) {
+      $block->content = filter_xss_admin(render($block->content));
+    }
 
-  if (!empty($block) && !empty($block->subject)) {
-    $block->title = $block->subject;
+    if (!empty($block->subject)) {
+      $block->title = $block->subject;
+    }
+    elseif (empty($block->title)) {
+      $block->title = t('No title');
+    }
     return $block;
   }
 }

@@ -7,16 +7,16 @@
 /**
  * Implements hook_ctools_plugin_api().
  */
-function dkan_dataset_groups_ctools_plugin_api() {
-  list($module, $api) = func_get_args();
+function dkan_dataset_groups_ctools_plugin_api($module = NULL, $api = NULL) {
   if ($module == "context" && $api == "context") {
     return array("version" => "3");
   }
-  list($module, $api) = func_get_args();
+  if ($module == "facetapi" && $api == "facetapi_defaults") {
+    return array("version" => "1");
+  }
   if ($module == "field_group" && $api == "field_group") {
     return array("version" => "1");
   }
-  list($module, $api) = func_get_args();
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
@@ -25,8 +25,155 @@ function dkan_dataset_groups_ctools_plugin_api() {
 /**
  * Implements hook_views_api().
  */
-function dkan_dataset_groups_views_api() {
+function dkan_dataset_groups_views_api($module = NULL, $api = NULL) {
   return array("api" => "3.0");
+}
+
+/**
+ * Implements hook_image_default_styles().
+ */
+function dkan_dataset_groups_image_default_styles() {
+  $styles = array();
+
+  // Exported image style: group_medium.
+  $styles['group_medium'] = array(
+    'name' => 'group_medium',
+    'label' => 'Group Medium',
+    'effects' => array(
+      6 => array(
+        'label' => 'Scale',
+        'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
+        'effect callback' => 'image_scale_effect',
+        'dimensions callback' => 'image_scale_dimensions',
+        'form callback' => 'image_scale_form',
+        'summary theme' => 'image_scale_summary',
+        'module' => 'image',
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => 200,
+          'height' => 200,
+          'upscale' => 0,
+        ),
+        'weight' => -10,
+      ),
+      8 => array(
+        'label' => 'Define canvas',
+        'help' => 'Define the size of the working canvas and background color, this controls the dimensions of the output image.',
+        'effect callback' => 'canvasactions_definecanvas_effect',
+        'dimensions callback' => 'canvasactions_definecanvas_dimensions',
+        'form callback' => 'canvasactions_definecanvas_form',
+        'summary theme' => 'canvasactions_definecanvas_summary',
+        'module' => 'imagecache_canvasactions',
+        'name' => 'canvasactions_definecanvas',
+        'data' => array(
+          'RGB' => array(
+            'HEX' => '#ffffff',
+          ),
+          'under' => 1,
+          'exact' => array(
+            'width' => 200,
+            'height' => 200,
+            'xpos' => 'center',
+            'ypos' => 'center',
+          ),
+          'relative' => array(
+            'leftdiff' => '',
+            'rightdiff' => '',
+            'topdiff' => '',
+            'bottomdiff' => '',
+          ),
+        ),
+        'weight' => -9,
+      ),
+      7 => array(
+        'label' => 'Crop',
+        'help' => 'Cropping will remove portions of an image to make it the specified dimensions.',
+        'effect callback' => 'image_crop_effect',
+        'dimensions callback' => 'image_resize_dimensions',
+        'form callback' => 'image_crop_form',
+        'summary theme' => 'image_crop_summary',
+        'module' => 'image',
+        'name' => 'image_crop',
+        'data' => array(
+          'width' => 200,
+          'height' => 200,
+          'anchor' => 'center-center',
+        ),
+        'weight' => -8,
+      ),
+    ),
+  );
+
+  // Exported image style: group_thumbnail.
+  $styles['group_thumbnail'] = array(
+    'name' => 'group_thumbnail',
+    'label' => 'Group Thumbnail',
+    'effects' => array(
+      4 => array(
+        'label' => 'Scale',
+        'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
+        'effect callback' => 'image_scale_effect',
+        'dimensions callback' => 'image_scale_dimensions',
+        'form callback' => 'image_scale_form',
+        'summary theme' => 'image_scale_summary',
+        'module' => 'image',
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => 100,
+          'height' => 100,
+          'upscale' => 0,
+        ),
+        'weight' => -10,
+      ),
+      9 => array(
+        'label' => 'Define canvas',
+        'help' => 'Define the size of the working canvas and background color, this controls the dimensions of the output image.',
+        'effect callback' => 'canvasactions_definecanvas_effect',
+        'dimensions callback' => 'canvasactions_definecanvas_dimensions',
+        'form callback' => 'canvasactions_definecanvas_form',
+        'summary theme' => 'canvasactions_definecanvas_summary',
+        'module' => 'imagecache_canvasactions',
+        'name' => 'canvasactions_definecanvas',
+        'data' => array(
+          'RGB' => array(
+            'HEX' => '#ffffff',
+          ),
+          'under' => 1,
+          'exact' => array(
+            'width' => 100,
+            'height' => 100,
+            'xpos' => 'center',
+            'ypos' => 'center',
+          ),
+          'relative' => array(
+            'leftdiff' => '',
+            'rightdiff' => '',
+            'topdiff' => '',
+            'bottomdiff' => '',
+          ),
+        ),
+        'weight' => -9,
+      ),
+      5 => array(
+        'label' => 'Crop',
+        'help' => 'Cropping will remove portions of an image to make it the specified dimensions.',
+        'effect callback' => 'image_crop_effect',
+        'dimensions callback' => 'image_resize_dimensions',
+        'form callback' => 'image_crop_form',
+        'summary theme' => 'image_crop_summary',
+        'module' => 'image',
+        'name' => 'image_crop',
+        'data' => array(
+          'width' => 100,
+          'height' => 100,
+          'anchor' => 'center-center',
+        ),
+        'weight' => -8,
+      ),
+    ),
+  );
+
+  return $styles;
 }
 
 /**
@@ -45,5 +192,185 @@ Groups also enable you to assign roles and authorisation to members of the group
       'help' => '',
     ),
   );
+  return $items;
+}
+
+/**
+ * Implements hook_default_search_api_index().
+ */
+function dkan_dataset_groups_default_search_api_index() {
+  $items = array();
+  $items['groups_di'] = entity_import('search_api_index', '{
+    "name" : "Groups Dataset Index",
+    "machine_name" : "groups_di",
+    "description" : "An index for datasets in groups. Identical to the dataset index in the dkan_sitewide module.",
+    "server" : "groups_server",
+    "item_type" : "node",
+    "options" : {
+      "index_directly" : 1,
+      "cron_limit" : "50",
+      "fields" : {
+        "type" : { "type" : "string" },
+        "title" : { "type" : "string" },
+        "status" : { "type" : "boolean" },
+        "changed" : { "type" : "date" },
+        "author" : { "type" : "integer", "entity_type" : "user" },
+        "field_tags" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
+        "og_group_ref" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "node" },
+        "search_api_language" : { "type" : "string" },
+        "search_api_viewed" : { "type" : "text" },
+        "search_api_access_node" : { "type" : "list\\u003Cstring\\u003E" },
+        "field_resources:field_format" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
+        "field_resources:body:value" : { "type" : "list\\u003Ctext\\u003E" }
+      },
+      "data_alter_callbacks" : {
+        "search_api_alter_bundle_filter" : {
+          "status" : 1,
+          "weight" : "-10",
+          "settings" : { "default" : "0", "bundles" : { "dataset" : "dataset" } }
+        },
+        "search_api_alter_node_access" : { "status" : 1, "weight" : "0", "settings" : [] },
+        "search_api_alter_node_status" : { "status" : 0, "weight" : "0", "settings" : [] },
+        "search_api_alter_add_hierarchy" : { "status" : 0, "weight" : "0", "settings" : { "fields" : [] } },
+        "search_api_alter_add_viewed_entity" : { "status" : 1, "weight" : "0", "settings" : { "mode" : "full" } },
+        "search_api_alter_add_url" : { "status" : 0, "weight" : "0", "settings" : [] },
+        "search_api_alter_add_aggregation" : { "status" : 0, "weight" : "0", "settings" : [] }
+      },
+      "processors" : {
+        "search_api_case_ignore" : { "status" : 0, "weight" : "0", "settings" : { "fields" : [] } },
+        "search_api_html_filter" : {
+          "status" : 0,
+          "weight" : "10",
+          "settings" : {
+            "fields" : [],
+            "title" : 0,
+            "alt" : 1,
+            "tags" : "h1 = 5\\r\\nh2 = 3\\r\\nh3 = 2\\r\\nstrong = 2\\r\\nb = 2\\r\\nem = 1.5\\r\\nu = 1.5"
+          }
+        },
+        "search_api_tokenizer" : {
+          "status" : 0,
+          "weight" : "20",
+          "settings" : { "fields" : [], "spaces" : "[^[:alnum:]]", "ignorable" : "[\\u0027]" }
+        },
+        "search_api_stopwords" : {
+          "status" : 0,
+          "weight" : "30",
+          "settings" : {
+            "fields" : [],
+            "file" : "",
+            "stopwords" : "but\\r\\ndid\\r\\nthe this that those\\r\\netc"
+          }
+        },
+        "search_api_highlighting" : {
+          "status" : 0,
+          "weight" : "35",
+          "settings" : {
+            "prefix" : "\\u003Cstrong\\u003E",
+            "suffix" : "\\u003C\\/strong\\u003E",
+            "excerpt" : 1,
+            "excerpt_length" : "256",
+            "highlight" : "always"
+          }
+        }
+      }
+    },
+    "enabled" : "1",
+    "read_only" : "0",
+    "rdf_mapping" : []
+  }');
+  return $items;
+}
+
+/**
+ * Implements hook_default_search_api_server().
+ */
+function dkan_dataset_groups_default_search_api_server() {
+  $items = array();
+  $items['groups_server'] = entity_import('search_api_server', '{
+    "name" : "Groups Server",
+    "machine_name" : "groups_server",
+    "description" : "This is separate from the dataset server so it can be packaged with DKAN Dataset.",
+    "class" : "search_api_db_service",
+    "options" : {
+      "database" : "default:default",
+      "min_chars" : "1",
+      "indexes" : { "groups_di" : {
+          "type" : {
+            "table" : "search_api_db_groups_di",
+            "column" : "type",
+            "type" : "string",
+            "boost" : "1.0"
+          },
+          "title" : {
+            "table" : "search_api_db_groups_di",
+            "column" : "title",
+            "type" : "string",
+            "boost" : "1.0"
+          },
+          "status" : {
+            "table" : "search_api_db_groups_di",
+            "column" : "status",
+            "type" : "boolean",
+            "boost" : "1.0"
+          },
+          "changed" : {
+            "table" : "search_api_db_groups_di",
+            "column" : "changed",
+            "type" : "date",
+            "boost" : "1.0"
+          },
+          "author" : {
+            "table" : "search_api_db_groups_di",
+            "column" : "author",
+            "type" : "integer",
+            "boost" : "1.0"
+          },
+          "search_api_language" : {
+            "table" : "search_api_db_groups_di",
+            "column" : "search_api_language",
+            "type" : "string",
+            "boost" : "1.0"
+          },
+          "search_api_viewed" : {
+            "table" : "search_api_db_groups_di_search_api_viewed",
+            "type" : "text",
+            "boost" : "1.0"
+          },
+          "search_api_access_node" : {
+            "table" : "search_api_db_groups_di_search_api_access_node",
+            "column" : "value",
+            "type" : "list\\u003Cstring\\u003E",
+            "boost" : "1.0"
+          },
+          "field_tags" : {
+            "table" : "search_api_db_groups_di_field_tags",
+            "column" : "value",
+            "type" : "list\\u003Cinteger\\u003E",
+            "boost" : "1.0"
+          },
+          "og_group_ref" : {
+            "table" : "search_api_db_groups_di_og_group_ref",
+            "column" : "value",
+            "type" : "list\\u003Cinteger\\u003E",
+            "boost" : "1.0"
+          },
+          "field_resources:field_format" : {
+            "table" : "search_api_db_groups_di_field_resources_field_format",
+            "column" : "value",
+            "type" : "list\\u003Cinteger\\u003E",
+            "boost" : "1.0"
+          },
+          "field_resources:body:value" : {
+            "table" : "search_api_db_groups_di_field_resources_body_value",
+            "type" : "list\\u003Ctext\\u003E",
+            "boost" : "1.0"
+          }
+        }
+      }
+    },
+    "enabled" : "1",
+    "rdf_mapping" : []
+  }');
   return $items;
 }
