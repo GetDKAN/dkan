@@ -4,6 +4,7 @@
       <div id="toolbar" class="grid-<?php print $columns; ?>">
         <div id="breadcrumb"><?php print $breadcrumb; ?></div>
         <div id="actions"><?php print $tabs; ?></div>
+        <?php if ($action_links): ?><ul class="action-links"><?php print render($action_links); ?></ul><?php endif; ?>
       </div>
     <?php endif; ?>
     <?php if ($messages): ?>
