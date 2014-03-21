@@ -68,6 +68,7 @@ function dkan_process_zone(&$vars) {
     $theme = alpha_get_theme();
     $tabs = dkan_theme_process_tabs($theme->page['tabs']);
     $vars['tabs'] = drupal_render($tabs);
+    $vars['action_links'] = drupal_render($theme->page['action_links']);
   }
 }
 
@@ -281,4 +282,27 @@ function dkan_facetapi_link_inactive($variables) {
 function dkan_preprocess_user_profile(&$variables) {
   // Remove user pic on profile.
   unset($variables['user_profile']['user_picture']);
+}
+
+
+/**
+ * Implements theme_menu_local_action().
+ */
+function dkan_menu_local_action($variables) {
+  $link = $variables['element']['#link'];
+
+  $output = '<li>';
+  if (isset($link['href'])) {
+    $link['title'] = '<i class="icon-large icon-plus"></i> ' . $link['title'];
+    $output .= l($link['title'], $link['href'], isset($link['localized_options']) ? $link['localized_options'] : array());
+  }
+  elseif (!empty($link['localized_options']['html'])) {
+    $output .= $link['title'];
+  }
+  else {
+    $output .= check_plain($link['title']);
+  }
+  $output .= "</li>\n";
+
+  return $output;
 }
