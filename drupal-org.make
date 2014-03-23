@@ -22,6 +22,8 @@ projects[beautytips][subdir] = contrib
 projects[beautytips][patch][849232] = http://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch
 projects[chosen][subdir] = contrib
 projects[chosen][version] = 2.0-alpha1
+projects[colorizer][subdir] = contrib
+projects[colorizer][version] = 1.0
 projects[ctools][subdir] = contrib
 projects[ctools][version] = 1.4
 projects[diff][subdir] = contrib
@@ -161,7 +163,6 @@ projects[omega][subdir] = contrib
 projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
 projects[bootstrap][version] = 3.0
 projects[bootstrap][subdir] = contrib
-;projects[bootstrap][patch][2177089] = http://drupal.org/files/issues/bootstrap-undefined-index-2177089-1.patch
 projects[nuboot][version] = 1.x-dev
 projects[nuboot][subdir] = contrib
 
