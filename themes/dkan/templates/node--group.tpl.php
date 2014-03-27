@@ -18,17 +18,18 @@
         ),
       ));
     endif;
-  ?> 
+  ?>
   <article class="node-teaser">
     <div class="field-name-field-image"><?php print render($group_logo); ?></div>
     <h2 class="node-title"><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
     <div class="content">
       <p>
-        <?php print render(field_view_field('node', $node, 'body', array(
+        <?php $field = field_view_field('node', $node, 'body', array(
             'label' => 'hidden',
             'type' => 'text_summary_or_trimmed',
             'settings' => array('trim_length' => 150),
-          )));
+          ));
+          print render($field);
         ?>
       </p>
     </div>
