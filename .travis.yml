@@ -27,13 +27,21 @@ before_script:
   - mysql -e 'create database dkan_dataset_test'
   - drush --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/dkan_dataset_test --enable=simpletest dkan_dataset_test
 
-  # copy drupal
+  # Grab dkan to have the dkan_default_content module at hand
+  - git clone --branch 7.x-1.x http://git.drupal.org/project/dkan.git
+
+  # Grab dkan_dataset
   - git clone --branch $TRAVIS_BRANCH https://github.com/nuams/dkan_dataset.git
 
-  # reference and enable travis_ci_drupal_module_example in build site
+  # copy dkan_dataset to sites/all
   - cp -r dkan_dataset dkan_dataset_test/drupal/sites/all/modules/dkan_dataset
+  # copy dkan_default_content to sites/all
+  - cp -r dkan/modules/dkan/dkan_sitewide/modules/dkan_default_content dkan_dataset_test/drupal/sites/all/modules/dkan_default_content
+  # Jump into setup directory
   - cd dkan_dataset_test/drupal
+  # Make dkan_dataset
   - drush make -v --no-core --yes sites/all/modules/dkan_dataset/dkan_dataset.make
+  # Enable modules
   - drush --yes pm-enable dkan_dataset
   - drush --yes pm-enable dkan_dataset_groups
 
@@ -41,4 +49,6 @@ before_script:
   - drush runserver 127.0.0.1:8080 &
   - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
 
-script: drush test-run --xml 'DKAN Dataset' --uri=http://127.0.0.1:8080
+script:
+  # Run test suite
+  - drush test-run --xml 'DKAN Dataset' --uri=http://127.0.0.1:8080

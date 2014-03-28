@@ -69,7 +69,7 @@ function theme_dkan_dataset_resource_view($vars) {
       else {
         $desc = '<p class="description"></p>';
       }
-      if (isset($node->field_format) && $node->field_format) {
+      if (isset($node->field_format) && $node->field_format && $node_wrapper->field_format->value()) {
         $term .= '<span class="format-label" property="dc:format" data-format="' . $node_wrapper->field_format->value()->name . '">' . $node_wrapper->field_format->value()->name  . '</span>';
       }
       else {
