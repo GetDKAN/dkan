@@ -10,44 +10,8 @@
 function dkan_sitewide_menu_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: main-menu:dataset
-  $menu_links['main-menu:dataset'] = array(
-    'menu_name' => 'main-menu',
-    'link_path' => 'dataset',
-    'router_path' => 'dataset',
-    'link_title' => 'Datasets',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -49,
-  );
-  // Exported menu link: main-menu:groups
-  $menu_links['main-menu:groups'] = array(
-    'menu_name' => 'main-menu',
-    'link_path' => 'groups',
-    'router_path' => 'groups',
-    'link_title' => 'Groups',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -48,
-  );
-  // Exported menu link: main-menu:node/add/dataset
-  $menu_links['main-menu:node/add/dataset'] = array(
+  // Exported menu link: main-menu_add-dataset:node/add/dataset
+  $menu_links['main-menu_add-dataset:node/add/dataset'] = array(
     'menu_name' => 'main-menu',
     'link_path' => 'node/add/dataset',
     'router_path' => 'node/add/dataset',
@@ -56,6 +20,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
       'attributes' => array(
         'title' => '',
       ),
+      'identifier' => 'main-menu_add-dataset:node/add/dataset',
     ),
     'module' => 'menu',
     'hidden' => 0,
@@ -63,11 +28,31 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'has_children' => 0,
     'expanded' => 0,
     'weight' => -50,
+    'customized' => 0,
+  );
+  // Exported menu link: main-menu_groups:groups
+  $menu_links['main-menu_groups:groups'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'groups',
+    'router_path' => 'groups',
+    'link_title' => 'Groups',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'main-menu_groups:groups',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -48,
+    'customized' => 0,
   );
   // Translatables
   // Included for use with string extractors like potx.
   t('Add Dataset');
-  t('Datasets');
   t('Groups');
 
 
