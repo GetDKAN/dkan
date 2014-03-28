@@ -112,6 +112,8 @@ function dkan_additional_setup() {
   drupal_write_record('feeds_source', $record);
   features_revert(array('dkan_sitewide_search_db' => array('search_api_index')));
   features_revert(array('dkan_dataset_groups' => array('search_api_index')));
-  features_revert(array('dkan_sitewide_roles_perms' => array('user_permission')));
+  features_revert(array('dkan_sitewide_roles_perms' => array('user_permission', 'og_features_permission')));
+  features_revert(array('dkan_sitewide_menu' => array('content_menu_links')));
+  features_revert(array('dkan_sitewide_menu' => array('menu_links')));
   unset($_SESSION['messages']['warning']);
 }
