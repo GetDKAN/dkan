@@ -1,8 +1,7 @@
 <?php
-
 /**
  * @file
- * dkan_dataset_content_types.features.field_instance.inc.
+ * dkan_dataset_content_types.features.field_instance.inc
  */
 
 /**
