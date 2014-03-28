@@ -192,6 +192,7 @@ Groups also enable you to assign roles and authorisation to members of the group
       'help' => '',
     ),
   );
+  drupal_alter('node_info', $items);
   return $items;
 }
 
