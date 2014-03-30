@@ -53,6 +53,7 @@ projects[link_iframe_formatter][subdir] = contrib
 projects[multistep][subdir] = contrib
 projects[multistep][version] = 1.x
 projects[og][subdir] = contrib
+projects[og][patch][1090438] = http://drupal.org/files/issues/og-add_users_and_entities_with_drush-1090438-12.patch
 projects[og][version] = 2.4
 projects[og_extras][subdir] = contrib
 projects[og_extras][version] = 1.x
