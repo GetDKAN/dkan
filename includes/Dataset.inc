@@ -152,16 +152,20 @@ class Dataset {
     if ($node) {
       $this->title = $node->title;
       $this->dataset = $node;
-      $this->resources = array();
-      // Load resources.
-      foreach ($this->dataset->field_resources[$this->dataset->language] as $key => $resource) {
-        $this->resources[] = node_load($resource['target_id']);
-      }
       // Removed unset($this->dataset->field_resources);.
       $this->created = TRUE;
     }
   }
 
+  protected function preloadResources() {
+    if ($this->created) {
+       $this->resources = array();
+      // Load resources.
+      foreach ($this->dataset->field_resources[$this->dataset->language] as $key => $resource) {
+        $this->resources[] = node_load($resource['target_id']);
+      }
+    }
+  }
   /**
    * Constructor.
    *
