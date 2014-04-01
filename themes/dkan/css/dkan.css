@@ -795,7 +795,10 @@ li .icon-large[class^="icon-"], li .icon-large[class*=" icon-"] {
 .node-type-group .block-group-block-block .content .views-field-body {
   padding:0 15px;
 }
-.node-type-group .horizontal-tabs ul.horizontal-tabs-list li.selected a, 
+.node-type-group .block-group-block-block .views-field-nid {
+  padding: 0 15px 15px 15px;
+}
+.node-type-group .horizontal-tabs ul.horizontal-tabs-list li.selected a,
 .node-type-group .horizontal-tabs ul.horizontal-tabs-list li a {
   font-size:18px;
   padding:10px 16px;
@@ -3387,5 +3390,4 @@ article.node-teaser .data-and-resources .label {
   region {
     clear: both;
   }
-
 }
