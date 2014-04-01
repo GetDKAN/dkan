@@ -25,6 +25,13 @@ function dkan_dataset_node_update($node) {
         }
       }
       break;
+ 
+	  case 'dataset':
+      if (!$node->is_new && module_exists('og')) {
+        // Syncs groups across resources if a dataset is updated.
+        dkan_dataset_sync_groups($node);
+      }
+      break;
 
     default:
       break;
