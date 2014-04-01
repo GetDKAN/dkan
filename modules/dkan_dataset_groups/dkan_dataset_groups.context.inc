@@ -59,6 +59,12 @@ function dkan_dataset_groups_context_default_contexts() {
           'region' => 'sidebar_first',
           'weight' => '-6',
         ),
+        'og_extras-group_info' => array(
+          'module' => 'og_extras',
+          'delta' => 'group_info',
+          'region' => 'sidebar_first',
+          'weight' => '-5',
+        ),
       ),
     ),
   );
