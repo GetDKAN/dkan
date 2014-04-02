@@ -420,7 +420,7 @@ other-nc|Other (Non-Commercial)
 other-closed|Other (Not Open)
 other-open|Other (Open)
 other-pd|Other (Public Domain)
-          uk-ogl|UK Open Government Licence (OGL)',
+uk-ogl|UK Open Government Licence (OGL)',
         'available_options_php' => '',
         'markup_available_options_php' => '&lt;none&gt;',
         'other' => 'Other',

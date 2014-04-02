@@ -20,7 +20,7 @@ class Dataset {
    * Helper function that slugifies strings.
    *
    * @param string $string
-   *   the string to be slugified
+   *   the string to be slugified.
    */
   protected static function slugify($string) {
     return strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $string));
@@ -40,12 +40,12 @@ class Dataset {
   }
 
   /**
-   * Helps checks if group reference definition.
+   * Helper function that checks if group reference is defined.
    *
    * @param array $fields
-   *   an array of dataset fields
+   *   an array of dataset fields.
    */
-  protected static function populate_og_reference(&$fields) {
+  protected static function populateOgReference(&$fields) {
     if (isset($fields['og_group_ref'][LANGUAGE_NONE][0]) && isset($fields['og_group_ref'][LANGUAGE_NONE][0]['title'])) {
       // Query group by title.
       $query = new EntityFieldQuery();
@@ -75,7 +75,7 @@ class Dataset {
    * @param object $resource
    *   an object that represents a file field
    */
-  protected static function populate_resource_field_upload($resource) {
+  protected static function populateResourceFieldUpload($resource) {
     if (isset($resource->field_upload)) {
       foreach ($resource->field_upload as $lang => $items) {
         foreach ($items as $key => $item) {
@@ -142,7 +142,7 @@ class Dataset {
   }
 
   /**
-   * Preloads dataset and resources based on dataset nid.
+   * Preloads dataset based on dataset nid.
    *
    * @param string $nid
    *   A string that represents the dataset node id
@@ -157,9 +157,12 @@ class Dataset {
     }
   }
 
+  /**
+   * Preloads Dataset's Resources.
+   */
   protected function preloadResources() {
     if ($this->created) {
-       $this->resources = array();
+      $this->resources = array();
       // Load resources.
       foreach ($this->dataset->field_resources[$this->dataset->language] as $key => $resource) {
         $this->resources[] = node_load($resource['target_id']);
@@ -200,7 +203,7 @@ class Dataset {
    * Increments revision for the dataset and sets a log for the resource.
    *
    * @param string $log
-   *   A string to be used as the log message for the revision instance
+   *   A string to be used as the log message for the revision instance.
    */
   public function incrementRevision($log) {
     if (isset($this->dataset->nid)) {
@@ -217,7 +220,7 @@ class Dataset {
    *   An associative array containing the dataset node fields
    */
   public function attachFields($fields) {
-    Dataset::populate_og_reference($fields);
+    Dataset::populateOgReference($fields);
     $this->dataset = Dataset::asobject($fields);
     // Populate basic properties.
     $this->dataset->title = $this->title;
@@ -239,7 +242,7 @@ class Dataset {
    */
   public function attachResource($resource) {
     $resource = Dataset::asobject($resource);
-    $resource = Dataset::populate_resource_field_upload($resource);
+    $resource = Dataset::populateResourceFieldUpload($resource);
     // Populate basic properties.
     $resource->status = '1';
     $resource->promote = '0';

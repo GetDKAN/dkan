@@ -173,7 +173,7 @@ function dkan_dataset_api_settings() {
   $form['dkan_dataset_api']['dkan_dataset_api_data_json'] = array(
     '#type' => 'checkbox',
     '#title' => t('data.json'),
-    '#description' => t('More information on !url.', array('!url' => l('data.json', 'http://project-open-data.github.io'))),
+    '#description' => t('More information on !url.', array('!url' => l(t('data.json'), 'http://project-open-data.github.io'))),
     '#default_value' => variable_get('dkan_dataset_api_data_json', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_revision_list'] = array(
@@ -193,7 +193,7 @@ function dkan_dataset_api_settings() {
   $form['dkan_dataset_api']['dkan_dataset_api_list_with_resources'] = array(
     '#type' => 'checkbox',
     '#title' => t('current_package_list_with_resources'),
-    '#description' => t('More information on !url.', array('!url' => l('current_package_list_with_resources', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'))),
+    '#description' => t('More information on !url.', array('!url' => l(t('current_package_list_with_resources'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'))),
     '#default_value' => variable_get('dkan_dataset_api_current_package_list_with_resources', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_package_show'] = array(
@@ -208,28 +208,28 @@ function dkan_dataset_api_settings() {
     '#type' => 'checkbox',
     '#title' => t('resource_show'),
     '#description' => t('More information on !url.', array(
-      '!url' => l('package_show', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.resource_show'))),
+      '!url' => l(t('package_show'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.resource_show'))),
     '#default_value' => variable_get('dkan_dataset_api_resource_show', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_group_package_show'] = array(
     '#type' => 'checkbox',
     '#title' => t('group_package_show'),
     '#description' => t('More information on !url.', array(
-      '!url' => l('package_show', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.group_package_show'))),
+      '!url' => l(t('package_show'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.group_package_show'))),
     '#default_value' => variable_get('dkan_dataset_api_group_package_show', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_package_revision_list'] = array(
     '#type' => 'checkbox',
     '#title' => t('package_revision_list'),
     '#description' => t('More information on !url.', array(
-      '!url' => l('package_revision_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_revision_list'))),
+      '!url' => l(t('package_revision_list'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_revision_list'))),
     '#default_value' => variable_get('dkan_dataset_api_package_revision_list', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_group_list'] = array(
     '#type' => 'checkbox',
     '#title' => t('group_list'),
     '#description' => t('More information on !url.', array(
-      '!url' => l('group_list', 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.group_list'))),
+      '!url' => l(t('group_list'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.group_list'))),
     '#default_value' => variable_get('dkan_dataset_api_group_list', 1),
   );
   return system_settings_form($form);

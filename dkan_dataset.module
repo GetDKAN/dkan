@@ -589,14 +589,15 @@ function dkan_dataset_update_groups($data) {
 
 /**
  * Callback for dkan_dataset_dataset_changelog cron worker.
- * @param  array $item
+ *
+ * @param array $item
  *   An associative array containing the dataset nid and a log message.
  */
 function dkan_dataset_dataset_changelog_run($item) {
   global $user;
   $original_user = $user;
   drupal_save_session(FALSE);
-  // Increment Revision
+  // Increment Revision.
   if (isset($item['user']) && isset($item['dataset']) && isset($item['message'])) {
     $user = user_load($item['user']);
     ctools_include('Dataset', 'dkan_dataset');
