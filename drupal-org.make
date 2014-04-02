@@ -59,6 +59,7 @@ projects[og_extras][subdir] = contrib
 projects[og_extras][version] = 1.x
 projects[og_moderation][subdir] = contrib
 projects[og_moderation][version] = 2.2
+projects[og_moderation][patch][2231737] = https://drupal.org/files/issues/any-user-with-view-revision-can-revert-delete-2231737-1.patch
 projects[ref_field][subdir] = contrib
 projects[ref_field][version] = 2.x
 projects[ref_field][patch][1670356] = http://drupal.org/files/removed_notice-1670356-1.patch
