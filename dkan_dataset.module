@@ -9,7 +9,6 @@ include_once 'dkan_dataset.features.inc';
 include_once 'dkan_dataset.theme.inc';
 // TODO: make optional through admin settings.
 include_once 'dkan_dataset.forms.inc';
-include_once 'dkan_dataset.triggers.inc';
 
 /**
  * Implements hook_menu().
@@ -384,6 +383,40 @@ function dkan_dataset_file_mimetype_mapping_alter(&$mapping) {
 }
 
 /**
+ * Implements hook_node_update().
+ */
+function dkan_dataset_node_update($node) {
+  global $user;
+  switch ($node->type) {
+    case 'dataset':
+      if (!$node->is_new && module_exists('og')) {
+        // Syncs groups across resources if a dataset is updated.
+        dkan_dataset_sync_groups($node);
+      }
+      break;
+
+    case 'resource':
+      $datasets = $node->field_dataset_ref[LANGUAGE_NONE];
+      if (count($datasets)) {
+        $queue = DrupalQueue::get('dataset_changelog');
+        foreach ($datasets as $dataset) {
+          $item = array(
+            'dataset' => $dataset['target_id'],
+            'message' => 'Update to resource \'' . $node->title . '\'',
+            'user' => $user->uid,
+          );
+          $queue->createItem($item);
+        }
+      }
+      break;
+
+    default:
+      break;
+
+  }
+}
+
+/**
  * Syncs groups on resources across groups.
  *
  * Resources attached to datasets need to add or remove groups based on whether
@@ -400,6 +433,12 @@ function dkan_dataset_sync_groups($node) {
   // Resources.
   $resources_new = $node_new->field_resources->value();
   $resources_orig = $node_orig->field_resources->value();
+
+  $new_groups = array();
+  $orig_groups = array();
+  $new_resources = array();
+  $orig_resources = array();
+
   // Grouping by nid to make it easier to compare.
   foreach ($groups_new as $new_key => $new_group) {
     $new_groups[$new_key] = $new_group->title;
@@ -521,9 +560,14 @@ function dkan_dataset_process_groups($nodes, $groups, $op = 'added', $limit_upda
  * Implements hook_cron_queue_info().
  */
 function dkan_dataset_cron_queue_info() {
+  $queues = array();
   $queues['dkan_dataset_group_update'] = array(
     'worker callback' => 'dkan_dataset_update_groups',
     'time' => 30,
+  );
+  $queues['dataset_changelog'] = array(
+    'worker callback' => 'dkan_dataset_dataset_changelog_run',
+    'time' => 20,
   );
   return $queues;
 }
@@ -534,4 +578,28 @@ function dkan_dataset_cron_queue_info() {
 function dkan_dataset_update_groups($data) {
   $data['wrapper']->og_group_ref->set($data['new_groups']);
   $data['wrapper']->save();
+}
+
+/**
+ * Callback for dkan_dataset_dataset_changelog cron worker.
+ * @param  array $item
+ *   An associative array containing the dataset nid and a log message.
+ */
+function dkan_dataset_dataset_changelog_run($item) {
+  global $user;
+  $original_user = $user;
+  drupal_save_session(FALSE);
+  // Increment Revision
+  if (isset($item['user']) && isset($item['dataset']) && isset($item['message'])) {
+    $user = user_load($item['user']);
+    ctools_include('Dataset', 'dkan_dataset');
+    $dataset = Dataset::instance($item['dataset']);
+    if ($dataset->created) {
+      $dataset->incrementRevision($item['message']);
+      $dataset->save();
+    }
+  }
+  // Restore Anonymous user.
+  $user = $original_user;
+  drupal_save_session(TRUE);
 }
