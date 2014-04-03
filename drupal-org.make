@@ -172,7 +172,6 @@ projects[bootstrap][downloald][type] = git
 projects[bootstrap][downloald][revision] = "dad396eca24d835a155bd8e1ffd264d5443a23ee"
 projects[nuboot][download][type] = git
 projects[nuboot][download][version] = 1.x
-projects[nuboot][download][revision] = "cdc180142fc7b0b9b6beda92aaa4a92360fbe41a"
 projects[nuboot][download][url] = "http://git.drupal.org/project/nuboot.git"
 
 ; Libraries
