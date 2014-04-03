@@ -18,13 +18,15 @@ function dkan_default_content_available_datasets(){
 }
 
 /**
- * Builds an array of Wisconsin Polling Places Dataset
+ * Builds an array of Wisconsin Polling Places Dataset.
  */
-function dkan_default_content_wisconsin_polling_dataset(){
+function dkan_default_content_wisconsin_polling_dataset() {
   return array(
     'title' => 'Wisconsin Polling Places',
     'sort_value' => '11',
     'created' => '1360559620',
+    'name' => 'admin',
+    'uid' => 1,
     'machine_name' => 'polling',
     'body' => array(
       'und' => array(
@@ -88,6 +90,7 @@ function dkan_default_content_wisconsin_polling_resources(){
     array(
       'exported_path' => 'dataset/wisconsin-polling-places/resource/0a6ef5bc-340c-40d7-b8ea-f7f12c390b1f',
       'title' => 'Madison Polling Places',
+      'uid' => 1,
       'status' => '1',
       'sort_value' => '10',
       'promote' => '0',
@@ -156,6 +159,7 @@ function dkan_default_content_national_foreclosure_dataset(){
     'exported_path' => 'us-national-foreclosure-statistics-january-2012',
     'sort_value' => '9',
     'title' => 'US National Foreclosure Statistics January 2012',
+    'uid' => 1,
     'created' => '1360557746',
     'machine_name' => 'national-foreclose',
     'body' => array(
@@ -209,6 +213,7 @@ function dkan_default_content_national_foreclosure_resources(){
       'exported_path' => 'dataset/us-national-foreclosure-statistics-january-2012/resource/d9ed9373-4371-4f94-a17d',
       'title' => '1-2012-Foreclosures-by-State',
       'sort_value' => '8',
+      'uid' => 1,
       'status' => '1',
       'promote' => '0',
       'sticky' => '0',
@@ -332,6 +337,7 @@ function dkan_default_content_gold_prices_resources(){
     array(
       'exported_path' => 'dataset/gold-prices-london-1950-2008-monthly/resource/f913d1f0-4e4e-459b-ad8d-57cf18d6fcdf',
       'title' => 'Table of Gold Prices',
+      'uid' => 1,
       'sort_value' => '6',
       'status' => '1',
       'promote' => '0',
@@ -397,6 +403,7 @@ function dkan_default_content_afghan_election_districts_dataset(){
     'title' => 'Afghanistan Election Districts',
     'sort_value' => '4',
     'status' => '1',
+    'uid' => 1,
     'promote' => '0',
     'sticky' => '0',
     'type' => 'dataset',
@@ -460,6 +467,7 @@ function dkan_default_content_afghan_election_districts_resources(){
     array(
       'exported_path' => 'dataset/resource/7fb111b3-ab62-4bf3-864c-56a72347df33',
       'title' => 'District Names',
+      'uid' => 1,
       'sort_value' => '5',
       'status' => '1',
       'promote' => '0',
