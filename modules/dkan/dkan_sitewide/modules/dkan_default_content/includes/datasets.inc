@@ -272,6 +272,7 @@ function dkan_default_content_gold_prices_dataset(){
   return array(
     'exported_path' => 'dataset/gold-prices-london-1950-2008-monthly',
     'title' => 'Gold Prices in London 1950-2008 (Monthly)',
+    'uid' => 1,
     'sort_value' => '7',
     'created' => '1360555545',
     'machine_name' => 'gold-prices',

@@ -25,6 +25,7 @@ function dkan_default_content_about_page(){
     ),
     'sort_value' => '3',
     'exported_path' => 'about',
+    'uid' => 1,
     'title' => 'About',
     'status' => '1',
     'promote' => '0',
