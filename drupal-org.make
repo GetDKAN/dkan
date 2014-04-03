@@ -64,6 +64,7 @@ projects[og_moderation][patch][2231737] = https://drupal.org/files/issues/any-us
 projects[ref_field][subdir] = contrib
 projects[ref_field][version] = 2.x
 projects[ref_field][patch][1670356] = http://drupal.org/files/removed_notice-1670356-1.patch
+projects[ref_field][patch][2201735] = https://drupal.org/files/issues/ref_field-invalid_argument_supplied_for_foreach-2201735-2.patch
 projects[remote_file_source][subdir] = contrib
 projects[remote_stream_wrapper][subdir] = contrib
 projects[restws][subdir] = contrib
