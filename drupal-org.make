@@ -167,10 +167,11 @@ projects[omega][version] = 3.1
 projects[omega][subdir] = contrib
 projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
 projects[bootstrap][downloald][version] = 3.x
-projects[bootstrap][downloald][subdir] = contrib
+projects[bootstrap][subdir] = contrib
 projects[bootstrap][downloald][type] = git
 projects[bootstrap][downloald][revision] = "dad396eca24d835a155bd8e1ffd264d5443a23ee"
 projects[nuboot][download][type] = git
+projects[nuboot][subdir] = contrib
 projects[nuboot][download][version] = 1.x
 projects[nuboot][download][url] = "http://git.drupal.org/project/nuboot.git"
 
