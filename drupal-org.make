@@ -24,6 +24,7 @@ projects[chosen][subdir] = contrib
 projects[chosen][version] = 2.0-alpha1
 projects[colorizer][subdir] = contrib
 projects[colorizer][version] = 1.0
+projects[colorizer][patch][2227651] = http://drupal.org/files/issues/colorizer-2227651.patch
 projects[ctools][subdir] = contrib
 projects[ctools][version] = 1.4
 projects[diff][subdir] = contrib
@@ -165,10 +166,14 @@ projects[imagecache_actions][version] = 1.4
 projects[omega][version] = 3.1
 projects[omega][subdir] = contrib
 projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
-projects[bootstrap][version] = 3.x-dev
-projects[bootstrap][subdir] = contrib
-projects[nuboot][version] = 1.x-dev
-projects[nuboot][subdir] = contrib
+projects[bootstrap][downloald][version] = 3.x
+projects[bootstrap][downloald][subdir] = contrib
+projects[bootstrap][downloald][type] = git
+projects[bootstrap][downloald][revision] = "dad396eca24d835a155bd8e1ffd264d5443a23ee"
+projects[nuboot][download][type] = git
+projects[nuboot][download][version] = 1.x
+projects[nuboot][download][revision] = "cdc180142fc7b0b9b6beda92aaa4a92360fbe41a"
+projects[nuboot][download][url] = "http://git.drupal.org/project/nuboot.git"
 
 ; Libraries
 libraries[recline][type] = libraries
