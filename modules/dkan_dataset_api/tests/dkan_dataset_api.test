@@ -111,6 +111,9 @@ class DkanDatasetApiWebTestCase extends DrupalWebTestCase {
     $modules = array_unique($modules);
     parent::setUp($modules);
 
+    features_rebuild();
+
+
     // Setup group.
     $this->group = $this->drupalCreateNode(
       array(
@@ -162,10 +165,11 @@ class DkanDatasetApiWebTestCase extends DrupalWebTestCase {
     );
     node_save($this->resource);
 
-    $this->dataset->og_group_ref[LANGUAGE_NONE][] = array(
-      'target_id' => $this->group->nid,
-      'target_type' => $this->group->type,
-    );
+    // $this->dataset->og_group_ref[LANGUAGE_NONE][] = array(
+    //   'target_id' => $this->group->nid,
+    //   'target_type' => $this->group->type,
+    // );
+
     $this->dataset->field_resources[LANGUAGE_NONE][] = array(
       'target_id' => $this->resource->nid,
       'target_type' => $this->resource->type,
