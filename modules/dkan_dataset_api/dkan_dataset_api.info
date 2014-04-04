@@ -3,5 +3,6 @@ description = Adds package, group, and tag APIs based on the CKAN API.
 package = DKAN API
 core = 7.x
 php = 5.2.4
-project = dkan_dataset
+version = 7.x-1.0-rc1
+project = dkan_dataset_api
 dependencies[] = dkan_dataset

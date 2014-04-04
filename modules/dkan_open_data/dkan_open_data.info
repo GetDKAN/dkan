@@ -3,6 +3,6 @@ description = Return all datasets available in json (Open Data specification).
 package = DKAN API
 core = 7.x
 php = 5.2.4
-version = 7.x-1.0-beta1
+version = 7.x-1.0-rc1
 project = dkan_dataset
 dependencies[] = dkan_dataset
