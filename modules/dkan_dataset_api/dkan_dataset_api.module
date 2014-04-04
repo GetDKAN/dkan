@@ -19,8 +19,7 @@ function dkan_dataset_api_menu() {
     'access arguments' => array('administer site configuration'),
   );
 
-  // API callbacks.
-  // -> site_read callbacks.
+  // Site_read callbacks.
   $site_read_aliases = array(
     'api/3/action/site_read',
     'api/action/site_read',
@@ -33,7 +32,7 @@ function dkan_dataset_api_menu() {
     );
   }
 
-  // -> package_list callbacks.
+  // Package_list callbacks.
   $package_list_aliases = array(
     'api/3/action/package_list',
     'api/action/package_list',
@@ -48,7 +47,7 @@ function dkan_dataset_api_menu() {
     );
   }
 
-  // -> package_show callbacks.
+  // Package_show callbacks.
   $package_show_aliases = array(
     'api/3/action/package_show',
     'api/2/rest/dataset/%',
@@ -65,7 +64,7 @@ function dkan_dataset_api_menu() {
     }
   }
 
-  // -> package_list_with_resources callbacks.
+  // Package_list_with_resources callbacks.
   $package_list_with_resources_aliases = array(
     'api/3/action/current_package_list_with_resources',
   );
@@ -78,7 +77,7 @@ function dkan_dataset_api_menu() {
     );
   }
 
-  // -> revision_list callbacks.
+  // Revision_list callbacks.
   $revision_list_aliases = array(
     'api/3/action/revision_list',
     'api/2/search/revision',
@@ -91,7 +90,58 @@ function dkan_dataset_api_menu() {
     );
   }
 
-  // -> data.json callback.
+  // Resource show callbacks.
+  $resource_show_aliases = array(
+    'api/3/action/resource_show',
+  );
+  foreach ($resource_show_aliases as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_resource_show',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+      'file' => 'dkan_dataset_api.inc',
+    );
+  }
+
+  // Group package show callbacks.
+  $group_package_show_aliases = array(
+    'api/3/action/group_package_show',
+  );
+  foreach ($group_package_show_aliases as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_group_package_show',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+      'file' => 'dkan_dataset_api.inc',
+    );
+  }
+
+  // Package_revision_list callbacks.
+  $package_revision_list_aliases = array(
+    'api/3/action/package_revision_list',
+  );
+  foreach ($package_revision_list_aliases as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_package_revision_list',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+    );
+  }
+
+  // Group_list callbacks.
+  $group_list_aliases = array(
+    'api/3/action/group_list',
+    'api/2/rest/group',
+  );
+  foreach ($group_list_aliases as $alias) {
+    $items[$alias] = array(
+      'page callback' => 'dkan_dataset_api_group_list',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+    );
+  }
+
+  // Data.json callback.
   $items['data.json'] = array(
     'page callback' => 'dkan_dataset_api_open_data_json',
     'access arguments' => array('access content'),
@@ -124,7 +174,7 @@ function dkan_dataset_api_settings() {
     '#type' => 'checkbox',
     '#title' => t('data.json'),
     '#description' => t('More information on !url.', array('!url' => l(t('data.json'), 'http://project-open-data.github.io'))),
-    '#default_value' => variable_get('dkan_dataset_api_data_json', 0),
+    '#default_value' => variable_get('dkan_dataset_api_data_json', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_revision_list'] = array(
     '#type' => 'checkbox',
@@ -140,11 +190,11 @@ function dkan_dataset_api_settings() {
       '!legacy' => l(t('rest/dataset'), 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
     '#default_value' => variable_get('dkan_dataset_api_package_list', 1),
   );
-  $form['dkan_dataset_api']['current_package_list_with_resources'] = array(
+  $form['dkan_dataset_api']['dkan_dataset_api_list_with_resources'] = array(
     '#type' => 'checkbox',
     '#title' => t('current_package_list_with_resources'),
     '#description' => t('More information on !url.', array('!url' => l(t('current_package_list_with_resources'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_list'))),
-    '#default_value' => variable_get('current_package_list_with_resources', 1),
+    '#default_value' => variable_get('dkan_dataset_api_current_package_list_with_resources', 1),
   );
   $form['dkan_dataset_api']['dkan_dataset_api_package_show'] = array(
     '#type' => 'checkbox',
@@ -153,6 +203,34 @@ function dkan_dataset_api_settings() {
       '!url' => l(t('package_show'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_show'),
       '!legacy' => l(t('rest/dataset'), 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'))),
     '#default_value' => variable_get('dkan_dataset_api_package_show', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_resource_show'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('resource_show'),
+    '#description' => t('More information on !url.', array(
+      '!url' => l(t('package_show'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.resource_show'))),
+    '#default_value' => variable_get('dkan_dataset_api_resource_show', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_group_package_show'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('group_package_show'),
+    '#description' => t('More information on !url.', array(
+      '!url' => l(t('package_show'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.group_package_show'))),
+    '#default_value' => variable_get('dkan_dataset_api_group_package_show', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_package_revision_list'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('package_revision_list'),
+    '#description' => t('More information on !url.', array(
+      '!url' => l(t('package_revision_list'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.package_revision_list'))),
+    '#default_value' => variable_get('dkan_dataset_api_package_revision_list', 1),
+  );
+  $form['dkan_dataset_api']['dkan_dataset_api_group_list'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('group_list'),
+    '#description' => t('More information on !url.', array(
+      '!url' => l(t('group_list'), 'http://docs.ckan.org/en/latest/api.html#ckan.logic.action.get.group_list'))),
+    '#default_value' => variable_get('dkan_dataset_api_group_list', 1),
   );
   return system_settings_form($form);
 }
@@ -165,7 +243,7 @@ function dkan_dataset_api_site_read() {
     return drupal_access_denied();
   }
   $output = array(
-    'help' => t("Return ``True``.\n\n    :rtype: boolean\n\n"),
+    'help' => t("Return ``TRUE``.\n\n    :rtype: boolean\n\n"),
     'success' => TRUE,
     'result' => TRUE,
   );
@@ -176,7 +254,7 @@ function dkan_dataset_api_site_read() {
  * Callback function for data.json retrieval.
  */
 function dkan_dataset_api_open_data_json() {
-  if (!variable_get('dkan_dataset_api_data_json', 0)) {
+  if (!variable_get('dkan_dataset_api_data_json', 1)) {
     return drupal_access_denied();
   }
 
@@ -264,7 +342,8 @@ function dkan_dataset_api_revision_list() {
     $result = array();
     // Double cross revisions with datasets nids.
     foreach ($revisions as $key => $revision) {
-      if (in_array((int) $revision->nid, $datasets)) {
+      $nid = (int) $revision->nid;
+      if (in_array($nid, $datasets)) {
         $result[] = $revision->vuuid;
       }
     }
@@ -278,12 +357,11 @@ function dkan_dataset_api_revision_list() {
   drupal_json_output($output);
 }
 
-
 /**
  * Returns a list of datasets with resources.
  */
 function dkan_dataset_api_current_package_list_with_resources() {
-  if (!variable_get('current_package_list_with_resources', 1)) {
+  if (!variable_get('dkan_dataset_api_current_package_list_with_resources', 1)) {
     return drupal_access_denied();
   }
 
@@ -316,6 +394,76 @@ function dkan_dataset_api_current_package_list_with_resources() {
   drupal_json_output($output);
 }
 
+
+/**
+ * Returns a list of datasets with resources.
+ */
+function dkan_dataset_api_group_package_show() {
+  if (!variable_get('dkan_dataset_api_group_package_show', 1)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return the datasets (packages) of a group.\n\n    :param id: the id of the group\n    :type id: string\n    :param limit: the maximum number of datasets to return (optional)\n    :type limit: int\n\n    :rtype: list of dictionaries\n\n"),
+  );
+
+  if (isset($_GET['id'])) {
+    $uuid = $_GET['id'];
+    $limit = isset($_GET['limit']) ? $_GET['limit'] : 0;
+    $offset = isset($_GET['offset']) && $_GET['offset'] ? $_GET['offset'] : 0;
+
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'group')
+      ->propertyCondition('status', 1)
+      ->propertyCondition('uuid', $uuid)
+      // Run the query as user 1.
+      ->addMetaData('account', user_load(1));
+
+    $group = $query->execute();
+    if (isset($group['node']) && count(array_keys($group['node']))) {
+      $group = array_keys($group['node']);
+      $group = $group[0];
+
+      $nodes = dkan_dataset_api_get_datasets($limit, $offset, $group);
+
+      if (count($nodes)) {
+        $output['success'] = TRUE;
+        $output['result'] = dkan_open_data_build_datasets($nodes);
+      }
+      else {
+        if ($offset != 0) {
+          $output['success'] = FALSE;
+          $output['error'] = array(
+            '__type' => t('Query offset out of range'),
+            'message' => t('Offset parameter is out of range'),
+          );
+        }
+        else {
+          $output['success'] = TRUE;
+          $output['result'] = array();
+        }
+      }
+    }
+    else {
+      $output['success'] = FALSE;
+      $output['error'] = array(
+        '__type' => t('Not Found Error'),
+        'message' => t('Not Found'),
+      );
+    }
+  }
+  else {
+    $output['success'] = FALSE;
+    $output['error'] = array(
+      '__type' => t('Validation Error'),
+      'id' => array(t('Missing Value')),
+    );
+  }
+  drupal_json_output($output);
+}
+
+
 /**
  * Return the metadata of a dataset (package) and its resources.
  */
@@ -325,7 +473,116 @@ function dkan_dataset_api_package_show($uuid = NULL) {
   }
 
   $output = array(
-    'help' => t("Return the metadata of a dataset (package) and its resources.\n\n :param id: the id or name of the dataset :type id: string \n\n:rtype: dictionary."),
+    'help' => t("Return the metadata of a dataset (package) and its resources.\n\n :param id: the id or name of the dataset :type id: string \n\n:rtype: dictionary"),
+  );
+
+  if (!isset($uuid)) {
+    $uuid = isset($_GET['id']) ? $_GET['id'] : NULL;
+  }
+
+  if (isset($uuid)) {
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'dataset')
+      ->propertyCondition('status', 1)
+      ->propertyCondition('uuid', $uuid)
+      // Run the query as user 1.
+      ->addMetaData('account', user_load(1));
+
+    $dataset = $query->execute();
+
+    if (isset($dataset['node']) && count(array_keys($dataset['node']))) {
+      $dataset = array_keys($dataset['node']);
+      $dataset = $dataset[0];
+      $dataset = node_load($dataset);
+      $row = dkan_open_data_build_datasets($dataset);
+      $output['success'] = TRUE;
+      $output['result'] = $row;
+    }
+    else {
+      $output['success'] = FALSE;
+      $output['error'] = array(
+        '__type' => t('Not Found Error'),
+        'message' => t('Not Found'),
+      );
+    }
+  }
+  else {
+    $output['success'] = FALSE;
+    $output['error'] = array(
+      '__type' => t('Validation Error'),
+      'id' => array(t('Missing Value')),
+    );
+  }
+
+  drupal_json_output($output);
+}
+
+/**
+ * Return the metadata of a dataset resource.
+ */
+function dkan_dataset_api_resource_show($uuid = NULL) {
+  if (!variable_get('dkan_dataset_api_resource_show', 1)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return the metadata of a dataset resource.\n\n :param id: the id or name of the resource :type id: string \n\n:rtype: dictionary"),
+  );
+
+  if (!isset($uuid)) {
+    $uuid = isset($_GET['id']) ? $_GET['id'] : NULL;
+  }
+
+  if (isset($uuid)) {
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'resource')
+      ->propertyCondition('status', 1)
+      ->propertyCondition('uuid', $uuid)
+      // Run the query as user 1.
+      ->addMetaData('account', user_load(1));
+
+    $resource = $query->execute();
+    if (count(array_keys($resource['node']))) {
+      $resource = array_keys($resource['node']);
+      $resource = $resource[0];
+      $resource = node_load($resource);
+      $row = dkan_open_data_build_dataset_resources(array($resource));
+      $row = $row[0];
+      $output['success'] = TRUE;
+      $output['result'] = $row;
+    }
+    else {
+      $output['success'] = FALSE;
+      $output['error'] = array(
+        '__type' => t('Not Found Error'),
+        'message' => t('Not Found'),
+      );
+    }
+  }
+  else {
+    $output['success'] = FALSE;
+    $output['error'] = array(
+      '__type' => t('Validation Error'),
+      'id' => array(t('Missing Value')),
+    );
+  }
+
+  drupal_json_output($output);
+}
+
+
+/**
+ * Returns a list of objects representing specific dataset's revisions.
+ */
+function dkan_dataset_api_package_revision_list($uuid = NULL) {
+  if (!variable_get('dkan_dataset_api_package_revision_list', 1)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return a dataset (package)'s revisions as a list of dictionaries.\n\n    :param id: the id or name of the dataset\n    :type id: string\n\n"),
   );
 
   if (!isset($uuid)) {
@@ -344,10 +601,21 @@ function dkan_dataset_api_package_show($uuid = NULL) {
     $dataset = $query->execute();
 
     if (count(array_keys($dataset['node']))) {
-      $dataset = node_load(array_keys($dataset['node']));
-      $row = dkan_open_data_build_datasets($dataset);
+      $dataset = array_keys($dataset['node']);
+      $dataset = node_load($dataset[0]);
+
+      $revisions = array();
+      foreach (dkan_dataset_api_node_revision_list($dataset) as $key => $revision) {
+        $revisions[] = array(
+          'timestamp' => format_date($revision->timestamp, 'custom', 'Y-m-d\TH:i:s.u'),
+          'message' => $revision->log,
+          'author' => $revision->name,
+          'id' => $revision->vuuid,
+        );
+      }
+
       $output['success'] = TRUE;
-      $output['result'] = $row;
+      $output['result'] = $revisions;
     }
     else {
       $output['success'] = FALSE;
@@ -364,7 +632,119 @@ function dkan_dataset_api_package_show($uuid = NULL) {
       'uuid' => array(t('Missing Value')),
     );
   }
+  drupal_json_output($output);
+}
 
+/**
+ * Returns a list of published groups.
+ */
+function dkan_dataset_api_group_list() {
+  if (!variable_get('dkan_dataset_api_group_list', 1)) {
+    return drupal_access_denied();
+  }
+
+  $output = array(
+    'help' => t("Return a list of the names of the site's groups.\n\n    :param order_by: the field to sort the list by, must be ``'name'`` or\n      ``'packages'`` (optional, default: ``'name'``) Deprecated use sort.\n    :type order_by: string\n    :param sort: sorting of the search results.  Optional.  Default:\n        \"name asc\" string of field name and sort-order. The allowed fields are\n        'name' and 'packages'\n    :type sort: string\n    :param all_fields: return full group dictionaries instead of  just names\n        (optional, default: ``False``)\n    :type all_fields: boolean\n\n    :rtype: list of strings"),
+  );
+
+  $validation_errors = array(
+    '__type' => t('Validation Error'),
+  );
+
+  // Validate order_by parameter.
+  $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : 'name';
+  switch ($order_by) {
+    case 'name':
+    case 'packages':
+      break;
+
+    default:
+      $validation_errors['order_by'] = $order_by . t(': not a valid value for argument `order_by`. Only `name` and `packages` are permitted');
+      break;
+
+  }
+  // Validate sort parameter.
+  $sort = isset($_GET['sort']) ? $_GET['sort'] : 'name asc';
+  switch ($sort) {
+    case 'name asc':
+    case 'name desc':
+    case 'package asc':
+    case 'package desc':
+      break;
+
+    default:
+      $validation_errors['sort'] = $sort . t(': not a valid value for argument `sort`. Only `name asc`, `name desc`, `package asc` and `package desc` are permitted');
+      break;
+
+  }
+
+  // Combine order and sort parameters.
+  if (!isset($validation_errors['sort']) && !isset($validation_errors['order_by'])) {
+    if ($sort == 'name asc' && $order_by != 'name') {
+      $sort = str_replace('name', $order_by, $sort);
+    }
+
+    $order_by = explode(' ', $sort);
+    $order_by = $order_by[0];
+    $sort = explode(' ', $sort);
+    $sort = strtoupper($sort[1]);
+    switch ($order_by) {
+      case 'name':
+        $order_by = 'title';
+        break;
+    }
+  }
+
+  // Validate all_fields parameter.
+  $all_fields = isset($_GET['all_fields']) ? $_GET['all_fields'] : 'False';
+  $all_fields = strtolower($all_fields);
+  switch ($all_fields) {
+    case 'true':
+    case 'FALSE':
+      $all_fields = $all_fields === 'true' ? TRUE : FALSE;
+      break;
+
+    default:
+      $validation_errors['all_fields'] = $sort . t(': not a valid value for argument `all_fields`. Only `true` and `FALSE`');
+  }
+  if (count($validation_errors) === 1) {
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'group')
+      ->propertyCondition('status', 1)
+      ->propertyOrderBy($order_by, $sort)
+      // Run the query as user 1.
+      ->addMetaData('account', user_load(1));
+    $groups = $query->execute();
+    $rows = array();
+    if (count(array_keys($groups['node']))) {
+      $groups = node_load_multiple(array_keys($groups['node']));
+      foreach ($groups as $group) {
+        $row = new stdClass();
+        $row->uuid = $group->uuid;
+        if ($all_fields) {
+          $row->title = $group->title;
+          $row->display_name = $group->title;
+          $row->created = format_date($group->created, 'custom', 'Y-m-d\TH:i:s.u');
+          $row->updated = format_date($group->changed, 'custom', 'Y-m-d\TH:i:s.u');
+          $row->image = file_create_url($group->field_image['und'][0]['uri']);
+          $row->status = $group->status ? 'active' : 'disabled';
+          $row->revision_id = $group->vuuid;
+          $rows[] = $row;
+        }
+        else {
+          $rows[] = $row->uuid;
+        }
+      }
+    }
+    $output['success'] = TRUE;
+    $output['result'] = $rows;
+  }
+  else {
+    $output['success'] = FALSE;
+    $output['result'] = array();
+    $output['error'] = $validation_errors;
+  }
   drupal_json_output($output);
 }
 
@@ -374,7 +754,7 @@ function dkan_dataset_api_package_show($uuid = NULL) {
  * @return array
  *   An array of dataset nodes.
  */
-function dkan_dataset_api_get_datasets($limit = 0, $offset = 0) {
+function dkan_dataset_api_get_datasets($limit = 0, $offset = 0, $group_id = NULL) {
   $query = new EntityFieldQuery();
 
   $query->entityCondition('entity_type', 'node')
@@ -383,6 +763,11 @@ function dkan_dataset_api_get_datasets($limit = 0, $offset = 0) {
     ->propertyOrderBy('created', 'DESC')
     // Run the query as user 1.
     ->addMetaData('account', user_load(1));
+
+  if ($group_id) {
+    $query->fieldCondition('og_group_ref', 'target_id', $group_id);
+  }
+
   if ($limit) {
     $query->range($limit, $offset);
   }
@@ -391,4 +776,22 @@ function dkan_dataset_api_get_datasets($limit = 0, $offset = 0) {
   $nodes = node_load_multiple($nids);
 
   return $nodes;
+}
+
+/**
+ * Retrieves node revisions with vuuid.
+ *
+ * @param stdobject $node
+ *   A node object
+ *
+ * @return array
+ *   An array of the node revisions
+ */
+function dkan_dataset_api_node_revision_list($node) {
+  $revisions = array();
+  $result = db_query('SELECT r.vid, r.title, r.log, r.uid, r.vuuid, n.vid AS current_vid, r.timestamp, u.name FROM {node_revision} r LEFT JOIN {node} n ON n.vid = r.vid INNER JOIN {users} u ON u.uid = r.uid WHERE r.nid = :nid ORDER BY r.vid DESC', array(':nid' => $node->nid));
+  foreach ($result as $revision) {
+    $revisions[$revision->vid] = $revision;
+  }
+  return $revisions;
 }
