@@ -434,6 +434,7 @@ function dkan_dataset_sync_groups($node) {
   $resources_new = $node_new->field_resources->value();
   $resources_orig = $node_orig->field_resources->value();
 
+
   $new_groups = array();
   $orig_groups = array();
   $new_resources = array();
@@ -453,6 +454,8 @@ function dkan_dataset_sync_groups($node) {
     $orig_resources[$orig_resource->nid] = $orig_resource;
   }
   // Groups have changed.
+  $additional_groups = array();
+  $resources_added = array();
   if ((array_diff($orig_groups, $new_groups) || array_diff($new_groups, $orig_groups)) && $resources_new) {
     $additional_groups = dkan_dataset_resource_groups($resources_new, $node);
     $groups_new = $groups_new + $additional_groups;
