@@ -74,10 +74,10 @@ function dkan_default_content_geospatial_group(){
     'body' => array(
       'und' => array(
         0 => array(
-          'value' => 'DKAN can plot both latitude and longitude as well as GeoJSON on a map. For more information, see ',
+          'value' => 'DKAN can plot both latitude and longitude as well as GeoJSON on a map.',
           'summary' => '',
           'format' => 'plain_text',
-          'safe_value' => '<p>DKAN can plot both latitude and longitude as well as GeoJSON on a map. For more information, see</p>',
+          'safe_value' => '<p>DKAN can plot both latitude and longitude as well as GeoJSON on a map.</p>',
           'safe_summary' => '',
         ),
       ),
