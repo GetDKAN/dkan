@@ -8,7 +8,6 @@ function dkan_default_content_base_install(){
   ctools_include('pages', 'dkan_default_content');
   ctools_include('groups', 'dkan_default_content');
   ctools_include('datasets', 'dkan_default_content');
-  ctools_include('file', 'defaultcontent', 'plugins');
   ctools_include('Dataset', 'dkan_dataset');
   // Save pages
   $pages = dkan_default_content_available_pages();

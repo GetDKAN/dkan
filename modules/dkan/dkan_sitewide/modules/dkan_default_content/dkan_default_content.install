@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  */
 /**
  * Implements hook_uninstall().
@@ -10,7 +10,6 @@ function dkan_default_content_uninstall(){
   ctools_include('pages', 'dkan_default_content');
   ctools_include('groups', 'dkan_default_content');
   ctools_include('datasets', 'dkan_default_content');
-  ctools_include('file', 'defaultcontent', 'plugins');
   $nids_to_delete = array();
   // Collect Pages to Delete
   $pages = dkan_default_content_available_pages();
@@ -24,7 +23,7 @@ function dkan_default_content_uninstall(){
     $group = call_user_func('dkan_default_content_' . $loadable . '_group');
     dkan_default_content_collect_id($nids_to_delete, 'node', 'group', $group['title']);
   }
-  // Collect Datasets and Resources to delete 
+  // Collect Datasets and Resources to delete
   // (this should be integrated as a method of the Dataset class)
   $datasets = dkan_default_content_available_datasets();
   foreach($datasets as $loadable){
@@ -40,7 +39,7 @@ function dkan_default_content_uninstall(){
 }
 
 /**
- * Helper function to query entities by title in order to keep 
+ * Helper function to query entities by title in order to keep
  * things as DRY as possible
  */
 function dkan_default_content_collect_id(&$nids, $type, $bundle, $title){
