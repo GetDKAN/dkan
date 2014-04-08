@@ -132,11 +132,18 @@ function dkan_sitewide_license_block() {
       $key = $key['value'];
       $label = $options[$key];
 
-      $output = l($label, 'http://opendefinition.org/licenses/' . $key) . '<br/>';
-      if ($key != 'other-closed') {
-        $output .= l('<img class="open-data" src="http://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]">', 'http://opendefinition.org/licenses/' . $key, array('html' => TRUE));
+      if (strpos($key,'other') !== false) {
+        $output = $label;
       }
-
+      else {
+        $output = l($label, 'http://opendefinition.org/licenses/' . $key) . '<br/>';
+        $output .= l(
+          '<img class="open-data" src="http://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]">',
+          'http://opendefinition.org/licenses/' . $key,
+          array('html' => TRUE)
+        );
+      }
+      
       return $output;
     }
     else {
