@@ -58,6 +58,15 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'node',
   );
 
+  // Exported permission: 'access resource node'.
+  $permissions['access resource node'] = array(
+    'name' => 'access resource node',
+    'roles' => array(
+      'anonymous user' => 'anonymous user',
+    ),
+    'module' => 'restws',
+  );
+
   // Exported permission: 'access rules debug'.
   $permissions['access rules debug'] = array(
     'name' => 'access rules debug',
