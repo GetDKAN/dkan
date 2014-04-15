@@ -156,7 +156,7 @@ function dkan_sitewide_license_block() {
  * Adds Powered by.
  */
 function dkan_sitewide_footer_author() {
-  return t("powered by !dkan, a project of !nuams", array("!dkan" => l('DKAN', 'http://nucivic.com/dkan'), '!nuams' => l('Nuams', 'http://nuams.com')));
+  return t("powered by !dkan, a project of !nuams", array("!dkan" => l('DKAN', 'http://nucivic.com/dkan'), '!nuams' => l('nüams', 'http://nuams.com')));
 }
 
 /**
