@@ -271,12 +271,27 @@ function dkan_sitewide_other_access() {
  */
 function dkan_sitewide_search_bar() {
   if (module_exists('dkan_sitewide_search_db')) {
+    static $dkan_sitewide_searcb_bar_id = 0;
     $view = views_get_view('dataset');
     $view->set_display('page');
     $view->init_handlers();
     $exposed_form = $view->display_handler->get_plugin('exposed_form');
     $exposed_form->view->filter['search_api_views_fulltext']->options['expose']['description'] = t('eg. Gold Prices');
     $exposed_form->view->filter['search_api_views_fulltext']->options['expose']['label'] = '';
-    return $exposed_form->render_exposed_form(true);
+    // Deal with any exposed filters we may have, before building.
+    $form_state = array(
+      'view' => $view,
+      'display' => $view->display[$view->current_display],
+      'method' => 'get',
+      'rerender' => TRUE,
+      'no_redirect' => TRUE,
+      'always_process' => TRUE,
+    );
+    $form_state['exposed_form_plugin'] = $exposed_form;
+    $form = drupal_build_form('views_exposed_form', $form_state);
+    $form['query']['#id'] = 'edit-query-' . $dkan_sitewide_searcb_bar_id;
+    $dkan_sitewide_searcb_bar_id++;
+    $output = drupal_render($form);
+    return $output;
   }
 }
