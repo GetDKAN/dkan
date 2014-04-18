@@ -28,14 +28,14 @@ Nuams' [NuData](http://nucivic.com/products/nudata/) platform offers 24/7, secur
 
 ### Downloadable Version 7.x-1-0
 
-https://github.com/nuams/dkan-drops7
+https://github.com/nuams/dkan-drops-7
 
 ### Drush Make
 
 Create a full version with drush make:
 
 ```
-git clone --branch 7.x-1.x git@github.com:nuams/dkan.git
+git clone --branch 7.x-1.x https://github.com/nuams/dkan.git
 cd dkan
 drush make --prepare-install build-dkan.make webroot
 cd webroot
