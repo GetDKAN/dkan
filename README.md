@@ -32,11 +32,13 @@ https://github.com/nuams/dkan-drops7
 
 Create a full version with drush make:
 
-`git clone --branch 7.x-1.x git@github.com:nuams/dkan.git `
-`cd dkan`
-`drush make --prepare-install build-dkan.make webroot`
-`cd webroot`
-`drush site-install dkan --db-url="mysql://DBUSER:DBPASS@localhost/DBNAME" `
+```
+git clone --branch 7.x-1.x git@github.com:nuams/dkan.git
+cd dkan
+drush make --prepare-install build-dkan.make webroot
+cd webroot
+drush site-install dkan --db-url="mysql://DBUSER:DBPASS@localhost/DBNAME"
+```
 
 ## Components
 
@@ -57,8 +59,6 @@ The dataset nodes contain the metadata and the resource nodes contain the file o
 DKAN Datastore is a stand-alone module: http://drupal.org/project/dkan_datastore that provides the ability to include uploaded files into a datastore and expose their components via an API. **DKAN Dataset can be included in any Drupal 7 site**.
 
 ## Current Status
-
-### Beta 1
 
 DKAN is about to release 1.0.
 
