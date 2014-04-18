@@ -1,0 +1,52 @@
+language: php
+
+php:
+  - 5.4
+
+node_js:
+  - "0.11"
+
+mysql:
+  database: dkan_travis 
+  username: root
+  encoding: utf8
+
+install:
+  - npm install
+  - composer install
+  - mysql -e 'create database dkan_travis;'
+  - sudo apt-get update > /dev/null
+  - sudo apt-get --quiet=2 install php5-cgi php5-curl php5-gd php5-mysql > /dev/null
+
+  # Install latest Drush 6.
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - composer global require --no-interaction drush/drush:6.*
+
+before_script:
+  # Install DKAN
+  - git clone --branch 7.x-1.x git@github.com:nuams/dkan.git dkan_build
+  - cd dkan_build
+  - drush make --prepare-install build-dkan.make --yes
+  - drush si dkan --sites-subdir=default --db-url=mysql://root:@127.0.0.1/dkan_travis --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module='array(FALSE,FALSE)' --yes
+  - drush cc all --yes
+  - drush --quiet --yes --root=$PWD --server=builtin runserver :8888 > /dev/null 2>&1 &
+  - sleep 4s
+
+  # Setup display for selenium
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - sleep 3
+  - cd ../
+
+  - wget http://selenium.googlecode.com/files/selenium-server-standalone-2.35.0.jar
+  - java -jar selenium-server-standalone-2.35.0.jar -quiet -p 4444 -log shut_up_selenium &
+  - sleep 5
+
+script:
+  - bin/behat features/groups.feature
+  - bin/behat features/dataset.feature
+  - bin/behat features/datastore.feature
+  - bin/behat features/editor.feature
+  - bin/behat features/home.feature
+  - bin/behat features/search.feature
+  - bin/behat features/recline.feature
