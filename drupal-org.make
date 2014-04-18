@@ -166,6 +166,7 @@ projects[bootstrap][downloald][version] = 3.x
 projects[bootstrap][subdir] = contrib
 projects[bootstrap][download][type] = git
 projects[bootstrap][download][revision] = "0390173732439fd60e898c7086219ab8c99c2f3d"
+projects[bootstrap][patch][2177089] = "https://drupal.org/files/issues/bootstrap-undefined-index-2177089-1.patch"
 projects[nuboot][download][type] = git
 projects[nuboot][subdir] = contrib
 projects[nuboot][download][version] = 1.x
