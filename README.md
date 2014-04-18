@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/nuams/dkan.svg?branch=7.x-1.x)](https://travis-ci.org/nuams/dkan)
 [![DKAN](https://drupal.org/files/dkanscreenshot.png)](http://nucivic.com/dkan)
 
 ## What is DKAN?
