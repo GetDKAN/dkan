@@ -7,11 +7,12 @@ node_js:
   - "0.11"
 
 mysql:
-  database: dkan_travis 
+  database: dkan_travis
   username: root
   encoding: utf8
 
 install:
+  - cd test
   - npm install
   - composer install
   - mysql -e 'create database dkan_travis;'

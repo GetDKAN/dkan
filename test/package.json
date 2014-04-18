@@ -1,0 +1,10 @@
+{
+  "name": "pnx-behat-zombie",
+  "author": "Lee Rowlands",
+  "description": "The node.js requirements we have to run our behat tests",
+  "repository": {},
+  "dependencies": {
+    "zombie": "1.4.1"
+  },
+  "version": "0.0.1"
+}
