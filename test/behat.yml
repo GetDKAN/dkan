@@ -1,0 +1,29 @@
+default:
+  extensions:
+    Behat\MinkExtension\Extension:
+      goutte: ~
+      selenium2: ~
+      zombie: ~
+      base_url: http://127.0.0.1:8888
+      default_session: 'goutte'
+      #javascript_session: zombie
+      javascript_session: 'selenium2'
+      zombie:
+        #node_modules_path: /home/travis/t-test/node_modules/ 
+        node_modules_path: /Users/aaron/workshop/test/t3/node_modules/ 
+        auto_server: false
+      files_path: "files"
+    Drupal\DrupalExtension\Extension:
+      blackbox: ~
+      drush:
+        root: "dkan" 
+      region_map:
+        content: "#region-content"
+        toolbar: "#toolbar"
+        footer: "#footer"
+        header: "#section-header"
+        left header: "#header-left"
+        right header: "#header-right"
+        right sidebar: "#column-right"
+      text:
+        log_out: "Logout"
