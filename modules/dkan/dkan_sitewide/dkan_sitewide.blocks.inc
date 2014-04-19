@@ -240,7 +240,7 @@ function dkan_sitewide_other_access() {
                 'html' => TRUE,
                 'attributes' => array(
                   'class' => array('btn'),
-                  'title' => 'json view of content'
+                  'title' => t('json view of content')
             ))),
           ),
           'rdf' => array(
@@ -251,14 +251,14 @@ function dkan_sitewide_other_access() {
                 'html' => TRUE,
                 'attributes' => array(
                   'class' => array('btn'),
-                  'title' => 'rdf view of content'
+                  'title' => t('rdf view of content')
             ))),
           ),
         ),
       ),
       'dkan_api' => array(
         '#type' => 'markup',
-        '#markup' => '<p><small>via the <a href="http://docs.getdkan.com">DKAN API</a></small></p>',
+        '#markup' => '<p><small>' . t('via the  <a href="http://docs.getdkan.com">DKAN API</a>') . '</small></p>',
       )
     );
 
