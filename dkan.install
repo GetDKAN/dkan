@@ -4,9 +4,9 @@
  * Implements hook_install().
  */
 function dkan_install() {
-  theme_enable(array('dkan'));
+  theme_enable(array('nuboot'));
   theme_enable(array('seven'));
-  variable_set('theme_default', 'dkan');
+  variable_set('theme_default', 'nuboot');
   variable_set('admin_theme', 'seven');
   variable_set('jquery_update_jquery_version', '1.7');
 
