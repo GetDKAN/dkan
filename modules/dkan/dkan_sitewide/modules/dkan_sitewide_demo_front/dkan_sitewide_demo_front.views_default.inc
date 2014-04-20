@@ -387,8 +387,7 @@ function dkan_sitewide_demo_front_views_default_views() {
   );
   $export['front_page_group_list'] = $view;
 
-  $view = new view();
-  $view->name = 'popular_tags';
+  $view = new view();$view->name = 'popular_tags';
   $view->description = '';
   $view->tag = 'default';
   $view->base_table = 'taxonomy_term_data';
@@ -442,10 +441,18 @@ function dkan_sitewide_demo_front_views_default_views() {
   $handler->display->display_options['filters']['machine_name']['value'] = array(
     'tags' => 'tags',
   );
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['relationship'] = 'reverse_field_tags_node';
+  $handler->display->display_options['filters']['status']['value'] = '1';
 
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block');
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+
+
   $export['popular_tags'] = $view;
 
   return $export;
