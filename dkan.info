@@ -88,7 +88,6 @@ dependencies[] = rdfx
 ; DKAN Features
 dependencies[] = dkan_sitewide_menu
 dependencies[] = dkan_sitewide_user
-dependencies[] = dkan_sitewide_roles_perms
 dependencies[] = dkan_sitewide_context
 dependencies[] = dkan_default_content
 dependencies[] = dkan_sitewide_demo_front
