@@ -257,8 +257,12 @@ projects[search_api_db][subdir] = contrib
 projects[rules][version] = 2.3
 projects[rules][subdir] = contrib
 
-projects[imagecache_actions][version] = 1.4
+projects[imagecache_actions][download][type] = git
+projects[imagecache_actions][download][url] = "http://git.drupal.org/project/imagecache_actions.git"
+projects[imagecache_actions][download][branch] = 7.x-1.x
+projects[imagecache_actions][download][revision] = cd19d2a
 projects[imagecache_actions][subdir] = contrib
+projects[imagecache_actions][type] = module
 
 ; Themes
 projects[omega][version] = 3.1
