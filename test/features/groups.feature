@@ -21,7 +21,7 @@ Feature: Groups
    Scenario: Request to join a group as an Auth User
     Given I am logged in as a user with the "authenticated user" role
     When I visit "group/geospatial-data-explorer-examples"
-      And I click "Request Membership to this Group"
+      And I click "Request group membership"
       Then I should see "Are you sure you want to join the group Geospatial Data Explorer Examples?"
     #When I click "Join"
       #Then I should have a pending request to join "Geospatial Data Explorer Examples" 
