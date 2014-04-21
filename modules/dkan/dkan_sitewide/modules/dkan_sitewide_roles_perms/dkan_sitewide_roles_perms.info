@@ -76,6 +76,7 @@ features[user_permission][] = access administration pages
 features[user_permission][] = access all views
 features[user_permission][] = access content
 features[user_permission][] = access content overview
+features[user_permission][] = access resource node
 features[user_permission][] = access rules debug
 features[user_permission][] = access site in maintenance mode
 features[user_permission][] = access site reports
