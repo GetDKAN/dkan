@@ -4,3 +4,7 @@ modules/dkan/dkan_dataset
 modules/dkan/dkan_datastore
 themes/contrib
 webroot
+test/vendor
+test/bin
+test/composer.lock
+test/dkan
