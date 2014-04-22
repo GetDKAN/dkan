@@ -41,6 +41,7 @@ function dkan_sitewide_search_db_default_search_api_index() {
         "type" : { "type" : "string" },
         "title" : { "type" : "string" },
         "status" : { "type" : "boolean" },
+        "created" : { "type" : "date" },
         "changed" : { "type" : "date" },
         "author" : { "type" : "integer", "entity_type" : "user" },
         "field_license" : { "type" : "text" },
@@ -185,6 +186,12 @@ function dkan_sitewide_search_db_default_search_api_server() {
           "field_resources:body:value" : {
             "table" : "search_api_db_datasets_field_resources_body_value",
             "type" : "list\\u003Ctext\\u003E",
+            "boost" : "1.0"
+          },
+          "created" : {
+            "table" : "search_api_db_datasets",
+            "column" : "created",
+            "type" : "date",
             "boost" : "1.0"
           }
         }
