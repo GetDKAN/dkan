@@ -13,6 +13,13 @@ function dkan_sitewide_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'admin_theme';
+  $strongarm->value = 'nuboot';
+  $export['admin_theme'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'bueditor_roles';
   $strongarm->value = array(
     3 => array(
@@ -38,6 +45,20 @@ function dkan_sitewide_strongarm() {
   $strongarm->name = 'bueditor_user1';
   $strongarm->value = '5';
   $export['bueditor_user1'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'colorizer_cssfile';
+  $strongarm->value = 'colorizer/colorizer.css';
+  $export['colorizer_cssfile'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'colorizer_incfile';
+  $strongarm->value = 'colorizer/colorizer.inc';
+  $export['colorizer_incfile'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
