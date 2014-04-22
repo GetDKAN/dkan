@@ -3,9 +3,6 @@ language: php
 php:
   - 5.4
 
-node_js:
-  - "0.11"
-
 mysql:
   database: dkan_travis
   username: root
@@ -13,7 +10,6 @@ mysql:
 
 install:
   - cd test
-  - npm install
   - composer install
   - mysql -e 'create database dkan_travis;'
   - sudo apt-get update > /dev/null
