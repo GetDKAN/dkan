@@ -19,9 +19,9 @@ default:
         root: "dkan" 
       region_map:
         content: "#region-content"
-        toolbar: "#toolbar"
+        toolbar: ".tabs--primary"
         footer: "#footer"
-        header: "#section-header"
+        header: "#nav-wrapper"
         left header: "#header-left"
         right header: "#header-right"
         right sidebar: "#column-right"
