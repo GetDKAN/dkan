@@ -4,3 +4,7 @@ modules/dkan/dkan_dataset
 modules/dkan/dkan_datastore
 themes/contrib
 webroot
+
+# local settings
+drupal-org.local.make
+dkan.rebuild.local.sh
