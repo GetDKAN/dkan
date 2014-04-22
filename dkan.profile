@@ -60,6 +60,8 @@ function dkan_additional_setup() {
   drupal_write_record('bueditor_editors', $data, array('eid'));
 
   dkan_default_content_base_install();
+  // Keeps us from getting notices "No module defines permission".
+  module_enable(array('dkan_sitewide_roles_perms'));
 
   features_revert(array('dkan_sitewide_menu' => array('content_menu_links')));
   features_revert(array('dkan_sitewide_menu' => array('menu_links')));
@@ -67,9 +69,8 @@ function dkan_additional_setup() {
   features_revert(array('dkan_dataset_groups' => array('field_base')));
   features_revert(array('dkan_dataset_groups' => array('search_api_index')));
   features_revert(array('dkan_sitewide_search_db' => array('search_api_index')));
-  features_revert(array('dkan_sitewide_roles_perms' => array('user_permission', 'og_features_permission')));
   cache_clear_all();
   features_revert(array('dkan_sitewide_search_db' => array('search_api_server')));
-  features_revert(array('dkan_sitewide_roles_perms' => array('user_permission', 'og_features_permission')));
+  features_revert(array('dkan_sitewide_roles_perms' => array('user_permission')));
   unset($_SESSION['messages']['warning']);
 }
