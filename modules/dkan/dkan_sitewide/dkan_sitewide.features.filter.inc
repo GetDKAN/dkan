@@ -14,18 +14,18 @@ function dkan_sitewide_filter_default_formats() {
   $formats['html'] = array(
     'format' => 'html',
     'name' => 'HTML',
-    'cache' => '1',
-    'status' => '1',
-    'weight' => '0',
+    'cache' => 1,
+    'status' => 1,
+    'weight' => 0,
     'filters' => array(
       'filter_markdown' => array(
-        'weight' => '-11',
-        'status' => '1',
+        'weight' => -11,
+        'status' => 1,
         'settings' => array(),
       ),
       'filter_html' => array(
-        'weight' => '-10',
-        'status' => '1',
+        'weight' => -10,
+        'status' => 1,
         'settings' => array(
           'allowed_html' => '<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <p>',
           'filter_html_help' => 1,
@@ -33,15 +33,15 @@ function dkan_sitewide_filter_default_formats() {
         ),
       ),
       'filter_url' => array(
-        'weight' => '0',
-        'status' => '1',
+        'weight' => 0,
+        'status' => 1,
         'settings' => array(
-          'filter_url_length' => '72',
+          'filter_url_length' => 72,
         ),
       ),
       'filter_htmlcorrector' => array(
-        'weight' => '10',
-        'status' => '1',
+        'weight' => 10,
+        'status' => 1,
         'settings' => array(),
       ),
     ),
