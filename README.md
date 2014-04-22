@@ -1,10 +1,11 @@
-[![Build Status](https://travis-ci.org/nuams/dkan.svg?branch=7.x-1.x)](https://travis-ci.org/nuams/dkan)
+[![DKAN Sitewide Build Status](https://travis-ci.org/nuams/dkan.svg?branch=7.x-1.x)](https://travis-ci.org/nuams/dkan)
+
 
 [![DKAN](https://drupal.org/files/dkanscreenshot.png)](http://nucivic.com/dkan)
 
 ## What is DKAN?
 
-[DKAN](http://nucivic.com/dkan) is a Drupal-based open data platform with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. DKAN is maintained by [Nuams](http://nucivic.com/dkan).
+[DKAN](http://nucivic.com/dkan) is a Drupal-based open data platform with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. DKAN is maintained by [Nuams](http://nuams.co).
 
 ## Data publishers
 
@@ -22,7 +23,15 @@ Nuams' [NuData](http://nucivic.com/products/nudata/) platform offers 24/7, secur
 
 *   [FAQs »](http://nucivic.com/products/nudata/nudata-faqs/)
 *   [ Live demo » ](http://demo.getdkan.com/)
-*   [ Docs » ](http://docs.getdkan.com//)
+*   [ Docs » ](http://docs.getdkan.com/)
+
+## Build Status
+
+| Component      | Status      |
+|----------------|:------------|
+| DKAN Sitewide  | [![DKAN Sitewide Build Status](https://travis-ci.org/nuams/dkan.svg?branch=7.x-1.x)](https://travis-ci.org/nuams/dkan) |
+| DKAN Dataset   | [![DKAN Dataset Build Status](https://travis-ci.org/nuams/dkan_dataset.svg?branch=7.x-1.x)](https://travis-ci.org/nuams/dkan_dataset) |
+| DKAN Datastore | [![DKAN Datastore Build Status](https://travis-ci.org/nuams/dkan_datastore.svg?branch=7.x-1.x)](https://travis-ci.org/nuams/dkan_datastore) |
 
 ## Installation
 
@@ -54,13 +63,13 @@ This is the installation profile that packages everything together. It included 
 
 ### DKAN Dataset
 
-DKAN Dataset is a stand-alone module: http://drupal.org/project/dkan_dataset that provides dataset and resource content types. This is the foundation for the open data publishing. **DKAN Dataset can be included in any Drupal 7 site**.
+DKAN Dataset is a stand-alone module: https://github.com/nuams/dkan_dataset that provides dataset and resource content types. This is the foundation for the open data publishing. **DKAN Dataset can be included in any Drupal 7 site**.
 
 The dataset nodes contain the metadata and the resource nodes contain the file or data itself. This is exactly how CKAN does it, but in Drupal.  The metadata from the datasets are available in rdf(a) that is DCAT compliant as well as in JSON.
 
 ### DKAN Datastore
 
-DKAN Datastore is a stand-alone module: http://drupal.org/project/dkan_datastore that provides the ability to include uploaded files into a datastore and expose their components via an API. **DKAN Dataset can be included in any Drupal 7 site**.
+DKAN Datastore is a stand-alone module: https://github.com/nuams/dkan_datastore that provides the ability to include uploaded files into a datastore and expose their components via an API. **DKAN Datastore can be included in any Drupal 7 site**.
 
 ## Current Status
 
