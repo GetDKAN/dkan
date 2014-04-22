@@ -7,13 +7,9 @@
 /**
  * Implements hook_ctools_plugin_api().
  */
-function dkan_sitewide_ctools_plugin_api() {
-  list($module, $api) = func_get_args();
+function dkan_sitewide_ctools_plugin_api($module = NULL, $api = NULL) {
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
-  }
-  if ($module == "context" && $api == "context") {
-    return array("version" => "3");
   }
 }
 
