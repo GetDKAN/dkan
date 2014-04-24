@@ -3,15 +3,9 @@ default:
     Behat\MinkExtension\Extension:
       goutte: ~
       selenium2: ~
-      zombie: ~
       base_url: http://127.0.0.1:8888
       default_session: 'goutte'
-      #javascript_session: zombie
       javascript_session: 'selenium2'
-      zombie:
-        #node_modules_path: /home/travis/t-test/node_modules/ 
-        node_modules_path: /Users/aaron/workshop/test/t3/node_modules/ 
-        auto_server: false
       files_path: "files"
     Drupal\DrupalExtension\Extension:
       blackbox: ~
