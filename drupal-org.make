@@ -11,7 +11,6 @@ projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = "http://git.drupal.org/project/dkan_datastore.git"
 projects[dkan_datastore][type] = module
-
 ; Contrib Modules
 projects[autocomplete_deluxe][subdir] = contrib
 projects[autocomplete_deluxe][version] = 2.0-beta3
@@ -94,12 +93,10 @@ projects[og_moderation][version] = 2.2
 projects[og_moderation][patch][2231737] = https://drupal.org/files/issues/any-user-with-view-revision-can-revert-delete-2231737-1.patch
 projects[og_moderation][subdir] = contrib
 
-projects[ref_field][download][type] = git
-projects[ref_field][download][url] = "http://git.drupal.org/project/ref_field.git"
-projects[ref_field][download][patch][1670356] = http://drupal.org/files/removed_notice-1670356-1.patch
-projects[ref_field][download][patch][2201735] = https://drupal.org/files/issues/ref_field-invalid_argument_supplied_for_foreach-2201735-2.patch
 projects[ref_field][subdir] = contrib
-projects[ref_field][type] = module
+projects[ref_field][version] = 2.x
+projects[ref_field][patch][1670356] = http://drupal.org/files/removed_notice-1670356-1.patch
+projects[ref_field][patch][2201735] = https://drupal.org/files/issues/ref_field-invalid_argument_supplied_for_foreach-2201735-2.patch
 
 projects[remote_file_source][version] = 1.0
 projects[remote_file_source][subdir] = contrib
@@ -214,11 +211,6 @@ projects[context][subdir] = contrib
 
 projects[delta][version] = 3.0-beta11
 projects[delta][subdir] = contrib
-
-#TODO REMOVE!
-projects[defaultcontent][subdir] = contrib
-projects[defaultcontent][version] = 1.x
-projects[defaultcontent][patch][1436094] = http://drupal.org/files/node_sort_value-1436094-6.patch
 
 projects[facetapi][subdir] = contrib
 projects[facetapi][revision] = 1.3

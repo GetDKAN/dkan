@@ -627,15 +627,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: 'edit node machine name'.
-  $permissions['edit node machine name'] = array(
-    'name' => 'edit node machine name',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
-    'module' => 'defaultcontent',
-  );
-
   // Exported permission: 'edit own dataset content'.
   $permissions['edit own dataset content'] = array(
     'name' => 'edit own dataset content',
