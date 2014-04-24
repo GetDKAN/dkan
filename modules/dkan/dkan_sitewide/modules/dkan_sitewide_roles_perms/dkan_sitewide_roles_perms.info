@@ -9,7 +9,6 @@ dependencies[] = block
 dependencies[] = bueditor
 dependencies[] = context_ui
 dependencies[] = ctools
-dependencies[] = defaultcontent
 dependencies[] = dkan_dataset
 dependencies[] = dkan_dataset_content_types
 dependencies[] = dkan_datastore
