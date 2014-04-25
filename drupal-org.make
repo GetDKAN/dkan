@@ -271,8 +271,9 @@ projects[bootstrap][downloald][revision] = "0390173732439fd60e898c7086219ab8c99c
 projects[bootstrap][subdir] = contrib
 
 projects[nuboot][download][type] = git
-projects[nuboot][download][version] = 1.x
 projects[nuboot][download][url] = "http://git.drupal.org/project/nuboot.git"
+projects[nuboot][download][branch] = 7.x-1.x
+projects[nuboot][downloald][revision] = e44b724
 projects[nuboot][subdir] = contrib
 
 ; Libraries
