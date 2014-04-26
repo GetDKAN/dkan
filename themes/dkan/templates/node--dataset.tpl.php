@@ -15,10 +15,10 @@
     <?php
       // We hide the comments and links now so that we can render them later.
       hide($content['links']);
-      if (module_esists('comment')) {
+      if (module_exists('comment')) {
         hide($content['comments']);
       }
-      if (module_esists('disqus')) {
+      if (module_exists('disqus')) {
         hide($content['disqus']);
       }
       print render($content);
@@ -30,13 +30,14 @@
       <nav class="links node-links clearfix"><?php print render($content['links']); ?></nav>
     <?php endif; ?>
 
-    <?php if (module_exists('comment') || module_exists('disqus')) : ?>
-      <h3> <?php print t('Comments') ?> </h3>
+    <?php if ($page && (module_exists('comment') || module_exists('disqus'))) : ?>
+      <h2> <?php print t('Comments') ?> </h2>
       <?php if (module_exists('disqus')) : ?>
         <?php print render($content['disqus']) ?>
       <?php else : ?>
         <?php print render($content['comments']); ?>
       <?php endif; ?>
     <?php endif; ?>
+
   </div>
 </article>
