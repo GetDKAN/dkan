@@ -140,7 +140,6 @@ features[user_permission][] = edit any dataset content
 features[user_permission][] = edit any group content
 features[user_permission][] = edit any page content
 features[user_permission][] = edit any resource content
-features[user_permission][] = edit node machine name
 features[user_permission][] = edit own dataset content
 features[user_permission][] = edit own group content
 features[user_permission][] = edit own page content
