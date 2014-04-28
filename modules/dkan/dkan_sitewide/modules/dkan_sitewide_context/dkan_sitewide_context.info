@@ -8,6 +8,7 @@ dependencies[] = context
 dependencies[] = ctools
 dependencies[] = dkan_dataset
 dependencies[] = dkan_dataset_content_types
+dependencies[] = dkan_dataset_groups
 dependencies[] = dkan_sitewide
 dependencies[] = entityreference
 dependencies[] = field_group
