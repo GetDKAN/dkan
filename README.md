@@ -71,6 +71,20 @@ The dataset nodes contain the metadata and the resource nodes contain the file o
 
 DKAN Datastore is a stand-alone module: https://github.com/nuams/dkan_datastore that provides the ability to include uploaded files into a datastore and expose their components via an API. **DKAN Datastore can be included in any Drupal 7 site**.
 
+## Issues and Pull Requests
+
+We are taking issues for all components of the dkan distribution in the issue thread of this repository. We have several labels in place for you to tag the issue with and identify it with the proper component.
+
+Please remember to reference the issue accross repositories in order for manteiners to pick up commits and pull requests in the issue thread. You can do that for commits like this:
+
+```bash
+git commit -m "Issue nuams/dkan#<issue_number>: ..."
+```
+
+Just replace **<issue_number>** with the actual issue number. You can reference pull requests exactly like that if you add the same text **"nuams/dkan#<issue_number>"** in a comment. 
+
+This really help us detecting changes and pulling them in in faster.
+
 ## Current Status
 
 DKAN is about to release 1.0.
