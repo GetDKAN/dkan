@@ -84,3 +84,16 @@ function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
     $form['submit']['#title'] = '';
   }
 }
+
+/**
+ * Implements hook_restws_resource_info().
+ */
+function dkan_sitewide_restws_resource_info_alter(&$info) {
+  // We aren't exposing anything other than node info, restws exposes all
+  // entities by default.
+  foreach ($info as $key => $value) {
+    if ($key != 'node') {
+      unset($info[$key]);
+    }
+  }
+}

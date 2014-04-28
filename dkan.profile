@@ -71,6 +71,6 @@ function dkan_additional_setup() {
   features_revert(array('dkan_sitewide_search_db' => array('search_api_index')));
   cache_clear_all();
   features_revert(array('dkan_sitewide_search_db' => array('search_api_server')));
-  features_revert(array('dkan_sitewide_roles_perms' => array('user_permission')));
+  features_revert(array('dkan_sitewide_roles_perms' => array('user_permission', 'og_features_permission')));
   unset($_SESSION['messages']['warning']);
 }
