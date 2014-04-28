@@ -61,6 +61,11 @@ function dkan_sitewide_search_db_views_default_views() {
   $handler->display->display_options['fields']['body_summary']['alter']['trim'] = TRUE;
   $handler->display->display_options['fields']['body_summary']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['body_summary']['link_to_entity'] = 0;
+  /* Sort criterion: Indexed Node: Date changed */
+  $handler->display->display_options['sorts']['changed']['id'] = 'changed';
+  $handler->display->display_options['sorts']['changed']['table'] = 'search_api_index_datasets';
+  $handler->display->display_options['sorts']['changed']['field'] = 'changed';
+  $handler->display->display_options['sorts']['changed']['order'] = 'DESC';
   /* Filter criterion: Search: Fulltext search */
   $handler->display->display_options['filters']['search_api_views_fulltext']['id'] = 'search_api_views_fulltext';
   $handler->display->display_options['filters']['search_api_views_fulltext']['table'] = 'search_api_index_datasets';
