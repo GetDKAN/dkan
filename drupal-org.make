@@ -3,14 +3,10 @@ api = 2
 
 ; DKAN
 projects[dkan_dataset][subdir] = dkan
-projects[dkan_dataset][download][type] = git
-projects[dkan_dataset][download][url] = "https://github.com/nuams/dkan_dataset.git"
-projects[dkan_dataset][type] = module
+projects[dkan_datastore][version] = 1.0
 
 projects[dkan_datastore][subdir] = dkan
-projects[dkan_datastore][download][type] = git
-projects[dkan_datastore][download][url] = "http://git.drupal.org/project/dkan_datastore.git"
-projects[dkan_datastore][type] = module
+projects[dkan_datastore][version] = 1.0
 
 ; Contrib Modules
 projects[autocomplete_deluxe][subdir] = contrib
@@ -133,7 +129,7 @@ projects[views_bulk_operations][subdir] = contrib
 projects[views_responsive_grid][version] = 1.3
 projects[views_responsive_grid][subdir] = contrib
 
-projects[recline][version] = 1.x
+projects[recline][version] = 1.0
 projects[recline][subdir] = contrib
 
 projects[entity_rdf][download][type] = git
@@ -182,7 +178,7 @@ projects[feeds_field_fetcher][subdir] = contrib
 projects[feeds_field_fetcher][type] = module
 
 projects[feeds_flatstore_processor][download][type] = git
-projects[feeds_flatstore_processor][download][url] = "http://git.drupal.org/sandbox/acouch/1952754.git"
+projects[feeds_flatstore_processor][download][url] = "https://github.com/nuams/feeds_flatstore_processor.git"
 projects[feeds_flatstore_processor][download][branch] = master
 projects[feeds_flatstore_processor][subdir] = contrib
 projects[feeds_flatstore_processor][type] = module
@@ -217,7 +213,7 @@ projects[delta][version] = 3.0-beta11
 projects[delta][subdir] = contrib
 
 projects[facetapi][subdir] = contrib
-projects[facetapi][revision] = 1.3
+projects[facetapi][version] = 1.3
 
 projects[facetapi_pretty_paths][subdir] = contrib
 projects[facetapi_pretty_paths][revision] = 1.0
@@ -270,17 +266,14 @@ projects[bootstrap][downloald][type] = git
 projects[bootstrap][downloald][revision] = "0390173732439fd60e898c7086219ab8c99c2f3d"
 projects[bootstrap][subdir] = contrib
 
-projects[nuboot][download][type] = git
-projects[nuboot][download][url] = "http://git.drupal.org/project/nuboot.git"
-projects[nuboot][download][branch] = 7.x-1.x
-projects[nuboot][downloald][revision] = 317616b
+projects[nuboot][version] = 1.0
 projects[nuboot][subdir] = contrib
 
 ; Libraries
 libraries[recline][type] = libraries
 libraries[recline][download][type] = git
 libraries[recline][download][url] = "https://github.com/okfn/recline.git"
-libraries[chosen][download][revision] = "300e5ea6a74af4b332b10ff8710d5173d2201dfc"
+libraries[recline][download][revision] = "300e5ea6a74af4b332b10ff8710d5173d2201dfc"
 
 libraries[font_awesome][type] = libraries
 libraries[font_awesome][download][type] = git
@@ -309,11 +302,6 @@ libraries[Leaflet][type] = libraries
 libraries[Leaflet][download][type] = git
 libraries[Leaflet][download][url] = "https://github.com/Leaflet/Leaflet.git"
 libraries[Leaflet][download][revision] = "81221ae4cd9772a8974b2e3c867d4fb35abd052d"
-
-libraries[recline][type] = libraries
-libraries[recline][download][type] = git
-libraries[recline][download][url] = "https://github.com/okfn/recline.git"
-libraries[recline][download][revision] = "e007fff15ac6e3853d96f095986cae6e4b192471"
 
 libraries[arc][type] = libraries
 libraries[arc][download][type] = git
