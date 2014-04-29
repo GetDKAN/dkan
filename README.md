@@ -73,11 +73,11 @@ DKAN Datastore is a stand-alone module: https://github.com/nuams/dkan_datastore 
 
 ## Current Status
 
-DKAN is about to release 1.0.
+DKAN just published its 1.0 release.
 
 Contact us if you want to get involved!
 
-DKAN development is a sponsored by NUAMS. For more information about hosting and professional support options for DKAN, see http://nuams.com/products
+DKAN development is a sponsored by NUAMS. For more information about hosting and professional support options for DKAN, see http://nucivic.com
 
 ## Contributing
 
