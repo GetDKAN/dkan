@@ -37,6 +37,10 @@ function dkan_sitewide_block_info() {
     'info' => t('User menu'),
     'cache' => DRUPAL_CACHE_GLOBAL
   );
+  $blocks['dkan_sitewide_data_extent'] = array(
+    'info' => t('Data Extent'),
+    'cache' => DRUPAL_CACHE_PER_PAGE
+  );
 
   return $blocks;
 }
@@ -48,6 +52,11 @@ function dkan_sitewide_block_view($delta = '') {
   $block = array();
 
   switch ($delta) {
+    case 'dkan_sitewide_data_extent':
+      $block['subject'] = t('Data Extent');
+      $block['content'] = dkan_sitewide_data_extent_block();
+      break;
+
     case 'dkan_sitewide_license':
       $block['subject'] = t('License');
       $block['content'] = dkan_sitewide_license_block();
@@ -109,7 +118,40 @@ function dkan_sitewide_resource_additional_block($nid = '') {
     return theme('table',
       array('rows' => $file_info, 'header' => array(t('Field'), t('Value'))));
   }
+}
 
+/**
+ * Provides Data Extent block.
+ */
+function dkan_sitewide_data_extent_block() {
+  $node = menu_get_object();
+  if ($node && isset($node->type) && $node->type == 'dataset') {
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $spatial = $wrapper->field_spatial->value();
+    if ($spatial && $spatial['wkt']) {
+    drupal_add_library('leaflet_widget', 'Leaflet');
+     $features = array(leaflet_widget_geojson_feature($spatial['wkt']));
+       $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
+       $output = "var dataExtent = " . $geojson;
+       $output .= "; var map = L.map('map');
+        L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+        maxZoom: 7,
+        attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, ' +
+        '<a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, ' +
+        'Imagery © <a href=\"http://mapbox.com\">Mapbox</a>',
+        id: 'examples.map-20v6611k'
+        }).addTo(map);
+
+        var geojson = L.geoJson(dataExtent).addTo(map);
+        map.fitBounds(geojson.getBounds());";
+       drupal_add_js($output,  array('type' => 'inline', 'scope' => 'footer', 'weight' => 5));
+       return '<div id="map" style="height:250px; width:100%"></div>';
+       return $geojson;
+    }
+  }
+  else {
+    return FALSE;
+  }
 }
 
 /**
