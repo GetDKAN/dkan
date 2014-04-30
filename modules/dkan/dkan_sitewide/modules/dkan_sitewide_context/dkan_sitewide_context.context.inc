@@ -53,6 +53,12 @@ function dkan_sitewide_context_context_default_contexts() {
           'region' => 'sidebar_first',
           'weight' => '-7',
         ),
+        'dkan_sitewide-dkan_sitewide_data_extent' => array(
+          'module' => 'dkan_sitewide',
+          'delta' => 'dkan_sitewide_data_extent',
+          'region' => 'sidebar_first',
+          'weight' => '-6',
+        ),
       ),
     ),
     'breadcrumb' => 'dataset',
