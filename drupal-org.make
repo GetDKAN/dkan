@@ -216,7 +216,7 @@ projects[facetapi][subdir] = contrib
 projects[facetapi][version] = 1.3
 
 projects[facetapi_pretty_paths][subdir] = contrib
-projects[facetapi_pretty_paths][revision] = 1.0
+projects[facetapi_pretty_paths][version] = 1.0
 
 projects[gravatar][downloald][type] =  git
 projects[gravatar][download][url] = "http://git.drupal.org/project/gravatar.git"
