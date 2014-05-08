@@ -41,6 +41,8 @@ https://github.com/nuams/dkan-drops-7
 
 ### Drush Make
 
+Requires drush version 6.x or 7.x.
+
 Create a full version with drush make:
 
 ```
