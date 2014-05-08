@@ -78,7 +78,14 @@ function dkan_default_content_wisconsin_polling_dataset() {
           'source' => null,
         )
       )
-    )
+    ),
+    'field_contact_email' => array(
+      'und' => array(
+        0 => array(
+          'value' => variable_get('site_mail', NULL),
+        ),
+      ),
+    ),
   );
 }
 
@@ -198,6 +205,13 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
         ),
         1 => array(
           'tid' => '3',
+        ),
+      ),
+    ),
+    'field_contact_email' => array(
+      'und' => array(
+        0 => array(
+          'value' => variable_get('site_mail', NULL),
         ),
       ),
     ),
@@ -324,6 +338,23 @@ License: PDDL (Source indicates no restrictions on data).',
       'und' => array(
         0 => array(
           'title' => 'Data Explorer Examples',
+        ),
+      ),
+    ),
+    'field_tags' => array(
+      'und' => array(
+        0 => array(
+          'tid' => '6',
+        ),
+        1 => array(
+          'tid' => '7',
+        ),
+      ),
+    ),
+    'field_contact_email' => array(
+      'und' => array(
+        0 => array(
+          'value' => variable_get('site_mail', NULL),
         ),
       ),
     ),
@@ -454,6 +485,13 @@ function dkan_default_content_afghan_election_districts_dataset(){
         ),
         3 => array(
           'tid' => '4',
+        ),
+      ),
+    ),
+    'field_contact_email' => array(
+      'und' => array(
+        0 => array(
+          'value' => variable_get('site_mail', NULL),
         ),
       ),
     ),
