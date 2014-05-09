@@ -30,6 +30,8 @@ function dkan_additional_setup() {
     'politics',
     'transparency',
     'municipal',
+    'price',
+    'time-series',
   );
   foreach ($tags as $tag) {
     $term = new stdClass();
