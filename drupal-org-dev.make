@@ -3,13 +3,13 @@ api = 2
 
 ; DKAN
 projects[dkan_dataset][subdir] = dkan
-projects[dkan_dataset][version] = 1.0
+projects[dkan_dataset][version] = 1.x
 
 projects[dkan_datastore][subdir] = dkan
-projects[dkan_datastore][version] = 1.0
+projects[dkan_datastore][version] = 1.x
 
-includes[dkan_dataset_make] = dkan_dataset.make
-includes[dkan_datastore_make] = dkan_datastore.make
+includes[dkan_dataset_make] = dkan_dataset_dev.make
+includes[dkan_datastore_make] = dkan_datastore_dev.make
 
 ; Contrib Modules
 projects[colorizer][version] = 1.0
