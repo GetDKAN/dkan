@@ -50,4 +50,7 @@ script:
   - bin/behat features/recline.feature
 
 notifications:
-  slack: nuams:2Eywq0BtPv73ISq3CF6gvRzo
+  slack:
+    rooms:
+      nuams:2Eywq0BtPv73ISq3CF6gvRzo#devops
+      nuams:t3p2KxXdzymmwxitWPvfAsnK#dkan
