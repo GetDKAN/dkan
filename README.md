@@ -81,6 +81,11 @@ Contact us if you want to get involved!
 
 DKAN development is a sponsored by NUAMS. For more information about hosting and professional support options for DKAN, see http://nucivic.com
 
+## Community
+
+You are welcome to join the discussion on the DKAN Developers mailing list. Join and read archives at:
+https://groups.google.com/forum/?hl=en#!forum/dkan-dev
+
 ## Contributing
 
 Please file all tickets for DKAN, including those that involve code in DKAN Dataset and DKAN Datastore modules in this issue queue. We have several labels in place for you to tag the issue with and identify it with the proper component.
