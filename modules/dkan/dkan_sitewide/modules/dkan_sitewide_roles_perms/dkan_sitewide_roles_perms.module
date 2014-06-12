@@ -11,11 +11,7 @@ include_once 'dkan_sitewide_roles_perms.features.inc';
  *
  * Sets user_admin_role to "administrator"
  */
-function dkan_sitewide_roles_perms_post_features_revert($component) {
-  if ($component == 'user_role') {
-    $role = user_role_load_by_name('administrator');
-    if ($role) {
-      variable_set('user_admin_role', $role->rid);
-    }
-  }
+function dkan_sitewide_roles_perms_strongarm_alter(&$strongarms) {
+  $role = user_role_load_by_name('administrator');
+  $strongarms['user_admin_role']->value = $role->rid;
 }
