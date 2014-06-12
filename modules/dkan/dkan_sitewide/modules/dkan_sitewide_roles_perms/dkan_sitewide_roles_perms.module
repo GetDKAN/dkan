@@ -7,13 +7,15 @@
 include_once 'dkan_sitewide_roles_perms.features.inc';
 
 /**
- * Implements hook_features_revert()
+ * Implements hook_post_features_revert()
  *
  * Sets user_admin_role to "administrator"
  */
-function dkan_sitewide_roles_perms_features_revert($module_name) {
-  $role = user_role_load_by_name('administrator');
-  if ($role) {
-    variable_set('user_admin_role', $role->rid);
+function dkan_sitewide_roles_perms_post_features_revert($component) {
+  if ($component == 'user_role') {
+    $role = user_role_load_by_name('administrator');
+    if ($role) {
+      variable_set('user_admin_role', $role->rid);
+    }
   }
 }
