@@ -173,7 +173,6 @@ features[variable][] = gravatar_default
 features[variable][] = gravatar_rating
 features[variable][] = gravatar_size
 features[variable][] = gravatar_url
-features[variable][] = user_admin_role
 features[variable][] = user_picture_default
 features[variable][] = user_picture_dimensions
 features[variable][] = user_picture_file_size
