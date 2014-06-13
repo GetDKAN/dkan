@@ -7,7 +7,7 @@
 include_once 'dkan_sitewide_roles_perms.features.inc';
 
 /**
- * Implements hook_post_features_revert()
+ * Implements hook_strongarm_alter()
  *
  * Sets user_admin_role to "administrator"
  */
