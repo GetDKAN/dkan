@@ -39,7 +39,7 @@ function dkan_default_content_about_page(){
     'body' => array(
       'und' => array(
         0 => array(
-          'value' => 'DKAN is the Drupal-based version of CKAN, the world\'s leading open-source open data publishing platform. It provides a complete open source software solution for data publishers, and adheres to the API, data, and functionality standards of CKAN. The goal of the project combine the utility of CKAN with the ease of maintenance and extensibility of Drupal.
+          'value' => 'DKAN is the Drupal-based version of CKAN, the world\'s leading open-source open data publishing platform. It provides a complete open source software solution for data publishers, and adheres to the API, data, and functionality standards of CKAN. The goal of the project is to combine the utility of CKAN with the ease of maintenance and extensibility of Drupal.
 
 Developers: see http://drupal.org/project/dkan for code, documentation, and to contribute.
 
