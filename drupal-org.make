@@ -74,9 +74,9 @@ projects[omega][version] = 3.1
 projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
 projects[omega][subdir] = contrib
 
-projects[bootstrap][downloald][version] = 3.x
-projects[bootstrap][downloald][type] = git
-projects[bootstrap][downloald][revision] = "0390173732439fd60e898c7086219ab8c99c2f3d"
+projects[bootstrap][download][version] = 3.x
+projects[bootstrap][download][type] = git
+projects[bootstrap][download][revision] = "0390173732439fd60e898c7086219ab8c99c2f3d"
 projects[bootstrap][subdir] = contrib
 
 projects[nuboot][version] = 1.0
