@@ -130,7 +130,7 @@ function dkan_default_content_wisconsin_polling_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '6',
+            'tid' => '8',
           ),
         ),
       ),
@@ -251,7 +251,7 @@ function dkan_default_content_national_foreclosure_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '6',
+            'tid' => '8',
           ),
         ),
       ),
@@ -399,7 +399,7 @@ function dkan_default_content_gold_prices_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '6',
+            'tid' => '8',
           ),
         ),
       ),
@@ -532,7 +532,7 @@ function dkan_default_content_afghan_election_districts_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '6',
+            'tid' => '8',
           ),
         ),
       ),
