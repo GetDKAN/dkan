@@ -4,15 +4,15 @@ api = 2
 ; DKAN
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
-projects[dkan_dataset][download][url] = git@github.com:nuams/dkan_dataset.git
+projects[dkan_dataset][download][url] = git@github.com:NuCivic/dkan_dataset.git
 projects[dkan_dataset][download][branch] = 7.x-1.x
 
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
-projects[dkan_datastore][download][url] = git@github.com:nuams/dkan_datastore.git
+projects[dkan_datastore][download][url] = git@github.com:NuCivic/dkan_datastore.git
 projects[dkan_datastore][download][branch] = 7.x-1.x
 
-includes[dkan_dataset_make] = https://raw.githubusercontent.com/nuams/dkan_dataset/7.x-1.x/dkan_dataset.make
+includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 
 ; Contrib Modules
