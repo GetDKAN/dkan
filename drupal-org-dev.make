@@ -8,7 +8,7 @@ projects[dkan_dataset][version] = 1.x
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][version] = 1.x
 
-includes[dkan_dataset_make] = https://raw.githubusercontent.com/nuams/dkan_dataset/7.x-1.x/dkan_dataset.make
+includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 
 ; Contrib Modules
