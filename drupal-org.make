@@ -83,8 +83,11 @@ projects[bootstrap][download][type] = git
 projects[bootstrap][download][revision] = "0390173732439fd60e898c7086219ab8c99c2f3d"
 projects[bootstrap][subdir] = contrib
 
-projects[nuboot][version] = 1.0
 projects[nuboot][subdir] = contrib
+projects[nuboot][download][type] = git
+projects[nuboot][download][url] = git@github.com:nuams/nuboot.git
+projects[nuboot][download][branch] = 7.x-1.x
+projects[nuboot][download][revision] = "77af47d65008e5d5cb9eb667bb7e1db304701f5d"
 
 ; Libraries
 libraries[font_awesome][type] = libraries
