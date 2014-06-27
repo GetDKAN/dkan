@@ -3,10 +3,14 @@ api = 2
 
 ; DKAN
 projects[dkan_dataset][subdir] = dkan
-projects[dkan_dataset][version] = 1.x
+projects[dkan_dataset][download][type] = git
+projects[dkan_dataset][download][url] = git@github.com:NuCivic/dkan_dataset.git
+projects[dkan_dataset][download][branch] = 7.x-1.x
 
 projects[dkan_datastore][subdir] = dkan
-projects[dkan_datastore][version] = 1.x
+projects[dkan_datastore][download][type] = git
+projects[dkan_datastore][download][url] = git@github.com:NuCivic/dkan_datastore.git
+projects[dkan_datastore][download][branch] = 7.x-1.x
 
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
@@ -79,8 +83,10 @@ projects[bootstrap][downloald][type] = git
 projects[bootstrap][downloald][revision] = "0390173732439fd60e898c7086219ab8c99c2f3d"
 projects[bootstrap][subdir] = contrib
 
-projects[nuboot][version] = 1.0
-projects[nuboot][subdir] = contrib
+projects[dkan_dataset][subdir] = dkan
+projects[dkan_dataset][download][type] = git
+projects[dkan_dataset][download][url] = git@github.com:NuCivic/nuboot.git
+projects[dkan_dataset][download][branch] = 7.x-1.x
 
 ; Libraries
 libraries[font_awesome][type] = libraries
