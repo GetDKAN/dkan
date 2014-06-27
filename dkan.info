@@ -1,7 +1,6 @@
 name = DKAN
 core = 7.x
 exclusive = TRUE
-version = 7.x-1.0
 
 ; Core
 dependencies[] = block
