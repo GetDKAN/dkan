@@ -5,19 +5,19 @@ api = 2
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
-;projects[dkan_dataset][download][branch] = 7.x-1.x
-projects[dkan_dataset][download][tag] = 7.x-1.1
+projects[dkan_dataset][download][branch] = 7.x-1.x
+;projects[dkan_dataset][download][tag] = 7.x-1.1
 
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datastore.git
-;projects[dkan_datastore][download][branch] = 7.x-1.x
-projects[dkan_datastore][download][tag] = 7.x-1.1
+projects[dkan_datastore][download][branch] = 7.x-1.x
+;projects[dkan_datastore][download][tag] = 7.x-1.1
 
-;includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
-;includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
-includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.1/dkan_dataset.make
-includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.1/dkan_datastore.make
+includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
+includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
+;includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.1/dkan_dataset.make
+;includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.1/dkan_datastore.make
 
 ; Contrib Modules
 projects[colorizer][version] = 1.0
@@ -90,8 +90,8 @@ projects[bootstrap][subdir] = contrib
 projects[nuboot][subdir] = contrib
 projects[nuboot][download][type] = git
 projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
-;projects[nuboot][download][branch] = 7.x-1.x
-projects[nuboot][download][tag] = 7.x-1.1
+projects[nuboot][download][branch] = 7.x-1.x
+;projects[nuboot][download][tag] = 7.x-1.1
 
 ; Libraries
 libraries[font_awesome][type] = libraries
