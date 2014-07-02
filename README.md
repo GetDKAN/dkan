@@ -1,11 +1,11 @@
-[![DKAN Sitewide Build Status](https://travis-ci.org/nuams/dkan.svg?branch=7.x-1.x)](https://travis-ci.org/nuams/dkan)
+[![DKAN Sitewide Build Status](https://travis-ci.org/NuCivic/dkan.svg?branch=7.x-1.x)](https://travis-ci.org/NuCivic/dkan)
 
 
 [![DKAN](http://f.cl.ly/items/3q3v120q0h1q2d2A3s3L/Screenshot%202014-04-29%2018.40.15.png)](http://nucivic.com/dkan)
 
 ## What is DKAN?
 
-[DKAN](http://nucivic.com/dkan) is a Drupal-based open data platform with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. DKAN is maintained by [Nuams](http://nuams.co).
+[DKAN](http://nucivic.com/dkan) is a Drupal-based open data tool with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. DKAN is maintained by [NuCivic](http://nucivic.com).
 
 ## Data publishers
 
@@ -19,7 +19,7 @@
 
 ## Hosting and support
 
-Nuams' [NuData](http://nucivic.com/products/nudata/) platform offers 24/7, secure, cloud-based DKAN hosting and support services.
+NuCivic' [Data](http://nucivic.com/products/nudata/) platform offers 24/7, secure, cloud-based DKAN hosting and support services.
 
 *   [FAQs »](http://nucivic.com/products/nudata/nudata-faqs/)
 *   [ Live demo » ](http://demo.getdkan.com/)
@@ -29,15 +29,15 @@ Nuams' [NuData](http://nucivic.com/products/nudata/) platform offers 24/7, secur
 
 | Component      | Status      |
 |----------------|:------------|
-| DKAN Sitewide  | [![DKAN Sitewide Build Status](https://travis-ci.org/nuams/dkan.svg?branch=7.x-1.x)](https://travis-ci.org/nuams/dkan) |
-| DKAN Dataset   | [![DKAN Dataset Build Status](https://travis-ci.org/nuams/dkan_dataset.svg?branch=7.x-1.x)](https://travis-ci.org/nuams/dkan_dataset) |
-| DKAN Datastore | [![DKAN Datastore Build Status](https://travis-ci.org/nuams/dkan_datastore.svg?branch=7.x-1.x)](https://travis-ci.org/nuams/dkan_datastore) |
+| DKAN Sitewide  | [![DKAN Sitewide Build Status](https://travis-ci.org/NuCivic/dkan.svg?branch=7.x-1.x)](https://travis-ci.org/NuCivic/dkan) |
+| DKAN Dataset   | [![DKAN Dataset Build Status](https://travis-ci.org/NuCivic/dkan_dataset.svg?branch=7.x-1.x)](https://travis-ci.org/NuCivic/dkan_dataset) |
+| DKAN Datastore | [![DKAN Datastore Build Status](https://travis-ci.org/NuCivic/dkan_datastore.svg?branch=7.x-1.x)](https://travis-ci.org/NuCivic/dkan_datastore) |
 
 ## Installation
 
 ### Downloadable Version 7.x-1-0
 
-https://github.com/nuams/dkan-drops-7
+https://github.com/NuCivic/dkan-drops-7
 
 ### Drush Make
 
@@ -46,7 +46,7 @@ Requires drush version 6.x or 7.x.
 Create a full version with drush make:
 
 ```
-git clone --branch 7.x-1.x https://github.com/nuams/dkan.git
+git clone --branch 7.x-1.x https://github.com/NuCivic/dkan.git
 cd dkan
 drush make --prepare-install build-dkan.make webroot
 cd webroot
@@ -65,13 +65,13 @@ This is the installation profile that packages everything together. It included 
 
 ### DKAN Dataset
 
-DKAN Dataset is a stand-alone module: https://github.com/nuams/dkan_dataset that provides dataset and resource content types. This is the foundation for the open data publishing. **DKAN Dataset can be included in any Drupal 7 site**.
+DKAN Dataset is a stand-alone module: https://github.com/NuCivic/dkan_dataset that provides dataset and resource content types. This is the foundation for the open data publishing. **DKAN Dataset can be included in any Drupal 7 site**.
 
 The dataset nodes contain the metadata and the resource nodes contain the file or data itself. This is exactly how CKAN does it, but in Drupal.  The metadata from the datasets are available in rdf(a) that is DCAT compliant as well as in JSON.
 
 ### DKAN Datastore
 
-DKAN Datastore is a stand-alone module: https://github.com/nuams/dkan_datastore that provides the ability to include uploaded files into a datastore and expose their components via an API. **DKAN Datastore can be included in any Drupal 7 site**.
+DKAN Datastore is a stand-alone module: https://github.com/NuCivic/dkan_datastore that provides the ability to include uploaded files into a datastore and expose their components via an API. **DKAN Datastore can be included in any Drupal 7 site**.
 
 ## Current Status
 
@@ -79,7 +79,12 @@ DKAN just published its 1.0 release.
 
 Contact us if you want to get involved!
 
-DKAN development is a sponsored by NUAMS. For more information about hosting and professional support options for DKAN, see http://nucivic.com
+DKAN development is a sponsored by NuCivic. For more information about hosting and professional support options for DKAN, see http://nucivic.com
+
+## Community
+
+You are welcome to join the discussion on the DKAN Developers mailing list. Join and read archives at:
+https://groups.google.com/forum/?hl=en#!forum/dkan-dev
 
 ## Contributing
 
@@ -88,9 +93,9 @@ Please file all tickets for DKAN, including those that involve code in DKAN Data
 Also, please remember to reference the issue accross repositories in order for maintainers to pick up commits and pull requests looking at the issue. You can do that for commits like this:
 
 ```bash
-git commit -m "Issue nuams/dkan#<issue_number>: ..."
+git commit -m "Issue NuCivic/dkan#<issue_number>: ..."
 ```
 
-Just replace **<issue_number>** with the actual issue number. You can reference pull requests exactly like that if you add the same text **"nuams/dkan#<issue_number>"** in a comment. 
+Just replace **<issue_number>** with the actual issue number. You can reference pull requests exactly like that if you add the same text **"NuCivic/dkan#<issue_number>"** in a comment.
 
 This really help us detecting changes and pulling them in in faster.

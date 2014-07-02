@@ -48,3 +48,9 @@ script:
   - bin/behat features/home.feature
   - bin/behat features/search.feature
   - bin/behat features/recline.feature
+
+notifications:
+  slack:
+    rooms:
+      nuams:2Eywq0BtPv73ISq3CF6gvRzo#monitor-devops
+      nuams:t3p2KxXdzymmwxitWPvfAsnK#monitor-dkan

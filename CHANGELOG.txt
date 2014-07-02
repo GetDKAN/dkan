@@ -1,3 +1,21 @@
+7.x-1.1
+-------
+- Moved dkan development to Nucivic's github: https://github.com/NuCivic/dkan
+- Grabbing dkan_dataset.make and dkan_datastore.make fiels from github cdn
+- Several bugs fixed.
+- Moving to using URLs for make file instead of copying locally #160
+- Issue nuams/dkan#112: "downloald" typo in drupal-org.make #159
+- Fixing #151: Admin role defaults to "Editor" #158
+- Fix typo on About page #156
+- Using hook_post_features_revert() for setting user_admin_role. #145
+- Issue nuams/dkan#138 update recline in dkan_dataset.make to fix negative lat/lon #135
+- Update to make files #131
+- POD changes #128
+- Issue #108 Add default email address for sample content #126
+- Fix license block #123
+- Issue #111 Fix facetapi_pretty_paths makefile definition #97
+- Update drupal-org.make #84
+
 7.x-1.0
 -------
 - Moved dkan development to github: https://github.com/nuams/dkan

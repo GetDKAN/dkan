@@ -78,7 +78,14 @@ function dkan_default_content_wisconsin_polling_dataset() {
           'source' => null,
         )
       )
-    )
+    ),
+    'field_contact_email' => array(
+      'und' => array(
+        0 => array(
+          'value' => variable_get('site_mail', NULL),
+        ),
+      ),
+    ),
   );
 }
 
@@ -123,7 +130,7 @@ function dkan_default_content_wisconsin_polling_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '6',
+            'tid' => '8',
           ),
         ),
       ),
@@ -201,6 +208,13 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
         ),
       ),
     ),
+    'field_contact_email' => array(
+      'und' => array(
+        0 => array(
+          'value' => variable_get('site_mail', NULL),
+        ),
+      ),
+    ),
   );
 }
 
@@ -237,7 +251,7 @@ function dkan_default_content_national_foreclosure_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '6',
+            'tid' => '8',
           ),
         ),
       ),
@@ -327,6 +341,23 @@ License: PDDL (Source indicates no restrictions on data).',
         ),
       ),
     ),
+    'field_tags' => array(
+      'und' => array(
+        0 => array(
+          'tid' => '6',
+        ),
+        1 => array(
+          'tid' => '7',
+        ),
+      ),
+    ),
+    'field_contact_email' => array(
+      'und' => array(
+        0 => array(
+          'value' => variable_get('site_mail', NULL),
+        ),
+      ),
+    ),
   );
 }
 
@@ -368,7 +399,7 @@ function dkan_default_content_gold_prices_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '6',
+            'tid' => '8',
           ),
         ),
       ),
@@ -457,6 +488,13 @@ function dkan_default_content_afghan_election_districts_dataset(){
         ),
       ),
     ),
+    'field_contact_email' => array(
+      'und' => array(
+        0 => array(
+          'value' => variable_get('site_mail', NULL),
+        ),
+      ),
+    ),
   );
 }
 
@@ -494,7 +532,7 @@ function dkan_default_content_afghan_election_districts_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '6',
+            'tid' => '8',
           ),
         ),
       ),
