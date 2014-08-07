@@ -1,37 +1,67 @@
+7.x-1.3
+-------
+ - Issue #192 drupal security update 
+
+7.x-1.2
+-------
+ - Issue #184 drupal security update
+ - Updating makefile back to 7.x-1.x state
+ - + 1.1 Release commit + changing git urls with https urls in order to travis to not fail during make
+ - Changing git protocol to https for dkan_dataset, dkan_datastore and nuboot in order for travis build to success
+ - Issue #166 updating nuboot for iframe link theme
+ - Update dataset.inc fixed #150
+ - Update README.md
+ - Updating nuams references to NuCivic
+ - Updating nuams references to NuCivic
+ - Updating nuams references to Nucivic
+ - Updating nuams references to NuCivic
+ - Updating nuams references to NuCivic
+ - Updating drupal-org.make to point to Nucivic
+ - Updating drupal-org-dev.make to point to NuCivic
+ - Moving to using URLs for make file instead of copying locally
+ - Fixes issue #112: "downloald" typo in drupal-org.make
+ - Changed 'The goal of the project combine...' to 'The goal of the project is to combine...'
+ - Update .travis.yml
+ - Adding information about google group
+ - Adding key to drupal core to play nice with buildmanager
+ - adding multi channel notifications for dkan
+ - adding slack integration for travis
+ - Update to make files
+
 7.x-1.1
 -------
-- Moved dkan development to Nucivic's github: https://github.com/NuCivic/dkan
-- Grabbing dkan_dataset.make and dkan_datastore.make fiels from github cdn
-- Several bugs fixed.
-- Moving to using URLs for make file instead of copying locally #160
-- Issue nuams/dkan#112: "downloald" typo in drupal-org.make #159
-- Fixing #151: Admin role defaults to "Editor" #158
-- Fix typo on About page #156
-- Using hook_post_features_revert() for setting user_admin_role. #145
-- Issue nuams/dkan#138 update recline in dkan_dataset.make to fix negative lat/lon #135
-- Update to make files #131
-- POD changes #128
-- Issue #108 Add default email address for sample content #126
-- Fix license block #123
-- Issue #111 Fix facetapi_pretty_paths makefile definition #97
-- Update drupal-org.make #84
+ - Moved dkan development to Nucivic's github: https://github.com/NuCivic/dkan
+ - Grabbing dkan_dataset.make and dkan_datastore.make fiels from github cdn
+ - Several bugs fixed.
+ - Moving to using URLs for make file instead of copying locally #160
+ - Issue nuams/dkan#112: "downloald" typo in drupal-org.make #159
+ - Fixing #151: Admin role defaults to "Editor" #158
+ - Fix typo on About page #156
+ - Using hook_post_features_revert() for setting user_admin_role. #145
+ - Issue nuams/dkan#138 update recline in dkan_dataset.make to fix negative lat/lon #135
+ - Update to make files #131
+ - POD changes #128
+ - Issue #108 Add default email address for sample content #126
+ - Fix license block #123
+ - Issue #111 Fix facetapi_pretty_paths makefile definition #97
+ - Update drupal-org.make #84
 
 7.x-1.0
 -------
-- Moved dkan development to github: https://github.com/nuams/dkan
-- Moved dkan_dataset development to github: https://github.com/nuams/dkan_dataset
-- Moved dkan_datastore development to github: https://github.com/nuams/dkan_datastore
-- Added BDD test suite for dkan: https://github.com/nuams/dkan/tree/7.x-1.x/test
-- Added WebTestCase test suite for dkan_dataset: https://github.com/nuams/dkan_dataset/tree/7.x-1.x/tests
-- Added WebTestCase test suite for dkan_dataset_api: https://github.com/nuams/dkan_dataset/tree/7.x-1.x/modules/dkan_dataset_api/tests
-- Added WebTestCase test suite for dkan_datastore and dkan_datastore_api: https://github.com/nuams/dkan_datastore/tree/7.x-1.x/tests
-- Travis + Github integration for all test suites on every commit
-- Moved issues for all three modules exclusively to dkan's github issues: https://github.com/nuams/dkan/issues/
-- Completed CKAN API Read Compliance with the following API methods: package_list, package_show, site_read, package_revision_list, group_list, resource_show, group_package_show and revision_list
-- Added nuboot theme (http://drupal.org/project/nuboot) as default dkan theme
-- Completed 508 compliance on dkan default theme
-- Several bugs fixed.
+ - Moved dkan development to github: https://github.com/nuams/dkan
+ - Moved dkan_dataset development to github: https://github.com/nuams/dkan_dataset
+ - Moved dkan_datastore development to github: https://github.com/nuams/dkan_datastore
+ - Added BDD test suite for dkan: https://github.com/nuams/dkan/tree/7.x-1.x/test
+ - Added WebTestCase test suite for dkan_dataset: https://github.com/nuams/dkan_dataset/tree/7.x-1.x/tests
+ - Added WebTestCase test suite for dkan_dataset_api: https://github.com/nuams/dkan_dataset/tree/7.x-1.x/modules/dkan_dataset_api/tests
+ - Added WebTestCase test suite for dkan_datastore and dkan_datastore_api: https://github.com/nuams/dkan_datastore/tree/7.x-1.x/tests
+ - Travis + Github integration for all test suites on every commit
+ - Moved issues for all three modules exclusively to dkan's github issues: https://github.com/nuams/dkan/issues/
+ - Completed CKAN API Read Compliance with the following API methods: package_list, package_show, site_read, package_revision_list, group_list, resource_show, group_package_show and revision_list
+ - Added nuboot theme (http://drupal.org/project/nuboot) as default dkan theme
+ - Completed 508 compliance on dkan default theme
+ - Several bugs fixed.
 
 7.x-1.0-beta
 ------------
-- First tagged release. Further tags will include a changelog.
+ - First tagged release. Further tags will include a changelog.
