@@ -35,7 +35,7 @@ NuCivic' [Data](http://nucivic.com/products/nudata/) platform offers 24/7, secur
 
 ## Installation
 
-### Downloadable Version 7.x-1-0
+### "Fully Made" version:
 
 https://github.com/NuCivic/dkan-drops-7
 
@@ -75,7 +75,7 @@ DKAN Datastore is a stand-alone module: https://github.com/NuCivic/dkan_datastor
 
 ## Current Status
 
-DKAN just published its 1.0 release.
+Check tags for latest DKAN Version. 7.x-1.x is the development branch.
 
 Contact us if you want to get involved!
 
