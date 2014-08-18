@@ -10,7 +10,7 @@ default:
     Drupal\DrupalExtension\Extension:
       blackbox: ~
       drush:
-        root: "dkan" 
+        root: "drupal" 
       region_map:
         content: "#region-content"
         toolbar: ".tabs--primary"
@@ -21,3 +21,9 @@ default:
         right sidebar: "#column-right"
       text:
         log_out: "Logout"
+
+local:
+  extensions:
+    Drupal\DrupalExtension\Extension:
+      drush:
+        root: "../../dkan"

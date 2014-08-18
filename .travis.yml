@@ -15,27 +15,35 @@ install:
   - sudo apt-get update > /dev/null
   - sudo apt-get --quiet=2 install php5-cgi php5-curl php5-gd php5-mysql > /dev/null
 
-  # Install latest Drush 6.
+  # Install latest Drush 7.
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - composer global require --no-interaction drush/drush:6.*
+  - composer global require --no-interaction drush/drush:dev-master
+  - composer global require --no-interaction youngj/httpserver:*
 
 before_script:
   # Install DKAN
-  - git clone --branch $TRAVIS_BRANCH https://github.com/nuams/dkan.git
-  - cd dkan
-  - sed -i "s/7.x-1.x/$TRAVIS_BRANCH/g" build-dkan.make
-  - drush make --prepare-install build-dkan.make --yes
-  - drush si dkan --sites-subdir=default --db-url=mysql://root:@127.0.0.1/dkan_travis --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module='array(FALSE,FALSE)' --yes
+  - cd ../..
+  - mkdir drupal
+  - cd drupal
+  - cp $TRAVIS_BUILD_DIR/drupal-org-core.make ./
+  - drush make --prepare-install drupal-org-core.make --yes
+  - cp -R $TRAVIS_BUILD_DIR profiles/
+  - cd profiles/dkan
+  - drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion
+  - cd $TRAVIS_BUILD_DIR/test
+  - mv ../../drupal ./
+  - cd drupal
+  - drush si dkan --sites-subdir=default --db-url=mysql://root:@127.0.0.1:3306/dkan_travis --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module='array(FALSE,FALSE)' --yes
   - drush cc all --yes
-  - drush --quiet --yes --root=$PWD --server=builtin runserver :8888 > /dev/null 2>&1 &
-  - sleep 4s
+  - drush --quiet --yes --root=$PWD runserver :8888 > /dev/null 2>&1 &
+  - sleep 4
 
   # Setup display for selenium
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - sleep 3
-  - cd ../
 
+  - cd ..
   - wget http://selenium.googlecode.com/files/selenium-server-standalone-2.35.0.jar
   - java -jar selenium-server-standalone-2.35.0.jar -quiet -p 4444 -log shut_up_selenium &
   - sleep 5
@@ -52,5 +60,5 @@ script:
 notifications:
   slack:
     rooms:
-      nuams:2Eywq0BtPv73ISq3CF6gvRzo#monitor-devops
-      nuams:t3p2KxXdzymmwxitWPvfAsnK#monitor-dkan
+      nucivic:2Eywq0BtPv73ISq3CF6gvRzo#monitor-devops
+      nucivic:t3p2KxXdzymmwxitWPvfAsnK#monitor-dkan
