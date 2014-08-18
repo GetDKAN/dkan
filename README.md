@@ -81,6 +81,22 @@ Contact us if you want to get involved!
 
 DKAN development is a sponsored by NuCivic. For more information about hosting and professional support options for DKAN, see http://nucivic.com
 
+## Getting Help with DKAN
+
+Have a question, found a bug, or need help with DKAN?
+
+### I have a general question DKAN as a Developer or Site Builder
+
+Please post a question on our Developer list: https://groups.google.com/forum/?hl=en#!forum/dkan-dev
+
+### I have a bug or issue
+
+Please post it to our Github issue queue: https://github.com/nucivic/dkan/issues
+
+### I would like to purchase DKAN support
+
+Please contact us at NuCivic http://nucivic.com/data/demo/
+
 ## Community
 
 You are welcome to join the discussion on the DKAN Developers mailing list. Join and read archives at:
