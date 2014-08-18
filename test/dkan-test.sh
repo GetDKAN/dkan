@@ -8,8 +8,8 @@ mysql -e 'drop database dkan_test; create database dkan_test;'
 
 # Install DKAN
 cd ..
-drush make --prepare-install build-dkan.make --yes test/dkan
-cd test/dkan
+drush make --prepare-install build-dkan.make --yes test/drupal
+cd test/drupal
 drush si dkan --sites-subdir=default --db-url=mysql://root:@127.0.0.1/dkan_test --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module='array(FALSE,FALSE)' --yes
 drush cc all --yes
 
