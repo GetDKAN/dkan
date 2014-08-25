@@ -79,7 +79,23 @@ Check tags for latest DKAN Version. 7.x-1.x is the development branch.
 
 Contact us if you want to get involved!
 
-DKAN development is a sponsored by NuCivic. For more information about hosting and professional support options for DKAN, see http://nucivic.com
+DKAN development is a sponsored by NuCivic. For more information about hosting and professional support options for DKAN, see http://nucivic.com/data
+
+## Getting Help with DKAN
+
+Have a question, found a bug, or need help with DKAN?
+
+### I have a general question DKAN as a Developer or Site Builder
+
+Please post a question on our Developer list: https://groups.google.com/forum/?hl=en#!forum/dkan-dev
+
+### I have a bug or issue
+
+Please post it to our Github issue queue: https://github.com/nucivic/dkan/issues
+
+### I would like to purchase DKAN support or hosting
+
+Please contact us at NuCivic http://nucivic.com/data/demo/
 
 ## Community
 
@@ -90,7 +106,7 @@ https://groups.google.com/forum/?hl=en#!forum/dkan-dev
 
 Please file all tickets for DKAN, including those that involve code in DKAN Dataset and DKAN Datastore modules in this issue queue. We have several labels in place for you to tag the issue with and identify it with the proper component.
 
-Also, please remember to reference the issue accross repositories in order for maintainers to pick up commits and pull requests looking at the issue. You can do that for commits like this:
+Also, please remember to reference the issue across repositories in order for maintainers to pick up commits and pull requests looking at the issue. You can do that for commits like this:
 
 ```bash
 git commit -m "Issue NuCivic/dkan#<issue_number>: ..."
