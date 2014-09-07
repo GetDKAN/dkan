@@ -35,7 +35,6 @@ function dkan_additional_setup() {
   );
   foreach ($tags as $tag) {
     $term = new stdClass();
-    // 'Tags' vid.
     $term->vid = 2;
     $term->name = $tag;
     taxonomy_term_save($term);
@@ -46,7 +45,6 @@ function dkan_additional_setup() {
   );
   foreach ($formats as $format) {
     $term = new stdClass();
-    // 'Formats' vid.
     $term->vid = 1;
     $term->name = $format;
     taxonomy_term_save($term);
