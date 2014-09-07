@@ -24,6 +24,9 @@ function dkan_additional_setup() {
   variable_set('node_access_needs_rebuild', FALSE);
   variable_set('gravatar_size', 190);
 
+  $tags_vocab = taxonomy_vocabulary_machine_name_load('tags');
+  $format_vocab = taxonomy_vocabulary_machine_name_load('format');
+
   $tags = array(
     'country-afghanistan',
     'election',
@@ -35,8 +38,8 @@ function dkan_additional_setup() {
   );
   foreach ($tags as $tag) {
     $term = new stdClass();
-    // 'Tags' vid.
-    $term->vid = 2;
+    $term->vid = $tags_vocab->vid;
+    $term->vocabulary_machine_name = 'tags';
     $term->name = $tag;
     taxonomy_term_save($term);
   }
@@ -46,12 +49,11 @@ function dkan_additional_setup() {
   );
   foreach ($formats as $format) {
     $term = new stdClass();
-    // 'Formats' vid.
-    $term->vid = 1;
+    $term->vid = $format_vocab->vid;
+    $term->vocabulary_machine_name = 'format';
     $term->name = $format;
     taxonomy_term_save($term);
   }
-
   // Make sure markdown editor installs correctly.
   module_load_include('install', 'markdowneditor', 'markdowneditor');
   _markdowneditor_insert_latest();
