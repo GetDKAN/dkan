@@ -44,8 +44,8 @@ before_script:
   - sleep 3
 
   - cd ..
-  - wget http://selenium.googlecode.com/files/selenium-server-standalone-2.35.0.jar
-  - java -jar selenium-server-standalone-2.35.0.jar -quiet -p 4444 -log shut_up_selenium &
+  - wget http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar
+  - java -jar selenium-server-standalone-2.42.2.jar -quiet -p 4444 -log shut_up_selenium &
   - sleep 5
 
 script:
