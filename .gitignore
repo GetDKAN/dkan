@@ -8,3 +8,4 @@ test/vendor
 test/bin
 test/composer.lock
 test/dkan
+test/local.yml

@@ -121,4 +121,20 @@ class FeatureContext extends DrupalContext
       sleep($arg1);
     }
 
+    /**
+     * Determine if the a user is already logged in.
+     */
+    public function loggedIn() {
+      $session = $this->getSession();
+      $session->visit($this->locatePath('/'));
+      $driver = $this->getSession()->getDriver();
+      // Wait two seconds for admin menu if using js.
+      if ($driver instanceof Selenium2Driver) {
+          $session->wait(2000);
+      }
+      // If a logout link is found, we are logged in. While not perfect, this is
+      // how Drupal SimpleTests currently work as well.
+      $element = $session->getPage();
+      return $element->findLink($this->getDrupalText('log_out'));
+    }
 }
