@@ -19,7 +19,7 @@ Feature: Homepage
 
   Scenario: Viewing footer
     Given I am on the homepage
-    Then I should see "powered by DKAN"
+    Then I should see "Powered by NuCivic"
 
   Scenario: Viewing tags
     Given I am on the homepage
