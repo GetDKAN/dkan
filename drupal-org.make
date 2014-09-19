@@ -39,7 +39,6 @@ projects[views_responsive_grid][version] = 1.3
 projects[views_responsive_grid][subdir] = contrib
 
 projects[schema][version] = 1.2
-projects[schema][patch][1237974] = http://drupal.org/files/schema-support-custom-types-1237974-48.patch
 projects[schema][subdir] = contrib
 
 projects[admin_menu][version] = 3.0-rc4
