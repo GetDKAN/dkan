@@ -5,3 +5,13 @@
  */
 
 include_once 'dkan_sitewide_roles_perms.features.inc';
+
+/**
+ * Implements hook_strongarm_alter()
+ *
+ * Sets user_admin_role to "administrator"
+ */
+function dkan_sitewide_roles_perms_strongarm_alter(&$strongarms) {
+  $role = user_role_load_by_name('administrator');
+  $strongarms['user_admin_role']->value = $role->rid;
+}
