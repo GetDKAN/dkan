@@ -21,7 +21,7 @@
 
 NuCivic' [Data](http://nucivic.com/products/nudata/) platform offers 24/7, secure, cloud-based DKAN hosting and support services.
 
-*   [FAQs »](http://nucivic.com/products/nudata/nudata-faqs/)
+*   [FAQs »](http://nucivic.com/data/faqs/)
 *   [ Live demo » ](http://demo.getdkan.com/)
 *   [ Docs » ](http://docs.getdkan.com/)
 
