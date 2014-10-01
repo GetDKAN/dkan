@@ -204,8 +204,9 @@ function dkan_sitewide_license_block() {
  */
 function dkan_sitewide_footer_author() {
   return t(
-    "Powered by !nucivic",
+    "Powered by !dkan, a project of !nucivic",
     array(
+      '!dkan' => l('DKAN', 'http://nucivic.com/dkan'),
       '!nucivic' => l('NuCivic', 'http://nucivic.com'),
     )
   );
