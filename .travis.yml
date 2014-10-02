@@ -60,7 +60,6 @@ script:
 notifications:
   slack:
     rooms:
-      nucivic:t3p2KxXdzymmwxitWPvfAsnK#general
-      nucivic:t3p2KxXdzymmwxitWPvfAsnK#monitor-dkan
-      nucivic:t3p2KxXdzymmwxitWPvfAsnK#monitor-data_starter
-      
+      - nucivic:t3p2KxXdzymmwxitWPvfAsnK#monitor-devops
+      - nucivic:t3p2KxXdzymmwxitWPvfAsnK#monitor-dkan
+      - nucivic:t3p2KxXdzymmwxitWPvfAsnK#monitor-data-starter
