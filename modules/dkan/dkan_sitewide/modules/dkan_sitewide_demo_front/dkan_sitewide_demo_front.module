@@ -35,7 +35,8 @@ function dkan_sitewide_demo_front_block_view($delta = '') {
   switch ($delta) {
     case 'dkan_demo_front':
       $block['subject'] = t('Welcome to the DKAN Demo');
-      $block['content'] = dkan_demo_front_block();
+      $default = dkan_demo_front_block();
+      $block['content'] = check_markup(variable_get('dkan_sitewide_demo_front_dkan_demo_front_text', $default), variable_get('dkan_sitewide_demo_front_dkan_demo_front_format', filter_fallback_format()));
       break;
 
     case 'dkan_search_front':
@@ -45,10 +46,64 @@ function dkan_sitewide_demo_front_block_view($delta = '') {
 
     case 'dkan_add_front':
       $block['subject'] = t('Add a Dataset');
-      $block['content'] = dkan_add_front_block();
+      $default = dkan_add_front_block();
+      $block['content'] = check_markup(variable_get('dkan_sitewide_demo_front_dkan_add_front_text', $default), variable_get('dkan_sitewide_demo_front_dkan_add_front_format', filter_fallback_format()));
       break;
   }
   return $block;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function dkan_sitewide_demo_front_block_configure($delta = '') {
+  $form = array();
+  if ($delta == 'dkan_demo_front') {
+    $form['dkan_sitewide_demo_front_dkan_demo_front_text'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Default'),
+      '#description' => t('Add text here to override the default block content. Leave blank to continue using default.'),
+      '#default_value' => variable_get('dkan_sitewide_demo_front_dkan_demo_front_text', ''),
+      '#format' => variable_get('dkan_sitewide_demo_front_dkan_demo_front_format', 'html'),
+    );
+  }
+  if ($delta == 'dkan_add_front') {
+    $form['dkan_sitewide_demo_front_dkan_add_front_text'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Add a dataset'),
+      '#description' => t('Add text here to override the default block content. Leave blank to continue using default.'),
+      '#default_value' => variable_get('dkan_sitewide_demo_front_dkan_add_front_text', ''),
+      '#format' => variable_get('dkan_sitewide_demo_front_dkan_add_front_format', 'html'),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function dkan_sitewide_demo_front_block_save($delta = '', $edit = array()) {
+  if ($delta == 'dkan_demo_front') {
+    if (empty($edit['dkan_sitewide_demo_front_dkan_demo_front_text']['value'])) {
+      variable_del('dkan_sitewide_demo_front_dkan_demo_front_text');
+      drupal_set_message(t('Reset block content to default.'));
+    }
+    else {
+      variable_set('dkan_sitewide_demo_front_dkan_demo_front_text', $edit['dkan_sitewide_demo_front_dkan_demo_front_text']['value']);
+      variable_set('dkan_sitewide_demo_front_dkan_demo_front_format', $edit['dkan_sitewide_demo_front_dkan_demo_front_text']['format']);
+    }
+  }
+  if ($delta == 'dkan_add_front') {
+    if (empty($edit['dkan_sitewide_demo_front_dkan_add_front_text']['value'])) {
+      variable_del('dkan_sitewide_demo_front_dkan_add_front_text');
+      drupal_set_message(t('Reset block content to default.'));
+    }
+    else {
+      variable_set('dkan_sitewide_demo_front_dkan_add_front_text', $edit['dkan_sitewide_demo_front_dkan_add_front_text']['value']);
+      variable_set('dkan_sitewide_demo_front_dkan_add_front_format', $edit['dkan_sitewide_demo_front_dkan_add_front_text']['format']);
+    }
+  }
 }
 
 /**
@@ -58,15 +113,9 @@ function dkan_demo_front_block() {
   $dataset_url = url('dataset');
   $homepage_graphic = url(drupal_get_path('theme', 'dkan') . '/images/homepage-graphic.jpg');
   $homepage_dataset_url = url('dataset/gold-prices-london-1950-2008-monthly');
-  $content = '<div class="module-content">
-    <header>
-      <p>Try out standard DKAN functionality in a sandbox environment. Search for datasets directly from the homepage or by navigating to the <a href="' . url('dataset') . '">Datasets</a> search page where you can facet by tags, groups and format.</p>
-    </header>
-    <section class="featured media-overlay">
-      <h2 class="media-heading">DKAN‘s data previewing tool has many powerful features</h2>
-      <a class="image" href=" ' . $homepage_dataset_url . ' "><img src="' . $homepage_graphic . '" style="width: 100%"></a>
-    </section>
-  </div>';
+  $content = t('<p>Try out standard DKAN functionality in a sandbox environment. Search for datasets directly from the homepage or by navigating to the <a href="' . url('dataset') . '">Datasets</a> search page where you can facet by tags, groups and format.</p>');
+  $content .= '<p class="featured media-overlay"><strong class="media-heading">DKANs data previewing tool has many powerful features</strong><a class="image" href=" ' . $homepage_dataset_url . ' "><img src="' . $homepage_graphic . '" style="width: 100%"></a>
+    </p>';
   return $content;
 }
 
