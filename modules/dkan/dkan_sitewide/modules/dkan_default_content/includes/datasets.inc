@@ -21,6 +21,9 @@ function dkan_default_content_available_datasets(){
  * Builds an array of Wisconsin Polling Places Dataset.
  */
 function dkan_default_content_wisconsin_polling_dataset() {
+  $name = 'csv';
+  $terms = taxonomy_get_term_by_name($name);
+  $term = current($terms);
   return array(
     'title' => 'Wisconsin Polling Places',
     'sort_value' => '11',
@@ -93,6 +96,9 @@ function dkan_default_content_wisconsin_polling_dataset() {
  * Builds an array of Winsconsin Polling Places Dataset's resources
  */
 function dkan_default_content_wisconsin_polling_resources(){
+  $name = 'csv';
+  $terms = taxonomy_get_term_by_name($name);
+  $term = current($terms);
   return array(
     array(
       'exported_path' => 'dataset/wisconsin-polling-places/resource/0a6ef5bc-340c-40d7-b8ea-f7f12c390b1f',
@@ -130,7 +136,7 @@ function dkan_default_content_wisconsin_polling_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '8',
+            'tid' => $term->tid,
           ),
         ),
       ),
@@ -161,7 +167,8 @@ function dkan_default_content_wisconsin_polling_resources(){
 /**
  * Builds an array of US National Foreclosure Statistics January 2012 Dataset
  */
-function dkan_default_content_national_foreclosure_dataset(){
+function dkan_default_content_national_foreclosure_dataset() {
+
   return array(
     'exported_path' => 'us-national-foreclosure-statistics-january-2012',
     'sort_value' => '9',
@@ -222,6 +229,9 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
  * Builds an array of US National Foreclosure Statistics January 2012 Dataset Resources
  */
 function dkan_default_content_national_foreclosure_resources(){
+  $name = 'csv';
+  $terms = taxonomy_get_term_by_name($name);
+  $term = current($terms);
   return array(
     array(
       'exported_path' => 'dataset/us-national-foreclosure-statistics-january-2012/resource/d9ed9373-4371-4f94-a17d',
@@ -251,7 +261,7 @@ function dkan_default_content_national_foreclosure_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '8',
+            'tid' => $term->tid,
           ),
         ),
       ),
@@ -365,6 +375,9 @@ License: PDDL (Source indicates no restrictions on data).',
  * Builds an array of Gold Prices in London 1950-2008 Dataset Resoures
  */
 function dkan_default_content_gold_prices_resources(){
+  $name = 'csv';
+  $terms = taxonomy_get_term_by_name($name);
+  $term = current($terms);
   return array(
     array(
       'exported_path' => 'dataset/gold-prices-london-1950-2008-monthly/resource/f913d1f0-4e4e-459b-ad8d-57cf18d6fcdf',
@@ -399,7 +412,7 @@ function dkan_default_content_gold_prices_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '8',
+            'tid' => $term->tid,
           ),
         ),
       ),
@@ -501,7 +514,10 @@ function dkan_default_content_afghan_election_districts_dataset(){
 /**
  * Builds an array of Afghanistan Election Districts Dataset Resources
  */
-function dkan_default_content_afghan_election_districts_resources(){
+function dkan_default_content_afghan_election_districts_resources() {
+  $name = 'csv';
+  $terms = taxonomy_get_term_by_name($name);
+  $term = current($terms);
   return array(
     array(
       'exported_path' => 'dataset/resource/7fb111b3-ab62-4bf3-864c-56a72347df33',
@@ -532,7 +548,7 @@ function dkan_default_content_afghan_election_districts_resources(){
       'field_format' => array(
         'und' => array(
           0 => array(
-            'tid' => '8',
+            'tid' => $term->tid,
           ),
         ),
       ),
