@@ -30,12 +30,6 @@ projects[og_moderation][subdir] = contrib
 projects[restws][version] = 2.1
 projects[restws][subdir] = contrib
 
-projects[views_bulk_operations][version] = 3.2
-projects[views_bulk_operations][subdir] = contrib
-
-projects[views_responsive_grid][version] = 1.3
-projects[views_responsive_grid][subdir] = contrib
-
 projects[schema][version] = 1.2
 projects[schema][patch][1237974] = http://drupal.org/files/schema-support-custom-types-1237974-48.patch
 projects[schema][subdir] = contrib
