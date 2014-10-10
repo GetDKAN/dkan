@@ -22,7 +22,7 @@ function dkan_sitewide_block_info() {
     'cache' => DRUPAL_NO_CACHE
   );
   $blocks['dkan_sitewide_footer_author'] = array(
-    'info' => t('Powered by NuCivic'),
+    'info' => t('Powered by DKAN'),
     'cache' => DRUPAL_CACHE_GLOBAL
   );
   $blocks['dkan_sitewide_search_bar'] = array(
@@ -206,8 +206,8 @@ function dkan_sitewide_footer_author() {
   return t(
     "Powered by !dkan, a project of !nucivic",
     array(
-      '!dkan' => l('DKAN', 'http://nucivic.com/dkan'),
-      '!nucivic' => l('NuCivic', 'http://nucivic.com'),
+      '!dkan' => l(t('DKAN'), 'http://nucivic.com/dkan'),
+      '!nucivic' => l(t('NuCivic'), 'http://nucivic.com'),
     )
   );
 }
@@ -324,27 +324,31 @@ function dkan_sitewide_other_access() {
  */
 function dkan_sitewide_search_bar() {
   if (module_exists('dkan_sitewide_search_db')) {
-    static $dkan_sitewide_searcb_bar_id = 0;
-    $view = views_get_view('dataset');
-    $view->set_display('page');
-    $view->init_handlers();
-    $exposed_form = $view->display_handler->get_plugin('exposed_form');
-    $exposed_form->view->filter['search_api_views_fulltext']->options['expose']['description'] = t('eg. Gold Prices');
-    $exposed_form->view->filter['search_api_views_fulltext']->options['expose']['label'] = '';
-    // Deal with any exposed filters we may have, before building.
-    $form_state = array(
-      'view' => $view,
-      'display' => $view->display[$view->current_display],
-      'method' => 'get',
-      'rerender' => TRUE,
-      'no_redirect' => TRUE,
-      'always_process' => TRUE,
-    );
-    $form_state['exposed_form_plugin'] = $exposed_form;
-    $form = drupal_build_form('views_exposed_form', $form_state);
-    $form['query']['#id'] = 'edit-query-' . $dkan_sitewide_searcb_bar_id;
-    $dkan_sitewide_searcb_bar_id++;
-    $output = drupal_render($form);
-    return $output;
+    $output = drupal_get_form('dkan_sitewide_dataset_search_form');
+    return drupal_render($output);
+  }
+}
+/**
+ * Form for sitewide search.
+ */
+function dkan_sitewide_dataset_search_form($form, $form_state) {
+  $form['search'] = array(
+    '#type' => 'textfield',
+    '#attributes' => array('placeholder' => t('search')),
+    '#size' => 30,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Apply'),
+  );
+  return $form;
+}
+/**
+ * Redirects to search page.
+ */
+function dkan_sitewide_dataset_search_form_submit($form, &$form_state) {
+  if ($query = $form_state['input']['search']) {
+    drupal_goto('dataset', array('query' => array('query' => $query)));
+
   }
 }

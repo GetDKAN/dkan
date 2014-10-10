@@ -15,7 +15,7 @@ Feature: Homepage
     Given I am on the homepage
     Then I should see "Datasets"
     Then I should see "Groups"
-    #Then I should see "About"
+    Then I should see "About"
 
   Scenario: Viewing footer
     Given I am on the homepage
