@@ -66,6 +66,14 @@ function dkan_sitewide_search_db_views_default_views() {
   $handler->display->display_options['sorts']['changed']['table'] = 'search_api_index_datasets';
   $handler->display->display_options['sorts']['changed']['field'] = 'changed';
   $handler->display->display_options['sorts']['changed']['order'] = 'DESC';
+  $handler->display->display_options['sorts']['changed']['exposed'] = TRUE;
+  $handler->display->display_options['sorts']['changed']['expose']['label'] = 'Date changed';
+  /* Sort criterion: Indexed Node: Title */
+  $handler->display->display_options['sorts']['title']['id'] = 'title';
+  $handler->display->display_options['sorts']['title']['table'] = 'search_api_index_datasets';
+  $handler->display->display_options['sorts']['title']['field'] = 'title';
+  $handler->display->display_options['sorts']['title']['exposed'] = TRUE;
+  $handler->display->display_options['sorts']['title']['expose']['label'] = 'Title';
   /* Filter criterion: Search: Fulltext search */
   $handler->display->display_options['filters']['search_api_views_fulltext']['id'] = 'search_api_views_fulltext';
   $handler->display->display_options['filters']['search_api_views_fulltext']['table'] = 'search_api_index_datasets';
