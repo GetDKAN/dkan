@@ -36,7 +36,7 @@ function dkan_sitewide_demo_front_block_view($delta = '') {
     case 'dkan_demo_front':
       $block['subject'] = t('Welcome to the DKAN Demo');
       $default = dkan_demo_front_block();
-      $block['content'] = check_markup(variable_get('dkan_sitewide_demo_front_dkan_demo_front_text', $default), variable_get('dkan_sitewide_demo_front_dkan_demo_front_format', filter_fallback_format()));
+      $block['content'] = check_markup(variable_get('dkan_sitewide_demo_front_dkan_demo_front_text', $default), variable_get('dkan_sitewide_demo_front_dkan_demo_front_format', 'html'));
       break;
 
     case 'dkan_search_front':
@@ -47,7 +47,7 @@ function dkan_sitewide_demo_front_block_view($delta = '') {
     case 'dkan_add_front':
       $block['subject'] = t('Add a Dataset');
       $default = dkan_add_front_block();
-      $block['content'] = check_markup(variable_get('dkan_sitewide_demo_front_dkan_add_front_text', $default), variable_get('dkan_sitewide_demo_front_dkan_add_front_format', filter_fallback_format()));
+      $block['content'] = check_markup(variable_get('dkan_sitewide_demo_front_dkan_add_front_text', $default), variable_get('dkan_sitewide_demo_front_dkan_add_front_format', 'html'));
       break;
   }
   return $block;
