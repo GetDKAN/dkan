@@ -82,7 +82,7 @@ projects[nuboot][subdir] = contrib
 projects[nuboot][download][type] = git
 projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
 projects[nuboot][download][branch] = 7.x-1.x
-;projects[nuboot][download][tag] = 7.x-1.1
+projects[nuboot][download][revision] = "8d03665d93d35c077a1ac5f7667ef5774be6e177"
 
 ; Libraries
 libraries[font_awesome][type] = libraries
