@@ -1,3 +1,7 @@
+7.x-1.5 2014-10-15
+--------------------------
+ - Drupal core security update. Upgrades to 7.32
+
 7.x-1.4  2014-10-10
 --------------------------
  - Replaced tid hardcoding during profile install with proper taxonomy_vocabulary_machine_name_load
