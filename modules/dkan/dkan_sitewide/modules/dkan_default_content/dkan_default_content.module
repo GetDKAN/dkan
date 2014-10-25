@@ -9,6 +9,8 @@ function dkan_default_content_base_install(){
   ctools_include('groups', 'dkan_default_content');
   ctools_include('datasets', 'dkan_default_content');
   ctools_include('Dataset', 'dkan_dataset');
+  // Create taxonomies
+  dkan_default_content_taxonomy_create();
   // Save pages
   $pages = dkan_default_content_available_pages();
   foreach($pages as $loadable){
@@ -36,6 +38,42 @@ function dkan_default_content_base_install(){
       $instance->attachResource($resource);
     }
     $instance->save();
+  }
+}
+
+/**
+ * Add default taxonomies
+ */
+function dkan_default_content_taxonomy_create() {
+  $tags_vocab = taxonomy_vocabulary_machine_name_load('tags');
+  $format_vocab = taxonomy_vocabulary_machine_name_load('format');
+
+  $tags = array(
+    'country-afghanistan',
+    'election',
+    'politics',
+    'transparency',
+    'municipal',
+    'price',
+    'time-series',
+  );
+  foreach ($tags as $tag) {
+    $term = new stdClass();
+    $term->vid = $tags_vocab->vid;
+    $term->vocabulary_machine_name = 'tags';
+    $term->name = $tag;
+    taxonomy_term_save($term);
+  }
+  $formats = array(
+    'csv',
+    'html',
+  );
+  foreach ($formats as $format) {
+    $term = new stdClass();
+    $term->vid = $format_vocab->vid;
+    $term->vocabulary_machine_name = 'format';
+    $term->name = $format;
+    taxonomy_term_save($term);
   }
 }
 
