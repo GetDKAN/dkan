@@ -76,7 +76,7 @@ Feature: Groups
       Then I should see "Create Dataset"
     When I fill in "title" with "Test Dataset"
       And I fill in "body[und][0][value]" with "Test description"
-      And I select node named "test group" from "og_group_ref[und][0][default][]"
+      And I click "test group"
       And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I fill in "title" with "Test Resource Link File"
