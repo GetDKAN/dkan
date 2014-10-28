@@ -1,8 +1,10 @@
 <?php
 
 /**
- *
+ * @file
+ * Install file for default content.
  */
+
 /**
  * Implements hook_uninstall().
  */
