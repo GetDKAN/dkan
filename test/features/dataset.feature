@@ -32,24 +32,6 @@ Feature: Datasets
       And I wait for "5" seconds
       And I should see "Door Creek Church"
 
-  @api @javascript @work
-  Scenario: Changing the Resource on an existing Dataset 
-    Given I am logged in as a user with the "editor" role
-      And I am on "/dataset/wisconsin-polling-places"
-      Then I should see "Edit"
-    When I click "Edit"
-      Then I should see "Resources"
-    When I empty the field "field_resources[und][0][target_id]"
-      And I fill in the autocomplete field "field_resources[und][0][target_id]" with "Table"
-      And I press "Finish"
-      Then I should see "CSV file extracted and cleaned from source exce"
-    When I click "Edit"
-      Then I should see "Resources"
-    When I empty the field "field_resources[und][0][target_id]"
-      And I fill in the autocomplete field "field_resources[und][0][target_id]" with "Madison"
-      And I press "Finish"
-      Then I should see "Madison"
-
   @api @javascript
   Scenario: Create a dataset with a group as an authenticated user
     Given I am logged in as a user with the "authenticated user" role
@@ -62,8 +44,8 @@ Feature: Datasets
       Then I should see "Create Dataset"
     When I fill in "title" with "Test Dataset"
       And I fill in "body[und][0][value]" with "Test description"
-      And I select "cc-by" from "field_license[und][select]"
-      And I select node named "test group" from "og_group_ref[und][0][default][]"
+      And I click the chosen field "License Not Specified" and enter "Creative Commons Attribution"    
+      And I fill in the chosen field "Choose some options" with "Test Group"
       And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I fill in "title" with "Test Resource Link File"
@@ -90,6 +72,5 @@ Feature: Datasets
     Then I should see "Edit"
       And I should see "Add Resource"
     When I am on "/dataset/wisconsin-polling-places"
-    # Removing for https://drupal.org/node/2204139
-    #Then I should not see "Edit"
-    #  And I should not see "Add Resource"
+      Then I should not see "Edit"
+      And I should see "Add Resource"

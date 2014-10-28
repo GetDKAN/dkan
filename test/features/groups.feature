@@ -13,9 +13,6 @@ Feature: Groups
     Given I am a "member" of the group "Geospatial Data Explorer Examples"
     When I visit "dataset/wisconsin-polling-places"
     Then I should see "edit"
-    # Requires https://drupal.org/files/update-groups-issues-2042581.patch
-    #When I click "Madison Polling Places"
-    #Then I should see "edit"
 
    @api @javascript
    Scenario: Request to join a group as an Auth User
@@ -23,20 +20,7 @@ Feature: Groups
     When I visit "group/geospatial-data-explorer-examples"
       And I click "Request group membership"
       Then I should see "Are you sure you want to join the group Geospatial Data Explorer Examples?"
-    #When I click "Join"
-      #Then I should have a pending request to join "Geospatial Data Explorer Examples" 
-
-  # Scenario: Join a group and view unpublished content as an Auth User
-    # Given I am logged in as a user with the "authenticated user" role
-    # And I am a "member" of the group "Geospatial Data Explorer Examples"
-    # When "Wisconsin Polling Places" is unpublished  
-    # And I visit "dataset/wisconsin-polling-places"
-    # Then I should see "Madison Polling Places" 
-
-  # Scenario: Manage a group as an Auth User 
-    #
-    #
-
+    
   @api @javascript
   Scenario: View Groups 
     Given I am on "/group/geospatial-data-explorer-examples"
@@ -92,8 +76,8 @@ Feature: Groups
       Then I should see "Create Dataset"
     When I fill in "title" with "Test Dataset"
       And I fill in "body[und][0][value]" with "Test description"
-      And I select "cc-by" from "field_license[und][select]"
-      And I select node named "test group" from "og_group_ref[und][0][default][]"
+      And I click the chosen field "License Not Specified" and enter "Creative Commons Attribution"
+      And I fill in the chosen field "Choose some options" with "Test Group"
       And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I fill in "title" with "Test Resource Link File"
