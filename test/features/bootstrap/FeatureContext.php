@@ -47,6 +47,57 @@ class FeatureContext extends DrupalContext
       $rid = trim(str_replace(array("'"), "", $option));
       $this->assertDrushCommandWithArgument('og-add-user',"node $gid $rid $user_id");
     }
+    
+    /**
+     * Properly inputs item in field rendered by Chosen.js.
+     *
+     *
+     * @Given /^I fill in the chosen field "([^"]*)" with "([^"]*)"$/
+     */
+    public function iFillInTheChosenFieldWith($field, $value) {
+      $session = $this->getSession();
+      $page = $session->getPage();
+      $xpath = $page->find('xpath', '//input[@value="' . $field . '"]');
+      $field = $this->fixStepArgument($field);
+      $value = $this->fixStepArgument($value);
+      // Focus means autocoplete will actually show up.
+      $this->getSession()->getDriver()->focus('//input[@value="' . $field . '"]');
+      //$page->fillField($field, $value);
+      $this->iWaitForSeconds(1);
+      // Selects the first dropdown since there is no id or other way to
+      // reference the desired entry.
+      $title = $session->getPage()->find(
+          'xpath',
+          $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
+
+      );
+      $title->click();
+    }
+    
+   /**
+    * @Given /^I click the chosen field "([^"]*)" and enter "([^"]*)"$/
+    */
+    public function iClickTheChosenFieldAndEnter($field, $value) {
+      $session = $this->getSession();
+      $page = $session->getPage();
+      $field = $this->fixStepArgument($field);
+      $value = $this->fixStepArgument($value);
+      // Click chosen field.
+      $field_click = $session->getPage()->find(
+          'xpath',
+          $session->getSelectorsHandler()->selectorToXpath('xpath', '//span[.="' . $field . '"]')
+
+      );
+      $field_click->click();
+      $this->iWaitForSeconds(1);
+      // Click value that now appears.
+      $title = $session->getPage()->find(
+          'xpath',
+          $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
+
+      );
+      $title->click();
+    }    
 
     /**
      * Click on map icon as identified by its z-index.
@@ -77,19 +128,20 @@ class FeatureContext extends DrupalContext
      */
     public function iFillInTheAutoFieldWith($field, $value) {
       $session = $this->getSession();
-      $page = $session->getPage();
-      $xpath = $page->find('xpath', '//input[@name="' . $field . '"]');
       $field = $this->fixStepArgument($field);
       $value = $this->fixStepArgument($value);
-      // Focus means autocoplete will actually show up.
-      $this->getSession()->getDriver()->focus('//input[@name="' . $field . '"]');
-      $page->fillField($field, $value);
-      $this->iWaitForSeconds(1);
+      $input_title = $session->getPage()->find(
+          'xpath',
+          $session->getSelectorsHandler()->selectorToXpath('xpath', '//input[@value="' . $field . '"]')
+
+      );
+      $input_title->click();
+      $this->iWaitForSeconds(2);
       // Selects the first dropdown since there is no id or other way to
       // reference the desired entry.
       $title = $session->getPage()->find(
           'xpath',
-          $session->getSelectorsHandler()->selectorToXpath('xpath', '//*[@class="reference-autocomplete"]')
+          $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
 
       );
       $title->click();
