@@ -4,7 +4,6 @@ package = DKAN Features
 version = beta1
 description = Default content for DKAN.
 php = 5.2.4
-version = 7.x-1.0-beta1
 project = dkan_default_content
 dependencies[] = dkan_dataset
 datestamp = 1351627959
