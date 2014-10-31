@@ -96,3 +96,72 @@ function dkan_sitewide_restws_resource_info_alter(&$info) {
     }
   }
 }
+
+/**
+ * Implements hook_update_status_alter().
+ *
+ * Drupal looks toward drupal.org for udpates. DKAN is blacklisted on d.o so we
+ * are checking github.
+ */
+function dkan_sitewide_update_status_alter(&$projects) {
+    $project = 'dkan';
+  $org = 'nucivic';
+
+  $tags = drupal_http_request('https://api.github.com/repos/NuCivic/' . $project . '/tags');
+  $tags = json_decode($tags->data);
+  if (isset($tags->message)) {
+    drupal_set_message("Could not get an update from Github on DKAN since github rate limit exceeded.");
+    unset($projects[$project]);
+    return;
+  }
+  $dkan_tag = $tags[0]->name;
+
+  $tag_commit_url = $tags[0]->commit->url;
+  $tag_commit = drupal_http_request($tag_commit_url);
+  $tag_commit = json_decode($tag_commit->data);
+  $tag_date = date("U", strtotime($tag_commit->commit->author->date));
+
+  $current_version = $projects[$project]['existing_version'];
+  if ($current_version == $dkan_tag) {
+    $projects[$project]['status'] = UPDATE_CURRENT;
+  }
+  else {
+    $projects[$project]['status'] = UPDATE_NOT_CHECKED;
+  }
+  $minor = str_replace('7.x-1.', '', $dkan_tag);
+    foreach (array($current_version, $dkan_tag) as $version) {
+    $projects[$project]['releases'][$version]['name'] = $project . ' ' . $version;
+    $projects[$project]['releases'][$version]['version'] = $version;
+    $projects[$project]['releases'][$version]['tag'] = $version;
+    $projects[$project]['releases'][$version]['date'] = time();
+    $projects[$project]['releases'][$version]['tag'] = $version;
+    $projects[$project]['releases'][$version]['reason'] = $version . ' Release';
+    $projects[$project]['releases'][$version]['version_major'] = $projects[$project]['existing_major'];
+    $projects[$project]['releases'][$version]['version_extra'] = str_replace('7.x-', '', $version);
+    $projects[$project]['releases'][$version]['status'] = 'published';
+    if ($minor != 'x') {
+      $projects[$project]['releases'][$version]['download_link'] = str_replace('7.x-1.', '', $dkan_tag);
+    }
+    else {
+      $projects[$project]['releases'][$version]['download_link'] = '';
+    }
+  }
+  $projects[$project]['releases'][$dkan_tag]['date'] = $tag_date;
+
+  $projects[$project]['datestamp'] = $tag_date;
+  $projects[$project]['link'] = 'http://github.com/nucivic/' . $project;
+  $projects[$project]['reason'] = 'Development Release';
+  $projects[$project]['releases']['latest_version'] = $dkan_tag;
+  $projects[$project]['releases']['7.x-1.x-dev']['release_link'] = 'http://github.com/nucivic/' . $project;
+  $projects[$project]['releases']['7.x-1.x-dev']['reason'] = 'Development Release';
+  $projects[$project]['releases']['7.x-1.x-dev']['download_link'] = 'https://api.github.com/repos/NuCivic/' . $project .  '/zipball/7.x-1.x';
+
+  $projects[$project]['releases']['7.x-1.x-dev']['date'] = time();
+
+  $projects[$project]['releases'][$dkan_tag]['release_link'] = 'https://api.github.com/repos/NuCivic/' . $project .  '/zipball/' . $dkan_tag;
+
+  // Checks to see if last digit is number which means it is on a tag.
+  if (preg_match("/.*?(\d+)$/", $projects[$project]['existing_version'])) {
+    $projects[$project]['recommended'] = $dkan_tag;
+  }
+}

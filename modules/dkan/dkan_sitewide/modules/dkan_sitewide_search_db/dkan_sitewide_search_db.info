@@ -10,7 +10,6 @@ dependencies[] = facetapi
 dependencies[] = search_api
 dependencies[] = search_api_db
 dependencies[] = views
-datestamp = 1366033194
 features[context][] = dataset_search
 features[ctools][] = context:context:3
 features[ctools][] = facetapi:facetapi_defaults:1
