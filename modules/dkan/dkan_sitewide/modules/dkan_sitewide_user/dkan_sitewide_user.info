@@ -1,7 +1,6 @@
 name = DKAN Sitewide User
 core = 7.x
 package = DKAN
-version = 7.x-1.0-beta1
 dependencies[] = context
 dependencies[] = ctools
 dependencies[] = entity
