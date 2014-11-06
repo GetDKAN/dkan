@@ -1,7 +1,6 @@
 {
   "require": {
-    "drupal/drupal-extension": "*",
-    "behat/mink-zombie-driver": "*"
+    "drupal/drupal-extension": "1.0.2"
   },
   "config": {
     "bin-dir": "bin/"
