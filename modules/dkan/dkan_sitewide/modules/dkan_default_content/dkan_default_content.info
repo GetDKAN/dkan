@@ -1,19 +1,8 @@
 name = DKAN Default Content
 core = 7.x
 package = DKAN Features
-version = beta1
 description = Default content for DKAN.
-php = 5.2.4
-project = dkan_default_content
+project = dkan
 dependencies[] = dkan_dataset
-datestamp = 1351627959
 
 features[features_api][] = api:2
-
-
-; Information added by drush on 2013-12-27
-version = "7.x-1.0-beta1+14-dev"
-core = "7.x"
-project = "dkan"
-datestamp = "1388180092"
-
