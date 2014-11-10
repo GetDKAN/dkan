@@ -15,7 +15,7 @@ projects[dkan_datastore][download][branch] = 285_services_make
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 ;includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.1/dkan_dataset.make
-;includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.1/dkan_datastore.make
+;includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/285_services_make/dkan_datastore.make
 
 ; Contrib Modules
 projects[colorizer][version] = 1.0
