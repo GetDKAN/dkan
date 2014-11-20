@@ -1,3 +1,11 @@
+7.x-1.6
+---------
+ - core update to 7.34
+ - fix issues with javascript in behat tests
+ - freezing behat drupal extension to 1.0.2
+ - dkan_sitewide modules now report to github
+
+
 7.x-1.5 2014-10-15
 --------------------------
  - Drupal core security update. Upgrades to 7.32
