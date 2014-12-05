@@ -83,6 +83,9 @@ projects[nuboot][download][type] = git
 projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
 projects[nuboot][download][branch] = radix_base
 
+projects[radix][subdir] = contrib
+projects[radix][type] = theme
+
 ; Libraries
 libraries[font_awesome][type] = libraries
 libraries[font_awesome][download][type] = git
