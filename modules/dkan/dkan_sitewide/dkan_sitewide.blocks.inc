@@ -342,7 +342,9 @@ function dkan_sitewide_dataset_search_form($form, $form_state) {
   );
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Apply'),
+    //'#value' => t('Apply'),
+    // Use fontawesome icon instead.
+      '#value' => decode_entities('&#xf002;'),
   );
   return $form;
 }
