@@ -7,7 +7,10 @@ function dkan_install() {
   theme_enable(array('nuboot'));
   theme_enable(array('seven'));
   variable_set('theme_default', 'nuboot');
-  variable_set('admin_theme', 'seven');
+  variable_set('admin_theme', 'nuboot');
+  variable_set('site_frontpage', 'welcome');
+  variable_set('page_manager_node_view_disabled', FALSE);
+ // variable_set('page_manager_override_anyway', 'TRUE');
   variable_set('jquery_update_jquery_version', '1.7');
 
   // Change block titles for selected blocks.
@@ -17,6 +20,9 @@ function dkan_install() {
   $views_disable = array(
     'og_extras_nodes' => TRUE,
     'feeds_log' => TRUE,
+    'groups_page' => TRUE,
+    'og_extras_groups' => TRUE,
+    'dataset' => TRUE,
   );
   variable_set('views_defaults', $views_disable);
 

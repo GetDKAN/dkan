@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the DKAN panels feature.
+ */
+
+include_once 'dkan_sitewide_panels.features.inc';
