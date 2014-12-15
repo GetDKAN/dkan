@@ -159,7 +159,10 @@ function dkan_sitewide_data_extent_block() {
  */
 function dkan_sitewide_license_block() {
   $node = menu_get_object();
-  if ($node->type != 'dataset') {
+  if (!isset($node->type)) {
+    return '';
+  }
+  elseif ($node->type != 'dataset') {
     return '';
   }
   else {

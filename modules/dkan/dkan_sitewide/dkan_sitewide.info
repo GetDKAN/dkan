@@ -5,7 +5,6 @@ package = DKAN
 version = 7.x-1.x
 project = dkan
 dependencies[] = colorizer
-dependencies[] = context
 dependencies[] = ctools
 dependencies[] = dkan_dataset
 dependencies[] = dkan_dataset_content_types
