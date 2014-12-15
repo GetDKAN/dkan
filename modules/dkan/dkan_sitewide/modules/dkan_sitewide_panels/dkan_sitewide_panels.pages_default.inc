@@ -13,6 +13,106 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $handler = new stdClass();
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
+  $handler->name = 'node_edit_panel_context';
+  $handler->task = 'node_edit';
+  $handler->subtask = '';
+  $handler->handler = 'panel_context';
+  $handler->weight = 0;
+  $handler->conf = array(
+    'title' => 'Dataset & Resource',
+    'no_blocks' => 0,
+    'pipeline' => 'standard',
+    'body_classes_to_remove' => '',
+    'body_classes_to_add' => '',
+    'css_id' => '',
+    'css' => '',
+    'contexts' => array(),
+    'relationships' => array(),
+    'access' => array(
+      'plugins' => array(
+        0 => array(
+          'name' => 'node_type',
+          'settings' => array(
+            'type' => array(
+              'dataset' => 'dataset',
+              'resource' => 'resource',
+            ),
+          ),
+          'context' => 'argument_node_edit_1',
+          'not' => FALSE,
+        ),
+      ),
+      'logic' => 'and',
+    ),
+  );
+  $display = new panels_display();
+  $display->layout = 'radix_bryant';
+  $display->layout_settings = array();
+  $display->panel_settings = array(
+    'style_settings' => array(
+      'default' => NULL,
+      'sidebar' => NULL,
+      'contentmain' => NULL,
+    ),
+  );
+  $display->cache = array();
+  $display->title = 'Add a %node:content-type';
+  $display->uuid = '903225a4-77c6-466f-a0b8-201b722bde0b';
+  $display->content = array();
+  $display->panels = array();
+    $pane = new stdClass();
+    $pane->pid = 'new-c650a924-4993-4ac3-9d3c-a45656b528f4';
+    $pane->panel = 'contentmain';
+    $pane->type = 'form';
+    $pane->subtype = 'form';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'context' => 'argument_node_edit_1',
+      'override_title' => 0,
+      'override_title_text' => '',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 0;
+    $pane->locks = array();
+    $pane->uuid = 'c650a924-4993-4ac3-9d3c-a45656b528f4';
+    $display->content['new-c650a924-4993-4ac3-9d3c-a45656b528f4'] = $pane;
+    $display->panels['contentmain'][0] = 'new-c650a924-4993-4ac3-9d3c-a45656b528f4';
+    $pane = new stdClass();
+    $pane->pid = 'new-002c718b-7393-44a9-9554-9262a636cb6d';
+    $pane->panel = 'sidebar';
+    $pane->type = 'block';
+    $pane->subtype = 'dkan_dataset-dkan_dataset_resource_help';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_title' => 0,
+      'override_title_text' => '',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 0;
+    $pane->locks = array();
+    $pane->uuid = '002c718b-7393-44a9-9554-9262a636cb6d';
+    $display->content['new-002c718b-7393-44a9-9554-9262a636cb6d'] = $pane;
+    $display->panels['sidebar'][0] = 'new-002c718b-7393-44a9-9554-9262a636cb6d';
+  $display->hide_title = PANELS_TITLE_FIXED;
+  $display->title_pane = 'new-c650a924-4993-4ac3-9d3c-a45656b528f4';
+  $handler->conf['display'] = $display;
+  $export['node_edit_panel_context'] = $handler;
+
+  $handler = new stdClass();
+  $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
+  $handler->api_version = 1;
   $handler->name = 'node_view_panel_context';
   $handler->task = 'node_view';
   $handler->subtask = '';
