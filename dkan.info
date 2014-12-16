@@ -57,6 +57,7 @@ dependencies[] = og_moderation
 dependencies[] = og_ui
 dependencies[] = page_manager
 dependencies[] = panels
+dependencies[] = panels_ipe
 dependencies[] = pathauto
 dependencies[] = radix_layouts
 dependencies[] = rules
