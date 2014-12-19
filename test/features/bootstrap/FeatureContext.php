@@ -108,8 +108,10 @@ class FeatureContext extends DrupalContext
         $session = $this->getSession();
         $element = $session->getPage()->find(
             'xpath',
-            $session->getSelectorsHandler()->selectorToXpath('xpath', '//img[contains(@style,"z-index: ' . $num . '")]')
-
+            $session->getSelectorsHandler()->selectorToXpath(
+              'xpath',
+              '//div[contains(@class, "leaflet-marker-pane")]//img[' . $num . ']'
+            )
         );
         if (null === $element) {
             throw new \InvalidArgumentException(sprintf('Cannot find map icon: "%s"', $num));

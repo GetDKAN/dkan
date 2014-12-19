@@ -16,7 +16,7 @@ Feature: Recline
       Then I should see "Latitude field"
     Given I click map icon number "48"
       And I wait for "3" seconds
-    Then I should see "Glendale Elementary School"
+    Then I should see "Lowell Center"
 
   @javascript @api
   Scenario: Viewing graph preview
