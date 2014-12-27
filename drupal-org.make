@@ -14,8 +14,6 @@ projects[dkan_datastore][download][branch] = 7.x-1.x
 
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
-;includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.1/dkan_dataset.make
-;includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.1/dkan_datastore.make
 
 ; Contrib Modules
 projects[admin_menu][version] = 3.0-rc4
@@ -52,6 +50,9 @@ projects[og_moderation][subdir] = contrib
 
 projects[panels][version] = 3.4
 projects[panels][subdir] = contrib
+
+projects[path_breadcrumbs][version] = 3.0
+projects[path_breadcrumbs][subdir] = contrib
 
 projects[pathauto][version] = 1.2
 projects[pathauto][subdir] = contrib
