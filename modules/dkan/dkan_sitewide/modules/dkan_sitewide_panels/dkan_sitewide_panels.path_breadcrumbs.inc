@@ -17,7 +17,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   $path_breadcrumb->path = 'node/%node';
   $path_breadcrumb->data = array(
     'titles' => array(
-      0 => 'Dataset',
+      0 => 'Datasets',
       1 => '%node:title',
     ),
     'paths' => array(
@@ -61,7 +61,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   $path_breadcrumb->path = 'node/%node';
   $path_breadcrumb->data = array(
     'titles' => array(
-      0 => 'Dataset',
+      0 => 'Datasets',
       1 => '%node:field-dataset-ref:0:title',
       2 => '%node:title',
     ),
