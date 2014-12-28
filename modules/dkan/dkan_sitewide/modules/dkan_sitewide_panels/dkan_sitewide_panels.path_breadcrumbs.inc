@@ -144,5 +144,63 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   $path_breadcrumb->weight = 0;
   $export['group'] = $path_breadcrumb;
 
+  $path_breadcrumb = new stdClass();
+  $path_breadcrumb->api_version = 1;
+  $path_breadcrumb->machine_name = 'node_add';
+  $path_breadcrumb->name = 'node add';
+  $path_breadcrumb->path = 'node/add/%node';
+  $path_breadcrumb->data = array(
+    'titles' => array(
+      0 => 'Add content',
+      1 => 'Add %node:type',
+    ),
+    'paths' => array(
+      0 => 'node/add',
+      1 => '<none>',
+    ),
+    'home' => 1,
+    'translatable' => 0,
+    'arguments' => array(
+      'node' => array(
+        'position' => 2,
+        'argument' => 'node_add',
+        'settings' => array(
+          'identifier' => 'Node add form: node type',
+        ),
+      ),
+    ),
+    'access' => array(),
+  );
+  $path_breadcrumb->weight = 0;
+  $export['node_add'] = $path_breadcrumb;
+
+  $path_breadcrumb = new stdClass();
+  $path_breadcrumb->api_version = 1;
+  $path_breadcrumb->machine_name = 'node_edit';
+  $path_breadcrumb->name = 'node edit';
+  $path_breadcrumb->path = 'node/%node/edit';
+  $path_breadcrumb->data = array(
+    'titles' => array(
+      0 => 'Edit %node:title',
+    ),
+    'paths' => array(
+      0 => '<none>',
+    ),
+    'home' => 1,
+    'translatable' => 0,
+    'arguments' => array(
+      'node' => array(
+        'position' => 1,
+        'argument' => 'entity_id:node',
+        'settings' => array(
+          'identifier' => 'Node: ID',
+        ),
+      ),
+    ),
+    'access' => array(),
+  );
+  $path_breadcrumb->weight = 0;
+  $export['node_edit'] = $path_breadcrumb;
+
   return $export;
 }
