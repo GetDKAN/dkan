@@ -19,7 +19,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $handler->handler = 'panel_context';
   $handler->weight = 0;
   $handler->conf = array(
-    'title' => 'Dataset & Resource',
+    'title' => 'Dataset Form',
     'no_blocks' => 0,
     'pipeline' => 'standard',
     'body_classes_to_remove' => '',
@@ -35,7 +35,6 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
           'settings' => array(
             'type' => array(
               'dataset' => 'dataset',
-              'resource' => 'resource',
             ),
           ),
           'context' => 'argument_node_edit_1',
@@ -84,10 +83,10 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $display->content['new-c650a924-4993-4ac3-9d3c-a45656b528f4'] = $pane;
     $display->panels['contentmain'][0] = 'new-c650a924-4993-4ac3-9d3c-a45656b528f4';
     $pane = new stdClass();
-    $pane->pid = 'new-002c718b-7393-44a9-9554-9262a636cb6d';
+    $pane->pid = 'new-23bb3d91-0edb-4ed2-a9c3-10fdac3fc38c';
     $pane->panel = 'sidebar';
     $pane->type = 'block';
-    $pane->subtype = 'dkan_dataset-dkan_dataset_resource_help';
+    $pane->subtype = 'dkan_dataset-dkan_dataset_dataset_help';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
@@ -102,10 +101,10 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->extras = array();
     $pane->position = 0;
     $pane->locks = array();
-    $pane->uuid = '002c718b-7393-44a9-9554-9262a636cb6d';
-    $display->content['new-002c718b-7393-44a9-9554-9262a636cb6d'] = $pane;
-    $display->panels['sidebar'][0] = 'new-002c718b-7393-44a9-9554-9262a636cb6d';
-  $display->hide_title = PANELS_TITLE_FIXED;
+    $pane->uuid = '23bb3d91-0edb-4ed2-a9c3-10fdac3fc38c';
+    $display->content['new-23bb3d91-0edb-4ed2-a9c3-10fdac3fc38c'] = $pane;
+    $display->panels['sidebar'][0] = 'new-23bb3d91-0edb-4ed2-a9c3-10fdac3fc38c';
+  $display->hide_title = PANELS_TITLE_NONE;
   $display->title_pane = 'new-c650a924-4993-4ac3-9d3c-a45656b528f4';
   $handler->conf['display'] = $display;
   $export['node_edit_panel_context'] = $handler;
