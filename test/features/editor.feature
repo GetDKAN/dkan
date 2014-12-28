@@ -8,7 +8,7 @@ Feature: Datasets
       And I should see "Data Explorer Examples"
       And I should see "Filter by tags"
     When I click "Edit"
-    Then I should see "Edit Group Data Explorer Examples"
+    Then I should see "Edit Data Explorer Examples"
 
   @api
   Scenario: Edit any page content 
@@ -16,7 +16,7 @@ Feature: Datasets
       And I am on "/about"
     Then I should see "DKAN is the Drupal-based version of CKAN"
     When I click "Edit"
-    Then I should see "Edit Page About"
+    Then I should see "Edit About"
 
   @api
   Scenario: Edit any dataset content 
