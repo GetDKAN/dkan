@@ -24,6 +24,7 @@ dependencies[] = autocomplete_deluxe
 dependencies[] = bueditor
 dependencies[] = beautytips
 dependencies[] = chosen
+dependencies[] = contextual
 dependencies[] = ctools
 dependencies[] = date
 dependencies[] = date_api
