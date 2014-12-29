@@ -72,5 +72,5 @@ Feature: Datasets
     Then I should see "Edit"
       And I should see "Add Resource"
     When I am on "/dataset/wisconsin-polling-places"
-      Then I should see "Edit"
+      Then I should not see "Edit"
       And I should see "Add content"
