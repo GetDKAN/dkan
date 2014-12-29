@@ -11,6 +11,7 @@ function dkan_install() {
   variable_set('site_frontpage', 'welcome');
   variable_set('page_manager_node_view_disabled', FALSE);
   variable_set('page_manager_node_edit_disabled', FALSE);
+  variable_set('page_manager_user_view_disabled', FALSE);
  // variable_set('page_manager_override_anyway', 'TRUE');
   variable_set('jquery_update_jquery_version', '1.7');
 
