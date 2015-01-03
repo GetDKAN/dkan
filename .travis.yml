@@ -49,6 +49,7 @@ before_script:
   - sleep 5
 
 script:
+  - bin/behat features/panels.feature
   - bin/behat features/groups.feature
   - bin/behat features/dataset.feature
   - bin/behat features/datastore.feature
