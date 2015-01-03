@@ -16,6 +16,7 @@ default:
         toolbar: ".tabs--primary"
         footer: "#footer"
         header: "#header"
+        modal: "#modalContent"
         left header: "#header-left"
         right header: "#header-right"
         right sidebar: "#column-right"
