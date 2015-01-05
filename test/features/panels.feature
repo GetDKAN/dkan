@@ -1,7 +1,7 @@
 Feature: Panels 
   
   @api @javascript
-  Scenario: Updating front page 
+  Scenario: Adds "New Custom Item" block to home page using panels ipe editor
     Given I am logged in as a user with the "administrator" role
       And I am on the homepage
       Then I should see "Customize this page"
@@ -9,12 +9,9 @@ Feature: Panels
       And I click "Add new pane"
       Then I should see "Please select a category from the left"
     When I click "New custom content" in the "modal" region
-      And I wait for "3" seconds
       And I fill in "edit-title" with "New Custom Item"
       And I fill in "edit-body-value" with "Custom item body."
-      And I wait for "1" seconds
       And I press "Finish"
-      And I wait for "1" seconds
       And I press "Save"
       Then I should see "New Custom Item"
 
