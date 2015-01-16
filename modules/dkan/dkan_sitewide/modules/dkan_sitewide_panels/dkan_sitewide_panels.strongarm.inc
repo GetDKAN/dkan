@@ -1,98 +1,98 @@
 <?php
 /**
  * @file
- * dkan_sitewide_roles_perms.strongarm.inc
+ * dkan_sitewide_panels.strongarm.inc
  */
 
 /**
  * Implements hook_strongarm().
  */
-function dkan_sitewide_roles_perms_strongarm() {
+function dkan_sitewide_panels_strongarm() {
   $export = array();
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'gravatar_default';
-  $strongarm->value = '3';
-  $export['gravatar_default'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'gravatar_rating';
-  $strongarm->value = 'G';
-  $export['gravatar_rating'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'gravatar_size';
-  $strongarm->value = 190;
-  $export['gravatar_size'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'gravatar_url';
-  $strongarm->value = 'http://www.gravatar.com/avatar/';
-  $export['gravatar_url'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'user_admin_role';
-  $strongarm->value = '';
-  $export['user_admin_role'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'user_pictures';
+  $strongarm->name = 'path_breadcrumbs_cache_enabled';
   $strongarm->value = 1;
-  $export['user_pictures'] = $strongarm;
+  $export['path_breadcrumbs_cache_enabled'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'user_picture_default';
+  $strongarm->name = 'path_breadcrumbs_cache_lifetime';
+  $strongarm->value = '-1';
+  $export['path_breadcrumbs_cache_lifetime'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'path_breadcrumbs_decode_entities';
+  $strongarm->value = 1;
+  $export['path_breadcrumbs_decode_entities'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'path_breadcrumbs_delimiter';
+  $strongarm->value = '»';
+  $export['path_breadcrumbs_delimiter'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'path_breadcrumbs_hide_single_breadcrumb';
+  $strongarm->value = 0;
+  $export['path_breadcrumbs_hide_single_breadcrumb'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'path_breadcrumbs_home_link_enabled';
+  $strongarm->value = 0;
+  $export['path_breadcrumbs_home_link_enabled'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'path_breadcrumbs_home_link_title';
+  $strongarm->value = 'Home';
+  $export['path_breadcrumbs_home_link_title'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'path_breadcrumbs_internal_render';
+  $strongarm->value = 0;
+  $export['path_breadcrumbs_internal_render'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'path_breadcrumbs_internal_render_themes';
+  $strongarm->value = array();
+  $export['path_breadcrumbs_internal_render_themes'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'path_breadcrumbs_rich_snippets';
+  $strongarm->value = 0;
+  $export['path_breadcrumbs_rich_snippets'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'path_breadcrumbs_truncate_title_length';
   $strongarm->value = '';
-  $export['user_picture_default'] = $strongarm;
+  $export['path_breadcrumbs_truncate_title_length'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'user_picture_dimensions';
-  $strongarm->value = '85x85';
-  $export['user_picture_dimensions'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'user_picture_file_size';
-  $strongarm->value = '30';
-  $export['user_picture_file_size'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'user_picture_guidelines';
-  $strongarm->value = '';
-  $export['user_picture_guidelines'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'user_picture_path';
-  $strongarm->value = 'pictures';
-  $export['user_picture_path'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'user_picture_style';
-  $strongarm->value = 'thumbnail';
-  $export['user_picture_style'] = $strongarm;
+  $strongarm->name = 'path_breadcrumbs_url_cleaning_method';
+  $strongarm->value = 'none';
+  $export['path_breadcrumbs_url_cleaning_method'] = $strongarm;
 
   return $export;
 }

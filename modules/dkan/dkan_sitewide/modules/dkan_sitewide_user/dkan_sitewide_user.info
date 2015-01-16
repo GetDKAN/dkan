@@ -1,7 +1,6 @@
 name = DKAN Sitewide User
 core = 7.x
 package = DKAN
-dependencies[] = context
 dependencies[] = ctools
 dependencies[] = entity
 dependencies[] = eva
@@ -10,8 +9,6 @@ dependencies[] = field_group
 dependencies[] = system
 dependencies[] = text
 dependencies[] = views
-features[context][] = profile
-features[ctools][] = context:context:3
 features[ctools][] = field_group:field_group:1
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2

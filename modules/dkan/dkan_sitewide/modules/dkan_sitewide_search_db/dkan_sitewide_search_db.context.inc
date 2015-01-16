@@ -11,7 +11,7 @@ function dkan_sitewide_search_db_context_default_contexts() {
   $export = array();
 
   $context = new stdClass();
-  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
+  $context->disabled = TRUE;
   $context->api_version = 3;
   $context->name = 'dataset_search';
   $context->description = 'Blocks for the dataset search page';
