@@ -5,7 +5,7 @@ api = 2
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
-projects[dkan_dataset][download][branch] = 307_radix_base
+projects[dkan_dataset][download][branch] = 7.x-1.x
 
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
@@ -89,7 +89,7 @@ projects[bootstrap][subdir] = contrib
 projects[nuboot][subdir] = contrib
 projects[nuboot][download][type] = git
 projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
-projects[nuboot][download][branch] = radix_base
+projects[nuboot][download][branch] = 7.x-2.x
 
 projects[radix][subdir] = contrib
 projects[radix][type] = theme
