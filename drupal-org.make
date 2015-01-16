@@ -91,6 +91,11 @@ projects[nuboot][download][type] = git
 projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
 projects[nuboot][download][branch] = 7.x-1.x
 
+projects[nuboot_radix][subdir] = contrib
+projects[nuboot_radix][download][type] = git
+projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
+projects[nuboot_radix][download][branch] = 7.x-1.x
+
 projects[radix][subdir] = contrib
 projects[radix][type] = theme
 
