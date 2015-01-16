@@ -89,7 +89,7 @@ projects[bootstrap][subdir] = contrib
 projects[nuboot][subdir] = contrib
 projects[nuboot][download][type] = git
 projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
-projects[nuboot][download][branch] = 7.x-2.x
+projects[nuboot][download][branch] = 7.x-1.x
 
 projects[radix][subdir] = contrib
 projects[radix][type] = theme
