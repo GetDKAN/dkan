@@ -115,6 +115,15 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'system',
   );
 
+  // Exported permission: 'administer advanced pane settings'.
+  $permissions['administer advanced pane settings'] = array(
+    'name' => 'administer advanced pane settings',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'panels',
+  );
+
   // Exported permission: 'administer blocks'.
   $permissions['administer blocks'] = array(
     'name' => 'administer blocks',
@@ -140,15 +149,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
       'administrator' => 'administrator',
     ),
     'module' => 'node',
-  );
-
-  // Exported permission: 'administer contexts'.
-  $permissions['administer contexts'] = array(
-    'name' => 'administer contexts',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
-    'module' => 'context_ui',
   );
 
   // Exported permission: 'administer facetapi pretty paths'.
@@ -268,6 +268,50 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'node',
   );
 
+  // Exported permission: 'administer open data schema mapper'.
+  $permissions['administer open data schema mapper'] = array(
+    'name' => 'administer open data schema mapper',
+    'roles' => array(),
+    'module' => 'open_data_schema_map',
+  );
+
+  // Exported permission: 'administer page manager'.
+  $permissions['administer page manager'] = array(
+    'name' => 'administer page manager',
+    'roles' => array(),
+    'module' => 'page_manager',
+  );
+
+  // Exported permission: 'administer pane access'.
+  $permissions['administer pane access'] = array(
+    'name' => 'administer pane access',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'panels',
+  );
+
+  // Exported permission: 'administer panels layouts'.
+  $permissions['administer panels layouts'] = array(
+    'name' => 'administer panels layouts',
+    'roles' => array(),
+    'module' => 'panels',
+  );
+
+  // Exported permission: 'administer panels styles'.
+  $permissions['administer panels styles'] = array(
+    'name' => 'administer panels styles',
+    'roles' => array(),
+    'module' => 'panels',
+  );
+
+  // Exported permission: 'administer path breadcrumbs'.
+  $permissions['administer path breadcrumbs'] = array(
+    'name' => 'administer path breadcrumbs',
+    'roles' => array(),
+    'module' => 'path_breadcrumbs_ui',
+  );
+
   // Exported permission: 'administer pathauto'.
   $permissions['administer pathauto'] = array(
     'name' => 'administer pathauto',
@@ -280,8 +324,17 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   // Exported permission: 'administer permissions'.
   $permissions['administer permissions'] = array(
     'name' => 'administer permissions',
-    'roles' => array(),
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
     'module' => 'user',
+  );
+
+  // Exported permission: 'administer rdf'.
+  $permissions['administer rdf'] = array(
+    'name' => 'administer rdf',
+    'roles' => array(),
+    'module' => 'rdfx',
   );
 
   // Exported permission: 'administer rules'.
@@ -349,7 +402,9 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   // Exported permission: 'administer users'.
   $permissions['administer users'] = array(
     'name' => 'administer users',
-    'roles' => array(),
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
     'module' => 'user',
   );
 
@@ -363,7 +418,9 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   // Exported permission: 'administer views'.
   $permissions['administer views'] = array(
     'name' => 'administer views',
-    'roles' => array(),
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
     'module' => 'views',
   );
 
@@ -398,6 +455,15 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'user',
   );
 
+  // Exported permission: 'change layouts in place editing'.
+  $permissions['change layouts in place editing'] = array(
+    'name' => 'change layouts in place editing',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'panels',
+  );
+
   // Exported permission: 'change own username'.
   $permissions['change own username'] = array(
     'name' => 'change own username',
@@ -425,15 +491,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
       'editor' => 'editor',
     ),
     'module' => 'feeds',
-  );
-
-  // Exported permission: 'context ajax block access'.
-  $permissions['context ajax block access'] = array(
-    'name' => 'context ajax block access',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
-    'module' => 'context_ui',
   );
 
   // Exported permission: 'create dataset content'.
@@ -824,6 +881,54 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'gravatar',
   );
 
+  // Exported permission: 'use ipe with page manager'.
+  $permissions['use ipe with page manager'] = array(
+    'name' => 'use ipe with page manager',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'panels',
+  );
+
+  // Exported permission: 'use page manager'.
+  $permissions['use page manager'] = array(
+    'name' => 'use page manager',
+    'roles' => array(),
+    'module' => 'page_manager',
+  );
+
+  // Exported permission: 'use panels caching features'.
+  $permissions['use panels caching features'] = array(
+    'name' => 'use panels caching features',
+    'roles' => array(),
+    'module' => 'panels',
+  );
+
+  // Exported permission: 'use panels dashboard'.
+  $permissions['use panels dashboard'] = array(
+    'name' => 'use panels dashboard',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'panels',
+  );
+
+  // Exported permission: 'use panels in place editing'.
+  $permissions['use panels in place editing'] = array(
+    'name' => 'use panels in place editing',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'panels',
+  );
+
+  // Exported permission: 'use panels locks'.
+  $permissions['use panels locks'] = array(
+    'name' => 'use panels locks',
+    'roles' => array(),
+    'module' => 'panels',
+  );
+
   // Exported permission: 'use text format html'.
   $permissions['use text format html'] = array(
     'name' => 'use text format html',
@@ -840,6 +945,15 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
       'editor' => 'editor',
     ),
     'module' => 'node',
+  );
+
+  // Exported permission: 'view pane admin links'.
+  $permissions['view pane admin links'] = array(
+    'name' => 'view pane admin links',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'panels',
   );
 
   // Exported permission: 'view revisions'.

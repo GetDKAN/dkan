@@ -19,17 +19,16 @@ dependencies[] = taxonomy
 
 ; Contrib
 dependencies[] = admin_menu
+dependencies[] = admin_menu_toolbar
 dependencies[] = autocomplete_deluxe
 dependencies[] = bueditor
 dependencies[] = beautytips
-dependencies[] = context
-dependencies[] = context_ui
 dependencies[] = chosen
+dependencies[] = contextual
 dependencies[] = ctools
 dependencies[] = date
 dependencies[] = date_api
 dependencies[] = date_popup
-dependencies[] = delta
 dependencies[] = diff
 dependencies[] = date
 dependencies[] = double_field
@@ -57,7 +56,13 @@ dependencies[] = og_access
 dependencies[] = og_extras
 dependencies[] = og_moderation
 dependencies[] = og_ui
+dependencies[] = page_manager
+dependencies[] = panels
+dependencies[] = panels_ipe
+dependencies[] = path_breadcrumbs
+dependencies[] = path_breadcrumbs_ui
 dependencies[] = pathauto
+dependencies[] = radix_layouts
 dependencies[] = rules
 dependencies[] = rules_admin
 dependencies[] = select_or_other
@@ -75,7 +80,6 @@ dependencies[] = uuid
 dependencies[] = views
 dependencies[] = views_ui
 dependencies[] = views_bulk_operations
-dependencies[] = uuid
 
 ; Open data
 dependencies[] = entity_rdf
@@ -88,10 +92,10 @@ dependencies[] = rdfx
 ; DKAN Features
 dependencies[] = dkan_sitewide_menu
 dependencies[] = dkan_sitewide_user
-dependencies[] = dkan_sitewide_context
 dependencies[] = dkan_default_content
 dependencies[] = dkan_sitewide_demo_front
 dependencies[] = dkan_dataset_groups
+dependencies[] = dkan_sitewide_panels
 dependencies[] = dkan_sitewide_search_db
 
 ; DKAN Modules

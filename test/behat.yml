@@ -10,12 +10,13 @@ default:
     Drupal\DrupalExtension\Extension:
       blackbox: ~
       drush:
-        root: "drupal" 
+        root: "drupal"
       region_map:
         content: "#region-content"
         toolbar: ".tabs--primary"
         footer: "#footer"
-        header: "#nav-wrapper"
+        header: "#header"
+        modal: "#modalContent"
         left header: "#header-left"
         right header: "#header-right"
         right sidebar: "#column-right"

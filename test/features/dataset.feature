@@ -52,7 +52,7 @@ Feature: Datasets
       And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
       And I press "edit-another"
     Then I should see "Test Resource Link File has been created"
-      And I should see "Create Resource"
+      And I should see "Add content"
     When I fill in "title" with "Test Resource Upload"
       And I click "Upload a file"
       And I attach the file "Polling_Places_Madison.csv" to "files[field_upload_und_0]" 
