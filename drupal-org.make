@@ -16,7 +16,7 @@ includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dat
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 
 ; Contrib Modules
-projects[admin_menu][version] = 3.0-rc4
+projects[admin_menu][version] = 3.0-rc5
 projects[admin_menu][subdir] = contrib
 
 projects[bueditor][version] = 1.7
