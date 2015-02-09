@@ -5,6 +5,7 @@ dependencies[] = ctools
 dependencies[] = entity
 dependencies[] = page_manager
 dependencies[] = panels
+dependencies[] = panels_ipe
 dependencies[] = path_breadcrumbs
 dependencies[] = radix_layouts
 dependencies[] = strongarm
