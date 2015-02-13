@@ -8,6 +8,22 @@ require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext
 {
+    
+    /**
+     * @Given /^I scroll to the top$/
+     */
+    public function iScrollToTheTop() {
+      $driver = $this->getSession()->getDriver();
+      // Wait two seconds for admin menu if using js.
+      if ($driver instanceof Selenium2Driver) {
+        $element = $driver.findElement(By.id("header"));
+        $actions = new Actions($driver);
+        $actions.moveToElement($element);
+        // actions.click();
+        $actions.perform();
+      }
+    }
+    
     /**
      * @Then /^I wait for the dialog box to appear$/
      */
