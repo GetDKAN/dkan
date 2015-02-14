@@ -5,7 +5,7 @@ api = 2
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
-projects[dkan_dataset][download][branch] = 7.x-1.x
+projects[dkan_dataset][download][branch] = 353_module_upgrades
 
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
@@ -51,7 +51,7 @@ projects[og_moderation][subdir] = contrib
 projects[panels][version] = 3.4
 projects[panels][subdir] = contrib
 
-projects[path_breadcrumbs][version] = 3.0
+projects[path_breadcrumbs][version] = 3.2
 projects[path_breadcrumbs][subdir] = contrib
 
 projects[pathauto][version] = 1.2
