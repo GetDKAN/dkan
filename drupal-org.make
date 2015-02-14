@@ -51,7 +51,7 @@ projects[og_moderation][subdir] = contrib
 projects[panels][version] = 3.4
 projects[panels][subdir] = contrib
 
-projects[path_breadcrumbs][version] = 3.0
+projects[path_breadcrumbs][version] = 3.2
 projects[path_breadcrumbs][subdir] = contrib
 
 projects[pathauto][version] = 1.2
