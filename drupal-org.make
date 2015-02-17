@@ -94,7 +94,7 @@ projects[nuboot][download][branch] = 7.x-1.x
 projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = 7.x-1.x
+projects[nuboot_radix][download][branch] = janette-internal-374
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
