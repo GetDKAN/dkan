@@ -20,5 +20,3 @@ default:
         left header: "#header-left"
         right header: "#header-right"
         right sidebar: "#column-right"
-      text:
-        log_out: "Logout"
