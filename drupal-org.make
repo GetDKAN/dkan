@@ -66,7 +66,7 @@ projects[r4032login][subdir] = contrib
 projects[rules][version] = 2.3
 projects[rules][subdir] = contrib
 
-projects[restws][version] = 2.1
+projects[restws][version] = 2.3
 projects[restws][subdir] = contrib
 
 projects[schema][version] = 1.2
@@ -89,12 +89,14 @@ projects[bootstrap][subdir] = contrib
 projects[nuboot][subdir] = contrib
 projects[nuboot][download][type] = git
 projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
+projects[nuboot][download][revision] = "fbd7ea2c2f1fa45a5f5a10b4215950940335879e"
 projects[nuboot][download][branch] = 7.x-1.x
 
 projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 7.x-1.x
+projects[nuboot_radix][download][revision] = "1689331acc893eff46214dd5e00fb3b293301ac5"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
