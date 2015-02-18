@@ -89,12 +89,14 @@ projects[bootstrap][subdir] = contrib
 projects[nuboot][subdir] = contrib
 projects[nuboot][download][type] = git
 projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
+projects[nuboot][download][revision] = "fbd7ea2c2f1fa45a5f5a10b4215950940335879e"
 projects[nuboot][download][branch] = 7.x-1.x
 
 projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = janette-internal-374
+projects[nuboot_radix][download][branch] = 7.x-1.x
+projects[nuboot_radix][download][revision] = "6866738ab47048576eddb2791700d72d07e7907b"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
