@@ -26,7 +26,7 @@ echo Updating to DKAN version $TAG
 cd ~
 
 echo "Backing up current docroot to $TMP_BACKUP_FILE"
-tar pczfP $TMP_DIR/mysite.tar.gz $MYSITE_DIR
+tar pczfP $TMP_BACKUP_FILE $MYSITE_DIR
 mv $MYSITE_DIR $MYSITE_TMP_DIR
 
 echo Downloading DKAN
@@ -35,14 +35,13 @@ cd $DKAN_TMP_DIR
 git checkout $TAG
 
 echo Making DKAN
-drush make build-dkan.make docroot
-
+drush make build-dkan.make  $MYSITE_DIR
 echo Moving git and sites directories
 if [ -d "$DIRECTORY" ]; then
-  mv $MYSITE_TMP_DIR/.git docroot/.
+  mv $MYSITE_TMP_DIR/.git .
 fi
 rm -rf docroot/sites
-mv $MYSITE_TMP_DIR/sites docroot/.
+mv $MYSITE_TMP_DIR/sites .
 mv docroot $MYSITE_DIR
 
 echo Removing git ignore files
@@ -57,3 +56,5 @@ rm $MYSITE_DIR/profiles/dkan/libraries/recline/.gitignore
 rm $MYSITE_DIR/profiles/dkan/themes/contrib/nuboot/.gitignore
 
 echo DKAN code updated to $TAG. Run necessary database updates.
+
+cp $MYSITE_TMP_DIR/.git $MYSITE_DIR/.
