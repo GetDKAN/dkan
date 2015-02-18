@@ -38,8 +38,3 @@ Feature: Homepage
     And I am on the homepage
     And I click "Add Dataset"
     Then I should see "Create Dataset"
-
-  Scenario: Test header region
-    Given I am on the homepage
-    Then I should see "Welcome"
-    And I should see "Login" in the "header" region
