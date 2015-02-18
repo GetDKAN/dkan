@@ -35,14 +35,15 @@ cd $DKAN_TMP_DIR
 git checkout $TAG
 
 echo Making DKAN
-drush make build-dkan.make  $MYSITE_DIR
+drush make build-dkan.make $MYSITE_DIR
+
 echo Moving git and sites directories
-if [ -d "$DIRECTORY" ]; then
+cd $MYSITE_DIR
+if [ -d "$MYSITE_TMP_DIR" ]; then
   mv $MYSITE_TMP_DIR/.git .
 fi
-rm -rf docroot/sites
+rm -rf sites
 mv $MYSITE_TMP_DIR/sites .
-mv docroot $MYSITE_DIR
 
 echo Removing git ignore files
 rm $MYSITE_DIR/.gitignore
@@ -55,6 +56,5 @@ rm $MYSITE_DIR/profiles/dkan/libraries/Leaflet.draw/.gitignore
 rm $MYSITE_DIR/profiles/dkan/libraries/recline/.gitignore
 rm $MYSITE_DIR/profiles/dkan/themes/contrib/nuboot/.gitignore
 
+rm -rf $MYSITE_TMP_DIR
 echo DKAN code updated to $TAG. Run necessary database updates.
-
-cp $MYSITE_TMP_DIR/.git $MYSITE_DIR/.
