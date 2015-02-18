@@ -66,7 +66,7 @@ projects[r4032login][subdir] = contrib
 projects[rules][version] = 2.3
 projects[rules][subdir] = contrib
 
-projects[restws][version] = 2.1
+projects[restws][version] = 2.3
 projects[restws][subdir] = contrib
 
 projects[schema][version] = 1.2
