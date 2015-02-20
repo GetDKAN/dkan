@@ -9,6 +9,7 @@ dependencies[] = path_breadcrumbs
 dependencies[] = radix_layouts
 dependencies[] = strongarm
 dependencies[] = views
+dependencies[] = views_content
 dependencies[] = views_responsive_grid
 features[ctools][] = page_manager:pages_default:1
 features[ctools][] = path_breadcrumbs:path_breadcrumbs:1
