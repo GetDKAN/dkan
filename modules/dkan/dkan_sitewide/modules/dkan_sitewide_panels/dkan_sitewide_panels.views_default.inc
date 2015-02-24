@@ -19,7 +19,7 @@ function dkan_sitewide_panels_views_default_views() {
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
-  
+
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Datasets';
@@ -27,6 +27,7 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['access']['type'] = 'role';
   $handler->display->display_options['access']['role'] = array(
     1 => '1',
+    2 => '2',
   );
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
@@ -96,7 +97,7 @@ function dkan_sitewide_panels_views_default_views() {
     'search_api_viewed' => 'search_api_viewed',
     'field_resources:body:value' => 'field_resources:body:value',
   );
-  
+
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
@@ -120,7 +121,7 @@ function dkan_sitewide_panels_views_default_views() {
     'search_api_viewed' => 'search_api_viewed',
     'field_resources:body:value' => 'field_resources:body:value',
   );
-  
+
   /* Display: Content pane */
   $handler = $view->new_display('panel_pane', 'Content pane', 'panel_pane_1');
   $handler->display->display_options['link_to_view'] = '0';
