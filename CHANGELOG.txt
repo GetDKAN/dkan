@@ -1,3 +1,5 @@
+
+
 7.x-1.7  2015-02-20
 --------------------------
 - Adds Panels to DKAN for Drag and Drop layouts: http://docs.getdkan.com/dkan-documentation/dkan-users-guide/customize-dkan-pages-layouts-and-components-using-panels
