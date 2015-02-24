@@ -49,4 +49,9 @@ function dkan_additional_setup() {
   unset($_SESSION['messages']['warning']);
   cache_clear_all();
 
+  // Flush image styles.
+  $image_styles = image_styles();
+  foreach ( $image_styles as $image_style ) {
+    image_style_flush($image_style);
+  }  
 }
