@@ -95,8 +95,8 @@ projects[nuboot][download][branch] = 7.x-1.x
 projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "4fe9a15613f12946966927583ad15df08cbe99b3"
+projects[nuboot_radix][download][branch] = fix-button-focus
+projects[nuboot_radix][download][revision] = "e6380b68e5ecdea3186a19b4bccd220cef85d0d0"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
