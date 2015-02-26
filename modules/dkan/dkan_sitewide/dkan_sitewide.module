@@ -187,3 +187,16 @@ function dkan_sitewide_update_status_alter(&$projects) {
     $projects[$project]['recommended'] = $dkan_tag;
   }
 }
+
+/**
+ * Implements template_preprocess_page().
+ */
+function dkan_sitewide_preprocess_page(&$variables) {
+  // Add colorizer instructions if not using default theme for admin pages.
+  global $base_url;
+  $admin_theme = variable_get('admin_theme');
+  $default_theme = variable_get('theme_default');
+  if (arg(0) == 'admin' && arg(1) == 'appearance' && $admin_theme !== '0' && $default_theme !== $admin_theme) {
+    drupal_set_message(t('For Colorizer to work you must set the Administration theme to match your <em>Default theme</em> at the bottom of the <a href="' . $base_url . '/admin/appearance">appearance list</a> page.'), 'warning');
+  }
+}
