@@ -56,6 +56,10 @@ projects[defaultconfig][version] = 1.0-alpha9
 projects[panelizer][version] = 3.1
 projects[panelizer][subdir] = contrib
 
+projects[panopoly_widgets][version] = 1.18
+projects[panopoly_widgets][subdir] = contrib
+includes[panopoly_widgets_make] = http://cgit.drupalcode.org/panopoly_widgets/plain/panopoly_widgets.make
+
 projects[panels][version] = 3.4
 projects[panels][subdir] = contrib
 
