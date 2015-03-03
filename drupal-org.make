@@ -23,8 +23,9 @@ projects[bueditor][version] = 1.7
 projects[bueditor][patch][1931862] = http://drupal.org/files/dont-render-bueditor-for-plain-text-textareas.patch
 projects[bueditor][subdir] = contrib
 
-projects[colorizer][version] = 1.0
-projects[colorizer][patch][2227651] = http://drupal.org/files/issues/colorizer-2227651.patch
+projects[colorizer][version] = 1.4
+projects[colorizer][patch][2227651] = https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch
+projects[colorizer][patch][2444249] = https://www.drupal.org/files/issues/colorizer-2444249.patch
 projects[colorizer][subdir] = contrib
 
 projects[diff][version] = 3.2
