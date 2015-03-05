@@ -337,6 +337,8 @@ function dkan_sitewide_search_bar() {
 function dkan_sitewide_dataset_search_form($form, $form_state) {
   $form['search'] = array(
     '#type' => 'textfield',
+    // Add field label for 508 compliance.
+    '#title' => 'Search',
     '#attributes' => array('placeholder' => t('search')),
     '#size' => 30,
   );
