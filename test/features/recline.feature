@@ -12,7 +12,7 @@ Feature: Recline
       Then I should see "This is a list and map of polling places in Madison, WI."
       Then I should see "Original data"
       Then I should see "Polling_Places_Madison.csv"
-    Given I click "Map"
+    Given I press "Map"
       Then I should see "Latitude field"
     Given I click map icon number "48"
       And I wait for "3" seconds
@@ -24,7 +24,7 @@ Feature: Recline
       Then I should see "Monthly gold prices"
     Given I click "Table of Gold Prices"
       Then I should see "748 records"
-    Given I click "Graph"
+    Given I press "Graph"
       Then I should see "There's no graph here yet"
 
   @javascript 
@@ -33,7 +33,7 @@ Feature: Recline
       Then I should see "Monthly gold prices"
     Given I click "Table of Gold Prices"
       Then I should see "748 records"
-    Given I click "Graph"
+    Given I press "Graph"
       And I wait for "3" seconds
       Then I should see "There's no graph here yet"
 
