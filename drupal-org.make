@@ -96,7 +96,7 @@ projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "644f604aff632a4bf9c6d8bdf9bdfe385da8e130"
+projects[nuboot_radix][download][revision] = "1397b88a2837e7ae6d3114b4dfaac55b68dacff9"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
@@ -114,3 +114,4 @@ libraries[spyc][download][url] = "https://raw.github.com/mustangostang/spyc/79f6
 libraries[spyc][filename] = "../spyc.php"
 libraries[spyc][directory_name] = "lib"
 libraries[spyc][destination] = "modules/contrib/services/servers/rest_server"
+
