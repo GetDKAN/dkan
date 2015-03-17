@@ -97,6 +97,13 @@ function dkan_sitewide_panels_views_default_views() {
     'search_api_viewed' => 'search_api_viewed',
     'field_resources:body:value' => 'field_resources:body:value',
   );
+  /* Filter criterion: Indexed Node: Status */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'search_api_index_datasets';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = array(
+    1 => '1',
+  );
 
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
