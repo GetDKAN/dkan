@@ -15,7 +15,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'menu_name' => 'main-menu',
     'link_path' => 'node/1',
     'router_path' => 'node/%',
-    'link_title' => 'About',
+    'link_title' => t('About'),
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -35,7 +35,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'menu_name' => 'main-menu',
     'link_path' => 'node/add/dataset',
     'router_path' => 'node/add/dataset',
-    'link_title' => 'Add Dataset',
+    'link_title' => t('Add Dataset'),
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -50,10 +50,31 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -50,
     'customized' => 0,
   );
+  // Exported menu link: main-menu_groups:groups
+  $menu_links['main-menu_groups:groups'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'groups',
+    'router_path' => 'groups',
+    'link_title' => t('Groups'),
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'main-menu_groups:groups',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -48,
+    'customized' => 0,
+  );
   // Translatables
   // Included for use with string extractors like potx.
   t('About');
   t('Add Dataset');
+  t('Groups');
 
 
   return $menu_links;
