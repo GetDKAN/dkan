@@ -150,8 +150,6 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   $path_breadcrumb->name = 'node add';
   $path_breadcrumb->path = 'node/add/%node';
 
-dpm('%node:type');
-
   $path_breadcrumb->data = array(
     'titles' => array(
       0 => t('Add content'),
