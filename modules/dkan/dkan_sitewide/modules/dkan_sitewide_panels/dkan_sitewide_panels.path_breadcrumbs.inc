@@ -203,5 +203,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   $path_breadcrumb->weight = 0;
   $export['node_edit'] = $path_breadcrumb;
 
+dpm($export);
+
   return $export;
 }
