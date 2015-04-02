@@ -1,3 +1,11 @@
+7.x-1.8  2015-04-02
+--------------------------
+ - Drupal core update to 7.36
+ - Some tweaks to display properly drupal admin pages using nuboot_radix
+ - Removed unnecessary drupal warning messages (colorizer, updates, etc)
+ - Tweaks to behat tests
+ - Security updates for contrib modules
+
 
 
 7.x-1.7  2015-02-20
