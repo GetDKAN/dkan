@@ -114,7 +114,7 @@ function dkan_demo_front_block() {
   $homepage_graphic = url(drupal_get_path('theme', 'dkan') . '/images/homepage-graphic.jpg');
   $homepage_dataset_url = url('dataset/gold-prices-london-1950-2008-monthly');
   $content = t('<p>Search for datasets directly from the homepage or by navigating to the <a href="' . url('dataset') . '">Datasets</a> search page where you can facet by tags, groups and format.</p>');
-  $content .= '<p class="featured media-overlay"><strong class="media-heading">DKANs data previewing tool has many powerful features</strong><a class="image" href=" ' . $homepage_dataset_url . ' "><img src="' . $homepage_graphic . '" style="width: 100%"></a>
+  $content .= '<p class="featured media-overlay"><strong class="media-heading">DKANs data previewing tool has many powerful features</strong><a class="image" href=" ' . $homepage_dataset_url . ' "><img src="' . $homepage_graphic . '" style="width: 100%" alt="Image of DKANs data previewing tool"></a>
     </p>';
   return $content;
 }
@@ -132,7 +132,7 @@ function dkan_search_front_block() {
 function dkan_add_front_block() {
   $output = '<div class="add content">';
   $output .= t('You can add a !dataset to get a sense of publisher workflow. This form can be customised to require many additional fields. In this demo only the most basic fields are required.', array('!dataset' => l(t('Dataset'), 'node/add/dataset')));
-  $output .= '</div><a class="close icon-remove-sign" href="#close"></a>';
+  $output .= '</div>';
   return $output;
 }
 
