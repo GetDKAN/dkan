@@ -12,8 +12,23 @@ projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datastore.git
 projects[dkan_datastore][download][branch] = 7.x-1.x
 
+
+projects[visualization_entity_charts][subdir] = dkan
+projects[visualization_entity_charts][download][type] = git
+projects[visualization_entity_charts][download][url] = https://github.com/NuCivic/visualization_entity_charts.git
+projects[visualization_entity_charts][download][branch] = nucivic_nucivic_internal_306_nvd3_integration
+projects[visualization_entity_charts][type] = module
+
+projects[visualization_entity][subdir] = dkan
+projects[visualization_entity][download][type] = git
+projects[visualization_entity][download][url] = https://github.com/NuCivic/visualization_entity.git
+projects[visualization_entity][download][branch] = master
+projects[visualization_entity][type] = module
+
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
+includes[visualization_entity_charts_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/nucivic_nucivic_internal_306_nvd3_integration/visualization_entity_charts.make
+includes[visualization_entity_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
 
 ; Contrib Modules
 projects[admin_menu][version] = 3.0-rc5
