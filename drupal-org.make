@@ -5,7 +5,7 @@ api = 2
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
-projects[dkan_dataset][download][branch] = 7.x-1.x
+projects[dkan_dataset][download][branch] = 533-move-dataset-css-back-to-dkan
 
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
@@ -96,8 +96,8 @@ projects[nuboot][download][branch] = 7.x-1.x
 projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "6e51be20ccfa8a0a42a698cdc34e3ce09ac415a8"
+projects[nuboot_radix][download][branch] = 533-move-dataset-css-back-to-dkan
+projects[nuboot_radix][download][revision] = "4d5c69d6ed3533a9cfaf7aff0976578a31819089"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
