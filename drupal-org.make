@@ -17,6 +17,12 @@ includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_d
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
 
+projects[recline][subdir] = contrib
+projects[recline][download][type] = git
+projects[recline][download][url] = https://github.com/NuCivic/recline.git
+projects[recline][download][branch] = nucivic_dkan_446_make_ajax_call_timeout_configurable
+projects[recline][download][revision] = ef247194f1f24c5be747ca4e2a0d9d25da7d7dbb
+
 ; Contrib Modules
 projects[admin_menu][version] = 3.0-rc5
 projects[admin_menu][subdir] = contrib
