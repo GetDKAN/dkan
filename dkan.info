@@ -16,6 +16,12 @@ dependencies[] = number
 dependencies[] = path
 dependencies[] = rdf
 dependencies[] = taxonomy
+dependencies[] = locale
+
+; Multilingual
+dependencies[] = i18n
+dependencies[] = i18n_string
+dependencies[] = i18n_field
 
 ; Contrib
 dependencies[] = admin_menu
