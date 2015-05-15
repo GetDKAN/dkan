@@ -54,6 +54,9 @@ projects[og_moderation][subdir] = contrib
 projects[defaultconfig][version] = 1.0-alpha9
 projects[defaultconfig][subdir] = contrib
 
+projects[views_autocomplete_filters][version] = 1.2
+projects[views_autocomplete_filters][subdir] = contrib
+
 projects[panopoly_widgets][version] = 1.21
 projects[panopoly_widgets][subdir] = contrib
 includes[panopoly_widgets_make] = http://cgit.drupalcode.org/panopoly_widgets/plain/panopoly_widgets.make
