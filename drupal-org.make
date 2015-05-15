@@ -23,8 +23,9 @@ projects[bueditor][version] = 1.7
 projects[bueditor][patch][1931862] = http://drupal.org/files/dont-render-bueditor-for-plain-text-textareas.patch
 projects[bueditor][subdir] = contrib
 
-projects[colorizer][version] = 1.0
-projects[colorizer][patch][2227651] = http://drupal.org/files/issues/colorizer-2227651.patch
+projects[colorizer][version] = 1.4
+projects[colorizer][patch][2227651] = https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch
+projects[colorizer][patch][2444249] = https://www.drupal.org/files/issues/colorizer-2444249.patch
 projects[colorizer][subdir] = contrib
 
 projects[diff][version] = 3.2
@@ -113,7 +114,7 @@ projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "644f604aff632a4bf9c6d8bdf9bdfe385da8e130"
+projects[nuboot_radix][download][revision] = "7d45b2200a3347a0687e5b8edaeea2f40f968c15"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
@@ -131,3 +132,4 @@ libraries[spyc][download][url] = "https://raw.github.com/mustangostang/spyc/79f6
 libraries[spyc][filename] = "../spyc.php"
 libraries[spyc][directory_name] = "lib"
 libraries[spyc][destination] = "modules/contrib/services/servers/rest_server"
+

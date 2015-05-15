@@ -129,7 +129,7 @@ function dkan_sitewide_data_extent_block() {
     $wrapper = entity_metadata_wrapper('node', $node);
     $spatial = $wrapper->field_spatial->value();
     if ($spatial && $spatial['wkt']) {
-    drupal_add_library('leaflet_widget', 'Leaflet');
+    drupal_add_library('leaflet_widget', 'leaflet_core');
      $features = array(leaflet_widget_geojson_feature($spatial['wkt']));
        $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
        $output = "var dataExtent = " . $geojson;
@@ -337,6 +337,8 @@ function dkan_sitewide_search_bar() {
 function dkan_sitewide_dataset_search_form($form, $form_state) {
   $form['search'] = array(
     '#type' => 'textfield',
+    // Add field label for 508 compliance.
+    '#title' => 'Search',
     '#attributes' => array('placeholder' => t('search')),
     '#size' => 30,
   );
