@@ -51,9 +51,13 @@ projects[og_moderation][version] = 2.2
 projects[og_moderation][patch][2231737] = https://drupal.org/files/issues/any-user-with-view-revision-can-revert-delete-2231737-1.patch
 projects[og_moderation][subdir] = contrib
 
-projects[panopoly_widgets][version] = 1.18
+projects[panopoly_widgets][version] = 1.21
 projects[panopoly_widgets][subdir] = contrib
 includes[panopoly_widgets_make] = http://cgit.drupalcode.org/panopoly_widgets/plain/panopoly_widgets.make
+
+projects[panopoly_images][version] = 1.21
+projects[panopoly_images][subdir] = contrib
+includes[panopoly_images_make] = http://cgit.drupalcode.org/panopoly_images/plain/panopoly_images.make
 
 projects[panels][version] = 3.4
 projects[panels][subdir] = contrib
