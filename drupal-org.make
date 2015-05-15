@@ -7,11 +7,11 @@ projects[visualization_entity][download][type] = git
 projects[visualization_entity][download][branch] = internal_308_embed_viz
 projects[visualization_entity][download][url] = "https://github.com/NuCivic/visualization_entity.git"
 
-projects[visualization_entity][type] = module
-projects[visualization_entity][subdir] = nucivic
-projects[visualization_entity][download][type] = git
-projects[visualization_entity][download][branch] = master
-projects[visualization_entity][download][url] = "https://github.com/NuCivic/visualization_entity_charts.git"
+projects[visualization_entity_charts][type] = module
+projects[visualization_entity_charts][subdir] = nucivic
+projects[visualization_entity_charts][download][type] = git
+projects[visualization_entity_charts][download][branch] = master
+projects[visualization_entity_charts][download][url] = "https://github.com/NuCivic/visualization_entity_charts.git"
 
 ; DKAN
 projects[dkan_dataset][subdir] = dkan
