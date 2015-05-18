@@ -32,6 +32,7 @@ NuCivic' [Data](http://nucivic.com/data/enterprise/) platform offers 24/7, secur
 | DKAN Sitewide  | [![DKAN Sitewide Build Status](https://travis-ci.org/NuCivic/dkan.svg?branch=7.x-1.x)](https://travis-ci.org/NuCivic/dkan) |
 | DKAN Dataset   | [![DKAN Dataset Build Status](https://travis-ci.org/NuCivic/dkan_dataset.svg?branch=7.x-1.x)](https://travis-ci.org/NuCivic/dkan_dataset) |
 | DKAN Datastore | [![DKAN Datastore Build Status](https://travis-ci.org/NuCivic/dkan_datastore.svg?branch=7.x-1.x)](https://travis-ci.org/NuCivic/dkan_datastore) |
+| Open Data Schema Map | [![ODSM Build Status](https://travis-ci.org/NuCivic/open_data_schema_map.svg?branch=master)](https://travis-ci.org/NuCivic/open_data_schema_map) |
 
 ## Installation
 
