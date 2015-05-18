@@ -73,6 +73,12 @@ projects[restws][subdir] = contrib
 projects[schema][version] = 1.2
 projects[schema][subdir] = contrib
 
+projects[admin_menu_source][version] = 1.0
+projects[admin_menu_source][subdir] = contrib
+
+projects[menu_token][version] = 1.0-beta5
+projects[menu_token][subdir] = contrib
+
 ; Deprecated
 projects[delta][version] = 3.0-beta11
 projects[delta][subdir] = contrib
