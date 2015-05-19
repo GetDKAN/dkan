@@ -39,6 +39,7 @@ dependencies[] = entityreference
 dependencies[] = feeds
 dependencies[] = facetapi
 dependencies[] = facetapi_pretty_paths
+dependencies[] = facetapi_bonus
 dependencies[] = features
 dependencies[] = field_group_table
 dependencies[] = field_group
