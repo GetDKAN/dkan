@@ -502,6 +502,15 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'node',
   );
 
+  // Exported permission: 'create files'.
+  $permissions['create files'] = array(
+    'name' => 'create files',
+    'roles' => array(
+      'authenticated user' => 'authenticated user',
+    ),
+    'module' => 'file_entity',
+  );
+
   // Exported permission: 'create group content'.
   $permissions['create group content'] = array(
     'name' => 'create group content',
