@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\DrupalExtension\Context\RawDrupalContext;
+use Behat\MinkExtension\Context\MinkContext;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
