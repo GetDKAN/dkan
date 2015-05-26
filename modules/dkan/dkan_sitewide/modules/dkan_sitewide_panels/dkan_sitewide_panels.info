@@ -44,4 +44,4 @@ features[variable][] = path_breadcrumbs_truncate_title_length
 features[variable][] = path_breadcrumbs_url_cleaning_method
 features[views_view][] = dkan_datasets
 features[views_view][] = dkan_groups
-mtime = 1419797634
+mtime = 1432688483
