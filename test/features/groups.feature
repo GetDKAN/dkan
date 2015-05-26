@@ -3,16 +3,17 @@ Feature: Groups
   As a website user
   I need to be able to view the group pages
 
-  @api @javascript
+  @api @work
   Scenario: Join a group and edit group content as an Authenticated User
     Given I am logged in as a user with the "authenticated user" role
     When I visit "dataset/wisconsin-polling-places"
-    Then I should not see "edit"
+    Then I should not see "edit" in the "toolbar" region
     When I click "Madison Polling Places"
-    Then I should not see "edit"
+    Then I should not see "edit" in the "toolbar" region
     Given I am a "member" of the group "Geospatial Data Explorer Examples"
     When I visit "dataset/wisconsin-polling-places"
-    Then I should see "edit"
+    Then I should see "Wisconsin Polling Places"
+    Then I should see "Edit" in the "toolbar" region
 
    @api @javascript
    Scenario: Request to join a group as an Auth User

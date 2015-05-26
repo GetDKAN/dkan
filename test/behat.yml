@@ -1,19 +1,27 @@
 default:
+  suites:
+    default:
+      contexts:
+        - FeatureContext
+        - Drupal\DrupalExtension\Context\DrupalContext
+        - Drupal\DrupalExtension\Context\MinkContext
+        - Drupal\DrupalExtension\Context\MessageContext
+        - Drupal\DrupalExtension\Context\DrushContext
   extensions:
-    Behat\MinkExtension\Extension:
+    Behat\MinkExtension:
       goutte: ~
       selenium2: ~
       base_url: http://127.0.0.1:8888
       default_session: 'goutte'
       javascript_session: 'selenium2'
-      files_path: "files"
-    Drupal\DrupalExtension\Extension:
+    Drupal\DrupalExtension:
       blackbox: ~
       drupal:
         drupal_root: "drupal"
+      api_driver: 'drupal'
       drush:
+        alias: @self
         root: "drupal"
-      api_driver: "drupal"
       region_map:
         content: ".region-content"
         toolbar: ".tabs--primary"
@@ -24,3 +32,5 @@ default:
         right header: "#header-right"
         right sidebar: "#column-right"
         dashboards: ".view-data-dashboards table tbody"
+      text:
+        log_out: "Log out"
