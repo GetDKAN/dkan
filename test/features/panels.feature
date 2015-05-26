@@ -14,6 +14,7 @@ Feature: Panels
       And I scroll to the top
       And I fill in "edit-body-value" with "Custom item body."
       And I press "Finish"
+      And I wait for "1" seconds
       And I press "Save"
       Then I should see "New Custom Item"
 
