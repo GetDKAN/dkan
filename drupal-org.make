@@ -25,7 +25,7 @@ projects[dkan_fixtures][subdir] = dkan
 projects[dkan_fixtures][download][type] = git
 projects[dkan_fixtures][download][url] = https://github.com/NuCivic/dkan_fixtures.git
 projects[dkan_fixtures][download][branch] = 7.x-1.x
-projects[dkan_migrate_base][type] = module
+projects[dkan_fixtures][type] = module
 
 ; Contrib Modules
 projects[admin_menu][version] = 3.0-rc5
