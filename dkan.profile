@@ -12,6 +12,11 @@ function dkan_install_tasks() {
   $tasks['dkan_additional_setup'] = array(
     'display_name' => 'Cleanup',
   );
+  $tasks['dkan_import_content'] = array(
+    'display_name' => st('Import Required Content'),
+    'type' => 'batch',
+    'display' => TRUE,
+  );
   return $tasks;
 }
 
@@ -54,4 +59,30 @@ function dkan_additional_setup() {
   foreach ( $image_styles as $image_style ) {
     image_style_flush($image_style);
   }  
+}
+
+
+/**
+ * Imports housing works content.
+ */
+function dkan_import_content() {
+
+  $operations[] = array('_dkan_migrate_import', array(
+    'dkan_fixtures_default_dataset',
+    t('Importing Default Content.'),
+    ));
+  $batch = array(
+    'title' => t('Importing content'),
+    'operations' => $operations,
+  );
+  return $batch;
+}
+
+/**
+ * Callback for migrations.
+ */
+function _dkan_migrate_import($operation, $type, &$context) {
+  $context['message'] = t('@operation', array('@operation' => $type));
+  $migration = Migration::getInstance($operation);
+  $migration->processImport();
 }
