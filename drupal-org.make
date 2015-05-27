@@ -97,7 +97,7 @@ projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 34-dropdown-menu
-projects[nuboot_radix][download][revision] = "46be86ce1febe2fcb13ace1eb1b8714de87f1510"
+projects[nuboot_radix][download][revision] = "5010fd83cb44ac224f8167c0788068fab65aaa56"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
