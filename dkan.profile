@@ -33,7 +33,7 @@ function dkan_additional_setup() {
   );
   drupal_write_record('bueditor_editors', $data, array('eid'));
   
-  dkan_default_content_base_install()
+  dkan_default_content_base_install();
   // Keeps us from getting notices "No module defines permission".
   module_enable(array('dkan_sitewide_roles_perms'));
 
