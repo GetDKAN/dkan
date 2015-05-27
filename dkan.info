@@ -104,6 +104,7 @@ dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
 dependencies[] = dkan_datastore_api
 dependencies[] = dkan_fixtures
+dependencies[] = dkan_fixtures
 dependencies[] = dkan_migrate_base
 dependencies[] = open_data_schema_map
 dependencies[] = open_data_schema_map_dkan
