@@ -15,6 +15,16 @@ projects[dkan_datastore][download][branch] = 7.x-1.x
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 
+projects[dkan_migrate_base][subdir] = dkan
+projects[dkan_migrate_base][download][type] = git
+projects[dkan_migrate_base][download][url] = https://github.com/NuCivic/dkan_migrate_base.git
+projects[dkan_migrate_base][download][branch] = 7.x-1.x
+
+projects[dkan_fixtures][subdir] = dkan
+projects[dkan_fixtures][download][type] = git
+projects[dkan_fixtures][download][url] = https://github.com/NuCivic/dkan_fixtures.git
+projects[dkan_fixtures][download][branch] = 7.x-1.x
+
 ; Contrib Modules
 projects[admin_menu][version] = 3.0-rc5
 projects[admin_menu][subdir] = contrib
