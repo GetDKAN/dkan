@@ -68,7 +68,7 @@ function dkan_additional_setup() {
 function dkan_import_content() {
 
   $operations[] = array('_dkan_migrate_import', array(
-    'dkan_fixtures_default_dataset',
+    'MigrateCkanDatasetFixturesDefault',
     t('Importing Default Content.'),
     ));
   $batch = array(
