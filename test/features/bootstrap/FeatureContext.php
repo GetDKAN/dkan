@@ -316,5 +316,15 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
           $this->getDriver()->nodeDelete($data_dashboard);
         }
       }
+    /**
+     * Returns fixed step argument (with \\" replaced back to ").
+     *
+     * @param string $argument
+     *
+     * @return string
+     */
+    public function fixStepArgument($argument)
+    {
+        return str_replace('\\"', '"', $argument);
     }
 }

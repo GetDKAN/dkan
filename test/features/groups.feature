@@ -3,7 +3,7 @@ Feature: Groups
   As a website user
   I need to be able to view the group pages
 
-  @api @work
+  @api
   Scenario: Join a group and edit group content as an Authenticated User
     Given I am logged in as a user with the "authenticated user" role
     When I visit "dataset/wisconsin-polling-places"
