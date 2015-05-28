@@ -266,7 +266,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
         $dir =  __file__;
         $test_dir = str_replace($offset, "", $dir);
 
-        $path = $test_dir . $path;
+        $path = $test_dir . "files/" . $path;
 
         $this->getSession()->getPage()->attachFileToField($field, $path);
     }
