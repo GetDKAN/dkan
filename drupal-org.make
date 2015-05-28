@@ -31,6 +31,9 @@ projects[colorizer][subdir] = contrib
 projects[diff][version] = 3.2
 projects[diff][subdir] = contrib
 
+projects[draggableviews][version] = 2.1
+projects[draggableviews][subdir] = contrib
+
 projects[imagecache_actions][download][type] = git
 projects[imagecache_actions][download][url] = "http://git.drupal.org/project/imagecache_actions.git"
 projects[imagecache_actions][download][branch] = 7.x-1.x
@@ -97,7 +100,7 @@ projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "44f119a10aef969abccd395a33113554c7cd19f5"
+projects[nuboot_radix][download][revision] = "7469d6a8d7fc71793f97e2e050744e92825e9d22"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
