@@ -33,14 +33,7 @@ projects[colorizer][patch][2444249] = https://www.drupal.org/files/issues/colori
 projects[diff][version] = 3.2
 
 projects[draggableviews][version] = 2.1
-
-projects[entityreference_filter][version] = 1.5
-
-projects[fieldable_panels_panes][version] = 1.6
-
-projects[honeypot][version] = 1.17
-
-projects[fontyourface][version] = 2.8
+projects[draggableviews][subdir] = contrib
 
 projects[imagecache_actions][download][type] = git
 projects[imagecache_actions][download][url] = "http://git.drupal.org/project/imagecache_actions.git"
@@ -122,7 +115,7 @@ projects[nuboot][download][branch] = 7.x-1.x
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "08d5af72e590a56a2e6ec543f82957171acae245"
+projects[nuboot_radix][download][revision] = "7469d6a8d7fc71793f97e2e050744e92825e9d22"
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
