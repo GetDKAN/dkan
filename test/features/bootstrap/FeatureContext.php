@@ -252,6 +252,26 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     }
 
     /**
+     * @When I attach the drupal file :arg1 to :arg2
+     * 
+     * Overrides attachFileToField() in Mink context to fix but with relative
+     * path.
+     */
+    public function iAttachTheDrupalFileTo($path, $field)
+    {
+        $field = $this->fixStepArgument($field);
+
+        // Relative paths stopped working after selenium 2.44.
+        $offset = 'features/bootstrap/FeatureContext.php';
+        $dir =  __file__;
+        $test_dir = str_replace($offset, "", $dir);
+
+        $path = $test_dir . $path;
+
+        $this->getSession()->getPage()->attachFileToField($field, $path);
+    }
+
+    /**
      * Check toolbar if this->user isn't working.
      */
     public function getCurrentUser() {

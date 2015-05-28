@@ -68,7 +68,7 @@ Feature: Datasets
       And I should see "Add content"
     When I fill in "title" with "Test Resource Upload"
       And I click "Upload a file"
-      And I attach the file "Polling_Places_Madison.csv" to "files[field_upload_und_0]" 
+      And I attach the drupal file "Polling_Places_Madison.csv" to "files[field_upload_und_0]"
       And I check "field_upload[und][0][view][grid]"
       And I press "edit-submit"
       And I wait for "5" seconds
