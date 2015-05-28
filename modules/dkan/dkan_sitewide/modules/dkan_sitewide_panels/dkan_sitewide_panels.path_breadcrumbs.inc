@@ -24,7 +24,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
       0 => 'dataset',
       1 => '<none>',
     ),
-    'home' => 1,
+    'home' => 0,
     'translatable' => 0,
     'arguments' => array(
       'node' => array(
@@ -70,7 +70,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
       1 => '%node:field-dataset-ref:0:url',
       2 => '<none>',
     ),
-    'home' => 1,
+    'home' => 0,
     'translatable' => 0,
     'arguments' => array(
       'node' => array(
@@ -114,7 +114,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
       0 => 'Groups',
       1 => '<none>',
     ),
-    'home' => 1,
+    'home' => 0,
     'translatable' => 0,
     'arguments' => array(
       'node' => array(
@@ -158,7 +158,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
       0 => 'node/add',
       1 => '<none>',
     ),
-    'home' => 1,
+    'home' => 0,
     'translatable' => 0,
     'arguments' => array(
       'node' => array(
@@ -186,7 +186,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
     'paths' => array(
       0 => '<none>',
     ),
-    'home' => 1,
+    'home' => 0,
     'translatable' => 0,
     'arguments' => array(
       'node' => array(
