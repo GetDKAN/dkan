@@ -42,6 +42,7 @@ function dkan_sitewide_page_alter(&$page) {
   // we want to add this.
   $breadcrumbs = drupal_get_breadcrumb();
 
+  // Remove home breadcrumb link.
   if (is_array($breadcrumbs)) {
     unset($breadcrumbs[0]);
   }
