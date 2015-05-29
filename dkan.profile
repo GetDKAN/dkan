@@ -66,7 +66,7 @@ function dkan_additional_setup() {
  */
 function dkan_import_content() {
   $operations[] = array('_dkan_migrate_import', array(
-    'MigrateCkanDatasetFixturesDefault',
+    'dkan_fixtures_default_dataset',
     t('Importing Default Content.'),
     ));
   $batch = array(
@@ -81,6 +81,7 @@ function dkan_import_content() {
  */
 function _dkan_migrate_import($operation, $type, &$context) {
   $context['message'] = t('@operation', array('@operation' => $type));
+  migrate_static_registration($operation);
   $migration = Migration::getInstance($operation);
   $migration->processImport();
 }
