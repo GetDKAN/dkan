@@ -2,6 +2,8 @@ libraries
 modules/contrib
 modules/dkan/dkan_dataset
 modules/dkan/dkan_datastore
+modules/dkan/dkan_fixtures
+modules/dkan/dkan_migrate_base
 themes/contrib
 webroot
 test/vendor
