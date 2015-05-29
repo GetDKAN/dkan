@@ -96,8 +96,8 @@ projects[nuboot][download][branch] = 7.x-1.x
 projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "44f119a10aef969abccd395a33113554c7cd19f5"
+projects[nuboot_radix][download][branch] = 170-demo-block-tint
+projects[nuboot_radix][download][revision] = "bec8155ed6c27e7c8241afed34d27801e9ec0785"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
