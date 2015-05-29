@@ -13,7 +13,7 @@ function dkan_install_tasks() {
     'display_name' => 'Cleanup',
   );
   $tasks['dkan_import_content'] = array(
-    'display_name' => st('Import Required Content'),
+    'display_name' => t('Import Required Content'),
     'type' => 'batch',
     'display' => TRUE,
   );
@@ -65,7 +65,6 @@ function dkan_additional_setup() {
  * Imports housing works content.
  */
 function dkan_import_content() {
-
   $operations[] = array('_dkan_migrate_import', array(
     'MigrateCkanDatasetFixturesDefault',
     t('Importing Default Content.'),
