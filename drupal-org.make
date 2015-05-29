@@ -97,7 +97,7 @@ projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = button-styles
-projects[nuboot_radix][download][revision] = "6ff443e74ef259f283f7f1c906ecd69b9d387c29"
+projects[nuboot_radix][download][revision] = "a2d01aa9aedb7e9196b251a282fe28f216aa9d2c"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
