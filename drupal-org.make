@@ -97,7 +97,7 @@ projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 106-mobile-responsive-strings
-projects[nuboot_radix][download][revision] = "137ae6ac98298b16c1f746626bd0821dbae7e6f4"
+projects[nuboot_radix][download][revision] = "8da32fd69327ba989cdf781f4684577486eaf016"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
