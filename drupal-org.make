@@ -5,14 +5,14 @@ api = 2
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
-projects[dkan_dataset][download][branch] = panopoly_widge
+projects[dkan_dataset][download][branch] = 7.x-1.x
 
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datastore.git
 projects[dkan_datastore][download][branch] = 7.x-1.x
 
-includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/panopoly_widge/dkan_dataset.make
+includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
@@ -33,8 +33,8 @@ projects[colorizer][subdir] = contrib
 projects[diff][version] = 3.2
 projects[diff][subdir] = contrib
 
-projects[diff][version] = 1.x
 projects[fieldable_panels_panes][subdir] = contrib
+projects[fieldable_panels_panes][version] = 1.6
 
 projects[imagecache_actions][download][type] = git
 projects[imagecache_actions][download][url] = "http://git.drupal.org/project/imagecache_actions.git"
@@ -62,6 +62,14 @@ projects[views_autocomplete_filters][subdir] = contrib
 projects[views_autocomplete_filters][patch][2277453] = http://drupal.org/files/issues/ViewsAutocompleteFilters-no_results_on_some_environments-2277453-1.patch
 projects[views_autocomplete_filters][patch][2374709] = http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
 projects[views_autocomplete_filters][patch][2317351] = http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
+
+libraries[jquery.imagesloaded][download][type] = file
+libraries[jquery.imagesloaded][download][url] = https://github.com/desandro/imagesloaded/archive/v2.1.2.tar.gz
+libraries[jquery.imagesloaded][download][subtree] = imagesloaded-2.1.2
+
+libraries[jquery.imgareaselect][download][type] = file
+libraries[jquery.imgareaselect][download][url] = http://odyniec.net/projects/imgareaselect/jquery.imgareaselect-0.9.10.zip
+libraries[jquery.imgareaselect][download][subtree] = jquery.imgareaselect-0.9.10
 
 projects[panopoly_widgets][version] = 1.21
 projects[panopoly_widgets][subdir] = contrib
