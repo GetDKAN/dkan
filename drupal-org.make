@@ -100,7 +100,7 @@ projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "7469d6a8d7fc71793f97e2e050744e92825e9d22"
+projects[nuboot_radix][download][revision] = "f53e782c2e3190f23753f1b00852bf38e13f3d89"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
