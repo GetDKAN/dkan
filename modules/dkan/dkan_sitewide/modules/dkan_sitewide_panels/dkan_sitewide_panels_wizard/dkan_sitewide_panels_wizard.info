@@ -1,0 +1,4 @@
+name = DKAN Dashboard Wizard
+core = 7.x
+package = DKAN
+dependencies[] = dkan_sitewide_panels
