@@ -36,6 +36,9 @@ projects[diff][subdir] = contrib
 projects[draggableviews][version] = 2.1
 projects[draggableviews][subdir] = contrib
 
+projects[entityreference_filter][version] = 1.5
+projects[entityreference_filter][subdir] = contrib
+
 projects[fieldable_panels_panes][subdir] = contrib
 projects[fieldable_panels_panes][version] = 1.6
 
@@ -133,7 +136,7 @@ projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "f53e782c2e3190f23753f1b00852bf38e13f3d89"
+projects[nuboot_radix][download][revision] = "08d5af72e590a56a2e6ec543f82957171acae245"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
