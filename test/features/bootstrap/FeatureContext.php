@@ -8,7 +8,7 @@ require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext
 {
-    
+
     /**
      * @Given /^I scroll to the top$/
      */
@@ -23,7 +23,33 @@ class FeatureContext extends DrupalContext
         $actions.perform();
       }
     }
-    
+
+    /**
+     * @When /^I switch to the frame "([^"]*)"$/
+     */
+    public function iSwitchToTheFrame($frame) {
+      $this->getSession()->switchToIFrame($frame);
+    }
+
+    /**
+     * @Then /^I should see the "([^"]*)" element in the "([^"]*)" region$/
+     */
+    public function assertRegionElement($tag, $region) {
+      $regionObj = $this->getMainContext()->getRegion($region);
+      $elements = $regionObj->findAll('css', $tag);
+      if (!empty($elements)) {
+        return;
+      }
+      throw new \Exception(sprintf('The element "%s" was not found in the "%s" region on the page %s', $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+
+    /**
+     * @Given /^I switch out of all frames$/
+     */
+    public function iSwitchOutOfAllFrames() {
+      $this->getSession()->switchToIFrame();
+    }
+
     /**
      * @Then /^I wait for the dialog box to appear$/
      */
@@ -63,7 +89,7 @@ class FeatureContext extends DrupalContext
       $rid = trim(str_replace(array("'"), "", $option));
       $this->assertDrushCommandWithArgument('og-add-user',"node $gid $rid $user_id");
     }
-    
+
     /**
      * Properly inputs item in field rendered by Chosen.js.
      *
@@ -89,7 +115,7 @@ class FeatureContext extends DrupalContext
       );
       $title->click();
     }
-    
+
    /**
     * @Given /^I click the chosen field "([^"]*)" and enter "([^"]*)"$/
     */
@@ -113,7 +139,26 @@ class FeatureContext extends DrupalContext
 
       );
       $title->click();
-    }    
+    }
+
+
+    /**
+     * Click some text.
+     *
+     * @When /^I click on the text "([^"]*)"$/
+     */
+    public function iClickOnTheText($text) {
+      $session = $this->getSession();
+      $element = $session->getPage()->find(
+        'xpath',
+        $session->getSelectorsHandler()->selectorToXpath('xpath',
+          '//*[contains(text(), "' . $text . '")]')
+      );
+      if (NULL === $element) {
+        throw new \InvalidArgumentException(sprintf('Cannot find text: "%s"', $text));
+      }
+      $element->click();
+    }
 
     /**
      * Click on map icon as identified by its z-index.
@@ -121,18 +166,18 @@ class FeatureContext extends DrupalContext
      * @Given /^I click map icon number "([^"]*)"$/
      */
     public function iClickMapIcon($num) {
-        $session = $this->getSession();
-        $element = $session->getPage()->find(
+      $session = $this->getSession();
+      $element = $session->getPage()->find(
+          'xpath',
+          $session->getSelectorsHandler()->selectorToXpath(
             'xpath',
-            $session->getSelectorsHandler()->selectorToXpath(
-              'xpath',
-              '//div[contains(@class, "leaflet-marker-pane")]//img[' . $num . ']'
-            )
-        );
-        if (null === $element) {
-            throw new \InvalidArgumentException(sprintf('Cannot find map icon: "%s"', $num));
-        }
-        $element->click();
+            '//div[contains(@class, "leaflet-marker-pane")]//img[' . $num . ']'
+          )
+      );
+      if (null === $element) {
+          throw new \InvalidArgumentException(sprintf('Cannot find map icon: "%s"', $num));
+      }
+      $element->click();
     }
 
     /**
