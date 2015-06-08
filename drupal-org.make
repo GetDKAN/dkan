@@ -45,6 +45,9 @@ projects[fieldable_panels_panes][version] = 1.6
 projects[honeypot][version] = 1.17
 projects[honeypot][subdir] = contrib
 
+projects[fontyourface][subdir] = contrib
+projects[fontyourface][version] = 2.8
+
 projects[imagecache_actions][download][type] = git
 projects[imagecache_actions][download][url] = "http://git.drupal.org/project/imagecache_actions.git"
 projects[imagecache_actions][download][branch] = 7.x-1.x
@@ -58,6 +61,9 @@ projects[markdown][subdir] = contrib
 projects[markdowneditor][version] = 1.2
 projects[markdowneditor][patch][2045225] = http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
 projects[markdowneditor][subdir] = contrib
+
+projects[module_filter][version] = 2.0
+projects[module_filter][subdir] = contrib
 
 projects[og_moderation][version] = 2.2
 projects[og_moderation][patch][2231737] = https://drupal.org/files/issues/any-user-with-view-revision-can-revert-delete-2231737-1.patch
