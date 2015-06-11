@@ -12,7 +12,7 @@ default:
       drush:
         root: "drupal"
       region_map:
-        content: "#region-content"
+        content: ".region-content"
         toolbar: ".tabs--primary"
         footer: "#footer"
         header: "#header"

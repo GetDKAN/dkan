@@ -1,0 +1,15 @@
+name = DKAN featured groups
+description = Sortable Panel Display of selected groups.
+core = 7.x
+package = DKAN Features
+version = 7.x-1.0
+project = dkan_featured_groups
+dependencies[] = draggableviews
+dependencies[] = views
+dependencies[] = views_content
+dependencies[] = views_responsive_grid
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[views_view][] = dkan_groups_featured
+features_exclude[dependencies][ctools] = ctools
+mtime = 1433272822
