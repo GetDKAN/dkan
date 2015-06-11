@@ -21,7 +21,11 @@ function dkan_sitewide_user_menu_block() {
     $output .= '<span class="links">' . l($user->name, 'user') . l(t('Log out'), 'user/logout', array('attributes' => array('class' => array('sub')))) . '</span>';
   }
   else {
-    $output .= '<span class="links">' . l(t('Log in'), 'user/login') . l(t('Register'), 'user/register', array('attributes' => array('class' => array('sub')))) . '</span>';
+    $output .= '<span class="links">' . l(t('Log in'), 'user/login');
+    if (variable_get('user_register', TRUE)) {
+      $output .= l(t('Register'), 'user/register', array('attributes' => array('class' => array('sub'))));
+    }
+    $output .= '</span>';
   }
   return $output;
 }
