@@ -27,6 +27,8 @@ function dkan_sitewide_panelizer_form_alter(&$form, &$form_state, $form_id) {
         $default_layout = $default_panel->display->layout;
       }
 
+      drupal_set_message(var_dump($default_panel));
+
       // Add layout form.
       $form['layout'] = array(
         '#prefix' =>
@@ -35,6 +37,7 @@ function dkan_sitewide_panelizer_form_alter(&$form, &$form_state, $form_id) {
           '<div class="form-checkboxes clearfix">',
         '#suffix' =>
           '</div></div>',
+        '#weight' => $form['additional_settings']['#weight'] - 1,
       );
 
       $layouts = panels_common_get_allowed_layouts('panelizer_node' . ':' . $node->type);
