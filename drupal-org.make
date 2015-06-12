@@ -18,6 +18,12 @@ includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_d
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
 
 ; Contrib Modules
+projects[i18n][version] = 1.12
+projects[i18n][subdir] = contrib
+
+projects[variable][version] = 2.5
+projects[variable][subdir] = contrib
+
 projects[admin_menu][version] = 3.0-rc5
 projects[admin_menu][subdir] = contrib
 
