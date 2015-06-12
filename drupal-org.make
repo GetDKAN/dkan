@@ -1,6 +1,18 @@
 core = 7.x
 api = 2
 
+projects[visualization_entity][type] = module
+projects[visualization_entity][subdir] = nucivic
+projects[visualization_entity][download][type] = git
+projects[visualization_entity][download][branch] = internal_308_embed_viz
+projects[visualization_entity][download][url] = "https://github.com/NuCivic/visualization_entity.git"
+
+projects[visualization_entity_charts][type] = module
+projects[visualization_entity_charts][subdir] = nucivic
+projects[visualization_entity_charts][download][type] = git
+projects[visualization_entity_charts][download][branch] = master
+projects[visualization_entity_charts][download][url] = "https://github.com/NuCivic/visualization_entity_charts.git"
+
 ; DKAN
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
@@ -14,6 +26,8 @@ projects[dkan_datastore][download][branch] = 7.x-1.x
 
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
+includes[visualization_entity_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
+includes[visualization_entity_charts_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
 
