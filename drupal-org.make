@@ -19,6 +19,7 @@ projects[dkan_datastore][download][branch] = 7.x-1.x
 
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
+includes[data_story_make] = https://raw.githubusercontent.com/NuCivic/data_story/622_dashboard_wizard/data_story.make
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
 
