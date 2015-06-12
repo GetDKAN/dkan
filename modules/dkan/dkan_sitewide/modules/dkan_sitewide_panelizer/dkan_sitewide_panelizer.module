@@ -4,6 +4,29 @@
  * Drupal needs this blank file.
  */
 
+/**
+ *
+ */
+function dkan_sitewide_panelizer_form_panels_ipe_edit_control_form_alter(&$form, &$form_state) {
+
+  // This is needed in order to alter the form AFTER panelizer.
+  $form['#after_build'][] = 'dkan_sitewide_panelizer_after_build';
+}
+
+/**
+ *
+ */
+function dkan_sitewide_panelizer_after_build($form, &$form_state) {
+
+  // Remove 'Revert to' button.
+  $form['buttons']['revert_default']['#access'] = FALSE;
+  $form['buttons']['revert_default']['#type'] = 'hidden';
+  return $form;
+}
+
+/**
+ *
+ */
 function dkan_sitewide_panelizer_form_alter(&$form, &$form_state, $form_id) {
 
   if (array_key_exists('node', $form_state)) {
@@ -65,6 +88,9 @@ function dkan_sitewide_panelizer_form_alter(&$form, &$form_state, $form_id) {
   }
 }
 
+/**
+ *
+ */
 function dkan_sitewide_panelizer_node_submit($form, &$form_state) {
 
   if (isset($form_state['node']) && is_object($form_state['node'])) {
@@ -88,6 +114,9 @@ function dkan_sitewide_panelizer_node_submit($form, &$form_state) {
   }
 }
 
+/**
+ *
+ */
 function dkan_sitewide_panelizer_preprocess_page(&$vars)
 {
   // Get URL parameters
@@ -110,6 +139,9 @@ function dkan_sitewide_panelizer_preprocess_page(&$vars)
   }
 }
 
+/**
+ *
+ */
 function _change_layout($new_layout_name, $old_display) {
 
   // Create new display.
