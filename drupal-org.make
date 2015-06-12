@@ -82,7 +82,7 @@ projects[panopoly_images][version] = 1.21
 projects[panopoly_images][subdir] = contrib
 includes[panopoly_images_make] = http://cgit.drupalcode.org/panopoly_images/plain/panopoly_images.make
 
-projects[panels][version] = 3.4
+projects[panels][version] = 3.5
 projects[panels][subdir] = contrib
 
 projects[path_breadcrumbs][version] = 3.2
