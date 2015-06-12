@@ -2,6 +2,11 @@ core = 7.x
 api = 2
 
 ; DKAN
+projects[data_story][subdir] = dkan
+projects[data_story][download][type] = git
+projects[data_story][download][url] = https://github.com/NuCivic/data_story.git
+projects[data_story][download][branch] = 622_dashboard_wizard
+
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
