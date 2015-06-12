@@ -13,6 +13,13 @@ function dkan_sitewide_data_dashboard_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'dkan_sitewide_panelizer_data_dashboard';
+  $strongarm->value = TRUE;
+  $export['dkan_sitewide_panelizer_data_dashboard'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'menu_options_data_dashboard';
   $strongarm->value = array(
     0 => 'main-menu',
