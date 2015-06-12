@@ -33,10 +33,14 @@ projects[colorizer][patch][2444249] = https://www.drupal.org/files/issues/colori
 projects[diff][version] = 3.2
 
 projects[draggableviews][version] = 2.1
-projects[draggableviews][subdir] = contrib
 
-projects[fieldable_panels_panes][subdir] = contrib
+projects[entityreference_filter][version] = 1.5
+
 projects[fieldable_panels_panes][version] = 1.6
+
+projects[honeypot][version] = 1.17
+
+projects[fontyourface][version] = 2.8
 
 projects[imagecache_actions][download][type] = git
 projects[imagecache_actions][download][url] = "http://git.drupal.org/project/imagecache_actions.git"
@@ -57,35 +61,6 @@ projects[og_moderation][patch][2231737] = https://drupal.org/files/issues/any-us
 projects[defaultconfig][version] = 1.0-alpha9
 
 projects[panelizer][version] = 3.1
-projects[panelizer][subdir] = contrib
-
-projects[defaultconfig][version] = 1.0-alpha9
-projects[defaultconfig][subdir] = contrib
-
-projects[views_autocomplete_filters][version] = 1.1
-projects[views_autocomplete_filters][subdir] = contrib
-projects[views_autocomplete_filters][patch][2277453] = http://drupal.org/files/issues/ViewsAutocompleteFilters-no_results_on_some_environments-2277453-1.patch
-projects[views_autocomplete_filters][patch][2374709] = http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
-projects[views_autocomplete_filters][patch][2317351] = http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
-
-libraries[jquery.imagesloaded][download][type] = file
-libraries[jquery.imagesloaded][download][url] = https://github.com/desandro/imagesloaded/archive/v2.1.2.tar.gz
-libraries[jquery.imagesloaded][download][subtree] = imagesloaded-2.1.2
-
-libraries[jquery.imgareaselect][download][type] = file
-libraries[jquery.imgareaselect][download][url] = http://odyniec.net/projects/imgareaselect/jquery.imgareaselect-0.9.10.zip
-libraries[jquery.imgareaselect][download][subtree] = jquery.imgareaselect-0.9.10
-
-projects[panopoly_widgets][version] = 1.21
-projects[panopoly_widgets][subdir] = contrib
-includes[panopoly_widgets_make] = http://cgit.drupalcode.org/panopoly_widgets/plain/panopoly_widgets.make
-
-projects[panopoly_images][version] = 1.21
-projects[panopoly_images][subdir] = contrib
-includes[panopoly_images_make] = http://cgit.drupalcode.org/panopoly_images/plain/panopoly_images.make
-
-projects[panels][version] = 3.4
-projects[panels][subdir] = contrib
 
 projects[views_autocomplete_filters][version] = 1.1
 projects[views_autocomplete_filters][patch][2277453] = http://drupal.org/files/issues/ViewsAutocompleteFilters-no_results_on_some_environments-2277453-1.patch
@@ -134,7 +109,6 @@ projects[bootstrap][download][version] = 3.x
 projects[bootstrap][download][type] = git
 projects[bootstrap][download][revision] = "0390173732439fd60e898c7086219ab8c99c2f3d"
 
-projects[nuboot][subdir] = contrib
 projects[nuboot][download][type] = git
 projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
 projects[nuboot][download][revision] = "fbd7ea2c2f1fa45a5f5a10b4215950940335879e"
@@ -143,7 +117,7 @@ projects[nuboot][download][branch] = 7.x-1.x
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "7469d6a8d7fc71793f97e2e050744e92825e9d22"
+projects[nuboot_radix][download][revision] = "08d5af72e590a56a2e6ec543f82957171acae245"
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
