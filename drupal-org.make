@@ -3,9 +3,11 @@ api = 2
 
 ; DKAN
 projects[data_story][subdir] = dkan
+projects[data_story][type] = module
 projects[data_story][download][type] = git
 projects[data_story][download][url] = https://github.com/NuCivic/data_story.git
 projects[data_story][download][branch] = 622_dashboard_wizard
+projects[data_story][download][revision] = d2666c5ca37e39c0a1447bb7c5bb1b2abf09d096
 
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
