@@ -53,5 +53,8 @@ function dkan_additional_setup() {
   $image_styles = image_styles();
   foreach ( $image_styles as $image_style ) {
     image_style_flush($image_style);
-  }  
+  }
+
+  // Set honeypot protection on user registration form
+  variable_set('honeypot_form_user_register_form', 1);
 }
