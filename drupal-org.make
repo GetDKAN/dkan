@@ -39,6 +39,9 @@ projects[draggableviews][subdir] = contrib
 projects[fieldable_panels_panes][subdir] = contrib
 projects[fieldable_panels_panes][version] = 1.6
 
+projects[honeypot][version] = 1.17
+projects[honeypot][subdir] = contrib
+
 projects[imagecache_actions][download][type] = git
 projects[imagecache_actions][download][url] = "http://git.drupal.org/project/imagecache_actions.git"
 projects[imagecache_actions][download][branch] = 7.x-1.x
