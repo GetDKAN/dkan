@@ -866,7 +866,10 @@ function dkan_sitewide_panels_default_page_manager_pages() {
   $page->admin_title = 'Datasets';
   $page->admin_description = '';
   $page->path = 'dataset';
-  $page->access = array();
+  $page->access = array(
+    'type' => 'none',
+    'settings' => NULL,
+  );
   $page->menu = array(
     'type' => 'normal',
     'title' => 'Datasets',
@@ -1160,7 +1163,10 @@ function dkan_sitewide_panels_default_page_manager_pages() {
   $page->admin_title = 'Front page';
   $page->admin_description = '';
   $page->path = 'welcome';
-  $page->access = array();
+  $page->access = array(
+    'type' => 'none',
+    'settings' => NULL,
+  );
   $page->menu = array();
   $page->arguments = array();
   $page->conf = array(
@@ -1340,7 +1346,10 @@ function dkan_sitewide_panels_default_page_manager_pages() {
   $page->admin_title = 'Groups';
   $page->admin_description = '';
   $page->path = 'groups';
-  $page->access = array();
+  $page->access = array(
+    'type' => 'none',
+    'settings' => NULL,
+  );
   $page->menu = array(
     'type' => 'normal',
     'title' => 'Groups',
