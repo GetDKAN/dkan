@@ -48,4 +48,3 @@ features[views_view][] = dkan_datasets
 features[views_view][] = dkan_datasets_filtered
 features[views_view][] = dkan_groups
 features[views_view][] = groups_entity_reference_list
-mtime = 1433349996
