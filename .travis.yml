@@ -58,6 +58,7 @@ script:
   - bin/behat features/search.feature
   - bin/behat features/recline.feature
   - bin/behat features/widgets.feature
+  - bash features-tests.sh
 
 notifications:
   slack:
