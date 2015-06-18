@@ -10,6 +10,4 @@ dependencies[] = views_content
 dependencies[] = views_responsive_grid
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2
-features[views_view][] = dkan_groups_featured
 features_exclude[dependencies][ctools] = ctools
-mtime = 1433272822
