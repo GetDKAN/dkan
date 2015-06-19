@@ -1,10 +1,20 @@
 #!/bin/bash
 set -e
 
+echo "FEATURES TEST";
+
+OLD_PATH=`pwd`
+echo "Current directory: $OLD_PATH"
+cd $1
+
+NEW_PATH=`pwd`
+echo "Changing to directory: $NEW_PATH";
+
 # First check if any features are overridden.
 if [ -n "$(drush fd | grep Overridden)" ]; then
       echo "---> Error: Features are showing as overridden.";
       drush fd;
+      cd $OLD_PATH;
       exit 1
 fi
 
@@ -18,8 +28,10 @@ if [ -n "$(git status -uno --porcelain)" ]; then
       echo "---> Error: Features need to be re-exported, or you have some changes to other files in git. ";
       git status;
       git diff;
+      cd $OLD_PATH;
       exit 1
 fi
 
 # Otherwise we should be good to go.
+cd $OLD_PATH;
 echo "---> Success: Features are up to date.";
