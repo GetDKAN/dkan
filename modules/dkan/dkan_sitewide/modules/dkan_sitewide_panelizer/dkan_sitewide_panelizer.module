@@ -127,9 +127,6 @@ function dkan_sitewide_panelizer_node_submit($form, &$form_state) {
       // Save entity.
       entity_save('node', $entity);
 
-      // Clear cache
-      cache_clear_all();
-
       // Check: Setting $form_state['reditect'] did not work.
       drupal_goto('node/' . $nid, array('query' => array('edit' => 'true')));
     }
