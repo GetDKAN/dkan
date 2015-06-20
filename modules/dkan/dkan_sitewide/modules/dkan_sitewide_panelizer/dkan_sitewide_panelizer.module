@@ -110,6 +110,12 @@ function dkan_sitewide_panelizer_node_submit($form, &$form_state) {
     // Load entity.
     $entity = entity_load_single('node', $nid);
 
+    // Clear status messages
+    drupal_get_messages('status');
+    // Add explanatory status message
+    drupal_set_message(t("Your %content_type '%title' has been created. Start adding content by clicking on the + sign on each panel.",
+                          array('%content_type' => node_type_get_name($entity->type), '%title' => $entity->title)));
+
     if (isset($entity->panelizer)) {
 
       // There is a default display.
