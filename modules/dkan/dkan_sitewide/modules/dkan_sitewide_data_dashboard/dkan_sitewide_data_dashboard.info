@@ -1,4 +1,5 @@
 name = DKAN Sitewide Data Dashboard
+description = DKAN module for Data Dashboard content type
 core = 7.x
 package = DKAN
 version = 7.x-1.0
