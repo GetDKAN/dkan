@@ -5,10 +5,9 @@ echo "FEATURES TEST";
 
 OLD_PATH=`pwd`
 echo "Current directory: $OLD_PATH"
-cd $1
+cd drupal
 
-NEW_PATH=`pwd`
-echo "Changing to directory: $NEW_PATH";
+echo "Changing to drupal installation directory";
 
 # First check if any features are overridden.
 if [ -n "$(drush fd | grep Overridden)" ]; then
