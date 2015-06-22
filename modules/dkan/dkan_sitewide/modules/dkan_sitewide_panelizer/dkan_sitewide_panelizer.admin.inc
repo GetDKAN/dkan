@@ -84,7 +84,7 @@ function dkan_sitewide_panelizer_admin() {
 }
 
 /**
- * Function: Custom submit handler.
+ * Custom submit handler.
  */
 function dkan_sitewide_panelizer_admin_submit($form, &$form_state) {
 
@@ -100,4 +100,11 @@ function dkan_sitewide_panelizer_admin_submit($form, &$form_state) {
       variable_set('dkan_sitewide_panelizer_' . $content_type_name, FALSE);
     }
   }
+}
+
+/**
+ *
+ */
+function _get_panelized_content_types() {
+
 }

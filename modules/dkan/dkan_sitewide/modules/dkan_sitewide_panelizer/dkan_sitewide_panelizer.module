@@ -16,7 +16,7 @@ function dkan_sitewide_panelizer_form_panels_ipe_edit_control_form_alter(&$form,
 }
 
 /**
- * Function: Custom callback to be executed after the form is built.
+ * Custom callback to be executed after the form is built.
  */
 function dkan_sitewide_panelizer_after_build($form, &$form_state) {
 
@@ -97,7 +97,7 @@ function dkan_sitewide_panelizer_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Function: Custom submit handler.
+ * Custom submit handler.
  */
 function dkan_sitewide_panelizer_node_submit($form, &$form_state) {
 
@@ -157,7 +157,7 @@ function dkan_sitewide_panelizer_preprocess_page(&$vars) {
 }
 
 /**
- * Function: Change current layout to new layout.
+ * Change current layout to new layout.
  */
 function _change_layout($new_layout_name, $old_display) {
 
