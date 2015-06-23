@@ -7,7 +7,7 @@ projects[data_story][type] = module
 projects[data_story][download][type] = git
 projects[data_story][download][url] = https://github.com/NuCivic/data_story.git
 projects[data_story][download][branch] = 622_dashboard_wizard
-projects[data_story][download][revision] = 9ac0759ae508b71913376953609a8c2c2d7235f6
+projects[data_story][download][revision] = 55f18ba3be4c813f74fce26813ee9b4d0a354746
 
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
