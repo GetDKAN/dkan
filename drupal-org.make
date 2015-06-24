@@ -109,7 +109,7 @@ projects[bootstrap][download][revision] = "0390173732439fd60e898c7086219ab8c99c2
 projects[nuboot][subdir] = contrib
 projects[nuboot][download][type] = git
 projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
-projects[nuboot][download][revision] = "fbd7ea2c2f1fa45a5f5a10b4215950940335879e"
+projects[nuboot][download][revision] = "f83064fff3ad05741d3d7e0226133290f5f515d3"
 projects[nuboot][download][branch] = 7.x-1.x
 
 projects[nuboot_radix][download][type] = git
