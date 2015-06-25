@@ -74,6 +74,7 @@ libraries[jquery.imgareaselect][download][url] = http://odyniec.net/projects/img
 libraries[jquery.imgareaselect][download][subtree] = jquery.imgareaselect-0.9.10
 
 projects[panopoly_widgets][version] = 1.21
+projects[panopoly_widgets][patch][] = patches/panopoly_widgets_overrides.patch
 includes[panopoly_widgets_make] = http://cgit.drupalcode.org/panopoly_widgets/plain/panopoly_widgets.make
 
 projects[panopoly_images][version] = 1.21
