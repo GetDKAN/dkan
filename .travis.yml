@@ -35,6 +35,7 @@ before_script:
   - cd drupal
   - drush si dkan --sites-subdir=default --db-url=mysql://root:@127.0.0.1:3306/dkan_travis --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module='array(FALSE,FALSE)' --yes
   - drush cc all --yes
+  - drush cc drush
   - drush --quiet --yes --root=$PWD runserver :8888 > /dev/null 2>&1 &
   - sleep 4
 
@@ -49,6 +50,7 @@ before_script:
   - sleep 5
 
 script:
+  - bash features-tests.sh $TRAVIS_BUILD_DIR
   - bin/behat features/panels.feature
   - bin/behat features/groups.feature
   - bin/behat features/dataset.feature

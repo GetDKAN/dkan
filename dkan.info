@@ -44,6 +44,7 @@ dependencies[] = features
 dependencies[] = field_group_table
 dependencies[] = field_group
 dependencies[] = gravatar
+dependencies[] = honeypot
 dependencies[] = link_iframe_formatter
 dependencies[] = libraries
 dependencies[] = link
