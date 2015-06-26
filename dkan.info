@@ -117,3 +117,5 @@ dependencies[] = dkan_datastore
 dependencies[] = dkan_datastore_api
 dependencies[] = open_data_schema_map
 dependencies[] = open_data_schema_map_dkan
+dependencies[] = data_story
+
