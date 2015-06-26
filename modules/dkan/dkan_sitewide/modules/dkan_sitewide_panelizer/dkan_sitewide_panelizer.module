@@ -1,0 +1,191 @@
+<?php
+/**
+ * @file
+ * Module core functions.
+ */
+
+include_once 'dkan_sitewide_panelizer.admin.inc';
+
+/**
+ * Hook: hook_FORM_ID_form_alter().
+ */
+function dkan_sitewide_panelizer_form_panels_ipe_edit_control_form_alter(&$form, &$form_state) {
+
+  // This is needed in order to alter the form AFTER panelizer.
+  $form['#after_build'][] = 'dkan_sitewide_panelizer_after_build';
+}
+
+/**
+ * Custom callback to be executed after the form is built.
+ */
+function dkan_sitewide_panelizer_after_build($form, &$form_state) {
+
+  // Remove 'Revert to' button.
+  $form['buttons']['revert_default']['#access'] = FALSE;
+  $form['buttons']['revert_default']['#type'] = 'hidden';
+  return $form;
+}
+
+/**
+ * Hook: hook_form_alter().
+ */
+function dkan_sitewide_panelizer_form_alter(&$form, &$form_state, $form_id) {
+
+  if (array_key_exists('node', $form_state)) {
+
+    $node = $form_state['node'];
+
+    $handler = panelizer_entity_plugin_get_handler('node');
+    if (!$handler) {
+      return;
+    }
+
+    // Check if this functionality was enabled for the content type.
+    $is_enabled = variable_get('dkan_sitewide_panelizer_' . $node->type);
+    // Check if the default view of the content type is panelized.
+    $is_panelized = $handler->is_panelized($node->type . '.default');
+    // Check if there is a default panel for the default view.
+    $has_default = $handler->has_default_panel($node->type . '.default');
+    // Check if its a creation form.
+    $is_creation = (!isset($node->nid) || isset($node->is_new)) ? TRUE : FALSE;
+
+    if ($is_creation && $is_enabled && $is_panelized && $has_default) {
+
+      ctools_include('common', 'panels');
+      ctools_include('cleanstring');
+
+      $default_layout = '';
+      $default_panel = $handler->get_default_panelizer_object($node->type, 'node:' . $node->type . ':default:default');
+      if ($default_panel) {
+        $default_layout = $default_panel->display->layout;
+      }
+
+      // Add layout form.
+      $form['layout'] = array(
+        '#prefix' => '<div class="panels-choose-layout panels-layouts-checkboxes clearfix">' .
+        '<label>Select layout</label>' .
+        '<div class="form-checkboxes clearfix">',
+        '#suffix' => '</div></div>',
+        '#weight' => $form['additional_settings']['#weight'] - 1,
+      );
+
+      $layouts = panels_common_get_allowed_layouts('panelizer_node' . ':' . $node->type);
+
+      foreach ($layouts as $name => $layout) {
+
+        // Set first layout as default if empty.
+        if (empty($default_layout)) {
+          $default_layout = $name;
+        }
+
+        // Add layout options.
+        $form['layout'][$name] = array(
+          '#type' => 'radio',
+          '#title' => panels_print_layout_icon($name, $layout, check_plain($layout['title'])),
+          '#parents' => array('layout'),
+          '#id' => drupal_clean_css_identifier('edit-layout-' . $name),
+          '#return_value' => check_plain($name),
+          '#default_value' => in_array($default_layout, array_keys($layouts)) ? $default_layout : NULL,
+        );
+      }
+
+      // Add custom submit handler.
+      $form['actions']['submit']['#submit'][] = 'dkan_sitewide_panelizer_node_submit';
+    }
+
+  }
+}
+
+/**
+ * Custom submit handler.
+ */
+function dkan_sitewide_panelizer_node_submit($form, &$form_state) {
+
+  if (isset($form_state['node']) && is_object($form_state['node'])) {
+
+    $nid = $form_state['node']->nid;
+
+    // Load entity.
+    $entity = entity_load_single('node', $nid);
+
+    // Clear status messages.
+    drupal_get_messages('status');
+    // Add explanatory status message.
+    drupal_set_message(t("Your %content_type '%title' has been created. Start adding content by clicking on the + sign on each panel.",
+                          array('%content_type' => node_type_get_name($entity->type), '%title' => $entity->title)));
+
+    if (isset($entity->panelizer)) {
+
+      // There is a default display.
+      $current_display = $entity->panelizer['default']->display;
+      // Update the default display with the new layout.
+      $entity->panelizer['default']->display = _change_layout($form_state['values']['layout'], $current_display);
+      $entity->panelizer['default']->display_is_modified = TRUE;
+
+      // Save entity.
+      entity_save('node', $entity);
+
+      // Check: Setting $form_state['reditect'] did not work.
+      drupal_goto('node/' . $nid, array('query' => array('edit' => 'true')));
+    }
+  }
+}
+
+/**
+ * Hook: hook_preprocess_page().
+ */
+function dkan_sitewide_panelizer_preprocess_page(&$vars) {
+
+  // Get URL parameters.
+  $query_params = drupal_get_query_parameters();
+
+  if (isset($query_params['edit']) && $query_params['edit'] == 'true') {
+
+    // Get current node.
+    $node = menu_get_object();
+
+    $handler = panelizer_entity_plugin_get_handler('node');
+    if (!$handler) {
+      return;
+    }
+
+    if (!empty($node) && $handler->is_panelized($node->type . '.default')) {
+      // Add JS to open IPE automatically.
+      drupal_add_js(drupal_get_path('module', 'dkan_sitewide_panelizer') . '/js/dkan_sitewide_panelizer.js');
+    }
+  }
+}
+
+/**
+ * Change current layout to new layout.
+ */
+function _change_layout($new_layout_name, $old_display) {
+
+  // Create new display.
+  $new_display = panels_new_display();
+  $new_display->layout = $new_layout_name;
+  $new_display->content = array();
+
+  // Get layout regions.
+  $new_layout = ctools_get_plugins('panels', 'layouts', $new_layout_name);
+  $new_layout_regions = $new_layout['regions'];
+
+  // Set default region.
+  $keys = array_keys($new_layout_regions);
+  $default_region = reset($keys);
+  $new_display->panels[$default_region] = array();
+
+  // Get current panes.
+  $current_panes = $old_display->content;
+
+  foreach ($current_panes as $pid => $pane) {
+
+    $pane->panel = $default_region;
+
+    // Add pane on new display.
+    $new_display->panels[$default_region][] = $pid;
+    $new_display->content[$pid] = $pane;
+  }
+
+  return $new_display;
+}

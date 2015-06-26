@@ -106,6 +106,9 @@ dependencies[] = dkan_dataset_groups
 dependencies[] = dkan_sitewide_panels
 dependencies[] = dkan_sitewide_search_db
 dependencies[] = dkan_featured_groups
+dependencies[] = dkan_sitewide_panelizer
+dependencies[] = dkan_sitewide_data_dashboard
+dependencies[] = dkan_featured_groups
 
 ; DKAN Modules
 dependencies[] = dkan_sitewide
