@@ -20,6 +20,18 @@ includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_d
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
 
+projects[dkan_migrate_base][subdir] = dkan
+projects[dkan_migrate_base][download][type] = git
+projects[dkan_migrate_base][download][url] = https://github.com/NuCivic/dkan_migrate_base.git
+projects[dkan_migrate_base][download][branch] = 7.x-1.x
+projects[dkan_migrate_base][type] = module
+
+projects[dkan_fixtures][subdir] = dkan
+projects[dkan_fixtures][download][type] = git
+projects[dkan_fixtures][download][url] = https://github.com/NuCivic/dkan_fixtures.git
+projects[dkan_fixtures][download][branch] = 7.x-1.x
+projects[dkan_fixtures][type] = module
+
 ; Contrib Modules
 projects[admin_menu][version] = 3.0-rc5
 
@@ -54,6 +66,9 @@ projects[markdowneditor][version] = 1.2
 projects[markdowneditor][patch][2045225] = http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
 
 projects[module_filter][version] = 2.0
+
+projects[migrate][version] = 2.7
+projects[migrate][subdir] = contrib
 
 projects[og_moderation][version] = 2.2
 projects[og_moderation][patch][2231737] = https://drupal.org/files/issues/any-user-with-view-revision-can-revert-delete-2231737-1.patch

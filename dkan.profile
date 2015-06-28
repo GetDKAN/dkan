@@ -12,6 +12,11 @@ function dkan_install_tasks() {
   $tasks['dkan_additional_setup'] = array(
     'display_name' => 'Cleanup',
   );
+  $tasks['dkan_import_content'] = array(
+    'display_name' => t('Import Required Content'),
+    'type' => 'batch',
+    'display' => TRUE,
+  );
   return $tasks;
 }
 
@@ -32,8 +37,7 @@ function dkan_additional_setup() {
     'eid' => 5,
   );
   drupal_write_record('bueditor_editors', $data, array('eid'));
-  
-  dkan_default_content_base_install();
+
   // Keeps us from getting notices "No module defines permission".
   module_enable(array('dkan_sitewide_roles_perms'));
 
@@ -58,4 +62,30 @@ function dkan_additional_setup() {
 
   // Set honeypot protection on user registration form
   variable_set('honeypot_form_user_register_form', 1);
+}
+
+
+/**
+ * Imports housing works content.
+ */
+function dkan_import_content() {
+
+  $operations[] = array('_dkan_migrate_import', array(
+    'MigrateCkanDatasetFixturesDefault',
+    t('Importing Default Content.'),
+    ));
+  $batch = array(
+    'title' => t('Importing content'),
+    'operations' => $operations,
+  );
+  return $batch;
+}
+
+/**
+ * Callback for migrations.
+ */
+function _dkan_migrate_import($operation, $type, &$context) {
+  $context['message'] = t('@operation', array('@operation' => $type));
+  $migration = Migration::getInstance($operation);
+  $migration->processImport();
 }
