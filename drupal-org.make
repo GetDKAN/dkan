@@ -67,14 +67,6 @@ projects[views_autocomplete_filters][patch][2277453] = http://drupal.org/files/i
 projects[views_autocomplete_filters][patch][2374709] = http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
 projects[views_autocomplete_filters][patch][2317351] = http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
 
-libraries[jquery.imagesloaded][download][type] = file
-libraries[jquery.imagesloaded][download][url] = https://github.com/desandro/imagesloaded/archive/v2.1.2.tar.gz
-libraries[jquery.imagesloaded][download][subtree] = imagesloaded-2.1.2
-
-libraries[jquery.imgareaselect][download][type] = file
-libraries[jquery.imgareaselect][download][url] = http://odyniec.net/projects/imgareaselect/jquery.imgareaselect-0.9.10.zip
-libraries[jquery.imgareaselect][download][subtree] = jquery.imgareaselect-0.9.10
-
 projects[panopoly_widgets][version] = 1.21
 projects[panopoly_widgets][patch][] = patches/panopoly_widgets_overrides.patch
 includes[panopoly_widgets_make] = http://cgit.drupalcode.org/panopoly_widgets/plain/panopoly_widgets.make
