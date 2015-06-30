@@ -60,6 +60,7 @@ script:
   - bin/behat features/search.feature
   - bin/behat features/recline.feature
   - bin/behat features/widgets.feature
+  - bin/behat features/data_dashboard.feature
 
 notifications:
   slack:
