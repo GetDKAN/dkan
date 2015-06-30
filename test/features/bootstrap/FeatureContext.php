@@ -2,12 +2,16 @@
 
 use Drupal\DrupalExtension\Context\DrupalContext;
 use Behat\Behat\Context\Step\Given;
+use Behat\Behat\Context\BehatContext;
 use Symfony\Component\Process\Process;
+use Behat\Gherkin\Node\TableNode;
 
 require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext
 {
+    // Keep track of created data dashboards so they can be cleaned up.
+    protected $data_dashboards = array();
 
     /**
      * @Given /^I scroll to the top$/
@@ -251,5 +255,54 @@ class FeatureContext extends DrupalContext
       // how Drupal SimpleTests currently work as well.
       $element = $session->getPage();
       return $element->findLink($this->getDrupalText('log_out'));
+    }
+
+    /************************************/
+    /* DATA DASHBOARDS                  */
+    /************************************/
+
+    /**
+     * @Given data_dashboards:
+     */
+    public function addDataDashboard(TableNode $data_dashboards_table) {
+
+      // Map readable field names to drupal field names.
+      $field_map = array(
+        'title' => 'title',
+      );
+
+      foreach ($data_dashboards_table->getHash() as $data_dashboards_hash) {
+
+        $node = new stdClass();
+        $node->type = 'data_dashboard';
+
+        foreach($data_dashboards_hash as $field => $value) {
+
+          if(isset($field_map[$field])) {
+            $drupal_field = $field_map[$field];
+            $node->$drupal_field = $value;
+          }
+          else {
+            throw new Exception(sprintf("Data Dashboard field %s doesn't exist, or hasn't been mapped. See FeatureContext::addDataDashboard for mappings.", $field));
+          }
+        }
+        $created_node = $this->getDriver()->createNode($node);
+        // Add the created node to the data dashboards array.
+        $this->data_dashboards[$created_node->nid] = $created_node;
+      }
+    }
+
+    /**
+     * Clean up generated content.
+     */
+    public function afterScenario($event) {
+
+      parent::afterScenario($event);
+
+      if (!empty($this->data_dashboards)) {
+        foreach ($this->data_dashboards as $data_dashboard_id => $data_dashboard) {
+          $this->getDriver()->nodeDelete($data_dashboard);
+        }
+      }
     }
 }
