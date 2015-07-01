@@ -9,8 +9,11 @@ default:
       files_path: "files"
     Drupal\DrupalExtension\Extension:
       blackbox: ~
+      drupal:
+        drupal_root: "drupal"
       drush:
         root: "drupal"
+      api_driver: "drupal"
       region_map:
         content: ".region-content"
         toolbar: ".tabs--primary"
@@ -20,3 +23,4 @@ default:
         left header: "#header-left"
         right header: "#header-right"
         right sidebar: "#column-right"
+        dashboards: ".view-data-dashboards table tbody"
