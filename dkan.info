@@ -96,6 +96,8 @@ dependencies[] = geophp
 dependencies[] = recline
 dependencies[] = rdfui
 dependencies[] = rdfx
+dependencies[] = visualization_entity
+dependencies[] = visualization_entity_charts
 
 ; DKAN Features
 dependencies[] = dkan_sitewide_menu
