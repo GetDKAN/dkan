@@ -15,8 +15,25 @@ projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datastore.git
 projects[dkan_datastore][download][branch] = 7.x-1.x
 
+; NuCivic Visualization tools
+
+projects[visualization_entity][download][type] = git
+projects[visualization_entity][download][url] = git@github.com:NuCivic/visualization_entity.git
+projects[visualization_entity][download][branch] = master
+
+projects[visualization_entity_charts][download][type] = git
+projects[visualization_entity_charts][download][url] = git@github.com:NuCivic/visualization_entity_charts.git
+projects[visualization_entity_charts][download][branch] = master
+
+; Includes, since we're doing non-recusive
+
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
+
+includes[visualization_entity] = https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
+includes[visualization_entity_charts] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
+
+; Patches to other modules
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
 
