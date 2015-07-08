@@ -1,25 +1,38 @@
-Feature: Datasets 
+Feature: Datasets
 
-  Scenario: Sharing the Dataset on Facebook 
+  Scenario: Sharing the Dataset on Facebook
     Given I am on "/dataset/wisconsin-polling-places"
     When I click "Facebook"
     Then I should see "Facebook"
 
-  Scenario: Sharing the Dataset on Twitter 
+  Scenario: Sharing the Dataset on Twitter
     Given I am on "/dataset/wisconsin-polling-places"
     When I click "Twitter"
     Then I should see "Share a link with your followers"
 
-  Scenario: Seeing the License 
+  Scenario: Seeing the License
     Given I am on "/dataset/wisconsin-polling-places"
     When I click "Creative Commons Attribution"
     Then I should see "The Creative Commons Attribution license allows re-distribution and re-use of a licensed work"
 
+  @api
+  Scenario: Creating License
+    Given I am logged in as a user with the "authenticated user" role
+    And I am on "/dataset"
+    Then I should not see "UK Open Government Licence (OGL)"
+    And "dataset" content:
+    | title        | body      | author  | field_license |
+    | test dataset | test body | admin |  uk-ogl |
+    And I am on "/dataset/test-dataset"
+    Then I should see "UK Open Government Licence (OGL)"
+    Then the Dataset search updates behind the scenes
+    And I am on "/dataset"
+    Then I should see "test dataset"
+    Then I should see "UK Open Government Licence (OGL)"
 
   Scenario: See Users datasets
-
   @javascript
-  Scenario: Viewing the Dataset 
+  Scenario: Viewing the Dataset
     Given I am on "/dataset/wisconsin-polling-places"
     Then I should see "Polling places in the state of Wisconsin"
       And I should see "Explore Data"
@@ -44,7 +57,7 @@ Feature: Datasets
       Then I should see "Create Dataset"
     When I fill in "title" with "Test Dataset"
       And I fill in "body[und][0][value]" with "Test description"
-      And I click the chosen field "License Not Specified" and enter "Creative Commons Attribution"    
+      And I click the chosen field "License Not Specified" and enter "Creative Commons Attribution"
       And I fill in the chosen field "Choose some options" with "Test Group"
       And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
@@ -55,7 +68,7 @@ Feature: Datasets
       And I should see "Add content"
     When I fill in "title" with "Test Resource Upload"
       And I click "Upload a file"
-      And I attach the file "Polling_Places_Madison.csv" to "files[field_upload_und_0]" 
+      And I attach the drupal file "Polling_Places_Madison.csv" to "files[field_upload_und_0]"
       And I check "field_upload[und][0][view][grid]"
       And I press "edit-submit"
       And I wait for "5" seconds
