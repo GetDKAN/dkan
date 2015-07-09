@@ -5,6 +5,7 @@ api = 2
 defaults[projects][subdir] = contrib
 
 ; DKAN
+projects[dkan_data_story][type] = module
 projects[dkan_data_story][subdir] = dkan
 projects[dkan_data_story][download][type] = git
 projects[dkan_data_story][download][url] = https://github.com/NuCivic/dkan_data_story.git
