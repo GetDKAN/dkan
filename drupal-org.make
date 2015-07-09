@@ -8,8 +8,8 @@ defaults[projects][subdir] = contrib
 projects[dkan_data_story][subdir] = dkan
 projects[dkan_data_story][download][type] = git
 projects[dkan_data_story][download][url] = https://github.com/NuCivic/dkan_data_story.git
-projects[dkan_data_story][download][branch] = 693-rename-data-story
-projects[dkan_data_story][download][revision] =a4bf30d89bc07916b1adcf78c05c0949e068a900
+projects[dkan_data_story][download][branch] = master
+projects[dkan_data_story][download][revision] = 6eb0e9a0fb94b0e07ebc3d97bbebbcab6c2a807a
 
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
