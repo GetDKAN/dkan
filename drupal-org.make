@@ -10,7 +10,7 @@ projects[dkan_data_story][subdir] = dkan
 projects[dkan_data_story][download][type] = git
 projects[dkan_data_story][download][url] = https://github.com/NuCivic/dkan_data_story.git
 projects[dkan_data_story][download][branch] = master
-projects[dkan_data_story][download][revision] = 12beb7a5348c3f6d52c7f5811486ce7f120e8721
+projects[dkan_data_story][download][revision] = 5dbf67a1b49931b3de27d89e813a9077afb568ad
 
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
