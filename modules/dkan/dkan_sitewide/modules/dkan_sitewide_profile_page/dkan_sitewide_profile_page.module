@@ -37,7 +37,10 @@ function dkan_sitewide_profile_page_block_view($delta = '') {
         )
       );
       $menu_data = menu_tree_all_data('menu-command-center-menu', NULL, 2);
-      $menu_data = menu_tree_output(dkan_sitewide_profile_page_remove_profile_menu_item($menu_data));
+
+      $menu_data = dkan_sitewide_profile_page_remove_profile_menu_item($menu_data);
+      $menu_data = dkan_sitewide_profile_page_check_access_visualization($menu_data);
+      $menu_data = menu_tree_output($menu_data);
       $menu = drupal_render($menu_data);
 
       $html = theme('dkan_sitewide_profile_page_dashboard_user_summary', array(
@@ -65,6 +68,32 @@ function dkan_sitewide_profile_page_block_view($delta = '') {
       break;
   }
   return $block;
+}
+
+/**
+ * Check if visualizations links are valid or not (Enable module visualization)
+ */
+function dkan_sitewide_profile_page_check_access_visualization($menu_data) {
+  foreach ($menu_data as $key => $menu_item) {
+    if ($menu_item['link']['link_path'] == 'admin/structure/entity-type/visualization') {
+      if (module_exists('visualization_entity')) {
+        //Check childrens
+        foreach ($menu_item['below'] as $key_below => $children) {
+          if (!module_exists('visualization_entity')) {
+            unset($menu_data[$key]['below'][$key_below]);
+          }
+          elseif (!module_exists('visualization_entity_choropleth_bundle') && ($children['link']['link_path'] == 'admin/structure/entity-type/visualization/choropleth_visualization/add' || $children['link']['link_path'] == 'admin/structure/entity-type/visualization/choropleth_visualization')) {
+            unset($menu_data[$key]['below'][$key_below]);
+          }
+        }
+      }
+      else {
+        unset($menu_data[$key]);
+      }
+    }
+  }
+
+  return $menu_data;
 }
 
 function dkan_sitewide_profile_page_remove_profile_menu_item($menu_data){
