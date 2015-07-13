@@ -4,7 +4,8 @@ api = 2
 ; Set the default subdirectory for projects.
 defaults[projects][subdir] = contrib
 
-; DKAN
+; DKAN core modules
+
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
@@ -34,6 +35,9 @@ includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_d
 
 includes[visualization_entity] = https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
 includes[visualization_entity_charts] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
+
+; This module is part of dkan now so the internal makefile should be referenced instead of the one from the repo.
+includes[dkan_data_story_make] = https://raw.githubusercontent.com/NuCivic/dkan_data_story/master/dkan_data_story.make
 
 ; Patches to other modules
 

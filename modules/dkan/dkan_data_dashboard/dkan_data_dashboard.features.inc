@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_sitewide_data_dashboard.features.inc
+ * dkan_data_dashboard.features.inc
  */
 
 /**
  * Implements hook_ctools_plugin_api().
  */
-function dkan_sitewide_data_dashboard_ctools_plugin_api($module = NULL, $api = NULL) {
+function dkan_data_dashboard_ctools_plugin_api($module = NULL, $api = NULL) {
   if ($module == "panelizer" && $api == "panelizer") {
     return array("version" => "1");
   }
@@ -19,14 +19,14 @@ function dkan_sitewide_data_dashboard_ctools_plugin_api($module = NULL, $api = N
 /**
  * Implements hook_views_api().
  */
-function dkan_sitewide_data_dashboard_views_api($module = NULL, $api = NULL) {
+function dkan_data_dashboard_views_api($module = NULL, $api = NULL) {
   return array("api" => "3.0");
 }
 
 /**
  * Implements hook_node_info().
  */
-function dkan_sitewide_data_dashboard_node_info() {
+function dkan_data_dashboard_node_info() {
   $items = array(
     'data_dashboard' => array(
       'name' => t('Data Dashboard'),
