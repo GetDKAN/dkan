@@ -18,16 +18,13 @@ function dkan_data_story_storyteller_role_default_roles_permissions() {
     'permissions' => array(
       'access administration menu' => TRUE,
       'access administration pages' => TRUE,
-      'access content' => TRUE,
       'access content overview' => TRUE,
-      'create blog content' => TRUE,
+      'administer panelizer node dkan_data_story content' => TRUE,
       'create dkan_data_story content' => TRUE,
-      'delete own blog content' => TRUE,
       'delete own dkan_data_story content' => TRUE,
-      'edit own blog content' => TRUE,
       'edit own dkan_data_story content' => TRUE,
+      'use panels in place editing' => TRUE,
       'use text format html' => TRUE,
-      'view own unpublished content' => TRUE,
     ),
   );
 
