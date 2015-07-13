@@ -113,10 +113,13 @@ dependencies[] = dkan_sitewide_panelizer
 dependencies[] = dkan_sitewide_data_dashboard
 dependencies[] = dkan_featured_groups
 
-; DKAN Modules
+; DKAN Core Modules
 dependencies[] = dkan_sitewide
 dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
 dependencies[] = dkan_datastore_api
 dependencies[] = open_data_schema_map
 dependencies[] = open_data_schema_map_dkan
+
+; DKAN Optional Modules
+dependencies[] = dkan_data_story
