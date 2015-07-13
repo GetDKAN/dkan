@@ -4,4 +4,4 @@
  * Code for the DKAN Sitewide Data Dashboard feature.
  */
 
-include_once 'dkan_sitewide_data_dashboard.features.inc';
+include_once 'dkan_data_dashboard.features.inc';

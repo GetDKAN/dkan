@@ -1,0 +1,18 @@
+<?php
+/**
+ * @file
+ * Code for the DKAN Data Story.
+ */
+
+include_once 'dkan_data_story.features.inc';
+
+/**
+ * Hook: hook_node_view().
+ */
+function dkan_data_story_node_view($node, $view_mode, $langcode) {
+
+  if ($node->type == 'dkan_data_story') {
+    // Add CSS to adjust the size of the images to the width of the container.
+    drupal_add_css(drupal_get_path('module', 'dkan_data_story') . '/css/dkan_data_story.css');
+  }
+}

@@ -1,0 +1,63 @@
+
+.node-type-dkan-data-story img.story-image-full {
+  width: 100%;
+  width: inherit;  /* This makes the next two lines work in IE8. */
+  max-width: 100% !important;
+  height: auto !important;
+  vertical-align: bottom;
+}
+.node-type-dkan-data-story .field-type-image {
+  margin-bottom: 1.5em;
+}
+
+/***************************
+Data Story Panels
+***************************/
+.view-dkan-data-stories .views-row {
+	margin-bottom: 1.75em;
+}
+.view-dkan-data-stories .views-row:nth-of-type(5n+5) {
+  clear: left;
+}
+.view-dkan-data-stories .more-link {
+  clear: both;
+  display: block;
+  font-weight: bold;
+  margin: 0 0 2em;
+  text-align: right;
+}
+.pane-dkan-data-stories-panel-pane-1 .pane-content {
+	margin-left: -15px;
+	margin-right: -15px;
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .pane-dkan-data-stories-panel-pane-1 .views-row:nth-of-type(3n+3) {
+    clear: left;
+  }
+}
+#main .views-field-field-image img.story-image-teaser {
+	/* To Do: fix this in nuboot_radix */
+	max-width: 100% !important;
+}
+
+/***************************
+Data Story Page
+***************************/
+.view-stories .view-header {
+	margin-bottom: 1em;
+}
+.view-stories .row img {
+	width: 100%;
+	height: auto;
+	margin-top: 1.5em;
+}
+.view-stories .views-field-field-tags {
+	margin: 1em 0 2em;
+}
+.view-stories .more-link {
+  clear: both;
+  display: block;
+  font-weight: bold;
+  margin: 1em 0 2em;
+  text-align: right;
+}

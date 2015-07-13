@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_sitewide_data_dashboard.strongarm.inc
+ * dkan_data_dashboard.strongarm.inc
  */
 
 /**
  * Implements hook_strongarm().
  */
-function dkan_sitewide_data_dashboard_strongarm() {
+function dkan_data_dashboard_strongarm() {
   $export = array();
 
   $strongarm = new stdClass();
