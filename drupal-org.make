@@ -24,7 +24,7 @@ projects[visualization_entity][type] = module
 
 projects[visualization_entity_charts][download][type] = git
 projects[visualization_entity_charts][download][url] = https://github.com/NuCivic/visualization_entity_charts.git
-projects[visualization_entity_charts][download][branch] = 695-remove-chosen
+projects[visualization_entity_charts][download][branch] = master
 projects[visualization_entity_charts][type] = module
 
 ; Includes, since we're doing non-recusive
