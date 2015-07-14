@@ -15,7 +15,6 @@ dependencies[] = views
 dependencies[] = views_content
 dependencies[] = views_responsive_grid
 stylesheets[all][] = css/dkan_data_story.css
-features[ctools][] = context:context:3
 features[ctools][] = facetapi:facetapi_defaults:1
 features[ctools][] = panelizer:panelizer:1
 features[ctools][] = strongarm:strongarm:1
