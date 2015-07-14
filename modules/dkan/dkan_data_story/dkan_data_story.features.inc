@@ -8,9 +8,6 @@
  * Implements hook_ctools_plugin_api().
  */
 function dkan_data_story_ctools_plugin_api($module = NULL, $api = NULL) {
-  if ($module == "context" && $api == "context") {
-    return array("version" => "3");
-  }
   if ($module == "facetapi" && $api == "facetapi_defaults") {
     return array("version" => "1");
   }
