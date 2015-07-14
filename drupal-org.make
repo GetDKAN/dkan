@@ -16,14 +16,6 @@ projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datastore.git
 projects[dkan_datastore][download][branch] = 7.x-1.x
 
-; DKAN optional modules
-
-projects[dkan_data_story][subdir] = dkan
-projects[dkan_data_story][download][type] = git
-projects[dkan_data_story][download][url] = https://github.com/NuCivic/dkan_data_story.git
-projects[dkan_data_story][download][branch] = prepare-release
-projects[dkan_data_story][type] = module
-
 ; NuCivic Visualization tools
 
 projects[visualization_entity][download][type] = git
@@ -40,8 +32,6 @@ projects[visualization_entity_charts][type] = module
 
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
-
-includes[dkan_data_story] = https://raw.githubusercontent.com/NuCivic/dkan_data_story/prepare-release/dkan_data_story.make
 
 includes[visualization_entity] = https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
 includes[visualization_entity_charts] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
