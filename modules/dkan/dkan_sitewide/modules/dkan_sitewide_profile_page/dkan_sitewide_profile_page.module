@@ -14,6 +14,10 @@ function dkan_sitewide_profile_page_block_info() {
   $blocks = array();
   $blocks['dkan_user_summary'] = array(
     'info' => t('DKAN User Summary'),
+    'status' => '1',
+    'pages' => "user/*/edit\nadmin/config/system/site-information\nadmin/people\nadmin/structure/entity-type/visualization\nadmin/structure/entity-type/visualization/ve_chart/add\nadmin/structure/entity-type/visualization/ve_chart\nnode/add/group\ngroups\nnode/add/dataset\ndataset\nadmin/content\nnode/add",
+    'visibility' => BLOCK_VISIBILITY_LISTED,
+    'region' => 'administration',
   );
   return $blocks;
 }
@@ -28,6 +32,10 @@ function dkan_sitewide_profile_page_block_view($delta = '') {
 
   switch($delta) {
     case 'dkan_user_summary':
+      //If is anonymous return empty array.
+      if (user_is_anonymous()) {
+        return array();
+      }
       $profile_picture = theme_image(
         array(
           'path' => gravatar_get_gravatar($user->mail),
