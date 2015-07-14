@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_sitewide_data_dashboard.views_default.inc
+ * dkan_data_dashboard.views_default.inc
  */
 
 /**
  * Implements hook_views_default_views().
  */
-function dkan_sitewide_data_dashboard_views_default_views() {
+function dkan_data_dashboard_views_default_views() {
   $export = array();
 
   $view = new view();
