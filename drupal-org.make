@@ -22,6 +22,7 @@ projects[dkan_data_story][subdir] = dkan
 projects[dkan_data_story][download][type] = git
 projects[dkan_data_story][download][url] = https://github.com/NuCivic/dkan_data_story.git
 projects[dkan_data_story][download][branch] = prepare-release
+projects[dkan_data_story][type] = module
 
 ; NuCivic Visualization tools
 
