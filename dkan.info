@@ -88,14 +88,19 @@ dependencies[] = uuid
 dependencies[] = views
 dependencies[] = views_ui
 dependencies[] = views_bulk_operations
+dependencies[] = visualization_entity
+dependencies[] = visualization_entity_charts
 
 ; Open data
 dependencies[] = entity_rdf
 dependencies[] = geofield
 dependencies[] = geophp
+dependencies[] = open_data_schema_map
 dependencies[] = recline
 dependencies[] = rdfui
 dependencies[] = rdfx
+dependencies[] = visualization_entity
+dependencies[] = visualization_entity_charts
 
 ; DKAN Features
 dependencies[] = dkan_sitewide_menu
@@ -108,13 +113,13 @@ dependencies[] = dkan_sitewide_search_db
 dependencies[] = dkan_sitewide_profile_page
 dependencies[] = dkan_featured_groups
 dependencies[] = dkan_sitewide_panelizer
-dependencies[] = dkan_sitewide_data_dashboard
+dependencies[] = dkan_data_dashboard
 dependencies[] = dkan_featured_groups
+dependencies[] = dkan_data_story
 
-; DKAN Modules
+; DKAN Core Modules
 dependencies[] = dkan_sitewide
 dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
 dependencies[] = dkan_datastore_api
-dependencies[] = open_data_schema_map
 dependencies[] = open_data_schema_map_dkan
