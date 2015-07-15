@@ -168,37 +168,26 @@ function dkan_sitewide_license_block() {
   else {
     if (isset($node->field_license) && $node->field_license) {
       $key = (isset($node->field_license[$node->language][0])) ? $node->field_license[$node->language][0] : $node->field_license[LANGUAGE_NONE][0];
-      $field = field_info_instance('node', 'field_license', 'dataset');
-      $raw_options = $field['widget']['settings']['available_options'];
-
-      foreach (explode("\n", $raw_options) as $option) {
-        $option = explode("|", $option);
-        $options[$option[0]] = $option[1];
-      }
-
       $key = $key['value'];
-      $label = $options[$key];
-
-      if (!$label) {
-        $output = $key;
+      $subscribed_values = dkan_dataset_content_types_license_subscribed_values();
+      if (isset($subscribed_values[$key])) {
+        $license = $subscribed_values[$key];
+        // dpm($subscribed_values);
+        if (isset($license['uri'])) {
+          $output = l($license['label'], $license['uri']) . '<br/>';
+          $output .= l(
+            '<img class="open-data" src="http://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]">',
+            $license['uri'],
+            array('html' => TRUE)
+          );
+        }
+        else {
+          $output = $license['label'];
+        }
+        return $output;
       }
-      else if (strpos($key,'other') !== false) {
-        $output = $label;
-      }
-      else {
-        $output = l($label, 'http://opendefinition.org/licenses/' . $key) . '<br/>';
-        $output .= l(
-          '<img class="open-data" src="http://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]">',
-          'http://opendefinition.org/licenses/' . $key,
-          array('html' => TRUE)
-        );
-      }
-
-      return $output;
     }
-    else {
-      return t('License not specified');
-    }
+    return t('License not specified');
   }
 }
 

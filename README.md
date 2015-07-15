@@ -19,9 +19,8 @@
 
 ## Hosting and support
 
-NuCivic' [Data](http://nucivic.com/data/enterprise/) platform offers 24/7, secure, cloud-based DKAN hosting and support services.
+NuCivic' [Data](http://nucivic.com/data/) platform offers 24/7, secure, cloud-based DKAN hosting and support services.
 
-*   [ FAQs »](http://nucivic.com/data/faqs/)
 *   [ Live demo » ](http://demo.getdkan.com/)
 *   [ Docs » ](http://docs.getdkan.com/)
 
@@ -32,6 +31,7 @@ NuCivic' [Data](http://nucivic.com/data/enterprise/) platform offers 24/7, secur
 | DKAN Sitewide  | [![DKAN Sitewide Build Status](https://travis-ci.org/NuCivic/dkan.svg?branch=7.x-1.x)](https://travis-ci.org/NuCivic/dkan) |
 | DKAN Dataset   | [![DKAN Dataset Build Status](https://travis-ci.org/NuCivic/dkan_dataset.svg?branch=7.x-1.x)](https://travis-ci.org/NuCivic/dkan_dataset) |
 | DKAN Datastore | [![DKAN Datastore Build Status](https://travis-ci.org/NuCivic/dkan_datastore.svg?branch=7.x-1.x)](https://travis-ci.org/NuCivic/dkan_datastore) |
+| Open Data Schema Map | [![ODSM Build Status](https://travis-ci.org/NuCivic/open_data_schema_map.svg?branch=master)](https://travis-ci.org/NuCivic/open_data_schema_map) |
 
 ## Installation
 
@@ -103,7 +103,7 @@ Please post it to our Github issue queue: https://github.com/nucivic/dkan/issues
 
 ### I would like to purchase DKAN support or hosting
 
-Please contact us at NuCivic http://nucivic.com/data/demo/
+Please contact us at NuCivic http://nucivic.com/contact
 
 ## Community
 
