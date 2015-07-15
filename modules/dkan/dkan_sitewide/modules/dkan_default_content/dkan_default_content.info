@@ -1,8 +1,7 @@
 name = DKAN Default Content
+description = Default content for DKAN.
 core = 7.x
 package = DKAN Features
-description = Default content for DKAN.
 project = dkan
 dependencies[] = dkan_dataset
-
 features[features_api][] = api:2

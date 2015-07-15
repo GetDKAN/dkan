@@ -1,0 +1,57 @@
+diff --git a/panopoly_widgets.features.field_instance.inc b/panopoly_widgets.features.field_instance.inc
+index a7d5037..ea59f0f 100644
+--- a/panopoly_widgets.features.field_instance.inc
++++ b/panopoly_widgets.features.field_instance.inc
+@@ -40,6 +40,20 @@ function panopoly_widgets_field_default_field_instances() {
+       'active' => 1,
+       'module' => 'file',
+       'settings' => array(
++        'filefield_sources' => array(
++          'filefield_sources' => array(),
++          'source_attach' => array(
++            'absolute' => 0,
++            'attach_mode' => 'move',
++            'path' => 'file_attach',
++          ),
++          'source_imce' => array(
++            'imce_mode' => 0,
++          ),
++          'source_reference' => array(
++            'autocomplete' => 0,
++          ),
++        ),
+         'progress_indicator' => 'throbber',
+       ),
+       'type' => 'file_generic',
+@@ -156,6 +170,20 @@ function panopoly_widgets_field_default_field_instances() {
+       'active' => 1,
+       'module' => 'image',
+       'settings' => array(
++        'filefield_sources' => array(
++          'filefield_sources' => array(),
++          'source_attach' => array(
++            'absolute' => 0,
++            'attach_mode' => 'move',
++            'path' => 'file_attach',
++          ),
++          'source_imce' => array(
++            'imce_mode' => 0,
++          ),
++          'source_reference' => array(
++            'autocomplete' => 0,
++          ),
++        ),
+         'manualcrop_crop_info' => 1,
+         'manualcrop_default_crop_area' => 1,
+         'manualcrop_enable' => 1,
+@@ -414,7 +442,9 @@ function panopoly_widgets_field_default_field_instances() {
+     'widget' => array(
+       'active' => 1,
+       'module' => 'options',
+-      'settings' => array(),
++      'settings' => array(
++        'apply_chosen' => 0,
++      ),
+       'type' => 'options_select',
+       'weight' => 1,
+     ),

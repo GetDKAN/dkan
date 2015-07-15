@@ -2,13 +2,17 @@
 
 use Drupal\DrupalExtension\Context\DrupalContext;
 use Behat\Behat\Context\Step\Given;
+use Behat\Behat\Context\BehatContext;
 use Symfony\Component\Process\Process;
+use Behat\Gherkin\Node\TableNode;
 
 require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext
 {
-    
+    // Keep track of created data dashboards so they can be cleaned up.
+    protected $data_dashboards = array();
+
     /**
      * @Given /^I scroll to the top$/
      */
@@ -23,7 +27,33 @@ class FeatureContext extends DrupalContext
         $actions.perform();
       }
     }
-    
+
+    /**
+     * @When /^I switch to the frame "([^"]*)"$/
+     */
+    public function iSwitchToTheFrame($frame) {
+      $this->getSession()->switchToIFrame($frame);
+    }
+
+    /**
+     * @Then /^I should see the "([^"]*)" element in the "([^"]*)" region$/
+     */
+    public function assertRegionElement($tag, $region) {
+      $regionObj = $this->getMainContext()->getRegion($region);
+      $elements = $regionObj->findAll('css', $tag);
+      if (!empty($elements)) {
+        return;
+      }
+      throw new \Exception(sprintf('The element "%s" was not found in the "%s" region on the page %s', $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+
+    /**
+     * @Given /^I switch out of all frames$/
+     */
+    public function iSwitchOutOfAllFrames() {
+      $this->getSession()->switchToIFrame();
+    }
+
     /**
      * @Then /^I wait for the dialog box to appear$/
      */
@@ -63,7 +93,7 @@ class FeatureContext extends DrupalContext
       $rid = trim(str_replace(array("'"), "", $option));
       $this->assertDrushCommandWithArgument('og-add-user',"node $gid $rid $user_id");
     }
-    
+
     /**
      * Properly inputs item in field rendered by Chosen.js.
      *
@@ -89,7 +119,7 @@ class FeatureContext extends DrupalContext
       );
       $title->click();
     }
-    
+
    /**
     * @Given /^I click the chosen field "([^"]*)" and enter "([^"]*)"$/
     */
@@ -113,7 +143,26 @@ class FeatureContext extends DrupalContext
 
       );
       $title->click();
-    }    
+    }
+
+
+    /**
+     * Click some text.
+     *
+     * @When /^I click on the text "([^"]*)"$/
+     */
+    public function iClickOnTheText($text) {
+      $session = $this->getSession();
+      $element = $session->getPage()->find(
+        'xpath',
+        $session->getSelectorsHandler()->selectorToXpath('xpath',
+          '//*[contains(text(), "' . $text . '")]')
+      );
+      if (NULL === $element) {
+        throw new \InvalidArgumentException(sprintf('Cannot find text: "%s"', $text));
+      }
+      $element->click();
+    }
 
     /**
      * Click on map icon as identified by its z-index.
@@ -121,18 +170,18 @@ class FeatureContext extends DrupalContext
      * @Given /^I click map icon number "([^"]*)"$/
      */
     public function iClickMapIcon($num) {
-        $session = $this->getSession();
-        $element = $session->getPage()->find(
+      $session = $this->getSession();
+      $element = $session->getPage()->find(
+          'xpath',
+          $session->getSelectorsHandler()->selectorToXpath(
             'xpath',
-            $session->getSelectorsHandler()->selectorToXpath(
-              'xpath',
-              '//div[contains(@class, "leaflet-marker-pane")]//img[' . $num . ']'
-            )
-        );
-        if (null === $element) {
-            throw new \InvalidArgumentException(sprintf('Cannot find map icon: "%s"', $num));
-        }
-        $element->click();
+            '//div[contains(@class, "leaflet-marker-pane")]//img[' . $num . ']'
+          )
+      );
+      if (null === $element) {
+          throw new \InvalidArgumentException(sprintf('Cannot find map icon: "%s"', $num));
+      }
+      $element->click();
     }
 
     /**
@@ -206,5 +255,54 @@ class FeatureContext extends DrupalContext
       // how Drupal SimpleTests currently work as well.
       $element = $session->getPage();
       return $element->findLink($this->getDrupalText('log_out'));
+    }
+
+    /************************************/
+    /* DATA DASHBOARDS                  */
+    /************************************/
+
+    /**
+     * @Given data_dashboards:
+     */
+    public function addDataDashboard(TableNode $data_dashboards_table) {
+
+      // Map readable field names to drupal field names.
+      $field_map = array(
+        'title' => 'title',
+      );
+
+      foreach ($data_dashboards_table->getHash() as $data_dashboards_hash) {
+
+        $node = new stdClass();
+        $node->type = 'data_dashboard';
+
+        foreach($data_dashboards_hash as $field => $value) {
+
+          if(isset($field_map[$field])) {
+            $drupal_field = $field_map[$field];
+            $node->$drupal_field = $value;
+          }
+          else {
+            throw new Exception(sprintf("Data Dashboard field %s doesn't exist, or hasn't been mapped. See FeatureContext::addDataDashboard for mappings.", $field));
+          }
+        }
+        $created_node = $this->getDriver()->createNode($node);
+        // Add the created node to the data dashboards array.
+        $this->data_dashboards[$created_node->nid] = $created_node;
+      }
+    }
+
+    /**
+     * Clean up generated content.
+     */
+    public function afterScenario($event) {
+
+      parent::afterScenario($event);
+
+      if (!empty($this->data_dashboards)) {
+        foreach ($this->data_dashboards as $data_dashboard_id => $data_dashboard) {
+          $this->getDriver()->nodeDelete($data_dashboard);
+        }
+      }
     }
 }

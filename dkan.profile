@@ -32,7 +32,7 @@ function dkan_additional_setup() {
     'eid' => 5,
   );
   drupal_write_record('bueditor_editors', $data, array('eid'));
-
+  
   dkan_default_content_base_install();
   // Keeps us from getting notices "No module defines permission".
   module_enable(array('dkan_sitewide_roles_perms'));
@@ -46,6 +46,7 @@ function dkan_additional_setup() {
   cache_clear_all();
   features_revert(array('dkan_sitewide_search_db' => array('search_api_server')));
   features_revert(array('dkan_sitewide_roles_perms' => array('user_permission', 'og_features_permission')));
+  features_revert(array('dkan_sitewide' => array('variable')));
   unset($_SESSION['messages']['warning']);
   features_revert(array('dkan_sitewide_profile_page' => array('menu_links')));
   cache_clear_all();
@@ -55,4 +56,7 @@ function dkan_additional_setup() {
   foreach ( $image_styles as $image_style ) {
     image_style_flush($image_style);
   }
+
+  // Set honeypot protection on user registration form
+  variable_set('honeypot_form_user_register_form', 1);
 }
