@@ -14,10 +14,6 @@ function dkan_sitewide_profile_page_block_info() {
   $blocks = array();
   $blocks['dkan_user_summary'] = array(
     'info' => t('DKAN User Summary'),
-    'status' => '1',
-    'pages' => "user/*/edit\nadmin/config/system/site-information\nadmin/people\nadmin/structure/entity-type/visualization\nadmin/structure/entity-type/visualization/ve_chart/add\nadmin/structure/entity-type/visualization/ve_chart\nnode/add/group\ngroups\nnode/add/dataset\ndataset\nadmin/content\nnode/add",
-    'visibility' => BLOCK_VISIBILITY_LISTED,
-    'region' => 'administration',
   );
   return $blocks;
 }
