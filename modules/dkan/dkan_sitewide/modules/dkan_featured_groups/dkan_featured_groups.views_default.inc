@@ -168,6 +168,8 @@ function dkan_featured_groups_views_default_views() {
   /* Display: Featured Group grid pane */
   $handler = $view->new_display('panel_pane', 'Featured Group grid pane', 'panel_pane_1');
   $handler->display->display_options['display_description'] = 'Enter 6, 12, 18, etc. for the number of groups to display.';
+  $handler->display->display_options['defaults']['access'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'some';
   $handler->display->display_options['pager']['options']['items_per_page'] = '6';
