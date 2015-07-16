@@ -130,7 +130,7 @@ projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 630-font-size
-projects[nuboot_radix][download][revision] = "b9c5e3d1628c869369f3e9c6390c63be360def0e"
+projects[nuboot_radix][download][revision] = "1a85764b21b81a2d1d18158f245a7fb7ef1fb780"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
