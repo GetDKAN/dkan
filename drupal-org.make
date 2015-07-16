@@ -51,6 +51,8 @@ projects[colorizer][version] = 1.4
 projects[colorizer][patch][2227651] = https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch
 projects[colorizer][patch][2444249] = https://www.drupal.org/files/issues/colorizer-2444249.patch
 
+projects[conditional_styles][version] = 2.2
+
 projects[diff][version] = 3.2
 
 projects[draggableviews][version] = 2.1
