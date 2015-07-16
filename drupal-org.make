@@ -108,8 +108,8 @@ projects[nuboot][download][branch] = 7.x-1.x
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "08d5af72e590a56a2e6ec543f82957171acae245"
+projects[nuboot_radix][download][branch] = 559-exposed-view-labels
+projects[nuboot_radix][download][revision] = "f648b99cdd9eb785e48e6bf1d3b81e185c097992"
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
