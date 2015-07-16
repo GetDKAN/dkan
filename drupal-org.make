@@ -113,6 +113,7 @@ projects[nuboot_radix][download][revision] = "08d5af72e590a56a2e6ec543f82957171a
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
+projects[radix][download][revision] = "f26d28784bd123c55d04e91b636d02e802bbdee9"
 
 ; Libraries
 libraries[font_awesome][type] = libraries
