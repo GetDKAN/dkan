@@ -130,12 +130,12 @@ projects[nuboot_radix][subdir] = contrib
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 630-font-size
-projects[nuboot_radix][download][revision] = "1a85764b21b81a2d1d18158f245a7fb7ef1fb780"
+projects[nuboot_radix][download][revision] = "e7deb7b61b487a1ecfe38b48c365df3ed40fe26c"
 projects[nuboot_radix][type] = theme
 
 projects[radix][subdir] = contrib
 projects[radix][type] = theme
-projects[radix][patch][2473455] = https://www.drupal.org/files/issues/radix-panels-pane-tpl-2473455-1.patch
+projects[radix][download][revision] = "f26d28784bd123c55d04e91b636d02e802bbdee9 "
 
 ; Libraries
 libraries[font_awesome][type] = libraries
