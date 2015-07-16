@@ -5,6 +5,7 @@ package = DKAN
 version = 7.x-1.x
 project = dkan_sitewide
 dependencies[] = colorizer
+dependencies[] = conditional_styles
 dependencies[] = ctools
 dependencies[] = defaultconfig
 dependencies[] = dkan_dataset
