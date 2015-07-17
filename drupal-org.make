@@ -111,7 +111,7 @@ projects[nuboot][download][branch] = 7.x-1.x
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = IE-Updates
-projects[nuboot_radix][download][revision] = "ffa5dd10944e581c24fb9ee5179614d39ee9e9ee"
+projects[nuboot_radix][download][revision] = "21f2fa7a408e16eeb5638a3d550674037a234497"
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
