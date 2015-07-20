@@ -5,6 +5,13 @@ api = 2
 defaults[projects][subdir] = contrib
 
 ; DKAN
+projects[dkan_data_story][type] = module
+projects[dkan_data_story][subdir] = dkan
+projects[dkan_data_story][download][type] = git
+projects[dkan_data_story][download][url] = https://github.com/NuCivic/dkan_data_story.git
+projects[dkan_data_story][download][branch] = master
+projects[dkan_data_story][download][revision] = 6cebf74da93ea6bc46a3cfef85297ef6818e38de
+
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
@@ -17,6 +24,7 @@ projects[dkan_datastore][download][branch] = 7.x-1.x
 
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
+includes[dkan_data_story_make] = https://raw.githubusercontent.com/NuCivic/dkan_data_story/master/dkan_data_story.make
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
 
@@ -128,4 +136,3 @@ libraries[spyc][download][url] = "https://raw.github.com/mustangostang/spyc/79f6
 libraries[spyc][filename] = "../spyc.php"
 libraries[spyc][directory_name] = "lib"
 libraries[spyc][destination] = "modules/contrib/services/servers/rest_server"
-
