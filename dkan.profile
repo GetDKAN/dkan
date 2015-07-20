@@ -19,6 +19,8 @@ function dkan_install_tasks() {
  * Implements hook_install_tasks().
  */
 function dkan_additional_setup() {
+  global $theme_key;
+
   // Change block titles for selected blocks.
   db_query("UPDATE {block} SET title ='<none>' WHERE delta = 'main-menu' OR delta = 'login'");
   variable_set('node_access_needs_rebuild', FALSE);
@@ -59,29 +61,9 @@ function dkan_additional_setup() {
   // Set honeypot protection on user registration form
   variable_set('honeypot_form_user_register_form', 1);
 
-  global $theme_key;
 
-  // check to see if colorizer css file exists on site
-  $source_path = drupal_get_path('theme', $theme_key) . '/';
-  $source_file = $source_path . variable_get('colorizer_cssfile', '');
-  if (!file_exists($source_file)) {
-    return;
-  }
-
-  $instance = $theme_key;
-  // allow other modules to change the instance we are updating
-  // allows for group-specific color instances rather than tying to theme
-  drupal_alter('colorizer_instance', $instance);
-
-  $file = variable_get('colorizer_' . $instance . '_stylesheet', '');
-
-  // recreate any missing colorize css files
-  if (!file_exists($file)) {
-    $palette = colorizer_get_palette($theme_key, $instance);
-    if (!empty($palette)) {
-      $file = colorizer_update_stylesheet($theme_key, $instance, $palette);
-      // clear file status cache so file_exists will look for file again
-      clearstatcache();
-    }
-  }
+  //Fix the problem with colorizer and the first time access.
+  $palette = colorizer_get_palette($theme_key, $instance);
+  $file = colorizer_update_stylesheet($theme_key, $theme_key, $palette);
+  clearstatcache();
 }
