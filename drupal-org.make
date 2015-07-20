@@ -112,6 +112,8 @@ projects[restws][version] = 2.3
 
 projects[schema][version] = 1.2
 
+projects[adminrole][version] = 1.0
+
 ; Deprecated
 projects[delta][version] = 3.0-beta11
 
