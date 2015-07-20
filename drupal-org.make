@@ -52,6 +52,8 @@ projects[colorizer][patch][2227651] = https://www.drupal.org/files/issues/colori
 
 projects[conditional_styles][version] = 2.2
 
+projects[conditional_styles][version] = 2.2
+
 projects[diff][version] = 3.2
 
 projects[draggableviews][version] = 2.1
@@ -131,6 +133,7 @@ projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_vie
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 7.x-1.x
+projects[nuboot_radix][download][revision] = "12bab36ee263d37bcbc5c45e95d1b0831cdc8d12"
 projects[nuboot_radix][type] = theme
 
 ; Need to bring in fix from https://www.drupal.org/node/2473455; remove once next radix release is out
