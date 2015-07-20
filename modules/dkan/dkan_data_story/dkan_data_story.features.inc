@@ -101,6 +101,7 @@ function dkan_data_story_default_search_api_index() {
         "type" : { "type" : "string" },
         "title" : { "type" : "text" },
         "status" : { "type" : "boolean" },
+        "created" : { "type" : "date" },
         "changed" : { "type" : "date" },
         "author" : { "type" : "integer", "entity_type" : "user" },
         "field_tags" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
@@ -225,6 +226,12 @@ function dkan_data_story_default_search_api_server() {
             "table" : "search_api_db_stories_index_search_api_access_node",
             "column" : "value",
             "type" : "list\\u003Cstring\\u003E",
+            "boost" : "1.0"
+          },
+          "created" : {
+            "table" : "search_api_db_stories_index",
+            "column" : "created",
+            "type" : "date",
             "boost" : "1.0"
           }
         }
