@@ -99,14 +99,14 @@ projects[delta][version] = 3.0-beta11
 projects[omega][version] = 3.1
 projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
 
-projects[bootstrap][download][version] = 3.x
-projects[bootstrap][download][type] = git
-projects[bootstrap][download][revision] = "0390173732439fd60e898c7086219ab8c99c2f3d"
+;projects[bootstrap][download][version] = 3.x
+;projects[bootstrap][download][type] = git
+;projects[bootstrap][download][revision] = "0390173732439fd60e898c7086219ab8c99c2f3d"
 
-projects[nuboot][download][type] = git
-projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
-projects[nuboot][download][revision] = "fbd7ea2c2f1fa45a5f5a10b4215950940335879e"
-projects[nuboot][download][branch] = 7.x-1.x
+;projects[nuboot][download][type] = git
+;projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
+;projects[nuboot][download][revision] = "fbd7ea2c2f1fa45a5f5a10b4215950940335879e"
+;projects[nuboot][download][branch] = 7.x-1.x
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
