@@ -100,7 +100,7 @@ includes[panopoly_images_make] = http://cgit.drupalcode.org/panopoly_images/plai
 
 projects[panels][version] = 3.5
 
-projects[path_breadcrumbs][version] = 3.2
+projects[path_breadcrumbs][version] = 3.3
 
 projects[pathauto][version] = 1.2
 
