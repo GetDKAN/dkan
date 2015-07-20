@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the DKAN Expire feature.
+ */
+
+include_once 'dkan_acquia_expire.features.inc';
