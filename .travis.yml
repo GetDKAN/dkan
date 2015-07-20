@@ -1,7 +1,8 @@
 language: php
+sudo: false
 
 php:
-  - 5.4
+  - 5.5
 
 mysql:
   database: dkan_travis
@@ -12,8 +13,6 @@ install:
   - cd test
   - composer install
   - mysql -e 'create database dkan_travis;'
-  - sudo apt-get update > /dev/null
-  - sudo apt-get --quiet=2 install php5-cgi php5-curl php5-gd php5-mysql > /dev/null
 
   # Install latest Drush 7.
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
