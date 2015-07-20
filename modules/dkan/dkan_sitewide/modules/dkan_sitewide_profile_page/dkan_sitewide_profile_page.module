@@ -89,6 +89,9 @@ function dkan_sitewide_profile_page_check_access_visualization($menu_data) {
           elseif (!module_exists('visualization_entity_choropleth_bundle') && ($children['link']['link_path'] == 'admin/structure/entity-type/visualization/choropleth_visualization/add' || $children['link']['link_path'] == 'admin/structure/entity-type/visualization/choropleth_visualization')) {
             unset($menu_data[$key]['below'][$key_below]);
           }
+          elseif (!drupal_valid_path($children['link']['link_path'])) {
+            unset($menu_data[$key]['below'][$key_below]);
+          }
         }
       }
       else {
