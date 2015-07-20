@@ -111,10 +111,8 @@ dependencies[] = dkan_dataset_groups
 dependencies[] = dkan_sitewide_panels
 dependencies[] = dkan_sitewide_search_db
 dependencies[] = dkan_sitewide_profile_page
-dependencies[] = dkan_featured_groups
 dependencies[] = dkan_sitewide_panelizer
 dependencies[] = dkan_data_dashboard
-dependencies[] = dkan_featured_groups
 dependencies[] = dkan_data_story
 
 ; DKAN Core Modules

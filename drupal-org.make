@@ -6,6 +6,7 @@ defaults[projects][subdir] = contrib
 
 ; DKAN core modules
 
+;Moved featured groups view
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
@@ -46,9 +47,10 @@ projects[admin_menu][version] = 3.0-rc5
 projects[bueditor][version] = 1.7
 projects[bueditor][patch][1931862] = http://drupal.org/files/dont-render-bueditor-for-plain-text-textareas.patch
 
-projects[colorizer][version] = 1.4
+projects[colorizer][version] = 1.7
 projects[colorizer][patch][2227651] = https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch
-projects[colorizer][patch][2444249] = https://www.drupal.org/files/issues/colorizer-2444249.patch
+
+projects[conditional_styles][version] = 2.2
 
 projects[diff][version] = 3.2
 
@@ -123,22 +125,23 @@ projects[delta][version] = 3.0-beta11
 projects[omega][version] = 3.1
 projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
 
-projects[bootstrap][download][version] = 3.x
-projects[bootstrap][download][type] = git
-projects[bootstrap][download][revision] = "0390173732439fd60e898c7086219ab8c99c2f3d"
+;projects[bootstrap][download][version] = 3.x
+;projects[bootstrap][download][type] = git
+;projects[bootstrap][download][revision] = "0390173732439fd60e898c7086219ab8c99c2f3d"
 
-projects[nuboot][download][type] = git
-projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
-projects[nuboot][download][revision] = "fbd7ea2c2f1fa45a5f5a10b4215950940335879e"
-projects[nuboot][download][branch] = 7.x-1.x
+;projects[nuboot][download][type] = git
+;projects[nuboot][download][url] = https://github.com/NuCivic/nuboot.git
+;projects[nuboot][download][revision] = "fbd7ea2c2f1fa45a5f5a10b4215950940335879e"
+;projects[nuboot][download][branch] = 7.x-1.x
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
 projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "08d5af72e590a56a2e6ec543f82957171acae245"
 projects[nuboot_radix][type] = theme
 
+; Need to bring in fix from https://www.drupal.org/node/2473455; remove once next radix release is out
 projects[radix][type] = theme
+projects[radix][download][revision] = "f26d28784bd123c55d04e91b636d02e802bbdee9"
 
 ; Libraries
 libraries[font_awesome][type] = libraries
