@@ -52,6 +52,8 @@ projects[colorizer][patch][2227651] = https://www.drupal.org/files/issues/colori
 
 projects[conditional_styles][version] = 2.2
 
+projects[conditional_styles][version] = 2.2
+
 projects[diff][version] = 3.2
 
 projects[draggableviews][version] = 2.1
