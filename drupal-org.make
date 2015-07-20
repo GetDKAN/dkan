@@ -30,6 +30,8 @@ projects[colorizer][version] = 1.4
 projects[colorizer][patch][2227651] = https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch
 projects[colorizer][patch][2444249] = https://www.drupal.org/files/issues/colorizer-2444249.patch
 
+projects[conditional_styles][version] = 2.2
+
 projects[diff][version] = 3.2
 
 projects[draggableviews][version] = 2.1
@@ -108,8 +110,8 @@ projects[nuboot][download][branch] = 7.x-1.x
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = 7.x-1.x
-projects[nuboot_radix][download][revision] = "08d5af72e590a56a2e6ec543f82957171acae245"
+projects[nuboot_radix][download][branch] = IE-Updates
+projects[nuboot_radix][download][revision] = "21f2fa7a408e16eeb5638a3d550674037a234497"
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
