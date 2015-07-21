@@ -51,6 +51,7 @@ function dkan_additional_setup() {
   features_revert(array('dkan_sitewide' => array('variable')));
   features_revert(array('dkan_sitewide_profile_page' => array('menu_custom', 'menu_links')));
   unset($_SESSION['messages']['warning']);
+  menu_rebuild();
   drupal_flush_all_caches();
   features_revert_module('dkan_sitewide_profile_page');
   cache_clear_all();
