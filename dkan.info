@@ -20,6 +20,7 @@ dependencies[] = taxonomy
 ; Contrib
 dependencies[] = admin_menu
 dependencies[] = admin_menu_toolbar
+dependencies[] = adminrole
 dependencies[] = autocomplete_deluxe
 dependencies[] = bueditor
 dependencies[] = beautytips
