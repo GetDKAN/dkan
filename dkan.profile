@@ -50,8 +50,9 @@ function dkan_additional_setup() {
   features_revert(array('dkan_sitewide_roles_perms' => array('user_permission', 'og_features_permission')));
   features_revert(array('dkan_sitewide' => array('variable')));
   features_revert(array('dkan_sitewide_profile_page' => array('menu_custom', 'menu_links')));
-  features_revert(array('dkan_sitewide_profile_page' => array('menu_links')));
-  features_revert(array('dkan_sitewide_profile_page' => array('menu_links')));
+  $menu_links = features_get_default('menu_links', 'dkan_sitewide_profile_page');
+  menu_links_features_rebuild_ordered($menu_links, TRUE);
+
   unset($_SESSION['messages']['warning']);
   cache_clear_all();
 
