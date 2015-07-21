@@ -53,6 +53,7 @@ function dkan_additional_setup() {
   unset($_SESSION['messages']['warning']);
   cache_clear_all();
   features_revert(array('dkan_sitewide_profile_page' => array('menu_links')));
+  cache_clear_all();
 
   // Flush image styles.
   $image_styles = image_styles();
