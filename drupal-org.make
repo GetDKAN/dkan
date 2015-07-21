@@ -16,7 +16,7 @@ projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datast
 projects[dkan_datastore][download][branch] = new_feeds_patch
 
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
-includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
+includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/new_feeds_patch/dkan_datastore.make
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
 
