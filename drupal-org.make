@@ -5,6 +5,12 @@ api = 2
 defaults[projects][subdir] = contrib
 
 ; DKAN
+projects[data_story][type] = module
+projects[data_story][download][type] = git
+projects[data_story][download][url] = https://github.com/NuCivic/data_story.git
+projects[data_story][download][branch] = 622_dashboard_wizard
+projects[data_story][download][revision] = bdd892ce5dbb8b941a1844330ba19be52f6cc734
+
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
@@ -17,6 +23,7 @@ projects[dkan_datastore][download][branch] = 7.x-1.x
 
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
+includes[data_story_make] = https://raw.githubusercontent.com/NuCivic/data_story/622_dashboard_wizard/data_story.make
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
 
