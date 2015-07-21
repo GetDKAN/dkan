@@ -50,8 +50,10 @@ function dkan_additional_setup() {
   features_revert(array('dkan_sitewide_roles_perms' => array('user_permission', 'og_features_permission')));
   features_revert(array('dkan_sitewide' => array('variable')));
   features_revert(array('dkan_data_story_storyteller_role' => array('user_role', 'roles_permissions')));
+  features_revert(array('dkan_sitewide_profile_page' => array('menu_custom', 'menu_links')));
   unset($_SESSION['messages']['warning']);
   cache_clear_all();
+  features_revert(array('dkan_sitewide_profile_page' => array('menu_links')));
 
   // Flush image styles.
   $image_styles = image_styles();

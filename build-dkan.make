@@ -9,3 +9,4 @@ projects[dkan][type] = profile
 projects[dkan][download][type] = git
 projects[dkan][download][url] = https://github.com/NuCivic/dkan.git
 projects[dkan][download][branch] = story_test_merge
+projects[dkan][download][branch] = internal_580_user_command_center
