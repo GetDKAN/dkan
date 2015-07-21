@@ -116,6 +116,7 @@ dependencies[] = dkan_sitewide_panelizer
 dependencies[] = dkan_data_dashboard
 dependencies[] = dkan_data_story
 dependencies[] = dkan_data_story_storyteller_role
+dependencies[] = dkan_sitewide_profile_page
 
 ; DKAN Core Modules
 dependencies[] = dkan_sitewide
