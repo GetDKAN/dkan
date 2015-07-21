@@ -20,6 +20,7 @@ dependencies[] = taxonomy
 ; Contrib
 dependencies[] = admin_menu
 dependencies[] = admin_menu_toolbar
+dependencies[] = adminrole
 dependencies[] = autocomplete_deluxe
 dependencies[] = bueditor
 dependencies[] = beautytips
@@ -110,6 +111,7 @@ dependencies[] = dkan_sitewide_demo_front
 dependencies[] = dkan_dataset_groups
 dependencies[] = dkan_sitewide_panels
 dependencies[] = dkan_sitewide_search_db
+dependencies[] = dkan_sitewide_profile_page
 dependencies[] = dkan_sitewide_panelizer
 dependencies[] = dkan_data_dashboard
 dependencies[] = dkan_data_story
