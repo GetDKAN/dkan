@@ -8,4 +8,4 @@ includes[core] = drupal-org-core.make
 projects[dkan][type] = profile
 projects[dkan][download][type] = git
 projects[dkan][download][url] = https://github.com/NuCivic/dkan.git
-projects[dkan][download][branch] = 1.9-release
+projects[dkan][download][branch] = internal_580_user_command_center
