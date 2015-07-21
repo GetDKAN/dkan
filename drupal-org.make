@@ -52,6 +52,8 @@ projects[colorizer][patch][2227651] = https://www.drupal.org/files/issues/colori
 
 projects[conditional_styles][version] = 2.2
 
+projects[conditional_styles][version] = 2.2
+
 projects[diff][version] = 3.2
 
 projects[draggableviews][version] = 2.1
@@ -98,7 +100,7 @@ includes[panopoly_images_make] = http://cgit.drupalcode.org/panopoly_images/plai
 
 projects[panels][version] = 3.5
 
-projects[path_breadcrumbs][version] = 3.2
+projects[path_breadcrumbs][version] = 3.3
 
 projects[pathauto][version] = 1.2
 
@@ -113,6 +115,12 @@ projects[restws][version] = 2.3
 projects[schema][version] = 1.2
 
 projects[adminrole][version] = 1.0
+
+projects[admin_menu_source][version] = 1.0
+projects[admin_menu_source][subdir] = contrib
+
+projects[menu_token][version] = 1.0-beta5
+projects[menu_token][subdir] = contrib
 
 ; Deprecated
 projects[delta][version] = 3.0-beta11
