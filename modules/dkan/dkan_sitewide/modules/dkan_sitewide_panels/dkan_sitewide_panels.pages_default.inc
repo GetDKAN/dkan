@@ -480,6 +480,36 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->uuid = '93b93af5-e162-416f-813d-06e7be118cb7';
     $display->content['new-93b93af5-e162-416f-813d-06e7be118cb7'] = $pane;
     $display->panels['contentmain'][0] = 'new-93b93af5-e162-416f-813d-06e7be118cb7';
+    $pane = new stdClass();
+    $pane->pid = 'new-4011a7a6-3f11-4788-bde2-83cd18a00b10';
+    $pane->panel = 'contentmain';
+    $pane->type = 'views_panes';
+    $pane->subtype = 'dkan_datasets_filtered-panel_pane_1';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'use_pager' => 1,
+      'pager_id' => '0',
+      'items_per_page' => '10',
+      'exposed' => array(
+        'og_group_ref_target_id_entityreference_filter' => '3',
+        'field_tags_tid' => 'All',
+      ),
+      'override_title' => 0,
+      'override_title_text' => '',
+      'override_title_heading' => 'h2',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 1;
+    $pane->locks = array();
+    $pane->uuid = '4011a7a6-3f11-4788-bde2-83cd18a00b10';
+    $display->content['new-4011a7a6-3f11-4788-bde2-83cd18a00b10'] = $pane;
+    $display->panels['contentmain'][1] = 'new-4011a7a6-3f11-4788-bde2-83cd18a00b10';
   $display->hide_title = PANELS_TITLE_PANE;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
