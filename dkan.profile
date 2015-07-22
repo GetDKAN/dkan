@@ -19,6 +19,8 @@ function dkan_install_tasks() {
  * Implements hook_install_tasks().
  */
 function dkan_additional_setup() {
+  global $theme_key;
+
   // Change block titles for selected blocks.
   db_query("UPDATE {block} SET title ='<none>' WHERE delta = 'main-menu' OR delta = 'login'");
   variable_set('node_access_needs_rebuild', FALSE);
@@ -47,6 +49,11 @@ function dkan_additional_setup() {
   features_revert(array('dkan_sitewide_search_db' => array('search_api_server')));
   features_revert(array('dkan_sitewide_roles_perms' => array('user_permission', 'og_features_permission')));
   features_revert(array('dkan_sitewide' => array('variable')));
+  features_revert(array('dkan_data_story_storyteller_role' => array('user_role', 'roles_permissions')));
+  features_revert(array('dkan_sitewide_profile_page' => array('menu_custom', 'menu_links')));
+  $menu_links = features_get_default('menu_links', 'dkan_sitewide_profile_page');
+  menu_links_features_rebuild_ordered($menu_links, TRUE);
+
   unset($_SESSION['messages']['warning']);
   cache_clear_all();
 
@@ -58,4 +65,10 @@ function dkan_additional_setup() {
 
   // Set honeypot protection on user registration form
   variable_set('honeypot_form_user_register_form', 1);
+
+
+  //Fix the problem with colorizer and the first time access.
+  $palette = colorizer_get_palette($theme_key, $instance);
+  $file = colorizer_update_stylesheet($theme_key, $theme_key, $palette);
+  clearstatcache();
 }

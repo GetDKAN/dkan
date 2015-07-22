@@ -20,6 +20,7 @@ dependencies[] = taxonomy
 ; Contrib
 dependencies[] = admin_menu
 dependencies[] = admin_menu_toolbar
+dependencies[] = adminrole
 dependencies[] = autocomplete_deluxe
 dependencies[] = bueditor
 dependencies[] = beautytips
@@ -88,14 +89,19 @@ dependencies[] = uuid
 dependencies[] = views
 dependencies[] = views_ui
 dependencies[] = views_bulk_operations
+dependencies[] = visualization_entity
+dependencies[] = visualization_entity_charts
 
 ; Open data
 dependencies[] = entity_rdf
 dependencies[] = geofield
 dependencies[] = geophp
+dependencies[] = open_data_schema_map
 dependencies[] = recline
 dependencies[] = rdfui
 dependencies[] = rdfx
+dependencies[] = visualization_entity
+dependencies[] = visualization_entity_charts
 
 ; DKAN Features
 dependencies[] = dkan_sitewide_menu
@@ -105,15 +111,16 @@ dependencies[] = dkan_sitewide_demo_front
 dependencies[] = dkan_dataset_groups
 dependencies[] = dkan_sitewide_panels
 dependencies[] = dkan_sitewide_search_db
-dependencies[] = dkan_featured_groups
 dependencies[] = dkan_sitewide_panelizer
-dependencies[] = dkan_sitewide_data_dashboard
-dependencies[] = dkan_featured_groups
+dependencies[] = dkan_sitewide_profile_page
+dependencies[] = dkan_data_dashboard
+dependencies[] = dkan_data_story
+dependencies[] = dkan_data_story_storyteller_role
+dependencies[] = dkan_sitewide_profile_page
 
-; DKAN Modules
+; DKAN Core Modules
 dependencies[] = dkan_sitewide
 dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
 dependencies[] = dkan_datastore_api
-dependencies[] = open_data_schema_map
 dependencies[] = open_data_schema_map_dkan

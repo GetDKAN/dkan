@@ -89,6 +89,18 @@ function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
     $form['query']['#attributes'] = array('placeholder' => t('Search'));
     $form['query']['#size'] = 60;
   }
+
+  if ($form_id == 'colorizer_admin_settings') {
+    //Add clear cache for anonymous after any change.
+    $form['#submit'][] = 'dkan_sitewide_form_colorize_clear_cache';
+  }
+}
+
+/**
+ * Clear cache on a form submit.
+ */
+function dkan_sitewide_form_colorize_clear_cache($form, &$form_state) {
+  cache_clear_all();
 }
 
 /**

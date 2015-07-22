@@ -10,7 +10,7 @@ default:
     Drupal\DrupalExtension\Extension:
       blackbox: ~
       drupal:
-        drupal_root: "drupal"
+        drupal_root: 'drupal'
       drush:
         root: "drupal"
       api_driver: "drupal"
@@ -24,3 +24,17 @@ default:
         right header: "#header-right"
         right sidebar: "#column-right"
         dashboards: ".view-data-dashboards table tbody"
+      text:
+        log_out: "Log out"
+        log_in: "Log in"
+local:
+  extensions:
+    Behat\MinkExtension\Extension:
+      base_url: http://dkan.local
+      selenium2:
+        wd_host: http://127.0.0.1:4444/wd/hub
+    Drupal\DrupalExtension\Extension:
+      drupal:
+        drupal_root: '/var/www/dkan/webroot'
+      drush:
+        root: '/var/www/dkan/webroot'

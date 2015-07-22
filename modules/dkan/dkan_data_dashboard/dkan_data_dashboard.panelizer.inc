@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_sitewide_data_dashboard.panelizer.inc
+ * dkan_data_dashboard.panelizer.inc
  */
 
 /**
  * Implements hook_panelizer_defaults().
  */
-function dkan_sitewide_data_dashboard_panelizer_defaults() {
+function dkan_data_dashboard_panelizer_defaults() {
   $export = array();
 
   $panelizer = new stdClass();
