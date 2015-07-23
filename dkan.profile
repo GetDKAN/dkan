@@ -68,6 +68,8 @@ function dkan_additional_setup() {
 
 
   //Fix the problem with colorizer and the first time access.
+  $instance = $theme_key;
+  drupal_alter('colorizer_instance', $instance);
   $palette = colorizer_get_palette($theme_key, $instance);
   $file = colorizer_update_stylesheet($theme_key, $theme_key, $palette);
   clearstatcache();
