@@ -119,38 +119,21 @@ function dkan_sitewide_search_db_default_search_api_server() {
       "min_chars" : "1",
       "indexes" : { "datasets" : {
           "type" : {
-            "table" : "search_api_db_datasets_type",
+            "table" : "search_api_db_datasets",
+            "column" : "type",
             "type" : "string",
             "boost" : "1.0"
           },
           "title" : {
-            "table" : "search_api_db_datasets_title",
+            "table" : "search_api_db_datasets",
+            "column" : "title",
             "type" : "string",
             "boost" : "1.0"
           },
           "status" : {
-            "table" : "search_api_db_datasets_status",
+            "table" : "search_api_db_datasets",
+            "column" : "status",
             "type" : "boolean",
-            "boost" : "1.0"
-          },
-          "author" : {
-            "table" : "search_api_db_datasets_author",
-            "type" : "integer",
-            "boost" : "1.0"
-          },
-          "search_api_language" : {
-            "table" : "search_api_db_datasets_search_api_language",
-            "type" : "string",
-            "boost" : "1.0"
-          },
-          "search_api_viewed" : {
-            "table" : "search_api_db_datasets_search_api_viewed",
-            "type" : "text",
-            "boost" : "1.0"
-          },
-          "search_api_access_node" : {
-            "table" : "search_api_db_datasets_search_api_access_node",
-            "type" : "list\\u003Cstring\\u003E",
             "boost" : "1.0"
           },
           "changed" : {
@@ -159,11 +142,17 @@ function dkan_sitewide_search_db_default_search_api_server() {
             "type" : "date",
             "boost" : "1.0"
           },
+          "author" : {
+            "table" : "search_api_db_datasets",
+            "column" : "author",
+            "type" : "integer",
+            "boost" : "1.0"
+          },
           "field_license" : {
             "table" : "search_api_db_datasets",
+            "column" : "field_license",
             "type" : "string",
-            "boost" : "1.0",
-            "column" : "field_license"
+            "boost" : "1.0"
           },
           "field_tags" : {
             "table" : "search_api_db_datasets_field_tags",
@@ -175,6 +164,23 @@ function dkan_sitewide_search_db_default_search_api_server() {
             "table" : "search_api_db_datasets_og_group_ref",
             "column" : "value",
             "type" : "list\\u003Cinteger\\u003E",
+            "boost" : "1.0"
+          },
+          "search_api_language" : {
+            "table" : "search_api_db_datasets",
+            "column" : "search_api_language",
+            "type" : "string",
+            "boost" : "1.0"
+          },
+          "search_api_viewed" : {
+            "table" : "search_api_db_datasets_search_api_viewed",
+            "type" : "text",
+            "boost" : "1.0"
+          },
+          "search_api_access_node" : {
+            "table" : "search_api_db_datasets_search_api_access_node",
+            "column" : "value",
+            "type" : "list\\u003Cstring\\u003E",
             "boost" : "1.0"
           },
           "field_resources:field_format" : {
