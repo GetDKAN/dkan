@@ -100,8 +100,7 @@ dependencies[] = open_data_schema_map
 dependencies[] = recline
 dependencies[] = rdfui
 dependencies[] = rdfx
-dependencies[] = visualization_entity
-dependencies[] = visualization_entity_charts
+dependencies[] = open_data_schema_map
 
 ; DKAN Features
 dependencies[] = dkan_sitewide_menu
@@ -124,3 +123,4 @@ dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
 dependencies[] = dkan_datastore_api
 dependencies[] = open_data_schema_map_dkan
+dependencies[] = visualization_entity_charts_dkan
