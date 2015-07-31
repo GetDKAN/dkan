@@ -95,31 +95,28 @@ function dkan_data_story_default_search_api_index() {
     "server" : "stories_server",
     "item_type" : "node",
     "options" : {
+      "datasource" : { "bundles" : [ "dkan_data_story" ] },
       "index_directly" : 1,
       "cron_limit" : "50",
       "fields" : {
-        "type" : { "type" : "string" },
-        "title" : { "type" : "text" },
-        "status" : { "type" : "boolean" },
-        "created" : { "type" : "date" },
-        "changed" : { "type" : "date" },
         "author" : { "type" : "integer", "entity_type" : "user" },
+        "changed" : { "type" : "date" },
+        "created" : { "type" : "date" },
         "field_tags" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
+        "search_api_access_node" : { "type" : "list\\u003Cstring\\u003E" },
         "search_api_language" : { "type" : "string" },
-        "search_api_access_node" : { "type" : "list\\u003Cstring\\u003E" }
+        "search_api_viewed" : { "type" : "text" },
+        "status" : { "type" : "boolean" },
+        "title" : { "type" : "string" },
+        "type" : { "type" : "string" }
       },
       "data_alter_callbacks" : {
-        "search_api_alter_bundle_filter" : {
-          "status" : 1,
-          "weight" : "-10",
-          "settings" : { "default" : "0", "bundles" : { "dkan_data_story" : "dkan_data_story" } }
-        },
         "search_api_alter_node_access" : { "status" : 1, "weight" : "0", "settings" : [] },
         "search_api_alter_node_status" : { "status" : 1, "weight" : "0", "settings" : [] },
         "search_api_alter_add_hierarchy" : { "status" : 0, "weight" : "0", "settings" : { "fields" : [] } },
-        "search_api_alter_add_viewed_entity" : { "status" : 0, "weight" : "0", "settings" : { "mode" : "full" } },
-        "search_api_alter_add_url" : { "status" : 0, "weight" : "0", "settings" : [] },
-        "search_api_alter_add_aggregation" : { "status" : 0, "weight" : "0", "settings" : [] }
+        "search_api_alter_add_viewed_entity" : { "status" : 1, "weight" : "0", "settings" : { "mode" : "full" } },
+        "search_api_alter_add_aggregation" : { "status" : 0, "weight" : "0", "settings" : [] },
+        "search_api_alter_add_url" : { "status" : 0, "weight" : "0", "settings" : [] }
       },
       "processors" : {
         "search_api_case_ignore" : { "status" : 0, "weight" : "0", "settings" : { "fields" : [] } },
@@ -134,9 +131,13 @@ function dkan_data_story_default_search_api_index() {
           }
         },
         "search_api_tokenizer" : {
-          "status" : 0,
+          "status" : 1,
           "weight" : "20",
-          "settings" : { "fields" : [], "spaces" : "[^[:alnum:]]", "ignorable" : "[\\u0027]" }
+          "settings" : {
+            "fields" : { "search_api_viewed" : true },
+            "spaces" : "[^[:alnum:]]",
+            "ignorable" : "[\\u0027]"
+          }
         },
         "search_api_stopwords" : {
           "status" : 0,
@@ -155,6 +156,7 @@ function dkan_data_story_default_search_api_index() {
             "suffix" : "\\u003C\\/strong\\u003E",
             "excerpt" : 1,
             "excerpt_length" : "256",
+            "exclude_fields" : [],
             "highlight" : "always"
           }
         }
@@ -179,7 +181,8 @@ function dkan_data_story_default_search_api_server() {
     "class" : "search_api_db_service",
     "options" : {
       "database" : "default:default",
-      "min_chars" : "1",
+      "min_chars" : "2",
+      "partial_matches" : 0,
       "indexes" : { "stories_index" : {
           "type" : {
             "table" : "search_api_db_stories_index",
@@ -188,14 +191,21 @@ function dkan_data_story_default_search_api_server() {
             "boost" : "1.0"
           },
           "title" : {
-            "table" : "search_api_db_stories_index_title",
-            "type" : "text",
+            "table" : "search_api_db_stories_index",
+            "column" : "title",
+            "type" : "string",
             "boost" : "1.0"
           },
           "status" : {
             "table" : "search_api_db_stories_index",
             "column" : "status",
             "type" : "boolean",
+            "boost" : "1.0"
+          },
+          "created" : {
+            "table" : "search_api_db_stories_index",
+            "column" : "created",
+            "type" : "date",
             "boost" : "1.0"
           },
           "changed" : {
@@ -222,16 +232,15 @@ function dkan_data_story_default_search_api_server() {
             "type" : "string",
             "boost" : "1.0"
           },
+          "search_api_viewed" : {
+            "table" : "search_api_db_stories_index_text",
+            "type" : "text",
+            "boost" : "1.0"
+          },
           "search_api_access_node" : {
             "table" : "search_api_db_stories_index_search_api_access_node",
             "column" : "value",
             "type" : "list\\u003Cstring\\u003E",
-            "boost" : "1.0"
-          },
-          "created" : {
-            "table" : "search_api_db_stories_index",
-            "column" : "created",
-            "type" : "date",
             "boost" : "1.0"
           }
         }

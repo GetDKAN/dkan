@@ -5,7 +5,6 @@ package = DKAN
 project = dkan
 dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
-dependencies[] = dkan_sitewide_search_db
 dependencies[] = features
 dependencies[] = menu
 features[features_api][] = api:2

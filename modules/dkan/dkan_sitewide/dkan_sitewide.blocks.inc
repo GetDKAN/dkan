@@ -172,7 +172,6 @@ function dkan_sitewide_license_block() {
       $subscribed_values = dkan_dataset_content_types_license_subscribed_values();
       if (isset($subscribed_values[$key])) {
         $license = $subscribed_values[$key];
-        // dpm($subscribed_values);
         if (isset($license['uri'])) {
           $output = l($license['label'], $license['uri']) . '<br/>';
           $output .= l(
