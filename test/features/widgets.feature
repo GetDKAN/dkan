@@ -3,7 +3,7 @@ Feature: Widgets
   Background:
     Given I am logged in as a user with the "administrator" role
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New Link Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
@@ -17,7 +17,7 @@ Feature: Widgets
       And I press "Save"
       Then I should see "Link example"
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New File Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
@@ -30,7 +30,7 @@ Feature: Widgets
       And I press "Save"
       Then I should see "actionplan.pdf"
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New Image Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
@@ -44,7 +44,7 @@ Feature: Widgets
       And I press "Save"
       Then I should see "dkan logo image test"
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New Text Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
@@ -57,7 +57,7 @@ Feature: Widgets
       And I press "Save"
       Then I should see "text example"
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New Map Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
@@ -71,7 +71,7 @@ Feature: Widgets
       And I press "Save"
       Then I should see "map example"
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New Table Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
@@ -116,7 +116,7 @@ Feature: Widgets
   #     And I press "Save"
   #   Then I should see "Testing video"
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New Spotlight Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
@@ -132,7 +132,7 @@ Feature: Widgets
       And I press "Save"
       Then I should see "First spot" in the "content"
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New Submenu Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
@@ -144,7 +144,7 @@ Feature: Widgets
       And I press "Save"
       Then I should see "About" in the "content"
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New Content List Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
@@ -160,7 +160,7 @@ Feature: Widgets
     Then I should see "Afghanistan Election Districts"
       And I should see "Posted by admin"
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New Content Item Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
