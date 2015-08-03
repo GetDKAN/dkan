@@ -20,6 +20,7 @@ Feature: Search
     When I click "politics"
     Then I should not see "Wisconsin Polling Places"
 
+    @fixme
   Scenario: Filter by facet group
     Given I am on "/dataset"
     When I click "Data Explorer Examples"

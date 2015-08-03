@@ -18,11 +18,11 @@ Feature: Groups
    Scenario: Request to join a group as an Auth User
     Given I am logged in as a user with the "authenticated user" role
     When I visit "group/geospatial-data-explorer-examples"
-      And I click "Request group membership"
-      Then I should see "Are you sure you want to join the group Geospatial Data Explorer Examples?"
-    
-  @api @javascript
-  Scenario: View Groups 
+    And I click "Request group membership"
+    Then I should see "Are you sure you want to join the group Geospatial Data Explorer Examples?"
+
+  @api @javascript @fixme
+  Scenario: View Groups
     Given I am on "/group/geospatial-data-explorer-examples"
       Then I should see "Wisconsin Polling Places"
       And I should see "Afghanistan Election Districts"
@@ -33,8 +33,8 @@ Feature: Groups
       Then I should see "Afghanistan Election Districts"
       And I should see "Wisconsin Polling Places"
 
-  @api @javascript
-  Scenario: Manage a group as an Editor 
+  @api @javascript @fixme
+  Scenario: Manage a group as an Editor
     Given I am logged in as a user with the "editor" role
       And I am on "/group/data-explorer-examples"
     Given users:
