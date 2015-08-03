@@ -1,8 +1,8 @@
 # features/profile.feature
 Feature: Profile
-  To check a user profile
-  As a authenticated user
+  Check a user profile as an authenticated user.
 
+  @api @fixme
   Scenario: Check profile menu
     Given I am logged in as a user with the "authenticated user" role
     And I am on "/user"

@@ -1,6 +1,6 @@
 Feature: Panels
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New Custom Item" block to home page using panels ipe editor
     Given I am logged in as a user with the "administrator" role
       And I am on the homepage
