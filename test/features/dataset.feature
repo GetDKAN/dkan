@@ -33,7 +33,7 @@ Feature: Datasets
     And I wait for "5" seconds
     And I should see "Door Creek Church"
 
-  @api @javascript @fixme
+  @api @javascript
   Scenario: Create a dataset with a group as an authenticated user
     Given I am logged in as a user with the "authenticated user" role
     And I am on "/node/add/group"
