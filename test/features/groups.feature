@@ -1,5 +1,5 @@
-Feature: Groups 
-  In order to know the groups are working 
+Feature: Groups
+  In order to know the groups are working
   As a website user
   I need to be able to view the group pages
 
@@ -24,14 +24,14 @@ Feature: Groups
   @api @javascript @fixme
   Scenario: View Groups
     Given I am on "/group/geospatial-data-explorer-examples"
-      Then I should see "Wisconsin Polling Places"
-      And I should see "Afghanistan Election Districts"
+    Then I should see "Wisconsin Polling Places"
+    And I should see "Afghanistan Election Districts"
     When I click "country-afghanistan (1)"
-      Then I should see "Afghanistan Election Districts"
-      And I should not see "Wisconsin Polling Places"
+    Then I should see "Afghanistan Election Districts"
+    And I should not see "Wisconsin Polling Places"
     When I click "country-afghanistan"
-      Then I should see "Afghanistan Election Districts"
-      And I should see "Wisconsin Polling Places"
+    Then I should see "Afghanistan Election Districts"
+    And I should see "Wisconsin Polling Places"
 
   @api @javascript @fixme
   Scenario: Manage a group as an Editor
