@@ -1,6 +1,6 @@
 Feature: Datasets
 
-  @api @fixme
+  @api
   Scenario: Edit any group content
     Given I am logged in as a user with the "editor" role
       And I am on "/group/data-explorer-examples"
