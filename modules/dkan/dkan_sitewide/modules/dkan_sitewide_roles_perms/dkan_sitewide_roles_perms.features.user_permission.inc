@@ -16,6 +16,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'admin_menu',
   );
@@ -26,6 +27,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'system',
   );
@@ -54,8 +56,18 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'node',
+  );
+
+  // Exported permission: 'access recline configuration'.
+  $permissions['access recline configuration'] = array(
+    'name' => 'access recline configuration',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'recline',
   );
 
   // Exported permission: 'access resource node'.
@@ -208,7 +220,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'administer filters',
     'roles' => array(
       'administrator' => 'administrator',
-      'editor' => 'editor',
     ),
     'module' => 'filter',
   );
@@ -227,7 +238,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'administer group',
     'roles' => array(
       'administrator' => 'administrator',
-      'editor' => 'editor',
     ),
     'module' => 'og',
   );
@@ -246,7 +256,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'administer menu',
     'roles' => array(
       'administrator' => 'administrator',
-      'editor' => 'editor',
     ),
     'module' => 'menu',
   );
@@ -936,6 +945,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'use panels in place editing',
     'roles' => array(
       'administrator' => 'administrator',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'panels',
   );
@@ -950,7 +960,9 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   // Exported permission: 'use text format html'.
   $permissions['use text format html'] = array(
     'name' => 'use text format html',
-    'roles' => array(),
+    'roles' => array(
+      'storyteller' => 'storyteller',
+    ),
     'module' => 'filter',
   );
 
