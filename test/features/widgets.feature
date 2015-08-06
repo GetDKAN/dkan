@@ -128,6 +128,7 @@ Feature: Widgets
       And I fill in "field_basic_spotlight_items[und][0][link]" with "http://demo.getdkan.com"
       And I attach the file "dkan_logo.png" to "files[field_basic_spotlight_items_und_0_fid]"
       And I press "Finish"
+      And I wait for "5" seconds
       And I press "Save"
       Then I should see "First spot" in the "content"
 
