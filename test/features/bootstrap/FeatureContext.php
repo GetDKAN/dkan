@@ -425,6 +425,14 @@ class FeatureContext extends DrupalContext
     }
   }
 
+   /**
+   * @Given /^I add a Dataset Filtered List$/
+   */
+  public function iAddADatasetFilteredList() {
+    $add_button = $this->getXPathElement("//fieldset[@class='widget-preview panel panel-default'][3]//a");
+    $add_button->click();
+  }
+
   /**
    * Clean up generated content.
    */

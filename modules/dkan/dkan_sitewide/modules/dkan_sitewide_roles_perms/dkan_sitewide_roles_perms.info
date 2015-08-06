@@ -107,6 +107,7 @@ features[user_permission][] = administer nodes
 features[user_permission][] = administer open data schema mapper
 features[user_permission][] = administer page manager
 features[user_permission][] = administer pane access
+features[user_permission][] = administer panelizer
 features[user_permission][] = administer panels layouts
 features[user_permission][] = administer panels styles
 features[user_permission][] = administer path breadcrumbs
