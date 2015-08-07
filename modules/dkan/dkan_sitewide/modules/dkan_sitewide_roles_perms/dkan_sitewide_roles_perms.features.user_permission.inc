@@ -238,6 +238,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'administer group',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'og',
   );
