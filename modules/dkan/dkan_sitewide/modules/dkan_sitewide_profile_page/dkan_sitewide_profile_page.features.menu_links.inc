@@ -196,7 +196,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
       'attributes' => array(
         'title' => '',
       ),
-      'alter' => TRUE,
+      'alter' => FALSE,
       'identifier' => 'menu-command-center-menu_profile-settings:menutoken/5547e8fd0c1a4',
     ),
     'module' => 'menu',
@@ -355,7 +355,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/content',
     'router_path' => 'admin/content',
-    'link_title' => 'Manage content',
+    'link_title' => 'View contents',
     'options' => array(
       'attributes' => array(
         'title' => '',
