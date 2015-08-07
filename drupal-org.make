@@ -94,9 +94,12 @@ projects[views_autocomplete_filters][patch][2277453] = http://drupal.org/files/i
 projects[views_autocomplete_filters][patch][2374709] = http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
 projects[views_autocomplete_filters][patch][2317351] = http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
 
+
 projects[panopoly_widgets][version] = 1.25
-projects[panopoly_widgets][patch][] = patches/panopoly_widgets_overrides.patch
 includes[panopoly_widgets_make] = http://cgit.drupalcode.org/panopoly_widgets/plain/panopoly_widgets.make
+projects[panopoly_widgets][patch][1] = patches/panopoly_widgets_overrides.patch
+projects[panopoly_widgets][patch][2] = patches/panopoly_widgets_add_jquery_ui_tabs.patch
+
 
 projects[panopoly_images][version] = 1.21
 includes[panopoly_images_make] = http://cgit.drupalcode.org/panopoly_images/plain/panopoly_images.make

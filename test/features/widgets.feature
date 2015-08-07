@@ -113,8 +113,8 @@ Feature: Widgets
   #     And I press "Next"
   #     And I wait for "2" seconds
   #     And I press "Finish"
-    #   And I press "Save"
-    # Then I should see "Testing video"
+  #     And I press "Save"
+  #   Then I should see "Testing video"
 
   @api @javascript
   Scenario: Adds "New Spotlight Widget" block to home page using panels ipe editor
@@ -128,6 +128,7 @@ Feature: Widgets
       And I fill in "field_basic_spotlight_items[und][0][link]" with "http://demo.getdkan.com"
       And I attach the file "dkan_logo.png" to "files[field_basic_spotlight_items_und_0_fid]"
       And I press "Finish"
+      And I wait for "2" seconds
       And I press "Save"
       Then I should see "First spot" in the "content"
 
