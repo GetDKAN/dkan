@@ -309,13 +309,58 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'panels',
   );
 
-   // Exported permission: 'administer panelizer'.
-  $permissions['administer panelizer'] = array(
-    'name' => 'administer panelizer',
+  // Exported permission: 'administer panelizer node data_dashboard content'.
+  $permissions['administer panelizer node data_dashboard content'] = array(
+    'name' => 'administer panelizer node data_dashboard content',
     'roles' => array(
-      'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
-    'module' => 'panels',
+    'module' => 'panelizer',
+  );
+
+  // Exported permission: 'administer panelizer node data_dashboard context'.
+  $permissions['administer panelizer node data_dashboard context'] = array(
+    'name' => 'administer panelizer node data_dashboard context',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'panelizer',
+  );
+
+  // Exported permission: 'administer panelizer node data_dashboard defaults'.
+  $permissions['administer panelizer node data_dashboard defaults'] = array(
+    'name' => 'administer panelizer node data_dashboard defaults',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'panelizer',
+  );
+
+  // Exported permission: 'administer panelizer node data_dashboard layout'.
+  $permissions['administer panelizer node data_dashboard layout'] = array(
+    'name' => 'administer panelizer node data_dashboard layout',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'panelizer',
+  );
+
+  // Exported permission: 'administer panelizer node data_dashboard overview'.
+  $permissions['administer panelizer node data_dashboard overview'] = array(
+    'name' => 'administer panelizer node data_dashboard overview',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'panelizer',
+  );
+
+  // Exported permission: 'administer panelizer node data_dashboard settings'.
+  $permissions['administer panelizer node data_dashboard settings'] = array(
+    'name' => 'administer panelizer node data_dashboard settings',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'panelizer',
   );
 
   // Exported permission: 'administer panels layouts'.
@@ -487,6 +532,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'change layouts in place editing',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'panels',
   );
@@ -1080,6 +1126,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'use panels in place editing',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
       'storyteller' => 'storyteller',
     ),
     'module' => 'panels',
