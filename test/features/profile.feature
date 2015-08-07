@@ -3,6 +3,7 @@ Feature: Profile
   To check a user profile
   As a authenticated user
 
+  @api
   Scenario: Check profile menu
     Given I am logged in as a user with the "authenticated user" role
     And I am on "/user"
@@ -15,6 +16,7 @@ Feature: Profile
     Then I should see "Profile Settings"
     Then I should not see "Theme Preferences"
 
+  @api
   Scenario: Check Theme Preferences link
     Given I am logged in as a user with the "administrator" role
     And I am on "/user"
