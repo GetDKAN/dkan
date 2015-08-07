@@ -13,3 +13,11 @@ Feature: Profile
     Then I should see "Users"
     Then I should see "Site Preferences"
     Then I should see "Profile Settings"
+    Then I should not see "Theme Preferences"
+
+  Scenario: Check Theme Preferences link
+    Given I am logged in as a user with the "administrator" role
+    And I am on "/user"
+    Then I should not see "Theme Preferences"
+    When I click "Theme Preferences"
+    Then I should see "These options control the display settings"
