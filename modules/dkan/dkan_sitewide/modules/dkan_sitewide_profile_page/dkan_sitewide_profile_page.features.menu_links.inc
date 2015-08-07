@@ -14,7 +14,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
   $menu_links['menu-command-center-menu_add-chart:admin/structure/entity-type/visualization/ve_chart/add'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
-    'router_path' => 'admin/structure/entity-type/visualization',
+    'router_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
     'link_title' => 'Add chart',
     'options' => array(
       'attributes' => array(
@@ -29,7 +29,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'expanded' => 0,
     'weight' => -50,
     'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
+    'parent_identifier' => 'menu-command-center-menu_visualization:admin/structure/entity-type/visualization',
   );
   // Exported menu link: menu-command-center-menu_add-choropleth:admin/structure/entity-type/visualization/choropleth_visualization/add
   $menu_links['menu-command-center-menu_add-choropleth:admin/structure/entity-type/visualization/choropleth_visualization/add'] = array(
@@ -50,7 +50,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'expanded' => 0,
     'weight' => -48,
     'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
+    'parent_identifier' => 'menu-command-center-menu_visualization:admin/structure/entity-type/visualization',
   );
   // Exported menu link: menu-command-center-menu_add-content:node/add
   $menu_links['menu-command-center-menu_add-content:node/add'] = array(
@@ -196,7 +196,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
       'attributes' => array(
         'title' => '',
       ),
-      'alter' => TRUE,
+      'alter' => FALSE,
       'identifier' => 'menu-command-center-menu_profile-settings:menutoken/5547e8fd0c1a4',
     ),
     'module' => 'menu',
@@ -204,7 +204,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -43,
+    'weight' => -42,
     'customized' => 1,
   );
   // Exported menu link: menu-command-center-menu_profile:user
@@ -247,6 +247,26 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'weight' => -44,
     'customized' => 1,
   );
+  // Exported menu link: menu-command-center-menu_theme-preferences:admin/dkan/theme_preferences
+  $menu_links['menu-command-center-menu_theme-preferences:admin/dkan/theme_preferences'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/dkan/theme_preferences',
+    'router_path' => 'admin/dkan/theme_preferences',
+    'link_title' => 'Theme Preferences',
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Change appearance/theme preferences like logos, colors, fonts and more.',
+      ),
+      'identifier' => 'menu-command-center-menu_theme-preferences:admin/dkan/theme_preferences',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -43,
+    'customized' => 1,
+  );
   // Exported menu link: menu-command-center-menu_users:admin/people
   $menu_links['menu-command-center-menu_users:admin/people'] = array(
     'menu_name' => 'menu-command-center-menu',
@@ -286,13 +306,13 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'expanded' => 0,
     'weight' => -46,
     'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
+    'parent_identifier' => 'menu-command-center-menu_visualization:admin/structure/entity-type/visualization',
   );
   // Exported menu link: menu-command-center-menu_view-charts:admin/structure/entity-type/visualization/ve_chart
   $menu_links['menu-command-center-menu_view-charts:admin/structure/entity-type/visualization/ve_chart'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/structure/entity-type/visualization/ve_chart',
-    'router_path' => 'admin/structure/entity-type/visualization',
+    'router_path' => 'admin/structure/entity-type/visualization/ve_chart',
     'link_title' => 'View charts',
     'options' => array(
       'attributes' => array(
@@ -307,7 +327,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'expanded' => 0,
     'weight' => -49,
     'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
+    'parent_identifier' => 'menu-command-center-menu_visualization:admin/structure/entity-type/visualization',
   );
   // Exported menu link: menu-command-center-menu_view-choropleth:admin/structure/entity-type/visualization/choropleth_visualization
   $menu_links['menu-command-center-menu_view-choropleth:admin/structure/entity-type/visualization/choropleth_visualization'] = array(
@@ -328,14 +348,14 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'expanded' => 0,
     'weight' => -47,
     'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
+    'parent_identifier' => 'menu-command-center-menu_visualization:admin/structure/entity-type/visualization',
   );
   // Exported menu link: menu-command-center-menu_view-contents:admin/content
   $menu_links['menu-command-center-menu_view-contents:admin/content'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/content',
     'router_path' => 'admin/content',
-    'link_title' => 'Manage content',
+    'link_title' => 'View contents',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -427,6 +447,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
   t('Profile');
   t('Profile Settings');
   t('Site Preferences');
+  t('Theme Preferences');
   t('Users');
   t('View all');
   t('View charts');

@@ -141,3 +141,20 @@ function dkan_sitewide_profile_page_theme() {
     )
   );
 }
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_sitewide_profile_page_menu() {
+  $items['admin/dkan/theme_preferences'] = array(
+    'page callback' => 'dkan_sitewide_profile_page_theme_preferences',
+    'access arguments' => array('administer themes'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+function dkan_sitewide_profile_page_theme_preferences() {
+  $default_theme = variable_get('theme_default', null);
+  drupal_goto('admin/appearance/settings/' . $default_theme);
+}
