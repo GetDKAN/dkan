@@ -51,6 +51,7 @@ before_script:
 script:
   - bash features-tests.sh $TRAVIS_BUILD_DIR
   - bin/behat features/panels.feature
+  - bin/behat features/profile.feature
   - bin/behat features/groups.feature
   - bin/behat features/dataset.feature
   - bin/behat features/datastore.feature
