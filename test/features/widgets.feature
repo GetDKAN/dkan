@@ -17,7 +17,7 @@ Feature: Widgets
       And I press "Save"
       Then I should see "Link example"
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New File Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
@@ -116,7 +116,7 @@ Feature: Widgets
   #     And I press "Save"
   #   Then I should see "Testing video"
 
-  @api @javascript
+  @api @javascript @fixme
   Scenario: Adds "New Spotlight Widget" block to home page using panels ipe editor
     Given I am on the homepage
       Then I should see "Customize this page"
