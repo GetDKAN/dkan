@@ -335,7 +335,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/content',
     'router_path' => 'admin/content',
-    'link_title' => 'View contents',
+    'link_title' => 'Manage content',
     'options' => array(
       'attributes' => array(
         'title' => '',

@@ -118,6 +118,7 @@ features[user_permission][] = administer panelizer node data_dashboard defaults
 features[user_permission][] = administer panelizer node data_dashboard layout
 features[user_permission][] = administer panelizer node data_dashboard overview
 features[user_permission][] = administer panelizer node data_dashboard settings
+features[user_permission][] = administer panelizer
 features[user_permission][] = administer panels layouts
 features[user_permission][] = administer panels styles
 features[user_permission][] = administer path breadcrumbs
