@@ -146,7 +146,7 @@ projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_vie
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = 7.x-1.x
+projects[nuboot_radix][download][branch] = 559-exposed-view-labels
 projects[nuboot_radix][type] = theme
 
 ; Need to bring in fix from https://www.drupal.org/node/2473455; remove once next radix release is out
