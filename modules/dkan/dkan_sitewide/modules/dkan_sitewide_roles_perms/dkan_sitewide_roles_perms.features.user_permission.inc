@@ -16,6 +16,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'admin_menu',
   );
@@ -26,6 +27,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'system',
   );
@@ -54,8 +56,18 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'node',
+  );
+
+  // Exported permission: 'access recline configuration'.
+  $permissions['access recline configuration'] = array(
+    'name' => 'access recline configuration',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'recline',
   );
 
   // Exported permission: 'access resource node'.
@@ -208,7 +220,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'administer filters',
     'roles' => array(
       'administrator' => 'administrator',
-      'editor' => 'editor',
     ),
     'module' => 'filter',
   );
@@ -227,7 +238,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'administer group',
     'roles' => array(
       'administrator' => 'administrator',
-      'editor' => 'editor',
     ),
     'module' => 'og',
   );
@@ -246,7 +256,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'administer menu',
     'roles' => array(
       'administrator' => 'administrator',
-      'editor' => 'editor',
     ),
     'module' => 'menu',
   );
@@ -672,6 +681,123 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'admin_menu',
   );
 
+  // Exported permission: 'eck add visualization bundles'.
+  $permissions['eck add visualization bundles'] = array(
+    'name' => 'eck add visualization bundles',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck add visualization ve_chart entities'.
+  $permissions['eck add visualization ve_chart entities'] = array(
+    'name' => 'eck add visualization ve_chart entities',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck administer visualization bundles'.
+  $permissions['eck administer visualization bundles'] = array(
+    'name' => 'eck administer visualization bundles',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck administer visualization ve_chart entities'.
+  $permissions['eck administer visualization ve_chart entities'] = array(
+    'name' => 'eck administer visualization ve_chart entities',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck delete visualization bundles'.
+  $permissions['eck delete visualization bundles'] = array(
+    'name' => 'eck delete visualization bundles',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck delete visualization ve_chart entities'.
+  $permissions['eck delete visualization ve_chart entities'] = array(
+    'name' => 'eck delete visualization ve_chart entities',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck edit visualization bundles'.
+  $permissions['eck edit visualization bundles'] = array(
+    'name' => 'eck edit visualization bundles',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck edit visualization ve_chart entities'.
+  $permissions['eck edit visualization ve_chart entities'] = array(
+    'name' => 'eck edit visualization ve_chart entities',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck list entity types'.
+  $permissions['eck list entity types'] = array(
+    'name' => 'eck list entity types',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck list visualization bundles'.
+  $permissions['eck list visualization bundles'] = array(
+    'name' => 'eck list visualization bundles',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck list visualization ve_chart entities'.
+  $permissions['eck list visualization ve_chart entities'] = array(
+    'name' => 'eck list visualization ve_chart entities',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck view visualization bundles'.
+  $permissions['eck view visualization bundles'] = array(
+    'name' => 'eck view visualization bundles',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck view visualization ve_chart entities'.
+  $permissions['eck view visualization ve_chart entities'] = array(
+    'name' => 'eck view visualization ve_chart entities',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
   // Exported permission: 'edit any dataset content'.
   $permissions['edit any dataset content'] = array(
     'name' => 'edit any dataset content',
@@ -822,6 +948,15 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'features',
   );
 
+  // Exported permission: 'manage visualization properties'.
+  $permissions['manage visualization properties'] = array(
+    'name' => 'manage visualization properties',
+    'roles' => array(
+      'editor' => 'editor',
+    ),
+    'module' => 'eck',
+  );
+
   // Exported permission: 'notify of path changes'.
   $permissions['notify of path changes'] = array(
     'name' => 'notify of path changes',
@@ -945,6 +1080,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'use panels in place editing',
     'roles' => array(
       'administrator' => 'administrator',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'panels',
   );
@@ -959,7 +1095,9 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   // Exported permission: 'use text format html'.
   $permissions['use text format html'] = array(
     'name' => 'use text format html',
-    'roles' => array(),
+    'roles' => array(
+      'storyteller' => 'storyteller',
+    ),
     'module' => 'filter',
   );
 
