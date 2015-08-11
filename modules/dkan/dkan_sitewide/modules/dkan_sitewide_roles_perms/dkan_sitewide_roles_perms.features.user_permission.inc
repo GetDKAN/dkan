@@ -238,7 +238,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'administer group',
     'roles' => array(
       'administrator' => 'administrator',
-      'editor' => 'editor',
     ),
     'module' => 'og',
   );
@@ -304,69 +303,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   // Exported permission: 'administer pane access'.
   $permissions['administer pane access'] = array(
     'name' => 'administer pane access',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
-    'module' => 'panels',
-  );
-
-  // Exported permission: 'administer panelizer node data_dashboard content'.
-  $permissions['administer panelizer node data_dashboard content'] = array(
-    'name' => 'administer panelizer node data_dashboard content',
-    'roles' => array(
-      'editor' => 'editor',
-    ),
-    'module' => 'panelizer',
-  );
-
-  // Exported permission: 'administer panelizer node data_dashboard context'.
-  $permissions['administer panelizer node data_dashboard context'] = array(
-    'name' => 'administer panelizer node data_dashboard context',
-    'roles' => array(
-      'editor' => 'editor',
-    ),
-    'module' => 'panelizer',
-  );
-
-  // Exported permission: 'administer panelizer node data_dashboard defaults'.
-  $permissions['administer panelizer node data_dashboard defaults'] = array(
-    'name' => 'administer panelizer node data_dashboard defaults',
-    'roles' => array(
-      'editor' => 'editor',
-    ),
-    'module' => 'panelizer',
-  );
-
-  // Exported permission: 'administer panelizer node data_dashboard layout'.
-  $permissions['administer panelizer node data_dashboard layout'] = array(
-    'name' => 'administer panelizer node data_dashboard layout',
-    'roles' => array(
-      'editor' => 'editor',
-    ),
-    'module' => 'panelizer',
-  );
-
-  // Exported permission: 'administer panelizer node data_dashboard overview'.
-  $permissions['administer panelizer node data_dashboard overview'] = array(
-    'name' => 'administer panelizer node data_dashboard overview',
-    'roles' => array(
-      'editor' => 'editor',
-    ),
-    'module' => 'panelizer',
-  );
-
-  // Exported permission: 'administer panelizer node data_dashboard settings'.
-  $permissions['administer panelizer node data_dashboard settings'] = array(
-    'name' => 'administer panelizer node data_dashboard settings',
-    'roles' => array(
-      'editor' => 'editor',
-    ),
-    'module' => 'panelizer',
-  );
-
-  // Exported permission: 'administer panelizer'.
-  $permissions['administer panelizer'] = array(
-    'name' => 'administer panelizer',
     'roles' => array(
       'administrator' => 'administrator',
     ),
@@ -542,7 +478,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'change layouts in place editing',
     'roles' => array(
       'administrator' => 'administrator',
-      'editor' => 'editor',
     ),
     'module' => 'panels',
   );
@@ -737,136 +672,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'admin_menu',
   );
 
-  // Exported permission: 'eck add visualization bundles'.
-  $permissions['eck add visualization bundles'] = array(
-    'name' => 'eck add visualization bundles',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck add visualization ve_chart entities'.
-  $permissions['eck add visualization ve_chart entities'] = array(
-    'name' => 'eck add visualization ve_chart entities',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck administer visualization bundles'.
-  $permissions['eck administer visualization bundles'] = array(
-    'name' => 'eck administer visualization bundles',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck administer visualization ve_chart entities'.
-  $permissions['eck administer visualization ve_chart entities'] = array(
-    'name' => 'eck administer visualization ve_chart entities',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck delete visualization bundles'.
-  $permissions['eck delete visualization bundles'] = array(
-    'name' => 'eck delete visualization bundles',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck delete visualization ve_chart entities'.
-  $permissions['eck delete visualization ve_chart entities'] = array(
-    'name' => 'eck delete visualization ve_chart entities',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck edit visualization bundles'.
-  $permissions['eck edit visualization bundles'] = array(
-    'name' => 'eck edit visualization bundles',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck edit visualization ve_chart entities'.
-  $permissions['eck edit visualization ve_chart entities'] = array(
-    'name' => 'eck edit visualization ve_chart entities',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck list entity types'.
-  $permissions['eck list entity types'] = array(
-    'name' => 'eck list entity types',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck list visualization bundles'.
-  $permissions['eck list visualization bundles'] = array(
-    'name' => 'eck list visualization bundles',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck list visualization ve_chart entities'.
-  $permissions['eck list visualization ve_chart entities'] = array(
-    'name' => 'eck list visualization ve_chart entities',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck view visualization bundles'.
-  $permissions['eck view visualization bundles'] = array(
-    'name' => 'eck view visualization bundles',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
-  // Exported permission: 'eck view visualization ve_chart entities'.
-  $permissions['eck view visualization ve_chart entities'] = array(
-    'name' => 'eck view visualization ve_chart entities',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
   // Exported permission: 'edit any dataset content'.
   $permissions['edit any dataset content'] = array(
     'name' => 'edit any dataset content',
@@ -1017,16 +822,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'features',
   );
 
-  // Exported permission: 'manage visualization properties'.
-  $permissions['manage visualization properties'] = array(
-    'name' => 'manage visualization properties',
-    'roles' => array(
-      'editor' => 'editor',
-      'storyteller' => 'storyteller',
-    ),
-    'module' => 'eck',
-  );
-
   // Exported permission: 'notify of path changes'.
   $permissions['notify of path changes'] = array(
     'name' => 'notify of path changes',
@@ -1150,7 +945,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'use panels in place editing',
     'roles' => array(
       'administrator' => 'administrator',
-      'editor' => 'editor',
       'storyteller' => 'storyteller',
     ),
     'module' => 'panels',
