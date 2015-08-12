@@ -63,6 +63,9 @@ projects[draggableviews][version] = 2.1
 
 projects[entityreference_filter][version] = 1.5
 
+projects[eck][version] = 2.0-rc3
+projects[eck][subdir] = contrib
+
 projects[fieldable_panels_panes][version] = 1.6
 
 projects[honeypot][version] = 1.17
