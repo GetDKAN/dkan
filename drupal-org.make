@@ -29,17 +29,6 @@ projects[visualization_entity_charts][download][url] = https://github.com/NuCivi
 projects[visualization_entity_charts][download][branch] = master
 projects[visualization_entity_charts][type] = module
 
-; Includes, since we're doing non-recusive
-
-includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
-includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
-
-includes[visualization_entity] = https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
-includes[visualization_entity_charts] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
-
-; This module is part of dkan now so the internal makefile should be referenced instead of the one from the repo.
-includes[dkan_data_story_make] = https://raw.githubusercontent.com/NuCivic/dkan_data_story/master/dkan_data_story.make
-
 ; Patches to other modules
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
