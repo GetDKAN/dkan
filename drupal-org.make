@@ -26,8 +26,18 @@ projects[visualization_entity][type] = module
 
 projects[visualization_entity_charts][download][type] = git
 projects[visualization_entity_charts][download][url] = https://github.com/NuCivic/visualization_entity_charts.git
-projects[visualization_entity_charts][download][branch] = master
+projects[visualization_entity_charts][download][branch] = 783-ve-updates
 projects[visualization_entity_charts][type] = module
+
+projects[visualization_entity_maps][download][type] = git
+projects[visualization_entity_maps][download][url] = https://github.com/NuCivic/visualization_entity_maps.git
+projects[visualization_entity_maps][download][branch] = 783-ve-updates
+projects[visualization_entity_maps][type] = module
+
+projects[visualization_entity_tables][download][type] = git
+projects[visualization_entity_tables][download][url] = https://github.com/NuCivic/visualization_entity_tables.git
+projects[visualization_entity_tables][download][branch] = 783-ve-updates
+projects[visualization_entity_tables][type] = module
 
 ; Includes, since we're doing non-recusive
 
