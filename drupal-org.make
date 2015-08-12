@@ -45,7 +45,7 @@ includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dat
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 
 includes[visualization_entity] = https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
-includes[visualization_entity_charts] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
+includes[visualization_entity_charts] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/783-ve-updates/visualization_entity_charts.make
 
 ; This module is part of dkan now so the internal makefile should be referenced instead of the one from the repo.
 includes[dkan_data_story_make] = https://raw.githubusercontent.com/NuCivic/dkan_data_story/master/dkan_data_story.make
