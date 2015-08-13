@@ -25,10 +25,7 @@ before_script:
   - mkdir drupal
   - cd drupal
   - cp $TRAVIS_BUILD_DIR/drupal-org-core.make ./
-  - drush make --prepare-install drupal-org-core.make --yes
-  - cp -R $TRAVIS_BUILD_DIR profiles/
-  - cd profiles/dkan
-  - drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion
+  - drush make --prepare-install build-drupal.make --yes
   - cd $TRAVIS_BUILD_DIR/test
   - mv ../../drupal ./
   - cd drupal
