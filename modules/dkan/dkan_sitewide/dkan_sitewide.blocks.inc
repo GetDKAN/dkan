@@ -209,16 +209,18 @@ function dkan_sitewide_footer_author() {
 function dkan_sitewide_social_block() {
   $path = isset($_GET['q']) ? $_GET['q'] : '<front>';
   $link = url($path, array('absolute' => TRUE));
+  $title = drupal_get_title();
 
   $output = array(
     '#theme' => 'item_list',
     '#items' => array(
-      'googleplus' => array(
-        'data' => l('<i class="ckan-icon ckan-icon-gplus fa fa-lg fa-google-plus-square"></i> ' . t('Google+'),
-          'https://plus.google.com/share', array(
+      'twitter' => array(
+        'data' => l('<i class="ckan-icon ckan-icon-twitter fa fa-lg fa-twitter-square"></i> ' . t('Twitter'),
+          'https://twitter.com/share', array(
           'query' => array(
-            'url' => $link
-           ),
+            'url' => $link,
+            'text' => $title
+          ),
           'attributes' => array(
             'target' => '_blank',
           ),
@@ -226,11 +228,40 @@ function dkan_sitewide_social_block() {
         )),
         'class' => array('nav-item'),
       ),
-      'twitter' => array(
-        'data' => l('<i class="ckan-icon ckan-icon-twitter fa fa-lg fa-twitter-square"></i> ' . t('Twitter'),
-          'https://twitter.com/share', array(
+      'linkedin' => array(
+        'data' => l('<i class="ckan-icon ckan-icon-fb fa fa-lg fa-linkedin-square"></i> ' . t('LinkedIn'),
+          'https://www.linkedin.com/shareArticle', array(
           'query' => array(
-            'url' => $link
+            'url' => $link,
+            'title' => $title
+          ),
+          'attributes' => array(
+            'target' => '_blank',
+          ),
+          'html' => TRUE,
+        )),
+        'class' => array('nav-item'),
+      ),   
+      'reddit' => array(
+        'data' => l('<i class="ckan-icon ckan-icon-fb fa fa-lg fa-reddit-square"></i> ' . t('Reddit'),
+          'http://www.reddit.com/submit', array(
+          'query' => array(
+            'url' => $link,
+            'title' => $title
+          ),
+          'attributes' => array(
+            'target' => '_blank',
+          ),
+          'html' => TRUE,
+        )),
+        'class' => array('nav-item'),
+      ),
+      'googleplus' => array(
+        'data' => l('<i class="ckan-icon ckan-icon-gplus fa fa-lg fa-google-plus-square"></i> ' . t('Google+'),
+          'https://plus.google.com/share', array(
+          'query' => array(
+            'url' => $link,
+            'title' => $title
           ),
           'attributes' => array(
             'target' => '_blank',
