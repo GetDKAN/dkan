@@ -14,7 +14,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
   $menu_links['menu-command-center-menu_add-chart:admin/structure/entity-type/visualization/ve_chart/add'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
-    'router_path' => 'admin/structure/entity-type/visualization',
+    'router_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
     'link_title' => 'Add chart',
     'options' => array(
       'attributes' => array(
@@ -175,6 +175,27 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'weight' => -47,
     'customized' => 1,
   );
+  // Exported menu link: menu-command-center-menu_manage-content:admin/content
+  $menu_links['menu-command-center-menu_manage-content:admin/content'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/content',
+    'router_path' => 'admin/content',
+    'link_title' => 'Manage content',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_manage-content:admin/content',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -49,
+    'customized' => 1,
+    'parent_identifier' => 'menu-command-center-menu_content:admin/content',
+  );
   // Exported menu link: menu-command-center-menu_profile-settings:menutoken/5547e8fd0c1a4
   $menu_links['menu-command-center-menu_profile-settings:menutoken/5547e8fd0c1a4'] = array(
     'menu_name' => 'menu-command-center-menu',
@@ -196,7 +217,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
       'attributes' => array(
         'title' => '',
       ),
-      'alter' => TRUE,
+      'alter' => FALSE,
       'identifier' => 'menu-command-center-menu_profile-settings:menutoken/5547e8fd0c1a4',
     ),
     'module' => 'menu',
@@ -204,7 +225,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -43,
+    'weight' => -42,
     'customized' => 1,
   );
   // Exported menu link: menu-command-center-menu_profile:user
@@ -245,6 +266,26 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'has_children' => 0,
     'expanded' => 0,
     'weight' => -44,
+    'customized' => 1,
+  );
+  // Exported menu link: menu-command-center-menu_theme-preferences:admin/dkan/theme_preferences
+  $menu_links['menu-command-center-menu_theme-preferences:admin/dkan/theme_preferences'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/dkan/theme_preferences',
+    'router_path' => 'admin/dkan/theme_preferences',
+    'link_title' => 'Theme Preferences',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_theme-preferences:admin/dkan/theme_preferences',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -43,
     'customized' => 1,
   );
   // Exported menu link: menu-command-center-menu_users:admin/people
@@ -292,7 +333,7 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
   $menu_links['menu-command-center-menu_view-charts:admin/structure/entity-type/visualization/ve_chart'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/structure/entity-type/visualization/ve_chart',
-    'router_path' => 'admin/structure/entity-type/visualization',
+    'router_path' => 'admin/structure/entity-type/visualization/ve_chart',
     'link_title' => 'View charts',
     'options' => array(
       'attributes' => array(
@@ -329,27 +370,6 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
     'weight' => -47,
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
-  );
-  // Exported menu link: menu-command-center-menu_view-contents:admin/content
-  $menu_links['menu-command-center-menu_view-contents:admin/content'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/content',
-    'router_path' => 'admin/content',
-    'link_title' => 'Manage content',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'menu-command-center-menu_view-contents:admin/content',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -49,
-    'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_content:admin/content',
   );
   // Exported menu link: menu-command-center-menu_view-datasets:dataset
   $menu_links['menu-command-center-menu_view-datasets:dataset'] = array(
@@ -424,14 +444,15 @@ function dkan_sitewide_profile_page_menu_default_menu_links() {
   t('Content');
   t('Datasets');
   t('Groups');
+  t('Manage content');
   t('Profile');
   t('Profile Settings');
   t('Site Preferences');
+  t('Theme Preferences');
   t('Users');
   t('View all');
   t('View charts');
   t('View choropleth');
-  t('View contents');
   t('View datasets');
   t('View groups');
   t('Visualizations');
