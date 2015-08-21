@@ -66,7 +66,7 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['fields']['body_summary']['alter']['trim'] = TRUE;
   $handler->display->display_options['fields']['body_summary']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['body_summary']['link_to_entity'] = 0;
-  /* Sort criterion: Indexed Node: Date changed */
+  /* Sort criterion: Broken/missing handler */
   $handler->display->display_options['sorts']['changed']['id'] = 'changed';
   $handler->display->display_options['sorts']['changed']['table'] = 'search_api_index_datasets';
   $handler->display->display_options['sorts']['changed']['field'] = 'changed';

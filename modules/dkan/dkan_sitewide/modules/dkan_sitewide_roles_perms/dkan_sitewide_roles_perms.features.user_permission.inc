@@ -16,6 +16,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'admin_menu',
   );
@@ -26,6 +27,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'system',
   );
@@ -54,6 +56,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'node',
   );
@@ -300,13 +303,13 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'panels',
   );
 
-   // Exported permission: 'administer panelizer'.
+  // Exported permission: 'administer panelizer'.
   $permissions['administer panelizer'] = array(
     'name' => 'administer panelizer',
     'roles' => array(
       'administrator' => 'administrator',
     ),
-    'module' => 'panels',
+    'module' => 'panelizer',
   );
 
   // Exported permission: 'administer panels layouts'.
@@ -945,6 +948,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'use panels in place editing',
     'roles' => array(
       'administrator' => 'administrator',
+      'storyteller' => 'storyteller',
     ),
     'module' => 'panels',
   );
@@ -959,7 +963,9 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   // Exported permission: 'use text format html'.
   $permissions['use text format html'] = array(
     'name' => 'use text format html',
-    'roles' => array(),
+    'roles' => array(
+      'storyteller' => 'storyteller',
+    ),
     'module' => 'filter',
   );
 
