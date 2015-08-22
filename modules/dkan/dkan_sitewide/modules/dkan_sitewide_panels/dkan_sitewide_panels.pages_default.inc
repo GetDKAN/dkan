@@ -409,7 +409,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $handler->handler = 'panel_context';
   $handler->weight = 1;
   $handler->conf = array(
-    'title' => 'Resource or Page',
+    'title' => 'Page',
     'no_blocks' => 0,
     'pipeline' => 'standard',
     'body_classes_to_remove' => '',
@@ -424,7 +424,6 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
           'name' => 'node_type',
           'settings' => array(
             'type' => array(
-              'resource' => 'resource',
               'page' => 'page',
             ),
           ),
