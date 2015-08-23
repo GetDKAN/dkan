@@ -59,7 +59,7 @@ Feature: Datasets
       And I check "field_upload[und][0][view][grid]"
       And I press "edit-submit"
       Then I should see "Test Dataset"
-    When I click on "Test Resource Upload"
+    When I click "Test Resource Upload"
       And I wait for "5" seconds
     Then I should see "Test Resource Upload has been created"
       And I should see "Glendale Elementary School"
