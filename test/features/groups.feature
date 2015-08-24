@@ -64,7 +64,7 @@ Feature: Groups
       And I press "edit-submit--2"
     Then I should see "Are you sure you want to perform Remove from group on the selected items?"
     When I press "edit-submit"
-      And I wait for "1" seconds
+      And I wait for "3" seconds
     Then I should see "Performed Remove from group"
     Given I am logged in as a user with the "authenticated user" role
       And I am on "/node/add/group"
