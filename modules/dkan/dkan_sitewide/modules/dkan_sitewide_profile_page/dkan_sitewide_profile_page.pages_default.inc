@@ -28,6 +28,22 @@ function dkan_sitewide_profile_page_default_page_manager_handlers() {
     'css' => '',
     'contexts' => array(),
     'relationships' => array(),
+    'access' => array(
+      'plugins' => array(
+        0 => array(
+          'name' => 'compare_users',
+          'settings' => array(
+            'equality' => '1',
+          ),
+          'context' => array(
+            0 => 'argument_entity_id:user_1',
+            1 => 'logged-in-user',
+          ),
+          'not' => FALSE,
+        ),
+      ),
+      'logic' => 'and',
+    ),
   );
   $display = new panels_display();
   $display->layout = 'radix_bryant';
