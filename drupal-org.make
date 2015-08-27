@@ -117,6 +117,7 @@ projects[r4032login][version] = 1.7
 projects[rules][version] = 2.3
 
 projects[restws][version] = 2.3
+projects[restws][patch][2484829] = https://www.drupal.org/files/issues/restws-fix-format-extension-2484829-53.patch
 
 projects[schema][version] = 1.2
 
