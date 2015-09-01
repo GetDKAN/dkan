@@ -1,0 +1,72 @@
+.vbo-fieldset-select-all {
+  display: inline;
+  margin-left: 10px;
+}
+
+#edit-actionviews-workflow-list-set-moderation-state-action-draft,
+#edit-actionviews-workflow-list-set-moderation-state-action-needs-review,
+#edit-actionviews-workflow-list-set-moderation-state-action-published {
+  margin-right: 10px;
+}
+
+.vbo-fieldset-select-all .form-type-checkbox input{
+  margin: 0;
+  margin-right: 4px;
+}
+
+.views-workflow-list-item .form-type-checkbox {
+  display: inline;
+}
+
+.views-workflow-list-item .form-type-checkbox label {
+  vertical-align: middle;
+}
+
+.views-workflow-list-item .item-content {
+  margin-bottom: 10px;
+}
+
+.views-workflow-list-item .item-content .views-workflow-list-title {
+  display: inline-block;
+  width: 30%;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.views-workflow-list-item .item-content .views-workflow-list-revision-user {
+  display: inline-block;
+  width: 15%;
+  text-align: center;
+}
+
+.views-workflow-list-item .item-content .views-workflow-list-revision-timestamp {
+  display: inline-block;
+  width: 15%;
+  text-align: left;
+}
+
+.views-workflow-list-item .item-content .views-workflow-list-moderation-link a {
+  margin-left: 10px;
+}
+
+ul.views-workflow-list {
+  list-style: none;
+}
+
+ul.views-workflow-list-item {
+  list-style: none;
+  margin: 0 0 1em 0;
+}
+
+il.views-workflow-list {
+  list-style: none;
+  margin: 0 0 1em 0;
+}
+
+.item-disabled .views-workflow-list-title,
+.item-disabled .views-workflow-list-title a,
+.item-disabled .views-workflow-list-revision-timestamp,
+.item-disabled .views-workflow-list-revision-user,
+.item-disabled .views-workflow-list-revision-user a {
+  color: #80808B;
+}

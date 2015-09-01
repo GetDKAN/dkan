@@ -1,0 +1,51 @@
+<?php
+/**
+ * @file
+ * Code for the NuCivic workflow feature.
+ */
+
+include_once 'dkan_workflow.features.inc';
+
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_workflow_menu_alter(&$items) {
+  // Hide the default workbench_content screen because it duplicates functionality
+  $items['admin/workbench']['page callback'] = 'workbench_create';
+  $items['admin/workbench/content']['page callback'] = 'workbench_create';
+  unset($items['admin/workbench/create']);
+}
+
+/**
+ * Implements hook_permission().
+ */
+function dkan_workflow_permission() {
+  return array(
+    'access unpublished data' => array(
+      'title' => t('Access Unpublished Data'),
+      'description' => t('Grant access to unpublished data page.'),
+    ),
+    'access stale reviews page' => array(
+      'title' => t('Access Stale Reviews Page'),
+      'description' => t('Grant access to stale reviews page.'),
+    ),
+    'access stale drafts page' => array(
+      'title' => t('Access Stale Drafts Page'),
+      'description' => t('Grant access to stale drafts page.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_css_alter().
+ */
+function dkan_workflow_css_alter(&$css) {
+  // Do not make assemptions about link_badges module localtion.
+  foreach ($css as $css_key => $css_value) {
+    if (preg_match('#/link_badges/link_badges.css$#', $css_key)) {
+      $css[$css_key]['data'] = drupal_get_path('module', 'dkan_workflow') . '/css/link_badges_custom.css';
+      // Only change the first (and most likely unique) occurrence.
+      break;
+    }
+  }
+}

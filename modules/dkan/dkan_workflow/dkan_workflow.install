@@ -1,0 +1,33 @@
+<?php
+/**
+ * @file
+ * Installation procedures for dkan_workflow
+ */
+
+/**
+ * Implements hook_install()
+ */
+function dkan_workflow_install() {
+  $item = array(
+    'link_path' => 'admin/workbench',
+    'link_title' => 'My Workbench',
+    'menu_name' => 'main-menu',
+    'weight' => -50,
+    'expanded' => 0,
+  );
+
+  $item_id = menu_link_save($item);
+
+}
+
+/**
+ * Implements hook_enable().
+ */
+function dkan_workflow_enable() {
+ // Ensure dataset and resource have "moderation" states.
+
+  $states = array('published', 'moderation', 'revision');
+  foreach (array('dataset', 'resource') as $type) {
+    variable_set('node_options_' . $type, $states);
+  }
+}

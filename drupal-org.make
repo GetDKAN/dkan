@@ -40,6 +40,9 @@ includes[visualization_entity_charts_make] = https://raw.githubusercontent.com/N
 ; This module is part of dkan now so the internal makefile should be referenced instead of the one from the repo.
 includes[dkan_data_story_make] = https://raw.githubusercontent.com/NuCivic/dkan_data_story/master/dkan_data_story.make
 
+; DKAN Workflow
+includes[dkan_workflow] = modules/dkan/dkan_workflow/dkan_workflow.make
+
 ; Patches to other modules
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
