@@ -1,0 +1,46 @@
+/* Custom link badges style*/
+
+.link-badge {
+  background: #005489;
+  color: #fff;
+  font-weight: bold;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  padding: 4px 6px 4px 6px;
+  font-size: 80%;
+  line-height: 1.0em;
+  margin-top: -0.75em;
+  font-family: "Lucida Grande","Lucida Sans Unicode", sans-serif;
+  border: 1px solid #005489;
+}
+.link-badge-badge-wrapper {
+  position: relative;
+  right: 1px;
+  top: -12px;
+  margin-right: -20px;
+  margin-bottom: -8px;
+  display: inline-block;
+}
+body .tabs ul.primary,
+ul.action-links li {
+  margin-top: -9px;
+  padding-top: 9px;
+}
+.link-badge {
+  display: inline-block;
+  margin-top: -10px;
+}
+@-moz-document url-prefix() {
+  .link-badge {
+    font-size: 85%;
+    padding: 4px 6px 4px 6px;
+  }
+}
+.page-admin-workbench .nav-pills > li + li {
+    margin-left: 5px;
+}
+.page-admin-workbench  li.active .link-badge {
+   background: #fff;
+   color: #005489;
+}

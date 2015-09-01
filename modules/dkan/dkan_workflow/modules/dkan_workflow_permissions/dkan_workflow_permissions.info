@@ -1,0 +1,16 @@
+name = Dkan Workflow Permissions
+description = Dkan Workflow Roles and Permissions
+core = 7.x
+package = DKAN Workflow
+dependencies[] = features
+dependencies[] = features_roles_permissions
+dependencies[] = role_export
+features[features_api][] = api:2
+features[roles_permissions][] = Workflow Approver
+features[roles_permissions][] = Workflow Creator
+features[roles_permissions][] = Workflow Supervisor
+features[user_role][] = Workflow Approver
+features[user_role][] = Workflow Creator
+features[user_role][] = Workflow Supervisor
+features_exclude[dependencies][role_export] = role_export
+project path = profiles/dkan/modules/dkan/dkan_workflow/modules
