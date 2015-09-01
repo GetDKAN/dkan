@@ -50,6 +50,9 @@ function dkan_workflow_permissions_default_roles_permissions() {
     'weight' => 9,
     'machine_name' => 'workflow_supervisor',
     'permissions' => array(
+      'access stale drafts page' => TRUE,
+      'access stale reviews page' => TRUE,
+      'access unpublished data' => TRUE,
       'access workbench' => TRUE,
       'administer workbench' => TRUE,
       'administer workbench emails' => TRUE,
