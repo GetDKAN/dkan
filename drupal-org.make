@@ -63,6 +63,10 @@ projects[draggableviews][version] = 2.1
 
 projects[entityreference_filter][version] = 1.5
 
+;; Required by dkan_permissions.
+projects[features_roles_permissions][version] = 1.2
+projects[features_roles_permissions][subdir] = contrib
+
 projects[fieldable_panels_panes][version] = 1.6
 
 projects[honeypot][version] = 1.17
