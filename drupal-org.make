@@ -17,6 +17,14 @@ projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datastore.git
 projects[dkan_datastore][download][branch] = 7.x-1.x
 
+; dkan_workflow not (yet?) in DO. Specify project type.
+projects[dkan_workflow][type] = module
+projects[dkan_workflow][subdir] = dkan
+projects[dkan_workflow][download][type] = git
+projects[dkan_workflow][download][url] = https://github.com/NuCivic/dkan_workflow.git
+projects[dkan_workflow][download][branch] = 7.x-1.x
+includes[dkan_workflow_make] = https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make
+
 ; NuCivic Visualization tools
 
 projects[visualization_entity][download][type] = git
