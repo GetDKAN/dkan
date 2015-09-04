@@ -50,6 +50,7 @@ before_script:
 
 script:
   - bash features-tests.sh $TRAVIS_BUILD_DIR
+  - bin/behat drupal/profiles/dkan/modules/dkan/dkan_dataset/modules/dkan_dataset_rest_api/tests/features/dkan_dataset_rest_api.feature
   - bin/behat features/panels.feature
   - bin/behat features/groups.feature
   - bin/behat features/dataset.feature
