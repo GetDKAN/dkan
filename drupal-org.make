@@ -6,11 +6,10 @@ defaults[projects][subdir] = contrib
 
 ; DKAN core modules
 
-;Moved featured groups view
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
-projects[dkan_dataset][download][branch] = 7.x-1.x
+projects[dkan_dataset][download][branch] = 310_dataset_rest_api
 
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
