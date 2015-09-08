@@ -147,6 +147,7 @@ projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_vie
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
+; edit to reboot qa site
 projects[nuboot_radix][download][branch] = 681-remove-table-margin
 projects[nuboot_radix][type] = theme
 
