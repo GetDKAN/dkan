@@ -33,6 +33,7 @@ features[path_breadcrumbs][] = dataset_clone
 features[path_breadcrumbs][] = group
 features[path_breadcrumbs][] = node_add
 features[path_breadcrumbs][] = node_edit
+features[path_breadcrumbs][] = other_content_types
 features[variable][] = path_breadcrumbs_cache_enabled
 features[variable][] = path_breadcrumbs_cache_lifetime
 features[variable][] = path_breadcrumbs_decode_entities

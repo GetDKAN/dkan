@@ -202,5 +202,49 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   $path_breadcrumb->weight = 0;
   $export['node_edit'] = $path_breadcrumb;
 
+  $path_breadcrumb = new stdClass();
+  $path_breadcrumb->api_version = 1;
+  $path_breadcrumb->machine_name = 'other_content_types';
+  $path_breadcrumb->name = 'other content types';
+  $path_breadcrumb->path = 'node/%node';
+  $path_breadcrumb->data = array(
+    'titles' => array(
+      0 => '%node:title',
+    ),
+    'paths' => array(
+      0 => '<none>',
+    ),
+    'home' => 0,
+    'translatable' => 0,
+    'arguments' => array(
+      'node' => array(
+        'position' => 1,
+        'argument' => 'entity_id:node',
+        'settings' => array(
+          'identifier' => 'Node: ID',
+        ),
+      ),
+    ),
+    'access' => array(
+      'plugins' => array(
+        0 => array(
+          'name' => 'node_type',
+          'settings' => array(
+            'type' => array(
+              'dataset' => 'dataset',
+              'resource' => 'resource',
+              'group' => 'group',
+            ),
+          ),
+          'context' => 'node',
+          'not' => TRUE,
+        ),
+      ),
+      'logic' => 'and',
+    ),
+  );
+  $path_breadcrumb->weight = 0;
+  $export['other_content_types'] = $path_breadcrumb;
+
   return $export;
 }
