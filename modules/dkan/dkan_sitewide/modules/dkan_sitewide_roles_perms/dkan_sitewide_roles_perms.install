@@ -8,8 +8,7 @@
  * Implements hook_install().
  */
 function dkan_sitewide_roles_perms_install() {
-  $role = user_role_load_by_name('administrator');
-  variable_set('user_admin_role', $role->rid);
+  dkan_sitewide_roles_perms_set_admin_role();
 }
 
 /**
@@ -17,16 +16,5 @@ function dkan_sitewide_roles_perms_install() {
  * role is set will get all permissions.
  */
 function dkan_sitewide_roles_perms_update_7109() {
-  if (!variable_get('user_admin_role')) {
-    if ($role = user_role_load_by_name('administrator')) {
-      variable_set('user_admin_role', $role->rid);
-      return t('User admin role reset to "administrator."');
-    }
-    else {
-      return t('Administrator role not found. Skipping update.');
-    }
-  }
-  else {
-    return t('User admin role already set. Skipping update.');
-  }
+  dkan_sitewide_roles_perms_set_admin_role();
 }
