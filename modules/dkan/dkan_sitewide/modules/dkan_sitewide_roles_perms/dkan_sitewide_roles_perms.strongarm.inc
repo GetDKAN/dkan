@@ -37,14 +37,7 @@ function dkan_sitewide_roles_perms_strongarm() {
   $strongarm->name = 'gravatar_url';
   $strongarm->value = 'http://www.gravatar.com/avatar/';
   $export['gravatar_url'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'user_admin_role';
-  $strongarm->value = '4';
-  $export['user_admin_role'] = $strongarm;
-
+  
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
