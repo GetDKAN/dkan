@@ -53,6 +53,7 @@ Feature: Data Dashboard
       And I click "Customize this page"
       And I click "Add new pane"
       And I click "View panes" in the "modal" region
+      And I wait for "3" seconds
       And I add a Dataset Filtered List
       And I wait for "2" seconds
       And I check "override-title-checkbox"
