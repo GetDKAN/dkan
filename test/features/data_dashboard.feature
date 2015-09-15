@@ -47,7 +47,7 @@ Feature: Data Dashboard
     When I am on "admin/dkan/data-dashboards"
     Then I should not see the text "Dashboard 01" in the "dashboards" region
 
-  @javascript
+  @api @javascript
   Scenario: Dashboards have Panels IPE available
     Given I am on "/afghan-dashboard"
     And I click "Customize this page"
