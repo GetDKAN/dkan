@@ -12,6 +12,9 @@ function dkan_install_tasks() {
   $tasks['dkan_additional_setup'] = array(
     'display_name' => 'Cleanup',
   );
+  $tasks['dkan_sitewide_roles_perms_set_admin_role'] = array(
+    'display_name' => 'Set admin role',
+  );
   return $tasks;
 }
 

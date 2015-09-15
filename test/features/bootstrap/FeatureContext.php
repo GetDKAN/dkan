@@ -447,4 +447,27 @@ class FeatureContext extends DrupalContext
       }
     }
   }
+
+  /**
+   * @Then /^the administrator role should have all permissions$/
+   */
+  public function theAdministratorRoleShouldHaveAllPermissions() {
+    // Get list of all permissions
+    $permissions = array();
+    foreach (module_list(FALSE, FALSE, TRUE) as $module) {
+      // Drupal 7
+      if (module_invoke($module, 'permission')) {
+        $permissions = array_merge($permissions, array_keys(module_invoke($module, 'permission')));
+      }
+    }
+    $administrator_role = user_role_load_by_name('administrator');
+    $administrator_perms = db_query("SELECT permission FROM {role_permission} WHERE rid = :admin_rid", array(':admin_rid' => $administrator_role->rid))
+        ->fetchCol();
+    foreach($permissions as $perm) {
+      if (!in_array($perm, $administrator_perms)) {
+        echo $perm;
+        throw new Exception(sprintf("Administrator role missing permission %s", $perm));
+      }
+    }
+  }
 }

@@ -48,18 +48,8 @@ Feature: Data Dashboard
     Then I should not see the text "Dashboard 01" in the "dashboards" region
 
   @api @javascript
-  Scenario: Create a dashboard with a set of filtered views
+  Scenario: Dashboards have Panels IPE available
     Given I am on "/afghan-dashboard"
-      And I click "Customize this page"
-      And I click "Add new pane"
-      And I click "View panes" in the "modal" region
-      And I add a Dataset Filtered List
-      And I wait for "2" seconds
-      And I check "override-title-checkbox"
-      And I fill in "override-title-textfield" with "Afghan Datasets"
-      And I select "country-afghanistan" from "edit-exposed-field-tags-tid"
-    When I press "Finish"
-      And I wait for "10" seconds
-      And I press "Save as custom"
-    Then I should see "Afghan Datasets"
-      And I should see "Afghanistan Election Districts"
+    And I click "Customize this page"
+    Then I should see "Add new pane"
+
