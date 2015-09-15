@@ -7,7 +7,11 @@
 
  /**
   * Enable field_reference_delete.
+  * Enables breadcrumbs module on updates.
   */ 
 function dkan_sitewide_update_7001(){
   module_enable(array('field_reference_delete'));
+  if (!module_enabled('dkan_sitewide_breadcrumbs')) {
+    module_enable('dkan_sitewide_breadcrumbs');
+  }
 }
