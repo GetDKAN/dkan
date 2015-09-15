@@ -150,9 +150,8 @@ projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.
 projects[nuboot_radix][download][branch] = 7.x-1.x
 projects[nuboot_radix][type] = theme
 
-; Need to bring in fix from https://www.drupal.org/node/2473455; remove once next radix release is out
 projects[radix][type] = theme
-projects[radix][download][revision] = "f26d28784bd123c55d04e91b636d02e802bbdee9"
+projects[radix][version] = 3.0-rc4
 
 ; Libraries
 libraries[font_awesome][type] = libraries
