@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_sitewide_panels.path_breadcrumbs.inc
+ * dkan_sitewide_breadcrumbs.path_breadcrumbs.inc
  */
 
 /**
  * Implements hook_path_breadcrumbs_settings_info().
  */
-function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
+function dkan_sitewide_breadcrumbs_path_breadcrumbs_settings_info() {
   $export = array();
 
   $path_breadcrumb = new stdClass();
@@ -102,6 +102,26 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
 
   $path_breadcrumb = new stdClass();
   $path_breadcrumb->api_version = 1;
+  $path_breadcrumb->machine_name = 'dataset_search_path';
+  $path_breadcrumb->name = 'Dataset search path';
+  $path_breadcrumb->path = 'dataset';
+  $path_breadcrumb->data = array(
+    'titles' => array(
+      0 => 'Datasets',
+    ),
+    'paths' => array(
+      0 => '<none>',
+    ),
+    'home' => 0,
+    'translatable' => 0,
+    'arguments' => array(),
+    'access' => array(),
+  );
+  $path_breadcrumb->weight = 0;
+  $export['dataset_search_path'] = $path_breadcrumb;
+
+  $path_breadcrumb = new stdClass();
+  $path_breadcrumb->api_version = 1;
   $path_breadcrumb->machine_name = 'group';
   $path_breadcrumb->name = 'group';
   $path_breadcrumb->path = 'node/%node';
@@ -143,6 +163,49 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   );
   $path_breadcrumb->weight = 0;
   $export['group'] = $path_breadcrumb;
+
+  $path_breadcrumb = new stdClass();
+  $path_breadcrumb->api_version = 1;
+  $path_breadcrumb->machine_name = 'node';
+  $path_breadcrumb->name = 'node';
+  $path_breadcrumb->path = 'node/%node';
+  $path_breadcrumb->data = array(
+    'titles' => array(
+      0 => '%node:title',
+    ),
+    'paths' => array(
+      0 => '<none>',
+    ),
+    'home' => 0,
+    'translatable' => 0,
+    'arguments' => array(
+      'node' => array(
+        'position' => 1,
+        'argument' => 'entity_id:node',
+        'settings' => array(
+          'identifier' => 'Node: ID',
+        ),
+      ),
+    ),
+    'access' => array(
+      'plugins' => array(
+        0 => array(
+          'name' => 'node_type',
+          'settings' => array(
+            'type' => array(
+              'dataset' => 'dataset',
+              'resource' => 'resource',
+            ),
+          ),
+          'context' => 'node',
+          'not' => TRUE,
+        ),
+      ),
+      'logic' => 'and',
+    ),
+  );
+  $path_breadcrumb->weight = 0;
+  $export['node'] = $path_breadcrumb;
 
   $path_breadcrumb = new stdClass();
   $path_breadcrumb->api_version = 1;
@@ -204,15 +267,17 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
 
   $path_breadcrumb = new stdClass();
   $path_breadcrumb->api_version = 1;
-  $path_breadcrumb->machine_name = 'other_content_types';
-  $path_breadcrumb->name = 'other content types';
+  $path_breadcrumb->machine_name = 'stories';
+  $path_breadcrumb->name = 'Stories';
   $path_breadcrumb->path = 'node/%node';
   $path_breadcrumb->data = array(
     'titles' => array(
-      0 => '%node:title',
+      0 => 'Stories',
+      1 => '%node:title',
     ),
     'paths' => array(
-      0 => '<none>',
+      0 => 'stories',
+      1 => '<none>',
     ),
     'home' => 0,
     'translatable' => 0,
@@ -231,20 +296,18 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
           'name' => 'node_type',
           'settings' => array(
             'type' => array(
-              'dataset' => 'dataset',
-              'resource' => 'resource',
-              'group' => 'group',
+              'dkan_data_story' => 'dkan_data_story',
             ),
           ),
           'context' => 'node',
-          'not' => TRUE,
+          'not' => FALSE,
         ),
       ),
       'logic' => 'and',
     ),
   );
   $path_breadcrumb->weight = 0;
-  $export['other_content_types'] = $path_breadcrumb;
+  $export['stories'] = $path_breadcrumb;
 
   return $export;
 }
