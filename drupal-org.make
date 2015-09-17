@@ -63,7 +63,7 @@ projects[draggableviews][version] = 2.1
 
 projects[entityreference_filter][version] = 1.5
 
-projects[fieldable_panels_panes][version] = 1.6
+projects[fieldable_panels_panes][version] = 1.7
 
 projects[honeypot][version] = 1.17
 
