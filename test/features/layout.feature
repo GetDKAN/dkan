@@ -21,7 +21,6 @@ Scenario: Breadcrumb navigation
     When I am on "dataset"
     Then I should see "Home" in the "ul.breadcrumb li:nth-child(1)" element
     And I should see "Datasets" in the "ul.breadcrumb li:nth-child(2)" element
-    And I should see "Search" in the "ul.breadcrumb li:nth-child(3)" element
     When I am on "stories"
     Then I should see "Home" in the "ul.breadcrumb li:nth-child(1)" element
     And I should see "Stories" in the "ul.breadcrumb li:nth-child(2)" element
