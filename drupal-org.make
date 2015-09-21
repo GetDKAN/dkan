@@ -100,7 +100,7 @@ projects[panopoly_widgets][patch][1] = patches/panopoly_widgets_overrides.patch
 projects[panopoly_widgets][patch][2] = patches/panopoly_widgets_add_jquery_ui_tabs.patch
 
 
-projects[panopoly_images][version] = 1.21
+projects[panopoly_images][version] = 1.27
 includes[panopoly_images_make] = http://cgit.drupalcode.org/panopoly_images/plain/panopoly_images.make
 
 projects[panels][version] = 3.5
