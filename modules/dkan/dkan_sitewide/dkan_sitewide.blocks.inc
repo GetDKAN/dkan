@@ -136,7 +136,7 @@ function dkan_sitewide_data_extent_block() {
        $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
        $output = "var dataExtent = " . $geojson;
        $output .= "; var map = L.map('map');
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        L.tileLayer(location.protocol + '//{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a>'
         }).addTo(map);
 
