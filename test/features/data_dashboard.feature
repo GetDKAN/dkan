@@ -1,10 +1,16 @@
 Feature: Data Dashboard
 
-  Background:
-    Given Data Dashboard:
+   Background:
+     Given Data Dashboard:
       | title        |
       | Dashboard 01 |
       | Dashboard 02 |
+      | title            |
+      | Dashboard 01     |
+      | Dashboard 02     |
+      | Afghan Dashboard |
+    And I am logged in as a user with the "administrator" role
+
 
   @api
   Scenario: See the list of data dashboards
@@ -14,7 +20,6 @@ Feature: Data Dashboard
 
   @api
   Scenario: Creation of data dashboard
-    Given I am logged in as a user with the "administrator" role
     And I am on "admin/dkan/data-dashboards"
     And I click "Create Dashboard"
     Then I should see "Create Data Dashboard"
@@ -26,7 +31,6 @@ Feature: Data Dashboard
 
   @api
   Scenario: Edition of data dashboard
-    Given I am logged in as a user with the "administrator" role
     And I am on "/dashboard-01"
     When I click "Edit"
     And I fill in "title" with "Edited Dashboard"
@@ -38,7 +42,6 @@ Feature: Data Dashboard
 
   @api
   Scenario: Deletion of data dashboard
-    Given I am logged in as a user with the "administrator" role
     And I am on "/dashboard-01"
     When I click "Edit"
     And I press "Delete"

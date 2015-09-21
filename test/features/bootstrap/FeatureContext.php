@@ -132,6 +132,9 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
 
     );
+    if(!isset($title)){
+      throw new Exception(sprintf('"' . $value . '" option was not found in the chosen field.'));
+    }
     $title->click();
   }
 
@@ -148,15 +151,17 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       'xpath',
       $session->getSelectorsHandler()->selectorToXpath('xpath', '//span[.="' . $field . '"]')
 
-    );
+      );
     $field_click->click();
     $this->iWaitForSeconds(1);
     // Click value that now appears.
     $title = $session->getPage()->find(
       'xpath',
       $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
-
-    );
+      );
+    if(!isset($title)){
+      throw new Exception(sprintf('"' . $value . '" option was not found in the chosen field.'));
+    }
     $title->click();
   }
 
@@ -395,4 +400,27 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   {
     return str_replace('\\"', '"', $argument);
   }
-}
+
+    /**
+   * @Then /^the administrator role should have all permissions$/
+   */
+    public function theAdministratorRoleShouldHaveAllPermissions() {
+    // Get list of all permissions
+      $permissions = array();
+      foreach (module_list(FALSE, FALSE, TRUE) as $module) {
+      // Drupal 7
+        if (module_invoke($module, 'permission')) {
+          $permissions = array_merge($permissions, array_keys(module_invoke($module, 'permission')));
+        }
+      }
+      $administrator_role = user_role_load_by_name('administrator');
+      $administrator_perms = db_query("SELECT permission FROM {role_permission} WHERE rid = :admin_rid", array(':admin_rid' => $administrator_role->rid))
+      ->fetchCol();
+      foreach($permissions as $perm) {
+        if (!in_array($perm, $administrator_perms)) {
+          echo $perm;
+          throw new Exception(sprintf("Administrator role missing permission %s", $perm));
+        }
+      }
+    }
+  }
