@@ -10,17 +10,20 @@ default:
   gherkin:
     filters:
       tags: ~@fixme
-  formatters:
-    pretty: true
   extensions:
     Behat\MinkExtension:
-      selenium2: ~
       goutte: ~
+      selenium2: ~
+      base_url: http://127.0.0.1:8888
+      default_session: 'goutte'
+      javascript_session: 'selenium2'
+      files_path: "files"
     Drupal\DrupalExtension:
+      blackbox: ~
       drupal:
         drupal_root: 'drupal'
       drush:
-        root: "drupal"
+        root: 'drupal'
       api_driver: 'drupal'
       # @todo fixup these regions for use with new theme. Updated navigation only
       region_map:
@@ -47,14 +50,14 @@ default:
         error_message_selector: '.alert.alert-error'
         success_message_selector: '.alert.alert-success'
 
-local-vm:
-  extensions:
-    Behat\MinkExtension:
-      base_url: http://dkan_test.localhost
-      selenium2:
-        wd_host: http://127.0.0.1:4444/wd/hub
-
-jenkins:
+local:
   extensions:
     Behat\MinkExtension:
       base_url: http://dkan.local
+      selenium2:
+        wd_host: http://127.0.0.1:4444/wd/hub
+    Drupal\DrupalExtension:
+      drupal:
+        drupal_root: '/var/www/dkan/webroot'
+      drush:
+        root: '/var/www/dkan/webroot'
