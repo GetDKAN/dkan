@@ -1,16 +1,12 @@
 Feature: Data Dashboard
 
-   Background:
-     Given Data Dashboard:
+  Background:
+    Given Data Dashboard:
       | title        |
       | Dashboard 01 |
       | Dashboard 02 |
-      | title            |
-      | Dashboard 01     |
-      | Dashboard 02     |
       | Afghan Dashboard |
     And I am logged in as a user with the "administrator" role
-
 
   @api
   Scenario: See the list of data dashboards
@@ -54,6 +50,8 @@ Feature: Data Dashboard
   @api @javascript
   Scenario: Dashboards have Panels IPE available
     Given I am on "/afghan-dashboard"
+    And I wait for "2" seconds
     And I click "Customize this page"
+    And I wait for "2" seconds
     Then I should see "Add new pane"
 
