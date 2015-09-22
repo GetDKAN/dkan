@@ -21,10 +21,10 @@ Feature: Datastore
     When I click "Delete items"
       Then I should see "DKAN Datastore File: Status"
     When I press "Delete"
-      And I wait for "3" seconds
+      And I wait for "2" seconds
       Then I should see "399 items have been deleted."
     When I click "Manage Datastore"
-      And I wait for "1" seconds
+      And I wait for "2" seconds
       And I click "Drop Datastore"
       And I press "Drop"
       Then I should see "Datastore dropped!"

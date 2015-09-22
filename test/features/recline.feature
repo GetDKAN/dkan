@@ -8,14 +8,14 @@ Feature: Recline
     Given I am on "/dataset/wisconsin-polling-places"
       Then I should see "Polling places in the state of Wisconsin"
     Given I follow "Madison Polling Places"
-      And I wait for "3" seconds
+      And I wait for "2" seconds
       Then I should see "This is a list and map of polling places in Madison, WI."
       Then I should see "Original data"
       Then I should see "Polling_Places_Madison.csv"
     Given I press "Map"
       Then I should see "Latitude field"
     Given I click map icon number "48"
-      And I wait for "3" seconds
+      And I wait for "2" seconds
     Then I should see "Lowell Center"
 
   @javascript @api
@@ -34,7 +34,7 @@ Feature: Recline
     Given I click "Table of Gold Prices"
       Then I should see "748 records"
     Given I press "Graph"
-      And I wait for "3" seconds
+      And I wait for "2" seconds
       Then I should see "There's no graph here yet"
 
   @javascript
