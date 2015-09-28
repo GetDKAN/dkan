@@ -87,4 +87,4 @@ Feature: Groups
       And I should see "Add resource"
     When I fill in "title" with "Test Resource Upload"
       And I press "edit-submit"
-    Then I should see "Test Resource Upload has been created"
+    Then I should see "Test Dataset"

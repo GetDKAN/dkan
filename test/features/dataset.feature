@@ -58,6 +58,8 @@ Feature: Datasets
       And I attach the file "Polling_Places_Madison.csv" to "files[field_upload_und_0]" 
       And I check "field_upload[und][0][view][grid]"
       And I press "edit-submit"
+      Then I should see "Test Dataset"
+    When I click "Test Resource Upload"
       And I wait for "5" seconds
     Then I should see "Test Resource Upload has been created"
       And I should see "Glendale Elementary School"
