@@ -22,7 +22,7 @@ Feature: Widgets
       And I press "Save"
       Then I should see "Link example"
 
-  @api @javascript @fixme
+  @api @javascript
   Scenario: Adds "New File Widget" block to home page using panels ipe editor
     Given I am on the homepage
       And I wait for "2" seconds
@@ -124,35 +124,35 @@ Feature: Widgets
       Then I should see "05/06/15"
       Then I should see "9.3"
 
-  # @api @javascript
-  # Scenario: Adds "New Video Widget" block to home page using panels ipe editor
-  #   Given I am logged in as a user with the "administrator" role
-  #     And I am on the homepage
-  #     And I wait for "2" seconds
-  #     Then I should see "Customize this page"
-  #   When I click "Customize this page"
-  #     And I wait for "2" seconds
-  #     And I click "Add new pane"
-  #     And I wait for "2" seconds
-  #     Then I should see "Please select a category from the left"
-  #   When I click on the text " Add video"
-  #     And I wait for "2" seconds
-  #   When I fill in "Testing video" for "edit-title"
-  #   When I click "Browse"
-  #     And I wait for "2" seconds
-  #     And I switch to the frame "mediaBrowser"
-  #     And I wait for "2" seconds
-  #   Then I should see "Supported internet media providers"
-  #     And I should see "YouTube"
-  #   When I fill in "File URL or media resource" with "https://www.youtube.com/watch?v=1TV0q4Sdxlc"
-  #     And I press "Next"
-  #     And I wait for "2" seconds
-  #     And I press "Finish"
-  #     And I wait for "2" seconds
-  #     And I press "Save"
-  #   Then I should see "Testing video"
+  @api @javascript
+  Scenario: Adds "New Video Widget" block to home page using panels ipe editor
+    Given I am logged in as a user with the "administrator" role
+      And I am on the homepage
+      And I wait for "2" seconds
+      Then I should see "Customize this page"
+    When I click "Customize this page"
+      And I wait for "2" seconds
+      And I click "Add new pane"
+      And I wait for "2" seconds
+      Then I should see "Please select a category from the left"
+    When I click on the text " Add video"
+      And I wait for "2" seconds
+    When I fill in "Testing video" for "edit-title"
+    When I click "Browse"
+      And I wait for "2" seconds
+      And I switch to the frame "mediaBrowser"
+      And I wait for "2" seconds
+    Then I should see "Supported internet media providers"
+      And I should see "YouTube"
+    When I fill in "File URL or media resource" with "https://www.youtube.com/watch?v=1TV0q4Sdxlc"
+      And I press "Next"
+      And I wait for "10" seconds
+      And I press "Finish"
+      And I wait for "2" seconds
+      And I press "Save"
+    Then I should see "Testing video"
 
-  @api @javascript @fixme
+  @api @javascript
   Scenario: Adds "New Spotlight Widget" block to home page using panels ipe editor
     Given I am on the homepage
       And I wait for "2" seconds
@@ -170,6 +170,7 @@ Feature: Widgets
       And I press "Finish"
       And I wait for "2" seconds
       And I press "Save"
+      And I wait for "2" seconds
       Then I should see "First spot" in the "content"
 
   @api @javascript
@@ -228,4 +229,4 @@ Feature: Widgets
       And I wait for "2" seconds
       And I press "Save"
     Then I should see "District Names"
-      And I should see "Posted by admin"
+      And I should see "Posted by admin" 
