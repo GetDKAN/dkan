@@ -34,7 +34,7 @@ Feature: Widgets
       Then I should see "Please select a category from the left"
     When I click on the text " Add file"
       And I wait for "2" seconds
-      And I attach the file "actionplan.pdf" to "files[field_basic_file_file_und_0]"
+      And I attach the drupal file "actionplan.pdf" to "files[field_basic_file_file_und_0]"
       And I press "Finish"
       And I wait for "2" seconds
       And I press "Save"
@@ -53,7 +53,7 @@ Feature: Widgets
     When I click on the text " Add image"
       And I wait for "2" seconds
       And I fill in "field_basic_image_caption[und][0][value]" with "dkan logo image test"
-      And I attach the file "dkan_logo.png" to "files[field_basic_image_image_und_0]"
+      And I attach the drupal file "dkan_logo.png" to "files[field_basic_image_image_und_0]"
       And I press "Finish"
       And I wait for "2" seconds
       And I press "Save"
@@ -166,7 +166,7 @@ Feature: Widgets
       And I wait for "2" seconds
       And I fill in "field_basic_spotlight_items[und][0][title]" with "First spot"
       And I fill in "field_basic_spotlight_items[und][0][link]" with "http://demo.getdkan.com"
-      And I attach the file "dkan_logo.png" to "files[field_basic_spotlight_items_und_0_fid]"
+      And I attach the drupal file "dkan_logo.png" to "files[field_basic_spotlight_items_und_0_fid]"
       And I press "Finish"
       And I wait for "2" seconds
       And I press "Save"

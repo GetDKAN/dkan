@@ -17,7 +17,6 @@ default:
       base_url: http://127.0.0.1:8888
       default_session: 'goutte'
       javascript_session: 'selenium2'
-      files_path: "files"
     Drupal\DrupalExtension:
       blackbox: ~
       drupal:
