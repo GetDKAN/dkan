@@ -8,8 +8,7 @@ Feature: Panels
     When I click "Customize this page"
     And I wait for "2" seconds
       And I click "Add new pane"
-      And I wait for "2" seconds
-      Then I should see "Please select a category from the left"
+      And I wait for "Please select a category from the left"
     When I click "New custom content" in the "modal" region
       And I wait for "2" seconds
       And I fill in "edit-title" with "New Custom Item"
@@ -18,8 +17,7 @@ Feature: Panels
       And I press "Finish"
       And I wait for "2" seconds
       And I press "Save"
-      And I wait for "2" seconds
-      Then I should see "New Custom Item"
+      And I wait for "New Custom Item"
 
   @api @javascript
   Scenario: Updating front page as authenticated user

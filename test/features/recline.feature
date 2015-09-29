@@ -15,8 +15,7 @@ Feature: Recline
     Given I press "Map"
       Then I should see "Latitude field"
     Given I click map icon number "48"
-      And I wait for "2" seconds
-    Then I should see "Lowell Center"
+      And I wait for "Lowell Center"
 
   @javascript @api
   Scenario: Viewing graph preview
@@ -34,8 +33,7 @@ Feature: Recline
     Given I click "Table of Gold Prices"
       Then I should see "748 records"
     Given I press "Graph"
-      And I wait for "2" seconds
-      Then I should see "There's no graph here yet"
+      And I wait for "There's no graph here yet"
 
   @javascript
   Scenario: Searching data 
