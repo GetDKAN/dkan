@@ -7,6 +7,10 @@ default:
           - Drupal\DrupalExtension\Context\MinkContext
           - Drupal\DrupalExtension\Context\MessageContext
           - Drupal\DrupalExtension\Context\DrushContext
+          - Devinci\DevinciExtension\Context\DebugContext:
+              asset_dump_path: %paths.base%/../assets/
+          - Devinci\DevinciExtension\Context\JavascriptContext:
+              maximum_wait: 30
   gherkin:
     filters:
       tags: ~@fixme
