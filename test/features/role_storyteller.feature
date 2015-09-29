@@ -68,25 +68,32 @@ Feature: Testing storyteller role and permissions
     And I press "Save"
     Then I should see "DKAN Data Story Test Story Post has been updated"
 
-    #  @api @javascript
-    #  Scenario: Add widget to my story
-    #    Given users:
-    #      | name         | mail                  | status     | roles     |
-    #      | storyteller  | storyteller@test.com  | 1          | storyteller |
-    #    And "dkan_data_story" content:
-    #      | title                           | author      | status   |
-    #      | DKAN Data Story Test Story Post | storyteller | 0        |
-    #    And I am logged in as "storyteller"
-    #      When I am on "story/dkan-data-story-test-story-post"
-    #      And I click "Customize this page"
-    #      And I click "Add new pane"
-    #      Then I should see "Please select a category from the left"
-    #    When I click on the text " Add map"
-    #      And I fill in "field_map_address[und][0][value]" with "175th St, Jamaica, NY 11433, USA"
-    #      And I fill in "field_map_information[und][0][value]" with "map example"
-    #      And I press "Finish"
-    #      And I press "Save"
-    #      Then I should see "map example"
+@api @javascript
+Scenario: Add widget to my story
+Given users:
+| name         | mail                  | status     | roles     |
+| storyteller  | storyteller@test.com  | 1          | storyteller |
+And "dkan_data_story" content:
+| title                           | author      | status   |
+| DKAN Data Story Test Story Post | storyteller | 0        |
+And I am logged in as "storyteller"
+When I am on "story/dkan-data-story-test-story-post"
+And I wait for "2" seconds
+Then I should see "Customize this page"
+And I click "Customize this page"
+And I wait for "2" seconds
+And I click "Add new pane"
+And I wait for "2" seconds
+Then I should see "Please select a category from the left"
+When I click on the text " Add map"
+And I wait for "2" seconds
+And I fill in "field_map_address[und][0][value]" with "175th St, Jamaica, NY 11433, USA"
+And I fill in "field_map_information[und][0][value]" with "map example"
+And I press "Finish"
+And I wait for "2" seconds
+And I press "Save as custom"
+And I wait for "2" seconds
+Then I should see "map example"
 
   @api @javascript
   Scenario: Use text format filtered_html
