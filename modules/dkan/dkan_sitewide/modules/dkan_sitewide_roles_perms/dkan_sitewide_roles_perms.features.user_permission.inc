@@ -16,7 +16,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'admin_menu',
   );
@@ -27,7 +26,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'system',
   );
@@ -56,7 +54,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'node',
   );
@@ -740,7 +737,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck add visualization bundles',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -750,7 +746,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck add visualization ve_chart entities',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -760,7 +755,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck administer visualization bundles',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -770,7 +764,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck administer visualization ve_chart entities',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -780,7 +773,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck delete visualization bundles',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -790,7 +782,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck delete visualization ve_chart entities',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -800,7 +791,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck edit visualization bundles',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -810,7 +800,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck edit visualization ve_chart entities',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -820,7 +809,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck list entity types',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -830,7 +818,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck list visualization bundles',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -840,7 +827,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck list visualization ve_chart entities',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -850,7 +836,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck view visualization bundles',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -860,7 +845,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'eck view visualization ve_chart entities',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -1020,7 +1004,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'manage visualization properties',
     'roles' => array(
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'eck',
   );
@@ -1149,7 +1132,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'roles' => array(
       'administrator' => 'administrator',
       'editor' => 'editor',
-      'storyteller' => 'storyteller',
     ),
     'module' => 'panels',
   );
@@ -1164,9 +1146,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
   // Exported permission: 'use text format html'.
   $permissions['use text format html'] = array(
     'name' => 'use text format html',
-    'roles' => array(
-      'storyteller' => 'storyteller',
-    ),
+    'roles' => array(),
     'module' => 'filter',
   );
 
