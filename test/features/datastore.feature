@@ -12,8 +12,7 @@ Feature: Datastore
     When I click "Manage Datastore"
       Then I should see "DKAN Datastore File: Status"
     When I press "Import"
-      And I wait for "7" seconds
-      Then I should see "399 imported items total."
+      And I wait for "399 imported items total."
     When I click "Data API"
       Then I should see "Example Query"
     When I click "Manage Datastore"
@@ -21,10 +20,9 @@ Feature: Datastore
     When I click "Delete items"
       Then I should see "DKAN Datastore File: Status"
     When I press "Delete"
-      And I wait for "2" seconds
-      Then I should see "399 items have been deleted."
+      And I wait for "399 items have been deleted."
     When I click "Manage Datastore"
-      And I wait for "2" seconds
+      And I wait for "Drop Datastore"
       And I click "Drop Datastore"
       And I press "Drop"
       Then I should see "Datastore dropped!"

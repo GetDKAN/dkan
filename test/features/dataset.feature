@@ -19,7 +19,7 @@ Feature: Datasets
 
   Scenario: See Users datasets
 
-    @javascript
+  @javascript
   Scenario: Viewing the Dataset
     Given I am on "/dataset/wisconsin-polling-places"
     Then I should see "Polling places in the state of Wisconsin"
@@ -28,10 +28,9 @@ Feature: Datasets
     And I should see "Modified Date"
     And I should see "Identifier"
     When I click "Madison Polling Places"
-    Then I should see "This is a list and map of polling places in Madison, WI."
-    And I should see "Polling_Places_Madison.csv"
-    And I wait for "2" seconds
-    And I should see "Door Creek Church"
+    Then I wait for "This is a list and map of polling places in Madison, WI."
+    And I wait for "Polling_Places_Madison.csv"
+    And I wait for "Door Creek Church"
 
   @api @javascript
   Scenario: Create a dataset with a group as an authenticated user
@@ -59,16 +58,14 @@ Feature: Datasets
     And I attach the drupal file "Polling_Places_Madison.csv" to "files[field_upload_und_0]"
     And I check "field_upload[und][0][view][grid]"
     And I press "edit-submit"
-    And I wait for "2" seconds
-    Then I should see "Test Resource Upload has been created"
+    And I wait for "Test Resource Upload has been created"
     And I should see "Glendale Elementary School"
     When I click "Test Dataset"
     Then I should see "Test Resource"
     And I should see "Test Group"
     And I should see "Creative Commons Attribution"
     When I click "Test Resource Link File"
-    And I wait for "5" seconds
-    Then I should see "Farah"
+    And I wait for "Farah"
     When I am on "dataset/test-dataset"
     Then I should see "Edit"
     And I should see "Add Resource"

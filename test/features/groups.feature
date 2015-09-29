@@ -44,19 +44,18 @@ Feature: Groups
     When I click "Group" in the "toolbar" region
     Then I should see "Add group members."
     When I click "Add people"
-    And I wait for "2" seconds
-    Then I should see "ADD A GROUP MEMBER TO DATA EXPLORER EXAMPLES"
+    And I wait for "ADD A GROUP MEMBER TO DATA EXPLORER EXAMPLES"
     When I fill in "name" with "teo"
     And I wait for "2" seconds
     And I press "edit-submit"
-    And I wait for "2" seconds
+    And I wait for "teo has been added to the group Data Explorer Examples."
     Then I should see the success message "teo has been added to the group Data Explorer Examples."
     When I am on "/group/data-explorer-examples"
     Then I should see "Members"
     When I click "Members"
     Then I should see "teo"
     When I click "Group" in the "toolbar" region
-    And I wait for "2" seconds
+    And I wait for "People"
     And I click "People"
     Then I should see "teo"
     When I check "edit-views-bulk-operations-1"
@@ -64,7 +63,7 @@ Feature: Groups
     And I press "edit-submit--2"
     Then I should see "Are you sure you want to perform Remove from group on the selected items?"
     When I press "edit-submit"
-    And I wait for "2" seconds
+    And I wait for "Performed Remove from group"
     Then I should see the success message "Performed Remove from group"
     Given I am logged in as a user with the "authenticated user" role
     And I am on "/node/add/group"
