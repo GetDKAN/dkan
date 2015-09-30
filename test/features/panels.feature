@@ -6,7 +6,7 @@ Feature: Panels
       And I am on the homepage
       Then I should see "Customize this page"
     When I click "Customize this page"
-    And I wait for "2" seconds
+    And I wait for "Add new pane"
       And I click "Add new pane"
       And I wait for "Please select a category from the left"
     When I click "New custom content" in the "modal" region

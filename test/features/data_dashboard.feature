@@ -50,8 +50,8 @@ Feature: Data Dashboard
   @api @javascript
   Scenario: Dashboards have Panels IPE available
     Given I am on "/afghan-dashboard"
-    And I wait for "2" seconds
+    And I wait for "Customize this page"
     And I click "Customize this page"
-    And I wait for "2" seconds
+    And I wait for "Add new pane"
     Then I should see "Add new pane"
 
