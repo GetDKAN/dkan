@@ -8,10 +8,9 @@ Feature: Recline
     Given I am on "/dataset/wisconsin-polling-places"
       Then I should see "Polling places in the state of Wisconsin"
     Given I follow "Madison Polling Places"
-      And I wait for "2" seconds
-      Then I should see "This is a list and map of polling places in Madison, WI."
-      Then I should see "Original data"
-      Then I should see "Polling_Places_Madison.csv"
+      And I wait for "This is a list and map of polling places in Madison, WI."
+      Then I wait for "Original data"
+      Then I wait for "Polling_Places_Madison.csv"
     Given I press "Map"
       Then I should see "Latitude field"
     Given I click map icon number "48"

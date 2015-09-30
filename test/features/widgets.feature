@@ -89,8 +89,7 @@ Feature: Widgets
     When I click "Browse"
       And I wait for "2" seconds
       And I switch to the frame "mediaBrowser"
-      And I wait for "2" seconds
-    Then I should see "Supported internet media providers"
+    Then I wait for "Supported internet media providers"
       And I should see "YouTube"
     When I fill in "File URL or media resource" with "https://www.youtube.com/watch?v=1TV0q4Sdxlc"
       And I press "Next"
@@ -145,4 +144,4 @@ Feature: Widgets
       And I wait for "2" seconds
       And I press "Save"
     Then I should see "District Names"
-      And I should see "Posted by admin" 
+      And I should see "Posted by admin"
