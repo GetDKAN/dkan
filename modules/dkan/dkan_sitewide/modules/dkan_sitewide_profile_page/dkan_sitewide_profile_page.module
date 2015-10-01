@@ -32,9 +32,11 @@ function dkan_sitewide_profile_page_block_view($delta = '') {
       if (user_is_anonymous()) {
         return array();
       }
+      $account = _gravatar_load_account($user);
+      $path = _gravatar_get_account_user_picture($account) ? _gravatar_get_account_user_picture($account) : gravatar_get_gravatar($user->mail);
       $profile_picture = theme_image(
         array(
-          'path' => gravatar_get_gravatar($user->mail),
+          'path' => $path,
           'width' => 60,
           'height' => 60,
           'attributes' => array(),
