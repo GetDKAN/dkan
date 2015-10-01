@@ -222,3 +222,19 @@ function dkan_sitewide_preprocess_page(&$variables) {
     drupal_set_message(t('For Colorizer to work you must set the Administration theme to match your <em>Default theme</em> at the bottom of the <a href="' . $base_url . '/admin/appearance">appearance list</a> page.'), 'warning');
   }
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function dkan_sitewide_form_user_profile_form_alter(&$form, $form_state) {
+  if ($form['#user_category'] == 'account' && isset($form['picture']) && variable_get('user_pictures', 0) && ($account = $form['#user']) && user_access('use gravatar', $account)) {
+    if (isset($form['picture']['picture_current']) && module_exists('gravatar')) {
+      $form['picture']['picture_current'] = array(
+        '#markup' => theme('image_style', array('style_name' => 'medium', 'path' => _gravatar_get_account_user_picture(_gravatar_load_account($account)))),
+      );
+    }
+    if (user_access('disable own gravatar', $account)) {
+      unset($form['picture']['gravatar']['#disabled']);
+    }
+  }
+}
