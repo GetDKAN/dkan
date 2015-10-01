@@ -16,7 +16,10 @@ function dkan_sitewide_user_menu_block() {
   $output = '';
   if ($user->uid) {
     if (module_exists('gravatar')) {
-      $output = l('<img alt="my user picture" src="' . gravatar_get_gravatar($user->mail, array('size' => '25')) . '">', 'user', array('html' => TRUE));
+      $account = _gravatar_load_account($user);
+      $uri = _gravatar_get_account_user_picture($account);
+      $file = _gravatar_get_account_user_picture($account) ? file_create_url(_gravatar_get_account_user_picture($account)) . '" width="25" height="25' : gravatar_get_gravatar($user->mail, array('size' => '25'));
+      $output = l('<img alt="my user picture" src="' . $file . '">', 'user', array('html' => TRUE));
     }
     $output .= '<span class="links">' . l($user->name, 'user') . l(t('Log out'), 'user/logout', array('attributes' => array('class' => array('sub')))) . '</span>';
   }
