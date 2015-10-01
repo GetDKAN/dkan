@@ -238,3 +238,14 @@ function dkan_sitewide_form_user_profile_form_alter(&$form, $form_state) {
     }
   }
 }
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function dkan_sitewide_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'form_alter' && isset($implementations['dkan_sitewide'])) {
+    $group = $implementations['dkan_sitewide'];
+    unset($implementations['dkan_sitewide']);
+    $implementations['dkan_sitewide'] = $group;
+  }
+}
