@@ -170,6 +170,7 @@ function dkan_misc_variables_set(&$context) {
       'feeds_log' => TRUE,
       'groups_page' => TRUE,
       'og_extras_groups' => TRUE,
+      'og_extras_members' => TRUE,
       'dataset' => TRUE,
   );
   variable_set('views_defaults', $views_disable);
