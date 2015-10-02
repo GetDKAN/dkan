@@ -1,19 +1,34 @@
 default:
+  suites:
+     default:
+        contexts:
+          - FeatureContext
+          - Drupal\DrupalExtension\Context\DrupalContext
+          - Drupal\DrupalExtension\Context\MinkContext
+          - Drupal\DrupalExtension\Context\MessageContext
+          - Drupal\DrupalExtension\Context\DrushContext
+          - Devinci\DevinciExtension\Context\DebugContext:
+              asset_dump_path: %paths.base%/../assets/
+          - Devinci\DevinciExtension\Context\JavascriptContext:
+              maximum_wait: 30
+  gherkin:
+    filters:
+      tags: ~@fixme
   extensions:
-    Behat\MinkExtension\Extension:
+    Behat\MinkExtension:
       goutte: ~
       selenium2: ~
       base_url: http://127.0.0.1:8888
       default_session: 'goutte'
       javascript_session: 'selenium2'
-      files_path: "files"
-    Drupal\DrupalExtension\Extension:
+    Drupal\DrupalExtension:
       blackbox: ~
       drupal:
         drupal_root: 'drupal'
       drush:
-        root: "drupal"
-      api_driver: "drupal"
+        root: 'drupal'
+      api_driver: 'drupal'
+      # @todo fixup these regions for use with new theme. Updated navigation only
       region_map:
         content: ".region-content"
         toolbar: ".tabs--primary"
@@ -24,16 +39,27 @@ default:
         right header: "#header-right"
         right sidebar: "#column-right"
         dashboards: ".view-data-dashboards table tbody"
+        navigation: '.navigation-wrapper'
+        breadcrumb: '.breadcrumb'
+        left_sidebar: '.panel-col-first'
+        search_area: '.panel-col-last'
+        dropdown_links: '.comment-main .links.inline.dropdown-menu'
+        comment: '.comment-main'
       text:
         log_out: "Log out"
         log_in: "Log in"
+      selectors:
+        message_selector: '.alert'
+        error_message_selector: '.alert.alert-error'
+        success_message_selector: '.alert.alert-success'
+
 local:
   extensions:
-    Behat\MinkExtension\Extension:
+    Behat\MinkExtension:
       base_url: http://dkan.local
       selenium2:
         wd_host: http://127.0.0.1:4444/wd/hub
-    Drupal\DrupalExtension\Extension:
+    Drupal\DrupalExtension:
       drupal:
         drupal_root: '/var/www/dkan/webroot'
       drush:
