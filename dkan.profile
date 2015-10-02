@@ -40,6 +40,7 @@ function dkan_additional_setup() {
           array('dkan_colorizer_reset', array()),
           array('dkan_misc_variables_set', array()),
           array('dkan_set_adminrole', array()),
+          array('dkan_enable_visualization_entity_embed', array()),
       ),
   );
 }
@@ -184,4 +185,13 @@ function dkan_misc_variables_set(&$context) {
 function dkan_set_adminrole(&$context) {
   $context['message'] = t('Setting user admin role');
   dkan_sitewide_roles_perms_set_admin_role();
+}
+
+/**
+ * Enable visualization entity embed.
+ * @param $context
+ */
+function dkan_enable_visualization_entity_embed(&$context) {
+  $context['message'] = t('Enabling visualization_entity_embed');
+  module_enable(array('visualization_entity_embed'));
 }
