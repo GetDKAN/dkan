@@ -6,16 +6,18 @@ Feature: Panels
       And I am on the homepage
       Then I should see "Customize this page"
     When I click "Customize this page"
+    And I wait for "Add new pane"
       And I click "Add new pane"
-      Then I should see "Please select a category from the left"
+      And I wait for "Please select a category from the left"
     When I click "New custom content" in the "modal" region
-      And I wait for "1" seconds
+      And I wait for "2" seconds
       And I fill in "edit-title" with "New Custom Item"
       And I scroll to the top
       And I fill in "edit-body-value" with "Custom item body."
       And I press "Finish"
+      And I wait for "2" seconds
       And I press "Save"
-      Then I should see "New Custom Item"
+      And I wait for "New Custom Item"
 
   @api @javascript
   Scenario: Updating front page as authenticated user
