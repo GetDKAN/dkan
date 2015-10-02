@@ -37,4 +37,4 @@ Pull requests should include sufficient context for a maintainer to open them fo
 
 [See this pull request for an example](https://github.com/NuCivic/dkan/pull/629).
 
-If a pull request is simply being created for QA purposes or should for some other reason NOT be merged, explain this in the description. 
+If a pull request is simply being created for QA purposes or should for some other reason NOT be merged, explain this in the description and add a "don't merge" tag.
