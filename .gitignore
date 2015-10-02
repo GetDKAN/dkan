@@ -11,3 +11,4 @@ test/composer.lock
 test/dkan
 test/local.yml
 .idea
+.sublime*

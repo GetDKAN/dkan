@@ -47,12 +47,10 @@ before_script:
   - drush cc drush
   - drush --quiet --yes --root=$PWD runserver :8888 > /dev/null 2>&1 &
   - sleep 4
-
   # Setup display for selenium
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - sleep 3
-
   - cd ..
   - wget http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar
   - java -jar selenium-server-standalone-2.42.2.jar -quiet -p 4444 -log shut_up_selenium &
@@ -73,6 +71,7 @@ script:
   - bin/behat features/data_dashboard.feature
   - bin/behat features/dkan_data_story_ui.feature
   - bin/behat features/role_storyteller.feature
+  - find ./ -type d -print
 
 notifications:
   slack:
