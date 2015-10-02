@@ -379,6 +379,7 @@ class FeatureContext extends DrupalContext
   {
     if (4 === $event->getResult()) {
       $driver = $this->getSession()->getDriver();
+      print 'driver: ' . get_class($driver);
       if (!($driver instanceof Selenium2Driver)) {
         // throw new UnsupportedDriverActionException('Taking screenshots is not supported by %s, use Selenium2Driver instead.', $driver);
         return;
