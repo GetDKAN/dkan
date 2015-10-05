@@ -16,7 +16,7 @@ A bug report should explain the problem as specifically as possible along with s
 
 ...is a very useful bug report!
 
-### User Story
+### New Feature
 
 Any new feature or other change in functionality that is NOT a bug in existing functionality should be expressed as a user story, with optional additional context. A user story should follow the general format of 
 
@@ -38,3 +38,35 @@ Pull requests should include sufficient context for a maintainer to open them fo
 [See this pull request for an example](https://github.com/NuCivic/dkan/pull/629).
 
 If a pull request is simply being created for QA purposes or should for some other reason NOT be merged, explain this in the description and add a "don't merge" tag.
+
+## Ticket Template
+
+New tickets should use the following template for consistency:
+
+### Bug Report
+```
+## Description
+
+## Steps to Reproduce
+
+## Acceptance Criteria
+
+## Test Updates
+
+## Documenation Updates
+```
+
+### New Feature
+```
+## Description
+
+## User Stories
+
+## Tests
+
+## Documentation
+
+## Pull Requests
+
+## Acceptance Criteria
+```
