@@ -7,6 +7,7 @@ themes/contrib
 webroot
 test/vendor
 test/bin
+test/assets
 test/composer.lock
 test/dkan
 test/local.yml
