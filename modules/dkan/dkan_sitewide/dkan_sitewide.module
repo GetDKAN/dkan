@@ -225,6 +225,10 @@ function dkan_sitewide_preprocess_page(&$variables) {
 
 /**
  * Implements hook_form_FORM_ID_alter().
+ *
+ * We need to alter the user form because we need to allow the user to check or
+ * uncheck the checkboxes for gravatar whenever he wants and because we need to
+ * show the user photo.
  */
 function dkan_sitewide_form_user_profile_form_alter(&$form, $form_state) {
   if ($form['#user_category'] == 'account' && isset($form['picture']) && variable_get('user_pictures', 0) && ($account = $form['#user']) && user_access('use gravatar', $account)) {
@@ -241,6 +245,9 @@ function dkan_sitewide_form_user_profile_form_alter(&$form, $form_state) {
 
 /**
  * Implements hook_module_implements_alter().
+ *
+ * We need to add this hook to make the hook_form_alter from dkan_sitewide to be
+ * run at the end of hook_form_alter's.
  */
 function dkan_sitewide_module_implements_alter(&$implementations, $hook) {
   if ($hook == 'form_alter' && isset($implementations['dkan_sitewide'])) {
