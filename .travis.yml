@@ -9,16 +9,6 @@ mysql:
   username: root
   encoding: utf8
 
-addons:
-  artifacts:
-    debug: true
-    paths:
-      - ./screens
-    target_paths: $TRAVIS_BUILD_NUMBER
-    working_dir: WORKING_DIR
-    bucket: nucivic-travis-artifacts
-    s3_region: us-east-1
-
 install:
   - cd test
   - composer install
