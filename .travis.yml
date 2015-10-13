@@ -48,21 +48,26 @@ before_script:
   - java -jar selenium-server-standalone-2.42.2.jar -quiet -p 4444 -log shut_up_selenium &
   - sleep 5
 
+matrix:
+  env:
+    - FEATURE_FILE=features/administrator.feature
+    - FEATURE_FILE=features/panels.feature
+    - FEATURE_FILE=features/groups.feature
+    - FEATURE_FILE=features/dataset.feature
+    - FEATURE_FILE=features/datastore.feature
+    - FEATURE_FILE=features/editor.feature
+    - FEATURE_FILE=features/home.feature
+    - FEATURE_FILE=features/search.feature
+    - FEATURE_FILE=features/recline.feature
+    - FEATURE_FILE=features/widgets.feature
+    - FEATURE_FILE=features/data_dashboard.feature
+    - FEATURE_FILE=features/dkan_data_story_ui.feature
+    - FEATURE_FILE=features/role_storyteller.feature
+
 script:
-  - bash features-tests.sh $TRAVIS_BUILD_DIR
-  - bin/behat features/administrator.feature
-  - bin/behat features/panels.feature
-  - bin/behat features/groups.feature
-  - bin/behat features/dataset.feature
-  - bin/behat features/datastore.feature
-  - bin/behat features/editor.feature
-  - bin/behat features/home.feature
-  - bin/behat features/search.feature
-  - bin/behat features/recline.feature
-  - bin/behat features/widgets.feature
-  - bin/behat features/data_dashboard.feature
-  - bin/behat features/dkan_data_story_ui.feature
-  - bin/behat features/role_storyteller.feature
+  # Disable testing of features while we test the matrix builds.
+  #- bash features-tests.sh $TRAVIS_BUILD_DIR
+  - bin/behat $FEATURE_FILE
 
 notifications:
   slack:
