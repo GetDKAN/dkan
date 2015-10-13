@@ -2,9 +2,11 @@
 
 use Behat\Behat\Context\Context;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
+use Devinci\DevinciExtension\Context\JavascriptContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
@@ -15,6 +17,8 @@ use WebDriver\Key;
  */
 class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
 {
+
+  protected $jsContext;
 
   /**
    * @Given /^I scroll to the top$/
@@ -257,6 +261,35 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function iWaitForSeconds($arg1) {
     sleep($arg1);
+  }
+
+  /**
+   * @BeforeScenario
+   */
+  public function gatherContexts(BeforeScenarioScope $scope) {
+    $environment = $scope->getEnvironment();
+
+    $this->jsContext = $environment->getContext('Devinci\DevinciExtension\Context\JavascriptContext');
+  }
+
+
+  /**
+   * Wait to click on something in case it does not appear immediately (javascript)
+   *
+   * @Given I wait and press :text
+   */
+  public function iWaitAndPress($text) {
+    $wait = $this->jsContext->maximum_wait;
+    try {
+      $found = $this->jsContext->spin(function ($context) use ($text) {
+        $context->getSession()->getPage()->pressButton($text);
+        return (TRUE);
+      }, $wait);
+      return $found;
+    }
+    catch(\Exception $e) {
+      throw new \Exception( "Couldn't find button $text within $wait seconds");
+    }
   }
 
   /**
