@@ -14,11 +14,12 @@ machine:
     #dev.mycompany.com: 127.0.0.1
 
   # Add some environment variables
-  environment:
+#  environment:
     #CIRCLE_ENV: test
     #DATABASE_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
 
 ## Customize checkout
+## Note: Only post is supported.
 #checkout:
 #  post:
 #    - git submodule sync
@@ -32,25 +33,23 @@ dependencies:
           test
     - printenv
     # Install latest Drush 7.
-    - export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - composer global require --prefer-source --no-interaction drush/drush:dev-master
-    - composer global require --prefer-source --no-interaction youngj/httpserver:*
-    - mkdir drupal:
-        pwd:
-          $HOME
-    - cd drupal
-    - cp $TRAVIS_BUILD_DIR/drupal-org-core.make ./
-    - drush make --prepare-install drupal-org-core.make --yes
-    - cp -R $TRAVIS_BUILD_DIR profiles/
-    - cd profiles/dkan
-    - drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion
-    - cd $TRAVIS_BUILD_DIR/test
-    - mv ../../drupal ./
-    - cd drupal
-    - drush si dkan --sites-subdir=default --db-url=mysql://root:@127.0.0.1:3306/dkan_travis --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module='array(FALSE,FALSE)' --yes
-    - drush cc all --yes
-    - drush cc drush
-    - drush --quiet --yes --root=$PWD runserver :8888 > /dev/null 2>&1 &
+    #- export PATH="$HOME/.composer/vendor/bin:$PATH"
+    - composer global require --prefer-source --no-interaction drush/drush:7.0.0
+    - drush make --prepare-install drupal-org-core.make test --yes
+    - rsync -av . test/profiles/dkan --exclude drupal
+    - drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion:
+      pwd:
+        test/profiles/dkan
+    - drush si dkan --sites-subdir=default --db-url=mysql://root:@127.0.0.1:3306/dkan_travis --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module='array(FALSE,FALSE)' --yes:
+      pwd:
+        test
+    - drush cc drush; drush cc all --yes:
+      pwd:
+        test
+    - drush --quiet --yes --root=$PWD runserver :8888:
+      pwd:
+        test
+      background: true
     - sleep 4
 
     # Setup display for selenium
@@ -58,10 +57,9 @@ dependencies:
     - sh -e /etc/init.d/xvfb start
     - sleep 3
 
-    - cd ..
     - wget http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar
-    - java -jar selenium-server-standalone-2.42.2.jar -quiet -p 4444 -log shut_up_selenium &
-    - sleep 5
+    - java -jar selenium-server-standalone-2.42.2.jar -quiet -p 4444 -log shut_up_selenium :
+        background: true
 
   # we automatically cache and restore many dependencies between
   # builds. If you need to, you can add custom paths to cache:
