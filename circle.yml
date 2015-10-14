@@ -13,11 +13,11 @@ machine:
     #circlehost: 127.0.0.1
     #dev.mycompany.com: 127.0.0.1
 
-  # Add some environment variables
-#  environment:
-    #CIRCLE_ENV: test
-    #DATABASE_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
-
+# Add some environment variables
+environment:
+  # For xvfb / selenium setup (not sure why)
+  DISPLAY:':99.0'
+  DATABASE_URL: mysql://ubuntu:@127.0.0.1:5432/circle_test
 ## Customize checkout
 ## Note: Only post is supported.
 #checkout:
@@ -37,19 +37,18 @@ dependencies:
     - 'composer global require --prefer-source --no-interaction drush/drush:7.0.0'
     - 'drush make --prepare-install drupal-org-core.make drupal --yes'
     - 'rsync -av . drupal/profiles/dkan --exclude drupal'
-    - 'rsync -av drupal test'
+    - 'rsync -av drupal/ test'
     - 'drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion':
         pwd:
           test/profiles/dkan
-    - drush use $HOME/$CIRCLE_PROJECT_REPONAME/tes#dkan
-    - 'drush si dkan --sites-subdir=default --db-url=mysql://root:@127.0.0.1:3306/dkan_travis --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module=''array(FALSE,FALSE)'' --yes'
+    - drush use $HOME/$CIRCLE_PROJECT_REPONAME/test#dkan
+    - 'drush si dkan --sites-subdir=default --db-url=$DATABASE_URL --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module=''array(FALSE,FALSE)'' --yes'
     - drush cc drush; drush cc all --yes
     - 'drush --quiet --yes --root=$PWD runserver :8888':
         background: true
     - sleep 4
 
     # Setup display for selenium
-    - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
     - sleep 3
 
