@@ -34,19 +34,19 @@ dependencies:
     - printenv
     # Install latest Drush 7.
     #- export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - composer global require --prefer-source --no-interaction drush/drush:7.0.0
-    - drush make --prepare-install drupal-org-core.make test --yes
-    - rsync -av . test/profiles/dkan --exclude drupal
-    - drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion:
+    - 'composer global require --prefer-source --no-interaction drush/drush:7.0.0'
+    - 'drush make --prepare-install drupal-org-core.make test --yes'
+    - 'rsync -av . test/profiles/dkan --exclude drupal'
+    - 'drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion':
       pwd:
         test/profiles/dkan
-    - drush si dkan --sites-subdir=default --db-url=mysql://root:@127.0.0.1:3306/dkan_travis --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module='array(FALSE,FALSE)' --yes:
+    - 'drush si dkan --sites-subdir=default --db-url=mysql://root:@127.0.0.1:3306/dkan_travis --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module=''array(FALSE,FALSE)'' --yes':
       pwd:
         test
     - drush cc drush; drush cc all --yes:
       pwd:
         test
-    - drush --quiet --yes --root=$PWD runserver :8888:
+    - 'drush --quiet --yes --root=$PWD runserver :8888':
       pwd:
         test
       background: true
