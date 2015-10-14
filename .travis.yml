@@ -1,3 +1,7 @@
+branches:
+  only:
+    - '7.x-1.x'
+
 language: php
 sudo: false
 
