@@ -1,0 +1,111 @@
+## Customize the test machine
+machine:
+
+  timezone:
+    America/New_York # Set the timezone
+
+  # Version of ruby to use
+  php:
+    version: '5.5.11'
+
+  # Override /etc/hosts
+  #hosts:
+    #circlehost: 127.0.0.1
+    #dev.mycompany.com: 127.0.0.1
+
+  # Add some environment variables
+  environment:
+    #CIRCLE_ENV: test
+    #DATABASE_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
+
+## Customize checkout
+#checkout:
+#  post:
+#    - git submodule sync
+#    - git submodule update --init # use submodules
+
+## Customize dependencies
+dependencies:
+  pre:
+    - cd test
+    - composer install
+    # Install latest Drush 7.
+    - export PATH="$HOME/.composer/vendor/bin:$PATH"
+    - composer global require --no-interaction drush/drush:dev-master
+    - composer global require --no-interaction youngj/httpserver:*
+    - cd ../..
+    - mkdir drupal
+    - cd drupal
+    - cp $TRAVIS_BUILD_DIR/drupal-org-core.make ./
+    - drush make --prepare-install drupal-org-core.make --yes
+    - cp -R $TRAVIS_BUILD_DIR profiles/
+    - cd profiles/dkan
+    - drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion
+    - cd $TRAVIS_BUILD_DIR/test
+    - mv ../../drupal ./
+    - cd drupal
+    - drush si dkan --sites-subdir=default --db-url=mysql://root:@127.0.0.1:3306/dkan_travis --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module='array(FALSE,FALSE)' --yes
+    - drush cc all --yes
+    - drush cc drush
+    - drush --quiet --yes --root=$PWD runserver :8888 > /dev/null 2>&1 &
+    - sleep 4
+
+    # Setup display for selenium
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
+    - sleep 3
+
+    - cd ..
+    - wget http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar
+    - java -jar selenium-server-standalone-2.42.2.jar -quiet -p 4444 -log shut_up_selenium &
+    - sleep 5
+
+  # we automatically cache and restore many dependencies between
+  # builds. If you need to, you can add custom paths to cache:
+  #cache_directories:
+  #  - "custom_1"   # relative to the build directory
+  #  - "~/custom_2" # relative to the user's home directory
+
+## Customize database setup
+database:
+  override:
+    # replace CircleCI's generated database.yml
+    #- cp config/database.yml.ci config/database.yml
+    #- bundle exec rake db:create db:schema:load
+
+## Customize test commands
+test:
+  override:
+    - bash features-tests.sh $TRAVIS_BUILD_DIR
+    - bin/behat features/administrator.feature
+    - bin/behat features/panels.feature
+    - bin/behat features/groups.feature
+    - bin/behat features/dataset.feature
+    - bin/behat features/datastore.feature
+    - bin/behat features/editor.feature
+    - bin/behat features/home.feature
+    - bin/behat features/search.feature
+    - bin/behat features/recline.feature
+    - bin/behat features/widgets.feature
+    - bin/behat features/data_dashboard.feature
+    - bin/behat features/dkan_data_story_ui.feature
+    - bin/behat features/role_storyteller.feature
+    - phpunit test/unit-tests # use PHPunit for testing
+#  post:
+#    - bundle exec rake jasmine:ci: # add an extra test type
+#        environment:
+#          RAILS_ENV: test
+#          RACK_ENV: test
+
+## Customize deployment commands
+#deployment:
+#  staging:
+#    branch: master
+#    heroku:
+#      appname: foo-bar-123
+
+## Custom notifications
+#notify:
+#  webhooks:
+#    # A list of hashes representing hooks. Only the url field is supported.
+#    - url: https://someurl.com/hooks/circle
