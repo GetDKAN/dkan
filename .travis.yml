@@ -28,7 +28,7 @@ before_script:
   - drush make --prepare-install drupal-org-core.make --yes
   - cp -R $TRAVIS_BUILD_DIR profiles/
   - cd profiles/dkan
-  - drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion --concurrency=3
+  - drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion --concurrency=5
   - cd $TRAVIS_BUILD_DIR/test
   - mv ../../drupal ./
   - cd drupal
