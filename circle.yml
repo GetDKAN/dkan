@@ -26,15 +26,18 @@ machine:
 
 ## Customize dependencies
 dependencies:
-  pre:
-    - cd test
-    - composer install
+  override:
+    - composer install:
+        pwd:
+          test
+    - printenv
     # Install latest Drush 7.
     - export PATH="$HOME/.composer/vendor/bin:$PATH"
     - composer global require --no-interaction drush/drush:dev-master
     - composer global require --no-interaction youngj/httpserver:*
-    - cd ../..
-    - mkdir drupal
+    - mkdir drupal:
+        pwd:
+          $HOME
     - cd drupal
     - cp $TRAVIS_BUILD_DIR/drupal-org-core.make ./
     - drush make --prepare-install drupal-org-core.make --yes
