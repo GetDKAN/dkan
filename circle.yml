@@ -27,14 +27,14 @@ machine:
 ## Customize dependencies
 dependencies:
   override:
-    - composer install:
+    - 'composer install --prefer-source --no-interaction':
         pwd:
           test
     - printenv
     # Install latest Drush 7.
     - export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - composer global require --no-interaction drush/drush:dev-master
-    - composer global require --no-interaction youngj/httpserver:*
+    - composer global require --prefer-source --no-interaction drush/drush:dev-master
+    - composer global require --prefer-source --no-interaction youngj/httpserver:*
     - mkdir drupal:
         pwd:
           $HOME
