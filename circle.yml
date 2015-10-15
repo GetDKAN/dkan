@@ -13,11 +13,11 @@ machine:
     #circlehost: 127.0.0.1
     #dev.mycompany.com: 127.0.0.1
 
-# Add some environment variables
-environment:
-  # For xvfb / selenium setup (not sure why)
-  DISPLAY: ':99.0'
-  DATABASE_URL: mysql://ubuntu:@127.0.0.1:5432/circle_test
+  # Add some environment variables
+  environment:
+    # For xvfb / selenium setup (not sure why)
+    DISPLAY: ':99.0'
+    DATABASE_URL: mysql://ubuntu:@127.0.0.1:5432/circle_test
 ## Customize checkout
 ## Note: Only post is supported.
 #checkout:
