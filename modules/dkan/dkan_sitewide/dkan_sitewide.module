@@ -16,7 +16,10 @@ function dkan_sitewide_user_menu_block() {
   $output = '';
   if ($user->uid) {
     if (module_exists('gravatar')) {
-      $output = l('<img alt="my user picture" src="' . gravatar_get_gravatar($user->mail, array('size' => '25')) . '">', 'user', array('html' => TRUE));
+      $account = _gravatar_load_account($user);
+      $uri = _gravatar_get_account_user_picture($account);
+      $file = _gravatar_get_account_user_picture($account) ? file_create_url(_gravatar_get_account_user_picture($account)) . '" width="25" height="25' : gravatar_get_gravatar($user->mail, array('size' => '25'));
+      $output = l('<img alt="my user picture" src="' . $file . '">', 'user', array('html' => TRUE));
     }
     $output .= '<span class="links">' . l($user->name, 'user') . l(t('Log out'), 'user/logout', array('attributes' => array('class' => array('sub')))) . '</span>';
   }
@@ -217,5 +220,39 @@ function dkan_sitewide_preprocess_page(&$variables) {
   $default_theme = variable_get('theme_default');
   if (arg(0) == 'admin' && arg(1) == 'appearance' && $admin_theme !== '0' && $default_theme !== $admin_theme) {
     drupal_set_message(t('For Colorizer to work you must set the Administration theme to match your <em>Default theme</em> at the bottom of the <a href="' . $base_url . '/admin/appearance">appearance list</a> page.'), 'warning');
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * We need to alter the user form because we need to allow the user to check or
+ * uncheck the checkboxes for gravatar whenever he wants and because we need to
+ * show the user photo.
+ */
+function dkan_sitewide_form_user_profile_form_alter(&$form, $form_state) {
+  if ($form['#user_category'] == 'account' && isset($form['picture']) && variable_get('user_pictures', 0) && ($account = $form['#user']) && user_access('use gravatar', $account)) {
+    if (isset($form['picture']['picture_current']) && module_exists('gravatar')) {
+      $form['picture']['picture_current'] = array(
+        '#markup' => theme('image_style', array('style_name' => 'medium', 'path' => _gravatar_get_account_user_picture(_gravatar_load_account($account)))),
+      );
+    }
+    if (user_access('disable own gravatar', $account)) {
+      unset($form['picture']['gravatar']['#disabled']);
+    }
+  }
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ *
+ * We need to add this hook to make the hook_form_alter from dkan_sitewide to be
+ * run at the end of hook_form_alter's.
+ */
+function dkan_sitewide_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'form_alter' && isset($implementations['dkan_sitewide'])) {
+    $group = $implementations['dkan_sitewide'];
+    unset($implementations['dkan_sitewide']);
+    $implementations['dkan_sitewide'] = $group;
   }
 }
