@@ -72,3 +72,12 @@ Feature: Datasets
     When I am on "/dataset/wisconsin-polling-places"
     Then I should not see "Edit"
     And I should see "Add Resource"
+
+  @api @javascript
+  Scenario: Open data previews in external services
+    Given I am on "/dataset/wisconsin-polling-places"
+    And DKAN Dataset Previews are set to "open_with"
+    Then I should see "Open With"
+    When I press "Open With"
+    Then I should see the local preview link
+    And I should see "CartoDB"
