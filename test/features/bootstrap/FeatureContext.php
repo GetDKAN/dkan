@@ -423,4 +423,23 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
         }
       }
     }
+
+    /**
+     * @Given DKAN Dataset Previews are set to :arg1
+     */
+    public function dkanDatasetPreviewsAreSetTo($arg1)
+    {
+        if (!$arg1) {
+          throw new Exception("No value provided for dkan_dataset_teaser_preview variable.");
+        }
+        variable_set('dkan_dataset_teaser_preview', $arg1);
+    }
+
+    /**
+     * @Then I should see the local preview link
+     */
+    public function iShouldSeeTheLocalPreviewLink()
+    {
+        $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', variable_get('site_name', t('Local'))));
+    }
   }
