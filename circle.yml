@@ -16,7 +16,7 @@ machine:
   # Add some environment variables
   environment:
     # For xvfb / selenium setup (not sure why)
-    DISPLAY: ':99.0'
+    #DISPLAY: ':99.0'
     DATABASE_URL: mysql://ubuntu:@127.0.0.1:3306/circle_test
 ## Customize checkout
 ## Note: Only post is supported.
@@ -49,8 +49,8 @@ dependencies:
     - sleep 4
 
     # Setup display for selenium
-    - sh -e /etc/init.d/xvfb start
-    - sleep 3
+    #- sh -e /etc/init.d/xvfb start
+    #- sleep 3
 
     - wget http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar
     - java -jar selenium-server-standalone-2.42.2.jar -quiet -p 4444 -log shut_up_selenium :
