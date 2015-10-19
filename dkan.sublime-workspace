@@ -1,0 +1,406 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"od",
+				"odsm_dkan_head"
+			],
+			[
+				"odsm",
+				"odsm_head"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "test/features/administrator.feature",
+			"settings":
+			{
+				"buffer_size": 208,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "test/features/groups.feature",
+			"settings":
+			{
+				"buffer_size": 4107,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": ".travis.yml",
+			"settings":
+			{
+				"buffer_size": 2487,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 87.0,
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"git push",
+				"Git: Push Current Branch"
+			],
+			[
+				"git q",
+				"Git: Quick Status"
+			],
+			[
+				"git status ",
+				"Git: Quick Status"
+			],
+			[
+				"enable",
+				"Package Control: Enable Package"
+			],
+			[
+				"git stat",
+				"Git: Status"
+			],
+			[
+				"enabe",
+				"Package Control: Enable Package"
+			],
+			[
+				"git ",
+				"SublimeGit: Documentation"
+			],
+			[
+				"git diff",
+				"Git: Diff"
+			],
+			[
+				"git",
+				"Git: Status"
+			],
+			[
+				"disab",
+				"Package Control: Disable Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"git status",
+				"Git: Status"
+			],
+			[
+				"git gut",
+				"GitGutter: Compare Against Commit"
+			],
+			[
+				"git sta",
+				"Git: Status"
+			],
+			[
+				"git st",
+				"Git: Status"
+			],
+			[
+				"git commit",
+				"Git: Commit"
+			],
+			[
+				"git add",
+				"Git: Add Current File"
+			],
+			[
+				"git ann",
+				"Git: Toggle Annotations"
+			],
+			[
+				"git statu",
+				"Git: Status"
+			],
+			[
+				"git branch",
+				"Git: New Branch"
+			],
+			[
+				"gitstats",
+				"Git: Status"
+			],
+			[
+				"cucm",
+				"Set Syntax: Cucumber Steps"
+			],
+			[
+				"gher",
+				"Set Syntax: Gherkin in zh-CN"
+			],
+			[
+				"format",
+				"Gherkin/Cucumber: Format"
+			],
+			[
+				"gh",
+				"Set Syntax: Gherkin in zh-CN"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"drup",
+				"Goto Drupal API"
+			],
+			[
+				"packag",
+				"Preferences: Browse Packages"
+			],
+			[
+				"bash",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"wrap",
+				"Word Wrap: Toggle"
+			]
+		],
+		"width": 458.0
+	},
+	"console":
+	{
+		"height": 111.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/dfeder/Library/Application Support/Sublime Text 2/Packages/User/Xdebug.sublime-settings",
+		"/Users/dfeder/vagrant/ansible-dev-vm/www/dkan/.travis.yml",
+		"/Users/dfeder/Work/jenkins_release_n_update_builds/new-dkan-release-candidate-tag.sh",
+		"/Users/dfeder/Work/jenkins_release_n_update_builds/README.md",
+		"/Users/dfeder/Work/dkan/CONTRIBUTING.md",
+		"/Users/dfeder/Desktop/recursion_temp.md",
+		"/Users/dfeder/Work/key.txt"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"clone",
+			"\\\"",
+			"drush site",
+			"drush si",
+			"drush"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"",
+			"\""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "test/features/administrator.feature",
+					"settings":
+					{
+						"buffer_size": 208,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								208,
+								208
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Cucumber/Cucumber Steps.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "test/features/groups.feature",
+					"settings":
+					{
+						"buffer_size": 4107,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Cucumber/Cucumber Steps.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": ".travis.yml",
+					"settings":
+					{
+						"buffer_size": 2487,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								312,
+								312
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/YAML/YAML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 287.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 29.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.git":
+	{
+		"height": 88.0
+	},
+	"output.git-push":
+	{
+		"height": 88.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				".travs",
+				".travis.yml"
+			],
+			[
+				".tra",
+				".travis.yml"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 299.0,
+	"status_bar_visible": true
+}

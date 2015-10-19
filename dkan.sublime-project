@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+			"path": "/Users/dfeder/vagrant/ansible-dev-vm/www/dkan"
+		}
+	],
+    "settings": {
+        "xdebug": {
+     		"path_mapping": {
+                 "/var/www" : "/Users/dfeder/vagrant/ansible-dev-vm/www"
+            },
+            "url": "http://dkan.local:8080/",
+            "super_globals": true,
+            "close_on_stop": true
+        }
+    }}
