@@ -44,7 +44,7 @@ dependencies:
     - drush use $HOME/$CIRCLE_PROJECT_REPONAME/test#dkan
     - 'drush si dkan --sites-subdir=default --db-url=$DATABASE_URL --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module=''array(FALSE,FALSE)'' --yes'
     - drush cc drush; drush cc all --yes
-    - 'drush --quiet --yes --root=$PWD runserver :8888':
+    - 'drush --yes runserver :8888':
         background: true
     - sleep 4
 
