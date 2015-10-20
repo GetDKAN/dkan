@@ -24,9 +24,7 @@ default:
     Drupal\DrupalExtension:
       blackbox: ~
       drupal:
-        drupal_root: 'drupal'
-      drush:
-        root: 'drupal'
+        drupal_root: %paths.base%
       api_driver: 'drupal'
       # @todo fixup these regions for use with new theme. Updated navigation only
       region_map:
