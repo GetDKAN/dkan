@@ -423,4 +423,54 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
         }
       }
     }
+
+  /************************************/
+  /* Gravatar                         */
+  /************************************/
+
+  /**
+   * @Then /^I should see a gravatar link in the "([^"]*)" region$/
+   */
+  public function iShouldSeeAGravatarLinkInTheRegion($region)
+  {
+    $regionObj = $this->getMainContext()->getRegion($region);
+    $elements = $regionObj->findAll('css', 'img');
+    if (!empty($elements)) {
+      foreach ($elements as $element) {
+        if ($element->hasAttribute('src')) {
+          $value = $element->getAttribute('src');
+          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
+            return;
+          }
+        }
+      }
+    }
+    throw new \Exception(sprintf('The element gravatar link was not found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
   }
+
+  /**
+   * @Then /^I should not see a gravatar link in the "([^"]*)" region$/
+   */
+  public function iShouldNotSeeAGravatarLinkInTheRegion($region)
+  {
+    $regionObj = $this->getMainContext()->getRegion($region);
+    $elements = $regionObj->findAll('css', 'img');
+    $match = FALSE;
+    if (!empty($elements)) {
+      foreach ($elements as $element) {
+        if ($element->hasAttribute('src')) {
+          $value = $element->getAttribute('src');
+          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
+            $match = TRUE;
+          }
+        }
+      }
+    }
+    if ($match) {
+      throw new \Exception(sprintf('The element gravatar link was found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
+    }
+    else {
+      return;
+    }
+  }
+}
