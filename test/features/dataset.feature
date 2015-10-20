@@ -23,7 +23,7 @@ Feature: Datasets
   Scenario: Viewing the Dataset
     Given I am on "/dataset/wisconsin-polling-places"
     Then I should see "Polling places in the state of Wisconsin"
-    And I should see "Explore Data"
+    And I should see "Explore"
     And I should see "Dataset Info"
     And I should see "Modified Date"
     And I should see "Identifier"
