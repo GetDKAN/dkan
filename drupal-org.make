@@ -10,7 +10,7 @@ defaults[projects][subdir] = contrib
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
-projects[dkan_dataset][download][branch] = 7.x-1.x
+projects[dkan_dataset][download][branch] = view_members_for_dateset_nodes_884
 
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
@@ -146,7 +146,7 @@ projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_vie
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = 7.x-1.x
+projects[nuboot_radix][download][branch] = view_members_for_dateset_nodes_884
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
