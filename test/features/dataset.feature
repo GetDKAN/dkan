@@ -74,9 +74,17 @@ Feature: Datasets
     And I should see "Add Resource"
 
   @api @javascript
+  Scenario: Data previews when only local enabled
+    Given cartodb previews are disabled for csv resources
+    And I am on "/dataset/wisconsin-polling-places"
+    Then I should see "Explore Data"
+    And I should not see "Open with"
+
+  @api @javascript
   Scenario: Open data previews in external services
-    Given I am on "/dataset/wisconsin-polling-places"
-    And DKAN Dataset Previews are set to "open_with"
+    Given cartodb previews are enabled for csv resources
+    And I am logged in as a user with the "administrator" role
+    And I am on "/dataset/wisconsin-polling-places"
     Then I should see "Open With"
     When I press "Open With"
     Then I should see the local preview link
