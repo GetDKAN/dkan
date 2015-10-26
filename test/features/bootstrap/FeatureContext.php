@@ -425,14 +425,18 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     }
 
     /**
-     * @Given DKAN Dataset Previews are set to :arg1
+     * @Given :provider previews are :setting for :format_name resources
+     *
+     * Changes variables in the database to enable or disable external previews
      */
-    public function dkanDatasetPreviewsAreSetTo($arg1)
+    public function externalPreviewsAreEnabledForFormat($provider, $setting, $format_name)
     {
-        if (!$arg1) {
-          throw new Exception("No value provided for dkan_dataset_teaser_preview variable.");
-        }
-        variable_set('dkan_dataset_teaser_preview', $arg1);
+      $format = current(taxonomy_get_term_by_name($format_name, 'format'));
+      $preview_settings = variable_get("dkan_dataset_format_previews_tid{$format->tid}", array());
+      // If $setting was "enabled," the preview is turned on. Otherwise, it's
+      // turned off.
+      $preview_settings[$provider] = ($setting == 'enabled') ? $provider : 0;
+      variable_set("dkan_dataset_format_previews_tid{$format->tid}", $preview_settings);
     }
 
     /**
