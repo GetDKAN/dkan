@@ -173,7 +173,7 @@ function dkan_sitewide_license_block() {
         if (isset($license['uri'])) {
           $output = l($license['label'], $license['uri']) . '<br/>';
           $output .= l(
-            '<img class="open-data" src="http://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]">',
+            '<img class="open-data" src="//assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]">',
             $license['uri'],
             array('html' => TRUE)
           );
