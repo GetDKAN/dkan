@@ -27,11 +27,14 @@ machine:
 
 ## Customize dependencies
 dependencies:
+
+  cache_directories:
+     - "test/vendor"
   override:
     - 'composer install --prefer-source --no-interaction':
         pwd:
           test
-    - printenv
+    - mkdir $CIRCLE_ARTIFACTS/junit
     # Install latest Drush 7.
     #- export PATH="$HOME/.composer/vendor/bin:$PATH"
     - 'composer global require --prefer-source --no-interaction drush/drush:7.0.0'
@@ -73,20 +76,24 @@ database:
 ## Customize test commands
 test:
   override:
-    - cd test; bash features-tests.sh
-    - cd test; bin/behat features/administrator.feature
-    - cd test; bin/behat features/panels.feature
-    - cd test; bin/behat features/groups.feature
-    - cd test; bin/behat features/dataset.feature
-    - cd test; bin/behat features/datastore.feature
-    - cd test; bin/behat features/editor.feature
-    - cd test; bin/behat features/home.feature
-    - cd test; bin/behat features/search.feature
-    - cd test; bin/behat features/recline.feature
-    - cd test; bin/behat features/widgets.feature
-    - cd test; bin/behat features/data_dashboard.feature
-    - cd test; bin/behat features/dkan_data_story_ui.feature
-    - cd test; bin/behat features/role_storyteller.feature
+    - cd test; bash circle-behat.sh:
+        parallel: true
+        files:
+          - test/features/administrator.feature
+          - test/features/panels.feature
+          - test/features/groups.feature
+          - test/features/dataset.feature
+          - test/features/datastore.feature
+          - test/features/editor.feature
+          - test/features/home.feature
+          - test/features/search.feature
+          - test/features/recline.feature
+          - test/features/widgets.feature
+          - test/features/data_dashboard.feature
+          - test/features/dkan_data_story_ui.feature
+          - test/features/role_storyteller.feature
+    - cd test; bash features-tests.sh:
+        parallel: true
   post:
     - cp -a assets $CIRCLE_ARTIFACTS
 #    - bundle exec rake jasmine:ci: # add an extra test type
