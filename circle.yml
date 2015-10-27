@@ -74,19 +74,22 @@ database:
 test:
   override:
     - cd test; bash features-tests.sh
-    - cd test; bin/behat features/administrator.feature
-    - cd test; bin/behat features/panels.feature
-    - cd test; bin/behat features/groups.feature
-    - cd test; bin/behat features/dataset.feature
-    - cd test; bin/behat features/datastore.feature
-    - cd test; bin/behat features/editor.feature
-    - cd test; bin/behat features/home.feature
-    - cd test; bin/behat features/search.feature
-    - cd test; bin/behat features/recline.feature
-    - cd test; bin/behat features/widgets.feature
-    - cd test; bin/behat features/data_dashboard.feature
-    - cd test; bin/behat features/dkan_data_story_ui.feature
-    - cd test; bin/behat features/role_storyteller.feature
+    - cd test; bin/behat:
+        parallel: true
+        files:
+          - features/administrator.feature
+          - features/panels.feature
+          - features/groups.feature
+          - features/dataset.feature
+          - features/datastore.feature
+          - features/editor.feature
+          - features/home.feature
+          - features/search.feature
+          - features/recline.feature
+          - features/widgets.feature
+          - features/data_dashboard.feature
+          - features/dkan_data_story_ui.feature
+          - features/role_storyteller.feature
   post:
     - cp -a assets $CIRCLE_ARTIFACTS
 #    - bundle exec rake jasmine:ci: # add an extra test type
