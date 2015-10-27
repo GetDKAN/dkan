@@ -73,8 +73,6 @@ database:
 ## Customize test commands
 test:
   override:
-    - cd test; bash features-tests.sh
-        parallel: true
     - cd test; bash circle-behat.sh:
         parallel: true
         files:
@@ -91,6 +89,8 @@ test:
           - test/features/data_dashboard.feature
           - test/features/dkan_data_story_ui.feature
           - test/features/role_storyteller.feature
+    - cd test; bash features-tests.sh:
+        parallel: true
   post:
     - cp -a assets $CIRCLE_ARTIFACTS
 #    - bundle exec rake jasmine:ci: # add an extra test type
