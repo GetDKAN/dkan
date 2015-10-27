@@ -75,7 +75,7 @@ test:
   override:
     - cd test; bash features-tests.sh
         parallel: true
-    - cd test; bin/behat --format=pretty --out=std --format=junit --out=$CIRCLE_ARTIFACTS/junit:
+    - cd test; bash circle-behat.sh:
         parallel: true
         files:
           - test/features/administrator.feature
