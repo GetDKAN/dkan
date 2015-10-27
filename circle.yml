@@ -53,8 +53,8 @@ dependencies:
     #- sh -e /etc/init.d/xvfb start
     #- sleep 3
 
-    - wget http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar
-    - java -jar selenium-server-standalone-2.42.2.jar -quiet -p 4444 -log shut_up_selenium :
+    - wget http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar
+    - java -jar selenium-server-standalone-2.48.2.jar -quiet -p 4444 -log shut_up_selenium :
         background: true
 
   # we automatically cache and restore many dependencies between
