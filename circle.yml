@@ -31,7 +31,7 @@ dependencies:
     - 'composer install --prefer-source --no-interaction':
         pwd:
           test
-    - printenv
+    - mkdir $CIRCLE_ARTIFACTS/junit
     # Install latest Drush 7.
     #- export PATH="$HOME/.composer/vendor/bin:$PATH"
     - 'composer global require --prefer-source --no-interaction drush/drush:7.0.0'
@@ -74,7 +74,8 @@ database:
 test:
   override:
     - cd test; bash features-tests.sh
-    - cd test; bin/behat:
+        parallel: true
+    - cd test; bin/behat --format=pretty --out=std --format=junit --out=$CIRCLE_ARTIFACTS/junit:
         parallel: true
         files:
           - test/features/administrator.feature
