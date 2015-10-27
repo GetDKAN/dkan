@@ -77,19 +77,19 @@ test:
     - cd test; bin/behat:
         parallel: true
         files:
-          - features/administrator.feature
-          - features/panels.feature
-          - features/groups.feature
-          - features/dataset.feature
-          - features/datastore.feature
-          - features/editor.feature
-          - features/home.feature
-          - features/search.feature
-          - features/recline.feature
-          - features/widgets.feature
-          - features/data_dashboard.feature
-          - features/dkan_data_story_ui.feature
-          - features/role_storyteller.feature
+          - test/features/administrator.feature
+          - test/features/panels.feature
+          - test/features/groups.feature
+          - test/features/dataset.feature
+          - test/features/datastore.feature
+          - test/features/editor.feature
+          - test/features/home.feature
+          - test/features/search.feature
+          - test/features/recline.feature
+          - test/features/widgets.feature
+          - test/features/data_dashboard.feature
+          - test/features/dkan_data_story_ui.feature
+          - test/features/role_storyteller.feature
   post:
     - cp -a assets $CIRCLE_ARTIFACTS
 #    - bundle exec rake jasmine:ci: # add an extra test type
