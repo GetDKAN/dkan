@@ -87,7 +87,8 @@ test:
     - cd test; bin/behat features/data_dashboard.feature
     - cd test; bin/behat features/dkan_data_story_ui.feature
     - cd test; bin/behat features/role_storyteller.feature
-#  post:
+  post:
+    - cp -a assets $CIRCLE_ARTIFACTS
 #    - bundle exec rake jasmine:ci: # add an extra test type
 #        environment:
 #          RAILS_ENV: test
