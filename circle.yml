@@ -46,6 +46,7 @@ dependencies:
     - drush cc drush; drush cc all --yes
     - 'drush --yes runserver :8888':
         background: true
+        pwd: test
     - sleep 4
 
     # Setup display for selenium
