@@ -52,7 +52,6 @@ dependencies:
     - 'drush --yes runserver :8888':
         background: true
         pwd: test
-    - sleep 4
 
     # Setup display for selenium
     #- sh -e /etc/init.d/xvfb start
@@ -89,8 +88,8 @@ test:
           - test/features/editor.feature
           - test/features/home.feature
           - test/features/search.feature
-          - test/features/recline.feature
           - test/features/widgets.feature
+          - test/features/recline.feature
           - test/features/data_dashboard.feature
           - test/features/dkan_data_story_ui.feature
           - test/features/role_storyteller.feature
