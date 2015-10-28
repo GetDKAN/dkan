@@ -32,6 +32,8 @@ dependencies:
      - "test/vendor"
      - "~/.composer"
      - "~/.drush"
+     - "~/backups"
+     - "test/sites/all/default"
   override:
     - 'composer install --prefer-source --no-interaction':
         pwd:
@@ -47,8 +49,7 @@ dependencies:
         pwd:
           test/profiles/dkan
     - drush use $HOME/$CIRCLE_PROJECT_REPONAME/test#dkan
-    - 'drush si dkan --sites-subdir=default --db-url=$DATABASE_URL --account-name=admin --account-pass=admin  --site-name="DKAN" install_configure_form.update_status_module=''array(FALSE,FALSE)'' --yes'
-    - drush cc drush; drush cc all --yes
+    - bash tests/circle-install.sh
     - 'drush --yes runserver :8888':
         background: true
         pwd: test
