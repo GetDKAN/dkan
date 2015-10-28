@@ -76,19 +76,19 @@ test:
     - cd test; bash circle-behat.sh:
         parallel: true
         files:
-          - test/features/administrator.feature
-          - test/features/panels.feature
-          - test/features/groups.feature
-          - test/features/dataset.feature
-          - test/features/datastore.feature
-          - test/features/editor.feature
-          - test/features/home.feature
-          - test/features/search.feature
-          - test/features/recline.feature
-          - test/features/widgets.feature
-          - test/features/data_dashboard.feature
-          - test/features/dkan_data_story_ui.feature
-          - test/features/role_storyteller.feature
+          - /home/ubuntu/dkan/test/features/administrator.feature
+          - /home/ubuntu/dkan/test/features/panels.feature
+          - /home/ubuntu/dkan/test/features/groups.feature
+          - /home/ubuntu/dkan/test/features/dataset.feature
+          - /home/ubuntu/dkan/test/features/datastore.feature
+          - /home/ubuntu/dkan/test/features/editor.feature
+          - /home/ubuntu/dkan/test/features/home.feature
+          - /home/ubuntu/dkan/test/features/search.feature
+          - /home/ubuntu/dkan/test/features/recline.feature
+          - /home/ubuntu/dkan/test/features/widgets.feature
+          - /home/ubuntu/dkan/test/features/data_dashboard.feature
+          - /home/ubuntu/dkan/test/features/dkan_data_story_ui.feature
+          - /home/ubuntu/dkan/test/features/role_storyteller.feature
     - cd test; bash features-tests.sh:
         parallel: true
   post:
