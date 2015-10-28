@@ -62,7 +62,10 @@ dependencies:
     - wget http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar
     - java -jar selenium-server-standalone-2.48.2.jar -quiet -p 4444 -log shut_up_selenium :
         background: true
-
+  post:
+     - sudo apt-get install -y x11vnc
+     - x11vnc -forever -nopw:
+        background: true
   # we automatically cache and restore many dependencies between
   # builds. If you need to, you can add custom paths to cache:
   #cache_directories:
