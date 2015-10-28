@@ -49,7 +49,7 @@ dependencies:
         pwd:
           test/profiles/dkan
     - drush use $HOME/$CIRCLE_PROJECT_REPONAME/test#dkan
-    - bash tests/circle-install.sh
+    - bash test/circle-install.sh
     - 'drush --yes runserver :8888':
         background: true
         pwd: test
