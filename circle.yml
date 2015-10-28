@@ -31,6 +31,7 @@ dependencies:
   cache_directories:
      - "test/vendor"
      - "~/.composer"
+     - "~/.drush"
   override:
     - 'composer install --prefer-source --no-interaction':
         pwd:
@@ -38,11 +39,11 @@ dependencies:
     - mkdir $CIRCLE_ARTIFACTS/junit
     # Install latest Drush 7.
     #- export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - 'composer global require --prefer-source --no-interaction drush/drush:7.0.0'
+    - 'rm -rf ~/.composer && composer global require --prefer-source --no-interaction drush/drush:8.0.0-rc2'
     - 'drush make --prepare-install drupal-org-core.make drupal --yes'
     - 'rsync -av . drupal/profiles/dkan --exclude drupal'
     - 'rsync -av drupal/ test'
-    - 'drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion':
+    - 'drush -y make --no-core --contrib-destination=./ drupal-org.make.lock --no-recursion':
         pwd:
           test/profiles/dkan
     - drush use $HOME/$CIRCLE_PROJECT_REPONAME/test#dkan
@@ -51,7 +52,6 @@ dependencies:
     - 'drush --yes runserver :8888':
         background: true
         pwd: test
-    - sleep 4
 
     # Setup display for selenium
     #- sh -e /etc/init.d/xvfb start
@@ -88,8 +88,8 @@ test:
           - test/features/editor.feature
           - test/features/home.feature
           - test/features/search.feature
-          - test/features/recline.feature
           - test/features/widgets.feature
+          - test/features/recline.feature
           - test/features/data_dashboard.feature
           - test/features/dkan_data_story_ui.feature
           - test/features/role_storyteller.feature
