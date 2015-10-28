@@ -38,7 +38,7 @@ dependencies:
     - mkdir $CIRCLE_ARTIFACTS/junit
     # Install latest Drush 7.
     #- export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - 'composer global require --prefer-source --no-interaction --no-update drush/drush:dev-master'
+    - 'composer global require --prefer-source --no-interaction --no-update drush/drush:8.0.0-rc2'
     - 'drush make --prepare-install drupal-org-core.make drupal --yes'
     - 'rsync -av . drupal/profiles/dkan --exclude drupal'
     - 'rsync -av drupal/ test'
