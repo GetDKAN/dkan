@@ -1,7 +1,8 @@
 {
     "require": {
-        "drupal/drupal-extension": "~3.0",
-        "devinci/devinci-behat-extension": "dev-master"
+        "behat/behat": "3.0.*@dev",
+        "devinci/devinci-behat-extension": "dev-master",
+        "nucivic/dkanextension": "master-dev"
     },
     "config": {
         "bin-dir": "bin/"
