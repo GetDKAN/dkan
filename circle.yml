@@ -33,7 +33,7 @@ dependencies:
      - "~/.composer"
      - "~/.drush"
      - "~/backups"
-     - "test/sites/all/default"
+     - "test/sites/default"
   override:
     - 'composer install --prefer-source --no-interaction':
         pwd:
