@@ -146,7 +146,7 @@ projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_vie
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = view_members_for_dateset_nodes_884
+projects[nuboot_radix][download][branch] = view_members_for_dataset_nodes_884
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
