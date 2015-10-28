@@ -31,6 +31,7 @@ dependencies:
   cache_directories:
      - "test/vendor"
      - "~/.composer"
+     - "~/.drush"
   override:
     - 'composer install --prefer-source --no-interaction':
         pwd:
