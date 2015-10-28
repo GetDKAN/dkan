@@ -1,6 +1,7 @@
 if [ -f ~/backups/dkan-install.sql ]; then
     # Use the cached install backup.
     echo "===> Loading install from cached database found at ~/backups/dkan-install.sql."
+    cp circle.settings.php sites/default/settings.php
     drush sql-drop -y && drush sqlc < ~/backups/dkan-install.sql
 else
     # Do full installation
