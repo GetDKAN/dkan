@@ -20,10 +20,10 @@ machine:
     DATABASE_URL: mysql://ubuntu:@127.0.0.1:3306/circle_test
 ## Customize checkout
 ## Note: Only post is supported.
-#checkout:
-#  post:
-#    - git submodule sync
-#    - git submodule update --init # use submodules
+checkout:
+  post:
+    # Remove the extra composer stuff that circleci loads and that is causing conflicts with drush.
+    - rm -rf ~/.composer
 
 ## Customize dependencies
 dependencies:
@@ -39,7 +39,7 @@ dependencies:
     - mkdir $CIRCLE_ARTIFACTS/junit
     # Install latest Drush 7.
     #- export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - 'rm -rf ~/.composer && composer global require --prefer-source --no-interaction drush/drush:8.0.0-rc2'
+    - 'composer global require --prefer-source --no-interaction drush/drush:8.0.0-rc2'
     - 'drush make --prepare-install drupal-org-core.make drupal --yes'
     - 'rsync -av . drupal/profiles/dkan --exclude drupal'
     - 'rsync -av drupal/ test'
