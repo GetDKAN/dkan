@@ -82,7 +82,7 @@ Feature: Groups
     When I fill in "title" with "Test Resource Link File"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
     And I press "edit-another"
-    Then I should see "Test Resource Link File has been created"
+    Then I wait for "Test Resource Link File has been created"
     And I should see "Add resource"
     When I fill in "title" with "Test Resource Upload"
     And I press "edit-submit"
