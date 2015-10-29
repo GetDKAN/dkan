@@ -14,8 +14,8 @@ Feature: Recline
     Given I press "Map"
       Then I should see "Latitude field"
       Then I wait for "3" seconds
-    Given I click map icon number "48"
-      And I wait for "Lowell Center"
+    Given I click map icon number "88"
+      And I wait for "Alicia Ashman Branch Library"
 
   @javascript @api
   Scenario: Viewing graph preview
