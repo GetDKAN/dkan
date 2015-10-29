@@ -14,7 +14,7 @@ default:
   formatters:
     pretty:
       output_styles:
-        comment:    [black, black, [conceal]]
+        comment:    [default, default , [conceal]]
   gherkin:
     filters:
       tags: ~@fixme
