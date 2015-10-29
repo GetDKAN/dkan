@@ -7,7 +7,7 @@ do
 
     if [ $? -eq 0 ]
     then
-      $error=1
+      error=1
     fi
 done
 exit $error
