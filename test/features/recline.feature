@@ -13,6 +13,7 @@ Feature: Recline
       Then I should see "Polling_Places_Madison.csv"
     Given I press "Map"
       Then I should see "Latitude field"
+      Then I wait for "3" seconds
     Given I click map icon number "48"
       And I wait for "Lowell Center"
 
@@ -35,15 +36,17 @@ Feature: Recline
       And I wait for "There's no graph here yet"
 
   @javascript
-  Scenario: Searching data 
+  Scenario: Searching data
     Given I am on "/dataset/wisconsin-polling-places"
       Then I should see "Polling places in the state of Wisconsin"
     Given I click "Madison Polling Places"
       Then I should see "Polling_Places_Madison.csv"
     Given I click "»"
-      Then I should see "Our"
+      Then I wait for "Our"
+      Then I wait for "1" seconds
     Given I click "«"
-      Then I should see "East"
+      Then I wait for "1" seconds
+      Then I wait for "East"
     Given I fill in "q" with "Glendale"
     When I press "Go"
       Then I should see "Tompkins"
