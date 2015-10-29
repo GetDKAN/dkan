@@ -11,6 +11,10 @@ default:
               asset_dump_path: %paths.base%/../assets
           - Devinci\DevinciExtension\Context\JavascriptContext:
               maximum_wait: 30
+  formatters:
+    pretty:
+      output_styles:
+        comment:    [default, default , [conceal]]
   gherkin:
     filters:
       tags: ~@fixme
