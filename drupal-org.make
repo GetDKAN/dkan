@@ -21,12 +21,12 @@ projects[dkan_datastore][download][tag] = 7.x-1.9
 
 projects[visualization_entity][download][type] = git
 projects[visualization_entity][download][url] = https://github.com/NuCivic/visualization_entity.git
-projects[visualization_entity][download][revision] = 14f01aba3a3f55a34cd2268d4f46d42792bec019
+projects[visualization_entity][download][revision] = 74ba9ca8629ec38ddfa016ac1b46d3f65ca9dfe7
 projects[visualization_entity][type] = module
 
 projects[visualization_entity_charts][download][type] = git
 projects[visualization_entity_charts][download][url] = https://github.com/NuCivic/visualization_entity_charts.git
-projects[visualization_entity_charts][download][revision] = 902393db995dd5c7e8a75b6945e3066ab7112a5f
+projects[visualization_entity_charts][download][revision] = 23d9a7123024700a5b40510de14aa47c9fdcf220
 projects[visualization_entity_charts][type] = module
 
 ; Includes, since we're doing non-recusive
@@ -34,8 +34,8 @@ projects[visualization_entity_charts][type] = module
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.9/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.9/dkan_datastore.make
 
-includes[visualization_entity_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
-includes[visualization_entity_charts_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
+includes[visualization_entity_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity/74ba9ca8629ec38ddfa016ac1b46d3f65ca9dfe7/visualization_entity.make
+includes[visualization_entity_charts_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/23d9a7123024700a5b40510de14aa47c9fdcf220/visualization_entity_charts.make
 
 includes[dkan_data_story_make] = modules/dkan/dkan_data_story/dkan_data_story.make
 
