@@ -506,4 +506,27 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       return;
     }
   }
+
+  /**
+   * @Given :provider previews are :setting for :format_name resources
+   *
+   * Changes variables in the database to enable or disable external previews
+   */
+  public function externalPreviewsAreEnabledForFormat($provider, $setting, $format_name)
+  {
+    $format = current(taxonomy_get_term_by_name($format_name, 'format'));
+    $preview_settings = variable_get("dkan_dataset_format_previews_tid{$format->tid}", array());
+    // If $setting was "enabled," the preview is turned on. Otherwise, it's
+    // turned off.
+    $preview_settings[$provider] = ($setting == 'enabled') ? $provider : 0;
+    variable_set("dkan_dataset_format_previews_tid{$format->tid}", $preview_settings);
+  }
+
+  /**
+   * @Then I should see the local preview link
+   */
+  public function iShouldSeeTheLocalPreviewLink()
+  {
+      $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', variable_get('site_name', t('Local'))));
+  }
 }
