@@ -15,8 +15,7 @@ Feature: Panels
       And I scroll to the top
       And I fill in "edit-body-value" with "Custom item body."
       And I press "Finish"
-      And I wait for "2" seconds
-      And I press "Save"
+      And I wait and press "Save"
       And I wait for "New Custom Item"
 
   @api @javascript
