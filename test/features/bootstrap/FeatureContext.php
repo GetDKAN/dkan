@@ -424,26 +424,76 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       }
     }
 
-    /**
-     * @Given :provider previews are :setting for :format_name resources
-     *
-     * Changes variables in the database to enable or disable external previews
-     */
-    public function externalPreviewsAreEnabledForFormat($provider, $setting, $format_name)
-    {
-      $format = current(taxonomy_get_term_by_name($format_name, 'format'));
-      $preview_settings = variable_get("dkan_dataset_format_previews_tid{$format->tid}", array());
-      // If $setting was "enabled," the preview is turned on. Otherwise, it's
-      // turned off.
-      $preview_settings[$provider] = ($setting == 'enabled') ? $provider : 0;
-      variable_set("dkan_dataset_format_previews_tid{$format->tid}", $preview_settings);
-    }
+  /************************************/
+  /* Gravatar                         */
+  /************************************/
 
-    /**
-     * @Then I should see the local preview link
-     */
-    public function iShouldSeeTheLocalPreviewLink()
-    {
-        $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', variable_get('site_name', t('Local'))));
+  /**
+   * @Then /^I should see a gravatar link in the "([^"]*)" region$/
+   */
+  public function iShouldSeeAGravatarLinkInTheRegion($region)
+  {
+    $regionObj = $this->getMainContext()->getRegion($region);
+    $elements = $regionObj->findAll('css', 'img');
+    if (!empty($elements)) {
+      foreach ($elements as $element) {
+        if ($element->hasAttribute('src')) {
+          $value = $element->getAttribute('src');
+          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
+            return;
+          }
+        }
+      }
+    }
+    throw new \Exception(sprintf('The element gravatar link was not found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
+  }
+
+  /**
+   * @Then /^I should not see a gravatar link in the "([^"]*)" region$/
+   */
+  public function iShouldNotSeeAGravatarLinkInTheRegion($region)
+  {
+    $regionObj = $this->getMainContext()->getRegion($region);
+    $elements = $regionObj->findAll('css', 'img');
+    $match = FALSE;
+    if (!empty($elements)) {
+      foreach ($elements as $element) {
+        if ($element->hasAttribute('src')) {
+          $value = $element->getAttribute('src');
+          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
+            $match = TRUE;
+          }
+        }
+      }
+    }
+    if ($match) {
+      throw new \Exception(sprintf('The element gravatar link was found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
+    }
+    else {
+      return;
     }
   }
+
+  /**
+   * @Given :provider previews are :setting for :format_name resources
+   *
+   * Changes variables in the database to enable or disable external previews
+   */
+  public function externalPreviewsAreEnabledForFormat($provider, $setting, $format_name)
+  {
+    $format = current(taxonomy_get_term_by_name($format_name, 'format'));
+    $preview_settings = variable_get("dkan_dataset_format_previews_tid{$format->tid}", array());
+    // If $setting was "enabled," the preview is turned on. Otherwise, it's
+    // turned off.
+    $preview_settings[$provider] = ($setting == 'enabled') ? $provider : 0;
+    variable_set("dkan_dataset_format_previews_tid{$format->tid}", $preview_settings);
+  }
+
+  /**
+   * @Then I should see the local preview link
+   */
+  public function iShouldSeeTheLocalPreviewLink()
+  {
+      $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', variable_get('site_name', t('Local'))));
+  }
+}

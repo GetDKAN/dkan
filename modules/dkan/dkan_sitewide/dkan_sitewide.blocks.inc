@@ -136,7 +136,7 @@ function dkan_sitewide_data_extent_block() {
        $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
        $output = "var dataExtent = " . $geojson;
        $output .= "; var map = L.map('map');
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a>'
         }).addTo(map);
 
@@ -173,7 +173,7 @@ function dkan_sitewide_license_block() {
         if (isset($license['uri'])) {
           $output = l($license['label'], $license['uri']) . '<br/>';
           $output .= l(
-            '<img class="open-data" src="http://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]">',
+            '<img class="open-data" src="https://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]">',
             $license['uri'],
             array('html' => TRUE)
           );
