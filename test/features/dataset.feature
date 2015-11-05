@@ -23,7 +23,7 @@ Feature: Datasets
   Scenario: Viewing the Dataset
     Given I am on "/dataset/wisconsin-polling-places"
     Then I should see "Polling places in the state of Wisconsin"
-    And I should see "Explore Data"
+    And I should see "Explore"
     And I should see "Dataset Info"
     And I should see "Modified Date"
     And I should see "Identifier"
@@ -72,3 +72,20 @@ Feature: Datasets
     When I am on "/dataset/wisconsin-polling-places"
     Then I should not see "Edit"
     And I should see "Add Resource"
+
+  @api @javascript
+  Scenario: Data previews when only local enabled
+    Given cartodb previews are disabled for csv resources
+    And I am on "/dataset/wisconsin-polling-places"
+    Then I should see "Explore Data"
+    And I should not see "Open with"
+
+  @api @javascript
+  Scenario: Open data previews in external services
+    Given cartodb previews are enabled for csv resources
+    And I am logged in as a user with the "administrator" role
+    And I am on "/dataset/wisconsin-polling-places"
+    Then I should see "Open With"
+    When I press "Open With"
+    Then I should see the local preview link
+    And I should see "CartoDB"
