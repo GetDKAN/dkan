@@ -2,9 +2,11 @@
 
 use Behat\Behat\Context\Context;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
+use Devinci\DevinciExtension\Context\JavascriptContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
@@ -15,6 +17,8 @@ use WebDriver\Key;
  */
 class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
 {
+
+  protected $jsContext;
 
   /**
    * @Given /^I scroll to the top$/
@@ -260,6 +264,35 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * @BeforeScenario
+   */
+  public function gatherContexts(BeforeScenarioScope $scope) {
+    $environment = $scope->getEnvironment();
+
+    $this->jsContext = $environment->getContext('Devinci\DevinciExtension\Context\JavascriptContext');
+  }
+
+
+  /**
+   * Wait to click on something in case it does not appear immediately (javascript)
+   *
+   * @Given I wait and press :text
+   */
+  public function iWaitAndPress($text) {
+    $wait = $this->jsContext->maximum_wait;
+    try {
+      $found = $this->jsContext->spin(function ($context) use ($text) {
+        $context->getSession()->getPage()->pressButton($text);
+        return (TRUE);
+      }, $wait);
+      return $found;
+    }
+    catch(\Exception $e) {
+      throw new \Exception( "Couldn't find button $text within $wait seconds");
+    }
+  }
+
+  /**
    * Use xpath to find 'admin-menu' top bar.
    * @todo maybe rewrite with simpler way then xpath?
    *
@@ -472,5 +505,28 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     else {
       return;
     }
+  }
+
+  /**
+   * @Given :provider previews are :setting for :format_name resources
+   *
+   * Changes variables in the database to enable or disable external previews
+   */
+  public function externalPreviewsAreEnabledForFormat($provider, $setting, $format_name)
+  {
+    $format = current(taxonomy_get_term_by_name($format_name, 'format'));
+    $preview_settings = variable_get("dkan_dataset_format_previews_tid{$format->tid}", array());
+    // If $setting was "enabled," the preview is turned on. Otherwise, it's
+    // turned off.
+    $preview_settings[$provider] = ($setting == 'enabled') ? $provider : 0;
+    variable_set("dkan_dataset_format_previews_tid{$format->tid}", $preview_settings);
+  }
+
+  /**
+   * @Then I should see the local preview link
+   */
+  public function iShouldSeeTheLocalPreviewLink()
+  {
+      $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', variable_get('site_name', t('Local'))));
   }
 }
