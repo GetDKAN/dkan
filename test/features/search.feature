@@ -4,11 +4,16 @@ Feature: Search
   As a website user
   I need to be able to search for a word
 
-  Scenario: Searching for a dataset
+  @debugEach
+  Scenario: Searching-dataset
     Given I am on "/about"
-    When I fill in "search" with "Madison" in the "header" region
-      And I press "edit-submit"
-    Then I should see "Wisconsin Polling Places"
+    And datasets:
+      | title           |
+      | Dataset 01      |
+    And I am on the "Dataset 01" page
+    And I search for "Dataset 01"
+    And I search for "Dataset 01"
+    Then I should see "Dataset 01" in the search results
 
   Scenario: See number of datasets on search page
     Given I am on "/dataset"

@@ -2,7 +2,7 @@ default:
   suites:
      default:
         contexts:
-          #- FeatureContext
+          - FeatureContext
           - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MinkContext
           - Drupal\DrupalExtension\Context\MessageContext
@@ -11,6 +11,14 @@ default:
           - Drupal\DKANExtension\Context\PageContext
           - Drupal\DKANExtension\Context\GroupContext
           - Drupal\DKANExtension\Context\DatasetContext
+          - Drupal\DKANExtension\Context\SearchAPIContext:
+              search_forms:
+                default:
+                  form_css: '#dkan-sitewide-dataset-search-form'
+                  form_field: 'edit-search'
+                  form_button: 'edit-submit'
+                  results_css: '.view-dkan-datasets'
+                  result_item_css: '.views-row'
           - Drupal\DKANExtension\Context\ResourceContext
           - Devinci\DevinciExtension\Context\DebugContext:
               asset_dump_path: %paths.base%/../assets

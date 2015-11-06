@@ -95,25 +95,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * @Given /^I am a "([^"]*)" of the group "([^"]*)"$/
-   */
-  public function iAmAMemberOfTheGroup($role, $group_name) {
-    $nid = db_query('SELECT nid FROM node WHERE title = :group_name', array(':group_name' =>  $group_name))->fetchField();
-
-    if ($account = $this->getCurrentUser()) {
-      og_group('node', $nid, array(
-        "entity type" => "user",
-        "entity" => $account,
-        "membership type" => OG_MEMBERSHIP_TYPE_DEFAULT,
-      ));
-    }
-    else {
-      throw new \InvalidArgumentException(sprintf('Could not find current user'));
-    }
-
-  }
-
-  /**
    * Properly inputs item in field rendered by Chosen.js.
    *
    *
@@ -257,10 +238,10 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Wait for the given number of seconds. ONLY USE FOR DEBUGGING!
    *
-   * @Given /^I wait for "([^"]*)" seconds$/
+   * @Given I wait for :time second(s)
    */
-  public function iWaitForSeconds($arg1) {
-    sleep($arg1);
+  public function iWaitForSeconds($time) {
+    sleep($time);
   }
 
   /**
