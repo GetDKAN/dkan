@@ -15,7 +15,7 @@ projects[dkan_dataset][download][branch] = 7.x-1.x
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datastore.git
-projects[dkan_datastore][download][branch] = 7.x-1.x
+projects[dkan_datastore][download][branch] = feeds-upgrade
 
 ; NuCivic Visualization tools
 
@@ -32,7 +32,7 @@ projects[visualization_entity_charts][type] = module
 ; Includes, since we're doing non-recusive
 
 includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
-includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
+includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/feeds-upgrade/dkan_datastore.make
 
 includes[visualization_entity_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
 includes[visualization_entity_charts_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
