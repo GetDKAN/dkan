@@ -16,9 +16,6 @@ Feature: Datasets
     When I click "Creative Commons Attribution"
     Then I should see "The Creative Commons Attribution license allows re-distribution and re-use of a licensed work"
 
-
-  Scenario: See Users datasets
-
   @javascript
   Scenario: Viewing the Dataset
     Given I am on "/dataset/wisconsin-polling-places"
@@ -89,3 +86,15 @@ Feature: Datasets
     When I press "Open With"
     Then I should see the local preview link
     And I should see "CartoDB"
+
+  @api
+  Scenario: Save using "Additional Info"
+    Given I am logged in as a user with the "authenticated user" role
+    And I am on "/node/add/dataset"
+    When I fill in "title" with "Test Dataset"
+    And I fill in "body[und][0][value]" with "Test description"
+    And I press "Next: Add data"
+    When I fill in "title" with "Test Resource Link File"
+    When I press "Next: Additional Info"
+    Then I should see "Test Dataset"
+    And I should see "Test description"
