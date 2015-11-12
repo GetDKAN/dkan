@@ -31,7 +31,7 @@ function dkan_additional_setup() {
           array('dkan_revert_feature', array('dkan_sitewide_menu', array('content_menu_links', 'menu_links'))),
           array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
           array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
-          array('dkan_revert_feature', array('dkan_sitewide_roles_perms', array('user_permission', 'og_features_permission'))),
+          array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
           array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
           array('dkan_revert_feature', array('dkan_data_story_storyteller_role', array('user_role', 'roles_permissions'))),
           array('dkan_revert_feature', array('dkan_sitewide_profile_page', array('menu_custom', 'menu_links'))),
@@ -87,7 +87,7 @@ function dkan_install_markdown(&$context) {
  */
 function dkan_enable_roles_perms(&$context) {
   $context['message'] = t('Enabling Sitewide Roles and Permissions');
-  module_enable(array('dkan_sitewide_roles_perms'));
+  module_enable(array('dkan_permissions'));
 }
 
 
@@ -181,7 +181,7 @@ function dkan_misc_variables_set(&$context) {
  *
  * @param $context
  */
-function dkan_set_adminrole(&$context) {
-  $context['message'] = t('Setting user admin role');
-  dkan_sitewide_roles_perms_set_admin_role();
-}
+// function dkan_set_adminrole(&$context) {
+//   $context['message'] = t('Setting user admin role');
+//   dkan_sitewide_roles_perms_set_admin_role();
+// }
