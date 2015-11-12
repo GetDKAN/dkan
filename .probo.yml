@@ -1,0 +1,7 @@
+steps:
+  - name: Site Setup
+    plugin: Drupal
+    makeFile: 'build-dkan.make'
+    profileName: 'dkan'
+    runInstall: true
+    clearCaches: true
