@@ -75,6 +75,11 @@ default:
         social: '.pane-dkan-sitewide-dkan-sitewide-social'
         other access: '.pane-dkan-sitewide-dkan-sitewide-other-access'
         datasets: '.view-dkan-datasets'
+        user profile: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
+        tabs: '.field-group-htabs-wrapper'
+        content: '.view-content'
+        user content: '.view-user-profile-search'
+        content search: '.form-item-query'
       text:
         log_out: "Log out"
         log_in: "Log in"
