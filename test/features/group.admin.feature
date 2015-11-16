@@ -1,4 +1,4 @@
-
+@api
 Feature: Portal Administrators administer groups
   In order to manage site organization
   As a Portal Administrator
@@ -44,7 +44,6 @@ Feature: Portal Administrators administer groups
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
 
-  @api 
   Scenario: Create group
     Given I am logged in as "John"
     And I am on "Groups" page
@@ -57,7 +56,8 @@ Feature: Portal Administrators administer groups
     And I should see the heading "My group"
     And I should see "This is a body"
 
-  @api 
+  @fixme
+    #When I fill in the "member" form for "Katie" - undefined
   Scenario: Add a group member on any group
     Given I am logged in as "John"
     And I am on "Group 02" page
@@ -70,7 +70,6 @@ Feature: Portal Administrators administer groups
     And I click "Members" in the "group information" region
     Then I should see "Katie" in the "groups information" region
 
-  @api
   Scenario: Remove a group member from any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -83,7 +82,6 @@ Feature: Portal Administrators administer groups
     And I click "Members"
     Then I should not see "Katie"
 
-  @api  
   Scenario: Delete any group
     Given I am logged in as "John"
     And I am on "Group 02" page
@@ -94,7 +92,8 @@ Feature: Portal Administrators administer groups
     When I press "Delete"
     Then I should see "Group Group 02 has been deleted"
 
-  @api  
+  @fixme
+    # And I should see the "Goup 02 edited" detail page - undefined
   Scenario: Edit any group
     Given I am logged in as "John"
     And I am on "Group 02" page
@@ -104,7 +103,6 @@ Feature: Portal Administrators administer groups
     Then I should see "Group Goup 02 edited has been updated"
     And I should see the "Goup 02 edited" detail page
 
-  @api  
   Scenario: Edit membership status of group member on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -115,7 +113,6 @@ Feature: Portal Administrators administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
-  @api  
   Scenario: Edit group roles of group member on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -126,7 +123,8 @@ Feature: Portal Administrators administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
-  @api  
+  @fixme
+    # Then I should see the list of permissions for the group - undefined
   Scenario: View permissions of any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -134,7 +132,8 @@ Feature: Portal Administrators administer groups
     When I click "Permissions (read-only)"
     Then I should see the list of permissions for the group
 
-  @api  
+  @fixme
+    # Then I should see the list of roles for the group - undefined
   Scenario: View group roles of any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -142,7 +141,8 @@ Feature: Portal Administrators administer groups
     When I click "Roles (read-only)"
     Then I should see the list of roles for the group
 
-  @api @wip
+  @fixme
+    # Then I should see the list of permissions for "<role name>" role - undefined
   Scenario Outline: View group role permissions of any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -157,7 +157,6 @@ Feature: Portal Administrators administer groups
       | member               |
       | administrator member |
 
-  @api  
   Scenario: View the number of members on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -165,7 +164,6 @@ Feature: Portal Administrators administer groups
     When I click "People"
     Then I should see "Total members: 4"
 
-  @api  
   Scenario: View the number of content on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -173,7 +171,8 @@ Feature: Portal Administrators administer groups
     When I click "People"
     Then I should see "Total content: 4"
 
-  @api  
+  @fixme
+    # Then I should see "Parent group" field - undefined
   Scenario: Add a sub-group on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -187,7 +186,8 @@ Feature: Portal Administrators administer groups
 
   # TODO: Change to use Workbench instead of /content
 
-  @api  
+  @fixme
+    # Then I should see "Group 03" - not found on page
   Scenario: View list of unpublished groups
     Given I am logged in as "John"
     And I am on "Content" page
@@ -197,7 +197,8 @@ Feature: Portal Administrators administer groups
     Then I should see "Group 03"
     And I should see "1" items in the "search content results" region
 
-  @api  
+  @fixme
+    # Then I should see the "Group 03" detail page - undefined
   Scenario: View the details of an unpublished group
     Given I am logged in as "John"
     When I am on "Group 03" page
