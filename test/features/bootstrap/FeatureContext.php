@@ -272,42 +272,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       throw new \Exception( "Couldn't find button $text within $wait seconds");
     }
   }
-
-  /**
-   * Use xpath to find 'admin-menu' top bar.
-   * @todo maybe rewrite with simpler way then xpath?
-   *
-   * @Then I should see the administration menu
-   */
-  public function iShouldSeeTheAdministrationMenu()
-  {
-    $session = $this->getSession();
-    $page = $session->getPage();
-    $xpath = "//div[@id='admin-menu']";
-    // grab the element
-    $element = $page->find('xpath', $xpath);
-    if(!isset($element)){
-      throw new Exception(sprintf("Admin menu not found in this page."));
-    }
-  }
-
-  /**
-   * Use xpath to find format option.
-   * @todo maybe rewrite with simpler way then xpath?
-   *
-   * @Then I should have an :option text format option
-   */
-  public function iShouldHaveAnTextFormatOption($option)
-  {
-    $session = $this->getSession();
-    $page = $session->getPage();
-    $xpath = "//select[@name='body[und][0][format]']//option[@value='" . $option . "']";
-    // grab the element
-    $element = $page->find('xpath', $xpath);
-    if(!isset($element)){
-      throw new Exception(sprintf("Admin menu not found in this page."));
-    }
-  }
+  
 
   /**
    * @When I attach the drupal file :arg1 to :arg2
