@@ -87,7 +87,6 @@ test:
         parallel: true
         files:
           - test/features/administrator.feature
-          - test/features/bootstrap
           - test/features/data_dashboard.feature
           - test/features/dataset.admin.feature
           - test/features/dataset.all.feature
@@ -97,7 +96,7 @@ test:
           - test/features/datastore.feature
           - test/features/dkan_data_story_ui.feature
           - test/features/editor.feature
-          - test/features/gravatar.feature
+          #- test/features/gravatar.feature
           - test/features/group.admin.feature
           - test/features/group.all.feature
           - test/features/group.author.feature
@@ -113,7 +112,6 @@ test:
           - test/features/resource.editor.feature
           - test/features/role_storyteller.feature
           - test/features/search.feature
-          - test/features/test.feature
           - test/features/user.admin.feature
           - test/features/user.all.feature
           - test/features/user.author.feature
