@@ -1,0 +1,36 @@
+ahoyapi: v1
+version: 0.0.0
+commands:
+  up:
+    cmd: "ahoy docker compose up -d"
+    usage: Start the docker-compose containers.
+  proxy-up:
+    cmd: "docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy"
+    usage: Run the nginx-proxy container
+  stop:
+    cmd: "ahoy docker compose stop"
+    usage: Stop the docker-compose containers (non-destructive).
+  ps:
+    cmd: "ahoy docker compose ps"
+    usage: List the running docker-compose containers.
+  ip:
+    cmd: "docker-machine ip default"
+    usage: Show the ip address f the default docker machine VM
+  reset:
+    cmd: "ahoy docker compose stop && ahoy docker compose rm && ahoy docker compose up -d"
+    usage: Start the docker compose-containers.
+  exec:
+    cmd: docker exec -it $(ahoy docker compose ps -q cli) bash -c '{{args}}'
+    usage: run a command in the docker-compose cli service container.
+  mysql:
+    cmd: "docker exec -it $(ahoy docker compose ps -q cli) bash -c 'mysql -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
+    usage: Connect to the default mysql database.
+  mysql-import:
+    cmd: "docker exec -i $(ahoy docker compose ps -q cli) bash -c 'mysql -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
+    usage: Pipe in a sql file.  `ahoy mysql-import < backups/live.sql`
+  mysql-dump:
+    cmd: "docker exec -it $(docker-compose -f  ps -q cli) bash -c 'mysqldump -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
+    usage: Dump data out into a file. `ahoy mysql-import > backups/local.sql`
+  compose:
+    cmd: docker-compose -f dkan/.ahoy/docker-compose.yml {{args}}
+    usage: Abstraction for docker-compose
