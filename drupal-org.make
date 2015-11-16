@@ -153,6 +153,8 @@ projects[nuboot_radix][type] = theme
 projects[radix][type] = theme
 projects[radix][version] = 3.0-rc4
 
+projects[field_reference_delete][download][version] = 7.x-1.0-beta1
+
 ; Libraries
 libraries[font_awesome][type] = libraries
 libraries[font_awesome][download][type] = git
