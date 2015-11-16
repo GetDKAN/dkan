@@ -127,10 +127,9 @@ Feature: Dataset Features
     And I should see "3" items in the "datasets" region
     And I should see the list with "Desc" order by "title"
 
-
-  # TODO : Reseting the search will make all the datasets appear in the results including pre-made
-  #        datasets, should be fixed
   @fixme
+    # TODO : Reseting the search will make all the datasets appear in the results including pre-made
+    #        datasets, should be fixed
   Scenario: Reset dataset search filters
     Given I am on "Datasets" page
     When I fill in "Dataset 01" for "Search" in the "datasets" region
@@ -142,102 +141,91 @@ Feature: Dataset Features
     And I should see "7" items in the "datasets" region
 
   @fixme
-    #Then I should see "Gov (1)" in the "filter by tag" region
+    # Then I should see "Gov (1)" in the "filter by tag" region -- not found
   Scenario: View available tag filters for datasets
     Given I am on "Datasets" page
     Then I should see "Health (2)" in the "filter by tag" region
     Then I should see "Gov (1)" in the "filter by tag" region
 
 
-  # TODO: their resource format is not being indexed properly by datasets,
-  #       so newly created datasets will not be filterable by resource format
   @fixme
+    # TODO: their resource format is not being indexed properly by datasets,
+    #       so newly created datasets will not be filterable by resource format
   Scenario: View available resource format filters for datasets
     Given I am on "Datasets" page
     Then I should see "CVS (2)" in the "filter by resource format" region
     Then I should see "XLS (1)" in the "filter by resource format" region
 
-  @api 
   Scenario: View available author filters for datasets
     Given I am on "Datasets" page
     Then I should see "Gabriel (2)" in the "filter by author" region
     Then I should see "Katie (1)" in the "filter by author" region
 
-  # TODO: 3 datasets are created in the test but the DKAN site has 4 datasets pre-made,
-  #       so the default search page will have 7 datasets instead of 3
+  # TODO: 5 datasets are created in the test but the DKAN site has 4 datasets pre-made,
+  #       so the default search page will have 9 datasets instead of 5
   #       the expected number of datasets are increased to reflect this, but should be fixed later
 
-  @api 
   Scenario: Filter dataset search results by tags
     Given I am on "Datasets" page
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "9 datasets"
+    And I should see "9" items in the "datasets" region
     When I click "Health" in the "filter by tag" region
     Then I should see "2 datasets"
     And I should see "2" items in the "datasets" region
 
-  @api 
   Scenario: Filter dataset search results by resource format
     Given I am on "Datasets" page
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "9 datasets"
+    And I should see "9" items in the "datasets" region
     When I click "CVS" in the "filter by resource format" region
     Then I should see "2 datasets"
     And I should see "2" items in the "datasets" region
 
-  @api 
   Scenario: Filter dataset search results by author
     Given I am on "Datasets" page
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "9 datasets"
+    And I should see "9" items in the "datasets" region
     When I click "Gabriel" in the "filter by author" region
     Then I should see "2 datasets"
     And I should see "2" items in the "datasets" region
 
-  @api 
   Scenario: View published dataset
     Given I am on "Datasets" page
     When I click "Dataset 01"
     # I should see the license information
     Then I should see "Dataset 01" detail page
 
-  @api 
   Scenario: Share published dataset on Google +
     Given I am on "Dataset 01" page
     When I click "Google+" in the "social" region
     Then I should be redirected to "Google+" sharing page for "Dataset 01"
 
-  @api 
   Scenario: Share published dataset on Twitter
     Given I am on "Dataset 01" page
     When I click "Twitter" in the "social" region
     Then I should be redirected to "Twitter" sharing page for "Dataset 01"
 
-  @api 
   Scenario: Share published dataset on Facebook
     Given I am on "Dataset 01" page
     When I click "Facebook" in the "social" region
     Then I should be redirected to "Facebook" sharing page for "Dataset 01"
 
-  @api 
   Scenario: View published dataset information as JSON
     Given I am on "Dataset 01" page
     When I click "JSON" in the "other access" region
     Then I should see the content in "JSON" format
 
-  @api 
   Scenario: View published dataset information as RDF
     Given I am on "Dataset 01" page
     When I click "RDF" in the "other access" region
     Then I should see the content in "RDF" format
 
-  @api 
   Scenario: Download file from published dataset
     Given I am on "Dataset 01" page
     When I press "Download" in the "Resource 01" row
     Then A file should be downloaded
 
-  # TODO: Needs definition
-  @api 
+  @fixme
+    # TODO: Needs definition
   Scenario: View a list of suggested datasets when viewing a dataset
     Given I am on the homepage
