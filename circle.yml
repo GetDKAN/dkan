@@ -121,7 +121,7 @@ test:
     - cd test; bash features-tests.sh:
         parallel: true
   post:
-    - cp -a assets $CIRCLE_ARTIFACTS
+    - cp -av assets $CIRCLE_ARTIFACTS
 #    - bundle exec rake jasmine:ci: # add an extra test type
 #        environment:
 #          RAILS_ENV: test
