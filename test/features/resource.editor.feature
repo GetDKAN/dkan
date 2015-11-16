@@ -36,15 +36,15 @@ Feature: Resource
       | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        |
     And "Format" terms:
       | name    |
-      | CVS     |
+      | cvs     |
       | XLS     |
     And resources:
-      | title       | publisher | resource format | dataset    | author   | published | description |
-      | Resource 01 | Group 01  | CVS             | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 02 | Group 01  | XLS             | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 03 | Group 01  | XLS             | Dataset 02 | Celeste  | No        | Yes         |
-      | Resource 04 | Group 01  | CVS             | Dataset 01 | Katie    | No        | Yes         |
-      | Resource 05 | Group 02  | XLS             | Dataset 02 | Celeste  | Yes       | Yes         |
+      | title       | publisher | format | dataset    | author   | published | description |
+      | Resource 01 | Group 01  | cvs    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 02 | Group 01  | xls    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 03 | Group 01  | xls    | Dataset 02 | Celeste  | No        | Yes         |
+      | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
+      | Resource 05 | Group 02  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
 
   # TODO: Change to use Workbench instead of /content
 
