@@ -37,6 +37,7 @@ function dkan_additional_setup() {
           array('dkan_revert_feature', array('dkan_sitewide_profile_page', array('menu_custom', 'menu_links'))),
           array('dkan_build_menu_links', array()),
           array('dkan_flush_image_styles', array()),
+          array('dkan_default_content_base_install', array()),
           array('dkan_colorizer_reset', array()),
           array('dkan_misc_variables_set', array()),
           array('dkan_set_adminrole', array()),
@@ -147,7 +148,6 @@ function dkan_colorizer_reset(&$context) {
   $palette = colorizer_get_palette($theme_key, $instance);
   $file = colorizer_update_stylesheet($theme_key, $theme_key, $palette);
   clearstatcache();
-  dkan_default_content_base_install();
 }
 
 /**
