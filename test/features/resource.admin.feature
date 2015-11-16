@@ -1,4 +1,5 @@
-@javascript
+@javascript @api
+# in the resource tests, when it uses "Given resources:" it defines a property called 'datastore created' with either a 'yes' or 'no', which is used in some tests -  should I try to map that when creating the resource in resourceContext? @Frank
 Feature: Resource
 
   Background:
@@ -48,7 +49,6 @@ Feature: Resource
 
   # TODO: Change to use Workbench instead of /content
 
-  @api
   Scenario: Edit any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -59,7 +59,6 @@ Feature: Resource
     When I am on "Content" page
     Then I should see "Resource 02 edited"
 
-  @api
   Scenario: Publish any resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
@@ -69,20 +68,20 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 04 has been updated"
 
-  # TODO
-
-  @api @fixme
+  @fixme
+    # TODO
   Scenario: Unpublish any resource
     Given I am on the homepage
 
-  @api
   Scenario: Manage Datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @api @fixme
+  @fixme
+    # And I press "Import" - button not found
+    # And I wait - undefined
   Scenario: Import items on datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -93,7 +92,8 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @api @fixme
+  @fixme
+    # And I press "Delete items" - button not found
   Scenario: Delete items on datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
@@ -105,7 +105,8 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @api @fixme
+  @fixme
+    # When I press "Drop datastore" - button not found
   Scenario: Drop datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
@@ -117,7 +118,6 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @api
   Scenario: Add revision to any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -129,9 +129,8 @@ Feature: Resource
     When I click "Revisions"
     Then I should see "current revision"
 
-  # TODO: Admins do not have access to revert a resource to a previous revision
-
-  @api @fixme
+  @fixme
+    # TODO: Admins do not have access to revert a resource to a previous revision
   Scenario: Revert any resource revision
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -146,7 +145,6 @@ Feature: Resource
     Then I should see "Resource 02"
       And I should not see "Resource 02 edited"
 
-  @api
   Scenario: Delete any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -154,6 +152,3 @@ Feature: Resource
     And I press "Delete"
     And I press "Delete"
     Then I should see "Resource Resource 02 has been deleted"
-
-
-    # in the resource tests, when it uses "Given resources:" it defines a property called 'datastore created' with either a 'yes' or 'no', which is used in some tests -  should I try to map that when creating the resource in resourceContext? @Frank
