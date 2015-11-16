@@ -40,9 +40,9 @@ Feature: Portal Administrators administer groups
       | Dataset 02 | Group 01  | price      | Katie   | No        | Cost of oil in January     |
       | Dataset 03 | Group 01  | election   | Gabriel | Yes       | Election districts         |
     And resources:
-      | title       | publisher | resource format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | csv             | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | html            | Katie  | Yes       | Dataset 01 |             |
+      | title       | publisher | format | author | published | dataset    | description |
+      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
 
   @api 
   Scenario: Create group

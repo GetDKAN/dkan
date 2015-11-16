@@ -46,10 +46,10 @@ Feature: Dataset Features
       | Dataset 04 | Group 02  | Celeste | No               | election |             |
       | Dataset 05 | Group 01  | Katie   | No               | election |             |
     And resources:
-      | title       | publisher | resource format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | csv             | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | html            | Katie  | Yes       | Dataset 01 |             |
-      | Resource 03 | Group 01  | html            | Katie  | Yes       | Dataset 02 |             |
+      | title       | publisher | format | author | published | dataset    | description |
+      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
+      | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 |             |
 
   # TODO: Requires workbench to be in place, not installed in data_starter at this time
   @api @fixme
