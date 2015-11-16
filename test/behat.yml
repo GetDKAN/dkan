@@ -12,6 +12,7 @@ default:
           - Drupal\DKANExtension\Context\PageContext
           - Drupal\DKANExtension\Context\GroupContext
           - Drupal\DKANExtension\Context\DatasetContext
+          - Drupal\DKANExtension\Context\DataDashboardContext
           - Drupal\DKANExtension\Context\SearchAPIContext:
               search_forms:
                 default:
