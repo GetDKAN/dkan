@@ -1,9 +1,10 @@
-@javascript
+@javascript @api
 Feature: Resource
 
   Background:
     Given pages:
       | title         | url         |
+       # TODO: Change to use Workbench admin screen instead of /content and /node/add
       | My Workbench  | /node/add/  |
       | Content       | /user       |
     Given users:
@@ -47,9 +48,6 @@ Feature: Resource
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
 
-  # TODO: Change to use Workbench instead of /content
-
-  @api
   Scenario: Create resource
     Given I am logged in as "Katie"
     And I am on "My Workbench" page
@@ -61,21 +59,16 @@ Feature: Resource
     When I am on "Content" page
     Then I should see "Resource 06"
 
-  # TODO: Needs definition.
-
-  @api @fixme
+  @fixme
+     # TODO: Needs definition.
   Scenario: Create resources with GeoJSON data
     Given I am on the homepage
 
-  # TODO: Needs definition.
-
-  @api @fixme
+  @fixme
+    # TODO: Needs definition.
   Scenario: Bureau & Program Code are auto populated on creation
     Given I am on the homepage
 
-  # TODO: Change to use Workbench instead of /content
-
-  @api
   Scenario: Edit own resource
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
@@ -86,23 +79,20 @@ Feature: Resource
     When I am on "Content" page
     Then I should see "Resource 02 edited"
 
-  @api
   Scenario: A data contributor should not be able to publish resources
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
     When I click "Edit"
     Then I should not see "Publishing options"
 
-  # TODO: Needs definition. How can a data contributor unpublish content?
-
-  @api @fixme
+  @fixme
+     # TODO: Needs definition. How can a data contributor unpublish content?
   Scenario: Unpublish own resource
     Given I am on the homepage
 
-  # TODO: Managing own datastore not currently supported for authenticated users
-  # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
-
-  @api @fixme
+  @fixme
+    # TODO: Managing own datastore not currently supported for authenticated users
+    # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
   Scenario: Manage datastore of own resource
     Given I am logged in as "Katie"
     And I am on "Resource 01" page
@@ -110,9 +100,8 @@ Feature: Resource
     And I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  # TODO: Add manage datastore support for created resources in DKAN Extension
-
-  @api @fixme
+  @fixme
+    # TODO: Add manage datastore support for created resources in DKAN Extension
   Scenario: Import items on datastore of own resource
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
@@ -123,9 +112,8 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  # TODO: Add manage datastore support for created resources in DKAN Extension
-
-  @api @fixme
+  @fixme
+    # TODO: Add manage datastore support for created resources in DKAN Extension
   Scenario: Delete items on datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -137,9 +125,8 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  # TODO: Add manage datastore support for created resources in DKAN Extension
-
-  @api @fixme
+  @fixme
+    # TODO: Add manage datastore support for created resources in DKAN Extension
   Scenario: Drop datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -151,7 +138,6 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @api
   Scenario: Add revision to own resource
     Given I am logged in as "Katie"
     And I am on "Resource 02" page

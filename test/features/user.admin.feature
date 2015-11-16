@@ -1,4 +1,4 @@
-
+@api @javascript
 Feature: User
 
   Background:
@@ -40,7 +40,7 @@ Feature: User
       | Dataset 03 | Group 01  | Gabriel | Yes              | Gov      | Test        |
       | Dataset 04 | Group 01  | Katie   | Yes              | Health   | Test        |
 
-  @api @javascript
+
   Scenario: Edit any user account
     Given I am logged in as "John"
     And I am on "Users" page
@@ -52,10 +52,8 @@ Feature: User
     And I click "About" in the "tabs" region
     Then I should see "This is Katie!"
 
-
-  # TODO: There is an error submitting the form for a new user, so test is not passing currently
-
-  @api @fixme
+  @fixme
+     # TODO: There is an error submitting the form for a new user, so test is not passing currently
   Scenario: Create user
     Given I am logged in as "John"
     And I am on "Users" page
@@ -68,7 +66,6 @@ Feature: User
     And I press "Create new account"
     Then I should see "Created a new user account for Micaela."
 
-  @api  
   Scenario: Block user
     Given I am logged in as "John"
     And I am on "Users" page
@@ -79,7 +76,6 @@ Feature: User
     When I am on "Users" page
     Then I should see "blocked" in the "Katie" row
 
-  @api @javascript
   Scenario: Disable user
     Given I am logged in as "John"
     And I am on "Users" page
@@ -89,7 +85,6 @@ Feature: User
     And I press "Cancel account"
     Then I wait for "Katie has been disabled"
 
-  @api  
   Scenario: Modify user roles
     Given I am logged in as "John"
     And I am on "Users" page
@@ -101,9 +96,8 @@ Feature: User
     When I am on "Users" page
     Then I should see "storyteller" in the "Jaz" row
 
-  # TODO: Needs definition
-
-  @api  
+  @fixme
+    # TODO: Needs definition
   Scenario: Search users
     Given I am on the homepage
 
