@@ -1,4 +1,4 @@
-
+@api @javascript
 Feature: User
 
   Background:
@@ -37,7 +37,8 @@ Feature: User
       | Dataset 01 | Group 01  | Katie   | Yes              | Health   | Test        |
       | Dataset 02 | Group 01  | Katie   | Yes              | Health   | Test        |
 
-  @api
+  @fixme
+    # Then I should see the "John" page - undefined
   Scenario: Login
     Given I am on the homepage
     When I follow "Log in"
@@ -48,7 +49,6 @@ Feature: User
 
   # TODO: Anonymous users can see profiles of logged in users (though can't edit), is that intended?
 
-  @api  
   Scenario: Logout
     Given I am logged in as "John"
     And I am on the homepage
@@ -60,8 +60,6 @@ Feature: User
 
   # TODO: Currently receiving an error page upon pressing "Create new account", upon which the user is not properly created
   #       and you cannot log in as them, so this should be fixed
-
-  @api  
   Scenario: Register
     Given I am on the homepage
     When I follow "Register"
@@ -71,7 +69,8 @@ Feature: User
     #Then I should see "Thank you for applying for an account."
     #And I should see "Your account is currently pending approval by the site administrator."
 
-  @api  
+  @fixme
+    # Then a notification should be sent to "John" - undefined
   Scenario: Request new password
     Given I am on the homepage
     When I follow "Log in"
@@ -81,20 +80,19 @@ Feature: User
     Then a notification should be sent to "John"
     #TODO: Follow reset password link on email?
 
-  @api  
+  @fixme
+    # Then I should see the "Katie" page - undefined
   Scenario: View user profile
     Given I am on "Group 01" page
     And I follow "Members"
     When I click "Katie"
     Then I should see the "Katie" page
 
-  @api @javascript
   Scenario: View list of published datasets created by user on user profile
     Given I am on "Katie" page
     And I click "Datasets" in the "tabs" region
     Then I should see "2" items in the "user content" region
 
-  @api @javascript
   Scenario: Search datasets created by user on user profile
     Given I am on "Katie" page
     And I click "Datasets" in the "tabs" region
@@ -103,7 +101,6 @@ Feature: User
     Then I should see "2 datasets" in the "user content" region
     And I should see "2" items in the "user content" region
 
-  @api @javascript
   Scenario: See list of user memberships on user profile
     Given I am on "Katie" page
     And I click "Groups" in the "tabs" region

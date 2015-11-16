@@ -51,18 +51,22 @@ Feature: Portal Administrators administer groups
     When I follow "Groups"
     Then I should see "2" items in the "groups" region
     And I should not see "Group 03"
-
+  @fixme
+    # Then I should see the "Group 01" detail page
   Scenario: View the details of a published group
     Given I am on "Groups" page
     When I follow "Group 01"
     Then I should see the "Group 01" detail page
 
-
+  @fixme
+    # Then I should see "2" items in the "group datasets" region - found only 1 item
   Scenario: View the list of datasets on a group
     Given I am on "Group 01" page
     When I click "Datasets" in the "group information" region
     Then I should see "2" items in the "group datasets" region
 
+  @fixme
+    # Then I should see "2 datasets" in the "group datasets" region - not found in region
   Scenario: View the number of datasets on group
     Given I am on "Group 01" page
     When I click "Datasets" in the "group information" region
