@@ -272,7 +272,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       throw new \Exception( "Couldn't find button $text within $wait seconds");
     }
   }
-  
+
 
   /**
    * @When I attach the drupal file :arg1 to :arg2
