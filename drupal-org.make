@@ -154,7 +154,9 @@ projects[radix][type] = theme
 projects[radix][version] = 3.0-rc4
 
 projects[field_reference_delete][download][version] = 7.x-1.0-beta1
-projects[field_reference_delete][patch][1] = patches/ref_field_sync-entity-load-multiple-1928680-1.patch
+
+; Apply a patch to ref_field (included elsewhere?)
+projects[ref_field][patch][1] = patches/ref_field_sync-entity-load-multiple-1928680-1.patch
 
 ; Libraries
 libraries[font_awesome][type] = libraries
