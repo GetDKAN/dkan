@@ -91,7 +91,7 @@ Background:
     And I should see "Change to Needs Review" in the "Dataset 04" row
     When I click "Change to Needs Review" in the "Dataset 04" row
     Then I should see "Needs Review" as "Moderation state" in the "Dataset 04" row
-    And "Admin" user should receive an email
+    And user "Admin" should receive an email
 
   @fixme
     # TODO: Requires workbench to be in place, not installed in data_starter at this time

@@ -5,9 +5,9 @@ default:
           - FeatureContext
           - Drupal\DrupalExtension\Context\MinkContext
           - Drupal\DrupalExtension\Context\MessageContext
-          - Drupal\DrupalExtension\Context\DrushContext
           - Drupal\DKANExtension\Context\DKANContext
           - Drupal\DKANExtension\Context\EntityStore
+          - Drupal\DKANExtension\Context\MailContext
           - Drupal\DKANExtension\Context\PageContext
           - Drupal\DKANExtension\Context\GroupContext
           - Drupal\DKANExtension\Context\DatasetContext
