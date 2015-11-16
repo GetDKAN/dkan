@@ -908,12 +908,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "c12384ce2c698085ad2e008ce010b9fbb7e7bc59"
+                "reference": "fbe9b99d115bcecd3bc8af73727e0fc94c17183e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/c12384ce2c698085ad2e008ce010b9fbb7e7bc59",
-                "reference": "c12384ce2c698085ad2e008ce010b9fbb7e7bc59",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/fbe9b99d115bcecd3bc8af73727e0fc94c17183e",
+                "reference": "fbe9b99d115bcecd3bc8af73727e0fc94c17183e",
                 "shasum": ""
             },
             "require": {
@@ -941,7 +941,7 @@
                 "test",
                 "web"
             ],
-            "time": "2015-11-16 22:07:11"
+            "time": "2015-11-16 23:11:10"
         },
         {
             "name": "psr/http-message",
