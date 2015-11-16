@@ -2,7 +2,7 @@ default:
   suites:
      default:
         contexts:
-          #- FeatureContext
+          - FeatureContext
           - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MinkContext
           - Drupal\DrupalExtension\Context\MessageContext
@@ -25,7 +25,7 @@ default:
           - Devinci\DevinciExtension\Context\DebugContext:
               asset_dump_path: %paths.base%/../assets
           - Devinci\DevinciExtension\Context\JavascriptContext:
-              maximum_wait: 30
+              maximum_wait: 10
   formatters:
     pretty:
       output_styles:
