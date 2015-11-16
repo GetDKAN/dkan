@@ -106,6 +106,8 @@ Feature: Portal Administrators administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
+  @fixme
+   # Then I should see the list of permissions for the group - undefined
   Scenario: View permissions of group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -113,6 +115,8 @@ Feature: Portal Administrators administer groups
     When I click "Permissions (read-only)"
     Then I should see the list of permissions for the group
 
+  @fixme
+     # Then I should see the list of roles for the group - undefined
   Scenario: View group roles of group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -120,6 +124,8 @@ Feature: Portal Administrators administer groups
     When I click "Roles (read-only)"
     Then I should see the list of roles for the group
 
+  @fixme
+     # Then I should see the list of permissions for "<role name>" role - undefined
   Scenario Outline: View group role permissions of group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -144,8 +150,6 @@ Feature: Portal Administrators administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
-  @fixme
-    # Then I should see the list of permissions for the group - undefined
   Scenario: View the number of members on group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -153,8 +157,6 @@ Feature: Portal Administrators administer groups
     When I click "People"
     Then I should see "Total members: 4"
 
-  @fixme
-    # Then I should see the list of roles for the group - undefined
   Scenario: View the number of content on group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page

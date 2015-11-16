@@ -1,4 +1,4 @@
-@javascript
+@javascript @api
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -37,9 +37,8 @@ Feature: Dataset Features
       | Dataset 04 | Group 02  | Celeste | No               | election |             |
       | Dataset 05 | Group 01  | Katie   | No               | election |             |
 
-  # TODO: needs review page not defined, determine where that may be
-
-  @api @fixme
+  @fixme
+    # TODO: needs review page not defined, determine where that may be
   Scenario: Review any dataset
     Given I am logged in as "John"
     When I am on "Needs Review" page
@@ -49,7 +48,6 @@ Feature: Dataset Features
     When I am on "Needs Review" page
     Then I should not see "Dataset 05"
 
-  @api
   Scenario: Edit any dataset
     Given I am logged in as "John"
     And I am on "Dataset 03" page
@@ -58,7 +56,6 @@ Feature: Dataset Features
     And I press "Finish"
     Then I should see "Dataset Dataset 03 edited has been updated"
 
-  @api
   Scenario: Delete any dataset
     Given I am logged in as "John"
     And I am on "Dataset 03" page
@@ -67,7 +64,8 @@ Feature: Dataset Features
     And I press "Delete"
     Then I should see "Dataset Dataset 03 has been deleted"
 
-  @api
+  @fixme
+    # And I select "Published" - undefined
   Scenario: Publish any dataset
     Given I am logged in as "John"
     And I am on "Dataset 05" page
