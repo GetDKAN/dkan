@@ -1,4 +1,4 @@
-@javascript
+@javascript @api
 Feature: Resource
 
   Background:
@@ -48,7 +48,6 @@ Feature: Resource
 
   # TODO: Change to use Workbench instead of /content
 
-  @api
   Scenario: Edit resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
@@ -59,7 +58,6 @@ Feature: Resource
     When I am on "Dataset 01" page
     Then I should see "Resource 01 edited"
 
-  @api
   Scenario: I should not be able to edit resources of groups that I am not a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 05" page
@@ -68,7 +66,7 @@ Feature: Resource
   # TODO: Permissions are not set so that a group member can publish any resources of their group,
   #       this test will need to wait until that is set
 
-  @api @fixme
+  @fixme
   Scenario: Publish resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 04" page
@@ -77,7 +75,6 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 04 edited has been updated"
 
-  @api
   Scenario: Delete resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
@@ -86,17 +83,15 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource Resource 01 has been deleted"
 
-  @api
   Scenario: Manage datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  # TODO:  Make possible to add items to datastore upon resource creation with extension to test
-  #         deleting  items and dropping datastore. Currently tests for empty items only (check commented for original)
-
-  @api
+  @fixme
+    # TODO:  Make possible to add items to datastore upon resource creation with extension to test
+    #         deleting  items and dropping datastore. Currently tests for empty items only (check commented for original)
   Scenario: Import items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
@@ -108,11 +103,10 @@ Feature: Resource
     #And I should see "imported items total"
     Then I should see "There is nothing to manage!"
 
-  # TODO:  Make possible to add items to datastore upon resource creation with extension to test
-  #         deleting  items and dropping datastore. Currently tests for empty items only (check commented for original)
-  #
-
-  @api @fixme
+  @fixme
+    # TODO:  Make possible to add items to datastore upon resource creation with extension to test
+    #         deleting  items and dropping datastore. Currently tests for empty items only (check commented for original)
+    #
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 04" page
@@ -125,10 +119,10 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  # TODO:  Make possible to add items to datastore upon resource creation with extension to test
-  #         deleting  items and dropping datastore. Currently tests for empty items only (check commented for original)
-
-  @api 
+  @fixme
+    # TODO:  Make possible to add items to datastore upon resource creation with extension to test
+    #         deleting  items and dropping datastore. Currently tests for empty items only (check commented for original)
+    #
   Scenario: Drop datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 04" page
@@ -142,7 +136,7 @@ Feature: Resource
     #Then I should see "No imported items."
     Then I should see "There is nothing to manage!"
 
-  @api @fixme
+  @fixme
   Scenario: Add revision to resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
@@ -155,7 +149,7 @@ Feature: Resource
     And I click "first" revision
     Then I should see "Resource 01 edited"
 
-  @api @fixme
+  @fixme
   Scenario: Revert resource revision of any resource associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page

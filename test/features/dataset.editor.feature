@@ -1,4 +1,4 @@
-@javascript
+@javascript @api
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -52,7 +52,6 @@ Background:
     | Resource 02 | Group 01  | xls    | Katie  | Yes       | Dataset 01 |             |
     | Resource 03 | Group 01  | xls    | Katie  | Yes       | Dataset 02 |             |
 
-  @api  
   Scenario: Edit any dataset associated with the groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Dataset 03" page
@@ -61,8 +60,8 @@ Background:
     And I press "Finish"
     Then I should see "Dataset Dataset 03 edited has been updated"
 
+  @fixme
     # TODO: Requires workbench to be in place, not installed in data_starter at this time
-  @api @fixme
   Scenario: Review any dataset associated with a group that I am a member of
     Given I am logged in as "Gabriel"
     When I am on "Needs Review" page
@@ -72,7 +71,8 @@ Background:
     When I am on "Needs Review" page
     Then I should not see "Dataset 05"
 
-  @api  
+  @fixme
+    #  And I select "Published" - undefined
   Scenario: Publish any dataset associated with the groups I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Dataset 05" page
@@ -82,8 +82,8 @@ Background:
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
 
-  # TODO: Requires workbench to be in place, not installed in data_starter at this time
-  @api  @fixme
+  @fixme
+    # TODO: Requires workbench to be in place, not installed in data_starter at this time
   Scenario: Receive a notification when a dataset is created by a member of the groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "My drafts" page
@@ -93,8 +93,8 @@ Background:
     Then I should see "Needs Review" as "Moderation state" in the "Dataset 04" row
     And "Admin" user should receive an email
 
-  # TODO: Requires workbench to be in place, not installed in data_starter at this time
-  @api  @fixme
+  @fixme
+    # TODO: Requires workbench to be in place, not installed in data_starter at this time
   Scenario: I should not receive notifications of content created outside of the groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "My drafts" page
@@ -104,13 +104,11 @@ Background:
     Then I should see "Needs Review" as "Moderation state" in the "Dataset 04" row
     And "Gabriel" should not receive an email
 
-  @api  
   Scenario: I should not be able to edit datasets of groups that I am not a member of
     Given I am logged in as "Gabriel"
     When I am on "Dataset 04" page
     Then I should not see the link "Edit"
 
-  @api  
   Scenario: Delete any dataset associated with the groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Dataset 03" page

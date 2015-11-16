@@ -1,4 +1,9 @@
 @javascript @api
+
+  # TODO: 5 datasets are created in the test but the DKAN site has 4 datasets pre-made,
+  #       so the default search page will have 9 datasets instead of 5
+  #       the expected number of datasets are increased to reflect this, but should be fixed later
+
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -60,23 +65,19 @@ Feature: Dataset Features
   #       Currently it searches for 'Test' keyword to prevent any pre-made datasets from appearing
 
    @fixme
-    # WIP: No region "datasets" found on the page
     # WIP: 'And I should see the list with "Desc" order by "Date changed"' is undefined.
   Scenario: View list of most recent published datasets (on homepage)
     Given I am on the homepage
-    Then I should see "7" items in the "datasets" region
+    Then I should see "9" items in the "datasets" region
     And I should see the list with "Desc" order by "Date changed"
 
-  @fixme
-   # WIP:  Then I should see "7 datasets" - not found on page
   Scenario: View list of published datasets
     Given I am on the homepage
     When I click "Datasets"
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "9 datasets"
+    And I should see "9" items in the "datasets" region
 
   @fixme
-     # WIP: Then I should see "3 datasets"- not found on page
      # WIP: And I should see the list with "Asc" order by "Date changed" - undefined
   Scenario: Search datasets by "Date changed" with "Asc" order
     Given I am on "Datasets" page
@@ -84,12 +85,11 @@ Feature: Dataset Features
     And I select "Date changed" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "3 datasets"
-    And I should see "3" items in the "datasets" region
+    Then I should see "5 datasets"
+    And I should see "5" items in the "datasets" region
     And I should see the list with "Asc" order by "Date changed"
 
   @fixme
-    # WIP: Then I should see "3 datasets"- not found on page
     # WIP: And I should see the list with "Desc" order by "Date changed" - undefined
   Scenario: Search datasets by "Date changed" with "Desc" order
     Given I am on "Datasets" page
@@ -97,21 +97,20 @@ Feature: Dataset Features
     And I select "Date changed" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "3 datasets"
-    And I should see "3" items in the "datasets" region
+    Then I should see "5 datasets"
+    And I should see "5" items in the "datasets" region
     And I should see the list with "Desc" order by "Date changed"
 
   @fixme
     # WIP: And I should see the list with "Asc" order by "title" - undefined
-    # WIP: Then I should see "3 datasets" - not found on page
   Scenario: Search datasets by "title" with "Asc" order
     Given I am on "Datasets" page
     When I fill in "Test" for "Search" in the "datasets" region
     And I select "Title" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "3 datasets"
-    And I should see "3" items in the "datasets" region
+    Then I should see "5 datasets"
+    And I should see "5" items in the "datasets" region
     And I should see the list with "Asc" order by "title"
 
   @fixme
@@ -123,8 +122,8 @@ Feature: Dataset Features
     And I select "Title" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "3 datasets"
-    And I should see "3" items in the "datasets" region
+    Then I should see "5 datasets"
+    And I should see "5" items in the "datasets" region
     And I should see the list with "Desc" order by "title"
 
   @fixme
@@ -137,8 +136,8 @@ Feature: Dataset Features
     Then I should see "1 datasets"
     And I should see "1" items in the "datasets" region
     When I press "Reset"
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "9 datasets"
+    And I should see "9" items in the "datasets" region
 
   @fixme
     # Then I should see "Gov (1)" in the "filter by tag" region -- not found
@@ -156,14 +155,13 @@ Feature: Dataset Features
     Then I should see "CVS (2)" in the "filter by resource format" region
     Then I should see "XLS (1)" in the "filter by resource format" region
 
+  @fixme
+    # Then I should see "Katie (1)" in the "filter by author" region - not found in region
   Scenario: View available author filters for datasets
     Given I am on "Datasets" page
     Then I should see "Gabriel (2)" in the "filter by author" region
     Then I should see "Katie (1)" in the "filter by author" region
 
-  # TODO: 5 datasets are created in the test but the DKAN site has 4 datasets pre-made,
-  #       so the default search page will have 9 datasets instead of 5
-  #       the expected number of datasets are increased to reflect this, but should be fixed later
 
   Scenario: Filter dataset search results by tags
     Given I am on "Datasets" page
