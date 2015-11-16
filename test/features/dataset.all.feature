@@ -45,13 +45,13 @@ Feature: Dataset Features
       | Dataset 05 | Group 01  | Katie   | No               | Gov      | Test        |
     And "Format" terms:
       | name    |
-      | CVS     |
-      | XLS     |
+      | csv     |
+      | xls     |
     And resources:
-      | title       | publisher | resource format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | CVS             | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | XLS            | Katie  | Yes       | Dataset 01 |             |
-      | Resource 03 | Group 01  | XLS            | Katie  | Yes       | Dataset 02 |             |
+      | title       | publisher | format | author | published | dataset    | description |
+      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | xls    | Katie  | Yes       | Dataset 01 |             |
+      | Resource 03 | Group 01  | xls    | Katie  | Yes       | Dataset 02 |             |
 
   # TODO: Since there is content already created in dkan profile,
   #       care must be taken when trying to filter the datasets in the site's search engine
