@@ -1,4 +1,4 @@
-@javascript
+@javascript @api
 Feature: Portal Administrators administer groups
   In order to manage site organization
   As a Portal Administrator
@@ -44,7 +44,8 @@ Feature: Portal Administrators administer groups
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
 
-  @api
+  @fixme
+    # And I should see the "Group 01 edited" detail page - undefined
   Scenario: Edit group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -54,7 +55,6 @@ Feature: Portal Administrators administer groups
     Then I should see "Group Goup 01 edited has been updated"
     And I should see the "Group 01 edited" detail page
 
-  @api
   Scenario: Add group member on a group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -68,7 +68,6 @@ Feature: Portal Administrators administer groups
     And I click "Members" in the "group information" region
     Then I should see "Martin" in the "group information" region
 
-  @api
   Scenario: Remove group member from a group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -81,14 +80,12 @@ Feature: Portal Administrators administer groups
     And I click "Members" in the "group information" region
     Then I should not see "Katie" in the "group information" region
 
-  @api
   Scenario: I should not be able to edit a group that I am not a member of
     Given I am logged in as "Gabriel"
     When I am on "Group 02" page
     Then I should not see the link "Edit" in the "primary tabs" region
     And I should not see the link "Group" in the "primary tabs" region
 
-  @api
   Scenario: Edit membership status of group member as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -99,7 +96,6 @@ Feature: Portal Administrators administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
-  @api
   Scenario: Edit group roles of group member as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -110,7 +106,6 @@ Feature: Portal Administrators administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
-  @api
   Scenario: View permissions of group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -118,7 +113,6 @@ Feature: Portal Administrators administer groups
     When I click "Permissions (read-only)"
     Then I should see the list of permissions for the group
 
-  @api
   Scenario: View group roles of group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -126,7 +120,6 @@ Feature: Portal Administrators administer groups
     When I click "Roles (read-only)"
     Then I should see the list of roles for the group
 
-  @api
   Scenario Outline: View group role permissions of group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -141,7 +134,6 @@ Feature: Portal Administrators administer groups
     | member               |
     | administrator member |
 
-  @api
   Scenario: Approve new group members as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -152,7 +144,8 @@ Feature: Portal Administrators administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
-  @api
+  @fixme
+    # Then I should see the list of permissions for the group - undefined
   Scenario: View the number of members on group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -160,7 +153,8 @@ Feature: Portal Administrators administer groups
     When I click "People"
     Then I should see "Total members: 4"
 
-  @api
+  @fixme
+    # Then I should see the list of roles for the group - undefined
   Scenario: View the number of content on group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
