@@ -118,10 +118,10 @@ test:
           - test/features/vis_entity_embeds.feature
           - test/features/widgets.feature
           - test/features/role_storyteller.feature
-    - cd test; bash features-tests.sh:
-        parallel: true
+    - cd test; bash features-tests.sh
   post:
-    - cp -av assets $CIRCLE_ARTIFACTS
+    - echo CIRCLE_ARTIFACTS; cp -av assets $CIRCLE_ARTIFACTS:
+        parallel: true
 #    - bundle exec rake jasmine:ci: # add an extra test type
 #        environment:
 #          RAILS_ENV: test
