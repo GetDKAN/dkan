@@ -109,7 +109,7 @@ Feature: Dataset Features
     And I am on "Needs Review" page
     When I click "Change to Published" in the "Dataset 05" row
     Then I should see "Email notification sent"
-    And "Katie" user should receive an email
+    And user "Katie" should receive an email
 
   # TODO: Your groups field is not being found
   @api  @fixme

@@ -64,20 +64,19 @@ Feature: User
     Given I am on the homepage
     When I follow "Register"
     And I fill in "Username" with "newuser"
-    And I fill in "E-mail address" with "newuser@email.com"
+    And I fill in "E-mail address" with "newuser@example.com"
     And I press "Create new account"
     #Then I should see "Thank you for applying for an account."
     #And I should see "Your account is currently pending approval by the site administrator."
 
-  @fixme
-    # Then a notification should be sent to "John" - undefined
+  @mail
   Scenario: Request new password
     Given I am on the homepage
     When I follow "Log in"
     And I follow "Request new password"
-    And I fill in "Username or e-mail address" with "john@test.com"
+    And I fill in "Username or e-mail address" with "john@example.com"
     And I press "E-mail new password"
-    Then a notification should be sent to "John"
+    Then user "John" should receive an email
     #TODO: Follow reset password link on email?
 
   @fixme
