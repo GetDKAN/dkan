@@ -71,14 +71,12 @@ Background:
     When I am on "Needs Review" page
     Then I should not see "Dataset 05"
 
-  @fixme
-    #  And I select "Published" - undefined
   Scenario: Publish any dataset associated with the groups I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Dataset 05" page
     When I click "Edit"
     When I click "Publishing options"
-    And I select "Published"
+    And I check the box "Published"
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
 
