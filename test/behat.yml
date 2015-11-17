@@ -77,6 +77,8 @@ default:
         user profile: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
         tabs: '.field-group-htabs-wrapper'
         content: '.view-content'
+        groups: '.view-content'
+        search content results: '.content'
         user content: '.view-user-profile-search'
         content search: '.form-item-query'
       text:

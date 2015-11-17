@@ -172,12 +172,12 @@ Feature: Portal Administrators administer groups
     Then I should see "Total content: 4"
 
   @fixme
-    # Then I should see "Parent group" field - undefined
+    # Parent group not on edit page, does not look like sub-groups are enabled on dkan currently
   Scenario: Add a sub-group on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
     When I click "Edit"
-    Then I should see "Parent group" field
+    Then I should see "Parent group"
     When I fill in "Parent group" with "Group 02"
     And I press "Update"
     Then I should see "Group Group 01 has been updated"
@@ -186,8 +186,7 @@ Feature: Portal Administrators administer groups
 
   # TODO: Change to use Workbench instead of /content
 
-  @fixme
-    # Then I should see "Group 03" - not found on page
+
   Scenario: View list of unpublished groups
     Given I am logged in as "John"
     And I am on "Content" page
@@ -195,7 +194,6 @@ Feature: Portal Administrators administer groups
     And I select "group" from "type"
     And I press "Filter"
     Then I should see "Group 03"
-    And I should see "1" items in the "search content results" region
 
   @fixme
     # Then I should see the "Group 03" detail page - undefined

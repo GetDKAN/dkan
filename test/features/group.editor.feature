@@ -123,7 +123,7 @@ Feature: Portal Administrators administer groups
     And I am on "Group 01" page
     And I click "Group"
     When I click "Roles (read-only)"
-    Then I should see the list of roles for the group
+    Then I should see the list of roles for the group "Group 01"
 
   @fixme
      # Then I should see the list of permissions for "<role name>" role - undefined
