@@ -49,15 +49,11 @@ Feature: Dataset Features
       | Dataset 03 | Group 01  | Katie   | Yes              | Health   | Test        |
       | Dataset 04 | Group 02  | Celeste | No               | Gov      | Test        |
       | Dataset 05 | Group 01  | Katie   | No               | Gov      | Test        |
-    And "Format" terms:
-      | name    |
-      | abc     |
-      | xyz     |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | abc    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | xyz    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 03 | Group 01  | xyz    | Katie  | Yes       | Dataset 02 |             |
+      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | html    | Katie  | Yes       | Dataset 01 |             |
+      | Resource 03 | Group 01  | html    | Katie  | Yes       | Dataset 02 |             |
 
   # TODO: Since there is content already created in dkan profile,
   #       care must be taken when trying to filter the datasets in the site's search engine
@@ -147,8 +143,8 @@ Feature: Dataset Features
 
   Scenario: View available resource format filters for datasets
     Given I am on "Datasets" page
-    Then I should see "abc (1)" in the "filter by resource format" region
-    Then I should see "xyz (1)" in the "filter by resource format" region
+    Then I should see "csv (5)" in the "filter by resource format" region
+    Then I should see "html (1)" in the "filter by resource format" region
 
 
   Scenario: View available author filters for datasets
@@ -169,9 +165,9 @@ Feature: Dataset Features
     Given I am on "Datasets" page
     Then I should see "7 datasets"
     And I should see "7" items in the "datasets" region
-    When I click "abc" in the "filter by resource format" region
-    Then I should see "1 datasets"
-    And I should see "1" items in the "datasets" region
+    When I click "csv" in the "filter by resource format" region
+    Then I should see "5 datasets"
+    And I should see "5" items in the "datasets" region
 
   Scenario: Filter dataset search results by author
     Given I am on "Datasets" page

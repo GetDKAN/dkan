@@ -43,14 +43,11 @@ Background:
     | Dataset 03 | Group 01  | Katie   | Yes              | Health   | Test        |
     | Dataset 04 | Group 02  | Celeste | No               | Gov      | Test        |
     | Dataset 05 | Group 01  | Katie   | No               | Gov      | Test        |
-  And "Format" terms:
-    | name    |
-    | xls     |
   And resources:
     | title       | publisher | format | author | published | dataset    | description |
     | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-    | Resource 02 | Group 01  | xls    | Katie  | Yes       | Dataset 01 |             |
-    | Resource 03 | Group 01  | xls    | Katie  | Yes       | Dataset 02 |             |
+    | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
+    | Resource 03 | Group 01  | html    | Katie  | Yes       | Dataset 02 |             |
 
   Scenario: Edit any dataset associated with the groups that I am a member of
     Given I am logged in as "Gabriel"

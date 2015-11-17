@@ -43,14 +43,10 @@ Feature: Portal Administrators administer groups
       | Dataset 01 | Group 01  | Health       | Katie   | Yes       | Increase of toy prices     |
       | Dataset 02 | Group 01  | Health       | Katie   | No        | Cost of oil in January     |
       | Dataset 03 | Group 01  | Gov          | Gabriel | Yes       | Election districts         |
-    And "Format" terms:
-      | name    |
-      | abc     |
-      | xyz     |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | abc    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | xyz    | Katie  | Yes       | Dataset 03 |             |
+      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 03 |             |
 
 
   Scenario: View the list of published groups
@@ -96,8 +92,8 @@ Feature: Portal Administrators administer groups
     And I click "Datasets" in the "group information" region
     When I fill in "Dataset" for "Search" in the "group datasets" region
     And I press "Apply"
-    Then I should see "abc (1)" in the "filter by resource format" region
-    And I should see "xyz (1)" in the "filter by resource format" region
+    Then I should see "csv (1)" in the "filter by resource format" region
+    And I should see "html (1)" in the "filter by resource format" region
 
   Scenario: View available "author" filters after search
     Given I am on "Group 01" page
@@ -120,7 +116,7 @@ Feature: Portal Administrators administer groups
     And I click "Datasets" in the "group information" region
     When I fill in "Dataset" for "Search" in the "group datasets" region
     And I press "Apply"
-    When I click "abc (1)" in the "filter by resource format" region
+    When I click "csv (1)" in the "filter by resource format" region
     Then I should see "1 datasets" in the "group datasets" region
     And I should see "1" items in the "group datasets" region
 
