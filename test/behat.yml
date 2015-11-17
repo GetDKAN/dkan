@@ -3,14 +3,28 @@ default:
      default:
         contexts:
           - FeatureContext
-          - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MinkContext
           - Drupal\DrupalExtension\Context\MessageContext
-          - Drupal\DrupalExtension\Context\DrushContext
+          - Drupal\DKANExtension\Context\DKANContext
+          - Drupal\DKANExtension\Context\EntityStore
+          - Drupal\DKANExtension\Context\MailContext
+          - Drupal\DKANExtension\Context\PageContext
+          - Drupal\DKANExtension\Context\GroupContext
+          - Drupal\DKANExtension\Context\DatasetContext
+          - Drupal\DKANExtension\Context\DataDashboardContext
+          - Drupal\DKANExtension\Context\SearchAPIContext:
+              search_forms:
+                default:
+                  form_css: '#dkan-sitewide-dataset-search-form'
+                  form_field: 'edit-search'
+                  form_button: 'edit-submit'
+                  results_css: '.view-dkan-datasets'
+                  result_item_css: '.views-row'
+          - Drupal\DKANExtension\Context\ResourceContext
           - Devinci\DevinciExtension\Context\DebugContext:
               asset_dump_path: %paths.base%/../assets
           - Devinci\DevinciExtension\Context\JavascriptContext:
-              maximum_wait: 30
+              maximum_wait: 10
   formatters:
     pretty:
       output_styles:
@@ -48,6 +62,23 @@ default:
         search_area: '.panel-col-last'
         dropdown_links: '.comment-main .links.inline.dropdown-menu'
         comment: '.comment-main'
+        navigation: '.navigation-wrapper'
+        primary tabs: '.tabs--primary'
+        group subscribe: '.group-subscribe-message'
+        group information: '.field-group-htabs-wrapper'
+        group datasets: '#node_group_full_group_tab_datasets'
+        group members: '#node_group_full_group_tab_members'
+        filter by resource format: '.facetapi-facet-field-resourcesfield-format'
+        filter by author: '.facetapi-facet-author'
+        filter by tag: '.facetapi-facet-field-tags'
+        social: '.pane-dkan-sitewide-dkan-sitewide-social'
+        other access: '.pane-dkan-sitewide-dkan-sitewide-other-access'
+        datasets: '.view-dkan-datasets'
+        user profile: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
+        tabs: '.field-group-htabs-wrapper'
+        content: '.view-content'
+        user content: '.view-user-profile-search'
+        content search: '.form-item-query'
       text:
         log_out: "Log out"
         log_in: "Log in"
@@ -67,3 +98,18 @@ local:
         drupal_root: '/var/www/dkan/webroot'
       drush:
         root: '/var/www/dkan/webroot'
+docker:
+  extensions:
+    Behat\MinkExtension:
+      base_url: http://web
+      #base_url: http://data_starter.local
+      selenium2:
+        wd_host: http://browser:4444/wd/hub
+        #wd_host: http://192.168.10.1:4444/wd/hub
+        browser: chrome
+        #browser: firefox
+    Drupal\DrupalExtension:
+      drupal:
+        drupal_root: '/var/www/docroot'
+      drush:
+        root: '/var/www/docroot'

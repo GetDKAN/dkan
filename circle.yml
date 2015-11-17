@@ -87,22 +87,43 @@ test:
         parallel: true
         files:
           - test/features/administrator.feature
-          - test/features/panels.feature
-          - test/features/groups.feature
+          - test/features/data_dashboard.feature
+          - test/features/dataset.admin.feature
+          - test/features/dataset.all.feature
+          - test/features/dataset.author.feature
+          - test/features/dataset.editor.feature
           - test/features/dataset.feature
           - test/features/datastore.feature
-          - test/features/editor.feature
-          - test/features/home.feature
-          - test/features/search.feature
-          - test/features/widgets.feature
-          - test/features/recline.feature
-          - test/features/data_dashboard.feature
           - test/features/dkan_data_story_ui.feature
+          - test/features/editor.feature
+          # Gravitar tests are broken.
+          #- test/features/gravatar.feature
+          - test/features/group.admin.feature
+          - test/features/group.all.feature
+          - test/features/group.author.feature
+          - test/features/group.editor.feature
+          - test/features/groups.feature
+          - test/features/home.feature
+          - test/features/panels.feature
+          - test/features/profile.feature
+          - test/features/recline.feature
+          - test/features/resource.admin.feature
+          - test/features/resource.all.feature
+          - test/features/resource.author.feature
+          - test/features/resource.editor.feature
           - test/features/role_storyteller.feature
-    - cd test; bash features-tests.sh:
-        parallel: true
+          - test/features/search.feature
+          - test/features/user.admin.feature
+          - test/features/user.all.feature
+          - test/features/user.author.feature
+          # Visualization Entity tests are all broken.
+          # - test/features/vis_entity_embeds.feature
+          - test/features/widgets.feature
+          - test/features/role_storyteller.feature
+    - cd test; bash features-tests.sh
   post:
-    - cp -a assets $CIRCLE_ARTIFACTS
+    - echo CIRCLE_ARTIFACTS; cp -av assets $CIRCLE_ARTIFACTS:
+        parallel: true
 #    - bundle exec rake jasmine:ci: # add an extra test type
 #        environment:
 #          RAILS_ENV: test
