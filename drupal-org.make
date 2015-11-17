@@ -147,7 +147,7 @@ projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_vie
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = 7.x-1.x
+projects[nuboot_radix][download][branch] = fix_problem_with_long_text_on_field_additional_info_civic_159
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
