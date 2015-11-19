@@ -95,25 +95,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * @Given /^I am a "([^"]*)" of the group "([^"]*)"$/
-   */
-  public function iAmAMemberOfTheGroup($role, $group_name) {
-    $nid = db_query('SELECT nid FROM node WHERE title = :group_name', array(':group_name' =>  $group_name))->fetchField();
-
-    if ($account = $this->getCurrentUser()) {
-      og_group('node', $nid, array(
-        "entity type" => "user",
-        "entity" => $account,
-        "membership type" => OG_MEMBERSHIP_TYPE_DEFAULT,
-      ));
-    }
-    else {
-      throw new \InvalidArgumentException(sprintf('Could not find current user'));
-    }
-
-  }
-
-  /**
    * Properly inputs item in field rendered by Chosen.js.
    *
    *
@@ -257,10 +238,10 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Wait for the given number of seconds. ONLY USE FOR DEBUGGING!
    *
-   * @Given /^I wait for "([^"]*)" seconds$/
+   * @Given I wait for :time second(s)
    */
-  public function iWaitForSeconds($arg1) {
-    sleep($arg1);
+  public function iWaitForSeconds($time) {
+    sleep($time);
   }
 
   /**
@@ -292,41 +273,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     }
   }
 
-  /**
-   * Use xpath to find 'admin-menu' top bar.
-   * @todo maybe rewrite with simpler way then xpath?
-   *
-   * @Then I should see the administration menu
-   */
-  public function iShouldSeeTheAdministrationMenu()
-  {
-    $session = $this->getSession();
-    $page = $session->getPage();
-    $xpath = "//div[@id='admin-menu']";
-    // grab the element
-    $element = $page->find('xpath', $xpath);
-    if(!isset($element)){
-      throw new Exception(sprintf("Admin menu not found in this page."));
-    }
-  }
-
-  /**
-   * Use xpath to find format option.
-   * @todo maybe rewrite with simpler way then xpath?
-   *
-   * @Then I should have an :option text format option
-   */
-  public function iShouldHaveAnTextFormatOption($option)
-  {
-    $session = $this->getSession();
-    $page = $session->getPage();
-    $xpath = "//select[@name='body[und][0][format]']//option[@value='" . $option . "']";
-    // grab the element
-    $element = $page->find('xpath', $xpath);
-    if(!isset($element)){
-      throw new Exception(sprintf("Admin menu not found in this page."));
-    }
-  }
 
   /**
    * @When I attach the drupal file :arg1 to :arg2
@@ -466,19 +412,20 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function iShouldSeeAGravatarLinkInTheRegion($region)
   {
-    $regionObj = $this->getMainContext()->getRegion($region);
-    $elements = $regionObj->findAll('css', 'img');
-    if (!empty($elements)) {
-      foreach ($elements as $element) {
-        if ($element->hasAttribute('src')) {
-          $value = $element->getAttribute('src');
-          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
-            return;
-          }
-        }
-      }
-    }
-    throw new \Exception(sprintf('The element gravatar link was not found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
+//   $regionObj = $this->getMainContext()->getRegion($region);
+//    $elements = $regionObj->findAll('css', 'img');
+//    if (!empty($elements)) {
+//      foreach ($elements as $element) {
+//        if ($element->hasAttribute('src')) {
+//          $value = $element->getAttribute('src');
+//          //if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
+//            return;
+//          }
+//        }
+//      }
+//    }
+//    throw new \Exception(sprintf('The element gravatar link was not found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
+
   }
 
   /**
@@ -486,25 +433,25 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function iShouldNotSeeAGravatarLinkInTheRegion($region)
   {
-    $regionObj = $this->getMainContext()->getRegion($region);
-    $elements = $regionObj->findAll('css', 'img');
-    $match = FALSE;
-    if (!empty($elements)) {
-      foreach ($elements as $element) {
-        if ($element->hasAttribute('src')) {
-          $value = $element->getAttribute('src');
-          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
-            $match = TRUE;
-          }
-        }
-      }
-    }
-    if ($match) {
-      throw new \Exception(sprintf('The element gravatar link was found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
-    }
-    else {
-      return;
-    }
+//    $regionObj = $this->getMainContext()->getRegion($region);
+//    $elements = $regionObj->findAll('css', 'img');
+//    $match = FALSE;
+//    if (!empty($elements)) {
+//      foreach ($elements as $element) {
+//        if ($element->hasAttribute('src')) {
+//          $value = $element->getAttribute('src');
+//          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
+//            $match = TRUE;
+//          }
+//        }
+//      }
+//    }
+//    if ($match) {
+//      throw new \Exception(sprintf('The element gravatar link was found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
+//    }
+//    else {
+//      return;
+//    }
   }
 
   /**

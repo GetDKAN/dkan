@@ -1,3 +1,25 @@
+7.x-1.10 2015-11-10
+--------------------------
+DKAN Distribution
+* A number of improvements to our test infrastructure
+* Improved user experience for user photos and Gravatar image fallback
+* Improvements to views on group pages
+* Enabled and improved UX of tools for adding existing visualizations directly into panels layouts
+* Fixed an extremely annoying bug in the Colorizer module that blew away colorizer CSS every time Drupal cron ran (sites using external/system cron were unaffected)
+* Added better HTTPS by loading certain external images over HTTPS
+* Upgraded to Drupal version 7.x-1.41
+* Added a CONTRIBUTING.md file to provide community contribution guidelines for DKAN project.
+
+DKAN Dataset Module https://github.com/NuCivic/dkan_dataset
+* Various improvements to dataset teaser displays.
+* Support for external previews (opening catalogued resources instantly in third-party visualization services, * including ArcGIS and CartoDB)
+* Support for Flaticon at module level, so vector icons work on any theme
+* Minor improvements and bugfixes
+
+NuBoot Radix Theme
+* Style improvements for "open with" button
+* Fix default logo path when svg not available
+
 7.x-1.9 2015-09-17
 --------------------------
 - Added "Data Dashboards" and "Data Stories" content types with customizable layouts
