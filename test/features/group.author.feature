@@ -76,7 +76,7 @@ Feature: Portal Administrators administer groups
     #Then I should see the "Group 01" detail page
     And I should see "Request group membership" in the "group block" region
 
-  @api
+  @fixme @api
   Scenario: I should not be able to edit groups
     Given I am logged in as "Katie"
     When I am on "Group 01" page

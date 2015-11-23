@@ -80,6 +80,7 @@ Feature: Portal Administrators administer groups
     And I click "Members" in the "group block" region
     Then I should not see "Katie" in the "group members" region
 
+  @fixme
   Scenario: I should not be able to edit a group that I am not a member of
     Given I am logged in as "Gabriel"
     When I am on "Group 02" page
