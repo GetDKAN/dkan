@@ -65,8 +65,8 @@ Feature: Portal Administrators administer groups
     And I press "Add users"
     Then I should see "Martin has been added to the group Group 01"
     When I am on "Group 01" page
-    And I click "Members" in the "group information" region
-    Then I should see "Martin" in the "group information" region
+    And I click "Members" in the "group block" region
+    Then I should see "Martin" in the "group members" region
 
   Scenario: Remove group member from a group as group administrator
     Given I am logged in as "Gabriel"
@@ -77,14 +77,14 @@ Feature: Portal Administrators administer groups
     And I press "Remove"
     Then I should see "The membership was removed"
     When I am on "Group 01" page
-    And I click "Members" in the "group information" region
-    Then I should not see "Katie" in the "group information" region
+    And I click "Members" in the "group block" region
+    Then I should not see "Katie" in the "group members" region
 
   Scenario: I should not be able to edit a group that I am not a member of
     Given I am logged in as "Gabriel"
     When I am on "Group 02" page
-    Then I should not see the link "Edit" in the "primary tabs" region
-    And I should not see the link "Group" in the "primary tabs" region
+    Then I should not see the link "Edit"
+    And I should not see the link "Group"
 
   Scenario: Edit membership status of group member as group administrator
     Given I am logged in as "Gabriel"
