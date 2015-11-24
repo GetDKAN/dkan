@@ -51,8 +51,8 @@ Feature: Portal Administrators administer groups
     When I click "Request group membership"
     And I fill in "Request message" with "Please let me join!"
     And I press "Join"
-    Then I should see "Your membership is pending approval." in the "group subscribe" region
-    And I should see "Remove pending membership request" in the "group subscribe" region
+    Then I should see "Your membership is pending approval." in the "group block" region
+    And I should see "Remove pending membership request" in the "group block" region
 
   @api
   Scenario: Cancel membership request
@@ -61,11 +61,11 @@ Feature: Portal Administrators administer groups
     When I click "Request group membership"
     And I fill in "Request message" with "Please let me join!"
     And I press "Join"
-    Then I should see "Remove pending membership request" in the "group subscribe" region
-    When I click "Remove pending membership request" in the "group subscribe" region
+    Then I should see "Remove pending membership request" in the "group block" region
+    When I click "Remove pending membership request" in the "group block" region
     And I press "Remove"
     #Then I should see the "Group 02" detail page
-    And I should see "Request group membership" in the "group subscribe" region
+    And I should see "Request group membership" in the "group block" region
 
   @api
   Scenario: Leave group
@@ -74,9 +74,9 @@ Feature: Portal Administrators administer groups
     When I click "Unsubscribe from group"
     And I press "Remove"
     #Then I should see the "Group 01" detail page
-    And I should see "Request group membership" in the "group subscribe" region
+    And I should see "Request group membership" in the "group block" region
 
-  @api
+  @fixme @api
   Scenario: I should not be able to edit groups
     Given I am logged in as "Katie"
     When I am on "Group 01" page

@@ -474,6 +474,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function iShouldSeeTheLocalPreviewLink()
   {
-      $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', variable_get('site_name', t('Local'))));
+      $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', '') . ' ' . t('Preview'));
   }
 }

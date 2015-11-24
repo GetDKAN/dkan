@@ -67,8 +67,8 @@ Feature: Portal Administrators administer groups
     And I press "Add users"
     Then I should see "Katie has been added to the group Group 02"
     When I am on "Group 02" page
-    And I click "Members" in the "group information" region
-    Then I should see "Katie" in the "groups information" region
+    And I click "Members" in the "group block" region
+    Then I should see "Katie" in the "group members" region
 
   Scenario: Remove a group member from any group
     Given I am logged in as "John"
