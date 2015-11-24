@@ -74,7 +74,7 @@ Feature: Portal Administrators administer groups
 
   Scenario: View the list of group members
     Given I am on "Group 01" page
-    When I click "Members" in the "group information" region
+    When I click "Members" in the "group block" region
     Then I should see "Gabriel" in the "group members" region
     And I should see "Katie" in the "group members" region
     And I should not see "Jaz" in the "group members" region
