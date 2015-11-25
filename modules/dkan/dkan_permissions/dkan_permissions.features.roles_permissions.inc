@@ -12,7 +12,7 @@ function dkan_permissions_default_roles_permissions() {
 
   // Exported role: Site Manager
   $roles['Site Manager'] = array(
-    'name' => 'Site Manager',
+    'name' => 'site manager',
     'weight' => 10,
     'machine_name' => 'site_manager',
     'permissions' => array(
