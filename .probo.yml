@@ -4,4 +4,5 @@ steps:
     makeFile: 'build-dkan.make'
     profileName: 'dkan'
     runInstall: true
-    clearCaches: true
+  - name: Fix Files Folder Permissions
+    command: 'chmod -R 777 /var/www/html/sites/default/files && drush cc all'
