@@ -288,9 +288,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $offset = 'features/bootstrap/FeatureContext.php';
     $dir =  __file__;
     $test_dir = str_replace($offset, "", $dir);
-
-    $path = $test_dir . "files/" . $path;
-
+    $path = $this->getMinkParameter('files_path') . '/' . $path;
     $this->getSession()->getPage()->attachFileToField($field, $path);
   }
 

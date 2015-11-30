@@ -13,3 +13,4 @@ test/dkan
 test/local.yml
 assets/*
 .idea
+behat.local.yml
