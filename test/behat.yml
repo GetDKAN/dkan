@@ -40,6 +40,7 @@ default:
       default_session: 'goutte'
       javascript_session: 'selenium2'
       browser_name: chrome
+      files_path: %paths.base%/files
     Drupal\DrupalExtension:
       blackbox: ~
       drupal:
@@ -87,18 +88,6 @@ default:
         error_message_selector: '.alert.alert-error'
         success_message_selector: '.alert.alert-success'
 
-local:
-  extensions:
-    Behat\MinkExtension:
-      base_url: http://dkan.local
-      browser_name: firefox
-      selenium2:
-        wd_host: http://33.33.33.1:4444/wd/hub
-    Drupal\DrupalExtension:
-      drupal:
-        drupal_root: '/var/www/dkan/webroot'
-      drush:
-        root: '/var/www/dkan/webroot'
 docker:
   extensions:
     Behat\MinkExtension:
