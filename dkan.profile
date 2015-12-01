@@ -31,6 +31,7 @@ function dkan_additional_setup() {
           array('dkan_revert_feature', array('dkan_sitewide_menu', array('content_menu_links', 'menu_links'))),
           array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
           array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
+          array('dkan_revert_feature', array('dkan_dataset_groups_perms', array('og_features_permission'))),
           array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
           array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
           array('dkan_revert_feature', array('dkan_data_story_storyteller_role', array('user_role', 'roles_permissions'))),
