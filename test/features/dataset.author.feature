@@ -14,12 +14,12 @@ Feature: Dataset Features
       | Needs Review | admin/workbench/needs-review |
       | My drafts    | admin/workbench/drafts       |
     Given users:
-      | name    | mail             | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
+      | name    | mail             | roles                   |
+      | John    | john@example.com    | site manager         |
+      | Badmin  | admin@example.com   | site manager         |
       | Gabriel | gabriel@example.com | editor               |
       | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | editor   |
+      | Katie   | katie@example.com   | editor               |
       | Martin  | martin@example.com  | editor               |
       | Celeste | celeste@example.com | editor               |
     Given groups:
@@ -88,7 +88,7 @@ Feature: Dataset Features
     And I should see "Draft" as "Moderation state" in the "Dataset 03 edited" row
 
   # TODO: Needs definition. How can a data contributor unpublish content?
-  @api  
+  @api
   Scenario: Unpublish own dataset
     Given I am on the homepage
 

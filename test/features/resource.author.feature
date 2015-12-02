@@ -9,11 +9,11 @@ Feature: Resource
       | Content       | /user       |
     Given users:
       | name    | mail                | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
-      | Gabriel | gabriel@example.com | authenticated user   |
+      | John    | john@example.com    | site manager         |
+      | Badmin  | admin@example.com   | site manager         |
+      | Gabriel | gabriel@example.com | content creator   |
       | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | authenticated user   |
+      | Katie   | katie@example.com   | content creator   |
       | Martin  | martin@example.com  | editor               |
       | Celeste | celeste@example.com | editor               |
     Given groups:
@@ -91,7 +91,7 @@ Feature: Resource
     Given I am on the homepage
 
   @fixme
-    # TODO: Managing own datastore not currently supported for authenticated users
+    # TODO: Managing own datastore not currently supported for content creators
     # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
   Scenario: Manage datastore of own resource
     Given I am logged in as "Katie"
