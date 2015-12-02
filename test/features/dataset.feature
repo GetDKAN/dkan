@@ -31,7 +31,7 @@ Feature: Datasets
 
   @api @javascript
   Scenario: Create a dataset with a group as a content creator
-    Given I am logged in as a user with the "content creator" role
+    Given I am logged in as a user with the "site manager" role
     And I am on "/node/add/group"
     Then I should see "Create Group"
     When I fill in "title" with "Test Group"
