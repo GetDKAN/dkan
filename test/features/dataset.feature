@@ -30,8 +30,8 @@ Feature: Datasets
     And I wait for "Door Creek Church"
 
   @api @javascript
-  Scenario: Create a dataset with a group as an authenticated user
-    Given I am logged in as a user with the "authenticated user" role
+  Scenario: Create a dataset with a group as a content creator
+    Given I am logged in as a user with the "content creator" role
     And I am on "/node/add/group"
     Then I should see "Create Group"
     When I fill in "title" with "Test Group"
@@ -80,7 +80,7 @@ Feature: Datasets
   @api @javascript
   Scenario: Open data previews in external services
     Given cartodb previews are enabled for csv resources
-    And I am logged in as a user with the "administrator" role
+    And I am logged in as a user with the "site manager" role
     And I am on "/dataset/wisconsin-polling-places"
     Then I should see "Open With"
     When I press "Open With"
@@ -89,7 +89,7 @@ Feature: Datasets
 
   @api
   Scenario: Save using "Additional Info"
-    Given I am logged in as a user with the "authenticated user" role
+    Given I am logged in as a user with the "content creator" role
     And I am on "/node/add/dataset"
     When I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "Test description"

@@ -4,8 +4,8 @@ Feature: Groups
   I need to be able to view the group pages
 
   @api @javascript
-  Scenario: Join a group and edit group content as an Authenticated User
-    Given I am logged in as a user with the "authenticated user" role
+  Scenario: Join a group and edit group content as a Content Creator
+    Given I am logged in as a user with the "content creator" role
     When I visit "dataset/wisconsin-polling-places"
     Then I should not see "edit"
     When I click "Madison Polling Places"
@@ -16,7 +16,7 @@ Feature: Groups
 
   @api @javascript
   Scenario: Request to join a group as an Auth User
-    Given I am logged in as a user with the "authenticated user" role
+    Given I am logged in as a user with the "content creator" role
     When I visit "group/geospatial-data-explorer-examples"
     And I click "Request group membership"
     Then I should see "Are you sure you want to join the group Geospatial Data Explorer Examples?"
@@ -66,7 +66,7 @@ Feature: Groups
     When I press "edit-submit"
     And I wait for "Performed Remove from group"
     Then I should see the success message "Performed Remove from group"
-    Given I am logged in as a user with the "authenticated user" role
+    Given I am logged in as a user with the "content creator" role
     And I am on "/node/add/group"
     Then I should see "Create Group"
     When I fill in "title" with "Test Group"

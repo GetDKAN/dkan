@@ -10,7 +10,7 @@ Feature: Visualization entity embed test.
       And "ve_chart" content:
           | title                           | author      | status   |
           | Viz Entity Test Chart           | admin       | 0        |
-      And I am logged in as a user with the "administrator" role
+      And I am logged in as a user with the "site manager" role
       When I am on "story/dkan-data-story-test-story-post"
       And I wait for "Customize this page"
       And I click "Customize this page"

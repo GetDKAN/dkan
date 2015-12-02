@@ -1,7 +1,7 @@
 @javascript @api
-Feature: Portal Administrators administer groups
+Feature: Site Manager administer groups
   In order to manage site organization
-  As a Portal Administrator
+  As a Site Manager
   I want to administer groups
 
   Portal administrators needs to be able to create, edit, and delete
@@ -15,12 +15,12 @@ Feature: Portal Administrators administer groups
       | Groups    | /groups         |
       | Content   | /admin/content/ |
     Given users:
-      | name    | mail             | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
-      | Gabriel | gabriel@example.com | authenticated user   |
+      | name    | mail                | roles                |
+      | John    | john@example.com    | site manager         |
+      | Badmin  | admin@example.com   | site manager         |
+      | Gabriel | gabriel@example.com | content creator      |
       | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | authenticated user   |
+      | Katie   | katie@example.com   | content creator      |
       | Martin  | martin@example.com  | editor               |
       | Celeste | celeste@example.com | editor               |
     Given groups:
@@ -46,7 +46,7 @@ Feature: Portal Administrators administer groups
 
   @fixme
     # And I should see the "Group 01 edited" detail page - undefined
-  Scenario: Edit group as administrator
+  Scenario: Edit group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     When I click "Edit"
@@ -55,7 +55,7 @@ Feature: Portal Administrators administer groups
     Then I should see "Group Goup 01 edited has been updated"
     And I should see the "Group 01 edited" detail page
 
-  Scenario: Add group member on a group as administrator
+  Scenario: Add group member on a group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     And I click "Group"
@@ -118,7 +118,7 @@ Feature: Portal Administrators administer groups
 
   @fixme
      # Then I should see the list of roles for the group - undefined
-  Scenario: View group roles of group as administrator
+  Scenario: View group roles of group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     And I click "Group"
@@ -127,7 +127,7 @@ Feature: Portal Administrators administer groups
 
   @fixme
      # Then I should see the list of permissions for "<role name>" role - undefined
-  Scenario Outline: View group role permissions of group as administrator
+  Scenario Outline: View group role permissions of group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     And I click "Group"
@@ -141,7 +141,7 @@ Feature: Portal Administrators administer groups
     | member               |
     | administrator member |
 
-  Scenario: Approve new group members as administrator
+  Scenario: Approve new group members as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     And I click "Group"
@@ -151,14 +151,14 @@ Feature: Portal Administrators administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
-  Scenario: View the number of members on group as administrator
+  Scenario: View the number of members on group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     And I click "Group"
     When I click "People"
     Then I should see "Total members: 4"
 
-  Scenario: View the number of content on group as administrator
+  Scenario: View the number of content on group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     And I click "Group"
