@@ -43,7 +43,7 @@ Feature: User
     And I fill in "Username" with "John"
     And I fill in "Password" with "johnpass"
     And I press "Log in"
-    Then I should see the "John" page
+    Then I should see the "John" user page
 
   Scenario: Logout
     Given I am logged in as "John"
@@ -77,7 +77,7 @@ Feature: User
     Given I am on "Group 01" page
     And I follow "Members"
     When I click "Katie"
-    Then I should see the "Katie" page
+    Then I should see the "Katie" user page
 
   Scenario: View list of published datasets created by user on user profile
     Given I am on "Katie" page
