@@ -93,6 +93,7 @@ dependencies[] = views_bulk_operations
 dependencies[] = visualization_entity
 dependencies[] = visualization_entity_charts
 dependencies[] = visualization_entity_embed
+dependencies[] = features_roles_permissions
 
 ; Open data
 dependencies[] = entity_rdf
