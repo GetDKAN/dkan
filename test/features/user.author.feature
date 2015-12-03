@@ -53,20 +53,11 @@ Feature: User
     And I click "About" in the "tabs" region
     Then I should see "This is my profile"
 
-
-  # TODO: Currently, profile of the current user only lists datasets of user that are published, and not published
-  #             content is now shown, tests currently only count for published datasets.
-
   @api @javascript
-  Scenario: View the list of own published and unpublished datasets on profile
+  Scenario: View the list of own published datasets on profile
     Given I am logged in as "Katie"
     And I am on "Katie" page
     Then I should see "2" items in the "content" region
-
-  # TODO: Check if resources are shown on user profile
-  @api @fixme
-  Scenario: View the list of own published and unpublished resources on profile
-    Given I am on the homepage
 
   # TODO: Needs definition.
   @api @fixme
