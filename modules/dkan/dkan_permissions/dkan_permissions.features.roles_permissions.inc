@@ -14,7 +14,6 @@ function dkan_permissions_default_roles_permissions() {
   $roles['administrator'] = array(
     'name' => 'administrator',
     'weight' => 3,
-    'machine_name' => '',
     'permissions' => array(
       'access administration menu' => TRUE,
       'access administration pages' => TRUE,
@@ -270,7 +269,6 @@ function dkan_permissions_default_roles_permissions() {
   $roles['anonymous user'] = array(
     'name' => 'anonymous user',
     'weight' => 0,
-    'machine_name' => '',
     'permissions' => array(
       'access content' => TRUE,
       'access resource node' => TRUE,
@@ -284,7 +282,6 @@ function dkan_permissions_default_roles_permissions() {
   $roles['authenticated user'] = array(
     'name' => 'authenticated user',
     'weight' => 1,
-    'machine_name' => '',
     'permissions' => array(),
   );
 
@@ -292,7 +289,6 @@ function dkan_permissions_default_roles_permissions() {
   $roles['content creator'] = array(
     'name' => 'content creator',
     'weight' => 11,
-    'machine_name' => 'content_creator',
     'permissions' => array(
       'access administration menu' => TRUE,
       'access administration pages' => TRUE,
@@ -324,7 +320,6 @@ function dkan_permissions_default_roles_permissions() {
       'edit own dkan_data_story content' => TRUE,
       'edit own resource content' => TRUE,
       'use gravatar' => TRUE,
-      'use ipe with page manager' => TRUE,
       'use manualcrop' => TRUE,
       'use page manager' => TRUE,
       'use panels in place editing' => TRUE,
@@ -339,7 +334,6 @@ function dkan_permissions_default_roles_permissions() {
   $roles['editor'] = array(
     'name' => 'editor',
     'weight' => 2,
-    'machine_name' => '',
     'permissions' => array(
       'access administration pages' => TRUE,
       'access content' => TRUE,
@@ -358,6 +352,8 @@ function dkan_permissions_default_roles_permissions() {
       'administer taxonomy' => TRUE,
       'change layouts in place editing' => TRUE,
       'change own username' => TRUE,
+      'clear dkan_file feeds' => TRUE,
+      'clear dkan_link feeds' => TRUE,
       'create dataset content' => TRUE,
       'create fieldable basic_file' => TRUE,
       'create fieldable fieldable_panels_pane' => TRUE,
@@ -438,8 +434,12 @@ function dkan_permissions_default_roles_permissions() {
       'edit own page content' => TRUE,
       'edit own resource content' => TRUE,
       'edit own video files' => TRUE,
+      'import dkan_file feeds' => TRUE,
+      'import dkan_link feeds' => TRUE,
       'manage datastore' => TRUE,
       'revert revisions' => TRUE,
+      'unlock dkan_file feeds' => TRUE,
+      'unlock dkan_link feeds' => TRUE,
       'use gravatar' => TRUE,
       'use ipe with page manager' => TRUE,
       'use manualcrop' => TRUE,
@@ -456,7 +456,6 @@ function dkan_permissions_default_roles_permissions() {
   $roles['site manager'] = array(
     'name' => 'site manager',
     'weight' => 10,
-    'machine_name' => 'site_manager',
     'permissions' => array(
       'access administration menu' => TRUE,
       'access administration pages' => TRUE,
