@@ -83,6 +83,8 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource Resource 01 has been deleted"
 
+  @fixme
+  # Should editors be able to manage the datastore?
   Scenario: Manage datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
