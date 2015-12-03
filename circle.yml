@@ -111,7 +111,6 @@ test:
           - test/features/resource.all.feature
           - test/features/resource.author.feature
           - test/features/resource.editor.feature
-          - test/features/role_storyteller.feature
           - test/features/search.feature
           - test/features/user.admin.feature
           - test/features/user.all.feature
