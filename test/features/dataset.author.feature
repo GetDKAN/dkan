@@ -10,16 +10,15 @@ Feature: Dataset Features
   Background:
     Given pages:
       | title        | url                          |
-      | Datasets     | dataset                      |
-      | Needs Review | admin/workbench/needs-review |
-      | My drafts    | admin/workbench/drafts       |
+      | Datasets     | /dataset                      |
+      | My Content   | /user                         |
     Given users:
       | name    | mail             | roles                |
       | John    | john@example.com    | administrator        |
       | Badmin  | admin@example.com   | administrator        |
       | Gabriel | gabriel@example.com | editor               |
       | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | editor   |
+      | Katie   | katie@example.com   | authenticated user   |
       | Martin  | martin@example.com  | editor               |
       | Celeste | celeste@example.com | editor               |
     Given groups:
@@ -51,65 +50,39 @@ Feature: Dataset Features
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
       | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 |             |
 
-  # TODO: Requires workbench to be in place, not installed in data_starter at this time
-  @api @fixme
-  Scenario: Create dataset as draft
+  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
+  @api
+  Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Datasets" page
     When I click "Add Dataset"
     And I fill in the "dataset" form for "Dataset 06"
     And I press "Next: Add data"
-    And I fill in the "resource" form for "Resource 06"
-    And I press "Save"
-    Then I should see "Resource Resource 05 has been created"
-    When I press "Back to dataset"
-    Then I should see "Revision state: Draft"
+    Then I should see "Test Dataset has been created"
 
-
-  #TODO: Data contributor role does not exist at this current time
-  @api @fixme
-  Scenario: A data contributor should not be able to publish datasets
-    Given I am logged in as "Celeste"
-    And I am on "Dataset 04" page
-    When I follow "Edit"
-    Then I should not see "Publishing options"
-
-  # TODO: Requires workbench to be in place, not installed in data_starter at this time
-  @api @fixme
-  Scenario: Edit own dataset
+  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
+  @api
+  Scenario: Edit own dataset and see revisions
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
     When I click "Edit"
     And I fill in "title" with "Dataset 03 edited"
     And I press "Finish"
     Then I should see "Dataset Dataset 03 edited has been updated"
-    When I am on "My drafts" page
+    When I am on "My Content" page
     Then I should see "Dataset 03 edited"
-    And I should see "Draft" as "Moderation state" in the "Dataset 03 edited" row
+    When I click "Dataset 03 edited"
+    And I should see "Revisions"
 
   # TODO: Needs definition. How can a data contributor unpublish content?
   @api  
-  Scenario: Unpublish own dataset
-    Given I am on the homepage
-
-  # TODO: Requires workbench to be in place, not installed in data_starter at this time
-  @api @fixme
-  Scenario: Revert review request (Change dataset status from 'Needs review' to 'Draft')
+  Scenario: Delete own dataset as content creator
     Given I am logged in as "Katie"
-    And I am on "My drafts" page
-    Then I should see "Dataset 05"
-    And I should see "Change to Draft" in the "Dataset 05" row
-    When I click "Change to Draft" in the "Dataset 05" row
-    Then I should see "Draft" as "Moderation state" in the "Dataset 05" row
-
-  # TODO: Requires workbench to be in place, not installed in data_starter at this time
-  @api @fixme
-  Scenario: Receive a notification when a content editor publishes content I created
-    Given I am logged in as "John"
-    And I am on "Needs Review" page
-    When I click "Change to Published" in the "Dataset 05" row
-    Then I should see "Email notification sent"
-    And user "Katie" should receive an email
+    And I am on "Dataset 03" page
+    When I click "Edit"
+    And I press "Delete"
+    And I press "Delete"
+    Then I should see "Dataset 03 has been deleted"
 
   # TODO: Your groups field is not being found
   @api  @fixme

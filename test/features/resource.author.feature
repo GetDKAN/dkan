@@ -4,9 +4,8 @@ Feature: Resource
   Background:
     Given pages:
       | title         | url         |
-       # TODO: Change to use Workbench admin screen instead of /content and /node/add
-      | My Workbench  | /node/add/  |
-      | Content       | /user       |
+      | Content       | /node/add/  |
+      | User          | /user       |
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | administrator        |

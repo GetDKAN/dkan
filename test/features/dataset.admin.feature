@@ -37,17 +37,6 @@ Feature: Dataset Features
       | Dataset 04 | Group 02  | Celeste | No               | election |             |
       | Dataset 05 | Group 01  | Katie   | No               | election |             |
 
-  @fixme
-    # TODO: needs review page not defined, determine where that may be
-  Scenario: Review any dataset
-    Given I am logged in as "John"
-    When I am on "Needs Review" page
-    Then I should see "Dataset 05"
-    When I click "Change to Published" in the "Dataset 05" row
-    Then I should see "Email notifications sent"
-    When I am on "Needs Review" page
-    Then I should not see "Dataset 05"
-
   Scenario: Edit any dataset
     Given I am logged in as "John"
     And I am on "Dataset 03" page
