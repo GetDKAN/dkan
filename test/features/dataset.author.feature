@@ -1,4 +1,4 @@
-@javascript
+ @api @javascript
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -51,7 +51,6 @@ Feature: Dataset Features
       | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 |             |
 
   #TODO: Content creator will be a role added later, but for now we stick with authenticated user
-  @api
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Datasets" page
@@ -65,7 +64,6 @@ Feature: Dataset Features
     Then I should see "Test Dataset has been created"
 
   #TODO: Content creator will be a role added later, but for now we stick with authenticated user
-  @api
   Scenario: Edit own dataset and see revisions
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
@@ -79,7 +77,6 @@ Feature: Dataset Features
     And I should see "Revisions"
 
   #TODO: Content creator will be a role added later, but for now we stick with authenticated user
-  @api  
   Scenario: Delete own dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
@@ -88,7 +85,6 @@ Feature: Dataset Features
     And I press "Delete"
     Then I should see "Dataset 03 has been deleted"
 
-  @api
   Scenario: Add a dataset to group that I am a member of
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
