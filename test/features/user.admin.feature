@@ -12,6 +12,7 @@ Feature: User
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
       | Badmin  | admin@example.com   | site manager         |
+      | aadmin  | admin@example.com   | administrator        |
       | Gabriel | gabriel@example.com | content creator      |
       | Jaz     | jaz@example.com     | editor               |
       | Katie   | katie@example.com   | content creator      |
@@ -86,15 +87,15 @@ Feature: User
     Then I wait for "Katie has been disabled"
 
   Scenario: Modify user roles
-    Given I am logged in as "John"
+    Given I am logged in as "aadmin"
     And I am on "Users" page
     When I click "edit" in the "Jaz" row
     And I uncheck "editor"
-    And I check "storyteller"
+    And I check "content creator"
     And I press "Save"
     Then I should see "The changes have been saved"
     When I am on "Users" page
-    Then I should see "storyteller" in the "Jaz" row
+    Then I should see "content creator" in the "Jaz" row
 
   @fixme
     # TODO: Needs definition

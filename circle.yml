@@ -119,7 +119,8 @@ test:
           # Visualization Entity tests are all broken.
           # - test/features/vis_entity_embeds.feature
           - test/features/widgets.feature
-          - test/features/role_storyteller.feature
+          # Storyteller was removed as role. Change this to content creator?
+          # - test/features/role_storyteller.feature
     - cd test; bash features-tests.sh
   post:
     - echo CIRCLE_ARTIFACTS; cp -av assets $CIRCLE_ARTIFACTS:
