@@ -64,7 +64,7 @@ Feature: Portal Administrators administer groups
     Then I should see "Remove pending membership request" in the "group block" region
     When I click "Remove pending membership request" in the "group block" region
     And I press "Remove"
-    #Then I should see the "Group 02" detail page
+    Then I should be on the "Group 02" page
     And I should see "Request group membership" in the "group block" region
 
   @api
@@ -73,7 +73,7 @@ Feature: Portal Administrators administer groups
     And I am on "Group 01" page
     When I click "Unsubscribe from group"
     And I press "Remove"
-    #Then I should see the "Group 01" detail page
+    Then I should be on the "Group 01" page
     And I should see "Request group membership" in the "group block" region
 
   @fixme @api

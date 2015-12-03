@@ -92,8 +92,6 @@ Feature: Portal Administrators administer groups
     When I press "Delete"
     Then I should see "Group Group 02 has been deleted"
 
-  @fixme
-    # And I should see the "Goup 02 edited" detail page - undefined
   Scenario: Edit any group
     Given I am logged in as "John"
     And I am on "Group 02" page
@@ -101,7 +99,7 @@ Feature: Portal Administrators administer groups
     And I fill in "title" with "Goup 02 edited"
     And I press "Save"
     Then I should see "Group Goup 02 edited has been updated"
-    And I should see the "Goup 02 edited" detail page
+    And I should be on the "Goup 02" page
 
   Scenario: Edit membership status of group member on any group
     Given I am logged in as "John"
@@ -192,11 +190,10 @@ Feature: Portal Administrators administer groups
     Then I should see "Group 03"
     And I should see "1" items in the "search content results" region
 
-  @fixme
-    # Then I should see the "Group 03" detail page - undefined
   Scenario: View the details of an unpublished group
     Given I am logged in as "John"
     When I am on "Group 03" page
-    Then I should see the "Group 03" detail page
+    #TODO: What should actually be tested as far as details?
+    Then I should be on the "Group 03" page
 
 
