@@ -61,17 +61,6 @@ Background:
     Then I should see "Dataset Dataset 03 edited has been updated"
 
   @fixme
-    # TODO: Requires workbench to be in place, not installed in data_starter at this time
-  Scenario: Review any dataset associated with a group that I am a member of
-    Given I am logged in as "Gabriel"
-    When I am on "Needs Review" page
-    Then I should see "Dataset 05"
-    When I click "Change to Published" in the "Dataset 05" row
-    Then I should see "Email notifications sent"
-    When I am on "Needs Review" page
-    Then I should not see "Dataset 05"
-
-  @fixme
     #  And I select "Published" - undefined
   Scenario: Publish any dataset associated with the groups I am a member of
     Given I am logged in as "Gabriel"
@@ -81,28 +70,6 @@ Background:
     And I select "Published"
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
-
-  @fixme
-    # TODO: Requires workbench to be in place, not installed in data_starter at this time
-  Scenario: Receive a notification when a dataset is created by a member of the groups that I am a member of
-    Given I am logged in as "Celeste"
-    And I am on "My drafts" page
-    Then I should see "Dataset 04"
-    And I should see "Change to Needs Review" in the "Dataset 04" row
-    When I click "Change to Needs Review" in the "Dataset 04" row
-    Then I should see "Needs Review" as "Moderation state" in the "Dataset 04" row
-    And user "Admin" should receive an email
-
-  @fixme
-    # TODO: Requires workbench to be in place, not installed in data_starter at this time
-  Scenario: I should not receive notifications of content created outside of the groups that I am a member of
-    Given I am logged in as "Celeste"
-    And I am on "My drafts" page
-    Then I should see "Dataset 04"
-    And I should see "Change to Needs Review" in the "Dataset 04" row
-    When I click "Change to Needs Review" in the "Dataset 04" row
-    Then I should see "Needs Review" as "Moderation state" in the "Dataset 04" row
-    And "Gabriel" should not receive an email
 
   Scenario: I should not be able to edit datasets of groups that I am not a member of
     Given I am logged in as "Gabriel"
