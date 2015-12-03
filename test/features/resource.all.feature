@@ -51,8 +51,7 @@ Feature: Resource
     When I click "Resource 01"
     Then I am on the "Resource 01" page
 
-  # TODO: DKAN Extension does not currently support visualization entities for resources
-  #       and should be added in later
+  # TODO: Checking the visualization of a resource being correct is not yet defined
 
   @api @fixme
   Scenario: View published resource data as a Graph
@@ -60,8 +59,7 @@ Feature: Resource
     When I click "Graph"
     Then I should view the "resource" content as "graph"
 
-  # TODO: DKAN Extension does not currently support visualization entities for resources
-  #       and should be added in later
+   # TODO: Checking the visualization of a resource being correct is not yet defined
 
   @api @fixme
   Scenario: View published resource data as a Grid
@@ -69,8 +67,7 @@ Feature: Resource
     When I click "Grid"
     Then I should view the "resource" content as "grid"
 
-  # TODO: DKAN Extension does not currently support visualization entities for resources
-  #       and should be added in later
+   # TODO: Checking the visualization of a resource being correct is not yet defined
 
   @api @fixme
   Scenario: View published resource data as Map
