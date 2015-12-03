@@ -22,7 +22,7 @@ default:
                   result_item_css: '.views-row'
           - Drupal\DKANExtension\Context\ResourceContext
           - Devinci\DevinciExtension\Context\DebugContext:
-              asset_dump_path: %paths.base%/../assets
+              asset_dump_path: %paths.base%/assets
           - Devinci\DevinciExtension\Context\JavascriptContext:
               maximum_wait: 10
   formatters:
@@ -78,8 +78,11 @@ default:
         user profile: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
         tabs: '.field-group-htabs-wrapper'
         content: '.view-content'
+        groups: '.view-content'
+        search content results: '.content'
         user content: '.view-user-profile-search'
         content search: '.form-item-query'
+        user block: '.pane-views-user-profile-fields-block'
       text:
         log_out: "Log out"
         log_in: "Log in"

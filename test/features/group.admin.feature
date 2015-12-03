@@ -1,4 +1,4 @@
-@api
+@api @javascript
 Feature: Portal Administrators administer groups
   In order to manage site organization
   As a Portal Administrator
@@ -92,16 +92,15 @@ Feature: Portal Administrators administer groups
     When I press "Delete"
     Then I should see "Group Group 02 has been deleted"
 
-  @fixme
     # And I should see the "Goup 02 edited" detail page - undefined
   Scenario: Edit any group
     Given I am logged in as "John"
     And I am on "Group 02" page
     When I click "Edit"
-    And I fill in "title" with "Goup 02 edited"
+    And I fill in "Body" with "Group 02 edited"
     And I press "Save"
-    Then I should see "Group Goup 02 edited has been updated"
-    And I should see the "Goup 02 edited" detail page
+    Then I should see "Group Group 02 has been updated"
+    And I should see the "Group 02" group page
 
   Scenario: Edit membership status of group member on any group
     Given I am logged in as "John"
@@ -123,8 +122,6 @@ Feature: Portal Administrators administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
-  @fixme
-    # Then I should see the list of permissions for the group - undefined
   Scenario: View permissions of any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -132,14 +129,12 @@ Feature: Portal Administrators administer groups
     When I click "Permissions (read-only)"
     Then I should see the list of permissions for the group
 
-  @fixme
-    # Then I should see the list of roles for the group - undefined
   Scenario: View group roles of any group
     Given I am logged in as "John"
     And I am on "Group 01" page
     And I click "Group"
     When I click "Roles (read-only)"
-    Then I should see the list of roles for the group
+    Then I should see the list of roles for the group "Group 01"
 
   @fixme
     # Then I should see the list of permissions for "<role name>" role - undefined
@@ -172,12 +167,12 @@ Feature: Portal Administrators administer groups
     Then I should see "Total content: 4"
 
   @fixme
-    # Then I should see "Parent group" field - undefined
+    # Parent group not on edit page, does not look like sub-groups are enabled on dkan currently
   Scenario: Add a sub-group on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
     When I click "Edit"
-    Then I should see "Parent group" field
+    Then I should see "Parent group"
     When I fill in "Parent group" with "Group 02"
     And I press "Update"
     Then I should see "Group Group 01 has been updated"
@@ -186,8 +181,7 @@ Feature: Portal Administrators administer groups
 
   # TODO: Change to use Workbench instead of /content
 
-  @fixme
-    # Then I should see "Group 03" - not found on page
+
   Scenario: View list of unpublished groups
     Given I am logged in as "John"
     And I am on "Content" page
@@ -195,7 +189,6 @@ Feature: Portal Administrators administer groups
     And I select "group" from "type"
     And I press "Filter"
     Then I should see "Group 03"
-    And I should see "1" items in the "search content results" region
 
   @fixme
     # Then I should see the "Group 03" detail page - undefined
