@@ -48,12 +48,9 @@ Feature: Resource
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
 
-  @fixme
-    # Link with id|title|alt|text "Resource" not found.
   Scenario: Create resource
     Given I am logged in as "Katie"
-    And I am on "My Workbench" page
-    #And I click "Add Content"
+    And I click "Add Content"
     And I click "Resource"
     When I fill in "Resource 06" for "Title"
     And I press "Save"
@@ -71,8 +68,6 @@ Feature: Resource
   Scenario: Bureau & Program Code are auto populated on creation
     Given I am on the homepage
 
-  @fixme
-    # Since create resource fails then we can't edit it
   Scenario: Edit own resource
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
