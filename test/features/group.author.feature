@@ -76,7 +76,8 @@ Feature: Portal Administrators administer groups
     Then I should be on the "Group 01" page
     And I should see "Request group membership" in the "group block" region
 
-  @fixme @api
+  @fixme @api @testBug
+    #TODO: Sees the navbar Group link, not the Group's group link - need to check by region
   Scenario: I should not be able to edit groups
     Given I am logged in as "Katie"
     When I am on "Group 01" page

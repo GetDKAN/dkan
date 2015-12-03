@@ -1,7 +1,8 @@
 @api
 Feature: Visualization entity embed test.
 
-  @fixme
+  @fixme @dkanBug
+    #TODO: Waiting for visualizations to be added
     # And I wait for "Add new pane" - not found after 10 seconds
   Scenario: Module visualization entity embed enabled by default
       Given "dkan_data_story" content:
@@ -19,7 +20,8 @@ Feature: Visualization entity embed test.
       And I wait for "Please select a category from the left"
       Then I should see "Visualizations"
 
-  @fixme
+  @fixme @dkanBug
+    #TODO: Waiting for visualizations to be added
     # When I click "Visualizations" - link not found
   Scenario: Use autocomplete field when adding viz_entity to a data story
       When I click "Visualizations"
@@ -30,7 +32,8 @@ Feature: Visualization entity embed test.
       And I wait for "2" seconds
       Then I should see "Viz Entity Test Chart"
 
-  @fixme
+  @fixme @dkanBug
+    #TODO: Waiting for visualizations to be added
     #  When I click "Viz Entity Test Chart" - link not found
   Scenario: Embed ve_chart to a data story
       When I click "Viz Entity Test Chart"

@@ -51,51 +51,46 @@ Feature: Resource
     When I click "Resource 01"
     Then I am on the "Resource 01" page
 
-  # TODO: Checking the visualization of a resource being correct is not yet defined
-
-  @api @fixme
+  @api @fixme @testBug
+    # TODO: Checking the visualization of a resource being correct is not yet defined, need feedback
   Scenario: View published resource data as a Graph
     Given I am on "Resource 01" page
     When I click "Graph"
     Then I should view the "resource" content as "graph"
 
-   # TODO: Checking the visualization of a resource being correct is not yet defined
-
-  @api @fixme
+  @api @fixme @testBug
+    # TODO: Checking the visualization of a resource being correct is not yet defined, need feedback
   Scenario: View published resource data as a Grid
     Given I am on "Resource 01" page
     When I click "Grid"
     Then I should view the "resource" content as "grid"
 
-   # TODO: Checking the visualization of a resource being correct is not yet defined
-
-  @api @fixme
+  @api @fixme @testBug
+    # TODO: Checking the visualization of a resource being correct is not yet defined, need feedback
   Scenario: View published resource data as Map
     Given I am on "Resource 01" page
     When I click "Map"
     Then I should view the "resource" content as "map"
 
-    #TODO: NEED TO have test data api set up
-
-  @api @fixme
+  @api @fixme @testBug
+    #TODO: NEED TO have test data api set up for new resources
   Scenario: View the Data API information for a published resource
     Given I am on "Resource 02" page
     When I click "Data API"
     Then I should see "The Resource ID for this resource is"
     And I should see "Example Query"
 
-
-  # TODO: Permissions for anonymous users to view revisions are not set (they cannot access revisions)
-
-  @api @fixme
+  @api @dkanBug
+    #TODO: Permissions for anon users to see revisions to be added in future release'
+    # See NuCivic/pluto/issues/132#issuecomment-161743679
   Scenario: View previous revisions of published resource
     Given I am on "Resource 01" page
     When I click "Revisions"
     Then I should see the list of revisions
 
-  # TODO: Permissions for anonymous users to view revisions are not set (they cannot access revisions)
-
-  @api @fixme
+  @api @dkanBug
+    #TODO: Permissions for anon users to see revisions to be added in future release'
+    # See NuCivic/pluto/issues/132#issuecomment-161743679
   Scenario: Compare revisions of published resource
     Given I am on "Resource 01" page
     And I press "Revisions"
@@ -104,8 +99,7 @@ Feature: Resource
     And I press "Compare"
     Then I should see the revisions diff
 
-  # TODO: Needs definition.
-
-  @api @fixme
+  @api @fixme @testBug
+    #TODO: Needs definition and feedback
   Scenario: View resource data on map automatically if lat and long info is present
     Given I am on the homepage
