@@ -177,7 +177,7 @@ Feature: Portal Administrators administer groups
     Given I am logged in as "John"
     And I am on "Group 01" page
     When I click "Edit"
-    Then I should see "Parent group" field
+    Then I should see "Parent group"
     When I fill in "Parent group" with "Group 02"
     And I press "Update"
     Then I should see "Group Group 01 has been updated"
@@ -186,8 +186,7 @@ Feature: Portal Administrators administer groups
 
   # TODO: Change to use Workbench instead of /content
 
-  @fixme
-    # Then I should see "Group 03" - not found on page
+
   Scenario: View list of unpublished groups
     Given I am logged in as "John"
     And I am on "Content" page

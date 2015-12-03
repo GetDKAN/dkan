@@ -41,7 +41,7 @@ Feature: Dataset Features
       | title      | publisher | author  | published        | tags     | description |
       | Dataset 01 | Group 01  | Gabriel | Yes              | price    |             |
       | Dataset 02 | Group 01  | Gabriel | Yes              | election |             |
-      | Dataset 03 | Group 01  | Katie   | Yes              | price    |             |
+      | Dataset 03 |           | Katie   | Yes              | price    |             |
       | Dataset 04 | Group 02  | Celeste | No               | election |             |
       | Dataset 05 | Group 01  | Katie   | No               | election |             |
     And resources:
@@ -66,7 +66,7 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
     When I click "Edit"
-    And I fill in "title" with "Dataset 03 edited"
+    And I fill in "edit-title" with "Dataset 03 edited"
     And I press "Finish"
     Then I should see "Dataset Dataset 03 edited has been updated"
     When I am on "My Content" page
@@ -84,13 +84,12 @@ Feature: Dataset Features
     And I press "Delete"
     Then I should see "Dataset 03 has been deleted"
 
-  # TODO: Your groups field is not being found
-  @api  @fixme
+  @api
   Scenario: Add a dataset to group that I am a member of
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
     When I click "Edit"
-    And I fill in "Your groups" with "Group 01"
+    And I fill in the chosen field "Choose some options" with "Group 01"
     And I press "Finish"
     Then I should see "Dataset Dataset 03 has been updated"
     When I am on "Group 01" page

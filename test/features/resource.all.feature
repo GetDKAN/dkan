@@ -49,7 +49,6 @@ Feature: Resource
     And I follow "Datasets"
     And I click "Dataset 01"
     When I click "Resource 01"
-    # License information should be shown
     Then I am on the "Resource 01" page
 
   # TODO: DKAN Extension does not currently support visualization entities for resources
@@ -79,13 +78,12 @@ Feature: Resource
     When I click "Map"
     Then I should view the "resource" content as "map"
 
-  # TODO: DKAN Extension does not currently support visualization entities for resources
-  #       and should be added in later
+    #TODO: NEED TO have test data api set up
 
   @api @fixme
   Scenario: View the Data API information for a published resource
-    Given I am on "Resource 01" page
-    When I press "Data API"
+    Given I am on "Resource 02" page
+    When I click "Data API"
     Then I should see "The Resource ID for this resource is"
     And I should see "Example Query"
 
