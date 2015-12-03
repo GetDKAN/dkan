@@ -29,7 +29,7 @@ Feature: Datasets
     And I wait for "Polling_Places_Madison.csv"
     And I wait for "Door Creek Church"
 
-  @api @javascript
+  @fixme @api @javascript
   Scenario: Create a dataset with a group as a content creator
     Given I am logged in as a user with the "site manager" role
     And I am on "/node/add/group"
@@ -41,8 +41,7 @@ Feature: Datasets
     Then I should see "Create Dataset"
     When I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "Test description"
-    # Uncomment this when chosen field issue is resolved
-    # And I click the chosen field "License Not Specified" and enter "Creative Commons Attribution"
+    And I click the chosen field "License Not Specified" and enter "Creative Commons Attribution"
     And I fill in the chosen field "Choose some options" with "Test Group"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
@@ -61,8 +60,7 @@ Feature: Datasets
     When I click "Test Dataset"
     Then I should see "Test Resource"
     And I should see "Test Group"
-    # Uncomment this when chosen field issue is resolved
-    # And I should see "Creative Commons Attribution"
+    And I should see "Creative Commons Attribution"
     When I click "Test Resource Link File"
     And I wait for "Farah"
     When I am on "dataset/test-dataset"
