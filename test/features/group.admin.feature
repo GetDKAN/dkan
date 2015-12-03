@@ -68,7 +68,7 @@ Feature: Portal Administrators administer groups
     And I press "Add users"
     Then I should see "Katie has been added to the group Group 02"
     When I am on "Group 02" page
-    And I click "Members" in the "group block" region
+    And I click "Members" in the "primary tabs" region
     Then I should see "Katie" in the "group members" region
 
   Scenario: Remove a group member from any group
@@ -76,12 +76,12 @@ Feature: Portal Administrators administer groups
     And I am on "Group 01" page
     And I click "Group"
     And I click "People"
-    And I click "remove" in the "Katie" row
+    When I click "remove" in the "Katie" row
     And I press "Remove"
     Then I should see "The membership was removed"
-    When I am on "Group 01" page
-    And I click "Members"
-    Then I should not see "Katie"
+    And I am on "Group 01" page
+    And I click "Members" in the "primary tabs" region
+    And I should see "Katie" in the "group members" region
 
   Scenario: Delete any group
     Given I am logged in as "John"
