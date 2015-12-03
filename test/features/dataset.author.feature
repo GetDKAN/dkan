@@ -78,7 +78,7 @@ Feature: Dataset Features
     When I click "Dataset 03 edited"
     And I should see "Revisions"
 
-  # TODO: Needs definition. How can a data contributor unpublish content?
+  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
   @api  
   Scenario: Delete own dataset as content creator
     Given I am logged in as "Katie"
