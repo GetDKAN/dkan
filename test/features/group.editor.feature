@@ -44,8 +44,6 @@ Feature: Portal Administrators administer groups
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
 
-  @fixme
-    # And I should see the "Group 01 edited" detail page - undefined
   Scenario: Edit group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -53,7 +51,7 @@ Feature: Portal Administrators administer groups
     And I fill in "title" with "Goup 01 edited"
     And I press "Save"
     Then I should see "Group Goup 01 edited has been updated"
-    And I should see the "Group 01 edited" detail page
+    And I should be on the "Group 01" page
 
   Scenario: Add group member on a group as administrator
     Given I am logged in as "Gabriel"
