@@ -56,7 +56,11 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Datasets" page
     When I click "Add Dataset"
-    And I fill in the "dataset" form for "Dataset 06"
+    And I fill in the following:
+      | Title           | Test Dataset      |
+      | Description     | Test description  |
+    And I click the chosen field "License Not Specified" and enter "Creative Commons Attribution"
+    And I fill in the chosen field "Choose some options" with "Group 01"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
 
