@@ -47,47 +47,43 @@ Feature: Resource
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
 
-  Scenario: Create resource
+  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
+  Scenario: Create resource with linked file as content creator
     Given I am logged in as "Katie"
-    And I am on "My Workbench" page
-    #And I click "Add Content"
+    And I am on the "Content" page
     And I click "Resource"
-    When I fill in "Resource 06" for "Title"
+    When I fill in "Title" with "Resource 06"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
-    When I am on "Content" page
-    Then I should see "Resource 06"
 
-  @fixme
-     # TODO: Needs definition.
-  Scenario: Create resources with GeoJSON data
-    Given I am on the homepage
-
-  @fixme
-    # TODO: Needs definition.
-  Scenario: Bureau & Program Code are auto populated on creation
-    Given I am on the homepage
-
-  Scenario: Edit own resource
+  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
+  Scenario: Edit own resource as content creator
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
     When I click "Edit"
     And I fill in "Title" with "Resource 02 edited"
     And I press "Save"
     Then I should see "Resource Resource 02 edited has been updated"
-    When I am on "Content" page
+    When I am on "User" page
     Then I should see "Resource 02 edited"
 
-  Scenario: A data contributor should not be able to publish resources
+  #TODO: Should a content creator be able to publish? Authenticated users currently cannot, but content creators
+  #TODO:   may have that permission when they are added
+  Scenario: A content creator should not be able to publish resources
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
     When I click "Edit"
     Then I should not see "Publishing options"
 
-  @fixme
-     # TODO: Needs definition. How can a data contributor unpublish content?
-  Scenario: Unpublish own resource
-    Given I am on the homepage
+  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
+  Scenario: Delete own resource
+    Given I am logged in as "Katie"
+    And I am on "Resource 02" page
+    When I click "Edit"
+    And I press "Delete"
+    And I press "Delete"
+    Then I should see "Resource 02 has been deleted"
 
   @fixme
     # TODO: Managing own datastore not currently supported for authenticated users
