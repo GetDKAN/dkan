@@ -48,9 +48,12 @@ Feature: Resource
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
 
+  @fixme
+    # Workbench is not enabled by default.
   Scenario: Create resource
     Given I am logged in as "Katie"
-    And I click "Add Content"
+    And I am on "My Workbench" page
+    #And I click "Add Content"
     And I click "Resource"
     When I fill in "Resource 06" for "Title"
     And I press "Save"
