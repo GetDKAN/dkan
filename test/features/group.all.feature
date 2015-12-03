@@ -54,12 +54,11 @@ Feature: Portal Administrators administer groups
     When I follow "Groups"
     Then I should see "2" items in the "groups" region
     And I should not see "Group 03"
-  @fixme
-    # Then I should see the "Group 01" detail page
+
   Scenario: View the details of a published group
     Given I am on "Groups" page
     When I follow "Group 01"
-    Then I should see the "Group 01" detail page
+    Then I should see the "Group 01" page
 
   Scenario: View the list of datasets on a group
     Given I am on "Group 01" page
