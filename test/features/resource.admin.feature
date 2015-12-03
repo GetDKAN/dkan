@@ -82,7 +82,8 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @fixme
+  @fixme @testBug
+    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
     # And I press "Import" - button not found
     # And I wait - undefined
   Scenario: Import items on datastore of any resource
@@ -95,7 +96,8 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @fixme
+  @fixme @testBug
+    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
     # And I press "Delete items" - button not found
   Scenario: Delete items on datastore of any resource
     Given I am logged in as "John"
@@ -108,7 +110,8 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @fixme
+  @fixme @testBug
+    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
     # When I press "Drop datastore" - button not found
   Scenario: Drop datastore of any resource
     Given I am logged in as "John"
@@ -132,8 +135,9 @@ Feature: Resource
     When I click "Revisions"
     Then I should see "current revision"
 
-  @fixme
+  @fixme @dkanBug
     # TODO: Admins do not have access to revert a resource to a previous revision
+    # See NuCivic/dkan#793
   Scenario: Revert any resource revision
     Given I am logged in as "John"
     And I am on "Resource 02" page

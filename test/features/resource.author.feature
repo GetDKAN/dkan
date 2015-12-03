@@ -85,7 +85,7 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
 
-  @fixme
+  @fixme @dkanBug
     # TODO: Managing own datastore not currently supported for authenticated users
     # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
   Scenario: Manage datastore of own resource
@@ -95,8 +95,8 @@ Feature: Resource
     And I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @fixme
-    # TODO: Add manage datastore support for created resources in DKAN Extension
+  @fixme @testBug
+    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Import items on datastore of own resource
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
@@ -107,8 +107,8 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @fixme
-    # TODO: Add manage datastore support for created resources in DKAN Extension
+  @fixme @testBug
+    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Delete items on datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -120,8 +120,8 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @fixme
-    # TODO: Add manage datastore support for created resources in DKAN Extension
+  @fixme @testBug
+    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Drop datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page

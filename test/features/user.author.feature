@@ -59,7 +59,7 @@ Feature: User
     And I am on "Katie" page
     Then I should see "2" items in the "content" region
 
-  # TODO: Needs definition.
-  @api @fixme
+  @api @fixme @testBug
+    # TODO: Needs definition.
   Scenario: User should be logged out automatically after N minutes
     Given I am on the homepage

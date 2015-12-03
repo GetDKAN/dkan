@@ -56,7 +56,8 @@ Feature: Portal Administrators administer groups
     And I should see the heading "My group"
     And I should see "This is a body"
 
-  @fixme
+  @fixme @testBug
+    #TODO: Break up undefined step into behat steps (I fill in the following...I press submit)
     #When I fill in the "member" form for "Katie" - undefined
   Scenario: Add a group member on any group
     Given I am logged in as "John"
@@ -135,7 +136,8 @@ Feature: Portal Administrators administer groups
     When I click "Roles (read-only)"
     Then I should see the list of roles for the group "Group 01"
 
-  @fixme
+  @fixme @testBug
+    #TODO: Need to define for getting list of permissions
     # Then I should see the list of permissions for "<role name>" role - undefined
   Scenario Outline: View group role permissions of any group
     Given I am logged in as "John"
@@ -165,7 +167,8 @@ Feature: Portal Administrators administer groups
     When I click "People"
     Then I should see "Total content: 4"
 
-  @fixme
+  @fixme @dkanBug
+    # TODO: Sub-groups not in dkan, this should be deleted
     # Parent group not on edit page, does not look like sub-groups are enabled on dkan currently
   Scenario: Add a sub-group on any group
     Given I am logged in as "John"

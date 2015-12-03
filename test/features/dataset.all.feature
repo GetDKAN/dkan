@@ -61,7 +61,7 @@ Feature: Dataset Features
   #
   #       Currently it searches for 'Test' keyword to prevent any pre-made datasets from appearing
 
-   @fixme
+   @fixme @testBug
     # WIP: 'And I should see the list with "Desc" order by "Date changed"' is undefined.
   Scenario: View list of most recent published datasets (on homepage)
     Given I am on the homepage
@@ -74,8 +74,8 @@ Feature: Dataset Features
     Then I should see "7 datasets"
     And I should see "7" items in the "datasets" region
 
-  @fixme
-     # WIP: And I should see the list with "Asc" order by "Date changed" - undefined
+  @fixme @testBug
+     # WIP: And I should see the list with "Asc" order by "Date changed" - undefined, needs definition
   Scenario: Search datasets by "Date changed" with "Asc" order
     Given I am on "Datasets" page
     When I fill in "Test" for "Search" in the "datasets" region
@@ -86,8 +86,8 @@ Feature: Dataset Features
     And I should see "5" items in the "datasets" region
     And I should see the list with "Asc" order by "Date changed"
 
-  @fixme
-    # WIP: And I should see the list with "Desc" order by "Date changed" - undefined
+  @fixme @testBug
+    # WIP: And I should see the list with "Desc" order by "Date changed" - undefined, needs definition
   Scenario: Search datasets by "Date changed" with "Desc" order
     Given I am on "Datasets" page
     When I fill in "Test" for "Search" in the "datasets" region
@@ -98,8 +98,8 @@ Feature: Dataset Features
     And I should see "5" items in the "datasets" region
     And I should see the list with "Desc" order by "Date changed"
 
-  @fixme
-    # WIP: And I should see the list with "Asc" order by "title" - undefined
+  @fixme @testBug
+    # WIP: And I should see the list with "Asc" order by "title" - undefined, needs definition
   Scenario: Search datasets by "title" with "Asc" order
     Given I am on "Datasets" page
     When I fill in "Test" for "Search" in the "datasets" region
@@ -110,7 +110,7 @@ Feature: Dataset Features
     And I should see "5" items in the "datasets" region
     And I should see the list with "Asc" order by "title"
 
-  @fixme
+  @fixme @testBug
     # WIP: And I should see the list with "Asc" order by "title" - undefined
     # WIP: Then I should see "3 datasets" - not found on page
   Scenario: Search datasets by "title" with "Desc" order
@@ -177,50 +177,53 @@ Feature: Dataset Features
     Then I should see "2 datasets"
     And I should see "2" items in the "datasets" region
 
-  @fixme
-    # Then I should see "Dataset 01" detail page - undefined
   Scenario: View published dataset
     Given I am on "Datasets" page
     When I click "Dataset 01"
     # I should see the license information
-    Then I should see "Dataset 01" detail page
+    Then I should be on "Dataset 01" page
 
-  @fixme
+  @fixme @testBug
+    #TODO: Need to know how to define a sharing page, get feedback
     # Then I should be redirected to "Google+" sharing page for "Dataset 01"
   Scenario: Share published dataset on Google +
     Given I am on "Dataset 01" page
     When I click "Google+" in the "social" region
     Then I should be redirected to "Google+" sharing page for "Dataset 01"
 
-  @fixme
+  @fixme @testBug
+    #TODO: Need to know how to define a sharing page, get feedback
     #  Then I should be redirected to "Twitter" sharing page for "Dataset 01" - undefined
   Scenario: Share published dataset on Twitter
     Given I am on "Dataset 01" page
     When I click "Twitter" in the "social" region
     Then I should be redirected to "Twitter" sharing page for "Dataset 01"
 
-  @fixme
+  @fixme @testBug
+    #TODO: Need to know how to define a sharing page, get feedback
     #  Then I should be redirected to "Facebook" sharing page for "Dataset 01" - undefined
   Scenario: Share published dataset on Facebook
     Given I am on "Dataset 01" page
     When I click "Facebook" in the "social" region
     Then I should be redirected to "Facebook" sharing page for "Dataset 01"
 
-  @fixme
+  @fixme @testBug
+    #TODO: NEed to know how to interpret JSON format, get feedback
     # Then I should see the content in "JSON" format - undefined
   Scenario: View published dataset information as JSON
     Given I am on "Dataset 01" page
     When I click "JSON" in the "other access" region
     Then I should see the content in "JSON" format
 
-  @fixme
+  @fixme @testBug
+    #TODO: NEed to know how to interpret RDF format, get feedback
     # Then I should see the content in "RDF" format - undefined
   Scenario: View published dataset information as RDF
     Given I am on "Dataset 01" page
     When I click "RDF" in the "other access" region
     Then I should see the content in "RDF" format
 
-  @fixme
+  @fixme @testBug
     #  When I press "Download" in the "Resource 01" row - undefined
     #  Then A file should be downloaded - undefined
   Scenario: Download file from published dataset
@@ -228,7 +231,8 @@ Feature: Dataset Features
     When I press "Download" in the "Resource 01" row
     Then A file should be downloaded
 
-  @fixme
+  @fixme @testBug
+    # TODO: Get feedback if this is still needed
     # TODO: Needs definition
   Scenario: View a list of suggested datasets when viewing a dataset
     Given I am on the homepage

@@ -78,7 +78,8 @@ Feature: Portal Administrators administer groups
     And I click "Members" in the "group block" region
     Then I should not see "Katie" in the "group members" region
 
-  @fixme
+  @fixme @testBug
+    #TODO: Sees the navbar Group link, not the Group's group link - need to check by region
   Scenario: I should not be able to edit a group that I am not a member of
     Given I am logged in as "Gabriel"
     When I am on "Group 02" page
@@ -119,7 +120,8 @@ Feature: Portal Administrators administer groups
     When I click "Roles (read-only)"
     Then I should see the list of roles for the group "Group 01"
 
-  @fixme
+  @fixme @testBug
+    #TODO: Need to define for getting list of permissions
      # Then I should see the list of permissions for "<role name>" role - undefined
   Scenario Outline: View group role permissions of group as administrator
     Given I am logged in as "Gabriel"
