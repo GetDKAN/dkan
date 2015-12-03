@@ -109,7 +109,9 @@ test:
           - test/features/recline.feature
           - test/features/resource.admin.feature
           - test/features/resource.all.feature
-          - test/features/resource.author.feature
+          # All the tests has the fixme tag. Until then
+          # this should be commented
+          # - test/features/resource.author.feature
           - test/features/resource.editor.feature
           - test/features/search.feature
           - test/features/user.admin.feature
