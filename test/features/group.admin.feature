@@ -1,4 +1,4 @@
-@api
+@api @javascript
 Feature: Portal Administrators administer groups
   In order to manage site organization
   As a Portal Administrator
@@ -96,10 +96,10 @@ Feature: Portal Administrators administer groups
     Given I am logged in as "John"
     And I am on "Group 02" page
     When I click "Edit"
-    And I fill in "title" with "Goup 02 edited"
+    And I fill in "Body" with "Group 02 edited"
     And I press "Save"
-    Then I should see "Group Goup 02 edited has been updated"
-    And I should be on the "Goup 02" page
+    Then I should see "Group Group 02 has been updated"
+    And I should be on the "Group 02" page
 
   Scenario: Edit membership status of group member on any group
     Given I am logged in as "John"

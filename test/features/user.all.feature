@@ -51,17 +51,14 @@ Feature: User
     When I follow "Log out"
     Then I should see "Log in"
 
-
-  # TODO: Currently receiving an error page upon pressing "Create new account", upon which the user is not properly created
-  #       and you cannot log in as them, so this should be fixed
   Scenario: Register
     Given I am on the homepage
     When I follow "Register"
     And I fill in "Username" with "newuser"
     And I fill in "E-mail address" with "newuser@example.com"
     And I press "Create new account"
-    #Then I should see "Thank you for applying for an account."
-    #And I should see "Your account is currently pending approval by the site administrator."
+    Then I should see "Thank you for applying for an account."
+    And I should see "Your account is currently pending approval by the site administrator."
 
   @mail
   Scenario: Request new password
