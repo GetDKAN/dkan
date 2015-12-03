@@ -8,14 +8,14 @@ Feature: User
       | John          | /users/john   |
       | Katie         | /users/katie  |
     Given users:
-      | name    | mail                | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
-      | Gabriel | gabriel@example.com | authenticated user   |
-      | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | authenticated user   |
-      | Martin  | martin@example.com  | editor               |
-      | Celeste | celeste@example.com | editor               |
+      | name    | mail                | roles                | pass     |
+      | Badmin  | admin@example.com   | administrator        | pass     |
+      | Gabriel | gabriel@example.com | authenticated user   | pass     |
+      | Jaz     | jaz@example.com     | editor               | pass     |
+      | Katie   | katie@example.com   | authenticated user   | pass     |
+      | Martin  | martin@example.com  | editor               | pass     |
+      | Celeste | celeste@example.com | editor               | pass     |
+      | John    | john@example.com    | administrator        | johnpass |
     Given groups:
       | title    | author  | published |
       | Group 01 | Badmin  | Yes       |
@@ -37,25 +37,19 @@ Feature: User
       | Dataset 01 | Group 01  | Katie   | Yes              | Health   | Test        |
       | Dataset 02 | Group 01  | Katie   | Yes              | Health   | Test        |
 
-  @fixme
-    # Then I should see the "John" page - undefined
   Scenario: Login
     Given I am on the homepage
     When I follow "Log in"
-    And I fill in "Username" with "john"
+    And I fill in "Username" with "John"
     And I fill in "Password" with "johnpass"
+    And I press "Log in"
     Then I should see the "John" page
-
-
-  # TODO: Anonymous users can see profiles of logged in users (though can't edit), is that intended?
 
   Scenario: Logout
     Given I am logged in as "John"
     And I am on the homepage
     When I follow "Log out"
     Then I should see "Log in"
-    #When I am on "John" page
-    #Then I should see "Page not found"
 
 
   # TODO: Currently receiving an error page upon pressing "Create new account", upon which the user is not properly created
@@ -79,8 +73,6 @@ Feature: User
     Then user "John" should receive an email
     #TODO: Follow reset password link on email?
 
-  @fixme
-    # Then I should see the "Katie" page - undefined
   Scenario: View user profile
     Given I am on "Group 01" page
     And I follow "Members"
