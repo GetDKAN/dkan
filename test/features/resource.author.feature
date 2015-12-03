@@ -142,8 +142,7 @@ Feature: Resource
     And I am on "Resource 02" page
     When I click "Edit"
     And I fill in "title" with "Resource 02 edited"
-    #And I check "Create new revision"
     And I press "Save"
     Then I should see "Resource Resource 02 edited has been updated"
     When I click "Revisions"
-    Then I should see "current revision"
+    Then I should see "by Katie"

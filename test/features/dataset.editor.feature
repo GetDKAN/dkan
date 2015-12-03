@@ -10,12 +10,12 @@ Feature: Dataset Features
 Background:
   Given pages:
     | title     | url       |
-    | Datasets  | /dataset |
+    | Datasets  | /dataset  |
   Given users:
     | name    | mail             | roles                |
     | John    | john@example.com    | administrator        |
     | Badmin  | admin@example.com   | administrator        |
-    | Gabriel | gabriel@example.com | authenticated user     |
+    | Gabriel | gabriel@example.com | authenticated user   |
     | Jaz     | jaz@example.com     | editor               |
     | Katie   | katie@example.com   | authenticated user   |
     | Martin  | martin@example.com  | editor               |
@@ -43,14 +43,11 @@ Background:
     | Dataset 03 | Group 01  | Katie   | Yes              | Health   | Test        |
     | Dataset 04 | Group 02  | Celeste | No               | Gov      | Test        |
     | Dataset 05 | Group 01  | Katie   | No               | Gov      | Test        |
-  And "Format" terms:
-    | name    |
-    | xls     |
   And resources:
     | title       | publisher | format | author | published | dataset    | description |
     | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-    | Resource 02 | Group 01  | xls    | Katie  | Yes       | Dataset 01 |             |
-    | Resource 03 | Group 01  | xls    | Katie  | Yes       | Dataset 02 |             |
+    | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
+    | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 |             |
 
   Scenario: Edit any dataset associated with the groups that I am a member of
     Given I am logged in as "Gabriel"
@@ -60,14 +57,12 @@ Background:
     And I press "Finish"
     Then I should see "Dataset Dataset 03 edited has been updated"
 
-  @fixme
-    #  And I select "Published" - undefined
   Scenario: Publish any dataset associated with the groups I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Dataset 05" page
     When I click "Edit"
     When I click "Publishing options"
-    And I select "Published"
+    And I check the box "Published"
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
 

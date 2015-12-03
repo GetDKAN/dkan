@@ -53,13 +53,11 @@ Feature: Dataset Features
     And I press "Delete"
     Then I should see "Dataset Dataset 03 has been deleted"
 
-  @fixme
-    # And I select "Published" - undefined
   Scenario: Publish any dataset
     Given I am logged in as "John"
     And I am on "Dataset 05" page
     When I click "Edit"
     When I click "Publishing options"
-    And I select "Published"
+    And I check the box "Published"
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
