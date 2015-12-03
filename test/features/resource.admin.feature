@@ -68,10 +68,13 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 04 has been updated"
 
-  @fixme
-    # TODO
-  Scenario: Unpublish any resource
-    Given I am on the homepage
+  Scenario: Delete any resource
+    Given I am logged in as "John"
+    And I am on "Resource 02" page
+    When I click "Edit"
+    And I press "Delete"
+    And I press "Delete"
+    Then I should see "Resource 02 has been deleted"
 
   Scenario: Manage Datastore of any resource
     Given I am logged in as "John"
@@ -144,11 +147,3 @@ Feature: Resource
     # TODO: This is NOT working. Throws "You are not authorized to access this page"
     Then I should see "Resource 02"
       And I should not see "Resource 02 edited"
-
-  Scenario: Delete any resource
-    Given I am logged in as "John"
-    And I am on "Resource 02" page
-    When I click "Edit"
-    And I press "Delete"
-    And I press "Delete"
-    Then I should see "Resource Resource 02 has been deleted"
