@@ -2,7 +2,7 @@ Feature: Datasets
 
   @api
   Scenario: Edit any page content
-    Given I am logged in as a user with the "sot" role
+    Given I am logged in as a user with the "editor" role
       And I am on "/about"
     Then I should see "DKAN is the Drupal-based version of CKAN"
     When I click "Edit"
