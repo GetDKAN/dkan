@@ -66,7 +66,6 @@ default:
         navigation: '.navigation-wrapper'
         primary tabs: '.tabs--primary'
         group subscribe: '.group-subscribe-message'
-        group datasets: '#node_group_full_group_tab_datasets'
         group block: '.pane-views-group-block-block'
         group members: '.view-id-dkan_og_extras_group_members'
         filter by resource format: '.facetapi-facet-field-resourcesfield-format'
@@ -78,8 +77,11 @@ default:
         user profile: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
         tabs: '.field-group-htabs-wrapper'
         content: '.view-content'
+        groups: '.view-content'
+        search content results: '.content'
         user content: '.view-user-profile-search'
         content search: '.form-item-query'
+        user block: '.pane-views-user-profile-fields-block'
       text:
         log_out: "Log out"
         log_in: "Log in"

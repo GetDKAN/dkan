@@ -8,14 +8,14 @@ Feature: User
       | John          | /users/john   |
       | Katie         | /users/katie  |
     Given users:
-      | name    | mail                | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
-      | Gabriel | gabriel@example.com | authenticated user   |
-      | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | authenticated user   |
-      | Martin  | martin@example.com  | editor               |
-      | Celeste | celeste@example.com | editor               |
+      | name    | mail                | roles                | pass     |
+      | Badmin  | admin@example.com   | administrator        | pass     |
+      | Gabriel | gabriel@example.com | authenticated user   | pass     |
+      | Jaz     | jaz@example.com     | editor               | pass     |
+      | Katie   | katie@example.com   | authenticated user   | pass     |
+      | Martin  | martin@example.com  | editor               | pass     |
+      | Celeste | celeste@example.com | editor               | pass     |
+      | John    | john@example.com    | administrator        | johnpass |
     Given groups:
       | title    | author  | published |
       | Group 01 | Badmin  | Yes       |
@@ -37,37 +37,31 @@ Feature: User
       | Dataset 01 | Group 01  | Katie   | Yes              | Health   | Test        |
       | Dataset 02 | Group 01  | Katie   | Yes              | Health   | Test        |
 
-  @fixme
-    # Then I should see the "John" page - undefined
   Scenario: Login
     Given I am on the homepage
     When I follow "Log in"
-    And I fill in "Username" with "john"
+    And I fill in "Username" with "John"
     And I fill in "Password" with "johnpass"
-    Then I should see the "John" page
-
-
-  # TODO: Anonymous users can see profiles of logged in users (though can't edit), is that intended?
+    And I press "Log in"
+    Then I should see the "John" user page
 
   Scenario: Logout
     Given I am logged in as "John"
     And I am on the homepage
     When I follow "Log out"
     Then I should see "Log in"
-    #When I am on "John" page
-    #Then I should see "Page not found"
 
-
-  # TODO: Currently receiving an error page upon pressing "Create new account", upon which the user is not properly created
-  #       and you cannot log in as them, so this should be fixed
   Scenario: Register
     Given I am on the homepage
     When I follow "Register"
+    # Needed because honeypot module give error when filling out the register form
+    # too quickly, so we need to add a wait.
+    And I wait for 4 seconds
     And I fill in "Username" with "newuser"
     And I fill in "E-mail address" with "newuser@example.com"
     And I press "Create new account"
-    #Then I should see "Thank you for applying for an account."
-    #And I should see "Your account is currently pending approval by the site administrator."
+    Then I should see "Thank you for applying for an account."
+    And I should see "Your account is currently pending approval by the site administrator."
 
   @mail
   Scenario: Request new password
@@ -79,13 +73,11 @@ Feature: User
     Then user "John" should receive an email
     #TODO: Follow reset password link on email?
 
-  @fixme
-    # Then I should see the "Katie" page - undefined
   Scenario: View user profile
     Given I am on "Group 01" page
     And I follow "Members"
     When I click "Katie"
-    Then I should see the "Katie" page
+    Then I should see the "Katie" user page
 
   Scenario: View list of published datasets created by user on user profile
     Given I am on "Katie" page

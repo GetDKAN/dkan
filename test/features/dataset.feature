@@ -68,7 +68,7 @@ Feature: Datasets
     And I should see "Add Resource"
     When I am on "/dataset/wisconsin-polling-places"
     Then I should not see "Edit"
-    And I should see "Add Resource"
+    And I should not see "Add Resource"
 
   @api @javascript
   Scenario: Data previews when only local enabled
