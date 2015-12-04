@@ -63,12 +63,10 @@ Feature: Portal Administrators administer groups
 
   Scenario: View the list of datasets on a group
     Given I am on "Group 01" page
-    When I click "Datasets" in the "group block" region
     Then I should see "2" items in the "group datasets" region
 
   Scenario: View the number of datasets on group
     Given I am on "Group 01" page
-    When I click "Datasets" in the "group block" region
     Then I should see "2 datasets" in the "group datasets" region
 
   Scenario: View the list of group members
@@ -81,7 +79,6 @@ Feature: Portal Administrators administer groups
 
   Scenario: Search datasets on group
     Given I am on "Group 01" page
-    And I click "Datasets" in the "group block" region
     When I fill in "toy" for "Search" in the "group datasets" region
     And I press "Apply"
     Then I should see "1 datasets" in the "group datasets" region
@@ -89,7 +86,6 @@ Feature: Portal Administrators administer groups
 
   Scenario: View available "resource format" filters after search
     Given I am on "Group 01" page
-    And I click "Datasets" in the "group block" region
     When I fill in "Dataset" for "Search" in the "group datasets" region
     And I press "Apply"
     Then I should see "csv (1)" in the "filter by resource format" region
@@ -97,7 +93,6 @@ Feature: Portal Administrators administer groups
 
   Scenario: View available "author" filters after search
     Given I am on "Group 01" page
-    And I click "Datasets" in the "group block" region
     When I fill in "Dataset" for "Search" in the "group datasets" region
     And I press "Apply"
     Then I should see "Katie (1)" in the "filter by author" region
@@ -105,7 +100,6 @@ Feature: Portal Administrators administer groups
 
   Scenario: View available "tag" filters after search
     Given I am on "Group 01" page
-    And I click "Datasets" in the "group block" region
     When I fill in "Dataset" for "Search" in the "group datasets" region
     And I press "Apply"
     Then I should see "Health (1)" in the "filter by tag" region
@@ -113,7 +107,6 @@ Feature: Portal Administrators administer groups
 
   Scenario: Filter datasets on group by resource format
     Given I am on "Group 01" page
-    And I click "Datasets" in the "group block" region
     When I fill in "Dataset" for "Search" in the "group datasets" region
     And I press "Apply"
     When I click "csv (1)" in the "filter by resource format" region
@@ -122,7 +115,6 @@ Feature: Portal Administrators administer groups
 
   Scenario: Filter datasets on group by author
     Given I am on "Group 01" page
-    And I click "Datasets" in the "group block" region
     When I fill in "Dataset" for "Search" in the "group datasets" region
     And I press "Apply"
     When I click "Katie" in the "filter by author" region
@@ -131,7 +123,6 @@ Feature: Portal Administrators administer groups
 
   Scenario: Filter datasets on group by tags
     Given I am on "Group 01" page
-    And I click "Datasets" in the "group block" region
     When I fill in "Dataset" for "Search" in the "group datasets" region
     And I press "Apply"
     When I click "Health" in the "filter by tag" region

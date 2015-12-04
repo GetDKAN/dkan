@@ -93,5 +93,4 @@ Feature: Dataset Features
     And I press "Finish"
     Then I should see "Dataset Dataset 03 has been updated"
     When I am on "Group 01" page
-    And I click "Datasets" in the "group block" region
     Then I should see "Dataset 03" in the "group information" region
