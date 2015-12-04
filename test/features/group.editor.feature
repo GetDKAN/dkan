@@ -44,6 +44,9 @@ Feature: Portal Administrators administer groups
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
 
+  @fixme @dkanBug
+    # When a group page title is updated, the path changes automatically and it probably should not.
+    # See https://github.com/NuCivic/dkan/issues/797
   Scenario: Edit group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
