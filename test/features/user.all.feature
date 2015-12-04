@@ -54,6 +54,9 @@ Feature: User
   Scenario: Register
     Given I am on the homepage
     When I follow "Register"
+    # Needed because honeypot module give error when filling out the register form
+    # too quickly, so we need to add a wait.
+    And I wait for 4 seconds
     And I fill in "Username" with "newuser"
     And I fill in "E-mail address" with "newuser@example.com"
     And I press "Create new account"
