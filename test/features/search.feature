@@ -15,8 +15,8 @@ Feature: Search
     Given datasets:
       | title           |
       | Dataset 01      |
-    And I search for "Dataset 01"
-   # Then I should be on the "Dataset Search" page
+    When I search for "Dataset 01"
+    Then I should be on the "Dataset Search" page
     And I should see "Dataset 01" in the search results
 
   Scenario: See number of datasets on search page
