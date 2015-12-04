@@ -80,7 +80,7 @@ Feature: Resource
     Then I should see "The Resource ID for this resource is"
     And I should see "Example Query"
 
-  @api @dkanBug
+  @api @fixme @dkanBug
     #TODO: Permissions for anon users to see revisions to be added in future release'
     # See NuCivic/pluto/issues/132#issuecomment-161743679
   Scenario: View previous revisions of published resource
@@ -88,7 +88,7 @@ Feature: Resource
     When I click "Revisions"
     Then I should see the list of revisions
 
-  @api @dkanBug
+  @api @fixme @dkanBug
     #TODO: Permissions for anon users to see revisions to be added in future release'
     # See NuCivic/pluto/issues/132#issuecomment-161743679
   Scenario: Compare revisions of published resource
