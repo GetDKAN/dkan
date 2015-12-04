@@ -81,7 +81,7 @@ Feature: Portal Administrators administer groups
     Then I should see "The membership was removed"
     And I am on "Group 01" page
     And I click "Members" in the "primary tabs" region
-    And I should see "Katie" in the "group members" region
+    And I should not see "Katie" in the "group members" region
 
   Scenario: Delete any group
     Given I am logged in as "John"
@@ -191,7 +191,6 @@ Feature: Portal Administrators administer groups
     And I select "group" from "type"
     And I press "Filter"
     Then I should see "Group 03"
-    And I should see "1" items in the "search content results" region
 
   Scenario: View the details of an unpublished group
     Given I am logged in as "John"
