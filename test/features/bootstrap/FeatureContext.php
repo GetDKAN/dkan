@@ -288,9 +288,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $offset = 'features/bootstrap/FeatureContext.php';
     $dir =  __file__;
     $test_dir = str_replace($offset, "", $dir);
-
-    $path = $test_dir . "files/" . $path;
-
+    $path = $this->getMinkParameter('files_path') . '/' . $path;
     $this->getSession()->getPage()->attachFileToField($field, $path);
   }
 
@@ -474,6 +472,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function iShouldSeeTheLocalPreviewLink()
   {
-      $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', variable_get('site_name', t('Local'))));
+      $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', '') . ' ' . t('Preview'));
   }
 }
