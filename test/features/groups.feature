@@ -33,7 +33,7 @@ Feature: Groups
     Then I should see "Afghanistan Election Districts"
     And I should see "Wisconsin Polling Places"
 
-  @api @javascript
+  @fixme @api @javascript
   Scenario: Manage a group as an Editor
     Given I am logged in as a user with the "editor" role
     And I am on "/group/data-explorer-examples"
@@ -54,7 +54,8 @@ Feature: Groups
     Then I should see "Members"
     When I click "Members"
     Then I should see "teo"
-    When I click "Group" in the "toolbar" region
+    When I click "Data Explorer Examples"
+    And I click "Group" in the "toolbar" region
     And I wait for "People"
     And I click "People"
     Then I should see "teo"

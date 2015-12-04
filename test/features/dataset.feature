@@ -74,7 +74,7 @@ Feature: Datasets
   Scenario: Data previews when only local enabled
     Given cartodb previews are disabled for csv resources
     And I am on "/dataset/wisconsin-polling-places"
-    Then I should see "Explore Data"
+    Then I should see "Preview"
     And I should not see "Open with"
 
   @api @javascript
@@ -94,7 +94,8 @@ Feature: Datasets
     When I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "Test description"
     And I press "Next: Add data"
-    When I fill in "title" with "Test Resource Link File"
-    When I press "Next: Additional Info"
+    And I fill in "title" with "Test Resource Link File"
+    And I press "Next: Additional Info"
+    And I press "Save"
     Then I should see "Test Dataset"
     And I should see "Test description"

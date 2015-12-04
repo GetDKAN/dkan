@@ -40,6 +40,7 @@ default:
       default_session: 'goutte'
       javascript_session: 'selenium2'
       browser_name: chrome
+      files_path: %paths.base%/files
     Drupal\DrupalExtension:
       blackbox: ~
       drupal:
@@ -65,9 +66,9 @@ default:
         navigation: '.navigation-wrapper'
         primary tabs: '.tabs--primary'
         group subscribe: '.group-subscribe-message'
-        group information: '.field-group-htabs-wrapper'
         group datasets: '#node_group_full_group_tab_datasets'
-        group members: '#node_group_full_group_tab_members'
+        group block: '.pane-views-group-block-block'
+        group members: '.view-id-dkan_og_extras_group_members'
         filter by resource format: '.facetapi-facet-field-resourcesfield-format'
         filter by author: '.facetapi-facet-author'
         filter by tag: '.facetapi-facet-field-tags'
@@ -87,17 +88,6 @@ default:
         error_message_selector: '.alert.alert-error'
         success_message_selector: '.alert.alert-success'
 
-local:
-  extensions:
-    Behat\MinkExtension:
-      base_url: http://dkan.local
-      selenium2:
-        wd_host: http://33.33.33.1:4444/wd/hub
-    Drupal\DrupalExtension:
-      drupal:
-        drupal_root: '/var/www/dkan/webroot'
-      drush:
-        root: '/var/www/dkan/webroot'
 docker:
   extensions:
     Behat\MinkExtension:
