@@ -44,8 +44,9 @@ Feature: Portal Administrators administer groups
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
 
-  @fixme
-    # And I should see the "Group 01 edited" detail page - undefined
+  @fixme @dkanBug
+    # When a group page title is updated, the path changes automatically and it probably should not.
+    # See https://github.com/NuCivic/dkan/issues/797
   Scenario: Edit group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -53,7 +54,7 @@ Feature: Portal Administrators administer groups
     And I fill in "title" with "Goup 01 edited"
     And I press "Save"
     Then I should see "Group Goup 01 edited has been updated"
-    And I should see the "Group 01 edited" detail page
+    And I should be on the "Group 01" page
 
   Scenario: Add group member on a group as administrator
     Given I am logged in as "Gabriel"
@@ -80,7 +81,8 @@ Feature: Portal Administrators administer groups
     And I click "Members" in the "group block" region
     Then I should not see "Katie" in the "group members" region
 
-  @fixme
+  @fixme @testBug
+    #TODO: Sees the navbar Group link, not the Group's group link - need to check by region
   Scenario: I should not be able to edit a group that I am not a member of
     Given I am logged in as "Gabriel"
     When I am on "Group 02" page
@@ -107,8 +109,6 @@ Feature: Portal Administrators administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
-  @fixme
-   # Then I should see the list of permissions for the group - undefined
   Scenario: View permissions of group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -116,16 +116,15 @@ Feature: Portal Administrators administer groups
     When I click "Permissions (read-only)"
     Then I should see the list of permissions for the group
 
-  @fixme
-     # Then I should see the list of roles for the group - undefined
   Scenario: View group roles of group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     And I click "Group"
     When I click "Roles (read-only)"
-    Then I should see the list of roles for the group
+    Then I should see the list of roles for the group "Group 01"
 
-  @fixme
+  @fixme @testBug
+    #TODO: Need to define for getting list of permissions
      # Then I should see the list of permissions for "<role name>" role - undefined
   Scenario Outline: View group role permissions of group as administrator
     Given I am logged in as "Gabriel"
