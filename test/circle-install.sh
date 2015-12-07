@@ -1,3 +1,6 @@
+#!/bin/bash
+# Make sure an error during execution gets passed along to circleCI
+set -e
 if [ -f ~/backups/dkan-install.sql ]; then
     # Use the cached install backup.
     echo "===> Loading install from cached database found at ~/backups/dkan-install.sql."

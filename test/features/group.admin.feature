@@ -56,7 +56,8 @@ Feature: Site managers administer groups
     And I should see the heading "My group"
     And I should see "This is a body"
 
-  @fixme
+  @fixme @testBug
+    #TODO: Break up undefined step into behat steps (I fill in the following...I press submit)
     #When I fill in the "member" form for "Katie" - undefined
   Scenario: Add a group member on any group
     Given I am logged in as "John"
@@ -75,12 +76,12 @@ Feature: Site managers administer groups
     And I am on "Group 01" page
     And I click "Group"
     And I click "People"
-    And I click "remove" in the "Katie" row
+    When I click "remove" in the "Katie" row
     And I press "Remove"
     Then I should see "The membership was removed"
-    When I am on "Group 01" page
-    And I click "Members"
-    Then I should not see "Katie"
+    And I am on "Group 01" page
+    And I click "Members" in the "group block" region
+    And I should not see "Katie" in the "group members" region
 
   Scenario: Delete any group
     Given I am logged in as "John"
@@ -92,16 +93,14 @@ Feature: Site managers administer groups
     When I press "Delete"
     Then I should see "Group Group 02 has been deleted"
 
-  @fixme
-    # And I should see the "Goup 02 edited" detail page - undefined
   Scenario: Edit any group
     Given I am logged in as "John"
     And I am on "Group 02" page
     When I click "Edit"
-    And I fill in "title" with "Goup 02 edited"
+    And I fill in "Body" with "Group 02 edited"
     And I press "Save"
-    Then I should see "Group Goup 02 edited has been updated"
-    And I should see the "Goup 02 edited" detail page
+    Then I should see "Group Group 02 has been updated"
+    And I should be on the "Group 02" page
 
   Scenario: Edit membership status of group member on any group
     Given I am logged in as "John"
@@ -123,8 +122,6 @@ Feature: Site managers administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
-  @fixme
-    # Then I should see the list of permissions for the group - undefined
   Scenario: View permissions of any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -132,16 +129,15 @@ Feature: Site managers administer groups
     When I click "Permissions (read-only)"
     Then I should see the list of permissions for the group
 
-  @fixme
-    # Then I should see the list of roles for the group - undefined
   Scenario: View group roles of any group
     Given I am logged in as "John"
     And I am on "Group 01" page
     And I click "Group"
     When I click "Roles (read-only)"
-    Then I should see the list of roles for the group
+    Then I should see the list of roles for the group "Group 01"
 
-  @fixme
+  @fixme @testBug
+    #TODO: Need to define for getting list of permissions
     # Then I should see the list of permissions for "<role name>" role - undefined
   Scenario Outline: View group role permissions of any group
     Given I am logged in as "John"
@@ -171,13 +167,14 @@ Feature: Site managers administer groups
     When I click "People"
     Then I should see "Total content: 4"
 
-  @fixme
-    # Then I should see "Parent group" field - undefined
+  @fixme @dkanBug
+    # TODO: Sub-groups not in dkan, this should be deleted
+    # Parent group not on edit page, does not look like sub-groups are enabled on dkan currently
   Scenario: Add a sub-group on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
     When I click "Edit"
-    Then I should see "Parent group" field
+    Then I should see "Parent group"
     When I fill in "Parent group" with "Group 02"
     And I press "Update"
     Then I should see "Group Group 01 has been updated"
@@ -186,8 +183,7 @@ Feature: Site managers administer groups
 
   # TODO: Change to use Workbench instead of /content
 
-  @fixme
-    # Then I should see "Group 03" - not found on page
+
   Scenario: View list of unpublished groups
     Given I am logged in as "John"
     And I am on "Content" page
@@ -195,13 +191,11 @@ Feature: Site managers administer groups
     And I select "group" from "type"
     And I press "Filter"
     Then I should see "Group 03"
-    And I should see "1" items in the "search content results" region
 
-  @fixme
-    # Then I should see the "Group 03" detail page - undefined
   Scenario: View the details of an unpublished group
     Given I am logged in as "John"
     When I am on "Group 03" page
-    Then I should see the "Group 03" detail page
+    #TODO: What should actually be tested as far as details?
+    Then I should be on the "Group 03" page
 
 

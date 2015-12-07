@@ -64,7 +64,7 @@ Feature: Site Manager administer groups
     Then I should see "Remove pending membership request" in the "group block" region
     When I click "Remove pending membership request" in the "group block" region
     And I press "Remove"
-    #Then I should see the "Group 02" detail page
+    Then I should be on the "Group 02" page
     And I should see "Request group membership" in the "group block" region
 
   @api
@@ -73,10 +73,11 @@ Feature: Site Manager administer groups
     And I am on "Group 01" page
     When I click "Unsubscribe from group"
     And I press "Remove"
-    #Then I should see the "Group 01" detail page
+    Then I should be on the "Group 01" page
     And I should see "Request group membership" in the "group block" region
 
-  @fixme @api
+  @fixme @api @testBug
+    #TODO: Sees the navbar Group link, not the Group's group link - need to check by region
   Scenario: I should not be able to edit groups
     Given I am logged in as "Katie"
     When I am on "Group 01" page
