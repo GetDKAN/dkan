@@ -53,8 +53,6 @@ Feature: User
     And I click "About" in the "tabs" region
     Then I should see "This is Katie!"
 
-  @fixme
-     # TODO: There is an error submitting the form for a new user, so test is not passing currently
   Scenario: Create user
     Given I am logged in as "John"
     And I am on "Users" page
@@ -96,11 +94,6 @@ Feature: User
     Then I should see "The changes have been saved"
     When I am on "Users" page
     Then I should see "content creator" in the "Jaz" row
-
-  @fixme
-    # TODO: Needs definition
-  Scenario: Search users
-    Given I am on the homepage
 
 
 

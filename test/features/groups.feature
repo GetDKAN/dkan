@@ -33,7 +33,7 @@ Feature: Groups
     Then I should see "Afghanistan Election Districts"
     And I should see "Wisconsin Polling Places"
 
-  @fixme @api @javascript
+  @api @javascript @testBug
   Scenario: Manage a group as an Editor
     Given I am logged in as a user with the "editor" role
     And I am on "/group/data-explorer-examples"

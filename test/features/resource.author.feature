@@ -4,9 +4,8 @@ Feature: Resource
   Background:
     Given pages:
       | title         | url         |
-       # TODO: Change to use Workbench admin screen instead of /content and /node/add
-      | My Workbench  | /node/add/  |
-      | Content       | /user       |
+      | Content       | /node/add/  |
+      | User          | /user       |
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
@@ -52,33 +51,22 @@ Feature: Resource
     # Workbench is not enabled by default.
   Scenario: Create resource
     Given I am logged in as "Katie"
-    And I am on "My Workbench" page
-    #And I click "Add Content"
+    And I am on the "Content" page
     And I click "Resource"
-    When I fill in "Resource 06" for "Title"
+    When I fill in "Title" with "Resource 06"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
-    When I am on "Content" page
-    Then I should see "Resource 06"
 
-  @fixme
-     # TODO: Needs definition.
-  Scenario: Create resources with GeoJSON data
-    Given I am on the homepage
-
-  @fixme
-    # TODO: Needs definition.
-  Scenario: Bureau & Program Code are auto populated on creation
-    Given I am on the homepage
-
-  Scenario: Edit own resource
+  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
+  Scenario: Edit own resource as content creator
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
     When I click "Edit"
     And I fill in "Title" with "Resource 02 edited"
     And I press "Save"
     Then I should see "Resource Resource 02 edited has been updated"
-    When I am on "Content" page
+    When I am on "User" page
     Then I should see "Resource 02 edited"
 
   @fixme
@@ -89,14 +77,18 @@ Feature: Resource
     When I click "Edit"
     Then I should not see "Publishing options"
 
-  @fixme
-     # TODO: Needs definition. How can a data contributor unpublish content?
-  Scenario: Unpublish own resource
-    Given I am on the homepage
+  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
+  Scenario: Delete own resource
+    Given I am logged in as "Katie"
+    And I am on "Resource 02" page
+    When I click "Edit"
+    And I press "Delete"
+    And I press "Delete"
+    Then I should see "Resource 02 has been deleted"
 
   @fixme
-    # TODO: Managing own datastore not currently supported for content creators
-    # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
+  # TODO: Managing own datastore not currently supported for content creators
+   # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
   Scenario: Manage datastore of own resource
     Given I am logged in as "Katie"
     And I am on "Resource 01" page
@@ -104,8 +96,8 @@ Feature: Resource
     And I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @fixme
-    # TODO: Add manage datastore support for created resources in DKAN Extension
+  @fixme @testBug
+    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Import items on datastore of own resource
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
@@ -116,8 +108,8 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @fixme
-    # TODO: Add manage datastore support for created resources in DKAN Extension
+  @fixme @testBug
+    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Delete items on datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -129,8 +121,8 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @fixme
-    # TODO: Add manage datastore support for created resources in DKAN Extension
+  @fixme @testBug
+    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Drop datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -149,8 +141,7 @@ Feature: Resource
     And I am on "Resource 02" page
     When I click "Edit"
     And I fill in "title" with "Resource 02 edited"
-    #And I check "Create new revision"
     And I press "Save"
     Then I should see "Resource Resource 02 edited has been updated"
     When I click "Revisions"
-    Then I should see "current revision"
+    Then I should see "by Katie"

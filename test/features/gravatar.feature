@@ -5,8 +5,8 @@ Feature: Gravatar
     Given I am logged in as a user with the "content creator" role
     When I visit "user/"
     Then I should see "Edit"
-    And I should see a gravatar link in the "content" region
-    And I should see a gravatar link in the "header" region
+    And I should see a gravatar image in the "content" region
+    And I should see a gravatar image in the "header" region
     When I click "Edit"
     Then I should see "Upload picture"
     When I check "gravatar"
@@ -14,9 +14,9 @@ Feature: Gravatar
     And I press "edit-submit"
     And I wait for "3" seconds
     Then I should see "The changes have been saved."
-    And I should not see a gravatar link in the "header" region
+    And I should not see a gravatar image in the "header" region
     When I visit "user/"
-    Then I should not see a gravatar link in the "content" region
+    Then I should not see a gravatar image in the "content" region
     When I click "Edit"
     Then I should see "Delete picture"
     When I check "edit-picture-delete"
@@ -24,5 +24,5 @@ Feature: Gravatar
     And I wait for "3" seconds
     Then I should see "The changes have been saved."
     And I should not see "Delete picture"
-    And I should see a gravatar link in the "content" region
-    And I should see a gravatar link in the "header" region
+    And I should see a gravatar image in the "content" region
+    And I should see a gravatar image in the "header" region

@@ -70,7 +70,7 @@ Feature: Widgets
       Then I should see "05/06/15"
       Then I should see "9.3"
 
-  @fixme
+  @fixme @testBug
     # And I press "Next" - unknown error: Element is not clickable at point (148, 338).
     # Other element would receive theclick: <iframe class="media-modal-frame ui-dialog-content..
   Scenario: Adds "New Video Widget" block to home page using panels ipe editor
