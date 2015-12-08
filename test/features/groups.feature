@@ -15,7 +15,7 @@ Feature: Groups
     Then I should see "edit"
 
   @api @javascript
-  Scenario: Request to join a group as an Auth User
+  Scenario: Request to join a group as a content creator
     Given I am logged in as a user with the "content creator" role
     When I visit "group/geospatial-data-explorer-examples"
     And I click "Request group membership"
@@ -34,8 +34,8 @@ Feature: Groups
     And I should see "Wisconsin Polling Places"
 
   @api @javascript @testBug
-  Scenario: Manage a group as an Editor
-    Given I am logged in as a user with the "editor" role
+  Scenario: Manage a group as a Site Manager
+    Given I am logged in as a user with the "site manager" role
     And I am on "/group/data-explorer-examples"
     Given users:
       | name     | mail            | status |
@@ -66,7 +66,10 @@ Feature: Groups
     When I press "edit-submit"
     And I wait for "Performed Remove from group"
     Then I should see the success message "Performed Remove from group"
-    Given I am logged in as a user with the "content creator" role
+
+  @api @javascript
+  Scenario: Create a group as a Site Manager
+    Given I am logged in as a user with the "site manager" role
     And I am on "/node/add/group"
     Then I should see "Create Group"
     When I fill in "title" with "Test Group"
