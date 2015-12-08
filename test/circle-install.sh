@@ -1,8 +1,10 @@
 #!/bin/bash
 # Make sure an error during execution gets passed along to circleCI
 set -e
-if [ -f ~/backups/dkan-install.sql ]; then
-    # Use the cached install backup.
+#if [ -f ~/backups/dkan-install.sql ]; then
+# DON'T USE THE CACHED BACKUP FOR A WHILE UNTIL THE DKAN REFACTORING IS DONE. --Frank
+if false; then
+# Use the cached install backup.
     echo "===> Loading install from cached database found at ~/backups/dkan-install.sql."
     cp circle.settings.php sites/default/settings.php
     drush sql-drop -y && drush sqlc < ~/backups/dkan-install.sql
