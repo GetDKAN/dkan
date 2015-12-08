@@ -1,10 +1,10 @@
 @javascript
-Feature: Portal Administrators administer groups
+Feature: Site Manager administer groups
   In order to manage site organization
-  As a Portal Administrator
+  As a Site Manager
   I want to administer groups
 
-  Portal administrators needs to be able to create, edit, and delete
+  Site managers needs to be able to create, edit, and delete
   groups. They need to be able to set group membership by adding and removing
   users and setting group roles and permissions.
 
@@ -15,12 +15,12 @@ Feature: Portal Administrators administer groups
       | Groups    | /groups         |
       | Content   | /admin/content/ |
     Given users:
-      | name    | mail             | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
+      | name    | mail                | roles                |
+      | John    | john@example.com    | site manager         |
+      | Badmin  | admin@example.com   | site manager         |
       | Gabriel | gabriel@example.com | editor               |
       | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | authenticated user   |
+      | Katie   | katie@example.com   | content creator      |
       | Martin  | martin@example.com  | editor               |
       | Celeste | celeste@example.com | editor               |
     Given groups:

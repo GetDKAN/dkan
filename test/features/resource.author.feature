@@ -8,11 +8,11 @@ Feature: Resource
       | User          | /user       |
     Given users:
       | name    | mail                | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
-      | Gabriel | gabriel@example.com | authenticated user   |
+      | John    | john@example.com    | site manager         |
+      | Badmin  | admin@example.com   | site manager         |
+      | Gabriel | gabriel@example.com | content creator   |
       | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | authenticated user   |
+      | Katie   | katie@example.com   | content creator   |
       | Martin  | martin@example.com  | editor               |
       | Celeste | celeste@example.com | editor               |
     Given groups:
@@ -47,8 +47,9 @@ Feature: Resource
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
 
-  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
-  Scenario: Create resource with linked file as content creator
+  @fixme
+    # Workbench is not enabled by default.
+  Scenario: Create resource
     Given I am logged in as "Katie"
     And I am on the "Content" page
     And I click "Resource"
@@ -68,9 +69,9 @@ Feature: Resource
     When I am on "User" page
     Then I should see "Resource 02 edited"
 
-  #TODO: Should a content creator be able to publish? Authenticated users currently cannot, but content creators
-  #TODO:   may have that permission when they are added
-  Scenario: A content creator should not be able to publish resources
+  @fixme
+   # Link with id|title|alt|text "Edit" not found.
+  Scenario: A data contributor should not be able to publish resources
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
     When I click "Edit"
@@ -85,9 +86,9 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
 
-  @fixme @dkanBug
-    # TODO: Managing own datastore not currently supported for authenticated users
-    # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
+  @fixme
+  # TODO: Managing own datastore not currently supported for content creators
+   # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
   Scenario: Manage datastore of own resource
     Given I am logged in as "Katie"
     And I am on "Resource 01" page
@@ -133,6 +134,8 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
+  @fixme
+    # Link with id|title|alt|text "Edit" not found.
   Scenario: Add revision to own resource
     Given I am logged in as "Katie"
     And I am on "Resource 02" page

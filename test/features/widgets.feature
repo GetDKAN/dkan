@@ -2,7 +2,7 @@
 Feature: Widgets
 
   Background:
-    Given I am logged in as a user with the "administrator" role
+    Given I am logged in as a user with the "site manager" role
     And I wait for "Customize this page"
     When I click "Customize this page"
     And I wait for "Add new pane"

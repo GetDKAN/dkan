@@ -13,12 +13,12 @@ Feature: Dataset Features
       | Datasets     | /dataset                      |
       | My Content   | /user                         |
     Given users:
-      | name    | mail             | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
+      | name    | mail             | roles                   |
+      | John    | john@example.com    | site manager         |
+      | Badmin  | admin@example.com   | site manager         |
       | Gabriel | gabriel@example.com | editor               |
       | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | authenticated user   |
+      | Katie   | katie@example.com   | editor               |
       | Martin  | martin@example.com  | editor               |
       | Celeste | celeste@example.com | editor               |
     Given groups:
@@ -73,8 +73,12 @@ Feature: Dataset Features
     Then I should see "Dataset Dataset 03 edited has been updated"
     When I am on "My Content" page
     Then I should see "Dataset 03 edited"
-    When I click "Dataset 03 edited"
-    And I should see "Revisions"
+    And I should see "Draft" as "Moderation state" in the "Dataset 03 edited" row
+
+  # TODO: Needs definition. How can a data contributor unpublish content?
+  @api
+  Scenario: Unpublish own dataset
+    Given I am on the homepage
 
   #TODO: Content creator will be a role added later, but for now we stick with authenticated user
   Scenario: Delete own dataset as content creator
