@@ -8,14 +8,14 @@ Feature: User
       | John          | /users/john   |
       | Katie         | /users/katie  |
     Given users:
-      | name    | mail                | roles                |
-      | John    | john@example.com    | site manager         |
-      | Badmin  | admin@example.com   | site manager         |
-      | Gabriel | gabriel@example.com | content creator      |
-      | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | content creator      |
-      | Martin  | martin@example.com  | editor               |
-      | Celeste | celeste@example.com | editor               |
+      | name    | mail                | roles                | pass     |
+      | John    | john@example.com    | site manager         | johnpass |
+      | Badmin  | admin@example.com   | site manager         | pass     |
+      | Gabriel | gabriel@example.com | content creator      | pass     |
+      | Jaz     | jaz@example.com     | editor               | pass     |
+      | Katie   | katie@example.com   | content creator      | pass     |
+      | Martin  | martin@example.com  | editor               | pass     |
+      | Celeste | celeste@example.com | editor               | pass     |
     Given groups:
       | title    | author  | published |
       | Group 01 | Badmin  | Yes       |
