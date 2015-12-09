@@ -53,6 +53,10 @@ Feature: User
     And I click "About" in the "tabs" region
     Then I should see "This is Katie!"
 
+  @dkanBug
+    # Site managers trigger honeypot when creating users.
+    # See https://github.com/NuCivic/dkan/issues/811
+    # Workaround: Wait for 4 seconds so that honeypot doesn't overreact
   Scenario: Create user
     Given I am logged in as "John"
     And I am on "Users" page
@@ -62,6 +66,7 @@ Feature: User
       | E-mail address    | micaela@example.com |
       | Password          | mic123              |
       | Confirm password  | mic123              |
+    And I wait for 4 seconds
     And I press "Create new account"
     Then I should see "Created a new user account for Micaela."
 
