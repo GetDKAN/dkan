@@ -10,17 +10,17 @@ Feature: Dataset Features
   Background:
     Given pages:
       | title        | url                          |
-      | Datasets     | /dataset                      |
-      | My Content   | /user                         |
+      | Datasets     | /dataset                     |
+      | My Content   | /user                        |
     Given users:
-      | name    | mail             | roles                   |
+      | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
       | Badmin  | admin@example.com   | site manager         |
       | Gabriel | gabriel@example.com | editor               |
       | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | editor               |
-      | Martin  | martin@example.com  | editor               |
-      | Celeste | celeste@example.com | editor               |
+      | Katie   | katie@example.com   | content creator      |
+      | Martin  | martin@example.com  | authenticated user   |
+      | Celeste | celeste@example.com | authenticated user   |
     Given groups:
       | title    | author | published |
       | Group 01 | Admin  | Yes       |
@@ -31,7 +31,6 @@ Feature: Dataset Features
       | Gabriel | Group 01 | administrator member | Active            |
       | Katie   | Group 01 | member               | Active            |
       | Jaz     | Group 01 | member               | Pending           |
-      | Admin   | Group 02 | administrator member | Active            |
       | Celeste | Group 02 | member               | Active            |
     And "Tags" terms:
       | name   |
@@ -50,7 +49,6 @@ Feature: Dataset Features
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
       | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 |             |
 
-  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Datasets" page
@@ -58,13 +56,12 @@ Feature: Dataset Features
     And I fill in the following:
       | Title           | Test Dataset      |
       | Description     | Test description  |
-    And I click the chosen field "License Not Specified" and enter "Creative Commons Attribution"
+    And I click the chosen field "License Not Specified" and enter "Other (Public Domain)"
     And I fill in the chosen field "Choose some options" with "Group 01"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
 
-  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
-  Scenario: Edit own dataset and see revisions
+  Scenario: Edit own dataset as a content creator
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
     When I click "Edit"
@@ -73,14 +70,12 @@ Feature: Dataset Features
     Then I should see "Dataset Dataset 03 edited has been updated"
     When I am on "My Content" page
     Then I should see "Dataset 03 edited"
-    And I should see "Draft" as "Moderation state" in the "Dataset 03 edited" row
 
-  # TODO: Needs definition. How can a data contributor unpublish content?
-  @api
-  Scenario: Unpublish own dataset
+  @fixme
+    # TODO: Needs definition. How can a data contributor unpublish content?
+  Scenario: Unpublish own dataset as a content creator
     Given I am on the homepage
 
-  #TODO: Content creator will be a role added later, but for now we stick with authenticated user
   Scenario: Delete own dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
