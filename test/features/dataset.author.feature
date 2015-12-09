@@ -56,7 +56,7 @@ Feature: Dataset Features
     And I fill in the following:
       | Title           | Test Dataset      |
       | Description     | Test description  |
-    And I click the chosen field "License Not Specified" and enter "Other"
+    And I click the chosen field "License Not Specified" and enter "Other (Public Domain)"
     And I fill in the chosen field "Choose some options" with "Group 01"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
