@@ -53,17 +53,22 @@ Feature: User
     And I click "About" in the "tabs" region
     Then I should see "This is Katie!"
 
+  @dkanBug @deleteTempUser
+    # Site managers trigger honeypot when creating users.
+    # See https://github.com/NuCivic/dkan/issues/811
+    # Workaround: Wait for 6 seconds so that honeypot doesn't overreact
   Scenario: Create user
     Given I am logged in as "John"
     And I am on "Users" page
     When I follow "Add user"
     And I fill in the following:
-      | Username          | Micaela             |
-      | E-mail address    | micaela@example.com |
-      | Password          | mic123              |
-      | Confirm password  | mic123              |
+      | Username          | tempuser             |
+      | E-mail address    | tempuser@example.com |
+      | Password          | temp123              |
+      | Confirm password  | temp123              |
+    And I wait for 6 seconds
     And I press "Create new account"
-    Then I should see "Created a new user account for Micaela."
+    Then I should see "Created a new user account for tempuser."
 
   Scenario: Block user
     Given I am logged in as "John"
