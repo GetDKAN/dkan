@@ -58,7 +58,7 @@ Feature: User
     When I follow "Register"
     # Needed because honeypot module give error when filling out the register form
     # too quickly, so we need to add a wait.
-    And I wait for 4 seconds
+    And I wait for 6 seconds
     And I fill in "Username" with "tempuser"
     And I fill in "E-mail address" with "tempuser@example.com"
     And I press "Create new account"
