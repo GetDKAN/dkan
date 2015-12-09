@@ -121,15 +121,4 @@ features[user_permission][] = view revisions
 features[user_permission][] = view the administration theme
 features[user_role][] = administrator
 features[user_role][] = editor
-features[variable][] = gravatar_default
-features[variable][] = gravatar_rating
-features[variable][] = gravatar_size
-features[variable][] = gravatar_url
-features[variable][] = user_admin_role
-features[variable][] = user_picture_default
-features[variable][] = user_picture_dimensions
-features[variable][] = user_picture_file_size
-features[variable][] = user_picture_guidelines
-features[variable][] = user_picture_path
-features[variable][] = user_picture_style
-features[variable][] = user_pictures
+
