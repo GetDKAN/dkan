@@ -56,19 +56,16 @@ Feature: Site managers administer groups
     And I should see the heading "My group"
     And I should see "This is a body"
 
-  @fixme @testBug
-    #TODO: Break up undefined step into behat steps (I fill in the following...I press submit)
-    #When I fill in the "member" form for "Katie" - undefined
   Scenario: Add a group member on any group
     Given I am logged in as "John"
     And I am on "Group 02" page
     And I click "Group"
     And I click "Add people"
-    When I fill in the "member" form for "Katie"
+    And I fill in "Katie" for "User name"
     And I press "Add users"
     Then I should see "Katie has been added to the group Group 02"
     When I am on "Group 02" page
-    And I click "Members" in the "group block" region
+    And I click "Members"
     Then I should see "Katie" in the "group members" region
 
   Scenario: Remove a group member from any group
@@ -80,7 +77,7 @@ Feature: Site managers administer groups
     And I press "Remove"
     Then I should see "The membership was removed"
     And I am on "Group 01" page
-    And I click "Members" in the "group block" region
+    And I click "Members"
     And I should not see "Katie" in the "group members" region
 
   Scenario: Delete any group
