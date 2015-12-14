@@ -164,23 +164,6 @@ Feature: Site managers administer groups
     When I click "People"
     Then I should see "Total content: 4"
 
-  @fixme @dkanBug
-    # TODO: Sub-groups not in dkan, this should be deleted
-    # Parent group not on edit page, does not look like sub-groups are enabled on dkan currently
-  Scenario: Add a sub-group on any group
-    Given I am logged in as "John"
-    And I am on "Group 01" page
-    When I click "Edit"
-    Then I should see "Parent group"
-    When I fill in "Parent group" with "Group 02"
-    And I press "Update"
-    Then I should see "Group Group 01 has been updated"
-    When I am on "Group 02" page
-    Then I should see "Group 01" in the "sub-groups" region
-
-  # TODO: Change to use Workbench instead of /content
-
-
   Scenario: View list of unpublished groups
     Given I am logged in as "John"
     And I am on "Content" page
