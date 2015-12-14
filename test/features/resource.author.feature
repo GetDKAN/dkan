@@ -96,8 +96,6 @@ Feature: Resource
     And I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Import items on datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 05" page
@@ -111,8 +109,6 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Delete items on datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -130,8 +126,6 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Drop datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
