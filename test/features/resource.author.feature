@@ -86,48 +86,63 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
 
-  @fixme
-  # TODO: Managing own datastore not currently supported for content creators
-   # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
+  @dkanBug
+    # TODO: Managing own datastore not currently supported for authenticated users
+    # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
   Scenario: Manage datastore of own resource
-    Given I am logged in as "Katie"
-    And I am on "Resource 01" page
+    Given I am logged in as "Celeste"
+    And I am on "Resource 05" page
     When I click "Edit"
     And I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @fixme @testBug
+  @testBug
     # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Import items on datastore of own resource
-    Given I am logged in as "Katie"
-    And I am on "Resource 02" page
+    Given I am logged in as "Celeste"
+    And I am on "Resource 05" page
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
+    And I am on "Resource 05" page
     When I click "Manage Datastore"
     And I press "Import"
-    And I press "Import"
-    And I wait
+    And I wait for "Delete items"
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @fixme @testBug
+  @testBug
     # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Delete items on datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
+    And I am on "Resource 03" page
     When I click "Manage Datastore"
-    And I press "Delete items"
+    And I press "Import"
+    And I wait for "Delete Items"
+    And I click "Delete items"
     And I press "Delete"
-    And I wait
-    Then I should see "items have been deleted."
+    And I wait for "items have been deleted"
+    And I am on "Resource 03" page
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @fixme @testBug
+  @testBug
     # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Drop datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
-    And I click "Manage Datastore"
-    When I press "Drop datastore"
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
+    And I am on "Resource 03" page
+    When I click "Manage Datastore"
+    And I press "Import"
+    And I wait for "Delete Items"
+    When I click "Drop Datastore"
     And I press "Drop"
     Then I should see "Datastore dropped!"
     And I should see "Your file for this resource is not added to the datastore"
