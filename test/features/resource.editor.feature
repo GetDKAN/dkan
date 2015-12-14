@@ -88,47 +88,56 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @fixme @testBug
+  @testBug
     # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Import items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
     When I click "Manage Datastore"
-    And I click "Import"
-    #And I press "Import"
-    #And I wait
-    #Then I should see "Last import"
-    #And I should see "imported items total"
-    Then I should see "There is nothing to manage!"
+    And I press "Import"
+    And I wait for "Delete Items"
+    Then I should see "Last import"
+    And I should see "imported items total"
 
-  @fixme @testBug
+  @testBug
     # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 04" page
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
     When I click "Manage Datastore"
+    And I press "Import"
+    And I wait for "Delete Items"
     And I click "Delete items"
     And I press "Delete"
-    And I wait
-    #Then I should see "items were deleted"
-    Then I should see "no items to delete"
+    And I wait for "items have been deleted"
+    And I am on "Resource 04" page
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @fixme @testBug
+  @testBug
     # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Drop datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 04" page
-    And I click "Manage Datastore"
-    When I click "Drop Datastore"
-    #And I press "Drop"
-    #Then I should see "Datastore dropped!"
-    #And I should see "Your file for this resource is not added to the datastore"
-    Then I should see "You need to have a file or link imported to the datastore in order to drop it."
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
+    And I am on "Resource 04" page
     When I click "Manage Datastore"
-    #Then I should see "No imported items."
-    Then I should see "There is nothing to manage!"
+    And I press "Import"
+    And I wait for "Delete Items"
+    When I click "Drop Datastore"
+    And I press "Drop"
+    Then I should see "Datastore dropped!"
+    And I should see "Your file for this resource is not added to the datastore"
+    When I click "Manage Datastore"
+    Then I should see "No imported items."
 
   @fixme @testBug
     #TODO: Need to add definition for clicking revisions on revision page, click in row
