@@ -474,4 +474,44 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   {
       $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', '') . ' ' . t('Preview'));
   }
+
+  /**
+   * @Given I should see the dataset list with :order order by :criteria
+   */
+  public function iShouldSeeDatasetListInOrder($order, $criteria){
+
+    $dataset_list = array();
+    $count = 1;
+    while(($row = $this->getSession()->getPage()->find('css', '.views-row-'.$count)) !== null ){
+      $dataset_list[$count-1] = $row->getText();
+      $count++;
+    }
+
+    switch($criteria){
+      case 'Date changed':
+        $criteria = 'changed';
+        break;
+      case 'Title':
+        $criteria = 'title';
+        break;
+      default:
+        break;
+    }
+
+    $query = db_select('node', 'n');
+
+    $results = $query->fields('n', array('title'))
+      ->condition('type', 'dataset')
+      ->condition('status', '1')
+      ->orderBy($criteria, strtoupper($order))
+      ->execute();
+
+    $count = 0;
+    foreach($results as $result){
+      if(strpos($dataset_list[$count], $result->title) !== 0){
+        throw new Exception("Does not match order of list, $dataset_list[$count] was next on page but expected $result->title");
+      }
+      $count++;
+    }
+  }
 }
