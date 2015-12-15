@@ -133,32 +133,25 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @fixme @testBug
-    #TODO: Need to add definition for clicking revisions on revision page, click in row
   Scenario: Add revision to resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
     When I click "Edit"
     And I fill in "title" with "Resource 01 edited"
-    And I check "Create new revision"
     And I press "Save"
     Then I should see "Resource Resource 01 edited has been updated"
-    When I press "Revisions"
-    And I click "first" revision
+    When I click "Revisions"
+    And I press "Compare"
     Then I should see "Resource 01 edited"
 
-  @fixme @dkanBug
-    # TODO: Editors do not have access to revert a resource to a previous revision
-    # See NuCivic/dkan#793
   Scenario: Revert resource revision of any resource associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
     When I click "Edit"
     And I fill in "title" with "Resource 01 edited"
-    And I check "Create new revision"
     And I press "Save"
     Then I should see "Resource Resource 01 edited has been updated"
-    When I press "Revisions"
-    And I click "Revert" in the "second" row
-    # TODO: This is NOT working. Throws "You are not authorized to access this page"
-    Then the resource should be reverted
+    When I click "Revisions"
+    And I click "Revert"
+    And I press "Revert"
+    Then I should see "Resource Resource 01 has been reverted"
