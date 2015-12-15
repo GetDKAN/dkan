@@ -125,8 +125,12 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
 
   /**
    * @Given /^I click the chosen field "([^"]*)" and enter "([^"]*)"$/
+   *
+   * DEPRECATED: DONT USE. The clicking of the chosen fields to select some values
+   * didn't work well (selenium errors about the value not being visible). Commenting
+   * this out for now in case someone wants to replace it later with something that works.
    */
-  public function iClickTheChosenFieldAndEnter($field, $value) {
+  /*public function iClickTheChosenFieldAndEnter($field, $value) {
     $session = $this->getSession();
     $page = $session->getPage();
     $field = $this->fixStepArgument($field);
@@ -148,7 +152,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       throw new Exception(sprintf('"' . $value . '" option was not found in the chosen field.'));
     }
     $title->click();
-  }
+  }*/
 
   /**
    * Click some text.
