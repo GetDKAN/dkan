@@ -148,11 +148,10 @@ Feature: Resource
     And I am on "Resource 02" page
     When I click "Edit"
     And I fill in "title" with "Resource 02 edited"
-    And I check "Create new revision"
     And I press "Save"
     Then I should see "Resource Resource 02 edited has been updated"
     When I click "Revisions"
     And I click "Revert"
     # TODO: This is NOT working. Throws "You are not authorized to access this page"
     Then I should see "Resource 02"
-      And I should not see "Resource 02 edited"
+    And I should not see "Resource 02 edited"

@@ -534,4 +534,20 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       }
     }
   }
+
+  /**
+   * @Then I should see content in JSON format
+   */
+  public function assertJSONContentFormat(){
+    $content = $this->getSession()->getPage()->getText();
+
+    json_decode($content);
+    if(!json_last_error() == JSON_ERROR_NONE){
+      throw new Exception("Not JSON format.");
+    }
+  }
+
+  /**
+   * @Then I
+   */
 }
