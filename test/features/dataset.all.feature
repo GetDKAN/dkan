@@ -210,13 +210,10 @@ Feature: Dataset Features
     When I click "Facebook" in the "social" region
     Then I should be redirected to "Facebook" sharing page for "Dataset 01"
 
-  @fixme @testBug
-    #TODO: NEed to know how to interpret JSON format, get feedback
-    # Then I should see the content in "JSON" format - undefined
   Scenario: View published dataset information as JSON
     Given I am on "Dataset 01" page
     When I click "JSON" in the "other access" region
-    Then I should see the content in "JSON" format
+    Then I should see content in JSON format
 
   @fixme @testBug
     #TODO: NEed to know how to interpret RDF format, get feedback
