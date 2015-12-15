@@ -122,15 +122,11 @@ Feature: Site Manager administer groups
     When I click "Roles (read-only)"
     Then I should see the list of roles for the group "Group 01"
 
-  @fixme @testBug
-    #TODO: Need to define for getting list of permissions
-     # Then I should see the list of permissions for "<role name>" role - undefined
-  Scenario Outline: View group role permissions of group as group administrator
+  Scenario Outline: View group role permissions of group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     And I click "Group"
-    And I click "Roles (read-only)"
-    When I click "view permissions" in the "<role name>" row
+    When I click "Permissions (read-only)"
     Then I should see the list of permissions for "<role name>" role
 
   Examples:
