@@ -42,6 +42,7 @@ features[variable][] = node_preview_page
 features[variable][] = node_submitted_page
 features[variable][] = pathauto_node_page_pattern
 features[variable][] = pathauto_node_pattern
+features[variable][] = user_admin_role
 features[variable][] = user_picture_default
 features[variable][] = user_picture_dimensions
 features[variable][] = user_picture_file_size
