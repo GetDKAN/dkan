@@ -19,11 +19,11 @@ Feature: Dataset Features
       | Datasets  | /dataset |
     Given users:
       | name    | mail             | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
+      | John    | john@example.com    | site manager         |
+      | Badmin  | admin@example.com   | site manager         |
       | Gabriel | gabriel@example.com | editor               |
       | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | authenticated user   |
+      | Katie   | katie@example.com   | content creator      |
       | Martin  | martin@example.com  | editor               |
       | Celeste | celeste@example.com | editor               |
     Given groups:
@@ -55,18 +55,12 @@ Feature: Dataset Features
       | Resource 02 | Group 01  | html    | Katie  | Yes       | Dataset 01 |             |
       | Resource 03 | Group 01  | html    | Katie  | Yes       | Dataset 02 |             |
 
-  # TODO: Since there is content already created in dkan profile,
-  #       care must be taken when trying to filter the datasets in the site's search engine
-  #       as the pre-created datasets will also be included and should be accounted for
-  #
-  #       Currently it searches for 'Test' keyword to prevent any pre-made datasets from appearing
-
-   @fixme @testBug
-    # WIP: 'And I should see the list with "Desc" order by "Date changed"' is undefined.
+   @fixme @dkanBug
+    # WIP: Datasets not shown on homepage currently
   Scenario: View list of most recent published datasets (on homepage)
     Given I am on the homepage
     Then I should see "7" items in the "datasets" region
-    And I should see the list with "Desc" order by "Date changed"
+    And I should see the dataset list with "Desc" order by "Date changed"
 
   Scenario: View list of published datasets
     Given I am on the homepage
@@ -74,54 +68,63 @@ Feature: Dataset Features
     Then I should see "7 datasets"
     And I should see "7" items in the "datasets" region
 
-  @fixme @testBug
-     # WIP: And I should see the list with "Asc" order by "Date changed" - undefined, needs definition
   Scenario: Search datasets by "Date changed" with "Asc" order
+    #Manual change change date for datasets
+    Given I am logged in as a user with the "administrator" role
+    When I am on the "Dataset 01" page
+    And I click "Edit"
+    And I fill in "Description" with "Test 01"
+    And I press "Finish"
+    And I am on the "Dataset 02" page
+    And I click "Edit"
+    And I fill in "Description" with "Test 02"
+    And I press "Finish"
+    Given I am an anonymous user
     Given I am on "Datasets" page
-    When I fill in "Test" for "Search" in the "datasets" region
-    And I select "Date changed" from "Sort by"
+    When I select "Date changed" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
-    And I should see the list with "Asc" order by "Date changed"
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
+    And I should see the dataset list with "Asc" order by "Date changed"
 
-  @fixme @testBug
-    # WIP: And I should see the list with "Desc" order by "Date changed" - undefined, needs definition
   Scenario: Search datasets by "Date changed" with "Desc" order
+    #Manual change change date for datasets
+    Given I am logged in as a user with the "administrator" role
+    When I am on the "Dataset 01" page
+    And I click "Edit"
+    And I fill in "Description" with "Test 01"
+    And I press "Finish"
+    And I am on the "Dataset 02" page
+    And I click "Edit"
+    And I fill in "Description" with "Test 02"
+    And I press "Finish"
+    Given I am an anonymous user
     Given I am on "Datasets" page
-    When I fill in "Test" for "Search" in the "datasets" region
     And I select "Date changed" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
-    And I should see the list with "Desc" order by "Date changed"
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
+    And I should see the dataset list with "Desc" order by "Date changed"
 
-  @fixme @testBug
-    # WIP: And I should see the list with "Asc" order by "title" - undefined, needs definition
   Scenario: Search datasets by "title" with "Asc" order
     Given I am on "Datasets" page
-    When I fill in "Test" for "Search" in the "datasets" region
     And I select "Title" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
-    And I should see the list with "Asc" order by "title"
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
+    And I should see the dataset list with "Asc" order by "Title"
 
-  @fixme @testBug
-    # WIP: And I should see the list with "Asc" order by "title" - undefined
-    # WIP: Then I should see "3 datasets" - not found on page
   Scenario: Search datasets by "title" with "Desc" order
     Given I am on "Datasets" page
-    When I fill in "Test" for "Search" in the "datasets" region
     And I select "Title" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
-    And I should see the list with "Desc" order by "title"
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
+    And I should see the dataset list with "Desc" order by "Title"
 
     # TODO : Reseting the search will make all the datasets appear in the results including pre-made
     #        datasets, should be fixed
@@ -207,13 +210,10 @@ Feature: Dataset Features
     When I click "Facebook" in the "social" region
     Then I should be redirected to "Facebook" sharing page for "Dataset 01"
 
-  @fixme @testBug
-    #TODO: NEed to know how to interpret JSON format, get feedback
-    # Then I should see the content in "JSON" format - undefined
   Scenario: View published dataset information as JSON
     Given I am on "Dataset 01" page
     When I click "JSON" in the "other access" region
-    Then I should see the content in "JSON" format
+    Then I should see content in JSON format
 
   @fixme @testBug
     #TODO: NEed to know how to interpret RDF format, get feedback

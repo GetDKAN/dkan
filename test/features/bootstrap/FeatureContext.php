@@ -474,4 +474,80 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   {
       $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', '') . ' ' . t('Preview'));
   }
+
+  /**
+   * @Given I should see the dataset list with :order order by :criteria
+   */
+  public function iShouldSeeDatasetListInOrder($order, $criteria){
+
+    $dataset_list = array();
+    $count = 1;
+    while(($row = $this->getSession()->getPage()->find('css', '.views-row-'.$count)) !== null ){
+      $dataset_list[$count-1] = $row->getText();
+      $count++;
+    }
+
+    switch($criteria){
+      case 'Date changed':
+        $criteria = 'changed';
+        break;
+      case 'Title':
+        $criteria = 'title';
+        break;
+      default:
+        break;
+    }
+
+    $query = db_select('node', 'n');
+
+    $results = $query->fields('n', array('title'))
+      ->condition('type', 'dataset')
+      ->condition('status', '1')
+      ->orderBy($criteria, strtoupper($order))
+      ->execute();
+
+    $count = 0;
+    foreach($results as $result){
+      if(strpos($dataset_list[$count], $result->title) !== 0){
+        throw new Exception("Does not match order of list, $dataset_list[$count] was next on page but expected $result->title");
+      }
+      $count++;
+    }
+  }
+
+  /**
+   * @Then I should see the list of permissions for :role role
+   */
+  public function iShouldSeePermissionsForRole($role)
+  {
+
+    $role_names = og_get_user_roles_name();
+    if ($rid = array_search($role, $role_names)) {
+      $permissions = og_role_permissions(array($rid => ''));
+      foreach(reset($permissions) as $machine_name => $perm) {
+        // Currently the permissions returned by og for a role are only the machine name and its true value,
+        // need to find a way to find the checkbox of a permission and see if it is checked
+        $search = "edit-".$rid."-".strtr($machine_name, " ", "-");
+        if(!$this->getSession()->getPage()->hasCheckedField($search)){
+          throw new \Exception("Permission $machine_name is not set for $role.");
+        }
+      }
+    }
+  }
+
+  /**
+   * @Then I should see content in JSON format
+   */
+  public function assertJSONContentFormat(){
+    $content = $this->getSession()->getPage()->getText();
+
+    json_decode($content);
+    if(!json_last_error() == JSON_ERROR_NONE){
+      throw new Exception("Not JSON format.");
+    }
+  }
+
+  /**
+   * @Then I
+   */
 }

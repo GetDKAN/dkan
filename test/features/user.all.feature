@@ -9,13 +9,13 @@ Feature: User
       | Katie         | /users/katie  |
     Given users:
       | name    | mail                | roles                | pass     |
-      | Badmin  | admin@example.com   | administrator        | pass     |
-      | Gabriel | gabriel@example.com | authenticated user   | pass     |
+      | John    | john@example.com    | site manager         | johnpass |
+      | Badmin  | admin@example.com   | site manager         | pass     |
+      | Gabriel | gabriel@example.com | content creator      | pass     |
       | Jaz     | jaz@example.com     | editor               | pass     |
-      | Katie   | katie@example.com   | authenticated user   | pass     |
+      | Katie   | katie@example.com   | content creator      | pass     |
       | Martin  | martin@example.com  | editor               | pass     |
       | Celeste | celeste@example.com | editor               | pass     |
-      | John    | john@example.com    | administrator        | johnpass |
     Given groups:
       | title    | author  | published |
       | Group 01 | Badmin  | Yes       |
@@ -44,6 +44,7 @@ Feature: User
     And I fill in "Password" with "johnpass"
     And I press "Log in"
     Then I should see the "John" user page
+    Then I should see the "John" user command center
 
   Scenario: Logout
     Given I am logged in as "John"
@@ -51,14 +52,15 @@ Feature: User
     When I follow "Log out"
     Then I should see "Log in"
 
+  @deleteTempUsers
   Scenario: Register
     Given I am on the homepage
     When I follow "Register"
     # Needed because honeypot module give error when filling out the register form
     # too quickly, so we need to add a wait.
-    And I wait for 4 seconds
-    And I fill in "Username" with "newuser"
-    And I fill in "E-mail address" with "newuser@example.com"
+    And I wait for 6 seconds
+    And I fill in "Username" with "tempuser"
+    And I fill in "E-mail address" with "tempuser@example.com"
     And I press "Create new account"
     Then I should see "Thank you for applying for an account."
     And I should see "Your account is currently pending approval by the site administrator."

@@ -1,12 +1,12 @@
-Feature: Datastore 
-  In order to know the datastore is working 
+Feature: Datastore
+  In order to know the datastore is working
   As a website user
-  I need to be able to add and remove items from the datastore 
+  I need to be able to add and remove items from the datastore
 
   @api @javascript
   Scenario: Adding and Removing items from the datastore
-    Given I am logged in as a user with the "administrator" role
-      And I am on "dataset/afghanistan-election-districts"   
+    Given I am logged in as a user with the "site manager" role
+      And I am on "dataset/afghanistan-election-districts"
       And I click "District Names"
       Then I wait for "Individual data records can be seen by clicking on each point."
     When I click "Manage Datastore"

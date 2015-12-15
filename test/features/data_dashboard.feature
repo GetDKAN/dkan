@@ -6,7 +6,7 @@ Feature: Data Dashboard
       | Dashboard 01 |
       | Dashboard 02 |
       | Afghan Dashboard |
-    And I am logged in as a user with the "administrator" role
+    And I am logged in as a user with the "site manager" role
 
   @api
   Scenario: See the list of data dashboards

@@ -2,7 +2,7 @@ Feature: Gravatar
 
   @api @javascript
   Scenario: Test gravatar in user pictures.
-    Given I am logged in as a user with the "authenticated user" role
+    Given I am logged in as a user with the "content creator" role
     When I visit "user/"
     Then I should see "Edit"
     And I should see a gravatar image in the "content" region
