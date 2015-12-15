@@ -37,7 +37,7 @@ Feature: Resource
       | xls     |
     And resources:
       | title       | publisher | format | dataset    | author   | published | description |
-      | Resource 01 | Group 01  | cvs    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 01 | Group 01  | cvs    | Dataset 01 | Katie    | Yes       | Old Body    |
       | Resource 02 | Group 01  | xls    | Dataset 01 | Katie    | Yes       | No          |
       | Resource 03 | Group 01  | xls    | Dataset 02 | Celeste  | No        | Yes         |
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
@@ -80,24 +80,30 @@ Feature: Resource
     Then I should see "The Resource ID for this resource is"
     And I should see "Example Query"
 
-  @api @fixme @dkanBug
-    #TODO: Permissions for anon users to see revisions to be added in future release'
-    # See NuCivic/pluto/issues/132#issuecomment-161743679
+  @api
   Scenario: View previous revisions of published resource
+    Given I am logged in as a user with the "administrator" role
+    And I am on "Resource 01" page
+    And I click "Edit"
+    And I fill in "Test" for "Description"
+    And I press "Save"
+    And I am an anonymous user
     Given I am on "Resource 01" page
     When I click "Revisions"
-    Then I should see the list of revisions
+    Then I should see "current revision"
 
-  @api @fixme @dkanBug
-    #TODO: Permissions for anon users to see revisions to be added in future release'
-    # See NuCivic/pluto/issues/132#issuecomment-161743679
+  @api
   Scenario: Compare revisions of published resource
+    Given I am logged in as a user with the "administrator" role
+    And I am on "Resource 01" page
+    And I click "Edit"
+    And I fill in "Test" for "Description"
+    And I press "Save"
+    And I am an anonymous user
     Given I am on "Resource 01" page
-    And I press "Revisions"
-    When I select "revision 1"
-    And I select "revision 2"
+    And I click "Revisions"
     And I press "Compare"
-    Then I should see the revisions diff
+    Then I should see "Old Body"
 
   @api @fixme @testBug
     #TODO: Needs definition and feedback
