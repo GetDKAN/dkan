@@ -26,6 +26,7 @@ Feature: Resource
       | Jaz     | Group 01 | member               | Pending           |
       | Admin   | Group 02 | administrator member | Active            |
       | Celeste | Group 02 | member               | Active            |
+      | Celeste | Group 01 | member               | Active            |
     And "Tags" terms:
       | name    |
       | Health  |
