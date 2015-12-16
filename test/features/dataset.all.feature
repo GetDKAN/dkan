@@ -186,29 +186,17 @@ Feature: Dataset Features
     # I should see the license information
     Then I should be on "Dataset 01" page
 
-  @fixme @testBug
-    #TODO: Need to know how to define a sharing page, get feedback
-    # Then I should be redirected to "Google+" sharing page for "Dataset 01"
-  Scenario: Share published dataset on Google +
+  Scenario: Share published dataset on Google+
     Given I am on "Dataset 01" page
-    When I click "Google+" in the "social" region
-    Then I should be redirected to "Google+" sharing page for "Dataset 01"
+    Then I should see the redirect button for "Google+"
 
-  @fixme @testBug
-    #TODO: Need to know how to define a sharing page, get feedback
-    #  Then I should be redirected to "Twitter" sharing page for "Dataset 01" - undefined
   Scenario: Share published dataset on Twitter
     Given I am on "Dataset 01" page
-    When I click "Twitter" in the "social" region
-    Then I should be redirected to "Twitter" sharing page for "Dataset 01"
+    Then I should see the redirect button for "Twitter"
 
-  @fixme @testBug
-    #TODO: Need to know how to define a sharing page, get feedback
-    #  Then I should be redirected to "Facebook" sharing page for "Dataset 01" - undefined
   Scenario: Share published dataset on Facebook
     Given I am on "Dataset 01" page
-    When I click "Facebook" in the "social" region
-    Then I should be redirected to "Facebook" sharing page for "Dataset 01"
+    Then I should see the redirect button for "Facebook"
 
   Scenario: View published dataset information as JSON
     Given I am on "Dataset 01" page

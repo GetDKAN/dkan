@@ -140,6 +140,7 @@ Feature: Resource
     When I click "Revisions"
     Then I should see "current revision"
 
+  @fixme
   Scenario: Revert any resource revision
     Given I am logged in as "John"
     And I am on "Resource 02" page
