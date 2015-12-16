@@ -52,28 +52,40 @@ Feature: Resource
     Then I am on the "Resource 01" page
 
   @api @fixme @testBug
-    # TODO: Checking the visualization of a resource being correct is not yet defined, need feedback
+    # TODO: Visualization for resources is added, and accessible on the resource's page
+    #       Checking the visualization of a resource being correct is not yet defined, need feedback
+    #       For example, how should the graph be verified that it is a graph and correctly displaying the data?
+    #       Check against a base graph and see if it matches? Seems like it would be complicated to verify
   Scenario: View published resource data as a Graph
     Given I am on "Resource 01" page
     When I click "Graph"
     Then I should view the "resource" content as "graph"
 
   @api @fixme @testBug
-    # TODO: Checking the visualization of a resource being correct is not yet defined, need feedback
+    # TODO: Visualization for resources is added, and accessible on the resource's page
+    #       Checking the visualization of a resource being correct is not yet defined, need feedback
+    #       For example, how should the grid be verified that it is a grid and correctly displaying the data?
+    #       Check against a base grid and see if it matches? Seems like it would be complicated to verify
   Scenario: View published resource data as a Grid
     Given I am on "Resource 01" page
     When I click "Grid"
     Then I should view the "resource" content as "grid"
 
   @api @fixme @testBug
-    # TODO: Checking the visualization of a resource being correct is not yet defined, need feedback
+    # TODO: Visualization for resources is added, and accessible on the resource's page
+    #       Checking the visualization of a resource being correct is not yet defined, need feedback
+    #       For example, how should the map be verified that it is a map and correctly displaying the data?
+    #       Check against a base map and see if it matches? Seems like it would be complicated to verify
   Scenario: View published resource data as Map
     Given I am on "Resource 01" page
     When I click "Map"
     Then I should view the "resource" content as "map"
 
   @api @fixme @testBug
-    #TODO: NEED TO have test data api set up for new resources
+    #TODO: Need to have test data api set up for new resources for this test
+    #      This functionality is tested in another module, test again here?
+    #      See:     https://github.com/NuCivic/dkan_datastore/blob/7.x-1.x/tests/dkan_datastore.test
+    #      And See: https://github.com/NuCivic/dkan_dataset/compare/310_dataset_rest_api
   Scenario: View the Data API information for a published resource
     Given I am on "Resource 02" page
     When I click "Data API"
@@ -106,6 +118,7 @@ Feature: Resource
     Then I should see "Old Body"
 
   @api @fixme @testBug
-    #TODO: Needs definition and feedback
+    #TODO: Needs definition and feedback, not sure where to test this
+    #       Does this get tested with the visualization tests for maps?
   Scenario: View resource data on map automatically if lat and long info is present
     Given I am on the homepage
