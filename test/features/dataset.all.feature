@@ -69,17 +69,6 @@ Feature: Dataset Features
     And I should see "7" items in the "datasets" region
 
   Scenario: Search datasets by "Date changed" with "Asc" order
-    #Manual change change date for datasets
-    Given I am logged in as a user with the "administrator" role
-    When I am on the "Dataset 01" page
-    And I click "Edit"
-    And I fill in "Description" with "Test 01"
-    And I press "Finish"
-    And I am on the "Dataset 02" page
-    And I click "Edit"
-    And I fill in "Description" with "Test 02"
-    And I press "Finish"
-    Given I am an anonymous user
     Given I am on "Datasets" page
     When I select "Date changed" from "Sort by"
     And I select "Asc" from "Order"
@@ -89,17 +78,6 @@ Feature: Dataset Features
     And I should see the dataset list with "Asc" order by "Date changed"
 
   Scenario: Search datasets by "Date changed" with "Desc" order
-    #Manual change change date for datasets
-    Given I am logged in as a user with the "administrator" role
-    When I am on the "Dataset 01" page
-    And I click "Edit"
-    And I fill in "Description" with "Test 01"
-    And I press "Finish"
-    And I am on the "Dataset 02" page
-    And I click "Edit"
-    And I fill in "Description" with "Test 02"
-    And I press "Finish"
-    Given I am an anonymous user
     Given I am on "Datasets" page
     And I select "Date changed" from "Sort by"
     And I select "Desc" from "Order"
