@@ -47,8 +47,6 @@ Feature: Resource
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
 
-  @fixme
-    # Workbench is not enabled by default.
   Scenario: Create resource
     Given I am logged in as "Katie"
     And I am on the "Content" page
@@ -69,8 +67,6 @@ Feature: Resource
     When I am on "User" page
     Then I should see "Resource 02 edited"
 
-  @fixme
-   # Link with id|title|alt|text "Edit" not found.
   Scenario: A data contributor should not be able to publish resources
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
@@ -145,8 +141,6 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @fixme
-    # Link with id|title|alt|text "Edit" not found.
   Scenario: Add revision to own resource
     Given I am logged in as "Katie"
     And I am on "Resource 02" page

@@ -140,9 +140,6 @@ Feature: Resource
     When I click "Revisions"
     Then I should see "current revision"
 
-  @fixme @dkanBug
-    # TODO: Admins do not have access to revert a resource to a previous revision
-    # See NuCivic/dkan#793
   Scenario: Revert any resource revision
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -152,6 +149,6 @@ Feature: Resource
     Then I should see "Resource Resource 02 edited has been updated"
     When I click "Revisions"
     And I click "Revert"
-    # TODO: This is NOT working. Throws "You are not authorized to access this page"
+    And I press "Revert"
     Then I should see "Resource 02"
     And I should not see "Resource 02 edited"
