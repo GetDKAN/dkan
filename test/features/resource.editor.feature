@@ -91,11 +91,12 @@ Feature: Resource
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
   Scenario: Import items on datastore of resources associated with groups that I am a member of
-    Given I am logged in as "Celeste"
+    Given I am logged in as "John"
     And I am on "Resource 01" page
     And I click "Edit"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
     And I press "Save"
+    Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
     And I press "Import"
@@ -104,11 +105,12 @@ Feature: Resource
     And I should see "imported items total"
 
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
-    Given I am logged in as "Celeste"
+    Given I am logged in as "John"
     And I am on "Resource 01" page
     And I click "Edit"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
     And I press "Save"
+    Given I am logged in as "Celeste"
     When I am on "Resource 01" page
     When I click "Manage Datastore"
     And I press "Import"
@@ -121,11 +123,12 @@ Feature: Resource
     Then I should see "No imported items."
 
   Scenario: Drop datastore of resources associated with groups that I am a member of
-    Given I am logged in as "Celeste"
+    Given I am logged in as "John"
     And I am on "Resource 01" page
     And I click "Edit"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
     And I press "Save"
+    Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
     And I press "Import"
