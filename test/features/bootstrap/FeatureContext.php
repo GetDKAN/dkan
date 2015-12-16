@@ -487,6 +487,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $dataset_list = array();
     $count = 1;
     while(($row = $this->getSession()->getPage()->find('css', '.views-row-'.$count)) !== null ){
+      $row = $row->find('css', 'h2');
       $dataset_list[$count-1] = $row->getText();
       $count++;
     }
@@ -501,21 +502,43 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       default:
         break;
     }
+    $index = search_api_index_load('datasets');
+    $query = new SearchApiQuery($index);
 
-    $query = db_select('node', 'n');
-
-    $results = $query->fields('n', array('title'))
-      ->condition('type', 'dataset')
+    $results = $query->condition('type', 'dataset')
       ->condition('status', '1')
-      ->orderBy($criteria, strtoupper($order))
+      ->sort($criteria, strtoupper($order))
+      ->range(0, 10)
       ->execute();
 
     $count = 0;
-    foreach($results as $result){
-      if(strpos($dataset_list[$count], $result->title) !== 0){
-        throw new Exception("Does not match order of list, $dataset_list[$count] was next on page but expected $result->title");
+    $prev_node = null;
+    $queried_datasets = array(array());
+    foreach($results['results'] as $result){
+      $node = node_load($result['id']);
+      if($prev_node !== null && $prev_node->$criteria === $node->$criteria){
+        $count--;
       }
+      $queried_datasets[$count][] = $node;
+      $prev_node = $node;
       $count++;
+    }
+
+    $in_subset = false;
+    $count = 0;
+    foreach($queried_datasets as $sublist){
+      for($index = $count; $index < count($sublist); $index++) {
+        foreach($sublist as $dataset){
+          if($dataset_list[$index] === $dataset->title){
+            $in_subset = true;
+          }
+        }
+        if(!$in_subset){
+          throw new Exception("Does not match order of list, $dataset_list[$count] was next on page but expected $node->title");
+        }
+        $in_subset = false;
+      }
+      $count = count($sublist);
     }
   }
 
