@@ -563,14 +563,25 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * @Then I should see content in JSON format
+   * @Then I should get :format content from the :button button
    */
-  public function assertJSONContentFormat(){
-    $content = $this->getSession()->getPage()->getText();
+  public function assertButtonReturnsFormat($format, $button){
 
-    json_decode($content);
-    if(!json_last_error() == JSON_ERROR_NONE){
-      throw new Exception("Not JSON format.");
+    if($button === "JSON"){
+      $button = "json view of content";
+    }
+
+    $content = $this->getSession()->getPage()->findLink($button);
+    try {
+      $file = file_get_contents($content->getAttribute("href"));
+    }catch(Exception $e){
+      throw $e;
+    }
+    if($format === "JSON") {
+      json_decode($file);
+      if (!json_last_error() == JSON_ERROR_NONE) {
+        throw new Exception("Not JSON format.");
+      }
     }
   }
 
