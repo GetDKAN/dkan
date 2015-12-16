@@ -29,9 +29,14 @@ Feature: Datasets
     And I wait for "Polling_Places_Madison.csv"
     And I wait for "Door Creek Church"
 
-  @fixme @api @javascript
+  @api @javascript
+    #TODO: There is an issue with file structures in containers, where files located in one container's folder
+    #       are not visible to other containers
+    #       This makes it difficult to upload files to the browser, as the browser container won't contain the file.
+    #       This is working on CircleCI as it is only a single container thus no file strucutre issues.
+    #       A solution where files can be shared across containers should be added
   Scenario: Create a dataset with a group as a content creator
-    Given I am logged in as a user with the "site manager" role
+    Given I am logged in as a user with the "content creator" role
     And I am on "/node/add/group"
     Then I should see "Create Group"
     When I fill in "title" with "Test Group"
@@ -59,7 +64,6 @@ Feature: Datasets
     When I click "Test Dataset"
     Then I should see "Test Resource"
     And I should see "Test Group"
-    And I should see "Creative Commons Attribution"
     When I click "Test Resource Link File"
     And I wait for "Farah"
     When I am on "dataset/test-dataset"

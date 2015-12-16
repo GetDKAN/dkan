@@ -56,7 +56,8 @@ Feature: Dataset Features
       | Resource 03 | Group 01  | html    | Katie  | Yes       | Dataset 02 |             |
 
    @fixme @dkanBug
-    # WIP: Datasets not shown on homepage currently
+    # TODO: Datasets not shown on homepage currently
+     #      Will they be added to the homepage later?
   Scenario: View list of most recent published datasets (on homepage)
     Given I am on the homepage
     Then I should see "7" items in the "datasets" region
@@ -186,23 +187,27 @@ Feature: Dataset Features
     Then I should get "JSON" content from the "JSON" button
 
   @fixme @testBug
-    #TODO: NEed to know how to interpret RDF format, get feedback
-    # Then I should see the content in "RDF" format - undefined
+    #TODO: Need to know how to check and confirm RDF format with PHP
+    #      Currently there is a step for checking JSON format (scenario above this one)
+    #      When you click the JSON button on a dataset
+    #      Solution is to use that custom step but have it check for RDF format instead
   Scenario: View published dataset information as RDF
     Given I am on "Dataset 01" page
     When I click "RDF" in the "other access" region
     Then I should see the content in "RDF" format
 
   @fixme @testBug
-    #  When I press "Download" in the "Resource 01" row - undefined
-    #  Then A file should be downloaded - undefined
+    #TODO: There is an issue where downloaded files in the browser container
+    #       Are not seen by other containers, and thus can't be tested to see if they exist.
+    #       A solution is to try to have files shared across containers.
   Scenario: Download file from published dataset
     Given I am on "Dataset 01" page
     When I press "Download" in the "Resource 01" row
     Then A file should be downloaded
 
   @fixme @testBug
-    # TODO: Get feedback if this is still needed
+    # TODO: Get feedback if this is still needed, since suggested datasets are not currently viewable
+    #       Will that be added later?
     # TODO: Needs definition
   Scenario: View a list of suggested datasets when viewing a dataset
     Given I am on the homepage

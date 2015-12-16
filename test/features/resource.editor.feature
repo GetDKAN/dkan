@@ -151,7 +151,9 @@ Feature: Resource
     And I press "Compare"
     Then I should see "Resource 01 edited"
 
-  @fixme
+  @fixme @dkanBug
+    #TODO: Currently content creators do not have access to revert any resource
+    #       That they are a group member for. Does this need to be tested then?
   Scenario: Revert resource revision of any resource associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
