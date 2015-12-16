@@ -552,6 +552,33 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * @Then I
+   * @Then I should see the redirect button for :site
    */
+  public function assertRedirectButton($site){
+    $page = $this->getSession()->getPage();
+
+    switch($site){
+      case 'Google+':
+        $element = $page->find('css', '.fa-google-plus-square');
+        $link = $element->getParent()->getAttribute("href");
+        $return = preg_match("#https:\/\/plus\.google\.com\/share\?url=.*dataset\/.*#", $link);
+        break;
+      case 'Twitter':
+        $element = $page->find('css', '.fa-twitter-square');
+        $link = $element->getParent()->getAttribute("href");
+        $return = preg_match("#https:\/\/twitter\.com\/share\?url=.*dataset\/.*#", $link);
+        break;
+      case 'Facebook':
+        $element = $page->find('css', '.fa-facebook-square');
+        $link = $element->getParent()->getAttribute("href");
+        $return = preg_match("#https:\/\/www\.facebook\.com\/sharer\.php.*dataset\/.*#", $link);
+        break;
+      default:
+        throw new Exception("Not a valid site for DKAN sharing.");
+    }
+
+    if(!$return){
+      throw new Exception("The $site redirect button is not properly configured.");
+    }
+  }
 }
