@@ -44,15 +44,13 @@ Feature: Site Manager administer groups
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
 
-  @fixme
-    # And I should see the "Group 01 edited" detail page - undefined
   Scenario: Edit group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     When I click "Edit"
-    And I fill in "title" with "Goup 01 edited"
+    And I fill in "Body" with "Edited page"
     And I press "Save"
-    Then I should see "Group Goup 01 edited has been updated"
+    Then I should see "Group Group 01 has been updated"
     And I should be on the "Group 01" page
 
   Scenario: Add group member on a group as group administrator
@@ -113,8 +111,6 @@ Feature: Site Manager administer groups
     When I click "Permissions (read-only)"
     Then I should see the list of permissions for the group
 
-  @fixme
-     # Then I should see the list of roles for the group - undefined
   Scenario: View group roles of group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
