@@ -5,6 +5,11 @@ api = 2
 defaults[projects][subdir] = contrib
 
 ; DKAN core modules
+projects[dkan_featured_topics][type] = module
+projects[dkan_featured_topics][subdir] = dkan
+projects[dkan_featured_topics][download][type] = git
+projects[dkan_featured_topics][download][url] = https://github.com/NuCivic/dkan_featured_topics.git
+projects[dkan_featured_topics][download][branch] = 7.x-1.x
 
 ;Moved featured groups view
 projects[dkan_dataset][subdir] = dkan
