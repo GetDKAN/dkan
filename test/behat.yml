@@ -3,6 +3,7 @@ default:
      default:
         contexts:
           - FeatureContext
+          - FeedbackContext
           - Drupal\DrupalExtension\Context\MinkContext
           - Drupal\DrupalExtension\Context\MessageContext
           - Drupal\DKANExtension\Context\DKANContext
@@ -20,6 +21,12 @@ default:
                   form_button: 'edit-submit'
                   results_css: '.view-dkan-datasets'
                   result_item_css: '.views-row'
+                feedback:
+                  form_css: '#views-exposed-form-feedback-page-1'
+                  form_field: 'edit-title'
+                  form_button: 'edit-submit-feedback'
+                  results_css: '.view-feedback'
+                  result_item_css: '.view-feedback .views-table tr'
           - Drupal\DKANExtension\Context\ResourceContext
           - Devinci\DevinciExtension\Context\DebugContext:
               asset_dump_path: %paths.base%/../assets
@@ -105,3 +112,4 @@ docker:
         drupal_root: '/var/www/docroot'
       drush:
         root: '/var/www/docroot'
+
