@@ -1,0 +1,17 @@
+diff --git a/dkan_featured_topics.views_default.inc b/dkan_featured_topics.views_default.inc
+index 3d9334b..b864c12 100644
+--- a/dkan_featured_topics.views_default.inc
++++ b/dkan_featured_topics.views_default.inc
+@@ -28,10 +28,10 @@ function dkan_featured_topics_views_default_views() {
+   $handler->display->display_options['query']['type'] = 'views_query';
+   $handler->display->display_options['exposed_form']['type'] = 'basic';
+   $handler->display->display_options['pager']['type'] = 'some';
+-  $handler->display->display_options['pager']['options']['items_per_page'] = '8';
++  $handler->display->display_options['pager']['options']['items_per_page'] = '12';
+   $handler->display->display_options['pager']['options']['offset'] = '0';
+   $handler->display->display_options['style_plugin'] = 'responsive_grid';
+-  $handler->display->display_options['style_options']['columns'] = '4';
++  $handler->display->display_options['style_options']['columns'] = '6';
+   $handler->display->display_options['style_options']['column_classes'] = 'col-xs-12 col-sm-6 col-md-2';
+   $handler->display->display_options['style_options']['row_classes'] = 'row container-12';
+   $handler->display->display_options['row_plugin'] = 'fields';

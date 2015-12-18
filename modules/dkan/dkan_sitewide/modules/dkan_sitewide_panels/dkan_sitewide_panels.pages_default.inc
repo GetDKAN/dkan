@@ -1386,7 +1386,7 @@ function dkan_sitewide_panels_default_page_manager_pages() {
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'items_per_page' => '8',
+      'items_per_page' => '12',
       'override_title' => 0,
       'override_title_text' => '',
       'override_title_heading' => 'h2',
