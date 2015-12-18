@@ -41,6 +41,7 @@ function dkan_additional_setup() {
           array('dkan_misc_variables_set', array()),
           array('dkan_install_default_content', array()),
           array('dkan_set_adminrole', array()),
+          array('dkan_topics_terms', array()),
       ),
   );
 }
