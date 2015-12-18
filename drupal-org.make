@@ -10,6 +10,7 @@ projects[dkan_featured_topics][subdir] = dkan
 projects[dkan_featured_topics][download][type] = git
 projects[dkan_featured_topics][download][url] = https://github.com/NuCivic/dkan_featured_topics.git
 projects[dkan_featured_topics][download][branch] = 7.x-1.x
+projects[dkan_featured_topics][patch][1] = patches/dkan-featured-topics-items-per-page.patch
 
 ;Moved featured groups view
 projects[dkan_dataset][subdir] = dkan
