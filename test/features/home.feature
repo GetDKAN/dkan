@@ -28,13 +28,13 @@ Feature: Homepage
 
   @api @javascript
   Scenario: See "Add Dataset"
-    Given I am logged in as a user with the "authenticated user" role
+    Given I am logged in as a user with the "content creator" role
     And I am on the homepage
     Then I should see "Add Dataset"
 
   @api @javascript
   Scenario: See "Dataset Form"
-    Given I am logged in as a user with the "authenticated user" role
+    Given I am logged in as a user with the "content creator" role
     And I am on the homepage
     And I click "Add Dataset"
     Then I should see "Create Dataset"
