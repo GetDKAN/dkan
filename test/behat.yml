@@ -75,6 +75,8 @@ default:
         other access: '.pane-dkan-sitewide-dkan-sitewide-other-access'
         datasets: '.view-dkan-datasets'
         user profile: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
+        user page: '.main'
+        user command center: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
         tabs: '.field-group-htabs-wrapper'
         content: '.view-content'
         groups: '.view-content'
