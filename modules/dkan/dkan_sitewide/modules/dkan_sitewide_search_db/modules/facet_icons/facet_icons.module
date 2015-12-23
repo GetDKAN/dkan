@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * Implements hook_facetapi_widgets().
+ */
+function facet_icons_facetapi_widgets() {
+  return array(
+    'terms' => array(
+      'handler' => array(
+        'label' => t('Term Icon'),
+        'class' => 'FacetapiTermIcon',
+        'query types' => array('term', 'date'),
+      ),
+    ),
+    'content_types' => array(
+      'handler' => array(
+        'label' => t('Content Type Icon'),
+        'class' => 'FacetapiContentTypeIcon',
+        'query types' => array('term', 'date'),
+      ),
+    ),
+  );
+}
+
+function facet_icons_image_default_styles(&$styles) {
+  $styles = array();
+  $styles['facet_icon'] = array(
+    'label' => 'Facet Icon',
+    'effects' => array(
+      array(
+        'name' => 'image_resize',
+        'data' => array(
+          'width' => 24,
+          'height' => 24,
+        ),
+        'weight' => 0,
+      ),
+    ),
+    'name' => 'facet_icon', // You need this and the next line to avoid PHP notices
+    'storage' => IMAGE_STORAGE_NORMAL,
+  );
+  return $styles;
+}
+
+function facet_icons_icon_path($file) {
+  $dir = 'facet_icons';
+  $extension = '.png';
+  $icon = '';
+  if (file_exists('public://facet_icons/' . $file . $extension)) {
+    $icon = parse_url(file_create_url('public://facet_icons/' . $file . $extension))['path'];
+  }
+  elseif (file_exists(drupal_get_path('theme', variable_get('theme_default')) . '/' . $dir . '/' . $file . $extension)) {
+    $icon = drupal_get_path('theme', variable_get('theme_default')) . '/' . $dir . '/' . $file . $extension;
+  }
+  elseif (file_exists(drupal_get_path('module', 'facet_icons') . '/' . $dir . '/' . $file . $extension)) {
+    $icon = drupal_get_path('module', 'facet_icons') . '/' . $dir . '/' . $file . $extension;
+  }
+  return $icon;
+}
