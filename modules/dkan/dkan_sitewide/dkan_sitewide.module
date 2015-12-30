@@ -264,8 +264,8 @@ function dkan_sitewide_module_toggler() {
   $groups = array();
 
   $groups['dkan_core_modules'] = array(
-    'name' => t('DKAN Core Modules'),
-    'description' => t('Lorem ipsum whatever'),
+    'name' => t('DKAN Core Components'),
+//    'description' => t('Optional DKAN components'),
     'modules' => array(),
   );
 
@@ -280,6 +280,32 @@ function dkan_sitewide_module_toggler() {
     'name' => t('Voting'),
   );
 
+  $groups['dkan_core_modules']['modules']['dkan_workflow'] = array(
+    'name' => t('Workflow'),
+    'description' => t('Add an editorial workflow process to DKAN. Moderate datasets,
+      resources and other content before publishing. Built on the
+      <a href="https://github.com/NuCivic/dkan_workflow">Workbench system</a>.'),
+    'more_info' => 'https://github.com/NuCivic/dkan_workflow',
+  );
+
+  $groups['integrations'] = array(
+    'name' => t('Service Integrations'),
+    'description' => t('Preconfigured integrations between DKAN and 3rd-party services.'),
+    'modules' => array(),
+  );
+
+  $groups['integrations']['modules']['dkan_datastore_cartodb'] = array(
+    'name' => t('CartoDB Datastore'),
+    'description' => t('Use the CartoDB service as an external datastore.'),
+    'more_info' => 'https://github.com/NuCivic/dkan_datastore_cartodb',
+  );
+
+  $groups['integrations']['modules']['visualization_entity_cartodb_bundle'] = array(
+    'name' => t('CartoDB Visualizations'),
+    'description' => t('Create CartoDB visualizations for your data.'),
+    'more_info' => 'https://github.com/NuCivic/visualization_entity_cartodb_bundle',
+  );
+
   $groups['contrib'] = array(
     'name' => t('Drupal Add-Ons'),
     'description' => t('Drupal modules supported on DKAN'),
@@ -289,6 +315,20 @@ function dkan_sitewide_module_toggler() {
   $groups['contrib']['modules']['honeypot'] = array(
     'more_info' => 'https://www.drupal.org/node/1232638',
   );
+
+
+  $groups['contrib']['modules']['data_discus'] = array(
+    'name' => t('Disqus Comments'),
+    'description' => t('Add Disqus comments to the datasets and content of your DKAN site.'),
+    'more_info' => 'https://github.com/NuCivic/data_disqus',
+  );
+
+  $groups['contrib']['modules']['recaptcha'] = array(
+    'name' => t('reCAPTCHA'),
+    'description' => t('Add reCAPTCHA widgets to your forms to prevent spam submissions.'),
+    'more_info' => 'https://www.drupal.org/node/151588',
+  );
+
 
   return $groups;
 }
