@@ -57,6 +57,7 @@ dependencies[] = markdown
 dependencies[] = media
 dependencies[] = media_vimeo
 dependencies[] = media_youtube
+dependencies[] = module_toggler
 dependencies[] = multistep
 dependencies[] = og
 dependencies[] = og_access

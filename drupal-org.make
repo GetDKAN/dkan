@@ -133,6 +133,12 @@ projects[admin_menu_source][subdir] = contrib
 projects[menu_token][version] = 1.0-beta5
 projects[menu_token][subdir] = contrib
 
+projects[module_toggler][download][type] = git
+projects[module_toggler][download][url] = https://github.com/NuCivic/module_toggler.git
+projects[module_toggler][download][branch] = 7.x-1.x
+projects[module_toggler][type] = module
+projects[module_toggler][subdir] = contrib
+
 ; Deprecated
 projects[delta][version] = 3.0-beta11
 
@@ -151,7 +157,7 @@ projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_vie
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = 7.x-1.x
+projects[nuboot_radix][download][branch] = module-toggler
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme

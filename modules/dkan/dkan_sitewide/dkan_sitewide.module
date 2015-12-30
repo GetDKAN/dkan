@@ -126,18 +126,18 @@ function dkan_sitewide_restws_resource_info_alter(&$info) {
  * are checking github.
  */
 function dkan_sitewide_update_status_alter(&$projects) {
-  
+
   // Remove update notices.
   $up_to_date_projects = array('gravatar', 'link_iframe_formatter', 'og_extras');
   foreach ( $up_to_date_projects as $up_to_date_project ) {
-    
+
     if ( isset($projects[$up_to_date_project]) ) {
-      
-      $projects[$up_to_date_project]['status'] = UPDATE_CURRENT; 
+
+      $projects[$up_to_date_project]['status'] = UPDATE_CURRENT;
 
       if ( isset($projects[$up_to_date_project]['title']) &&
            isset($projects[$up_to_date_project]['existing_version']) ) {
-        
+
         $project_name = $projects[$up_to_date_project]['title'];
         $project_revision = $projects[$up_to_date_project]['existing_version'];
 
@@ -146,8 +146,8 @@ function dkan_sitewide_update_status_alter(&$projects) {
         }
       }
     }
-  } 
-  
+  }
+
   $project = 'dkan';
   $org = 'nucivic';
 
@@ -255,4 +255,40 @@ function dkan_sitewide_module_implements_alter(&$implementations, $hook) {
     unset($implementations['dkan_sitewide']);
     $implementations['dkan_sitewide'] = $group;
   }
+}
+
+/**
+ * Implements hook_module_toggler().
+ */
+function dkan_sitewide_module_toggler() {
+  $groups = array();
+
+  $groups['dkan_core_modules'] = array(
+    'name' => t('DKAN Core Modules'),
+    'description' => t('Lorem ipsum whatever'),
+    'modules' => array(),
+  );
+
+  $groups['dkan_core_modules']['modules']['dkan_dataset_groups'] = array(
+    'name' => t('Groups'),
+    'description' => t('Organize users and datasets into groups (such as
+      organizations or sub-agencies). Built on
+      <a href="https://www.drupal.org/project/og">Organic Groups</a>.'),
+  );
+
+  $groups['dkan_core_modules']['modules']['dkan_dataset_voting'] = array(
+    'name' => t('Voting'),
+  );
+
+  $groups['contrib'] = array(
+    'name' => t('Drupal Add-Ons'),
+    'description' => t('Drupal modules supported on DKAN'),
+    'modules' => array(),
+  );
+
+  $groups['contrib']['modules']['honeypot'] = array(
+    'more_info' => 'https://www.drupal.org/node/1232638',
+  );
+
+  return $groups;
 }
