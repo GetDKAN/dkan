@@ -10,7 +10,7 @@ defaults[projects][subdir] = contrib
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
-projects[dkan_dataset][download][branch] = 821_unblock_roles
+projects[dkan_dataset][download][branch] = 7.x-1.x
 
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
@@ -38,7 +38,7 @@ projects[visualization_entity_charts][type] = module
 
 ; Includes, since we're doing non-recusive
 
-includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/821_unblock_roles/dkan_dataset.make
+includes[dkan_dataset_make] = https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 
 includes[visualization_entity_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
@@ -58,7 +58,7 @@ projects[bueditor][patch][1931862] = http://drupal.org/files/dont-render-buedito
 
 projects[colorizer][version] = 1.7
 projects[colorizer][patch][2227651] = https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch
-projects[colorizer][patch][2599298] = https://www.drupal.org/files/issues/colorizer-bug_system_cron_delete_current_css-2599298-2.patch
+projects[colorizer][patch][2599298] = https://www.drupal.org/files/issues/colorizer-bug_system_cron_delete_current_css-2599298-3.patch
 
 projects[conditional_styles][version] = 2.2
 
@@ -163,6 +163,7 @@ projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
 projects[radix][version] = 3.0-rc4
+projects[radix][patch][2557385] = https://www.drupal.org/files/issues/radix-undefined-theme-2557385-9.patch
 
 projects[field_reference_delete][download][version] = 7.x-1.0-beta1
 

@@ -271,9 +271,7 @@ function dkan_permissions_default_roles_permissions() {
     'weight' => 0,
     'permissions' => array(
       'access content' => TRUE,
-      'access resource node' => TRUE,
       'access user profiles' => TRUE,
-      'use gravatar' => TRUE,
       'view revisions' => TRUE,
     ),
   );
@@ -282,7 +280,15 @@ function dkan_permissions_default_roles_permissions() {
   $roles['authenticated user'] = array(
     'name' => 'authenticated user',
     'weight' => 1,
-    'permissions' => array(),
+    'permissions' => array(
+      'access content' => TRUE,
+      'access user profiles' => TRUE,
+      'cancel account' => TRUE,
+      'change own username' => TRUE,
+      'use gravatar' => TRUE,
+      'view own unpublished content' => TRUE,
+      'view revisions' => TRUE,
+    ),
   );
 
   // Exported role: content creator
