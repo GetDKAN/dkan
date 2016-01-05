@@ -72,6 +72,8 @@ projects[fieldable_panels_panes][version] = 1.7
 projects[honeypot][version] = 1.17
 
 projects[fontyourface][version] = 2.8
+projects[fontyourface][patch][2644694] = https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch
+
 
 projects[imagecache_actions][download][type] = git
 projects[imagecache_actions][download][url] = "http://git.drupal.org/project/imagecache_actions.git"
