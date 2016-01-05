@@ -61,5 +61,8 @@ Feature: User
 
   @api @fixme @testBug
     # TODO: Needs definition.
+    #       This would take a long time to test manually, having to wait N minutes each time it's run.
+    #       A possible solution to this would be to edit the cookies directly and speed up the waiting time
+    #       that way. That would take time to figure out, would this test be worth the time?
   Scenario: User should be logged out automatically after N minutes
     Given I am on the homepage
