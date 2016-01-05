@@ -55,18 +55,13 @@ Feature: Dataset Features
       | Resource 02 | Group 01  | html    | Katie  | Yes       | Dataset 01 |             |
       | Resource 03 | Group 01  | html    | Katie  | Yes       | Dataset 02 |             |
 
-  # TODO: Since there is content already created in dkan profile,
-  #       care must be taken when trying to filter the datasets in the site's search engine
-  #       as the pre-created datasets will also be included and should be accounted for
-  #
-  #       Currently it searches for 'Test' keyword to prevent any pre-made datasets from appearing
-
-   @fixme @testBug
-    # WIP: 'And I should see the list with "Desc" order by "Date changed"' is undefined.
+   @fixme @dkanBug
+    # TODO: Datasets not shown on homepage currently
+     #      Will they be added to the homepage later?
   Scenario: View list of most recent published datasets (on homepage)
     Given I am on the homepage
     Then I should see "7" items in the "datasets" region
-    And I should see the list with "Desc" order by "Date changed"
+    And I should see the dataset list with "Desc" order by "Date changed"
 
   Scenario: View list of published datasets
     Given I am on the homepage
@@ -74,54 +69,41 @@ Feature: Dataset Features
     Then I should see "7 datasets"
     And I should see "7" items in the "datasets" region
 
-  @fixme @testBug
-     # WIP: And I should see the list with "Asc" order by "Date changed" - undefined, needs definition
   Scenario: Search datasets by "Date changed" with "Asc" order
     Given I am on "Datasets" page
-    When I fill in "Test" for "Search" in the "datasets" region
-    And I select "Date changed" from "Sort by"
+    When I select "Date changed" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
-    And I should see the list with "Asc" order by "Date changed"
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
+    And I should see the dataset list with "Asc" order by "Date changed"
 
-  @fixme @testBug
-    # WIP: And I should see the list with "Desc" order by "Date changed" - undefined, needs definition
   Scenario: Search datasets by "Date changed" with "Desc" order
     Given I am on "Datasets" page
-    When I fill in "Test" for "Search" in the "datasets" region
     And I select "Date changed" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
-    And I should see the list with "Desc" order by "Date changed"
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
+    And I should see the dataset list with "Desc" order by "Date changed"
 
-  @fixme @testBug
-    # WIP: And I should see the list with "Asc" order by "title" - undefined, needs definition
   Scenario: Search datasets by "title" with "Asc" order
     Given I am on "Datasets" page
-    When I fill in "Test" for "Search" in the "datasets" region
     And I select "Title" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
-    And I should see the list with "Asc" order by "title"
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
+    And I should see the dataset list with "Asc" order by "Title"
 
-  @fixme @testBug
-    # WIP: And I should see the list with "Asc" order by "title" - undefined
-    # WIP: Then I should see "3 datasets" - not found on page
   Scenario: Search datasets by "title" with "Desc" order
     Given I am on "Datasets" page
-    When I fill in "Test" for "Search" in the "datasets" region
     And I select "Title" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
-    And I should see the list with "Desc" order by "title"
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
+    And I should see the dataset list with "Desc" order by "Title"
 
     # TODO : Reseting the search will make all the datasets appear in the results including pre-made
     #        datasets, should be fixed
@@ -183,56 +165,49 @@ Feature: Dataset Features
     # I should see the license information
     Then I should be on "Dataset 01" page
 
-  @fixme @testBug
-    #TODO: Need to know how to define a sharing page, get feedback
-    # Then I should be redirected to "Google+" sharing page for "Dataset 01"
-  Scenario: Share published dataset on Google +
+  Scenario: Share published dataset on Google+
     Given I am on "Dataset 01" page
-    When I click "Google+" in the "social" region
-    Then I should be redirected to "Google+" sharing page for "Dataset 01"
+    Then I should see the redirect button for "Google+"
 
-  @fixme @testBug
-    #TODO: Need to know how to define a sharing page, get feedback
-    #  Then I should be redirected to "Twitter" sharing page for "Dataset 01" - undefined
   Scenario: Share published dataset on Twitter
     Given I am on "Dataset 01" page
-    When I click "Twitter" in the "social" region
-    Then I should be redirected to "Twitter" sharing page for "Dataset 01"
+    Then I should see the redirect button for "Twitter"
 
-  @fixme @testBug
-    #TODO: Need to know how to define a sharing page, get feedback
-    #  Then I should be redirected to "Facebook" sharing page for "Dataset 01" - undefined
   Scenario: Share published dataset on Facebook
     Given I am on "Dataset 01" page
-    When I click "Facebook" in the "social" region
-    Then I should be redirected to "Facebook" sharing page for "Dataset 01"
+    Then I should see the redirect button for "Facebook"
 
   @fixme @testBug
-    #TODO: NEed to know how to interpret JSON format, get feedback
-    # Then I should see the content in "JSON" format - undefined
+    #TODO: This is currently not working on CircleCI due to a memory issue
+    #      but is passing locally
+    #      The default PHP limits are not enough on CI, and thus
+    #      the test errors out due to insufficient memory space to allocate.
   Scenario: View published dataset information as JSON
     Given I am on "Dataset 01" page
-    When I click "JSON" in the "other access" region
-    Then I should see the content in "JSON" format
+    Then I should get "JSON" content from the "JSON" button
 
   @fixme @testBug
-    #TODO: NEed to know how to interpret RDF format, get feedback
-    # Then I should see the content in "RDF" format - undefined
+    #TODO: Need to know how to check and confirm RDF format with PHP
+    #      Currently there is a step for checking JSON format (scenario above this one)
+    #      When you click the JSON button on a dataset
+    #      Solution is to use that custom step but have it check for RDF format instead
   Scenario: View published dataset information as RDF
     Given I am on "Dataset 01" page
     When I click "RDF" in the "other access" region
     Then I should see the content in "RDF" format
 
   @fixme @testBug
-    #  When I press "Download" in the "Resource 01" row - undefined
-    #  Then A file should be downloaded - undefined
+    #TODO: There is an issue where downloaded files in the browser container
+    #       Are not seen by other containers, and thus can't be tested to see if they exist.
+    #       A solution is to try to have files shared across containers.
   Scenario: Download file from published dataset
     Given I am on "Dataset 01" page
     When I press "Download" in the "Resource 01" row
     Then A file should be downloaded
 
   @fixme @testBug
-    # TODO: Get feedback if this is still needed
+    # TODO: Get feedback if this is still needed, since suggested datasets are not currently viewable
+    #       Will that be added later?
     # TODO: Needs definition
   Scenario: View a list of suggested datasets when viewing a dataset
     Given I am on the homepage
