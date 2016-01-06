@@ -21,8 +21,8 @@ projects[dkan_workflow][type] = module
 projects[dkan_workflow][subdir] = dkan
 projects[dkan_workflow][download][type] = git
 projects[dkan_workflow][download][url] = https://github.com/NuCivic/dkan_workflow.git
-projects[dkan_workflow][download][branch] = upstream_fixes
-includes[dkan_workflow_make] = https://raw.githubusercontent.com/NuCivic/dkan_workflow/upstream_fixes/dkan_workflow.make
+projects[dkan_workflow][download][branch] = 852_actions_sync_notice
+includes[dkan_workflow_make] = https://raw.githubusercontent.com/NuCivic/dkan_workflow/852_actions_sync_notice/dkan_workflow.make
 
 ; NuCivic Visualization tools
 
