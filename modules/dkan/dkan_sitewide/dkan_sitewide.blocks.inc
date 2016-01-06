@@ -130,21 +130,35 @@ function dkan_sitewide_data_extent_block() {
   if ($node && isset($node->type) && $node->type == 'dataset') {
     $wrapper = entity_metadata_wrapper('node', $node);
     $spatial = $wrapper->field_spatial->value();
+
+    // Allow for multiple layers.
+    if ($spatial && is_array($spatial[0]) && isset($spatial[0]['wkt'])) {
+      $spatial['wkt'] = array();
+      foreach ($spatial as $layer) {
+        if (isset($layer['wkt'])) {
+          array_push($spatial['wkt'], $layer['wkt']);
+        }
+      }
+    }
+
     if ($spatial && $spatial['wkt']) {
-    drupal_add_library('leaflet_widget', 'leaflet_core');
-     $features = array(leaflet_widget_geojson_feature($spatial['wkt']));
-       $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
-       $output = "var dataExtent = " . $geojson;
-       $output .= "; var map = L.map('map');
+      drupal_add_library('leaflet_widget', 'leaflet_core');
+      $features = array(leaflet_widget_geojson_feature($spatial['wkt']));
+      $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
+      $output = "var dataExtent = " . $geojson;
+      $output .= "; var map = L.map('map');
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a>'
         }).addTo(map);
 
         var geojson = L.geoJson(dataExtent).addTo(map);
         map.fitBounds(geojson.getBounds());";
-       drupal_add_js($output,  array('type' => 'inline', 'scope' => 'footer', 'weight' => 5));
-       return '<div id="map" style="height:250px; width:100%"></div>';
-       return $geojson;
+      drupal_add_js($output, array(
+        'type' => 'inline',
+        'scope' => 'footer',
+        'weight' => 5,
+      ));
+      return '<div id="map" style="height:250px; width:100%"></div>';
     }
   }
   else {
