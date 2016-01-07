@@ -17,7 +17,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   $path_breadcrumb->path = 'node/%node';
   $path_breadcrumb->data = array(
     'titles' => array(
-      0 => 'Datasets',
+      0 => t('Datasets'),
       1 => '%node:title',
     ),
     'paths' => array(
@@ -61,7 +61,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   $path_breadcrumb->path = 'node/%node';
   $path_breadcrumb->data = array(
     'titles' => array(
-      0 => 'Datasets',
+      0 => t('Datasets'),
       1 => '%node:field-dataset-ref:0:title',
       2 => '%node:title',
     ),
@@ -107,7 +107,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   $path_breadcrumb->path = 'node/%node';
   $path_breadcrumb->data = array(
     'titles' => array(
-      0 => 'Groups',
+      0 => t('Groups'),
       1 => '%node:title',
     ),
     'paths' => array(
@@ -151,8 +151,8 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   $path_breadcrumb->path = 'node/add/%node';
   $path_breadcrumb->data = array(
     'titles' => array(
-      0 => 'Add content',
-      1 => 'Add %node:type',
+      0 => t('Add content'),
+      1 => t('Add %node:type'),
     ),
     'paths' => array(
       0 => 'node/add',
@@ -181,7 +181,7 @@ function dkan_sitewide_panels_path_breadcrumbs_settings_info() {
   $path_breadcrumb->path = 'node/%node/edit';
   $path_breadcrumb->data = array(
     'titles' => array(
-      0 => 'Edit %node:title',
+      0 => t('Edit %node:title'),
     ),
     'paths' => array(
       0 => '<none>',
