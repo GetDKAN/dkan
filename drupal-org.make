@@ -18,6 +18,13 @@ projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datastore.git
 projects[dkan_datastore][download][branch] = 7.x-1.x
 
+projects[dkan_workflow][type] = module
+projects[dkan_workflow][subdir] = dkan
+projects[dkan_workflow][download][type] = git
+projects[dkan_workflow][download][url] = https://github.com/NuCivic/dkan_workflow.git
+projects[dkan_workflow][download][branch] = upstream_fixes
+includes[dkan_workflow_make] = https://raw.githubusercontent.com/NuCivic/dkan_workflow/upstream_fixes/dkan_workflow.make
+
 ; NuCivic Visualization tools
 
 projects[visualization_entity][download][type] = git
@@ -50,9 +57,7 @@ projects[admin_menu][version] = 3.0-rc5
 projects[bueditor][version] = 1.7
 projects[bueditor][patch][1931862] = http://drupal.org/files/dont-render-bueditor-for-plain-text-textareas.patch
 
-projects[colorizer][version] = 1.7
-projects[colorizer][patch][2227651] = https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch
-projects[colorizer][patch][2599298] = https://www.drupal.org/files/issues/colorizer-bug_system_cron_delete_current_css-2599298-3.patch
+projects[colorizer][version] = 1.8
 
 projects[conditional_styles][version] = 2.2
 
