@@ -140,7 +140,7 @@ projects[menu_token][subdir] = contrib
 projects[delta][version] = 3.0-beta11
 
 ; Themes
-projects[omega][version] = 3.31
+projects[omega][version] = 3.1
 projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
 
 ;projects[bootstrap][download][version] = 3.x
