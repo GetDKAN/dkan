@@ -22,7 +22,7 @@ function facet_icons_facetapi_widgets() {
   );
 }
 
-function facet_icons_image_default_styles(&$styles) {
+function facet_icons_image_default_styles() {
   $styles = array();
   $styles['facet_icon'] = array(
     'label' => 'Facet Icon',
