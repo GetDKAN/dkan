@@ -35,7 +35,7 @@ cd $DKAN_TMP_DIR
 git checkout $TAG
 
 echo Making DKAN
-drush make build-dkan.make $MYSITE_DIR
+drush make build-dkan.make.unlocked --lock=build-dkan.make $MYSITE_DIR
 
 echo Moving git and sites directories
 cd $MYSITE_DIR

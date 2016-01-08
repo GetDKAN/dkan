@@ -13,6 +13,7 @@ projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.
 ; edit to reboot qa site
 projects[dkan_dataset][download][branch] = 197-visualizations-list
 
+
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datastore.git
@@ -38,8 +39,7 @@ includes[dkan_datastore_make] = https://raw.githubusercontent.com/NuCivic/dkan_d
 includes[visualization_entity_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
 includes[visualization_entity_charts_make] = https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
 
-; This module is part of dkan now so the internal makefile should be referenced instead of the one from the repo.
-includes[dkan_data_story_make] = https://raw.githubusercontent.com/NuCivic/dkan_data_story/master/dkan_data_story.make
+includes[dkan_data_story_make] = modules/dkan/dkan_data_story/dkan_data_story.make
 
 ; Patches to other modules
 
@@ -53,6 +53,7 @@ projects[bueditor][patch][1931862] = http://drupal.org/files/dont-render-buedito
 
 projects[colorizer][version] = 1.7
 projects[colorizer][patch][2227651] = https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch
+projects[colorizer][patch][2599298] = https://www.drupal.org/files/issues/colorizer-bug_system_cron_delete_current_css-2599298-3.patch
 
 projects[conditional_styles][version] = 2.2
 
@@ -64,7 +65,11 @@ projects[draggableviews][version] = 2.1
 
 projects[entityreference_filter][version] = 1.5
 
-projects[fieldable_panels_panes][version] = 1.6
+;; Required by dkan_permissions.
+projects[features_roles_permissions][version] = 1.2
+projects[features_roles_permissions][subdir] = contrib
+
+projects[fieldable_panels_panes][version] = 1.7
 
 projects[honeypot][version] = 1.17
 
@@ -102,7 +107,7 @@ projects[panopoly_widgets][patch][1] = patches/panopoly_widgets_overrides.patch
 projects[panopoly_widgets][patch][2] = patches/panopoly_widgets_add_jquery_ui_tabs.patch
 
 
-projects[panopoly_images][version] = 1.21
+projects[panopoly_images][version] = 1.27
 includes[panopoly_images_make] = http://cgit.drupalcode.org/panopoly_images/plain/panopoly_images.make
 
 projects[panels][version] = 3.5
@@ -151,9 +156,15 @@ projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.
 projects[nuboot_radix][download][branch] = 7.x-1.x
 projects[nuboot_radix][type] = theme
 
-; Need to bring in fix from https://www.drupal.org/node/2473455; remove once next radix release is out
 projects[radix][type] = theme
-projects[radix][download][revision] = "f26d28784bd123c55d04e91b636d02e802bbdee9"
+projects[radix][version] = 3.0-rc4
+projects[radix][patch][2557385] = https://www.drupal.org/files/issues/radix-undefined-theme-2557385-9.patch
+
+projects[field_reference_delete][download][version] = 7.x-1.0-beta1
+
+; Apply a patch to ref_field (included elsewhere?)
+projects[ref_field][patch][1] = patches/ref_field_sync-entity-load-multiple-1928680-1.patch
+projects[facetapi][patch][1] = patches/cross-site-scripting-facets-156778.patch
 
 ; Libraries
 libraries[font_awesome][type] = libraries

@@ -5,7 +5,7 @@ echo "FEATURES TEST";
 
 OLD_PATH=`pwd`
 echo "Current directory: $OLD_PATH"
-cd drupal
+#cd drupal
 
 echo "Changing to drupal installation directory";
 
