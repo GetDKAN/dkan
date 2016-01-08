@@ -2,10 +2,15 @@
 #  - Handle circleCI's parallelization.
 #  - Handle searching in multiple directories for feature files.
 # Ex. There are 3 VMs setup: (3)
-if [ -n $CIRCLE_NODE_INDEX ]; then
+if [ -z "$CIRCLE_NODE_INDEX" ]; then
+  echo "No parrallelism found, setting defaults to run all tests."
   CIRCLE_NODE_TOTAL=1
   CIRCLE_NODE_INDEX=0
 fi
+
+echo "\$CIRCLE_NODE_TOTAL = $CIRCLE_NODE_TOTAL"
+echo "\$CIRCLE_NODE_INDEX = $CIRCLE_NODE_INDEX"
+
 error=0
 pwd=$(pwd)
 declare -a files
