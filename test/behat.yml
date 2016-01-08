@@ -1,19 +1,52 @@
 default:
+  suites:
+     default:
+        contexts:
+          - FeatureContext
+          - Drupal\DrupalExtension\Context\MinkContext
+          - Drupal\DrupalExtension\Context\MessageContext
+          - Drupal\DKANExtension\Context\DKANContext
+          - Drupal\DKANExtension\Context\EntityStore
+          - Drupal\DKANExtension\Context\MailContext
+          - Drupal\DKANExtension\Context\PageContext
+          - Drupal\DKANExtension\Context\GroupContext
+          - Drupal\DKANExtension\Context\DatasetContext
+          - Drupal\DKANExtension\Context\DataDashboardContext
+          - Drupal\DKANExtension\Context\SearchAPIContext:
+              search_forms:
+                default:
+                  form_css: '#dkan-sitewide-dataset-search-form'
+                  form_field: 'edit-search'
+                  form_button: 'edit-submit'
+                  results_css: '.view-dkan-datasets'
+                  result_item_css: '.views-row'
+          - Drupal\DKANExtension\Context\ResourceContext
+          - Devinci\DevinciExtension\Context\DebugContext:
+              asset_dump_path: %paths.base%/../assets
+          - Devinci\DevinciExtension\Context\JavascriptContext:
+              maximum_wait: 30
+  formatters:
+    pretty:
+      output_styles:
+        comment:    [default, default , [conceal]]
+  gherkin:
+    filters:
+      tags: ~@fixme
   extensions:
-    Behat\MinkExtension\Extension:
+    Behat\MinkExtension:
       goutte: ~
       selenium2: ~
       base_url: http://127.0.0.1:8888
       default_session: 'goutte'
       javascript_session: 'selenium2'
-      files_path: "files"
-    Drupal\DrupalExtension\Extension:
+      browser_name: chrome
+      files_path: %paths.base%/files
+    Drupal\DrupalExtension:
       blackbox: ~
       drupal:
-        drupal_root: 'drupal'
-      drush:
-        root: "drupal"
-      api_driver: "drupal"
+        drupal_root: %paths.base%
+      api_driver: 'drupal'
+      # @todo fixup these regions for use with new theme. Updated navigation only
       region_map:
         content: ".region-content"
         toolbar: ".tabs--primary"
@@ -24,17 +57,53 @@ default:
         right header: "#header-right"
         right sidebar: "#column-right"
         dashboards: ".view-data-dashboards table tbody"
+        navigation: '.navigation-wrapper'
+        breadcrumb: '.breadcrumb'
+        left_sidebar: '.panel-col-first'
+        search_area: '.panel-col-last'
+        dropdown_links: '.comment-main .links.inline.dropdown-menu'
+        comment: '.comment-main'
+        navigation: '.navigation-wrapper'
+        primary tabs: '.tabs--primary'
+        group subscribe: '.group-subscribe-message'
+        group block: '.pane-views-group-block-block'
+        group members: '.view-id-dkan_og_extras_group_members'
+        filter by resource format: '.facetapi-facet-field-resourcesfield-format'
+        filter by author: '.facetapi-facet-author'
+        filter by tag: '.facetapi-facet-field-tags'
+        social: '.pane-dkan-sitewide-dkan-sitewide-social'
+        other access: '.pane-dkan-sitewide-dkan-sitewide-other-access'
+        datasets: '.view-dkan-datasets'
+        user profile: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
+        user page: '.main'
+        user command center: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
+        tabs: '.field-group-htabs-wrapper'
+        content: '.view-content'
+        groups: '.view-content'
+        search content results: '.content'
+        user content: '.view-user-profile-search'
+        content search: '.form-item-query'
+        user block: '.pane-views-user-profile-fields-block'
       text:
         log_out: "Log out"
         log_in: "Log in"
-local:
+      selectors:
+        message_selector: '.alert'
+        error_message_selector: '.alert.alert-error'
+        success_message_selector: '.alert.alert-success'
+
+docker:
   extensions:
-    Behat\MinkExtension\Extension:
-      base_url: http://dkan.local
+    Behat\MinkExtension:
+      base_url: http://web
+      #base_url: http://data_starter.local
       selenium2:
-        wd_host: http://127.0.0.1:4444/wd/hub
-    Drupal\DrupalExtension\Extension:
+        wd_host: http://browser:4444/wd/hub
+        #wd_host: http://192.168.10.1:4444/wd/hub
+        browser: chrome
+        #browser: firefox
+    Drupal\DrupalExtension:
       drupal:
-        drupal_root: '/var/www/dkan/webroot'
+        drupal_root: '/var/www/docroot'
       drush:
-        root: '/var/www/dkan/webroot'
+        root: '/var/www/docroot'

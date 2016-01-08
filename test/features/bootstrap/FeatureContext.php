@@ -1,48 +1,51 @@
 <?php
 
-use Drupal\DrupalExtension\Context\DrupalContext;
-use Behat\Behat\Context\BehatContext;
-use Behat\Behat\Context\Step\Given;
-use Behat\Behat\Context\Step\Then;
-use Symfony\Component\Process\Process;
+use Behat\Behat\Context\Context;
+use Drupal\DrupalExtension\Context\RawDrupalContext;
+use Devinci\DevinciExtension\Context\JavascriptContext;
+use Behat\MinkExtension\Context\MinkContext;
+use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
+use Behat\Behat\Hook\Scope\AfterScenarioScope;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Behat\Context\SnippetAcceptingContext;
+use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use WebDriver\Key;
 
-require 'vendor/autoload.php';
-
-class FeatureContext extends DrupalContext
+/**
+ * Defines application features from the specific context.
+ */
+class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
 {
-  // Keep track of created data dashboards so they can be cleaned up.
-  protected $data_dashboards = array();
+
+  protected $jsContext;
 
   /**
    * @Given /^I scroll to the top$/
    */
-  public function iScrollToTheTop()
-  {
+  public function iScrollToTheTop() {
     $driver = $this->getSession()->getDriver();
     // Wait two seconds for admin menu if using js.
     if ($driver instanceof Selenium2Driver) {
-      $element = $driver . findElement(By . id("header"));
+      $element = $driver.findElement(By.id("header"));
       $actions = new Actions($driver);
-      $actions . moveToElement($element);
+      $actions.moveToElement($element);
       // actions.click();
-      $actions . perform();
+      $actions.perform();
     }
   }
 
   /**
    * @When /^I switch to the frame "([^"]*)"$/
    */
-  public function iSwitchToTheFrame($frame)
-  {
+  public function iSwitchToTheFrame($frame) {
     $this->getSession()->switchToIFrame($frame);
   }
 
   /**
    * @Then /^I should see the "([^"]*)" element in the "([^"]*)" region$/
    */
-  public function assertRegionElement($tag, $region)
-  {
+  public function assertRegionElement($tag, $region) {
     $regionObj = $this->getMainContext()->getRegion($region);
     $elements = $regionObj->findAll('css', $tag);
     if (!empty($elements)) {
@@ -54,8 +57,7 @@ class FeatureContext extends DrupalContext
   /**
    * @Given /^I switch out of all frames$/
    */
-  public function iSwitchOutOfAllFrames()
-  {
+  public function iSwitchOutOfAllFrames() {
     $this->getSession()->switchToIFrame();
   }
 
@@ -65,6 +67,16 @@ class FeatureContext extends DrupalContext
   public function iWaitForTheDialogBoxToAppear()
   {
     $this->getSession()->wait(2000, "jQuery('#user-login-dialog').children().length > 0");
+  }
+
+  /**
+   * @Then the Dataset search updates behind the scenes
+   */
+  public function theDatasetSearchUpdatesBehindTheScenes()
+  {
+    $index = search_api_index_load('datasets');
+    $items =  search_api_get_items_to_index($index);
+    search_api_index_specific_items($index, $items);
   }
 
   /**
@@ -83,31 +95,12 @@ class FeatureContext extends DrupalContext
   }
 
   /**
-   * @Given /^I am a "([^"]*)" of the group "([^"]*)"$/
-   */
-  public function iAmAMemberOfTheGroup($role, $group_name)
-  {
-    $this->assertDrushCommandWithArgument('php-eval', "\"return db_query('SELECT nid FROM node WHERE title = \'$group_name\'')->fetchField();\"");
-    $option = $this->readDrushOutput();
-    $gid = trim(str_replace(array("'"), "", $option));
-    $user = $this->user;
-    $this->assertDrushCommandWithArgument('php-eval', "\"return db_query('SELECT uid FROM users WHERE name = \'$user->name\'')->fetchField();\"");
-    $option = $this->readDrushOutput();
-    $user_id = trim(str_replace(array("'"), "", $option));
-    $this->assertDrushCommandWithArgument('php-eval', "\"return db_query('SELECT rid FROM og_role WHERE name = \'$role\'')->fetchField();\"");
-    $option = $this->readDrushOutput();
-    $rid = trim(str_replace(array("'"), "", $option));
-    $this->assertDrushCommandWithArgument('og-add-user', "node $gid $rid $user_id");
-  }
-
-  /**
    * Properly inputs item in field rendered by Chosen.js.
    *
    *
    * @Given /^I fill in the chosen field "([^"]*)" with "([^"]*)"$/
    */
-  public function iFillInTheChosenFieldWith($field, $value)
-  {
+  public function iFillInTheChosenFieldWith($field, $value) {
     $session = $this->getSession();
     $page = $session->getPage();
     $xpath = $page->find('xpath', '//input[@value="' . $field . '"]');
@@ -124,14 +117,20 @@ class FeatureContext extends DrupalContext
       $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
 
     );
+    if(!isset($title)){
+      throw new Exception(sprintf('"' . $value . '" option was not found in the chosen field.'));
+    }
     $title->click();
   }
 
   /**
    * @Given /^I click the chosen field "([^"]*)" and enter "([^"]*)"$/
+   *
+   * DEPRECATED: DONT USE. The clicking of the chosen fields to select some values
+   * didn't work well (selenium errors about the value not being visible). Commenting
+   * this out for now in case someone wants to replace it later with something that works.
    */
-  public function iClickTheChosenFieldAndEnter($field, $value)
-  {
+  /*public function iClickTheChosenFieldAndEnter($field, $value) {
     $session = $this->getSession();
     $page = $session->getPage();
     $field = $this->fixStepArgument($field);
@@ -141,31 +140,31 @@ class FeatureContext extends DrupalContext
       'xpath',
       $session->getSelectorsHandler()->selectorToXpath('xpath', '//span[.="' . $field . '"]')
 
-    );
+      );
     $field_click->click();
     $this->iWaitForSeconds(1);
     // Click value that now appears.
     $title = $session->getPage()->find(
       'xpath',
       $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
-
-    );
+      );
+    if(!isset($title)){
+      throw new Exception(sprintf('"' . $value . '" option was not found in the chosen field.'));
+    }
     $title->click();
-  }
-
+  }*/
 
   /**
    * Click some text.
    *
    * @When /^I click on the text "([^"]*)"$/
    */
-  public function iClickOnTheText($text)
-  {
+  public function iClickOnTheText($text) {
     $session = $this->getSession();
     $element = $session->getPage()->find(
       'xpath',
       $session->getSelectorsHandler()->selectorToXpath('xpath',
-        '//*[contains(text(), "' . $text . '")]')
+      '//*[contains(text(), "' . $text . '")]')
     );
     if (NULL === $element) {
       throw new \InvalidArgumentException(sprintf('Cannot find text: "%s"', $text));
@@ -178,8 +177,7 @@ class FeatureContext extends DrupalContext
    *
    * @Given /^I click map icon number "([^"]*)"$/
    */
-  public function iClickMapIcon($num)
-  {
+  public function iClickMapIcon($num) {
     $session = $this->getSession();
     $element = $session->getPage()->find(
       'xpath',
@@ -203,8 +201,7 @@ class FeatureContext extends DrupalContext
    *
    * @Given /^I fill in the autocomplete field "([^"]*)" with "([^"]*)"$/
    */
-  public function iFillInTheAutoFieldWith($field, $value)
-  {
+  public function iFillInTheAutoFieldWith($field, $value) {
     $session = $this->getSession();
     $field = $this->fixStepArgument($field);
     $value = $this->fixStepArgument($value);
@@ -228,8 +225,7 @@ class FeatureContext extends DrupalContext
   /**
    * @Given /^I empty the field "([^"]*)"$/
    */
-  public function iEmptyTheField($locator)
-  {
+  public function iEmptyTheField($locator) {
     $session = $this->getSession();
     $page = $session->getPage();
     $field = $page->findField($locator);
@@ -244,150 +240,78 @@ class FeatureContext extends DrupalContext
   }
 
   /**
-   * Determine if the a user is already logged in.
-   */
-  public function loggedIn()
-  {
-    $session = $this->getSession();
-    $session->visit($this->locatePath('/'));
-    $driver = $this->getSession()->getDriver();
-    // Wait two seconds for admin menu if using js.
-    if ($driver instanceof Selenium2Driver) {
-      $session->wait(2000);
-    }
-    // If a logout link is found, we are logged in. While not perfect, this is
-    // how Drupal SimpleTests currently work as well.
-    $element = $session->getPage();
-    return $element->findLink($this->getDrupalText('log_out'));
-  }
-
-  /**
-   * @Given /^groups memberships:$/
-   */
-  public function groupsMemberships(TableNode $table)
-  {
-    $memberships = $table->getHash();
-    foreach ($memberships as $membership) {
-      // Find group node.
-      $group_node = $membership['group'];
-      foreach ($this->nodes as $node) {
-        if ($node->type == 'group' && $node->title == $group_node) {
-          $group_node = $node;
-        }
-      }
-
-      // Subscribe nodes and users to group.
-      if (isset($membership['members'])) {
-        $members = explode(",", $membership['members']);
-        foreach ($this->users as $user) {
-          if (in_array($user->name, $members)) {
-            og_group(
-              'node',
-              $group_node->nid,
-              array(
-                'entity' => $user,
-                'entity_type' => 'user',
-                "membership type" => OG_MEMBERSHIP_TYPE_DEFAULT,
-              )
-            );
-            // Patch till i figure out why rules are not firing.
-            if ($user->name == 'editor') {
-              og_role_grant('node', $group_node->nid, $user->uid, 4);
-            }
-          }
-        }
-      }
-
-      if (isset($membership['nodes'])) {
-        $content = explode(",", $membership['nodes']);
-        foreach ($this->nodes as $node) {
-          if ($node->type != 'group' && in_array($node->title, $content)) {
-            og_group(
-              'node',
-              $group_node->nid,
-              array(
-                'entity' => $node,
-                'entity_type' => 'node',
-                'state' => OG_STATE_ACTIVE,
-              )
-            );
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * @Given /^I wait for "([^"]*)" seconds$/
-   */
-  public function iWaitForSeconds($seconds)
-  {
-    $session = $this->getSession();
-    $session->wait($seconds * 1000);
-  }
-
-  /**
-   * @Then /^I should see the administration menu$/
-   */
-  public function iShouldSeeTheAdministrationMenu()
-  {
-    $xpath = "//div[@id='admin-menu']";
-    // grab the element
-    $element = $this->getXPathElement($xpath);
-  }
-
-  /**
-   * @Then /^I should have an "([^"]*)" text format option$/
-   */
-  public function iShouldHaveAnTextFormatOption($option)
-  {
-    $xpath = "//select[@name='body[und][0][format]']//option[@value='" . $option . "']";
-    // grab the element
-    $element = $this->getXPathElement($xpath);
-  }
-
-  /**
-   * Returns an element from an xpath string
-   * @param  string $xpath
-   *   String representing the xpath
-   * @return object
-   *   A mink html element
-   */
-  protected function getXPathElement($xpath)
-  {
-    // get the mink session
-    $session = $this->getSession();
-    // runs the actual query and returns the element
-    $element = $session->getPage()->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', $xpath)
-    );
-    // errors must not pass silently
-    if (null === $element) {
-      throw new \InvalidArgumentException(sprintf('Could not evaluate XPath: "%s"', $xpath));
-    }
-    return $element;
-  }
-
-  /**
-   * Take screenshot when step fails.
-   * Works only with Selenium2Driver.
+   * Wait for the given number of seconds. ONLY USE FOR DEBUGGING!
    *
-   * @AfterStep
+   * @Given I wait for :time second(s)
    */
-  public function takeScreenshotAfterStep($event)
-  {
-    if (4 === $event->getResult()) {
-      $driver = $this->getSession()->getDriver();
-      if (!($driver instanceof Selenium2Driver)) {
-        // throw new UnsupportedDriverActionException('Taking screenshots is not supported by %s, use Selenium2Driver instead.', $driver);
-        return;
-      }
-      $screenshot = $driver->getScreenshot();
-      $file = 'screens/' . time() . ' ' . $event->getLogicalParent()->getTitle();
-      $file = $file . '.png';
-      file_put_contents($file, $screenshot);
+  public function iWaitForSeconds($time) {
+    sleep($time);
+  }
+
+  /**
+   * @BeforeScenario
+   */
+  public function gatherContexts(BeforeScenarioScope $scope) {
+    $environment = $scope->getEnvironment();
+
+    $this->jsContext = $environment->getContext('Devinci\DevinciExtension\Context\JavascriptContext');
+  }
+
+
+  /**
+   * Wait to click on something in case it does not appear immediately (javascript)
+   *
+   * @Given I wait and press :text
+   */
+  public function iWaitAndPress($text) {
+    $wait = $this->jsContext->maximum_wait;
+    try {
+      $found = $this->jsContext->spin(function ($context) use ($text) {
+        $context->getSession()->getPage()->pressButton($text);
+        return (TRUE);
+      }, $wait);
+      return $found;
     }
+    catch(\Exception $e) {
+      throw new \Exception( "Couldn't find button $text within $wait seconds");
+    }
+  }
+
+
+  /**
+   * @When I attach the drupal file :arg1 to :arg2
+   *
+   * Overrides attachFileToField() in Mink context to fix but with relative
+   * path.
+   */
+  public function iAttachTheDrupalFileTo($path, $field)
+  {
+    $field = $this->fixStepArgument($field);
+
+    // Relative paths stopped working after selenium 2.44.
+    $offset = 'features/bootstrap/FeatureContext.php';
+    $dir =  __file__;
+    $test_dir = str_replace($offset, "", $dir);
+    $path = $this->getMinkParameter('files_path') . '/' . $path;
+    $this->getSession()->getPage()->attachFileToField($field, $path);
+  }
+
+  /**
+   * Check toolbar if this->user isn't working.
+   */
+  public function getCurrentUser() {
+    if ($this->user) {
+      return $this->user;
+    }
+    $session = $this->getSession();
+    $page = $session->getPage();
+    $xpath = $page->find('xpath', "//div[@class='content']/span[@class='links']/a[1]");
+    $userName = $xpath->getText();
+    $uid = db_query('SELECT uid FROM users WHERE name = :user_name', array(':user_name' =>  $userName))->fetchField();
+    if ($uid && $user = user_load($uid)) {
+      return $user;
+    }
+    return FALSE;
   }
 
   /************************************/
@@ -395,10 +319,9 @@ class FeatureContext extends DrupalContext
   /************************************/
 
   /**
-   * @Given data_dashboards:
+   * @Given Data Dashboard:
    */
-  public function addDataDashboard(TableNode $data_dashboards_table)
-  {
+  public function addDataDashboard(TableNode $data_dashboards_table) {
 
     // Map readable field names to drupal field names.
     $field_map = array(
@@ -410,12 +333,13 @@ class FeatureContext extends DrupalContext
       $node = new stdClass();
       $node->type = 'data_dashboard';
 
-      foreach ($data_dashboards_hash as $field => $value) {
+      foreach($data_dashboards_hash as $field => $value) {
 
-        if (isset($field_map[$field])) {
+        if(isset($field_map[$field])) {
           $drupal_field = $field_map[$field];
           $node->$drupal_field = $value;
-        } else {
+        }
+        else {
           throw new Exception(sprintf("Data Dashboard field %s doesn't exist, or hasn't been mapped. See FeatureContext::addDataDashboard for mappings.", $field));
         }
       }
@@ -435,16 +359,260 @@ class FeatureContext extends DrupalContext
 
   /**
    * Clean up generated content.
+   *
+   * @AfterScenario
    */
-  public function afterScenario($event)
-  {
-
-    parent::afterScenario($event);
-
+  public function afterScenario() {
     if (!empty($this->data_dashboards)) {
       foreach ($this->data_dashboards as $data_dashboard_id => $data_dashboard) {
         $this->getDriver()->nodeDelete($data_dashboard);
       }
+    }
+  }
+
+  /**
+   * Returns fixed step argument (with \\" replaced back to ").
+   *
+   * @param string $argument
+   *
+   * @return string
+   */
+  public function fixStepArgument($argument)
+  {
+    return str_replace('\\"', '"', $argument);
+  }
+
+    /**
+   * @Then /^the administrator role should have all permissions$/
+   */
+    public function theAdministratorRoleShouldHaveAllPermissions() {
+    // Get list of all permissions
+      $permissions = array();
+      foreach (module_list(FALSE, FALSE, TRUE) as $module) {
+      // Drupal 7
+        if (module_invoke($module, 'permission')) {
+          $permissions = array_merge($permissions, array_keys(module_invoke($module, 'permission')));
+        }
+      }
+      $administrator_role = user_role_load_by_name('administrator');
+      $administrator_perms = db_query("SELECT permission FROM {role_permission} WHERE rid = :admin_rid", array(':admin_rid' => $administrator_role->rid))
+      ->fetchCol();
+      foreach($permissions as $perm) {
+        if (!in_array($perm, $administrator_perms)) {
+          echo $perm;
+          throw new Exception(sprintf("Administrator role missing permission %s", $perm));
+        }
+      }
+    }
+
+  /************************************/
+  /* Gravatar                         */
+  /************************************/
+
+//  /**
+//   * @Then /^I should see a gravatar link in the "([^"]*)" region$/
+//   */
+//  public function iShouldSeeAGravatarLinkInTheRegion($region)
+//  {
+////   $regionObj = $this->getMainContext()->getRegion($region);
+////    $elements = $regionObj->findAll('css', 'img');
+////    if (!empty($elements)) {
+////      foreach ($elements as $element) {
+////        if ($element->hasAttribute('src')) {
+////          $value = $element->getAttribute('src');
+////          //if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
+////            return;
+////          }
+////        }
+////      }
+////    }
+////    throw new \Exception(sprintf('The element gravatar link was not found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
+//
+//  }
+//
+//  /**
+//   * @Then /^I should not see a gravatar link in the "([^"]*)" region$/
+//   */
+//  public function iShouldNotSeeAGravatarLinkInTheRegion($region)
+//  {
+////    $regionObj = $this->getMainContext()->getRegion($region);
+////    $elements = $regionObj->findAll('css', 'img');
+////    $match = FALSE;
+////    if (!empty($elements)) {
+////      foreach ($elements as $element) {
+////        if ($element->hasAttribute('src')) {
+////          $value = $element->getAttribute('src');
+////          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
+////            $match = TRUE;
+////          }
+////        }
+////      }
+////    }
+////    if ($match) {
+////      throw new \Exception(sprintf('The element gravatar link was found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
+////    }
+////    else {
+////      return;
+////    }
+//  }
+
+  /**
+   * @Given :provider previews are :setting for :format_name resources
+   *
+   * Changes variables in the database to enable or disable external previews
+   */
+  public function externalPreviewsAreEnabledForFormat($provider, $setting, $format_name)
+  {
+    $format = current(taxonomy_get_term_by_name($format_name, 'format'));
+    $preview_settings = variable_get("dkan_dataset_format_previews_tid{$format->tid}", array());
+    // If $setting was "enabled," the preview is turned on. Otherwise, it's
+    // turned off.
+    $preview_settings[$provider] = ($setting == 'enabled') ? $provider : 0;
+    variable_set("dkan_dataset_format_previews_tid{$format->tid}", $preview_settings);
+  }
+
+  /**
+   * @Then I should see the local preview link
+   */
+  public function iShouldSeeTheLocalPreviewLink()
+  {
+      $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', '') . ' ' . t('Preview'));
+  }
+
+  /**
+   * @Given I should see the dataset list with :order order by :criteria
+   */
+  public function iShouldSeeDatasetListInOrder($order, $criteria){
+
+    $dataset_list = array();
+    $count = 1;
+    while(($row = $this->getSession()->getPage()->find('css', '.views-row-'.$count)) !== null ){
+      $row = $row->find('css', 'h2');
+      $dataset_list[$count-1] = $row->getText();
+      $count++;
+    }
+
+    switch($criteria){
+      case 'Date changed':
+        $criteria = 'changed';
+        break;
+      case 'Title':
+        $criteria = 'title';
+        break;
+      default:
+        break;
+    }
+    $index = search_api_index_load('datasets');
+    $query = new SearchApiQuery($index);
+
+    $results = $query->condition('type', 'dataset')
+      ->condition('status', '1')
+      ->sort($criteria, strtoupper($order))
+      ->range(0, 10)
+      ->execute();
+
+    $count = 0;
+    $prev_node = null;
+    $queried_datasets = array(array());
+    foreach($results['results'] as $result){
+      $node = node_load($result['id']);
+      if($prev_node !== null && $prev_node->$criteria === $node->$criteria){
+        $count--;
+      }
+      $queried_datasets[$count][] = $node;
+      $prev_node = $node;
+      $count++;
+    }
+
+    $in_subset = false;
+    $count = 0;
+    foreach($queried_datasets as $sublist){
+      for($index = $count; $index < count($sublist); $index++) {
+        foreach($sublist as $dataset){
+          if($dataset_list[$index] === $dataset->title){
+            $in_subset = true;
+          }
+        }
+        if(!$in_subset){
+          throw new Exception("Does not match order of list, $dataset_list[$count] was next on page but expected $node->title");
+        }
+        $in_subset = false;
+      }
+      $count = count($sublist);
+    }
+  }
+
+  /**
+   * @Then I should see the list of permissions for :role role
+   */
+  public function iShouldSeePermissionsForRole($role)
+  {
+
+    $role_names = og_get_user_roles_name();
+    if ($rid = array_search($role, $role_names)) {
+      $permissions = og_role_permissions(array($rid => ''));
+      foreach(reset($permissions) as $machine_name => $perm) {
+        // Currently the permissions returned by og for a role are only the machine name and its true value,
+        // need to find a way to find the checkbox of a permission and see if it is checked
+        $search = "edit-".$rid."-".strtr($machine_name, " ", "-");
+        if(!$this->getSession()->getPage()->hasCheckedField($search)){
+          throw new \Exception("Permission $machine_name is not set for $role.");
+        }
+      }
+    }
+  }
+
+  /**
+   * @Then I should get :format content from the :button button
+   */
+  public function assertButtonReturnsFormat($format, $button){
+
+    if($button === "JSON"){
+      $button = "json view of content";
+    }
+
+    $content = $this->getSession()->getPage()->findLink($button);
+    try {
+      $file = file_get_contents($content->getAttribute("href"));
+    }catch(Exception $e){
+      throw $e;
+    }
+    if($format === "JSON") {
+      json_decode($file);
+      if (!json_last_error() == JSON_ERROR_NONE) {
+        throw new Exception("Not JSON format.");
+      }
+    }
+  }
+
+  /**
+   * @Then I should see the redirect button for :site
+   */
+  public function assertRedirectButton($site){
+    $page = $this->getSession()->getPage();
+
+    switch($site){
+      case 'Google+':
+        $element = $page->find('css', '.fa-google-plus-square');
+        $link = $element->getParent()->getAttribute("href");
+        $return = preg_match("#https:\/\/plus\.google\.com\/share\?url=.*dataset\/.*#", $link);
+        break;
+      case 'Twitter':
+        $element = $page->find('css', '.fa-twitter-square');
+        $link = $element->getParent()->getAttribute("href");
+        $return = preg_match("#https:\/\/twitter\.com\/share\?url=.*dataset\/.*#", $link);
+        break;
+      case 'Facebook':
+        $element = $page->find('css', '.fa-facebook-square');
+        $link = $element->getParent()->getAttribute("href");
+        $return = preg_match("#https:\/\/www\.facebook\.com\/sharer\.php.*dataset\/.*#", $link);
+        break;
+      default:
+        throw new Exception("Not a valid site for DKAN sharing.");
+    }
+
+    if(!$return){
+      throw new Exception("The $site redirect button is not properly configured.");
     }
   }
 }

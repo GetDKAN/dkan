@@ -1,0 +1,79 @@
+diff --git a/ref_field_sync.module b/ref_field_sync.module
+index 6e02ddb..918bea8 100644
+--- a/ref_field_sync.module
++++ b/ref_field_sync.module
+@@ -207,10 +207,14 @@ function ref_field_sync_entity_insert($entity, $type) {
+             $new[] = $value['target_id'];
+           }
+         }
+-        foreach ($new as $target_id) {
+-          $entities = entity_load($field['settings']['target_type'], array($target_id));
+-          // Add reference to synced field.
+-          ref_field_sync_add_reference($field['settings']['target_type'], $entities[$target_id], $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
++        if(!empty($new)) {
++          $entities = entity_load($field['settings']['target_type'], $new);
++          if(!empty($entities)) {
++            foreach($entities as $entity_id => $e) {
++              // Add reference to synced field.
++              ref_field_sync_add_reference($field['settings']['target_type'], $e, $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
++            }
++          }
+         }
+       }
+     }
+@@ -266,22 +270,29 @@ function ref_field_sync_entity_update($entity, $type) {
+ 
+         // Get removed values.
+         $removed = array_diff($old, $new);
+-        if ($removed) {
++        // Get added values.
++        $added = array_diff($new, $old);
++
++        $entity_ids = array_merge($removed, $added);
++        $entities = array();
++        if(!empty($entity_id)) {
++          $entities = entity_load($field['settings']['target_type'], $entity_ids);
++        }
++
++        if (!empty($removed)) {
+           foreach ($removed as $target_id) {
+-            $entities = entity_load($field['settings']['target_type'], array($target_id));
+             // Remove reference from synced field.
+             if (isset($entities[$target_id])) {
+               ref_field_sync_remove_reference($field['settings']['target_type'], $entities[$target_id], $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
+             }
+           }
+         }
+-        // Get added values.
+-        $added = array_diff($new, $old);
+-        if ($added) {
++        if (!empty($added)) {
+           foreach ($added as $target_id) {
+-            $entities = entity_load($field['settings']['target_type'], array($target_id));
+             // Add reference to synced field.
+-            ref_field_sync_add_reference($field['settings']['target_type'], $entities[$target_id], $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
++            if (isset($entities[$target_id])) {
++              ref_field_sync_add_reference($field['settings']['target_type'], $entities[$target_id], $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
++            }
+           }
+         }
+       }
+@@ -318,10 +329,14 @@ function ref_field_sync_entity_delete($entity, $type) {
+           $delete[] = $item['target_id'];
+         }
+       }
+-      foreach ($delete as $target_id) {
+-        $entities = entity_load($field['settings']['target_type'], array($target_id));
+-        // Remove reference from synced field.
+-        ref_field_sync_remove_reference($field['settings']['target_type'], $entities[$target_id], $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
++      if(!empty($delete)) {
++        $entities = entity_load($field['settings']['target_type'], $delete);
++        if(!empty($entities)) {
++          foreach($entities as $entity_id => $e) {
++            // Remove reference from synced field.
++            ref_field_sync_remove_reference($field['settings']['target_type'], $e, $entity->{$info['entity keys']['id']}, $field['settings']['sync']);
++          }
++        }
+       }
+     }
+   }
