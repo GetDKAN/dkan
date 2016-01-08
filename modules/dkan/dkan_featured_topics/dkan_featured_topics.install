@@ -72,7 +72,6 @@ function panels_display_pane_remove(&$display, $region, $type_name, $subtype_nam
 function dkan_featured_topics_enable() {
 
   $page = panels_load_page_by_id('page_datasets_panel_context');
-  var_dump($page);
   $configuration = array(
     'items_per_page' => 6
   );
