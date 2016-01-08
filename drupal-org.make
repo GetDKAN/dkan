@@ -163,6 +163,7 @@ projects[field_reference_delete][download][version] = 7.x-1.0-beta1
 
 ; Apply a patch to ref_field (included elsewhere?)
 projects[ref_field][patch][1] = patches/ref_field_sync-entity-load-multiple-1928680-1.patch
+projects[facetapi][patch][1] = patches/cross-site-scripting-facets-156778.patch
 
 ; Libraries
 libraries[font_awesome][type] = libraries
