@@ -37,6 +37,7 @@ dependencies:
   pre:
     - echo "memory_limit = 256M" > ~/.phpenv/versions/5.5.11/etc/conf.d/memory.ini
   override:
+    - printenv
     - 'composer install --prefer-source --no-interaction':
         pwd:
           test
