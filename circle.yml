@@ -35,6 +35,7 @@ dependencies:
      - "~/backups"
      - "test/sites/default"
   override:
+    - printenv
     - 'composer install --prefer-source --no-interaction':
         pwd:
           test
