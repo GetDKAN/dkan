@@ -29,11 +29,12 @@ checkout:
 dependencies:
 
   cache_directories:
-     - "test/vendor"
+     - "dkan/test/vendor"
      - "~/.composer"
      - "~/.drush"
-     - "~/backups"
-     - "test/sites/default"
+     # Disable cachine sql install backups for now.
+     #- "backups"
+     - "dkan/test/sites/default"
   pre:
     - echo "memory_limit = 256M" > ~/.phpenv/versions/5.5.11/etc/conf.d/memory.ini
   override:
