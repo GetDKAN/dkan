@@ -29,11 +29,12 @@ checkout:
 dependencies:
 
   cache_directories:
-     - "test/vendor"
+     - "dkan/test/vendor"
      - "~/.composer"
      - "~/.drush"
-     - "~/backups"
-     - "test/sites/default"
+     # Disable cachine sql install backups for now.
+     #- "backups"
+     - "dkan/test/sites/default"
   override:
     - printenv
     - 'composer install --prefer-source --no-interaction':
