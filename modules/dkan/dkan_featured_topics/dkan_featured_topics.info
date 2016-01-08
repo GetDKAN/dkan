@@ -8,6 +8,7 @@ dependencies[] = facetapi
 dependencies[] = features
 dependencies[] = image
 dependencies[] = options
+dependencies[] = dkan_sitewide_panels
 dependencies[] = taxonomy
 dependencies[] = views
 dependencies[] = views_content
