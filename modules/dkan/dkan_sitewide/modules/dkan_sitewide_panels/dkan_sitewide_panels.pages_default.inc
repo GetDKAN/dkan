@@ -284,6 +284,29 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $display->content['new-0301d504-1b1e-471b-8239-f207759bb981'] = $pane;
     $display->panels['column1'][0] = 'new-0301d504-1b1e-471b-8239-f207759bb981';
     $pane = new stdClass();
+    $pane->pid = 'new-f8882733-00a0-4b8f-a54b-47782e311327';
+    $pane->panel = 'column1';
+    $pane->type = 'block';
+    $pane->subtype = 'dkan_dataset-dkan_dataset_visualizations_list';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_title' => 0,
+      'override_title_text' => '',
+      'override_title_heading' => 'h2',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 1;
+    $pane->locks = array();
+    $pane->uuid = 'f8882733-00a0-4b8f-a54b-47782e311327';
+    $display->content['new-f8882733-00a0-4b8f-a54b-47782e311327'] = $pane;
+    $display->panels['column1'][1] = 'new-f8882733-00a0-4b8f-a54b-47782e311327';
+    $pane = new stdClass();
     $pane->pid = 'new-c82392fb-3b88-440e-8485-2c2ec42344be';
     $pane->panel = 'column2';
     $pane->type = 'block';
