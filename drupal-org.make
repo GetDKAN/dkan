@@ -10,8 +10,7 @@ defaults[projects][subdir] = contrib
 projects[dkan_dataset][subdir] = dkan
 projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
-; edit to reboot qa site
-projects[dkan_dataset][download][branch] = 197-visualizations-list
+projects[dkan_dataset][download][branch] = 7.x-1.x
 
 
 projects[dkan_datastore][subdir] = dkan
