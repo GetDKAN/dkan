@@ -34,7 +34,7 @@ index 192f9ba..9498186 100644
 +        continue;
 +      }
 +
-+      $entry_path = $path . '/' . $entry;
++      $entry_path = $colorizer_path . '/' . $entry;
 +
 +      // Delete CSS file if not currencly being used.
 +      if ($entry_path != $current_stylesheet_id) {
