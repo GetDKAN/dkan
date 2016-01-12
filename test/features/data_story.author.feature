@@ -14,15 +14,15 @@ Feature: Data Stories
     Given I am on the homepage
     Then I should see "Stories"
 
-  @fixme
+  @javascript
   Scenario: Create Story Content
     And I am logged in as "Jaz"
     When I am on "/node/add/dkan-data-story"
-    And I fill in "edit-title" with "Creating Data Story Test Story Post"
+    And I fill in "edit-title" with "Test Post"
     And I fill in "body[und][0][value]" with "Test description"
     And I press "Save"
-    Then I should see "Your DKAN Data Story 'DKAN Data Story Test Story Post' has been created"
-    Then I should be able to use the Panels In Place Editor
+    Then I should see "Your DKAN Data Story 'Test Post' has been created"
+    Then I should not see "panels-ipe-region"
 
   @javascript
   Scenario: Edit own story content
