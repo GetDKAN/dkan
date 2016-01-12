@@ -1,0 +1,48 @@
+diff --git a/colorizer.module b/colorizer.module
+index 192f9ba..9498186 100644
+--- a/colorizer.module
++++ b/colorizer.module
+@@ -255,6 +255,8 @@ function colorizer_update_stylesheet($theme, $instance, $palette) {
+     $target_styles = _colorizer_rewrite_stylesheet($palette, $source_styles);
+     $target_file = $target_path . $id . '.css';
+     _colorizer_save_stylesheet($target_file, $target_styles);
++    // Keep track of latest CSS file id.
++    variable_set('colorizer_current_sylesheet_id', $target_file);
+   }
+ 
+   if (!empty($target_file)) {
+@@ -287,11 +289,31 @@ function _colorizer_save_stylesheet($file, $style) {
+ }
+ 
+ /**
+- * Removes css files from colorizer files cache
+- * They will get recreated in hook_init on demand
++ * Removes unused css files from colorizer files cache.
+  */
+ function colorizer_clearcache() {
+-  file_unmanaged_delete_recursive('public://colorizer');
++
++  $colorizer_path = 'public://colorizer';
++  $current_stylesheet_id = variable_get('colorizer_current_sylesheet_id', '');
++
++  if (is_dir($colorizer_path)) {
++
++    $dir = dir($colorizer_path);
++    while (($entry = $dir->read()) !== FALSE) {
++
++      if ($entry == '.' || $entry == '..') {
++        continue;
++      }
++
++      $entry_path = $path . '/' . $entry;
++
++      // Delete CSS file if not currencly being used.
++      if ($entry_path != $current_stylesheet_id) {
++        file_unmanaged_delete($entry_path);
++      }
++    }
++    $dir->close();
++  }
+ }
+ 
+ /**
