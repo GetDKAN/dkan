@@ -56,19 +56,16 @@ Feature: Site managers administer groups
     And I should see the heading "My group"
     And I should see "This is a body"
 
-  @fixme @testBug
-    #TODO: Break up undefined step into behat steps (I fill in the following...I press submit)
-    #When I fill in the "member" form for "Katie" - undefined
   Scenario: Add a group member on any group
     Given I am logged in as "John"
     And I am on "Group 02" page
     And I click "Group"
     And I click "Add people"
-    When I fill in the "member" form for "Katie"
+    And I fill in "Katie" for "User name"
     And I press "Add users"
     Then I should see "Katie has been added to the group Group 02"
     When I am on "Group 02" page
-    And I click "Members" in the "group block" region
+    And I click "Members"
     Then I should see "Katie" in the "group members" region
 
   Scenario: Remove a group member from any group
@@ -80,7 +77,7 @@ Feature: Site managers administer groups
     And I press "Remove"
     Then I should see "The membership was removed"
     And I am on "Group 01" page
-    And I click "Members" in the "group block" region
+    And I click "Members"
     And I should not see "Katie" in the "group members" region
 
   Scenario: Delete any group
@@ -136,15 +133,11 @@ Feature: Site managers administer groups
     When I click "Roles (read-only)"
     Then I should see the list of roles for the group "Group 01"
 
-  @fixme @testBug
-    #TODO: Need to define for getting list of permissions
-    # Then I should see the list of permissions for "<role name>" role - undefined
   Scenario Outline: View group role permissions of any group
     Given I am logged in as "John"
     And I am on "Group 01" page
     And I click "Group"
-    And I click "Roles (read-only)"
-    When I click "view permissions" in the "<role name>" row
+    And I click "Permissions (read-only)"
     Then I should see the list of permissions for "<role name>" role
 
     Examples:
@@ -166,23 +159,6 @@ Feature: Site managers administer groups
     And I click "Group"
     When I click "People"
     Then I should see "Total content: 4"
-
-  @fixme @dkanBug
-    # TODO: Sub-groups not in dkan, this should be deleted
-    # Parent group not on edit page, does not look like sub-groups are enabled on dkan currently
-  Scenario: Add a sub-group on any group
-    Given I am logged in as "John"
-    And I am on "Group 01" page
-    When I click "Edit"
-    Then I should see "Parent group"
-    When I fill in "Parent group" with "Group 02"
-    And I press "Update"
-    Then I should see "Group Group 01 has been updated"
-    When I am on "Group 02" page
-    Then I should see "Group 01" in the "sub-groups" region
-
-  # TODO: Change to use Workbench instead of /content
-
 
   Scenario: View list of unpublished groups
     Given I am logged in as "John"

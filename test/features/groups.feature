@@ -79,7 +79,6 @@ Feature: Groups
     Then I should see "Create Dataset"
     When I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "Test description"
-    And I click the chosen field "License Not Specified" and enter "Other (Public Domain)"
     And I fill in the chosen field "Choose some options" with "Test Group"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
