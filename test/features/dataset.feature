@@ -29,20 +29,18 @@ Feature: Datasets
     And I wait for "Polling_Places_Madison.csv"
     And I wait for "Door Creek Church"
 
-  @fixme @api @javascript
-  Scenario: Create a dataset with a group as a content creator
-    Given I am logged in as a user with the "site manager" role
-    And I am on "/node/add/group"
-    Then I should see "Create Group"
-    When I fill in "title" with "Test Group"
-    And I press "Save"
-    Then I should see "Test Group has been created"
+  @api @javascript
+    #TODO: There is an issue with file structures in containers, where files located in one container's folder
+    #       are not visible to other containers
+    #       This makes it difficult to upload files to the browser, as the browser container won't contain the file.
+    #       This is working on CircleCI as it is only a single container thus no file strucutre issues.
+    #       A solution where files can be shared across containers should be added
+  Scenario: Create a dataset as a content creator
+    Given I am logged in as a user with the "content creator" role
     Given I am on "/node/add/dataset"
     Then I should see "Create Dataset"
     When I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "Test description"
-    And I click the chosen field "License Not Specified" and enter "Creative Commons Attribution"
-    And I fill in the chosen field "Choose some options" with "Test Group"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I fill in "title" with "Test Resource Link File"
@@ -56,11 +54,8 @@ Feature: Datasets
     And I check "field_upload[und][0][view][grid]"
     And I press "edit-submit"
     And I wait for "Test Resource Upload has been created"
-    And I should see "Glendale Elementary School"
     When I click "Test Dataset"
     Then I should see "Test Resource"
-    And I should see "Test Group"
-    And I should see "Creative Commons Attribution"
     When I click "Test Resource Link File"
     And I wait for "Farah"
     When I am on "dataset/test-dataset"

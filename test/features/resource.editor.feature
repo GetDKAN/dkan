@@ -26,6 +26,7 @@ Feature: Resource
       | Jaz     | Group 01 | member               | Pending           |
       | Admin   | Group 02 | administrator member | Active            |
       | Celeste | Group 02 | member               | Active            |
+      | Celeste | Group 01 | member               | Active            |
     And "Tags" terms:
       | name    |
       | Health  |
@@ -67,10 +68,11 @@ Feature: Resource
     # TODO: Permissions are not set so that a group member can publish any resources of their group,
     #       this test will need to wait until that is set
   Scenario: Publish resources associated with groups that I am a member of
-    Given I am logged in as "Gabriel"
+    Given I am logged in as "Celeste"
     And I am on "Resource 04" page
     When I click "Edit"
-    And I select "published" for "publishing options"
+    And I click "Publishing options"
+    And I check "Published"
     And I press "Save"
     Then I should see "Resource Resource 04 edited has been updated"
 
@@ -88,74 +90,78 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @fixme @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Import items on datastore of resources associated with groups that I am a member of
+    Given I am logged in as "John"
+    And I am on "Resource 01" page
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
-    And I click "Import"
-    #And I press "Import"
-    #And I wait
-    #Then I should see "Last import"
-    #And I should see "imported items total"
-    Then I should see "There is nothing to manage!"
+    And I press "Import"
+    And I wait for "Delete Items"
+    Then I should see "Last import"
+    And I should see "imported items total"
 
-  @fixme @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
+    Given I am logged in as "John"
+    And I am on "Resource 01" page
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
     Given I am logged in as "Celeste"
-    And I am on "Resource 04" page
+    When I am on "Resource 01" page
     When I click "Manage Datastore"
+    And I press "Import"
+    And I wait for "Delete Items"
     And I click "Delete items"
     And I press "Delete"
-    And I wait
-    #Then I should see "items were deleted"
-    Then I should see "no items to delete"
+    And I wait for "items have been deleted"
+    And I am on "Resource 01" page
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @fixme @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
   Scenario: Drop datastore of resources associated with groups that I am a member of
+    Given I am logged in as "John"
+    And I am on "Resource 01" page
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
     Given I am logged in as "Celeste"
-    And I am on "Resource 04" page
-    And I click "Manage Datastore"
-    When I click "Drop Datastore"
-    #And I press "Drop"
-    #Then I should see "Datastore dropped!"
-    #And I should see "Your file for this resource is not added to the datastore"
-    Then I should see "You need to have a file or link imported to the datastore in order to drop it."
+    And I am on "Resource 01" page
     When I click "Manage Datastore"
-    #Then I should see "No imported items."
-    Then I should see "There is nothing to manage!"
+    And I press "Import"
+    And I wait for "Delete Items"
+    When I click "Drop Datastore"
+    And I press "Drop"
+    Then I should see "Datastore dropped!"
+    And I should see "Your file for this resource is not added to the datastore"
+    When I click "Manage Datastore"
+    Then I should see "No imported items."
 
-  @fixme @testBug
-    #TODO: Need to add definition for clicking revisions on revision page, click in row
   Scenario: Add revision to resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
     When I click "Edit"
     And I fill in "title" with "Resource 01 edited"
-    And I check "Create new revision"
     And I press "Save"
     Then I should see "Resource Resource 01 edited has been updated"
-    When I press "Revisions"
-    And I click "first" revision
+    When I click "Revisions"
+    And I press "Compare"
     Then I should see "Resource 01 edited"
 
   @fixme @dkanBug
-    # TODO: Editors do not have access to revert a resource to a previous revision
-    # See NuCivic/dkan#793
+    #TODO: Currently content creators do not have access to revert any resource
+    #       That they are a group member for. Does this need to be tested then?
   Scenario: Revert resource revision of any resource associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
     When I click "Edit"
     And I fill in "title" with "Resource 01 edited"
-    And I check "Create new revision"
     And I press "Save"
     Then I should see "Resource Resource 01 edited has been updated"
-    When I press "Revisions"
-    And I click "Revert" in the "second" row
-    # TODO: This is NOT working. Throws "You are not authorized to access this page"
-    Then the resource should be reverted
+    When I click "Revisions"
+    And I click "Revert"
+    And I press "Revert"
+    Then I should see "Resource Resource 01 has been reverted"
