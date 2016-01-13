@@ -24,8 +24,6 @@ class FacetapiTermIcon extends FacetapiWidgetLinks {
   public function buildListItems($build) {
     $settings = $this->settings->settings;
 
-    $default_icon = facet_icons_icon_path('default_facet_icon');
-
     // Initializes links attributes, adds rel="nofollow" if configured.
     $attributes = ($settings['nofollow']) ? array('rel' => 'nofollow') : array();
     $attributes += array('class' => $this->getItemClasses());
@@ -34,13 +32,10 @@ class FacetapiTermIcon extends FacetapiWidgetLinks {
     $items = array();
     foreach ($build as $value => $item) {
       $row = array('class' => array());
-
-      $icon = '<img src="' . $default_icon . '" typeof="foaf:Image">';
-      if (isset($item['#indexed_value'])) {
-        $term = taxonomy_term_load($item['#indexed_value']);
-        if (isset($term->field_image['und'][0]['uri'])) {
-          $icon = '<img src="' . image_style_url('facet_icon', $term->field_image['und'][0]['uri']) . '" typeof="foaf:Image">';
-        }
+      $type = '';
+      $icon = nuboot_radix_icon( array('type'=> $type, 'class' => array('facet-icon')));
+      if (isset($item['#indexed_value']) && $term = taxonomy_term_load($item['#indexed_value'])) {
+        $icon = nuboot_radix_icon( array('type'=> $term->machine_name, 'class' => array('facet-icon')));
       }
 
       // Initializes variables passed to theme hook.

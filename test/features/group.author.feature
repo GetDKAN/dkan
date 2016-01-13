@@ -76,10 +76,9 @@ Feature: Site Manager administer groups
     Then I should be on the "Group 01" page
     And I should see "Request group membership" in the "group block" region
 
-  @fixme @api @testBug
-    #TODO: Sees the navbar Group link, not the Group's group link - need to check by region
+  @api
   Scenario: I should not be able to edit groups
     Given I am logged in as "Katie"
     When I am on "Group 01" page
-    Then I should not see the link "Edit" in the "primary tabs" region
-    And I should not see the link "Group" in the "primary tabs" region
+    Then I should not see the link "Edit"
+    And I should not see the link "fa-users"

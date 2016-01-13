@@ -50,22 +50,28 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -50,
     'customized' => 0,
   );
-  // Exported menu link: main-menu_datasets:dataset
-  $menu_links['main-menu_datasets:dataset'] = array(
-    'menu_name' => 'main-menu',
-    'link_path' => 'dataset?f[0]=type:dataset',
-    'router_path' => 'dataset',
-    'link_title' => 'Datasets',
-    'options' => array(
-      'identifier' => 'main-menu_datasets:dataset',
-    ),
-    'module' => 'system',
-    'hidden' => -1,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -6,
-    'customized' => 0,
+  // Exported menu link: main-menu_add-dataset:node/add/dataset
+  $menu_links['main-menu_dataset'] = array(
+      'menu_name' => 'main-menu',
+      'link_path' => 'dataset',
+      'router_path' => 'dataset',
+      'link_title' => 'Dataset',
+      'options' => array(
+          'attributes' => array(
+              'title' => '',
+          ),
+          'identifier' => 'main-menu_dataset',
+          'query' => array(
+              'f[0]' => 'type:dataset'
+          )
+      ),
+      'module' => 'menu',
+      'hidden' => 0,
+      'external' => 0,
+      'has_children' => 0,
+      'expanded' => 0,
+      'weight' => -47,
+      'customized' => 0,
   );
 
   // Translatables
