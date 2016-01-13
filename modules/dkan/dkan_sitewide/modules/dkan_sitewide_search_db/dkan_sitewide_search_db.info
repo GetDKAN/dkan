@@ -32,4 +32,3 @@ features[facetapi][] = search_api@default_node_index:block:title
 features[features_api][] = api:2
 features[search_api_index][] = datasets
 features[search_api_server][] = datasets
-features[views_view][] = dataset
