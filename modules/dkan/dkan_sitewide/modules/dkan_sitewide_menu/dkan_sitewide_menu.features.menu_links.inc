@@ -54,7 +54,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   $menu_links['main-menu_datasets:dataset'] = array(
     'menu_name' => 'main-menu',
     'link_path' => 'dataset?f[0]=type:dataset',
-    'router_path' => 'dataset',
+    'router_path' => 'dataset?f[0]=type:dataset',
     'link_title' => 'Datasets',
     'options' => array(
       'identifier' => 'main-menu_datasets:dataset',
@@ -64,7 +64,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -6,
+    'weight' => -47,
     'customized' => 0,
   );
 

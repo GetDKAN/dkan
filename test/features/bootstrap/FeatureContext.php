@@ -125,8 +125,12 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
 
   /**
    * @Given /^I click the chosen field "([^"]*)" and enter "([^"]*)"$/
+   *
+   * DEPRECATED: DONT USE. The clicking of the chosen fields to select some values
+   * didn't work well (selenium errors about the value not being visible). Commenting
+   * this out for now in case someone wants to replace it later with something that works.
    */
-  public function iClickTheChosenFieldAndEnter($field, $value) {
+  /*public function iClickTheChosenFieldAndEnter($field, $value) {
     $session = $this->getSession();
     $page = $session->getPage();
     $field = $this->fixStepArgument($field);
@@ -148,7 +152,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       throw new Exception(sprintf('"' . $value . '" option was not found in the chosen field.'));
     }
     $title->click();
-  }
+  }*/
 
   /**
    * Click some text.
@@ -473,5 +477,142 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   public function iShouldSeeTheLocalPreviewLink()
   {
       $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', '') . ' ' . t('Preview'));
+  }
+
+  /**
+   * @Given I should see the dataset list with :order order by :criteria
+   */
+  public function iShouldSeeDatasetListInOrder($order, $criteria){
+
+    $dataset_list = array();
+    $count = 1;
+    while(($row = $this->getSession()->getPage()->find('css', '.views-row-'.$count)) !== null ){
+      $row = $row->find('css', 'h2');
+      $dataset_list[$count-1] = $row->getText();
+      $count++;
+    }
+
+    switch($criteria){
+      case 'Date changed':
+        $criteria = 'changed';
+        break;
+      case 'Title':
+        $criteria = 'title';
+        break;
+      default:
+        break;
+    }
+    $index = search_api_index_load('datasets');
+    $query = new SearchApiQuery($index);
+
+    $results = $query->condition('type', 'dataset')
+      ->condition('status', '1')
+      ->sort($criteria, strtoupper($order))
+      ->range(0, 10)
+      ->execute();
+
+    $count = 0;
+    $prev_node = null;
+    $queried_datasets = array(array());
+    foreach($results['results'] as $result){
+      $node = node_load($result['id']);
+      if($prev_node !== null && $prev_node->$criteria === $node->$criteria){
+        $count--;
+      }
+      $queried_datasets[$count][] = $node;
+      $prev_node = $node;
+      $count++;
+    }
+
+    $in_subset = false;
+    $count = 0;
+    foreach($queried_datasets as $sublist){
+      for($index = $count; $index < count($sublist); $index++) {
+        foreach($sublist as $dataset){
+          if($dataset_list[$index] === $dataset->title){
+            $in_subset = true;
+          }
+        }
+        if(!$in_subset){
+          throw new Exception("Does not match order of list, $dataset_list[$count] was next on page but expected $node->title");
+        }
+        $in_subset = false;
+      }
+      $count = count($sublist);
+    }
+  }
+
+  /**
+   * @Then I should see the list of permissions for :role role
+   */
+  public function iShouldSeePermissionsForRole($role)
+  {
+
+    $role_names = og_get_user_roles_name();
+    if ($rid = array_search($role, $role_names)) {
+      $permissions = og_role_permissions(array($rid => ''));
+      foreach(reset($permissions) as $machine_name => $perm) {
+        // Currently the permissions returned by og for a role are only the machine name and its true value,
+        // need to find a way to find the checkbox of a permission and see if it is checked
+        $search = "edit-".$rid."-".strtr($machine_name, " ", "-");
+        if(!$this->getSession()->getPage()->hasCheckedField($search)){
+          throw new \Exception("Permission $machine_name is not set for $role.");
+        }
+      }
+    }
+  }
+
+  /**
+   * @Then I should get :format content from the :button button
+   */
+  public function assertButtonReturnsFormat($format, $button){
+
+    if($button === "JSON"){
+      $button = "json view of content";
+    }
+
+    $content = $this->getSession()->getPage()->findLink($button);
+    try {
+      $file = file_get_contents($content->getAttribute("href"));
+    }catch(Exception $e){
+      throw $e;
+    }
+    if($format === "JSON") {
+      json_decode($file);
+      if (!json_last_error() == JSON_ERROR_NONE) {
+        throw new Exception("Not JSON format.");
+      }
+    }
+  }
+
+  /**
+   * @Then I should see the redirect button for :site
+   */
+  public function assertRedirectButton($site){
+    $page = $this->getSession()->getPage();
+
+    switch($site){
+      case 'Google+':
+        $element = $page->find('css', '.fa-google-plus-square');
+        $link = $element->getParent()->getAttribute("href");
+        $return = preg_match("#https:\/\/plus\.google\.com\/share\?url=.*dataset\/.*#", $link);
+        break;
+      case 'Twitter':
+        $element = $page->find('css', '.fa-twitter-square');
+        $link = $element->getParent()->getAttribute("href");
+        $return = preg_match("#https:\/\/twitter\.com\/share\?url=.*dataset\/.*#", $link);
+        break;
+      case 'Facebook':
+        $element = $page->find('css', '.fa-facebook-square');
+        $link = $element->getParent()->getAttribute("href");
+        $return = preg_match("#https:\/\/www\.facebook\.com\/sharer\.php.*dataset\/.*#", $link);
+        break;
+      default:
+        throw new Exception("Not a valid site for DKAN sharing.");
+    }
+
+    if(!$return){
+      throw new Exception("The $site redirect button is not properly configured.");
+    }
   }
 }
