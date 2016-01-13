@@ -12,6 +12,7 @@ projects[dkan_dataset][download][type] = git
 projects[dkan_dataset][download][url] = https://github.com/NuCivic/dkan_dataset.git
 projects[dkan_dataset][download][branch] = 661-search-page-redesign
 
+
 projects[dkan_datastore][subdir] = dkan
 projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datastore.git
@@ -166,6 +167,7 @@ projects[field_reference_delete][download][version] = 7.x-1.0-beta1
 
 ; Apply a patch to ref_field (included elsewhere?)
 projects[ref_field][patch][1] = patches/ref_field_sync-entity-load-multiple-1928680-1.patch
+projects[facetapi][patch][1] = patches/cross-site-scripting-facets-156778.patch
 
 ; Libraries
 libraries[font_awesome][type] = libraries

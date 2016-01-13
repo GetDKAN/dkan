@@ -24,8 +24,6 @@ class FacetapiContentTypeIcon extends FacetapiWidgetLinks {
   public function buildListItems($build) {
     $settings = $this->settings->settings;
 
-    $default_icon = facet_icons_icon_path('default_facet_icon');
-
     // Initializes links attributes, adds rel="nofollow" if configured.
     $attributes = ($settings['nofollow']) ? array('rel' => 'nofollow') : array();
     $attributes += array('class' => $this->getItemClasses());
@@ -33,18 +31,10 @@ class FacetapiContentTypeIcon extends FacetapiWidgetLinks {
     // Builds rows.
     $items = array();
     foreach ($build as $value => $item) {
-      $row = array('class' => array());
 
-      $icon = '<img src="' . $default_icon . '" typeof="foaf:Image">';
-      if (isset($item['#indexed_value'])) {
-        $type = facet_icons_icon_path('content_types/' . $item['#indexed_value']);
-        if ($type != '') {
-          $icon = '<img src="' . $type . '" typeof="foaf:Image">';
-        }
-        else {
-          $icon = '<img src="' . $default_icon . '" typeof="foaf:Image">';
-        }
-      }
+      $row = array('class' => array());
+      $type = (isset($item['#indexed_value'])) ? $item['#indexed_value'] : '';
+      $icon = nuboot_radix_icon( array('type'=> $type, 'class' => array('facet-icon')));
 
       // Initializes variables passed to theme hook.
       $variables = array(
