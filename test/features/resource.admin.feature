@@ -47,7 +47,6 @@ Feature: Resource
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
 
-  # TODO: Change to use Workbench instead of /content
 
   Scenario: Edit any resource
     Given I am logged in as "John"
@@ -78,46 +77,52 @@ Feature: Resource
 
   Scenario: Manage Datastore of any resource
     Given I am logged in as "John"
-    And I am on "Resource 02" page
+    And I am on "Resource 01" page
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @fixme @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
-    # And I press "Import" - button not found
-    # And I wait - undefined
   Scenario: Import items on datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
     When I click "Manage Datastore"
     And I press "Import"
-    And I press "Import"
-    And I wait
+    And I wait for "Delete Items"
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @fixme @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
-    # And I press "Delete items" - button not found
   Scenario: Delete items on datastore of any resource
+    # Backgorund steps to add a file to a resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
+    And I am on "Resource 04" page
     When I click "Manage Datastore"
-    And I press "Delete items"
+    And I press "Import"
+    And I wait for "Delete Items"
+    And I click "Delete items"
     And I press "Delete"
-    And I wait
-    Then I should see "items have been deleted."
+    And I wait for "items have been deleted"
+    And I am on "Resource 04" page
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @fixme @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
-    # When I press "Drop datastore" - button not found
   Scenario: Drop datastore of any resource
+    # Backgorund steps to add a file to a resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
-    And I click "Manage Datastore"
-    When I press "Drop datastore"
+    And I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "Save"
+    And I am on "Resource 04" page
+    When I click "Manage Datastore"
+    And I press "Import"
+    And I wait for "Delete Items"
+    When I click "Drop Datastore"
     And I press "Drop"
     Then I should see "Datastore dropped!"
     And I should see "Your file for this resource is not added to the datastore"
@@ -136,18 +141,17 @@ Feature: Resource
     Then I should see "current revision"
 
   @fixme @dkanBug
-    # TODO: Admins do not have access to revert a resource to a previous revision
-    # See NuCivic/dkan#793
+    #TODO: There is an issue where an admin, when clicking revert, gets a access unauthorized response.
+    #     See: https://github.com/NuCivic/dkan/issues/793
   Scenario: Revert any resource revision
     Given I am logged in as "John"
     And I am on "Resource 02" page
     When I click "Edit"
     And I fill in "title" with "Resource 02 edited"
-    And I check "Create new revision"
     And I press "Save"
     Then I should see "Resource Resource 02 edited has been updated"
     When I click "Revisions"
     And I click "Revert"
-    # TODO: This is NOT working. Throws "You are not authorized to access this page"
+    And I press "Revert"
     Then I should see "Resource 02"
-      And I should not see "Resource 02 edited"
+    And I should not see "Resource 02 edited"
