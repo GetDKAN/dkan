@@ -60,14 +60,14 @@ Feature: Dataset Features
      #      Will they be added to the homepage later?
   Scenario: View list of most recent published datasets (on homepage)
     Given I am on the homepage
-    Then I should see "7" items in the "datasets" region
+    Then I should see "19" items in the "datasets" region
     And I should see the dataset list with "Desc" order by "Date changed"
 
   Scenario: View list of published datasets
     Given I am on the homepage
     When I click "Datasets"
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "19 datasets"
+    And I should see "19" items in the "datasets" region
 
   Scenario: Search datasets by "Date changed" with "Asc" order
     Given I am on "Datasets" page
