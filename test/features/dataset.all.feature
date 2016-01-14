@@ -83,8 +83,8 @@ Feature: Dataset Features
     And I select "Date changed" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "19 datasets"
+    And I should see "19" items in the "datasets" region
     And I should see the dataset list with "Desc" order by "Date changed"
 
   Scenario: Search datasets by "title" with "Asc" order
@@ -92,8 +92,8 @@ Feature: Dataset Features
     And I select "Title" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "19 datasets"
+    And I should see "19" items in the "datasets" region
     And I should see the dataset list with "Asc" order by "Title"
 
   Scenario: Search datasets by "title" with "Desc" order
@@ -101,8 +101,8 @@ Feature: Dataset Features
     And I select "Title" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "19 datasets"
+    And I should see "19" items in the "datasets" region
     And I should see the dataset list with "Desc" order by "Title"
 
     # TODO : Reseting the search will make all the datasets appear in the results including pre-made
@@ -114,39 +114,43 @@ Feature: Dataset Features
     Then I should see "3 datasets"
     And I should see "3" items in the "datasets" region
     When I press "Reset"
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "19 datasets"
+    And I should see "19" items in the "datasets" region
 
   Scenario: View available tag filters for datasets
     Given I am on "Datasets" page
+    Then I click on the text "Tags"
     Then I should see "Health (2)" in the "filter by tag" region
     Then I should see "Gov (1)" in the "filter by tag" region
 
 
   Scenario: View available resource format filters for datasets
     Given I am on "Datasets" page
+    Then I click on the text "Format"
     Then I should see "csv (5)" in the "filter by resource format" region
     Then I should see "html (1)" in the "filter by resource format" region
 
 
   Scenario: View available author filters for datasets
     Given I am on "Datasets" page
+    Then I click on the text "Author"
     Then I should see "Gabriel (2)" in the "filter by author" region
     Then I should see "Katie (1)" in the "filter by author" region
 
 
   Scenario: Filter dataset search results by tags
     Given I am on "Datasets" page
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "19 datasets"
+    And I should see "19" items in the "datasets" region
+    Then I click on the text "Tags"
     When I click "Health" in the "filter by tag" region
     Then I should see "2 datasets"
     And I should see "2" items in the "datasets" region
 
   Scenario: Filter dataset search results by resource format
     Given I am on "Datasets" page
-    Then I should see "7 datasets"
-    And I should see "7" items in the "datasets" region
+    Then I should see "19 datasets"
+    And I should see "19" items in the "datasets" region
     When I click "csv" in the "filter by resource format" region
     Then I should see "5 datasets"
     And I should see "5" items in the "datasets" region
