@@ -88,7 +88,6 @@ projects[markdowneditor][patch][2045225] = http://drupal.org/files/remove-dsm-fr
 projects[module_filter][version] = 2.0
 
 projects[og_moderation][version] = 2.3
-projects[og_moderation][patch][2231737] = https://drupal.org/files/issues/any-user-with-view-revision-can-revert-delete-2231737-1.patch
 
 projects[defaultconfig][version] = 1.0-alpha11
 
