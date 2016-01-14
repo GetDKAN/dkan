@@ -56,7 +56,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
       'menu_name' => 'main-menu',
       'link_path' => 'dataset',
       'router_path' => 'dataset',
-      'link_title' => 'Dataset',
+      'link_title' => 'Datasets',
       'options' => array(
           'attributes' => array(
               'title' => '',
