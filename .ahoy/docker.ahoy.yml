@@ -32,5 +32,5 @@ commands:
     cmd: "docker exec -it $(docker-compose -f  ps -q cli) bash -c 'mysqldump -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
     usage: Dump data out into a file. `ahoy mysql-import > backups/local.sql`
   compose:
-    cmd: docker-compose -f dkan/.ahoy/docker-compose.yml {{args}}
+    cmd: docker-compose -f dkan/.ahoy/docker-compose.yml -p "${PWD##*/}" {{args}}
     usage: Abstraction for docker-compose
