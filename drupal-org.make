@@ -22,7 +22,7 @@ projects[dkan_datastore][download][branch] = 7.x-1.x
 
 projects[visualization_entity][download][type] = git
 projects[visualization_entity][download][url] = https://github.com/NuCivic/visualization_entity.git
-projects[visualization_entity][download][branch] = master
+projects[visualization_entity][download][branch] = module-updates
 projects[visualization_entity][type] = module
 
 projects[visualization_entity_charts][download][type] = git
