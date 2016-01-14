@@ -113,7 +113,7 @@ projects[path_breadcrumbs][version] = 3.3
 
 projects[pathauto][version] = 1.2
 
-projects[radix_layouts][version] = 3.3
+projects[radix_layouts][version] = 3.4
 
 projects[r4032login][version] = 1.8
 
