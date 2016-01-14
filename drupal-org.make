@@ -47,7 +47,7 @@ projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file
 ; Contrib Modules
 projects[admin_menu][version] = 3.0-rc5
 
-projects[bueditor][version] = 1.7
+projects[bueditor][version] = 1.8
 projects[bueditor][patch][1931862] = http://drupal.org/files/dont-render-bueditor-for-plain-text-textareas.patch
 
 projects[colorizer][version] = 1.8
@@ -82,20 +82,19 @@ projects[imagecache_actions][type] = module
 
 projects[markdown][version] = 1.2
 
-projects[markdowneditor][version] = 1.2
+projects[markdowneditor][version] = 1.4
 projects[markdowneditor][patch][2045225] = http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
 
 projects[module_filter][version] = 2.0
 
-projects[og_moderation][version] = 2.2
+projects[og_moderation][version] = 2.3
 projects[og_moderation][patch][2231737] = https://drupal.org/files/issues/any-user-with-view-revision-can-revert-delete-2231737-1.patch
 
-projects[defaultconfig][version] = 1.0-alpha9
+projects[defaultconfig][version] = 1.0-alpha11
 
 projects[panelizer][version] = 3.1
 
-projects[views_autocomplete_filters][version] = 1.1
-projects[views_autocomplete_filters][patch][2277453] = http://drupal.org/files/issues/ViewsAutocompleteFilters-no_results_on_some_environments-2277453-1.patch
+projects[views_autocomplete_filters][version] = 1.2
 projects[views_autocomplete_filters][patch][2374709] = http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
 projects[views_autocomplete_filters][patch][2317351] = http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
 
@@ -117,7 +116,7 @@ projects[pathauto][version] = 1.2
 
 projects[radix_layouts][version] = 3.3
 
-projects[r4032login][version] = 1.7
+projects[r4032login][version] = 1.8
 
 projects[rules][version] = 2.3
 
@@ -126,7 +125,7 @@ projects[restws][patch][2484829] = https://www.drupal.org/files/issues/restws-fi
 
 projects[schema][version] = 1.2
 
-projects[adminrole][version] = 1.0
+projects[adminrole][version] = 1.1
 
 projects[admin_menu_source][version] = 1.0
 projects[admin_menu_source][subdir] = contrib
