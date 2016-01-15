@@ -61,7 +61,7 @@ Feature: Dataset Features
   Scenario: View list of most recent published datasets (on homepage)
     Given I am on the homepage
     Then I should see "22" items in the "datasets" region
-    And I should see the dataset list with "Desc" order by "Date changed"
+    And I should see the first "3" dataset items in "Date changed" "Desc" order.
 
   Scenario: View list of published datasets
     Given I am on the homepage
@@ -69,24 +69,32 @@ Feature: Dataset Features
     Then I should see "22 datasets"
     And I should see "10" items in the "datasets" region
 
-  Scenario: Search datasets by "Date changed" with "Asc" order
-    Given I am on "Datasets" page
-    When I select "Date changed" from "Sort by"
+  Scenario: Order datasets by "Date changed" by oldest first.
+    Given datasets:
+      | title                 |  published | description | date changed |
+      | Dataset 5 years ago   |  Yes       | Test        | -5 year      |
+      | Dataset 2 years ago   |  Yes       | Test        | -2 year      |
+      | Dataset 1 year ago    |  Yes       | Test        | -1 year      |
+      | Dataset 3 years ago   |  Yes       | Test        | -3 year      |
+    And I am on "Datasets" page
+    And I select "Date changed" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "22 datasets"
-    And I should see "10" items in the "datasets" region
-    And I should see the dataset list with "Asc" order by "Date changed"
+    And I should see the first "4" dataset items in "Date changed" "Asc" order.
 
-  @fixme
-  Scenario: Search datasets by "Date changed" with "Desc" order
-    Given I am on "Datasets" page
+
+  Scenario: Order datasets by "Date changed" with newest first.
+    Given datasets:
+      | title               |  published | description | date changed |
+      | Dataset 5 years +   |  Yes       | Test        | +5 year      |
+      | Dataset 2 years +   |  Yes       | Test        | +2 year      |
+      | Dataset 3 years +   |  Yes       | Test        | +3 year      |
+      | Dataset 1 year +    |  Yes       | Test        | +1 year      |
+    And I am on "Datasets" page
     And I select "Date changed" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "22 datasets"
-    And I should see "10" items in the "datasets" region
-    And I should see the dataset list with "Desc" order by "Date changed"
+    And I should see the first "4" dataset items in "Date changed" "Desc" order.
 
   Scenario: Search datasets by "title" with "Asc" order
     Given I am on "Datasets" page
@@ -95,7 +103,7 @@ Feature: Dataset Features
     And I press "Apply"
     Then I should see "22 datasets"
     And I should see "10" items in the "datasets" region
-    And I should see the dataset list with "Asc" order by "Title"
+    And I should see the first "3" dataset items in "Title" "Asc" order.
 
   Scenario: Search datasets by "title" with "Desc" order
     Given I am on "Datasets" page
@@ -104,7 +112,7 @@ Feature: Dataset Features
     And I press "Apply"
     Then I should see "22 datasets"
     And I should see "10" items in the "datasets" region
-    And I should see the dataset list with "Desc" order by "Title"
+    And I should see the first "3" dataset items in "Title" "Desc" order.
 
     # TODO : Reseting the search will make all the datasets appear in the results including pre-made
     #        datasets, should be fixed
