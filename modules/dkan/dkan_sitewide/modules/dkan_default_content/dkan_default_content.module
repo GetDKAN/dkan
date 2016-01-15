@@ -62,6 +62,10 @@ function dkan_default_content_update_changed_field(){
         ->fields(array('changed' => $timestamp))
         ->condition('nid', $nid, '=')
         ->execute();
+    db_update('node_revision')
+        ->fields(array('timestamp' => $timestamp))
+        ->condition('nid', $nid, '=')
+        ->execute();        
     $timestamp++;
   }
 }
