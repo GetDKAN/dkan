@@ -18,6 +18,14 @@ projects[dkan_datastore][download][type] = git
 projects[dkan_datastore][download][url] = https://github.com/NuCivic/dkan_datastore.git
 projects[dkan_datastore][download][branch] = 7.x-1.x
 
+; dkan_feedback in DO. Specify project type.
+projects[dkan_feedback][type] = module
+projects[dkan_feedback][subdir] = dkan
+projects[dkan_feedback][download][type] = git
+projects[dkan_feedback][download][url] = https://github.com/NuCivic/dkan_feedback.git
+projects[dkan_feedback][download][branch] = 7.x-1.x
+includes[dkan_feedback] = https://raw.githubusercontent.com/NuCivic/dkan_feedback/7.x-1.x/dkan_feedback.make
+
 ; NuCivic Visualization tools
 
 projects[visualization_entity][download][type] = git
