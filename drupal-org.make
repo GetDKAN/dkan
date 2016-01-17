@@ -43,6 +43,7 @@ includes[dkan_data_story_make] = modules/dkan/dkan_data_story/dkan_data_story.ma
 ; Patches to other modules
 
 projects[file_entity][patch][2308737] = https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
+projects[file_entity][patch][2570377] = https://www.drupal.org/files/issues/file-entity-preserve-filemime_0.patch
 
 ; Contrib Modules
 projects[admin_menu][version] = 3.0-rc5
