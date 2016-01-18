@@ -711,9 +711,12 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
       'args' => '',
       'url' => '',
       'display' => 'dkan_group_search',
-      'override_title' => 0,
-      'override_title_text' => '',
+      'override_title' => 1,
+      'override_title_text' => '%node:title',
       'override_title_heading' => 'h2',
+      'context' => array(
+          0 => '',
+      ),
     );
     $pane->cache = array();
     $pane->style = array(
