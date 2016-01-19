@@ -60,13 +60,13 @@ Feature: Dataset Features
      #      Will they be added to the homepage later?
   Scenario: View list of most recent published datasets (on homepage)
     Given I am on the homepage
-    Then I should see "22" items in the "datasets" region
+    Then I should see "19" items in the "datasets" region
     And I should see the first "3" dataset items in "Date changed" "Desc" order.
 
   Scenario: View list of published datasets
     Given I am on the homepage
     When I click "Datasets"
-    Then I should see "22 datasets"
+    Then I should see "19 datasets"
     And I should see "10" items in the "datasets" region
 
   Scenario: Order datasets by "Date changed" by oldest first.
@@ -101,7 +101,7 @@ Feature: Dataset Features
     And I select "Title" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "22 datasets"
+    Then I should see "19 datasets"
     And I should see "10" items in the "datasets" region
     And I should see the first "3" dataset items in "Title" "Asc" order.
 
@@ -110,7 +110,7 @@ Feature: Dataset Features
     And I select "Title" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "22 datasets"
+    Then I should see "19 datasets"
     And I should see "10" items in the "datasets" region
     And I should see the first "3" dataset items in "Title" "Desc" order.
 
@@ -120,10 +120,10 @@ Feature: Dataset Features
     Given I am on "Datasets" page
     When I fill in "Test" for "Search" in the "datasets" region
     And I press "Apply"
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
+    Then I should see "3 datasets"
+    And I should see "3" items in the "datasets" region
     When I press "Reset"
-    Then I should see "22 datasets"
+    Then I should see "19 datasets"
     And I should see "10" items in the "datasets" region
 
   Scenario: View available tag filters for datasets
@@ -148,7 +148,7 @@ Feature: Dataset Features
 
   Scenario: Filter dataset search results by tags
     Given I am on "Datasets" page
-    Then I should see "22 datasets"
+    Then I should see "19 datasets"
     And I should see "10" items in the "datasets" region
     Then I click on the text "Tags"
     When I click "Health" in the "filter by tag" region
@@ -157,7 +157,7 @@ Feature: Dataset Features
 
   Scenario: Filter dataset search results by resource format
     Given I am on "Datasets" page
-    Then I should see "22 datasets"
+    Then I should see "19 datasets"
     And I should see "10" items in the "datasets" region
     When I click "csv" in the "filter by resource format" region
     Then I should see "5 datasets"
@@ -165,7 +165,7 @@ Feature: Dataset Features
 
   Scenario: Filter dataset search results by author
     Given I am on "Datasets" page
-    Then I should see "22 datasets"
+    Then I should see "19 datasets"
     And I should see "10" items in the "datasets" region
     When I click "Gabriel" in the "filter by author" region
     Then I should see "2 datasets"
