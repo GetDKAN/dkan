@@ -11,3 +11,4 @@ features[features_api][] = api:2
 features[menu_custom][] = main-menu
 features[menu_links][] = main-menu_about:node/1
 features[menu_links][] = main-menu_add-dataset:node/add/dataset
+features[menu_links][] = main-menu_datasets:dataset
