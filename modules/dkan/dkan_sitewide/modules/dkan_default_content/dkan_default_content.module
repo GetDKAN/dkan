@@ -43,8 +43,33 @@ function dkan_default_content_base_install(){
     $instance->save();
     $datasets[$key] = $instance;
   }
+
+  // Updates the changed field in the database to prevent
+  // sort issues derived from nodes with the same changed
+  // datetime.
+  dkan_default_content_update_changed_field();
   return $datasets;
 }
+
+/**
+ * Updates the changed field in the databases
+ */
+function dkan_default_content_update_changed_field(){
+  $timestamp = 1357269426;
+  $nids = $nids = db_query('SELECT nid FROM {node}')->fetchCol();
+  foreach($nids as $nid) {
+    db_update('node')
+        ->fields(array('changed' => $timestamp))
+        ->condition('nid', $nid, '=')
+        ->execute();
+    db_update('node_revision')
+        ->fields(array('timestamp' => $timestamp))
+        ->condition('nid', $nid, '=')
+        ->execute();        
+    $timestamp++;
+  }
+}
+
 
 /**
  * Add default taxonomies

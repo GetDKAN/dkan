@@ -35,9 +35,12 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['exposed_form']['options']['reset_button'] = TRUE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '1';
+  $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'entity';
-  $handler->display->display_options['row_options']['view_mode'] = 'teaser';
+  $handler->display->display_options['row_options']['view_mode'] = 'search_result';
   /* Header: Global: Result summary */
   $handler->display->display_options['header']['result']['id'] = 'result';
   $handler->display->display_options['header']['result']['table'] = 'views';
@@ -110,6 +113,11 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
     'dataset' => 'dataset',
+    'resource' => 'resource',
+    'group' => 'group',
+    'dkan_data_story' => 'dkan_data_story',
+    'data_dashboard' => 'data_dashboard',
+    'page' => 'page',
   );
 
   /* Display: Block */
@@ -170,7 +178,7 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'entity';
-  $handler->display->display_options['row_options']['view_mode'] = 'teaser';
+  $handler->display->display_options['row_options']['view_mode'] = 'search_result';
   /* Header: Global: Result summary */
   $handler->display->display_options['header']['result']['id'] = 'result';
   $handler->display->display_options['header']['result']['table'] = 'views';
@@ -262,6 +270,11 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
     'dataset' => 'dataset',
+    'resource' => 'resource',
+    'group' => 'group',
+    'dkan_data_story' => 'dkan_data_story',
+    'data_dashboard' => 'data_dashboard',
+    'page' => 'page',
   );
   $handler->display->display_options['filters']['type']['group'] = 1;
   /* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
