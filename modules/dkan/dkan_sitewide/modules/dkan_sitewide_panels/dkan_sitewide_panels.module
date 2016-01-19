@@ -15,7 +15,7 @@ function dkan_sitewide_panels_preprocess_panels_style_collapsible(&$variables) {
   // Find out if the pane matches a facet in the query string; un-collapse if so
   $pane = $variables['pane'];
   if (substr($pane->type, 0, 8)) {
-    if (is_array($_GET['f'])) {
+    if (isset($_GET['f']) && is_array($_GET['f'])) {
       foreach ($_GET['f'] as $param) {
         // We match the first part of the param to a mapped facet name
         $param_parts = explode(':', $param, 2);
