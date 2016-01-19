@@ -155,7 +155,7 @@ projects[omega][type] = theme
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = remove_eva_module
+projects[nuboot_radix][download][branch] = 661-search-page-redesign
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
