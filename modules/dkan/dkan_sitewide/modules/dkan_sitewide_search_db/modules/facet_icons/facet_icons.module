@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * Implements hook_facetapi_widgets().
+ */
+function facet_icons_facetapi_widgets() {
+  return array(
+    'terms' => array(
+      'handler' => array(
+        'label' => t('Term Icon'),
+        'class' => 'FacetapiTermIcon',
+        'query types' => array('term', 'date'),
+      ),
+    ),
+    'content_types' => array(
+      'handler' => array(
+        'label' => t('Content Type Icon'),
+        'class' => 'FacetapiContentTypeIcon',
+        'query types' => array('term', 'date'),
+      ),
+    ),
+  );
+}

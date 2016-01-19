@@ -110,6 +110,9 @@ includes[panopoly_images_make] = http://cgit.drupalcode.org/panopoly_images/plai
 
 projects[panels][version] = 3.5
 
+projects[panels_style_collapsible][version] = 1.3
+projects[panels_style_collapsible][subdir] = contrib
+
 projects[path_breadcrumbs][version] = 3.3
 
 projects[pathauto][version] = 1.2
@@ -139,6 +142,7 @@ projects[delta][version] = 3.0-beta11
 ; Themes
 projects[omega][version] = 3.1
 projects[omega][patch][1828552] = http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
+projects[omega][type] = theme
 
 ;projects[bootstrap][download][version] = 3.x
 ;projects[bootstrap][download][type] = git
@@ -176,4 +180,3 @@ libraries[spyc][download][url] = "https://raw.github.com/mustangostang/spyc/79f6
 libraries[spyc][filename] = "../spyc.php"
 libraries[spyc][directory_name] = "lib"
 libraries[spyc][destination] = "modules/contrib/services/servers/rest_server"
-
