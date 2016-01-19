@@ -480,65 +480,53 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * @Given I should see the dataset list with :order order by :criteria
+   * @Given I should see the first :number dataset items in :orderby :sortdirection order.
    */
-  public function iShouldSeeDatasetListInOrder($order, $criteria){
-
+  public function iShouldSeeTheFirstDatasetListInOrder($number, $orderby, $sortdirection){
+    $number = (int) $number;
+    // Search the list of datasets actually on the page (up to $number items)
     $dataset_list = array();
-    $count = 1;
-    while(($row = $this->getSession()->getPage()->find('css', '.views-row-'.$count)) !== null ){
+    $count = 0;
+    while(($count < $number ) && ($row = $this->getSession()->getPage()->find('css', '.views-row-'.($count+1))) !== null ){
       $row = $row->find('css', 'h2');
-      $dataset_list[$count-1] = $row->getText();
+      $dataset_list[] = $row->getText();
       $count++;
     }
 
-    switch($criteria){
+    if ($count !== $number) {
+      throw new Exception("Couldn't find $number datasets on the page. Found $count.");
+    }
+
+    switch($orderby){
       case 'Date changed':
-        $criteria = 'changed';
+        $orderby = 'changed';
         break;
       case 'Title':
-        $criteria = 'title';
+        $orderby = 'title';
         break;
       default:
-        break;
+        throw new Exception("Ordering by '$orderby' is not supported by this step.");
     }
+
     $index = search_api_index_load('datasets');
     $query = new SearchApiQuery($index);
 
     $results = $query->condition('type', 'dataset')
       ->condition('status', '1')
-      ->sort($criteria, strtoupper($order))
-      ->range(0, 10)
+      ->sort($orderby, strtoupper($sortdirection))
+      ->range(0, $number)
       ->execute();
-
-    $count = 0;
-    $prev_node = null;
-    $queried_datasets = array(array());
-    foreach($results['results'] as $result){
-      $node = node_load($result['id']);
-      if($prev_node !== null && $prev_node->$criteria === $node->$criteria){
-        $count--;
-      }
-      $queried_datasets[$count][] = $node;
-      $prev_node = $node;
-      $count++;
+    $count = count($results['results']);
+    if (count($results['results']) !== $number) {
+      throw new Exception("Couldn't find $number datasets in the database. Found $count.");
     }
 
-    $in_subset = false;
-    $count = 0;
-    foreach($queried_datasets as $sublist){
-      for($index = $count; $index < count($sublist); $index++) {
-        foreach($sublist as $dataset){
-          if($dataset_list[$index] === $dataset->title){
-            $in_subset = true;
-          }
-        }
-        if(!$in_subset){
-          throw new Exception("Does not match order of list, $dataset_list[$count] was next on page but expected $node->title");
-        }
-        $in_subset = false;
+    foreach($results['results'] as $nid => $result) {
+      $dataset = node_load($nid);
+      $found_title = array_shift($dataset_list);
+      if ($found_title !== $dataset->title) {
+        throw new Exception("Does not match order of list, $found_title was next on page but expected $dataset->title");
       }
-      $count = count($sublist);
     }
   }
 
