@@ -8,8 +8,8 @@ Feature: Search
   Background:
     Given I am on the homepage
     And pages:
-    | title          | url      |
-    | Dataset Search | /dataset |
+    | title          | url                        |
+    | Dataset Search | /dataset?f[0]=type:dataset |
 
   Scenario: Searching datasets
     Given datasets:
@@ -22,8 +22,8 @@ Feature: Search
   Scenario: See number of datasets on search page
     Given I am on the "Dataset Search" page
     Given I search for " "
-    Then I should see "10" search results shown on the page
-    And I should see "19 datasets"
+    Then I should see "5" search results shown on the page
+    And I should see "5 datasets"
 
   Scenario: Filter by facet tag
     Given "tags" terms:
