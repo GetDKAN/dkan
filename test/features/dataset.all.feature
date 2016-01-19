@@ -66,7 +66,7 @@ Feature: Dataset Features
   Scenario: View list of published datasets
     Given I am on the homepage
     When I click "Datasets"
-    Then I should see "19 datasets"
+    Then I should see "4 datasets"
     And I should see "10" items in the "datasets" region
 
   Scenario: Order datasets by "Date changed" by oldest first.
@@ -159,6 +159,8 @@ Feature: Dataset Features
     Given I am on "Datasets" page
     Then I should see "19 datasets"
     And I should see "10" items in the "datasets" region
+    Then I click "Format" in the "facet container" region
+    Then I wait for "1" seconds
     When I click "csv" in the "filter by resource format" region
     Then I should see "5 datasets"
     And I should see "5" items in the "datasets" region
@@ -167,6 +169,8 @@ Feature: Dataset Features
     Given I am on "Datasets" page
     Then I should see "19 datasets"
     And I should see "10" items in the "datasets" region
+    Then I click "Author" in the "facet container" region
+    Then I wait for "1" seconds
     When I click "Gabriel" in the "filter by author" region
     Then I should see "2 datasets"
     And I should see "2" items in the "datasets" region

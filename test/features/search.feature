@@ -23,7 +23,7 @@ Feature: Search
     Given I am on the "Dataset Search" page
     Given I search for " "
     Then I should see "10" search results shown on the page
-    And I should see "10 datasets"
+    And I should see "19 datasets"
 
   Scenario: Filter by facet tag
     Given "tags" terms:
