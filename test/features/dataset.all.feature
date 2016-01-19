@@ -66,8 +66,8 @@ Feature: Dataset Features
   Scenario: View list of published datasets
     Given I am on the homepage
     When I click "Datasets"
-    Then I should see "5 datasets"
-    And I should see "10" items in the "datasets" region
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
 
   Scenario: Order datasets by "Date changed" by oldest first.
     Given datasets:
@@ -101,8 +101,8 @@ Feature: Dataset Features
     And I select "Title" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
     And I should see the first "3" dataset items in "Title" "Asc" order.
 
   Scenario: Search datasets by "title" with "Desc" order
@@ -110,12 +110,13 @@ Feature: Dataset Features
     And I select "Title" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
     And I should see the first "3" dataset items in "Title" "Desc" order.
 
     # TODO : Reseting the search will make all the datasets appear in the results including pre-made
     #        datasets, should be fixed
+
   Scenario: Reset dataset search filters
     Given I am on "Datasets" page
     When I fill in "Test" for "Search" in the "datasets" region
@@ -148,8 +149,8 @@ Feature: Dataset Features
 
   Scenario: Filter dataset search results by tags
     Given I am on "Datasets" page
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
     Then I click on the text "Tags"
     When I click "Health" in the "filter by tag" region
     Then I should see "2 datasets"
@@ -157,9 +158,9 @@ Feature: Dataset Features
 
   Scenario: Filter dataset search results by resource format
     Given I am on "Datasets" page
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
-    Then I click "Format" in the "facet container" region
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
+    Then I click on the text "Format"
     Then I wait for "1" seconds
     When I click "csv" in the "filter by resource format" region
     Then I should see "5 datasets"
@@ -167,9 +168,9 @@ Feature: Dataset Features
 
   Scenario: Filter dataset search results by author
     Given I am on "Datasets" page
-    Then I should see "5 datasets"
-    And I should see "5" items in the "datasets" region
-    Then I click "Author" in the "facet container" region
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
+    Then I click on the text "Author"
     Then I wait for "1" seconds
     When I click "Gabriel" in the "filter by author" region
     Then I should see "2 datasets"
