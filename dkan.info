@@ -35,7 +35,6 @@ dependencies[] = date
 dependencies[] = double_field
 dependencies[] = entity
 dependencies[] = entity_token
-dependencies[] = eva
 dependencies[] = entityreference
 dependencies[] = feeds
 dependencies[] = facetapi
