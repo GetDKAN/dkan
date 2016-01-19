@@ -68,7 +68,7 @@ default:
         group subscribe: '.group-subscribe-message'
         group block: '.pane-views-group-block-block'
         group members: '.view-id-dkan_og_extras_group_members'
-        facet container: '.pane-facetapi'
+        facet container: '.radix-layouts-sidebar'
         filter by resource format: '.facetapi-facet-field-resourcesfield-format'
         filter by author: '.facetapi-facet-author'
         filter by tag: '.facetapi-facet-field-tags'
