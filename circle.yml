@@ -96,7 +96,7 @@ test:
           - test/features/dataset.editor.feature
           - test/features/dataset.feature
           - test/features/datastore.feature
-          - test/features/data_story.feature
+          - test/features/data_story.author.feature
           - test/features/editor.feature
           # Gravitar tests are broken.
           #- test/features/gravatar.feature
