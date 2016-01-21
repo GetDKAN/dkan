@@ -11,3 +11,7 @@ If you have been using the older DKAN Sitewide Roles and Permissions module on a
 You also of course have the option of disabling both modules, setting your own prefered roles and permissions and exporting those to a custom feature.
 
 For detailed documentation of the DKAN Permissions module, see *this blog post* (coming soon).
+
+## Group Permissions
+
+Group-level permissions are now defined in the [DKAN Dataset Groups Permissions](https://github.com/NuCivic/dkan_dataset/tree/7.x-1.x/modules/dkan_dataset_groups/modules/dkan_dataset_groups_perms) (dkan_dataset_groups_perms) module, part of the [DKAN Dataset](https://github.com/NuCivic/dkan_dataset) project.
