@@ -40,7 +40,7 @@ commands:
         ahoy drush sql-drop && ahoy drush sqlc < backups/last_install.sql && \
         echo "Installed dkan from backup"
       else
-        ahoy drush "si dkan --root=docroot  --site-name='DKAN' install_configure_form.update_status_module='array\(FALSE,FALSE\)' --yes" && \
+        ahoy drush "si dkan --root=docroot --account-pass='admin' --site-name='DKAN' install_configure_form.update_status_module='array\(FALSE,FALSE\)' --yes" && \
         ahoy drush sql-dump > backups/last_install.sql.tmp && \
         mv backups/last_install.sql.tmp backups/last_install.sql && \
         echo "Installed DKAN and created a new backup at backups/last_install.sql"
