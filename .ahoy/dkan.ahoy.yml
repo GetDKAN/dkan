@@ -97,10 +97,8 @@ commands:
       ALT_CONFIG_FILE="behat.local.yml"
       # Crazy bash to get rid of the carriage return. Where does that come from?
       BEHAT_ENV=$(`echo ahoy cmd-proxy printenv HOSTNAME` | tr -d "\r")
-      if [ ! -d "$BEHAT_FOLDER/vendor" ]; then
-        echo "Installing behat dependencies.."
-        ahoy cmd-proxy "cd $BEHAT_FOLDER && composer install --prefer-source --no-interaction"
-      fi
+      echo "Installing behat dependencies.."
+      ahoy cmd-proxy "cd $BEHAT_FOLDER && composer install --prefer-source --no-interaction"
       if [ -f "$BEHAT_FOLDER/$ALT_CONFIG_FILE" ]; then
         echo "Using $BEHAT_FOLDER/$ALT_CONFIG_FILE .."
         CONFIG=" -c $ALT_CONFIG_FILE"
