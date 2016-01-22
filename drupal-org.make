@@ -155,7 +155,7 @@ projects[omega][type] = theme
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = 7.x-1.x
+projects[nuboot_radix][download][branch] = facet_menu_colorizer
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
