@@ -44,6 +44,34 @@ Questions? Bugs?
 EOF
 }
 
+install_dependencies() {
+  if [ ! "$(which composer)" ]; then
+    echo "Installing Composer";
+  fi
+
+  if [ ! "$(which drush)" ||  ]; then
+    echo "Installing Drush";
+  fi
+
+  if [ ! "$(which ahoy)" ]; then
+    echo "Installing Ahoy";
+  fi
+}
+
+install_dkan() {
+  if [ ! "$(which composer)" ]; then
+    echo "Installing Composer";
+  fi
+
+  if [ ! "$(which drush)" ||  ]; then
+    echo "Installing Drush";
+  fi
+
+  if [ ! "$(which ahoy)" ]; then
+    echo "Installing Ahoy";
+  fi
+}
+
 # Make sure that a parameter was set.
 if [ ! $1 ]; then
   echo "Error: Missing the dkan module name!"
@@ -51,6 +79,37 @@ if [ ! $1 ]; then
   show_help
   exit 1
 fi
+
+while test $# -gt 0; do
+  case "$1" in
+    -h|--help)
+            show_help
+            exit 0
+            ;;
+    --install-dkan)
+            shift
+            if test $# -gt 0; then
+                    export DB_URL=$1
+            else
+                    echo "To install, you need to set the db string to use:"
+                    echo "    --install-dkan=mysql://user:password@server/database_name"
+                    exit 1
+            fi
+            shift
+            ;;
+    --install-dependencies)
+            shift
+              install_dependencies
+            shift
+            ;;
+    *)
+            break
+            ;;
+  esac
+done
+
+
+
 
 # This allows us to use !(dkan) to move all the files into a subfolder without recursion.
 shopt -s extglob dotglob
