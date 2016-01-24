@@ -74,6 +74,7 @@ projects[honeypot][version] = 1.17
 
 projects[fontyourface][version] = 2.8
 projects[fontyourface][patch][2550253] = https://www.drupal.org/files/issues/fontface_regenerate-css-after-add-rule.patch
+projects[fontyourface][patch][] = patches/fontyourface-no-ajax-browse-view.patch
 
 projects[imagecache_actions][download][type] = git
 projects[imagecache_actions][download][url] = "http://git.drupal.org/project/imagecache_actions.git"
