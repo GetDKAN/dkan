@@ -29,34 +29,28 @@ checkout:
 dependencies:
 
   cache_directories:
-     - "test/vendor"
-     - "~/.composer"
+     #- "dkan/test/vendor"
+     #- "~/.composer"
      - "~/.drush"
-     - "~/backups"
-     - "test/sites/default"
+     # Disable cachine sql install backups for now.
+     #- "backups"
+     - "dkan/test/sites/default"
   pre:
     - echo "memory_limit = 256M" > ~/.phpenv/versions/5.5.11/etc/conf.d/memory.ini
   override:
-    - 'composer install --prefer-source --no-interaction':
-        pwd:
-          test
+    - printenv
     - mkdir $CIRCLE_ARTIFACTS/junit
-    # Install latest Drush 7.
+    # Install latest Drush 8.
     #- export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - 'composer global require --prefer-source --no-interaction drush/drush:8.0.0-rc2'
-    - 'drush make --prepare-install drupal-org-core.make drupal --yes'
-    - 'rsync -av . drupal/profiles/dkan --exclude drupal'
-    - 'rsync -av drupal/ test'
-    - 'drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion --concurrency=3':
-        pwd:
-          test/profiles/dkan
-    - drush use $HOME/$CIRCLE_PROJECT_REPONAME/test#dkan
-    - 'bash circle-install.sh':
-        pwd:
-          test
-    - 'drush --yes runserver :8888':
+    - 'composer global require --prefer-source --no-interaction drush/drush:8.0.1'
+    # Install ahoy
+    - 'sudo wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy && sudo chown $USER /usr/local/bin/ahoy && sudo chmod +x /usr/local/bin/ahoy'
+    - 'bash dkan-init.sh dkan'
+    - 'ahoy dkan drupal-rebuild $DATABASE_URL'
+    - 'ahoy dkan remake'
+    - 'ahoy dkan reinstall'
+    - 'ahoy drush --yes runserver :8888':
         background: true
-        pwd: test
 
     # Setup display for selenium
     #- sh -e /etc/init.d/xvfb start
@@ -85,48 +79,10 @@ database:
 ## Customize test commands
 test:
   override:
-    - cd test; bash circle-behat.sh:
+    - bash dkan/test/circle-behat.sh docroot/profiles/dkan/test/features:
         parallel: true
-        files:
-          - test/features/administrator.feature
-          - test/features/data_dashboard.feature
-          - test/features/dataset.admin.feature
-          - test/features/dataset.all.feature
-          - test/features/dataset.author.feature
-          - test/features/dataset.editor.feature
-          - test/features/dataset.feature
-          - test/features/datastore.feature
-          - test/features/data_story.author.feature
-          # Gravitar tests are broken.
-          #- test/features/gravatar.feature
-          - test/features/group.admin.feature
-          - test/features/group.all.feature
-          - test/features/group.author.feature
-          - test/features/group.editor.feature
-          # - test/features/groups.feature
-          - test/features/home.feature
-          - test/features/panels.feature
-          - test/features/profile.feature
-          - test/features/recline.feature
-          - test/features/resource.admin.feature
-          - test/features/resource.all.feature
-          - test/features/resource.author.feature
-          - test/features/resource.editor.feature
-          - test/features/search.feature
-          - test/features/user.admin.feature
-          - test/features/user.all.feature
-          - test/features/user.author.feature
-          # Visualization Entity tests are all broken.
-          # - test/features/vis_entity_embeds.feature
-          - test/features/widgets.feature
-          # Storyteller was removed as role. Change this to content creator?
-          # - test/features/role_storyteller.feature
-    # The features tests don't actually show overridden features and are failing
-    # because a memory limit of ~135MB is being reached when rebuilding features,
-    # so commenting out for now. May replace with behat tests instead.
-    # - cd test; bash features-tests.sh
   post:
-    - echo CIRCLE_ARTIFACTS; cp -av assets $CIRCLE_ARTIFACTS:
+    - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true
 #    - bundle exec rake jasmine:ci: # add an extra test type
 #        environment:
