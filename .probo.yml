@@ -15,48 +15,17 @@ steps:
       echo ""
 
       echo ""
-      echo "-------> Update drush to latest"
-      echo ""
-      old_drush=$(which drush)
-      composer global require --prefer-source --no-interaction drush/drush:8.0.1
-      export PATH="$HOME/.composer/vendor/bin:$PATH"
-      rm $old_drush
-      which drush
-      drush_version=$(drush --version)
-      if [ drush_version !== "8.0.1" ]; then
-        echo "Drush version is not up to date: $drush_version should be 8.0.1"
-        exit 1
-      fi
-
-      echo ""
-      echo "-------> Install ahoy"
-      echo ""
-      wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy; chmod +x /usr/local/bin/ahoy
-
-      echo ""
       echo "-------> Run 'bash dkan-init.sh':"
       echo ""
       # Create the proper folder structure
-      time bash dkan-init.sh dkan
+      time bash dkan-init.sh dkan --deps --build=mysql://root:strongpassword@127.0.0.1/dkan
       #Set a symlink so that probo can serve the site.
 
       echo ""
-      echo "-------> Run 'ahoy dkan drupal-rebuild':"
+      echo "-------> Symlink ./docroot to var/www/html:"
       echo ""
-      # Setup and install DKAN - use 127.0.0.1 instead of localhost
-      time ahoy dkan drupal-rebuild mysql://root:strongpassword@127.0.0.1/dkan
       ln -s $SRC_DIR/docroot /var/www/html
       chmod -R 777 /var/www/html/sites/default/files
-
-      echo ""
-      echo "-------> Run 'ahoy dkan remake':"
-      echo ""
-      time ahoy dkan remake
-
-      echo ""
-      echo "-------> Run 'ahoy dkan reinstall':"
-      echo ""
-      time ahoy dkan reinstall
 
       echo ""
       echo "The url of this build should be at:"
