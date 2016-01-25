@@ -82,6 +82,17 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
 
+  Scenario: Change dataset on resource
+    Given I am logged in as "Katie"
+    And I am on "Resource 01" page
+    When I click "Edit"
+    And I select "Dataset 02" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource Resource 01 has been updated"
+    When I click "Back to dataset"
+    Then I should see "Dataset 02" in the "dataset title" region
+    And I should see "Resource 01" in the "dataset resource list" region
+
   @dkanBug
     # TODO: Managing own datastore not currently supported for authenticated users
     # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)

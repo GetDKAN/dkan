@@ -60,6 +60,8 @@ default:
         navigation: '.navigation-wrapper'
         breadcrumb: '.breadcrumb'
         left_sidebar: '.panel-col-first'
+        dataset title: '.pane-node .pane-title'
+        dataset resource list: '.resource-list'
         search_area: '.panel-col-last'
         dropdown_links: '.comment-main .links.inline.dropdown-menu'
         comment: '.comment-main'
