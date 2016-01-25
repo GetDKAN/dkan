@@ -36,7 +36,6 @@ default:
     Behat\MinkExtension:
       goutte: ~
       selenium2: ~
-      base_url: http://127.0.0.1:8888
       default_session: 'goutte'
       javascript_session: 'selenium2'
       browser_name: chrome
@@ -44,7 +43,8 @@ default:
     Drupal\DrupalExtension:
       blackbox: ~
       drupal:
-        drupal_root: %paths.base%
+        #TODO Abstract this out.
+        drupal_root: %paths.base%/../../docroot
       api_driver: 'drupal'
       # @todo fixup these regions for use with new theme. Updated navigation only
       region_map:
@@ -92,19 +92,3 @@ default:
         message_selector: '.alert'
         error_message_selector: '.alert.alert-error'
         success_message_selector: '.alert.alert-success'
-
-docker:
-  extensions:
-    Behat\MinkExtension:
-      base_url: http://web
-      #base_url: http://data_starter.local
-      selenium2:
-        wd_host: http://browser:4444/wd/hub
-        #wd_host: http://192.168.10.1:4444/wd/hub
-        browser: chrome
-        #browser: firefox
-    Drupal\DrupalExtension:
-      drupal:
-        drupal_root: '/var/www/docroot'
-      drush:
-        root: '/var/www/docroot'
