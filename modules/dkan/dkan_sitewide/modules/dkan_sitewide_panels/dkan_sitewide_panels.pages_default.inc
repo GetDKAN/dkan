@@ -692,31 +692,17 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $display->content = array();
   $display->panels = array();
     $pane = new stdClass();
-    $pane->pid = 'new-460c2ac2-d1db-4adb-b857-f0931c423225';
+    $pane->pid = 'new-7a0c91ca-bf36-42df-b89a-f4d3a73f44a8';
     $pane->panel = 'contentmain';
-    $pane->type = 'views';
-    $pane->subtype = 'dkan_group_search';
+    $pane->type = 'block';
+    $pane->subtype = 'views-7d6279e929769d19b46e686f927993a3';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'override_pager_settings' => 0,
-      'use_pager' => 1,
-      'nodes_per_page' => '10',
-      'pager_id' => '0',
-      'offset' => '0',
-      'more_link' => 0,
-      'feed_icons' => 0,
-      'panel_args' => 0,
-      'link_to_view' => 0,
-      'args' => '',
-      'url' => '',
-      'display' => 'dkan_group_search',
+      'inherit_path' => 1,
       'override_title' => 1,
       'override_title_text' => '%node:title',
       'override_title_heading' => 'h2',
-      'context' => array(
-          0 => '',
-      ),
     );
     $pane->cache = array();
     $pane->style = array(
@@ -726,9 +712,28 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->extras = array();
     $pane->position = 0;
     $pane->locks = array();
-    $pane->uuid = '460c2ac2-d1db-4adb-b857-f0931c423225';
-    $display->content['new-460c2ac2-d1db-4adb-b857-f0931c423225'] = $pane;
-    $display->panels['contentmain'][0] = 'new-460c2ac2-d1db-4adb-b857-f0931c423225';
+    $pane->uuid = '7a0c91ca-bf36-42df-b89a-f4d3a73f44a8';
+    $display->content['new-7a0c91ca-bf36-42df-b89a-f4d3a73f44a8'] = $pane;
+    $display->panels['contentmain'][0] = 'new-7a0c91ca-bf36-42df-b89a-f4d3a73f44a8';
+    $pane = new stdClass();
+    $pane->pid = 'new-cf4cd1b6-f7ec-4b26-ae5d-57762810dc17';
+    $pane->panel = 'contentmain';
+    $pane->type = 'views_panes';
+    $pane->subtype = 'dkan_group_search-dkan_group_search';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array();
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 1;
+    $pane->locks = array();
+    $pane->uuid = 'cf4cd1b6-f7ec-4b26-ae5d-57762810dc17';
+    $display->content['new-cf4cd1b6-f7ec-4b26-ae5d-57762810dc17'] = $pane;
+    $display->panels['contentmain'][1] = 'new-cf4cd1b6-f7ec-4b26-ae5d-57762810dc17';
     $pane = new stdClass();
     $pane->pid = 'new-4e2d9246-e27b-4b4a-961e-b4718e53117c';
     $pane->panel = 'sidebar';
@@ -840,7 +845,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $display->content['new-58708ed1-8465-4976-887b-a764f6bc6e4f'] = $pane;
     $display->panels['sidebar'][4] = 'new-58708ed1-8465-4976-887b-a764f6bc6e4f';
   $display->hide_title = PANELS_TITLE_PANE;
-  $display->title_pane = '0';
+  $display->title_pane = 'new-7a0c91ca-bf36-42df-b89a-f4d3a73f44a8';
   $handler->conf['display'] = $display;
   $export['node_view_panel_context_3'] = $handler;
 
@@ -1037,16 +1042,16 @@ function dkan_sitewide_panels_default_page_manager_pages() {
     'settings' => NULL,
   );
   $page->menu = array(
+    'type' => 'none',
+    'title' => '',
+    'name' => 'navigation',
+    'weight' => '0',
+    'parent' => array(
       'type' => 'none',
       'title' => '',
       'name' => 'navigation',
       'weight' => '0',
-      'parent' => array(
-          'type' => 'none',
-          'title' => '',
-          'name' => 'navigation',
-          'weight' => '0',
-      ),
+    ),
   );
   $page->arguments = array();
   $page->conf = array(
