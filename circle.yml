@@ -1,8 +1,8 @@
 ## Customize the test machine
 machine:
 
-  timezone:
-    America/New_York # Set the timezone
+  #timezone:
+  #  America/New_York # Set the timezone
 
   # Version of ruby to use
   php:
@@ -28,27 +28,25 @@ checkout:
 ## Customize dependencies
 dependencies:
 
+  # we automatically cache and restore many dependencies between
+  # builds. If you need to, you can add custom paths to cache:
+  #cache_directories:
+  #  - "custom_1"   # relative to the build directory
+  #  - "~/custom_2" # relative to the user's home directory
   cache_directories:
      #- "dkan/test/vendor"
      #- "~/.composer"
      - "~/.drush"
-     # Disable cachine sql install backups for now.
+     # Disable caching sql install backups for now.
      #- "backups"
-     - "dkan/test/sites/default"
+     #- "dkan/test/sites/default"
   pre:
     - echo "memory_limit = 256M" > ~/.phpenv/versions/5.5.11/etc/conf.d/memory.ini
   override:
     - printenv
     - mkdir $CIRCLE_ARTIFACTS/junit
-    # Install latest Drush 8.
-    #- export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - 'composer global require --prefer-source --no-interaction drush/drush:8.0.1'
-    # Install ahoy
-    - 'sudo wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy && sudo chown $USER /usr/local/bin/ahoy && sudo chmod +x /usr/local/bin/ahoy'
-    - 'bash dkan-init.sh dkan'
-    - 'ahoy dkan drupal-rebuild $DATABASE_URL'
-    - 'ahoy dkan remake'
-    - 'ahoy dkan reinstall'
+    - 'bash dkan-init.sh dkan --deps --build=$DATABASE_URL'
+    # Run a webserver using drush.
     - 'ahoy drush --yes runserver :8888':
         background: true
 
@@ -63,18 +61,6 @@ dependencies:
      - sudo apt-get install -y x11vnc
      - x11vnc -forever -nopw:
         background: true
-  # we automatically cache and restore many dependencies between
-  # builds. If you need to, you can add custom paths to cache:
-  #cache_directories:
-  #  - "custom_1"   # relative to the build directory
-  #  - "~/custom_2" # relative to the user's home directory
-
-## Customize database setup
-database:
-  override:
-    # replace CircleCI's generated database.yml
-    #- cp config/database.yml.ci config/database.yml
-    #- bundle exec rake db:create db:schema:load
 
 ## Customize test commands
 test:
@@ -84,20 +70,3 @@ test:
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true
-#    - bundle exec rake jasmine:ci: # add an extra test type
-#        environment:
-#          RAILS_ENV: test
-#          RACK_ENV: test
-
-## Customize deployment commands
-#deployment:
-#  staging:
-#    branch: master
-#    heroku:
-#      appname: foo-bar-123
-
-## Custom notifications
-#notify:
-#  webhooks:
-#    # A list of hashes representing hooks. Only the url field is supported.
-#    - url: https://someurl.com/hooks/circle
