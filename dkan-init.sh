@@ -227,7 +227,7 @@ if [ ! "$SKIP_INIT" ]; then
   if [ "$MODULE_NAME" != "dkan" ]; then
     echo "Cloning dkan.."
     # switched to https because ssh keys may not exist in all environments (Probo)
-    git clone https://github.com/NuCivic/dkan.git --branch 7.x-1.x
+    git clone https://github.com/NuCivic/dkan.git --branch dev-dkan-ahoy-smarter
   fi
 
   if [ -f dkan/.ahoy/starter.ahoy.yml ]; then
