@@ -21,3 +21,14 @@ function facet_icons_facetapi_widgets() {
     ),
   );
 }
+
+/**
+ * Theme function icons
+ */
+function theme_icon($variables) {
+  $attributes = (isset($variables['attributes']))? $variables['attributes'] : array();
+  $classes = (isset($variables['class']))? $variables['class'] : array();
+  $classes[] = 'icon-dkan-' .  $variables['type'];
+  $classes = implode(' ', $classes);
+  return '<span class="icon-dkan ' . $classes . '" '. drupal_attributes($attributes) .'></span>';
+}
