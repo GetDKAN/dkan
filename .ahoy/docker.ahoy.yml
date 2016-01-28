@@ -37,7 +37,7 @@ commands:
     cmd: "ahoy docker compose stop && ahoy docker compose rm && ahoy docker compose up -d"
     usage: Destroy and then restart the docker compose containers.
   destroy:
-    cmd: "ahoy docker compose stop && ahoy docker composer rm"
+    cmd: "ahoy docker compose stop && ahoy docker compose rm"
     usage: Destroy all the docker compose containers. (use before deleting folder)
   exec:
     cmd: |
