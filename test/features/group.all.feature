@@ -11,7 +11,7 @@ Feature: Site Manager administer groups
 
   Background:
     Given pages:
-      | title     | url             |
+      | name      | url             |
       | Groups    | /groups         |
       | Content   | /admin/content/ |
     Given users:
