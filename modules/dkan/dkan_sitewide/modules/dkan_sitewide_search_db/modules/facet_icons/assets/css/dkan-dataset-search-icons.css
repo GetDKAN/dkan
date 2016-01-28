@@ -1,0 +1,52 @@
+@font-face {
+    font-family: 'dkan-dataset-search';
+    src:    url('../fonts/dkan-dataset-search.eot?rrliwl');
+    src:    url('../fonts/dkan-dataset-search.eot?rrliwl#iefix') format('embedded-opentype'),
+    url('../fonts/dkan-dataset-search.ttf?rrliwl') format('truetype'),
+    url('../fonts/dkan-dataset-search.woff?rrliwl') format('woff'),
+    url('../fonts/dkan-dataset-search.svg?rrliwl#dkan-dataset-search') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-dkan-"], [class*=" icon-dkan-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'dkan-dataset-search' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.icon-dkan:before {
+    content: "\e906";
+}
+.icon-dkan-page:before {
+    content: "\e906";
+}
+.icon-dkan-visualization:before {
+    content: "\e900";
+}
+.icon-dkan-resource:before {
+    content: "\e901";
+}
+.icon-dkan-group:before {
+    content: "\e902";
+}
+.icon-dkan-feedback:before {
+    content: "\e903";
+}
+.icon-dkan-dkan_data_story:before {
+    content: "\e904";
+}
+.icon-dkan-dataset:before {
+    content: "\e905";
+}
+.icon-dkan-data_dashboard:before {
+    content: "\e907";
+}

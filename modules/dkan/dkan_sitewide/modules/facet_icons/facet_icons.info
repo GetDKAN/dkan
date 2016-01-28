@@ -7,3 +7,4 @@ dependencies[] = facetapi
 dependencies[] = panels_style_collapsible
 files[] = widget_term_icons.inc
 files[] = widget_content_type_icons.inc
+stylesheets[all][] = assets/css/dkan-dataset-search-icons.css
