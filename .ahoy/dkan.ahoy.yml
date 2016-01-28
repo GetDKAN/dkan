@@ -93,25 +93,34 @@ commands:
   test:
     usage: Run the tests for dkan.
     cmd: |
+      # Store the arguments as a bash array.
+      ARGS=( "{{args}}" )
       BEHAT_FOLDER=docroot/profiles/dkan/test
       ALT_CONFIG_FILE="behat.local.yml"
-      # Crazy bash to get rid of the carriage return. Where does that come from?
-      BEHAT_ENV=$(echo ahoy cmd-proxy printenv HOSTNAME < /dev/null)
-      echo "Installing behat dependencies.."
-      ahoy cmd-proxy "cd $BEHAT_FOLDER && composer install --prefer-source --no-interaction"
+      # Crazy bash to get rid of the carriage return. (docker issue)
+      BEHAT_ENV=$(echo $(ahoy cmd-proxy printenv HOSTNAME) | tr -d "\r" )
+      SKIP_COMPOSER_FLAG="--skip-composer"
+      if [[ ! "${ARGS[@]}" == *"$SKIP_COMPOSER_FLAG"* ]]; then
+        echo "Installing behat dependencies.."
+        #ahoy cmd-proxy "cd $BEHAT_FOLDER && composer install --prefer-source --no-interaction"
+      else
+        echo "Skipping composer install.."
+        ARGS=( "${ARGS[@]/$SKIP_COMPOSER_FLAG}" )
+      fi
       if [ -f "$BEHAT_FOLDER/$ALT_CONFIG_FILE" ]; then
         echo "Using $BEHAT_FOLDER/$ALT_CONFIG_FILE .."
         CONFIG=" -c $ALT_CONFIG_FILE"
-      elif [ "$BEHAT_ENV" = "cli" ]; then
+      elif [ "$BEHAT_ENV" == "cli" ]; then
         echo "Using behat.docker.yml config .."
         CONFIG=" -c behat.docker.yml"
-      elif [ "$CI" = "true" ]; then
+      elif [ "$CI" == "true" ]; then
         echo "Using behat.circleci.yml config .."
         CONFIG=" -c behat.circleci.yml"
       else
+        echo "$BEHAT_ENV"
         echo "Using behat.yml .."
       fi
-      ahoy cmd-proxy "cd $BEHAT_FOLDER && bin/behat $CONFIG {{args}}"
+      ahoy cmd-proxy "cd $BEHAT_FOLDER && bin/behat $CONFIG "${ARGS[@]}""
   sqlc:
     usage: Abstracted way to connect to the mysql database.
     cmd: |
