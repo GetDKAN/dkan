@@ -23,12 +23,30 @@ function facet_icons_facetapi_widgets() {
 }
 
 /**
- * Theme function icons
+ * Implements hook_theme().
  */
-function theme_icon($variables) {
+function facet_icons_theme() {
+  return array(
+    'dkan_icons_search_icons' => array(
+      'variables' => array('class' => array(), 'type' => NULL),
+    ),
+  );
+}
+
+/**
+ * Theme function implementation.
+ */
+function theme_dkan_icons_search_icons($variables) {
   $attributes = (isset($variables['attributes']))? $variables['attributes'] : array();
   $classes = (isset($variables['class']))? $variables['class'] : array();
   $classes[] = 'icon-dkan-' .  $variables['type'];
   $classes = implode(' ', $classes);
   return '<span class="icon-dkan ' . $classes . '" '. drupal_attributes($attributes) .'></span>';
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function facet_icons_preprocess_page(&$variables) {
+  drupal_add_css(drupal_get_path('module', 'facet_icons') . '/assets/css/dkan-dataset-search-icons.css','module' ,'all' , false);
 }
