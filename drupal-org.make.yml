@@ -115,6 +115,8 @@ projects:
     version: 1.0-alpha11
   panelizer:
     version: ~
+  views:
+    version: ~
   views_autocomplete_filters:
     version: '1.2'
     patch:
