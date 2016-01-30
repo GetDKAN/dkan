@@ -31,6 +31,7 @@ commands:
         echo "Found overrides.make .. adding that to the rebuild call."
         OVERRIDES="--overrides=dkan/overrides.make"
       fi
+      drush cc drush
       ahoy drush -y make "$OVERRIDES" --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --working-copy docroot/profiles/dkan
 
   reinstall:
