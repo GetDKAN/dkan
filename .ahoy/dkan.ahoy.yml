@@ -28,8 +28,8 @@ commands:
       rm -rf docroot/profiles/dkan/modules/contrib ;
       echo "removed dkan/modules folders created by make and running a fresh drush make."
       if [ -f dkan/overrides.make ]; then
-        OVERRIDES="--overrides.make"
-        exit 1
+        echo "Found overrides.make .. adding that to the rebuild call."
+        OVERRIDES="--overrides=dkan/overrides.make"
       fi
       ahoy drush -y make "$OVERRIDES" --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --working-copy docroot/profiles/dkan
 
