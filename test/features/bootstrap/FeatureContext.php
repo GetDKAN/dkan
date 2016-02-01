@@ -203,18 +203,30 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function iFillInTheAutoFieldWith($field, $value) {
     $session = $this->getSession();
+    $page = $session->getPage();
+
     $field = $this->fixStepArgument($field);
     $value = $this->fixStepArgument($value);
-    $input_title = $session->getPage()->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', '//input[@value="' . $field . '"]')
 
-    );
-    $input_title->click();
+    $element = $page->findField($field);
+    if (!$element) {
+      throw new ElementNotFoundException($session, NULL, 'named', $field);
+    }
+    $page->fillField($field, $value);
+
+    // Trigger all needed key events (autocomplete.js uses key down/up events directly).
+    // Delete last char and add it again.
+    $chars = str_split($value);
+    $last_char = array_pop($chars);
+    $session->getDriver()->keyDown($element->getXpath(), 8);
+    $session->getDriver()->keyUp($element->getXpath(), 8);
+    $session->getDriver()->keyDown($element->getXpath(), $last_char);
+    $session->getDriver()->keyUp($element->getXpath(), $last_char);
     $this->iWaitForSeconds(2);
+
     // Selects the first dropdown since there is no id or other way to
     // reference the desired entry.
-    $title = $session->getPage()->find(
+    $title = $page->find(
       'xpath',
       $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
 
