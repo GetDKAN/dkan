@@ -5,7 +5,6 @@ package = DKAN
 project = dkan
 dependencies[] = ctools
 dependencies[] = entity
-dependencies[] = facet_icons
 dependencies[] = facetapi
 dependencies[] = search_api
 dependencies[] = search_api_db
