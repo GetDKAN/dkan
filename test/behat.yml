@@ -63,7 +63,7 @@ default:
         dataset title: '.pane-node .pane-title'
         dataset resource list: '#data-and-resources'
         resource title: '.pane-node .pane-title'
-        resource groups: '#edit-og-group-ref'
+        resource groups: '#edit-groups'
         search_area: '.panel-col-last'
         dropdown_links: '.comment-main .links.inline.dropdown-menu'
         comment: '.comment-main'
