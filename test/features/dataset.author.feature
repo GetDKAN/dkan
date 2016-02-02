@@ -46,14 +46,16 @@ Feature: Dataset Features
       | Dataset 05 | Group 01  | Katie   | No               | election |             |
       | Dataset 06 |           | Katie   | Yes              | election |             |
       | Dataset 07 | Group 01  | Katie   | Yes              | election |             |
-      | Dataset 08 | Group 02  | Katie   | Yes              | election |             |
+      | Dataset 08 |           | Katie   | Yes              | election |             |
+      | Dataset 09 | Group 02  | Katie   | Yes              | election |             |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
       | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 |             |
       | Resource 04 |           | csv    | Katie  | Yes       |            |             |
-      | Resource 05 | Group 02  | csv    | Katie  | Yes       | Dataset 08 |             |
+      | Resource 05 |           | csv    | Katie  | Yes       | Dataset 08 |             |
+      | Resource 06 | Group 02  | csv    | Katie  | Yes       | Dataset 09 |             |
 
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
@@ -164,3 +166,39 @@ Feature: Dataset Features
     And I click "Edit"
     Then I should not see "Group 01" in the "resource groups" region
 
+  Scenario: Add group to a dataset with resources
+    Given I am logged in as "Katie"
+    And I am on "Dataset 08" page
+    When I click "Edit"
+    And I fill in the chosen field "Choose some options" with "Group 02"
+    And I press "Finish"
+    Then I should see "Dataset 08 has been updated"
+    And I should see "1 resource(s) were added or removed from the groups associated with Dataset 08"
+    When I am on "Resource 05" page
+    And I click "Edit"
+    Then I should see "Group 02" in the "resource groups" region
+
+  Scenario: Remove group from dataset with resources
+    Given I am logged in as "Katie"
+    And I am on "Dataset 09" page
+    When I click "Edit"
+    And I empty the chosen field "edit_og_group_ref_und_0_default_chosen"
+    And I press "Finish"
+    Then I should see "Dataset 09 has been updated"
+    When I am on "Resource 06" page
+    And I click "Edit"
+    Then I should not see "Group 02" in the "resource groups" region
+
+  Scenario: Add group and resource to a dataset on the same edition
+    Given I am logged in as "Katie"
+    And I am on "Dataset 08" page
+    When I click "Edit"
+    And I fill in the chosen field "Choose some options" with "Group 02"
+    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I press "Finish"
+    Then I should see "Dataset 08 has been updated"
+    And I should see "1 resource(s) were added or removed from the groups associated with Dataset 08"
+    And I should see "Resource 04" in the "dataset resource list" region
+    When I click "Resource 04"
+    And I click "Edit"
+    Then I should see "Group 02" in the "resource groups" region
