@@ -34,3 +34,37 @@ function dkan_sitewide_panels_preprocess_panels_style_collapsible(&$variables) {
     }
   }
 }
+
+/**
+ * Process variables for node--search-result.tpl.php.
+ *
+ * Search results formatting for DKAN search page
+ *
+ * See https://github.com/NuCivic/nuboot_radix/blob/7.x-1.x/templates/node/node--search-result.tpl.php
+ * for an example template implementation.
+ */
+function dkan_sitewide_panels_preprocess_node(&$variables) {
+  if ($variables['view_mode'] == 'search_result') {
+    $variables['result_icon'] = array(
+      '#theme' => 'dkan_icons_search_icons',
+      '#type' => $variables['type'],
+      '#class' => array('search-result-icon'),
+    );
+
+
+    $wrapper = entity_metadata_wrapper('node', $variables['nid']);
+    $groups = og_get_entity_groups('node', $wrapper->value());
+    $variables['group_list'] = NULL;
+    $variables['body'] = $wrapper->body->value->value();
+    $variables['node_url'] = drupal_lookup_path('alias', "node/" . $wrapper->getIdentifier());
+
+    if(!empty($groups['node'])) {
+      $groups = array_map(function($gid){
+        $g_wrapper = entity_metadata_wrapper('node', $gid);
+        return $g_wrapper->label();
+      }, array_values($groups['node']));
+      $group_list = implode(',', $groups);
+      $variables['group_list'] = $group_list;
+    }
+  }
+}
