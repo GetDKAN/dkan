@@ -25,11 +25,10 @@ function facet_icons_facetapi_widgets() {
 /**
  * Implements hook_theme().
  */
-function facet_icons_theme() {
+function facet_icons_theme($existing, $type, $theme, $path) {
   return array(
     'dkan_icons_search_icons' => array(
       'variables' => array('class' => array(), 'type' => NULL),
-      'template' => drupal_get_path('module', 'facet_icons') . '/assets/templates/node--search-result',
     ),
   );
 }
@@ -40,24 +39,7 @@ function facet_icons_theme() {
 function theme_dkan_icons_search_icons($variables) {
   // Add css.
   drupal_add_css(drupal_get_path('module', 'facet_icons') . '/assets/css/dkan-dataset-search-icons.css','module' ,'all' , false);
-  // Template variables.
-  $groups = og_get_entity_groups('node', $node);
-  $variables['group_list'] = null;
-  $wrapper = entity_metadata_wrapper('node', $node);
-  $variables['body'] = $wrapper->body->value->value();
 
-  if(!empty($groups['node'])) {
-      $groups = array_map(function($gid){
-          $g = node_load($gid);
-          return $g->title;
-      }, array_values($groups['node']));
-      $variables['group_list'] = implode(',', $groups);
-  }
-  $result = array(
-    '#theme' => 'dkan_icons_search_icons',
-    '#type' => $type,
-    '#class' => array('search-result-icon'),
-  );
   // Icon styles variables.
   $attributes = (isset($variables['attributes']))? $variables['attributes'] : array();
   $classes = (isset($variables['class']))? $variables['class'] : array();
