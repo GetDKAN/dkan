@@ -96,7 +96,7 @@ Feature: Resource
     When I click "Edit"
     And I select "Dataset 02" from "Dataset"
     And I press "Save"
-    Then I should see "Resource Resource 01 has been updated"
+    Then I should see "Resource 01 has been updated"
     When I click "Back to dataset"
     Then I should see "Dataset 02" in the "dataset title" region
     And I should see "Resource 01" in the "dataset resource list" region
@@ -107,7 +107,7 @@ Feature: Resource
     When I click "Edit"
     And I select "Dataset 03" from "Dataset"
     And I press "Save"
-    Then I should see "Resource Resource 06 has been updated"
+    Then I should see "Resource 06 has been updated"
     When I click "Back to dataset"
     Then I should see "Dataset 03" in the "dataset title" region
     And I should see "Resource 06" in the "dataset resource list" region
@@ -118,7 +118,7 @@ Feature: Resource
     When I click "Edit"
     And I select "- None -" from "Dataset"
     And I press "Save"
-    Then I should see "Resource Resource 07 has been updated"
+    Then I should see "Resource 07 has been updated"
     When I click "Back to dataset"
     Then I should see "There is no dataset associated with this resource"
     Given I am on "Dataset 04" page
@@ -130,7 +130,7 @@ Feature: Resource
     When I click "Edit"
     And I select "Dataset 05" from "Dataset"
     And I press "Save"
-    Then I should see "Resource Resource 06 has been updated"
+    Then I should see "Resource 06 has been updated"
     And I should see "1 resource(s) were added or removed from the groups associated with Dataset 05"
     When I click "Edit"
     Then I should see "Group 01" in the "resource groups" region
@@ -142,11 +142,57 @@ Feature: Resource
     Then I should see "Group 01" in the "resource groups" region
     When I select "- None -" from "Dataset"
     And I press "Save"
-    Then I should see "Resource Resource 08 has been updated"
+    Then I should see "Resource 08 has been updated"
     When I click "Edit"
     Then I should not see "Group 01" in the "resource groups" region
     When I am on "Dataset 05" page
     Then I should not see "Resource 08" in the "dataset resource list" region
+
+  Scenario: Add a resource to multiple datasets with groups
+    Given I am logged in as "Katie"
+    And I am on "Resource 06" page
+    When I click "Edit"
+    And I select "Dataset 05" from "Dataset"
+    And I additionally select "Dataset 06" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    And I should see "1 resource(s) were added or removed from the groups associated with Dataset 05"
+    And I should see "1 resource(s) were added or removed from the groups associated with Dataset 06"
+    When I click "Edit"
+    Then I should see "Group 01" in the "resource groups" region
+    And I should see "Group 02" in the "resource groups" region
+
+  Scenario: Remove one dataset with group from resource with multiple datasets
+    Given I am logged in as "Katie"
+    And I am on "Resource 06" page
+    When I click "Edit"
+    And I select "Dataset 05" from "Dataset"
+    And I additionally select "Dataset 06" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    When I click "Edit"
+    And I select "Dataset 05" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    When I click "Edit"
+    Then I should see "Group 01" in the "resource groups" region
+    And I should not see "Group 02" in the "resource groups" region
+
+  Scenario: Remove all datasets with groups from resource
+    Given I am logged in as "Katie"
+    And I am on "Resource 06" page
+    When I click "Edit"
+    And I select "Dataset 05" from "Dataset"
+    And I additionally select "Dataset 06" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    When I click "Edit"
+    And I select "- None -" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    When I click "Edit"
+    Then I should not see "Group 01" in the "resource groups" region
+    And I should not see "Group 02" in the "resource groups" region
 
   @dkanBug
     # TODO: Managing own datastore not currently supported for authenticated users
