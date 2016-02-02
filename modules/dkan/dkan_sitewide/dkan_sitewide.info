@@ -11,6 +11,7 @@ dependencies[] = defaultconfig
 dependencies[] = dkan_dataset
 dependencies[] = dkan_dataset_content_types
 dependencies[] = features
+dependencies[] = facet_icons
 dependencies[] = filter
 dependencies[] = fontyourface
 dependencies[] = fontyourface_ui
