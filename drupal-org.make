@@ -179,3 +179,8 @@ libraries[spyc][download][url] = "https://raw.github.com/mustangostang/spyc/79f6
 libraries[spyc][filename] = "../spyc.php"
 libraries[spyc][directory_name] = "lib"
 libraries[spyc][destination] = "modules/contrib/services/servers/rest_server"
+
+
+; Updated Patch to fix the ton of notices this module throws. Hasn't been maintained since 2012!
+; DO NOT MERGE THIS INTO DKAN - MERGE PR INSTEAD.. https://github.com/NuCivic/dkan_dataset/pull/206
+projects[ref_field][patch][2360019] = https://www.drupal.org/files/issues/ref_field-delete-insert-warning-2360019-5.patch
