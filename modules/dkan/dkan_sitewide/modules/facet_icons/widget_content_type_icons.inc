@@ -34,7 +34,7 @@ class FacetapiContentTypeIcon extends FacetapiWidgetLinks {
 
       $row = array('class' => array());
       $type = (isset($item['#indexed_value'])) ? $item['#indexed_value'] : '';
-      $icon = nuboot_radix_icon( array('type'=> $type, 'class' => array('facet-icon')));
+      $icon = theme('facet_icons', array('type'=> $type, 'class' => array('facet-icon')));
 
       // Initializes variables passed to theme hook.
       $variables = array(
