@@ -1,3 +1,60 @@
+7.x-1.11 2016-02-01
+--------------------------
+- Re-designed dataset/search page. "Datasets" link on default menu bar now goes to a page that lets you browse and search all site content, not just datasets, but does filter by dataset. Search box will search all content by default. See note below.
+- Add new dkan_permissions module, refactoring default roles and permissions and using new export method. See note below.
+- Moved group permissions from old dkan_sitewide_roles_perms into new dkan_dataset_groups_perms
+- Patch fontyourface module to make font changes happen instantly
+- Fix adminrole implementation to avoid warning on install
+- Fix (again) a bug that would make colorizer styles disappear after running "poor man's cron"
+- Add to resource node page a list of visualizations built with that resource
+- Number of contrib module updates
+- Change the view of groups to show 12 instead of 10 nodes per page, to fit with the layout of three per line
+- Patch the FacetAPI module to avoid a cross-site scripting vulnerability
+- Add integration with ProboCI (http://probo.ci/) for QA builds
+- Fix a bug that showed an extra pager on the group page
+- Major refactor of Behat tests, including introduction of new [DKAN extension](https://github.com/NuCivic/dkanextension).
+- Improve layout/ordering of blocks in the sidebar for dataset pages
+- Improvement in the UX of user pictures, including Gravatar integration
+- Numerous other small improvements and bugfixes
+
+== Notice: Avoiding PHP errors after upgrade ==
+
+In some cases, changes to the codebase may cause PHP errors when the Drupal bootstrap process looks for a file that no longer exists. As always, backing up your db before upgrading is recommended. In addition, if you get to a state in which Drupal will not bootstrap successfully due to an issue with views_autocomplete_filters, try some combination of:
+
+$ drush sql-query 'DELETE FROM registry WHERE filename LIKE "%views_autocomplete_filters_handler_filter_string.inc%"';
+$ drush cc all
+$ drush rr
+
+== Search page redesign ==
+
+This release of DKAN includes a redesigned search page, which is also the page used to browse datasets. This redesign required some changes to the included search indexes. Use the following drush commands to rebuild your search indexes, or go to admin/config/search/search_api/index/datasets and disable, re-enable and re-index the _datasets_ search index.
+
+$ drush search-api-disable datasets -y 
+$ drush search-api-enable datasets -y
+$ drush sapi-r -y
+$ drush sapi-i -y
+
+== Permissions/roles upgrade ==
+
+As mentioned above, this release includes a new module called DKAN Permissions (dkan_permissions), which is meant to replace the old DKAN Sitewide Roles and Permissions (dkan_sitewide_roles_perms). New installs of DKAN will enable this module and ignore the old one, while existing sites will see no change (but are recommended to upgrade).  See more information in the module's README file.
+
+The command line method, including deleting the now-deprecated "storyteller" role, would look like this:
+
+$ drush dis dkan_sitewide_roles_perms -y
+$ drush rdel 'storyteller' 
+$ drush en dkan_permissions -y
+$ drush fra -y
+$ drush fr dkan_permissions -y
+
+Group-level permissions have been moved to DKAN Dataset Groups Permissions. To start using them, enable the new module, and revert it using Features. Do this via the UI or on the command line with Drush:
+
+$ drush en dkan_dataset_groups_perms -y
+$ drush fr dkan_dataset_groups_perms -y
+
+== DKAN Dataset ==
+
+See the DKAN Dataset release notes for 7.x-1.11 for notes specific to the DKAN Dataset module.
+
 7.x-1.10 2015-11-10
 --------------------------
 DKAN Distribution
