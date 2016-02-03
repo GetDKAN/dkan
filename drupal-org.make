@@ -156,7 +156,7 @@ projects[omega][type] = theme
 
 projects[nuboot_radix][download][type] = git
 projects[nuboot_radix][download][url] = https://github.com/NuCivic/nuboot_radix.git
-projects[nuboot_radix][download][branch] = dan-886-facet-icon-function
+projects[nuboot_radix][download][branch] = 7.x-1.x
 projects[nuboot_radix][type] = theme
 
 projects[radix][type] = theme
