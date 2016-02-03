@@ -61,11 +61,12 @@ commands:
   module-link:
     usage: Link a module folder into dkan/modules/dkan/.
     cmd: |
-      if [[ "{{args}}" != * ]]; then
+      MODULE="{{args}}"
+      if [[ "$MODULE" != * ]]; then
           echo "Please specify the name of the module you want to link."
           exit 1
       fi
-      if [ ! -d {{args}} ]; then
+      if [ ! -d "$MODULE" ]; then
           echo "No module exists at ./$1. Make sure you fetch or create it first."
           exit 1
       fi
@@ -73,7 +74,11 @@ commands:
         echo "No dkan folder found at ./docroot/profiles/dkan/modules/dkan. Consider running 'ahoy dkan drupal-rebuild'."
         exit 1
       fi
-      ln -s ../../../{{args}} docroot/profiles/dkan/modules/dkan && echo "Symlink created for {{args}}.. "
+      if [ -d "docroot/profiles/dkan/modules/dkan/$MODULE" ]; then
+        echo "Module already exists at 'docroot/profiles/dkan/modules/dkan/$MODULE', removing it to make room..."
+        rm -rf "docroot/profiles/dkan/modules/dkan/$MODULE";
+      fi
+      ln -s ../../../$MODULE docroot/profiles/dkan/modules/dkan && echo "Symlink created for $MODULE.. "
   module-make:
     usage: Run drush make for a module in dkan/modules/dkan/.
     cmd: |
@@ -102,7 +107,7 @@ commands:
       SKIP_COMPOSER_FLAG="--skip-composer"
       if [[ ! "${ARGS[@]}" == *"$SKIP_COMPOSER_FLAG"* ]]; then
         echo "Installing behat dependencies.."
-        #ahoy cmd-proxy "cd $BEHAT_FOLDER && composer install --prefer-source --no-interaction"
+        ahoy cmd-proxy "cd $BEHAT_FOLDER && composer install --prefer-source --no-interaction"
       else
         echo "Skipping composer install.."
         ARGS=( "${ARGS[@]/$SKIP_COMPOSER_FLAG}" )
@@ -120,7 +125,7 @@ commands:
         echo "$BEHAT_ENV"
         echo "Using behat.yml .."
       fi
-      ahoy cmd-proxy "cd $BEHAT_FOLDER && bin/behat $CONFIG "${ARGS[@]}""
+      ahoy cmd-proxy "cd $BEHAT_FOLDER && bin/behat $CONFIG ${ARGS[@]}"
   sqlc:
     usage: Abstracted way to connect to the mysql database.
     cmd: |
