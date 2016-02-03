@@ -108,6 +108,7 @@ Feature: Resource
     And I select "Dataset 03" from "Dataset"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
     When I click "Back to dataset"
     Then I should see "Dataset 03" in the "dataset title" region
     And I should see "Resource 06" in the "dataset resource list" region
@@ -119,6 +120,7 @@ Feature: Resource
     And I select "- None -" from "Dataset"
     And I press "Save"
     Then I should see "Resource 07 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
     When I click "Back to dataset"
     Then I should see "There is no dataset associated with this resource"
     Given I am on "Dataset 04" page
@@ -131,7 +133,7 @@ Feature: Resource
     And I select "Dataset 05" from "Dataset"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
-    And I should see "1 resource(s) were added or removed from the groups associated with Dataset 05"
+    And I should see "Groups were updated on 1 resource(s)"
     When I click "Edit"
     Then I should see "Group 01" in the "resource groups" region
 
@@ -143,6 +145,7 @@ Feature: Resource
     When I select "- None -" from "Dataset"
     And I press "Save"
     Then I should see "Resource 08 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
     When I click "Edit"
     Then I should not see "Group 01" in the "resource groups" region
     When I am on "Dataset 05" page
@@ -156,8 +159,7 @@ Feature: Resource
     And I additionally select "Dataset 06" from "Dataset"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
-    And I should see "1 resource(s) were added or removed from the groups associated with Dataset 05"
-    And I should see "1 resource(s) were added or removed from the groups associated with Dataset 06"
+    And I should see "Groups were updated on 1 resource(s)"
     When I click "Edit"
     Then I should see "Group 01" in the "resource groups" region
     And I should see "Group 02" in the "resource groups" region
@@ -174,6 +176,7 @@ Feature: Resource
     And I select "Dataset 05" from "Dataset"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
     When I click "Edit"
     Then I should see "Group 01" in the "resource groups" region
     And I should not see "Group 02" in the "resource groups" region
@@ -186,6 +189,7 @@ Feature: Resource
     And I additionally select "Dataset 06" from "Dataset"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
     When I click "Edit"
     And I select "- None -" from "Dataset"
     And I press "Save"
