@@ -15,7 +15,7 @@ Feature: Dataset Features
 
   Background:
     Given pages:
-      | title     | url                        |
+      | name      | url                        |
       | Datasets  | /dataset?f[0]=type:dataset |
     Given users:
       | name    | mail             | roles                |
