@@ -31,4 +31,4 @@ Product owns everything by default.
 - `./circle*`
 - `./.probo.yml`
 - `./*.make` (exluding `./drupal-org-core.make` and `./drupal-org.make`)
-- `./test/*` (excluding ./test/features/*`)
+- `./test/*` (excluding `./test/features/*`)
