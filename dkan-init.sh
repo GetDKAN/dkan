@@ -114,7 +114,7 @@ install_dependencies() {
     export PATH="$PATH:~/$COMPOSER_PATH"
   fi
 
-  DRUSH_VERSION="8.0.1"
+  DRUSH_VERSION="8.0.2"
   if [ ! "$(which drush)" ]; then
     echo "> Installing Drush";
     composer global require --prefer-source --no-interaction drush/drush:$DRUSH_VERSION
