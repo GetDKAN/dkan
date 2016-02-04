@@ -8,7 +8,7 @@ Feature: Search
   Background:
     Given I am on the homepage
     And pages:
-    | title          | url                        |
+    | name           | url      |
     | Dataset Search | /dataset |
 
   Scenario: Searching datasets
