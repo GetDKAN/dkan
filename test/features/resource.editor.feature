@@ -3,7 +3,7 @@ Feature: Resource
 
   Background:
     Given pages:
-      | title         | url   |
+      | name          | url   |
       | Content       | /user       |
     Given users:
       | name    | mail                | roles                |
