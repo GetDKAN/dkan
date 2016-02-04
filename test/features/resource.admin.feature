@@ -4,7 +4,7 @@ Feature: Resource
 
   Background:
     Given pages:
-      | title     | url             |
+      | name      | url             |
       | Content   | /admin/content  |
     Given users:
       | name    | mail                | roles                |
