@@ -3,12 +3,13 @@ default:
      default:
         contexts:
           - Drupal\DrupalExtension\Context\MinkContext
+          - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MessageContext
           - Drupal\DKANExtension\Context\DKANContext
-          - Drupal\DKANExtension\Context\EntityStore
           - Drupal\DKANExtension\Context\MailContext
           - Drupal\DKANExtension\Context\PageContext
           - Drupal\DKANExtension\Context\GroupContext
+          - Drupal\DKANExtension\Context\WorkflowContext
           - Drupal\DKANExtension\Context\DatasetContext
           - Drupal\DKANExtension\Context\DataDashboardContext
           - Drupal\DKANExtension\Context\SearchAPIContext:
@@ -91,3 +92,5 @@ default:
         message_selector: '.alert'
         error_message_selector: '.alert.alert-error'
         success_message_selector: '.alert.alert-success'
+    Drupal\DKANExtension:
+      some_param: test
