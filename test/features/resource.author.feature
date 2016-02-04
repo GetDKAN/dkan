@@ -3,7 +3,7 @@ Feature: Resource
 
   Background:
     Given pages:
-      | title         | url         |
+      | name          | url         |
       | Content       | /node/add/  |
       | User          | /user       |
     Given users:
@@ -100,7 +100,7 @@ Feature: Resource
     And I press "Save"
     And I am on "Resource 05" page
     When I click "Manage Datastore"
-    And I press "Import"
+    And I click "Import"
     And I wait for "Delete items"
     Then I should see "Last import"
     And I should see "imported items total"
@@ -114,7 +114,7 @@ Feature: Resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
     When I click "Manage Datastore"
-    And I press "Import"
+    And I click "Import"
     And I wait for "Delete Items"
     And I click "Delete items"
     And I press "Delete"
@@ -132,7 +132,7 @@ Feature: Resource
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
     When I click "Manage Datastore"
-    And I press "Import"
+    And I click "Import"
     And I wait for "Delete Items"
     When I click "Drop Datastore"
     And I press "Drop"

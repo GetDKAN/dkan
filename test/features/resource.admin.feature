@@ -4,7 +4,7 @@ Feature: Resource
 
   Background:
     Given pages:
-      | title     | url             |
+      | name      | url             |
       | Content   | /admin/content  |
     Given users:
       | name    | mail                | roles                |
@@ -88,7 +88,7 @@ Feature: Resource
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
     And I press "Save"
     When I click "Manage Datastore"
-    And I press "Import"
+    And I click "Import"
     And I wait for "Delete Items"
     Then I should see "Last import"
     And I should see "imported items total"
@@ -102,7 +102,7 @@ Feature: Resource
     And I press "Save"
     And I am on "Resource 04" page
     When I click "Manage Datastore"
-    And I press "Import"
+    And I click "Import"
     And I wait for "Delete Items"
     And I click "Delete items"
     And I press "Delete"
@@ -120,7 +120,7 @@ Feature: Resource
     And I press "Save"
     And I am on "Resource 04" page
     When I click "Manage Datastore"
-    And I press "Import"
+    And I click "Import"
     And I wait for "Delete Items"
     When I click "Drop Datastore"
     And I press "Drop"

@@ -3,7 +3,7 @@ Feature: User
 
   Background:
     Given pages:
-      | title         | url           |
+      | name          | url           |
       | Content       | /user         |
       | Users         | /admin/people |
       | John          | /users/john   |
