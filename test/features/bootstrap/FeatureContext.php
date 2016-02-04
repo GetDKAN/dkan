@@ -124,35 +124,28 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * @Given /^I click the chosen field "([^"]*)" and enter "([^"]*)"$/
+   * Empty a field rendered by Chosen.js.
    *
-   * DEPRECATED: DONT USE. The clicking of the chosen fields to select some values
-   * didn't work well (selenium errors about the value not being visible). Commenting
-   * this out for now in case someone wants to replace it later with something that works.
+   * @When I empty the chosen field :field
    */
-  /*public function iClickTheChosenFieldAndEnter($field, $value) {
+  public function iEmptyTheChosenField($field) {
     $session = $this->getSession();
     $page = $session->getPage();
-    $field = $this->fixStepArgument($field);
-    $value = $this->fixStepArgument($value);
-    // Click chosen field.
-    $field_click = $session->getPage()->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', '//span[.="' . $field . '"]')
 
-      );
-    $field_click->click();
-    $this->iWaitForSeconds(1);
-    // Click value that now appears.
-    $title = $session->getPage()->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
-      );
-    if(!isset($title)){
-      throw new Exception(sprintf('"' . $value . '" option was not found in the chosen field.'));
+    $field = $this->fixStepArgument($field);
+    $groups_field = $page->find('xpath', '//div[@id="' . $field . '"]');
+    if (NULL === $groups_field) {
+      throw new \InvalidArgumentException(sprintf('Cannot find chosen field: "%s"', $field));
     }
-    $title->click();
-  }*/
+
+    $groups_choices = $groups_field->findAll('css', '.chosen-choices .search-choice');
+    foreach($groups_choices as $group_choice) {
+      $remove_button = $group_choice->find('css', '.search-choice-close');
+      if ($remove_button) {
+        $remove_button->click();
+      }
+    }
+  }
 
   /**
    * Click some text.
@@ -203,18 +196,30 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function iFillInTheAutoFieldWith($field, $value) {
     $session = $this->getSession();
+    $page = $session->getPage();
+
     $field = $this->fixStepArgument($field);
     $value = $this->fixStepArgument($value);
-    $input_title = $session->getPage()->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', '//input[@value="' . $field . '"]')
 
-    );
-    $input_title->click();
+    $element = $page->findField($field);
+    if (!$element) {
+      throw new ElementNotFoundException($session, NULL, 'named', $field);
+    }
+    $page->fillField($field, $value);
+
+    // Trigger all needed key events (autocomplete.js uses key down/up events directly).
+    // Delete last char and add it again.
+    $chars = str_split($value);
+    $last_char = array_pop($chars);
+    $session->getDriver()->keyDown($element->getXpath(), 8);
+    $session->getDriver()->keyUp($element->getXpath(), 8);
+    $session->getDriver()->keyDown($element->getXpath(), $last_char);
+    $session->getDriver()->keyUp($element->getXpath(), $last_char);
     $this->iWaitForSeconds(2);
+
     // Selects the first dropdown since there is no id or other way to
     // reference the desired entry.
-    $title = $session->getPage()->find(
+    $title = $page->find(
       'xpath',
       $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
 
@@ -408,53 +413,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /************************************/
   /* Gravatar                         */
   /************************************/
-
-//  /**
-//   * @Then /^I should see a gravatar link in the "([^"]*)" region$/
-//   */
-//  public function iShouldSeeAGravatarLinkInTheRegion($region)
-//  {
-////   $regionObj = $this->getMainContext()->getRegion($region);
-////    $elements = $regionObj->findAll('css', 'img');
-////    if (!empty($elements)) {
-////      foreach ($elements as $element) {
-////        if ($element->hasAttribute('src')) {
-////          $value = $element->getAttribute('src');
-////          //if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
-////            return;
-////          }
-////        }
-////      }
-////    }
-////    throw new \Exception(sprintf('The element gravatar link was not found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
-//
-//  }
-//
-//  /**
-//   * @Then /^I should not see a gravatar link in the "([^"]*)" region$/
-//   */
-//  public function iShouldNotSeeAGravatarLinkInTheRegion($region)
-//  {
-////    $regionObj = $this->getMainContext()->getRegion($region);
-////    $elements = $regionObj->findAll('css', 'img');
-////    $match = FALSE;
-////    if (!empty($elements)) {
-////      foreach ($elements as $element) {
-////        if ($element->hasAttribute('src')) {
-////          $value = $element->getAttribute('src');
-////          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
-////            $match = TRUE;
-////          }
-////        }
-////      }
-////    }
-////    if ($match) {
-////      throw new \Exception(sprintf('The element gravatar link was found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
-////    }
-////    else {
-////      return;
-////    }
-//  }
 
   /**
    * @Given :provider previews are :setting for :format_name resources
