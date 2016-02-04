@@ -1,0 +1,191 @@
+api: 2
+defaults:
+  projects:
+    subdir: contrib
+libraries:
+  nvd3:
+    download:
+      type: git
+      url: 'https://github.com/novus/nvd3.git'
+      revision: 7ebd54ca09061022a248bec9a050a4dec93e2b28
+    type: library
+  d3:
+    download:
+      type: git
+      url: 'https://github.com/mbostock/d3.git'
+      revision: f82dd6fb414a15bca4f9c39c7c9442295ddea416
+    type: library
+  gdocs:
+    download:
+      type: git
+      url: 'https://github.com/okfn/recline.backend.gdocs.git'
+      revision: e81bb237759353932834a38a0ec810441e0ada10
+    type: library
+  lodash_data:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/lodash.data.git'
+      revision: 0dbe0701003b8a45037ab5fada630db2dbf75d9d
+    type: library
+  reclineViewNvd3:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/recline.view.nvd3.js.git'
+      revision: 56666586338e69b18bb9414773869b412391186b
+    type: library
+  chroma:
+    download:
+      type: file
+      url: 'https://github.com/gka/chroma.js/zipball/master'
+    type: library
+  numeral:
+    download:
+      type: file
+      url: 'https://github.com/adamwdraper/Numeral-js/zipball/master'
+    type: library
+  recline_choropleth:
+    download:
+      type: file
+      url: 'https://github.com/NuCivic/recline.view.choroplethmap.js/archive/master.zip'
+    type: library
+  recline:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/recline.js.git'
+      revision: a7eea3f80254648290592824886298df87768f47
+    type: library
+  lodash:
+    download:
+      type: git
+      url: 'https://github.com/lodash/lodash.git'
+      revision: e21e993729861a2bc1d01c858cfabce7a27d2861
+    type: library
+  backbone:
+    download:
+      type: git
+      url: 'https://github.com/jashkenas/backbone.git'
+      revision: e109f6d3e7a366f933f1f34405ca97effecae6c5
+    type: library
+  csv:
+    download:
+      type: git
+      url: 'https://github.com/okfn/csv.js.git'
+      revision: 976b61384a1808eb464aca5876e5ea46c98deaee
+    type: library
+  slickgrid:
+    download:
+      type: git
+      url: 'https://github.com/mleibman/SlickGrid.git'
+      revision: e004912b5ce29ac0d0cb04df50fe66db5e3af9ea
+    type: library
+  mustache:
+    download:
+      type: git
+      url: 'https://github.com/janl/mustache.js.git'
+      revision: d4ba5a19d4d04b139bbf7840fe342bb43930aee3
+    type: library
+  moment:
+    download:
+      type: git
+      url: 'https://github.com/moment/moment.git'
+      revision: 78a53b8cb53e967c6dac2e7325e18da2a472fc2d
+    type: library
+  leaflet:
+    download:
+      type: git
+      url: 'https://github.com/Leaflet/Leaflet.git'
+      revision: 8a5fdfc6e3db2807b8f0dd617474e4ab2949142b
+    type: library
+  flot:
+    download:
+      type: git
+      url: 'https://github.com/flot/flot.git'
+      revision: 7f5f90384ed6d6c30b232580d358c84e355919ab
+    type: library
+  deep_diff:
+    download:
+      type: git
+      url: 'https://github.com/flitbit/diff.git'
+      revision: 07e91c624e5016be5c5c6560a9eabe49ef3ba2d0
+    directory_name: deep_diff
+    type: library
+  recline_deeplink:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/recline-deeplink.git'
+      revision: c1695d669f8314ed8b66e5907eb4f1bc4a8a9495
+    directory_name: recline_deeplink
+    type: library
+  leaflet_markercluster:
+    download:
+      type: git
+      url: 'https://github.com/Leaflet/Leaflet.markercluster.git'
+      revision: c5864dbfca9e71c86ac61b432862cc77f8fd8e68
+    directory_name: leaflet_markercluster
+    type: library
+  leaflet_draw:
+    type: library
+    download:
+      type: git
+      url: 'https://github.com/Leaflet/Leaflet.draw.git'
+      tag: v0.2.4
+  leaflet_core:
+    type: library
+    download:
+      type: git
+      url: 'https://github.com/Leaflet/Leaflet.git'
+      tag: v0.7.3
+  chosen:
+    type: library
+    download:
+      type: get
+      url: 'https://github.com/harvesthq/chosen/releases/download/v1.3.0/chosen_v1.3.0.zip'
+    destination: libraries
+  slugify:
+    type: library
+    download:
+      type: git
+      url: 'https://github.com/pmcelhaney/jQuery-Slugify-Plugin.git'
+      revision: 79133a1bdfd3ac80d500d661a722b85c03a01da3
+    directory_name: slugify
+  arc:
+    type: library
+    download:
+      type: git
+      url: 'https://github.com/semsol/arc2.git'
+      revision: 44c396ab54178086c09499a1704e31a977b836d2
+    subdir: ARC2
+  excanvas:
+    download:
+      type: file
+      url: 'https://explorercanvas.googlecode.com/files/excanvas_r3.zip'
+      sha1: f1b9f7a44428eb0c7b27fe8ac0242d34ec94a385
+    type: library
+  jquery.imagesloaded:
+    download:
+      type: file
+      url: 'https://github.com/desandro/imagesloaded/archive/v2.1.2.tar.gz'
+      subtree: imagesloaded-2.1.2
+    type: library
+  jquery.imgareaselect:
+    download:
+      type: file
+      url: 'https://github.com/odyniec/imgareaselect/archive/v0.9.11-rc.1.tar.gz'
+      subtree: imgareaselect-0.9.11-rc.1
+    type: library
+  font_awesome:
+    type: library
+    download:
+      type: git
+      url: 'https://github.com/FortAwesome/Font-Awesome.git'
+      revision: 13d5dd373cbf3f2bddd8ac2ee8df3a1966a62d09
+    directory_name: font_awesome
+  spyc:
+    download:
+      type: get
+      url: 'https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php'
+    filename: ../spyc.php
+    directory_name: lib
+    destination: modules/contrib/services/servers/rest_server
+    type: library
+
