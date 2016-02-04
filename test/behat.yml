@@ -2,6 +2,7 @@ default:
   suites:
      default:
         contexts:
+          - FeatureContext #Temporary overrides only!
           - Drupal\DrupalExtension\Context\MinkContext
           - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MessageContext
