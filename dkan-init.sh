@@ -200,11 +200,14 @@ for i in "$@"; do
             ;;
     --build=*)
             DB_URL="${i#*=}"
-            shift
             ;;
-    --install-dependencies|--deps)
+    --deps)
             INSTALL_DEPS=true
-            shift
+            ;;
+    --deps-only)
+            echo "Only installing dependencies...."
+            install_dependencies
+            exit $?
             ;;
     *)
             error "not recognized flag or param ${i#*=}"
