@@ -17,7 +17,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/2059cbe4bb8055c8555fa3365c6ea3b4b30288f5",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/718159921b1d844b8805b5ab2e7d1be34ca323cb",
                 "reference": "2059cbe4bb8055c8555fa3365c6ea3b4b30288f5",
                 "shasum": ""
             },
@@ -908,12 +908,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "c66e34311b31208efb538c5fca563a8301ffe48f"
+                "reference": "42d951d0dd1309bf78d9782a04f7e706a867697f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/c66e34311b31208efb538c5fca563a8301ffe48f",
-                "reference": "c66e34311b31208efb538c5fca563a8301ffe48f",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/42d951d0dd1309bf78d9782a04f7e706a867697f",
+                "reference": "42d951d0dd1309bf78d9782a04f7e706a867697f",
                 "shasum": ""
             },
             "require": {
@@ -941,7 +941,7 @@
                 "test",
                 "web"
             ],
-            "time": "2015-12-09 00:05:58"
+            "time": "2016-02-04 11:58:33"
         },
         {
             "name": "psr/http-message",
