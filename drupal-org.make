@@ -161,6 +161,7 @@ projects:
     url: 'http://git.drupal.org/project/admin_menu_source.git'
     branch: 7.x-1.x
     revision: 8514d8b
+    # Allow ordering of roles to handle users w/multiple roles
     patch:
       2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
   menu_token:
