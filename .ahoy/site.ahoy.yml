@@ -4,6 +4,8 @@ commands:
   setup:
     usage: Setups site settings
     cmd: |
+      # Create an array with the arguments that were input.
+      ARGS=( {{args}} )
       rm -f assets/sites/default/settings.docker.php
       rm -f assets/sites/default/settings.local.php
       if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
@@ -13,15 +15,48 @@ commands:
         case "`uname`" in
           Darwin*) darwin=true ;;
         esac
-        if $darwin; then
+        if [ "$darwin" ]; then
           HOST=`ahoy docker ip`
           WEB_PORT=`ahoy docker ps | grep _web_ | awk 'BEGIN { FS=":"; } { print $3; }' | awk 'BEGIN { FS="->";} { print $1}'`
           printf "\n\$base_url = 'http://$HOST:$WEB_PORT';" >> assets/sites/default/settings.docker.php
         fi
+      elif [ "${#ARGS[@]}" -ne 0  ]; then
+        for i in "${ARGS[@]}"; do
+          case "$i" in
+            --db-user=*)
+                    DB_USER="${i#*=}"
+                    ;;
+            --db-pass=*)
+                    DB_PASS="${i#*=}"
+                    ;;
+            --db-host=*)
+                    DB_HOST="${i#*=}"
+                    ;;
+            --db-port=*)
+                    DB_PORT="${i#*=}"
+                    ;;
+            --db-name=*)
+                    DB_NAME="${i#*=}"
+                    ;;
+            *)
+                    echo "not recognized flag or param ${i#*=}"
+                    exit 1
+                    ;;
+          esac
+        done
+        sed  \
+        -e s/#DB_HOST/$DB_HOST/g \
+        -e s/#DB_USER/$DB_USER/g \
+        -e s/#DB_PASS/$DB_PASS/g \
+        -e s/#DB_PORT/$DB_PORT/g \
+        -e s/#DB_NAME/$DB_NAME/g \
+        assets/sites/default/settings.local.demo.php > assets/sites/default/settings.local.php
+        echo "A settings.local.php file was created at assets/sites/default/settings.local.php with your db credentials."
       else
         cp assets/sites/default/settings.local.demo.php assets/sites/default/settings.local.php
-        echo "Please fill assets/sites/default/settings.local.php with your db credentials"
+        echo "A settings.local.php file was created at assets/sites/default/settings.local.php, but you need you add your own db credentials."
       fi
+
 
   drupal-rebuild:
     usage: Remakes and reinstall site.
@@ -32,6 +67,7 @@ commands:
   remake:
     usage: Rebuild all the dkan projects from the build.make file.
     cmd: |
+      set -e
       # Building in a new directory so dkan .ahoy folder keeps being available
       ahoy drush -y make build.make --no-recursion --no-cache --verbose docroot_new
       rm -rf docroot
