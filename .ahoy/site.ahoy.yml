@@ -1,0 +1,128 @@
+ahoyapi: v1
+version: 0.0.0
+commands:
+  setup:
+    usage: Setups site settings
+    cmd: |
+      rm -f assets/sites/default/settings.docker.php
+      rm -f assets/sites/default/settings.local.php
+      if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
+        cp assets/sites/default/settings.docker.demo.php assets/sites/default/settings.docker.php
+        ahoy docker up
+        darwin=false;
+        case "`uname`" in
+          Darwin*) darwin=true ;;
+        esac
+        if $darwin; then
+          HOST=`ahoy docker ip`
+          WEB_PORT=`ahoy docker ps | grep _web_ | awk 'BEGIN { FS=":"; } { print $3; }' | awk 'BEGIN { FS="->";} { print $1}'`
+          printf "\n\$base_url = 'http://$HOST:$WEB_PORT';" >> assets/sites/default/settings.docker.php
+        fi
+      else
+        cp assets/sites/default/settings.local.demo.php assets/sites/default/settings.local.php
+        echo "Please fill assets/sites/default/settings.local.php with your db credentials"
+      fi
+
+  drupal-rebuild:
+    usage: Remakes and reinstall site.
+    cmd: |
+      ahoy site remake
+      ahoy site reinstall
+
+  remake:
+    usage: Rebuild all the dkan projects from the build.make file.
+    cmd: |
+      # Building in a new directory so dkan .ahoy folder keeps being available
+      ahoy drush -y make build.make --no-recursion --no-cache --verbose docroot_new
+      rm -rf docroot
+      mv docroot_new docroot
+      # No recursive prevents dkan build to happen. Run it now from dkan remake.
+      ahoy dkan remake
+      ahoy site post_build
+
+  post_build:
+    usage: Runs (what used to be buildmanager) post build commands.
+    cmd: |
+      # Setup a folder for contrib modules and themes.
+      mkdir -p docroot/sites/all/modules/contrib
+      mkdir -p docroot/sites/all/themes/contrib
+      # Replace the default .htaccess file with our own that includes a working non-www to www example for acquia.
+      rm -rf docroot/.htaccess
+      ln -s ../assets/.htaccess docroot/.htaccess
+      # Replace sites/default with our own sites/default outside of the drupal root.
+      rm -rf docroot/sites/default;
+      ln -s ../../assets/sites/default docroot/sites/default
+      # Clean out any .gitignore files imported from other modules, libraries, and profiles.
+      find docroot/profiles/dkan -type f -name .gitignore -exec rm -rf {} \;
+      find docroot/sites/all -type f -name .gitignore -exec rm -rf {} \;
+      # Clean out any CHANGELOG.txt files.
+      find . -type f -name CHANGELOG.txt -exec rm -rf {} \;
+      # Setup custom modules folder outside of the drupal root.
+      rm -rf docroot/sites/all/modules/custom
+      rm -rf docroot/sites/all/modules/dkan_overrides
+      ln -s ../../../../projects/modules/custom docroot/sites/all/modules/custom
+      ln -s ../../../../projects/modules/dkan_overrides docroot/sites/all/modules/dkan_overrides
+
+  reinstall:
+    usage: Reinstall the site from scratch (dkan + custom_config + environment).
+    cmd: |
+      ahoy dkan reinstall
+      ahoy drush -y en custom_config environment devinci
+      ahoy drush env-switch --force local
+
+  new:
+    usage: Sets new client site from data-starter
+    cmd: |
+      cd ..
+      if [ -d {{args}} ]; then
+        ahoy confirm "{{args}} site folder alredy exists."
+        echo ".. skipping installation"; exit 1;
+      fi
+      {
+        hub clone NuCivic/{{args}}
+        echo "NuCivic/{{args}} Github repo cloned"
+      } || {
+        mkdir {{args}}
+        cd {{args}}
+        wget https://github.com/NuCivic/data_starter/archive/master.tar.gz
+        tar -xvzf master.tar.gz --strip 1
+        rm master.tar.gz
+      
+        echo "Site {{args}} initiated at ../{{args}}"
+        git init .
+        git add . -A
+        git commit -m "{{args}} codebase setup"
+        hub create -p NuCivic/{{args}}
+        git push origin master
+        echo "NuCivic/{{args}} Github repo created"
+      }
+
+  dkan:
+    usage: Upgrades/Downgrades dkan to a certain tag 'ahoy site dkan tag 7.x-1.10' or branch 'ahoy site dkan branch 7.x-1.x'
+    cmd: |
+      IFS=' ' read -r -a args <<< "{{args}}"
+      tag_new=${args[0]}
+      version_new=${args[1]}
+      if [[ $tag_new != tag && $tag_new != branch ]]; then
+        echo "First argument should be either 'tag' or 'branch'"
+        exit 1
+      fi
+      tag_old='branch'
+      version_old=$(awk -F " = " '/projects\[dkan\]\[download\]\[branch\]/ {print $2}' build-dkan.make)
+      if grep -Fq "tag" build-dkan.make
+      then
+        tag_old='tag'
+        version_old=$(awk -F " = " '/projects\[dkan\]\[download\]\[tag\]/ {print $2}' build-dkan.make)
+      fi
+      pr_branch="UPDATE_$tag_old-$version_old-TO-$tag_new-$version_new"
+      if [[ `git branch | grep $pr_branch` ]]; then
+        git branch -D "$pr_branch"
+      fi
+      git checkout -b "$pr_branch"
+      sed "s/$tag_old/$tag_new/g" build-dkan.make > build-dkan.make.new; rm build-dkan.make; mv build-dkan.make.new build-dkan.make
+      sed "s/$version_old/$version_new/g" build-dkan.make > build-dkan.make.new; rm build-dkan.make; mv build-dkan.make.new build-dkan.make
+      git add . -A
+      git commit -m "Updates build-dkan.make from $tag_old $version_old to $tag_new $version_new"
+      ahoy site remake
+      git push origin "$pr_branch";
+      hub pull-request 
