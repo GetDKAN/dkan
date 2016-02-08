@@ -54,10 +54,10 @@ commands:
     usage: Connect to the default mysql database.
   mysql-import:
     cmd: "docker exec -i $(ahoy docker compose ps -q cli) bash -c 'mysql -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
-    usage: Pipe in a sql file.  `ahoy mysql-import < backups/live.sql`
+    usage: Pipe in a sql file.  `ahoy docker mysql-import < backups/live.sql`
   mysql-dump:
-    cmd: "docker exec -it $(docker-compose -f  ps -q cli) bash -c 'mysqldump -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
-    usage: Dump data out into a file. `ahoy mysql-import > backups/local.sql`
+    cmd: "docker exec -it $(ahoy docker compose ps -q cli) bash -c 'mysqldump -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
+    usage: Dump data out into a file. `ahoy docker mysql-dump > backups/local.sql`
   compose:
     cmd: docker-compose -f dkan/.ahoy/docker-compose.yml -p "${PWD##*/}" {{args}}
     usage: Abstraction for docker-compose
