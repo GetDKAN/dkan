@@ -118,6 +118,7 @@ dependencies[] = dkan_sitewide_panelizer
 dependencies[] = dkan_data_dashboard
 dependencies[] = dkan_data_story
 dependencies[] = dkan_permissions
+dependencies[] = dkan_workflow
 
 ; DKAN Core Modules
 dependencies[] = dkan_sitewide
