@@ -53,6 +53,12 @@ projects:
       type: git
       url: 'https://github.com/NuCivic/dkan_datastore.git'
       branch: 7.x-1.x
+  dkan_workflow:
+    subdir: dkan
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/dkan_workflow.git'
+      branch: workflow-menu-links
   visualization_entity:
     download:
       type: git
