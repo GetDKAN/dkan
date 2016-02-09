@@ -58,7 +58,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_workflow.git'
-      branch: upstream_fixes
+      branch: workflow-menu-links
   visualization_entity:
     download:
       type: git
