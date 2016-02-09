@@ -77,9 +77,9 @@ commands:
       mv docroot_new docroot
       # No recursive prevents dkan build to happen. Run it now from dkan remake.
       ahoy dkan remake
-      ahoy site post_build
+      ahoy site post-build
 
-  post_build:
+  post-build:
     usage: Runs (what used to be buildmanager) post build commands.
     cmd: |
       # Setup a folder for contrib modules and themes.
@@ -163,5 +163,15 @@ commands:
       git add . -A
       git commit -m "Updates build-dkan.make from $tag_old $version_old to $tag_new $version_new"
       ahoy site remake
+      command -v hub >/dev/null 2>&1 || { echo >&2 "Hub not installed, please push code and create PR manually."; exit 1; }
       git push origin "$pr_branch";
-      hub pull-request 
+      hub pull-request
+
+  mysql-dump-sanitized:
+    usage: Creates a dump of a sanitazed version of the site db
+    cmd: |
+      ahoy drush sql-dump > backups/unsanitized.sql
+      ahoy drush sql-cli < dkan/.ahoy/.mysqlscripts/sanitize.sql
+      ahoy drush sql-dump > backups/sanitized.sql
+      ahoy drush -y sql-drop
+      ahoy drush sql-cli < backups/unsanitized.sql
