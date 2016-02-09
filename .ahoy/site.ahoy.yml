@@ -8,6 +8,9 @@ commands:
       ARGS=( {{args}} )
       rm -f assets/sites/default/settings.docker.php
       rm -f assets/sites/default/settings.local.php
+      if [ -f assets/drush/aliases.local.php ]; then
+        ahoy cmd-proxy 'mkdir -p ~/.drush && cp assets/drush/aliases.local.php ~/.drush/'
+      fi
       if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
         cp assets/sites/default/settings.docker.demo.php assets/sites/default/settings.docker.php
         ahoy docker up
