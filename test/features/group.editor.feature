@@ -1,4 +1,4 @@
-@javascript @api @noworkflow
+@javascript @api
 Feature: Site Manager administer groups
   In order to manage site organization
   As a Site Manager
