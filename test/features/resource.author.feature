@@ -1,4 +1,4 @@
-@javascript @api
+@javascript @api @noworkflow
 Feature: Resource
 
   Background:

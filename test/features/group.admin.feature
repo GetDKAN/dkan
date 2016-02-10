@@ -1,4 +1,4 @@
-@api
+@api @noworkflow
 Feature: Site managers administer groups
   In order to manage site organization
   As a Site Manager
