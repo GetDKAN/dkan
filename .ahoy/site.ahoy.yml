@@ -199,8 +199,9 @@ commands:
     cmd: |
       ahoy cmd-proxy exec mkdir -p backups
       site=$(ahoy site name)
-      asset="https://s3.amazonaws.com/nucivic-data-backups/$site.prod.sanitized.sql"
-      wget -O backups/sanitized.sql $asset
+      asset="https://s3.amazonaws.com/nucivic-data-backups/$site.prod.sanitized.sql.gz"
+      wget -O backups/sanitized.sql.gz $asset
+      cd backups && gunzip sanitized.sql.gz
 
   asset-download-files:
     usage: Download files backup asset from S3 to local backups folder.
@@ -208,7 +209,7 @@ commands:
       ahoy cmd-proxy exec mkdir -p backups
       site=$(ahoy site name)
       asset="https://s3.amazonaws.com/nucivic-data-backups/$site.prod.files.gz"
-      wget -O backups/sanitized.sql $asset
+      wget -O backups/$site.prod.files.gz $asset
     hide: true
 
   asset-upload:
