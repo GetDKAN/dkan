@@ -1,4 +1,4 @@
-@javascript @api @noworkflow
+@javascript @api
 Feature: Resource
 
   Background:
@@ -47,6 +47,7 @@ Feature: Resource
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
 
+  @noworkflow
   Scenario: Create resource
     Given I am logged in as "Katie"
     And I am on the "Content" page
@@ -56,6 +57,7 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
 
+  @noworkflow
   #TODO: Content creator will be a role added later, but for now we stick with authenticated user
   Scenario: Edit own resource as content creator
     Given I am logged in as "Katie"
@@ -67,12 +69,14 @@ Feature: Resource
     When I am on "User" page
     Then I should see "Resource 02 edited"
 
+  @noworkflow
   Scenario: A data contributor should not be able to publish resources
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
     When I click "Edit"
     Then I should not see "Publishing options"
 
+  @noworkflow
   #TODO: Content creator will be a role added later, but for now we stick with authenticated user
   Scenario: Delete own resource
     Given I am logged in as "Katie"
@@ -82,7 +86,7 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
 
-  @dkanBug
+  @dkanBug @noworkflow
     # TODO: Managing own datastore not currently supported for authenticated users
     # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
   Scenario: Manage datastore of own resource
@@ -92,6 +96,7 @@ Feature: Resource
     And I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
+  @noworkflow
   Scenario: Import items on datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 05" page
@@ -105,6 +110,7 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
+  @noworkflow
   Scenario: Delete items on datastore of own resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
@@ -123,6 +129,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
+  @noworkflow
   Scenario: Drop datastore of own resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
@@ -141,6 +148,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
+  @noworkflow
   Scenario: Add revision to own resource
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
@@ -150,3 +158,8 @@ Feature: Resource
     Then I should see "Resource Resource 02 edited has been updated"
     When I click "Revisions"
     Then I should see "by Katie"
+
+  # https://github.com/Behat/Behat/issues/834
+  @dummy
+  Scenario: Dummy test
+    Given I am on "/"
