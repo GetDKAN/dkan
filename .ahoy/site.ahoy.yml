@@ -71,10 +71,15 @@ commands:
     usage: Rebuild all the dkan projects from the build.make file.
     cmd: |
       set -e
-      # Building in a new directory so dkan .ahoy folder keeps being available
+      # Building in a new directory
       ahoy drush -y make build.make --no-recursion --no-cache --verbose docroot_new
       rm -rf docroot
       mv docroot_new docroot
+      # Move dkan folder from docroot/profiles to base folder
+      mv dkan dkan_old
+      mv docroot/profiles/dkan ./
+      ln -s ../../dkan docroot/profiles/dkan
+      rm -rf dkan_old
       # No recursive prevents dkan build to happen. Run it now from dkan remake.
       ahoy dkan remake
       ahoy site post-build
@@ -92,7 +97,7 @@ commands:
       rm -rf docroot/sites/default;
       ln -s ../../assets/sites/default docroot/sites/default
       # Clean out any .gitignore files imported from other modules, libraries, and profiles.
-      find docroot/profiles/dkan -type f -name .gitignore -exec rm -rf {} \;
+      find dkan -type f -name .gitignore -exec rm -rf {} \;
       find docroot/sites/all -type f -name .gitignore -exec rm -rf {} \;
       # Clean out any CHANGELOG.txt files.
       find . -type f -name CHANGELOG.txt -exec rm -rf {} \;
