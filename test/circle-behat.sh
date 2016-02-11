@@ -26,6 +26,14 @@ for param in "$@"; do
       done < <(find $param | grep "\.feature$")
     else
       # Fetch all the params to be passed later to behat
+      # Quote named params to allow special chars inside
+      # them. This allow us to use && || or any other
+      # reserved operand inside params.
+      if [[ $param == *"="* ]]
+      then
+        arrParam=(${param//=/ })
+        param="${arrParam[0]}='${arrParam[1]}'"
+      fi
       echo "Fetch param $param"
       params=(${params[@]} "$param")
     fi
