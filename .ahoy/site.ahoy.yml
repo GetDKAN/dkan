@@ -8,9 +8,9 @@ commands:
       ARGS=( {{args}} )
       rm -f assets/sites/default/settings.docker.php
       rm -f assets/sites/default/settings.local.php
-      if [ -f assets/drush/aliases.local.php ]; then
-        ahoy cmd-proxy 'mkdir -p ~/.drush && cp assets/drush/aliases.local.php ~/.drush/'
-      fi
+      ahoy cmd-proxy mkdir -p ~/.drush
+      ahoy cmd-proxy 'find ./assets -type f -name "*aliases*php" -exec cp "{}" ~/.drush \;'
+
       if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
         cp assets/sites/default/settings.docker.demo.php assets/sites/default/settings.docker.php
         ahoy docker up
@@ -176,3 +176,49 @@ commands:
       ahoy drush sql-dump > backups/sanitized.sql
       ahoy drush -y sql-drop
       ahoy drush sql-cli < backups/unsanitized.sql
+
+  name:
+    usage: Utility function to determine the site name.
+    cmd: ahoy drush sa --fields=uri --local-only | sed -n 1p | cut -d . -f1
+    hide: true
+
+  asset-download:
+    usage: Download database and files assets from S3 to local backups folder.
+    cmd: |
+      ahoy site asset-db-download
+      ahoy site asset-files-download
+    hide: true
+
+  asset-db-download:
+    usage: Download files backup asset from S3 to local backups folder.
+    cmd: |
+      ahoy cmd-proxy exec mkdir -p backups
+      site=$(ahoy site name)
+      asset="https://s3.amazonaws.com/nucivic-data-backups/$site.prod.sanitized.sql"
+      wget -O backups/sanitized.sql $asset
+
+  asset-files-download:
+    usage: Download files backup asset from S3 to local backups folder.
+    cmd: |
+      ahoy cmd-proxy exec mkdir -p backups
+      site=$(ahoy site name)
+      asset="https://s3.amazonaws.com/nucivic-data-backups/$site.prod.files.gz"
+      wget -O backups/sanitized.sql $asset
+    hide: true
+
+  asset-upload:
+    usage: Upload database and files assets to dedicated S3 bucket.
+    cmd: |
+      ahoy site asset-db-upload
+      ahoy site asset-files-upload
+    hide: true
+
+  asset-upload-db:
+    usage: Upload database asset to dedicated S3 bucket.
+    cmd: echo "TODO:// Implement asset-upload-db feature."
+    hide: true
+
+  asset-upload-files:
+    usage: Upload files asset to dedicated S3 bucket.
+    cmd: echo "TODO:// Implement asset-upload-files feature."
+    hide: true
