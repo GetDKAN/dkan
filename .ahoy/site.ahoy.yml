@@ -190,11 +190,11 @@ commands:
   asset-download:
     usage: Download database and files assets from S3 to local backups folder.
     cmd: |
-      ahoy site asset-db-download
-      ahoy site asset-files-download
+      ahoy site asset-download-db
+      ahoy site asset-download-files
     hide: true
 
-  asset-db-download:
+  asset-download-db:
     usage: Download files backup asset from S3 to local backups folder.
     cmd: |
       ahoy cmd-proxy exec mkdir -p backups
@@ -202,7 +202,7 @@ commands:
       asset="https://s3.amazonaws.com/nucivic-data-backups/$site.prod.sanitized.sql"
       wget -O backups/sanitized.sql $asset
 
-  asset-files-download:
+  asset-download-files:
     usage: Download files backup asset from S3 to local backups folder.
     cmd: |
       ahoy cmd-proxy exec mkdir -p backups
