@@ -170,6 +170,7 @@ commands:
   mysql-dump-sanitized:
     usage: Creates a dump of a sanitazed version of the site db
     cmd: |
+      ahoy cmd-proxy exec mkdir -p backups
       ahoy drush sql-dump > backups/unsanitized.sql
       ahoy drush sql-cli < dkan/.ahoy/.mysqlscripts/sanitize.sql
       ahoy drush sql-dump > backups/sanitized.sql
