@@ -184,7 +184,8 @@ commands:
 
   name:
     usage: Utility function to determine the site name.
-    cmd: ahoy drush sa --fields=uri --local-only | sed -n 1p | cut -d . -f1
+    cmd: |
+      ahoy cmd-proxy php -f ./dkan/.ahoy/.scripts/site-name.php
     hide: true
 
   asset-download:
@@ -201,7 +202,10 @@ commands:
       site=$(ahoy site name)
       asset="https://s3.amazonaws.com/nucivic-data-backups/$site.prod.sanitized.sql.gz"
       wget -O backups/sanitized.sql.gz $asset
-      cd backups && gunzip sanitized.sql.gz
+      echo ""
+      echo "Unpacking the sanitized database."
+      echo ""
+      ahoy cmd-proxy gunzip backups/sanitized.sql.gz -f
 
   asset-download-files:
     usage: Download files backup asset from S3 to local backups folder.
