@@ -176,7 +176,7 @@ else
   shift
 fi
 
-BRANCH="7.x.1.x"
+BRANCH="7.x-1.x"
 
 for i in "$@"; do
   case "$i" in
