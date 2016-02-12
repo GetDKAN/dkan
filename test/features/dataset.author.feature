@@ -32,6 +32,7 @@ Feature: Dataset Features
       | Katie   | Group 01 | member               | Active            |
       | Jaz     | Group 01 | member               | Pending           |
       | Celeste | Group 02 | member               | Active            |
+      | Katie   | Group 02 | member               | Active            |
     And "Tags" terms:
       | name   |
       | Health |
@@ -43,11 +44,18 @@ Feature: Dataset Features
       | Dataset 03 |           | Katie   | Yes              | price    |             |
       | Dataset 04 | Group 02  | Celeste | No               | election |             |
       | Dataset 05 | Group 01  | Katie   | No               | election |             |
+      | Dataset 06 |           | Katie   | Yes              | election |             |
+      | Dataset 07 | Group 01  | Katie   | Yes              | election |             |
+      | Dataset 08 |           | Katie   | Yes              | election |             |
+      | Dataset 09 | Group 02  | Katie   | Yes              | election |             |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
       | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 |             |
+      | Resource 04 |           | csv    | Katie  | Yes       |            |             |
+      | Resource 05 |           | csv    | Katie  | Yes       | Dataset 08 |             |
+      | Resource 06 | Group 02  | csv    | Katie  | Yes       | Dataset 09 |             |
 
   @noworkflow
   Scenario: Create dataset as content creator
@@ -103,3 +111,110 @@ Feature: Dataset Features
   @dummy
   Scenario: Dummy test
     Given I am on "/"
+
+  Scenario: Add a resource with no dataset to a dataset with no resource
+    Given I am logged in as "Katie"
+    And I am on "Dataset 06" page
+    When I click "Edit"
+    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I press "Finish"
+    Then I should see "Dataset 06 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    And I should see "Resource 04" in the "dataset resource list" region
+    When I click "Resource 04"
+    Then I should see "Resource 04" in the "resource title" region
+
+  # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
+  #       because the URL of the resources change based on the datasets where they are added
+  #       so going back to a resource page after the dataset association is modified throws an error.
+  Scenario: Remove a resource with only one dataset from the dataset
+    Given I am logged in as "Katie"
+    And I am on "Dataset 06" page
+    When I click "Edit"
+    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I press "Finish"
+    Then I should see "Dataset 06 has been updated"
+    And I should see "Resource 04" in the "dataset resource list" region
+    When I click "Edit"
+    And I empty the field "edit-field-resources-und-0-target-id"
+    And I press "Finish"
+    Then I should see "Dataset 06 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    And I should not see "Resource 04" in the "resource title" region
+    When I am on "Resource 04" page
+    And I click "Back to dataset"
+    Then I should see "There is no dataset associated with this resource"
+
+  Scenario: Add a resource with no group to a dataset with group
+    Given I am logged in as "Katie"
+    And I am on "Dataset 07" page
+    When I click "Edit"
+    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I press "Finish"
+    Then I should see "Dataset 07 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    When I click "Resource 04"
+    And I click "Edit"
+    Then I should see "Group 01" in the "resource groups" region
+
+  # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
+  #       because the URL of the resources change based on the datasets where they are added
+  #       so going back to a resource page after the dataset association is modified throws an error.
+  Scenario: Remove a resource from a dataset with group
+    Given I am logged in as "Katie"
+    And I am on "Dataset 07" page
+    When I click "Edit"
+    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I press "Finish"
+    Then I should see "Dataset 07 has been updated"
+    When I click "Resource 04"
+    And I click "Edit"
+    Then I should see "Group 01" in the "resource groups" region
+    When I am on "Dataset 07" page
+    And I click "Edit"
+    And I empty the field "edit-field-resources-und-0-target-id"
+    And I press "Finish"
+    Then I should see "Dataset 07 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    When I am on "Resource 04" page
+    And I click "Edit"
+    Then I should not see "Group 01" in the "resource groups" region
+
+  Scenario: Add group to a dataset with resources
+    Given I am logged in as "Katie"
+    And I am on "Dataset 08" page
+    When I click "Edit"
+    And I fill in the chosen field "Choose some options" with "Group 02"
+    And I press "Finish"
+    Then I should see "Dataset 08 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    When I am on "Resource 05" page
+    And I click "Edit"
+    Then I should see "Group 02" in the "resource groups" region
+
+  Scenario: Remove group from dataset with resources
+    Given I am logged in as "Katie"
+    And I am on "Dataset 09" page
+    When I click "Edit"
+    And I empty the chosen field "edit_og_group_ref_und_0_default_chosen"
+    And I press "Finish"
+    Then I should see "Dataset 09 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    When I am on "Resource 06" page
+    And I click "Edit"
+    Then I should not see "Group 02" in the "resource groups" region
+
+  Scenario: Add group and resource to a dataset on the same edition
+    Given I am logged in as "Katie"
+    And I am on "Dataset 08" page
+    When I click "Edit"
+    And I fill in the chosen field "Choose some options" with "Group 02"
+    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I press "Finish"
+    Then I should see "Dataset 08 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    And I should see "Resource 04" in the "dataset resource list" region
+    When I click "Resource 04"
+    And I click "Edit"
+    Then I should see "Group 02" in the "resource groups" region
+
