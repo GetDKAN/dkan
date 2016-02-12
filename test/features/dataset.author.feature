@@ -116,7 +116,7 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I fill in the resources field "edit-field-resources-und-0-target-id" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -131,7 +131,7 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I fill in the resources field "edit-field-resources-und-0-target-id" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 06 has been updated"
     And I should see "Resource 04" in the "dataset resource list" region
@@ -149,7 +149,7 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I fill in the resources field "edit-field-resources-und-0-target-id" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -164,7 +164,7 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I fill in the resources field "edit-field-resources-und-0-target-id" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 07 has been updated"
     When I click "Resource 04"
@@ -196,7 +196,7 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 09" page
     When I click "Edit"
-    And I empty the chosen field "edit_og_group_ref_und_0_default_chosen"
+    And I empty the resources field "edit_og_group_ref_und_0_default_chosen"
     And I press "Finish"
     Then I should see "Dataset 09 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -209,7 +209,7 @@ Feature: Dataset Features
     And I am on "Dataset 08" page
     When I click "Edit"
     And I fill in the chosen field "Choose some options" with "Group 02"
-    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I fill in the resources field "edit-field-resources-und-0-target-id" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
