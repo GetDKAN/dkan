@@ -34,7 +34,7 @@ Feature: Resource
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
       | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        |
+      | Dataset 02 | Group 02  | Celeste | Yes              | Gov      | Test        |
     And "Format" terms:
       | name    |
       | cvs     |
@@ -43,7 +43,7 @@ Feature: Resource
       | title       | publisher | format | dataset    | author   | published | description |
       | Resource 01 | Group 01  | cvs    | Dataset 01 | Katie    | Yes       | No          |
       | Resource 02 | Group 01  | xls    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 03 | Group 01  | xls    | Dataset 02 | Celeste  | No        | Yes         |
+      | Resource 03 | Group 02  | xls    | Dataset 02 | Celeste  | No        | Yes         |
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 02  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
 
