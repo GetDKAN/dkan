@@ -26,7 +26,8 @@ Feature: Resource
       | Katie   | Group 01 | member               | Active            |
       | Jaz     | Group 01 | member               | Pending           |
       | Admin   | Group 02 | administrator member | Active            |
-      | Celeste | Group 02 | member               | Active            |
+      | Celeste | Group 01 | member               | Active            |
+      | Katie   | Group 02 | member               | Active            |
     And "Tags" terms:
       | name    |
       | Health  |
@@ -35,6 +36,10 @@ Feature: Resource
       | title      | publisher | author  | published        | tags     | description |
       | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        |
       | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        |
+      | Dataset 03 |           | Katie   | Yes              | Health   | Test        |
+      | Dataset 04 |           | Katie   | Yes              | Gov      | Test        |
+      | Dataset 05 | Group 01  | Katie   | Yes              | Gov      | Test        |
+      | Dataset 06 | Group 02  | Katie   | Yes              | Gov      | Test        |
     And "Format" terms:
       | name    |
       | cvs     |
@@ -46,6 +51,9 @@ Feature: Resource
       | Resource 03 | Group 01  | xls    | Dataset 02 | Celeste  | No        | Yes         |
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
+      | Resource 06 |           | csv    |            | Katie    | Yes       | Test        |
+      | Resource 07 |           | csv    | Dataset 04 | Katie    | Yes       | Test        |
+      | Resource 08 | Group 01  | csv    | Dataset 05 | Katie    | Yes       | Test        |
 
   Scenario: Create resource
     Given I am logged in as "Katie"
@@ -81,6 +89,114 @@ Feature: Resource
     And I press "Delete"
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
+
+  Scenario: Change dataset on resource
+    Given I am logged in as "Katie"
+    And I am on "Resource 01" page
+    When I click "Edit"
+    And I select "Dataset 02" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 01 has been updated"
+    When I click "Back to dataset"
+    Then I should see "Dataset 02" in the "dataset title" region
+    And I should see "Resource 01" in the "dataset resource list" region
+
+  Scenario: Add a resource with no datasets to a dataset with no resource
+    Given I am logged in as "Katie"
+    And I am on "Resource 06" page
+    When I click "Edit"
+    And I select "Dataset 03" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    When I click "Back to dataset"
+    Then I should see "Dataset 03" in the "dataset title" region
+    And I should see "Resource 06" in the "dataset resource list" region
+
+  Scenario: Remove a resource with only one dataset from the dataset
+    Given I am logged in as "Katie"
+    And I am on "Resource 07" page
+    When I click "Edit"
+    And I select "- None -" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 07 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    When I click "Back to dataset"
+    Then I should see "There is no dataset associated with this resource"
+    Given I am on "Dataset 04" page
+    Then I should not see "Resource 07" in the "dataset resource list" region
+
+  Scenario: Add a resource with no group to a dataset with group
+    Given I am logged in as "Katie"
+    And I am on "Resource 06" page
+    When I click "Edit"
+    And I select "Dataset 05" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    When I click "Edit"
+    Then I should see "Group 01" in the "resource groups" region
+
+  Scenario: Remove a resource from a dataset with group
+    Given I am logged in as "Katie"
+    And I am on "Resource 08" page
+    When I click "Edit"
+    Then I should see "Group 01" in the "resource groups" region
+    When I select "- None -" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 08 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    When I click "Edit"
+    Then I should not see "Group 01" in the "resource groups" region
+    When I am on "Dataset 05" page
+    Then I should not see "Resource 08" in the "dataset resource list" region
+
+  Scenario: Add a resource to multiple datasets with groups
+    Given I am logged in as "Katie"
+    And I am on "Resource 06" page
+    When I click "Edit"
+    And I select "Dataset 05" from "Dataset"
+    And I additionally select "Dataset 06" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    When I click "Edit"
+    Then I should see "Group 01" in the "resource groups" region
+    And I should see "Group 02" in the "resource groups" region
+
+  Scenario: Remove one dataset with group from resource with multiple datasets
+    Given I am logged in as "Katie"
+    And I am on "Resource 06" page
+    When I click "Edit"
+    And I select "Dataset 05" from "Dataset"
+    And I additionally select "Dataset 06" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    When I click "Edit"
+    And I select "Dataset 05" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    When I click "Edit"
+    Then I should see "Group 01" in the "resource groups" region
+    And I should not see "Group 02" in the "resource groups" region
+
+  Scenario: Remove all datasets with groups from resource
+    Given I am logged in as "Katie"
+    And I am on "Resource 06" page
+    When I click "Edit"
+    And I select "Dataset 05" from "Dataset"
+    And I additionally select "Dataset 06" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    And I should see "Groups were updated on 1 resource(s)"
+    When I click "Edit"
+    And I select "- None -" from "Dataset"
+    And I press "Save"
+    Then I should see "Resource 06 has been updated"
+    When I click "Edit"
+    Then I should not see "Group 01" in the "resource groups" region
+    And I should not see "Group 02" in the "resource groups" region
 
   @dkanBug
     # TODO: Managing own datastore not currently supported for authenticated users
