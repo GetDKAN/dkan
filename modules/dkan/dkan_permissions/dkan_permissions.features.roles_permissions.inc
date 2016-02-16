@@ -615,6 +615,7 @@ function dkan_permissions_default_roles_permissions() {
       'import dkan_file feeds' => TRUE,
       'import dkan_link feeds' => TRUE,
       'manage datastore' => TRUE,
+      'manage datastore settings' => TRUE,
       'notify of path changes' => TRUE,
       'revert revisions' => TRUE,
       'unlock dkan_file feeds' => TRUE,
