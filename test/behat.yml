@@ -22,6 +22,7 @@ default:
                   results_css: '.view-dkan-datasets'
                   result_item_css: '.views-row'
           - Drupal\DKANExtension\Context\ResourceContext
+          - Drupal\DKANExtension\Context\DatastoreContext
           - Devinci\DevinciExtension\Context\DebugContext:
               asset_dump_path: %paths.base%/assets
           - Devinci\DevinciExtension\Context\JavascriptContext:
