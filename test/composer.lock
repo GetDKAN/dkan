@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "128c1f26e845f0706efb50a88549d131",
-    "content-hash": "d8744cda7d9b196e3ba2dccbd321f1c7",
+    "hash": "def1eb64cf11ae68a35dd277ea5c7a10",
+    "content-hash": "5b0b01e369aa2b7b64649e620b03615a",
     "packages": [
         {
             "name": "behat/behat",
@@ -903,16 +903,16 @@
         },
         {
             "name": "nucivic/dkanextension",
-            "version": "dev-upgrade-behat",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "9bb73067a2d4382d4625a74e7a13f00dba1a8881"
+                "reference": "7ea7f3009b030cb23ee1ad03124667b265a0274d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/9bb73067a2d4382d4625a74e7a13f00dba1a8881",
-                "reference": "9bb73067a2d4382d4625a74e7a13f00dba1a8881",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/7ea7f3009b030cb23ee1ad03124667b265a0274d",
+                "reference": "7ea7f3009b030cb23ee1ad03124667b265a0274d",
                 "shasum": ""
             },
             "require": {
@@ -940,7 +940,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-02-16 14:09:57"
+            "time": "2016-02-16 14:36:18"
         },
         {
             "name": "psr/http-message",
