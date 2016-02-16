@@ -176,6 +176,7 @@ else
   shift
 fi
 
+BRANCH="7.x.1.x"
 
 for i in "$@"; do
   case "$i" in
@@ -195,16 +196,22 @@ for i in "$@"; do
     --no)
             AUTO_CONFIRM="echo -ne 'n\n' | "
             ;;
+    --branch=*)
+            BRANCH="${i#*=}"
+            ;;
     --build)
             error"The '--build' flag must have a db url set:\n    --build=mysql://user:password@server/database_name"
             ;;
     --build=*)
             DB_URL="${i#*=}"
-            shift
             ;;
-    --install-dependencies|--deps)
+    --deps)
             INSTALL_DEPS=true
-            shift
+            ;;
+    --deps-only)
+            echo "Only installing dependencies...."
+            install_dependencies
+            exit $?
             ;;
     *)
             error "not recognized flag or param ${i#*=}"
@@ -227,7 +234,7 @@ if [ ! "$SKIP_INIT" ]; then
   if [ "$MODULE_NAME" != "dkan" ]; then
     echo "Cloning dkan.."
     # switched to https because ssh keys may not exist in all environments (Probo)
-    git clone https://github.com/NuCivic/dkan.git --branch dev-dkan-ahoy-smarter
+    git clone https://github.com/NuCivic/dkan.git --branch $BRANCH
   fi
 
   if [ -f dkan/.ahoy/starter.ahoy.yml ]; then

@@ -49,6 +49,7 @@ Feature: Dataset Features
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
       | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 |             |
 
+  @noworkflow
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Datasets" page
@@ -60,6 +61,7 @@ Feature: Dataset Features
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
 
+  @noworkflow
   Scenario: Edit own dataset as a content creator
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
@@ -70,11 +72,12 @@ Feature: Dataset Features
     When I am on "My Content" page
     Then I should see "Dataset 03 edited"
 
-  @fixme
+  @fixme @noworkflow
     # TODO: Needs definition. How can a data contributor unpublish content?
   Scenario: Unpublish own dataset as a content creator
     Given I am on the homepage
 
+  @noworkflow
   Scenario: Delete own dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
@@ -83,6 +86,7 @@ Feature: Dataset Features
     And I press "Delete"
     Then I should see "Dataset 03 has been deleted"
 
+  @noworkflow
   Scenario: Add a dataset to group that I am a member of
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
@@ -92,3 +96,8 @@ Feature: Dataset Features
     Then I should see "Dataset Dataset 03 has been updated"
     When I am on "Group 01" page
     Then I should see "Dataset 03" in the "content" region
+
+  # https://github.com/Behat/Behat/issues/834
+  @dummy
+  Scenario: Dummy test
+    Given I am on "/"
