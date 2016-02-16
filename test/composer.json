@@ -2,7 +2,7 @@
     "require": {
         "behat/behat": "3.1.*@dev",
         "devinci/devinci-behat-extension": "dev-master",
-        "nucivic/dkanextension": "upgrade-behat-dev"
+        "nucivic/dkanextension": "dev-upgrade-behat"
     },
     "config": {
         "bin-dir": "bin/"
