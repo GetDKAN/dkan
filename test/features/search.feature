@@ -8,17 +8,18 @@ Feature: Search
   Background:
     Given I am on the homepage
     And pages:
-    | title          | url                        |
-    | Dataset Search | /dataset |
+    | name           | url                         |
+    | Dataset Search | /dataset                    |
+    | Dataset Results| /dataset?query=Dataset%2001 |
 
   Scenario: Searching datasets
     Given datasets:
       | title           |
       | Dataset 01      |
     When I search for "Dataset 01"
-    Then I should be on the "Dataset Search" page
+    Then I should be on the "Dataset Results" page
     And I should see "Dataset 01"
-    
+
   Scenario: See number of datasets on search page
     Given I am on the "Dataset Search" page
     Given I search for " "
