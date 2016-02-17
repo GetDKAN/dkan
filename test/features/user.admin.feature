@@ -3,7 +3,7 @@ Feature: User
 
   Background:
     Given pages:
-      | title         | url           |
+      | name          | url           |
       | Content       | /user         |
       | Users         | /admin/people |
       | John          | /users/john   |
@@ -53,7 +53,7 @@ Feature: User
     And I click "About" in the "tabs" region
     Then I should see "This is Katie!"
 
-  @dkanBug @deleteTempUser
+  @dkanBug @deleteTempUsers
     # Site managers trigger honeypot when creating users.
     # See https://github.com/NuCivic/dkan/issues/811
     # Workaround: Wait for 6 seconds so that honeypot doesn't overreact

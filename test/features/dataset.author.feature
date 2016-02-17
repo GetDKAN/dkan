@@ -9,7 +9,7 @@ Feature: Dataset Features
 
   Background:
     Given pages:
-      | title        | url                          |
+      | name         | url                          |
       | Datasets     | /dataset                     |
       | My Content   | /user                        |
     Given users:

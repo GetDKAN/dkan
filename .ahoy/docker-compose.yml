@@ -88,7 +88,8 @@ memcached:
 # Uncomment the service definition section below and the link in the web service above to start using selenium2 driver for Behat tests requiring JS support.
 browser:
   hostname: browser
-  image: selenium/standalone-chrome-debug:2.48.2
+  image: selenium/standalone-chrome-debug:2.49.1
+  # This helps keep selenium-chrome from crashing because it uses shared memory.
   volumes:
     - /dev/shm:/dev/shm
   links:

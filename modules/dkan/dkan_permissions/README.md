@@ -10,7 +10,7 @@ If you have been using the older DKAN Sitewide Roles and Permissions module on a
 
 You also of course have the option of disabling both modules, setting your own prefered roles and permissions and exporting those to a custom feature.
 
-For detailed documentation of the DKAN Permissions module, see *this blog post* (coming soon).
+For detailed documentation of the DKAN Permissions module, see [our blog post](http://www.nucivic.com/dkan-roles-and-permissions-just-got-easier-in-the-latest-release/).
 
 ## Group Permissions
 
