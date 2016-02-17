@@ -1,7 +1,7 @@
 Feature: Data Dashboard
 
   Background:
-    Given Data Dashboard:
+    Given data dashboards:
       | title        |
       | Dashboard 01 |
       | Dashboard 02 |
