@@ -212,8 +212,12 @@ commands:
     cmd: |
       ahoy cmd-proxy exec mkdir -p backups
       site=$(ahoy site name)
-      asset="https://s3.amazonaws.com/nucivic-data-backups/$site.prod.files.gz"
-      wget -O backups/$site.prod.files.gz $asset
+      asset="https://s3.amazonaws.com/nucivic-data-backups/$site.prod.files.tar.gz"
+      wget -O backups/$site.prod.files.tar.gz $asset
+      echo ""
+      echo "Unpacking the files asset."
+      echo ""
+      ahoy cmd-proxy tar xvzf backups/$site.prod.files.tar.gz
     hide: true
 
   asset-upload:
