@@ -34,6 +34,8 @@ function dkan_additional_setup() {
           array('dkan_revert_feature', array('dkan_dataset_groups_perms', array('og_features_permission'))),
           array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
           array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
+          array('dkan_revert_feature', array('dkan_sitewide_menu', array('custom_menu', 'menu_links'))),
+          array('dkan_build_menu_links', array()),
           array('dkan_flush_image_styles', array()),
           array('dkan_colorizer_reset', array()),
           array('dkan_misc_variables_set', array()),
@@ -102,6 +104,19 @@ function dkan_revert_feature($feature, $components, &$context) {
   features_revert(array($feature => $components));
   cache_clear_all();
 }
+
+/**
+ * Build menu links
+ *
+ * @param $context
+ */
+function dkan_build_menu_links(&$context) {
+  $context['message'] = t('Building menu links');
+   $menu_links = features_get_default('menu_links', 'dkan_sitewide_menu');
+   menu_links_features_rebuild_ordered($menu_links, TRUE);
+   unset($_SESSION['messages']['warning']);
+   cache_clear_all();
+ }
 
 /**
  * Flush the image styles
