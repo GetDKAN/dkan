@@ -165,7 +165,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/nuboot_radix.git'
-      branch: 7.x-1.x
+      branch: 250-civic-manage-large-file-upload
     type: theme
   radix:
     type: theme
