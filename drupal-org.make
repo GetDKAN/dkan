@@ -12,7 +12,7 @@ includes:
     #DKAN Data Story
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
     # Dkan Workflow
-  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/upstream_fixes/dkan_workflow.make"
 projects:
   manualcrop:
     version: 1.x-dev
