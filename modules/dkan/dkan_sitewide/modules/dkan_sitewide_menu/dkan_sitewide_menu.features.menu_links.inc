@@ -73,26 +73,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -49,
     'customized' => 1,
   );
-  // Exported menu link: menu-command-center-menu_add-dataset:node/add/dataset
-  $menu_links['menu-command-center-menu_add-dataset:node/add/dataset'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'node/add/dataset',
-    'router_path' => 'node/add/dataset',
-    'link_title' => 'Add dataset',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'menu-command-center-menu_add-dataset:node/add/dataset',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -50,
-    'customized' => 1,
-  );
   // Exported menu link: menu-command-center-menu_add-group:node/add/group
   $menu_links['menu-command-center-menu_add-group:node/add/group'] = array(
     'menu_name' => 'menu-command-center-menu',
