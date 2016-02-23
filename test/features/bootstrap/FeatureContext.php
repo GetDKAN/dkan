@@ -52,4 +52,33 @@ class FeatureContext extends RawDKANContext
     }
   }
 
+
+  /**
+   * @When I hover over the admin menu item :item
+   */
+  public function iHoverOverTheAdminMenuItem($item) {
+    $session = $this->getSession();
+    $page = $session->getPage();
+    $menu = $page->findById('admin-menu-wrapper');
+    $element = $menu->findLink($item);
+    if (null === $element) {
+        throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
+    }
+
+    $element->mouseOver();
+  }
+
+  /**
+   * @When I should see the admin menu item :item
+   */
+  public function iShouldSeeTheAdminMenuItem($item) {
+    $session = $this->getSession();
+    $page = $session->getPage();
+    $menu = $page->findById('admin-menu-wrapper');
+    $element = $menu->findLink($item);
+    if (null === $element) {
+        throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
+    }
+  }
+
 }
