@@ -8,9 +8,9 @@ Feature: Search
   Background:
     Given I am on the homepage
     And pages:
-    | name           | url                         |
-    | Dataset Search | /dataset                    |
-    | Dataset Results| /dataset?query=Dataset%2001 |
+    | name           | url                                      |
+    | Dataset Search | /search/type/dataset                     |
+    | Dataset Results| //search/type/dataset?query=Dataset%2001 |
 
   Scenario: Searching datasets
     Given datasets:
