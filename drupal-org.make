@@ -4,7 +4,7 @@ includes:
     # DKAN Dataset
   - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
     # DKAN Datastore
-  - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/1524_datastore_warnings/dkan_datastore.make"
     # Visualization Entity
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make"
     # Visualization Entity Charts
@@ -52,7 +52,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_datastore.git'
-      branch: 7.x-1.x
+      branch: 1524_datastore_warnings
   visualization_entity:
     download:
       type: git
