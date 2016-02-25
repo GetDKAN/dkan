@@ -106,6 +106,7 @@ Feature: Resource
     Then I should see "Dataset 02" in the "dataset title" region
     And I should see "Resource 01" in the "dataset resource list" region
 
+  @noworkflow
   Scenario: Add a resource with no datasets to a dataset with no resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
@@ -118,6 +119,7 @@ Feature: Resource
     Then I should see "Dataset 03" in the "dataset title" region
     And I should see "Resource 06" in the "dataset resource list" region
 
+  @noworkflow
   Scenario: Remove a resource with only one dataset from the dataset
     Given I am logged in as "Katie"
     And I am on "Resource 07" page
@@ -131,6 +133,7 @@ Feature: Resource
     Given I am on "Dataset 04" page
     Then I should not see "Resource 07" in the "dataset resource list" region
 
+  @noworkflow
   Scenario: Add a resource with no group to a dataset with group
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
@@ -142,6 +145,7 @@ Feature: Resource
     When I click "Edit"
     Then I should see "Group 01" in the "resource groups" region
 
+  @noworkflow
   Scenario: Remove a resource from a dataset with group
     Given I am logged in as "Katie"
     And I am on "Resource 08" page
@@ -156,6 +160,7 @@ Feature: Resource
     When I am on "Dataset 05" page
     Then I should not see "Resource 08" in the "dataset resource list" region
 
+  @noworkflow
   Scenario: Add a resource to multiple datasets with groups
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
@@ -169,6 +174,7 @@ Feature: Resource
     Then I should see "Group 01" in the "resource groups" region
     And I should see "Group 02" in the "resource groups" region
 
+  @noworkflow
   Scenario: Remove one dataset with group from resource with multiple datasets
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
@@ -186,6 +192,7 @@ Feature: Resource
     Then I should see "Group 01" in the "resource groups" region
     And I should not see "Group 02" in the "resource groups" region
 
+  @noworkflow
   Scenario: Remove all datasets with groups from resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
@@ -203,7 +210,7 @@ Feature: Resource
     Then I should not see "Group 01" in the "resource groups" region
     And I should not see "Group 02" in the "resource groups" region
 
-  @dkanBug
+  @dkanBug @noworkflow
     # TODO: Managing own datastore not currently supported for authenticated users
     # TODO: Permissions for a user to manage the datastore of their own resource are not set (they can't access)
   Scenario: Manage datastore of own resource

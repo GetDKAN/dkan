@@ -112,6 +112,7 @@ Feature: Dataset Features
   Scenario: Dummy test
     Given I am on "/"
 
+  @noworkflow
   Scenario: Add a resource with no dataset to a dataset with no resource
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
@@ -127,6 +128,7 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
+  @noworkflow
   Scenario: Remove a resource with only one dataset from the dataset
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
@@ -145,6 +147,7 @@ Feature: Dataset Features
     And I click "Back to dataset"
     Then I should see "There is no dataset associated with this resource"
 
+  @noworkflow
   Scenario: Add a resource with no group to a dataset with group
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
@@ -160,6 +163,7 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
+  @noworkflow
   Scenario: Remove a resource from a dataset with group
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
@@ -180,6 +184,7 @@ Feature: Dataset Features
     And I click "Edit"
     Then I should not see "Group 01" in the "resource groups" region
 
+  @noworkflow
   Scenario: Add group to a dataset with resources
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
@@ -192,6 +197,7 @@ Feature: Dataset Features
     And I click "Edit"
     Then I should see "Group 02" in the "resource groups" region
 
+  @noworkflow
   Scenario: Remove group from dataset with resources
     Given I am logged in as "Katie"
     And I am on "Dataset 09" page
@@ -204,6 +210,7 @@ Feature: Dataset Features
     And I click "Edit"
     Then I should not see "Group 02" in the "resource groups" region
 
+  @noworkflow
   Scenario: Add group and resource to a dataset on the same edition
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
