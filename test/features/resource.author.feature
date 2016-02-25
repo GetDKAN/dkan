@@ -77,7 +77,7 @@ Feature: Resource
     When I am on "User" page
     Then I should see "Resource 02 edited"
 
-  @noworkflow
+  @fixme @noworkflow
   Scenario: A data contributor should not be able to publish resources
     Given I am logged in as "Katie"
     And I am on "Resource 02" page
