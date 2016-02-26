@@ -23,8 +23,8 @@ Feature: Search
   Scenario: See number of datasets on search page
     Given I am on the "Dataset Search" page
     Given I search for " "
-    Then I should see "10" search results shown on the page
-    And I should see "11 datasets"
+    Then I should see "4" search results shown on the page
+    And I should see "4 datasets"
 
   Scenario: Filter by facet tag
     Given "tags" terms:
