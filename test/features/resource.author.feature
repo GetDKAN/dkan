@@ -26,7 +26,7 @@ Feature: Resource
       | Katie   | Group 01 | member               | Active            |
       | Jaz     | Group 01 | member               | Pending           |
       | Admin   | Group 02 | administrator member | Active            |
-      | Celeste | Group 02 | member               | Active            |
+      | Celeste | Group 01 | member               | Active            |
     And "Tags" terms:
       | name    |
       | Health  |
@@ -66,12 +66,6 @@ Feature: Resource
     Then I should see "Resource Resource 02 edited has been updated"
     When I am on "User" page
     Then I should see "Resource 02 edited"
-
-  Scenario: A data contributor should not be able to publish resources
-    Given I am logged in as "Katie"
-    And I am on "Resource 02" page
-    When I click "Edit"
-    Then I should not see "Publishing options"
 
   #TODO: Content creator will be a role added later, but for now we stick with authenticated user
   Scenario: Delete own resource
