@@ -30,7 +30,8 @@ function dkan_sitewide_menu() {
  * Callback to make change search path backward compatible.
  */
 function dkan_sitewide_redirect_to_search(){
-  drupal_goto('search/type/dataset', array(), 301);
+  $params = drupal_get_query_parameters();
+  drupal_goto('/search/type/dataset', array('query' => $params), 301);
 }
 
 /**

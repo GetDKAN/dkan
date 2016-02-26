@@ -124,8 +124,8 @@ Feature: Dataset Features
     Then I should see "3 datasets"
     And I should see "3" items in the "datasets" region
     When I press "Reset"
-    Then I should see "19 datasets"
-    And I should see "10" items in the "datasets" region
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
 
   Scenario: View available tag filters for datasets
     Given I am on "Datasets Search" page
