@@ -138,7 +138,7 @@ Feature: Dataset Features
     Given I am on "Datasets Search" page
     Then I click on the text "Format"
     Then I should see "csv (5)" in the "filter by resource format" region
-    Then I should see "html (1)" in the "filter by resource format" region
+    Then I should see "html (2)" in the "filter by resource format" region
 
   Scenario: View available author filters for datasets
     Given I am on "Datasets Search" page
