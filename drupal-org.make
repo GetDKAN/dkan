@@ -165,7 +165,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/nuboot_radix.git'
-      branch: 7.x-1.x
+      branch: radix-structure-update-dan2
     type: theme
   radix:
     type: theme
