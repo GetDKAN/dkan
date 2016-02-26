@@ -5,12 +5,16 @@ includes:
   - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
     # DKAN Datastore
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
+    # DKAN Workflow
+  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/upstream_fixes/dkan_workflow.make"
     # Visualization Entity
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make"
     # Visualization Entity Charts
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make"
     #DKAN Data Story
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
+    # Dkan Workflow
+  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/upstream_fixes/dkan_workflow.make"
 projects:
   manualcrop:
     version: 1.x-dev
@@ -157,10 +161,12 @@ projects:
   adminrole:
     version: '1.1'
   admin_menu_source:
-    type: git
-    url: 'http://git.drupal.org/project/admin_menu_source.git'
-    branch: 7.x-1.x
-    revision: 8514d8b
+    download:
+      type: git
+      url: 'http://git.drupal.org/project/admin_menu_source.git'
+      branch: 7.x-1.x
+      revision: 8514d8b
+    # Allow ordering of roles to handle users w/multiple roles
     patch:
       2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
   menu_token:

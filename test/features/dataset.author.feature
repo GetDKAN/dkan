@@ -53,7 +53,9 @@ Feature: Dataset Features
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Datasets" page
-    When I click "Add Dataset"
+    Then I hover over the admin menu item "Content"
+    Then I hover over the admin menu item "Add content"
+    Then I click "Dataset"
     And I fill in the following:
       | Title           | Test Dataset      |
       | Description     | Test description  |

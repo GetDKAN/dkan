@@ -296,6 +296,7 @@ function dkan_permissions_default_roles_permissions() {
     'name' => 'content creator',
     'weight' => 11,
     'permissions' => array(
+      'access administration menu' => TRUE,
       'access administration pages' => TRUE,
       'access content' => TRUE,
       'access content overview' => TRUE,

@@ -24,6 +24,19 @@ function dkan_sitewide_menu_update_7100() {
  * rid to be the same on every site so not using features.
  */
 function _dkan_sitewide_menu_setup_admin_menu_source() {
+  $required_roles = array('administrator', 'site manager', 'editor', 'content creator');
+  $roles = array_flip(user_roles());
+  $admin_menu_source_settings = array();
+  foreach($required_roles as $role_name) {
+    if (!isset($roles[$role_name])) {
+      $role = new stdClass();
+      $role->name = $role_name;
+      user_role_save($role);
+      $roles[$role_name] = $role->rid;
+    }
+  }
+
+
   $roles = array_flip(user_roles());
 
   $admin_menu_source_settings = array(
@@ -34,7 +47,7 @@ function _dkan_sitewide_menu_setup_admin_menu_source() {
     ),
     $roles['site manager'] => array(
       'rid' => $roles['site manager'],
-      'source' => '',
+      'source' => 'menu-command-center-menu',
       'weight' => 1,
     ),
     $roles['editor'] => array(
@@ -42,7 +55,7 @@ function _dkan_sitewide_menu_setup_admin_menu_source() {
       'source' => 'menu-command-center-menu',
       'weight' => 2,
     ),
-    $roles['content creator '] => array(
+    $roles['content creator'] => array(
       'rid' => $roles['content creator '],
       'source' => 'menu-command-center-menu',
       'weight' => 3,
