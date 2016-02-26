@@ -165,7 +165,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/nuboot_radix.git'
-      branch: 7.x-1.x
+      branch: change_search_path
     type: theme
   radix:
     type: theme
