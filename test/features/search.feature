@@ -10,7 +10,7 @@ Feature: Search
     And pages:
     | name           | url                                      |
     | Dataset Search | /search/type/dataset                     |
-    | Dataset Results| //search/type/dataset?query=Dataset%2001 |
+    | Dataset Results| /search/type/dataset?query=Dataset%2001 |
 
   Scenario: Searching datasets
     Given datasets:
