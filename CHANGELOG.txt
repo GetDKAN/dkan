@@ -1,6 +1,8 @@
 7.x-1.x
 --------------------------
 - Upgrade Drupal core to 7.43
+- Enable pretty paths for search page
+- Change search page path from /dataset to /search and redirect /dataset to /search for backward compatibility
 
 7.x-1.11 2016-02-01
 --------------------------
