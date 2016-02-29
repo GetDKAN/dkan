@@ -165,11 +165,11 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/nuboot_radix.git'
-      branch: 7.x-1.x
+      branch: radix-structure-update-dan2
     type: theme
   radix:
     type: theme
-    version: 3.0-rc4
+    version: 3.3
     patch:
       2557385: 'https://www.drupal.org/files/issues/radix-undefined-theme-2557385-9.patch'
   field_reference_delete:
