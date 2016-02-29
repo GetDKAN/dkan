@@ -1,3 +1,10 @@
+7.x-1.x
+--------------------------
+- Upgrade Drupal core to 7.43
+- Enable pretty paths for search page
+- Change search page path from /dataset to /search and redirect /dataset to /search for backward compatibility
+- Add big file upload support through file_resup module
+
 7.x-1.11 2016-02-01
 --------------------------
 - Re-designed dataset/search page. "Datasets" link on default menu bar now goes to a page that lets you browse and search all site content, not just datasets, but does filter by dataset. Search box will search all content by default. See note below.
