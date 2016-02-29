@@ -15,8 +15,8 @@ Feature: Dataset Features
 
   Background:
     Given pages:
-      | name      | url                        |
-      | Datasets  | /dataset?f[0]=type:dataset |
+      | name             | url                        |
+      | Datasets Search  | /search/type/dataset       |
     Given users:
       | name    | mail             | roles                |
       | John    | john@example.com    | site manager         |
@@ -76,7 +76,7 @@ Feature: Dataset Features
       | Dataset 2 years ago   |  Yes       | Test        | -2 year      |
       | Dataset 1 year ago    |  Yes       | Test        | -1 year      |
       | Dataset 3 years ago   |  Yes       | Test        | -3 year      |
-    And I am on "Datasets" page
+    And I am on "Datasets Search" page
     And I select "Date changed" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
@@ -90,14 +90,14 @@ Feature: Dataset Features
       | Dataset 2 years +   |  Yes       | Test        | +2 year      |
       | Dataset 3 years +   |  Yes       | Test        | +3 year      |
       | Dataset 1 year +    |  Yes       | Test        | +1 year      |
-    And I am on "Datasets" page
+    And I am on "Datasets Search" page
     And I select "Date changed" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
     And I should see the first "4" dataset items in "Date changed" "Desc" order.
 
   Scenario: Search datasets by "title" with "Asc" order
-    Given I am on "Datasets" page
+    Given I am on "Datasets Search" page
     And I select "Title" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
@@ -106,7 +106,7 @@ Feature: Dataset Features
     And I should see the first "3" dataset items in "Title" "Asc" order.
 
   Scenario: Search datasets by "title" with "Desc" order
-    Given I am on "Datasets" page
+    Given I am on "Datasets Search" page
     And I select "Title" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
@@ -118,37 +118,37 @@ Feature: Dataset Features
     #        datasets, should be fixed
 
   Scenario: Reset dataset search filters
-    Given I am on "Datasets" page
+    Given I am on "Datasets Search" page
     When I fill in "Test" for "Search" in the "datasets" region
     And I press "Apply"
     Then I should see "3 datasets"
     And I should see "3" items in the "datasets" region
     When I press "Reset"
-    Then I should see "19 datasets"
-    And I should see "10" items in the "datasets" region
+    Then I should see "7 datasets"
+    And I should see "7" items in the "datasets" region
 
   Scenario: View available tag filters for datasets
-    Given I am on "Datasets" page
+    Given I am on "Datasets Search" page
     Then I click on the text "Tags"
     Then I should see "Health (2)" in the "filter by tag" region
     Then I should see "Gov (1)" in the "filter by tag" region
 
 
   Scenario: View available resource format filters for datasets
-    Given I am on "Datasets" page
+    Given I am on "Datasets Search" page
     Then I click on the text "Format"
     Then I should see "csv (5)" in the "filter by resource format" region
-    Then I should see "html (1)" in the "filter by resource format" region
+    Then I should see "html (2)" in the "filter by resource format" region
 
   Scenario: View available author filters for datasets
-    Given I am on "Datasets" page
+    Given I am on "Datasets Search" page
     Then I click on the text "Author"
     Then I should see "Gabriel (2)" in the "filter by author" region
     Then I should see "Katie (1)" in the "filter by author" region
 
 
   Scenario: Filter dataset search results by tags
-    Given I am on "Datasets" page
+    Given I am on "Datasets Search" page
     Then I should see "7 datasets"
     And I should see "7" items in the "datasets" region
     Then I click on the text "Tags"
@@ -157,7 +157,7 @@ Feature: Dataset Features
     And I should see "2" items in the "datasets" region
 
   Scenario: Filter dataset search results by resource format
-    Given I am on "Datasets" page
+    Given I am on "Datasets Search" page
     Then I should see "7 datasets"
     And I should see "7" items in the "datasets" region
     Then I click on the text "Format"
@@ -167,7 +167,7 @@ Feature: Dataset Features
     And I should see "5" items in the "datasets" region
 
   Scenario: Filter dataset search results by author
-    Given I am on "Datasets" page
+    Given I am on "Datasets Search" page
     Then I should see "7 datasets"
     And I should see "7" items in the "datasets" region
     Then I click on the text "Author"
@@ -177,7 +177,7 @@ Feature: Dataset Features
     And I should see "2" items in the "datasets" region
 
   Scenario: View published dataset
-    Given I am on "Datasets" page
+    Given I am on "Datasets Search" page
     When I click "Dataset 01"
     # I should see the license information
     Then I should be on "Dataset 01" page
