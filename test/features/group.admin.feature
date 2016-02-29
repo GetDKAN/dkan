@@ -158,7 +158,7 @@ Feature: Site managers administer groups
     And I am on "Group 01" page
     And I click "Group"
     When I click "People"
-    Then I should see "Total content: 4"
+    Then I should see "Total content: 5"
 
   Scenario: View list of unpublished groups
     Given I am logged in as "John"
