@@ -14,6 +14,9 @@ function dkan_sitewide_search_db_ctools_plugin_api($module = NULL, $api = NULL) 
   if ($module == "facetapi" && $api == "facetapi_defaults") {
     return array("version" => "1");
   }
+  if ($module == "strongarm" && $api == "strongarm") {
+    return array("version" => "1");
+  }
 }
 
 /**
