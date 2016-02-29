@@ -9,9 +9,10 @@ Feature: Dataset Features
 
   Background:
     Given pages:
-      | name         | url                          |
-      | Datasets     | /dataset                     |
-      | My Content   | /user                        |
+      | name                | url                          |
+      | Datasets            | /dataset                     |
+      | Datasets Search     | /search/type/dataset         |
+      | My Content          | /user                        |
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
@@ -51,7 +52,7 @@ Feature: Dataset Features
 
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
-    And I am on "Datasets" page
+    And I am on "Datasets Search" page
     When I click "Add Dataset"
     And I fill in the following:
       | Title           | Test Dataset      |
