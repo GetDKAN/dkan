@@ -4,6 +4,7 @@
 - Enable pretty paths for search page
 - Change search page path from /dataset to /search and redirect /dataset to /search for backward compatibility
 - Add big file upload support through file_resup module
+- Add support to import big files using mysql statement load data infile
 
 7.x-1.11 2016-02-01
 --------------------------
