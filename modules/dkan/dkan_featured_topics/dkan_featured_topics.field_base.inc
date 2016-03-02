@@ -11,7 +11,7 @@ function _dkan_featured_topics_installed_fields() {
   $field_bases = array();
 
   // field_base: 'field_icon_type' - check if it exists.
-  if(!field_info_field('field_icon_type') {
+  if(!field_info_field('field_icon_type')) {
     $field_bases['field_icon_type'] = array(
       'active' => 1,
       'cardinality' => 1,
@@ -38,7 +38,7 @@ function _dkan_featured_topics_installed_fields() {
   }
 
   // field_base: 'field_topic'
-  if(!field_info_field('field_topic') {
+  if(!field_info_field('field_topic')) {
     $field_bases['field_topic'] = array(
       'active' => 1,
       'cardinality' => -1,
@@ -66,7 +66,7 @@ function _dkan_featured_topics_installed_fields() {
   }
 
   // field_base: 'field_topic_icon'
-  if(!field_info_field('field_topic_icon') {
+  if(!field_info_field('field_topic_icon')) {
     $field_bases['field_topic_icon'] = array(
       'active' => 1,
       'cardinality' => 1,
@@ -87,7 +87,7 @@ function _dkan_featured_topics_installed_fields() {
   }
 
   // field_base: 'field_topic_icon_color'
-  if(!field_info_field('field_topic_icon_color') {
+  if(!field_info_field('field_topic_icon_color')) {
     $field_bases['field_topic_icon_color'] = array(
       'active' => 1,
       'cardinality' => 1,
