@@ -169,9 +169,7 @@ projects:
     type: theme
   radix:
     type: theme
-    version: 3.0-rc4
-    patch:
-      2557385: 'https://www.drupal.org/files/issues/radix-undefined-theme-2557385-9.patch'
+    version: 3.3
   field_reference_delete:
     download:
       version: 7.x-1.0-beta1
