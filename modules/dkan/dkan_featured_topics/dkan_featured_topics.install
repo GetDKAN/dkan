@@ -179,5 +179,21 @@ function dkan_featured_topics_modules_enabled($modules) {
       panels_display_pane_remove($page->conf['display'], 'sidebar', 'block', 'facetapi-EwrOFrHh7WdVteFiBTQYXfGlscW50MbI', $configuration, $style);
     }
   }
+}
+
+function dkan_featured_topics_uninstall() {
+  // Remove taxonomy.
+  $vocab = taxonomy_vocabulary_machine_name_load('dkan_topics');
+  taxonomy_vocabulary_delete($vocab->vid);
+
+  // Loop over each of the fields defined by this module and delete
+  // all instances of the field, their data, and the field itself.
+  // http://api.drupal.org/api/function/field_delete_field/7
+  foreach (array_keys(_dkan_featured_topics_installed_fields()) as $field) {
+    field_delete_field($field);
+  }
+  // Purge all field infromation
+  // http://api.drupal.org/api/function/field_purge_batch/7
+  field_purge_batch(1000);
 
 }
