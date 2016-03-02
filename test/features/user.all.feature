@@ -91,7 +91,7 @@ Feature: User
     And I click "Datasets" in the "tabs" region
     When I fill in "Test" for "Search" in the "content search" region
     And I press "Apply"
-    Then I should see "2 datasets" in the "user content" region
+    Then I should see "2 results" in the "user content" region
     And I should see "2" items in the "user content" region
 
   Scenario: See list of user memberships on user profile
