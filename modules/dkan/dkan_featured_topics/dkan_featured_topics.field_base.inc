@@ -63,7 +63,7 @@ function _dkan_featured_topics_installed_fields() {
       'translatable' => 0,
       'type' => 'taxonomy_term_reference',
     );
-  }
+  //}
 
   // field_base: 'field_topic_icon'
   //if(!field_info_field('field_topic_icon')) {
