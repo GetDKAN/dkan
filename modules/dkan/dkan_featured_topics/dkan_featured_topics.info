@@ -30,6 +30,7 @@ features[field_instance][] = taxonomy_term-dkan_topics-field_icon_type
 features[field_instance][] = taxonomy_term-dkan_topics-field_image
 features[field_instance][] = taxonomy_term-dkan_topics-field_topic_icon
 features[field_instance][] = taxonomy_term-dkan_topics-field_topic_icon_color
+features[image][] = small_topics_icons
 features[image][] = topic_medium
 features[taxonomy][] = dkan_topics
 features[views_view][] = dkan_topics_featured
