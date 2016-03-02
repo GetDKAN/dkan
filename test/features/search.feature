@@ -24,7 +24,7 @@ Feature: Search
     Given I am on the "Dataset Search" page
     Given I search for " "
     Then I should see "4" search results shown on the page
-    And I should see "4 datasets"
+    And I should see "4 results"
 
   Scenario: Filter by facet tag
     Given "tags" terms:
