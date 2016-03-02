@@ -50,8 +50,8 @@ commands:
       fi
     usage: run a command in the docker-compose cli service container.
   mysql:
-    cmd: "docker exec -it $(ahoy docker compose ps -q cli) bash -c 'mysql -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
-    usage: Connect to the default mysql database.
+    cmd: "docker exec -it $(ahoy docker compose ps -q cli) bash -c 'mysql -uroot -p$DB_ENV_MYSQL_ROOT_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
+    usage: Connect to the default mysql database as the root user.
   mysql-import:
     cmd: "docker exec -i $(ahoy docker compose ps -q cli) bash -c 'mysql -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
     usage: Pipe in a sql file.  `ahoy docker mysql-import < backups/live.sql`
