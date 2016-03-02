@@ -5,6 +5,7 @@
  */
 
 include_once 'dkan_featured_topics.inc';
+include_once 'dkan_featured_topics.conditional_fields.inc';
 
 /**
  * Implements hook_page_alter().
