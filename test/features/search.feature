@@ -8,16 +8,17 @@ Feature: Search
   Background:
     Given I am on the homepage
     And pages:
-    | title          | url      |
-    | Dataset Search | /dataset |
+    | name           | url                                      |
+    | Dataset Search | /search/type/dataset                     |
+    | Dataset Results| /search/type/dataset?query=Dataset%2001 |
 
   Scenario: Searching datasets
     Given datasets:
       | title           |
       | Dataset 01      |
     When I search for "Dataset 01"
-    Then I should be on the "Dataset Search" page
-    And I should see "Dataset 01" in the search results
+    Then I should be on the "Dataset Results" page
+    And I should see "Dataset 01"
 
   Scenario: See number of datasets on search page
     Given I am on the "Dataset Search" page
@@ -36,8 +37,8 @@ Feature: Search
 
     And I search for " "
     When I click "politics"
-    Then I should not see "Dataset 01" in the search results
-    But I should see "Dataset 02" in the search results
+    Then I should not see "Dataset 01"
+    But I should see "Dataset 02"
 
   Scenario: Filter by facet group
     Given groups:
@@ -49,5 +50,5 @@ Feature: Search
       | Dataset 02      | Group 01 |
     And I search for " "
     When I click "Group 01"
-    Then I should not see "Dataset 01" in the search results
-    But I should see "Dataset 02" in the search results
+    Then I should not see "Dataset 01"
+    But I should see "Dataset 02"

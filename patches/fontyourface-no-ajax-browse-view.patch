@@ -1,0 +1,35 @@
+diff --git a/modules/fontyourface_ui/views/fontyourface_ui.views_default.inc b/modules/fontyourface_ui/views/fontyourface_ui.views_default.inc
+index 111eed1..d5c37d9 100644
+--- a/modules/fontyourface_ui/views/fontyourface_ui.views_default.inc
++++ b/modules/fontyourface_ui/views/fontyourface_ui.views_default.inc
+@@ -25,7 +25,7 @@ function fontyourface_ui_views_default_views() {
+   /* Display: Defaults */
+   $handler = $view->new_display('default', 'Defaults', 'default');
+   $handler->display->display_options['title'] = 'Browse all fonts';
+-  $handler->display->display_options['use_ajax'] = TRUE;
++  $handler->display->display_options['use_ajax'] = FALSE;
+   $handler->display->display_options['access']['type'] = 'perm';
+   $handler->display->display_options['access']['perm'] = 'administer @font-your-face';
+   $handler->display->display_options['cache']['type'] = 'none';
+diff --git a/modules/google_fonts_api/views/google_fonts_api.views_default.inc b/modules/google_fonts_api/views/google_fonts_api.views_default.inc
+index 2f652e6..6576157 100644
+--- a/modules/google_fonts_api/views/google_fonts_api.views_default.inc
++++ b/modules/google_fonts_api/views/google_fonts_api.views_default.inc
+@@ -26,7 +26,7 @@ function google_fonts_api_views_default_views() {
+   $handler = $view->new_display('default', 'Defaults', 'default');
+   $handler->display->display_options['title'] = 'Browse fonts';
+   $handler->display->display_options['css_class'] = 'view-fontyourface-browse';
+-  $handler->display->display_options['use_ajax'] = TRUE;
++  $handler->display->display_options['use_ajax'] = FALSE;
+   $handler->display->display_options['access']['type'] = 'perm';
+   $handler->display->display_options['access']['perm'] = 'administer @font-your-face';
+   $handler->display->display_options['cache']['type'] = 'none';
+@@ -287,7 +287,7 @@ function google_fonts_api_views_default_views() {
+   $handler->display->display_options['filters']['license']['expose']['identifier'] = 'license';
+   $handler->display->display_options['filters']['license']['expose']['required'] = 0;
+   $handler->display->display_options['filters']['license']['expose']['multiple'] = FALSE;
+-  
++
+   /* Display: Google Fonts */
+   $handler = $view->new_display('page', 'Google Fonts', 'page_2');
+   $handler->display->display_options['defaults']['arguments'] = FALSE;

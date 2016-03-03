@@ -11,7 +11,7 @@ Feature: Site Manager administer groups
 
   Background:
     Given pages:
-      | title     | url             |
+      | name      | url             |
       | Groups    | /groups         |
       | Content   | /admin/content/ |
     Given users:
@@ -76,7 +76,7 @@ Feature: Site Manager administer groups
     Given I am on "Group 01" page
     When I fill in "toy" for "Search" in the "content" region
     And I press "Apply"
-    Then I should see "1 datasets" in the "content" region
+    Then I wait for "1 datasets"
 
   Scenario: View available "resource format" filters after search
     Given I am on "Group 01" page
@@ -104,18 +104,18 @@ Feature: Site Manager administer groups
     When I fill in "Dataset" for "Search" in the "content" region
     And I press "Apply"
     When I click "csv (1)" in the "filter by resource format" region
-    Then I should see "1 datasets" in the "content" region
+    Then I wait for "1 datasets"
 
   Scenario: Filter datasets on group by author
     Given I am on "Group 01" page
     When I fill in "Dataset" for "Search" in the "content" region
     And I press "Apply"
     When I click "Katie" in the "filter by author" region
-    Then I should see "1 datasets" in the "content" region
+    Then I wait for "1 datasets"
 
   Scenario: Filter datasets on group by tags
     Given I am on "Group 01" page
     When I fill in "Dataset" for "Search" in the "content" region
     And I press "Apply"
     When I click "Health" in the "filter by tag" region
-    Then I should see "1 datasets" in the "content" region
+    Then I wait for "1 datasets"

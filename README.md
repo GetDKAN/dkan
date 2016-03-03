@@ -1,7 +1,10 @@
+[![DKAN Sitewide Build Status](https://circleci.com/gh/NuCivic/dkan.svg?style=svg)](https://circleci.com/gh/NuCivic/dkan)
 
-[![DKAN](http://f.cl.ly/items/3q3v120q0h1q2d2A3s3L/Screenshot%202014-04-29%2018.40.15.png)](http://nucivic.com/dkan)
+[![Join the chat at https://gitter.im/NuCivic/dkan](https://badges.gitter.im/NuCivic/dkan.svg)](https://gitter.im/NuCivic/dkan?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## What is DKAN?
+
+[![DKAN](https://www.drupal.org/files/2016-02-05_12-09-49.png)](http://nucivic.com/dkan)
 
 [DKAN](http://nucivic.com/dkan) is a Drupal-based open data tool with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. DKAN is maintained by [NuCivic](http://nucivic.com).
 
