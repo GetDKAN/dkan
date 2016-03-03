@@ -1036,7 +1036,7 @@ function dkan_sitewide_panels_default_page_manager_pages() {
   $page->task = 'page';
   $page->admin_title = 'Datasets';
   $page->admin_description = '';
-  $page->path = 'dataset';
+  $page->path = 'search';
   $page->access = array(
     'type' => 'none',
     'settings' => NULL,
