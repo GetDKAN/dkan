@@ -1,0 +1,86 @@
+body .navbar-default .navbar-nav .view-dkan-topics-featured .dropdown-menu,
+.navbar-default .view-dkan-topics-featured .user-menu .dropdown-menu {
+  padding: 30px;
+  margin-top: 0;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+.navbar-nav .open .dropdown-menu {
+  display: block;
+}
+.navbar-nav .dropdown-menu .featured-topics-menu a {
+  color: #2b3076 !important;
+}
+.navbar-nav .dropdown-menu li.topics-item {
+  float: left;
+  width: 125px;
+  height: 140px;
+  text-align: center;
+}
+.navbar-nav > li > .dropdown-menu.topics {
+  padding: 30px;
+}
+.navbar-nav .dropdown-menu.topics img {
+  width: 75px;
+  height: 75px;
+}
+.navbar-default .navbar-nav .open .dropdown-toggle .dropdown-menu li a:hover {
+  background-color: #fff;
+}
+.navbar-default .navbar-nav .open .view-dkan-topics-featured .dropdown-menu li > a:hover {
+  background-color: #fff;
+}
+.navbar-default .navbar-nav .open .view-dkan-topics-featured .dropdown-menu li > a {
+  padding: 3px;
+  white-space: normal;
+}
+ @media (min-width: 768px) {
+  .navbar-nav .view-dkan-topics-featured > li {
+    float: left;
+    position: inherit;
+  }
+  .navbar-nav .view-dkan-topics-featured > li.open {
+    position: static;
+  }
+  .navbar-nav .view-dkan-topics-featured .dropdown-menu {
+    width: 950px;
+    float: left;
+    left: 0;
+    position: relative;
+    background: #FFF !important;
+    color: #2b3076;
+  }
+}
+
+.view-dkan-topics-featured .topic-icon,
+.view-dkan-topics-featured .views-field {
+  display: block;
+  margin: 5px 0;
+  text-align: center;
+  width: 100%;
+}
+.view-dkan-topics-featured a:hover {
+  text-decoration: none;
+}
+.view-dkan-topics-featured .topic-icon a::before {
+  font-size: 7em;
+  line-height: 1em;
+}
+#div-field-topic-icon-color-und-0--rgb {
+  margin-bottom: 3em;
+}
+/* dataset view */
+.node .field-name-field-topic-icon,
+.view-dkan-datasets .field-name-field-topic-icon {
+  display: inline-block;
+}
+.node .field-name-field-topic-icon span::before,
+.view-dkan-datasets .field-name-field-topic-icon span::before {
+  font-size: 1.5em;
+  vertical-align: bottom;
+  padding-right: 2px;
+}
+/*.field-name-field-topic .field-name-field-topic .field-label,
+.view-dkan-datasets .field-name-field-topic .field-label {
+  display: none;
+}*/

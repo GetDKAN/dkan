@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * Install file for DKAN Topics.
+ */
+
+
+/**
+ * Implements hook_install().
+ */
+function dkan_featured_topics_install() {
+  dkan_featured_topics_add_menu();
+}

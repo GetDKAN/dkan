@@ -1448,6 +1448,30 @@ function dkan_sitewide_panels_default_page_manager_pages() {
     $display->content['new-8aa431e2-a9e8-4d73-b043-aa57ecbf0947'] = $pane;
     $display->panels['middle'][0] = 'new-8aa431e2-a9e8-4d73-b043-aa57ecbf0947';
     $pane = new stdClass();
+    $pane->pid = 'new-5dd2eb01-4ffb-44fe-8c72-07d167cf363c';
+    $pane->panel = 'middle';
+    $pane->type = 'views_panes';
+    $pane->subtype = 'dkan_topics_featured-panel_pane_1';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'items_per_page' => '12',
+      'override_title' => 0,
+      'override_title_text' => '',
+      'override_title_heading' => 'h2',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 1;
+    $pane->locks = array();
+    $pane->uuid = '5dd2eb01-4ffb-44fe-8c72-07d167cf363c';
+    $display->content['new-5dd2eb01-4ffb-44fe-8c72-07d167cf363c'] = $pane;
+    $display->panels['middle'][1] = 'new-5dd2eb01-4ffb-44fe-8c72-07d167cf363c';
+    $pane = new stdClass();
     $pane->pid = 'new-d3655ff2-8c3c-4a0b-b492-8aa98ea1b7f3';
     $pane->panel = 'top-first';
     $pane->type = 'block';
