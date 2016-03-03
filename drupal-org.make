@@ -11,7 +11,7 @@ includes:
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make"
     #DKAN Data Story
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
-  	#DKAN Featured Topics
+    #DKAN Featured Topics
   - "modules/dkan/dkan_featured_topics/dkan_featured_topics.make"
 projects:
   manualcrop:
