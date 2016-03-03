@@ -25,10 +25,11 @@ function dkan_featured_topics_field_default_field_instances() {
         'weight' => 21,
       ),
       'teaser' => array(
-        'label' => 'above',
+        'label' => 'hidden',
+        'module' => 'dkan_dataset',
         'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
+        'type' => 'dkan_dataset_term_topic_icon',
+        'weight' => 5,
       ),
     ),
     'entity_type' => 'node',
@@ -49,9 +50,44 @@ function dkan_featured_topics_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'taxonomy_term-dkan_topics_term-field_image'
-  $field_instances['taxonomy_term-dkan_topics_term-field_image'] = array(
-    'bundle' => 'dkan_topics_term',
+  // Exported field_instance: 'taxonomy_term-dkan_topics-field_icon_type'
+  $field_instances['taxonomy_term-dkan_topics-field_icon_type'] = array(
+    'bundle' => 'dkan_topics',
+    'default_value' => array(
+      0 => array(
+        'value' => 'font',
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 2,
+      ),
+    ),
+    'entity_type' => 'taxonomy_term',
+    'field_name' => 'field_icon_type',
+    'label' => 'Icon Type',
+    'required' => 1,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_buttons',
+      'weight' => 2,
+    ),
+  );
+
+  // Exported field_instance: 'taxonomy_term-dkan_topics-field_image'
+  $field_instances['taxonomy_term-dkan_topics-field_image'] = array(
+    'bundle' => 'dkan_topics',
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -74,6 +110,9 @@ function dkan_featured_topics_field_default_field_instances() {
       'max_filesize' => '',
       'max_resolution' => '',
       'min_resolution' => '',
+      'resup' => 0,
+      'resup_autostart' => 0,
+      'resup_max_filesize' => '',
       'title_field' => 0,
       'user_register_form' => FALSE,
     ),
@@ -118,14 +157,85 @@ function dkan_featured_topics_field_default_field_instances() {
         'progress_indicator' => 'throbber',
       ),
       'type' => 'image_image',
-      'weight' => 32,
+      'weight' => 3,
+    ),
+  );
+
+  // Exported field_instance: 'taxonomy_term-dkan_topics-field_topic_icon'
+  $field_instances['taxonomy_term-dkan_topics-field_topic_icon'] = array(
+    'bundle' => 'dkan_topics',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'font_icon_select',
+        'settings' => array(),
+        'type' => 'font_icon_select_icon_default_formatter',
+        'weight' => 3,
+      ),
+    ),
+    'entity_type' => 'taxonomy_term',
+    'field_name' => 'field_topic_icon',
+    'label' => 'Icon',
+    'required' => 0,
+    'settings' => array(
+      'blacklist_fieldset' => array(
+        'blacklist' => 1,
+        'suppress' => array(),
+      ),
+      'flid' => 1,
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'font_icon_select',
+      'settings' => array(),
+      'type' => 'font_icon_select_icon_widget',
+      'weight' => 4,
+    ),
+  );
+
+  // Exported field_instance: 'taxonomy_term-dkan_topics-field_topic_icon_color'
+  $field_instances['taxonomy_term-dkan_topics-field_topic_icon_color'] = array(
+    'bundle' => 'dkan_topics',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'color_field',
+        'settings' => array(),
+        'type' => 'color_field_default_formatter',
+        'weight' => 4,
+      ),
+    ),
+    'entity_type' => 'taxonomy_term',
+    'field_name' => 'field_topic_icon_color',
+    'label' => 'Icon Color',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'color_field',
+      'settings' => array(),
+      'type' => 'color_field_spectrum_widget',
+      'weight' => 5,
     ),
   );
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Icon');
+  t('Icon Color');
+  t('Icon Type');
   t('Image');
-  t('Topic');
+  t('Topics');
 
   return $field_instances;
 }

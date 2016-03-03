@@ -51,3 +51,39 @@ body .navbar-default .navbar-nav .view-dkan-topics-featured .dropdown-menu,
     color: #2b3076;
   }
 }
+
+.view-dkan-topics-featured {
+  margin: 2em 0;
+}
+.view-dkan-topics-featured .topic-icon,
+.view-dkan-topics-featured .views-field {
+  display: block;
+  margin: 5px 0;
+  text-align: center;
+  width: 100%;
+}
+.view-dkan-topics-featured a:hover {
+  text-decoration: none;
+}
+.view-dkan-topics-featured .topic-icon a::before {
+  font-size: 7em;
+  line-height: 1em;
+}
+#div-field-topic-icon-color-und-0--rgb {
+  margin-bottom: 3em;
+}
+/* dataset view */
+.node .field-name-field-topic-icon,
+.view-dkan-datasets .field-name-field-topic-icon {
+  display: inline-block;
+}
+.node .field-name-field-topic-icon span::before,
+.view-dkan-datasets .field-name-field-topic-icon span::before {
+  font-size: 1.5em;
+  vertical-align: bottom;
+  padding-right: 2px;
+}
+/*.field-name-field-topic .field-name-field-topic .field-label,
+.view-dkan-datasets .field-name-field-topic .field-label {
+  display: none;
+}*/

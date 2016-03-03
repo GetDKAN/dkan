@@ -9,9 +9,9 @@
  */
 function dkan_featured_topics_taxonomy_default_vocabularies() {
   return array(
-    'dkan_topics_term' => array(
+    'dkan_topics' => array(
       'name' => 'Topics',
-      'machine_name' => 'dkan_topics_term',
+      'machine_name' => 'dkan_topics',
       'description' => '',
       'hierarchy' => 0,
       'module' => 'taxonomy',
