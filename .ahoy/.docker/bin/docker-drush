@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker exec -it $(docker-compose ps -q cli) bash -ic "drush $*"

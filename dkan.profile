@@ -186,7 +186,18 @@ function dkan_install_default_content(&$context) {
  *
  * @param $context
  */
-// function dkan_set_adminrole(&$context) {
-//   $context['message'] = t('Setting user admin role');
-//   dkan_sitewide_roles_perms_set_admin_role();
-// }
+function dkan_set_adminrole(&$context) {
+    $context['message'] = t('Setting user admin role');
+    if (!variable_get('user_admin_role')) {
+        if ($role = user_role_load_by_name('administrator')) {
+          variable_set('user_admin_role', $role->rid);
+          return t('User admin role reset to "administrator."');
+        }
+        else {
+          return t('Administrator role not found. Skipping update.');
+        }
+    }
+    else {
+        return t('User admin role already set. Skipping update.');
+    }
+}
