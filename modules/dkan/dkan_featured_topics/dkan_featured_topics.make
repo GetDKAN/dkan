@@ -10,8 +10,8 @@ projects[font_icon_select][download][url] = https://git.drupal.org/sandbox/wolff
 projects[font_icon_select][download][branch] = 7.x-1.x
 
 projects[conditional_fields][version] = 3.0-alpha2
-projects[taxonomy_menu][version = 1.5
-projects[color_field][version = 1.8
+projects[taxonomy_menu][version] = 1.5
+projects[color_field][version] = 1.8
 
 ; Libraries
 libraries[spectrum][type] = libraries
