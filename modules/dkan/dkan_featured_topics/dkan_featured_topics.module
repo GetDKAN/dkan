@@ -1,0 +1,239 @@
+<?php
+/**
+ * @file
+ * Code for the DKAN Featured Topics feature.
+ */
+
+include_once 'dkan_featured_topics.inc';
+include_once 'dkan_featured_topics.conditional_fields.inc';
+
+/**
+ * Implements hook_page_alter().
+ */
+function dkan_featured_topics_page_alter(&$page) {
+  drupal_add_css(drupal_get_path('module', 'dkan_featured_topics') . '/theme/dkan_featured_topics.css');
+}
+
+/**
+ * Implements hook_menu() to add topics link.
+ */
+function dkan_featured_topics_menu() {
+  $items['topics'] = array(
+    'title'           => t('Topics'),
+    'menu_name'       => 'main-menu',
+    'weight'          => 8,
+    'access callback' => TRUE,
+    'page callback'   => 'topics',
+    'access arguments' => array('view published content'), // permission
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Overrides theme_main_menu() to add topics dropdown.
+ */
+function dkan_featured_topics_main_menu($variables) {
+  $output = "<li class='leaf menu-link-topics featured-topics-menu'>";
+  if ($variables['element']['#title'] == t('Topics')) {
+    $link = ($variables['element']['#href'] == '<front>') ? '/' : $variables['element']['#href'];
+    $output .= '<a href="' . $link . '" class="dropdown-toggle" data-toggle="dropdown" data-target="#"> ' . $variables['element']["#title"] . '<b class="caret"></b></a>';
+    $output .= views_embed_view('dkan_topics_featured', 'block_1');
+  }
+  else {
+    return theme('menu_link', $variables);
+  }
+  $output .= '</li>';
+  return $output;
+}
+
+/**
+ * Adds "Topics" to main menu.
+ */
+function dkan_featured_topics_add_menu() {
+  $main_menu = menu_load_links('main-menu');
+  $topics_enabled = variable_get('dkan_featured_topics_menu_item_enabled', TRUE);
+  foreach ($main_menu as $link) {
+    if ($link['link_title'] == t('Topics')) {
+      $topics_enabled = TRUE;
+      break;
+    }
+  }
+  if (!$topics_enabled) {
+    $item = array(
+      'link_path' => '<front>',
+      'link_title' => t('Topics'),
+      'menu_name' => 'main-menu',
+      'weight' => 0,
+      'plid' => 0,
+      'module' => 'menu',
+    );
+    menu_link_save($item);
+  }
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+// function dkan_featured_topics_theme($existing) {
+//   return array(
+//     'views_view_fields__dkan_topics_featured' => array(
+//       'variables' => array('view' => NULL, 'options' => NULL, 'row' => NULL),
+//       'template' => 'views-view-fields--dkan-topics-featured',
+//       'base hook' => 'views_view_fields',
+//       'path' => drupal_get_path('module', 'dkan_featured_topics') . '/theme',
+//     ),
+//   );
+// }
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_featured_topics_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'taxonomy_form_term') {
+    $form['#attached']['js'][] = drupal_get_path('module', 'dkan_featured_topics') . '/theme/dkan_featured_topics.js';
+  }
+}
+
+/**
+* Implements hook_preprocess_field().
+*/
+function dkan_featured_topics_preprocess_field(&$vars) {
+  if ($vars['element']['#field_name'] == 'field_topic_icon') {
+    //dpm($vars);
+    $vars['label_hidden'] = TRUE;
+  }
+  if ($vars['element']['#field_name'] == 'topic') {
+    //dpm($vars);
+    $vars['label_hidden'] = TRUE;
+    $color = $vars['field_topic'][1]['taxonomy_term']->field_topic_icon_color['und'][0]['rgb'];
+    $icon = $vars['field_topic'][0]['taxonomy_term']->field_topic_icon['und'][0]['value'];
+    if($icon && $color) {
+      $vars['field_topic'][0]['taxonomy_term']->field_topic_icon['und'][0]['value'] = '<span style="color:' . $color . '">' . $icon . '</span>';
+    }
+  }
+}
+
+/**
+* Implements hook_views_pre_render().
+*/
+function dkan_featured_topics_views_pre_render(&$view) {
+  if(isset($view->name) && $view->name == 'dkan_topics_featured'){
+    //dpm($view);
+    foreach($view->result as $row) {
+      if($row->_field_data['tid']['entity']->field_icon_type['und'][0]['value'] == 'font') {
+        global $base_url;
+        $term = strtolower($row->taxonomy_term_data_name);
+        $url = $base_url . '/topics/' . $term;
+
+        // Modify icon to add term link and custom color.
+        $prefix_clipped = substr($row->field_field_topic_icon[0]['rendered']['#prefix'], 6);
+        $new_prefix = '<a href="' . $url . '"';
+        if(!empty($row->field_field_topic_icon_color[0]['raw']['rgb'])) {
+          $new_prefix .= ' style="color:' . $row->field_field_topic_icon_color[0]['raw']['rgb'] . '"';
+        }
+        $new_prefix .= $prefix_clipped;
+        $row->field_field_topic_icon[0]['rendered']['#prefix'] = $new_prefix;
+        $row->field_field_topic_icon[0]['rendered']['#suffix'] = '</a>';
+      }
+    }
+
+    return $view;
+  }
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function dkan_featured_topics_field_formatter_info() {
+  return array(
+    // 'font_icon_select_icon_default_formatter' => array(
+    //   'label' => t('default'),
+    //   'description' => t('Output unencoded icon.'),
+    //   'field types' => array('font_icon_select_icon'),
+    // ),
+    'dkan_topic_formatter' => array(
+      'label' => t('Topic with icon'),
+      'field types' => array('taxonomy_term_reference'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function dkan_featured_topics_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    //case 'font_icon_select_icon_default_formatter':
+      // Alter font_icon_select default formatter. (so far not working)
+      // foreach ($items as $delta => $item) {
+      //   if ($item['access']) {
+      //     $result[$delta] = array(
+      //       '#prefix' => '<span class="shazam topic-icon font-icon-select-' . $field['settings']['font'] . ' font-icon-select-' . $field['settings']['font'] . '-' . drupal_substr($item['value'], 1) . '">',
+      //       '#suffix' => '</span>',
+      //     );
+      //   }
+      // }
+      // break;
+
+    case 'dkan_topic_formatter':
+      // Custom formatter for topic field.
+      foreach ($items as $delta => $item) {
+        $term = taxonomy_term_load($item['tid']);
+        // Gather icon values if font icon is used.
+        $icons = field_get_items('taxonomy_term', $term, 'field_topic_icon');
+        $icon = field_view_field('taxonomy_term', $term, 'field_topic_icon', $icons, $langcode = NULL);
+        if($icon) {
+          if(isset($term->field_topic_icon_color['und'][0]['rgb'])) {
+            $color = $term->field_topic_icon_color['und'][0]['rgb'];
+            $prefix_clipped = substr($icon[0]['#prefix'], 6);
+            $new_prefix = '<span style="color:' . $color . '" ' . $prefix_clipped;
+            $icon[0]['#prefix'] = $new_prefix;
+          }
+          // Font Icon formatter.
+          $element[$delta] = array(
+          'image' => array(
+            '#type' => 'markup',
+            '#markup' => drupal_render($icon),
+            ),
+          'name' => array(
+            '#type' => 'markup',
+            '#markup' => check_plain($term->name),
+            '#prefix' => '<div class="name">',
+            '#suffix' => '</div>',
+            ),
+          );
+        }  
+        // Set up image values if image is used.
+        else {
+          $images = field_get_items('taxonomy_term', $term, 'field_image');
+          $display = array(
+            'label' => 'hidden',
+            'settings' => array(
+              'image_style' => 'small_topics_icons',
+              ),
+            );
+          $img = field_view_field('taxonomy_term', $term, 'field_image', $display, $langcode = NULL);
+          // Image Icon formatter.
+          $element[$delta] = array(
+          'image' => array(
+            '#type' => 'markup',
+            '#markup' => drupal_render($img),
+            ),
+          'name' => array(
+            '#type' => 'markup',
+            '#markup' => check_plain($term->name),
+            '#prefix' => '<div class="name">',
+            '#suffix' => '</div>',
+            ),
+          );
+        }   
+      }
+      break;
+  }
+
+  return $element;
+}
