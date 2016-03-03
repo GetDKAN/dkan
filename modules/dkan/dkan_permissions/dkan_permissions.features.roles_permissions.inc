@@ -274,6 +274,7 @@ function dkan_permissions_default_roles_permissions() {
       'access content' => TRUE,
       'access user profiles' => TRUE,
       'view revisions' => TRUE,
+      'eck view entities' => TRUE,
     ),
   );
 
