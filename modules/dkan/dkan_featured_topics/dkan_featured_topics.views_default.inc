@@ -35,6 +35,14 @@ function dkan_featured_topics_views_default_views() {
   $handler->display->display_options['style_options']['column_classes'] = 'col-xs-12 col-sm-6 col-md-2';
   $handler->display->display_options['style_options']['row_classes'] = 'row container-12';
   $handler->display->display_options['row_plugin'] = 'fields';
+  /* Field: Taxonomy term: Term ID */
+  $handler->display->display_options['fields']['tid']['id'] = 'tid';
+  $handler->display->display_options['fields']['tid']['table'] = 'taxonomy_term_data';
+  $handler->display->display_options['fields']['tid']['field'] = 'tid';
+  $handler->display->display_options['fields']['tid']['label'] = '';
+  $handler->display->display_options['fields']['tid']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['tid']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['tid']['separator'] = '';
   /* Field: Taxonomy term: Icon Type */
   $handler->display->display_options['fields']['field_icon_type']['id'] = 'field_icon_type';
   $handler->display->display_options['fields']['field_icon_type']['table'] = 'field_data_field_icon_type';
@@ -53,7 +61,7 @@ function dkan_featured_topics_views_default_views() {
     'image_style' => 'topic_medium',
     'image_link' => 'content',
   );
-  /* Field: Taxonomy term: Font Icon Color */
+  /* Field: Taxonomy term: Icon Color */
   $handler->display->display_options['fields']['field_topic_icon_color']['id'] = 'field_topic_icon_color';
   $handler->display->display_options['fields']['field_topic_icon_color']['table'] = 'field_data_field_topic_icon_color';
   $handler->display->display_options['fields']['field_topic_icon_color']['field'] = 'field_topic_icon_color';
@@ -64,7 +72,7 @@ function dkan_featured_topics_views_default_views() {
   $handler->display->display_options['fields']['field_topic_icon_color']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_topic_icon_color']['element_wrapper_type'] = '0';
   $handler->display->display_options['fields']['field_topic_icon_color']['element_default_classes'] = FALSE;
-  /* Field: Taxonomy term: Font Icon */
+  /* Field: Taxonomy term: Icon */
   $handler->display->display_options['fields']['field_topic_icon']['id'] = 'field_topic_icon';
   $handler->display->display_options['fields']['field_topic_icon']['table'] = 'field_data_field_topic_icon';
   $handler->display->display_options['fields']['field_topic_icon']['field'] = 'field_topic_icon';
@@ -79,10 +87,14 @@ function dkan_featured_topics_views_default_views() {
   $handler->display->display_options['fields']['name']['table'] = 'taxonomy_term_data';
   $handler->display->display_options['fields']['name']['field'] = 'name';
   $handler->display->display_options['fields']['name']['label'] = '';
+  $handler->display->display_options['fields']['name']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['name']['alter']['path'] = '/search/field_topic/[name]-[tid]';
+  $handler->display->display_options['fields']['name']['alter']['absolute'] = TRUE;
+  $handler->display->display_options['fields']['name']['alter']['replace_spaces'] = TRUE;
+  $handler->display->display_options['fields']['name']['alter']['path_case'] = 'lower';
   $handler->display->display_options['fields']['name']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['name']['alter']['ellipsis'] = FALSE;
   $handler->display->display_options['fields']['name']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['name']['link_to_taxonomy'] = TRUE;
   /* Sort criterion: Taxonomy term: Weight */
   $handler->display->display_options['sorts']['weight']['id'] = 'weight';
   $handler->display->display_options['sorts']['weight']['table'] = 'taxonomy_term_data';

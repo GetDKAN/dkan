@@ -32,46 +32,62 @@ function dkan_featured_topics_menu() {
 }
 
 /**
- * Overrides theme_main_menu() to add topics dropdown.
+ * Re-route taxonomy term url in main menu.
  */
-function dkan_featured_topics_main_menu($variables) {
-  $output = "<li class='leaf menu-link-topics featured-topics-menu'>";
-  if ($variables['element']['#title'] == t('Topics')) {
-    $link = ($variables['element']['#href'] == '<front>') ? '/' : $variables['element']['#href'];
-    $output .= '<a href="' . $link . '" class="dropdown-toggle" data-toggle="dropdown" data-target="#"> ' . $variables['element']["#title"] . '<b class="caret"></b></a>';
-    $output .= views_embed_view('dkan_topics_featured', 'block_1');
+function dkan_featured_topics_taxonomy_term_uri($term) {
+  switch ($term->vocabulary_machine_name) {
+ 
+    case 'dkan_topics':
+      return array(
+        'path' => 'bitchin/' . $term->tid,
+      );
+    break;
+ 
+    case 'tags':
+      return array(
+        'path' => 'on-fire/' . $term->tid,
+      );
+    break;
+ 
+    default:
+      return array(
+        'path' => 'taxonomy/term/' . $term->tid,
+      );
+    break;
   }
-  else {
-    return theme('menu_link', $variables);
-  }
-  $output .= '</li>';
-  return $output;
 }
+// function taxonomy_term_path($term) {
+//   $vocabulary = taxonomy_vocabulary_load($term->vid);
+//   if ($vocabulary->module != 'taxonomy' && $path = module_invoke($vocabulary->module, 'term_path', $term)) {
+//     return $path;
+//   }
+//   return 'freaky/term/' . $term->tid;
+// }
 
 /**
  * Adds "Topics" to main menu.
  */
-function dkan_featured_topics_add_menu() {
-  $main_menu = menu_load_links('main-menu');
-  $topics_enabled = variable_get('dkan_featured_topics_menu_item_enabled', TRUE);
-  foreach ($main_menu as $link) {
-    if ($link['link_title'] == t('Topics')) {
-      $topics_enabled = TRUE;
-      break;
-    }
-  }
-  if (!$topics_enabled) {
-    $item = array(
-      'link_path' => '<front>',
-      'link_title' => t('Topics'),
-      'menu_name' => 'main-menu',
-      'weight' => 0,
-      'plid' => 0,
-      'module' => 'menu',
-    );
-    menu_link_save($item);
-  }
-}
+// function dkan_featured_topics_add_menu() {
+//   $main_menu = menu_load_links('main-menu');
+//   $topics_enabled = variable_get('dkan_featured_topics_menu_item_enabled', TRUE);
+//   foreach ($main_menu as $link) {
+//     if ($link['link_title'] == t('Topics')) {
+//       $topics_enabled = TRUE;
+//       break;
+//     }
+//   }
+//   if (!$topics_enabled) {
+//     $item = array(
+//       'link_path' => '<front>',
+//       'link_title' => t('Topics'),
+//       'menu_name' => 'main-menu',
+//       'weight' => 0,
+//       'plid' => 0,
+//       'module' => 'menu',
+//     );
+//     menu_link_save($item);
+//   }
+// }
 
 /**
  * Implementation of hook_theme().
@@ -90,11 +106,11 @@ function dkan_featured_topics_add_menu() {
 /**
  * Implements hook_form_alter().
  */
-function dkan_featured_topics_form_alter(&$form, &$form_state, $form_id) {
-  if ($form_id == 'taxonomy_form_term') {
-    $form['#attached']['js'][] = drupal_get_path('module', 'dkan_featured_topics') . '/theme/dkan_featured_topics.js';
-  }
-}
+// function dkan_featured_topics_form_alter(&$form, &$form_state, $form_id) {
+//   if ($form_id == 'taxonomy_form_term') {
+//     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_featured_topics') . '/theme/dkan_featured_topics.js';
+//   }
+// }
 
 /**
 * Implements hook_preprocess_field().
@@ -120,22 +136,26 @@ function dkan_featured_topics_preprocess_field(&$vars) {
 */
 function dkan_featured_topics_views_pre_render(&$view) {
   if(isset($view->name) && $view->name == 'dkan_topics_featured'){
-    //dpm($view);
     foreach($view->result as $row) {
       if($row->_field_data['tid']['entity']->field_icon_type['und'][0]['value'] == 'font') {
         global $base_url;
-        $term = strtolower($row->taxonomy_term_data_name);
-        $url = $base_url . '/topics/' . $term;
+        $term = str_replace(' ', '-', $row->taxonomy_term_data_name);
+        $url =  $base_url . '/search/field_topic/' . strtolower($term) . '-' . $row->tid;
 
-        // Modify icon to add term link and custom color.
-        $prefix_clipped = substr($row->field_field_topic_icon[0]['rendered']['#prefix'], 6);
-        $new_prefix = '<a href="' . $url . '"';
-        if(!empty($row->field_field_topic_icon_color[0]['raw']['rgb'])) {
-          $new_prefix .= ' style="color:' . $row->field_field_topic_icon_color[0]['raw']['rgb'] . '"';
+        if($row->field_field_topic_icon) {
+          // Modify icon to add term link and custom color.
+          $prefix_clipped = substr($row->field_field_topic_icon[0]['rendered']['#prefix'], 6);
+          $new_prefix = '<a href="' . $url . '"';
+          if(!empty($row->field_field_topic_icon_color[0]['raw']['rgb'])) {
+            $new_prefix .= ' style="color:' . $row->field_field_topic_icon_color[0]['raw']['rgb'] . '"';
+          }
+          else {
+            $new_prefix .= '';
+          }
+          $new_prefix .= $prefix_clipped;
+          $row->field_field_topic_icon[0]['rendered']['#prefix'] = $new_prefix;
+          $row->field_field_topic_icon[0]['rendered']['#suffix'] = '</a>';
         }
-        $new_prefix .= $prefix_clipped;
-        $row->field_field_topic_icon[0]['rendered']['#prefix'] = $new_prefix;
-        $row->field_field_topic_icon[0]['rendered']['#suffix'] = '</a>';
       }
     }
 
