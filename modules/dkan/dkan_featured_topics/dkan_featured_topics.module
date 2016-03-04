@@ -31,63 +31,6 @@ function dkan_featured_topics_menu() {
   return $items;
 }
 
-/**
- * Re-route taxonomy term url in main menu.
- */
-function dkan_featured_topics_taxonomy_term_uri($term) {
-  switch ($term->vocabulary_machine_name) {
- 
-    case 'dkan_topics':
-      return array(
-        'path' => 'bitchin/' . $term->tid,
-      );
-    break;
- 
-    case 'tags':
-      return array(
-        'path' => 'on-fire/' . $term->tid,
-      );
-    break;
- 
-    default:
-      return array(
-        'path' => 'taxonomy/term/' . $term->tid,
-      );
-    break;
-  }
-}
-// function taxonomy_term_path($term) {
-//   $vocabulary = taxonomy_vocabulary_load($term->vid);
-//   if ($vocabulary->module != 'taxonomy' && $path = module_invoke($vocabulary->module, 'term_path', $term)) {
-//     return $path;
-//   }
-//   return 'freaky/term/' . $term->tid;
-// }
-
-/**
- * Adds "Topics" to main menu.
- */
-// function dkan_featured_topics_add_menu() {
-//   $main_menu = menu_load_links('main-menu');
-//   $topics_enabled = variable_get('dkan_featured_topics_menu_item_enabled', TRUE);
-//   foreach ($main_menu as $link) {
-//     if ($link['link_title'] == t('Topics')) {
-//       $topics_enabled = TRUE;
-//       break;
-//     }
-//   }
-//   if (!$topics_enabled) {
-//     $item = array(
-//       'link_path' => '<front>',
-//       'link_title' => t('Topics'),
-//       'menu_name' => 'main-menu',
-//       'weight' => 0,
-//       'plid' => 0,
-//       'module' => 'menu',
-//     );
-//     menu_link_save($item);
-//   }
-// }
 
 /**
  * Implementation of hook_theme().
