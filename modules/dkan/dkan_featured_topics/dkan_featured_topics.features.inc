@@ -29,6 +29,21 @@ function dkan_featured_topics_views_api($module = NULL, $api = NULL) {
 function dkan_featured_topics_image_default_styles() {
   $styles = array();
 
+  // Exported image style: small_topics_icons.
+  $styles['small_topics_icons'] = array(
+    'label' => 'Small topics icons',
+    'effects' => array(
+      2 => array(
+        'name' => 'image_scale_and_crop',
+        'data' => array(
+          'width' => 25,
+          'height' => 25,
+        ),
+        'weight' => 2,
+      ),
+    ),
+  );
+
   // Exported image style: topic_medium.
   $styles['topic_medium'] = array(
     'label' => 'Topic Medium',
