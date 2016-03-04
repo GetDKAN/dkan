@@ -36,25 +36,28 @@ function dkan_featured_topics_install() {
         ),
       ),
     ),
-  );  
+  );
   taxonomy_vocabulary_save($topics_vocab);
 
   // Add fields.
   foreach (_dkan_featured_topics_installed_fields() as $field) {
     field_create_field($field);
   }
+
+  // Add instances
   foreach (_dkan_featured_topics_installed_instances() as $fieldinstance) {
     field_create_instance($fieldinstance);
   }
 
-  // Add the field_topic field instance to the dataset, story and dashboard bundles. 
+  // Add the field_topic field instance to the dataset, story and dashboard bundles.
   $content_types = array('dataset', 'dkan_data_story', 'data_dashboard');
   $available_types = array_keys(node_type_get_types());
 
   foreach (array_intersect($content_types, $available_types) as $content_type) {
     if (!field_info_instance('node', 'field_topic', $content_type)) {
 
-      $instance['node-' . $content_type . '-field_topic'] = array(
+      // Exported field_instance: 'node-dataset-field_topic'
+      $instance = array(
         'bundle' => $content_type,
         'default_value' => NULL,
         'deleted' => 0,
@@ -97,13 +100,12 @@ function dkan_featured_topics_install() {
           ),
           'type' => 'options_select',
           'weight' => 4,
-        ), 
+        ),
       );
       field_create_instance($instance);
     }
-  } 
+  }
 }
-
 
 /**
  * Implements hook_modules_enabled($modules).

@@ -10,53 +10,6 @@
 function _dkan_featured_topics_installed_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-dataset-field_topic'
-  $field_instances['node-dataset-field_topic'] = array(
-    'bundle' => 'dataset',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'taxonomy',
-        'settings' => array(),
-        'type' => 'taxonomy_term_reference_link',
-        'weight' => 21,
-      ),
-      'search_result' => array(
-        'label' => 'above',
-        'module' => 'taxonomy',
-        'settings' => array(),
-        'type' => 'taxonomy_term_reference_link',
-        'weight' => 21,
-      ),
-      'teaser' => array(
-        'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
-        'settings' => array(),
-        'type' => 'dkan_topic_formatter',
-        'weight' => 5,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'field_topic',
-    'label' => 'Topics',
-    'required' => 0,
-    'settings' => array(
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'options',
-      'settings' => array(
-        'apply_chosen' => '',
-      ),
-      'type' => 'options_select',
-      'weight' => 4,
-    ),
-  );
-
   // Exported field_instance: 'taxonomy_term-dkan_topics-field_icon_type'
   $field_instances['taxonomy_term-dkan_topics-field_icon_type'] = array(
     'bundle' => 'dkan_topics',
