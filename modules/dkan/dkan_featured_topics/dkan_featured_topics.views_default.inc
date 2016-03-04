@@ -53,7 +53,7 @@ function dkan_featured_topics_views_default_views() {
     'image_style' => 'topic_medium',
     'image_link' => 'content',
   );
-  /* Field: Taxonomy term: Icon Color */
+  /* Field: Taxonomy term: Font Icon Color */
   $handler->display->display_options['fields']['field_topic_icon_color']['id'] = 'field_topic_icon_color';
   $handler->display->display_options['fields']['field_topic_icon_color']['table'] = 'field_data_field_topic_icon_color';
   $handler->display->display_options['fields']['field_topic_icon_color']['field'] = 'field_topic_icon_color';
@@ -64,7 +64,7 @@ function dkan_featured_topics_views_default_views() {
   $handler->display->display_options['fields']['field_topic_icon_color']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_topic_icon_color']['element_wrapper_type'] = '0';
   $handler->display->display_options['fields']['field_topic_icon_color']['element_default_classes'] = FALSE;
-  /* Field: Taxonomy term: Icon */
+  /* Field: Taxonomy term: Font Icon */
   $handler->display->display_options['fields']['field_topic_icon']['id'] = 'field_topic_icon';
   $handler->display->display_options['fields']['field_topic_icon']['table'] = 'field_data_field_topic_icon';
   $handler->display->display_options['fields']['field_topic_icon']['field'] = 'field_topic_icon';

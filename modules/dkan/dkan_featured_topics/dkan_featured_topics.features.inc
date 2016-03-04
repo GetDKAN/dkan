@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * dkan_featured_topics.features.inc
+ * dkan_featured_topics.inc
  */
 
 /**
