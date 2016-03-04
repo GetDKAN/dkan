@@ -25,9 +25,10 @@ function dkan_featured_topics_field_default_field_instances() {
         'weight' => 21,
       ),
       'search_result' => array(
-        'label' => 'above',
+        'label' => 'hidden',
+        'module' => 'dkan_featured_topics',
         'settings' => array(),
-        'type' => 'hidden',
+        'type' => 'dkan_topic_formatter',
         'weight' => 0,
       ),
       'teaser' => array(
@@ -69,9 +70,8 @@ function dkan_featured_topics_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'list',
         'settings' => array(),
-        'type' => 'list_default',
+        'type' => 'hidden',
         'weight' => 2,
       ),
     ),
@@ -101,7 +101,7 @@ function dkan_featured_topics_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 1,
+        'weight' => 4,
       ),
     ),
     'entity_type' => 'taxonomy_term',
@@ -175,11 +175,11 @@ function dkan_featured_topics_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'hidden',
         'module' => 'font_icon_select',
         'settings' => array(),
         'type' => 'font_icon_select_icon_default_formatter',
-        'weight' => 3,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'taxonomy_term',
@@ -213,10 +213,9 @@ function dkan_featured_topics_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'color_field',
         'settings' => array(),
-        'type' => 'color_field_default_formatter',
-        'weight' => 4,
+        'type' => 'hidden',
+        'weight' => 3,
       ),
     ),
     'entity_type' => 'taxonomy_term',

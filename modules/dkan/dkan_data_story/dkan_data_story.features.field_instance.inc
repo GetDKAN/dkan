@@ -230,9 +230,10 @@ function dkan_data_story_field_default_field_instances() {
         'weight' => 0,
       ),
       'teaser' => array(
-        'label' => 'above',
+        'label' => 'hidden',
+        'module' => 'dkan_featured_topics',
         'settings' => array(),
-        'type' => 'hidden',
+        'type' => 'dkan_topic_formatter',
         'weight' => 0,
       ),
     ),
