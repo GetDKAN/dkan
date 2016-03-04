@@ -87,8 +87,7 @@ function dkan_featured_topics_preprocess_field(&$vars) {
 * Implements hook_views_pre_render().
 */
 function dkan_featured_topics_views_pre_render(&$view) {
-  if(isset($view->name) && $view->name == 'dkan_topics_featured'){
-    //dpm($view);
+  if(isset($view->name) && $view->name == 'dkan_topics_featured') {
     foreach($view->result as $row) {
       if($row->_field_data['tid']['entity']->field_icon_type['und'][0]['value'] == 'font') {
         global $base_url;
@@ -111,6 +110,7 @@ function dkan_featured_topics_views_pre_render(&$view) {
 
     return $view;
   }
+
 }
 
 /**
