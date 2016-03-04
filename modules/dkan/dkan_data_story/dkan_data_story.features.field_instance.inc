@@ -22,6 +22,15 @@ function dkan_data_story_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
+        'weight' => 2,
+      ),
+      'search_result' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(
+          'trim_length' => 600,
+        ),
+        'type' => 'text_summary_or_trimmed',
         'weight' => 1,
       ),
       'teaser' => array(
@@ -68,7 +77,13 @@ function dkan_data_story_field_default_field_instances() {
           'image_style' => 'story_image_full',
         ),
         'type' => 'image',
-        'weight' => 0,
+        'weight' => 1,
+      ),
+      'search_result' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 3,
       ),
       'teaser' => array(
         'label' => 'hidden',
@@ -93,6 +108,9 @@ function dkan_data_story_field_default_field_instances() {
       'max_filesize' => '',
       'max_resolution' => '',
       'min_resolution' => '',
+      'resup' => 0,
+      'resup_autostart' => 0,
+      'resup_max_filesize' => '',
       'title_field' => 0,
       'user_register_form' => FALSE,
     ),
@@ -153,6 +171,12 @@ function dkan_data_story_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(),
         'type' => 'taxonomy_term_reference_link',
+        'weight' => 3,
+      ),
+      'search_result' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
         'weight' => 2,
       ),
       'teaser' => array(
@@ -184,11 +208,58 @@ function dkan_data_story_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-dkan_data_story-field_topic'
+  $field_instances['node-dkan_data_story-field_topic'] = array(
+    'bundle' => 'dkan_data_story',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'dkan_featured_topics',
+        'settings' => array(),
+        'type' => 'dkan_topic_formatter',
+        'weight' => 0,
+      ),
+      'search_result' => array(
+        'label' => 'hidden',
+        'module' => 'dkan_featured_topics',
+        'settings' => array(),
+        'type' => 'dkan_topic_formatter',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_topic',
+    'label' => 'Topics',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'apply_chosen' => '',
+      ),
+      'type' => 'options_select',
+      'weight' => 4,
+    ),
+  );
+
   // Translatables
   // Included for use with string extractors like potx.
   t('Body');
   t('Image');
   t('Tags');
+  t('Topics');
 
   return $field_instances;
 }
