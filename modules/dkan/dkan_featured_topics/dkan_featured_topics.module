@@ -4,8 +4,8 @@
  * Code for the DKAN Featured Topics feature.
  */
 
-include_once 'dkan_featured_topics.inc';
-include_once 'dkan_featured_topics.conditional_fields.inc';
+include_once 'dkan_featured_topics.features.inc';
+include_once 'dkan_featured_topics.features.conditional_fields.inc';
 
 /**
  * Implements hook_page_alter().
@@ -206,7 +206,7 @@ function dkan_featured_topics_field_formatter_view($entity_type, $entity, $field
             '#suffix' => '</div>',
             ),
           );
-        }  
+        }
         // Set up image values if image is used.
         else {
           $images = field_get_items('taxonomy_term', $term, 'field_image');
@@ -230,7 +230,7 @@ function dkan_featured_topics_field_formatter_view($entity_type, $entity, $field
             '#suffix' => '</div>',
             ),
           );
-        }   
+        }
       }
       break;
   }
