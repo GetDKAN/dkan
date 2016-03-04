@@ -1352,6 +1352,29 @@ function dkan_sitewide_panels_default_page_manager_pages() {
     $pane->uuid = '0541c9a5-2e8c-488f-8db4-4cd064bdc903';
     $display->content['new-0541c9a5-2e8c-488f-8db4-4cd064bdc903'] = $pane;
     $display->panels['sidebar'][5] = 'new-0541c9a5-2e8c-488f-8db4-4cd064bdc903';
+    $pane = new stdClass();
+    $pane->pid = 'new-51b9a740-77dd-44f7-8aa8-57d1728afbe7';
+    $pane->panel = 'sidebar';
+    $pane->type = 'block';
+    $pane->subtype = 'facetapi-EwrOFrHh7WdVteFiBTQYXfGlscW50MbI';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_title' => 0,
+      'override_title_text' => '',
+      'override_title_heading' => 'h2',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 6;
+    $pane->locks = array();
+    $pane->uuid = '51b9a740-77dd-44f7-8aa8-57d1728afbe7';
+    $display->content['new-51b9a740-77dd-44f7-8aa8-57d1728afbe7'] = $pane;
+    $display->panels['sidebar'][6] = 'new-51b9a740-77dd-44f7-8aa8-57d1728afbe7';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
