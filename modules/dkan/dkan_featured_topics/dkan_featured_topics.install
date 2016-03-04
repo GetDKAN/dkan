@@ -3,8 +3,6 @@
 /**
  * Install file for DKAN Topics.
  */
-include_once 'dkan_featured_topics.field_base.inc';
-include_once 'dkan_featured_topics.field_instance.inc';
 
 /**
  * Implements hook_install().
@@ -13,41 +11,9 @@ function dkan_featured_topics_install() {
   // Add menu.
   dkan_featured_topics_add_menu();
 
-  // Add taxonomy.
-  $topics_vocab = (object) array(
-    'name' => 'Topics',
-    'machine_name' => 'dkan_topics',
-    'description' => '',
-    'hierarchy' => 0,
-    'module' => 'taxonomy',
-    'weight' => 0,
-    'rdf_mapping' => array(
-      'rdftype' => array(
-        0 => 'skos:ConceptScheme',
-      ),
-      'name' => array(
-        'predicates' => array(
-          0 => 'dc:title',
-        ),
-      ),
-      'description' => array(
-        'predicates' => array(
-          0 => 'rdfs:comment',
-        ),
-      ),
-    ),
-  );
-  taxonomy_vocabulary_save($topics_vocab);
-
-  // Add fields.
-  foreach (_dkan_featured_topics_installed_fields() as $field) {
-    field_create_field($field);
-  }
-
-  // Add instances
-  foreach (_dkan_featured_topics_installed_instances() as $fieldinstance) {
-    field_create_instance($fieldinstance);
-  }
+  $feature = features_get_features('dkan_featured_topics');
+  $components = array_keys($feature->info['features']);
+  features_revert(array('dkan_featured_topics' => $components));
 
   // Add the field_topic field instance to the dataset, story and dashboard bundles.
   $content_types = array('dataset', 'dkan_data_story', 'data_dashboard');
@@ -105,6 +71,7 @@ function dkan_featured_topics_install() {
       field_create_instance($instance);
     }
   }
+  dkan_featured_topics_default_content();
 }
 
 /**
@@ -181,6 +148,27 @@ function dkan_featured_topics_modules_enabled($modules) {
       panels_display_pane_remove($page->conf['display'], 'sidebar', 'block', 'facetapi-EwrOFrHh7WdVteFiBTQYXfGlscW50MbI', $configuration, $style);
     }
   }
+}
+
+function dkan_featured_topics_default_content() {
+  module_load_include('inc', 'font_icon_select', 'font_icon_select.admin');
+  $new_entity = entity_get_controller('font_icon_select_font_library')->create();
+  $new_entity->font_title = 'IconMoon';
+  $font_files = array('eot', 'svg', 'ttf', 'woff');
+
+  // Add the file usage.
+  foreach ($font_files as $ext) {
+    $filename = 'icomoon';
+    $module_path = drupal_get_path('module', 'dkan_featured_topics');
+    $handle = fopen($module_path . '/theme/fonts/' . $filename . '.' . $ext, 'r');
+    $file = file_save_data($handle, 'public://' . $filename . '.' . $ext, FILE_EXISTS_RENAME);
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+    $new_entity->{$ext . '_fid'} = $file->fid;
+    file_usage_add($file, 'font_icon_select', 'font_icon_select_font_library', $new_entity->flid);
+  }
+  entity_get_controller('font_icon_select_font_library')->save($new_entity);
+  _font_icon_select_generate_general_css($new_entity);
 }
 
 function dkan_featured_topics_uninstall() {
