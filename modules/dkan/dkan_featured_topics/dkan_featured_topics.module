@@ -31,6 +31,30 @@ function dkan_featured_topics_menu() {
   return $items;
 }
 
+/**
+* Adds "Topics" to main menu.
+*/
+function dkan_featured_topics_add_menu() {
+  $main_menu = menu_load_links('main-menu');
+  $topics_enabled = variable_get('dkan_featured_topics_menu_item_enabled', TRUE);
+  foreach ($main_menu as $link) {
+    if ($link['link_title'] == t('Topics')) {
+      $topics_enabled = TRUE;
+      break;
+    }
+  }
+  if (!$topics_enabled) {
+    $item = array(
+      'link_path' => '<front>',
+      'link_title' => t('Topics'),
+      'menu_name' => 'main-menu',
+      'weight' => 0,
+      'plid' => 0,
+      'module' => 'menu',
+    );
+    menu_link_save($item);
+  }
+}
 
 /**
  * Implementation of hook_theme().
