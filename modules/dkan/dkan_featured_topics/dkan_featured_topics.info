@@ -4,6 +4,7 @@ core = 7.x
 package = DKAN Features
 dependencies[] = color_field
 dependencies[] = conditional_fields
+dependencies[] = dkan_default_topics
 dependencies[] = dkan_dataset_content_types
 dependencies[] = dkan_sitewide_panels
 dependencies[] = entity_path
