@@ -153,12 +153,12 @@ function dkan_featured_topics_modules_enabled($modules) {
 function dkan_featured_topics_default_content() {
   module_load_include('inc', 'font_icon_select', 'font_icon_select.admin');
   $new_entity = entity_get_controller('font_icon_select_font_library')->create();
-  $new_entity->font_title = 'IconMoon';
+  $new_entity->font_title = 'DKAN Topics';
   $font_files = array('eot', 'svg', 'ttf', 'woff');
 
   // Add the file usage.
   foreach ($font_files as $ext) {
-    $filename = 'icomoon';
+    $filename = 'dkantopics';
     $module_path = drupal_get_path('module', 'dkan_featured_topics');
     $handle = fopen($module_path . '/theme/fonts/' . $filename . '.' . $ext, 'r');
     $file = file_save_data($handle, 'public://' . $filename . '.' . $ext, FILE_EXISTS_RENAME);
