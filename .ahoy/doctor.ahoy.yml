@@ -4,26 +4,28 @@ commands:
   all:
     usage: Checks that the docker environment is healthy and ready for development
     cmd: |
+      set -e
       echo "Checking docker machine status..."
-      if ahoy doctor machine; then
-        echo "Checking docker machine IP address..."
-        if ahoy doctor ip; then
-          echo "Checking docker daemon..."
-          if ahoy doctor daemon; then
-          echo "Checking NFS file sharing..."
-            if ahoy doctor nfs; then
-            echo "Checking projet containers..."
-              if ahoy doctor containers; then
-              echo "Checking site URL accessibility..."
-                if ahoy doctor site; then
-                  echo
-                  echo "[Success] Docktor check done."
-                fi
-              fi
-            fi
-          fi
-        fi
-      fi
+      ahoy doctor machine
+
+      echo "Checking docker machine IP address..."
+      ahoy doctor ip
+
+      echo "Checking docker daemon..."
+      ahoy doctor daemon
+
+      echo "Checking NFS file sharing..."
+      ahoy doctor nfs
+
+      echo "Checking projet containers..."
+      ahoy doctor containers
+
+      echo "Checking site URL accessibility..."
+      ahoy doctor site
+
+      echo
+      echo "[Success] Docktor check done."
+
   machine:
     usage: Checks if the docker machine is running
     cmd: |
