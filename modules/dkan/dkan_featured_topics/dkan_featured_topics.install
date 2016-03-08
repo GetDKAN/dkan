@@ -174,7 +174,9 @@ function dkan_featured_topics_default_content() {
   $vocab = taxonomy_vocabulary_machine_name_load('dkan_topics');
   $terms = taxonomy_get_tree($vocab->vid);
   if (!isset($terms) && module_exists('taxonomy_fixtures') && module_exists('dkan_default_topics')) {
-    dkan_default_topics_taxonomy_fixtures_vocabulary();
+    $topics = array('dkan_topics');
+    taxonomy_fixtures_import_terms($topics);
+    //dkan_default_topics_taxonomy_fixtures_vocabulary();
   }
 }
 
