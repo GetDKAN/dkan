@@ -108,6 +108,18 @@ function dkan_featured_topics_views_pre_render(&$view) {
 }
 
 /**
+ * Rewrite font file paths to work on install.
+ */
+function dkan_featured_topics_file_url_alter(&$uri) {
+  $re = "/public\\:\\/\\/dkantopics.(eot|woff|ttf|svg)/";  
+  preg_match_all($re, $uri, $matches);
+
+  if(!empty($matches)) {
+    $uri = str_replace('public://', '/sites/default/files/', $uri);
+  }
+}
+
+/**
  * Implements hook_field_formatter_info().
  */
 function dkan_featured_topics_field_formatter_info() {
@@ -117,19 +129,6 @@ function dkan_featured_topics_field_formatter_info() {
       'field types' => array('taxonomy_term_reference'),
     ),
   );
-}
-
-function dkan_featured_topics_file_url_alter(&$uri) {
-  print_r($uri);
-
-  // if(testURI($uri)) {
-  //   $scheme = file_uri_scheme($uri);
-
-  //   if ($scheme && file_stream_wrapper_valid_scheme($scheme)) {
-  //     $wrapper = file_stream_wrapper_get_instance_by_scheme($scheme);
-  //     $uri = $wrapper->getLocalPath($file);
-  //   }
-  // }
 }
 
 /**
