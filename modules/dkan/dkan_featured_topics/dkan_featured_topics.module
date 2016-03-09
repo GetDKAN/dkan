@@ -57,29 +57,6 @@ function dkan_featured_topics_add_menu() {
 }
 
 /**
- * Implementation of hook_theme().
- */
-// function dkan_featured_topics_theme($existing) {
-//   return array(
-//     'views_view_fields__dkan_topics_featured' => array(
-//       'variables' => array('view' => NULL, 'options' => NULL, 'row' => NULL),
-//       'template' => 'views-view-fields--dkan-topics-featured',
-//       'base hook' => 'views_view_fields',
-//       'path' => drupal_get_path('module', 'dkan_featured_topics') . '/theme',
-//     ),
-//   );
-// }
-
-/**
- * Implements hook_form_alter().
- */
-// function dkan_featured_topics_form_alter(&$form, &$form_state, $form_id) {
-//   if ($form_id == 'taxonomy_form_term') {
-//     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_featured_topics') . '/theme/dkan_featured_topics.js';
-//   }
-// }
-
-/**
 * Implements hook_preprocess_field().
 */
 function dkan_featured_topics_preprocess_field(&$vars) {
@@ -135,16 +112,24 @@ function dkan_featured_topics_views_pre_render(&$view) {
  */
 function dkan_featured_topics_field_formatter_info() {
   return array(
-    // 'font_icon_select_icon_default_formatter' => array(
-    //   'label' => t('default'),
-    //   'description' => t('Output unencoded icon.'),
-    //   'field types' => array('font_icon_select_icon'),
-    // ),
     'dkan_topic_formatter' => array(
       'label' => t('Topic with icon'),
       'field types' => array('taxonomy_term_reference'),
     ),
   );
+}
+
+function dkan_featured_topics_file_url_alter(&$uri) {
+  print_r($uri);
+
+  // if(testURI($uri)) {
+  //   $scheme = file_uri_scheme($uri);
+
+  //   if ($scheme && file_stream_wrapper_valid_scheme($scheme)) {
+  //     $wrapper = file_stream_wrapper_get_instance_by_scheme($scheme);
+  //     $uri = $wrapper->getLocalPath($file);
+  //   }
+  // }
 }
 
 /**
@@ -154,17 +139,6 @@ function dkan_featured_topics_field_formatter_view($entity_type, $entity, $field
   $element = array();
 
   switch ($display['type']) {
-    //case 'font_icon_select_icon_default_formatter':
-      // Alter font_icon_select default formatter. (so far not working)
-      // foreach ($items as $delta => $item) {
-      //   if ($item['access']) {
-      //     $result[$delta] = array(
-      //       '#prefix' => '<span class="shazam topic-icon font-icon-select-' . $field['settings']['font'] . ' font-icon-select-' . $field['settings']['font'] . '-' . drupal_substr($item['value'], 1) . '">',
-      //       '#suffix' => '</span>',
-      //     );
-      //   }
-      // }
-      // break;
 
     case 'dkan_topic_formatter':
       // Custom formatter for topic field.
