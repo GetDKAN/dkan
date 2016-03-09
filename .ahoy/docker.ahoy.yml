@@ -61,3 +61,15 @@ commands:
   compose:
     cmd: docker-compose -f dkan/.ahoy/docker-compose.yml -p "${PWD##*/}" {{args}}
     usage: Abstraction for docker-compose
+  url:
+    usage: Prints the project URL
+    cmd: |
+      echo "http://`docker-machine ip default`:`ahoy docker compose port web 80|cut -d ':' -f2`"
+  surl:
+    usage: Prints a secure project URL
+    cmd: |
+      echo "https://`docker-machine ip default`:`ahoy docker compose port web 443|cut -d ':' -f2`"
+  vnc:
+    usage: Prints the project VNC URL
+    cmd: |
+      echo "`docker-machine ip default`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
