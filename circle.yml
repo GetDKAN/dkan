@@ -45,9 +45,9 @@ dependencies:
   override:
     - printenv
     - mkdir $CIRCLE_ARTIFACTS/junit
-    - 'bash dkan-init.sh dkan --deps --build=$DATABASE_URL'
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH bash dkan-init.sh dkan --deps --build=$DATABASE_URL'
     # Run a webserver using drush.
-    - 'ahoy drush --yes runserver :8888':
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes runserver :8888':
         background: true
 
     # Setup display for selenium
