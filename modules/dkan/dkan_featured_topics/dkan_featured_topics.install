@@ -171,13 +171,12 @@ function dkan_featured_topics_default_content() {
   _font_icon_select_generate_general_css($new_entity);
 
   // Check if there are already terms and if not import default terms.
-  $vocab = taxonomy_vocabulary_machine_name_load('dkan_topics');
-  $terms = taxonomy_get_tree($vocab->vid);
-  if (!isset($terms) && module_exists('taxonomy_fixtures') && module_exists('dkan_default_topics')) {
-    $topics = array('dkan_topics');
-    //taxonomy_fixtures_import_terms($topics);
-    dkan_default_topics_taxonomy_fixtures_vocabulary($topics);
-  }
+  //$vocab = taxonomy_vocabulary_machine_name_load('dkan_topics');
+  //$terms = taxonomy_get_tree($vocab->vid);
+  //if (!isset($terms) && module_exists('taxonomy_fixtures') && module_exists('dkan_default_topics')) {
+    $vocab = dkan_default_topics_taxonomy_fixtures_vocabulary();
+    taxonomy_fixtures_import_terms($vocab);
+  //}
 }
 
 function dkan_featured_topics_uninstall() {
