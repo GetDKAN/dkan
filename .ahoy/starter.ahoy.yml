@@ -33,3 +33,8 @@ commands:
         {{args}}
       fi
     hide: true
+
+  doctor:
+    usage: A series of maintenance commands to check the docker environment health
+    import: dkan/.ahoy/doctor.ahoy.yml
+    hide: true
