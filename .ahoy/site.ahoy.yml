@@ -1,0 +1,6 @@
+ahoyapi: v1
+version: 0.0.0
+commands:
+  dkan:
+    usage: Prints the DKAN site version.
+    cmd: echo $(grep -iE 'projects\[dkan\]\[download\]\[(branch|tag)\]' docroot/profiles/dkan/build-dkan.make|cut -d '=' -f2|sed 's/ //g')

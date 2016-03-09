@@ -33,3 +33,8 @@ commands:
         {{args}}
       fi
     hide: true
+
+  site:
+    usage: A series of DKAN site commands
+    import: dkan/.ahoy/site.ahoy.yml
+    hide: true
