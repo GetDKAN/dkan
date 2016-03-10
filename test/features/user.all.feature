@@ -44,7 +44,6 @@ Feature: User
     And I fill in "Password" with "johnpass"
     And I press "Log in"
     Then I should see the "John" user page
-    Then I should see the "John" user command center
 
   Scenario: Logout
     Given I am logged in as "John"
