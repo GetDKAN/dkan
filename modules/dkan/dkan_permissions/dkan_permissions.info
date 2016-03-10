@@ -7,7 +7,6 @@ features[roles_permissions][] = authenticated user
 features[roles_permissions][] = content creator
 features[roles_permissions][] = editor
 features[roles_permissions][] = site manager
-features[user_role][] = administrator
 features_exclude[dependencies][features] = features
 features_exclude[dependencies][features_roles_permissions] = features_roles_permissions
 project path = profiles/dkan/modules/dkan
