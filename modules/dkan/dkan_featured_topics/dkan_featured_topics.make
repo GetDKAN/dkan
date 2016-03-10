@@ -13,6 +13,7 @@ projects[conditional_fields][version] = 3.0-alpha2
 projects[taxonomy_menu][version] = 1.5
 projects[color_field][version] = 1.8
 projects[entity_path][version] = 1.x-dev
+projects[globalredirect][version] = 1.5
 
 ; Patches
 projects[views][patch][1388684] = https://www.drupal.org/files/views_taxonomy_entity_uri-1388684-15.patch
