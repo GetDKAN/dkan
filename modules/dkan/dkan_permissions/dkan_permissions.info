@@ -2,7 +2,6 @@ name = Dkan Permissions
 core = 7.x
 package = DKAN
 features[features_api][] = api:2
-features[roles_permissions][] = administrator
 features[roles_permissions][] = anonymous user
 features[roles_permissions][] = authenticated user
 features[roles_permissions][] = content creator
