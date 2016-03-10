@@ -23,12 +23,19 @@ function dkan_featured_topics_menu() {
     'menu_name'       => 'main-menu',
     'weight'          => 8,
     'access callback' => TRUE,
-    'page callback'   => 'topics',
+    'page callback'   => 'topics_page',
     'access arguments' => array('view published content'), // permission
     'type' => MENU_NORMAL_ITEM,
   );
 
   return $items;
+}
+
+/*
+ * Set main menu topics link to null.
+ */
+function topics_page() {
+  drupal_goto('<front>');
 }
 
 /**
@@ -45,7 +52,7 @@ function dkan_featured_topics_add_menu() {
   }
   if (!$topics_enabled) {
     $item = array(
-      'link_path' => '<front>',
+      'link_path' => '<nolink>',
       'link_title' => t('Topics'),
       'menu_name' => 'main-menu',
       'weight' => 0,
