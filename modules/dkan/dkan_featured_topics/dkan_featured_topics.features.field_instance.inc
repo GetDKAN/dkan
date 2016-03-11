@@ -19,10 +19,10 @@ function dkan_featured_topics_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'taxonomy',
+        'module' => 'dkan_featured_topics',
         'settings' => array(),
-        'type' => 'taxonomy_term_reference_link',
-        'weight' => 21,
+        'type' => 'dkan_topic_formatter',
+        'weight' => 2,
       ),
       'search_result' => array(
         'label' => 'hidden',
