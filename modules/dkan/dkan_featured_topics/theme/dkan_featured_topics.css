@@ -2,6 +2,10 @@
 .view-dkan-topics-featured {
  margin: 2em 0;
 }
+.view-dkan-topics-featured .views-field-field-image img {
+  max-width: 110px;
+  margin-bottom: 8px;
+}
 .view-dkan-topics-featured .topic-icon,
 .view-dkan-topics-featured .views-field {
   display: block;
@@ -41,6 +45,12 @@
   font-size: 1.5em;
   vertical-align: bottom;
   padding-right: 2px;
+}
+.field-name-field-topic .field-item {
+  margin-bottom: 5px;
+}
+.field-name-field-topic .field-type-image {
+  display: inline-block;
 }
 /* FACET BLOCK */
 .facetapi-facet-field-topic li.leaf a span:before {
