@@ -38,7 +38,15 @@ function dkan_sitewide_search_db_default_search_api_index() {
     "server" : "datasets",
     "item_type" : "node",
     "options" : {
-      "datasource" : { "bundles" : [ "dataset", "resource", "group", "dkan_data_story", "data_dashboard", "page"] },
+      "datasource" : { "bundles" : [
+          "dataset",
+          "resource",
+          "group",
+          "dkan_data_story",
+          "data_dashboard",
+          "page"
+        ]
+      },
       "index_directly" : 1,
       "cron_limit" : "50",
       "fields" : {
