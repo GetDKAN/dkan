@@ -36,7 +36,7 @@ function dkan_featured_topics_menu() {
  * Set main menu topics link to null.
  */
 function topics_page() {
-  drupal_goto('<front>');
+  drupal_goto('search/field_topic');
 }
 
 /**
