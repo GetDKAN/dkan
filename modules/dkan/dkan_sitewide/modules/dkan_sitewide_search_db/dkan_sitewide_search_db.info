@@ -14,6 +14,7 @@ features[ctools][] = context:context:3
 features[ctools][] = facetapi:facetapi_defaults:1
 features[ctools][] = strongarm:strongarm:1
 features[ctools][] = views:views_default:3.0
+features[facetapi][] = search_api@datasets::field_topic
 features[facetapi][] = search_api@datasets::type
 features[facetapi][] = search_api@datasets:block:author
 features[facetapi][] = search_api@datasets:block:field_format
