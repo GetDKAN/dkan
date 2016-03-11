@@ -24,6 +24,12 @@ function dkan_default_content_wisconsin_polling_dataset() {
   $name = 'csv';
   $terms = taxonomy_get_term_by_name($name);
   $term = current($terms);
+  // Tags.
+  $election = taxonomy_get_term_by_name('election');
+  $election_tid = key($election);
+  // Topics.
+  $education = taxonomy_get_term_by_name('Education');
+  $education_tid = key($education);
   return array(
     'title' => 'Wisconsin Polling Places',
     'sort_value' => '11',
@@ -54,7 +60,14 @@ function dkan_default_content_wisconsin_polling_dataset() {
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '2',
+          'tid' => $election_tid,
+        ),
+      ),
+    ),
+    'field_topics' => array(
+      'und' => array(
+        0 => array(
+          'tid' => $education_tid,
         ),
       ),
     ),
