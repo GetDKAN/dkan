@@ -1,56 +1,4 @@
-body .navbar-default .navbar-nav .view-dkan-topics-featured .dropdown-menu,
-.navbar-default .view-dkan-topics-featured .user-menu .dropdown-menu {
-  padding: 30px;
-  margin-top: 0;
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
-}
-.navbar-nav .open .dropdown-menu {
-  display: block;
-}
-.navbar-nav .dropdown-menu .featured-topics-menu a {
-  color: #2b3076 !important;
-}
-.navbar-nav .dropdown-menu li.topics-item {
-  float: left;
-  width: 125px;
-  height: 140px;
-  text-align: center;
-}
-.navbar-nav > li > .dropdown-menu.topics {
-  padding: 30px;
-}
-.navbar-nav .dropdown-menu.topics img {
-  width: 75px;
-  height: 75px;
-}
-.navbar-default .navbar-nav .open .dropdown-toggle .dropdown-menu li a:hover {
-  background-color: #fff;
-}
-.navbar-default .navbar-nav .open .view-dkan-topics-featured .dropdown-menu li > a:hover {
-  background-color: #fff;
-}
-.navbar-default .navbar-nav .open .view-dkan-topics-featured .dropdown-menu li > a {
-  padding: 3px;
-  white-space: normal;
-}
- @media (min-width: 768px) {
-  .navbar-nav .view-dkan-topics-featured > li {
-    float: left;
-    position: inherit;
-  }
-  .navbar-nav .view-dkan-topics-featured > li.open {
-    position: static;
-  }
-  .navbar-nav .view-dkan-topics-featured .dropdown-menu {
-    width: 950px;
-    float: left;
-    left: 0;
-    position: relative;
-    background: #FFF !important;
-    color: #2b3076;
-  }
-}
+/* panel pane */
 .view-dkan-topics-featured {
  margin: 2em 0;
 }
@@ -94,7 +42,33 @@ body .navbar-default .navbar-nav .view-dkan-topics-featured .dropdown-menu,
   vertical-align: bottom;
   padding-right: 2px;
 }
-/*.field-name-field-topic .field-name-field-topic .field-label,
-.view-dkan-datasets .field-name-field-topic .field-label {
-  display: none;
-}*/
+/* FACET BLOCK */
+.facetapi-facet-field-topic li.leaf a span:before {
+  font-family: 'font_icon_select_1';
+  margin-right: 5px;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+.facetapi-facet-field-topic li.leaf a .icon-dkan-transportation:before {
+  content:'\e905';
+}
+.facetapi-facet-field-topic li.leaf a .icon-dkan-public-safety:before {
+  content:'\e904';
+}
+.facetapi-facet-field-topic li.leaf a .icon-dkan-city-planning:before {
+  content:'\e903';
+}
+.facetapi-facet-field-topic li.leaf a .icon-dkan-health-care:before {
+  content: '\e902';
+}
+.facetapi-facet-field-topic li.leaf a .icon-dkan-education:before {
+  content: '\e901';
+}
+.facetapi-facet-field-topic li.leaf a .icon-dkan-finance-and-budgeting:before {
+  content: '\e900';
+}

@@ -34,8 +34,10 @@ class FacetapiTermIcon extends FacetapiWidgetLinks {
       $row = array('class' => array());
       $type = '';
       $icon = theme('facet_icons', array('type'=> $type, 'class' => array('facet-icon')));
-      if (isset($item['#indexed_value']) && $term = taxonomy_term_load($item['#indexed_value'])) {
-        $icon = theme('facet_icons', array('type'=> $term->machine_name, 'class' => array('facet-icon')));
+      $term = taxonomy_term_load($item['#indexed_value']);
+      $term = pathauto_cleanstring($term->name);
+      if (isset($item['#indexed_value']) && $term) {
+        $icon = theme('facet_icons', array('type'=> $term, 'class' => array('facet-icon')));
       }
 
       // Initializes variables passed to theme hook.
