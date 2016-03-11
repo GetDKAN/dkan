@@ -24,12 +24,6 @@ function dkan_default_content_wisconsin_polling_dataset() {
   $name = 'csv';
   $terms = taxonomy_get_term_by_name($name);
   $term = current($terms);
-  // Tags.
-  $election = taxonomy_get_term_by_name('election');
-  $election_tid = key($election);
-  // Topics.
-  $education = taxonomy_get_term_by_name('Education');
-  $education_tid = key($education);
   return array(
     'title' => 'Wisconsin Polling Places',
     'sort_value' => '11',
@@ -60,20 +54,7 @@ function dkan_default_content_wisconsin_polling_dataset() {
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '8',
-        ),
-      ),
-    ),
-    'field_topic' => array(
-      'und' => array(
-        0 => array(
-          'tid' => '1',
-        ),
-        1 => array(
-          'tid' => '4',
-        ),
-        2 => array(
-          'tid' => '5',
+          'tid' => '2',
         ),
       ),
     ),
@@ -227,17 +208,7 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '10',
-        ),
-        1 => array(
-          'tid' => '9',
-        ),
-      ),
-    ),
-    'field_topic' => array(
-      'und' => array(
-        0 => array(
-          'tid' => '6',
+          'tid' => '4',
         ),
         1 => array(
           'tid' => '3',
@@ -383,20 +354,10 @@ License: PDDL (Source indicates no restrictions on data).',
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '12',
+          'tid' => '6',
         ),
         1 => array(
-          'tid' => '13',
-        ),
-      ),
-    ),
-    'field_topic' => array(
-      'und' => array(
-        0 => array(
-          'tid' => '3',
-        ),
-        1 => array(
-          'tid' => '2',
+          'tid' => '7',
         ),
       ),
     ),
@@ -527,26 +488,16 @@ function dkan_default_content_afghan_election_districts_dataset(){
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '7',
+          'tid' => '1',
         ),
         1 => array(
-          'tid' => '8',
+          'tid' => '2',
         ),
         2 => array(
-          'tid' => '9',
+          'tid' => '3',
         ),
         3 => array(
-          'tid' => '10',
-        ),
-      ),
-    ),
-    'field_topic' => array(
-      'und' => array(
-        0 => array(
-          'tid' => '6',
-        ),
-        1 => array(
-          'tid' => '1',
+          'tid' => '4',
         ),
       ),
     ),
