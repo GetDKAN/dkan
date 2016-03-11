@@ -1218,7 +1218,10 @@ function dkan_sitewide_panels_default_page_manager_pages() {
       ),
       'style' => 'collapsible',
     );
-    $pane->css = array();
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => 'pane-facetapi pane-block',
+    );
     $pane->extras = array();
     $pane->position = 1;
     $pane->locks = array();
