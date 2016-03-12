@@ -54,7 +54,20 @@ function dkan_default_content_wisconsin_polling_dataset() {
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '2',
+          'tid' => '8',
+        ),
+      ),
+    ),
+    'field_topic' => array(
+      'und' => array(
+        0 => array(
+          'tid' => '1',
+        ),
+        1 => array(
+          'tid' => '4',
+        ),
+        2 => array(
+          'tid' => '5',
         ),
       ),
     ),
@@ -208,7 +221,17 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '4',
+          'tid' => '10',
+        ),
+        1 => array(
+          'tid' => '9',
+        ),
+      ),
+    ),
+    'field_topic' => array(
+      'und' => array(
+        0 => array(
+          'tid' => '6',
         ),
         1 => array(
           'tid' => '3',
@@ -354,10 +377,20 @@ License: PDDL (Source indicates no restrictions on data).',
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '6',
+          'tid' => '12',
         ),
         1 => array(
-          'tid' => '7',
+          'tid' => '13',
+        ),
+      ),
+    ),
+    'field_topic' => array(
+      'und' => array(
+        0 => array(
+          'tid' => '3',
+        ),
+        1 => array(
+          'tid' => '2',
         ),
       ),
     ),
@@ -488,16 +521,26 @@ function dkan_default_content_afghan_election_districts_dataset(){
     'field_tags' => array(
       'und' => array(
         0 => array(
-          'tid' => '1',
+          'tid' => '7',
         ),
         1 => array(
-          'tid' => '2',
+          'tid' => '8',
         ),
         2 => array(
-          'tid' => '3',
+          'tid' => '9',
         ),
         3 => array(
-          'tid' => '4',
+          'tid' => '10',
+        ),
+      ),
+    ),
+    'field_topic' => array(
+      'und' => array(
+        0 => array(
+          'tid' => '6',
+        ),
+        1 => array(
+          'tid' => '1',
         ),
       ),
     ),
