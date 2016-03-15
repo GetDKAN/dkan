@@ -57,6 +57,100 @@ function dkan_featured_topics_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-dkan_data_story-field_topic'
+  $field_instances['node-dkan_data_story-field_topic'] = array(
+    'bundle' => 'dkan_data_story',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'dkan_featured_topics',
+        'settings' => array(),
+        'type' => 'dkan_topic_formatter',
+        'weight' => 0,
+      ),
+      'search_result' => array(
+        'label' => 'hidden',
+        'module' => 'dkan_featured_topics',
+        'settings' => array(),
+        'type' => 'dkan_topic_formatter',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'hidden',
+        'module' => 'dkan_featured_topics',
+        'settings' => array(),
+        'type' => 'dkan_topic_formatter',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_topic',
+    'label' => 'Topics',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'apply_chosen' => '',
+      ),
+      'type' => 'options_select',
+      'weight' => 4,
+    ),
+  );
+
+  // Exported field_instance: 'node-data_dashboard-field_topic'
+  $field_instances['node-data_dashboard-field_topic'] = array(
+    'bundle' => 'data_dashboard',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'dkan_featured_topics',
+        'settings' => array(),
+        'type' => 'dkan_topic_formatter',
+        'weight' => 0,
+      ),
+      'search_result' => array(
+        'label' => 'hidden',
+        'module' => 'dkan_featured_topics',
+        'settings' => array(),
+        'type' => 'dkan_topic_formatter',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'hidden',
+        'module' => 'dkan_featured_topics',
+        'settings' => array(),
+        'type' => 'dkan_topic_formatter',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_topic',
+    'label' => 'Topics',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'apply_chosen' => '',
+      ),
+      'type' => 'options_select',
+      'weight' => 1,
+    ),
+  );
+
   // Exported field_instance: 'taxonomy_term-dkan_topics-field_icon_type'
   $field_instances['taxonomy_term-dkan_topics-field_icon_type'] = array(
     'bundle' => 'dkan_topics',
