@@ -158,7 +158,7 @@ function dkan_featured_topics_default_content() {
 
   // Add the file usage.
   foreach ($font_files as $ext) {
-    $filename = 'dkantopics';
+    $filename = 'DKAN-Topics';
     $module_path = drupal_get_path('module', 'dkan_featured_topics');
     $handle = fopen($module_path . '/theme/fonts/' . $filename . '.' . $ext, 'r');
     $file = file_save_data($handle, 'public://' . $filename . '.' . $ext, FILE_EXISTS_RENAME);
