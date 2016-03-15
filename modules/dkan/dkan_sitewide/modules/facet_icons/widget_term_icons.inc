@@ -4,6 +4,8 @@
  * @file
  *
  */
+// Add pathauto inc file so we can use pathauto_cleanstring function.
+module_load_include('inc','pathauto','pathauto');
 
 /**
  * Widget that renders facets as a list of clickable links.

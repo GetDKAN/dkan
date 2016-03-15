@@ -18,11 +18,11 @@ function dkan_featured_topics_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'hidden',
         'module' => 'dkan_featured_topics',
         'settings' => array(),
         'type' => 'dkan_topic_formatter',
-        'weight' => 2,
+        'weight' => 0,
       ),
       'search_result' => array(
         'label' => 'hidden',

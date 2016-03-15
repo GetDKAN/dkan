@@ -1213,7 +1213,7 @@ function dkan_sitewide_panels_default_page_manager_pages() {
     $pane->style = array(
       'settings' => array(
         'pane_title' => '%title',
-        'pane_collapsed' => 1,
+        'pane_collapsed' => 0,
         'pane_empty_check' => 0,
       ),
       'style' => 'collapsible',
