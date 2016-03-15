@@ -208,59 +208,11 @@ function dkan_data_story_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dkan_data_story-field_topic'
-  $field_instances['node-dkan_data_story-field_topic'] = array(
-    'bundle' => 'dkan_data_story',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
-        'settings' => array(),
-        'type' => 'dkan_topic_formatter',
-        'weight' => 0,
-      ),
-      'search_result' => array(
-        'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
-        'settings' => array(),
-        'type' => 'dkan_topic_formatter',
-        'weight' => 0,
-      ),
-      'teaser' => array(
-        'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
-        'settings' => array(),
-        'type' => 'dkan_topic_formatter',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'field_topic',
-    'label' => 'Topics',
-    'required' => 0,
-    'settings' => array(
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'options',
-      'settings' => array(
-        'apply_chosen' => '',
-      ),
-      'type' => 'options_select',
-      'weight' => 4,
-    ),
-  );
-
   // Translatables
   // Included for use with string extractors like potx.
   t('Body');
   t('Image');
   t('Tags');
-  t('Topics');
 
   return $field_instances;
 }
