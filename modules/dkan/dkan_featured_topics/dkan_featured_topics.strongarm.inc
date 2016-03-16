@@ -56,7 +56,7 @@ function dkan_featured_topics_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'taxonomy_menu_vocab_parent_dkan_topics';
-  $strongarm->value = '1386';
+  $strongarm->value = '489';
   $export['taxonomy_menu_vocab_parent_dkan_topics'] = $strongarm;
 
   $strongarm = new stdClass();
