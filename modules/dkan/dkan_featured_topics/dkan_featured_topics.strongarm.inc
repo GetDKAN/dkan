@@ -13,9 +13,37 @@ function dkan_featured_topics_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'taxonomy_menu_expanded_dkan_topics';
+  $strongarm->value = 1;
+  $export['taxonomy_menu_expanded_dkan_topics'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'taxonomy_menu_path_dkan_topics';
+  $strongarm->value = 'taxonomy_menu_path_default';
+  $export['taxonomy_menu_path_dkan_topics'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'taxonomy_menu_rebuild_dkan_topics';
+  $strongarm->value = 0;
+  $export['taxonomy_menu_rebuild_dkan_topics'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'taxonomy_menu_sync_dkan_topics';
   $strongarm->value = 1;
   $export['taxonomy_menu_sync_dkan_topics'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'taxonomy_menu_term_item_description_dkan_topics';
+  $strongarm->value = 0;
+  $export['taxonomy_menu_term_item_description_dkan_topics'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -28,8 +56,15 @@ function dkan_featured_topics_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'taxonomy_menu_vocab_parent_dkan_topics';
-  $strongarm->value = '489';
+  $strongarm->value = '1386';
   $export['taxonomy_menu_vocab_parent_dkan_topics'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'taxonomy_menu_voc_item_description_dkan_topics';
+  $strongarm->value = 0;
+  $export['taxonomy_menu_voc_item_description_dkan_topics'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
