@@ -184,11 +184,19 @@ function dkan_featured_topics_uninstall() {
   $vocab = taxonomy_vocabulary_machine_name_load('dkan_topics');
   taxonomy_vocabulary_delete($vocab->vid);
 
-  // Loop over each of the fields defined by this module and delete
-  // all instances of the field, their data, and the field itself.
-  // http://api.drupal.org/api/function/field_delete_field/7
-  foreach (array_keys(_dkan_featured_topics_installed_fields()) as $field) {
-    field_delete_field($field);
+  $fields = array(
+    'field_icon_type', 
+    'field_topic', 
+    'field_topic_icon', 
+    'field_topic_icon_color',
+  );
+  foreach( $fields as $field) {
+    if (field_info_field($field)) { 
+      field_delete_field($field); 
+      $message = 'Deleting field = ' . $field;
+      dsm($message); 
+      drush_print($message);
+    };
   }
   // Purge all field infromation
   // http://api.drupal.org/api/function/field_purge_batch/7
