@@ -146,6 +146,11 @@ function dkan_featured_topics_modules_enabled($modules) {
 
       $page = panels_load_page_by_id('page_datasets_panel_context');
       panels_display_pane_remove($page->conf['display'], 'sidebar', 'block', 'facetapi-EwrOFrHh7WdVteFiBTQYXfGlscW50MbI', $configuration, $style);
+      // Disable taxonomy_menu.
+      module_disable(array('taxonomy_menu', 'dkan_default_topics','font_icon_select','color_field','conditional_fields'));
+      // Recommend uninstall.
+      global $base_url;
+      drupal_set_message(t('To completely remove topics from the site, uninstall it here '. $base_url . '/admin/modules/uninstall'), 'status', FALSE);
     }
   }
 }
