@@ -153,11 +153,6 @@ function dkan_featured_topics_modules_enabled($modules) {
 }
 
 /**
- * Implements hook_enable().
- */
-
-
-/**
  * Additional hook_disable() tasks.
  */
 function dkan_featured_topics_extra_tasks() {
@@ -180,8 +175,8 @@ function dkan_featured_topics_default_content() {
   // Add the file usage.
   foreach ($font_files as $ext) {
     $filename = 'DKAN-Topics';
-    $module_path = drupal_get_path('module', 'dkan_featured_topics');
-    $handle = fopen($module_path . '/theme/fonts/' . $filename . '.' . $ext, 'r');
+    $theme_path = drupal_get_path('theme', 'nuboot_radix');
+    $handle = fopen($theme_path . '/assets/fonts/' . $filename . '.' . $ext, 'r');
     $file = file_save_data($handle, 'public://' . $filename . '.' . $ext, FILE_EXISTS_RENAME);
     $file->status = FILE_STATUS_PERMANENT;
     file_save($file);
