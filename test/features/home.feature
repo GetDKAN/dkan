@@ -30,11 +30,15 @@ Feature: Homepage
   Scenario: See "Add Dataset"
     Given I am logged in as a user with the "content creator" role
     And I am on the homepage
-    Then I should see "Add Dataset"
+    Then I hover over the admin menu item "Content"
+    Then I hover over the admin menu item "Add content"
+    Then I should see the admin menu item "Dataset"
 
   @api @javascript
   Scenario: See "Dataset Form"
     Given I am logged in as a user with the "content creator" role
     And I am on the homepage
-    And I click "Add Dataset"
+    Then I hover over the admin menu item "Content"
+    Then I hover over the admin menu item "Add content"
+    Then I click "Dataset"
     Then I should see "Create Dataset"
