@@ -135,25 +135,32 @@ function dkan_featured_topics_modules_enabled($modules) {
       }
       panels_save_display($display);
     }
+
+    function dkan_featured_topics_enable() {
+
+      $page = panels_load_page_by_id('page_datasets_panel_context');
+      panels_display_pane_add($page->conf['display'], 'sidebar', 'block', 'facetapi-EwrOFrHh7WdVteFiBTQYXfGlscW50MbI', $configuration, $style);
+    }
+
+    function dkan_featured_topics_disable() {
+      if (in_array('dkan_sitewide_panels', $modules)) {
+        $page = panels_load_page_by_id('page_datasets_panel_context');
+        panels_display_pane_remove($page->conf['display'], 'sidebar', 'block', 'facetapi-EwrOFrHh7WdVteFiBTQYXfGlscW50MbI', $configuration, $style);
+      }
+      dkan_featured_topics_extra_tasks();
+    }
   }
 }
 
 /**
  * Implements hook_enable().
  */
-function dkan_featured_topics_enable() {
 
-  $page = panels_load_page_by_id('page_datasets_panel_context');
-  panels_display_pane_add($page->conf['display'], 'sidebar', 'block', 'facetapi-EwrOFrHh7WdVteFiBTQYXfGlscW50MbI', $configuration, $style);
-}
 
 /**
- * Implements hook_disable().
+ * Additional hook_disable() tasks.
  */
-function dkan_featured_topics_disable() {
-
-  $page = panels_load_page_by_id('page_datasets_panel_context');
-  panels_display_pane_remove($page->conf['display'], 'sidebar', 'block', 'facetapi-EwrOFrHh7WdVteFiBTQYXfGlscW50MbI', $configuration, $style);
+function dkan_featured_topics_extra_tasks() {
   // Disable taxonomy_menu.
   module_disable(array('taxonomy_menu', 'dkan_default_topics','font_icon_select','color_field','conditional_fields'));
   // Recommend uninstall.
