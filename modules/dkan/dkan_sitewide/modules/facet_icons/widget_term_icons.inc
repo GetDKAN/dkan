@@ -37,11 +37,10 @@ class FacetapiTermIcon extends FacetapiWidgetLinks {
       $type = '';
       $icon = '';
       $term = taxonomy_term_load($item['#indexed_value']);
-      $name = $term->name;
-      if($name) {
-        $term_class = pathauto_cleanstring($name);
-        if(!empty($item->field_image)) {
-          $uri = $item->field_image['und'][0]['uri'];
+      if(is_object($term)) {
+        $term_class = pathauto_cleanstring($term->name);
+        if(!empty($term->field_image)) {
+          $uri = $term->field_image['und'][0]['uri'];
           if($uri) {
             $icon = '<img src="' . image_style_url('small_topics_icons', $uri) . '">';
           }
