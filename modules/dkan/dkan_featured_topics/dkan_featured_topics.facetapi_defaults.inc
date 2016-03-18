@@ -51,6 +51,9 @@ function dkan_featured_topics_facetapi_default_facet_settings() {
       'value' => '',
       'format' => 'html',
     ),
+    'pretty_paths_alias' => 'field_topic',
+    'pretty_paths_taxonomy_pathauto' => 0,
+    'pretty_paths_taxonomy_pathauto_vocabulary' => 'dkan_topics',
     'submit_realm' => 'Save and go back to realm settings',
   );
   $export['search_api@datasets:block:field_topic'] = $facet;

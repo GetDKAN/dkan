@@ -1,5 +1,5 @@
 name = DKAN Featured Topics
-description = Categorize your data into easy to search topics.
+description = Categorize your data with topics to help users find what they are looking for.
 core = 7.x
 package = DKAN
 version = 7.x-1.0
