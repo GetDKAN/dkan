@@ -4,8 +4,6 @@
  * @file
  *
  */
-// Add pathauto inc file so we can use pathauto_cleanstring function.
-module_load_include('inc','pathauto','pathauto');
 
 /**
  * Widget that renders facets as a list of clickable links.
@@ -34,11 +32,9 @@ class FacetapiTermIcon extends FacetapiWidgetLinks {
     $items = array();
     foreach ($build as $value => $item) {
       $row = array('class' => array());
-      $type = '';
       $icon = '';
       $term = taxonomy_term_load($item['#indexed_value']);
       if(is_object($term)) {
-        $term_class = pathauto_cleanstring($term->name);
         if(!empty($term->field_image)) {
           $uri = $term->field_image['und'][0]['uri'];
           if($uri) {
@@ -46,7 +42,11 @@ class FacetapiTermIcon extends FacetapiWidgetLinks {
           }
         }
         else {
-          $icon = theme('facet_icons', array('type'=> $term_class, 'class' => array('facet-icon')));
+          $font_icon = field_get_items('taxonomy_term', $term, 'field_topic_icon');
+          $i = field_view_field('taxonomy_term', $term, 'field_topic_icon', $font_icon, $langcode = NULL);
+          if($i) {
+            $icon = drupal_render($i);
+          }
         }
       }
       // Initializes variables passed to theme hook.
