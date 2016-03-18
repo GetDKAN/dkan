@@ -27,9 +27,8 @@
 .view-dkan-datasets .field-name-field-topic {
   margin: 8px 0;
 }
-.field-name-field-topic .name,
-.view-dkan-datasets .field-name-field-topic .name {
-  margin: 0 1.5em 0 .25em;
+.field-name-field-topic .field-name-field-topic-icon {
+  margin: 0 .25em 0 0;
 }
 #taxonomy-form-term .field-name-field-topic-icon {
   display: block;
@@ -52,36 +51,3 @@
 .field-name-field-topic .field-type-image {
   display: inline-block;
 }
-/* FACET BLOCK */
-.facetapi-facet-field-topic li.leaf a span:before {
-  font-family: 'font_icon_select_1';
-  margin-right: 5px;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-}
-/*.facetapi-facet-field-topic li.leaf a .icon-dkan-transportation:before {
-  content:'\e977';
-}
-.facetapi-facet-field-topic li.leaf a .icon-dkan-public-safety:before {
-  content:'\e978';
-}
-.facetapi-facet-field-topic li.leaf a .icon-dkan-city-planning:before {
-  content:'\e979';
-}
-.facetapi-facet-field-topic li.leaf a .icon-dkan-health-care:before {
-  content: '\e97a';
-}
-.facetapi-facet-field-topic li.leaf a .icon-dkan-education:before {
-  content: '\e97b';
-}
-.facetapi-facet-field-topic li.leaf a .icon-dkan-finance-and-budgeting:before {
-  content: '\e97c';
-}*/
