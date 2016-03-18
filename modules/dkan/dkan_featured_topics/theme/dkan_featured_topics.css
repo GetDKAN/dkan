@@ -67,7 +67,7 @@
   -moz-osx-font-smoothing: grayscale;
 
 }
-.facetapi-facet-field-topic li.leaf a .icon-dkan-transportation:before {
+/*.facetapi-facet-field-topic li.leaf a .icon-dkan-transportation:before {
   content:'\e977';
 }
 .facetapi-facet-field-topic li.leaf a .icon-dkan-public-safety:before {
@@ -84,4 +84,4 @@
 }
 .facetapi-facet-field-topic li.leaf a .icon-dkan-finance-and-budgeting:before {
   content: '\e97c';
-}
+}*/
