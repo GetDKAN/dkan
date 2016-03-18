@@ -5,6 +5,8 @@ includes:
   - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
     # DKAN Datastore
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
+    # DKAN Workflow
+  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
     # Visualization Entity
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make"
     # Visualization Entity Charts
@@ -52,6 +54,12 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_datastore.git'
+      branch: 7.x-1.x
+  dkan_workflow:
+    subdir: dkan
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/dkan_workflow.git'
       branch: 7.x-1.x
   visualization_entity:
     download:
@@ -151,7 +159,14 @@ projects:
   adminrole:
     version: '1.1'
   admin_menu_source:
-    version: '1.0'
+    download:
+      type: git
+      url: 'http://git.drupal.org/project/admin_menu_source.git'
+      branch: 7.x-1.x
+      revision: 8514d8b
+    # Allow ordering of roles to handle users w/multiple roles
+    patch:
+      2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
   menu_token:
     version: 1.0-beta5
   delta:

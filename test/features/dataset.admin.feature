@@ -37,6 +37,7 @@ Feature: Dataset Features
       | Dataset 04 | Group 02  | Celeste | No               | election |             |
       | Dataset 05 | Group 01  | Katie   | No               | election |             |
 
+  @noworkflow
   Scenario: Edit any dataset
     Given I am logged in as "John"
     And I am on "Dataset 03" page
@@ -45,6 +46,7 @@ Feature: Dataset Features
     And I press "Finish"
     Then I should see "Dataset Dataset 03 edited has been updated"
 
+  @noworkflow
   Scenario: Delete any dataset
     Given I am logged in as "John"
     And I am on "Dataset 03" page
@@ -53,6 +55,7 @@ Feature: Dataset Features
     And I press "Delete"
     Then I should see "Dataset Dataset 03 has been deleted"
 
+  @noworkflow
   Scenario: Publish any dataset
     Given I am logged in as "John"
     And I am on "Dataset 05" page
@@ -61,3 +64,8 @@ Feature: Dataset Features
     And I check the box "Published"
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
+
+  # https://github.com/Behat/Behat/issues/834
+  @dummy
+  Scenario: Dummy test
+    Given I am on "/"
