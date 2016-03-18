@@ -132,3 +132,15 @@ commands:
       # Grab the sql string and ignore stdin so it can be used later.
       ahoy cmd-proxy "$(ahoy drush sql-connect < /dev/null)"
 
+  self-update:
+    usage: Update dkan-ahoy
+    cmd: |
+      set -e
+      rm -fR dkan-ahoy
+      rm -fR dkan/.ahoy
+      rm dkan/dkan-init.sh
+      git clone 'git@github.com:nucivic/dkan' --depth=1 dkan-ahoy
+      cp -r dkan-ahoy/.ahoy dkan/
+      cp dkan-ahoy/dkan-init.sh  dkan/
+      rm -fR dkan-ahoy
+    hide: true
