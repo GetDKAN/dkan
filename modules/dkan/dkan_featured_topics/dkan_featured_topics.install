@@ -75,92 +75,100 @@ function dkan_featured_topics_install() {
 }
 
 /**
- * Implements hook_modules_enabled($modules).
+ * Custom panel function.
  */
-function dkan_featured_topics_modules_enabled($modules) {
-  if (in_array('dkan_sitewide_panels', $modules)) {
-    function panels_load_page_by_id($id) {
-      ctools_include('page', 'page_manager', 'plugins/tasks');
-      ctools_include('page_manager.admin', 'page_manager', '');
-      ctools_include('content');
-      ctools_include('export');
+function panels_load_page_by_id($id) {
+  if(module_exists('dkan_sitewide_panels')) {
+    ctools_include('page', 'page_manager', 'plugins/tasks');
+    ctools_include('page_manager.admin', 'page_manager', '');
+    ctools_include('content');
+    ctools_include('export');
 
-      $tasks = page_manager_get_tasks_by_type('page');
-      $page_types = array();
+    $tasks = page_manager_get_tasks_by_type('page');
+    $page_types = array();
 
-      foreach ($tasks as $task) {
-        // Disabled page return empty
-        if ($pages = page_manager_load_task_handlers($task)) {
-          $page_types[] = $pages;
-        }
+    foreach ($tasks as $task) {
+      // Disabled page return empty
+      if ($pages = page_manager_load_task_handlers($task)) {
+        $page_types[] = $pages;
       }
+    }
 
-      // Not all display _object(&data, name)ts are loaded, make sure to load them
-      foreach ($page_types as &$pages) {
-        foreach ($pages as &$page) {
-          if (empty($page->conf['display']) && !empty($page->conf['did'])) {
-            $page->conf['display'] = panels_load_display($page->conf['did']);
-          }
-        }
-      }
-
-      // Page types will have all panel page objects fully loaded
-      foreach ($page_types as $page_type) {
-        foreach ($page_type as $key => $value) {
-          if ($key == $id) {
-            return $value;
-          }
+    // Not all display _object(&data, name)ts are loaded, make sure to load them
+    foreach ($page_types as &$pages) {
+      foreach ($pages as &$page) {
+        if (empty($page->conf['display']) && !empty($page->conf['did'])) {
+          $page->conf['display'] = panels_load_display($page->conf['did']);
         }
       }
     }
 
-    function panels_display_pane_add(&$display, $region, $type_name, $subtype_name, $configuration, $style) {
-      $content_type = ctools_get_content_type($type_name);
-      $subtype = ctools_content_get_subtype($content_type, $subtype_name);
-      $pane = panels_new_pane($type_name, $subtype_name, TRUE);
-      $pane->configuration = $configuration;
-      $pane->style = $style;
-      $display->add_pane($pane, $region);
-
-      panels_save_display($display);
-    }
-
-    function panels_display_pane_remove(&$display, $region, $type_name, $subtype_name) {
-      foreach ($display->content as $key => $pane) {
-        if($pane->panel == $region && $pane->type == $type_name && $pane->subtype == $subtype_name) {
-          $region_pane_key = array_search($pane->pid, $display->panels[$region]);
-          unset($display->panels[$region][$region_pane_key]);
-          unset($display->content[$key]);
+    // Page types will have all panel page objects fully loaded
+    foreach ($page_types as $page_type) {
+      foreach ($page_type as $key => $value) {
+        if ($key == $id) {
+          return $value;
         }
       }
-      panels_save_display($display);
-    }
-
-    function dkan_featured_topics_enable() {
-
-      $page = panels_load_page_by_id('page_datasets_panel_context');
-      panels_display_pane_add($page->conf['display'], 'sidebar', 'block', 'facetapi-EwrOFrHh7WdVteFiBTQYXfGlscW50MbI', $configuration, $style);
-    }
-
-    function dkan_featured_topics_disable() {
-      if (in_array('dkan_sitewide_panels', $modules)) {
-        $page = panels_load_page_by_id('page_datasets_panel_context');
-        panels_display_pane_remove($page->conf['display'], 'sidebar', 'block', 'facetapi-EwrOFrHh7WdVteFiBTQYXfGlscW50MbI', $configuration, $style);
-      }
-      dkan_featured_topics_extra_tasks();
     }
   }
 }
 
+function panels_display_pane_add(&$display, $region, $type_name, $subtype_name, $configuration, $style) {
+  if(module_exists('dkan_sitewide_panels')) {
+    $content_type = ctools_get_content_type($type_name);
+    $subtype = ctools_content_get_subtype($content_type, $subtype_name);
+    $pane = panels_new_pane($type_name, $subtype_name, TRUE);
+    $pane->configuration = $configuration;
+    $pane->style = $style;
+    $display->add_pane($pane, $region);
+
+    panels_save_display($display);
+  }
+}
+
+function panels_display_pane_remove(&$display, $region, $type_name, $subtype_name) {
+  if(module_exists('dkan_sitewide_panels')) {
+    foreach ($display->content as $key => $pane) {
+      if($pane->panel == $region && $pane->type == $type_name && $pane->subtype == $subtype_name) {
+        $region_pane_key = array_search($pane->pid, $display->panels[$region]);
+        unset($display->panels[$region][$region_pane_key]);
+        unset($display->content[$key]);
+      }
+    }
+    panels_save_display($display);
+  }
+}
+
 /**
- * Additional hook_disable() tasks.
+ * Implements hook_enable().
  */
-function dkan_featured_topics_extra_tasks() {
-  // Disable taxonomy_menu.
-  module_disable(array('taxonomy_menu', 'dkan_default_topics','font_icon_select','color_field','conditional_fields'));
+// function dkan_featured_topics_enable() {
+//   if(module_exists('dkan_sitewide_panels')) {
+//     $page = panels_load_page_by_id('page_datasets_panel_context');
+//     panels_display_pane_add($page->conf['display'], 'sidebar', 'block', 'facetapi-dqCRnp6cKP1cSzAsNB6zqFtY9AVEa0mp', $configuration, $style);
+//   }
+// }
+
+/**
+ * Implements hook_disable().
+ */
+function dkan_featured_topics_disable() {
+  // if(module_exists('dkan_sitewide_panels')) {
+  //   $page = panels_load_page_by_id('page_datasets_panel_context');
+  //   panels_display_pane_remove($page->conf['display'], 'sidebar', 'block', 'facetapi-dqCRnp6cKP1cSzAsNB6zqFtY9AVEa0mp', $configuration, $style);
+  // }
+
+  if (module_exists('taxonomy_menu')) {
+    db_update('menu_links')
+      ->fields(array('hidden' => 1))
+      ->condition('module', 'taxonomy_menu')
+      ->execute();
+  }
+  dkan_featured_topics_add_menu();
   // Recommend uninstall.
   global $base_url;
-  drupal_set_message(t('To completely remove topics from the site, uninstall it here '. $base_url . '/admin/modules/uninstall'), 'status', FALSE);
+  drupal_set_message(t('To completely remove DKAN Topics content and fields from the site, uninstall the module here: <a href="'. $base_url . '/admin/modules/uninstall">Uninstall DKAN Featured Topics</a>.'), 'warning', FALSE);
 }
 
 /**
@@ -174,7 +182,7 @@ function dkan_featured_topics_default_content() {
 
   // Add the file usage.
   foreach ($font_files as $ext) {
-    $filename = 'DKAN-Topics';
+    $filename = 'dkan-topics';
     $theme_path = drupal_get_path('theme', 'nuboot_radix');
     $handle = fopen($theme_path . '/assets/fonts/' . $filename . '.' . $ext, 'r');
     $file = file_save_data($handle, 'public://' . $filename . '.' . $ext, FILE_EXISTS_RENAME);
