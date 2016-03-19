@@ -145,5 +145,7 @@ commands:
       git clone 'git@github.com:nucivic/dkan' --depth=1 dkan-ahoy
       cp -r dkan-ahoy/.ahoy dkan/
       cp dkan-ahoy/dkan-init.sh  dkan/
+      cp dkan-ahoy/test/behat.docker.yml dkan/test/
+      cp dkan-ahoy/test/behat.circleci.yml dkan/test/
       rm -fR dkan-ahoy
     hide: true
