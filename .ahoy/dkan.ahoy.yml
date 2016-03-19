@@ -126,6 +126,9 @@ commands:
         echo "Using behat.yml .."
       fi
       ahoy cmd-proxy "cd $BEHAT_FOLDER && bin/behat $CONFIG ${ARGS[@]}"
+  dkanextension-update:
+    usage: Update the nucivic/dkanextension composer package.
+    cmd: ahoy cmd-proxy 'cd dkan/test && composer update nucivic/dkanextension'
   sqlc:
     usage: Abstracted way to connect to the mysql database.
     cmd: |
