@@ -122,3 +122,9 @@ Feature: Resource
     #       Does this get tested with the visualization tests for maps?
   Scenario: View resource data on map automatically if lat and long info is present
     Given I am on the homepage
+
+  @api
+  Scenario: View dataset reference on Resource teaser
+    Given I am on "/search"
+    And I click "Resource"
+    Then I should see "Dataset 01"
