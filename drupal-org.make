@@ -181,7 +181,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/nuboot_radix.git'
-      branch: 944-resource-teaser
+      branch: 7.x-1.x
     type: theme
   radix:
     type: theme
