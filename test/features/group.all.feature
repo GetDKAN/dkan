@@ -38,11 +38,23 @@ Feature: Site Manager administer groups
       | name    |
       | Health  |
       | Gov     |
+      | Count   |
     And datasets:
       | title      | publisher | tags         | author  | published | description                |
       | Dataset 01 | Group 01  | Health       | Katie   | Yes       | Increase of toy prices     |
       | Dataset 02 | Group 01  | Health       | Katie   | No        | Cost of oil in January     |
       | Dataset 03 | Group 01  | Gov          | Gabriel | Yes       | Election districts         |
+      | Dataset 04 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
+      | Dataset 05 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
+      | Dataset 06 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
+      | Dataset 07 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
+      | Dataset 08 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
+      | Dataset 09 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
+      | Dataset 10 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
+      | Dataset 11 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
+      | Dataset 12 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
+      | Dataset 13 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
+      | Dataset 14 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
@@ -63,6 +75,12 @@ Feature: Site Manager administer groups
   Scenario: View the list of datasets on a group
     Given I am on "Group 01" page
     Then I should see "2 datasets" in the "content" region
+
+  Scenario: View the correct count of datasets
+    Given I am on "Groups" page
+    Then I should see "11 datasets"
+    When I click "11 datasets"
+    Then I should see "Displaying 1 - 10 of 11 datasets"
 
   Scenario: View the list of group members
     Given I am on "Group 01" page
