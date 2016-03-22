@@ -4,7 +4,7 @@ Feature: Resource
 
   Background:
     Given pages:
-      | title     | url             |
+      | name      | url             |
       | Content   | /admin/content  |
     Given users:
       | name    | mail                | roles                |
@@ -47,7 +47,7 @@ Feature: Resource
       | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
 
-
+  @noworkflow
   Scenario: Edit any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -58,6 +58,7 @@ Feature: Resource
     When I am on "Content" page
     Then I should see "Resource 02 edited"
 
+  @noworkflow
   Scenario: Publish any resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
@@ -67,6 +68,7 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 04 has been updated"
 
+  @noworkflow
   Scenario: Delete any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -75,12 +77,14 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
 
+  @noworkflow
   Scenario: Manage Datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
+  @noworkflow
   Scenario: Import items on datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -93,6 +97,7 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
+  @noworkflow
   Scenario: Delete items on datastore of any resource
     # Backgorund steps to add a file to a resource
     Given I am logged in as "John"
@@ -111,6 +116,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
+  @noworkflow
   Scenario: Drop datastore of any resource
     # Backgorund steps to add a file to a resource
     Given I am logged in as "John"
@@ -129,6 +135,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
+  @noworkflow
   Scenario: Add revision to any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -140,7 +147,7 @@ Feature: Resource
     When I click "Revisions"
     Then I should see "current revision"
 
-  @fixme @dkanBug
+  @fixme @dkanBug @noworkflow
     #TODO: There is an issue where an admin, when clicking revert, gets a access unauthorized response.
     #     See: https://github.com/NuCivic/dkan/issues/793
   Scenario: Revert any resource revision
@@ -155,3 +162,8 @@ Feature: Resource
     And I press "Revert"
     Then I should see "Resource 02"
     And I should not see "Resource 02 edited"
+
+  # https://github.com/Behat/Behat/issues/834
+  @dummy
+  Scenario: Dummy test
+    Given I am on "/"

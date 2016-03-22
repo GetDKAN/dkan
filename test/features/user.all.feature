@@ -3,7 +3,7 @@ Feature: User
 
   Background:
     Given pages:
-      | title         | url           |
+      | name          | url           |
       | Content       | /user         |
       | John          | /users/john   |
       | Katie         | /users/katie  |
@@ -44,7 +44,6 @@ Feature: User
     And I fill in "Password" with "johnpass"
     And I press "Log in"
     Then I should see the "John" user page
-    Then I should see the "John" user command center
 
   Scenario: Logout
     Given I am logged in as "John"
@@ -91,7 +90,7 @@ Feature: User
     And I click "Datasets" in the "tabs" region
     When I fill in "Test" for "Search" in the "content search" region
     And I press "Apply"
-    Then I should see "2 datasets" in the "user content" region
+    Then I should see "2 results" in the "user content" region
     And I should see "2" items in the "user content" region
 
   Scenario: See list of user memberships on user profile

@@ -1,19 +1,28 @@
+[![DKAN Sitewide Build Status](https://circleci.com/gh/NuCivic/dkan.svg?style=svg)](https://circleci.com/gh/NuCivic/dkan)
 
-[![DKAN](http://f.cl.ly/items/3q3v120q0h1q2d2A3s3L/Screenshot%202014-04-29%2018.40.15.png)](http://nucivic.com/dkan)
+[![Join the chat at https://gitter.im/NuCivic/dkan](https://badges.gitter.im/NuCivic/dkan.svg)](https://gitter.im/NuCivic/dkan?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## What is DKAN?
+
+[![DKAN](https://www.drupal.org/files/2016-02-05_12-09-49.png)](http://nucivic.com/dkan)
 
 [DKAN](http://nucivic.com/dkan) is a Drupal-based open data tool with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. DKAN is maintained by [NuCivic](http://nucivic.com).
 
 ## Data publishers
 
 *   Publish data through a guided process or import via API/harvesting from other catalogs
-*   Customize your own metadata fields, themes and branding*   Store data within DKAN or on external (e.g. departmental) sites*   Manage access control, version history with rollback, RDF support, user analytics*   Supported enterprise-quality commercial support and FISMA-certified cloud hosting options available
+*   Customize your own metadata fields, themes and branding
+*   Store data within DKAN or on external (e.g. departmental) sites
+*   Manage access control, version history with rollback, RDF support, user analytics
+*   Supported enterprise-quality commercial support and FISMA-certified cloud hosting options available
 
 ## Data users
 
 *   Explore, search, add, describe, tag, group datasets via web front-end or API
-*   Collaborate with user profiles, groups, dashboard, social network integration, comments*   Use metadata and data APIs, data previews and visualizations*   Manage access control, version history with rollback, INSPIRE/RDF support, user analytics*   Extend and leverage the full universe of more than 18,000 freely available Drupal modules
+*   Collaborate with user profiles, groups, dashboard, social network integration, comments
+*   Use metadata and data APIs, data previews and visualizations
+*   Manage access control, version history with rollback, INSPIRE/RDF support, user analytics
+*   Extend and leverage the full universe of more than 18,000 freely available Drupal modules
 
 ## Hosting and support
 
@@ -43,7 +52,7 @@ Requires drush version 6.x or 7.x.
 
 Create a full version with drush make:
 
-```
+```bash
 git clone --branch 7.x-1.x https://github.com/NuCivic/dkan.git
 cd dkan
 drush make --prepare-install build-dkan.make webroot
@@ -112,7 +121,7 @@ https://groups.google.com/forum/?hl=en#!forum/dkan-dev
 
 Please file all tickets for DKAN, including those that involve code in DKAN Dataset and DKAN Datastore modules in this issue queue. We have several labels in place for you to tag the issue with and identify it with the proper component.
 
-Please follow the (Ticket Template)[https://github.com/NuCivic/dkan/blob/7.x-1.x/CONTRIBUTING.md#new-feature-template] when creating new tickets.
+Please follow the [Ticket Template](https://github.com/NuCivic/dkan/blob/7.x-1.x/CONTRIBUTING.md#new-feature-template) when creating new tickets.
 
 Also, please remember to reference the issue across repositories in order for maintainers to pick up commits and pull requests looking at the issue. You can do that for commits like this:
 
@@ -120,6 +129,6 @@ Also, please remember to reference the issue across repositories in order for ma
 git commit -m "Issue NuCivic/dkan#<issue_number>: ..."
 ```
 
-Just replace **<issue_number>** with the actual issue number. You can reference pull requests exactly like that if you add the same text **"NuCivic/dkan#<issue_number>"** in a comment. 
+Just replace **<issue_number>** with the actual issue number. You can reference pull requests exactly like that if you add the same text **"NuCivic/dkan#&lt;issue_number&gt;"** in a comment. 
 
 This really help us detecting changes and pulling them in in faster.

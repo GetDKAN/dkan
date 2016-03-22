@@ -1,22 +1,25 @@
+
 Feature: Datasets
 
-  @api
+  @api @noworkflow
   Scenario: Sharing the Dataset on Facebook
     Given I am on "/dataset/wisconsin-polling-places"
     When I click "Facebook"
     Then I should see "Facebook"
 
+  @noworkflow
   Scenario: Sharing the Dataset on Twitter
     Given I am on "/dataset/wisconsin-polling-places"
     When I click "Twitter"
     Then I should see "Share a link with your followers"
 
+  @noworkflow
   Scenario: Seeing the License
     Given I am on "/dataset/wisconsin-polling-places"
     When I click "Creative Commons Attribution"
     Then I should see "The Creative Commons Attribution license allows re-distribution and re-use of a licensed work"
 
-  @javascript
+  @javascript @noworkflow
   Scenario: Viewing the Dataset
     Given I am on "/dataset/wisconsin-polling-places"
     Then I should see "Polling places in the state of Wisconsin"
@@ -29,7 +32,7 @@ Feature: Datasets
     And I wait for "Polling_Places_Madison.csv"
     And I wait for "Door Creek Church"
 
-  @api @javascript
+  @api @javascript @noworkflow
     #TODO: There is an issue with file structures in containers, where files located in one container's folder
     #       are not visible to other containers
     #       This makes it difficult to upload files to the browser, as the browser container won't contain the file.
@@ -50,7 +53,8 @@ Feature: Datasets
     And I should see "Add content"
     When I fill in "title" with "Test Resource Upload"
     And I click "Upload a file"
-    And I attach the drupal file "Polling_Places_Madison.csv" to "files[field_upload_und_0]"
+    And I attach the file "Polling_Places_Madison.csv" to "field_upload[und][0][resup]" using file resup
+    And I wait for the file upload to finish
     And I check "field_upload[und][0][view][grid]"
     And I press "edit-submit"
     And I wait for "Test Resource Upload has been created"
@@ -65,14 +69,14 @@ Feature: Datasets
     Then I should not see "Edit"
     And I should not see "Add Resource"
 
-  @api @javascript
+  @api @javascript @noworkflow
   Scenario: Data previews when only local enabled
     Given cartodb previews are disabled for csv resources
     And I am on "/dataset/wisconsin-polling-places"
     Then I should see "Preview"
     And I should not see "Open with"
 
-  @api @javascript
+  @api @javascript @noworkflow
   Scenario: Open data previews in external services
     Given cartodb previews are enabled for csv resources
     And I am logged in as a user with the "site manager" role
@@ -82,7 +86,7 @@ Feature: Datasets
     Then I should see the local preview link
     And I should see "CartoDB"
 
-  @api
+  @api @noworkflow
   Scenario: Save using "Additional Info"
     Given I am logged in as a user with the "content creator" role
     And I am on "/node/add/dataset"
@@ -94,3 +98,8 @@ Feature: Datasets
     And I press "Save"
     Then I should see "Test Dataset"
     And I should see "Test description"
+
+  # https://github.com/Behat/Behat/issues/834
+  @dummy
+  Scenario: Dummy test
+    Given I am on "/"

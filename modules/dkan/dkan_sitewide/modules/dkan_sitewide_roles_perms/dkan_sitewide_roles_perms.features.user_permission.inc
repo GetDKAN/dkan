@@ -521,6 +521,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'cancel account',
     'roles' => array(
       'administrator' => 'administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'user',
   );

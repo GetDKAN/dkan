@@ -34,8 +34,8 @@ dependencies[] = diff
 dependencies[] = date
 dependencies[] = double_field
 dependencies[] = entity
-dependencies[] = entity_token
 dependencies[] = eva
+dependencies[] = entity_token
 dependencies[] = entityreference
 dependencies[] = feeds
 dependencies[] = facetapi
@@ -93,7 +93,6 @@ dependencies[] = views_bulk_operations
 dependencies[] = visualization_entity
 dependencies[] = visualization_entity_charts
 dependencies[] = visualization_entity_embed
-dependencies[] = features_roles_permissions
 
 ; Open data
 dependencies[] = entity_rdf
@@ -115,10 +114,8 @@ dependencies[] = dkan_dataset_groups_perms
 dependencies[] = dkan_sitewide_panels
 dependencies[] = dkan_sitewide_search_db
 dependencies[] = dkan_sitewide_panelizer
-dependencies[] = dkan_sitewide_profile_page
 dependencies[] = dkan_data_dashboard
 dependencies[] = dkan_data_story
-dependencies[] = dkan_sitewide_profile_page
 dependencies[] = dkan_permissions
 
 ; DKAN Core Modules

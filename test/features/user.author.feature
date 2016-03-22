@@ -3,7 +3,7 @@ Feature: User
 
   Background:
     Given pages:
-      | title         | url           |
+      | name          | url           |
       | Content       | /user         |
       | Users         | /admin/people |
       | John          | /users/john   |
@@ -57,7 +57,7 @@ Feature: User
   Scenario: View the list of own published datasets on profile
     Given I am logged in as "Katie"
     And I am on "Katie" page
-    Then I should see "2" items in the "content" region
+    Then I should see "2" items in the "tabs" region
 
   @api @fixme @testBug
     # TODO: Needs definition.
