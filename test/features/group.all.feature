@@ -86,6 +86,9 @@ Feature: Site Manager administer groups
     Given I am on "Group 01" page
     When I click "Members" in the "group block" region
     Then I should see "Gabriel" in the "group members" region
+    And I should see "Katie" in the "group members" region
+    And I should not see "Jaz" in the "group members" region
+    And I should not see "John" in the "group members" region
 
   Scenario: Search datasets on group
     Given I am on "Group 01" page
