@@ -118,9 +118,10 @@ Feature: Site Manager administer groups
     And I should see "Gov (1)" in the "filter by tag" region
 
   Scenario: View available "date changed" filters after search
-    Given I am on "Group 01" page
-    Then I should see "September 10, 2015 (1)" in the "filter by date changed" region
-    And I should see "October 17, 2015 (1)" in the "filter by date changed" region
+    Given I am on "Group 02" page
+    Then I should see "2015 (5)" in the "filter by date changed" region
+    And I should see "2013 (4)" in the "filter by date changed" region
+    And I should see "2014 (2)" in the "filter by date changed" region
 
   Scenario: Filter datasets on group by resource format
     Given I am on "Group 01" page
