@@ -50,7 +50,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_dataset.git'
-      branch: civic-1474-featured-topics
+      branch: 7.x-1.x
   dkan_datastore:
     subdir: dkan
     download:
@@ -183,7 +183,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/nuboot_radix.git'
-      branch: civic-1474-featured-topics
+      branch: 7.x-1.x
     type: theme
   radix:
     type: theme
