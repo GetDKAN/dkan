@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+- Add dkan_featured_topics module and relevant updates to dkan_dataset and nuboot_radix
 - Upgrade Drupal core to 7.43
 - Enable pretty paths for search page
 - Change search page path from /dataset to /search and redirect /dataset to /search for backward compatibility

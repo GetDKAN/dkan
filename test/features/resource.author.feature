@@ -4,7 +4,7 @@ Feature: Resource
   Background:
     Given pages:
       | name          | url         |
-      | Content       | /node/add/  |
+      | Content       | /node/add  |
       | User          | /user       |
     Given users:
       | name    | mail                | roles                |
