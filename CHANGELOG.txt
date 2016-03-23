@@ -1,11 +1,13 @@
 7.x-1.x
 --------------------------
+- Add dkan_featured_topics module and relevant updates to dkan_dataset and nuboot_radix
 - Upgrade Drupal core to 7.43
 - Enable pretty paths for search page
 - Change search page path from /dataset to /search and redirect /dataset to /search for backward compatibility
 - Add big file upload support through file_resup module
 - Add support to import big files using mysql statement load data infile
-- Added Dkan Workflow module.
+- Added Dkan Workflow module
+- Upgrade Fieldable Panels Panes to 1.8
 
 7.x-1.11 2016-02-01
 --------------------------

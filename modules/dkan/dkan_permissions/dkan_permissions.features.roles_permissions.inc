@@ -241,6 +241,7 @@ function dkan_permissions_default_roles_permissions() {
       'administer file types' => TRUE,
       'administer files' => TRUE,
       'administer group' => TRUE,
+      'administer icon select settings' => TRUE,
       'administer nodes' => TRUE,
       'administer panelizer node data_dashboard content' => TRUE,
       'administer panelizer node data_dashboard defaults' => TRUE,
