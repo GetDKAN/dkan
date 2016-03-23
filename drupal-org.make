@@ -97,7 +97,7 @@ projects:
   features_roles_permissions:
     version: '1.2'
   fieldable_panels_panes:
-    version: '1.7'
+    version: '1.8'
   honeypot:
     version: '1.17'
   fontyourface:
