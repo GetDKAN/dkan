@@ -764,8 +764,9 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
+      'override_title' => 1,
+      'override_title_text' => 'Date Changed',
+      'override_title_heading' => 'h2',
     );
     $pane->cache = array();
     $pane->style = array(
@@ -779,15 +780,16 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $display->content['new-3e8ea599-5b82-4fb2-af0f-ce8f0a6b58be'] = $pane;
     $display->panels['sidebar'][1] = 'new-3e8ea599-5b82-4fb2-af0f-ce8f0a6b58be';
     $pane = new stdClass();
-    $pane->pid = 'new-0720de5b-6051-4f54-948b-c62d1074f82e';
+    $pane->pid = 'new-5b7571be-ff82-48eb-8855-16ddcd379a9d';
     $pane->panel = 'sidebar';
     $pane->type = 'block';
-    $pane->subtype = 'facetapi-lzvCI5xSUC94irLWjBH4WoOTqXVxs8FR';
+    $pane->subtype = 'facetapi-xNAidW9x2foW6UGpYpK8MzTaBT8ebK4D';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
+      'override_title' => 1,
+      'override_title_text' => 'Tags',
+      'override_title_heading' => 'h2',
     );
     $pane->cache = array();
     $pane->style = array(
@@ -797,19 +799,20 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->extras = array();
     $pane->position = 2;
     $pane->locks = array();
-    $pane->uuid = '0720de5b-6051-4f54-948b-c62d1074f82e';
-    $display->content['new-0720de5b-6051-4f54-948b-c62d1074f82e'] = $pane;
-    $display->panels['sidebar'][2] = 'new-0720de5b-6051-4f54-948b-c62d1074f82e';
+    $pane->uuid = '5b7571be-ff82-48eb-8855-16ddcd379a9d';
+    $display->content['new-5b7571be-ff82-48eb-8855-16ddcd379a9d'] = $pane;
+    $display->panels['sidebar'][2] = 'new-5b7571be-ff82-48eb-8855-16ddcd379a9d';
     $pane = new stdClass();
-    $pane->pid = 'new-5b7571be-ff82-48eb-8855-16ddcd379a9d';
+    $pane->pid = 'new-0720de5b-6051-4f54-948b-c62d1074f82e';
     $pane->panel = 'sidebar';
     $pane->type = 'block';
-    $pane->subtype = 'facetapi-xNAidW9x2foW6UGpYpK8MzTaBT8ebK4D';
+    $pane->subtype = 'facetapi-lzvCI5xSUC94irLWjBH4WoOTqXVxs8FR';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
+      'override_title' => 1,
+      'override_title_text' => 'Format',
+      'override_title_heading' => 'h2',
     );
     $pane->cache = array();
     $pane->style = array(
@@ -819,9 +822,9 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->extras = array();
     $pane->position = 3;
     $pane->locks = array();
-    $pane->uuid = '5b7571be-ff82-48eb-8855-16ddcd379a9d';
-    $display->content['new-5b7571be-ff82-48eb-8855-16ddcd379a9d'] = $pane;
-    $display->panels['sidebar'][3] = 'new-5b7571be-ff82-48eb-8855-16ddcd379a9d';
+    $pane->uuid = '0720de5b-6051-4f54-948b-c62d1074f82e';
+    $display->content['new-0720de5b-6051-4f54-948b-c62d1074f82e'] = $pane;
+    $display->panels['sidebar'][3] = 'new-0720de5b-6051-4f54-948b-c62d1074f82e';
     $pane = new stdClass();
     $pane->pid = 'new-58708ed1-8465-4976-887b-a764f6bc6e4f';
     $pane->panel = 'sidebar';
@@ -830,8 +833,9 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
+      'override_title' => 1,
+      'override_title_text' => 'Author',
+      'override_title_heading' => 'h2',
     );
     $pane->cache = array();
     $pane->style = array(
@@ -937,8 +941,9 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
+      'override_title' => 1,
+      'override_title_text' => 'License',
+      'override_title_heading' => 'h2',
     );
     $pane->cache = array();
     $pane->style = array(
@@ -959,8 +964,9 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
+      'override_title' => 1,
+      'override_title_text' => 'Publisher',
+      'override_title_heading' => 'h2',
     );
     $pane->cache = array();
     $pane->style = array(
@@ -981,8 +987,9 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
+      'override_title' => 1,
+      'override_title_text' => 'Format',
+      'override_title_heading' => 'h2',
     );
     $pane->cache = array();
     $pane->style = array(
@@ -1003,8 +1010,9 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
+      'override_title' => 1,
+      'override_title_text' => 'Tags',
+      'override_title_heading' => 'h2',
     );
     $pane->cache = array();
     $pane->style = array(
