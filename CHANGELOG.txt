@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+- Standardize facet titles between user, search and group pages
 - Add dkan_featured_topics module and relevant updates to dkan_dataset and nuboot_radix
 - Upgrade Drupal core to 7.43
 - Enable pretty paths for search page
