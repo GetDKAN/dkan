@@ -13,6 +13,8 @@ includes:
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make"
     #DKAN Data Story
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
+    #DKAN Featured Topics
+  - "modules/dkan/dkan_featured_topics/dkan_featured_topics.make"
 projects:
   manualcrop:
     version: 1.x-dev
@@ -95,7 +97,7 @@ projects:
   features_roles_permissions:
     version: '1.2'
   fieldable_panels_panes:
-    version: '1.7'
+    version: '1.8'
   honeypot:
     version: '1.17'
   fontyourface:
