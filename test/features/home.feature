@@ -16,6 +16,7 @@ Feature: Homepage
     Then I should see "Datasets"
     Then I should see "Groups"
     Then I should see "About"
+    Then I should see "Topics"
 
   Scenario: Viewing footer
     Given I am on the homepage
@@ -25,6 +26,11 @@ Feature: Homepage
     Given I am on the homepage
     When I click "politics"
     Then I should see "Afghanistan Election Districts"
+
+  Scenario: Viewing topics
+    Given I am on the homepage
+    When I click "Public Safety"
+    Then I should see "Wisconsin Polling Places"
 
   @api @javascript
   Scenario: See "Add Dataset"

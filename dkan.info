@@ -116,6 +116,7 @@ dependencies[] = dkan_sitewide_search_db
 dependencies[] = dkan_sitewide_panelizer
 dependencies[] = dkan_data_dashboard
 dependencies[] = dkan_data_story
+dependencies[] = dkan_featured_topics
 dependencies[] = dkan_permissions
 
 ; DKAN Core Modules
