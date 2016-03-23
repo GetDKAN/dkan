@@ -40,21 +40,21 @@ Feature: Site Manager administer groups
       | Gov     |
       | Count   |
     And datasets:
-      | title      | publisher | tags         | author  | published | description                |
-      | Dataset 01 | Group 01  | Health       | Katie   | Yes       | Increase of toy prices     |
-      | Dataset 02 | Group 01  | Health       | Katie   | No        | Cost of oil in January     |
-      | Dataset 03 | Group 01  | Gov          | Gabriel | Yes       | Election districts         |
-      | Dataset 04 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
-      | Dataset 05 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
-      | Dataset 06 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
-      | Dataset 07 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
-      | Dataset 08 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
-      | Dataset 09 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
-      | Dataset 10 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
-      | Dataset 11 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
-      | Dataset 12 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
-      | Dataset 13 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
-      | Dataset 14 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        |
+      | title      | publisher | tags         | author  | published | description                | date changed      |
+      | Dataset 01 | Group 01  | Health       | Katie   | Yes       | Increase of toy prices     | 10 September 2015 |
+      | Dataset 02 | Group 01  | Health       | Katie   | No        | Cost of oil in January     | 10 September 2015 |
+      | Dataset 03 | Group 01  | Gov          | Gabriel | Yes       | Election districts         | 17 October 2015   |
+      | Dataset 04 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 September 2015 |
+      | Dataset 05 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 21 September 2015 |
+      | Dataset 06 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 13 March 2015     |
+      | Dataset 07 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 September 2015 |
+      | Dataset 08 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 25 February 2014  |
+      | Dataset 09 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 13 September 2014 |
+      | Dataset 10 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 October 2013   |
+      | Dataset 11 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 19 October 2013   |
+      | Dataset 12 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 19 October 2013   |
+      | Dataset 13 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 23 October 2013   |
+      | Dataset 14 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 September 2015 |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
@@ -116,6 +116,11 @@ Feature: Site Manager administer groups
     And I press "Apply"
     Then I should see "Health (1)" in the "filter by tag" region
     And I should see "Gov (1)" in the "filter by tag" region
+
+  Scenario: View available "date changed" filters after search
+    Given I am on "Group 01" page
+    Then I should see "September 10, 2015 (1)" in the "filter by date changed" region
+    And I should see "October 17, 2015 (1)" in the "filter by date changed" region
 
   Scenario: Filter datasets on group by resource format
     Given I am on "Group 01" page

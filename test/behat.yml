@@ -78,6 +78,7 @@ default:
         filter by resource format: '.facetapi-facet-field-resourcesfield-format'
         filter by author: '.facetapi-facet-author'
         filter by tag: '.facetapi-facet-field-tags'
+        filter by date changed: '.facetapi-facet-changed'
         social: '.pane-dkan-sitewide-dkan-sitewide-social'
         other access: '.pane-dkan-sitewide-dkan-sitewide-other-access'
         datasets: '.view-dkan-datasets'
