@@ -55,13 +55,6 @@ function dkan_featured_topics_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'taxonomy_menu_vocab_parent_dkan_topics';
-  $strongarm->value = '489';
-  $export['taxonomy_menu_vocab_parent_dkan_topics'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
   $strongarm->name = 'taxonomy_menu_voc_item_description_dkan_topics';
   $strongarm->value = 0;
   $export['taxonomy_menu_voc_item_description_dkan_topics'] = $strongarm;

@@ -8,8 +8,6 @@
  * Implements hook_install().
  */
 function dkan_featured_topics_install() {
-  // Add menu.
-  dkan_featured_topics_add_menu();
 
   $feature = features_get_features('dkan_featured_topics');
   $components = array_keys($feature->info['features']);
