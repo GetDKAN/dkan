@@ -39,7 +39,7 @@ function dkan_featured_topics_menu_link_insert($link) {
   // We need to set the 'taxonomy_menu_vocab_parent_dkan_topics' variable
   // with the ID of the 'Topics' menu link so all the topics terms can be
   // added there as sub-links.
-  if ($link['page callback'] == 'topics_page') {
+  if (isset($link['page callback']) && ($link['page callback'] == 'topics_page')) {
     variable_set('taxonomy_menu_vocab_parent_dkan_topics', $link['mlid']);
   }
 }
