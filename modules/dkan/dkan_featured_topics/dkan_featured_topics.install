@@ -114,7 +114,6 @@ function dkan_featured_topics_disable() {
       ->condition('module', 'taxonomy_menu')
       ->execute();
   }
-  dkan_featured_topics_add_menu();
   // Recommend uninstall.
   global $base_url;
   drupal_set_message(t('DKAN Topics has been disabled. To completely remove the topic terms and fields from the site, uninstall the module here: <a href="'. $base_url . '/admin/modules/uninstall">Uninstall DKAN Featured Topics</a>.'), 'warning', FALSE);
