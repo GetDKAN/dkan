@@ -31,14 +31,15 @@ function dkan_additional_setup() {
           array('dkan_revert_feature', array('dkan_sitewide_menu', array('content_menu_links', 'menu_links'))),
           array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
           array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
-          array('dkan_revert_feature', array('dkan_sitewide_roles_perms', array('user_permission', 'og_features_permission'))),
+          array('dkan_revert_feature', array('dkan_dataset_groups_perms', array('og_features_permission'))),
+          array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
           array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
-          array('dkan_revert_feature', array('dkan_data_story_storyteller_role', array('user_role', 'roles_permissions'))),
-          array('dkan_revert_feature', array('dkan_sitewide_profile_page', array('menu_custom', 'menu_links'))),
+          array('dkan_revert_feature', array('dkan_sitewide_menu', array('custom_menu', 'menu_links'))),
           array('dkan_build_menu_links', array()),
           array('dkan_flush_image_styles', array()),
           array('dkan_colorizer_reset', array()),
           array('dkan_misc_variables_set', array()),
+          array('dkan_install_default_content', array()),
           array('dkan_set_adminrole', array()),
       ),
   );
@@ -87,7 +88,7 @@ function dkan_install_markdown(&$context) {
  */
 function dkan_enable_roles_perms(&$context) {
   $context['message'] = t('Enabling Sitewide Roles and Permissions');
-  module_enable(array('dkan_sitewide_roles_perms'));
+  module_enable(array('dkan_permissions'));
 }
 
 
@@ -110,12 +111,12 @@ function dkan_revert_feature($feature, $components, &$context) {
  * @param $context
  */
 function dkan_build_menu_links(&$context) {
-  $context['message'] = t('Building menu links');
-  $menu_links = features_get_default('menu_links', 'dkan_sitewide_profile_page');
+  $context['message'] = t('Building menu links and assigning custom admin menus to roles');
+  $menu_links = features_get_default('menu_links', 'dkan_sitewide_menu');
   menu_links_features_rebuild_ordered($menu_links, TRUE);
   unset($_SESSION['messages']['warning']);
   cache_clear_all();
-}
+ }
 
 /**
  * Flush the image styles
@@ -124,9 +125,6 @@ function dkan_build_menu_links(&$context) {
  */
 function dkan_flush_image_styles(&$context) {
   $context['message'] = t('Flushing image styles');
-  $menu_links = features_get_default('menu_links', 'dkan_sitewide_profile_page');
-  menu_links_features_rebuild_ordered($menu_links, TRUE);
-  unset($_SESSION['messages']['warning']);
   cache_clear_all();
   $image_styles = image_styles();
   foreach ( $image_styles as $image_style ) {
@@ -147,7 +145,6 @@ function dkan_colorizer_reset(&$context) {
   $palette = colorizer_get_palette($theme_key, $instance);
   $file = colorizer_update_stylesheet($theme_key, $theme_key, $palette);
   clearstatcache();
-  dkan_default_content_base_install();
 }
 
 /**
@@ -176,12 +173,28 @@ function dkan_misc_variables_set(&$context) {
   variable_set('views_defaults', $views_disable);
 }
 
+function dkan_install_default_content(&$context) {
+  $context['message'] = t('Creating default content');
+  dkan_default_content_base_install();
+}
+
 /**
  * Set the user admin role
  *
  * @param $context
  */
 function dkan_set_adminrole(&$context) {
-  $context['message'] = t('Setting user admin role');
-  dkan_sitewide_roles_perms_set_admin_role();
+    $context['message'] = t('Setting user admin role');
+    if (!variable_get('user_admin_role')) {
+        if ($role = user_role_load_by_name('administrator')) {
+          variable_set('user_admin_role', $role->rid);
+          return t('User admin role reset to "administrator."');
+        }
+        else {
+          return t('Administrator role not found. Skipping update.');
+        }
+    }
+    else {
+        return t('User admin role already set. Skipping update.');
+    }
 }

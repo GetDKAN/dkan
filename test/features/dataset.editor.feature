@@ -9,15 +9,15 @@ Feature: Dataset Features
 
 Background:
   Given pages:
-    | title     | url       |
+    | name      | url       |
     | Datasets  | /dataset  |
   Given users:
-    | name    | mail             | roles                |
-    | John    | john@example.com    | administrator        |
-    | Badmin  | admin@example.com   | administrator        |
-    | Gabriel | gabriel@example.com | authenticated user   |
+    | name    | mail                | roles                |
+    | John    | john@example.com    | site manager         |
+    | Badmin  | admin@example.com   | site manager         |
+    | Gabriel | gabriel@example.com | content creator      |
     | Jaz     | jaz@example.com     | editor               |
-    | Katie   | katie@example.com   | authenticated user   |
+    | Katie   | katie@example.com   | content creator      |
     | Martin  | martin@example.com  | editor               |
     | Celeste | celeste@example.com | editor               |
   Given groups:
@@ -49,6 +49,7 @@ Background:
     | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
     | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 |             |
 
+  @noworkflow
   Scenario: Edit any dataset associated with the groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Dataset 03" page
@@ -57,6 +58,7 @@ Background:
     And I press "Finish"
     Then I should see "Dataset Dataset 03 edited has been updated"
 
+  @noworkflow
   Scenario: Publish any dataset associated with the groups I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Dataset 05" page
@@ -66,11 +68,13 @@ Background:
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
 
+  @noworkflow
   Scenario: I should not be able to edit datasets of groups that I am not a member of
     Given I am logged in as "Gabriel"
     When I am on "Dataset 04" page
     Then I should not see the link "Edit"
 
+  @noworkflow
   Scenario: Delete any dataset associated with the groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Dataset 03" page
@@ -78,3 +82,8 @@ Background:
     When I press "Delete"
     And I press "Delete"
     Then I should see "Dataset Dataset 03 has been deleted"
+
+  # https://github.com/Behat/Behat/issues/834
+  @dummy
+  Scenario: Dummy test
+    Given I am on "/"

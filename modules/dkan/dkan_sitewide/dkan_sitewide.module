@@ -8,6 +8,32 @@
 include_once 'dkan_sitewide.features.inc';
 include_once 'dkan_sitewide.blocks.inc';
 
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_sitewide_menu() {
+  $items = array();
+
+  $items['dataset'] = array(
+    'title' => 'Dataset',
+    'description' => t('Redirects to search page'),
+    'page callback' => 'dkan_sitewide_redirect_to_search',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Callback to make change search path backward compatible.
+ */
+function dkan_sitewide_redirect_to_search(){
+  $params = drupal_get_query_parameters();
+  drupal_goto('/search/type/dataset', array('query' => $params), 301);
+}
+
 /**
  * Adds group block to dataset node.
  */
@@ -126,18 +152,18 @@ function dkan_sitewide_restws_resource_info_alter(&$info) {
  * are checking github.
  */
 function dkan_sitewide_update_status_alter(&$projects) {
-  
+
   // Remove update notices.
   $up_to_date_projects = array('gravatar', 'link_iframe_formatter', 'og_extras');
   foreach ( $up_to_date_projects as $up_to_date_project ) {
-    
+
     if ( isset($projects[$up_to_date_project]) ) {
-      
-      $projects[$up_to_date_project]['status'] = UPDATE_CURRENT; 
+
+      $projects[$up_to_date_project]['status'] = UPDATE_CURRENT;
 
       if ( isset($projects[$up_to_date_project]['title']) &&
            isset($projects[$up_to_date_project]['existing_version']) ) {
-        
+
         $project_name = $projects[$up_to_date_project]['title'];
         $project_revision = $projects[$up_to_date_project]['existing_version'];
 
@@ -146,8 +172,8 @@ function dkan_sitewide_update_status_alter(&$projects) {
         }
       }
     }
-  } 
-  
+  }
+
   $project = 'dkan';
   $org = 'nucivic';
 

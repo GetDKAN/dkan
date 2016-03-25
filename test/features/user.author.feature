@@ -3,18 +3,18 @@ Feature: User
 
   Background:
     Given pages:
-      | title         | url           |
+      | name          | url           |
       | Content       | /user         |
       | Users         | /admin/people |
       | John          | /users/john   |
       | Katie         | /users/katie  |
     Given users:
       | name    | mail                | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
-      | Gabriel | gabriel@example.com | authenticated user   |
+      | John    | john@example.com    | site manager         |
+      | Badmin  | admin@example.com   | site manager         |
+      | Gabriel | gabriel@example.com | content creator      |
       | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | authenticated user   |
+      | Katie   | katie@example.com   | content creator      |
       | Martin  | martin@example.com  | editor               |
       | Celeste | celeste@example.com | editor               |
     Given groups:
@@ -57,9 +57,12 @@ Feature: User
   Scenario: View the list of own published datasets on profile
     Given I am logged in as "Katie"
     And I am on "Katie" page
-    Then I should see "2" items in the "content" region
+    Then I should see "2" items in the "tabs" region
 
   @api @fixme @testBug
     # TODO: Needs definition.
+    #       This would take a long time to test manually, having to wait N minutes each time it's run.
+    #       A possible solution to this would be to edit the cookies directly and speed up the waiting time
+    #       that way. That would take time to figure out, would this test be worth the time?
   Scenario: User should be logged out automatically after N minutes
     Given I am on the homepage

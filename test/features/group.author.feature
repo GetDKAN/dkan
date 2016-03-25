@@ -1,26 +1,26 @@
 @javascript
-Feature: Portal Administrators administer groups
+Feature: Site Manager administer groups
   In order to manage site organization
-  As a Portal Administrator
+  As a Site Manager
   I want to administer groups
 
-  Portal administrators needs to be able to create, edit, and delete
+  Site managers needs to be able to create, edit, and delete
   groups. They need to be able to set group membership by adding and removing
   users and setting group roles and permissions.
 
 
   Background:
     Given pages:
-      | title     | url             |
+      | name      | url             |
       | Groups    | /groups         |
       | Content   | /admin/content/ |
     Given users:
-      | name    | mail             | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
+      | name    | mail                | roles                |
+      | John    | john@example.com    | site manager         |
+      | Badmin  | admin@example.com   | site manager         |
       | Gabriel | gabriel@example.com | editor               |
       | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | authenticated user   |
+      | Katie   | katie@example.com   | content creator      |
       | Martin  | martin@example.com  | editor               |
       | Celeste | celeste@example.com | editor               |
     Given groups:
@@ -76,10 +76,9 @@ Feature: Portal Administrators administer groups
     Then I should be on the "Group 01" page
     And I should see "Request group membership" in the "group block" region
 
-  @fixme @api @testBug
-    #TODO: Sees the navbar Group link, not the Group's group link - need to check by region
+  @api
   Scenario: I should not be able to edit groups
     Given I am logged in as "Katie"
     When I am on "Group 01" page
-    Then I should not see the link "Edit" in the "primary tabs" region
-    And I should not see the link "Group" in the "primary tabs" region
+    Then I should not see the link "Edit"
+    And I should not see the link "fa-users"

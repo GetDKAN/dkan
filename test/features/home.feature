@@ -16,6 +16,7 @@ Feature: Homepage
     Then I should see "Datasets"
     Then I should see "Groups"
     Then I should see "About"
+    Then I should see "Topics"
 
   Scenario: Viewing footer
     Given I am on the homepage
@@ -26,15 +27,24 @@ Feature: Homepage
     When I click "politics"
     Then I should see "Afghanistan Election Districts"
 
+  Scenario: Viewing topics
+    Given I am on the homepage
+    When I click "Public Safety"
+    Then I should see "Wisconsin Polling Places"
+
   @api @javascript
   Scenario: See "Add Dataset"
-    Given I am logged in as a user with the "authenticated user" role
+    Given I am logged in as a user with the "content creator" role
     And I am on the homepage
-    Then I should see "Add Dataset"
+    Then I hover over the admin menu item "Content"
+    Then I hover over the admin menu item "Add content"
+    Then I should see the admin menu item "Dataset"
 
   @api @javascript
   Scenario: See "Dataset Form"
-    Given I am logged in as a user with the "authenticated user" role
+    Given I am logged in as a user with the "content creator" role
     And I am on the homepage
-    And I click "Add Dataset"
+    Then I hover over the admin menu item "Content"
+    Then I hover over the admin menu item "Add content"
+    Then I click "Dataset"
     Then I should see "Create Dataset"

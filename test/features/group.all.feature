@@ -1,28 +1,28 @@
 @api @javascript
-Feature: Portal Administrators administer groups
+Feature: Site Manager administer groups
   In order to manage site organization
-  As a Portal Administrator
+  As a Site Manager
   I want to administer groups
 
-  Portal administrators needs to be able to create, edit, and delete
+  Site managers needs to be able to create, edit, and delete
   groups. They need to be able to set group membership by adding and removing
   users and setting group roles and permissions.
 
 
   Background:
     Given pages:
-      | title     | url             |
+      | name      | url             |
       | Groups    | /groups         |
       | Content   | /admin/content/ |
     Given users:
-      | name    | mail             | roles                |
-      | John    | john@example.com    | administrator        |
-      | Badmin  | admin@example.com   | administrator        |
-      | Gabriel | gabriel@example.com | editor               |
-      | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | editor               |
-      | Martin  | martin@example.com  | editor               |
-      | Celeste | celeste@example.com | editor               |
+      | name    | mail                | roles         |
+      | John    | john@example.com    | site manager  |
+      | Badmin  | admin@example.com   | site manager  |
+      | Gabriel | gabriel@example.com | editor        |
+      | Jaz     | jaz@example.com     | editor        |
+      | Katie   | katie@example.com   | editor        |
+      | Martin  | martin@example.com  | editor        |
+      | Celeste | celeste@example.com | editor        |
     Given groups:
       | title    | author | published |
       | Group 01 | Badmin | Yes       |
@@ -38,11 +38,23 @@ Feature: Portal Administrators administer groups
       | name    |
       | Health  |
       | Gov     |
+      | Count   |
     And datasets:
-      | title      | publisher | tags         | author  | published | description                |
-      | Dataset 01 | Group 01  | Health       | Katie   | Yes       | Increase of toy prices     |
-      | Dataset 02 | Group 01  | Health       | Katie   | No        | Cost of oil in January     |
-      | Dataset 03 | Group 01  | Gov          | Gabriel | Yes       | Election districts         |
+      | title      | publisher | tags         | author  | published | description                | date changed      | topics         |
+      | Dataset 01 | Group 01  | Health       | Katie   | Yes       | Increase of toy prices     | 10 September 2015 | Education      |
+      | Dataset 02 | Group 01  | Health       | Katie   | No        | Cost of oil in January     | 10 September 2015 | Education      |
+      | Dataset 03 | Group 01  | Gov          | Gabriel | Yes       | Election districts         | 17 October 2015   | Education      |
+      | Dataset 04 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Education      |
+      | Dataset 05 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 21 September 2015 | Education      |
+      | Dataset 06 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 13 March 2015     | Transportation |
+      | Dataset 07 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation |
+      | Dataset 08 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 25 February 2014  | Transportation |
+      | Dataset 09 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 13 September 2014 | Education      |
+      | Dataset 10 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 October 2013   | Education      |
+      | Dataset 11 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation |
+      | Dataset 12 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation |
+      | Dataset 13 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 23 October 2013   | Transportation |
+      | Dataset 14 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
@@ -64,6 +76,12 @@ Feature: Portal Administrators administer groups
     Given I am on "Group 01" page
     Then I should see "2 datasets" in the "content" region
 
+  Scenario: View the correct count of datasets
+    Given I am on "Groups" page
+    Then I should see "11 datasets"
+    When I click "11 datasets"
+    Then I should see "Displaying 1 - 10 of 11 datasets"
+
   Scenario: View the list of group members
     Given I am on "Group 01" page
     When I click "Members" in the "group block" region
@@ -76,7 +94,7 @@ Feature: Portal Administrators administer groups
     Given I am on "Group 01" page
     When I fill in "toy" for "Search" in the "content" region
     And I press "Apply"
-    Then I should see "1 datasets" in the "content" region
+    Then I wait for "1 datasets"
 
   Scenario: View available "resource format" filters after search
     Given I am on "Group 01" page
@@ -99,23 +117,34 @@ Feature: Portal Administrators administer groups
     Then I should see "Health (1)" in the "filter by tag" region
     And I should see "Gov (1)" in the "filter by tag" region
 
+  Scenario: View available "date changed" filters after search
+    Given I am on "Group 02" page
+    Then I should see "2015 (5)" in the "filter by date changed" region
+    And I should see "2013 (4)" in the "filter by date changed" region
+    And I should see "2014 (2)" in the "filter by date changed" region
+
   Scenario: Filter datasets on group by resource format
     Given I am on "Group 01" page
     When I fill in "Dataset" for "Search" in the "content" region
     And I press "Apply"
     When I click "csv (1)" in the "filter by resource format" region
-    Then I should see "1 datasets" in the "content" region
+    Then I wait for "1 datasets"
 
   Scenario: Filter datasets on group by author
     Given I am on "Group 01" page
     When I fill in "Dataset" for "Search" in the "content" region
     And I press "Apply"
     When I click "Katie" in the "filter by author" region
-    Then I should see "1 datasets" in the "content" region
+    Then I wait for "1 datasets"
 
   Scenario: Filter datasets on group by tags
     Given I am on "Group 01" page
     When I fill in "Dataset" for "Search" in the "content" region
     And I press "Apply"
     When I click "Health" in the "filter by tag" region
-    Then I should see "1 datasets" in the "content" region
+    Then I wait for "1 datasets"
+
+  Scenario: View the list of datasets displayed with the search result view mode
+    Given I am on "Group 01" page
+    Then I should see "Group 01" in the ".group-membership" element
+    Then I should see "Education" in the ".name" element

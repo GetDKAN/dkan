@@ -38,6 +38,9 @@ function dkan_data_story_strongarm() {
       'token' => array(
         'custom_settings' => FALSE,
       ),
+      'search_result' => array(
+        'custom_settings' => TRUE,
+      ),
     ),
     'extra_fields' => array(
       'form' => array(
@@ -45,7 +48,7 @@ function dkan_data_story_strongarm() {
           'weight' => '0',
         ),
         'path' => array(
-          'weight' => '4',
+          'weight' => '5',
         ),
       ),
       'display' => array(),
