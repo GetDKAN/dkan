@@ -40,7 +40,7 @@ Feature: Site Manager administer groups
       | Gov     |
       | Count   |
     And datasets:
-      | title      | publisher | tags         | author  | published | description                | date changed      | topics         |
+      | title      | publisher | tags         | author  | published | description                | date changed      | topic          |
       | Dataset 01 | Group 01  | Health       | Katie   | Yes       | Increase of toy prices     | 10 September 2015 | Transportation |
       | Dataset 02 | Group 01  | Health       | Katie   | No        | Cost of oil in January     | 10 September 2015 | Education      |
       | Dataset 03 | Group 01  | Gov          | Gabriel | Yes       | Election districts         | 17 October 2015   | Education      |
