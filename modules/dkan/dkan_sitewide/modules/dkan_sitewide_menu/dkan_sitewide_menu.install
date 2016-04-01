@@ -13,16 +13,31 @@ function dkan_sitewide_menu_install()  {
   _dkan_sitewide_menu_setup_admin_menu_source();
 }
 
+/**
+ * Configure new lower-level user admin menu
+ */
 function dkan_sitewide_menu_update_7100() {
+  _dkan_sitewide_menu_clear_command_center();
   _dkan_sitewide_menu_setup_admin_menu_source();
 }
 
+/**
+ * Remove unwanted links from main menu
+ */
 function dkan_sitewide_menu_update_7101() {
   // Delete 'Add Dataset' link.
   menu_link_delete(NULL, 'node/add/dataset');
   // Delete old 'Datasets' link.
   // The new 'Datasets' link point to the search page.
   menu_link_delete(NULL, 'dataset');
+}
+
+function _dkan_sitewide_menu_clear_command_center() {
+  $menu_links = menu_load_links('menu-command-center-menu');
+
+  foreach($menu_links as $menu_link) {
+    menu_link_delete($menu_link['mlid']);
+  }
 }
 
 /**
