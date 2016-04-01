@@ -17,7 +17,6 @@ Feature: Theme
     And I uncheck "Use the default logo"
     And I attach the drupal file "dkan_logo.png" to "files[logo_upload]"
     And I wait for the file upload to finish
-    Then I should see "dkan_logo.png"
     When I press "Save configuration"
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
