@@ -10,6 +10,7 @@
 - Add support to import big files using mysql statement load data infile
 - Added Dkan Workflow module
 - Upgrade Fieldable Panels Panes to 1.8
+- Added hook_update to remove 'Add Dataset' and 'Datasets' links from main menu. The 'Datasets' link is now added by the dkan_sitewide_search_db feature. 
 
 7.x-1.11 2016-02-01
 --------------------------
