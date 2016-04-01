@@ -183,7 +183,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/nuboot_radix.git'
-      branch: 7.x-1.x
+      branch: 1031-nuboot-updates
     type: theme
   radix:
     type: theme
