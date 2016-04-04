@@ -40,3 +40,79 @@ function dkan_sitewide_panels_preprocess_panels_style_collapsible(&$variables) {
     }
   }
 }
+
+/**
+ * Implements hook_block_info().
+ */
+function dkan_sitewide_panels_block_info() {
+  $blocks = array();
+  $blocks['dkan_user_summary'] = array(
+    'info' => t('DKAN User Summary'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function dkan_sitewide_panels_block_view($delta = '') {
+  global $user;
+  $block = array();
+  $query = new EntityFieldQuery();
+
+  switch($delta) {
+    case 'dkan_user_summary':
+      //If is anonymous return empty array.
+      if (user_is_anonymous()) {
+        return array();
+      }
+      $account = _gravatar_load_account($user);
+      $path = _gravatar_get_account_user_picture($account) ? _gravatar_get_account_user_picture($account) : gravatar_get_gravatar($user->mail);
+      $profile_picture = theme_image(
+        array(
+          'path' => $path,
+          'width' => 60,
+          'height' => 60,
+          'attributes' => array(),
+        )
+      );
+      $group_list = views_embed_view('list_of_users_groups', 'panel_pane_1');
+
+      $output = '<div class="profile-stats">' . $profile_picture;
+      $output .= '<strong>' . $user->name . '</strong>';
+      $output .= '<p>' . dkan_sitewide_panels_user_summary_count_by_type('dataset') . ' Datasets</p>';
+      $output .= '<p>' . dkan_sitewide_panels_user_summary_count_by_type('group') . ' Groups</p>';
+      $output .= '<p>User since ' . format_date($user->created, 'custom', 'm/d/Y') . '</p></div>';
+      $output .= '<div>' . $group_list . '</div>';
+
+      $block['subject'] = '';
+      $block['content'] = array(
+        '#markup' => $output,
+        '#attached' => array(
+          'css' => array(
+            drupal_get_path('module', 'dkan_sitewide_panels') . '/dkan_sitewide_panels_user_summary.css',
+          ),
+        ),
+      );
+
+      break;
+  }
+  return $block;
+}
+
+/*
+ * Get number of nodes created by user
+ * of a particular content type.
+ */
+function dkan_sitewide_panels_user_summary_count_by_type($type){
+  global $user;
+
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', $type)
+  ->propertyCondition('uid', $user->uid)
+  ->count();
+
+  return $query->execute();
+}

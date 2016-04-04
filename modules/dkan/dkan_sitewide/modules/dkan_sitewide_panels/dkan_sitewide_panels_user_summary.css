@@ -1,0 +1,44 @@
+/*@media (min-width: 992px) {
+  .dkan-profile-page-user-info {
+    margin-top: -5px;
+  }
+}*/
+.pane-dkan-sitewide-panels-dkan-user-summary img {
+  float: left;
+  margin-left: -80px;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary .profile-stats {
+  padding-left: 80px;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary p {
+  font-size: 12px;
+  margin-bottom: 0px;
+  line-height: normal;
+}
+
+.pane-dkan-sitewide-panels-dkan-user-summary .view-list-of-users-groups {
+  position: relative;
+  display: block;
+  padding: 0;
+  text-decoration: none;
+  margin: 0 -15px;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary .view .group-membership a {
+
+  display: block;
+  padding: 6px 10px;
+  position: relative;
+  line-height: 22px;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary .view .group-membership a:before {
+  content: "\e981";
+  font-family: 'DKAN-Topics';
+  font-style: normal;
+  margin-right: .5em;
+}
+
+.pane-dkan-sitewide-panels-dkan-user-summary .view .group-membership a:hover {
+
+  background: rgba(0, 0, 0, 0.03);
+  text-decoration: none;
+}
