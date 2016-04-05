@@ -4,32 +4,5 @@
  * Implements hook_install().
  */
 function dkan_install() {
-  theme_enable(array('nuboot_radix'));
-  theme_enable(array('seven'));
-  variable_set('theme_default', 'nuboot_radix');
-  variable_set('admin_theme', 'nuboot_radix');
-  variable_set('site_frontpage', 'welcome');
-  variable_set('page_manager_node_view_disabled', FALSE);
-  variable_set('page_manager_node_edit_disabled', FALSE);
-  variable_set('page_manager_user_view_disabled', FALSE);
- // variable_set('page_manager_override_anyway', 'TRUE');
-  variable_set('jquery_update_jquery_version', '1.7');
-
-  // Change block titles for selected blocks.
-  db_query("UPDATE {block} SET title ='<none>' WHERE delta = 'main-menu' OR delta = 'login'");
-
-  // Disable selected views enabled by contributed modules.
-  $views_disable = array(
-    'og_extras_nodes' => TRUE,
-    'feeds_log' => TRUE,
-    'groups_page' => TRUE,
-    'og_extras_groups' => TRUE,
-    'dataset' => TRUE,
-  );
-  variable_set('views_defaults', $views_disable);
-
-  // Disable the default Bartik theme
-  theme_disable(array('bartik'));
-  theme_disable(array('seven'));
 
 }

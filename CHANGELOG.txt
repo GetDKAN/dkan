@@ -1,3 +1,130 @@
+7.x-1.x
+--------------------------
+- Add "data dashboard" creation link to user admin menu (in dkan_sitewide_menu)
+- Patch DKAN core file module to fix managed file problem https://www.drupal.org/node/1903010#comment-10118508
+- Standardize facet titles between user, search and group pages
+- Add dkan_featured_topics module and relevant updates to dkan_dataset and nuboot_radix
+- Upgrade Drupal core to 7.43
+- Enable pretty paths for search page
+- Change search page path from /dataset to /search and redirect /dataset to /search for backward compatibility
+- Add big file upload support through file_resup module
+- Add support to import big files using mysql statement load data infile
+- Added Dkan Workflow module
+- Upgrade Fieldable Panels Panes to 1.8
+
+7.x-1.11 2016-02-01
+--------------------------
+- Re-designed dataset/search page. "Datasets" link on default menu bar now goes to a page that lets you browse and search all site content, not just datasets, but does filter by dataset. Search box will search all content by default. See note below.
+- Add new dkan_permissions module, refactoring default roles and permissions and using new export method. See note below.
+- Moved group permissions from old dkan_sitewide_roles_perms into new dkan_dataset_groups_perms
+- Patch fontyourface module to make font changes happen instantly
+- Fix adminrole implementation to avoid warning on install
+- Fix (again) a bug that would make colorizer styles disappear after running "poor man's cron"
+- Add to resource node page a list of visualizations built with that resource
+- Number of contrib module updates
+- Change the view of groups to show 12 instead of 10 nodes per page, to fit with the layout of three per line
+- Patch the FacetAPI module to avoid a cross-site scripting vulnerability
+- Add integration with ProboCI (http://probo.ci/) for QA builds
+- Fix a bug that showed an extra pager on the group page
+- Major refactor of Behat tests, including introduction of new [DKAN extension](https://github.com/NuCivic/dkanextension).
+- Improve layout/ordering of blocks in the sidebar for dataset pages
+- Improvement in the UX of user pictures, including Gravatar integration
+- Numerous other small improvements and bugfixes
+
+== Notice: Avoiding PHP errors after upgrade ==
+
+In some cases, changes to the codebase may cause PHP errors when the Drupal bootstrap process looks for a file that no longer exists. As always, backing up your db before upgrading is recommended. In addition, if you get to a state in which Drupal will not bootstrap successfully due to an issue with views_autocomplete_filters, try some combination of:
+
+$ drush sql-query 'DELETE FROM registry WHERE filename LIKE "%views_autocomplete_filters_handler_filter_string.inc%"';
+$ drush cc all
+$ drush rr
+
+== Search page redesign ==
+
+This release of DKAN includes a redesigned search page, which is also the page used to browse datasets. This redesign required some changes to the included search indexes. Use the following drush commands to rebuild your search indexes, or go to admin/config/search/search_api/index/datasets and disable, re-enable and re-index the _datasets_ search index.
+
+$ drush search-api-disable datasets -y 
+$ drush search-api-enable datasets -y
+$ drush sapi-r -y
+$ drush sapi-i -y
+
+== Permissions/roles upgrade ==
+
+As mentioned above, this release includes a new module called DKAN Permissions (dkan_permissions), which is meant to replace the old DKAN Sitewide Roles and Permissions (dkan_sitewide_roles_perms). New installs of DKAN will enable this module and ignore the old one, while existing sites will see no change (but are recommended to upgrade).  See more information in the module's README file.
+
+The command line method, including deleting the now-deprecated "storyteller" role, would look like this:
+
+$ drush dis dkan_sitewide_roles_perms -y
+$ drush rdel 'storyteller' 
+$ drush en dkan_permissions -y
+$ drush fra -y
+$ drush fr dkan_permissions -y
+
+Group-level permissions have been moved to DKAN Dataset Groups Permissions. To start using them, enable the new module, and revert it using Features. Do this via the UI or on the command line with Drush:
+
+$ drush en dkan_dataset_groups_perms -y
+$ drush fr dkan_dataset_groups_perms -y
+
+== DKAN Dataset ==
+
+See the DKAN Dataset release notes for 7.x-1.11 for notes specific to the DKAN Dataset module.
+
+7.x-1.10 2015-11-10
+--------------------------
+DKAN Distribution
+* A number of improvements to our test infrastructure
+* Improved user experience for user photos and Gravatar image fallback
+* Improvements to views on group pages
+* Enabled and improved UX of tools for adding existing visualizations directly into panels layouts
+* Fixed an extremely annoying bug in the Colorizer module that blew away colorizer CSS every time Drupal cron ran (sites using external/system cron were unaffected)
+* Added better HTTPS by loading certain external images over HTTPS
+* Upgraded to Drupal version 7.x-1.41
+* Added a CONTRIBUTING.md file to provide community contribution guidelines for DKAN project.
+
+DKAN Dataset Module https://github.com/NuCivic/dkan_dataset
+* Various improvements to dataset teaser displays.
+* Support for external previews (opening catalogued resources instantly in third-party visualization services, * including ArcGIS and CartoDB)
+* Support for Flaticon at module level, so vector icons work on any theme
+* Minor improvements and bugfixes
+
+NuBoot Radix Theme
+* Style improvements for "open with" button
+* Fix default logo path when svg not available
+
+7.x-1.9 2015-09-17
+--------------------------
+- Added "Data Dashboards" and "Data Stories" content types with customizable layouts
+- Added Panopoly Widgets for use in Dashboards, Stories, the front page and panel pages
+- Added new custom DKAN widgets for use on panel pages
+- The Visualization Entity module, along with the additional Charts bundle, are now included in DKAN core
+- Added a "command center" to the user\'s own profile page to more easily find common functions
+- @font-your-face module added w/configuration for easier font admin
+- Multiple security updates and other contrib module and theme updates.
+- Drupal now on version 7.39. 
+- Many bug fixes and code cleanups
+- See release notes for nuboot_radix theme and individual DKAN modules for additional release notes
+
+== Search API Database upgrade issue ==
+
+This release updates the Search API DB module, which, if you are using the database backend, may break
+your search indexes, resulting in either a) nothing, or b) all nodes regardless of type on your search/datasets
+pages.
+
+To fix, follow these steps after updating your database:
+
+1. Go to /admin/config/search/search_api/index/datasets/edit to edit the database node index
+2. Set the Server to "< No Server >" and Save. Your index will now show as "disabled."
+3. Edit it again (by clicking "Edit" next to "Database Node Index") and set the Server back to "Database Server" 
+and Save.
+4. Click the "enable" link while viewing the resulting page, or edit the index again and check the "Enabled" box.
+5. Once the index is enabled, you should see "0/[total] Indexed" on the index page. Click "Index Now" at the 
+bottom of the page to re-index all your datasets.
+6. Repeat for any other indexes you have running on a database server.
+
+This issue has been identified and documented for other Drupal distributions using Search API. See release notes for 
+the Panopoly (https://www.drupal.org/node/2425263) and OpenAtrium (https://www.drupal.org/node/2443025) 
+distros on Drupal.org.
+
 7.x-1.8  2015-04-02
 --------------------------
  - Drupal core update to 7.36
