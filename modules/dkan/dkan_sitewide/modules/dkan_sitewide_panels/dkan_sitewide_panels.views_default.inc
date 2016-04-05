@@ -277,7 +277,7 @@ function dkan_sitewide_panels_views_default_views() {
     'page' => 'page',
   );
   $handler->display->display_options['filters']['type']['group'] = 1;
-  /* Filter criterion: Content: Publisher (og_group_ref) (reference filter) */
+  /* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
@@ -477,7 +477,7 @@ function dkan_sitewide_panels_views_default_views() {
   $view->description = 'Show groups of a user.';
   $view->tag = 'og';
   $view->base_table = 'og_membership';
-  $view->human_name = 'List of users groups';
+  $view->human_name = 'DKAN List of users groups';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -491,7 +491,8 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['style_options']['row_class'] = 'group-membership';
   $handler->display->display_options['style_options']['default_row_class'] = FALSE;
