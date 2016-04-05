@@ -898,7 +898,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
       'view_mode' => 'full',
       'context' => 'argument_entity_id:user_1',
       'override_title' => 1,
-      'override_title_text' => 'My Content',
+      'override_title_text' => '%user:name\'s Content',
       'override_title_heading' => 'h2',
     );
     $pane->cache = array();
