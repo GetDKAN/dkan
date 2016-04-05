@@ -1,24 +1,19 @@
+At NuCivic we use [Behat](http://behat.org) for behavioral testing, both locally and in a [continuous integration using CircleCI](https://circleci.com/gh/NuCivic/dkan).
+
 ## Running behat tests locally
 
-These are the steps for running DKAN's [Behat tests](http://docs.behat.org/en/v2.5/) on the [NuCivic development VM](https://github.com/NuCivic/ansible-dev-vm) or other local environments. 
+The `behat.yml` file that ships with DKAN is intended for use on CircleCI. Do run tests locally, we recommend making a copy of `behat.local.demo.yml` and overriding Behat's default profile there. 
 
-Once you are in your DKAN directory, type the following commands:
+We currently use Selenium and the Chrome driver for javascript tests. Our development environment is in Vagrant using our own [NuCivic development VM](https://github.com/NuCivic/ansible-dev-vm). We execute the tests inside the VM, but run Selenium and Chrome on our "host" machines (in most cases, a Mac).
 
-* `$ cd test`
-* `$ mysql -e 'drop database dkan_test; create database dkan_test;'`
-* `$ cd ..`
-* `$ drush make --prepare-install build-dkan.make --yes test/drupal`
-* `$ cd test/drupal`
-* `$ drush si dkan --sites-subdir=default --db-url=mysql://db_user:db_pass@127.0.0.1/dkan_test --account-name=admin --account-pass=admin --site-name="DKAN" install_configure_form.update_status_module='array(FALSE,FALSE)' --yes`
-* `$ drush cc all --yes`
-* `$ drush --root=$PWD runserver 8888 &`
-* `$ cd ../`
-* `$ sudo apt-get install firefox`
-* `$ sudo apt-get install xvfb`
-* `$ Xvfb :99 -ac &`
-* `$ export DISPLAY=:99`
-* `$ wget http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar`
-* `$ java -jar selenium-server-standalone-2.46.0.jar -p 4444 &`
-* `$ bin/behat`
+Obviously, steps will differ depending on your development environment. 
 
-Firefox and Xvfb are needed if you are using a headless machine. Also, note that other versions of Selenium present some problems with firefox, so be careful with it.
+Assuming you have a working DKAN installation you wish to test on:
+
+1. Download [Selenium standalone server v 2.48.2](http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar) anywhere to your local Mac/Linux machine.
+2. Download the [Chrome Driver for Selenium](https://code.google.com/p/selenium/wiki/ChromeDriver) to the same machine.
+3. `$ java -jar /path/to/selenium-server-standalone-2.48.2.jar -p 4444 -Dwebdriver.chrome.driver="/path/to/chromedriver"`
+4. Make a copy of `behay.local.demo.yml` called `behat.local.yml`. Edit it to point the files path to the absolute path to your test/files directory as accessed on your host/local machine (probably within the folder you share with vagrant).
+5. `bin/behat --config=behat.local.yml`
+
+Your tests should run from the VM and use your host machine as a Selenium server, meaning any Selenium tests will run in an instance of Chrome on your machine.
