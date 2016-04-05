@@ -1,0 +1,11 @@
+diff --git a/plugins/facetapi/url_processor.inc b/plugins/facetapi/url_processor.inc
+index 95ef3bc..e2be9a5 100644
+--- a/plugins/facetapi/url_processor.inc
++++ b/plugins/facetapi/url_processor.inc
+@@ -149,6 +149,7 @@ abstract class FacetapiUrlProcessor {
+     if (!isset($this->params[$this->filterKey]) || !is_array($this->params[$this->filterKey])) {
+       $this->params[$this->filterKey] = array();
+     }
++    $this->params[$this->filterKey] = array_map('filter_xss', $this->params[$filter_key]);
+     return $this;
+   }

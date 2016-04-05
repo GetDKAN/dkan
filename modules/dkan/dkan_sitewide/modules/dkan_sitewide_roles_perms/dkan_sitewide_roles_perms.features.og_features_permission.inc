@@ -22,7 +22,6 @@ function dkan_sitewide_roles_perms_og_features_default_permissions() {
   $permissions['node:group:access authoring options of resource content'] = array(
     'roles' => array(
       'administrator member' => 'administrator member',
-      'member' => 'member',
     ),
   );
 
@@ -38,7 +37,6 @@ function dkan_sitewide_roles_perms_og_features_default_permissions() {
   $permissions['node:group:access publishing options of resource content'] = array(
     'roles' => array(
       'administrator member' => 'administrator member',
-      'member' => 'member',
     ),
   );
 
@@ -54,7 +52,6 @@ function dkan_sitewide_roles_perms_og_features_default_permissions() {
   $permissions['node:group:access revisions options of resource content'] = array(
     'roles' => array(
       'administrator member' => 'administrator member',
-      'member' => 'member',
     ),
   );
 
@@ -91,7 +88,6 @@ function dkan_sitewide_roles_perms_og_features_default_permissions() {
   $permissions['node:group:create resource content'] = array(
     'roles' => array(
       'administrator member' => 'administrator member',
-      'member' => 'member',
     ),
   );
 
@@ -107,7 +103,6 @@ function dkan_sitewide_roles_perms_og_features_default_permissions() {
   $permissions['node:group:delete any resource content'] = array(
     'roles' => array(
       'administrator member' => 'administrator member',
-      'member' => 'member',
     ),
   );
 
@@ -123,7 +118,6 @@ function dkan_sitewide_roles_perms_og_features_default_permissions() {
   $permissions['node:group:delete own resource content'] = array(
     'roles' => array(
       'administrator member' => 'administrator member',
-      'member' => 'member',
     ),
   );
 
@@ -180,7 +174,6 @@ function dkan_sitewide_roles_perms_og_features_default_permissions() {
   $permissions['node:group:update any resource content'] = array(
     'roles' => array(
       'administrator member' => 'administrator member',
-      'member' => 'member',
     ),
   );
 
@@ -203,7 +196,6 @@ function dkan_sitewide_roles_perms_og_features_default_permissions() {
   $permissions['node:group:update own resource content'] = array(
     'roles' => array(
       'administrator member' => 'administrator member',
-      'member' => 'member',
     ),
   );
 
@@ -219,7 +211,6 @@ function dkan_sitewide_roles_perms_og_features_default_permissions() {
   $permissions['node:group:view any unpublished resource content'] = array(
     'roles' => array(
       'administrator member' => 'administrator member',
-      'member' => 'member',
     ),
   );
 

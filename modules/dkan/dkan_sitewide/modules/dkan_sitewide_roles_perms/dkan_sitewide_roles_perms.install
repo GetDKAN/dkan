@@ -1,0 +1,21 @@
+<?php
+/**
+ * @file
+ * Install file for dkan_sitewide_roles_perms
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dkan_sitewide_roles_perms_install() {
+  dkan_sitewide_roles_perms_set_admin_role();
+}
+
+/**
+ * Set the admin roll to "administrator" if not already set. Note that adminrole module has been added and whatever
+ * role is set will get all permissions.
+ */
+function dkan_sitewide_roles_perms_update_7109() {
+  module_load_include('module', 'dkan_sitewide_roles_perms');
+  dkan_sitewide_roles_perms_set_admin_role();
+}
