@@ -19,7 +19,7 @@ commands:
       EOF
     usage: Outputs the commands needed to setup a docker environment.
   up:
-    cmd: "ahoy docker compose up -d"
+    cmd: "ahoy docker compose up -d {{args}}"
     usage: Start the docker-compose containers.
   proxy-up:
     cmd: "docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy"
