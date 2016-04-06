@@ -11,6 +11,7 @@
 - Add support to import big files using mysql statement load data infile
 - Added Dkan Workflow module
 - Upgrade Fieldable Panels Panes to 1.8
+- Removed 'taxonomy_menu_vocab_parent_dkan_topics' variable from info file to get the 'DKAN Featured Topics' feature back into 'Default' state. 
 
 7.x-1.11 2016-02-01
 --------------------------
