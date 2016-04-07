@@ -237,6 +237,27 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_people:admin/people',
   );
+  // Exported menu link: menu-command-center-menu_data-dashboard:node/add/data-dashboard
+  $menu_links['menu-command-center-menu_data-dashboard:node/add/data-dashboard'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'node/add/data-dashboard',
+    'router_path' => 'node/add/data-dashboard',
+    'link_title' => 'Data Dashboard',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_data-dashboard:node/add/data-dashboard',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -46,
+    'customized' => 1,
+    'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
+  );
   // Exported menu link: menu-command-center-menu_data-previews:admin/dkan/dataset_preview
   $menu_links['menu-command-center-menu_data-previews:admin/dkan/dataset_preview'] = array(
     'menu_name' => 'menu-command-center-menu',
@@ -439,7 +460,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 1,
     'expanded' => 0,
-    'weight' => -43,
+    'weight' => -45,
     'customized' => 1,
   );
   // Exported menu link: menu-command-center-menu_resource:node/add/resource
@@ -480,7 +501,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 1,
     'expanded' => 0,
-    'weight' => -42,
+    'weight' => -44,
     'customized' => 1,
   );
   // Exported menu link: menu-command-center-menu_site-information:admin/config/system/site-information
@@ -563,7 +584,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 1,
     'expanded' => 0,
-    'weight' => -44,
+    'weight' => -46,
     'customized' => 1,
   );
   // Exported menu link: menu-command-center-menu_visualizations:admin/structure/entity-type/visualization/ve_chart/add
@@ -583,7 +604,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 1,
     'expanded' => 0,
-    'weight' => -46,
+    'weight' => -45,
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
   );
@@ -599,6 +620,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Colorizer');
   t('Content');
   t('Create user');
+  t('Data Dashboard');
   t('Data Previews');
   t('Data Story');
   t('Dataset');
