@@ -46,8 +46,8 @@ Create a full version with drush make:
 ```bash
 git clone --branch 7.x-1.x https://github.com/NuCivic/dkan.git
 cd dkan
-drush make --prepare-install build-dkan.make webroot
-cd webroot
+drush make --prepare-install drupal-org-core.make docroot --yes
+cd docroot
 drush site-install dkan --db-url="mysql://DBUSER:DBPASS@localhost/DBNAME"
 ```
 
