@@ -23,6 +23,7 @@ features[menu_links][] = menu-command-center-menu_choropleth:admin/structure/ent
 features[menu_links][] = menu-command-center-menu_colorizer:admin/appearance/colorizer
 features[menu_links][] = menu-command-center-menu_content:admin/content
 features[menu_links][] = menu-command-center-menu_create-user:admin/people/create
+features[menu_links][] = menu-command-center-menu_data-dashboard:node/add/data-dashboard
 features[menu_links][] = menu-command-center-menu_data-previews:admin/dkan/dataset_preview
 features[menu_links][] = menu-command-center-menu_data-story:node/add/asdas
 features[menu_links][] = menu-command-center-menu_dataset:node/add/dataset
