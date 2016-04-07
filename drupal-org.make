@@ -143,6 +143,8 @@ projects:
     version: '3.5'
   panels_style_collapsible:
     version: '1.3'
+  panels_curator:
+    version: '1.1'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
