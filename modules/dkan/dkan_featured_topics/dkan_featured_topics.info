@@ -55,7 +55,6 @@ features[variable][] = taxonomy_menu_voc_item_description_dkan_topics
 features[variable][] = taxonomy_menu_voc_item_dkan_topics
 features[variable][] = taxonomy_menu_voc_name_dkan_topics
 features[variable][] = taxonomy_menu_vocab_menu_dkan_topics
-features[variable][] = taxonomy_menu_vocab_parent_dkan_topics
 features[views_view][] = dkan_topics_featured
 features_exclude[dependencies][ctools] = ctools
 features_exclude[dependencies][dkan_dataset_groups] = dkan_dataset_groups
