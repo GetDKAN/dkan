@@ -21,6 +21,10 @@ function dkan_sitewide_menu_update_7100() {
   _dkan_sitewide_menu_setup_admin_menu_source();
 }
 
+/**
+ * Remove "Add dataset" and "Datasets" menu items from main menu. These links
+ * are now provided from other modules.
+ */
 function dkan_sitewide_menu_update_7101() {
   $main_menu_links = menu_load_links('main-menu');
 
@@ -36,6 +40,19 @@ function dkan_sitewide_menu_update_7101() {
     }
   }
 }
+
+/**
+ * When we upgrade, we need to rebuild the command center menu completely. This
+ * Deletes all the existing menu links.
+ */
+function _dkan_sitewide_menu_clear_command_center() {
+  $menu_links = menu_load_links('menu-command-center-menu');
+
+  foreach($menu_links as $menu_link) {
+    menu_link_delete($menu_link['mlid']);
+  }
+}
+
 
 /**
  * This helper function sets up the admin_menu_source module's configuration.
