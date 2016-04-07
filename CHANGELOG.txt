@@ -11,6 +11,7 @@
 - Add support to import big files using mysql statement load data infile
 - Added Dkan Workflow module
 - Upgrade Fieldable Panels Panes to 1.8
+- Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
 
 7.x-1.11 2016-02-01
 --------------------------
