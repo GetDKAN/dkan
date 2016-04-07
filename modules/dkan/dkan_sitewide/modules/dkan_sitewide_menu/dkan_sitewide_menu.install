@@ -38,25 +38,6 @@ function dkan_sitewide_menu_update_7101() {
 }
 
 /**
- * Remove unwanted links from main menu
- */
-function dkan_sitewide_menu_update_7101() {
-  // Delete 'Add Dataset' link.
-  menu_link_delete(NULL, 'node/add/dataset');
-  // Delete old 'Datasets' link.
-  // The new 'Datasets' link point to the search page.
-  menu_link_delete(NULL, 'dataset');
-}
-
-function _dkan_sitewide_menu_clear_command_center() {
-  $menu_links = menu_load_links('menu-command-center-menu');
-
-  foreach($menu_links as $menu_link) {
-    menu_link_delete($menu_link['mlid']);
-  }
-}
-
-/**
  * This helper function sets up the admin_menu_source module's configuration.
  * We want the content creator and editor roles to have the "command center"
  * menu rather than the whole admin menu in the top bar. We can't rely on the
