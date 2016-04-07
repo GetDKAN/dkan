@@ -1,0 +1,41 @@
+<?php
+/**
+ * @file
+ * Code for the DKAN In-Place Editor feature.
+ */
+
+include_once 'dkan_ipe.features.inc';
+
+// function dkan_ipe_modal_image_button($image, $dest, $alt, $class = '') {
+//   return ctools_ajax_text_button(theme($dest, $alt, $class, 'ctools-use-modal');
+// }
+
+/**
+* Implements hook_theme().
+*/
+// function dkan_ipe_theme() {
+//   $theme = array();
+//   $theme['panels_add_content_modal'] = array(
+//     'variables' => array('renderer' => NULL, 'categories' => array(), 'region' => NULL, 'category' => NULL, 'column_count' => 1),
+//     'path' => drupal_get_path('module', 'dkan_ipe') . '/templates',
+//     //'file' => '../includes/add-content.inc',
+//     'template' => 'dkan-add-content-modal',
+//   );
+//   return $theme;
+// }
+
+/**
+* Implements hook_ctools_content_subtype_alter().
+*/
+// function dkan_ipe_ctools_content_subtype_alter(&$subtype, &$plugin) {
+//   // Change title and icon for rich_text Fielded panel pane content
+//   if (isset($subtype['bundle']) && $subtype['bundle'] == 'quick_links') {
+//     $subtype['title'] = 'Quickies';
+//     $subtype['path'] = 'sites/default/files';
+//     $subtype['icon'] = 'bills.png';
+//   }
+//   if (isset($subtype['bundle']) && $subtype['bundle'] == 'basic_file') {
+//     $subtype['path'] = 'sites/default/files';
+//     $subtype['icon'] = '<span class="icon-dkan-page"></span>';
+//   }
+// }
