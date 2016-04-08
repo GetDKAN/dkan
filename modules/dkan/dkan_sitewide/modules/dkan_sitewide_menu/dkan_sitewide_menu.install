@@ -61,42 +61,27 @@ function _dkan_sitewide_menu_clear_command_center() {
  * rid to be the same on every site so not using features.
  */
 function _dkan_sitewide_menu_setup_admin_menu_source() {
-  $required_roles = array('administrator', 'site manager', 'editor', 'content creator');
+  $exclude_roles = array('administrator', 'authenticated user', 'anonymous user');
   $roles = array_flip(user_roles());
-  $admin_menu_source_settings = array();
-  foreach($required_roles as $role_name) {
-    if (!isset($roles[$role_name])) {
-      $role = new stdClass();
-      $role->name = $role_name;
-      user_role_save($role);
-      $roles[$role_name] = $role->rid;
-    }
-  }
-
-
-  $roles = array_flip(user_roles());
-
   $admin_menu_source_settings = array(
     $roles['administrator'] => array(
       'rid' => $roles['administrator'],
       'source' => '',
       'weight' => 0,
-    ),
-    $roles['site manager'] => array(
-      'rid' => $roles['site manager'],
-      'source' => 'menu-command-center-menu',
-      'weight' => 1,
-    ),
-    $roles['editor'] => array(
-      'rid' => $roles['editor'],
-      'source' => 'menu-command-center-menu',
-      'weight' => 2,
-    ),
-    $roles['content creator'] => array(
-      'rid' => $roles['content creator'],
-      'source' => 'menu-command-center-menu',
-      'weight' => 3,
-    ),
+    )
   );
+
+  $i = 1;
+  foreach($roles as $role => $rid) {
+    if (!in_array($role, $exclude_roles)) {
+      $admin_menu_source_settings[$rid] = array(
+        'rid' => $rid,
+        'source' => 'menu-command-center-menu',
+        'weight' => $i,
+      );
+      $i++;
+    }
+  }
+
   variable_set('admin_menu_source_settings', $admin_menu_source_settings);
 }
