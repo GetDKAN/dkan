@@ -1,13 +1,18 @@
 <?php
+
 use Drupal\DKANExtension\Context\RawDKANContext;
+
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext extends RawDKANContext
 {
+
   protected $old_global_user;
+
   // This file is only meant for temporary custom step functions or overrides to the dkanextension.
   // Changes should be implemented in dkanextension so that it works across all projects.
+
   /**
    * @beforeDKANEntityCreate
    */
@@ -19,10 +24,12 @@ class FeatureContext extends RawDKANContext
     }
     $types = workbench_moderation_moderate_node_types();
     $node_type = $wrapper->getBundle();
+
     // Also don't do anything if this isn't a moderation type.
     if (!in_array($node_type, $types)) {
       return;
     }
+
     // IF the author is set (there was a logged in user or it was set during creation)
     // See RawDKANEntity::pre_save()
     if (isset($wrapper->author)) {
@@ -33,6 +40,7 @@ class FeatureContext extends RawDKANContext
       $user = $wrapper->author->value();
     }
   }
+
   /**
    * @afterDKANEntityCreate
    */
@@ -43,6 +51,8 @@ class FeatureContext extends RawDKANContext
       $user = $this->old_global_user;
     }
   }
+
+
   /**
    * @When I hover over the admin menu item :item
    */
@@ -52,10 +62,12 @@ class FeatureContext extends RawDKANContext
     $menu = $page->findById('admin-menu-wrapper');
     $element = $menu->findLink($item);
     if (null === $element) {
-      throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
+        throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
     }
+
     $element->mouseOver();
   }
+
   /**
    * @When I should see the admin menu item :item
    */
@@ -65,7 +77,8 @@ class FeatureContext extends RawDKANContext
     $menu = $page->findById('admin-menu-wrapper');
     $element = $menu->findLink($item);
     if (null === $element) {
-      throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
+        throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
     }
   }
+
 }
