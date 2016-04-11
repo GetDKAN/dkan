@@ -6,7 +6,6 @@ version = 7.x-1.0
 dependencies[] = color_field
 dependencies[] = conditional_fields
 dependencies[] = dkan_dataset_content_types
-dependencies[] = dkan_default_topics
 dependencies[] = entity_path
 dependencies[] = facetapi
 dependencies[] = features
