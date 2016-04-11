@@ -1,0 +1,50 @@
+ahoyapi: v1
+version: 0.0.0
+commands:
+  fetch:
+    usage: Checkout the dkan theme from the NuCivic github repo.
+    cmd: |
+      ahoy dkan module-fetch nuboot_radix
+
+  link:
+    usage: Link a module folder into dkan/modules/dkan/.
+    cmd: |
+      if [ -d "docroot/profiles/dkan/themes/contrib/nuboot_radix" ]; then
+        echo "Theme already exists at 'docroot/profiles/dkan/themes/contrib/nuboot_radix', removing it to make room..."
+        rm -rf "docroot/profiles/dkan/themes/contrib/nuboot_radix";
+      fi
+      ln -s ../../../nuboot_radix docroot/profiles/dkan/themes/contrib/nuboot_radix && echo "Symlink created for nuboot_radix.. "
+
+  install-dependencies:
+    usage: Installs dependencies for theme development
+    cmd: |
+      if [ "$AHOY_CMD_PROXY" != "DOCKER" ]; then
+        echo 'Sorry. We are only mantaining theme development on docker.'
+        exit 1
+      fi
+      ahoy cmd-proxy command -v bower >/dev/null 2>&1 || {
+        echo >&2 "Bower not installed.";
+        ahoy confirm "We need this. Should I proceed?" && ahoy cmd-proxy npm install -g bower || {
+          exit 1;
+        };
+      }
+      ahoy cmd-proxy command -v gulp >/dev/null 2>&1 || {
+        echo >&2 "Gulp not installed.";
+        ahoy confirm "We need this. Should I proceed?" && ahoy cmd-proxy npm install -g gulp-cli || {
+          exit 1;
+        };
+      }
+      ahoy cmd-proxy "cd dkan/themes/contrib/nuboot_radix && npm install --unsafe-perm"
+      ahoy cmd-proxy "cd dkan/themes/contrib/nuboot_radix && bower install -allow-root"
+
+  setup:
+    usage: Base setup for theme development
+    cmd: |
+      ahoy dkan theme fetch
+      ahoy dkan theme link
+      ahoy dkan theme install-dependencies
+
+  watch:
+    usage: 'compile and watch for changes'
+    cmd: |
+      ahoy cmd-proxy "cd dkan/themes/contrib/nuboot_radix && gulp"

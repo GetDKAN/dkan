@@ -103,9 +103,9 @@ projects:
   fontyourface:
     version: '2.8'
     patch:
-      2550253: 'https://www.drupal.org/files/issues/fontface_regenerate-css-after-add-rule.patch'
-      2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
       1: patches/fontyourface-no-ajax-browse-view.patch
+      2: patches/fontyourface-clear-css-cache.patch
+      2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
   imagecache_actions:
     download:
       type: git
