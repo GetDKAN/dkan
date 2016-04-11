@@ -83,7 +83,7 @@ class FeatureContext extends RawDKANContext
   /**
    * @When I should see valid data.json on the /data.json page
    */
-  public function iShouldSeeValidDatasjonOnTheDatajsonPage($item) {
+  public function iShouldSeeValidDatasjonOnTheDatajsonPage() {
     $results = open_data_schema_pod_process_validate($this->getMinkParameter('base_url') . 'data.json', TRUE);
     if ($results['errors']) {
       return FALSE;
