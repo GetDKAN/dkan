@@ -92,9 +92,9 @@ function dkan_install_markdown(&$context) {
  * @param $context
  */
 function dkan_enable_optional_module($module, &$context) {
+  module_enable(array($module));
   $module_info = system_get_info('module', $module);
-  $context['message'] = t('Enabling %module', array('%module' => $module_info['name']));
-  module_enable(array('dkan_permissions'));
+  $context['message'] = t('Enabled %module', array('%module' => $module_info['name']));
 }
 
 /**
