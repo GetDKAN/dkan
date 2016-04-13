@@ -44,7 +44,6 @@ features[user_permission][] = administer panels styles
 features[user_permission][] = administer path breadcrumbs
 features[user_permission][] = administer pathauto
 features[user_permission][] = administer permissions
-features[user_permission][] = administer rdf
 features[user_permission][] = administer rules
 features[user_permission][] = administer search_api
 features[user_permission][] = administer services
