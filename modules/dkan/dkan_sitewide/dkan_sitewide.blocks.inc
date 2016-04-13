@@ -316,17 +316,6 @@ function dkan_sitewide_other_access() {
                   'title' => t('json view of content')
             ))),
           ),
-          'rdf' => array(
-            '#type' => 'markup',
-            '#markup' => l('<i class="ckan-icon ckan-icon-rdfxml "></i> RDF',
-              'node/' . $node->nid . '.rdf',
-              array(
-                'html' => TRUE,
-                'attributes' => array(
-                  'class' => array('btn'),
-                  'title' => t('rdf view of content')
-            ))),
-          ),
         ),
       ),
       'dkan_api' => array(
