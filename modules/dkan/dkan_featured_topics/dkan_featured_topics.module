@@ -106,10 +106,10 @@ function dkan_featured_topics_views_pre_render(&$view) {
  * Rewrite font file paths to work on install.
  */
 function dkan_featured_topics_file_url_alter(&$uri) {
-  $re = "/public\\:\\/\\/dkantopics.(eot|woff|ttf|svg)/";  
-  preg_match_all($re, $uri, $matches);
+  $re = "/public:\\/\\/[^\\/]*\\/?dkan-topics.*\\.(eot|woff|ttf|svg)$/";
+  $match = preg_match($re, $uri);
 
-  if(!empty($matches)) {
+  if ($match) {
     $uri = str_replace('public://', '/sites/default/files/', $uri);
   }
 }
