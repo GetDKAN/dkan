@@ -378,15 +378,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'module' => 'user',
   );
 
-  // Exported permission: 'administer rdf'.
-  $permissions['administer rdf'] = array(
-    'name' => 'administer rdf',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
-    'module' => 'rdfx',
-  );
-
   // Exported permission: 'administer rules'.
   $permissions['administer rules'] = array(
     'name' => 'administer rules',
