@@ -65,12 +65,3 @@ function dkan_ipe_preprocess_panels_add_content_link(&$vars) {
     $vars['icon_text_button'] = ctools_ajax_icon_text_button($vars['title'], $vars['icon'], $vars['url'], $vars['description'], $subtype_class . '-icon-text-button panels-modal-add-config');
   }
 }
-
-/**
-* Implements hook_ctools_plugin_directory().
-*/
-// function dkan_ipe_ctools_plugin_directory($owner, $plugin_type) {
-// 	if ($owner == 'ctools' && $plugin_type == 'content_types') {
-//   	return 'plugins/' . $plugin_type;
-// 	}
-// }
