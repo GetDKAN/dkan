@@ -8,7 +8,8 @@ Feature: Panels
     When I click "Customize this page"
     And I wait for "Add new pane"
       And I click "Add new pane"
-    When I follow "Create a completely custom piece of HTML content."
+      And I wait for "Add content"
+    When I follow "New custom content"
       And I wait for "5" seconds
       And I fill in "edit-title" with "New Custom Item"
       And I scroll to the top
