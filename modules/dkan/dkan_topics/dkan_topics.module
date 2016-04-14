@@ -105,6 +105,7 @@ function dkan_topics_views_pre_render(&$view) {
 /**
  * Rewrite font file paths to work on install.
  */
+function dkan_featured_topics_file_url_alter(&$uri) {
   $re = "/public:\\/\\/[^\\/]*\\/?dkan-topics.*\\.(eot|woff|ttf|svg)$/";
   $match = preg_match($re, $uri);
 
