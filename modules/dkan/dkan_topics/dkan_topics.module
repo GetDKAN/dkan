@@ -55,7 +55,7 @@ function topics_page() {
  * Implements hook_preprocess_menu_link().
  * Add icons to topics menu.
  */
-function dkan_featured_topics_preprocess_menu_link(&$variables) {
+function dkan_topics_preprocess_menu_link(&$variables) {
   if($variables['element']['#title'] == 'Topics') {
     $submenu = $variables['element']['#below'];
     $css = '';
