@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_featured_topics.views_default.inc
+ * dkan_topics.views_default.inc
  */
 
 /**
  * Implements hook_views_default_views().
  */
-function dkan_featured_topics_views_default_views() {
+function dkan_topics_views_default_views() {
   $export = array();
 
   $view = new view();

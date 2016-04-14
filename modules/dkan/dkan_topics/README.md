@@ -1,10 +1,10 @@
-## DKAN Featured Topics
+## DKAN Topics
 
 While DKAN includes a free-tagging tags/keywords field for datasets, many data portals organize datasets into more predefined catagories by subject matter. These are usually a small collection of subjects with logos that are incoporated into the site navegation. Neither DKAN's tags or "groups" (which are designed for grouping user permissions and usually represent organizational divisions) are exactly appropriate for this task.
 
-The DKAN Featured Topics module adds a "topics" vocabulary to DKAN, and corresponding functionality throughout the site. It adds a facet to the search/datasets page, and a pane to the default homepage. Topics can be administered through the standard Drupal taxonomy interface.
+The DKAN Topics module adds a "topics" vocabulary to DKAN, and corresponding functionality throughout the site. It adds a facet to the search/datasets page, and a pane to the default homepage. Topics can be administered through the standard Drupal taxonomy interface.
 
-DKAN Featured Topics is enabled by default on new DKAN installations, with default terms loaded into the vocabulary. The module can be disabled and all existing topics will be removed.
+DKAN Topics is enabled by default on new DKAN installations, with default terms loaded into the vocabulary. The module can be disabled and all existing topics will be removed.
 
 ### Known Issues
 
