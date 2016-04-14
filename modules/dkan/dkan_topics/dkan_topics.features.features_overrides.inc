@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_featured_topics.features.features_overrides.inc
+ * dkan_topics.features.features_overrides.inc
  */
 
 /**
  * Implements hook_features_override_default_overrides().
  */
-function dkan_featured_topics_features_override_default_overrides() {
+function dkan_topics_features_override_default_overrides() {
   // This code is only used for UI in features. Exported alters hooks do the magic.
   $overrides = array();
 
