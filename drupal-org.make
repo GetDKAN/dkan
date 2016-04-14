@@ -14,7 +14,7 @@ includes:
     #DKAN Data Story
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
     #DKAN Featured Topics
-  - "modules/dkan/dkan_featured_topics/dkan_featured_topics.make"
+  - "modules/dkan/dkan_topics/dkan_topics.make"
 projects:
   manualcrop:
     version: 1.x-dev

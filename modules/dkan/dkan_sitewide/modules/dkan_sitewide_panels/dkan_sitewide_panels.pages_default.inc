@@ -1090,8 +1090,8 @@ function dkan_sitewide_panels_default_page_manager_pages() {
         0 => array(
           'name' => 'php',
           'settings' => array(
-            'description' => 'dkan_featured_topics is enabled',
-            'php' => 'if(module_exists(\'dkan_featured_topics\')) {
+            'description' => 'dkan_topics is enabled',
+            'php' => 'if(module_exists(\'dkan_topics\')) {
 return TRUE;
 }',
           ),
@@ -1431,8 +1431,8 @@ return TRUE;
         0 => array(
           'name' => 'php',
           'settings' => array(
-            'description' => 'dkan_featured_topics is disabled',
-            'php' => 'if(!module_exists(\'dkan_featured_topics\')) {
+            'description' => 'dkan_topics is disabled',
+            'php' => 'if(!module_exists(\'dkan_topics\')) {
 return TRUE;
 }',
           ),
