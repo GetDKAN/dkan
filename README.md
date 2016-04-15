@@ -37,7 +37,9 @@ Please see the ["Installation" section of the DKAN Documentation](http://docs.ge
 
 ### Upgrading DKAN
 
-Please see the ["Updating and Maintaining DKAN" section of the DKAN Documentation](http://docs.getdkan.com/dkan-documentation/dkan-developers-guide/updating-and-maintaining-dkan).
+Please see the ["Updating and Maintaining DKAN" section of the DKAN Documentation](http://docs.getdkan.com/dkan-documentation/dkan-developers-guide/updating-and-maintaining-dkan) for general upgrade information.
+
+For release notes and upgrade instructions specific to particular releases, see the [releases section of the DKAN Project](https://github.com/NuCivic/dkan/releases) on Github.
 
 ## Components
 
@@ -59,7 +61,7 @@ DKAN Datastore is a stand-alone module: https://github.com/NuCivic/dkan_datastor
 
 ## Current Status
 
-Check tags for latest DKAN Version. 7.x-1.x is the development branch.
+Check the [releases page](https://github.com/NuCivic/dkan/releases) for latest DKAN Version. 7.x-1.x is the development branch.
 
 Contact us if you want to get involved!
 
