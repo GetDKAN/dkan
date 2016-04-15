@@ -4,7 +4,9 @@ While DKAN includes a free-tagging tags/keywords field for datasets, many data p
 
 The DKAN Topics module adds a "topics" vocabulary to DKAN, and corresponding functionality throughout the site. It adds a facet to the search/datasets page, and a pane to the default homepage. Topics can be administered through the standard Drupal taxonomy interface.
 
-DKAN Topics is enabled by default on new DKAN installations, with default terms loaded into the vocabulary. The module can be disabled and all existing topics will be removed.
+The included [DKAN Default Topics](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_topics/modules/dkan_default_topics) module will add, on enable, a set of default civic topics using the [Taxonomy Fixtures](https://github.com/NuCivic/taxonomy_fixtures) module.
+
+DKAN Topics is enabled by default on new DKAN installations, with default terms loaded into the vocabulary. The module can be disabled and uninstalled, and all existing topics will be removed.
 
 ### Known Issues
 

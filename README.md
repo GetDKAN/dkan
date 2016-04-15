@@ -33,25 +33,42 @@ NuCivic' [Data](http://nucivic.com/data/) platform offers 24/7, secure, cloud-ba
 
 ## Installation
 
+Please note that we are in the process of revamping our installation and upgrade guide. The instructions here will work, but please bear with us as we develop better documentation and processes. 
+
+Before getting started, it's recommended that you familiarize yourself with:
+ 
+* [Drush, the command line tool]()
+* [Drupal's installation process]()
+* [Drupal's upgrade process]()
+* [Drupal profiles and distributions]()
+
+What you will find in this folder is a Drupal _installation profile_. To set up a working website using DKAN, you will need to acquire or build a full DKAN distribution of Drupal.  
+
 ### "Fully Made" version:
 
 https://github.com/NuCivic/dkan-drops-7
 
+At the moment, our supported fully-made DKAN codebase is the [DKAN DROPS-7](https://github.com/NuCivic/dkan-drops-7) repository, which is optimized to run on the Pantheon platform. You can build a DKAN site with a single click on Pantheon [here](https://dashboard.getpantheon.com/products/dkan/spinup). (We also offer [one-click installation on Acquia](http://docs.getdkan.com/dkan-documentation/get-dkan/dkan-acquia))
+
 ### Drush Make
 
-Requires drush version 6.x or 7.x.
+This "builds" a full DKAN website codebase from the bleeding-edge development version of DKAN, by downloading Drupal and all the additional modules that DKAN needs to run. This method is particularly useful for people who want to work on the DKAN project itself, as it preserves Git versioning information in every profile, theme and module directory. The core developers use this method when developing and testing DKAN.  
 
-Create a full version with drush make:
+Note that `rsync` is used to copy the DKAN profile inside the Drupal `/profiles` folder. You may wish to modify this process to fit your own development practices.
+
+Requires drush version 8.x.
 
 ```bash
 git clone --branch 7.x-1.x https://github.com/NuCivic/dkan.git
 cd dkan
-drush make --prepare-install build-dkan.make webroot
-cd webroot
-drush site-install dkan --db-url="mysql://DBUSER:DBPASS@localhost/DBNAME"
+drush make --prepare-install drupal-org-core.make webroot --yes
+rsync -av . webroot/profiles/dkan --exclude webroot
+drush -y make --no-core --working-copy --contrib-destination=./ drupal-org.make webroot/profiles/dkan --no-recursion --concurrency=3 
+cd webroot 
+drush site-install dkan --db-url=mysql://DBUSER:DBPASS@localhost/DBNAME --verbose --yes --account-pass=admin
 ```
 
-Note: Recline previews require clean URLs
+Note: Recline previews require [clean URLs](https://www.drupal.org/getting-started/clean-urls#enabling-7)
 
 ## Components
 
