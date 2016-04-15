@@ -1,5 +1,7 @@
 7.x-1.x
 --------------------------
+- Fixed regex used to rewrite font file paths on Dkan Topics, which was breaking filepaths in data.json
+- Rename dkan_featured_topics to dkan_topics before release
 - Add "data dashboard" creation link to user admin menu (in dkan_sitewide_menu)
 - Patch DKAN core file module to fix managed file problem https://www.drupal.org/node/1903010#comment-10118508
 - Standardize facet titles between user, search and group pages

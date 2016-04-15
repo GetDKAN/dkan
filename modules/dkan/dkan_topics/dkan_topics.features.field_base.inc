@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_featured_topics.features.field_base.inc
+ * dkan_topics.features.field_base.inc
  */
 
 /**
  * Implements hook_field_default_field_bases().
  */
-function dkan_featured_topics_field_default_field_bases() {
+function dkan_topics_field_default_field_bases() {
   $field_bases = array();
 
   // Exported field_base: 'field_icon_type'
