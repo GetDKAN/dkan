@@ -38,3 +38,8 @@ commands:
     usage: A series of maintenance commands to check the docker environment health
     import: dkan/.ahoy/diagnose.ahoy.yml
     hide: true
+
+  doctor:
+    usage: A series of maintenance commands to check the docker environment health (Deprecated and moved to diagnose commands)
+    import: dkan/.ahoy/diagnose.ahoy.yml
+    hide: true
