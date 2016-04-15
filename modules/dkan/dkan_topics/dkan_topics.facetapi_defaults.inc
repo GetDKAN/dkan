@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_featured_topics.facetapi_defaults.inc
+ * dkan_topics.facetapi_defaults.inc
  */
 
 /**
  * Implements hook_facetapi_default_facet_settings().
  */
-function dkan_featured_topics_facetapi_default_facet_settings() {
+function dkan_topics_facetapi_default_facet_settings() {
   $export = array();
 
   $facet = new stdClass();

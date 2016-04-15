@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_featured_topics.features.field_instance.inc
+ * dkan_topics.features.field_instance.inc
  */
 
 /**
  * Implements hook_field_default_field_instances().
  */
-function dkan_featured_topics_field_default_field_instances() {
+function dkan_topics_field_default_field_instances() {
   $field_instances = array();
 
   // Exported field_instance: 'node-data_dashboard-field_topic'
@@ -19,21 +19,21 @@ function dkan_featured_topics_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
+        'module' => 'dkan_topics',
         'settings' => array(),
         'type' => 'dkan_topic_formatter',
         'weight' => 0,
       ),
       'search_result' => array(
         'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
+        'module' => 'dkan_topics',
         'settings' => array(),
         'type' => 'dkan_topic_formatter',
         'weight' => 0,
       ),
       'teaser' => array(
         'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
+        'module' => 'dkan_topics',
         'settings' => array(),
         'type' => 'dkan_topic_formatter',
         'weight' => 0,
@@ -66,14 +66,14 @@ function dkan_featured_topics_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
+        'module' => 'dkan_topics',
         'settings' => array(),
         'type' => 'dkan_topic_formatter',
         'weight' => 0,
       ),
       'search_result' => array(
         'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
+        'module' => 'dkan_topics',
         'settings' => array(),
         'type' => 'dkan_topic_formatter',
         'weight' => 0,
@@ -113,21 +113,21 @@ function dkan_featured_topics_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
+        'module' => 'dkan_topics',
         'settings' => array(),
         'type' => 'dkan_topic_formatter',
         'weight' => 0,
       ),
       'search_result' => array(
         'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
+        'module' => 'dkan_topics',
         'settings' => array(),
         'type' => 'dkan_topic_formatter',
         'weight' => 0,
       ),
       'teaser' => array(
         'label' => 'hidden',
-        'module' => 'dkan_featured_topics',
+        'module' => 'dkan_topics',
         'settings' => array(),
         'type' => 'dkan_topic_formatter',
         'weight' => 0,
