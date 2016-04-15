@@ -1,0 +1,243 @@
+ahoyapi: v1
+version: 0.0.0
+commands:
+  all:
+    usage: Checks that the docker environment is healthy and ready for development
+    cmd: |
+      set -e
+      echo "Checking docker machine status..."
+      ahoy diagnose machine "{{args}}"
+
+      echo "Checking docker machine IP address..."
+      ahoy diagnose ip "{{args}}"
+
+      echo "Checking docker daemon..."
+      ahoy diagnose daemon "{{args}}"
+
+      echo "Checking NFS file sharing..."
+      ahoy diagnose nfs "{{args}}"
+
+      echo "Checking projet containers..."
+      ahoy diagnose containers "{{args}}"
+
+      echo "Checking site URL accessibility..."
+      ahoy diagnose site "{{args}}"
+
+      echo "[Success] Docktor check done."
+
+  machine:
+    usage: Checks if the docker machine is running
+    cmd: |
+      if [ $(docker-machine status $DOCKER_MACHINE_NAME) == 'Running' ]; then
+        echo "[OK] The \"$DOCKER_MACHINE_NAME\" docker machine is running."
+      else
+        echo "[Error] The \"$DOCKER_MACHINE_NAME\" docker machine is not running: $(docker-machine status $DOCKER_MACHINE_NAME)"
+        if [[ "{{args}}" == "fix" ]]; then
+          docker-machine start default
+          if [[ $(docker-machine status $DOCKER_MACHINE_NAME) == "Running" ]]; then
+            echo "[Fixed] The \"$DOCKER_MACHINE_NAME\" docker machine is now running properly."
+          else
+            echo "[Error] The \"$DOCKER_MACHINE_NAME\" docker machine could not be started. Please proceed to manual troubleshooting or contact your dev-support team."
+            exit 1
+          fi
+        else
+          exit 1
+        fi
+      fi
+  ip:
+    usage: Checks if docker machine IP address corresponds to the $DOCKER_HOST environment variable
+    cmd: |
+      if [ $(echo "$DOCKER_HOST"|grep $(docker-machine ip $DOCKER_MACHINE_NAME)|wc -l) -gt 0 ]; then
+        echo "[OK] The \"$DOCKER_MACHINE_NAME\" docker machine IP address and the DOCKER_HOST environment variable are setup properly."
+      else
+        echo "[Error] The DOCKER_HOST variable ($DOCKER_HOST) does not correspond to the \"$DOCKER_MACHINE_NAME\" docker machine IP address ($(docker-machine ip $DOCKER_MACHINE_NAME))."
+        if [[ "{{args}}" == "fix" ]]; then
+          // fixing docker-machine ip
+          dmip=$(docker-machine ip default)
+          if [[ $dmip == "" ]]; then
+            if [[ $(docker-machine status $DOCKER_MACHINE_NAME) == "Running" ]]; then
+              docker-machine restart $DOCKER_MACHINE_NAME
+            fi
+            ahoy diagnose machine fix
+            dmip=$(docker-machine ip default)
+            if [[ $dmip == "" ]]; then
+              echo "[Error] The \"$DOCKER_MACHINE_NAME\" docker machine IP address could not be setup eventhough the machine is running properly. Please proceed to manual troubleshooting or contact your dev-support team."
+              exit 1
+            fi
+            echo "[Fixed] The \"$DOCKER_MACHINE_NAME\" docker machine IP address is setup properly."
+          fi
+          // fixing $DOCKER_HOST variable
+          if [[ $DOCKER_HOST == "" ]] || [[ $(echo "$DOCKER_HOST"|grep $(docker-machine ip $DOCKER_MACHINE_NAME)|wc -l) -gt 0 ]]; then
+            ahoy diagnose daemon fix
+          fi
+          echo "[Fixed] The \"$DOCKER_MACHINE_NAME\" docker machine IP address and the DOCKER_HOST environment variable are setup properly."
+        else
+          exit 1
+        fi
+      fi
+  env:
+    usage: Checks the docker machine environment variables
+    cmd: |
+      shell="$(echo $SHELL|rev|cut -d/ -f1|rev)"
+      rcfile="$HOME/.${shell}rc"
+      if [ "$DOCKER_MACHINE_NAME" == "" ]; then
+        export DOCKER_MACHINE_NAME="default"
+        echo "[Error] The DOCKER_MACHINE_NAME environment variable is empty. Setting it to \"default\" as a temporary workaround and trying to fix the other variables."
+      fi
+      if [ "$(printenv|grep -E '^DOCKER_'|sort)" == "$(if [ $(docker-machine env $DOCKER_MACHINE_NAME 2> /dev/null|wc -l) -gt 0 ]; then eval $(docker-machine env $DOCKER_MACHINE_NAME); printenv|grep -E '^DOCKER_'|sort; fi)" ]; then
+        echo "[OK] The \"$DOCKER_MACHINE_NAME\" docker machine environment variables are properly setup on your shell ($shell)."
+      else
+        echo "[Error] The \"$DOCKER_MACHINE_NAME\" docker machine environment variables are not properly setup on your shell ($shell)."
+        if [[ "{{args}}" == "fix" ]]; then
+          ahoy diagnose machine fix
+          if [ "$(printenv|grep -E '^DOCKER_'|sort)" == "$(if [ $(docker-machine env $DOCKER_MACHINE_NAME 2> /dev/null|wc -l) -gt 0 ]; then eval $(docker-machine env $DOCKER_MACHINE_NAME); printenv|grep -E '^DOCKER_'|sort; fi)" ]; then
+            echo "[OK] The \"$DOCKER_MACHINE_NAME\" docker machine has been started and the environment variables are setup properly."
+          else
+            if [ ! -f "$rcfile" ]; then
+              echo "[Error] The your default shell ($SHELL) is not supported. Please proceed to manual troubleshooting or contact your dev-support team."
+              exit 1
+            fi
+            docker-machine env $DOCKER_MACHINE_NAME|grep -Ev '^#' > $HOME/.default.docker-machine
+            if [ $(grep "source $HOME/.default.docker-machine" $rcfile|wc -l) -eq 0 ]; then
+              echo "source $HOME/.default.docker-machine" >> $rcfile
+              echo "[Fixed] Updated environment variables for the \"$DOCKER_MACHINE_NAME\" docker machine are saved in \"$HOME/.default.docker-machine\" and sourced in \"$rcfile\"."
+            fi
+            source $rcfile 2> /dev/null
+            if [ "$(printenv|grep -E '^DOCKER_'|sort)" == "$(if [ $(docker-machine env $DOCKER_MACHINE_NAME 2> /dev/null|wc -l) -gt 0 ]; then eval $(docker-machine env $DOCKER_MACHINE_NAME); printenv|grep -E '^DOCKER_'|sort; fi)" ]; then
+              echo "[Fixed] Sourcing "$rcfile" sets the \"$DOCKER_MACHINE_NAME\" docker machine environment variables properly."
+              echo "[WARNING] Please reopen your shell and execute your last command in order for the updated environment variables to take effect."
+            else
+              echo "[Error] Cannot fix the environment variables for your shell ($shell). Please proceed to manual troubleshooting or contact your dev-support team."
+              exit 1
+            fi
+          fi
+        else
+          exit 1
+        fi
+      fi
+      if [ "$(echo $AHOY_CMD_PROXY)" == "DOCKER" ]; then
+        echo "[OK] The AHOY_CMD_PROXY environment variable is setup properly on your shell ($shell)."
+      else
+        echo "[Error] The AHOY_CMD_PROXY environment variable is not setup properly on your shell ($shell)."
+        if [[ "{{args}}" == "fix" ]]; then
+          if [ "$(grep "export AHOY_CMD_PROXY=\"DOCKER\"" $rcfile|wc -l)" -lt 1 ]; then
+            echo "export AHOY_CMD_PROXY=\"DOCKER\"" >> $rcfile
+            source $rcfile 2> /dev/null
+            if [ $(grep "export AHOY_CMD_PROXY=\"DOCKER\"" $rcfile|wc -l) -gt 0 ]; then
+              echo "[Fixed] AHOY_CMD_PROXY environment variable is now exported in \"$rcfile\"."
+              echo "[WARNING] Please reopen your shell and execute your last command in order for the updated environment variables to take effect."
+            else
+              echo "[Error] Cannot fix the AHOY_CMD_PROXY environment variable for your shell ($SHELL). Please proceed to manual troubleshooting or contact your dev-support team."
+              exit 1
+            fi
+          else
+            echo "[Error] The AHOY_CMD_PROXY environment variable is being exported properly in \"$rcfile\" but does not take effect. Please proceed to manual troubleshooting or contact your dev-support team."
+            exit 1
+          fi
+        else
+          exit 1
+        fi
+      fi
+  daemon:
+    usage: Checks if the docker client can connect to the docker daemon on Boot2Docker
+    cmd: |
+      if [ $(docker info|grep -i 'Operating System: Boot2Docker'|wc -l) -eq 1 ]; then
+        echo "[OK] The the docker daemon is accessible from this machine."
+      else
+        echo "[Error] The the docker daemon is not accessible from this machine."
+        if [[ "{{args}}" == "fix" ]]; then
+          ahoy diagnose machine fix
+          ahoy diagnose env
+          if [ $? -eq 1 ]; then
+            ahoy diagnose env fix
+            exit 1
+          else
+            if [ $(docker info|wc -l) -eq 0 ]; then
+              echo "[Error] Cannot connect to the remote docker service on \"$DOCKER_MACHINE_NAME\" docker machine. Please proceed to manual troubleshooting or contact your dev-support team."
+              exit 1
+            elif [ $(docker info|grep -i 'Operating System:'|grep -i 'Boot2Docker'|wc -l) -eq 0 ]; then
+              echo "[Error] The \"$DOCKER_MACHINE_NAME\" docker machine is not a Boot2Docker machine:"
+              echo "$(docker info|grep -i 'Operating System:')"
+              echo "Please proceed to manual troubleshooting or contact your dev-support team."
+              exit 1
+            fi
+          fi
+        else
+          exit 1
+        fi
+      fi
+  nfs:
+    usage: Checks if the NFS server share is properly configured and that the docker machine connects to the NFS server.
+    cmd: |
+      if [[ "{{args}}" == "fix" ]]; then
+        ahoy diagnose daemon fix
+      fi
+      if [ $(showmount -e|grep "$(docker-machine ip $DOCKER_MACHINE_NAME)"|wc -l) -eq 1 ]; then
+        echo "[OK] The NFS share is setup properly on your host machine."
+        serverip=$(docker-machine ssh default mount|grep nfs|cut -d ':' -f1)
+        if [ $(echo $serverip|wc -c) -gt 0 ] && [ $(ifconfig|grep "$serverip"|wc -l) -gt 0 ]; then
+          echo "[OK] The \"$DOCKER_MACHINE_NAME\" docker machine can connect to the host NFS server at $serverip"
+        else
+          echo "[Error] The \"$DOCKER_MACHINE_NAME\" docker machine cannot connect to the host NFS server. Please proceed to manual troubleshooting or contact your dev-support team."
+          exit 1
+        fi
+      else
+        echo "[Error] The docker machine NFS share is not setup properly."
+        if [ $(grep -E " $(docker-machine ip $DOCKER_MACHINE_NAME)\(rw,sync,all_squash,anonuid=[0-9]*,anongid=[0-9]*,no_subtree_check\)$" /etc/exports|wc -l) -eq 1 ] || [ $(grep -E " $(docker-machine ip $DOCKER_MACHINE_NAME) -alldirs -mapall=[0-9]*:[0-9]*$" /etc/exports|wc -l) -eq 1 ]; then
+          echo "[Warning] Your NFS share configuration is correct. Please consult your NFS server logs to make sure that it is running properly or contact your dev-support team."
+          exit 1
+        else
+          echo "[Error] Your NFS share configuration might not be correct. Please check your NFS configuration in /etc/exports and make sure your NFS server is running with no issues."
+          if [[ "{{args}}" == "fix" ]]; then
+            sudo grep -v "$(docker-machine ip $DOCKER_MACHINE_NAME)" /etc/exports > etcexports
+            sudo mv etcexports /etc/exports
+            if [ "$(uname)" == "Darwin"  ]; then
+              docker-machine-nfs $DOCKER_MACHINE_NAME --shared-folder=$HOME/docker
+            elif [ "$(uname)" == "Linux" ]; then
+              docker-machine-nfs $DOCKER_MACHINE_NAME --nfs-config="(rw,sync,all_squash,anonuid=$(id -u),anongid=$(id -g),no_subtree_check)" --shared-folder=$HOME/docker --force
+            else
+              echo "[Error] This OS is not supported."
+              exit 1
+            fi
+            if [ $(grep -E " $(docker-machine ip $DOCKER_MACHINE_NAME)\(rw,sync,all_squash,anonuid=[0-9]*,anongid=[0-9]*,no_subtree_check\)$" /etc/exports|wc -l) -eq 1 ] || [ $(grep -E " $(docker-machine ip $DOCKER_MACHINE_NAME) -alldirs -mapall=[0-9]*:[0-9]*$" /etc/exports|wc -l) -eq 1 ]; then
+              echo "[Fixed] /etc/exports configuration fixed."
+              ahoy diagnose nfs fix
+            else
+              echo "[Error] Cannot fix /etc/exports configuration. Please proceed to manual troubleshooting or contact your dev-support team."
+              exit 1
+            fi
+          else
+            exit 1
+          fi
+        fi
+      fi
+  containers:
+    usage: Checks that all site containers are up
+    cmd: |
+      containers=$(ahoy docker ps|grep -i ' up '|cut -d ' ' -f1)
+      if [[ "{{args}}" == "fix" ]]; then
+        ahoy diagnose nfs fix
+        ahoy docker up
+      fi
+      for service in $(ahoy docker ps|grep -i ' up '|cut -d ' ' -f1|ahoy docker compose config --services); do
+        if [ $(echo $containers|grep "\_$service\_"|wc -l) -gt 0 ]; then
+          echo "[OK] The \"$service\" container is running."
+        else
+          echo "[Error] The \"$service\" container is not running: $(ahoy docker ps|grep "$service")"
+          if [[ "{{args}}" == "fix" ]]; then
+            ahoy docker up $service
+          else
+            exit 1
+          fi
+        fi
+      done
+  site:
+    usage: Checks that the site URL is accessible
+    cmd: |
+      url=$(ahoy docker url)
+      if curl --output /dev/null --silent --head --fail "$url)"; then
+        echo "[OK] URL $url is reachable."
+      else
+        echo "[Error] URL $url is not reachable. Please make sure your site is properly built and deployed."
+        exit 1
+      fi
