@@ -4,21 +4,21 @@
  * Code for the DKAN Featured Topics feature.
  */
 
-include_once 'dkan_featured_topics.features.inc';
-include_once 'dkan_featured_topics.features.conditional_fields.inc';
+include_once 'dkan_topics.features.inc';
+include_once 'dkan_topics.features.conditional_fields.inc';
 module_load_include('inc','pathauto','pathauto');
 
 /**
  * Implements hook_page_alter().
  */
-function dkan_featured_topics_page_alter(&$page) {
-  drupal_add_css(drupal_get_path('module', 'dkan_featured_topics') . '/theme/dkan_featured_topics.css');
+function dkan_topics_page_alter(&$page) {
+  drupal_add_css(drupal_get_path('module', 'dkan_topics') . '/theme/dkan_topics.css');
 }
 
 /**
  * Implements hook_menu() to add topics link.
  */
-function dkan_featured_topics_menu() {
+function dkan_topics_menu() {
   $items['topics'] = array(
     'title'           => t('Topics'),
     'menu_name'       => 'main-menu',
@@ -35,7 +35,7 @@ function dkan_featured_topics_menu() {
 /**
  *
  */
-function dkan_featured_topics_menu_link_insert($link) {
+function dkan_topics_menu_link_insert($link) {
   // We need to set the 'taxonomy_menu_vocab_parent_dkan_topics' variable
   // with the ID of the 'Topics' menu link so all the topics terms can be
   // added there as sub-links.
@@ -55,7 +55,7 @@ function topics_page() {
 /**
 * Implements hook_preprocess_field().
 */
-function dkan_featured_topics_preprocess_field(&$vars) {
+function dkan_topics_preprocess_field(&$vars) {
   if ($vars['element']['#field_name'] == 'field_topic_icon') {
     $vars['label_hidden'] = TRUE;
   }
@@ -72,7 +72,7 @@ function dkan_featured_topics_preprocess_field(&$vars) {
 /**
 * Implements hook_views_pre_render().
 */
-function dkan_featured_topics_views_pre_render(&$view) {
+function dkan_topics_views_pre_render(&$view) {
   if(isset($view->name) && $view->name == 'dkan_topics_featured') {
     foreach($view->result as $row) {
       if($row->_field_data['tid']['entity']->field_icon_type['und'][0]['value'] == 'font') {
@@ -105,11 +105,11 @@ function dkan_featured_topics_views_pre_render(&$view) {
 /**
  * Rewrite font file paths to work on install.
  */
-function dkan_featured_topics_file_url_alter(&$uri) {
-  $re = "/public\\:\\/\\/dkantopics.(eot|woff|ttf|svg)/";  
-  preg_match_all($re, $uri, $matches);
+function dkan_topics_file_url_alter(&$uri) {
+  $re = "/public:\\/\\/[^\\/]*\\/?dkan-topics.*\\.(eot|woff|ttf|svg)$/";
+  $match = preg_match($re, $uri);
 
-  if(!empty($matches)) {
+  if ($match) {
     $uri = str_replace('public://', '/sites/default/files/', $uri);
   }
 }
@@ -117,7 +117,7 @@ function dkan_featured_topics_file_url_alter(&$uri) {
 /**
  * Implements hook_field_formatter_info().
  */
-function dkan_featured_topics_field_formatter_info() {
+function dkan_topics_field_formatter_info() {
   return array(
     'dkan_topic_formatter' => array(
       'label' => t('Topic with icon'),
@@ -129,7 +129,7 @@ function dkan_featured_topics_field_formatter_info() {
 /**
  * Implements hook_field_formatter_view().
  */
-function dkan_featured_topics_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+function dkan_topics_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
 
   switch ($display['type']) {
