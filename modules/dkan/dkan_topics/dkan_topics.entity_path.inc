@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_featured_topics.entity_path.inc
+ * dkan_topics.entity_path.inc
  */
 
 /**
  * Implements hook_entity_path_config_default().
  */
-function dkan_featured_topics_entity_path_config_default() {
+function dkan_topics_entity_path_config_default() {
   $export = array();
 
   $entity_path_config = new stdClass();
