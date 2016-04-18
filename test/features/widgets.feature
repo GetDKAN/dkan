@@ -9,14 +9,14 @@ Feature: Widgets
     And I click "Add new pane"
     And I wait for "Add content"
 
-  # Scenario: Adds "New Link Widget" block to home page using panels ipe editor
-  #   When I click on the text " Add links"
-  #     And I wait for "Configure new Add links"
-  #     And I fill in "field_quick_links_links[und][0][title]" with "Link example"
-  #     And I fill in "field_quick_links_links[und][0][url]" with "http://demo.getdkan.com"
-  #     And I press "Finish"
-  #     And I wait and press "Save"
-  #     Then I should see "Link example"
+  Scenario: Adds "Button Link" to home page using panels ipe editor
+    When I follow "Link"
+      And I wait for "Configure new Button link"
+      And I fill in "edit-button-link-title" with "Link example"
+      And I fill in "edit-button-link-url" with "http://demo.getdkan.com"
+      And I press "Finish"
+      And I wait and press "Save"
+      Then I should see "Link example"
 
   Scenario: Adds "New File Widget" block to home page using panels ipe editor
     When I follow "File"
