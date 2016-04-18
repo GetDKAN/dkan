@@ -61,6 +61,9 @@ function dkan_ipe_preprocess_panels_add_content_link(&$vars) {
 	    case 'Visualization embed':
 	      $vars['title'] = 'Visualization';
 	      break;
+      case 'Button link':
+        $vars['title'] = 'Link';
+        break;
 	  }
     $vars['icon_text_button'] = ctools_ajax_icon_text_button($vars['title'], $vars['icon'], $vars['url'], $vars['description'], $subtype_class . '-icon-text-button panels-modal-add-config');
   }
