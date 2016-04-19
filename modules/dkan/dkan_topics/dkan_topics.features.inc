@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_featured_topics.features.inc
+ * dkan_topics.features.inc
  */
 
 /**
  * Implements hook_ctools_plugin_api().
  */
-function dkan_featured_topics_ctools_plugin_api($module = NULL, $api = NULL) {
+function dkan_topics_ctools_plugin_api($module = NULL, $api = NULL) {
   if ($module == "entity_path" && $api == "entity_path") {
     return array("version" => "1");
   }
@@ -22,14 +22,14 @@ function dkan_featured_topics_ctools_plugin_api($module = NULL, $api = NULL) {
 /**
  * Implements hook_views_api().
  */
-function dkan_featured_topics_views_api($module = NULL, $api = NULL) {
+function dkan_topics_views_api($module = NULL, $api = NULL) {
   return array("api" => "3.0");
 }
 
 /**
  * Implements hook_image_default_styles().
  */
-function dkan_featured_topics_image_default_styles() {
+function dkan_topics_image_default_styles() {
   $styles = array();
 
   // Exported image style: small_topics_icons.
