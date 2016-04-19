@@ -4,5 +4,6 @@ core = 7.x
 package = DKAN Features
 version = 7.x-1.0
 project = dkan_default_topics
+dependencies[] = dkan_topics
 dependencies[] = taxonomy_fixtures
 dependencies[] = taxonomy
