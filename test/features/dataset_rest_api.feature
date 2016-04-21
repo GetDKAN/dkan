@@ -15,6 +15,7 @@ Feature: DKAN Dataset REST API
       | title    | published |
       | Group 01 | Yes       |
 
+
   Scenario: Create a Resource using the Dataset REST API
     Given I am on "Search Resources" page
     Then I should not see "Resource 02"
