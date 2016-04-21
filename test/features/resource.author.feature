@@ -93,6 +93,7 @@ Feature: Resource
     And I am on "Resource 01" page
     When I click "Edit"
     And I select "Dataset 02" from "Dataset"
+    And I fill in the chosen field "edit_field_dataset_ref_und_chosen" with "Dataset 02"
     And I press "Save"
     Then I should see "Resource 01 has been updated"
     When I click "Back to dataset"
@@ -104,7 +105,7 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I select "Dataset 03" from "Dataset"
+    And I fill in the chosen field "edit_field_dataset_ref_und_chosen" with "Dataset 03"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -117,7 +118,7 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on "Resource 07" page
     When I click "Edit"
-    And I select "- None -" from "Dataset"
+    And I fill in the chosen field "edit_field_dataset_ref_und_chosen" with "- None -"
     And I press "Save"
     Then I should see "Resource 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -131,7 +132,7 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I select "Dataset 05" from "Dataset"
+    And I fill in the chosen field "edit_field_dataset_ref_und_chosen" with "Dataset 05"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -144,7 +145,7 @@ Feature: Resource
     And I am on "Resource 08" page
     When I click "Edit"
     Then I should see "Group 01" in the "resource groups" region
-    When I select "- None -" from "Dataset"
+    And I fill in the chosen field "edit_field_dataset_ref_und_chosen" with "- None -"
     And I press "Save"
     Then I should see "Resource 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -158,8 +159,8 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I select "Dataset 05" from "Dataset"
-    And I additionally select "Dataset 06" from "Dataset"
+    And I fill in the chosen field "edit_field_dataset_ref_und_chosen" with "Dataset 05"
+    And I fill in the chosen field "edit_field_dataset_ref_und_chosen" with "Dataset 06"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -172,8 +173,8 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I select "Dataset 05" from "Dataset"
-    And I additionally select "Dataset 06" from "Dataset"
+    And I fill in the chosen field "edit_field_dataset_ref_und_chosen" with "Dataset 05"
+    And I fill in the chosen field "edit_field_dataset_ref_und_chosen" with "Dataset 06"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     When I click "Edit"
@@ -190,8 +191,8 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I select "Dataset 05" from "Dataset"
-    And I additionally select "Dataset 06" from "Dataset"
+    And I fill in the chosen field "edit_field_dataset_ref_und_chosen" with "Dataset 05"
+    And I fill in the chosen field "edit_field_dataset_ref_und_chosen" with "Dataset 06"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
