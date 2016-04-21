@@ -50,7 +50,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_dataset.git'
-      branch: 7.x-1.x
+      branch: enable-chosen-on-resource-dataset-ref
   dkan_datastore:
     subdir: dkan
     download:
