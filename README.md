@@ -33,25 +33,13 @@ NuCivic' [Data](http://nucivic.com/data/) platform offers 24/7, secure, cloud-ba
 
 ## Installation
 
-### "Fully Made" version:
+Please see the ["Installation" section of the DKAN Documentation](http://docs.getdkan.com/dkan-documentation/dkan-developers-guide/installing-dkan).
 
-https://github.com/NuCivic/dkan-drops-7
+### Upgrading DKAN
 
-### Drush Make
+Please see the ["Updating and Maintaining DKAN" section of the DKAN Documentation](http://docs.getdkan.com/dkan-documentation/dkan-developers-guide/updating-and-maintaining-dkan) for general upgrade information.
 
-Requires drush version 6.x or 7.x.
-
-Create a full version with drush make:
-
-```bash
-git clone --branch 7.x-1.x https://github.com/NuCivic/dkan.git
-cd dkan
-drush make --prepare-install build-dkan.make webroot
-cd webroot
-drush site-install dkan --db-url="mysql://DBUSER:DBPASS@localhost/DBNAME"
-```
-
-Note: Recline previews require clean URLs
+For release notes and upgrade instructions specific to particular releases, see the [releases section of the DKAN Project](https://github.com/NuCivic/dkan/releases) on Github.
 
 ## Components
 
@@ -73,7 +61,7 @@ DKAN Datastore is a stand-alone module: https://github.com/NuCivic/dkan_datastor
 
 ## Current Status
 
-Check tags for latest DKAN Version. 7.x-1.x is the development branch.
+Check the [releases page](https://github.com/NuCivic/dkan/releases) for latest DKAN Version. 7.x-1.x is the development branch.
 
 Contact us if you want to get involved!
 
