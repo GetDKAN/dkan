@@ -56,7 +56,8 @@ function topics_page() {
  * Add icons to topics menu.
  */
 function dkan_topics_preprocess_menu_link(&$variables) {
-  if($variables['element']['#title'] == 'Topics') {
+  $voc = taxonomy_vocabulary_machine_name_load('dkan_topics');
+  if($variables['element']['#original_link']['link_title'] == $voc->name) {
     $submenu = $variables['element']['#below'];
     $css = '';
     foreach ($submenu as $child) {
