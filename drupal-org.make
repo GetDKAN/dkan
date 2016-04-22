@@ -103,11 +103,7 @@ projects:
       2: patches/fontyourface-clear-css-cache.patch
       2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
   imagecache_actions:
-    download:
-      type: git
-      url: 'http://git.drupal.org/project/imagecache_actions.git'
-      branch: 7.x-1.x
-      revision: cd19d2a
+    version: '1.7'
     type: module
   markdown:
     version: '1.2'
