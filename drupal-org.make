@@ -99,7 +99,7 @@ projects:
   fieldable_panels_panes:
     version: '1.8'
   honeypot:
-    version: '1.17'
+    version: '1.22'
   fontyourface:
     version: '2.8'
     patch:
