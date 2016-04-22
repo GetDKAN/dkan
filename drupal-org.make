@@ -146,7 +146,7 @@ projects:
   path_breadcrumbs:
     version: '3.3'
   pathauto:
-    version: '1.2'
+    version: '1.3'
   radix_layouts:
     version: '3.4'
   r4032login:
