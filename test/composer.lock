@@ -907,12 +907,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "be9b41ecf3a2c771e33c079ff324cbe9d4c86180"
+                "reference": "d5c4add2b56bd24212f2d88e3ff1c31c2546b835"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/be9b41ecf3a2c771e33c079ff324cbe9d4c86180",
-                "reference": "be9b41ecf3a2c771e33c079ff324cbe9d4c86180",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/d5c4add2b56bd24212f2d88e3ff1c31c2546b835",
+                "reference": "d5c4add2b56bd24212f2d88e3ff1c31c2546b835",
                 "shasum": ""
             },
             "require": {
@@ -940,7 +940,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-04-12 17:30:23"
+            "time": "2016-04-22 02:17:37"
         },
         {
             "name": "psr/http-message",
@@ -1110,12 +1110,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "8c83ff9a2ffbed1e606bc816db11ddc2385a16ee"
+                "reference": "38711092665edc06ef55e842942fb813932ff4ac"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/config/zipball/38711092665edc06ef55e842942fb813932ff4ac",
-                "reference": "8c83ff9a2ffbed1e606bc816db11ddc2385a16ee",
+                "reference": "38711092665edc06ef55e842942fb813932ff4ac",
                 "shasum": ""
             },
             "require": {
