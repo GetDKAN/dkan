@@ -17,11 +17,7 @@ includes:
   - "modules/dkan/dkan_topics/dkan_topics.make"
 projects:
   manualcrop:
-    version: 1.x-dev
-    download:
-      type: git
-      revision: d6c449d
-      branch: 7.x-1.x
+    version: '1.5'
   tablefield:
     version: '2.4'
   simple_gmap:
