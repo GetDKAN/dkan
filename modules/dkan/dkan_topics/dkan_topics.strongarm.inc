@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_featured_topics.strongarm.inc
+ * dkan_topics.strongarm.inc
  */
 
 /**
  * Implements hook_strongarm().
  */
-function dkan_featured_topics_strongarm() {
+function dkan_topics_strongarm() {
   $export = array();
 
   $strongarm = new stdClass();

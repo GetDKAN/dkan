@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * dkan_featured_topics.features.conditional_fields.inc
+ * dkan_topics.features.conditional_fields.inc
  */
 
 /**
  * Implements hook_conditional_fields_default_fields().
  */
-function dkan_featured_topics_conditional_fields_default_fields() {
+function dkan_topics_conditional_fields_default_fields() {
   $items = array();
 
   $items["taxonomy_term:dkan_topics:0"] = array(
