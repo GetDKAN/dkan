@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+- Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
 - Add topic icons to the drop down menu
 
 7.x-1.12 2016-04-20
