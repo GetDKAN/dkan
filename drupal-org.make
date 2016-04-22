@@ -154,7 +154,7 @@ projects:
   rules:
     version: '2.9'
   restws:
-    version: '2.3'
+    version: '2.5'
     patch:
       2484829: 'https://www.drupal.org/files/issues/restws-fix-format-extension-2484829-53.patch'
   schema:
