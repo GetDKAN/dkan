@@ -907,12 +907,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "1f31b08e3eb853289cb72d7dfc78b416c23c7710"
+                "reference": "0487597bedaf2759b1df13ed9f1eb2f4ab668257"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/1f31b08e3eb853289cb72d7dfc78b416c23c7710",
-                "reference": "1f31b08e3eb853289cb72d7dfc78b416c23c7710",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/0487597bedaf2759b1df13ed9f1eb2f4ab668257",
+                "reference": "0487597bedaf2759b1df13ed9f1eb2f4ab668257",
                 "shasum": ""
             },
             "require": {

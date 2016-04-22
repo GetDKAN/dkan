@@ -5,4 +5,5 @@ Feature: Project Open Data
 
   Scenario: Viewing valid data.json
     Given I am an anonymous user
-    Then I should see valid data.json on the /data.json page
+    And I am on "/data.json"
+    Then I should see valid data.json
