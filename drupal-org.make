@@ -152,7 +152,7 @@ projects:
   r4032login:
     version: '1.8'
   rules:
-    version: '2.3'
+    version: '2.9'
   restws:
     version: '2.3'
     patch:
