@@ -2,11 +2,11 @@
 api: '2'
 core: 7.x
 includes:
-- https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.12/dkan_dataset.make
-- https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.12/dkan_datastore.make
-- https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.12/dkan_workflow.make
-- https://raw.githubusercontent.com/NuCivic/visualization_entity/a2490a0ea1baa8fe3617d669b4c9a1c8f0b5626c/visualization_entity.make
-- https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/d02f1b19797840b0d4b8b92625b4c22ca0a603f2/visualization_entity_charts.make
+- https://raw.githubusercontent.com/NuCivic/dkan_dataset/release-1-9/dkan_dataset.make
+- https://raw.githubusercontent.com/NuCivic/dkan_datastore/release-1-9/dkan_datastore.make
+- https://raw.githubusercontent.com/NuCivic/dkan_workflow/release-1-9/dkan_workflow.make
+- https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
+- https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
 - modules/dkan/dkan_topics/dkan_topics.make
 projects:
@@ -44,19 +44,19 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_dataset.git
-      tag: 7.x-1.12
+      tag: release-1-9
   dkan_datastore:
     subdir: dkan
     download:
       type: git
       url: https://github.com/NuCivic/dkan_datastore.git
-      tag: 7.x-1.12
+      tag: release-1-9
   dkan_workflow:
     subdir: dkan
     download:
       type: git
       url: https://github.com/NuCivic/dkan_workflow.git
-      tag: 7.x-1.12
+      tag: release-1-9
   visualization_entity:
     download:
       type: git
@@ -176,7 +176,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/nuboot_radix.git
-      tag: 7.x-1.12
+      tag: release-1-9
     type: theme
   radix:
     type: theme
