@@ -51,6 +51,9 @@ Feature: User command center links for site manager role.
     When I hover over the admin menu item "People"
     And I click "Create user"
     Then I should see "This web page allows administrators to register new users."
+    When I hover over the admin menu item "People"
+    And I click "Manage Users"
+    Then I should see "Show only users where"
 
   Scenario: Site manager role can view admin menu links under Site Configuration
     Given I am logged in as "John"
