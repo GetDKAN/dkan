@@ -75,7 +75,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'node/add/group',
     'router_path' => 'node/add/group',
-    'link_title' => 'Add group',
+    'link_title' => 'Group',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -117,7 +117,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
     'router_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
-    'link_title' => 'Charts',
+    'link_title' => 'Chart',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -130,48 +130,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'has_children' => 0,
     'expanded' => 0,
     'weight' => -50,
-    'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization/ve_chart/add',
-  );
-  // Exported menu link: menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization
-  $menu_links['menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/structure/entity-type/visualization/choropleth_visualization',
-    'router_path' => 'admin/structure/entity-type/visualization/choropleth_visualization',
-    'link_title' => 'Choropleth',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -49,
-    'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
-  );
-  // Exported menu link: menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization/add
-  $menu_links['menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization/add'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/structure/entity-type/visualization/choropleth_visualization/add',
-    'router_path' => 'admin/structure/entity-type/visualization/choropleth_visualization/add',
-    'link_title' => 'Choropleth',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization/add',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -47,
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization/ve_chart/add',
   );
@@ -341,48 +299,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -47,
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
-  );
-  // Exported menu link: menu-command-center-menu_geojson:admin/structure/entity-type/geo_file/geojson/add
-  $menu_links['menu-command-center-menu_geojson:admin/structure/entity-type/geo_file/geojson/add'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/structure/entity-type/geo_file/geojson/add',
-    'router_path' => 'admin/structure/entity-type/geo_file/geojson/add',
-    'link_title' => 'GeoJSON',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'menu-command-center-menu_geojson:admin/structure/entity-type/geo_file/geojson/add',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -49,
-    'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization/ve_chart/add',
-  );
-  // Exported menu link: menu-command-center-menu_geojson:admin/structure/entity-type/visualization/geojson_visualization
-  $menu_links['menu-command-center-menu_geojson:admin/structure/entity-type/visualization/geojson_visualization'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/structure/entity-type/visualization/geojson_visualization',
-    'router_path' => 'admin/structure/entity-type/visualization/geojson_visualization',
-    'link_title' => 'GeoJSON',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'menu-command-center-menu_geojson:admin/structure/entity-type/visualization/geojson_visualization',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => 0,
-    'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
   );
   // Exported menu link: menu-command-center-menu_manage-users:admin/people
   $menu_links['menu-command-center-menu_manage-users:admin/people'] = array(
@@ -592,7 +508,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
     'router_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
-    'link_title' => 'Visualizations',
+    'link_title' => 'Visualization',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -613,10 +529,9 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   // Included for use with string extractors like potx.
   t('About');
   t('Add content');
-  t('Add dataset');
-  t('Add group');
+  t('Dataset');
+  t('Group');
   t('Charts');
-  t('Choropleth');
   t('Colorizer');
   t('Content');
   t('Create user');
@@ -626,7 +541,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Dataset');
   t('Datasets');
   t('Fonts');
-  t('GeoJSON');
   t('Manage Users');
   t('Menus');
   t('My Workbench');

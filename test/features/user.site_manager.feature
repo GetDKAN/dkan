@@ -18,7 +18,7 @@ Feature: User command center links for site manager role.
     And I click "Resource"
     Then I should see "Add resource"
     When I hover over the admin menu item "Add content"
-    And I click "Add group"
+    And I click "Group"
     Then I should see "Create Group"
     When I hover over the admin menu item "Add content"
     And I click "Data Story"
@@ -27,7 +27,8 @@ Feature: User command center links for site manager role.
     And I click "Data Dashboard"
     Then I should see "Create Data Dashboard"
     When I hover over the admin menu item "Add content"
-    And I click "Visualizations"
+    Then I hover over the admin menu item "Visualization"
+    And I click "Chart"
     Then I should see "Add Chart"
 
   Scenario: Site manager role can view admin menu link Content
