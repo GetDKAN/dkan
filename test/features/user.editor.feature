@@ -24,7 +24,8 @@ Feature: User command center links for editor role.
     And I click "Data Dashboard"
     Then I should see "Create Data Dashboard"
     When I hover over the admin menu item "Add content"
-    And I click "Visualizations"
+    Then I hover over the admin menu item "Visualization"
+    And I click "Chart"
     Then I should see "Add Chart"
 
   Scenario: Editor role can view admin menu link Content
