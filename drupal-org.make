@@ -176,7 +176,7 @@ projects:
     version: 3.3
   field_reference_delete:
     download:
-      version: 7.x-1.0-beta1
+      full_version: 7.x-1.0-beta1
   facetapi:
     patch:
       1: patches/cross-site-scripting-facets-156778.patch
