@@ -55,25 +55,21 @@ Feature: Datasets
     When I click "Twitter"
     Then I should see "Share a link with your followers"
 
-  @noworkflow @fixme
+  @noworkflow
     #TODO: We need to fix this as we can't rely on dkan default content. In the next lines we can see an approach
     #      in which we tried to update a dataset with the new information about license in order to see the license
     #      at the end, the problem is this is not working, the step "I fill in the chosen field" fails because it
     #      can't see the option we are trying to set. So we should fix that function on the context or maybe fix
     #      the "Given datasets" function in order to have license in the mapping of fields and add this as part of
     #      the background.
-    #Scenario: Seeing the License
-    #Given I am logged in as a user with the "administrator" role
-    #And I am on "/dataset/dataset-01"
-    #When I click "Edit"
-    #And I fill in the chosen field "edit_field_license_und_select_chosen" with "Creative Commons Attribution"
-    #And I press "edit-submit"
-    #When I am on "/dataset/dataset-01"
-    #And I click "Creative Commons Attribution"
-    #Then I should see "The Creative Commons Attribution license allows re-distribution and re-use of a licensed work"
-  Scenario: Seeing the License
-    Given I am on "/dataset/wisconsin-polling-places"
-    When I click "Creative Commons Attribution"
+    Scenario: Seeing the License
+    Given I am logged in as a user with the "administrator" role
+    And I am on "/dataset/dataset-01"
+    When I click "Edit"
+    And I fill in the chosen field "edit_field_license_und_select_chosen" with "Creative Commons Attribution"
+    And I press "edit-submit"
+    When I am on "/dataset/dataset-01"
+    And I click "Creative Commons Attribution"
     Then I should see "The Creative Commons Attribution license allows re-distribution and re-use of a licensed work"
 
   @javascript @noworkflow
@@ -131,28 +127,20 @@ Feature: Datasets
     Then I should see "Preview"
     And I should not see "Open with"
 
-  @api @javascript @noworkflow @fixme
+  @api @javascript @noworkflow
   #TODO: This test is relying in default dkan content so we need to fix it, in the next lines there is
   #      an approach but it doesn't work because for some reason the preview is not working for external
   #      files.
-  #Scenario: Open data previews in external services
-  #  Given cartodb previews are enabled for csv resources
-  #  And I am logged in as a user with the "site manager" role
-  #  And I am on "/dataset/dataset-01"
-  #  When I click "Resource 01"
-  #  Then I should see "Edit"
-  #  When I click "Edit"
-  #  And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
-  #  And I press "edit-submit"
-  #  When I am on "/dataset/dataset-01"
-  #  Then I should see "Open With"
-  #  When I press "Open With"
-  #  Then I should see the local preview link
-  #  And I should see "CartoDB"
   Scenario: Open data previews in external services
     Given cartodb previews are enabled for csv resources
     And I am logged in as a user with the "site manager" role
-    And I am on "/dataset/wisconsin-polling-places"
+    And I am on "/dataset/dataset-01"
+    When I click "Resource 01"
+    Then I should see "Edit"
+    When I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "edit-submit"
+    When I am on "/dataset/dataset-01"
     Then I should see "Open With"
     When I press "Open With"
     Then I should see the local preview link
