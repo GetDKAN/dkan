@@ -42,7 +42,7 @@ Feature: Recline
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 | Test R2     |
       | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 | Test R3     |
   
-  @javascript @fixme
+  @javascript
   Scenario: Viewing map preview
     Given I am logged in as "John"
     And I am on "/dataset/dataset-01"
@@ -60,7 +60,7 @@ Feature: Recline
     Given I click map icon number "88"
     And I wait for "Alicia Ashman Branch Library"
 
-  @javascript @api @fixme
+  @javascript @api
   Scenario: Viewing graph preview
     Given I am logged in as "John"
     And I am on "/dataset/dataset-01"
@@ -76,7 +76,7 @@ Feature: Recline
     Given I press "Graph"
     Then I should see "There's no graph here yet"
 
-  @javascript @fixme
+  @javascript
   Scenario: Searching data
     Given I am logged in as "John"
     And I am on "/dataset/dataset-01"
