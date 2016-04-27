@@ -29,7 +29,7 @@ Feature: Dataset Features
       | Jaz     | Group 01 | member               | Pending           |
       | Admin   | Group 02 | administrator member | Active            |
       | Celeste | Group 02 | member               | Active            |
-    And "Tags" term:
+    And "Tags" terms:
       | name     |
       | price    |
       | election |
