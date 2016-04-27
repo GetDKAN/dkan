@@ -29,6 +29,10 @@ Feature: Dataset Features
       | Jaz     | Group 01 | member               | Pending           |
       | Admin   | Group 02 | administrator member | Active            |
       | Celeste | Group 02 | member               | Active            |
+    And "Tags" term:
+      | name     |
+      | price    |
+      | election |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
       | Dataset 01 | Group 01  | Gabriel | Yes              | price    |             |
