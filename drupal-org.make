@@ -6,7 +6,7 @@ includes:
     # DKAN Datastore
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/contrib_mods_update/dkan_datastore.make"
     # DKAN Workflow
-  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/contrib_mods_update/dkan_workflow.make"
     # Visualization Entity
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make"
     # Visualization Entity Charts
@@ -62,7 +62,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_workflow.git'
-      branch: 7.x-1.x
+      branch: contrib_mods_update
   visualization_entity:
     download:
       type: git
