@@ -66,7 +66,7 @@ Feature: Datasets
     Given I am logged in as a user with the "administrator" role
     And I am on "/dataset/dataset-01"
     When I click "Edit"
-    And I fill in the chosen field "edit_field_license_und_select_chosen" with "Creative Commons Attribution"
+    Given I select "Creative Commons Attribution" from "edit-field-license-und-select" chosen.js select box
     And I press "edit-submit"
     When I am on "/dataset/dataset-01"
     And I click "Creative Commons Attribution"
