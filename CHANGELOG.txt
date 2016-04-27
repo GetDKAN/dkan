@@ -2,6 +2,7 @@
 --------------------------
 - Fixes typo in "add data story" link in command center menu
 - Add topic icons to the drop down menu
+- Upgrade of: Colorizer, Admin Menu Source, Honey Pot, Panopoly Widgets, Panopoly Images, Pathauto, Rules, Restws, Manual Crop, Image Cache Actions, Features, Search API, Organic Groups, Chosen, Date, Entity, Facet API, Facet API Bonus, Facet API Pretty Paths, UUID, Views, Select or other, Remote Stream Wrapper, Link, Libraries, Beauty Tips, Gravatar, OG Extras, Services and Workbench Email.
 
 7.x-1.12 2016-04-20
 --------------------------
