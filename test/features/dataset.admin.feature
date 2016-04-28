@@ -84,10 +84,10 @@ Feature: Dataset Features
     When I click "Facebook"
     Then I should see "Facebook"
 
-  @noworkflow
   Scenario: Sharing the Dataset on Twitter
     Given I am on "/dataset/dataset-01"
     When I click "Twitter"
+    And I switch to window
     Then I should see "Share a link with your followers"
 
   @noworkflow @javascript
