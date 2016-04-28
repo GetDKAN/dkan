@@ -56,12 +56,6 @@ Feature: Datasets
     Then I should see "Share a link with your followers"
 
   @noworkflow @javascript
-    #TODO: We need to fix this as we can't rely on dkan default content. In the next lines we can see an approach
-    #      in which we tried to update a dataset with the new information about license in order to see the license
-    #      at the end, the problem is this is not working, the step "I fill in the chosen field" fails because it
-    #      can't see the option we are trying to set. So we should fix that function on the context or maybe fix
-    #      the "Given datasets" function in order to have license in the mapping of fields and add this as part of
-    #      the background.
     Scenario: Seeing the License
     Given I am logged in as a user with the "administrator" role
     And I am on "/dataset/dataset-01"
