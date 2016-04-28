@@ -127,10 +127,10 @@ Feature: Datasets
     Then I should see "Preview"
     And I should not see "Open with"
 
-  @api @javascript @noworkflow
+  @api @javascript @noworkflow @fixme
   #TODO: This test is relying in default dkan content so we need to fix it, in the next lines there is
-  #      an approach but it doesn't work because for some reason the preview is not working for external
-  #      files.
+  #      an approach but it doesn't work because of a bug in which the carto db previews are not working
+  #      for external files.
   Scenario: Open data previews in external services
     Given cartodb previews are enabled for csv resources
     And I am logged in as a user with the "site manager" role
