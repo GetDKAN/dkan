@@ -33,6 +33,14 @@ Feature: User command center links for editor role.
     When I click "Content" in the "admin menu" region
     Then I should see "Show only items where"
 
+  Scenario: Editor role can view admin menu links under Visualizations
+    Given I am logged in as "Jaz"
+    When I click "Visualizations" in the "admin menu" region
+    Then I should see "Visualization"
+    When I hover over the admin menu item "Visualizations"
+    And I click "Charts"
+    Then I should see "Chart"
+
   Scenario: Editor role can view admin menu links under Site Configuration
     Given I am logged in as "Jaz"
     When I hover over the admin menu item "Site Configuration"
