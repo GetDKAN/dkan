@@ -2,11 +2,11 @@ api: '2'
 core: 7.x
 includes:
     # DKAN Dataset
-  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/upgrade-contrib-mods/dkan_dataset.make"
     # DKAN Datastore
-  - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/upgrade-contrib-mods/dkan_datastore.make"
     # DKAN Workflow
-  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/upgrade-contrib-mods/dkan_workflow.make"
     # Visualization Entity
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make"
     # Visualization Entity Charts
@@ -50,19 +50,19 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_dataset.git'
-      branch: 7.x-1.x
+      branch: upgrade-contrib-mods
   dkan_datastore:
     subdir: dkan
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_datastore.git'
-      branch: 7.x-1.x
+      branch: upgrade-contrib-mods
   dkan_workflow:
     subdir: dkan
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_workflow.git'
-      branch: 7.x-1.x
+      branch: upgrade-contrib-mods
   visualization_entity:
     download:
       type: git
