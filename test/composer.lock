@@ -906,7 +906,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "b31b8732313d0d2feef70f09422194ac49f3923b"
+                "reference": "abe74d2d45cb5983cde0fc95fc28251f2c3ede71"
             },
             "dist": {
                 "type": "zip",
