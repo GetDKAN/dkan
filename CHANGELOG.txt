@@ -1,5 +1,10 @@
 7.x-1.x
 --------------------------
+- Fixes typo in "add data story" link in command center menu
+- Add topic icons to the drop down menu
+
+7.x-1.12 2016-04-20
+--------------------------
 - Fixed regex used to rewrite font file paths on Dkan Topics, which was breaking filepaths in data.json
 - Rename dkan_featured_topics to dkan_topics before release
 - Add "data dashboard" creation link to user admin menu (in dkan_sitewide_menu)
