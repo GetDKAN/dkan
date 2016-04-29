@@ -2,6 +2,8 @@
 --------------------------
 - Fixes typo in "add data story" link in command center menu
 - Add topic icons to the drop down menu
+- Renamed the default HTML text format to 'Markdown HTML'
+- Improved markdown text editor toolbar
 
 7.x-1.12 2016-04-20
 --------------------------
