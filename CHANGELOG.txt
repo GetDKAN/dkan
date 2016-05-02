@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+- Fixes typo in "add data story" link in command center menu
 - Add topic icons to the drop down menu
 
 7.x-1.12 2016-04-20
