@@ -93,6 +93,7 @@ default:
         user content: '.view-user-profile-search'
         content search: '.form-item-query'
         user block: '.pane-views-user-profile-fields-block'
+        admin menu: '#admin-menu'
       text:
         log_out: "Log out"
         log_in: "Log in"

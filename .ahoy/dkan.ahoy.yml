@@ -74,16 +74,29 @@ commands:
         echo "No dkan folder found at ./docroot/profiles/dkan/modules/dkan. Consider running 'ahoy dkan drupal-rebuild'."
         exit 1
       fi
-      if [ -d "docroot/profiles/dkan/modules/dkan/$MODULE" ]; then
-        echo "Module already exists at 'docroot/profiles/dkan/modules/dkan/$MODULE', removing it to make room..."
-        rm -rf "docroot/profiles/dkan/modules/dkan/$MODULE";
+      if [ ! -d docroot/profiles/dkan/modules/contrib ]; then
+        echo "No contrib folder found at ./docroot/profiles/dkan/modules/contrib. Consider running 'ahoy dkan drupal-rebuild'."
+        exit 1
       fi
-      ln -s ../../../$MODULE docroot/profiles/dkan/modules/dkan && echo "Symlink created for $MODULE.. "
+      MODULE_PATH=`find dkan -type d -name "$MODULE" | grep -e 'modules'`
+      if [ -d "$MODULE_PATH" ]; then
+        echo "Module already exists at '$MODULE_PATH', removing it to make room..."
+        rm -rf $MODULE_PATH
+      else
+        MODULE_PATH="dkan/modules/contrib/$MODULE"
+        echo "Module is not part of DKAN core. Placing it at $MODULE_PATH"
+        ALREADY_SYMLINKED=`find -L docroot -type l -name $MODULE`
+        if [ ! -z "$ALREADY_SYMLINKED" ]; then
+          rm $MODULE_PATH
+        fi 
+      fi
+      ln -s ../../../$MODULE docroot/profiles/$MODULE_PATH && echo "Symlink created for $MODULE.. "
 
   module-make:
     usage: Run drush make for a module in dkan/modules/dkan/.
     cmd: |
-      if [ -z "{{args}}" ]; then
+      MODULE="{{args}}"
+      if [ -z "$MODULE" ]; then
           echo "Please specify the name of the module you want to link."
           exit 1
       fi
@@ -91,11 +104,16 @@ commands:
         echo "No dkan folder found at dkan/modules/dkan. Consider running 'ahoy dkan drupal-rebuild'."
         exit 1
       fi
-      if [ ! -f dkan/modules/dkan/{{args}}/{{args}}.make ]; then
-        echo "No make file found at dkan/modules/dkan/{{args}}/{{args}}.make. Consider running 'ahoy dkan link-module'."
+      if [ ! -d docroot/profiles/dkan/modules/contrib ]; then
+        echo "No contrib folder found at ./docroot/profiles/dkan/modules/contrib. Consider running 'ahoy dkan drupal-rebuild'."
         exit 1
       fi
-      ahoy drush -y make --no-core --contrib-destination=dkan dkan/modules/dkan/{{args}}/{{args}}.make --no-recursion --no-cache --verbose --working-copy
+      MODULE_PATH=`find dkan -type l -name "$MODULE" | grep -e 'modules'`
+      if [ ! -f "$MODULE_PATH/$MODULE.make" ]; then
+        echo "No make file found at $MODULE_PATH/$MODULE.make. Consider running 'ahoy dkan link-module'."
+        exit 1
+      fi
+      ahoy drush -y make --no-core --contrib-destination=dkan $MODULE_PATH/$MODULE.make --no-recursion --no-cache --verbose --working-copy
 
   test:
     usage: Run the tests for dkan.
