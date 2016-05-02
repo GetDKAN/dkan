@@ -75,6 +75,10 @@ function dkan_ipe_preprocess_panels_add_content_link(&$vars) {
  * panels/includes/add-content.inc
  */
 function dkan_ipe_process_panels_add_content_modal(&$vars) {
+  if(!$vars['renderer']->admin) {
+    $vars['category'] = 'dkan';
+    $vars['header'] = t('');
+  }
   $content = !empty($vars['categories'][$vars['category']]['content']) ? $vars['categories'][$vars['category']]['content'] : array();
 
   // If no category is selected or the category is empty or our special empty
