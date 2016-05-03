@@ -25,12 +25,16 @@ Feature: DKAN Dataset REST API
     And I am on "Search Resources" page
     Then I should see "Resource 02"
 
-  Scenario: Attach a file to a Resource using the Dataset REST API
+  Scenario: Attach files to Resources using the Dataset REST API
     Given I am on "Resource 01" page
     Then I should not see "Polling_Places_Madison"
     Given I use the Dataset REST API to attach the file "Polling_Places_Madison.csv" to "Resource 01"
-    And I am on "Resource 01" page
+    When I am on "Resource 01" page
     Then I should see "Polling_Places_Madison"
+    Given I use the Dataset REST API to attach the file "Afghanistan_Election_Districts.csv" to "Resource 01"
+    When I am on "Resource 01" page
+    Then I should not see "Polling_Places_Madison"
+    And I should see "Afghanistan_Election_Districts"
 
 
   Scenario: Update a Resource using the Dataset REST API
