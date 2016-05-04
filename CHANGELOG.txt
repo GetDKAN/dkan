@@ -2,6 +2,7 @@
 --------------------------
 - Fixes typo in "add data story" link in command center menu
 - Add topic icons to the drop down menu
+- URLs on dataset's additional info are now properly displayed as links.
 
 7.x-1.12 2016-04-20
 --------------------------
