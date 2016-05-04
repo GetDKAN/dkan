@@ -73,7 +73,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/visualization_entity_charts.git'
-      branch: master
+      branch: 2416-fix-gdocs-backend
     type: module
   admin_menu:
     version: 3.0-rc5
