@@ -1,7 +1,9 @@
 7.x-1.x
 --------------------------
 - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
+- Fixes typo in "add data story" link in command center menu
 - Add topic icons to the drop down menu
+- URLs on dataset's additional info are now properly displayed as links.
 
 7.x-1.12 2016-04-20
 --------------------------
@@ -20,6 +22,7 @@
 - Upgrade Fieldable Panels Panes to 1.8
 - Added hook_update to remove 'Add Dataset' and 'Datasets' links from main menu. The 'Datasets' link is now added by the dkan_sitewide_search_db feature.
 - Removed 'taxonomy_menu_vocab_parent_dkan_topics' variable from info file to get the 'DKAN Featured Topics' feature back into 'Default' state.
+- Add dkan_ipe feature to simplify the in-place editor interface, includes addition of the panels_curator module
 
 7.x-1.11 2016-02-01
 --------------------------
