@@ -1,0 +1,9 @@
+name = DKAN Plugins
+description = Custom plugins
+core = 7.x
+package = DKAN
+version = 7.x-1.0
+dependencies[] = ctools
+dependencies[] = panels
+project path = profiles/dkan/modules/dkan
+scripts[] = js/colorPicker.behavior.js
