@@ -1,0 +1,108 @@
+<?php
+/**
+ * @file
+ * Code for the DKAN In-Place Editor feature.
+ */
+
+include_once 'dkan_ipe.features.inc';
+
+/**
+ * Implements hook_panels_ipe_region_links_alter() from Panels IPE.
+ * Set the default category to 'dkan' in the IPE.
+ */
+function dkan_ipe_panels_ipe_region_links_alter(&$links, $context) {
+  $links['add-pane']['href'] .= '/dkan';
+}
+
+/**
+ * Preprocess the add content link used in the modal.
+ */
+function dkan_ipe_preprocess_panels_add_content_link(&$vars) {
+  $vars['title'] = filter_xss_admin($vars['content_type']['title']);
+  $vars['description'] = isset($vars['content_type']['description']) ? $vars['content_type']['description'] : $vars['title'];
+  $vars['icon'] = ctools_content_admin_icon($vars['content_type']);
+  $vars['url'] = $vars['renderer']->get_url('add-pane', $vars['region'], $vars['content_type']['type_name'], $vars['content_type']['subtype_name']);
+  $subtype_class = 'add-content-link-' . str_replace('_', '-', $vars['content_type']['subtype_name']);
+  $vars['image_button'] = ctools_ajax_image_button($vars['icon'], $vars['url'], $vars['description'], $subtype_class . '-image-button panels-modal-add-config');
+  $vars['text_button'] = ctools_ajax_text_button($vars['title'], $vars['url'], $vars['description'], $subtype_class . '-text-button panels-modal-add-config');
+
+  if (function_exists('ctools_ajax_icon_text_button')) {
+  	switch($vars['title']) {
+  		case 'Add content list':
+	      $vars['title'] = 'Content List';
+	      break;
+  		case 'Add file':
+	      $vars['title'] = 'File';
+	      break;
+	  	case 'Add image':
+	      $vars['title'] = 'Image';
+	      break;
+	    case 'Add map':
+	      $vars['title'] = 'Map';
+	      break;
+	    case 'Add spotlight':
+	      $vars['title'] = 'Slideshow';
+	      break;
+	    case 'Add submenu':
+	      $vars['title'] = 'Submenu';
+	      break;
+	    case 'Add table':
+	      $vars['title'] = 'Table';
+	      break;
+	    case 'Add text':
+	      $vars['title'] = 'Text';
+	      break;
+	    case 'Add video':
+	      $vars['title'] = 'Video';
+	      break;
+	    case 'Existing node':
+	    	$vars['title'] = 'Existing content';
+	    	break;
+	    case 'Visualization embed':
+	      $vars['title'] = 'Visualization';
+	      break;
+      case 'Button link':
+        $vars['title'] = 'Link';
+        break;
+	  }
+    $vars['icon_text_button'] = ctools_ajax_icon_text_button($vars['title'], $vars['icon'], $vars['url'], $vars['description'], $subtype_class . '-icon-text-button panels-modal-add-config');
+  }
+}
+
+/**
+ * Process the panels add content modal.
+ *
+ * panels/includes/add-content.inc
+ */
+function dkan_ipe_process_panels_add_content_modal(&$vars) {
+  if(!$vars['renderer']->admin) {
+    $vars['category'] = 'dkan';
+    $vars['header'] = t('');
+  }
+  $content = !empty($vars['categories'][$vars['category']]['content']) ? $vars['categories'][$vars['category']]['content'] : array();
+
+  // If no category is selected or the category is empty or our special empty
+  // category render a 'header' that will appear instead of the columns.
+  if (empty($vars['category']) || empty($content) || $vars['category'] == 'root') {
+    $vars['header'] = t('Content options are divided by category. Please select a category from the left to proceed.');
+  }
+  else {
+    $titles = array_keys($content);
+    //natcasesort($titles);
+    arsort($titles);
+
+    // This will default to 2 columns in the theme definition but could be
+    // changed by a preprocess. Ensure there is at least one column.
+    $columns = max(1, $vars['column_count']);
+    $vars['columns'] = array_fill(1, $columns, '');
+
+    $col_size = count($titles) / $columns;
+    $count = 0;
+    foreach ($titles as $title) {
+      $which = floor($count++ / $col_size) + 1;
+      $vars['columns'][$which] .= theme('panels_add_content_link', array('renderer' => $vars['renderer'], 'region' => $vars['region'], 'content_type' => $content[$title]));
+    }
+  }
+
+  $vars['messages'] = theme('status_messages');
+}
