@@ -26,7 +26,7 @@ function dkan_additional_setup() {
     'operations' => array(
       array('dkan_theme_config', array()),
       array('dkan_change_block_titles', array()),
-      array('dkan_install_markdown', array()),
+      array('dkan_markdown_setup', array()),
       array('dkan_enable_optional_module', array('dkan_permissions')),
       array('dkan_enable_optional_module', array('dkan_default_topics')),
       array('dkan_revert_feature', array('dkan_sitewide_menu', array('content_menu_links', 'menu_links'))),
@@ -42,7 +42,6 @@ function dkan_additional_setup() {
       array('dkan_misc_variables_set', array()),
       array('dkan_install_default_content', array()),
       array('dkan_set_adminrole', array()),
-      array('dkan_delete_markdown_buttons', array()),
     ),
   );
 }
@@ -73,7 +72,7 @@ function dkan_change_block_titles(&$context) {
  * Make sure markdown editor installs correctly.
  * @param $context
  */
-function dkan_install_markdown(&$context) {
+function dkan_markdown_setup(&$context) {
   $context['message'] = t('Installing Markdown');
   module_load_include('install', 'markdowneditor', 'markdowneditor');
   _markdowneditor_insert_latest();
@@ -82,45 +81,8 @@ function dkan_install_markdown(&$context) {
     'eid' => 5,
   );
   drupal_write_record('bueditor_editors', $data, array('eid'));
-}
-
-/**
- * Remove unsupported markdown options.
- */
-function dkan_delete_markdown_buttons(&$context) {
-  $context['message'] = t('Removing unsupported Markdown buttons');
-  $eid = db_query('SELECT eid FROM {bueditor_editors} WHERE name = :name', array(':name' => 'Markdowneditor'))->fetchField();
-  db_delete('bueditor_buttons')
-    ->condition('title', 'Insert a table')
-    ->condition('eid', $eid)
-    ->execute();
-
-  db_delete('bueditor_buttons')
-    ->condition('title', 'Insert an abbreviation (word or acronym with definition)')
-    ->condition('eid', $eid)
-    ->execute();
-
-  db_delete('bueditor_buttons')
-    ->condition('title', 'Insert a footnote')
-    ->condition('eid', $eid)
-    ->execute();
-
-  db_delete('bueditor_buttons')
-    ->condition('title', 'Insert a horizontal ruler (horizontal line)')
-    ->condition('eid', $eid)
-    ->execute();
-
-  db_delete('bueditor_buttons')
-    ->condition('title', 'Teaser break')
-    ->condition('eid', $eid)
-    ->execute();
-
-  // Update markdown linebreak button with html.
-  db_update('bueditor_buttons')
-    ->fields(array('content' => '<br>'))
-    ->condition('title', 'Insert a line break', '=')
-    ->condition('eid', $eid)
-    ->execute();
+  // Remove unsupported markdown options.
+  dkan_delete_markdown_buttons($context);
 }
 
 /**
@@ -243,3 +205,45 @@ function dkan_set_adminrole(&$context) {
         return t('User admin role already set. Skipping update.');
     }
 }
+
+/**
+ * Remove unsupported markdown options.
+ *
+ * @param $context
+ */
+function dkan_delete_markdown_buttons(&$context) {
+  $context['message'] = t('Removing unsupported Markdown buttons');
+  $eid = db_query('SELECT eid FROM {bueditor_editors} WHERE name = :name', array(':name' => 'Markdowneditor'))->fetchField();
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Insert a table')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Insert an abbreviation (word or acronym with definition)')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Insert a footnote')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Insert a horizontal ruler (horizontal line)')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Teaser break')
+    ->condition('eid', $eid)
+    ->execute();
+
+  // Update markdown linebreak button with html.
+  db_update('bueditor_buttons')
+    ->fields(array('content' => '<br>'))
+    ->condition('title', 'Insert a line break', '=')
+    ->condition('eid', $eid)
+    ->execute();
+}
+
