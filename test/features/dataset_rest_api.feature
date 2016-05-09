@@ -5,6 +5,9 @@ Feature: DKAN Dataset REST API
       | name             | url                    |
       | Search Resources | /search/type/resource  |
       | Search Datasets  | /search/type/dataset   |
+    And endpoints:
+      | name             | path                   |
+      | dataset rest api | /api/dataset           |
     And resources:
       | title       | published | description     |
       | Resource 01 | Yes       | The description |
@@ -15,68 +18,74 @@ Feature: DKAN Dataset REST API
       | title    | published |
       | Group 01 | Yes       |
 
-
-  Scenario: Create a Resource using the Dataset REST API
+  Scenario: Create a Resource using the 'Dataset REST API' endpoint
     Given I am on "Search Resources" page
     Then I should not see "Resource 02"
-    Given I use the Dataset REST API to create the nodes:
+    Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
+    And I use the "dataset rest api" endpoint to create the nodes:
       | type     | title            | body            | status |
       | resource | Resource 02      | The description | 1      |
-    And I am on "Search Resources" page
+    When I am on "Search Resources" page
     Then I should see "Resource 02"
 
-  Scenario: Attach files to Resources using the Dataset REST API
+  Scenario: Attach files to Resources using the 'Dataset REST API' endpoint
     Given I am on "Resource 01" page
     Then I should not see "Polling_Places_Madison"
-    Given I use the Dataset REST API to attach the file "Polling_Places_Madison.csv" to "Resource 01"
+    Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
+    And I use the "dataset rest api" endpoint to attach the file "Polling_Places_Madison.csv" to "Resource 01"
     When I am on "Resource 01" page
     Then I should see "Polling_Places_Madison"
-    Given I use the Dataset REST API to attach the file "Afghanistan_Election_Districts.csv" to "Resource 01"
+    Given I use the "dataset rest api" endpoint to attach the file "Afghanistan_Election_Districts.csv" to "Resource 01"
     When I am on "Resource 01" page
     Then I should not see "Polling_Places_Madison"
     And I should see "Afghanistan_Election_Districts"
 
-
-  Scenario: Update a Resource using the Dataset REST API
+  Scenario: Update a Resource using the 'Dataset REST API' endpoint
     Given I am on "Resource 01" page
     Then I should not see "The description was modified"
-    When I use the Dataset REST API to update the node "Resource 01" with:
+    Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
+    And I use the "dataset rest api" endpoint to update the node "Resource 01" with:
       | body                         |
       | The description was modified |
-    And I am on "Resource 01" page
+    When I am on "Resource 01" page
     Then I should see "The description was modified"
 
-  Scenario: Delete a Resource using the Dataset REST API
+  Scenario: Delete a Resource using the 'Dataset REST API' endpoint
     Given I am on "Search Resources" page
     Then I should see "Resource 01"
-    When I use the Dataset REST API to delete the node "Resource 01"
-    And I am on "Search Resources" page
+    Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
+    And I use the "dataset rest api" endpoint to delete the node "Resource 01"
+    When I am on "Search Resources" page
     Then I should not see "Resource 01"
 
-  Scenario: Create a Dataset using the Dataset REST API
+  Scenario: Create a Dataset using the 'Dataset REST API' endpoint
     Given I am on "Search Datasets" page
     Then I should not see "Dataset 02"
-    Given I use the Dataset REST API to create the nodes:
+    Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
+    And I use the "dataset rest api" endpoint to create the nodes:
       | type     | title            | body            | status | resource    |
       | dataset  | Dataset 02       | The description | 1      | Resource 01 |
     When I am on "Search Datasets" page
     Then I should see "Dataset 02"
-    When I am on "/dataset/dataset-02"
+    And I am on "/dataset/dataset-02"
     Then I should see "Resource 01"
 
-  Scenario: Update a Dataset using the Dataset REST API.
+  Scenario: Update a Dataset using the 'Dataset REST API' endpoint
     Given I am on "Dataset 01" page
     Then I should not see "The description was modified"
-    When I use the Dataset REST API to update the node "Dataset 01" with:
+    Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
+    And I use the "dataset rest api" endpoint to update the node "Dataset 01" with:
       | body                         |
       | The description was modified |
-    And I am on "Dataset 01" page
+    When I am on "Dataset 01" page
     Then I should see "The description was modified"
 
-  Scenario: Delete a Dataset using the REST API
+  Scenario: Delete a Dataset using the 'Dataset REST API' endpoint
     Given I am on "Search Datasets" page
     Then I should see "Dataset 01"
-    When I use the Dataset REST API to delete the node "Dataset 01"
-    And I am on "Search Datasets" page
+    Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
+    And I use the "dataset rest api" endpoint to delete the node "Dataset 01"
+    When I am on "Search Datasets" page
     Then I should not see "Dataset 01"
+
 
