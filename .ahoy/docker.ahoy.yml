@@ -19,7 +19,7 @@ commands:
       EOF
     usage: Outputs the commands needed to setup a docker environment.
   up:
-    cmd: "ahoy docker compose up -d"
+    cmd: "ahoy docker compose up -d {{args}}"
     usage: Start the docker-compose containers.
   proxy-up:
     cmd: "docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy"
@@ -73,3 +73,18 @@ commands:
     usage: Prints the project VNC URL
     cmd: |
       echo "`docker-machine ip default`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+
+  cleanup:
+    usage: Clean ups docker unused images and volumes. See http://blog.yohanliyanage.com/2015/05/docker-clean-up-after-yourself/.
+    cmd: |
+      EXITED=`docker ps -a -q -f status=exited`
+      DANGLING=`docker images -f "dangling=true" -q`
+      if [ ! -z "$EXITED" ]
+      then
+        docker rm -v $EXITED  
+      fi
+      if [ ! -z "$DANGLING" ]
+      then
+        docker rmi $DANGLING
+      fi
+      docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes
