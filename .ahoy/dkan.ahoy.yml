@@ -14,7 +14,7 @@ commands:
           ahoy confirm "./docroot folder alredy exists. Delete it and reinstall drupal?" && chmod -R 777 docroot/sites/default && rm -rf docroot ||
           { echo ".. skipping installation"; exit 1;}
       fi
-      ahoy drush make --prepare-install dkan/drupal-org-core.make docroot --yes &&
+      ahoy drush make --prepare-install dkan/drupal-org-core.make docroot --yes
       ln -s ../../dkan docroot/profiles/dkan &&
       ahoy drush "-y --verbose si minimal --sites-subdir=default --account-pass='admin' --db-url={{args}} install_configure_form.update_status_module='''''array\(FALSE,FALSE\)'''''"
 
@@ -88,7 +88,7 @@ commands:
         ALREADY_SYMLINKED=`find -L docroot -type l -name $MODULE`
         if [ ! -z "$ALREADY_SYMLINKED" ]; then
           rm $MODULE_PATH
-        fi 
+        fi
       fi
       ln -s ../../../$MODULE docroot/profiles/$MODULE_PATH && echo "Symlink created for $MODULE.. "
 
