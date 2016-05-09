@@ -29,6 +29,9 @@ function dkan_additional_setup() {
           array('dkan_install_markdown', array()),
           array('dkan_enable_optional_module', array('dkan_permissions')),
           array('dkan_enable_optional_module', array('dkan_default_topics')),
+          array('dkan_enable_optional_module', array('geo_file_entity_geojson_bundle')),
+          array('dkan_enable_optional_module', array('visualization_entity_geojson_bundle')),
+          array('dkan_enable_optional_module', array('visualization_entity_choropleth_bundle')),
           array('dkan_revert_feature', array('dkan_sitewide_menu', array('content_menu_links', 'menu_links'))),
           array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
           array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
@@ -42,6 +45,9 @@ function dkan_additional_setup() {
           array('dkan_misc_variables_set', array()),
           array('dkan_install_default_content', array()),
           array('dkan_set_adminrole', array()),
+          array('dkan_disable_optional_module', array('geo_file_entity_geojson_bundle')),
+          array('dkan_disable_optional_module', array('visualization_entity_geojson_bundle')),
+          array('dkan_disable_optional_module', array('visualization_entity_choropleth_bundle')),
       ),
   );
 }
@@ -49,7 +55,7 @@ function dkan_additional_setup() {
 function dkan_theme_config(&$context) {
   $context['message'] = t('Setting theme options.');
   theme_enable(array('nuboot_radix'));
-  theme_enable(array('seven'));
+  //theme_enable(array('seven'));
   variable_set('theme_default', 'nuboot_radix');
   variable_set('admin_theme', 'nuboot_radix');
 
@@ -95,6 +101,20 @@ function dkan_enable_optional_module($module, &$context) {
   module_enable(array($module));
   $module_info = system_get_info('module', $module);
   $context['message'] = t('Enabled %module', array('%module' => $module_info['name']));
+}
+
+/**
+ * Disable a module on install after dkan_permissions has been reverted.
+ *
+ * @param $module
+ *   The module name
+ *
+ * @param $context
+ */
+function dkan_disable_optional_module($module, &$context) {
+  module_disable(array($module));
+  $module_info = system_get_info('module', $module);
+  $context['message'] = t('Disabled %module', array('%module' => $module_info['name']));
 }
 
 /**
