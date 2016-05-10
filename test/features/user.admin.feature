@@ -50,8 +50,7 @@ Feature: User
     And I press "Save"
     Then I should see "The changes have been saved"
     When I am on "Katie" page
-    And I click "About" in the "tabs" region
-    Then I should see "This is Katie!"
+    Then I should see "This is Katie!" in the "user profile" region
 
   @dkanBug @deleteTempUsers
     # Site managers trigger honeypot when creating users.
