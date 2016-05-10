@@ -3,6 +3,7 @@ core = 7.x
 package = DKAN
 dependencies[] = ctools
 dependencies[] = entity
+dependencies[] = eva
 dependencies[] = features
 dependencies[] = field_group
 dependencies[] = system
