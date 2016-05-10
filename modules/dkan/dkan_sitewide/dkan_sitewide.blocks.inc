@@ -113,7 +113,7 @@ function dkan_sitewide_resource_additional_block($nid = '') {
 
     if (($file = $link) || ($file = $upload)) {
       $file_info[] = array(t('mimetype'), $file['filemime']);
-      $file_info[] = array(t('filesize'), $file['filesize']);
+      $file_info[] = array(t('filesize'), format_size($file['filesize']));
       $file_info[] = array(t('resource type'), 'file upload');
       $file_info[] = array(t('timestamp'), date('M d, Y', $file['timestamp']));
       return theme('table',
