@@ -27,7 +27,8 @@ function dkan_additional_setup() {
           array('dkan_theme_config', array()),
           array('dkan_change_block_titles', array()),
           array('dkan_install_markdown', array()),
-          array('dkan_enable_roles_perms', array()),
+          array('dkan_enable_optional_module', array('dkan_permissions')),
+          array('dkan_enable_optional_module', array('dkan_default_topics')),
           array('dkan_revert_feature', array('dkan_sitewide_menu', array('content_menu_links', 'menu_links'))),
           array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
           array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
@@ -83,14 +84,18 @@ function dkan_install_markdown(&$context) {
 }
 
 /**
- * Keeps us from getting notices "No module defines permission".
+ * Enable a module on install that we don't want as a dependency for existing sites
+ *
+ * @param $module
+ *   The module name
+ *
  * @param $context
  */
-function dkan_enable_roles_perms(&$context) {
-  $context['message'] = t('Enabling Sitewide Roles and Permissions');
-  module_enable(array('dkan_permissions'));
+function dkan_enable_optional_module($module, &$context) {
+  module_enable(array($module));
+  $module_info = system_get_info('module', $module);
+  $context['message'] = t('Enabled %module', array('%module' => $module_info['name']));
 }
-
 
 /**
  * Revert particular feature components that have been overridden in the setup process

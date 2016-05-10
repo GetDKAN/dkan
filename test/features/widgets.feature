@@ -7,19 +7,19 @@ Feature: Widgets
     When I click "Customize this page"
     And I wait for "Add new pane"
     And I click "Add new pane"
-    And I wait for "Please select a category from the left"
+    And I wait for "Add content"
 
-  Scenario: Adds "New Link Widget" block to home page using panels ipe editor
-    When I click on the text " Add links"
-      And I wait for "Configure new Add links"
-      And I fill in "field_quick_links_links[und][0][title]" with "Link example"
-      And I fill in "field_quick_links_links[und][0][url]" with "http://demo.getdkan.com"
+  Scenario: Adds "Button Link" to home page using panels ipe editor
+    When I follow "Link"
+      And I wait for "Configure new Button link"
+      And I fill in "edit-button-link-title" with "Link example"
+      And I fill in "edit-button-link-url" with "http://demo.getdkan.com"
       And I press "Finish"
       And I wait and press "Save"
       Then I should see "Link example"
 
   Scenario: Adds "New File Widget" block to home page using panels ipe editor
-    When I click on the text " Add file"
+    When I follow "File"
       And I wait for "Configure new Add file"
       And I attach the drupal file "actionplan.pdf" to "files[field_basic_file_file_und_0]"
       And I press "Finish"
@@ -27,7 +27,7 @@ Feature: Widgets
       Then I should see "actionplan.pdf"
 
   Scenario: Adds "New Image Widget" block to home page using panels ipe editor
-    When I click on the text " Add image"
+    When I follow "Add image"
       And I wait for "Configure new Add image"
       And I fill in "field_basic_image_caption[und][0][value]" with "dkan logo image test"
       And I attach the drupal file "dkan_logo.png" to "files[field_basic_image_image_und_0]"
@@ -36,7 +36,7 @@ Feature: Widgets
       Then I should see "dkan logo image test"
 
   Scenario: Adds "New Text Widget" block to home page using panels ipe editor
-    When I click on the text " Add text"
+    When I follow "Add text"
       And I wait for "Configure new Add text"
       And I fill in "field_basic_text_text[und][0][value]" with "text example"
       And I press "Finish"
@@ -44,7 +44,7 @@ Feature: Widgets
       Then I should see "text example"
 
   Scenario: Adds "New Map Widget" block to home page using panels ipe editor
-    When I click on the text " Add map"
+    When I follow "Add map"
     And I wait for "Configure new Add map"
       And I fill in "field_map_address[und][0][value]" with "175th St, Jamaica, NY 11433, USA"
       And I fill in "field_map_information[und][0][value]" with "map example"
@@ -53,7 +53,7 @@ Feature: Widgets
       Then I should see "map example"
 
   Scenario: Adds "New Table Widget" block to home page using panels ipe editor
-    When I click on the text " Add table"
+    When I follow "Add table"
     And I wait for "Configure new Add table"
       And I fill in "field-basic-table-table-und-0-tablefield-cell-0-0" with "date"
       And I fill in "field-basic-table-table-und-0-tablefield-cell-0-1" with "price"
@@ -71,7 +71,7 @@ Feature: Widgets
       Then I should see "9.3"
 
   Scenario: Adds "New Video Widget" block to home page using panels ipe editor
-    When I click on the text " Add video"
+    When I follow "Add video"
     And I wait for "Configure new Add video"
     When I fill in "Testing video" for "edit-title"
     When I click "Browse"
@@ -86,7 +86,7 @@ Feature: Widgets
     Then I should see "Testing video"
 
   Scenario: Adds "New Spotlight Widget" block to home page using panels ipe editor
-    When I click on the text " Add spotlight"
+    When I follow "Add spotlight"
     And I wait for "Configure new Add spotlight"
       And I fill in "field_basic_spotlight_items[und][0][title]" with "First spot"
       And I fill in "field_basic_spotlight_items[und][0][link]" with "http://demo.getdkan.com"
@@ -97,14 +97,14 @@ Feature: Widgets
       Then I should see "First spot" in the "content"
 
   Scenario: Adds "New Submenu Widget" block to home page using panels ipe editor
-    When I click on the text " Add submenu"
+    When I follow "Submenu"
     And I wait for "Configure new Add submenu"
       And I press "Finish"
     And I wait and press "Save"
       Then I should see "About" in the "content"
 
   Scenario: Adds "New Content List Widget" block to home page using panels ipe editor
-    When I click on the text " Add content list"
+    When I follow "Content List"
     And I wait for "Configure new Add content list"
     When I select "Dataset" from "exposed[type]"
       And I select "Asc" from "exposed[sort_order]"
@@ -114,12 +114,11 @@ Feature: Widgets
     Then I should see "Afghanistan Election Districts"
       And I should see "Posted by admin"
 
-  Scenario: Adds "New Content Item Widget" block to home page using panels ipe editor
-    When I click on the text " Add content item"
-    And I wait for "Configure new Add content item"
-    When I select "Resource" from "exposed[type]"
-      And I fill in "exposed[title]" with "District Names"
-      And I press "Finish"
+  Scenario: Adds "Existing Content" block to home page using panels ipe editor
+    When I follow "Existing content"
+    And I wait for "Configure new Existing node"
+    And I fill in "edit-nid" with "Wisconsin Polling Places"
+    And I press "Finish"
     And I wait and press "Save"
-    Then I should see "District Names"
-      And I should see "Posted by admin"
+    Then I should see "Wisconsin Polling Places"
+      And I should see "csv"
