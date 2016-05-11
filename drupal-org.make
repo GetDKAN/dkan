@@ -97,7 +97,7 @@ projects:
   features_roles_permissions:
     version: '1.2'
   fieldable_panels_panes:
-    version: '1.8'
+    version: '1.10'
   honeypot:
     version: '1.17'
   fontyourface:
@@ -133,12 +133,12 @@ projects:
       2374709: 'http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch'
       2317351: 'http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch'
   panopoly_widgets:
-    version: '1.25'
+    version: '1.35'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.27'
+    version: '1.35'
   panels:
     version: '3.5'
   panels_style_collapsible:

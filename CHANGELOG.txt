@@ -15,6 +15,7 @@
 - Upgrade Fieldable Panels Panes to 1.8
 - Added hook_update to remove 'Add Dataset' and 'Datasets' links from main menu. The 'Datasets' link is now added by the dkan_sitewide_search_db feature.
 - Removed 'taxonomy_menu_vocab_parent_dkan_topics' variable from info file to get the 'DKAN Featured Topics' feature back into 'Default' state.
+- Upgrade of Panopoly Widgets, Panopoly Images and Fieldable Panels Panes.
 
 7.x-1.11 2016-02-01
 --------------------------
