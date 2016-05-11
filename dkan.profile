@@ -51,7 +51,7 @@ function dkan_theme_config(&$context) {
   theme_enable(array('nuboot_radix'));
   theme_enable(array('seven'));
   variable_set('theme_default', 'nuboot_radix');
-  variable_set('admin_theme', 'nuboot_radix');
+  variable_set('admin_theme', '0');
 
   // Disable the default Bartik theme
   theme_disable(array('bartik'));
