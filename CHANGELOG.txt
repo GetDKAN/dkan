@@ -1,4 +1,9 @@
-7.x-1.x
+7.x-1.12.x
+--------------------------
+- Fix XSS vulnerability by adding sanitization for titles on workbench view
+- Upgrade of: Colorizer, Admin Menu Source, Honey Pot, Panopoly Widgets, Panopoly Images, Pathauto, Rules, Restws, Manual Crop, Image Cache Actions, Features, Search API, Organic Groups, Chosen, Date, Entity, Facet API, Facet API Bonus, Facet API Pretty Paths, UUID, Views, Select or other, Remote Stream Wrapper, Link, Libraries, Beauty Tips, Gravatar, OG Extras, Services and Workbench Email.
+
+7.x-1.12 2016-04-20
 --------------------------
 - Fixed regex used to rewrite font file paths on Dkan Topics, which was breaking filepaths in data.json
 - Rename dkan_featured_topics to dkan_topics before release
@@ -16,6 +21,7 @@
 - Added hook_update to remove 'Add Dataset' and 'Datasets' links from main menu. The 'Datasets' link is now added by the dkan_sitewide_search_db feature.
 - Removed 'taxonomy_menu_vocab_parent_dkan_topics' variable from info file to get the 'DKAN Featured Topics' feature back into 'Default' state.
 - Upgrade of Panopoly Widgets, Panopoly Images and Fieldable Panels Panes.
+- Add dkan_ipe feature to simplify the in-place editor interface, includes addition of the panels_curator module
 
 7.x-1.11 2016-02-01
 --------------------------
