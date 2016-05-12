@@ -134,7 +134,7 @@ projects:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.34'
+    version: '1.35'
   panels:
     version: '3.5'
   panels_style_collapsible:
