@@ -8,7 +8,7 @@ includes:
     # DKAN Workflow
   - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
     # Visualization Entity
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/2230-fix-vis-warnings/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make"
     # Visualization Entity Charts
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make"
     #DKAN Data Story
@@ -67,7 +67,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/visualization_entity.git'
-      branch: 2230-fix-vis-warnings
+      branch: master
     type: module
   visualization_entity_charts:
     download:
