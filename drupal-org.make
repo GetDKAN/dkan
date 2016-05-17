@@ -15,6 +15,8 @@ includes:
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
     #DKAN Featured Topics
   - "modules/dkan/dkan_topics/dkan_topics.make"
+    #DKAN Open Data Schema Map
+  - "modules/contrib/open_data_schema_map/open_data_schema_map.make"
 projects:
   manualcrop:
     version: 1.x-dev
