@@ -4,6 +4,10 @@
 - Fixes typo in "add data story" link in command center menu
 - Add topic icons to the drop down menu
 - URLs on dataset's additional info are now properly displayed as links.
+- Removed warnings about undefined permissions when visualization_entity_choropleth_bundle module is enabled.
+- Removed warnings about undefined permissions when visualization_entity_geojson_bundle module is enabled.
+- Removed specific visualization entity charts permissions from dkan_extension.
+- Added test feature to validate that users with Editor, Content Creator and Site Manager roles are not able to access to admin pages.
 
 7.x-1.12 2016-04-20
 --------------------------
