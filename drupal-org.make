@@ -16,7 +16,7 @@ includes:
     #DKAN Featured Topics
   - "modules/dkan/dkan_topics/dkan_topics.make"
     #DKAN Open Data Schema Map
-  - "modules/contrib/open_data_schema_map/open_data_schema_map.make"
+  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/dcat/open_data_schema_map.make"
 projects:
   manualcrop:
     version: 1.x-dev
