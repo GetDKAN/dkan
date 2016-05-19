@@ -51,16 +51,6 @@ class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
     }
     parent::__construct($arguments);
   }
-
-  public function prepare($node, $row) {
-
-  }
-
-  public function prepareRow($row) {
-    parent::prepareRow($row);
-    $row->uid = 1;
-  }
-
 }
 
 class DefaultContentResourceImport extends MigrateCkanResourceImport {

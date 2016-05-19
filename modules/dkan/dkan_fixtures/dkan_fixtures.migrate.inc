@@ -98,7 +98,8 @@ class MigrateCkanDatasetImport extends MigrateCkanDatasetBase {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
-    $row = $this->addAdditionalFields($row);
+    $this->addAdditionalFields($row);
+    $this->createAndMapGroups($row);
   }
 
   /**
