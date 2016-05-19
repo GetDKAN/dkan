@@ -123,12 +123,9 @@ function dkan_topics_views_pre_render(&$view) {
           if(!empty($row->field_field_topic_icon_color[0]['raw']['rgb'])) {
             $new_prefix .= ' style="color:' . $row->field_field_topic_icon_color[0]['raw']['rgb'] . '"';
           }
-          else {
-            $new_prefix .= '';
-          }
           $new_prefix .= $prefix_clipped;
           $row->field_field_topic_icon[0]['rendered']['#prefix'] = $new_prefix;
-          $row->field_field_topic_icon[0]['rendered']['#suffix'] = '</a>';
+          $row->field_field_topic_icon[0]['rendered']['#suffix'] = '<span class="screenreader">icon</span></a>';
         }
       }
     }
@@ -194,7 +191,7 @@ function dkan_topics_field_formatter_view($entity_type, $entity, $field, $instan
           'name' => array(
             '#type' => 'markup',
             '#markup' => check_plain($term->name),
-            '#prefix' => '<a class="name" href="' . $url . '">',
+            '#prefix' => '<a href="' . $url . '">',
             '#suffix' => '</a>',
             ),
           );
