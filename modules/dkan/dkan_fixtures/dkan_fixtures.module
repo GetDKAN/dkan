@@ -136,7 +136,11 @@ function dkan_fixtures_render_fixtures($nids = array()) {
       }
       $rendered_fixtures[] = array(
         'filename' => 'group_show?id=' . $id . '.json',
-        'content' => open_data_schema_map_json_pretty_output($group_show_api, $group_data),
+        'content' => open_data_schema_map_json_pretty_output($group_show_api,
+          array(
+            'help' => t('Group data'),
+            'result' => $group_data[$id],
+        )),
         'group_files' => $files_to_save,
       );
     }
@@ -176,6 +180,8 @@ function dkan_fixtures_save_fixture($fixture, $module_path) {
  */
 function dkan_fixtures_migrations_disable() {
   Migration::deregisterMigration('ckan_dataset_fixtures');
+  Migration::deregisterMigration('ckan_resource_fixtures');
+  Migration::deregisterMigration('ckan_group_fixtures');
 }
 
 /**

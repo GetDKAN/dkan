@@ -4,7 +4,6 @@
  * Migration file for dkan_fixtures.
  */
 
-
 /**
  * Implements hook_migrate_api().
  */
@@ -27,6 +26,11 @@ function dkan_fixtures_migrate_api() {
         'class_name' => 'MigrateCkanResourceImport',
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Resource Fixtures'),
+      ),
+      'ckan_group_fixtures' => array(
+        'class_name' => 'MigrateCkanGroupImport',
+        'group_name' => 'dkan_fixtures',
+        'title' => t('DKAN Group Fixtures'),
       ),
     ),
   );
@@ -195,6 +199,65 @@ class MigrateCkanResourceImport extends MigrateCkanResourceBase {
             $node->field_link_remote_file = array();
             $node->field_upload = array();
             $node->field_link_api['und'][0]['url'] = $row->url;
+        }
+      }
+    }
+  }
+}
+
+class MigrateCkanGroupImport extends MigrateCkanGroupBase {
+  /**
+   * Here we go.
+   */
+  public function __construct($arguments) {
+    parent::__construct($arguments);
+    if (!isset($arguments['endpoint'])) {
+      $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures') . '/data/';
+      $arguments['list_url'] = 'group_list.json';
+      $arguments['item_url'] = 'group_show?id=:id.json';
+    }
+  }
+
+  /**
+   * Implements prepare.
+   */
+  public function prepare($node, $row) {
+    $node->uid = 1;
+    $node->field_image[LANGUAGE_NONE][] = array(
+      'fid' => $row->file,
+      'display' => 1,
+      'description' => '',
+    );
+  }
+
+  /**
+   * Implements prepareRow.
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    // Replace with absolute path.
+    if (isset($row->image_display_url) && trim ($row->image_display_url)) {
+      if (strpos($row->image_display_url, 'http://') === FALSE && strpos($row->image_display_url, 'https://') === FALSE) {
+        // Fixes transliteration issues.
+        $row->image_display_url = urldecode($row->image_display_url);
+        $row->image_display_url = preg_replace('!\s+!', ' ', $row->image_display_url);
+        $row->image_display_url = DRUPAL_ROOT . '/' . $this->endpoint . $row->image_display_url;
+        if (file_exists($row->image_display_url)) {
+          // Create file.
+          $data = file_get_contents($row->image_display_url);
+          $name = basename($row->image_display_url);
+          $uri = 'public://' . $name;
+          $file = file_save_data($data, $uri, FILE_EXISTS_REPLACE);
+          $row->file = $file->fid;
+          // Unset other fields populated from url.
+          unset($row->file_remote_link);
+          unset($row->link);
+        }
+        else {
+          $this->queuedMessages[] = array(
+            'message' => t('%url was not available for download', array('%url' => $row->image_display_url)),
+            'level' => MigrationBase::MESSAGE_NOTICE,
+          );
         }
       }
     }
