@@ -76,9 +76,10 @@ class DefaultContentResourceImport extends MigrateCkanResourceImport {
     parent::__construct($arguments);
   }
 
-  public function prepareRow($row) {
-    parent::prepareRow($row);
-    $row->uid = 1;
+  public function prepare($node, $row) {
+    parent::prepare($node, $row);
+    $node->uid = 1;
+    $node->status = 1;
   }
 }
 

@@ -223,6 +223,7 @@ class MigrateCkanGroupImport extends MigrateCkanGroupBase {
    */
   public function prepare($node, $row) {
     $node->uid = 1;
+    $node->status = 1;
     $node->field_image[LANGUAGE_NONE][] = array(
       'fid' => $row->file,
       'display' => 1,
