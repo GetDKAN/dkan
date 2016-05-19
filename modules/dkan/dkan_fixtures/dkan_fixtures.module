@@ -31,6 +31,8 @@ function dkan_fixtures_render_fixtures($nids = array()) {
     'content' => open_data_schema_map_json_pretty_output($package_list_api, $package_list),
   );
   $resource_ids = array();
+  $group_ids = array();
+  $group_data = array();
 
   // Use ids in package_list to create exports for every dataset.
   $package_show_api = open_data_schema_map_api_load('ckan_package_show');
@@ -54,6 +56,14 @@ function dkan_fixtures_render_fixtures($nids = array()) {
           $resource_ids[] = $resource['id'];
         }
       }
+      // Grab all the information related with Groups to be exported as a
+      // fixture later.
+      if (isset($package_show['result']['groups'])) {
+        foreach ($package_show['result']['groups'] as $key => $group) {
+          $group_ids[] = $group['id'];
+          $group_data[$group['id']] = $group;
+        }
+      }
       $rendered_fixtures[] = array(
         'filename' => 'package_show?id=' . $id . '.json',
         'content' => open_data_schema_map_json_pretty_output($package_show_api, $package_show),
@@ -69,6 +79,19 @@ function dkan_fixtures_render_fixtures($nids = array()) {
         array(
           'help' => t('List of resource ids'),
           'result' => $resource_ids,
+        )
+      ),
+    );
+
+    // Fake group-list api
+    $group_list_api = array();
+    $rendered_fixtures[] = array(
+      'filename' => 'group_list.json',
+      'content' => open_data_schema_map_json_pretty_output(
+        $group_list_api,
+        array(
+          'help' => t('List of group ids'),
+          'result' => $group_ids,
         )
       ),
     );
@@ -97,6 +120,26 @@ function dkan_fixtures_render_fixtures($nids = array()) {
         'resource_files' => $files_to_save,
       );
     }
+
+    // Use ids in fake group-list to create exports for every group.
+    $group_show_api = array();
+    foreach ($group_ids as $id) {
+      $files_to_save = array();
+      if (isset($group_data[$id]['image_display_url'])) {
+        $file = $group_data[$id]['image_display_url'];
+        if (strpos($file, $base_url) === 0) {
+          $file = parse_url($file);
+          $file = DRUPAL_ROOT . $file['path'];
+          $files_to_save[] = $file;
+          $group_data[$id]['image_display_url'] = 'files/' . basename($file);
+        }
+      }
+      $rendered_fixtures[] = array(
+        'filename' => 'group_show?id=' . $id . '.json',
+        'content' => open_data_schema_map_json_pretty_output($group_show_api, $group_data),
+        'group_files' => $files_to_save,
+      );
+    }
   }
   return $rendered_fixtures;
 }
@@ -115,6 +158,15 @@ function dkan_fixtures_save_fixture($fixture, $module_path) {
       $resource_file = preg_replace('!\s+!', ' ', $resource_file);
       $destination = $module_path . '/data/files/' . basename($resource_file);
       file_unmanaged_copy($resource_file, $destination, FILE_EXISTS_REPLACE);
+    }
+  }
+
+  if (isset($fixture['group_files'])) {
+    foreach ($fixture['group_files'] as $group_file) {
+      $group_file = urldecode($group_file);
+      $group_file = preg_replace('!\s+!', ' ', $group_file);
+      $destination = $module_path . '/data/files/' . basename($group_file);
+      file_unmanaged_copy($group_file, $destination, FILE_EXISTS_REPLACE);
     }
   }
 }
