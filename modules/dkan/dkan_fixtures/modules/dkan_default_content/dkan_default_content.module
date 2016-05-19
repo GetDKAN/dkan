@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * @file
+ * DKAN Default Content module file.
+ */
+
+/**
+ * Implements hook_migrate_api().
+ */
+function dkan_default_content_migrate_api() {
+  $api = array(
+    'api' => 2,
+    'migrations' => array(
+      'dkan_default_content_datasets' => array(
+        'class_name' => 'DefaultContentDatasetImport',
+        'group_name' => 'dkan_fixtures',
+        'title' => t('DKAN Default Content'),
+      ),
+      'dkan_default_content_resources' => array(
+        'class_name' => 'DefaultContentResourceImport',
+        'group_name' => 'dkan_fixtures',
+        'title' => t('DKAN Default Content'),
+      ),
+    ),
+
+  );
+  return $api;
+}
+
+/**
+ * Implements hook_dkan_fixtures_register().
+ */
+function dkan_default_content_dkan_fixtures_register() {
+  return 'dkan_default_content';
+}
+
+class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
+  /**
+   * Here we go.
+   */
+  public function __construct($arguments) {
+    if (!isset($arguments['endpoint'])) {
+      $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
+      $arguments['list_url'] = 'package_list.json';
+      $arguments['item_url'] = 'package_show?id=:id.json';
+    }
+    parent::__construct($arguments);
+  }
+
+  public function prepare(stdClass $node, stdClass $row) {
+
+  }
+
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    $row->uid = 1;
+  }
+
+}
+
+class DefaultContentResourceImport extends MigrateCkanResourceImport {
+  /**
+   * Here we go.
+   */
+  public function __construct($arguments) {
+    if (!isset($arguments['endpoint'])) {
+      $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
+      $arguments['list_url'] = drupal_get_path('module', 'dkan_default_content') . '/data/' . 'resource_list.json';
+      $arguments['item_url'] = 'resource_show?id=:id.json';
+    }
+    parent::__construct($arguments);
+  }
+
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    $row->uid = 1;
+  }
+}
+
+/**
+ * Deregisters migrations.
+ */
+function dkan_oob_content_migrations_disable() {
+  Migration::deregisterMigration('dkan_default_content_datasets');
+  Migration::deregisterMigration('dkan_default_content_resources');
+}

@@ -1,0 +1,6 @@
+name = DKAN Default Content
+description = Default Content for DKAN
+core = 7.x
+package = DKAN
+
+dependencies[] = 'dkan_fixtures'

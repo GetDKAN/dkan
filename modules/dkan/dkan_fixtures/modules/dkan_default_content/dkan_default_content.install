@@ -1,0 +1,29 @@
+<?php
+/**
+ * @file
+ * Install file for DKAN Default Content.
+ */
+
+/**
+ * Adds default content on install.
+ */
+function dkan_default_content_install() {
+
+  /*
+  migrate_static_registration();
+  $migrations = array(
+    'dkan_default_content_datasets',
+  );
+  foreach ($migrations as $machine_name) {
+    $migration = Migration::getInstance($machine_name);
+    $migration->processImport();
+  }
+  */
+}
+
+/**
+ * Implements hook_disable().
+ */
+function dkan_default_content_disable() {
+  dkan_default_content_migrations_disable();
+}
