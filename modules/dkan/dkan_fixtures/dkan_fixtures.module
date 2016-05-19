@@ -40,6 +40,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
       $queries = array('id' => $id);
       $package_show = open_data_schema_map_render_api($package_show_api, $query, $queries);
       $package_show = $package_show['result'];
+      $package_show['result'] = reset($package_show['result']);
       if (isset($package_show['result']['resources'])) {
         foreach ($package_show['result']['resources'] as $key => $resource) {
           if (isset($resource['url'])) {
@@ -192,7 +193,7 @@ function dkan_fixtures_open_data_schema_map_results_alter(&$result, $machine_nam
     $restws_result = $format->viewResource($resource, $ids[0], NULL);
     $fields = open_data_schema_map_additional_fields($api);
     foreach ($fields as $id => $field) {
-      $result[0]['dkan_additional_fields'][$field] = $restws_result[$field];
+      $result[0][0]['dkan_additional_fields'][$field] = $restws_result[$field];
     }
   }
 }
