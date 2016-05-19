@@ -48,7 +48,7 @@ class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
     parent::__construct($arguments);
   }
 
-  public function prepare(stdClass $node, stdClass $row) {
+  public function prepare($node, $row) {
 
   }
 

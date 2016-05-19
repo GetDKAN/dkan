@@ -73,7 +73,7 @@ class MigrateCkanDatasetImport extends MigrateCkanDatasetBase {
   /**
    * Implements prepare.
    */
-  public function prepare($node, stdClass $row) {
+  public function prepare($node, $row) {
     parent::prepare($node, $row);
     if ($row->private == 'Published') {
       $node->status = 1;
@@ -181,7 +181,7 @@ class MigrateCkanResourceImport extends MigrateCkanResourceBase {
   /**
    * Implements prepare.
    */
-  public function prepare($node, stdClass $row) {
+  public function prepare($node, $row) {
     parent::prepare($node, $row);
     // If the url is a url and has a common domain or file extension treat it
     // as a remote link.
