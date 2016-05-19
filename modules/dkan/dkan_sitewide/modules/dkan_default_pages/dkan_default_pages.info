@@ -1,5 +1,5 @@
-name = DKAN Default Content
-description = Default content for DKAN.
+name = DKAN Default Pages
+description = Default pages for DKAN.
 core = 7.x
 package = DKAN Features
 project = dkan

@@ -180,7 +180,7 @@ function dkan_misc_variables_set(&$context) {
 
 function dkan_install_default_content(&$context) {
   $context['message'] = t('Creating default content');
-  dkan_default_content_base_install();
+  dkan_default_pages_base_install();
 }
 
 /**
