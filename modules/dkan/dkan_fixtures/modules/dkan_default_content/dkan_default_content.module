@@ -49,7 +49,16 @@ class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
       $arguments['list_url'] = 'package_list.json';
       $arguments['item_url'] = 'package_show?id=:id.json';
     }
+    $this->addFieldMapping('field_spatial', 'field_spatial');
+
     parent::__construct($arguments);
+  }
+
+  public function prepare($node, $row) {
+    parent::prepare($node, $row);
+    if (isset($row->dkan_additional_fields->field_spatial->geo_type)) {
+      $node->field_spatial[LANGUAGE_NONE][0] = (array) $row->dkan_additional_fields->field_spatial;
+    }
   }
 }
 
