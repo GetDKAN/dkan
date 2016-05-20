@@ -2,22 +2,22 @@
 
 /**
  * @file
- * DKAN Default Content module file.
+ * DKAN Fixtures Default module file.
  */
 
 /**
  * Implements hook_migrate_api().
  */
-function dkan_default_content_migrate_api() {
+function dkan_fixtures_default_migrate_api() {
   $api = array(
     'api' => 2,
     'migrations' => array(
-      'dkan_default_content_datasets' => array(
+      'dkan_fixtures_default_datasets' => array(
         'class_name' => 'DefaultContentDatasetImport',
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Default Content'),
       ),
-      'dkan_default_content_resources' => array(
+      'dkan_fixtures_default_resources' => array(
         'class_name' => 'DefaultContentResourceImport',
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Default Content'),
@@ -35,8 +35,8 @@ function dkan_default_content_migrate_api() {
 /**
  * Implements hook_dkan_fixtures_register().
  */
-function dkan_default_content_dkan_fixtures_register() {
-  return 'dkan_default_content';
+function dkan_fixtures_default_dkan_fixtures_register() {
+  return 'dkan_fixtures_default';
 }
 
 class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
@@ -45,7 +45,7 @@ class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
-      $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
+      $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
       $arguments['list_url'] = 'package_list.json';
       $arguments['item_url'] = 'package_show?id=:id.json';
     }
@@ -71,8 +71,8 @@ class DefaultContentResourceImport extends MigrateCkanResourceImport {
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
-      $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
-      $arguments['list_url'] = drupal_get_path('module', 'dkan_default_content') . '/data/' . 'resource_list.json';
+      $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+      $arguments['list_url'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/' . 'resource_list.json';
       $arguments['item_url'] = 'resource_show?id=:id.json';
     }
     parent::__construct($arguments);
@@ -91,7 +91,7 @@ class DefaultContentGroupImport extends MigrateCkanGroupImport {
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
-      $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
+      $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
       $arguments['list_url'] = 'group_list.json';
       $arguments['item_url'] = 'group_show?id=:id.json';
     }
@@ -102,8 +102,8 @@ class DefaultContentGroupImport extends MigrateCkanGroupImport {
 /**
  * Deregisters migrations.
  */
-function dkan_oob_content_migrations_disable() {
-  Migration::deregisterMigration('dkan_default_content_datasets');
-  Migration::deregisterMigration('dkan_default_content_resources');
-  Migration::deregisterMigration('dkan_default_content_groups');
+function dkan_fixtures_default_migrations_disable() {
+  Migration::deregisterMigration('dkan_fixtures_default_datasets');
+  Migration::deregisterMigration('dkan_fixtures_default_resources');
+  Migration::deregisterMigration('dkan_fixtures_default_groups');
 }
