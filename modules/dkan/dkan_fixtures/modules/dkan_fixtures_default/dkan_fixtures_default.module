@@ -39,9 +39,14 @@ function dkan_fixtures_default_dkan_fixtures_register() {
   return 'dkan_fixtures_default';
 }
 
+
+/**
+ * Migration class used to import Default Datasets from fixtures.
+ */
 class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
+
   /**
-   * Here we go.
+   * __construct().
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
@@ -50,13 +55,18 @@ class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
       $arguments['item_url'] = 'package_show?id=:id.json';
     }
 
+    // Add field mapping for topics.
     $this->addFieldMapping('field_topic', 'topic_names');
 
     parent::__construct($arguments);
   }
 
+  /**
+   * Prepares the row data for processing.
+   */
   public function prepareRow($row) {
     parent::prepareRow($row);
+    // Process topics.
     $topics = taxonomy_vocabulary_machine_name_load('dkan_topics');
     if (isset($row->dkan_additional_fields->field_topic)) {
       foreach ($row->dkan_additional_fields->field_topic as $topic) {
@@ -67,9 +77,14 @@ class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
   }
 }
 
+
+/**
+ * Migration class used to import Default Resources from fixtures.
+ */
 class DefaultContentResourceImport extends MigrateCkanResourceImport {
+
   /**
-   * Here we go.
+   * __construct().
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
@@ -80,16 +95,26 @@ class DefaultContentResourceImport extends MigrateCkanResourceImport {
     parent::__construct($arguments);
   }
 
+  /**
+   * Do extra processing on the node data before its saved.
+   */
   public function prepare($node, $row) {
     parent::prepare($node, $row);
+    // Assign to 'Admin' user.
     $node->uid = 1;
+    // Set up as published.
     $node->status = 1;
   }
 }
 
+
+/**
+ * Migration class used to import Default Groups from fixtures.
+ */
 class DefaultContentGroupImport extends MigrateCkanGroupImport {
+
   /**
-   * Here we go.
+   * __construct().
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
