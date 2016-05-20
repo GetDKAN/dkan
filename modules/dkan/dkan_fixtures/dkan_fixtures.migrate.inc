@@ -230,6 +230,8 @@ class MigrateCkanGroupImport extends MigrateCkanGroupBase {
       'display' => 1,
       'description' => '',
     );
+    $node->body[LANGUAGE_NONE][0]['value_format'] = 'html';
+    $node->body[LANGUAGE_NONE][0]['format'] = 'html';
   }
 
   /**
