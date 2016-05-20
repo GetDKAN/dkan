@@ -10,7 +10,7 @@
         "maintainer": "Site-Install",
         "maintainer_email": "admin@example.com",
         "license_title": "other-pd",
-        "notes": "<p><strong>Source:</strong> Los Angeles Metropolitan Transit Agency (<a href=\"http://developer.metro.net/\">http://developer.metro.net/</a>)</p>\n\n<p>This data is used to produce an animated data visualization displaying the activity of rapid bus lines within the L.A. metro area.</p>\n\n<p><a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dynamic-transportation-visualizations\">Go to data dashboard</a></p>",
+        "notes": "<p><strong>Source:</strong> Los Angeles Metropolitan Transit Agency (<a href=\"http://developer.metro.net/\">http://developer.metro.net/</a>)</p>\n\n<p>This data is used to produce an animated data visualization displaying the activity of rapid bus lines within the L.A. metro area.</p>\n\n<p><a href=\"/dynamic-transportation-visualizations\">Go to data dashboard</a></p>",
         "url": "http://default/dataset/la-metro-gtfs-data",
         "state": "Active",
         "private": "Published",

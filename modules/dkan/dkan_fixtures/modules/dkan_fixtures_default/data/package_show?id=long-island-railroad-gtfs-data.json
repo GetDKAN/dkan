@@ -10,7 +10,7 @@
         "maintainer": "Site-Install",
         "maintainer_email": "admin@example.com",
         "license_title": "other-at",
-        "notes": "<p><strong>Source:</strong> The New York MTA's Developer Downloads Page (<a href=\"http://web.mta.info/developers/download.html\">http://web.mta.info/developers/download.html</a>)</p>\n\n<p>This data is used to produce an animated data visualization displaying the frequency of trains at Long Island Railroad stations throughout New York City, Nassau County, NY and Suffolk County, NY.</p>\n\n<p><a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dynamic-transportation-visualizations\">Go to data dashboard</a></p>",
+        "notes": "<p><strong>Source:</strong> The New York MTA's Developer Downloads Page (<a href=\"http://web.mta.info/developers/download.html\">http://web.mta.info/developers/download.html</a>)</p>\n\n<p>This data is used to produce an animated data visualization displaying the frequency of trains at Long Island Railroad stations throughout New York City, Nassau County, NY and Suffolk County, NY.</p>\n\n<p><a href=\"/dynamic-transportation-visualizations\">Go to data dashboard</a></p>",
         "url": "http://default/dataset/long-island-railroad-gtfs-data",
         "state": "Active",
         "private": "Published",
