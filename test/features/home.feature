@@ -30,11 +30,10 @@ Feature: Homepage
     When I click "demographics"
     Then I should see "London Deprivation Index"
 
-  @fixme
   Scenario: Viewing topics
     Given I am on the homepage
     When I click "Public Safety"
-    Then I should see "Wisconsin Polling Places"
+    Then I should see "Committee on International Affairs"
 
   @api @javascript
   Scenario: See "Add Dataset"
