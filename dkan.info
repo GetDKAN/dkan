@@ -126,5 +126,5 @@ dependencies[] = dkan_datastore
 dependencies[] = dkan_datastore_api
 dependencies[] = open_data_schema_map_dkan
 dependencies[] = visualization_entity_charts_dkan
-dependencies[] = dkan_default_pages
+dependencies[] = dkan_default_content
 dependencies[] = dkan_fixtures_default

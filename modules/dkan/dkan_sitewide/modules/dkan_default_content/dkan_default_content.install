@@ -6,14 +6,14 @@
 /**
  * Implements hook_uninstall().
  */
-function dkan_default_pages_uninstall(){
-  ctools_include('pages', 'dkan_default_pages');
+function dkan_default_content_uninstall(){
+  ctools_include('pages', 'dkan_default_content');
   $nids_to_delete = array();
   // Collect Pages to Delete
-  $pages = dkan_default_pages_available_pages();
+  $pages = dkan_default_content_available_pages();
   foreach($pages as $loadable){
     $page = call_user_func('dkan_default_content_' . $loadable . '_page');
-    dkan_default_pages_collect_id($nids_to_delete, 'node', 'page', $page['title']);
+    dkan_default_content_collect_id($nids_to_delete, 'node', 'page', $page['title']);
   }
   // Delete collected nids
   node_delete_multiple($nids_to_delete);
@@ -23,7 +23,7 @@ function dkan_default_pages_uninstall(){
  * Helper function to query entities by title in order to keep
  * things as DRY as possible
  */
-function dkan_default_pages_collect_id(&$nids, $type, $bundle, $title){
+function dkan_default_content_collect_id(&$nids, $type, $bundle, $title){
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', $type)
         ->entityCondition('bundle', $bundle)

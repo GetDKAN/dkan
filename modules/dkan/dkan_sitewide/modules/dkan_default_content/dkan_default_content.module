@@ -1,0 +1,17 @@
+<?php
+/**
+ * @file
+ * Custom elements for importing default pages.
+ */
+
+function dkan_default_content_base_install(){
+  ctools_include('pages', 'dkan_default_content');
+  // Save pages
+  $pages = dkan_default_content_available_pages();
+  foreach($pages as $loadable){
+    drupal_flush_all_caches();
+    $page = call_user_func('dkan_default_content_' . $loadable . '_page');
+    $page = (object) $page;
+    node_save($page);
+  }
+}

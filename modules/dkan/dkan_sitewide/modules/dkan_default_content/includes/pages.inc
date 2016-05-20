@@ -1,9 +1,9 @@
 <?php
-function dkan_default_pages_available_pages(){
+function dkan_default_content_available_pages(){
   return array('about');
 }
 
-function dkan_default_pages_about_page(){
+function dkan_default_content_about_page(){
 	return array(
     'menu' => array(
       'menu_name' => 'main-menu',
