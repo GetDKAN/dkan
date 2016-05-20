@@ -7,23 +7,42 @@
 /**
  * Adds default fixtures on install.
  */
-function dkan_fixtures_default_install() {
-
-  /*
+function dkan_fixtures_default_enable() {
+  // Register migrations.
   migrate_static_registration();
-  $migrations = array(
-    'dkan_default_content_datasets',
-  );
-  foreach ($migrations as $machine_name) {
-    $migration = Migration::getInstance($machine_name);
-    $migration->processImport();
-  }
-  */
+
+  // Import Groups.
+  $migration = Migration::getInstance('dkan_fixtures_default_groups');
+  $migration->processImport();
+  // Import Resources.
+  $migration = Migration::getInstance('dkan_fixtures_default_resources');
+  $migration->processImport();
+  // Import Datasets.
+  $migration = Migration::getInstance('dkan_fixtures_default_datasets');
+  $migration->processImport();
+
+  // Clear message queue.
+  drupal_get_messages(NULL, TRUE);
+  drupal_set_message('The default content was imported.');
 }
 
 /**
  * Implements hook_disable().
  */
 function dkan_fixtures_default_disable() {
+  // Rollback datasets.
+  $migration = Migration::getInstance('dkan_fixtures_default_datasets');
+  $migration->processRollback();
+  // Rollback resources.
+  $migration = Migration::getInstance('dkan_fixtures_default_resources');
+  $migration->processRollback();
+  // Rollback groups.
+  $migration = Migration::getInstance('dkan_fixtures_default_groups');
+  $migration->processRollback();
+  // Disable mirations.
   dkan_fixtures_default_migrations_disable();
+
+  // Clear message queue.
+  drupal_get_messages(NULL, TRUE);
+  drupal_set_message('The default content was removed.');
 }
