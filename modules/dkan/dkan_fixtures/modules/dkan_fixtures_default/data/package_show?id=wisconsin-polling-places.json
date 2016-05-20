@@ -13,11 +13,10 @@
         "notes": "<p>Polling places in the state of Wisconsin.</p>",
         "url": "http://default/dataset/wisconsin-polling-places",
         "state": "Active",
-        "log_message": "Update to resource 'Madison Polling Places'",
         "private": "Published",
-        "revision_timestamp": "Fri, 05/20/2016 - 02:50",
+        "revision_timestamp": "Fri, 05/20/2016 - 15:56",
         "metadata_created": "Fri, 05/20/2016 - 01:08",
-        "metadata_modified": "Fri, 05/20/2016 - 02:50",
+        "metadata_modified": "Fri, 05/20/2016 - 15:56",
         "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
         "type": "Dataset",
         "resources": [
@@ -103,7 +102,15 @@
                     "value": "admin"
                 }
             ],
-            "field_topic": []
+            "field_topic": [
+                {
+                    "uri": "http://default/taxonomy_term/6",
+                    "id": "6",
+                    "resource": "taxonomy_term",
+                    "uuid": "ed451aa0-f7fc-409a-b3be-30a5b7f26751",
+                    "value": "City Planning"
+                }
+            ]
         }
     }
 }

@@ -13,11 +13,10 @@
         "notes": "<p><strong>Source:</strong> The New York MTA's Developer Downloads Page (<a href=\"http://web.mta.info/developers/download.html\">http://web.mta.info/developers/download.html</a>)</p>\n\n<p>This data is used to produce an animated data visualization displaying the frequency of trains at Long Island Railroad stations throughout New York City, Nassau County, NY and Suffolk County, NY.</p>\n\n<p><a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dynamic-transportation-visualizations\">Go to data dashboard</a></p>",
         "url": "http://default/dataset/long-island-railroad-gtfs-data",
         "state": "Active",
-        "log_message": "Update to resource 'Long Island Rail Road GTFS Data'",
         "private": "Published",
-        "revision_timestamp": "Fri, 05/20/2016 - 02:50",
+        "revision_timestamp": "Fri, 05/20/2016 - 15:51",
         "metadata_created": "Fri, 05/20/2016 - 01:04",
-        "metadata_modified": "Fri, 05/20/2016 - 02:50",
+        "metadata_modified": "Fri, 05/20/2016 - 15:51",
         "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
         "type": "Dataset",
         "resources": [
@@ -86,7 +85,15 @@
             ],
             "field_temporal_coverage": [],
             "og_group_ref": [],
-            "field_topic": []
+            "field_topic": [
+                {
+                    "uri": "http://default/taxonomy_term/1",
+                    "id": "1",
+                    "resource": "taxonomy_term",
+                    "uuid": "f8112e3b-d62d-433d-9b9b-724e56ef3fd8",
+                    "value": "Transportation"
+                }
+            ]
         }
     }
 }

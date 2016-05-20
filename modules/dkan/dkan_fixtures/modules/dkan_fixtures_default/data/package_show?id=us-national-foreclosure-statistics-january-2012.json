@@ -12,11 +12,10 @@
         "notes": "<p>County data: <a href=\"http://www.npr.org/templates/story/story.php?storyId=111494514\">http://www.npr.org/templates/story/story.php?storyId=111494514</a></p>\n\n<p>State data: <a href=\"http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1\">http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1</a></p>",
         "url": "http://default/dataset/us-national-foreclosure-statistics-january-2012",
         "state": "Active",
-        "log_message": "Update to resource '1-2012-Foreclosures-by-State'",
         "private": "Published",
-        "revision_timestamp": "Fri, 05/20/2016 - 02:50",
+        "revision_timestamp": "Fri, 05/20/2016 - 15:53",
         "metadata_created": "Fri, 05/20/2016 - 00:41",
-        "metadata_modified": "Fri, 05/20/2016 - 02:50",
+        "metadata_modified": "Fri, 05/20/2016 - 15:53",
         "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
         "type": "Dataset",
         "resources": [
@@ -113,7 +112,15 @@
                 "duration": 2592000
             },
             "og_group_ref": [],
-            "field_topic": []
+            "field_topic": [
+                {
+                    "uri": "http://default/taxonomy_term/3",
+                    "id": "3",
+                    "resource": "taxonomy_term",
+                    "uuid": "4ac6d362-6898-4ab8-98f6-ce195657ec4c",
+                    "value": "Finance and Budgeting"
+                }
+            ]
         }
     }
 }

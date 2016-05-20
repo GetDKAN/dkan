@@ -13,11 +13,10 @@
         "notes": "<p>Deprivation is measured across seven different areas or domains - income, employment, health, education, living environment, crime and barriers to services using a wide range of indicators, and the methods used show how each area compares with other areas across England using a combination of all these indicators.</p>\n\n<p>As stated by The Guardian, \"the data is based on a close analysis of the UK government's Indices of Multiple Deprivation - which measures relative poverty across England \u2013 by Alasdair Rae at the University of Sheffield.\" (<a href=\"http://www.theguardian.com/uk/datablog/2012/apr/12/deprivation-poverty-london\">Source</a>)</p>\n\n<p><strong>Source:</strong> <a href=\"http://data.london.gov.uk/dataset/indices-of-deprivation-2015\">http://data.london.gov.uk/dataset/indices-of-deprivation-2015</a></p>\n\n<p><strong>See associated DKAN data story:</strong> <a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/london-income-analysis\">http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/london-income-analysis</a></p>",
         "url": "http://default/dataset/london-deprivation-index",
         "state": "Active",
-        "log_message": "Update to resource 'English Indices of Deprivation 2010'",
         "private": "Published",
-        "revision_timestamp": "Fri, 05/20/2016 - 02:50",
+        "revision_timestamp": "Fri, 05/20/2016 - 15:51",
         "metadata_created": "Fri, 05/20/2016 - 00:04",
-        "metadata_modified": "Fri, 05/20/2016 - 02:50",
+        "metadata_modified": "Fri, 05/20/2016 - 15:51",
         "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
         "type": "Dataset",
         "resources": [
@@ -159,7 +158,15 @@
                     "value": "admin"
                 }
             ],
-            "field_topic": []
+            "field_topic": [
+                {
+                    "uri": "http://default/taxonomy_term/3",
+                    "id": "3",
+                    "resource": "taxonomy_term",
+                    "uuid": "4ac6d362-6898-4ab8-98f6-ce195657ec4c",
+                    "value": "Finance and Budgeting"
+                }
+            ]
         }
     }
 }

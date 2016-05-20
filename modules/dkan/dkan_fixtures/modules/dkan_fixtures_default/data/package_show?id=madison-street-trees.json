@@ -13,11 +13,10 @@
         "notes": "<p>Locations of street trees and by type located in Madison, Wisconsin.</p>\n\n<p><strong>Tree varieties include:</strong> Norway Maple, Green Ash, Honeylocust, Littleleaf Linden, the \"Skyline\" Honeylocust, White Ash, American Basswood, Redmond Linden, Hackberry, Crab Apple and others.</p>\n\n<p>Data curated by Aaron Couch.</p>\n\n<p><strong>Original source:</strong> City of Madison, Parks Department.</p>",
         "url": "http://default/dataset/madison-street-trees",
         "state": "Active",
-        "log_message": "Update to resource 'Madison, WI Street Trees '",
         "private": "Published",
-        "revision_timestamp": "Fri, 05/20/2016 - 02:50",
+        "revision_timestamp": "Fri, 05/20/2016 - 15:55",
         "metadata_created": "Fri, 05/20/2016 - 00:21",
-        "metadata_modified": "Fri, 05/20/2016 - 02:50",
+        "metadata_modified": "Fri, 05/20/2016 - 15:55",
         "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
         "type": "Dataset",
         "resources": [
@@ -151,7 +150,15 @@
                     "value": "admin"
                 }
             ],
-            "field_topic": []
+            "field_topic": [
+                {
+                    "uri": "http://default/taxonomy_term/6",
+                    "id": "6",
+                    "resource": "taxonomy_term",
+                    "uuid": "ed451aa0-f7fc-409a-b3be-30a5b7f26751",
+                    "value": "City Planning"
+                }
+            ]
         }
     }
 }

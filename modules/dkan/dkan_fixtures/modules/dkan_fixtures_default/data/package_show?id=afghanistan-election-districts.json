@@ -12,11 +12,10 @@
         "notes": "<p>This data created by the National Democratic Institute (NDI) in partnership with Development Seed, a Washington, D.C.-based online communications consultancy, is designed to make data from the August 20, 2009, Afghanistan presidential election accessible and transparent. We have provided this csv file as there is no download for the whole dataset. There are many more files on the website.</p>\n",
         "url": "http://default/dataset/afghanistan-election-districts",
         "state": "Active",
-        "log_message": "Update to resource 'District Names'",
         "private": "Published",
-        "revision_timestamp": "Fri, 05/20/2016 - 02:50",
+        "revision_timestamp": "Fri, 05/20/2016 - 15:55",
         "metadata_created": "Fri, 05/20/2016 - 00:32",
-        "metadata_modified": "Fri, 05/20/2016 - 02:50",
+        "metadata_modified": "Fri, 05/20/2016 - 15:55",
         "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
         "type": "Dataset",
         "resources": [
@@ -138,7 +137,15 @@
                     "value": "admin"
                 }
             ],
-            "field_topic": []
+            "field_topic": [
+                {
+                    "uri": "http://default/taxonomy_term/6",
+                    "id": "6",
+                    "resource": "taxonomy_term",
+                    "uuid": "ed451aa0-f7fc-409a-b3be-30a5b7f26751",
+                    "value": "City Planning"
+                }
+            ]
         }
     }
 }
