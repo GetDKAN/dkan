@@ -1,0 +1,164 @@
+{
+    "help": "Return the metadata of a dataset (package) and its resources. :param id: the id or name of the dataset :type id: string",
+    "success": true,
+    "result": {
+        "id": "b7238e89-961a-4431-b3c8-eadeb8d02e81",
+        "name": "state-workforce-generation-2011-2015",
+        "title": "State Workforce by Generation (2011-2015)",
+        "author_email": "stefanie@nucivic.com",
+        "maintainer": "Site-Install",
+        "maintainer_email": "admin@example.com",
+        "license_title": "http://opendefinition.org/licenses/gfdl/",
+        "notes": "<p>Information about the state workforce, broken down into four generational cohorts.</p>\n\n<p><strong>Note:</strong> This dataset has been given a vague name because it is anonymized demo data, not actual state data.</p>",
+        "url": "http://default/dataset/state-workforce-generation-2011-2015",
+        "state": "Active",
+        "private": "Published",
+        "revision_timestamp": "Fri, 05/20/2016 - 00:20",
+        "metadata_created": "Fri, 05/20/2016 - 00:12",
+        "metadata_modified": "Fri, 05/20/2016 - 00:20",
+        "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
+        "type": "Dataset",
+        "resources": [
+            {
+                "id": "c6e8235b-e0df-4466-9cb4-5cdec2239508",
+                "revision_id": "",
+                "url": "files/samplegenerationchart.csv",
+                "description": "<p>Population of state employees broken down into Gen X, Gen Y, Baby Boomers and Over 65+.</p>",
+                "format": "csv",
+                "state": "Active",
+                "revision_timestamp": "Fri, 05/20/2016 - 00:14",
+                "name": "Workforce By Generation (2011-2015)",
+                "mimetype": "text/csv",
+                "size": "229 bytes",
+                "created": "Fri, 05/20/2016 - 00:14",
+                "resource_group_id": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
+                "last_modified": "Date changed\tFri, 05/20/2016 - 00:14"
+            },
+            {
+                "id": "16eb97b4-6a21-45d8-819f-dc2648ac68b3",
+                "revision_id": "",
+                "url": "files/retirements.csv",
+                "description": "<p>Total number of employees who retired from the state workforce, 2011-2015.</p>",
+                "format": "csv",
+                "state": "Active",
+                "revision_timestamp": "Fri, 05/20/2016 - 00:17",
+                "name": "Retirements (2011 - 2015)",
+                "mimetype": "text/csv",
+                "size": "66 bytes",
+                "created": "Fri, 05/20/2016 - 00:17",
+                "resource_group_id": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
+                "last_modified": "Date changed\tFri, 05/20/2016 - 00:17"
+            },
+            {
+                "id": "e80753af-b0c7-4b5f-9179-983be8f9a49f",
+                "revision_id": "",
+                "url": "files/2015EligibleVsActual.csv",
+                "description": "<p>This data, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire compared to the percentage of the workforce who actually retired.</p>",
+                "format": "csv",
+                "state": "Active",
+                "revision_timestamp": "Fri, 05/20/2016 - 00:18",
+                "name": "Retirements: Eligible vs. Actual",
+                "mimetype": "text/csv",
+                "size": "239 bytes",
+                "created": "Fri, 05/20/2016 - 00:18",
+                "resource_group_id": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
+                "last_modified": "Date changed\tFri, 05/20/2016 - 00:18"
+            }
+        ],
+        "tags": [
+            {
+                "id": "d7f3174b-33af-43df-9380-e3acf8fbba24",
+                "vocabulary_id": "2",
+                "name": "demographics"
+            },
+            {
+                "id": "353cc756-05ea-442a-924b-4ec7451c643b",
+                "vocabulary_id": "2",
+                "name": "workforce"
+            },
+            {
+                "id": "f83adca1-5ccf-4936-8b39-9c6cfabedd5b",
+                "vocabulary_id": "2",
+                "name": "socioeconomic"
+            }
+        ],
+        "groups": [
+            {
+                "description": "<p>The State Economic Council is responsible for increasing economic development of the state by collecting statistics and performing analysis on the labor force, workforce and employer demographics, generational trends, etc.</p>\n",
+                "id": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
+                "image_display_url": "http://default/sites/default/files/money-saving.png",
+                "title": "State Economic Council",
+                "name": "group/state-economic-council"
+            }
+        ],
+        "dkan_additional_fields": {
+            "field_additional_info": [],
+            "field_contact_email": "stefanie@nucivic.com",
+            "field_contact_name": "Stefanie Gray",
+            "field_data_dictionary": null,
+            "field_frequency": "4",
+            "field_granularity": "Person",
+            "field_public_access_level": "public",
+            "field_related_content": [],
+            "field_resources": [
+                {
+                    "uri": "http://default/node/10",
+                    "id": "10",
+                    "resource": "node",
+                    "uuid": "c6e8235b-e0df-4466-9cb4-5cdec2239508",
+                    "value": "admin"
+                },
+                {
+                    "uri": "http://default/node/11",
+                    "id": "11",
+                    "resource": "node",
+                    "uuid": "16eb97b4-6a21-45d8-819f-dc2648ac68b3",
+                    "value": "admin"
+                },
+                {
+                    "uri": "http://default/node/12",
+                    "id": "12",
+                    "resource": "node",
+                    "uuid": "e80753af-b0c7-4b5f-9179-983be8f9a49f",
+                    "value": "admin"
+                }
+            ],
+            "field_spatial": [],
+            "field_spatial_geographical_cover": "State",
+            "field_tags": [
+                {
+                    "uri": "http://default/taxonomy_term/8",
+                    "id": "8",
+                    "resource": "taxonomy_term",
+                    "uuid": "d7f3174b-33af-43df-9380-e3acf8fbba24",
+                    "value": "demographics"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/21",
+                    "id": "21",
+                    "resource": "taxonomy_term",
+                    "uuid": "353cc756-05ea-442a-924b-4ec7451c643b",
+                    "value": "workforce"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/22",
+                    "id": "22",
+                    "resource": "taxonomy_term",
+                    "uuid": "f83adca1-5ccf-4936-8b39-9c6cfabedd5b",
+                    "value": "socioeconomic"
+                }
+            ],
+            "field_temporal_coverage": [],
+            "og_group_ref": [
+                {
+                    "uri": "http://default/node/4",
+                    "id": "4",
+                    "resource": "node",
+                    "uuid": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
+                    "value": "admin"
+                }
+            ],
+            "field_topic": []
+        }
+    }
+}

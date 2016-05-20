@@ -1,0 +1,17 @@
+{
+    "help": "Return the metadata of a resource. :param id: the id of the resource :type id: string :rtype: dictionary",
+    "success": true,
+    "result": {
+        "id": "d58c7e27-3c73-4b0f-88b8-77b5381fc803",
+        "url": "files/Polling_Places_Madison.csv",
+        "description": "<p>This is a list and map of polling places in Madison, WI.</p>\n\n<p>Original data here: \n  <a href=\"https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr\">https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr</a></p>",
+        "format": "csv",
+        "revision_timestamp": "Fri, 05/20/2016 - 01:10",
+        "name": "Madison Polling Places",
+        "mimetype": "text/csv",
+        "size": "17.06 KB",
+        "created": "Fri, 05/20/2016 - 01:09",
+        "resource_group_id": "f2c130b8-5eef-4e90-913a-842c11e26665",
+        "last_modified": "Date changed\tFri, 05/20/2016 - 01:10"
+    }
+}

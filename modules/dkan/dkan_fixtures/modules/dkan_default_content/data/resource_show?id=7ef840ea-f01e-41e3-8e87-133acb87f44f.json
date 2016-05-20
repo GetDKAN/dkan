@@ -1,0 +1,17 @@
+{
+    "help": "Return the metadata of a resource. :param id: the id of the resource :type id: string :rtype: dictionary",
+    "success": true,
+    "result": {
+        "id": "7ef840ea-f01e-41e3-8e87-133acb87f44f",
+        "url": "files/TobaccoTaxes2016_2.csv",
+        "description": "<p>Source: The Campaign for Tobacco-Free Kids, April 2016: <a href=\"https://www.tobaccofreekids.org/research/factsheets/pdf/0097.pdf\">https://www.tobaccofreekids.org/research/factsheets/pdf/0097.pdf</a></p>",
+        "format": "csv",
+        "revision_timestamp": "Fri, 05/20/2016 - 00:31",
+        "name": "Tobacco Taxation by State as of April 2016",
+        "mimetype": "text/csv",
+        "size": "970 bytes",
+        "created": "Fri, 05/20/2016 - 00:27",
+        "resource_group_id": "8bf2dcea-334e-4da3-a5b6-c819791df83b",
+        "last_modified": "Date changed\tFri, 05/20/2016 - 00:31"
+    }
+}

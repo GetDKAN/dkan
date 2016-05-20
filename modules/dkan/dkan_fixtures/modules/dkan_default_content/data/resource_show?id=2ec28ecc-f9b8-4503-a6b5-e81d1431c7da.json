@@ -1,0 +1,16 @@
+{
+    "help": "Return the metadata of a resource. :param id: the id of the resource :type id: string :rtype: dictionary",
+    "success": true,
+    "result": {
+        "id": "2ec28ecc-f9b8-4503-a6b5-e81d1431c7da",
+        "url": "files/data.csv",
+        "description": "<p>CSV file extracted and cleaned from source excel.</p>\n\n<p>Click on Graph button under Preview and plot date (x-axis) against price (y-axis) to see a line graph. Hovering over a point gives you the value of that data entry.</p>",
+        "format": "csv",
+        "revision_timestamp": "Fri, 05/20/2016 - 00:38",
+        "name": "Table of Gold Prices",
+        "mimetype": "text/csv",
+        "size": "14.16 KB",
+        "created": "Fri, 05/20/2016 - 00:38",
+        "last_modified": "Date changed\tFri, 05/20/2016 - 00:38"
+    }
+}

@@ -1,0 +1,129 @@
+{
+    "help": "Return the metadata of a dataset (package) and its resources. :param id: the id or name of the dataset :type id: string",
+    "success": true,
+    "result": {
+        "id": "a0164836-5fc3-499a-8ecb-3c9744994024",
+        "name": "crime-data-ten-most-populous-cities-us",
+        "title": "Crime Data for the Ten Most Populous Cities in the U.S.",
+        "author": "Federal Bureau of Investigations",
+        "author_email": "datademo@nucivic.com",
+        "maintainer": "Site-Install",
+        "maintainer_email": "admin@example.com",
+        "license_title": "http://opendefinition.org/licenses/odc-odbl/",
+        "notes": "<p><strong>Source:</strong> FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n\n<p>Data is split into two categories:</p>\n\n<p><strong>Violent Crime:</strong> Includes aggravated assault, murder, rape and robbery.\n<strong>Property Crime:</strong> Includes arson, burglary, larceny-theft and motor vehicle theft.</p>\n\n<p><strong>Top 10 Most Populous U.S. Cities:</strong></p>\n\n<ol><li>New York, NY</li>\n<li>Los Angeles, CA</li>\n<li>Chicago, IL</li>\n<li>Houston, TX</li>\n<li>Philadelphia, PA</li>\n<li>Las Vegas, NV</li>\n<li>Phoenix, AZ</li>\n<li>San Antonio, TX</li>\n<li>San Diego, TX</li>\n<li>Dallas, TX</li>\n</ol><p><strong>Link to DKAN Data Dashboard:</strong> <a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/crime-americas-top-10-most-populous-cities\">http://dev-stefanies-dkan-demo-site.pantheonsite.io/crime-americas-top-10-most-populous-cities</a></p>",
+        "url": "http://default/dataset/crime-data-ten-most-populous-cities-us",
+        "state": "Active",
+        "private": "Published",
+        "revision_timestamp": "Fri, 05/20/2016 - 00:50",
+        "metadata_created": "Fri, 05/20/2016 - 00:45",
+        "metadata_modified": "Fri, 05/20/2016 - 00:50",
+        "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
+        "type": "Dataset",
+        "resources": [
+            {
+                "id": "1374aeb4-7df2-4114-a85e-dafa48cdd30c",
+                "revision_id": "",
+                "url": "files/ViolentCrimeRates.csv",
+                "description": "<p>Source: FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n\n<p>Includes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.</p>",
+                "format": "csv",
+                "state": "Active",
+                "revision_timestamp": "Fri, 05/20/2016 - 00:47",
+                "name": "Violent Crime Data for the Ten Most Populous Cities in the U.S.",
+                "mimetype": "text/csv",
+                "size": "1.32 KB",
+                "created": "Fri, 05/20/2016 - 00:47",
+                "resource_group_id": "",
+                "last_modified": "Date changed\tFri, 05/20/2016 - 00:47"
+            },
+            {
+                "id": "d4e958e2-6c34-45a5-98e5-2cede2f9a925",
+                "revision_id": "",
+                "url": "files/PropertyCrimeRates.csv",
+                "description": "<p>Source: FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n\n<p>Includes information on the frequency of property crimes in general, burglary, larceny-theft, motor vehicle theft and arson. All crime rates are per 100,000 people.</p>\n\n<p>(Note: New York City does not release arson statistics; therefore, the listed rate of \"0\" is inaccurate.)</p>",
+                "format": "csv",
+                "state": "Active",
+                "revision_timestamp": "Fri, 05/20/2016 - 00:48",
+                "name": "Property Crime Data for the Ten Most Populous Cities in the U.S.",
+                "mimetype": "text/csv",
+                "size": "1.32 KB",
+                "created": "Fri, 05/20/2016 - 00:48",
+                "resource_group_id": "",
+                "last_modified": "Date changed\tFri, 05/20/2016 - 00:48"
+            }
+        ],
+        "tags": [
+            {
+                "id": "4afc34f4-39dd-4feb-a64c-a52e79a09896",
+                "vocabulary_id": "2",
+                "name": "crime"
+            },
+            {
+                "id": "c63376e1-2c0d-4cd4-bf5e-7524fc233b7d",
+                "vocabulary_id": "2",
+                "name": "public safety"
+            }
+        ],
+        "dkan_additional_fields": {
+            "field_additional_info": [],
+            "field_contact_email": "datademo@nucivic.com",
+            "field_contact_name": "Gray, Stefanie",
+            "field_data_dictionary": null,
+            "field_frequency": "3",
+            "field_granularity": "City",
+            "field_public_access_level": "public",
+            "field_related_content": [],
+            "field_resources": [
+                {
+                    "uri": "http://default/node/25",
+                    "id": "25",
+                    "resource": "node",
+                    "uuid": "1374aeb4-7df2-4114-a85e-dafa48cdd30c",
+                    "value": "admin"
+                },
+                {
+                    "uri": "http://default/node/26",
+                    "id": "26",
+                    "resource": "node",
+                    "uuid": "d4e958e2-6c34-45a5-98e5-2cede2f9a925",
+                    "value": "admin"
+                }
+            ],
+            "field_spatial": {
+                "wkt": "POLYGON ((-129.7265625 24.046463999667, -129.7265625 51.835777520452, -65.390625 51.835777520452, -65.390625 24.046463999667))",
+                "geo_type": "polygon",
+                "lat": "37.9411",
+                "lon": "-97.5586",
+                "left": "-129.727",
+                "top": "51.8358",
+                "right": "-65.3906",
+                "bottom": "24.0465",
+                "srid": null,
+                "latlon": "37.9411,-97.5586"
+            },
+            "field_spatial_geographical_cover": null,
+            "field_tags": [
+                {
+                    "uri": "http://default/taxonomy_term/34",
+                    "id": "34",
+                    "resource": "taxonomy_term",
+                    "uuid": "4afc34f4-39dd-4feb-a64c-a52e79a09896",
+                    "value": "crime"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/35",
+                    "id": "35",
+                    "resource": "taxonomy_term",
+                    "uuid": "c63376e1-2c0d-4cd4-bf5e-7524fc233b7d",
+                    "value": "public safety"
+                }
+            ],
+            "field_temporal_coverage": {
+                "value": "1388534400",
+                "value2": "1419984000",
+                "duration": 31449600
+            },
+            "og_group_ref": [],
+            "field_topic": []
+        }
+    }
+}

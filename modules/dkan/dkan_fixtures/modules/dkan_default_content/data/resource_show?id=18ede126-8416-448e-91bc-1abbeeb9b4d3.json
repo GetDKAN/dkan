@@ -1,0 +1,17 @@
+{
+    "help": "Return the metadata of a resource. :param id: the id of the resource :type id: string :rtype: dictionary",
+    "success": true,
+    "result": {
+        "id": "18ede126-8416-448e-91bc-1abbeeb9b4d3",
+        "url": "files/postvaccinedeaths_0.csv",
+        "description": "<p>Source: \"Near elimination of varicella deaths in the US after implementation of the vaccination program.\" published in the American Journal of Pediatrics in August 2011.</p>",
+        "format": "csv",
+        "revision_timestamp": "Fri, 05/20/2016 - 00:58",
+        "name": " Varicella Mortality by Age Group, 1995-2009",
+        "mimetype": "text/csv",
+        "size": "288 bytes",
+        "created": "Fri, 05/20/2016 - 00:52",
+        "resource_group_id": "8bf2dcea-334e-4da3-a5b6-c819791df83b",
+        "last_modified": "Date changed\tFri, 05/20/2016 - 00:58"
+    }
+}

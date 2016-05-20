@@ -1,0 +1,17 @@
+{
+    "help": "Return the metadata of a resource. :param id: the id of the resource :type id: string :rtype: dictionary",
+    "success": true,
+    "result": {
+        "id": "cc064487-3721-4851-9f82-1c0950f4fdca",
+        "url": "files/Tree_Map4.csv",
+        "description": "<p>Check out this dataset of the street trees located in Madison.</p>",
+        "format": "csv",
+        "revision_timestamp": "Fri, 05/20/2016 - 00:25",
+        "name": "Madison, WI Street Trees ",
+        "mimetype": "text/csv",
+        "size": "9.35 MB",
+        "created": "Fri, 05/20/2016 - 00:22",
+        "resource_group_id": "c4b05c72-cbe7-45fa-99c8-02b76d30d329",
+        "last_modified": "Date changed\tFri, 05/20/2016 - 00:25"
+    }
+}

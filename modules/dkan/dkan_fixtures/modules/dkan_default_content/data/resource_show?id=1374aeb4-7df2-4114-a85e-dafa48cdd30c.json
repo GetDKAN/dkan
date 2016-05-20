@@ -1,0 +1,16 @@
+{
+    "help": "Return the metadata of a resource. :param id: the id of the resource :type id: string :rtype: dictionary",
+    "success": true,
+    "result": {
+        "id": "1374aeb4-7df2-4114-a85e-dafa48cdd30c",
+        "url": "files/ViolentCrimeRates.csv",
+        "description": "<p>Source: FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n\n<p>Includes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.</p>",
+        "format": "csv",
+        "revision_timestamp": "Fri, 05/20/2016 - 00:47",
+        "name": "Violent Crime Data for the Ten Most Populous Cities in the U.S.",
+        "mimetype": "text/csv",
+        "size": "1.32 KB",
+        "created": "Fri, 05/20/2016 - 00:47",
+        "last_modified": "Date changed\tFri, 05/20/2016 - 00:47"
+    }
+}

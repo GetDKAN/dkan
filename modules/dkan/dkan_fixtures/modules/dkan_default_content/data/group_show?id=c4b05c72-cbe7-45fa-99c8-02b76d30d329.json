@@ -1,0 +1,10 @@
+{
+    "help": "Group data",
+    "result": {
+        "description": "<p>The Wisconsin Parks and Recreation Commission is dedicated to providing programs and public spaces that improve the quality of life in counties throughout Wisconsin.</p>\n",
+        "id": "c4b05c72-cbe7-45fa-99c8-02b76d30d329",
+        "image_display_url": "files/weather.png",
+        "title": "Wisconsin Parks and Rec Commission ",
+        "name": "group/wisconsin-parks-and-rec-commission"
+    }
+}

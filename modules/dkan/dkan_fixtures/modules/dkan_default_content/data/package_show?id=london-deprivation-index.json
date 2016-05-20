@@ -1,0 +1,163 @@
+{
+    "help": "Return the metadata of a dataset (package) and its resources. :param id: the id or name of the dataset :type id: string",
+    "success": true,
+    "result": {
+        "id": "4dacbcdb-8fc6-4682-a90c-0d65d18c5d3f",
+        "name": "london-deprivation-index",
+        "title": "London Deprivation Index",
+        "author": "Department for Communities and Local Government",
+        "author_email": "datademo@nucivic.com",
+        "maintainer": "Site-Install",
+        "maintainer_email": "admin@example.com",
+        "notes": "<p>Deprivation is measured across seven different areas or domains - income, employment, health, education, living environment, crime and barriers to services using a wide range of indicators, and the methods used show how each area compares with other areas across England using a combination of all these indicators.</p>\n\n<p>As stated by The Guardian, \"the data is based on a close analysis of the UK government's Indices of Multiple Deprivation - which measures relative poverty across England \u2013 by Alasdair Rae at the University of Sheffield.\" (<a href=\"http://www.theguardian.com/uk/datablog/2012/apr/12/deprivation-poverty-london\">Source</a>)</p>\n\n<p><strong>Source:</strong> <a href=\"http://data.london.gov.uk/dataset/indices-of-deprivation-2015\">http://data.london.gov.uk/dataset/indices-of-deprivation-2015</a></p>\n\n<p><strong>See associated DKAN data story:</strong> <a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/london-income-analysis\">http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/london-income-analysis</a></p>",
+        "url": "http://default/dataset/london-deprivation-index",
+        "state": "Active",
+        "private": "Published",
+        "revision_timestamp": "Fri, 05/20/2016 - 00:09",
+        "metadata_created": "Fri, 05/20/2016 - 00:04",
+        "metadata_modified": "Fri, 05/20/2016 - 00:09",
+        "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
+        "type": "Dataset",
+        "resources": [
+            {
+                "id": "f14a3476-91c8-404b-8f34-5d66219ce97d",
+                "revision_id": "",
+                "url": "files/index-of-multiple-deprivation.zip",
+                "description": "",
+                "format": "zip",
+                "state": "Active",
+                "revision_timestamp": "Fri, 05/20/2016 - 00:06",
+                "name": "English Indices of Deprivation 2010",
+                "mimetype": "application/zip",
+                "size": "21.95 MB",
+                "created": "Fri, 05/20/2016 - 00:06",
+                "resource_group_id": "f2c130b8-5eef-4e90-913a-842c11e26665",
+                "last_modified": "Date changed\tFri, 05/20/2016 - 00:06"
+            }
+        ],
+        "tags": [
+            {
+                "id": "f498352f-9c56-4d00-b889-26baeb688235",
+                "vocabulary_id": "2",
+                "name": "economy"
+            },
+            {
+                "id": "d7f3174b-33af-43df-9380-e3acf8fbba24",
+                "vocabulary_id": "2",
+                "name": "demographics"
+            },
+            {
+                "id": "b3da21d4-bc7d-42f3-b613-24fad1d696ff",
+                "vocabulary_id": "2",
+                "name": "spatial data"
+            },
+            {
+                "id": "308a434a-0687-40c8-bd2a-3f8debfca2d1",
+                "vocabulary_id": "2",
+                "name": "United Kingdom"
+            }
+        ],
+        "groups": [
+            {
+                "description": "<p>The Committee on International Affairs is a working group to identify opportunities to learn from and collaborate with government and organizations across the globe.</p>\n",
+                "id": "f2c130b8-5eef-4e90-913a-842c11e26665",
+                "image_display_url": "http://default/sites/default/files/map_0.png",
+                "title": "Committee on International Affairs",
+                "name": "group/committee-international-affairs"
+            },
+            {
+                "description": "<p>The State Economic Council is responsible for increasing economic development of the state by collecting statistics and performing analysis on the labor force, workforce and employer demographics, generational trends, etc.</p>\n",
+                "id": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
+                "image_display_url": "http://default/sites/default/files/money-saving.png",
+                "title": "State Economic Council",
+                "name": "group/state-economic-council"
+            }
+        ],
+        "dkan_additional_fields": {
+            "field_additional_info": [],
+            "field_contact_email": "datademo@nucivic.com",
+            "field_contact_name": "Gray, Stefanie",
+            "field_data_dictionary": null,
+            "field_frequency": "3",
+            "field_granularity": null,
+            "field_public_access_level": "public",
+            "field_related_content": [
+                {
+                    "title": "Expert panel says London's living wage is $15.53/h ",
+                    "url": "http://www.lfpress.com/2016/05/13/expert-panel-says-londons-living-wage-is-1553h-londoners-need-30284-to-meet-basic-needs",
+                    "attributes": []
+                }
+            ],
+            "field_resources": [
+                {
+                    "uri": "http://default/node/8",
+                    "id": "8",
+                    "resource": "node",
+                    "uuid": "f14a3476-91c8-404b-8f34-5d66219ce97d",
+                    "value": "admin"
+                }
+            ],
+            "field_spatial": {
+                "wkt": "POLYGON ((-1.1178588867187 51.08282186161, -1.1178588867187 51.859531509855, 1.1178588867187 51.859531509855, 1.1178588867187 51.08282186161))",
+                "geo_type": "polygon",
+                "lat": "51.4712",
+                "lon": "-0",
+                "left": "-1.11786",
+                "top": "51.8595",
+                "right": "1.11786",
+                "bottom": "51.0828",
+                "srid": null,
+                "latlon": "51.4712,-0"
+            },
+            "field_spatial_geographical_cover": "London, England",
+            "field_tags": [
+                {
+                    "uri": "http://default/taxonomy_term/7",
+                    "id": "7",
+                    "resource": "taxonomy_term",
+                    "uuid": "f498352f-9c56-4d00-b889-26baeb688235",
+                    "value": "economy"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/8",
+                    "id": "8",
+                    "resource": "taxonomy_term",
+                    "uuid": "d7f3174b-33af-43df-9380-e3acf8fbba24",
+                    "value": "demographics"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/9",
+                    "id": "9",
+                    "resource": "taxonomy_term",
+                    "uuid": "b3da21d4-bc7d-42f3-b613-24fad1d696ff",
+                    "value": "spatial data"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/10",
+                    "id": "10",
+                    "resource": "taxonomy_term",
+                    "uuid": "308a434a-0687-40c8-bd2a-3f8debfca2d1",
+                    "value": "United Kingdom"
+                }
+            ],
+            "field_temporal_coverage": [],
+            "og_group_ref": [
+                {
+                    "uri": "http://default/node/3",
+                    "id": "3",
+                    "resource": "node",
+                    "uuid": "f2c130b8-5eef-4e90-913a-842c11e26665",
+                    "value": "admin"
+                },
+                {
+                    "uri": "http://default/node/4",
+                    "id": "4",
+                    "resource": "node",
+                    "uuid": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
+                    "value": "admin"
+                }
+            ],
+            "field_topic": []
+        }
+    }
+}

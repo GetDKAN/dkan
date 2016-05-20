@@ -1,0 +1,17 @@
+{
+    "help": "Return the metadata of a resource. :param id: the id of the resource :type id: string :rtype: dictionary",
+    "success": true,
+    "result": {
+        "id": "16eb97b4-6a21-45d8-819f-dc2648ac68b3",
+        "url": "files/retirements.csv",
+        "description": "<p>Total number of employees who retired from the state workforce, 2011-2015.</p>",
+        "format": "csv",
+        "revision_timestamp": "Fri, 05/20/2016 - 00:17",
+        "name": "Retirements (2011 - 2015)",
+        "mimetype": "text/csv",
+        "size": "66 bytes",
+        "created": "Fri, 05/20/2016 - 00:17",
+        "resource_group_id": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
+        "last_modified": "Date changed\tFri, 05/20/2016 - 00:17"
+    }
+}

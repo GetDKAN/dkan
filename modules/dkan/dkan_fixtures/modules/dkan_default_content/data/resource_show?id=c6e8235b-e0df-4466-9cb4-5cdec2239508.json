@@ -1,0 +1,17 @@
+{
+    "help": "Return the metadata of a resource. :param id: the id of the resource :type id: string :rtype: dictionary",
+    "success": true,
+    "result": {
+        "id": "c6e8235b-e0df-4466-9cb4-5cdec2239508",
+        "url": "files/samplegenerationchart.csv",
+        "description": "<p>Population of state employees broken down into Gen X, Gen Y, Baby Boomers and Over 65+.</p>",
+        "format": "csv",
+        "revision_timestamp": "Fri, 05/20/2016 - 00:14",
+        "name": "Workforce By Generation (2011-2015)",
+        "mimetype": "text/csv",
+        "size": "229 bytes",
+        "created": "Fri, 05/20/2016 - 00:14",
+        "resource_group_id": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
+        "last_modified": "Date changed\tFri, 05/20/2016 - 00:14"
+    }
+}

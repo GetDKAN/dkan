@@ -1,0 +1,17 @@
+{
+    "help": "Return the metadata of a resource. :param id: the id of the resource :type id: string :rtype: dictionary",
+    "success": true,
+    "result": {
+        "id": "8caff261-40e8-4444-9f3e-f9a57c5c408b",
+        "url": "files/CDCSmokingRates.csv",
+        "description": "<p>Source: Centers for Disease Control and Prevention, 2015</p>",
+        "format": "csv",
+        "revision_timestamp": "Fri, 05/20/2016 - 00:31",
+        "name": "U.S. Adult Smoking Rate",
+        "mimetype": "text/csv",
+        "size": "1.99 KB",
+        "created": "Fri, 05/20/2016 - 00:29",
+        "resource_group_id": "8bf2dcea-334e-4da3-a5b6-c819791df83b",
+        "last_modified": "Date changed\tFri, 05/20/2016 - 00:31"
+    }
+}
