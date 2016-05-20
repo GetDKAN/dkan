@@ -56,6 +56,9 @@ class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
 
   public function prepare($node, $row) {
     parent::prepare($node, $row);
+    if (!$row->field_additional_info) {
+      $node->field_additional_info = array();
+    }
     if (isset($row->dkan_additional_fields->field_spatial->geo_type)) {
       $node->field_spatial[LANGUAGE_NONE][0] = (array) $row->dkan_additional_fields->field_spatial;
     }
