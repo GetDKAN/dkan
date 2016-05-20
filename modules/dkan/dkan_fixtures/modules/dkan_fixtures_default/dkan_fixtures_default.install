@@ -5,7 +5,8 @@
  */
 
 /**
- * Adds default fixtures on install.
+ * Hook: hook_default_enable().
+ * Registers all needed migrations and imports groups, resources and datasets.
  */
 function dkan_fixtures_default_enable() {
   // Register migrations.
@@ -27,7 +28,8 @@ function dkan_fixtures_default_enable() {
 }
 
 /**
- * Implements hook_disable().
+ * Hook: hook_default_disable().
+ * Removes all the generated content and disables all enabled migrations.
  */
 function dkan_fixtures_default_disable() {
   // Rollback datasets.
