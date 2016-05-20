@@ -46,7 +46,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
       // If the License URI is available ODSM will return that on the 'license_title' field instead of the ID.
       // In order to import the data we need to always work with the URI ID so we need to do a convertion.
       if (isset($package_show['result']['license_title'])) {
-        $package_show['result']['license_title'] = getLicenseIdForValue($package_show['result']['license_title']);
+        $package_show['result']['license_title'] = getLicenseId($package_show['result']['license_title']);
       }
       if (isset($package_show['result']['resources'])) {
         foreach ($package_show['result']['resources'] as $key => $resource) {
@@ -295,17 +295,15 @@ function dkan_fixtures_dkan_save_data($nids = array()) {
 }
 
 /**
- * If the value is the license URI then search and return the ID.
+ * ODSM returns either the URI or the label of the License.
+ * This function retrieves the ID as needed for import.
  */
-function getLicenseIdForValue($value) {
-  if (filter_var($value, FILTER_VALIDATE_URL)) {
-    $licenses = dkan_dataset_content_types_license_subscribe();
-    foreach ($licenses as $license_id => $license_data) {
-      if (isset($license_data['uri']) && $license_data['uri'] === $value) {
-        return $license_id;
-      }
+function getLicenseId($license) {
+  $licenses = dkan_dataset_content_types_license_subscribe();
+  foreach ($licenses as $license_id => $license_data) {
+    if ((isset($license_data['uri']) && $license_data['uri'] === $license) ||
+         ($license_data['label'] === $license)) {
+      return $license_id;
     }
   }
-
-  return $value;
 }
