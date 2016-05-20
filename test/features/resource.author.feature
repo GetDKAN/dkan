@@ -30,27 +30,23 @@ Feature: Resource
       | Katie   | Group 02 | member               | Active            |
     And "Tags" terms:
       | name    |
-      | Health  |
-      | Gov     |
+      | world   |
+      | results |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        |
-      | Dataset 03 |           | Katie   | Yes              | Health   | Test        |
-      | Dataset 04 |           | Katie   | Yes              | Gov      | Test        |
-      | Dataset 05 | Group 01  | Katie   | Yes              | Gov      | Test        |
-      | Dataset 06 | Group 02  | Katie   | Yes              | Gov      | Test        |
-    And "Format" terms:
-      | name    |
-      | cvs     |
-      | xls     |
+      | Dataset 01 | Group 01  | Gabriel | Yes              | world    | Test        |
+      | Dataset 02 | Group 01  | Gabriel | Yes              | results  | Test        |
+      | Dataset 03 |           | Katie   | Yes              | world    | Test        |
+      | Dataset 04 |           | Katie   | Yes              | results  | Test        |
+      | Dataset 05 | Group 01  | Katie   | Yes              | results  | Test        |
+      | Dataset 06 | Group 02  | Katie   | Yes              | results  | Test        |
     And resources:
       | title       | publisher | format | dataset    | author   | published | description |
-      | Resource 01 | Group 01  | cvs    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 02 | Group 01  | xls    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 03 | Group 01  | xls    | Dataset 02 | Celeste  | No        | Yes         |
-      | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
-      | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
+      | Resource 01 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 02 | Group 01  | zip    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 03 | Group 01  | zip    | Dataset 02 | Celeste  | No        | Yes         |
+      | Resource 04 | Group 01  | csv    | Dataset 01 | Katie    | No        | Yes         |
+      | Resource 05 | Group 01  | zip    | Dataset 02 | Celeste  | Yes       | Yes         |
       | Resource 06 |           | csv    |            | Katie    | Yes       | Test        |
       | Resource 07 |           | csv    | Dataset 04 | Katie    | Yes       | Test        |
       | Resource 08 | Group 01  | csv    | Dataset 05 | Katie    | Yes       | Test        |

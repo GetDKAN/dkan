@@ -7,9 +7,12 @@ Feature: Homepage
     Given I am on the homepage
     Then I should see "Welcome to the DKAN Demo"
 
-  Scenario: Viewing default content
+  Scenario: Viewing default groups
     Given I am on the homepage
-    Then I should see "Geospatial Data Explorer Examples"
+    Then I should see "Committee on International Affairs"
+    And I should see "State Economic Council"
+    And I should see "Wisconsin Parks and Rec Commission"
+    And I should see "Advisory Council for Infectious Disease"
 
   Scenario: Viewing top menu
     Given I am on the homepage
@@ -24,9 +27,10 @@ Feature: Homepage
 
   Scenario: Viewing tags
     Given I am on the homepage
-    When I click "politics"
-    Then I should see "Afghanistan Election Districts"
+    When I click "demographics"
+    Then I should see "London Deprivation Index"
 
+  @fixme
   Scenario: Viewing topics
     Given I am on the homepage
     When I click "Public Safety"

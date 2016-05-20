@@ -40,20 +40,20 @@ Feature: Dataset Features
       | Celeste | Group 02 | member               | Active            |
     And "Tags" terms:
       | name    |
-      | Health  |
-      | Gov     |
+      | world  |
+      | sports |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        |
-      | Dataset 03 | Group 01  | Katie   | Yes              | Health   | Test        |
-      | Dataset 04 | Group 02  | Celeste | No               | Gov      | Test        |
-      | Dataset 05 | Group 01  | Katie   | No               | Gov      | Test        |
+      | Dataset 01 | Group 01  | Gabriel | Yes              | world    | Test        |
+      | Dataset 02 | Group 01  | Gabriel | Yes              | sports   | Test        |
+      | Dataset 03 | Group 01  | Katie   | Yes              | world    | Test        |
+      | Dataset 04 | Group 02  | Celeste | No               | sports   | Test        |
+      | Dataset 05 | Group 01  | Katie   | No               | sports   | Test        |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | html    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 03 | Group 01  | html    | Katie  | Yes       | Dataset 02 |             |
+      | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
+      | Resource 03 | Group 01  | zip    | Katie  | Yes       | Dataset 02 |             |
 
    @fixme @dkanBug
     # TODO: Datasets not shown on homepage currently
@@ -66,8 +66,8 @@ Feature: Dataset Features
   Scenario: View list of published datasets
     Given I am on the homepage
     When I click "Datasets"
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
+    Then I should see "15 results"
+    And I should see "10" items in the "datasets" region
 
   Scenario: Order datasets by "Date changed" by oldest first.
     Given datasets:
@@ -101,8 +101,8 @@ Feature: Dataset Features
     And I select "Title" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
+    Then I should see "15 results"
+    And I should see "10" items in the "datasets" region
     And I should see the first "3" dataset items in "Title" "Asc" order.
 
   Scenario: Search datasets by "title" with "Desc" order
@@ -110,8 +110,8 @@ Feature: Dataset Features
     And I select "Title" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
+    Then I should see "15 results"
+    And I should see "10" items in the "datasets" region
     And I should see the first "3" dataset items in "Title" "Desc" order.
 
     # TODO : Reseting the search will make all the datasets appear in the results including pre-made
@@ -124,21 +124,21 @@ Feature: Dataset Features
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
     When I press "Reset"
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
+    Then I should see "15 results"
+    And I should see "10" items in the "datasets" region
 
   Scenario: View available tag filters for datasets
     Given I am on "Datasets Search" page
     Then I click on the text "Tags"
-    Then I should see "Health (2)" in the "filter by tag" region
-    Then I should see "Gov (1)" in the "filter by tag" region
+    Then I should see "election (2)" in the "filter by tag" region
+    Then I should see "sports (1)" in the "filter by tag" region
 
 
   Scenario: View available resource format filters for datasets
     Given I am on "Datasets Search" page
     Then I click on the text "Format"
-    Then I should see "csv (5)" in the "filter by resource format" region
-    Then I should see "html (2)" in the "filter by resource format" region
+    Then I should see "csv (10)" in the "filter by resource format" region
+    Then I should see "zip (4)" in the "filter by resource format" region
 
   Scenario: View available author filters for datasets
     Given I am on "Datasets Search" page
@@ -149,27 +149,27 @@ Feature: Dataset Features
 
   Scenario: Filter dataset search results by tags
     Given I am on "Datasets Search" page
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
+    Then I should see "15 results"
+    And I should see "10" items in the "datasets" region
     Then I click on the text "Tags"
-    When I click "Health" in the "filter by tag" region
+    When I click "election" in the "filter by tag" region
     Then I should see "2 results"
     And I should see "2" items in the "datasets" region
 
   Scenario: Filter dataset search results by resource format
     Given I am on "Datasets Search" page
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
+    Then I should see "15 results"
+    And I should see "10" items in the "datasets" region
     Then I click on the text "Format"
     Then I wait for "1" seconds
     When I click "csv" in the "filter by resource format" region
-    Then I should see "5 results"
-    And I should see "5" items in the "datasets" region
+    Then I should see "10 results"
+    And I should see "10" items in the "datasets" region
 
   Scenario: Filter dataset search results by author
     Given I am on "Datasets Search" page
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
+    Then I should see "15 results"
+    And I should see "10" items in the "datasets" region
     Then I click on the text "Author"
     Then I wait for "1" seconds
     When I click "Gabriel" in the "filter by author" region

@@ -30,12 +30,12 @@ Feature: User
       | Celeste | Group 02 | member               | Active            |
     And "Tags" terms:
       | name    |
-      | Health  |
-      | Gov     |
+      | world   |
+      | results |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Katie   | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Katie   | Yes              | Health   | Test        |
+      | Dataset 01 | Group 01  | Katie   | Yes              | world    | Test        |
+      | Dataset 02 | Group 01  | Katie   | Yes              | world    | Test        |
 
   Scenario: Login
     Given I am on the homepage

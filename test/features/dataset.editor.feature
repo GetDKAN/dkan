@@ -34,20 +34,20 @@ Background:
     | Celeste | Group 02 | member               | Active            |
   And "Tags" terms:
     | name    |
-    | Health  |
-    | Gov     |
+    | world   |
+    | sport   |
   And datasets:
     | title      | publisher | author  | published        | tags     | description |
-    | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        |
-    | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        |
-    | Dataset 03 | Group 01  | Katie   | Yes              | Health   | Test        |
-    | Dataset 04 | Group 02  | Celeste | No               | Gov      | Test        |
-    | Dataset 05 | Group 01  | Katie   | No               | Gov      | Test        |
+    | Dataset 01 | Group 01  | Gabriel | Yes              | world    | Test        |
+    | Dataset 02 | Group 01  | Gabriel | Yes              | sport    | Test        |
+    | Dataset 03 | Group 01  | Katie   | Yes              | world    | Test        |
+    | Dataset 04 | Group 02  | Celeste | No               | sport    | Test        |
+    | Dataset 05 | Group 01  | Katie   | No               | sport    | Test        |
   And resources:
     | title       | publisher | format | author | published | dataset    | description |
     | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-    | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
-    | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 |             |
+    | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
+    | Resource 03 | Group 01  | zip    | Katie  | Yes       | Dataset 02 |             |
 
   @noworkflow
   Scenario: Edit any dataset associated with the groups that I am a member of

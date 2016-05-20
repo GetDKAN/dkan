@@ -24,8 +24,8 @@ Feature: Search
   Scenario: See number of datasets on search page
     Given I am on the "Dataset Search" page
     Given I search for " "
-    Then I should see "4" search results shown on the page
-    And I should see "4 results"
+    Then I should see "10" search results shown on the page
+    And I should see "12 results"
 
   Scenario: Filter by facet tag
     Given "tags" terms:
@@ -37,9 +37,9 @@ Feature: Search
       | Dataset 02      | Yes        | politics  |
 
     And I search for " "
-    When I click "politics"
-    Then I should not see "Dataset 01"
-    But I should see "Dataset 02"
+    When I click "something"
+    Then I should not see "Dataset 02"
+    But I should see "Dataset 01"
 
   Scenario: Filter by facet group
     Given groups:
