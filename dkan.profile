@@ -36,6 +36,8 @@ function dkan_additional_setup() {
           array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
           array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
           array('dkan_revert_feature', array('dkan_sitewide_menu', array('custom_menu', 'menu_links'))),
+          // The module needs to be enabled after the revert on 'dkan_dataset_groups' is done.
+          // If not a warning will appear during install about og_group_ref not being present.
           array('dkan_enable_optional_module', array('dkan_fixtures_default')),
           array('dkan_build_menu_links', array()),
           array('dkan_flush_image_styles', array()),
