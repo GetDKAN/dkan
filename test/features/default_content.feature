@@ -59,7 +59,7 @@ Feature: Homepage
   Scenario: All default content should be removed if the module is disabled
     Given I am logged in as a user with the "administrator" role
     When I disable the module "dkan_fixtures_default"
-    When I am on "/admin/content"
+    And I am on "/admin/content"
     # I should not see the default groups.
     Then I should not see "Committee on International Affairs"
     And I should not see "State Economic Council"
@@ -100,5 +100,8 @@ Feature: Homepage
     And I should not see "U.S. Tobacco Usage Statistics"
     And I should not see "Varicella (Chickenpox) Incidence and Mortality, Before and After the Vaccine"
     And I should not see "Wisconsin Polling Places"
-    # Enable the module again for the rest of the tests
+
+  @api
+  Scenario: Enable the default content module back
+    Given I am logged in as a user with the "administrator" role
     Then I enable the module "dkan_fixtures_default"
