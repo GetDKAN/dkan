@@ -202,8 +202,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_migrate_base.git'
-      branch: 7.x-1.x
-      revision: 7ce1d18
+      branch: 2198-new-oob-content
 libraries:
   jquery.imagesloaded:
     download:
