@@ -36,6 +36,7 @@ function dkan_additional_setup() {
           array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
           array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
           array('dkan_revert_feature', array('dkan_sitewide_menu', array('custom_menu', 'menu_links'))),
+          array('dkan_enable_optional_module', array('dkan_fixtures_default')),
           array('dkan_build_menu_links', array()),
           array('dkan_flush_image_styles', array()),
           array('dkan_colorizer_reset', array()),
