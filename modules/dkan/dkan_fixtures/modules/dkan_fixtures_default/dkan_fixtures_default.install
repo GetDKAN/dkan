@@ -23,7 +23,8 @@ function dkan_fixtures_default_enable() {
   $migration->processImport();
 
   // Clear message queue.
-  drupal_get_messages(NULL, TRUE);
+  drupal_get_messages('status', TRUE);
+  drupal_get_messages('warning', TRUE);
   drupal_set_message('The default content was imported.');
 }
 
@@ -45,6 +46,7 @@ function dkan_fixtures_default_disable() {
   dkan_fixtures_default_migrations_disable();
 
   // Clear message queue.
-  drupal_get_messages(NULL, TRUE);
+  drupal_get_messages('status', TRUE);
+  drupal_get_messages('warning', TRUE);
   drupal_set_message('The default content was removed.');
 }
