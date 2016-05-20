@@ -81,7 +81,7 @@ Feature: Datasets
     Given cartodb previews are enabled for csv resources
     And I am logged in as a user with the "site manager" role
     And I am on "/dataset/wisconsin-polling-places"
-    Then I should see "Open With"
+    Then I should see "Preview"
     When I press "Open With"
     Then I should see the local preview link
     And I should see "CartoDB"

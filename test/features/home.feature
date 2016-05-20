@@ -33,7 +33,7 @@ Feature: Homepage
   Scenario: Viewing topics
     Given I am on the homepage
     When I click "Public Safety"
-    Then I should see "Committee on International Affairs"
+    Then I should see "Crime Data for the Ten Most Populous Cities in the U.S."
 
   @api @javascript
   Scenario: See "Add Dataset"
