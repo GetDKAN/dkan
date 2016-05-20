@@ -53,6 +53,8 @@ class MigrateCkanDatasetImport extends MigrateCkanDatasetBase {
     foreach ($fields as $id => $field) {
       $this->addFieldMapping($field, $field);
     }
+
+    $this->addFieldMapping('field_spatial', 'field_spatial');
   }
 
   /**
@@ -67,6 +69,7 @@ class MigrateCkanDatasetImport extends MigrateCkanDatasetBase {
           $field != 'field_contact_email' &&
           $field != 'field_spatial' &&
           $field != 'field_tags' &&
+          $field != 'field_topic' &&
           $field != 'field_additional_info') {
         $additional_fields[] = $field;
       }
@@ -79,6 +82,15 @@ class MigrateCkanDatasetImport extends MigrateCkanDatasetBase {
    */
   public function prepare($node, $row) {
     parent::prepare($node, $row);
+
+    if (!$row->field_additional_info) {
+      $node->field_additional_info = array();
+    }
+
+    if (isset($row->dkan_additional_fields->field_spatial->geo_type)) {
+      $node->field_spatial[LANGUAGE_NONE][0] = (array) $row->dkan_additional_fields->field_spatial;
+    }
+
     if ($row->private == 'Published') {
       $node->status = 1;
       foreach ($row->resource_ids as $resource) {
@@ -88,6 +100,7 @@ class MigrateCkanDatasetImport extends MigrateCkanDatasetBase {
         node_save($resource);
       }
     }
+
     if (!$node->uid) {
       $node->uid = 1;
     }

@@ -49,18 +49,20 @@ class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
       $arguments['list_url'] = 'package_list.json';
       $arguments['item_url'] = 'package_show?id=:id.json';
     }
-    $this->addFieldMapping('field_spatial', 'field_spatial');
+
+    $this->addFieldMapping('field_topic', 'topic_names');
 
     parent::__construct($arguments);
   }
 
-  public function prepare($node, $row) {
-    parent::prepare($node, $row);
-    if (!$row->field_additional_info) {
-      $node->field_additional_info = array();
-    }
-    if (isset($row->dkan_additional_fields->field_spatial->geo_type)) {
-      $node->field_spatial[LANGUAGE_NONE][0] = (array) $row->dkan_additional_fields->field_spatial;
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    $topics = taxonomy_vocabulary_machine_name_load('dkan_topics');
+    if (isset($row->dkan_additional_fields->field_topic)) {
+      foreach ($row->dkan_additional_fields->field_topic as $topic) {
+        $topic = $this->createTax($topic->value, 'dkan_topics', $topics->vid);
+        $row->topic_names[] = $topic->name;
+      }
     }
   }
 }
