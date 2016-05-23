@@ -91,6 +91,12 @@ class MigrateCkanDatasetImport extends MigrateCkanDatasetBase {
       $node->field_spatial[LANGUAGE_NONE][0] = (array) $row->dkan_additional_fields->field_spatial;
     }
 
+    if (isset($row->dkan_additional_fields->field_related_content[0])) {
+      foreach ($row->dkan_additional_fields->field_related_content as $key => $link) {
+        $node->field_related_content[LANGUAGE_NONE][$key] = (array) $link;
+      }
+    }
+
     if ($row->private == 'Published') {
       $node->status = 1;
       foreach ($row->resource_ids as $resource) {
@@ -191,28 +197,6 @@ class MigrateCkanResourceImport extends MigrateCkanResourceBase {
             'message' => t('%url was not available for download', array('%url' => $row->url)),
             'level' => MigrationBase::MESSAGE_NOTICE,
           );
-        }
-      }
-    }
-  }
-
-  /**
-   * Implements prepare.
-   */
-  public function prepare($node, $row) {
-    parent::prepare($node, $row);
-    // If the url is a url and has a common domain or file extension treat it
-    // as a remote link.
-    if (isset($row->url) && (strpos($row->url, 'http://') !== FALSE || strpos($row->url, 'https://') !== FALSE)) {
-      if ($ext = array_pop(explode('.', $row->url))) {
-        if ($ext == 'html' ||
-          $ext = 'shtml' ||
-          $ext = 'com' ||
-          $ext = 'net' ||
-          $ext = 'info') {
-            $node->field_link_remote_file = array();
-            $node->field_upload = array();
-            $node->field_link_api['und'][0]['url'] = $row->url;
         }
       }
     }
