@@ -1,7 +1,7 @@
 Feature: Topics
 
   Background:
-    Given "dkan_topics_term" terms:
+    Given "dkan_topics" terms:
       | name   |
       | Topic1 |
       | Topic2 |
