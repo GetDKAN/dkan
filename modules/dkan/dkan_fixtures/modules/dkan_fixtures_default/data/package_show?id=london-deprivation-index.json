@@ -14,26 +14,26 @@
         "url": "http://default/dataset/london-deprivation-index",
         "state": "Active",
         "private": "Published",
-        "revision_timestamp": "Fri, 05/20/2016 - 15:51",
+        "revision_timestamp": "Mon, 05/23/2016 - 17:08",
         "metadata_created": "Fri, 05/20/2016 - 00:04",
-        "metadata_modified": "Fri, 05/20/2016 - 15:51",
+        "metadata_modified": "Mon, 05/23/2016 - 17:08",
         "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
         "type": "Dataset",
         "resources": [
             {
                 "id": "f14a3476-91c8-404b-8f34-5d66219ce97d",
                 "revision_id": "",
-                "url": "files/index-of-multiple-deprivation.zip",
+                "url": "https://files.datapress.com/london/dataset/indices-deprivation-2010/IMD-MAPS.zip",
                 "description": "",
                 "format": "zip",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/20/2016 - 00:06",
+                "revision_timestamp": "Mon, 05/23/2016 - 17:05",
                 "name": "English Indices of Deprivation 2010",
-                "mimetype": "application/zip",
-                "size": "21.95 MB",
+                "mimetype": "zip",
+                "size": "",
                 "created": "Fri, 05/20/2016 - 00:06",
                 "resource_group_id": "f2c130b8-5eef-4e90-913a-842c11e26665",
-                "last_modified": "Date changed\tFri, 05/20/2016 - 00:06"
+                "last_modified": "Date changed\tMon, 05/23/2016 - 17:05"
             }
         ],
         "tags": [
