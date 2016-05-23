@@ -23,7 +23,7 @@ Feature: Datasets
   Scenario: Viewing the Dataset
     Given I am on "/dataset/wisconsin-polling-places"
     Then I should see "Polling places in the state of Wisconsin"
-    And I should see "Open With"
+    And I should see "Preview"
     And I should see "Dataset Info"
     And I should see "Modified Date"
     And I should see "Identifier"
@@ -81,7 +81,7 @@ Feature: Datasets
     Given cartodb previews are enabled for csv resources
     And I am logged in as a user with the "site manager" role
     And I am on "/dataset/wisconsin-polling-places"
-    Then I should see "Preview"
+    Then I should see "Open With"
     When I press "Open With"
     Then I should see the local preview link
     And I should see "CartoDB"
