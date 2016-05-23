@@ -23,32 +23,32 @@
             {
                 "id": "8dd6e6fc-ffe8-494e-a042-fc03bff2c20b",
                 "revision_id": "",
-                "url": "files/google_transit.zip",
+                "url": "http://developer.metro.net/gtfs/google_transit.zip",
                 "description": "",
                 "format": "zip",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/20/2016 - 01:00",
-                "name": "LA Metro GTFS Data March 2016",
-                "mimetype": "application/zip",
-                "size": "18.09 MB",
+                "revision_timestamp": "Mon, 05/23/2016 - 19:57",
+                "name": "LA Metro GTFS Data 03/16",
+                "mimetype": "zip",
+                "size": "",
                 "created": "Fri, 05/20/2016 - 01:00",
                 "resource_group_id": "",
-                "last_modified": "Date changed\tFri, 05/20/2016 - 01:00"
+                "last_modified": "Date changed\tMon, 05/23/2016 - 19:57"
             },
             {
                 "id": "8243ec40-5677-4636-add8-16cf1a6d775f",
                 "revision_id": "",
-                "url": "files/google_transit_2016-02-23.zip",
+                "url": "http://developer.metro.net/gtfs/archive/google_transit_2016-02-23.zip",
                 "description": "",
                 "format": "zip",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/20/2016 - 01:01",
-                "name": "LA Metro GTFS Data February 2016",
-                "mimetype": "application/zip",
-                "size": "22.06 MB",
+                "revision_timestamp": "Mon, 05/23/2016 - 19:56",
+                "name": "LA Metro GTFS Data  02/16",
+                "mimetype": "zip",
+                "size": "",
                 "created": "Fri, 05/20/2016 - 01:01",
                 "resource_group_id": "",
-                "last_modified": "Date changed\tFri, 05/20/2016 - 01:01"
+                "last_modified": "Date changed\tMon, 05/23/2016 - 19:56"
             }
         ],
         "tags": [
