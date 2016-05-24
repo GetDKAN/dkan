@@ -8,8 +8,8 @@ Feature: Panels
     When I click "Customize this page"
     And I wait for "Add new pane"
       And I click "Add new pane"
-      And I wait for "Please select a category from the left"
-    When I click "New custom content" in the "modal" region
+      And I wait for "Add content"
+    When I follow "New custom content"
       And I wait for "5" seconds
       And I fill in "edit-title" with "New Custom Item"
       And I scroll to the top
