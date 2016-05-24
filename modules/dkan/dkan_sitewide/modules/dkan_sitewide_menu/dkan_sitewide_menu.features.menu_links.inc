@@ -10,46 +10,6 @@
 function dkan_sitewide_menu_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: main-menu_about:node/1
-  $menu_links['main-menu_about:node/1'] = array(
-    'menu_name' => 'main-menu',
-    'link_path' => 'node/1',
-    'router_path' => 'node/%',
-    'link_title' => 'About',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'main-menu_about:node/1',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -49,
-    'customized' => 1,
-  );
-  // Exported menu link: main-menu_dataset:search/type/dataset
-  $menu_links['main-menu_dataset:search/type/dataset'] = array(
-    'menu_name' => 'main-menu',
-    'link_path' => 'search/type/dataset',
-    'router_path' => 'search/type/dataset',
-    'link_title' => 'Datasets',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'main-menu_dataset:search/type/dataset',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -47,
-    'customized' => 1,
-  );
   // Exported menu link: menu-command-center-menu_add-content:node/add
   $menu_links['menu-command-center-menu_add-content:node/add'] = array(
     'menu_name' => 'menu-command-center-menu',
@@ -611,7 +571,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('About');
   t('Add content');
   t('Add dataset');
   t('Add group');
@@ -624,7 +583,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Data Previews');
   t('Data Story');
   t('Dataset');
-  t('Datasets');
   t('Fonts');
   t('GeoJSON');
   t('Manage Users');
