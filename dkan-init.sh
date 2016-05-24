@@ -90,14 +90,12 @@ alert() {
   echo ""
 }
 
-composer_configure() {
-  if [[ "$PATH" != *"${1}/vendor/bin"* ]]; then
-    echo "> Composer PATH is not set. Adding temporarily.. (you should add to your .bashrc)"
+# Exports a specified path parameter in the PATH environment variable
+path_export() {
+  if [[ "$PATH" != *"$1"* ]]; then
+    echo "> $1 PATH is not set. Adding temporarily.. (you should add to your .bashrc)"
     echo "PATH (prior) = $PATH"
-    export PATH="$PATH:${1}/vendor/bin"
-  fi
-  if [ -d "$1" ]; then
-    rm -rf "$1"
+    export PATH="$PATH:$1"
   fi
 }
 
@@ -117,12 +115,13 @@ install_dependencies() {
     echo "> Composer already installed"
   fi
 
-  composer_configure "$HOME/.config/composer"
-  composer_configure "$HOME/.composer"
+  path_export "$HOME/.config/composer/vendor/bin"
+  path_export "$HOME/.composer/vendor/bin"
 
   DRUSH_VERSION="8.1.0"
   if [ ! "$(which drush)" ]; then
     echo "> Installing Drush";
+    $AUTO_SUDO rm -rf "$HOME/.config/composer" "$HOME/.composer" || true
     composer global require --prefer-source --no-interaction drush/drush:$DRUSH_VERSION
     if [ ! "$(which drush)" ]; then
       error "Installation of drush failed."
@@ -131,7 +130,7 @@ install_dependencies() {
     old_version=$(drush --version)
     old_drush=$(which drush)
     echo "Drush version is not up to date: $drush_version should be $DRUSH_VERSION. Removing old drush and updating."
-    $AUTO_SUDO mv "$old_drush" "$old_drush-old"
+    $AUTO_SUDO rm -rf "$HOME/.config/composer" "$HOME/.composer" || true
     composer global require --prefer-source --no-interaction drush/drush:"$DRUSH_VERSION"
     if [[ "$(drush --version)" != *"$DRUSH_VERSION"* ]]; then
       echo "Drush Path: $(which drush)"
