@@ -117,7 +117,7 @@ install_dependencies() {
 
   path_export "$HOME/.config/composer/vendor/bin"
   path_export "$HOME/.composer/vendor/bin"
-
+  echo "just another commit"
   DRUSH_VERSION="8.0.5"
   if [ ! "$(which drush)" ]; then
     echo "> Installing Drush";
