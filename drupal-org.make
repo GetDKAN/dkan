@@ -185,7 +185,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/nuboot_radix.git'
-      branch: 7.x-1.x
+      branch: civic-2199-front-page
     type: theme
   radix:
     type: theme
