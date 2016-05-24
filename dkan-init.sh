@@ -90,6 +90,17 @@ alert() {
   echo ""
 }
 
+composer_configure() {
+  if [[ "$PATH" != *"${1}/vendor/bin"* ]]; then
+    echo "> Composer PATH is not set. Adding temporarily.. (you should add to your .bashrc)"
+    echo "PATH (prior) = $PATH"
+    export PATH="$PATH:${1}/vendor/bin"
+  fi
+  if [ -d "$1" ]; then
+    rm -rf "$1"
+  fi
+}
+
 install_dependencies() {
   alert "Installing dependencies if they don't exist."
 
@@ -106,15 +117,10 @@ install_dependencies() {
     echo "> Composer already installed"
   fi
 
-  COMPOSER_PATH=".composer/vendor/bin"
+  composer_configure "$HOME/.config/composer"
+  composer_configure "$HOME/.composer"
 
-  if [[ "$PATH" != *"$COMPOSER_PATH"* ]]; then
-    echo "> Composer PATH is not set. Adding temporarily.. (you should add to your .bashrc)"
-    echo "PATH (prior) = $PATH"
-    export PATH="$PATH:~/$COMPOSER_PATH"
-  fi
-
-  DRUSH_VERSION="8.0.2"
+  DRUSH_VERSION="8.1.0"
   if [ ! "$(which drush)" ]; then
     echo "> Installing Drush";
     composer global require --prefer-source --no-interaction drush/drush:$DRUSH_VERSION
@@ -265,4 +271,3 @@ else
 fi
 
 shopt -u dotglob
-
