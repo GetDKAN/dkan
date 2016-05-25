@@ -40,11 +40,9 @@ commands:
   setup:
     usage: Base setup for theme development
     cmd: |
-      ahoy dkan theme fetch
-      ahoy dkan theme link
       ahoy dkan theme install-dependencies
 
   watch:
     usage: 'compile and watch for changes'
     cmd: |
-      ahoy cmd-proxy "cd dkan/themes/contrib/nuboot_radix && gulp"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && gulp"
