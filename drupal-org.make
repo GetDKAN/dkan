@@ -67,7 +67,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/visualization_entity.git'
-      branch: master
+      branch: 938_chroma_css
     type: module
   visualization_entity_charts:
     download:
