@@ -1,0 +1,23 @@
+@media all and (max-width:767px) {
+	aside[class|='col'],
+	section[class|='col'] {
+		padding: 0;
+	}
+	.container {
+		width: 100%;
+	}
+	// Adjust custom full width panels.
+	.panel-full-width .panel-top .panel-col-first,
+	.panel-full-width .panel-top .panel-col-second,
+	.panel-full-width .panel-bottom .panel-col-first,
+	.panel-full-width .panel-bottom .panel-col-second,
+	.panel-full-width .panel-bottom .panel-col-third  {
+	  width: 100%;
+	  float: none;
+	  .inside {
+	  	margin: 20px 15px;
+	  }
+	}
+	
+}
+
