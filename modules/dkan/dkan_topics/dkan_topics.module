@@ -191,7 +191,7 @@ function dkan_topics_field_formatter_view($entity_type, $entity, $field, $instan
           'name' => array(
             '#type' => 'markup',
             '#markup' => check_plain($term->name),
-            '#prefix' => '<a href="' . $url . '">',
+            '#prefix' => '<a class="name" href="' . $url . '">',
             '#suffix' => '</a>',
             ),
           );
