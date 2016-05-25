@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+.views-edit-view .action-list input.btn, .views-edit-view .action-list input.btn:active, .views-edit-view .action-list input.btn:focus, .views-edit-view .action-list input.btn:hover, .views-edit-view .action-list input[type="submit"]:hover { background: inherit; border: none; color: inherit; }
+.views-edit-view .footer { background: inherit; }
+
+.modal-content .panels-root-content-box a.btn { white-space: normal; }
+.modal-content .panel-title { padding-right: 55px; }
+
+.views-displays .secondary .open > a:hover { color: #666; }
+
+input.form-submit.features-refresh-button { background: #0A77BD; }
+
+.recline-pager .pagination li { vertical-align: middle; }
+.recline-pager .pagination li a { line-height: 1em; padding: 0 10px; }
+.recline-pager .pagination li a.btn { line-height: 32px; }
+.recline-pager .pagination input { height: 20px; font-size: .8em; }
+
+.recline-data-explorer .form-control { border-color: #ccc; }
+.recline-data-explorer .btn { border: 1px solid #ccc; font-size: 14px; padding: 0px 12px; line-height: 32px; }
+
+.dropdown-menu.slick-contextmenu { background: #fff; }
+.dropdown-menu.slick-contextmenu li { padding-left: 5px; padding-right: 5px; }

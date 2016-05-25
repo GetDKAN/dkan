@@ -9,11 +9,11 @@ commands:
   link:
     usage: Link a module folder into dkan/modules/dkan/.
     cmd: |
-      if [ -d "docroot/profiles/dkan/themes/contrib/nuboot_radix" ]; then
-        echo "Theme already exists at 'docroot/profiles/dkan/themes/contrib/nuboot_radix', removing it to make room..."
-        rm -rf "docroot/profiles/dkan/themes/contrib/nuboot_radix";
+      if [ -d "docroot/profiles/dkan/themes/nuboot_radix" ]; then
+        echo "Theme already exists at 'docroot/profiles/dkan/themes/nuboot_radix', removing it to make room..."
+        rm -rf "docroot/profiles/dkan/themes/nuboot_radix";
       fi
-      ln -s ../../../nuboot_radix docroot/profiles/dkan/themes/contrib/nuboot_radix && echo "Symlink created for nuboot_radix.. "
+      ln -s ../../nuboot_radix docroot/profiles/dkan/themes/nuboot_radix && echo "Symlink created for nuboot_radix.. "
 
   install-dependencies:
     usage: Installs dependencies for theme development
@@ -34,17 +34,15 @@ commands:
           exit 1;
         };
       }
-      ahoy cmd-proxy "cd dkan/themes/contrib/nuboot_radix && npm install --unsafe-perm"
-      ahoy cmd-proxy "cd dkan/themes/contrib/nuboot_radix && bower install -allow-root"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && npm install --unsafe-perm"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && bower install -allow-root"
 
   setup:
     usage: Base setup for theme development
     cmd: |
-      ahoy dkan theme fetch
-      ahoy dkan theme link
       ahoy dkan theme install-dependencies
 
   watch:
     usage: 'compile and watch for changes'
     cmd: |
-      ahoy cmd-proxy "cd dkan/themes/contrib/nuboot_radix && gulp"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && gulp"

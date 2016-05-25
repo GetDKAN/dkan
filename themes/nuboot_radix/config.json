@@ -1,0 +1,37 @@
+{
+  "name": "nuboot_radix",
+  "description": "A Radix based subtheme built for DKAN.",
+  "browserSyncProxy" : "http://dkan.local",
+  "bowerDir": "./bower_components",
+  "css": {
+    "file" : "nuboot_radix.style.scss",
+    "src": [
+      "scss/**/*.scss"
+    ],
+    "dest": "assets/css",
+    "includePaths": [
+      "./bower_components/bootstrap-sass/assets/stylesheets",
+      "./bower_components/font-awesome/scss",
+      "./bower_components/compass-mixins/lib"
+    ]
+  },
+  "js": {
+    "file" : "nuboot_radix.script.js",
+    "src": [
+      "js/**/*.js"
+    ],
+    "dest": "assets/js"
+  },
+  "images": {
+    "src": [
+      "assets/images/**/*"
+    ],
+    "dest": "assets/images/"
+  },
+  "fonts": {
+    "src": [
+      "./bower_components/font-awesome/fonts/**.*"
+    ],
+    "dest": "./assets/fonts/"
+  }
+}
