@@ -4,7 +4,7 @@
 # Web node
 web:
   hostname: web
-  image: blinkreaction/drupal-apache-php:2.2-5.5
+  image: nuams/drupal-apache-php:1.0-5.5
   environment:
     - VIRTUAL_HOST=dkan.docker
     #- VIRTUAL_PROTO=https
