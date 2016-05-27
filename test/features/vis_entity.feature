@@ -21,7 +21,6 @@ Feature: Visualization Entities
     And I am on the "Add Chart" page
     And I click "Add Chart"
     When I fill in "Title" with "Chart 01"
-    And I attach the file "Polling_Places_Madison.csv" to "field_upload[und][0][resup]"
     And I attach the drupal file "gold_prices.csv" to "files[field_file_und_0]"
     And I press "Upload"
     #And I wait for "Remove"
