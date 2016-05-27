@@ -10,10 +10,10 @@
 function dkan_install_tasks() {
   return array(
     'dkan_additional_setup' => array(
-        'display_name' => t('DKAN final setup tasks'),
-        'display' => TRUE,
-        'type' => 'batch',
-        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+    'display_name' => t('DKAN final setup tasks'),
+    'display' => TRUE,
+    'type' => 'batch',
+    'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
     ),
   );
 }
@@ -23,26 +23,26 @@ function dkan_install_tasks() {
  */
 function dkan_additional_setup() {
   return array(
-      'operations' => array(
-          array('dkan_theme_config', array()),
-          array('dkan_change_block_titles', array()),
-          array('dkan_install_markdown', array()),
-          array('dkan_enable_optional_module', array('dkan_permissions')),
-          array('dkan_enable_optional_module', array('dkan_default_topics')),
-          array('dkan_revert_feature', array('dkan_sitewide_menu', array('content_menu_links', 'menu_links'))),
-          array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
-          array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
-          array('dkan_revert_feature', array('dkan_dataset_groups_perms', array('og_features_permission'))),
-          array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
-          array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
-          array('dkan_revert_feature', array('dkan_sitewide_menu', array('custom_menu', 'menu_links'))),
-          array('dkan_build_menu_links', array()),
-          array('dkan_flush_image_styles', array()),
-          array('dkan_colorizer_reset', array()),
-          array('dkan_misc_variables_set', array()),
-          array('dkan_install_default_content', array()),
-          array('dkan_set_adminrole', array()),
-      ),
+    'operations' => array(
+      array('dkan_theme_config', array()),
+      array('dkan_change_block_titles', array()),
+      array('dkan_markdown_setup', array()),
+      array('dkan_enable_optional_module', array('dkan_permissions')),
+      array('dkan_enable_optional_module', array('dkan_default_topics')),
+      array('dkan_revert_feature', array('dkan_sitewide_menu', array('content_menu_links', 'menu_links'))),
+      array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
+      array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
+      array('dkan_revert_feature', array('dkan_dataset_groups_perms', array('og_features_permission'))),
+      array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
+      array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
+      array('dkan_revert_feature', array('dkan_sitewide_menu', array('custom_menu', 'menu_links'))),
+      array('dkan_build_menu_links', array()),
+      array('dkan_flush_image_styles', array()),
+      array('dkan_colorizer_reset', array()),
+      array('dkan_misc_variables_set', array()),
+      array('dkan_install_default_content', array()),
+      array('dkan_set_adminrole', array()),
+    ),
   );
 }
 
@@ -72,15 +72,17 @@ function dkan_change_block_titles(&$context) {
  * Make sure markdown editor installs correctly.
  * @param $context
  */
-function dkan_install_markdown(&$context) {
+function dkan_markdown_setup(&$context) {
   $context['message'] = t('Installing Markdown');
   module_load_include('install', 'markdowneditor', 'markdowneditor');
   _markdowneditor_insert_latest();
   $data = array(
-      'pages' => "node/*\ncomment/*\nsystem/ajax",
-      'eid' => 5,
+    'pages' => "node/*\ncomment/*\nsystem/ajax",
+    'eid' => 5,
   );
   drupal_write_record('bueditor_editors', $data, array('eid'));
+  // Remove unsupported markdown options.
+  dkan_delete_markdown_buttons($context);
 }
 
 /**
@@ -168,12 +170,12 @@ function dkan_misc_variables_set(&$context) {
   variable_set('jquery_update_jquery_version', '1.7');
   // Disable selected views enabled by contributed modules.
   $views_disable = array(
-      'og_extras_nodes' => TRUE,
-      'feeds_log' => TRUE,
-      'groups_page' => TRUE,
-      'og_extras_groups' => TRUE,
-      'og_extras_members' => TRUE,
-      'dataset' => TRUE,
+    'og_extras_nodes' => TRUE,
+    'feeds_log' => TRUE,
+    'groups_page' => TRUE,
+    'og_extras_groups' => TRUE,
+    'og_extras_members' => TRUE,
+    'dataset' => TRUE,
   );
   variable_set('views_defaults', $views_disable);
 }
@@ -203,3 +205,45 @@ function dkan_set_adminrole(&$context) {
         return t('User admin role already set. Skipping update.');
     }
 }
+
+/**
+ * Remove unsupported markdown options.
+ *
+ * @param $context
+ */
+function dkan_delete_markdown_buttons(&$context) {
+  $context['message'] = t('Removing unsupported Markdown buttons');
+  $eid = db_query('SELECT eid FROM {bueditor_editors} WHERE name = :name', array(':name' => 'Markdowneditor'))->fetchField();
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Insert a table')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Insert an abbreviation (word or acronym with definition)')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Insert a footnote')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Insert a horizontal ruler (horizontal line)')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Teaser break')
+    ->condition('eid', $eid)
+    ->execute();
+
+  // Update markdown linebreak button with html.
+  db_update('bueditor_buttons')
+    ->fields(array('content' => '<br>'))
+    ->condition('title', 'Insert a line break', '=')
+    ->condition('eid', $eid)
+    ->execute();
+}
+
