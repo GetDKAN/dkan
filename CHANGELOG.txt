@@ -1,6 +1,8 @@
 7.x-1.12.x
 --------------------------
 - Add <br><h2><h3><center><iframe> to allowed html tags
+- Renamed the default HTML text format to 'Markdown HTML'
+- Improved markdown text editor toolbar
 
 7.x-1.12.2
 --------------------------
