@@ -3,6 +3,8 @@
 - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
 - Fixes typo in "add data story" link in command center menu
 - Add topic icons to the drop down menu
+- Renamed the default HTML text format to 'Markdown HTML'
+- Improved markdown text editor toolbar
 - URLs on dataset's additional info are now properly displayed as links.
 - Removed warnings about undefined permissions when visualization_entity_choropleth_bundle module is enabled.
 - Removed warnings about undefined permissions when visualization_entity_geojson_bundle module is enabled.
@@ -11,6 +13,7 @@
 - Removed omega theme.
 - Removed delta module.
 - Moved Nuboot Radix theme into core build.
+
 
 7.x-1.12 2016-04-20
 --------------------------
