@@ -13,7 +13,7 @@
 - Removed omega theme.
 - Removed delta module.
 - Moved Nuboot Radix theme into core build.
-
+- Change admin theme setting to use default theme rather than nuboot radix
 
 7.x-1.12 2016-04-20
 --------------------------
