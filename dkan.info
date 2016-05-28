@@ -23,6 +23,7 @@ dependencies[] = admin_menu_toolbar
 dependencies[] = adminrole
 dependencies[] = autocomplete_deluxe
 dependencies[] = bueditor
+dependencies[] = bueditor_plus
 dependencies[] = beautytips
 dependencies[] = chosen
 dependencies[] = contextual
