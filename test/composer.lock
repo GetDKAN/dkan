@@ -1115,11 +1115,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/config/zipball/38711092665edc06ef55e842942fb813932ff4ac",
-<<<<<<< HEAD
                 "reference": "38711092665edc06ef55e842942fb813932ff4ac",
-=======
-                "reference": "8c83ff9a2ffbed1e606bc816db11ddc2385a16ee",
->>>>>>> 7.x-1.x
                 "shasum": ""
             },
             "require": {
