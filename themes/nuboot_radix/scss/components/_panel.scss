@@ -1,0 +1,132 @@
+//
+// Styles for panels and panes.
+// --------------------------------------------------
+.region-content {
+	margin: 0 15px;
+}
+.panel-body {
+	overflow: visible;
+}
+.pane-content {
+  .field-name-body {
+    line-height: 2em;
+  }
+}
+
+.breadcrumb,
+.alert,
+.tabs--primary,
+.page-header {
+  margin: 0 15px 15px;
+}
+
+.page-admin {
+	.region-content {
+		margin: 0;
+	}
+	.breadcrumb,
+	.alert,
+	.tabs--primary,
+	.page-header {
+		margin: 0 0 15px;
+	}
+}
+
+.front {
+	.region-content {
+		margin: 0;
+	}
+	.alert {
+		margin: 10px 15px;
+	}
+}
+
+#panels-choose-layout .form-type-radio input,
+.panels-choose-layout .form-type-radio input {
+	width: 15px;
+}
+
+.radix-layouts-sidebar {
+	.pane-title {
+		@include block-title;
+	}
+	.pane-block {
+		@include blockbox;
+		&.pane-facetapi {
+			border: none;
+		}
+	}
+}
+.page-user .radix-layouts-content .pane-content {
+  padding: 0;
+  .profile {
+  	margin-top: 0;
+  }
+}
+.radix-layouts-content {
+	.pane-title {
+		font-size: 36px;
+  	line-height: 42px;
+		margin:0 0 15px 0;
+		padding:0;
+	}
+	.pane-content {
+		padding: 20px 0;
+		margin-bottom: 1em;
+	}
+	.pane-node-field-topic .pane-content {
+		padding: 0
+	}
+	.pane-page-breadcrumb {
+		.breadcrumb {
+			display: block;
+			margin: 0 0 15px 0;
+		}
+	}
+}
+.node-type-group .radix-layouts-content {
+	@media (max-width: 991px) {
+		.pane-title {
+			margin-top: 2em;
+		}
+	}
+	.pane-content {
+		padding: 20px 0 0;
+		margin-bottom: 0;
+	}
+}
+
+.page-manager-wrapper .panel-region {
+	.pane-title {
+		background-image: none;
+		border: none;
+		font-size: 1em;
+		line-height: normal;
+	}
+	.panel-pane-collapsible {
+		.pane-content {
+			padding: 10px 15px;
+		}
+	}
+}
+
+#panelizer-edit-content-form input {
+	margin-right: 1em;
+}
+
+.panel-full-width .panel-top {
+	margin-bottom: 15px;
+	.pane-content {
+		margin: 25px 0;
+	}
+}
+@media (max-width: 768px) {
+	.panel-full-width .panel-bottom {
+		.panel-col-first,
+		.panel-col-second,
+		.panel-col-third {
+			float: none;
+			width: 100%;
+		}
+	}
+}

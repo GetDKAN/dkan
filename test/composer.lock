@@ -17,7 +17,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/e080d0be50fdeb00ee8df23fb585577ca031a628",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/56657835a16fa1fcfbd801612c7b8f95ebd7a328",
                 "reference": "e080d0be50fdeb00ee8df23fb585577ca031a628",
                 "shasum": ""
             },
@@ -903,7 +903,7 @@
         },
         {
             "name": "nucivic/dkanextension",
-            "version": "dev-master",
+            "version": "dev-civic-2217-markdown",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
@@ -1115,7 +1115,11 @@
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/config/zipball/38711092665edc06ef55e842942fb813932ff4ac",
+<<<<<<< HEAD
                 "reference": "38711092665edc06ef55e842942fb813932ff4ac",
+=======
+                "reference": "8c83ff9a2ffbed1e606bc816db11ddc2385a16ee",
+>>>>>>> 7.x-1.x
                 "shasum": ""
             },
             "require": {
