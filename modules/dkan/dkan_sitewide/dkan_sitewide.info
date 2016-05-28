@@ -26,7 +26,6 @@ features[features_api][] = api:2
 features[field_instance][] = node-page-body
 features[filter][] = html
 features[node][] = page
-features[variable][] = admin_theme
 features[variable][] = bueditor_roles
 features[variable][] = bueditor_user1
 features[variable][] = colorizer_cssfile
