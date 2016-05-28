@@ -59,7 +59,12 @@ class FeatureContext extends RawDKANContext
   public function iHoverOverTheAdminMenuItem($item) {
     $session = $this->getSession();
     $page = $session->getPage();
+
     $menu = $page->findById('admin-menu-wrapper');
+    if (null === $menu) {
+      throw new \InvalidArgumentException(sprintf('The admin-menu could not be found'));
+    }
+
     $element = $menu->findLink($item);
     if (null === $element) {
         throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
