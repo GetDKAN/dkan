@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "495cd163a358224ebef66fd3b9e7a79f",
-    "content-hash": "1c622d2a9544c6d9fa7a1c2572450337",
+    "hash": "def1eb64cf11ae68a35dd277ea5c7a10",
+    "content-hash": "5b0b01e369aa2b7b64649e620b03615a",
     "packages": [
         {
             "name": "behat/behat",
@@ -17,7 +17,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/56657835a16fa1fcfbd801612c7b8f95ebd7a328",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/e080d0be50fdeb00ee8df23fb585577ca031a628",
                 "reference": "e080d0be50fdeb00ee8df23fb585577ca031a628",
                 "shasum": ""
             },
@@ -903,16 +903,16 @@
         },
         {
             "name": "nucivic/dkanextension",
-            "version": "dev-310_dataset_rest_api",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "eeb7ad3c3d04ec9e07805c3aaebc65751ab644ab"
+                "reference": "9108782b9c4df079342270e8220a6a7f0ae64fca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/eeb7ad3c3d04ec9e07805c3aaebc65751ab644ab",
-                "reference": "eeb7ad3c3d04ec9e07805c3aaebc65751ab644ab",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/9108782b9c4df079342270e8220a6a7f0ae64fca",
+                "reference": "9108782b9c4df079342270e8220a6a7f0ae64fca",
                 "shasum": ""
             },
             "require": {
@@ -940,7 +940,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-05-09 22:16:52"
+            "time": "2016-05-28 16:12:44"
         },
         {
             "name": "psr/http-message",
