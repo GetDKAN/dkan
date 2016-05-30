@@ -10,7 +10,7 @@ includes:
     # Visualization Entity
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make"
     # Visualization Entity Charts
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/fix_google_backend/visualization_entity_charts.make"
     #DKAN Data Story
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
     #DKAN Featured Topics
@@ -73,7 +73,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/visualization_entity_charts.git'
-      branch: 2416-fix-gdocs-backend
+      branch: fix_google_backend
     type: module
   admin_menu:
     version: 3.0-rc5
