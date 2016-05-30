@@ -296,6 +296,8 @@ function dkan_sitewide_social_block() {
 function dkan_sitewide_other_access() {
   $node = menu_get_object();
   if (!empty($node->nid)) {
+    $alias = drupal_get_path_alias('node/' . $node->nid);
+    $alias = $alias . '.xml';
     $output = array(
       'formats' => array(
         '#type' => 'markup',
@@ -314,6 +316,17 @@ function dkan_sitewide_other_access() {
                 'attributes' => array(
                   'class' => array('btn'),
                   'title' => t('json view of content')
+            ))),
+          ),
+          'dcat' => array(
+            '#type' => 'markup',
+            '#markup' => l('<i class="ckan-icon ckan-icon-rdfxml"></i> RDF',
+              url($alias, array('absolute' => TRUE)),
+              array(
+                'html' => TRUE,
+                'attributes' => array(
+                  'class' => array('btn'),
+                  'title' => t('rdf view of content')
             ))),
           ),
         ),
