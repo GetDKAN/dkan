@@ -55,7 +55,6 @@
 
           <!-- user menu -->
           <?php
-            $display_login_menu = (theme_get_setting('display_login_menu', 'nuboot_radix') === NULL) ? 1 : theme_get_setting('display_login_menu', 'nuboot_radix');
             if($display_login_menu):
               $block = block_load('dkan_sitewide', 'dkan_sitewide_user_menu');
               if($block):
