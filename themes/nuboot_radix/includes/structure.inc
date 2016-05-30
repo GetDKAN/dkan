@@ -16,7 +16,7 @@ function nuboot_radix_css_alter(&$css) {
  * Implements template_preprocess_page().
  */
 function nuboot_radix_preprocess_page(&$variables) {
-  // Logo file -- assumes default file is logo.svg.
+  $variables['display_login_menu'] = (theme_get_setting('display_login_menu') === NULL) ? 1 : theme_get_setting('display_login_menu');
   $logo = theme_get_setting('toggle_logo');
   $theme = variable_get('theme_default');
   $default = theme_get_setting('default_logo');
