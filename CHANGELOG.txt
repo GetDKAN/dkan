@@ -1,5 +1,6 @@
 7.x-1.12.x
 --------------------------
+- New version of Visualization Entity Charts fixes a number of UI bugs and restores support for Google Sheets and Data Proxy
 - Fix XSS vulnerability by adding sanitization for titles on workbench view
 - Upgrade of: Colorizer, Admin Menu Source, Honey Pot, Panopoly Widgets, Panopoly Images, Pathauto, Rules, Restws, Manual Crop, Image Cache Actions, Features, Search API, Organic Groups, Chosen, Date, Entity, Facet API, Facet API Bonus, Facet API Pretty Paths, UUID, Views, Select or other, Remote Stream Wrapper, Link, Libraries, Beauty Tips, Gravatar, OG Extras, Services and Workbench Email.
 
