@@ -2,82 +2,83 @@
     "help": "Return the metadata of a dataset (package) and its resources. :param id: the id or name of the dataset :type id: string",
     "success": true,
     "result": {
-        "id": "b7238e89-961a-4431-b3c8-eadeb8d02e81",
+        "id": "95f8eac4-fd1f-4b35-8472-5c87e9425dfa",
         "name": "state-workforce-generation-2011-2015",
         "title": "State Workforce by Generation (2011-2015)",
         "author_email": "stefanie@nucivic.com",
-        "maintainer": "Site-Install",
-        "maintainer_email": "admin@example.com",
+        "maintainer": "Stefanie's DKAN Demo Site",
+        "maintainer_email": "stefanie@nucivic.com",
         "license_title": "gfdl",
-        "notes": "<p>Information about the state workforce, broken down into four generational cohorts.</p>\n\n<p><strong>Note:</strong> This dataset has been given a vague name because it is anonymized demo data, not actual state data.</p>",
+        "notes": "<p>Information about the state workforce, broken down into four generational cohorts.</p>\n\n<p><small><strong>Note:</strong> This dataset has been given a vague name because it is anonymized demo data, not actual state data.</small></p>\n",
         "url": "http://default/dataset/state-workforce-generation-2011-2015",
         "state": "Active",
+        "log_message": "Update to resource 'Retirements: Eligible vs. Actual'",
         "private": "Published",
-        "revision_timestamp": "Fri, 05/20/2016 - 15:55",
-        "metadata_created": "Fri, 05/20/2016 - 00:12",
-        "metadata_modified": "Fri, 05/20/2016 - 15:55",
-        "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
+        "revision_timestamp": "Fri, 05/13/2016 - 15:47",
+        "metadata_created": "Mon, 04/11/2016 - 08:48",
+        "metadata_modified": "Fri, 05/13/2016 - 15:47",
+        "creator_user_id": "24eb1825-a538-499e-83c0-9559ef9fd38e",
         "type": "Dataset",
         "resources": [
             {
-                "id": "c6e8235b-e0df-4466-9cb4-5cdec2239508",
+                "id": "209e9f48-7c20-4654-8ba4-bd4415ee80de",
                 "revision_id": "",
                 "url": "files/samplegenerationchart.csv",
-                "description": "<p>Population of state employees broken down into Gen X, Gen Y, Baby Boomers and Over 65+.</p>",
+                "description": "<p>Population of state employees broken down into Gen X, Gen Y, Baby Boomers and Over 65+.</p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/20/2016 - 00:14",
+                "revision_timestamp": "Fri, 05/13/2016 - 14:51",
                 "name": "Workforce By Generation (2011-2015)",
                 "mimetype": "text/csv",
                 "size": "229 bytes",
-                "created": "Fri, 05/20/2016 - 00:14",
-                "resource_group_id": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
-                "last_modified": "Date changed\tFri, 05/20/2016 - 00:14"
+                "created": "Mon, 04/11/2016 - 08:49",
+                "resource_group_id": "26dc023a-a216-4989-98b9-81f92d176dbd",
+                "last_modified": "Date changed\tFri, 05/13/2016 - 14:51"
             },
             {
-                "id": "16eb97b4-6a21-45d8-819f-dc2648ac68b3",
+                "id": "ceb00c8e-a6d4-4dde-b8d8-43a7d714a0ff",
                 "revision_id": "",
-                "url": "files/retirements.csv",
-                "description": "<p>Total number of employees who retired from the state workforce, 2011-2015.</p>",
+                "url": "files/retirements_0.csv",
+                "description": "<p>Total number of employees who retired from the state workforce, 2011-2015.</p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/20/2016 - 00:17",
+                "revision_timestamp": "Fri, 05/13/2016 - 14:51",
                 "name": "Retirements (2011 - 2015)",
                 "mimetype": "text/csv",
                 "size": "66 bytes",
-                "created": "Fri, 05/20/2016 - 00:17",
-                "resource_group_id": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
-                "last_modified": "Date changed\tFri, 05/20/2016 - 00:17"
+                "created": "Thu, 04/21/2016 - 18:38",
+                "resource_group_id": "26dc023a-a216-4989-98b9-81f92d176dbd",
+                "last_modified": "Date changed\tFri, 05/13/2016 - 14:51"
             },
             {
-                "id": "e80753af-b0c7-4b5f-9179-983be8f9a49f",
+                "id": "e0e42cb1-e515-431f-b762-86ac46909784",
                 "revision_id": "",
                 "url": "files/2015EligibleVsActual.csv",
-                "description": "<p>This data, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire compared to the percentage of the workforce who actually retired.</p>",
+                "description": "<p>This data, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire compared to the percentage of the workforce who actually retired.</p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/20/2016 - 00:18",
+                "revision_timestamp": "Fri, 05/13/2016 - 14:51",
                 "name": "Retirements: Eligible vs. Actual",
                 "mimetype": "text/csv",
                 "size": "239 bytes",
-                "created": "Fri, 05/20/2016 - 00:18",
-                "resource_group_id": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
-                "last_modified": "Date changed\tFri, 05/20/2016 - 00:18"
+                "created": "Thu, 04/21/2016 - 18:39",
+                "resource_group_id": "26dc023a-a216-4989-98b9-81f92d176dbd",
+                "last_modified": "Date changed\tFri, 05/13/2016 - 14:51"
             }
         ],
         "tags": [
             {
-                "id": "d7f3174b-33af-43df-9380-e3acf8fbba24",
+                "id": "1990a0d8-e459-445f-9378-8fe6aada1388",
                 "vocabulary_id": "2",
                 "name": "demographics"
             },
             {
-                "id": "353cc756-05ea-442a-924b-4ec7451c643b",
+                "id": "6f902d4c-21cb-45f2-8ab2-f9f411b0cef6",
                 "vocabulary_id": "2",
                 "name": "workforce"
             },
             {
-                "id": "f83adca1-5ccf-4936-8b39-9c6cfabedd5b",
+                "id": "1a5d928c-f7e6-4c9b-b1b6-97515385c4b4",
                 "vocabulary_id": "2",
                 "name": "socioeconomic"
             }
@@ -85,7 +86,7 @@
         "groups": [
             {
                 "description": "<p>The State Economic Council is responsible for increasing economic development of the state by collecting statistics and performing analysis on the labor force, workforce and employer demographics, generational trends, etc.</p>\n",
-                "id": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
+                "id": "26dc023a-a216-4989-98b9-81f92d176dbd",
                 "image_display_url": "http://default/sites/default/files/money-saving.png",
                 "title": "State Economic Council",
                 "name": "group/state-economic-council"
@@ -102,24 +103,24 @@
             "field_related_content": [],
             "field_resources": [
                 {
-                    "uri": "http://default/node/10",
-                    "id": "10",
+                    "uri": "http://default/node/26",
+                    "id": "26",
                     "resource": "node",
-                    "uuid": "c6e8235b-e0df-4466-9cb4-5cdec2239508",
+                    "uuid": "209e9f48-7c20-4654-8ba4-bd4415ee80de",
                     "value": "admin"
                 },
                 {
-                    "uri": "http://default/node/11",
-                    "id": "11",
+                    "uri": "http://default/node/52",
+                    "id": "52",
                     "resource": "node",
-                    "uuid": "16eb97b4-6a21-45d8-819f-dc2648ac68b3",
+                    "uuid": "ceb00c8e-a6d4-4dde-b8d8-43a7d714a0ff",
                     "value": "admin"
                 },
                 {
-                    "uri": "http://default/node/12",
-                    "id": "12",
+                    "uri": "http://default/node/53",
+                    "id": "53",
                     "resource": "node",
-                    "uuid": "e80753af-b0c7-4b5f-9179-983be8f9a49f",
+                    "uuid": "e0e42cb1-e515-431f-b762-86ac46909784",
                     "value": "admin"
                 }
             ],
@@ -127,44 +128,35 @@
             "field_spatial_geographical_cover": "State",
             "field_tags": [
                 {
-                    "uri": "http://default/taxonomy_term/8",
-                    "id": "8",
+                    "uri": "http://default/taxonomy_term/19",
+                    "id": "19",
                     "resource": "taxonomy_term",
-                    "uuid": "d7f3174b-33af-43df-9380-e3acf8fbba24",
+                    "uuid": "1990a0d8-e459-445f-9378-8fe6aada1388",
                     "value": "demographics"
                 },
                 {
-                    "uri": "http://default/taxonomy_term/21",
-                    "id": "21",
+                    "uri": "http://default/taxonomy_term/20",
+                    "id": "20",
                     "resource": "taxonomy_term",
-                    "uuid": "353cc756-05ea-442a-924b-4ec7451c643b",
+                    "uuid": "6f902d4c-21cb-45f2-8ab2-f9f411b0cef6",
                     "value": "workforce"
                 },
                 {
-                    "uri": "http://default/taxonomy_term/22",
-                    "id": "22",
+                    "uri": "http://default/taxonomy_term/34",
+                    "id": "34",
                     "resource": "taxonomy_term",
-                    "uuid": "f83adca1-5ccf-4936-8b39-9c6cfabedd5b",
+                    "uuid": "1a5d928c-f7e6-4c9b-b1b6-97515385c4b4",
                     "value": "socioeconomic"
                 }
             ],
             "field_temporal_coverage": [],
             "og_group_ref": [
                 {
-                    "uri": "http://default/node/4",
-                    "id": "4",
+                    "uri": "http://default/node/62",
+                    "id": "62",
                     "resource": "node",
-                    "uuid": "c497b740-8c4f-4213-ac35-bcc8066ab80a",
+                    "uuid": "26dc023a-a216-4989-98b9-81f92d176dbd",
                     "value": "admin"
-                }
-            ],
-            "field_topic": [
-                {
-                    "uri": "http://default/taxonomy_term/3",
-                    "id": "3",
-                    "resource": "taxonomy_term",
-                    "uuid": "4ac6d362-6898-4ab8-98f6-ce195657ec4c",
-                    "value": "Finance and Budgeting"
                 }
             ]
         }

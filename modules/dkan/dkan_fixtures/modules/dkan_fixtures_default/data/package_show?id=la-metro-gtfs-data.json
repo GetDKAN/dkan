@@ -2,58 +2,58 @@
     "help": "Return the metadata of a dataset (package) and its resources. :param id: the id or name of the dataset :type id: string",
     "success": true,
     "result": {
-        "id": "fd3db3d5-debe-4543-bb3e-c2d0f92e5115",
+        "id": "6fb3578e-3ab9-4ee0-bdf8-c8e9fa2589a6",
         "name": "la-metro-gtfs-data",
         "title": "LA Metro GTFS Data ",
         "author": "Los Angeles Metropolitan Transit Authority",
         "author_email": "datademo@nucivic.com",
-        "maintainer": "Site-Install",
-        "maintainer_email": "admin@example.com",
+        "maintainer": "Stefanie's DKAN Demo Site",
+        "maintainer_email": "stefanie@nucivic.com",
         "license_title": "other-pd",
-        "notes": "<p><strong>Source:</strong> Los Angeles Metropolitan Transit Agency (<a href=\"http://developer.metro.net/\">http://developer.metro.net/</a>)</p>\n\n<p>This data is used to produce an animated data visualization displaying the activity of rapid bus lines within the L.A. metro area.</p>\n\n<p><a href=\"/dynamic-transportation-visualizations\">Go to data dashboard</a></p>",
+        "notes": "<p><strong>Source:</strong> Los Angeles Metropolitan Transit Agency (<a href=\"http://developer.metro.net/\">http://developer.metro.net/</a>)</p>\n\n<p>This data is used to produce an animated data visualization displaying the activity of rapid bus lines within the L.A. metro area.</p>\n\n<p><a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dynamic-transportation-visualizations\">Go to data dashboard</a></p>\n",
         "url": "http://default/dataset/la-metro-gtfs-data",
         "state": "Active",
         "private": "Published",
-        "revision_timestamp": "Mon, 05/23/2016 - 17:08",
-        "metadata_created": "Fri, 05/20/2016 - 00:59",
-        "metadata_modified": "Mon, 05/23/2016 - 17:08",
-        "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
+        "revision_timestamp": "Mon, 05/23/2016 - 15:22",
+        "metadata_created": "Fri, 04/15/2016 - 16:19",
+        "metadata_modified": "Mon, 05/23/2016 - 15:22",
+        "creator_user_id": "4eb26c32-4098-43a8-a8cc-e5ce6db7fc96",
         "type": "Dataset",
         "resources": [
             {
-                "id": "8dd6e6fc-ffe8-494e-a042-fc03bff2c20b",
-                "revision_id": "",
-                "url": "http://developer.metro.net/gtfs/google_transit.zip",
-                "description": "",
-                "format": "zip",
-                "state": "Active",
-                "revision_timestamp": "Mon, 05/23/2016 - 19:57",
-                "name": "LA Metro GTFS Data 03/16",
-                "mimetype": "zip",
-                "size": "",
-                "created": "Fri, 05/20/2016 - 01:00",
-                "resource_group_id": "",
-                "last_modified": "Date changed\tMon, 05/23/2016 - 19:57"
-            },
-            {
-                "id": "8243ec40-5677-4636-add8-16cf1a6d775f",
+                "id": "d71b0e31-16eb-4e67-b6c7-bc8db8c7d71a",
                 "revision_id": "",
                 "url": "http://developer.metro.net/gtfs/archive/google_transit_2016-02-23.zip",
                 "description": "",
                 "format": "zip",
                 "state": "Active",
-                "revision_timestamp": "Mon, 05/23/2016 - 19:56",
+                "revision_timestamp": "Mon, 05/23/2016 - 15:18",
                 "name": "LA Metro GTFS Data  02/16",
                 "mimetype": "zip",
                 "size": "",
-                "created": "Fri, 05/20/2016 - 01:01",
+                "created": "Mon, 05/23/2016 - 15:18",
                 "resource_group_id": "",
-                "last_modified": "Date changed\tMon, 05/23/2016 - 19:56"
+                "last_modified": "Date changed\tMon, 05/23/2016 - 15:18"
+            },
+            {
+                "id": "f3746a42-4506-42c4-9285-f64c4c3e4dc8",
+                "revision_id": "",
+                "url": "http://developer.metro.net/gtfs/google_transit.zip",
+                "description": "",
+                "format": "zip",
+                "state": "Active",
+                "revision_timestamp": "Mon, 05/23/2016 - 15:20",
+                "name": "LA Metro GTFS Data 03/16",
+                "mimetype": "zip",
+                "size": "",
+                "created": "Mon, 05/23/2016 - 15:20",
+                "resource_group_id": "",
+                "last_modified": "Date changed\tMon, 05/23/2016 - 15:20"
             }
         ],
         "tags": [
             {
-                "id": "ed650616-4fa0-43f4-b321-a407460194cb",
+                "id": "b5e67976-f3f8-4acc-b827-b61464ac60d6",
                 "vocabulary_id": "2",
                 "name": "transportation"
             }
@@ -61,7 +61,7 @@
         "dkan_additional_fields": {
             "field_additional_info": [],
             "field_contact_email": "datademo@nucivic.com",
-            "field_contact_name": "Dawn McDougal",
+            "field_contact_name": "Dawn McDougall",
             "field_data_dictionary": "GTFS stands for General Transit Feed Specification. GTFS is a common format for public transportation schedules and associated geographic information that allows developers to explore real-time and historical transit statistics.",
             "field_frequency": "2",
             "field_granularity": "Street level",
@@ -69,18 +69,18 @@
             "field_related_content": [],
             "field_resources": [
                 {
-                    "uri": "http://default/node/34",
-                    "id": "34",
+                    "uri": "http://default/node/68",
+                    "id": "68",
                     "resource": "node",
-                    "uuid": "8dd6e6fc-ffe8-494e-a042-fc03bff2c20b",
-                    "value": "admin"
+                    "uuid": "d71b0e31-16eb-4e67-b6c7-bc8db8c7d71a",
+                    "value": "Dawn McDougall"
                 },
                 {
-                    "uri": "http://default/node/35",
-                    "id": "35",
+                    "uri": "http://default/node/69",
+                    "id": "69",
                     "resource": "node",
-                    "uuid": "8243ec40-5677-4636-add8-16cf1a6d775f",
-                    "value": "admin"
+                    "uuid": "f3746a42-4506-42c4-9285-f64c4c3e4dc8",
+                    "value": "Dawn McDougall"
                 }
             ],
             "field_spatial": {
@@ -98,28 +98,19 @@
             "field_spatial_geographical_cover": "Los Angeles, California",
             "field_tags": [
                 {
-                    "uri": "http://default/taxonomy_term/36",
-                    "id": "36",
+                    "uri": "http://default/taxonomy_term/25",
+                    "id": "25",
                     "resource": "taxonomy_term",
-                    "uuid": "ed650616-4fa0-43f4-b321-a407460194cb",
+                    "uuid": "b5e67976-f3f8-4acc-b827-b61464ac60d6",
                     "value": "transportation"
                 }
             ],
             "field_temporal_coverage": {
-                "value": "1456185600",
-                "value2": "1456185600",
+                "value": "1458705600",
+                "value2": "1458705600",
                 "duration": 0
             },
-            "og_group_ref": [],
-            "field_topic": [
-                {
-                    "uri": "http://default/taxonomy_term/1",
-                    "id": "1",
-                    "resource": "taxonomy_term",
-                    "uuid": "f8112e3b-d62d-433d-9b9b-724e56ef3fd8",
-                    "value": "Transportation"
-                }
-            ]
+            "og_group_ref": []
         }
     }
 }

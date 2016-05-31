@@ -2,63 +2,64 @@
     "help": "Return the metadata of a dataset (package) and its resources. :param id: the id or name of the dataset :type id: string",
     "success": true,
     "result": {
-        "id": "c63b35d8-7657-45ab-b074-0db321711a6e",
+        "id": "1f2042ad-c513-4fcf-a933-cae6c6fd35e6",
         "name": "us-tobacco-usage-statistics",
         "title": "U.S. Tobacco Usage Statistics",
         "author": "Centers for Disease Control and Prevention",
         "author_email": "cdcinfo@cdc.gov",
-        "maintainer": "Site-Install",
-        "maintainer_email": "admin@example.com",
+        "maintainer": "Stefanie's DKAN Demo Site",
+        "maintainer_email": "stefanie@nucivic.com",
         "license_title": "cc-by",
-        "notes": "<p>Statistics on U.S. smoking rates and tobacco taxation rates for all fifty states.</p>\n\n<p><strong>Source:</strong> Centers for Disease Control and Prevention, 2015\n<a href=\"http://www.cdc.gov/tobacco/data_statistics/state_data/\">http://www.cdc.gov/tobacco/data_statistics/state_data/</a></p>\n\n<p><strong>See associated DKAN data story:</strong>\n<a href=\"/story/state-level-policies-reduce-smoking-rates-nationwide\">/story/state-level-policies-reduce-smoking-rates-nationwide</a></p>",
+        "notes": "<p>Statistics on U.S. smoking rates and tobacco taxation rates for all fifty states.</p>\n\n<p><strong>Source:</strong> Centers for Disease Control and Prevention, 2015\n<a href=\"http://www.cdc.gov/tobacco/data_statistics/state_data/\">http://www.cdc.gov/tobacco/data_statistics/state_data/</a></p>\n\n<p><strong>See associated DKAN data story:</strong>\n<a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/state-level-policies-reduce-smoking-rates-nationwide\">http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/state-level-policies-reduce-smoking-rates-nationwide</a></p>\n",
         "url": "http://default/dataset/us-tobacco-usage-statistics",
         "state": "Active",
+        "log_message": "Update to resource 'U.S. Adult Smoking Rate'",
         "private": "Published",
-        "revision_timestamp": "Mon, 05/23/2016 - 17:06",
-        "metadata_created": "Fri, 05/20/2016 - 00:26",
-        "metadata_modified": "Mon, 05/23/2016 - 17:06",
-        "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
+        "revision_timestamp": "Fri, 05/13/2016 - 15:47",
+        "metadata_created": "Sun, 04/10/2016 - 23:11",
+        "metadata_modified": "Fri, 05/13/2016 - 15:47",
+        "creator_user_id": "24eb1825-a538-499e-83c0-9559ef9fd38e",
         "type": "Dataset",
         "resources": [
             {
-                "id": "7ef840ea-f01e-41e3-8e87-133acb87f44f",
+                "id": "5e23aa2c-c639-49eb-b3e9-652ee22c76cb",
                 "revision_id": "",
-                "url": "files/TobaccoTaxes2016_2.csv",
-                "description": "<p>Source: The Campaign for Tobacco-Free Kids, April 2016: <a href=\"https://www.tobaccofreekids.org/research/factsheets/pdf/0097.pdf\">https://www.tobaccofreekids.org/research/factsheets/pdf/0097.pdf</a></p>",
+                "url": "files/TobaccoTaxes2016_2_1.csv",
+                "description": "<p>Source: The Campaign for Tobacco-Free Kids, April 2016: <a href=\"https://www.tobaccofreekids.org/research/factsheets/pdf/0097.pdf\">https://www.tobaccofreekids.org/research/factsheets/pdf/0097.pdf</a></p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/20/2016 - 00:31",
+                "revision_timestamp": "Fri, 05/13/2016 - 14:49",
                 "name": "Tobacco Taxation by State as of April 2016",
                 "mimetype": "text/csv",
                 "size": "970 bytes",
-                "created": "Fri, 05/20/2016 - 00:27",
-                "resource_group_id": "8bf2dcea-334e-4da3-a5b6-c819791df83b",
-                "last_modified": "Date changed\tFri, 05/20/2016 - 00:31"
+                "created": "Sun, 04/10/2016 - 23:20",
+                "resource_group_id": "55261028-f4b2-4402-9a30-640781ad1b59",
+                "last_modified": "Date changed\tFri, 05/13/2016 - 14:49"
             },
             {
-                "id": "8caff261-40e8-4444-9f3e-f9a57c5c408b",
+                "id": "02708727-2f2b-4567-a53f-c669c4e3b267",
                 "revision_id": "",
                 "url": "files/CDCSmokingRates.csv",
-                "description": "<p>Source: Centers for Disease Control and Prevention, 2015</p>",
+                "description": "<p>Source: Centers for Disease Control and Prevention, 2015</p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/20/2016 - 00:31",
+                "revision_timestamp": "Fri, 05/13/2016 - 14:49",
                 "name": "U.S. Adult Smoking Rate",
                 "mimetype": "text/csv",
                 "size": "1.99 KB",
-                "created": "Fri, 05/20/2016 - 00:29",
-                "resource_group_id": "8bf2dcea-334e-4da3-a5b6-c819791df83b",
-                "last_modified": "Date changed\tFri, 05/20/2016 - 00:31"
+                "created": "Mon, 04/11/2016 - 09:47",
+                "resource_group_id": "55261028-f4b2-4402-9a30-640781ad1b59",
+                "last_modified": "Date changed\tFri, 05/13/2016 - 14:49"
             }
         ],
         "tags": [
             {
-                "id": "7ee41464-2194-407f-8754-9b253849230b",
+                "id": "b5eb7d30-d3ce-4d81-9e97-0500da462dd7",
                 "vocabulary_id": "2",
                 "name": "health"
             },
             {
-                "id": "d7f3174b-33af-43df-9380-e3acf8fbba24",
+                "id": "1990a0d8-e459-445f-9378-8fe6aada1388",
                 "vocabulary_id": "2",
                 "name": "demographics"
             }
@@ -66,7 +67,7 @@
         "groups": [
             {
                 "description": "<p>Advisory Council for Infectious Disease is a working group that performs research and prepares reports to inform treatment and prevention programs nationally.</p>\n",
-                "id": "8bf2dcea-334e-4da3-a5b6-c819791df83b",
+                "id": "55261028-f4b2-4402-9a30-640781ad1b59",
                 "image_display_url": "http://default/sites/default/files/clipboard.png",
                 "title": "Advisory Council for Infectious Disease",
                 "name": "group/advisory-council-infectious-disease"
@@ -83,17 +84,17 @@
             "field_related_content": [],
             "field_resources": [
                 {
-                    "uri": "http://default/node/16",
-                    "id": "16",
+                    "uri": "http://default/node/24",
+                    "id": "24",
                     "resource": "node",
-                    "uuid": "7ef840ea-f01e-41e3-8e87-133acb87f44f",
+                    "uuid": "5e23aa2c-c639-49eb-b3e9-652ee22c76cb",
                     "value": "admin"
                 },
                 {
-                    "uri": "http://default/node/17",
-                    "id": "17",
+                    "uri": "http://default/node/27",
+                    "id": "27",
                     "resource": "node",
-                    "uuid": "8caff261-40e8-4444-9f3e-f9a57c5c408b",
+                    "uuid": "02708727-2f2b-4567-a53f-c669c4e3b267",
                     "value": "admin"
                 }
             ],
@@ -112,37 +113,28 @@
             "field_spatial_geographical_cover": "United States",
             "field_tags": [
                 {
-                    "uri": "http://default/taxonomy_term/27",
-                    "id": "27",
+                    "uri": "http://default/taxonomy_term/18",
+                    "id": "18",
                     "resource": "taxonomy_term",
-                    "uuid": "7ee41464-2194-407f-8754-9b253849230b",
+                    "uuid": "b5eb7d30-d3ce-4d81-9e97-0500da462dd7",
                     "value": "health"
                 },
                 {
-                    "uri": "http://default/taxonomy_term/8",
-                    "id": "8",
+                    "uri": "http://default/taxonomy_term/19",
+                    "id": "19",
                     "resource": "taxonomy_term",
-                    "uuid": "d7f3174b-33af-43df-9380-e3acf8fbba24",
+                    "uuid": "1990a0d8-e459-445f-9378-8fe6aada1388",
                     "value": "demographics"
                 }
             ],
             "field_temporal_coverage": [],
             "og_group_ref": [
                 {
-                    "uri": "http://default/node/6",
-                    "id": "6",
+                    "uri": "http://default/node/57",
+                    "id": "57",
                     "resource": "node",
-                    "uuid": "8bf2dcea-334e-4da3-a5b6-c819791df83b",
+                    "uuid": "55261028-f4b2-4402-9a30-640781ad1b59",
                     "value": "admin"
-                }
-            ],
-            "field_topic": [
-                {
-                    "uri": "http://default/taxonomy_term/4",
-                    "id": "4",
-                    "resource": "taxonomy_term",
-                    "uuid": "80a9cc2b-c817-405e-9591-14565759defc",
-                    "value": "Health Care"
                 }
             ]
         }

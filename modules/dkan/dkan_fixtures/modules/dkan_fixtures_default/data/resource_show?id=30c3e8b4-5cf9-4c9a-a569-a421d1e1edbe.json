@@ -1,0 +1,16 @@
+{
+    "help": "Return the metadata of a resource. :param id: the id of the resource :type id: string :rtype: dictionary",
+    "success": true,
+    "result": {
+        "id": "30c3e8b4-5cf9-4c9a-a569-a421d1e1edbe",
+        "url": "files/varicellaincidencerates.csv",
+        "description": "<p>Source: \"Near elimination of varicella deaths in the US after implementation of the vaccination program.\" published in the American Journal of Pediatrics in August 2011.</p>\n",
+        "format": "csv",
+        "revision_timestamp": "Wed, 04/06/2016 - 13:42",
+        "name": "Varicella Incidence by Age Group, 1995-2009",
+        "mimetype": "text/csv",
+        "size": "155 bytes",
+        "created": "Wed, 04/06/2016 - 13:24",
+        "last_modified": "Date changed\tWed, 04/06/2016 - 13:42"
+    }
+}

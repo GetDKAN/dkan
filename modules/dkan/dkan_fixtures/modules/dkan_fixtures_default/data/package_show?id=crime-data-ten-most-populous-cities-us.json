@@ -2,63 +2,63 @@
     "help": "Return the metadata of a dataset (package) and its resources. :param id: the id or name of the dataset :type id: string",
     "success": true,
     "result": {
-        "id": "a0164836-5fc3-499a-8ecb-3c9744994024",
+        "id": "d460252e-d42c-474a-9ea9-5287b1d595f6",
         "name": "crime-data-ten-most-populous-cities-us",
         "title": "Crime Data for the Ten Most Populous Cities in the U.S.",
         "author": "Federal Bureau of Investigations",
         "author_email": "datademo@nucivic.com",
-        "maintainer": "Site-Install",
-        "maintainer_email": "admin@example.com",
+        "maintainer": "Stefanie's DKAN Demo Site",
+        "maintainer_email": "stefanie@nucivic.com",
         "license_title": "odc-odbl",
-        "notes": "<p><strong>Source:</strong> FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n\n<p>Data is split into two categories:</p>\n\n<p><strong>Violent Crime:</strong> Includes aggravated assault, murder, rape and robbery.\n<strong>Property Crime:</strong> Includes arson, burglary, larceny-theft and motor vehicle theft.</p>\n\n<p><strong>Top 10 Most Populous U.S. Cities:</strong></p>\n\n<ol><li>New York, NY</li>\n<li>Los Angeles, CA</li>\n<li>Chicago, IL</li>\n<li>Houston, TX</li>\n<li>Philadelphia, PA</li>\n<li>Las Vegas, NV</li>\n<li>Phoenix, AZ</li>\n<li>San Antonio, TX</li>\n<li>San Diego, TX</li>\n<li>Dallas, TX</li>\n</ol><p><strong>Link to DKAN Data Dashboard:</strong> <a href=\"/crime-americas-top-10-most-populous-cities\">/crime-americas-top-10-most-populous-cities</a></p>",
+        "notes": "<p><strong>Source:</strong> FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n\n<p>Data is split into two categories:</p>\n\n<p><strong>Violent Crime:</strong> Includes aggravated assault, murder, rape and robbery.<br /><strong>Property Crime:</strong> Includes arson, burglary, larceny-theft and motor vehicle theft.</p>\n\n<p><strong>Top 10 Most Populous U.S. Cities:</strong></p>\n\n<ol><li>New York, NY</li>\n<li>Los Angeles, CA</li>\n<li>Chicago, IL</li>\n<li>Houston, TX</li>\n<li>Philadelphia, PA</li>\n<li>Las Vegas, NV</li>\n<li>Phoenix, AZ</li>\n<li>San Antonio, TX</li>\n<li>San Diego, TX</li>\n<li>Dallas, TX</li>\n</ol><p><strong>Link to DKAN Data Dashboard:</strong> <a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/crime-americas-top-10-most-populous-cities\">http://dev-stefanies-dkan-demo-site.pantheonsite.io/crime-americas-top-10-most-populous-cities</a></p>\n",
         "url": "http://default/dataset/crime-data-ten-most-populous-cities-us",
         "state": "Active",
         "private": "Published",
-        "revision_timestamp": "Mon, 05/23/2016 - 17:07",
-        "metadata_created": "Fri, 05/20/2016 - 00:45",
-        "metadata_modified": "Mon, 05/23/2016 - 17:07",
-        "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
+        "revision_timestamp": "Fri, 05/13/2016 - 14:55",
+        "metadata_created": "Wed, 04/20/2016 - 15:41",
+        "metadata_modified": "Fri, 05/13/2016 - 14:55",
+        "creator_user_id": "24eb1825-a538-499e-83c0-9559ef9fd38e",
         "type": "Dataset",
         "resources": [
             {
-                "id": "1374aeb4-7df2-4114-a85e-dafa48cdd30c",
+                "id": "80d51987-acc7-42aa-a51b-9a4737c09efa",
                 "revision_id": "",
                 "url": "files/ViolentCrimeRates.csv",
-                "description": "<p>Source: FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n\n<p>Includes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.</p>",
+                "description": "<p>Source: FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n\n<p>Includes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.</p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/20/2016 - 00:47",
+                "revision_timestamp": "Wed, 04/20/2016 - 15:42",
                 "name": "Violent Crime Data for the Ten Most Populous Cities in the U.S.",
                 "mimetype": "text/csv",
                 "size": "1.32 KB",
-                "created": "Fri, 05/20/2016 - 00:47",
+                "created": "Wed, 04/20/2016 - 15:42",
                 "resource_group_id": "",
-                "last_modified": "Date changed\tFri, 05/20/2016 - 00:47"
+                "last_modified": "Date changed\tWed, 04/20/2016 - 15:42"
             },
             {
-                "id": "d4e958e2-6c34-45a5-98e5-2cede2f9a925",
+                "id": "a0415b2c-001d-4c7b-be8a-ce4389159a6d",
                 "revision_id": "",
-                "url": "files/PropertyCrimeRates.csv",
-                "description": "<p>Source: FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n\n<p>Includes information on the frequency of property crimes in general, burglary, larceny-theft, motor vehicle theft and arson. All crime rates are per 100,000 people.</p>\n\n<p>(Note: New York City does not release arson statistics; therefore, the listed rate of \"0\" is inaccurate.)</p>",
+                "url": "files/PropertyCrimeRates_0.csv",
+                "description": "<p>Source: FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n\n<p>Includes information on the frequency of property crimes in general, burglary, larceny-theft, motor vehicle theft and arson. All crime rates are per 100,000 people.</p>\n\n<p>(Note: New York City does not release arson statistics; therefore, the listed rate of \"0\" is inaccurate.)</p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/20/2016 - 00:48",
+                "revision_timestamp": "Wed, 04/20/2016 - 17:04",
                 "name": "Property Crime Data for the Ten Most Populous Cities in the U.S.",
                 "mimetype": "text/csv",
                 "size": "1.32 KB",
-                "created": "Fri, 05/20/2016 - 00:48",
+                "created": "Wed, 04/20/2016 - 15:43",
                 "resource_group_id": "",
-                "last_modified": "Date changed\tFri, 05/20/2016 - 00:48"
+                "last_modified": "Date changed\tWed, 04/20/2016 - 17:04"
             }
         ],
         "tags": [
             {
-                "id": "4afc34f4-39dd-4feb-a64c-a52e79a09896",
+                "id": "6273cf70-6e44-48bd-b111-9b5bd425efe4",
                 "vocabulary_id": "2",
                 "name": "crime"
             },
             {
-                "id": "c63376e1-2c0d-4cd4-bf5e-7524fc233b7d",
+                "id": "3a5db53d-4efc-4f0a-be37-472ca2e6790c",
                 "vocabulary_id": "2",
                 "name": "public safety"
             }
@@ -74,17 +74,17 @@
             "field_related_content": [],
             "field_resources": [
                 {
-                    "uri": "http://default/node/25",
-                    "id": "25",
+                    "uri": "http://default/node/43",
+                    "id": "43",
                     "resource": "node",
-                    "uuid": "1374aeb4-7df2-4114-a85e-dafa48cdd30c",
+                    "uuid": "80d51987-acc7-42aa-a51b-9a4737c09efa",
                     "value": "admin"
                 },
                 {
-                    "uri": "http://default/node/26",
-                    "id": "26",
+                    "uri": "http://default/node/44",
+                    "id": "44",
                     "resource": "node",
-                    "uuid": "d4e958e2-6c34-45a5-98e5-2cede2f9a925",
+                    "uuid": "a0415b2c-001d-4c7b-be8a-ce4389159a6d",
                     "value": "admin"
                 }
             ],
@@ -103,35 +103,26 @@
             "field_spatial_geographical_cover": null,
             "field_tags": [
                 {
-                    "uri": "http://default/taxonomy_term/34",
-                    "id": "34",
+                    "uri": "http://default/taxonomy_term/22",
+                    "id": "22",
                     "resource": "taxonomy_term",
-                    "uuid": "4afc34f4-39dd-4feb-a64c-a52e79a09896",
+                    "uuid": "6273cf70-6e44-48bd-b111-9b5bd425efe4",
                     "value": "crime"
                 },
                 {
-                    "uri": "http://default/taxonomy_term/35",
-                    "id": "35",
+                    "uri": "http://default/taxonomy_term/23",
+                    "id": "23",
                     "resource": "taxonomy_term",
-                    "uuid": "c63376e1-2c0d-4cd4-bf5e-7524fc233b7d",
+                    "uuid": "3a5db53d-4efc-4f0a-be37-472ca2e6790c",
                     "value": "public safety"
                 }
             ],
             "field_temporal_coverage": {
-                "value": "1388534400",
-                "value2": "1419984000",
+                "value": "1388552400",
+                "value2": "1420002000",
                 "duration": 31449600
             },
-            "og_group_ref": [],
-            "field_topic": [
-                {
-                    "uri": "http://default/taxonomy_term/5",
-                    "id": "5",
-                    "resource": "taxonomy_term",
-                    "uuid": "916a5b0d-d4f9-489d-a3a0-30c5cdfd0261",
-                    "value": "Public Safety"
-                }
-            ]
+            "og_group_ref": []
         }
     }
 }

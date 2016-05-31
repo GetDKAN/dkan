@@ -1,0 +1,14 @@
+{
+    "help": "Return the metadata of a resource. :param id: the id of the resource :type id: string :rtype: dictionary",
+    "success": true,
+    "result": {
+        "id": "f3746a42-4506-42c4-9285-f64c4c3e4dc8",
+        "url": "http://developer.metro.net/gtfs/google_transit.zip",
+        "format": "zip",
+        "revision_timestamp": "Mon, 05/23/2016 - 15:20",
+        "name": "LA Metro GTFS Data 03/16",
+        "mimetype": "zip",
+        "created": "Mon, 05/23/2016 - 15:20",
+        "last_modified": "Date changed\tMon, 05/23/2016 - 15:20"
+    }
+}

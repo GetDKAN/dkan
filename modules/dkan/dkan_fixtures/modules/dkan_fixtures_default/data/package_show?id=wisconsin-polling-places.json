@@ -2,43 +2,43 @@
     "help": "Return the metadata of a dataset (package) and its resources. :param id: the id or name of the dataset :type id: string",
     "success": true,
     "result": {
-        "id": "2daa4a76-8ae2-48a9-9186-320087659290",
+        "id": "934400f2-a5dc-4abf-bf16-3f17335888d3",
         "name": "wisconsin-polling-places",
         "title": "Wisconsin Polling Places",
         "author": "Wisconsin Board of Elections",
         "author_email": "datademo@nucivic.com",
-        "maintainer": "Site-Install",
-        "maintainer_email": "admin@example.com",
+        "maintainer": "Stefanie's DKAN Demo Site",
+        "maintainer_email": "stefanie@nucivic.com",
         "license_title": "cc-by",
-        "notes": "<p>Polling places in the state of Wisconsin.</p>",
+        "notes": "<p>Polling places in the state of Wisconsin.</p>\n",
         "url": "http://default/dataset/wisconsin-polling-places",
         "state": "Active",
         "private": "Published",
-        "revision_timestamp": "Fri, 05/20/2016 - 15:56",
-        "metadata_created": "Fri, 05/20/2016 - 01:08",
-        "metadata_modified": "Fri, 05/20/2016 - 15:56",
-        "creator_user_id": "0e1c9b65-7998-48e8-b2f5-916e33ee549e",
+        "revision_timestamp": "Fri, 05/13/2016 - 13:28",
+        "metadata_created": "Mon, 02/11/2013 - 00:13",
+        "metadata_modified": "Fri, 05/13/2016 - 13:28",
+        "creator_user_id": "24eb1825-a538-499e-83c0-9559ef9fd38e",
         "type": "Dataset",
         "resources": [
             {
-                "id": "d58c7e27-3c73-4b0f-88b8-77b5381fc803",
+                "id": "37971f0c-a5e8-4c0c-9dbc-d6fe5fb54607",
                 "revision_id": "",
-                "url": "files/Polling_Places_Madison.csv",
-                "description": "<p>This is a list and map of polling places in Madison, WI.</p>\n\n<p>Original data here: \n  <a href=\"https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr\">https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr</a></p>",
+                "url": "files/Polling_Places_Madison_0.csv",
+                "description": "<p>This is a list and map of polling places in Madison, WI.</p>\n\n<p>Original data here: \n  <a href=\"https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr\">https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr</a></p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/20/2016 - 01:10",
+                "revision_timestamp": "Thu, 01/03/2013 - 22:17",
                 "name": "Madison Polling Places",
                 "mimetype": "text/csv",
                 "size": "17.06 KB",
-                "created": "Fri, 05/20/2016 - 01:09",
-                "resource_group_id": "f2c130b8-5eef-4e90-913a-842c11e26665",
-                "last_modified": "Date changed\tFri, 05/20/2016 - 01:10"
+                "created": "Mon, 02/11/2013 - 00:16",
+                "resource_group_id": "",
+                "last_modified": "Date changed\tThu, 01/03/2013 - 22:17"
             }
         ],
         "tags": [
             {
-                "id": "a4c05405-5b15-40c4-bd55-1cd9ebe73e75",
+                "id": "61c776e4-3922-4fd1-9abb-a3b160558b7d",
                 "vocabulary_id": "2",
                 "name": "election"
             }
@@ -46,8 +46,8 @@
         "groups": [
             {
                 "description": "<p>The Committee on International Affairs is a working group to identify opportunities to learn from and collaborate with government and organizations across the globe.</p>\n",
-                "id": "f2c130b8-5eef-4e90-913a-842c11e26665",
-                "image_display_url": "http://default/sites/default/files/map_0.png",
+                "id": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
+                "image_display_url": "http://default/sites/default/files/map.png",
                 "title": "Committee on International Affairs",
                 "name": "group/committee-international-affairs"
             }
@@ -63,10 +63,10 @@
             "field_related_content": [],
             "field_resources": [
                 {
-                    "uri": "http://default/node/39",
-                    "id": "39",
+                    "uri": "http://default/node/5",
+                    "id": "5",
                     "resource": "node",
-                    "uuid": "d58c7e27-3c73-4b0f-88b8-77b5381fc803",
+                    "uuid": "37971f0c-a5e8-4c0c-9dbc-d6fe5fb54607",
                     "value": "admin"
                 }
             ],
@@ -85,10 +85,10 @@
             "field_spatial_geographical_cover": "Wisconsin, United States",
             "field_tags": [
                 {
-                    "uri": "http://default/taxonomy_term/29",
-                    "id": "29",
+                    "uri": "http://default/taxonomy_term/2",
+                    "id": "2",
                     "resource": "taxonomy_term",
-                    "uuid": "a4c05405-5b15-40c4-bd55-1cd9ebe73e75",
+                    "uuid": "61c776e4-3922-4fd1-9abb-a3b160558b7d",
                     "value": "election"
                 }
             ],
@@ -98,17 +98,8 @@
                     "uri": "http://default/node/3",
                     "id": "3",
                     "resource": "node",
-                    "uuid": "f2c130b8-5eef-4e90-913a-842c11e26665",
+                    "uuid": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
                     "value": "admin"
-                }
-            ],
-            "field_topic": [
-                {
-                    "uri": "http://default/taxonomy_term/6",
-                    "id": "6",
-                    "resource": "taxonomy_term",
-                    "uuid": "ed451aa0-f7fc-409a-b3be-30a5b7f26751",
-                    "value": "City Planning"
                 }
             ]
         }
