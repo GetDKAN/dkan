@@ -149,8 +149,56 @@ function dkan_fixtures_render_fixtures($nids = array()) {
         'group_files' => $files_to_save,
       );
     }
+
+    _build_visualization_entity_fixtures($rendered_fixtures);
   }
   return $rendered_fixtures;
+}
+
+/**
+ *
+ */
+function _build_visualization_entity_fixtures(&$rendered_fixtures) {
+
+  $visualization_entities = array();
+
+  // Get all entities available for export.
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'visualization')
+    ->entityCondition('bundle', 've_chart');
+
+  $results = $query->execute();
+  if (isset($results['visualization'])) {
+    $visualizations = entity_load('visualization', array_keys($results['visualization']));
+
+    foreach ($visualizations as $id => $visualization) {
+      $visualization_entities[$id] = $visualization;
+
+      // Add fixture with visualization entity data.
+      $rendered_fixtures[] = array(
+        'filename' => 'visualization_entity_show?id=' . $id . '.json',
+        'content' => open_data_schema_map_json_pretty_output(
+          array(),
+          array(
+            'help' => t('Visualization Entity data'),
+            'result' => $visualization,
+          )),
+        'files' => '',
+      );
+    }
+  }
+
+  // Add fixture with visualization entities list.
+  $rendered_fixtures[] = array(
+    'filename' => 'visualization_entity_list.json',
+    'content' => open_data_schema_map_json_pretty_output(
+      array(),
+      array(
+        'help' => t('Visualization Entity list'),
+        'result' => array_keys($visualization_entities),
+      ))
+  );
+
 }
 
 /**
