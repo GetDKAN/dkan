@@ -3,7 +3,7 @@
     "success": true,
     "result": {
         "id": "02708727-2f2b-4567-a53f-c669c4e3b267",
-        "url": "files/CDCSmokingRates.csv",
+        "url": "files/resource/CDCSmokingRates.csv",
         "description": "<p>Source: Centers for Disease Control and Prevention, 2015</p>\n",
         "format": "csv",
         "revision_timestamp": "Fri, 05/13/2016 - 14:49",

@@ -3,7 +3,7 @@
     "success": true,
     "result": {
         "id": "209e9f48-7c20-4654-8ba4-bd4415ee80de",
-        "url": "files/samplegenerationchart.csv",
+        "url": "files/resource/samplegenerationchart.csv",
         "description": "<p>Population of state employees broken down into Gen X, Gen Y, Baby Boomers and Over 65+.</p>\n",
         "format": "csv",
         "revision_timestamp": "Fri, 05/13/2016 - 14:51",

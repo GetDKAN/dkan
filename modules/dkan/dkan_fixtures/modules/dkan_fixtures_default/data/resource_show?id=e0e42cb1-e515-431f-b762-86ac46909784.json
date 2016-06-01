@@ -3,7 +3,7 @@
     "success": true,
     "result": {
         "id": "e0e42cb1-e515-431f-b762-86ac46909784",
-        "url": "files/2015EligibleVsActual.csv",
+        "url": "files/resource/2015EligibleVsActual.csv",
         "description": "<p>This data, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire compared to the percentage of the workforce who actually retired.</p>\n",
         "format": "csv",
         "revision_timestamp": "Fri, 05/13/2016 - 14:51",

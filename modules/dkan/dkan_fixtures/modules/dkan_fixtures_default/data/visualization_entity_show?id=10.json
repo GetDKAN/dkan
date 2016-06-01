@@ -1,0 +1,51 @@
+{
+    "help": "Visualization Entity data",
+    "result": {
+        "id": "10",
+        "type": "ve_chart",
+        "title": "Los Angeles Violent Crime",
+        "uid": "1",
+        "created": "1461098666",
+        "changed": "1461117120",
+        "field_description": {
+            "und": [
+                {
+                    "value": "Source: FBI Uniform Crime Report, 2014 (https://www.fbi.gov/about-us/cjis/ucr/ucr)",
+                    "format": null,
+                    "safe_value": "Source: FBI Uniform Crime Report, 2014 (https://www.fbi.gov/about-us/cjis/ucr/ucr)"
+                }
+            ]
+        },
+        "field_file": {
+            "und": [
+                {
+                    "fid": "84",
+                    "uid": "1",
+                    "filename": "NumbersByCity.csv",
+                    "uri": "public://NumbersByCity_0.csv",
+                    "filemime": "text/csv",
+                    "filesize": "366",
+                    "status": "1",
+                    "timestamp": "1461098666",
+                    "type": "undefined",
+                    "uuid": "9c7c55e8-3f6b-4b3b-8e12-c9d6af3531fc",
+                    "rdf_mapping": [],
+                    "metadata": [],
+                    "alt": "",
+                    "title": "",
+                    "display": "1",
+                    "description": ""
+                }
+            ]
+        },
+        "field_ve_settings": {
+            "und": [
+                {
+                    "value": "{\"queryState\":{\"size\":100,\"from\":0,\"q\":\"\",\"facets\":{},\"filters\":[]},\"step\":3,\"source\":{\"backend\":\"csv\",\"url\":\"files\\/visualization_entity\\/NumbersByCity_0.csv\"},\"model\":{\"records\":[[\"Statistics\",\"New York\",\"Los Angeles\",\"Chicago\",\"Houston\",\"Philadelphia\",\"Las Vegas\",\"Phoenix\",\"San Antonio\",\"San Diego\",\"Dallas\"],[\"Murder and Nonnegligent Manslaughter\",333,260,411,242,248,122,114,103,32,116],[\"Rape\",2190,1126,1343,812,1207,780,1006,1077,371,781],[\"Robbery\",16581,7949,9804,10186,6970,4885,2952,1777,1318,3856],[\"Aggravated Assault\",31460,9836,12531,10768,7500,7089,4677,4747,3493,3704]]},\"fields\":[{\"name\":\"Statistics\",\"value\":\"Statistics\",\"selected\":true},{\"name\":\"New York\",\"value\":\"New York\",\"selected\":false},{\"name\":\"Los Angeles\",\"value\":\"Los Angeles\",\"selected\":false},{\"name\":\"Chicago\",\"value\":\"Chicago\",\"selected\":false},{\"name\":\"Houston\",\"value\":\"Houston\",\"selected\":false},{\"name\":\"Philadelphia\",\"value\":\"Philadelphia\",\"selected\":false},{\"name\":\"Las Vegas\",\"value\":\"Las Vegas\",\"selected\":false},{\"name\":\"Phoenix\",\"value\":\"Phoenix\",\"selected\":false},{\"name\":\"San Antonio\",\"value\":\"San Antonio\",\"selected\":false},{\"name\":\"San Diego\",\"value\":\"San Diego\",\"selected\":false},{\"name\":\"Dallas\",\"value\":\"Dallas\",\"selected\":false}],\"xfields\":[{\"name\":\"Statistics\",\"value\":\"Statistics\",\"selected\":false},{\"name\":\"New York\",\"value\":\"New York\",\"selected\":false},{\"name\":\"Los Angeles\",\"value\":\"Los Angeles\",\"selected\":true},{\"name\":\"Chicago\",\"value\":\"Chicago\",\"selected\":false},{\"name\":\"Houston\",\"value\":\"Houston\",\"selected\":false},{\"name\":\"Philadelphia\",\"value\":\"Philadelphia\",\"selected\":false},{\"name\":\"Las Vegas\",\"value\":\"Las Vegas\",\"selected\":false},{\"name\":\"Phoenix\",\"value\":\"Phoenix\",\"selected\":false},{\"name\":\"San Antonio\",\"value\":\"San Antonio\",\"selected\":false},{\"name\":\"San Diego\",\"value\":\"San Diego\",\"selected\":false},{\"name\":\"Dallas\",\"value\":\"Dallas\",\"selected\":false}],\"xDataTypes\":[{\"name\":\"Number\",\"value\":\"Number\",\"selected\":false},{\"name\":\"String\",\"value\":\"String\",\"selected\":false},{\"name\":\"Date\",\"value\":\"Date\",\"selected\":false},{\"name\":\"Auto\",\"value\":\"Auto\",\"selected\":true}],\"seriesFields\":[\"Los Angeles\"],\"xfield\":\"Statistics\",\"xDataType\":\"Auto\",\"graphTypes\":[{\"name\":\"discreteBarChart\",\"value\":\"discreteBarChart\",\"selected\":false},{\"name\":\"multiBarChart\",\"value\":\"multiBarChart\",\"selected\":false},{\"name\":\"multiBarHorizontalChart\",\"value\":\"multiBarHorizontalChart\",\"selected\":false},{\"name\":\"stackedAreaChart\",\"value\":\"stackedAreaChart\",\"selected\":false},{\"name\":\"pieChart\",\"value\":\"pieChart\",\"selected\":true},{\"name\":\"lineChart\",\"value\":\"lineChart\",\"selected\":false},{\"name\":\"lineWithFocusChart\",\"value\":\"lineWithFocusChart\",\"selected\":false},{\"name\":\"scatterChart\",\"value\":\"scatterChart\",\"selected\":false},{\"name\":\"linePlusBarChart\",\"value\":\"linePlusBarChart\",\"selected\":false}],\"graphType\":\"pieChart\",\"width\":640,\"height\":480,\"group\":false,\"options\":{\"showLabels\":true,\"labelType\":\"percent\",\"tooltips\":true,\"margin\":{\"top\":0,\"right\":0,\"bottom\":0,\"left\":0},\"xAxis\":{\"rotateLabels\":\"\",\"axisLabel\":\"\"},\"yAxis\":{\"axisLabel\":\"\",\"axisLabelDistance\":0},\"showControls\":false,\"showLegend\":true,\"reduceXTicks\":false,\"donut\":true,\"color\":[\"#542437\",\"#C02942\",\"#D95B43\",\"#ECD078\"]},\"computeXLabels\":true,\"sortFields\":[{\"name\":\"default\",\"label\":\"Default\",\"selected\":false},{\"name\":\"Statistics\",\"value\":\"Statistics\",\"selected\":false},{\"name\":\"New York\",\"value\":\"New York\",\"selected\":false},{\"name\":\"Los Angeles\",\"value\":\"Los Angeles\",\"selected\":false},{\"name\":\"Chicago\",\"value\":\"Chicago\",\"selected\":false},{\"name\":\"Houston\",\"value\":\"Houston\",\"selected\":false},{\"name\":\"Philadelphia\",\"value\":\"Philadelphia\",\"selected\":false},{\"name\":\"Las Vegas\",\"value\":\"Las Vegas\",\"selected\":false},{\"name\":\"Phoenix\",\"value\":\"Phoenix\",\"selected\":false},{\"name\":\"San Antonio\",\"value\":\"San Antonio\",\"selected\":false},{\"name\":\"San Diego\",\"value\":\"San Diego\",\"selected\":false},{\"name\":\"Dallas\",\"value\":\"Dallas\",\"selected\":false}],\"transitionTime\":\"2000\",\"xFormat\":\"\",\"sort\":\"\",\"showTitle\":false}"
+                }
+            ]
+        },
+        "field_uuid_resource": [],
+        "rdf_mapping": []
+    }
+}

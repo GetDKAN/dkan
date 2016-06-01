@@ -3,7 +3,7 @@
     "success": true,
     "result": {
         "id": "30c3e8b4-5cf9-4c9a-a569-a421d1e1edbe",
-        "url": "files/varicellaincidencerates.csv",
+        "url": "files/resource/varicellaincidencerates.csv",
         "description": "<p>Source: \"Near elimination of varicella deaths in the US after implementation of the vaccination program.\" published in the American Journal of Pediatrics in August 2011.</p>\n",
         "format": "csv",
         "revision_timestamp": "Wed, 04/06/2016 - 13:42",

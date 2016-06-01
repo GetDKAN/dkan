@@ -116,13 +116,14 @@ function dkan_fixtures_render_fixtures($nids = array()) {
           $file = parse_url($file);
           $file = DRUPAL_ROOT . $file['path'];
           $files_to_save[] = $file;
-          $resource_show['result']['url'] = 'files/' . basename($file);
+          $resource_show['result']['url'] = 'files/resource/' . basename($file);
         }
       }
       $rendered_fixtures[] = array(
         'filename' => 'resource_show?id=' . $id . '.json',
         'content' => open_data_schema_map_json_pretty_output($resource_show_api, $resource_show),
-        'resource_files' => $files_to_save,
+        'files' => $files_to_save,
+        'files_subdir' => 'resource'
       );
     }
 
@@ -136,7 +137,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
           $file = parse_url($file);
           $file = DRUPAL_ROOT . $file['path'];
           $files_to_save[] = $file;
-          $group_data[$id]['image_display_url'] = 'files/' . basename($file);
+          $group_data[$id]['image_display_url'] = 'files/group/' . basename($file);
         }
       }
       $rendered_fixtures[] = array(
@@ -146,7 +147,8 @@ function dkan_fixtures_render_fixtures($nids = array()) {
             'help' => t('Group data'),
             'result' => $group_data[$id],
         )),
-        'group_files' => $files_to_save,
+        'files' => $files_to_save,
+        'files_subdir' => 'group'
       );
     }
 
@@ -161,6 +163,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
 function _build_visualization_entity_fixtures(&$rendered_fixtures) {
 
   $visualization_entities = array();
+  $visualization_entity_files = array();
 
   // Get all entities available for export.
   $query = new EntityFieldQuery();
@@ -172,7 +175,21 @@ function _build_visualization_entity_fixtures(&$rendered_fixtures) {
     $visualizations = entity_load('visualization', array_keys($results['visualization']));
 
     foreach ($visualizations as $id => $visualization) {
+      $visualization_wrapper = entity_metadata_wrapper('visualization', $visualization);
       $visualization_entities[$id] = $visualization;
+
+      $visualization_settings = json_decode($visualization_wrapper->field_ve_settings->value());
+      $source_url = $visualization_settings->source->url;
+
+      // Check if the source is an URL.
+      if(filter_var($source_url, FILTER_VALIDATE_URL)) {
+        // Add the file to the list of files that need to be download locally as part of fixtures data.
+        $visualization_entity_files[] = $source_url;
+        // Replace the URL.
+        $visualization_settings->source->url = 'files/visualization_entity/' . basename($source_url);
+        // Update settings field.
+        $visualization_wrapper->field_ve_settings->set(json_encode($visualization_settings));
+      }
 
       // Add fixture with visualization entity data.
       $rendered_fixtures[] = array(
@@ -183,7 +200,8 @@ function _build_visualization_entity_fixtures(&$rendered_fixtures) {
             'help' => t('Visualization Entity data'),
             'result' => $visualization,
           )),
-        'files' => '',
+        'files' => $visualization_entity_files,
+        'files_subdir' => 'visualization_entity'
       );
     }
   }
@@ -209,21 +227,12 @@ function dkan_fixtures_save_fixture($fixture, $module_path) {
   $fixture['content'] = mb_convert_encoding($fixture['content'], "UTF-8", "HTML-ENTITIES");
   fwrite($file, $fixture['content']);
   fclose($file);
-  if (isset($fixture['resource_files'])) {
-    foreach ($fixture['resource_files'] as $resource_file) {
-      $resource_file = urldecode($resource_file);
-      $resource_file = preg_replace('!\s+!', ' ', $resource_file);
-      $destination = $module_path . '/data/files/' . basename($resource_file);
-      file_unmanaged_copy($resource_file, $destination, FILE_EXISTS_REPLACE);
-    }
-  }
-
-  if (isset($fixture['group_files'])) {
-    foreach ($fixture['group_files'] as $group_file) {
-      $group_file = urldecode($group_file);
-      $group_file = preg_replace('!\s+!', ' ', $group_file);
-      $destination = $module_path . '/data/files/' . basename($group_file);
-      file_unmanaged_copy($group_file, $destination, FILE_EXISTS_REPLACE);
+  if (isset($fixture['files'])) {
+    foreach ($fixture['files'] as $file) {
+      $file = urldecode($file);
+      $file = preg_replace('!\s+!', ' ', $file);
+      $destination = $module_path . '/data/files/' . $fixture['files_subdir'] . '/' . basename($file);
+      file_unmanaged_copy($file, $destination, FILE_EXISTS_REPLACE);
     }
   }
 }

@@ -1,0 +1,43 @@
+{
+    "help": "Visualization Entity data",
+    "result": {
+        "id": "5",
+        "type": "ve_chart",
+        "title": "Workforce By Generation (2011-2015) - Chart",
+        "uid": "1",
+        "created": "1460390577",
+        "changed": "1461679733",
+        "field_description": [],
+        "field_file": {
+            "und": [
+                {
+                    "fid": "49",
+                    "uid": "1",
+                    "filename": "GenChart.csv",
+                    "uri": "public://GenChart_1.csv",
+                    "filemime": "text/csv",
+                    "filesize": "198",
+                    "status": "1",
+                    "timestamp": "1460574212",
+                    "type": "undefined",
+                    "uuid": "043c889f-851e-4b96-9306-9e6842ecc888",
+                    "rdf_mapping": [],
+                    "metadata": [],
+                    "alt": "",
+                    "title": "",
+                    "display": "1",
+                    "description": ""
+                }
+            ]
+        },
+        "field_ve_settings": {
+            "und": [
+                {
+                    "value": "{\"queryState\":{\"size\":100,\"from\":0,\"q\":\"\",\"facets\":{},\"filters\":[]},\"step\":3,\"source\":{\"backend\":\"csv\",\"url\":\"files\\/visualization_entity\\/GenChart_1.csv\"},\"model\":{\"records\":[[\"Generation\",\"FY2011\",\"FY2012\",\"FY2013\",\"FY2014\",\"FY2015\"],[\"Baby Boomers\",19351,18067,18069,14270,10470],[\"Gen X\",10541,10287,10333,12728,13568],[\"Gen Y\",3304,4890,4853,6857,8972],[\"Sixty-Five and Older\",1194,554,673,558,420]]},\"fields\":[{\"name\":\"Generation\",\"value\":\"Generation\",\"selected\":false},{\"name\":\"FY2011\",\"value\":\"FY2011\",\"selected\":true},{\"name\":\"FY2012\",\"value\":\"FY2012\",\"selected\":true},{\"name\":\"FY2013\",\"value\":\"FY2013\",\"selected\":true},{\"name\":\"FY2014\",\"value\":\"FY2014\",\"selected\":true},{\"name\":\"FY2015\",\"value\":\"FY2015\",\"selected\":true}],\"xfields\":[{\"name\":\"Generation\",\"value\":\"Generation\",\"selected\":true},{\"name\":\"FY2011\",\"value\":\"FY2011\",\"selected\":false},{\"name\":\"FY2012\",\"value\":\"FY2012\",\"selected\":false},{\"name\":\"FY2013\",\"value\":\"FY2013\",\"selected\":false},{\"name\":\"FY2014\",\"value\":\"FY2014\",\"selected\":false},{\"name\":\"FY2015\",\"value\":\"FY2015\",\"selected\":false}],\"xDataTypes\":[{\"name\":\"Number\",\"value\":\"Number\",\"selected\":false},{\"name\":\"String\",\"value\":\"String\",\"selected\":false},{\"name\":\"Date\",\"value\":\"Date\",\"selected\":false},{\"name\":\"Auto\",\"value\":\"Auto\",\"selected\":true}],\"seriesFields\":[\"FY2011\",\"FY2012\",\"FY2013\",\"FY2014\",\"FY2015\"],\"xfield\":\"Generation\",\"xDataType\":\"Auto\",\"graphTypes\":[{\"name\":\"discreteBarChart\",\"value\":\"discreteBarChart\",\"selected\":false},{\"name\":\"multiBarChart\",\"value\":\"multiBarChart\",\"selected\":true},{\"name\":\"multiBarHorizontalChart\",\"value\":\"multiBarHorizontalChart\",\"selected\":false},{\"name\":\"stackedAreaChart\",\"value\":\"stackedAreaChart\",\"selected\":false},{\"name\":\"pieChart\",\"value\":\"pieChart\",\"selected\":false},{\"name\":\"lineChart\",\"value\":\"lineChart\",\"selected\":false},{\"name\":\"lineWithFocusChart\",\"value\":\"lineWithFocusChart\",\"selected\":false},{\"name\":\"scatterChart\",\"value\":\"scatterChart\",\"selected\":false},{\"name\":\"linePlusBarChart\",\"value\":\"linePlusBarChart\",\"selected\":false}],\"graphType\":\"multiBarChart\",\"width\":640,\"height\":480,\"group\":false,\"computeXLabels\":false,\"options\":{\"reduceXTicks\":true,\"tooltips\":true,\"margin\":{\"top\":15,\"right\":10,\"bottom\":50,\"left\":60},\"xAxis\":{\"rotateLabels\":\"\",\"axisLabel\":\"\"},\"yAxis\":{\"axisLabel\":\"\",\"axisLabelDistance\":0},\"showControls\":true,\"showLegend\":true,\"color\":[\"#708FA3\",\"#76B295\",\"#FFC0AA\",\"#FFD9AA\",\"#999FA3\"]},\"sortFields\":[{\"name\":\"default\",\"label\":\"Default\",\"selected\":false},{\"name\":\"Generation\",\"value\":\"Generation\",\"selected\":false},{\"name\":\"FY2011\",\"value\":\"FY2011\",\"selected\":false},{\"name\":\"FY2012\",\"value\":\"FY2012\",\"selected\":false},{\"name\":\"FY2013\",\"value\":\"FY2013\",\"selected\":false},{\"name\":\"FY2014\",\"value\":\"FY2014\",\"selected\":false},{\"name\":\"FY2015\",\"value\":\"FY2015\",\"selected\":false}],\"transitionTime\":\"2000\",\"xFormat\":\"\",\"sort\":\"\",\"showTitle\":false}"
+                }
+            ]
+        },
+        "field_uuid_resource": [],
+        "rdf_mapping": []
+    }
+}
