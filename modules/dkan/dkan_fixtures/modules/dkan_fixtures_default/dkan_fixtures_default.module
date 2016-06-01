@@ -15,18 +15,23 @@ function dkan_fixtures_default_migrate_api() {
       'dkan_fixtures_default_datasets' => array(
         'class_name' => 'DefaultContentDatasetImport',
         'group_name' => 'dkan_fixtures',
-        'title' => t('DKAN Default Content'),
+        'title' => t('DKAN Default Datasets'),
       ),
       'dkan_fixtures_default_resources' => array(
         'class_name' => 'DefaultContentResourceImport',
         'group_name' => 'dkan_fixtures',
-        'title' => t('DKAN Default Content'),
+        'title' => t('DKAN Default Resources'),
       ),
       'dkan_fixtures_default_groups' => array(
         'class_name' => 'DefaultContentGroupImport',
         'group_name' => 'dkan_fixtures',
-        'title' => t('DKAN Default Content'),
+        'title' => t('DKAN Default Groups'),
       ),
+      'dkan_fixtures_default_visualization_entities' => array(
+        'class_name' => 'DefaultContentVisualizationEntityImport',
+        'group_name' => 'dkan_fixtures',
+        'title' => t('DKAN Default Visualization Entities'),
+      )
     ),
   );
   return $api;
@@ -127,10 +132,29 @@ class DefaultContentGroupImport extends MigrateCkanGroupImport {
 }
 
 /**
+ * Migration class used to import Default Visualization Entities from fixtures.
+ */
+class DefaultContentVisualizationEntityImport extends MigrateCkanBase {
+
+  /**
+   * __construct().
+   */
+  public function __construct($arguments) {
+    if (!isset($arguments['endpoint'])) {
+      $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+      $arguments['list_url'] = 'visualization_entity_list.json';
+      $arguments['item_url'] = 'visualization_entity_show?id=:id.json';
+    }
+    parent::__construct($arguments);
+  }
+}
+
+/**
  * Deregisters migrations.
  */
 function dkan_fixtures_default_migrations_disable() {
   Migration::deregisterMigration('dkan_fixtures_default_datasets');
   Migration::deregisterMigration('dkan_fixtures_default_resources');
   Migration::deregisterMigration('dkan_fixtures_default_groups');
+  Migration::deregisterMigration('dkan_fixtures_default_visualization_entities');
 }
