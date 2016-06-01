@@ -1,6 +1,13 @@
 //
 // Styles for panels and panes.
 // --------------------------------------------------
+
+.container,
+.row {
+	// Override Radix container and row overflow
+	overflow: visible;
+}
+
 .region-content {
 	margin: 0 15px;
 }

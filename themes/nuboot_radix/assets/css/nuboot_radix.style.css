@@ -8545,12 +8545,6 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
 .media-thumbnails-select {
   padding: 0 0 40px; }
 
-.page-admin-structure .main.container,
-.page-admin-structure .container-fluid,
-.page-admin-structure .row,
-.page-admin-structure .panels-dnd .container {
-  overflow: visible; }
-
 .page-admin .alert {
   margin: 10px 0; }
 
@@ -8599,6 +8593,9 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
   float: none !important;
   margin: 0 !important;
   position: relative; }
+
+.panels-dnd div {
+  background-image: none; }
 
 .pane-dkan-sitewide-dkan-sitewide-other-access a.btn, .pane-dkan-sitewide-dkan-sitewide-other-access .media-widget > a,
 #block-dkan-sitewide-dkan-sitewide-other-access a.btn,
@@ -9905,6 +9902,10 @@ ul.action-links {
 .footer {
   padding: 40px 0;
   margin: 0; }
+
+.container,
+.row {
+  overflow: visible; }
 
 .region-content {
   margin: 0 15px; }
