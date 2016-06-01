@@ -127,7 +127,7 @@ commands:
       SKIP_COMPOSER_FLAG="--skip-composer"
       if [[ ! "${ARGS[@]}" == *"$SKIP_COMPOSER_FLAG"* ]]; then
         echo "Installing behat dependencies.."
-        ahoy cmd-proxy "cd $BEHAT_FOLDER && composer install --prefer-source --no-interaction"
+        ahoy cmd-proxy "cd $BEHAT_FOLDER \&\& composer install --prefer-source --no-interaction"
       else
         echo "Skipping composer install.."
         ARGS=( "${ARGS[@]/$SKIP_COMPOSER_FLAG}" )
@@ -145,11 +145,12 @@ commands:
         echo "$BEHAT_ENV"
         echo "Using behat.yml .."
       fi
-      ahoy cmd-proxy "cd $BEHAT_FOLDER && bin/behat $CONFIG ${ARGS[@]}"
+      echo "The behat folder: $BEHAT_FOLDER"
+      ahoy cmd-proxy "cd $BEHAT_FOLDER \&\& bin/behat $CONFIG ${ARGS[@]}"
 
   dkanextension-update:
     usage: Update the nucivic/dkanextension composer package.
-    cmd: ahoy cmd-proxy 'cd dkan/test && composer update nucivic/dkanextension'
+    cmd: ahoy cmd-proxy 'cd dkan/test \&\& composer update nucivic/dkanextension'
 
   sqlc:
     usage: Abstracted way to connect to the mysql database.
