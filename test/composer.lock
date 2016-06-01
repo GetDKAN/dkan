@@ -1110,7 +1110,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "8c83ff9a2ffbed1e606bc816db11ddc2385a16ee"
+                "reference": "38711092665edc06ef55e842942fb813932ff4ac"
             },
             "dist": {
                 "type": "zip",

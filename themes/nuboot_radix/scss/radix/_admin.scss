@@ -1,0 +1,9 @@
+// Styles for admin pages.
+// --------------------------------------------------
+.views-display-setting .views-admin-label {
+  // From views-admin.css
+  display: inline-block;
+  float: left; /* LTR */
+  // From views-admin.theme.css
+  margin-right: 3pt; /* LTR */
+}
