@@ -2,13 +2,17 @@ ahoyapi: v1
 version: 0.0.0
 commands:
   fetch:
-    usage: Checkout the dkan theme from the NuCivic github repo.
+    usage: Deprecated - Checkout the dkan theme from the NuCivic github repo.
+    hide: true
     cmd: |
+      echo "[Deprecated] Warning, this command will be removed in the future. Please make sure to use an alternative to this command."
       ahoy dkan module-fetch nuboot_radix
 
   link:
-    usage: Link a module folder into dkan/modules/dkan/.
+    usage: Deprecated - Link a module folder into dkan/modules/dkan/.
+    hide: true
     cmd: |
+      echo "[Deprecated] Warning, this command will be removed in the future. Please make sure to use an alternative to this command."
       if [ -d "docroot/profiles/dkan/themes/nuboot_radix" ]; then
         echo "Theme already exists at 'docroot/profiles/dkan/themes/nuboot_radix', removing it to make room..."
         rm -rf "docroot/profiles/dkan/themes/nuboot_radix";
