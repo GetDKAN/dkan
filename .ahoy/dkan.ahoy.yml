@@ -145,7 +145,6 @@ commands:
         echo "$BEHAT_ENV"
         echo "Using behat.yml .."
       fi
-      echo "The behat folder: $BEHAT_FOLDER"
       ahoy cmd-proxy "cd $BEHAT_FOLDER \&\& bin/behat $CONFIG ${ARGS[@]}"
 
   dkanextension-update:
