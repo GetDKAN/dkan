@@ -185,6 +185,8 @@ projects:
       1: patches/cross-site-scripting-facets-156778.patch
   migrate:
     version: 2.8
+  migrate_extras:
+    version: 2.5
   dkan_migrate_base:
     download:
       type: git

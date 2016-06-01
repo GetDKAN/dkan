@@ -3,4 +3,5 @@ description = Default Fixtures for DKAN
 core = 7.x
 package = DKAN
 
-dependencies[] = 'dkan_fixtures'
+dependencies[] = dkan_fixtures
+dependencies[] = migrate_extras
