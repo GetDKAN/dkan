@@ -127,7 +127,7 @@ commands:
       SKIP_COMPOSER_FLAG="--skip-composer"
       if [[ ! "${ARGS[@]}" == *"$SKIP_COMPOSER_FLAG"* ]]; then
         echo "Installing behat dependencies.."
-        ahoy cmd-proxy "cd $BEHAT_FOLDER \&\& composer install --prefer-source --no-interaction"
+        ahoy cmd-proxy "cd $BEHAT_FOLDER && composer install --prefer-source --no-interaction"
       else
         echo "Skipping composer install.."
         ARGS=( "${ARGS[@]/$SKIP_COMPOSER_FLAG}" )
@@ -145,7 +145,7 @@ commands:
         echo "$BEHAT_ENV"
         echo "Using behat.yml .."
       fi
-      ahoy cmd-proxy "cd $BEHAT_FOLDER \&\& bin/behat $CONFIG ${ARGS[@]}"
+      ahoy cmd-proxy "cd $BEHAT_FOLDER && bin/behat $CONFIG ${ARGS[@]}"
 
   dkanextension-update:
     usage: Update the nucivic/dkanextension composer package.
