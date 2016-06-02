@@ -1,0 +1,84 @@
+//
+// Styles for main layout
+// --------------------------------------------------
+
+aside.col-sm-3 {
+  padding-left:0;
+}
+section.col-sm-9 {
+  padding-right: 0;
+}
+
+#featured,
+.panel-top {
+  background-position:50% 50%;
+  background-size:cover !important;
+  overflow:hidden;
+  position: relative;
+  z-index: 0;
+  .tint {
+    // Let colorizer supply the background color.
+    //background-color:rgba(10 , 119 , 189, .45);
+    position:absolute;
+    height: 900px;
+    width:100%;
+    z-index: -1;
+  }
+  .pane-dkan-sitewide-demo-front-dkan-demo-front .pane-title,
+  .pane-views-popular-tags-block .pane-title,
+  .pane-dkan-sitewide-demo-front-dkan-add-front .pane-title {
+    display:none;
+  }
+  .container {
+    padding: 30px 0;
+    position: relative;
+    z-index: 5;
+  }
+  .pane-block,
+  .panel-pane,
+  .block-content {
+    color:#fff;
+    line-height: 1.33em;
+    margin:0 15px;
+  }
+  a {
+    color:#fff;
+  }
+}
+.page-admin .panel-top {
+  background-image: none !important;
+  background-color: none;
+  overflow: visible;
+  .tint {
+    display:none;
+  }
+}
+#top-content {
+  margin:20px;
+  .block {
+    padding:10px;
+    text-align:center;
+    h2.block-title {
+      border:none;
+      color:$gray-dark;
+      font-size:1.6em;
+    }
+  }
+  [class*="col-"]{
+    background-color: $smoke;
+    border-left:4px solid $body-bg;
+    border-right:4px solid $body-bg;
+    margin-bottom: -99999px;
+    padding-bottom: 99999px;
+  }
+
+  .row {
+    overflow: hidden;
+  }
+}
+@media all and (max-width:767px) {
+  .branding.container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
