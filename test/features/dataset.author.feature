@@ -98,6 +98,7 @@ Feature: Dataset Features
     Then I should see "Dataset 03 edited"
 
   @noworkflow @javascript
+  Scenario: Seeing the License
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
     When I click "Edit"
