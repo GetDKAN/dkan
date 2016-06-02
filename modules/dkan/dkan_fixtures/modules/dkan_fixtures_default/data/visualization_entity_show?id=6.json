@@ -4,48 +4,7 @@
         "id": "6",
         "type": "ve_chart",
         "title": "Retirements: Eligible vs. Actual",
-        "uid": "1",
-        "created": "1460575794",
-        "changed": "1460576034",
-        "field_description": {
-            "und": [
-                {
-                    "value": "This chart, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire along with the percentage of the workforce who actually retired.",
-                    "format": null,
-                    "safe_value": "This chart, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire along with the percentage of the workforce who actually retired."
-                }
-            ]
-        },
-        "field_file": {
-            "und": [
-                {
-                    "fid": "50",
-                    "uid": "1",
-                    "filename": "FY 2015 Eligible vs. Actual Retirements_0.csv",
-                    "uri": "public://FY 2015 Eligible vs. Actual Retirements_0.csv",
-                    "filemime": "text/csv",
-                    "filesize": "239",
-                    "status": "1",
-                    "timestamp": "1460575794",
-                    "type": "undefined",
-                    "uuid": "eeac290a-1c81-4774-aa5e-b08c6eef20a7",
-                    "rdf_mapping": [],
-                    "metadata": [],
-                    "alt": "",
-                    "title": "",
-                    "display": "1",
-                    "description": ""
-                }
-            ]
-        },
-        "field_ve_settings": {
-            "und": [
-                {
-                    "value": "{\"queryState\":{\"size\":100,\"from\":0,\"q\":\"\",\"facets\":{},\"filters\":[]},\"step\":3,\"source\":{\"backend\":\"csv\",\"url\":\"files\\/visualization_entity\\/FY%202015%20Eligible%20vs.%20Actual%20Retirements_0.csv\"},\"model\":{\"records\":[[\"Fiscal Year\",\"Number Eligible to Retire\",\"Percent Eligible to Retire\",\"Number Retirements\",\"Percent Retirements\"],[2011,5574,\"15.40%\",835,\"2.30%\"],[2012,6582,\"18.60%\",806,\"2.30%\"],[2013,6715,\"19.80%\",919,\"2.70%\"],[2014,5754,\"16.70%\",979,\"2.80%\"],[2015,5506,\"16.00%\",1045,\"3.10%\"]]},\"fields\":[{\"name\":\"Fiscal Year\",\"value\":\"Fiscal Year\",\"selected\":false},{\"name\":\"Number Eligible to Retire\",\"value\":\"Number Eligible to Retire\",\"selected\":false},{\"name\":\"Percent Eligible to Retire\",\"value\":\"Percent Eligible to Retire\",\"selected\":false},{\"name\":\"Number Retirements\",\"value\":\"Number Retirements\",\"selected\":false},{\"name\":\"Percent Retirements\",\"value\":\"Percent Retirements\",\"selected\":false}],\"xfields\":[{\"name\":\"Fiscal Year\",\"value\":\"Fiscal Year\",\"selected\":true},{\"name\":\"Number Eligible to Retire\",\"value\":\"Number Eligible to Retire\",\"selected\":false},{\"name\":\"Percent Eligible to Retire\",\"value\":\"Percent Eligible to Retire\",\"selected\":false},{\"name\":\"Number Retirements\",\"value\":\"Number Retirements\",\"selected\":false},{\"name\":\"Percent Retirements\",\"value\":\"Percent Retirements\",\"selected\":false}],\"xDataTypes\":[{\"name\":\"Number\",\"value\":\"Number\",\"selected\":false},{\"name\":\"String\",\"value\":\"String\",\"selected\":false},{\"name\":\"Date\",\"value\":\"Date\",\"selected\":false},{\"name\":\"Auto\",\"value\":\"Auto\",\"selected\":true}],\"seriesFields\":[\"Percent Eligible to Retire\",\"Percent Retirements\"],\"xfield\":\"Fiscal Year\",\"xDataType\":\"Auto\",\"graphTypes\":[{\"name\":\"discreteBarChart\",\"value\":\"discreteBarChart\",\"selected\":false},{\"name\":\"multiBarChart\",\"value\":\"multiBarChart\",\"selected\":false},{\"name\":\"multiBarHorizontalChart\",\"value\":\"multiBarHorizontalChart\",\"selected\":false},{\"name\":\"stackedAreaChart\",\"value\":\"stackedAreaChart\",\"selected\":false},{\"name\":\"pieChart\",\"value\":\"pieChart\",\"selected\":false},{\"name\":\"lineChart\",\"value\":\"lineChart\",\"selected\":false},{\"name\":\"lineWithFocusChart\",\"value\":\"lineWithFocusChart\",\"selected\":false},{\"name\":\"scatterChart\",\"value\":\"scatterChart\",\"selected\":true},{\"name\":\"linePlusBarChart\",\"value\":\"linePlusBarChart\",\"selected\":false}],\"graphType\":\"multiBarChart\",\"width\":640,\"height\":480,\"group\":false,\"computeXLabels\":false,\"options\":{\"showDistX\":true,\"showDistY\":true,\"onlyCircles\":false,\"xAxis\":{\"rotateLabels\":\"\",\"axisLabel\":\"\"},\"useInteractiveGuideline\":true,\"tooltips\":true,\"reduceXTicks\":true,\"margin\":{\"top\":15,\"right\":10,\"bottom\":50,\"left\":60},\"yAxis\":{\"axisLabel\":\"\",\"axisLabelDistance\":0},\"showControls\":true,\"showLegend\":true,\"color\":[\"#FFD9AA\",\"#FFC0AA\"]},\"sortFields\":[{\"name\":\"default\",\"label\":\"Default\",\"selected\":false},{\"name\":\"Fiscal Year\",\"value\":\"Fiscal Year\",\"selected\":false},{\"name\":\"Number Eligible to Retire\",\"value\":\"Number Eligible to Retire\",\"selected\":false},{\"name\":\"Percent Eligible to Retire\",\"value\":\"Percent Eligible to Retire\",\"selected\":false},{\"name\":\"Number Retirements\",\"value\":\"Number Retirements\",\"selected\":false},{\"name\":\"Percent Retirements\",\"value\":\"Percent Retirements\",\"selected\":false}],\"transitionTime\":\"2000\",\"xFormat\":\"YY\",\"sort\":\"\",\"showTitle\":false}"
-                }
-            ]
-        },
-        "field_uuid_resource": [],
-        "rdf_mapping": []
+        "description": "This chart, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire along with the percentage of the workforce who actually retired.",
+        "settings": "{\"queryState\":{\"size\":100,\"from\":0,\"q\":\"\",\"facets\":{},\"filters\":[]},\"step\":3,\"source\":{\"backend\":\"csv\",\"url\":\"files\\/visualization_entity\\/FY%202015%20Eligible%20vs.%20Actual%20Retirements_0.csv\"},\"model\":{\"records\":[[\"Fiscal Year\",\"Number Eligible to Retire\",\"Percent Eligible to Retire\",\"Number Retirements\",\"Percent Retirements\"],[2011,5574,\"15.40%\",835,\"2.30%\"],[2012,6582,\"18.60%\",806,\"2.30%\"],[2013,6715,\"19.80%\",919,\"2.70%\"],[2014,5754,\"16.70%\",979,\"2.80%\"],[2015,5506,\"16.00%\",1045,\"3.10%\"]]},\"fields\":[{\"name\":\"Fiscal Year\",\"value\":\"Fiscal Year\",\"selected\":false},{\"name\":\"Number Eligible to Retire\",\"value\":\"Number Eligible to Retire\",\"selected\":false},{\"name\":\"Percent Eligible to Retire\",\"value\":\"Percent Eligible to Retire\",\"selected\":false},{\"name\":\"Number Retirements\",\"value\":\"Number Retirements\",\"selected\":false},{\"name\":\"Percent Retirements\",\"value\":\"Percent Retirements\",\"selected\":false}],\"xfields\":[{\"name\":\"Fiscal Year\",\"value\":\"Fiscal Year\",\"selected\":true},{\"name\":\"Number Eligible to Retire\",\"value\":\"Number Eligible to Retire\",\"selected\":false},{\"name\":\"Percent Eligible to Retire\",\"value\":\"Percent Eligible to Retire\",\"selected\":false},{\"name\":\"Number Retirements\",\"value\":\"Number Retirements\",\"selected\":false},{\"name\":\"Percent Retirements\",\"value\":\"Percent Retirements\",\"selected\":false}],\"xDataTypes\":[{\"name\":\"Number\",\"value\":\"Number\",\"selected\":false},{\"name\":\"String\",\"value\":\"String\",\"selected\":false},{\"name\":\"Date\",\"value\":\"Date\",\"selected\":false},{\"name\":\"Auto\",\"value\":\"Auto\",\"selected\":true}],\"seriesFields\":[\"Percent Eligible to Retire\",\"Percent Retirements\"],\"xfield\":\"Fiscal Year\",\"xDataType\":\"Auto\",\"graphTypes\":[{\"name\":\"discreteBarChart\",\"value\":\"discreteBarChart\",\"selected\":false},{\"name\":\"multiBarChart\",\"value\":\"multiBarChart\",\"selected\":false},{\"name\":\"multiBarHorizontalChart\",\"value\":\"multiBarHorizontalChart\",\"selected\":false},{\"name\":\"stackedAreaChart\",\"value\":\"stackedAreaChart\",\"selected\":false},{\"name\":\"pieChart\",\"value\":\"pieChart\",\"selected\":false},{\"name\":\"lineChart\",\"value\":\"lineChart\",\"selected\":false},{\"name\":\"lineWithFocusChart\",\"value\":\"lineWithFocusChart\",\"selected\":false},{\"name\":\"scatterChart\",\"value\":\"scatterChart\",\"selected\":true},{\"name\":\"linePlusBarChart\",\"value\":\"linePlusBarChart\",\"selected\":false}],\"graphType\":\"multiBarChart\",\"width\":640,\"height\":480,\"group\":false,\"computeXLabels\":false,\"options\":{\"showDistX\":true,\"showDistY\":true,\"onlyCircles\":false,\"xAxis\":{\"rotateLabels\":\"\",\"axisLabel\":\"\"},\"useInteractiveGuideline\":true,\"tooltips\":true,\"reduceXTicks\":true,\"margin\":{\"top\":15,\"right\":10,\"bottom\":50,\"left\":60},\"yAxis\":{\"axisLabel\":\"\",\"axisLabelDistance\":0},\"showControls\":true,\"showLegend\":true,\"color\":[\"#FFD9AA\",\"#FFC0AA\"]},\"sortFields\":[{\"name\":\"default\",\"label\":\"Default\",\"selected\":false},{\"name\":\"Fiscal Year\",\"value\":\"Fiscal Year\",\"selected\":false},{\"name\":\"Number Eligible to Retire\",\"value\":\"Number Eligible to Retire\",\"selected\":false},{\"name\":\"Percent Eligible to Retire\",\"value\":\"Percent Eligible to Retire\",\"selected\":false},{\"name\":\"Number Retirements\",\"value\":\"Number Retirements\",\"selected\":false},{\"name\":\"Percent Retirements\",\"value\":\"Percent Retirements\",\"selected\":false}],\"transitionTime\":\"2000\",\"xFormat\":\"YY\",\"sort\":\"\",\"showTitle\":false}"
     }
 }
