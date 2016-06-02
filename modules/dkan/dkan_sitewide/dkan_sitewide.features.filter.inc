@@ -10,10 +10,10 @@
 function dkan_sitewide_filter_default_formats() {
   $formats = array();
 
-  // Exported format: HTML.
+  // Exported format: Markdown HTML.
   $formats['html'] = array(
     'format' => 'html',
-    'name' => 'HTML',
+    'name' => 'Markdown HTML',
     'cache' => 1,
     'status' => 1,
     'weight' => 0,
@@ -27,10 +27,15 @@ function dkan_sitewide_filter_default_formats() {
         'weight' => -10,
         'status' => 1,
         'settings' => array(
-          'allowed_html' => '<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <p><img>',
+          'allowed_html' => '<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <p><img><br><h2><h3>',
           'filter_html_help' => 1,
           'filter_html_nofollow' => 0,
         ),
+      ),
+      'filter_autop' => array(
+        'weight' => 0,
+        'status' => 1,
+        'settings' => array(),
       ),
       'filter_url' => array(
         'weight' => 0,
