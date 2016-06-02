@@ -903,16 +903,16 @@
         },
         {
             "name": "nucivic/dkanextension",
-            "version": "dev-remove_url_hash",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "a8082fc41a20d1a6c4e4ffa50cfc99a49c166d2f"
+                "reference": "2e4bdf8dedd9215e73e799559720aa2f33378637"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/a8082fc41a20d1a6c4e4ffa50cfc99a49c166d2f",
-                "reference": "a8082fc41a20d1a6c4e4ffa50cfc99a49c166d2f",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/2e4bdf8dedd9215e73e799559720aa2f33378637",
+                "reference": "2e4bdf8dedd9215e73e799559720aa2f33378637",
                 "shasum": ""
             },
             "require": {
