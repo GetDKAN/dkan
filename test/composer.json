@@ -2,7 +2,7 @@
     "require": {
         "behat/behat": "3.1.*@dev",
         "devinci/devinci-behat-extension": "dev-master",
-        "nucivic/dkanextension": "master-dev"
+        "nucivic/dkanextension": "remove_url_hash-dev"
     },
     "config": {
         "bin-dir": "bin/"
