@@ -191,6 +191,16 @@ function _build_visualization_entity_fixtures(&$rendered_fixtures) {
         $visualization_wrapper->field_ve_settings->set(json_encode($visualization_settings));
       }
 
+      $visualization_data = array();
+      $visualization_data['id'] = $visualization_wrapper->getIdentifier();
+      $visualization_data['type'] = $visualization_wrapper->getBundle();
+      $visualization_data['title'] = $visualization_wrapper->title->value();
+      $visualization_data['description'] = $visualization_wrapper->field_description->value();
+      $visualization_data['settings'] = $visualization_wrapper->field_ve_settings->value();
+      if (!empty($visualization->field_uuid_resource)) {
+        $visualization_data['existing_resource_uuid'] = $visualization->field_uuid_resource[LANGUAGE_NONE][0]['target_uuid'];
+      }
+
       // Add fixture with visualization entity data.
       $rendered_fixtures[] = array(
         'filename' => 'visualization_entity_show?id=' . $id . '.json',
@@ -198,7 +208,7 @@ function _build_visualization_entity_fixtures(&$rendered_fixtures) {
           array(),
           array(
             'help' => t('Visualization Entity data'),
-            'result' => $visualization,
+            'result' => $visualization_data,
           )),
         'files' => $visualization_entity_files,
         'files_subdir' => 'visualization_entity'
