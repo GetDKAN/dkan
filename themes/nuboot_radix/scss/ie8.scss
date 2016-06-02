@@ -1,0 +1,54 @@
+// @file
+// IE-8 Specific Styles
+// --------------------------------------------------
+@import "base/variables";
+
+.panel-top {
+	-ms-behavior: url(/backgroundsize.min.htc);
+	.tint {
+		background: $brand-primary;
+		opacity:0.5;
+		filter:alpha(opacity=50);
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	}
+}
+.format-label {
+	font-size:0;
+}
+.radix-layouts-sidebar .pane-block {
+	border: 1px solid #ddd;
+}
+.field-type-taxonomy-term-reference {
+  label {
+    display: block;
+  }
+  input.form-control {
+    height: auto;
+  }
+  .field-item {
+    a {
+      display: inline-block;
+      padding:0;
+      font-size:12px;
+      line-height: 1.25em;
+      border-radius:none;
+      background-image:none;
+      margin: 1px 1em .75em 0;
+      position:relative;
+      color: $brand-primary;
+      border: none;
+      border-left:0;
+      z-index:2;
+      &:after,
+      &:before {
+        display: none;
+      }
+    }
+    a:hover:after,
+    a:hover {
+      background: inherit;
+      color: $brand-secondary;
+      text-decoration: underline;
+    }
+  }
+}
