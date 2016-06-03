@@ -1,6 +1,5 @@
-7.x-1.x
+7.x-1.x 2016-04-20
 --------------------------
-- Patch colorfield module to avoid incorrect status error. See https://www.drupal.org/node/2696505
 - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
 - Fixes typo in "add data story" link in command center menu
 - Add topic icons to the drop down menu
@@ -15,6 +14,14 @@
 - Removed delta module.
 - Moved Nuboot Radix theme into core build.
 - Change admin theme setting to use default theme rather than nuboot radix
+
+7.x-1.12.1
+--------------------------
+- New version of Visualization Entity Charts fixes a number of UI bugs and restores support for Google Sheets and Data Proxy
+- Fix XSS vulnerability by adding sanitization for titles on workbench view
+- Upgrade of: Colorizer, Admin Menu Source, Honey Pot, Panopoly Widgets, Panopoly Images, Pathauto, Rules, Restws, Manual Crop, Image Cache Actions, Features, Search API, Organic Groups, Chosen, Date, Entity, Facet API, Facet API Bonus, Facet API Pretty Paths, UUID, Views, Select or other, Remote Stream Wrapper, Link, Libraries, Beauty Tips, Gravatar, OG Extras, Services and Workbench Email.
+- Upgrade of Panopoly Widgets, Panopoly Images and Fieldable Panels Panes.
+- Patch colorfield module to avoid incorrect status error. See https://www.drupal.org/node/2696505
 
 7.x-1.12 2016-04-20
 --------------------------
