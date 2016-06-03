@@ -1,4 +1,4 @@
-7.x-1.12.x
+7.x-1.12.1
 --------------------------
 - New version of Visualization Entity Charts fixes a number of UI bugs and restores support for Google Sheets and Data Proxy
 - Fix XSS vulnerability by adding sanitization for titles on workbench view
