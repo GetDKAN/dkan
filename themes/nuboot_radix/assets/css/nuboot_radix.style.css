@@ -9936,7 +9936,7 @@ h2.pane-title {
 .panels-dnd .panel-top,
 .panels-dnd .panel-hero {
   background-image: none !important;
-  background-color: transparent; }
+  background-color: transparent !important; }
   .panels-dnd .panel-top .tint,
   .panels-dnd .panel-hero .tint {
     display: none; }
@@ -9974,7 +9974,6 @@ h2.pane-title {
   background-position: 50% 50%;
   background-size: cover !important;
   background-repeat: no-repeat;
-  overflow: hidden;
   position: relative;
   z-index: 0;
   margin-bottom: 15px; }
