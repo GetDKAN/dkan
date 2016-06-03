@@ -3,6 +3,8 @@
 - New version of Visualization Entity Charts fixes a number of UI bugs and restores support for Google Sheets and Data Proxy
 - Fix XSS vulnerability by adding sanitization for titles on workbench view
 - Upgrade of: Colorizer, Admin Menu Source, Honey Pot, Panopoly Widgets, Panopoly Images, Pathauto, Rules, Restws, Manual Crop, Image Cache Actions, Features, Search API, Organic Groups, Chosen, Date, Entity, Facet API, Facet API Bonus, Facet API Pretty Paths, UUID, Views, Select or other, Remote Stream Wrapper, Link, Libraries, Beauty Tips, Gravatar, OG Extras, Services and Workbench Email.
+- Upgrade of Panopoly Widgets, Panopoly Images and Fieldable Panels Panes.
+- Patch colorfield module to avoid incorrect status error. See https://www.drupal.org/node/2696505
 
 7.x-1.12 2016-04-20
 --------------------------
@@ -55,7 +57,7 @@ $ drush rr
 
 This release of DKAN includes a redesigned search page, which is also the page used to browse datasets. This redesign required some changes to the included search indexes. Use the following drush commands to rebuild your search indexes, or go to admin/config/search/search_api/index/datasets and disable, re-enable and re-index the _datasets_ search index.
 
-$ drush search-api-disable datasets -y 
+$ drush search-api-disable datasets -y
 $ drush search-api-enable datasets -y
 $ drush sapi-r -y
 $ drush sapi-i -y
@@ -67,7 +69,7 @@ As mentioned above, this release includes a new module called DKAN Permissions (
 The command line method, including deleting the now-deprecated "storyteller" role, would look like this:
 
 $ drush dis dkan_sitewide_roles_perms -y
-$ drush rdel 'storyteller' 
+$ drush rdel 'storyteller'
 $ drush en dkan_permissions -y
 $ drush fra -y
 $ drush fr dkan_permissions -y
@@ -112,7 +114,7 @@ NuBoot Radix Theme
 - Added a "command center" to the user\'s own profile page to more easily find common functions
 - @font-your-face module added w/configuration for easier font admin
 - Multiple security updates and other contrib module and theme updates.
-- Drupal now on version 7.39. 
+- Drupal now on version 7.39.
 - Many bug fixes and code cleanups
 - See release notes for nuboot_radix theme and individual DKAN modules for additional release notes
 
@@ -126,15 +128,15 @@ To fix, follow these steps after updating your database:
 
 1. Go to /admin/config/search/search_api/index/datasets/edit to edit the database node index
 2. Set the Server to "< No Server >" and Save. Your index will now show as "disabled."
-3. Edit it again (by clicking "Edit" next to "Database Node Index") and set the Server back to "Database Server" 
+3. Edit it again (by clicking "Edit" next to "Database Node Index") and set the Server back to "Database Server"
 and Save.
 4. Click the "enable" link while viewing the resulting page, or edit the index again and check the "Enabled" box.
-5. Once the index is enabled, you should see "0/[total] Indexed" on the index page. Click "Index Now" at the 
+5. Once the index is enabled, you should see "0/[total] Indexed" on the index page. Click "Index Now" at the
 bottom of the page to re-index all your datasets.
 6. Repeat for any other indexes you have running on a database server.
 
-This issue has been identified and documented for other Drupal distributions using Search API. See release notes for 
-the Panopoly (https://www.drupal.org/node/2425263) and OpenAtrium (https://www.drupal.org/node/2443025) 
+This issue has been identified and documented for other Drupal distributions using Search API. See release notes for
+the Panopoly (https://www.drupal.org/node/2425263) and OpenAtrium (https://www.drupal.org/node/2443025)
 distros on Drupal.org.
 
 7.x-1.8  2015-04-02
@@ -176,7 +178,7 @@ distros on Drupal.org.
 
 7.x-1.3
 -------
- - Issue #192 drupal security update 
+ - Issue #192 drupal security update
 
 7.x-1.2
 -------
