@@ -81,4 +81,13 @@ class FeatureContext extends RawDKANContext
     }
   }
 
+  /**
+   * @When I switch to window
+   */
+  public function iSwitchToPopup() {
+    $windowNames = $this->getSession()->getWindowNames();
+    if (count($windowNames) > 1) {
+      $this->getSession()->switchToWindow($windowNames[1]);
+    }
+  }
 }
