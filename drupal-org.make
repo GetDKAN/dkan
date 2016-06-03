@@ -14,7 +14,7 @@ includes:
     #DKAN Data Story
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
     #DKAN Featured Topics
-  - "modules/dkan/dkan_featured_topics/dkan_featured_topics.make"
+  - "modules/dkan/dkan_topics/dkan_topics.make"
 projects:
   manualcrop:
     version: 1.x-dev
@@ -79,8 +79,8 @@ projects:
     version: 3.0-rc5
   bueditor:
     version: '1.8'
-    patch:
-      1931862: 'http://drupal.org/files/dont-render-bueditor-for-plain-text-textareas.patch'
+  bueditor_plus:
+    version: '1.4'
   colorizer:
     version: '1.8'
     patch:
@@ -103,9 +103,9 @@ projects:
   fontyourface:
     version: '2.8'
     patch:
-      2550253: 'https://www.drupal.org/files/issues/fontface_regenerate-css-after-add-rule.patch'
-      2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
       1: patches/fontyourface-no-ajax-browse-view.patch
+      2: patches/fontyourface-clear-css-cache.patch
+      2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
   imagecache_actions:
     download:
       type: git
@@ -143,6 +143,8 @@ projects:
     version: '3.5'
   panels_style_collapsible:
     version: '1.3'
+  panels_curator:
+    version: '1.1'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
@@ -172,19 +174,6 @@ projects:
       2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
   menu_token:
     version: 1.0-beta5
-  delta:
-    version: 3.0-beta11
-  omega:
-    version: '3.1'
-    patch:
-      1828552: 'http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch'
-    type: theme
-  nuboot_radix:
-    download:
-      type: git
-      url: 'https://github.com/NuCivic/nuboot_radix.git'
-      branch: 7.x-1.x
-    type: theme
   radix:
     type: theme
     version: 3.3
