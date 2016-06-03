@@ -1,7 +1,7 @@
 name = DKAN
 core = 7.x
 exclusive = TRUE
-version = 7.x-1.12
+version = 7.x-1.12.1
 project = dkan
 
 ; Core
