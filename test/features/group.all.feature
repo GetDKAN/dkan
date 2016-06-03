@@ -55,6 +55,10 @@ Feature: Site Manager administer groups
       | Dataset 12 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation |
       | Dataset 13 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 23 October 2013   | Transportation |
       | Dataset 14 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation |
+    And "format" terms:
+      | name |
+      | csv  |
+      | html |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |

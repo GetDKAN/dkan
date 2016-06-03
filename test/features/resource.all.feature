@@ -128,3 +128,29 @@ Feature: Resource
     Given I am on "/search"
     And I click "Resource"
     Then I should see "Dataset 01"
+
+  @api @javascript @noworkflow
+  Scenario: Data previews when only local enabled
+    Given cartodb previews are disabled for csv resources
+    And I am on "Dataset 01" page
+    Then I should see "Preview"
+    And I should not see "Open with"
+
+  @api @javascript @noworkflow @fixme
+  #TODO: This test was relying on default dkan content so we needed to fix it, in the next lines there is
+  #      an approach but it doesn't work because of a bug in which the carto db previews are not working
+  #      for resources which uses linked files.
+  Scenario: Open data previews in external services
+    Given cartodb previews are enabled for csv resources
+    And I am logged in as a user with the "site manager" role
+    And I am on "/dataset/dataset-01"
+    When I click "Resource 01"
+    Then I should see "Edit"
+    When I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I press "edit-submit"
+    When I am on "/dataset/dataset-01"
+    Then I should see "Open With"
+    When I press "Open With"
+    Then I should see the local preview link
+    And I should see "CartoDB"

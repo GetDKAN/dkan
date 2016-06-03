@@ -16,7 +16,7 @@ commands:
       fi
       ahoy drush make --prepare-install dkan/drupal-org-core.make docroot --yes &&
       ln -s ../../dkan docroot/profiles/dkan &&
-      ahoy drush "-y --verbose si minimal --sites-subdir=default --account-pass='admin' --db-url={{args}} install_configure_form.update_status_module='''''array\(FALSE,FALSE\)'''''"
+      ahoy drush "-y --verbose si minimal --sites-subdir=default --account-pass='admin' --db-url={{args}} install_configure_form.update_status_module=\"'array\(FALSE,FALSE\)'\""
 
   remake:
     usage: Rebuild all the dkan projects from the drupal-org.make file using drush make.
@@ -40,7 +40,7 @@ commands:
         ahoy dkan sqlc <  backups/last_install.sql && \
         echo "Installed dkan from backup"
       else
-        ahoy drush "si dkan --verbose --account-pass='admin' --site-name='DKAN' install_configure_form.update_status_module='''''array\(FALSE,FALSE\)''''' --yes" && \
+        ahoy drush "si dkan --verbose --account-pass='admin' --site-name='DKAN' install_configure_form.update_status_module=\"\'array\(FALSE,FALSE\)\'\" --yes" && \
         ahoy drush sql-dump > backups/last_install.sql.tmp && \
         mv backups/last_install.sql.tmp backups/last_install.sql && \
         echo "Installed DKAN and created a new backup at backups/last_install.sql"
