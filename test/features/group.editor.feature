@@ -34,11 +34,19 @@ Feature: Site Manager administer groups
       | Katie   | Group 01 | member               | Active            |
       | Jaz     | Group 01 | member               | Pending           |
       | Celeste | Group 02 | member               | Active            |
+    And "Tags" terms:
+      | name     |
+      | price    |
+      | election |
     And datasets:
       | title      | publisher | tags       | author  | published | description                |
       | Dataset 01 | Group 01  | price      | Katie   | Yes       | Increase of toy prices     |
       | Dataset 02 | Group 01  | price      | Katie   | No        | Cost of oil in January     |
       | Dataset 03 | Group 01  | election   | Gabriel | Yes       | Election districts         |
+    And "format" terms:
+      | name |
+      | csv  |
+      | html |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
