@@ -10254,6 +10254,9 @@ h2.pane-title {
 .search-result p {
   margin-bottom: 0px; }
 
+.node-search-result h2.node-title {
+  margin: 1.5em 0 .5em 0; }
+
 body {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
