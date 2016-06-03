@@ -1,6 +1,25 @@
 7.x-1.x
 --------------------------
 - Patch colorfield module to avoid incorrect status error. See https://www.drupal.org/node/2696505
+- Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
+- Fixes typo in "add data story" link in command center menu
+- Add topic icons to the drop down menu
+- Renamed the default HTML text format to 'Markdown HTML'
+- Improved markdown text editor toolbar
+- URLs on dataset's additional info are now properly displayed as links.
+- Removed warnings about undefined permissions when visualization_entity_choropleth_bundle module is enabled.
+- Removed warnings about undefined permissions when visualization_entity_geojson_bundle module is enabled.
+- Removed specific visualization entity charts permissions from dkan_extension.
+- Added test feature to validate that users with Editor, Content Creator and Site Manager roles are not able to access to admin pages.
+- Removed omega theme.
+- Removed delta module.
+- Moved Nuboot Radix theme into core build.
+- Change admin theme setting to use default theme rather than nuboot radix
+
+7.x-1.12 2016-04-20
+--------------------------
+- Fixed regex used to rewrite font file paths on Dkan Topics, which was breaking filepaths in data.json
+- Rename dkan_featured_topics to dkan_topics before release
 - Add "data dashboard" creation link to user admin menu (in dkan_sitewide_menu)
 - Patch DKAN core file module to fix managed file problem https://www.drupal.org/node/1903010#comment-10118508
 - Standardize facet titles between user, search and group pages
@@ -14,6 +33,7 @@
 - Upgrade Fieldable Panels Panes to 1.8
 - Added hook_update to remove 'Add Dataset' and 'Datasets' links from main menu. The 'Datasets' link is now added by the dkan_sitewide_search_db feature.
 - Removed 'taxonomy_menu_vocab_parent_dkan_topics' variable from info file to get the 'DKAN Featured Topics' feature back into 'Default' state.
+- Add dkan_ipe feature to simplify the in-place editor interface, includes addition of the panels_curator module
 
 7.x-1.11 2016-02-01
 --------------------------
