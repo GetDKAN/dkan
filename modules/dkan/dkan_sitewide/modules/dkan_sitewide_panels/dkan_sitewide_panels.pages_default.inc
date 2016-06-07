@@ -303,11 +303,11 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->configuration = array(
       'links' => 0,
       'no_extras' => 1,
-      'override_title' => 0,
+      'override_title' => 1,
       'override_title_text' => '',
       'identifier' => '',
       'link' => 0,
-      'leave_node_title' => 1,
+      'leave_node_title' => 0,
       'build_mode' => 'teaser',
       'context' => 'argument_entity_id:node_1',
       'override_title_heading' => 'h2',
@@ -323,6 +323,52 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->uuid = 'f37cd80b-e225-4e19-9cb9-3ced34a027ee';
     $display->content['new-f37cd80b-e225-4e19-9cb9-3ced34a027ee'] = $pane;
     $display->panels['sidebar'][0] = 'new-f37cd80b-e225-4e19-9cb9-3ced34a027ee';
+    $pane = new stdClass();
+    $pane->pid = 'new-dff3ab78-497e-4b4b-9821-3c971ad02b5a';
+    $pane->panel = 'sidebar';
+    $pane->type = 'block';
+    $pane->subtype = 'facetapi-wsVI1ENUXwf4Rz08n9fg2WvfQ0Gs5h2a';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_title' => 1,
+      'override_title_text' => 'Author',
+      'override_title_heading' => 'h2',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 1;
+    $pane->locks = array();
+    $pane->uuid = 'dff3ab78-497e-4b4b-9821-3c971ad02b5a';
+    $display->content['new-dff3ab78-497e-4b4b-9821-3c971ad02b5a'] = $pane;
+    $display->panels['sidebar'][1] = 'new-dff3ab78-497e-4b4b-9821-3c971ad02b5a';
+    $pane = new stdClass();
+    $pane->pid = 'new-1dd44b86-bd6f-4a06-86bf-741c89c980f2';
+    $pane->panel = 'sidebar';
+    $pane->type = 'block';
+    $pane->subtype = 'facetapi-dqCRnp6cKP1cSzAsNB6zqFtY9AVEa0mp';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_title' => 1,
+      'override_title_text' => 'Tags',
+      'override_title_heading' => 'h2',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 2;
+    $pane->locks = array();
+    $pane->uuid = '1dd44b86-bd6f-4a06-86bf-741c89c980f2';
+    $display->content['new-1dd44b86-bd6f-4a06-86bf-741c89c980f2'] = $pane;
+    $display->panels['sidebar'][2] = 'new-1dd44b86-bd6f-4a06-86bf-741c89c980f2';
   $display->hide_title = PANELS_TITLE_PANE;
   $display->title_pane = 'new-c0fb5b4d-a03a-444b-8be5-c57562638d37';
   $handler->conf['display'] = $display;
