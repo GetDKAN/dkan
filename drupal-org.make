@@ -7,6 +7,7 @@ includes:
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
 - modules/dkan/dkan_topics/dkan_topics.make
+- "https://raw.githubusercontent.com/NuCivic/dkan_harvest/harvest_source_page/dkan_harvest.make"
 projects:
   manualcrop:
     version: 1.x-dev
@@ -60,6 +61,12 @@ projects:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
       tag: 7.x-1.0-beta1
+    type: module
+  dkan_harvest:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/dkan_harvest.git'
+      branch: harvest_source_page
     type: module
   admin_menu:
     version: 3.0-rc5
