@@ -61,13 +61,13 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      revision: a2490a0ea1baa8fe3617d669b4c9a1c8f0b5626c
+      branch: master
     type: module
   visualization_entity_charts:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity_charts.git
-      revision: d02f1b19797840b0d4b8b92625b4c22ca0a603f2
+      branch: master
     type: module
   admin_menu:
     version: 3.0-rc5
