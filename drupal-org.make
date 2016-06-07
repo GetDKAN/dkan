@@ -2,11 +2,11 @@
 api: '2'
 core: 7.x
 includes:
-- https://raw.githubusercontent.com/NuCivic/dkan_dataset/release-1-12/dkan_dataset.make
-- https://raw.githubusercontent.com/NuCivic/dkan_datastore/release-1-12/dkan_datastore.make
-- https://raw.githubusercontent.com/NuCivic/dkan_workflow/release-1-12/dkan_workflow.make
-- https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
-- https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
+- https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.12.1/dkan_dataset.make
+- https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.12.1/dkan_datastore.make
+- https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.12.1/dkan_workflow.make
+- https://raw.githubusercontent.com/NuCivic/visualization_entity/cbc6080bb2c75f3c6097932cad18a879d95eb20a/visualization_entity.make
+- https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/a565e38bc1ee9f837e88b90d12fe0b58546666bb/visualization_entity_charts.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
 - modules/dkan/dkan_topics/dkan_topics.make
 projects:
@@ -44,30 +44,30 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_dataset.git
-      branch: release-1-12
+      tag: 7.x-1.12.1
   dkan_datastore:
     subdir: dkan
     download:
       type: git
       url: https://github.com/NuCivic/dkan_datastore.git
-      branch: release-1-12
+      tag: 7.x-1.12.1
   dkan_workflow:
     subdir: dkan
     download:
       type: git
       url: https://github.com/NuCivic/dkan_workflow.git
-      branch: release-1-12
+      tag: 7.x-1.12.1
   visualization_entity:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      branch: master
+      revision: cbc6080bb2c75f3c6097932cad18a879d95eb20a
     type: module
   visualization_entity_charts:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity_charts.git
-      branch: master
+      revision: a565e38bc1ee9f837e88b90d12fe0b58546666bb
     type: module
   admin_menu:
     version: 3.0-rc5
@@ -151,7 +151,6 @@ projects:
     version: '1.1'
   admin_menu_source:
     version: '1.1'
-    # Allow ordering of roles to handle users w/multiple roles
     patch:
       2441283: https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch
   menu_token:
@@ -167,7 +166,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/nuboot_radix.git
-      branch: release-1-12
+      tag: 7.x-1.12.1
     type: theme
   radix:
     type: theme
