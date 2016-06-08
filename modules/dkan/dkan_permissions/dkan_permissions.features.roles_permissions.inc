@@ -31,6 +31,7 @@ function dkan_permissions_default_roles_permissions() {
       'access user profiles' => TRUE,
       'cancel account' => TRUE,
       'change own username' => TRUE,
+      'eck view entities' => TRUE,
       'use gravatar' => TRUE,
       'view own unpublished content' => TRUE,
       'view revisions' => TRUE,
