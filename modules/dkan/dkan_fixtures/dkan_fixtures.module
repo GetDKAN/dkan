@@ -153,8 +153,65 @@ function dkan_fixtures_render_fixtures($nids = array()) {
     }
 
     _build_visualization_entity_fixtures($rendered_fixtures);
+
+    _build_panelized_nodes_fixtures('data_dashboard', $rendered_fixtures);
+
   }
   return $rendered_fixtures;
+}
+
+function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
+  $panelized_nodes = array();
+
+  // Get all published nodes with the specified type.
+  $query = new EntityFieldQuery();
+  $result = $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $content_type)
+    ->entityCondition('status', 1)
+    ->execute();
+
+  if ($result) {
+    $nodes = node_load_multiple(array_keys($result['node']));
+
+    // Process all nodes.
+    foreach ($nodes as $node) {
+      $nuuid = $node->uuid;
+
+      $panelized_node = array();
+      $panelized_node['uuid'] = $nuuid;
+      $panelized_node['id'] = $node->nid;
+      $panelized_node['title'] = $node->title;
+      $panelized_node['created'] = $node->created;
+      $panelized_node['changed'] = $node->changed;
+      $panelized_node['field_topic'] = $node->field_topic;
+
+      $panelized_nodes[] = $nuuid;
+
+      // Build 'Item' fixture for content.
+      $fixtures[] = array(
+        'filename' => $content_type . '_show?id=' . $nuuid . '.json',
+        'content' => open_data_schema_map_json_pretty_output(
+          array(),
+          array(
+            'help' => t( $content_type . ' item'),
+            'result' => $panelized_node,
+          )
+        ),
+      );
+    }
+
+    // Build 'List' fixture for content.
+    $fixtures[] = array(
+      'filename' => $content_type . '_list.json',
+      'content' => open_data_schema_map_json_pretty_output(
+        array(),
+        array(
+          'help' => t($content_type . ' list'),
+          'result' => $panelized_nodes,
+        )
+      ),
+    );
+  }
 }
 
 /**
