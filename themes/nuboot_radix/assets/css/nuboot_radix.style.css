@@ -9300,6 +9300,7 @@ div.horizontal-tabs {
   content: "\f0c1"; }
 
 .container,
+.container-fluid,
 .row {
   overflow: visible; }
 
@@ -9875,6 +9876,9 @@ ul.action-links {
 
 .pane-content .field-name-body {
   line-height: 2em; }
+
+.panels-ipe-portlet-wrapper {
+  margin: 2.5em 0; }
 
 h2.pane-title {
   border-bottom: 1px solid #ddd;
@@ -10567,6 +10571,13 @@ dd {
     .nav-simple li.last {
       border-bottom: none; }
 
+.thumbnail {
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  border: none;
+  border-radius: 0; }
+
 .field-name-field-tags .field-item {
   display: inline-block; }
 
@@ -10650,12 +10661,13 @@ dd {
   border-bottom: 1px dotted #ccc;
   padding: 1em 0; }
 
-.views-field-field-image img {
-  display: block;
-  height: auto;
-  margin: 0 auto 5px;
-  max-width: 220px;
-  width: 100%; }
+.view-front-page-group-list .views-row {
+  position: relative;
+  padding-left: 120px; }
+  .view-front-page-group-list .views-row img {
+    position: absolute;
+    top: 0;
+    left: 0; }
 
 .view-user-profile-fields img {
   height: auto;

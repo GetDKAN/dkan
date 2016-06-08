@@ -28,11 +28,22 @@
 }
 
 .views-field-field-image img {
-  display:block;
-  height:auto;
-  margin:0 auto 5px;
-  max-width:220px;
-  width:100%;
+  // display:block;
+  // height:auto;
+  // margin:0 auto 5px;
+  // max-width:220px;
+  // width:100%;
+}
+.view-front-page-group-list {
+  .views-row {
+    position: relative;
+    padding-left: 120px;
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
 }
 
 .view-user-profile-fields img {
