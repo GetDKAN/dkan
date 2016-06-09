@@ -9086,8 +9086,17 @@ div.autocomplete-deluxe-multiple {
   .colorizer-form #palette .item-selected {
     background-color: transparent; }
 
-.bue-ui {
-  background-color: #ffffff; }
+.bue-popup {
+  z-index: 999; }
+
+.bue-ui.editor-container {
+  background-color: #ffffff;
+  padding: 0 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px 4px 0 0; }
+
+.form-control.form-textarea {
+  border-radius: 0; }
 
 .form-control.chosen-processed {
   line-height: 34px;
@@ -9121,10 +9130,7 @@ div.autocomplete-deluxe-container input.autocomplete-deluxe-form-single {
   float: left; }
 
 fieldset {
-  padding-top: 40px;
   position: relative; }
-  fieldset fieldset {
-    padding-top: 0; }
 
 fieldset.collapsible {
   padding-top: 0; }
@@ -9301,9 +9307,6 @@ div.horizontal-tabs {
 
 .add-content-link-dkan-plugins-button-link-icon-text-button:before {
   content: "\f0c1"; }
-
-.bue-popup {
-  z-index: 999; }
 
 img.thumbnail {
   width: 100px;
