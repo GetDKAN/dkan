@@ -8680,6 +8680,7 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
 .radix-layouts-sidebar div[class*="pane-facetapi"] h2.pane-title,
 .radix-layouts-sidebar .block-facetapi h2.pane-title {
   border-radius: 0;
+  border: none;
   color: #fff;
   font-size: 16px;
   font-weight: normal;
@@ -9299,6 +9300,9 @@ div.horizontal-tabs {
 .add-content-link-dkan-plugins-button-link-icon-text-button:before {
   content: "\f0c1"; }
 
+.bue-popup {
+  z-index: 999; }
+
 .container,
 .container-fluid,
 .row {
@@ -9877,8 +9881,8 @@ ul.action-links {
 .pane-content .field-name-body {
   line-height: 2em; }
 
-.panels-ipe-portlet-wrapper {
-  margin: 2.5em 0; }
+.main .panel-pane {
+  margin: 3em 0; }
 
 h2.pane-title {
   border-bottom: 1px solid #ddd;
