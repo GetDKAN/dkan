@@ -157,15 +157,16 @@ function dkan_fixtures_render_fixtures($nids = array()) {
 
     // Export Data Dashboards.
     _build_panelized_nodes_fixtures('data_dashboard', $rendered_fixtures);
+
     // Export Data Stories.
     _build_panelized_nodes_fixtures('dkan_data_story', $rendered_fixtures);
-
   }
   return $rendered_fixtures;
 }
 
-
-
+/**
+ *
+ */
 function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
   $panelized_nodes = array();
 
@@ -181,38 +182,35 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
 
     // Process all nodes.
     foreach ($nodes as $node) {
+      // Export data common to all content types.
       $nuuid = $node->uuid;
       $panelized_nodes[] = $nuuid;
 
       $panelized_node = array();
       $panelized_node['uuid'] = $nuuid;
       $panelized_node['id'] = $node->nid;
-      $panelized_node['bundle'] = $content_type;
+      $panelized_node['type'] = $node->type;
       $panelized_node['title'] = $node->title;
       $panelized_node['created'] = $node->created;
       $panelized_node['changed'] = $node->changed;
-      $panelized_node['field_topic'] = $node->field_topic;
 
-      // Export of Panelizer related data: panelizer_entity, panels_display and panels_pane.
-      if (isset($node->panelizer)) {
-        ctools_include('export');
-        // Export panelizer_entity information
-        $result = db_query("SELECT * FROM {panelizer_entity} WHERE entity_id = :nid", array(':nid' => $node->nid))->fetchObject();
-        $panelizer_entity = ctools_export_unpack_object('panelizer_entity', $result);
-        $panelized_node['panelizer']['panelizer_entity'] = $panelizer_entity;
-
-        // Export panels_display.
-        $result = db_query("SELECT * FROM {panels_display} WHERE did = :did", array(':did' => $panelizer_entity->did))->fetchObject();
-        $panels_display = ctools_export_unpack_object('panels_display', $result);
-        $panelized_node['panelizer']['panels_display'] = $panels_display;
-
-        // Export panels_pane.
-        $result = db_query("SELECT * FROM {panels_pane} WHERE did = :did", array(':did' => $panelizer_entity->did));
-        foreach ($result as $obj) {
-          $panels_pane = ctools_export_unpack_object('panels_pane', $obj);
-          $panelized_node['panelizer']['panels_pane'][] = $panels_pane;
-        }
+      // Export specific data.
+      // TODO: Refactor this.
+      switch ($node->type) {
+        case 'dkan_data_story':
+          $panelized_node['body'] = $node->body;
+          $panelized_node['field_image'] = $node->field_image;
+          $panelized_node['field_tags'] = $node->field_tags;
+          break;
+        case 'page':
+          $panelized_node['body'] = $node->body;
+          break;
+        default:
+          break;
       }
+
+      // Add Panelizer data on export: panelizer_entity, panels_display and panels_pane.
+      $panelized_node['panelizer'] = _get_panelizer_data($node);
 
       // Build 'Item' fixture for content.
       $fixtures[] = array(
@@ -220,7 +218,7 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
         'content' => open_data_schema_map_json_pretty_output(
           array(),
           array(
-            'help' => t( $content_type . ' item'),
+            'help' => t($content_type . ' item'),
             'result' => $panelized_node,
           )
         ),
@@ -239,6 +237,35 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
       ),
     );
   }
+}
+
+/**
+ *
+ */
+function _get_panelizer_data($node) {
+  $panelizer_data = array();
+
+  if (isset($node->panelizer)) {
+    ctools_include('export');
+    // Get panelizer_entity information
+    $result = db_query("SELECT * FROM {panelizer_entity} WHERE entity_id = :nid", array(':nid' => $node->nid))->fetchObject();
+    $panelizer_entity = ctools_export_unpack_object('panelizer_entity', $result);
+    $panelizer_data['panelizer_entity'] = $panelizer_entity;
+
+    // Get panels_display.
+    $result = db_query("SELECT * FROM {panels_display} WHERE did = :did", array(':did' => $panelizer_entity->did))->fetchObject();
+    $panels_display = ctools_export_unpack_object('panels_display', $result);
+    $panelizer_data['panels_display'] = $panels_display;
+
+    // Get panels_pane.
+    $result = db_query("SELECT * FROM {panels_pane} WHERE did = :did", array(':did' => $panelizer_entity->did));
+    foreach ($result as $obj) {
+      $panels_pane = ctools_export_unpack_object('panels_pane', $obj);
+      $panelizer_data['panels_pane'][] = $panels_pane;
+    }
+  }
+
+  return $panelizer_data;
 }
 
 /**
