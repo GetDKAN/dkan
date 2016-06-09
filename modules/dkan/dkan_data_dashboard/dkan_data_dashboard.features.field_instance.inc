@@ -10,15 +10,15 @@
 function dkan_data_dashboard_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-data_dashboard-field_summary'.
-  $field_instances['node-data_dashboard-field_summary'] = array(
+  // Exported field_instance: 'node-data_dashboard-body'.
+  $field_instances['node-data_dashboard-body'] = array(
     'bundle' => 'data_dashboard',
     'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'hidden',
+        'label' => 'above',
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
@@ -32,34 +32,36 @@ function dkan_data_dashboard_field_default_field_instances() {
         'weight' => 1,
       ),
       'teaser' => array(
-        'label' => 'hidden',
-        'module' => 'text',
+        'label' => 'above',
         'settings' => array(),
-        'type' => 'text_default',
+        'type' => 'hidden',
         'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'field_summary',
-    'label' => 'Summary',
-    'required' => FALSE,
+    'field_name' => 'body',
+    'label' => 'Description',
+    'required' => 0,
     'settings' => array(
-      'text_processing' => 0,
+      'display_summary' => 0,
+      'text_processing' => 1,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
+      'active' => 1,
       'module' => 'text',
       'settings' => array(
-        'rows' => 5,
+        'rows' => 20,
+        'summary_rows' => 5,
       ),
-      'type' => 'text_textarea',
-      'weight' => 3,
+      'type' => 'text_textarea_with_summary',
+      'weight' => 2,
     ),
   );
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('Summary');
+  t('Description');
 
   return $field_instances;
 }

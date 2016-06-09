@@ -302,7 +302,11 @@ dd {
     }
   }
 }
-
+// Keep images inside their containers.
+img {
+  max-width: 100%;
+  height: auto;
+}
 // Bootstrap/Radix Overrides.
 .thumbnail {
   padding: 0;

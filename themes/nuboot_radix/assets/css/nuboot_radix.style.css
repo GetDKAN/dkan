@@ -9120,9 +9120,11 @@ div.autocomplete-deluxe-multiple,
 div.autocomplete-deluxe-container input.autocomplete-deluxe-form-single {
   float: left; }
 
-fieldset fieldset {
+fieldset {
   padding-top: 40px;
   position: relative; }
+  fieldset fieldset {
+    padding-top: 0; }
 
 fieldset.collapsible {
   padding-top: 0; }
@@ -10107,6 +10109,10 @@ h2.pane-title {
 .recline-filter-editor select {
   width: auto; }
 
+.recline-embeded .header,
+.recline-embeded .data-view-sidebar {
+  display: none; }
+
 @media all and (max-width: 991px) {
   .recline-query-editor {
     border: none;
@@ -10589,6 +10595,10 @@ dd {
     .radix-layouts-sidebar .item-list ul li.last,
     .nav-simple li.last {
       border-bottom: none; }
+
+img {
+  max-width: 100%;
+  height: auto; }
 
 .thumbnail {
   padding: 0;
