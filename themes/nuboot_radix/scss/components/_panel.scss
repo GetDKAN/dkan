@@ -10,8 +10,11 @@
     line-height: 2em;
   }
 }
-.main .panel-pane {
-  margin: 3em 0;
+
+.main {
+	.panel-pane {
+  	margin-bottom: 3em;
+  }
 }
 
 h2.pane-title {
