@@ -1,3 +1,7 @@
+7.x-1.12.2
+--------------------------
+- Fix problems in visualization entity charts creation due to version of CSV.js referenced in recline.make
+
 7.x-1.12.1
 --------------------------
 - New version of Visualization Entity Charts fixes a number of UI bugs and restores support for Google Sheets and Data Proxy
