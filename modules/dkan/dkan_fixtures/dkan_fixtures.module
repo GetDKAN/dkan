@@ -168,7 +168,10 @@ function dkan_fixtures_render_fixtures($nids = array()) {
  *
  */
 function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
+  global $base_url;
+
   $panelized_nodes = array();
+  $files_to_save = array();
 
   // Get all published nodes with the specified type.
   $query = new EntityFieldQuery();
@@ -198,8 +201,16 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
       // TODO: Refactor this.
       switch ($node->type) {
         case 'dkan_data_story':
+          // Body.
           $panelized_node['body'] = $node->body;
-          $panelized_node['field_image'] = $node->field_image;
+          // Image
+          $panelized_node['field_image'] = '';
+          if (!empty($node->field_image)) {
+            $file = $node->field_image[LANGUAGE_NONE][0];
+            $panelized_node['field_image'] = 'files/dkan_data_story/' . $file['filename'];
+            $files_to_save[] = drupal_realpath($file['uri']);
+          }
+          // Tags
           $panelized_node['field_tags'] = $node->field_tags;
           break;
         case 'page':
@@ -222,6 +233,8 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
             'result' => $panelized_node,
           )
         ),
+        'files' => $files_to_save,
+        'files_subdir' => 'dkan_data_story'
       );
     }
 
