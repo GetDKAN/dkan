@@ -31,7 +31,17 @@ function dkan_fixtures_default_migrate_api() {
         'class_name' => 'DefaultContentVisualizationEntityImport',
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Default Visualization Entities'),
-      )
+      ),
+      'dkan_fixtures_default_data_stories' => array(
+        'class_name' => 'DefaultContentDataStoriesImport',
+        'group_name' => 'dkan_fixtures',
+        'title' => t('DKAN Default Data Stories'),
+      ),
+      'dkan_fixtures_default_data_dashboards' => array(
+        'class_name' => 'DefaultContentDataDashboardsImport',
+        'group_name' => 'dkan_fixtures',
+        'title' => t('DKAN Default Data Dashboards'),
+      ),
     ),
   );
   return $api;
@@ -248,6 +258,116 @@ class DefaultContentVisualizationEntityImport extends Migration {
 }
 
 /**
+ * Migration class used to import Default Panelized Nodes from fixtures.
+ */
+class DefaultContentPanelizedNodesImport extends Migration {
+
+  /**
+   * __construct().
+   */
+  public function __construct($arguments) {
+
+    $this->endpoint = isset($arguments['endpoint']) ? $arguments['endpoint'] : drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+    $list_url = isset($arguments['list_url']) ? $arguments['list_url'] : 'panelized_node_list.json';
+    $list_url = $this->endpoint . $list_url;
+    $item_url = isset($arguments['item_url']) ? $arguments['item_url'] : 'panelized_node_item.json';
+    $item_url = $this->endpoint . $item_url;
+
+    parent::__construct($arguments);
+
+    $this->page = isset($arguments['page']) ? $arguments['page'] : '';
+    $this->offset = isset($arguments['offset']) ? $arguments['offset'] : '';
+
+    $fields = $this->getPanelizedNodeFields();
+
+    // The source that will feed data to the migration.
+    $this->source = new MigrateSourceList(
+      new CKANListJSON($list_url, array('page' => $this->page, 'offset' => $this->offset)),
+      new CKANItemJSON($item_url, $fields), $fields);
+
+    // This will receive data that originated from the source and has been mapped
+    // by the Migration class, and create Drupal objects.
+    $this->destination = new MigrateDestinationNode($arguments['content_type']);
+
+    // This will keep track of which source items have been imported and what destination objects they map to.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'id' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'description' => 'id',
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+
+    // Add Field mappings.
+    $this->addFieldMapping('title', 'title');
+  }
+
+  /**
+   *
+   */
+  public function prepareRow($row) {
+
+  }
+
+  /**
+   * Do extra processing on the node data before its saved.
+   */
+  public function prepare($entity, $row) {
+
+    // Setup superuser as author.
+    $entity->uid = 1;
+  }
+
+  /**
+   * @return array
+   */
+  public function getPanelizedNodeFields() {
+    return array(
+    );
+  }
+}
+
+/**
+ * Migration class used to import Default Data Dashboards from fixtures.
+ */
+class DefaultContentDataDashboardsImport extends DefaultContentPanelizedNodesImport {
+
+  /**
+   * __construct().
+   */
+  public function __construct($arguments) {
+    $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+    $arguments['list_url'] = $arguments['endpoint'] . 'data_dashboard_list.json';
+    $arguments['item_url'] = $arguments['endpoint'] . 'data_dashboard_show?id=:id.json';
+    $arguments['content_type'] = 'data_dashboard';
+
+    parent::__construct($arguments);
+  }
+}
+
+/**
+ * Migration class used to import Default Data Stories from fixtures.
+ */
+class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport {
+
+  /**
+   * __construct().
+   */
+  public function __construct($arguments) {
+    $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+    $arguments['list_url'] = $arguments['endpoint'] . 'dkan_data_story_list.json';
+    $arguments['item_url'] = $arguments['endpoint'] . 'dkan_data_story_show?id=:id.json';
+    $arguments['content_type'] = 'dkan_data_story';
+
+    parent::__construct($arguments);
+  }
+}
+
+/**
  * Deregisters migrations.
  */
 function dkan_fixtures_default_migrations_disable() {
@@ -255,4 +375,6 @@ function dkan_fixtures_default_migrations_disable() {
   Migration::deregisterMigration('dkan_fixtures_default_resources');
   Migration::deregisterMigration('dkan_fixtures_default_groups');
   Migration::deregisterMigration('dkan_fixtures_default_visualization_entities');
+  Migration::deregisterMigration('dkan_fixtures_default_data_stories');
+  Migration::deregisterMigration('dkan_fixtures_default_data_dashboards');
 }
