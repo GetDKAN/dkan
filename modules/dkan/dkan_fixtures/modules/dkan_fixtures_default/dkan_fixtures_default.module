@@ -215,7 +215,7 @@ class DefaultContentVisualizationEntityImport extends Migration {
             // Add file data in row.
             $row->local_file = (array) $file;
             // Update file path on settings field.
-            $settings->source->url = file_create_url($file->uri);
+            $settings->source->url = '/' . variable_get('file_public_path', conf_path() . '/files') . '/' . $name;
             $row->settings = json_encode($settings);
           }
         }
