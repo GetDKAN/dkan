@@ -250,19 +250,26 @@ function _get_panelizer_data($node) {
     // Get panelizer_entity information
     $result = db_query("SELECT * FROM {panelizer_entity} WHERE entity_id = :nid", array(':nid' => $node->nid))->fetchObject();
     $panelizer_entity = ctools_export_unpack_object('panelizer_entity', $result);
-    $panelizer_data['panelizer_entity'] = $panelizer_entity;
 
     // Get panels_display.
     $result = db_query("SELECT * FROM {panels_display} WHERE did = :did", array(':did' => $panelizer_entity->did))->fetchObject();
     $panels_display = ctools_export_unpack_object('panels_display', $result);
+    unset($panels_display->did);
     $panelizer_data['panels_display'] = $panels_display;
 
     // Get panels_pane.
     $result = db_query("SELECT * FROM {panels_pane} WHERE did = :did", array(':did' => $panelizer_entity->did));
     foreach ($result as $obj) {
       $panels_pane = ctools_export_unpack_object('panels_pane', $obj);
+      unset($panels_pane->pid);
+      unset($panels_pane->did);
       $panelizer_data['panels_pane'][] = $panels_pane;
     }
+
+    unset($panelizer_entity->entity_id);
+    unset($panelizer_entity->revision_id);
+    unset($panelizer_entity->did);
+    $panelizer_data['panelizer_entity'] = $panelizer_entity;
   }
 
   return $panelizer_data;
