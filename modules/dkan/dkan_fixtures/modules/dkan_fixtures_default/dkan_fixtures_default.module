@@ -268,10 +268,8 @@ class DefaultContentPanelizedNodesImport extends Migration {
   public function __construct($arguments) {
 
     $this->endpoint = isset($arguments['endpoint']) ? $arguments['endpoint'] : drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
-    $list_url = isset($arguments['list_url']) ? $arguments['list_url'] : 'panelized_node_list.json';
-    $list_url = $this->endpoint . $list_url;
-    $item_url = isset($arguments['item_url']) ? $arguments['item_url'] : 'panelized_node_item.json';
-    $item_url = $this->endpoint . $item_url;
+    $list_url = isset($arguments['list_url']) ? $arguments['list_url'] : $this->endpoint . 'panelized_node_list.json';
+    $item_url = isset($arguments['item_url']) ? $arguments['item_url'] : $this->endpoint . 'panelized_node_item.json';
 
     parent::__construct($arguments);
 
@@ -304,30 +302,62 @@ class DefaultContentPanelizedNodesImport extends Migration {
 
     // Add Field mappings.
     $this->addFieldMapping('title', 'title');
-  }
-
-  /**
-   *
-   */
-  public function prepareRow($row) {
-
+    $this->addFieldMapping('uuid', 'uuid');
   }
 
   /**
    * Do extra processing on the node data before its saved.
    */
   public function prepare($entity, $row) {
-
     // Setup superuser as author.
     $entity->uid = 1;
   }
 
   /**
-   * @return array
+   *
+   */
+  public function complete($entity, $row) {
+    // Import panelizer data.
+    $this->importPanelizerData($entity, $row->panelizer);
+  }
+
+  /**
+   *
    */
   public function getPanelizedNodeFields() {
     return array(
+      "id" => "Node ID",
+      "uuid" => "UUID",
+      "type" => "Content Type",
+      "title" => "Title",
     );
+  }
+
+  /**
+   *
+   */
+  public function importPanelizerData($entity, $panelizer_data) {
+    // Convert panelizer data into array recursively. Almos all functions on Panels expect arrays.
+    $panelizer_data = json_decode(json_encode($panelizer_data), true);
+
+    $panelizer_entity = $panelizer_data['panelizer_entity'];
+    $panels_display = $panelizer_data['panels_display'];
+    $panels_pane = $panelizer_data['panels_pane'];
+
+    // Import panels_display.
+    drupal_write_record('panels_display', $panels_display);
+
+    // Import panels_pane.
+    foreach ($panels_pane as $pane) {
+      $pane['did'] = $panels_display['did'];
+      drupal_write_record('panels_pane', $pane);
+    }
+
+    // Import panelizer_entity.
+    $panelizer_entity['did'] = $panels_display['did'];
+    $panelizer_entity['entity_id'] = $entity->nid;
+    $panelizer_entity['revision_id'] = $entity->nid;
+    drupal_write_record('panelizer_entity', $panelizer_entity);
   }
 }
 
