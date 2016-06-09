@@ -187,6 +187,7 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
       $panelized_node = array();
       $panelized_node['uuid'] = $nuuid;
       $panelized_node['id'] = $node->nid;
+      $panelized_node['bundle'] = $content_type;
       $panelized_node['title'] = $node->title;
       $panelized_node['created'] = $node->created;
       $panelized_node['changed'] = $node->changed;
@@ -212,7 +213,6 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
           $panelized_node['panelizer']['panels_pane'][] = $panels_pane;
         }
       }
-
 
       // Build 'Item' fixture for content.
       $fixtures[] = array(
