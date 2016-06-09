@@ -9303,6 +9303,21 @@ div.horizontal-tabs {
 .bue-popup {
   z-index: 999; }
 
+img.thumbnail {
+  width: 100px;
+  height: auto; }
+
+img.left {
+  float: left;
+  margin: 0 1em 1em 0; }
+
+img.right {
+  float: right;
+  margin: 0 0 1em 1em; }
+
+img.center {
+  margin: 0 auto; }
+
 .container,
 .container-fluid,
 .row {
