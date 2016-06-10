@@ -188,6 +188,7 @@ class DefaultContentVisualizationEntityImport extends Migration {
     $this->addFieldMapping('field_description', 'description');
     $this->addFieldMapping('field_ve_settings', 'settings');
     $this->addFieldMapping('field_file', 'local_file');
+    $this->addFieldMapping('uuid', 'uuid');
   }
 
   /**
