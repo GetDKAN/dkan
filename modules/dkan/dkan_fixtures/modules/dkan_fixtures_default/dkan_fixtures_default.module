@@ -394,6 +394,17 @@ class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport
     $arguments['content_type'] = 'dkan_data_story';
 
     parent::__construct($arguments);
+
+    // Add field mappings.
+    $this->addFieldMapping('field_image', 'field_image');
+  }
+
+  /**
+   *
+   */
+  public function prepareRow($row) {
+    // Fix field_image file path.
+    $row->field_image = DRUPAL_ROOT . '/' . $this->endpoint . $row->field_image;
   }
 }
 
