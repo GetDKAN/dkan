@@ -397,14 +397,30 @@ class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport
 
     // Add field mappings.
     $this->addFieldMapping('field_image', 'field_image');
+    $this->addFieldMapping('body', 'body_value');
+    $this->addFieldMapping('body:summary', 'body_summary');
+    $this->addFieldMapping('body:format', 'body_format');
   }
 
   /**
    *
    */
   public function prepareRow($row) {
-    // Fix field_image file path.
+    // Prepare 'field_image' field for field mapping.
     $row->field_image = DRUPAL_ROOT . '/' . $this->endpoint . $row->field_image;
+
+    // Prepare 'body' field for field mapping.
+    $body = $row->body->und[0];
+    $row->body_value = $body->value;
+    $row->body_summary = $body->summary;
+    $row->body_format = $body->format;
+  }
+
+  /**
+   * Do extra processing on the node data before its saved.
+   */
+  public function prepare($entity, $row) {
+
   }
 }
 
