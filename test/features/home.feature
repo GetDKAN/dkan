@@ -9,7 +9,10 @@ Feature: Homepage
 
   Scenario: Viewing default content
     Given I am on the homepage
-    Then I should see "Geospatial Data Explorer Examples"
+    Then I should see "Welcome to DKAN"
+    Then I should see "Latest Data Stories"
+    Then I should see "State Economic Council"
+    Then I should see "Dynamic Transportation Visualizations"
 
   Scenario: Viewing top menu
     Given I am on the homepage
@@ -22,15 +25,16 @@ Feature: Homepage
     Given I am on the homepage
     Then I should see "Powered by DKAN, a project of NuCivic"
 
-  Scenario: Viewing tags
-    Given I am on the homepage
-    When I click "politics"
-    Then I should see "Afghanistan Election Districts"
+  # Scenario: Viewing tags
+    # Given I am on the homepage
+    # When I click "politics"
+    # Then I should see "Afghanistan Election Districts"
 
   Scenario: Viewing topics
     Given I am on the homepage
+    Then I should see "Transportation"
     When I click "Public Safety"
-    Then I should see "Wisconsin Polling Places"
+    Then I should see "Crime in America's Top 10 Most Populous Cities"
 
   @api @javascript
   Scenario: See "Add Dataset"

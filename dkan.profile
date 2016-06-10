@@ -49,9 +49,9 @@ function dkan_additional_setup() {
 function dkan_theme_config(&$context) {
   $context['message'] = t('Setting theme options.');
   theme_enable(array('nuboot_radix'));
-  theme_enable(array('seven'));
   variable_set('theme_default', 'nuboot_radix');
   variable_set('admin_theme', '0');
+  variable_set('site_name', 'Welcome to the DKAN Demo');
 
   // Disable the default Bartik theme
   theme_disable(array('bartik'));
