@@ -326,6 +326,7 @@ function _build_visualization_entity_fixtures(&$rendered_fixtures) {
 
       $visualization_data = array();
       $visualization_data['id'] = $visualization_wrapper->getIdentifier();
+      $visualization_data['uuid'] = $visualization_wrapper->uuid->value();
       $visualization_data['type'] = $visualization_wrapper->getBundle();
       $visualization_data['title'] = $visualization_wrapper->title->value();
       $visualization_data['description'] = $visualization_wrapper->field_description->value();
