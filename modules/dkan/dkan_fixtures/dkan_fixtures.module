@@ -212,6 +212,8 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
           }
           // Tags
           $panelized_node['field_tags'] = $node->field_tags;
+          // Topics
+          $panelized_node['field_topic'] = $node->field_tags;
           break;
         case 'page':
           $panelized_node['body'] = $node->body;
