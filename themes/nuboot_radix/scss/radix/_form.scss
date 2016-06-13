@@ -1,0 +1,253 @@
+// General
+// -----------------------------------------------------------------------------
+.form-item {
+  margin-top: 0;
+}
+form {
+  .form-managed-file {
+    input {
+      display: inline-block;
+      margin: 0 10px 0 0;
+    }
+  }
+  .container-inline-date .date-padding {
+    padding: 0;
+    float: none;
+  }
+  .form-actions {
+    .btn {
+      margin-right: 10px;
+    }
+  }
+  .field-type-datetime {
+    select {
+      min-width: 80px;
+    }
+  }
+  .format-toggle {
+    float: none;
+  }
+  .field-multiple-table {
+    thead {
+      th {
+        padding: 10px !important;
+        label {
+          margin: 0;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+  .description {
+    margin: 2px 0;
+    color: $gray;
+  }
+}
+
+.media-widget {
+  > a {
+    margin: 0 10px 0 0;
+    @extend .btn;
+  }
+}
+
+fieldset {
+  padding: 0;
+  legend {
+    float: left;
+    line-height: 1em;
+    margin: 0;
+  }
+  .panel-body {
+    clear: both;
+  }
+}
+
+html.js {
+  input.form-autocomplete {
+    background: image-url("throbber.gif") no-repeat right 8px #fff !important;
+  }
+  input.throbbing {
+    background-position: right -122px !important;
+  }
+  fieldset.collapsed {
+    height: auto;
+    border-left-width: 1px;
+    border-right-width: 1px;
+  }
+}
+
+.views-exposed-form .views-exposed-widget .form-submit {
+  margin-top: 1.8em;
+}
+
+@media (max-width: 767px) { 
+  form {
+    .btn {
+      width: 100%;
+      display: block;
+      clear: both;
+      margin: 0 0 5px;
+    }
+    input.form-text,
+    textarea,
+    select {
+      width: 100%;
+    }
+    .confirm-parent, 
+    .password-parent, 
+    .password-suggestions {
+      width: auto !important;
+    }
+    .password-parent {
+      div.password-strength {
+        width: 150px;
+        float: right;
+        margin-top: 0;
+        font-size: 10px;
+        margin-bottom: 5px;
+        margin-top: -5px;
+      }
+    }
+    .confirm-parent {
+      div.password-confirm {
+        width: 110px;
+        float: right;
+        margin-top: 0;
+        font-size: 10px;
+        margin-bottom: 5px;
+        margin-top: -5px;
+      }
+    }
+  }
+}
+
+// Node Edit Form
+// -----------------------------------------------------------------------------
+#node-edit {
+  #edit-title {
+    font-size: 1.6em;
+    line-height: 1.6em;
+    height: 45px;
+    width: 90%;
+  }
+  .form-item-path-alias {
+    @include clearfix;
+    label, input {
+      display: inline;
+    }
+  }
+  .burr-flipped-sidebar {
+    .panel-pane {
+      @include well;
+      padding: 10px;
+      .pane-title {
+        margin-top: 0;
+      }
+    }
+    .pane-node-form-buttons {
+      background: none;
+      padding: inherit;
+      .form-actions {
+        margin: 0;
+        border-top: 0;
+      }
+    }
+  }
+  .pane-node-form-buttons {
+    clear: both;
+  }
+}
+
+.filter-wrapper {
+  @include well;
+  margin-top: 10px;
+  .form-item {
+    margin: 0 0 10px;
+    padding: 0;
+  }
+  .filter-guidelines {
+    padding: 0;
+    .tips {
+      margin-left: 0;
+    }
+  }
+}
+
+// Field Overview
+// -----------------------------------------------------------------------------
+.page-admin {
+  form {
+    table {
+      select,
+      input.form-text {
+        width: 150px;
+      }
+    }
+  }
+}
+
+// Features
+// -----------------------------------------------------------------------------
+#features-export-form {
+  .features-export-parent {
+    margin: 0 0 20px;
+    fieldset.collapsed {
+      min-height: 43px !important;
+      background: none;
+    }
+    .features-export-list {
+      padding: 10px;
+      .form-item {
+        float: none !important;
+      }
+    }
+  }
+}
+
+// Panels edit content form.
+// -----------------------------------------------------------------------------
+#panels-panel-context-edit-move,
+#panels-panel-context-edit-content {
+  .container {
+    width: auto;
+    padding: 0;
+    .row {
+      margin-bottom: 20px;
+    }
+  }
+}
+
+// Navbar form
+// -----------------------------------------------------------------------------
+.navbar-form {
+  .form-wrapper {
+    padding: 0;
+  }
+  .form-item-keys,
+  .form-item {
+    margin-top: 0 !important;
+  }
+  .form-submit {
+    display: none;
+  }
+}
+
+// Search form block
+// -----------------------------------------------------------------------------
+.pane-search-box {
+  form {
+    .form-wrapper {
+      .form-group {
+        display: block;
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
+
+// Draggable tables
+// -----------------------------------------------------------------------------
+.tabledrag-handle .handle {
+  box-sizing: content-box;
+}
