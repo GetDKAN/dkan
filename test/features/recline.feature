@@ -1,8 +1,8 @@
-Feature: Recline 
-  In order to know the recline preview is working 
+Feature: Recline
+  In order to know the recline preview is working
   As a website user
-  I need to be able to view the recline previews 
-  
+  I need to be able to view the recline previews
+
   @javascript
   Scenario: Viewing map preview
     Given I am on "/dataset/wisconsin-polling-places"
@@ -26,7 +26,7 @@ Feature: Recline
     Given I press "Graph"
       Then I should see "There's no graph here yet"
 
-  @javascript 
+  @javascript
   Scenario: Viewing graph preview
     Given I am on "/dataset/gold-prices-london-1950-2008-monthly"
       Then I should see "Monthly gold prices"
@@ -41,6 +41,7 @@ Feature: Recline
       Then I should see "Polling places in the state of Wisconsin"
     Given I click "Madison Polling Places"
       Then I should see "Polling_Places_Madison.csv"
+      Then I wait for "3" seconds
     Given I click "»"
       Then I wait for "Our"
       Then I wait for "1" seconds
