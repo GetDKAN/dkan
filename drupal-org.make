@@ -43,7 +43,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_dataset.git'
-      branch: harvest_source_page
+      branch: harvest_dkan_integration
   dkan_datastore:
     subdir: dkan
     download:
@@ -66,7 +66,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_harvest.git'
-      branch: harvest_source_page
+      branch: harvest_dkan_integration
     type: module
   admin_menu:
     version: 3.0-rc5
