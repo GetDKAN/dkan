@@ -124,8 +124,8 @@ Feature: Widgets
       And I should see "csv"
 
   Scenario: Adds "Visualization embed" block to home page using panels ipe editor
-    When I follow "Visualization"
-    And I select "External - data previews" from "edit-source-origin"
+    When I follow "Visualization embed"
+    And I select "URL - use for external visualization services, or embed URLs from DKAN resource previews" from "edit-source-origin"
     And I fill in "edit-remote-source" with "http://demo.getdkan.com/node/7/recline-embed#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}}}"
     And I press "Finish"
     Then I should see "total.foreclosures"
