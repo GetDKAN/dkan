@@ -1,6 +1,10 @@
-7.x-1.12.2
+7.x-1.12.x
 --------------------------
 - Add <br><h2><h3><center><iframe> to allowed html tags
+
+7.x-1.12.2
+--------------------------
+- Fix problems in visualization entity charts creation due to version of CSV.js referenced in recline.make
 
 7.x-1.12.1
 --------------------------
