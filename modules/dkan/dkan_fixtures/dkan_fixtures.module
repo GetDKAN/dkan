@@ -278,6 +278,12 @@ function _get_panelizer_data($node) {
       $panels_pane = ctools_export_unpack_object('panels_pane', $obj);
       unset($panels_pane->pid);
       unset($panels_pane->did);
+
+      if ($panels_pane->type === 'fieldable_panels_pane') {
+        // Append 'Fieldable panels pane' data.
+        $panels_pane->fpp_data = fieldable_panels_panes_load_from_subtype_force($panels_pane->subtype);
+      }
+
       $panelizer_data['panels_pane'][] = $panels_pane;
     }
 
