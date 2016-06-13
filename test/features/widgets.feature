@@ -125,7 +125,7 @@ Feature: Widgets
 
   Scenario: Adds "Visualization embed" block to home page using panels ipe editor
     When I follow "Visualization"
-    And I select "External - paste your own url"
+    And I select "External - data previews" from "edit-source-origin"
     And I fill in "edit-remote-source" with "http://demo.getdkan.com/node/7/recline-embed#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}}}"
     And I press "Finish"
     Then I should see "total.foreclosures"
