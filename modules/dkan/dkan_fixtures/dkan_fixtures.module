@@ -279,6 +279,18 @@ function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_di
       unset($panels_pane->pid);
       unset($panels_pane->did);
 
+      if ($panels_pane->type === 'visualization_embed') {
+        $embed_config = $panels_pane->configuration;
+        if (!empty($embed_config['local_source'])) {
+          // The reference to the local viz is saved with the format "Title [id:XXX]".
+          // We need to get the normal ID in order to be able to find the UUID to export that instead.
+          preg_match('~:(.*?)]~', $embed_config['local_source'], $viz_id);
+          // Load the visualization entity to get the UUID.
+          $visualization = entity_load_single('visualization', end($viz_id));
+          $panels_pane->configuration['local_source'] = $visualization->uuid;
+        }
+      }
+
       if ($panels_pane->type === 'fieldable_panels_pane') {
         // Append 'Fieldable panels pane' data.
         $fpp_data = fieldable_panels_panes_load_from_subtype_force($panels_pane->subtype);
