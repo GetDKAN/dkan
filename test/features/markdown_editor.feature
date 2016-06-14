@@ -52,7 +52,7 @@ Feature: Markdown Editor
     And I should see the button "Make selected text into a header (Alt + H)" in the "dataset edit body"
     # Buttons that the user should not see on the toolbar
     And I should not see the button "Insert a table" in the "dataset edit body"
-    
+
   Scenario: Seeing 'Markdown' text format and toolbar as a Site Manager
     Given I am logged in as "John"
     When I am on "Add Dataset" page
@@ -63,7 +63,7 @@ Feature: Markdown Editor
     And I should see the button "Make selected text into a header (Alt + H)" in the "dataset edit body"
     # Buttons that the user should not see on the toolbar
     And I should not see the button "Insert a table" in the "dataset edit body"
-    
+
   Scenario: Add headers using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
@@ -159,11 +159,21 @@ Feature: Markdown Editor
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "<br>"
+    And I fill in "body[und][0][value]" with "This<br>that"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "br" element in the "dataset body" region
+
+  Scenario: Add iframe break using markdown
+    Given I am logged in as "Jaz"
+    When I am on "Add Dataset" page
+    And I fill in "title" with "Test Dataset"
+    And I fill in "body[und][0][value]" with "<iframe src=\"http://www.w3schools.com\"></iframe>"
+    And I press "Next: Add data"
+    Then I should see "Test Dataset has been created"
+    When I am on "dataset/test-dataset"
+    Then I should see the "iframe" element in the "dataset body" region
 
   Scenario: Don't see markdown toolbar when using 'Plain text' text format
     Given I am logged in as "Jaz"
