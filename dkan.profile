@@ -26,7 +26,7 @@ function dkan_additional_setup() {
       'operations' => array(
           array('dkan_theme_config', array()),
           array('dkan_change_block_titles', array()),
-          array('dkan_install_markdown', array()),
+          array('dkan_markdown_setup', array()),
           array('dkan_enable_optional_module', array('dkan_permissions')),
           array('dkan_enable_optional_module', array('dkan_default_topics')),
           array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
