@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+- Patch colorfield module to avoid incorrect status error. See https://www.drupal.org/node/2696505
 - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
 - Fixes typo in "add data story" link in command center menu
 - Add topic icons to the drop down menu
