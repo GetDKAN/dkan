@@ -15,6 +15,8 @@ includes:
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
     #DKAN Featured Topics
   - "modules/dkan/dkan_topics/dkan_topics.make"
+    #DKAN Harvest
+  - "https://raw.githubusercontent.com/NuCivic/dkan_harvest/7.x-2.x/dkan_harvest.make"
 projects:
   manualcrop:
     version: 1.x-dev
@@ -74,6 +76,12 @@ projects:
       type: git
       url: 'https://github.com/NuCivic/visualization_entity_charts.git'
       branch: master
+    type: module
+  dkan_harvest:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/dkan_harvest.git'
+      branch: 7.x-2.x
     type: module
   admin_menu:
     version: 3.0-rc5

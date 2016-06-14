@@ -46,6 +46,7 @@ dependencies:
     - printenv
     - mkdir $CIRCLE_ARTIFACTS/junit
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH bash dkan-init.sh dkan --deps --build=$DATABASE_URL'
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard'
     # Run a webserver using drush.
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes runserver :8888':
         background: true
