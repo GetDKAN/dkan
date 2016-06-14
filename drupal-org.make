@@ -2,7 +2,7 @@ api: '2'
 core: 7.x
 includes:
     # DKAN Dataset
-  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/harvest_source_page/dkan_dataset.make"
     # DKAN Datastore
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
     # DKAN Workflow
@@ -15,6 +15,8 @@ includes:
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
     #DKAN Featured Topics
   - "modules/dkan/dkan_topics/dkan_topics.make"
+    #DKAN Harvest
+  - "https://raw.githubusercontent.com/NuCivic/dkan_harvest/harvest_source_page/dkan_harvest.make"
 projects:
   manualcrop:
     version: 1.x-dev
@@ -50,7 +52,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_dataset.git'
-      branch: 7.x-1.x
+      branch: harvest_source_page
   dkan_datastore:
     subdir: dkan
     download:
@@ -74,6 +76,12 @@ projects:
       type: git
       url: 'https://github.com/NuCivic/visualization_entity_charts.git'
       branch: master
+    type: module
+  dkan_harvest:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/dkan_harvest.git'
+      branch: harvest_source_page
     type: module
   admin_menu:
     version: 3.0-rc5
