@@ -58,10 +58,10 @@ commands:
       id=$(ahoy docker compose ps -q $container)
       if [ -t 0 ]; then
         # if the input is empty, then use a tty session
-        docker exec -it $id bash -c $command "$args"
+        docker exec -it $id bash -c "$command $args"
       else
         # if the input is not empty, then don't use tty
-        docker exec -i $id bash -c $command "$args"
+        docker exec -i $id bash -c "$command $args"
       fi
     usage: run a command in the docker-compose cli or in any other docker service container.
 
