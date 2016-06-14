@@ -352,6 +352,35 @@ class DefaultContentPanelizedNodesImport extends Migration {
     foreach ($panels_pane as $pane) {
       $pane['did'] = $panels_display['did'];
       drupal_write_record('panels_pane', $pane);
+
+      if ($pane['type'] === 'fieldable_panels_pane') {
+        $fpp_data = $pane['fpp_data'];
+        list($id_type, $id_value) = explode(':', $pane['subtype']);
+
+        $fpp = new stdClass();
+        $fpp->title = $fpp_data['title'];
+        $fpp->bundle = $fpp_data['bundle'];
+        $fpp->uuid = $id_value;
+        $fpp->link = $fpp_data['link'];
+        $fpp->path = $fpp_data['path'];
+        $fpp->reusable = $fpp_data['reusable'];
+        $fpp->admin_title = $fpp_data['admin_title'];
+        $fpp->admin_description = $fpp_data['admin_description'];
+        $fpp->category = $fpp_data['category'];
+
+        $wrapper = entity_metadata_wrapper('fieldable_panels_pane', $fpp);
+
+        $fields = field_info_instances('fieldable_panels_pane', $fpp_data['bundle']);
+        foreach ($fields as $field_name => $field_spec) {
+          if (isset($fpp_data[$field_name])) {
+            $field_data = $fpp_data[$field_name][LANGUAGE_NONE][0];
+
+            $wrapper->$field_name->set($field_data);
+          }
+        }
+
+        fieldable_panels_panes_save($fpp);
+      }
     }
 
     // Import panelizer_entity.
