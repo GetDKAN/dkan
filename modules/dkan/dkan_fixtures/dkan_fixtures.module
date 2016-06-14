@@ -293,12 +293,23 @@ function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_di
         unset($fpp_data->changed);
         unset($fpp_data->current_vid);
 
-        if ($fpp_data->bundle === 'image') {
-          $files_to_save[] = drupal_realpath($fpp_data->field_basic_image_image[LANGUAGE_NONE][0]['uri']);
-          $fpp_data->field_basic_image_image = array(
-            'bundle' => 'image',
-            'image_path' => 'files/' . $files_dir . '/' . $fpp_data->field_basic_image_image[LANGUAGE_NONE][0]['filename']
-          );
+        if (isset($fpp_data->bundle)) {
+          $fields = field_info_instances('fieldable_panels_pane', $fpp_data->bundle);
+          foreach ($fields as $field_name => $field_spec) {
+            // Cleanup field data. Remove the language part.
+            //$field_data = ($fpp_data->$field_name[LANGUAGE_NONE][0]
+            $field_data = $fpp_data->$field_name;
+            $fpp_data->$field_name = $field_data[LANGUAGE_NONE][0];
+
+            if ($fpp_data->bundle === 'image' && $field_name === 'field_basic_image_image') {
+              $file_uri = $field_data[LANGUAGE_NONE][0]['uri'];
+              $files_to_save[] = drupal_realpath($file_uri);
+              $fpp_data->field_basic_image_image = array(
+                'bundle' => 'image',
+                'image_path' => 'files/' . $files_dir . '/' . basename($file_uri)
+              );
+            }
+          }
         }
 
         $panels_pane->fpp_data = $fpp_data;
