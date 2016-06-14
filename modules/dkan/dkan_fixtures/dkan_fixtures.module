@@ -207,7 +207,7 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
           $panelized_node['field_image'] = '';
           if (!empty($node->field_image)) {
             $file = $node->field_image[LANGUAGE_NONE][0];
-            $panelized_node['field_image'] = 'files/dkan_data_story/' . $file['filename'];
+            $panelized_node['field_image'] = 'files/' . $content_type . '/' . $file['filename'];
             $files_to_save[] = drupal_realpath($file['uri']);
           }
           // Tags
@@ -223,7 +223,7 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
       }
 
       // Add Panelizer data on export: panelizer_entity, panels_display and panels_pane.
-      $panelized_node['panelizer'] = _get_panelizer_data($node);
+      append_panelizer_data($node, $panelized_node, $files_to_save, $content_type);
 
       // Build 'Item' fixture for content.
       $fixtures[] = array(
@@ -236,7 +236,7 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
           )
         ),
         'files' => $files_to_save,
-        'files_subdir' => 'dkan_data_story'
+        'files_subdir' => $content_type
       );
     }
 
@@ -257,7 +257,7 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
 /**
  *
  */
-function _get_panelizer_data($node) {
+function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_dir) {
   $panelizer_data = array();
 
   if (isset($node->panelizer)) {
@@ -281,7 +281,27 @@ function _get_panelizer_data($node) {
 
       if ($panels_pane->type === 'fieldable_panels_pane') {
         // Append 'Fieldable panels pane' data.
-        $panels_pane->fpp_data = fieldable_panels_panes_load_from_subtype_force($panels_pane->subtype);
+        $fpp_data = fieldable_panels_panes_load_from_subtype_force($panels_pane->subtype);
+        // Don't export data that is not needed.
+        unset($fpp_data->vid);
+        unset($fpp_data->timestamp);
+        unset($fpp_data->uid);
+        unset($fpp_data->log);
+        unset($fpp_data->vuuid);
+        unset($fpp_data->fpid);
+        unset($fpp_data->created);
+        unset($fpp_data->changed);
+        unset($fpp_data->current_vid);
+
+        if ($fpp_data->bundle === 'image') {
+          $files_to_save[] = drupal_realpath($fpp_data->field_basic_image_image[LANGUAGE_NONE][0]['uri']);
+          $fpp_data = array(
+            'bundle' => 'image',
+            'image_path' => 'files/' . $files_dir . '/' . $fpp_data->field_basic_image_image[LANGUAGE_NONE][0]['filename']
+          );
+        }
+
+        $panels_pane->fpp_data = $fpp_data;
       }
 
       $panelizer_data['panels_pane'][] = $panels_pane;
@@ -293,7 +313,7 @@ function _get_panelizer_data($node) {
     $panelizer_data['panelizer_entity'] = $panelizer_entity;
   }
 
-  return $panelizer_data;
+  $fixture_data['panelizer'] = $panelizer_data;
 }
 
 /**
