@@ -373,7 +373,25 @@ class DefaultContentPanelizedNodesImport extends Migration {
         $fields = field_info_instances('fieldable_panels_pane', $fpp_data['bundle']);
         foreach ($fields as $field_name => $field_spec) {
           if (isset($fpp_data[$field_name])) {
-            $field_data = $fpp_data[$field_name][LANGUAGE_NONE][0];
+            $field_data = $fpp_data[$field_name];
+            if ($field_data['bundle'] === 'image') {
+
+              $file_url = urldecode($field_data['image_path']);
+              $file_url = preg_replace('!\s+!', ' ', $file_url);
+              $file_url = DRUPAL_ROOT . '/' . $this->endpoint . $file_url;
+              if (file_exists($file_url)) {
+                // Copy file and save on public directory.
+                $data = file_get_contents($file_url);
+                $name = basename($file_url);
+                $uri = 'public://' . $name;
+                $file = file_save_data($data, $uri, FILE_EXISTS_REPLACE);
+
+                if ($file) {
+                  // Add file data in row.
+                  $field_data = (array) $file;
+                }
+              }
+            }
 
             $wrapper->$field_name->set($field_data);
           }
