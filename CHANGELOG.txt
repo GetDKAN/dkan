@@ -15,6 +15,10 @@
 - Moved Nuboot Radix theme into core build.
 - Change admin theme setting to use default theme rather than nuboot radix
 
+7.x-1.12.x
+--------------------------
+- Add <br><h2><h3><center><iframe> to allowed html tags
+
 7.x-1.12.2
 --------------------------
 - Fix problems in visualization entity charts creation due to version of CSV.js referenced in recline.make
