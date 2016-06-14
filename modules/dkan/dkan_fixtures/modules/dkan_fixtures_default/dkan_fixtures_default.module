@@ -338,6 +338,7 @@ class DefaultContentPanelizedNodesImport extends Migration {
    *
    */
   public function importPanelizerData($entity, $panelizer_data) {
+
     // Convert panelizer data into array recursively. Almos all functions on Panels expect arrays.
     $panelizer_data = json_decode(json_encode($panelizer_data), true);
 
@@ -350,8 +351,21 @@ class DefaultContentPanelizedNodesImport extends Migration {
 
     // Import panels_pane.
     foreach ($panels_pane as $pane) {
+
       $pane['did'] = $panels_display['did'];
-      drupal_write_record('panels_pane', $pane);
+
+      if ($pane['type'] === 'visualization_embed') {
+        if (!empty($pane['configuration']['local_source'])) {
+          // Get the visualization UUID.
+          $viz_uuid = $pane['configuration']['local_source'];
+          // The 'local_source' setting needs to be in the format "Title [id:XXX]".
+          $visualization = reset(entity_uuid_load('visualization', array($viz_uuid)));
+          $pane['configuration']['local_source'] = '';
+          if ($visualization) {
+            $pane['configuration']['local_source'] = $visualization->title . ' [id:' . $visualization->id . ']';
+          }
+        }
+      }
 
       if ($pane['type'] === 'fieldable_panels_pane') {
         $fpp_data = $pane['fpp_data'];
@@ -399,12 +413,14 @@ class DefaultContentPanelizedNodesImport extends Migration {
 
         fieldable_panels_panes_save($fpp);
       }
+
+      drupal_write_record('panels_pane', $pane);
     }
 
     // Import panelizer_entity.
     $panelizer_entity['did'] = $panels_display['did'];
     $panelizer_entity['entity_id'] = $entity->nid;
-    $panelizer_entity['revision_id'] = $entity->nid;
+    $panelizer_entity['revision_id'] = $entity->vid;
     drupal_write_record('panelizer_entity', $panelizer_entity);
   }
 }
