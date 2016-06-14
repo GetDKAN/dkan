@@ -295,7 +295,7 @@ function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_di
 
         if ($fpp_data->bundle === 'image') {
           $files_to_save[] = drupal_realpath($fpp_data->field_basic_image_image[LANGUAGE_NONE][0]['uri']);
-          $fpp_data = array(
+          $fpp_data->field_basic_image_image = array(
             'bundle' => 'image',
             'image_path' => 'files/' . $files_dir . '/' . $fpp_data->field_basic_image_image[LANGUAGE_NONE][0]['filename']
           );
