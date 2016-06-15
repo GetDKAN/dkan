@@ -38,8 +38,9 @@ commands:
           exit 1;
         };
       }
-      ahoy cmd-proxy "cd dkan/themes/nuboot_radix \&\& npm install --unsafe-perm"
-      ahoy cmd-proxy "cd dkan/themes/nuboot_radix \&\& bower install -allow-root"
+      THEME=`ahoy drush scr dkan/.ahoy/.scripts/active_theme_path.php`
+      ahoy cmd-proxy "cd $THEME \&\& npm install --unsafe-perm"
+      ahoy cmd-proxy "cd $THEME \&\& bower install -allow-root"
 
   setup:
     usage: Base setup for theme development
@@ -49,7 +50,8 @@ commands:
   watch:
     usage: 'compile and watch for changes'
     cmd: |
-      ahoy cmd-proxy "cd dkan/themes/nuboot_radix \&\& gulp"
+      THEME=`ahoy drush scr dkan/.ahoy/.scripts/active_theme_path.php`
+      ahoy cmd-proxy "cd $THEME \&\& gulp"
 
 
   new-from-kit:
@@ -77,6 +79,8 @@ commands:
         ahoy cmd-proxy rm -rf dkan/themes/contrib/radix/kits/nuboot
         ahoy cmd-proxy mv radix-kit-nuboot-master dkan/themes/contrib/radix/kits/nuboot
         ahoy drush radix $ARGS --kit='nuboot'
+        ahoy drush vset theme_default $ARGS
+        ahoy drush pm-disable $ORIGINAL_THEME
       else
         echo "Can't seem to download kit from $KIT_URL, restoring original theme"
         ahoy drush vset theme_default $ORIGINAL_THEME
