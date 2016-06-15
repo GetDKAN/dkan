@@ -5,7 +5,7 @@ includes:
 - https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 - https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 - https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make
-- https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
+- https://raw.githubusercontent.com/NuCivic/visualization_entity/civic-2787-undefined-index/visualization_entity.make
 - https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
 - modules/dkan/dkan_topics/dkan_topics.make
