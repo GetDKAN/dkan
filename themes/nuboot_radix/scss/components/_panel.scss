@@ -73,7 +73,8 @@ h2.pane-title {
 }
 
 // Panels administration pages.
-.panels-dnd {
+.panels-dnd .panel-full-width,
+.panels-dnd .panel-dkan-front {
 	.panel-top,
 	.panel-hero {
 		.tint {
@@ -81,6 +82,7 @@ h2.pane-title {
 		}
 		background-image: none !important;
 	  background-color: transparent !important;
+	  overflow: visible;
 	}
 }
 .page-manager-wrapper .panel-region {
@@ -129,6 +131,7 @@ h2.pane-title {
 	  position: relative;
 	  z-index: 0;
 		margin-bottom: 15px;
+		overflow: hidden;
 		.tint {
 	    // Let colorizer supply the background color.
 	    //background-color:rgba(10 , 119 , 189, .45);

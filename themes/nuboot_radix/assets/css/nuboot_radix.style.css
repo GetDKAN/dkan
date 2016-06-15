@@ -9961,12 +9961,17 @@ h2.pane-title {
   padding: 20px 0 0;
   margin-bottom: 0; }
 
-.panels-dnd .panel-top,
-.panels-dnd .panel-hero {
+.panels-dnd .panel-full-width .panel-top,
+.panels-dnd .panel-full-width .panel-hero,
+.panels-dnd .panel-dkan-front .panel-top,
+.panels-dnd .panel-dkan-front .panel-hero {
   background-image: none !important;
-  background-color: transparent !important; }
-  .panels-dnd .panel-top .tint,
-  .panels-dnd .panel-hero .tint {
+  background-color: transparent !important;
+  overflow: visible; }
+  .panels-dnd .panel-full-width .panel-top .tint,
+  .panels-dnd .panel-full-width .panel-hero .tint,
+  .panels-dnd .panel-dkan-front .panel-top .tint,
+  .panels-dnd .panel-dkan-front .panel-hero .tint {
     display: none; }
 
 .page-manager-wrapper .panel-region .pane-title {
@@ -10004,7 +10009,8 @@ h2.pane-title {
   background-repeat: no-repeat;
   position: relative;
   z-index: 0;
-  margin-bottom: 15px; }
+  margin-bottom: 15px;
+  overflow: hidden; }
   .panel-full-width .panel-top .tint,
   .panel-full-width .panel-hero .tint,
   .panel-dkan-front .panel-top .tint,
