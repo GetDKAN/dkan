@@ -1,0 +1,52 @@
+ahoyapi: v1
+version: 0.0.0
+commands:
+  fetch:
+    usage: Deprecated - Checkout the dkan theme from the NuCivic github repo.
+    hide: true
+    cmd: |
+      echo "[Deprecated] Warning, this command will be removed in the future. Please make sure to use an alternative to this command."
+      ahoy dkan module-fetch nuboot_radix
+
+  link:
+    usage: Deprecated - Link a module folder into dkan/modules/dkan/.
+    hide: true
+    cmd: |
+      echo "[Deprecated] Warning, this command will be removed in the future. Please make sure to use an alternative to this command."
+      if [ -d "docroot/profiles/dkan/themes/nuboot_radix" ]; then
+        echo "Theme already exists at 'docroot/profiles/dkan/themes/nuboot_radix', removing it to make room..."
+        rm -rf "docroot/profiles/dkan/themes/nuboot_radix";
+      fi
+      ln -s ../../nuboot_radix docroot/profiles/dkan/themes/nuboot_radix && echo "Symlink created for nuboot_radix.. "
+
+  install-dependencies:
+    usage: Installs dependencies for theme development
+    cmd: |
+      if [ "$AHOY_CMD_PROXY" != "DOCKER" ]; then
+        echo 'Sorry. We are only mantaining theme development on docker.'
+        exit 1
+      fi
+      ahoy cmd-proxy command -v bower >/dev/null 2>&1 || {
+        echo >&2 "Bower not installed.";
+        ahoy confirm "We need this. Should I proceed?" && ahoy cmd-proxy npm install -g bower || {
+          exit 1;
+        };
+      }
+      ahoy cmd-proxy command -v gulp >/dev/null 2>&1 || {
+        echo >&2 "Gulp not installed.";
+        ahoy confirm "We need this. Should I proceed?" && ahoy cmd-proxy npm install -g gulp-cli || {
+          exit 1;
+        };
+      }
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix \&\& npm install --unsafe-perm"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix \&\& bower install -allow-root"
+
+  setup:
+    usage: Base setup for theme development
+    cmd: |
+      ahoy dkan theme install-dependencies
+
+  watch:
+    usage: 'compile and watch for changes'
+    cmd: |
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix \&\& gulp"
