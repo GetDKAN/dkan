@@ -306,20 +306,50 @@ function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_di
         unset($fpp_data->current_vid);
 
         if (isset($fpp_data->bundle)) {
+          // Get all field instances available for the bundle.
           $fields = field_info_instances('fieldable_panels_pane', $fpp_data->bundle);
+          // Cleanup data on each field.
           foreach ($fields as $field_name => $field_spec) {
-            // Cleanup field data. Remove the language part.
-            //$field_data = ($fpp_data->$field_name[LANGUAGE_NONE][0]
-            $field_data = $fpp_data->$field_name;
-            $fpp_data->$field_name = $field_data[LANGUAGE_NONE][0];
 
+            // Cleanup field data. Remove the language part.
+            $field_data = $fpp_data->$field_name;
+            if (isset($field_data[LANGUAGE_NONE])) {
+              $fpp_data->$field_name = $field_data[LANGUAGE_NONE];
+            }
+
+            // Image fieldable panel pane.
             if ($fpp_data->bundle === 'image' && $field_name === 'field_basic_image_image') {
               $file_uri = $field_data[LANGUAGE_NONE][0]['uri'];
+              // Add file to the list of files that need to be imported.
               $files_to_save[] = drupal_realpath($file_uri);
               $fpp_data->field_basic_image_image = array(
                 'bundle' => 'image',
                 'image_path' => 'files/' . $files_dir . '/' . basename($file_uri)
               );
+            }
+
+            // Spotlight fieldable panel pane.
+            if ($fpp_data->bundle === 'spotlight' && $field_name === 'field_basic_spotlight_items') {
+              $spotlight_items = $fpp_data->field_basic_spotlight_items;
+              $fpp_data->field_basic_spotlight_items = array();
+              foreach ($spotlight_items as $spotlight_item) {
+                $item = array();
+                // Copy the data that needs to be exported.
+                $item['field_file_image_alt_text'] = $spotlight_item['field_file_image_alt_text'];
+                $item['field_file_image_title_text'] = $spotlight_item['field_file_image_title_text'];
+                $item['alt'] = $spotlight_item['alt'];
+                $item['title'] = $spotlight_item['title'];
+                $item['height'] = $spotlight_item['height'];
+                $item['width'] = $spotlight_item['width'];
+                $item['description'] = $spotlight_item['description'];
+                $item['link'] = $spotlight_item['link'];
+                // Copy only the image data that is important.
+                $item['image_path'] = 'files/' . $files_dir . '/' . basename($spotlight_item['uri']);
+                // Add file to the list of files that need to be imported.
+                $files_to_save[] = drupal_realpath($spotlight_item['uri']);
+
+                $fpp_data->field_basic_spotlight_items[] = $item;
+              }
             }
           }
         }
