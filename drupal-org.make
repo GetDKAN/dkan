@@ -2,9 +2,9 @@
 api: '2'
 core: 7.x
 includes:
-- https://raw.githubusercontent.com/NuCivic/dkan_dataset/release-1-12/dkan_dataset.make
-- https://raw.githubusercontent.com/NuCivic/dkan_datastore/release-1-12/dkan_datastore.make
-- https://raw.githubusercontent.com/NuCivic/dkan_workflow/release-1-12/dkan_workflow.make
+- https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
+- https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
+- https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
 - https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
@@ -44,19 +44,19 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_dataset.git
-      branch: release-1-12
+      branch: 7.x-1.x
   dkan_datastore:
     subdir: dkan
     download:
       type: git
       url: https://github.com/NuCivic/dkan_datastore.git
-      branch: release-1-12
+      branch: 7.x-1.x
   dkan_workflow:
     subdir: dkan
     download:
       type: git
       url: https://github.com/NuCivic/dkan_workflow.git
-      branch: release-1-12
+      branch: 7.x-1.x
   visualization_entity:
     download:
       type: git
@@ -73,8 +73,8 @@ projects:
     version: 3.0-rc5
   bueditor:
     version: '1.8'
-    patch:
-      1931862: http://drupal.org/files/dont-render-bueditor-for-plain-text-textareas.patch
+  bueditor_plus:
+    version: '1.4'
   colorizer:
     version: '1.10'
     patch:
@@ -133,6 +133,8 @@ projects:
     version: '3.5'
   panels_style_collapsible:
     version: '1.3'
+  panels_curator:
+    version: '1.1'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
@@ -156,19 +158,6 @@ projects:
       2441283: https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch
   menu_token:
     version: 1.0-beta5
-  delta:
-    version: 3.0-beta11
-  omega:
-    version: '3.1'
-    patch:
-      1828552: http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch
-    type: theme
-  nuboot_radix:
-    download:
-      type: git
-      url: https://github.com/NuCivic/nuboot_radix.git
-      branch: release-1-12
-    type: theme
   radix:
     type: theme
     version: 3.3

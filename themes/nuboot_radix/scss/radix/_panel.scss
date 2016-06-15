@@ -1,0 +1,77 @@
+// General
+// -----------------------------------------------------------------------------
+.panel-display {
+  > .row {
+    margin-bottom: 20px;
+  }
+}
+.panel-flexible .panel-separator {
+  display: none;
+}
+
+// Admin
+// -----------------------------------------------------------------------------
+.panels-layouts-checkboxes {
+  // Undo default Radix styling so the radio button can appear above the layout.
+  input[type="radio"] {
+    position: static;
+    margin-left: 0px;
+    margin-bottom: 20px;
+  }
+  label {
+    margin-left: 0px;
+  }
+  .form-type-radio {
+    margin: 0 !important;
+  }
+}
+
+// IPE
+// -----------------------------------------------------------------------------
+body.panels-ipe {
+  margin-bottom: 55px !important;
+}
+
+div#panels-ipe-control-container {
+  width: auto;
+  left: 0;
+  right: 0;
+  box-shadow: none;
+  .panels-ipe-button-container {
+    text-align: center;
+    .panels-ipe-pseudobutton-container {
+      margin: 0 5px;
+      a {
+        padding: 0px 10px 0px 34px;
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+  }
+  .panels-ipe-form-container {
+    form {
+      > div {
+        text-align: center;
+      }
+      .form-submit {
+        margin: 0 5px;
+        padding: 0px 10px 0px 34px;
+        &:hover {
+          box-shadow: none;
+        }
+      }
+    }
+  }
+}
+
+ul.panels-ipe-linkbar {
+  list-style: none outside none;
+  > li {
+    display: inline-block;
+    margin: 0 0 0 5px;
+    a {
+      margin: 0 !important;
+    }
+  }
+}

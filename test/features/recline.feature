@@ -1,8 +1,8 @@
 @api
 Feature: Recline
-  In order to know the recline preview is working 
+  In order to know the recline preview is working
   As a website user
-  I need to be able to view the recline previews 
+  I need to be able to view the recline previews
 
   Background:
     Given users:
@@ -41,7 +41,7 @@ Feature: Recline
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 | Test R1     |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 | Test R2     |
       | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 | Test R3     |
-  
+
   @javascript
   Scenario: Viewing map preview
     Given I am logged in as "John"
