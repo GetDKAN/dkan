@@ -1773,7 +1773,7 @@ return TRUE;
     'settings' => NULL,
   );
   $page->menu = array(
-    'type' => 'normal',
+    'type' => 'none',
     'title' => 'Groups',
     'name' => 'main-menu',
     'weight' => '2',

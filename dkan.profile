@@ -137,7 +137,7 @@ function dkan_add_default_menu_links(&$context) {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -49,
+    'weight' => 0,
     'customized' => 1,
   );
   // Exported menu link: main-menu_dataset:search/type/dataset
@@ -157,7 +157,7 @@ function dkan_add_default_menu_links(&$context) {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -47,
+    'weight' => -1,
     'customized' => 1,
   );
   // Exported menu link: main-menu_dataset:search/type/data_dashboard
@@ -177,7 +177,7 @@ function dkan_add_default_menu_links(&$context) {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -52,
+    'weight' => 4,
     'customized' => 1,
   );
   // Exported menu link: main-menu_stories:stories
@@ -197,7 +197,7 @@ function dkan_add_default_menu_links(&$context) {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -51,
+    'weight' => 3,
     'customized' => 1,
   );
   // Exported menu link: main-menu_groups:groups
@@ -217,7 +217,7 @@ function dkan_add_default_menu_links(&$context) {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -50,
+    'weight' => 2,
     'customized' => 1,
   );
   t('About');
