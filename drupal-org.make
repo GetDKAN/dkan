@@ -2,7 +2,7 @@ api: '2'
 core: 7.x
 includes:
     # DKAN Dataset
-  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/undefined_mime_type/dkan_dataset.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
     # DKAN Datastore
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/undefined_mime_type/dkan_datastore.make"
     # DKAN Workflow
@@ -50,7 +50,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_dataset.git'
-      branch: undefined_mime_type
+      branch: 7.x-1.x
   dkan_datastore:
     subdir: dkan
     download:
