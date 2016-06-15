@@ -122,3 +122,12 @@ Feature: Widgets
     And I wait and press "Save"
     Then I should see "Wisconsin Polling Places"
       And I should see "csv"
+
+  Scenario: Adds "Visualization embed" block to home page using panels ipe editor
+    When I follow "visualization"
+    And I wait for "Configure new Visualization embed"
+    And I select "remote" from "source_origin"
+    And I fill in "edit-remote-source" with "http://demo.getdkan.com/node/7/recline-embed#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}}}"
+    And I press "Finish"
+    Then I should see "Visualization embed"
+    
