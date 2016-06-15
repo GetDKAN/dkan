@@ -320,9 +320,11 @@ function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_di
             // Image fieldable panel pane.
             if ($fpp_data->bundle === 'image' && $field_name === 'field_basic_image_image') {
               $file_uri = $field_data[LANGUAGE_NONE][0]['uri'];
+              // Clear field data.
+              $fpp_data->field_basic_image_image = array();
               // Add file to the list of files that need to be imported.
               $files_to_save[] = drupal_realpath($file_uri);
-              $fpp_data->field_basic_image_image = array(
+              $fpp_data->field_basic_image_image[] = array(
                 'bundle' => 'image',
                 'image_path' => 'files/' . $files_dir . '/' . basename($file_uri)
               );
@@ -331,6 +333,7 @@ function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_di
             // Spotlight fieldable panel pane.
             if ($fpp_data->bundle === 'spotlight' && $field_name === 'field_basic_spotlight_items') {
               $spotlight_items = $fpp_data->field_basic_spotlight_items;
+              // Clear field data.
               $fpp_data->field_basic_spotlight_items = array();
               foreach ($spotlight_items as $spotlight_item) {
                 $item = array();
