@@ -367,7 +367,7 @@ class DefaultContentPanelizedNodesImport extends Migration {
         }
       }
 
-      if ($pane['type'] === 'fieldable_panels_pane') {
+      if ($pane['type'] === 'fieldable_panels_pane' && !empty($pane['fpp_data'])) {
         $fpp_data = $pane['fpp_data'];
         list($id_type, $id_value) = explode(':', $pane['subtype']);
 
@@ -506,7 +506,7 @@ class DefaultContentPanelizedNodesImport extends Migration {
       $name = basename($file_url);
       $uri = 'public://' . $name;
       try {
-        $file = file_save_data($data, $uri, FILE_EXISTS_REPLACE);
+        $file = file_save_data($data, $uri, FILE_EXISTS_RENAME);
         return $file;
 
       } catch (Exception $e) {
