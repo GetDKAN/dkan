@@ -29,7 +29,6 @@ function dkan_additional_setup() {
       array('dkan_markdown_setup', array()),
       array('dkan_enable_optional_module', array('dkan_permissions')),
       array('dkan_enable_optional_module', array('dkan_default_topics')),
-      array('dkan_revert_feature', array('dkan_sitewide_menu', array('content_menu_links', 'menu_links'))),
       array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
       array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
       array('dkan_revert_feature', array('dkan_dataset_groups_perms', array('og_features_permission'))),
@@ -39,6 +38,7 @@ function dkan_additional_setup() {
       // The module needs to be enabled after the revert on 'dkan_dataset_groups' is done.
       // If not a warning will appear during install about og_group_ref not being present.
       array('dkan_enable_optional_module', array('dkan_fixtures_default')),
+      array('dkan_add_default_menu_links', array()),
       array('dkan_build_menu_links', array()),
       array('dkan_flush_image_styles', array()),
       array('dkan_colorizer_reset', array()),
@@ -113,6 +113,62 @@ function dkan_revert_feature($feature, $components, &$context) {
   $context['message'] = t('Reverting feature %feature_name', array('%feature_name' => $feature));
   features_revert(array($feature => $components));
   cache_clear_all();
+}
+
+
+/**
+ * Import default menu links.
+ *
+ * @param $context
+ */
+function dkan_add_default_menu_links(&$context) {
+  $menu_links = array();
+  // Exported menu link: main-menu_about:node/1
+  $menu_links['main-menu_about:node/1'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'node/1',
+    'router_path' => 'node/%',
+    'link_title' => 'About',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'main-menu_about:node/1',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -49,
+    'customized' => 1,
+  );
+  // Exported menu link: main-menu_dataset:search/type/dataset
+  $menu_links['main-menu_dataset:search/type/dataset'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'search/type/dataset',
+    'router_path' => 'search/type/dataset',
+    'link_title' => 'Datasets',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'main-menu_dataset:search/type/dataset',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -47,
+    'customized' => 1,
+  );
+  t('About');
+  t('Datasets');
+
+  foreach ($menu_links as $menu_link) {
+    menu_link_save($menu_link);
+  }
 }
 
 /**
