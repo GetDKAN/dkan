@@ -42,6 +42,11 @@ function dkan_fixtures_default_migrate_api() {
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Default Data Dashboards'),
       ),
+      'dkan_fixtures_default_pages' => array(
+        'class_name' => 'DefaultContentPagesImport',
+        'group_name' => 'dkan_fixtures',
+        'title' => t('DKAN Default Pages'),
+      ),
     ),
   );
   return $api;
@@ -585,6 +590,47 @@ class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport
 }
 
 /**
+ * Migration class used to import Default Data Stories from fixtures.
+ */
+class DefaultContentPagesImport extends DefaultContentPanelizedNodesImport {
+
+  /**
+   * __construct().
+   */
+  public function __construct($arguments) {
+    $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+    $arguments['list_url'] = $arguments['endpoint'] . 'page_list.json';
+    $arguments['item_url'] = $arguments['endpoint'] . 'page_show?id=:id.json';
+    $arguments['content_type'] = 'page';
+
+    parent::__construct($arguments);
+
+    // Add field mappings.
+    $this->addFieldMapping('body', 'body_value');
+    $this->addFieldMapping('body:summary', 'body_summary');
+    $this->addFieldMapping('body:format', 'body_format');
+  }
+
+  /**
+   *
+   */
+  public function prepareRow($row) {
+    // Prepare 'body' field for field mapping.
+    $body = $row->body->und[0];
+    $row->body_value = $body->value;
+    $row->body_summary = $body->summary;
+    $row->body_format = $body->format;
+  }
+
+  /**
+   * Do extra processing on the node data before its saved.
+   */
+  public function prepare($entity, $row) {
+
+  }
+}
+
+/**
  * Deregisters migrations.
  */
 function dkan_fixtures_default_migrations_disable() {
@@ -594,4 +640,5 @@ function dkan_fixtures_default_migrations_disable() {
   Migration::deregisterMigration('dkan_fixtures_default_visualization_entities');
   Migration::deregisterMigration('dkan_fixtures_default_data_stories');
   Migration::deregisterMigration('dkan_fixtures_default_data_dashboards');
+  Migration::deregisterMigration('dkan_fixtures_default_pages');
 }
