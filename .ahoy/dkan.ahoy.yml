@@ -176,3 +176,16 @@ commands:
     usage: A series of commands for dkan theme development
     import: dkan/.ahoy/theme.ahoy.yml
     hide: true
+
+  uli:
+    usage: log into the
+    cmd: |
+      uli=$(ahoy drush uli {{args}} | sed 's/^http.*\/default\/\(.*$\)/\1/g')
+      url="$(ahoy docker url)/$uli"
+      os=$(uname)
+
+      if [ "$os" = "Darwin" ]; then
+        open $url
+      else
+        echo $url
+      fi
