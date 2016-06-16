@@ -5,7 +5,7 @@ Feature: Homepage
 
   Scenario: Viewing the site title
     Given I am on the homepage
-    Then I should see "Welcome to the DKAN Demo"
+    Then I should see "DKAN"
 
   Scenario: Viewing default content
     Given I am on the homepage
