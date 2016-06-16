@@ -161,13 +161,19 @@ function dkan_fixtures_render_fixtures($nids = array()) {
     // Export Data Stories.
     _build_panelized_nodes_fixtures('dkan_data_story', $rendered_fixtures);
   }
+
+  // Export Home Page.
+  $site_frontpage = variable_get('site_frontpage', 'node');
+  $homepage_node = $node = menu_get_object("node", 1, $site_frontpage);
+  _build_panelized_nodes_fixtures('page', $rendered_fixtures, array($homepage_node->nid));
+
   return $rendered_fixtures;
 }
 
 /**
  *
  */
-function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
+function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = array()) {
   global $base_url;
 
   $panelized_nodes = array();
@@ -175,10 +181,13 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures) {
 
   // Get all published nodes with the specified type.
   $query = new EntityFieldQuery();
-  $result = $query->entityCondition('entity_type', 'node')
+  $query->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', $content_type)
-    ->entityCondition('status', 1)
-    ->execute();
+    ->entityCondition('status', 1);
+  if (!empty($nids)) {
+    $query->entityCondition('entity_id', $nids, 'IN');
+  }
+  $result = $query->execute();
 
   if ($result) {
     $nodes = node_load_multiple(array_keys($result['node']));
