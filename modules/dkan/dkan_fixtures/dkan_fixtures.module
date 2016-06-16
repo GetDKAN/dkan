@@ -317,17 +317,32 @@ function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_di
               $fpp_data->$field_name = $field_data[LANGUAGE_NONE];
             }
 
+            // TODO: Extract common processing for images and spotlight items.
+
             // Image fieldable panel pane.
             if ($fpp_data->bundle === 'image' && $field_name === 'field_basic_image_image') {
-              $file_uri = $field_data[LANGUAGE_NONE][0]['uri'];
+              $field_data = reset($field_data[LANGUAGE_NONE]);
+              $file_uri = $field_data['uri'];
               // Clear field data.
               $fpp_data->field_basic_image_image = array();
+
+              $field = array();
+              // Copy the data that needs to be exported.
+              $field['field_file_image_alt_text'] = $field_data['field_file_image_alt_text'];
+              $field['field_file_image_title_text'] = $field_data['field_file_image_title_text'];
+              $field['alt'] = $field_data['alt'];
+              $field['title'] = $field_data['title'];
+              $field['height'] = $field_data['height'];
+              $field['width'] = $field_data['width'];
+              $field['description'] = $field_data['description'];
+              $field['link'] = $field_data['link'];
+              $field['type'] = $field_data['link'];
+              // Copy only the image data that is important.
+              $field['image_path'] = 'files/' . $files_dir . '/' . basename($spotlight_item['uri']);
+
               // Add file to the list of files that need to be imported.
               $files_to_save[] = drupal_realpath($file_uri);
-              $fpp_data->field_basic_image_image[] = array(
-                'bundle' => 'image',
-                'image_path' => 'files/' . $files_dir . '/' . basename($file_uri)
-              );
+              $fpp_data->field_basic_image_image[] = $field;
             }
 
             // Spotlight fieldable panel pane.
