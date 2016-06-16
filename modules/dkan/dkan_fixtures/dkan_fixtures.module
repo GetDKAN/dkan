@@ -17,6 +17,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
   global $base_url;
 
   $rendered_fixtures = array();
+  /*
 
   // Render list of packages first.
   $package_list_api = open_data_schema_map_api_load('ckan_package_list');
@@ -161,10 +162,11 @@ function dkan_fixtures_render_fixtures($nids = array()) {
     // Export Data Stories.
     _build_panelized_nodes_fixtures('dkan_data_story', $rendered_fixtures);
   }
+  */
 
   // Export Home Page.
   $site_frontpage = variable_get('site_frontpage', 'node');
-  $homepage_node = $node = menu_get_object("node", 1, $site_frontpage);
+  $homepage_node = menu_get_object("node", 1, $site_frontpage);
   _build_panelized_nodes_fixtures('page', $rendered_fixtures, array($homepage_node->nid));
 
   return $rendered_fixtures;
@@ -233,6 +235,13 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = arra
 
       // Add Panelizer data on export: panelizer_entity, panels_display and panels_pane.
       append_panelizer_data($node, $panelized_node, $files_to_save, $content_type);
+
+      // If homepage then add flag.
+      $site_frontpage = variable_get('site_frontpage', 'node');
+      $homepage_node = menu_get_object("node", 1, $site_frontpage);
+      if ($node->nid == $homepage_node->nid) {
+        $panelized_node['is_homepage'] = TRUE;
+      }
 
       // Build 'Item' fixture for content.
       $fixtures[] = array(
