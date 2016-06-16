@@ -435,7 +435,6 @@ class DefaultContentPanelizedNodesImport extends Migration {
           case 'field_basic_image_image': {
             $field_data = reset($fpp_data[$field_name]);
             $file = $this->import_file($field_data['image_path']);
-            var_dump($file);
             if (!empty($file)) {
               $field_record['field_basic_image_image_fid'] = $file->fid;
               $field_record['field_basic_image_image_alt'] = $field_data['alt'];
