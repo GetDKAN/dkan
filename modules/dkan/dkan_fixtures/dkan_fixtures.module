@@ -17,7 +17,6 @@ function dkan_fixtures_render_fixtures($nids = array()) {
   global $base_url;
 
   $rendered_fixtures = array();
-  /*
 
   // Render list of packages first.
   $package_list_api = open_data_schema_map_api_load('ckan_package_list');
@@ -162,7 +161,6 @@ function dkan_fixtures_render_fixtures($nids = array()) {
     // Export Data Stories.
     _build_panelized_nodes_fixtures('dkan_data_story', $rendered_fixtures);
   }
-  */
 
   // Export Home Page.
   $site_frontpage = variable_get('site_frontpage', 'node');
