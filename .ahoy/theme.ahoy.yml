@@ -79,8 +79,9 @@ commands:
         ahoy cmd-proxy rm -rf dkan/themes/contrib/radix/kits/nuboot
         ahoy cmd-proxy mv radix-kit-nuboot-master dkan/themes/contrib/radix/kits/nuboot
         ahoy drush radix $ARGS --kit='nuboot'
-        ahoy drush vset theme_default $ARGS
-        ahoy drush pm-disable $ORIGINAL_THEME
+        ahoy drush en $ARGS -y
+        ahoy drush vset theme_default $ARGS -y
+        ahoy drush pm-disable $ORIGINAL_THEME -y
       else
         echo "Can't seem to download kit from $KIT_URL, restoring original theme"
         ahoy drush vset theme_default $ORIGINAL_THEME
