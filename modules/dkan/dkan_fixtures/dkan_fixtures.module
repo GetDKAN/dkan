@@ -338,7 +338,7 @@ function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_di
               $field['link'] = $field_data['link'];
               $field['type'] = $field_data['link'];
               // Copy only the image data that is important.
-              $field['image_path'] = 'files/' . $files_dir . '/' . basename($spotlight_item['uri']);
+              $field['image_path'] = 'files/' . $files_dir . '/' . basename($field_data['uri']);
 
               // Add file to the list of files that need to be imported.
               $files_to_save[] = drupal_realpath($file_uri);
