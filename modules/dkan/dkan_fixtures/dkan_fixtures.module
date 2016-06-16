@@ -163,9 +163,11 @@ function dkan_fixtures_render_fixtures($nids = array()) {
   }
 
   // Export Home Page.
-  $site_frontpage = variable_get('site_frontpage', 'node');
-  $homepage_node = menu_get_object("node", 1, $site_frontpage);
-  _build_panelized_nodes_fixtures('page', $rendered_fixtures, array($homepage_node->nid));
+  $site_frontpage = variable_get('site_frontpage');
+  if ($site_frontpage) {
+    $homepage_node = menu_get_object("node", 1, $site_frontpage);
+    _build_panelized_nodes_fixtures('page', $rendered_fixtures, array($homepage_node->nid));
+  }
 
   return $rendered_fixtures;
 }
