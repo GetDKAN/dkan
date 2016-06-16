@@ -581,12 +581,6 @@ class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport
     $row->body_format = $body->format;
   }
 
-  /**
-   * Do extra processing on the node data before its saved.
-   */
-  public function prepare($entity, $row) {
-
-  }
 }
 
 /**
@@ -623,10 +617,16 @@ class DefaultContentPagesImport extends DefaultContentPanelizedNodesImport {
   }
 
   /**
-   * Do extra processing on the node data before its saved.
+   *
    */
-  public function prepare($entity, $row) {
+  public function complete($entity, $row) {
 
+    parent::complete($entity, $row);
+
+    // If homepage then setup homepage variable.
+    if (isset($row->is_homepage)) {
+      variable_set('site_frontpage', 'node/' . $entity->nid);
+    }
   }
 }
 
