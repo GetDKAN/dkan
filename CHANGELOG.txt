@@ -1,5 +1,6 @@
 7.x-1.12.x
 --------------------------
+- Upgrade Drupal core to 7.44
 - Add <br><h2><h3><center><iframe> to allowed html tags
 
 7.x-1.12.2
