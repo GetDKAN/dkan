@@ -87,6 +87,7 @@ Feature: Recline
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/Polling_Places_Madison_0.csv"
     And I press "edit-submit"
     Then I should see "Polling_Places_Madison_0.csv"
+    Then I wait for "3" seconds
     Given I click "»"
     Then I wait for "Our"
     Then I wait for "1" seconds
