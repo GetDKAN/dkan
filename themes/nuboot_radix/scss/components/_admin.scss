@@ -42,16 +42,6 @@
 	padding: 0 0 40px;
 }
 
-// Allow overflow on page manager screens.
-.page-admin-structure {
-	.main.container,
-	.container-fluid,
-	.row,
-  .panels-dnd .container {
-		overflow: visible;
-	}
-}
-
 .page-admin .alert {
   margin: 10px 0;
 }

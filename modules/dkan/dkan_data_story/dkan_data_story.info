@@ -5,7 +5,6 @@ package = DKAN
 version = 7.x-1.x-dev
 project = dkan_data_story
 dependencies[] = dkan_sitewide
-dependencies[] = dkan_sitewide_menu
 dependencies[] = file_entity
 dependencies[] = image_url_formatter
 dependencies[] = panelizer

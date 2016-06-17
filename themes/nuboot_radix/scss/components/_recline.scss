@@ -45,6 +45,12 @@
     width: auto;
   }
 }
+.recline-embeded {
+  .header,
+  .data-view-sidebar {
+    display: none;
+  }
+}
 
 @media all and (max-width:991px) {
   .recline-query-editor {

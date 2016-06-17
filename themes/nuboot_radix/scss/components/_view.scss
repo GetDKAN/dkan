@@ -20,8 +20,7 @@
 }
 .view-content h2 {
   font-size: 1.5em;
-  font-weight:bold;
-  margin:1em 0 .25em;
+  margin:1em 0 0.5em;
 }
 .view-groups-search .views-row {
   border-bottom:1px dotted $smoke;
@@ -29,11 +28,23 @@
 }
 
 .views-field-field-image img {
-  display:block;
-  height:auto;
-  margin:0 auto 5px;
-  max-width:220px;
-  width:100%;
+  // display:block;
+  // height:auto;
+  // margin:0 auto 5px;
+  // max-width:220px;
+  // width:100%;
+}
+.view-front-page-group-list {
+  .views-row {
+    position: relative;
+    padding-left: 120px;
+    min-height: 110px;
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
 }
 
 .view-user-profile-fields img {
@@ -46,12 +57,8 @@
 .view-front-page-group-grid {
   .row {
     span {
-      @include card;
       display:block;
-      overflow:hidden;
-      padding:10px;
       margin:15px 0;
-      min-height: 130px;
       .media-content {
         padding:0 10px 10px 120px;
       }
@@ -82,9 +89,17 @@
 
 .view-dkan-groups {
   .node-teaser {
-    @include card;
+    min-height: 365px;
+    margin-bottom: 20px;
+    h2.node-title {
+      margin: .75em 0;
+    }
+    .btn-primary {
+      margin: 0 auto 1.5em;
+    }
   }
 }
+
 .view-groups-page {
   .views-column {
     float:left;
@@ -95,7 +110,6 @@
 .view-group-block {
   .views-field-title {
     font-size:1.2em;
-    font-weight:bold;
   }
   .views-field-nid a {
     background: $brand-primary;

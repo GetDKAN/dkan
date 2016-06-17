@@ -38,6 +38,7 @@ Data Story Panels
 #main .views-field-field-image img.story-image-teaser {
 	/* To Do: fix this in nuboot_radix */
 	max-width: 100% !important;
+  height: auto;
 }
 
 /***************************

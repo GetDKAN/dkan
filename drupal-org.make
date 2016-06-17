@@ -2,7 +2,7 @@
 api: '2'
 core: 7.x
 includes:
-- https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
+- https://raw.githubusercontent.com/NuCivic/dkan_dataset/civic-2654-front-page/dkan_dataset.make
 - https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 - https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
@@ -43,8 +43,8 @@ projects:
     subdir: dkan
     download:
       type: git
-      url: https://github.com/NuCivic/dkan_dataset.git
-      branch: 7.x-1.x
+      url: 'https://github.com/NuCivic/dkan_dataset.git'
+      branch: civic-2654-front-page
   dkan_datastore:
     subdir: dkan
     download:

@@ -12,7 +12,7 @@
           allowEmpty: false,
           showAlpha: true,
           showInitial: true,
-          preferredFormat: "rgb",
+          preferredFormat: "hex",
           clickoutFiresChange: true,
           showButtons: true
         });       
