@@ -6,6 +6,7 @@ version = 7.x-1.12.2
 project = dkan_data_story
 dependencies[] = dkan_sitewide
 dependencies[] = dkan_sitewide_menu
+dependencies[] = dkan_topics
 dependencies[] = file_entity
 dependencies[] = image_url_formatter
 dependencies[] = panelizer
