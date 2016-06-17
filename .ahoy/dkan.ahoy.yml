@@ -32,11 +32,12 @@ commands:
   reinstall:
     usage: Reinstall the dkan install profile (db only).
     cmd: |
+      set -e
       if [ ! -d backups ]; then
         mkdir backups
       fi
       if [ -f backups/last_install.sql ] && ahoy confirm "An existing installation backup exists at backups/last_install.sql, do you want to use that instead of reinstalling from scratch?"; then
-        ahoy drush sql-drop -y &&
+        ahoy drush sql-drop -y && \
         ahoy dkan sqlc <  backups/last_install.sql && \
         echo "Installed dkan from backup"
       else
@@ -127,7 +128,7 @@ commands:
       SKIP_COMPOSER_FLAG="--skip-composer"
       if [[ ! "${ARGS[@]}" == *"$SKIP_COMPOSER_FLAG"* ]]; then
         echo "Installing behat dependencies.."
-        ahoy cmd-proxy "cd $BEHAT_FOLDER && composer install --prefer-source --no-interaction"
+        ahoy cmd-proxy bash dkan/.ahoy/.scripts/composer-install.sh $BEHAT_FOLDER
       else
         echo "Skipping composer install.."
         ARGS=( "${ARGS[@]/$SKIP_COMPOSER_FLAG}" )
@@ -145,11 +146,11 @@ commands:
         echo "$BEHAT_ENV"
         echo "Using behat.yml .."
       fi
-      ahoy cmd-proxy "cd $BEHAT_FOLDER && bin/behat $CONFIG ${ARGS[@]}"
+      ahoy cmd-proxy bash dkan/.ahoy/.scripts/behat.sh $BEHAT_FOLDER $CONFIG $ARGS
 
   dkanextension-update:
     usage: Update the nucivic/dkanextension composer package.
-    cmd: ahoy cmd-proxy 'cd dkan/test \&\& composer update nucivic/dkanextension'
+    cmd: ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkanextension-update.sh
 
   sqlc:
     usage: Abstracted way to connect to the mysql database.
@@ -176,3 +177,16 @@ commands:
     usage: A series of commands for dkan theme development
     import: dkan/.ahoy/theme.ahoy.yml
     hide: true
+
+  uli:
+    usage: log into the
+    cmd: |
+      uli=$(ahoy drush uli {{args}} | sed 's/^http.*\/default\/\(.*$\)/\1/g')
+      url="$(ahoy docker url)/$uli"
+      os=$(uname)
+
+      if [ "$os" = "Darwin" ]; then
+        open $url
+      else
+        echo $url
+      fi
