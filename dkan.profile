@@ -159,25 +159,25 @@ function dkan_add_default_menu_links(&$context) {
     'customized' => 1,
   );
   // Exported menu link: main-menu_dataset:search/type/data_dashboard
-  $menu_links['main-menu_dashboard:search/type/data_dashboard'] = array(
-    'menu_name' => 'main-menu',
-    'link_path' => 'search/type/data_dashboard',
-    'router_path' => 'search/type/data_dashboard',
-    'link_title' => 'Dashboards',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'main-menu_dashboard:search/type/data_dashboard',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => 4,
-    'customized' => 1,
-  );
+  // $menu_links['main-menu_dashboard:search/type/data_dashboard'] = array(
+  //   'menu_name' => 'main-menu',
+  //   'link_path' => 'search/type/data_dashboard',
+  //   'router_path' => 'search/type/data_dashboard',
+  //   'link_title' => 'Dashboards',
+  //   'options' => array(
+  //     'attributes' => array(
+  //       'title' => '',
+  //     ),
+  //     'identifier' => 'main-menu_dashboard:search/type/data_dashboard',
+  //   ),
+  //   'module' => 'menu',
+  //   'hidden' => 0,
+  //   'external' => 0,
+  //   'has_children' => 0,
+  //   'expanded' => 0,
+  //   'weight' => 4,
+  //   'customized' => 1,
+  // );
   // Exported menu link: main-menu_stories:stories
   $menu_links['main-menu_stories:stories'] = array(
     'menu_name' => 'main-menu',
@@ -220,7 +220,7 @@ function dkan_add_default_menu_links(&$context) {
   );
   t('About');
   t('Datasets');
-  t('Dashboards');
+  //t('Dashboards');
   t('Stories');
   t('Groups');
 
