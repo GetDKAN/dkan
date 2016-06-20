@@ -2,7 +2,7 @@
     "require": {
         "behat/behat": "3.1.*@dev",
         "devinci/devinci-behat-extension": "dev-master",
-        "nucivic/dkanextension": "civic-2217-markdown-dev"
+        "nucivic/dkanextension": "master"
     },
     "config": {
         "bin-dir": "bin/"
