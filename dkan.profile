@@ -239,6 +239,21 @@ function dkan_delete_markdown_buttons(&$context) {
     ->condition('eid', $eid)
     ->execute();
 
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Insert a definition list')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Format selected text as code')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Format selected text as a code block')
+    ->condition('eid', $eid)
+    ->execute();
+
   // Update markdown linebreak button with html.
   db_update('bueditor_buttons')
     ->fields(array('content' => '<br>'))
