@@ -1,5 +1,5 @@
 //
-// Styles for Tabs, Messages, ..etc
+// Styles for headings, links, lists, tables, general, ..etc
 // --------------------------------------------------
 body {
   font-family:$font-base;
@@ -47,7 +47,7 @@ h1 {
 }
 h1,h2,h3,h4 {
   color:$gray-dark;
-  font-weight:bold;
+  font-weight:300;
 }
 h3.media-heading {
   margin:.5em 0;
@@ -301,4 +301,17 @@ dd {
       border-bottom: none;
     }
   }
+}
+// Keep images inside their containers.
+img {
+  max-width: 100%;
+  height: auto;
+}
+// Bootstrap/Radix Overrides.
+.thumbnail {
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
 }

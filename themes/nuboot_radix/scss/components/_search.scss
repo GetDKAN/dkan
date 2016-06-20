@@ -1,6 +1,6 @@
 #views-exposed-form-dkan-datasets-panel-pane-1 {
   .views-exposed-form .views-widget-filter-search_api_views_fulltext {
-    max-width: 400px;
+    max-width: 320px;
   }
 }
 
@@ -112,5 +112,11 @@
   }
   p {
     margin-bottom: 0px;
+  }
+}
+
+.node-search-result {
+  h2.node-title {
+    margin: 1.5em 0 .5em 0;
   }
 }

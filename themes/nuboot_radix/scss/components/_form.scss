@@ -66,8 +66,18 @@ div.autocomplete-deluxe-multiple {
     }
   }
 }
-.bue-ui {
+// BuEditor.
+.bue-popup {
+  z-index: 999;
+}
+.bue-ui.editor-container {
   background-color: #ffffff;
+  padding: 0 4px;
+  border: 1px solid $border;
+  @include border-radius(4px 4px 0 0);
+}
+.form-control.form-textarea {
+  @include border-radius(0);
 }
 // Chosen.
 .form-control.chosen-processed {
@@ -104,10 +114,10 @@ div.autocomplete-deluxe-container input.autocomplete-deluxe-form-single {
   float: left;
 }
 
-fieldset fieldset {
-  padding-top: 40px;
+fieldset {
   position: relative;
 }
+
 fieldset.collapsible {
   padding-top: 0;
 }
