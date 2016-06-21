@@ -158,6 +158,7 @@ function dkan_add_default_menu_links(&$context) {
     'weight' => -1,
     'customized' => 1,
   );
+  // To Do: Add 'Dashboards' link to main menu when new default content is deployed.
   // Exported menu link: main-menu_dataset:search/type/data_dashboard
   // $menu_links['main-menu_dashboard:search/type/data_dashboard'] = array(
   //   'menu_name' => 'main-menu',
