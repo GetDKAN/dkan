@@ -45,10 +45,10 @@
     width: auto;
   }
 }
-.recline-embeded {
+#recline-embeded .recline-data-explorer {
   .header,
   .data-view-sidebar {
-    display: none;
+    display: none !important;
   }
 }
 

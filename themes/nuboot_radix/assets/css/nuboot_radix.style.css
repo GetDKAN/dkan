@@ -10125,9 +10125,9 @@ h2.pane-title {
 .recline-filter-editor select {
   width: auto; }
 
-.recline-embeded .header,
-.recline-embeded .data-view-sidebar {
-  display: none; }
+#recline-embeded .recline-data-explorer .header,
+#recline-embeded .recline-data-explorer .data-view-sidebar {
+  display: none !important; }
 
 @media all and (max-width: 991px) {
   .recline-query-editor {
