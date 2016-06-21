@@ -10081,6 +10081,13 @@ h2.pane-title {
     float: none;
     width: 100%; } }
 
+.field-name-field-basic-image-image img.panopoly-image-full {
+  max-width: 100%;
+  width: initial !important;
+  height: auto;
+  margin: 1em auto .5em;
+  display: block; }
+
 .recline-pager .pagination li {
   vertical-align: middle; }
   .recline-pager .pagination li a {
