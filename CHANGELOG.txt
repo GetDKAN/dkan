@@ -1,5 +1,7 @@
 7.x-1.12.x
 --------------------------
+- Fix editor permissions to allow access to visualizations list from admin menu
+- Upgrade Views to 7.14
 - Upgrade Drupal core to 7.44
 - Add <br><h2><h3><center><iframe> to allowed html tags
 
