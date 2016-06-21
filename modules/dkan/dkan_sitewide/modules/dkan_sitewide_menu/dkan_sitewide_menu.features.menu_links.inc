@@ -93,48 +93,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization/ve_chart/add',
   );
-  // Exported menu link: menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization.
-  $menu_links['menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/structure/entity-type/visualization/choropleth_visualization',
-    'router_path' => 'admin/structure/entity-type/visualization',
-    'link_title' => 'Choropleth',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -49,
-    'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
-  );
-  // Exported menu link: menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization/add.
-  $menu_links['menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization/add'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/structure/entity-type/visualization/choropleth_visualization/add',
-    'router_path' => 'admin/structure/entity-type/visualization',
-    'link_title' => 'Choropleth',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'menu-command-center-menu_choropleth:admin/structure/entity-type/visualization/choropleth_visualization/add',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -47,
-    'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization/ve_chart/add',
-  );
   // Exported menu link: menu-command-center-menu_colorizer:admin/appearance/colorizer.
   $menu_links['menu-command-center-menu_colorizer:admin/appearance/colorizer'] = array(
     'menu_name' => 'menu-command-center-menu',
@@ -280,48 +238,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -47,
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
-  );
-  // Exported menu link: menu-command-center-menu_geojson:admin/structure/entity-type/geo_file/geojson/add.
-  $menu_links['menu-command-center-menu_geojson:admin/structure/entity-type/geo_file/geojson/add'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/structure/entity-type/geo_file/geojson/add',
-    'router_path' => 'admin/structure/entity-type',
-    'link_title' => 'GeoJSON',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'menu-command-center-menu_geojson:admin/structure/entity-type/geo_file/geojson/add',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -49,
-    'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization/ve_chart/add',
-  );
-  // Exported menu link: menu-command-center-menu_geojson:admin/structure/entity-type/visualization/geojson_visualization.
-  $menu_links['menu-command-center-menu_geojson:admin/structure/entity-type/visualization/geojson_visualization'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/structure/entity-type/visualization/geojson_visualization',
-    'router_path' => 'admin/structure/entity-type/visualization',
-    'link_title' => 'GeoJSON',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'menu-command-center-menu_geojson:admin/structure/entity-type/visualization/geojson_visualization',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => 0,
-    'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
   );
   // Exported menu link: menu-command-center-menu_manage-users:admin/people.
   $menu_links['menu-command-center-menu_manage-users:admin/people'] = array(
