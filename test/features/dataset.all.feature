@@ -66,6 +66,7 @@ Feature: Dataset Features
   Scenario: View list of published datasets
     Given I am on the homepage
     When I click "Datasets"
+    And I search for "Dataset"
     Then I should see "7 results"
     And I should see "7" items in the "datasets" region
 
@@ -76,6 +77,7 @@ Feature: Dataset Features
       | Dataset 2 years ago   |  Yes       | Test        | -2 year      |
       | Dataset 1 year ago    |  Yes       | Test        | -1 year      |
       | Dataset 3 years ago   |  Yes       | Test        | -3 year      |
+    And I search for "Dataset"
     And I am on "Datasets Search" page
     And I select "Date changed" from "Sort by"
     And I select "Asc" from "Order"
@@ -91,6 +93,7 @@ Feature: Dataset Features
       | Dataset 3 years +   |  Yes       | Test        | +3 year      |
       | Dataset 1 year +    |  Yes       | Test        | +1 year      |
     And I am on "Datasets Search" page
+    And I search for "Dataset"
     And I select "Date changed" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
@@ -98,6 +101,7 @@ Feature: Dataset Features
 
   Scenario: Search datasets by "title" with "Asc" order
     Given I am on "Datasets Search" page
+    And I search for "Dataset"
     And I select "Title" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
@@ -107,6 +111,7 @@ Feature: Dataset Features
 
   Scenario: Search datasets by "title" with "Desc" order
     Given I am on "Datasets Search" page
+    And I search for "Dataset"
     And I select "Title" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
@@ -119,6 +124,7 @@ Feature: Dataset Features
 
   Scenario: Reset dataset search filters
     Given I am on "Datasets Search" page
+    And I search for "Dataset"
     When I fill in "Test" for "Search" in the "datasets" region
     And I press "Apply"
     Then I should see "3 results"
@@ -127,13 +133,14 @@ Feature: Dataset Features
     Then I should see "7 results"
     And I should see "7" items in the "datasets" region
 
+  # TODO: fix for when we don't have default content on.
   Scenario: View available tag filters for datasets
     Given I am on "Datasets Search" page
     Then I click on the text "Tags"
     Then I should see "Health (2)" in the "filter by tag" region
     Then I should see "Gov (1)" in the "filter by tag" region
 
-
+  # TODO: fix for when we don't have default content on.
   Scenario: View available resource format filters for datasets
     Given I am on "Datasets Search" page
     Then I click on the text "Format"
@@ -146,7 +153,7 @@ Feature: Dataset Features
     Then I should see "Gabriel (2)" in the "filter by author" region
     Then I should see "Katie (1)" in the "filter by author" region
 
-
+  # TODO: fix for when we don't have default content on.
   Scenario: Filter dataset search results by tags
     Given I am on "Datasets Search" page
     Then I should see "7 results"
@@ -156,6 +163,7 @@ Feature: Dataset Features
     Then I should see "2 results"
     And I should see "2" items in the "datasets" region
 
+  # TODO: fix for when we don't have default content on.
   Scenario: Filter dataset search results by resource format
     Given I am on "Datasets Search" page
     Then I should see "7 results"
@@ -166,6 +174,7 @@ Feature: Dataset Features
     Then I should see "5 results"
     And I should see "5" items in the "datasets" region
 
+  # TODO: fix for when we don't have default content on.
   Scenario: Filter dataset search results by author
     Given I am on "Datasets Search" page
     Then I should see "7 results"
