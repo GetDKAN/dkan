@@ -1,5 +1,6 @@
 7.x-1.12.x
 --------------------------
+- Point to new release of visualization entity, which cleans up some make files and brings visualization_entity_charts into the same project repository.
 - Fix editor permissions to allow access to visualizations list from admin menu
 - Upgrade Views to 7.14
 - Upgrade Drupal core to 7.44
@@ -35,7 +36,6 @@
 - Added hook_update to remove 'Add Dataset' and 'Datasets' links from main menu. The 'Datasets' link is now added by the dkan_sitewide_search_db feature.
 - Removed 'taxonomy_menu_vocab_parent_dkan_topics' variable from info file to get the 'DKAN Featured Topics' feature back into 'Default' state.
 - Upgrade of Panopoly Widgets, Panopoly Images and Fieldable Panels Panes.
-- Add dkan_ipe feature to simplify the in-place editor interface, includes addition of the panels_curator module
 
 7.x-1.11 2016-02-01
 --------------------------
