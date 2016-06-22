@@ -1,12 +1,11 @@
-name = DKAN Featured Topics
+name = DKAN Topics
 description = Categorize your data with topics to help users find what they are looking for.
 core = 7.x
 package = DKAN
-version = 7.x-1.0
+version = 7.x-1.x-dev
 dependencies[] = color_field
 dependencies[] = conditional_fields
 dependencies[] = dkan_dataset_content_types
-dependencies[] = dkan_default_topics
 dependencies[] = entity_path
 dependencies[] = facetapi
 dependencies[] = features
