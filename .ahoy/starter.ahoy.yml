@@ -12,7 +12,7 @@ commands:
 
 # Utility / Experimental commands that are currently hidden
   confirm:
-    cmd: ahoy -f dkan/.ahoy/utils.ahoy.yml confirm {{args}}
+    cmd: ahoy -f dkan/.ahoy/utils.ahoy.yml confirm "{{args}}"
     hide: true
 
   docker:
