@@ -5,6 +5,12 @@
 - Upgrade Views to 7.14
 - Upgrade Drupal core to 7.44
 - Add <br><h2><h3><center><iframe> to allowed html tags
+- Stories main menu link removed from stories view
+- Groups main menu link removed from page manager groups page config
+- Main menu links added on install function rather than through features
+- Add body field to data_dashboard content types
+- Front page page manager config moved to the dkan_sitewide_demo_front feature
+- Front page group views moved to the dkan_dataset_groups feature
 
 7.x-1.12.2
 --------------------------
