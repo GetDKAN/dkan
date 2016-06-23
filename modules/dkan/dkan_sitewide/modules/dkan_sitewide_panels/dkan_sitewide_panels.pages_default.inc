@@ -1049,18 +1049,7 @@ function dkan_sitewide_panels_default_page_manager_pages() {
     'type' => 'none',
     'settings' => NULL,
   );
-  $page->menu = array(
-    'type' => 'none',
-    'title' => '',
-    'name' => 'navigation',
-    'weight' => '0',
-    'parent' => array(
-      'type' => 'none',
-      'title' => '',
-      'name' => 'navigation',
-      'weight' => '0',
-    ),
-  );
+  $page->menu = array();
   $page->arguments = array();
   $page->conf = array(
     'admin_paths' => FALSE,
@@ -1732,18 +1721,7 @@ return TRUE;
     'type' => 'none',
     'settings' => NULL,
   );
-  $page->menu = array(
-    'type' => 'none',
-    'title' => 'Groups',
-    'name' => 'main-menu',
-    'weight' => '2',
-    'parent' => array(
-      'type' => 'none',
-      'title' => '',
-      'name' => 'navigation',
-      'weight' => '0',
-    ),
-  );
+  $page->menu = array();
   $page->arguments = array();
   $page->conf = array(
     'admin_paths' => FALSE,
