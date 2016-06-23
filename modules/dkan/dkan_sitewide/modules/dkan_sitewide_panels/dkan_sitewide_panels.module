@@ -40,3 +40,12 @@ function dkan_sitewide_panels_preprocess_panels_style_collapsible(&$variables) {
     }
   }
 }
+
+/**
+* Implements hook_update_N().
+* Disable, then enable page-groups to remove menu link from cache.
+*/
+function dkan_sitewide_panels_update_7000() {
+  update_panel_page_status('groups', FALSE);
+  update_panel_page_status('groups', TRUE);
+}

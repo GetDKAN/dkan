@@ -35,7 +35,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'node/add/group',
     'router_path' => 'node/add/group',
-    'link_title' => 'Add group',
+    'link_title' => 'Group',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -77,7 +77,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
     'router_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
-    'link_title' => 'Charts',
+    'link_title' => 'Chart',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -196,6 +196,27 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -48,
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
+  );
+  // Exported menu link: menu-command-center-menu_data-story:node/add/dkan-data-story
+  $menu_links['menu-command-center-menu_data-story:node/add/dkan-data-story'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'node/add/dkan-data-story',
+    'router_path' => 'node/add',
+    'link_title' => 'Data Story',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_data-story:node/add/dkan-data-story',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -47,
+    'customized' => 1,
+    'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
   );
   // Exported menu link: menu-command-center-menu_dataset:node/add/dataset.
   $menu_links['menu-command-center-menu_dataset:node/add/dataset'] = array(
@@ -447,7 +468,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
     'router_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
-    'link_title' => 'Visualizations',
+    'link_title' => 'Visualization',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -467,9 +488,9 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Add content');
-  t('Add group');
+  t('Dataset');
+  t('Group');
   t('Charts');
-  t('Choropleth');
   t('Colorizer');
   t('Content');
   t('Create user');
@@ -477,7 +498,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Data Previews');
   t('Dataset');
   t('Fonts');
-  t('GeoJSON');
   t('Manage Users');
   t('Menus');
   t('My Workbench');
