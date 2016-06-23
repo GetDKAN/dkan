@@ -31,9 +31,11 @@ function dkan_fixtures_default_enable() {
   $migration = Migration::getInstance('dkan_fixtures_default_data_dashboards');
   $migration->processImport();
   // TODO: The pages migration needs to be moved to a separate module.
-  // Import Pages.
+  // Import Pages
   $migration = Migration::getInstance('dkan_fixtures_default_pages');
   $migration->processImport();
+  // Import Homepage.
+  import_default_homepage();
 
   // Clear message queue.
   drupal_get_messages('status', TRUE);
@@ -63,9 +65,6 @@ function dkan_fixtures_default_disable() {
   $migration->processRollback();
   // Rollback Groups.
   $migration = Migration::getInstance('dkan_fixtures_default_groups');
-  $migration->processRollback();
-  // Rollback Pages.
-  $migration = Migration::getInstance('dkan_fixtures_default_pages');
   $migration->processRollback();
   // Disable Mirations.
   dkan_fixtures_default_migrations_disable();
