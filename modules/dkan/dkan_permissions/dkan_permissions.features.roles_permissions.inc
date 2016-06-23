@@ -16,6 +16,7 @@ function dkan_permissions_default_roles_permissions() {
     'weight' => 0,
     'permissions' => array(
       'access content' => TRUE,
+      'access resource node' => TRUE,
       'access user profiles' => TRUE,
       'eck view entities' => TRUE,
       'view revisions' => TRUE,
@@ -28,6 +29,7 @@ function dkan_permissions_default_roles_permissions() {
     'weight' => 1,
     'permissions' => array(
       'access content' => TRUE,
+      'access resource node' => TRUE,
       'access user profiles' => TRUE,
       'cancel account' => TRUE,
       'change own username' => TRUE,
