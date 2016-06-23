@@ -35,34 +35,34 @@ Feature: Site Manager administer groups
       | Jaz     | Group 01 | member               | Pending           |
       | Celeste | Group 02 | member               | Active            |
     And "Tags" terms:
-      | name    |
-      | Health  |
-      | Gov     |
-      | Count   |
+      | name             |
+      | Health 2         |
+      | Gov 2            |
+      | Count 2          |
     And datasets:
       | title      | publisher | tags         | author  | published | description                | date changed      | topics         |
-      | Dataset 01 | Group 01  | Health       | Katie   | Yes       | Increase of toy prices     | 10 September 2015 | Education      |
-      | Dataset 02 | Group 01  | Health       | Katie   | No        | Cost of oil in January     | 10 September 2015 | Education      |
-      | Dataset 03 | Group 01  | Gov          | Gabriel | Yes       | Election districts         | 17 October 2015   | Education      |
-      | Dataset 04 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Education      |
-      | Dataset 05 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 21 September 2015 | Education      |
-      | Dataset 06 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 13 March 2015     | Transportation |
-      | Dataset 07 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation |
-      | Dataset 08 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 25 February 2014  | Transportation |
-      | Dataset 09 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 13 September 2014 | Education      |
-      | Dataset 10 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 October 2013   | Education      |
-      | Dataset 11 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation |
-      | Dataset 12 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation |
-      | Dataset 13 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 23 October 2013   | Transportation |
-      | Dataset 14 | Group 02  | Count        | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation |
+      | Dataset 01 | Group 01  | Health 2     | Katie   | Yes       | Increase of toy prices     | 10 September 2015 | Education      |
+      | Dataset 02 | Group 01  | Health 2     | Katie   | No        | Cost of oil in January     | 10 September 2015 | Education      |
+      | Dataset 03 | Group 01  | Gov 2        | Gabriel | Yes       | Election districts         | 17 October 2015   | Education      |
+      | Dataset 04 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Education      |
+      | Dataset 05 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 21 September 2015 | Education      |
+      | Dataset 06 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 13 March 2015     | Transportation |
+      | Dataset 07 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation |
+      | Dataset 08 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 25 February 2014  | Transportation |
+      | Dataset 09 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 13 September 2014 | Education      |
+      | Dataset 10 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 October 2013   | Education      |
+      | Dataset 11 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation |
+      | Dataset 12 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation |
+      | Dataset 13 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 23 October 2013   | Transportation |
+      | Dataset 14 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation |
     And "format" terms:
-      | name |
-      | csv  |
-      | html |
+      | name   |
+      | csv 2  |
+      | html 2 |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 03 |             |
+      | Resource 01 | Group 01  | csv 2  | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | html 2 | Katie  | Yes       | Dataset 03 |             |
 
 
   Scenario: View the list of published groups
@@ -104,8 +104,8 @@ Feature: Site Manager administer groups
     Given I am on "Group 01" page
     When I fill in "Dataset" for "Search" in the "content" region
     And I press "Apply"
-    Then I should see "csv (1)" in the "filter by resource format" region
-    And I should see "html (1)" in the "filter by resource format" region
+    Then I should see "csv 2 (1)" in the "filter by resource format" region
+    And I should see "html 2 (1)" in the "filter by resource format" region
 
   Scenario: View available "author" filters after search
     Given I am on "Group 01" page
@@ -118,8 +118,8 @@ Feature: Site Manager administer groups
     Given I am on "Group 01" page
     When I fill in "Dataset" for "Search" in the "content" region
     And I press "Apply"
-    Then I should see "Health (1)" in the "filter by tag" region
-    And I should see "Gov (1)" in the "filter by tag" region
+    Then I should see "Health 2 (1)" in the "filter by tag" region
+    And I should see "Gov 2 (1)" in the "filter by tag" region
 
   Scenario: View available "date changed" filters after search
     Given I am on "Group 02" page
@@ -131,7 +131,7 @@ Feature: Site Manager administer groups
     Given I am on "Group 01" page
     When I fill in "Dataset" for "Search" in the "content" region
     And I press "Apply"
-    When I click "csv (1)" in the "filter by resource format" region
+    When I click "csv 2 (1)" in the "filter by resource format" region
     Then I wait for "1 datasets"
 
   Scenario: Filter datasets on group by author
@@ -145,7 +145,7 @@ Feature: Site Manager administer groups
     Given I am on "Group 01" page
     When I fill in "Dataset" for "Search" in the "content" region
     And I press "Apply"
-    When I click "Health" in the "filter by tag" region
+    When I click "Health 2" in the "filter by tag" region
     Then I wait for "1 datasets"
 
   Scenario: View the list of datasets displayed with the search result view mode
