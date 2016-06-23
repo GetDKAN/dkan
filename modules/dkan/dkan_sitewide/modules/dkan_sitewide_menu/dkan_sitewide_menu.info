@@ -1,5 +1,5 @@
 name = DKAN Sitewide Menu
-description = Default menu settings for DKAN
+description = Command center menu settings for DKAN
 core = 7.x
 package = DKAN
 project = dkan
@@ -9,8 +9,6 @@ dependencies[] = dkan_datastore
 dependencies[] = features
 dependencies[] = menu
 features[features_api][] = api:2
-features[menu_custom][] = main-menu
 features[menu_custom][] = menu-command-center-menu
 features[menu_links][] = main-menu_about:node/1
 features[menu_links][] = main-menu_dataset:search/type/dataset
-
