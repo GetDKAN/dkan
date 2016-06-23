@@ -89,7 +89,9 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
     And I click "Edit"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    # And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I click "Upload a file"
+    And I attach the file "district_centerpoints_0.csv" to "field_upload[und][0][resup]" using file resup
     And I press "Save"
     When I click "Manage Datastore"
     And I press "Import"
@@ -103,7 +105,9 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
     And I click "Edit"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    # And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I click "Upload a file"
+    And I attach the file "district_centerpoints_0.csv" to "field_upload[und][0][resup]" using file resup
     And I press "Save"
     And I am on "Resource 04" page
     When I click "Manage Datastore"
@@ -122,7 +126,9 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
     And I click "Edit"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    # And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I click "Upload a file"
+    And I attach the file "district_centerpoints_0.csv" to "field_upload[und][0][resup]" using file resup
     And I press "Save"
     And I am on "Resource 04" page
     When I click "Manage Datastore"
