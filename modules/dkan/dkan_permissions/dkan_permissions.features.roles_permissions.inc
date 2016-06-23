@@ -174,10 +174,7 @@ function dkan_permissions_default_roles_permissions() {
       'eck add entities' => TRUE,
       'eck delete entities' => TRUE,
       'eck edit entities' => TRUE,
-<<<<<<< HEAD
-=======
       'eck edit visualization ve_chart entities' => TRUE,
->>>>>>> release-1-12
       'eck list bundles' => TRUE,
       'eck list entities' => TRUE,
       'eck view entities' => TRUE,
