@@ -197,6 +197,27 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
+  // Exported menu link: menu-command-center-menu_data-story:node/add/dkan-data-story
+  $menu_links['menu-command-center-menu_data-story:node/add/dkan-data-story'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'node/add/dkan-data-story',
+    'router_path' => 'node/add',
+    'link_title' => 'Data Story',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_data-story:node/add/dkan-data-story',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -47,
+    'customized' => 1,
+    'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
+  );
   // Exported menu link: menu-command-center-menu_dataset:node/add/dataset.
   $menu_links['menu-command-center-menu_dataset:node/add/dataset'] = array(
     'menu_name' => 'menu-command-center-menu',
