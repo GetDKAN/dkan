@@ -10,10 +10,10 @@
 function dkan_install_tasks() {
   return array(
     'dkan_additional_setup' => array(
-        'display_name' => t('DKAN final setup tasks'),
-        'display' => TRUE,
-        'type' => 'batch',
-        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+      'display_name' => t('DKAN final setup tasks'),
+      'display' => TRUE,
+      'type' => 'batch',
+      'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
     ),
   );
 }
@@ -23,26 +23,27 @@ function dkan_install_tasks() {
  */
 function dkan_additional_setup() {
   return array(
-      'operations' => array(
-          array('dkan_theme_config', array()),
-          array('dkan_change_block_titles', array()),
-          array('dkan_install_markdown', array()),
-          array('dkan_enable_optional_module', array('dkan_permissions')),
-          array('dkan_enable_optional_module', array('dkan_default_topics')),
-          array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
-          array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
-          array('dkan_revert_feature', array('dkan_dataset_groups_perms', array('og_features_permission'))),
-          array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
-          array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
-          array('dkan_revert_feature', array('dkan_sitewide_menu', array('custom_menu', 'menu_links'))),
-          array('dkan_add_default_menu_links', array()),
-          array('dkan_build_menu_links', array()),
-          array('dkan_flush_image_styles', array()),
-          array('dkan_colorizer_reset', array()),
-          array('dkan_misc_variables_set', array()),
-          array('dkan_install_default_content', array()),
-          array('dkan_set_adminrole', array()),
-      ),
+    'operations' => array(
+      array('dkan_theme_config', array()),
+      array('dkan_change_block_titles', array()),
+      array('dkan_install_markdown', array()),
+      array('dkan_enable_optional_module', array('dkan_permissions')),
+      array('dkan_enable_optional_module', array('dkan_default_topics')),
+      array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
+      array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
+      array('dkan_revert_feature', array('dkan_dataset_groups_perms', array('og_features_permission'))),
+      array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
+      array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
+      array('dkan_revert_feature', array('dkan_sitewide_menu', array('custom_menu', 'menu_links'))),
+      array('dkan_add_default_menu_links', array()),
+      array('dkan_build_menu_links', array()),
+      array('dkan_flush_image_styles', array()),
+      array('dkan_colorizer_reset', array()),
+      array('dkan_misc_variables_set', array()),
+      array('dkan_group_link_delete', array()),
+      array('dkan_install_default_content', array()),
+      array('dkan_set_adminrole', array()),
+    ),
   );
 }
 
@@ -200,7 +201,7 @@ function dkan_add_default_menu_links(&$context) {
     'customized' => 1,
   );
   // Exported menu link: main-menu_groups:groups
-  $menu_links['main-menu_stories:groups'] = array(
+  $menu_links['main-menu_groups:groups'] = array(
     'menu_name' => 'main-menu',
     'link_path' => 'groups',
     'router_path' => 'groups',
@@ -322,4 +323,15 @@ function dkan_set_adminrole(&$context) {
     else {
         return t('User admin role already set. Skipping update.');
     }
+}
+
+/**
+ * The groups view in og_extras creates a menu item even when the view is disabled.
+ * This will delete the extra menu item until the og_extras is removed from the code base.
+ *
+ * @param $context
+ */
+function dkan_group_link_delete(&$context) {
+  $context['message'] = t('Removing og_extra groups link');
+  db_query('DELETE FROM {menu_links} WHERE link_path = :link_path LIMIT 1', array(':link_path' => 'groups'));
 }
