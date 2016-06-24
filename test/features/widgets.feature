@@ -2,7 +2,22 @@
 Feature: Widgets
 
   Background:
-    Given I am logged in as a user with the "site manager" role
+    Given groups:
+      | title    | author  | published |
+      | Group 01 | admin  | Yes       |
+    And "Tags" terms:
+      | name     |
+      | Health 2 |
+    And "Format" terms:
+      | name   |
+      | csv 2  |
+    And datasets:
+      | title                          | publisher | author | published        | tags     | description |
+      | Afghanistan Election Districts | Group 01  | admin  | Yes              | Health 2 | Test        |
+    And resources:
+      | title          | publisher | format | author | published | dataset                        | description |
+      | District Names | Group 01  | csv 2  | admin  | Yes       | Afghanistan Election Districts |             |
+    And I am logged in as a user with the "site manager" role
     And I wait for "Customize this page"
     When I click "Customize this page"
     And I wait for "Add new pane"
@@ -101,7 +116,7 @@ Feature: Widgets
     And I wait for "Configure new Add submenu"
       And I press "Finish"
     And I wait and press "Save"
-      Then I should see "About" in the "content"
+      Then I should see "Datasets" in the "content"
 
   Scenario: Adds "New Content List Widget" block to home page using panels ipe editor
     When I click on the text " Add content list"
