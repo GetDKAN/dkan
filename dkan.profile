@@ -40,6 +40,7 @@ function dkan_additional_setup() {
       array('dkan_flush_image_styles', array()),
       array('dkan_colorizer_reset', array()),
       array('dkan_misc_variables_set', array()),
+      array('dkan_group_link_delete', array()),
       array('dkan_install_default_content', array()),
       array('dkan_set_adminrole', array()),
     ),
@@ -322,4 +323,15 @@ function dkan_set_adminrole(&$context) {
     else {
         return t('User admin role already set. Skipping update.');
     }
+}
+
+/**
+ * The groups view in og_extras creates a menu item even when the view is disabled.
+ * This will delete the extra menu item until the og_extras is removed from the code base.
+ *
+ * @param $context
+ */
+function dkan_group_link_delete(&$context) {
+  $context['message'] = t('Removing og_extra groups link');
+  db_query('DELETE FROM {menu_links} WHERE link_path = :link_path LIMIT 1', array(':link_path' => 'groups'));
 }
