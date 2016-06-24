@@ -43,7 +43,6 @@ function dkan_additional_setup() {
       array('dkan_flush_image_styles', array()),
       array('dkan_colorizer_reset', array()),
       array('dkan_misc_variables_set', array()),
-      array('dkan_install_default_content', array()),
       array('dkan_set_adminrole', array()),
     ),
   );
@@ -237,11 +236,6 @@ function dkan_misc_variables_set(&$context) {
     'dataset' => TRUE,
   );
   variable_set('views_defaults', $views_disable);
-}
-
-function dkan_install_default_content(&$context) {
-  $context['message'] = t('Creating default content');
-  dkan_default_content_base_install();
 }
 
 /**
