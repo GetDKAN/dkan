@@ -314,6 +314,7 @@ function convert_homepage($homepage_path) {
       $homepage_node->type = 'page';
       $homepage_node->uid = 1;
       $homepage_node->status = 1;
+      $homepage_node->language = LANGUAGE_NONE;
       $homepage_node->title = $homepage->admin_title;
       node_save($homepage_node);
 
