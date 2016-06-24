@@ -282,3 +282,85 @@ function dkan_sitewide_module_implements_alter(&$implementations, $hook) {
     $implementations['dkan_sitewide'] = $group;
   }
 }
+
+/**
+ * Function used to enable/disable panel pages.
+ *   - TRUE: Disable page.
+ *   - FALSE: Enable page.
+ */
+function update_panel_page_status($page_name, $status = FALSE) {
+  $page = page_manager_get_page_cache('page-' . $page_name);
+  $function = ctools_plugin_get_function($page->subtask, "enable callback");
+  $function($page, $status);
+  menu_rebuild();
+}
+
+/*
+ * Function used to convert the Panel Page version of the Home Page into
+ * a Panelized Node version of the homepage.
+ */
+function convert_homepage($homepage_path) {
+
+  // Get menu item associated with the home page path.
+  $menu_item = menu_get_item($homepage_path);
+  // Check if the item is a panel page.
+  if ($menu_item['access_callback'] === 'ctools_access_menu') {
+    // Load panel page info.
+    $homepage = get_panel_page($homepage_path);
+
+    if ($homepage) {
+      // Create new Page node for the homepage.
+      $homepage_node = new stdClass();
+      $homepage_node->type = 'page';
+      $homepage_node->uid = 1;
+      $homepage_node->status = 1;
+      $homepage_node->title = $homepage->admin_title;
+      node_save($homepage_node);
+
+      // Get the id of the display being used on the current homepage.
+      $task = page_manager_get_task($homepage->task);
+      $task_handler = reset(page_manager_load_task_handlers($task, $homepage->name));
+      $display_id = $task_handler->conf['did'];
+      // Clone display.
+      $display = clone_panel_display($display_id);
+
+      // Setup cloned display on new homepage.
+      $homepage_node = node_load($homepage_node->nid);
+      $homepage_node->panelizer['default']->display = $display;
+      $homepage_node->panelizer['default']->did = $display->did;
+      $homepage_node->panelizer['default']->entity_id = $homepage_node->nid;
+      $homepage_node->panelizer['default']->display_is_modified = TRUE;
+      $homepage_node->panelizer['default']->entity_type = 'node';
+      $homepage_node->panelizer['default']->link_to_entity = $homepage_node->nid;
+      node_save($homepage_node);
+
+      // Disable old panel page.
+      update_panel_page_status($homepage->name, TRUE);
+      // Set new home page node as the new home page.
+      variable_set('site_frontpage', 'node/' . $homepage_node->nid);
+    }
+  }
+}
+
+/**
+ * Return panel page info based on specified path.
+ */
+function get_panel_page($path) {
+  $query = db_select('page_manager_pages', 'pmp')
+    ->fields('pmp')
+    ->condition('pmp.path', $path);
+  return $query->execute()->fetchObject();
+}
+
+/**
+ * Clone panel display.
+ */
+function clone_panel_display($did) {
+  $display = panels_load_display($did);
+  $display_code = panels_export_display($display);
+  eval($display_code);
+  panels_save_display($display);
+
+  return $display;
+}
+
