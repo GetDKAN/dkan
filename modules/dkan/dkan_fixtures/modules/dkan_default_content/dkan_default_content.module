@@ -2,48 +2,48 @@
 
 /**
  * @file
- * DKAN Fixtures Default module file.
+ * DKAN Default Content module file.
  */
 
 
 /**
  * Implements hook_migrate_api().
  */
-function dkan_fixtures_default_migrate_api() {
+function dkan_default_content_migrate_api() {
   $api = array(
     'api' => 2,
     'migrations' => array(
-      'dkan_fixtures_default_datasets' => array(
+      'dkan_default_content_datasets' => array(
         'class_name' => 'DefaultContentDatasetImport',
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Default Datasets'),
       ),
-      'dkan_fixtures_default_resources' => array(
+      'dkan_default_content_resources' => array(
         'class_name' => 'DefaultContentResourceImport',
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Default Resources'),
       ),
-      'dkan_fixtures_default_groups' => array(
+      'dkan_default_content_groups' => array(
         'class_name' => 'DefaultContentGroupImport',
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Default Groups'),
       ),
-      'dkan_fixtures_default_visualization_entities' => array(
+      'dkan_default_content_visualization_entities' => array(
         'class_name' => 'DefaultContentVisualizationEntityImport',
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Default Visualization Entities'),
       ),
-      'dkan_fixtures_default_data_stories' => array(
+      'dkan_default_content_data_stories' => array(
         'class_name' => 'DefaultContentDataStoriesImport',
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Default Data Stories'),
       ),
-      'dkan_fixtures_default_data_dashboards' => array(
+      'dkan_default_content_data_dashboards' => array(
         'class_name' => 'DefaultContentDataDashboardsImport',
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Default Data Dashboards'),
       ),
-      'dkan_fixtures_default_pages' => array(
+      'dkan_default_content_pages' => array(
         'class_name' => 'DefaultContentPagesImport',
         'group_name' => 'dkan_fixtures',
         'title' => t('DKAN Default Pages'),
@@ -56,8 +56,8 @@ function dkan_fixtures_default_migrate_api() {
 /**
  * Implements hook_dkan_fixtures_register().
  */
-function dkan_fixtures_default_dkan_fixtures_register() {
-  return 'dkan_fixtures_default';
+function dkan_default_content_dkan_fixtures_register() {
+  return 'dkan_default_content';
 }
 
 
@@ -71,7 +71,7 @@ class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
-      $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+      $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
       $arguments['list_url'] = 'package_list.json';
       $arguments['item_url'] = 'package_show?id=:id.json';
     }
@@ -109,8 +109,8 @@ class DefaultContentResourceImport extends MigrateCkanResourceImport {
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
-      $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
-      $arguments['list_url'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/' . 'resource_list.json';
+      $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
+      $arguments['list_url'] = drupal_get_path('module', 'dkan_default_content') . '/data/' . 'resource_list.json';
       $arguments['item_url'] = 'resource_show?id=:id.json';
     }
     parent::__construct($arguments);
@@ -139,7 +139,7 @@ class DefaultContentGroupImport extends MigrateCkanGroupImport {
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
-      $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+      $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
       $arguments['list_url'] = 'group_list.json';
       $arguments['item_url'] = 'group_show?id=:id.json';
     }
@@ -158,7 +158,7 @@ class DefaultContentVisualizationEntityImport extends Migration {
   public function __construct($arguments) {
     parent::__construct($arguments);
 
-    $this->endpoint = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+    $this->endpoint = drupal_get_path('module', 'dkan_default_content') . '/data/';
     $list_url = $this->endpoint . 'visualization_entity_list.json';
     $item_url = $this->endpoint . 'visualization_entity_show?id=:id.json';
 
@@ -274,7 +274,7 @@ class DefaultContentPanelizedNodesImport extends Migration {
    */
   public function __construct($arguments) {
 
-    $this->endpoint = isset($arguments['endpoint']) ? $arguments['endpoint'] : drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+    $this->endpoint = isset($arguments['endpoint']) ? $arguments['endpoint'] : drupal_get_path('module', 'dkan_default_content') . '/data/';
     $list_url = isset($arguments['list_url']) ? $arguments['list_url'] : $this->endpoint . 'panelized_node_list.json';
     $item_url = isset($arguments['item_url']) ? $arguments['item_url'] : $this->endpoint . 'panelized_node_item.json';
 
@@ -536,7 +536,7 @@ class DefaultContentDataDashboardsImport extends DefaultContentPanelizedNodesImp
    * __construct().
    */
   public function __construct($arguments) {
-    $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+    $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
     $arguments['list_url'] = $arguments['endpoint'] . 'data_dashboard_list.json';
     $arguments['item_url'] = $arguments['endpoint'] . 'data_dashboard_show?id=:id.json';
     $arguments['content_type'] = 'data_dashboard';
@@ -554,7 +554,7 @@ class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport
    * __construct().
    */
   public function __construct($arguments) {
-    $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+    $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
     $arguments['list_url'] = $arguments['endpoint'] . 'dkan_data_story_list.json';
     $arguments['item_url'] = $arguments['endpoint'] . 'dkan_data_story_show?id=:id.json';
     $arguments['content_type'] = 'dkan_data_story';
@@ -592,7 +592,7 @@ class DefaultContentPagesImport extends DefaultContentPanelizedNodesImport {
    * __construct().
    */
   public function __construct($arguments) {
-    $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures_default') . '/data/';
+    $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
     $arguments['list_url'] = $arguments['endpoint'] . 'page_list.json';
     $arguments['item_url'] = $arguments['endpoint'] . 'page_show?id=:id.json';
     $arguments['content_type'] = 'page';
@@ -633,13 +633,13 @@ class DefaultContentPagesImport extends DefaultContentPanelizedNodesImport {
 /**
  * Deregisters migrations.
  */
-function dkan_fixtures_default_migrations_disable() {
-  Migration::deregisterMigration('dkan_fixtures_default_datasets');
-  Migration::deregisterMigration('dkan_fixtures_default_resources');
-  Migration::deregisterMigration('dkan_fixtures_default_groups');
-  Migration::deregisterMigration('dkan_fixtures_default_visualization_entities');
-  Migration::deregisterMigration('dkan_fixtures_default_data_stories');
-  Migration::deregisterMigration('dkan_fixtures_default_data_dashboards');
+function dkan_default_content_migrations_disable() {
+  Migration::deregisterMigration('dkan_default_content_datasets');
+  Migration::deregisterMigration('dkan_default_content_resources');
+  Migration::deregisterMigration('dkan_default_content_groups');
+  Migration::deregisterMigration('dkan_default_content_visualization_entities');
+  Migration::deregisterMigration('dkan_default_content_data_stories');
+  Migration::deregisterMigration('dkan_default_content_data_dashboards');
 }
 
 

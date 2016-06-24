@@ -1,34 +1,34 @@
 <?php
 /**
  * @file
- * Install file for DKAN Fixtures Default.
+ * Install file for DKAN Default Content.
  */
 
 /**
- * Hook: hook_default_enable().
- * Registers all needed migrations and imports groups, resources and datasets.
+ * Hook: hook_enable().
+ * Registers migrations and imports all default content.
  */
-function dkan_fixtures_default_enable() {
+function dkan_default_content_enable() {
   // Register migrations.
   migrate_static_registration();
 
   // Import Groups.
-  $migration = Migration::getInstance('dkan_fixtures_default_groups');
+  $migration = Migration::getInstance('dkan_default_content_groups');
   $migration->processImport();
   // Import Resources.
-  $migration = Migration::getInstance('dkan_fixtures_default_resources');
+  $migration = Migration::getInstance('dkan_default_content_resources');
   $migration->processImport();
   // Import Datasets.
-  $migration = Migration::getInstance('dkan_fixtures_default_datasets');
+  $migration = Migration::getInstance('dkan_default_content_datasets');
   $migration->processImport();
   // Import Visualization Entities.
-  $migration = Migration::getInstance('dkan_fixtures_default_visualization_entities');
+  $migration = Migration::getInstance('dkan_default_content_visualization_entities');
   $migration->processImport();
   // Import Data Stories
-  $migration = Migration::getInstance('dkan_fixtures_default_data_stories');
+  $migration = Migration::getInstance('dkan_default_content_data_stories');
   $migration->processImport();
   // Import Data Dashboards
-  $migration = Migration::getInstance('dkan_fixtures_default_data_dashboards');
+  $migration = Migration::getInstance('dkan_default_content_data_dashboards');
   $migration->processImport();
   // Import Pages (Homepage + About page).
   import_default_pages();
@@ -44,39 +44,39 @@ function dkan_fixtures_default_enable() {
  */
 function import_default_pages() {
   // Get migration instance.
-  $migration = Migration::getInstance('dkan_fixtures_default_pages');
+  $migration = Migration::getInstance('dkan_default_content_pages');
   // Import pages.
   $migration->processImport();
   // Deregister migration. We don't want users to accidentally rollback the import
   // of the homepage or about page.
-  Migration::deregisterMigration('dkan_fixtures_default_pages');
+  Migration::deregisterMigration('dkan_default_content_pages');
 }
 
 /**
  * Hook: hook_default_disable().
  * Removes all the generated content and disables all enabled migrations.
  */
-function dkan_fixtures_default_disable() {
+function dkan_default_content_disable() {
   // Rollback Data Dashboards.
-  $migration = Migration::getInstance('dkan_fixtures_default_data_dashboards');
+  $migration = Migration::getInstance('dkan_default_content_data_dashboards');
   $migration->processRollback();
   // Rollback Data Stories.
-  $migration = Migration::getInstance('dkan_fixtures_default_data_stories');
+  $migration = Migration::getInstance('dkan_default_content_data_stories');
   $migration->processRollback();
   // Rollback Visualization Entities.
-  $migration = Migration::getInstance('dkan_fixtures_default_visualization_entities');
+  $migration = Migration::getInstance('dkan_default_content_visualization_entities');
   $migration->processRollback();
   // Rollback Datasets.
-  $migration = Migration::getInstance('dkan_fixtures_default_datasets');
+  $migration = Migration::getInstance('dkan_default_content_datasets');
   $migration->processRollback();
   // Rollback Resources.
-  $migration = Migration::getInstance('dkan_fixtures_default_resources');
+  $migration = Migration::getInstance('dkan_default_content_resources');
   $migration->processRollback();
   // Rollback Groups.
-  $migration = Migration::getInstance('dkan_fixtures_default_groups');
+  $migration = Migration::getInstance('dkan_default_content_groups');
   $migration->processRollback();
   // Disable Mirations.
-  dkan_fixtures_default_migrations_disable();
+  dkan_default_content_migrations_disable();
 
   // Clear message queue.
   drupal_get_messages('status', TRUE);
