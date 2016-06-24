@@ -58,7 +58,7 @@ Feature: Homepage
   @api
   Scenario: All default content should be removed if the module is disabled
     Given I am logged in as a user with the "administrator" role
-    When I disable the module "dkan_fixtures_default"
+    When I disable the module "dkan_default_content"
     And I am on "/admin/content"
     # I should not see the default groups.
     Then I should not see "Committee on International Affairs"
@@ -104,4 +104,4 @@ Feature: Homepage
   @api
   Scenario: Enable the default content module back
     Given I am logged in as a user with the "administrator" role
-    Then I enable the module "dkan_fixtures_default"
+    Then I enable the module "dkan_default_content"
