@@ -332,6 +332,7 @@ function convert_homepage($homepage_path) {
       $homepage_node->panelizer['default']->entity_id = $homepage_node->nid;
       $homepage_node->panelizer['default']->display_is_modified = TRUE;
       $homepage_node->panelizer['default']->entity_type = 'node';
+      $homepage_node->panelizer['default']->pipeline = 'ipe';
       $homepage_node->panelizer['default']->link_to_entity = $homepage_node->nid;
       node_save($homepage_node);
 
