@@ -1,4 +1,4 @@
-Feature: Harvest
+Feature: Dkan Harvest
 
   @api @javascript
   Scenario: As an administrator I should be able to add a harvest source.
@@ -39,9 +39,9 @@ Feature: Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                    | author        | published |
-    | Source one | source_one   | https://data.mo.gov/data.json | Administrator | Yes       |
-    | Source two | source_two   | https://data.mo.gov/data.json | Administrator | No        |
+    | title      | machine name | source uri                        | type               | author        | published |
+    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source two | source_two   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | No        |
   And pages:
     | name               | url                            |
     | Harvest Dashboard  | /admin/dkan/harvest/dashboard  |
@@ -50,3 +50,26 @@ Feature: Harvest
   And I am on the "Harvest Dashboard" page
   Then I should see the text "Source one"
   And I should not see the text "Source two"
+
+  @api @here
+  Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
+  Given users:
+    | name             | mail                   | roles           |
+    | Administrator    | admin@fakeemail.com    | administrator   |
+  And harvest sources:
+    | title      | machine name | source uri                        | type               | author        | published |
+    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+  And I am logged in as a "<role>"
+  And I am on the "Source one" page
+  Given The "source_one" source is harvested
+  Then I should see the link "Event Log"
+  When I click "Event Log"
+  Then The page status should be 'ok'
+  And I should see a harvest event log table
+  And the harvest event log table should have 1 row
+
+  Examples:
+  | role               |
+  | administrator      |
+  | anonymous user     |
+  | authenticated user |
