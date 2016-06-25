@@ -30,26 +30,26 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -49,
     'customized' => 1,
   );
-  // Exported menu link: menu-command-center-menu_add-group:node/add/group.
-  $menu_links['menu-command-center-menu_add-group:node/add/group'] = array(
+  // Exported menu link: menu-command-center-menu_chart:admin/structure/entity-type/visualization/ve_chart/add.
+  $menu_links['menu-command-center-menu_chart:admin/structure/entity-type/visualization/ve_chart/add'] = array(
     'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'node/add/group',
-    'router_path' => 'node/add/group',
-    'link_title' => 'Group',
+    'link_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
+    'router_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
+    'link_title' => 'Chart',
     'options' => array(
       'attributes' => array(
         'title' => '',
       ),
-      'identifier' => 'menu-command-center-menu_add-group:node/add/group',
+      'identifier' => 'menu-command-center-menu_chart:admin/structure/entity-type/visualization/ve_chart/add',
     ),
     'module' => 'menu',
     'hidden' => 0,
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -48,
+    'weight' => -50,
     'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
+    'parent_identifier' => 'menu-command-center-menu_visualization:admin/structure/entity-type/visualization/ve_chart/add',
   );
   // Exported menu link: menu-command-center-menu_charts:admin/structure/entity-type/visualization/ve_chart.
   $menu_links['menu-command-center-menu_charts:admin/structure/entity-type/visualization/ve_chart'] = array(
@@ -197,7 +197,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
-  // Exported menu link: menu-command-center-menu_data-story:node/add/dkan-data-story
+  // Exported menu link: menu-command-center-menu_data-story:node/add/dkan-data-story.
   $menu_links['menu-command-center-menu_data-story:node/add/dkan-data-story'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'node/add/dkan-data-story',
@@ -259,6 +259,27 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -47,
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
+  );
+  // Exported menu link: menu-command-center-menu_group:node/add/group.
+  $menu_links['menu-command-center-menu_group:node/add/group'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'node/add/group',
+    'router_path' => 'node/add/group',
+    'link_title' => 'Group',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_group:node/add/group',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -48,
+    'customized' => 1,
+    'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
   );
   // Exported menu link: menu-command-center-menu_manage-users:admin/people.
   $menu_links['menu-command-center-menu_manage-users:admin/people'] = array(
@@ -443,6 +464,27 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
+  // Exported menu link: menu-command-center-menu_visualization:admin/structure/entity-type/visualization/ve_chart/add.
+  $menu_links['menu-command-center-menu_visualization:admin/structure/entity-type/visualization/ve_chart/add'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
+    'router_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
+    'link_title' => 'Visualization',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_visualization:admin/structure/entity-type/visualization/ve_chart/add',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 1,
+    'expanded' => 0,
+    'weight' => -45,
+    'customized' => 1,
+    'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
+  );
   // Exported menu link: menu-command-center-menu_visualizations:admin/structure/entity-type/visualization.
   $menu_links['menu-command-center-menu_visualizations:admin/structure/entity-type/visualization'] = array(
     'menu_name' => 'menu-command-center-menu',
@@ -463,41 +505,21 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -46,
     'customized' => 1,
   );
-  // Exported menu link: menu-command-center-menu_visualizations:admin/structure/entity-type/visualization/ve_chart/add.
-  $menu_links['menu-command-center-menu_visualizations:admin/structure/entity-type/visualization/ve_chart/add'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
-    'router_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
-    'link_title' => 'Visualization',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-      'identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization/ve_chart/add',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 1,
-    'expanded' => 0,
-    'weight' => -45,
-    'customized' => 1,
-    'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
-  );
 
   // Translatables
   // Included for use with string extractors like potx.
   t('Add content');
-  t('Dataset');
-  t('Group');
+  t('Chart');
   t('Charts');
   t('Colorizer');
   t('Content');
   t('Create user');
   t('Data Dashboard');
   t('Data Previews');
+  t('Data Story');
   t('Dataset');
   t('Fonts');
+  t('Group');
   t('Manage Users');
   t('Menus');
   t('My Workbench');
@@ -507,6 +529,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Site Information');
   t('Taxonomy');
   t('Theme Settings');
+  t('Visualization');
   t('Visualizations');
 
   return $menu_links;
