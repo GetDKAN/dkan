@@ -6,6 +6,7 @@ default:
           - Drupal\DrupalExtension\Context\MinkContext
           - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MessageContext
+          - Drupal\DrupalExtension\Context\MarkupContext
           - Drupal\DKANExtension\Context\DKANContext
           - Drupal\DKANExtension\Context\MailContext
           - Drupal\DKANExtension\Context\PageContext
@@ -64,6 +65,8 @@ default:
         left_sidebar: '.panel-col-first'
         dataset title: '.pane-node .pane-title'
         dataset resource list: '#data-and-resources'
+        dataset body: '.field-name-body'
+        dataset edit body: '#edit-body'
         resource title: '.pane-node .pane-title'
         resource groups: '#edit-groups'
         search_area: '.panel-col-last'

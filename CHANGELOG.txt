@@ -5,6 +5,8 @@
 - Upgrade Views to 7.14
 - Upgrade Drupal core to 7.44
 - Add <br><h2><h3><center><iframe> to allowed html tags
+- Renamed the default HTML text format to 'Markdown HTML'
+- Improved markdown text editor toolbar
 - Stories main menu link removed from stories view
 - Groups main menu link removed from page manager groups page config
 - Main menu links added on install function rather than through features
