@@ -72,6 +72,27 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
   );
+  // Exported menu link: menu-command-center-menu_charts:admin/structure/entity-type/visualization/ve_chart/add.
+  $menu_links['menu-command-center-menu_charts:admin/structure/entity-type/visualization/ve_chart/add'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
+    'router_path' => 'admin/structure/entity-type/visualization/ve_chart/add',
+    'link_title' => 'Chart',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_charts:admin/structure/entity-type/visualization/ve_chart/add',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -50,
+    'customized' => 1,
+    'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization/ve_chart/add',
+  );
   // Exported menu link: menu-command-center-menu_colorizer:admin/appearance/colorizer.
   $menu_links['menu-command-center-menu_colorizer:admin/appearance/colorizer'] = array(
     'menu_name' => 'menu-command-center-menu',

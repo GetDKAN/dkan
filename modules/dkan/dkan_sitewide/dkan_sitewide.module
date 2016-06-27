@@ -282,3 +282,13 @@ function dkan_sitewide_module_implements_alter(&$implementations, $hook) {
     $implementations['dkan_sitewide'] = $group;
   }
 }
+
+/**
+ * Disable panel page.
+ */
+function update_panel_page_status($page_name, $status = FALSE) {
+  $page = page_manager_get_page_cache('page-' . $page_name);
+  $function = ctools_plugin_get_function($page->subtask, "enable callback");
+  $function($page, $status);
+  menu_rebuild();
+}
