@@ -27,7 +27,6 @@ features[page_manager_handlers][] = node_view_panel_context_2
 features[page_manager_handlers][] = node_view_panel_context_3
 features[page_manager_handlers][] = user_view_panel_context
 features[page_manager_pages][] = datasets
-features[page_manager_pages][] = front_page
 features[page_manager_pages][] = groups
 features[path_breadcrumbs][] = dataset
 features[path_breadcrumbs][] = dataset_clone

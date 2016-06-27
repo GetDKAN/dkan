@@ -23,26 +23,26 @@ function dkan_install_tasks() {
  */
 function dkan_additional_setup() {
   return array(
-      'operations' => array(
-          array('dkan_theme_config', array()),
-          array('dkan_change_block_titles', array()),
-          array('dkan_markdown_setup', array()),
-          array('dkan_enable_optional_module', array('dkan_permissions')),
-          array('dkan_enable_optional_module', array('dkan_default_topics')),
-          array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
-          array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
-          array('dkan_revert_feature', array('dkan_dataset_groups_perms', array('og_features_permission'))),
-          array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
-          array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
-          array('dkan_revert_feature', array('dkan_sitewide_menu', array('custom_menu', 'menu_links'))),
-          array('dkan_add_default_menu_links', array()),
-          array('dkan_build_menu_links', array()),
-          array('dkan_flush_image_styles', array()),
-          array('dkan_colorizer_reset', array()),
-          array('dkan_misc_variables_set', array()),
-          array('dkan_install_default_content', array()),
-          array('dkan_set_adminrole', array()),
-      ),
+    'operations' => array(
+      array('dkan_theme_config', array()),
+      array('dkan_change_block_titles', array()),
+      array('dkan_markdown_setup', array()),
+      array('dkan_enable_optional_module', array('dkan_permissions')),
+      array('dkan_enable_optional_module', array('dkan_default_topics')),
+      array('dkan_revert_feature', array('dkan_dataset_content_types', array('field_base', 'field_instance'))),
+      array('dkan_revert_feature', array('dkan_dataset_groups', array('field_base'))),
+      array('dkan_revert_feature', array('dkan_dataset_groups_perms', array('og_features_permission'))),
+      array('dkan_revert_feature', array('dkan_permissions', array('roles_permissions'))),
+      array('dkan_revert_feature', array('dkan_sitewide', array('variable'))),
+      array('dkan_revert_feature', array('dkan_sitewide_menu', array('custom_menu', 'menu_links'))),
+      array('dkan_add_default_menu_links', array()),
+      array('dkan_build_menu_links', array()),
+      array('dkan_flush_image_styles', array()),
+      array('dkan_colorizer_reset', array()),
+      array('dkan_misc_variables_set', array()),
+      array('dkan_install_default_content', array()),
+      array('dkan_set_adminrole', array()),
+    ),
   );
 }
 
@@ -137,7 +137,7 @@ function dkan_add_default_menu_links(&$context) {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -49,
+    'weight' => 0,
     'customized' => 1,
   );
   // Exported menu link: main-menu_dataset:search/type/dataset
@@ -157,11 +157,75 @@ function dkan_add_default_menu_links(&$context) {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -47,
+    'weight' => -1,
+    'customized' => 1,
+  );
+  // To Do: Add 'Dashboards' link to main menu when new default content is deployed.
+  // Exported menu link: main-menu_dataset:search/type/data_dashboard
+  // $menu_links['main-menu_dashboard:search/type/data_dashboard'] = array(
+  //   'menu_name' => 'main-menu',
+  //   'link_path' => 'search/type/data_dashboard',
+  //   'router_path' => 'search/type/data_dashboard',
+  //   'link_title' => 'Dashboards',
+  //   'options' => array(
+  //     'attributes' => array(
+  //       'title' => '',
+  //     ),
+  //     'identifier' => 'main-menu_dashboard:search/type/data_dashboard',
+  //   ),
+  //   'module' => 'menu',
+  //   'hidden' => 0,
+  //   'external' => 0,
+  //   'has_children' => 0,
+  //   'expanded' => 0,
+  //   'weight' => 4,
+  //   'customized' => 1,
+  // );
+  // Exported menu link: main-menu_stories:stories
+  $menu_links['main-menu_stories:stories'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'stories',
+    'router_path' => 'stories',
+    'link_title' => 'Stories',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'main-menu_stories:stories',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => 3,
+    'customized' => 1,
+  );
+  // Exported menu link: main-menu_groups:groups
+  $menu_links['main-menu_groups:groups'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'groups',
+    'router_path' => 'groups',
+    'link_title' => 'Groups',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'main-menu_groups:groups',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => 2,
     'customized' => 1,
   );
   t('About');
   t('Datasets');
+  //t('Dashboards');
+  t('Stories');
+  t('Groups');
 
   foreach ($menu_links as $menu_link) {
     menu_link_save($menu_link);
@@ -295,6 +359,21 @@ function dkan_delete_markdown_buttons(&$context) {
     ->condition('eid', $eid)
     ->execute();
 
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Insert a definition list')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Format selected text as code')
+    ->condition('eid', $eid)
+    ->execute();
+
+  db_delete('bueditor_buttons')
+    ->condition('title', 'Format selected text as a code block')
+    ->condition('eid', $eid)
+    ->execute();
+
   // Update markdown linebreak button with html.
   db_update('bueditor_buttons')
     ->fields(array('content' => '<br>'))
@@ -303,3 +382,13 @@ function dkan_delete_markdown_buttons(&$context) {
     ->execute();
 }
 
+/**
+ * The groups view in og_extras creates a menu item even when the view is disabled.
+ * This will delete the extra menu item until the og_extras is removed from the code base.
+ *
+ * @param $context
+ */
+function dkan_group_link_delete(&$context) {
+  $context['message'] = t('Removing og_extra groups link');
+  db_query('DELETE FROM {menu_links} WHERE link_path = :link_path LIMIT 1', array(':link_path' => 'groups'));
+}
