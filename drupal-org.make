@@ -66,8 +66,8 @@ projects:
     version: 3.0-rc5
   bueditor:
     version: '1.8'
-    patch:
-      1931862: http://drupal.org/files/dont-render-bueditor-for-plain-text-textareas.patch
+  bueditor_plus:
+    version: '1.4'
   colorizer:
     version: '1.10'
     patch:
