@@ -51,7 +51,7 @@ Feature: Dkan Harvest
   Then I should see the text "Source one"
   And I should not see the text "Source two"
 
-  @api @here
+  @api
   Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
   Given users:
     | name             | mail                   | roles           |
