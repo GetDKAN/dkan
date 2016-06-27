@@ -23,11 +23,19 @@ commands:
     # Note that we tried using --overwrite, but that seems to delete the entire modules/dkan folder which includes both checked-in modules and modules from make.
     # So, we delete the specific folders.
     cmd: |
-      rm -rf docroot/profiles/dkan/modules/dkan/dkan_dataset ;
-      rm -rf docroot/profiles/dkan/modules/dkan/dkan_datastore ;
-      rm -rf docroot/profiles/dkan/modules/contrib ;
-      echo "removed dkan/modules folders created by make and running a fresh drush make."
-      ahoy drush -y make --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --working-copy docroot/profiles/dkan
+      ARGS="{{args}}"
+      if [ -z "$ARGS" ]; then
+        rm -rf docroot/profiles/dkan/modules/dkan/dkan_dataset ;
+        rm -rf docroot/profiles/dkan/modules/dkan/dkan_datastore ;
+        rm -rf docroot/profiles/dkan/modules/dkan/dkan_workflow ;
+        rm -rf docroot/profiles/dkan/modules/contrib ;
+        ARGS=''
+        echo "removed dkan/modules folders created by make and running a fresh drush make."
+      else
+        ARGS="--projects=$ARGS"
+        echo "Running drush make for the following modules: $ARGS."
+      fi
+      ahoy drush -y make --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --working-copy docroot/profiles/dkan $ARGS
 
   reinstall:
     usage: Reinstall the dkan install profile (db only).
