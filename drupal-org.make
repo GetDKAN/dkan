@@ -2,11 +2,10 @@
 api: '2'
 core: 7.x
 includes:
-- https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
+- https://raw.githubusercontent.com/NuCivic/dkan_dataset/dataset-dev-integration/dkan_dataset.make
 - https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 - https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make
-- https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
-- https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
+- https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-alpha5/visualization_entity.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
 - modules/dkan/dkan_topics/dkan_topics.make
 projects:
@@ -44,7 +43,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_dataset.git
-      branch: 7.x-1.x
+      branch: dataset-dev-integration
   dkan_datastore:
     subdir: dkan
     download:
@@ -61,13 +60,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      branch: master
-    type: module
-  visualization_entity_charts:
-    download:
-      type: git
-      url: https://github.com/NuCivic/visualization_entity_charts.git
-      branch: master
+      tag: 7.x-1.0-alpha5
     type: module
   admin_menu:
     version: 3.0-rc5
