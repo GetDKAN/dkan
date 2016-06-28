@@ -59,6 +59,9 @@ class HarvestSourceContext extends RawDKANEntityContext {
     // Harvest Migration of the test data.
     dkan_harvest_migrate_sources(array($harvest_source));
 
+    // Make sure that we process any index items if they were added.
+    $this->searchContext->process();
+
     // Back global user to the original user. Probably an anonymous.
     $user = $global_user;
   }
