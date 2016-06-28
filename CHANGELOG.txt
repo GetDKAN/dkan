@@ -15,6 +15,7 @@
 - Moved Nuboot Radix theme into core build.
 - Change admin theme setting to use default theme rather than nuboot radix
 - Page content type added to panelizer and now defined in features, with in-place editor enabled for page content.
+- Page link added to the command center menu.
 
 7.x-1.12.x
 --------------------------
