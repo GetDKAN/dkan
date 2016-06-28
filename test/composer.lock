@@ -909,7 +909,7 @@
         },
         {
             "name": "nucivic/dkanextension",
-            "version": "dev-master",
+            "version": "dev-civic-2217-markdown",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
