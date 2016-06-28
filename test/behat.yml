@@ -23,6 +23,9 @@ default:
                   form_button: 'edit-submit'
                   results_css: '.view-dkan-datasets'
                   result_item_css: '.views-row'
+                harvest_source:
+                  results_css: '.view-dkan-harvest-source-search'
+                  result_item_css: '.views-row'
           - Drupal\DKANExtension\Context\ResourceContext
           - Drupal\DKANExtension\Context\ServicesContext
           - Drupal\DKANExtension\Context\DatastoreContext

@@ -73,3 +73,22 @@ Feature: Dkan Harvest
   | administrator      |
   | anonymous user     |
   | authenticated user |
+
+  @api
+  Scenario Outline: As a user I should see a list of imported datasets on the Harvest Source page.
+  Given users:
+    | name             | mail                   | roles           |
+    | Administrator    | admin@fakeemail.com    | administrator   |
+  And harvest sources:
+    | title      | machine name | source uri                        | type               | author        | published |
+    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+  And The "source_one" source is harvested
+  And I am logged in as a "<role>"
+  And I am on the "Source one" page
+  Then I should see 4 search results shown on the page in the 'harvest_source' search form
+
+  Examples:
+  | role               |
+  | administrator      |
+  | anonymous user     |
+  | authenticated user |
