@@ -23,8 +23,7 @@ h1,h2,h3,h4 {
 }
 
 .pane-dkan-sitewide-demo-front-dkan-demo-front .pane-content,
-#featured .tint,
-.panel-top .tint {
+.tint {
   background-color: @top_rgb;
 }
 
@@ -207,19 +206,16 @@ div.autocomplete-deluxe-multiple,
   background:@bottom;
 }
 
-.radix-layouts-sidebar .pane-title {
-  background: @toolbarborder;
-  color: @title;
-}
-
 .radix-layouts-sidebar div[class*="pane-facetapi"] .pane-title,
 .radix-layouts-sidebar .pane-title.ctools-collapsible-handle {
   background: @toolbarbtn;
 }
 
+.radix-layouts-sidebar .pane-title,
 .radix-layouts-sidebar div[class*="pane-facetapi"] .facetapi-active {
   background: @toolbarbtn;
-  color: @toolbarborder;
+  border-color: @toolbarbtn;
+  color: @bg;
 }
 
 .horizontal-tabs ul.horizontal-tabs-list .selected strong {
