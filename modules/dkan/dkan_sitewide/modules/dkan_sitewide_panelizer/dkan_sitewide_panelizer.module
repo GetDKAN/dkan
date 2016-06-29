@@ -1,6 +1,12 @@
 <?php
 /**
  * @file
+ * Code for the DKAN Sitewide Panelizer feature.
+ */
+
+include_once 'dkan_sitewide_panelizer.features.inc';
+/**
+ * @file
  * Module core functions.
  */
 
