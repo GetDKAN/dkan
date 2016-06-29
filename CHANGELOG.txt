@@ -14,7 +14,7 @@
 - Removed delta module.
 - Moved Nuboot Radix theme into core build.
 - Change admin theme setting to use default theme rather than nuboot radix
-- Panelize page content.
+- Page content type added to panelizer and now defined in features, with in-place editor enabled for page content.
 
 7.x-1.12.x
 --------------------------
