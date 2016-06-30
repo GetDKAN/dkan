@@ -167,15 +167,6 @@ install_dkan() {
   fi
 }
 
-create_test_users() {
-  ahoy drush "user-create sitemanager --mail=sitemanager@example.com --password=sitemanager"
-  ahoy drush "user-add-role 'site manager' --name=sitemanager"
-  ahoy drush "user-create editor --mail=editor@example.com --password=editor"
-  ahoy drush "user-add-role editor --name=editor"
-  ahoy drush "user-create creator --mail=creator@example.com --password=creator"
-  ahoy drush "user-add-role 'content creator' --name=creator"
-}
-
 # Make sure that a parameter was set.
 if [ -z $1 ]; then
   error "Missing the dkan module name or 'dkan' if using dkan core."
@@ -202,8 +193,8 @@ for i in "$@"; do
     --yes)
             AUTO_CONFIRM="echo -ne 'y\n' | "
             ;;
-    --test-users)
-            TEST_USERS=true
+    --qa-users)
+            QA_USERS=true
             ;;
     --no)
             AUTO_CONFIRM="echo -ne 'n\n' | "
@@ -266,8 +257,8 @@ if [ "$DB_URL" ]; then
   alert "Building and installing dkan..."
   install_dkan $DB_URL
 
-  if [ "$TEST_USERS" ]; then
-    create_test_users
+  if [ "$QA_USERS" ]; then
+    ahoy dkan create-qa-users
   fi
 
 
