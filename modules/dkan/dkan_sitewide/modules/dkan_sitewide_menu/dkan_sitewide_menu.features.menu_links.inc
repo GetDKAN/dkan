@@ -151,7 +151,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -46,
+    'weight' => -45,
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
   );
@@ -193,7 +193,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -47,
+    'weight' => -46,
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
   );
@@ -318,6 +318,27 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'expanded' => 0,
     'weight' => -50,
     'customized' => 0,
+  );
+  // Exported menu link: menu-command-center-menu_page:node/add/page.
+  $menu_links['menu-command-center-menu_page:node/add/page'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'node/add/page',
+    'router_path' => 'node/add/page',
+    'link_title' => 'Page',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_page:node/add/page',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -47,
+    'customized' => 1,
+    'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
   );
   // Exported menu link: menu-command-center-menu_people:admin/people.
   $menu_links['menu-command-center-menu_people:admin/people'] = array(
@@ -460,7 +481,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 1,
     'expanded' => 0,
-    'weight' => -45,
+    'weight' => -44,
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
   );
@@ -502,6 +523,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Manage Users');
   t('Menus');
   t('My Workbench');
+  t('Page');
   t('People');
   t('Resource');
   t('Site Configuration');
