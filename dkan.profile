@@ -45,7 +45,6 @@ function dkan_additional_setup() {
       array('dkan_colorizer_reset', array()),
       array('dkan_misc_variables_set', array()),
       array('dkan_group_link_delete', array()),
-      array('dkan_install_default_content', array()),
       array('dkan_set_adminrole', array()),
     ),
   );
