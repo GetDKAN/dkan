@@ -5,8 +5,7 @@ includes:
 - https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 - https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 - https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make
-- https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make
-- https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make
+- https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
 - modules/dkan/dkan_topics/dkan_topics.make
 projects:
@@ -61,7 +60,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0-alpha5
+      tag: 7.x-1.0-beta1
     type: module
   admin_menu:
     version: 3.0-rc5
