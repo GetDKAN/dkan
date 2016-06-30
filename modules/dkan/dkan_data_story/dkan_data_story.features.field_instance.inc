@@ -10,7 +10,7 @@
 function dkan_data_story_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-dkan_data_story-body'
+  // Exported field_instance: 'node-dkan_data_story-body'.
   $field_instances['node-dkan_data_story-body'] = array(
     'bundle' => 'dkan_data_story',
     'default_value' => NULL,
@@ -63,7 +63,7 @@ function dkan_data_story_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dkan_data_story-field_image'
+  // Exported field_instance: 'node-dkan_data_story-field_image'.
   $field_instances['node-dkan_data_story-field_image'] = array(
     'bundle' => 'dkan_data_story',
     'deleted' => 0,
@@ -159,7 +159,7 @@ function dkan_data_story_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dkan_data_story-field_tags'
+  // Exported field_instance: 'node-dkan_data_story-field_tags'.
   $field_instances['node-dkan_data_story-field_tags'] = array(
     'bundle' => 'dkan_data_story',
     'default_value' => NULL,
