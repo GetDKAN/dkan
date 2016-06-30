@@ -38,8 +38,8 @@ commands:
           exit 1;
         };
       }
-      ahoy cmd-proxy "cd dkan/themes/nuboot_radix \&\& npm install --unsafe-perm"
-      ahoy cmd-proxy "cd dkan/themes/nuboot_radix \&\& bower install -allow-root"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && npm install --unsafe-perm"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && bower install -allow-root"
 
   setup:
     usage: Base setup for theme development
@@ -49,4 +49,4 @@ commands:
   watch:
     usage: 'compile and watch for changes'
     cmd: |
-      ahoy cmd-proxy "cd dkan/themes/nuboot_radix \&\& gulp"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && gulp"
