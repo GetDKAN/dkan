@@ -41,9 +41,9 @@ commands:
     usage: Destroy all the docker compose containers. (use before deleting folder)
   exec:
     cmd: |
-      all_args=$(echo {{args}})
-      first_arg=$(echo {{args}} | sed  's/\([[:alnum:]]*\ \).*/\1/')
-      rest_args=$(echo {{args}} | sed  's/\([[:alnum:]]*\ \)//')
+      all_args=$(echo "{{args}}")
+      first_arg=$(echo "{{args}}" | sed  's/\([[:alnum:]]*\ \).*/\1/')
+      rest_args=$(echo "{{args}}" | sed  's/\([[:alnum:]]*\ \)//')
       case $first_arg in
         *web*|*db*|*memcached*|*cli*|*browser*|*solr*)
           container=$first_arg
@@ -97,7 +97,7 @@ commands:
       DANGLING=`docker images -f "dangling=true" -q`
       if [ ! -z "$EXITED" ]
       then
-        docker rm -v $EXITED  
+        docker rm -v $EXITED
       fi
       if [ ! -z "$DANGLING" ]
       then
