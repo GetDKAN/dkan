@@ -24,12 +24,9 @@ Feature: Markdown Editor
     And I should see the button "Make selected text into a header (Alt + H)" in the "dataset edit body"
     And I should see the button "Italics: Make selected text emphasized (Alt + I)" in the "dataset edit body"
     And I should see the button "Bold: Make selected text strong (Alt + B)" in the "dataset edit body"
-    And I should see the button "Format selected text as code" in the "dataset edit body"
-    And I should see the button "Format selected text as a code block" in the "dataset edit body"
     And I should see the button "Make selected text into a block quote (Alt + Q)" in the "dataset edit body"
     And I should see the button "Make selected text into an ordered list (numbered) (Alt + O)" in the "dataset edit body"
     And I should see the button "Make selected text into an unordered list (bullets) (Alt + N)" in the "dataset edit body"
-    And I should see the button "Insert a definition list" in the "dataset edit body"
     And I should see the button "Make text into an autolink (turns URLs in links, turns words into section identifiers for navigating the document) (Alt + A)" in the "dataset edit body"
     And I should see the button "Make text into a link (turns text into a link with more options) (Alt + L)" in the "dataset edit body"
     And I should see the button "Insert an image (Alt + M)" in the "dataset edit body"
@@ -41,6 +38,9 @@ Feature: Markdown Editor
     And I should not see the button "Insert a footnote" in the "dataset edit body"
     And I should not see the button "Insert a horizontal ruler (horizontal line)" in the "dataset edit body"
     And I should not see the button "Teaser break" in the "dataset edit body"
+    And I should not see the button "Insert a definition list" in the "dataset edit body"
+    And I should not see the button "Format selected text as code" in the "dataset edit body"
+    And I should not see the button "Format selected text as a code block" in the "dataset edit body"
 
   Scenario: Seeing 'Markdown' text format and toolbar as an Editor
     Given I am logged in as "Jaz"
