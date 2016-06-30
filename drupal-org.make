@@ -44,13 +44,13 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_dataset.git
-      branch: 7.x-1.x
+      branch: safe_fme
   dkan_datastore:
     subdir: dkan
     download:
       type: git
       url: https://github.com/NuCivic/dkan_datastore.git
-      branch: 7.x-1.x
+      branch: safe_fme
   dkan_workflow:
     subdir: dkan
     download:
