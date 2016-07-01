@@ -19,11 +19,14 @@
 
 7.x-1.12.x
 --------------------------
+- Open Data Schema Map update: improves performance of package_show endpoint
 - Point to new release of visualization entity, which cleans up some make files and brings visualization_entity_charts into the same project repository.
 - Fix editor permissions to allow access to visualizations list from admin menu
 - Upgrade Views to 7.14
 - Upgrade Drupal core to 7.44
 - Add <br><h2><h3><center><iframe> to allowed html tags
+- Renamed the default HTML text format to 'Markdown HTML'
+- Improved markdown text editor toolbar
 - Stories main menu link removed from stories view
 - Groups main menu link removed from page manager groups page config
 - Main menu links added on install function rather than through features
