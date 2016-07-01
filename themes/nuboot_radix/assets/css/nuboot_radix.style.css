@@ -9201,6 +9201,16 @@ div.horizontal-tabs {
   padding: 0;
   margin: 0; }
 
+.page-node-add-dataset .main .radix-layouts-sidebar .panel-pane,
+.page-node-add-resource .main .radix-layouts-sidebar .panel-pane {
+  margin-bottom: 20px; }
+
+@media all and (max-width: 599px) {
+  .page-node-add-dataset .stages li .highlight,
+  .page-node-add-resource .stages li .highlight {
+    font-size: 12px;
+    line-height: 1.15em; } }
+
 .node-resource-form .field-name-field-upload .form-type-managed-file {
   display: table; }
   .node-resource-form .field-name-field-upload .form-type-managed-file .file-widget {

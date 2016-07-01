@@ -204,6 +204,15 @@ div.horizontal-tabs {
     padding: 0;
     margin: 0;
   }
+  .main .radix-layouts-sidebar .panel-pane {
+    margin-bottom: 20px;
+  }
+  @media all and (max-width:599px) {
+    .stages li .highlight {
+      font-size: 12px;
+      line-height: 1.15em;
+    }
+  }
 }
 
 // file_resup tweaks to display on top of recline
