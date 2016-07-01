@@ -39,8 +39,8 @@ commands:
         };
       }
       THEME=`ahoy drush scr dkan/.ahoy/.scripts/active_theme_path.php`
-      ahoy cmd-proxy "cd $THEME \&\& npm install --unsafe-perm"
-      ahoy cmd-proxy "cd $THEME \&\& bower install -allow-root"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && npm install --unsafe-perm"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && bower install -allow-root"
 
   setup:
     usage: Base setup for theme development
@@ -51,7 +51,7 @@ commands:
     usage: 'compile and watch for changes'
     cmd: |
       THEME=`ahoy drush scr dkan/.ahoy/.scripts/active_theme_path.php`
-      ahoy cmd-proxy "cd $THEME \&\& gulp"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && gulp"
 
 
   new-from-kit:
