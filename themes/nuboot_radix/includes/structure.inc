@@ -53,10 +53,6 @@ function nuboot_radix_preprocess_page(&$variables) {
     $variables['title'] = '';
     unset($variables['page']['content']['system_main']['default_message']);
   }
-  // Remove title on dataset edit and creation pages.
-  if (!empty($variables['node']) && in_array($variables['node']->type, array('dataset', 'resource', 'blog'))) {
-    $variables['title'] = '';
-  }
   // Add external css files.
   $external_css = array(
     '#attached' => array(

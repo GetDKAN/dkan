@@ -85,6 +85,7 @@ div.autocomplete-deluxe-multiple {
   height: auto;
   padding: 0;
   border: none;
+  max-width: 100% !important;
   .chosen-choices {
     @include border-radius(4px);
     border-color: #ccc;
@@ -189,6 +190,19 @@ div.horizontal-tabs {
 #body-add-more-wrapper {
   .panel-body {
     padding: 0;
+  }
+}
+
+.page-node-add-dataset,
+.page-node-add-resource {
+  h1 {
+    margin: 0 0 15px 0;
+  }
+  // Remove global margin and padding for these forms.
+  .main .panel-pane,
+  .radix-layouts-content .pane-content {
+    padding: 0;
+    margin: 0;
   }
 }
 
