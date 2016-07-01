@@ -9,7 +9,6 @@
  * @see template_process()
  * @see html.tpl.php
  */
-//dpm($variables);
 ?>
 <header id="header" class="header" role="header">
   <div class="branding container">
