@@ -148,6 +148,16 @@ commands:
       fi
       ahoy cmd-proxy bash dkan/.ahoy/.scripts/behat.sh $BEHAT_FOLDER $CONFIG $ARGS
 
+  create-qa-users:
+    usage: Create users for each core role for QA purposes
+    cmd: |
+      ahoy drush "user-create sitemanager --mail=sitemanager@example.com --password=sitemanager"
+      ahoy drush "user-add-role 'site manager' --name=sitemanager"
+      ahoy drush "user-create editor --mail=editor@example.com --password=editor"
+      ahoy drush "user-add-role editor --name=editor"
+      ahoy drush "user-create creator --mail=creator@example.com --password=creator"
+      ahoy drush "user-add-role 'content creator' --name=creator"
+
   dkanextension-update:
     usage: Update the nucivic/dkanextension composer package.
     cmd: ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkanextension-update.sh
