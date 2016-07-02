@@ -1,0 +1,783 @@
+{
+    "help": "data_dashboard item",
+    "result": {
+        "uuid": "e3fa4177-f077-46d7-8f38-5df574492d70",
+        "id": "31",
+        "type": "data_dashboard",
+        "title": "Crime in America's Top 10 Most Populous Cities",
+        "created": "1460393089",
+        "changed": "1466634250",
+        "panelizer": {
+            "panels_display": {
+                "args": [],
+                "content": [],
+                "panels": [],
+                "incoming_content": null,
+                "css_id": null,
+                "context": [],
+                "renderer": "standard",
+                "layout": "radix_rolph",
+                "layout_settings": [],
+                "panel_settings": {
+                    "style_settings": {
+                        "default": null,
+                        "header": null,
+                        "column1": null,
+                        "column2": null,
+                        "middle": null,
+                        "secondcolumn1": null,
+                        "secondcolumn2": null,
+                        "footer": null,
+                        "quarter1": null,
+                        "quarter2": null,
+                        "quarter3": null,
+                        "quarter4": null
+                    }
+                },
+                "cache": [],
+                "title": "",
+                "hide_title": "0",
+                "title_pane": "0",
+                "uuid": "9625cca2-b6c8-4d36-a253-fbee22499e12"
+            },
+            "panels_pane": [
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:3e1883d3-3f13-4601-93aa-e11c6ac42f87",
+                    "shown": "0",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "0362a59c-489c-4688-ac2e-f8b5efada93c",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "spotlight",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "3e1883d3-3f13-4601-93aa-e11c6ac42f87",
+                        "language": "und",
+                        "field_basic_spotlight_duration": [
+                            {
+                                "value": "5"
+                            }
+                        ],
+                        "field_basic_spotlight_items": [
+                            {
+                                "field_file_image_alt_text": [],
+                                "field_file_image_title_text": [],
+                                "alt": "Police Tape",
+                                "title": "Crime Incidents ",
+                                "height": 2210,
+                                "width": 3315,
+                                "description": "",
+                                "link": "",
+                                "image_path": "files/data_dashboard/2498847226_9beb1f55db_o.jpg"
+                            },
+                            {
+                                "field_file_image_alt_text": [],
+                                "field_file_image_title_text": [],
+                                "alt": "Body Worn Police Cameras",
+                                "title": "Police Advisory Complaints",
+                                "height": 640,
+                                "width": 960,
+                                "description": "",
+                                "link": "",
+                                "image_path": "files/data_dashboard/bodyworn-794100_960_720.jpg"
+                            },
+                            {
+                                "field_file_image_alt_text": [],
+                                "field_file_image_title_text": [],
+                                "alt": "Crime Stats Chart",
+                                "title": "Data-Driven Decision-Making",
+                                "height": 1704,
+                                "width": 2000,
+                                "description": "",
+                                "link": "",
+                                "image_path": "files/data_dashboard/Number_of_crimes_reported_per_100,000_population_in_Sweden,_1993-2013.svg_.png"
+                            },
+                            {
+                                "field_file_image_alt_text": [],
+                                "field_file_image_title_text": [],
+                                "alt": "Police cruisers lights ",
+                                "title": "Response Times",
+                                "height": 928,
+                                "width": 1601,
+                                "description": "",
+                                "link": "",
+                                "image_path": "files/data_dashboard/Cruiser-2.jpg"
+                            }
+                        ],
+                        "field_basic_spotlight_pager": [
+                            {
+                                "value": "full"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:e70dd67c-96fc-42de-8366-a9071d4e1bd7",
+                    "shown": "0",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "3",
+                    "locks": [],
+                    "uuid": "e2a7894b-de44-4cd0-ba87-ec0be713e97f",
+                    "fpp_data": {
+                        "title": "Police Complaints",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "e70dd67c-96fc-42de-8366-a9071d4e1bd7",
+                        "language": "und",
+                        "field_basic_text_text": [
+                            {
+                                "value": "What are the complaints against police officers and what's the cause?\n\n\nGood data leads to good questions. Without data, our assumptions rely on experiences and memory. By opening data on police complaints we can more objectively identify patterns that answer these questions. What are the trends and do they affirm assumptions or is it more complex? Without bringing raw information into the light, these issues may never surface and consequently never addressed. Both challenges and successes can be identified to better inform policies and procedures. ",
+                                "format": "html",
+                                "safe_value": "<p>What are the complaints against police officers and what's the cause?</p>\n<p>Good data leads to good questions. Without data, our assumptions rely on experiences and memory. By opening data on police complaints we can more objectively identify patterns that answer these questions. What are the trends and do they affirm assumptions or is it more complex? Without bringing raw information into the light, these issues may never surface and consequently never addressed. Both challenges and successes can be identified to better inform policies and procedures.</p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:85705dd1-84fc-441b-a3be-6159f93e1cc9",
+                    "shown": "0",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "e0cf39d5-28e8-404b-a8ad-d920b566e347",
+                    "fpp_data": {
+                        "title": "Traffic and Pedestrian Stops",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "85705dd1-84fc-441b-a3be-6159f93e1cc9",
+                        "language": "und",
+                        "field_basic_text_text": [
+                            {
+                                "value": "How do we balance the power and responsibility of service and protection?\n\nOur duty is to protect and serve the communities in our care with the authority entrusted to us. Documenting and measuring how that authority is exercised is critical to keeping the system fair. With Traffic and Pedestrian Stops data, we can see trends emerging and ask important questions. By understanding the data, we can improve our practices and continue to protect and serve our communities.",
+                                "format": "html",
+                                "safe_value": "<p>How do we balance the power and responsibility of service and protection?</p>\n<p>Our duty is to protect and serve the communities in our care with the authority entrusted to us. Documenting and measuring how that authority is exercised is critical to keeping the system fair. With Traffic and Pedestrian Stops data, we can see trends emerging and ask important questions. By understanding the data, we can improve our practices and continue to protect and serve our communities.</p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:29b6b417-9605-49c0-8257-f5c36119dd8b",
+                    "shown": "0",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "9c001002-9a35-4d74-9753-a6fe051ab9f4",
+                    "fpp_data": {
+                        "title": "Response Time",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "29b6b417-9605-49c0-8257-f5c36119dd8b",
+                        "language": "und",
+                        "field_basic_text_text": [
+                            {
+                                "value": "Why is opening response time data important?\n\nA key metric for the efficiency and effectiveness of a police department is how their units are able to mobilize toward a crime scene. Though it's not the only measure, it's an important indicator for how well the agency is doing. By opening the data on response time we're able to get a firm sense on our performance, set standards and goals towards better service, and hold ourselves accountable in our progress towards those goals.",
+                                "format": "html",
+                                "safe_value": "<p>Why is opening response time data important?</p>\n<p>A key metric for the efficiency and effectiveness of a police department is how their units are able to mobilize toward a crime scene. Though it's not the only measure, it's an important indicator for how well the agency is doing. By opening the data on response time we're able to get a firm sense on our performance, set standards and goals towards better service, and hold ourselves accountable in our progress towards those goals.</p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:1e3f9d5c-8af1-4300-951b-f689ba710b3f",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "4",
+                    "locks": [],
+                    "uuid": "89a77344-758d-4b1c-ad6d-c820e8a83e7a",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Re-usable content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "1e3f9d5c-8af1-4300-951b-f689ba710b3f",
+                        "language": "und",
+                        "field_basic_text_text": [
+                            {
+                                "value": "How are crime rates and types represented appropriately when comparing major metropolitan cities? \r\n\r\nWith the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.\r\n\r\nThe visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dataset/crime-data-ten-most-populous-cities-us/resource/80d51987-acc7-42aa-a51b-9a4737c09efa#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}},view-map:{lonField:!Longitude,latField:!Latitude}}\">Go to Dataset</a>) and property crime (<a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dataset/crime-data-ten-most-populous-cities-us/resource/a0415b2c-001d-4c7b-be8a-ce4389159a6d#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}},view-map:{lonField:!Longitude,latField:!Latitude}}\">Go to Dataset</a>).\r\n\r\nAll of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a>",
+                                "format": "html",
+                                "safe_value": "<p>How are crime rates and types represented appropriately when comparing major metropolitan cities?</p>\n<p>With the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.</p>\n<p>The visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dataset/crime-data-ten-most-populous-cities-us/resource/80d51987-acc7-42aa-a51b-9a4737c09efa#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}},view-map:{lonField:!Longitude,latField:!Latitude}}\">Go to Dataset</a>) and property crime (<a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dataset/crime-data-ten-most-populous-cities-us/resource/a0415b2c-001d-4c7b-be8a-ce4389159a6d#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}},view-map:{lonField:!Longitude,latField:!Latitude}}\">Go to Dataset</a>).</p>\n<p>All of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a></p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:d1140782-57e0-4068-8c3c-0d7156e6f72e",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "7",
+                    "locks": [],
+                    "uuid": "f6368d86-27ea-47d8-9e58-6d376760a207",
+                    "fpp_data": {
+                        "title": "Breaking Down the Proportions of Each Crime Within the Four Most Populous Cities: NYC, LA, Chicago and Houston",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "d1140782-57e0-4068-8c3c-0d7156e6f72e",
+                        "language": "und",
+                        "field_basic_text_text": [
+                            {
+                                "value": "America's metropolises can learn from on successful policing tactics and public safety campaigns. Some methods and crime reduction strategies can set best-practices for large cities as a whole. Others will remain unique to the character of the city, the layout, people and culture.  \n\nBy comparing and contrasting the proportions of violent crimes and property crimes in each big city, citizens, law enforcement officials and local policy-makers can make better informed decisions about where to allocate resources, funding, staff assistance and community organizing.",
+                                "format": "html",
+                                "safe_value": "<p>America's metropolises can learn from on successful policing tactics and public safety campaigns. Some methods and crime reduction strategies can set best-practices for large cities as a whole. Others will remain unique to the character of the city, the layout, people and culture.</p>\n<p>By comparing and contrasting the proportions of violent crimes and property crimes in each big city, citizens, law enforcement officials and local policy-makers can make better informed decisions about where to allocate resources, funding, staff assistance and community organizing.</p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "quarter1",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "df8ba640-4106-4ff3-b86b-4a78956b8712",
+                        "remote_source": "",
+                        "height": "400",
+                        "width": "100%",
+                        "override_title": 1,
+                        "override_title_text": "NYC",
+                        "override_title_heading": "h6"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null,
+                        "style": "default"
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "5fdbecc5-3ee3-428f-9105-6fec88d35530"
+                },
+                {
+                    "panel": "quarter2",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "8050d067-a720-4ca6-a181-ae4e4ac9c318",
+                        "remote_source": "",
+                        "height": "400",
+                        "width": "100%",
+                        "override_title": 1,
+                        "override_title_text": "Los Angeles",
+                        "override_title_heading": "h6"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "ff8fa96d-327d-4c83-8056-45b22c18bd53"
+                },
+                {
+                    "panel": "quarter3",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "c4a08cfc-c4c6-419b-a5e0-099a1b11d75f",
+                        "remote_source": "",
+                        "height": "400",
+                        "width": "100%",
+                        "override_title": 1,
+                        "override_title_text": "Chicago",
+                        "override_title_heading": "h6"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "6c6543cc-b756-4cb5-8823-d524186dd8de"
+                },
+                {
+                    "panel": "quarter4",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "037135f1-b10c-4197-9125-1072c335fc03",
+                        "remote_source": "",
+                        "height": "400",
+                        "width": "100%",
+                        "override_title": 1,
+                        "override_title_text": "Houston",
+                        "override_title_heading": "h6"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "2def0927-b1e2-4196-8f2b-4de599ffffcf"
+                },
+                {
+                    "panel": "header",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "e44c1cba-397f-44f7-b827-11219b70dd9f",
+                        "remote_source": "http://dev-stefanies-dkan-demo-site.pantheonsite.io/visualization/ve_chart/13/iframe",
+                        "height": "600",
+                        "width": "100%",
+                        "override_title": 1,
+                        "override_title_text": "Violent Crime Data for the Ten Most Populous Cities in the U.S.",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "5",
+                    "locks": [],
+                    "uuid": "3105f79c-a8b5-4b2f-bb2c-980618cbf68a"
+                },
+                {
+                    "panel": "quarter1",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "",
+                        "title": "",
+                        "body": "<ul><li><strong>New York</strong> has the highest proportion of aggravated assaults among the four cities compared in these graphs.</li><br>\n<li>It also has the lowest proportions of murder and non-negligent manslaughters as well as robberies.</li><br>\n<li>Burglaries and motor vehicle thefts are the lowest ratio compared to Chicago, Houston and L.A. This may be because many New Yorkers inhabit apartments and are less likely to own cars.</li><br>\n<li>New York\u2019s crime rates are low compared to peer cities. This may be due to the legacies of the Mayor Giuliani and Mayor Bloomberg, who were both known for dramatically reducing crime and staying committed to public safety.</li></ul><br>\n*Note: New York does not report official arson figures to the FBI; therefore, the arson rate displayed as 0 is inaccurate.*",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "16aa7c73-8d92-4d13-ac33-7144d62488a0"
+                },
+                {
+                    "panel": "quarter2",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "",
+                        "title": "",
+                        "body": "<ul><li><strong>Los Angeles</strong> has a violent crime rate lower than that of every other city within the ten most populous locales with the exception of San Diego.</li><br>\n<li>L.A. has an exceptionally high rate of motor vehicle thefts. However, Los Angeles\u2019 overall rate of larceny-thefts is roughly equal to that of New York. This could be that among the cities in this comparison, LA has a much higher driving rate.</li><br>\n<li>Los Angeles also has the highest rate of arson amongst America\u2019s top ten most populated cities - a disturbing statistic when considering the fact that in California even a small blaze can quickly turn into a destructive wildfire.</li><br></ul>",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "8206a1e0-b53b-427e-9d0d-9898fae8d213"
+                },
+                {
+                    "panel": "quarter3",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "",
+                        "title": "",
+                        "body": "<ul><li><strong>Chicago</strong> remains in the midst of a violent crime epidemic, with overall violent crime rates far higher than those of each of the top ten most populous cities with the exceptions of Houston and Philadelphia.</li><br>\n<li>As shown in the above chart, the proportion of murders and non-negligent manslaughters is the highest of the four cities shown. Rape is also high compared to New York, L.A. and Houston.</li><br>\n<li>Chicago\u2019s overall rate of property crimes is far lower than Houston\u2019s, and is nearly half of San Antonio\u2019s.</li></ul>",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "d3b2674e-1b1f-4be8-bf37-620166f4023a"
+                },
+                {
+                    "panel": "quarter4",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "",
+                        "title": "",
+                        "body": "<ul><li><strong>Houston</strong> has the highest rates of robbery and burglary compared to New York, L.A. and Chicago. In fact, Houston has the highest robbery rate out of the top ten most populated cities in the country.</li><br>\n<li>Houston also has a high rate of aggravated assaults, larceny-thefts, and motor vehicle thefts. </li><br>\n<li>What could be influencing Houston\u2019s high violent crime rate? With the help of open data from local law enforcement, citizens and researchers may be able to figure out the underlying causes - whether they involve the drug trade, regional guns laws or lack thereof, or other factors that will reveal themselves once information is available.</li></ul>",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "1c1011d8-6f1f-4534-8a2e-708da62533c4"
+                },
+                {
+                    "panel": "header",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "98ded2e4-8306-4bd3-942b-072b9584f2dc",
+                        "remote_source": "",
+                        "height": "600",
+                        "width": "100%",
+                        "override_title": 1,
+                        "override_title_text": "Property Crime Data for the Ten Most Populous Cities in the U.S.",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "6",
+                    "locks": [],
+                    "uuid": "035ccc39-0cc2-4839-9e55-85bc86c0db9a"
+                },
+                {
+                    "panel": "quarter1",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "ec74c54b-a0c4-450f-b113-e8b012566bf1",
+                        "remote_source": "",
+                        "height": "400",
+                        "width": "100%",
+                        "override_title": 0,
+                        "override_title_text": " NYC",
+                        "override_title_heading": "div"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "6315db48-8046-4397-a6ac-36bd44c373c0"
+                },
+                {
+                    "panel": "quarter2",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "12bbc062-a866-4777-b249-453722fc9adb",
+                        "remote_source": "",
+                        "height": "400",
+                        "width": "100%",
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "2627dc01-ae81-4bd7-9bd6-57173324840e"
+                },
+                {
+                    "panel": "quarter3",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "6b07ddec-b946-44a6-ab93-931929d8f1a2",
+                        "remote_source": "",
+                        "height": "400",
+                        "width": "100%",
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "a299979b-10ea-4118-aaff-b0ea29d0e1d6"
+                },
+                {
+                    "panel": "quarter4",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "50137c7c-2f71-45c2-90e9-df972f60c98e",
+                        "remote_source": "",
+                        "height": "400",
+                        "width": "100%",
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "f3b18f20-5689-41e6-ad49-ab80abedf843"
+                },
+                {
+                    "panel": "footer",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:ea013782-458b-4567-810c-944a66cb55a0",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "031421ac-370d-4a90-b7a5-55427034581e",
+                    "fpp_data": {
+                        "title": "More to Explore",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Re-usable content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "ea013782-458b-4567-810c-944a66cb55a0",
+                        "language": "und",
+                        "field_basic_text_text": [
+                            {
+                                "value": "In the map below, you can explore violent crime and property data for America's ten most populated cities. On the maps, you can click each marker to see the incidences and rates of each type of crime for each city. \r\n\r\nBy clicking \"Grid,\" you can preview the data in the form of a table, and by clicking \"Graph,\" you can select \"City\" for Axis 1 and add various statistics to Axis 2 (using \"Add Series\") to compare and contrast different figures.\r\n\r\nThese were created using Data Previews, a standard DKAN feature. ",
+                                "format": "html",
+                                "safe_value": "<p>In the map below, you can explore violent crime and property data for America's ten most populated cities. On the maps, you can click each marker to see the incidences and rates of each type of crime for each city.</p>\n<p>By clicking \"Grid,\" you can preview the data in the form of a table, and by clicking \"Graph,\" you can select \"City\" for Axis 1 and add various statistics to Axis 2 (using \"Add Series\") to compare and contrast different figures.</p>\n<p>These were created using Data Previews, a standard DKAN feature.</p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "footer",
+                    "type": "block",
+                    "subtype": "dkan_sitewide_demo_front-dkan_search_front",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "d7a39199-d557-4d50-af0a-31195ce02a5f"
+                },
+                {
+                    "panel": "footer",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "",
+                        "remote_source": "http://default-content.dkandemo.nuamsdev.com/node/43/recline-embed#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},currentView:!map,graphOptions:{hooks:{processOffset:{},bindEvents:{}}},view-map:{lonField:!Longitude,latField:!Latitude},map:{bounds:{_southWest:{lat:16.29905101458183,lng:-136.0546875},_northEast:{lat:51.6180165487737,lng:-56.07421875}}}}",
+                        "height": "480",
+                        "width": "100%",
+                        "override_title": 1,
+                        "override_title_text": "Interactive Preview: U.S. Violent Crime Data by City",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "9eaeae8d-9988-4a7d-bbf3-6968ec373692"
+                }
+            ],
+            "panelizer_entity": {
+                "entity_type": "node",
+                "name": null,
+                "no_blocks": "0",
+                "css_id": "",
+                "css": "",
+                "pipeline": "ipe",
+                "contexts": [],
+                "relationships": [],
+                "view_mode": "default",
+                "css_class": "",
+                "title_element": "H2",
+                "link_to_entity": "0",
+                "extra": []
+            }
+        }
+    }
+}
