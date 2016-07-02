@@ -43,11 +43,6 @@ function dkan_fixtures_render_fixtures($nids = array()) {
       $package_show = open_data_schema_map_render_api($package_show_api, $query, $queries);
       $package_show = $package_show['result'];
       $package_show['result'] = reset($package_show['result']);
-      // If the License URI is available ODSM will return that on the 'license_title' field instead of the ID.
-      // In order to import the data we need to always work with the URI ID so we need to do a convertion.
-      if (isset($package_show['result']['license_title'])) {
-        $package_show['result']['license_title'] = getLicenseId($package_show['result']['license_title']);
-      }
       if (isset($package_show['result']['resources'])) {
         foreach ($package_show['result']['resources'] as $key => $resource) {
           if (isset($resource['url'])) {
@@ -610,16 +605,3 @@ function dkan_fixtures_dkan_save_data($nids = array()) {
   variable_set(DKAN_FIXTURES_IS_EXPORTING, FALSE);
 }
 
-/**
- * ODSM returns either the URI or the label of the License.
- * This function retrieves the ID as needed for import.
- */
-function getLicenseId($license) {
-  $licenses = dkan_dataset_content_types_license_subscribe();
-  foreach ($licenses as $license_id => $license_data) {
-    if ((isset($license_data['uri']) && $license_data['uri'] === $license) ||
-         ($license_data['label'] === $license)) {
-      return $license_id;
-    }
-  }
-}
