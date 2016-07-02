@@ -9190,24 +9190,13 @@ div.horizontal-tabs {
 #body-add-more-wrapper .panel-body {
   padding: 0; }
 
-.page-node-add-dataset h1,
-.page-node-add-resource h1 {
-  margin: 0 0 15px 0; }
-
-.page-node-add-dataset .main .panel-pane,
-.page-node-add-dataset .radix-layouts-content .pane-content,
-.page-node-add-resource .main .panel-pane,
-.page-node-add-resource .radix-layouts-content .pane-content {
-  padding: 0;
-  margin: 0; }
-
-.page-node-add-dataset .main .radix-layouts-sidebar .panel-pane,
-.page-node-add-resource .main .radix-layouts-sidebar .panel-pane {
-  margin-bottom: 20px; }
+.node-dataset-form .field-name-field-format label,
+.node-resource-form .field-name-field-format label {
+  vertical-align: top; }
 
 @media all and (max-width: 599px) {
-  .page-node-add-dataset .stages li .highlight,
-  .page-node-add-resource .stages li .highlight {
+  .node-dataset-form .stages li .highlight,
+  .node-resource-form .stages li .highlight {
     font-size: 12px;
     line-height: 1.15em; } }
 

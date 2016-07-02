@@ -193,19 +193,10 @@ div.horizontal-tabs {
   }
 }
 
-.page-node-add-dataset,
-.page-node-add-resource {
-  h1 {
-    margin: 0 0 15px 0;
-  }
-  // Remove global margin and padding for these forms.
-  .main .panel-pane,
-  .radix-layouts-content .pane-content {
-    padding: 0;
-    margin: 0;
-  }
-  .main .radix-layouts-sidebar .panel-pane {
-    margin-bottom: 20px;
+.node-dataset-form,
+.node-resource-form {
+  .field-name-field-format label {
+    vertical-align: top;
   }
   @media all and (max-width:599px) {
     .stages li .highlight {
