@@ -10701,6 +10701,9 @@ img {
 .view-dkan-datasets .field-name-field-topic-icon span::before {
   font-size: 18px; }
 
+.font_icon_select_options .label {
+  color: #333; }
+
 .front .view-popular-tags {
   margin-top: 20px; }
 

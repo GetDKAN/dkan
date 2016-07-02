@@ -12,11 +12,6 @@ function nuboot_radix_form_alter(&$form, &$form_state, $form_id) {
   }
 }
 
-// function topic_checkbox_after_build($element, &$form_state) {
-//   // Always return the element to render in after_build callbacks.
-//   return $element;
-// }
-
 /**
  * Implements theme_form_element().
  * Remove label wrapped around font-icon checkbox input.
