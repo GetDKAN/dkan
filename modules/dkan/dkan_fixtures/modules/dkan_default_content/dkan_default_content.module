@@ -331,6 +331,23 @@ class DefaultContentPanelizedNodesImport extends Migration {
     // Add Field mappings.
     $this->addFieldMapping('title', 'title');
     $this->addFieldMapping('uuid', 'uuid');
+    $this->addFieldMapping('field_topic', 'topics')->separator(",");
+  }
+
+  /**
+   *
+   */
+  public function prepareRow($row) {
+
+    // Prepare 'Topics' for field mapping.
+    $topics = array();
+    if (isset($row->field_topic)) {
+      foreach ($row->field_topic as $topic) {
+        $topics[] = $topic->name;
+      }
+    }
+
+    $row->topics = implode (",", $topics);
   }
 
   /**
@@ -593,6 +610,9 @@ class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport
    *
    */
   public function prepareRow($row) {
+
+    parent::prepareRow($row);
+
     // Prepare 'field_image' field for field mapping.
     $row->field_image = DRUPAL_ROOT . '/' . $this->endpoint . $row->field_image;
 
