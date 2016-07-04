@@ -230,7 +230,7 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = arra
         case 'page':
           $panelized_node['body'] = $node->body;
           break;
-        
+
         default:
           break;
       }
