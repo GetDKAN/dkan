@@ -16,6 +16,7 @@
 - Change admin theme setting to use default theme rather than nuboot radix
 - Page content type added to panelizer and now defined in features, with in-place editor enabled for page content.
 - Page link added to the command center menu.
+- Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
 
 7.x-1.12.x
 --------------------------
