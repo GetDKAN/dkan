@@ -346,7 +346,6 @@ class DefaultContentPanelizedNodesImport extends Migration {
         $topics[] = $topic->name;
       }
     }
-
     $row->topics = implode (",", $topics);
   }
 
@@ -604,6 +603,7 @@ class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport
     $this->addFieldMapping('body', 'body_value');
     $this->addFieldMapping('body:summary', 'body_summary');
     $this->addFieldMapping('body:format', 'body_format');
+    $this->addFieldMapping('field_tags', 'tags')->separator(",");
   }
 
   /**
@@ -621,6 +621,15 @@ class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport
     $row->body_value = $body->value;
     $row->body_summary = $body->summary;
     $row->body_format = $body->format;
+
+    // Prepare 'Tags' for field mapping.
+    $tags = array();
+    if (isset($row->field_tags)) {
+      foreach ($row->field_tags as $tag) {
+        $tags[] = $tag->name;
+      }
+    }
+    $row->tags = implode (",", $tags);
   }
 }
 
