@@ -204,8 +204,8 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = arra
       $panelized_node['changed'] = $node->changed;
 
       // Export specific data.
-      // TODO: Refactor this.
       switch ($node->type) {
+
         case 'dkan_data_story':
           // Body.
           $panelized_node['body'] = $node->body;
@@ -217,17 +217,20 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = arra
             $files_to_save[] = drupal_realpath($file['uri']);
           }
           // Tags
-          $panelized_node['field_tags'] = $node->field_tags;
+          $panelized_node['field_tags'] = export_terms($node, 'field_tags');
           // Topics
-          $panelized_node['field_topic'] = $node->field_topic;
+          $panelized_node['field_topic'] = export_terms($node, 'field_topic');
           break;
+
         case 'data_dashboard':
           // Topics
-          $panelized_node['field_topic'] = $node->field_topic;
+          $panelized_node['field_topic'] = export_terms($node, 'field_topic');
           break;
+
         case 'page':
           $panelized_node['body'] = $node->body;
           break;
+        
         default:
           break;
       }
@@ -271,9 +274,30 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = arra
   }
 }
 
-/**
- *
+/*
+ * Returns an array with all terms in field formatted for export.
  */
+function export_terms( $node, $terms_field ) {
+
+  $node_wrapper = entity_metadata_wrapper('node', $node);
+
+  $terms = array();
+  if (isset($node_wrapper->$terms_field)) {
+    foreach ($node_wrapper->$terms_field->getIterator() as $term) {
+      $terms[] = (object) array(
+        'name' => $term->name->value(),
+        'display_name' => $term->name->value(),
+        'id' => $term->uuid->value(),
+      );
+    }
+  }
+
+  return $terms;
+}
+
+/**
+*
+*/
 function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_dir) {
   $panelizer_data = array();
 
