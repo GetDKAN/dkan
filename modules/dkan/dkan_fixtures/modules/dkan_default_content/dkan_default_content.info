@@ -5,3 +5,12 @@ package = DKAN
 
 dependencies[] = dkan_fixtures
 dependencies[] = migrate_extras
+
+files[] = dkan_default_content.migrate.data_dashboard.inc
+files[] = dkan_default_content.migrate.data_story.inc
+files[] = dkan_default_content.migrate.dataset.inc
+files[] = dkan_default_content.migrate.group.inc
+files[] = dkan_default_content.migrate.page.inc
+files[] = dkan_default_content.migrate.panelized_node.inc
+files[] = dkan_default_content.migrate.resource.inc
+files[] = dkan_default_content.migrate.visualization_entity.inc
