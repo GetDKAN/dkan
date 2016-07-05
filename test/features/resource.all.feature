@@ -147,6 +147,7 @@ Feature: Resource
     When I click "Resource 01"
     Then I should see "Edit"
     When I click "Edit"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
     And I press "edit-submit"
     When I am on "/dataset/dataset-01"
