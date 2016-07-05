@@ -44,6 +44,11 @@ function nuboot_radix_preprocess_page(&$variables) {
   if ($copyright = theme_get_setting('copyright')) {
     $variables['copyright'] = isset($copyright['value']) ? check_markup($copyright['value'], $copyright['format']) : t('Powered by <a href="http://nucivic.com/dkan">DKAN</a>, a project of <a href="http://nucivic.com">NuCivic</a>'); 
   }
+  // Use front page template for node front page.
+  $alias = drupal_get_path_alias($_GET['q']);
+  if ($alias == 'welcome') {
+    $variables['is_front'] = TRUE;
+  }
   if (drupal_is_front_page()) {
     $variables['title'] = '';
     unset($variables['page']['content']['system_main']['default_message']);
@@ -56,7 +61,7 @@ function nuboot_radix_preprocess_page(&$variables) {
   $external_css = array(
     '#attached' => array(
       'css' => array(
-        '//fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic,600,600italic' => array(
+        '//fonts.googleapis.com/css?family=Open+Sans::400,300,700' => array(
           'type' => 'external'),
       ),
     ),
