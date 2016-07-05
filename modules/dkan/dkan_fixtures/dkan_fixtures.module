@@ -159,12 +159,8 @@ function dkan_fixtures_render_fixtures($nids = array()) {
     _build_panelized_nodes_fixtures('dkan_data_story', $rendered_fixtures);
   }
 
-  // Export Home Page.
-  $site_frontpage = variable_get('site_frontpage');
-  if ($site_frontpage) {
-    $homepage_node = menu_get_object("node", 1, $site_frontpage);
-    _build_panelized_nodes_fixtures('page', $rendered_fixtures, array($homepage_node->nid));
-  }
+  // Export Home Page + About page
+  _build_panelized_nodes_fixtures('page', $rendered_fixtures);
 
   return $rendered_fixtures;
 }
@@ -215,7 +211,7 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = arra
           $panelized_node['field_image'] = '';
           if (!empty($node->field_image)) {
             $file = $node->field_image[LANGUAGE_NONE][0];
-            $panelized_node['field_image'] = 'files/' . $content_type . '/' . $file['filename'];
+            $panelized_node['field_image'] = 'files/' . $content_type . '/' . basename($file['uri']);
             $files_to_save[] = drupal_realpath($file['uri']);
           }
           // Tags
