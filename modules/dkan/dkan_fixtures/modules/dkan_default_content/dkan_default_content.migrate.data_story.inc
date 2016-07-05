@@ -22,6 +22,7 @@ class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport
     $this->addFieldMapping('body:summary', 'body_summary');
     $this->addFieldMapping('body:format', 'body_format');
     $this->addFieldMapping('field_tags', 'tags');
+    $this->addFieldMapping('field_topic', 'topics');
   }
 
   /**
@@ -48,5 +49,14 @@ class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport
       }
     }
     $row->tags = $tags;
+
+    // Prepare 'Topics' for field mapping.
+    $topics = array();
+    if (isset($row->field_topic)) {
+      foreach ($row->field_topic as $topic) {
+        $topics[] = $topic->name;
+      }
+    }
+    $row->topics = $topics;
   }
 }

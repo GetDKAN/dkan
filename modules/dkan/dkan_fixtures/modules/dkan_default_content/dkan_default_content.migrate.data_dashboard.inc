@@ -15,5 +15,25 @@ class DefaultContentDataDashboardsImport extends DefaultContentPanelizedNodesImp
     $arguments['content_type'] = 'data_dashboard';
 
     parent::__construct($arguments);
+
+    // Add Field mappings.
+    $this->addFieldMapping('field_topic', 'topics');
+  }
+
+  /**
+   *
+   */
+  public function prepareRow($row) {
+
+    parent::prepareRow($row);
+
+    // Prepare 'Topics' for field mapping.
+    $topics = array();
+    if (isset($row->field_topic)) {
+      foreach ($row->field_topic as $topic) {
+        $topics[] = $topic->name;
+      }
+    }
+    $row->topics = $topics;
   }
 }
