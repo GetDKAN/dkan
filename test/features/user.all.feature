@@ -51,7 +51,7 @@ Feature: User
     When I follow "Log out"
     Then I should see "Log in"
 
-  @deleteTempUsers
+  @deleteTempUsers @customizable
   Scenario: Register
     Given I am on the homepage
     When I follow "Register"
