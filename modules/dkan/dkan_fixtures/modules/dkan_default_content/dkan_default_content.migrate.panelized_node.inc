@@ -109,8 +109,6 @@ class DefaultContentPanelizedNodesImport extends Migration {
         }
       }
 
-      var_dump($pane['type']);
-
       if ($pane['type'] === 'fieldable_panels_pane' && !empty($pane['fpp_data'])) {
         $fpp_data = $pane['fpp_data'];
         list($id_type, $id_value) = explode(':', $pane['subtype']);
@@ -134,19 +132,14 @@ class DefaultContentPanelizedNodesImport extends Migration {
         $this->save_fieldable_panel_pane_field($fpp, $fpp_data);
       }
 
-      var_dump(1);
       drupal_write_record('panels_pane', $pane);
-      var_dump(2);
     }
 
     // Import panelizer_entity.
-    var_dump(3);
     $panelizer_entity['did'] = $panels_display['did'];
     $panelizer_entity['entity_id'] = $entity->nid;
     $panelizer_entity['revision_id'] = $entity->vid;
-    var_dump(4);
     drupal_write_record('panelizer_entity', $panelizer_entity);
-    var_dump(5);
   }
 
   /**
