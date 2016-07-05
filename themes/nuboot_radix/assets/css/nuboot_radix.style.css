@@ -9102,7 +9102,8 @@ div.autocomplete-deluxe-multiple {
   line-height: 34px;
   height: auto;
   padding: 0;
-  border: none; }
+  border: none;
+  max-width: 100% !important; }
   .form-control.chosen-processed .chosen-choices {
     border-radius: 4px;
     border-color: #ccc; }
@@ -9188,6 +9189,16 @@ div.horizontal-tabs {
 
 #body-add-more-wrapper .panel-body {
   padding: 0; }
+
+.node-dataset-form .field-name-field-format label,
+.node-resource-form .field-name-field-format label {
+  vertical-align: top; }
+
+@media all and (max-width: 599px) {
+  .node-dataset-form .stages li .highlight,
+  .node-resource-form .stages li .highlight {
+    font-size: 12px;
+    line-height: 1.15em; } }
 
 .node-resource-form .field-name-field-upload .form-type-managed-file {
   display: table; }
@@ -9383,7 +9394,7 @@ section.col-sm-9 {
   margin: 0;
   overflow: visible !important;
   position: relative;
-  z-index: 1; }
+  z-index: 3; }
   .navbar-default .navbar-nav,
   .navbar-default .user-menu {
     margin: 0;
@@ -10066,6 +10077,9 @@ h2.pane-title {
   .panel-dkan-front .panel-triplet .panel-col-first,
   .panel-dkan-front .panel-triplet .panel-col-second,
   .panel-dkan-front .panel-triplet .panel-col-third,
+  .panel-dkan-front .panel-top .panel-col-first,
+  .panel-dkan-front .panel-top .panel-col-second,
+  .panel-dkan-front .panel-top .panel-col-third,
   .panel-dkan-front .panel-bottom .panel-col-first,
   .panel-dkan-front .panel-bottom .panel-col-second,
   .panel-dkan-front .panel-bottom .panel-col-third,
@@ -10075,6 +10089,9 @@ h2.pane-title {
   .panel-full-width .panel-triplet .panel-col-first,
   .panel-full-width .panel-triplet .panel-col-second,
   .panel-full-width .panel-triplet .panel-col-third,
+  .panel-full-width .panel-top .panel-col-first,
+  .panel-full-width .panel-top .panel-col-second,
+  .panel-full-width .panel-top .panel-col-third,
   .panel-full-width .panel-bottom .panel-col-first,
   .panel-full-width .panel-bottom .panel-col-second,
   .panel-full-width .panel-bottom .panel-col-third {
@@ -10683,6 +10700,9 @@ img {
 .field-name-field-topic-icon span::before,
 .view-dkan-datasets .field-name-field-topic-icon span::before {
   font-size: 18px; }
+
+.font_icon_select_options .label {
+  color: #333; }
 
 .front .view-popular-tags {
   margin-top: 20px; }
