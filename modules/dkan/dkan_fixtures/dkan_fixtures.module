@@ -419,6 +419,7 @@ function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_di
 
     unset($panelizer_entity->entity_id);
     unset($panelizer_entity->revision_id);
+    unset($panelizer_entity->contexts);
     unset($panelizer_entity->did);
     $panelizer_data['panelizer_entity'] = $panelizer_entity;
   }
