@@ -89,6 +89,7 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
     And I click "Edit"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     When I click "Manage Datastore"
@@ -103,6 +104,7 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
     And I click "Edit"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     And I am on "Resource 04" page
@@ -122,6 +124,7 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
     And I click "Edit"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     And I am on "Resource 04" page
