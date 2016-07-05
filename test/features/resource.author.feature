@@ -61,6 +61,7 @@ Feature: Resource
     And I am on the "Content" page
     And I click "Resource"
     When I fill in "Title" with "Resource 06"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
@@ -218,6 +219,7 @@ Feature: Resource
     Given I am logged in as "Celeste"
     And I am on "Resource 05" page
     And I click "Edit"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     And I am on "Resource 05" page
@@ -232,6 +234,7 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
     And I click "Edit"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
@@ -251,6 +254,7 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
     And I click "Edit"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
