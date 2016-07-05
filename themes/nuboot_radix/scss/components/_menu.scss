@@ -3,7 +3,6 @@
 // --------------------------------------------------
 .navigation-wrapper .container {
   overflow: visible;
-  padding: 0;
   .navbar-collapse {
     overflow: visible;
   }
@@ -30,7 +29,7 @@
   margin: 0;
   overflow: visible !important;
   position:relative;
-  z-index:1;
+  z-index:3;
 
   .navbar-nav,
   .user-menu {
@@ -47,12 +46,20 @@
       display: block;
       line-height: 20px;
       padding:15px;
+      &.dropdown-toggle:hover,
       &:active,
       &:hover,
       &:focus {
         background: $brand-secondary;
         color: #FFFFFF;
         text-decoration:none;
+      }
+      &.dropdown-toggle:focus,
+      &.dropdown-toggle:active {
+        background-color: transparent;
+      }
+      &.dropdown-toggle:hover {
+        background: $brand-secondary;
       }
     }
     .dropdown-menu {
@@ -200,6 +207,9 @@
   }
 }
 
+.front .tabs--primary {
+  display: none;
+}
 .tabs--primary {
   .nav-pills li a.active,
   .nav-pills li.active a:hover,
