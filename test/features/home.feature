@@ -6,40 +6,24 @@ Feature: Homepage
   @customizable
   Scenario: Viewing the site title
     Given I am on the homepage
-    Then I should see "Welcome to the DKAN Demo"
-
-  @customizable
-  Scenario: Viewing default content
-    Given I am on the homepage
-    Then I should see "Committee on International Affairs"
-    And I should see "State Economic Council"
-    And I should see "Wisconsin Parks and Rec Commission"
-    And I should see "Advisory Council for Infectious Disease"
+    Then I should see "Welcome to DKAN"
 
   @customizable
   Scenario: Viewing top menu
     Given I am on the homepage
     Then I should see "Datasets"
-    Then I should see "Groups"
-    Then I should see "About"
-    Then I should see "Topics"
+    And I should see "Groups"
+    And I should see "About"
+    And I should see "Topics"
+    And I should see "Stories"
+    And I should see "Dashboards"
 
   @customizable
-  Scenario: Viewing footer
+  Scenario: Viewing sections
     Given I am on the homepage
-    Then I should see "Powered by DKAN, a project of NuCivic"
-
-  @customizable
-  Scenario: Viewing tags
-    Given I am on the homepage
-    When I click "demographics"
-    Then I should see "London Deprivation Index"
-
-  @customizable
-  Scenario: Viewing topics
-    Given I am on the homepage
-    When I click "Public Safety"
-    Then I should see "Crime Data for the Ten Most Populous Cities in the U.S."
+    Then I should see "Latest Data Stories" in the "content" region
+    And I should see "Groups" in the "content" region
+    And I should see "Dashboards" in the "content" region
 
   @api @javascript @customizable
   Scenario: See "Add Dataset"
