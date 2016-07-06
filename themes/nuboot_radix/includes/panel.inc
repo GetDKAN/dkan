@@ -24,10 +24,10 @@ function nuboot_radix_preprocess(&$variables, $hook) {
 	else :
 	  $background_option = theme_get_setting('background_option');
 	  if(empty($background_option)):
-	    $uri = $theme_path . '/assets/images/hero.jpg';
-	    $variables['tint'] = 'tint';
-	    $variables['bg_color'] = 'transparent';
-	    $variables['path'] = file_create_url($uri);
+	    //$uri = $theme_path . '/assets/images/hero.jpg';
+	    $variables['tint'] = 'no-tint';
+	    $variables['bg_color'] = '#005e9a';
+	    $variables['path'] = '';
 	  else :
 	    $uri = '';
 	    $variables['tint'] = 'no-tint';
