@@ -36,3 +36,24 @@ function nuboot_radix_preprocess(&$variables, $hook) {
 	  endif;
 	endif;
 }
+
+/**
+ * Implements hook_preprocess_panels_pane().
+ */
+function nuboot_radix_preprocess_panels_pane(&$vars) {
+  // Add titles to dataset and resource forms.
+  if($vars['pane']->subtype == 'form' && empty($vars['content']['nid']['#value'])) {
+    switch ($vars['content']['type']['#value']) {
+      case 'dataset':
+        $vars['title'] = "Add a Dataset";
+        break;
+
+      case 'resource':
+        $vars['title'] = "Add a Resource";
+        break;
+      
+      default:
+        break;
+    }
+  }
+}
