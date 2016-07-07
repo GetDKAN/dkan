@@ -446,7 +446,7 @@ function _build_visualization_entity_fixtures(&$rendered_fixtures) {
 
     foreach ($visualizations as $id => $visualization) {
       $visualization_wrapper = entity_metadata_wrapper('visualization', $visualization);
-      $visualization_entities[$id] = $visualization;
+      $visualization_entities[$visualization_wrapper->uuid->value()] = $visualization;
 
       $visualization_settings = json_decode($visualization_wrapper->field_ve_settings->value());
       $source_url = $visualization_settings->source->url;
@@ -474,7 +474,7 @@ function _build_visualization_entity_fixtures(&$rendered_fixtures) {
 
       // Add fixture with visualization entity data.
       $rendered_fixtures[] = array(
-        'filename' => 'visualization_entity_show?id=' . $id . '.json',
+        'filename' => 'visualization_entity_show?id=' . $visualization_wrapper->uuid->value() . '.json',
         'content' => open_data_schema_map_json_pretty_output(
           array(),
           array(
