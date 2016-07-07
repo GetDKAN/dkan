@@ -34,7 +34,7 @@ class DefaultContentPagesImport extends DefaultContentPanelizedNodesImport {
   }
 
   /**
-   *
+   * Do extra processing after import.
    */
   public function complete($entity, $row) {
 
@@ -45,27 +45,33 @@ class DefaultContentPagesImport extends DefaultContentPanelizedNodesImport {
       variable_set('site_frontpage', 'node/' . $entity->nid);
     } else {
       // Setup menu item on main menu.
-      $item = array(
-        'menu_name' => 'main-menu',
-        'link_path' => 'node/' . $entity->nid,
-        'router_path' => 'node/%',
-        'link_title' => $entity->title,
-        'options' => array(
-          'attributes' => array(
-            'title' => '',
-          ),
-          'identifier' => 'main-menu_about:node/' . $entity->nid,
-        ),
-        'module' => 'menu',
-        'hidden' => 0,
-        'external' => 0,
-        'has_children' => 0,
-        'expanded' => 0,
-        'weight' => 0,
-        'customized' => 1,
-      );
-      menu_link_save($item);
-      t('About');
+      $this->addMainMenuLink($entity);
     }
+  }
+
+  /**
+   * Add a menu link on Main Menu for entity.
+   */
+  private function addMainMenuLink($entity) {
+    $item = array(
+      'menu_name' => 'main-menu',
+      'link_path' => 'node/' . $entity->nid,
+      'router_path' => 'node/%',
+      'link_title' => $entity->title,
+      'options' => array(
+        'attributes' => array(
+          'title' => '',
+        ),
+        'identifier' => 'main-menu_about:node/' . $entity->nid,
+      ),
+      'module' => 'menu',
+      'hidden' => 0,
+      'external' => 0,
+      'has_children' => 0,
+      'expanded' => 0,
+      'weight' => 0,
+      'customized' => 1,
+    );
+    menu_link_save($item);
   }
 }
