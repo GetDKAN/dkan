@@ -6,7 +6,7 @@
         "type": "data_dashboard",
         "title": "State Workforce and Retirement Statistics",
         "created": "1459965181",
-        "changed": "1467668180",
+        "changed": "1467860041",
         "field_topic": [
             {
                 "name": "Finance and Budgeting",
@@ -415,7 +415,7 @@
                     "shown": "1",
                     "access": [],
                     "configuration": {
-                        "local_source": null,
+                        "local_source": "29ae0e05-bb4a-4f64-8fd3-bd108a8b9c73",
                         "remote_source": "",
                         "height": "400",
                         "width": "100%",

@@ -6,7 +6,7 @@
         "type": "data_dashboard",
         "title": "Dynamic Transportation Visualizations",
         "created": "1460127350",
-        "changed": "1467853188",
+        "changed": "1467859798",
         "field_topic": [
             {
                 "name": "Transportation",
@@ -287,79 +287,6 @@
                     "uuid": "e0fa88a6-083c-4b2f-90b2-59b33b74160f"
                 },
                 {
-                    "panel": "header",
-                    "type": "fieldable_panels_pane",
-                    "subtype": "current:80",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "view_mode": "full"
-                    },
-                    "cache": [],
-                    "style": [],
-                    "css": [],
-                    "extras": [],
-                    "position": "0",
-                    "locks": [],
-                    "uuid": "237e60b2-8b4f-40bf-8ce7-e543ef8bb802",
-                    "fpp_data": {
-                        "title": "",
-                        "bundle": "spotlight",
-                        "link": "0",
-                        "path": "",
-                        "reusable": "0",
-                        "admin_title": "",
-                        "admin_description": "",
-                        "category": "Reusable Content",
-                        "view_access": null,
-                        "edit_access": null,
-                        "uuid": "d56f6170-4004-4584-88fd-f1b847ff925d",
-                        "language": "und",
-                        "field_basic_spotlight_duration": [],
-                        "field_basic_spotlight_items": [
-                            {
-                                "field_file_image_alt_text": [],
-                                "field_file_image_title_text": [],
-                                "alt": "Subway train departing",
-                                "title": "GTFS Data and Commuters",
-                                "height": 996,
-                                "width": 1500,
-                                "description": "GTFS data can tell us a lot about how riders use different systems and how often. ",
-                                "link": "",
-                                "image_path": "files/data_dashboard/tranist-01.jpg"
-                            },
-                            {
-                                "field_file_image_alt_text": [],
-                                "field_file_image_title_text": [],
-                                "alt": "Bike Rentals",
-                                "title": "More Bikeshare, More Bike Lanes",
-                                "height": 1366,
-                                "width": 2048,
-                                "description": "Does the infrastructure of bike lanes relate to an increase in bikeshare memberships? ",
-                                "link": "",
-                                "image_path": "files/data_dashboard/transit 03.jpg"
-                            },
-                            {
-                                "field_file_image_alt_text": [],
-                                "field_file_image_title_text": [],
-                                "alt": "Heavy Traffic",
-                                "title": "",
-                                "height": 1040,
-                                "width": 1000,
-                                "description": "As cities get denser and transit systems get larger there may soon be fewer cars on the road. ",
-                                "link": "",
-                                "image_path": "files/data_dashboard/transit-04.jpg"
-                            }
-                        ],
-                        "field_basic_spotlight_pager": [
-                            {
-                                "value": "full"
-                            }
-                        ],
-                        "rdf_mapping": []
-                    }
-                },
-                {
                     "panel": "footer",
                     "type": "block",
                     "subtype": "dkan_sitewide_demo_front-dkan_search_front",
@@ -412,6 +339,79 @@
                                 "value": "<h3>Sources</h3>\r\n\r\nThe visualization created above used GTFS data from New York City with the digital mapping tool CartoDB. This data is used to produce an animated data visualization displaying the frequency of trains at Long Island Railroad stations throughout New York City, Nassau County, NY and Suffolk County, NY. You can create your own data visualizations using digital tools and embed them onto your DKAN site. \r\n\r\nYou can access the data from the following sources:\r\n\r\nThe New York MTA's Developer Downloads Page (requires developer key for access): http://web.mta.info/developers/download.html\r\n\r\nIf you don't have a developer key, you can access the GTFS data at TransitFeeds: http://transitfeeds.com/p/mta/86?p=1\r\n",
                                 "format": "html",
                                 "safe_value": "<h3>Sources</h3>\n<p>The visualization created above used GTFS data from New York City with the digital mapping tool CartoDB. This data is used to produce an animated data visualization displaying the frequency of trains at Long Island Railroad stations throughout New York City, Nassau County, NY and Suffolk County, NY. You can create your own data visualizations using digital tools and embed them onto your DKAN site.</p>\n<p>You can access the data from the following sources:</p>\n<p>The New York MTA's Developer Downloads Page (requires developer key for access): <a href=\"http://web.mta.info/developers/download.html\">http://web.mta.info/developers/download.html</a></p>\n<p>If you don't have a developer key, you can access the GTFS data at TransitFeeds: <a href=\"http://transitfeeds.com/p/mta/86?p=1\">http://transitfeeds.com/p/mta/86?p=1</a></p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:919df9bb-5c4c-4bf1-8192-45a9972dca82",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "4437c91d-6278-4f65-a05b-eeba5fb5b9da",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "spotlight",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "919df9bb-5c4c-4bf1-8192-45a9972dca82",
+                        "language": "und",
+                        "field_basic_spotlight_duration": [],
+                        "field_basic_spotlight_items": [
+                            {
+                                "field_file_image_alt_text": [],
+                                "field_file_image_title_text": [],
+                                "alt": "Subway train departing",
+                                "title": "GTFS Data and Commuters",
+                                "height": 996,
+                                "width": 1500,
+                                "description": "GTFS data can tell us a lot about how riders use different systems and how often. ",
+                                "link": "",
+                                "image_path": "files/data_dashboard/tranist-001.jpg"
+                            },
+                            {
+                                "field_file_image_alt_text": [],
+                                "field_file_image_title_text": [],
+                                "alt": "Bike Rentals",
+                                "title": "More Bikeshare, More Bike Lanes",
+                                "height": 1366,
+                                "width": 2048,
+                                "description": "Does the infrastructure of bike lanes relate to an increase in bikeshare memberships? ",
+                                "link": "",
+                                "image_path": "files/data_dashboard/transit-003.jpg"
+                            },
+                            {
+                                "field_file_image_alt_text": [],
+                                "field_file_image_title_text": [],
+                                "alt": "Heavy Traffic",
+                                "title": "",
+                                "height": 1040,
+                                "width": 1000,
+                                "description": "As cities get denser and transit systems get larger there may soon be fewer cars on the road. ",
+                                "link": "",
+                                "image_path": "files/data_dashboard/transit-004.jpg"
+                            }
+                        ],
+                        "field_basic_spotlight_pager": [
+                            {
+                                "value": "full"
                             }
                         ],
                         "rdf_mapping": []

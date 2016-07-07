@@ -6,7 +6,7 @@
         "type": "dkan_data_story",
         "title": "An End to Chickenpox: The Varicella Vaccine's Success Story",
         "created": "1459962814",
-        "changed": "1467853618",
+        "changed": "1467859270",
         "body": {
             "und": [
                 {
@@ -78,31 +78,6 @@
                     "position": "2",
                     "locks": [],
                     "uuid": "00684646-ba76-48ef-9f1c-d8ffeb33983a"
-                },
-                {
-                    "panel": "header",
-                    "type": "entity_field",
-                    "subtype": "node:field_tags",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "label": "hidden",
-                        "formatter": "taxonomy_term_reference_link",
-                        "delta_limit": 0,
-                        "delta_offset": "0",
-                        "delta_reversed": false,
-                        "formatter_settings": [],
-                        "context": "panelizer"
-                    },
-                    "cache": [],
-                    "style": {
-                        "settings": null
-                    },
-                    "css": [],
-                    "extras": [],
-                    "position": "3",
-                    "locks": [],
-                    "uuid": "9badcb19-4dc5-49a8-bac6-5ec537133e2f"
                 },
                 {
                     "panel": "column1",
@@ -437,53 +412,6 @@
                 },
                 {
                     "panel": "header",
-                    "type": "fieldable_panels_pane",
-                    "subtype": "current:56",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "view_mode": "full"
-                    },
-                    "cache": [],
-                    "style": [],
-                    "css": [],
-                    "extras": [],
-                    "position": "0",
-                    "locks": [],
-                    "uuid": "de1247d2-aa0b-496b-99ae-042407c101ab",
-                    "fpp_data": {
-                        "title": "",
-                        "bundle": "image",
-                        "link": "0",
-                        "path": "",
-                        "reusable": "0",
-                        "admin_title": "",
-                        "admin_description": "",
-                        "category": "Reusable Content",
-                        "view_access": null,
-                        "edit_access": null,
-                        "uuid": "b625e20b-dcfa-4537-b27e-443e9e5d1115",
-                        "language": "und",
-                        "field_basic_image_caption": [],
-                        "field_basic_image_image": [
-                            {
-                                "field_file_image_alt_text": [],
-                                "field_file_image_title_text": [],
-                                "alt": "",
-                                "title": "",
-                                "height": "667",
-                                "width": "1000",
-                                "description": null,
-                                "link": null,
-                                "type": null,
-                                "image_path": "files/dkan_data_story/A_nurse_vaccinates_Barack_Obama_against_H1N1_0.jpg"
-                            }
-                        ],
-                        "rdf_mapping": []
-                    }
-                },
-                {
-                    "panel": "header",
                     "type": "node_author",
                     "subtype": "node_author",
                     "shown": "1",
@@ -502,6 +430,53 @@
                     "position": "1",
                     "locks": [],
                     "uuid": "7ee25ef9-6b17-4111-89a1-bd9c6451c1d1"
+                },
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:4d69d6d5-1a8f-449a-879a-371effdbea24",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "5aa1944d-c4d9-4ae5-a670-bd13314d124a",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "image",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "4d69d6d5-1a8f-449a-879a-371effdbea24",
+                        "language": "und",
+                        "field_basic_image_caption": [],
+                        "field_basic_image_image": [
+                            {
+                                "field_file_image_alt_text": [],
+                                "field_file_image_title_text": [],
+                                "alt": "",
+                                "title": "",
+                                "height": "667",
+                                "width": "1000",
+                                "description": null,
+                                "link": null,
+                                "type": null,
+                                "image_path": "files/dkan_data_story/Barack_Obama_against_H1N1.jpg"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
                 }
             ],
             "panelizer_entity": {
