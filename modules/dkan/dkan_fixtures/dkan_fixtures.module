@@ -509,10 +509,12 @@ function dkan_fixtures_save_fixture($fixture, $module_path) {
   fwrite($file, $fixture['content']);
   fclose($file);
   if (isset($fixture['files'])) {
+    $files_dir_path = $module_path . '/data/files/' . $fixture['files_subdir'];
+    file_prepare_directory($files_dir_path, FILE_CREATE_DIRECTORY);
     foreach ($fixture['files'] as $file) {
       $file = urldecode($file);
       $file = preg_replace('!\s+!', ' ', $file);
-      $destination = $module_path . '/data/files/' . $fixture['files_subdir'] . '/' . basename($file);
+      $destination = $files_dir_path . '/' . basename($file);
       file_unmanaged_copy($file, $destination, FILE_EXISTS_REPLACE);
     }
   }
@@ -609,13 +611,13 @@ function dkan_fixtures_dkan_save_data($nids = array()) {
   $modules = $modules ? $modules : array('dkan_fixtures');
   $module = array_pop($modules);
   $module_path = drupal_get_path('module', $module);
-  // Remove old files.
-  $files = glob($module_path . '/data/*');
-  foreach ($files as $file) {
-    if (is_file($file)) {
-      unlink($file);
-    }
-  }
+
+  $fixtures_dir = $module_path . '/data';
+  // Prepare directory.
+  file_prepare_directory($fixtures_dir, FILE_CREATE_DIRECTORY);
+  // Empty directory.
+  rrmdir($fixtures_dir);
+
   // Create new fixtures.
   $fixtures = dkan_fixtures_render_fixtures($nids);
   if (module_hook($module, 'dkan_fixtures_prerendered')) {
@@ -625,10 +627,27 @@ function dkan_fixtures_dkan_save_data($nids = array()) {
       $fixtures[] = $fixture();
     }
   }
-  // Save them.
+  // Save all fixtures + associated files.
   foreach ($fixtures as $fixture) {
     dkan_fixtures_save_fixture($fixture, $module_path);
   }
   variable_set(DKAN_FIXTURES_IS_EXPORTING, FALSE);
+}
+
+/**
+ * Delete all content in directory.
+ */
+function rrmdir($dir) {
+  if (is_dir($dir)) {
+    $objects = scandir($dir);
+    foreach ($objects as $object) {
+      if ($object != "." && $object != "..") {
+        if (is_dir($dir."/".$object))
+          rrmdir($dir."/".$object);
+        else
+          unlink($dir."/".$object);
+      }
+    }
+  }
 }
 
