@@ -21,7 +21,7 @@ class DefaultContentDataDashboardsImport extends DefaultContentPanelizedNodesImp
   }
 
   /**
-   *
+   * Prepare row data for import.
    */
   public function prepareRow($row) {
 

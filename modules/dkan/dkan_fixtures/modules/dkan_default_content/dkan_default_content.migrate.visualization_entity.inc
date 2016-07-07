@@ -51,9 +51,10 @@ class DefaultContentVisualizationEntityImport extends Migration {
   }
 
   /**
-   *
+   * Prepare row data to be imported.
    */
   public function prepareRow($row) {
+
     // If a file was used then download the file locally and update the field settings.
     $settings = json_decode($row->settings);
     $source_url = $settings->source->url;
@@ -61,23 +62,13 @@ class DefaultContentVisualizationEntityImport extends Migration {
       $path_parts = explode('/', $source_url);
       if ($path_parts[0] === 'files') {
         // The file needs to be copied into the files directory.
-        $source_url = urldecode($source_url);
-        $source_url = preg_replace('!\s+!', ' ', $source_url);
-        $source_url = DRUPAL_ROOT . '/' . $this->endpoint . $source_url;
-        if (file_exists($source_url)) {
-          // Copy file and save on public directory.
-          $data = file_get_contents($source_url);
-          $name = basename($source_url);
-          $uri = 'public://' . $name;
-          $file = file_save_data($data, $uri, FILE_EXISTS_REPLACE);
-
-          if ($file) {
-            // Add file data in row.
-            $row->local_file = (array) $file;
-            // Update file path on settings field.
-            $settings->source->url = '/' . variable_get('file_public_path', conf_path() . '/files') . '/' . $name;
-            $row->settings = json_encode($settings);
-          }
+        $file = import_file($source_url, DRUPAL_ROOT . '/' . $this->endpoint);
+        if ($file) {
+          // Add file data in row.
+          $row->local_file = (array) $file;
+          // Update file path on settings field.
+          $settings->source->url = '/' . variable_get('file_public_path', conf_path() . '/files') . '/' . $name;
+          $row->settings = json_encode($settings);
         }
         else {
           $this->queuedMessages[] = array(
@@ -103,7 +94,7 @@ class DefaultContentVisualizationEntityImport extends Migration {
   }
 
   /**
-   * @return array
+   * Get fields.
    */
   public function getVisualizationEntityFields() {
     return array(

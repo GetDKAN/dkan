@@ -57,7 +57,7 @@ class DefaultContentPanelizedNodesImport extends Migration {
   }
 
   /**
-   *
+   * Do extra processing after import.
    */
   public function complete($entity, $row) {
     // Import panelizer data.
@@ -65,7 +65,7 @@ class DefaultContentPanelizedNodesImport extends Migration {
   }
 
   /**
-   *
+   * Get fields.
    */
   public function getPanelizedNodeFields() {
     return array(
@@ -77,11 +77,12 @@ class DefaultContentPanelizedNodesImport extends Migration {
   }
 
   /**
-   *
+   * Import all data related with panelizer.
    */
   public function importPanelizerData($entity, $panelizer_data) {
 
-    // Convert panelizer data into array recursively. Almos all functions on Panels expect arrays.
+    // Convert panelizer data into array recursively.
+    // Almost all functions on Panels expect arrays.
     $panelizer_data = json_decode(json_encode($panelizer_data), true);
 
     $panelizer_entity = $panelizer_data['panelizer_entity'];
@@ -96,6 +97,7 @@ class DefaultContentPanelizedNodesImport extends Migration {
 
       $pane['did'] = $panels_display['did'];
 
+      // Import Visualization Embeds.
       if ($pane['type'] === 'visualization_embed') {
         if (!empty($pane['configuration']['local_source'])) {
           // Get the visualization UUID.
@@ -109,6 +111,7 @@ class DefaultContentPanelizedNodesImport extends Migration {
         }
       }
 
+      // Import Fieldable Panel Panes.
       if ($pane['type'] === 'fieldable_panels_pane' && !empty($pane['fpp_data'])) {
         $fpp_data = $pane['fpp_data'];
         list($id_type, $id_value) = explode(':', $pane['subtype']);
@@ -143,8 +146,7 @@ class DefaultContentPanelizedNodesImport extends Migration {
   }
 
   /**
-   * TODO: This function needs to be refactored. There should be a better way to do the same.
-   *       Setting field values using an entity metadata wrapper is problematic for Spotlight.
+   * Import Fieldable Panel Panes.
    */
   private function save_fieldable_panel_pane_field($fpp, $fpp_data) {
     $fields = field_info_instances('fieldable_panels_pane', $fpp->bundle);
@@ -176,7 +178,8 @@ class DefaultContentPanelizedNodesImport extends Migration {
           }
           case 'field_basic_image_image': {
             $field_data = reset($fpp_data[$field_name]);
-            $file = $this->import_file($field_data['image_path']);
+            $orig_file_dir = DRUPAL_ROOT . '/' . $this->endpoint;
+            $file = import_file($field_data['image_path'], $orig_file_dir);
             if (!empty($file)) {
               $field_record['field_basic_image_image_fid'] = $file->fid;
               $field_record['field_basic_image_image_alt'] = $field_data['alt'];
@@ -195,7 +198,7 @@ class DefaultContentPanelizedNodesImport extends Migration {
             $field_data = reset($fpp_data[$field_name]);
             $field_record['field_basic_spotlight_duration_value'] = $field_data['value'];
             drupal_write_record('field_data_' . $field_name, $field_record);
-            drupal_write_record('field_revision_' . $field_name, $field_record);
+            //drupal_write_record('field_revision_' . $field_name, $field_record);
             break;
           }
           case 'field_basic_spotlight_items': {
@@ -204,7 +207,8 @@ class DefaultContentPanelizedNodesImport extends Migration {
             foreach($spotlight_items as $key => $spotlight_item) {
 
               $field_record['delta'] = $key;
-              $file = $this->import_file($spotlight_item['image_path']);
+              $orig_file_dir = DRUPAL_ROOT . '/' . $this->endpoint;
+              $file = import_file($spotlight_item['image_path'], $orig_file_dir);
               if (!empty($file)) {
                 $field_record['field_basic_spotlight_items_title'] = $spotlight_item['title'];
                 $field_record['field_basic_spotlight_items_description'] = $spotlight_item['description'];
@@ -233,32 +237,5 @@ class DefaultContentPanelizedNodesImport extends Migration {
         }
       }
     }
-  }
-
-  /**
-   *
-   */
-  private function import_file($path) {
-    $file_url = urldecode($path);
-    $file_url = preg_replace('!\s+!', ' ', $file_url);
-    $file_url = DRUPAL_ROOT . '/' . $this->endpoint . $file_url;
-    if (file_exists($file_url)) {
-      // Copy file and save on public directory.
-      $data = file_get_contents($file_url);
-      $name = basename($file_url);
-      $uri = 'public://' . $name;
-      try {
-        $file = file_save_data($data, $uri, FILE_EXISTS_RENAME);
-        return $file;
-
-      } catch (Exception $e) {
-        $this->queuedMessages[] = array(
-          'message' => t('The file %file could not be imported.', array('%file' => $uri)),
-          'level' => MigrationBase::MESSAGE_ERROR,
-        );
-      }
-    }
-
-    return array();
   }
 }

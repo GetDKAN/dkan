@@ -22,7 +22,7 @@ class DefaultContentDatasetImport extends MigrateCkanDatasetImport {
   }
 
   /**
-   * Prepares the row data for processing.
+   * Prepare row data for processing.
    */
   public function prepareRow($row) {
     parent::prepareRow($row);

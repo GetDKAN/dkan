@@ -26,7 +26,7 @@ class DefaultContentDataStoriesImport extends DefaultContentPanelizedNodesImport
   }
 
   /**
-   *
+   * Prepare row data for import.
    */
   public function prepareRow($row) {
 
