@@ -6,7 +6,7 @@
         "type": "dkan_data_story",
         "title": "London Income Analysis",
         "created": "1460662824",
-        "changed": "1467245249",
+        "changed": "1467853418",
         "body": {
             "und": [
                 {
@@ -18,7 +18,7 @@
                 }
             ]
         },
-        "field_image": "files/dkan_data_story/london1_0.jpg",
+        "field_image": "files/dkan_data_story/london1_0_0.jpg",
         "field_tags": [],
         "field_topic": [],
         "panelizer": {

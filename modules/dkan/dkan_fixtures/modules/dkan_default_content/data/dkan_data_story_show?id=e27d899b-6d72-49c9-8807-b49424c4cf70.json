@@ -6,7 +6,7 @@
         "type": "dkan_data_story",
         "title": "An End to Chickenpox: The Varicella Vaccine's Success Story",
         "created": "1459962814",
-        "changed": "1466606650",
+        "changed": "1467853618",
         "body": {
             "und": [
                 {
@@ -18,7 +18,7 @@
                 }
             ]
         },
-        "field_image": "files/dkan_data_story/A_nurse_vaccinates_Barack_Obama_against_H1N1.jpg",
+        "field_image": "files/dkan_data_story/A_nurse_vaccinates_Barack_Obama_against_H1N1_0.jpg",
         "field_tags": [],
         "field_topic": [],
         "panelizer": {
@@ -438,7 +438,7 @@
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:b625e20b-dcfa-4537-b27e-443e9e5d1115",
+                    "subtype": "current:56",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -471,12 +471,12 @@
                                 "field_file_image_title_text": [],
                                 "alt": "",
                                 "title": "",
-                                "height": "2731",
-                                "width": "4096",
+                                "height": "667",
+                                "width": "1000",
                                 "description": null,
                                 "link": null,
                                 "type": null,
-                                "image_path": "files/dkan_data_story/A_nurse_vaccinates_Barack_Obama_against_H1N1.jpg"
+                                "image_path": "files/dkan_data_story/A_nurse_vaccinates_Barack_Obama_against_H1N1_0.jpg"
                             }
                         ],
                         "rdf_mapping": []

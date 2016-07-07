@@ -6,7 +6,7 @@
         "type": "data_dashboard",
         "title": "Dynamic Transportation Visualizations",
         "created": "1460127350",
-        "changed": "1466610534",
+        "changed": "1467853188",
         "field_topic": [
             {
                 "name": "Transportation",
@@ -180,31 +180,6 @@
                     }
                 },
                 {
-                    "panel": "column2",
-                    "type": "visualization_embed",
-                    "subtype": "visualization_embed",
-                    "shown": "0",
-                    "access": [],
-                    "configuration": {
-                        "local_source": "",
-                        "remote_source": "https://swyft.cartodb.com/viz/04ccd6b6-9796-11e5-a101-0e3a376473ab/embed_map",
-                        "height": "600",
-                        "width": "100%",
-                        "override_title": 0,
-                        "override_title_text": "",
-                        "override_title_heading": "h2"
-                    },
-                    "cache": [],
-                    "style": {
-                        "settings": null
-                    },
-                    "css": [],
-                    "extras": [],
-                    "position": "2",
-                    "locks": [],
-                    "uuid": "97afbbd9-69d1-4d42-8423-1f00c38db73d"
-                },
-                {
                     "panel": "column1",
                     "type": "fieldable_panels_pane",
                     "subtype": "uuid:783fa7aa-6c48-4b6b-9be0-339d7447bad9",
@@ -314,7 +289,7 @@
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:d56f6170-4004-4584-88fd-f1b847ff925d",
+                    "subtype": "current:80",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -347,11 +322,11 @@
                                 "field_file_image_title_text": [],
                                 "alt": "Subway train departing",
                                 "title": "GTFS Data and Commuters",
-                                "height": 2848,
-                                "width": 4288,
+                                "height": 996,
+                                "width": 1500,
                                 "description": "GTFS data can tell us a lot about how riders use different systems and how often. ",
                                 "link": "",
-                                "image_path": "files/data_dashboard/tranist 01.jpg"
+                                "image_path": "files/data_dashboard/tranist-01.jpg"
                             },
                             {
                                 "field_file_image_alt_text": [],
@@ -369,11 +344,11 @@
                                 "field_file_image_title_text": [],
                                 "alt": "Heavy Traffic",
                                 "title": "",
-                                "height": 3104,
-                                "width": 2985,
+                                "height": 1040,
+                                "width": 1000,
                                 "description": "As cities get denser and transit systems get larger there may soon be fewer cars on the road. ",
                                 "link": "",
-                                "image_path": "files/data_dashboard/transit 04.jpg"
+                                "image_path": "files/data_dashboard/transit-04.jpg"
                             }
                         ],
                         "field_basic_spotlight_pager": [
