@@ -3,34 +3,20 @@
 /**
  * Migration class used to import Default Data Stories from fixtures.
  */
-class DefaultContentPagesImport extends DefaultContentPanelizedNodesImport {
+class DefaultContentPagesImport extends DkanPagesImport {
 
   /**
    * __construct().
    */
   public function __construct($arguments) {
-    $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
-    $arguments['list_url'] = $arguments['endpoint'] . 'page_list.json';
-    $arguments['item_url'] = $arguments['endpoint'] . 'page_show?id=:id.json';
-    $arguments['content_type'] = 'page';
+
+    if (!isset($arguments['endpoint'])) {
+      $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
+      $arguments['list_url'] = 'page_list.json';
+      $arguments['item_url'] = 'page_show?id=:id.json';
+    }
 
     parent::__construct($arguments);
-
-    // Add field mappings.
-    $this->addFieldMapping('body', 'body_value');
-    $this->addFieldMapping('body:summary', 'body_summary');
-    $this->addFieldMapping('body:format', 'body_format');
-  }
-
-  /**
-   *
-   */
-  public function prepareRow($row) {
-    // Prepare 'body' field for field mapping.
-    $body = $row->body->und[0];
-    $row->body_value = $body->value;
-    $row->body_summary = $body->summary;
-    $row->body_format = $body->format;
   }
 
   /**

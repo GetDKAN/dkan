@@ -11,6 +11,39 @@ $odsm_path = drupal_get_path('module', 'open_data_schema_map');
 require_once $odsm_path . '/open_data_schema_map.output.inc';
 
 /**
+ * Implements hook_migrate_api().
+ */
+function dkan_fixtures_migrate_api() {
+  $api = array(
+    // Migrate API, not CKAN's of course.
+    'api' => 2,
+    'groups' => array(
+      'dkan_fixtures' => array(
+        'title' => t('DKAN Fixtures'),
+      ),
+    ),
+    'migrations' => array(
+      'dkan_fixtures_datasets' => array(
+        'class_name' => 'DkanDatasetImport',
+        'group_name' => 'dkan_fixtures',
+        'title' => t('DKAN Dataset Fixtures'),
+      ),
+      'dkan_fixtures_resources' => array(
+        'class_name' => 'DkanResourceImport',
+        'group_name' => 'dkan_fixtures',
+        'title' => t('DKAN Resource Fixtures'),
+      ),
+      'dkan_fixtures_groups' => array(
+        'class_name' => 'DkanGroupImport',
+        'group_name' => 'dkan_fixtures',
+        'title' => t('DKAN Group Fixtures'),
+      ),
+    ),
+  );
+  return $api;
+}
+
+/**
  * Render fixtures for datasets.
  */
 function dkan_fixtures_render_fixtures($nids = array()) {
@@ -166,7 +199,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
 }
 
 /**
- *
+ * Implements hook_
  */
 function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = array()) {
   global $base_url;
@@ -315,6 +348,7 @@ function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_di
     $result = db_query("SELECT * FROM {panels_pane} WHERE did = :did", array(':did' => $panelizer_entity->did));
     foreach ($result as $obj) {
       $panels_pane = ctools_export_unpack_object('panels_pane', $obj);
+      // TODO
       unset($panels_pane->pid);
       unset($panels_pane->did);
 
@@ -524,9 +558,9 @@ function dkan_fixtures_save_fixture($fixture, $module_path) {
  * Deregisters DKAN fixture migrations.
  */
 function dkan_fixtures_migrations_disable() {
-  Migration::deregisterMigration('ckan_dataset_fixtures');
-  Migration::deregisterMigration('ckan_resource_fixtures');
-  Migration::deregisterMigration('ckan_group_fixtures');
+  Migration::deregisterMigration('dkan_fixtures_datasets');
+  Migration::deregisterMigration('dkan_fixtures_resources');
+  Migration::deregisterMigration('dkan_fixtures_groups');
 }
 
 /**
@@ -650,4 +684,33 @@ function rrmdir($dir) {
     }
   }
 }
+
+/**
+ * Helper function to import fixture files.
+ */
+function dkan_fixtures_import_file($file_path, $orig_dir) {
+
+  // Fix transliteration issues.
+  $file_url = urldecode($file_path);
+  $file_url = preg_replace('!\s+!', ' ', $file_url);
+  $file_url = $orig_dir . $file_url;
+
+  if (file_exists($file_url)) {
+    // Copy file and save on public directory.
+    $data = file_get_contents($file_url);
+    $name = basename($file_url);
+    $uri = 'public://' . $name;
+    try {
+      $file = file_save_data($data, $uri, FILE_EXISTS_RENAME);
+      return $file;
+
+    } catch (Exception $e) {
+      $this->queuedMessages[] = array(
+        'message' => t('The file %file could not be imported.', array('%file' => $uri)),
+        'level' => MigrationBase::MESSAGE_ERROR,
+      );
+    }
+  }
+}
+
 

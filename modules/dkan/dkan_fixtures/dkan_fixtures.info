@@ -5,4 +5,12 @@ package = DKAN
 
 dependencies[] = 'open_data_schema_map_dkan'
 dependencies[] = 'dkan_migrate_base'
-files[] = dkan_fixtures.migrate.inc
+
+files[] = dkan_fixtures.migrate.data_dashboard.inc
+files[] = dkan_fixtures.migrate.data_story.inc
+files[] = dkan_fixtures.migrate.dataset.inc
+files[] = dkan_fixtures.migrate.group.inc
+files[] = dkan_fixtures.migrate.page.inc
+files[] = dkan_fixtures.migrate.panelized_node.inc
+files[] = dkan_fixtures.migrate.resource.inc
+files[] = dkan_fixtures.migrate.visualization_entity.inc

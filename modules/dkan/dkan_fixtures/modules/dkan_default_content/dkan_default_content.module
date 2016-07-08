@@ -15,37 +15,37 @@ function dkan_default_content_migrate_api() {
     'migrations' => array(
       'dkan_default_content_datasets' => array(
         'class_name' => 'DefaultContentDatasetImport',
-        'group_name' => 'dkan_fixtures',
+        'group_name' => 'dkan_default_content',
         'title' => t('DKAN Default Datasets'),
       ),
       'dkan_default_content_resources' => array(
         'class_name' => 'DefaultContentResourceImport',
-        'group_name' => 'dkan_fixtures',
+        'group_name' => 'dkan_default_content',
         'title' => t('DKAN Default Resources'),
       ),
       'dkan_default_content_groups' => array(
         'class_name' => 'DefaultContentGroupImport',
-        'group_name' => 'dkan_fixtures',
+        'group_name' => 'dkan_default_content',
         'title' => t('DKAN Default Groups'),
       ),
       'dkan_default_content_visualization_entities' => array(
         'class_name' => 'DefaultContentVisualizationEntityImport',
-        'group_name' => 'dkan_fixtures',
+        'group_name' => 'dkan_default_content',
         'title' => t('DKAN Default Visualization Entities'),
       ),
       'dkan_default_content_data_stories' => array(
         'class_name' => 'DefaultContentDataStoriesImport',
-        'group_name' => 'dkan_fixtures',
+        'group_name' => 'dkan_default_content',
         'title' => t('DKAN Default Data Stories'),
       ),
       'dkan_default_content_data_dashboards' => array(
         'class_name' => 'DefaultContentDataDashboardsImport',
-        'group_name' => 'dkan_fixtures',
+        'group_name' => 'dkan_default_content',
         'title' => t('DKAN Default Data Dashboards'),
       ),
       'dkan_default_content_pages' => array(
         'class_name' => 'DefaultContentPagesImport',
-        'group_name' => 'dkan_fixtures',
+        'group_name' => 'dkan_default_content',
         'title' => t('DKAN Default Pages'),
       ),
     ),
@@ -72,32 +72,6 @@ function dkan_default_content_migrations_disable() {
   Migration::deregisterMigration('dkan_default_content_data_dashboards');
 }
 
-/**
- *
- */
-function import_file($file_path, $orig_dir) {
-
-  $file_url = urldecode($file_path);
-  $file_url = preg_replace('!\s+!', ' ', $file_url);
-  $file_url = $orig_dir . $file_url;
-
-  if (file_exists($file_url)) {
-    // Copy file and save on public directory.
-    $data = file_get_contents($file_url);
-    $name = basename($file_url);
-    $uri = 'public://' . $name;
-    try {
-      $file = file_save_data($data, $uri, FILE_EXISTS_RENAME);
-      return $file;
-
-    } catch (Exception $e) {
-      $this->queuedMessages[] = array(
-        'message' => t('The file %file could not be imported.', array('%file' => $uri)),
-        'level' => MigrationBase::MESSAGE_ERROR,
-      );
-    }
-  }
-}
 
 
 
