@@ -209,30 +209,16 @@ function dkan_fixtures_build_panelized_node_fixtures($content_type, &$fixtures, 
       $panelized_node['changed'] = $node->changed;
       $panelized_node['body'] = $node->body;
 
-      // Export specific data.
-      switch ($node->type) {
-
-        case 'dkan_data_story':
-          // Image
-          $panelized_node['field_image'] = '';
-          if (!empty($node->field_image)) {
-            $file = $node->field_image[LANGUAGE_NONE][0];
-            $panelized_node['field_image'] = 'files/' . $content_type . '/' . basename($file['uri']);
-            $files_to_save[] = drupal_realpath($file['uri']);
-          }
-          // Tags
-          $panelized_node['field_tags'] = dkan_fixtures_export_terms($node, 'field_tags');
-          // Topics
-          $panelized_node['field_topic'] = dkan_fixtures_export_terms($node, 'field_topic');
-          break;
-
-        case 'data_dashboard':
-          // Topics
-          $panelized_node['field_topic'] = dkan_fixtures_export_terms($node, 'field_topic');
-          break;
-
-        default:
-          break;
+      if ($node->field_topic) {
+        $panelized_node['field_topic'] = dkan_fixtures_export_terms($node, 'field_topic');
+      }
+      if ($node->field_tags) {
+        $panelized_node['field_tags'] = dkan_fixtures_export_terms($node, 'field_tags');
+      }
+      if ($node->field_image && !empty($node->field_image)) {
+        $file = $node->field_image[LANGUAGE_NONE][0];
+        $panelized_node['field_image'] = 'files/' . $content_type . '/' . basename($file['uri']);
+        $files_to_save[] = drupal_realpath($file['uri']);
       }
 
       // Add Panelizer data on export: panelizer_entity, panels_display and panels_pane.
@@ -553,22 +539,6 @@ function dkan_fixtures_open_data_schema_map_endpoint_query_alter(&$query, $machi
           unset($query->propertyConditions[$key]);
         }  
       }
-    }
-  }
-}
-
-/**
- * Adds additional fields to package_show.
- */
-function dkan_fixtures_open_data_schema_map_results_alter(&$result, $machine_name, $schema, $ids) {
-  $api = open_data_schema_map_api_load($machine_name);
-  if ($machine_name == 'ckan_package_show') {
-    $format = restws_format('array');
-    $resource = restws_resource_controller('node');
-    $restws_result = $format->viewResource($resource, $ids[0], NULL);
-    $fields = open_data_schema_map_additional_fields($api);
-    foreach ($fields as $id => $field) {
-      $result[0][0]['dkan_additional_fields'][$field] = $restws_result[$field];
     }
   }
 }
