@@ -144,5 +144,6 @@ Feature: Widgets
     And I select "remote" from "source_origin"
     And I fill in "edit-remote-source" with "http://demo.getdkan.com/node/7/recline-embed#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}}}"
     And I press "Finish"
+    And I wait for "Visualization embed"
     Then I should see "Visualization embed"
     
