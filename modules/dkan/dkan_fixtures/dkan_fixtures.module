@@ -233,13 +233,12 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = arra
       $panelized_node['title'] = $node->title;
       $panelized_node['created'] = $node->created;
       $panelized_node['changed'] = $node->changed;
+      $panelized_node['body'] = $node->body;
 
       // Export specific data.
       switch ($node->type) {
 
         case 'dkan_data_story':
-          // Body.
-          $panelized_node['body'] = $node->body;
           // Image
           $panelized_node['field_image'] = '';
           if (!empty($node->field_image)) {
@@ -256,10 +255,6 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = arra
         case 'data_dashboard':
           // Topics
           $panelized_node['field_topic'] = export_terms($node, 'field_topic');
-          break;
-
-        case 'page':
-          $panelized_node['body'] = $node->body;
           break;
 
         default:
