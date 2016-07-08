@@ -7,6 +7,17 @@
         "title": "Crime in America's Top 10 Most Populous Cities",
         "created": "1460393089",
         "changed": "1467852620",
+        "body": {
+            "und": [
+                {
+                    "value": "How are crime rates and types represented appropriately when comparing major metropolitan cities?",
+                    "summary": "",
+                    "format": "html",
+                    "safe_value": "<p>How are crime rates and types represented appropriately when comparing major metropolitan cities?</p>\n",
+                    "safe_summary": ""
+                }
+            ]
+        },
         "field_topic": [
             {
                 "name": "Public Safety",

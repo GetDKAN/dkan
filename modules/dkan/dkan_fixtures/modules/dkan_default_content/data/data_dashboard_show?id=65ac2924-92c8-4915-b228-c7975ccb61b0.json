@@ -7,6 +7,17 @@
         "title": "Dynamic Transportation Visualizations",
         "created": "1460127350",
         "changed": "1467859798",
+        "body": {
+            "und": [
+                {
+                    "value": "Transportation systems across the country are adapting to meet the needs of their stakeholders. It's a basic service that many citizens rely on, so it has to work for everyone all of the time. ",
+                    "summary": "",
+                    "format": "html",
+                    "safe_value": "<p>Transportation systems across the country are adapting to meet the needs of their stakeholders. It's a basic service that many citizens rely on, so it has to work for everyone all of the time.</p>\n",
+                    "safe_summary": ""
+                }
+            ]
+        },
         "field_topic": [
             {
                 "name": "Transportation",
