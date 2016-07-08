@@ -102,6 +102,19 @@ function dkan_fixtures_render_fixtures($nids = array()) {
           }
         }
       }
+      // Add additional fields.
+      // This is a temporal solution since ODSM is not exposing some fields like field_spatial.
+      // Load dataset.
+      $dataset = reset(entity_uuid_load('node', array($package_show['result']['id'])));
+      $api = open_data_schema_map_api_load('ckan_package_show');
+      $format = restws_format('array');
+      $resource = restws_resource_controller('node');
+      $restws_result = $format->viewResource($resource, $dataset->nid, NULL);
+      $fields = open_data_schema_map_additional_fields($api);
+      foreach ($fields as $field) {
+        $package_show['result']['dkan_additional_fields'][$field] = $restws_result[$field];
+      }
+
       $fixture_name = 'package_show?id=' . $id . '.json';
       $fdata = dkan_fixtures_build_fixture_data($fixture_name, $package_show);
       $fixtures[] = $fdata;
