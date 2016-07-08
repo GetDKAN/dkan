@@ -93,10 +93,12 @@ function dkan_fixtures_render_fixtures($nids = array()) {
       // fixture later.
       if (isset($package_show['result']['groups'])) {
         foreach ($package_show['result']['groups'] as $key => $group) {
-          // Remove HTML tags from description.
-          $group['description'] = strip_tags($group['description']);
-          $group_ids[] = $group['id'];
-          $group_data[$group['id']] = $group;
+          if (!isset($group_data[$group['id']])) {
+            // Remove HTML tags from description.
+            $group['description'] = strip_tags($group['description']);
+            $group_ids[] = $group['id'];
+            $group_data[$group['id']] = $group;
+          }
         }
       }
       $rendered_fixtures[] = array(
