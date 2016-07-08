@@ -5,6 +5,7 @@ package = DKAN
 
 dependencies[] = dkan_fixtures
 dependencies[] = migrate_extras
+dependencies[] = dkan_default_topics
 
 files[] = dkan_default_content.migrate.data_dashboard.inc
 files[] = dkan_default_content.migrate.data_story.inc
