@@ -61,7 +61,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
   $package_list = $package_list_fetch['result'];
 
   $fixture_name = 'package_list.json';
-  $fdata = dkan_fixtures_build_fixture_data($fixture_name, $package_list);
+  $fdata = dkan_fixtures_build_fixture_data($fixture_name, $package_list['result']);
   $fixtures[] = $fdata;
 
   $resource_ids = array();
@@ -116,7 +116,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
       }
 
       $fixture_name = 'package_show?id=' . $id . '.json';
-      $fdata = dkan_fixtures_build_fixture_data($fixture_name, $package_show);
+      $fdata = dkan_fixtures_build_fixture_data($fixture_name, $package_show['result']);
       $fixtures[] = $fdata;
     }
 
@@ -147,7 +147,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
         }
       }
       $fixture_name = 'resource_show?id=' . $id . '.json';
-      $fdata = dkan_fixtures_build_fixture_data($fixture_name, $resource_show, $files_to_save, 'resource');
+      $fdata = dkan_fixtures_build_fixture_data($fixture_name, $resource_show['result'], $files_to_save, 'resource');
       $fixtures[] = $fdata;
     }
 
