@@ -31,7 +31,7 @@ function dkan_default_content_enable() {
   $migration = Migration::getInstance('dkan_default_content_data_dashboards');
   $migration->processImport();
   // Import Pages (Homepage + About page).
-  import_default_pages();
+  dkan_default_content_import_default_pages();
 
   // Clear message queue.
   drupal_get_messages('status', TRUE);
@@ -42,7 +42,7 @@ function dkan_default_content_enable() {
 /**
  * Function that handles the import of default pages.
  */
-function import_default_pages() {
+function dkan_default_content_import_default_pages() {
   // Get migration instance.
   $migration = Migration::getInstance('dkan_default_content_pages');
   // Import pages.

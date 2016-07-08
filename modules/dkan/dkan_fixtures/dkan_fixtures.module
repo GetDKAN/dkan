@@ -183,17 +183,17 @@ function dkan_fixtures_render_fixtures($nids = array()) {
     }
 
     // Export Visualization Entities.
-    _build_visualization_entity_fixtures($rendered_fixtures);
+    dkan_fixtures_build_visualization_entity_fixtures($rendered_fixtures);
 
     // Export Data Dashboards.
-    _build_panelized_nodes_fixtures('data_dashboard', $rendered_fixtures);
+    dkan_fixtures_build_panelized_node_fixtures('data_dashboard', $rendered_fixtures);
 
     // Export Data Stories.
-    _build_panelized_nodes_fixtures('dkan_data_story', $rendered_fixtures);
+    dkan_fixtures_build_panelized_node_fixtures('dkan_data_story', $rendered_fixtures);
   }
 
   // Export Home Page + About page
-  _build_panelized_nodes_fixtures('page', $rendered_fixtures);
+  dkan_fixtures_build_panelized_node_fixtures('page', $rendered_fixtures);
 
   return $rendered_fixtures;
 }
@@ -201,7 +201,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
 /**
  * Implements hook_
  */
-function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = array()) {
+function dkan_fixtures_build_panelized_node_fixtures($content_type, &$fixtures, $nids = array()) {
   global $base_url;
 
   $panelized_nodes = array();
@@ -247,14 +247,14 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = arra
             $files_to_save[] = drupal_realpath($file['uri']);
           }
           // Tags
-          $panelized_node['field_tags'] = export_terms($node, 'field_tags');
+          $panelized_node['field_tags'] = dkan_fixtures_export_terms($node, 'field_tags');
           // Topics
-          $panelized_node['field_topic'] = export_terms($node, 'field_topic');
+          $panelized_node['field_topic'] = dkan_fixtures_export_terms($node, 'field_topic');
           break;
 
         case 'data_dashboard':
           // Topics
-          $panelized_node['field_topic'] = export_terms($node, 'field_topic');
+          $panelized_node['field_topic'] = dkan_fixtures_export_terms($node, 'field_topic');
           break;
 
         default:
@@ -262,7 +262,7 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = arra
       }
 
       // Add Panelizer data on export: panelizer_entity, panels_display and panels_pane.
-      append_panelizer_data($node, $panelized_node, $files_to_save, $content_type);
+      dkan_fixtures_append_panelizer_data($node, $panelized_node, $files_to_save, $content_type);
 
       // If homepage then add flag.
       $site_frontpage = variable_get('site_frontpage', 'node');
@@ -303,7 +303,7 @@ function _build_panelized_nodes_fixtures($content_type, &$fixtures, $nids = arra
 /*
  * Returns an array with all terms in field formatted for export.
  */
-function export_terms( $node, $terms_field ) {
+function dkan_fixtures_export_terms( $node, $terms_field ) {
 
   $node_wrapper = entity_metadata_wrapper('node', $node);
 
@@ -324,7 +324,7 @@ function export_terms( $node, $terms_field ) {
 /**
 *
 */
-function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_dir) {
+function dkan_fixtures_append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_dir) {
   $panelizer_data = array();
 
   if (isset($node->panelizer)) {
@@ -459,7 +459,7 @@ function append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_di
 /**
  *
  */
-function _build_visualization_entity_fixtures(&$rendered_fixtures) {
+function dkan_fixtures_build_visualization_entity_fixtures(&$rendered_fixtures) {
 
   $visualization_entities = array();
   $visualization_entity_files = array();
@@ -645,7 +645,7 @@ function dkan_fixtures_dkan_save_data($nids = array()) {
   // Prepare directory.
   file_prepare_directory($fixtures_dir, FILE_CREATE_DIRECTORY);
   // Empty directory.
-  rrmdir($fixtures_dir);
+  dkan_fixtures_rrmdir($fixtures_dir);
 
   // Create new fixtures.
   $fixtures = dkan_fixtures_render_fixtures($nids);
@@ -666,13 +666,13 @@ function dkan_fixtures_dkan_save_data($nids = array()) {
 /**
  * Delete all content in directory.
  */
-function rrmdir($dir) {
+function dkan_fixtures_rrmdir($dir) {
   if (is_dir($dir)) {
     $objects = scandir($dir);
     foreach ($objects as $object) {
       if ($object != "." && $object != "..") {
         if (is_dir($dir."/".$object))
-          rrmdir($dir."/".$object);
+          dkan_fixtures_rrmdir($dir."/".$object);
         else
           unlink($dir."/".$object);
       }
