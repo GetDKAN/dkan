@@ -327,9 +327,6 @@ function dkan_fixtures_append_panels_pane_data($display_id, &$panelizer_data, &$
     unset($panels_pane->pid);
     unset($panels_pane->did);
 
-    /////////////////////////////////////////////////
-    // Visualization Embed
-    /////////////////////////////////////////////////
     if ($panels_pane->type === 'visualization_embed') {
       $embed_config = $panels_pane->configuration;
       if (!empty($embed_config['local_source'])) {
@@ -342,68 +339,77 @@ function dkan_fixtures_append_panels_pane_data($display_id, &$panelizer_data, &$
       }
     }
 
-    /////////////////////////////////////////////////
-    // Fieldable Panel Pane
-    /////////////////////////////////////////////////
     if ($panels_pane->type === 'fieldable_panels_pane') {
       // Append 'Fieldable panels pane' data.
-      $fpp_data = fieldable_panels_panes_load_from_subtype_force($panels_pane->subtype);
-      // Unset all information that is not needed.
-      // IDs and timestamps are going to be generated and associated during import.
-      unset($fpp_data->vid);
-      unset($fpp_data->timestamp);
-      unset($fpp_data->uid);
-      unset($fpp_data->log);
-      unset($fpp_data->vuuid);
-      unset($fpp_data->fpid);
-      unset($fpp_data->created);
-      unset($fpp_data->changed);
-      unset($fpp_data->current_vid);
-
-      if (isset($fpp_data->bundle)) {
-        // Get all field instances available for the bundle.
-        $fields = field_info_instances('fieldable_panels_pane', $fpp_data->bundle);
-        // Cleanup data on each field.
-        foreach ($fields as $field_name => $field_spec) {
-
-          // Cleanup field data. Remove the language part.
-          $field_data = $fpp_data->$field_name;
-          if (isset($field_data[LANGUAGE_NONE])) {
-            $fpp_data->$field_name = $field_data[LANGUAGE_NONE];
-          }
-
-          if ($field_name === 'field_basic_image_image' || $field_name === 'field_basic_spotlight_items') {
-            $field_data = $fpp_data->$field_name;
-            $field_items = array();
-            foreach ($field_data as $key => $field_item) {
-              $field = array();
-              $field['alt'] = $field_item['alt'];
-              $field['title'] = $field_item['title'];
-              $field['height'] = $field_item['height'];
-              $field['width'] = $field_item['width'];
-              $field['description'] = $field_item['description'];
-              $field['link'] = $field_item['link'];
-              $field['type'] = $field_item['type'];
-              $field['image_path'] = 'files/' . $files_dir . '/' . basename($field_item['uri']);
-              // Add file to the list of files that need to be imported.
-              $files_to_save[] = drupal_realpath($field_item['uri']);
-              $field_items[] = $field;
-            }
-            $fpp_data->$field_name = $field_items;
-          }
-        }
-
-        // Spotlight pager field does not need to be exported since it's generated automatically.
-        if ($field_name === 'field_basic_spotlight_pager') {
-          unset($fpp_data->$field_name);
-        }
-      }
-
-      $panels_pane->fpp_data = $fpp_data;
+      dkan_fixtures_append_fieldable_panel_pane_data($panels_pane, $files_to_save, $files_dir);
     }
 
+    // Append panel pane.
     $panelizer_data['panels_pane'][] = $panels_pane;
   }
+}
+
+/**
+ *
+ */
+function dkan_fixtures_append_fieldable_panel_pane_data(&$panels_pane, &$files_to_save, $files_dir) {
+
+  // Load fields associated with the fieldable panel pane.
+  $fpp_data = fieldable_panels_panes_load_from_subtype_force($panels_pane->subtype);
+  // Unset all information that is not needed.
+  // IDs and timestamps are going to be generated and associated during import.
+  unset($fpp_data->vid);
+  unset($fpp_data->timestamp);
+  unset($fpp_data->uid);
+  unset($fpp_data->log);
+  unset($fpp_data->vuuid);
+  unset($fpp_data->fpid);
+  unset($fpp_data->created);
+  unset($fpp_data->changed);
+  unset($fpp_data->current_vid);
+
+  if (isset($fpp_data->bundle)) {
+    // Get all field instances available for the bundle.
+    $fields = field_info_instances('fieldable_panels_pane', $fpp_data->bundle);
+    // Cleanup data on each field.
+    foreach ($fields as $field_name => $field_spec) {
+
+      // Cleanup field data. Remove the language part.
+      $field_data = $fpp_data->$field_name;
+      if (isset($field_data[LANGUAGE_NONE])) {
+        $fpp_data->$field_name = $field_data[LANGUAGE_NONE];
+      }
+
+      // Cleanup field data for image fields.
+      if ($field_name === 'field_basic_image_image' || $field_name === 'field_basic_spotlight_items') {
+        $field_data = $fpp_data->$field_name;
+        $field_items = array();
+        foreach ($field_data as $key => $field_item) {
+          $field = array();
+          $field['alt'] = $field_item['alt'];
+          $field['title'] = $field_item['title'];
+          $field['height'] = $field_item['height'];
+          $field['width'] = $field_item['width'];
+          $field['description'] = $field_item['description'];
+          $field['link'] = $field_item['link'];
+          $field['type'] = $field_item['type'];
+          $field['image_path'] = 'files/' . $files_dir . '/' . basename($field_item['uri']);
+          // Add file to the list of files that need to be imported.
+          $files_to_save[] = drupal_realpath($field_item['uri']);
+          $field_items[] = $field;
+        }
+        $fpp_data->$field_name = $field_items;
+      }
+    }
+
+    // Spotlight pager field does not need to be exported since it's generated automatically.
+    if ($field_name === 'field_basic_spotlight_pager') {
+      unset($fpp_data->$field_name);
+    }
+  }
+
+  // Append fieldable panel pane data.
+  $panels_pane->fpp_data = $fpp_data;
 }
 
 /**
