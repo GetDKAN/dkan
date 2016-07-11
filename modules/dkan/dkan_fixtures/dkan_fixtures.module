@@ -290,17 +290,18 @@ function dkan_fixtures_append_panelizer_data($node, &$fixture_data, &$files_to_s
     $result = db_query("SELECT * FROM {panelizer_entity} WHERE entity_id = :nid", array(':nid' => $node->nid))->fetchObject();
     $panelizer_entity = ctools_export_unpack_object('panelizer_entity', $result);
 
-    // Get panels_display.
+    // Get panels_display information.
     $result = db_query("SELECT * FROM {panels_display} WHERE did = :did", array(':did' => $panelizer_entity->did))->fetchObject();
     $panels_display = ctools_export_unpack_object('panels_display', $result);
     unset($panels_display->did);
     $panelizer_data['panels_display'] = $panels_display;
 
-    // Get panels_pane.
+    // Get panels_pane information.
     $result = db_query("SELECT * FROM {panels_pane} WHERE did = :did", array(':did' => $panelizer_entity->did));
     foreach ($result as $obj) {
       $panels_pane = ctools_export_unpack_object('panels_pane', $obj);
-      // TODO
+      // Unset all information that is not needed.
+      // IDs and timestamps are going to be generated and associated during import.
       unset($panels_pane->pid);
       unset($panels_pane->did);
 
@@ -319,7 +320,8 @@ function dkan_fixtures_append_panelizer_data($node, &$fixture_data, &$files_to_s
       if ($panels_pane->type === 'fieldable_panels_pane') {
         // Append 'Fieldable panels pane' data.
         $fpp_data = fieldable_panels_panes_load_from_subtype_force($panels_pane->subtype);
-        // Don't export data that is not needed.
+        // Unset all information that is not needed.
+        // IDs and timestamps are going to be generated and associated during import.
         unset($fpp_data->vid);
         unset($fpp_data->timestamp);
         unset($fpp_data->uid);
@@ -342,55 +344,24 @@ function dkan_fixtures_append_panelizer_data($node, &$fixture_data, &$files_to_s
               $fpp_data->$field_name = $field_data[LANGUAGE_NONE];
             }
 
-            // Image fieldable panel pane.
-            if ($fpp_data->bundle === 'image' && $field_name === 'field_basic_image_image') {
-              $field_data = reset($field_data[LANGUAGE_NONE]);
-              $file_uri = $field_data['uri'];
-              // Clear field data.
-              $fpp_data->field_basic_image_image = array();
-
-              $field = array();
-              // Copy the data that needs to be exported.
-              $field['field_file_image_alt_text'] = $field_data['field_file_image_alt_text'];
-              $field['field_file_image_title_text'] = $field_data['field_file_image_title_text'];
-              $field['alt'] = $field_data['alt'];
-              $field['title'] = $field_data['title'];
-              $field['height'] = $field_data['height'];
-              $field['width'] = $field_data['width'];
-              $field['description'] = $field_data['description'];
-              $field['link'] = $field_data['link'];
-              $field['type'] = $field_data['link'];
-              // Copy only the image data that is important.
-              $field['image_path'] = 'files/' . $files_dir . '/' . basename($field_data['uri']);
-
-              // Add file to the list of files that need to be imported.
-              $files_to_save[] = drupal_realpath($file_uri);
-              $fpp_data->field_basic_image_image[] = $field;
-            }
-
-            // Spotlight fieldable panel pane.
-            if ($fpp_data->bundle === 'spotlight' && $field_name === 'field_basic_spotlight_items') {
-              $spotlight_items = $fpp_data->field_basic_spotlight_items;
-              // Clear field data.
-              $fpp_data->field_basic_spotlight_items = array();
-              foreach ($spotlight_items as $spotlight_item) {
-                $item = array();
-                // Copy the data that needs to be exported.
-                $item['field_file_image_alt_text'] = $spotlight_item['field_file_image_alt_text'];
-                $item['field_file_image_title_text'] = $spotlight_item['field_file_image_title_text'];
-                $item['alt'] = $spotlight_item['alt'];
-                $item['title'] = $spotlight_item['title'];
-                $item['height'] = $spotlight_item['height'];
-                $item['width'] = $spotlight_item['width'];
-                $item['description'] = $spotlight_item['description'];
-                $item['link'] = $spotlight_item['link'];
-                // Copy only the image data that is important.
-                $item['image_path'] = 'files/' . $files_dir . '/' . basename($spotlight_item['uri']);
+            if ($field_name === 'field_basic_image_image' || $field_name === 'field_basic_spotlight_items') {
+              $field_data = $fpp_data->$field_name;
+              $field_items = array();
+              foreach ($field_data as $key => $field_item) {
+                $field = array();
+                $field['alt'] = $field_item['alt'];
+                $field['title'] = $field_item['title'];
+                $field['height'] = $field_item['height'];
+                $field['width'] = $field_item['width'];
+                $field['description'] = $field_item['description'];
+                $field['link'] = $field_item['link'];
+                $field['type'] = $field_item['type'];
+                $field['image_path'] = 'files/' . $files_dir . '/' . basename($field_item['uri']);
                 // Add file to the list of files that need to be imported.
-                $files_to_save[] = drupal_realpath($spotlight_item['uri']);
-
-                $fpp_data->field_basic_spotlight_items[] = $item;
+                $files_to_save[] = drupal_realpath($field_item['uri']);
+                $field_items[] = $field;
               }
+              $fpp_data->$field_name = $field_items;
             }
           }
 
@@ -406,6 +377,8 @@ function dkan_fixtures_append_panelizer_data($node, &$fixture_data, &$files_to_s
       $panelizer_data['panels_pane'][] = $panels_pane;
     }
 
+    // Unset all information that is not needed.
+    // IDs and timestamps are going to be generated and associated during import.
     unset($panelizer_entity->entity_id);
     unset($panelizer_entity->revision_id);
     unset($panelizer_entity->contexts);
