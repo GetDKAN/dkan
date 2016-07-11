@@ -156,7 +156,7 @@
                                 "width": "750",
                                 "description": null,
                                 "link": null,
-                                "type": null,
+                                "type": "image",
                                 "image_path": "files/dkan_data_story/Madison_trees_1.jpg"
                             }
                         ],

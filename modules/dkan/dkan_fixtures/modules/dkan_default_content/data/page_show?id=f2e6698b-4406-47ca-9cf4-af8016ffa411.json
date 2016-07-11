@@ -235,7 +235,7 @@
                                 "width": "120",
                                 "description": null,
                                 "link": null,
-                                "type": null,
+                                "type": "image",
                                 "image_path": "files/page/LCr5fi0_3.png"
                             }
                         ],
@@ -301,7 +301,7 @@
                                 "width": "120",
                                 "description": null,
                                 "link": null,
-                                "type": null,
+                                "type": "image",
                                 "image_path": "files/page/pjKIPkG_2.png"
                             }
                         ],
@@ -367,7 +367,7 @@
                                 "width": "120",
                                 "description": null,
                                 "link": null,
-                                "type": null,
+                                "type": "image",
                                 "image_path": "files/page/jfiHlsa_2.png"
                             }
                         ],

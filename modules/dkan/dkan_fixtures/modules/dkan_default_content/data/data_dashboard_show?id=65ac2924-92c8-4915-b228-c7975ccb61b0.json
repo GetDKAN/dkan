@@ -392,6 +392,7 @@
                                 "width": 1500,
                                 "description": "GTFS data can tell us a lot about how riders use different systems and how often. ",
                                 "link": "",
+                                "type": "image",
                                 "image_path": "files/data_dashboard/tranist-001.jpg"
                             },
                             {
@@ -401,6 +402,7 @@
                                 "width": 2048,
                                 "description": "Does the infrastructure of bike lanes relate to an increase in bikeshare memberships? ",
                                 "link": "",
+                                "type": "image",
                                 "image_path": "files/data_dashboard/transit-003.jpg"
                             },
                             {
@@ -410,6 +412,7 @@
                                 "width": 1000,
                                 "description": "As cities get denser and transit systems get larger there may soon be fewer cars on the road. ",
                                 "link": "",
+                                "type": "image",
                                 "image_path": "files/data_dashboard/transit-004.jpg"
                             }
                         ],

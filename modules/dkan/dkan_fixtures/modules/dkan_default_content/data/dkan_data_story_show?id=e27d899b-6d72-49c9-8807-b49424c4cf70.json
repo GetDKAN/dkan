@@ -116,7 +116,7 @@
                                 "width": "657",
                                 "description": null,
                                 "link": null,
-                                "type": null,
+                                "type": "image",
                                 "image_path": "files/dkan_data_story/Screen Shot 2016-04-21 at 6.24.35 PM.png"
                             }
                         ],
@@ -245,7 +245,7 @@
                                 "width": "883",
                                 "description": null,
                                 "link": null,
-                                "type": null,
+                                "type": "image",
                                 "image_path": "files/dkan_data_story/postvaccinerate.png"
                             }
                         ],
@@ -333,7 +333,7 @@
                                 "width": "883",
                                 "description": null,
                                 "link": null,
-                                "type": null,
+                                "type": "image",
                                 "image_path": "files/dkan_data_story/postvaccinedeaths.png"
                             }
                         ],
@@ -460,7 +460,7 @@
                                 "width": "1000",
                                 "description": null,
                                 "link": null,
-                                "type": null,
+                                "type": "image",
                                 "image_path": "files/dkan_data_story/Barack_Obama_against_H1N1.jpg"
                             }
                         ],
