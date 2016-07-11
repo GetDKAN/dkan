@@ -11,6 +11,7 @@ Feature: Dkan Harvest
     And I am on "node/add/harvest-source"
     Then I should see the text "Create Harvest Source"
     And I fill in "Title" with "Source 1"
+    And I wait for "2" seconds
     And I fill in "Source URI" with "https://data.mo.gov/data.json"
     And I select "datajson_v1_1_json" from "Type"
     And I press "Save"
@@ -50,6 +51,26 @@ Feature: Dkan Harvest
   And I am on the "Harvest Dashboard" page
   Then I should see the text "Source one"
   And I should not see the text "Source two"
+
+  @api
+  Scenario: As a user I should have access to see harvest information into dataset node.
+  Given users:
+    | name             | mail                   | roles           |
+    | Administrator    | admin@fakeemail.com    | administrator   |
+  And harvest sources:
+    | title      | machine name | source uri                        | type               | author        | published |
+    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+  And I am logged in as a "Administrator"
+  And I am on the "Source one" page
+  Given The "source_one" source is harvested
+  When I am on the "Source one" page
+  Then I should see the link "Wisconsin Polling Places"
+  And I click "Wisconsin Polling Places"
+  And I should see the text "Harvested from Source one"
+  And I should see the text "Harvest Object Id"
+  And I should see the text "Harvest Source Id"
+  And I should see the text "Harvest Source Title"
+
 
   @api
   Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
