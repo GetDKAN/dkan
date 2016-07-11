@@ -171,6 +171,7 @@ class DkanPanelizedNodesImport extends Migration {
     $fields = field_info_instances('fieldable_panels_pane', $fpp->bundle);
 
     foreach ($fields as $field_name => $field_spec) {
+
       if (isset($fpp_data[$field_name])) {
         // Setup basic field information (common to all field types).
         $field_record = array();
@@ -181,77 +182,41 @@ class DkanPanelizedNodesImport extends Migration {
         $field_record['delta'] = 0;
         $field_record['language'] = LANGUAGE_NONE;
 
-        switch($field_name) {
-          /////////////////////////////////
-          // Image field.
-          /////////////////////////////////
-          case 'field_basic_image_caption': {
-            $field_data = reset($fpp_data[$field_name]);
-            $field_record['field_basic_image_caption_value'] = $field_data['value'];
-            $field_record['field_basic_image_caption_summary'] = $field_data['summary'];
-            $field_record['field_basic_image_caption_format'] = $field_data['format'];
-            drupal_write_record('field_data_' . $field_name, $field_record);
-            drupal_write_record('field_revision_' . $field_name, $field_record);
-            break;
-          }
-          case 'field_basic_image_image': {
-            $field_data = reset($fpp_data[$field_name]);
-            $orig_file_dir = DRUPAL_ROOT . '/' . $this->endpoint;
-            $file = dkan_fixtures_import_file($field_data['image_path'], $orig_file_dir);
-            if (!empty($file)) {
-              $field_record['field_basic_image_image_fid'] = $file->fid;
-              $field_record['field_basic_image_image_alt'] = $field_data['alt'];
-              $field_record['field_basic_image_image_title'] = $field_data['title'];
-              $field_record['field_basic_image_image_width'] = $field_data['width'];
-              $field_record['field_basic_image_image_height'] = $field_data['height'];
-              drupal_write_record('field_data_' . $field_name, $field_record);
-              drupal_write_record('field_revision_' . $field_name, $field_record);
-            }
-            break;
-          }
-          /////////////////////////////////
-          // Spotlight field.
-          /////////////////////////////////
-          case 'field_basic_spotlight_duration': {
-            $field_data = reset($fpp_data[$field_name]);
-            $field_record['field_basic_spotlight_duration_value'] = $field_data['value'];
-            drupal_write_record('field_data_' . $field_name, $field_record);
-            drupal_write_record('field_revision_' . $field_name, $field_record);
-            break;
-          }
-          case 'field_basic_spotlight_items': {
-            // This is a multi-value field so multiple items need to be processed.
-            $spotlight_items = $fpp_data[$field_name];
-            foreach($spotlight_items as $key => $spotlight_item) {
+        // Import additional fpp data.
+        $field_data = $fpp_data[$field_name];
 
-              $field_record['delta'] = $key;
-              $orig_file_dir = DRUPAL_ROOT . '/' . $this->endpoint;
-              $file = dkan_fixtures_import_file($spotlight_item['image_path'], $orig_file_dir);
-              if (!empty($file)) {
-                $field_record['field_basic_spotlight_items_title'] = $spotlight_item['title'];
-                $field_record['field_basic_spotlight_items_description'] = $spotlight_item['description'];
-                $field_record['field_basic_spotlight_items_link'] = $spotlight_item['link'];
-                $field_record['field_basic_spotlight_items_alt'] = $spotlight_item['alt'];
-                $field_record['field_basic_spotlight_items_fid'] = $file->fid;
-                drupal_write_record('field_data_' . $field_name, $field_record);
-                drupal_write_record('field_revision_' . $field_name, $field_record);
+        if (empty($field_data)) {
+          // Save record as it is.
+          drupal_write_record('field_data_' . $field_name, $field_record);
+          drupal_write_record('field_revision_' . $field_name, $field_record);
+        }
+        else {
+          // Add extra field data.
+          // Process all field items. 'Spotlight' FFPs for example have more than one field items.
+          foreach ($field_data as $key => $field_item_data) {
+            $field_record['delta'] = $key;
+            // Process all columns inside field item.
+            foreach ($field_item_data as $column => $value) {
+              if ($column === 'image_path') {
+                // Import the image and save fid.
+                $orig_file_dir = DRUPAL_ROOT . '/' . $this->endpoint;
+                $file = dkan_fixtures_import_file($value, $orig_file_dir);
+                $field_record[$field_name . '_fid'] = $file->fid;
+              }
+              else {
+                $field_record[$field_name . '_' . $column] = $value;
               }
             }
-            break;
+
+            try {
+              // Save records in DB.
+              drupal_write_record('field_data_' . $field_name, $field_record);
+              drupal_write_record('field_revision_' . $field_name, $field_record);
+
+            } catch (Exception $e) {
+              drupal_set_message("There was an error saving the FFP field :field", array('field' => $field_name));
+            }
           }
-          /////////////////////////////////
-          // Text field.
-          /////////////////////////////////
-          case 'field_basic_text_text': {
-            $field_data = reset($fpp_data[$field_name]);
-            $field_record['field_basic_text_text_value'] = $field_data['value'];
-            $field_record['field_basic_text_text_format'] = $field_data['format'];
-            drupal_write_record('field_data_' . $field_name, $field_record);
-            drupal_write_record('field_revision_' . $field_name, $field_record);
-            break;
-          }
-          default:
-            break;
         }
       }
     }
