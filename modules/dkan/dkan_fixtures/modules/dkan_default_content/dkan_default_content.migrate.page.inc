@@ -20,6 +20,17 @@ class DefaultContentPagesImport extends DkanPagesImport {
   }
 
   /**
+   * Prepare row data for import.
+   */
+  public function prepareRow($row) {
+    // Skip import of page if there is another one with the same UUID.
+    $page = reset(entity_uuid_load('node', array($row->uuid)));
+    if ($page) {
+      return false;
+    }
+  }
+
+  /**
    * Do extra processing after import.
    */
   public function complete($entity, $row) {
