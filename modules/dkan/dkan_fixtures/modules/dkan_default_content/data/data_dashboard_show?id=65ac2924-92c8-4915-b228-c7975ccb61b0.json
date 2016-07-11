@@ -386,8 +386,6 @@
                         "field_basic_spotlight_duration": [],
                         "field_basic_spotlight_items": [
                             {
-                                "field_file_image_alt_text": [],
-                                "field_file_image_title_text": [],
                                 "alt": "Subway train departing",
                                 "title": "GTFS Data and Commuters",
                                 "height": 996,
@@ -397,8 +395,6 @@
                                 "image_path": "files/data_dashboard/tranist-001.jpg"
                             },
                             {
-                                "field_file_image_alt_text": [],
-                                "field_file_image_title_text": [],
                                 "alt": "Bike Rentals",
                                 "title": "More Bikeshare, More Bike Lanes",
                                 "height": 1366,
@@ -408,8 +404,6 @@
                                 "image_path": "files/data_dashboard/transit-003.jpg"
                             },
                             {
-                                "field_file_image_alt_text": [],
-                                "field_file_image_title_text": [],
                                 "alt": "Heavy Traffic",
                                 "title": "",
                                 "height": 1040,
@@ -417,11 +411,6 @@
                                 "description": "As cities get denser and transit systems get larger there may soon be fewer cars on the road. ",
                                 "link": "",
                                 "image_path": "files/data_dashboard/transit-004.jpg"
-                            }
-                        ],
-                        "field_basic_spotlight_pager": [
-                            {
-                                "value": "full"
                             }
                         ],
                         "rdf_mapping": []

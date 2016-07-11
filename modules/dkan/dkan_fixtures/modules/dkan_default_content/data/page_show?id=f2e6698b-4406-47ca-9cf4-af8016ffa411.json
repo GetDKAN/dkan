@@ -229,8 +229,6 @@
                         "field_basic_image_caption": [],
                         "field_basic_image_image": [
                             {
-                                "field_file_image_alt_text": [],
-                                "field_file_image_title_text": [],
                                 "alt": "",
                                 "title": "",
                                 "height": "120",
@@ -297,8 +295,6 @@
                         "field_basic_image_caption": [],
                         "field_basic_image_image": [
                             {
-                                "field_file_image_alt_text": [],
-                                "field_file_image_title_text": [],
                                 "alt": "",
                                 "title": "",
                                 "height": "120",
@@ -365,8 +361,6 @@
                         "field_basic_image_caption": [],
                         "field_basic_image_image": [
                             {
-                                "field_file_image_alt_text": [],
-                                "field_file_image_title_text": [],
                                 "alt": "",
                                 "title": "",
                                 "height": "120",
