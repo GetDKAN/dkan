@@ -342,8 +342,6 @@ function dkan_fixtures_append_panelizer_data($node, &$fixture_data, &$files_to_s
               $fpp_data->$field_name = $field_data[LANGUAGE_NONE];
             }
 
-            // TODO: Extract common processing for images and spotlight items.
-
             // Image fieldable panel pane.
             if ($fpp_data->bundle === 'image' && $field_name === 'field_basic_image_image') {
               $field_data = reset($field_data[LANGUAGE_NONE]);
@@ -394,6 +392,11 @@ function dkan_fixtures_append_panelizer_data($node, &$fixture_data, &$files_to_s
                 $fpp_data->field_basic_spotlight_items[] = $item;
               }
             }
+          }
+
+          // Spotlight pager field does not need to be exported since it's generated automatically.
+          if ($field_name === 'field_basic_spotlight_pager') {
+            unset($fpp_data->$field_name);
           }
         }
 
