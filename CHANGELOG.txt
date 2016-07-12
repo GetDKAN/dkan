@@ -1,6 +1,7 @@
 7.x-1.12.4 2016-07-12
 --------------------------
 - Update permissions in DKAN Permissions module to allow anonymous users to access RDF endpoints for individual datasets.
+- Add RoleAssign module, update DKAN Permissions to give site managers permission to assign roles.
 
 7.x-1.12.3 2016-06-30
 --------------------------
