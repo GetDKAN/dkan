@@ -47,26 +47,33 @@ function dkan_fixtures_migrate_api() {
  * Render fixtures for datasets.
  */
 function dkan_fixtures_render_fixtures($nids = array()) {
+
   global $base_url;
 
   $fixtures = array();
+  $resource_ids = array();
+  $group_ids = array();
+  $group_data = array();
 
   // Render list of packages first.
   $package_list_api = open_data_schema_map_api_load('ckan_package_list');
   // This adds arguments to ckan_package_list so we can only get specifiied IDs.
   $package_list_api->arguments[] = array('field' => 'id', 'required' => 0);
   $package_list_api->mapping['id']['value'] = '[node:nid]';
-
+  // Get list of datasets.
   $package_list_fetch = open_data_schema_map_render_api($package_list_api, NULL, array('id' => $nids));
   $package_list = $package_list_fetch['result'];
 
+  // Add 'package_list.json' to the list of fixtures to be rendered.
   $fixture_name = 'package_list.json';
   $fdata = dkan_fixtures_build_fixture_data($fixture_name, $package_list['result']);
   $fixtures[] = $fdata;
 
-  $resource_ids = array();
-  $group_ids = array();
-  $group_data = array();
+  // TODO:
+  // We are using the information on each dataset to build the list of resources and
+  // groups that are going to be exported later on dkan_fixtures_append_resource_fixtures() and
+  // dkan_fixtures_append_group_fixtures().
+  // We should be able in the future to export each type of content individually calling different endpoints.
 
   // Use ids in package_list to create exports for every dataset.
   $package_show_api = open_data_schema_map_api_load('ckan_package_show');
@@ -79,19 +86,13 @@ function dkan_fixtures_render_fixtures($nids = array()) {
       $package_show['result'] = reset($package_show['result']);
       if (isset($package_show['result']['resources'])) {
         foreach ($package_show['result']['resources'] as $key => $resource) {
-          if (isset($resource['url'])) {
-            $file = $resource['url'];
-            if (strpos($file, $base_url) === 0) {
-              $file = parse_url($file);
-              $file = DRUPAL_ROOT . $file['path'];
-              $package_show['result']['resources'][$key]['url'] = 'files/' . basename($file);
-            }
-          }
+          // Save resource on the list of resources that are going to be exported.
           $resource_ids[] = $resource['id'];
         }
       }
+
       // Grab all the information related with Groups to be exported as a
-      // fixture later.
+      // fixture later. This should be improved once a 'group_show' endpoint is implemented.
       if (isset($package_show['result']['groups'])) {
         foreach ($package_show['result']['groups'] as $key => $group) {
           if (!isset($group_data[$group['id']])) {
@@ -102,8 +103,9 @@ function dkan_fixtures_render_fixtures($nids = array()) {
           }
         }
       }
+
       // Add additional fields.
-      // This is a temporal solution since ODSM is not exposing some fields like field_spatial.
+      // NOTE: This is a temporal solution since ODSM is not exposing some fields like field_spatial.
       // Load dataset.
       $dataset = reset(entity_uuid_load('node', array($package_show['result']['id'])));
       $api = open_data_schema_map_api_load('ckan_package_show');
@@ -115,80 +117,106 @@ function dkan_fixtures_render_fixtures($nids = array()) {
         $package_show['result']['dkan_additional_fields'][$field] = $restws_result[$field];
       }
 
+      // Add dataset fixture to the list of fixtures to be rendered.
       $fixture_name = 'package_show?id=' . $id . '.json';
       $fdata = dkan_fixtures_build_fixture_data($fixture_name, $package_show['result']);
       $fixtures[] = $fdata;
     }
-
-    $fixture_name = 'resource_list.json';
-    $fdata = dkan_fixtures_build_fixture_data($fixture_name, $resource_ids);
-    $fixtures[] = $fdata;
-
-    $fixture_name = 'group_list.json';
-    $fdata = dkan_fixtures_build_fixture_data($fixture_name, $group_ids);
-    $fixtures[] = $fdata;
-
-    // Use ids in fake resource-list to create exports for every resource.
-    $resource_show_api = open_data_schema_map_api_load('ckan_resource_show');
-    foreach ($resource_ids as $id) {
-      $files_to_save = array();
-      $query = array('id' => $id, 'q' => 'api/3/action/resource_show');
-      $queries = array('id' => $id);
-      $resource_show_api->mapping['url']['value'] = '[node:field-link-api:url] || [node:field_link_remote_file] || [node:field-upload:url]';
-      $resource_show = open_data_schema_map_render_api($resource_show_api, $query, $queries);
-      $resource_show = $resource_show['result'];
-      if (isset($resource_show['result']['url'])) {
-        $file = $resource_show['result']['url'];
-        if (strpos($file, $base_url) === 0) {
-          $file = parse_url($file);
-          $file = DRUPAL_ROOT . $file['path'];
-          $files_to_save[] = $file;
-          $resource_show['result']['url'] = 'files/resource/' . basename($file);
-        }
-      }
-      $fixture_name = 'resource_show?id=' . $id . '.json';
-      $fdata = dkan_fixtures_build_fixture_data($fixture_name, $resource_show['result'], $files_to_save, 'resource');
-      $fixtures[] = $fdata;
-    }
-
-    // Use ids in fake group-list to create exports for every group.
-    $group_show_api = array();
-    foreach ($group_ids as $id) {
-      $files_to_save = array();
-      if (isset($group_data[$id]['image_display_url'])) {
-        $file = $group_data[$id]['image_display_url'];
-        if (strpos($file, $base_url) === 0) {
-          $file = parse_url($file);
-          $file = DRUPAL_ROOT . $file['path'];
-          $files_to_save[] = $file;
-          $group_data[$id]['image_display_url'] = 'files/group/' . basename($file);
-        }
-      }
-      $fixture_name = 'group_show?id=' . $id . '.json';
-      $fdata = dkan_fixtures_build_fixture_data($fixture_name, $group_data[$id], $files_to_save, 'group');
-      $fixtures[] = $fdata;
-    }
-
-    // Export Visualization Entities.
-    dkan_fixtures_build_visualization_entity_fixtures($fixtures);
-
-    // Export Data Dashboards.
-    dkan_fixtures_build_panelized_node_fixtures('data_dashboard', $fixtures);
-
-    // Export Data Stories.
-    dkan_fixtures_build_panelized_node_fixtures('dkan_data_story', $fixtures);
   }
 
+  // Export Resources.
+  dkan_fixtures_append_resource_fixtures($resource_ids, $fixtures);
+
+  // Export Groups.
+  dkan_fixtures_append_group_fixtures($group_ids, $group_data, $fixtures);
+
+  // Export Visualization Entities.
+  dkan_fixtures_append_visualization_entity_fixtures($fixtures);
+
+  // Export Data Dashboards.
+  dkan_fixtures_append_panelized_node_fixtures('data_dashboard', $fixtures);
+
+  // Export Data Stories.
+  dkan_fixtures_append_panelized_node_fixtures('dkan_data_story', $fixtures);
+
   // Export Home Page + About page
-  dkan_fixtures_build_panelized_node_fixtures('page', $fixtures);
+  dkan_fixtures_append_panelized_node_fixtures('page', $fixtures);
 
   return $fixtures;
 }
 
 /**
- * Implements hook_
+ *
  */
-function dkan_fixtures_build_panelized_node_fixtures($content_type, &$fixtures, $nids = array()) {
+function dkan_fixtures_append_group_fixtures($group_ids, $group_data, &$fixtures) {
+  global $base_url;
+
+  // Use ids in fake group-list to create exports for every group.
+  $group_show_api = array();
+  foreach ($group_ids as $id) {
+    $files_to_save = array();
+    if (isset($group_data[$id]['image_display_url'])) {
+      $file = $group_data[$id]['image_display_url'];
+      if (strpos($file, $base_url) === 0) {
+        $file = parse_url($file);
+        $file = DRUPAL_ROOT . $file['path'];
+        $files_to_save[] = $file;
+        $group_data[$id]['image_display_url'] = 'files/group/' . basename($file);
+      }
+    }
+    $fixture_name = 'group_show?id=' . $id . '.json';
+    $fdata = dkan_fixtures_build_fixture_data($fixture_name, $group_data[$id], $files_to_save, 'group');
+    $fixtures[] = $fdata;
+  }
+  $fixture_name = 'group_list.json';
+  $fdata = dkan_fixtures_build_fixture_data($fixture_name, $group_ids);
+  $fixtures[] = $fdata;
+}
+
+/**
+ *
+ */
+function dkan_fixtures_append_resource_fixtures($resource_ids, &$fixtures) {
+  global $base_url;
+
+  // Use ids in fake resource-list to create exports for every resource.
+  $resource_show_api = open_data_schema_map_api_load('ckan_resource_show');
+  foreach ($resource_ids as $id) {
+    $files_to_save = array();
+    $query = array('id' => $id, 'q' => 'api/3/action/resource_show');
+    $queries = array('id' => $id);
+    $resource_show_api->mapping['url']['value'] = '[node:field-link-api:url] || [node:field_link_remote_file] || [node:field-upload:url]';
+    $resource_show = open_data_schema_map_render_api($resource_show_api, $query, $queries);
+    $resource_show = $resource_show['result'];
+
+    // Add resource file to the list of files that need to be exported.
+    // Replace file URL with local URL.
+    if (isset($resource_show['result']['url'])) {
+      $file = $resource_show['result']['url'];
+      if (strpos($file, $base_url) === 0) {
+        $file = parse_url($file);
+        $file = DRUPAL_ROOT . $file['path'];
+        $files_to_save[] = $file;
+        $resource_show['result']['url'] = 'files/resource/' . basename($file);
+      }
+    }
+
+    // Append resource fixture.
+    $fixture_name = 'resource_show?id=' . $id . '.json';
+    $fdata = dkan_fixtures_build_fixture_data($fixture_name, $resource_show['result'], $files_to_save, 'resource');
+    $fixtures[] = $fdata;
+  }
+
+  // Append resource list fixture.
+  $fixture_name = 'resource_list.json';
+  $fdata = dkan_fixtures_build_fixture_data($fixture_name, $resource_ids);
+  $fixtures[] = $fdata;
+}
+
+/**
+ *
+ */
+function dkan_fixtures_append_panelized_node_fixtures($content_type, &$fixtures, $nids = array()) {
   global $base_url;
 
   $panelized_nodes = array();
@@ -244,13 +272,13 @@ function dkan_fixtures_build_panelized_node_fixtures($content_type, &$fixtures, 
         $panelized_node['is_homepage'] = TRUE;
       }
 
-      // Build 'Item' fixture for content.
+      // Append 'Item' fixture for content.
       $fixture_name = $content_type . '_show?id=' . $nuuid . '.json';
       $fdata = dkan_fixtures_build_fixture_data($fixture_name, $panelized_node, $files_to_save, $content_type);
       $fixtures[] = $fdata;
     }
 
-    // Build 'List' fixture for content.
+    // Append 'List' fixture for content.
     $fixture_name = $content_type . '_list.json';
     $fdata = dkan_fixtures_build_fixture_data($fixture_name, $panelized_nodes);
     $fixtures[] = $fdata;
@@ -415,7 +443,7 @@ function dkan_fixtures_append_fieldable_panel_pane_data(&$panels_pane, &$files_t
 /**
  *
  */
-function dkan_fixtures_build_visualization_entity_fixtures(&$fixtures) {
+function dkan_fixtures_append_visualization_entity_fixtures(&$fixtures) {
 
   $visualization_entities = array();
   $visualization_entity_files = array();
@@ -457,14 +485,14 @@ function dkan_fixtures_build_visualization_entity_fixtures(&$fixtures) {
         $visualization_data['existing_resource_uuid'] = $visualization->field_uuid_resource[LANGUAGE_NONE][0]['target_uuid'];
       }
 
-      // Add fixture with visualization entity data.
+      // Append fixture with visualization entity data.
       $fixture_name = 'visualization_entity_show?id=' . $visualization_wrapper->uuid->value() . '.json';
       $fdata = dkan_fixtures_build_fixture_data($fixture_name, $visualization_data, $visualization_entity_files, 'visualization_entity');
       $fixtures[] = $fdata;
     }
   }
 
-  // Add fixture with visualization entities list.
+  // Append fixture with visualization entities list.
   $fixture_name = 'visualization_entity_list.json';
   $fdata = dkan_fixtures_build_fixture_data($fixture_name, array_keys($visualization_entities));
   $fixtures[] = $fdata;
