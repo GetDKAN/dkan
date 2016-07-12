@@ -44,11 +44,10 @@ function dkan_fixtures_migrate_api() {
 }
 
 /**
- * Render fixtures for datasets.
+ * Returns all the fixtures that need to be exported for: Datasets, Resources, Groups,
+ * Visualization Entities, Data Dashboards, Data Stories and Pages.
  */
 function dkan_fixtures_render_fixtures($nids = array()) {
-
-  global $base_url;
 
   $fixtures = array();
   $resource_ids = array();
@@ -146,7 +145,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
 }
 
 /**
- *
+ * Appends all Groups fixtures to the list of fixtures that are going to be exported.
  */
 function dkan_fixtures_append_group_fixtures($group_ids, $group_data, &$fixtures) {
   global $base_url;
@@ -174,7 +173,7 @@ function dkan_fixtures_append_group_fixtures($group_ids, $group_data, &$fixtures
 }
 
 /**
- *
+ * Appends all Resource fixtures to the list of fixtures that are going to be exported.
  */
 function dkan_fixtures_append_resource_fixtures($resource_ids, &$fixtures) {
   global $base_url;
@@ -214,7 +213,7 @@ function dkan_fixtures_append_resource_fixtures($resource_ids, &$fixtures) {
 }
 
 /**
- *
+ * Appends all Panelized Nodes fixtures to the list of fixtures that are going to be exported.
  */
 function dkan_fixtures_append_panelized_node_fixtures($content_type, &$fixtures, $nids = array()) {
   global $base_url;
@@ -307,7 +306,7 @@ function dkan_fixtures_export_terms( $node, $terms_field ) {
 }
 
 /**
-  *
+  * Appends all panelizer related data to the node data that is being exported on a fixture.
   */
 function dkan_fixtures_append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_dir) {
   $panelizer_data = array();
@@ -340,7 +339,7 @@ function dkan_fixtures_append_panelizer_data($node, &$fixture_data, &$files_to_s
 }
 
 /**
- *
+ * Appends all panes to the panelizer data that is being exported on a fixture.
  */
 function dkan_fixtures_append_panels_pane_data($display_id, &$panelizer_data, &$files_to_save, $files_dir) {
 
@@ -378,7 +377,7 @@ function dkan_fixtures_append_panels_pane_data($display_id, &$panelizer_data, &$
 }
 
 /**
- *
+ * Appends all fieldable panel panes data to the pane that is being exported on a fixture.
  */
 function dkan_fixtures_append_fieldable_panel_pane_data(&$panels_pane, &$files_to_save, $files_dir) {
 
@@ -441,7 +440,7 @@ function dkan_fixtures_append_fieldable_panel_pane_data(&$panels_pane, &$files_t
 }
 
 /**
- *
+ * Append all visualization entity fixtures to the list of fixtures that are going to be exported.
  */
 function dkan_fixtures_append_visualization_entity_fixtures(&$fixtures) {
 
@@ -499,7 +498,7 @@ function dkan_fixtures_append_visualization_entity_fixtures(&$fixtures) {
 }
 
 /**
- * Saves json fixture file into data directory.
+ * Saves JSON fixture files into data directory.
  */
 function dkan_fixtures_save_fixture($fixture, $module_path) {
   $file = fopen($module_path . '/data/' . $fixture['filename'], 'w');
@@ -617,7 +616,7 @@ function dkan_fixtures_dkan_save_data($nids = array()) {
 }
 
 /**
- * Delete all content in directory.
+ * Deletes all content in directory.
  */
 function dkan_fixtures_rrmdir($dir) {
   if (is_dir($dir)) {
@@ -634,7 +633,7 @@ function dkan_fixtures_rrmdir($dir) {
 }
 
 /**
- * Helper function to import fixture files.
+ * Imports fixture files.
  */
 function dkan_fixtures_import_file($file_path, $orig_dir) {
 
@@ -662,7 +661,7 @@ function dkan_fixtures_import_file($file_path, $orig_dir) {
 }
 
 /**
- * Helper function to build and append
+ * Prepares all fixture data to be exported.
  */
 function dkan_fixtures_build_fixture_data($filename, $content, $files = array(), $files_dir = '') {
   $fixtures_data = array(
