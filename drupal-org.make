@@ -43,7 +43,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_dataset.git
-      branch: modified_date
+      branch: 7.x-1.x
   dkan_datastore:
     subdir: dkan
     download:
