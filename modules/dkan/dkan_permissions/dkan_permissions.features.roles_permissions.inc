@@ -265,6 +265,7 @@ function dkan_permissions_default_roles_permissions() {
       'administer taxonomy' => TRUE,
       'administer url aliases' => TRUE,
       'administer users' => TRUE,
+      'assign roles' => TRUE,
       'bypass file access' => TRUE,
       'bypass node access' => TRUE,
       'change layouts in place editing' => TRUE,
