@@ -100,8 +100,6 @@ class DkanPanelizedNodesImport extends Migration {
    */
   public function importPanelizerData($entity, $panelizer_data) {
 
-    var_dump('IMPORTING ENTITY');
-
     // Convert panelizer data into array recursively.
     // Almost all functions on Panels expect arrays.
     $panelizer_data = json_decode(json_encode($panelizer_data), true);
@@ -115,9 +113,6 @@ class DkanPanelizedNodesImport extends Migration {
 
     // Import panels_pane.
     foreach ($panels_pane as $pane) {
-
-      var_dump('- Pane: ');
-      var_dump($pane['type']);
 
       $pane['did'] = $panels_display['did'];
 
