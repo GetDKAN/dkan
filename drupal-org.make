@@ -138,6 +138,8 @@ projects:
     version: '2.9'
   restws:
     version: '2.5'
+  roleassign:
+    version: '1.1'
   schema:
     version: '1.2'
   adminrole:
