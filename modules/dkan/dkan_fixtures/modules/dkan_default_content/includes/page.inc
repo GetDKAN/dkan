@@ -28,6 +28,8 @@ class DefaultContentPagesImport extends DkanPagesImport {
     if ($page) {
       return false;
     }
+
+    parent::prepareRow($row);
   }
 
   /**
