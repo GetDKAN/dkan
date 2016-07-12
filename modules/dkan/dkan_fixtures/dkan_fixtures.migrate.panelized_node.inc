@@ -186,9 +186,14 @@ class DkanPanelizedNodesImport extends Migration {
         $field_data = $fpp_data[$field_name];
 
         if (empty($field_data)) {
-          // Save record as it is.
-          drupal_write_record('field_data_' . $field_name, $field_record);
-          drupal_write_record('field_revision_' . $field_name, $field_record);
+          try {
+            // Save record as it is.
+            drupal_write_record('field_data_' . $field_name, $field_record);
+            drupal_write_record('field_revision_' . $field_name, $field_record);
+            
+          } catch (Exception $e) {
+            drupal_set_message("There was an error saving the FFP field :field", array('field' => $field_name));
+          }
         }
         else {
           // Add extra field data.
