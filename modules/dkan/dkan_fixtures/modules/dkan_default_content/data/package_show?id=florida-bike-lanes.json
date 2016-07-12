@@ -19,7 +19,7 @@
             {
                 "id": "960687d8-582c-4f29-b1e4-113781e58e3b",
                 "revision_id": "",
-                "url": "files/Bike_Lane.csv",
+                "url": "http://default/sites/default/files/Bike_Lane.csv",
                 "description": "",
                 "format": "csv",
                 "state": "Active",

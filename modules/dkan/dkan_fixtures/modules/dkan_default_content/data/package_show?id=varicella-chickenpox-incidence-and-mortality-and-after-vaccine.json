@@ -21,7 +21,7 @@
             {
                 "id": "0536307c-ca88-4190-a6d2-473ad08a6188",
                 "revision_id": "",
-                "url": "files/postvaccinedeaths_0_0.csv",
+                "url": "http://default/sites/default/files/postvaccinedeaths_0_0.csv",
                 "description": "<p>Source: \"Near elimination of varicella deaths in the US after implementation of the vaccination program.\" published in the American Journal of Pediatrics in August 2011.</p>\n",
                 "format": "csv",
                 "state": "Active",
@@ -36,7 +36,7 @@
             {
                 "id": "339a5d0c-ecc9-4492-8de6-30f17e91bf47",
                 "revision_id": "",
-                "url": "files/varicelladeaths1970_1994.csv",
+                "url": "http://default/sites/default/files/varicelladeaths1970_1994.csv",
                 "description": "<p>Source: Centers for Disease Control and Prevention in Atlanta, Georgia. \u201cVaricella Mortality: Trends before Vaccine Licensure in the United States, 1970\u20131994\u201d published August 2000 in the Journal of Infectious Diseases.</p>\n",
                 "format": "csv",
                 "state": "Active",
@@ -51,7 +51,7 @@
             {
                 "id": "d59d8dfc-6015-420a-80a2-87dfdfdaf542",
                 "revision_id": "",
-                "url": "files/varicellaincidencerates_0.csv",
+                "url": "http://default/sites/default/files/varicellaincidencerates_0.csv",
                 "description": "<p>Source: \"Impact of Vaccination on the Epidemiology of Varicella: 1995\u20132009\" published in the journal Pediatrics in August 2011.</p>\n",
                 "format": "csv",
                 "state": "Active",

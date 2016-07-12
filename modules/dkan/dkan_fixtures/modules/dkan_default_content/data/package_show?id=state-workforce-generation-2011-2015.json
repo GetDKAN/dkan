@@ -21,7 +21,7 @@
             {
                 "id": "209e9f48-7c20-4654-8ba4-bd4415ee80de",
                 "revision_id": "",
-                "url": "files/GenChart_0_0.csv",
+                "url": "http://default/sites/default/files/GenChart_0_0.csv",
                 "description": "<p>Population of state employees broken down into Gen X, Gen Y, Baby Boomers and Over 65+.</p>\n",
                 "format": "csv",
                 "state": "Active",
@@ -36,7 +36,7 @@
             {
                 "id": "ceb00c8e-a6d4-4dde-b8d8-43a7d714a0ff",
                 "revision_id": "",
-                "url": "files/retirements_0.csv",
+                "url": "http://default/sites/default/files/retirements_0.csv",
                 "description": "<p>Total number of employees who retired from the state workforce, 2011-2015.</p>\n",
                 "format": "csv",
                 "state": "Active",
@@ -51,7 +51,7 @@
             {
                 "id": "e0e42cb1-e515-431f-b762-86ac46909784",
                 "revision_id": "",
-                "url": "files/2015EligibleVsActual.csv",
+                "url": "http://default/sites/default/files/2015EligibleVsActual.csv",
                 "description": "<p>This data, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire compared to the percentage of the workforce who actually retired.</p>\n",
                 "format": "csv",
                 "state": "Active",

@@ -22,7 +22,7 @@
             {
                 "id": "80d51987-acc7-42aa-a51b-9a4737c09efa",
                 "revision_id": "",
-                "url": "files/ViolentCrimeRates.csv",
+                "url": "http://default/sites/default/files/ViolentCrimeRates.csv",
                 "description": "<p>Source: FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n<p>Includes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.</p>\n",
                 "format": "csv",
                 "state": "Active",
@@ -37,7 +37,7 @@
             {
                 "id": "23f45c04-9e65-4fdf-be89-01cf15be3d55",
                 "revision_id": "",
-                "url": "files/NumbersByCity_3.csv",
+                "url": "http://default/sites/default/files/NumbersByCity_3.csv",
                 "description": "",
                 "format": "csv",
                 "state": "Active",
@@ -52,7 +52,7 @@
             {
                 "id": "ae1af387-c709-4e7a-b450-c6a4e44381fb",
                 "revision_id": "",
-                "url": "files/PropertyCrimesByCity_3.csv",
+                "url": "http://default/sites/default/files/PropertyCrimesByCity_3.csv",
                 "description": "",
                 "format": "csv",
                 "state": "Active",
@@ -67,7 +67,7 @@
             {
                 "id": "49daa44a-efa6-4145-92a9-baedc7202e1f",
                 "revision_id": "",
-                "url": "files/PropertyCrimeRates_1.csv",
+                "url": "http://default/sites/default/files/PropertyCrimeRates_1.csv",
                 "description": "<p>Source: FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n",
                 "format": "csv",
                 "state": "Active",
