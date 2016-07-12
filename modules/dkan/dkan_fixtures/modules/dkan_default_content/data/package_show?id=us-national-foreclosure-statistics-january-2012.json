@@ -110,7 +110,8 @@
                 "duration": 2592000
             },
             "og_group_ref": [],
-            "field_topic": []
+            "field_topic": [],
+            "field_modified_source_date": null
         }
     }
 }

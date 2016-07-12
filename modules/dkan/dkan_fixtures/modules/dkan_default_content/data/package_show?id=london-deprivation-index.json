@@ -12,9 +12,9 @@
         "url": "http://default/dataset/london-deprivation-index",
         "state": "Active",
         "private": "Published",
-        "revision_timestamp": "Fri, 07/01/2016 - 23:27",
+        "revision_timestamp": "Thu, 07/07/2016 - 11:46",
         "metadata_created": "Thu, 04/21/2016 - 10:28",
-        "metadata_modified": "Fri, 07/01/2016 - 23:27",
+        "metadata_modified": "Thu, 07/07/2016 - 11:46",
         "creator_user_id": "4eb26c32-4098-43a8-a8cc-e5ce6db7fc96",
         "type": "Dataset",
         "resources": [
@@ -156,7 +156,16 @@
                     "value": "admin"
                 }
             ],
-            "field_topic": []
+            "field_topic": [
+                {
+                    "uri": "http://default/taxonomy_term/40",
+                    "id": "40",
+                    "resource": "taxonomy_term",
+                    "uuid": "4ac6d362-6898-4ab8-98f6-ce195657ec4c",
+                    "value": "Finance and Budgeting"
+                }
+            ],
+            "field_modified_source_date": null
         }
     }
 }
