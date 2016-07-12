@@ -8,64 +8,86 @@ include_once 'dkan_ipe.features.inc';
 
 /**
  * Implements hook_panels_ipe_region_links_alter() from Panels IPE.
- * Set the default category to 'dkan' in the IPE.
+ * Set the default category to 'custom' in the IPE.
  */
 function dkan_ipe_panels_ipe_region_links_alter(&$links, $context) {
-  $links['add-pane']['href'] .= '/dkan';
+  $links['add-pane']['href'] .= '/custom';
 }
 
 /**
- * Preprocess the add content link used in the modal.
+ * Implements hook_entity_info_alter().
  */
-function dkan_ipe_preprocess_panels_add_content_link(&$vars) {
-  $vars['title'] = filter_xss_admin($vars['content_type']['title']);
-  $vars['description'] = isset($vars['content_type']['description']) ? $vars['content_type']['description'] : $vars['title'];
-  $vars['icon'] = ctools_content_admin_icon($vars['content_type']);
-  $vars['url'] = $vars['renderer']->get_url('add-pane', $vars['region'], $vars['content_type']['type_name'], $vars['content_type']['subtype_name']);
-  $subtype_class = 'add-content-link-' . str_replace('_', '-', $vars['content_type']['subtype_name']);
-  $vars['image_button'] = ctools_ajax_image_button($vars['icon'], $vars['url'], $vars['description'], $subtype_class . '-image-button panels-modal-add-config');
-  $vars['text_button'] = ctools_ajax_text_button($vars['title'], $vars['url'], $vars['description'], $subtype_class . '-text-button panels-modal-add-config');
+function dkan_ipe_entity_info_alter(&$entity_info) {
+  // Move panopoly widget options into the custom category.
+  // File.
+  $entity_info['fieldable_panels_pane']['bundles']['basic_file']['pane top level'] = FALSE;
+  $entity_info['fieldable_panels_pane']['bundles']['basic_file']['pane category'] = t('Custom');
+  $entity_info['fieldable_panels_pane']['bundles']['basic_file']['label'] = t('File');
+  // Image.
+  $entity_info['fieldable_panels_pane']['bundles']['image']['pane top level'] = FALSE;
+  $entity_info['fieldable_panels_pane']['bundles']['image']['pane category'] = t('Custom');
+  $entity_info['fieldable_panels_pane']['bundles']['image']['label'] = t('Image');
+  // Text.
+  $entity_info['fieldable_panels_pane']['bundles']['text']['label'] = t('Text');
+  $entity_info['fieldable_panels_pane']['bundles']['text']['pane category'] = t('custom');
+  $entity_info['fieldable_panels_pane']['bundles']['text']['pane top level'] = FALSE;
+  // Map.
+  $entity_info['fieldable_panels_pane']['bundles']['map']['label'] = t('Map');
+  $entity_info['fieldable_panels_pane']['bundles']['map']['pane category'] = t('custom');
+  $entity_info['fieldable_panels_pane']['bundles']['map']['pane top level'] = FALSE;
+  // Table.
+  $entity_info['fieldable_panels_pane']['bundles']['table']['label'] = t('Table');
+  $entity_info['fieldable_panels_pane']['bundles']['table']['pane category'] = t('custom');
+  $entity_info['fieldable_panels_pane']['bundles']['table']['pane top level'] = FALSE;
+  // Video.
+  $entity_info['fieldable_panels_pane']['bundles']['video']['label'] = t('Video');
+  $entity_info['fieldable_panels_pane']['bundles']['video']['pane category'] = t('custom');
+  $entity_info['fieldable_panels_pane']['bundles']['video']['pane top level'] = FALSE;
+  // Spotlight.
+  $entity_info['fieldable_panels_pane']['bundles']['spotlight']['label'] = t('Slideshow');
+  $entity_info['fieldable_panels_pane']['bundles']['spotlight']['pane category'] = t('custom');
+  $entity_info['fieldable_panels_pane']['bundles']['spotlight']['pane top level'] = FALSE;
+}
 
-  if (function_exists('ctools_ajax_icon_text_button')) {
-  	switch($vars['title']) {
-  		case 'Add content list':
-	      $vars['title'] = 'Content List';
-	      break;
-  		case 'Add file':
-	      $vars['title'] = 'File';
-	      break;
-	  	case 'Add image':
-	      $vars['title'] = 'Image';
-	      break;
-	    case 'Add map':
-	      $vars['title'] = 'Map';
-	      break;
-	    case 'Add spotlight':
-	      $vars['title'] = 'Slideshow';
-	      break;
-	    case 'Add submenu':
-	      $vars['title'] = 'Submenu';
-	      break;
-	    case 'Add table':
-	      $vars['title'] = 'Table';
-	      break;
-	    case 'Add text':
-	      $vars['title'] = 'Text';
-	      break;
-	    case 'Add video':
-	      $vars['title'] = 'Video';
-	      break;
-	    case 'Existing node':
-	    	$vars['title'] = 'Existing content';
-	    	break;
-	    case 'Visualization embed':
-	      $vars['title'] = 'Visualization';
-	      break;
-      case 'Button link':
-        $vars['title'] = 'Link';
-        break;
-	  }
-    $vars['icon_text_button'] = ctools_ajax_icon_text_button($vars['title'], $vars['icon'], $vars['url'], $vars['description'], $subtype_class . '-icon-text-button panels-modal-add-config');
+/**
+ * Implements hook_ctools_content_subtype_alter().
+ */
+function dkan_ipe_ctools_content_subtype_alter(&$subtype, &$plugin) {
+  // Move the options we want available to editors to the custom category.
+  $dkan = array('Visualizations', 'Custom');
+  if (in_array($subtype['category'], $dkan)) {
+    $subtype['category'] = 'custom';
+  }
+  // Content list.
+  if ($plugin['module'] == 'views_content' && $subtype['title'] == 'Add content list') {
+    $subtype['pane category'] = t('custom');
+    $subtype['top level'] = FALSE;
+    $subtype['title'] = t('Content List');
+  }
+  // Submenu.
+  if ($plugin['module'] == 'menu_block' && $subtype['menu_title'] == 'Main menu') {
+    $subtype['pane category'] = t('custom');
+    $subtype['top level'] = FALSE;
+    $subtype['title'] = t('Submenu');
+  }
+  // Existing node.
+  if ($plugin['module'] == 'ctools' && $plugin['title'] == 'Existing node') {
+    $subtype['pane category'] = t('custom');
+    $subtype['top level'] = FALSE;
+    $subtype['title'] = t('Existing content');
+  }
+  // New content.
+  if ($plugin['module'] == 'ctools' && $plugin['title'] == 'Custom content') {
+    $subtype['pane category'] = t('custom');
+    $subtype['top level'] = FALSE;
+    $subtype['title'] = t('New custom content');
+  }
+  // Adjust titles.
+  if ($plugin['module'] == 'visualization_entity_embed' && $plugin['title'] == 'Visualization embed') {
+    $subtype['title'] = t('Visualization');
+  }
+  if ($plugin['module'] == 'dkan_plugins' && $plugin['title'] == 'Button link') {
+    $subtype['title'] = t('Link');
   }
 }
 
@@ -76,7 +98,7 @@ function dkan_ipe_preprocess_panels_add_content_link(&$vars) {
  */
 function dkan_ipe_process_panels_add_content_modal(&$vars) {
   if(!$vars['renderer']->admin) {
-    $vars['category'] = 'dkan';
+    $vars['category'] = 'custom';
     $vars['header'] = t('');
   }
   $content = !empty($vars['categories'][$vars['category']]['content']) ? $vars['categories'][$vars['category']]['content'] : array();
