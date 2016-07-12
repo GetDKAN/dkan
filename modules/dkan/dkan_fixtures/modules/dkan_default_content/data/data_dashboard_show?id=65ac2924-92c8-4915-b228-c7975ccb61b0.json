@@ -5,7 +5,7 @@
         "type": "data_dashboard",
         "title": "Dynamic Transportation Visualizations",
         "created": "1460127350",
-        "changed": "1467859798",
+        "changed": "1468336152",
         "body": {
             "und": [
                 {
@@ -22,6 +22,11 @@
                 "name": "Transportation",
                 "display_name": "Transportation",
                 "id": "f8112e3b-d62d-433d-9b9b-724e56ef3fd8"
+            },
+            {
+                "name": "City Planning",
+                "display_name": "City Planning",
+                "id": "ed451aa0-f7fc-409a-b3be-30a5b7f26751"
             }
         ],
         "panelizer": {
@@ -72,7 +77,7 @@
                     },
                     "css": [],
                     "extras": [],
-                    "position": "4",
+                    "position": "3",
                     "locks": [],
                     "uuid": "135e81d2-23e1-4cd7-9ec3-420c65833911",
                     "fpp_data": {
@@ -97,31 +102,6 @@
                         ],
                         "rdf_mapping": []
                     }
-                },
-                {
-                    "panel": "header",
-                    "type": "visualization_embed",
-                    "subtype": "visualization_embed",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "local_source": "",
-                        "remote_source": "http://jcwong86.cartodb.com/viz/6bfb2708-5160-11e3-bdbd-3085a9a9563c/embed_map",
-                        "height": "525",
-                        "width": "80%",
-                        "override_title": 0,
-                        "override_title_text": "",
-                        "override_title_heading": "h2"
-                    },
-                    "cache": [],
-                    "style": {
-                        "settings": null
-                    },
-                    "css": [],
-                    "extras": [],
-                    "position": "2",
-                    "locks": [],
-                    "uuid": "1657fa85-5710-4e81-9f07-a23bb5d5f917"
                 },
                 {
                     "panel": "column2",
@@ -181,9 +161,9 @@
                         "language": "und",
                         "field_basic_text_text": [
                             {
-                                "value": "The movement of transit can be difficult to capture and quantify, let alone make into an engaging visualization. General Transit Feed Specification (GTFS) data creates a common format for agencies to provide data and developers to consume it. The dynamic heat map above <a href=\"http://developer.metro.net/introduction/gtfs-data/download-metros-gtfs-data/\">uses open GTFS data</a> to highlight the life of a transit network. \r\n\r\nThis map shows where Bus Rapid Transit (BRT) lines are operating in the LA Metro area. BRT is different from a standard bus route that is common to most transportation networks. Standard routes have stops designated, and the bus may make as many stops as needed. In some cases, a stop could mean a single city block. Bus Rapid Transit lines minimize time spent commuting as well as auto congestion by covering more ground and making fewer stops. This map is made with the digital mapping tool CartoDB. You can create your own data visualizations using digital tools and embed them onto your DKAN site. \r\n\r\n\r\n\r\nFrom the spending perspective, BRT is also much more affordable, flexible, and sustainable than any rail options. Especially for newer cities without rail lines and sprawled metropolitan areas, BRT can translate into an important piece of the larger transportation network. In the case of LA, <a href=\"http://la.streetsblog.org/2014/06/03/guest-opinion-the-future-of-los-angeles-is-bus-rapid-transit/\">BRT could triple the size of the network without great expense</a>. \r\n\r\nIn the visualization above, the higher the concentration of BRT lines, the brighter the color. With this map, it's easy to see which areas in LA's metro area are getting the most service (as measured by bus activity) and give agencies insight on how to <a href=\"https://losangeles2b.files.wordpress.com/2012/12/web-_ten.pdf\">best allocate resources</a>. \r\n\r\n<a href=\"/dataset/la-metro-gtfs-data\">Go to Data</a>\r\n",
+                                "value": "The movement of transit can be difficult to capture and quantify, let alone make into an engaging visualization. General Transit Feed Specification (GTFS) data creates a common format for agencies to provide data and developers to consume it. The dynamic heat map above <a href=\"http://developer.metro.net/introduction/gtfs-data/download-metros-gtfs-data/\">uses open GTFS data</a> to highlight the life of a transit network. \r\n\r\nThis map shows where Bus Rapid Transit (BRT) lines are operating in the LA Metro area. BRT is different from a standard bus route that is common to most transportation networks. Standard routes have stops designated, and the bus may make as many stops as needed. In some cases, a stop could mean a single city block. Bus Rapid Transit lines minimize time spent commuting as well as auto congestion by covering more ground and making fewer stops. This map is made with the digital mapping tool CartoDB. You can create your own data visualizations using digital tools and embed them onto your DKAN site. \r\n\r\n\r\n\r\nFrom the spending perspective, BRT is also much more affordable, flexible, and sustainable than any rail options. Especially for newer cities without rail lines and sprawled metropolitan areas, BRT can translate into an important piece of the larger transportation network. In the case of LA, <a href=\"http://la.streetsblog.org/2014/06/03/guest-opinion-the-future-of-los-angeles-is-bus-rapid-transit/\">BRT could triple the size of the network without great expense</a>. \r\n\r\nIn the visualization above, the higher the concentration of BRT lines, the brighter the color. With this map, it's easy to see which areas in LA's metro area are getting the most service (as measured by bus activity) and give agencies insight on how to <a href=\"https://losangeles2b.files.wordpress.com/2012/12/web-_ten.pdf\">best allocate resources</a>. ",
                                 "format": "html",
-                                "safe_value": "<p>The movement of transit can be difficult to capture and quantify, let alone make into an engaging visualization. General Transit Feed Specification (GTFS) data creates a common format for agencies to provide data and developers to consume it. The dynamic heat map above <a href=\"http://developer.metro.net/introduction/gtfs-data/download-metros-gtfs-data/\">uses open GTFS data</a> to highlight the life of a transit network.</p>\n<p>This map shows where Bus Rapid Transit (BRT) lines are operating in the LA Metro area. BRT is different from a standard bus route that is common to most transportation networks. Standard routes have stops designated, and the bus may make as many stops as needed. In some cases, a stop could mean a single city block. Bus Rapid Transit lines minimize time spent commuting as well as auto congestion by covering more ground and making fewer stops. This map is made with the digital mapping tool CartoDB. You can create your own data visualizations using digital tools and embed them onto your DKAN site.</p>\n<p>From the spending perspective, BRT is also much more affordable, flexible, and sustainable than any rail options. Especially for newer cities without rail lines and sprawled metropolitan areas, BRT can translate into an important piece of the larger transportation network. In the case of LA, <a href=\"http://la.streetsblog.org/2014/06/03/guest-opinion-the-future-of-los-angeles-is-bus-rapid-transit/\">BRT could triple the size of the network without great expense</a>.</p>\n<p>In the visualization above, the higher the concentration of BRT lines, the brighter the color. With this map, it's easy to see which areas in LA's metro area are getting the most service (as measured by bus activity) and give agencies insight on how to <a href=\"https://losangeles2b.files.wordpress.com/2012/12/web-_ten.pdf\">best allocate resources</a>.</p>\n<p><a href=\"/dataset/la-metro-gtfs-data\">Go to Data</a></p>\n"
+                                "safe_value": "<p>The movement of transit can be difficult to capture and quantify, let alone make into an engaging visualization. General Transit Feed Specification (GTFS) data creates a common format for agencies to provide data and developers to consume it. The dynamic heat map above <a href=\"http://developer.metro.net/introduction/gtfs-data/download-metros-gtfs-data/\">uses open GTFS data</a> to highlight the life of a transit network.</p>\n<p>This map shows where Bus Rapid Transit (BRT) lines are operating in the LA Metro area. BRT is different from a standard bus route that is common to most transportation networks. Standard routes have stops designated, and the bus may make as many stops as needed. In some cases, a stop could mean a single city block. Bus Rapid Transit lines minimize time spent commuting as well as auto congestion by covering more ground and making fewer stops. This map is made with the digital mapping tool CartoDB. You can create your own data visualizations using digital tools and embed them onto your DKAN site.</p>\n<p>From the spending perspective, BRT is also much more affordable, flexible, and sustainable than any rail options. Especially for newer cities without rail lines and sprawled metropolitan areas, BRT can translate into an important piece of the larger transportation network. In the case of LA, <a href=\"http://la.streetsblog.org/2014/06/03/guest-opinion-the-future-of-los-angeles-is-bus-rapid-transit/\">BRT could triple the size of the network without great expense</a>.</p>\n<p>In the visualization above, the higher the concentration of BRT lines, the brighter the color. With this map, it's easy to see which areas in LA's metro area are getting the most service (as measured by bus activity) and give agencies insight on how to <a href=\"https://losangeles2b.files.wordpress.com/2012/12/web-_ten.pdf\">best allocate resources</a>.</p>\n"
                             }
                         ],
                         "rdf_mapping": []
@@ -222,9 +202,9 @@
                         "language": "und",
                         "field_basic_text_text": [
                             {
-                                "value": "While residents in suburban and rural areas ride bikes primarily as a recreational activity, more and more biking is become a common form of transportation in urban areas. With a greater number of people on bikes, it's clear that infrastructure and resources for bicyclists is increasingly essential. \r\n\r\nThis map made with ArcGIS shows the <a href=\"http://gis.mdc.opendata.arcgis.com/datasets/5c850d795e17485ebf8a8d179d649d9c_0?%22%20style=%22width:%20800px;%20height:%20600px;\">existing bike lanes for the larger Miami-Dade County area</a> in Florida using open data from the regional Metropolitan Planning Organization (MPO). Bike lanes are a core part of pedestrian, bicyclist, and automotive safety. They show clear right-of-way paths and encourage everyone to follow traffic safety rules. You can create your own data visualizations using digital tools and embed them onto your DKAN site. \r\n\r\nThe data released by the Miami-Dade MPO provide information about the number of bike lanes, the start and stop points, etc. With the visualization above we see the data as more than a list. It's easy to see exactly where bike lanes exist and how much area is covered in relation to the entire county. This data, along with other datasets, inform long-term plans for pedestrian and bicycle safety. The <a href=\"http://miamidadempo.org/library/plans/miami-dade-2040-bicycle-pedestrian-plan.pdf\">Miami-Dade MPO 2040 plan for pedestrian bicycle safety</a> identifies major improvements that will be achieved over the next few decades.   \r\n\r\n\r\n<a href=\"/dataset/bike-lanes/resource/960687d8-582c-4f29-b1e4-113781e58e3b\">Go to Data</a>",
+                                "value": "While residents in suburban and rural areas ride bikes primarily as a recreational activity, more and more biking is become a common form of transportation in urban areas. With a greater number of people on bikes, it's clear that infrastructure and resources for bicyclists is increasingly essential. \r\n\r\nThis map made with ArcGIS shows the <a href=\"http://gis.mdc.opendata.arcgis.com/datasets/5c850d795e17485ebf8a8d179d649d9c_0?%22%20style=%22width:%20800px;%20height:%20600px;\">existing bike lanes for the larger Miami-Dade County area</a> in Florida using open data from the regional Metropolitan Planning Organization (MPO). Bike lanes are a core part of pedestrian, bicyclist, and automotive safety. They show clear right-of-way paths and encourage everyone to follow traffic safety rules. You can create your own data visualizations using digital tools and embed them onto your DKAN site. \r\n\r\nThe data released by the Miami-Dade MPO provide information about the number of bike lanes, the start and stop points, etc. With the visualization above we see the data as more than a list. It's easy to see exactly where bike lanes exist and how much area is covered in relation to the entire county. This data, along with other datasets, inform long-term plans for pedestrian and bicycle safety. The <a href=\"http://miamidadempo.org/library/plans/miami-dade-2040-bicycle-pedestrian-plan.pdf\">Miami-Dade MPO 2040 plan for pedestrian bicycle safety</a> identifies major improvements that will be achieved over the next few decades.   \r\n\r\n\r\n<center><a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/florida-bike-lanes/resource/960687d8-582c-4f29-b1e4-113781e58e3b\">Go to Data</a></center>",
                                 "format": "html",
-                                "safe_value": "<p>While residents in suburban and rural areas ride bikes primarily as a recreational activity, more and more biking is become a common form of transportation in urban areas. With a greater number of people on bikes, it's clear that infrastructure and resources for bicyclists is increasingly essential.</p>\n<p>This map made with ArcGIS shows the <a href=\"http://gis.mdc.opendata.arcgis.com/datasets/5c850d795e17485ebf8a8d179d649d9c_0?%22%20style=%22width:%20800px;%20height:%20600px;\">existing bike lanes for the larger Miami-Dade County area</a> in Florida using open data from the regional Metropolitan Planning Organization (MPO). Bike lanes are a core part of pedestrian, bicyclist, and automotive safety. They show clear right-of-way paths and encourage everyone to follow traffic safety rules. You can create your own data visualizations using digital tools and embed them onto your DKAN site.</p>\n<p>The data released by the Miami-Dade MPO provide information about the number of bike lanes, the start and stop points, etc. With the visualization above we see the data as more than a list. It's easy to see exactly where bike lanes exist and how much area is covered in relation to the entire county. This data, along with other datasets, inform long-term plans for pedestrian and bicycle safety. The <a href=\"http://miamidadempo.org/library/plans/miami-dade-2040-bicycle-pedestrian-plan.pdf\">Miami-Dade MPO 2040 plan for pedestrian bicycle safety</a> identifies major improvements that will be achieved over the next few decades.</p>\n<p><a href=\"/dataset/bike-lanes/resource/960687d8-582c-4f29-b1e4-113781e58e3b\">Go to Data</a></p>\n"
+                                "safe_value": "<p>While residents in suburban and rural areas ride bikes primarily as a recreational activity, more and more biking is become a common form of transportation in urban areas. With a greater number of people on bikes, it's clear that infrastructure and resources for bicyclists is increasingly essential.</p>\n<p>This map made with ArcGIS shows the <a href=\"http://gis.mdc.opendata.arcgis.com/datasets/5c850d795e17485ebf8a8d179d649d9c_0?%22%20style=%22width:%20800px;%20height:%20600px;\">existing bike lanes for the larger Miami-Dade County area</a> in Florida using open data from the regional Metropolitan Planning Organization (MPO). Bike lanes are a core part of pedestrian, bicyclist, and automotive safety. They show clear right-of-way paths and encourage everyone to follow traffic safety rules. You can create your own data visualizations using digital tools and embed them onto your DKAN site.</p>\n<p>The data released by the Miami-Dade MPO provide information about the number of bike lanes, the start and stop points, etc. With the visualization above we see the data as more than a list. It's easy to see exactly where bike lanes exist and how much area is covered in relation to the entire county. This data, along with other datasets, inform long-term plans for pedestrian and bicycle safety. The <a href=\"http://miamidadempo.org/library/plans/miami-dade-2040-bicycle-pedestrian-plan.pdf\">Miami-Dade MPO 2040 plan for pedestrian bicycle safety</a> identifies major improvements that will be achieved over the next few decades.</p>\n</p>\n<p><center><a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/florida-bike-lanes/resource/960687d8-582c-4f29-b1e4-113781e58e3b\">Go to Data</a></center></p>\n"
                             }
                         ],
                         "rdf_mapping": []
@@ -245,7 +225,7 @@
                     },
                     "css": [],
                     "extras": [],
-                    "position": "1",
+                    "position": "2",
                     "locks": [],
                     "uuid": "9b90511b-dcf8-44f3-b047-fccada93eb00",
                     "fpp_data": {
@@ -272,16 +252,12 @@
                     }
                 },
                 {
-                    "panel": "column1",
-                    "type": "visualization_embed",
-                    "subtype": "visualization_embed",
+                    "panel": "footer",
+                    "type": "block",
+                    "subtype": "dkan_sitewide_demo_front-dkan_search_front",
                     "shown": "1",
                     "access": [],
                     "configuration": {
-                        "local_source": "",
-                        "remote_source": "http://gis.mdc.opendata.arcgis.com/datasets/5c850d795e17485ebf8a8d179d649d9c_0?embed=true\" style=\"width: 800px; height: 600px;",
-                        "height": "600",
-                        "width": "100%",
                         "override_title": 0,
                         "override_title_text": "",
                         "override_title_heading": "h2"
@@ -294,82 +270,26 @@
                     "extras": [],
                     "position": "0",
                     "locks": [],
-                    "uuid": "e0fa88a6-083c-4b2f-90b2-59b33b74160f"
-                },
-                {
-                    "panel": "footer",
-                    "type": "block",
-                    "subtype": "dkan_sitewide_demo_front-dkan_search_front",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "override_title": 0,
-                        "override_title_text": "",
-                        "override_title_heading": "h2"
-                    },
-                    "cache": [],
-                    "style": [],
-                    "css": [],
-                    "extras": [],
-                    "position": "0",
-                    "locks": [],
                     "uuid": "7838b469-0b4c-44e6-bbe5-2d6eca3e7b77"
                 },
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:44218b7e-64fb-465e-88a6-ce6976f5d748",
+                    "subtype": "uuid:425b0faf-dcf9-412f-9770-90cc286a8595",
                     "shown": "1",
                     "access": [],
                     "configuration": {
                         "view_mode": "full"
                     },
                     "cache": [],
-                    "style": [],
-                    "css": [],
-                    "extras": [],
-                    "position": "3",
-                    "locks": [],
-                    "uuid": "e9aff39a-5f60-4059-af0d-34a08c9bf215",
-                    "fpp_data": {
-                        "title": "",
-                        "bundle": "text",
-                        "link": "0",
-                        "path": "",
-                        "reusable": "0",
-                        "admin_title": "",
-                        "admin_description": "",
-                        "category": "Re-usable content",
-                        "view_access": null,
-                        "edit_access": null,
-                        "uuid": "44218b7e-64fb-465e-88a6-ce6976f5d748",
-                        "language": "und",
-                        "field_basic_text_text": [
-                            {
-                                "value": "<h3>Sources</h3>\r\n\r\nThe visualization created above used GTFS data from New York City with the digital mapping tool CartoDB. This data is used to produce an animated data visualization displaying the frequency of trains at Long Island Railroad stations throughout New York City, Nassau County, NY and Suffolk County, NY. You can create your own data visualizations using digital tools and embed them onto your DKAN site. \r\n\r\nYou can access the data from the following sources:\r\n\r\nThe New York MTA's Developer Downloads Page (requires developer key for access): http://web.mta.info/developers/download.html\r\n\r\nIf you don't have a developer key, you can access the GTFS data at TransitFeeds: http://transitfeeds.com/p/mta/86?p=1\r\n",
-                                "format": "html",
-                                "safe_value": "<h3>Sources</h3>\n<p>The visualization created above used GTFS data from New York City with the digital mapping tool CartoDB. This data is used to produce an animated data visualization displaying the frequency of trains at Long Island Railroad stations throughout New York City, Nassau County, NY and Suffolk County, NY. You can create your own data visualizations using digital tools and embed them onto your DKAN site.</p>\n<p>You can access the data from the following sources:</p>\n<p>The New York MTA's Developer Downloads Page (requires developer key for access): <a href=\"http://web.mta.info/developers/download.html\">http://web.mta.info/developers/download.html</a></p>\n<p>If you don't have a developer key, you can access the GTFS data at TransitFeeds: <a href=\"http://transitfeeds.com/p/mta/86?p=1\">http://transitfeeds.com/p/mta/86?p=1</a></p>\n"
-                            }
-                        ],
-                        "rdf_mapping": []
-                    }
-                },
-                {
-                    "panel": "header",
-                    "type": "fieldable_panels_pane",
-                    "subtype": "uuid:919df9bb-5c4c-4bf1-8192-45a9972dca82",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "view_mode": "full"
+                    "style": {
+                        "settings": null
                     },
-                    "cache": [],
-                    "style": [],
                     "css": [],
                     "extras": [],
-                    "position": "0",
+                    "position": "1",
                     "locks": [],
-                    "uuid": "4437c91d-6278-4f65-a05b-eeba5fb5b9da",
+                    "uuid": "5863b0b2-26ce-4d59-a636-4e6019c4b36d",
                     "fpp_data": {
                         "title": "",
                         "bundle": "spotlight",
@@ -381,7 +301,7 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "919df9bb-5c4c-4bf1-8192-45a9972dca82",
+                        "uuid": "425b0faf-dcf9-412f-9770-90cc286a8595",
                         "language": "und",
                         "field_basic_spotlight_duration": [],
                         "field_basic_spotlight_items": [
@@ -418,6 +338,59 @@
                         ],
                         "rdf_mapping": []
                     }
+                },
+                {
+                    "panel": "column1",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "",
+                        "remote_source": "http://gis.mdc.opendata.arcgis.com/datasets/5c850d795e17485ebf8a8d179d649d9c_0?embed=true%22%20style=%22width:%20800px;%20height:%20600px;",
+                        "height": "480",
+                        "width": "100%",
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "c5f8c1bd-fdc9-496c-b5b1-630660860813"
+                },
+                {
+                    "panel": "header",
+                    "type": "entity_field",
+                    "subtype": "node:field_topic",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "label": "title",
+                        "formatter": "dkan_topic_formatter",
+                        "delta_limit": "0",
+                        "delta_offset": "0",
+                        "delta_reversed": 0,
+                        "formatter_settings": [],
+                        "context": "panelizer",
+                        "override_title": 1,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "f4fb31f1-150b-438e-9f65-d216df6a8880"
                 }
             ],
             "panelizer_entity": {

@@ -11,11 +11,11 @@
         "notes": "<p><strong>Source:</strong> FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n<p>Data is split into two categories:</p>\n<p><strong>Violent Crime:</strong> Includes aggravated assault, murder, rape and robbery.<br /><strong>Property Crime:</strong> Includes arson, burglary, larceny-theft and motor vehicle theft.</p>\n<p><strong>Top 10 Most Populous U.S. Cities:</strong></p>\n<ol>\n<li>New York, NY</li>\n<li>Los Angeles, CA</li>\n<li>Chicago, IL</li>\n<li>Houston, TX</li>\n<li>Philadelphia, PA</li>\n<li>Las Vegas, NV</li>\n<li>Phoenix, AZ</li>\n<li>San Antonio, TX</li>\n<li>San Diego, TX</li>\n<li>Dallas, TX</li>\n</ol>\n<p><strong>Link to DKAN Data Dashboard:</strong> <a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/crime-americas-top-10-most-populous-cities\">http://dev-stefanies-dkan-demo-site.pantheonsite.io/crime-americas-top-10-most-populous-cities</a></p>\n",
         "url": "http://default/dataset/crime-data-ten-most-populous-cities-us",
         "state": "Active",
-        "log_message": "Update to resource 'Property Crime Statistics by City'",
+        "log_message": "Update to resource 'Violent Crime Statistics by City '",
         "private": "Published",
-        "revision_timestamp": "Thu, 06/23/2016 - 11:01",
+        "revision_timestamp": "Fri, 07/08/2016 - 15:48",
         "metadata_created": "Wed, 04/20/2016 - 15:41",
-        "metadata_modified": "Thu, 06/23/2016 - 11:01",
+        "metadata_modified": "Fri, 07/08/2016 - 15:48",
         "creator_user_id": "24eb1825-a538-499e-83c0-9559ef9fd38e",
         "type": "Dataset",
         "resources": [
@@ -33,21 +33,6 @@
                 "created": "Wed, 04/20/2016 - 15:42",
                 "resource_group_id": "",
                 "last_modified": "Date changed\tWed, 04/20/2016 - 15:42"
-            },
-            {
-                "id": "23f45c04-9e65-4fdf-be89-01cf15be3d55",
-                "revision_id": "",
-                "url": "http://default/sites/default/files/NumbersByCity_3.csv",
-                "description": "",
-                "format": "csv",
-                "state": "Active",
-                "revision_timestamp": "Wed, 06/22/2016 - 22:26",
-                "name": "Violent Crime Statistics by City ",
-                "mimetype": "text/csv",
-                "size": "366 bytes",
-                "created": "Tue, 06/21/2016 - 12:35",
-                "resource_group_id": "",
-                "last_modified": "Date changed\tWed, 06/22/2016 - 22:26"
             },
             {
                 "id": "ae1af387-c709-4e7a-b450-c6a4e44381fb",
@@ -78,6 +63,21 @@
                 "created": "Fri, 05/06/2016 - 16:17",
                 "resource_group_id": "",
                 "last_modified": "Date changed\tWed, 06/22/2016 - 18:49"
+            },
+            {
+                "id": "8d533036-8f67-4c86-a3b0-bcc1c7ef6f14",
+                "revision_id": "",
+                "url": "http://default/sites/default/files/NumbersByCity.csv",
+                "description": "",
+                "format": "csv",
+                "state": "Active",
+                "revision_timestamp": "Fri, 07/08/2016 - 14:09",
+                "name": "Violent Crime Statistics by City ",
+                "mimetype": "text/csv",
+                "size": "340 bytes",
+                "created": "Fri, 07/08/2016 - 14:09",
+                "resource_group_id": "",
+                "last_modified": "Date changed\tFri, 07/08/2016 - 14:09"
             }
         ],
         "tags": [
@@ -110,13 +110,6 @@
                     "value": "admin"
                 },
                 {
-                    "uri": "http://default/node/74",
-                    "id": "74",
-                    "resource": "node",
-                    "uuid": "23f45c04-9e65-4fdf-be89-01cf15be3d55",
-                    "value": "admin"
-                },
-                {
                     "uri": "http://default/node/75",
                     "id": "75",
                     "resource": "node",
@@ -128,6 +121,13 @@
                     "id": "65",
                     "resource": "node",
                     "uuid": "49daa44a-efa6-4145-92a9-baedc7202e1f",
+                    "value": "admin"
+                },
+                {
+                    "uri": "http://default/node/84",
+                    "id": "84",
+                    "resource": "node",
+                    "uuid": "8d533036-8f67-4c86-a3b0-bcc1c7ef6f14",
                     "value": "admin"
                 }
             ],
@@ -166,7 +166,16 @@
                 "duration": 31449600
             },
             "og_group_ref": [],
-            "field_topic": []
+            "field_topic": [
+                {
+                    "uri": "http://default/taxonomy_term/42",
+                    "id": "42",
+                    "resource": "taxonomy_term",
+                    "uuid": "916a5b0d-d4f9-489d-a3a0-30c5cdfd0261",
+                    "value": "Public Safety"
+                }
+            ],
+            "field_modified_source_date": null
         }
     }
 }

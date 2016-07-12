@@ -5,7 +5,7 @@
         "type": "page",
         "title": "About",
         "created": "1467686276",
-        "changed": "1467690351",
+        "changed": "1468010882",
         "body": [],
         "panelizer": {
             "panels_display": {
@@ -200,7 +200,7 @@
                 {
                     "panel": "column1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:9353f7b3-995a-4929-8b58-263dc9ca270c",
+                    "subtype": "current:129",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -236,7 +236,7 @@
                                 "description": null,
                                 "link": null,
                                 "type": "image",
-                                "image_path": "files/page/LCr5fi0_3.png"
+                                "image_path": "files/page/LCr5fi0_4.png"
                             }
                         ],
                         "rdf_mapping": []
@@ -266,7 +266,7 @@
                 {
                     "panel": "column1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:0a61d130-8ca4-4115-a9e2-5d0cc20f6677",
+                    "subtype": "current:130",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -302,7 +302,7 @@
                                 "description": null,
                                 "link": null,
                                 "type": "image",
-                                "image_path": "files/page/pjKIPkG_2.png"
+                                "image_path": "files/page/pjKIPkG_3.png"
                             }
                         ],
                         "rdf_mapping": []
@@ -332,7 +332,7 @@
                 {
                     "panel": "column1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:5e03dff0-6a15-4079-8b06-7a4a50ff1191",
+                    "subtype": "current:131",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -368,7 +368,7 @@
                                 "description": null,
                                 "link": null,
                                 "type": "image",
-                                "image_path": "files/page/jfiHlsa_2.png"
+                                "image_path": "files/page/jfiHlsa_3.png"
                             }
                         ],
                         "rdf_mapping": []
@@ -488,7 +488,7 @@
                     "configuration": {
                         "admin_title": "Notes to developers",
                         "title": "",
-                        "body": "<img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/octo-cat.jpeg\" align=\"left\" alt=\"GitHub Octocat\" width=\"125\" height=\"75\">Are you a developer and want to use and/or contribute to DKAN? DKAN is open source and accepts contributions\u2013check out our <a href=\"https://github.com/NuCivic/dkan\">public GitHub.</a>\n\n\n\n<img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/madison-polling.png\" align=\"left\" alt=\"DKAN demo on computer\" width=\"125\" height=\"100\"><br>Want DKAN\u2019s enterprise solution? <a href=\"http://demo.getdkan.com/\">Test drive DKAN</a> and <a href=\"mailto:contact@nucivic.com\">contact our team for more information.</a>",
+                        "body": "<img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/octo-cat.png\" align=\"left\" alt=\"GitHub Octocat\" width=\"90\" height=\"84\" hspace=\"18\">Are you a developer and want to use and/or contribute to DKAN? DKAN is open source and accepts contributions\u2013check out our <a href=\"https://github.com/NuCivic/dkan\">public GitHub.</a>",
                         "format": "html",
                         "substitute": 1
                     },
@@ -499,6 +499,27 @@
                     "position": "0",
                     "locks": [],
                     "uuid": "152429db-26a4-4562-bf28-6d6117c31c8b"
+                },
+                {
+                    "panel": "secondcolumn2",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "Link to demo site",
+                        "title": "",
+                        "body": "<img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/madison-polling.png\" align=\"left\" alt=\"DKAN demo on computer\" width=\"125\" height=\"100\"><br>Want DKAN\u2019s enterprise solution? <a href=\"http://demo.getdkan.com/\">Test drive DKAN</a> and <a href=\"mailto:contact@nucivic.com\">contact our team for more information.</a>",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "5ba8d84b-b162-4140-9dbd-004bb2e5f47d"
                 }
             ],
             "panelizer_entity": {
