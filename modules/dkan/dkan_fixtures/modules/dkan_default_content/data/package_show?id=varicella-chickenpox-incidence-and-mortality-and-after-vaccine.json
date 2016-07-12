@@ -12,9 +12,9 @@
         "url": "http://default/dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine",
         "state": "Active",
         "private": "Published",
-        "revision_timestamp": "Thu, 07/07/2016 - 11:49",
+        "revision_timestamp": "Fri, 05/13/2016 - 14:52",
         "metadata_created": "Wed, 04/06/2016 - 13:18",
-        "metadata_modified": "Thu, 07/07/2016 - 11:49",
+        "metadata_modified": "Fri, 05/13/2016 - 14:52",
         "creator_user_id": "24eb1825-a538-499e-83c0-9559ef9fd38e",
         "type": "Dataset",
         "resources": [
@@ -144,16 +144,7 @@
                     "value": "admin"
                 }
             ],
-            "field_topic": [
-                {
-                    "uri": "http://default/taxonomy_term/41",
-                    "id": "41",
-                    "resource": "taxonomy_term",
-                    "uuid": "80a9cc2b-c817-405e-9591-14565759defc",
-                    "value": "Health Care"
-                }
-            ],
-            "field_modified_source_date": null
+            "field_topic": []
         }
     }
 }

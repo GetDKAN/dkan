@@ -9,6 +9,7 @@
  * Registers migrations and imports all default content.
  */
 function dkan_default_content_enable() {
+  /*
   // Register migrations.
   migrate_static_registration();
 
@@ -37,6 +38,7 @@ function dkan_default_content_enable() {
   drupal_get_messages('status', TRUE);
   drupal_get_messages('warning', TRUE);
   drupal_set_message('The default content was imported.');
+  */
 }
 
 /**

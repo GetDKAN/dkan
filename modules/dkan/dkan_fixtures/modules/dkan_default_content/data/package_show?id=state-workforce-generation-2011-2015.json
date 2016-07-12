@@ -10,10 +10,11 @@
         "notes": "<p>Information about the state workforce, broken down into four generational cohorts.</p>\n<p><strong>Note:</strong> This dataset has been given a vague name because it is anonymized demo data, not actual state data.</p>\n",
         "url": "http://default/dataset/state-workforce-generation-2011-2015",
         "state": "Active",
+        "log_message": "Update to resource 'Workforce By Generation (2011-2015)'",
         "private": "Published",
-        "revision_timestamp": "Thu, 07/07/2016 - 11:47",
+        "revision_timestamp": "Wed, 06/22/2016 - 13:35",
         "metadata_created": "Mon, 04/11/2016 - 08:48",
-        "metadata_modified": "Thu, 07/07/2016 - 11:47",
+        "metadata_modified": "Wed, 06/22/2016 - 13:35",
         "creator_user_id": "24eb1825-a538-499e-83c0-9559ef9fd38e",
         "type": "Dataset",
         "resources": [
@@ -160,8 +161,7 @@
                     "value": "admin"
                 }
             ],
-            "field_topic": [],
-            "field_modified_source_date": null
+            "field_topic": []
         }
     }
 }

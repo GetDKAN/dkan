@@ -11,10 +11,11 @@
         "notes": "<p>Statistics on U.S. smoking rates and tobacco taxation rates for all fifty states.</p>\n<p><strong>Source:</strong> Centers for Disease Control and Prevention, 2015<br />\n<a href=\"http://www.cdc.gov/tobacco/data_statistics/state_data/\">http://www.cdc.gov/tobacco/data_statistics/state_data/</a></p>\n<p><strong>See associated DKAN data story:</strong><br />\n<a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/state-level-policies-reduce-smoking-rates-nationwide\">http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/state-level-policies-reduce-smoking-rates-nationwide</a></p>\n",
         "url": "http://default/dataset/us-tobacco-usage-statistics",
         "state": "Active",
+        "log_message": "Update to resource 'U.S. Adult Smoking Rate'",
         "private": "Published",
-        "revision_timestamp": "Thu, 07/07/2016 - 11:48",
+        "revision_timestamp": "Fri, 05/13/2016 - 15:47",
         "metadata_created": "Sun, 04/10/2016 - 23:11",
-        "metadata_modified": "Thu, 07/07/2016 - 11:48",
+        "metadata_modified": "Fri, 05/13/2016 - 15:47",
         "creator_user_id": "24eb1825-a538-499e-83c0-9559ef9fd38e",
         "type": "Dataset",
         "resources": [
@@ -134,16 +135,7 @@
                     "value": "admin"
                 }
             ],
-            "field_topic": [
-                {
-                    "uri": "http://default/taxonomy_term/41",
-                    "id": "41",
-                    "resource": "taxonomy_term",
-                    "uuid": "80a9cc2b-c817-405e-9591-14565759defc",
-                    "value": "Health Care"
-                }
-            ],
-            "field_modified_source_date": null
+            "field_topic": []
         }
     }
 }

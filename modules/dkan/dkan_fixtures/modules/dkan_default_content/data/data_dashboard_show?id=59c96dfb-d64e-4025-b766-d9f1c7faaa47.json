@@ -5,7 +5,7 @@
         "type": "data_dashboard",
         "title": "State Workforce and Retirement Statistics",
         "created": "1459965181",
-        "changed": "1468080205",
+        "changed": "1467860041",
         "body": {
             "und": [
                 {
@@ -62,7 +62,7 @@
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:11",
+                    "subtype": "uuid:6c9f0728-48a6-4981-882f-7aad9d77b229",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -74,7 +74,7 @@
                     },
                     "css": [],
                     "extras": [],
-                    "position": "2",
+                    "position": "1",
                     "locks": [],
                     "uuid": "808f5020-e67e-45ac-8f96-366263a4a732",
                     "fpp_data": {
@@ -92,9 +92,9 @@
                         "language": "und",
                         "field_basic_text_text": [
                             {
-                                "value": "As our state workforce grows older the overall demographics are shifting. Workers over the age of 65 and \"Baby Boomers\" are aging out, while Gen-Xers and Millennials are aging in. The changes in employee makeup have implications for how businesses (including government) adapt to new trends as well as short-term considerations like policy and budgeting for retirement and pension costs. The charts below show how the state workforce has changed over fiscal years 2011-2015, which will inform how we plan for the years ahead. \n\n<br>\n<center><font size=\"5\">[Go to Dataset](http://default-content.dkandemo.nuamsdev.com/dataset/state-workforce-generation-2011-2015)</center></font>\n",
+                                "value": "As our state workforce grows older the overall demographics are shifting. Workers over the age of 65 and \"Baby Boomers\" are aging out, while Gen-Xers and Millennials are aging in. The changes in employee makeup have implications for how businesses (including government) adapt to new trends as well as short-term considerations like policy and budgeting for retirement and pension costs. The charts below show how the state workforce has changed over fiscal years 2011-2015, which will inform how we plan for the years ahead. \n\n<br>\n<center>[Go to Dataset](../dataset/state-workforce-generation-2011-2015)</center>\n",
                                 "format": "html",
-                                "safe_value": "<p>As our state workforce grows older the overall demographics are shifting. Workers over the age of 65 and \"Baby Boomers\" are aging out, while Gen-Xers and Millennials are aging in. The changes in employee makeup have implications for how businesses (including government) adapt to new trends as well as short-term considerations like policy and budgeting for retirement and pension costs. The charts below show how the state workforce has changed over fiscal years 2011-2015, which will inform how we plan for the years ahead.</p>\n<p></p>\n<p><center><a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/state-workforce-generation-2011-2015\">Go to Dataset</a></center></p>\n"
+                                "safe_value": "<p>As our state workforce grows older the overall demographics are shifting. Workers over the age of 65 and \"Baby Boomers\" are aging out, while Gen-Xers and Millennials are aging in. The changes in employee makeup have implications for how businesses (including government) adapt to new trends as well as short-term considerations like policy and budgeting for retirement and pension costs. The charts below show how the state workforce has changed over fiscal years 2011-2015, which will inform how we plan for the years ahead.</p>\n<p></p>\n<p><center><a href=\"../dataset/state-workforce-generation-2011-2015\">Go to Dataset</a></center></p>\n"
                             }
                         ],
                         "rdf_mapping": []
@@ -261,7 +261,7 @@
                     },
                     "css": [],
                     "extras": [],
-                    "position": "1",
+                    "position": "0",
                     "locks": [],
                     "uuid": "961b35cc-5569-43d0-af1b-87aa53841fb7",
                     "fpp_data": {
@@ -365,9 +365,7 @@
                         "override_title_heading": "h2"
                     },
                     "cache": [],
-                    "style": {
-                        "settings": null
-                    },
+                    "style": [],
                     "css": [],
                     "extras": [],
                     "position": "0",
@@ -390,9 +388,7 @@
                         "override_title_heading": "h2"
                     },
                     "cache": [],
-                    "style": {
-                        "settings": null
-                    },
+                    "style": [],
                     "css": [],
                     "extras": [],
                     "position": "2",
@@ -415,9 +411,7 @@
                         "override_title_heading": "h2"
                     },
                     "cache": [],
-                    "style": {
-                        "settings": null
-                    },
+                    "style": [],
                     "css": [],
                     "extras": [],
                     "position": "0",
@@ -440,42 +434,12 @@
                         "override_title_heading": "h2"
                     },
                     "cache": [],
-                    "style": {
-                        "settings": null
-                    },
+                    "style": [],
                     "css": [],
                     "extras": [],
                     "position": "3",
                     "locks": [],
                     "uuid": "28113752-fe1e-46b9-929c-11b685d68216"
-                },
-                {
-                    "panel": "header",
-                    "type": "entity_field",
-                    "subtype": "node:field_topic",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "label": "title",
-                        "formatter": "dkan_topic_formatter",
-                        "delta_limit": "0",
-                        "delta_offset": "0",
-                        "delta_reversed": 0,
-                        "formatter_settings": [],
-                        "context": "panelizer",
-                        "override_title": 1,
-                        "override_title_text": "",
-                        "override_title_heading": "h2"
-                    },
-                    "cache": [],
-                    "style": {
-                        "settings": null
-                    },
-                    "css": [],
-                    "extras": [],
-                    "position": "0",
-                    "locks": [],
-                    "uuid": "53840a27-3cac-42d7-8a12-15eac2d8ccd9"
                 }
             ],
             "panelizer_entity": {

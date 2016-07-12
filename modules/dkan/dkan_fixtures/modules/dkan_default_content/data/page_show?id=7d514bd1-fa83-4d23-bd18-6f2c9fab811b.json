@@ -5,7 +5,7 @@
         "type": "page",
         "title": "Welcome",
         "created": "1467685518",
-        "changed": "1468014938",
+        "changed": "1467686050",
         "body": {
             "und": [
                 {
@@ -241,39 +241,6 @@
                     "position": "0",
                     "locks": [],
                     "uuid": "3c7762b7-844a-4f01-afc0-36da301160e6"
-                },
-                {
-                    "panel": "bottom-second",
-                    "type": "views",
-                    "subtype": "front_page_dashboards_list",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "override_pager_settings": 0,
-                        "use_pager": 0,
-                        "nodes_per_page": "4",
-                        "pager_id": "0",
-                        "offset": "0",
-                        "more_link": 0,
-                        "feed_icons": 0,
-                        "panel_args": 0,
-                        "link_to_view": 0,
-                        "args": "",
-                        "url": "",
-                        "display": "block",
-                        "override_title": 1,
-                        "override_title_text": "Dashboards",
-                        "override_title_heading": "h2"
-                    },
-                    "cache": [],
-                    "style": {
-                        "settings": null
-                    },
-                    "css": [],
-                    "extras": [],
-                    "position": "0",
-                    "locks": [],
-                    "uuid": "4f78ddf7-f8ca-4e4b-b0b5-a2611cfc4d58"
                 }
             ],
             "panelizer_entity": {

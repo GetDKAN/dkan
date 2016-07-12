@@ -100,6 +100,8 @@ class DkanPanelizedNodesImport extends Migration {
    */
   public function importPanelizerData($entity, $panelizer_data) {
 
+    var_dump('IMPORTING ENTITY');
+
     // Convert panelizer data into array recursively.
     // Almost all functions on Panels expect arrays.
     $panelizer_data = json_decode(json_encode($panelizer_data), true);
@@ -170,7 +172,11 @@ class DkanPanelizedNodesImport extends Migration {
   private function save_fieldable_panel_pane_field($fpp, $fpp_data) {
     $fields = field_info_instances('fieldable_panels_pane', $fpp->bundle);
 
+
+
     foreach ($fields as $field_name => $field_spec) {
+
+      var_dump($field_name);
 
       if (isset($fpp_data[$field_name])) {
         // Setup basic field information (common to all field types).

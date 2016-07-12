@@ -5,7 +5,7 @@
         "type": "dkan_data_story",
         "title": "London Income Analysis",
         "created": "1460662824",
-        "changed": "1468080566",
+        "changed": "1467853418",
         "body": {
             "und": [
                 {
@@ -17,13 +17,6 @@
                 }
             ]
         },
-        "field_topic": [
-            {
-                "name": "Finance and Budgeting",
-                "display_name": "Finance and Budgeting",
-                "id": "4ac6d362-6898-4ab8-98f6-ce195657ec4c"
-            }
-        ],
         "field_image": "files/dkan_data_story/london1_0_0.jpg",
         "panelizer": {
             "panels_display": {
@@ -34,7 +27,7 @@
                 "css_id": null,
                 "context": [],
                 "renderer": "standard",
-                "layout": "radix_boxton",
+                "layout": "radix_brenham_flipped",
                 "layout_settings": [],
                 "panel_settings": {
                     "style_settings": {
@@ -52,7 +45,7 @@
             },
             "panels_pane": [
                 {
-                    "panel": "contentmain",
+                    "panel": "header",
                     "type": "entity_field",
                     "subtype": "node:field_image",
                     "shown": "1",
@@ -82,12 +75,12 @@
                         "css_class": "story_image_full_width"
                     },
                     "extras": [],
-                    "position": "1",
+                    "position": "0",
                     "locks": [],
                     "uuid": "309fe989-26f8-4c4f-8c6b-54a55738fd5f"
                 },
                 {
-                    "panel": "contentmain",
+                    "panel": "header",
                     "type": "entity_field",
                     "subtype": "node:body",
                     "shown": "1",
@@ -117,19 +110,82 @@
                 },
                 {
                     "panel": "contentmain",
-                    "type": "entity_field",
-                    "subtype": "node:field_topic",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
                     "shown": "1",
                     "access": [],
                     "configuration": {
-                        "label": "title",
-                        "formatter": "dkan_topic_formatter",
-                        "delta_limit": "0",
-                        "delta_offset": "0",
-                        "delta_reversed": 0,
-                        "formatter_settings": [],
+                        "local_source": "",
+                        "remote_source": "http://public.tableausoftware.com/views/MultipleDeprivationIndex-London/DeprivationinLondon?:embed=y&:showVizHome=no&:ho",
+                        "height": "600",
+                        "width": "100%",
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null,
+                        "style": "default"
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "b940c039-f7a0-4b7d-86cc-f224f468bc92"
+                },
+                {
+                    "panel": "sidebar",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:30f02ef8-08d1-4ab7-9f2c-b80fe123f3d4",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null,
+                        "style": "default"
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "31d8fa9f-f9f8-4851-b006-debd338e163e",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "30f02ef8-08d1-4ab7-9f2c-b80fe123f3d4",
+                        "language": "und",
+                        "field_basic_text_text": [
+                            {
+                                "value": "This visualization has been put together using the IMD 2010 dataset the visualization tool, Tableau. You can create your own visualizations using a variety of tools and embed them on your DKAN site.  \n\nThe UK Index of Multiple Deprivation (IMD) is a measure to understand economic disparity in the booming metropolitan that is London. The index takes into consideration assets of all kinds (not just economic) to get a real sense of how resources are distributed. The data can be explored on the interactive map that was built with Tableau. \n\nLower Super Output Areas (LSOAs) were mapped to post codes and shown through Tableau Public 8, which can now support 1 million rows of data. This is a great improvement and now allows highly detailed analysis to be published for free to a wide audience. \n\n\n[Go to Data](../dataset/london-deprivation-index)",
+                                "format": "html",
+                                "safe_value": "<p>This visualization has been put together using the IMD 2010 dataset the visualization tool, Tableau. You can create your own visualizations using a variety of tools and embed them on your DKAN site.</p>\n<p>The UK Index of Multiple Deprivation (IMD) is a measure to understand economic disparity in the booming metropolitan that is London. The index takes into consideration assets of all kinds (not just economic) to get a real sense of how resources are distributed. The data can be explored on the interactive map that was built with Tableau.</p>\n<p>Lower Super Output Areas (LSOAs) were mapped to post codes and shown through Tableau Public 8, which can now support 1 million rows of data. This is a great improvement and now allows highly detailed analysis to be published for free to a wide audience.</p>\n<p><a href=\"../dataset/london-deprivation-index\">Go to Data</a></p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "header",
+                    "type": "node_author",
+                    "subtype": "node_author",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "link": 0,
                         "context": "panelizer",
-                        "override_title": 1,
+                        "override_title": 0,
                         "override_title_text": "",
                         "override_title_heading": "h2"
                     },
@@ -139,9 +195,9 @@
                     },
                     "css": [],
                     "extras": [],
-                    "position": "0",
+                    "position": "1",
                     "locks": [],
-                    "uuid": "eeed0799-8e74-49a3-a52d-7843a331d918"
+                    "uuid": "6b83e46a-eea1-4936-84b3-81d0431c7e24"
                 }
             ],
             "panelizer_entity": {

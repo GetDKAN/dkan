@@ -5,7 +5,7 @@
         "type": "data_dashboard",
         "title": "Crime in America's Top 10 Most Populous Cities",
         "created": "1460393089",
-        "changed": "1468080315",
+        "changed": "1467852620",
         "body": {
             "und": [
                 {
@@ -61,7 +61,7 @@
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:28",
+                    "subtype": "uuid:1e3f9d5c-8af1-4300-951b-f689ba710b3f",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -73,7 +73,7 @@
                     },
                     "css": [],
                     "extras": [],
-                    "position": "1",
+                    "position": "0",
                     "locks": [],
                     "uuid": "89a77344-758d-4b1c-ad6d-c820e8a83e7a",
                     "fpp_data": {
@@ -84,16 +84,16 @@
                         "reusable": "0",
                         "admin_title": "",
                         "admin_description": "",
-                        "category": "Reusable Content",
+                        "category": "Re-usable content",
                         "view_access": null,
                         "edit_access": null,
                         "uuid": "1e3f9d5c-8af1-4300-951b-f689ba710b3f",
                         "language": "und",
                         "field_basic_text_text": [
                             {
-                                "value": "How are crime rates and types represented appropriately when comparing major metropolitan cities? \n\nWith the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.\n\nThe visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/23f45c04-9e65-4fdf-be89-01cf15be3d55\">Go to Dataset</a>) and property crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f\">Go to Dataset</a>).\n\nAll of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a>",
+                                "value": "How are crime rates and types represented appropriately when comparing major metropolitan cities? \r\n\r\nWith the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.\r\n\r\nThe visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dataset/crime-data-ten-most-populous-cities-us/resource/80d51987-acc7-42aa-a51b-9a4737c09efa#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}},view-map:{lonField:!Longitude,latField:!Latitude}}\">Go to Dataset</a>) and property crime (<a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dataset/crime-data-ten-most-populous-cities-us/resource/a0415b2c-001d-4c7b-be8a-ce4389159a6d#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}},view-map:{lonField:!Longitude,latField:!Latitude}}\">Go to Dataset</a>).\r\n\r\nAll of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a>",
                                 "format": "html",
-                                "safe_value": "<p>How are crime rates and types represented appropriately when comparing major metropolitan cities?</p>\n<p>With the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.</p>\n<p>The visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/23f45c04-9e65-4fdf-be89-01cf15be3d55\">Go to Dataset</a>) and property crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f\">Go to Dataset</a>).</p>\n<p>All of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a></p>\n"
+                                "safe_value": "<p>How are crime rates and types represented appropriately when comparing major metropolitan cities?</p>\n<p>With the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.</p>\n<p>The visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dataset/crime-data-ten-most-populous-cities-us/resource/80d51987-acc7-42aa-a51b-9a4737c09efa#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}},view-map:{lonField:!Longitude,latField:!Latitude}}\">Go to Dataset</a>) and property crime (<a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/dataset/crime-data-ten-most-populous-cities-us/resource/a0415b2c-001d-4c7b-be8a-ce4389159a6d#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}},view-map:{lonField:!Longitude,latField:!Latitude}}\">Go to Dataset</a>).</p>\n<p>All of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a></p>\n"
                             }
                         ],
                         "rdf_mapping": []
@@ -114,7 +114,7 @@
                     },
                     "css": [],
                     "extras": [],
-                    "position": "4",
+                    "position": "3",
                     "locks": [],
                     "uuid": "f6368d86-27ea-47d8-9e58-6d376760a207",
                     "fpp_data": {
@@ -354,7 +354,7 @@
                     },
                     "css": [],
                     "extras": [],
-                    "position": "3",
+                    "position": "2",
                     "locks": [],
                     "uuid": "035ccc39-0cc2-4839-9e55-85bc86c0db9a"
                 },
@@ -511,14 +511,35 @@
                         "override_title_heading": "h2"
                     },
                     "cache": [],
-                    "style": {
-                        "settings": null
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "d7a39199-d557-4d50-af0a-31195ce02a5f"
+                },
+                {
+                    "panel": "footer",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "",
+                        "remote_source": "http://default-content.dkandemo.nuamsdev.com/node/43/recline-embed#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},currentView:!map,graphOptions:{hooks:{processOffset:{},bindEvents:{}}},view-map:{lonField:!Longitude,latField:!Latitude},map:{bounds:{_southWest:{lat:16.29905101458183,lng:-136.0546875},_northEast:{lat:51.6180165487737,lng:-56.07421875}}}}",
+                        "height": "480",
+                        "width": "100%",
+                        "override_title": 1,
+                        "override_title_text": "Interactive Preview: U.S. Violent Crime Data by City",
+                        "override_title_heading": "h2"
                     },
+                    "cache": [],
+                    "style": [],
                     "css": [],
                     "extras": [],
                     "position": "1",
                     "locks": [],
-                    "uuid": "d7a39199-d557-4d50-af0a-31195ce02a5f"
+                    "uuid": "9eaeae8d-9988-4a7d-bbf3-6968ec373692"
                 },
                 {
                     "panel": "header",
@@ -536,42 +557,12 @@
                         "override_title_heading": "h2"
                     },
                     "cache": [],
-                    "style": {
-                        "settings": null
-                    },
+                    "style": [],
                     "css": [],
                     "extras": [],
-                    "position": "2",
+                    "position": "1",
                     "locks": [],
                     "uuid": "12698c5c-7254-41ef-96b5-f4e6065c20cc"
-                },
-                {
-                    "panel": "header",
-                    "type": "entity_field",
-                    "subtype": "node:field_topic",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "label": "title",
-                        "formatter": "dkan_topic_formatter",
-                        "delta_limit": "0",
-                        "delta_offset": "0",
-                        "delta_reversed": 0,
-                        "formatter_settings": [],
-                        "context": "panelizer",
-                        "override_title": 1,
-                        "override_title_text": "",
-                        "override_title_heading": "h2"
-                    },
-                    "cache": [],
-                    "style": {
-                        "settings": null
-                    },
-                    "css": [],
-                    "extras": [],
-                    "position": "0",
-                    "locks": [],
-                    "uuid": "76fd80ae-f950-48a1-ae94-16b3f5e197a6"
                 }
             ],
             "panelizer_entity": {

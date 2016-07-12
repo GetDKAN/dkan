@@ -11,9 +11,9 @@
         "url": "http://default/dataset/gold-prices-london-1950-2008-monthly",
         "state": "Active",
         "private": "Published",
-        "revision_timestamp": "Thu, 07/07/2016 - 11:48",
+        "revision_timestamp": "Fri, 05/13/2016 - 15:13",
         "metadata_created": "Sun, 02/10/2013 - 23:05",
-        "metadata_modified": "Thu, 07/07/2016 - 11:48",
+        "metadata_modified": "Fri, 05/13/2016 - 15:13",
         "creator_user_id": "4eb26c32-4098-43a8-a8cc-e5ce6db7fc96",
         "type": "Dataset",
         "resources": [
@@ -110,16 +110,7 @@
                 "duration": 1861833600
             },
             "og_group_ref": [],
-            "field_topic": [
-                {
-                    "uri": "http://default/taxonomy_term/40",
-                    "id": "40",
-                    "resource": "taxonomy_term",
-                    "uuid": "4ac6d362-6898-4ab8-98f6-ce195657ec4c",
-                    "value": "Finance and Budgeting"
-                }
-            ],
-            "field_modified_source_date": null
+            "field_topic": []
         }
     }
 }
