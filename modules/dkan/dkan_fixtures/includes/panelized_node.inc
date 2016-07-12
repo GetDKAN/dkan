@@ -132,14 +132,16 @@ class DkanPanelizedNodesImport extends Migration {
 
       // Import Fieldable Panel Panes.
       if ($pane['type'] === 'fieldable_panels_pane' && !empty($pane['fpp_data'])) {
+
+        $pane['subtype'] = 'uuid:' . $pane['uuid'];
+
         $fpp_data = $pane['fpp_data'];
-        list($id_type, $id_value) = explode(':', $pane['subtype']);
 
         $fpp = new stdClass();
         $fpp->uid = 1;
         $fpp->title = $fpp_data['title'];
         $fpp->bundle = $fpp_data['bundle'];
-        $fpp->uuid = $id_value;
+        $fpp->uuid = $pane['uuid'];
         $fpp->link = $fpp_data['link'];
         $fpp->path = $fpp_data['path'];
         $fpp->reusable = $fpp_data['reusable'];
