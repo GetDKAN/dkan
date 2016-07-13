@@ -140,6 +140,9 @@ projects:
     version: '2.5'
   roleassign:
     version: '1.1'
+    # Features export fix
+    patch:
+      2189541: https://www.drupal.org/files/issues/roleassign-features-export-2189541-1.patch
   schema:
     version: '1.2'
   adminrole:

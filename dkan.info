@@ -74,7 +74,6 @@ dependencies[] = path_breadcrumbs
 dependencies[] = path_breadcrumbs_ui
 dependencies[] = pathauto
 dependencies[] = radix_layouts
-dependencies[] = roleassign
 dependencies[] = rules
 dependencies[] = rules_admin
 dependencies[] = select_or_other
