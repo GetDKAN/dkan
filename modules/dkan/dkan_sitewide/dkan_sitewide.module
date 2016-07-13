@@ -296,50 +296,51 @@ function update_panel_page_status($page_name, $status = FALSE) {
 }
 
 /*
- * Function used to convert the Panel Page version of the Home Page into
- * a Panelized Node version of the homepage.
+ * Converts a panel page into a panelized node page.
+ *
+ * @param
+ *  $page_name The administrative name of the page.
+ * @param
+ *  $is_homepage True if the converted page should be set as the homepage.
  */
-function convert_homepage($homepage_path) {
+function convert_panel_page($page_name, $is_homepage = false) {
 
-  // Get menu item associated with the home page path.
-  $menu_item = menu_get_item($homepage_path);
-  // Check if the item is a panel page.
-  if ($menu_item['access_callback'] === 'ctools_access_menu') {
-    // Load panel page info.
-    $homepage = get_panel_page($homepage_path);
+  module_load_include('inc', 'page_manager', 'plugins/tasks/page');
+  $page = page_manager_page_load($page_name);
 
-    if ($homepage) {
-      // Create new Page node for the homepage.
-      $homepage_node = new stdClass();
-      $homepage_node->type = 'page';
-      $homepage_node->uid = 1;
-      $homepage_node->status = 1;
-      $homepage_node->language = LANGUAGE_NONE;
-      $homepage_node->title = $homepage->admin_title;
-      node_save($homepage_node);
+  if ($page) {
+    // Create new Page node for the homepage.
+    $page_node = new stdClass();
+    $page_node->type = 'page';
+    $page_node->uid = 1;
+    $page_node->status = 1;
+    $page_node->language = LANGUAGE_NONE;
+    $page_node->title = $page->admin_title;
+    node_save($page_node);
 
-      // Get the id of the display being used on the current homepage.
-      $task = page_manager_get_task($homepage->task);
-      $task_handler = reset(page_manager_load_task_handlers($task, $homepage->name));
-      $display_id = $task_handler->conf['did'];
-      // Clone display.
-      $display = clone_panel_display($display_id);
+    $task = page_manager_get_task($page->task);
+    $task_handler = reset(page_manager_load_task_handlers($task, $page->name));
 
-      // Setup cloned display on new homepage.
-      $homepage_node = node_load($homepage_node->nid);
-      $homepage_node->panelizer['default']->display = $display;
-      $homepage_node->panelizer['default']->did = $display->did;
-      $homepage_node->panelizer['default']->entity_id = $homepage_node->nid;
-      $homepage_node->panelizer['default']->display_is_modified = TRUE;
-      $homepage_node->panelizer['default']->entity_type = 'node';
-      $homepage_node->panelizer['default']->pipeline = 'ipe';
-      $homepage_node->panelizer['default']->link_to_entity = $homepage_node->nid;
-      node_save($homepage_node);
+    $display = clone_panel_display($task_handler);
 
-      // Disable old panel page.
-      update_panel_page_status($homepage->name, TRUE);
+    // Setup cloned display on the new page node.
+    $page_node = node_load($page_node->nid);
+    $page_node->panelizer['default']->display = $display;
+    $page_node->panelizer['default']->did = $display->did;
+    $page_node->panelizer['default']->entity_id = $page_node->nid;
+    $page_node->panelizer['default']->display_is_modified = TRUE;
+    $page_node->panelizer['default']->entity_type = 'node';
+    $page_node->panelizer['default']->pipeline = 'ipe';
+    $page_node->panelizer['default']->link_to_entity = $page_node->nid;
+    node_save($page_node);
+
+    // Disable old panel page.
+    update_panel_page_status($page->name, TRUE);
+
+    // If the panel page was the homepage then set up the new node as the new homepage.
+    if ($is_homepage) {
       // Set new home page node as the new home page.
-      variable_set('site_frontpage', 'node/' . $homepage_node->nid);
+      variable_set('site_frontpage', 'node/' . $page_node->nid);
     }
   }
 }
@@ -357,12 +358,22 @@ function get_panel_page($path) {
 /**
  * Clone panel display.
  */
-function clone_panel_display($did) {
-  $display = panels_load_display($did);
-  $display_code = panels_export_display($display);
-  eval($display_code);
-  panels_save_display($display);
+function clone_panel_display($task_handler) {
+
+  $display = array();
+  // Check first if the display was already loaded.
+  if (isset($task_handler->conf['display'])) {
+    $display = $task_handler->conf['display'];
+    // If the display was not loaded then try to load it by the ID.
+  } else if (isset($task_handler->conf['did'])) {
+    $display = panels_load_display($task_handler->conf['did']);
+  }
+
+  if ($display) {
+    $display_code = panels_export_display($display);
+    eval($display_code);
+    panels_save_display($display);
+  }
 
   return $display;
 }
-

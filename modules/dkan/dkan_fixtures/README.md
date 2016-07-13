@@ -45,11 +45,11 @@ with the exception of pages (Homepage, About page, etc):
 Starting from Dkan 1.13 the Homepage has been converted from a Panel Page into a common Node Page. DKAN provides a function
 that can be used to make that conversion automatically. The provided function will take care of:
 
-- Generate an exact copy of the current homepage. This will work only if the homepage is a panel page.
+- Generate an copy of the specified panel page automatically.
 - A new panelizer page node will be generated and the previous panel page will be disabled, not deleted.
-- The new node page will be set up as the site homepage.
-- Please note that some CSS adjustments might be needed in order for the node page to look exactly like the panel page since CSS IDs and classes are going to be different.
+- The new node page will be set up as the site homepage if the $is_homepage parameter is set as 'true'.
+- Please note that some CSS adjustments might be needed in order for the node page to look exactly like the panel page since CSS IDs and classes might be different.
 
 The function can be found in the dkan_sitewide module and can be used as follows:
 
-```drush php-eval "convert_homepage(<path-to-homepage>);"```
+```drush php-eval "convert_panel_page(<page-name>);"```
