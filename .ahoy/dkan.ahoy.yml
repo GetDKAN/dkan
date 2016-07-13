@@ -41,10 +41,14 @@ commands:
         ahoy dkan sqlc <  backups/last_install.sql && \
         echo "Installed dkan from backup"
       else
-        ahoy drush "si dkan --verbose --account-pass='admin' --site-name='DKAN' install_configure_form.update_status_module=\"\'array\(FALSE,FALSE\)\'\" --yes" && \
-        ahoy drush sql-dump > backups/last_install.sql.tmp && \
-        mv backups/last_install.sql.tmp backups/last_install.sql && \
-        echo "Installed DKAN and created a new backup at backups/last_install.sql"
+        ahoy drush "si dkan --verbose --account-pass='admin' --site-name='DKAN' install_configure_form.update_status_module=\"\'array\(FALSE,FALSE\)\'\" --yes"
+        success=$(ahoy drush status --fields=bootstrap)
+        if [[ "$success" = *"Successful"* ]]; then
+          echo "Creating DB backup."
+          ahoy drush sql-dump > backups/last_install.sql.tmp
+          mv backups/last_install.sql.tmp backups/last_install.sql
+          echo "Installed DKAN and created a new backup at backups/last_install.sql"
+        fi
       fi
   module-fetch:
     usage: Checkout a dkan module from the NuCivic github repo.
