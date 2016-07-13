@@ -5,7 +5,7 @@
         "type": "data_dashboard",
         "title": "Crime in America's Top 10 Most Populous Cities",
         "created": "1460393089",
-        "changed": "1468080315",
+        "changed": "1468373840",
         "body": {
             "und": [
                 {
@@ -500,27 +500,6 @@
                     }
                 },
                 {
-                    "panel": "footer",
-                    "type": "block",
-                    "subtype": "dkan_sitewide_demo_front-dkan_search_front",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "override_title": 0,
-                        "override_title_text": "",
-                        "override_title_heading": "h2"
-                    },
-                    "cache": [],
-                    "style": {
-                        "settings": null
-                    },
-                    "css": [],
-                    "extras": [],
-                    "position": "1",
-                    "locks": [],
-                    "uuid": "d7a39199-d557-4d50-af0a-31195ce02a5f"
-                },
-                {
                     "panel": "header",
                     "type": "visualization_embed",
                     "subtype": "visualization_embed",
@@ -572,6 +551,27 @@
                     "position": "0",
                     "locks": [],
                     "uuid": "76fd80ae-f950-48a1-ae94-16b3f5e197a6"
+                },
+                {
+                    "panel": "footer",
+                    "type": "block",
+                    "subtype": "dkan_sitewide-dkan_sitewide_search_bar",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "override_title": 1,
+                        "override_title_text": "Search Your Data",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "5fe4aedb-1ef5-4361-9e3b-fea44714f95b"
                 }
             ],
             "panelizer_entity": {

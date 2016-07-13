@@ -5,7 +5,7 @@
         "type": "data_dashboard",
         "title": "Dynamic Transportation Visualizations",
         "created": "1460127350",
-        "changed": "1468336152",
+        "changed": "1468373805",
         "body": {
             "und": [
                 {
@@ -252,27 +252,6 @@
                     }
                 },
                 {
-                    "panel": "footer",
-                    "type": "block",
-                    "subtype": "dkan_sitewide_demo_front-dkan_search_front",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "override_title": 0,
-                        "override_title_text": "",
-                        "override_title_heading": "h2"
-                    },
-                    "cache": [],
-                    "style": {
-                        "settings": null
-                    },
-                    "css": [],
-                    "extras": [],
-                    "position": "0",
-                    "locks": [],
-                    "uuid": "7838b469-0b4c-44e6-bbe5-2d6eca3e7b77"
-                },
-                {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
                     "subtype": "uuid:425b0faf-dcf9-412f-9770-90cc286a8595",
@@ -391,6 +370,27 @@
                     "position": "0",
                     "locks": [],
                     "uuid": "f4fb31f1-150b-438e-9f65-d216df6a8880"
+                },
+                {
+                    "panel": "footer",
+                    "type": "block",
+                    "subtype": "dkan_sitewide-dkan_sitewide_search_bar",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "override_title": 1,
+                        "override_title_text": "Search Your Data",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "fb2bd60f-9910-433b-83b1-5750af76c189"
                 }
             ],
             "panelizer_entity": {
