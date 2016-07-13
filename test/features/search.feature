@@ -31,24 +31,27 @@ Feature: Search
       | Test Dataset 02 | Group 01  | Gabriel | Yes       | politics  | Test 02     |
 
   Scenario: Searching datasets
+    Given I am on the homepage
     When I search for "Dataset 01"
     Then I should be on the "Dataset Results" page
     And I should see "Dataset 01"
 
   Scenario: See number of datasets on search page
     Given I am on the "Dataset Search" page
-    Given I search for "Test"
+    When I search for "Test"
     Then I should see "2" search results shown on the page
     And I should see "2 results"
 
   Scenario: Filter by facet tag
-    Given I search for "Test"
-    When I click "politics"
-    Then I should not see "Dataset 01"
+    Given I am on the homepage
+    When I search for "Test"
+    Then I click "politics"
+    And I should not see "Dataset 01"
     But I should see "Dataset 02"
 
   Scenario: Filter by facet group
-    Given I search for "Test"
-    When I click "Group 01"
-    Then I should not see "Dataset 01"
+    Given I am on the homepage
+    When I search for "Test"
+    Then I click "Group 01"
+    And I should not see "Dataset 01"
     But I should see "Dataset 02"
