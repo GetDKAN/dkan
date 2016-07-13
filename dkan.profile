@@ -44,8 +44,14 @@ function dkan_additional_setup() {
       array('dkan_group_link_delete', array()),
       array('dkan_install_default_content', array()),
       array('dkan_set_adminrole', array()),
+      array('dkan_set_roleassign_roles', array()),
     ),
   );
+}
+
+function dkan_set_roleassign_roles(&$context) {
+  $roles = array('editor' => 'editor', 'site manager' => 'site manager', 'content creator' => 'content creator', 'administrator' => 0);
+  variable_set('roleassign_roles', $roles);
 }
 
 function dkan_theme_config(&$context) {
