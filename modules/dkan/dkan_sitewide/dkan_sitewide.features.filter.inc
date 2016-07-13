@@ -32,11 +32,6 @@ function dkan_sitewide_filter_default_formats() {
           'filter_html_nofollow' => 0,
         ),
       ),
-      'filter_autop' => array(
-        'weight' => 0,
-        'status' => 1,
-        'settings' => array(),
-      ),
       'filter_url' => array(
         'weight' => -45,
         'status' => 1,
@@ -46,6 +41,11 @@ function dkan_sitewide_filter_default_formats() {
       ),
       'filter_htmlcorrector' => array(
         'weight' => -44,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'filter_autop' => array(
+        'weight' => 0,
         'status' => 1,
         'settings' => array(),
       ),
