@@ -283,18 +283,6 @@ function dkan_sitewide_module_implements_alter(&$implementations, $hook) {
   }
 }
 
-/**
- * Function used to enable/disable panel pages.
- *   - TRUE: Disable page.
- *   - FALSE: Enable page.
- */
-function update_panel_page_status($page_name, $status = FALSE) {
-  $page = page_manager_get_page_cache('page-' . $page_name);
-  $function = ctools_plugin_get_function($page->subtask, "enable callback");
-  $function($page, $status);
-  menu_rebuild();
-}
-
 /*
  * Converts a panel page into a panelized node page.
  *
@@ -303,7 +291,7 @@ function update_panel_page_status($page_name, $status = FALSE) {
  * @param
  *  $is_homepage True if the converted page should be set as the homepage.
  */
-function convert_panel_page($page_name, $is_homepage = false) {
+function dkan_sitewide_convert_panel_page($page_name, $is_homepage = false) {
 
   module_load_include('inc', 'page_manager', 'plugins/tasks/page');
   $page = page_manager_page_load($page_name);
@@ -321,7 +309,7 @@ function convert_panel_page($page_name, $is_homepage = false) {
     $task = page_manager_get_task($page->task);
     $task_handler = reset(page_manager_load_task_handlers($task, $page->name));
 
-    $display = clone_panel_display($task_handler);
+    $display = dkan_sitewide_clone_panel_display($task_handler);
 
     // Setup cloned display on the new page node.
     $page_node = node_load($page_node->nid);
@@ -335,7 +323,7 @@ function convert_panel_page($page_name, $is_homepage = false) {
     node_save($page_node);
 
     // Disable old panel page.
-    update_panel_page_status($page->name, TRUE);
+    dkan_sitewide_update_panel_page_status($page->name, TRUE);
 
     // If the panel page was the homepage then set up the new node as the new homepage.
     if ($is_homepage) {
@@ -345,20 +333,11 @@ function convert_panel_page($page_name, $is_homepage = false) {
   }
 }
 
-/**
- * Return panel page info based on specified path.
- */
-function get_panel_page($path) {
-  $query = db_select('page_manager_pages', 'pmp')
-    ->fields('pmp')
-    ->condition('pmp.path', $path);
-  return $query->execute()->fetchObject();
-}
 
 /**
  * Clone panel display.
  */
-function clone_panel_display($task_handler) {
+function dkan_sitewide_clone_panel_display($task_handler) {
 
   $display = array();
   // Check first if the display was already loaded.
@@ -376,4 +355,16 @@ function clone_panel_display($task_handler) {
   }
 
   return $display;
+}
+
+/**
+ * Function used to enable/disable panel pages.
+ *   - TRUE: Disable page.
+ *   - FALSE: Enable page.
+ */
+function dkan_sitewide_update_panel_page_status($page_name, $status = FALSE) {
+  $page = page_manager_get_page_cache('page-' . $page_name);
+  $function = ctools_plugin_get_function($page->subtask, "enable callback");
+  $function($page, $status);
+  menu_rebuild();
 }

@@ -45,4 +45,4 @@ Please note that some CSS adjustments might be needed in order for the node page
 
 The function can be found in the dkan_sitewide module and can be used as follows:
 
-```drush php-eval "convert_panel_page(<path-to-homepage>);"```
+```drush php-eval "dkan_sitewide_convert_panel_page(<page-name>);"```
