@@ -34,8 +34,8 @@ Background:
     | Celeste | Group 02 | member               | Active            |
   And "Tags" terms:
     | name    |
-    | world   |
-    | sport   |
+    | Health  |
+    | Gov     |
   And datasets:
     | title      | publisher | author  | published        | tags     | description | modified source date | date changed |
     | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        | 2015-01-02           |  -5 year     |
