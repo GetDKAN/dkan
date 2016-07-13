@@ -42,8 +42,6 @@ function nuboot_radix_preprocess_field(&$variables) {
   }
 }
 
- /**
-
 /**
  * Theme function for iframe link.
  */
