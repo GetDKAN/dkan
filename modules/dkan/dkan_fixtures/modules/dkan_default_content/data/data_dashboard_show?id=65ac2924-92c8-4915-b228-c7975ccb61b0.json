@@ -326,8 +326,8 @@
                     "access": [],
                     "configuration": {
                         "local_source": "",
-                        "remote_source": "http://gis.mdc.opendata.arcgis.com/datasets/5c850d795e17485ebf8a8d179d649d9c_0?embed=true%22%20style=%22width:%20800px;%20height:%20600px;",
-                        "height": "480",
+                        "remote_source": "https://federicca.carto.com/viz/8591dcb4-49cb-11e6-b680-0e05a8b3e3d7/embed_map",
+                        "height": "600",
                         "width": "100%",
                         "override_title": 0,
                         "override_title_text": "",
