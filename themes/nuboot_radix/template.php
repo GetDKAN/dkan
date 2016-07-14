@@ -13,6 +13,35 @@ require_once dirname(__FILE__) . '/includes/panel.inc';
 require_once dirname(__FILE__) . '/includes/user.inc';
 require_once dirname(__FILE__) . '/includes/view.inc';
 
+/*
+ * Hides the link to API (URL) iframe when either the field
+ * upload or the remote field are also present.
+ */
+function nuboot_radix_preprocess_field(&$variables) {  
+  $field_name = $variables['element']['#field_name'];
+  if ($field_name == 'field_link_api') {
+    $node = $variables['element']['#object'];
+    $resource_fields = array(
+      $node->field_link_api, 
+      $node->field_link_remote_file, 
+      $node->field_upload
+    );
+    $count = array_reduce($resource_fields, function($result, $field){
+      if(!empty($field)) {
+        $result = $result count($field);  
+      }
+      return $result;
+    }, 0);
+    
+    // If there is more than type of resource linked we have to be sure
+    // link to URL resource is not being displayed.
+    if($count > 1 && $node->field_link_api) {
+      unset($variables['element'][0]['iframe']);
+      unset($variables['items'][0]['iframe']);      
+    }
+  }
+}
+
 /**
  * Theme function for iframe link.
  */
