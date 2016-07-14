@@ -108,8 +108,6 @@ dependencies[] = open_data_schema_map
 ; DKAN Features
 dependencies[] = dkan_sitewide_menu
 dependencies[] = dkan_sitewide_user
-dependencies[] = dkan_default_content
-dependencies[] = dkan_sitewide_demo_front
 dependencies[] = dkan_dataset_groups
 dependencies[] = dkan_dataset_groups_perms
 dependencies[] = dkan_dataset_rest_api

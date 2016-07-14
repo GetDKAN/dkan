@@ -158,6 +158,15 @@ projects:
   facetapi:
     patch:
       1: patches/cross-site-scripting-facets-156778.patch
+  migrate:
+    version: 2.8
+  migrate_extras:
+    version: 2.5
+  dkan_migrate_base:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/dkan_migrate_base.git'
+      branch: 2198-new-oob-content
 libraries:
   jquery.imagesloaded:
     download:
