@@ -1,4 +1,3 @@
----
 api: '2'
 core: 7.x
 includes:
@@ -24,20 +23,20 @@ projects:
   file_entity:
     version: 2.0-beta2
     patch:
-      2308737: https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
+      2308737: 'https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch'
   media:
     version: 2.0-beta1
     patch:
-      2126697: https://www.drupal.org/files/issues/media_wysiwyg_2126697-53.patch
-      2308487: https://www.drupal.org/files/issues/media-alt-title-double-encoded-2308487-2.patch
-      2084287: http://www.drupal.org/files/issues/media-file-name-focus-2084287-2.patch
-      2534724: https://www.drupal.org/files/issues/media-browser_opens_twice-2534724-53.patch
+      2126697: 'https://www.drupal.org/files/issues/media_wysiwyg_2126697-53.patch'
+      2308487: 'https://www.drupal.org/files/issues/media-alt-title-double-encoded-2308487-2.patch'
+      2084287: 'http://www.drupal.org/files/issues/media-file-name-focus-2084287-2.patch'
+      2534724: 'https://www.drupal.org/files/issues/media-browser_opens_twice-2534724-53.patch'
   media_youtube:
     version: '3.0'
   media_vimeo:
     version: '2.1'
     patch:
-      2446199: https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch
+      2446199: 'https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch'
   dkan_dataset:
     subdir: dkan
     download:
@@ -71,8 +70,8 @@ projects:
   colorizer:
     version: '1.10'
     patch:
-      2227651: https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch
-      2599298: https://www.drupal.org/files/issues/colorizer-bug_system_cron_delete_current_css-2599298-9.patch
+      2227651: 'https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch'
+      2599298: 'https://www.drupal.org/files/issues/colorizer-bug_system_cron_delete_current_css-2599298-9.patch'
   conditional_styles:
     version: '2.2'
   diff:
@@ -92,7 +91,7 @@ projects:
     patch:
       1: patches/fontyourface-no-ajax-browse-view.patch
       2: patches/fontyourface-clear-css-cache.patch
-      2644694: https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch
+      2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
   imagecache_actions:
     version: '1.7'
     type: module
@@ -101,7 +100,7 @@ projects:
   markdowneditor:
     version: '1.4'
     patch:
-      2045225: http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
+      2045225: 'http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch'
   module_filter:
     version: '2.0'
   og_moderation:
@@ -113,8 +112,8 @@ projects:
   views_autocomplete_filters:
     version: '1.2'
     patch:
-      2374709: http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
-      2317351: http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
+      2374709: 'http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch'
+      2317351: 'http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch'
   panopoly_widgets:
     version: '1.35'
     patch:
@@ -137,7 +136,7 @@ projects:
   rules:
     version: '2.9'
   restws:
-    version: '2.5'
+    version: '2.6'
   schema:
     version: '1.2'
   adminrole:
@@ -146,7 +145,7 @@ projects:
     version: '1.1'
     # Allow ordering of roles to handle users w/multiple roles
     patch:
-      2441283: https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch
+      2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
   menu_token:
     version: 1.0-beta5
   radix:
@@ -162,25 +161,25 @@ libraries:
   jquery.imagesloaded:
     download:
       type: file
-      url: https://github.com/desandro/imagesloaded/archive/v2.1.2.tar.gz
+      url: 'https://github.com/desandro/imagesloaded/archive/v2.1.2.tar.gz'
       subtree: imagesloaded-2.1.2
   jquery.imgareaselect:
     download:
       type: file
-      url: https://github.com/odyniec/imgareaselect/archive/v0.9.11-rc.1.tar.gz
+      url: 'https://github.com/odyniec/imgareaselect/archive/v0.9.11-rc.1.tar.gz'
       subtree: imgareaselect-0.9.11-rc.1
   font_awesome:
     type: libraries
     download:
       type: git
-      url: https://github.com/FortAwesome/Font-Awesome.git
+      url: 'https://github.com/FortAwesome/Font-Awesome.git'
       revision: 13d5dd373cbf3f2bddd8ac2ee8df3a1966a62d09
     directory_name: font_awesome
   spyc:
     download:
       type: get
-      url: https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php
-    filename: "../spyc.php"
+      url: 'https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php'
+    filename: ../spyc.php
     directory_name: lib
     destination: modules/contrib/services/servers/rest_server
 defaults:
