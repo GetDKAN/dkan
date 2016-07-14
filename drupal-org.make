@@ -1,18 +1,12 @@
 api: '2'
 core: 7.x
 includes:
-    # DKAN Dataset
-  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
-    # DKAN Datastore
-  - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
-    # DKAN Workflow
-  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
-    # Visualization Entity
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
-    #DKAN Data Story
-  - "modules/dkan/dkan_data_story/dkan_data_story.make"
-    #DKAN Featured Topics
-  - "modules/dkan/dkan_topics/dkan_topics.make"
+- https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
+- https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
+- https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make
+- https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make
+- modules/dkan/dkan_data_story/dkan_data_story.make
+- modules/dkan/dkan_topics/dkan_topics.make
 projects:
   manualcrop:
     version: 1.x-dev
@@ -71,13 +65,8 @@ projects:
     version: 3.0-rc5
   bueditor:
     version: '1.8'
-<<<<<<< HEAD
   bueditor_plus:
     version: '1.4'
-=======
-    patch:
-      1931862: 'http://drupal.org/files/dont-render-bueditor-for-plain-text-textareas.patch'
->>>>>>> parent of e32cc3c... New release replacements on makefiles
   colorizer:
     version: '1.10'
     patch:
@@ -104,15 +93,7 @@ projects:
       2: patches/fontyourface-clear-css-cache.patch
       2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
   imagecache_actions:
-<<<<<<< HEAD
     version: '1.7'
-=======
-    download:
-      type: git
-      url: 'http://git.drupal.org/project/imagecache_actions.git'
-      branch: 7.x-1.x
-      revision: cd19d2a
->>>>>>> parent of e32cc3c... New release replacements on makefiles
     type: module
   markdown:
     version: '1.2'
@@ -155,48 +136,18 @@ projects:
   rules:
     version: '2.9'
   restws:
-<<<<<<< HEAD
     version: '2.6'
-=======
-    version: '2.3'
-    patch:
-      2484829: 'https://www.drupal.org/files/issues/restws-fix-format-extension-2484829-53.patch'
->>>>>>> parent of e32cc3c... New release replacements on makefiles
   schema:
     version: '1.2'
   adminrole:
     version: '1.1'
   admin_menu_source:
-<<<<<<< HEAD
     version: '1.1'
-=======
-    download:
-      type: git
-      url: 'http://git.drupal.org/project/admin_menu_source.git'
-      branch: 7.x-1.x
-      revision: 8514d8b
->>>>>>> parent of e32cc3c... New release replacements on makefiles
     # Allow ordering of roles to handle users w/multiple roles
     patch:
       2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
   menu_token:
     version: 1.0-beta5
-<<<<<<< HEAD
-=======
-  delta:
-    version: 3.0-beta11
-  omega:
-    version: '3.1'
-    patch:
-      1828552: 'http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch'
-    type: theme
-  nuboot_radix:
-    download:
-      type: git
-      url: 'https://github.com/NuCivic/nuboot_radix.git'
-      branch: 7.x-1.x
-    type: theme
->>>>>>> parent of e32cc3c... New release replacements on makefiles
   radix:
     type: theme
     version: 3.3
