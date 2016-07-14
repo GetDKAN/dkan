@@ -19,7 +19,17 @@
 - Page link added to the command center menu.
 - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
 
-7.x-1.12.x
+7.x-1.12.5 2016-07-13
+--------------------------
+- Update restws to 7.x-2.6 (critical security update)
+- Update to latest version of recline.js to fix map tiles (Mapquest discontinued open access)
+- Upgrade Drupal core to 7.50
+
+7.x-1.12.4 2016-07-12
+--------------------------
+- Update permissions in DKAN Permissions module to allow anonymous users to access RDF endpoints for individual datasets.
+
+7.x-1.12.3 2016-06-30
 --------------------------
 - Open Data Schema Map update: improves performance of package_show endpoint
 - Point to new release of visualization entity, which cleans up some make files and brings visualization_entity_charts into the same project repository.
@@ -37,11 +47,11 @@
 - Front page group views moved to the dkan_dataset_groups feature
 - Add dkan_ipe feature to simplify the in-place editor interface, includes addition of the panels_curator module
 
-7.x-1.12.2
+7.x-1.12.2 2016-06-09
 --------------------------
 - Fix problems in visualization entity charts creation due to version of CSV.js referenced in recline.make
 
-7.x-1.12.1
+7.x-1.12.1 2016-06-07
 --------------------------
 - New version of Visualization Entity Charts fixes a number of UI bugs and restores support for Google Sheets and Data Proxy
 - Fix XSS vulnerability by adding sanitization for titles on workbench view
