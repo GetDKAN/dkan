@@ -1,4 +1,4 @@
-7.x-1.x 2016-04-20
+7.x-1.x
 --------------------------
 - Add new "modified date" field, hidden in form, to datasets. This is for dkan_harvest compatibility; saves sources dates into a separate field so they aren't affected by node changes. ODSM mappings also updated.
 - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
