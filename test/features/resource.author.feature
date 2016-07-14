@@ -60,9 +60,9 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on the "Content" page
     And I click "Resource"
-    When I fill in "Title" with "Resource 06"
     And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    When I fill in "Title" with "Resource 06"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
 
