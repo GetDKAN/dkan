@@ -51,6 +51,41 @@ function topics_page() {
   drupal_goto('search/field_topic');
 }
 
+/*
+ * Implements hook_preprocess_menu_link().
+ * Add icons to topics menu.
+ */
+function dkan_topics_preprocess_menu_link(&$variables) {
+  $voc = taxonomy_vocabulary_machine_name_load('dkan_topics');
+  if($variables['element']['#original_link']['link_title'] == $voc->name) {
+    $submenu = $variables['element']['#below'];
+    $css = '';
+    foreach ($submenu as $child) {
+      if(isset($child['#href'])) {
+        $url  = explode("/", $child['#href']);
+        $term = strtolower($child['#title']);
+        $term = str_replace(' ', '-', $term);
+        $type = db_query('SELECT field_icon_type_value FROM {field_data_field_icon_type} WHERE entity_id = :id', array(':id' => $url[2]))->fetchField();
+        if($type == 'font') {
+          $icon = db_query('SELECT field_topic_icon_value FROM {field_data_field_topic_icon} WHERE entity_id = :id', array(':id' => $url[2]))->fetchField();
+          $icon = '\\' . substr($icon, 1);
+          $font = db_query('SELECT bundle FROM {field_data_field_topic_icon} WHERE entity_id = :id', array(':id' => $url[2]))->fetchField();
+          $font = str_replace("_", "-", $font);
+          $css .= "li.menu-link-$term a:before {font-size:1.25em; font-family:'$font'; content:'$icon'; margin-right:6px; vertical-align: middle; }";
+        }
+        elseif($type == 'image') {
+          $obj = taxonomy_term_load($url[2]);
+          $image = field_get_items('taxonomy_term', $obj, 'field_image');
+          global $base_url;
+          $path = image_style_path('small_topics_icons', $image[0]['uri']);
+          $img = $base_url . image_style_url('small_topics_icons', $path);
+          $css .= "li.menu-link-$term > a, li.menu-link-$term > a:hover, li.menu-link-$term > a:focus, li.menu-link-$term a:active { background-image:url('$img') !important; background-position:12px center !important; background-repeat:no-repeat !important; padding-left:40px !important; }";
+        }
+      }
+    }
+    drupal_add_css($css, 'inline');
+  }
+}
 
 /**
 * Implements hook_preprocess_field().
