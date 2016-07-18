@@ -1,0 +1,117 @@
+{
+    "result": {
+        "id": "74c06c81-9fe0-439c-aba9-cd5c980a6df4",
+        "name": "us-national-foreclosure-statistics-january-2012",
+        "title": "US National Foreclosure Statistics January 2012",
+        "author_email": "datademo@nucivic.com",
+        "maintainer": "Welcome to the DKAN Demo",
+        "maintainer_email": "stefanie@nucivic.com",
+        "license_title": "http://opendefinition.org/licenses/cc-zero/",
+        "notes": "<p>County data: <a href=\"http://www.npr.org/templates/story/story.php?storyId=111494514\">http://www.npr.org/templates/story/story.php?storyId=111494514</a></p>\n<p>State data: <a href=\"http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1\">http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1</a></p>\n",
+        "url": "http://default/dataset/us-national-foreclosure-statistics-january-2012",
+        "state": "Active",
+        "private": "Published",
+        "revision_timestamp": "Fri, 05/13/2016 - 15:12",
+        "metadata_created": "Sun, 02/10/2013 - 23:42",
+        "metadata_modified": "Fri, 05/13/2016 - 15:12",
+        "creator_user_id": "4eb26c32-4098-43a8-a8cc-e5ce6db7fc96",
+        "type": "Dataset",
+        "resources": [
+            {
+                "id": "44d9ed6f-31bc-499c-bb6c-1659f960b69d",
+                "revision_id": "",
+                "url": "http://default/sites/default/files/us_foreclosures_jan_2012_by_state_0.csv",
+                "description": "<p>US National Foreclosure Statistics - By State - January 2012</p>\n",
+                "format": "csv",
+                "state": "Active",
+                "revision_timestamp": "Thu, 01/03/2013 - 22:17",
+                "name": "1-2012-Foreclosures-by-State",
+                "mimetype": "text/csv",
+                "size": "1015 bytes",
+                "created": "Mon, 02/11/2013 - 00:03",
+                "resource_group_id": "",
+                "last_modified": "Date changed\tThu, 01/03/2013 - 22:17"
+            }
+        ],
+        "tags": [
+            {
+                "id": "eb84865a-6c07-427a-9795-29fc1e7339d3",
+                "vocabulary_id": "2",
+                "name": "transparency"
+            },
+            {
+                "id": "360738df-4801-410f-a04c-3648bd419eec",
+                "vocabulary_id": "2",
+                "name": "politics"
+            },
+            {
+                "id": "722a9295-cd92-4075-84d2-f40e6bbee58d",
+                "vocabulary_id": "2",
+                "name": "economy"
+            }
+        ],
+        "dkan_additional_fields": {
+            "field_additional_info": [],
+            "field_contact_email": "datademo@nucivic.com",
+            "field_contact_name": "Gray, Stefanie",
+            "field_data_dictionary": null,
+            "field_frequency": "3",
+            "field_granularity": null,
+            "field_public_access_level": "public",
+            "field_related_content": [],
+            "field_resources": [
+                {
+                    "uri": "http://default/node/7",
+                    "id": "7",
+                    "resource": "node",
+                    "uuid": "44d9ed6f-31bc-499c-bb6c-1659f960b69d",
+                    "value": "admin"
+                }
+            ],
+            "field_spatial": {
+                "wkt": "POLYGON ((-126.9140625 24.046463999667, -126.9140625 50.625073063414, -65.56640625 50.625073063414, -65.56640625 24.046463999667))",
+                "geo_type": "polygon",
+                "lat": "37.3358",
+                "lon": "-96.2402",
+                "left": "-126.914",
+                "top": "50.6251",
+                "right": "-65.5664",
+                "bottom": "24.0465",
+                "srid": null,
+                "latlon": "37.3358,-96.2402"
+            },
+            "field_spatial_geographical_cover": "United States of America",
+            "field_tags": [
+                {
+                    "uri": "http://default/taxonomy_term/4",
+                    "id": "4",
+                    "resource": "taxonomy_term",
+                    "uuid": "eb84865a-6c07-427a-9795-29fc1e7339d3",
+                    "value": "transparency"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/3",
+                    "id": "3",
+                    "resource": "taxonomy_term",
+                    "uuid": "360738df-4801-410f-a04c-3648bd419eec",
+                    "value": "politics"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/32",
+                    "id": "32",
+                    "resource": "taxonomy_term",
+                    "uuid": "722a9295-cd92-4075-84d2-f40e6bbee58d",
+                    "value": "economy"
+                }
+            ],
+            "field_temporal_coverage": {
+                "value": "1325394000",
+                "value2": "1327986000",
+                "duration": 2592000
+            },
+            "og_group_ref": [],
+            "field_topic": [],
+            "field_modified_source_date": null
+        }
+    }
+}
