@@ -1,7 +1,7 @@
-## DKAN Default Content?
+## DKAN Default Content
 
 DKAN Default Content is the module that holds all the default content delivered with DKAN. All content is
-imported through the fixtures that can be found inside the /data directory. [DKAN Fixtures]() was used to generate
+imported through the _fixtures_ that can be found inside the /data directory. [DKAN Fixtures](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_fixtures) was used to generate
 the default content fixtures and to migrate all the data using the migration clases that are provided.
 
 ## Updating the fixtures
@@ -22,14 +22,14 @@ Please note that some rules should be followed when preparing the default conten
 
 ## Importing default content
 
-All the default content is imported automatically as soon as the DKAN Default Content module is enabled:
+All the default content is imported automatically as soon as the DKAN Default Content module is enabled. Enable the DKAN Default Content module in the browser via admin/modules, or on the command line via drush:
 
 ```drush en dkan_default_content```
 
 ## Removing the default content
 
 All the default content is automatically removed as soon as the DKAN Default Content module is disabled
-with the exception of pages (Homepage, About page, etc):
+with the exception of pages (Homepage, About page, etc). Disable the DKAN Default Content module in the browser via admin/modules, or on the command line via drush:
 
 ```drush dis dkan_default_content```
 
