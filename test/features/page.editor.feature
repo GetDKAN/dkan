@@ -16,7 +16,8 @@ Feature: Page
       When I fill in "Title" with "New Sample Page"
         And I press "Save"
         Then I should see "New Sample Page"
-        #And I wait for "Save"
-      When I press "Save"
+        
+      When I wait for "Save"
+        And I press "Save"
         And I wait for "Customize this page"
         Then I should see "Customize this page"
