@@ -11,6 +11,7 @@
 - Removed warnings about undefined permissions when visualization_entity_geojson_bundle module is enabled.
 - Removed specific visualization entity charts permissions from dkan_extension.
 - Added test feature to validate that users with Editor, Content Creator and Site Manager roles are not able to access to admin pages.
+- Default content was improved and now it's generated based on fixtures.
 - Removed omega theme.
 - Removed delta module.
 - Moved Nuboot Radix theme into core build.

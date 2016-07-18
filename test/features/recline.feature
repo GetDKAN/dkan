@@ -39,8 +39,8 @@ Feature: Recline
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 | Test R1     |
-      | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 | Test R2     |
-      | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 | Test R3     |
+      | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 | Test R2     |
+      | Resource 03 | Group 01  | zip    | Katie  | Yes       | Dataset 02 | Test R3     |
 
   @javascript
   Scenario: Viewing map preview
