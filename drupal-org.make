@@ -74,7 +74,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_harvest.git'
-      branch: harvest_dkan_integration
+      branch: harvest_preview_civic_2695
     type: module
   admin_menu:
     version: 3.0-rc5
