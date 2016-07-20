@@ -228,7 +228,18 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     'relationships' => array(),
     'name' => '',
     'access' => array(
-      'plugins' => array(),
+      'plugins' => array(
+        0 => array(
+          'name' => 'node_type',
+          'settings' => array(
+            'type' => array(
+              'harvest_source' => 'harvest_source',
+            ),
+          ),
+          'context' => 'argument_entity_id:node_1',
+          'not' => FALSE,
+        ),
+      ),
       'logic' => 'and',
     ),
   );
