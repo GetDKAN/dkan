@@ -1,3 +1,9 @@
+7.x-1.12.5 2016-07-13
+--------------------------
+- Update restws to 7.x-2.6 (critical security update)
+- Update to latest version of recline.js to fix map tiles (Mapquest discontinued open access)
+- Upgrade Drupal core to 7.50 
+
 7.x-1.12.4 2016-07-12
 --------------------------
 - Update permissions in DKAN Permissions module to allow anonymous users to access RDF endpoints for individual datasets.
