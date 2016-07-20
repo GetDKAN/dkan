@@ -73,6 +73,23 @@ Feature: Dkan Harvest
 
 
   @api
+  Scenario: As a user I should have access to see harvest preview information.
+  Given users:
+    | name             | mail                   | roles           |
+    | Administrator    | admin@fakeemail.com    | administrator   |
+  And harvest sources:
+    | title      | machine name | source uri                        | type               | author        | published |
+    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+  And I am logged in as a "Administrator"
+  And I am on the "Source one" page
+  Given The "source_one" source is harvested
+  When I am on the "Source one" page
+  Then I should see the link "Preview"
+  And I click "Preview"
+  And I should see the link "Import/Process information"
+  And I should see the text "Wisconsin Polling Places"
+
+  @api
   Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
   Given users:
     | name             | mail                   | roles           |
