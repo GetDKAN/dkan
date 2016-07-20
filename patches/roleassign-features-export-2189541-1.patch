@@ -1,0 +1,29 @@
+diff --git a/roleassign.admin.inc b/roleassign.admin.inc
+index c33329b..fa3160b 100644
+--- a/roleassign.admin.inc
++++ b/roleassign.admin.inc
+@@ -27,10 +27,14 @@ function roleassign_admin_form() {
+ 
+   // Show checkboxes with roles that can be delegated if any.
+   if ($roles) {
++    $options = array();
++    foreach($roles AS $role) {
++      $options[$role] = $role;
++    }
+     $form['roleassign_roles'] = array(
+       '#type' => 'checkboxes',
+       '#title' => t('Roles'),
+-      '#options' => $roles,
++      '#options' => $options,
+       '#default_value' => variable_get('roleassign_roles',  array()),
+       '#description' => t('Select roles that should be available for assignment.'),
+     );
+@@ -216,7 +220,7 @@ function _roleassign_user_operations() {
+  * @return array
+  */
+ function _roleassign_assignable_roles(array $roles) {
+-  return array_intersect_key($roles, array_filter(variable_get('roleassign_roles', array())));
++  return array_intersect($roles, array_filter(variable_get('roleassign_roles', array())));
+ }
+ 
+ /**
