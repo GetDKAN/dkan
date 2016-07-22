@@ -2,7 +2,22 @@
 Feature: Widgets
 
   Background:
-    Given I am logged in as a user with the "site manager" role
+    Given groups:
+      | title    | author  | published |
+      | Group 01 | admin  | Yes       |
+    And "Tags" terms:
+      | name     |
+      | Health 2 |
+    And "Format" terms:
+      | name   |
+      | csv 2  |
+    And datasets:
+      | title                          | publisher | author | published        | tags     | description |
+      | Afghanistan Election Districts | Group 01  | admin  | Yes              | Health 2 | Test        |
+    And resources:
+      | title          | publisher | format | author | published | dataset                        | description |
+      | District Names | Group 01  | csv 2  | admin  | Yes       | Afghanistan Election Districts |             |
+    And I am logged in as a user with the "site manager" role
     And I wait for "Customize this page"
     When I click "Customize this page"
     And I wait for "Add new pane"
@@ -11,7 +26,7 @@ Feature: Widgets
 
   Scenario: Adds "Button Link" to home page using panels ipe editor
     When I follow "Link"
-      And I wait for "Configure new Button link"
+      And I wait for "Configure new Link"
       And I fill in "edit-button-link-title" with "Link example"
       And I fill in "edit-button-link-url" with "http://demo.getdkan.com"
       And I press "Finish"
@@ -20,7 +35,7 @@ Feature: Widgets
 
   Scenario: Adds "New File Widget" block to home page using panels ipe editor
     When I follow "File"
-      And I wait for "Configure new Add file"
+      And I wait for "Configure new File"
       And I attach the drupal file "actionplan.pdf" to "files[field_basic_file_file_und_0]"
       And I press "Finish"
       And I wait and press "Save"
@@ -28,7 +43,7 @@ Feature: Widgets
 
   Scenario: Adds "New Image Widget" block to home page using panels ipe editor
     When I follow "Add image"
-      And I wait for "Configure new Add image"
+      And I wait for "Configure new Image"
       And I fill in "field_basic_image_caption[und][0][value]" with "dkan logo image test"
       And I attach the drupal file "dkan_logo.png" to "files[field_basic_image_image_und_0]"
       And I press "Finish"
@@ -37,7 +52,7 @@ Feature: Widgets
 
   Scenario: Adds "New Text Widget" block to home page using panels ipe editor
     When I follow "Add text"
-      And I wait for "Configure new Add text"
+      And I wait for "Configure new Text"
       And I fill in "field_basic_text_text[und][0][value]" with "text example"
       And I press "Finish"
       And I wait and press "Save"
@@ -45,7 +60,7 @@ Feature: Widgets
 
   Scenario: Adds "New Map Widget" block to home page using panels ipe editor
     When I follow "Add map"
-    And I wait for "Configure new Add map"
+    And I wait for "Configure new Map"
       And I fill in "field_map_address[und][0][value]" with "175th St, Jamaica, NY 11433, USA"
       And I fill in "field_map_information[und][0][value]" with "map example"
       And I press "Finish"
@@ -54,7 +69,7 @@ Feature: Widgets
 
   Scenario: Adds "New Table Widget" block to home page using panels ipe editor
     When I follow "Add table"
-    And I wait for "Configure new Add table"
+    And I wait for "Configure new Table"
       And I fill in "field-basic-table-table-und-0-tablefield-cell-0-0" with "date"
       And I fill in "field-basic-table-table-und-0-tablefield-cell-0-1" with "price"
       And I fill in "field-basic-table-table-und-0-tablefield-cell-1-0" with "05/05/15"
@@ -72,7 +87,7 @@ Feature: Widgets
 
   Scenario: Adds "New Video Widget" block to home page using panels ipe editor
     When I follow "Add video"
-    And I wait for "Configure new Add video"
+    And I wait for "Configure new Video"
     When I fill in "Testing video" for "edit-title"
     When I click "Browse"
       And I wait for "2" seconds
@@ -87,7 +102,7 @@ Feature: Widgets
 
   Scenario: Adds "New Spotlight Widget" block to home page using panels ipe editor
     When I follow "Add spotlight"
-    And I wait for "Configure new Add spotlight"
+    And I wait for "Configure new Slideshow"
       And I fill in "field_basic_spotlight_items[und][0][title]" with "First spot"
       And I fill in "field_basic_spotlight_items[und][0][link]" with "http://demo.getdkan.com"
       And I attach the drupal file "dkan_logo.png" to "files[field_basic_spotlight_items_und_0_fid]"
@@ -98,14 +113,14 @@ Feature: Widgets
 
   Scenario: Adds "New Submenu Widget" block to home page using panels ipe editor
     When I follow "Submenu"
-    And I wait for "Configure new Add submenu"
+    And I wait for "Configure new Submenu"
       And I press "Finish"
     And I wait and press "Save"
-      Then I should see "About" in the "content"
+      Then I should see "Datasets" in the "content"
 
   Scenario: Adds "New Content List Widget" block to home page using panels ipe editor
     When I follow "Content List"
-    And I wait for "Configure new Add content list"
+    And I wait for "Configure new Content List"
     When I select "Dataset" from "exposed[type]"
       And I select "Asc" from "exposed[sort_order]"
       And I select "Title" from "exposed[sort_by]"
@@ -116,7 +131,7 @@ Feature: Widgets
 
   Scenario: Adds "Existing Content" block to home page using panels ipe editor
     When I follow "Existing content"
-    And I wait for "Configure new Existing node"
+    And I wait for "Configure new Existing content"
     And I fill in "edit-nid" with "Wisconsin Polling Places"
     And I press "Finish"
     And I wait and press "Save"
@@ -125,9 +140,10 @@ Feature: Widgets
 
   Scenario: Adds "Visualization embed" block to home page using panels ipe editor
     When I follow "visualization"
-    And I wait for "Configure new Visualization embed"
+    And I wait for "Configure new Visualization"
     And I select "remote" from "source_origin"
     And I fill in "edit-remote-source" with "http://demo.getdkan.com/node/7/recline-embed#{view-graph:{graphOptions:{hooks:{processOffset:{},bindEvents:{}}}},graphOptions:{hooks:{processOffset:{},bindEvents:{}}}}"
     And I press "Finish"
+    And I wait for "Visualization embed"
     Then I should see "Visualization embed"
     
