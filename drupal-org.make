@@ -137,7 +137,9 @@ projects:
   rules:
     version: '2.9'
   restws:
-    version: '2.5'
+    version: '2.6'
+  roleassign:
+    version: '1.1'
   schema:
     version: '1.2'
   adminrole:
