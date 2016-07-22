@@ -1,8 +1,13 @@
+7.x-1.12.x
+--------------------------
+- Theme updates back ported from dev branch, including topics icons in topics drop-down menu
+- Add RoleAssign module, update DKAN Permissions to give site managers permission to assign roles.
+
 7.x-1.12.5 2016-07-13
 --------------------------
 - Update restws to 7.x-2.6 (critical security update)
 - Update to latest version of recline.js to fix map tiles (Mapquest discontinued open access)
-- Upgrade Drupal core to 7.50 
+- Upgrade Drupal core to 7.50
 
 7.x-1.12.4 2016-07-12
 --------------------------
