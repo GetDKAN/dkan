@@ -114,7 +114,7 @@ Feature: User
     When I am on "Users" page
     Then I should see "site manager" in the "Jaz" row
 
-
-
-
-
+Scenario: Modify user as editor
+    Given I am logged in as "Jaz"
+    And I am on "Users" page
+    Then I should see "Access denied"
