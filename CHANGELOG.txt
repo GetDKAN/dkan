@@ -1,5 +1,6 @@
-7.x-1.x 2016-04-20
+7.x-1.x
 --------------------------
+- Add new "modified date" field, hidden in form, to datasets. This is for dkan_harvest compatibility; saves sources dates into a separate field so they aren't affected by node changes. ODSM mappings also updated.
 - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
 - Fixes typo in "add data story" link in command center menu
 - Add topic icons to the drop down menu
@@ -10,20 +11,35 @@
 - Removed warnings about undefined permissions when visualization_entity_geojson_bundle module is enabled.
 - Removed specific visualization entity charts permissions from dkan_extension.
 - Added test feature to validate that users with Editor, Content Creator and Site Manager roles are not able to access to admin pages.
+- Default content was improved and now it's generated based on fixtures.
 - Removed omega theme.
 - Removed delta module.
 - Moved Nuboot Radix theme into core build.
 - Change admin theme setting to use default theme rather than nuboot radix
 - Page content type added to panelizer and now defined in features, with in-place editor enabled for page content.
 - Page link added to the command center menu.
+- Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
 
-7.x-1.12.x
+7.x-1.12.5 2016-07-13
 --------------------------
+- Update restws to 7.x-2.6 (critical security update)
+- Update to latest version of recline.js to fix map tiles (Mapquest discontinued open access)
+- Upgrade Drupal core to 7.50
+
+7.x-1.12.4 2016-07-12
+--------------------------
+- Update permissions in DKAN Permissions module to allow anonymous users to access RDF endpoints for individual datasets.
+
+7.x-1.12.3 2016-06-30
+--------------------------
+- Open Data Schema Map update: improves performance of package_show endpoint
 - Point to new release of visualization entity, which cleans up some make files and brings visualization_entity_charts into the same project repository.
 - Fix editor permissions to allow access to visualizations list from admin menu
 - Upgrade Views to 7.14
 - Upgrade Drupal core to 7.44
 - Add <br><h2><h3><center><iframe> to allowed html tags
+- Renamed the default HTML text format to 'Markdown HTML'
+- Improved markdown text editor toolbar
 - Stories main menu link removed from stories view
 - Groups main menu link removed from page manager groups page config
 - Main menu links added on install function rather than through features
@@ -32,11 +48,11 @@
 - Front page group views moved to the dkan_dataset_groups feature
 - Add dkan_ipe feature to simplify the in-place editor interface, includes addition of the panels_curator module
 
-7.x-1.12.2
+7.x-1.12.2 2016-06-09
 --------------------------
 - Fix problems in visualization entity charts creation due to version of CSV.js referenced in recline.make
 
-7.x-1.12.1
+7.x-1.12.1 2016-06-07
 --------------------------
 - New version of Visualization Entity Charts fixes a number of UI bugs and restores support for Google Sheets and Data Proxy
 - Fix XSS vulnerability by adding sanitization for titles on workbench view

@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Install file for DKAN fixtures migration.
+ */
+
+/**
+ * Implements hook_disable().
+ */
+function dkan_fixtures_disable() {
+  dkan_fixtures_migrations_disable();
+}

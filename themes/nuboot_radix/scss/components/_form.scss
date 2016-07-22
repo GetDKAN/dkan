@@ -66,8 +66,18 @@ div.autocomplete-deluxe-multiple {
     }
   }
 }
-.bue-ui {
+// BuEditor.
+.bue-popup {
+  z-index: 999;
+}
+.bue-ui.editor-container {
   background-color: #ffffff;
+  padding: 0 4px;
+  border: 1px solid $border;
+  @include border-radius(4px 4px 0 0);
+}
+.form-control.form-textarea {
+  @include border-radius(0);
 }
 // Chosen.
 .form-control.chosen-processed {
@@ -75,6 +85,7 @@ div.autocomplete-deluxe-multiple {
   height: auto;
   padding: 0;
   border: none;
+  max-width: 100% !important;
   .chosen-choices {
     @include border-radius(4px);
     border-color: #ccc;
@@ -104,10 +115,10 @@ div.autocomplete-deluxe-container input.autocomplete-deluxe-form-single {
   float: left;
 }
 
-fieldset fieldset {
-  padding-top: 40px;
+fieldset {
   position: relative;
 }
+
 fieldset.collapsible {
   padding-top: 0;
 }
@@ -179,6 +190,19 @@ div.horizontal-tabs {
 #body-add-more-wrapper {
   .panel-body {
     padding: 0;
+  }
+}
+
+.node-dataset-form,
+.node-resource-form {
+  .field-name-field-format label {
+    vertical-align: top;
+  }
+  @media all and (max-width:599px) {
+    .stages li .highlight {
+      font-size: 12px;
+      line-height: 1.15em;
+    }
   }
 }
 
