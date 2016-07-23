@@ -2,6 +2,7 @@
 --------------------------
 - Theme updates back ported from dev branch, including topics icons in topics drop-down menu
 - Add RoleAssign module, update DKAN Permissions to give site managers permission to assign roles.
+- Make links and emails in metadata pages clickable
 
 7.x-1.12.5 2016-07-13
 --------------------------
