@@ -17,7 +17,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/3da167e77f4d4d6a7b24845146b24f81b20cb580",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/ebcc5b4185b340d7908cb487b8beb3fed069d756",
                 "reference": "3da167e77f4d4d6a7b24845146b24f81b20cb580",
                 "shasum": ""
             },
@@ -484,7 +484,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/devinci-code/devinci-behat-extension/zipball/d08228e8236341761e7975a53b96ec5c24b79efd",
+                "url": "https://api.github.com/repos/devinci-code/devinci-behat-extension/zipball/0b0f0f75b1723827e3db52ed88f5e7e716fe9792",
                 "reference": "d08228e8236341761e7975a53b96ec5c24b79efd",
                 "shasum": ""
             },
@@ -909,16 +909,16 @@
         },
         {
             "name": "nucivic/dkanextension",
-            "version": "dev-civic-2217-markdown",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "7945c19ed6af3b6fdfdefe7b84544eabe4d704de"
+                "reference": "ade0dc61347b75b7bff7507739553b15b8ad0390"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/7945c19ed6af3b6fdfdefe7b84544eabe4d704de",
-                "reference": "7945c19ed6af3b6fdfdefe7b84544eabe4d704de",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/ade0dc61347b75b7bff7507739553b15b8ad0390",
+                "reference": "ade0dc61347b75b7bff7507739553b15b8ad0390",
                 "shasum": ""
             },
             "require": {
@@ -946,7 +946,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-06-24 21:43:43"
+            "time": "2016-07-14 21:22:51"
         },
         {
             "name": "psr/http-message",

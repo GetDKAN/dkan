@@ -28,6 +28,7 @@ Feature: DKAN Dataset REST API
     When I am on "Search Resources" page
     Then I should see "Resource 02"
 
+  @api
   Scenario: Attach files to Resources using the 'Dataset REST API' endpoint
     Given I am on "Resource 01" page
     Then I should not see "Polling_Places_Madison"
@@ -39,6 +40,11 @@ Feature: DKAN Dataset REST API
     When I am on "Resource 01" page
     Then I should not see "Polling_Places_Madison"
     And I should see "Afghanistan_Election_Districts"
+    And I run cron
+    And I am logged in as a user with the "administrator" role
+    And I am on "Resource 01" page
+    And I click "Manage Datastore"
+    Then I should not see "No imported items"
 
   Scenario: Update a Resource using the 'Dataset REST API' endpoint
     Given I am on "Resource 01" page
