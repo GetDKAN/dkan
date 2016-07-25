@@ -8,9 +8,14 @@ Feature: Search
   Background:
     Given I am on the homepage
     And pages:
-    | name           | url                                      |
-    | Dataset Search | /search/type/dataset                     |
-    | Dataset Results| /search/type/dataset?query=Dataset%2001  |
+    | name                      | url                                                |
+    | Dataset Search            | /search/type/dataset                               |
+    | Dataset Results           | /search/type/dataset?query=Dataset%2001            |
+    | Not valid type search     | /search/type/notvalid                              |
+    | Not valid tags search     | /search/field_tags/notvalid                        |
+    | Not valid topics search   | /search/field_topic/notvalid                       |
+    | Not valid resource search | /search/field_resources%253Afield_format/notvalid  |
+    | Not valid license search  | /search/field_license/notvalid                     |
     Given users:
       | name    | mail                | roles                |
       | Badmin  | admin@example.com   | site manager         |
@@ -52,3 +57,14 @@ Feature: Search
     When I click "Group 01"
     Then I should not see "Dataset 01"
     But I should see "Dataset 02"
+
+  Scenario Outline: Forbid XSS injection in search
+    Given I am on the "<page>" page
+    Then I should see "Page not found"
+    Examples:
+    | page                      |
+    | Not valid type search     |
+    | Not valid tags search     |
+    | Not valid topics search   |
+    | Not valid resource search |
+    | Not valid license search  |
