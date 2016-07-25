@@ -118,7 +118,7 @@ install_dependencies() {
   path_export "$HOME/.config/composer/vendor/bin"
   path_export "$HOME/.composer/vendor/bin"
 
-  DRUSH_VERSION="8.1.0"
+  DRUSH_VERSION="8.1.3"
   if [ ! "$(which drush)" ]; then
     echo "> Installing Drush";
     $AUTO_SUDO rm -rf "$HOME/.config/composer" "$HOME/.composer" || true
