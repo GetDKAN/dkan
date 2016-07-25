@@ -5,6 +5,7 @@
  */
 
 include_once 'dkan_sitewide_search_db.features.inc';
+include_once 'dkan_sitewide_search_db.security.inc';
 
 /**
  * Implements hook_menu_local_tasks_alter().
