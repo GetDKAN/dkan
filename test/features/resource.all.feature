@@ -25,23 +25,19 @@ Feature: Resource
       | Celeste | Group 02 | member               | Active            |
     And "Tags" terms:
       | name    |
-      | Health  |
-      | Gov     |
+      | world   |
+      | results |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        |
-    And "Format" terms:
-      | name    |
-      | cvs     |
-      | xls     |
+      | Dataset 01 | Group 01  | Gabriel | Yes              | world    | Test        |
+      | Dataset 02 | Group 01  | Gabriel | Yes              | results  | Test        |
     And resources:
       | title       | publisher | format | dataset    | author   | published | description |
-      | Resource 01 | Group 01  | cvs    | Dataset 01 | Katie    | Yes       | Old Body    |
-      | Resource 02 | Group 01  | xls    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 03 | Group 01  | xls    | Dataset 02 | Celeste  | No        | Yes         |
-      | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
-      | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
+      | Resource 01 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | Old Body    |
+      | Resource 02 | Group 01  | zip    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 03 | Group 01  | zip    | Dataset 02 | Celeste  | No        | Yes         |
+      | Resource 04 | Group 01  | csv    | Dataset 01 | Katie    | No        | Yes         |
+      | Resource 05 | Group 01  | zip    | Dataset 02 | Celeste  | Yes       | Yes         |
 
   @api
   Scenario: View published resource
@@ -128,3 +124,29 @@ Feature: Resource
     Given I am on "/search"
     And I click "Resource"
     Then I should see "Dataset 01"
+
+  @api @javascript @noworkflow
+  Scenario: Data previews when only local enabled
+    Given cartodb previews are disabled for csv resources
+    And I am on "Dataset 01" page
+    Then I should see "Preview"
+    And I should not see "Open with"
+
+  @api @javascript @noworkflow @fixme
+  #TODO: This test was relying on default dkan content so we needed to fix it, in the next lines there is
+  #      an approach but it doesn't work because of a bug in which the carto db previews are not working
+  #      for resources which uses linked files.
+  Scenario: Open data previews in external services
+    Given cartodb previews are enabled for csv resources
+    And I am logged in as a user with the "site manager" role
+    And I am on "/dataset/dataset-01"
+    When I click "Resource 01"
+    Then I should see "Edit"
+    When I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv"
+    And I press "edit-submit"
+    When I am on "/dataset/dataset-01"
+    Then I should see "Open With"
+    When I press "Open With"
+    Then I should see the local preview link
+    And I should see "CartoDB"

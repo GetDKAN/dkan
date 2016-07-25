@@ -32,14 +32,14 @@ Feature: User
       | Celeste | Group 02 | member               | Active            |
     And "Tags" terms:
       | name    |
-      | Health  |
-      | Gov     |
+      | world   |
+      | results |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Katie   | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Katie   | No               | Health   | Test        |
-      | Dataset 03 | Group 01  | Gabriel | Yes              | Gov      | Test        |
-      | Dataset 04 | Group 01  | Katie   | Yes              | Health   | Test        |
+      | Dataset 01 | Group 01  | Katie   | Yes              | world    | Test        |
+      | Dataset 02 | Group 01  | Katie   | No               | world    | Test        |
+      | Dataset 03 | Group 01  | Gabriel | Yes              | results  | Test        |
+      | Dataset 04 | Group 01  | Katie   | Yes              | world    | Test        |
 
 
   Scenario: Edit any user account
