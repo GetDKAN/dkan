@@ -1,5 +1,6 @@
 7.x-1.12.x
 --------------------------
+- Sanitize theme output for facets to avoid any security issue from search input
 - Fix a potential XSS vulnerability in search facets by adding some validation hooks for facet input
 - Theme updates back ported from dev branch, including topics icons in topics drop-down menu
 - Add RoleAssign module, update DKAN Permissions to give site managers permission to assign roles.
