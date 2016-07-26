@@ -162,7 +162,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/nuboot_radix.git
-      branch: filter-facet-typ
+      branch: filter-facet-type
     type: theme
   radix:
     type: theme
