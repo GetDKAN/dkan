@@ -9213,6 +9213,12 @@ div.horizontal-tabs {
 .page-admin form input[type=submit] {
   margin-right: 1em; }
 
+#field-dkan-harvest-filters-values .description,
+#field-dkan-harvest-excludes-values .description,
+#field-dkan-harvest-overrides-values .description,
+#field-dkan-harvest-defaults-values .description {
+  font-weight: normal; }
+
 #modalContent .modal-header {
   background: #0A77BD; }
   #modalContent .modal-header h4 {
