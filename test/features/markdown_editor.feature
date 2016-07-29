@@ -49,7 +49,7 @@ Feature: Markdown Editor
     Then I should have an "html" text format option
     And I should have an "plain_text" text format option
     # Buttons that the user should see on the toolbar
-    And I should see the button "Make selected text into a header in the "dataset edit body"
+    And I should see the button "Make selected text into a header" in the "dataset edit body"
     # Buttons that the user should not see on the toolbar
     And I should not see the button "Insert a table" in the "dataset edit body"
 
@@ -60,7 +60,7 @@ Feature: Markdown Editor
     Then I should have an "html" text format option
     And I should have an "plain_text" text format option
     # Buttons that the user should see on the toolbar
-    And I should see the button "Make selected text into a header in the "dataset edit body"
+    And I should see the button "Make selected text into a header" in the "dataset edit body"
     # Buttons that the user should not see on the toolbar
     And I should not see the button "Insert a table" in the "dataset edit body"
 
@@ -179,5 +179,5 @@ Feature: Markdown Editor
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
     And I select "Plain text" from "edit-body-und-0-format--2" chosen.js select box
-    Then I should not see the button "Make selected text into a header (Alt + H)" in the "dataset edit body"
-    And I should not see the button "Italics: Make selected text emphasized (Alt + I)" in the "dataset edit body"
+    Then I should not see the button "Make selected text into a header" in the "dataset edit body"
+    And I should not see the button "Italics: Make selected text emphasized" in the "dataset edit body"
