@@ -39,7 +39,7 @@ Feature: Site Manager administer groups
       | Health 2         |
       | Gov 2            |
       | Count 2          |
-    And "Tags" terms:
+    And "Topics" terms:
       | name             |
       | Education 2      |
       | Transportation 2 |
