@@ -5,7 +5,7 @@
         "type": "dkan_data_story",
         "title": "An End to Chickenpox: The Varicella Vaccine's Success Story",
         "created": "1459962814",
-        "changed": "1468015870",
+        "changed": "1469821276",
         "body": {
             "und": [
                 {
@@ -25,6 +25,7 @@
             }
         ],
         "field_image": "files/dkan_data_story/A_nurse_vaccinates_Barack_Obama_against_H1N1_0.jpg",
+        "field_image_alt": "Nurse vaccinates Pres. Obama",
         "panelizer": {
             "panels_display": {
                 "args": [],

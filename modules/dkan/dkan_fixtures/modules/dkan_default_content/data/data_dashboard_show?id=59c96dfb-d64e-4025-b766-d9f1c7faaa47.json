@@ -5,7 +5,7 @@
         "type": "data_dashboard",
         "title": "State Workforce and Retirement Statistics",
         "created": "1459965181",
-        "changed": "1468373874",
+        "changed": "1468373606",
         "body": {
             "und": [
                 {
@@ -475,7 +475,7 @@
                     "extras": [],
                     "position": "5",
                     "locks": [],
-                    "uuid": "cf30cfd9-3a4e-4fb3-a765-fb4acc119a56"
+                    "uuid": "ed8bd655-a2b2-4399-8166-a60f9c5534df"
                 }
             ],
             "panelizer_entity": {
