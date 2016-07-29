@@ -153,6 +153,17 @@ function dkan_fixtures_append_group_fixtures($group_ids, $group_data, &$fixtures
   // Use ids in fake group-list to create exports for every group.
   $group_show_api = array();
   foreach ($group_ids as $id) {
+
+    // Save alt value.
+    $query = db_select('node', 'n');
+    $query->join('field_data_field_image', 'i', 'n.nid = i.entity_id');
+    $query->condition('n.uuid', $id);
+    $query->fields('i', array('field_image_alt'));
+    $result = $query->execute();
+    foreach ($result as $row) {
+      $group_data[$id]['field_image_alt'] = $row->field_image_alt;
+    }
+    
     $files_to_save = array();
     if (isset($group_data[$id]['image_display_url'])) {
       $file = $group_data[$id]['image_display_url'];
@@ -258,6 +269,7 @@ function dkan_fixtures_append_panelized_node_fixtures($content_type, &$fixtures,
       if ($node->field_image && !empty($node->field_image)) {
         $file = $node->field_image[LANGUAGE_NONE][0];
         $panelized_node['field_image'] = 'files/' . $content_type . '/' . basename($file['uri']);
+        $panelized_node['field_image_alt'] = $node->field_image[LANGUAGE_NONE][0]['alt'];
         $files_to_save[] = drupal_realpath($file['uri']);
       }
 

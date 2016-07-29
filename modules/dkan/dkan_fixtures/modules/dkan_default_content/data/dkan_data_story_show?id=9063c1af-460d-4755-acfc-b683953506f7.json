@@ -5,7 +5,7 @@
         "type": "dkan_data_story",
         "title": "State-Level Policies Reduce Smoking Rates Nationwide",
         "created": "1460343943",
-        "changed": "1468015811",
+        "changed": "1469821216",
         "body": {
             "und": [
                 {
@@ -25,6 +25,7 @@
             }
         ],
         "field_image": "files/dkan_data_story/nosmoking.jpg",
+        "field_image_alt": "Hand refusing offered cigarettes",
         "panelizer": {
             "panels_display": {
                 "args": [],
