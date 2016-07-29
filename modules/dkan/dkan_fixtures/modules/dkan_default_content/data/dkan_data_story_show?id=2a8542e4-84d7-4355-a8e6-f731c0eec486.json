@@ -5,7 +5,7 @@
         "type": "dkan_data_story",
         "title": "Tree-Planting in Madison, WI Improves Environment and Quality of Life",
         "created": "1460384779",
-        "changed": "1468015578",
+        "changed": "1469821124",
         "body": {
             "und": [
                 {
@@ -30,6 +30,7 @@
             }
         ],
         "field_image": "files/dkan_data_story/madison-347441_960_720.jpg",
+        "field_image_alt": "Madison WI",
         "panelizer": {
             "panels_display": {
                 "args": [],

@@ -5,7 +5,7 @@
         "type": "data_dashboard",
         "title": "Dynamic Transportation Visualizations",
         "created": "1460127350",
-        "changed": "1468373805",
+        "changed": "1468507296",
         "body": {
             "und": [
                 {
@@ -390,7 +390,7 @@
                     "extras": [],
                     "position": "0",
                     "locks": [],
-                    "uuid": "fb2bd60f-9910-433b-83b1-5750af76c189"
+                    "uuid": "65ad5074-f9ad-4ce6-9ede-ffbb2cee7b23"
                 }
             ],
             "panelizer_entity": {
