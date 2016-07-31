@@ -28,12 +28,12 @@ Feature: Search
       | Gabriel | Group 01 | administrator member | Active            |
     And "Tags" terms:
       | name         |
-      | something 01 |
-      | politics  01 |
+      | something01 |
+      | politics01 |
     And datasets:
       | title           | publisher | author  | published | tags         | description |
-      | Test Dataset 01 |           | Gabriel | Yes       | something 01 | Test 01     |
-      | Test Dataset 02 | Group 01  | Gabriel | Yes       | politics 01  | Test 02     |
+      | Test Dataset 01 |           | Gabriel | Yes       | something01 | Test 01     |
+      | Test Dataset 02 | Group 01  | Gabriel | Yes       | politics01  | Test 02     |
 
   Scenario: Searching datasets
     When I search for "Dataset 01"
@@ -48,7 +48,7 @@ Feature: Search
 
   Scenario: Filter by facet tag
     Given I search for "Test"
-    When I click "politics 01"
+    When I click "politics01"
     Then I should not see "Dataset 01"
     But I should see "Dataset 02"
 
