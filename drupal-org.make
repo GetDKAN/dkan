@@ -2,7 +2,7 @@
 api: '2'
 core: 7.x
 includes:
-- https://raw.githubusercontent.com/NuCivic/dkan_dataset/resource_ui_improve/dkan_dataset.make
+- https://raw.githubusercontent.com/NuCivic/dkan_dataset/resource_ui_improve-danredo/dkan_dataset.make
 - https://raw.githubusercontent.com/NuCivic/dkan_datastore/release-1-12/dkan_datastore.make
 - https://raw.githubusercontent.com/NuCivic/dkan_workflow/release-1-12/dkan_workflow.make
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make
@@ -43,7 +43,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_dataset.git
-      branch: resource_ui_improve
+      branch: resource_ui_improve-danredo
   dkan_datastore:
     subdir: dkan
     download:
