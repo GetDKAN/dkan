@@ -69,11 +69,19 @@ DKAN development is a sponsored by NuCivic. For more information about hosting a
 
 ### Releases and Release Candidates
 
-Currently, we plan releases wrapping github issues on milestones. For instance, if the latest release for dkan is ```7.x-1.n``` then a ```DKAN 7.x-1.n+1``` milestone should exists. You are welcome to take a look and propose bugs fixes or new features for the next release.
+DKAN follows a modified semantic versioning convention, and has _major_, _point_ (also known as _minor_), and _patch_ releases. 
 
-However, there are times when we need to create a release candidate for the next release. This usually happens when security updates are needed for contrib modules but other criteria may arise.
+The only _major_ release of DKAN has been 7.x-1.0. It is unlikely there will be a 7.x-2.x version of DKAN but in the case of a major architecture change, this is possible. More likely is a 8.x-2.x release if and when DKAN is ported to Drupal 8. At the moment there is no work being done on a Drupal 8 version.
 
-We keep DKAN, DKAN Dataset and DKAN Datastore versioning in sync.
+_Point_ releases occur approximately every 1-2 months and include new functionality and architectural changes. For instance, DKAN 7.x-1.1 was the first point release, and 7.x-1.2 was the second. While we try to make updating as seamless as possible, _point release_ updates often involve some work, especially if the website uses a custom theme or modules outside of what is included in the distro.
+
+_Patch_ releases, introduced after the release of DKAN 7.x-1.12, occur much more frequently, and include bug fixes, core and contrib module updates, and minor enhancements. The first patch release was version 7.x-1.12.1, the second was 7.x-1.12.2, and so on. Updating to a new _patch_ release should be very straightforward and cause little to no distruption to a website.
+
+#### Tags and branches
+
+After a _point_ release comes out, we create a _release branch_, on which we do any work intended for future _patch_ releases on that version of DKAN. The _release branch_ for version 7.x-1.12 development, for instance, is `release-1-12`. New features and other work destined for the next _point release_ continues on the main development branch, `7.x-1.x`.
+
+We keep the DKAN profile (this project), [DKAN Dataset](https://github.com/NuCivic/dkan_dataset), [DKAN Datastore](https://github.com/NuCivic/dkan_datastore), [DKAN Workflow](https://github.com/NuCivic/dkan_workflow) and [Recline](https://github.com/NuCivic/recline) versioning in sync. Other depdendencies that we maintain, incuding [Open Data Schema Map](https://github.com/NuCivic/open_data_schema_map) and [Visualization Entity](https://github.com/NuCivic/visualization_entity) follow their own, separate release cycle.
 
 ## Getting Help with DKAN
 

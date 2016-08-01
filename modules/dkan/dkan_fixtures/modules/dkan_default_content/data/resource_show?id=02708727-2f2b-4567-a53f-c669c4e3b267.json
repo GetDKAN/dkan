@@ -1,0 +1,15 @@
+{
+    "result": {
+        "id": "02708727-2f2b-4567-a53f-c669c4e3b267",
+        "url": "files/resource/CDCSmokingRates.csv",
+        "description": "<p>Source: Centers for Disease Control and Prevention, 2015</p>\n",
+        "format": "csv",
+        "revision_timestamp": "Fri, 05/13/2016 - 14:49",
+        "name": "U.S. Adult Smoking Rate",
+        "mimetype": "text/csv",
+        "size": "1.99 KB",
+        "created": "Mon, 04/11/2016 - 09:47",
+        "resource_group_id": "55261028-f4b2-4402-9a30-640781ad1b59",
+        "last_modified": "Date changed\tFri, 05/13/2016 - 14:49"
+    }
+}
