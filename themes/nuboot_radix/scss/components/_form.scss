@@ -230,10 +230,11 @@ div.horizontal-tabs {
   }
 }
 
-// Harvest Source form.
-#field-dkan-harvest-filters-values .description,
-#field-dkan-harvest-excludes-values .description,
-#field-dkan-harvest-overrides-values .description,
-#field-dkan-harvest-defaults-values .description {
-  font-weight: normal;
+#field-dkan-harvest-filters-values,
+#field-dkan-harvest-excludes-values,
+#field-dkan-harvest-overrides-values,
+#field-dkan-harvest-defaults-values {
+  .description {
+    font-weight: normal; 
+  }  
 }
