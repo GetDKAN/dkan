@@ -1,0 +1,88 @@
+.clearfix {
+  overflow: visible;
+}
+.admin-list {
+  dt, dd{
+    display:inline-block;
+    float:none;
+    vertical-align: top;
+  }
+}
+.views-edit-view {
+	.action-list {
+		input.btn,
+		input.btn:active,
+		input.btn:focus,
+		input.btn:hover, 
+		input[type="submit"]:hover {
+			background: inherit;
+			border: none;
+			color: inherit;
+		}
+	}
+	.footer {
+		background: inherit;
+	}
+}
+
+.modal-content {
+	.panels-root-content-box a.btn {
+		white-space: normal;
+	}
+	.panel-title {
+		padding-right: 55px;
+	}
+}
+
+.views-displays .secondary .open > a:hover {
+	color: #666;
+}
+
+.media-thumbnails-select {
+	padding: 0 0 40px;
+}
+
+.page-admin .alert {
+  margin: 10px 0;
+}
+// Admin tables.
+.page-admin {
+  .container.main {
+    width: 100%;
+  }
+  .table-bordered > thead > tr > th,
+  .table-bordered > tbody > tr > th,
+  .table-bordered > tbody > tr > td {
+    border: none;
+  }
+  table thead > tr > th.checkbox, 
+  table.table thead > tr > th.checkbox,
+  .table-bordered > tbody > tr > th.checkbox,
+  .table-bordered > tbody > tr > td.checkbox,
+  .table-striped > tbody > tr:nth-child(odd) > td.checkbox,
+  .table-striped > tbody > tr:nth-child(odd) > th.checkbox {
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    display: table-cell;
+    position: relative;
+  }
+  .table tbody tr:hover td.checkbox, 
+  .table tbody tr:hover th.checkbox {
+    background-color: #FFFEEE;
+  }
+  table th.checkbox, 
+  table td.checkbox {
+    label {
+      line-height:0;
+      padding: 4px;
+      vertical-align: top;
+    }
+    input[type="checkbox"],
+    input {
+      float: none !important;
+      margin: 0 !important;
+      position: relative;
+    }
+  }
+}

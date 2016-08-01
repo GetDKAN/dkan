@@ -1,0 +1,10 @@
+@media all and (max-width:767px) {
+	aside[class|='col'],
+	section[class|='col'] {
+		padding: 0;
+	}
+	.container {
+		width: 100%;
+	}
+}
+

@@ -1,0 +1,57 @@
+// Sass Mixins
+// --------------------------------------------------
+@mixin transparent($color, $alpha) {
+  $rgba: rgba($color, $alpha);
+  $ie-hex-str: ie-hex-str($rgba);
+  background-color: transparent;
+  background-color: $rgba;
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$ie-hex-str},endColorstr=#{$ie-hex-str});
+  zoom: 1;
+}
+
+@mixin well() {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: $well-bg;
+  border: 1px solid darken($well-bg, 7%);
+  @include border-radius(4px);
+  @include box-shadow(inset 0 1px 1px rgba(0,0,0,.05));
+  blockquote {
+    border-color: #ddd;
+    border-color: rgba(0,0,0,.15);
+  }
+}
+
+@mixin btn() {
+  display: inline-block;
+}
+
+// Breakpoint mixin.
+// Usage: @include breakpoint(sm) { ... }
+// -----------------------------------------------------------------------------
+@mixin breakpoint($class) {
+  @if $class == xs {
+    @media (max-width: $screen-xs-max) { @content; }
+  }
+  @else if $class == sm {
+    @media (min-width: $screen-sm) { @content; }
+  }
+  @else if $class == md {
+    @media (min-width: $screen-md) { @content; }
+  }
+  @else if $class == lg {
+    @media (min-width: $screen-lg) { @content; }
+  }
+  @else {
+    @warn "Breakpoint mixin supports: xs, sm, md, lg";
+  }
+}
+
+// Font Awesome.
+// Usage: @include fa(bars) { ... }
+// -----------------------------------------------------------------------------
+@mixin fa($icon) {
+  @extend .fa;
+  @extend .fa-#{$icon}
+}
