@@ -91,9 +91,9 @@
                         "language": "und",
                         "field_basic_text_text": [
                             {
-                                "value": "How are crime rates and types represented appropriately when comparing major metropolitan cities? \n\nWith the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.\n\nThe visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/23f45c04-9e65-4fdf-be89-01cf15be3d55\">Go to Dataset</a>) and property crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f\">Go to Dataset</a>).\n\nAll of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a>",
+                                "value": "How are crime rates and types represented appropriately when comparing major metropolitan cities? \r\n\r\nWith the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.\r\n\r\nThe visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime ([Go to Dataset](dataset/crime-data-ten-most-populous-cities-us/resource/23f45c04-9e65-4fdf-be89-01cf15be3d55)) and property crime ([Go to Dataset](dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f)).\r\n\r\nAll of the data on this page has sourced from the [FBI's Uniform Crime Report, 2014.](https://www.fbi.gov/about-us/cjis/ucr/ucr)",
                                 "format": "html",
-                                "safe_value": "<p>How are crime rates and types represented appropriately when comparing major metropolitan cities?</p>\n<p>With the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.</p>\n<p>The visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/23f45c04-9e65-4fdf-be89-01cf15be3d55\">Go to Dataset</a>) and property crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f\">Go to Dataset</a>).</p>\n<p>All of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a></p>\n"
+                                "safe_value": "<p>How are crime rates and types represented appropriately when comparing major metropolitan cities?</p>\n<p>With the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.</p>\n<p>The visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"dataset/crime-data-ten-most-populous-cities-us/resource/23f45c04-9e65-4fdf-be89-01cf15be3d55\">Go to Dataset</a>) and property crime (<a href=\"dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f\">Go to Dataset</a>).</p>\n<p>All of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a></p>\n"
                             }
                         ],
                         "rdf_mapping": []
@@ -476,28 +476,7 @@
                     "position": "0",
                     "locks": [],
                     "uuid": "031421ac-370d-4a90-b7a5-55427034581e",
-                    "fpp_data": {
-                        "title": "More to Explore",
-                        "bundle": "text",
-                        "link": "0",
-                        "path": "",
-                        "reusable": "0",
-                        "admin_title": "",
-                        "admin_description": "",
-                        "category": "Re-usable content",
-                        "view_access": null,
-                        "edit_access": null,
-                        "uuid": "ea013782-458b-4567-810c-944a66cb55a0",
-                        "language": "und",
-                        "field_basic_text_text": [
-                            {
-                                "value": "In the map below, you can explore violent crime and property data for America's ten most populated cities. On the maps, you can click each marker to see the incidences and rates of each type of crime for each city. \r\n\r\nBy clicking \"Grid,\" you can preview the data in the form of a table, and by clicking \"Graph,\" you can select \"City\" for Axis 1 and add various statistics to Axis 2 (using \"Add Series\") to compare and contrast different figures.\r\n\r\nThese were created using Data Previews, a standard DKAN feature. ",
-                                "format": "html",
-                                "safe_value": "<p>In the map below, you can explore violent crime and property data for America's ten most populated cities. On the maps, you can click each marker to see the incidences and rates of each type of crime for each city.</p>\n<p>By clicking \"Grid,\" you can preview the data in the form of a table, and by clicking \"Graph,\" you can select \"City\" for Axis 1 and add various statistics to Axis 2 (using \"Add Series\") to compare and contrast different figures.</p>\n<p>These were created using Data Previews, a standard DKAN feature.</p>\n"
-                            }
-                        ],
-                        "rdf_mapping": []
-                    }
+                    "fpp_data": []
                 },
                 {
                     "panel": "header",
