@@ -1,0 +1,78 @@
+//
+// Styles for Taxonomy
+// --------------------------------------------------
+
+.field-name-field-tags .field-item {
+  display:inline-block;
+}
+.field-name-field-tags {
+  label {
+    display: block;
+  }
+  input.form-control {
+    height: auto;
+  }
+  .field-item {
+    a {
+      display: inline-block;
+      padding:2px 10px 2px;
+      font-size:12px;
+      line-height: 20px;
+      @include border-radius(0 5px 5px 0);
+      background-color: $shade;
+      margin:3px 5px 3px 20px;
+      position:relative;
+      color:$gray-dark;
+      border:1px solid $border;
+      border-left:0;
+      z-index:2;
+      &:after {
+        content:"";
+        width: 20px;
+        height: 20px;
+        background-color: $shade;
+        @include rotate(45deg);
+        @include border-radius(2px);
+        position:absolute;
+        top:2px;
+        left:-9px;
+        z-index:-1;
+        border:1px solid $border;
+        border-top:none;
+        border-right:none;
+      }
+      &:before {
+        content:"";
+        width:2px;
+        height:2px;
+        background:$gray-light;
+        position:absolute;
+        top:11px;
+        left:-5px;
+        @include border-radius(0);
+      }
+    }
+    a:hover,
+    a:hover:after {
+      background: #fff;
+      color:#000;
+      text-decoration:none;
+    }
+  }
+}
+
+.field-name-field-topic {
+  .field-item { 
+    margin: 0 1.5em .5em 0;
+    .field-item {
+      margin: 0;
+    }
+  }
+}
+.field-name-field-topic-icon span::before, 
+.view-dkan-datasets .field-name-field-topic-icon span::before {
+  font-size: 18px;
+}
+.font_icon_select_options .label {
+  color: #333;
+}

@@ -1,0 +1,57 @@
+name        = NuBoot Radix
+description = A Radix based subtheme built for DKAN.
+screenshot  = screenshot.png
+core        = 7.x
+
+; Base - Radix
+base theme  = radix
+
+
+; Regions
+regions[header]         = 'Header'
+regions[highlighted]    = 'Highlighted'
+regions[preface_first]  = 'Preface First'
+regions[preface_second] = 'Preface Second'
+regions[help]           = 'Help'
+regions[content]        = 'Content'
+regions[sidebar_first]  = 'Primary'
+regions[sidebar_second] = 'Secondary'
+regions[postscript_first]   = 'Postscript First'
+regions[postscript_second]  = 'Postscript Second'
+regions[bottom_content] = Bottom Content
+regions[footer_first]   = Footer First
+regions[footer_second]  = Footer Second
+regions[footer_third]   = Footer Third
+regions[footer]         = 'Footer'
+regions[page_top]       = 'Page top'
+regions[page_bottom]    = 'Page bottom'
+
+; Panels
+plugins[panels][layouts] = panels/layouts
+plugins[panels][styles] = panels/styles
+
+; CSS - General
+stylesheets[all][]     = assets/css/nuboot_radix.style.css
+stylesheets[all][]		 = assets/css/dkan-flaticon.css
+stylesheets[all][]		 = assets/css/dkan-topics.css
+stylesheets[print][]   = assets/css/print.css
+
+; CSS - Conditional
+stylesheets-conditional[lte IE 9][all][] = assets/css/ie.css
+stylesheets-conditional[IE 9][all][] = assets/css/ie9.css
+stylesheets-conditional[IE 8][all][] = assets/css/ie8.css
+
+; Javascript
+scripts[] = assets/js/nuboot_radix.script.js
+
+; Default Theme Settings
+settings[toggle_logo] = 1
+settings[toggle_name] = 0
+settings[toggle_slogan] = 0
+settings[toggle_node_user_picture] = 1
+settings[toggle_comment_user_picture] = 1
+settings[toggle_comment_user_verification] = 1
+settings[toggle_favicon] = 1
+settings[toggle_main_menu] = 1
+settings[toggle_secondary_menu] = 1
+settings[copyright][format] = 'html'

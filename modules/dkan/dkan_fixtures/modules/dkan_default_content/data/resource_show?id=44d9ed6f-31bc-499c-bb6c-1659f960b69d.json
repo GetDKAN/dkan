@@ -1,0 +1,14 @@
+{
+    "result": {
+        "id": "44d9ed6f-31bc-499c-bb6c-1659f960b69d",
+        "url": "files/resource/us_foreclosures_jan_2012_by_state_0.csv",
+        "description": "<p>US National Foreclosure Statistics - By State - January 2012</p>\n",
+        "format": "csv",
+        "revision_timestamp": "Thu, 01/03/2013 - 22:17",
+        "name": "1-2012-Foreclosures-by-State",
+        "mimetype": "text/csv",
+        "size": "1015 bytes",
+        "created": "Mon, 02/11/2013 - 00:03",
+        "last_modified": "Date changed\tThu, 01/03/2013 - 22:17"
+    }
+}

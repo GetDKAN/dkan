@@ -4,7 +4,7 @@ commands:
 
   drush:
     usage: Run drush via ahoy (helpful for abstraction)
-    cmd: ahoy cmd-proxy drush --root=docroot {{args}}
+    cmd: ahoy cmd-proxy drush --root=docroot "{{args}}"
 
   dkan:
     usage: A series of commands for dkan development.
@@ -12,7 +12,7 @@ commands:
 
 # Utility / Experimental commands that are currently hidden
   confirm:
-    cmd: ahoy -f dkan/.ahoy/utils.ahoy.yml confirm {{args}}
+    cmd: ahoy -f dkan/.ahoy/utils.ahoy.yml confirm "{{args}}"
     hide: true
 
   docker:

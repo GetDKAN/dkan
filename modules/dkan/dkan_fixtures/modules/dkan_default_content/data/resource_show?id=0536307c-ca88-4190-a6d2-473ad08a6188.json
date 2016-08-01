@@ -1,0 +1,14 @@
+{
+    "result": {
+        "id": "0536307c-ca88-4190-a6d2-473ad08a6188",
+        "url": "files/resource/postvaccinedeaths_0_0.csv",
+        "description": "<p>Source: \"Near elimination of varicella deaths in the US after implementation of the vaccination program.\" published in the American Journal of Pediatrics in August 2011.</p>\n",
+        "format": "csv",
+        "revision_timestamp": "Wed, 04/06/2016 - 13:26",
+        "name": " Varicella Mortality by Age Group, 1995-2009",
+        "mimetype": "text/csv",
+        "size": "288 bytes",
+        "created": "Wed, 04/06/2016 - 13:21",
+        "last_modified": "Date changed\tWed, 04/06/2016 - 13:26"
+    }
+}
