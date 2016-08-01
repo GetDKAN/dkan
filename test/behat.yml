@@ -3,6 +3,7 @@ default:
      default:
         contexts:
           - FeatureContext #Temporary overrides only!
+          - HarvestSourceContext
           - Drupal\DrupalExtension\Context\MinkContext
           - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MessageContext
@@ -21,6 +22,9 @@ default:
                   form_field: 'edit-search'
                   form_button: 'edit-submit'
                   results_css: '.view-dkan-datasets'
+                  result_item_css: '.views-row'
+                harvest_source:
+                  results_css: '.view-dkan-harvest-source-search'
                   result_item_css: '.views-row'
           - Drupal\DKANExtension\Context\ResourceContext
           - Drupal\DKANExtension\Context\ServicesContext
@@ -98,6 +102,7 @@ default:
         content search: '.form-item-query'
         user block: '.pane-views-user-profile-fields-block'
         admin menu: '#admin-menu'
+        harvest datasets: '.view-dkan-harvest-datasets'
       text:
         log_out: "Log out"
         log_in: "Log in"
