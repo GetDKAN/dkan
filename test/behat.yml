@@ -102,6 +102,7 @@ default:
         content search: '.form-item-query'
         user block: '.pane-views-user-profile-fields-block'
         admin menu: '#admin-menu'
+        harvest datasets: '.view-dkan-harvest-datasets'
       text:
         log_out: "Log out"
         log_in: "Log in"

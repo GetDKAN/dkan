@@ -67,19 +67,19 @@ class HarvestSourceContext extends RawDKANEntityContext {
   }
 
   /**
-   * Retrieve a table row containing specified text from a given element.
+   * Check a table with the given class name exists in the page
    *
-   * @Given I should see a harvest event log table
+   * @Given I should see a table with a class name :class_name
    *
    * @return \Behat\Mink\Element\NodeElement
    *
    * @throws \Exception
    */
-  public function assertHarvestEventLogTable() {
+  public function assertTableByClassName($class_name) {
     $page = $this->getSession()->getPage();
-    $table = $page->findAll('css', 'table.harvest-event-log');
+    $table = $page->findAll('css', 'table.'.$class_name);
     if (empty($table)) {
-      throw new \Exception(sprintf('No Harvest Event Log table found on the page %s', $this->getSession()->getCurrentUrl()));
+      throw new \Exception(sprintf('No table found on the page %s', $this->getSession()->getCurrentUrl()));
     }
 
 // The current use case
@@ -87,18 +87,18 @@ class HarvestSourceContext extends RawDKANEntityContext {
   }
 
   /**
-   * Check on the number of rows a harvest event log should have.
+   * Check on the number of rows a table with the class name :class_name.
    *
-   * @Then the harvest event log table should have :number row(s)
+   * @Then the table with the class name :class_name should have :number row(s)
    *
    * @throws \Exception
    */
-  public function assertHarvestEventLogTableRowNumber($number) {
+  public function assertTableRowNumber($class_name, $number) {
     if (!is_numeric($number)) {
       throw new \Exception(sprintf('Expected "number" to be numeric'));
     }
 
-    $table = $this->assertHarvestEventLogTable();
+    $table = $this->assertTableByClassName($class_name);
     $rows = $table->findAll('css', 'tr');
 
     // The first row is for the header. bump.
