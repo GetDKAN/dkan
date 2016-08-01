@@ -1,13 +1,13 @@
 api: '2'
 core: 7.x
 includes:
-- "https://raw.githubusercontent.com/NuCivic/dkan_dataset/harvest_source_page/dkan_dataset.make"
+- https://raw.githubusercontent.com/NuCivic/dkan_dataset/harvest_dkan_integration/dkan_dataset.make
 - https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 - https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
 - modules/dkan/dkan_topics/dkan_topics.make
-- "https://raw.githubusercontent.com/NuCivic/dkan_harvest/harvest_source_page/dkan_harvest.make"
+- "https://raw.githubusercontent.com/NuCivic/dkan_harvest/harvest_dkan_integration/dkan_harvest.make"
 projects:
   manualcrop:
     version: 1.x-dev
