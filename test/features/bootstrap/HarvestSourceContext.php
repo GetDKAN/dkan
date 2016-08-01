@@ -66,46 +66,4 @@ class HarvestSourceContext extends RawDKANEntityContext {
     $user = $global_user;
   }
 
-  /**
-   * Check a table with the given class name exists in the page
-   *
-   * @Given I should see a table with a class name :class_name
-   *
-   * @return \Behat\Mink\Element\NodeElement
-   *
-   * @throws \Exception
-   */
-  public function assertTableByClassName($class_name) {
-    $page = $this->getSession()->getPage();
-    $table = $page->findAll('css', 'table.'.$class_name);
-    if (empty($table)) {
-      throw new \Exception(sprintf('No table found on the page %s', $this->getSession()->getCurrentUrl()));
-    }
-
-// The current use case
-    return array_pop($table);
-  }
-
-  /**
-   * Check on the number of rows a table with the class name :class_name.
-   *
-   * @Then the table with the class name :class_name should have :number row(s)
-   *
-   * @throws \Exception
-   */
-  public function assertTableRowNumber($class_name, $number) {
-    if (!is_numeric($number)) {
-      throw new \Exception(sprintf('Expected "number" to be numeric'));
-    }
-
-    $table = $this->assertTableByClassName($class_name);
-    $rows = $table->findAll('css', 'tr');
-
-    // The first row is for the header. bump.
-    array_pop($rows);
-
-    if (count($rows) != $number) {
-          throw new \Exception(sprintf('Found %s rows in the harvest event log table instead of the expected %s.', count($rows), $number));
-    }
-  }
 }
