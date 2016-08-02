@@ -68,7 +68,7 @@ Feature: Site Manager administer groups
       | Resource 01 | Group 01  | csv 2  | Katie  | Yes       | Dataset 01 |             |
       | Resource 02 | Group 01  | html 2 | Katie  | Yes       | Dataset 03 |             |
 
-
+  @customizable
   Scenario: View the list of published groups
     Given I am on the homepage
     When I follow "Groups"
