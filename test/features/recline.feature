@@ -50,6 +50,7 @@ Feature: Recline
     When I click "Resource 01"
     Then I should see "Test R1"
     When I click "Edit"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/Polling_Places_Madison_0.csv"
     And I press "edit-submit"
     Then I should see "Polling_Places_Madison_0.csv"
@@ -68,6 +69,7 @@ Feature: Recline
     Given I click "Resource 02"
     Then I should see "Test R2"
     When I click "Edit"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/data_0.csv"
     And I press "edit-submit"
     Then I should see "data_0.csv"
@@ -84,15 +86,18 @@ Feature: Recline
     When I click "Resource 01"
     Then I should see "Test R1"
     When I click "Edit"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/Polling_Places_Madison_0.csv"
     And I press "edit-submit"
+    And I wait for "Loading" to disappear
+    And I wait for "1" seconds
     Then I should see "Polling_Places_Madison_0.csv"
-    Given I click "»"
-    Then I wait for "Our"
-    Then I wait for "1" seconds
-    Given I click "«"
-    Then I wait for "1" seconds
-    Then I wait for "East"
-    Given I fill in "q" with "Glendale"
-    When I press "Go"
+    When I click "»"
+    And I wait for "Our"
+    And I wait for "1" seconds
+    And I click "«"
+    And I wait for "1" seconds
+    And I wait for "East"
+    And I fill in "q" with "Glendale"
+    And I press "Go"
     Then I should see "Tompkins"
