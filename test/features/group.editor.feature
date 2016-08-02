@@ -60,7 +60,7 @@ Feature: Site Manager administer groups
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     When I click "Edit"
-    And I fill in "Body" with "Edited page"
+    And I fill in "Description" with "Edited page"
     And I press "Save"
     Then I should see "Group Group 01 has been updated"
     And I should be on the "Group 01" page
