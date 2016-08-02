@@ -142,10 +142,10 @@ Feature: Dataset Features
   # TODO: make sure it works when we don't have default content on.
   Scenario: View available resource format filters for datasets
     Given I am on "Datasets Search" page
-    Then I click on the text "Format"
+    When I click on the text "Format"
     And I wait for "1" seconds
     Then I should see "csv 2 (1)" in the "filter by resource format" region
-    Then I should see "html 2 (2)" in the "filter by resource format" region
+    And I should see "html 2 (2)" in the "filter by resource format" region
 
   Scenario: View available author filters for datasets
     Given I am on "Datasets Search" page
