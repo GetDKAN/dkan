@@ -42,7 +42,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_dataset.git
-      branch: fix-group-block
+      branch: 7.x-1.x
   dkan_datastore:
     subdir: dkan
     download:
