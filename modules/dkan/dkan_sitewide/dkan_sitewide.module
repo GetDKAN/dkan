@@ -386,7 +386,7 @@ function dkan_sitewide_rename_field($old_field_name, $new_field_name) {
   // Read field data.
   $old_field = field_read_field($old_field_name);
   if (empty($old_field)) {
-    $messages[] = t('The field %old_field_name does not exist.', array('%old_field_name' => $old_field_name));
+    $messages[] = t('The field %old_field_name does not exist so it cannot be renamed.', array('%old_field_name' => $old_field_name));
     return $messages;
   }
 
@@ -447,6 +447,8 @@ function dkan_sitewide_rename_field($old_field_name, $new_field_name) {
     $messages[] = t('The field %old_field_name could not be renamed because there was an error: %error.',
       array('%old_field_name' => $old_field_name, '%error' => $e->getMessage()));
   }
+
+  cache_clear_all('*', 'cache_field', TRUE);
 
   return $messages;
 }
