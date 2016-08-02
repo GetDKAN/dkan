@@ -44,7 +44,6 @@ a {
     color: #23527c;
     text-decoration: underline; }
   a:focus {
-    outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
 
@@ -1257,7 +1256,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px; }
 
@@ -1765,7 +1763,6 @@ select[multiple].input-lg,
   -ms-user-select: none;
   user-select: none; }
   .btn:focus, .media-widget > a:focus, .btn.focus, .media-widget > a.focus, .btn:active:focus, .media-widget > a:active:focus, .btn:active.focus, .media-widget > a:active.focus, .btn.active:focus, .media-widget > a.active:focus, .btn.active.focus, .media-widget > a.active.focus {
-    outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
   .btn:hover, .media-widget > a:hover, .btn:focus, .media-widget > a:focus, .btn.focus, .media-widget > a.focus {
@@ -9158,6 +9155,17 @@ div.horizontal-tabs {
   border-radius: 5px 0 0 5px;
   margin-right: 0; }
 
+.form-managed-file .file-size {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 0 10px;
+  vertical-align: top;
+  line-height: 34px;
+  display: inline-block;
+  font-size: 12px;
+  margin: 0 -5px;
+  background: #eee; }
+
 .form-managed-file input {
   border-radius: 4px 0 0 4px;
   border: 1px solid #ddd;
@@ -9172,6 +9180,9 @@ div.horizontal-tabs {
 .form-managed-file .input-group-btn {
   display: inline-block;
   vertical-align: top; }
+
+.form-managed-file .manualcrop-style-button-holder input {
+  border-radius: 5px; }
 
 .path-form.panel-default {
   border-color: transparent; }
@@ -9773,12 +9784,6 @@ ul.action-links {
     position: absolute;
     top: -6px;
     width: 30px; }
-
-.node-type-group .horizontal-tabs {
-  margin: 0; }
-  .node-type-group .horizontal-tabs #edit-field-image-und-0-remove-button {
-    border-radius: 4px;
-    margin-left: 5px; }
 
 .group-owner-message {
   margin-bottom: 20px; }
