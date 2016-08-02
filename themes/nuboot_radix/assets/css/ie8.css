@@ -1,0 +1,43 @@
+.panel-top {
+  -ms-behavior: url(/backgroundsize.min.htc); }
+  .panel-top .tint {
+    background: #0A77BD;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; }
+
+.format-label {
+  font-size: 0; }
+
+.radix-layouts-sidebar .pane-block {
+  border: 1px solid #ddd; }
+
+.field-type-taxonomy-term-reference label {
+  display: block; }
+
+.field-type-taxonomy-term-reference input.form-control {
+  height: auto; }
+
+.field-type-taxonomy-term-reference .field-item a {
+  display: inline-block;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.25em;
+  border-radius: none;
+  background-image: none;
+  margin: 1px 1em .75em 0;
+  position: relative;
+  color: #0A77BD;
+  border: none;
+  border-left: 0;
+  z-index: 2; }
+  .field-type-taxonomy-term-reference .field-item a:after, .field-type-taxonomy-term-reference .field-item a:before {
+    display: none; }
+
+.field-type-taxonomy-term-reference .field-item a:hover:after,
+.field-type-taxonomy-term-reference .field-item a:hover {
+  background: inherit;
+  color: #002245;
+  text-decoration: underline; }
+
+/*# sourceMappingURL=ie8.css.map */

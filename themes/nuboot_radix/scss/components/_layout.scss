@@ -1,0 +1,44 @@
+//
+// Styles for main layout
+// --------------------------------------------------
+.container,
+.container-fluid,
+.row {
+	// Override Radix container and row overflow
+	overflow: visible;
+}
+aside.col-sm-3 {
+  padding-left:0;
+}
+section.col-sm-9 {
+  padding-right: 0;
+}
+.region-content {
+	padding: 15px 0;
+}
+.front {
+	.panel-dkan-front .container,
+	.region-content {
+		padding: 0;
+	}
+	.alert {
+		margin: 10px 15px;
+	}
+}
+.breadcrumb,
+.alert,
+.tabs--primary,
+.page-header {
+  margin: 0 0 15px;
+}
+#footer.footer {
+	padding:40px 0;
+	margin: 0;
+}
+
+@media all and (max-width:767px) {
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
