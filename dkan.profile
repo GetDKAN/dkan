@@ -443,7 +443,7 @@ function dkan_bueditor_markdown_install() {
     case 'anonymous user':
       $bueditor_roles[$rid] = [
         'weight' => 12,
-        'editor' => __bueditor_by_name('Commenter'),
+        'editor' => _dkan_bueditor_by_name('Commenter'),
         'alt' => 0,
       ];
       break;
