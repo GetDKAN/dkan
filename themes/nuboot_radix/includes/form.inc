@@ -9,18 +9,7 @@ function nuboot_radix_form_alter(&$form, &$form_state, $form_id) {
       $form['colorizer_global']['colorizer_cssfile']['#default_value'] = 'colorizer/colorizer.css';
       $form['colorizer_global']['colorizer_incfile']['#default_value'] = 'colorizer/colorizer.inc';
       break;
-
-    case 'taxonomy_form_term':
-      //$form['field_topic_icon']['#after_build'][] = 'topic_checkbox_after_build';
-      //drupal_set_message('got it');
-    	break;
   }
-}
-
-function topic_checkbox_after_build($element, &$form_state) {
-  //drupal_set_message('<pre>' . print_r($element, TRUE) . '</pre>');
-  // Always return the element to render in after_build callbacks.
-  return $element;
 }
 
 /**
