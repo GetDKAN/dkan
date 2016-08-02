@@ -1,6 +1,6 @@
 Feature: Dkan Harvest
 
-  @api @javascript
+  @api @javascript @harvest_rollback
   Scenario: As an administrator I should be able to add a harvest source.
 
     Given users:
@@ -12,13 +12,13 @@ Feature: Dkan Harvest
     Then I should see the text "Create Harvest Source"
     And I fill in "Title" with "Source 1"
     And I wait for "2" seconds
-    And I fill in "Source URI" with "https://data.mo.gov/data.json"
+    And I fill in "Source URI" with "http://s3.amazonaws.com/dkan-default-content-files/files/data.json"
     And I select "datajson_v1_1_json" from "Type"
     And I press "Save"
     And I wait for "2" seconds
     Then I should see the success message "Harvest Source Source 1 has been created."
 
-  @api
+  @api @harvest_rollback
   Scenario Outline: As a user I should not be able to add a harvest source.
 
     Given pages:
@@ -33,7 +33,7 @@ Feature: Dkan Harvest
     | anonymous user     |
     | authenticated user |
 
-  @api
+  @api @harvest_rollback
   Scenario: As an administrator I should see only the published harvest sources listed on the harvest dashboard.
 
   Given users:
@@ -41,8 +41,8 @@ Feature: Dkan Harvest
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
-    | Source two | source_two   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | No        |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source two | source_two   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | No        |
   And pages:
     | name               | url                            |
     | Harvest Dashboard  | /admin/dkan/harvest/dashboard  |
@@ -52,14 +52,14 @@ Feature: Dkan Harvest
   Then I should see the text "Source one"
   And I should not see the text "Source two"
 
-  @api
+  @api @harvest_rollback
   Scenario: As a user I should have access to see harvest information into dataset node.
   Given users:
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
   And I am logged in as a "Administrator"
   And I am on the "Source one" page
   Given The "source_one" source is harvested
@@ -72,14 +72,14 @@ Feature: Dkan Harvest
   And I should see the text "Harvest Source Title"
 
 
-  @api
+  @api @harvest_rollback
   Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
   Given users:
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
   And I am logged in as a "<role>"
   And I am on the "Source one" page
   Given The "source_one" source is harvested
@@ -95,14 +95,14 @@ Feature: Dkan Harvest
   | anonymous user     |
   | authenticated user |
 
-  @api
+  @api @harvest_rollback
   Scenario Outline: As a user I should see a list of imported datasets on the Harvest Source page.
   Given users:
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
   And The "source_one" source is harvested
   And I am logged in as a "<role>"
   And I am on the "Source one" page
@@ -115,14 +115,14 @@ Feature: Dkan Harvest
   | authenticated user |
 
 
-  @api
+  @api @harvest_rollback
   Scenario Outline: As user I should see a list of imported datasets in the harvest administration dashboard
   Given users:
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -136,14 +136,14 @@ Feature: Dkan Harvest
   | role               |
   | administrator      |
 
-  @api @javascript
+  @api @javascript @harvest_rollback
   Scenario Outline: As user I want to filter harvested datasets by orphan status in the harvest administration dashboard
   Given users:
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -159,14 +159,14 @@ Feature: Dkan Harvest
   | administrator      |
 
 
-  @api @javascript
+  @api @javascript @harvest_rollback
   Scenario Outline: As user I want to filter harvested datasets by post date in the harvest administration dashboard
   Given users:
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -185,14 +185,14 @@ Feature: Dkan Harvest
   | administrator      |
 
 
-  @api @javascript
+  @api @javascript @harvest_rollback
   Scenario Outline: As user I want to filter harvested datasets by updated date in the harvest administration dashboard
   Given users:
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -215,14 +215,14 @@ Feature: Dkan Harvest
   | administrator      |
 
 
-  @api @javascript
+  @api @javascript @harvest_rollback
   Scenario Outline: As user I want to delete harvested datasets in the harvest administration dashboard
   Given users:
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://demo.getdkan.com/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |

@@ -4,6 +4,7 @@ use Drupal\DKANExtension\Context\RawDKANEntityContext;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Behat\Hook\Scope\AfterScenarioScope;
 
 /**
  * Defines application features from the specific context.
@@ -66,4 +67,18 @@ class HarvestSourceContext extends RawDKANEntityContext {
     $user = $global_user;
   }
 
+  /**
+  * @AfterScenario @harvest_rollback
+  */
+  public function harvestRollback(AfterScenarioScope $event)
+  {
+    $migrations = migrate_migrations();
+    $harvest_migrations = array();
+    foreach ($migrations as $name => $migration) {
+      if(strpos($name , 'dkan_harvest') === 0) {
+        $migration = Migration::getInstance($name);
+        $migration->processRollback();
+      }
+    }
+  }
 }
