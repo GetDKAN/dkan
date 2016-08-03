@@ -165,7 +165,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_migrate_base.git'
-      branch: 7.x-1.x
+      branch: 3494-move-odfe-fields
 libraries:
   jquery.imagesloaded:
     download:
