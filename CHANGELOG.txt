@@ -1,5 +1,6 @@
 7.x-1-12.x
 --------------------------
+- Fix bug that produced a "Cannot use a scalar value" error when trying to add a content pane to a data story node in panels.
 - Change theming on resource to remove iframe to "API or link URL" if remote file field also populated
 - Update options in Dataset "frequency" field to reflect standards for DCAT and Project Open Data
 - Provide "data proxy" to serve remote CSVs through local domain and resolve cross-origin issues with previews n these resources
