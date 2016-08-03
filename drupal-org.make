@@ -162,7 +162,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/nuboot_radix.git
-      branch: resource_ui_improve
+      branch: release-1-12
     type: theme
   radix:
     type: theme
