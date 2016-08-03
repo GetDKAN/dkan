@@ -38,17 +38,19 @@ Feature: Dataset Features
       | name   |
       | Health |
       | Gov    |
+      | price1 |
+      | election1 |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Gabriel | Yes              | price    |             |
-      | Dataset 02 | Group 01  | Gabriel | Yes              | election |             |
-      | Dataset 03 |           | Katie   | Yes              | price    |             |
-      | Dataset 04 | Group 02  | Celeste | No               | election |             |
-      | Dataset 05 | Group 01  | Katie   | No               | election |             |
-      | Dataset 06 |           | Katie   | Yes              | election |             |
-      | Dataset 07 | Group 01  | Katie   | Yes              | election |             |
-      | Dataset 08 |           | Katie   | Yes              | election |             |
-      | Dataset 09 | Group 02  | Katie   | Yes              | election |             |
+      | Dataset 01 | Group 01  | Gabriel | Yes              | price1    |             |
+      | Dataset 02 | Group 01  | Gabriel | Yes              | election1 |             |
+      | Dataset 03 |           | Katie   | Yes              | price1    |             |
+      | Dataset 04 | Group 02  | Celeste | No               | election1 |             |
+      | Dataset 05 | Group 01  | Katie   | No               | election1 |             |
+      | Dataset 06 |           | Katie   | Yes              | election1 |             |
+      | Dataset 07 | Group 01  | Katie   | Yes              | election1 |             |
+      | Dataset 08 |           | Katie   | Yes              | election1 |             |
+      | Dataset 09 | Group 02  | Katie   | Yes              | election1 |             |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
