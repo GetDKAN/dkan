@@ -21,7 +21,7 @@
   ?>
   <article class="node-teaser">
     <div class="field-name-field-image"><?php print render($group_logo); ?></div>
-    <h2 class="node-title"><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
+    <h2 class="node-title"><a href="<?php print url($node_url) ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
     <div class="content">
       <p>
         <?php $field = field_view_field('node', $node, 'body', array(
@@ -43,7 +43,7 @@
     <?php print render($title_prefix); ?>
     <?php if (!$page && $title): ?>
     <header>
-      <h2<?php print $title_attributes; ?>><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
+      <h2<?php print $title_attributes; ?>><a href="<?php print url($node_url) ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
     </header>
     <?php endif; ?>
     <?php print render($title_suffix); ?>
