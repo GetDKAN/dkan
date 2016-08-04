@@ -13,7 +13,7 @@ Feature: Dkan Harvest
     And I fill in "Title" with "Source 1"
     And I wait for "2" seconds
     And I fill in "Source URI" with "http://s3.amazonaws.com/dkan-default-content-files/files/data.json"
-    And I select "datajson_v1_1_json" from "Type"
+    And I select "Project Open Data v1.1 JSON" from "Type"
     And I press "Save"
     And I wait for "2" seconds
     Then I should see the success message "Harvest Source Source 1 has been created."
@@ -29,9 +29,8 @@ Feature: Dkan Harvest
     And I should be denied access to the "Create Harvest Source" page
 
     Examples:
-    | role               |
-    | anonymous user     |
-    | authenticated user |
+    | role                    |
+    | authenticated user      |
 
   @api @harvest_rollback
   Scenario: As an administrator I should see only the published harvest sources listed on the harvest dashboard.
@@ -40,26 +39,25 @@ Feature: Dkan Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                        | type               | author        | published |
+    | title      | machine name | source uri                                                         | type               | author        | published |
     | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
     | Source two | source_two   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | No        |
   And pages:
     | name               | url                            |
     | Harvest Dashboard  | /admin/dkan/harvest/dashboard  |
-
   And I am logged in as "Administrator"
   And I am on the "Harvest Dashboard" page
   Then I should see the text "Source one"
   And I should not see the text "Source two"
 
-  @api @harvest_rollback
+  @api @harvest_rollback @javascript
   Scenario: As a user I should have access to see harvest information into dataset node.
   Given users:
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | title      | machine name | source uri                          | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
   And I am logged in as a "Administrator"
   And I am on the "Source one" page
   Given The "source_one" source is harvested
@@ -67,24 +65,41 @@ Feature: Dkan Harvest
   Then I should see the link "Wisconsin Polling Places"
   And I click "Wisconsin Polling Places"
   And I should see the text "Harvested from Source one"
-  And I should see the text "Harvest Object Id"
-  And I should see the text "Harvest Source Id"
+  And I should see the text "Last Harvest Performed"
+  And I should see the text "Harvest Source URI"
   And I should see the text "Harvest Source Title"
 
 
   @api @harvest_rollback
+  Scenario: As a user I should have access to see harvest preview information.
+  Given users:
+    | name             | mail                   | roles           |
+    | Administrator    | admin@fakeemail.com    | administrator   |
+  And harvest sources:
+    | title      | machine name | source uri                        | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+  And I am logged in as a "Administrator"
+  And I am on the "Source one" page
+  Given The "source_one" source is harvested
+  When I am on the "Source one" page
+  Then I should see the link "Preview"
+  And I click "Preview"
+  And I should see the text "Harvest now"
+  And I should see the text "Wisconsin Polling Places"
+
+  @api @javascript
   Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
   Given users:
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
   And I am logged in as a "<role>"
   And I am on the "Source one" page
   Given The "source_one" source is harvested
-  Then I should see the link "Event Log"
-  When I click "Event Log"
+  Then I should see the link "Event"
+  When I click "Event"
   Then The page status should be 'ok'
   And I should see a table with a class name "harvest-event-log"
   And the table with the class name "harvest-event-log" should have 1 row
@@ -92,8 +107,6 @@ Feature: Dkan Harvest
   Examples:
   | role               |
   | administrator      |
-  | anonymous user     |
-  | authenticated user |
 
   @api @harvest_rollback
   Scenario Outline: As a user I should see a list of imported datasets on the Harvest Source page.
@@ -102,7 +115,7 @@ Feature: Dkan Harvest
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
   And The "source_one" source is harvested
   And I am logged in as a "<role>"
   And I am on the "Source one" page
@@ -111,8 +124,6 @@ Feature: Dkan Harvest
   Examples:
   | role               |
   | administrator      |
-  | anonymous user     |
-  | authenticated user |
 
 
   @api @harvest_rollback
@@ -122,7 +133,7 @@ Feature: Dkan Harvest
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -143,7 +154,7 @@ Feature: Dkan Harvest
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -166,7 +177,7 @@ Feature: Dkan Harvest
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -192,7 +203,7 @@ Feature: Dkan Harvest
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -222,7 +233,7 @@ Feature: Dkan Harvest
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
     | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |

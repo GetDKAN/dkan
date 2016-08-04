@@ -44,7 +44,7 @@ class HarvestSourceContext extends RawDKANEntityContext {
    * @throw \Exception
    */
   public function theHarvestSourceIsHarvested($machine_name) {
-    $harvest_source = HarvestSource::getSourceByMachineName($machine_name);
+    $harvest_source = new HarvestSource($machine_name);
     if (!$harvest_source) {
       throw new \Exception("Harvest source '$machine_name' not found.");
     }
