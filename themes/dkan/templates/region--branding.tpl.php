@@ -3,7 +3,7 @@
     <?php if ($logo || $site_name || $site_slogan): ?>
     <div class="branding-data clearfix">
       <?php if ($logo): ?>
-        <a href="/" title="<?php print t('Home'); ?>" rel="home" id="logo">
+        <a href="<?php print url('') ?>" title="<?php print t('Home'); ?>" rel="home" id="logo">
           <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
         </a>
       <?php endif; ?>
