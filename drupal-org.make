@@ -162,7 +162,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/nuboot_radix.git
-      branch:  fix_views_relative_apth_civic_3648
+      branch:  release-1-12
     type: theme
   radix:
     type: theme
