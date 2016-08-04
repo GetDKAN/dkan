@@ -5,6 +5,7 @@
 - Update options in Dataset "frequency" field to reflect standards for DCAT and Project Open Data
 - Provide "data proxy" to serve remote CSVs through local domain and resolve cross-origin issues with previews n these resources
 - Some changes to the Resource node form to improve UX of links and file attachments, especially by replacing the label "Link to an API" to "API or Website URL"
+- Fix bug on relative paths for links in theme template files.
 
 7.x-1.12.6 2016-07-26
 --------------------------
