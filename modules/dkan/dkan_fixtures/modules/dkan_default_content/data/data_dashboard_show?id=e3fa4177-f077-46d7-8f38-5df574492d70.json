@@ -5,7 +5,7 @@
         "type": "data_dashboard",
         "title": "Crime in America's Top 10 Most Populous Cities",
         "created": "1460393089",
-        "changed": "1468373840",
+        "changed": "1468373535",
         "body": {
             "und": [
                 {
@@ -91,9 +91,9 @@
                         "language": "und",
                         "field_basic_text_text": [
                             {
-                                "value": "How are crime rates and types represented appropriately when comparing major metropolitan cities? \n\nWith the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.\n\nThe visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/23f45c04-9e65-4fdf-be89-01cf15be3d55\">Go to Dataset</a>) and property crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f\">Go to Dataset</a>).\n\nAll of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a>",
+                                "value": "How are crime rates and types represented appropriately when comparing major metropolitan cities? \r\n\r\nWith the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.\r\n\r\nThe visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime ([Go to Dataset](dataset/crime-data-ten-most-populous-cities-us/resource/23f45c04-9e65-4fdf-be89-01cf15be3d55)) and property crime ([Go to Dataset](dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f)).\r\n\r\nAll of the data on this page has sourced from the [FBI's Uniform Crime Report, 2014.](https://www.fbi.gov/about-us/cjis/ucr/ucr)",
                                 "format": "html",
-                                "safe_value": "<p>How are crime rates and types represented appropriately when comparing major metropolitan cities?</p>\n<p>With the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.</p>\n<p>The visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/23f45c04-9e65-4fdf-be89-01cf15be3d55\">Go to Dataset</a>) and property crime (<a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f\">Go to Dataset</a>).</p>\n<p>All of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a></p>\n"
+                                "safe_value": "<p>How are crime rates and types represented appropriately when comparing major metropolitan cities?</p>\n<p>With the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.</p>\n<p>The visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"dataset/crime-data-ten-most-populous-cities-us/resource/23f45c04-9e65-4fdf-be89-01cf15be3d55\">Go to Dataset</a>) and property crime (<a href=\"dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f\">Go to Dataset</a>).</p>\n<p>All of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a></p>\n"
                             }
                         ],
                         "rdf_mapping": []
@@ -459,6 +459,26 @@
                     "uuid": "f3b18f20-5689-41e6-ad49-ab80abedf843"
                 },
                 {
+                    "panel": "footer",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:ea013782-458b-4567-810c-944a66cb55a0",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "031421ac-370d-4a90-b7a5-55427034581e",
+                    "fpp_data": []
+                },
+                {
                     "panel": "header",
                     "type": "visualization_embed",
                     "subtype": "visualization_embed",
@@ -530,7 +550,7 @@
                     "extras": [],
                     "position": "1",
                     "locks": [],
-                    "uuid": "5fe4aedb-1ef5-4361-9e3b-fea44714f95b"
+                    "uuid": "05330ff2-752e-41cc-8a1c-685ae38fa0bf"
                 }
             ],
             "panelizer_entity": {

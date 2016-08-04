@@ -5,7 +5,7 @@
         "type": "dkan_data_story",
         "title": "Tree-Planting in Madison, WI Improves Environment and Quality of Life",
         "created": "1460384779",
-        "changed": "1468015578",
+        "changed": "1470094007",
         "body": {
             "und": [
                 {
@@ -30,6 +30,7 @@
             }
         ],
         "field_image": "files/dkan_data_story/madison-347441_960_720.jpg",
+        "field_image_alt": "Madison WI",
         "panelizer": {
             "panels_display": {
                 "args": [],
@@ -153,10 +154,10 @@
                         "language": "und",
                         "field_basic_image_caption": [
                             {
-                                "value": "<i>Students learning to plant trees.</i> ",
+                                "value": "*Students learning to plant trees.*",
                                 "summary": "",
                                 "format": "html",
-                                "safe_value": "<p>Students learning to plant trees.</p>\n",
+                                "safe_value": "<p><em>Students learning to plant trees.</em></p>\n",
                                 "safe_summary": ""
                             }
                         ],
@@ -208,9 +209,9 @@
                         "language": "und",
                         "field_basic_text_text": [
                             {
-                                "value": "As part of the Madison's open data effort, the Parks department released an inventory of trees by type and location. The inventory has generated a number of maps that detail locations and varieties of the trees located int the city--some clusters have over 400 trees! It's encouraging to see which areas benefit from a rich urban forest, and we can see which areas need more green space. \r\n\r\nTrees are just one part of a much larger picture of quality of life in Madison. As we make more data open, we can draw better conclusions and make better choices. We encourage you explore the Madison Parks department tree inventory. \r\n\r\nThe interactive map below displays the full weight of the number of trees in Madison. It was created with data from Madison Parks department put into the digital mapping tool CartoDB. You can create your own visualizations with digital tools and embed them onto your DKAN site. Click on the different tree varieties to the locations by species.\r\n\r\n<b>Tree varieties</b>: Norway Maple, Green Ash, Honeylocust, Littleleaf Linden, the \"Skyline\" Honeylocust, White Ash, American Basswood, Redmond Linden, Hackberry, Crab Apple and others.\r\n\r\n<b>Data curation</b>: Aaron Couch.\r\n\r\n<b>Original source</b>: <a href=\"https://dkan.cartodb.com/u/dkan-admin/viz/6f588616-d19d-11e4-a931-7054d21a95e5/map\">City of Madison, Parks Department.</a>\r\n<br>\r\n<br>\r\n",
+                                "value": "As part of the Madison's open data effort, the Parks department released an inventory of trees by type and location. The inventory has generated a number of maps that detail locations and varieties of the trees located int the city--some clusters have over 400 trees! It's encouraging to see which areas benefit from a rich urban forest, and we can see which areas need more green space. \r\n\r\nTrees are just one part of a much larger picture of quality of life in Madison. As we make more data open, we can draw better conclusions and make better choices. We encourage you explore the Madison Parks department tree inventory. \r\n\r\nThe interactive map below displays the full weight of the number of trees in Madison. It was created with data from Madison Parks department put into the digital mapping tool CartoDB. You can create your own visualizations with digital tools and embed them onto your DKAN site. Click on the different tree varieties to the locations by species.\r\n\r\n**Tree varieties**: Norway Maple, Green Ash, Honeylocust, Littleleaf Linden, the \"Skyline\" Honeylocust, White Ash, American Basswood, Redmond Linden, Hackberry, Crab Apple and others.\r\n\r\n**Data curation**: Aaron Couch.\r\n\r\n**Original source**: [City of Madison, Parks Department.](https://dkan.cartodb.com/u/dkan-admin/viz/6f588616-d19d-11e4-a931-7054d21a95e5/map)\r\n",
                                 "format": "html",
-                                "safe_value": "<p>As part of the Madison's open data effort, the Parks department released an inventory of trees by type and location. The inventory has generated a number of maps that detail locations and varieties of the trees located int the city--some clusters have over 400 trees! It's encouraging to see which areas benefit from a rich urban forest, and we can see which areas need more green space.</p>\n<p>Trees are just one part of a much larger picture of quality of life in Madison. As we make more data open, we can draw better conclusions and make better choices. We encourage you explore the Madison Parks department tree inventory.</p>\n<p>The interactive map below displays the full weight of the number of trees in Madison. It was created with data from Madison Parks department put into the digital mapping tool CartoDB. You can create your own visualizations with digital tools and embed them onto your DKAN site. Click on the different tree varieties to the locations by species.</p>\n<p>Tree varieties: Norway Maple, Green Ash, Honeylocust, Littleleaf Linden, the \"Skyline\" Honeylocust, White Ash, American Basswood, Redmond Linden, Hackberry, Crab Apple and others.</p>\n<p>Data curation: Aaron Couch.</p>\n<p>Original source: <a href=\"https://dkan.cartodb.com/u/dkan-admin/viz/6f588616-d19d-11e4-a931-7054d21a95e5/map\">City of Madison, Parks Department.</a></p>\n"
+                                "safe_value": "<p>As part of the Madison's open data effort, the Parks department released an inventory of trees by type and location. The inventory has generated a number of maps that detail locations and varieties of the trees located int the city--some clusters have over 400 trees! It's encouraging to see which areas benefit from a rich urban forest, and we can see which areas need more green space.</p>\n<p>Trees are just one part of a much larger picture of quality of life in Madison. As we make more data open, we can draw better conclusions and make better choices. We encourage you explore the Madison Parks department tree inventory.</p>\n<p>The interactive map below displays the full weight of the number of trees in Madison. It was created with data from Madison Parks department put into the digital mapping tool CartoDB. You can create your own visualizations with digital tools and embed them onto your DKAN site. Click on the different tree varieties to the locations by species.</p>\n<p><strong>Tree varieties</strong>: Norway Maple, Green Ash, Honeylocust, Littleleaf Linden, the \"Skyline\" Honeylocust, White Ash, American Basswood, Redmond Linden, Hackberry, Crab Apple and others.</p>\n<p><strong>Data curation</strong>: Aaron Couch.</p>\n<p><strong>Original source</strong>: <a href=\"https://dkan.cartodb.com/u/dkan-admin/viz/6f588616-d19d-11e4-a931-7054d21a95e5/map\">City of Madison, Parks Department.</a></p>\n"
                             }
                         ],
                         "rdf_mapping": []
