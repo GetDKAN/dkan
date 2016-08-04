@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "def1eb64cf11ae68a35dd277ea5c7a10",
-    "content-hash": "5b0b01e369aa2b7b64649e620b03615a",
+    "hash": "1b29f70ad8f759a4bfcaf921175edd0f",
+    "content-hash": "59aec09dd19f47f304d953272a6ca435",
     "packages": [
         {
             "name": "behat/behat",
@@ -17,8 +17,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/ebcc5b4185b340d7908cb487b8beb3fed069d756",
-                "reference": "3da167e77f4d4d6a7b24845146b24f81b20cb580",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/3efb713af889d1c9444ff85f0ed9f4bd0d310066",
+                "reference": "e080d0be50fdeb00ee8df23fb585577ca031a628",
                 "shasum": ""
             },
             "require": {
@@ -909,16 +909,16 @@
         },
         {
             "name": "nucivic/dkanextension",
-            "version": "dev-master",
+            "version": "dev-pod_test",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "ade0dc61347b75b7bff7507739553b15b8ad0390"
+                "reference": "144881fc42c489ed7834c7a903db62d1312dfff9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/ade0dc61347b75b7bff7507739553b15b8ad0390",
-                "reference": "ade0dc61347b75b7bff7507739553b15b8ad0390",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/144881fc42c489ed7834c7a903db62d1312dfff9",
+                "reference": "144881fc42c489ed7834c7a903db62d1312dfff9",
                 "shasum": ""
             },
             "require": {
@@ -946,7 +946,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-07-14 21:22:51"
+            "time": "2016-07-27 14:34:04"
         },
         {
             "name": "psr/http-message",
@@ -1116,12 +1116,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "048dc47e07f92333203c3b7045868bbc864fc40e"
+                "reference": "38711092665edc06ef55e842942fb813932ff4ac"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/config/zipball/048dc47e07f92333203c3b7045868bbc864fc40e",
-                "reference": "048dc47e07f92333203c3b7045868bbc864fc40e",
+                "reference": "38711092665edc06ef55e842942fb813932ff4ac",
                 "shasum": ""
             },
             "require": {
