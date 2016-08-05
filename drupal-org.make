@@ -5,7 +5,7 @@ includes:
 - https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
 - https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make
-- https://raw.githubusercontent.com/NuCivic/dkan_harvest/civic-2686-harvested-datasets/dkan_harvest.make
+- https://raw.githubusercontent.com/NuCivic/dkan_harvest/harvest_dkan_integration/dkan_harvest.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
 - modules/dkan/dkan_topics/dkan_topics.make
 projects:
@@ -66,7 +66,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_harvest.git'
-      branch: civic-2686-harvested-datasets
+      branch: harvest_dkan_integration
     type: module
   admin_menu:
     version: 3.0-rc5

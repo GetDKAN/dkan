@@ -5,6 +5,8 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
+use Behat\Behat\Hook\Scope\BeforeFeatureScope;
+use Behat\Behat\Hook\Scope\AfterFeatureScope;
 
 /**
  * Defines application features from the specific context.
@@ -24,6 +26,29 @@ class HarvestSourceContext extends RawDKANEntityContext {
       'harvest_source'
     );
   }
+
+  /** 
+   * @BeforeFeature
+   */
+  public static function setupFeature(BeforeFeatureScope $scope)
+  {
+    $feature = $scope->getFeature();
+    if($feature->getTitle() == 'Dkan Harvest') {
+      module_enable(array('dkan_harvest_test'));
+    }
+  }
+
+  /** 
+   * @AfterFeature
+   */
+  public static function teardownFeature(AfterFeatureScope $scope)
+  {
+    $feature = $scope->getFeature();
+    if($feature->getTitle() == 'Dkan Harvest') {
+      module_disable(array('dkan_harvest_test'));
+    }
+  }
+
 
   /**
    * Creates harvest sources from a table.
