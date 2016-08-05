@@ -106,8 +106,9 @@ function _alter_search_callback($argument) {
           // Only do this if we are searching topics and a topic path is
           // provided
           if ($key == 'field_topic' && $path[1] == 'field_topic'
-            // and the next argument isn't a term id.
-            && !is_numeric($path[2])) {
+            // and the next argument isn't a term id and there is an additional
+            // query.
+            && isset($path[2]) && !is_numeric($path[2]) && isset($path[3])) {
             unset($path[1]);
             drupal_goto(implode("/",$path));
           }
