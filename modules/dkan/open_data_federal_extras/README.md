@@ -9,17 +9,10 @@ Open Data Federal Agency Extras module. Extends DKAN Dataset to include selected
 
  * Bureau Code
  * Program Code
- * Landing Page
- * Data Standard
  * Data Quality
- * Data Dictionary Type
- * Collection
- * Rights
- * Is Part Of
- * Language
  * primary IT Investment UII
  * System of Records
- * Category
+
 
 ### Requirements
 Requires DKAN Dataset module.
