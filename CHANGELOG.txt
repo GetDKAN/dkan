@@ -20,6 +20,8 @@
 - Page link added to the command center menu.
 - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
 - Moved and renamed the following fields from ODFE to DKAN Core: field_is_part_of, field_data_dictionary_type, field_landing_page, field_pod_theme, field_conforms_to, field_rights, field_language.
+- Added new option on DKAN Dataset Forms to enable POD based validation on Dataset form.
+- Added Open Data Federal Extras module into DKAN Core.
 
 7.x-1.12.5 2016-07-13
 --------------------------
