@@ -3,7 +3,7 @@ core: 7.x
 includes:
 - https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make
 - https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make
-- https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make
+- https://raw.githubusercontent.com/NuCivic/dkan_workflow/update-legend/dkan_workflow.make
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
 - modules/dkan/dkan_topics/dkan_topics.make
@@ -54,7 +54,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_workflow.git
-      branch: 7.x-1.x
+      branch: update-legend
   visualization_entity:
     download:
       type: git
