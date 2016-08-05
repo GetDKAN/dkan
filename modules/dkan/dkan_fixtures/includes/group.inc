@@ -13,6 +13,10 @@ class DkanGroupImport extends MigrateCkanGroupBase {
     }
 
     parent::__construct($arguments);
+
+    // Add field mappings.
+    $this->addFieldMapping('field_image', 'image_display_url');
+    $this->addFieldMapping('field_image:alt', 'field_image_alt');
   }
 
   /**
@@ -22,14 +26,9 @@ class DkanGroupImport extends MigrateCkanGroupBase {
 
     parent::prepareRow($row);
 
-    // Import file for Group image.
-    if (isset($row->image_display_url) && trim ($row->image_display_url)) {
-      if (strpos($row->image_display_url, 'http://') === FALSE && strpos($row->image_display_url, 'https://') === FALSE) {
-        $file_orig_dir = DRUPAL_ROOT . '/' . $this->endpoint;
-        $file = dkan_fixtures_import_file($row->image_display_url, $file_orig_dir);
-        $row->file = $file->fid;
-      }
-    }
+    // Prepare 'field_image' field for field mapping.
+    $row->image_display_url = DRUPAL_ROOT . '/' . $this->endpoint . $row->image_display_url;
+
   }
 
   /**
@@ -41,12 +40,6 @@ class DkanGroupImport extends MigrateCkanGroupBase {
     $node->uid = 1;
     // Set node as published.
     $node->status = NODE_PUBLISHED;
-    // Set group image.
-    $node->field_image[LANGUAGE_NONE][] = array(
-      'fid' => $row->file,
-      'display' => 1,
-      'description' => '',
-    );
     // Set body format.
     $node->body[LANGUAGE_NONE][0]['value_format'] = 'html';
     $node->body[LANGUAGE_NONE][0]['format'] = 'html';
