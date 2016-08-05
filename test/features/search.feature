@@ -11,6 +11,7 @@ Feature: Search
     | name                      | url                                                |
     | Dataset Search            | /search/type/dataset                               |
     | Dataset Results           | /search/type/dataset?query=Dataset%2001            |
+    | Topics Search             | /search/field_topics                               |
     | Not valid type search     | /search/type/notvalid                              |
     | Not valid tags search     | /search/field_tags/notvalid                        |
     | Not valid topics search   | /search/field_topic/notvalid                       |
@@ -28,12 +29,16 @@ Feature: Search
       | Gabriel | Group 01 | administrator member | Active            |
     And "Tags" terms:
       | name         |
-      | something01 |
-      | politics01 |
+      | something01  |
+      | politics01   |
+    And "Topics" terms:
+      | name         |
+      | edumication  |
+      | dazzling     |
     And datasets:
-      | title           | publisher | author  | published | tags         | description |
-      | Test Dataset 01 |           | Gabriel | Yes       | something01 | Test 01     |
-      | Test Dataset 02 | Group 01  | Gabriel | Yes       | politics01  | Test 02     |
+      | title           | publisher | author  | published | tags         | topics      | description |
+      | Test Dataset 01 |           | Gabriel | Yes       | something01  | edumication | Test 01     |
+      | Test Dataset 02 | Group 01  | Gabriel | Yes       | politics01   | dazzling    | Test 02     |
 
   Scenario: Searching datasets
     When I search for "Dataset 01"
@@ -57,6 +62,13 @@ Feature: Search
     When I click "Group 01"
     Then I should not see "Dataset 01"
     But I should see "Dataset 02"
+
+  Scenario: View Topics Search Page
+    Given I am on the "Topics Search" page
+    Then I should see "edumication" in the "filter by topics" region
+    When I click "edumication"
+    Then I should not see "Dataset 02"
+    But I should see "Dataset 01"
 
   Scenario Outline: Forbid XSS injection in search
     Given I am on the "<page>" page
