@@ -61,17 +61,11 @@ Feature: Search
 
   Scenario: View Topics Search Page
     Given I am on the "Topics Search" page
-    Then I should not see "Page not found"
-    Given I search for "Test"
+    Then I should see "something01" in the "filter by topics" region
+    And I should see "politics01" in the "filter by topics" region
     When I click "something01"
-    Then I should not see "Dataset 01"
-    But I should see "Dataset 02"
-    
-  Scenario: Filter by facet group
-    Given I search for "Test"
-    When I click "Group 01"
-    Then I should not see "Dataset 01"
-    But I should see "Dataset 02"
+    Then I should not see "Dataset 02"
+    But I should see "Dataset 01"
 
   Scenario Outline: Forbid XSS injection in search
     Given I am on the "<page>" page
