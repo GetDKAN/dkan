@@ -282,3 +282,17 @@ function dkan_sitewide_module_implements_alter(&$implementations, $hook) {
     $implementations['dkan_sitewide'] = $group;
   }
 }
+
+/**
+ * Implements hook_modules_enabled().
+ */
+function dkan_sitewide_modules_enabled($modules) {
+  // Ensure administer role has all permissions.
+  if (module_enabled('adminrole')) {
+    if ($role = user_role_load_by_name('administrator')) {
+      variable_set('user_admin_role', $role->rid);
+      adminrole_update_permissions();
+    }
+    watchdog('dkan_sitewide', 'Admininistrator role updated with all permissions.', array(), WATCHDOG_INFO);
+  }
+}
