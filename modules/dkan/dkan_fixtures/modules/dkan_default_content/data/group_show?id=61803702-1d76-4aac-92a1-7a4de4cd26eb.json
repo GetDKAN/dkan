@@ -4,6 +4,7 @@
         "id": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
         "image_display_url": "files/group/map.png",
         "title": "Committee on International Affairs",
-        "name": "group/committee-international-affairs"
+        "name": "group/committee-international-affairs",
+        "field_image_alt": "Map Icon"
     }
 }
