@@ -66,8 +66,7 @@ Feature: Search
   Scenario: View Topics Search Page
     Given I am on the "Topics Search" page
     Then I should see "edumication" in the "filter by topics" region
-    And I should see "politics01" in the "filter by topics" region
-    When I click "something01"
+    When I click "edumication"
     Then I should not see "Dataset 02"
     But I should see "Dataset 01"
 
