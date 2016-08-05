@@ -29,12 +29,16 @@ Feature: Search
       | Gabriel | Group 01 | administrator member | Active            |
     And "Tags" terms:
       | name         |
-      | something01 |
-      | politics01 |
+      | something01  |
+      | politics01   |
+    And "Topics" terms:
+      | name         |
+      | edumication  |
+      | dazzling     |
     And datasets:
-      | title           | publisher | author  | published | tags         | description |
-      | Test Dataset 01 |           | Gabriel | Yes       | something01 | Test 01     |
-      | Test Dataset 02 | Group 01  | Gabriel | Yes       | politics01  | Test 02     |
+      | title           | publisher | author  | published | tags         | topics      | description |
+      | Test Dataset 01 |           | Gabriel | Yes       | something01  | edumication | Test 01     |
+      | Test Dataset 02 | Group 01  | Gabriel | Yes       | politics01   | dazzling    | Test 02     |
 
   Scenario: Searching datasets
     When I search for "Dataset 01"
@@ -61,7 +65,7 @@ Feature: Search
 
   Scenario: View Topics Search Page
     Given I am on the "Topics Search" page
-    Then I should see "something01" in the "filter by topics" region
+    Then I should see "edumication" in the "filter by topics" region
     And I should see "politics01" in the "filter by topics" region
     When I click "something01"
     Then I should not see "Dataset 02"
