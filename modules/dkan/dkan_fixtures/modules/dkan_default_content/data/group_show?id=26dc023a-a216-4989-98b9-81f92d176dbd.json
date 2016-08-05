@@ -4,6 +4,7 @@
         "id": "26dc023a-a216-4989-98b9-81f92d176dbd",
         "image_display_url": "files/group/money-saving.png",
         "title": "State Economic Council",
-        "name": "group/state-economic-council"
+        "name": "group/state-economic-council",
+        "field_image_alt": "Piggy Bank Icon"
     }
 }
