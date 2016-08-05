@@ -7,7 +7,6 @@ includes:
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
 - modules/dkan/dkan_topics/dkan_topics.make
-- modules/dkan/open_data_federal_extras/open_data_federal_extras.make
 projects:
   manualcrop:
     version: 1.x-dev
