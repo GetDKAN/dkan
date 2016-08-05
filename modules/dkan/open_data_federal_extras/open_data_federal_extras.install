@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * @file
+ * Installation file for ODFE.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function open_data_federal_extras_install() {
+  // Updates values for field_frequency.
+  open_data_federal_extras_update_field_frequency();
+}
+
+/**
+ *
+ */
+function open_data_federal_extras_disable() {
+  // When this module is enabled a new field dependency is created between
+  // fields_rights and field_public_access_level so we need to delete that
+  // dependency when the module is disabled.
+  $field_rights_info = field_info_instance('node', 'field_rights', 'dataset');
+  $field_public_access_level_info = field_info_instance('node', 'field_public_access_level', 'dataset');
+
+  try {
+    // Search for dependency ID.
+    $result = db_select('conditional_fields', 'cf')
+      ->fields('cf', array('id'))
+      ->condition('dependee', $field_public_access_level_info['id'])
+      ->condition('dependent', $field_rights_info['id'])
+      ->execute();
+    // Delete dependency.
+    conditional_fields_dependency_delete($result->fetchCol());
+
+  } catch (Exception $e) {
+    watchdog('open_data_federal_extras', 'The field_rights dependency could not get removed.', NULL, WATCHDOG_WARNING);
+  }
+}
+
+/**
+ * Sets select list for field_odfe_bureau_code.
+ */
+function open_data_federal_extras_update_7001() {
+  $ret = array();
+  if (!db_table_exists('field_data_field_odfe_bureau_code')) {
+    $out = array(
+      '#abort' => array(
+        'success' => FALSE,
+        'query' => t("The field_odfe_bureau_code table doesn\'t exist yet.)."),
+      ),
+    );
+    return $out;
+  }
+
+  $field_odfe_bureau_code = field_info_field('field_odfe_bureau_code');
+  unset($field_odfe_bureau_code['settings']['allowed_values']);
+  $field_odfe_bureau_code['settings']['allowed_values_function'] = 'field_odfe_bureau_code_allowed_values';
+  field_update_field($field_odfe_bureau_code);
+  return $ret;
+}
+
+/**
+ * Updates existing values to use the colon format rather than dashes.
+ */
+function open_data_federal_extras_update_7002() {
+  // Allowed values have been changed, so change existing values as well
+  $sql = "UPDATE field_data_field_odfe_program_code
+          SET field_odfe_program_code_value = REPLACE(field_odfe_program_code_value, '-', ':')";
+  $result = db_query($sql);
+  $sql = "UPDATE field_revision_field_odfe_program_code
+          SET field_odfe_program_code_value = REPLACE(field_odfe_program_code_value, '-', ':')";
+  $result = db_query($sql);
+  $sql = "UPDATE field_data_field_odfe_bureau_code
+          SET field_odfe_bureau_code_value = REPLACE(field_odfe_bureau_code_value, '-', ':')";
+  $result = db_query($sql);
+  $sql = "UPDATE field_revision_field_odfe_bureau_code
+          SET field_odfe_bureau_code_value = REPLACE(field_odfe_bureau_code_value, '-', ':')";
+  $result = db_query($sql);
+}
+
+/**
+ * Updates values for field_frequency.
+ */
+function open_data_federal_extras_update_7003() {
+  open_data_federal_extras_update_field_frequency();
+}

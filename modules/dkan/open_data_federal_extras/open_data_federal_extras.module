@@ -1,0 +1,176 @@
+<?php
+/**
+ * @file
+ * Code for the Open Data Federal Agency Extras feature.
+ */
+
+include_once 'open_data_federal_extras.features.inc';
+
+/**
+ * @file
+ * Extends DKAN Dataset to include Federal level compliance items.
+ */
+
+/**
+ * Implements allowed_values_function for field_odfe_bureau_code.
+ */
+function field_odfe_program_code_allowed_values() {
+  include 'fed_program_code_list/federal_inventory_list.php';
+  return $federal_inventory_small_list;
+}
+
+/**
+ * Implements allowed_values_function for field_odfe_bureau_code.
+ */
+function field_odfe_bureau_code_allowed_values() {
+  include 'fed_bureau_code_list/omb-agency-bureau-treasury-codes.php';
+  return $bureau_codes;
+}
+/**
+ * Implements hook_menu().
+ */
+function open_data_federal_extras_menu() {
+  $items = array();
+
+  // Put your menu items here.
+  $items['admin/dkan/bureu_agency'] = array(
+    'title' => 'Selected Agency',
+    'description' => 'Select an agency to limit form choices.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_data_federal_extras_agency_form'),
+    'access arguments' => array('administer site configuration'),
+  );
+
+  return $items;
+}
+
+/**
+ * Callback for selected agency form.
+ */
+function open_data_federal_extras_agency_form($form, $form_state) {
+  $form = array();
+  $path = drupal_get_path('module', 'open_data_federal_extras');
+  include $path . '/fed_program_code_list/federal_inventory_agencies.php';
+  $options = array('' => t('All agencies')) + $federal_inventory_agency_list;
+  $form['open_data_federal_extras_agency'] = array(
+    '#type' => 'select',
+    '#title' => t('Select an Agency.'),
+    '#options' => $options,
+    '#description' => t('Select an agency to be used for the Bureau Code field on the Dataset node.'),
+    '#default_value' => variable_get('open_data_federal_extras_agency', ''),
+  );
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function open_data_federal_extras_form_alter(&$form, $form_state, $form_id) {
+  switch ($form_id) {
+    case 'dataset_node_form':
+      if ($agency_code = variable_get('open_data_federal_extras_agency')) {
+        $path = drupal_get_path('module', 'open_data_federal_extras');
+        include $path . '/fed_program_code_list/federal_inventory_agencies.php';
+        $options = $form['field_odfe_bureau_code']['und']['#options'];
+        $concat_options = array('_none' => $options['_none']);
+        foreach ($options as $key => $value) {
+          $pattern = '/^' . $agency_code . '\:[\d]/';
+          if (preg_match($pattern, $key)) {
+            $agency_name = $federal_inventory_agency_list[$agency_code];
+            $value = str_replace($agency_name . ' - ', ' ', $value);
+            $concat_options[$key] = $value;
+          }
+        }
+        $form['field_odfe_bureau_code']['und']['#options'] = $concat_options;
+
+        $options = $form['field_odfe_program_code']['und']['#options'];
+        $concat_options = array();
+        foreach ($options as $key => $value) {
+          $pattern = '/^' . $agency_code . '\:[\d]/';
+          if (preg_match($pattern, $key)) {
+            $agency_name = $federal_inventory_agency_list[$agency_code];
+            $value = str_replace($agency_name . ' - ', ' ', $value);
+            $concat_options[$key] = $value;
+          }
+        }
+        $form['field_odfe_program_code']['und']['#options'] = $concat_options;
+      }
+
+      break;
+  }
+}
+
+/**
+ * Provides ISO Frequency values.
+ *
+ * See: https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
+ */
+function open_data_federal_extras_iso_frequency() {
+  return  array(
+    "R/P10Y" => "Decennial - R/P10Y",
+    "R/P4Y" => "Quadrennial -  R/P4Y",
+    "R/P1Y" => "Annual - R/P1Y",
+    "R/P2M " => "Bimonthly - R/P2M",
+    "R/P0.5M" => "Bimonthly - R/P0.5M",
+    "R/P3.5D" => "Semiweekly - R/P3.5D",
+    "R/P1D" => "Daily - R/P1D",
+    "R/P0.5W" => "Biweekly - R/P0.5W",
+    "R/P2W" => "Biweekly - R/P2W",
+    "R/P6M" => "Semiannual - R/P6M",
+    "R/P2Y" => "Biennial - R/P2Y",
+    "R/P3Y" => "Triennial - R/P3Y",
+    "R/P0.33W" => "Three times a week - R/P0.33W",
+    "R/P0.33M" => "Three times a month - R/P0.33M",
+    "R/PT1S" => "Continuously updated - R/PT1S",
+    "R/P1M" => "Monthly - R/P1M",
+    "R/P3M" => "Quarterly - R/P3M",
+    "R/P0.5M" => "Semimonthly - R/P0.5M",
+    "R/P4M" => "Three times a year - R/P4M",
+    "R/P1W" => "Weekly - R/P1W",
+  );
+}
+
+/**
+ * Adds ISO Frequency values to field_frequency.
+ */
+function open_data_federal_extras_update_field_frequency() {
+  $info = field_info_field('field_frequency');
+  $current_values = &$info['settings']['allowed_values'];
+  if (!array_key_exists("R/P6M", $current_values)) {
+    $iso_values = open_data_federal_extras_iso_frequency();
+    $current_values = $current_values + $iso_values;
+    field_update_field($info);
+    db_change_field('field_data_field_frequency', 'field_frequency_value', 'field_frequency_value',
+      array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+    ));
+    db_change_field('field_revision_field_frequency', 'field_frequency_value', 'field_frequency_value',
+      array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+    ));
+  }
+}
+
+/**
+ * Implements hook_field_default_field_bases_alter().
+ */
+function open_data_federal_extras_field_default_field_bases_alter(&$fields) {
+  // Captures changes to field_frequency defined in dkan_dataset_content_types.
+  if (isset($fields['field_frequency'])) {
+    $fields['field_frequency']['type'] = 'list_text';
+    $old_values = array(
+      0 => 'Daily',
+      1 => 'Weekly',
+      2 => 'Monthly',
+      3 => 'Annually',
+      4 => 'Continuously',
+      5 => 'Irregularly',
+    );
+    $fields['field_frequency']['settings']['allowed_values'] = $old_values + open_data_federal_extras_iso_frequency();
+  }
+}
+
