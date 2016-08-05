@@ -44,6 +44,7 @@ a {
     color: #23527c;
     text-decoration: underline; }
   a:focus {
+    outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
 
@@ -1256,6 +1257,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px; }
 
@@ -1763,6 +1765,7 @@ select[multiple].input-lg,
   -ms-user-select: none;
   user-select: none; }
   .btn:focus, .media-widget > a:focus, .btn.focus, .media-widget > a.focus, .btn:active:focus, .media-widget > a:active:focus, .btn:active.focus, .media-widget > a:active.focus, .btn.active:focus, .media-widget > a.active:focus, .btn.active.focus, .media-widget > a.active.focus {
+    outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
   .btn:hover, .media-widget > a:hover, .btn:focus, .media-widget > a:focus, .btn.focus, .media-widget > a.focus {

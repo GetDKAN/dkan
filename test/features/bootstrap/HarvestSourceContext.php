@@ -4,6 +4,9 @@ use Drupal\DKANExtension\Context\RawDKANEntityContext;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Behat\Hook\Scope\AfterScenarioScope;
+use Behat\Behat\Hook\Scope\BeforeFeatureScope;
+use Behat\Behat\Hook\Scope\AfterFeatureScope;
 
 /**
  * Defines application features from the specific context.
@@ -24,6 +27,29 @@ class HarvestSourceContext extends RawDKANEntityContext {
     );
   }
 
+  /** 
+   * @BeforeFeature
+   */
+  public static function setupFeature(BeforeFeatureScope $scope)
+  {
+    $feature = $scope->getFeature();
+    if($feature->getTitle() == 'Dkan Harvest') {
+      module_enable(array('dkan_harvest_test'));
+    }
+  }
+
+  /** 
+   * @AfterFeature
+   */
+  public static function teardownFeature(AfterFeatureScope $scope)
+  {
+    $feature = $scope->getFeature();
+    if($feature->getTitle() == 'Dkan Harvest') {
+      module_disable(array('dkan_harvest_test'));
+    }
+  }
+
+
   /**
    * Creates harvest sources from a table.
    *
@@ -43,7 +69,7 @@ class HarvestSourceContext extends RawDKANEntityContext {
    * @throw \Exception
    */
   public function theHarvestSourceIsHarvested($machine_name) {
-    $harvest_source = HarvestSource::getSourceByMachineName($machine_name);
+    $harvest_source = new HarvestSource($machine_name);
     if (!$harvest_source) {
       throw new \Exception("Harvest source '$machine_name' not found.");
     }
@@ -67,45 +93,17 @@ class HarvestSourceContext extends RawDKANEntityContext {
   }
 
   /**
-   * Retrieve a table row containing specified text from a given element.
-   *
-   * @Given I should see a harvest event log table
-   *
-   * @return \Behat\Mink\Element\NodeElement
-   *
-   * @throws \Exception
-   */
-  public function assertHarvestEventLogTable() {
-    $page = $this->getSession()->getPage();
-    $table = $page->findAll('css', 'table.harvest-event-log');
-    if (empty($table)) {
-      throw new \Exception(sprintf('No Harvest Event Log table found on the page %s', $this->getSession()->getCurrentUrl()));
-    }
-
-// The current use case
-    return array_pop($table);
-  }
-
-  /**
-   * Check on the number of rows a harvest event log should have.
-   *
-   * @Then the harvest event log table should have :number row(s)
-   *
-   * @throws \Exception
-   */
-  public function assertHarvestEventLogTableRowNumber($number) {
-    if (!is_numeric($number)) {
-      throw new \Exception(sprintf('Expected "number" to be numeric'));
-    }
-
-    $table = $this->assertHarvestEventLogTable();
-    $rows = $table->findAll('css', 'tr');
-
-    // The first row is for the header. bump.
-    array_pop($rows);
-
-    if (count($rows) != $number) {
-          throw new \Exception(sprintf('Found %s rows in the harvest event log table instead of the expected %s.', count($rows), $number));
+  * @AfterScenario @harvest_rollback
+  */
+  public function harvestRollback(AfterScenarioScope $event)
+  {
+    $migrations = migrate_migrations();
+    $harvest_migrations = array();
+    foreach ($migrations as $name => $migration) {
+      if(strpos($name , 'dkan_harvest') === 0) {
+        $migration = Migration::getInstance($name);
+        $migration->processRollback();
+      }
     }
   }
 }
