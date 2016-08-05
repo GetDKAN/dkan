@@ -89,14 +89,29 @@ function _alter_search_callback($argument) {
     if (count($in_array)) {
       foreach ($in_array as $i) {
         // Check if a value is provided after the mark.
-        if (!isset($path[$i+1])) {
-          return drupal_not_found();
+        // Topics page is special. If no term is provided carry on.
+        if ($key == 'field_topic' && !isset($path[$i+1])) {
+          return page_manager_page_execute($argument);
         }
         $term = $path[$i+1];
         $term = explode('-', $term);
         $last = array_pop($term);
         // Check if last element is a term id.
         if (!is_numeric($last)) {
+          // Topics page is special. It can be accessed without an argurment.
+          // If it has been accessed via '/search/field_topic' that URL will be
+          // prepended to the actual search. We want to remove field_topic if
+          // that is the case because it will not yield a valid search result.
+          //
+          // Only do this if we are searching topics and a topic path is
+          // provided
+          if ($key == 'field_topic' && $path[1] == 'field_topic'
+            // and the next argument isn't a term id and there is an additional
+            // query.
+            && isset($path[2]) && !is_numeric($path[2]) && isset($path[3])) {
+            unset($path[1]);
+            drupal_goto(implode("/",$path));
+          }
           return drupal_not_found();
         }
         $term = array(implode('_', $term), $last);
