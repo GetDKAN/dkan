@@ -5,7 +5,7 @@
         "type": "page",
         "title": "About",
         "created": "1467686276",
-        "changed": "1468010882",
+        "changed": "1469821631",
         "body": [],
         "panelizer": {
             "panels_display": {
@@ -140,7 +140,7 @@
                 {
                     "panel": "column1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:81ba5024-610a-4fed-bd19-c39e02c011af",
+                    "subtype": "current:128",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -168,9 +168,9 @@
                         "language": "und",
                         "field_basic_text_text": [
                             {
-                                "value": "<center><img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/ncd.gif\"></center>",
+                                "value": "<center><img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/ncd.gif\" alt=\"Computer screen with DKAN installation\"></center>",
                                 "format": "html",
-                                "safe_value": "</p>\n<p><center><img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/ncd.gif\" /></center></p>\n"
+                                "safe_value": "</p>\n<p><center><img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/ncd.gif\" alt=\"Computer screen with DKAN installation\" /></center></p>\n"
                             }
                         ],
                         "rdf_mapping": []
