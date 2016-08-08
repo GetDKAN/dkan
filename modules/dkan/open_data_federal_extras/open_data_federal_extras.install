@@ -6,31 +6,6 @@
  */
 
 /**
- *
- */
-function open_data_federal_extras_disable() {
-  // When this module is enabled a new field dependency is created between
-  // fields_rights and field_public_access_level so we need to delete that
-  // dependency when the module is disabled.
-  $field_rights_info = field_info_instance('node', 'field_rights', 'dataset');
-  $field_public_access_level_info = field_info_instance('node', 'field_public_access_level', 'dataset');
-
-  try {
-    // Search for dependency ID.
-    $result = db_select('conditional_fields', 'cf')
-      ->fields('cf', array('id'))
-      ->condition('dependee', $field_public_access_level_info['id'])
-      ->condition('dependent', $field_rights_info['id'])
-      ->execute();
-    // Delete dependency.
-    conditional_fields_dependency_delete($result->fetchCol());
-
-  } catch (Exception $e) {
-    watchdog('open_data_federal_extras', 'The field_rights dependency could not get removed.', NULL, WATCHDOG_WARNING);
-  }
-}
-
-/**
  * Sets select list for field_odfe_bureau_code.
  */
 function open_data_federal_extras_update_7001() {
