@@ -12,6 +12,7 @@ Feature: Search
     | Dataset Search            | /search/type/dataset                               |
     | Dataset Results           | /search/type/dataset?query=Dataset%2001            |
     | Topics Search             | /search/field_topics                               |
+    | Topics Redirect           | /topics                                            |
     | Not valid type search     | /search/type/notvalid                              |
     | Not valid tags search     | /search/field_tags/notvalid                        |
     | Not valid topics search   | /search/field_topic/notvalid                       |
@@ -69,6 +70,11 @@ Feature: Search
     When I click "edumication"
     Then I should not see "Dataset 02"
     But I should see "Dataset 01"
+
+  Scenario: Topics redirect
+    Given I visit "topics"
+    Then I should see "Search"
+    And I should not see "Page not found"
 
   Scenario Outline: Forbid XSS injection in search
     Given I am on the "<page>" page
