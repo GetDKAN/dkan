@@ -5,7 +5,7 @@
         "type": "data_dashboard",
         "title": "State Workforce and Retirement Statistics",
         "created": "1459965181",
-        "changed": "1468373874",
+        "changed": "1468373606",
         "body": {
             "und": [
                 {
@@ -92,9 +92,9 @@
                         "language": "und",
                         "field_basic_text_text": [
                             {
-                                "value": "As our state workforce grows older the overall demographics are shifting. Workers over the age of 65 and \"Baby Boomers\" are aging out, while Gen-Xers and Millennials are aging in. The changes in employee makeup have implications for how businesses (including government) adapt to new trends as well as short-term considerations like policy and budgeting for retirement and pension costs. The charts below show how the state workforce has changed over fiscal years 2011-2015, which will inform how we plan for the years ahead. \n\n<br>\n<center><font size=\"5\">[Go to Dataset](http://default-content.dkandemo.nuamsdev.com/dataset/state-workforce-generation-2011-2015)</center></font>\n",
+                                "value": "As our state workforce grows older the overall demographics are shifting. Workers over the age of 65 and \"Baby Boomers\" are aging out, while Gen-Xers and Millennials are aging in. The changes in employee makeup have implications for how businesses (including government) adapt to new trends as well as short-term considerations like policy and budgeting for retirement and pension costs. The charts below show how the state workforce has changed over fiscal years 2011-2015, which will inform how we plan for the years ahead. \r\n\r\n<center>[Go to Dataset](dataset/state-workforce-generation-2011-2015)</center>\r\n",
                                 "format": "html",
-                                "safe_value": "<p>As our state workforce grows older the overall demographics are shifting. Workers over the age of 65 and \"Baby Boomers\" are aging out, while Gen-Xers and Millennials are aging in. The changes in employee makeup have implications for how businesses (including government) adapt to new trends as well as short-term considerations like policy and budgeting for retirement and pension costs. The charts below show how the state workforce has changed over fiscal years 2011-2015, which will inform how we plan for the years ahead.</p>\n<p></p>\n<p><center><a href=\"http://default-content.dkandemo.nuamsdev.com/dataset/state-workforce-generation-2011-2015\">Go to Dataset</a></center></p>\n"
+                                "safe_value": "<p>As our state workforce grows older the overall demographics are shifting. Workers over the age of 65 and \"Baby Boomers\" are aging out, while Gen-Xers and Millennials are aging in. The changes in employee makeup have implications for how businesses (including government) adapt to new trends as well as short-term considerations like policy and budgeting for retirement and pension costs. The charts below show how the state workforce has changed over fiscal years 2011-2015, which will inform how we plan for the years ahead.</p>\n</p>\n<p><center><a href=\"dataset/state-workforce-generation-2011-2015\">Go to Dataset</a></center></p>\n"
                             }
                         ],
                         "rdf_mapping": []
@@ -475,7 +475,7 @@
                     "extras": [],
                     "position": "5",
                     "locks": [],
-                    "uuid": "cf30cfd9-3a4e-4fb3-a765-fb4acc119a56"
+                    "uuid": "ed8bd655-a2b2-4399-8166-a60f9c5534df"
                 }
             ],
             "panelizer_entity": {

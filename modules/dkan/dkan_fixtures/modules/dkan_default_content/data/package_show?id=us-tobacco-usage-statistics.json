@@ -12,9 +12,9 @@
         "url": "http://default/dataset/us-tobacco-usage-statistics",
         "state": "Active",
         "private": "Published",
-        "revision_timestamp": "Thu, 07/07/2016 - 11:48",
+        "revision_timestamp": "Mon, 08/01/2016 - 21:16",
         "metadata_created": "Sun, 04/10/2016 - 23:11",
-        "metadata_modified": "Thu, 07/07/2016 - 11:48",
+        "metadata_modified": "Mon, 08/01/2016 - 21:16",
         "creator_user_id": "24eb1825-a538-499e-83c0-9559ef9fd38e",
         "type": "Dataset",
         "resources": [
@@ -25,13 +25,13 @@
                 "description": "<p>Source: The Campaign for Tobacco-Free Kids, April 2016: <a href=\"https://www.tobaccofreekids.org/research/factsheets/pdf/0097.pdf\">https://www.tobaccofreekids.org/research/factsheets/pdf/0097.pdf</a></p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/13/2016 - 14:49",
+                "revision_timestamp": "Mon, 08/01/2016 - 21:16",
                 "name": "Tobacco Taxation by State as of April 2016",
                 "mimetype": "text/csv",
                 "size": "970 bytes",
                 "created": "Sun, 04/10/2016 - 23:20",
                 "resource_group_id": "55261028-f4b2-4402-9a30-640781ad1b59",
-                "last_modified": "Date changed\tFri, 05/13/2016 - 14:49"
+                "last_modified": "Date changed\tMon, 08/01/2016 - 21:16"
             },
             {
                 "id": "02708727-2f2b-4567-a53f-c669c4e3b267",
@@ -40,13 +40,13 @@
                 "description": "<p>Source: Centers for Disease Control and Prevention, 2015</p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Fri, 05/13/2016 - 14:49",
+                "revision_timestamp": "Mon, 08/01/2016 - 21:17",
                 "name": "U.S. Adult Smoking Rate",
                 "mimetype": "text/csv",
                 "size": "1.99 KB",
                 "created": "Mon, 04/11/2016 - 09:47",
                 "resource_group_id": "55261028-f4b2-4402-9a30-640781ad1b59",
-                "last_modified": "Date changed\tFri, 05/13/2016 - 14:49"
+                "last_modified": "Date changed\tMon, 08/01/2016 - 21:17"
             }
         ],
         "tags": [

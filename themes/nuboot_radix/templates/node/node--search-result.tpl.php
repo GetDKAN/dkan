@@ -11,7 +11,7 @@
     ?>
   </div>
   <div class="col-md-10 col-lg-11 col-xs-10 search-result search-result-<?php print $type ?>">
-    <h2 class="node-title"><a href="/<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
+    <h2 class="node-title"><a href="<?php print url($node_url) ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
     <?php if(!empty($group_list)): ?>
       <div class="group-membership"><?php print $group_list ?></div>
     <?php endif; ?>
