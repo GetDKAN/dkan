@@ -68,6 +68,25 @@ Feature: Site managers administer groups
     And I should see the heading "My group"
     And I should see "This is a body"
 
+  Scenario: Create group with previous same title
+    Given I am logged in as "John"
+    And I am on "Groups" page
+    And I follow "Add Group"
+    When I fill in the following:
+      | Title         | My group       |
+      | Description   | This is a body |
+    And I press "Save"
+    Then I should see the success message "Group My group has been created"
+    And I should see the heading "My group"
+    And I should see "This is a body"
+    Then I am on "Groups" page
+    And I follow "Add Group"
+    When I fill in the following:
+      | Title         | My group       |
+      | Description   | This is a body |
+    And I press "Save"
+    Then I should see "A group with title My group exists on the site. Please use another title."
+
   Scenario: Add a group member on any group
     Given I am logged in as "John"
     And I am on "Group 02" page
