@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+- Fixes to groups UX: Group body field now labeled "Description," longer group descriptions do not get cut off after 200 characters on group page, and extraneous "about" tab on Group node edit form removed
 - Add new "modified date" field, hidden in form, to datasets. This is for dkan_harvest compatibility; saves sources dates into a separate field so they aren't affected by node changes. ODSM mappings also updated.
 - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
 - Fixes typo in "add data story" link in command center menu
@@ -19,6 +20,7 @@
 - Page content type added to panelizer and now defined in features, with in-place editor enabled for page content.
 - Page link added to the command center menu.
 - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
+- Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
 
 7.x-1.12.5 2016-07-13
 --------------------------
