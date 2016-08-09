@@ -10,6 +10,7 @@ Feature: Data Stories
       | DKAN Data Story Test Story Post | Jaz         | 1        |
       | Unpublished Test Story Post     | Jaz         | 1        |
 
+  @customizable
   Scenario: Menu Item
     Given I am on the homepage
     Then I should see "Stories"
