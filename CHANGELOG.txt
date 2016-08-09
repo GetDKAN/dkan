@@ -25,6 +25,7 @@
 - Added hook update to migrate the content from field_odfe_category to field_pod_theme on Datasets.
 - Added new option on DKAN Dataset Forms to enable POD based validation on Dataset form.
 - Added Open Data Federal Extras module into DKAN Core.
+- Upgraded contitional_fields module.
 
 7.x-1.12.5 2016-07-13
 --------------------------
