@@ -44,6 +44,7 @@ a {
     color: #23527c;
     text-decoration: underline; }
   a:focus {
+    outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
 
@@ -1256,6 +1257,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px; }
 
@@ -1763,6 +1765,7 @@ select[multiple].input-lg,
   -ms-user-select: none;
   user-select: none; }
   .btn:focus, .media-widget > a:focus, .btn.focus, .media-widget > a.focus, .btn:active:focus, .media-widget > a:active:focus, .btn:active.focus, .media-widget > a:active.focus, .btn.active:focus, .media-widget > a.active:focus, .btn.active.focus, .media-widget > a.active.focus {
+    outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
   .btn:hover, .media-widget > a:hover, .btn:focus, .media-widget > a:focus, .btn.focus, .media-widget > a.focus {
@@ -9200,6 +9203,16 @@ div.horizontal-tabs {
 
 #body-add-more-wrapper .panel-body {
   padding: 0; }
+
+.node-dataset-form .form-item.has-error div.autocomplete-deluxe-container,
+.node-dataset-form .form-item.has-error div.chosen-container {
+  border: 2px solid red; }
+  .node-dataset-form .form-item.has-error div.autocomplete-deluxe-container .chosen-single,
+  .node-dataset-form .form-item.has-error div.chosen-container .chosen-single {
+    border: none; }
+
+.node-dataset-form .form-item .error .chosen-single {
+  line-height: 24px; }
 
 .node-dataset-form .field-name-field-format label,
 .node-resource-form .field-name-field-format label {

@@ -207,6 +207,20 @@ div.horizontal-tabs {
   }
 }
 
+.node-dataset-form .form-item.has-error {
+  div.autocomplete-deluxe-container,
+  div.chosen-container {
+    border: 2px solid red;
+    .chosen-single {
+      border: none;
+    }
+  }
+}
+
+.node-dataset-form .form-item .error .chosen-single {
+  line-height: 24px;
+}
+
 .node-dataset-form,
 .node-resource-form {
   .field-name-field-format label {
