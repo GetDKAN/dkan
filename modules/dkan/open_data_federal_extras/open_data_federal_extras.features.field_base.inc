@@ -35,7 +35,7 @@ function open_data_federal_extras_field_default_field_bases() {
   // Exported field_base: 'field_odfe_data_quality'.
   $field_bases['field_odfe_data_quality'] = array(
     'active' => 1,
-    'cardinality' => 1,
+    'cardinality' => -1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_odfe_data_quality',
@@ -48,8 +48,8 @@ function open_data_federal_extras_field_default_field_bases() {
     'module' => 'list',
     'settings' => array(
       'allowed_values' => array(
-        'true' => 'TRUE',
-        'false' => 'FALSE',
+        'true' => 'Meets agency’s Information Quality Guidelines',
+        'false' => 'False',
       ),
       'allowed_values_function' => '',
     ),

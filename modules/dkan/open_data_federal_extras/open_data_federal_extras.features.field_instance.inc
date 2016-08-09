@@ -60,7 +60,7 @@ function open_data_federal_extras_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Indicates whether a dataset conforms to the agency’s information quality guidelines.',
+    'description' => '',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -95,7 +95,7 @@ function open_data_federal_extras_field_default_field_instances() {
       'settings' => array(
         'apply_chosen' => 1,
       ),
-      'type' => 'options_select',
+      'type' => 'options_buttons',
       'weight' => 30,
     ),
   );
@@ -259,7 +259,6 @@ function open_data_federal_extras_field_default_field_instances() {
   t('Adds Project Open Data\'s <a href="https://project-open-data.cio.gov/v1.1/schema/#programCode">Program Code</a>.');
   t('Bureau Code');
   t('Data Quality');
-  t('Indicates whether a dataset conforms to the agency’s information quality guidelines.');
   t('Program Code');
   t('System of Records');
   t('This field should a URL to the System of Records Notice (SORN) that relates to the dataset, specifically from FederalRegister.gov.');
