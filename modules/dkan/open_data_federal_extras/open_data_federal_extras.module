@@ -96,6 +96,8 @@ function open_data_federal_extras_form_alter(&$form, $form_state, $form_id) {
         $form['field_odfe_program_code']['und']['#options'] = $concat_options;
       }
 
+      // Override text displayed for 'true' option on Data Quality field.
+      $form['field_odfe_data_quality']['und']['#options']['true'] = 'Meets agency’s Information Quality Guidelines';
       // Hide the 'false' option on the Data Quality field.
       unset($form['field_odfe_data_quality']['und']['#options']['false']);
 
@@ -108,11 +110,8 @@ function open_data_federal_extras_form_alter(&$form, $form_state, $form_id) {
  */
 function open_data_federal_extras_preprocess_field(&$vars) {
   if($vars['element']['#field_name'] == 'field_odfe_data_quality') {
-    // If the selected Data Quality option is true, change the markup to just read 'True'.
-    if($vars['items'][0]['#markup'] == 'Meets agency’s Information Quality Guidelines') {
-      $vars['items'][0]['#markup'] = 'True';
-    }
-    return;
+    // Display 'True/False' instead of 'true/false'.
+    $vars['items'][0]['#markup'] = ucwords($vars['items'][0]['#markup']);
   }
 }
 

@@ -48,8 +48,8 @@ function open_data_federal_extras_field_default_field_bases() {
     'module' => 'list',
     'settings' => array(
       'allowed_values' => array(
-        'true' => 'Meets agency’s Information Quality Guidelines',
-        'false' => 'False',
+        'true' => 'true',
+        'false' => 'false',
       ),
       'allowed_values_function' => '',
     ),
