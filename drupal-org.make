@@ -68,6 +68,7 @@ projects:
       url: 'https://github.com/NuCivic/dkan_harvest.git'
       branch: harvest_dkan_integration
     type: module
+    subdir: dkan
   admin_menu:
     version: 3.0-rc5
   bueditor:
@@ -173,6 +174,7 @@ projects:
       type: git
       url: 'https://github.com/NuCivic/dkan_migrate_base.git'
       branch: 7.x-1.x
+    subdir: dkan
 libraries:
   jquery.imagesloaded:
     download:
