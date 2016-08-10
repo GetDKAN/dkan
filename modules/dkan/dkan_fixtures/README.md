@@ -1,4 +1,4 @@
-## DKAN Fixtures
+# DKAN Fixtures
 
 _Fixtures_ are a programming concept for default data that is included with application code for testing or other purposes. The data is provided in a structured format like XML or JSON, and imported into the database as part of a build process.
 
