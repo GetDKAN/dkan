@@ -260,10 +260,18 @@ function nuboot_radix_file_widget($variables) {
  * assets/stylesheets/dkan-topics.css
  */
 function nuboot_radix_facet_icons($variables) {
+   // Filter for values that are allowed for machine names of content types.
+  $attributes = (isset($variables['attributes']))? $variables['attributes'] : array();
+  // Uses same regex for content type validation.
+  $variables['type'] = trim(preg_replace("/[^a-zA-Z0-9_]+/", " ", $variables['type']));
+  // Reject if original input wasn't valid machine name for a content type.
+  if (strrpos($variables['type'], ' ')) {
+    $variables['type'] = '';
+  }
   // Icon styles variables.
   $attributes = (isset($variables['attributes']))? $variables['attributes'] : array();
   $classes = (isset($variables['class']))? $variables['class'] : array();
-  $classes[] = 'icon-dkan-' .  $variables['type'];
+  $classes[] = 'icon-dkan-' .  check_plain($variables['type']);
   $classes = implode(' ', $classes);
   return '<span class="icon-dkan ' . $classes . '" '. drupal_attributes($attributes) .'></span>';
 }
