@@ -26,6 +26,7 @@
 - Added new option on DKAN Dataset Forms to enable POD based validation on Dataset form.
 - Added Open Data Federal Extras module into DKAN Core.
 - Upgraded contitional_fields module.
+- Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
 
 7.x-1.12.5 2016-07-13
 --------------------------
