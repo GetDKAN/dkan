@@ -54,15 +54,17 @@ Feature: Search
     And I should see "2 results"
 
   Scenario: Filter by facet tag
-    Given I search for "Test"
-    When I click "politics01"
-    Then I should not see "Dataset 01"
+    Given I am on the "Dataset Search" page
+    When I search for "Test"
+    Then I click "politics01"
+    And I should not see "Dataset 01"
     But I should see "Dataset 02"
 
   Scenario: Filter by facet group
-    Given I search for "Test"
-    When I click "Group 01"
-    Then I should not see "Dataset 01"
+    Given I am on the "Dataset Search" page
+    When I search for "Test"
+    Then I click "Group 01"
+    And I should not see "Dataset 01"
     But I should see "Dataset 02"
 
   Scenario: View Topics Search Page
