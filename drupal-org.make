@@ -2,9 +2,9 @@ api: '2'
 core: 7.x
 includes:
     # DKAN Dataset
-  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/dev-integration/dkan_dataset.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
     # DKAN Datastore
-  - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/dev-integration/dkan_datastore.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
     # DKAN Workflow
   - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
     # Visualization Entity
@@ -44,13 +44,13 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_dataset.git'
-      branch: dev-integration
+      branch: 7.x-1.x
   dkan_datastore:
     subdir: dkan
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_datastore.git'
-      branch: dev-integration
+      branch: 7.x-1.x
   dkan_workflow:
     subdir: dkan
     download:
