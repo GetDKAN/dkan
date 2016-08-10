@@ -19,6 +19,7 @@ dependencies[] = google_fonts_api
 dependencies[] = markdown
 dependencies[] = module_filter
 dependencies[] = restws
+dependencies[] = roleassign
 dependencies[] = strongarm
 dependencies[] = text
 features[ctools][] = strongarm:strongarm:1
