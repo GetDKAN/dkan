@@ -56,8 +56,6 @@ function dkan_permissions_default_roles_permissions() {
       'administer panelizer node data_dashboard layout' => TRUE,
       'administer panelizer node dkan_data_story content' => TRUE,
       'administer panelizer node dkan_data_story layout' => TRUE,
-      'administer panelizer node page content' => TRUE,
-      'administer panelizer node page layout' => TRUE,
       'change layouts in place editing' => TRUE,
       'change own username' => TRUE,
       'clear dkan_file feeds' => TRUE,
