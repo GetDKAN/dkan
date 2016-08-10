@@ -33,7 +33,7 @@
         ?>
       </p>
     </div>
-    <a href="<?php print $node_url ?>" class="btn btn-primary"><?php print count($datasets) ?> datasets</a>
+    <a href="<?php print url($node_url) ?>" class="btn btn-primary"><?php print count($datasets) ?> datasets</a>
   </article>
 
 <?php else: ?>
@@ -43,7 +43,7 @@
     <header>
       <?php print render($title_prefix); ?>
       <?php if (!$page && !empty($title)): ?>
-      <h2<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
+      <h2<?php print $title_attributes; ?>><a href="<?php print url($node_url); ?>"><?php print $title; ?></a></h2>
       <?php endif; ?>
       <?php print render($title_suffix); ?>
       <?php if ($display_submitted): ?>
