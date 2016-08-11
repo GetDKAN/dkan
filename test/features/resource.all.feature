@@ -2,6 +2,9 @@
 Feature: Resource
 
   Background:
+    Given pages:
+      | name          | url         |
+      | Content       | /node/add   |
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
@@ -150,3 +153,14 @@ Feature: Resource
     When I press "Open With"
     Then I should see the local preview link
     And I should see "CartoDB"
+
+  @api @javascript @noworkflow
+  Scenario: Preview excel files
+    Given I am logged in as "Katie"
+    And I am on the "Content" page
+    And I click "Resource"
+    When I fill in "Title" with "Resource 07"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/last_transactions.xlsx"
+    And I press "Save"
+    Then I should see "Resource Resource 07 has been created"
+    And I wait for "Fecha"
