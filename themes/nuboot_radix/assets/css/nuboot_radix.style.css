@@ -9204,6 +9204,12 @@ div.horizontal-tabs {
 #body-add-more-wrapper .panel-body {
   padding: 0; }
 
+.node-dataset-form .group-odfie-pod .form-item {
+  margin-bottom: 0px; }
+
+.node-dataset-form .group-odfie-pod .field-name-field-odfe-data-quality {
+  margin-bottom: 15px; }
+
 .node-dataset-form .form-item.has-error div.autocomplete-deluxe-container,
 .node-dataset-form .form-item.has-error div.chosen-container {
   border: 2px solid red; }
