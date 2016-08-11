@@ -5,6 +5,7 @@
         "This file is @generated automatically"
     ],
     "hash": "def1eb64cf11ae68a35dd277ea5c7a10",
+    "content-hash": "5b0b01e369aa2b7b64649e620b03615a",
     "packages": [
         {
             "name": "behat/behat",
@@ -16,7 +17,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/3da167e77f4d4d6a7b24845146b24f81b20cb580",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/d9cac87edd73c71c61c185244c44a02ab174c0b8",
                 "reference": "3da167e77f4d4d6a7b24845146b24f81b20cb580",
                 "shasum": ""
             },
@@ -483,7 +484,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/devinci-code/devinci-behat-extension/zipball/d08228e8236341761e7975a53b96ec5c24b79efd",
+                "url": "https://api.github.com/repos/devinci-code/devinci-behat-extension/zipball/0b0f0f75b1723827e3db52ed88f5e7e716fe9792",
                 "reference": "d08228e8236341761e7975a53b96ec5c24b79efd",
                 "shasum": ""
             },
@@ -912,12 +913,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "ade0dc61347b75b7bff7507739553b15b8ad0390"
+                "reference": "0fd371b320efd0a7e655608be2407dd2e1ae05e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/ade0dc61347b75b7bff7507739553b15b8ad0390",
-                "reference": "ade0dc61347b75b7bff7507739553b15b8ad0390",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/0fd371b320efd0a7e655608be2407dd2e1ae05e7",
+                "reference": "0fd371b320efd0a7e655608be2407dd2e1ae05e7",
                 "shasum": ""
             },
             "require": {
@@ -945,7 +946,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-07-14 21:22:51"
+            "time": "2016-08-10 14:06:27"
         },
         {
             "name": "psr/http-message",
