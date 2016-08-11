@@ -196,7 +196,7 @@ function open_data_federal_extras_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'This field should a URL to the System of Records Notice (SORN) that relates to the dataset, specifically from FederalRegister.gov.',
+    'description' => 'This field should be a URL to the System of Records Notice (SORN) that relates to the dataset, specifically from FederalRegister.gov.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -261,7 +261,7 @@ function open_data_federal_extras_field_default_field_instances() {
   t('Data Quality');
   t('Program Code');
   t('System of Records');
-  t('This field should a URL to the System of Records Notice (SORN) that relates to the dataset, specifically from FederalRegister.gov.');
+  t('This field should be a URL to the System of Records Notice (SORN) that relates to the dataset, specifically from FederalRegister.gov.');
   t('Use to link a given dataset with its related IT Unique Investment Identifier, which can often be found in Exhibit 53 documents.');
   t('Primary IT Investment UII');
 
