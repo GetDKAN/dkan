@@ -9678,7 +9678,7 @@ ul.action-links {
     .node-resource-form .horizontal-tabs ul.horizontal-tabs-list li.selected {
       border: 0;
       background-color: transparent;
-      min-width: 10em; }
+      min-width: 4em; }
       .node-resource-form .horizontal-tabs ul.horizontal-tabs-list li a:hover,
       .node-resource-form .horizontal-tabs ul.horizontal-tabs-list li.selected a:hover {
         background: transparent; }
@@ -9689,7 +9689,7 @@ ul.action-links {
         text-indent: -9999px;
         width: 16px;
         height: 16px;
-        margin: 0 0 0 28px;
+        left: 50%;
         clip: auto; }
       .node-resource-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-1 .summary,
       .node-resource-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-2 .summary,
