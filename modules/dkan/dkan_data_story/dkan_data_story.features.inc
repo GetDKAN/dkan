@@ -71,7 +71,7 @@ function dkan_data_story_image_default_styles() {
 function dkan_data_story_node_info() {
   $items = array(
     'dkan_data_story' => array(
-      'name' => t('DKAN Data Story'),
+      'name' => t('Data Story'),
       'base' => 'node_content',
       'description' => t('Create compelling stories using data to illustrate key points.'),
       'has_title' => '1',
