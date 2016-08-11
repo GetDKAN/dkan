@@ -259,11 +259,11 @@ function open_data_federal_extras_field_default_field_instances() {
   t('Adds Project Open Data\'s <a href="https://project-open-data.cio.gov/v1.1/schema/#programCode">Program Code</a>.');
   t('Bureau Code');
   t('Data Quality');
+  t('Primary IT Investment UII');
   t('Program Code');
   t('System of Records');
   t('This field should be a URL to the System of Records Notice (SORN) that relates to the dataset, specifically from FederalRegister.gov.');
   t('Use to link a given dataset with its related IT Unique Investment Identifier, which can often be found in Exhibit 53 documents.');
-  t('Primary IT Investment UII');
 
   return $field_instances;
 }
