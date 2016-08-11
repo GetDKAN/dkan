@@ -1,4 +1,4 @@
-7.x-1-12.x
+7.x-1-12.7 2016-08-09
 --------------------------
 - Update contrib modules uuid, services, manualcrop, markdown, panelizer, panopoly_widgets, panopoly_images
 - Fix bug that produced a "Cannot use a scalar value" error when trying to add a content pane to a data story node in panels.
@@ -7,6 +7,7 @@
 - Provide "data proxy" to serve remote CSVs through local domain and resolve cross-origin issues with previews n these resources
 - Some changes to the Resource node form to improve UX of links and file attachments, especially by replacing the label "Link to an API" to "API or Website URL"
 - Fix bug on relative paths for links in theme template files.
+- Fix minor typo in DKAN topics menu link
 
 7.x-1.12.6 2016-07-26
 --------------------------
