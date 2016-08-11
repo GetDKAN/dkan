@@ -39,7 +39,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_dataset.git
-      branch: prevent_duplicate_groups_7_12_civic_3232
+      branch: release-1-12
   dkan_datastore:
     subdir: dkan
     download:
