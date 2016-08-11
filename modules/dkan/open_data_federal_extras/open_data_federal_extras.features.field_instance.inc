@@ -129,7 +129,7 @@ function open_data_federal_extras_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_odfe_investment_uii',
-    'label' => 'primary IT Investment UII',
+    'label' => 'Primary IT Investment UII',
     'required' => 0,
     'settings' => array(
       'text_processing' => 0,
@@ -263,7 +263,7 @@ function open_data_federal_extras_field_default_field_instances() {
   t('System of Records');
   t('This field should a URL to the System of Records Notice (SORN) that relates to the dataset, specifically from FederalRegister.gov.');
   t('Use to link a given dataset with its related IT Unique Investment Identifier, which can often be found in Exhibit 53 documents.');
-  t('primary IT Investment UII');
+  t('Primary IT Investment UII');
 
   return $field_instances;
 }
