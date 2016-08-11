@@ -101,7 +101,21 @@ function open_data_federal_extras_form_alter(&$form, $form_state, $form_id) {
       // Hide the 'false' option on the Data Quality field.
       unset($form['field_odfe_data_quality']['und']['#options']['false']);
 
+      $form['#validate'][] = 'open_data_federal_extras_dataset_node_form_validate';
       break;
+  }
+}
+
+/**
+ * Validation function for dataset node form.
+ */
+function open_data_federal_extras_dataset_node_form_validate($form, &$form_state) {
+  $field_odfe_data_quality_langcode = dkan_dataset_form_field_language($form, 'field_odfe_data_quality');
+  $data_quality_value = $form_state['values']['field_odfe_data_quality'][$field_odfe_data_quality_langcode][0]['value'];
+  // The 'false' option for the 'Data Quality' field was removed from the form
+  // so the common way of setting default values is not going to work.
+  if (!$data_quality_value) {
+    $form_state['values']['field_odfe_data_quality'][$field_odfe_data_quality_langcode][0]['value'] = 'false';
   }
 }
 
