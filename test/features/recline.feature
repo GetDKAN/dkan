@@ -41,6 +41,10 @@ Feature: Recline
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 | Test R1     |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 | Test R2     |
       | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 | Test R3     |
+
+  # Don't remove! This is for avoiding issues when other scenarios are disabled (because of @noworkflow tag).
+  Scenario: Dumb test
+        Given I am on the homepage
   
   @javascript @noworkflow
   Scenario: Viewing map preview
