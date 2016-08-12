@@ -51,7 +51,7 @@ Feature: Recline
     Then I should see "Test R1"
     When I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/Polling_Places_Madison_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/Polling_Places_Madison_0.csv"
     And I press "edit-submit"
     Then I should see "Polling_Places_Madison_0.csv"
     And I wait for "Map"
@@ -70,7 +70,7 @@ Feature: Recline
     Then I should see "Test R2"
     When I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/data_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/data_0.csv"
     And I press "edit-submit"
     Then I should see "data_0.csv"
     And I should see "748 records"
@@ -87,7 +87,7 @@ Feature: Recline
     Then I should see "Test R1"
     When I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/Polling_Places_Madison_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/Polling_Places_Madison_0.csv"
     And I press "edit-submit"
     And I wait for "Loading" to disappear
     And I wait for "1" seconds
