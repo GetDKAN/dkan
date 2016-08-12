@@ -20,7 +20,7 @@ Feature: Datastore
       | title       | publisher | format | dataset    | author  | published | description               |
       | Resource 01 | Group 01  | cvs    | Dataset 01 | Gabriel | Yes       | The resource description. |
 
-  @api @javascript
+  @api @javascript @noworkflow
   Scenario: Adding and Removing items from the datastore
       Given I am logged in as a user with the "site manager" role
       And I am on "dataset/dataset-01"
