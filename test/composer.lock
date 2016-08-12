@@ -5,6 +5,7 @@
         "This file is @generated automatically"
     ],
     "hash": "def1eb64cf11ae68a35dd277ea5c7a10",
+    "content-hash": "5b0b01e369aa2b7b64649e620b03615a",
     "packages": [
         {
             "name": "behat/behat",
@@ -913,12 +914,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "0fd371b320efd0a7e655608be2407dd2e1ae05e7"
+                "reference": "a723e35f01b4563e13fb1c0a21ccd59de7f6af43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/0fd371b320efd0a7e655608be2407dd2e1ae05e7",
-                "reference": "0fd371b320efd0a7e655608be2407dd2e1ae05e7",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/a723e35f01b4563e13fb1c0a21ccd59de7f6af43",
+                "reference": "a723e35f01b4563e13fb1c0a21ccd59de7f6af43",
                 "shasum": ""
             },
             "require": {
@@ -946,7 +947,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-08-10 14:06:27"
+            "time": "2016-08-12 01:00:05"
         },
         {
             "name": "psr/http-message",
