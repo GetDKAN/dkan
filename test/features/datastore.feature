@@ -1,3 +1,4 @@
+@api
 Feature: Datastore
   In order to know the datastore is working
   As a website user
@@ -19,6 +20,10 @@ Feature: Datastore
     And resources:
       | title       | publisher | format | dataset    | author  | published | description               |
       | Resource 01 | Group 01  | cvs    | Dataset 01 | Gabriel | Yes       | The resource description. |
+
+  # Don't remove! This is for avoiding issues when other scenarios are disabled (because of @noworkflow tag).
+  Scenario: Dumb test
+        Given I am on the homepage
 
   @api @javascript @noworkflow
   Scenario: Adding and Removing items from the datastore
