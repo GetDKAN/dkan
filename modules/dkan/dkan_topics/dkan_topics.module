@@ -48,7 +48,7 @@ function dkan_topics_menu_link_insert($link) {
  * Set main menu topics link to null.
  */
 function topics_page() {
-  drupal_goto('search/field_topic');
+  drupal_goto('search/field_topics');
 }
 
 /*

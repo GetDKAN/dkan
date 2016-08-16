@@ -39,22 +39,26 @@ Feature: Site Manager administer groups
       | Health 2         |
       | Gov 2            |
       | Count 2          |
+    And "Topics" terms:
+      | name             |
+      | Education02      |
+      | Transportation02 |
     And datasets:
-      | title      | publisher | tags         | author  | published | description                | date changed      | topics         |
-      | Dataset 01 | Group 01  | Health 2     | Katie   | Yes       | Increase of toy prices     | 10 September 2015 | Education      |
-      | Dataset 02 | Group 01  | Health 2     | Katie   | No        | Cost of oil in January     | 10 September 2015 | Education      |
-      | Dataset 03 | Group 01  | Gov 2        | Gabriel | Yes       | Election districts         | 17 October 2015   | Education      |
-      | Dataset 04 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Education      |
-      | Dataset 05 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 21 September 2015 | Education      |
-      | Dataset 06 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 13 March 2015     | Transportation |
-      | Dataset 07 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation |
-      | Dataset 08 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 25 February 2014  | Transportation |
-      | Dataset 09 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 13 September 2014 | Education      |
-      | Dataset 10 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 October 2013   | Education      |
-      | Dataset 11 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation |
-      | Dataset 12 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation |
-      | Dataset 13 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 23 October 2013   | Transportation |
-      | Dataset 14 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation |
+      | title      | publisher | tags         | author  | published | description                | date changed      | topics           |
+      | Dataset 01 | Group 01  | Health 2     | Katie   | Yes       | Increase of toy prices     | 10 September 2015 | Education02      |
+      | Dataset 02 | Group 01  | Health 2     | Katie   | No        | Cost of oil in January     | 10 September 2015 | Education02      |
+      | Dataset 03 | Group 01  | Gov 2        | Gabriel | Yes       | Election districts         | 17 October 2015   | Education02      |
+      | Dataset 04 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Education02      |
+      | Dataset 05 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 21 September 2015 | Education02      |
+      | Dataset 06 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 13 March 2015     | Transportation02 |
+      | Dataset 07 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation02 |
+      | Dataset 08 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 25 February 2014  | Transportation02 |
+      | Dataset 09 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 13 September 2014 | Education02      |
+      | Dataset 10 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 October 2013   | Education02      |
+      | Dataset 11 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation02 |
+      | Dataset 12 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation02 |
+      | Dataset 13 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 23 October 2013   | Transportation02 |
+      | Dataset 14 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation02 |
     And "format" terms:
       | name   |
       | csv 2  |
@@ -64,7 +68,7 @@ Feature: Site Manager administer groups
       | Resource 01 | Group 01  | csv 2  | Katie  | Yes       | Dataset 01 |             |
       | Resource 02 | Group 01  | html 2 | Katie  | Yes       | Dataset 03 |             |
 
-
+  @customizable
   Scenario: View the list of published groups
     Given I am on the homepage
     When I follow "Groups"
@@ -151,4 +155,4 @@ Feature: Site Manager administer groups
   Scenario: View the list of datasets displayed with the search result view mode
     Given I am on "Group 01" page
     Then I should see "Group 01" in the ".group-membership" element
-    Then I should see "Education" in the ".name" element
+    Then I should see "Education02" in the ".name" element
