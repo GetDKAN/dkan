@@ -1,8 +1,6 @@
 Feature: DCAT
 
-  @api @noworkflow
+  @api
   Scenario: Check access to dcat endpoint
-    Given I am on "catalog.xml"
-    Then the response status code should be 200
-
-
+    Given I am on the homepage
+    Then I should see a valid catalog xml
