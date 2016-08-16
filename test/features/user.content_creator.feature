@@ -19,7 +19,7 @@ Feature: User command center links for content creator role.
     Then I should see "Add resource"
     When I hover over the admin menu item "Add content"
     And I click "Data Story"
-    Then I should see "Create DKAN Data Story"
+    Then I should see "Create Data Story"
     When I hover over the admin menu item "Add content"
     And I click "Data Dashboard"
     Then I should see "Create Data Dashboard"
