@@ -105,7 +105,7 @@ projects:
   defaultconfig:
     version: 1.0-alpha11
   panelizer:
-    version: '3.2'
+    version: '3.3'
   views_autocomplete_filters:
     version: '1.2'
     patch:
@@ -119,7 +119,7 @@ projects:
   panopoly_images:
     version: '1.37'
   panels:
-    version: '3.5'
+    version: '3.6'
   panels_style_collapsible:
     version: '1.3'
   path_breadcrumbs:
