@@ -106,6 +106,8 @@ projects:
     version: 1.0-alpha11
   panelizer:
     version: '3.2'
+    patch:
+      2762351: https://www.drupal.org/files/issues/panelizer-n2762351-7.patch
   views_autocomplete_filters:
     version: '1.2'
     patch:
