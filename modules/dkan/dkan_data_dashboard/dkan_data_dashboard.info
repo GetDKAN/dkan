@@ -29,4 +29,5 @@ features[variable][] = panelizer_node:data_dashboard_allowed_layouts_default
 features[variable][] = panelizer_node:data_dashboard_allowed_types_default
 features[variable][] = panelizer_node:data_dashboard_default
 features[views_view][] = data_dashboards
+features_exclude[dependencies][dkan_dataset_content_types] = dkan_dataset_content_types
 features_exclude[dependencies][dkan_topics] = dkan_topics
