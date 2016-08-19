@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+- Add preview support for resources of many more formats, outside of recline.js. Support added for JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, ZIP
 - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
 - Fixes to groups UX: Group body field now labeled "Description," longer group descriptions do not get cut off after 200 characters on group page, and extraneous "about" tab on Group node edit form removed
 - Add new "modified date" field, hidden in form, to datasets. This is for dkan_harvest compatibility; saves sources dates into a separate field so they aren't affected by node changes. ODSM mappings also updated.
