@@ -108,7 +108,6 @@ projects:
     version: '3.3'
     patch:
       2785945: https://www.drupal.org/files/issues/panelizer-n2785945-23.patch
-      2762351: https://www.drupal.org/files/issues/panelizer-n2762351-7.patch
   views_autocomplete_filters:
     version: '1.2'
     patch:
