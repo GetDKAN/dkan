@@ -70,7 +70,7 @@ Feature: Site managers administer groups
     And I follow "Add Group"
     When I fill in the following:
       | Title         | My group       |
-      | Group 01      | This is a body |
+      | Body      | This is a body |
     And I press "Save"
     Then I should see "A group with title Group 01 exists on the site. Please use another title."
 
