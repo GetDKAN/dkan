@@ -105,8 +105,9 @@ projects:
   defaultconfig:
     version: 1.0-alpha11
   panelizer:
-    version: '3.2'
+    version: '3.3'
     patch:
+      2785945: https://www.drupal.org/files/issues/panelizer-n2785945-23.patch
       2762351: https://www.drupal.org/files/issues/panelizer-n2762351-7.patch
   views_autocomplete_filters:
     version: '1.2'
@@ -121,7 +122,9 @@ projects:
   panopoly_images:
     version: '1.37'
   panels:
-    version: '3.5'
+    version: '3.6'
+    patch:
+      2785915: https://www.drupal.org/files/issues/panels-storage-backcompat-2785915-18.patch
   panels_style_collapsible:
     version: '1.3'
   path_breadcrumbs:
