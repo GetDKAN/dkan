@@ -1,5 +1,7 @@
 7.x-1.12.8 2018-08-19
 --------------------------
+- Patch panelizer module to correct bug introduced in previous release. See release notes for details.
+- Add validation to Group form to prevent duplicate groups from being created
 - Update and patch panels and panelizer to fix critical security issue. See release notes.
 - Patch panelizer module to correct bug introduced in previous release. See release notes.
 
