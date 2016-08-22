@@ -1,4 +1,9 @@
-7.x-1.12.8 2018-08-19
+7.x-1-12.x
+--------------------------
+- Fix data dictionary field to use html input format and improvements to the field's display and help text.
+- Update dkan_workflow content type legend to include all content types with correct icons.
+
+7.x-1.12.8 2016-08-19
 --------------------------
 - Patch panelizer module to correct bug introduced in previous release. See release notes for details.
 - Add validation to Group form to prevent duplicate groups from being created
