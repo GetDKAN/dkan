@@ -6,7 +6,7 @@ machine:
 
   # Version of ruby to use
   php:
-    version: '5.3.29'
+    version: '5.3.25'
 
   # Override /etc/hosts
   #hosts:
@@ -41,7 +41,7 @@ dependencies:
      #- "backups"
      #- "dkan/test/sites/default"
   pre:
-    - echo "memory_limit = 256M" > ~/.phpenv/versions/5.3.29/etc/conf.d/memory.ini
+    - echo "memory_limit = 256M" > ~/.phpenv/versions/5.3.25/etc/conf.d/memory.ini
   override:
     - printenv
     - mkdir $CIRCLE_ARTIFACTS/junit
