@@ -80,7 +80,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -100,6 +125,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@datasets:block:author'] = $facet;
 
@@ -114,7 +140,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -134,6 +185,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@datasets:block:field_format'] = $facet;
 
@@ -211,7 +263,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -231,6 +308,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@datasets:block:field_resources:field_format'] = $facet;
 
@@ -245,7 +323,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -265,6 +368,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@datasets:block:field_tags'] = $facet;
 
@@ -279,7 +383,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -299,6 +428,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@datasets:block:og_group_ref'] = $facet;
 
@@ -313,7 +443,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -333,6 +488,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@datasets:block:search_api_language'] = $facet;
 
@@ -347,7 +503,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -367,6 +548,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@datasets:block:search_api_viewed'] = $facet;
 
@@ -381,7 +563,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -401,6 +608,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@datasets:block:title'] = $facet;
 
@@ -415,7 +623,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'content_types',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -446,6 +679,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
       'format' => 'html',
     ),
     'submit_realm' => 'Save and go back to realm settings',
+    'rewrite_items' => 1,
   );
   $export['search_api@datasets:block:type'] = $facet;
 
@@ -460,7 +694,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -480,6 +739,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@default_node_index:block:author'] = $facet;
 
@@ -494,7 +754,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -514,6 +799,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@default_node_index:block:body:value'] = $facet;
 
@@ -528,7 +814,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -548,6 +859,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@default_node_index:block:created'] = $facet;
 
@@ -562,7 +874,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -582,6 +919,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@default_node_index:block:search_api_language'] = $facet;
 
@@ -596,7 +934,32 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
-    'filters' => array(),
+    'filters' => array(
+      'active_items' => array(
+        'status' => 0,
+        'weight' => '-50',
+      ),
+      'exclude_items' => array(
+        'status' => 0,
+        'weight' => '-49',
+      ),
+      'rewrite_items' => array(
+        'status' => 1,
+        'weight' => '-48',
+      ),
+      'narrow_results' => array(
+        'status' => 0,
+        'weight' => '-47',
+      ),
+      'show_if_minimum_items' => array(
+        'status' => 0,
+        'weight' => '-46',
+      ),
+      'deepest_level_items' => array(
+        'status' => 0,
+        'weight' => '-45',
+      ),
+    ),
     'active_sorts' => array(
       'active' => 'active',
       'count' => 'count',
@@ -616,6 +979,7 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'soft_limit' => 20,
     'nofollow' => 1,
     'show_expanded' => 0,
+    'rewrite_items' => 1,
   );
   $export['search_api@default_node_index:block:title'] = $facet;
 

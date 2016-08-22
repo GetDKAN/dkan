@@ -6,6 +6,7 @@ project = dkan
 dependencies[] = ctools
 dependencies[] = entity
 dependencies[] = facetapi
+dependencies[] = facetapi_bonus
 dependencies[] = search_api
 dependencies[] = search_api_db
 dependencies[] = strongarm
