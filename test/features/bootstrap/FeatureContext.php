@@ -16,7 +16,7 @@ class FeatureContext extends RawDKANContext
   /**
    * @beforeDKANEntityCreate
    */
-  public function setGlobalUserBeforeEntity(\Drupal\DKANExtension\Hook\Scope\BeforeDKANEntityCreateScope $scope) {
+  public static function setGlobalUserBeforeEntity(\Drupal\DKANExtension\Hook\Scope\BeforeDKANEntityCreateScope $scope) {
     // Don't do anything if workbench isn't enabled or this isn't a node.
     $wrapper = $scope->getEntity();
     if (!function_exists('workbench_moderation_moderate_node_types') || $wrapper->type() !== 'node'){
@@ -36,7 +36,7 @@ class FeatureContext extends RawDKANContext
       // Then set the global user so that stupid workbench is happy.
       global $user;
       // Save a backup of the user (should be anonymous)
-      $this->old_global_user = $user;
+      self::$old_global_user = $user;
       $user = $wrapper->author->value();
     }
   }
@@ -44,11 +44,11 @@ class FeatureContext extends RawDKANContext
   /**
    * @afterDKANEntityCreate
    */
-  public function removeGlobalUserAfterEntity(\Drupal\DKANExtension\Hook\Scope\AfterDKANEntityCreateScope $scope) {
+  public static function removeGlobalUserAfterEntity(\Drupal\DKANExtension\Hook\Scope\AfterDKANEntityCreateScope $scope) {
     // After we've created the entity, set it back the the old global user (anon) so it doesn't pollute other things.
-    if (isset($this->old_global_user)) {
+    if (isset(self::$old_global_user)) {
       global $user;
-      $user = $this->old_global_user;
+      $user = self::$old_global_user;
     }
   }
 
