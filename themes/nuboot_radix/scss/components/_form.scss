@@ -147,6 +147,17 @@ div.horizontal-tabs {
     border-radius: 5px 0 0 5px;
     margin-right: 0;
   }
+  .file-size {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 0 10px;
+    vertical-align: top;
+    line-height: 34px;
+    display: inline-block;
+    font-size: 12px;
+    margin: 0 -5px;
+    background: #eee;
+  }
   input {
     @include border-radius($border-radius-base 0 0 $border-radius-base);
     border: 1px solid $border;
@@ -162,6 +173,9 @@ div.horizontal-tabs {
   .input-group-btn {
     display: inline-block;
     vertical-align: top;
+  }
+  .manualcrop-style-button-holder input {
+    @include border-radius(5px);
   }
 }
 .image-widget-data input.btn {
