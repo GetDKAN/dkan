@@ -100,7 +100,6 @@ dependencies[] = geofield
 dependencies[] = geophp
 dependencies[] = open_data_schema_map
 dependencies[] = recline
-dependencies[] = open_data_schema_map
 
 ; DKAN Features
 dependencies[] = dkan_sitewide_menu
