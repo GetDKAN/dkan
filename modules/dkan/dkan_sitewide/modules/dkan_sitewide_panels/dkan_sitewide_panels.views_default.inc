@@ -112,12 +112,13 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['filters']['type']['table'] = 'search_api_index_datasets';
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
-    'dataset' => 'dataset',
-    'resource' => 'resource',
-    'group' => 'group',
-    'dkan_data_story' => 'dkan_data_story',
     'data_dashboard' => 'data_dashboard',
+    'dkan_data_story' => 'dkan_data_story',
+    'dataset' => 'dataset',
+    'group' => 'group',
+    'harvest_source' => 'harvest_source',
     'page' => 'page',
+    'resource' => 'resource',
   );
 
   /* Display: Block */
@@ -277,7 +278,7 @@ function dkan_sitewide_panels_views_default_views() {
     'page' => 'page',
   );
   $handler->display->display_options['filters']['type']['group'] = 1;
-  /* Filter criterion: Content: Publisher (og_group_ref) (reference filter) */
+  /* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
@@ -376,7 +377,7 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['fields']['title']['element_type'] = 'h3';
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['title']['element_default_classes'] = FALSE;
-  /* Field: Content: Body */
+  /* Field: Content: Description */
   $handler->display->display_options['fields']['body']['id'] = 'body';
   $handler->display->display_options['fields']['body']['table'] = 'field_data_body';
   $handler->display->display_options['fields']['body']['field'] = 'body';
