@@ -243,3 +243,12 @@ div.horizontal-tabs {
     margin-right: 1em;
   }
 }
+
+#field-dkan-harvest-filters-values,
+#field-dkan-harvest-excludes-values,
+#field-dkan-harvest-overrides-values,
+#field-dkan-harvest-defaults-values {
+  .description {
+    font-weight: normal; 
+  }  
+}

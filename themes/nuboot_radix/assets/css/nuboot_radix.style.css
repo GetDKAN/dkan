@@ -5428,6 +5428,7 @@ button.close {
     @media all and (transform-3d), (-webkit-transform-3d) {
       .carousel-inner > .item {
         transition: transform 0.6s ease-in-out;
+        -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         -ms-perspective: 1000px;
         -o-perspective: 1000px;
@@ -9224,6 +9225,12 @@ div.horizontal-tabs {
 .page-admin form input[type=submit] {
   margin-right: 1em; }
 
+#field-dkan-harvest-filters-values .description,
+#field-dkan-harvest-excludes-values .description,
+#field-dkan-harvest-overrides-values .description,
+#field-dkan-harvest-defaults-values .description {
+  font-weight: normal; }
+
 #modalContent .modal-header {
   background: #0A77BD; }
   #modalContent .modal-header h4 {
@@ -9917,7 +9924,9 @@ ul.action-links {
 .pane-content .field-name-body {
   line-height: 2em; }
 
-.main .panel-pane {
+.main .pane-custom,
+.main .pane-node-field-image,
+.main .pane-fieldable-panels-pane {
   margin-bottom: 3em; }
 
 h2.pane-title {
@@ -9959,7 +9968,6 @@ h2.pane-title {
   margin: 0 0 15px 0; }
 
 .radix-layouts-content .pane-content {
-  padding: 20px 0;
   margin-bottom: 1em; }
 
 .radix-layouts-content .pane-node-field-topic .pane-content {
