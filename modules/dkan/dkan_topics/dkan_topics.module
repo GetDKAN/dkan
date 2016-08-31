@@ -76,9 +76,8 @@ function dkan_topics_preprocess_menu_link(&$variables) {
         elseif($type == 'image') {
           $obj = taxonomy_term_load($url[2]);
           $image = field_get_items('taxonomy_term', $obj, 'field_image');
-          global $base_url;
           $path = image_style_path('small_topics_icons', $image[0]['uri']);
-          $img = $base_url . image_style_url('small_topics_icons', $path);
+          $img =  image_style_url('small_topics_icons', $path);
           $css .= "li.menu-link-$term > a, li.menu-link-$term > a:hover, li.menu-link-$term > a:focus, li.menu-link-$term a:active { background-image:url('$img') !important; background-position:12px center !important; background-repeat:no-repeat !important; padding-left:40px !important; }";
         }
       }
