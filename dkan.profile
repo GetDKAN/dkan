@@ -45,6 +45,7 @@ function dkan_additional_setup() {
       array('dkan_install_default_content', array()),
       array('dkan_set_adminrole', array()),
       array('dkan_set_roleassign_roles', array()),
+      array('dkan_set_bueditor_excludes', array()),
     ),
   );
 }
@@ -516,4 +517,20 @@ function _dkan_bueditor_by_name($name = '') {
   }
 
   return 0;
+}
+
+/**
+ * Add data dictionary textarea id to bueditor excludes list.
+ */
+function dkan_set_bueditor_excludes() {
+  db_update('bueditor_editors')
+    ->fields(array(
+      'excludes' => 'edit-log
+edit-menu-description
+*data-dictionary*',
+    ))
+    ->condition('eid', '5')
+    ->execute();
+
+  drupal_flush_all_caches();
 }
