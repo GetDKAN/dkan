@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 7.x-1.x
 --------------------------
 - Add preview support for resources of many more formats, outside of recline.js. Support added for JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, ZIP
@@ -23,7 +24,7 @@
 - Page link added to the command center menu.
 - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
 - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
-
+=======
 7.x-1-12.9 2016-08-30
 --------------------------
 - Fix data dictionary field to use html input format and improvements to the field's display and help text.
@@ -36,6 +37,7 @@
 - Add validation to Group form to prevent duplicate groups from being created
 - Update and patch panels and panelizer to fix critical security issue. See release notes.
 - Patch panelizer module to correct bug introduced in previous release. See release notes.
+>>>>>>> origin/release-1-12
 
 7.x-1-12.7 2016-08-09
 --------------------------
