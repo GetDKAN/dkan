@@ -1,8 +1,9 @@
-7.x-1-12.9 2016-08-30
+7.x-1-12.9 2016-08-31
 --------------------------
 - Fix data dictionary field to use html input format and improvements to the field's display and help text.
 - Update dkan_workflow content type legend to include all content types with correct icons.
 - Fix to new bug introduced in recline module in 1.12.7; previews would not display if file smaller than max preview size, even if loading from datastore.
+- Fix a problem with paths for image icons for topics. Uploaded image icons will now display correctly in the Topics menu.
 
 7.x-1.12.8 2016-08-19
 --------------------------
