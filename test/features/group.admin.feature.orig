@@ -61,8 +61,13 @@ Feature: Site managers administer groups
     And I am on "Groups" page
     And I follow "Add Group"
     When I fill in the following:
+<<<<<<< HEAD
+      | Title         | My group       |
+      | Description   | This is a body |
+=======
       | Title  | My group       |
       | Body   | This is a body |
+>>>>>>> origin/release-1-12
     And I press "Save"
     Then I should see the success message "Group My group has been created"
     And I should see the heading "My group"
