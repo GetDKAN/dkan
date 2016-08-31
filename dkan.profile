@@ -414,6 +414,112 @@ function dkan_set_roleassign_roles(&$context) {
 }
 
 /**
+ * Configures BUEditor and markdown test format.
+ */
+function dkan_bueditor_markdown_install() {
+  module_enable(array('bueditor_plus'));
+  cache_clear_all();
+
+  $context = array();
+  dkan_set_roleassign_roles($context);
+
+  // Delete the old bueditor settings and profile.
+  db_delete('bueditor_editors')
+    ->condition('name', 'Markdowneditor')
+    ->execute();
+
+  db_delete('bueditor_plus_profiles')
+    ->condition('name', 'Global')
+    ->execute();
+
+  // Create the new bueditor settings and profile.
+  dkan_markdown_setup($context);
+  features_revert(array('dkan_sitewide' => array('filter')));
+
+  $roles = user_roles();
+  $bueditor_roles = array();
+
+  foreach ($roles as $rid => $role) {
+    switch($role) {
+    case 'anonymous user':
+      $bueditor_roles[$rid] = [
+        'weight' => 12,
+        'editor' => _dkan_bueditor_by_name('Commenter'),
+        'alt' => 0,
+      ];
+      break;
+
+    case 'administrator':
+    case 'content creator':
+    case 'editor':
+    case 'site manager':
+      $bueditor_roles[$rid] = [
+        'weight' => 0,
+        'editor' => _dkan_bueditor_by_name('Markdowneditor'),
+        'alt' => 0,
+      ];
+      break;
+
+    default:
+      $bueditor_roles[$rid] = [
+        'weight' => 11,
+        'editor' => 0,
+        'alt' => 0,
+      ];
+    }
+  }
+
+  variable_set('bueditor_roles', $bueditor_roles);
+  variable_set('bueditor_user1', $eid);
+
+  $eid = db_select("bueditor_editors", "bue")
+    ->fields("bue", array("eid"))
+    ->condition("name", "Markdowneditor")
+    ->execute()
+    ->fetchField();
+
+  $data = [
+    'html' => ['default' => $eid, 'alternative' => 0],
+    'plain_text' => ['plain_text' => 0, 'alternative' => 0]
+  ];
+
+  db_insert('bueditor_plus_profiles')
+    ->fields(array(
+      'name' => 'Global',
+      'data' => serialize($data),
+      'global' => 1,
+    ))
+    ->execute();
+}
+
+/**
+ * Extracts the editor id for an editor name.
+ *
+ * @param string $name
+ *   The user role name of the editor.
+ *
+ * @return int
+ *   The eid of the editor.
+ */
+function _dkan_bueditor_by_name($name = '') {
+  module_load_include("inc", "bueditor");
+
+  if ($name == '') {
+    return 0;
+  }
+
+  $editors = bueditor_editors('all');
+
+  foreach ($editors as $eid => $editor) {
+    if ($editor->name == $name) {
+      return $eid;
+    }
+  }
+
+  return 0;
+}
+
+/**
  * Add data dictionary textarea id to bueditor excludes list.
  */
 function dkan_set_bueditor_excludes() {
