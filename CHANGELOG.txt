@@ -1,9 +1,27 @@
-7.x-1-12.x
+7.x-1-12.9 2016-08-31
 --------------------------
+- Fix data dictionary field to use html input format and improvements to the field's display and help text.
+- Update dkan_workflow content type legend to include all content types with correct icons.
+- Fix to new bug introduced in recline module in 1.12.7; previews would not display if file smaller than max preview size, even if loading from datastore.
+- Fix a problem with paths for image icons for topics. Uploaded image icons will now display correctly in the Topics menu.
+
+7.x-1.12.8 2016-08-19
+--------------------------
+- Patch panelizer module to correct bug introduced in previous release. See release notes for details.
+- Add validation to Group form to prevent duplicate groups from being created
+- Update and patch panels and panelizer to fix critical security issue. See release notes.
+- Patch panelizer module to correct bug introduced in previous release. See release notes.
+
+7.x-1-12.7 2016-08-09
+--------------------------
+- Update contrib modules uuid, services, manualcrop, markdown, panelizer, panopoly_widgets, panopoly_images
+- Fix bug that produced a "Cannot use a scalar value" error when trying to add a content pane to a data story node in panels.
 - Change theming on resource to remove iframe to "API or link URL" if remote file field also populated
 - Update options in Dataset "frequency" field to reflect standards for DCAT and Project Open Data
 - Provide "data proxy" to serve remote CSVs through local domain and resolve cross-origin issues with previews n these resources
 - Some changes to the Resource node form to improve UX of links and file attachments, especially by replacing the label "Link to an API" to "API or Website URL"
+- Fix bug on relative paths for links in theme template files.
+- Fix minor typo in DKAN topics menu link
 
 7.x-1.12.6 2016-07-26
 --------------------------

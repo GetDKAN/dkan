@@ -80,6 +80,7 @@ default:
         facet container: '.radix-layouts-sidebar'
         filter by resource format: '.facetapi-facet-field-resourcesfield-format'
         filter by author: '.facetapi-facet-author'
+        filter by topics: '.facetapi-facet-field-topic'
         filter by tag: '.facetapi-facet-field-tags'
         filter by date changed: '.facetapi-facet-changed'
         social: '.pane-dkan-sitewide-dkan-sitewide-social'

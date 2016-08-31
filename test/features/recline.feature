@@ -41,8 +41,12 @@ Feature: Recline
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 | Test R1     |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 | Test R2     |
       | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 | Test R3     |
+
+  # Don't remove! This is for avoiding issues when other scenarios are disabled (because of @noworkflow tag).
+  Scenario: Dumb test
+        Given I am on the homepage
   
-  @javascript
+  @javascript @noworkflow
   Scenario: Viewing map preview
     Given I am logged in as "John"
     And I am on "/dataset/dataset-01"
@@ -51,7 +55,7 @@ Feature: Recline
     Then I should see "Test R1"
     When I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/Polling_Places_Madison_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/Polling_Places_Madison_0.csv"
     And I press "edit-submit"
     Then I should see "Polling_Places_Madison_0.csv"
     And I wait for "Map"
@@ -61,7 +65,7 @@ Feature: Recline
     Given I click map icon number "88"
     And I wait for "Alicia Ashman Branch Library"
 
-  @javascript @api
+  @javascript @api @noworkflow
   Scenario: Viewing graph preview
     Given I am logged in as "John"
     And I am on "/dataset/dataset-01"
@@ -70,7 +74,7 @@ Feature: Recline
     Then I should see "Test R2"
     When I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/data_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/data_0.csv"
     And I press "edit-submit"
     Then I should see "data_0.csv"
     And I should see "748 records"
@@ -78,7 +82,7 @@ Feature: Recline
     Given I press "Graph"
     Then I should see "There's no graph here yet"
 
-  @javascript
+  @javascript @noworkflow
   Scenario: Searching data
     Given I am logged in as "John"
     And I am on "/dataset/dataset-01"
@@ -87,7 +91,7 @@ Feature: Recline
     Then I should see "Test R1"
     When I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/Polling_Places_Madison_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/Polling_Places_Madison_0.csv"
     And I press "edit-submit"
     And I wait for "Loading" to disappear
     And I wait for "1" seconds
