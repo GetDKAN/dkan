@@ -4,11 +4,12 @@
         "url": "files/resource/district_centerpoints_0.csv",
         "description": "<p>You can see this data plotted on a map, by clicking on 'Map' below. Individual data records can be seen by clicking on each point.</p>\n",
         "format": "csv",
-        "revision_timestamp": "Thu, 01/03/2013 - 22:17",
+        "revision_timestamp": "Thu, 09/01/2016 - 01:31",
         "name": "District Names",
         "mimetype": "text/csv",
         "size": "31.62 KB",
-        "created": "Mon, 10/29/2012 - 00:40",
-        "last_modified": "Date changed\tThu, 01/03/2013 - 22:17"
+        "created": "Thu, 09/01/2016 - 01:37",
+        "resource_group_id": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
+        "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
     }
 }
