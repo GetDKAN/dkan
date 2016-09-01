@@ -1,11 +1,11 @@
 {
     "result": {
         "uuid": "e27d899b-6d72-49c9-8807-b49424c4cf70",
-        "id": "12",
+        "id": "32",
         "type": "dkan_data_story",
         "title": "An End to Chickenpox: The Varicella Vaccine's Success Story",
-        "created": "1459962814",
-        "changed": "1470091006",
+        "created": "1472693478",
+        "changed": "1472709437",
         "body": {
             "und": [
                 {
@@ -53,7 +53,9 @@
                 "title": "",
                 "hide_title": "0",
                 "title_pane": "3",
-                "uuid": "d0353c26-0159-4b91-83a4-329aa4cebccc"
+                "uuid": "d0353c26-0159-4b91-83a4-329aa4cebccc",
+                "storage_type": "panelizer_entity",
+                "storage_id": "node:32:default"
             },
             "panels_pane": [
                 {
@@ -112,7 +114,7 @@
                 {
                     "panel": "column2",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:2",
+                    "subtype": "uuid:30099eb3-cdc6-490c-848b-1fc02d37f5b5",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -138,8 +140,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "136eb642-483e-4d9b-9662-471e61d7369a",
-                        "language": "und",
+                        "uuid": "30099eb3-cdc6-490c-848b-1fc02d37f5b5",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "Let\u2019s examine some of the official data from the 45 years ago and onward to witness the varicella vaccine revolution in action:\r\n\r\n### 1970-1994 \r\n\r\n*   **2262** death records listed varicella as the underlying cause.\r\n\r\n*   Average of **90** deaths per year.\r\n\r\n*   The overall death count dropped from **138** in 1973 to **47** deaths in 1986.\r\n\r\n\r\n### 2000 \r\n\r\n*   The Centers for Disease Control and Prevention in Atlanta, Georgia published \u201cVaricella Mortality: Trends before Vaccine Licensure in the United States, 1970\u20131994\u201d in the Journal of Infectious Diseases. [PDF] \r\n\r\n*   The data shows how dangerous complications from varicella once were, and demonstrate the decrease after vaccinations are introduced.\r\n\r\n<center>[Go to Data](../dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine/resource/d59d8dfc-6015-420a)</center>",
@@ -153,7 +155,7 @@
                 {
                     "panel": "middle",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:0958e50b-5c21-4eed-8a39-e1a9fab60280",
+                    "subtype": "uuid:2fadbf7e-2860-486c-aee7-992e94cba770",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -179,8 +181,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "0958e50b-5c21-4eed-8a39-e1a9fab60280",
-                        "language": "und",
+                        "uuid": "2fadbf7e-2860-486c-aee7-992e94cba770",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "After almost 20 years of experience with use of varicella vaccine on a population basis, the World Health Organization [source] writes that it has a \u201cgood safety profile with rare confirmed serious adverse events.\u201d The vaccine \u201cmarkedly decreases the risk and severity of varicella. [...] One dose is ~85% effective in preventing all varicella and ~100% effective in preventing severe varicella.\u201d \r\n\r\nTypically, raw data is too large to grasp by itself. We rely on synthesis to make sense of walls a numbers. Visual synthesis clearly demonstrates patterns and trends. Visualizations can also highlight spikes that imply significant events or interventions. The charts below show how the intervention of the chicken pox vaccine had dramatic impact by showing the change in data over time. Both incident and mortality rates saw a large decrease with the introduction of the vaccine. ",
@@ -194,7 +196,7 @@
                 {
                     "panel": "secondcolumn1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:8",
+                    "subtype": "uuid:66a8f99f-79fc-4479-9e79-e059a0c6d9b8",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -220,8 +222,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "3bd4985a-b4dc-482c-bd35-d8a8fb4b1279",
-                        "language": "und",
+                        "uuid": "66a8f99f-79fc-4479-9e79-e059a0c6d9b8",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "### Who was affected by Varicella?\r\n\r\nDespite spikes in some age groups, people of all ages saw fewer people getting chicken pox. The most dramatic decrease in incidents were those aged 20-49. That might seem surprising since this age group tends to be among the healthiest. But these are also the age groups most likely to be in contact with more vulnerable groups, like kids and the elderly. They are also less likely to be required to get a vaccination, whereas children may need records of vaccination to attend public school. \r\n\r\nIn the modern era, there are few people in the US who don't receive the vaccine. \r\n\r\n\r\n<center>[Go to Data](../dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine/resource/339a5d0c-ecc9-4492)</center>",
@@ -235,7 +237,7 @@
                 {
                     "panel": "secondcolumn2",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:9",
+                    "subtype": "uuid:e6cec771-2fb8-4c0b-a89e-724c547557e0",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -261,8 +263,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "e1f50894-cfaf-4b0b-844a-524c4eee9585",
-                        "language": "und",
+                        "uuid": "e6cec771-2fb8-4c0b-a89e-724c547557e0",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "### Countless lives have been saved\r\n\r\nIn **1995** there were **over 100** deaths from chicken pox in kids between the ages of 5 and 9. \r\n\r\nIn **5** years that number went down to **less than 20**. \r\n\r\nPeople of all ages have seen a decrease in death due to chicken pox or its related medical complications. With widespread adoption of the varicella vaccine, tens of thousands of lives have been saved from a preventable virus.\r\n\r\nThe Centers for Disease Control and Prevention in Atlanta wrote in the journal Pediatrics in 2011 that there\u2019s been a \"near elimination\" of varicella deaths in the US after implementation of the vaccine program. This is not an exaggeration: As displayed in the chart above and its accompanying dataset, the average mortality rate per 100,000 people has dropped to a grinding halt.\r\n\r\n<br>\r\n\r\n<center>[Go to Data](../dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine/resource/0536307c-ca88-4190)</center>",
@@ -276,7 +278,7 @@
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:520b5061-30af-450e-9a69-f63affd1311c",
+                    "subtype": "uuid:f04eed83-e575-4ca1-95f8-5a256fbdbad3",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -302,9 +304,15 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "520b5061-30af-450e-9a69-f63affd1311c",
-                        "language": "und",
-                        "field_basic_image_caption": [],
+                        "uuid": "f04eed83-e575-4ca1-95f8-5a256fbdbad3",
+                        "language": "",
+                        "field_basic_image_caption": [
+                            {
+                                "value": null,
+                                "summary": null,
+                                "format": null
+                            }
+                        ],
                         "field_basic_image_image": [
                             {
                                 "alt": "",
@@ -426,17 +434,17 @@
             ],
             "panelizer_entity": {
                 "entity_type": "node",
-                "name": null,
-                "no_blocks": "0",
-                "css_id": "",
-                "css": "",
-                "pipeline": "ipe",
-                "relationships": [],
                 "view_mode": "default",
+                "name": null,
+                "css_id": "",
                 "css_class": "",
+                "css": "",
+                "no_blocks": "0",
                 "title_element": "H2",
                 "link_to_entity": "0",
-                "extra": []
+                "extra": [],
+                "pipeline": "ipe",
+                "relationships": []
             }
         }
     }
