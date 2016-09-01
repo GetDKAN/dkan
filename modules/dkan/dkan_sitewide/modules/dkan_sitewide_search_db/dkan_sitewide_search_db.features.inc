@@ -44,7 +44,8 @@ function dkan_sitewide_search_db_default_search_api_index() {
           "group",
           "dkan_data_story",
           "data_dashboard",
-          "page"
+          "page",
+          "harvest_source"
         ]
       },
       "index_directly" : 1,
