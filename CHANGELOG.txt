@@ -23,6 +23,7 @@
 - Page link added to the command center menu.
 - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
 - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
+- Added default image for groups.
 
 7.x-1-12.7 2016-08-09
 --------------------------
