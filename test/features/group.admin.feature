@@ -67,6 +67,7 @@ Feature: Site managers administer groups
     Then I should see the success message "Group My group has been created"
     And I should see the heading "My group"
     And I should see "This is a body"
+    And I should see the "img" element in the "group block" region
 
   Scenario: Create group with previous same title
     Given I am logged in as "John"
