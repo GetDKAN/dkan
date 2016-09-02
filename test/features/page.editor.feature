@@ -14,9 +14,10 @@ Feature: Page
     #     And I click "Page"
       Then I should see "Create Page"
       When I fill in "Title" with "New Sample Page"
-        And I press "Save"
-        Then I should see "New Sample Page"
-        #And I wait for "Save"
-      When I press "Save"
-        And I wait for "Customize this page"
-        Then I should see "Customize this page"
+      And I press "Save"
+      Then I should see "New Sample Page"
+      When I wait for "Loading" to disappear
+      And I wait for "1" seconds
+      And I press "Save"
+      And I wait for "Customize this page"
+      Then I should see "Customize this page"
