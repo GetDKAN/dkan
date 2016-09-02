@@ -383,7 +383,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $handler->conf = array(
     'title' => 'Dataset',
     'no_blocks' => 0,
-    'pipeline' => 'ipe',
+    'pipeline' => 'standard',
     'body_classes_to_remove' => '',
     'body_classes_to_add' => '',
     'css_id' => '',
@@ -1034,7 +1034,7 @@ function dkan_sitewide_panels_default_page_manager_pages() {
   $handler->conf = array(
     'title' => 'With Topics',
     'no_blocks' => 0,
-    'pipeline' => 'ipe',
+    'pipeline' => 'standard',
     'body_classes_to_remove' => '',
     'body_classes_to_add' => '',
     'css_id' => '',
@@ -1377,7 +1377,7 @@ return TRUE;
   $handler->conf = array(
     'title' => 'Without Topics',
     'no_blocks' => 0,
-    'pipeline' => 'ipe',
+    'pipeline' => 'standard',
     'body_classes_to_remove' => '',
     'body_classes_to_add' => '',
     'css_id' => '',
