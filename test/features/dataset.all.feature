@@ -150,7 +150,7 @@ Feature: Dataset Features
   Scenario: View available author filters for datasets
     Given I am on "Datasets Search" page
     And I wait for "Author"
-    When I click on the text "Author"
+    When I click on the exact text "Author"
     And I wait for "1" seconds
     Then I should see "Gabriel (2)" in the "filter by author" region
     Then I should see "Katie (1)" in the "filter by author" region
