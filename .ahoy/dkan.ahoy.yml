@@ -120,7 +120,7 @@ commands:
     usage: Run the tests for dkan.
     cmd: |
       # Store the arguments as a bash array.
-      ahoy cmd-proxy ruby dkan/.ahoy/.scripts/dkan-test.rb {{args}}
+      ahoy cmd-proxy ruby dkan/.ahoy/.scripts/dkan-test.rb \'{{args}}\'
 
   create-qa-users:
     usage: Create users for each core role for QA purposes

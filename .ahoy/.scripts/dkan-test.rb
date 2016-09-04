@@ -4,7 +4,7 @@
 
 # Parsese given arguments in a format that behat understands.
 def behat_param_parse args
-  args.join(" ").split("--").map do |arg|
+  args.split("--").map do |arg|
     key_value = arg.split("=")
 
     if key_value[0].nil?
@@ -50,14 +50,17 @@ if File.exists? "#{BEHAT_FOLDER}/#{ALT_CONFIG_FILE}"
 elsif ENV['CI'] == "true"
   puts "Using behat.circleci.yml config .."
   CONFIG="--config=behat.circle.yml"
+elsif BEHAT_ENV == "cli"
+  puts "Using behat.docker.yml config .."
+  CONFIG="--config=behat.docker.yml"
 else
-  puts BEHAT_ENV
   puts "Using behat.yml"
+  CONFIG="--config=behat.yml"
 end
 
 Dir.chdir(BEHAT_FOLDER) do
   # print command output as it comes
-  IO.popen("bin/behat #{behat_param_parse(ARGV)}").each do |line|
+  IO.popen("bin/behat #{CONFIG} #{behat_param_parse(ARGV[0])}").each do |line|
     puts line
   end
 end
