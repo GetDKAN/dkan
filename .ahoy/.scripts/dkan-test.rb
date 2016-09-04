@@ -12,7 +12,7 @@ def behat_param_parse args
     end
 
     if key_value.size == 2
-      "--" + key_value[0].strip + "=" + "'#{key_value[1]}'".strip
+      "--" + key_value[0].strip + "=" + "'" + "#{key_value[1]}".strip + "'"
     else
       if [
         "colors", "no-color", "end", "suite", "format",
