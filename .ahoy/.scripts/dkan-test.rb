@@ -2,7 +2,7 @@
 # environements; including CircleCI and local. This script parses the arguments
 # to fix the inherent limitation of envoking commands with quotes via ahoy.
 
-# Parsese given arguments in a format that behat understands.
+# Parse given arguments in a format that behat understands.
 def behat_param_parse args
   args.split("--").map do |arg|
     key_value = arg.split("=")
@@ -60,6 +60,8 @@ end
 
 Dir.chdir(BEHAT_FOLDER) do
   # print command output as it comes
+  puts "RUNNING: bin/behat #{CONFIG} #{behat_param_parse(ARGV[0])}"
+
   IO.popen("bin/behat #{CONFIG} #{behat_param_parse(ARGV[0])}").each do |line|
     puts line
   end
