@@ -60,9 +60,9 @@ end
 
 Dir.chdir(BEHAT_FOLDER) do
   # print command output as it comes
-  puts "RUNNING: bin/behat #{CONFIG} #{behat_param_parse(ARGV[0])}"
+  puts "RUNNING: bin/behat #{behat_param_parse(ARGV[0])} #{CONFIG}"
 
-  IO.popen("bin/behat #{CONFIG} #{behat_param_parse(ARGV[0])}").each do |line|
+  IO.popen("bin/behat #{behat_param_parse(ARGV[0])} #{CONFIG}").each do |line|
     puts line
   end
 end
