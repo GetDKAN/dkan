@@ -41,8 +41,8 @@ done
 
 for i in "${!files[@]}"; do
     if [ $(($i % $CIRCLE_NODE_TOTAL)) -eq $CIRCLE_NODE_INDEX ]; then
-      echo "Running ahoy dkan test --format=pretty --out=std --format=junit --out=$CIRCLE_ARTIFACTS/junit ${params} `pwd`/${files[$i]}"
-      time ahoy dkan test --format=pretty --out=std --format=junit --out=$CIRCLE_ARTIFACTS/junit ${params} `pwd`/${files[$i]}
+      echo "Running ahoy dkan test `pwd`/${files[$i]} --format=pretty --out=std --format=junit --out=$CIRCLE_ARTIFACTS/junit ${params} --colors"
+      time ahoy dkan test `pwd`/${files[$i]} --format=pretty --out=std --format=junit --out=$CIRCLE_ARTIFACTS/junit ${params} --colors
     fi
     # Mark the entire script as a failure if any of the iterations fail.
     if [ ! $? -eq 0 ]
