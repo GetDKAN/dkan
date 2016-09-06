@@ -11,8 +11,8 @@ unless ENV.has_key?("CIRCLE_NODE_INDEX")
   CIRCLE_NODE_TOTAL=1
   CIRCLE_NODE_INDEX=0
 else 
-  CIRCLE_NODE_TOTAL = ENV['CIRCLE_NODE_TOTAL']
-  CIRCLE_NODE_INDEX = ENV['CIRCLE_ARTIFACTS']
+  CIRCLE_NODE_TOTAL = ENV['CIRCLE_NODE_TOTAL'].to_i
+  CIRCLE_NODE_INDEX = ENV['CIRCLE_NODE_INDEX'].to_i
 end
 
 CIRCLE_ARTIFACTS =  ENV.has_key?("CIRCLE_ARTIFACTS") ? ENV['CIRCLE_ARTIFACTS'] : "assets"
@@ -40,7 +40,6 @@ files.each_index do |i|
       error = 1 unless $?.success?
     end
   end
-  exit
 end
 
 Kernel.exit(error) unless error == 0

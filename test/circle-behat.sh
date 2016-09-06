@@ -2,6 +2,15 @@
 #  - Handle circleCI's parallelization.
 #  - Handle searching in multiple directories for feature files.
 # Ex. There are 3 VMs setup: (3)
+
+# TODO: remove by end of month (9/30/2016)
+echo "*** DEPRECATED ***"
+echo "*** use .ahoy/.scripts/circle-behat.rb ***"
+echo "*** DEPRECATED ***"
+echo "*** use .ahoy/.scripts/circle-behat.rb ***"
+echo "*** DEPRECATED ***"
+echo "*** use .ahoy/.scripts/circle-behat.rb ***"
+
 if [ -z "$CIRCLE_NODE_INDEX" ]; then
   echo "No parrallelism found, setting defaults to run all tests."
   CIRCLE_NODE_TOTAL=1

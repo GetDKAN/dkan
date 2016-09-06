@@ -24,10 +24,18 @@ else
   CONFIG="--config=behat.yml"
 end
 
-# Parse given arguments in a format that behat understands.
-
-def main
+def args_payload
   payload = Base64.decode64(ARGV[0]).split(" ")
+  if payload[0] == 'payload:'
+    return payload.drop 1
+  end
+  ARGV
+end
+
+# Parse given arguments in a format that behat understands.
+def main
+  payload = args_payload
+
   if payload.include? SKIP_COMPOSER_FLAG
     puts  "Skipping composer install.."
     payload.delete(SKIP_COMPOSER_FLAG)

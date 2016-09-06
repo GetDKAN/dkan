@@ -20,7 +20,7 @@ def behat_join_params args
         "tags", "role", "story-syntax","definitions", "append-snippets",
         "no-snippets", "strict", "order", "rerun", "stop-on-failure",
         "dry-run", "profile", "config", "verbose", "help",
-        "config-reference", "version", "no-interaction"
+        "config-reference", "version", "no-interaction", "skip-composer"
       ].include? key_value[0].strip
         "--" + key_value[0].strip
       else
