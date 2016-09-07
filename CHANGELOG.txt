@@ -1,3 +1,8 @@
+7.x-1.12.10 2016-09-07
+--------------------------
+- Fix JS error on IE browsers preventing previews from appearing
+- Provide upgrade paths for older sites upgrading to newer BU editor config
+
 7.x-1-12.9 2016-08-31
 --------------------------
 - Fix data dictionary field to use html input format and improvements to the field's display and help text.
