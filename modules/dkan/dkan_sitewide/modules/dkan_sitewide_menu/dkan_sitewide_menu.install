@@ -62,18 +62,7 @@ function _dkan_sitewide_menu_clear_command_center() {
  */
 function _dkan_sitewide_menu_setup_admin_menu_source() {
   $required_roles = array('administrator', 'site manager', 'editor', 'content creator');
-  $roles = array_flip(user_roles());
   $admin_menu_source_settings = array();
-  foreach($required_roles as $role_name) {
-    if (!isset($roles[$role_name])) {
-      $role = new stdClass();
-      $role->name = $role_name;
-      user_role_save($role);
-      $roles[$role_name] = $role->rid;
-    }
-  }
-
-
   $roles = array_flip(user_roles());
 
   $admin_menu_source_settings = array(
