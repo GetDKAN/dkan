@@ -163,8 +163,7 @@ function dkan_data_story_default_search_api_index() {
       }
     },
     "enabled" : "1",
-    "read_only" : "0",
-    "rdf_mapping" : []
+    "read_only" : "0"
   }');
   return $items;
 }
@@ -246,8 +245,7 @@ function dkan_data_story_default_search_api_server() {
         }
       }
     },
-    "enabled" : "1",
-    "rdf_mapping" : []
+    "enabled" : "1"
   }');
   return $items;
 }
