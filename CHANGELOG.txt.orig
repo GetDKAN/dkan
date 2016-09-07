@@ -1,6 +1,8 @@
 <<<<<<< HEAD
 7.x-1.x
 --------------------------
+- Remove Panels IPE from dataset and search pages; in DKAN, we only want to show IPE for panelizer layouts, not templates or other "sitewide" pages.
+- Added default image for groups.
 - Add preview support for resources of many more formats, outside of recline.js. Support added for JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, ZIP
 - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
 - Fixes to groups UX: Group body field now labeled "Description," longer group descriptions do not get cut off after 200 characters on group page, and extraneous "about" tab on Group node edit form removed
@@ -24,12 +26,21 @@
 - Page link added to the command center menu.
 - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
 - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
-=======
+
 7.x-1-12.9 2016-08-30
+=======
+7.x-1.12.10 2016-09-07
+--------------------------
+- Fix JS error on IE browsers preventing previews from appearing
+- Provide upgrade paths for older sites upgrading to newer BU editor config
+
+7.x-1-12.9 2016-08-31
+>>>>>>> release-1-12
 --------------------------
 - Fix data dictionary field to use html input format and improvements to the field's display and help text.
 - Update dkan_workflow content type legend to include all content types with correct icons.
 - Fix to new bug introduced in recline module in 1.12.7; previews would not display if file smaller than max preview size, even if loading from datastore.
+- Fix a problem with paths for image icons for topics. Uploaded image icons will now display correctly in the Topics menu.
 
 7.x-1.12.8 2016-08-19
 --------------------------
@@ -37,7 +48,6 @@
 - Add validation to Group form to prevent duplicate groups from being created
 - Update and patch panels and panelizer to fix critical security issue. See release notes.
 - Patch panelizer module to correct bug introduced in previous release. See release notes.
->>>>>>> origin/release-1-12
 
 7.x-1-12.7 2016-08-09
 --------------------------
