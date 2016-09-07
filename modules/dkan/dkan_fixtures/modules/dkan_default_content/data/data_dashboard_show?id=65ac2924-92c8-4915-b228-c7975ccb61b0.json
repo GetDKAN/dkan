@@ -1,11 +1,11 @@
 {
     "result": {
         "uuid": "65ac2924-92c8-4915-b228-c7975ccb61b0",
-        "id": "20",
+        "id": "37",
         "type": "data_dashboard",
         "title": "Dynamic Transportation Visualizations",
-        "created": "1460127350",
-        "changed": "1470083609",
+        "created": "1472693478",
+        "changed": "1472709471",
         "body": {
             "und": [
                 {
@@ -59,13 +59,15 @@
                 "title": "",
                 "hide_title": "0",
                 "title_pane": "0",
-                "uuid": "53bb618c-8f72-449f-a311-6568322452d6"
+                "uuid": "53bb618c-8f72-449f-a311-6568322452d6",
+                "storage_type": "panelizer_entity",
+                "storage_id": "node:37:default"
             },
             "panels_pane": [
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:64d8b1cd-1467-46d7-87e6-f6a7d0ba14d8",
+                    "subtype": "uuid:135e81d2-23e1-4cd7-9ec3-420c65833911",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -91,8 +93,8 @@
                         "category": "Re-usable content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "64d8b1cd-1467-46d7-87e6-f6a7d0ba14d8",
-                        "language": "und",
+                        "uuid": "135e81d2-23e1-4cd7-9ec3-420c65833911",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "Getting from place to place looks different for every citizen, so transportation comes in many shapes and sizes. Some regions rely on local subways and trolleys while others adopt modern modes like Bus Rapid Transit (BRT) and bikeshare. In many cases, regions use a diverse combination of all transportation types to meet the needs and preferences of an increasingly multi-modal world.   \r\n\r\nThe dynamic map above visualizes the traffic on [Long Island Rail Road](http://www.baruch.cuny.edu/nycdata/travel/lirr-stats.htm), a heavy rail line in New York City, NY. \r\n\r\nThe LIRR makes **124** stops\r\nto serve **85,868,246** commuters annually, \r\n**298,448** of whom are weekday passengers.\r\n\r\nOn the map, each dot lighting up represents a train making a stop. The flashing map shows how many people use these services in the course of just 20 minutes. Looking at the map for only a couple seconds, it's easy to see the role transportation plays in our daily lives. \r\n\r\nThat's why it's important to have a thorough understanding of our systems and how citizens navigate within them. Visualizations provide a better way to understand complex networks, key challenges, and opportunities. Open data helps make it happen. In fact, this map was created by a citizen with open data. \r\n\r\nExplore the map above and other visualizations on this open data dashboard to learn more about commuter flows in different parts of the country. \r\n",
@@ -131,7 +133,7 @@
                 {
                     "panel": "column2",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:d6953a6c-2bac-4ec6-b0e1-8598d5fcf8b4",
+                    "subtype": "uuid:fe24605d-6b6a-495e-8bc4-338e633ab43e",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -157,8 +159,8 @@
                         "category": "Re-usable content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "d6953a6c-2bac-4ec6-b0e1-8598d5fcf8b4",
-                        "language": "und",
+                        "uuid": "fe24605d-6b6a-495e-8bc4-338e633ab43e",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "The movement of transit can be difficult to capture and quantify, let alone make into an engaging visualization. General Transit Feed Specification (GTFS) data creates a common format for agencies to provide data and developers to consume it. The dynamic heat map above [uses open GTFS data](http://developer.metro.net/introduction/gtfs-data/download-metros-gtfs-data/) to highlight the life of a transit network. \r\n\r\nThis map shows where Bus Rapid Transit (BRT) lines are operating in the LA Metro area. BRT is different from a standard bus route that is common to most transportation networks. Standard routes have stops designated, and the bus may make as many stops as needed. In some cases, a stop could mean a single city block. Bus Rapid Transit lines minimize time spent commuting as well as auto congestion by covering more ground and making fewer stops. This map is made with the digital mapping tool CartoDB. You can create your own data visualizations using digital tools and embed them onto your DKAN site. \r\n\r\n\r\n\r\nFrom the spending perspective, BRT is also much more affordable, flexible, and sustainable than any rail options. Especially for newer cities without rail lines and sprawled metropolitan areas, BRT can translate into an important piece of the larger transportation network. In the case of LA, [BRT could triple the size of the network without great expense](http://la.streetsblog.org/2014/06/03/guest-opinion-the-future-of-los-angeles-is-bus-rapid-transit/). \r\n\r\nIn the visualization above, the higher the concentration of BRT lines, the brighter the color. With this map, it's easy to see which areas in LA's metro area are getting the most service (as measured by bus activity) and give agencies insight on how to [best allocate resources](https://losangeles2b.files.wordpress.com/2012/12/web-_ten.pdf). ",
@@ -172,7 +174,7 @@
                 {
                     "panel": "column1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:783fa7aa-6c48-4b6b-9be0-339d7447bad9",
+                    "subtype": "uuid:06dadd90-17a0-47a0-a071-3c4e868cb95f",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -198,8 +200,8 @@
                         "category": "Re-usable content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "783fa7aa-6c48-4b6b-9be0-339d7447bad9",
-                        "language": "und",
+                        "uuid": "06dadd90-17a0-47a0-a071-3c4e868cb95f",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "While residents in suburban and rural areas ride bikes primarily as a recreational activity, more and more biking is become a common form of transportation in urban areas. With a greater number of people on bikes, it's clear that infrastructure and resources for bicyclists is increasingly essential. \r\n\r\nThis map made with ArcGIS shows the [existing bike lanes for the larger Miami-Dade County area](http://gis.mdc.opendata.arcgis.com/datasets/5c850d795e17485ebf8a8d179d649d9c_0?%22%20style=%22width:%20800px;%20height:%20600px;) in Florida using open data from the regional Metropolitan Planning Organization (MPO). Bike lanes are a core part of pedestrian, bicyclist, and automotive safety. They show clear right-of-way paths and encourage everyone to follow traffic safety rules. You can create your own data visualizations using digital tools and embed them onto your DKAN site. \r\n\r\nThe data released by the Miami-Dade MPO provide information about the number of bike lanes, the start and stop points, etc. With the visualization above we see the data as more than a list. It's easy to see exactly where bike lanes exist and how much area is covered in relation to the entire county. This data, along with other datasets, inform long-term plans for pedestrian and bicycle safety. The [Miami-Dade MPO 2040 plan for pedestrian bicycle safety](http://miamidadempo.org/library/plans/miami-dade-2040-bicycle-pedestrian-plan.pdf) identifies major improvements that will be achieved over the next few decades.   \r\n\r\n\r\n<center>[Go to Data](../dataset/florida-bike-lanes/resource/960687d8-582c-4f29-b1e4-113781e58e3b)</center>",
@@ -213,7 +215,7 @@
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:e673ae6c-3ea4-4aef-a513-61518d5ebf34",
+                    "subtype": "uuid:9b90511b-dcf8-44f3-b047-fccada93eb00",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -239,8 +241,8 @@
                         "category": "Re-usable content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "e673ae6c-3ea4-4aef-a513-61518d5ebf34",
-                        "language": "und",
+                        "uuid": "9b90511b-dcf8-44f3-b047-fccada93eb00",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "*Transportation systems across the country are adapting to meet the needs of their stakeholders. It's a basic service that many citizens rely on, so it has to work for everyone all of the time. Bikeshare, light and heavy rail, bus routes, and automotive come together for a robust network of mobility. Open data helps us see the bigger picture. Explore the dynamic transportation visualizations dashboard to see the big picture.*",
@@ -254,7 +256,7 @@
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:425b0faf-dcf9-412f-9770-90cc286a8595",
+                    "subtype": "uuid:5863b0b2-26ce-4d59-a636-4e6019c4b36d",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -280,9 +282,13 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "425b0faf-dcf9-412f-9770-90cc286a8595",
-                        "language": "und",
-                        "field_basic_spotlight_duration": [],
+                        "uuid": "5863b0b2-26ce-4d59-a636-4e6019c4b36d",
+                        "language": "",
+                        "field_basic_spotlight_duration": [
+                            {
+                                "value": null
+                            }
+                        ],
                         "field_basic_spotlight_items": [
                             {
                                 "alt": "Subway train departing",
@@ -395,17 +401,17 @@
             ],
             "panelizer_entity": {
                 "entity_type": "node",
-                "name": null,
-                "no_blocks": "0",
-                "css_id": "",
-                "css": "",
-                "pipeline": "ipe",
-                "relationships": [],
                 "view_mode": "default",
+                "name": null,
+                "css_id": "",
                 "css_class": "",
+                "css": "",
+                "no_blocks": "0",
                 "title_element": "H2",
                 "link_to_entity": "0",
-                "extra": []
+                "extra": [],
+                "pipeline": "ipe",
+                "relationships": []
             }
         }
     }

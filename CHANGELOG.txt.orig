@@ -1,7 +1,6 @@
+<<<<<<< HEAD
 7.x-1.x
 --------------------------
-- Remove Panels IPE from dataset and search pages; in DKAN, we only want to show IPE for panelizer layouts, not templates or other "sitewide" pages.
-- Added default image for groups.
 - Add preview support for resources of many more formats, outside of recline.js. Support added for JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, ZIP
 - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
 - Fixes to groups UX: Group body field now labeled "Description," longer group descriptions do not get cut off after 200 characters on group page, and extraneous "about" tab on Group node edit form removed
@@ -25,7 +24,7 @@
 - Page link added to the command center menu.
 - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
 - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
-
+=======
 7.x-1-12.9 2016-08-30
 --------------------------
 - Fix data dictionary field to use html input format and improvements to the field's display and help text.
@@ -38,6 +37,7 @@
 - Add validation to Group form to prevent duplicate groups from being created
 - Update and patch panels and panelizer to fix critical security issue. See release notes.
 - Patch panelizer module to correct bug introduced in previous release. See release notes.
+>>>>>>> origin/release-1-12
 
 7.x-1-12.7 2016-08-09
 --------------------------

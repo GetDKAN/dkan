@@ -4,8 +4,8 @@
         "id": "35",
         "type": "dkan_data_story",
         "title": "London Income Analysis",
-        "created": "1460662824",
-        "changed": "1469821022",
+        "created": "1472693478",
+        "changed": "1472709446",
         "body": {
             "und": [
                 {
@@ -49,7 +49,9 @@
                 "title": "",
                 "hide_title": "0",
                 "title_pane": "98",
-                "uuid": "c1fc4b3e-0aa5-4caf-9fac-70b8d675fec5"
+                "uuid": "c1fc4b3e-0aa5-4caf-9fac-70b8d675fec5",
+                "storage_type": "panelizer_entity",
+                "storage_id": "node:35:default"
             },
             "panels_pane": [
                 {
@@ -147,17 +149,17 @@
             ],
             "panelizer_entity": {
                 "entity_type": "node",
-                "name": null,
-                "no_blocks": "0",
-                "css_id": "",
-                "css": "",
-                "pipeline": "ipe",
-                "relationships": [],
                 "view_mode": "default",
+                "name": null,
+                "css_id": "",
                 "css_class": "",
+                "css": "",
+                "no_blocks": "0",
                 "title_element": "H2",
                 "link_to_entity": "0",
-                "extra": []
+                "extra": [],
+                "pipeline": "ipe",
+                "relationships": []
             }
         }
     }
