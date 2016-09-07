@@ -58,6 +58,12 @@ projects:
       url: https://github.com/NuCivic/visualization_entity.git
       tag: 7.x-1.0-beta1
     type: module
+  open_data_federal_extras:
+    download:
+      type: git
+      url: https://github.com/NuCivic/open_data_federal_extras.git
+      branch: civic-2659-data-quality
+    type: module
   admin_menu:
     version: 3.0-rc5
   bueditor:
