@@ -4,17 +4,18 @@
         "name": "gold-prices-london-1950-2008-monthly",
         "title": "Gold Prices in London 1950-2008 (Monthly)",
         "author_email": "datademo@nucivic.com",
-        "maintainer": "Welcome to the DKAN Demo",
-        "maintainer_email": "stefanie@nucivic.com",
+        "maintainer": "DKAN",
+        "maintainer_email": "admin@example.com",
         "license_title": "http://opendefinition.org/licenses/odc-pddl/",
         "notes": "<p>Monthly gold prices (USD) in London from Bundesbank.</p>\n<p>General: 1 ounce of fine gold = 31.1034768g.</p>\n<p>Method of calculation:</p>\n<ul>\n<li>Since 1 April 1968, calculated from the daily morning fixing;</li>\n<li>From January 1950 to 21 March 1954, calculated using the Bank of England's gold purchasing price (1 ounce of fine = pound 12.40) in connection with the average exchange rate for the pound in New York (up to the end of 1952; source: Federal Reserve Bulletin) and, from January 1953, midpoint exchange rates for the US dollar in London (source: Financial Times (FT)).</li>\n<li>From 22 March 1954 to December 1959, calculated using the fixing price for gold bars of approx. 12 1/2 kg and 995/1000 fineness and over (so-called standard bars) according to data from Metallgesellschaft AG, Frankfurt am Main, in connection with the average midpoint exchange rates for the US dollar in London (source: FT).</li>\n<li>From January 1960 to 14 March 1968, average fixing price for standard bars as specified in the Bank of England's Quarterly Bulletin.</li>\n<li>On 15 March 1968, fixing price suspended. Gold market split into an official (reserved for central banks) and a free market as a result of the Washington Communique of 17 March 1968. Gold trading suspended from 18 to 29 March 1968.</li>\n<li>Sources for daily prices: April 1968 - March 1974: FT; April 1974 - December 1980: Samuel Montagu & Co. Ltd.; January 1981 - December 2005: FT; January 2006 - present: Reuters.</li>\n<li>Comment on 1968-03: Average from 1 to 14 March 1968.</li>\n</ul>\n<p>License: PDDL (Source indicates no restrictions on data).</p>\n",
         "url": "http://default/dataset/gold-prices-london-1950-2008-monthly",
         "state": "Active",
+        "log_message": "Update to resource 'Table of Gold Prices'",
         "private": "Published",
-        "revision_timestamp": "Thu, 07/07/2016 - 11:48",
+        "revision_timestamp": "Thu, 09/01/2016 - 01:31",
         "metadata_created": "Sun, 02/10/2013 - 23:05",
-        "metadata_modified": "Thu, 07/07/2016 - 11:48",
-        "creator_user_id": "4eb26c32-4098-43a8-a8cc-e5ce6db7fc96",
+        "metadata_modified": "Thu, 09/01/2016 - 01:31",
+        "creator_user_id": "1ed39316-37af-4fe3-9a0d-9842efb486e3",
         "type": "Dataset",
         "resources": [
             {
@@ -24,28 +25,28 @@
                 "description": "<p>CSV file extracted and cleaned from source excel.</p>\n<p>Click on Graph button under Preview and plot date (x-axis) against price (y-axis) to see a line graph. Hovering over a point gives you the value of that data entry.</p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Thu, 01/03/2013 - 22:17",
+                "revision_timestamp": "Thu, 09/01/2016 - 01:31",
                 "name": "Table of Gold Prices",
                 "mimetype": "text/csv",
                 "size": "14.16 KB",
-                "created": "Sun, 02/10/2013 - 23:07",
+                "created": "Thu, 09/01/2016 - 01:37",
                 "resource_group_id": "",
-                "last_modified": "Date changed\tThu, 01/03/2013 - 22:17"
+                "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
             }
         ],
         "tags": [
             {
-                "id": "b7f3ef95-408b-4089-ba06-b93e890c558a",
+                "id": "deece28e-846c-4ddc-8c24-9f9a48f707c2",
                 "vocabulary_id": "2",
                 "name": "price"
             },
             {
-                "id": "3cf4af2f-313e-4b9c-af05-274ab6ed1607",
+                "id": "5fa42bbf-f3a2-496c-8f73-88524071ac6d",
                 "vocabulary_id": "2",
                 "name": "time-series"
             },
             {
-                "id": "722a9295-cd92-4075-84d2-f40e6bbee58d",
+                "id": "012b5bd1-75a2-4845-bcec-e45f550ef5c1",
                 "vocabulary_id": "2",
                 "name": "economy"
             }
@@ -57,12 +58,13 @@
             "field_data_dictionary": null,
             "field_frequency": null,
             "field_granularity": null,
+            "field_modified_source_date": null,
             "field_public_access_level": "public",
             "field_related_content": [],
             "field_resources": [
                 {
-                    "uri": "http://default/node/9",
-                    "id": "9",
+                    "uri": "http://default/node/6",
+                    "id": "6",
                     "resource": "node",
                     "uuid": "4d6d64b8-5c1d-49b6-a222-652fd4a7cb35",
                     "value": "admin"
@@ -83,43 +85,42 @@
             "field_spatial_geographical_cover": "London, England, United Kingdom",
             "field_tags": [
                 {
-                    "uri": "http://default/taxonomy_term/6",
-                    "id": "6",
+                    "uri": "http://default/taxonomy_term/13",
+                    "id": "13",
                     "resource": "taxonomy_term",
-                    "uuid": "b7f3ef95-408b-4089-ba06-b93e890c558a",
+                    "uuid": "deece28e-846c-4ddc-8c24-9f9a48f707c2",
                     "value": "price"
                 },
                 {
-                    "uri": "http://default/taxonomy_term/7",
-                    "id": "7",
+                    "uri": "http://default/taxonomy_term/14",
+                    "id": "14",
                     "resource": "taxonomy_term",
-                    "uuid": "3cf4af2f-313e-4b9c-af05-274ab6ed1607",
+                    "uuid": "5fa42bbf-f3a2-496c-8f73-88524071ac6d",
                     "value": "time-series"
                 },
                 {
-                    "uri": "http://default/taxonomy_term/32",
-                    "id": "32",
+                    "uri": "http://default/taxonomy_term/12",
+                    "id": "12",
                     "resource": "taxonomy_term",
-                    "uuid": "722a9295-cd92-4075-84d2-f40e6bbee58d",
+                    "uuid": "012b5bd1-75a2-4845-bcec-e45f550ef5c1",
                     "value": "economy"
                 }
             ],
             "field_temporal_coverage": {
                 "value": "-631134000",
-                "value2": "1230699600",
-                "duration": 1861833600
+                "value2": "-631134000",
+                "duration": 0
             },
             "og_group_ref": [],
             "field_topic": [
                 {
-                    "uri": "http://default/taxonomy_term/40",
-                    "id": "40",
+                    "uri": "http://default/taxonomy_term/3",
+                    "id": "3",
                     "resource": "taxonomy_term",
                     "uuid": "4ac6d362-6898-4ab8-98f6-ce195657ec4c",
                     "value": "Finance and Budgeting"
                 }
-            ],
-            "field_modified_source_date": null
+            ]
         }
     }
 }
