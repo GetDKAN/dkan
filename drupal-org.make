@@ -68,7 +68,6 @@ projects:
     version: '1.10'
     patch:
       2227651: 'https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch'
-      2599298: 'https://www.drupal.org/files/issues/colorizer-bug_system_cron_delete_current_css-2599298-9.patch'
   conditional_styles:
     version: '2.2'
   diff:
