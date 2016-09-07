@@ -110,7 +110,7 @@ projects:
       url: 'https://github.com/NuCivic/open_data_schema_map.git'
       branch: 7.x-1.x
   panelizer:
-    version: '3.2'
+    version: '3.4'
   views_autocomplete_filters:
     version: '1.2'
     patch:
@@ -124,7 +124,9 @@ projects:
   panopoly_images:
     version: '1.37'
   panels:
-    version: '3.5'
+    version: '3.6'
+    patch:
+      2785915: https://www.drupal.org/files/issues/panels-storage-backcompat-2785915-18.patch
   panels_style_collapsible:
     version: '1.3'
   path_breadcrumbs:
