@@ -63,8 +63,11 @@ function dkan_topics_preprocess_menu_link(&$variables) {
     foreach ($submenu as $child) {
       if(isset($child['#href'])) {
         $url  = explode("/", $child['#href']);
+        // Prepare term to match menu class.
         $term = strtolower($child['#title']);
-        $term = str_replace(' ', '-', $term);
+        $term = str_replace(array('\\', '/', '[', ' '), '-', $term);
+        $term = str_replace(array(']', '{', '}'), '', $term);
+        $term = preg_replace('/[^\p{L}0-9\-™®]/u', '', $term);
         $type = db_query('SELECT field_icon_type_value FROM {field_data_field_icon_type} WHERE entity_id = :id', array(':id' => $url[2]))->fetchField();
         if($type == 'font') {
           $icon = db_query('SELECT field_topic_icon_value FROM {field_data_field_topic_icon} WHERE entity_id = :id', array(':id' => $url[2]))->fetchField();
@@ -122,12 +125,9 @@ function dkan_topics_views_pre_render(&$view) {
           if(!empty($row->field_field_topic_icon_color[0]['raw']['rgb'])) {
             $new_prefix .= ' style="color:' . $row->field_field_topic_icon_color[0]['raw']['rgb'] . '"';
           }
-          else {
-            $new_prefix .= '';
-          }
           $new_prefix .= $prefix_clipped;
           $row->field_field_topic_icon[0]['rendered']['#prefix'] = $new_prefix;
-          $row->field_field_topic_icon[0]['rendered']['#suffix'] = '</a>';
+          $row->field_field_topic_icon[0]['rendered']['#suffix'] = '<span class="screenreader">icon</span></a>';
         }
       }
     }
