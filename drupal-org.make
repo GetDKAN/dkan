@@ -1,17 +1,12 @@
 api: '2'
 core: 7.x
 includes:
-    # DKAN Dataset
   - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
-    # DKAN Datastore
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
-    # DKAN Workflow
   - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
-    # Visualization Entity
-  - https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make
-    #DKAN Data Story
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
-    #DKAN Featured Topics
   - "modules/dkan/dkan_topics/dkan_topics.make"
 projects:
   manualcrop:
@@ -109,6 +104,11 @@ projects:
     version: '2.3'
   defaultconfig:
     version: 1.0-alpha11
+  open_data_schema_map:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/open_data_schema_map.git'
+      branch: 7.x-1.x
   panelizer:
     version: '3.2'
   views_autocomplete_filters:
