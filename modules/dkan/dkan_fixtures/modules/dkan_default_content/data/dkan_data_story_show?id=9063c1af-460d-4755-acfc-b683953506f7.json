@@ -1,11 +1,11 @@
 {
     "result": {
         "uuid": "9063c1af-460d-4755-acfc-b683953506f7",
-        "id": "22",
+        "id": "33",
         "type": "dkan_data_story",
         "title": "State-Level Policies Reduce Smoking Rates Nationwide",
-        "created": "1460343943",
-        "changed": "1470083959",
+        "created": "1472693478",
+        "changed": "1472709440",
         "body": {
             "und": [
                 {
@@ -53,7 +53,9 @@
                 "title": "",
                 "hide_title": "0",
                 "title_pane": "31",
-                "uuid": "ebf9cf6e-6f19-4a42-ab6c-b15037e39db0"
+                "uuid": "ebf9cf6e-6f19-4a42-ab6c-b15037e39db0",
+                "storage_type": "panelizer_entity",
+                "storage_id": "node:33:default"
             },
             "panels_pane": [
                 {
@@ -147,7 +149,7 @@
                 {
                     "panel": "column1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:23",
+                    "subtype": "uuid:8dd112cb-d090-4e7e-853a-027732b2dc82",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -173,8 +175,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "040bb6c7-6c9f-40e2-b316-cba1adb1f621",
-                        "language": "und",
+                        "uuid": "8dd112cb-d090-4e7e-853a-027732b2dc82",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "### Least taxed states, percent of adult smokers:\r\n\r\n1. Missouri, **22%**\r\n2. Virginia, **19%**\r\n3. Louisiana, **23.5%**\r\n4. Georgia, **18.8%**\r\n5. Alabama, **21.5%**\r\n\r\n### Most taxed states, percent of adult smokers:\r\n\r\n1. New York, **16.6%**\r\n2. Massachusetts,**16.6%**\r\n3. Rhode Island, **17.4%**\r\n4. Connecticut, **15.5%**\r\n5. Hawaii, **13.3%**\r\n\r\n<br>\r\n[Go to Data](../dataset/us-tobacco-usage-statistics/resource/5e23aa2c-c639-49eb-b3e9-652ee22c76cb)",
@@ -188,7 +190,7 @@
                 {
                     "panel": "column2",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:24",
+                    "subtype": "uuid:2ee76a71-e4a7-4cc2-aedc-dfe559474a9a",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -214,8 +216,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "48a9c382-6b02-4dc4-9e62-0594596ab536",
-                        "language": "und",
+                        "uuid": "2ee76a71-e4a7-4cc2-aedc-dfe559474a9a",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "### Highest adult smoking rates and tax rate, 2015:\r\n\r\n1. Kentucky, **$.60**\r\n2. West Virginia, **$.60**\r\n3. Oklahoma, **$1.00**\r\n4. Missouri, **$.20**\r\n5. Tennessee, **$.60**\r\n\r\n### Lowest adult smoking rate and tax rate, 2015:\r\n\r\n1. Utah, **$1.70**\r\n2. California, **$.90**\r\n3. Connecticut, **$3.60**\r\n4. Massachusetts, **$3.50**\r\n5. Minnesota, **$3.00**\r\n\r\n<br>\r\n[Go to Data](../dataset/us-tobacco-usage-statistics/resource/02708727-2f2b-4567-a53f-c669c4e3b267)",
@@ -282,17 +284,17 @@
             ],
             "panelizer_entity": {
                 "entity_type": "node",
-                "name": null,
-                "no_blocks": "0",
-                "css_id": "",
-                "css": "",
-                "pipeline": "ipe",
-                "relationships": [],
                 "view_mode": "default",
+                "name": null,
+                "css_id": "",
                 "css_class": "",
+                "css": "",
+                "no_blocks": "0",
                 "title_element": "H2",
                 "link_to_entity": "0",
-                "extra": []
+                "extra": [],
+                "pipeline": "ipe",
+                "relationships": []
             }
         }
     }

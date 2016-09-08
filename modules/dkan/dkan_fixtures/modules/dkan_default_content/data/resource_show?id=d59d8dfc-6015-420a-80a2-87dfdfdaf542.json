@@ -4,11 +4,12 @@
         "url": "files/resource/varicellaincidencerates_0.csv",
         "description": "<p>Source: \"Impact of Vaccination on the Epidemiology of Varicella: 1995\u20132009\" published in the journal Pediatrics in August 2011.</p>\n",
         "format": "csv",
-        "revision_timestamp": "Wed, 04/06/2016 - 13:27",
+        "revision_timestamp": "Thu, 09/01/2016 - 01:31",
         "name": "Varicella Incidence Rates After Vaccine Introduced in U.S., 1995-2009",
         "mimetype": "text/csv",
         "size": "155 bytes",
-        "created": "Wed, 04/06/2016 - 13:23",
-        "last_modified": "Date changed\tWed, 04/06/2016 - 13:27"
+        "created": "Thu, 09/01/2016 - 01:37",
+        "resource_group_id": "55261028-f4b2-4402-9a30-640781ad1b59",
+        "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
     }
 }
