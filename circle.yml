@@ -65,7 +65,7 @@ dependencies:
 ## Customize test commands
 test:
   override:
-    - bash dkan/test/circle-behat.sh docroot/profiles/dkan/test/features:
+    - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         parallel: true
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
