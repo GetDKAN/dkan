@@ -25,6 +25,7 @@
 - Page link added to the command center menu.
 - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
 - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
+- Removed field mapping warnings during import of default content.
 
 7.x-1-12.9 2016-08-30
 --------------------------
