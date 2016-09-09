@@ -1,3 +1,7 @@
+7.x-1.12.x
+--------------------------
+- Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
+
 7.x-1.12.10 2016-09-07
 --------------------------
 - Fix JS error on IE browsers preventing previews from appearing
