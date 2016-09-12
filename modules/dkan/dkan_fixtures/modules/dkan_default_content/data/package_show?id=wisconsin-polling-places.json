@@ -5,38 +5,39 @@
         "title": "Wisconsin Polling Places",
         "author": "Wisconsin Board of Elections",
         "author_email": "datademo@nucivic.com",
-        "maintainer": "Welcome to the DKAN Demo",
-        "maintainer_email": "stefanie@nucivic.com",
+        "maintainer": "DKAN",
+        "maintainer_email": "admin@example.com",
         "license_title": "http://opendefinition.org/licenses/cc-by/",
         "notes": "<p>Polling places in the state of Wisconsin.</p>\n",
         "url": "http://default/dataset/wisconsin-polling-places",
         "state": "Active",
+        "log_message": "Update to resource 'Madison Polling Places'",
         "private": "Published",
-        "revision_timestamp": "Fri, 05/13/2016 - 13:28",
+        "revision_timestamp": "Thu, 09/01/2016 - 01:31",
         "metadata_created": "Mon, 02/11/2013 - 00:13",
-        "metadata_modified": "Fri, 05/13/2016 - 13:28",
-        "creator_user_id": "24eb1825-a538-499e-83c0-9559ef9fd38e",
+        "metadata_modified": "Thu, 09/01/2016 - 01:31",
+        "creator_user_id": "1ed39316-37af-4fe3-9a0d-9842efb486e3",
         "type": "Dataset",
         "resources": [
             {
                 "id": "37971f0c-a5e8-4c0c-9dbc-d6fe5fb54607",
                 "revision_id": "",
                 "url": "http://default/sites/default/files/Polling_Places_Madison_0.csv",
-                "description": "<p>This is a list and map of polling places in Madison, WI.</p>\n<p>Original data here:<br />\n  <a href=\"https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr\">https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr</a></p>\n",
+                "description": "<p>This is a list and map of polling places in Madison, WI.</p>\n<p>Original data here:<br /><a href=\"https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr\">https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr</a></p>\n",
                 "format": "csv",
                 "state": "Active",
-                "revision_timestamp": "Thu, 01/03/2013 - 22:17",
+                "revision_timestamp": "Thu, 09/01/2016 - 01:31",
                 "name": "Madison Polling Places",
                 "mimetype": "text/csv",
                 "size": "17.06 KB",
-                "created": "Mon, 02/11/2013 - 00:16",
-                "resource_group_id": "",
-                "last_modified": "Date changed\tThu, 01/03/2013 - 22:17"
+                "created": "Thu, 09/01/2016 - 01:37",
+                "resource_group_id": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
+                "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
             }
         ],
         "tags": [
             {
-                "id": "61c776e4-3922-4fd1-9abb-a3b160558b7d",
+                "id": "54a23941-1bc4-4739-af8f-48f0e7e99d30",
                 "vocabulary_id": "2",
                 "name": "election"
             }
@@ -57,12 +58,13 @@
             "field_data_dictionary": null,
             "field_frequency": "5",
             "field_granularity": null,
+            "field_modified_source_date": null,
             "field_public_access_level": "public",
             "field_related_content": [],
             "field_resources": [
                 {
-                    "uri": "http://default/node/5",
-                    "id": "5",
+                    "uri": "http://default/node/4",
+                    "id": "4",
                     "resource": "node",
                     "uuid": "37971f0c-a5e8-4c0c-9dbc-d6fe5fb54607",
                     "value": "admin"
@@ -83,25 +85,24 @@
             "field_spatial_geographical_cover": "Wisconsin, United States",
             "field_tags": [
                 {
-                    "uri": "http://default/taxonomy_term/2",
-                    "id": "2",
+                    "uri": "http://default/taxonomy_term/9",
+                    "id": "9",
                     "resource": "taxonomy_term",
-                    "uuid": "61c776e4-3922-4fd1-9abb-a3b160558b7d",
+                    "uuid": "54a23941-1bc4-4739-af8f-48f0e7e99d30",
                     "value": "election"
                 }
             ],
             "field_temporal_coverage": [],
             "og_group_ref": [
                 {
-                    "uri": "http://default/node/3",
-                    "id": "3",
+                    "uri": "http://default/node/1",
+                    "id": "1",
                     "resource": "node",
                     "uuid": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
                     "value": "admin"
                 }
             ],
-            "field_topic": [],
-            "field_modified_source_date": null
+            "field_topic": []
         }
     }
 }

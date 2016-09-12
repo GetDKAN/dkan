@@ -1,11 +1,11 @@
 {
     "result": {
         "uuid": "59c96dfb-d64e-4025-b766-d9f1c7faaa47",
-        "id": "19",
+        "id": "36",
         "type": "data_dashboard",
         "title": "State Workforce and Retirement Statistics",
-        "created": "1459965181",
-        "changed": "1468373606",
+        "created": "1472693478",
+        "changed": "1472709475",
         "body": {
             "und": [
                 {
@@ -56,13 +56,15 @@
                 "title": "",
                 "hide_title": "0",
                 "title_pane": "0",
-                "uuid": "51369f27-3e73-406e-9e8e-2e79f62d894c"
+                "uuid": "51369f27-3e73-406e-9e8e-2e79f62d894c",
+                "storage_type": "panelizer_entity",
+                "storage_id": "node:36:default"
             },
             "panels_pane": [
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:11",
+                    "subtype": "uuid:808f5020-e67e-45ac-8f96-366263a4a732",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -88,8 +90,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "6c9f0728-48a6-4981-882f-7aad9d77b229",
-                        "language": "und",
+                        "uuid": "808f5020-e67e-45ac-8f96-366263a4a732",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "As our state workforce grows older the overall demographics are shifting. Workers over the age of 65 and \"Baby Boomers\" are aging out, while Gen-Xers and Millennials are aging in. The changes in employee makeup have implications for how businesses (including government) adapt to new trends as well as short-term considerations like policy and budgeting for retirement and pension costs. The charts below show how the state workforce has changed over fiscal years 2011-2015, which will inform how we plan for the years ahead. \r\n\r\n<center>[Go to Dataset](dataset/state-workforce-generation-2011-2015)</center>\r\n",
@@ -103,7 +105,7 @@
                 {
                     "panel": "footer",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:d1afac66-a926-4083-824b-d5926f5c387d",
+                    "subtype": "uuid:f6f4578f-1ddb-4abf-b2e3-c9c096110676",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -129,8 +131,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "d1afac66-a926-4083-824b-d5926f5c387d",
-                        "language": "und",
+                        "uuid": "f6f4578f-1ddb-4abf-b2e3-c9c096110676",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "By comparing the two pie charts shown above, you can see that the demographic makeup of the state workforce in 2011 - directly after the worst of the 2008 recession and the jobs crisis that followed - differed dramatically from the demographic makeup of the state workforce in 2015.",
@@ -144,7 +146,7 @@
                 {
                     "panel": "quarter1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:7d2b6784-6cad-4c8e-a2b2-bdea2340c4d2",
+                    "subtype": "uuid:f6dc22ec-3290-4c94-a393-269827d3ca67",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -170,8 +172,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "7d2b6784-6cad-4c8e-a2b2-bdea2340c4d2",
-                        "language": "und",
+                        "uuid": "f6dc22ec-3290-4c94-a393-269827d3ca67",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "* Baby Boomers dropped from representing 56% of the workforce in 2011 to only 31% in 2015.\n* Meanwhile, Generation X (those born between 1961 and 1981) expanded from 31% to 41% of the workforce.",
@@ -208,7 +210,7 @@
                 {
                     "panel": "footer",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:325ce9b2-3feb-423c-8bdf-be7fb45ad94b",
+                    "subtype": "uuid:473447af-a104-4826-b88c-099362cfbda9",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -234,8 +236,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "325ce9b2-3feb-423c-8bdf-be7fb45ad94b",
-                        "language": "und",
+                        "uuid": "473447af-a104-4826-b88c-099362cfbda9",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "These charts and graphs help us understand at a glance how the data are related. It's true that those in the \"Gen-X\" and \"Millenial\" generations compose more of the workforce in 2015 than in 2011, but across the board we're seeing little to no change in the number of retirements--despite the number of eligible candidates. That is, though the overall number of retirements is the same there are fewer people retiring relative to how many could. \r\n\r\nWhat does this tell us? Looking at just a few datasets won't give us the full picture, but it can lead us down the right path to ask the right questions.  ",
@@ -249,7 +251,7 @@
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:d2296651-89d8-4927-83bf-4fe7dd67273a",
+                    "subtype": "uuid:961b35cc-5569-43d0-af1b-87aa53841fb7",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -275,8 +277,8 @@
                         "category": "Re-usable content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "d2296651-89d8-4927-83bf-4fe7dd67273a",
-                        "language": "und",
+                        "uuid": "961b35cc-5569-43d0-af1b-87aa53841fb7",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "**Note: This dataset has been given a vague name because it is anonymized demo data, not actual state data.**\r\n\r\n*How do changing workforce demographics inform how we budget for a retirement and pension fund or budget and program evaluation? By understanding how and what types of citizens are participating in the workforce, we can make better decisions about how to serve them in our budgeting and finance operations. Learn about how the makeup of the workforce changed in just a few years.*",
@@ -290,7 +292,7 @@
                 {
                     "panel": "footer",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:e2af63a2-b481-4a96-8a44-706a861e05a7",
+                    "subtype": "uuid:779f8662-f8d0-41e1-b7d9-3335886ece47",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -316,8 +318,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "e2af63a2-b481-4a96-8a44-706a861e05a7",
-                        "language": "und",
+                        "uuid": "779f8662-f8d0-41e1-b7d9-3335886ece47",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "With shifts in the workforce, budget and finance must pay attention and adapt to meet changing needs. We look at **actual retirements and eligibility vs actual** to create reliable projections to be efficient with how dollars are allocated. \n\nThe following graphs display the retirement statistics for state employees from 2011 through 2016 as well as comparison of the percentage of state employees who are eligible to retire versus the number of actual retirements during these years.",
@@ -480,17 +482,17 @@
             ],
             "panelizer_entity": {
                 "entity_type": "node",
-                "name": null,
-                "no_blocks": "0",
-                "css_id": "",
-                "css": "",
-                "pipeline": "ipe",
-                "relationships": [],
                 "view_mode": "default",
+                "name": null,
+                "css_id": "",
                 "css_class": "",
+                "css": "",
+                "no_blocks": "0",
                 "title_element": "H2",
                 "link_to_entity": "0",
-                "extra": []
+                "extra": [],
+                "pipeline": "ipe",
+                "relationships": []
             }
         }
     }
