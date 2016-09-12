@@ -1,11 +1,11 @@
 {
     "result": {
         "uuid": "7d514bd1-fa83-4d23-bd18-6f2c9fab811b",
-        "id": "81",
+        "id": "39",
         "type": "page",
         "title": "Welcome",
-        "created": "1467685518",
-        "changed": "1468014938",
+        "created": "1472693478",
+        "changed": "1472709417",
         "body": {
             "und": [
                 {
@@ -46,7 +46,9 @@
                 "title": "",
                 "hide_title": "0",
                 "title_pane": "258",
-                "uuid": "9bff5eaa-e759-4450-9e3c-12ec708bbfc5"
+                "uuid": "9bff5eaa-e759-4450-9e3c-12ec708bbfc5",
+                "storage_type": "panelizer_entity",
+                "storage_id": "node:39:default"
             },
             "panels_pane": [
                 {
@@ -80,7 +82,7 @@
                 {
                     "panel": "hero-first",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:245830da-a7e6-4733-939b-627cf96763e4",
+                    "subtype": "uuid:a170851d-bc67-4e75-8d6e-0c8cb461345b",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -106,8 +108,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "245830da-a7e6-4733-939b-627cf96763e4",
-                        "language": "und",
+                        "uuid": "a170851d-bc67-4e75-8d6e-0c8cb461345b",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "<img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/ncd.gif\" class=\"demo\" alt=\"animated gif\" />",
@@ -278,17 +280,17 @@
             ],
             "panelizer_entity": {
                 "entity_type": "node",
-                "name": null,
-                "no_blocks": "0",
-                "css_id": "",
-                "css": "",
-                "pipeline": "ipe",
-                "relationships": [],
                 "view_mode": "default",
+                "name": null,
+                "css_id": "",
                 "css_class": "",
+                "css": "",
+                "no_blocks": "0",
                 "title_element": "H2",
                 "link_to_entity": "1",
-                "extra": []
+                "extra": [],
+                "pipeline": "ipe",
+                "relationships": []
             }
         },
         "is_homepage": true
