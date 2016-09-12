@@ -10,7 +10,7 @@
 function dkan_topics_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-data_dashboard-field_topic'
+  // Exported field_instance: 'node-data_dashboard-field_topic'.
   $field_instances['node-data_dashboard-field_topic'] = array(
     'bundle' => 'data_dashboard',
     'default_value' => NULL,
@@ -57,7 +57,7 @@ function dkan_topics_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataset-field_topic'
+  // Exported field_instance: 'node-dataset-field_topic'.
   $field_instances['node-dataset-field_topic'] = array(
     'bundle' => 'dataset',
     'default_value' => NULL,
@@ -104,7 +104,7 @@ function dkan_topics_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dkan_data_story-field_topic'
+  // Exported field_instance: 'node-dkan_data_story-field_topic'.
   $field_instances['node-dkan_data_story-field_topic'] = array(
     'bundle' => 'dkan_data_story',
     'default_value' => NULL,
@@ -151,7 +151,7 @@ function dkan_topics_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'taxonomy_term-dkan_topics-field_icon_type'
+  // Exported field_instance: 'taxonomy_term-dkan_topics-field_icon_type'.
   $field_instances['taxonomy_term-dkan_topics-field_icon_type'] = array(
     'bundle' => 'dkan_topics',
     'default_value' => array(
@@ -185,7 +185,7 @@ function dkan_topics_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'taxonomy_term-dkan_topics-field_image'
+  // Exported field_instance: 'taxonomy_term-dkan_topics-field_image'.
   $field_instances['taxonomy_term-dkan_topics-field_image'] = array(
     'bundle' => 'dkan_topics',
     'deleted' => 0,
@@ -261,7 +261,7 @@ function dkan_topics_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'taxonomy_term-dkan_topics-field_topic_icon'
+  // Exported field_instance: 'taxonomy_term-dkan_topics-field_topic_icon'.
   $field_instances['taxonomy_term-dkan_topics-field_topic_icon'] = array(
     'bundle' => 'dkan_topics',
     'default_value' => NULL,
@@ -298,7 +298,8 @@ function dkan_topics_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'taxonomy_term-dkan_topics-field_topic_icon_color'
+  // Exported field_instance:
+  // 'taxonomy_term-dkan_topics-field_topic_icon_color'.
   $field_instances['taxonomy_term-dkan_topics-field_topic_icon_color'] = array(
     'bundle' => 'dkan_topics',
     'default_value' => NULL,
