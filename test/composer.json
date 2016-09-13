@@ -2,7 +2,7 @@
     "require": {
         "behat/behat": "3.1.*@dev",
         "devinci/devinci-behat-extension": "dev-master",
-        "nucivic/dkanextension": "master-dev"
+        "nucivic/dkanextension": "master-dev",
         "phpunit/phpunit": "4.6.*",
     		"myplanetdigital/function_mock": "dev-master",
     		"drupal/drupal-driver": "~1.0"
