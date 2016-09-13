@@ -10,9 +10,9 @@ Behind the scenes, Groups add an additional set of roles and permissions that en
 
 ![cat](https://d1ra4hr810e003.cloudfront.net/media/27FB7F0C-9885-42A6-9E0C19C35242B5AC/0/D968A2D0-35B8-41C6-A94A0C5C5FCA0725/F0E9E3EC-8F99-4ED8-A40DADEAF7A011A5/dbe669e9-40be-51c9-a9a0-001b0e022be7/thul-IMG_2100.jpg "Optional Title")
 
-##How to use Groups 
+## How to use Groups 
 
-####Adding a new Group:
+#### Adding a new Group:
 
 When adding a new Group, the form has fields for basic information about the Group itself that should tell site visitors what to expect from the Datasets in the Group.
 
@@ -24,7 +24,7 @@ When adding a new Group, the form has fields for basic information about the Gro
 
 **Summary text:** You can use the Summary to create unique text for your Group. This text appears as a snippet under the Group image on the Group overview page. If left blank the first portion of the body text will be used (about 100 words). Including a summary can be useful in adding more key search terms or using a different tone to intrigue site visitors to learn more.
 
-##Managing Groups and Members
+## Managing Groups and Members
 
 Once you've added a new Group, you can assign Datasets (and their Resources) to that Group. You can also manage the members of a Group, adding new members and giving certain members different roles. Members of a Group are not bound by the permissions of their role and restricted to the content in their Group. As a Site Manager you have access to all Groups and are limited by the permissions of the Group. 
 
@@ -59,7 +59,7 @@ You can block a single user from the Group with the edit link in the far-right c
 If you need to change a user’s role you can use the edit link in the far-right column next to the user’s profile details to access and change the details of their profile. Alternatively, you can change a Group member’s role for a group of users in the Group with a bulk action by checking off multiple users and selecting the Modify OG member roles option from the drop-down menu in the Operations box. 
  
 
-##More on Group Membership
+## More on Group Membership
 
 **Requesting membership and unsubscribing from a Group:** In DKAN, “subscribing” to a Group is synonymous with becoming a member of the Group. Nonmembers can submit a membership request to the Group Administrator to become a Group member. Members have privileges to access and edit Datasets associated to the Group, so membership requires moderation. As a Site Manager, you can join any Group without moderation. Any other role must first submit a request to subscribe and then be approved by the Group Administrator. 
                    
