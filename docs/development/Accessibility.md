@@ -1,6 +1,6 @@
-## Accessibility
+# Accessibility
 
-### Section 508 compliance for the visually-impaired:
+## Section 508 compliance for the visually-impaired:
 
 Visually-impaired web users face unique challenges when using screen reader devices and applications to navigate the Internet. 
 
