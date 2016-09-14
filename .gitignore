@@ -15,5 +15,6 @@ test/dkan
 test/local.yml
 assets/*
 .idea
+.DS_Store
 behat.local.yml
 docs/_build
