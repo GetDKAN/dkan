@@ -1713,7 +1713,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'bundle' => 'dataset',
     'mapping' => array(
       '@type' => array(
-        'value' => 'dcat:dataset',
+        'value' => 'dcat:Dataset',
         'type' => 'string',
       ),
       'accessLevel' => array(
