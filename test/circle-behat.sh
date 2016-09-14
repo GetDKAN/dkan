@@ -2,6 +2,15 @@
 #  - Handle circleCI's parallelization.
 #  - Handle searching in multiple directories for feature files.
 # Ex. There are 3 VMs setup: (3)
+
+# TODO: remove by end of month (9/30/2016)
+echo "*** DEPRECATED ***"
+echo "*** use .ahoy/.scripts/circle-behat.rb ***"
+echo "*** DEPRECATED ***"
+echo "*** use .ahoy/.scripts/circle-behat.rb ***"
+echo "*** DEPRECATED ***"
+echo "*** use .ahoy/.scripts/circle-behat.rb ***"
+
 if [ -z "$CIRCLE_NODE_INDEX" ]; then
   echo "No parrallelism found, setting defaults to run all tests."
   CIRCLE_NODE_TOTAL=1
@@ -41,8 +50,8 @@ done
 
 for i in "${!files[@]}"; do
     if [ $(($i % $CIRCLE_NODE_TOTAL)) -eq $CIRCLE_NODE_INDEX ]; then
-      echo "Running ahoy dkan test --format=pretty --out=std --format=junit --out=$CIRCLE_ARTIFACTS/junit ${params} `pwd`/${files[$i]}"
-      time ahoy dkan test --format=pretty --out=std --format=junit --out=$CIRCLE_ARTIFACTS/junit ${params} `pwd`/${files[$i]}
+      echo "Running ahoy dkan test `pwd`/${files[$i]} --format=pretty --out=std --format=junit --out=$CIRCLE_ARTIFACTS/junit ${params} --colors"
+      time ahoy dkan test `pwd`/${files[$i]} --format=pretty --out=std --format=junit --out=$CIRCLE_ARTIFACTS/junit ${params} --colors
     fi
     # Mark the entire script as a failure if any of the iterations fail.
     if [ ! $? -eq 0 ]

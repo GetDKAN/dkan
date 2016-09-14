@@ -1,11 +1,11 @@
 {
     "result": {
         "uuid": "f2e6698b-4406-47ca-9cf4-af8016ffa411",
-        "id": "83",
+        "id": "40",
         "type": "page",
         "title": "About",
-        "created": "1467686276",
-        "changed": "1469821631",
+        "created": "1472693478",
+        "changed": "1472709424",
         "body": [],
         "panelizer": {
             "panels_display": {
@@ -23,7 +23,9 @@
                 "title": "",
                 "hide_title": "0",
                 "title_pane": "267",
-                "uuid": "4380d718-b0d2-4a54-8f2d-cfcf3c4a9daa"
+                "uuid": "4380d718-b0d2-4a54-8f2d-cfcf3c4a9daa",
+                "storage_type": "panelizer_entity",
+                "storage_id": "node:40:default"
             },
             "panels_pane": [
                 {
@@ -80,7 +82,7 @@
                 {
                     "panel": "header",
                     "type": "fieldable_panels_pane",
-                    "subtype": "uuid:42d8eee9-e22a-4b3c-a021-ba2d1753671f",
+                    "subtype": "uuid:6b8529c2-2958-495e-bb67-5596fe1d17ec",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -104,8 +106,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "42d8eee9-e22a-4b3c-a021-ba2d1753671f",
-                        "language": "und",
+                        "uuid": "6b8529c2-2958-495e-bb67-5596fe1d17ec",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "<iframe width=\"90%\" height=\"400px\" src=\"https://www.youtube.com/embed/lU-TSKEaMKI\" frameborder=\"0\" allowfullscreen></iframe> ",
@@ -140,7 +142,7 @@
                 {
                     "panel": "column1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:128",
+                    "subtype": "uuid:c2781828-d9d0-46dc-8224-f1efa9846ba1",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -164,8 +166,8 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "81ba5024-610a-4fed-bd19-c39e02c011af",
-                        "language": "und",
+                        "uuid": "c2781828-d9d0-46dc-8224-f1efa9846ba1",
+                        "language": "",
                         "field_basic_text_text": [
                             {
                                 "value": "<center><img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/ncd.gif\" alt=\"Computer screen with DKAN installation\"></center>",
@@ -200,7 +202,7 @@
                 {
                     "panel": "column1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:129",
+                    "subtype": "uuid:c0702ca4-6d3c-4d7c-b9ab-ce66f6d67887",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -224,9 +226,15 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "9353f7b3-995a-4929-8b58-263dc9ca270c",
-                        "language": "und",
-                        "field_basic_image_caption": [],
+                        "uuid": "c0702ca4-6d3c-4d7c-b9ab-ce66f6d67887",
+                        "language": "",
+                        "field_basic_image_caption": [
+                            {
+                                "value": null,
+                                "summary": null,
+                                "format": null
+                            }
+                        ],
                         "field_basic_image_image": [
                             {
                                 "alt": "",
@@ -266,7 +274,7 @@
                 {
                     "panel": "column1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:130",
+                    "subtype": "uuid:23ec78df-8f73-46b4-b03f-d94da7bda5f5",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -290,9 +298,15 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "0a61d130-8ca4-4115-a9e2-5d0cc20f6677",
-                        "language": "und",
-                        "field_basic_image_caption": [],
+                        "uuid": "23ec78df-8f73-46b4-b03f-d94da7bda5f5",
+                        "language": "",
+                        "field_basic_image_caption": [
+                            {
+                                "value": null,
+                                "summary": null,
+                                "format": null
+                            }
+                        ],
                         "field_basic_image_image": [
                             {
                                 "alt": "",
@@ -332,7 +346,7 @@
                 {
                     "panel": "column1",
                     "type": "fieldable_panels_pane",
-                    "subtype": "current:131",
+                    "subtype": "uuid:3fa5cb60-41e5-450d-903a-32fa1646b276",
                     "shown": "1",
                     "access": [],
                     "configuration": {
@@ -356,9 +370,15 @@
                         "category": "Reusable Content",
                         "view_access": null,
                         "edit_access": null,
-                        "uuid": "5e03dff0-6a15-4079-8b06-7a4a50ff1191",
-                        "language": "und",
-                        "field_basic_image_caption": [],
+                        "uuid": "3fa5cb60-41e5-450d-903a-32fa1646b276",
+                        "language": "",
+                        "field_basic_image_caption": [
+                            {
+                                "value": null,
+                                "summary": null,
+                                "format": null
+                            }
+                        ],
                         "field_basic_image_image": [
                             {
                                 "alt": "",
@@ -524,17 +544,17 @@
             ],
             "panelizer_entity": {
                 "entity_type": "node",
-                "name": null,
-                "no_blocks": "0",
-                "css_id": "",
-                "css": "",
-                "pipeline": "ipe",
-                "relationships": [],
                 "view_mode": "default",
+                "name": null,
+                "css_id": "",
                 "css_class": "",
+                "css": "",
+                "no_blocks": "0",
                 "title_element": "H2",
                 "link_to_entity": "1",
-                "extra": []
+                "extra": [],
+                "pipeline": "ipe",
+                "relationships": []
             }
         }
     }
