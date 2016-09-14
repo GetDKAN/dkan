@@ -16,3 +16,4 @@ test/local.yml
 assets/*
 .idea
 behat.local.yml
+docs/_build
