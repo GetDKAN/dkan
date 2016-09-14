@@ -14,7 +14,7 @@ class DkanDatasetImport extends MigrateCkanDatasetBase {
 
     $fields = $this->additionalFields();
     foreach ($fields as $id => $field) {
-      $this->addFieldMapping($field, $field);
+      $this->addFieldMapping($field, $field, FALSE);
     }
 
     $this->addFieldMapping('field_topic', 'topic_names');
