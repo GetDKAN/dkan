@@ -1,12 +1,13 @@
 api: '2'
 core: 7.x
 includes:
-- "https://raw.githubusercontent.com/NuCivic/dkan_dataset/3494-move-odfe-fields/dkan_dataset.make"
-- "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
-- "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
-- "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
-- "modules/dkan/dkan_data_story/dkan_data_story.make"
-- "modules/dkan/dkan_topics/dkan_topics.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/3494-move-odfe-fields/dkan_dataset.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
+  - "modules/dkan/dkan_data_story/dkan_data_story.make"
+  - "modules/dkan/dkan_topics/dkan_topics.make"
 projects:
   manualcrop:
     version: '1.5'
@@ -103,8 +104,13 @@ projects:
     version: '2.3'
   defaultconfig:
     version: 1.0-alpha11
+  open_data_schema_map:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/open_data_schema_map.git'
+      branch: 7.x-1.x
   panelizer:
-    version: '3.2'
+    version: '3.4'
   views_autocomplete_filters:
     version: '1.2'
     patch:
@@ -118,7 +124,9 @@ projects:
   panopoly_images:
     version: '1.37'
   panels:
-    version: '3.5'
+    version: '3.6'
+    patch:
+      2785915: https://www.drupal.org/files/issues/panels-storage-backcompat-2785915-18.patch
   panels_style_collapsible:
     version: '1.3'
   path_breadcrumbs:
