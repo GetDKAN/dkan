@@ -71,7 +71,7 @@ Feature: Dataset Features
     And I fill in the following:
       | Title           | Test Dataset      |
       | Description     | Test description  |
-    And I fill in the chosen field "edit_og_group_ref_und_0_default_chosen" with "Group 01"
+    And I fill in the chosen field "edit_og_group_ref_und_chosen" with "Group 01"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
 
@@ -131,7 +131,7 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
     When I click "Edit"
-    And I fill in the chosen field "edit_og_group_ref_und_0_default_chosen" with "Group 01"
+    And I fill in the chosen field "edit_og_group_ref_und_chosen" with "Group 01"
     And I press "Finish"
     Then I should see "Dataset Dataset 03 has been updated"
     When I am on "Group 01" page
@@ -186,9 +186,6 @@ Feature: Dataset Features
     And I press "Finish"
     Then I should see "Dataset 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I click "Resource 04"
-    And I click "Edit"
-    Then I should see "Group 01" in the "resource groups" region
 
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
@@ -201,59 +198,45 @@ Feature: Dataset Features
     And I fill in the resources field "edit-field-resources-und-0-target-id" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 07 has been updated"
-    When I click "Resource 04"
-    And I click "Edit"
-    Then I should see "Group 01" in the "resource groups" region
+    And I should see "Groups were updated on 1 resource(s)"
     When I am on "Dataset 07" page
     And I click "Edit"
     And I empty the field "edit-field-resources-und-0-target-id"
     And I press "Finish"
     Then I should see "Dataset 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I am on "Resource 04" page
-    And I click "Edit"
-    Then I should not see "Group 01" in the "resource groups" region
 
   @noworkflow
   Scenario: Add group to a dataset with resources
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
     When I click "Edit"
-    And I fill in the chosen field "edit_og_group_ref_und_0_default_chosen" with "Group 02"
+    And I fill in the chosen field "edit_og_group_ref_und_chosen" with "Group 02"
     And I press "Finish"
     Then I should see "Dataset 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I am on "Resource 05" page
-    And I click "Edit"
-    Then I should see "Group 02" in the "resource groups" region
 
   @noworkflow
   Scenario: Remove group from dataset with resources
     Given I am logged in as "Katie"
     And I am on "Dataset 09" page
     When I click "Edit"
-    And I empty the resources field "edit_og_group_ref_und_0_default_chosen"
+    And I empty the resources field "edit_og_group_ref_und_chosen"
     And I press "Finish"
     Then I should see "Dataset 09 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I am on "Resource 06" page
-    And I click "Edit"
-    Then I should not see "Group 02" in the "resource groups" region
 
   @noworkflow
   Scenario: Add group and resource to a dataset on the same edition
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
     When I click "Edit"
-    And I fill in the chosen field "edit_og_group_ref_und_0_default_chosen" with "Group 02"
+    And I fill in the chosen field "edit_og_group_ref_und_chosen" with "Group 02"
     And I fill in the resources field "edit-field-resources-und-0-target-id" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
     And I should see "Resource 04" in the "dataset resource list" region
-    When I click "Resource 04"
-    And I click "Edit"
-    Then I should see "Group 02" in the "resource groups" region
 
   @api
   Scenario: Site Managers should see groups they are not member of

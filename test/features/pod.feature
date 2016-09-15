@@ -69,4 +69,6 @@ Feature: Project Open Data + Open Data Federal Extras
     When I am logged in as a user with the "content creator" role
     And I visit "node/add/dataset"
     Then I should see the "POD valid" license values
+    #Cleanup configuration
+    Given I "disable" the "Strict POD validation" on DKAN Dataset Forms
 
