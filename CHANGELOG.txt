@@ -30,7 +30,8 @@
 - Added new option on DKAN Dataset Forms to enable POD based validation on Dataset form.
 - Added new option on DKAN Dataset Forms to enable Groups field validation on Dataset form.
 - Added Open Data Federal Extras module into DKAN Core.
-- Upgraded contitional_fields module.
+- Groups field was hidden on the resource form since groups are assigned automatically based on the parent datasets.
+- Groups field on Dataset form was modified to be a single select with all group options and it was moved from the tabs section to the main section of the form. 
 - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
 - Removed field mapping warnings during import of default content.
 
