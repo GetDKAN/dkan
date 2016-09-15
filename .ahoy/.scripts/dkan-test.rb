@@ -51,8 +51,12 @@ def main
   Dir.chdir(BEHAT_FOLDER) do
     puts "RUNNING: bin/behat #{files} #{params} #{CONFIG}"
 
-    IO.popen("bin/behat #{files} #{params} #{CONFIG}").each do |line|
-      puts line
+    IO.popen("bin/behat #{files} #{params} #{CONFIG}") do |io|
+      while line = io.gets
+        print line
+      end
+      io.close
+      exit(1) unless $?.success?
     end
   end
 end
