@@ -10,7 +10,7 @@
 function dkan_topics_field_default_field_bases() {
   $field_bases = array();
 
-  // Exported field_base: 'field_icon_type'
+  // Exported field_base: 'field_icon_type'.
   $field_bases['field_icon_type'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -35,7 +35,7 @@ function dkan_topics_field_default_field_bases() {
     'type' => 'list_text',
   );
 
-  // Exported field_base: 'field_topic'
+  // Exported field_base: 'field_topic'.
   $field_bases['field_topic'] = array(
     'active' => 1,
     'cardinality' => -1,
@@ -61,7 +61,7 @@ function dkan_topics_field_default_field_bases() {
     'type' => 'taxonomy_term_reference',
   );
 
-  // Exported field_base: 'field_topic_icon'
+  // Exported field_base: 'field_topic_icon'.
   $field_bases['field_topic_icon'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -80,7 +80,7 @@ function dkan_topics_field_default_field_bases() {
     'type' => 'font_icon_select_icon',
   );
 
-  // Exported field_base: 'field_topic_icon_color'
+  // Exported field_base: 'field_topic_icon_color'.
   $field_bases['field_topic_icon_color'] = array(
     'active' => 1,
     'cardinality' => 1,
