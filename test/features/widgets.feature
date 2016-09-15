@@ -13,16 +13,16 @@ Feature: Widgets
       | csv 2  |
     And datasets:
       | title                          | publisher | author | published        | tags     | description |
-      | Afghanistan Election Districts | Group 01  | admin  | Yes              | Health 2 | Test        |
+      | 11111AAAAAAafghanistan Election Districts | Group 01  | admin  | Yes              | Health 2 | Test        |
     And resources:
       | title          | publisher | format | author | published | dataset                        | description |
-      | District Names | Group 01  | csv 2  | admin  | Yes       | Afghanistan Election Districts |             |
+      | District Names | Group 01  | csv 2  | admin  | Yes       | 11111AAAAAAafghanistan Election Districts |             |
     And I am logged in as a user with the "site manager" role
     And I wait for "Customize this page"
     When I click "Customize this page"
     And I wait for "Add new pane"
     And I click "Add new pane"
-    And I wait for "Add content"
+    And I wait for "Add content to"
 
   Scenario: Adds "Button Link" to home page using panels ipe editor
     When I follow "Link"
@@ -126,7 +126,7 @@ Feature: Widgets
       And I select "Title" from "exposed[sort_by]"
       And I press "Finish"
     And I wait and press "Save"
-    Then I should see "Afghanistan Election Districts"
+    Then I should see "11111AAAAAAafghanistan"
       And I should see "Posted by admin"
 
   Scenario: Adds "Existing Content" block to home page using panels ipe editor
@@ -146,4 +146,4 @@ Feature: Widgets
     And I press "Finish"
     And I wait for "Visualization embed"
     Then I should see "Visualization embed"
-    
+

@@ -135,6 +135,7 @@ Feature: Dataset Features
   Scenario: View available tag filters for datasets
     Given I am on "Datasets Search" page
     Then I click on the text "Tags"
+    And I wait for "1" seconds
     Then I should see "Health 2 (2)" in the "filter by tag" region
     Then I should see "Gov 2 (1)" in the "filter by tag" region
 
@@ -148,7 +149,9 @@ Feature: Dataset Features
 
   Scenario: View available author filters for datasets
     Given I am on "Datasets Search" page
-    Then I click on the text "Author"
+    And I wait for "Author"
+    When I click on the text "Author"
+    And I wait for "1" seconds
     Then I should see "Gabriel (2)" in the "filter by author" region
     Then I should see "Katie (1)" in the "filter by author" region
 

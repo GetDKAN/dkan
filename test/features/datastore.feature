@@ -1,3 +1,4 @@
+@api
 Feature: Datastore
   In order to know the datastore is working
   As a website user
@@ -20,12 +21,17 @@ Feature: Datastore
       | title       | publisher | format | dataset    | author  | published | description               |
       | Resource 01 | Group 01  | cvs    | Dataset 01 | Gabriel | Yes       | The resource description. |
 
-  @api @javascript
+  # Don't remove! This is for avoiding issues when other scenarios are disabled (because of @noworkflow tag).
+  Scenario: Dumb test
+        Given I am on the homepage
+
+  @api @javascript @noworkflow
   Scenario: Adding and Removing items from the datastore
       Given I am logged in as a user with the "site manager" role
       And I am on "dataset/dataset-01"
       And I click "Resource 01"
       And I click "Edit"
+      And I click "Remote file"
       And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv"
       And I press "Save"
       And I am on "dataset/dataset-01"

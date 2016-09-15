@@ -46,9 +46,12 @@ function dkan_additional_setup() {
       array('dkan_misc_variables_set', array()),
       array('dkan_group_link_delete', array()),
       array('dkan_set_adminrole', array()),
+      array('dkan_set_roleassign_roles', array()),
+      array('dkan_set_bueditor_excludes', array()),
     ),
   );
 }
+
 
 function dkan_theme_config(&$context) {
   $context['message'] = t('Setting theme options.');
@@ -367,4 +370,35 @@ function dkan_delete_markdown_buttons(&$context) {
 function dkan_group_link_delete(&$context) {
   $context['message'] = t('Removing og_extra groups link');
   db_query('DELETE FROM {menu_links} WHERE link_path = :link_path LIMIT 1', array(':link_path' => 'groups'));
+}
+
+/**
+ * Set up the roles that sitemanagers are allowed to assign via role assign
+ * module. Should be everything except admin.
+ */
+function dkan_set_roleassign_roles(&$context) {
+  $context['message'] = t('Configuring Role Assign module');
+  $roles_rids = array_flip(user_roles());
+  $roleassign_roles = array($roles_rids['administrator'] => 0);
+  $allowed_roles = array('editor', 'site manager', 'content creator');
+  foreach($allowed_roles as $role) {
+    $roleassign_roles[$roles_rids[$role]] = (string) $roles_rids[$role];
+  }
+  variable_set('roleassign_roles', $roleassign_roles);
+}
+
+/**
+ * Add data dictionary textarea id to bueditor excludes list.
+ */
+function dkan_set_bueditor_excludes() {
+  db_update('bueditor_editors')
+    ->fields(array(
+      'excludes' => 'edit-log
+edit-menu-description
+*data-dictionary*',
+    ))
+    ->condition('eid', '5')
+    ->execute();
+
+  drupal_flush_all_caches();
 }

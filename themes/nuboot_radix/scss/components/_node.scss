@@ -34,7 +34,7 @@
     li.selected {
       border: 0;
       background-color: transparent;
-      min-width: 10em;
+      min-width: 4em;
       a:hover {
         background:transparent;
       }
@@ -44,7 +44,7 @@
         text-indent: -9999px;
         width: 16px;
         height: 16px;
-        margin: 0 0 0 28px;
+        left: 50%;
         clip: auto;
       }
       &.horizontal-tab-button-1 .summary,
