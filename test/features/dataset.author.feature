@@ -19,6 +19,7 @@ Feature: Dataset Features
       | Badmin  | admin@example.com   | site manager         |
       | Gabriel | gabriel@example.com | editor               |
       | Jaz     | jaz@example.com     | editor               |
+      | Daniel  | daniel@example.com  | editor               |
       | Katie   | katie@example.com   | content creator      |
       | Martin  | martin@example.com  | authenticated user   |
       | Celeste | celeste@example.com | authenticated user   |
@@ -27,6 +28,7 @@ Feature: Dataset Features
       | Group 01 | Admin  | Yes       |
       | Group 02 | Admin  | Yes       |
       | Group 03 | Admin  | No        |
+      | Group 04 | Admin  | Yes       |
     And group memberships:
       | user    | group    | role on group        | membership status |
       | Gabriel | Group 01 | administrator member | Active            |
@@ -34,6 +36,7 @@ Feature: Dataset Features
       | Jaz     | Group 01 | member               | Pending           |
       | Celeste | Group 02 | member               | Active            |
       | Katie   | Group 02 | member               | Active            |
+      | Daniel  | Group 02 | member               | Active            |
     And "Tags" terms:
       | name   |
       | price1 |
@@ -251,3 +254,24 @@ Feature: Dataset Features
     When I click "Resource 04"
     And I click "Edit"
     Then I should see "Group 02" in the "resource groups" region
+
+  @api
+  Scenario: Site Managers should see groups they are not member of
+    Given I am logged in as "John"
+    When I visit "node/add/dataset"
+    Then I should see the "Group 01" groups option
+    And I should see the "Group 02" groups option
+
+  @api
+  Scenario: Content Creators should only see the groups they are member of
+    Given I am logged in as "Katie"
+    When I visit "node/add/dataset"
+    Then I should see the "Group 02" groups option
+    And I should not see the "Group 04" groups option
+
+  @api
+  Scenario: Editors should only see the groups they are member of
+    Given I am logged in as "Daniel"
+    When I visit "node/add/dataset"
+    Then I should see the "Group 02" groups option
+    And I should not see the "Group 04" groups option

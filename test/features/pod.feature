@@ -21,32 +21,30 @@ Feature: Project Open Data + Open Data Federal Extras
 
   @api @add_ODFE @remove_ODFE
   Scenario: See all POD required fields marked as required
-    Given I am logged in as a user with the "administrator" role
-    When I visit "admin/dkan/dataset_forms"
-    And I check the box "Validate dataset form according to Project Open Data (more strict than default DKAN validation)."
-    And I check the box "Require datasets to have a group."
-    And I press "Save configuration"
-    When I visit "node/add/dataset"
+    # Enable POD validation + Groups validation
+    Given I "enable" the "Strict POD validation" on DKAN Dataset Forms
+    And I "enable" the "Groups validation" on DKAN Dataset Forms
+    # Log in as a non-admin user.
+    When I am logged in as a user with the "content creator" role
+    And I visit "node/add/dataset"
     Then I should see all POD required fields
-    And I should see "A dataset must be added to a specific group, but you don’t belong to any groups."
+    Then I should see "A dataset must be added to a specific group, but you don’t belong to any groups."
     And I should see "Ask a supervisor or site administrator to add you to a group or promote you to site manager to add datasets."
     When I select "- None -" from "edit-field-public-access-level-und"
     And I press "Next: Add data"
     Then I should see an error for POD required fields
     And I should see "Error: You tried to submit a dataset with no groups assigned."
     # Cleanup configuration.
-    Given I visit "admin/dkan/dataset_forms"
-    Then I uncheck the box "Validate dataset form according to Project Open Data (more strict than default DKAN validation)."
-    Then I uncheck the box "Require datasets to have a group."
-    And I press "Save configuration"
+    Then I "disable" the "Strict POD validation" on DKAN Dataset Forms
+    Then I "disable" the "Groups validation" on DKAN Dataset Forms
 
   @api @add_ODFE @remove_ODFE
   Scenario: See all POD required fields marked as required except for Groups
-    Given I am logged in as a user with the "administrator" role
-    When I visit "admin/dkan/dataset_forms"
-    And I check the box "Validate dataset form according to Project Open Data (more strict than default DKAN validation)."
-    And I press "Save configuration"
-    When I visit "node/add/dataset"
+    # Enable POD validation only.
+    Given I "enable" the "Strict POD validation" on DKAN Dataset Forms
+    # Log in as a non-admin user.
+    When I am logged in as a user with the "content creator" role
+    And I visit "node/add/dataset"
     Then I should see all POD required fields
     And I should not see "A dataset must be added to a specific group, but you don’t belong to any groups."
     And I should not see "Ask a supervisor or site administrator to add you to a group or promote you to site manager to add datasets."
@@ -55,6 +53,20 @@ Feature: Project Open Data + Open Data Federal Extras
     Then I should see an error for POD required fields
     And I should not see "Error: You tried to submit a dataset with no groups assigned."
     # Cleanup configuration.
-    Given I visit "admin/dkan/dataset_forms"
-    Then I uncheck the box "Validate dataset form according to Project Open Data (more strict than default DKAN validation)."
-    And I press "Save configuration"
+    Then I "disable" the "Strict POD validation" on DKAN Dataset Forms
+
+  @api @add_ODFE @remove_ODFE
+  Scenario: See all license values if POD validation is not enabled
+    Given I am logged in as a user with the "content creator" role
+    When I visit "node/add/dataset"
+    Then I should see "all" license values
+
+  @api @add_ODFE @remove_ODFE
+  Scenario: See only POD valid licenses if POD validation is enabled
+    # Enable POD validation only.
+    Given I "enable" the "Strict POD validation" on DKAN Dataset Forms
+    # Log in as a non-admin user.
+    When I am logged in as a user with the "content creator" role
+    And I visit "node/add/dataset"
+    Then I should see the "POD valid" license values
+
