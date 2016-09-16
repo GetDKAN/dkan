@@ -442,30 +442,30 @@ function dkan_bueditor_markdown_install() {
   foreach ($roles as $rid => $role) {
     switch($role) {
     case 'anonymous user':
-      $bueditor_roles[$rid] = [
+      $bueditor_roles[$rid] = array(
         'weight' => 12,
         'editor' => _dkan_bueditor_by_name('Commenter'),
         'alt' => 0,
-      ];
+      );
       break;
 
     case 'administrator':
     case 'content creator':
     case 'editor':
     case 'site manager':
-      $bueditor_roles[$rid] = [
+      $bueditor_roles[$rid] = array(
         'weight' => 0,
         'editor' => _dkan_bueditor_by_name('Markdowneditor'),
         'alt' => 0,
-      ];
+      );
       break;
 
     default:
-      $bueditor_roles[$rid] = [
+      $bueditor_roles[$rid] = array(
         'weight' => 11,
         'editor' => 0,
         'alt' => 0,
-      ];
+      );
     }
   }
 
@@ -478,10 +478,10 @@ function dkan_bueditor_markdown_install() {
     ->execute()
     ->fetchField();
 
-  $data = [
+  $data = array(
     'html' => ['default' => $eid, 'alternative' => 0],
     'plain_text' => ['plain_text' => 0, 'alternative' => 0]
-  ];
+  );
 
   db_insert('bueditor_plus_profiles')
     ->fields(array(
