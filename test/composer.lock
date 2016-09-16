@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "def1eb64cf11ae68a35dd277ea5c7a10",
+    "hash": "b19f47badad5da611f53b644944e07f8",
     "packages": [
         {
             "name": "behat/behat",
@@ -909,16 +909,16 @@
         },
         {
             "name": "nucivic/dkanextension",
-            "version": "dev-master",
+            "version": "dev-civic-3522-enable-dkan-workflow",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "c2fadc490db4933d4fa3d99d9fdd53e17f441f51"
+                "reference": "b76a09b95fe8971995ef3f0521e944a06e194b6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/c2fadc490db4933d4fa3d99d9fdd53e17f441f51",
-                "reference": "c2fadc490db4933d4fa3d99d9fdd53e17f441f51",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/b76a09b95fe8971995ef3f0521e944a06e194b6a",
+                "reference": "b76a09b95fe8971995ef3f0521e944a06e194b6a",
                 "shasum": ""
             },
             "require": {
@@ -946,7 +946,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-09-16 14:02:25"
+            "time": "2016-09-16 20:25:37"
         },
         {
             "name": "psr/http-message",

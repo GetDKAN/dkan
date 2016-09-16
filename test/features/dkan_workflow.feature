@@ -1,4 +1,4 @@
-@api @javascript
+@api @javascript @enableDKAN_Workflow
 Feature:
   Workflow (Workbench) tests for DKAN Workflow Module
 
