@@ -238,21 +238,21 @@ Feature: Dataset Features
     And I should see "Groups were updated on 1 resource(s)"
     And I should see "Resource 04" in the "dataset resource list" region
 
-  @api
+  @api @noworkflow
   Scenario: Site Managers should see groups they are not member of
     Given I am logged in as "John"
     When I visit "node/add/dataset"
     Then I should see the "Group 01" groups option
     And I should see the "Group 02" groups option
 
-  @api
+  @api @noworkflow
   Scenario: Content Creators should only see the groups they are member of
     Given I am logged in as "Katie"
     When I visit "node/add/dataset"
     Then I should see the "Group 02" groups option
     And I should not see the "Group 04" groups option
 
-  @api
+  @api @noworkflow
   Scenario: Editors should only see the groups they are member of
     Given I am logged in as "Daniel"
     When I visit "node/add/dataset"
