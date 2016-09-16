@@ -3,23 +3,23 @@ Feature: Project Open Data + Open Data Federal Extras
   As a dataset creator
   I want to create datasets with POD fields and publish them with data.json
 
-  @api
+  @api @noworkflow
   Scenario: Data.json should be valid
     Given I am on the homepage
     Then I should see a valid data.json
 
-  @api @add_ODFE @remove_ODFE
+  @api @noworkflow @add_ODFE @remove_ODFE
   Scenario: Data.json should remain valid when ODFE is enabled
     Given I am on the homepage
     Then I should see a valid data.json
 
-  @api @add_ODFE @remove_ODFE
+  @api @noworkflow @add_ODFE @remove_ODFE
   Scenario: See Federal Extras fields on the Dataset form
     Given I am logged in as a user with the "editor" role
     When I visit "node/add/dataset"
     Then I should see all of the Federal Extras fields
 
-  @api @add_ODFE @remove_ODFE
+  @api @noworkflow @add_ODFE @remove_ODFE
   Scenario: See all POD required fields marked as required
     # Enable POD validation + Groups validation
     Given I "enable" the "Strict POD validation" on DKAN Dataset Forms
@@ -38,7 +38,7 @@ Feature: Project Open Data + Open Data Federal Extras
     Then I "disable" the "Strict POD validation" on DKAN Dataset Forms
     Then I "disable" the "Groups validation" on DKAN Dataset Forms
 
-  @api @add_ODFE @remove_ODFE
+  @api @noworkflow @add_ODFE @remove_ODFE
   Scenario: See all POD required fields marked as required except for Groups
     # Enable POD validation only.
     Given I "enable" the "Strict POD validation" on DKAN Dataset Forms
@@ -55,13 +55,13 @@ Feature: Project Open Data + Open Data Federal Extras
     # Cleanup configuration.
     Then I "disable" the "Strict POD validation" on DKAN Dataset Forms
 
-  @api @add_ODFE @remove_ODFE
+  @api @noworkflow @add_ODFE @remove_ODFE
   Scenario: See all license values if POD validation is not enabled
     Given I am logged in as a user with the "content creator" role
     When I visit "node/add/dataset"
     Then I should see "all" license values
 
-  @api @add_ODFE @remove_ODFE
+  @api @noworkflow @add_ODFE @remove_ODFE
   Scenario: See only POD valid licenses if POD validation is enabled
     # Enable POD validation only.
     Given I "enable" the "Strict POD validation" on DKAN Dataset Forms
