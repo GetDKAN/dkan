@@ -1,4 +1,4 @@
-@api @disablecaptcha @javascript
+@api @javascript
 Feature:
   Workflow (Workbench) tests for DKAN Workflow Module
 
@@ -14,6 +14,27 @@ Feature:
       | My Edits           | /admin/workbench/content/edited      |
       | All Recent Content | /admin/workbench/content/all         |
       | Create User        | /admin/people/create                 |
+    Given users:
+      | name    | mail                | roles         |
+      | John    | john@example.com    | site manager,   |
+      | Badmin  | admin@example.com   | site manager  |
+      | Gabriel | gabriel@example.com | editor        |
+      | Jaz     | jaz@example.com     | editor        |
+      | Katie   | katie@example.com   | editor        |
+      | Martin  | martin@example.com  | editor        |
+      | Celeste | celeste@example.com | editor        |
+    Given groups:
+      | title    | author | published |
+      | Group 01 | Badmin | Yes       |
+      | Group 02 | Badmin | Yes       |
+      | Group 03 | Badmin | No        |
+    And group memberships:
+      | user    | group    | role on group        | membership status |
+      | Gabriel | Group 01 | administrator member | Active            |
+      | Katie   | Group 01 | member               | Active            |
+      | Jaz     | Group 01 | member               | Pending           |
+      | Celeste | Group 02 | member               | Active            |
+
 
   # Non workbench roles can see the menu item My Workflow. However
   # they can't access to the page.
@@ -43,7 +64,7 @@ Feature:
     Then The page status should be "ok"
     And I should be on the "My Workbench" page
     And I should see the link "My content"
-    #And I should see the link " My drafts"
+    And I should see the link " My drafts"
     And I should see the link "My Edits"
     And I should see the link "All Recent Content"
     Examples:
@@ -78,11 +99,11 @@ Feature:
   Scenario Outline: As a user with the Workflow Moderator or Supervisor role, I should be able to publish 'Needs Review' content.
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
-      | title                       | published |
-      | Draft Dataset Needs Review  | No        |
+      | title                      | author  | moderation |
+      | Draft Dataset Needs Review | Katie   | draft      |
     And resources:
-      | title                        | dataset             | format |  published |
-      | Draft Resource Needs Review  | Draft Dataset Needs Review    | csv    |  no        |
+      | title                        | author | dataset                       | format |  published |
+      | Draft Resource Needs Review  | Katie  | Draft Dataset Needs Review    | csv    |  no        |
     And I update the moderation state of "Draft Dataset Needs Review" to "Needs Review"
     And I update the moderation state of "Draft Resource Needs Review" to "Needs Review"
     Given I am logged in as a user with the "<workbench reviewer roles>" role
@@ -103,12 +124,12 @@ Feature:
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
-      | title                       | published |
-      | Stale Dataset Needs Review  | No        |
-      | Fresh Dataset Needs Review  | No        |
+      | title                       | author | published |
+      | Stale Dataset Needs Review  | Katie  | No        |
+      | Fresh Dataset Needs Review  | Katie  | No        |
     And resources:
-      | title                        | dataset                    | format |  published |
-      | Stale Resource Needs Review  | Stale Dataset Needs Review | csv    |  no        |
+      | title                        | author | dataset                    | format |  published |
+      | Stale Resource Needs Review  | Katie  | Stale Dataset Needs Review | csv    |  no        |
     And I update the moderation state of "Stale Dataset Needs Review" to "Needs Review" on date "30 days ago"
     And I update the moderation state of "Stale Resource Needs Review" to "Needs Review" on date "30 days ago"
     And I update the moderation state of "Fresh Dataset Needs Review" to "Needs Review" on date "20 days ago"
@@ -149,11 +170,11 @@ Feature:
   Scenario Outline: As a user with Workflow Roles, I should be able to see draft content I authored in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
-      | title       | published |
-      | My Dataset  | No        |
+      | title       | author | published |
+      | My Dataset  | Katie  | No        |
     And resources:
-      | title        | dataset    | format |  published |
-      | My Resource  | My Dataset | csv    |  no        |
+      | title        | author | dataset    | format |  published |
+      | My Resource  | Katie  | My Dataset | csv    |  no        |
     And I visit the "My Drafts" page
     And I should see "My Resource"
     And I should see "My Dataset"
@@ -171,11 +192,11 @@ Feature:
       | moderator       | Workflow Moderator, editor            | moderator@email.com   |
     Given I am logged in as "contributor"
     And datasets:
-      | title                         | published |
-      | My Dataset                    | No        |
+      | title       | author  | published |
+      | My Dataset  | Katie   | No        |
     And resources:
-      | title        | dataset       | format |  published |
-      | My Resource  | My Dataset    | csv    |  Yes       |
+      | title        | author | dataset       | format |  published |
+      | My Resource  | Katie  | My Dataset    | csv    |  Yes       |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And "moderator" updates the moderation state of "My Dataset" to "Published"
@@ -196,11 +217,11 @@ Feature:
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Needs Review resources I authored in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
-      | title       | published |
-      | My Dataset  | No        |
+      | title       | author | published |
+      | My Dataset  | Katie  | No        |
     And resources:
-      | title        | dataset       | format |  published |
-      | My Resource  | My Dataset    | csv    |  no        |
+      | title        | author |  dataset       | format |  published |
+      | My Resource  | Katie  | My Dataset    | csv    |  no        |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And I visit the "My Drafts" page
@@ -216,11 +237,11 @@ Feature:
   Scenario: As a user with the Workflow Contributor, I should be able to see Needs Review contents I authored in 'Needs Review'
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
-      | title       | published |
-      | My Dataset  | Yes       |
+      | title       | author | published |
+      | My Dataset  | Katie  | Yes       |
     And resources:
-      | title        | dataset       | format |  published |
-      | My Resource  | My Dataset    | csv    |  Yes       |
+      | title        | author | dataset       | format |  published |
+      | My Resource  | Katie  | My Dataset    | csv    |  Yes       |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And I visit the "Needs Review" page
@@ -249,9 +270,6 @@ Feature:
 
   @ok
   Scenario: As a Workflow Moderator, I should be able to see Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
-    Given groups:
-      | title    | published |
-      | Group 01 | Yes       |
     Given users:
       | name            | roles                                 |
       | some-other-user | Workflow Contributor, content creator |
@@ -270,10 +288,6 @@ Feature:
 
   @ok
   Scenario: As a Workflow Moderator, I should not be able to see Needs Review datasets I did not author, and which do not belong to my Group, in 'Needs Review'
-    Given groups:
-      | title    | published |
-      | Group 01 | Yes       |
-      | Group 02 | Yes       |
     Given users:
       | name            | roles                                 |
       | some-other-user | Workflow Contributor, content creator |
@@ -292,10 +306,6 @@ Feature:
 
   @ok
   Scenario: As a Workflow Supervisor, I should be able to see Needs Review content I did not author, regardless whether it belongs to my group or not, in 'Needs Review'
-    Given groups:
-      | title    | published |
-      | Group 01 | Yes       |
-      | Group 02 | Yes       |
     Given users:
       | name            | roles                                 |
       | other-user      | Workflow Contributor, content creator |
@@ -319,10 +329,6 @@ Feature:
 
   @ok
   Scenario: As a Workflow Supervisor I should be able to see content in the 'Needs Review' state I did not author, regardless whether it belongs to my group or not, but which were submitted greater than 72 hours before now, in the 'Stale Reviews'
-    Given groups:
-      | title    | published |
-      | Group 01 | Yes       |
-      | Group 02 | Yes       |
     Given users:
       | name            | roles                                 |
       | other-user      | Workflow Contributor, content creator |
@@ -346,10 +352,6 @@ Feature:
 
   @ok
   Scenario: As a Workflow Supervisor I should be able to see content in the 'Draft' state I did not author, regardless whether it belongs to my group or not, but which were submitted greater than 72 hours before now, in the 'Stale Drafts'
-    Given groups:
-      | title    | published |
-      | Group 01 | Yes       |
-      | Group 02 | Yes       |
     Given users:
       | name            | roles                                 |
       | other-user      | Workflow Contributor, content creator |
@@ -387,10 +389,6 @@ Feature:
       | Moderator M1G2   | moderator-m1g2@test.com    | 1      | Workflow Moderator, editor            |
       | Supervisor S1G2  | supervisor-s1g2@test.com   | 1      | Workflow Supervisor, site manager     |
 
-    Given groups:
-      | title    | author         | published |
-      | Group 01 | Administrator  | Yes       |
-      | Group 02 | Administrator  | Yes       |
     And group memberships:
       | user              | group    | role on group        | membership status |
       | Administrator     | Group 01 | administrator member | Active            |
