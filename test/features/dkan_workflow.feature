@@ -14,26 +14,22 @@ Feature:
       | My Edits           | /admin/workbench/content/edited      |
       | All Recent Content | /admin/workbench/content/all         |
       | Create User        | /admin/people/create                 |
-    Given users:
-      | name    | mail                | roles         |
-      | John    | john@example.com    | site manager,   |
-      | Badmin  | admin@example.com   | site manager  |
-      | Gabriel | gabriel@example.com | editor        |
-      | Jaz     | jaz@example.com     | editor        |
-      | Katie   | katie@example.com   | editor        |
-      | Martin  | martin@example.com  | editor        |
-      | Celeste | celeste@example.com | editor        |
+    Given Users:
+      | name         | mail                | status | roles                             |
+      | Contributor  | WC@fakeemail.com    | 1      | Workflow Contributor              |
+      | Moderator    | WM@fakeemail.com    | 1      | Editor, Workflow Moderator        |
+      | Supervisor   | WS@fakeemail.com    | 1      | Site Manager, Workflow Supervisor |
     Given groups:
-      | title    | author | published |
-      | Group 01 | Badmin | Yes       |
-      | Group 02 | Badmin | Yes       |
-      | Group 03 | Badmin | No        |
+      | title    | author     | published |
+      | Group 01 | Supervisor | Yes       |
+      | Group 02 | Supervisor | Yes       |
+      | Group 03 | Supervisor | No        |
     And group memberships:
-      | user    | group    | role on group        | membership status |
-      | Gabriel | Group 01 | administrator member | Active            |
-      | Katie   | Group 01 | member               | Active            |
-      | Jaz     | Group 01 | member               | Pending           |
-      | Celeste | Group 02 | member               | Active            |
+      | user       | group    | role on group        | membership status |
+      | Supervisor | Group 01 | administrator member | Active            |
+      | Moderator  | Group 01 | member               | Active            |
+      | Contributor| Group 01 | member               | Pending           |
+      | Moderator  | Group 02 | member               | Active            |
 
 
   # Non workbench roles can see the menu item My Workflow. However
@@ -99,13 +95,14 @@ Feature:
   Scenario Outline: As a user with the Workflow Moderator or Supervisor role, I should be able to publish 'Needs Review' content.
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
-      | title                      | author  | moderation |
-      | Draft Dataset Needs Review | Katie   | draft      |
+      | title                      | author        | moderation |
+      | Draft Dataset Needs Review | Contributor   | draft      |
     And resources:
-      | title                        | author | dataset                       | format |  published |
-      | Draft Resource Needs Review  | Katie  | Draft Dataset Needs Review    | csv    |  no        |
+      | title                        | author       | dataset                       | format |  published |
+      | Draft Resource Needs Review  | Contributor  | Draft Dataset Needs Review    | csv    |  no        |
     And I update the moderation state of "Draft Dataset Needs Review" to "Needs Review"
     And I update the moderation state of "Draft Resource Needs Review" to "Needs Review"
+    Given I am not logged in
     Given I am logged in as a user with the "<workbench reviewer roles>" role
     And I visit the "Needs Review" page
     And I should see the button "Reject"
@@ -124,15 +121,17 @@ Feature:
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
-      | title                       | author | published |
-      | Stale Dataset Needs Review  | Katie  | No        |
-      | Fresh Dataset Needs Review  | Katie  | No        |
+      | title                       | author       | published | moderation_date   | date created  |
+      | Stale Dataset Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
+      | Fresh Dataset Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
     And resources:
-      | title                        | author | dataset                    | format |  published |
-      | Stale Resource Needs Review  | Katie  | Stale Dataset Needs Review | csv    |  no        |
+      | title                        | author       | dataset                    | format |  published |
+      | Stale Resource Needs Review  | Contributor  | Stale Dataset Needs Review | csv    |  no        |
     And I update the moderation state of "Stale Dataset Needs Review" to "Needs Review" on date "30 days ago"
     And I update the moderation state of "Stale Resource Needs Review" to "Needs Review" on date "30 days ago"
     And I update the moderation state of "Fresh Dataset Needs Review" to "Needs Review" on date "20 days ago"
+    #And I click "Log out"
+    Then I am an anonymous user
     Given I am logged in as a user with the "Workflow Supervisor" role
     And I visit the "Stale Reviews" page
     And I should see the button "Reject"
