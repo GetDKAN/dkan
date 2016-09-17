@@ -170,10 +170,10 @@ Feature:
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
       | title       | author | published |
-      | My Dataset  | Katie  | No        |
+      | My Dataset  | Contributor  | No        |
     And resources:
       | title        | author | dataset    | format |  published |
-      | My Resource  | Katie  | My Dataset | csv    |  no        |
+      | My Resource  | Contributor  | My Dataset | csv    |  no        |
     And I visit the "My Drafts" page
     And I should see "My Resource"
     And I should see "My Dataset"
@@ -192,10 +192,10 @@ Feature:
     Given I am logged in as "contributor"
     And datasets:
       | title       | author  | published |
-      | My Dataset  | Katie   | No        |
+      | My Dataset  | Contributor   | No        |
     And resources:
       | title        | author | dataset       | format |  published |
-      | My Resource  | Katie  | My Dataset    | csv    |  Yes       |
+      | My Resource  | Contributor  | My Dataset    | csv    |  Yes       |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And "moderator" updates the moderation state of "My Dataset" to "Published"
@@ -217,10 +217,10 @@ Feature:
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
       | title       | author | published |
-      | My Dataset  | Katie  | No        |
+      | My Dataset  | Contributor  | No        |
     And resources:
       | title        | author |  dataset       | format |  published |
-      | My Resource  | Katie  | My Dataset    | csv    |  no        |
+      | My Resource  | Contributor  | My Dataset    | csv    |  no        |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And I visit the "My Drafts" page
@@ -237,10 +237,10 @@ Feature:
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
       | title       | author | published |
-      | My Dataset  | Katie  | Yes       |
+      | My Dataset  | Contributor  | Yes       |
     And resources:
       | title        | author | dataset       | format |  published |
-      | My Resource  | Katie  | My Dataset    | csv    |  Yes       |
+      | My Resource  | Contributor  | My Dataset    | csv    |  Yes       |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And I visit the "Needs Review" page
