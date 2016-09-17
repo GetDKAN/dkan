@@ -374,7 +374,7 @@ Feature:
 
   # EMAIL NOTIFICATIONS: Content WITH group.
 
-  @api @disablecaptcha @mail
+  @api @mail
   Scenario Outline: As a user with a workflow role I should receive an email notification if needed when the moderation status on a content with group is changed
     Given users:
       | name             | mail                       | status | roles                                 |
@@ -435,7 +435,7 @@ Feature:
 
   # EMAIL NOTIFICATIONS: Content WITHOUT group.
 
-  @api @disablecaptcha @mail
+  @api @mail
   Scenario Outline: As a user with a workflow role I should receive an email notification if needed when the moderation status on a content without group is changed
     Given users:
       | name             | mail                       | status | roles                                 |
