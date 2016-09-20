@@ -32,8 +32,8 @@ Feature:
       | Moderator  | Group 02 | member               | Active            |
 
 
-   Non workbench roles can see the menu item My Workflow. However
-   they can't access to the page.
+  #Non workbench roles can see the menu item My Workflow. However
+  #they can't access to the page.
   Scenario Outline: As a user without a Workbench role, I should not be able to access My Workbench or the My Workbench tabs
     Given I am logged in as a user with the "<non-workbench roles>" role
     Then I should not see the link "My Workbench"
@@ -55,8 +55,8 @@ Feature:
   @ok
   Scenario Outline: As a user with any Workflow role, I should be able to access My Workbench.
     Given I am logged in as a user with the "<workbench roles>" role
-    And I am on "My Workbench" page
-    And I should see the link "My content"
+    When I am on "My Workbench" page
+    Then I should see the link "My content"
     And I should see the link "My drafts"
     And I should see the link "My Edits"
     And I should see the link "All Recent Content"
@@ -75,7 +75,7 @@ Feature:
     And resources:
       | title              | dataset             | author | format |  moderation |  moderation_date | date created  |
       | My Draft Resource  | My Draft Dataset    | <user> | csv    |  draft      |  Jul 21, 2015    | Jul 21, 2015  |
-    And I am on the "My Drafts" page
+    When I am on the "My Drafts" page
     Then I should see the button "Submit for review"
     And I should see "My Draft Dataset"
     And I should see "My Draft Resource"
@@ -90,7 +90,7 @@ Feature:
       | Moderator |
       | Supervisor |
 
-  @ok 
+  @ok @mail 
   Scenario Outline: As a user with the Workflow Moderator or Supervisor role, I should be able to publish 'Needs Review' content.
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
@@ -101,15 +101,14 @@ Feature:
       | Draft Resource Needs Review  | Contributor  | Draft Dataset Needs Review    | csv    |  no        |
     And I update the moderation state of "Draft Dataset Needs Review" to "Needs Review"
     And I update the moderation state of "Draft Resource Needs Review" to "Needs Review"
-    Given I am not logged in
-    Given I am logged in as a user with the "<workbench reviewer roles>" role
+    When  I am logged in as a user with the "<workbench reviewer roles>" role
     And I visit the "Needs Review" page
-    And I should see the button "Reject"
+    Then I should see the button "Reject"
     And I should see the button "Publish"
     And I should see "Draft Dataset Needs Review"
     And I should see "Draft Resource Needs Review"
-    And I check the box "Select all items on this page"
-    When I press "Publish"
+    When I check the box "Select all items on this page"
+    And I press "Publish"
     Then I wait for "Performed Publish on 2 items."
     Examples:
       | workbench reviewer roles              |
@@ -361,7 +360,6 @@ Feature:
     Then I should see the text "Not My Dataset"
 
   # EMAIL NOTIFICATIONS: Content WITH group.
-
   @api @mail
   Scenario Outline: As a user with a workflow role I should receive an email notification if needed when the moderation status on a content with group is changed
     Given users:
@@ -421,8 +419,7 @@ Feature:
     | Supervisor S1G2  | should not |
 
 
-   EMAIL NOTIFICATIONS: Content WITHOUT group.
-
+  # EMAIL NOTIFICATIONS: Content WITHOUT group.
   @api @mail
   Scenario Outline: As a user with a workflow role I should receive an email notification if needed when the moderation status on a content without group is changed
     Given users:
