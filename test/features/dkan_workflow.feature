@@ -173,14 +173,13 @@ Feature:
       | title        | author | dataset    | format |  moderation |
       | My Resource  | <user>  | My Dataset | csv    |  draft        |
     And I visit the "My Drafts" page
-    And I debug wait for 10 seconds
     And I should see "My Resource"
     And I should see "My Dataset"
     Examples:
-      | user                       |
-      |Contributor|
-      | Workflow Moderator, editor            |
-      | Workflow Supervisor, site manager     |
+      | user |
+      | Contributor |
+      | Moderator  |
+      | Supervisor |
 
   @ok 
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Published content I authored in workbench pages
