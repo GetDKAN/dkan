@@ -30,12 +30,12 @@ Feature: User
       | Celeste | Group 02 | member               | Active            |
     And "Tags" terms:
       | name    |
-      | Health  |
-      | Gov     |
+      | world   |
+      | results |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Katie   | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Katie   | Yes              | Health   | Test        |
+      | Dataset 01 | Group 01  | Katie   | Yes              | world    | Test        |
+      | Dataset 02 | Group 01  | Katie   | Yes              | world    | Test        |
 
   Scenario: Login
     Given I am on the homepage
@@ -51,7 +51,7 @@ Feature: User
     When I follow "Log out"
     Then I should see "Log in"
 
-  @deleteTempUsers
+  @deleteTempUsers @customizable
   Scenario: Register
     Given I am on the homepage
     When I follow "Register"
@@ -82,20 +82,17 @@ Feature: User
 
   Scenario: View list of published datasets created by user on user profile
     Given I am on "Katie" page
-    And I click "Datasets" in the "tabs" region
     Then I should see "2" items in the "user content" region
 
   Scenario: Search datasets created by user on user profile
     Given I am on "Katie" page
-    And I click "Datasets" in the "tabs" region
     When I fill in "Test" for "Search" in the "content search" region
     And I press "Apply"
     Then I should see "2 results" in the "user content" region
     And I should see "2" items in the "user content" region
 
   Scenario: See list of user memberships on user profile
-    Given I am on "Katie" page
-    And I click "Groups" in the "tabs" region
-    Then I should see "Group membership:"
-    Then I should see "Group 01"
+    Given I am logged in as "Katie"
+    And I am on "Katie" page
+    Then I should see "Group 01" in the "user profile" region
     And I should not see "Group 02"

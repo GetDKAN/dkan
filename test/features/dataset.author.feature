@@ -36,24 +36,24 @@ Feature: Dataset Features
       | Katie   | Group 02 | member               | Active            |
     And "Tags" terms:
       | name   |
-      | Health |
-      | Gov    |
+      | price1 |
+      | election1 |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Gabriel | Yes              | price    |             |
-      | Dataset 02 | Group 01  | Gabriel | Yes              | election |             |
-      | Dataset 03 |           | Katie   | Yes              | price    |             |
-      | Dataset 04 | Group 02  | Celeste | No               | election |             |
-      | Dataset 05 | Group 01  | Katie   | No               | election |             |
-      | Dataset 06 |           | Katie   | Yes              | election |             |
-      | Dataset 07 | Group 01  | Katie   | Yes              | election |             |
-      | Dataset 08 |           | Katie   | Yes              | election |             |
-      | Dataset 09 | Group 02  | Katie   | Yes              | election |             |
+      | Dataset 01 | Group 01  | Gabriel | Yes              | price1    |             |
+      | Dataset 02 | Group 01  | Gabriel | Yes              | election1 |             |
+      | Dataset 03 |           | Katie   | Yes              | price1    |             |
+      | Dataset 04 | Group 02  | Celeste | No               | election1 |             |
+      | Dataset 05 | Group 01  | Katie   | No               | election1 |             |
+      | Dataset 06 |           | Katie   | Yes              | election1 |             |
+      | Dataset 07 | Group 01  | Katie   | Yes              | election1 |             |
+      | Dataset 08 |           | Katie   | Yes              | election1 |             |
+      | Dataset 09 | Group 02  | Katie   | Yes              | election1 |             |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
-      | Resource 03 | Group 01  | html   | Katie  | Yes       | Dataset 02 |             |
+      | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
+      | Resource 03 | Group 01  | zip    | Katie  | Yes       | Dataset 02 |             |
       | Resource 04 |           | csv    | Katie  | Yes       |            |             |
       | Resource 05 |           | csv    | Katie  | Yes       | Dataset 08 |             |
       | Resource 06 | Group 02  | csv    | Katie  | Yes       | Dataset 09 |             |
@@ -68,9 +68,23 @@ Feature: Dataset Features
     And I fill in the following:
       | Title           | Test Dataset      |
       | Description     | Test description  |
-    And I fill in the chosen field "Choose some options" with "Group 01"
+    And I fill in the chosen field "edit_og_group_ref_und_0_default_chosen" with "Group 01"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
+
+  @api @noworkflow
+  Scenario: Save using "Additional Info"
+    Given I am logged in as a user with the "content creator" role
+    And I am on "/node/add/dataset"
+    When I fill in "title" with "Test Dataset"
+    And I fill in "body[und][0][value]" with "Test description"
+    And I press "Next: Add data"
+    And I fill in "title" with "Test Resource Link File"
+    And I press "Next: Additional Info"
+    And I press "Save"
+    Then I should see "Test Dataset"
+    And I should see "Test description"
+
 
   @noworkflow
   Scenario: Edit own dataset as a content creator
@@ -82,6 +96,18 @@ Feature: Dataset Features
     Then I should see "Dataset Dataset 03 edited has been updated"
     When I am on "My Content" page
     Then I should see "Dataset 03 edited"
+
+  @noworkflow @javascript
+  Scenario: Seeing the License
+    Given I am logged in as "Katie"
+    And I am on "Dataset 03" page
+    When I click "Edit"
+    Given I select "Creative Commons Attribution" from "edit-field-license-und-select" chosen.js select box
+    And I press "edit-submit"
+    And I click "Log out"
+    When I am on "Dataset 03" page
+    And I click "Creative Commons Attribution"
+    Then I should see "The Creative Commons Attribution license allows re-distribution and re-use of a licensed work"
 
   @fixme @noworkflow
     # TODO: Needs definition. How can a data contributor unpublish content?
@@ -102,7 +128,7 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
     When I click "Edit"
-    And I fill in the chosen field "Choose some options" with "Group 01"
+    And I fill in the chosen field "edit_og_group_ref_und_0_default_chosen" with "Group 01"
     And I press "Finish"
     Then I should see "Dataset Dataset 03 has been updated"
     When I am on "Group 01" page
@@ -190,7 +216,7 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
     When I click "Edit"
-    And I fill in the chosen field "Choose some options" with "Group 02"
+    And I fill in the chosen field "edit_og_group_ref_und_0_default_chosen" with "Group 02"
     And I press "Finish"
     Then I should see "Dataset 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -216,7 +242,7 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
     When I click "Edit"
-    And I fill in the chosen field "Choose some options" with "Group 02"
+    And I fill in the chosen field "edit_og_group_ref_und_0_default_chosen" with "Group 02"
     And I fill in the resources field "edit-field-resources-und-0-target-id" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 08 has been updated"
@@ -225,4 +251,3 @@ Feature: Dataset Features
     When I click "Resource 04"
     And I click "Edit"
     Then I should see "Group 02" in the "resource groups" region
-

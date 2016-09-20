@@ -4,7 +4,7 @@ commands:
 
   drush:
     usage: Run drush via ahoy (helpful for abstraction)
-    cmd: ahoy cmd-proxy drush --root=docroot {{args}}
+    cmd: ahoy cmd-proxy drush --root=docroot "{{args}}"
 
   dkan:
     usage: A series of commands for dkan development.
@@ -12,7 +12,7 @@ commands:
 
 # Utility / Experimental commands that are currently hidden
   confirm:
-    cmd: ahoy -f dkan/.ahoy/utils.ahoy.yml confirm {{args}}
+    cmd: ahoy -f dkan/.ahoy/utils.ahoy.yml confirm "{{args}}"
     hide: true
 
   docker:
@@ -34,7 +34,12 @@ commands:
       fi
     hide: true
 
-  doctor:
+  diagnose:
     usage: A series of maintenance commands to check the docker environment health
-    import: dkan/.ahoy/doctor.ahoy.yml
+    import: dkan/.ahoy/diagnose.ahoy.yml
+    hide: true
+
+  doctor:
+    usage: A series of maintenance commands to check the docker environment health (Deprecated and moved to diagnose commands)
+    import: dkan/.ahoy/diagnose.ahoy.yml
     hide: true
