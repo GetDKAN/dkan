@@ -1,27 +1,16 @@
 api: '2'
 core: 7.x
 includes:
-    # DKAN Dataset
   - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
-    # DKAN Datastore
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
-    # DKAN Workflow
   - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
-    # Visualization Entity
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/master/visualization_entity.make"
-    # Visualization Entity Charts
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity_charts/master/visualization_entity_charts.make"
-    #DKAN Data Story
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
-    #DKAN Featured Topics
-  - "modules/dkan/dkan_featured_topics/dkan_featured_topics.make"
+  - "modules/dkan/dkan_topics/dkan_topics.make"
 projects:
   manualcrop:
-    version: 1.x-dev
-    download:
-      type: git
-      revision: d6c449d
-      branch: 7.x-1.x
+    version: '1.5'
   tablefield:
     version: '2.4'
   simple_gmap:
@@ -66,23 +55,17 @@ projects:
   visualization_entity:
     download:
       type: git
-      url: 'https://github.com/NuCivic/visualization_entity.git'
-      branch: master
-    type: module
-  visualization_entity_charts:
-    download:
-      type: git
-      url: 'https://github.com/NuCivic/visualization_entity_charts.git'
-      branch: master
+      url: https://github.com/NuCivic/visualization_entity.git
+      tag: 7.x-1.0-beta1
     type: module
   admin_menu:
     version: 3.0-rc5
   bueditor:
     version: '1.8'
-    patch:
-      1931862: 'http://drupal.org/files/dont-render-bueditor-for-plain-text-textareas.patch'
+  bueditor_plus:
+    version: '1.4'
   colorizer:
-    version: '1.8'
+    version: '1.10'
     patch:
       2227651: 'https://www.drupal.org/files/issues/colorizer-add-rgb-vars-2227651-4b.patch'
       2599298: 'https://www.drupal.org/files/issues/colorizer-bug_system_cron_delete_current_css-2599298-9.patch'
@@ -97,9 +80,9 @@ projects:
   features_roles_permissions:
     version: '1.2'
   fieldable_panels_panes:
-    version: '1.8'
+    version: '1.10'
   honeypot:
-    version: '1.17'
+    version: '1.22'
   fontyourface:
     version: '2.8'
     patch:
@@ -107,14 +90,10 @@ projects:
       2: patches/fontyourface-clear-css-cache.patch
       2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
   imagecache_actions:
-    download:
-      type: git
-      url: 'http://git.drupal.org/project/imagecache_actions.git'
-      branch: 7.x-1.x
-      revision: cd19d2a
+    version: '1.7'
     type: module
   markdown:
-    version: '1.2'
+    version: '1.4'
   markdowneditor:
     version: '1.4'
     patch:
@@ -125,75 +104,74 @@ projects:
     version: '2.3'
   defaultconfig:
     version: 1.0-alpha11
+  open_data_schema_map:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/open_data_schema_map.git'
+      branch: 7.x-1.x
   panelizer:
-    version: '3.1'
+    version: '3.4'
   views_autocomplete_filters:
     version: '1.2'
     patch:
       2374709: 'http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch'
       2317351: 'http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch'
   panopoly_widgets:
-    version: '1.25'
+    version: '1.37'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.27'
+    version: '1.37'
   panels:
-    version: '3.5'
+    version: '3.6'
+    patch:
+      2785915: https://www.drupal.org/files/issues/panels-storage-backcompat-2785915-18.patch
   panels_style_collapsible:
     version: '1.3'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
-    version: '1.2'
+    version: '1.3'
   radix_layouts:
     version: '3.4'
   r4032login:
     version: '1.8'
   rules:
-    version: '2.3'
+    version: '2.9'
   restws:
-    version: '2.3'
-    patch:
-      2484829: 'https://www.drupal.org/files/issues/restws-fix-format-extension-2484829-53.patch'
+    version: '2.6'
+  roleassign:
+    version: '1.1'
   schema:
     version: '1.2'
   adminrole:
     version: '1.1'
   admin_menu_source:
-    download:
-      type: git
-      url: 'http://git.drupal.org/project/admin_menu_source.git'
-      branch: 7.x-1.x
-      revision: 8514d8b
+    version: '1.1'
     # Allow ordering of roles to handle users w/multiple roles
     patch:
       2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
   menu_token:
     version: 1.0-beta5
-  delta:
-    version: 3.0-beta11
-  omega:
-    version: '3.1'
-    patch:
-      1828552: 'http://drupal.org/files/1828552-omega-hook_views_mini_pager.patch'
-    type: theme
-  nuboot_radix:
-    download:
-      type: git
-      url: 'https://github.com/NuCivic/nuboot_radix.git'
-      branch: 7.x-1.x
-    type: theme
   radix:
     type: theme
     version: 3.3
   field_reference_delete:
     download:
-      version: 7.x-1.0-beta1
+      full_version: 7.x-1.0-beta1
   facetapi:
     patch:
       1: patches/cross-site-scripting-facets-156778.patch
+  migrate:
+    version: 2.8
+  migrate_extras:
+    version: 2.5
+  dkan_migrate_base:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/dkan_migrate_base.git'
+      branch: 7.x-1.x
 libraries:
   jquery.imagesloaded:
     download:

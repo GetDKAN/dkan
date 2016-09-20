@@ -113,7 +113,7 @@ function dkan_sitewide_resource_additional_block($nid = '') {
 
     if (($file = $link) || ($file = $upload)) {
       $file_info[] = array(t('mimetype'), $file['filemime']);
-      $file_info[] = array(t('filesize'), $file['filesize']);
+      $file_info[] = array(t('filesize'), format_size($file['filesize']));
       $file_info[] = array(t('resource type'), 'file upload');
       $file_info[] = array(t('timestamp'), date('M d, Y', $file['timestamp']));
       return theme('table',
@@ -296,6 +296,8 @@ function dkan_sitewide_social_block() {
 function dkan_sitewide_other_access() {
   $node = menu_get_object();
   if (!empty($node->nid)) {
+    $alias = drupal_get_path_alias('node/' . $node->nid);
+    $alias = $alias . '.xml';
     $output = array(
       'formats' => array(
         '#type' => 'markup',
@@ -316,10 +318,10 @@ function dkan_sitewide_other_access() {
                   'title' => t('json view of content')
             ))),
           ),
-          'rdf' => array(
+          'dcat' => array(
             '#type' => 'markup',
-            '#markup' => l('<i class="ckan-icon ckan-icon-rdfxml "></i> RDF',
-              'node/' . $node->nid . '.rdf',
+            '#markup' => l('<i class="ckan-icon ckan-icon-rdfxml"></i> RDF',
+              url($alias, array('absolute' => TRUE)),
               array(
                 'html' => TRUE,
                 'attributes' => array(
