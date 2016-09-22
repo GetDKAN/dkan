@@ -497,23 +497,22 @@ Feature:
     And I click "Edit"
     Then the checkbox "content creator" should be checked
 
-  ## TODO: fix scenario: https://jira.govdelivery.com/browse/CIVIC-4150
-  #@api
-  #Scenario: Modify user workflow roles as site manager
-    #Given users:
-      #| name     | roles           | mail           |
-      #| content-creator     | content creator | pat@test.com   |
-      #| site-manager    | site manager    | chris@test.com |
-    #Given pages:
-      #| name          | url           |
-      #| Users         | /admin/people |
+  @api
+  Scenario: Modify user workflow roles as site manager
+    Given users:
+      | name            | roles           | mail           |
+      | content-creator | content creator | pat@test.com   |
+      | site-manager    | site manager    | chris@test.com |
+    Given pages:
+      | name          | url           |
+      | Users         | /admin/people |
 
-    #Given I am logged in as "site-manager"
-    #And I am on "Users" page
-    #When I click "edit" in the "content-creator" row
-    #And I check "Workflow Contributor"
-    #And I press "Save"
-    #And I wait for "People"
-    #Then I should see "The changes have been saved"
-    #When I am on "Users" page
-    #Then I should see "Workflow Contributor" in the "content-creator" row
+    Given I am logged in as "site-manager"
+    And I am on "Users" page
+    When I click "edit" in the "content-creator" row
+    And I check "Workflow Contributor"
+    And I press "Save"
+    And I wait for "People"
+    Then I should see "The changes have been saved"
+    When I am on "Users" page
+    Then I should see "Workflow Contributor" in the "content-creator" row
