@@ -117,7 +117,9 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       ),
       'limit' => 1000,
       'filters' => array(
-        'date' => '1950-02-01'
+        array(
+          'date' => '1950-02-01'
+        )
       )
     );
     $params = _dkan_datastore_api_get_params($params);

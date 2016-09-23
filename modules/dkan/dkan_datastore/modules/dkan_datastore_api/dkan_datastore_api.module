@@ -386,14 +386,9 @@ function dkan_datastore_api_add_index_conditions(&$data_select, $filters, $alias
     foreach ($filters as $num => $filter) {
       $num = str_replace(' ', '_', $num);
 
-      if (is_array($filter)) {
         foreach ($filter as $key => $value) {
-          $data_select->condition($num . '.' . $key, $filter, 'IN');
+          $data_select->condition($alias . '.' . $key, $filter, 'IN');
         }
-      }
-      else {
-        $data_select->condition($alias . '.' . $num, services_str_getcsv($filter), 'IN');
-      }
     }
   }
 }
