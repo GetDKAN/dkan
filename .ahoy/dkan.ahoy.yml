@@ -24,7 +24,6 @@ commands:
     # So, we delete the specific folders.
     cmd: |
       rm -rf docroot/profiles/dkan/modules/dkan/dkan_dataset ;
-      rm -rf docroot/profiles/dkan/modules/dkan/dkan_datastore ;
       rm -rf docroot/profiles/dkan/modules/contrib ;
       echo "removed dkan/modules folders created by make and running a fresh drush make."
       ahoy drush -y make --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --working-copy docroot/profiles/dkan
