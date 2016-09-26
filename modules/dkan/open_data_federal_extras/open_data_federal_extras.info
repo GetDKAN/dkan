@@ -1,4 +1,4 @@
-name = Open Data Federal Agency Extras
+name = Open Data Federal Extras
 description = Extends DKAN for Federal level compliance items.
 core = 7.x
 package = DKAN
