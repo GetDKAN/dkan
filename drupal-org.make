@@ -1,7 +1,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/3494-move-odfe-fields/dkan_dataset.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
   - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
@@ -39,7 +39,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_dataset.git'
-      branch: 3494-move-odfe-fields
+      branch: 7.x-1.x
   dkan_datastore:
     subdir: dkan
     download:
@@ -108,7 +108,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/open_data_schema_map.git'
-      branch: 3494-move-odfe-fields
+      branch: 7.x-1.x
   panelizer:
     version: '3.4'
   views_autocomplete_filters:
@@ -171,7 +171,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_migrate_base.git'
-      branch: 3494-move-odfe-fields
+      branch: 7.x-1.x
 libraries:
   jquery.imagesloaded:
     download:
