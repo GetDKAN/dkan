@@ -207,6 +207,29 @@ div.horizontal-tabs {
   }
 }
 
+.node-dataset-form .group-odfie-pod {
+  .form-item {
+    margin-bottom: 0px;
+  }
+  .field-name-field-odfe-data-quality {
+    margin-bottom: 15px;
+  }
+}
+
+.node-dataset-form .form-item.has-error {
+  div.autocomplete-deluxe-container,
+  div.chosen-container {
+    border: 2px solid red;
+    .chosen-single {
+      border: none;
+    }
+  }
+}
+
+.node-dataset-form .form-item .error .chosen-single {
+  line-height: 24px;
+}
+
 .node-dataset-form,
 .node-resource-form {
   .field-name-field-format label {
@@ -242,4 +265,8 @@ div.horizontal-tabs {
   input[type=submit] {
     margin-right: 1em;
   }
+}
+
+#dkan-dataset-form-settings .help-block {
+  margin: 5px 20px 10px;
 }
