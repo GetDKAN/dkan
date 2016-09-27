@@ -24,6 +24,14 @@
 - Page content type added to panelizer and now defined in features, with in-place editor enabled for page content.
 - Page link added to the command center menu.
 - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
+- Moved and renamed the following fields from ODFE to DKAN Core: field_is_part_of, field_data_dictionary_type, field_landing_page, field_pod_theme, field_conforms_to, field_rights, field_language.
+- Added hook updates to handle the renaming of the old ODFE fields removing the 'odfe' namespacing.
+- Added hook update to migrate the content from field_odfe_category to field_pod_theme on Datasets.
+- Added new option on DKAN Dataset Forms to enable POD based validation on Dataset form.
+- Added new option on DKAN Dataset Forms to enable Groups field validation on Dataset form.
+- Added Open Data Federal Extras module into DKAN Core.
+- Groups field was hidden on the resource form since groups are assigned automatically based on the parent datasets.
+- Groups field on Dataset form was modified to be a single select with all group options and it was moved from the tabs section to the main section of the form. 
 - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
 - Removed field mapping warnings during import of default content.
 
