@@ -160,7 +160,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/nuboot_radix.git
-      branch: civic-4008
+      branch: release-1-12
     type: theme
   radix:
     type: theme
