@@ -56,8 +56,87 @@ For more information on how to use @fontyourface visit the [project page](https:
 ![Select google fonts][Select google fonts]
 ![Apply fonts][Apply fonts]
 
-## More Information About Drupal Theming
+## Creating a Sub-Theme for DKAN 7.x-1.12+
+
+### NuBoot Radix 
+
+NuBoot Radix is the default theme for DKAN and is a subtheme of Radix, which uses Bootstrap styles and is compatible with panelized sites. This theme has some basic customization features built in; for many client sites, these configurations will be all that is necessary to meet the client expectations.
+
+### Creating a new subtheme 
+
+When you need more control over the theme or prefer to keep customizations in code without using overrides, creating a subtheme of NuBoot Radix is an easy win. The subtheme will pick up all styles from the chain in cascading order: Radix > NuBoot Radix > Your Subtheme
+So you only need to add styles where you want to override the upstream css, and add custom templates if you need specific changes to the layout.
+To start a new Nuboot Radix subtheme, run this command
+
+    drush radix "MyThemeName" --kit=https://github.com/NuCivic/radix-kit-nuboot/archive/master.zip
+
+The new subtheme will be placed in to the /sites/all/themes/ directory, it will appear to have a lot of files but it is mostly just file structure to get you started.
+
+### Theming Tools
+When creating a new subtheme or contributing to NuBoot Radix, you will need to install Node and npm. Radix 7.x-3.3 has switched from using compass to using gulp for compiling the sass files. To get your local environment set up, follow these steps:
+
+**Step 1**
+
+Make sure you have Node and npm installed. You can read a guide on how to install node here: [https://docs.npmjs.com/getting-started/installing-node](https://docs.npmjs.com/getting-started/installing-node)
+
+**Step 2**
+
+Install bower: `npm install -g bower`.
+
+**Step 3**
+
+Go to the root of your theme and run the following commands: `npm run setup`.
+
+**Step 4**
+
+Update browserSyncProxy in config.json
+
+**Step 5**
+
+Edit the files under the scss and js directory, these will be compiled into the assets directory. Run the following command to compile Sass and watch for changes: `gulp`.
+
+### More Information About Drupal Theming
 
 If your organization has no experience with Drupal theming, we strongly
 recommend starting any theme customization by reading the [Drupal.org Theming
 Guide](https://drupal.org/documentation/theme).
+
+## Adding Styles to Content in DKAN
+
+DKAN allows you to style the text in the description fields of datasets and resources as well as in the body of data stories. Text can be styled as bold and italic. You can add headline styling and subheads and create numbered lists and bulleted lists. You can also add tables, hyperlinks and images, along with some other text styling elements such as horizontal rules.
+
+Text styling is added using [markdown syntax](http://daringfireball.net/projects/markdown/syntax). To assist you in adding styling to your text, a markdown toolbar appears at the top of styled text areas with buttons that you can click to add styles:
+
+![markdown toolbar](http://docs.getdkan.com/sites/default/files/add%20file.png)
+
+Markdown syntax is intended to provide limited styling capabilities. It offers fewer styling options and is not as simple to use as the WYSIWYG editors used in modern word processors such as Microsoft Word. This limitation is intentional. DKAN is intended to serve as an open data sharing platform, and it has a powerful API that can be used to retrieve datasets and their content by other computer programs. Limiting DKAN to markdown styles helps ensure that dataset descriptions and other metadata can be shared consistently via the API without breaking.
+
+## Adding images to styled content 
+
+Inserting images into styled content is a bit challenging, but it can be done. You need to first upload an image file to your website, and then use the markdown image tool to insert that image into your content.
+
+Users with the role of "administrator" can upload files to a DKAN website. This permission can be added to other DKAN user roles such as the "editor" and "storyteller" roles, but these permissions are not enabled by default for security reasons. To upload an image, visit the files administration page at path /admin/content/file and click the "Add file" button:
+
+![add file button](http://docs.getdkan.com/sites/default/files/add%20file.png)
+
+This will bring up an "Add file" page that lets you choose the image file and upload it:
+
+![add file page](http://docs.getdkan.com/sites/default/files/add%20file2.png)
+
+After you have uploaded and saved the image file, you can view it and copy its image address (URL) to be added to the text where you want it to appear. If you are using a Windows computer, visit the image file's page and right click on it to made a copy of the image address. On an OSX computer, control click rather than right click to do the same thing:
+
+![cat image](http://docs.getdkan.com/sites/default/files/cat%20pic.png)
+
+Now visit the text field where you want to insert the image, and position your edit cursor inside the textfield at the spot where you want the image to appear. Click the green rectangle in the markdown toolbar to insert the image:
+
+
+![insert image button](http://docs.getdkan.com/sites/default/files/green%20rectangle.png)
+
+A popup window will appear where you need to enter alt text describing the image as well as its URL. You should also select the "Inline" checkbox:
+
+
+![insert image popup](http://docs.getdkan.com/sites/default/files/popup%20window.png)
+
+This will insert markdown text for the image that you want to insert, like the example below:
+
+![example markdown image code](http://docs.getdkan.com/sites/default/files/markup%20code.png)
