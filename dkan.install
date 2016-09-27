@@ -6,3 +6,87 @@
 function dkan_install() {
 
 }
+
+/**
+ * Rename a field.
+ *
+ * Addapted from field_rename_rename_fields() in 'Field Rename' module.
+ *
+ * @param $old_field_name
+ *   The old name of the field.
+ * @param $new_field_name
+ *   The new name of the field.
+ */
+function dkan_rename_field($old_field_name, $new_field_name) {
+
+  $messages = array();
+
+  // Read field data.
+  $old_field = field_read_field($old_field_name);
+  if (empty($old_field)) {
+    $messages[] = t('The field %old_field_name does not exist so it cannot be renamed.', array('%old_field_name' => $old_field_name));
+    return $messages;
+  }
+
+  try {
+    // Update {field_config}.
+    db_update('field_config')
+      ->fields(array('field_name' => $new_field_name))
+      ->condition('id', $old_field['id'])
+      ->execute();
+
+    // Update {field_config_instance}.
+    db_update('field_config_instance')
+      ->fields(array('field_name' => $new_field_name))
+      ->condition('field_id', $old_field['id'])
+      ->execute();
+
+    // The tables that need updating in the form 'old_name' => 'new_name'.
+    $tables = array(
+      'field_data_' . $old_field_name => 'field_data_' . $new_field_name,
+      'field_revision_' . $old_field_name => 'field_revision_' . $new_field_name,
+    );
+
+    // Iterate through tables to be redefined and renamed.
+    foreach ($tables as $old_table => $new_table) {
+      // Iterate through the field's columns. For example, a 'text' field will
+      // have columns 'value' and 'format'.
+      foreach ($old_field['columns'] as $column_name => $column_definition) {
+        // Column names are in the format {field_name}_{column_name}.
+        $old_column_name = $old_field_name . '_' . $column_name;
+        $new_column_name = $new_field_name . '_' . $column_name;
+
+        // If there is an index for the field, drop and then re-add it.
+        $has_index = isset($old_field['indexes'][$column_name]) && ($old_field['indexes'][$column_name] == array($column_name));
+        if ($has_index) {
+          db_drop_index($old_table, $old_column_name);
+        }
+
+        // Rename the column.
+        db_change_field($old_table, $old_column_name, $new_column_name, $column_definition);
+
+        if ($has_index) {
+          db_drop_index($old_table, $new_column_name);
+          db_add_index($old_table, $new_column_name, array($new_column_name));
+        }
+      }
+
+      // The new table may exist e.g. due to having been included in a feature
+      // that was reverted prior to this update being run. If so, we need to
+      // drop the new table so that the old one can be renamed.
+      if (db_table_exists($new_table)) {
+        db_drop_table($new_table);
+      }
+
+      // Rename the table.
+      db_rename_table($old_table, $new_table);
+    }
+  } catch ( Exception $e ) {
+    $messages[] = t('The field %old_field_name could not be renamed because there was an error: %error.',
+      array('%old_field_name' => $old_field_name, '%error' => $e->getMessage()));
+  }
+
+  cache_clear_all('*', 'cache_field', TRUE);
+
+  return $messages;
+}
