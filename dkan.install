@@ -14,3 +14,12 @@ function dkan_update_7001() {
   module_load_include("profile", "dkan");
   dkan_bueditor_markdown_install();
 }
+
+/**
+ * Update the default jquery library to 1.10.
+ */
+function dkan_update_7002() {
+	if(version_compare(variable_get('jquery_update_jquery_version'), '1.10', '<')) {
+  	variable_set('jquery_update_jquery_version', '1.10');
+  }
+}
