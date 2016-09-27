@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d3d22f5335cfdc94e5d91b78a7cc31fd",
-    "content-hash": "b76e83e00835f45b39da6f4aba194e3d",
+    "hash": "def1eb64cf11ae68a35dd277ea5c7a10",
+    "content-hash": "5b0b01e369aa2b7b64649e620b03615a",
     "packages": [
         {
             "name": "behat/behat",
@@ -17,7 +17,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/9dadda10bc70cc1a4a9a3ee8ff0c00100037905e",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/209eb668750297e885cbf772aaf12b87eb3beb2e",
                 "reference": "d9cac87edd73c71c61c185244c44a02ab174c0b8",
                 "shasum": ""
             },
@@ -910,16 +910,16 @@
         },
         {
             "name": "nucivic/dkanextension",
-            "version": "dev-3494-move-odfe-fields",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "1539f09dd1bdbc5ab06730829d716d89e3298015"
+                "reference": "9abe1cec25a6963ac938c12b5652860d715ce218"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/1539f09dd1bdbc5ab06730829d716d89e3298015",
-                "reference": "1539f09dd1bdbc5ab06730829d716d89e3298015",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/9abe1cec25a6963ac938c12b5652860d715ce218",
+                "reference": "9abe1cec25a6963ac938c12b5652860d715ce218",
                 "shasum": ""
             },
             "require": {
@@ -947,7 +947,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-09-21 20:58:48"
+            "time": "2016-09-26 21:22:16"
         },
         {
             "name": "psr/http-message",
