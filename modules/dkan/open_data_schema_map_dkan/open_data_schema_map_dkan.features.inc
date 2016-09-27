@@ -1721,7 +1721,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'rights' => array(
-        'value' => '[node:field_odfe_rights]',
+        'value' => '[node:field_rights]',
         'type' => 'string',
       ),
       'accrualPeriodicity' => array(
@@ -1751,7 +1751,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'describedByType' => array(
-        'value' => '[node:field_odfe_data_dictionary_type]',
+        'value' => '[node:field_data_dictionary_type]',
         'type' => 'string',
       ),
       'conformsTo' => array(
@@ -1813,11 +1813,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'array',
       ),
       'landingPage' => array(
-        'value' => '[node:field_odfe_landing_page:url]',
+        'value' => '[node:field_landing_page:url]',
         'type' => 'string',
       ),
       'language' => array(
-        'value' => '[node:field_odfe_language]',
+        'value' => '[node:field_language]',
         'type' => 'array',
       ),
       'license' => array(
@@ -1867,11 +1867,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'isPartOf' => array(
-        'value' => '[node:field_odfe_is_part_of]',
+        'value' => '[node:field_is_part_of]',
         'type' => 'string',
       ),
       'theme' => array(
-        'value' => '[node:field_odfe_category]',
+        'value' => '[node:field_pod_theme] || [node:field_topic]',
         'type' => 'array',
       ),
       'title' => array(
