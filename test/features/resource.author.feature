@@ -50,6 +50,19 @@ Feature: Resource
       | Resource 06 |           | csv    |            | Katie    | Yes       | Test        |
       | Resource 07 |           | csv    | Dataset 04 | Katie    | Yes       | Test        |
       | Resource 08 | Group 01  | csv    | Dataset 05 | Katie    | Yes       | Test        |
+    And resources:
+      | title       | author   | published | description | link file |
+      | Resource 11 | Katie    | Yes       | Test        | https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD |
+      | Resource 12 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/geography.png |
+      | Resource 13 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/metdata.zip |
+      | Resource 14 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/catalog.xml |
+      | Resource 15 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/data.json |
+
+  Scenario: Create resource
+    Given I am an anonymous user
+    When I visit "resource-11"
+    Then I should see "CSV"
+    And I should see a recline preview
 
   @noworkflow
   Scenario: Create resource
@@ -280,3 +293,33 @@ Feature: Resource
   @dummy
   Scenario: Dummy test
     Given I am on "/"
+
+  Scenario: Remote CSV preview
+    Given I am an anonymous user
+    When I visit "resource-11"
+    Then I should see a recline preview
+
+  Scenario: Image preview
+    Given I am an anonymous user
+    When I visit "resource-12"
+    Then I should see a image preview
+
+  Scenario: ZIP preview
+    Given I am an anonymous user
+    When I visit "resource-13"
+    Then I should see a zip preview
+
+  Scenario: XML preview
+    Given I am an anonymous user
+    When I visit "resource-14"
+    Then I should see a xml preview
+
+  Scenario: JSON preview
+    Given I am an anonymous user
+    When I visit "resource-15"
+    Then I should see a json preview
+
+  Scenario: GEOJSON preview
+    Given I am an anonymous user
+    When I visit "resource-15"
+    Then I should see a geojson preview
