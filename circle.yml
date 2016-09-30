@@ -42,7 +42,8 @@ dependencies:
      #- "dkan/test/sites/default"
   pre:
     - echo "memory_limit = 256M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
-    - sudo apt-get remove --purge mysql* -y
+    - sudo apt-get purge mysql-server mysql-client mysql-common mysql-server-core-5.7 mysql-client-core-5.7
+    - sudo rm -rf /etc/mysql /var/lib/mysql
     - sudo apt-get autoremove -y
     - sudo apt-get autoclean -y
     - sudo apt-get install mysql-server-5.6 -y
