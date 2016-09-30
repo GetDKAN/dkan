@@ -5,5 +5,6 @@ DKAN Developer's Guide
    :maxdepth: 1
 
    accessibility
+   addingfields
    maintaining
    subtheme
