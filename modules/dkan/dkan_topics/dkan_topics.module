@@ -5,7 +5,6 @@
  */
 
 include_once 'dkan_topics.features.inc';
-include_once 'dkan_topics.features.conditional_fields.inc';
 module_load_include('inc','pathauto','pathauto');
 
 /**
@@ -225,3 +224,29 @@ function dkan_topics_field_formatter_view($entity_type, $entity, $field, $instan
 
   return $element;
 }
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_topics_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id === 'taxonomy_form_term') {
+
+    $field_icon_type_langcode = dkan_dataset_form_field_language($form, 'field_icon_type');
+
+    // If 'Font Icon Type' is 'Image' then make 'field_image' visible.
+    $form['field_image']['#states'] = array(
+      'visible' => array(
+        '[name="field_icon_type[' . $field_icon_type_langcode . ']"]' => array('value' => 'image')),
+    );
+    // If 'Font Icon Type' is 'Font' then make 'field_topic_icon' and 'field_topic_icon_color' visible.
+    $form['field_topic_icon']['#states'] = array(
+      'visible' => array(
+        '[name="field_icon_type[' . $field_icon_type_langcode . ']"]' => array('value' => 'font')),
+    );
+    $form['field_topic_icon_color']['#states'] = array(
+      'visible' => array(
+        '[name="field_icon_type[' . $field_icon_type_langcode . ']"]' => array('value' => 'font')),
+    );
+  }
+}
+

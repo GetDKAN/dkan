@@ -9,7 +9,6 @@ projects[font_icon_select][download][type] = git
 projects[font_icon_select][download][url] = https://git.drupal.org/sandbox/wolffereast/2319993.git
 projects[font_icon_select][download][branch] = 7.x-1.x
 
-projects[conditional_fields][version] = 3.0-alpha2
 projects[taxonomy_menu][version] = 1.5
 projects[color_field][version] = 1.8
 projects[color_field][patch][2696505] = https://www.drupal.org/files/issues/color_field-requirements-2696505-v2.patch
