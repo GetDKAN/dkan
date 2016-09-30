@@ -34,6 +34,7 @@
 - Groups field on Dataset form was modified to be a single select with all group options and it was moved from the tabs section to the main section of the form. 
 - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
 - Removed field mapping warnings during import of default content.
+- Removed conditional_fields from dkan_topics.
 
 7.x-1.12.10 2016-09-07
 --------------------------
