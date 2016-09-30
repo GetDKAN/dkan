@@ -6,7 +6,7 @@ machine:
 
   # Version of ruby to use
   php:
-    version: '5.5.21'
+    version: '5.6.14'
 
   # Override /etc/hosts
   #hosts:
