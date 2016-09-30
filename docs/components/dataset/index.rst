@@ -11,6 +11,7 @@ DKAN's core functionality around datasets, their metadata and resources, is defi
    :maxdepth: 1
 
    adding-datasets
+   api
    groups
    rest-api
 

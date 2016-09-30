@@ -6,5 +6,6 @@ DKAN Developer's Guide
 
    accessibility
    addingfields
-   maintaining
    subtheme
+   reportingbugs
+   maintaining
