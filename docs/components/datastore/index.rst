@@ -1,4 +1,4 @@
-DKAN Datastore
+# DKAN Datastore
 ==============
 
 DKAN features a Datastore for uploaded files. Currently supported files are CSV and XML. Any type of file can be uploaded to DKAN but will not be parsed and stored in the Datastore.
@@ -36,7 +36,14 @@ DKAN provides UI for managing the Datastore. (PICTURE SHOULD GO HERE) Management
 
 The DKAN Datastore is managed by the Feeds module. Custom plugins were created for the Feed fetcher and processor to make the file uploaded to the resource form a feed item.
 
+## Geocoder
+
+DKAN's native Datastore can use the Drupal [geocoder](https://www.drupal.org/project/geocoder) module to add latitude/longitude coordinates to resources that have plain-text address information. This means that datasets containing plain-text addresses can be viewed on a map using the [Data Preview](dkan-documentation/dkan-features/data-preview-features) or more easily used to build map-based data visualizations.
+
 .. toctree::
    :maxdepth: 1
    
+   background
    datastoreAPI
+   largefiles
+   managing

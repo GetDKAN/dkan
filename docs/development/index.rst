@@ -7,6 +7,7 @@ DKAN Developer's Guide
    accessibility
    addingfields
    contributing
+   dcatfields
    subtheme
    reportingbugs
    maintaining

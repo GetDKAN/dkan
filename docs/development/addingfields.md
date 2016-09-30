@@ -10,7 +10,7 @@ which will appear on the Dataset view when content is entered:
 
 ![dataset view](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202014-10-02%20at%2011.29.43%20AM.png)
 
-## Adding Fields to DKAN
+## Adding the New Field
 
 Let's add a field to the **Dataset** content type as an example.
 
