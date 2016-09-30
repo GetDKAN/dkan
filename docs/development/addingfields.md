@@ -1,4 +1,4 @@
-#Adding Fields to DKAN
+# Adding Fields to DKAN
 
 The following will allow you to add new fields to DKAN content types like Dataset.
 
