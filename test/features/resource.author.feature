@@ -52,9 +52,9 @@ Feature: Resource
       | Resource 08 | Group 01  | csv    | Dataset 05 | Katie    | Yes       | Test        |
     And resources:
       | title       | author   | published | description | link file |
-      | Resource 11 | Katie    | Yes       | Test        | https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD |
+      | Resource 11 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv |
       | Resource 12 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/geography.png |
-      | Resource 13 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/metdata.zip |
+      | Resource 13 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/metadata.zip |
       | Resource 14 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/catalog.xml |
       | Resource 15 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/data.json |
 
@@ -281,6 +281,7 @@ Feature: Resource
   Scenario: Dummy test
     Given I am on "/"
 
+  # @todo Add test for URL w/o .csv
   Scenario: Remote CSV preview
     Given I am an anonymous user
     When I visit "resource-11"
