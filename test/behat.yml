@@ -27,6 +27,7 @@ default:
           - Drupal\DKANExtension\Context\ServicesContext
           - Drupal\DKANExtension\Context\PODContext
           - Drupal\DKANExtension\Context\DatastoreContext
+          - Drupal\DrupalExtension\Context\DrushContext
           - Devinci\DevinciExtension\Context\DebugContext:
               asset_dump_path: %paths.base%/assets
           - Devinci\DevinciExtension\Context\JavascriptContext:
