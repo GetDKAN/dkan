@@ -44,7 +44,6 @@ a {
     color: #23527c;
     text-decoration: underline; }
   a:focus {
-    outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
 
@@ -1257,7 +1256,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px; }
 
@@ -1765,7 +1763,6 @@ select[multiple].input-lg,
   -ms-user-select: none;
   user-select: none; }
   .btn:focus, .media-widget > a:focus, .btn.focus, .media-widget > a.focus, .btn:active:focus, .media-widget > a:active:focus, .btn:active.focus, .media-widget > a:active.focus, .btn.active:focus, .media-widget > a.active:focus, .btn.active.focus, .media-widget > a.active.focus {
-    outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
   .btn:hover, .media-widget > a:hover, .btn:focus, .media-widget > a:focus, .btn.focus, .media-widget > a.focus {
@@ -5431,6 +5428,7 @@ button.close {
     @media all and (transform-3d), (-webkit-transform-3d) {
       .carousel-inner > .item {
         transition: transform 0.6s ease-in-out;
+        -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         -ms-perspective: 1000px;
         -o-perspective: 1000px;
@@ -10795,6 +10793,8 @@ img {
     margin: .75em 0; }
   .view-dkan-groups .node-teaser .btn-primary, .view-dkan-groups .node-teaser body.maintenance-page .form-actions .btn:first-child, body.maintenance-page .form-actions .view-dkan-groups .node-teaser .btn:first-child, .view-dkan-groups .node-teaser body.maintenance-page .form-actions .media-widget > a:first-child, body.maintenance-page .form-actions .view-dkan-groups .node-teaser .media-widget > a:first-child {
     margin: 0 auto 1.5em; }
+  .view-dkan-groups .node-teaser .field-name-field-image {
+    text-align: center; }
 
 .view-groups-page .views-column {
   float: left;
@@ -10810,6 +10810,9 @@ img {
   display: block;
   margin: 1em 0 0 0;
   padding: 5px 8px;
+  text-align: center; }
+
+.view-group-block .views-field-field-image {
   text-align: center; }
 
 .view-dataset form {
