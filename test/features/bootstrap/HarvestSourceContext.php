@@ -106,4 +106,47 @@ class HarvestSourceContext extends RawDKANEntityContext {
       }
     }
   }
+
+  /**
+   * @Then the content :content_title should be :status
+   */
+  public function theContentShouldBe($content_title, $status)
+  {
+    // Get content by title.
+    $query = new EntityFieldQuery();
+    $result = $query->entityCondition('entity_type', 'node')
+      ->propertyCondition('title', $content_title)
+      ->execute();
+
+    // Load content if any and generate wrapper.
+    if (!empty($result['node'])) {
+      $content_ids = array_keys($result['node']);
+      $content_id = array_shift($content_ids);
+      $content = node_load($content_id, NULL, TRUE);
+      $content_wrapper = entity_metadata_wrapper('node', $content);
+    } else {
+      throw new \Exception("Content with title '$content_title' was not found.");
+    }
+
+    // Check content status.
+    switch ($status) {
+      case 'published':
+        if ($content_wrapper->status->value() != NODE_PUBLISHED) {
+          throw new \Exception("The status of the content is not '$status'");
+        }
+        break;
+      case 'unpublished':
+        if ($content_wrapper->status->value() != NODE_NOT_PUBLISHED) {
+          throw new \Exception("The status of the content is not '$status'");
+        }
+        break;
+      case 'orphaned':
+        if (!$content_wrapper->field_orphan->value()) {
+          throw new \Exception("The status of the content is not '$status'");
+        }
+        break;
+      default:
+        break;
+    }
+  }
 }
