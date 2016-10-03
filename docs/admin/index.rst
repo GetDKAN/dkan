@@ -1,4 +1,4 @@
-Site Administration Guide
+Exploring and Visualizing Your Data
 =========================
 
 Table of Contents
@@ -6,8 +6,4 @@ Table of Contents
 .. toctree::
    :maxdepth: 1
 
-   appearance
-   users
-   roles
-   groups
-   panels
+   internalpreviews
