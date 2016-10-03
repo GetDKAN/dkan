@@ -1,7 +1,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/harvest_dkan_integration/dkan_dataset.make"
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
   - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
   - "https://raw.githubusercontent.com/NuCivic/dkan_harvest/harvest_dkan_integration/dkan_harvest.make"
