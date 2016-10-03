@@ -8,6 +8,7 @@ default:
           - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MessageContext
           - Drupal\DrupalExtension\Context\MarkupContext
+          - Drupal\DrupalExtension\Context\BatchContext
           - Drupal\DKANExtension\Context\DKANContext
           - Drupal\DKANExtension\Context\MailContext
           - Drupal\DKANExtension\Context\PageContext
