@@ -132,21 +132,16 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I click "Edit"
-    Then I should see "Group 01" in the "resource groups" region
 
   @noworkflow
   Scenario: Remove a resource from a dataset with group
     Given I am logged in as "Katie"
     And I am on "Resource 08" page
     When I click "Edit"
-    Then I should see "Group 01" in the "resource groups" region
-    When I select "- None -" from "Dataset"
+    And I select "- None -" from "Dataset"
     And I press "Save"
     Then I should see "Resource 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I click "Edit"
-    Then I should not see "Group 01" in the "resource groups" region
     When I am on "Dataset 05" page
     Then I should not see "Resource 08" in the "dataset resource list" region
 
@@ -160,9 +155,6 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I click "Edit"
-    Then I should see "Group 01" in the "resource groups" region
-    And I should see "Group 02" in the "resource groups" region
 
   @noworkflow
   Scenario: Remove one dataset with group from resource with multiple datasets
@@ -178,9 +170,6 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I click "Edit"
-    Then I should see "Group 01" in the "resource groups" region
-    And I should not see "Group 02" in the "resource groups" region
 
   @noworkflow
   Scenario: Remove all datasets with groups from resource
@@ -196,9 +185,7 @@ Feature: Resource
     And I select "- None -" from "Dataset"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
-    When I click "Edit"
-    Then I should not see "Group 01" in the "resource groups" region
-    And I should not see "Group 02" in the "resource groups" region
+    And I should see "Groups were updated on 1 resource(s)"
 
   @dkanBug @noworkflow
     # TODO: Managing own datastore not currently supported for authenticated users
