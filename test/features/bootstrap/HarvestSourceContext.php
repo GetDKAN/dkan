@@ -116,12 +116,13 @@ class HarvestSourceContext extends RawDKANEntityContext {
     $query = new EntityFieldQuery();
     $result = $query->entityCondition('entity_type', 'node')
       ->propertyCondition('title', $content_title)
+      ->propertyOrderBy('changed', $direction = 'DESC')
       ->execute();
 
     // Load content if any and generate wrapper.
     if (!empty($result['node'])) {
       $content_ids = array_keys($result['node']);
-      $content_id = array_shift($content_ids);
+      $content_id = current($content_ids);
       $content = node_load($content_id, NULL, TRUE);
       $content_wrapper = entity_metadata_wrapper('node', $content);
     } else {
