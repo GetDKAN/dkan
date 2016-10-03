@@ -62,15 +62,15 @@ Feature: Dkan Harvest
   And I am on the "Source one" page
   Given The "source_one" source is harvested
   When I am on the "Source one" page
-  Then I should see the link "Wisconsin Polling Places"
-  And I click "Wisconsin Polling Places"
+  Then I should see the link "Florida Bike Lanes"
+  And I click "Florida Bike Lanes"
   And I should see the text "Harvested from Source one"
   And I should see the text "Last Harvest Performed"
   And I should see the text "Harvest Source URI"
   And I should see the text "Harvest Source Title"
 
 
-  @api @harvest_rollback
+  @api @javascript @harvest_rollback
   Scenario: As a user I should have access to see harvest preview information.
   Given users:
     | name             | mail                   | roles           |
@@ -85,9 +85,9 @@ Feature: Dkan Harvest
   Then I should see the link "Preview"
   And I click "Preview"
   And I should see the text "Harvest now"
-  And I should see the text "Wisconsin Polling Places"
+  And I should see the text "Florida Bike Lanes"
 
-  @api @javascript
+  @api @javascript @harvest_rollback
   Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
   Given users:
     | name             | mail                   | roles           |
@@ -252,3 +252,71 @@ Feature: Dkan Harvest
   Examples:
   | role               |
   | administrator      |
+
+  @api @javascript @harvest_rollback
+  Scenario: Delete all associated content when a Source is deleted
+    Given users:
+      | name               | mail                     | status | roles             |
+      | Administrator      | admin@fakeemail.com      | 1      | administrator     |
+    And harvest sources:
+      | title      | machine name | source uri                        | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+
+    And The "source_one" source is harvested
+    And I am logged in as "Administrator"
+    When I am on "admin/content"
+    Then I should see "Gold Prices in London 1950-2008 (Monthly)"
+    Given I am on the "Source one" page
+    And I click "Edit"
+    And I press "Delete"
+    Then I should see "Are you sure you want to delete Source one?"
+    When I select the radio button "Delete content." with the id "edit-dataset-op-0"
+    And I press "Delete Sources"
+    And I wait for the batch job to finish
+    Then I should see "Harvest Source Source one has been deleted."
+    When I am on "admin/content"
+    Then I should not see "Gold Prices in London 1950-2008 (Monthly)"
+
+  @api @javascript @harvest_rollback
+  Scenario: Unpublish and mark as orphan all associated content when a Source is deleted
+    Given users:
+      | name               | mail                     | status | roles             |
+      | Administrator      | admin@fakeemail.com      | 1      | administrator     |
+    And harvest sources:
+      | title      | machine name | source uri                        | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+
+    And The "source_one" source is harvested
+    And I am logged in as "Administrator"
+    When I am on the "Source one" page
+    And I click "Edit"
+    And I press "Delete"
+    Then I should see "Are you sure you want to delete Source one?"
+    When I select the radio button "Unpublish content." with the id "edit-dataset-op-1"
+    And I press "Delete Sources"
+    And I wait for the batch job to finish
+    Then I should see "Harvest Source Source one has been deleted."
+    And the content "Gold Prices in London 1950-2008 (Monthly)" should be "unpublished"
+    And the content "Gold Prices in London 1950-2008 (Monthly)" should be "orphaned"
+
+  @api @javascript @harvest_rollback
+  Scenario: Keep published but mark as orphan all associated content when a Source is deleted
+    Given users:
+      | name               | mail                     | status | roles             |
+      | Administrator      | admin@fakeemail.com      | 1      | administrator     |
+    And harvest sources:
+      | title      | machine name | source uri                        | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+
+    And The "source_one" source is harvested
+    And I am logged in as "Administrator"
+    When I am on the "Source one" page
+    And I click "Edit"
+    And I press "Delete"
+    Then I should see "Are you sure you want to delete Source one?"
+    When I select the radio button "Leave content published but mark as orphan." with the id "edit-dataset-op-2"
+    And I press "Delete Sources"
+    And I wait for the batch job to finish
+    Then I should see "Harvest Source Source one has been deleted."
+    And the content "Gold Prices in London 1950-2008 (Monthly)" should be "published"
+    And the content "Gold Prices in London 1950-2008 (Monthly)" should be "orphaned"
