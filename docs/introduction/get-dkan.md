@@ -1,4 +1,12 @@
-# Hosting Partners
+# Get DKAN
+
+DKAN is open source and flexible: You can download it for free and run it on your own server or choose from one of our hosting partners below.
+
+## Download and run DKAN on your server
+
+DKAN is based on the open source </a><a href="http://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported.  Users unfamiliar with Drupal may be more comfortable trying one of the hosted options listed below, or contacting us to obtain a private demonstration instance. There is extensive information on how to install DKAN on your own in the [the developers/installation](/dkan-documentation/dkan-developers/installation) section of this site.
+
+## Hosting Partners
 
 DKAN is open source and flexible: you can download it for free and run it on your own server (see [installation instructions](installation.md)) or choose from one of our hosting partners below.
 
@@ -56,6 +64,11 @@ An error like the following is often seen at the end of the install process on P
 
 This will hopefully be fixed on future releases. However, the resulting site should still be fully installed and functional.
 
-### GovDelivery Open Data
+
+## NuCivic Data Subscription
+
+[NuCivic](http://nucivic.com), the company leading DKAN's development, now offers a turn-key software as a service (SaaS) product called [NuCivic Data Enterprise](http://nucivic.com/data/enterprise/). Hosted on Acquia Cloud, NuCivic Data Enterprise meets US government [security standards](https://docs.acquia.com/cloud/arch/compliance-standards-and-regulations), comes pre-configured for out-of-the-box open data standards compliance and advanced data visualization techniques, and includes 24-hour, enterprise-level support. [Contact NuCivic](http://nucivic.com/contact) for more information.
+
+## GovDelivery Open Data
 
 More information coming soon...
