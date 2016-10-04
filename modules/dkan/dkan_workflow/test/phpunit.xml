@@ -4,12 +4,8 @@
     bootstrap="boot.php"
     colors="true">
   <testsuites>
-    <testsuite name="DKAN Test Suite">
+    <testsuite name="HHS Harvest Suite">
       <directory>.</directory>
     </testsuite>
   </testsuites>
-
-  <php>
-    <includePath>.</includePath>
-  </php>
 </phpunit>
