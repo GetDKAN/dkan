@@ -12,6 +12,6 @@ DKAN's core functionality around datasets, their metadata and resources, is defi
 
    adding-datasets
    api
-   dataset features
+   datasetfeatures
    groups
    rest-api
