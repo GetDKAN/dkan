@@ -1,5 +1,3 @@
-[![Circle CI](https://circleci.com/gh/NuCivic/dkan_datastore.svg?style=svg)](https://circleci.com/gh/NuCivic/dkan_datastore)
-
 # DKAN Datastore
 
 DKAN Datastore bundles a number of modules and configuration to allow users to upload CSV files, parse them and save them into the native database as flat tables, and query them through a public API.
