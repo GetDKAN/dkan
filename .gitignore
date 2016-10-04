@@ -3,7 +3,6 @@ libraries
 modules/contrib
 modules/nucivic
 modules/dkan/dkan_dataset
-modules/dkan/dkan_workflow
 themes/contrib
 webroot
 test/vendor
