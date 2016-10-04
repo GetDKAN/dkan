@@ -35,6 +35,7 @@
 - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
 - Removed field mapping warnings during import of default content.
 - Removed conditional_fields from dkan_topics.
+- Removed AJAX from Dataset and Resource forms.
 
 7.x-1.12.10 2016-09-07
 --------------------------
