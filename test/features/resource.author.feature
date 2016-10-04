@@ -57,12 +57,7 @@ Feature: Resource
       | Resource 13 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/metadata.zip |
       | Resource 14 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/catalog.xml |
       | Resource 15 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/data.json |
-
-  Scenario: Create resource
-    Given I am an anonymous user
-    When I visit "resource-11"
-    Then I should see "CSV"
-    And I should see a recline preview
+      | Resource 16 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/USA.geo.json |
 
   @noworkflow
   Scenario: Create resource
@@ -284,30 +279,30 @@ Feature: Resource
   # @todo Add test for URL w/o .csv
   Scenario: Remote CSV preview
     Given I am an anonymous user
-    When I visit "resource-11"
+    And I am on "Resource 11" page
     Then I should see a recline preview
 
   Scenario: Image preview
     Given I am an anonymous user
-    When I visit "resource-12"
+    And I am on "Resource 12" page
     Then I should see a image preview
 
   Scenario: ZIP preview
     Given I am an anonymous user
-    When I visit "resource-13"
+    And I am on "Resource 13" page
     Then I should see a zip preview
 
   Scenario: XML preview
     Given I am an anonymous user
-    When I visit "resource-14"
+    And I am on "Resource 14" page
     Then I should see a xml preview
 
   Scenario: JSON preview
     Given I am an anonymous user
-    When I visit "resource-15"
+    And I am on "Resource 15" page
     Then I should see a json preview
 
   Scenario: GEOJSON preview
     Given I am an anonymous user
-    When I visit "resource-15"
+    And I am on "Resource 16" page
     Then I should see a geojson preview
