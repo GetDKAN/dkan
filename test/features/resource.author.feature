@@ -3,9 +3,9 @@ Feature: Resource
 
   Background:
     Given pages:
-      | name          | url         |
-      | Content       | /node/add  |
-      | User          | /user       |
+      | name          | url                |
+      | Content       | /node/add          |
+      | User          | /user              |
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
@@ -278,37 +278,52 @@ Feature: Resource
     Given I am on "/"
 
   # @todo Add test for URL w/o .csv
+  # We need to edit and save to trigger auto type discover
   Scenario: Remote CSV preview
-    Given I am an anonymous user
+    Given I am logged in as "Katie"
     And I am on "Resource 11" page
+    When I click "Edit"
+    And I press "Save"
     Then I should see a recline preview
 
   Scenario: Image preview
     Given I am an anonymous user
     And I am on "Resource 12" page
+    When I click "Edit"
+    And I press "Save"
     Then I should see a image preview
 
   Scenario: ZIP preview
-    Given I am an anonymous user
+    Given I am logged in as "Katie"
     And I am on "Resource 13" page
+    When I click "Edit"
+    And I press "Save"
     Then I should see a zip preview
 
   Scenario: XML preview
-    Given I am an anonymous user
+    Given I am logged in as "Katie"
     And I am on "Resource 14" page
+    When I click "Edit"
+    And I press "Save"
     Then I should see a xml preview
 
   Scenario: JSON preview
-    Given I am an anonymous user
+    Given I am logged in as "Katie"
     And I am on "Resource 15" page
+    When I click "Edit"
+    And I press "Save"
     Then I should see a json preview
 
   Scenario: GEOJSON preview
-    Given I am an anonymous user
+    Given I am logged in as "Katie"
     And I am on "Resource 16" page
+    When I click "Edit"
+    And I press "Save"
     Then I should see a geojson preview
 
   Scenario: Generated CSV preview
-    Given I am an anonymous user
+    Given I am logged in as "Katie"
     And I am on "Resource 17" page
+    When I click "Edit"
+    And I press "Save"
     Then I should see a recline preview
