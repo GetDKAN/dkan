@@ -1,5 +1,3 @@
-[![Circle CI](https://circleci.com/gh/NuCivic/dkan_workflow.svg?style=svg)](https://circleci.com/gh/NuCivic/dkan_workflow)
-
 ## What is DKAN?
 
 [DKAN](http://nucivic.com/dkan) is a Drupal-based open data tool with a full
