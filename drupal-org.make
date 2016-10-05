@@ -4,7 +4,7 @@ includes:
   - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
-  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
+  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/bug_open_data_schema_map_ckan_4107/open_data_schema_map.make"
   - "modules/dkan/dkan_workflow/dkan_workflow.make"
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
   - "modules/dkan/dkan_topics/dkan_topics.make"
@@ -102,7 +102,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/open_data_schema_map.git'
-      branch: 7.x-1.x
+      branch: bug_open_data_schema_map_ckan_4107
   panelizer:
     version: '3.4'
   views_autocomplete_filters:
