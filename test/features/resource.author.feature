@@ -58,6 +58,7 @@ Feature: Resource
       | Resource 14 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/catalog.xml |
       | Resource 15 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/data.json |
       | Resource 16 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/USA.geo.json |
+      | Resource 17 | Katie    | Yes       | Test        | https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD |
 
   @noworkflow
   Scenario: Create resource
@@ -306,3 +307,8 @@ Feature: Resource
     Given I am an anonymous user
     And I am on "Resource 16" page
     Then I should see a geojson preview
+
+  Scenario: Generated CSV preview
+    Given I am an anonymous user
+    And I am on "Resource 17" page
+    Then I should see a recline preview
