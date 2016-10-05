@@ -1,0 +1,46 @@
+7.x-1.12 2015-04-01
+--------------------------
+- Add update function enable field_hidden module
+
+7.x-1.10 2015-11-10
+--------------------------
+- Upgrade Feeds module to latest dev version
+
+7.x-1.9 2015-09-17
+--------------------------
+- Better UX/behavior for the "add to datastore" button: https://github.com/NuCivic/dkan_datastore/pull/39
+- Small bugfixes and improvements
+
+7.x-1.8  2015-04-02
+--------------------------
+ - Adding CRUD functions to Datastore.inc class
+ - Adding drush interface to CRUD functions in order to create instances from the cli
+
+7.x-1.7  2015-02-20
+--------------------------
+ - Remove schema patch
+
+7.x-1.6
+---------
+ - Fix services module reference at dkan_datastore.make file
+
+7.x-1.4  2014-10-10
+--------------------------
+ - Many warnings fixed with proper isset calls
+ - Added dkan_datastore_api_count implementation
+ - Optimisations on GET parameters processing 
+
+7.x-1.1
+-------
+- Moved dkan_datastore development to NuCivic: 
+  https://github.com/NuCivic/dkan_datastore
+- Several bugs fixed.
+
+7.x-1.0
+-------
+- Moved dkan_datastore development to github: 
+  https://github.com/nuams/dkan_datastore
+- Added WebTestCase test suite for dkan_datastore and dkan_datastore_api: 
+  https://github.com/nuams/dkan_datastore/tree/7.x-1.x/tests
+- Travis + Github integration for all test suites on every commit
+- Several bugs fixed.
