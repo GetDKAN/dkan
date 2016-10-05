@@ -287,7 +287,7 @@ Feature: Resource
     Then I should see a recline preview
 
   Scenario: Image preview
-    Given I am an anonymous user
+    Given I am logged in as "Katie"
     And I am on "Resource 12" page
     When I click "Edit"
     And I press "Save"
