@@ -1,6 +1,4 @@
-[![Build Status](https://circleci.com/gh/NuCivic/dkan_migrate_base.svg?branch=7.x-1.x&style=svg)](https://circleci.com/gh/NuCivic/dkan_migrate_base)
-
-DKAN "Harvester" using Migrate module
+DKAN Migrate Base
 =================
 This provides base classes for common DKAN migrations (ie imports or harvests).
 

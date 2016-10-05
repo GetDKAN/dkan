@@ -8,7 +8,6 @@ includes:
   - "modules/dkan/dkan_workflow/dkan_workflow.make"
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
   - "modules/dkan/dkan_topics/dkan_topics.make"
-  - "modules/dkan/dkan_migrate_base/dkan_migrate_base.make"
 projects:
   manualcrop:
     version: '1.5'
