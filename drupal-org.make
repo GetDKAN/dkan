@@ -4,6 +4,8 @@ includes:
   - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
+  - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/967c8bb3eb13f3b70f28a4b487074b23591f1075/leaflet_widget.make"
+  - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
 projects:
   admin_menu:
     version: '3.0-rc5'
@@ -13,11 +15,23 @@ projects:
     patch:
       2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
   adminrole:
-    version: '1.1'  
+    version: '1.1'
+  autocomplete_deluxe:
+    version: '2.1'
+  beautytips:
+    download:
+      type: git
+      url: 'http://git.drupal.org/project/beautytips.git'
+      branch: 7.x-2.x
+      revision: f9a8b5b
+    patch:
+      849232: 'http://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch'
   bueditor:
     version: '1.8'
   bueditor_plus:
     version: '1.4'
+  chosen:
+    version: '2.0-beta5'
   colorizer:
     version: '1.10'
     patch:
@@ -29,8 +43,14 @@ projects:
       2696505: 'https://www.drupal.org/files/issues/color_field-requirements-2696505-v2.patch'
   conditional_styles:
     version: '2.2'
+  context:
+    version: '3.6'
+  ctools:
+    version: '1.9'
   data:
     version: '1.x'
+  date:
+    version: '2.9'
   defaultconfig:
     version: '1.0-alpha11'
   diff:
@@ -41,17 +61,36 @@ projects:
       type: git
       url: 'https://github.com/NuCivic/dkan_dataset.git'
       branch: 7.x-1.x
+  double_field:
+    version: '2.4'
   draggableviews:
     version: '2.1'
+  entity:
+    download:
+      full_version: '7.x-1.7'
+    patch:
+      2341611: 'https://www.drupal.org/files/issues/entity-multivalue-token-replacement-fix-2341611-0.patch'
+      2564119: 'https://www.drupal.org/files/issues/Use-array-in-foreach-statement-2564119-1.patch'
   entity_path:
     version: '1.x-dev'
     patch:
       2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_1.diff'
+  entityreference:
+    version: '1.1'
   entityreference_filter:
     version: '1.5'
+  eva:
+    version: '1.2'
   facetapi:
+    version: '1.5'
     patch:
       1: patches/cross-site-scripting-facets-156778.patch
+  facetapi_bonus:
+    version: '1.2'
+  facetapi_pretty_paths:
+    version: '1.4'
+  features:
+    version: '2.10'
   features_roles_permissions:
     version: '1.2'
   feeds:
@@ -74,6 +113,15 @@ projects:
       type: git
       url: 'https://github.com/NuCivic/feeds_flatstore_processor.git'
       branch: master
+  field_group:
+    version: '1.5'
+    patch:
+      2042681: 'http://drupal.org/files/issues/field-group-show-ajax-2042681-8.patch'
+  field_group_table:
+    download:
+      type: git
+      url: 'https://github.com/nuams/field_group_table.git'
+      revision: 5b0aed9396a8cfd19a5b623a5952b3b8cacd361c
   field_hidden:
     version: '1.7'
   field_reference_delete:
@@ -85,6 +133,10 @@ projects:
     version: '2.0-beta2'
     patch:
       2308737: 'https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch'
+  file_resup:
+    version: '1.x-dev'
+  filefield_sources:
+    version: '1.10'
   font_icon_select:
     download:
       type: git
@@ -98,6 +150,14 @@ projects:
       2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
   globalredirect:
     version: '1.5'
+  gravatar:
+    download:
+      type: git
+      url: 'http://git.drupal.org/project/gravatar.git'
+      branch: 7.x-1.x
+      revision: bb2f81e
+    patch:
+      1568162: 'http://drupal.org/files/views-display-user-picture-doesn-t-display-gravatar-1568162-10.patch'
   honeypot:
     version: '1.22'
   image_url_formatter:
@@ -105,10 +165,32 @@ projects:
   imagecache_actions:
     version: '1.7'
     type: module
+    download:
+      type: git
+      url: 'http://git.drupal.org/project/imagecache_actions.git'
+      revision: cd19d2a
   job_scheduler:
     version: '2.x'
+  jquery_update:
+    version: '2.7'
+  leaflet_draw_widget:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
+      revision: 967c8bb3eb13f3b70f28a4b487074b23591f1075
+  libraries:
+    version: '2.2'
+  link:
+    version: '1.4'
   link_badges:
     version: '1.1'
+  link_iframe_formatter:
+    download:
+      type: git
+      url: 'http://git.drupal.org/project/link_iframe_formatter.git'
+      revision: 228f9f4
+    patch: 
+      2287233: 'https://www.drupal.org/files/issues/link_iframe_formatter-coding-standards.patch'
   manualcrop:
     version: '1.5'
   markdown:
@@ -142,6 +224,19 @@ projects:
     version: '2.5'
   module_filter:
     version: '2.0'
+  multistep:
+    download:
+      type: git
+      url: 'http://git.drupal.org/project/multistep.git'
+      revision: 3b0d40a
+  og:
+    version: '2.9'
+    patch:
+      1090438: 'http://drupal.org/files/issues/og-add_users_and_entities_with_drush-1090438-12.patch'
+      2549071: 'https://www.drupal.org/files/issues/og_actions-bug-vbo-delete.patch'
+      2301831: 'https://www.drupal.org/files/issues/og-missing-permission-roles-2301831-1.patch'
+  og_extras:
+    version: '1.2'
   og_moderation:
     version: '2.3'
   open_data_schema_map:
@@ -175,6 +270,24 @@ projects:
     version: '3.3'
   radix_layouts:
     version: '3.4'
+  recline:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/recline.git'
+      branch: 7.x-1.x
+  ref_field:
+    download:
+      type: git
+      url: 'http://git.drupal.org/project/ref_field.git'
+      revision: 9dbf7cf
+    patch:
+      2360019: 'https://www.drupal.org/files/issues/ref_field-delete-insert-warning-2360019-5.patch'
+  remote_file_source:
+    version: '1.x'
+    patch:
+      2362487: 'https://www.drupal.org/files/issues/remote_file_source-location-content-dist_1.patch'
+  remote_stream_wrapper:
+    version: '1.0-rc1'
   role_export:
     version: '1.0'
   rules:
@@ -186,10 +299,18 @@ projects:
   schema:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
+  search_api:
+    version: '1.18'
+  search_api_db:
+    version: '1.5'
+  select_or_other:
+    version: '2.22'
   services:
     version: '3.16'
   simple_gmap:
-    version: '1.2'  
+    version: '1.2'
+  strongarm:
+    version: '2.0'  
   tablefield:
     version: '2.4'
   taxonomy_menu:
@@ -199,7 +320,12 @@ projects:
       type: git
       url: 'https://github.com/NuCivic/taxonomy_fixtures.git'
       branch: 7.x-1.x
+  token:
+    version: '1.6'
+  uuid:
+    version: '1.0-beta2'
   views:
+    version: '3.14'
     patch:
       1388684: 'https://www.drupal.org/files/views_taxonomy_entity_uri-1388684-15.patch'
   views_autocomplete_filters:
@@ -207,6 +333,10 @@ projects:
     patch:
       2374709: 'http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch'
       2317351: 'http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch'
+  views_bulk_operations:
+    version: '3.3'
+  views_responsive_grid:
+    version: '1.3'
   visualization_entity:
     download:
       type: git
@@ -226,6 +356,28 @@ projects:
       2393771: 'https://www.drupal.org/files/issues/specify_change_state_user-2393771-5.patch'
       1838640: 'https://www.drupal.org/files/issues/workbench_moderation-fix_callback_argument-1838640-23.patch'
 libraries:
+  arc:
+    download:
+      type: git
+      url: 'https://github.com/semsol/arc2.git'
+      revision: 44c396ab54178086c09499a1704e31a977b836d2
+    subdir: ARC2
+  chosen:
+    download:
+      type: get
+      url: 'https://github.com/harvesthq/chosen/releases/download/v1.3.0/chosen_v1.3.0.zip'
+  excanvas:
+    download:
+      type: git
+      url: 'https://github.com/arv/ExplorerCanvas.git'
+      sha1: aa989ea9d9bac748638f7c66b0fc88e619715da6
+  font_awesome:
+    type: libraries
+    download:
+      type: git
+      url: 'https://github.com/FortAwesome/Font-Awesome.git'
+      revision: 13d5dd373cbf3f2bddd8ac2ee8df3a1966a62d09
+    directory_name: font_awesome  
   jquery.imagesloaded:
     download:
       type: file
@@ -236,18 +388,17 @@ libraries:
       type: file
       url: 'https://github.com/odyniec/imgareaselect/archive/v0.9.11-rc.1.tar.gz'
       subtree: imgareaselect-0.9.11-rc.1
-  font_awesome:
-    type: libraries
+  slugify:
     download:
       type: git
-      url: 'https://github.com/FortAwesome/Font-Awesome.git'
-      revision: 13d5dd373cbf3f2bddd8ac2ee8df3a1966a62d09
-    directory_name: font_awesome
+      url: 'https://github.com/pmcelhaney/jQuery-Slugify-Plugin.git'
+      revision: 79133a1bdfd3ac80d500d661a722b85c03a01da3
+    directory_name: slugify
   spectrum:
     download:
       type: git
       url: 'https://github.com/bgrins/spectrum.git'
-      directory_name: bgrins-spectrum
+    directory_name: bgrins-spectrum
   spyc:
     download:
       type: get

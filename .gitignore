@@ -2,7 +2,6 @@ docroot
 libraries
 modules/contrib
 modules/nucivic
-modules/dkan/dkan_dataset
 themes/contrib
 webroot
 test/vendor
