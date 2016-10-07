@@ -119,7 +119,8 @@ Feature: Dkan Harvest
   And The "source_one" source is harvested
   And I am logged in as a "<role>"
   And I am on the "Source one" page
-  Then I should see 10 search results shown on the page in the 'harvest_source' search form
+  When I click "Manage Datasets"
+  Then the table with the class name "views-table" should have 10 rows
 
   Examples:
   | role               |
