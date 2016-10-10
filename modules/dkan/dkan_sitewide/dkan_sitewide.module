@@ -7,7 +7,6 @@
 
 include_once 'dkan_sitewide.features.inc';
 include_once 'dkan_sitewide.blocks.inc';
-include_once 'includes/dkan.utils.inc';
 
 
 /**
