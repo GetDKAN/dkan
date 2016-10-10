@@ -35,30 +35,32 @@ Provides an API for the default DKAN Datastore.
 DKAN Dataset requires specific versions of modules and libraries which are specified in the [dkan_dataset.make](https://github.com/nuams/dkan_dataset/blob/7.x-1.x/dkan_dataset.make) file. Because of the specific module versions and library dependencies **you must use drush make before installing DKAN Dataset.** Below is a recipe for installing DKAN Dataset into a new Drupal 7 site. The following can be adjusted for an existing Drupal 7 site:
 
 ~~~~
-# Download drupal into folder named "webroot"
+Download drupal into folder named "webroot"
 drush dl drupal --drupal-project-rename=webroot
 
-# Move to modules folder
+Move to modules folder
 cd webroot/sites/all/modules
 
-# Clone DKAN Dataset 
+Clone DKAN Dataset 
 git clone https://github.com/nuams/dkan_dataset.git
 
-# Checkout latest tag
+Check out latest tag
 cd dkan_dataset
 git checkout 7.x-1.0
 
-# Move to webroot/sites/all
+Move to webroot/sites/all
 cd ../../
 
-# Copy make file to webroot/sites/all/dkan_dataset.make
+Copy make file to webroot/sites/all/dkan_dataset.make
 cp modules/dkan_dataset/dkan_dataset.make .
 
-# Make required modules and libraries.
+Make required modules and libraries.
+
 drush make --no-core dkan_dataset.make --contrib-destination="."
 
-# Enable DKAN Dataset!
-# Currently we have to enable dkan_dataset_content_types. See https://github.com/nuams/dkan/issues/140 for fix
+Enable DKAN Dataset!
+
+Currently we have to enable dkan_dataset_content_types. See https://github.com/nuams/dkan/issues/140 for fix
 drush en -y dkan_dataset_content_types
 ~~~~
 
