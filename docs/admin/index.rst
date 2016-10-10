@@ -5,6 +5,7 @@ DKAN Site Administration
    :maxdepth: 1
 
    Appearance Options <appearance>
+   Content Management<contentmanagement/index>
    Exploring and Visualizing Your Data <visualizations/index>
    Groups <groups>
    Modifying the Front Page <frontpage>

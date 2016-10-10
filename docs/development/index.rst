@@ -9,10 +9,10 @@ DKAN Developer's Guide
    addingfields
    socialmedia
    contributing
+   subtheme
    datasetfields
    developingoffofdkan
    geocoder
    googleanalytics
-   subtheme
    reportingbugs
    maintaining

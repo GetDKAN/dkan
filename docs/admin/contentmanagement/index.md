@@ -1,4 +1,4 @@
-Editing and Publishing Content
+Content Management
 =========================
 
 Table of Contents

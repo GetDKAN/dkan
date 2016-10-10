@@ -57,6 +57,7 @@ The chapters in this section are all compiled from README files that exist in sp
    Datastore <datastore/index>
    Modules <componentmodules>
    Open Data Schema <open-data-schema>
+   Project Open Data <project-open-data>
    Workflow <workflow>
    fixtures/index
    Topics <topics>
