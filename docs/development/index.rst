@@ -5,6 +5,7 @@ DKAN Developer's Guide
    :maxdepth: 1
 
    accessibility
+   addingdkanfeatures
    addingfields
    socialmedia
    contributing
@@ -15,4 +16,3 @@ DKAN Developer's Guide
    subtheme
    reportingbugs
    maintaining
-   addingdkanfeatures
