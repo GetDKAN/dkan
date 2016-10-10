@@ -19,7 +19,7 @@ function dkan_topics_entity_path_config_default() {
   $entity_path_config->query_pattern = '';
   $entity_path_config->fragment_pattern = '';
   $entity_path_config->config = array(
-    'pathauto_cleanstring' => 0,
+    'pathauto_cleanstring' => 1,
     'space_separator' => 1,
     'space_separator_char' => '-',
     'path_case' => 'lowercase',
