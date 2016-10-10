@@ -12,7 +12,7 @@ Feature: Dkan Harvest
     Then I should see the text "Create Harvest Source"
     And I fill in "Title" with "Source 1"
     And I wait for "2" seconds
-    And I fill in "Source URI" with "http://s3.amazonaws.com/dkan-default-content-files/files/data.json"
+    And I fill in "Source URI" with "http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json"
     And I select "Project Open Data v1.1 JSON" from "Type"
     And I press "Save"
     And I wait for "2" seconds
@@ -39,9 +39,9 @@ Feature: Dkan Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                                                         | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | Yes       |
-    | Source two | source_two   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json | datajson_v1_1_json | Administrator | No        |
+    | title      | machine name | source uri                                                                 | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Administrator | Yes       |
+    | Source two | source_two   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Administrator | No        |
   And pages:
     | name               | url                            |
     | Harvest Dashboard  | /admin/dkan/harvest/dashboard  |
@@ -56,14 +56,14 @@ Feature: Dkan Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                          | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+    | title      | machine name | source uri                                                                 | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
   And I am logged in as a "Administrator"
   And I am on the "Source one" page
   Given The "source_one" source is harvested
   When I am on the "Source one" page
-  Then I should see the link "Florida Bike Lanes"
-  And I click "Florida Bike Lanes"
+  Then I should see the link "Florida Bike Lanes Harvest"
+  And I click "Florida Bike Lanes Harvest"
   And I should see the text "Harvested from Source one"
   And I should see the text "Last Harvest Performed"
   And I should see the text "Harvest Source URI"
@@ -76,8 +76,8 @@ Feature: Dkan Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+    | title      | machine name | source uri                                                                 | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
   And I am logged in as a "Administrator"
   And I am on the "Source one" page
   Given The "source_one" source is harvested
@@ -85,7 +85,7 @@ Feature: Dkan Harvest
   Then I should see the link "Preview"
   And I click "Preview"
   And I should see the text "Harvest now"
-  And I should see the text "Florida Bike Lanes"
+  And I should see the text "Florida Bike Lanes Harvest"
 
   @api @javascript @harvest_rollback
   Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
@@ -93,8 +93,8 @@ Feature: Dkan Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+    | title      | machine name | source uri                                                                 | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
   And I am logged in as a "<role>"
   And I am on the "Source one" page
   Given The "source_one" source is harvested
@@ -114,8 +114,8 @@ Feature: Dkan Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+    | title      | machine name | source uri                                                                 | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
   And The "source_one" source is harvested
   And I am logged in as a "<role>"
   And I am on the "Source one" page
@@ -133,8 +133,8 @@ Feature: Dkan Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+    | title      | machine name | source uri                                                                 | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -154,8 +154,8 @@ Feature: Dkan Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+    | title      | machine name | source uri                                                                 | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -177,8 +177,8 @@ Feature: Dkan Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+    | title      | machine name | source uri                                                                 | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -188,7 +188,7 @@ Feature: Dkan Harvest
   And I fill in "edit-created-min" with "06/01/2016"
   And I fill in "edit-created-max" with "06/30/2016"
   And I press "Apply"
-  Then I should see "Florida Bike Lanes"
+  Then I should see "Florida Bike Lanes Harvest"
   And I should see a table with a class name "views-table"
   Then the table with the class name "views-table" should have 1 rows
   
@@ -203,8 +203,8 @@ Feature: Dkan Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+    | title      | machine name | source uri                                                                 | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -233,8 +233,8 @@ Feature: Dkan Harvest
     | name             | mail                   | roles           |
     | Administrator    | admin@fakeemail.com    | administrator   |
   And harvest sources:
-    | title      | machine name | source uri                        | type               | author        | published |
-    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+    | title      | machine name | source uri                                                                 | type               | author        | published |
+    | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
   And pages:
     | name                       | url                                     |
     | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -260,13 +260,13 @@ Feature: Dkan Harvest
       | name               | mail                     | status | roles             |
       | Administrator      | admin@fakeemail.com      | 1      | administrator     |
     And harvest sources:
-      | title      | machine name | source uri                        | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+      | title      | machine name | source uri                                                                 | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
 
     And The "source_one" source is harvested
     And I am logged in as "Administrator"
     When I am on "admin/content"
-    Then I should see "Gold Prices in London 1950-2008 (Monthly)"
+    Then I should see "Gold Prices in London 1950-2008 (Monthly) Harvest"
     Given I am on the "Source one" page
     And I click "Edit"
     And I press "Delete"
@@ -276,7 +276,7 @@ Feature: Dkan Harvest
     And I wait for the batch job to finish
     Then I should see "Harvest Source Source one has been deleted."
     When I am on "admin/content"
-    Then I should not see "Gold Prices in London 1950-2008 (Monthly)"
+    Then I should not see "Gold Prices in London 1950-2008 (Monthly) Harvest"
 
   @api @javascript @harvest_rollback
   Scenario: Unpublish and mark as orphan all associated content when a Source is deleted
@@ -284,8 +284,8 @@ Feature: Dkan Harvest
       | name               | mail                     | status | roles             |
       | Administrator      | admin@fakeemail.com      | 1      | administrator     |
     And harvest sources:
-      | title      | machine name | source uri                        | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+      | title      | machine name | source uri                                                                 | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
 
     And The "source_one" source is harvested
     And I am logged in as "Administrator"
@@ -297,8 +297,8 @@ Feature: Dkan Harvest
     And I press "Delete Sources"
     And I wait for the batch job to finish
     Then I should see "Harvest Source Source one has been deleted."
-    And the content "Gold Prices in London 1950-2008 (Monthly)" should be "unpublished"
-    And the content "Gold Prices in London 1950-2008 (Monthly)" should be "orphaned"
+    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "unpublished"
+    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "orphaned"
 
   @api @javascript @harvest_rollback
   Scenario: Keep published but mark as orphan all associated content when a Source is deleted
@@ -306,8 +306,8 @@ Feature: Dkan Harvest
       | name               | mail                     | status | roles             |
       | Administrator      | admin@fakeemail.com      | 1      | administrator     |
     And harvest sources:
-      | title      | machine name | source uri                        | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data.json |  datajson_v1_1_json | Administrator | Yes       |
+      | title      | machine name | source uri                                                                 | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
 
     And The "source_one" source is harvested
     And I am logged in as "Administrator"
@@ -319,5 +319,5 @@ Feature: Dkan Harvest
     And I press "Delete Sources"
     And I wait for the batch job to finish
     Then I should see "Harvest Source Source one has been deleted."
-    And the content "Gold Prices in London 1950-2008 (Monthly)" should be "published"
-    And the content "Gold Prices in London 1950-2008 (Monthly)" should be "orphaned"
+    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "published"
+    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "orphaned"
