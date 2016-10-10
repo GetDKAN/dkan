@@ -1,5 +1,0 @@
-bin/
-vendor
-composer.lock
-.idea
-behat.local.yml
