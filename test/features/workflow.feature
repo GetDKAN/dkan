@@ -1,4 +1,4 @@
-@api @javascript  @enableDKAN_Workflow
+@api @enableDKAN_Workflow
 Feature:
   Workflow (Workbench) tests for DKAN Workflow Module
 
@@ -479,9 +479,8 @@ Feature:
     | Supervisor S1G2  | should     |
 
 
-  @api  @ahoyRunMe
+  @api @ahoyRunMe
   Scenario: When administering users, role pairings with core roles should be enforced
-
     Given I am logged in as a user with the "administrator" role
     And I visit the "Create User" page
     Then the checkbox "content creator" should not be checked

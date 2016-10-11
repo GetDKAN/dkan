@@ -1,4 +1,4 @@
-@javascript @api
+@api
 Feature: Theme
 
   Background:

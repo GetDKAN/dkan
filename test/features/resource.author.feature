@@ -1,4 +1,4 @@
-@javascript @api
+@api
 Feature: Resource
 
   Background:

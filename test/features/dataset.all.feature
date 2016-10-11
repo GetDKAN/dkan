@@ -1,4 +1,4 @@
-@javascript @api
+@api
 
   # TODO: 5 datasets are created in the test but the DKAN site has 4 datasets pre-made,
   #       with 2 of the datasets created are unpublished so the

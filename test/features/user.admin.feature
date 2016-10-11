@@ -1,4 +1,4 @@
-@api @javascript
+@api
 Feature: User
 
   Background:
