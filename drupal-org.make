@@ -8,6 +8,7 @@ includes:
   - "modules/dkan/dkan_workflow/dkan_workflow.make"
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
   - "modules/dkan/dkan_topics/dkan_topics.make"
+  - "modules/dkan/dkan_harvest/dkan_harvest.make"
 projects:
   manualcrop:
     version: '1.5'
@@ -38,7 +39,7 @@ projects:
     subdir: dkan
     download:
       type: git
-      url: 'https://github.com/NuCivic/dkan_dataset.git'
+      url: https://github.com/NuCivic/dkan_dataset.git
       branch: 7.x-1.x
   dkan_datastore:
     subdir: dkan
@@ -166,6 +167,7 @@ projects:
       type: git
       url: 'https://github.com/NuCivic/dkan_migrate_base.git'
       branch: 7.x-1.x
+    subdir: dkan
 libraries:
   jquery.imagesloaded:
     download:
