@@ -3,12 +3,12 @@ core: 7.x
 includes:
   - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/harvest_dkan_integration/dkan_dataset.make"
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
-  - "https://raw.githubusercontent.com/NuCivic/dkan_harvest/harvest_dkan_integration/dkan_harvest.make"
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "modules/dkan/dkan_workflow/dkan_workflow.make"
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
   - "modules/dkan/dkan_topics/dkan_topics.make"
+  - "modules/dkan/dkan_harvest/dkan_harvest.make"
 projects:
   manualcrop:
     version: '1.5'
@@ -53,13 +53,6 @@ projects:
       url: https://github.com/NuCivic/visualization_entity.git
       tag: 7.x-1.0-beta1
     type: module
-  dkan_harvest:
-    download:
-      type: git
-      url: 'https://github.com/NuCivic/dkan_harvest.git'
-      branch: harvest_dkan_integration
-    type: module
-    subdir: dkan
   admin_menu:
     version: 3.0-rc5
   bueditor:

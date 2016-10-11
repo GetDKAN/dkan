@@ -37,6 +37,7 @@
 - Removed conditional_fields from dkan_topics.
 - Removed AJAX from Dataset and Resource forms.
 - Fix bugs in resource mimetypes and previews.
+- Added DKAN Harvest module into DKAN Core.
 
 7.x-1.12.10 2016-09-07
 --------------------------
