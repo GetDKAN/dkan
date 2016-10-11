@@ -39,6 +39,14 @@
 - Fix bugs in resource mimetypes and previews.
 - Added DKAN Harvest module into DKAN Core.
 
+7.x-1.12.x
+--------------------------
+- Center group images in "Groups" page and group node page sidebar
+- Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
+- Update the default jquery library setting from 1.7 to 1.10
+- Fix topics menu and facet links if special characters are used in topic terms.
+- Fix form redirect issues on dataset form validation
+
 7.x-1.12.10 2016-09-07
 --------------------------
 - Fix JS error on IE browsers preventing previews from appearing
