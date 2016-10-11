@@ -104,6 +104,10 @@ p:last-child {
   &.alert-warning {
     background: #FFE285;//$brand-warning;
   }
+  &.alert-completed {
+    background: #dff0d8;
+    color: #3c763d;
+  }
   &:before {
     font-family: $icon-fa;
     font-size: 1.5em;
@@ -119,6 +123,7 @@ p:last-child {
     content: '\f05a';
     color: #8a6d3b;
   }
+  &.alert-completed:before,
   &.alert-success:before {
     content: '\f058';
     color: $brand-success;
