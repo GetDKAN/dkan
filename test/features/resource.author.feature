@@ -3,9 +3,9 @@ Feature: Resource
 
   Background:
     Given pages:
-      | name          | url         |
-      | Content       | /node/add  |
-      | User          | /user       |
+      | name          | url                |
+      | Content       | /node/add          |
+      | User          | /user              |
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
@@ -50,6 +50,15 @@ Feature: Resource
       | Resource 06 |           | csv    |            | Katie    | Yes       | Test        |
       | Resource 07 |           | csv    | Dataset 04 | Katie    | Yes       | Test        |
       | Resource 08 | Group 01  | csv    | Dataset 05 | Katie    | Yes       | Test        |
+    And resources:
+      | title       | author   | published | description | link file |
+      | Resource 11 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv |
+      | Resource 12 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/geography.png |
+      | Resource 13 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/metadata.zip |
+      | Resource 14 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/catalog.xml |
+      | Resource 15 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/data.json |
+      | Resource 16 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/USA.geo.json |
+      | Resource 17 | Katie    | Yes       | Test        | https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD |
 
   @noworkflow
   Scenario: Create resource
@@ -57,7 +66,7 @@ Feature: Resource
     And I am on the "Content" page
     And I click "Resource"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     When I fill in "Title" with "Resource 06"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
@@ -203,7 +212,7 @@ Feature: Resource
     And I am on "Resource 05" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     And I am on "Resource 05" page
     When I click "Manage Datastore"
@@ -218,7 +227,7 @@ Feature: Resource
     And I am on "Resource 03" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -238,7 +247,7 @@ Feature: Resource
     And I am on "Resource 03" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -267,3 +276,54 @@ Feature: Resource
   @dummy
   Scenario: Dummy test
     Given I am on "/"
+
+  # @todo Add test for URL w/o .csv
+  # We need to edit and save to trigger auto type discover
+  Scenario: Remote CSV preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 11" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a recline preview
+
+  Scenario: Image preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 12" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a image preview
+
+  Scenario: ZIP preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 13" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a zip preview
+
+  Scenario: XML preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 14" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a xml preview
+
+  Scenario: JSON preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 15" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a json preview
+
+  Scenario: GEOJSON preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 16" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a geojson preview
+
+  Scenario: Generated CSV preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 17" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a recline preview
