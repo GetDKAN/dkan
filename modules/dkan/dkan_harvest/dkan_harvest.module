@@ -969,7 +969,7 @@ function dkan_harvest_modify_delete_harvest_source_confirmation_form(&$form, $so
   // Modify submit button.
   $form['actions']['submit']['#value'] = t('Delete Sources');
 
-  // Set up custom submit handler. Be sure that is the firs handler that is going to be executed.
+  // Set up custom submit handler. Be sure that is the first handler that is going to be executed.
   if (isset($form['actions']['submit']['#submit'])) {
     array_unshift($form['actions']['submit']['#submit'], 'dkan_harvest_delete_confirmation_submit');
   } else {
