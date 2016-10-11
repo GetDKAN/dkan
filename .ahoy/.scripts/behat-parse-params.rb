@@ -51,7 +51,29 @@ def behat_parse_params args
       params.push param
     end
   end
+
   params.push '--colors' 
   {:files => files, :params => params}
 end
 
+
+def behat_parse_suite file
+  default = "data_starter"
+
+  return default if  file.nil? or file.empty?
+
+  key = file.split('/').reverse[3]
+
+  return default if key.nil?
+
+  types = {
+    :dkan => "dkan",
+    :config => "custom",
+  }
+
+  if types[key.to_sym]
+    types[key.to_sym]
+  else
+    default
+  end
+end
