@@ -25,3 +25,11 @@ Related Content    |field_related_content    ||[references](http://project-open-
 Identifier         |identifier               |[identifier](http://www.w3.org/TR/vocab-dcat/#Property:dataset_identifier)|[identifier](http://project-open-data.github.io/schema/#identifier)
 Modified Date      |modified_date            |[modified data](http://www.w3.org/TR/vocab-dcat/#Property:dataset_modified_date)|[modified](http://project-open-data.github.io/schema/#modified)
 Release Date       |release_date             |[release data](http://www.w3.org/TR/vocab-dcat/#Property:dataset_release_date)|[issued](http://project-open-data.github.io/schema/#issued)
+
+## Editing the UUID field
+
+DKAN contains a Universal Unique Identifier field which appears on Datasets and Resources: ![UUID on dataset](/sites/default/files/uuid.png) 
+
+This is generated when a Dataset or Resource are created or is copied when a Dataset or Resource are being Harvested from another catalog. By default the Unique Identifier cannot be edited by users. To make the Unique Identifier editable on Dataset and Resource forms, use the [UUID Editable](https://github.com/nucivic/uuid_editable) module. 
+
+Follow the [UUID Editable Instructions](https://github.com/NuCivic/uuid_editable/blob/master/README.md#instructions) for details and configuration.

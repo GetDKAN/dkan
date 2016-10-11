@@ -14,5 +14,7 @@ DKAN Developer's Guide
    developingoffofdkan
    geocoder
    googleanalytics
+   odsm-endpoints
    reportingbugs
+   viz-entity
    maintaining
