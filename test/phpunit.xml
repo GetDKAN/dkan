@@ -1,0 +1,11 @@
+<phpunit backupGlobals="false"
+    backupStaticAttributes="false"
+    syntaxCheck="false"
+    bootstrap="boot.php"
+    colors="true">
+  <testsuites>
+    <testsuite name="HHS Harvest Suite">
+      <directory>.</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

@@ -3,11 +3,12 @@ core: 7.x
 includes:
   - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
   - "https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.x/dkan_datastore.make"
-  - "https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.x/dkan_workflow.make"
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
+  - "modules/dkan/dkan_workflow/dkan_workflow.make"
   - "modules/dkan/dkan_data_story/dkan_data_story.make"
   - "modules/dkan/dkan_topics/dkan_topics.make"
+  - "modules/dkan/dkan_harvest/dkan_harvest.make"
 projects:
   manualcrop:
     version: '1.5'
@@ -38,19 +39,13 @@ projects:
     subdir: dkan
     download:
       type: git
-      url: 'https://github.com/NuCivic/dkan_dataset.git'
+      url: https://github.com/NuCivic/dkan_dataset.git
       branch: 7.x-1.x
   dkan_datastore:
     subdir: dkan
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_datastore.git'
-      branch: 7.x-1.x
-  dkan_workflow:
-    subdir: dkan
-    download:
-      type: git
-      url: 'https://github.com/NuCivic/dkan_workflow.git'
       branch: 7.x-1.x
   visualization_entity:
     download:
@@ -172,6 +167,7 @@ projects:
       type: git
       url: 'https://github.com/NuCivic/dkan_migrate_base.git'
       branch: 7.x-1.x
+    subdir: dkan
 libraries:
   jquery.imagesloaded:
     download:
