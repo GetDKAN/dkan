@@ -1,0 +1,206 @@
+<?php
+
+/**
+ * @file
+ * Support for data.json endpoints for dkan_harvest.
+ */
+
+/**
+ * Implements hook_harvest_source_types().
+ */
+function dkan_harvest_datajson_harvest_source_types() {
+  return array(
+    'datajson_v1_1_json' => array(
+      'machine_name' => 'datajson_v1_1_json',
+      'label' => 'Project Open Data v1.1 JSON',
+      'cache callback' => 'dkan_harvest_datajson_cache',
+      'migration class' => 'DatajsonHarvestMigration',
+    ),
+    'datajson_v1_1_xml' => array(
+      'machine_name' => 'datajson_v1_1_xml',
+      'label' => 'Project Open Data v1.1 XML',
+      'cache callback' => 'dkan_harvest_datajson_cache',
+      'migration class' => 'DatajsonHarvestMigration',
+    ),
+  );
+}
+
+/**
+ * Cache callback for Project Open Data v1.1 endpoints.
+ * Currently support datajson_v1_1_json and pod_v1_1_xml dkan_harvest source types.
+ *
+ * @param HarvestSource $source the source object from a datajson endpoint to cache.
+ * @param $harvest_updatetime
+ *
+ * @return HarvestCache
+ */
+function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime) {
+  // This is needed for remote uri.
+  $context = stream_context_create(
+    array(
+      'http' => array(
+        'timeout' => 36000,
+      ),
+      'https' => array(
+        'timeout' => 36000,
+      ),
+    )
+  );
+
+  $remote = @file_get_contents($source->uri, 0, $context);
+
+  if ($remote) {
+    $data = FALSE;
+    if ($source->type->machine_name === 'datajson_v1_1_xml') {
+      // Convert the XML document to JSON.
+      $xml = simplexml_load_string($remote);
+      $json = json_encode($xml);
+      $data = json_decode($json, TRUE);
+    }
+    elseif ($source->type->machine_name === 'datajson_v1_1_json') {
+      $data = drupal_json_decode($remote);
+    }
+
+    // Filter and save the data gathered from the endpoint.
+    if ($data) {
+      $v = dkan_harvest_datajson_cache_pod_v1_1_json($data, $source,
+        $harvest_updatetime);
+      return $v;
+    }
+  }
+}
+
+/**
+ * Cache the datajson_1_1_json datasets.
+ *
+ * @param Array $data
+ * @param HarvestSource $source
+ * @param $harvest_updatetime
+ *
+ * @return HarvestCache
+ */
+function dkan_harvest_datajson_cache_pod_v1_1_json(Array $data, HarvestSource $source, $harvest_updatetime) {
+  $harvestCache = new HarvestCache($source, $harvest_updatetime);
+
+  $datasets = $data['dataset'];
+
+  // Filter datasets, only allow datasets that have the filters value.
+  $filters = $source->filters;
+  if (!empty($filters)) {
+    $datasets = array_filter($datasets, function($dataset) use($filters, &$harvestCache){
+      $dataset_key = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
+      // Default action is to DROP the dataset if it does not meet the
+      // filtering criteria.
+      $accept = FALSE;
+      foreach ($filters as $filter => $value) {
+        if (!empty($dataset[$filter]) && !empty($value) && count(array_intersect((array)$value, (array)$dataset[$filter])) > 0) {
+          // The value to filter is an array and does intersect with the
+          // dataset value. ACCEPT
+          $accept = TRUE;
+        }
+        if ($accept) {
+          // Dataset have at least one filter that match. No need for more
+          // proccecing.
+          break;
+        }
+      }
+
+      if ($accept) {
+        // Update the cache result object.
+        $harvestCache->setCacheEntryFiltered($dataset_key, $dataset['title']);
+      }
+      else {
+        // This dataset will be dropped from here on. Add to the processed count.
+        $harvestCache->setCacheEntryProcessed($dataset_key, $dataset['title']);
+      }
+      // Drop the dataset if excluded.
+      return $accept;
+    });
+  }
+
+  // Exclude datasets, drop datasets that have the excludes value.
+  $excludes = $source->excludes;
+  if (!empty($excludes)) {
+    $datasets = array_filter($datasets, function($dataset) use($excludes, &$harvestCache){
+      $dataset_key = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
+      // Default action is to accept dataset that does not meet the
+      // excluding criteria.
+      $accept= TRUE;
+      foreach ($excludes as $exclude => $value) {
+        if (!empty($dataset[$exclude]) && count(array_intersect((array)$value, (array)$dataset[$exclude])) > 0) {
+          // The value to exclude is an array and does intersect with the dataset value. Drop.
+          $accept = FALSE;
+        }
+
+        if (!$accept) {
+          // Dataset have at least one exclude criterion that matchs. No need for more
+          // proccecing.
+          break;
+        }
+      }
+
+      if (!$accept) {
+        // Update the cache result object.
+        // This dataset will be dropped from here on. Add to the processed
+        // count.
+        $harvestCache->setCacheEntryExcluded($dataset_key, $dataset['title']);
+      }
+
+      // Drop the dataset if excluded.
+      return $accept;
+    });
+  }
+
+  // Override field values.
+  $overrides = $source->overrides;
+  $datasets = array_map(function($dataset) use($overrides, &$harvestCache){
+    foreach ($overrides as $override => $value) {
+      $dataset[$override] = $value[0];
+    }
+    return $dataset;
+  }, $datasets);
+
+  // Set default values for empty fields.
+  $defaults = $source->defaults;
+  $datasets = array_map(function($dataset) use($defaults, &$harvestCache){
+    foreach ($defaults as $default => $value) {
+      if(!isset($dataset[$default]))
+        $dataset[$default] = $value[0];
+    }
+    return $dataset;
+  }, $datasets);
+
+  // TODO add defaults and overriddes?
+  foreach ($datasets as $dataset) {
+    $identifier = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
+    $dataset_file = implode('/', array($source->getCacheDir(), $identifier));
+    $data = drupal_json_encode($dataset);
+    $cached = @file_put_contents($dataset_file, $data);
+
+    if (!$cached) {
+      $harvestCache->setCacheEntryFailed($identifier, $dataset['title']);
+    }
+    else {
+      // This will reset the failed flag if previously set.
+      $harvestCache->setCacheEntryProcessed($identifier, $dataset['title']);
+    }
+  }
+
+  return $harvestCache;
+}
+
+/**
+ * Removes URL and returns directory from URL string.
+ *
+ * Example: "http://example.com/whathat" returns "whatwhat"
+ */
+function dkan_harvest_datajson_prepare_item_id($identifier) {
+  if (filter_var($identifier, FILTER_VALIDATE_URL)) {
+    $identifier = parse_url($identifier, PHP_URL_PATH);
+    $frag = explode('/', $identifier);
+    // Does not produce "Strict warning: Only variables should be passed by
+    // reference" like end(explode('/', $identifier));
+    $identifier = $frag[count($frag) - 1];
+  }
+  return $identifier;
+}
