@@ -65,7 +65,8 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on the "Content" page
     And I click "Resource"
-    And I click "Remote file"
+    ## If you use selenium uncomment this
+    # And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     When I fill in "Title" with "Resource 06"
     And I press "Save"
@@ -211,7 +212,8 @@ Feature: Resource
     Given I am logged in as "Celeste"
     And I am on "Resource 05" page
     And I click "Edit"
-    And I click "Remote file"
+    ## If you use selenium uncomment this
+    # And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     And I am on "Resource 05" page
@@ -226,7 +228,8 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
     And I click "Edit"
-    And I click "Remote file"
+    ## If you use selenium uncomment this
+    # And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
@@ -246,7 +249,8 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
     And I click "Edit"
-    And I click "Remote file"
+    ## If you use selenium uncomment this
+    # And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
@@ -279,6 +283,7 @@ Feature: Resource
 
   # @todo Add test for URL w/o .csv
   # We need to edit and save to trigger auto type discover
+  @javascript
   Scenario: Remote CSV preview
     Given I am logged in as "Katie"
     And I am on "Resource 11" page
@@ -321,6 +326,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a geojson preview
 
+  @javascript
   Scenario: Generated CSV preview
     Given I am logged in as "Katie"
     And I am on "Resource 17" page

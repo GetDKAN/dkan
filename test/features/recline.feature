@@ -54,7 +54,8 @@ Feature: Recline
     When I click "Resource 01"
     Then I should see "Test R1"
     When I click "Edit"
-    And I click "Remote file"
+    ## If you use selenium uncomment this
+    # And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/Polling_Places_Madison_0.csv"
     And I press "edit-submit"
     Then I should see "Polling_Places_Madison_0.csv"
@@ -73,7 +74,8 @@ Feature: Recline
     Given I click "Resource 02"
     Then I should see "Test R2"
     When I click "Edit"
-    And I click "Remote file"
+    ## If you use selenium uncomment this
+    # And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/data_0.csv"
     And I press "edit-submit"
     Then I should see "data_0.csv"
@@ -90,7 +92,8 @@ Feature: Recline
     When I click "Resource 01"
     Then I should see "Test R1"
     When I click "Edit"
-    And I click "Remote file"
+    ## If you use selenium uncomment this
+    # And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/Polling_Places_Madison_0.csv"
     And I press "edit-submit"
     And I wait for "Loading" to disappear

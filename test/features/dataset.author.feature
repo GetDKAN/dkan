@@ -142,7 +142,7 @@ Feature: Dataset Features
   Scenario: Dummy test
     Given I am on "/"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource with no dataset to a dataset with no resource
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
@@ -158,7 +158,7 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove a resource with only one dataset from the dataset
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
@@ -177,7 +177,7 @@ Feature: Dataset Features
     And I click "Back to dataset"
     Then I should see "There is no dataset associated with this resource"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource with no group to a dataset with group
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
@@ -190,7 +190,7 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove a resource from a dataset with group
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
@@ -216,7 +216,7 @@ Feature: Dataset Features
     Then I should see "Dataset 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove group from dataset with resources
     Given I am logged in as "Katie"
     And I am on "Dataset 09" page
