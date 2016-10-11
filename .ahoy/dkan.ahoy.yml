@@ -169,7 +169,8 @@ commands:
 
   theme:
     usage: A series of commands for dkan theme development
-    import: dkan/.ahoy/theme.ahoy.yml
+    imports:
+      - dkan/.ahoy/theme.ahoy.yml
     hide: true
 
   uli:
