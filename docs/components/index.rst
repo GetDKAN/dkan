@@ -1,7 +1,7 @@
 Major Components
 ----------------------
 
-**DKAN** is an open data portal built in <a href="http://drupal.org">Drupal</a>. DKAN is designed to be feature-compatible with <a href="http://ckan.org">CKAN</a>, the Open Data portal built by the <a href="http://okfn.org">Open Knowledge Foundation</a>. 
+**DKAN** is an open data portal built in [Drupal](http://drupal.org). DKAN is designed to be feature-compatible with [CKAN](http://ckan.org), the Open Data portal built by the [Open Knowledge Foundation](http://okfn.org).
 
 ### DKAN Features
 
