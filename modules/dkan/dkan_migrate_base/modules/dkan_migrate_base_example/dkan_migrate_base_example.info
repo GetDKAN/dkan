@@ -1,0 +1,6 @@
+name = "DKAN Migrate Base"
+description = "DKAN migration base example."
+package = "DKAN"
+core = 7.x
+dependencies[] = dkan_migrate_base
+files[] = dkan_migrate_base_example.migrate.inc
