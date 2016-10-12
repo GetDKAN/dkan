@@ -367,12 +367,6 @@ projects:
       2393771: 'https://www.drupal.org/files/issues/specify_change_state_user-2393771-5.patch'
       1838640: 'https://www.drupal.org/files/issues/workbench_moderation-fix_callback_argument-1838640-23.patch'
 libraries:
-  arc:
-    download:
-      type: git
-      url: 'https://github.com/semsol/arc2.git'
-      revision: 44c396ab54178086c09499a1704e31a977b836d2
-    subdir: ARC2
   chosen:
     download:
       type: get

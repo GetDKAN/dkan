@@ -74,7 +74,6 @@ class DkanDatasetWebTestCase extends DrupalWebTestCase {
     $modules[] = 'link_iframe_formatter';
     $modules[] = 'multistep';
     $modules[] = 'ref_field_sync';
-    $modules[] = 'remote_file_source';
     $modules[] = 'select_or_other';
     $modules[] = 'og';
     $modules[] = 'og_context';
