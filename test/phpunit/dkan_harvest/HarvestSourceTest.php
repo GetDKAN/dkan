@@ -165,8 +165,7 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
    */
   private function getLocalSource() {
     return new HarvestSourceTestStub(
-      'harvest_test_source_local_file', DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/harvest_test_source_local_file/data.json"
+      'harvest_test_source_local_file', __DIR__ . '/data/harvest_test_source_local_file/data.json'
     );
   }
 }

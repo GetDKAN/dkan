@@ -1,0 +1,25 @@
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         syntaxCheck="false"
+         bootstrap="boot.php"
+         colors="true">
+    <testsuites>
+        <testsuite name="Dkan Harvest Test Suite">
+            <file>dkan_harvest/DatajsonHarvestMigrationTest.php</file>
+            <file>dkan_harvest/DkanHarvestDataJsonTest.php</file>
+            <file>dkan_harvest/DkanHarvestSourcesTest.php</file>
+            <file>dkan_harvest/DkanHarvestTest.php</file>
+            <file>dkan_harvest/HarvestSourceTest.php</file>
+            <file>dkan_harvest/HarvestSourceTypeTest.php</file>
+        </testsuite>
+        <testsuite name="Dkan Workflow Test Suite">
+            <!--<file>dkan_workflow/DkanWorkflowEmailTransition.php</file>
+            <file>dkan_workflow/DkanWorkflowTest.php</file>-->
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <ini name="display_errors" value="true"/>
+        <includePath>.</includePath>
+    </php>
+</phpunit>

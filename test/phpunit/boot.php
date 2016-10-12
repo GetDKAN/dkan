@@ -7,7 +7,7 @@
 use Drupal\Driver\DrupalDriver;
 use Drupal\Driver\Cores\Drupal7;
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 // Path to Drupal.
 $dir = implode('/', array(__DIR__, '..', '..', '..', 'docroot'));
