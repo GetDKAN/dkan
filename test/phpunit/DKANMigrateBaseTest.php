@@ -16,10 +16,11 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
 {
     public static function setUpBeforeClass()
     {
-        $setup = new DKANMigrateBaseTestSetup();
-        $setup->unpublishNodes('dataset');
-        migrate_static_registration();
-        self::setMigrationEndpointName('data_json_1_1', 'json');
+      // module_enable(array('dkan_migrate_base_example'), TRUE);
+      $setup = new DKANMigrateBaseTestSetup();
+      $setup->unpublishNodes('dataset');
+      migrate_static_registration();
+      self::setMigrationEndpointName('data_json_1_1', 'json');
     }
 
     public function setup() {
@@ -111,11 +112,11 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
       );
       $table = $map->getMapTable();
       dkan_migrate_base_add_modified_column($table);
-
       $result = $migration->processImport();
 
       $this->assertNotEquals($result, Migration::RESULT_FAILED);
       $this->assertEquals(0, $migration->errorCount());
+      return $migration;
     }
 
     public function testCKANResourceImport()
@@ -320,11 +321,62 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
       $this->nodeAssert($expect, $dataset);
     }
 
+    public function testDataJsonHighwater() {
+      $this->rollback('dkan_migrate_base_example_data_json11');
+      // First run should create some elements and update 0.
+      $migration = $this->migrate('dkan_migrate_base_example_data_json11');
+      $this->assertGreaterThan(0, $migration->getDestination()->getCreated());
+      $this->assertEquals(0, $migration->getDestination()->getUpdated());
+      // Second run should create 0 and update 0.
+      $migration->getDestination()->resetStats();
+      $migration->prepareUpdate();
+      $migration = $this->migrate('dkan_migrate_base_example_data_json11');
+      $this->assertEquals(0, $migration->errorCount());
+      $this->assertEquals(0, $migration->getDestination()->getCreated());
+      $this->assertEquals(0, $migration->getDestination()->getUpdated());
+      // Tamper source data.
+      $data_folder = implode(
+        '/',
+        array(
+          DRUPAL_ROOT,
+          drupal_get_path('module', 'dkan_migrate_base_example'),
+          'data',
+        )
+      );
+      // Prepare files
+      $original_file = implode('/', array($data_folder, 'data11.json'));
+      $backup_file = implode('/', array($data_folder, 'data11.json.backup'));
+      // Tamper original file
+      shell_exec('rm -rf ' . $backup_file);
+      shell_exec('cp ' . $original_file . ' ' . $backup_file);
+      $file = file_get_contents($original_file);
+      $file = str_replace('2014-', '2016-', $file);
+      file_unmanaged_save_data($file, $original_file, FILE_EXISTS_REPLACE);
+      // Run migration again
+      drupal_static_reset('getInstance');
+      $migration = $this->migrate('dkan_migrate_base_example_data_json11');
+      $this->assertEquals(0, $migration->errorCount());
+      $this->assertEquals(0, $migration->getDestination()->getCreated());
+      $this->assertGreaterThan(0, $migration->getDestination()->getUpdated());
+      // Run Migration for the fourth time.
+      $migration->getDestination()->resetStats();
+      $migration->prepareUpdate();
+      $migration = $this->migrate('dkan_migrate_base_example_data_json11');
+      $this->assertEquals(0, $migration->errorCount());
+      $this->assertEquals(0, $migration->getDestination()->getCreated());
+      $this->assertEquals(0, $migration->getDestination()->getUpdated());
+      // Put everything as it was
+      shell_exec('rm ' . $original_file);
+      shell_exec('mv ' . $backup_file . ' ' . $original_file);
+      $this->rollback('dkan_migrate_base_example_data_json11');
+    }
+
     public function tearDown(){
       $this->rollback('dkan_migrate_base_example_data_json11');
     }
 
     public static function tearDownAfterClass() {
+      // module_disable(array('dkan_migrate_base_example'));
       self::setMigrationEndpointName('data_json_1_1', 'data.json');
     }
 }
