@@ -1,4 +1,4 @@
- @api @javascript
+@api
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -60,7 +60,7 @@ Feature: Dataset Features
       | Resource 05 |           | csv    | Katie  | Yes       | Dataset 08 |             |
       | Resource 06 | Group 02  | csv    | Katie  | Yes       | Dataset 09 |             |
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Datasets Search" page
@@ -125,7 +125,7 @@ Feature: Dataset Features
     And I press "Delete"
     Then I should see "Dataset 03 has been deleted"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a dataset to group that I am a member of
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
@@ -141,7 +141,7 @@ Feature: Dataset Features
   Scenario: Dummy test
     Given I am on "/"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource with no dataset to a dataset with no resource
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
@@ -157,7 +157,7 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove a resource with only one dataset from the dataset
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
@@ -176,7 +176,7 @@ Feature: Dataset Features
     And I click "Back to dataset"
     Then I should see "There is no dataset associated with this resource"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource with no group to a dataset with group
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
@@ -192,7 +192,7 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove a resource from a dataset with group
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
@@ -213,7 +213,7 @@ Feature: Dataset Features
     And I click "Edit"
     Then I should not see "Group 01" in the "resource groups" region
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add group to a dataset with resources
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
@@ -226,7 +226,7 @@ Feature: Dataset Features
     And I click "Edit"
     Then I should see "Group 02" in the "resource groups" region
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove group from dataset with resources
     Given I am logged in as "Katie"
     And I am on "Dataset 09" page
@@ -239,7 +239,7 @@ Feature: Dataset Features
     And I click "Edit"
     Then I should not see "Group 02" in the "resource groups" region
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add group and resource to a dataset on the same edition
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page

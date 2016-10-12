@@ -1,4 +1,4 @@
-@javascript @api
+@api
 # in the resource tests, when it uses "Given resources:" it defines a property called 'datastore created' with either a 'yes' or 'no', which is used in some tests -  should I try to map that when creating the resource in resourceContext? @Frank
 Feature: Resource
 
@@ -63,7 +63,6 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
     When I click "Edit"
-    And I click "Publishing options"
     And I check "Published"
     And I press "Save"
     Then I should see "Resource Resource 04 has been updated"
@@ -84,7 +83,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @noworkflow
+  @noworkflow @javascript 
   Scenario: Import items on datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -98,7 +97,7 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Delete items on datastore of any resource
     # Backgorund steps to add a file to a resource
     Given I am logged in as "John"
@@ -118,7 +117,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @noworkflow
+  @noworkflow @javascript 
   Scenario: Drop datastore of any resource
     # Backgorund steps to add a file to a resource
     Given I am logged in as "John"
