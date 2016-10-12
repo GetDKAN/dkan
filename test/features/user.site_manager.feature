@@ -1,3 +1,8 @@
+##
+# Refactor this to populate all the pages using the background
+# and visiting them using the visit step.
+# In that way we can remove the javascript part.
+##
 @api @javascript
 Feature: User command center links for site manager role.
 

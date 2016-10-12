@@ -1,4 +1,4 @@
-@api @javascript
+@api
 Feature: User
 
   Background:
@@ -52,7 +52,7 @@ Feature: User
     When I am on "Katie" page
     Then I should see "This is Katie!" in the "user profile" region
 
-  @dkanBug @deleteTempUsers
+  @dkanBug @deleteTempUsers @javascript
     # Site managers trigger honeypot when creating users.
     # See https://github.com/NuCivic/dkan/issues/811
     # Workaround: Wait for 6 seconds so that honeypot doesn't overreact
@@ -82,6 +82,7 @@ Feature: User
     When I am on "Users" page
     Then I should see "blocked" in the "Katie" row
 
+  @javascript
   Scenario: Disable user
     Given I am logged in as "John"
     And I am on "Users" page

@@ -1,4 +1,4 @@
-@api @javascript
+@api
 Feature: User command center links for content creator role.
 
   Background:
@@ -6,7 +6,7 @@ Feature: User command center links for content creator role.
       | name    | mail                | roles                |
       | Gabriel | gabriel@example.com | content creator      |
 
-
+  @javascript
   Scenario: Content creator role can view admin menu links under Add Content
     Given I am logged in as "Gabriel"
     When I click "Add content" in the "admin menu" region
