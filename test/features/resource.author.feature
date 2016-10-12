@@ -212,8 +212,7 @@ Feature: Resource
     Given I am logged in as "Celeste"
     And I am on "Resource 05" page
     And I click "Edit"
-    ## If you use selenium uncomment this
-    # And I click "Remote file"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     And I am on "Resource 05" page
@@ -228,8 +227,7 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
     And I click "Edit"
-    ## If you use selenium uncomment this
-    # And I click "Remote file"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
@@ -249,8 +247,7 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
     And I click "Edit"
-    ## If you use selenium uncomment this
-    # And I click "Remote file"
+    And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
