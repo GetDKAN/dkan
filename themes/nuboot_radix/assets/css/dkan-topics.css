@@ -38,6 +38,9 @@
     text-decoration: none;
 }
 
+.icon-dkan-harvest_source:before {
+    content:"\e925";
+}
 .icon-dkan-page:before {
     content: "\e984";
 }
