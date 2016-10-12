@@ -79,6 +79,7 @@ Feature: Dataset Features
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
 
+  @javascript
   Scenario: See all dataset fields
     Given I am logged in as "Gabriel"
     And I am on "Dataset 01" page
