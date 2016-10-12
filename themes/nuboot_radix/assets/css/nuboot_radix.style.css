@@ -9241,6 +9241,12 @@ div.horizontal-tabs {
 .page-admin form input[type=submit] {
   margin-right: 1em; }
 
+#field-dkan-harvest-filters-values .description,
+#field-dkan-harvest-excludes-values .description,
+#field-dkan-harvest-overrides-values .description,
+#field-dkan-harvest-defaults-values .description {
+  font-weight: normal; }
+
 #dkan-dataset-form-settings .help-block {
   margin: 5px 20px 10px; }
 
@@ -9934,7 +9940,9 @@ ul.action-links {
 .pane-content .field-name-body {
   line-height: 2em; }
 
-.main .panel-pane {
+.main .pane-custom,
+.main .pane-node-field-image,
+.main .pane-fieldable-panels-pane {
   margin-bottom: 3em; }
 
 h2.pane-title {
@@ -9976,7 +9984,6 @@ h2.pane-title {
   margin: 0 0 15px 0; }
 
 .radix-layouts-content .pane-content {
-  padding: 20px 0;
   margin-bottom: 1em; }
 
 .radix-layouts-content .pane-node-field-topic .pane-content {
@@ -10428,6 +10435,9 @@ p:last-child {
     top: 5px; }
   .alert.alert-warning {
     background: #FFE285; }
+  .alert.alert-completed {
+    background: #dff0d8;
+    color: #3c763d; }
   .alert:before {
     font-family: "FontAwesome";
     font-size: 1.5em;
@@ -10440,7 +10450,7 @@ p:last-child {
   .alert.alert-warning:before {
     content: '\f05a';
     color: #8a6d3b; }
-  .alert.alert-success:before {
+  .alert.alert-completed:before, .alert.alert-success:before {
     content: '\f058';
     color: #5cb85c; }
 
