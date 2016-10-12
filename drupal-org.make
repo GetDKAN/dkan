@@ -4,7 +4,7 @@ includes:
   - "https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.x/dkan_dataset.make"
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
-  - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/967c8bb3eb13f3b70f28a4b487074b23591f1075/leaflet_widget.make"
+  - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/860437c9e6813cf829fee91b31b0968a2f4c5d7a/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
 projects:
   admin_menu:
@@ -184,7 +184,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
-      revision: 967c8bb3eb13f3b70f28a4b487074b23591f1075
+      revision: 860437c9e6813cf829fee91b31b0968a2f4c5d7a
   libraries:
     version: '2.2'
   link:
