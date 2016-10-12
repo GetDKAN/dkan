@@ -1,4 +1,3 @@
-@javascript
 Feature: Resource
 
   Background:

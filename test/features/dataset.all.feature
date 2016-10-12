@@ -1,4 +1,4 @@
-@javascript @api
+@api
 
   # TODO: 5 datasets are created in the test but the DKAN site has 4 datasets pre-made,
   #       with 2 of the datasets created are unpublished so the
@@ -134,24 +134,17 @@ Feature: Dataset Features
   # TODO: make sure it works when we don't have default content on.
   Scenario: View available tag filters for datasets
     Given I am on "Datasets Search" page
-    Then I click on the text "Tags"
-    And I wait for "1" seconds
     Then I should see "Health 2 (2)" in the "filter by tag" region
     Then I should see "Gov 2 (1)" in the "filter by tag" region
 
   # TODO: make sure it works when we don't have default content on.
   Scenario: View available resource format filters for datasets
     Given I am on "Datasets Search" page
-    When I click on the text "Format"
-    And I wait for "1" seconds
     Then I should see "csv 2 (1)" in the "filter by resource format" region
     And I should see "html 2 (2)" in the "filter by resource format" region
 
   Scenario: View available author filters for datasets
     Given I am on "Datasets Search" page
-    And I wait for "Author"
-    When I click on the exact text "Author"
-    And I wait for "1" seconds
     Then I should see "Gabriel (2)" in the "filter by author" region
     Then I should see "Katie (1)" in the "filter by author" region
 
@@ -162,7 +155,6 @@ Feature: Dataset Features
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
-    Then I click on the text "Tags"
     When I click "Health 2" in the "filter by tag" region
     Then I should see "2 results"
     And I should see "2" items in the "datasets" region
@@ -174,8 +166,6 @@ Feature: Dataset Features
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
-    Then I click on the text "Format"
-    Then I wait for "1" seconds
     When I click "csv 2" in the "filter by resource format" region
     Then I should see "1 results"
     And I should see "1" items in the "datasets" region
@@ -187,8 +177,6 @@ Feature: Dataset Features
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
-    Then I click on the text "Author"
-    Then I wait for "1" seconds
     When I click "Gabriel" in the "filter by author" region
     Then I should see "2 results"
     And I should see "2" items in the "datasets" region
