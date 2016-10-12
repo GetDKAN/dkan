@@ -259,6 +259,7 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
       $row->publisher = (object) $row->publisher;
     }
     if (isset($row->publisher->name) && !$row->group_id = $this->getGroupNidByTitle($row->publisher->name)) {
+
       if ($row->publisher->name) {
         $group = new stdClass;
         $group->title = $row->publisher->name;
@@ -267,7 +268,7 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
         $row->group_id = $group->nid;
       }
     }
-
+    $row->group_id = (int) $row->group_id;
     if (is_array($row->contactPoint)) {
       $row->contactPoint = (object) $row->contactPoint;
     }
@@ -467,7 +468,6 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
           'modified' =>$modified,))
       ->execute();
     }
-
     db_update($table)
       ->condition('sourceid1', $identifier, "=")
       ->fields(array(
@@ -516,8 +516,8 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
   /**
    * Implements prepareRow.
    */
-  public function prepare($entity, $row) {
-    
+  public function prepare(&$entity, $row) {
+    global $user;
     // Remove empy additional fields.
     if (isset($entity->field_additional_info['und'][0]) && $entity->field_additional_info['und'][0]['first'] == NULL) {
       unset($entity->field_additional_info);
@@ -528,6 +528,16 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
     $entity->status = 1;
     $entity->vid = isset($entity->vid) ? $entity->vid : '';
 
+    // If the migration is running under a user that doesn't belong
+    // to a specific group, the same user can't create og references.
+    // This solves it by attaching field_mode admin to the ref field
+    if (isset($entity->nid) && (int) $user->uid == 0) {
+      if (!empty($entity->og_group_ref[LANGUAGE_NONE])) {
+        foreach($entity->og_group_ref[LANGUAGE_NONE] as $delta => $value) {
+          $entity->og_group_ref[LANGUAGE_NONE][$delta]['field_mode'] = 'admin';
+        }
+      }
+    }
   }
 }
 
