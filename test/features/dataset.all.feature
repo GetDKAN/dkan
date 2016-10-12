@@ -134,8 +134,6 @@ Feature: Dataset Features
   # TODO: make sure it works when we don't have default content on.
   Scenario: View available tag filters for datasets
     Given I am on "Datasets Search" page
-    Then I click on the text "Tags"
-    And I wait for "1" seconds
     Then I should see "Health 2 (2)" in the "filter by tag" region
     Then I should see "Gov 2 (1)" in the "filter by tag" region
 
