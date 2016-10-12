@@ -1,4 +1,4 @@
-@javascript @api
+@api
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor

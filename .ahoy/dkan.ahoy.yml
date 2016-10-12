@@ -14,7 +14,7 @@ commands:
           ahoy confirm "./docroot folder alredy exists. Delete it and reinstall drupal?" && chmod -R 777 docroot/sites/default && rm -rf docroot ||
           { echo ".. skipping installation"; exit 1;}
       fi
-      ahoy drush make --prepare-install dkan/drupal-org-core.make docroot --yes
+      ahoy drush make --concurrency=8 --prepare-install dkan/drupal-org-core.make docroot --yes
       ln -s ../../dkan docroot/profiles/dkan &&
       ahoy drush "-y --verbose si minimal --sites-subdir=default --account-pass='admin' --db-url={{args}} install_configure_form.update_status_module=\"'array\(FALSE,FALSE\)'\""
 
@@ -27,7 +27,7 @@ commands:
       rm -rf docroot/profiles/dkan/modules/dkan/dkan_datastore ;
       rm -rf docroot/profiles/dkan/modules/contrib ;
       echo "removed dkan/modules folders created by make and running a fresh drush make."
-      ahoy drush -y make --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --working-copy docroot/profiles/dkan
+      ahoy drush -y make --concurrency=8 --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --working-copy docroot/profiles/dkan
 
   reinstall:
     usage: Reinstall the dkan install profile (db only).
@@ -114,7 +114,7 @@ commands:
         echo "No make file found at $MODULE_PATH/$MODULE.make. Consider running 'ahoy dkan link-module'."
         exit 1
       fi
-      ahoy drush -y make --no-core --contrib-destination=dkan $MODULE_PATH/$MODULE.make --no-recursion --no-cache --verbose --working-copy
+      ahoy drush -y make --concurrency=8 --no-core --contrib-destination=dkan $MODULE_PATH/$MODULE.make --no-recursion --no-cache --verbose --working-copy
 
   test:
     usage: Run the tests for dkan.

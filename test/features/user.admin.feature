@@ -1,4 +1,4 @@
-@api @javascript
+@api
 Feature: User
 
   Background:
@@ -53,7 +53,7 @@ Feature: User
     And I click "About" in the "tabs" region
     Then I should see "This is Katie!"
 
-  @dkanBug @deleteTempUsers
+  @dkanBug @deleteTempUsers @javascript
     # Site managers trigger honeypot when creating users.
     # See https://github.com/NuCivic/dkan/issues/811
     # Workaround: Wait for 6 seconds so that honeypot doesn't overreact
@@ -83,6 +83,7 @@ Feature: User
     When I am on "Users" page
     Then I should see "blocked" in the "Katie" row
 
+  @javascript
   Scenario: Disable user
     Given I am logged in as "John"
     And I am on "Users" page
@@ -114,7 +115,7 @@ Feature: User
     When I am on "Users" page
     Then I should see "site manager" in the "Jaz" row
 
-Scenario: Modify user as editor
+  Scenario: Modify user as editor
     Given I am logged in as "Jaz"
     And I am on "Users" page
     Then I should see "Access denied"
