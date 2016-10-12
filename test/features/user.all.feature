@@ -82,12 +82,10 @@ Feature: User
 
   Scenario: View list of published datasets created by user on user profile
     Given I am on "Katie" page
-    And I click "Datasets" in the "tabs" region
     Then I should see "2" items in the "user content" region
 
   Scenario: Search datasets created by user on user profile
     Given I am on "Katie" page
-    And I click "Datasets" in the "tabs" region
     When I fill in "Test" for "Search" in the "content search" region
     And I press "Apply"
     Then I should see "2 results" in the "user content" region
@@ -95,7 +93,6 @@ Feature: User
 
   Scenario: See list of user memberships on user profile
     Given I am on "Katie" page
-    And I click "Groups" in the "tabs" region
     Then I should see "Group membership:"
     Then I should see "Group 01"
     And I should not see "Group 02"

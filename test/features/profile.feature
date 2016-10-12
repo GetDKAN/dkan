@@ -2,7 +2,7 @@
 Feature: Profile
   Check a user profile as an content creator.
 
-  @api
+  @api @javascript
   Scenario: Check profile menu
     Given I am logged in as a user with the "content creator" role
     And I am on "/user"
