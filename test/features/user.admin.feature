@@ -82,6 +82,7 @@ Feature: User
     When I am on "Users" page
     Then I should see "blocked" in the "Katie" row
 
+  @javascript
   Scenario: Disable user
     Given I am logged in as "John"
     And I am on "Users" page
