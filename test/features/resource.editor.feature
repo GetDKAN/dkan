@@ -72,7 +72,6 @@ Feature: Resource
     Given I am logged in as "Celeste"
     And I am on "Resource 04" page
     When I click "Edit"
-    And I click "Publishing options"
     And I check "Published"
     And I press "Save"
     Then I should see "Resource Resource 04 edited has been updated"
