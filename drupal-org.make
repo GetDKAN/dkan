@@ -26,6 +26,8 @@ projects:
       revision: f9a8b5b
     patch:
       849232: 'http://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch'
+  better_exposed_filters:
+    version: '3.2'
   bueditor:
     version: '1.8'
   bueditor_plus:
@@ -60,6 +62,11 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/dkan_dataset.git'
+      branch: 7.x-1.x
+  dkan_migrate_base:
+    download:
+      type: git
+      url: 'https://github.com/NuCivic/dkan_migrate_base.git'
       branch: 7.x-1.x
   double_field:
     version: '2.4'
@@ -220,6 +227,8 @@ projects:
     version: '1.0-beta5'
   migrate:
     version: '2.8'
+    patch:
+      1989492: 'https://www.drupal.org/files/issues/migrate-append-map-messages-1989492-10.patch'
   migrate_extras:
     version: '2.5'
   module_filter:
@@ -296,6 +305,8 @@ projects:
     version: '2.6'
   roleassign:
     version: '1.1'
+  safeword:
+    version: '1.13'
   schema:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
