@@ -1,4 +1,4 @@
-@api @javascript  @enableDKAN_Workflow
+@api @enableDKAN_Workflow
 Feature:
   Workflow (Workbench) tests for DKAN Workflow Module
 
@@ -66,7 +66,7 @@ Feature:
       | Workflow Moderator |
       | Workflow Supervisor |
 
-  @api 
+  @api @javascript
   Scenario Outline: As a user with any Workflow role, I should be able to upgrade my own draft content to needs review.
     Given I am logged in as "<user>"
     And datasets:
@@ -90,7 +90,7 @@ Feature:
       | Moderator |
       | Supervisor |
 
-  @ok @mail 
+  @ok @mail @javascript
   Scenario Outline: As a user with the Workflow Moderator or Supervisor role, I should be able to publish 'Needs Review' content.
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
@@ -115,7 +115,7 @@ Feature:
       | Workflow Moderator, editor            |
       | Workflow Supervisor, site manager     |
 
-  @ok 
+  @ok @javascript
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
@@ -479,9 +479,8 @@ Feature:
     | Supervisor S1G2  | should     |
 
 
-  @api  @ahoyRunMe
+  @api @ahoyRunMe @javascript
   Scenario: When administering users, role pairings with core roles should be enforced
-
     Given I am logged in as a user with the "administrator" role
     And I visit the "Create User" page
     Then the checkbox "content creator" should not be checked
