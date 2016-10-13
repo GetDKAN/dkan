@@ -192,7 +192,6 @@ libraries:
       revision: 13d5dd373cbf3f2bddd8ac2ee8df3a1966a62d09
     directory_name: font_awesome
   spyc:
-    type: library
     download:
       type: file
       url: 'https://raw.github.com/mustangostang/spyc/master/Spyc.php'
