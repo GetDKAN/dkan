@@ -68,10 +68,9 @@ dependencies:
 ## Customize test commands
 test:
   override:
-    - cd $HOME/dkan/dkan/test
-    - ./bin/phpunit --configuration ./phpunit
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         parallel: true
+    - $HOME/dkan/dkan/test/bin/phpunit --configuration dkan/dkan/test/phpunit
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true
