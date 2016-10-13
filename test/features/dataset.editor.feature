@@ -1,4 +1,4 @@
-@javascript @api
+@api
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -54,7 +54,8 @@ Background:
     Given I am logged in as "Gabriel"
     And I am on "Dataset 05" page
     When I click "Edit"
-    When I click "Publishing options"
+    ## If you use selenium uncomment this
+    # When I click "Publishing options"
     And I check the box "Published"
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
@@ -74,7 +75,8 @@ Background:
     Given I am logged in as "Gabriel"
     And I am on "Dataset 05" page
     When I click "Edit"
-    When I click "Publishing options"
+    ## If you use selenium uncomment this
+    # When I click "Publishing options"
     And I check the box "Published"
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
