@@ -11,6 +11,8 @@ includes:
 projects:
   manualcrop:
     version: '1.5'
+    patch:
+      2504119: 'https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch'
   tablefield:
     version: '2.4'
   simple_gmap:
@@ -191,11 +193,9 @@ libraries:
     directory_name: font_awesome
   spyc:
     download:
-      type: get
-      url: https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php
-    filename: "../spyc.php"
-    directory_name: lib
-    destination: modules/contrib/services/servers/rest_server
+      type: file
+      url: 'https://raw.github.com/mustangostang/spyc/master/Spyc.php'
+    directory_name: spyc
 defaults:
   projects:
     subdir: contrib
