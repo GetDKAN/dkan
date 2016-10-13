@@ -56,17 +56,6 @@ projects:
     version: '1.0-alpha11'
   diff:
     version: '3.2'
-  dkan_dataset:
-    subdir: dkan
-    download:
-      type: git
-      url: 'https://github.com/NuCivic/dkan_dataset.git'
-      branch: 7.x-1.x
-  dkan_migrate_base:
-    download:
-      type: git
-      url: 'https://github.com/NuCivic/dkan_migrate_base.git'
-      branch: 7.x-1.x
   double_field:
     version: '2.4'
   draggableviews:
