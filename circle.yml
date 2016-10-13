@@ -70,7 +70,7 @@ test:
   override:
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         parallel: true
-    - $HOME/dkan/dkan/test/bin/phpunit --configuration dkan/dkan/test/phpunit
+    - $HOME/dkan/dkan/test/bin/phpunit --configuration $HOME/dkan/dkan/test/phpunit
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true
