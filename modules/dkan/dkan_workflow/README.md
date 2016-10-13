@@ -1,16 +1,7 @@
-[![Circle CI](https://circleci.com/gh/NuCivic/dkan_workflow.svg?style=svg)](https://circleci.com/gh/NuCivic/dkan_workflow)
-
-## What is DKAN?
-
-[DKAN](http://nucivic.com/dkan) is a Drupal-based open data tool with a full
-suite of cataloging, publishing and visualization features that allows
-governments, nonprofits and universities to easily publish data to the public.
-DKAN is maintained by [NuCivic](http://nucivic.com).
-
-## What is DKAN Workflow?
+# DKAN Workflow
 ![DKAN Workflow](./dkan_workflow_screenshot.png)
 
-Workflow implementation for [DKAN](https://github.com/NuCivic/dkan) based on
+Publishing workflow for [DKAN](https://github.com/NuCivic/dkan) based on
 [Workbench](https://www.drupal.org/project/workbench) and related modules.
 
 ## Requirements
@@ -29,20 +20,7 @@ Email](https://www.drupal.org/project/workbench_email) for email notifications.)
 
 ## Installation
 
-This module needs to be [built using drush
-make](https://github.com/NuCivic/nucivic-process/wiki/Using-drush-make-in-individual-modules)
-before being enabled. If you download only the module you will miss key
-dependencies for required modules and libraries.
-
-After either enabling or disabling DKAN Workflow and its dependencies, you will need to [rebuild content permissions](https://docs.acquia.com/articles/rebuilding-node-access-permissions). If logged in as an admin you should see a message telling you this with a link to the form to do so.
-
-To install:
-```
-cd <path to modules directory>
-git clone https://github.com/NuCivic/dkan_workflow
-drush make --no-core <path to modules directory>/dkan_workflow/dkan_workflow.make
-drush en dkan_workflow
-```
+This module is disabled by default in a new DKAN installation. After either enabling or disabling DKAN Workflow and its dependencies, you will need to [rebuild content permissions](https://docs.acquia.com/articles/rebuilding-node-access-permissions). If logged in as an admin you should see a message telling you this with a link to the form to do so.
 
 ## Known issues:
 
@@ -55,21 +33,4 @@ drush en dkan_workflow
 ## Documentation
 
 We are working on improving this documentation. Please let us know if you have
-any questions in the mean time.
-
-## Contributing
-
-We are accepting issues in the dkan issue thread only ->
-https://github.com/NuCivic/dkan/issues -> Please label your issue as
-**"component: dkan_workflow"** after submitting so we can identify problems and
-feature requests faster.
-
-If you can, please cross reference commits in this repo to the corresponding
-issue in the dkan issue thread. You can do that easily adding this text:
-
-```
-NuCivic/dkan#[issue_id]
-```
-
-to any commit message or comment replacing **issue_id** with the corresponding
-issue id.
+any questions in the meantime.

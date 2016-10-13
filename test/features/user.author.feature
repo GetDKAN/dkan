@@ -40,7 +40,7 @@ Feature: User
       | Dataset 03 | Group 01  | Gabriel | Yes              | results  | Test        |
       | Dataset 04 | Group 01  | Katie   | Yes              | world    | Test        |
 
-  @api @javascript
+  @api
   Scenario: Edit own user account
     Given I am logged in as "Katie"
     And I am on "Katie" page
@@ -52,7 +52,7 @@ Feature: User
     When I am on "Katie" page
     Then I should see "This is my profile" in the "user profile" region
 
-  @api @javascript
+  @api
   Scenario: View the list of own published datasets on profile
     Given I am logged in as "Katie"
     And I am on "Katie" page
