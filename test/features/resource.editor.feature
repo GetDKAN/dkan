@@ -101,6 +101,7 @@ Feature: Resource
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
+    And I wait for "Import"
     And I press "Import"
     And I wait for "Delete Items"
     Then I should see "Last import"
@@ -124,7 +125,7 @@ Feature: Resource
     And I wait for "items have been deleted"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
-    Then I should see "No imported items."
+    And I wait for "No imported items."
 
   @noworkflow @javascript
   Scenario: Drop datastore of resources associated with groups that I am a member of

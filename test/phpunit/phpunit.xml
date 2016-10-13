@@ -4,7 +4,7 @@
          bootstrap="boot.php"
          colors="true">
     <testsuites>
-        <testsuite name="Dkan Harvest Test Suite">
+        <testsuite name="DKAN Harvest Test Suite">
             <file>dkan_harvest/DatajsonHarvestMigrationTest.php</file>
             <file>dkan_harvest/DkanHarvestDataJsonTest.php</file>
             <file>dkan_harvest/DkanHarvestSourcesTest.php</file>
@@ -12,9 +12,17 @@
             <file>dkan_harvest/HarvestSourceTest.php</file>
             <file>dkan_harvest/HarvestSourceTypeTest.php</file>
         </testsuite>
-        <testsuite name="Dkan Workflow Test Suite">
+        <testsuite name="DKAN Workflow Test Suite">
             <!--<file>dkan_workflow/DkanWorkflowEmailTransition.php</file>
             <file>dkan_workflow/DkanWorkflowTest.php</file>-->
+        </testsuite>
+        <testsuite name="DKAN Dataset Test Suite">
+        </testsuite>
+        <testsuite name="DKAN Datastore Test Suite">
+        </testsuite>
+        <testsuite name="DKAN Datastore API Test Suite">
+        </testsuite>
+        <testsuite name="DKAN Migrate Base Test Suite">
         </testsuite>
     </testsuites>
 
