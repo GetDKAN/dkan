@@ -47,7 +47,7 @@ projects:
   context:
     version: '3.6'
   ctools:
-    version: '1.9'
+    version: '1.10'
   data:
     version: '1.x'
   date:
