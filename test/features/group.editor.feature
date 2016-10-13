@@ -1,3 +1,4 @@
+# time:0m50.36s
 @api
 Feature: Site Manager administer groups
   In order to manage site organization
