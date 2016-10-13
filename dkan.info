@@ -115,6 +115,8 @@ dependencies[] = dkan_data_story
 dependencies[] = dkan_topics
 dependencies[] = dkan_permissions
 dependencies[] = dkan_ipe
+dependencies[] = dkan_harvest_dashboard
+dependencies[] = dkan_harvest_datajson
 
 ; DKAN Core Modules
 dependencies[] = dkan_sitewide

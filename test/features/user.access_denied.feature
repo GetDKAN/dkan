@@ -1,4 +1,4 @@
-@api @javascript
+@api
 Feature: Users with Editor, Content Creator or Site Manager roles should not have access to administration pages.
 
   Background:

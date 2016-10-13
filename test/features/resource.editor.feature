@@ -1,4 +1,4 @@
-@javascript @api
+@api
 Feature: Resource
 
   Background:
@@ -68,7 +68,8 @@ Feature: Resource
     Given I am logged in as "Celeste"
     And I am on "Resource 04" page
     When I click "Edit"
-    And I click "Publishing options"
+    ## If you use selenium uncomment this
+    # When I click "Publishing options"
     And I check "Published"
     And I press "Save"
     Then I should see "Resource Resource 04 edited has been updated"
@@ -89,28 +90,30 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Import items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
+    And I wait for "Import"
     And I press "Import"
     And I wait for "Delete Items"
     Then I should see "Last import"
     And I should see "imported items total"
-  @noworkflow
+  
+  @noworkflow @javascript
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     When I am on "Resource 01" page
@@ -122,15 +125,15 @@ Feature: Resource
     And I wait for "items have been deleted"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
-    Then I should see "No imported items."
+    And I wait for "No imported items."
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Drop datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
