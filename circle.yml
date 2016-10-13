@@ -68,7 +68,8 @@ dependencies:
 ## Customize test commands
 test:
   override:
-    - $HOME/dkan/dkan/test/bin/phpunit --configuration dkan/dkan/test/phpunit
+    - cd $HOME/dkan/dkan/test
+    - ./bin/phpunit --configuration ./phpunit
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         parallel: true
   post:
