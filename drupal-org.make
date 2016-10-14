@@ -162,7 +162,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/nuboot_radix.git
-      branch: hidden_fields_view_modes_panelizer_4093
+      branch: release-1-12
     type: theme
   radix:
     type: theme
