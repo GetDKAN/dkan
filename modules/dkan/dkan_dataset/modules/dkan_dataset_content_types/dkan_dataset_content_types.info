@@ -109,7 +109,6 @@ features[variable][] = chosen_minimum_multiple
 features[variable][] = chosen_minimum_single
 features[variable][] = field_bundle_settings_node__dataset
 features[variable][] = field_bundle_settings_node__resource
-features[variable][] = jquery_update_jquery_version
 features[variable][] = menu_options_dataset
 features[variable][] = menu_options_resource
 features[variable][] = menu_parent_dataset
