@@ -1,3 +1,4 @@
+# time:1m5.66s
 @api
 Feature: Recline
   In order to know the recline preview is working
