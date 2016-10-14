@@ -66,6 +66,7 @@ dependencies:
         background: true
   post:
      - sudo apt-get install -y x11vnc
+     - sudo apt-get install -y dbus-x11
      - x11vnc -forever -nopw:
         background: true
 
