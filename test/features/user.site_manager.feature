@@ -1,3 +1,4 @@
+# time:0m39s
 ##
 # Refactor this to populate all the pages using the background
 # and visiting them using the visit step.

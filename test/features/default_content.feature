@@ -1,3 +1,4 @@
+# time:0m16s
 Feature: Homepage
   In order to know all the features provided by Dkan
   As a website user
