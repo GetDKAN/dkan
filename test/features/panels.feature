@@ -1,3 +1,4 @@
+# time:0m21.02s
 Feature: Panels
 
   @api @javascript

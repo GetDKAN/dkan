@@ -7,10 +7,12 @@ default:
           - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MessageContext
           - Drupal\DrupalExtension\Context\MarkupContext
+          - Drupal\DrupalExtension\Context\BatchContext
           - Drupal\DKANExtension\Context\DKANContext
           - Drupal\DKANExtension\Context\MailContext
           - Drupal\DKANExtension\Context\PageContext
           - Drupal\DKANExtension\Context\GroupContext
+          - Drupal\DKANExtension\Context\HarvestSourceContext
           - Drupal\DKANExtension\Context\WorkflowContext
           - Drupal\DKANExtension\Context\DatasetContext
           - Drupal\DKANExtension\Context\DataDashboardContext
@@ -22,6 +24,9 @@ default:
                   form_field: 'edit-search'
                   form_button: 'edit-submit'
                   results_css: '.view-dkan-datasets'
+                  result_item_css: '.views-row'
+                harvest_source:
+                  results_css: '.view-dkan-harvest-source-search'
                   result_item_css: '.views-row'
           - Drupal\DKANExtension\Context\ResourceContext
           - Drupal\DKANExtension\Context\ServicesContext
@@ -102,6 +107,7 @@ default:
         content search: '.form-item-query'
         user block: '.pane-views-user-profile-fields-block'
         admin menu: '#admin-menu'
+        harvest datasets: '.view-dkan-harvest-datasets'
       text:
         log_out: "Log out"
         log_in: "Log in"

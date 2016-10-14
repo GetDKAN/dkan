@@ -1,3 +1,4 @@
+# time:0m32.86s
 Feature: DKAN Dataset REST API
 
   Background:
