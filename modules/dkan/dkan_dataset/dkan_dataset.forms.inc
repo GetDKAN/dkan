@@ -38,7 +38,9 @@ function dkan_dataset_get_group_options() {
 
   $available_groups = array();
 
-  if (user_access('administer group')) {
+  //We need to check role because administer group allow access to full administer pages.
+  $role_sm = user_role_load_by_name('site manager');
+  if (user_access('administer group') || user_has_role($role_sm->rid)) {
     // If the user is a group administrator then show all groups as available options.
     $groups = og_get_all_group();
   } else {
