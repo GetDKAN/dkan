@@ -5,6 +5,7 @@
 - Update the default jquery library setting from 1.7 to 1.10
 - Fix topics menu and facet links if special characters are used in topic terms.
 - Fix form redirect issues on dataset form validation
+- Patch fontyourface to remove <div> from the "standard text" selector, to prevent unpredictable results from this option
 
 7.x-1.12.10 2016-09-07
 --------------------------
