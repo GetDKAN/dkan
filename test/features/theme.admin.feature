@@ -1,4 +1,5 @@
-@javascript @api
+# time:0m22s
+@api @javascript
 Feature: Theme
 
   Background:
@@ -9,7 +10,8 @@ Feature: Theme
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | administrator         |
-  @noworkflow
+  
+  @noworkflow 
   Scenario: Add custom logo
     Given I am logged in as "John"
     And I am on "Settings" page
