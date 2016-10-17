@@ -40,6 +40,7 @@
  - Added DKAN Datastore module into DKAN Core.
  - Added DKAN Dataset module into DKAN Core.
  - Added DKAN Migrate Base module into DKAN Core.
+ - Fix warning messages when you try view changes on resource/dataset nodes
 DKAN Dataset:
  - Upgrade Features to 7.x-2.9
  - Make date facet use "day" granularity.
