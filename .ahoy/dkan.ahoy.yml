@@ -30,9 +30,6 @@ commands:
     cmd: |
       ARGS="{{args}}"
       if [ -z "$ARGS" ]; then
-        rm -rf docroot/profiles/dkan/modules/dkan/dkan_dataset ;
-        rm -rf docroot/profiles/dkan/modules/dkan/dkan_datastore ;
-        rm -rf docroot/profiles/dkan/modules/dkan/dkan_workflow ;
         rm -rf docroot/profiles/dkan/modules/contrib ;
         ARGS=''
         echo "removed dkan/modules folders created by make and running a fresh drush make."
