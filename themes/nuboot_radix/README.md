@@ -32,16 +32,22 @@ So you only need to add styles where you want to override the upstream css, and 
 
 To create a Nuboot Radix subtheme, run these command
 
+```drush en radix```
+
 ```drush vset theme_default radix```
 
 ```drush radix "MyThemeName" --kit=https://github.com/NuCivic/radix-kit-nuboot/archive/master.zip```
 
 ```drush vset theme_default MyThemeName```
 
+```drush dis radix```
+
 OR if using Ahoy:
 
 ```ahoy dkan theme new-from-kit [new-theme-name]```
+
 ```ahoy dkan theme setup```
+
 ```ahoy dkan theme watch```
 
 The new subtheme will be placed in to the /sites/all/themes/ directory, it will contain the proper directory structure to get you started. Read the 
