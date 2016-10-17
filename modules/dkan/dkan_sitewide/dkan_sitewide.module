@@ -7,7 +7,6 @@
 
 include_once 'dkan_sitewide.features.inc';
 include_once 'dkan_sitewide.blocks.inc';
-include_once 'includes/dkan.utils.inc';
 
 
 /**
@@ -369,3 +368,4 @@ function dkan_sitewide_update_panel_page_status($page_name, $status = FALSE) {
   $function($page, $status);
   menu_rebuild();
 }
+

@@ -6,7 +6,7 @@ machine:
 
   # Version of ruby to use
   php:
-    version: '5.5.11'
+    version: '5.6.22'
 
   # Override /etc/hosts
   #hosts:
@@ -41,11 +41,14 @@ dependencies:
      #- "backups"
      #- "dkan/test/sites/default"
   pre:
-    - echo "memory_limit = 256M" > ~/.phpenv/versions/5.5.11/etc/conf.d/memory.ini
+    - rm /opt/circleci/php/$(phpenv global)/etc/conf.d/xdebug.ini
+    - echo "memory_limit = 256M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
+    - echo "always_populate_raw_post_data = -1" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/deprecated.ini
   override:
     - printenv
     - mkdir $CIRCLE_ARTIFACTS/junit
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH bash dkan-init.sh dkan --deps --build=$DATABASE_URL'
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard'
     # Run a webserver using drush.
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes runserver :8888':
         background: true
@@ -54,8 +57,8 @@ dependencies:
     #- sh -e /etc/init.d/xvfb start
     #- sleep 3
 
-    - wget http://selenium-release.storage.googleapis.com/2.49/selenium-server-standalone-2.49.1.jar
-    - java -jar selenium-server-standalone-2.49.1.jar -p 4444 :
+    - wget http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar
+    - java -jar selenium-server-standalone-2.53.1.jar -p 4444 :
         background: true
   post:
      - sudo apt-get install -y x11vnc

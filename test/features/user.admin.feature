@@ -1,4 +1,5 @@
-@api @javascript
+# time:0m45.62s
+@api
 Feature: User
 
   Background:
@@ -52,7 +53,7 @@ Feature: User
     When I am on "Katie" page
     Then I should see "This is Katie!" in the "user profile" region
 
-  @dkanBug @deleteTempUsers
+  @dkanBug @deleteTempUsers @javascript
     # Site managers trigger honeypot when creating users.
     # See https://github.com/NuCivic/dkan/issues/811
     # Workaround: Wait for 6 seconds so that honeypot doesn't overreact
@@ -66,7 +67,7 @@ Feature: User
       | Password          | temp123              |
       | Confirm password  | temp123              |
     And I check "editor"
-    And I wait for 6 seconds
+    And I wait for "6" seconds
     And I press "Create new account"
     Then I should see "Created a new user account for tempuser."
     When I am on "Users" page
@@ -82,6 +83,7 @@ Feature: User
     When I am on "Users" page
     Then I should see "blocked" in the "Katie" row
 
+  @javascript
   Scenario: Disable user
     Given I am logged in as "John"
     And I am on "Users" page
