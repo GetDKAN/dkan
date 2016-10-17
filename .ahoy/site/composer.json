@@ -1,0 +1,17 @@
+{
+    "name": "nucivic/nucivic-ahoy",
+    "description": "Nucivic Priviate ahoy commands",
+    "require": {
+        "symfony/yaml": "~3.0",
+        "twig/twig": "~1.0"
+    },
+    "require-dev": {
+        "symfony/yaml": "~3.0"
+    },
+    "authors": [
+        {
+            "name": "dkinzer",
+            "email": "dtkinzer@gmail.com"
+        }
+    ]
+}
