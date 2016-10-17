@@ -274,11 +274,6 @@ Feature: Resource
     When I click "Revisions"
     Then I should see "by Katie"
 
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"
-
   # @todo Add test for URL w/o .csv
   # We need to edit and save to trigger auto type discover
   @javascript
