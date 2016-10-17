@@ -33,7 +33,7 @@ end
 
 def behat_parse_params args
   files = []
-  params = []
+  params = [ '--colors' ]
 
   args.each do |param|
 
