@@ -50,7 +50,7 @@ OR if using Ahoy:
 
 ```ahoy dkan theme watch```
 
-The new subtheme will be placed in to the /sites/all/themes/ directory, it will contain the proper directory structure to get you started. Read the 
+The new subtheme will be placed in to the /sites/all/themes/ directory, it will contain the proper directory structure to get you started. 
 
 
 ## Updating subthemes that were based on Radix 7.x-rc4
