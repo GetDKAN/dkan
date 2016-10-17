@@ -97,6 +97,9 @@
     .btn-primary {
       margin: 0 auto 1.5em;
     }
+    .field-name-field-image {
+      text-align: center; 
+    }
   }
 }
 
@@ -117,6 +120,9 @@
     display: block;
     margin:1em 0 0 0;
     padding:5px 8px;
+    text-align: center;
+  }
+  .views-field-field-image {
     text-align: center;
   }
 }

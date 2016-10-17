@@ -1,4 +1,5 @@
-@api @javascript
+# time:0m25.25s
+@api
 Feature: User command center links for editor role.
 
   Background:
@@ -6,7 +7,7 @@ Feature: User command center links for editor role.
       | name    | mail                | roles                |
       | Jaz     | jaz@example.com     | editor               |
 
-
+  @javascript
   Scenario: Editor role can view admin menu links under Add Content
     Given I am logged in as "Jaz"
     When I click "Add content" in the "admin menu" region
@@ -22,7 +23,7 @@ Feature: User command center links for editor role.
     Then I should see "Create Page"
     When I hover over the admin menu item "Add content"
     And I click "Data Story"
-    Then I should see "Create DKAN Data Story"
+    Then I should see "Create Data Story"
     When I hover over the admin menu item "Add content"
     And I click "Data Dashboard"
     Then I should see "Create Data Dashboard"
@@ -30,12 +31,13 @@ Feature: User command center links for editor role.
     Then I hover over the admin menu item "Visualization"
     And I click "Chart"
     Then I should see "Add Chart"
-
+  
   Scenario: Editor role can view admin menu link Content
     Given I am logged in as "Jaz"
     When I click "Content" in the "admin menu" region
     Then I should see "Show only items where"
 
+  @javascript
   Scenario: Editor role can view admin menu links under Visualizations
     Given I am logged in as "Jaz"
     When I click "Visualizations" in the "admin menu" region
@@ -43,7 +45,8 @@ Feature: User command center links for editor role.
     When I hover over the admin menu item "Visualizations"
     And I click "Charts"
     Then I should see "Chart"
-
+  
+  @javascript
   Scenario: Editor role can view admin menu links under Site Configuration
     Given I am logged in as "Jaz"
     When I hover over the admin menu item "Site Configuration"

@@ -5,7 +5,6 @@
  */
 
 include_once 'dkan_topics.features.inc';
-include_once 'dkan_topics.features.conditional_fields.inc';
 module_load_include('inc','pathauto','pathauto');
 
 /**
@@ -48,7 +47,7 @@ function dkan_topics_menu_link_insert($link) {
  * Set main menu topics link to null.
  */
 function topics_page() {
-  drupal_goto('search/field_topic');
+  drupal_goto('search/field_topics');
 }
 
 /*
@@ -63,8 +62,11 @@ function dkan_topics_preprocess_menu_link(&$variables) {
     foreach ($submenu as $child) {
       if(isset($child['#href'])) {
         $url  = explode("/", $child['#href']);
+        // Prepare term to match menu class.
         $term = strtolower($child['#title']);
-        $term = str_replace(' ', '-', $term);
+        $term = str_replace(array('\\', '/', '[', ' '), '-', $term);
+        $term = str_replace(array(']', '{', '}'), '', $term);
+        $term = preg_replace('/[^\p{L}0-9\-™®]/u', '', $term);
         $type = db_query('SELECT field_icon_type_value FROM {field_data_field_icon_type} WHERE entity_id = :id', array(':id' => $url[2]))->fetchField();
         if($type == 'font') {
           $icon = db_query('SELECT field_topic_icon_value FROM {field_data_field_topic_icon} WHERE entity_id = :id', array(':id' => $url[2]))->fetchField();
@@ -76,9 +78,8 @@ function dkan_topics_preprocess_menu_link(&$variables) {
         elseif($type == 'image') {
           $obj = taxonomy_term_load($url[2]);
           $image = field_get_items('taxonomy_term', $obj, 'field_image');
-          global $base_url;
           $path = image_style_path('small_topics_icons', $image[0]['uri']);
-          $img = $base_url . image_style_url('small_topics_icons', $path);
+          $img =  image_style_url('small_topics_icons', $path);
           $css .= "li.menu-link-$term > a, li.menu-link-$term > a:hover, li.menu-link-$term > a:focus, li.menu-link-$term a:active { background-image:url('$img') !important; background-position:12px center !important; background-repeat:no-repeat !important; padding-left:40px !important; }";
         }
       }
@@ -226,3 +227,29 @@ function dkan_topics_field_formatter_view($entity_type, $entity, $field, $instan
 
   return $element;
 }
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_topics_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id === 'taxonomy_form_term') {
+
+    $field_icon_type_langcode = dkan_dataset_form_field_language($form, 'field_icon_type');
+
+    // If 'Font Icon Type' is 'Image' then make 'field_image' visible.
+    $form['field_image']['#states'] = array(
+      'visible' => array(
+        '[name="field_icon_type[' . $field_icon_type_langcode . ']"]' => array('value' => 'image')),
+    );
+    // If 'Font Icon Type' is 'Font' then make 'field_topic_icon' and 'field_topic_icon_color' visible.
+    $form['field_topic_icon']['#states'] = array(
+      'visible' => array(
+        '[name="field_icon_type[' . $field_icon_type_langcode . ']"]' => array('value' => 'font')),
+    );
+    $form['field_topic_icon_color']['#states'] = array(
+      'visible' => array(
+        '[name="field_icon_type[' . $field_icon_type_langcode . ']"]' => array('value' => 'font')),
+    );
+  }
+}
+

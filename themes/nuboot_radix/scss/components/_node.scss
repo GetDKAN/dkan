@@ -5,9 +5,6 @@
   .field-name-field-tags {
     margin: 1em 0;
   }
-  .field-name-field-topic {
-    margin: -20px 0 15px 0;
-  }
   // Dataset field labels.
   h4 {
     @include h4;
@@ -34,7 +31,7 @@
     li.selected {
       border: 0;
       background-color: transparent;
-      min-width: 10em;
+      min-width: 4em;
       a:hover {
         background:transparent;
       }
@@ -44,7 +41,7 @@
         text-indent: -9999px;
         width: 16px;
         height: 16px;
-        margin: 0 0 0 28px;
+        left: 50%;
         clip: auto;
       }
       &.horizontal-tab-button-1 .summary,
@@ -158,16 +155,6 @@
     position:absolute;
     top:-6px;
     width:30px;
-  }
-}
-
-.node-type-group {
-  .horizontal-tabs {
-    margin: 0;
-    #edit-field-image-und-0-remove-button {
-      @include border-radius($border-radius-base);
-      margin-left: 5px;
-    }
   }
 }
 

@@ -1,4 +1,5 @@
-@api @javascript
+# time:0m45.62s
+@api
 Feature: User
 
   Background:
@@ -52,11 +53,11 @@ Feature: User
     When I am on "Katie" page
     Then I should see "This is Katie!" in the "user profile" region
 
-  @dkanBug @deleteTempUsers
+  @dkanBug @deleteTempUsers @javascript
     # Site managers trigger honeypot when creating users.
     # See https://github.com/NuCivic/dkan/issues/811
     # Workaround: Wait for 6 seconds so that honeypot doesn't overreact
-  Scenario: Create user
+  Scenario: Create user and assign role as site manager
     Given I am logged in as "John"
     And I am on "Users" page
     When I follow "Add user"
@@ -65,9 +66,12 @@ Feature: User
       | E-mail address    | tempuser@example.com |
       | Password          | temp123              |
       | Confirm password  | temp123              |
-    And I wait for 6 seconds
+    And I check "editor"
+    And I wait for "6" seconds
     And I press "Create new account"
     Then I should see "Created a new user account for tempuser."
+    When I am on "Users" page
+    Then I should see "editor" in the "tempuser" row
 
   Scenario: Block user
     Given I am logged in as "John"
@@ -79,6 +83,7 @@ Feature: User
     When I am on "Users" page
     Then I should see "blocked" in the "Katie" row
 
+  @javascript
   Scenario: Disable user
     Given I am logged in as "John"
     And I am on "Users" page
@@ -88,7 +93,7 @@ Feature: User
     And I press "Cancel account"
     Then I wait for "Katie has been disabled"
 
-  Scenario: Modify user roles
+  Scenario: Modify user roles as administrator
     Given I am logged in as "aadmin"
     And I am on "Users" page
     When I click "edit" in the "Jaz" row
@@ -99,8 +104,18 @@ Feature: User
     When I am on "Users" page
     Then I should see "content creator" in the "Jaz" row
 
+  Scenario: Modify user roles as site manager
+    Given I am logged in as "John"
+    And I am on "Users" page
+    When I click "edit" in the "Jaz" row
+    And I uncheck "content creator"
+    And I check "site manager"
+    And I press "Save"
+    Then I should see "The changes have been saved"
+    When I am on "Users" page
+    Then I should see "site manager" in the "Jaz" row
 
-
-
-
-
+Scenario: Modify user as editor
+    Given I am logged in as "Jaz"
+    And I am on "Users" page
+    Then I should see "Access denied"

@@ -44,7 +44,6 @@ a {
     color: #23527c;
     text-decoration: underline; }
   a:focus {
-    outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
 
@@ -1257,7 +1256,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px; }
 
@@ -1765,7 +1763,6 @@ select[multiple].input-lg,
   -ms-user-select: none;
   user-select: none; }
   .btn:focus, .media-widget > a:focus, .btn.focus, .media-widget > a.focus, .btn:active:focus, .media-widget > a:active:focus, .btn:active.focus, .media-widget > a:active.focus, .btn.active:focus, .media-widget > a.active:focus, .btn.active.focus, .media-widget > a.active.focus {
-    outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
   .btn:hover, .media-widget > a:hover, .btn:focus, .media-widget > a:focus, .btn.focus, .media-widget > a.focus {
@@ -5431,6 +5428,7 @@ button.close {
     @media all and (transform-3d), (-webkit-transform-3d) {
       .carousel-inner > .item {
         transition: transform 0.6s ease-in-out;
+        -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         -ms-perspective: 1000px;
         -o-perspective: 1000px;
@@ -9158,6 +9156,17 @@ div.horizontal-tabs {
   border-radius: 5px 0 0 5px;
   margin-right: 0; }
 
+.form-managed-file .file-size {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 0 10px;
+  vertical-align: top;
+  line-height: 34px;
+  display: inline-block;
+  font-size: 12px;
+  margin: 0 -5px;
+  background: #eee; }
+
 .form-managed-file input {
   border-radius: 4px 0 0 4px;
   border: 1px solid #ddd;
@@ -9172,6 +9181,9 @@ div.horizontal-tabs {
 .form-managed-file .input-group-btn {
   display: inline-block;
   vertical-align: top; }
+
+.form-managed-file .manualcrop-style-button-holder input {
+  border-radius: 5px; }
 
 .path-form.panel-default {
   border-color: transparent; }
@@ -9189,6 +9201,22 @@ div.horizontal-tabs {
 
 #body-add-more-wrapper .panel-body {
   padding: 0; }
+
+.node-dataset-form .group-odfie-pod .form-item {
+  margin-bottom: 0px; }
+
+.node-dataset-form .group-odfie-pod .field-name-field-odfe-data-quality {
+  margin-bottom: 15px; }
+
+.node-dataset-form .form-item.has-error div.autocomplete-deluxe-container,
+.node-dataset-form .form-item.has-error div.chosen-container {
+  border: 2px solid red; }
+  .node-dataset-form .form-item.has-error div.autocomplete-deluxe-container .chosen-single,
+  .node-dataset-form .form-item.has-error div.chosen-container .chosen-single {
+    border: none; }
+
+.node-dataset-form .form-item .error .chosen-single {
+  line-height: 24px; }
 
 .node-dataset-form .field-name-field-format label,
 .node-resource-form .field-name-field-format label {
@@ -9212,6 +9240,15 @@ div.horizontal-tabs {
 
 .page-admin form input[type=submit] {
   margin-right: 1em; }
+
+#field-dkan-harvest-filters-values .description,
+#field-dkan-harvest-excludes-values .description,
+#field-dkan-harvest-overrides-values .description,
+#field-dkan-harvest-defaults-values .description {
+  font-weight: normal; }
+
+#dkan-dataset-form-settings .help-block {
+  margin: 5px 20px 10px; }
 
 #modalContent .modal-header {
   background: #0A77BD; }
@@ -9637,9 +9674,6 @@ ul.action-links {
 .node-type-dataset .field-name-field-tags {
   margin: 1em 0; }
 
-.node-type-dataset .field-name-field-topic {
-  margin: -20px 0 15px 0; }
-
 .node-type-dataset h4 {
   font-size: 20px;
   font-weight: bold;
@@ -9667,7 +9701,7 @@ ul.action-links {
     .node-resource-form .horizontal-tabs ul.horizontal-tabs-list li.selected {
       border: 0;
       background-color: transparent;
-      min-width: 10em; }
+      min-width: 4em; }
       .node-resource-form .horizontal-tabs ul.horizontal-tabs-list li a:hover,
       .node-resource-form .horizontal-tabs ul.horizontal-tabs-list li.selected a:hover {
         background: transparent; }
@@ -9678,7 +9712,7 @@ ul.action-links {
         text-indent: -9999px;
         width: 16px;
         height: 16px;
-        margin: 0 0 0 28px;
+        left: 50%;
         clip: auto; }
       .node-resource-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-1 .summary,
       .node-resource-form .horizontal-tabs ul.horizontal-tabs-list li.horizontal-tab-button-2 .summary,
@@ -9773,12 +9807,6 @@ ul.action-links {
     position: absolute;
     top: -6px;
     width: 30px; }
-
-.node-type-group .horizontal-tabs {
-  margin: 0; }
-  .node-type-group .horizontal-tabs #edit-field-image-und-0-remove-button {
-    border-radius: 4px;
-    margin-left: 5px; }
 
 .group-owner-message {
   margin-bottom: 20px; }
@@ -9912,7 +9940,9 @@ ul.action-links {
 .pane-content .field-name-body {
   line-height: 2em; }
 
-.main .panel-pane {
+.main .pane-custom,
+.main .pane-node-field-image,
+.main .pane-fieldable-panels-pane {
   margin-bottom: 3em; }
 
 h2.pane-title {
@@ -9954,7 +9984,6 @@ h2.pane-title {
   margin: 0 0 15px 0; }
 
 .radix-layouts-content .pane-content {
-  padding: 20px 0;
   margin-bottom: 1em; }
 
 .radix-layouts-content .pane-node-field-topic .pane-content {
@@ -10406,6 +10435,9 @@ p:last-child {
     top: 5px; }
   .alert.alert-warning {
     background: #FFE285; }
+  .alert.alert-completed {
+    background: #dff0d8;
+    color: #3c763d; }
   .alert:before {
     font-family: "FontAwesome";
     font-size: 1.5em;
@@ -10418,7 +10450,7 @@ p:last-child {
   .alert.alert-warning:before {
     content: '\f05a';
     color: #8a6d3b; }
-  .alert.alert-success:before {
+  .alert.alert-completed:before, .alert.alert-success:before {
     content: '\f058';
     color: #5cb85c; }
 
@@ -10771,6 +10803,8 @@ img {
     margin: .75em 0; }
   .view-dkan-groups .node-teaser .btn-primary, .view-dkan-groups .node-teaser body.maintenance-page .form-actions .btn:first-child, body.maintenance-page .form-actions .view-dkan-groups .node-teaser .btn:first-child, .view-dkan-groups .node-teaser body.maintenance-page .form-actions .media-widget > a:first-child, body.maintenance-page .form-actions .view-dkan-groups .node-teaser .media-widget > a:first-child {
     margin: 0 auto 1.5em; }
+  .view-dkan-groups .node-teaser .field-name-field-image {
+    text-align: center; }
 
 .view-groups-page .views-column {
   float: left;
@@ -10786,6 +10820,9 @@ img {
   display: block;
   margin: 1em 0 0 0;
   padding: 5px 8px;
+  text-align: center; }
+
+.view-group-block .views-field-field-image {
   text-align: center; }
 
 .view-dataset form {

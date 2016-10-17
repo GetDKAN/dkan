@@ -96,14 +96,10 @@ dependencies[] = visualization_entity_charts
 dependencies[] = visualization_entity_embed
 
 ; Open data
-dependencies[] = entity_rdf
 dependencies[] = geofield
 dependencies[] = geophp
 dependencies[] = open_data_schema_map
 dependencies[] = recline
-dependencies[] = rdfui
-dependencies[] = rdfx
-dependencies[] = open_data_schema_map
 
 ; DKAN Features
 dependencies[] = dkan_sitewide_menu
@@ -119,6 +115,8 @@ dependencies[] = dkan_data_story
 dependencies[] = dkan_topics
 dependencies[] = dkan_permissions
 dependencies[] = dkan_ipe
+dependencies[] = dkan_harvest_dashboard
+dependencies[] = dkan_harvest_datajson
 
 ; DKAN Core Modules
 dependencies[] = dkan_sitewide

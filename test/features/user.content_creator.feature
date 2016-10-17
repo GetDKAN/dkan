@@ -1,4 +1,5 @@
-@api @javascript
+# time:0m14.99s
+@api
 Feature: User command center links for content creator role.
 
   Background:
@@ -6,7 +7,7 @@ Feature: User command center links for content creator role.
       | name    | mail                | roles                |
       | Gabriel | gabriel@example.com | content creator      |
 
-
+  @javascript
   Scenario: Content creator role can view admin menu links under Add Content
     Given I am logged in as "Gabriel"
     When I click "Add content" in the "admin menu" region
@@ -19,7 +20,7 @@ Feature: User command center links for content creator role.
     Then I should see "Add resource"
     When I hover over the admin menu item "Add content"
     And I click "Data Story"
-    Then I should see "Create DKAN Data Story"
+    Then I should see "Create Data Story"
     When I hover over the admin menu item "Add content"
     And I click "Data Dashboard"
     Then I should see "Create Data Dashboard"
