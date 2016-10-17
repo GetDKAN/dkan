@@ -112,12 +112,13 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['filters']['type']['table'] = 'search_api_index_datasets';
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
-    'dataset' => 'dataset',
-    'resource' => 'resource',
-    'group' => 'group',
-    'dkan_data_story' => 'dkan_data_story',
     'data_dashboard' => 'data_dashboard',
+    'dkan_data_story' => 'dkan_data_story',
+    'dataset' => 'dataset',
+    'group' => 'group',
+    'harvest_source' => 'harvest_source',
     'page' => 'page',
+    'resource' => 'resource',
   );
 
   /* Display: Block */

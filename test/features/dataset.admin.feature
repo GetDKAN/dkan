@@ -1,4 +1,5 @@
-@javascript @api
+# time:0m15.83s
+@api
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -73,10 +74,21 @@ Feature: Dataset Features
     Given I am logged in as "John"
     And I am on "Dataset 05" page
     When I click "Edit"
-    When I click "Publishing options"
+    ## If you use selenium uncomment this
+    # When I click "Publishing options"
     And I check the box "Published"
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
+
+  @javascript
+  Scenario: See all dataset fields
+    Given I am logged in as "Gabriel"
+    And I am on "Dataset 01" page
+    When I click "Edit"
+    Then I should see all the dataset fields in the form
+    And I should not see "Rights on Project Open Data"
+    Then I select "Restricted" from "edit-field-public-access-level-und"
+    And I should see "Rights on Project Open Data"
 
   # https://github.com/Behat/Behat/issues/834
   @dummy
