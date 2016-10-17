@@ -46,7 +46,7 @@ dependencies:
      #- "dkan/test/sites/default"
   pre:
     - rm /opt/circleci/php/$(phpenv global)/etc/conf.d/xdebug.ini
-    - echo "memory_limit = 1024M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
+    - echo "memory_limit = 512M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
     - echo "always_populate_raw_post_data = -1" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/deprecated.ini
   override:
     - printenv
@@ -61,8 +61,8 @@ dependencies:
     #- sh -e /etc/init.d/xvfb start
     #- sleep 3
 
-    - wget http://selenium-release.storage.googleapis.com/2.49/selenium-server-standalone-2.49.1.jar
-    - java -jar selenium-server-standalone-2.49.1.jar -p 4444 -browserSessionReuse -ensureCleanSession:
+    - wget http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar
+    - java -jar selenium-server-standalone-2.53.1.jar -p 4444 :
         background: true
   post:
      - sudo apt-get install -y x11vnc
