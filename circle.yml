@@ -46,7 +46,7 @@ dependencies:
      #- "dkan/test/sites/default"
   pre:
     - rm /opt/circleci/php/$(phpenv global)/etc/conf.d/xdebug.ini
-    - echo "memory_limit = 256M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
+    - echo "memory_limit = 1024M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
     - echo "always_populate_raw_post_data = -1" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/deprecated.ini
   override:
     - printenv
@@ -66,7 +66,6 @@ dependencies:
         background: true
   post:
      - sudo apt-get install -y x11vnc
-     - sudo apt-get install -y dbus-x11
      - x11vnc -forever -nopw:
         background: true
 
@@ -74,6 +73,7 @@ dependencies:
 test:
   override:
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
+        timeout: 1200
         parallel: true
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
