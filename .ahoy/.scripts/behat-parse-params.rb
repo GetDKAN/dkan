@@ -33,7 +33,7 @@ end
 
 def behat_parse_params args
   files = []
-  params = [ '--colors' ]
+  params = []
 
   args.each do |param|
 
@@ -51,7 +51,7 @@ def behat_parse_params args
       params.push param
     end
   end
-
+  params.push '--colors'
   {:files => files, :params => params}
 end
 
