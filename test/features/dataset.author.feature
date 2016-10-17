@@ -75,9 +75,9 @@ Feature: Dataset Features
     Then I should see "Test Dataset has been created"
 
   @noworkflow
-  Scenario: Save using "Additional Info"
+  Scenario: Save using Additional Info
     Given I am logged in as a user with the "content creator" role
-    And I am on "Add Dataset"
+    And I am on "Add Dataset" page
     When I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "Test description"
     And I press "Next: Add data"
