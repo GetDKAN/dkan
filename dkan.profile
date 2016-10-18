@@ -116,7 +116,6 @@ function dkan_enable_optional_module($module, &$context) {
 function dkan_revert_feature($feature, $components, &$context) {
   $context['message'] = t('Reverting feature %feature_name', array('%feature_name' => $feature));
   features_revert(array($feature => $components));
-  cache_clear_all();
 }
 
 
@@ -227,7 +226,6 @@ function dkan_build_menu_links(&$context) {
   $menu_links = features_get_default('menu_links', 'dkan_sitewide_menu');
   menu_links_features_rebuild_ordered($menu_links, TRUE);
   unset($_SESSION['messages']['warning']);
-  cache_clear_all();
  }
 
 /**
@@ -237,7 +235,6 @@ function dkan_build_menu_links(&$context) {
  */
 function dkan_flush_image_styles(&$context) {
   $context['message'] = t('Flushing image styles');
-  cache_clear_all();
   $image_styles = image_styles();
   foreach ( $image_styles as $image_style ) {
     image_style_flush($image_style);
@@ -271,7 +268,7 @@ function dkan_misc_variables_set(&$context) {
   variable_set('page_manager_node_edit_disabled', FALSE);
   variable_set('page_manager_user_view_disabled', FALSE);
   // variable_set('page_manager_override_anyway', 'TRUE');
-  variable_set('jquery_update_jquery_version', '1.7');
+  variable_set('jquery_update_jquery_version', '1.10');
   // Disable selected views enabled by contributed modules.
   $views_disable = array(
     'og_extras_nodes' => TRUE,
@@ -388,6 +385,111 @@ function dkan_set_roleassign_roles(&$context) {
 }
 
 /**
+ * Configures BUEditor and markdown test format.
+ */
+function dkan_bueditor_markdown_install() {
+  module_enable(array('bueditor_plus'));
+
+  $context = array();
+  dkan_set_roleassign_roles($context);
+
+  // Delete the old bueditor settings and profile.
+  db_delete('bueditor_editors')
+    ->condition('name', 'Markdowneditor')
+    ->execute();
+
+  db_delete('bueditor_plus_profiles')
+    ->condition('name', 'Global')
+    ->execute();
+
+  // Create the new bueditor settings and profile.
+  dkan_markdown_setup($context);
+  features_revert(array('dkan_sitewide' => array('filter')));
+
+  $roles = user_roles();
+  $bueditor_roles = array();
+
+  foreach ($roles as $rid => $role) {
+    switch($role) {
+    case 'anonymous user':
+      $bueditor_roles[$rid] = array(
+        'weight' => 12,
+        'editor' => _dkan_bueditor_by_name('Commenter'),
+        'alt' => 0,
+      );
+      break;
+
+    case 'administrator':
+    case 'content creator':
+    case 'editor':
+    case 'site manager':
+      $bueditor_roles[$rid] = array(
+        'weight' => 0,
+        'editor' => _dkan_bueditor_by_name('Markdowneditor'),
+        'alt' => 0,
+      );
+      break;
+
+    default:
+      $bueditor_roles[$rid] = array(
+        'weight' => 11,
+        'editor' => 0,
+        'alt' => 0,
+      );
+    }
+  }
+
+  variable_set('bueditor_roles', $bueditor_roles);
+  variable_set('bueditor_user1', $eid);
+
+  $eid = db_select("bueditor_editors", "bue")
+    ->fields("bue", array("eid"))
+    ->condition("name", "Markdowneditor")
+    ->execute()
+    ->fetchField();
+
+  $data = array(
+    'html' => ['default' => $eid, 'alternative' => 0],
+    'plain_text' => ['plain_text' => 0, 'alternative' => 0]
+  );
+
+  db_insert('bueditor_plus_profiles')
+    ->fields(array(
+      'name' => 'Global',
+      'data' => serialize($data),
+      'global' => 1,
+    ))
+    ->execute();
+}
+
+/**
+ * Extracts the editor id for an editor name.
+ *
+ * @param string $name
+ *   The user role name of the editor.
+ *
+ * @return int
+ *   The eid of the editor.
+ */
+function _dkan_bueditor_by_name($name = '') {
+  module_load_include("inc", "bueditor");
+
+  if ($name == '') {
+    return 0;
+  }
+
+  $editors = bueditor_editors('all');
+
+  foreach ($editors as $eid => $editor) {
+    if ($editor->name == $name) {
+      return $eid;
+    }
+  }
+
+  return 0;
+}
+
+/**
  * Add data dictionary textarea id to bueditor excludes list.
  */
 function dkan_set_bueditor_excludes() {
@@ -399,6 +501,5 @@ edit-menu-description
     ))
     ->condition('eid', '5')
     ->execute();
-
   drupal_flush_all_caches();
 }

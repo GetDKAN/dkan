@@ -1,0 +1,13 @@
+name = "DKAN Migrate Base"
+description = "DKAN migration base."
+package = "DKAN"
+core = 7.x
+dependencies[] = dkan_dataset
+dependencies[] = migrate (7.x-2.x-dev)
+dependencies[] = list
+dependencies[] = number
+files[] = dkan_migrate_base.migrate.inc
+files[] = dkan_migrate_base_group.inc
+files[] = dkan_migrate_base_dataset.inc
+files[] = dkan_migrate_base_resource.inc
+files[] = dkan_migrate_base_data_json.inc

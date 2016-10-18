@@ -1,3 +1,4 @@
+# time:0m28.91s
 @api
 Feature: Datastore
   In order to know the datastore is working
@@ -32,7 +33,7 @@ Feature: Datastore
       And I click "Resource 01"
       And I click "Edit"
       And I click "Remote file"
-      And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv"
+      And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv"
       And I press "Save"
       And I am on "dataset/dataset-01"
       And I click "Resource 01"

@@ -1,4 +1,5 @@
-@api @javascript
+# time:0m23.59s
+@api
 Feature: User
 
   Background:
@@ -51,13 +52,13 @@ Feature: User
     When I follow "Log out"
     Then I should see "Log in"
 
-  @deleteTempUsers @customizable
+  @javascript @deleteTempUsers @customizable
   Scenario: Register
     Given I am on the homepage
     When I follow "Register"
     # Needed because honeypot module give error when filling out the register form
     # too quickly, so we need to add a wait.
-    And I wait for 6 seconds
+    And I wait for "6" seconds
     And I fill in "Username" with "tempuser"
     And I fill in "E-mail address" with "tempuser@example.com"
     And I press "Create new account"
