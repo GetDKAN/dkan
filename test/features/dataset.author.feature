@@ -1,4 +1,5 @@
- @api @javascript
+# time:2m56.53s
+@api
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -12,6 +13,7 @@ Feature: Dataset Features
       | name                | url                          |
       | Datasets            | /dataset                     |
       | Datasets Search     | /search/type/dataset         |
+      | Add Dataset         | /node/add/dataset            |
       | My Content          | /user                        |
     Given users:
       | name    | mail                | roles                |
@@ -64,21 +66,18 @@ Feature: Dataset Features
   @noworkflow
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
-    And I am on "Datasets Search" page
-    Then I hover over the admin menu item "Content"
-    Then I hover over the admin menu item "Add content"
-    Then I click "Dataset"
+    And I am on "Add Dataset" page
     And I fill in the following:
       | Title           | Test Dataset      |
       | Description     | Test description  |
-    And I fill in the chosen field "edit_og_group_ref_und_chosen" with "Group 01"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
 
-  @api @noworkflow
-  Scenario: Save using "Additional Info"
+  @noworkflow
+  Scenario: Save using Additional Info
     Given I am logged in as a user with the "content creator" role
-    And I am on "/node/add/dataset"
+    And I am on "Add Dataset" page
     When I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "Test description"
     And I press "Next: Add data"
@@ -87,7 +86,6 @@ Feature: Dataset Features
     And I press "Save"
     Then I should see "Test Dataset"
     And I should see "Test description"
-
 
   @noworkflow
   Scenario: Edit own dataset as a content creator
@@ -100,12 +98,12 @@ Feature: Dataset Features
     When I am on "My Content" page
     Then I should see "Dataset 03 edited"
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Seeing the License
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
     When I click "Edit"
-    Given I select "Creative Commons Attribution" from "edit-field-license-und-select" chosen.js select box
+    Given I select "Creative Commons Attribution" from "edit-field-license-und-select"
     And I press "edit-submit"
     And I click "Log out"
     When I am on "Dataset 03" page
@@ -131,18 +129,13 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
     When I click "Edit"
-    And I fill in the chosen field "edit_og_group_ref_und_chosen" with "Group 01"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Finish"
     Then I should see "Dataset Dataset 03 has been updated"
     When I am on "Group 01" page
     Then I should see "Dataset 03" in the "content" region
 
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"
-
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource with no dataset to a dataset with no resource
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
@@ -158,7 +151,7 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove a resource with only one dataset from the dataset
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
@@ -177,7 +170,7 @@ Feature: Dataset Features
     And I click "Back to dataset"
     Then I should see "There is no dataset associated with this resource"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource with no group to a dataset with group
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
@@ -190,7 +183,7 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove a resource from a dataset with group
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
@@ -211,7 +204,7 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
     When I click "Edit"
-    And I fill in the chosen field "edit_og_group_ref_und_chosen" with "Group 02"
+    And I select "Group 02" from "og_group_ref[und][]"
     And I press "Finish"
     Then I should see "Dataset 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -221,12 +214,12 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Dataset 09" page
     When I click "Edit"
-    And I empty the resources field "edit_og_group_ref_und_chosen"
+    And I select "" from "og_group_ref[und][]"
     And I press "Finish"
     Then I should see "Dataset 09 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add group and resource to a dataset on the same edition
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
@@ -238,21 +231,21 @@ Feature: Dataset Features
     And I should see "Groups were updated on 1 resource(s)"
     And I should see "Resource 04" in the "dataset resource list" region
 
-  @api @noworkflow
+  @noworkflow
   Scenario: Site Managers should see groups they are not member of
     Given I am logged in as "John"
     When I visit "node/add/dataset"
     Then I should see the "Group 01" groups option
     And I should see the "Group 02" groups option
 
-  @api @noworkflow
+  @noworkflow
   Scenario: Content Creators should only see the groups they are member of
     Given I am logged in as "Katie"
     When I visit "node/add/dataset"
     Then I should see the "Group 02" groups option
     And I should not see the "Group 04" groups option
 
-  @api @noworkflow
+  @noworkflow
   Scenario: Editors should only see the groups they are member of
     Given I am logged in as "Daniel"
     When I visit "node/add/dataset"

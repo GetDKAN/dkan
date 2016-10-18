@@ -1,3 +1,4 @@
+# time:0m23.12s
 @api
 Feature: Data Stories
 
@@ -15,7 +16,6 @@ Feature: Data Stories
     Given I am on the homepage
     Then I should see "Stories"
 
-  @javascript
   Scenario: Create Story Content
     And I am logged in as "Jaz"
     When I am on "/node/add/dkan-data-story"
@@ -25,7 +25,6 @@ Feature: Data Stories
     Then I should see "Your Data Story 'Test Post' has been created"
     Then I should not see "panels-ipe-region"
 
-  @javascript
   Scenario: Edit own story content
     And I am logged in as "Jaz"
     When I am on "story/dkan-data-story-test-story-post"
@@ -44,7 +43,6 @@ Feature: Data Stories
   #   And I press "Save"
   #   Then I should see "Education"
 
-  @javascript
   Scenario: Delete own story content
     And I am logged in as "Jaz"
     When I am on "story/dkan-data-story-test-story-post"

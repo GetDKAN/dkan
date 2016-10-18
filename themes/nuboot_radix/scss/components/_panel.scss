@@ -10,8 +10,12 @@
     line-height: 2em;
   }
 }
-.main .panel-pane {
-  margin-bottom: 3em;
+.main {
+	.pane-custom,
+	.pane-node-field-image,
+	.pane-fieldable-panels-pane {
+  	margin-bottom: 3em;
+  }
 }
 
 h2.pane-title {
@@ -47,7 +51,6 @@ h2.pane-title {
 		margin:0 0 15px 0;
 	}
 	.pane-content {
-		padding: 20px 0;
 		margin-bottom: 1em;
 	}
 	.pane-node-field-topic .pane-content {

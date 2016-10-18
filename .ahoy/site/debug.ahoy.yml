@@ -1,0 +1,13 @@
+ahoyapi: v1
+version: 0.0.0
+commands:
+  setup-sublime:
+    usage: Setup project for sublime xdebugging
+    cmd: |
+      mkdir -p .cache
+      cd dkan/.ahoy/site
+      composer install
+      cd ..
+      PROJECT=`pwd`
+      PROJECT=$(basename "$PROJECT")
+      PWD=`pwd` URI=`ahoy docker url` php ./dkan/.ahoy/site/.scripts/setup-sublime-xdebug.php > $PROJECT.sublime-project

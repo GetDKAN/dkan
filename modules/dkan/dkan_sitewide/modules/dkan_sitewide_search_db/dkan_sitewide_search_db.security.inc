@@ -36,12 +36,17 @@ function _facet_is_content_type($value) {
  * @return boolean
  */
 function _facet_is_term($name, $tid) {
-  $result = db_select('taxonomy_term_data', 'terms')
+  $query = db_select('taxonomy_term_data', 'terms')
               ->fields('terms', array('name'))
-              ->condition('name', $name, 'LIKE')
               ->condition('tid', $tid)
               ->execute();
-  return $result->rowCount() > 0;
+  $result = $query->fetchObject();
+  if ($query->rowCount() > 0) {
+    $n1 = pathauto_cleanstring($result->name);
+    $n2 = pathauto_cleanstring(urldecode($name));
+    return $n1 == $n2;
+  }
+  return FALSE;
 }
 
 /**
@@ -99,7 +104,7 @@ function _alter_search_callback($argument) {
         if (!is_numeric($last)) {
           return drupal_not_found();
         }
-        $term = array(implode('_', $term), $last);
+        $term = array(implode('-', $term), $last);
         // Save the extra query if we can.
         if (count($term) == 1) {
           return drupal_not_found();

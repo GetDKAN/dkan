@@ -267,6 +267,15 @@ div.horizontal-tabs {
   }
 }
 
+#field-dkan-harvest-filters-values,
+#field-dkan-harvest-excludes-values,
+#field-dkan-harvest-overrides-values,
+#field-dkan-harvest-defaults-values {
+  .description {
+    font-weight: normal;
+  }
+}
+
 #dkan-dataset-form-settings .help-block {
   margin: 5px 20px 10px;
 }

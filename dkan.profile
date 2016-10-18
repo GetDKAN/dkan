@@ -116,7 +116,6 @@ function dkan_enable_optional_module($module, &$context) {
 function dkan_revert_feature($feature, $components, &$context) {
   $context['message'] = t('Reverting feature %feature_name', array('%feature_name' => $feature));
   features_revert(array($feature => $components));
-  cache_clear_all();
 }
 
 
@@ -227,7 +226,6 @@ function dkan_build_menu_links(&$context) {
   $menu_links = features_get_default('menu_links', 'dkan_sitewide_menu');
   menu_links_features_rebuild_ordered($menu_links, TRUE);
   unset($_SESSION['messages']['warning']);
-  cache_clear_all();
  }
 
 /**
@@ -237,7 +235,6 @@ function dkan_build_menu_links(&$context) {
  */
 function dkan_flush_image_styles(&$context) {
   $context['message'] = t('Flushing image styles');
-  cache_clear_all();
   $image_styles = image_styles();
   foreach ( $image_styles as $image_style ) {
     image_style_flush($image_style);
@@ -271,7 +268,7 @@ function dkan_misc_variables_set(&$context) {
   variable_set('page_manager_node_edit_disabled', FALSE);
   variable_set('page_manager_user_view_disabled', FALSE);
   // variable_set('page_manager_override_anyway', 'TRUE');
-  variable_set('jquery_update_jquery_version', '1.7');
+  variable_set('jquery_update_jquery_version', '1.10');
   // Disable selected views enabled by contributed modules.
   $views_disable = array(
     'og_extras_nodes' => TRUE,
@@ -392,7 +389,6 @@ function dkan_set_roleassign_roles(&$context) {
  */
 function dkan_bueditor_markdown_install() {
   module_enable(array('bueditor_plus'));
-  cache_clear_all();
 
   $context = array();
   dkan_set_roleassign_roles($context);
@@ -416,30 +412,30 @@ function dkan_bueditor_markdown_install() {
   foreach ($roles as $rid => $role) {
     switch($role) {
     case 'anonymous user':
-      $bueditor_roles[$rid] = [
+      $bueditor_roles[$rid] = array(
         'weight' => 12,
         'editor' => _dkan_bueditor_by_name('Commenter'),
         'alt' => 0,
-      ];
+      );
       break;
 
     case 'administrator':
     case 'content creator':
     case 'editor':
     case 'site manager':
-      $bueditor_roles[$rid] = [
+      $bueditor_roles[$rid] = array(
         'weight' => 0,
         'editor' => _dkan_bueditor_by_name('Markdowneditor'),
         'alt' => 0,
-      ];
+      );
       break;
 
     default:
-      $bueditor_roles[$rid] = [
+      $bueditor_roles[$rid] = array(
         'weight' => 11,
         'editor' => 0,
         'alt' => 0,
-      ];
+      );
     }
   }
 
@@ -452,10 +448,10 @@ function dkan_bueditor_markdown_install() {
     ->execute()
     ->fetchField();
 
-  $data = [
+  $data = array(
     'html' => ['default' => $eid, 'alternative' => 0],
     'plain_text' => ['plain_text' => 0, 'alternative' => 0]
-  ];
+  );
 
   db_insert('bueditor_plus_profiles')
     ->fields(array(
@@ -505,6 +501,5 @@ edit-menu-description
     ))
     ->condition('eid', '5')
     ->execute();
-
   drupal_flush_all_caches();
 }
