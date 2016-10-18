@@ -37,7 +37,7 @@ commands:
         ARGS="--projects=$ARGS"
         echo "Running drush make for the following modules: $ARGS."
       fi
-      ahoy drush -y make --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --ignore-checksums --concurrency=8 docroot/profiles/dkan $ARGS
+      ahoy drush -y make --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --ignore-checksums --concurrency=8 --shallow-clone docroot/profiles/dkan $ARGS
 
   reinstall:
     usage: Reinstall the dkan install profile (db only).
