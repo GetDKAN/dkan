@@ -1,0 +1,46 @@
+ahoyapi: v1
+version: 0.0.0
+commands:
+  reinstall:
+    usage: Reinstall the site from scratch (dkan + custom_config + environment).
+    cmd: |
+      set -e
+      alias={{args}}
+      alias=${alias#@}
+      echo $alias
+      ahoy drush @$alias cc drush
+      ahoy drush @$alias -y si dkan
+      ahoy drush @$alias cc drush
+      ahoy drush @$alias -y en custom_config environment devinci
+      ahoy remote deploy $alias
+      ahoy remote update-indexes $alias
+
+  deploy:
+    usage: Standarized deploy process for Nucivic Data.
+    cmd: |
+      set -e
+      alias={{args}}
+      alias=${alias#@}
+      ahoy  drush @$alias dl -n registry_rebuild
+      ahoy  drush @$alias cc drush
+      target_env=`ahoy  drush @$alias php-eval "'echo ENVIRONMENT;'"`
+      ahoy drush @$alias cc drush
+      ahoy drush @$alias -y fr --force custom_config
+      ahoy drush @$alias env-switch $target_env --force
+      ahoy drush @$alias cc drush
+      ahoy drush @$alias rr
+
+  update-indexes:
+    usage: Updates search api indexes
+    cmd: |
+      set -e
+      alias={{args}}
+      alias=${alias#@}
+      ahoy  drush @$alias cc drush
+      ahoy  drush @$alias search-api-index datasets
+      ahoy  drush @$alias search-api-index groups_di
+      ahoy  drush @$alias search-api-index stories_index
+
+  launch-checklist:
+    usage: A series of commands to perform a launch-checklist
+    import: dkan/.ahoy/site/launch-checklist.ahoy.yml
