@@ -18,7 +18,7 @@ Feature: Dkan Harvest
     And I wait for "2" seconds
     Then I should see the success message "Harvest Source Source 1 has been created."
 
-  @api @javascript @harvest_rollback
+  @api @harvest_rollback
   Scenario Outline: As a user I should not be able to add a harvest source.
     Given pages:
     | name                  | url                      |
@@ -31,7 +31,7 @@ Feature: Dkan Harvest
     | role                    |
     | authenticated user      |
 
-  @api @javascript @harvest_rollback
+  @api @harvest_rollback
   Scenario: As an administrator I should see only the published harvest sources listed on the harvest dashboard.
     Given users:
       | name             | mail                   | roles           |
@@ -115,7 +115,7 @@ Feature: Dkan Harvest
     And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "published"
     And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "orphaned"
 
-  @api @harvest_rollback @javascript
+  @api @harvest_rollback
   Scenario: As a user I should have access to see harvest information into dataset node.
     Given users:
       | name             | mail                   | roles           |
@@ -134,7 +134,7 @@ Feature: Dkan Harvest
     And I should see the text "Harvest Source URI"
     And I should see the text "Harvest Source Title"
 
-  @api @javascript @harvest_rollback
+  @api @harvest_rollback
   Scenario: As a user I should have access to see harvest preview information.
     Given users:
       | name             | mail                   | roles           |
@@ -151,7 +151,7 @@ Feature: Dkan Harvest
     And I should see the text "Harvest now"
     And I should see the text "Florida Bike Lanes Harvest"
 
-  @api @javascript @harvest_rollback
+  @api @harvest_rollback
   Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
     Given users:
       | name             | mail                   | roles           |
@@ -172,7 +172,7 @@ Feature: Dkan Harvest
     | role               |
     | administrator      |
 
-  @api @javascript @harvest_rollback
+  @api @harvest_rollback
   Scenario Outline: As a user I should see a list of imported datasets on the Harvest Source page.
     Given users:
       | name             | mail                   | roles           |
@@ -190,7 +190,7 @@ Feature: Dkan Harvest
     | role               |
     | administrator      |
 
-  @api @javascript @harvest_rollback
+  @api @harvest_rollback
   Scenario Outline: As user I should see a list of imported datasets in the harvest administration dashboard
     Given users:
       | name             | mail                   | roles           |
