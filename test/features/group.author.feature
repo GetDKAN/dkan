@@ -1,5 +1,4 @@
 # time:0m13.79s
-@javascript
 Feature: Site Manager administer groups
   In order to manage site organization
   As a Site Manager
