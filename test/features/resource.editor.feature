@@ -174,8 +174,3 @@ Feature: Resource
     And I click "Revert"
     And I press "Revert"
     Then I should see "Resource Resource 01 has been reverted"
-
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"
