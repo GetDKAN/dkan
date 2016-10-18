@@ -163,8 +163,3 @@ Feature: Resource
     And I press "Revert"
     Then I should see "Resource 02"
     And I should not see "Resource 02 edited"
-
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"
