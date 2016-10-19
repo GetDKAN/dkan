@@ -12,5 +12,5 @@ fi
 
 drush --root=docroot  make --concurrency=$concurrency --prepare-install dkan/drupal-org-core.make docroot --yes
 
-drush -y --verbose $root si minimal --sites-subdir=default --account-pass='admin' --db-url=$1 install_configure_form.update_status_module='array(FALSE,FALSE)' &&
+drush --root=docroot -y --verbose $root si minimal --sites-subdir=default --account-pass='admin' --db-url=$1 install_configure_form.update_status_module='array(false,false)' &&
   ln -s ../../dkan docroot/profiles/dkan
