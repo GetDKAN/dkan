@@ -970,7 +970,7 @@ class HarvestMigration extends MigrateDKAN {
             '@url' => $url,
             '@extension' => $extension,
           ));
-        self::displayMessage($message , 'error');
+        self::displayMessage($message, 'error');
         return FALSE;
       }
     }
@@ -1017,7 +1017,10 @@ class HarvestMigration extends MigrateDKAN {
     $resource_emw = entity_metadata_wrapper('node', $resource_node);
 
     $resource_emw->title = $res->title;
-    $resource_emw->body->value->set($res->description);
+    $resource_emw->body->set(array(
+      'value' => $res->description,
+      'format' => 'html',
+    ));
 
     if (isset($res->format)) {
       $term = $this->createTax($res->format, 'format');
