@@ -1,4 +1,4 @@
-ahoyapi: v1
+ahoyapi: v2
 version: 0.0.0
 commands:
   drupal-rebuild:
@@ -181,7 +181,8 @@ commands:
 
   theme:
     usage: A series of commands for dkan theme development
-    import: dkan/.ahoy/theme.ahoy.yml
+    imports:
+      - dkan/.ahoy/theme.ahoy.yml
     hide: true
 
   uli:
