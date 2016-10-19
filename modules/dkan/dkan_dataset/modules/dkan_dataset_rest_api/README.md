@@ -195,8 +195,7 @@ $response = curl_exec($curl);
 
 ### Terminal Command Examples
 If you just want to quickly test that the funcitonality is working you can run the following commands from a terminal.
-
-**Replace the IP and PORT values in the commands below to match your development environment.**
+#####Replace the IP and PORT values in the commands below to match your development environment.
 
 #### Users
 ##### Authentication (login)
@@ -285,7 +284,7 @@ Note that the provided value (`A resource create via DKANs REST APIs (45)`) is
 the value expected from the dataset entry form.
 
 ##### Query for url/values of previous revision of file.
-The assemption is that the file is stored remotly and we are looking to get the
+The assumption is that the file is stored remotely and we are looking to get the
 link as it was set in a previous revision of the resource node. 
 
 Version (revision) are tracked via the VID Durpal identifier. We can query a
