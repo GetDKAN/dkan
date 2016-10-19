@@ -502,4 +502,6 @@ edit-menu-description
     ->condition('eid', '5')
     ->execute();
   drupal_flush_all_caches();
+  variable_set('preprocess_css', 1);
+  variable_set('preprocess_js', 1);
 }
