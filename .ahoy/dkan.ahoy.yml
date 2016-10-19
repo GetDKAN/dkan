@@ -19,7 +19,7 @@ commands:
           ahoy confirm "./docroot folder alredy exists. Delete it and reinstall drupal?" && chmod -R 777 docroot/sites/default && rm -rf docroot ||
           { echo ".. skipping installation"; exit 1;}
       fi
-      ahoy drush make --concurrency=8 --prepare-install dkan/drupal-org-core.make docroot --yes
+      ahoy drush make --concurrency=32 --prepare-install dkan/drupal-org-core.make docroot --yes
       ln -s ../../dkan docroot/profiles/dkan &&
       ahoy drush "-y --verbose si minimal --sites-subdir=default --account-pass='admin' --db-url=$ARGS install_configure_form.update_status_module='''''array\(FALSE,FALSE\)'''''"
 
@@ -37,7 +37,7 @@ commands:
         ARGS="--projects=$ARGS"
         echo "Running drush make for the following modules: $ARGS."
       fi
-      ahoy drush -y make --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --working-copy docroot/profiles/dkan $ARGS
+      ahoy drush -y make --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --concurrency=32 docroot/profiles/dkan $ARGS
 
   reinstall:
     usage: Reinstall the dkan install profile (db only).
