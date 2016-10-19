@@ -192,3 +192,105 @@ curl_setopt($curl, CURLOPT_FAILONERROR, TRUE);
 // Execute request and get response.
 $response = curl_exec($curl);
 ```
+
+### Terminal Command Examples
+If you just want to quickly test that the funcitonality is working you can run the following commands from a terminal.
+
+**Replace the IP and PORT values in the commands below to match your development environment.**
+
+#### Users
+##### Authentication (login)
+
+```sh
+curl -X POST -i -H "Content-type: application/json" -H "Accept: application/json" -c cookies.txt -X POST http://192.168.99.100:32770/api/dataset/user/login -d '{
+  "username":"admin",
+  "password":"admin"
+}'
+```
+
+This will return the cookie and the **CSRF token** that we need to reuse for all
+the authenticated user iteration via the API.
+
+
+#### Content (Datasets, resource)
+
+##### Retrive dataset
+
+```sh
+curl http://192.168.99.100:32770/api/dataset/node/43.json
+```
+
+Example output:
+```json
+{"vid":"82","uid":"1","title":"A node created with services 3.x and REST server","log":"","status":"1","comment":"0","promote":"0","sticky":"0","vuuid":"d7ffecfd-a1e2-4f33-8528-9768f3e838c0","nid":"43","type":"dataset","language":"und","created":"1473173658","changed":"1473173658","tnid":"0","translate":"0","uuid":"55350015-d8fa-4861-96f7-78b808f39dac","revision_timestamp":"1473173658","revision_uid":"1","body":{"und":[{"value":"This should be the description","summary":"","format":"html","safe_value":"<p>This should be the description</p>\n","safe_summary":""}]},"field_additional_info":[],"field_author":[],"field_contact_email":[],"field_contact_name":[],"field_data_dictionary":[],"field_frequency":[],"field_granularity":[],"field_license":{"und":[{"value":"notspecified","format":null,"safe_value":"notspecified"}]},"field_modified_source_date":[],"field_public_access_level":[],"field_related_content":[],"field_resources":[],"field_spatial":[],"field_spatial_geographical_cover":[],"field_tags":[],"field_temporal_coverage":[],"og_group_ref":[],"field_topic":[],"rdf_mapping":{"rdftype":["sioc:Item","foaf:Document"],"title":{"predicates":["dc:title"]},"created":{"predicates":["dc:date","dc:created"],"datatype":"xsd:dateTime","callback":"date_iso8601"},"changed":{"predicates":["dc:modified"],"datatype":"xsd:dateTime","callback":"date_iso8601"},"body":{"predicates":["content:encoded"]},"uid":{"predicates":["sioc:has_creator"],"type":"rel"},"name":{"predicates":["foaf:name"]},"comment_count":{"predicates":["sioc:num_replies"],"datatype":"xsd:integer"},"last_activity":{"predicates":["sioc:last_activity_date"],"datatype":"xsd:dateTime","callback":"date_iso8601"}},"path":"http://192.168.99.100:32770/dataset/node-created-services-3x-and-rest-server-1","name":"admin","picture":"0","data":"b:0;"}
+```
+
+##### Create new dataset
+This will need an authenticated user with appropriate permissions. The headers
+includes the user credentials (cookie and CSRF token).
+
+```sh
+curl -X POST -i -H "Content-type: application/json" -H "X-CSRF-Token: 8RniaOCwrsK8Mvue0al_C6EMAraTg26jzklDdLLgvns" -b cookies.txt -X POST http://192.168.99.100:32770/api/dataset/node -d '{
+  "title":"A node created via DKAN REST API",
+  "type":"dataset",
+  "body": {
+    "und": [{"value": "This should be the description"}]
+  }
+}'
+```
+
+##### Update dataset title
+To update content we use the PUT HTTP method.
+
+```sh
+curl -X PUT -i -H "Content-type: application/json" -H "X-CSRF-Token: 8RniaOCwrsK8Mvue0al_C6EMAraTg26jzklDdLLgvns" -b cookies.txt http://192.168.99.100:32770/api/dataset/node/43 -d '{
+  "title":"A node created with services 3.x and REST server - UPDATED"
+}'
+```
+
+##### Update each POD field
+Updating POD fields should be the same with a slight variation depending on the
+field type.
+
+```sh
+curl -X PUT -i -H "Content-type: application/json" -H "X-CSRF-Token: 8RniaOCwrsK8Mvue0al_C6EMAraTg26jzklDdLLgvns" -b cookies.txt http://192.168.99.100:32770/api/dataset/node/43 -d '{
+  "field_odfe_bureau_code": {"und": {"value": "001:12"}}
+}'
+```
+
+##### Update field isChild(collection) to parent UID
+Updating the isPartOf field (`field_odfe_is_part_of`) should be the similar to
+updating any other regular field.
+
+##### Add new resource to dataset
+API wise this is a 2 step process:
+
+1. Create the resource node.
+  ```sh
+  curl -X POST -i -H "Content-type: application/json" -H "X-CSRF-Token: 8RniaOCwrsK8Mvue0al_C6EMAraTg26jzklDdLLgvns" -b cookies.txt -X POST http://192.168.99.100:32770/api/dataset/node -d '{
+  "title":"A resource created via DKANs REST APIs",
+  "type":"resource",
+  "body": {"und": [{"value": "This should be the description for the resource."}]},
+  "field_link_api": {"und": [{"url": "http://data.worldbank.org/"}]}
+  }'
+  ```
+
+2. Attach the newly created resource node to the parent dataset. Use the node ids that match the dataset and resource created by the commands above.
+  ```sh
+  curl -X PUT -i -H "Content-type: application/json" -H "X-CSRF-Token: 8RniaOCwrsK8Mvue0al_C6EMAraTg26jzklDdLLgvns" -b cookies.txt http://192.168.99.100:32770/api/dataset/node/43 -d '{
+  "field_resources": {"und": [{"target_id": "A resource create via DKANs REST APIs (45)"}]}
+  }'
+  ```
+Note that the provided value (`A resource create via DKANs REST APIs (45)`) is
+the value expected from the dataset entry form.
+
+##### Query for url/values of previous revision of file.
+The assemption is that the file is stored remotly and we are looking to get the
+link as it was set in a previous revision of the resource node. 
+
+Version (revision) are tracked via the VID Durpal identifier. We can query a
+specific node revision (for example version id 89) using the vid as parameter:
+
+```sh
+curl -X GET -gi -H "Content-type: application/json" -H "X-CSRF-Token: 8RniaOCwrsK8Mvue0al_C6EMAraTg26jzklDdLLgvns" -b cookies.txt 'http://192.168.99.100:32770/api/dataset/node.json?parameters[vid]=89'
+```
