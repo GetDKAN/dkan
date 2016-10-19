@@ -57,7 +57,7 @@ commands:
         else
           MYSQL=''
         fi
-        ahoy cmd-proxy cli MYSQL=$MYSQL bash dkan/.ahoy/.scripts/drush-si.sh
+        ahoy cmd-proxy bash dkan/.ahoy/.scripts/drush-si.sh $MYSQL
       fi
 
   module-fetch:
