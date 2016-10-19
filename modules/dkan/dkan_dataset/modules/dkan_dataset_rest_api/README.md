@@ -293,3 +293,66 @@ specific node revision (for example version id 89) using the vid as parameter:
 ```sh
 curl -X GET -gi -H "Content-type: application/json" -H "X-CSRF-Token: 8RniaOCwrsK8Mvue0al_C6EMAraTg26jzklDdLLgvns" -b cookies.txt 'http://192.168.99.100:32770/api/dataset/node.json?parameters[vid]=89'
 ```
+##### Trigger new version of dataset/resource
+This managed internally by DKAN with workflow enabled. Any changes to the
+dataset node will trigger an new dataset version ("revision" in DKAN terms).
+
+##### Query for workflow status of dataset
+Currently this is not implemented/added in/to DKAN. We need to workout the
+`service` module integration with `dkan_workflow`.
+
+##### Query for comment count on dataset
+Drupal comments are not enabled by default in DKAN. Querying Drupal comments is
+supported by the REST APIs pending some configuration.
+
+#### DKAN Datastore
+Although not enabled by default, REST API support for the DKAN Datastore is
+implemented via the [dkan_datastore_api](https://github.com/NuCivic/dkan_datastore/blob/7.x-1.x/modules/dkan_datastore_api) module and documented in [README.md](https://github.com/NuCivic/dkan_datastore/blob/7.x-1.x/modules/dkan_datastore_api/README.md)
+and the [docs.getdkan.com site](http://docs.getdkan.com/docs/dkan-documentation/dkan-api/datastore-api). 
+
+From the documentation it seems only querying the datastore is implemented.
+
+##### Query for "if resource has datastore" aka "hasDatastore:true/false"
+In resource Datastore status is stored in the `field_datastore_status` field.
+We can get the node and look for the field value.
+
+```sh
+curl http://192.168.99.100:32770/api/dataset/node/4.json
+```
+
+Example `field_datastore_status` return value.
+```json
+"field_datastore_status": {
+  "und": [
+    {
+      "value": "1"
+    }
+  ]
+},
+```
+
+##### Trigger import to datastore
+Triggering an import to the datastore is not covered by the DKAN DATASTORE API yet.
+
+##### Trigger drop of datastore
+Triggering a drop to the datastore is not covered by the DKAN DATASTORE API yet.
+
+## Note:
+* Used the curl way of quering providing example as it's the standard for this
+  type of docs and there is no easy text based way of emulating this for
+  postman.
+* Querying content from DKAN currently in done via NID which is the DKAN way of
+  identifiying data. Using UUIDs as a supplement to NIDs seems to be available
+  but discovery/confirmations is needed.
+
+## TODO
+### Discovery work
+1. Use UUIDs as identifier for varius HTTP CRUD operation. Seems link the
+   support is built in via the [UUID](https://www.drupal.org/project/uuid)
+   module and in theory we do not need to do anything other then set it up.
+   Would be great to validate this assumption.
+   
+### Implementation work
+1. Setup user management APIs (creation, etc).
+2. Implement Support for querying workflow status.
+3. Implement support for triggering an import and drop to the datastore.
