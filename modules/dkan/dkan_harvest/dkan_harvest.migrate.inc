@@ -890,20 +890,51 @@ class HarvestMigration extends MigrateDKAN {
    * FALSE.
    */
   public static function prepareResourceHelper($url, $format=NULL, $title=NULL, $created=NULL, $description=NULL) {
-    $resource = new stdClass();
-
     // Validate the url
     if (!filter_var($url, FILTER_VALIDATE_URL)) {
-      $message = t('Resource remote url (@url) not valid!',
-        array(
-          '@url' => $url,
-        ));
+      $message = t('Resource remote url "@url" not valid.',
+        array('@url' => $url,));
       self::displayMessage($message, 'error');
       return FALSE;
     }
-    else {
-      $resource->url = $url;
+
+    // remote_stream_wrapper does not play nice with files link behind
+    // redirects. Try to get the bottom of the redircet chain if any and use
+    // the last URL.
+    // This only works for http requests (right now). So for ftp and other URLs
+    // we just skip the check.
+    if (strpos(parse_url($url, PHP_URL_SCHEME), 'http') === 0) {
+      $ch = curl_init();
+      curl_setopt ($ch, CURLOPT_URL, $url);
+      // Wait only 30 seconds.
+      curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 30);
+      curl_setopt($ch, CURLOPT_HEADER, TRUE);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+      // TODO
+      curl_setopt($ch, CURLOPT_COOKIEFILE, "");
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+      // This changes the request method to HEAD. No need to "GET" the hole link.
+      curl_setopt($ch, CURLOPT_NOBODY, true);
+      // Spoof the User Agent
+      curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1');
+
+      if (!curl_exec($ch)) {
+        // Validation check failed. Log and return.
+        $message = t('Resource remote url "@url" connection failed or timedout.',
+          array('@url' => $url,));
+        self::displayMessage($message, 'error');
+        return FALSE;
+      }
+
+      // Get the effective URL.
+      $url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+      curl_close($ch);
     }
+
+    $resource = new stdClass();
+
+    // This URL is valid and ready to be processed.
+    $resource->url = $url;
 
     // Detect the url type. If file set field_link_remote_file. If not set
     // field_link_api.
