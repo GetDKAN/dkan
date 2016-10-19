@@ -35,7 +35,7 @@ class DkanGroupImport extends MigrateCkanGroupBase {
    * Do extra processing before the node is saved.
    */
   public function prepare($node, $row) {
-
+    parent::prepare($node, $row);
     // Set user as admin.
     $node->uid = 1;
     // Set node as published.

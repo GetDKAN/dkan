@@ -267,9 +267,6 @@ abstract class MigrateDKAN extends Migration {
    */
   public function datasetPrepare($node, $row) {
     $node->uuid = $row->id;
-    // Turn off pathauto for import and set path.
-    $node->path['pathauto'] = FALSE;
-    $node->path['alias'] = $row->name;
     // Converts geojson spatial for saving field.
     if (isset($node->field_spatial[$node->language][0]['wkt']) && $spatial = $node->field_spatial[$node->language][0]['wkt']) {
       $geophp = geophp_load();
@@ -575,6 +572,7 @@ abstract class MigrateDKAN extends Migration {
       $new_term = new stdClass();
       $new_term->name = $name;
       $new_term->vid = $vid;
+      $new_term->path['pathauto'] = FALSE;
       $term = taxonomy_term_save($new_term);
       if ($term == SAVED_NEW) {
         $term = taxonomy_get_term_by_name($name, $vocab_name);
@@ -726,6 +724,13 @@ abstract class MigrateCkanBase extends MigrateDKAN {
   /**
    * Here we go.
    */
+
+  public function prepare($node, $row) {
+    $node->path = is_array($node->path) ? $node->path : array();
+    $node->path['pathauto'] = FALSE;
+    $node->path['alias'] = $row->name;
+  }
+  
   public function __construct($arguments) {
     $this->endpoint = isset($arguments['endpoint']) ? $arguments['endpoint'] : 'http://demo.getdkan.com/api/3/action/';
     parent::__construct($arguments);
