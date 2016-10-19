@@ -114,7 +114,7 @@ class HarvestMigration extends MigrateDKAN {
     if (!isset($result['node'])) {
       // Something is wrong.
       $message = t('Cannot look-up the harvest source Node ID');
-      self::displayMessage($message, 'error');
+      $this->saveMessage($message);
     }
 
     // This should be set when running the harvest with a harvest source node. Add
@@ -401,7 +401,7 @@ class HarvestMigration extends MigrateDKAN {
           array(
             '@exception_message' => $emwException->getMessage(),
           ));
-        self::displayMessage($message, 'error');
+        $this->saveMessage($message);
         }
     }
 
@@ -445,7 +445,7 @@ class HarvestMigration extends MigrateDKAN {
 
     if (!$file) {
       $message = t('Cannot create the file for the Metadata Source.');
-      self::displayMessage($message, 'error');
+      $this->saveMessage($message);
       return FALSE;
     }
     $metadata_source_emw->field_metadata_file->file->set($file);
@@ -460,7 +460,7 @@ class HarvestMigration extends MigrateDKAN {
           '@message_prefix' => 'Adding Metada Source failed',
           '@exception_message' => $emwException->getMessage(),
         ));
-      self::displayMessage($message, 'error');
+      $this->saveMessage($message);
     }
 
     // Attache the metadata source to the dataset.
@@ -661,7 +661,7 @@ class HarvestMigration extends MigrateDKAN {
         try {
           $dataset_emw = entity_metadata_wrapper('node', $nid);
         } catch (EntityMetadataWrapperException $exception) {
-          self::displayMessage($exception->getMessage(), 'error');
+          $this->saveMessage($exception->getMessage());
           // Skip this nid
           continue;
         }
@@ -845,7 +845,7 @@ class HarvestMigration extends MigrateDKAN {
         array (
           '@vocab_name' => $vocab_name,
         ));
-      self::displayMessage($message , 'error');
+      $this->saveMessage($message);
       return NULL;
     }
 
@@ -870,7 +870,7 @@ class HarvestMigration extends MigrateDKAN {
             '@name' => $name,
             '@vocab_name' => $vocab_name,
           ));
-        self::displayMessage($message , 'error');
+        $this->saveMessage($message);
         return NULL;
       }
     }
