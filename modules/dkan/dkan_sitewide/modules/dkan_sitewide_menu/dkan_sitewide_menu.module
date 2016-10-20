@@ -3,3 +3,12 @@
  * @file
  * Drupal needs this blank file.
  */
+
+function dkan_sitewide_menu_permission() {
+  return array(
+    'administer DKAN configuration' => array(
+      'title' => t('Administer DKAN configuration'),
+      'description' => t('Perform administration tasks for DKAN.'),
+    ),
+  );
+}
