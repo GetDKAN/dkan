@@ -3,9 +3,10 @@ core: 7.x
 includes:
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/bug_open_data_schema_map_ckan_4107/open_data_schema_map.make"
-  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
-  - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
-  - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
+  - "modules/dkan/dkan_workflow/dkan_workflow.make"
+  - "modules/dkan/dkan_data_story/dkan_data_story.make"
+  - "modules/dkan/dkan_topics/dkan_topics.make"
+  - "modules/dkan/dkan_harvest/dkan_harvest.make"
 projects:
   admin_menu:
     version: '3.0-rc5'
