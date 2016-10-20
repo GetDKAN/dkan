@@ -235,6 +235,7 @@ function dkan_permissions_default_roles_permissions() {
       'access administration pages' => TRUE,
       'access content' => TRUE,
       'access content overview' => TRUE,
+      'access draggableviews' => TRUE,
       'access media browser' => TRUE,
       'access recline configuration' => TRUE,
       'access site in maintenance mode' => TRUE,
