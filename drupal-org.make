@@ -2,9 +2,9 @@
 api: '2'
 core: 7.x
 includes:
-- https://raw.githubusercontent.com/NuCivic/dkan_dataset/release-1-12/dkan_dataset.make
-- https://raw.githubusercontent.com/NuCivic/dkan_datastore/release-1-12/dkan_datastore.make
-- https://raw.githubusercontent.com/NuCivic/dkan_workflow/release-1-12/dkan_workflow.make
+- https://raw.githubusercontent.com/NuCivic/dkan_dataset/7.x-1.12.11/dkan_dataset.make
+- https://raw.githubusercontent.com/NuCivic/dkan_datastore/7.x-1.12.11/dkan_datastore.make
+- https://raw.githubusercontent.com/NuCivic/dkan_workflow/7.x-1.12.11/dkan_workflow.make
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make
 - modules/dkan/dkan_data_story/dkan_data_story.make
 - modules/dkan/dkan_topics/dkan_topics.make
@@ -12,7 +12,7 @@ projects:
   manualcrop:
     version: '1.5'
     patch:
-      2504119: 'https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch'
+      2504119: https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch
   tablefield:
     version: '2.4'
   simple_gmap:
@@ -41,19 +41,19 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_dataset.git
-      branch: release-1-12
+      tag: 7.x-1.12.11
   dkan_datastore:
     subdir: dkan
     download:
       type: git
       url: https://github.com/NuCivic/dkan_datastore.git
-      branch: release-1-12
+      tag: 7.x-1.12.11
   dkan_workflow:
     subdir: dkan
     download:
       type: git
       url: https://github.com/NuCivic/dkan_workflow.git
-      branch: release-1-12
+      tag: 7.x-1.12.11
   visualization_entity:
     download:
       type: git
@@ -91,7 +91,7 @@ projects:
       1: patches/fontyourface-no-ajax-browse-view.patch
       2: patches/fontyourface-clear-css-cache.patch
       2644694: https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch
-      2816837: 'https://www.drupal.org/files/issues/font_your_face-remove_div_general_text_option-D7.patch'
+      2816837: https://www.drupal.org/files/issues/font_your_face-remove_div_general_text_option-D7.patch
   imagecache_actions:
     version: '1.7'
     type: module
@@ -147,7 +147,6 @@ projects:
     version: '1.1'
   admin_menu_source:
     version: '1.1'
-    # Allow ordering of roles to handle users w/multiple roles
     patch:
       2441283: https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch
   menu_token:
@@ -163,7 +162,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/nuboot_radix.git
-      branch: release-1-12
+      tag: 7.x-1.12.11
     type: theme
   radix:
     type: theme
@@ -195,7 +194,7 @@ libraries:
   spyc:
     download:
       type: file
-      url: 'https://raw.github.com/mustangostang/spyc/master/Spyc.php'
+      url: https://raw.github.com/mustangostang/spyc/master/Spyc.php
     directory_name: spyc
 defaults:
   projects:
