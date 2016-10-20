@@ -251,7 +251,6 @@ abstract class MigrateDKAN extends Migration {
     $this->addFieldMapping('field_contact_email', 'author_email');
     $this->addFieldMapping('uid', 'uid');
     $this->addFieldMapping('id', 'uuid');
-    $this->addFieldMapping('path', 'name');
     $this->addFieldMapping('body', 'notes');
     $this->addFieldMapping('field_spatial_geographical_cover', 'spatialText');
     $this->addFieldMapping('field_spatial', 'spatial');
@@ -280,7 +279,6 @@ abstract class MigrateDKAN extends Migration {
    */
   public function datasetPrepareRow(&$row) {
     $row->uid = isset($row->creator_user_id) ? $this->getUser($row->creator_user_id) : 1;
-    $row->name = 'dataset/' . $row->name;
     $row->resource_ids = array();
     // If there is no revision timestamp an error is thrown as it is the
     // highwater mark. Put in a low highwater mark instead.
@@ -727,8 +725,6 @@ abstract class MigrateCkanBase extends MigrateDKAN {
 
   public function prepare($node, $row) {
     $node->path = is_array($node->path) ? $node->path : array();
-    $node->path['pathauto'] = FALSE;
-    $node->path['alias'] = $row->name;
   }
   
   public function __construct($arguments) {

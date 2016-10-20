@@ -17,6 +17,7 @@ class DkanGroupImport extends MigrateCkanGroupBase {
     // Add field mappings.
     $this->addFieldMapping('field_image', 'image_display_url');
     $this->addFieldMapping('field_image:alt', 'field_image_alt');
+    $this->addFieldMapping('path', '__path');
   }
 
   /**
@@ -36,6 +37,7 @@ class DkanGroupImport extends MigrateCkanGroupBase {
    */
   public function prepare($node, $row) {
     parent::prepare($node, $row);
+    $node->path['pathauto'] = FALSE;
     // Set user as admin.
     $node->uid = 1;
     // Set node as published.
