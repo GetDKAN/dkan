@@ -879,7 +879,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'bundle' => 'dataset',
     'mapping' => array(
       'id' => array(
-        'value' => '',
+        'value' => '[node:uuid]',
         'type' => 'string',
       ),
       'revision_id' => array(
