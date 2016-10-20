@@ -21,5 +21,13 @@
       <div class="node-description"><?php print text_summary($body, 'plain_text', 250) ?></div>
     <?php endif; ?>
     <?php print render($content['resources']); ?>
+    <?php
+      if(isset($node->nid) && $node->type == 'harvest_source' && module_exists('dkan_harvest')) {
+        $changed = format_date($node->changed, 'custom','m/d/Y');
+        $count = dkan_harvest_datasets_count($node) ? dkan_harvest_datasets_count($node): 0;
+        print '<span>' . t('Number of Datasets:') . '</span> ' . $count;
+        print '<br><span>' . t('Last updated:') . '</span> ' . $changed;
+      }
+    ?>
   </div>
 </article>

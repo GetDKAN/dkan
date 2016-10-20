@@ -1,0 +1,144 @@
+{
+    "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+    "@id": "http://example.com/data.json",
+    "@type": "dcat:Catalog",
+    "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+    "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
+    "dataset": [
+        {
+            "@type": "dcat:Dataset",
+            "contactPoint": {
+                "fn": "Bruce Wayne",
+                "hasEmail": "mailto:bruce@notbatman.com"
+            },
+            "theme":["Workforce"],
+            "description": "Here is a description",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "http://example.com/sites/default/files/grossrents_adj.txt",
+                    "mediaType": "text/plain",
+                    "format": "txt",
+                    "description": "No description provided"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "accessURL": "http://demo.getdkan.com/dataset/wisconsin-polling-places",
+                    "downloadURL": "https://s3.amazonaws.com/dkan-default-content-files/files/Polling_Places_Madison_0.csv",
+                    "description": "No description provided"
+                }
+            ],
+            "identifier": "b6a4942e-fa73-4cbf-804f-1f9eea6d02df",
+            "keyword": [
+                "housing",
+                "rent"
+            ],
+            "language": [
+                "en"
+            ],
+            "license": "notspecified",
+            "conformsTo": "http://www.agency.gov/common-vegetable-analysis-model",
+            "modified": "2014-06-24",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "Housing"
+            },
+            "title": "Gross Rent over time",
+            "accessLevel": "public",
+            "crazy": "what",
+            "dataQuality":true,
+            "describedBy": "http://www.agency.gov/vegetables/definitions.pdf",
+            "describedByType": "application/pdf",
+            "isPartOf":"http://dx.doi.org/10.7927/H4PZ56R2",
+            "language":["es-MX","wo","nv","en-US"],
+            "primaryITInvestmentUII":"023-000000001",
+            "references":["http://www.agency.gov/legumes/legumes_data_documentation.html","http://www.agency.gov/fruits/fruit_data_documentation.html"],
+            "systemOfRecords":"https://www.federalregister.gov/articles/2002/04/08/02-7376/privacy-act-of-1974-publication-in-full-of-all-notices-of-systems-of-records-including-several-new#p-361",
+            "theme":["vegetables","produce"],
+            "temporal":"2000-01-15T00:45:00Z/2010-01-15T00:06:00Z",
+            "spatial": "Lincoln, Nebraska",
+            "accrualPeriodicity":"R/P1Y",
+            "programCode":["015:001","015:002"],
+            "landingPage":"http://www.agency.gov/vegetables",
+            "rights":"This dataset contains Personally Identifiable Information and could not be released for public access.",
+            "bureauCode":["010:86"]
+        },
+        {
+            "@type": "dcat:Dataset",
+            "contactPoint": {
+                "fn": "John Smith",
+                "hasEmail": "mailto:john@smythsales.com"
+            },
+            "description": "The data that is used by the Hospital Compare tool can be downloaded for public use. This functionality is primarily used by health policy researchers and the media. The data provided includes process of care, mortality, and readmission quality measures. The collection period for the measures is generally 12 months. However, some measures may be based upon fewer than 12 months. Generally, the Hospital Compare quality measures are refreshed the third month of each quarter.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "http://example.com/sites/default/files/HQI_HOSP_AHRQ_NATIONAL.csv",
+                    "mediaType": "text/csv",
+                    "format": "csv",
+                    "description": "No description provided"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "http://example.com/sites/default/files/HQI_US_NATIONAL_MORTALITY_READM_RATE.csv",
+                    "mediaType": "text/csv",
+                    "format": "csv",
+                    "description": "No description provided"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "http://example.com/sites/default/files/HQI_HOSP_STRUCTURAL_XWLK.csv",
+                    "mediaType": "text/csv",
+                    "format": "csv",
+                    "description": "No description provided"
+                }
+            ],
+            "identifier": "2be7feb9-150f-4b7b-ac73-c9f337fc9341",
+            "keyword": [
+                "community",
+                "health",
+                "hospitals"
+            ],
+            "language": [
+                "en"
+            ],
+            "license": "odc-by",
+            "modified": "2014-06-24",
+            "dataStandard": "http://www.agency.gov/common-vegetable-analysis-model/",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "Health"
+            },
+            "title": "Hospital Compare",
+            "accessLevel": "public"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "contactPoint": {
+                "fn": "admin",
+                "hasEmail": "mailto:"
+            },
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "http://example.com/sites/default/files/values.csv",
+                    "mediaType": "text/csv",
+                    "format": "csv",
+                    "description": "No description provided"
+                }
+            ],
+            "identifier": "765bc983-a4f5-438a-bf3c-6e171c7cc15a",
+            "language": [
+                "en"
+            ],
+            "license": "cc-by",
+            "modified": "2014-06-23",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "Health"
+            },
+            "title": "NGA Scores",
+            "accessLevel": "public"
+        }
+    ]
+}
