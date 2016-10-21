@@ -44,6 +44,7 @@ DKAN Dataset:
  - Upgrade Features to 7.x-2.9
  - Make date facet use "day" granularity.
  - Remove ARC2 library.
+ - Disable pathauto for content created using dkan_fixtures.
 
 
 7.x-1.12.x
