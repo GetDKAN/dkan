@@ -17,7 +17,7 @@ class DkanGroupImport extends MigrateCkanGroupBase {
     // Add field mappings.
     $this->addFieldMapping('field_image', 'image_display_url');
     $this->addFieldMapping('field_image:alt', 'field_image_alt');
-    $this->addFieldMapping('path', '__path');
+    $this->addFieldMapping('path', 'path');
   }
 
   /**

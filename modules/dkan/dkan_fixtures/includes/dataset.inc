@@ -18,7 +18,7 @@ class DkanDatasetImport extends MigrateCkanDatasetBase {
     }
 
     $this->addFieldMapping('field_topic', 'topic_names');
-    $this->addFieldMapping('path', '__path');
+    $this->addFieldMapping('path', 'path');
   }
 
   /**

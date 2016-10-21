@@ -21,7 +21,7 @@ class DkanDataDashboardsImport extends DkanPanelizedNodesImport {
 
     // Add Field mappings.
     $this->addFieldMapping('field_topic', 'topics');
-    $this->addFieldMapping('path', '__path');
+    $this->addFieldMapping('path', 'path');
   }
 
   

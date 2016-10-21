@@ -12,7 +12,7 @@ class DkanResourceImport extends MigrateCkanResourceBase {
     }
     parent::__construct($arguments);
 
-    $this->addFieldMapping('path', '__path');
+    $this->addFieldMapping('path', 'path');
   }
 
   /**

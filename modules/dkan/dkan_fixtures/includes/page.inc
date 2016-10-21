@@ -19,7 +19,7 @@ class DkanPagesImport extends DkanPanelizedNodesImport {
 
     parent::__construct($arguments);
 
-    $this->addFieldMapping('path', '__path');
+    $this->addFieldMapping('path', 'path');
   }
 
   /**

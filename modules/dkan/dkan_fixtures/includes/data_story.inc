@@ -24,7 +24,7 @@ class DkanDataStoriesImport extends DkanPanelizedNodesImport {
     $this->addFieldMapping('field_image:alt', 'field_image_alt');
     $this->addFieldMapping('field_tags', 'tags');
     $this->addFieldMapping('field_topic', 'topics');
-    $this->addFieldMapping('path', '__path');
+    $this->addFieldMapping('path', 'path');
   }
 
   /**
