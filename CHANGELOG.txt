@@ -45,7 +45,8 @@ DKAN Dataset:
  - Make date facet use "day" granularity.
  - Remove ARC2 library.
  - Disable pathauto for content created using dkan_fixtures.
-
+ - Fix missing source column in harvest dashboard.
+ - Fix source filter not populated in harvest dashboard.
 
 7.x-1.12.x
 --------------------------
