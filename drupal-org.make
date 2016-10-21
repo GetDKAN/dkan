@@ -240,7 +240,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/open_data_schema_map.git'
-      branch: bug_open_data_schema_map_ckan_4107
+      branch: 7.x-1.x
   panelizer:
     version: '3.4'
   panels:
