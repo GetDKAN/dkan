@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/crime-data-ten-most-populous-cities-us/resource/ae1af387-c709-4e7a-b450-c6a4e44381fb",
         "id": "ae1af387-c709-4e7a-b450-c6a4e44381fb",
         "url": "files/resource/PropertyCrimesByCity_3.csv",
         "format": "csv",
