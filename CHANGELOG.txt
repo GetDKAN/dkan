@@ -40,6 +40,10 @@
  - Added DKAN Datastore module into DKAN Core.
  - Added DKAN Dataset module into DKAN Core.
  - Added DKAN Migrate Base module into DKAN Core.
+ - Add Harvest Source to the Command Center menu under Add Content.
+ - Add DKAN menu links to the Command Center menu.
+ - Fix access for site managers to see the DKAN config forms.
+ - Fix admin menu source when dkan_workflow is enabled.
 DKAN Dataset:
  - Upgrade Features to 7.x-2.9
  - Make date facet use "day" granularity.
