@@ -73,8 +73,6 @@ function views_dkan_workflow_tree_action_info() {
 }
 
 function views_dkan_workflow_tree_views_bulk_operations_form_alter(&$form, &$form_state, $vbo) {
-
-
   // Workbench Moderation VBO action permissions check
   // @TODO This is temporary and needs to be moved to the front-end.
   if (strpos($form['#form_id'], 'views_form_workbench_moderation') === 0) {
@@ -99,48 +97,48 @@ function views_dkan_workflow_tree_views_bulk_operations_form_alter(&$form, &$for
         }
       }
     }
-  }
 
-  $form['select']['#type'] = 'div';
+    $form['select']['#type'] = 'div';
 
-  // Change "Select all items" button position
-  if ($form_state['step'] == 'views_form_views_form' && isset($form['select_all_markup'])) {
-    $select_all = array('select_all_markup' => $form['select_all_markup']);
-    $form['select'] = $select_all + $form['select'];
-    unset($form['select_all_markup']);
+    // Change "Select all items" button position
+    if ($form_state['step'] == 'views_form_views_form' && isset($form['select_all_markup'])) {
+      $select_all = array('select_all_markup' => $form['select_all_markup']);
+      $form['select'] = $select_all + $form['select'];
+      unset($form['select_all_markup']);
 
-    $dataset_icon = array(
-      'type' => 'dataset',
-      'class' => array('icon-dkan')
-    );
-    $resource_icon = array(
-      'type' => 'resource',
-      'class' => array('icon-dkan')
-    );
-    $story_icon = array(
-      'type' => 'dkan_data_story',
-      'class' => array('icon-dkan')
-    );
-    $dashboard_icon = array(
-      'type' => 'data_dashboard',
-      'class' => array('icon-dkan')
-    );
-    
-    $dataset_legend = '<span>'. theme('facet_icons', $dataset_icon) . ' Dataset</span>';
-    $resource_legend = '<span>'. theme('facet_icons', $resource_icon) . ' Resource</span>';
-    $story_legend = '<span>'. theme('facet_icons', $story_icon) . ' Data Story</span>';
-    $dashboard_legend = '<span>' . theme('facet_icons', $dashboard_icon) . ' Data Dashboard</span>';
-
-    if(module_exists('dkan_feedback')) {
-      $feedback_icon = array(
-        'type' => 'feedback',
+      $dataset_icon = array(
+        'type' => 'dataset',
         'class' => array('icon-dkan')
       );
-      $feedback_legend = '<span>'. theme('facet_icons', $feedback_icon) . ' Feedback</span>';
-      $form['#suffix'] = '<div class="references">' . $dataset_legend . $resource_legend . $story_legend . $dashboard_legend . $feedback_legend . '</div>';
-    }
-    else {
-      $form['#suffix'] = '<div class="references">' . $dataset_legend . $resource_legend . $story_legend . $dashboard_legend . '</div>';
+      $resource_icon = array(
+        'type' => 'resource',
+        'class' => array('icon-dkan')
+      );
+      $story_icon = array(
+        'type' => 'dkan_data_story',
+        'class' => array('icon-dkan')
+      );
+      $dashboard_icon = array(
+        'type' => 'data_dashboard',
+        'class' => array('icon-dkan')
+      );
+      
+      $dataset_legend = '<span>'. theme('facet_icons', $dataset_icon) . ' Dataset</span>';
+      $resource_legend = '<span>'. theme('facet_icons', $resource_icon) . ' Resource</span>';
+      $story_legend = '<span>'. theme('facet_icons', $story_icon) . ' Data Story</span>';
+      $dashboard_legend = '<span>' . theme('facet_icons', $dashboard_icon) . ' Data Dashboard</span>';
+
+      if(module_exists('dkan_feedback')) {
+        $feedback_icon = array(
+          'type' => 'feedback',
+          'class' => array('icon-dkan')
+        );
+        $feedback_legend = '<span>'. theme('facet_icons', $feedback_icon) . ' Feedback</span>';
+        $form['#suffix'] = '<div class="references">' . $dataset_legend . $resource_legend . $story_legend . $dashboard_legend . $feedback_legend . '</div>';
+      }
+      else {
+        $form['#suffix'] = '<div class="references">' . $dataset_legend . $resource_legend . $story_legend . $dashboard_legend . '</div>';
+      }
     }
   }
 }
