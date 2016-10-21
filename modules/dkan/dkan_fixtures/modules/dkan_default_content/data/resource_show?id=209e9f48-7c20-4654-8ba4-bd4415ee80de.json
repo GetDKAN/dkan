@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/state-workforce-generation-2011-2015/resource/209e9f48-7c20-4654-8ba4-bd4415ee80de",
         "id": "209e9f48-7c20-4654-8ba4-bd4415ee80de",
         "url": "files/resource/GenChart_0_0.csv",
         "description": "<p>Population of state employees broken down into Gen X, Gen Y, Baby Boomers and Over 65+.</p>\n",
