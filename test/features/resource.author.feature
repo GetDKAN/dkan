@@ -1,4 +1,4 @@
-# time:12m13.30s
+# time:4m30.30s
 @api
 Feature: Resource
 
