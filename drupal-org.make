@@ -207,6 +207,8 @@ projects:
     version: '2.1'
     patch:
       2446199: 'https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch' 
+  menu_admin_per_menu:
+    version: '1.1'
   menu_badges:
     version: '1.2'
   menu_block:
