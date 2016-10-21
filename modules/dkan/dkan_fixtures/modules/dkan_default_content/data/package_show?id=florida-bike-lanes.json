@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/florida-bike-lanes",
         "id": "cedcd327-4e5d-43f9-8eb1-c11850fa7c55",
         "name": "florida-bike-lanes",
         "title": "Florida Bike Lanes ",

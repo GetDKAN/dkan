@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/london-deprivation-index",
         "id": "fb3525f2-d32a-451e-8869-906ed41f7695",
         "name": "london-deprivation-index",
         "title": "London Deprivation Index",

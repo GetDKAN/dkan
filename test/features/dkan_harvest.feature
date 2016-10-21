@@ -1,4 +1,4 @@
-# time:8m19.05s
+# time:3m30.05s
 Feature: Dkan Harvest
 
   @api @javascript @harvest_rollback
