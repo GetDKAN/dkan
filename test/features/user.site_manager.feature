@@ -39,6 +39,8 @@ Feature: User command center links for site manager role.
     Then I hover over the admin menu item "Visualization"
     And I click "Chart"
     Then I should see "Add Chart"
+
+  Scenario: Site manager role can view admin menu links under DKAN
     When I hover over the admin menu item "DKAN"
     And I click "Data Dashboards"
     Then I should see "Data Dashboards"
