@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/florida-bike-lanes/resource/960687d8-582c-4f29-b1e4-113781e58e3b",
         "id": "960687d8-582c-4f29-b1e4-113781e58e3b",
         "url": "files/resource/Bike_Lane.csv",
         "format": "csv",

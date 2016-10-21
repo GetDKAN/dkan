@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "story/london-income-analysis",
         "uuid": "71e0e549-4214-4297-8354-373b54468f57",
         "id": "35",
         "type": "dkan_data_story",
