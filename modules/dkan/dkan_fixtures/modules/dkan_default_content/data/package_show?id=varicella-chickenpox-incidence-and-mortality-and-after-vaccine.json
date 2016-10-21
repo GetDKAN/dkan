@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine",
         "id": "e1f2ebcd-ee23-454f-87b5-df0306658418",
         "name": "varicella-chickenpox-incidence-and-mortality-and-after-vaccine",
         "title": "Varicella (Chickenpox) Incidence and Mortality, Before and After the Vaccine",
