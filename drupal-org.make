@@ -232,7 +232,6 @@ projects:
       1090438: 'http://drupal.org/files/issues/og-add_users_and_entities_with_drush-1090438-12.patch'
       2549071: 'https://www.drupal.org/files/issues/og_actions-bug-vbo-delete.patch'
       2301831: 'https://www.drupal.org/files/issues/og-missing-permission-roles-2301831-1.patch'
-      2820913: 'https://www.drupal.org/files/issues/organic_groups-extra_permission_admin_pages_og_ui.patch'
   og_extras:
     version: '1.2'
   og_moderation:
