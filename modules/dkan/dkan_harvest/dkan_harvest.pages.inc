@@ -10,7 +10,7 @@
 function dkan_harvest_page_event_log($node) {
   // Set the table header.
   $header = array(
-    'mlid' => array('data' => t('Event ID'), 'field' => 'mlid'),
+    'mlid' => array('data' => t('Event ID'), 'field' => 'log.mlid'),
     'starttime' => array('data' => t('Date'), 'field' => 'starttime', 'sort' => 'desc'),
     'duration' => array('data' => t('Duration'), 'field' => 'duration'),
     'created' => array('data' => t('Created'), 'field' => 'created'),
