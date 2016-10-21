@@ -18,7 +18,7 @@ Acquia offers a "single-click" installation of DKAN. While this is labelled as a
 
 #### Maintaining a DKAN Site on Acquia
 
-Updates to DKAN are released frequently. Acquia will not push these updates to your instance automatically, but you can keep your codebase up-to-date using your own workflow, or following our general [Upgrade Instructions](/dkan-documentation/dkan-developers-guide/updating-and-maintaining-dkan).
+Updates to DKAN are released frequently. Acquia will not push these updates to your instance automatically, but you can keep your codebase up-to-date using your own workflow, or following our general [Upgrade Instructions](../development/maintaining.md).
 
 ### Pantheon
 
