@@ -46,7 +46,7 @@ dependencies:
      #- "dkan/test/sites/default"
   pre:
     - rm /opt/circleci/php/$(phpenv global)/etc/conf.d/xdebug.ini
-    - echo "memory_limit = 512M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
+    - echo "memory_limit = 256M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
     - echo "always_populate_raw_post_data = -1" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/deprecated.ini
   override:
     - printenv
