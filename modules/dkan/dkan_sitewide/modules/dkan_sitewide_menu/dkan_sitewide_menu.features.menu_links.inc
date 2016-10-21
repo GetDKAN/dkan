@@ -390,7 +390,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/dkan/harvest/dashboard',
     'router_path' => 'admin/dkan/harvest/dashboard',
-    'link_title' => 'Harvest Dashboard',
+    'link_title' => 'DKAN Harvest Dashboard',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -706,6 +706,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('DKAN Dataset API');
   t('DKAN Dataset Forms');
   t('DKAN Dataset Previews');
+  t('DKAN Harvest Dashboard');
   t('Data Dashboard');
   t('Data Dashboards');
   t('Data Story');
@@ -714,7 +715,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Featured Groups Sort Order');
   t('Fonts');
   t('Group');
-  t('Harvest Dashboard');
   t('Harvest Source');
   t('Manage Users');
   t('Menus');
