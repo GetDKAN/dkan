@@ -56,7 +56,7 @@ def behat_parse_params args
 end
 
 def behat_parse_suite file
-  default = "data_starter"
+  default = "dkan_starter"
 
   return default if  file.nil? or file.empty?
 

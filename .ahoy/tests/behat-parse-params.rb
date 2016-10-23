@@ -22,16 +22,16 @@ class TestBehatParseParams < MiniTest::Unit::TestCase
     actual = behat_parse_suite "config/tests/features/my.feature"
     assert_equal expected, actual
 
-    # returns data_starter for data_starter features or by default
-    expected = "data_starter"
+    # returns dkan_starter for dkan_starter features or by default
+    expected = "dkan_starter"
     actual = behat_parse_suite "/var/www/tests/features/my.feature"
     assert_equal expected, actual
 
-    expected = "data_starter"
+    expected = "dkan_starter"
     actual = behat_parse_suite "tests/features/my.feature"
     assert_equal expected, actual
 
-    expected = "data_starter"
+    expected = "dkan_starter"
     actual = behat_parse_suite nil 
     assert_equal expected, actual
   end
