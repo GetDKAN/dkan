@@ -4,7 +4,7 @@
 # Web node
 web:
   hostname: web
-  image: nuams/drupal-apache-php:1.0-5.5
+  image: nuams/drupal-apache-php:1.0-5.6
   environment:
     - VIRTUAL_HOST=dkan.docker
     #- VIRTUAL_PROTO=https
@@ -53,8 +53,8 @@ cli:
     # Project root folder mapping
     - *project_root
     # Host SSH keys mapping. Uncomment one of the lines below based on your setup.
-    - /.ssh:/.ssh   # boot2docker-vagrant
-    #- ~/.ssh:/.ssh  # Linux
+    # - /.ssh:/.ssh   # boot2docker-vagrant
+    - ~/.ssh:/.ssh  # Linux
   links:
     - db
     - web
@@ -92,6 +92,8 @@ browser:
   # This helps keep selenium-chrome from crashing because it uses shared memory.
   volumes:
     - /dev/shm:/dev/shm
+    # Project root folder mapping
+    - *project_root
   links:
     - web
   ports:
