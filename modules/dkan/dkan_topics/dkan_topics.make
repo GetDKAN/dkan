@@ -14,7 +14,7 @@ projects[taxonomy_menu][version] = 1.5
 projects[color_field][version] = 1.8
 projects[color_field][patch][2696505] = https://www.drupal.org/files/issues/color_field-requirements-2696505-v2.patch
 projects[entity_path][version] = 1.x-dev
-projects[entity_path][patch][2809655] = https://www.drupal.org/files/issues/entity-path-mysql-5-7_1.diff
+projects[entity_path][patch][2809655] = https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff
 projects[globalredirect][version] = 1.5
 
 ; Patches
