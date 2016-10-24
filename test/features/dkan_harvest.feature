@@ -1,4 +1,4 @@
-# time:8m19.05s
+# time:3m30.05s
 Feature: Dkan Harvest
 
   @api @javascript @harvest_rollback
@@ -108,7 +108,7 @@ Feature: Dkan Harvest
     And I click "Edit"
     And I press "Delete"
     Then I should see "Are you sure you want to delete Source one?"
-    When I select the radio button "Leave content published but mark as orphan." with the id "edit-dataset-op-2"
+    When I select the radio button "Leave content published." with the id "edit-dataset-op-2"
     And I press "Delete Sources"
     And I wait for the batch job to finish
     Then I should see "Harvest Source Source one has been deleted."

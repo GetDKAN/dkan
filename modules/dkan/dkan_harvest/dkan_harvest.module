@@ -955,7 +955,7 @@ function dkan_harvest_modify_delete_harvest_source_confirmation_form(&$form, $so
   $options = array(
     DELETE_CONTENT => t('Delete content.'),
     UNPUBLISH_CONTENT => t('Unpublish content.'),
-    ORPHAN_CONTENT => t('Leave content published but mark as orphan.')
+    ORPHAN_CONTENT => t('Leave content published.')
   );
   $form['dataset_op'] = array(
     '#type' => 'radios',
