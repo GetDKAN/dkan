@@ -41,6 +41,7 @@
  - Added DKAN Dataset module into DKAN Core.
  - Added DKAN Migrate Base module into DKAN Core.
  - Update DKAN workflow vbo customizations to not affect other vbo forms.
+ - Removed warning message when try edit resource without dataset.
 DKAN Dataset:
  - Upgrade Features to 7.x-2.9
  - Make date facet use "day" granularity.
