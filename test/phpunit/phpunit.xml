@@ -23,6 +23,8 @@
         <testsuite name="DKAN Datastore API Test Suite">
         </testsuite>
         <testsuite name="DKAN Migrate Base Test Suite">
+            <file>dkan_migrate_base/DeleteDuplicateDatasetsTest.php</file>
+            <file>dkan_migrate_base/DKANMigrateBaseTest.php</file>
         </testsuite>
     </testsuites>
 
