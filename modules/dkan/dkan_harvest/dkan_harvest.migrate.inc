@@ -1017,6 +1017,7 @@ class HarvestMigration extends MigrateDKAN {
     $resource_emw = entity_metadata_wrapper('node', $resource_node);
 
     $resource_emw->title = $res->title;
+    $resource_emw->body->format->set('html');
     $resource_emw->body->value->set($res->description);
 
     if (isset($res->format)) {
