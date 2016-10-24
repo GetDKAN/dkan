@@ -21,7 +21,7 @@ function dkan_harvest_path_breadcrumbs_settings_info() {
       1 => '%node:title',
     ),
     'paths' => array(
-      0 => 'Harvest Sources',
+      0 => 'admin/dkan/harvest/dashboard',
       1 => '<none>',
     ),
     'home' => 1,
