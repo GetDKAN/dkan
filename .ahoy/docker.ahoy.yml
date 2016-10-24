@@ -63,8 +63,13 @@ commands:
         # if the input is not empty, then don't use tty
         docker exec -i $id bash -c "$command $args"
       fi
-    usage: run a command in the docker-compose cli or in any other docker service container.
-
+    usage: run a command in the docker-compose cli service container.
+  mysql-url:
+    cmd: |
+      MYSQL=`docker exec -it $(ahoy docker compose ps -q cli) bash -c 'echo "mysql://$DB_1_ENV_MYSQL_USER:$DB_1_ENV_MYSQL_PASSWORD@$DB_1_PORT_3306_TCP_ADDR/$DB_1_ENV_MYSQL_DATABASE"'`
+      MYSQL="$(echo -e "${MYSQL}" | tr -d '[[:space:]]')"
+      echo "$MYSQL"
+    usage: Outputs a mysql-url
   mysql:
     cmd: "docker exec -it $(ahoy docker compose ps -q cli) bash -c 'mysql -uroot -p$DB_ENV_MYSQL_ROOT_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
     usage: Connect to the default mysql database as the root user.
