@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/crime-data-ten-most-populous-cities-us",
         "id": "d460252e-d42c-474a-9ea9-5287b1d595f6",
         "name": "crime-data-ten-most-populous-cities-us",
         "title": "Crime Data for the Ten Most Populous Cities in the U.S.",
