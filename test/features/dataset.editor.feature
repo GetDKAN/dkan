@@ -1,3 +1,4 @@
+# time:0m18.30s
 @api
 Feature: Dataset Features
   In order to realize a named business value
@@ -95,8 +96,3 @@ Background:
     When I press "Delete"
     And I press "Delete"
     Then I should see "Dataset Dataset 03 has been deleted"
-
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"

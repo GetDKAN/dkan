@@ -1,3 +1,4 @@
+# time:2m54.08s
 @api
 # in the resource tests, when it uses "Given resources:" it defines a property called 'datastore created' with either a 'yes' or 'no', which is used in some tests -  should I try to map that when creating the resource in resourceContext? @Frank
 Feature: Resource
@@ -162,8 +163,3 @@ Feature: Resource
     And I press "Revert"
     Then I should see "Resource 02"
     And I should not see "Resource 02 edited"
-
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"

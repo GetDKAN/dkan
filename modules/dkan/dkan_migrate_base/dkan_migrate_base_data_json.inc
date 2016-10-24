@@ -514,27 +514,28 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
   }
 
   /**
-   * Implements prepareRow.
+   * Implements prepare.
    */
-  public function prepare(&$entity, $row) {
+  public function prepare($node, $row) {
+    parent::prepare($node, $row);
     global $user;
     // Remove empy additional fields.
-    if (isset($entity->field_additional_info['und'][0]) && $entity->field_additional_info['und'][0]['first'] == NULL) {
-      unset($entity->field_additional_info);
+    if (isset($node->field_additional_info['und'][0]) && $node->field_additional_info['und'][0]['first'] == NULL) {
+      unset($node->field_additional_info);
     }
-    if (isset($entity->field_temporal_coverage['und'][0]['value'])) {
-      $entity->field_temporal_coverage['und'][0]['timezone'] = 'UTC';
+    if (isset($node->field_temporal_coverage['und'][0]['value'])) {
+      $node->field_temporal_coverage['und'][0]['timezone'] = 'UTC';
     }
-    $entity->status = 1;
-    $entity->vid = isset($entity->vid) ? $entity->vid : '';
+    $node->status = 1;
+    $node->vid = isset($node->vid) ? $node->vid : '';
 
     // If the migration is running under a user that doesn't belong
     // to a specific group, the same user can't create og references.
     // This solves it by attaching field_mode admin to the ref field
-    if (isset($entity->nid) && (int) $user->uid == 0) {
-      if (!empty($entity->og_group_ref[LANGUAGE_NONE])) {
-        foreach($entity->og_group_ref[LANGUAGE_NONE] as $delta => $value) {
-          $entity->og_group_ref[LANGUAGE_NONE][$delta]['field_mode'] = 'admin';
+    if (isset($node->nid) && (int) $user->uid == 0) {
+      if (!empty($node->og_group_ref[LANGUAGE_NONE])) {
+        foreach($node->og_group_ref[LANGUAGE_NONE] as $delta => $value) {
+          $node->og_group_ref[LANGUAGE_NONE][$delta]['field_mode'] = 'admin';
         }
       }
     }

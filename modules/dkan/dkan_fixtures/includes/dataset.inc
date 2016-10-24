@@ -18,6 +18,7 @@ class DkanDatasetImport extends MigrateCkanDatasetBase {
     }
 
     $this->addFieldMapping('field_topic', 'topic_names');
+    $this->addFieldMapping('path', 'path');
   }
 
   /**
@@ -70,7 +71,7 @@ class DkanDatasetImport extends MigrateCkanDatasetBase {
    */
   public function prepare($node, $row) {
     parent::prepare($node, $row);
-
+    $node->path['pathauto'] = FALSE;
     if (!$row->field_additional_info) {
       $node->field_additional_info = array();
     }

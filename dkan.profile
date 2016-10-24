@@ -48,6 +48,7 @@ function dkan_additional_setup() {
       array('dkan_set_adminrole', array()),
       array('dkan_set_roleassign_roles', array()),
       array('dkan_set_bueditor_excludes', array()),
+      array('dkan_post_install', array()),
     ),
   );
 }
@@ -116,7 +117,6 @@ function dkan_enable_optional_module($module, &$context) {
 function dkan_revert_feature($feature, $components, &$context) {
   $context['message'] = t('Reverting feature %feature_name', array('%feature_name' => $feature));
   features_revert(array($feature => $components));
-  cache_clear_all();
 }
 
 
@@ -227,7 +227,6 @@ function dkan_build_menu_links(&$context) {
   $menu_links = features_get_default('menu_links', 'dkan_sitewide_menu');
   menu_links_features_rebuild_ordered($menu_links, TRUE);
   unset($_SESSION['messages']['warning']);
-  cache_clear_all();
  }
 
 /**
@@ -237,7 +236,6 @@ function dkan_build_menu_links(&$context) {
  */
 function dkan_flush_image_styles(&$context) {
   $context['message'] = t('Flushing image styles');
-  cache_clear_all();
   $image_styles = image_styles();
   foreach ( $image_styles as $image_style ) {
     image_style_flush($image_style);
@@ -392,7 +390,6 @@ function dkan_set_roleassign_roles(&$context) {
  */
 function dkan_bueditor_markdown_install() {
   module_enable(array('bueditor_plus'));
-  cache_clear_all();
 
   $context = array();
   dkan_set_roleassign_roles($context);
@@ -505,6 +502,9 @@ edit-menu-description
     ))
     ->condition('eid', '5')
     ->execute();
+}
 
-  drupal_flush_all_caches();
+function dkan_post_install() {
+  variable_set('preprocess_css', 1);
+  variable_set('preprocess_js', 1);
 }

@@ -1,3 +1,4 @@
+# time:0m28.91s
 @api
 Feature: Datastore
   In order to know the datastore is working

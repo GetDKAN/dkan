@@ -1,3 +1,4 @@
+# time:0m25.25s
 @api
 Feature: User command center links for editor role.
 

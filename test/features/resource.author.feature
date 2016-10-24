@@ -1,3 +1,4 @@
+# time:4m30.30s
 @api
 Feature: Resource
 
@@ -272,11 +273,6 @@ Feature: Resource
     Then I should see "Resource Resource 02 edited has been updated"
     When I click "Revisions"
     Then I should see "by Katie"
-
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"
 
   # @todo Add test for URL w/o .csv
   # We need to edit and save to trigger auto type discover
