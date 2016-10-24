@@ -4,7 +4,12 @@ commands:
   drupal-rebuild:
     usage: 'Builds a drupal site in ./docroot. Requires database url.'
     cmd: |
-      if [[ "{{args}}" != mysql* ]]; then
+      if [ "$AHOY_CMD_PROXY" != "DOCKER" ]; then
+        ARGS="{{args}}"
+      else
+        ARGS=`ahoy docker mysql-url`
+      fi
+      if [[ "$ARGS" != mysql* ]]; then
           echo "You need to specify the drupal db url to use in the form mysql://root:root@localhost/db as an argument."
           exit 1
       fi
@@ -14,9 +19,7 @@ commands:
           ahoy confirm "./docroot folder alredy exists. Delete it and reinstall drupal?" && chmod -R 777 docroot/sites/default && rm -rf docroot ||
           { echo ".. skipping installation"; exit 1;}
       fi
-      ahoy drush make --concurrency=8 --prepare-install dkan/drupal-org-core.make docroot --yes
-      ln -s ../../dkan docroot/profiles/dkan &&
-      ahoy drush "-y --verbose si minimal --sites-subdir=default --account-pass='admin' --db-url={{args}} install_configure_form.update_status_module=\"'array\(FALSE,FALSE\)'\""
+      ahoy cmd-proxy bash dkan/.ahoy/.scripts/drupal-rebuild.sh $ARGS
 
   remake:
     usage: Rebuild all the dkan projects from the drupal-org.make file using drush make.
@@ -25,9 +28,6 @@ commands:
     cmd: |
       ARGS="{{args}}"
       if [ -z "$ARGS" ]; then
-        rm -rf docroot/profiles/dkan/modules/dkan/dkan_dataset ;
-        rm -rf docroot/profiles/dkan/modules/dkan/dkan_datastore ;
-        rm -rf docroot/profiles/dkan/modules/dkan/dkan_workflow ;
         rm -rf docroot/profiles/dkan/modules/contrib ;
         ARGS=''
         echo "removed dkan/modules folders created by make and running a fresh drush make."
@@ -35,7 +35,7 @@ commands:
         ARGS="--projects=$ARGS"
         echo "Running drush make for the following modules: $ARGS."
       fi
-      ahoy drush -y make --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --working-copy docroot/profiles/dkan $ARGS
+      ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkan-make.sh "$ARGS"
 
   reinstall:
     usage: Reinstall the dkan install profile (db only).
@@ -49,11 +49,15 @@ commands:
         ahoy dkan sqlc <  backups/last_install.sql && \
         echo "Installed dkan from backup"
       else
-        ahoy drush "si dkan --verbose --account-pass='admin' --site-name='DKAN' install_configure_form.update_status_module=\"\'array\(FALSE,FALSE\)\'\" --yes" && \
-        ahoy drush sql-dump > backups/last_install.sql.tmp && \
-        mv backups/last_install.sql.tmp backups/last_install.sql && \
-        echo "Installed DKAN and created a new backup at backups/last_install.sql"
+        if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
+          MYSQL=`ahoy docker mysql-url`
+          MYSQL="--db-url=$MYSQL"
+        else
+          MYSQL=''
+        fi
+        ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkan-si.sh $MYSQL
       fi
+
   module-fetch:
     usage: Checkout a dkan module from the NuCivic github repo.
     cmd: |

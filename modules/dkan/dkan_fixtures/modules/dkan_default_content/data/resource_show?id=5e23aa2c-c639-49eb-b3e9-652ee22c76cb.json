@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/us-tobacco-usage-statistics/resource/5e23aa2c-c639-49eb-b3e9-652ee22c76cb",
         "id": "5e23aa2c-c639-49eb-b3e9-652ee22c76cb",
         "url": "files/resource/TobaccoTaxes2016_2_1.csv",
         "description": "<p>Source: The Campaign for Tobacco-Free Kids, April 2016: <a href=\"https://www.tobaccofreekids.org/research/factsheets/pdf/0097.pdf\">https://www.tobaccofreekids.org/research/factsheets/pdf/0097.pdf</a></p>\n",

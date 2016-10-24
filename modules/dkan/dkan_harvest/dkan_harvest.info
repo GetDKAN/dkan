@@ -34,6 +34,7 @@ features[field_base][] = field_dkan_harvest_source_uri
 features[field_base][] = field_notes
 features[field_base][] = field_orphan
 features[field_instance][] = node-dataset-field_orphan
+features[field_instance][] = node-resource-field_orphan
 features[field_instance][] = node-harvest_source-field_dkan_harveset_type
 features[field_instance][] = node-harvest_source-field_dkan_harvest_defaults
 features[field_instance][] = node-harvest_source-field_dkan_harvest_excludes

@@ -18,6 +18,10 @@ machine:
     # For xvfb / selenium setup (not sure why)
     #DISPLAY: ':99.0'
     DATABASE_URL: mysql://ubuntu:@127.0.0.1:3306/circle_test
+    # Timeouts issues happen when selenium tries to spawn a new chrome 
+    # instance. I've nail that down to this selenium issue 
+    # https://github.com/SeleniumHQ/docker-selenium/issues/87
+    DBUS_SESSION_BUS_ADDRESS: /dev/null
 ## Customize checkout
 ## Note: Only post is supported.
 checkout:
@@ -69,6 +73,7 @@ dependencies:
 test:
   override:
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
+        timeout: 1200
         parallel: true
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
