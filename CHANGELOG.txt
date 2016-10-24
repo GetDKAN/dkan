@@ -22,18 +22,11 @@
  - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
  - Removed field mapping warnings during import of default content.
  - Removed conditional_fields from dkan_topics.
- - Fix bugs in resource mimetypes and previews.
- - Added DKAN Harvest module into DKAN Core.
- - Added DKAN Datastore module into DKAN Core.
- - Added DKAN Dataset module into DKAN Core.
- - Added DKAN Migrate Base module into DKAN Core.
- - Update DKAN workflow vbo customizations to not affect other vbo forms.
- - Removed warning message when try edit resource without dataset.
-DKAN Dataset:
  - Upgrade Features to 7.x-2.9
  - Make date facet use "day" granularity.
  - Remove ARC2 library.
  - Disable pathauto for content created using dkan_fixtures.
+ - Removed warning message when try edit resource without dataset.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
