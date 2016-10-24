@@ -12,7 +12,6 @@ Feature: User command center links for site manager role.
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
 
-
   Scenario: Site manager role can view admin menu links under Add Content
     Given I am logged in as "John"
     When I click "Add content" in the "admin menu" region
@@ -41,23 +40,26 @@ Feature: User command center links for site manager role.
     Then I should see "Add Chart"
 
   Scenario: Site manager role can view admin menu links under DKAN
+    Given I am logged in as "John"
+    When I click "DKAN" in the "admin menu" region
+    Then I should see "DKAN"
     When I hover over the admin menu item "DKAN"
-    And I click "Data Dashboards"
+    And I click "Data Dashboards" in the "admin menu" region
     Then I should see "Data Dashboards"
     When I hover over the admin menu item "DKAN"
-    And I click "DKAN Dataset Forms"
+    And I click "DKAN Dataset Forms" in the "admin menu" region
     Then I should see "DKAN Dataset Forms"
     When I hover over the admin menu item "DKAN"
-    And I click "DKAN Dataset Previews"
+    And I click "DKAN Dataset Previews" in the "admin menu" region
     Then I should see "DKAN Dataset Previews"
     When I hover over the admin menu item "DKAN"
-    And I click "DKAN Harvest Dashboard"
+    And I click "DKAN Harvest Dashboard" in the "admin menu" region
     Then I should see "DKAN Harvest Dashboard"
     When I hover over the admin menu item "DKAN"
-    And I click "Featured Groups Sort Order"
+    And I click "Featured Groups Sort Order" in the "admin menu" region
     Then I should see "Featured Groups Sort Order"
     When I hover over the admin menu item "DKAN"
-    And I click "Recline Configuration"
+    And I click "Recline Configuration" in the "admin menu" region
     Then I should see "Recline Configuration"
 
   Scenario: Site manager role can view admin menu link Content
@@ -86,6 +88,7 @@ Feature: User command center links for site manager role.
 
   Scenario: Site manager role can view admin menu links under Site Configuration
     Given I am logged in as "John"
+    Then I should see "Topics"
     When I hover over the admin menu item "Site Configuration"
     And I click "Fonts"
     Then I should see "No fonts enabled yet, please enable some fonts first."
@@ -96,6 +99,7 @@ Feature: User command center links for site manager role.
     Then I hover over the admin menu item "Taxonomy"
     And I click "Format"
     Then I should see "Format"
+    And I wait for "Site Configuration"
     When I hover over the admin menu item "Site Configuration"
     Then I hover over the admin menu item "Taxonomy"
     And I click "Tags"
