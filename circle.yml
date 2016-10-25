@@ -75,8 +75,7 @@ test:
     #- ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
     #    timeout: 1200
     #    parallel: true
-    - cd $HOME/dkan/dkan/test
-    - composer install
+    - cd $HOME/dkan/dkan/test && composer install
     - 'ahoy drush en -y dkan_migrate_base_example'
     - 'ahoy drush -y en dkan_harvest_test'
     - 'ahoy drush -y dis dkan_default_content'
