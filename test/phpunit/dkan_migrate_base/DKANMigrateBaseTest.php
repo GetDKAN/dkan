@@ -321,7 +321,7 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
       })[0];
       $expected['title'] = 'Gross Rent over time';
       $expected['modified'] = '2014-06-24';
-      $this->nodeAssert($expect, $dataset);
+      $this->nodeAssert($expected, (array)$dataset);
     }
 
     public function testDataJsonHighwater() {
