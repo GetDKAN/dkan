@@ -27,6 +27,7 @@
  - Remove ARC2 library.
  - Disable pathauto for content created using dkan_fixtures.
  - Removed warning message when try edit resource without dataset.
+ - Added PHP Unit tests configurations to make them run on DKAN.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
