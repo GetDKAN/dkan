@@ -2,6 +2,9 @@
          backupStaticAttributes="false"
          syntaxCheck="false"
          bootstrap="boot.php"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
          colors="true">
     <testsuites>
         <testsuite name="DKAN Harvest Test Suite">
