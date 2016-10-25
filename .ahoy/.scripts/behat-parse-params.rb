@@ -51,7 +51,11 @@ def behat_parse_params args
       params.push param
     end
   end
-  params.unshift '--colors'
+
+  unless params.include? '--no-colors'
+    params.unshift '--colors'
+  end
+
   {:files => files, :params => params}
 end
 
