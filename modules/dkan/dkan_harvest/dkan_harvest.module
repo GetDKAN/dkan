@@ -761,7 +761,7 @@ function dkan_harvest_form_alter(&$form, &$form_state, $form_id) {
     //Show a warning message if is a harvested content.
     $node = $form['#node'];
 
-    if ($form_id == 'resource_node_form' && isset($node->field_dataset_ref)) {
+    if ($form_id == 'resource_node_form' && isset($node->field_dataset_ref[LANGUAGE_NONE][0]['target_id'])) {
       $node = node_load($node->field_dataset_ref[LANGUAGE_NONE][0]['target_id']);
     }
 
