@@ -148,7 +148,9 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
       ->entityCondition('bundle', 'harvest_source')
       ->fieldCondition('field_dkan_harvest_machine_name', 'machine', 'test_harvest_source_construct');
     $result = $query->execute();
-    node_delete_multiple(array_keys($result['node']));
+    if ($result && isset($result['node'])) {
+      node_delete_multiple(array_keys($result['node']));
+    }
   }
 
   /**
