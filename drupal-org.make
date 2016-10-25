@@ -345,7 +345,9 @@ projects:
   workbench:
     version: '1.2'
   workbench_email:
-    version: '3.11'
+    version: '3.9'
+    patch:
+      2391233: 'https://www.drupal.org/files/issues/workbench_email-2391233-3.patch'
   workbench_moderation:
     branch: 7.x-1.x
     revision: 2c91211
