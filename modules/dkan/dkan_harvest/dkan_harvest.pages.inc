@@ -185,7 +185,7 @@ function dkan_harvest_page_error_log($node) {
     $collapsible_item_offset = 0;
     // We can use the mlid key as the bases of the sorting. The bigger the mlid
     // the more recent the harvest migrate event. Preserve the key.
-    $collapsible_items = array_reverse($collapsible_items, FALSE);
+    $collapsible_items = array_reverse($collapsible_items, TRUE);
     foreach ($collapsible_items as $collapsible_item_mlid => $collapsible_item) {
       $collapsible_inner_table = array(
         '#attached' => array(
