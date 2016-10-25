@@ -54,9 +54,10 @@ DKAN Dataset:
  - Added new option on DKAN Dataset Forms to enable Groups field validation on Dataset form.
  - Fixes to groups UX: Group body field now labeled "Description," longer group descriptions do not get cut off after 200 characters on group page, and extraneous "about" tab on Group node edit form removed
  - Add new "modified date" field, hidden in form, to datasets. This is for dkan_harvest compatibility; saves sources dates into a separate field so they aren't affected by node changes. ODSM mappings also updated.
+ - Fix keywords/tags creating broken links when containing spaces, and add missing keywords to default content.
 
 
-7.x-1.12.x
+7.x-1.12.11
 --------------------------
 - Center group images in "Groups" page and group node page sidebar
 - Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
