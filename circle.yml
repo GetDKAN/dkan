@@ -1,8 +1,8 @@
 ## Customize the test machine
 machine:
 
-  #timezone:
-  #  America/New_York # Set the timezone
+  timezone:
+    America/New_York
 
   # Version of ruby to use
   php:
@@ -75,6 +75,11 @@ test:
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         timeout: 1200
         parallel: true
+    - 'ahoy drush en -y dkan_migrate_base_example'
+    - 'ahoy drush -y en dkan_harvest_test'
+    - 'ahoy drush -y dis dkan_default_content'
+    - 'ahoy drush -y pm-uninstall dkan_default_content'
+    - $HOME/dkan/dkan/test/bin/phpunit --configuration $HOME/dkan/dkan/test/phpunit
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true
