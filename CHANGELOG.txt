@@ -27,6 +27,7 @@
  - Remove ARC2 library.
  - Disable pathauto for content created using dkan_fixtures.
  - Removed warning message when try edit resource without dataset.
+ - Added hook_uninstall to federal extra module for remove fields after uninstall module.
  - Removed redundant definition for CKAN package_list endpoint from open_data_schema_map_dkan, allowing that feature to be in default state after install.
  - Update ctools to version 1.10, which fixes some PHP7 incompatibilities
 DKAN Datastore:
