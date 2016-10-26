@@ -63,4 +63,6 @@ function open_data_federal_extras_uninstall() {
       field_delete_field($field); 
     };
   }
+
+  menu_cache_clear_all();
 }
