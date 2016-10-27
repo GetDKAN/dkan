@@ -55,6 +55,7 @@ dependencies[] = jquery_update
 dependencies[] = job_scheduler
 dependencies[] = markdowneditor
 dependencies[] = markdown
+dependencies[] = menu_admin_per_menu
 dependencies[] = media
 dependencies[] = media_vimeo
 dependencies[] = media_youtube
