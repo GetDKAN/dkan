@@ -88,7 +88,6 @@ Feature: User command center links for site manager role.
 
   Scenario: Site manager role can view admin menu links under Site Configuration
     Given I am logged in as "John"
-    Then I should see "Topics"
     When I hover over the admin menu item "Site Configuration"
     And I click "Fonts"
     Then I should see "No fonts enabled yet, please enable some fonts first."
