@@ -271,11 +271,34 @@ function dkan_harvest_harvest_now_form($form, &$form_state, $node) {
 }
 
 function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
-  $harvestSource = HarvestSource::getHarvestSourceFromNode($form['#node']);
+
+  // Build array of batch operations.
+  $batch_operations = array();
+  $batch_operations[] = array('dkan_harvest_perform_harvest', array($form['#node']));
+
+  // Setup batch process.
+  $batch = array(
+    'operations' => $batch_operations,
+    'title' => t('Migrating content from ') . $form['#node']->title . '... ',
+    'init_message' => t('Processed 0%.') . '<br/><br/>&nbsp;'.
+      t('A full Harvest may take several minutes, depending on
+      how many items your source contains. If your harvest times out, start it
+      again as needed until it completes successfully. For more reliable harvests,
+      use built-in drush commands in the terminal or set up a cron job.
+      See the DKAN Harvest documentation for more information.'),
+    'progress_message' => t('Processed @percentage.'),
+    'error_message' => t('An error ocurred during the migration.'),
+  );
+  batch_set($batch);
+
+  $form_state['redirect'] = 'admin/dkan/harvest/dashboard';
+}
+
+function dkan_harvest_perform_harvest($node, &$context) {
+  $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
   dkan_harvest_cache_sources(array($harvestSource));
   dkan_harvest_migrate_sources(array($harvestSource));
   dkan_harvest_message_cleanup();
-  $form_state['redirect'] = 'admin/dkan/harvest/dashboard';
 }
 
 /**
