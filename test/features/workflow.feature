@@ -516,3 +516,24 @@ Feature:
     Then I should see "The changes have been saved"
     When I am on "Users" page
     Then I should see "Workflow Contributor" in the "content-creator" row
+
+  @api @ahoyRunMe @javascript
+  Scenario: Role pairings should also work for site managers.
+    Given users:
+      | name            | roles                             |
+      | site-manager    | Workflow Supervisor, site manager |
+
+    Given I am logged in as "site-manager"
+    And I visit the "Create User" page
+    Then the checkbox "editor" should not be checked
+    When I fill in "Username" with "Moderator RolePairing"
+    And I fill in "E-mail address" with "pairing2@test.com"
+    And I fill in "Password" with "password"
+    And I fill in "Confirm password" with "password"
+    And I check the box "Workflow Moderator"
+    Then the checkbox "editor" should be checked
+    When I press "Create new account"
+    Then I should see "Created a new user account for Moderator RolePairing"
+    When I click "Moderator RolePairing"
+    And I click "Edit"
+    Then the checkbox "editor" should be checked
