@@ -45,3 +45,24 @@ function open_data_federal_extras_update_7002() {
           SET field_odfe_bureau_code_value = REPLACE(field_odfe_bureau_code_value, '-', ':')";
   $result = db_query($sql);
 }
+
+/**
+ * Delete fields when uninstall module.
+ */
+function open_data_federal_extras_uninstall() {
+  $fields = array(
+    'field_odfe_bureau_code',
+    'field_odfe_data_quality',
+    'field_odfe_investment_ui',
+    'field_odfe_program_code',
+    'field_odfe_system_of_records',
+    'field_odfe_investment_uii'
+  );
+  foreach( $fields as $field) {
+    if (field_info_field($field)) { 
+      field_delete_field($field); 
+    };
+  }
+
+  menu_cache_clear_all();
+}
