@@ -14,7 +14,6 @@ features[features_api][] = api:2
 features[open_data_schema_apis][] = ckan_current_package_list_with_resources
 features[open_data_schema_apis][] = ckan_group_list
 features[open_data_schema_apis][] = ckan_group_package_show
-features[open_data_schema_apis][] = ckan_package_list
 features[open_data_schema_apis][] = ckan_package_show
 features[open_data_schema_apis][] = ckan_resource_show
 features[open_data_schema_apis][] = data_json
