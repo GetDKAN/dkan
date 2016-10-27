@@ -12,6 +12,7 @@ function dkan_harvest_page_event_log($node) {
   $header = array(
     'mlid' => array('data' => t('Event ID'), 'field' => 'log.mlid'),
     'starttime' => array('data' => t('Date'), 'field' => 'starttime', 'sort' => 'desc'),
+    'status' => array('data' => t('Status'), 'field' => 'failed'),
     'duration' => array('data' => t('Duration'), 'field' => 'duration'),
     'created' => array('data' => t('Created'), 'field' => 'created'),
     'updated' => array('data' => t('Updated'), 'field' => 'updated'),
@@ -20,6 +21,8 @@ function dkan_harvest_page_event_log($node) {
     'unchanged' => array('data' =>t('Unchanged'), 'field' => 'unchanged'),
   );
 
+  $status_text = array(0 => t('OK'), 1 => l(t('ERROR'), 'node/' . $node->nid . '/harvest-errors', array('attributes' => array('alt' => 'Error'))));
+  $status_class = array(0 => 'alert-success', 1 => t('alert-danger'));
   $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
   $harvestSourceMigration = dkan_harvest_get_migration($harvestSource);
   $logTable = $harvestSourceMigration->getMap()->getLogTable();
@@ -67,6 +70,7 @@ function dkan_harvest_page_event_log($node) {
         'data' => array(
           'mlid' => $result->mlid,
           'date' => format_date(timefloor($result->starttime)),
+          'status' => array('data' => $status_text[$result->failed], 'class' => array($status_class[$result->failed])),
           'duration' => format_interval(timefloor($result->duration), 2),
           'created' => $result->created,
           'updated' => $result->updated,
