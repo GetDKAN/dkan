@@ -40,6 +40,8 @@ DKAN Harvest:
  - Fix dkan harvest feature overridden after install.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
+ - Removed row from migration map table when a dataset is deleted.
+ - Added Batch API on 'Harvest now' action.
 DKAN Workflow:
  - Update DKAN workflow vbo customizations to not affect other vbo forms.
 DKAN Dataset:

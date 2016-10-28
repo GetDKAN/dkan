@@ -4,6 +4,9 @@
  * Drupal needs this blank file.
  */
 
+/**
+ * Implements hook_permission.
+ */
 function dkan_sitewide_menu_permission() {
   return array(
     'administer DKAN configuration' => array(
