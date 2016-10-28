@@ -725,6 +725,18 @@ function dkan_harvest_node_delete($node) {
     $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
     dkan_harvest_deregister_sources(array($harvest_source));
   }
+
+  if ($node->type == 'dataset') {
+    // Delete the associated row from the migration map table.
+    $dataset_wrapper = entity_metadata_wrapper('node', $node);
+    $harvest_source_node = $dataset_wrapper->field_harvest_source_ref->value();
+    if ($harvest_source_node) {
+      $harvest_source = HarvestSource::getHarvestSourceFromNode($harvest_source_node);
+      $harvest_migration = $harvest_source->getMigration();
+      $migration_map_table = $harvest_migration->getMap();
+      $migration_map_table->deleteDestination(array($dataset_wrapper->getIdentifier()));
+    }
+  }
 }
 
 /**
