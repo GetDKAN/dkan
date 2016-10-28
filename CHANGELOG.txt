@@ -59,7 +59,7 @@ DKAN Dataset:
  - Fixes to groups UX: Group body field now labeled "Description," longer group descriptions do not get cut off after 200 characters on group page, and extraneous "about" tab on Group node edit form removed
  - Add new "modified date" field, hidden in form, to datasets. This is for dkan_harvest compatibility; saves sources dates into a separate field so they aren't affected by node changes. ODSM mappings also updated.
  - Fix keywords/tags creating broken links when containing spaces, and add missing keywords to default content.
-
+ - Fix ODSM permissions for non-admin roles.
 
 7.x-1.12.11
 --------------------------
