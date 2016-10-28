@@ -14,4 +14,12 @@ function dkan_sitewide_menu_permission() {
       'description' => t('Perform administration tasks for DKAN.'),
     ),
   );
+} 
+
+/**
+ * Implements hook_menu_alter.
+ * Allow site managers access to colorizer form.
+ */
+function dkan_sitewide_menu_menu_alter(&$items) {
+  $items['admin/appearance/colorizer']['access arguments'] = array('administer DKAN configuration');
 }
