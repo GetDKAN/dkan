@@ -38,6 +38,7 @@ DKAN Harvest:
  - Added UI to add harvest sources
  - Added UI to manage harvest sources and datasets
  - Fix dkan harvest feature overridden after install.
+ - Removed row from migration map table when a dataset is deleted.
 DKAN Migrate Base
  - Added DKAN Migrate Base module into DKAN Core.
 DKAN Workflow:
