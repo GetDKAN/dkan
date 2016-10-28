@@ -484,6 +484,9 @@ Feature:
   Scenario: When administering users, role pairings with core roles should be enforced
     Given I am logged in as a user with the "administrator" role
     And I visit the "Create User" page
+    # Needed because honeypot module give error when filling out the register form
+    # too quickly, so we need to add a wait.
+    And I wait for "6" seconds
     Then the checkbox "content creator" should not be checked
     When I fill in "Username" with "Contributor RolePairing"
     And I fill in "E-mail address" with "pairing@test.com"
@@ -525,6 +528,9 @@ Feature:
 
     Given I am logged in as "site-manager"
     And I visit the "Create User" page
+    # Needed because honeypot module give error when filling out the register form
+    # too quickly, so we need to add a wait.
+    And I wait for "6" seconds
     Then the checkbox "editor" should not be checked
     When I fill in "Username" with "Moderator RolePairing"
     And I fill in "E-mail address" with "pairing2@test.com"
