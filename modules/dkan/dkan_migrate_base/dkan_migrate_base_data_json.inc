@@ -517,7 +517,6 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
    * Implements prepare.
    */
   public function prepare($node, $row) {
-    parent::prepare($node, $row);
     global $user;
     // Remove empy additional fields.
     if (isset($node->field_additional_info['und'][0]) && $node->field_additional_info['und'][0]['first'] == NULL) {
