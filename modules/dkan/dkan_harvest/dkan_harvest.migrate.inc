@@ -481,7 +481,7 @@ class HarvestMigration extends MigrateDKAN {
     // Show and add an error to the message table.
     if ($this->sourceCount() == 0) {
       $message = t('Items to import is 0. Looks like source is missing. All the'
-        . 'content previously harvested will be unpublished.');
+        . ' content previously harvested will be unpublished.');
       self::displayMessage($message, 'error');
       $this->saveMessage($message);
     }
