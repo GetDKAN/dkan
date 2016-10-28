@@ -31,4 +31,4 @@ commands:
       eval $(ahoy parse config/config.yml)
       ahoy utils truncate-watchdog
       ahoy cmd-proxy bash hooks/common/post-code-deploy/drush-env-switch.sh $name local
-      ahoy drush user-password 1 --password=$private-probo-password
+      ahoy drush user-password 1 --password=$private_probo_password
