@@ -265,6 +265,7 @@ function dkan_permissions_default_roles_permissions() {
       'administer themes' => TRUE,
       'administer url aliases' => TRUE,
       'administer users' => TRUE,
+      'administer open data schema mapper' => TRUE,
       'assign roles' => TRUE,
       'bypass file access' => TRUE,
       'bypass node access' => TRUE,
