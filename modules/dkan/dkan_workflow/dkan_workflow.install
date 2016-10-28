@@ -56,7 +56,9 @@ function dkan_workflow_enable() {
   $add_roles = array('Workflow Contributor', 'Workflow Moderator', 'Workflow Supervisor');
 
   foreach($add_roles as $role) {
-    $roleassign_roles[$roles_rids[$role]] = (string) $roles_rids[$role];
+    if(isset($roles_rids[$role])) {
+      $roleassign_roles[$roles_rids[$role]] = (string) $roles_rids[$role];
+    } 
   }
 
   variable_set('roleassign_roles', $roleassign_roles);
