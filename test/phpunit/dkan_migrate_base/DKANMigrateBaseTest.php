@@ -31,12 +31,15 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
       // Change /data.json path to /json during tests.
       $data_json = open_data_schema_map_api_load($api);
       $data_json->endpoint = $name;
-      drupal_write_record('open_data_schema_map', $data_json, 'id');
+      $result = drupal_write_record('open_data_schema_map', $data_json, 'id');
+      if ($result != SAVED_UPDATED) {
+        throw new \Exception('There was an error updating the endpoint.');
+      }
       drupal_static_reset('open_data_schema_map_api_load_all');
       menu_rebuild();
     }
     
-	  public function createDummyGroup() {
+	public function createDummyGroup() {
       $nodes = $this->getNodeByTitle('Health', TRUE);
       if($nodes) {
         node_delete_multiple(array_keys($nodes));
@@ -318,7 +321,7 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
       })[0];
       $expected['title'] = 'Gross Rent over time';
       $expected['modified'] = '2014-06-24';
-      $this->nodeAssert($expect, $dataset);
+      $this->nodeAssert($expected, (array)$dataset);
     }
 
     public function testDataJsonHighwater() {
