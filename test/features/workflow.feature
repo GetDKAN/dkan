@@ -484,6 +484,9 @@ Feature:
   Scenario: When administering users, role pairings with core roles should be enforced
     Given I am logged in as a user with the "administrator" role
     And I visit the "Create User" page
+    # Needed because honeypot module give error when filling out the register form
+    # too quickly, so we need to add a wait.
+    And I wait for "6" seconds
     Then the checkbox "content creator" should not be checked
     When I fill in "Username" with "Contributor RolePairing"
     And I fill in "E-mail address" with "pairing@test.com"
@@ -516,3 +519,27 @@ Feature:
     Then I should see "The changes have been saved"
     When I am on "Users" page
     Then I should see "Workflow Contributor" in the "content-creator" row
+
+  @api @ahoyRunMe @javascript
+  Scenario: Role pairings should also work for site managers.
+    Given users:
+      | name            | roles                             |
+      | site-manager    | Workflow Supervisor, site manager |
+
+    Given I am logged in as "site-manager"
+    And I visit the "Create User" page
+    # Needed because honeypot module give error when filling out the register form
+    # too quickly, so we need to add a wait.
+    And I wait for "6" seconds
+    Then the checkbox "editor" should not be checked
+    When I fill in "Username" with "Moderator RolePairing"
+    And I fill in "E-mail address" with "pairing2@test.com"
+    And I fill in "Password" with "password"
+    And I fill in "Confirm password" with "password"
+    And I check the box "Workflow Moderator"
+    Then the checkbox "editor" should be checked
+    When I press "Create new account"
+    Then I should see "Created a new user account for Moderator RolePairing"
+    When I click "Moderator RolePairing"
+    And I click "Edit"
+    Then the checkbox "editor" should be checked
