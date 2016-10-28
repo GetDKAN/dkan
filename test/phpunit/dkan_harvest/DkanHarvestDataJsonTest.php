@@ -61,7 +61,6 @@ class DkanHarvestDataJsonTest extends PHPUnit_Framework_TestCase {
    * Test Harvest Source.
    */
   public static function getTestSource() {
-    return new HarvestSourceDataJsonStub(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/dkan_harvest_datajson_test.json");
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test.json');
   }
 }

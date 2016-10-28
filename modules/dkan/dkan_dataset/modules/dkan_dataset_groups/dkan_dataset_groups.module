@@ -274,3 +274,26 @@ function dkan_dataset_groups_node_validate($node, $form, &$form_state) {
     }
   }
 }
+
+/**
+ * Implements hook_permission().
+ */
+function dkan_dataset_groups_permission() {
+  return array(
+    'administer og ui pages' =>  array(
+      'title' => t('Administer Organic groups ui pages'),
+      'description' => t('Access admin pages for Organic Groups ui.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_dataset_groups_menu_alter(&$items) {
+  $items['admin/config/group']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/settings']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/permissions']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/roles']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/fields']['access arguments'] = array('administer og ui pages');
+}
