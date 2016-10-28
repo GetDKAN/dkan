@@ -28,6 +28,9 @@
  - Disable pathauto for content created using dkan_fixtures.
  - Removed warning message when try edit resource without dataset.
  - Added PHP Unit tests configurations to make them run on DKAN.
+ - Added hook_uninstall to federal extra module for remove fields after uninstall module.
+ - Removed redundant definition for CKAN package_list endpoint from open_data_schema_map_dkan, allowing that feature to be in default state after install.
+ - Update ctools to version 1.10, which fixes some PHP7 incompatibilities
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
@@ -36,6 +39,7 @@ DKAN Harvest:
  - Added UI to add harvest sources
  - Added UI to manage harvest sources and datasets
  - Fix dkan harvest feature overridden after install.
+ - Removed row from migration map table when a dataset is deleted.
 DKAN Migrate Base
  - Added DKAN Migrate Base module into DKAN Core.
 DKAN Workflow:
