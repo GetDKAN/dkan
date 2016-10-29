@@ -50,7 +50,7 @@ Feature: User command center links for site manager role.
     And I click "DKAN Dataset Forms" in the "admin menu" region
     Then I should see "DKAN Dataset Forms"
     When I hover over the admin menu item "DKAN"
-    And I click "DKAN Dataset Previews" in the "admin menu" region
+    And I click "Data Previews" in the "admin menu" region
     Then I should see "DKAN Dataset Previews"
     When I hover over the admin menu item "DKAN"
     And I click "DKAN Harvest Dashboard" in the "admin menu" region
@@ -88,6 +88,9 @@ Feature: User command center links for site manager role.
 
   Scenario: Site manager role can view admin menu links under Site Configuration
     Given I am logged in as "John"
+    When I hover over the admin menu item "Site Configuration"
+    And I click "Open Data Schema Mapper"
+    Then I should see "Open Data Schema Mapper"
     When I hover over the admin menu item "Site Configuration"
     And I click "Colorizer"
     Then I should see "Color Scheme Settings"
