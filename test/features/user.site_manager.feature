@@ -38,6 +38,9 @@ Feature: User command center links for site manager role.
     Then I hover over the admin menu item "Visualization"
     And I click "Chart"
     Then I should see "Add Chart"
+    When I hover over the admin menu item "Add content"
+    And I click "Harvest Source"
+    Then I should see "Create Harvest Source"
 
   Scenario: Site manager role can view admin menu links under DKAN
     Given I am logged in as "John"

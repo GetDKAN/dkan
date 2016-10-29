@@ -184,7 +184,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'link_title' => 'Data Previews',
     'options' => array(
       'attributes' => array(
-        'title' => '',
+        'title' => 'Manage options for local and external DKAN resource previews',
       ),
       'identifier' => 'menu-command-center-menu_data-previews:admin/dkan/dataset_preview',
     ),
@@ -486,7 +486,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => 0,
+    'weight' => 1,
     'customized' => 1,
   );
   // Exported menu link: menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm/add/api.
