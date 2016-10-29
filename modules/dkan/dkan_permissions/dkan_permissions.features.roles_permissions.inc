@@ -249,6 +249,7 @@ function dkan_permissions_default_roles_permissions() {
       'administer icon select settings' => TRUE,
       'administer main-menu menu items' => TRUE,
       'administer nodes' => TRUE,
+      'administer open data schema mapper' => TRUE,
       'administer panelizer node data_dashboard content' => TRUE,
       'administer panelizer node data_dashboard defaults' => TRUE,
       'administer panelizer node data_dashboard layout' => TRUE,
