@@ -14,6 +14,7 @@ function dkan_workflow_install() {
     'menu_name' => 'menu-command-center-menu',
     'weight' => -50,
     'expanded' => 0,
+    'access arguments' => array('access workbench'),
   );
 
   $item_id = menu_link_save($item);

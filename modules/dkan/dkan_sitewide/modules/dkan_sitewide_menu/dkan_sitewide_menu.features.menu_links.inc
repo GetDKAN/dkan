@@ -27,7 +27,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 1,
     'expanded' => 0,
-    'weight' => -49,
+    'weight' => 2,
     'customized' => 1,
   );
   // Exported menu link: menu-command-center-menu_chart:admin/structure/entity-type/visualization/ve_chart/add.
@@ -110,7 +110,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -48,
+    'weight' => 3,
     'customized' => 1,
   );
   // Exported menu link: menu-command-center-menu_create-user:admin/people/create.
@@ -319,7 +319,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 1,
     'expanded' => 0,
-    'weight' => -47,
+    'weight' => 4,
     'customized' => 1,
   );
   // Exported menu link: menu-command-center-menu_featured-groups-sort-order:admin/dkan/featured-groups-sort-order.
@@ -483,7 +483,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -50,
+    'weight' => 0,
     'customized' => 0,
   );
   // Exported menu link: menu-command-center-menu_page:node/add/page.
@@ -524,7 +524,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 1,
     'expanded' => 0,
-    'weight' => -45,
+    'weight' => 5,
     'customized' => 1,
   );
   // Exported menu link: menu-command-center-menu_recline-configuration:admin/dkan/recline.
