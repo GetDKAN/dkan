@@ -470,25 +470,26 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
   // Exported menu link: menu-command-center-menu_my-workbench:admin/workbench.
-  $menu_links['menu-command-center-menu_my-workbench:admin/workbench'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/workbench',
-    'router_path' => 'admin',
-    'link_title' => 'My Workbench',
-    'options' => array(
-      'identifier' => 'menu-command-center-menu_my-workbench:admin/workbench',
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => 1,
-    'customized' => 1,
-  );
+  // $menu_links['menu-command-center-menu_my-workbench:admin/workbench'] = array(
+  //   'menu_name' => 'menu-command-center-menu',
+  //   'link_path' => 'admin/workbench',
+  //   'router_path' => 'admin',
+  //   'link_title' => 'My Workbench',
+  //   'options' => array(
+  //     'identifier' => 'menu-command-center-menu_my-workbench:admin/workbench',
+  //     'attributes' => array(
+  //       'title' => '',
+  //     ),
+  //   ),
+  //   'module' => 'menu',
+  //   'hidden' => 0,
+  //   'external' => 0,
+  //   'has_children' => 0,
+  //   'expanded' => 0,
+  //   'weight' => -20,
+  //   'customized' => 1,
+  //   'plid' => 0,
+  // );
   // Exported menu link: menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm/add/api.
   $menu_links['menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm/add/api'] = array(
     'menu_name' => 'menu-command-center-menu',

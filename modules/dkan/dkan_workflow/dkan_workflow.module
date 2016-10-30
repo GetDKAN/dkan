@@ -10,11 +10,17 @@ include_once 'dkan_workflow.features.inc';
  * Implements hook_menu_alter().
  */
 function dkan_workflow_menu_alter(&$items) {
+  // Move workbench link to command center if not administrator or user 1.
+  global $user;
+  if (!in_array('administrator', array_values($user->roles)) && $user->uid >1) {
+    $items['admin/workbench']['menu_name'] = 'menu-command-center-menu';
+  }
   // Hide the default workbench_content screen because it duplicates
   // functionalities.
   $items['admin/workbench']['page callback'] = 'workbench_create';
   $items['admin/workbench/content']['page callback'] = 'workbench_create';
   unset($items['admin/workbench/create']);
+
 }
 
 /**
