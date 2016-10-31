@@ -311,6 +311,30 @@ public function prepareRow($row) {
 }
 ```
 
+#### [DKAN Dataset Metadata Source](https://github.com/NuCivic/dkan_dataset_metadata_source) support
+
+DKAN harvest will take care of creating the `dkan_dataset_metadata_source` node
+and linking a copy of the cached file to it if the `$row->metadata_source`
+object set setup with all the needed info.
+
+Example code snippet:
+```php
+/**
+ * Implements prepareRow.
+ */
+public function prepareRow($row) {
+  // Redacted code
+
+  $row->metadata_source = self::prepareMetadataSourceHelper(
+    $metadata_source_cached_filepath,
+    'ISO-19115 Metadata for ' . $row->dkan_harvest_object_id,
+    'ISO 19115-2'
+  );
+
+  // Redacted code
+}
+```
+
 #### Harvest and [DKAN Workflow](https://github.com/NuCivic/dkan_workflow) support
 
 By default, DKAN Harvest will make sure that the harvested dataset node will be
