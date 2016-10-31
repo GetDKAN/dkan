@@ -1,3 +1,4 @@
+# time:4m38.05s
 @api @javascript
 Feature: Widgets
 
@@ -22,7 +23,7 @@ Feature: Widgets
     When I click "Customize this page"
     And I wait for "Add new pane"
     And I click "Add new pane"
-    And I wait for "Add content"
+    And I wait for "Add content to"
 
   Scenario: Adds "Button Link" to home page using panels ipe editor
     When I follow "Link"
@@ -146,4 +147,4 @@ Feature: Widgets
     And I press "Finish"
     And I wait for "Visualization embed"
     Then I should see "Visualization embed"
-    
+

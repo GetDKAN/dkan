@@ -1,0 +1,116 @@
+ahoyapi: v1
+usage: NuCivic Data cli app for development using ahoy.
+commands:
+  drush:
+    usage: Run drush via ahoy (helpful for abstraction)
+    cmd: ahoy cmd-proxy drush --root=docroot "{{args}}"
+
+  build:
+    usage: A series of commands for dkan development.
+    import: dkan/.ahoy/site/build.ahoy.yml
+    hide: true
+
+  dkan:
+    usage: A series of commands for dkan development.
+    hide: true
+    import: dkan/.ahoy/dkan.ahoy.yml
+
+  diagnose:
+    usage: A series of ahoy-docker setup diagnosis commands.
+    import: dkan/.ahoy/diagnose.ahoy.yml
+    hide: true
+
+  doctor:
+    usage: A series of ahoy-docker setup diagnosis commands.
+    import: dkan/.ahoy/diagnose.ahoy.yml
+    hide: true
+
+  confirm:
+    cmd: ahoy -f dkan/.ahoy/utils.ahoy.yml confirm {{args}}
+    hide: true
+
+  docker:
+    usage: A series of docker commands for dkan development (experimental)
+    import: dkan/.ahoy/docker.ahoy.yml
+    hide: true
+
+  init:
+    cmd: echo "ahoy.yml file already exists."
+    hide: true
+
+  cmd-proxy:
+    usage: abstraction for commmands.
+    cmd: |
+      if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
+        ahoy docker exec "{{args}}"
+      else
+        {{args}}
+      fi
+    hide: true
+
+  ci:
+    usage: A series of commands to handle ci setup
+    import: dkan/.ahoy/site/ci.ahoy.yml
+    hide: true
+
+  tools:
+    usage: A series of commands to setup dev tools
+    import: dkan/.ahoy/site/tools.ahoy.yml
+    hide: true
+
+  debug:
+    usage: A series of commands to setup debugging
+    import: dkan/.ahoy/site/debug.ahoy.yml
+    hide: true
+
+  launch-checklist:
+    usage: A series of commands to handle pre launch checks
+    import: dkan/.ahoy/site/launch-checklist.ahoy.yml
+    hide: true
+
+  site:
+    usage: A series of commands for site development
+    import: dkan/.ahoy/site/site.ahoy.yml
+
+  utils:
+    hide: true
+    usage: A series of helper commands (hide the details)
+    import: dkan/.ahoy/site/utils.ahoy.yml
+
+  remote:
+    usage: A series of commands for site remote management
+    import: dkan/.ahoy/site/remote.ahoy.yml
+    hide: true
+
+  custom:
+    usage: A series of custom commands specific to a project.
+    import: config/custom.ahoy.yml
+    hide: true
+
+  parse:
+    usage: ahoy parse :filpath :argument, where :argument depth is seperated by underscores.
+    hide: true
+    cmd: |
+      # Attribution: https://gist.github.com/epiloque/8cf512c6d64641bde388#file-yaml-sh
+      parse_yaml() {
+        local prefix=$2
+        local s
+        local w
+        local fs
+        s='[[:space:]]*'
+        w='[a-zA-Z0-9_]*'
+        fs="$(echo @|tr @ '\034')"
+        sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+                 -e "s|^\($s\)\($w\)$s[:-]$s\(.*\)$s\$|\1$fs\2$fs\3|p" "$1" |
+        awk -F"$fs" '{
+          indent = length($1)/2;
+          vname[indent] = $2;
+          for (i in vname) {if (i > indent) {delete vname[i]}}
+            if (length($3) > 0) {
+              vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+              printf("%s%s%s=(\"%s\")\n", "'"$prefix"'",vn, $2, $3);
+            }
+          }' | sed 's/_=/+=/g'
+      }
+
+      parse_yaml {{args}}

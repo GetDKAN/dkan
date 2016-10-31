@@ -21,6 +21,16 @@ class DkanDataDashboardsImport extends DkanPanelizedNodesImport {
 
     // Add Field mappings.
     $this->addFieldMapping('field_topic', 'topics');
+    $this->addFieldMapping('path', 'path');
+  }
+
+  
+  /**
+   * Do extra processing before the node is saved.
+   */
+  public function prepare($node, $row) {
+    parent::prepare($node, $row);
+    $node->path['pathauto'] = FALSE;
   }
 
   /**
