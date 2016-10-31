@@ -47,7 +47,7 @@ projects:
   context:
     version: '3.6'
   ctools:
-    version: '1.9'
+    version: '1.10'
   data:
     version: '1.x'
   date:
@@ -207,6 +207,8 @@ projects:
     version: '2.1'
     patch:
       2446199: 'https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch' 
+  menu_admin_per_menu:
+    version: '1.1'
   menu_badges:
     version: '1.2'
   menu_block:
@@ -345,9 +347,7 @@ projects:
   workbench:
     version: '1.2'
   workbench_email:
-    version: '3.9'
-    patch:
-      2391233: 'https://www.drupal.org/files/issues/workbench_email-2391233-3.patch'
+    version: '3.11'
   workbench_moderation:
     branch: 7.x-1.x
     revision: 2c91211

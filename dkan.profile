@@ -48,6 +48,7 @@ function dkan_additional_setup() {
       array('dkan_set_adminrole', array()),
       array('dkan_set_roleassign_roles', array()),
       array('dkan_set_bueditor_excludes', array()),
+      array('dkan_post_install', array()),
     ),
   );
 }
@@ -501,5 +502,9 @@ edit-menu-description
     ))
     ->condition('eid', '5')
     ->execute();
-  drupal_flush_all_caches();
+}
+
+function dkan_post_install() {
+  variable_set('preprocess_css', 1);
+  variable_set('preprocess_js', 1);
 }

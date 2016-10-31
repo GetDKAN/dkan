@@ -1,11 +1,6 @@
 7.x-1.x
 --------------------------
  - Remove Panels IPE from dataset and search pages; in DKAN, we only want to show IPE for panelizer layouts, not templates or other "sitewide" pages.
- - Added default image for groups.
- - Add preview support for resources of many more formats, outside of recline.js. Support added for JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, ZIP
- - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
- - Fixes to groups UX: Group body field now labeled "Description," longer group descriptions do not get cut off after 200 characters on group page, and extraneous "about" tab on Group node edit form removed
- - Add new "modified date" field, hidden in form, to datasets. This is for dkan_harvest compatibility; saves sources dates into a separate field so they aren't affected by node changes. ODSM mappings also updated.
  - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
  - Fixes typo in "add data story" link in command center menu
  - Add topic icons to the drop down menu
@@ -23,30 +18,51 @@
  - Change admin theme setting to use default theme rather than nuboot radix
  - Page content type added to panelizer and now defined in features, with in-place editor enabled for page content.
  - Page link added to the command center menu.
+ - Added Open Data Federal Extras module into DKAN Core.
+ - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
+ - Removed field mapping warnings during import of default content.
+ - Removed conditional_fields from dkan_topics.
+ - Upgrade Features to 7.x-2.9
+ - Make date facet use "day" granularity.
+ - Remove ARC2 library.
+ - Disable pathauto for content created using dkan_fixtures.
+ - Removed warning message when try edit resource without dataset.
+ - Added hook_uninstall to federal extra module for remove fields after uninstall module.
+ - Removed redundant definition for CKAN package_list endpoint from open_data_schema_map_dkan, allowing that feature to be in default state after install.
+ - Update ctools to version 1.10, which fixes some PHP7 incompatibilities
+DKAN Datastore:
+ - Added DKAN Datastore module into DKAN Core.
+ - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
+DKAN Harvest:
+ - Added DKAN Harvest module into DKAN Core.
+ - Added UI to add harvest sources
+ - Added UI to manage harvest sources and datasets
+ - Fix dkan harvest feature overridden after install.
+ - Removed row from migration map table when a dataset is deleted.
+ - Added Batch API on 'Harvest now' action.
+DKAN Migrate Base
+ - Added DKAN Migrate Base module into DKAN Core.
+DKAN Workflow:
+ - Update DKAN workflow vbo customizations to not affect other vbo forms.
+DKAN Dataset:
+ - Added DKAN Dataset module into DKAN Core.
+ - Added default image for groups.
+ - Add preview support for resources of many more formats, outside of recline.js. Support added for JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, ZIP
+ - Fix bugs in resource mimetypes and previews.
+ - Groups field on Dataset form was modified to be a single select with all group options and it was moved from the tabs section to the main section of the form. 
+ - Groups field was hidden on the resource form since groups are assigned automatically based on the parent datasets.
  - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
  - Moved and renamed the following fields from ODFE to DKAN Core: field_is_part_of, field_data_dictionary_type, field_landing_page, field_pod_theme, field_conforms_to, field_rights, field_language.
  - Added hook updates to handle the renaming of the old ODFE fields removing the 'odfe' namespacing.
  - Added hook update to migrate the content from field_odfe_category to field_pod_theme on Datasets.
  - Added new option on DKAN Dataset Forms to enable POD based validation on Dataset form.
  - Added new option on DKAN Dataset Forms to enable Groups field validation on Dataset form.
- - Added Open Data Federal Extras module into DKAN Core.
- - Groups field was hidden on the resource form since groups are assigned automatically based on the parent datasets.
- - Groups field on Dataset form was modified to be a single select with all group options and it was moved from the tabs section to the main section of the form. 
- - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
- - Removed field mapping warnings during import of default content.
- - Removed conditional_fields from dkan_topics.
- - Fix bugs in resource mimetypes and previews.
- - Added DKAN Harvest module into DKAN Core.
- - Added DKAN Datastore module into DKAN Core.
- - Added DKAN Dataset module into DKAN Core.
- - Added DKAN Migrate Base module into DKAN Core.
-DKAN Dataset:
- - Upgrade Features to 7.x-2.9
- - Make date facet use "day" granularity.
- - Remove ARC2 library.
+ - Fixes to groups UX: Group body field now labeled "Description," longer group descriptions do not get cut off after 200 characters on group page, and extraneous "about" tab on Group node edit form removed
+ - Add new "modified date" field, hidden in form, to datasets. This is for dkan_harvest compatibility; saves sources dates into a separate field so they aren't affected by node changes. ODSM mappings also updated.
+ - Fix keywords/tags creating broken links when containing spaces, and add missing keywords to default content.
+ - Fix ODSM permissions for non-admin roles.
 
-
-7.x-1.12.x
+7.x-1.12.11
 --------------------------
 - Center group images in "Groups" page and group node page sidebar
 - Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
