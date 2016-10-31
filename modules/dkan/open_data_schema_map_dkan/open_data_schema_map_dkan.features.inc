@@ -868,7 +868,6 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-
   // Exported Open Data API Map: CKAN Package Show
   $open_data_schema_apis['ckan_package_show'] = array(
     'name' => 'CKAN Package Show',
@@ -1635,11 +1634,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:issued' => array(
-        'value' => '[node:created:custom:Y-m-d]',
+        'value' => '[node:created:custom:c]',
         'type' => 'string',
       ),
       'dct:modified' => array(
-        'value' => '[node:changed:custom:Y-m-d]',
+        'value' => '[node:changed:custom:c]',
         'type' => 'string',
       ),
       'owl:versionInfo' => array(
@@ -1752,11 +1751,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dct:issued' => array(
-          'value' => '[node:field-resources:Nth:created:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:created:custom:c]',
           'type' => '',
         ),
         'dct:modified' => array(
-          'value' => '[node:field-resources:Nth:changed:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:changed:custom:c]',
           'type' => '',
         ),
         'dct:license' => array(
@@ -1802,7 +1801,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
       ),
     ),
     'xml_root' => 'rdf:RDF',
-    'xml_defaulttag' => 'dcat:dataset',
+    'xml_defaulttag' => 'dcat:Dataset',
   );
   // Exported Open Data API Map: DCAT-AP v1.1
   $open_data_schema_apis['dcat_v1_1'] = array(
@@ -1839,11 +1838,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:issued' => array(
-        'value' => '[node:created:custom:Y-m-d]',
+        'value' => '[node:created:custom:c]',
         'type' => 'string',
       ),
       'dct:modified' => array(
-        'value' => '[node:changed:custom:Y-m-d]',
+        'value' => '[node:changed:custom:c]',
         'type' => 'string',
       ),
       'owl:versionInfo' => array(
@@ -1921,10 +1920,6 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dcat:contactPoint' => array(
-        'odsm_entity_reference' => array(
-          'value' => '',
-          'type' => '',
-        ),
         'vcard:fn' => array(
           'value' => '[node:field-contact-name]',
           'type' => '',
@@ -1956,11 +1951,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dct:issued' => array(
-          'value' => '[node:field-resources:Nth:created:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:created:custom:c]',
           'type' => '',
         ),
         'dct:modified' => array(
-          'value' => '[node:field-resources:Nth:changed:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:changed:custom:c]',
           'type' => '',
         ),
         'dct:license' => array(
@@ -1972,7 +1967,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dcat:accessURL' => array(
-          'value' => '[node:field-resources:Nth:field-link-api:url]',
+          'value' => '[node:field-resources:Nth:url]',
           'type' => '',
         ),
         'dcat:downloadURL' => array(
@@ -2001,7 +1996,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'endpoint' => 'catalog.xml',
     'arguments' => array(),
     'xml_root' => 'rdf:RDF',
-    'xml_defaulttag' => 'dcat:dataset',
+    'xml_defaulttag' => 'dcat:Dataset',
   );
   // Exported Open Data API Map: DCAT-AP v1.1 (JSON)
   $open_data_schema_apis['dcat_v1_1_json'] = array(
@@ -2038,11 +2033,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:issued' => array(
-        'value' => '[node:created:custom:Y-m-d]',
+        'value' => '[node:created:custom:c]',
         'type' => 'string',
       ),
       'dct:modified' => array(
-        'value' => '[node:changed:custom:Y-m-d]',
+        'value' => '[node:changed:custom:c]',
         'type' => 'string',
       ),
       'owl:versionInfo' => array(
@@ -2120,10 +2115,6 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dcat:contactPoint' => array(
-        'odsm_entity_reference' => array(
-          'value' => '',
-          'type' => '',
-        ),
         'vcard:fn' => array(
           'value' => '[node:field-contact-name]',
           'type' => '',
@@ -2155,11 +2146,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dct:issued' => array(
-          'value' => '[node:field-resources:Nth:created:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:created:custom:c]',
           'type' => '',
         ),
         'dct:modified' => array(
-          'value' => '[node:field-resources:Nth:changed:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:changed:custom:c]',
           'type' => '',
         ),
         'dct:license' => array(
@@ -2171,7 +2162,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dcat:accessURL' => array(
-          'value' => '[node:field-resources:Nth:field-link-api:url]',
+          'value' => '[node:field-resources:Nth:url]',
           'type' => '',
         ),
         'dcat:downloadURL' => array(
