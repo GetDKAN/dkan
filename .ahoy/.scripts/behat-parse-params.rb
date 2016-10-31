@@ -15,7 +15,7 @@ def behat_join_params args
       "--" + key_value[0].strip + "=" + "'" + "#{key_value[1]}".strip + "'"
     else
       if [
-        "colors", "no-color", "end", "suite", "format",
+        "colors", "no-colors", "end", "suite", "format",
         "out", "format-settings", "init",  "lang", "name",
         "tags", "role", "story-syntax","definitions", "append-snippets",
         "no-snippets", "strict", "order", "rerun", "stop-on-failure",
@@ -51,7 +51,11 @@ def behat_parse_params args
       params.push param
     end
   end
-  params.push '--colors' 
+
+  unless params.include? '--no-colors'
+    params.unshift '--colors'
+  end
+
   {:files => files, :params => params}
 end
 

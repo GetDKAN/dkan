@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/gold-prices-london-1950-2008-monthly/resource/4d6d64b8-5c1d-49b6-a222-652fd4a7cb35",
         "id": "4d6d64b8-5c1d-49b6-a222-652fd4a7cb35",
         "url": "files/resource/data_0.csv",
         "description": "<p>CSV file extracted and cleaned from source excel.</p>\n<p>Click on Graph button under Preview and plot date (x-axis) against price (y-axis) to see a line graph. Hovering over a point gives you the value of that data entry.</p>\n",
