@@ -10,6 +10,8 @@ DKAN's core functionality around datasets, their metadata and resources, is defi
 .. toctree::
    :maxdepth: 1
 
+   adding-datasets
+   api
+   datasetfeatures
    groups
    rest-api
-

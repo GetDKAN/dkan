@@ -1,4 +1,4 @@
-# Creating a DKAN Subtheme
+# DKAN Theming
 
 ## NuBoot Radix
 
