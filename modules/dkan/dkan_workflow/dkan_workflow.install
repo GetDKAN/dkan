@@ -11,7 +11,6 @@ function dkan_workflow_install() {
   $item = array(
     'link_path' => 'admin/workbench',
     'link_title' => 'My Workbench',
-    'menu_name' => 'menu-command-center-menu',
     'weight' => 0,
     'expanded' => 1,
     'has_children' => 0,

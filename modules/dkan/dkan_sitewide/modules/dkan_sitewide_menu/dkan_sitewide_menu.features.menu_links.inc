@@ -302,6 +302,23 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_dkan:admin/dkan',
   );
+  // Exported menu link: menu-command-center-menu_my-workbench:admin/workbench.
+  $menu_links['menu-command-center-menu_my-workbench:admin/workbench'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench',
+    'router_path' => 'admin',
+    'link_title' => 'My Workbench',
+    'options' => array(
+      'identifier' => 'menu-command-center-menu_my-workbench:admin/workbench',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 1,
+    'weight' => 0,
+    'customized' => 0,
+  );
   // Exported menu link: menu-command-center-menu_dkan-dataset-forms:admin/dkan/dataset_forms.
   $menu_links['menu-command-center-menu_dkan-dataset-forms:admin/dkan/dataset_forms'] = array(
     'menu_name' => 'menu-command-center-menu',
@@ -744,6 +761,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Harvest Source');
   t('Manage Users');
   t('Menus');
+  t('My Workbench');
   t('Open Data Schema Mapper');
   t('Page');
   t('People');
