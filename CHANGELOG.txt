@@ -27,9 +27,11 @@
  - Remove ARC2 library.
  - Disable pathauto for content created using dkan_fixtures.
  - Removed warning message when try edit resource without dataset.
+ - Added PHP Unit tests configurations to make them run on DKAN.
  - Added hook_uninstall to federal extra module for remove fields after uninstall module.
  - Removed redundant definition for CKAN package_list endpoint from open_data_schema_map_dkan, allowing that feature to be in default state after install.
  - Update ctools to version 1.10, which fixes some PHP7 incompatibilities
+ - Update open data schema module to render a valid output passing validation (dcat and rdf)
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
@@ -39,6 +41,7 @@ DKAN Harvest:
  - Added UI to manage harvest sources and datasets
  - Fix dkan harvest feature overridden after install.
  - Removed row from migration map table when a dataset is deleted.
+ - Added Batch API on 'Harvest now' action.
 DKAN Migrate Base
  - Added DKAN Migrate Base module into DKAN Core.
 DKAN Workflow:
@@ -59,6 +62,8 @@ DKAN Dataset:
  - Fixes to groups UX: Group body field now labeled "Description," longer group descriptions do not get cut off after 200 characters on group page, and extraneous "about" tab on Group node edit form removed
  - Add new "modified date" field, hidden in form, to datasets. This is for dkan_harvest compatibility; saves sources dates into a separate field so they aren't affected by node changes. ODSM mappings also updated.
  - Fix keywords/tags creating broken links when containing spaces, and add missing keywords to default content.
+ - Add support "Compound" fields on Filters/Overrides/Excludes/Default in DKAN Harvest.
+ - Fix ODSM permissions for non-admin roles.
 
 
 7.x-1.12.11
