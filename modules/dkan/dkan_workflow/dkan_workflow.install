@@ -13,7 +13,7 @@ function dkan_workflow_install() {
     'link_title' => 'My Workbench',
     'menu_name' => 'menu-command-center-menu',
     'weight' => 0,
-    'expanded' => 0,
+    'expanded' => 1,
     'has_children' => 0,
     'plid' => 0,
   );

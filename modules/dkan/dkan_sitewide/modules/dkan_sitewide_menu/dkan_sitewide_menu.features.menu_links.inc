@@ -260,6 +260,27 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_dkan-harvest-dashboard:admin/dkan/harvest/dashboard',
   );
+  // Exported menu link: menu-command-center-menu_dcat-validation:admin/config/services/odsm/validate/dcat.
+  $menu_links['menu-command-center-menu_dcat-validation:admin/config/services/odsm/validate/dcat'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/config/services/odsm/validate/dcat',
+    'router_path' => 'admin/config/services/odsm/validate/dcat',
+    'link_title' => 'DCAT validation',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_dcat-validation:admin/config/services/odsm/validate/dcat',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => 0,
+    'customized' => 1,
+    'parent_identifier' => 'menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm',
+  );
   // Exported menu link: menu-command-center-menu_dkan-dataset-api:admin/dkan/dataset_api.
   $menu_links['menu-command-center-menu_dkan-dataset-api:admin/dkan/dataset_api'] = array(
     'menu_name' => 'menu-command-center-menu',
@@ -469,43 +490,22 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
-  // Exported menu link: menu-command-center-menu_my-workbench:admin/workbench.
-  // $menu_links['menu-command-center-menu_my-workbench:admin/workbench'] = array(
-  //   'menu_name' => 'menu-command-center-menu',
-  //   'link_path' => 'admin/workbench',
-  //   'router_path' => 'admin',
-  //   'link_title' => 'My Workbench',
-  //   'options' => array(
-  //     'identifier' => 'menu-command-center-menu_my-workbench:admin/workbench',
-  //     'attributes' => array(
-  //       'title' => '',
-  //     ),
-  //   ),
-  //   'module' => 'menu',
-  //   'hidden' => 0,
-  //   'external' => 0,
-  //   'has_children' => 0,
-  //   'expanded' => 0,
-  //   'weight' => -20,
-  //   'customized' => 1,
-  //   'plid' => 0,
-  // );
-  // Exported menu link: menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm/add/api.
-  $menu_links['menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm/add/api'] = array(
+  // Exported menu link: menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm.
+  $menu_links['menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm'] = array(
     'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/config/services/odsm/add/api',
-    'router_path' => 'admin/config/services/odsm/add/api',
+    'link_path' => 'admin/config/services/odsm',
+    'router_path' => 'admin/config/services/odsm',
     'link_title' => 'Open Data Schema Mapper',
     'options' => array(
       'attributes' => array(
         'title' => '',
       ),
-      'identifier' => 'menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm/add/api',
+      'identifier' => 'menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm',
     ),
     'module' => 'menu',
     'hidden' => 0,
     'external' => 0,
-    'has_children' => 0,
+    'has_children' => 1,
     'expanded' => 0,
     'weight' => -47,
     'customized' => 1,
@@ -727,6 +727,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Colorizer');
   t('Content');
   t('Create user');
+  t('DCAT validation');
   t('DKAN');
   t('DKAN Dataset API');
   t('DKAN Dataset Forms');
@@ -743,7 +744,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Harvest Source');
   t('Manage Users');
   t('Menus');
-  t('My Workbench');
   t('Open Data Schema Mapper');
   t('Page');
   t('People');
