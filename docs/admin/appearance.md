@@ -13,17 +13,18 @@ and other “look and feel” elements are known as a “theme.” The DKAN
 distribution of Drupal includes a default “DKAN Theme” called NuBoot Radix, that visually
 highlights all of the DKAN-specific data elements in the software.
 
-DKAN administrators have the choice of customizing the existing DKAN Theme or
-implementing an entirely new theme, or creating a [subtheme of nuboot_radix](dkan-documentation/dkan-developers-guide/creating-sub-theme-dkan).
+DKAN administrators have the choice of customizing the existing DKAN Theme through theme settings, implementing an entirely new theme, or creating a [subtheme of nuboot_radix](dkan-documentation/dkan-developers-guide/creating-sub-theme-dkan).
 
-By default, the DKAN Theme is located in: `[SITEROOT]/profiles/dkan/themes/contrib/nuboot_radix`
+By default, the DKAN Theme is located in: `[SITEROOT]/themes/nuboot_radix`
 
-The default DKAN Theme is a sub-theme of [Radix](https://www.drupal.org/project/radix),  and Radix uses components and plugins from [Bootstrap](https://www.drupal.org/project/bootstrap).
+The default DKAN Theme is a sub-theme of [Radix](https://www.drupal.org/project/radix),  and Radix uses components and plugins from [Bootstrap](https://github.com/twbs/bootstrap).
 
 ## Theme and Appearance Settings
 
+The DKAN Theme does provide a few simple customizations that administrators can use to change the default appearance of the site from the theme settings screen. If logged in as an administrative user, navigate to Appearance >> Settings
+
 ### Site name and slogan
-From the settings screen, you can toggle on the **site name** and **slogan**, simply check the box next to the elements you want to use.
+From the settings screen, you can toggle on/off the **site name** and **slogan**, simply check the box next to the elements you want to use.
 ![Site name and slogan settings][Site name and slogan settings]
 
 ### Logo
@@ -45,7 +46,7 @@ The **Hero Unit** is the background image that displays on the front page. To us
 ### Color scheme
 To use the **colorizer** option, you must use the default theme as the admin theme. Navigate to `[SITEROOT]/admin/appearance` and scroll to the bottom. Confirm that the Admin theme is set to 'Default Theme'.
 
-Now navigate to `[SITEROOT]/admin/appearance/colorizer` by clicking on the 'Colorizer' tab. Here you will see the color scheme options. There are a few default options you can select from the drop down, or you can enter hex values to create a custom color scheme, be sure to click 'Save Configuration' when finished. Your new colors are saved to a css file in your files directory. If you do not see your changes you may need to clear the colorizer cache by clicking the 'Clear Colorizer Cache' button. These colors will trump all other styles in the theme.
+Now navigate to `[SITEROOT]/admin/appearance/colorizer` by clicking on the 'Colorizer' tab. Here you will see the color scheme options. There are a few default options you can select from the drop down, or you can enter hex values to create a custom color scheme, be sure to click 'Save Configuration' when finished. Your new colors are saved to a css file in your files directory. If you do not see your changes you may need to clear the colorizer cache by clicking the 'Clear Colorizer Cache' button. These colors will override all other styles in the theme.
 ![Colorizer settings][Colorizer settings]
 
 ### Fonts
@@ -58,7 +59,7 @@ For more information on how to use @fontyourface visit the [project page](https:
 
 ## Adding Styles to Content in DKAN
 
-DKAN allows you to style the text in the description fields of datasets and resources as well as in the body of data stories. Text can be styled as bold and italic. You can add headline styling and subheads and create numbered lists and bulleted lists. You can also add tables, hyperlinks and images, along with some other text styling elements such as horizontal rules.
+DKAN allows you to style the text in the description fields of datasets and resources as well as in the body of data stories. Text can be styled as bold and italic. You can add headline styling and subheads and create numbered lists and bulleted lists. You can also add hyperlinks and images.
 
 Text styling is added using [markdown syntax](http://daringfireball.net/projects/markdown/syntax). To assist you in adding styling to your text, a markdown toolbar appears at the top of styled text areas with buttons that you can click to add styles:
 
@@ -66,11 +67,11 @@ Text styling is added using [markdown syntax](http://daringfireball.net/projects
 
 Markdown syntax is intended to provide limited styling capabilities. It offers fewer styling options and is not as simple to use as the WYSIWYG editors used in modern word processors such as Microsoft Word. This limitation is intentional. DKAN is intended to serve as an open data sharing platform, and it has a powerful API that can be used to retrieve datasets and their content by other computer programs. Limiting DKAN to markdown styles helps ensure that dataset descriptions and other metadata can be shared consistently via the API without breaking.
 
-## Adding Images to Styled Content 
+## Adding Images 
 
-Inserting images into styled content is a bit challenging, but it can be done. You need to first upload an image file to your website, and then use the markdown image tool to insert that image into your content.
+First you will need to upload an image file to your website, then use the markdown image tool to insert that image into your content.
 
-Users with the role of "administrator" can upload files to a DKAN website. This permission can be added to other DKAN user roles such as the "editor" and "storyteller" roles, but these permissions are not enabled by default for security reasons. To upload an image, visit the files administration page at path /admin/content/file and click the "Add file" button:
+Users with the role of "administrator" can upload files to a DKAN website. This permission can be added to other DKAN user roles such as the "editor" and "content creator" roles, but these permissions are not enabled by default for security reasons. To upload an image, visit the files administration page at path /admin/content/file and click the "Add file" button:
 
 ![add file button](http://docs.getdkan.com/sites/default/files/add%20file.png)
 
