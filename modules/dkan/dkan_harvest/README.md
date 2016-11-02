@@ -43,7 +43,7 @@ Project Open Data (as well as most metadata APIs) includes many fields that are 
 To access the name property for filtering or overriding, you can set `publisher.name` in the first text box and the value you want to use in the second one.
 
 
-![Add Harvest Source](https://cloud.githubusercontent.com/assets/381224/19934949/2af9a128-a0f7-11e6-9c92-69d922759aef.jpg)
+![Add Harvest Source](https://cloud.githubusercontent.com/assets/381224/19936998/53e3012c-a0fe-11e6-8253-16c5270eaedf.png)
 
 If the Harvest Source type you are looking for is not available, please refer
 to the **Define a new Harvest Source Type** section in the developers docs (coming soon).
