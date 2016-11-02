@@ -12,7 +12,6 @@ Feature: User command center links for site manager role.
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
 
-
   Scenario: Site manager role can view admin menu links under Add Content
     Given I am logged in as "John"
     When I click "Add content" in the "admin menu" region
@@ -67,6 +66,15 @@ Feature: User command center links for site manager role.
   Scenario: Site manager role can view admin menu links under Site Configuration
     Given I am logged in as "John"
     When I hover over the admin menu item "Site Configuration"
+    And I click "Colorizer"
+    Then I should see "Color Scheme Settings"
+    When I hover over the admin menu item "Site Configuration"
+    And I click "Theme Settings"
+    Then I should see "Appearance"
+    When I hover over the admin menu item "Site Configuration"
+    And I click "Menus"
+    Then I should see "Main menu"
+    When I hover over the admin menu item "Site Configuration"
     And I click "Fonts"
     Then I should see "No fonts enabled yet, please enable some fonts first."
     When I hover over the admin menu item "Site Configuration"
@@ -76,11 +84,13 @@ Feature: User command center links for site manager role.
     Then I hover over the admin menu item "Taxonomy"
     And I click "Format"
     Then I should see "Format"
+    Then I wait for "Site Configuration"
     When I hover over the admin menu item "Site Configuration"
     Then I hover over the admin menu item "Taxonomy"
     And I click "Tags"
     Then I should see "Tags"
+    Then I wait for "Site Configuration"
     When I hover over the admin menu item "Site Configuration"
     Then I hover over the admin menu item "Taxonomy"
-    And I click "Topics"
+    And I click "Topics" in the "admin menu" region
     Then I should see "Topics"

@@ -71,6 +71,57 @@ function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime)
 }
 
 /**
+ * Set a nested value inside an array.
+ * @param  Array   &$obj      Original array
+ * @param  String  $path      Path to the value (path.to.the.0.value)
+ * @param  Any     $value     Value to set
+ * @param  boolean $override  If should or shouldn't override an existing value
+ * @return Array              Modified array
+ */
+function dkan_harvest_datajson_set_value(&$obj, $path, $value, $override = FALSE) {
+  $keys = explode('.', $path);
+  $branch = &$obj;
+
+  foreach ($keys as $key) {
+    if(isset($branch[$key])) {
+      $branch = &$branch[$key];
+    } else {
+      drupal_set_message(t('Key ' . $path . '  was automatically generated because doesn\'t exists in the dataset ' . $obj['title'] . '. Make sure you want to modify the key ' . $path), 'warning');
+      $branch[$key] = array();
+      $branch = &$branch[$key];
+    }
+  }
+  
+  if($override) {
+    $branch = $value;
+  } else {
+    $branch = empty($branch) ? $value : $branch;
+  }
+  return $obj;
+}
+
+/**
+ * Get a nested value from an array.
+ * @param  Array   &$obj      Array
+ * @param  String  $path      Path to the value (path.to.the.0.value)
+ * @return Array              Modified array
+ */
+function dkan_harvest_datajson_get_value($obj, $path) {
+  $keys = explode('.', $path);
+  $value = $obj;
+
+  foreach ($keys as $key) {
+    if(isset($value[$key])) {
+      $value = $value[$key];  
+    } else {
+      drupal_set_message(t('Error trying to access to key ' . $path . '. Please make sure ' . $path . ' exists in the dataset ' . $obj['title']), 'error');
+      return;
+    }
+  }
+  return $value;
+}
+
+/**
  * Cache the datajson_1_1_json datasets.
  *
  * @param Array $data
@@ -92,8 +143,9 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(Array $data, HarvestSource $s
       // Default action is to DROP the dataset if it does not meet the
       // filtering criteria.
       $accept = FALSE;
-      foreach ($filters as $filter => $value) {
-        if (!empty($dataset[$filter]) && !empty($value) && count(array_intersect((array)$value, (array)$dataset[$filter])) > 0) {
+      foreach ($filters as $path => $filter_value) {
+        $value = dkan_harvest_datajson_get_value($dataset, $path);
+        if (!empty($value) && !empty($filter_value) && count(array_intersect((array)$filter_value, (array)$value)) > 0) {
           // The value to filter is an array and does intersect with the
           // dataset value. ACCEPT
           $accept = TRUE;
@@ -125,9 +177,10 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(Array $data, HarvestSource $s
       $dataset_key = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
       // Default action is to accept dataset that does not meet the
       // excluding criteria.
-      $accept= TRUE;
-      foreach ($excludes as $exclude => $value) {
-        if (!empty($dataset[$exclude]) && count(array_intersect((array)$value, (array)$dataset[$exclude])) > 0) {
+      $accept = TRUE;
+      foreach ($excludes as $path => $exclude_value) {
+        $value = dkan_harvest_datajson_get_value($dataset, $path);
+        if (!empty($value) && count(array_intersect((array)$exclude_value, (array)$value)) > 0) {
           // The value to exclude is an array and does intersect with the dataset value. Drop.
           $accept = FALSE;
         }
@@ -154,18 +207,17 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(Array $data, HarvestSource $s
   // Override field values.
   $overrides = $source->overrides;
   $datasets = array_map(function($dataset) use($overrides, &$harvestCache){
-    foreach ($overrides as $override => $value) {
-      $dataset[$override] = $value[0];
+    foreach ($overrides as $path => $override_value) {
+      dkan_harvest_datajson_set_value($dataset, $path, $override_value[0], TRUE);
     }
     return $dataset;
   }, $datasets);
-
+  
   // Set default values for empty fields.
   $defaults = $source->defaults;
   $datasets = array_map(function($dataset) use($defaults, &$harvestCache){
-    foreach ($defaults as $default => $value) {
-      if(!isset($dataset[$default]))
-        $dataset[$default] = $value[0];
+    foreach ($defaults as $path => $default_value) {
+      dkan_harvest_datajson_set_value($dataset, $path, $default_value[0]);
     }
     return $dataset;
   }, $datasets);
