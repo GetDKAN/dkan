@@ -14,4 +14,5 @@ assets/*
 .idea
 .DS_Store
 behat.local.yml
+npm-debug.log
 docs/_build
