@@ -84,6 +84,25 @@ orphan datasets.
 
 Presenting the event log via some easy to parse charts is in the TODO list.
 
+## The Harvest Dashboard
+
+To run and manage harvest operations from the web interface, navigate to
+ `admin/dkan/harvest/dashboard`. This is a view of all
+available (published) Harvest Sources in the system. Apart from the
+title and the source type, additonal columns displaying the last time a harvest
+migration was run for a specific source and the number of daatsets
+imported are available.
+
+![Harvest Dashboard](images/harvest_dashboard.png)
+
+The dashboard allows you to select one or more sources and perform one of the following operations on it:
+
+* **Harvest (cache and migrate)** is the operation you are most likely to want to perform on this page. It will cache the source data locally and migrate that source data into your site content.
+* **Cache source(s)** will simply fetch the source data, apply the source configuration (filters, excludes, etc.) and cache the data locally without migrating. You may wish to do this to check for errors, or to refresh the preview available for each specific source (see the section on source pages below).
+* **Migrate source(s)** will migrate the current cache for the selected sources, no matter how old it is.
+
+![Harvest Dashboard Operations](images/harvest_dashboard_operations.png)
+
 ## Harvest Drush Commands
 
 DKAN Harvest provides multiple drush commands to manage harvest sources and
