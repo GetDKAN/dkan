@@ -31,6 +31,18 @@ publisher listed on the source whose datasets you do _not_ want to bring into yo
 * **Overrides** will replace values from the source when you harvest. For instance, if you want to take responsibility for the datasets once harvested and add your agency's name as the publisher, you might add "publisher" with your agency's name as the value.
 * **Defaults**   work the same as overrides, but will only be used if the relevant field is empty in the source
 
+Project Open Data (as well as most metadata APIs) includes many fields that are not simple key-value pairs. If you need to access or modify nested array values you can use this dot syntax to specify the path: `key.nested_key.0.other_nested_key`. For example, the Publisher field in Project Open Data is expressed like this:
+
+```json
+      "publisher": {
+        "@type": "org:Organization",
+        "name": "demo.getdkan.com"
+      },
+```
+
+To access the name property for filtering or overriding, you can set `publisher.name` in the first text box and the value you want to use in the second one.
+
+
 ![Add Harvest Source](images/node_add_harvest_source.png)
 
 If the Harvest Source type you are looking for is not available, please refer
