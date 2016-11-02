@@ -10,6 +10,55 @@
 function dkan_harvest_field_default_field_instances() {
   $field_instances = array();
 
+  // Exported field_instance: 'node-harvest_source-body'.
+  $field_instances['node-harvest_source-body'] = array(
+    'bueditor_profile' => -1,
+    'bundle' => 'harvest_source',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 8,
+      ),
+      'search_result' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'body',
+    'label' => 'Description',
+    'required' => 0,
+    'settings' => array(
+      'display_summary' => 0,
+      'text_processing' => 1,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 20,
+        'summary_rows' => 5,
+      ),
+      'type' => 'text_textarea_with_summary',
+      'weight' => 1,
+    ),
+  );
+
   // Exported field_instance: 'node-harvest_source-field_dkan_harveset_type'.
   $field_instances['node-harvest_source-field_dkan_harveset_type'] = array(
     'bundle' => 'harvest_source',
@@ -660,6 +709,7 @@ function dkan_harvest_field_default_field_instances() {
   // Included for use with string extractors like potx.
   t('Add one or more filters to narrow a harvest to a specific subset of fields and values.');
   t('Defaults');
+  t('Description');
   t('Determine replacement field values that will be overwritten when you harvest.');
   t('Exclude a specific field and value from your harvest. Using this will import all fields except the ones listed.');
   t('Excludes');
