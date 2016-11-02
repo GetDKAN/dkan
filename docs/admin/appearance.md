@@ -52,10 +52,11 @@ On the Appearance page, you will see a sub-menu item for **@font-your-face**. Na
 
 By default, the Google fonts api is enabled. If you click on the **Browse all fonts** tab, you will be able to select which google fonts to add to your site. Once you have made your selections, click on the **Enabled fonts** tab to view the font settings screen. Click on the **By CSS selector**, here you can select the css tag and what font should be applied to it using the table. To add fonts to specific css selectors, add them to the open text field at the bottom of the list, select a font from the dropdown next to it and click the **Save applied fonts** button
 For more information on how to use @fontyourface visit the [project page](https://www.drupal.org/project/fontyourface).
-![Select google fonts](../images/Appearance_DKAN_5.png)
 ![Apply fonts](../images/Browse_fonts_DKAN.png)
+![Select google fonts](../images/Appearance_DKAN_5.png)
 
-## Adding Styles to text
+
+## Adding styles to text
 
 DKAN allows you to style the text in the description fields of datasets and resources as well as in the body of data stories. Text can be styled as bold and italic. You can add headline styling and subheads, blockquotes, numbered lists, bulleted lists, hyperlinks and images.
 
