@@ -563,52 +563,6 @@ function dkan_harvest_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-harvest_source-field_notes'.
-  $field_instances['node-harvest_source-field_notes'] = array(
-    'bundle' => 'harvest_source',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 7,
-      ),
-      'search_result' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 3,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'field_notes',
-    'label' => 'Notes',
-    'required' => 0,
-    'settings' => array(
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'rows' => 5,
-      ),
-      'type' => 'text_textarea',
-      'weight' => 8,
-    ),
-  );
-
   // Exported field_instance: 'node-dataset-field_orphan'.
   $field_instances['node-dataset-field_orphan'] = array(
     'bundle' => 'dataset',
