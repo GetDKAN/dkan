@@ -4,9 +4,6 @@ DKAN Developer's Guide
 .. toctree::
    :maxdepth: 1
 
-   accessibility
-   addingdkanfeatures
-   addingfields
    socialmedia
    contributing
    subtheme

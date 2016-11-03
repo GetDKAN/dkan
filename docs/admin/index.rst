@@ -4,6 +4,7 @@ DKAN Site Administration
 .. toctree::
    :maxdepth: 1
 
+   addingfields
    Appearance Options <appearance>
    Content Management<contentmanagement/index>
    Exploring and Visualizing Your Data <visualizations/index>

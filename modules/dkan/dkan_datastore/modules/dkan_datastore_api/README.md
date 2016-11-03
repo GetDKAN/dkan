@@ -1,3 +1,5 @@
+# Datastore API
+
 DKAN offers a Datastore API as a custom endpoint for the Drupal Services module.
 
 This API is designed to be as compatible as possible with the [CKAN Datastore API](http://ckan.readthedocs.org/en/latest/maintaining/datastore.html).
@@ -87,7 +89,9 @@ Returns the country, population, and timestamp fields for US and AR from dataset
 
 Paths with the 'query' argument will search the listed fields within the dataset.
 
-`http://example.com/api/dataset/search?resource_id=d2142282-9838-4cca-972f-f1741410417b&fields=country,population&query=US`
+```
+http://example.com/api/dataset/search?resource_id=d2142282-9838-4cca-972f-f1741410417b&fields=country,population&query=US
+```
 
 This will return the country and population from US.
 
@@ -95,7 +99,9 @@ This will return the country and population from US.
 
 If you wish to query multiple tables, indicate the table as an array key in the following fields:
 
-`http://example.com/api/dataset/search?resource_id[pop]=d2142282-9838-4cca-972f-f1741410417b&resource_id[size]=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters[pop][country]=US,AR&join[pop]=country&join[size]=country`
+```
+http://example.com/api/dataset/search?resource_id[pop]=d2142282-9838-4cca-972f-f1741410417b&resource_id[size]=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters[pop][country]=US,AR&join[pop]=country&join[size]=country
+```
 
 Returns the country, population, squarekm and id for US and AR from datasets 11 and 13.
 
