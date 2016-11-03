@@ -237,7 +237,7 @@ function dkan_harvest_page_preview($node) {
     // The cache directory does not exist.
     // Perform a cache operation.
     $batch_operations = array();
-    $batch_operations[] = array('dkan_harvest_cache_source', array($node));
+    $batch_operations[] = array('dkan_harvest_cache_source_node_batch', array($node));
 
     // Setup batch process.
     $batch = array(
@@ -277,17 +277,16 @@ function dkan_harvest_page_preview($node) {
 }
 
 /**
+ * Batch function to cache a source from source.
  *
+ * @see dkan_harvest_cache_sources()
+ *
+ * @param $node Harvest source node object
+ * @param $context Batch context
  */
-function dkan_harvest_cache_source($node, &$context) {
+function dkan_harvest_cache_source_node_batch($node, &$context) {
   $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
-  $harvest_cache = $harvest_source->cache();
-  if (!$harvest_cache) {
-    // Could not cache the source.
-    $message = t("Failed to fetch the source. Please make sure that the source
-      is reachable and the filters are set up correctly.");
-    drupal_set_message($message, 'error', FALSE);
-  }
+  dkan_harvest_cache_sources(array($harvest_source));
 }
 
 /**
