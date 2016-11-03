@@ -13,3 +13,4 @@ test/local.yml
 assets/*
 .idea
 behat.local.yml
+npm-debug.log

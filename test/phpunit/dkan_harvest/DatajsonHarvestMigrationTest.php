@@ -689,40 +689,35 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    * Test Harvest Source.
    */
   public static function getOriginalTestSource() {
-    return new HarvestSourceDataJsonStub(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/dkan_harvest_datajson_test_original.json");
+    return new HarvestSourceDataJsonStub( __DIR__ . '/data/dkan_harvest_datajson_test_original.json');
   }
 
   /**
    *
    */
   public static function getAlternativeTestSource() {
-    return new HarvestSourceDataJsonStub(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/dkan_harvest_datajson_test_alternative.json");
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_alternative.json');
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getGroupUpdatedTestSource() {
-    return new HarvestSourceDataJsonStub(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/dkan_harvest_datajson_test_group_updated.json");
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_group_updated.json');
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getErrorTestSource() {
-    return new HarvestSourceDataJsonStub(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/dkan_harvest_datajson_test_error.json");
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_error.json');
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getEmptyTestSource() {
-    return new HarvestSourceDataJsonStub(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/dkan_harvest_datajson_test_empty.json");
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_empty.json');
   }
 
   /**

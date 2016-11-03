@@ -425,7 +425,7 @@ class HarvestMigration extends MigrateDKAN {
     $metadata_source_emw->title = $row->metadata_source->title;
 
     if (isset($row->migrate_map_destid1)) {
-      $metadata_source_emw->field_dataset_metadata_ref->set($row->migrate_map_destid1);
+      $metadata_source_emw->field_dataset_metadata_ref->set[] = $row->migrate_map_destid1;
     }
 
     if (isset($row->metadata_source->metadata_schema)) {
@@ -481,7 +481,7 @@ class HarvestMigration extends MigrateDKAN {
     // Show and add an error to the message table.
     if ($this->sourceCount() == 0) {
       $message = t('Items to import is 0. Looks like source is missing. All the'
-        . 'content previously harvested will be unpublished.');
+        . ' content previously harvested will be unpublished.');
       self::displayMessage($message, 'error');
       $this->saveMessage($message);
     }
