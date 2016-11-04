@@ -533,7 +533,7 @@ class HarvestMigration extends MigrateDKAN {
     if ($this->logHistory) {
       try {
         db_merge($this->map->getLogTable())
-          ->key(array('mlid' => $this->logId))
+          ->key(array('mlid' => $this->logID))
           ->fields(array(
             'created' => $this->destination->getCreated(),
             'updated' => $this->destination->getUpdated(),
@@ -1153,12 +1153,12 @@ class HarvestMigration extends MigrateDKAN {
   }
 
   /**
-   * Getter for the $logId variable.
+   * Getter for the $logID variable.
    *
    * Mainly used for the HarvestMigrateSQLMap class.
    */
   public function getLogId() {
-    return $this->logId;
+    return $this->logID;
   }
 
 }
