@@ -95,6 +95,7 @@ Feature: User command center links for site manager role.
     And I click "Open Data Schema Mapper"
     Then I should see "Open Data Schema Mapper"
     When I hover over the admin menu item "Site Configuration"
+    And I hover over the admin menu item "Open Data Schema Mapper"
     And I click "DCAT validation"
     Then I should see "DCAT validation"
     When I hover over the admin menu item "Site Configuration"
