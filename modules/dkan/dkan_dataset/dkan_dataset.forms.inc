@@ -5,6 +5,8 @@
  * Form elements for DKAN.
  */
 
+use dkanDataset\getRemoteFileInfo;
+
 include_once 'includes/getRemoteFileInfo.php';
 
 /**
@@ -41,7 +43,8 @@ function dkan_dataset_get_group_options() {
   if (user_access('administer group')) {
     // If the user is a group administrator then show all groups as available options.
     $groups = og_get_all_group();
-  } else {
+  }
+  else {
     // If the user is not an administrator then only display the groups that the user is a member of.
     // If a user is not specified for 'og_get_groups_by_user' then it defaults to the current user.
     $groups = og_get_groups_by_user(NULL, 'node');
@@ -175,7 +178,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     else {
       $form['actions']['submit']['#value'] = t('Finish');
       // This is here for AJAX compatibililty but causing other problems; commenting out for now
-      // $form['#action'] = url('node/add/dataset');
+      // $form['#action'] = url('node/add/dataset');.
     }
 
     // Mark all POD related required fields as required except for 'Publisher'
@@ -199,16 +202,17 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       // License.
       $field_license_langcode = dkan_dataset_form_field_language($form, 'field_license');
       // Set 'Open Data Commons Open Database License (ODbL)' as default value.
-      $valid_pod_license = true;
+      $valid_pod_license = TRUE;
       $selected_license_code = $form['field_license'][$field_license_langcode]['#default_value'];
       // If the license is not specified then it's not a POD valid license.
       if ($selected_license_code === 'notspecified') {
-        $valid_pod_license = false;
-      } else {
+        $valid_pod_license = FALSE;
+      }
+      else {
         $available_licenses = dkan_dataset_content_types_license_subscribed_values();
         // If the license is not available then is not a POD valid license.
         if (!isset($available_licenses[$selected_license_code])) {
-          $valid_pod_license = false;
+          $valid_pod_license = FALSE;
           drupal_set_message(
             t('The dataset had a license value that is not valid on Project Open Data so it was changed automatically. ') .
             t('Please check the new value before saving any changes.')
@@ -225,14 +229,16 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     // to 'restricted' or 'private'.
     $access_level_values = array(
       array('value' => t('restricted')),
-      array('value' => t('private'))
+      array('value' => t('private')),
     );
     $field_public_access_level_langcode = dkan_dataset_form_field_language($form, 'field_public_access_level');
     $form['field_rights']['#states'] = array(
       'visible' => array(
-        '[name="field_public_access_level[' . $field_public_access_level_langcode . ']"]' => array($access_level_values)),
+        '[name="field_public_access_level[' . $field_public_access_level_langcode . ']"]' => array($access_level_values),
+      ),
       'required' => array(
-        '[name="field_public_access_level[' . $field_public_access_level_langcode . ']"]' => array($access_level_values))
+        '[name="field_public_access_level[' . $field_public_access_level_langcode . ']"]' => array($access_level_values),
+      ),
     );
 
     // Mark 'Groups' field as required if the group validation is enabled on DKAN Dataset forms.
@@ -261,7 +267,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     }
 
     // Hide field groups if multi step form is enabled and the dataset API is not being used.
-    if (variable_get('dkan_dataset_form_additional_info', 1 ) && (current_path() != 'api/dataset/node')) {
+    if (variable_get('dkan_dataset_form_additional_info', 1) && (current_path() != 'api/dataset/node')) {
       $query = drupal_get_query_parameters();
       $arg2 = arg(2);
       $additional = isset($form['#additional_processed']) && $form['#additional_processed'] ? TRUE : FALSE;
@@ -293,7 +299,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $field_dataset_ref_langcode = dkan_dataset_form_field_language($form, 'field_dataset_ref');
     $form['field_dataset_ref'][$field_dataset_ref_langcode]['#description'] = t('Dataset that this resource is attached to.');
     $dataset_options = $form['field_dataset_ref'][$field_dataset_ref_langcode]['#options'];
-    $fix_apostrophes = function($value) {
+    $fix_apostrophes = function ($value) {
       return html_entity_decode($value, ENT_QUOTES, "UTF-8");
     };
     $form['field_dataset_ref'][$field_dataset_ref_langcode]['#options'] = array_map($fix_apostrophes, $dataset_options);
@@ -355,10 +361,10 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     else {
       $form['#action'] = url('node/add/resource');
       if (drupal_match_path(current_path(), 'node/*/edit')) {
-          $form['#action'] = url('node/' . $form['#node']->nid . '/edit');
-       }    
+        $form['#action'] = url('node/' . $form['#node']->nid . '/edit');
+      }
     }
-    if (variable_get('dkan_dataset_form_additional_info', 1 )) {
+    if (variable_get('dkan_dataset_form_additional_info', 1)) {
       if (isset($query['dataset']) || (isset($form_state['input']['field_dataset_ref']['und'][0]))) {
         $form['actions']['additional'] = array(
           '#type' => 'submit',
@@ -541,18 +547,28 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
       }
       // @todo Probably remove all this
       elseif ($api) {
-        $file = new dkanDataset\getRemoteFileInfo($api, t('!site_name crawler', array('!site_name' => variable_get('site_name'))) , TRUE, file_directory_temp());
+        $file = new GetRemoteFileInfo($api, t('!site_name crawler', array('!site_name' => variable_get('site_name'))), TRUE, file_directory_temp());
         $filemime = $file->getType();
         $type = dkan_dataset_discovery_extension($filemime);
       }
-      // Check for geojson
+      // Check for geojson.
       if ($type == 'json' && isset($file)) {
         $response = drupal_http_request($file->uri, array('timeout' => 5));
         // dpm($response);
         if ($response->code == '200') {
           $data = $response->data;
           $decoded = drupal_json_decode($data);
-          $geojson_types = array('FeatureCollection', 'GeometryCollection', 'Feature', 'Point', 'MultiPoint', 'LineString', 'MultiLineString', 'Polygon', 'MultiPolygon');
+          $geojson_types = array(
+            'FeatureCollection',
+            'GeometryCollection',
+            'Feature',
+            'Point',
+            'MultiPoint',
+            'LineString',
+            'MultiLineString',
+            'Polygon',
+            'MultiPolygon',
+          );
           foreach ($geojson_types as $geojson_type) {
             foreach ($decoded as $key => $value) {
               if ($geojson_type === $value) {
@@ -737,7 +753,7 @@ function dkan_dataset_resource_nodes() {
   }
   if ($nodes) {
     foreach ($nodes as $node) {
-      $attributes = array('attributes' => array('class' => array('list-group-item')),'html' => true);
+      $attributes = array('attributes' => array('class' => array('list-group-item')), 'html' => TRUE);
       $links[] = l('<span>' . $node->title . '</span>', 'node/' . $node->nid, $attributes);
     }
     if (!$current_node) {
@@ -755,13 +771,13 @@ function dkan_dataset_visualizations_list() {
   $output = '';
   $current_node = menu_get_object();
   if (isset($current_node->type) && $current_node->type == 'resource') {
-    if($current_node->uuid) {
+    if ($current_node->uuid) {
       // Find all visualizations created from this resource.
       $nodes = dkan_dataset_get_visualization_entities($current_node->uuid);
     }
     if ($nodes) {
       foreach ($nodes as $node) {
-        $attributes = array('attributes' => array('class' => array('list-group-item')),'html' => true);
+        $attributes = array('attributes' => array('class' => array('list-group-item')), 'html' => TRUE);
         // Fetch title and type.
         $result = db_query("SELECT type, title FROM {eck_visualization} WHERE id = :id", array(':id' => $node->nid));
         foreach ($result as $row) {
