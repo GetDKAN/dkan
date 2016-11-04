@@ -461,7 +461,9 @@ class HarvestMigration extends MigrateDKAN {
       $this->saveMessage($message);
       return FALSE;
     }
-    $metadata_source_emw->field_metadata_file->file->set($file);
+    else {
+      $metadata_source_emw->field_metadata_file->file->set($file);
+    }
 
     try {
       $metadata_source_emw->save();
