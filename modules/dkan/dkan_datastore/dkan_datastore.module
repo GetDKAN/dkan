@@ -621,7 +621,7 @@ function dkan_datastore_queue_import($uuid, $fid) {
     'fid' => $fid,
   );
   DrupalQueue::get('dkan_datastore_queue')->createItem($item);
-  watchdog('dkan_datastore', 'Added @file to queue for import into datastore', array('%file' => $fid)));
+  watchdog('dkan_datastore', 'Added @file to queue for import into datastore', array('%file' => $fid));
 }
 
 /**
