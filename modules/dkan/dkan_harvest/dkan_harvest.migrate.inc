@@ -114,7 +114,7 @@ class HarvestMigration extends MigrateDKAN {
     if (!isset($result['node'])) {
       // Something is wrong.
       $message = t('Cannot look-up the harvest source Node ID');
-      $this->displayMessage($message);
+      self::displayMessage($message, 'error');
     }
 
     // This should be set when running the harvest with a harvest source node. Add
