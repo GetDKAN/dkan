@@ -2,13 +2,16 @@
 
 /**
  * @file
- * File for dkan_harvest HarvestSource class. This will serve as a in code
- * documentation as well, please update the comments if you update the class!
+ * File for dkan_harvest HarvestSource class.
+ *
+ * This will serve as a in code documentation as well.
+ * Please update the comments if you update the class!
  */
 
 /**
- * Class to store caching informations about the harvest source. Each dataset
- * id added can have multiple flags.
+ * Class to store caching informations about the harvest source.
+ *
+ * Each dataset id added can have multiple flags.
  */
 class HarvestCache {
   // Cached entries Flags.
@@ -19,8 +22,8 @@ class HarvestCache {
   const DKAN_HARVEST_CACHE_DEFAULTED = 0x8;
   const DKAN_HARVEST_CACHE_OVERRIDDEN = 0x16;
   // Source Object.
-  public $harvest_source;
-  public $harvestcache_time;
+  public $harvestSource;
+  public $harvestCacheTime;
   public $processed;
 
   /**
@@ -28,7 +31,7 @@ class HarvestCache {
    */
   public function __construct(HarvestSource $harvest_source = NULL, $harvestcache_time = NULL, $processed = array()) {
     if (is_a($harvest_source, 'HarvestSource')) {
-      $this->harvest_source = $harvest_source;
+      $this->harvestSource = $harvest_source;
     }
     else {
       throw new Exception('HarvestSource not valid!');
@@ -38,7 +41,7 @@ class HarvestCache {
       $harvestcache_time = time();
     }
 
-    $this->harvestcache_time = $harvestcache_time;
+    $this->harvestCacheTime = $harvestcache_time;
     $this->processed = $processed;
   }
 
@@ -161,8 +164,7 @@ class HarvestCache {
   }
 
   /**
-   * Get count of the cached source elements that were saved to the cache
-   * directory.
+   * Get count of cached source elements saved in the cache directory.
    */
   public function getSavedCount() {
     return count($this->getSaved());
@@ -171,8 +173,10 @@ class HarvestCache {
   /**
    * Set cache entry with specific flag.
    *
-   * @param $cache_id
-   * @param $flag
+   * @param string $cache_id
+   *        An id to name a cache entry.
+   * @param int $flag
+   *        Status of a cache entry.
    */
   public function setCacheEntry($cache_id, $flag, $title) {
     if (!isset($this->processed[$cache_id])) {

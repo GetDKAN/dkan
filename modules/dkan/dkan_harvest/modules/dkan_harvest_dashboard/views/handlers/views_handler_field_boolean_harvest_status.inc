@@ -109,12 +109,12 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
     }
 
     $machine_name = array_pop($result_array);
-    $harvestSource = new HarvestSource($machine_name);
+    $harvest_source = new HarvestSource($machine_name);
 
     // Get the latest mlid from the message table.
     $query_migrate_log = db_query("SELECT mlid FROM migrate_log WHERE machine_name = :migration_machine_name ORDER BY mlid DESC LIMIT 1",
       array(
-        ':migration_machine_name' => $harvestSource->getMigrationMachineName(),
+        ':migration_machine_name' => $harvest_source->getMigrationMachineName(),
       ));
 
     $result_migrate_log = $query_migrate_log->fetchAssoc();
@@ -128,8 +128,8 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
     // Get rid of the array.
     $mlid = array_pop($result_migrate_log);
 
-    $harvestSourceMigration = dkan_harvest_get_migration($harvestSource);
-    $messageTable = $harvestSourceMigration->getMap()->getMessageTable();
+    $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
+    $messageTable = $harvest_source_migration->getMap()->getMessageTable();
 
     // Let's see if we got errors during the last migration.
     $query_message_table = db_query("SELECT COUNT(*) FROM " . $messageTable . " WHERE mlid = :mlid AND level = :error_level",
@@ -162,7 +162,7 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
         && !empty(filter_xss_admin($this->options['type_custom_notapplicable']))) {
         return filter_xss_admin($this->options['type_custom_notapplicable']);
       }
-      return "N/A";
+      return 'N/A';
     }
 
     return parent::render($values);

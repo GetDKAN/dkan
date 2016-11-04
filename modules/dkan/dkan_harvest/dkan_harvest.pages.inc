@@ -1,21 +1,27 @@
 <?php
-
 /**
  * @file
+ * Page callbacks for dkan harvest pages.
  */
 
 /**
  * Display a harvest source node's event log history.
  *
- * @param $node The harvest source node being acted upon.
+ * @param object $node
+ *        The harvest source node being acted upon.
  *
- * @return A themed table of data and links for harvest source node events.
+ * @return array
+ *         A themed table of data and links for harvest source node events.
  */
 function dkan_harvest_page_event_log($node) {
   // Set the table header.
   $header = array(
     'mlid' => array('data' => t('Event ID'), 'field' => 'log.mlid'),
-    'starttime' => array('data' => t('Date'), 'field' => 'starttime', 'sort' => 'desc'),
+    'starttime' => array(
+      'data' => t('Date'),
+      'field' => 'starttime',
+      'sort' => 'desc',
+    ),
     'duration' => array('data' => t('Duration'), 'field' => 'duration'),
     'created' => array('data' => t('Created'), 'field' => 'created'),
     'updated' => array('data' => t('Updated'), 'field' => 'updated'),
@@ -24,18 +30,18 @@ function dkan_harvest_page_event_log($node) {
     'unchanged' => array('data' => t('Unchanged'), 'field' => 'unchanged'),
   );
 
-  $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
-  $harvestSourceMigration = dkan_harvest_get_migration($harvestSource);
-  $logTable = $harvestSourceMigration->getMap()->getLogTable();
+  $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+  $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
+  $log_table = $harvest_source_migration->getMap()->getLogTable();
 
   $query = db_select('migrate_log', 'log');
 
-  $query->join($logTable, 'harvest_source_log', 'log.mlid = harvest_source_log.mlid');
+  $query->join($log_table, 'harvest_source_log', 'log.mlid = harvest_source_log.mlid');
 
   $query_result = $query
     ->fields('log')
     ->fields('harvest_source_log')
-    ->condition('machine_name', $harvestSource->getMigrationMachineName())
+    ->condition('machine_name', $harvest_source->getMigrationMachineName())
     // Add table sort extender.
     ->extend('TableSort')
     // Add order by headers.
@@ -50,7 +56,7 @@ function dkan_harvest_page_event_log($node) {
   /**
    * Convert from microsecnod to seconds.
    */
-  function timefloor ($microtime) {
+  function timefloor($microtime) {
     return floor($microtime / 1000);
   }
 
@@ -115,9 +121,12 @@ function dkan_harvest_page_event_log($node) {
 /**
  * Display a harvest source node's error log history.
  *
- * @param $node The harvest source node being acted upon.
+ * @param object $node
+ *        The harvest source node being acted upon.
  *
- * @return A themed table of data and links for harvest source node events.
+ * @return array
+ *         A themed table of data and links for
+ *         harvest source node events.
  */
 function dkan_harvest_page_error_log($node) {
   // Set the table header.
@@ -128,11 +137,11 @@ function dkan_harvest_page_error_log($node) {
     'message' => array('data' => t('Error Message'), 'field' => 'message'),
   );
 
-  $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
-  $harvestSourceMigration = dkan_harvest_get_migration($harvestSource);
-  $harvestSourceMigrationMap = $harvestSourceMigration->getMap();
+  $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+  $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
+  $harvest_source_migration_map = $harvest_source_migration->getMap();
 
-  $query = db_select($harvestSourceMigrationMap->getMessageTable(), 'harvest_source_message')
+  $query = db_select($harvest_source_migration_map->getMessageTable(), 'harvest_source_message')
     ->fields('harvest_source_message')
     ->condition('level', Migration::MESSAGE_ERROR)
     // Add table sort extender.
@@ -163,7 +172,7 @@ function dkan_harvest_page_error_log($node) {
         // Lookup the dataset nid. lookupDestinationID() takes an array and
         // returns an array, But really we are interested in one sincle result.
         $sourceid = $result->sourceid1;
-        $destids = $harvestSourceMigrationMap->lookupDestinationID(array($sourceid));
+        $destids = $harvest_source_migration_map->lookupDestinationID(array($sourceid));
         // We expect an array with one valid item. If not fallback to default
         // "N/A".
         if (is_array($destids) && count($destids) == 1 && isset($destids['destid1'])) {

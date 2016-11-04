@@ -56,13 +56,13 @@ function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime)
 
   if ($remote) {
     $data = FALSE;
-    if ($source->type->machine_name === 'datajson_v1_1_xml') {
+    if ($source->type->machineName === 'datajson_v1_1_xml') {
       // Convert the XML document to JSON.
       $xml = simplexml_load_string($remote);
       $json = json_encode($xml);
       $data = json_decode($json, TRUE);
     }
-    elseif ($source->type->machine_name === 'datajson_v1_1_json') {
+    elseif ($source->type->machineName === 'datajson_v1_1_json') {
       $data = drupal_json_decode($remote);
     }
 

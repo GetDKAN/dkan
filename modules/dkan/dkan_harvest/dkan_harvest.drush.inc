@@ -85,10 +85,13 @@ function dkan_harvest_drush_command() {
 }
 
 /**
- * Run a harvest operation (cache + migrate) on all the harvest source
+ * Run a harvest operation (cache + migrate).
+ *
+ * Run harvest on all the harvest source
  * available or the source passed as arguments.
  *
- * @param $source_machine_name Optional harvest source machine name.
+ * @param string $source_machine_name
+ *        Optional harvest source machine name.
  */
 function dkan_harvest_drush_command_harvest($source_machine_name) {
   dkan_harvest_drush_command_cache($source_machine_name);
@@ -98,7 +101,8 @@ function dkan_harvest_drush_command_harvest($source_machine_name) {
 /**
  * Run harvest cache operation on the source passed as argument.
  *
- * @param $source_machine_name Source machine name to cache
+ * @param string $source_machine_name
+ *        Source machine name to cache.
  */
 function dkan_harvest_drush_command_cache($source_machine_name) {
   if (isset($source_machine_name)) {
@@ -120,7 +124,8 @@ function dkan_harvest_drush_command_cache($source_machine_name) {
 /**
  * Run harvest migrate operation on the source passed as argument.
  *
- * @param $source_machine_name Source machine name to migrate
+ * @param string $source_machine_name
+ *        Source machine name to migrate.
  */
 function dkan_harvest_drush_command_migrate($source_machine_name) {
   // Gather harvest migration options.
@@ -148,7 +153,8 @@ function dkan_harvest_drush_command_migrate($source_machine_name) {
 /**
  * Run harvest migrate operation on the source passed as argument.
  *
- * @param $source_machine_name Source machine name to migrate
+ * @param string $source_machine_name
+ *        Source machine name to migrate.
  */
 function dkan_harvest_drush_command_rollback($source_machine_name) {
 
@@ -198,7 +204,7 @@ function dkan_harvest_drush_command_status() {
 
   foreach ($harvest_sources as $harvest_source) {
     $rows[] = array(
-      'machine name' => $harvest_source->machine_name,
+      'machine name' => $harvest_source->machineName,
       'label' => $harvest_source->label,
       'uri' => $harvest_source->uri,
       'type' => $harvest_source->type->label,
@@ -211,7 +217,8 @@ function dkan_harvest_drush_command_status() {
 /**
  * Drop the harvest migrate information about a harvest source.
  *
- * @param $source_machine_name
+ * @param string $source_machine_name
+ *        Source machine name to migrate.
  */
 function dkan_harvest_drush_command_deregister($source_machine_name) {
 
@@ -226,12 +233,12 @@ function dkan_harvest_drush_command_deregister($source_machine_name) {
     return FALSE;
   }
 
-  $harvestSource = new HarvestSource($source_machine_name);
+  $harvest_source = new HarvestSource($source_machine_name);
 
-  if (!$harvestSource) {
+  if (!$harvest_source) {
     drush_log(t("Harvest Source not found!"), 'error');
     return FALSE;
   }
 
-  dkan_harvest_deregister_sources(array($harvestSource), $options);
+  dkan_harvest_deregister_sources(array($harvest_source), $options);
 }

@@ -2,15 +2,13 @@
 
 /**
  * @file
- */
-
-/**
  * Base MigrateItem class for Harvest Migrations.
  *
  * Should be a simpler files retriving impletation for locally stored files.
  */
+
 /**
- *
+ * Base MigrateItem class for Harvest Migrations.
  */
 class HarvestItem extends MigrateItem {
 
@@ -22,7 +20,8 @@ class HarvestItem extends MigrateItem {
   /**
    * Constructor.
    *
-   * @param $item_uri_subject
+   * @param string $item_uri_subject
+   *        Item URI.
    */
   public function __construct($item_uri_subject) {
     parent::__construct();
@@ -66,10 +65,10 @@ class HarvestItem extends MigrateItem {
    * easily expressed from the ID.
    *
    * @param mixed $id
-   *   XML item ID
+   *        XML item ID.
    *
    * @return string
-   *   Formatted string with replaced tokens
+   *         Formatted string with replaced tokens.
    */
   protected function constructItemUrl($id) {
     return str_replace(':id', $id, $this->itemUriSubject);
@@ -83,10 +82,10 @@ class HarvestItem extends MigrateItem {
    * the source service is slow, etc.)
    *
    * @param string $item_uri
-   *   URL to the XML file
+   *        URL to the XML file.
    *
    * @return SimpleXMLElement
-   *   Loaded XML
+   *         Loaded XML
    */
   protected function loadItemContent($item_uri) {
     return file_get_contents($item_uri);

@@ -2,15 +2,13 @@
 
 /**
  * @file
+ * HarvestMigrateSQLMap file.
  */
 
 /**
  * Base MigrateItem class for Harvest Migrations.
  *
  * Should be a simpler files retriving impletation for locally stored files.
- */
-/**
- *
  */
 class HarvestMigrateSQLMap extends MigrateSQLMap {
 
@@ -35,6 +33,8 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
   }
 
   /**
+   * Gets a qualified log table.
+   *
    * Qualifying the log table name with the database name makes cross-db joins
    * possible. Note that, because prefixes are applied after we do this (i.e.,
    * it will prefix the string we return), we do not qualify the table if it has
@@ -43,6 +43,7 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
    * query is in an external database.
    *
    * @return string
+   *         Returns the log table name.
    *
    * @see self::getQualifiedMapTable()
    */
@@ -70,9 +71,9 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
     $db_connection = Database::getConnection('default', $connection_key);
 
     // Default generated table names, limited to 63 characters.
-    $prefixLength = strlen($db_connection->tablePrefix());
+    $prefix_length = strlen($db_connection->tablePrefix());
     $this->logTable = 'migrate_log_' . drupal_strtolower($machine_name);
-    $this->logTable = drupal_substr($this->logTable, 0, 63 - $prefixLength);
+    $this->logTable = drupal_substr($this->logTable, 0, 63 - $prefix_length);
 
     parent::__construct($machine_name, $source_key, $destination_key, $connection_key, $options);
   }
@@ -224,8 +225,8 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
         $schema = array(
           'description' => t('Mappings from source key to destination key'),
           'fields' => $fields,
-          // For documentation purposes only; foreign keys are not created in the
-          // database.
+          // For documentation purposes only; foreign keys are not
+          // created in the database.
           'foreign keys' => array(
             'migrate_log' => array(
               'table' => 'migrate_log',
@@ -275,11 +276,13 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
   }
 
   /**
-   * Get the number of source records which were previously imported but not
-   * available from the source anymore.
+   * Get the number of source records.
+   *
+   * Get number of source records previously imported
+   * but not available from the source anymore.
    *
    * @return int
-   *  Number of records errored out.
+   *         Number of records errored out.
    */
   public function orphanedCount() {
     $query = $this->connection->select($this->mapTable);
@@ -291,14 +294,6 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
 
   /**
    * More generic method to query the map table.
-   *
-   * @parm $needs_update_value
-   * @param $sourceid1_values
-   * @param $sourceid1_condition
-   * @param $destid1_values
-   * @param $destid1_condition
-   *
-   * @result Array with the result keyed by 'sourceid1'
    */
   public function lookupMapTable($needs_update_value = HarvestMigrateSQLMap::STATUS_IMPORTED, $sourceid1_values = array(), $sourceid1_condition = "IN", $destid1_values = array(), $destid1_condition = "IN") {
     migrate_instrument_stop('lookupMapTable');
@@ -334,7 +329,7 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
       // migration).
       $migration = Migration::currentMigration();
       if ($migration) {
-        $fields['mlid'] = $migration->getLogID();
+        $fields['mlid'] = $migration->getLogId();
       }
     }
     else {
@@ -358,8 +353,10 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
   }
 
   /**
-   * Rip off the MigrateSQLMap::deleteBulk() that only supports one key and
-   * deletes the map table entry by sourceid.
+   * Rip off the MigrateSQLMap::deleteBulk().
+   *
+   * Only supports one key and deletes the map
+   * table entry by sourceid.
    */
   public function deleteBulkFromMap(array $source_keys) {
     // If we have a single-column key, we can shortcut it.

@@ -2,20 +2,28 @@
 
 /**
  * @file
- * File for dkan_harvest HarvestSource class. This will serve as a in code
- * documentation as well, please update the comments if you update the class!
+ * File for dkan_harvest HarvestSource class.
+ *
+ * This will serve as a in code documentation as well.
+ * Please update the comments if you update the class!
  */
 
 /**
- * Dkan Harvest HarvestSource Object is user to store the sources properties needed to
- * indentify a source to harvest. Those properties are:.
+ * Dkan Harvest HarvestSource Object.
+ *
+ * It's user to store the sources properties needed to
+ * indentify a source to harvest.
+ *
+ * Those properties are:
  *
  * - 'machine_name' (Required): Unique identifier for this source.
- * - 'uri' (Required): Location of the content to harvest for this source. This can be a
- * standard URL 'http://data_json_remote' or a local file path '/home/test/source/file'.
- * - 'type' (Required): Type of the endpoint protocol that this source is pulling from.
- * - 'name' (String, Optional): User friendly name used to display this source. If
- * empty will use the 'machine_name' property.
+ * - 'uri' (Required): Location of the content to harvest for this source.
+ * This can be a standard URL 'http://data_json_remote' or a local file
+ * path '/home/test/source/file'.
+ * - 'type' (Required): Type of endpoint protocol
+ * that this source is pulling from.
+ * - 'name' (String, Optional): User friendly name used to display this source.
+ * If empty will use the 'machine_name' property.
  * - 'filters' => array('keyword' => array('health')) (Optional): Filter items
  * preseting the following values.
  * - 'excludes' => array('keyword' => array('tabacco')) (Optional): Exclude
@@ -25,7 +33,7 @@
  * - 'overrides' => array('author' => 'Author') (Optional): Provide overrides .
  */
 class HarvestSource {
-  public $machine_name;
+  public $machineName;
   public $uri;
   public $type;
   public $label;
@@ -37,8 +45,9 @@ class HarvestSource {
   /**
    * Constructor for HarvestSource class.
    *
-   * @param Array source: Source array containing atleast all the required
-   *   source elements (As documented above) and any other optional proprety.
+   * @param array $machine_name
+   *        Source array containing atleast all the required source
+   *        elements (As documented above) and any other optional proprety.
    */
   public function __construct($machine_name) {
     // $machine_name is really needed to construct this object.
@@ -62,7 +71,7 @@ class HarvestSource {
     $harvest_source_node = entity_load_single('node', array_pop($harvest_source_nids));
     $harvest_source_emw = entity_metadata_wrapper('node', $harvest_source_node);
 
-    $this->machine_name = $harvest_source_emw->field_dkan_harvest_machine_name->machine->value();
+    $this->machineName = $harvest_source_emw->field_dkan_harvest_machine_name->machine->value();
 
     if (!isset($harvest_source_emw->field_dkan_harvest_source_uri)) {
       throw new Exception('HarvestSource uri invalid!');
@@ -77,7 +86,7 @@ class HarvestSource {
 
     $label = $harvest_source_emw->title->value();
     if (!isset($label) || !is_string($label)) {
-      $label = $this->machine_name;
+      $label = $this->machineName;
     }
     $this->label = $label;
 
@@ -113,14 +122,15 @@ class HarvestSource {
   /**
    * Get the cache directory for a specific source.
    *
-   * @param bool $create:
-   *   create the cache diretory if it does not exist.
+   * @param bool $create_or_clear
+   *        Create the cache diretory if it does not exist.
    *
    * @return string
-   * PHP filesteream location. Or FALSE if the cache directory does not exist.
+   *         PHP filesteream location.
+   *         Or FALSE if the cache directory does not exist.
    */
   public function getCacheDir($create_or_clear = FALSE) {
-    $cache_dir_path = DKAN_HARVEST_CACHE_DIR . '/' . $this->machine_name;
+    $cache_dir_path = DKAN_HARVEST_CACHE_DIR . '/' . $this->machineName;
     $options = FILE_MODIFY_PERMISSIONS;
     if ($create_or_clear) {
       file_unmanaged_delete_recursive($cache_dir_path);
@@ -134,16 +144,20 @@ class HarvestSource {
   }
 
   /**
-   * Generate a migration machine name from the source machine name suitable for in
-   * MigrationBase::registerMigration().
+   * Get machine name of migration from migration name.
+   *
+   * Generate a migration machine name from the source machine name
+   * suitable for in MigrationBase::registerMigration().
    */
   public function getMigrationMachineName() {
-    return self::getMigrationMachineNameFromName($this->machine_name);
+    return self::getMigrationMachineNameFromName($this->machineName);
   }
 
   /**
-   * Generate a migration machine name from the source machine name suitable for in
-   * MigrationBase::registerMigration().
+   * Get machine name of migration from migration name.
+   *
+   * Generate a migration machine name from the source machine name
+   * suitable for in MigrationBase::registerMigration().
    */
   public static function getMigrationMachineNameFromName($machine_name) {
     $migration_name = DKAN_HARVEST_MIGRATION_PREFIX . $machine_name;
@@ -154,9 +168,10 @@ class HarvestSource {
    * Generic function to convert a string to a Drupal machine name.
    *
    * @param string $human_name
-   *   string to convert to machine name.
+   *        String to convert to machine name.
    *
-   *   TODO Not sure that this is needed anymore.
+   * @return string
+   *         String after replacements.
    */
   public static function getMachineNameFromName($human_name) {
     return preg_replace('@[^a-z0-9-]+@', '_', strtolower($human_name));
@@ -165,11 +180,14 @@ class HarvestSource {
   /**
    * Get a HarvestSource object from a harvest_source node.
    *
-   * @param $harvest_source_node harvest_source node.
+   * @param object $harvest_source_node
+   *        Harvest Source content type node.
    *
-   * @return HarvestSource object.
+   * @return HarvestSource
+   *         HarvestSource object.
    *
-   * @throws Exception if HarvestSource creation fail.
+   * @throws Exception
+   *         If HarvestSource creation fail.
    */
   public static function getHarvestSourceFromNode(stdClass $harvest_source_node) {
     $harvest_source_node_emw = entity_metadata_wrapper('node', $harvest_source_node);
@@ -177,13 +195,14 @@ class HarvestSource {
   }
 
   /**
-   * Query the migrate_log table to get the last time the harvest source
-   * migration run.
+   * Get last time migration run from migration log table by machine_name.
    *
-   * @param string @machine_name Harvest Source machine name.
+   * @param string $machine_name
+   *        Harvest Source machine name.
    *
-   * @return Timestamp of the last Harvest Migration run. Or NULL if source not
-   * found or not run yet.
+   * @return int
+   *         Timestamp of the last Harvest Migration run.
+   *         Or NULL if source not found or not run yet.
    */
   public static function getMigrationTimestampFromMachineName($machine_name) {
     $migration_machine_name = HarvestSource::getMigrationMachineNameFromName($machine_name);
@@ -207,13 +226,14 @@ class HarvestSource {
   }
 
   /**
-   * Query the migrate_log table to get the time the harvest source
-   * migration run.
+   * Get last time migration run from migration log table by mild.
    *
-   * @param string @mlid Harvest Source Migration event ID.
+   * @param string $mlid
+   *        Harvest Source Migration event ID.
    *
-   * @return Timestamp of the last Harvest Migration run. Or NULL if source not
-   * found or not run yet.
+   * @return int
+   *         Timestamp of the last Harvest Migration run.
+   *         Or NULL if source not found or not run yet.
    */
   public static function getMigrationTimestampFromMlid($mlid) {
     // Get the time the migration was run by mlid.
@@ -235,12 +255,13 @@ class HarvestSource {
   }
 
   /**
-   * Query the migration map table to get the last time the harvest source
-   * migration run.
+   * Get number of dataset imported.
    *
-   * @param string @machine_name Harvest Source machine name.
+   * @param string $machine_name
+   *        Harvest Source machine name.
    *
-   * @return number of datasets imported by the Harvest Source.
+   * @return int
+   *         Number of datasets imported by the Harvest Source.
    */
   public static function getMigrationCountFromMachineName($machine_name) {
     // Construct the migrate map table name.
@@ -263,8 +284,13 @@ class HarvestSource {
   }
 
   /**
+   * Cache harvest source.
    *
-   * @return HarvestCache object or FALSE in case of error.
+   * @param int $timestamp
+   *        Timestamp to use when store the cache.
+   *
+   * @return HarvestCache
+   *         HarvestCache bject or FALSE in case of error.
    */
   public function cache($timestamp = FALSE) {
 
@@ -277,31 +303,33 @@ class HarvestSource {
 
     try {
       // Get the cache callback for the source.
-      $harvestCache = call_user_func(
-        $this->type->cache_callback,
+      $harvest_cache = call_user_func(
+        $this->type->cacheCallback,
         $this,
         $timestamp
       );
     }
     catch (Exception $e) {
-      drupal_set_message(t('Harvest demo cache failed ') . $e->getMessage(), 'error', FALSE);
+      drupal_set_message(t('Harvest demo cache failed: @error', array('@error' => $e->getMessage())), 'error', FALSE);
     }
 
-    if (!isset($harvestCache)) {
+    if (!isset($harvest_cache)) {
       // Nothing to look for here.
       return FALSE;
     }
 
-    return $harvestCache;
+    return $harvest_cache;
   }
 
   /**
    * Run the migration for the sources.
    *
-   * @param $options: Array extra options to pass to the migration.
+   * @param array $options
+   *        Array extra options to pass to the migration.
    *
-   * @return FALSE in case of a problem. Or a Migrate::RESULT_* status after
-   * completion.
+   * @return mixed
+   *         FALSE in case of a problem. Or a Migrate::RESULT_*
+   *         status after completion.
    */
   public function migrate($options = array()) {
     $migration = $this->getMigration();
@@ -325,7 +353,8 @@ class HarvestSource {
   /**
    * Register and get the migration class for a harvest source.
    *
-   * @return HarvestMigration object related to the source. Or FALSE if failed.
+   * @return HarvestMigration
+   *         Object related to the source. Or FALSE if failed.
    */
   public function getMigration() {
     $harvest_migration_machine_name = $this->getMigrationMachineName();
@@ -338,17 +367,17 @@ class HarvestSource {
       'dkan_harvest_source' => $this,
     );
 
-    // Register the migration if it does not exist yet or update the arguments if
-    // not.
+    // Register the migration if it does not exist yet or
+    // update the arguments if not.
     HarvestMigration::registerMigration(
-      $this->type->migration_class,
+      $this->type->migrationClass,
       $harvest_migration_machine_name,
       $arguments
     );
 
     // This will make sure the Migration have the latest arguments.
     $migration = HarvestMigration::getInstance($harvest_migration_machine_name,
-      $this->type->migration_class, $arguments);
+      $this->type->migrationClass, $arguments);
 
     // Probably we should not trust migrations not subclassed from our
     // HarvestMigration. Altheugh this check should've have happened in the
@@ -363,8 +392,9 @@ class HarvestSource {
   /**
    * Remove any cached or imported content.
    *
-   * @return HarvestSource::RESULT_* status code or FALSE if something is gone
-   * wrong.
+   * @return mixed
+   *         HarvestSource::RESULT_* status code
+   *         FALSE if something is gone wrong.
    */
   public function rollback($options = array()) {
     // Clear the cache dir.
