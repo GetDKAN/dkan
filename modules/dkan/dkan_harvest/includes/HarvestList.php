@@ -1,9 +1,16 @@
 <?php
 
 /**
+ * @file
+ */
+
+/**
  * Base MigrateList class for Harvest Migrations.
  *
  * Should be a simpler files retriving impletation then MigrateListFiles.
+ */
+/**
+ *
  */
 class HarvestList extends MigrateList {
 
@@ -15,7 +22,7 @@ class HarvestList extends MigrateList {
    *
    * @param $source_cache_dir
    *
-   * This will use the file name as the item id.
+   *   This will use the file name as the item id.
    */
   public function __construct($source_cache_dir) {
     parent::__construct();
@@ -40,7 +47,7 @@ class HarvestList extends MigrateList {
    * Implements MigrateList::__toString().
    */
   public function __toString() {
-    // Remove any leading
+    // Remove any leading.
     return preg_replace('@[^a-z0-9-]+@', '_', strtolower($this->source_cache_dir));
   }
 
@@ -50,4 +57,5 @@ class HarvestList extends MigrateList {
   public function computeCount() {
     return count($this->getIdList());
   }
+
 }

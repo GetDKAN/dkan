@@ -1,9 +1,16 @@
 <?php
 
 /**
+ * @file
+ */
+
+/**
  * Base MigrateItem class for Harvest Migrations.
  *
  * Should be a simpler files retriving impletation for locally stored files.
+ */
+/**
+ *
  */
 class HarvestItem extends MigrateItem {
 
@@ -51,7 +58,7 @@ class HarvestItem extends MigrateItem {
     }
   }
 
- /**
+  /**
    * Creates a valid URL pointing to current item.
    *
    * The default implementation simply replaces the :id token in the URL with
@@ -84,4 +91,5 @@ class HarvestItem extends MigrateItem {
   protected function loadItemContent($item_uri) {
     return file_get_contents($item_uri);
   }
+
 }

@@ -99,7 +99,6 @@ class HarvestMigration extends MigrateDKAN {
     );
 
     // Get the harvest source nid.
-
     $query = new EntityFieldQuery();
 
     $query->entityCondition('entity_type', 'node')
@@ -256,19 +255,20 @@ class HarvestMigration extends MigrateDKAN {
    * replace them.
    *
    * @param $dataset entity where resources are going to be added.
-   * @param stdClass $row Migrate row.
+   * @param object $row
+   *   Migrate row.
    */
   private function createResources(&$dataset, stdClass &$row) {
-      // Delete all resources from dataset if any.
-      // All resources will get imported again.
-      $field_resources_ids = array();
-      $dataset_old_emw = entity_metadata_wrapper('node', $dataset->nid);
-      foreach ($dataset_old_emw->field_resources->getIterator() as $delta => $resource_emw) {
-        $field_resources_ids[] = $resource_emw->getIdentifier();
-      }
-      if (!empty($field_resources_ids)) {
-        entity_delete_multiple('node', $field_resources_ids);
-      }
+    // Delete all resources from dataset if any.
+    // All resources will get imported again.
+    $field_resources_ids = array();
+    $dataset_old_emw = entity_metadata_wrapper('node', $dataset->nid);
+    foreach ($dataset_old_emw->field_resources->getIterator() as $delta => $resource_emw) {
+      $field_resources_ids[] = $resource_emw->getIdentifier();
+    }
+    if (!empty($field_resources_ids)) {
+      entity_delete_multiple('node', $field_resources_ids);
+    }
 
     if (isset($row->resources) && is_array($row->resources) && !empty($row->resources)) {
       // Create all resources and assign them to the dataset.
@@ -294,7 +294,8 @@ class HarvestMigration extends MigrateDKAN {
    * it doesn't exist. Add group nid to the row data.
    *
    * @param $dataset entity where groups are going to be added.
-   * @param stdClass $row Migrate row.
+   * @param object $row
+   *   Migrate row.
    */
   private function prepareGroup(&$dataset, stdClass &$row) {
 
@@ -336,8 +337,8 @@ class HarvestMigration extends MigrateDKAN {
    * @return Object usable for HarvestMigration::prepareMetadataSource(), or
    * FALSE.
    */
-  public static function prepareMetadataSourceHelper($file_uri, $title=NULL,
-    $metadata_schema=NULL, $metadata_view=NULL, $uid=1) {
+  public static function prepareMetadataSourceHelper($file_uri, $title = NULL,
+    $metadata_schema = NULL, $metadata_view = NULL, $uid = 1) {
 
     $metadata_source = new stdClass();
 
@@ -347,7 +348,7 @@ class HarvestMigration extends MigrateDKAN {
     $metadata_source_dir = 'public://metadata_source/';
     if (file_prepare_directory($metadata_source_dir, FILE_MODIFY_PERMISSIONS | FILE_CREATE_DIRECTORY)) {
       // Check if the actual file exists.
-      if (!file_exists($file_uri)){
+      if (!file_exists($file_uri)) {
         $message = t('@message_prefix. Metadata Source file @file_path not found.',
           array(
             '@message_prefix' => 'Adding Metada Source failed',
@@ -359,16 +360,16 @@ class HarvestMigration extends MigrateDKAN {
       $metadata_source->file_uri = $file_uri;
     }
 
-    // Metadata schema
+    // Metadata schema.
     $metadata_source->metadata_schema = $metadata_schema;
 
-    // Title
+    // Title.
     $metadata_source->title = isset($title) ? $title : 'Metadata for ' . $row->dkan_harvest_object_id;
 
-    // Metadata View
+    // Metadata View.
     $metadata_source->metadata_view = $metadata_view;
 
-    // UID
+    // UID.
     $metadata_source->uid = $uid;
 
     return $metadata_source;
@@ -392,7 +393,8 @@ class HarvestMigration extends MigrateDKAN {
         if (isset($metadata_source_old_emw)) {
           entity_delete('node', $metadata_source_old_emw->nid);
         }
-      } catch (EntityMetadataWrapperException $emwException) {
+      }
+      catch (EntityMetadataWrapperException $emwException) {
         // Cannot get to the old datasets although the migration states it
         // exists. This should never happen but lets log this to help the next
         // developer debug this problem.
@@ -402,7 +404,7 @@ class HarvestMigration extends MigrateDKAN {
             '@exception_message' => $emwException->getMessage(),
           ));
         self::displayMessage($message, 'error');
-        }
+      }
     }
 
     if (!isset($row->metadata_source) || !$row->metadata_source) {
@@ -413,11 +415,10 @@ class HarvestMigration extends MigrateDKAN {
     // TODO export the config bit out.
     // Create a metadata node that contains the source for imported USDA ISO
     // dataset.
-    $metadata_source = entity_create('node'
-      , array(
-        'type' => 'metadata',
-        'uid' => $row->metadata_source,
-      ));
+    $metadata_source = entity_create('node', array(
+    'type' => 'metadata',
+    'uid' => $row->metadata_source,
+    ));
 
     // Use the admin user as the node author.
     $metadata_source_emw = entity_metadata_wrapper('node', $metadata_source);
@@ -435,7 +436,7 @@ class HarvestMigration extends MigrateDKAN {
       );
     }
 
-    // File
+    // File.
     $metadata_source_content = file_get_contents($row->metadata_source->file_uri);
     // TODO move this to the dkan_dataset_metadata_source module as a variable.
     $metadata_source_dir = 'public://metadata_source/';
@@ -452,7 +453,8 @@ class HarvestMigration extends MigrateDKAN {
 
     try {
       $metadata_source_emw->save();
-    } catch (EntityMetadataWrapperException $emwException) {
+    }
+    catch (EntityMetadataWrapperException $emwException) {
       // Saving the metadata source failed. skip.
       $message = t(
         '@message_prefix. @exception_message',
@@ -472,12 +474,12 @@ class HarvestMigration extends MigrateDKAN {
   }
 
   /**
-   * Implements Migrate::postImport()
+   * Implements Migrate::postImport().
    */
   public function postImport() {
     parent::postImport();
 
-    //Check if sourceCount is 0.
+    // Check if sourceCount is 0.
     // Show and add an error to the message table.
     if ($this->sourceCount() == 0) {
       $message = t('Items to import is 0. Looks like source is missing. All the'
@@ -547,7 +549,7 @@ class HarvestMigration extends MigrateDKAN {
       $message = t('The following rules are re-enabled: @rules_list',
         array(
           '@rules_list' => implode(', ', $this->dkanHarvestDisabledRules),
-          ));
+        ));
       self::displayMessage($message, 'notice');
     }
   }
@@ -560,7 +562,6 @@ class HarvestMigration extends MigrateDKAN {
     // Remove the HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE flag and publish the datasets (and
     // their related content) that had their source disappear in a previous
     // harvest migrate.
-
     // Get all the rows marked with HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE and
     // part of the imported datasets imported.
     if (is_array($this->idListImported) && !empty($this->idListImported)) {
@@ -660,9 +661,10 @@ class HarvestMigration extends MigrateDKAN {
         $dataset_emw = NULL;
         try {
           $dataset_emw = entity_metadata_wrapper('node', $nid);
-        } catch (EntityMetadataWrapperException $exception) {
+        }
+        catch (EntityMetadataWrapperException $exception) {
           self::displayMessage($exception->getMessage(), 'error');
-          // Skip this nid
+          // Skip this nid.
           continue;
         }
 
@@ -731,7 +733,7 @@ class HarvestMigration extends MigrateDKAN {
       // Get metadata source ids if enabled.
       if (module_exists('dkan_dataset_metadata_source')) {
         if (isset($dataset_emw->field_metadata_sources)) {
-          $delete_nids[] =  $dataset_emw->field_metadata_sources->getIdentifier();
+          $delete_nids[] = $dataset_emw->field_metadata_sources->getIdentifier();
         }
       }
 
@@ -768,7 +770,7 @@ class HarvestMigration extends MigrateDKAN {
 
     // Set the harvest source entity reference in the dataset node.
     $this->addFieldMapping('field_harvest_source_ref', 'harvest_source_ref')
-    ->defaultValue(array($this->dkanHarvestSourceNid));
+      ->defaultValue(array($this->dkanHarvestSourceNid));
 
     // Mark the dataset as published if dkan_workflow is there.
     if (module_exists('dkan_workflow')) {
@@ -777,7 +779,7 @@ class HarvestMigration extends MigrateDKAN {
     }
 
     // Default Dkan Dataset fields.
-    // Node property
+    // Node property.
     $this->addFieldMapping('created', 'created');
     $this->addFieldMapping('changed', 'changed');
     // Primary.
@@ -785,7 +787,7 @@ class HarvestMigration extends MigrateDKAN {
     $this->addFieldMapping('body', 'description');
     $this->addFieldMapping('field_tags', 'tags');
     $this->addFieldMapping('field_tags:create_term')
-     ->defaultValue(TRUE);
+      ->defaultValue(TRUE);
     $this->addFieldMapping('field_license', 'license')
       ->defaultValue('notspecified');
 
@@ -796,7 +798,7 @@ class HarvestMigration extends MigrateDKAN {
     $this->addFieldMapping('field_frequency', 'frequency');
     $this->addFieldMapping('field_contact_name', 'contact_name');
     $this->addFieldMapping('field_contact_email', 'contact_email');
-    // $this->addFieldMapping('og_group_ref', 'group_ids');
+    // $this->addFieldMapping('og_group_ref', 'group_ids');.
     $this->addFieldMapping('field_related_content', 'related_content');
     $this->addFieldMapping('field_related_content:title', 'related_content:title');
     $this->addFieldMapping('field_related_content:url', 'related_content:url');
@@ -807,7 +809,7 @@ class HarvestMigration extends MigrateDKAN {
       $this->addFieldMapping('field_metadata_sources', 'metadata_sources');
     }
 
-    //open_data_federal_extras
+    // open_data_federal_extras.
     if (module_exists('open_data_federal_extras')) {
       // Project Open Data Fields.
       $this->addFieldMapping('field_odfe_bureau_code', 'odfe_bureau_code');
@@ -837,15 +839,15 @@ class HarvestMigration extends MigrateDKAN {
    *
    * @return object term. Or null if failed.
    */
-  public function createTax($name, $vocab_name, $vid=NULL) {
+  public function createTax($name, $vocab_name, $vid = NULL) {
     // Make sure that the vocabulary exists before adding terms.
     $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
     if (!$vocab) {
       $message = t('Vocabulary term @vocab_name does not exists!',
-        array (
+        array(
           '@vocab_name' => $vocab_name,
         ));
-      self::displayMessage($message , 'error');
+      self::displayMessage($message, 'error');
       return NULL;
     }
 
@@ -866,11 +868,11 @@ class HarvestMigration extends MigrateDKAN {
       }
       else {
         $message = t('New taxonomy term @name in vocabulary @vocab_name creation failed!',
-          array (
+          array(
             '@name' => $name,
             '@vocab_name' => $vocab_name,
           ));
-        self::displayMessage($message , 'error');
+        self::displayMessage($message, 'error');
         return NULL;
       }
     }
@@ -889,10 +891,10 @@ class HarvestMigration extends MigrateDKAN {
    * @return Object usable for HarvestMigration::createResourceNode(), or
    * FALSE.
    */
-  public static function prepareResourceHelper($url, $format=NULL, $title=NULL, $created=NULL, $description=NULL) {
+  public static function prepareResourceHelper($url, $format = NULL, $title = NULL, $created = NULL, $description = NULL) {
     $resource = new stdClass();
 
-    // Validate the url
+    // Validate the url.
     if (!filter_var($url, FILTER_VALIDATE_URL)) {
       $message = t('Resource remote url (@url) not valid!',
         array(
@@ -914,7 +916,6 @@ class HarvestMigration extends MigrateDKAN {
     // To Detect the field_link_remote_file format:
     // * check the file extension.
     // * If not available. Check the file mime-type.
-
     // url_type. Safe default to url.
     $resource->url_type = 'api';
     $format_detected = 'html';
@@ -926,7 +927,8 @@ class HarvestMigration extends MigrateDKAN {
     $extension = strtolower($extension);
 
     $html_extensions = array('html', 'shtml', 'htm', 'rhtml', 'phtml', 'pht',
-      'php', 'phps', 'php3', 'php3p', 'php4');
+      'php', 'phps', 'php3', 'php3p', 'php4',
+    );
 
     include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
     $mimetype_mappings = file_default_mimetype_mapping();
@@ -956,7 +958,7 @@ class HarvestMigration extends MigrateDKAN {
       }
     }
 
-    // If the file
+    // If the file.
     if ($resource->url_type == 'file') {
       // Check if this file extension is allowed for field_link_remote_file.
       // Reduce everything to lowercase to support files with uppercase
@@ -966,11 +968,11 @@ class HarvestMigration extends MigrateDKAN {
       // Reject if the extension is not allowed.
       if (!in_array($extension, $file_extensions)) {
         $message = t('Resource remote url (@url) extension (@extension) not allowed',
-          array (
+          array(
             '@url' => $url,
             '@extension' => $extension,
           ));
-        self::displayMessage($message , 'error');
+        self::displayMessage($message, 'error');
         return FALSE;
       }
     }
@@ -979,13 +981,13 @@ class HarvestMigration extends MigrateDKAN {
     // Default to detected format if not set.
     $resource->format = isset($format) ? strtolower($format) : $format_detected;
 
-    // Title
+    // Title.
     $resource->title = isset($title) ? $title : $url;
 
-    // Created
+    // Created.
     $resource->created = isset($created) ? $created : time();
 
-    // Description
+    // Description.
     $resource->description = isset($description) ? $description : '';
 
     return $resource;
@@ -996,8 +998,9 @@ class HarvestMigration extends MigrateDKAN {
    *
    * Create a dkan resource node from the values provided.
    *
-   * @param Array $res values for the resources node to be created.
-   *  Expected to be prepared with the self::prepareResourceHelper() methode.
+   * @param array $res
+   *   values for the resources node to be created.
+   *   Expected to be prepared with the self::prepareResourceHelper() methode.
    *
    * @return resource node object.
    */
@@ -1093,7 +1096,8 @@ class HarvestMigration extends MigrateDKAN {
    *
    * Create a dkan group node from the values provided.
    *
-   * @param Array $group values for the group node to be created.
+   * @param array $group
+   *   values for the group node to be created.
    *
    * @return group node object.
    */
@@ -1128,10 +1132,12 @@ class HarvestMigration extends MigrateDKAN {
   public function getLogID() {
     return $this->logID;
   }
+
 }
-
-
-class XMLHarvestMigration  extends HarvestMigration {
+/**
+ *
+ */
+class XMLHarvestMigration extends HarvestMigration {
 
   public $itemUrl;
 
@@ -1140,7 +1146,7 @@ class XMLHarvestMigration  extends HarvestMigration {
    */
   public function __construct($arguments) {
     parent::__construct($arguments);
-    $this->itemUrl = drupal_realpath( $this->dkanHarvestSource->getCacheDir()) .
+    $this->itemUrl = drupal_realpath($this->dkanHarvestSource->getCacheDir()) .
       '/:id.xml';
 
     $this->source = new MigrateSourceList(
@@ -1217,9 +1223,9 @@ class XMLHarvestMigration  extends HarvestMigration {
   /**
    * Gets item from XML using the xpath.
    *
-   * Default implementation - straightforward xpath application
+   * Default implementation - straightforward xpath application.
    *
-   * @param stdClass $data_row
+   * @param object $data_row
    *   row containing items.
    * @param string $xpath
    *   xpath used to find the item
@@ -1246,7 +1252,11 @@ class XMLHarvestMigration  extends HarvestMigration {
     }
   }
 
+  /**
+   *
+   */
   public function prepare($entity, $row) {
     parent::prepare($entity, $row);
   }
+
 }

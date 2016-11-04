@@ -2,7 +2,7 @@
 
 /**
  * @file
- * dkan_harvest.drush.inc.
+ * Dkan_harvest.drush.inc.
  */
 
 /**
@@ -77,8 +77,7 @@ function dkan_harvest_drush_command() {
     'arguments' => array(
       'source_machine_name' => 'The source machine name to run the harvest migration on. If not provided run the harvest ',
     ),
-    'options' => array(
-    ),
+    'options' => array(),
     'drupal dependencies' => array('dkan_harvest'),
   );
 
@@ -106,10 +105,12 @@ function dkan_harvest_drush_command_cache($source_machine_name) {
     if ($source = new HarvestSource($source_machine_name)) {
       drush_log("Running the harvest migration on " . $source_machine_name, 'notice');
       return dkan_harvest_cache_sources(array($source), microtime());
-    } else {
+    }
+    else {
       drush_log("No source with machine name " . $source_machine_name . " found.", 'error');
     }
-  } else {
+  }
+  else {
     drush_log("Running the harvest caching on all the available sources.", 'notice');
     $sources = dkan_harvest_sources_definition();
     dkan_harvest_cache_sources($sources);

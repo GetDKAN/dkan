@@ -8,7 +8,7 @@
 
 /**
  * Dkan Harvest HarvestSource Object is user to store the sources properties needed to
- * indentify a source to harvest. Those properties are:
+ * indentify a source to harvest. Those properties are:.
  *
  * - 'machine_name' (String, Required): Unique identifier for this source.
  * - 'cache_callback' (String, Required): function to be used when caching a
@@ -32,19 +32,22 @@ class HarvestSourceType {
     if (!is_string($machine_name)) {
       // TODO Make sure the type exists.
       throw new Exception('HarvestSourceType machine_name invalid!');
-    } else {
+    }
+    else {
       $this->machine_name = $machine_name;
     }
 
     if (isset($source_type['cache callback']) && function_exists($source_type['cache callback'])) {
       $this->cache_callback = $source_type['cache callback'];
-    } else {
+    }
+    else {
       throw new Exception('HarvestSourceType cache_callback invalid!');
     }
 
     if (isset($source_type['migration class']) && class_exists($source_type['migration class'])) {
       $this->migration_class = $source_type['migration class'];
-    } else {
+    }
+    else {
       throw new Exception('HarvestSourceType migrate invalid!');
     }
 
@@ -52,7 +55,8 @@ class HarvestSourceType {
     // TODO add validation code for all the remining propreties.
     if (!isset($source_type['label']) || !is_string($source_type['label'])) {
       $this->label = $this->machine_name;
-    } else {
+    }
+    else {
       $this->label = $source_type['label'];
     }
   }
@@ -74,4 +78,5 @@ class HarvestSourceType {
     }
     throw new Exception('HarvestSourceType machine_name not found!');
   }
+
 }

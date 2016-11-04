@@ -8,7 +8,7 @@
 
 /**
  * Dkan Harvest HarvestSource Object is user to store the sources properties needed to
- * indentify a source to harvest. Those properties are:
+ * indentify a source to harvest. Those properties are:.
  *
  * - 'machine_name' (Required): Unique identifier for this source.
  * - 'uri' (Required): Location of the content to harvest for this source. This can be a
@@ -24,7 +24,6 @@
  * Provide defaults.
  * - 'overrides' => array('author' => 'Author') (Optional): Provide overrides .
  */
-
 class HarvestSource {
   public $machine_name;
   public $uri;
@@ -39,7 +38,7 @@ class HarvestSource {
    * Constructor for HarvestSource class.
    *
    * @param Array source: Source array containing atleast all the required
-   * source elements (As documented above) and any other optional proprety.
+   *   source elements (As documented above) and any other optional proprety.
    */
   public function __construct($machine_name) {
     // $machine_name is really needed to construct this object.
@@ -76,7 +75,6 @@ class HarvestSource {
     $type_machine_name = $harvest_source_emw->field_dkan_harveset_type->value();
     $this->type = HarvestSourceType::getSourceType($type_machine_name);
 
-
     $label = $harvest_source_emw->title->value();
     if (!isset($label) || !is_string($label)) {
       $label = $this->machine_name;
@@ -112,14 +110,15 @@ class HarvestSource {
     return $remote;
   }
 
-/**
- * Get the cache directory for a specific source.
- *
- * @param Boolean $create: create the cache diretory if it does not exist.
- *
- * @return string
- * PHP filesteream location. Or FALSE if the cache directory does not exist.
- */
+  /**
+   * Get the cache directory for a specific source.
+   *
+   * @param bool $create:
+   *   create the cache diretory if it does not exist.
+   *
+   * @return string
+   * PHP filesteream location. Or FALSE if the cache directory does not exist.
+   */
   public function getCacheDir($create_or_clear = FALSE) {
     $cache_dir_path = DKAN_HARVEST_CACHE_DIR . '/' . $this->machine_name;
     $options = FILE_MODIFY_PERMISSIONS;
@@ -154,9 +153,10 @@ class HarvestSource {
   /**
    * Generic function to convert a string to a Drupal machine name.
    *
-   * @param String $human_name string to convert to machine name.
+   * @param string $human_name
+   *   string to convert to machine name.
    *
-   * TODO Not sure that this is needed anymore.
+   *   TODO Not sure that this is needed anymore.
    */
   public static function getMachineNameFromName($human_name) {
     return preg_replace('@[^a-z0-9-]+@', '_', strtolower($human_name));
@@ -186,21 +186,23 @@ class HarvestSource {
    * found or not run yet.
    */
   public static function getMigrationTimestampFromMachineName($machine_name) {
-   $migration_machine_name = HarvestSource::getMigrationMachineNameFromName($machine_name);
+    $migration_machine_name = HarvestSource::getMigrationMachineNameFromName($machine_name);
 
-   // Get the last time (notice the MAX) the migration was run.
-   $result = db_query("SELECT MAX(starttime) FROM {migrate_log} WHERE machine_name =
-     :migration_machine_name ORDER BY starttime ASC limit 1;", array(':migration_machine_name' =>
-     $migration_machine_name));
+    // Get the last time (notice the MAX) the migration was run.
+    $result = db_query("SELECT MAX(starttime) FROM {migrate_log} WHERE machine_name =
+     :migration_machine_name ORDER BY starttime ASC limit 1;", array(
+       ':migration_machine_name' =>
+       $migration_machine_name,
+     ));
 
-   $result_array = $result->fetchAssoc();
+    $result_array = $result->fetchAssoc();
 
-   if (!empty($result_array)) {
-     $harvest_migrate_date = array_pop($result_array);
-     // Migrate saves the timestamps with microseconds. So we drop the extra
-     // info and get only the usual timestamp.
-     $harvest_migrate_date = floor($harvest_migrate_date/1000);
-     return $harvest_migrate_date;
+    if (!empty($result_array)) {
+      $harvest_migrate_date = array_pop($result_array);
+      // Migrate saves the timestamps with microseconds. So we drop the extra
+      // info and get only the usual timestamp.
+      $harvest_migrate_date = floor($harvest_migrate_date / 1000);
+      return $harvest_migrate_date;
     }
   }
 
@@ -214,19 +216,21 @@ class HarvestSource {
    * found or not run yet.
    */
   public static function getMigrationTimestampFromMlid($mlid) {
-   // Get the time the migration was run by mlid.
-   $result = db_query("SELECT MAX(starttime) FROM {migrate_log} WHERE mlid =
-     :mlid ORDER BY starttime ASC limit 1;", array(':mlid' =>
-     $mlid));
+    // Get the time the migration was run by mlid.
+    $result = db_query("SELECT MAX(starttime) FROM {migrate_log} WHERE mlid =
+     :mlid ORDER BY starttime ASC limit 1;", array(
+       ':mlid' =>
+       $mlid,
+     ));
 
-   $result_array = $result->fetchAssoc();
+    $result_array = $result->fetchAssoc();
 
-   if (!empty($result_array)) {
-     $harvest_migrate_date = array_pop($result_array);
-     // Migrate saves the timestamps with microseconds. So we drop the extra
-     // info and get only the usual timestamp.
-     $harvest_migrate_date = floor($harvest_migrate_date/1000);
-     return $harvest_migrate_date;
+    if (!empty($result_array)) {
+      $harvest_migrate_date = array_pop($result_array);
+      // Migrate saves the timestamps with microseconds. So we drop the extra
+      // info and get only the usual timestamp.
+      $harvest_migrate_date = floor($harvest_migrate_date / 1000);
+      return $harvest_migrate_date;
     }
   }
 
@@ -249,20 +253,20 @@ class HarvestSource {
     }
 
     // Only count for successful dataset imports.
-   $result = db_query("SELECT sourceid1 FROM {" . $migrate_map_table . "} WHERE needs_update = :needs_update;",
+    $result = db_query("SELECT sourceid1 FROM {" . $migrate_map_table . "} WHERE needs_update = :needs_update;",
      array(
        ':needs_update' => MigrateMap::STATUS_IMPORTED,
      )
-   );
+    );
 
-   return $result->rowCount();
+    return $result->rowCount();
   }
 
   /**
    *
    * @return HarvestCache object or FALSE in case of error.
    */
-  public function cache($timestamp = false) {
+  public function cache($timestamp = FALSE) {
 
     if (!$timestamp) {
       $timestamp = microtime();
@@ -278,11 +282,10 @@ class HarvestSource {
         $this,
         $timestamp
       );
-    } catch (Exception $e) {
-      drupal_set_message(t('Harvest demo cache failed ').$e->getMessage(), 'error', FALSE);
     }
-
-
+    catch (Exception $e) {
+      drupal_set_message(t('Harvest demo cache failed ') . $e->getMessage(), 'error', FALSE);
+    }
 
     if (!isset($harvestCache)) {
       // Nothing to look for here.
@@ -292,14 +295,14 @@ class HarvestSource {
     return $harvestCache;
   }
 
-/**
- * Run the migration for the sources.
- *
- * @param $options: Array extra options to pass to the migration.
- *
- * @return FALSE in case of a problem. Or a Migrate::RESULT_* status after
- * completion.
- */
+  /**
+   * Run the migration for the sources.
+   *
+   * @param $options: Array extra options to pass to the migration.
+   *
+   * @return FALSE in case of a problem. Or a Migrate::RESULT_* status after
+   * completion.
+   */
   public function migrate($options = array()) {
     $migration = $this->getMigration();
     // Make sure the migration instantiation worked.
@@ -384,4 +387,5 @@ class HarvestSource {
   public function deregister() {
     HarvestMigration::deregisterMigration($this->getMigrationMachineName());
   }
+
 }

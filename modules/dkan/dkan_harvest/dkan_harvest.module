@@ -26,14 +26,16 @@ define('ORPHAN_CONTENT', 2);
  */
 function dkan_harvest_preprocess_page(&$vars) {
   $path = drupal_get_path('module', 'dkan_harvest');
-  if(isset($vars['node']) && $vars['node']->type == 'harvest_source') {
+  if (isset($vars['node']) && $vars['node']->type == 'harvest_source') {
     drupal_add_css($path . '/css/dkan_harvest.css');
     drupal_add_js($path . '/js/harvest_source_summary.js');
   }
 }
 
-// Implements hook_theme
-function dkan_harvest_theme(){
+/**
+ * Implements hook_theme.
+ */
+function dkan_harvest_theme() {
   return array(
     'dkan_harvest_source_summary' => array(
       'variables' => array(
@@ -55,7 +57,7 @@ function dkan_harvest_theme(){
 function theme_dkan_harvest_source_summary(&$vars) {
   $output = '';
   $node = menu_get_object();
-  if(isset($node->nid)) {
+  if (isset($node->nid)) {
     $wrapper = entity_metadata_wrapper('node', $node);
     $filters = dkan_harvest_render_field_multiple($wrapper->field_dkan_harvest_filters->value());
     $excludes = dkan_harvest_render_field_multiple($wrapper->field_dkan_harvest_excludes->value());
@@ -67,28 +69,28 @@ function theme_dkan_harvest_source_summary(&$vars) {
         '#attributes' => array(
           'id' => 'harvest_source_summary_uri',
           'class' => array('form-control'),
-          'value' => $wrapper->field_dkan_harvest_source_uri->value()
+          'value' => $wrapper->field_dkan_harvest_source_uri->value(),
         ),
-        '#autocomplete_path' => FALSE
-      )
+        '#autocomplete_path' => FALSE,
+      ),
     ));
     $output .= '<div class="form-group"><label>' . t('Source') . ': </label>' . $source_field . '</div>';
     $output .= '<div><strong>' . t('Datasets') . ': </strong>' . $count . '</div>';
-    if(!empty($filters) || !empty($excludes) || !empty($overrides) || !empty($defaults)) {
+    if (!empty($filters) || !empty($excludes) || !empty($overrides) || !empty($defaults)) {
       $output .= '<div class="summary-details">';
-      if(!empty($filters)) {
+      if (!empty($filters)) {
         $output .= '<h6>' . t('Filters') . '</h6>';
         $output .= $filters;
       }
-      if(!empty($excludes)) {
+      if (!empty($excludes)) {
         $output .= '<h6>' . t('Excludes') . '</h6>';
         $output .= $excludes;
       }
-      if(!empty($overrides)) {
+      if (!empty($overrides)) {
         $output .= '<h6>' . t('Overrides') . '</h6>';
         $output .= $overrides;
       }
-      if(!empty($defaults)) {
+      if (!empty($defaults)) {
         $output .= '<h6>' . t('Defaults') . '</h6>';
         $output .= $defaults;
       }
@@ -104,7 +106,7 @@ function theme_dkan_harvest_source_summary(&$vars) {
 function dkan_harvest_block_info() {
   $blocks['harvest_source_summary'] = array(
     'info' => t('Harvest Source Summary'),
-    'cache' => DRUPAL_CACHE_PER_PAGE
+    'cache' => DRUPAL_CACHE_PER_PAGE,
   );
   return $blocks;
 }
@@ -119,17 +121,18 @@ function dkan_harvest_block_view($delta = '') {
         'subject' => t('Harvest Source Summary'),
         'content' => theme('dkan_harvest_source_summary'),
       );
-      break;
+
+    break;
   }
 }
 
 /**
- * Render field multiple (filters, excludes and overrides)
+ * Render field multiple (filters, excludes and overrides).
  */
 function dkan_harvest_render_field_multiple($field) {
   $output = '';
   foreach ($field as $key => $value) {
-    $output .= '<div><strong>' . t($value['first']) . ': </strong>' .$value['second'] . '</div>';
+    $output .= '<div><strong>' . t($value['first']) . ': </strong>' . $value['second'] . '</div>';
   }
   return $output;
 }
@@ -150,7 +153,7 @@ function dkan_harvest_permission() {
   return array(
     'admininster harvest' => array(
       'title' => t('Administrate harvest sources and datasets'),
-    )
+    ),
   );
 }
 
@@ -227,9 +230,8 @@ function dkan_harvest_page_preview($node) {
   $output = '';
 
   // Get the cache callback for the source.
-  // This will run a cache operation for the harvest source. Download the file and processed and create cache directory
+  // This will run a cache operation for the harvest source. Download the file and processed and create cache directory.
   $harvestCache = $harvestSource->cache();
-
 
   $rows = array();
   if (!$harvestCache) {
@@ -258,6 +260,9 @@ is reachable and the filters are set up correctly.");
   return $output;
 }
 
+/**
+ *
+ */
 function dkan_harvest_harvest_now_form($form, &$form_state, $node) {
   $form = array();
   $form['#node'] = $node;
@@ -270,6 +275,9 @@ function dkan_harvest_harvest_now_form($form, &$form_state, $node) {
   return $form;
 }
 
+/**
+ *
+ */
 function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
 
   // Build array of batch operations.
@@ -280,8 +288,8 @@ function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
   $batch = array(
     'operations' => $batch_operations,
     'title' => t('Migrating content from ') . $form['#node']->title . '... ',
-    'init_message' => t('Processed 0%.') . '<br/><br/>&nbsp;'.
-      t('A full Harvest may take several minutes, depending on
+    'init_message' => t('Processed 0%.') . '<br/><br/>&nbsp;' .
+    t('A full Harvest may take several minutes, depending on
       how many items your source contains. If your harvest times out, start it
       again as needed until it completes successfully. For more reliable harvests,
       use built-in drush commands in the terminal or set up a cron job.
@@ -294,6 +302,9 @@ function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
   $form_state['redirect'] = 'admin/dkan/harvest/dashboard';
 }
 
+/**
+ *
+ */
 function dkan_harvest_perform_harvest($node, &$context) {
   $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
   dkan_harvest_cache_sources(array($harvestSource));
@@ -303,11 +314,11 @@ function dkan_harvest_perform_harvest($node, &$context) {
 
 /**
  * Do not display 'Groups were updated on X resources' messages when harvesting datasets.
-*/
+ */
 function dkan_harvest_message_cleanup() {
   $orig_messages = drupal_get_messages('status') + array('status' => array());
   foreach ($orig_messages['status'] as $message) {
-    if(!preg_match('/\bgroups were updated\b/i', $message)) {
+    if (!preg_match('/\bgroups were updated\b/i', $message)) {
       drupal_set_message($message, 'status');
     }
   }
@@ -338,7 +349,7 @@ function dkan_harvest_get_last_event_log($node) {
   $query->addExpression('log.endtime - log.starttime', 'duration');
 
   $result = $query->execute()->fetchObject();
-  $time = floor($result->starttime/1000);
+  $time = floor($result->starttime / 1000);
   return format_date($time);
 
 }
@@ -355,7 +366,7 @@ function dkan_harvest_get_last_event_log($node) {
  */
 function dkan_harvest_modules_enabled($modules) {
   $modules_implements = module_implements('harvest_source_types');
-  if(!empty(array_intersect($modules_implements, $modules))) {
+  if (!empty(array_intersect($modules_implements, $modules))) {
     drupal_static_reset('dkan_harvest_source_types_definition');
     cache_clear_all('dkan_harvest_source_types_definition', 'cache');
   }
@@ -384,7 +395,7 @@ function dkan_harvest_modules_disabled($modules) {
  * @return Array of HarvestSource objects.
  */
 function dkan_harvest_sources_definition() {
-  $query = new EntityFieldQuery;
+  $query = new EntityFieldQuery();
   $result = $query
     ->entityCondition('entity_type', 'node')
     ->propertyCondition('type', 'harvest_source')
@@ -404,8 +415,10 @@ function dkan_harvest_sources_definition() {
     $harvest_source = HarvestSource::getHarvestSourceFromNode($harvest_sources_node);
     if (is_null($harvest_source)) {
       $message = t('Harvest Source \"@title\" (@nid) cannot be imported!',
-        array('@title' => $harvest_sources_node->title,
-        '@nid' => $harvest_sources_node->nid)
+        array(
+          '@title' => $harvest_sources_node->title,
+          '@nid' => $harvest_sources_node->nid,
+        )
       );
       dkan_harvest_log($message, 'warning');
     }
@@ -456,7 +469,7 @@ function dkan_harvest_source_types_definition() {
         $source_types_definition = array_merge($source_types_definition,
           $source_types);
       }
-      // populate $source_types_definition with the correct stuff. Set to
+      // Populate $source_types_definition with the correct stuff. Set to
       // CACHE_TEMPORARY to clear it in the next general cache wipe.
       cache_set('dkan_harvest_source_types_definition', $source_types_definition, 'cache', CACHE_TEMPORARY);
     }
@@ -512,10 +525,11 @@ function dkan_harvest_get_migration(HarvestSource $source) {
 /**
  * Cache a set of sources.
  *
- * @param Array $sources: Array of HarvestSource object to harvest.
+ * @param array $sources:
+ *   Array of HarvestSource object to harvest.
  * @param $harvest_updatetime: timestamp of the time to use as the update time.
  */
-function dkan_harvest_cache_sources(Array $sources, $harvest_updatetime=NULL) {
+function dkan_harvest_cache_sources(Array $sources, $harvest_updatetime = NULL) {
   foreach ($sources as $source) {
     $harvestCache = $source->cache($harvest_updatetime);
 
@@ -553,9 +567,10 @@ function dkan_harvest_cache_sources(Array $sources, $harvest_updatetime=NULL) {
  * Dump and simple cache callback for dkan_harvest source. Ideally this will
  * not be used by any source with any slightly advanced requirements.
  *
- * @param HarvestSource $source: the source to cache.
+ * @param HarvestSource $source:
+ *   the source to cache.
  * @param $cache_dir: the directory where to store the cached files. This is
- * managed by dkan_harvest.
+ *   managed by dkan_harvest.
  * @param $harvest_updatetime
  *
  * @return HarvestCache object with all the needed cache information about the
@@ -607,8 +622,8 @@ function dkan_harvest_cache_default(HarvestSource $source, $harvest_updatetime) 
 /**
  * Wrapper around migrate deregistration api for dkan harvest sources.
  *
- * @param Array $sources Harvest sources to deregister.
- *
+ * @param array $sources
+ *   Harvest sources to deregister.
  */
 function dkan_harvest_deregister_sources(Array $sources) {
   foreach ($sources as $source) {
@@ -622,9 +637,9 @@ function dkan_harvest_deregister_sources(Array $sources) {
  *
  * @param $message: The message to output.
  * @param $level: Optional message severity as understood by drupal_set_message
- * and drush_log (defaults to 'error').
+ *   and drush_log (defaults to 'error').
  */
-function dkan_harvest_log($message, $type='error') {
+function dkan_harvest_log($message, $type = 'error') {
   if (function_exists('drush_log')) {
     drush_log($message, $type);
   }
@@ -634,18 +649,21 @@ function dkan_harvest_log($message, $type='error') {
 
   // Report to watchdog by defaut.
   switch ($type) {
-  case 'status':
-    $type = WATCHDOG_INFO;
-    break;
-  case 'warning':
-    $type = WATCHDOG_WARNING;
-    break;
-  case 'error':
-    $type = WATCHDOG_ERROR;
-    break;
-  default:
-    $type = WATCHDOG_NOTICE;
-    break;
+    case 'status':
+      $type = WATCHDOG_INFO;
+      break;
+
+    case 'warning':
+      $type = WATCHDOG_WARNING;
+      break;
+
+    case 'error':
+      $type = WATCHDOG_ERROR;
+      break;
+
+    default:
+      $type = WATCHDOG_NOTICE;
+      break;
   }
   watchdog('dkan_harvest', $message, array(), $type);
 }
@@ -698,7 +716,7 @@ function dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, 
   $pattern = '%^(' . implode('|', $allowed_protocols) . ')%';
   if (preg_match($pattern, $uri, $matches)) {
     switch (array_pop($matches)) {
-      // Validate local uri
+      // Validate local uri.
       case 'file://':
       case 'public://':
       case 'private://':
@@ -709,7 +727,8 @@ function dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, 
           );
         }
         break;
-      // Validate remote uri
+
+      // Validate remote uri.
       case 'http://':
       case 'https://':
         if (!filter_var($uri, FILTER_VALIDATE_URL)) {
@@ -719,6 +738,7 @@ function dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, 
           );
         }
         break;
+
       default:
         // In theory this should not happen and we should have all the allowed
         // protocols specific validation covered. Return a generic error.
@@ -793,7 +813,7 @@ function dkan_harvest_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'dataset_node_form' || $form_id == 'resource_node_form') {
     // Hide 'orphan' field.
     $form['field_orphan']['#access'] = FALSE;
-    //Show a warning message if is a harvested content.
+    // Show a warning message if is a harvested content.
     $node = $form['#node'];
 
     if ($form_id == 'resource_node_form' && isset($node->field_dataset_ref[LANGUAGE_NONE][0]['target_id'])) {
@@ -830,7 +850,7 @@ function dkan_harvest_form_alter(&$form, &$form_state, $form_id) {
     $form['field_dkan_harvest_defaults'][$language]['#title'] .= '<div class="description">' . $field_desc . '</div>';
     $form['field_dkan_harvest_defaults'][$language]['#description'] = '';
 
-    //Add redirect to tab preview after save.
+    // Add redirect to tab preview after save.
     $form['actions']['submit']['#submit'][] = 'dkan_harvest_node_save_redirect_submit';
   }
 
@@ -869,7 +889,7 @@ function dkan_harvest_process_source_datasets($sources, $dataset_op) {
     foreach ($affected_content as $content) {
       $batch_operations[] = array(
         'dkan_harvest_process_content',
-        array($content, $dataset_op)
+        array($content, $dataset_op),
       );
     }
     // Setup batch process.
@@ -895,7 +915,8 @@ function dkan_harvest_process_source_datasets_finished($success, $results, $oper
 /**
  * Returns the content (datasets and resources) associated with specified sources.
  *
- * @param array $sources An array with the source IDs.
+ * @param array $sources
+ *   An array with the source IDs.
  */
 function dkan_harvest_get_sources_content($sources) {
   $datasets = array();
@@ -925,14 +946,15 @@ function dkan_harvest_process_content($content_id, $operation, &$context) {
 
   if ($operation == DELETE_CONTENT) {
     $content_wrapper->delete();
-  } else {
-    // Set as orphan
+  }
+  else {
+    // Set as orphan.
     $content_wrapper->field_orphan->set(1);
     if ($operation == UNPUBLISH_CONTENT) {
-      // Unpublish
+      // Unpublish.
       $content_wrapper->status->set(NODE_NOT_PUBLISHED);
     }
-    // Save
+    // Save.
     $content_wrapper->save();
   }
 }
@@ -961,7 +983,8 @@ function dkan_harvest_get_datasets_from_source($source_id) {
 /**
  * Returns an array with the ID of the resources associated with the datasets.
  *
- * @param array $datasets An array with the IDs of the datasets.
+ * @param array $datasets
+ *   An array with the IDs of the datasets.
  */
 function dkan_harvest_get_resources_from_datasets($datasets) {
   $resources = array();
@@ -990,7 +1013,7 @@ function dkan_harvest_modify_delete_harvest_source_confirmation_form(&$form, $so
   $options = array(
     DELETE_CONTENT => t('Delete content.'),
     UNPUBLISH_CONTENT => t('Unpublish content.'),
-    ORPHAN_CONTENT => t('Leave content published.')
+    ORPHAN_CONTENT => t('Leave content published.'),
   );
   $form['dataset_op'] = array(
     '#type' => 'radios',
@@ -1007,7 +1030,8 @@ function dkan_harvest_modify_delete_harvest_source_confirmation_form(&$form, $so
   // Set up custom submit handler. Be sure that is the first handler that is going to be executed.
   if (isset($form['actions']['submit']['#submit'])) {
     array_unshift($form['actions']['submit']['#submit'], 'dkan_harvest_delete_confirmation_submit');
-  } else {
+  }
+  else {
     array_unshift($form['#submit'], 'dkan_harvest_delete_confirmation_submit');
   }
 
@@ -1048,4 +1072,3 @@ function dkan_harvest_delete_confirmation_submit($form, $form_state) {
 
   dkan_harvest_process_source_datasets($selected_sources, $datasets_op);
 }
-

@@ -11,14 +11,14 @@
  * id added can have multiple flags.
  */
 class HarvestCache {
-  // Cached entries Flags
+  // Cached entries Flags.
   const DKAN_HARVEST_CACHE_PROCESSED = 0x0;
   const DKAN_HARVEST_CACHE_FAILED = 0x1;
   const DKAN_HARVEST_CACHE_FILTERED = 0x2;
   const DKAN_HARVEST_CACHE_EXCLUDED = 0x4;
   const DKAN_HARVEST_CACHE_DEFAULTED = 0x8;
   const DKAN_HARVEST_CACHE_OVERRIDDEN = 0x16;
-  // Source Object
+  // Source Object.
   public $harvest_source;
   public $harvestcache_time;
   public $processed;
@@ -27,7 +27,7 @@ class HarvestCache {
    * Constructor for HarvestCache class.
    */
   public function __construct(HarvestSource $harvest_source = NULL, $harvestcache_time = NULL, $processed = array()) {
-    if (is_a($harvest_source, 'HarvestSource')){
+    if (is_a($harvest_source, 'HarvestSource')) {
       $this->harvest_source = $harvest_source;
     }
     else {
@@ -63,7 +63,7 @@ class HarvestCache {
     return array_filter($this->processed,
       function ($processed_flag) {
         return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_FAILED);
-    });
+      });
   }
 
   /**
@@ -80,7 +80,7 @@ class HarvestCache {
     return array_filter($this->processed,
       function ($processed_flag) {
         return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_FILTERED);
-    });
+      });
   }
 
   /**
@@ -97,7 +97,7 @@ class HarvestCache {
     return array_filter($this->processed,
       function ($processed_flag) {
         return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_EXCLUDED);
-    });
+      });
   }
 
   /**
@@ -114,7 +114,7 @@ class HarvestCache {
     return array_filter($this->getSaved(),
       function ($processed_flag) {
         return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_DEFAULTED);
-    });
+      });
   }
 
   /**
@@ -130,7 +130,7 @@ class HarvestCache {
     return array_filter($this->getSaved(),
       function ($processed_flag) {
         return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_OVERRIDDEN);
-    });
+      });
   }
 
   /**
@@ -157,7 +157,7 @@ class HarvestCache {
     return array_filter($base,
       function ($base_flag) {
         return !($base_flag['flag'] & (self::DKAN_HARVEST_CACHE_EXCLUDED | self::DKAN_HARVEST_CACHE_FAILED));
-    });
+      });
   }
 
   /**
@@ -232,4 +232,5 @@ class HarvestCache {
   public function setCacheEntryOverridden($cache_id, $title = NULL) {
     $this->setCacheEntry($cache_id, self::DKAN_HARVEST_CACHE_OVERRIDDEN, $title);
   }
+
 }

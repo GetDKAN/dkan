@@ -1,5 +1,5 @@
 <?php
-
+// @codingStandardsIgnoreFile
 /**
  * Handler class implementation for Dkan Harvest Migration date field.
  */
@@ -9,7 +9,7 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
    * {@inheritdoc}
    */
   function query() {
-    // do nothing -- to override the parent query since we are not using a
+    // Do nothing -- to override the parent query since we are not using a
     // direct database query.
   }
 
@@ -111,7 +111,7 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
     $machine_name = array_pop($result_array);
     $harvestSource = new HarvestSource($machine_name);
 
-      // Get the latest mlid from the message table.
+    // Get the latest mlid from the message table.
     $query_migrate_log = db_query("SELECT mlid FROM migrate_log WHERE machine_name = :migration_machine_name ORDER BY mlid DESC LIMIT 1",
       array(
         ':migration_machine_name' => $harvestSource->getMigrationMachineName(),
@@ -167,4 +167,5 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
 
     return parent::render($values);
   }
+
 }
