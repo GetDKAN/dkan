@@ -2,14 +2,11 @@
 
 /**
  * @file
+ * views_dkan_workflow_tree.views.inc
  */
 
 /**
- * Implementation of hook_views_plugins()
- */
-
-/**
- *
+ * Implements hook_views_plugins().
  */
 function views_dkan_workflow_tree_views_plugins() {
   $plugin = array(

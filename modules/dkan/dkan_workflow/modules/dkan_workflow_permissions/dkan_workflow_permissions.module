@@ -40,7 +40,8 @@ function dkan_workflow_permissions_form_alter(&$form, &$form_state, $form_id) {
       $rids['Workflow Moderator']   => $rids['editor'],
       $rids['Workflow Supervisor']  => $rids['site manager'],
     );
-    // Use Drupal.settings to pass information from our PHP code to our JavaScript code.
+    // Use Drupal.settings to pass information
+    // from our PHP code to our JavaScript code.
     drupal_add_js(array('dkan_workflow_permissions' => array('rolePairings' => $pairings)), 'setting');
     global $user;
     if (in_array('administrator', $user->roles) || $user->uid == 1) {

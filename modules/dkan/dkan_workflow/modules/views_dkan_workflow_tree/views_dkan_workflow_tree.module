@@ -2,28 +2,26 @@
 
 /**
  * @file
+ * views_dkan_workflow_tree.module
  */
 
 /**
  * Generates a list of links to available moderation actions.
- * based on workbench_moderation_get_moderation_links().
  *
- * @param $node
+ * Based on workbench_moderation_get_moderation_links().
+ *
+ * @param object $node
  *   The node being acted upon.
- * @param $url_options
+ * @param array $url_options
  *   An array of options to pass, following the url() function syntax.
  *
- * @return
+ * @return array
  *   A list of links to display with the revision.
- */
-
-/**
- *
  */
 function views_dkan_workflow_tree_get_moderation_links($node, $url_options = array()) {
   // Make sure that this node is moderated.
   if (!workbench_moderation_node_moderated($node)) {
-    return;
+    return array();
   }
 
   // Build links to available moderation states.
@@ -53,7 +51,7 @@ function views_dkan_workflow_tree_get_moderation_links($node, $url_options = arr
 }
 
 /**
- * Implements of hook_views_api().
+ * Implements hook_views_api().
  */
 function views_dkan_workflow_tree_views_api() {
   return array(
@@ -71,8 +69,13 @@ function views_dkan_workflow_tree_action_info() {
   foreach (workbench_moderation_state_labels() as $key => $label) {
     $info['views_dkan_workflow_tree_set_moderation_state_action_' . $key] = array(
       'type' => 'node',
-      'label' => t("Workflow set moderation state " . $label),
-      'triggers' => array('node_presave', 'node_insert', 'node_update', 'workbench_moderation_transition'),
+      'label' => t("Workflow set moderation state !state", array('!state' => $label)),
+      'triggers' => array(
+        'node_presave',
+        'node_insert',
+        'node_update',
+        'workbench_moderation_transition',
+      ),
       'callback' => 'views_dkan_workflow_tree_set_state_action',
       'parameters' => array('state' => $key),
       'configurable' => FALSE,
@@ -82,7 +85,7 @@ function views_dkan_workflow_tree_action_info() {
 }
 
 /**
- *
+ * Implements hook_form_alter().
  */
 function views_dkan_workflow_tree_views_bulk_operations_form_alter(&$form, &$form_state, $vbo) {
   // Workbench Moderation VBO action permissions check.
@@ -163,7 +166,7 @@ function views_dkan_workflow_tree_set_state_action($node, $context) {
 }
 
 /**
- * Implements of hook_theme().
+ * Implements hook_theme().
  */
 function views_dkan_workflow_tree_theme($existing, $type, $theme, $path) {
   return array(
@@ -190,8 +193,8 @@ function theme_views_dkan_workflow_tree($variables) {
   foreach (array('VBO' => $vbo_field, 'VID' => $vid_field) as $field_key => $field_value) {
     if (!isset($field_value)) {
       // Can't continue without the vid alias. report and skip.
-      watchdog('views_dkan_workflow_tree', t('Missing %field_key field value
-        from the View Format settings.'), array('%field_key' => $field_key),
+      watchdog('views_dkan_workflow_tree', 'Missing %field_key field value
+        from the View Format settings.', array('%field_key' => $field_key),
           WATCHDOG_ERROR);
       return;
     }
@@ -208,8 +211,8 @@ function theme_views_dkan_workflow_tree($variables) {
     }
     else {
       // Vid from result is missing from the db.
-      watchdog('views_dkan_workflow_tree', t('Failed to load Node with Vid
-        %vid'), array('%vid' => $result_item->{$vid_alias}), WATCHDOG_ERROR);
+      watchdog('views_dkan_workflow_tree', 'Failed to load Node with Vid
+        %vid', array('%vid' => $result_item->{$vid_alias}), WATCHDOG_ERROR);
     }
   }
 
@@ -324,7 +327,8 @@ function theme_views_dkan_workflow_tree($variables) {
 /**
  * Add theme function for dataset dkan_workflow items.
  *
- * @param $variables: data required to theme the element:
+ * @param array $variables
+ *   Data required to theme the element
  *   -$variables['title'] to render a disabled itew with only the title.
  *   - $variables['node'] is the node object.
  *   - $variables['vbo'] VBO checkboxs to use while generating the html
@@ -356,11 +360,11 @@ function theme_dkan_workflow_tree_item($variables = NULL) {
       // Use the correct class for the disabled item.
       $output = '<div class="item-content item-disabled">';
       $output .=
-          '<div class="form-item form-type-checkbox form-item-views-bulk-operations-null checkbox">' .
-          '<label for="edit-views-bulk-operations-null">' .
-          '<input class="vbo-select form-checkbox" disabled="disabled" type="checkbox">' .
-          '</label>' .
-          '</div>';
+          '<div class="form-item form-type-checkbox form-item-views-bulk-operations-null checkbox">
+          <label for="edit-views-bulk-operations-null">
+          <input class="vbo-select form-checkbox" disabled="disabled" type="checkbox">
+          </label>
+          </div>';
     }
     else {
       $output = '<div class="item-content">';
@@ -374,7 +378,7 @@ function theme_dkan_workflow_tree_item($variables = NULL) {
 }
 
 /**
- * Implement hook_theme();.
+ * Implements hook_theme().
  */
 function theme_dkan_workflow_tree_node(stdClass $node, $vbo) {
   // Groups
@@ -408,7 +412,8 @@ function theme_dkan_workflow_tree_node(stdClass $node, $vbo) {
   $output .=
       '<span class="views-dkan-workflow-tree-title ' . $node->type . '">' .
       $vbo .
-      // Since the 'html' option is set to TRUE we need to sanitize the title with check_plain().
+      // Since the 'html' option is set to TRUE
+      // we need to sanitize the title with check_plain().
       theme('link', array(
         'text' => theme('facet_icons', $icon) . ' ' . check_plain($node->title),
         'path' => 'node/' . $node->nid,
@@ -416,14 +421,14 @@ function theme_dkan_workflow_tree_node(stdClass $node, $vbo) {
           'html' => TRUE,
         ),
       )) .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-revision-user">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-revision-user">',
       theme('username', array('account' => $author)) .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-groups">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-groups">' .
       $groups .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-revision-timestamp">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-revision-timestamp">' .
       format_date($node->revision_timestamp) .
       '</span>';
 
@@ -452,7 +457,7 @@ function theme_dkan_workflow_tree_node(stdClass $node, $vbo) {
 }
 
 /**
- *
+ * Implementation theme function to show headers.
  */
 function theme_dkan_workflow_tree_headers() {
 
@@ -461,17 +466,17 @@ function theme_dkan_workflow_tree_headers() {
   $output .=
       '<span class="views-dkan-workflow-tree-title header">' .
       t('Title') .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-revision-user header">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-revision-user header">' .
       t('Revision Author') .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-groups header">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-groups header">' .
       t('Groups') .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-revision-timestamp header">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-revision-timestamp header">' .
       t('Updated') .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-actions header">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-actions header">' .
       t('Actions') .
       '</span>';
 

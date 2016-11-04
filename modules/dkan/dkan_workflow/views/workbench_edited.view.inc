@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * Workbench_edited.view.inc.
  */
 
 $view = new view();

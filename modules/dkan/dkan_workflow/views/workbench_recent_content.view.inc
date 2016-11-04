@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * Workbench_recent_content.view.inc.
  */
 
 $view = new view();

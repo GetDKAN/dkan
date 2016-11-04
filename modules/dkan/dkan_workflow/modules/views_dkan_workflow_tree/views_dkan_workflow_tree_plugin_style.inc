@@ -6,7 +6,10 @@
  */
 
 /**
- * Style plugin to render each item in a slideshow of an ordered or unordered list.
+ * Style plugin.
+ *
+ * Style plugin to render each item in a slideshow
+ *  of an ordered or unordered list.
  *
  * @ingroup views_style_plugins
  */
