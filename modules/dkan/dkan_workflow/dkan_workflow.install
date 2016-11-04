@@ -8,15 +8,6 @@
  * Implements hook_install().
  */
 function dkan_workflow_install() {
-  $item = array(
-    'link_path' => 'admin/workbench',
-    'link_title' => 'My Workbench',
-    'weight' => 0,
-    'expanded' => 1,
-    'has_children' => 0,
-    'plid' => 0,
-  );
-  menu_link_save($item);
   dkan_workflow_revert_views();
 }
 
@@ -65,6 +56,7 @@ function dkan_workflow_enable() {
   //Set up source for the admin menu.
   _dkan_workflow_setup_admin_menu_source();
   drupal_flush_all_caches();
+  features_revert(array('dkan_sitewide_menu' => array('menu_links')));
 }
 
 /**
