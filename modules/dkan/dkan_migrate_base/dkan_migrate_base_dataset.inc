@@ -9,6 +9,7 @@
  * Migrate CKAN dataset.
  */
 class MigrateCkanDatasetBase extends MigrateCkanBase {
+
   /**
    * Here we go.
    */
@@ -30,9 +31,10 @@ class MigrateCkanDatasetBase extends MigrateCkanBase {
 
     $this->source = new MigrateSourceList(new CKANListJSON(
       $list_url,
-      array('page' => $this->page,
-            'offset' => $this->offset,
-            'ids' => $this->ids,
+      array(
+        'page' => $this->page,
+        'offset' => $this->offset,
+        'ids' => $this->ids,
       )
     ),
     new CKANItemJSON($item_url, $fields), $fields);
@@ -84,4 +86,5 @@ class MigrateCkanDatasetBase extends MigrateCkanBase {
     }
     node_save($node);
   }
+
 }
