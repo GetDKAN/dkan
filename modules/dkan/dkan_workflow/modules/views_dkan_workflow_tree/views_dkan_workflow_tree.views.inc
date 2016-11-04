@@ -1,7 +1,15 @@
 <?php
 
 /**
+ * @file
+ */
+
+/**
  * Implementation of hook_views_plugins()
+ */
+
+/**
+ *
  */
 function views_dkan_workflow_tree_views_plugins() {
   $plugin = array(
@@ -23,4 +31,3 @@ function views_dkan_workflow_tree_views_plugins() {
 
   return $plugin;
 }
-

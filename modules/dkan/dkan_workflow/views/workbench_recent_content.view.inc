@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * @file
+ */
+
 $view = new view();
 $view->name = 'workbench_recent_content';
 $view->description = 'Content overview page for Workbench.';

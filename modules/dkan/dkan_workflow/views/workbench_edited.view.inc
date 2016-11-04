@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * @file
+ */
+
 $view = new view();
 $view->name = 'workbench_edited';
 $view->description = 'Lists content edited by the user.';
