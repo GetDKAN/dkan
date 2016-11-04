@@ -429,10 +429,23 @@ class HarvestMigration extends MigrateDKAN {
     }
 
     if (isset($row->metadata_source->metadata_schema)) {
-      // TODO better null check.
-      $metadata_source_emw->field_metadata_schema->set(
-        $this->createTax($row->metadata_source->metadata_schema, 'extended_metadata_schema')->tid
-      );
+      $vocab = 'extended_metadata_schema';
+      $term = $this->createTax($row->metadata_source->metadata_schema, $vocab);
+      if (!$term) {
+        // Something is wrong. Report.
+        $message = t(
+          "Cannot get taxonomy @taxonomy (@vocabulary vocabulary).",
+          array(
+            '@taxonomy' => $row->metadata_source->metadata_schema,
+            '@vocabulary' => $vocab,
+          )
+        );
+        $this->saveMessage($message);
+      }
+      else {
+        // Looks fine.
+        $metadata_source_emw->field_metadata_schema->set($term->tid);
+      }
     }
 
     // File
@@ -835,17 +848,12 @@ class HarvestMigration extends MigrateDKAN {
    * @param $name Taxonomy term name.
    * @param $vocab_name Taxonomy vocabulary name.
    *
-   * @return object term. Or null if failed.
+   * @return object term. Or NULL if failed.
    */
   public function createTax($name, $vocab_name, $vid=NULL) {
     // Make sure that the vocabulary exists before adding terms.
     $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
     if (!$vocab) {
-      $message = t('Vocabulary term @vocab_name does not exists!',
-        array (
-          '@vocab_name' => $vocab_name,
-        ));
-      $this->saveMessage($message);
       return NULL;
     }
 
@@ -864,15 +872,9 @@ class HarvestMigration extends MigrateDKAN {
         // properties.
         return $term_new;
       }
-      else {
-        $message = t('New taxonomy term @name in vocabulary @vocab_name creation failed!',
-          array (
-            '@name' => $name,
-            '@vocab_name' => $vocab_name,
-          ));
-        $this->saveMessage($message);
-        return NULL;
-      }
+
+      // If we made it til here then something did not work out as expected.
+      return NULL;
     }
   }
 
@@ -1021,8 +1023,21 @@ class HarvestMigration extends MigrateDKAN {
     $resource_emw->body->value->set($res->description);
 
     if (isset($res->format)) {
-      $term = $this->createTax($res->format, 'format');
-      if ($term) {
+      $vocab = 'format';
+      $term = $this->createTax($res->format, $vocab);
+
+      if (is_null($term)) {
+        // Something went left. Report.
+        $message = t(
+          "Cannot get taxonomy @taxonomy (@vocabulary vocabulary).",
+          array(
+            '@taxonomy' => $res->format,
+            '@vocabulary' => $vocab,
+          )
+        );
+        $this->saveMessage($message);
+      }
+      else {
         $resource_emw->field_format = $term->tid;
       }
     }
