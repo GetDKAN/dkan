@@ -6,7 +6,7 @@
  */
 
 /**
- * Implements hook_panels_ipe_region_links_alter() from Panels IPE.
+ * Implements hook_panels_ipe_region_links_alter().
  *
  * Set the default category to 'dkan' in the IPE.
  */
@@ -29,21 +29,21 @@ function dkan_plugins_ctools_plugin_directory($owner, $plugin_type) {
  * Implements hook_preprocess_panels_pane().
  */
 function dkan_plugins_preprocess_panels_pane(&$vars) {
-	if ($vars['pane']->subtype == 'dkan_plugins_button_link') {
+  if ($vars['pane']->subtype == 'dkan_plugins_button_link') {
     // Iterate through each button pane to set button alignment and hover color.
-		$panes = array();
-		$panes[] = $vars['pane']->pid;
-		foreach($panes as $pane) {
-			$align = $vars['pane']->configuration['button_align'];
-			if($align) {
-			 	$vars['classes_array'][0] = $align;
-			}
-			$color = $vars['pane']->configuration['button_color'];
-			$hover = adjust_color_lighten_darken($color, 25);
-			if($color) {
-				$pid = $vars['pane']->pid;
-				$css = '#panels-ipe-paneid-' . $pid . ' .pane-dkan-plugins-button-link a:hover { border-color: ' . $hover . ' !important; background-color: ' . $hover .' !important; }';
-				drupal_add_css($css, 'inline');
+    $panes = array();
+    $panes[] = $vars['pane']->pid;
+    foreach ($panes as $pane) {
+      $align = $vars['pane']->configuration['button_align'];
+      if ($align) {
+        $vars['classes_array'][0] = $align;
+      }
+      $color = $vars['pane']->configuration['button_color'];
+      $hover = adjust_color_lighten_darken($color, 25);
+      if ($color) {
+        $pid = $vars['pane']->pid;
+        $css = '#panels-ipe-paneid-' . $pid . ' .pane-dkan-plugins-button-link a:hover { border-color: ' . $hover . ' !important; background-color: ' . $hover . ' !important; }';
+        drupal_add_css($css, 'inline');
       }
     }
   }
