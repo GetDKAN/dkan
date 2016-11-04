@@ -695,6 +695,39 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     }, $messages);
 
     $this->assertContains("Cannot get taxonomy csv (format vocabulary).", $messages);
+
+    // Similar test for when dkan_dataset_metadata_source is available.
+    if (!module_exists('dkan_dataset_metadata_source')) {
+      $this->markTestSkipped("dkan_dataset_metadata_source module does not exists.");
+    }
+    else {
+      // Clean the harvest migration data from the source.
+      dkan_harvest_rollback_sources(array(self::getOriginalTestSource()));
+      dkan_harvest_deregister_sources(array(self::getOriginalTestSource()));
+
+      // Delete the format vocabulary.
+      $vocab_format = taxonomy_vocabulary_machine_name_load('extended_metadata_schema');
+      if ($vocab_format) {
+        taxonomy_vocabulary_delete($vocab_format->vid);
+      }
+
+      // Running the harvest should generate an error.
+      dkan_harvest_cache_sources(array(self::getOriginalTestSource()));
+      dkan_harvest_migrate_sources(array(self::getOriginalTestSource()));
+
+      $migrationError = dkan_harvest_get_migration(self::getOriginalTestSource());
+      $migrationErrorMessages = $this->getMessageTableFromMigration($migrationError);
+
+      $messages = array_filter($migrationErrorMessages, function ($message) {
+        return $message->level == 1;
+      });
+
+      $messages = array_map(function ($message) {
+        return $message->message;
+      }, $messages);
+
+      $this->assertContains("Cannot get taxonomy csv (format vocabulary).", $messages);
+    }
   }
 
   /**
