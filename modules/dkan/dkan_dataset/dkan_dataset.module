@@ -748,7 +748,7 @@ function dkan_dataset_get_resource_groups(EntityMetadataWrapper $resource, int $
  * @param int $use_queue_limit
  *    A limit indicating when a Drupal queue should be used to update the resources.
  */
-function dkan_dataset_update_resource_groups($resources, EntityMetadataWrapper $updated_dataset, array $updated_dataset_groups, int $use_queue_limit = 20) {
+function dkan_dataset_update_resource_groups($resources, EntityMetadataWrapper $updated_dataset, $updated_dataset_groups, $use_queue_limit = 20) {
 
   $use_queue = FALSE;
   $queue = '';
