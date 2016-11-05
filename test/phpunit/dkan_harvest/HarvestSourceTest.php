@@ -111,7 +111,7 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
     $this->assertFALSE($cache_dir);
 
     $cache_dir = $source_remote->getCacheDir(TRUE);
-    $this->assertEquals($cacheDir, $source_remote_cachedir_path);
+    $this->assertEquals($cache_dir, $source_remote_cachedir_path);
   }
 
   /**
