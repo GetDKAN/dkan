@@ -42,28 +42,28 @@ class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
     // Make sure that all the harvest source type entries available right now
     // in the site are cached by 'dkan_harvest_source_types_definition()'.
     dkan_harvest_source_types_definition();
-    $beforeCache = cache_get('dkan_harvest_source_types_definition');
-    $this->assertTrue(is_array($beforeCache->data));
-    $beforeCount = count($beforeCache->data);
+    $before_cache = cache_get('dkan_harvest_source_types_definition');
+    $this->assertTrue(is_array($before_cache->data));
+    $before_count = count($before_cache->data);
 
     // Enabling a module that implements the "harvest_source_types" hook should
     // reset the cached entries.
     module_enable(array("dkan_harvest_test"));
-    $moduleEnableCache = cache_get('dkan_harvest_source_types_definition');
-    $this->assertFalse($moduleEnableCache);
+    $module_enabled_cache = cache_get('dkan_harvest_source_types_definition');
+    $this->assertFalse($module_enabled_cache);
 
     // Running the callback should repopulate the cache entry with the latest
     // harvest source types available in the system.
     dkan_harvest_source_types_definition();
-    $afterCache = cache_get('dkan_harvest_source_types_definition');
-    $this->assertTrue(is_array($afterCache->data));
-    $afterCount = count($afterCache->data);
+    $after_cache = cache_get('dkan_harvest_source_types_definition');
+    $this->assertTrue(is_array($after_cache->data));
+    $after_count = count($after_cache->data);
 
     // Run a before/after comparison. Make sure that the test source types
     // provided by the 'dkan_harvest_test' module are now available.
-    $this->assertGreaterThan($beforeCount, $afterCount);
-    $this->assertArrayHasKey('harvest_test_type', $afterCache->data);
-    $this->assertArrayHasKey('harvest_another_test_type', $afterCache->data);
+    $this->assertGreaterThan($before_count, $after_count);
+    $this->assertArrayHasKey('harvest_test_type', $after_cache->data);
+    $this->assertArrayHasKey('harvest_another_test_type', $after_cache->data);
   }
 
   /**
