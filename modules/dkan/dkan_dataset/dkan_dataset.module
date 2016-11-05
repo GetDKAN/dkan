@@ -703,7 +703,7 @@ function dkan_dataset_get_dataset_resources($dataset) {
  *    Array containing the full list of groups associated with all the datasets where the
  *    resource was added except the ones from the dataset that is being updated.
  */
-function dkan_dataset_get_resource_groups(EntityMetadataWrapper $resource, int $updated_dataset_id) {
+function dkan_dataset_get_resource_groups(EntityMetadataWrapper $resource, $updated_dataset_id) {
 
   $groups = array();
 
@@ -769,7 +769,7 @@ function dkan_dataset_update_resource_groups($resources, EntityMetadataWrapper $
     $wrapper_resource = entity_metadata_wrapper('node', $resource);
 
     // Get all the resource groups from all the other datasets the resource was associated with.
-    $resource_groups = dkan_dataset_get_resource_groups($wrapper_resource, $updated_dataset->nid->value());
+    $resource_groups = dkan_dataset_get_resource_groups($wrapper_resource, $updated_dataset->getIdentifier());
     // If present then append the groups of the current dataset.
     if ($updated_dataset_groups) {
       $resource_groups = array_merge($resource_groups, $updated_dataset_groups);
