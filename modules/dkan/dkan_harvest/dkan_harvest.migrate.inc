@@ -425,7 +425,7 @@ class HarvestMigration extends MigrateDKAN {
     $metadata_source_emw->title = $row->metadata_source->title;
 
     if (isset($row->migrate_map_destid1)) {
-      $metadata_source_emw->field_dataset_metadata_ref->set($row->migrate_map_destid1);
+      $metadata_source_emw->field_dataset_metadata_ref->set[] = $row->migrate_map_destid1;
     }
 
     if (isset($row->metadata_source->metadata_schema)) {
