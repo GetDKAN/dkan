@@ -349,8 +349,11 @@ projects:
   workbench_email:
     version: '3.11'
   workbench_moderation:
-    branch: 7.x-1.x
-    revision: 2c91211
+    download:
+      type: git
+      url: http://git.drupal.org/project/workbench_moderation.git
+      branch: 7.x-1.x
+      revision: 2c91211
     patch:
       2393771: 'https://www.drupal.org/files/issues/specify_change_state_user-2393771-5.patch'
       1838640: 'https://www.drupal.org/files/issues/workbench_moderation-fix_callback_argument-1838640-23.patch'
