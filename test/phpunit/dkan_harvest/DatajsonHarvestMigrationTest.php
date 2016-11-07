@@ -663,6 +663,40 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * https://jira.govdelivery.com/browse/CIVIC-4670
+   *
+   * Test Harvesting Datasets that does not have resources associated to. This
+   * used to make the harvest migration process fail.
+   */
+  public function testHarvestSourceNoResources() {
+
+    // Clean the harvest migration data from previous tests.
+    dkan_harvest_rollback_sources(array(self::getNoResourceTestSource()));
+    dkan_harvest_deregister_sources(array(self::getNoResourceTestSource()));
+
+    // Harvest the No Resource source.
+    dkan_harvest_cache_sources(array(self::getNoResourceTestSource()));
+    dkan_harvest_migrate_sources(array(self::getNoResourceTestSource()));
+
+    $migrationNoResource = dkan_harvest_get_migration(self::getNoResourceTestSource());
+    $migrationNoResourceMap = $this->getMapTableFromMigration($migrationNoResource);
+    $migrationNoResourceMessages = $this->getMessageTableFromMigration($migrationNoResource);
+
+    // Expect only one dataset imported.
+    $this->assertNotEmpty($migrationNoResourceMap);
+    $this->assertEquals(1, count($migrationNoResourceMap));
+
+    // Make sure the dataset was actually imported.
+    $record = array_pop($migrationNoResourceMap);
+    $this->assertNotNull($record->destid1);
+
+    // Should not be any error messages logged.
+    foreach ($migrationNoResourceMessages as $message) {
+      $this->assertNotEquals(MigrationBase::MESSAGE_ERROR, $message->level);
+    }
+  }
+
+  /**
    * {@inheritdoc}
    */
   protected function tearDown() {
@@ -718,6 +752,13 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    */
   public static function getEmptyTestSource() {
     return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_empty.json');
+  }
+
+  /**
+   * Test Harvest Source.
+   */
+  public static function getNoResourceTestSource() {
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_no_resources.json');
   }
 
   /**
