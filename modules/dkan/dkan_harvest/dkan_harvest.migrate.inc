@@ -268,9 +268,14 @@ class HarvestMigration extends MigrateDKAN {
     // All resources will get imported again.
     $field_resources_ids = array();
     $dataset_old_emw = entity_metadata_wrapper('node', $dataset->nid);
-    foreach ($dataset_old_emw->field_resources->getIterator() as $delta => $resource_emw) {
-      $field_resources_ids[] = $resource_emw->getIdentifier();
+
+    // Sometimes the field_resources would not be set before the node is saved.
+    if (isset($dataset_old_emw->field_resources)) {
+      foreach ($dataset_old_emw->field_resources->getIterator() as $delta => $resource_emw) {
+        $field_resources_ids[] = $resource_emw->getIdentifier();
+      }
     }
+
     if (!empty($field_resources_ids)) {
       entity_delete_multiple('node', $field_resources_ids);
     }

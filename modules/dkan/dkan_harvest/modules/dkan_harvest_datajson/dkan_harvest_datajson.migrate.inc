@@ -159,7 +159,9 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $row->group = $this->prepareRowGroup($row->publisher);
 
     // Prepare resources data.
-    $row->resources = $this->prepareRowResources($row->distribution);
+    if (isset($row->distribution)) {
+      $row->resources = $this->prepareRowResources($row->distribution);
+    }
   }
 
   /**
