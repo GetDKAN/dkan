@@ -88,6 +88,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
       'TEST - Workforce By Generation (2011-2015)' => 'http://demo.getdkan.com/sites/default/files/GenChart_0_0.csv',
       'TEST - Retirements (2011 - 2015)' => 'http://demo.getdkan.com/sites/default/files/retirements_0.csv',
       'TEST - Retirements: Eligible vs. Actual' => 'http://demo.getdkan.com/sites/default/files/2015EligibleVsActual.csv',
+      'TEST - Redirect source' => 'https://dl.sciencesocieties.org/publications/datasets/jeq/C3.JEQ2013.12.0516.ds1/download',
     );
 
     $dataset_resources = $this->getDatasetResources($dataset);
@@ -416,6 +417,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
       $errors_level[] = $message->level;
     }
     $this->assertContains(Migration::MESSAGE_ERROR, $errors_level);
+
   }
 
   /**
@@ -855,7 +857,9 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
     foreach ($dataset->field_resources->getIterator() as $delta => $resource) {
       $remote_file = $resource->field_link_remote_file->value();
-      $resources[$resource->title->value()] = $remote_file['uri'];
+      $remote_api = $resource->field_link_api->value();
+      $file = empty($remote_file['uri']) ? $remote_api['url'] : $remote_file['uri'];
+      $resources[$resource->title->value()] = $file;
     }
 
     return $resources;
