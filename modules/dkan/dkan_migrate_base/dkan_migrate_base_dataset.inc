@@ -66,6 +66,7 @@ class MigrateCkanDatasetBase extends MigrateCkanBase {
    * Implements prepare.
    */
   public function prepare($node, $row) {
+    parent::prepare($node, $row);
     $this->datasetPrepare($node, $row);
   }
 

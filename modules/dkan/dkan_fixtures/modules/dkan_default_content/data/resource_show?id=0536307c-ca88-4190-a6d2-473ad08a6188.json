@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine/resource/0536307c-ca88-4190",
         "id": "0536307c-ca88-4190-a6d2-473ad08a6188",
         "url": "files/resource/postvaccinedeaths_0_0.csv",
         "description": "<p>Source: \"Near elimination of varicella deaths in the US after implementation of the vaccination program.\" published in the American Journal of Pediatrics in August 2011.</p>\n",

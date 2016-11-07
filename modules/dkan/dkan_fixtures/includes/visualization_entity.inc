@@ -86,7 +86,7 @@ class DkanVisualizationEntityImport extends Migration {
    * Do extra processing on the node data before its saved.
    */
   public function prepare($entity, $row) {
-
+    $entity->path['pathauto'] = FALSE;
     // Setup superuser as author.
     $entity->uid = 1;
 

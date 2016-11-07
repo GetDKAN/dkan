@@ -148,8 +148,9 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
       ->entityCondition('bundle', 'harvest_source')
       ->fieldCondition('field_dkan_harvest_machine_name', 'machine', 'test_harvest_source_construct');
     $result = $query->execute();
-
-    node_delete_multiple(array_keys($result));
+    if ($result && isset($result['node'])) {
+      node_delete_multiple(array_keys($result['node']));
+    }
   }
 
   /**
@@ -165,8 +166,7 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
    */
   private function getLocalSource() {
     return new HarvestSourceTestStub(
-      'harvest_test_source_local_file', DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/harvest_test_source_local_file/data.json"
+      'harvest_test_source_local_file', __DIR__ . '/data/harvest_test_source_local_file/data.json'
     );
   }
 }

@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/florida-bike-lanes",
         "id": "cedcd327-4e5d-43f9-8eb1-c11850fa7c55",
         "name": "florida-bike-lanes",
         "title": "Florida Bike Lanes ",
@@ -54,7 +55,22 @@
             ],
             "field_spatial": [],
             "field_spatial_geographical_cover": "Miame-Dade County, Florida, US",
-            "field_tags": [],
+            "field_tags": [
+                {
+                    "uri": "http://default/taxonomy_term/21",
+                    "id": "21",
+                    "resource": "taxonomy_term",
+                    "uuid": "5dc2dc6f-cd2b-4f8b-ab70-9b721efe06c9",
+                    "value": "public safety"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/24",
+                    "id": "24",
+                    "resource": "taxonomy_term",
+                    "uuid": "9aa2c8a6-ed82-4935-ae78-ccd162cc9411",
+                    "value": "roads"
+                }                 
+            ],
             "field_temporal_coverage": [],
             "og_group_ref": [],
             "field_topic": [
