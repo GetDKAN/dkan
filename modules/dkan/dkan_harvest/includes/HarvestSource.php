@@ -135,6 +135,15 @@ class HarvestSource {
   }
 
   /**
+   * Delete the cache directory for a specific source.
+   */
+  public function deleteCacheDir() {
+    $cache_dir_path = DKAN_HARVEST_CACHE_DIR . '/' . $this->machine_name;
+    return file_unmanaged_delete_recursive($cache_dir_path);
+  }
+
+
+  /**
    * Generate a migration machine name from the source machine name suitable for in
    * MigrationBase::registerMigration().
    */
