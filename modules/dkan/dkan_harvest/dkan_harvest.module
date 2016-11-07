@@ -223,41 +223,75 @@ function dkan_harvest_page_tab_access($node) {
  * @return A themed table with a migration preview.
  */
 function dkan_harvest_page_preview($node) {
-  $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
+
   $output = '';
-
-  // Get the cache callback for the source.
-  // This will run a cache operation for the harvest source. Download the file and processed and create cache directory
-  $harvestCache = $harvestSource->cache();
-
-
   $rows = array();
-  if (!$harvestCache) {
-    // Could not cache the source. issue?
-    $message = t("Failed to fetch the source. Please make sure that the source
-is reachable and the filters are set up correctly.");
-    drupal_set_message($message, 'error', FALSE);
-    $output = '<em>Preview is not available for this source. Please check the above errors.</em>';
-  }
-  else {
-    foreach ($harvestCache->getSaved() as $id => $dataset_item) {
-      $rows[] = array($id, $dataset_item['title']);
-    }
 
-    $form_import = drupal_get_form('dkan_harvest_harvest_now_form', $node);
-    $caption = t('Harvesting from this source as it is currently configured will
-  import the datasets listed below into this data portal. Click "Edit" above to
-  change the source\'s configuration, click the "Harvest now" button at the
-  bottom of the page to run the harvest immediately, or simply continue working
-  and the harvest will be performed on schedule.');
-    $header = array(t('Identifier'), t('Title'));
-    $output .= theme('table', array('rows' => $rows, 'header' => $header, 'caption' => $caption));
-    $output .= drupal_render($form_import);
+  // Get harvest source from node.
+  $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
+
+  // Get the cache dir.
+  $cache_dir = $harvestSource->getCacheDir(FALSE);
+
+  if (!$cache_dir) {
+    // The cache directory does not exist.
+    // Perform a cache operation.
+    $batch_operations = array();
+    $batch_operations[] = array('dkan_harvest_cache_source_node_batch', array($node));
+
+    // Setup batch process.
+    $batch = array(
+      'operations' => $batch_operations,
+      'title' => t('Caching source and preparing Harvest preview...'),
+      'init_message' => t('Processed 0%.'),
+      'progress_message' => t('Processed @percentage.'),
+      'error_message' => t('An error ocurred while caching the source.'),
+    );
+    batch_set($batch);
+    batch_process();
+
+  } else {
+    // The cache directory exists. Load the table.
+    $harvestCache = call_user_func($harvestSource->type->cache_callback, $harvestSource, NULL);
+
+    if ($harvestCache) {
+      foreach ($harvestCache->getSaved() as $id => $dataset_item) {
+        $rows[] = array($id, $dataset_item['title']);
+      }
+
+      $form_import = drupal_get_form('dkan_harvest_harvest_now_form', $node);
+      $caption = t('Harvesting from this source as it is currently configured will
+        import the datasets listed below into this data portal. Click "Edit" above to
+        change the source\'s configuration, click the "Harvest now" button at the
+        bottom of the page to run the harvest immediately, or simply continue working
+        and the harvest will be performed on schedule.');
+      $output .= '<div class="datasets-count-preview"><span>' .
+        t('Datasets in source: ') . '</span>' . $harvestCache->getSavedCount() . '</div>';
+      $header = array(t('Identifier'), t('Title'));
+      $output .= theme('table', array('rows' => $rows, 'header' => $header, 'caption' => $caption));
+      $output .= drupal_render($form_import);
+    }
   }
 
   return $output;
 }
 
+/**
+ * Batch function to cache a source from source.
+ *
+ * @see dkan_harvest_cache_sources()
+ *
+ * @param $node Harvest source node object
+ * @param $context Batch context
+ */
+function dkan_harvest_cache_source_node_batch($node, &$context) {
+  $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+  dkan_harvest_cache_sources(array($harvest_source));
+}
+
+/**
+ *
+ */
 function dkan_harvest_harvest_now_form($form, &$form_state, $node) {
   $form = array();
   $form['#node'] = $node;
@@ -270,6 +304,9 @@ function dkan_harvest_harvest_now_form($form, &$form_state, $node) {
   return $form;
 }
 
+/**
+ *
+ */
 function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
 
   // Build array of batch operations.
@@ -294,6 +331,9 @@ function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
   $form_state['redirect'] = 'admin/dkan/harvest/dashboard';
 }
 
+/**
+ *
+ */
 function dkan_harvest_perform_harvest($node, &$context) {
   $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
   dkan_harvest_cache_sources(array($harvestSource));
@@ -847,6 +887,12 @@ function dkan_harvest_form_alter(&$form, &$form_state, $form_id) {
  * @param array $form_state
  */
 function dkan_harvest_node_save_redirect_submit($form, &$form_state) {
+  // Get harvest source from node.
+  $harvestSource = HarvestSource::getHarvestSourceFromNode($form_state['node']);
+  // Delete the cache dir in order to force the cache of the content.
+  $harvestSource->deleteCacheDir();
+
+  // Redirect to Preview page.
   $form_state['redirect'] = 'node/' . $form_state['nid'] . '/harvest-preview';
 }
 
