@@ -60,7 +60,7 @@ If you have modified any of the files included with DKAN, merging in upstream ch
 
 An error like the following is often seen at the end of the install process on Pantheon:
 
-![An AJAX HTTP error occurred. HTTP Result Code: 502 Debugging information follows...](https://cloud.githubusercontent.com/assets/512243/14712530/1810339e-07a3-11e6-8995-a97cf26d5746.png)
+![An AJAX HTTP error occurred. HTTP Result Code: 502 Debugging information follows...](../images/pantheon-error.png)
 
 This will hopefully be fixed on future releases. However, the resulting site should still be fully installed and functional.
 

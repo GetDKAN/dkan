@@ -24,8 +24,8 @@ copyright = u'2016, Test'
 author = u'DKAN Team'
 
 
-version = '1.12'
-release = '1.12.7'
+version = '1.13'
+release = '1.13'
 
 language = 'en'
 
