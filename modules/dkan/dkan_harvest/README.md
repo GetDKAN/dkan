@@ -69,7 +69,7 @@ run on this source.
 
 The information is managed by the core `dkan_harvest` via a per-harvest source
 `migrate_log` table that tracks the number of datasets created, updated,
-failed, orphaned, and unchanged.
+failed, orphaned, and unchanged and status. If the value for the field Status is Error then you can click on the text to see the log error and identify the problem.
 
 ### Error Log
 
