@@ -1238,7 +1238,7 @@ function dkan_dataset_field_formatter_view($entity_type, $entity, $field, $insta
     $harvest_node = node_load($entity->field_harvest_source_ref[LANGUAGE_NONE][0]['target_id']);
     if ($harvest_node) {
       $harvestSource = HarvestSource::getHarvestSourceFromNode($harvest_node);
-      $migrate_table = 'migrate_map_dkan_harvest_migrate_' . $harvestSource->machine_name;
+      $migrate_table = 'migrate_map_dkan_harvest_migrate_' . $harvestSource->machineName;
       $migrate_info = db_query("SELECT * FROM {$migrate_table} WHERE destid1=:destid1", array(':destid1' => $entity->nid))->fetchObject();
       $sourceid = isset($migrate_info->sourceid1) ? $migrate_info->sourceid1 : '';
       $rows[] = array(t('<strong>Harvest Source Title</strong>'), $harvest_node->title);
