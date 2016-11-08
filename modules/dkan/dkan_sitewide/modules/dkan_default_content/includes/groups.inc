@@ -1,20 +1,29 @@
 <?php
+
 /**
  * @file
+ * Groups.inc.
+ *
  * Contains helper functions that build content arrays to be loaded
  * as demo content.
  */
 
-function dkan_default_content_available_groups(){
+/**
+ * Implements hook_available_groups().
+ */
+function dkan_default_content_available_groups() {
   return array(
     'data_explorer',
-    'geospatial'
+    'geospatial',
   );
 }
 
-function dkan_default_content_data_explorer_group(){
-	return array(
-	  'title' => 'Data Explorer Examples',
+/**
+ * Implements hook_data_explore_group().
+ */
+function dkan_default_content_data_explorer_group() {
+  return array(
+    'title' => 'Data Explorer Examples',
     'uid' => 1,
     'status' => '1',
     'sort_value' => '2',
@@ -56,7 +65,10 @@ function dkan_default_content_data_explorer_group(){
   );
 }
 
-function dkan_default_content_geospatial_group(){
+/**
+ * Implements hook_geospatial_group().
+ */
+function dkan_default_content_geospatial_group() {
   return array(
     'title' => 'Geospatial Data Explorer Examples',
     'uid' => 1,

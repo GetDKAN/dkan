@@ -2,13 +2,17 @@
 
 /**
  * @file
- *
+ * Widget_content_type_icons.inc.
  */
 
 /**
  * Widget that renders facets as a list of clickable links.
  */
 class FacetapiContentTypeIcon extends FacetapiWidgetLinks {
+
+  /**
+   * Implement execute method.
+   */
   public function execute() {
     $element = &$this->build[$this->facet['field alias']];
 
@@ -21,6 +25,9 @@ class FacetapiContentTypeIcon extends FacetapiWidgetLinks {
     );
   }
 
+  /**
+   * Implement buildListItems method.
+   */
   public function buildListItems($build) {
     $settings = $this->settings->settings;
 
@@ -34,7 +41,7 @@ class FacetapiContentTypeIcon extends FacetapiWidgetLinks {
 
       $row = array('class' => array());
       $type = (isset($item['#indexed_value'])) ? $item['#indexed_value'] : '';
-      $icon = theme('facet_icons', array('type'=> $type, 'class' => array('facet-icon')));
+      $icon = theme('facet_icons', array('type' => $type, 'class' => array('facet-icon')));
 
       // Initializes variables passed to theme hook.
       $variables = array(
@@ -83,4 +90,5 @@ class FacetapiContentTypeIcon extends FacetapiWidgetLinks {
 
     return $items;
   }
+
 }
