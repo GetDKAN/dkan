@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Install file for DKAN base migration.
