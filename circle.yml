@@ -78,10 +78,10 @@ dependencies:
 ## Customize test commands
 test:
   override:
+    - ahoy dkan lint
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         timeout: 1200
         parallel: true
-    - ahoy dkan lint
     - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_migrate_base_example
     - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_harvest_test
     - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush dis --yes dkan_default_content
