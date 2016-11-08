@@ -422,7 +422,7 @@ function theme_dkan_workflow_tree_node(stdClass $node, $vbo) {
         ),
       )) .
       '</span>
-      <span class="views-dkan-workflow-tree-revision-user">',
+      <span class="views-dkan-workflow-tree-revision-user">' .
       theme('username', array('account' => $author)) .
       '</span>
       <span class="views-dkan-workflow-tree-groups">' .
