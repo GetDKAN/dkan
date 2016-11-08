@@ -29,6 +29,7 @@ class DkanHarvestDataJsonTest extends PHPUnit_Framework_TestCase {
     $source = self::getTestSource();
     $data = drupal_json_decode(file_get_contents(__DIR__ . '/data/dkan_harvest_datajson_test_filters.json'));
     $cache = dkan_harvest_datajson_cache_pod_v1_1_json($data, $source, microtime());
+    $count = $cache->getSavedCount();
     $uuid = reset(array_keys($cache->getSaved()));
     $node = reset(array_values($cache->getSaved()));
     $identifier = dkan_harvest_datajson_prepare_item_id($uuid);
@@ -37,6 +38,8 @@ class DkanHarvestDataJsonTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($node['title'], 'Wisconsin Polling Places TEST');
     $this->assertEquals($dataset['awesomekey'], 'politics');
     $this->assertEquals($dataset['publisher']['name'], 'nucivic');
+    // With filters and excludes, only one dataset should be cached from source
+    $this->assertEquals($count, 1);
   }
 
   /**
