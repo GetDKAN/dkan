@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Default Groups from fixtures.
+ */
+
+/**
+ * Default content extention of group fixtures migration class.
  */
 class DefaultContentGroupImport extends DkanGroupImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
@@ -18,4 +23,5 @@ class DefaultContentGroupImport extends DkanGroupImport {
 
     parent::__construct($arguments);
   }
+
 }
