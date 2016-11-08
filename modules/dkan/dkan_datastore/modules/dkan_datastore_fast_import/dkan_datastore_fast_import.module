@@ -1,7 +1,13 @@
 <?php
-define('DKAN_DATASTORE_BATCH_IMPORT', 0);
-define('DKAN_DATASTORE_FAST_IMPORT', 1);
-define('DKAN_DATASTORE_DYNAMIC_IMPORT', 2);
+
+/**
+ * @file
+ * Enables database csv imports.
+ */
+
+define('DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT', 0);
+define('DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_FAST_IMPORT', 1);
+define('DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_DYNAMIC_IMPORT', 2);
 
 /**
  * Implements hook_menu().
@@ -12,42 +18,49 @@ function dkan_datastore_fast_import_menu() {
     'description' => 'Settings for DKAN Datastore.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_datastore_fast_import_settings'),
-    'access arguments' => array('manage datastore settings')
+    'access arguments' => array('manage datastore settings'),
   );
 
   return $items;
 }
 
+/**
+ * Check database is set with pdo flags.
+ */
 function dkan_datastore_check_database() {
   global $databases;
   $target = Database::getConnection()->getTarget();
   $key = Database::getConnection()->getKey();
   $database = $databases[$target][$key];
 
-  if(!isset($database['pdo'])) {
+  if (!isset($database['pdo'])) {
     drupal_set_message(t('Required PDO flags for dkan_datastore_fast_import were not found. This module requires PDO::MYSQL_ATTR_LOCAL_INFILE and PDO::MYSQL_ATTR_USE_BUFFERED_QUERY'), 'error', FALSE);
-  } else {
+  }
+  else {
 
     $infile_enabled = array_key_exists(PDO::MYSQL_ATTR_LOCAL_INFILE, $database['pdo']) && $database['pdo'][PDO::MYSQL_ATTR_LOCAL_INFILE];
-    if(!$infile_enabled) {
+    if (!$infile_enabled) {
       drupal_set_message(t('Required PDO flag for dkan_datastore_fast_import were not found. This module requires PDO::MYSQL_ATTR_LOCAL_INFILE'), 'error', FALSE);
     }
 
     $buffered_query_enabled = array_key_exists(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $database['pdo']) && $database['pdo'][PDO::MYSQL_ATTR_USE_BUFFERED_QUERY];
-    if(!$buffered_query_enabled) {
+    if (!$buffered_query_enabled) {
       drupal_set_message(t('Required PDO flag for dkan_datastore_fast_import were not found. This module requires PDO::MYSQL_ATTR_USE_BUFFERED_QUERY'), 'error', FALSE);
     }
 
   }
 }
 
-function dkan_datastore_fast_import_settings(){
+/**
+ * Settings form.
+ */
+function dkan_datastore_fast_import_settings() {
   dkan_datastore_check_database();
   $form = array();
   $options = array(
-    DKAN_DATASTORE_BATCH_IMPORT => t('Use regular import as default (BATCH)'),
-    DKAN_DATASTORE_FAST_IMPORT => t('Use fast import as default (LOAD DATA)'),
-    DKAN_DATASTORE_DYNAMIC_IMPORT => t('Use fast import for files with a weight over:'),
+    DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT => t('Use regular import as default (BATCH)'),
+    DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_FAST_IMPORT => t('Use fast import as default (LOAD DATA)'),
+    DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_DYNAMIC_IMPORT => t('Use fast import for files with a weight over:'),
   );
 
   $form['dkan_datastore_fast_import_selection'] = array(
@@ -65,9 +78,9 @@ function dkan_datastore_fast_import_settings(){
     '#description' => '',
     '#states' => array(
       'visible' => array(
-        ':input[name="dkan_datastore_fast_import_selection"]' => array('value' => DKAN_DATASTORE_DYNAMIC_IMPORT),
+        ':input[name="dkan_datastore_fast_import_selection"]' => array('value' => DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_DYNAMIC_IMPORT),
       ),
-    )
+    ),
   );
 
   $options = array(
@@ -82,9 +95,9 @@ function dkan_datastore_fast_import_settings(){
     '#default_value' => variable_get('dkan_datastore_load_data_type', 'load_data_local_infile'),
     '#states' => array(
       'invisible' => array(
-        ':input[name="dkan_datastore_fast_import_selection"]' => array('value' => DKAN_DATASTORE_BATCH_IMPORT),
+        ':input[name="dkan_datastore_fast_import_selection"]' => array('value' => DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT),
       ),
-    )
+    ),
   );
 
   $form['queue_filesize_threshold'] = array(
@@ -95,18 +108,21 @@ function dkan_datastore_fast_import_settings(){
     '#description' => 'You need to setup a cron to run periodically "drush queue-run dkan_datastore_queue". If not, files will not be imported into the datastore.',
     '#states' => array(
       'invisible' => array(
-        ':input[name="dkan_datastore_fast_import_selection"]' => array('value' => DKAN_DATASTORE_BATCH_IMPORT),
+        ':input[name="dkan_datastore_fast_import_selection"]' => array('value' => DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT),
       ),
-    )
+    ),
   );
   $form['#submit'][] = 'dkan_datastore_fast_import_settings_submit';
 
   return system_settings_form($form);
 }
 
+/**
+ * Settings submit callback.
+ */
 function dkan_datastore_fast_import_settings_submit($form, &$form_state) {
   $fast_import_selection = $form_state['values']['dkan_datastore_fast_import_selection'];
-  $class = ($fast_import_selection != DKAN_DATASTORE_BATCH_IMPORT) ? 'DkanDatastoreFastImport' : 'DkanDatastore';
+  $class = ($fast_import_selection != DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT) ? 'DkanDatastoreFastImport' : 'DkanDatastore';
   variable_set('dkan_datastore_class', $class);
 }
 
@@ -133,7 +149,7 @@ function dkan_datastore_fast_import_cron_queue_info() {
 /**
  * Import csv using the most performant way.
  */
-function dkan_datastore_fast_import_import($source, $node, $table, $config){
+function dkan_datastore_fast_import_import($source, $node, $table, $config) {
   $load_data_type = variable_get('dkan_datastore_load_data_type', 'load_data_local_infile');
   $file = $node->field_upload->value();
   $file_path = drupal_realpath($file->uri);
@@ -153,33 +169,39 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config){
     db_query($sql);
     $node->field_datastore_status->set(DKAN_DATASTORE_EXISTS);
     $node->save();
-  } catch (Exception $e) {
-    drupal_set_message(t('There was an error trying to import this file: ' . $e->getMessage() ), 'error', FALSE);
+  }
+  catch (Exception $e) {
+    drupal_set_message(t('There was an error trying to import this file: @error', array('@error', $e->getMessage())), 'error', FALSE);
   }
 }
 
-function dkan_datastore_fast_import_import_queue_worker($item){
+/**
+ * Queue worker for dkan fast imports.
+ */
+function dkan_datastore_fast_import_import_queue_worker($item) {
   dkan_datastore_fast_import_import($item['source'], $item['node'], $item['table'], $item['config']);
 }
 
 /**
  * Implements hook_form_alter().
  */
-function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id){
-  if($form_id == 'dkan_datastore_import_tab_form'){
+function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'dkan_datastore_import_tab_form') {
     $node = entity_metadata_wrapper('node', $form_state['build_info']['args'][0]);
     $file = $node->field_upload->value();
-    $selection = variable_get('dkan_datastore_fast_import_selection', DKAN_DATASTORE_BATCH_IMPORT);
+    $selection = variable_get('dkan_datastore_fast_import_selection', DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT);
     $use_fast_import = FALSE;
 
-    if($selection == DKAN_DATASTORE_DYNAMIC_IMPORT) {
+    if ($selection == DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_DYNAMIC_IMPORT) {
       $threshold = variable_get('dkan_datastore_fast_import_selection_threshold', DkanDatastoreFastImport::FAST_IMPORT_THRESHOLD_DEFAULT);
-      if($file->filesize > parse_size($threshold)) {
+      if ($file->filesize > parse_size($threshold)) {
         $use_fast_import = TRUE;
       }
-    } else if($selection == DKAN_DATASTORE_FAST_IMPORT) {
+    }
+    elseif ($selection == DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_FAST_IMPORT) {
       $use_fast_import = TRUE;
-    } else {
+    }
+    else {
       $use_fast_import = FALSE;
     }
 
@@ -191,11 +213,11 @@ function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id){
         'disabled' => array(
           ':input[name="FeedsFlatstoreProcessor[geolocate]"]' => array('checked' => TRUE),
         ),
-      )
+      ),
     );
     $form['#attached']['js'][] = array(
-      'data' => drupal_get_path('module', 'dkan_datastore_fast_import'). '/dkan_datastore_fast_import.js',
-      'type' => 'file'
+      'data' => drupal_get_path('module', 'dkan_datastore_fast_import') . '/dkan_datastore_fast_import.js',
+      'type' => 'file',
     );
   }
 }
