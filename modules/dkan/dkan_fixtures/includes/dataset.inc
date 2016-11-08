@@ -1,8 +1,17 @@
 <?php
 
+/**
+ * @file
+ * Migration class for dataset fixtures.
+ */
+
+/**
+ * Dataset class, based on the CKAN migration class.
+ */
 class DkanDatasetImport extends MigrateCkanDatasetBase {
+
   /**
-   * Here we go.
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
@@ -50,8 +59,9 @@ class DkanDatasetImport extends MigrateCkanDatasetBase {
     $this->addAdditionalFields($row);
     $this->createAndMapGroups($row);
 
-    // If the License URI is available ODSM will return that on the 'license_title' field instead of the ID.
-    // In order to import the data we need to always work with the URI ID so we need to do a convertion.
+    // If the License URI is available ODSM will return that on the
+    // 'license_title' field instead of the ID. In order to import the data we
+    // need to always work with the URI ID so we need to do a convertion.
     if (isset($row->license_title)) {
       $row->license_title = $this->getLicenseId($row->license_title);
     }
@@ -99,7 +109,6 @@ class DkanDatasetImport extends MigrateCkanDatasetBase {
       $node->uid = 1;
     }
   }
-
 
   /**
    * Adds Additional fields to $row.
@@ -149,4 +158,5 @@ class DkanDatasetImport extends MigrateCkanDatasetBase {
 
     return '';
   }
+
 }
