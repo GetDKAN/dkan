@@ -3,6 +3,10 @@
 /**
  * @file
  * Contains the list style plugin.
+ *
+ * NOTE: The views_plugin style classes do not follow Drupal coding standards
+ * for class and variable names, so we are ignoring the function definition
+ * lines.
  */
 
 /**
@@ -13,12 +17,12 @@
  *
  * @ingroup views_style_plugins
  */
-class views_dkan_workflow_tree_plugin_style extends views_plugin_style_list {
+class ViewsDkanWorkflowTreePluginStyle extends views_plugin_style_list {
 
   /**
    * Set default options.
    */
-  public function option_definition() {
+  public function option_definition() { // @codingStandardsIgnoreLine
     $options = parent::option_definition();
     $options['class'] = array('default' => '');
     $options['wrapper_class'] = array('default' => 'item-list');
@@ -33,7 +37,7 @@ class views_dkan_workflow_tree_plugin_style extends views_plugin_style_list {
   /**
    * Render the given style.
    */
-  public function options_form(&$form, &$form_state) {
+  public function options_form(&$form, &$form_state) { // @codingStandardsIgnoreLine
     parent::options_form($form, $form_state);
 
     $fields = array('' => t('<None>'));
