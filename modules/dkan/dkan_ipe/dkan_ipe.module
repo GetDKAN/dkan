@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Code for the DKAN In-Place Editor feature.
@@ -7,7 +8,8 @@
 include_once 'dkan_ipe.features.inc';
 
 /**
- * Implements hook_panels_ipe_region_links_alter() from Panels IPE.
+ * Implements hook_panels_ipe_region_links_alter().
+ *
  * Set the default category to 'custom' in the IPE.
  */
 function dkan_ipe_panels_ipe_region_links_alter(&$links, $context) {
@@ -94,12 +96,12 @@ function dkan_ipe_ctools_content_subtype_alter(&$subtype, &$plugin) {
 /**
  * Process the panels add content modal.
  *
- * panels/includes/add-content.inc
+ * Panels/includes/add-content.inc.
  */
 function dkan_ipe_process_panels_add_content_modal(&$vars) {
-  if(!$vars['renderer']->admin) {
+  if (!$vars['renderer']->admin) {
     $vars['category'] = 'custom';
-    $vars['header'] = t('');
+    $vars['header'] = '';
   }
   $content = !empty($vars['categories'][$vars['category']]['content']) ? $vars['categories'][$vars['category']]['content'] : array();
 
@@ -110,7 +112,7 @@ function dkan_ipe_process_panels_add_content_modal(&$vars) {
   }
   else {
     $titles = array_keys($content);
-    //natcasesort($titles);
+    // natcasesort($titles);
     arsort($titles);
 
     // This will default to 2 columns in the theme definition but could be
@@ -122,7 +124,11 @@ function dkan_ipe_process_panels_add_content_modal(&$vars) {
     $count = 0;
     foreach ($titles as $title) {
       $which = floor($count++ / $col_size) + 1;
-      $vars['columns'][$which] .= theme('panels_add_content_link', array('renderer' => $vars['renderer'], 'region' => $vars['region'], 'content_type' => $content[$title]));
+      $vars['columns'][$which] .= theme('panels_add_content_link', array(
+        'renderer' => $vars['renderer'],
+        'region' => $vars['region'],
+        'content_type' => $content[$title],
+      ));
     }
   }
 
