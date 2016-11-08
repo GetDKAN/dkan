@@ -50,6 +50,16 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $this->addFieldMapping('field_temporal_coverage:to', 'temporalEnd');
     $this->addFieldMapping('field_frequency', 'accrualPeriodicity');
     $this->addFieldMapping('field_data_dictionary', 'describedBy');
+    $this->addFieldMapping('field_landing_page', 'landingPage');
+    $this->addFieldMapping('field_rights', 'rights');
+    $this->addFieldMapping('field_conforms_to', 'conformsTo');
+    $this->addFieldMapping('field_data_dictionary_type', 'describedByType');
+    $this->addFieldMapping('field_is_part_of', 'isPartOf');
+    $this->addFieldMapping('field_language', 'language');
+    $this->addFieldMapping('field_pod_theme', 'theme');
+    $this->addFieldMapping('field_pod_theme:create_term')
+      ->defaultValue(TRUE);
+
     if ($version == '1.0') {
       $this->addFieldMapping('field_data_dictionary', 'dataDictionary');
       $this->addFieldMapping('language', 'language');
@@ -61,19 +71,9 @@ class DatajsonHarvestMigration extends HarvestMigration {
     if (module_exists('open_data_federal_extras')) {
       $this->addFieldMapping('field_odfe_bureau_code', 'bureauCode');
       $this->addFieldMapping('field_odfe_program_code', 'programCode');
-      $this->addFieldMapping('field_odfe_landing_page', 'landingPage');
-      $this->addFieldMapping('field_odfe_rights', 'rights');
-      $this->addFieldMapping('field_odfe_conforms_to', 'conformsTo');
       $this->addFieldMapping('field_odfe_data_quality', 'dataQuality');
-      $this->addFieldMapping('field_odfe_data_dictionary_type', 'describedByType');
-      $this->addFieldMapping('field_odfe_is_part_of', 'isPartOf');
-      $this->addFieldMapping('field_odfe_language', 'language');
       $this->addFieldMapping('field_odfe_investment_uii', 'primaryITInvestmentUII');
       $this->addFieldMapping('field_odfe_system_of_records', 'systemOfRecords');
-
-      $this->addFieldMapping('field_odfe_category', 'theme');
-      $this->addFieldMapping('field_odfe_category:create_term')
-        ->defaultValue(TRUE);
     }
     // dkan_dataset_metadata_source.
     if (module_exists('dkan_dataset_metadata_source')) {
