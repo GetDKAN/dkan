@@ -10,7 +10,8 @@
     "autoload": {
         "psr-0": {
             "Drupal\\DKANExtension\\": "dkanextension/src/"
-        }
+        },
+        "drupal/coder": "~8.2"
     },
     "config": {
         "bin-dir": "bin/"
