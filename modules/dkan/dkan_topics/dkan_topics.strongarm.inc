@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_topics.strongarm.inc

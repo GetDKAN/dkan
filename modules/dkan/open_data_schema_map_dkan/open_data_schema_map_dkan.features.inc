@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * open_data_schema_map_dkan.features.inc
@@ -10,7 +11,7 @@
 function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
   $open_data_schema_apis = array();
 
-  // Exported Open Data API Map: CKAN Current Package List With Resources
+  // Exported Open Data API Map: CKAN Current Package List With Resources.
   $open_data_schema_apis['ckan_current_package_list_with_resources'] = array(
     'name' => 'CKAN Current Package List With Resources',
     'enabled' => 1,
@@ -301,7 +302,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: CKAN Group List
+  // Exported Open Data API Map: CKAN Group List.
   $open_data_schema_apis['ckan_group_list'] = array(
     'name' => 'CKAN Group List',
     'enabled' => 1,
@@ -582,7 +583,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: CKAN Group Package Show
+  // Exported Open Data API Map: CKAN Group Package Show.
   $open_data_schema_apis['ckan_group_package_show'] = array(
     'name' => 'CKAN Group Package Show',
     'enabled' => 1,
@@ -868,7 +869,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: CKAN Package Show
+  // Exported Open Data API Map: CKAN Package Show.
   $open_data_schema_apis['ckan_package_show'] = array(
     'name' => 'CKAN Package Show',
     'enabled' => 1,
@@ -1158,7 +1159,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: CKAN Resource Show
+  // Exported Open Data API Map: CKAN Resource Show.
   $open_data_schema_apis['ckan_resource_show'] = array(
     'name' => 'CKAN Resource Show',
     'enabled' => 1,
@@ -1268,7 +1269,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: Data.json
+  // Exported Open Data API Map: Data.json.
   $open_data_schema_apis['data_json'] = array(
     'name' => 'Data.json',
     'enabled' => 0,
@@ -1411,7 +1412,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: Data Json 1.1
+  // Exported Open Data API Map: Data Json 1.1.
   $open_data_schema_apis['data_json_1_1'] = array(
     'name' => 'Data Json 1.1',
     'enabled' => 1,
@@ -1803,7 +1804,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'rdf:RDF',
     'xml_defaulttag' => 'dcat:Dataset',
   );
-  // Exported Open Data API Map: DCAT-AP v1.1
+  // Exported Open Data API Map: DCAT-AP v1.1.
   $open_data_schema_apis['dcat_v1_1'] = array(
     'name' => 'DCAT-AP v1.1',
     'enabled' => 1,

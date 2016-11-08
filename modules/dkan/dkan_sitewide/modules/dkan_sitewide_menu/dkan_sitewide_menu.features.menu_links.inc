@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_sitewide_menu.features.menu_links.inc
@@ -72,7 +73,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_visualizations:admin/structure/entity-type/visualization',
   );
-  // Exported menu link: menu-command-center-menu_colorizer:admin/appearance/colorizer.
+  // Exported menu link:
+  // menu-command-center-menu_colorizer:admin/appearance/colorizer.
   $menu_links['menu-command-center-menu_colorizer:admin/appearance/colorizer'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/appearance/colorizer',
@@ -93,7 +95,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
-  // Exported menu link: menu-command-center-menu_content:admin/content.
+  // Exported menu
+  // link: menu-command-center-menu_content:admin/content.
   $menu_links['menu-command-center-menu_content:admin/content'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/content',
@@ -113,7 +116,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -48,
     'customized' => 1,
   );
-  // Exported menu link: menu-command-center-menu_create-user:admin/people/create.
+  // Exported menu
+  // link: menu-command-center-menu_create-user:admin/people/create.
   $menu_links['menu-command-center-menu_create-user:admin/people/create'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/people/create',
@@ -134,7 +138,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_people:admin/people',
   );
-  // Exported menu link: menu-command-center-menu_data-dashboard:node/add/data-dashboard.
+  // Exported menu
+  // link: menu-command-center-menu_data-dashboard:node/add/data-dashboard.
   $menu_links['menu-command-center-menu_data-dashboard:node/add/data-dashboard'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'node/add/data-dashboard',
@@ -155,7 +160,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
   );
-  // Exported menu link: menu-command-center-menu_data-previews:admin/dkan/dataset_preview.
+  // Exported menu
+  // link: menu-command-center-menu_data-previews:admin/dkan/dataset_preview.
   $menu_links['menu-command-center-menu_data-previews:admin/dkan/dataset_preview'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/dkan/dataset_preview',
@@ -176,7 +182,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
-  // Exported menu link: menu-command-center-menu_data-story:node/add/dkan-data-story.
+  // Exported menu
+  // link: menu-command-center-menu_data-story:node/add/dkan-data-story.
   $menu_links['menu-command-center-menu_data-story:node/add/dkan-data-story'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'node/add/dkan-data-story',
@@ -197,7 +204,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
   );
-  // Exported menu link: menu-command-center-menu_dataset:node/add/dataset.
+  // Exported menu
+  // link: menu-command-center-menu_dataset:node/add/dataset.
   $menu_links['menu-command-center-menu_dataset:node/add/dataset'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'node/add/dataset',
@@ -218,7 +226,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
   );
-  // Exported menu link: menu-command-center-menu_fonts:admin/appearance/fontyourface.
+  // Exported menu
+  // link: menu-command-center-menu_fonts:admin/appearance/fontyourface.
   $menu_links['menu-command-center-menu_fonts:admin/appearance/fontyourface'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/appearance/fontyourface',
@@ -239,7 +248,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
-  // Exported menu link: menu-command-center-menu_group:node/add/group.
+  // Exported menu
+  // link: menu-command-center-menu_group:node/add/group.
   $menu_links['menu-command-center-menu_group:node/add/group'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'node/add/group',
@@ -381,7 +391,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_add-content:node/add',
   );
-  // Exported menu link: menu-command-center-menu_site-configuration:admin/config.
+  // Exported menu
+  // link: menu-command-center-menu_site-configuration:admin/config.
   $menu_links['menu-command-center-menu_site-configuration:admin/config'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/config',
@@ -422,7 +433,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
-  // Exported menu link: menu-command-center-menu_taxonomy:admin/structure/taxonomy.
+  // Exported menu
+  // link: menu-command-center-menu_taxonomy:admin/structure/taxonomy.
   $menu_links['menu-command-center-menu_taxonomy:admin/structure/taxonomy'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/structure/taxonomy',
@@ -443,7 +455,8 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
-  // Exported menu link: menu-command-center-menu_theme-settings:admin/appearance/settings.
+  // Exported menu
+  // link: menu-command-center-menu_theme-settings:admin/appearance/settings.
   $menu_links['menu-command-center-menu_theme-settings:admin/appearance/settings'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/appearance/settings',
