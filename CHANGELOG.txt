@@ -46,6 +46,12 @@ DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
  - Added Batch API on 'Harvest now' action.
+<<<<<<< HEAD
+=======
+ - Added Batch API on the 'Preview' page.
+DKAN Migrate Base
+ - Added DKAN Migrate Base module into DKAN Core.
+>>>>>>> 7.x-1.x
 DKAN Workflow:
  - Updated DKAN workflow vbo customizations to not affect other vbo forms.
  - Updated workbench_email from 3.9 to 3.11
