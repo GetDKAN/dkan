@@ -60,7 +60,7 @@ class HarvestSource {
     $query->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'harvest_source')
       ->propertyCondition('status', NODE_PUBLISHED)
-      ->fieldCondition('field_dkan_harvest_machine_name', 'machine', $machine_name);
+      ->fieldCondition('field_dkan_harvest_machine_name', 'machine', $machineName);
     $result = $query->execute();
 
     if (!isset($result['node'])) {
