@@ -60,7 +60,7 @@ class HarvestSource {
     $query->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'harvest_source')
       ->propertyCondition('status', NODE_PUBLISHED)
-      ->fieldCondition('field_dkan_harvest_machineName', 'machine', $machineName);
+      ->fieldCondition('field_dkan_harvest_machine_name', 'machine', $machine_name);
     $result = $query->execute();
 
     if (!isset($result['node'])) {
@@ -71,7 +71,7 @@ class HarvestSource {
     $harvest_source_node = entity_load_single('node', array_pop($harvest_source_nids));
     $harvest_source_emw = entity_metadata_wrapper('node', $harvest_source_node);
 
-    $this->machineName = $harvest_source_emw->field_dkan_harvest_machineName->machine->value();
+    $this->machineName = $harvest_source_emw->field_dkan_harvest_machine_name->machine->value();
 
     if (!isset($harvest_source_emw->field_dkan_harvest_source_uri)) {
       throw new Exception('HarvestSource uri invalid!');
@@ -198,7 +198,7 @@ class HarvestSource {
    */
   public static function getHarvestSourceFromNode(stdClass $harvest_source_node) {
     $harvest_source_node_emw = entity_metadata_wrapper('node', $harvest_source_node);
-    return new HarvestSource($harvest_source_node_emw->field_dkan_harvest_machineName->machine->value());
+    return new HarvestSource($harvest_source_node_emw->field_dkan_harvest_machine_name->machine->value());
   }
 
   /**
