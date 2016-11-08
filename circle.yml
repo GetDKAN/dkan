@@ -81,7 +81,7 @@ test:
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         timeout: 1200
         parallel: true
-    - test/bin/phpcs `git diff 7.x-1.x --name-only`
+    - ahoy dkan lint
     - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_migrate_base_example
     - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_harvest_test
     - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush dis --yes dkan_default_content
