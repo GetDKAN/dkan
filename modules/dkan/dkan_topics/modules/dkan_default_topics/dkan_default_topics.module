@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Default topic taxonomy terms.
@@ -13,7 +14,7 @@ function dkan_default_topics_taxonomy_fixtures_vocabulary() {
 
   $vocabularies['dkan_topics'] = array(
     'export_path' => $data_path,
-    'map' =>     array(
+    'map' => array(
       'name' => 'name',
       'field_icon_type' => 'type',
       'field_topic_icon' => 'icon',
@@ -22,7 +23,7 @@ function dkan_default_topics_taxonomy_fixtures_vocabulary() {
       'weight' => 'weight',
       'uuid' => 'uuid',
     ),
-  ); 
+  );
 
   return $vocabularies;
 
