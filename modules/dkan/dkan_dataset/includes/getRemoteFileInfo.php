@@ -1,17 +1,16 @@
 <?php
 
-/**
- * @file
- * Class to get content type and name of remote file.
- *
- * Socrata shim copied from data.gov.
- */
-
 namespace dkanDataset;
 
-class getRemoteFileInfo {
+/**
+ * Encapsulate logic for retriving information from remote files.
+ */
+class GetRemoteFileInfo {
 
-  function __construct($url, $agent, $followRedirect = TRUE, $tmp = '/tmp') {
+  /**
+   * Class constructor.
+   */
+  public function __construct($url, $agent, $followRedirect = TRUE, $tmp = '/tmp') {
     $this->url = $url;
     $this->agent = $agent;
     $this->followRedirect = $followRedirect;
@@ -21,7 +20,7 @@ class getRemoteFileInfo {
   /**
    * Retrieves headers from url.
    */
-  public function curl_header($url, $agent, $followRedirect, $tmp) {
+  public function curlHeader($url, $agent, $followRedirect, $tmp) {
     $info = array();
 
     $ch = curl_init();
@@ -29,12 +28,12 @@ class getRemoteFileInfo {
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
     curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-    curl_setopt($ch, CURLOPT_FILETIME, true);
-    curl_setopt($ch, CURLOPT_NOBODY, true);
-    curl_setopt($ch, CURLOPT_HEADER, true);
+    curl_setopt($ch, CURLOPT_FRESH_CONNECT, TRUE);
+    curl_setopt($ch, CURLOPT_FILETIME, TRUE);
+    curl_setopt($ch, CURLOPT_NOBODY, TRUE);
+    curl_setopt($ch, CURLOPT_HEADER, TRUE);
 
-    curl_setopt($ch, CURLOPT_COOKIESESSION, true);
+    curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
     curl_setopt($ch, CURLOPT_COOKIE, "");
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $followRedirect);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -49,7 +48,7 @@ class getRemoteFileInfo {
     // If the server didn't support HTTP HEAD, use the shim.
     if ((!empty($info['header']['X-Error-Message']) && trim($info['header']['X-Error-Message']) == 'HEAD is not supported')
         || empty($info['header']['Content-Type'])) {
-      return $this->curl_head_shim($url, $agent, $followRedirect, $tmp);
+      return $this->curlHeadShim($url, $agent, $followRedirect, $tmp);
     }
     else {
       return $info;
@@ -59,7 +58,7 @@ class getRemoteFileInfo {
   /**
    * Saves file to temp dir to parse header.
    */
-  private function curl_head_shim($url, $agent, $followRedirect, $tmp) {
+  private function curlHeadShim($url, $agent, $followRedirect, $tmp) {
     $info = array();
     $ch = curl_init();
     $output = fopen('/dev/null', 'w');
@@ -69,7 +68,7 @@ class getRemoteFileInfo {
     curl_setopt($ch, CURLOPT_FILE, $output);
     curl_setopt($ch, CURLOPT_WRITEHEADER, $headerfile);
     curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-    curl_setopt($ch, CURLOPT_HEADER, true);
+    curl_setopt($ch, CURLOPT_HEADER, TRUE);
     curl_setopt($ch, CURLOPT_USERAGENT, $agent);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $followRedirect);
     curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
@@ -88,7 +87,7 @@ class getRemoteFileInfo {
    */
   public function getInfo() {
     if (!isset($this->info)) {
-      $this->info = $this->curl_header($this->url, $this->agent, $this->followRedirect, $this->tmp);
+      $this->info = $this->curlHeader($this->url, $this->agent, $this->followRedirect, $this->tmp);
     }
     return $this->info;
   }
@@ -114,7 +113,7 @@ class getRemoteFileInfo {
   /**
    * Retrieves URL from end of string.
    */
-  function getNameFromUrl() {
+  public function getNameFromUrl() {
     $basename = basename($this->url);
     $name = explode('.', $basename);
     if (count($name) > 2) {
@@ -208,7 +207,7 @@ class getRemoteFileInfo {
       }
       else {
         if (substr($h[0], 0, 1) == "\t") {
-          $headers[$key] .= "\r\n\t".trim($h[0]);
+          $headers[$key] .= "\r\n\t" . trim($h[0]);
         }
         elseif (!$key) {
           $headers[0] = trim($h[0]);trim($h[0]);
