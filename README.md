@@ -4,7 +4,7 @@
 
 ## What is DKAN?
 
-[![DKAN](https://www.drupal.org/files/2016-02-05_12-09-49.png)](http://nucivic.com/dkan)
+[![DKAN](docs/images/dkan-front-page.png)](http://nucivic.com/dkan)
 
 [DKAN](http://nucivic.com/dkan) is a Drupal-based open data tool with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. DKAN is maintained by [NuCivic](http://nucivic.com).
 
