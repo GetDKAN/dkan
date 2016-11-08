@@ -1,0 +1,334 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 389.0,
+		"last_filter": "settings",
+		"selected_items":
+		[
+			[
+				"settings",
+				"Preferences: SublimeLinter Settings – User"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"html",
+				"HTML: Encode Special Characters"
+			],
+			[
+				"wr",
+				"Word Wrap: Toggle"
+			],
+			[
+				"wrap",
+				"Word Wrap: Toggle"
+			],
+			[
+				"php",
+				"Set Syntax: PHP"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"res",
+				"Set Syntax: reStructuredText Improved"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"rst",
+				"Set Syntax: reStructuredText"
+			],
+			[
+				"babel",
+				"Set Syntax: JavaScript (Babel)"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"jaca",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"react",
+				"Set Syntax: React Templates"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"getiniti",
+				"Snippet: React: getInitialState: fn() { return {...} } "
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"browse",
+				"Preferences: Browse Packages"
+			],
+			[
+				"preferences",
+				"Preferences: Settings - User"
+			],
+			[
+				"encode",
+				"HTML: Encode Special Characters"
+			]
+		],
+		"width": 703.0
+	},
+	"console":
+	{
+		"height": 153.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/dfeder/Work/coder-dkan/modules/dkan/dkan_fixtures/dkan_fixtures.sublime-project",
+		"/home/dfeder/.config/sublime-text-3/Packages/User/SublimeLinter.sublime-settings",
+		"/home/dfeder/Work/coder-dkan/modules/dkan/dkan_fixtures/dkan_fixtures.api.php",
+		"/home/dfeder/Work/dkan/docs/components/index.rst",
+		"/home/dfeder/Work/dkan/docs/development/datasetfields.md",
+		"/home/dfeder/Work/dkan/docs/admin/roles.md",
+		"/home/dfeder/Work/dkan/docs/admin/addingfields.md",
+		"/home/dfeder/Work/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_api/README.md",
+		"/home/dfeder/Work/dkan/docs/apis/ckan-dataset.md",
+		"/home/dfeder/Work/dkan/modules/dkan/dkan_datastore/README.md",
+		"/home/dfeder/Work/dkan/docs/_build/html/_sources/apis/open-data.txt",
+		"/home/dfeder/Work/dkan/docs/components/datastore/index.rst",
+		"/home/dfeder/Work/dkan/docs/components/project-open-data.md",
+		"/home/dfeder/Work/dkan/docs/apis/open-data.rst",
+		"/home/dfeder/Work/dkan/docs/admin/index.rst",
+		"/home/dfeder/Work/dkan/docs/development/index.rst",
+		"/home/dfeder/Work/dkan/docs/components/dataset/rest-api.md",
+		"/home/dfeder/.config/composer/composer.lock",
+		"/home/dfeder/.config/composer/composer.json",
+		"/home/dfeder/Sites/efn/sites/default/settings.php",
+		"/home/dfeder/Sites/efn/sites/default/settings.local.php",
+		"/home/dfeder/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/dfeder/Sites/efn/modules/auto_nodetitle/auto_nodetitle.module",
+		"/home/dfeder/Sites/efn/modules/features/features.info.yml",
+		"/home/dfeder/Sites/efn/.editorconfig",
+		"/home/dfeder/Sites/efn/composer.json",
+		"/home/dfeder/classified.html",
+		"//"
+	],
+	"find":
+	{
+		"height": 26.0
+	},
+	"find_in_files":
+	{
+		"height": 108.0,
+		"where_history":
+		[
+			"",
+			"/home/dfeder/Work/dkan/docs"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"dkan_fixtures_import_file",
+			"RestWSFormatArray",
+			"`Open Data Schema",
+			"^\\t\"(.+?)\", ",
+			"temporal",
+			"^(.+?)\\s*\\|(.+?)\\s*\\|\\[(.+?)\\]\\((.+?)\\)\\|\\[(.+?)\\]\\((.+?)\\)",
+			"^(.+?)\\s*\\|(.+?)\\s*\\|\\|\\[(.+?)\\]\\((.+?)\\)",
+			"dcat",
+			"project open data",
+			"address",
+			"zone",
+			"ps1",
+			"colors",
+			"php\": \"",
+			"php"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"\\t",
+			"\\t\"$1\", \"$2\", `$3 <$4>`_, `$5 <$6>`_",
+			"\\t\"$1\", \"$2\", \"\", `$3 <$4>`_",
+			"\\t\"$1\""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 36.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "dkan_fixtures.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"scss",
+				"_sass/_layout.scss"
+			],
+			[
+				"php",
+				"dkan_fixtures.api.php"
+			],
+			[
+				"dataset",
+				"docs/development/datasetfields.md"
+			],
+			[
+				"project",
+				"docs/components/project-open-data.md"
+			],
+			[
+				"datastoreapireadme",
+				"modules/dkan/dkan_datastore/modules/dkan_datastore_api/README.md"
+			],
+			[
+				"settings.",
+				"sites/default/settings.php"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 317.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
