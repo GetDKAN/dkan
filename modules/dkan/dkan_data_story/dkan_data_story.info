@@ -56,5 +56,4 @@ features_exclude[dependencies][features] = features
 features_exclude[dependencies][image] = image
 features_exclude[dependencies][strongarm] = strongarm
 features_exclude[dependencies][taxonomy] = taxonomy
-features_exclude[dependencies][dkan_topics] = dkan_topics
 no autodetect = 1
