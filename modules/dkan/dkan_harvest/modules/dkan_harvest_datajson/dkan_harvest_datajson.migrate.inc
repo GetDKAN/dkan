@@ -192,7 +192,6 @@ class DatajsonHarvestMigration extends HarvestMigration {
     return $resources;
   }
 
-
   /**
    * Prepare group that needs to be imported based on the row data.
    *

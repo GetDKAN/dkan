@@ -27,31 +27,44 @@ class HarvestMigration extends MigrateDKAN {
     return parent::getInstance($machine_name, $class_name, $arguments);
   }
 
-  // Store the harvest source we got from the Migration registration.
+  /**
+   * Store the harvest source we got from the Migration registration.
+   *
+   * @var object
+   */
   protected $dkanHarvestSource;
 
   protected $sourceListOptions;
-
-  // MigrateMap init arguments.
   protected $dkanHarvestMigrateSQLMapSourceKey;
   protected $dkanHarvestMigrateSQLMapDestinationKey;
   protected $dkanHarvestMigrateSQLMapConnectionKey;
   protected $dkanHarvestMigrateSQLMapSourceOptions;
 
-  // Store the dataset ids processed by this harvest migrate. Those will come
-  // in handy later to unpublish missing sources.
+  /**
+   * Store the dataset ids processed to unpublish missing sources later.
+   *
+   * @var array
+   */
   protected $idListImported = array();
 
-  // Extra Harvest argument.
+  /**
+   * Extra Harvest argument.
+   *
+   * @var bool
+   */
   protected $dkanHarvestOptSkipHash = FALSE;
 
-  // Disabled rules during import.
+  /**
+   * Disabled rules during import.
+   *
+   * @var array
+   */
   protected $dkanHarvestDisabledRules = array();
 
   /**
    * General initialization of a HarvestMigration object.
    */
-  public function __construct(Array $arguments) {
+  public function __construct(array $arguments) {
     if (!isset($arguments['dkan_harvest_source'])) {
       // Don't bother if we don't get the harvest source object. This will help
       // avoid null issues when looking at the migrations status .
@@ -354,8 +367,11 @@ class HarvestMigration extends MigrateDKAN {
    *         An object usable for
    *         HarvestMigration::prepareMetadataSource() or FALSE.
    */
-  public static function prepareMetadataSourceHelper($file_uri, $title = NULL,
-    $metadata_schema = NULL, $metadata_view = NULL, $uid = 1) {
+  public static function prepareMetadataSourceHelper($file_uri,
+  $title = NULL,
+    $metadata_schema = NULL,
+  $metadata_view = NULL,
+  $uid = 1) {
 
     $metadata_source = new stdClass();
 
@@ -437,8 +453,8 @@ class HarvestMigration extends MigrateDKAN {
     // Create a metadata node that contains the source for imported USDA ISO
     // dataset.
     $metadata_source = entity_create('node', array(
-    'type' => 'metadata',
-    'uid' => $row->metadata_source,
+      'type' => 'metadata',
+      'uid' => $row->metadata_source,
     ));
 
     // Use the admin user as the node author.
@@ -1093,7 +1109,8 @@ class HarvestMigration extends MigrateDKAN {
    * Change the default to not warn as overriding field mapping is common
    * practice for the HarvestMigration subclasses.
    */
-  public function addFieldMapping($destination_field, $source_field = NULL,
+  public function addFieldMapping($destination_field,
+  $source_field = NULL,
     $warn_on_override = FALSE) {
     return parent::addFieldMapping($destination_field, $source_field,
       $warn_on_override);
@@ -1208,7 +1225,8 @@ class XMLHarvestMigration extends HarvestMigration {
    * @return MigrateXMLFieldMapping
    *   MigrateXMLFieldMapping
    */
-  public function addFieldMapping($destination_field, $source_field = NULL,
+  public function addFieldMapping($destination_field,
+  $source_field = NULL,
                                   $warn_on_override = TRUE) {
     // Warn of duplicate mappings.
     if ($warn_on_override && !is_null($destination_field) && isset($this->codedFieldMappings[$destination_field])) {

@@ -16,14 +16,14 @@
  *
  * Those properties are:
  *
- * - 'machine_name' (Required): Unique identifier for this source.
+ * - 'machineName' (Required): Unique identifier for this source.
  * - 'uri' (Required): Location of the content to harvest for this source.
  * This can be a standard URL 'http://data_json_remote' or a local file
  * path '/home/test/source/file'.
  * - 'type' (Required): Type of endpoint protocol
  * that this source is pulling from.
  * - 'name' (String, Optional): User friendly name used to display this source.
- * If empty will use the 'machine_name' property.
+ * If empty will use the 'machineName' property.
  * - 'filters' => array('keyword' => array('health')) (Optional): Filter items
  * preseting the following values.
  * - 'excludes' => array('keyword' => array('tabacco')) (Optional): Exclude
@@ -45,13 +45,13 @@ class HarvestSource {
   /**
    * Constructor for HarvestSource class.
    *
-   * @param array $machine_name
+   * @param array $machineName
    *        Source array containing atleast all the required source
    *        elements (As documented above) and any other optional proprety.
    */
-  public function __construct($machine_name) {
-    // $machine_name is really needed to construct this object.
-    if (empty($machine_name) || is_null($machine_name)) {
+  public function __construct($machineName) {
+    // $machineName is really needed to construct this object.
+    if (empty($machineName) || is_null($machineName)) {
       throw new Exception(t('machine name is required!'));
     }
 
@@ -60,18 +60,18 @@ class HarvestSource {
     $query->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'harvest_source')
       ->propertyCondition('status', NODE_PUBLISHED)
-      ->fieldCondition('field_dkan_harvest_machine_name', 'machine', $machine_name);
+      ->fieldCondition('field_dkan_harvest_machineName', 'machine', $machineName);
     $result = $query->execute();
 
     if (!isset($result['node'])) {
-      throw new Exception(t('Harvest Source node with machine name %s not found.', array('%s' => $machine_name)));
+      throw new Exception(t('Harvest Source node with machine name %s not found.', array('%s' => $machineName)));
     }
 
     $harvest_source_nids = array_keys($result['node']);
     $harvest_source_node = entity_load_single('node', array_pop($harvest_source_nids));
     $harvest_source_emw = entity_metadata_wrapper('node', $harvest_source_node);
 
-    $this->machineName = $harvest_source_emw->field_dkan_harvest_machine_name->machine->value();
+    $this->machineName = $harvest_source_emw->field_dkan_harvest_machineName->machine->value();
 
     if (!isset($harvest_source_emw->field_dkan_harvest_source_uri)) {
       throw new Exception('HarvestSource uri invalid!');
@@ -81,8 +81,8 @@ class HarvestSource {
     if (!isset($harvest_source_emw->field_dkan_harveset_type)) {
       throw new Exception('HarvestSource type invalid!');
     }
-    $type_machine_name = $harvest_source_emw->field_dkan_harveset_type->value();
-    $this->type = HarvestSourceType::getSourceType($type_machine_name);
+    $type_machineName = $harvest_source_emw->field_dkan_harveset_type->value();
+    $this->type = HarvestSourceType::getSourceType($type_machineName);
 
     $label = $harvest_source_emw->title->value();
     if (!isset($label) || !is_string($label)) {
@@ -147,14 +147,14 @@ class HarvestSource {
    * Delete the cache directory for a specific source.
    */
   public function deleteCacheDir() {
-    $cache_dir_path = DKAN_HARVEST_CACHE_DIR . '/' . $this->machine_name;
+    $cache_dir_path = DKAN_HARVEST_CACHE_DIR . '/' . $this->machineName;
     return file_unmanaged_delete_recursive($cache_dir_path);
   }
 
-
   /**
-   * Generate a migration machine name from the source machine name suitable for in
-   * MigrationBase::registerMigration().
+   * Generate a valid migration machine name from the source.
+   *
+   * @see MigrationBase::registerMigration()
    */
   public function getMigrationMachineName() {
     return self::getMigrationMachineNameFromName($this->machineName);
@@ -166,8 +166,8 @@ class HarvestSource {
    * Generate a migration machine name from the source machine name
    * suitable for in MigrationBase::registerMigration().
    */
-  public static function getMigrationMachineNameFromName($machine_name) {
-    $migration_name = DKAN_HARVEST_MIGRATION_PREFIX . $machine_name;
+  public static function getMigrationMachineNameFromName($machineName) {
+    $migration_name = DKAN_HARVEST_MIGRATION_PREFIX . $machineName;
     return self::getMachineNameFromName($migration_name);
   }
 
@@ -198,27 +198,27 @@ class HarvestSource {
    */
   public static function getHarvestSourceFromNode(stdClass $harvest_source_node) {
     $harvest_source_node_emw = entity_metadata_wrapper('node', $harvest_source_node);
-    return new HarvestSource($harvest_source_node_emw->field_dkan_harvest_machine_name->machine->value());
+    return new HarvestSource($harvest_source_node_emw->field_dkan_harvest_machineName->machine->value());
   }
 
   /**
-   * Get last time migration run from migration log table by machine_name.
+   * Get last time migration run from migration log table by machineName.
    *
-   * @param string $machine_name
+   * @param string $machineName
    *        Harvest Source machine name.
    *
    * @return int
    *         Timestamp of the last Harvest Migration run.
    *         Or NULL if source not found or not run yet.
    */
-  public static function getMigrationTimestampFromMachineName($machine_name) {
-    $migration_machine_name = HarvestSource::getMigrationMachineNameFromName($machine_name);
+  public static function getMigrationTimestampFromMachineName($machineName) {
+    $migration_machineName = HarvestSource::getMigrationMachineNameFromName($machineName);
 
     // Get the last time (notice the MAX) the migration was run.
-    $result = db_query("SELECT MAX(starttime) FROM {migrate_log} WHERE machine_name =
-     :migration_machine_name ORDER BY starttime ASC limit 1;", array(
-       ':migration_machine_name' =>
-       $migration_machine_name,
+    $result = db_query("SELECT MAX(starttime) FROM {migrate_log} WHERE machineName =
+     :migration_machineName ORDER BY starttime ASC limit 1;", array(
+       ':migration_machineName' =>
+       $migration_machineName,
      ));
 
     $result_array = $result->fetchAssoc();
@@ -264,16 +264,16 @@ class HarvestSource {
   /**
    * Get number of dataset imported.
    *
-   * @param string $machine_name
+   * @param string $machineName
    *        Harvest Source machine name.
    *
    * @return int
    *         Number of datasets imported by the Harvest Source.
    */
-  public static function getMigrationCountFromMachineName($machine_name) {
+  public static function getMigrationCountFromMachineName($machineName) {
     // Construct the migrate map table name.
-    $migration_machine_name = HarvestSource::getMigrationMachineNameFromName($machine_name);
-    $migrate_map_table = 'migrate_map_' . $migration_machine_name;
+    $migration_machineName = HarvestSource::getMigrationMachineNameFromName($machineName);
+    $migrate_map_table = 'migrate_map_' . $migration_machineName;
 
     // In case the migration was not run and the table was not created yet.
     if (!db_table_exists($migrate_map_table)) {
@@ -310,7 +310,7 @@ class HarvestSource {
 
     try {
       // Get the cache callback for the source.
-      $harvest_cache = call_user_func(
+      $harvestCache = call_user_func(
         $this->type->cacheCallback,
         $this,
         $timestamp
@@ -320,12 +320,12 @@ class HarvestSource {
       drupal_set_message(t('Harvest demo cache failed: @error', array('@error' => $e->getMessage())), 'error', FALSE);
     }
 
-    if (!isset($harvest_cache)) {
+    if (!isset($harvestCache)) {
       // Nothing to look for here.
       return FALSE;
     }
 
-    return $harvest_cache;
+    return $harvestCache;
   }
 
   /**
@@ -364,7 +364,7 @@ class HarvestSource {
    *         Object related to the source. Or FALSE if failed.
    */
   public function getMigration() {
-    $harvest_migration_machine_name = $this->getMigrationMachineName();
+    $harvest_migration_machineName = $this->getMigrationMachineName();
 
     // Prepare $arguments to pass to the migration.
     $arguments = array(
@@ -378,12 +378,12 @@ class HarvestSource {
     // update the arguments if not.
     HarvestMigration::registerMigration(
       $this->type->migrationClass,
-      $harvest_migration_machine_name,
+      $harvest_migration_machineName,
       $arguments
     );
 
     // This will make sure the Migration have the latest arguments.
-    $migration = HarvestMigration::getInstance($harvest_migration_machine_name,
+    $migration = HarvestMigration::getInstance($harvest_migration_machineName,
       $this->type->migrationClass, $arguments);
 
     // Probably we should not trust migrations not subclassed from our

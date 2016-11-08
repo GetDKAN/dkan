@@ -1,11 +1,11 @@
 <?php
+
 /**
  * @file
  * Code for the DKAN Harvest Dashboard feature.
  */
 
 include_once 'dkan_harvest_dashboard.features.inc';
-
 
 /**
  * Implements hook_menu().

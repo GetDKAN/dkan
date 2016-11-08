@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Code for the DKAN Harvest feature.
@@ -74,8 +75,8 @@ function theme_dkan_harvest_source_summary(&$vars) {
         '#autocomplete_path' => FALSE,
       ),
     ));
-    $output .= '<div class="form-group"><label>' . t('Source') . ': </label>' . $source_field . '</div>';
-    $output .= '<div><strong>' . t('Datasets') . ': </strong>' . $count . '</div>';
+    $output .= '<div class="form-group">' . t('<label>Source</label> @source', array('@source => $source_filed')) . '</div>';
+    $output .= '<div>' . t('<strong>Datasets</strong> @count', array('@count' => $count)) . '</div>';
     if (!empty($filters) || !empty($excludes) || !empty($overrides) || !empty($defaults)) {
       $output .= '<div class="summary-details">';
       if (!empty($filters)) {
@@ -257,9 +258,10 @@ function dkan_harvest_page_preview($node) {
     batch_set($batch);
     batch_process();
 
-  } else {
+  }
+  else {
     // The cache directory exists. Load the table.
-    $harvestCache = call_user_func($harvestSource->type->cache_callback, $harvestSource, NULL);
+    $harvestCache = call_user_func($harvestSource->type->cacheCallback, $harvestSource, NULL);
 
     if ($harvestCache) {
       foreach ($harvestCache->getSaved() as $id => $dataset_item) {
@@ -272,10 +274,15 @@ function dkan_harvest_page_preview($node) {
         change the source\'s configuration, click the "Harvest now" button at the
         bottom of the page to run the harvest immediately, or simply continue working
         and the harvest will be performed on schedule.');
-      $output .= '<div class="datasets-count-preview"><span>' .
-        t('Datasets in source: ') . '</span>' . $harvestCache->getSavedCount() . '</div>';
+      $output .= '<div class="datasets-count-preview">' .
+        t('<span>Datasets in source: </span> @count', array('@count' => $harvestCache->getSavedCount())) .
+        '</div>';
       $header = array(t('Identifier'), t('Title'));
-      $output .= theme('table', array('rows' => $rows, 'header' => $header, 'caption' => $caption));
+      $output .= theme('table', array(
+        'rows' => $rows,
+        'header' => $header,
+        'caption' => $caption,
+      ));
       $output .= drupal_render($form_import);
     }
   }
@@ -286,10 +293,10 @@ function dkan_harvest_page_preview($node) {
 /**
  * Batch function to cache a source from source.
  *
- * @see dkan_harvest_cache_sources()
- *
- * @param $node Harvest source node object
- * @param $context Batch context
+ * @param object $node
+ *   Harvest source node object.
+ * @param array $context
+ *   Batch context.
  */
 function dkan_harvest_cache_source_node_batch($node, &$context) {
   $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
@@ -297,7 +304,7 @@ function dkan_harvest_cache_source_node_batch($node, &$context) {
 }
 
 /**
- *
+ * Form callback for single-button "Harvest Now" form.
  */
 function dkan_harvest_harvest_now_form($form, &$form_state, $node) {
   $form = array();
@@ -312,7 +319,7 @@ function dkan_harvest_harvest_now_form($form, &$form_state, $node) {
 }
 
 /**
- *
+ * Submit callback for dkan_harvest_harvest_now_form.
  */
 function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
 

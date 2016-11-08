@@ -14,6 +14,8 @@ class HarvestItem extends MigrateItem {
 
   /**
    * A uri string template for locally cached harvest files.
+   *
+   * @var string
    */
   protected $itemUriSubject;
 

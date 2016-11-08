@@ -162,7 +162,7 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
   // Filter datasets, only allow datasets that have the filters value.
   $filters = $source->filters;
   if (!empty($filters)) {
-    $datasets = array_filter($datasets, function($dataset) use($filters, &$harvest_cache) {
+    $datasets = array_filter($datasets, function ($dataset) use ($filters, &$harvest_cache) {
       $dataset_key = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
       // Default action is to DROP the dataset if it does not meet the
       // filtering criteria.
@@ -198,7 +198,7 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
   // Exclude datasets, drop datasets that have the excludes value.
   $excludes = $source->excludes;
   if (!empty($excludes)) {
-    $datasets = array_filter($datasets, function($dataset) use($excludes, &$harvest_cache) {
+    $datasets = array_filter($datasets, function ($dataset) use ($excludes, &$harvest_cache) {
       $dataset_key = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
       // Default action is to accept dataset that does not meet the
       // excluding criteria.
@@ -232,7 +232,7 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
 
   // Override field values.
   $overrides = $source->overrides;
-  $datasets = array_map(function($dataset) use($overrides, &$harvest_cache) {
+  $datasets = array_map(function ($dataset) use ($overrides, &$harvest_cache) {
     foreach ($overrides as $path => $override_value) {
       dkan_harvest_datajson_set_value($dataset, $path, $override_value[0], TRUE);
     }
@@ -241,7 +241,7 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
 
   // Set default values for empty fields.
   $defaults = $source->defaults;
-  $datasets = array_map(function($dataset) use($defaults, &$harvest_cache) {
+  $datasets = array_map(function ($dataset) use ($defaults, &$harvest_cache) {
     foreach ($defaults as $path => $default_value) {
       dkan_harvest_datajson_set_value($dataset, $path, $default_value[0]);
     }

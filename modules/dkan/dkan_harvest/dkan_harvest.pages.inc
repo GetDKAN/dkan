@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Page callbacks for dkan harvest pages.
@@ -116,7 +117,6 @@ function dkan_harvest_page_event_log($node) {
 
   return $build;
 }
-
 
 /**
  * Display a harvest source node's error log history.

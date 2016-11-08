@@ -14,14 +14,13 @@
  * Each dataset id added can have multiple flags.
  */
 class HarvestCache {
-  // Cached entries Flags.
   const DKAN_HARVEST_CACHE_PROCESSED = 0x0;
   const DKAN_HARVEST_CACHE_FAILED = 0x1;
   const DKAN_HARVEST_CACHE_FILTERED = 0x2;
   const DKAN_HARVEST_CACHE_EXCLUDED = 0x4;
   const DKAN_HARVEST_CACHE_DEFAULTED = 0x8;
   const DKAN_HARVEST_CACHE_OVERRIDDEN = 0x16;
-  // Source Object.
+
   public $harvestSource;
   public $harvestCacheTime;
   public $processed;
@@ -126,6 +125,7 @@ class HarvestCache {
   public function getDefaultedCount() {
     return count($this->getDefaulted());
   }
+
   /**
    * Get the overridden saved harvest source elements.
    */

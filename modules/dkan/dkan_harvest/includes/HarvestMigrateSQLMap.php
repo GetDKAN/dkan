@@ -64,8 +64,11 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
    * Rewrite the parent constructor and add our specific bits that we couldn't
    * add as an override.
    */
-  public function __construct($machine_name, array $source_key,
-    array $destination_key, $connection_key = 'default', $options = array()) {
+  public function __construct($machine_name,
+  array $source_key,
+    array $destination_key,
+  $connection_key = 'default',
+  $options = array()) {
 
     // Save the logTable name before creating the tables.
     $db_connection = Database::getConnection('default', $connection_key);

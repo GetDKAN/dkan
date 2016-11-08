@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Views hooks for dkan_harvest_dashboard.
