@@ -11,7 +11,7 @@
 class MigrateCkanGroupBase extends MigrateCkanBase {
 
   /**
-   * Here we go.
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
     parent::__construct($arguments);
