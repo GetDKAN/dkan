@@ -1,19 +1,22 @@
 <?php
+
 /**
  * @file
+ * Datasets.inc.
+ *
  * Contains helper functions that build content arrays to be loaded
  * as demo content.
  */
 
 /**
- * Returns an array of available datasets slugs to use wit
+ * Returns an array of available datasets slugs to use wit.
  */
-function dkan_default_content_available_datasets(){
+function dkan_default_content_available_datasets() {
   return array(
     'wisconsin_polling',
     'national_foreclosure',
     'gold_prices',
-    'afghan_election_districts'
+    'afghan_election_districts',
   );
 }
 
@@ -89,11 +92,11 @@ function dkan_default_content_wisconsin_polling_dataset() {
           'top' => '46.9573',
           'right' => '-87.0307',
           'bottom' => '42.4936',
-          'srid' => null,
-          'accuracy' => null,
-          'source' => null,
-        )
-      )
+          'srid' => NULL,
+          'accuracy' => NULL,
+          'source' => NULL,
+        ),
+      ),
     ),
     'field_contact_email' => array(
       'und' => array(
@@ -105,10 +108,10 @@ function dkan_default_content_wisconsin_polling_dataset() {
   );
 }
 
-/*
- * Builds an array of Winsconsin Polling Places Dataset's resources
+/**
+ * Builds an array of Winsconsin Polling Places Dataset's resources.
  */
-function dkan_default_content_wisconsin_polling_resources(){
+function dkan_default_content_wisconsin_polling_resources() {
   $name = 'csv';
   $terms = taxonomy_get_term_by_name($name);
   $term = current($terms);
@@ -172,12 +175,12 @@ function dkan_default_content_wisconsin_polling_resources(){
           ),
         ),
       ),
-    )
+    ),
   );
 }
 
 /**
- * Builds an array of US National Foreclosure Statistics January 2012 Dataset
+ * Builds an array of US National Foreclosure Statistics January 2012 Dataset.
  */
 function dkan_default_content_national_foreclosure_dataset() {
 
@@ -248,9 +251,12 @@ State data: http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1',
 }
 
 /**
- * Builds an array of US National Foreclosure Statistics January 2012 Dataset Resources
+ * Generate information US National Foreclosure.
+ *
+ * Builds an array of US National Foreclosure Statistics January
+ * 2012 Dataset Resources.
  */
-function dkan_default_content_national_foreclosure_resources(){
+function dkan_default_content_national_foreclosure_resources() {
   $name = 'csv';
   $terms = taxonomy_get_term_by_name($name);
   $term = current($terms);
@@ -306,14 +312,14 @@ function dkan_default_content_national_foreclosure_resources(){
           ),
         ),
       ),
-    )
+    ),
   );
 }
 
 /**
- * Builds an array of Gold Prices in London 1950-2008 Dataset
+ * Builds an array of Gold Prices in London 1950-2008 Dataset.
  */
-function dkan_default_content_gold_prices_dataset(){
+function dkan_default_content_gold_prices_dataset() {
   return array(
     'exported_path' => 'dataset/gold-prices-london-1950-2008-monthly',
     'title' => 'Gold Prices in London 1950-2008 (Monthly)',
@@ -403,9 +409,9 @@ License: PDDL (Source indicates no restrictions on data).',
 }
 
 /**
- * Builds an array of Gold Prices in London 1950-2008 Dataset Resoures
+ * Builds an array of Gold Prices in London 1950-2008 Dataset Resoures.
  */
-function dkan_default_content_gold_prices_resources(){
+function dkan_default_content_gold_prices_resources() {
   $name = 'csv';
   $terms = taxonomy_get_term_by_name($name);
   $term = current($terms);
@@ -466,14 +472,14 @@ function dkan_default_content_gold_prices_resources(){
           ),
         ),
       ),
-    )
+    ),
   );
 }
 
 /**
- * Builds an array of Afghanistan Election Districts Dataset
+ * Builds an array of Afghanistan Election Districts Dataset.
  */
-function dkan_default_content_afghan_election_districts_dataset(){
+function dkan_default_content_afghan_election_districts_dataset() {
   return array(
     'title' => 'Afghanistan Election Districts',
     'sort_value' => '4',
@@ -511,7 +517,7 @@ function dkan_default_content_afghan_election_districts_dataset(){
     'og_group_ref' => array(
       'und' => array(
         0 => array(
-          'title' => 'Geospatial Data Explorer Examples'
+          'title' => 'Geospatial Data Explorer Examples',
         ),
       ),
     ),
@@ -552,7 +558,7 @@ function dkan_default_content_afghan_election_districts_dataset(){
 }
 
 /**
- * Builds an array of Afghanistan Election Districts Dataset Resources
+ * Builds an array of Afghanistan Election Districts Dataset Resources.
  */
 function dkan_default_content_afghan_election_districts_resources() {
   $name = 'csv';
@@ -610,6 +616,6 @@ function dkan_default_content_afghan_election_districts_resources() {
           ),
         ),
       ),
-    )
+    ),
   );
 }

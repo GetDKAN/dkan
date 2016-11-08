@@ -51,7 +51,7 @@ We provide hook implementations in order to add extra options or remove existing
 
 In order to add options to the existing ones you need to implement `hook_license_subscribe` in the following fashion:
 
-<code class="php">
+```php
     // Let's asume we want to do this as part of the fictitious license_options_extra module
     function license_options_extra_subscribe() {
       return array(
@@ -61,7 +61,7 @@ In order to add options to the existing ones you need to implement `hook_license
         ),
       );
     }
-</code>
+```
 
 The code above add the **Talis Community License (TCL)** license referencing it to the **tcl** key. It also provides a link to the license (optional). You can provide as many options as you want through the array being returned.
 
@@ -69,14 +69,14 @@ The code above add the **Talis Community License (TCL)** license referencing it 
 
 In order to remove options from the existing ones you need to implement `hook_license_unsubscribe` in the following fashion:
 
-<code class="php">
+```php
     // Let's asume we want to do this as part of the fictitious license_options_extra module
     function license_options_extra_unsubscribe() {
       return array(
         'notspecified',
       );
     }
-</code>
+```
 
 The code above removes the **notspecified** option. You can provide as many options as you want through the array being returned.
 

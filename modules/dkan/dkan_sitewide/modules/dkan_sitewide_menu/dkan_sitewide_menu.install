@@ -5,16 +5,15 @@
  * Contains install and update functions for dkan_sitewide_menu.
  */
 
-
 /**
- * Implements hook_install.
+ * Implements hook_install().
  */
-function dkan_sitewide_menu_install()  {
+function dkan_sitewide_menu_install() {
   _dkan_sitewide_menu_setup_admin_menu_source();
 }
 
 /**
- * Configure new lower-level user admin menu
+ * Configure new lower-level user admin menu.
  */
 function dkan_sitewide_menu_update_7100() {
   _dkan_sitewide_menu_clear_command_center();
@@ -22,13 +21,16 @@ function dkan_sitewide_menu_update_7100() {
 }
 
 /**
- * Remove "Add dataset" and "Datasets" menu items from main menu. These links
+ * Implements hook_update_7101().
+ *
+ * Remove "Add dataset" and "Datasets" menu
+ * items from main menu. These links
  * are now provided from other modules.
  */
 function dkan_sitewide_menu_update_7101() {
   $main_menu_links = menu_load_links('main-menu');
 
-  foreach($main_menu_links as $main_menu_link) {
+  foreach ($main_menu_links as $main_menu_link) {
 
     if (isset($main_menu_link['link_path'])) {
       $link_path = $main_menu_link['link_path'];
@@ -42,29 +44,41 @@ function dkan_sitewide_menu_update_7101() {
 }
 
 /**
- * When we upgrade, we need to rebuild the command center menu completely. This
+ * Clear command center.
+ *
+ * When we upgrade, we need to rebuild
+ * the command center menu completely. This
  * Deletes all the existing menu links.
  */
 function _dkan_sitewide_menu_clear_command_center() {
   $menu_links = menu_load_links('menu-command-center-menu');
 
-  foreach($menu_links as $menu_link) {
+  foreach ($menu_links as $menu_link) {
     menu_link_delete($menu_link['mlid']);
   }
 }
 
-
 /**
- * This helper function sets up the admin_menu_source module's configuration.
- * We want the content creator and editor roles to have the "command center"
- * menu rather than the whole admin menu in the top bar. We can't rely on the
+ * Setup menu.
+ *
+ * This helper function sets up the
+ * admin_menu_source module's configuration.
+ * We want the content creator and
+ * editor roles to have the "command center"
+ * menu rather than the whole admin
+ * menu in the top bar. We can't rely on the
  * rid to be the same on every site so not using features.
  */
 function _dkan_sitewide_menu_setup_admin_menu_source() {
-  $required_roles = array('administrator', 'site manager', 'editor', 'content creator');
+  $required_roles = array(
+    'administrator',
+    'site manager',
+    'editor',
+    'content creator',
+  );
   $roles = array_flip(user_roles());
   $admin_menu_source_settings = array();
-  foreach($required_roles as $role_name) {
+  foreach ($required_roles as $role_name) {
     if (!isset($roles[$role_name])) {
       $role = new stdClass();
       $role->name = $role_name;
@@ -72,7 +86,6 @@ function _dkan_sitewide_menu_setup_admin_menu_source() {
       $roles[$role_name] = $role->rid;
     }
   }
-
 
   $roles = array_flip(user_roles());
 

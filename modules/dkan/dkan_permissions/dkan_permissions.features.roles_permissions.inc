@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * dkan_permissions.features.roles_permissions.inc
+ * Dkan_permissions.features.roles_permissions.inc.
  */
 
 /**
@@ -10,7 +11,7 @@
 function dkan_permissions_default_roles_permissions() {
   $roles = array();
 
-  // Exported role: anonymous user
+  // Exported role: anonymous user.
   $roles['anonymous user'] = array(
     'name' => 'anonymous user',
     'weight' => 0,
@@ -23,7 +24,7 @@ function dkan_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: authenticated user
+  // Exported role: authenticated user.
   $roles['authenticated user'] = array(
     'name' => 'authenticated user',
     'weight' => 1,
@@ -40,7 +41,7 @@ function dkan_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: content creator
+  // Exported role: content creator.
   $roles['content creator'] = array(
     'name' => 'content creator',
     'weight' => 11,
@@ -94,7 +95,7 @@ function dkan_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: editor
+  // Exported role: editor.
   $roles['editor'] = array(
     'name' => 'editor',
     'weight' => 2,
@@ -226,7 +227,7 @@ function dkan_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: site manager
+  // Exported role: site manager.
   $roles['site manager'] = array(
     'name' => 'site manager',
     'weight' => 10,

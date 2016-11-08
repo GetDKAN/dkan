@@ -19,16 +19,64 @@ Naturally users will need more than one role to fulfill the full scope of their 
 A note about the new roles: If you are already operating on an older version of DKAN, updating won’t automatically enable this module or migrate your users over to these new roles. We recommend disabling the old “DKAN Sitewide Roles and Permissions” module and enabling the new “DKAN Permissions” module, but be aware that you will probably need to review all of your site’s users to make sure they have the appropriate role going forward.
 
 
-###Core Roles and Permissions Table
+### Core Roles
 
-| **Role (User Type)** | **Description** | **Permissions  (What can I do?)** | **Description** |
-| ----------------------| |---------------------------| |-------------------------------------| |-------------------------------|
-| Anonymous User: General site visitors that are **not** logged in. | This user type has no profile information, hence it’s anonymous. |1.View and search content on public website. | DKAN recognizes this user type to let it see and search content, as well as leave general feedback, it but doesn’t let the user add comments. |
-| Authenticated User: These users are logged on and have profile information that can be verified (and authenticated). | This type has the **lowest** level of permissions; all users with login credentials have this role. This user type is a general site visitor but he or she has created an account. | 1.Have a profile and add/edit that profile. 2. Can leave comments on the data catalogue. | DKAN can verify account information with a created profile so that the user is able to take limited actions and manage profile details. |
-| **Content Creator**: Content Creators are focused simply on adding resources to the data catalogue under direction of a supervisor. | At this level, the role **must** be assigned by a higher role; this role has access to the production side of the site. This will be someone working in your organization who helps by adding to the data catalogue but doesn’t need to worry about the whole site. | 1.Create most content types and edit **own** content. 2. View **own** unpublished content and revision history of all published content. 3. Add and view files to site library. | This level of access takes users into the production side of the site, but gives little freedom to move outside of creating and adding certain content types. Limiting this role is critical for avoiding inadvertent damage to site content. |
-| **Editor**: This will typically be a person handling the content on a frequent basis. Someone in your organization with expertise on the subject-matter that is expansive as well as in-depth. | An editor role is similar to a content creator role because the focus is content, however an editor will deal with multiple content authors and have the ability to manage and edit. An editor is responsible for managing content from a strategic perspective. | 1.Assign roles to lower-level users. 2. View, edit, delete most content types and manage versions of content.  3. Access and manage DKAN datastore | The editor largely handles the quality and timeliness of the content that appears on the site. This role is able to make changes to content and where it appears, but it doesn’t go further into admin functions. |
-| **Site Manager**: The highest-level for *non-technical* users. A site manager is mostly concerned with admin functions of the site. Typically this will fall to someone in a supervisory role. | The site manager takes a high-level view of the site, its content, and the users on the site. This person maintains the site and assigns roles and permissions to new users but doesn’t deal with the technical backend. | 1.Create, edit, delete **all** content types created by **any** user. 2. Change the types of content that lower-access roles can create. 3. Assigns roles to all user levels, but cannot create new roles/perms. 4. Create and manage groups. | The site manager handles the admin part of the site. This role keeps the production side of the site in good order so that editors and contributors can focus on what site visitors see on the website. This is still largely a non-technical role. |
-| Administrator: The administrator role holds every permission, and it requires high technical competency. This role has the ability to cause serious damage, so it’s generally reserved for a single web professional. | The administrator handles the overall structure of the website for lower-access roles to plug content into and make changes as needed. Admins hold the **highest level** of all roles and permissions. | 1.Enable/disable DKAN modules and features. 2. Change the appearance of the site with views and themes. 3. Create and edit  user roles and permissions. | Administrators are the middle piece between users using a site daily and the core functions built in the technical backend. Based on an organization’s requirements the administrator can adapt the site to meet daily needs of users. |
+#### Anonymous User
+
+* General site visitors that are **not** logged in. 
+* This user type has no profile information, hence it’s anonymous. 
+* Can view and search content on public website.
+
+#### Authenticated User
+
+These users are logged on and have profile information that can be verified (and authenticated). This type has the **lowest** level of permissions; all users with login credentials have this role. This user type is a general site visitor but he or she has created an account.
+
+Permissions:
+
+* Have a profile and add/edit that profile.
+* Can leave comments on the data catalog, if comments are enabled.
+* DKAN can verify account information with a created profile so that the user is able to take limited actions and manage profile details.
+
+#### Content Creator
+
+Content Creators are focused simply on adding resources to the data catalogue under direction of a supervisor. At this level, the role **must** be assigned by a higher role; this role has access to the production side of the site. This will be someone working in your organization who helps by adding to the data catalogue but doesn’t need to worry about the whole site. This level of access takes users into the production side of the site, but gives little freedom to move outside of creating and adding certain content types. Limiting this role is critical for avoiding inadvertent damage to site content.
+
+Permissions:
+
+* Create most content types and edit **own** content. 
+* View **own** unpublished content and revision history of all published content. 
+* Add and view files to site library.
+
+#### Editor
+
+This will typically be a person handling the content on a frequent basis. Someone in your organization with expertise on the subject-matter that is expansive as well as in-depth. | An editor role is similar to a content creator role because the focus is content, however an editor will deal with multiple content authors and have the ability to manage and edit. An editor is responsible for managing content from a strategic perspective.  The editor largely handles the quality and timeliness of the content that appears on the site. This role is able to make changes to content and where it appears, but it doesn’t go further into admin functions.
+
+Permissions: 
+
+* Assign roles to lower-level users.
+* View, edit, delete most content types and manage versions of content.
+* Access and manage DKAN datastore
+
+#### Site Manager
+
+The highest level for *non-technical* users. A site manager is mostly concerned with admin functions of the site. Typically this will fall to someone in a supervisory role. The site manager takes a high-level view of the site, its content, and the users on the site. This person maintains the site and assigns roles and permissions to new users but doesn’t deal with the technical backend. 
+
+Permissions: 
+
+* Create, edit, delete **all** content types created by **any** user.
+* Change the types of content that lower-access roles can create.
+* Assigns roles to all user levels, but cannot create new roles/perms.
+* Create and manage groups.
+
+#### Administrator
+
+The administrator role holds every permission, and it requires high technical competency. This role has the ability to cause serious damage, so it’s generally reserved for a single web professional. The administrator handles the overall structure of the website for lower-access roles to plug content into and make changes as needed. Admins hold the **highest level** of all roles and permissions. 
+
+Permissions: 
+
+* Enable/disable DKAN modules and features.
+* Change the appearance of the site with views and themes.
+* Create and edit  user roles and permissions.
 
 ## Installation/upgrade notes
 
