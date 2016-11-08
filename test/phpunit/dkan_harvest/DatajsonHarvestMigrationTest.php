@@ -50,6 +50,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('TEST - State Workforce by Generation (2011-2015)', $dataset->title->value());
   }
 
+
+
   /**
    * @depends testDatasetCount
    */
@@ -91,6 +93,21 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     );
 
     $dataset_resources = $this->getDatasetResources($dataset);
+
+    $this->assertEquals($expected_resources, $dataset_resources);
+  }
+
+  /**
+   * @depends testDatasetCount
+   */
+  public function testResourcesBodyFormat($dataset) {
+    $expected_resources = array(
+      'TEST - Workforce By Generation (2011-2015)' => 'html',
+      'TEST - Retirements (2011 - 2015)' => 'html',
+      'TEST - Retirements: Eligible vs. Actual' => 'html',
+    );
+
+    $dataset_resources = $this->getDatasetResourcesFormat($dataset);
 
     $this->assertEquals($expected_resources, $dataset_resources);
   }
@@ -856,6 +873,20 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     foreach ($dataset->field_resources->getIterator() as $delta => $resource) {
       $remote_file = $resource->field_link_remote_file->value();
       $resources[$resource->title->value()] = $remote_file['uri'];
+    }
+
+    return $resources;
+  }
+
+  /**
+   * Returns an array with the list of resources (with format info) associated with the dataset.
+   */
+  private function getDatasetResourcesFormat($dataset) {
+    $resources = array();
+
+    foreach ($dataset->field_resources->getIterator() as $delta => $resource) {
+      $body = $resource->body->value();
+      $resources[$resource->title->value()] = $body['format'];
     }
 
     return $resources;
