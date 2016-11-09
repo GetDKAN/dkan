@@ -24,4 +24,5 @@ function dkan_sitewide_menu_permission() {
  */
 function dkan_sitewide_menu_menu_alter(&$items) {
   $items['admin/appearance/colorizer']['access arguments'] = array('administer DKAN configuration');
+  $items['admin/config/services/odsm/validate/dcat']['access arguments'] = array('administer DKAN configuration');
 }
