@@ -2,11 +2,11 @@
 
 /**
  * @file
- * Migration File for DKAN Harvest Data.Json
+ * Migration File for DKAN Harvest Data.Json.
  */
 
 /**
- *
+ * Migration class to harves POD endpoints.
  */
 class DatajsonHarvestMigration extends HarvestMigration {
 
@@ -87,27 +87,27 @@ class DatajsonHarvestMigration extends HarvestMigration {
   public function getDataJsonDatasetFields($version = '1.1') {
     $common_fields = array(
         // “Common Core” Required Fields.
-        "title" => "Title",
-        "description" => "Description",
-        "keyword" => "Tags",
-        "modified" => "Last Update",
-        "publisher" => "Publisher",
-        "contactPoint" => "Contact Name",
-        "identifier" => "Unique Identifier",
-        "accessLevel" => "Public",
+      "title" => "Title",
+      "description" => "Description",
+      "keyword" => "Tags",
+      "modified" => "Last Update",
+      "publisher" => "Publisher",
+      "contactPoint" => "Contact Name",
+      "identifier" => "Unique Identifier",
+      "accessLevel" => "Public",
         // “Common Core” Required-if-Applicable Fields.
-        "bureauCode" => " Bureau Code",
-        "programCode" => "Program Code",
-        "license" => "License",
-        "spatial" => "Spatial",
-        "temporal" => " Temporal",
+      "bureauCode" => " Bureau Code",
+      "programCode" => "Program Code",
+      "license" => "License",
+      "spatial" => "Spatial",
+      "temporal" => " Temporal",
         // Beyond Common Core.
-        "dataQuality" => " Data Quality",
-        "distribution" => "Distribution",
-        "issued" => "Release Date",
-        "language" => " Language",
-        "references" => " Related Documents ",
-        "systemOfRecords" => " System of Records",
+      "dataQuality" => " Data Quality",
+      "distribution" => "Distribution",
+      "issued" => "Release Date",
+      "language" => " Language",
+      "references" => " Related Documents ",
+      "systemOfRecords" => " System of Records",
     );
     if ($version == '1.0') {
       return $common_fields + array(
@@ -144,13 +144,13 @@ class DatajsonHarvestMigration extends HarvestMigration {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
-    if(property_exists($row, 'accrualPeriodicity')) {
-      $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);      
-    } 
+    if (property_exists($row, 'accrualPeriodicity')) {
+      $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
+    }
   }
 
   /**
-   *
+   * Implements prepare.
    */
   public function prepare($dataset_prepare, $row) {
     parent::prepare($dataset_prepare, $row);
@@ -167,10 +167,12 @@ class DatajsonHarvestMigration extends HarvestMigration {
   /**
    * Prepare list of resources that need to be imported based on the row data.
    *
-   * @param $resources_row_data Resources data present on row.
+   * @param object $resources_row_data
+   *        Resources data present on row.
    *
-   * @return An array with all resources data ready to be imported or empty if
-   * no resources where found.
+   * @return array
+   *         An array with all resources data ready to be imported or empty if
+   *         no resources where found.
    */
   public function prepareRowResources($resources_row_data) {
     $resources = array();
@@ -190,13 +192,14 @@ class DatajsonHarvestMigration extends HarvestMigration {
     return $resources;
   }
 
-
   /**
    * Prepare group that needs to be imported based on the row data.
    *
-   * @param $group_row_data Group data present on row.
+   * @param object $group_row_data
+   *        $group_row_data Group data present on row.
    *
-   * @return An object value with the group data needed to import the group.
+   * @return object
+   *         An object value with the group data needed to import the group.
    */
   public function prepareRowGroup($group_row_data) {
 
@@ -205,4 +208,5 @@ class DatajsonHarvestMigration extends HarvestMigration {
 
     return $group;
   }
+
 }
