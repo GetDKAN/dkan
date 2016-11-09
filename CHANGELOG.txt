@@ -31,6 +31,7 @@
  - Added hook_uninstall to federal extra module for remove fields after uninstall module.
  - Removed redundant definition for CKAN package_list endpoint from open_data_schema_map_dkan, allowing that feature to be in default state after install.
  - Update ctools to version 1.10, which fixes some PHP7 incompatibilities
+ - Added links to ODSM page and DCAT validation under Site Configuration in the command center menu
  - Update open data schema module to render a valid output passing validation (dcat and rdf)
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
@@ -40,13 +41,21 @@ DKAN Harvest:
  - Added UI to add harvest sources
  - Added UI to manage harvest sources and datasets
  - Fix dkan harvest feature overridden after install.
+ - Add link for site managers to create harvest source in command center menu.
+DKAN Migrate Base:
+ - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
  - Added Batch API on 'Harvest now' action.
+<<<<<<< HEAD
+=======
  - Added Batch API on the 'Preview' page.
 DKAN Migrate Base
  - Added DKAN Migrate Base module into DKAN Core.
+>>>>>>> 7.x-1.x
 DKAN Workflow:
- - Update DKAN workflow vbo customizations to not affect other vbo forms.
+ - Updated DKAN workflow vbo customizations to not affect other vbo forms.
+ - Updated workbench_email from 3.9 to 3.11
+ - Fixed admin menu source when dkan_workflow is enabled
 DKAN Dataset:
  - Added DKAN Dataset module into DKAN Core.
  - Added default image for groups.
