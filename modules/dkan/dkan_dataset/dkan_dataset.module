@@ -70,7 +70,7 @@ function dkan_dataset_menu() {
     'weight' => -8,
     'position' => 'left',
     'page callback' => 'system_admin_menu_block_page',
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer DKAN configuration'),
     'file' => 'system.admin.inc',
     'file path' => drupal_get_path('module', 'system'),
   );
@@ -79,7 +79,7 @@ function dkan_dataset_menu() {
     'description' => 'Settings for DKAN Dataset local and external previews.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_dataset_preview_settings'),
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('administer DKAN configuration'),
     'file' => 'dkan_dataset.admin.inc',
   );
   $items['admin/dkan/dataset_forms'] = array(
@@ -87,7 +87,7 @@ function dkan_dataset_menu() {
     'description' => 'Form settings for DKAN Datasets.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_dataset_form_settings'),
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('administer DKAN configuration'),
     'file' => 'dkan_dataset.admin.inc',
   );
   if (module_exists('open_data_schema_map_dkan')) {
@@ -95,7 +95,7 @@ function dkan_dataset_menu() {
       'title' => 'DKAN Dataset API',
       'description' => 'Settings for DKAN Dataset APIs.',
       'page callback' => 'dkan_dataset_api_menu_settings',
-      'access arguments' => array('administer site configuration'),
+      'access arguments' => array('administer DKAN configuration'),
       'file' => 'dkan_dataset.admin.inc',
     );
   }
