@@ -1,5 +1,7 @@
 
 cd dkan
+echo "Installing dependencies.."
+bash .ahoy/.scripts/composer-install.sh test
 
 test/bin/phpcs --config-set installed_paths test/vendor/drupal/coder/coder_sniffer
 
