@@ -216,8 +216,8 @@ class HarvestSource {
 
     // Get the last time (notice the MAX) the migration was run.
     $result = db_query("SELECT MAX(starttime) FROM {migrate_log} WHERE machine_name =
-     :migration_machine_name ORDER BY starttime ASC limit 1;", array(
-       ':migration_machineName' => $migrationMachineName,
+     :migration_machine_name ORDER BY starttime ASC limit 1", array(
+       ':migration_machine_name' => $migrationMachineName,
      ));
 
     $result_array = $result->fetchAssoc();
