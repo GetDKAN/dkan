@@ -212,13 +212,12 @@ class HarvestSource {
    *         Or NULL if source not found or not run yet.
    */
   public static function getMigrationTimestampFromMachineName($machineName) {
-    $migration_machineName = HarvestSource::getMigrationMachineNameFromName($machineName);
+    $migrationMachineName = HarvestSource::getMigrationMachineNameFromName($machineName);
 
     // Get the last time (notice the MAX) the migration was run.
-    $result = db_query("SELECT MAX(starttime) FROM {migrate_log} WHERE machineName =
-     :migration_machineName ORDER BY starttime ASC limit 1;", array(
-       ':migration_machineName' =>
-       $migration_machineName,
+    $result = db_query("SELECT MAX(starttime) FROM {migrate_log} WHERE machine_name =
+     :migration_machine_name ORDER BY starttime ASC limit 1;", array(
+       ':migration_machineName' => $migrationMachineName,
      ));
 
     $result_array = $result->fetchAssoc();
@@ -272,8 +271,8 @@ class HarvestSource {
    */
   public static function getMigrationCountFromMachineName($machineName) {
     // Construct the migrate map table name.
-    $migration_machineName = HarvestSource::getMigrationMachineNameFromName($machineName);
-    $migrate_map_table = 'migrate_map_' . $migration_machineName;
+    $migratioMachineName = HarvestSource::getMigrationMachineNameFromName($machineName);
+    $migrate_map_table = 'migrate_map_' . $migratioMachineName;
 
     // In case the migration was not run and the table was not created yet.
     if (!db_table_exists($migrate_map_table)) {
