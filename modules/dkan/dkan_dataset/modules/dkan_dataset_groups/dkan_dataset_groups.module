@@ -97,7 +97,8 @@ function dkan_dataset_groups_extras_subscribe($entity_type, $entity) {
 /**
  * Implements hook_default_search_api_index_alter().
  *
- * Add og group ref when is enable dataset groups. In other case we don't need this field on the index.
+ * Add og group ref when is enable dataset groups. In other case we don't need
+ * this field on the index.
  */
 function dkan_dataset_groups_default_search_api_index_alter(array &$defaults) {
   foreach ($defaults as &$index) {
@@ -110,7 +111,8 @@ function dkan_dataset_groups_default_search_api_index_alter(array &$defaults) {
 /**
  * Implements hook_default_search_api_server_alter().
  *
- * Add og group ref when is enable dataset groups. In other case we don't need this field on the index.
+ * Add og group ref when is enable dataset groups. In other case we don't need
+ * this field on the index.
  */
 function dkan_dataset_groups_default_search_api_server_alter(array &$defaults) {
   foreach ($defaults as &$server) {

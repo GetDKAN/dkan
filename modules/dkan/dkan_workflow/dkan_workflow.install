@@ -57,7 +57,7 @@ function dkan_workflow_enable() {
 
   variable_set('roleassign_roles', $roleassign_roles);
 
-  //Set up source for the admin menu.
+  // Set up source for the admin menu.
   _dkan_workflow_setup_admin_menu_source();
   drupal_flush_all_caches();
   features_revert(array('dkan_sitewide_menu' => array('menu_links')));
@@ -65,15 +65,24 @@ function dkan_workflow_enable() {
 
 /**
  * This helper function sets up the admin_menu_source module's configuration.
+ *
  * We want the workflow roles to have the "command center"
  * menu rather than the whole admin menu in the top bar. We can't rely on the
  * rid to be the same on every site so not using features.
  */
 function _dkan_workflow_setup_admin_menu_source() {
-  $required_roles = array('administrator', 'site manager', 'editor', 'content creator', 'Workflow Contributor', 'Workflow Moderator', 'Workflow Supervisor');
+  $required_roles = array(
+    'administrator',
+    'site manager',
+    'editor',
+    'content creator',
+    'Workflow Contributor',
+    'Workflow Moderator',
+    'Workflow Supervisor',
+  );
   $roles = array_flip(user_roles());
   $admin_menu_source_settings = array();
-  foreach($required_roles as $role_name) {
+  foreach ($required_roles as $role_name) {
     if (!isset($roles[$role_name])) {
       $role = new stdClass();
       $role->name = $role_name;
