@@ -150,9 +150,9 @@ class GetRemoteFileInfo {
    * Returns the name for a remote file.
    *
    * This doesn't just check the end of the string for the filename because
-   * a file URL like this
-   * https://data.expamle.gov/api/views/abc-123/rows.csv?accessType=DOWNLOAD will
-   * have a filename of 'this_file_name.csv' in the Content Disposition.
+   * a file URL like this:
+   * https://data.expamle.gov/api/views/abc-123/rows.csv?accessType=DOWNLOAD
+   * will have a filename of 'this_file_name.csv' in the Content Disposition.
    */
   public function getName() {
     if ($info = $this->getInfo()) {

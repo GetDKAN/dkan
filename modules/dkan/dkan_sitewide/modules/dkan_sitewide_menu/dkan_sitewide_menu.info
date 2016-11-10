@@ -2,7 +2,6 @@ name = DKAN Sitewide Menu
 description = Command center menu settings for DKAN
 core = 7.x
 package = DKAN
-project = dkan
 dependencies[] = admin_menu_source
 dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
