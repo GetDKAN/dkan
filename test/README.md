@@ -26,11 +26,11 @@ Follows the steps that are needed for running PHPUnit tests locally:
   
 1. Edit the configuration on `boot.php` if needed. The `$dir` variable needs to point to the actual DKAN working directory.
 2. Access docker: `ahoy docker exec bash`.
-3. Go to `/tests` folder.
+3. Go to `/test` folder.
 4. Run `composer install`.
 5. You can execute all available PHPUnit by running `bin/phpunit --configuration phpunit`
 
-PHPUnit will load the configuration from `/tests/phpunit/phpunit.xml`.
+PHPUnit will load the configuration from `/test/phpunit/phpunit.xml`.
 
 ### Filtering tests
 
