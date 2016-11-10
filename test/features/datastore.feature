@@ -92,4 +92,3 @@ Feature: Datastore
     Given I am logged in as "Katie"
     Then I "should" be able to manage the "Resource 01" datastore
     And I "should" be able to manage the "Resource 02" datastore
-    
