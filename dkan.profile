@@ -490,7 +490,7 @@ function dkan_bueditor_markdown_install() {
           'editor' => 0,
           'alt' => 0,
         );
-        break
+        break;
     }
   }
 
