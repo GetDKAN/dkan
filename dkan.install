@@ -1,14 +1,12 @@
 <?php
 
 /**
- * Implements hook_install().
+ * @file
+ * Install functions and update hooks for DKAN profile.
  */
-function dkan_install() {
-}
 
 /**
- * Reverts dkan_sitewide to add Markdown HTML filter.
- * Sets up roleassign feature.
+ * Reverts dkan_sitewide to add Markdown filter. Sets up roleassign feature.
  */
 function dkan_update_7001() {
   module_load_include("profile", "dkan");
@@ -20,9 +18,9 @@ function dkan_update_7001() {
  *
  * Addapted from field_rename_rename_fields() in 'Field Rename' module.
  *
- * @param $old_field_name
+ * @param string $old_field_name
  *   The old name of the field.
- * @param $new_field_name
+ * @param string $new_field_name
  *   The new name of the field.
  */
 function dkan_rename_field($old_field_name, $new_field_name) {
@@ -89,7 +87,8 @@ function dkan_rename_field($old_field_name, $new_field_name) {
       // Rename the table.
       db_rename_table($old_table, $new_table);
     }
-  } catch ( Exception $e ) {
+  }
+  catch (Exception $e) {
     $messages[] = t('The field %old_field_name could not be renamed because there was an error: %error.',
       array('%old_field_name' => $old_field_name, '%error' => $e->getMessage()));
   }
@@ -103,7 +102,7 @@ function dkan_rename_field($old_field_name, $new_field_name) {
  * Update the default jquery library to 1.10.
  */
 function dkan_update_7002() {
-	if(version_compare(variable_get('jquery_update_jquery_version'), '1.10', '<')) {
-  	variable_set('jquery_update_jquery_version', '1.10');
+  if (version_compare(variable_get('jquery_update_jquery_version'), '1.10', '<')) {
+    variable_set('jquery_update_jquery_version', '1.10');
   }
 }
