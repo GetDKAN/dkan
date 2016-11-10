@@ -1,10 +1,8 @@
-At NuCivic we use [Behat](http://behat.org) for behavioral testing, both locally and in a [continuous integration using CircleCI](https://circleci.com/gh/NuCivic/dkan).
+At NuCivic we use [Behat](http://behat.org) for behavioral testing, both locally and in a [continuous integration using CircleCI](https://circleci.com/gh/NuCivic/dkan). PHPUnit is also used for functional  Tests are run on [CircleCI](https://circleci.com/gh/NuCivic/dkan) on every push and merge, but can also be run locally.
 
-## Running behat tests locally
+## Behat tests
 
-The `behat.yml` file that ships with DKAN is intended for use on CircleCI. Do run tests locally, we recommend making a copy of `behat.local.demo.yml` and overriding Behat's default profile there. 
-
-We currently use Selenium and the Chrome driver for javascript tests. Our development environment is in Vagrant using our own [NuCivic development VM](https://github.com/NuCivic/ansible-dev-vm). We execute the tests inside the VM, but run Selenium and Chrome on our "host" machines (in most cases, a Mac).
+The `behat.yml` file that ships with DKAN is intended for use on CircleCI. When running tests locally, we recommend making a copy of `behat.local.demo.yml` and overriding Behat's default profile there. 
 
 Obviously, steps will differ depending on your development environment. 
 
@@ -17,3 +15,33 @@ Assuming you have a working DKAN installation you wish to test on:
 5. `bin/behat --config=behat.local.yml`
 
 Your tests should run from the VM and use your host machine as a Selenium server, meaning any Selenium tests will run in an instance of Chrome on your machine.
+
+## PHPUnit tests
+
+Starting from 1.13 PHPUnit tests were added into DKAN core. All tests can be found inside the `/phpunit` directory separated in different test suites, one per DKAN module.
+  
+Follows the steps that are needed for running PHPUnit tests locally:
+  
+1. Edit the configuration on `boot.php` if needed. The `$dir` variable needs to point to the actual DKAN working directory.
+2. If you are using the [DKAN Starter docker/ahoy environment](http://dkan-starter.readthedocs.io/en/latest/docker-dev-env/installation.html), get to the Docker cli prompt: `ahoy docker exec bash`.
+3. Go to `/test` folder.
+4. Run `composer install`.
+5. You can execute all available PHPUnit by running `bin/phpunit --configuration phpunit`
+
+PHPUnit will load the configuration from `/test/phpunit/phpunit.xml`.
+
+### Running specific tests
+
+PHPUnit allows you to easily filter tests that are going to be executed by using the `--filter <pattern>` option.
+ 
+For example:
+
+```sh
+# Execute all tests inside "TestCaseClass":
+bin/phpunit --configuration phpunit --filter TestCaseClass
+# Execute only "testMethod":
+bin/phpunit --configuration phpunit --filter testMethod
+```
+
+For additional options or more detailed information on how to use PHPUnit please check the [PHPUnit Documentation]( https://phpunit.de/manual/current/en/textui.html)
+ 
