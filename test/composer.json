@@ -3,7 +3,7 @@
         "phpunit/phpunit": "4.6.*",
         "behat/behat": "3.1.*@dev",
         "devinci/devinci-behat-extension": "dev-master",
-        "nucivic/dkanextension": "dev-master",
+        "nucivic/dkanextension": "dev-upgrade_workbench_moderation",
         "myplanetdigital/function_mock": "dev-master",
         "drupal/drupal-driver": "^1.2"
     },

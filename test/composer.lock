@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "937c556553d314719c8471f623693dd8",
-    "content-hash": "aeb7a759cbde6698a2ff0918e8ed6bd6",
+    "hash": "d57f4f7b53fab09766915afc69087a19",
+    "content-hash": "181ee82d91b4aaf71a015d2294accbd3",
     "packages": [
         {
             "name": "behat/behat",
@@ -17,7 +17,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/209eb668750297e885cbf772aaf12b87eb3beb2e",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/d9cac87edd73c71c61c185244c44a02ab174c0b8",
                 "reference": "d9cac87edd73c71c61c185244c44a02ab174c0b8",
                 "shasum": ""
             },
@@ -1003,16 +1003,16 @@
         },
         {
             "name": "nucivic/dkanextension",
-            "version": "dev-master",
+            "version": "dev-upgrade_workbench_moderation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "777969b8959e46c7d91517660973d4f9a1562cc5"
+                "reference": "ab898cc38e980841856a5b3fb3c99f5e98d78129"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/777969b8959e46c7d91517660973d4f9a1562cc5",
-                "reference": "777969b8959e46c7d91517660973d4f9a1562cc5",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/ab898cc38e980841856a5b3fb3c99f5e98d78129",
+                "reference": "ab898cc38e980841856a5b3fb3c99f5e98d78129",
                 "shasum": ""
             },
             "require": {
@@ -1040,7 +1040,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-10-11 15:31:18"
+            "time": "2016-11-11 21:31:05"
         },
         {
             "name": "phpdocumentor/reflection-common",
