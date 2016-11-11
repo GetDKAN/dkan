@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Data Stories from fixtures.
+ */
+
+/**
+ * Parent class for panelized node fixtures migrations.
  */
 class DkanPagesImport extends DkanPanelizedNodesImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
@@ -28,6 +33,6 @@ class DkanPagesImport extends DkanPanelizedNodesImport {
   public function prepare($node, $row) {
     parent::prepare($node, $row);
     $node->path['pathauto'] = FALSE;
-  }  
+  }
 
 }
