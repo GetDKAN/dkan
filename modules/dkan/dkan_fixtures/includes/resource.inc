@@ -1,6 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Resource fixtures migration class.
+ */
+
+/**
+ * CKAN-based resource migration for fixtures.
+ */
 class DkanResourceImport extends MigrateCkanResourceBase {
+
   /**
    * Here we go.
    */
@@ -23,11 +32,11 @@ class DkanResourceImport extends MigrateCkanResourceBase {
     parent::prepareRow($row);
 
     // Import Resource file.
-    if (isset($row->url) && trim ($row->url)) {
+    if (isset($row->url) && trim($row->url)) {
       if (strpos($row->url, 'http://') === FALSE && strpos($row->url, 'https://') === FALSE) {
-          $file_orig_dir = DRUPAL_ROOT . '/' . $this->endpoint;
-          $file = dkan_fixtures_import_file($row->url, $file_orig_dir);
-          $row->file = $file->fid;
+        $file_orig_dir = DRUPAL_ROOT . '/' . $this->endpoint;
+        $file = dkan_fixtures_import_file($row->url, $file_orig_dir);
+        $row->file = $file->fid;
       }
     }
   }
@@ -43,5 +52,5 @@ class DkanResourceImport extends MigrateCkanResourceBase {
     // Set up as published.
     $node->status = NODE_PUBLISHED;
   }
-}
 
+}
