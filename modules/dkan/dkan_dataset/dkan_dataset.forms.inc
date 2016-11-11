@@ -120,7 +120,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['field_license'][$field_license_langcode]['#description'] =
       t('<i class="icon-large icon-info-sign"></i>
         License definitions and additional information can be found at
-        <a href="http://opendefinition.org">opendefinition.org</a>';
+        <a href="http://opendefinition.org">opendefinition.org</a>');
 
     // Get langcode for field_additional_info.
     if (isset($form['field_additional_info'])) {
