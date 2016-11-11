@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_workflow_permissions.features.roles_permissions.inc
@@ -10,7 +11,7 @@
 function dkan_workflow_permissions_default_roles_permissions() {
   $roles = array();
 
-  // Exported role: Workflow Moderator
+  // Exported role: Workflow Moderator.
   $roles['Workflow Moderator'] = array(
     'name' => 'Workflow Moderator',
     'weight' => 8,
@@ -28,7 +29,7 @@ function dkan_workflow_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: Workflow Contributor
+  // Exported role: Workflow Contributor.
   $roles['Workflow Contributor'] = array(
     'name' => 'Workflow Contributor',
     'weight' => 7,
@@ -44,7 +45,7 @@ function dkan_workflow_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: Workflow Supervisor
+  // Exported role: Workflow Supervisor.
   $roles['Workflow Supervisor'] = array(
     'name' => 'Workflow Supervisor',
     'weight' => 9,

@@ -209,7 +209,7 @@ abstract class Datastore {
  * Declares interface for forms required for interaction with Datastores through
  * the DKAN user interface.
  */
-interface DatastoreForm {
+interface DatastoreFormInterface {
 
   /**
    * Manage form.
