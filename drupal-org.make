@@ -58,7 +58,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 3834_edit_visualizations
+      branch: 3834_edit_visualizations
     type: module
   admin_menu:
     version: 3.0-rc5
