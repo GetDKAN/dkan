@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_sitewide_panels.pages_default.inc

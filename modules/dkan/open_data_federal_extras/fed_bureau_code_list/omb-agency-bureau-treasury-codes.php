@@ -1,10 +1,11 @@
 <?php
+
 /**
  * @file
  * Declares Bureau codes.
  */
 
-$bureau_codes = array (
+$bureau_codes = array(
   '001:05' => '001:05 - Senate',
   '001:10' => '001:10 - House of Representatives',
   '001:11' => '001:11 - Joint Items',

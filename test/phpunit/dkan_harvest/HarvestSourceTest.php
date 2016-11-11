@@ -73,8 +73,6 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
     $node = node_submit($node); // Prepare node for saving
     node_save($node);
 
-    $this->testHarvestSourceConstructNID = $node->nid;
-
     // Get the HarvestSource object.
     $source = new HarvestSource('test_harvest_source_construct');
 
@@ -104,16 +102,16 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
     $source_remote = $this->getRemoteSource();
     $source_remote_cachedir_path = DKAN_HARVEST_CACHE_DIR .
       '/' .
-      $source_remote->machine_name;
+      $source_remote->machineName;
     // Make sure that we delete the cache directory.
     file_unmanaged_delete_recursive($source_remote_cachedir_path);
     $rmdir = drupal_rmdir($source_remote_cachedir_path);
 
-    $cacheDir = $source_remote->getCacheDir();
-    $this->assertFALSE($cacheDir);
+    $cache_dir = $source_remote->getCacheDir();
+    $this->assertFALSE($cache_dir);
 
-    $cacheDir = $source_remote->getCacheDir(TRUE);
-    $this->assertEquals($cacheDir, $source_remote_cachedir_path);
+    $cache_dir = $source_remote->getCacheDir(TRUE);
+    $this->assertEquals($cache_dir, $source_remote_cachedir_path);
   }
 
   /**
