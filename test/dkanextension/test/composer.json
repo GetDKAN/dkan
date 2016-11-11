@@ -1,0 +1,11 @@
+{
+  "require": {
+    "nucivic/dkanextension": "dev-master"
+  },
+  "config": {
+    "bin-dir": "bin/"
+  }
+  "scripts": {
+    "post-install-cmd": "mv bin/bddkan bin/behat"
+  }
+}
