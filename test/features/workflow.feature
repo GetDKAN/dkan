@@ -35,7 +35,7 @@ Feature:
 
   #Non workbench roles can see the menu item My Workflow. However
   #they can't access to the page.
-  @globalUser
+  @javascript @globalUser
   Scenario Outline: As a user without a Workbench role, I should not be able to access My Workbench or the My Workbench tabs
     Given I am logged in as a user with the "<non-workbench roles>" role
     Then I should not see the link "My Workbench"
@@ -54,7 +54,7 @@ Feature:
       | editor              |
       | site manager        |
 
-  @ok @globalUser
+  @javascript @ok @globalUser
   Scenario Outline: As a user with any Workflow role, I should be able to access My Workbench.
     Given I am logged in as a user with the "<workbench roles>" role
     When I am on "My Workbench" page
