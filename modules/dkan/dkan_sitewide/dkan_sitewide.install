@@ -7,15 +7,15 @@
 
  /**
   * Enable field_reference_delete.
-  */ 
-function dkan_sitewide_update_7001(){
+  */
+function dkan_sitewide_update_7001() {
   module_enable(array('field_reference_delete'));
 }
 
 /**
  * Enable facet_icons.
  */
-function dkan_sitewide_update_7002(){
+function dkan_sitewide_update_7002() {
   module_enable(array('facet_icons'));
 }
 

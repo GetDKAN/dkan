@@ -10,7 +10,7 @@
 function dkan_datastore_field_default_field_bases() {
   $field_bases = array();
 
-  // Exported field_base: 'field_datastore_status'
+  // Exported field_base: 'field_datastore_status'.
   $field_bases['field_datastore_status'] = array(
     'active' => 1,
     'cardinality' => 1,

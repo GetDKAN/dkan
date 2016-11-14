@@ -50,8 +50,11 @@ function dkan_dataset_download($node) {
   }
 }
 
+/**
+ * Zip files.
+ */
 function _dkan_dataset_zip($files, $node) {
-  $zip = new ZipArchive;
+  $zip = new ZipArchive();
   $file_path = tempnam(file_directory_temp(), 'zip');
   $zip_open = $zip->open($file_path, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
   if ($zip_open === TRUE) {
@@ -70,7 +73,7 @@ function _dkan_dataset_zip($files, $node) {
     $headers = array(
       'Content-type' => 'application/zip',
       'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-      'Content-Length' => filesize($file_path)
+      'Content-Length' => filesize($file_path),
     );
     file_transfer('temporary://' . basename($file_path), $headers);
   }
@@ -81,8 +84,16 @@ function _dkan_dataset_zip($files, $node) {
   }
 }
 
+/**
+ * Generate a filename for the zip file.
+ */
 function _dkan_dataset_zip_filename($title) {
-  $filename = strtr(drupal_strtolower($title), array(' ' => '-', '_' => '-', '[' => '-', ']' => ''));
+  $filename = strtr(drupal_strtolower($title), array(
+    ' ' => '-',
+    '_' => '-',
+    '[' => '-',
+    ']' => '',
+  ));
   $filename = preg_replace('/[^A-Za-z0-9\-_]/', '', $filename);
   $filename = preg_replace('/\-+/', '-', $filename);
   return $filename . '-All-' . date('Y-m-d_Hi') . '.zip';
