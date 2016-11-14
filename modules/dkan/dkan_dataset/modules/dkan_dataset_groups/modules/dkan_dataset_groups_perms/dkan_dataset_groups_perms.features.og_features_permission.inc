@@ -3,6 +3,7 @@
 /**
  * @file
  * dkan_dataset_groups_perms.features.og_features_permission.inc
+ * @codingStandardsIgnoreStart
  */
 
 /**
@@ -222,3 +223,4 @@ function dkan_dataset_groups_perms_og_features_default_permissions() {
 
   return $permissions;
 }
+/* @codingStandardsIgnoreEnd */
