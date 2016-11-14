@@ -106,3 +106,47 @@ function dkan_update_7002() {
     variable_set('jquery_update_jquery_version', '1.10');
   }
 }
+
+/**
+ * Remove modules on upgrade to 7.x-1.13.
+ * Conditional Fields, Entity RDF, RDF UI, RDF Extensions.
+ */
+function dkan_update_7003() {
+  $modules = array(
+    'conditional_fields',
+    'entity_rdf',
+    'rdfui',
+    'rdfx',
+  );
+  db_delete('system')
+    ->condition('name', $modules, 'IN')
+    ->condition('type', 'module')
+    ->execute();
+
+  db_drop_table('conditional_fields');
+  db_drop_table('rdfx_namespaces');
+  db_drop_table('rdfx_term_details');
+  db_drop_table('rdfx_term_domains');
+  db_drop_table('rdfx_term_inverses');
+  db_drop_table('rdfx_term_ranges');
+  db_drop_table('rdfx_term_superclasses');
+  db_drop_table('rdfx_term_superproperties');
+  db_drop_table('rdfx_term_types');
+  db_drop_table('rdfx_terms');
+  db_drop_table('rdfx_vocabulary_details');
+  db_drop_table('rdfx_vocabulary_graphs');
+}
+
+/**
+ * Remove deprecated test and theme directories.
+ */
+function dkan_update_7004() {
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/fonts');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/tests');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/tests');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_api/tests');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_fast_import/test');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_workflow/test');
+  drush_delete_dir('profiles/dkan/themes/contrib/nuboot_radix');
+  drush_delete_dir('profiles/dkan/themes/contrib/omega');
+}
