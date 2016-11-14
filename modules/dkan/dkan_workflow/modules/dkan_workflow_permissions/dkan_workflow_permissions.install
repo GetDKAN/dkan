@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * Implements hook_enable().
+ */
+function dkan_workflow_permissions_enable() {
+  features_revert(array('dkan_workflow_permissions' => array('role_permission')));
+  drupal_flush_all_caches();
+
+  // Add dkan workflow roles to roleassign config.
+  $roleassign_roles = variable_get('roleassign_roles', array());
+  $roles_rids = array_flip(user_roles());
+
+  $add_roles = array('Workflow Contributor', 'Workflow Moderator', 'Workflow Supervisor');
+
+  foreach($add_roles as $role) {
+    if(isset($roles_rids[$role])) {
+      $roleassign_roles[$roles_rids[$role]] = (string) $roles_rids[$role];
+    }
+  }
+  print_r($roleassign_roles);
+  variable_set('roleassign_roles', $roleassign_roles);
+}

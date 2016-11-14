@@ -47,21 +47,8 @@ function dkan_workflow_enable() {
     variable_set($var_name, $node_options);
   }
   dkan_workflow_revert_views();
+
   variable_set('dkan_workflow_content_types', $dkan_workflow_content_types);
-
-  // Add dkan workflow roles to roleassign config.
-  $roleassign_roles = variable_get('roleassign_roles', array());
-  $roles_rids = array_flip(user_roles());
-
-  $add_roles = array('Workflow Contributor', 'Workflow Moderator', 'Workflow Supervisor');
-
-  foreach($add_roles as $role) {
-    if(isset($roles_rids[$role])) {
-      $roleassign_roles[$roles_rids[$role]] = (string) $roles_rids[$role];
-    } 
-  }
-
-  variable_set('roleassign_roles', $roleassign_roles);
 }
 
 /**
