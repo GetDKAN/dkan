@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_dataset_voting.features.field_instance.inc
@@ -10,7 +11,7 @@
 function dkan_dataset_voting_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'comment-comment_node_dataset-field_rating'
+  // Exported field_instance: 'comment-comment_node_dataset-field_rating'.
   $field_instances['comment-comment_node_dataset-field_rating'] = array(
     'bundle' => 'comment_node_dataset',
     'default_value' => NULL,
@@ -55,7 +56,7 @@ function dkan_dataset_voting_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataset-field_rating'
+  // Exported field_instance: 'node-dataset-field_rating'.
   $field_instances['node-dataset-field_rating'] = array(
     'bundle' => 'dataset',
     'default_value' => NULL,

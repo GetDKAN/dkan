@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * Administration of DKAN Dataset
+ * Administration of DKAN Dataset.
  */
 
 /**
@@ -10,7 +11,7 @@
 function dkan_dataset_preview_settings() {
   $form = array();
 
-  // Help text for formats
+  // Help text for formats.
   $form['preview_list'] = array(
     '#type' => 'fieldset',
     '#title' => t('Available preview descriptions'),
@@ -32,7 +33,7 @@ function dkan_dataset_preview_settings() {
     )),
     '#collapsible' => FALSE,
   );
-   $form['external_previews']['formats'] = array(
+  $form['external_previews']['formats'] = array(
     '#prefix' => '<div id="external-previews-providers">',
     '#suffix' => '</div>',
     '#theme' => 'dkan_dataset_preview_settings_external_table_form',
@@ -44,7 +45,6 @@ function dkan_dataset_preview_settings() {
   $formats = taxonomy_get_tree($format_vocabulary->vid);
   $previews = dkan_dataset_teaser_get_external_previews();
 
-
   // We will check to see if the preview is is already toggled in the variable.
   // If not, we chekck the defaults set by the preview definition.
   foreach ($formats as $format) {
@@ -55,7 +55,7 @@ function dkan_dataset_preview_settings() {
       if ($machine_name == 'dkan') {
         continue;
       }
-      // Restrict available options to sugested formats
+      // Restrict available options to sugested formats.
       if (in_array($format->name, $preview['suggested_formats'])) {
         $preview_options[$machine_name] = $preview['name'];
       }
@@ -138,8 +138,11 @@ function dkan_dataset_form_settings() {
 
 /**
  * Create table of available formats.
+ *
  * @todo This should be a theme function.
- * @return string Formatted table
+ *
+ * @return string
+ *   String Formatted table.
  */
 function _dkan_dataset_preview_list_table() {
   $vars = array(

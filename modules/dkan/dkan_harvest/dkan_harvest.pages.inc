@@ -1,40 +1,48 @@
 <?php
 
 /**
+ * @file
+ * Page callbacks for dkan harvest pages.
+ */
+
+/**
  * Display a harvest source node's event log history.
  *
- * @param $node The harvest source node being acted upon.
+ * @param object $node
+ *        The harvest source node being acted upon.
  *
- * @return A themed table of data and links for harvest source node events.
+ * @return array
+ *         A themed table of data and links for harvest source node events.
  */
 function dkan_harvest_page_event_log($node) {
   // Set the table header.
   $header = array(
     'mlid' => array('data' => t('Event ID'), 'field' => 'log.mlid'),
-    'starttime' => array('data' => t('Date'), 'field' => 'starttime', 'sort' => 'desc'),
-    'status' => array('data' => t('Status'), 'field' => 'failed'),
+    'starttime' => array(
+      'data' => t('Date'),
+      'field' => 'starttime',
+      'sort' => 'desc',
+    ),
     'duration' => array('data' => t('Duration'), 'field' => 'duration'),
     'created' => array('data' => t('Created'), 'field' => 'created'),
     'updated' => array('data' => t('Updated'), 'field' => 'updated'),
     'failed' => array('data' => t('Failed'), 'field' => 'failed'),
     'orphaned' => array('data' => t('Orphaned'), 'field' => 'orphaned'),
-    'unchanged' => array('data' =>t('Unchanged'), 'field' => 'unchanged'),
+    'unchanged' => array('data' => t('Unchanged'), 'field' => 'unchanged'),
   );
 
-  $status_text = array(0 => t('OK'), 1 => l(t('ERROR'), 'node/' . $node->nid . '/harvest-errors', array('attributes' => array('alt' => 'Error'))));
-  $status_class = array(0 => 'alert-success', 1 => t('alert-danger'));
-  $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
-  $harvestSourceMigration = dkan_harvest_get_migration($harvestSource);
-  $logTable = $harvestSourceMigration->getMap()->getLogTable();
+  $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+  $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
+  $log_table = $harvest_source_migration->getMap()->getLogTable();
 
   $query = db_select('migrate_log', 'log');
 
-  $query->join($logTable, 'harvest_source_log', 'log.mlid = harvest_source_log.mlid');
+  $query->join($log_table, 'harvest_source_log', 'log.mlid = harvest_source_log.mlid');
 
   $query_result = $query
     ->fields('log')
     ->fields('harvest_source_log')
-    ->condition('machine_name', $harvestSource->getMigrationMachineName())
+    ->condition('machine_name', $harvest_source->getMigrationMachineName())
     // Add table sort extender.
     ->extend('TableSort')
     // Add order by headers.
@@ -46,12 +54,14 @@ function dkan_harvest_page_event_log($node) {
 
   $results = $query_result->fetchAllAssoc('mlid');
 
-  // Convert from microsecnod to seconds.
-  function timefloor ($microtime) {
-    return floor($microtime/1000);
+  /**
+   * Convert from microsecnod to seconds.
+   */
+  function timefloor($microtime) {
+    return floor($microtime / 1000);
   }
 
-  // Add help text
+  // Add help text.
   $build['help'] = array(
     '#attributes' => array(
       'class' => array('help-block'),
@@ -60,9 +70,9 @@ function dkan_harvest_page_event_log($node) {
     '#markup' => t('Chronological log of harvests performed on this source. See the "Error log" page for details on any failures listed here.'),
     '#prefix' => '<span class="help-block">',
     '#suffix' => '</span>',
-  );  
+  );
 
-  if(count($results)) {
+  if (count($results)) {
     // Build the table rows.
     $rows = array();
     foreach ($results as $result) {
@@ -84,8 +94,6 @@ function dkan_harvest_page_event_log($node) {
       $rows[] = $row;
     }
 
-
-
     // Return properly styled output.
     $build['pager_table'] = array(
       '#attached' => array(
@@ -93,46 +101,48 @@ function dkan_harvest_page_event_log($node) {
       ),
       '#theme' => 'table',
       '#attributes' => array(
-         'class' => array('harvest-event-log'),
+        'class' => array('harvest-event-log'),
       ),
       '#header' => $header,
       '#rows' => $rows,
     );
 
     // Attach the pager theme.
-    $build['pager_pager'] = array('#theme' => 'pager');    
-  } 
+    $build['pager_pager'] = array('#theme' => 'pager');
+  }
   else {
     $build['no_results'] = array(
-      '#markup' => '<em>No log messages available.</em>',   
+      '#markup' => '<em>No log messages available.</em>',
     );
   }
 
   return $build;
 }
 
-
 /**
  * Display a harvest source node's error log history.
  *
- * @param $node The harvest source node being acted upon.
+ * @param object $node
+ *        The harvest source node being acted upon.
  *
- * @return A themed table of data and links for harvest source node events.
+ * @return array
+ *         A themed table of data and links for
+ *         harvest source node events.
  */
 function dkan_harvest_page_error_log($node) {
   // Set the table header.
   $collapsible_inner_header = array(
     'msgid' => array('data' => t('Message ID'), 'field' => 'msgid'),
     'sourceid1' => array('data' => t('Source ID'), 'field' => 'sourceid1'),
-    'dataset_link' => array('data' => t('Dataset'),),
+    'dataset_link' => array('data' => t('Dataset')),
     'message' => array('data' => t('Error Message'), 'field' => 'message'),
   );
 
-  $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
-  $harvestSourceMigration = dkan_harvest_get_migration($harvestSource);
-  $harvestSourceMigrationMap = $harvestSourceMigration->getMap();
+  $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+  $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
+  $harvest_source_migration_map = $harvest_source_migration->getMap();
 
-  $query = db_select($harvestSourceMigrationMap->getMessageTable(), 'harvest_source_message')
+  $query = db_select($harvest_source_migration_map->getMessageTable(), 'harvest_source_message')
     ->fields('harvest_source_message')
     ->condition('level', Migration::MESSAGE_ERROR)
     // Add table sort extender.
@@ -144,7 +154,7 @@ function dkan_harvest_page_error_log($node) {
 
   $results = $query_result->fetchAllAssoc('msgid');
 
-  // Add help text
+  // Add help text.
   $build['help'] = array(
     '#attributes' => array(
       'class' => array('help-block'),
@@ -155,20 +165,20 @@ function dkan_harvest_page_error_log($node) {
     '#suffix' => '</span>',
   );
 
-  if(count($results)) { 
+  if (count($results)) {
     // Build the table rows.
     $collapsible_items = array();
     foreach ($results as $result) {
-      if (isset($result->sourceid1)){
+      if (isset($result->sourceid1)) {
         // Lookup the dataset nid. lookupDestinationID() takes an array and
         // returns an array, But really we are interested in one sincle result.
         $sourceid = $result->sourceid1;
-        $destids = $harvestSourceMigrationMap->lookupDestinationID(array($sourceid));
+        $destids = $harvest_source_migration_map->lookupDestinationID(array($sourceid));
         // We expect an array with one valid item. If not fallback to default
         // "N/A".
         if (is_array($destids) && count($destids) == 1 && isset($destids['destid1'])) {
           $destid = array_pop($destids);
-          $result->dataset_link = l(t('Dataset link'), 'node/'. $destid);
+          $result->dataset_link = l(t('Dataset link'), 'node/' . $destid);
         }
       }
 
@@ -216,13 +226,13 @@ function dkan_harvest_page_error_log($node) {
       $build['collapsible_row_' . $collapsible_item_mlid] = array(
         '#attached' => array(
           'css' => array(
-            drupal_get_path('module', 'dkan_harvest') . '/css/dkan_harvest_pages_error_log_collapsible.css'
+            drupal_get_path('module', 'dkan_harvest') . '/css/dkan_harvest_pages_error_log_collapsible.css',
           ),
         ),
         '#theme' => 'ctools_collapsible',
         '#attributes' => array(
           'class' => array(
-            'harvest-error-log-collapse'
+            'harvest-error-log-collapse',
           ),
         ),
         '#handle' => $handle,
@@ -233,14 +243,12 @@ function dkan_harvest_page_error_log($node) {
       $collapsible_item_offset++;
     }
 
-
-
     // Attach the pager theme.
     $build['pager_pager'] = array('#theme' => 'pager');
   }
   else {
     $build['no_results'] = array(
-      '#markup' => '<em>No error messages available.</em>',   
+      '#markup' => '<em>No error messages available.</em>',
     );
   }
 

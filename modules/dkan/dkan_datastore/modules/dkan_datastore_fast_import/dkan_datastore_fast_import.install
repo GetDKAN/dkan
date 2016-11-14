@@ -1,5 +1,10 @@
 <?php
 /**
+ * @file
+ * Fast import install.
+ */
+
+/**
  * Implements hook_enable().
  */
 function dkan_datastore_fast_import_enable() {

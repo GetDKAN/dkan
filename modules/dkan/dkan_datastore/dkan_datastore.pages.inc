@@ -15,10 +15,12 @@ function dkan_datastore_datastore_api($node) {
       $datastore = dkan_datastore_go($node->uuid);
       $output = $datastore->apiForm();
       return $output;
+
     case DKAN_DATASTORE_FILE_EXISTS:
       drupal_set_message(t('You need to add your file to the datastore in order to use the DATA API'));
       $redirect_path = 'node/' . $node->nid . '/datastore';
       break;
+
     default:
       drupal_set_message(t('This resource can not be added to the datastore'));
       $redirect_path = 'node/' . $node->nid;
@@ -36,15 +38,18 @@ function dkan_datastore_download($node) {
   $url = $link_type['url'];
   $type = $link_type['type'];
 
-  if($type == 'upload') {
+  if ($type == 'upload') {
     return drupal_goto($url);
-  } else if($type == 'remote') {
+  }
+  elseif ($type == 'remote') {
     dkan_datastore_proxy($node);
-  } else if($type == 'link'){
+  }
+  elseif ($type == 'link') {
     return drupal_goto($url);
-  } else {
+  }
+  else {
     drupal_set_message(t('No download available for this resource'));
-    return '';    
+    return '';
   }
 }
 
@@ -60,7 +65,7 @@ function dkan_datastore_proxy($node) {
   $mime = $remote_file['filemime'];
   $type = recline_get_data_type($remote_file['filemime']);
 
-  if(in_array($type, $allowed_types)) {
+  if (in_array($type, $allowed_types)) {
     drupal_add_http_header('Content-Type', $mime);
     drupal_add_http_header('Content-Disposition', 'attachment; filename=' . $filename);
     print file_get_contents($uri);

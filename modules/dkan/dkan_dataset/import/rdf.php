@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Includes dcat and dcterms rdf definitions.
