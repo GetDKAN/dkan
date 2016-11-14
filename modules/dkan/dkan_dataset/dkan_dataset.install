@@ -45,6 +45,8 @@ function dkan_dataset_update_7001() {
 }
 
 /**
+ * Open Data Federal Extras module added to core.
+ *
  * Some fields were moved from Open Data Federal Extras module to
  * the DKAN Core so an update is needed in order to rename the fields
  * if they already exist on the DB.
@@ -69,10 +71,10 @@ function dkan_dataset_update_7002() {
 }
 
 /**
- * Migrate values from old 'field_odfe_category' field if present to the new
- * 'field_pod_theme'.
+ * Migrate values from old 'field_odfe_category' to 'field_pod_theme'.
  *
- * @throws \DrupalUpdateException if the 'field_pod_theme' field is not part of the dataset content type.
+ * @throws \DrupalUpdateException
+ *   If the 'field_pod_theme' field is not part of the dataset content type.
  */
 function dkan_dataset_update_7003() {
 
@@ -97,13 +99,13 @@ function dkan_dataset_update_7003() {
   $dataset_ids = array_unique($dataset_ids);
 
   // Process all datasets.
-  foreach($dataset_ids as $dataset_id) {
+  foreach ($dataset_ids as $dataset_id) {
     // Load dataset.
     $dataset = node_load($dataset_id);
     $dataset_wrapper = entity_metadata_wrapper('node', $dataset);
     // Get all values in 'field_odfe_category' field.
     $categories = $dataset_wrapper->field_odfe_category;
-    foreach($categories as $category) {
+    foreach ($categories as $category) {
       // Save each value on the new 'field_pod_theme' field.
       $dataset_wrapper->field_pod_theme[] = $category->value()->name;
     }
