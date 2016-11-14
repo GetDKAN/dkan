@@ -69,7 +69,8 @@ DKAN Dataset:
  - Fix keywords/tags creating broken links when containing spaces, and add missing keywords to default content.
  - Add support "Compound" fields on Filters/Overrides/Excludes/Default in DKAN Harvest.
  - Fix ODSM permissions for non-admin roles.
-
+ - Added upgrade hook to clean DB after removal of 'conditional_fields', 'entity_rdf', 'rdfui' and 'rdfx'.
+ - Added upgrade hook to remove deprecated test and theme directories.
 
 7.x-1.12.11
 --------------------------
