@@ -50,20 +50,3 @@ function dkan_workflow_enable() {
 
   variable_set('dkan_workflow_content_types', $dkan_workflow_content_types);
 }
-
-/**
- * Implements hook_disable().
- */
-function dkan_workflow_disable() {
-  // Remove workflow roles from roleassign_roles variable
-  $roleassign_roles = variable_get('roleassign_roles', array());
-  $roles_rids = array_flip(user_roles());
-  $remove_roles = array('Workflow Contributor', 'Workflow Moderator', 'Workflow Supervisor');
-
-  foreach($remove_roles as $role) {
-    unset($roleassign_roles[$roles_rids[$role]]);
-  }
-
-  variable_set('roleassign_roles', $roleassign_roles);
-
-}

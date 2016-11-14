@@ -21,3 +21,19 @@ function dkan_workflow_permissions_enable() {
   print_r($roleassign_roles);
   variable_set('roleassign_roles', $roleassign_roles);
 }
+
+/**
+ * Implements hook_disable().
+ */
+function dkan_workflow_permissions_disable() {
+  // Remove workflow roles from roleassign_roles variable
+  $roleassign_roles = variable_get('roleassign_roles', array());
+  $roles_rids = array_flip(user_roles());
+  $remove_roles = array('Workflow Contributor', 'Workflow Moderator', 'Workflow Supervisor');
+
+  foreach($remove_roles as $role) {
+    unset($roleassign_roles[$roles_rids[$role]]);
+  }
+
+  variable_set('roleassign_roles', $roleassign_roles);
+}
