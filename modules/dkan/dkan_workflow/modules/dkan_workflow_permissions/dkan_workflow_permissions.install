@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Installation procedures for dkan_workflow_permissions.
+ */
 
 /**
  * Implements hook_enable().
@@ -11,16 +15,20 @@ function dkan_workflow_permissions_enable() {
   $roleassign_roles = variable_get('roleassign_roles', array());
   $roles_rids = array_flip(user_roles());
 
-  $add_roles = array('Workflow Contributor', 'Workflow Moderator', 'Workflow Supervisor');
+  $add_roles = array(
+    'Workflow Contributor',
+    'Workflow Moderator',
+    'Workflow Supervisor',
+  );
 
-  foreach($add_roles as $role) {
-    if(isset($roles_rids[$role])) {
+  foreach ($add_roles as $role) {
+    if (isset($roles_rids[$role])) {
       $roleassign_roles[$roles_rids[$role]] = (string) $roles_rids[$role];
     }
   }
   variable_set('roleassign_roles', $roleassign_roles);
 
-  //Set up source for the admin menu.
+  // Set up source for the admin menu.
   _dkan_workflow_permissions_setup_admin_menu_source();
   drupal_flush_all_caches();
   features_revert(array('dkan_sitewide_menu' => array('menu_links')));
@@ -29,15 +37,24 @@ function dkan_workflow_permissions_enable() {
 
 /**
  * This helper function sets up the admin_menu_source module's configuration.
+ *
  * We want the workflow roles to have the "command center"
  * menu rather than the whole admin menu in the top bar. We can't rely on the
  * rid to be the same on every site so not using features.
  */
 function _dkan_workflow_permissions_setup_admin_menu_source() {
-  $required_roles = array('administrator', 'site manager', 'editor', 'content creator', 'Workflow Contributor', 'Workflow Moderator', 'Workflow Supervisor');
+  $required_roles = array(
+    'administrator',
+    'site manager',
+    'editor',
+    'content creator',
+    'Workflow Contributor',
+    'Workflow Moderator',
+    'Workflow Supervisor',
+  );
   $roles = array_flip(user_roles());
   $admin_menu_source_settings = array();
-  foreach($required_roles as $role_name) {
+  foreach ($required_roles as $role_name) {
     if (!isset($roles[$role_name])) {
       $role = new stdClass();
       $role->name = $role_name;
@@ -92,12 +109,16 @@ function _dkan_workflow_permissions_setup_admin_menu_source() {
  * Implements hook_disable().
  */
 function dkan_workflow_permissions_disable() {
-  // Remove workflow roles from roleassign_roles variable
+  // Remove workflow roles from roleassign_roles variable.
   $roleassign_roles = variable_get('roleassign_roles', array());
   $roles_rids = array_flip(user_roles());
-  $remove_roles = array('Workflow Contributor', 'Workflow Moderator', 'Workflow Supervisor');
+  $remove_roles = array(
+    'Workflow Contributor',
+    'Workflow Moderator',
+    'Workflow Supervisor',
+  );
 
-  foreach($remove_roles as $role) {
+  foreach ($remove_roles as $role) {
     unset($roleassign_roles[$roles_rids[$role]]);
   }
 
