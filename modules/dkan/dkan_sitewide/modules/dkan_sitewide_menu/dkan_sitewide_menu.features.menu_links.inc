@@ -3,6 +3,7 @@
 /**
  * @file
  * dkan_sitewide_menu.features.menu_links.inc
+ * @codingStandardsIgnoreStart
  */
 
 /**
@@ -891,3 +892,4 @@ function dkan_sitewide_menu_menu_default_menu_links() {
 
   return $menu_links;
 }
+/* @codingStandardsIgnoreEnd */
