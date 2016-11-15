@@ -1,4 +1,5 @@
 # time:0m6.21s
+@api
 Feature: User
 
   Background:
@@ -50,7 +51,7 @@ Feature: User
     Then I should see "The changes have been saved"
     Given I am an anonymous user
     When I am on "Katie" page
-    Then I should see "This is my profile" in the "user profile" region
+    Then I should see "This is my profile"
 
   @api
   Scenario: View the list of own published datasets on profile
@@ -58,7 +59,7 @@ Feature: User
     And I am on "Katie" page
     Then I should see "2" items in the "user content" region
 
-  @api @fixme @testBug
+  @fixme @testBug
     # TODO: Needs definition.
     #       This would take a long time to test manually, having to wait N minutes each time it's run.
     #       A possible solution to this would be to edit the cookies directly and speed up the waiting time
