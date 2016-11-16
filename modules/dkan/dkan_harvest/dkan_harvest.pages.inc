@@ -80,6 +80,7 @@ function dkan_harvest_page_event_log($node) {
         'data' => array(
           'mlid' => $result->mlid,
           'date' => format_date(timefloor($result->starttime)),
+          'status' => array('data' => $status_text[$result->failed], 'class' => array($status_class[$result->failed])),
           'duration' => format_interval(timefloor($result->duration), 2),
           'created' => $result->created,
           'updated' => $result->updated,
