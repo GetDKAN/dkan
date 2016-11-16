@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Code for the DKAN panels feature.
@@ -13,20 +14,22 @@ include_once 'dkan_sitewide_panels.features.inc';
  */
 function dkan_sitewide_panels_preprocess_panels_style_collapsible(&$variables) {
 
-  // Get the active searchers. For example search_api@datasets
+  // Get the active searchers. For example search_api@datasets.
   foreach (facetapi_get_active_searchers() as $searcher) {
 
     // Load the facet adapter to load all the facets later.
     $adapter = facetapi_adapter_load($searcher);
 
-    // Find out if the pane matches a facet in the query string; un-collapse if so
+    // Find out if the pane matches a facet
+    // in the query string; un-collapse if so.
     $pane = $variables['pane'];
     if (substr($pane->type, 0, 8)) {
       foreach (array_keys($adapter->getAllActiveItems()) as $param) {
-        // We match the first part of the param to a mapped facet name
+        // We match the first part of the param to a mapped facet name.
         $param_parts = explode(':', $param, 2);
         $param_name = $param_parts[0];
-        // The pane subtype will be something like "facetapi-wsVI1ENUXwf4Rz08n9fg2WvfQ0Gs5h2a"
+        // The pane subtype will be something
+        // like "facetapi-wsVI1ENUXwf4Rz08n9fg2WvfQ0Gs5h2a".
         $facet_hash = substr($pane->subtype, 9);
         $facet_delta_map = facetapi_get_delta_map();
         if (in_array($facet_hash, array_keys($facet_delta_map))) {
@@ -60,7 +63,7 @@ function dkan_sitewide_panels_block_view($delta = '') {
   $block = array();
   $query = new EntityFieldQuery();
 
-  switch($delta) {
+  switch ($delta) {
     case 'dkan_user_summary':
       $account = menu_get_object('user');
       $items = field_get_items('user', $account, 'field_about');
@@ -81,7 +84,7 @@ function dkan_sitewide_panels_block_view($delta = '') {
       $output .= '<p>' . dkan_sitewide_panels_user_summary_count_by_type('dataset', $account->uid) . ' Datasets</p>';
       $output .= '<p>' . dkan_sitewide_panels_user_summary_count_by_type('group', $account->uid) . ' Groups</p>';
       $output .= '<p>User since ' . format_date($account->created, 'custom', 'm/d/Y') . '</p></div>';
-      if($about) {
+      if ($about) {
         $output .= '<p>' . render($about) . '</p>';
       }
       $output .= $group_list;
@@ -101,18 +104,20 @@ function dkan_sitewide_panels_block_view($delta = '') {
   return $block;
 }
 
-/*
+/**
+ * Calculate summary count by type.
+ *
  * Get number of nodes created by user
  * of a particular content type.
  */
-function dkan_sitewide_panels_user_summary_count_by_type($type, $uid){
+function dkan_sitewide_panels_user_summary_count_by_type($type, $uid) {
 
   $query = new EntityFieldQuery();
 
   $query->entityCondition('entity_type', 'node')
-  ->entityCondition('bundle', $type)
-  ->propertyCondition('uid', $uid)
-  ->count();
+    ->entityCondition('bundle', $type)
+    ->propertyCondition('uid', $uid)
+    ->count();
 
   return $query->execute();
 }

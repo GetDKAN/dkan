@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Drupal needs this blank file.
@@ -25,7 +26,7 @@ function dkan_workflow_permissions_form_alter(&$form, &$form_state, $form_id) {
       'Workflow Supervisor',
     );
 
-    foreach($required_roles as $required_role) {
+    foreach ($required_roles as $required_role) {
       if (!in_array($required_role, $user_roles)) {
         // @todo: Add some kind of user warning if this happens.
         return;
@@ -39,7 +40,8 @@ function dkan_workflow_permissions_form_alter(&$form, &$form_state, $form_id) {
       $rids['Workflow Moderator']   => $rids['editor'],
       $rids['Workflow Supervisor']  => $rids['site manager'],
     );
-    // Use Drupal.settings to pass information from our PHP code to our JavaScript code. 
+    // Use Drupal.settings to pass information
+    // from our PHP code to our JavaScript code.
     drupal_add_js(array('dkan_workflow_permissions' => array('rolePairings' => $pairings)), 'setting');
     global $user;
     if (in_array('administrator', $user->roles) || $user->uid == 1) {
@@ -52,7 +54,7 @@ function dkan_workflow_permissions_form_alter(&$form, &$form_state, $form_id) {
       $path = drupal_get_path('module', 'dkan_workflow_permissions');
       $form['#attached']['js'][] = "$path/dkan_workflow_permissions.js";
     }
-    
+
     $form['account']['roles']['#description'] = t('Workflow roles require certain
       core roles to be enabled. For instance, the "Workflow Contributor" role must
       always be accompanied by the "content creator" role. Users without any

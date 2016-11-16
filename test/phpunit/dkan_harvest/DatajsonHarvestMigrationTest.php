@@ -789,6 +789,13 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test Harvest Source.
+   */
+  public static function getNoResourceTestSource() {
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_no_resources.json');
+  }
+
+  /**
    *
    */
   private function getTestDatasetNid($source) {

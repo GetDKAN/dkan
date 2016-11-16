@@ -1,4 +1,5 @@
 <?php
+// @codingStandardsIgnoreFile
 /**
  * @file
  * dkan_harvest_dashboard.features.user_permission.inc
