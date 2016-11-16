@@ -45,7 +45,8 @@ DKAN Harvest:
  - Fix dkan harvest feature overridden after install.
  - Add link for site managers to create harvest source in command center menu.
  - Added Batch API on 'Harvest now' action.
- - Added Batch API on the 'Preview' page. 
+ - Added Batch API on the 'Preview' page.
+ - Added 'Add Source' shortcut on Harvest Dashboard pages.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
