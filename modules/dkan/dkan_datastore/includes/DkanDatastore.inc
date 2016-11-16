@@ -216,7 +216,6 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
     $this->import();
   }
 
-
   /**
    * Adds configuration to feeds source.
    */
