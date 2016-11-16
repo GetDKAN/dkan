@@ -24,7 +24,7 @@ class HarvestSourceTypeTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @expectedException Exception
-   * @expectedExceptionMessage HarvestSourceType machine_name invalid!
+   * @expectedExceptionMessage HarvestSourceType machineName invalid!
    */
   public function testHarvestSourceTypeConstructMachineNameException() {
     $source_type = new HarvestSourceType(NULL, array(
@@ -36,7 +36,7 @@ class HarvestSourceTypeTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @expectedException Exception
-   * @expectedExceptionMessage HarvestSourceType cache_callback invalid!
+   * @expectedExceptionMessage HarvestSourceType cacheCallback invalid!
    */
   public function testHarvestSourceTypeConstructCacheCallbackMissingException() {
     $source_type = new HarvestSourceType('harvest_test_type', array(
@@ -47,7 +47,7 @@ class HarvestSourceTypeTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @expectedException Exception
-   * @expectedExceptionMessage HarvestSourceType cache_callback invalid!
+   * @expectedExceptionMessage HarvestSourceType cacheCallback invalid!
    */
   public function testHarvestSourceTypeConstructCacheCallbackNotFunctionException() {
     $source_type = new HarvestSourceType('harvest_test_type', array(
