@@ -11,3 +11,7 @@
 .form-item-changed-max input {
   width: 100px;
 }
+
+.page-admin-dkan-harvest-dashboard a.btn-add-source {
+  margin: 0px 0px 10px 0px;
+}
