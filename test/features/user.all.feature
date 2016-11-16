@@ -93,7 +93,7 @@ Feature: User
     And I should see "2" items in the "user content" region
 
   Scenario: See list of user memberships on user profile
-    Given I am on "Katie" page
-    Then I should see "Group membership:"
-    Then I should see "Group 01"
+    Given I am logged in as "Katie"
+    And I am on "Katie" page
+    Then I should see "Group 01" in the "user profile" region
     And I should not see "Group 02"
