@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Default Data Stories from fixtures.
+ */
+
+/**
+ * Default content extention of data stories fixtures migration class.
  */
 class DefaultContentDataStoriesImport extends DkanDataStoriesImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
@@ -18,4 +23,5 @@ class DefaultContentDataStoriesImport extends DkanDataStoriesImport {
 
     parent::__construct($arguments);
   }
+
 }

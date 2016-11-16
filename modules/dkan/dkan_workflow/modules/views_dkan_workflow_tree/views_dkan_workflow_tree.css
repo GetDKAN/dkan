@@ -1,5 +1,5 @@
 .views-dkan-workflow-tree > .views-dkan-workflow-tree-item {
-  border-bottom: 1px solid #DDDDDD;
+  border-bottom: 1px solid #dddddd;
   margin: 0 0 0em 0em;
   padding-left: 1em;
   padding-top: 10px;
@@ -47,7 +47,7 @@
 }
 
 .vbo-select-all-markup {
-  display:  inline-block !important;
+  display: inline-block !important;
 }
 
 .view-workbench-moderation .vbo-fieldset-select-all {
@@ -76,7 +76,7 @@
   background: #f5f5f5;
 }
 
-.views-dkan-workflow-tree-item .item-content .views-dkan-workflow-tree-title.header{
+.views-dkan-workflow-tree-item .item-content .views-dkan-workflow-tree-title.header {
   text-align: left;
 }
 
@@ -154,5 +154,5 @@ il.views-dkan-workflow-tree {
 .item-disabled .views-dkan-workflow-tree-revision-timestamp,
 .item-disabled .views-dkan-workflow-tree-revision-user,
 .item-disabled .views-dkan-workflow-tree-revision-user a {
-  color: #80808B;
+  color: #80808b;
 }

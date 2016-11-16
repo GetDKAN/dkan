@@ -8,7 +8,7 @@
 /**
  * Class for DKAN Datastores.
  */
-class DkanDatastore extends Datastore implements DatastoreForm {
+class DkanDatastore extends Datastore implements DatastoreFormInterface {
 
   public $endpoint = 'api/action/datastore/search.json';
 
@@ -96,8 +96,8 @@ class DkanDatastore extends Datastore implements DatastoreForm {
    * Retrieves current Datastore status.
    */
   public function status() {
-   module_load_include('module', 'dkan_datastore', 'dkan_datastore');
-   return dkan_datastore_status($this->node);
+    module_load_include('module', 'dkan_datastore', 'dkan_datastore');
+    return dkan_datastore_status($this->node);
   }
 
   /**
@@ -107,7 +107,8 @@ class DkanDatastore extends Datastore implements DatastoreForm {
     return url($this->endpoint, array(
       'query' => array(
         'resource_id' => $this->uuid,
-        'limit' => 5),
+        'limit' => 5,
+      ),
       'absolute' => TRUE,
     ));
   }
@@ -214,7 +215,6 @@ class DkanDatastore extends Datastore implements DatastoreForm {
     $this->save();
     $this->import();
   }
-
 
   /**
    * Adds configuration to feeds source.
@@ -351,13 +351,14 @@ class DkanDatastore extends Datastore implements DatastoreForm {
   }
 
   /**
-   * Drop a datastore table
+   * Drop a datastore table.
    */
-  private function dropTable($table_name){
+  private function dropTable($table_name) {
     $table = data_get_table($table_name);
-    if($table) {
+    if ($table) {
       $table->drop();
-    } elseif (db_table_exists($table_name)) {
+    }
+    elseif (db_table_exists($table_name)) {
       db_drop_table($table_name);
     }
   }

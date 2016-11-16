@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_sitewide_user.views_default.inc
