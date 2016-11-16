@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Data Stories from fixtures.
+ */
+
+/**
+ * Data stories fixtures migration class.
  */
 class DkanDataStoriesImport extends DkanPanelizedNodesImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
@@ -63,4 +68,5 @@ class DkanDataStoriesImport extends DkanPanelizedNodesImport {
     }
     $row->topics = $topics;
   }
+
 }
