@@ -1,5 +1,4 @@
 name = Facet Links with Icons
-project = "facet_icons"
 package = Search Toolkit
 description = Provides facet widgets with links and icons for taxonomy terms and content types.
 core = 7.x
