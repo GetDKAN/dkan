@@ -32,7 +32,9 @@
  - Removed redundant definition for CKAN package_list endpoint from open_data_schema_map_dkan, allowing that feature to be in default state after install.
  - Update ctools to version 1.10, which fixes some PHP7 incompatibilities
  - Added links to ODSM page and DCAT validation under Site Configuration in the command center menu
- - Update open data schema module to render a valid output passing validation (dcat and rdf)
+ - Update open data schema module to render a valid output passing validation (dcat and rdf).
+ - Added upgrade hook to clean DB after removal of 'conditional_fields', 'entity_rdf', 'rdfui' and 'rdfx'.
+ - Added upgrade hook to remove deprecated test and theme directories.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
