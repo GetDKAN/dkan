@@ -1,11 +1,13 @@
 <?php
+
 /**
  * @file
  * Install file for DKAN Default Content.
  */
 
 /**
- * Hook: hook_enable().
+ * Implements hook_enable().
+ *
  * Registers migrations and imports all default content.
  */
 function dkan_default_content_enable() {
@@ -24,10 +26,10 @@ function dkan_default_content_enable() {
   // Import Visualization Entities.
   $migration = Migration::getInstance('dkan_default_content_visualization_entities');
   $migration->processImport();
-  // Import Data Stories
+  // Import Data Stories.
   $migration = Migration::getInstance('dkan_default_content_data_stories');
   $migration->processImport();
-  // Import Data Dashboards
+  // Import Data Dashboards.
   $migration = Migration::getInstance('dkan_default_content_data_dashboards');
   $migration->processImport();
   // Import Pages (Homepage + About page).
@@ -47,13 +49,14 @@ function dkan_default_content_import_default_pages() {
   $migration = Migration::getInstance('dkan_default_content_pages');
   // Import pages.
   $migration->processImport();
-  // Deregister migration. We don't want users to accidentally rollback the import
+  // Deregister migration. We don't want users to accidentally roll back import
   // of the homepage or about page.
   Migration::deregisterMigration('dkan_default_content_pages');
 }
 
 /**
- * Hook: hook_default_disable().
+ * Implements hook_default_disable().
+ *
  * Removes all the generated content and disables all enabled migrations.
  */
 function dkan_default_content_disable() {

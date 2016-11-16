@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_datastore.features.field_instance.inc
@@ -10,7 +11,7 @@
 function dkan_datastore_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-resource-field_datastore_status'
+  // Exported field_instance: 'node-resource-field_datastore_status'.
   $field_instances['node-resource-field_datastore_status'] = array(
     'bundle' => 'resource',
     'default_value' => array(
