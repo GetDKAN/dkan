@@ -14,11 +14,12 @@
  * actually do anything, it just serves as a notice for upgraders).
  */
 function dkan_sitewide_search_db_update_7109() {
-  $message = <<<EOD
-WARNING: If you are upgrading from a previous version of DKAN, a required update of the Search API DB backend module
-may break your search indexes, showing either a) nothing or b) all nodes regardless of type in your search/datasets
-pages. This problem can be easily fixed by following the instructions in the release notes at
-https://github.com/NuCivic/dkan/releases/tag/7.x-1.9 or in CHANGELOG.txt.
-EOD;
-  return t($message);
+  return t(
+    'WARNING: If you are upgrading from a previous version of DKAN, a required
+    update of the Search API DB backend module may break your search indexes,
+    showing either a) nothing or b) all nodes regardless of type in your
+    search/datasets pages. This problem can be easily fixed by following the
+    instructions in the release notes at
+    https://github.com/NuCivic/dkan/releases/tag/7.x-1.9 or in CHANGELOG.txt.'
+  );
 }
