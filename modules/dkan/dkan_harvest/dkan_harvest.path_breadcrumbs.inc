@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_harvest.path_breadcrumbs.inc
@@ -52,8 +51,54 @@ function dkan_harvest_path_breadcrumbs_settings_info() {
       'logic' => 'and',
     ),
   );
-  $path_breadcrumb->weight = 0;
+  $path_breadcrumb->weight = -95;
   $export['harvest_source'] = $path_breadcrumb;
+
+  $path_breadcrumb = new stdClass();
+  $path_breadcrumb->api_version = 1;
+  $path_breadcrumb->machine_name = 'harvest_source_preview';
+  $path_breadcrumb->name = 'harvest_source_preview';
+  $path_breadcrumb->path = 'node/%node/harvest-preview';
+  $path_breadcrumb->data = array(
+    'titles' => array(
+      0 => 'Harvest Sources',
+      1 => '%node:title',
+      2 => 'Preview',
+    ),
+    'paths' => array(
+      0 => 'admin/dkan/harvest/dashboard',
+      1 => '%node:url',
+      2 => '<none>',
+    ),
+    'home' => 1,
+    'translatable' => 0,
+    'arguments' => array(
+      'node' => array(
+        'position' => 1,
+        'argument' => 'entity_id:node',
+        'settings' => array(
+          'identifier' => 'Node: ID',
+        ),
+      ),
+    ),
+    'access' => array(
+      'plugins' => array(
+        0 => array(
+          'name' => 'entity_bundle:node',
+          'settings' => array(
+            'type' => array(
+              'harvest_source' => 'harvest_source',
+            ),
+          ),
+          'context' => 'node',
+          'not' => FALSE,
+        ),
+      ),
+      'logic' => 'and',
+    ),
+  );
+  $path_breadcrumb->weight = -94;
+  $export['harvest_source_preview'] = $path_breadcrumb;
 
   return $export;
 }
