@@ -47,6 +47,7 @@ DKAN Harvest:
  - Added Batch API on 'Harvest now' action.
  - Added Batch API on the 'Preview' page.
  - Added 'Add Source' shortcut on Harvest Dashboard pages.
+ - Fixed breadcrumb on harvest sources preview page.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
