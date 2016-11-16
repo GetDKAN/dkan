@@ -1,6 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Group fixtures migration class.
+ */
+
+/**
+ * Group fixtures migration class.
+ */
 class DkanGroupImport extends MigrateCkanGroupBase {
+
   /**
    * Here we go.
    */
@@ -46,4 +55,5 @@ class DkanGroupImport extends MigrateCkanGroupBase {
     $node->body[LANGUAGE_NONE][0]['value_format'] = 'html';
     $node->body[LANGUAGE_NONE][0]['format'] = 'html';
   }
+
 }
