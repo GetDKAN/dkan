@@ -1,8 +1,7 @@
 name = DKAN Sitewide Roles and Permissions
-description = Defines roles and permissions.
+description = Defines roles and permissions. Deprecated in favor of dkan_permissions, will be removed in future release.
 core = 7.x
 package = DKAN Deprecated
-project = dkan
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:2
 features[user_permission][] = access administration menu
@@ -119,4 +118,3 @@ features[user_permission][] = view revisions
 features[user_permission][] = view the administration theme
 features[user_role][] = administrator
 features[user_role][] = editor
-
