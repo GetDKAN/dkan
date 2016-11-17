@@ -71,6 +71,7 @@ DKAN Dataset:
  - Fix keywords/tags creating broken links when containing spaces, and add missing keywords to default content.
  - Add support "Compound" fields on Filters/Overrides/Excludes/Default in DKAN Harvest.
  - Fix ODSM permissions for non-admin roles.
+ - Fixed text on 'Download All' button to not display HTML.
 
 
 7.x-1.12.11
