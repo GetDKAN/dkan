@@ -341,8 +341,8 @@ projects:
   visualization_entity:
     download:
       type: git
-      url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0-beta1
+      url: 'https://github.com/NuCivic/visualization_entity.git'
+      branch: master
     type: module
   workbench:
     version: '1.2'
