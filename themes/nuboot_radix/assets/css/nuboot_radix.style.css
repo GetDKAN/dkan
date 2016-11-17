@@ -5919,8 +5919,7 @@ button.close {
 :root .fa-rotate-270,
 :root .fa-flip-horizontal,
 :root .fa-flip-vertical {
-  -webkit-filter: none;
-          filter: none; }
+  filter: none; }
 
 .fa-stack {
   position: relative;
@@ -10167,8 +10166,7 @@ h2.pane-title {
   padding: 8px;
   margin: 10px 0; }
 
-.recline-filter-editor input,
-.recline-filter-editor select {
+.recline-filter-editor input {
   width: auto; }
 
 #recline-embeded .recline-data-explorer .header,
