@@ -948,6 +948,7 @@ class HarvestMigration extends MigrateDKAN {
    */
   public static function prepareResourceHelper($url, $format = NULL, $title = NULL, $created = NULL, $description = NULL) {
     $resource = new stdClass();
+    $filesize = 0;
 
     // Validate the url.
     if (!filter_var($url, FILTER_VALIDATE_URL)) {
@@ -987,6 +988,11 @@ class HarvestMigration extends MigrateDKAN {
 
       // Get the effective URL.
       $url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+
+      //Fix a problem with size. If we can't get size
+      // Then says is a api.
+      $filesize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+
       curl_close($ch);
     }
 
@@ -1025,22 +1031,34 @@ class HarvestMigration extends MigrateDKAN {
     // TODO improve the $html_extensions list?
     if (!empty($extension)
       && !in_array($extension, $html_extensions)
-      && array_key_exists($extension, $mimetype_mappings['extensions'])) {
+      && array_key_exists($extension, $mimetype_mappings['extensions'])
+      && $filesize != -1) {
       // This url have an extension. Consider it a file and default the
       // format_detected to it!
       $resource->url_type = 'file';
       $format_detected = $extension;
     }
     else {
-      // Cannot get an extension from the url. Check the Headers.
-      $req = drupal_http_request($res->url, array('timeout' => 5));
-      if ($req->code == 200) {
-        $mime = substr($req->headers['content-type'], 0, strpos($req->headers['content-type'], ";"));
+      // Cannot get an extension from the url. Check the Headers with curl.
+      $ch = curl_init($resource->url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_exec($ch);
+      $req_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+      $mime = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+      curl_close($ch);
+
+      if ($req_code == 200) {
+        $mime = substr($mime, 0, strpos($mime, ";"));
         // Check if the content-type header return a valide mime type that is
         // not in the $html_extensions array (ie. not a web page). If so
         // acknowledge the url as a file and save the detected extension.
-        if ($type = recline_get_data_type($mime) && !in_array($type, $html_extensions)) {
+        $type = recline_get_data_type($mime);
+        if ($type && !in_array($type, $html_extensions) && $filesize != -1) {
           $resource->url_type = 'file';
+          $format_detected = $type;
+        }
+        elseif ($type && $filesize == -1) {
+        //Special case. If is a redirect url to a file we need
           $format_detected = $type;
         }
       }
