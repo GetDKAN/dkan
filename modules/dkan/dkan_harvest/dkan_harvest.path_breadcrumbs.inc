@@ -55,14 +55,14 @@ function dkan_harvest_path_breadcrumbs_settings_info() {
 
   $path_breadcrumb = new stdClass();
   $path_breadcrumb->api_version = 1;
-  $path_breadcrumb->machine_name = 'harvest_source_preview';
-  $path_breadcrumb->name = 'harvest_source_preview';
-  $path_breadcrumb->path = 'node/%node/harvest-preview';
+  $path_breadcrumb->machine_name = 'harvest_source_pages';
+  $path_breadcrumb->name = 'harvest_source_pages';
+  $path_breadcrumb->path = 'node/%node/%section';
   $path_breadcrumb->data = array(
     'titles' => array(
       0 => 'Harvest Sources',
       1 => '%node:title',
-      2 => 'Preview',
+      2 => '!page_title',
     ),
     'paths' => array(
       0 => 'admin/dkan/harvest/dashboard',
@@ -78,6 +78,9 @@ function dkan_harvest_path_breadcrumbs_settings_info() {
         'settings' => array(
           'identifier' => 'Node: ID',
         ),
+      ),
+      'section' => array(
+        'position' => 2,
       ),
     ),
     'access' => array(
@@ -96,7 +99,7 @@ function dkan_harvest_path_breadcrumbs_settings_info() {
       'logic' => 'and',
     ),
   );
-  $export['harvest_source_preview'] = $path_breadcrumb;
+  $export['harvest_source_pages'] = $path_breadcrumb;
 
   return $export;
 }
