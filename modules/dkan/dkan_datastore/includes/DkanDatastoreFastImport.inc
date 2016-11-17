@@ -13,6 +13,7 @@ class DkanDatastoreFastImport extends DkanDatastore implements DatastoreFormInte
   public $endpoint = 'api/action/datastore/search.json';
   const QUEUE_FILESIZE_THRESHOLD_DEFAULT = '30MB';
   const FAST_IMPORT_THRESHOLD_DEFAULT = '30MB';
+
   /**
    * Sets default items for datastore object.
    */

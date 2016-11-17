@@ -50,6 +50,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('TEST - State Workforce by Generation (2011-2015)', $dataset->title->value());
   }
 
+
+
   /**
    * @depends testDatasetCount
    */
@@ -91,6 +93,21 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     );
 
     $dataset_resources = $this->getDatasetResources($dataset);
+
+    $this->assertEquals($expected_resources, $dataset_resources);
+  }
+
+  /**
+   * @depends testDatasetCount
+   */
+  public function testResourcesBodyFormat($dataset) {
+    $expected_resources = array(
+      'TEST - Workforce By Generation (2011-2015)' => 'html',
+      'TEST - Retirements (2011 - 2015)' => 'html',
+      'TEST - Retirements: Eligible vs. Actual' => 'html',
+    );
+
+    $dataset_resources = $this->getDatasetResourcesFormat($dataset);
 
     $this->assertEquals($expected_resources, $dataset_resources);
   }
@@ -663,36 +680,70 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * https://jira.govdelivery.com/browse/CIVIC-4670
+   * https://jira.govdelivery.com/browse/CIVIC-4498
    *
-   * Test Harvesting Datasets that does not have resources associated to. This
-   * used to make the harvest migration process fail.
+   * Make sure harvest error from the base HarvestMigration class are logged.
    */
-  public function testHarvestSourceNoResources() {
+  public function testHarvestError() {
 
-    // Clean the harvest migration data from previous tests.
-    dkan_harvest_rollback_sources(array(self::getNoResourceTestSource()));
-    dkan_harvest_deregister_sources(array(self::getNoResourceTestSource()));
+    // Clean the harvest migration data from the source.
+    dkan_harvest_rollback_sources(array(self::getOriginalTestSource()));
+    dkan_harvest_deregister_sources(array(self::getOriginalTestSource()));
 
-    // Harvest the No Resource source.
-    dkan_harvest_cache_sources(array(self::getNoResourceTestSource()));
-    dkan_harvest_migrate_sources(array(self::getNoResourceTestSource()));
+    // Delete the format vocabulary.
+    $vocab_format = taxonomy_vocabulary_machine_name_load('format');
+    if ($vocab_format) {
+      taxonomy_vocabulary_delete($vocab_format->vid);
+    }
 
-    $migrationNoResource = dkan_harvest_get_migration(self::getNoResourceTestSource());
-    $migrationNoResourceMap = $this->getMapTableFromMigration($migrationNoResource);
-    $migrationNoResourceMessages = $this->getMessageTableFromMigration($migrationNoResource);
+    // Running the harvest should generate an error.
+    dkan_harvest_cache_sources(array(self::getOriginalTestSource()));
+    dkan_harvest_migrate_sources(array(self::getOriginalTestSource()));
 
-    // Expect only one dataset imported.
-    $this->assertNotEmpty($migrationNoResourceMap);
-    $this->assertEquals(1, count($migrationNoResourceMap));
+    $migrationError = dkan_harvest_get_migration(self::getOriginalTestSource());
+    $migrationErrorMessages = $this->getMessageTableFromMigration($migrationError);
 
-    // Make sure the dataset was actually imported.
-    $record = array_pop($migrationNoResourceMap);
-    $this->assertNotNull($record->destid1);
+    $messages = array_filter($migrationErrorMessages, function ($message) {
+      return $message->level == 1;
+    });
 
-    // Should not be any error messages logged.
-    foreach ($migrationNoResourceMessages as $message) {
-      $this->assertNotEquals(MigrationBase::MESSAGE_ERROR, $message->level);
+    $messages = array_map(function ($message) {
+      return $message->message;
+    }, $messages);
+
+    $this->assertContains("Cannot get taxonomy csv (format vocabulary).", $messages);
+
+    // Similar test for when dkan_dataset_metadata_source is available.
+    if (!module_exists('dkan_dataset_metadata_source')) {
+      $this->markTestSkipped("dkan_dataset_metadata_source module does not exists.");
+    }
+    else {
+      // Clean the harvest migration data from the source.
+      dkan_harvest_rollback_sources(array(self::getOriginalTestSource()));
+      dkan_harvest_deregister_sources(array(self::getOriginalTestSource()));
+
+      // Delete the format vocabulary.
+      $vocab_format = taxonomy_vocabulary_machine_name_load('extended_metadata_schema');
+      if ($vocab_format) {
+        taxonomy_vocabulary_delete($vocab_format->vid);
+      }
+
+      // Running the harvest should generate an error.
+      dkan_harvest_cache_sources(array(self::getOriginalTestSource()));
+      dkan_harvest_migrate_sources(array(self::getOriginalTestSource()));
+
+      $migrationError = dkan_harvest_get_migration(self::getOriginalTestSource());
+      $migrationErrorMessages = $this->getMessageTableFromMigration($migrationError);
+
+      $messages = array_filter($migrationErrorMessages, function ($message) {
+        return $message->level == 1;
+      });
+
+      $messages = array_map(function ($message) {
+        return $message->message;
+      }, $messages);
+
+      $this->assertContains("Cannot get taxonomy csv (format vocabulary).", $messages);
     }
   }
 
@@ -856,6 +907,20 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     foreach ($dataset->field_resources->getIterator() as $delta => $resource) {
       $remote_file = $resource->field_link_remote_file->value();
       $resources[$resource->title->value()] = $remote_file['uri'];
+    }
+
+    return $resources;
+  }
+
+  /**
+   * Returns an array with the list of resources (with format info) associated with the dataset.
+   */
+  private function getDatasetResourcesFormat($dataset) {
+    $resources = array();
+
+    foreach ($dataset->field_resources->getIterator() as $delta => $resource) {
+      $body = $resource->body->value();
+      $resources[$resource->title->value()] = $body['format'];
     }
 
     return $resources;
