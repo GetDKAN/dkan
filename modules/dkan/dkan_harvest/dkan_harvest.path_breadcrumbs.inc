@@ -51,7 +51,6 @@ function dkan_harvest_path_breadcrumbs_settings_info() {
       'logic' => 'and',
     ),
   );
-  $path_breadcrumb->weight = -95;
   $export['harvest_source'] = $path_breadcrumb;
 
   $path_breadcrumb = new stdClass();
@@ -97,7 +96,6 @@ function dkan_harvest_path_breadcrumbs_settings_info() {
       'logic' => 'and',
     ),
   );
-  $path_breadcrumb->weight = -94;
   $export['harvest_source_preview'] = $path_breadcrumb;
 
   return $export;
