@@ -19,6 +19,7 @@ dependencies[] = strongarm
 dependencies[] = text
 dependencies[] = views
 dependencies[] = views_content
+stylesheets[all][] = css/dkan_harvest.css
 features[ctools][] = path_breadcrumbs:path_breadcrumbs:1
 features[ctools][] = strongarm:strongarm:1
 features[ctools][] = views:views_default:3.0
