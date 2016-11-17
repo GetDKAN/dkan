@@ -92,13 +92,6 @@ class DkanDatasetImport extends MigrateCkanDatasetBase {
 
     if (isset($row->dkan_additional_fields->field_related_content[0])) {
       foreach ($row->dkan_additional_fields->field_related_content as $key => $link) {
-        // Check if the URL is relative.
-        if (!parse_url($link->url, PHP_URL_SCHEME)) {
-          // Convert relative URL into absolute URL.
-          // This is needed for passing POD validation.
-          $link->url = url($link->url, array('absolute' => TRUE));
-        }
-
         $node->field_related_content[LANGUAGE_NONE][$key] = (array) $link;
       }
     }
