@@ -1,3 +1,4 @@
+# time:2m54.08s
 @api
 # in the resource tests, when it uses "Given resources:" it defines a property called 'datastore created' with either a 'yes' or 'no', which is used in some tests -  should I try to map that when creating the resource in resourceContext? @Frank
 Feature: Resource
@@ -29,23 +30,19 @@ Feature: Resource
       | Celeste | Group 02 | member               | Active            |
     And "Tags" terms:
       | name    |
-      | Health  |
-      | Gov     |
+      | world   |
+      | results |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        |
-    And "Format" terms:
-      | name    |
-      | cvs     |
-      | xls     |
+      | Dataset 01 | Group 01  | Gabriel | Yes              | world    | Test        |
+      | Dataset 02 | Group 01  | Gabriel | Yes              | results  | Test        |
     And resources:
       | title       | publisher | format | dataset    | author   | published | description |
-      | Resource 01 | Group 01  | cvs    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 02 | Group 01  | xls    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 03 | Group 01  | xls    | Dataset 02 | Celeste  | No        | Yes         |
-      | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
-      | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
+      | Resource 01 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 02 | Group 01  | zip    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 03 | Group 01  | zip    | Dataset 02 | Celeste  | No        | Yes         |
+      | Resource 04 | Group 01  | csv    | Dataset 01 | Katie    | No        | Yes         |
+      | Resource 05 | Group 01  | zip    | Dataset 02 | Celeste  | Yes       | Yes         |
 
   @noworkflow
   Scenario: Edit any resource
@@ -63,6 +60,8 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
     When I click "Edit"
+    ## If you use selenium uncomment this
+    # When I click "Publishing options"
     And I check "Published"
     And I press "Save"
     Then I should see "Resource Resource 04 has been updated"
@@ -83,13 +82,13 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @noworkflow @javascript 
+  @noworkflow @javascript
   Scenario: Import items on datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"    
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     When I click "Manage Datastore"
     And I press "Import"
@@ -104,7 +103,7 @@ Feature: Resource
     And I am on "Resource 04" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"    
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     And I am on "Resource 04" page
     When I click "Manage Datastore"
@@ -117,14 +116,14 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @noworkflow @javascript 
+  @noworkflow @javascript
   Scenario: Drop datastore of any resource
     # Backgorund steps to add a file to a resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"    
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     And I am on "Resource 04" page
     When I click "Manage Datastore"
@@ -164,8 +163,3 @@ Feature: Resource
     And I press "Revert"
     Then I should see "Resource 02"
     And I should not see "Resource 02 edited"
-
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"

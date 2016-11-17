@@ -1,11 +1,12 @@
+# time:4m30.30s
 @api
 Feature: Resource
 
   Background:
     Given pages:
-      | name          | url         |
-      | Content       | /node/add  |
-      | User          | /user       |
+      | name          | url                |
+      | Content       | /node/add          |
+      | User          | /user              |
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
@@ -30,37 +31,44 @@ Feature: Resource
       | Katie   | Group 02 | member               | Active            |
     And "Tags" terms:
       | name    |
-      | Health  |
-      | Gov     |
+      | world   |
+      | results |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        |
-      | Dataset 03 |           | Katie   | Yes              | Health   | Test        |
-      | Dataset 04 |           | Katie   | Yes              | Gov      | Test        |
-      | Dataset 05 | Group 01  | Katie   | Yes              | Gov      | Test        |
-      | Dataset 06 | Group 02  | Katie   | Yes              | Gov      | Test        |
-    And "Format" terms:
-      | name    |
-      | cvs     |
-      | xls     |
+      | Dataset 01 | Group 01  | Gabriel | Yes              | world    | Test        |
+      | Dataset 02 | Group 01  | Gabriel | Yes              | results  | Test        |
+      | Dataset 03 |           | Katie   | Yes              | world    | Test        |
+      | Dataset 04 |           | Katie   | Yes              | results  | Test        |
+      | Dataset 05 | Group 01  | Katie   | Yes              | results  | Test        |
+      | Dataset 06 | Group 02  | Katie   | Yes              | results  | Test        |
     And resources:
       | title       | publisher | format | dataset    | author   | published | description |
-      | Resource 01 | Group 01  | cvs    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 02 | Group 01  | xls    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 03 | Group 01  | xls    | Dataset 02 | Celeste  | No        | Yes         |
-      | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
-      | Resource 05 | Group 01  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
+      | Resource 01 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 02 | Group 01  | zip    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 03 | Group 01  | zip    | Dataset 02 | Celeste  | No        | Yes         |
+      | Resource 04 | Group 01  | csv    | Dataset 01 | Katie    | No        | Yes         |
+      | Resource 05 | Group 01  | zip    | Dataset 02 | Celeste  | Yes       | Yes         |
       | Resource 06 |           | csv    |            | Katie    | Yes       | Test        |
       | Resource 07 |           | csv    | Dataset 04 | Katie    | Yes       | Test        |
       | Resource 08 | Group 01  | csv    | Dataset 05 | Katie    | Yes       | Test        |
+    And resources:
+      | title       | author   | published | description | link file |
+      | Resource 11 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv |
+      | Resource 12 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/geography.png |
+      | Resource 13 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/metadata.zip |
+      | Resource 14 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/catalog.xml |
+      | Resource 15 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/data.json |
+      | Resource 16 | Katie    | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/USA.geo.json |
+      | Resource 17 | Katie    | Yes       | Test        | https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD |
 
   @noworkflow
   Scenario: Create resource
     Given I am logged in as "Katie"
     And I am on the "Content" page
     And I click "Resource"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    ## If you use selenium uncomment this
+    # And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     When I fill in "Title" with "Resource 06"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
@@ -135,21 +143,16 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I click "Edit"
-    Then I should see "Group 01" in the "resource groups" region
 
   @noworkflow
   Scenario: Remove a resource from a dataset with group
     Given I am logged in as "Katie"
     And I am on "Resource 08" page
     When I click "Edit"
-    Then I should see "Group 01" in the "resource groups" region
-    When I select "- None -" from "Dataset"
+    And I select "- None -" from "Dataset"
     And I press "Save"
     Then I should see "Resource 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I click "Edit"
-    Then I should not see "Group 01" in the "resource groups" region
     When I am on "Dataset 05" page
     Then I should not see "Resource 08" in the "dataset resource list" region
 
@@ -163,9 +166,6 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I click "Edit"
-    Then I should see "Group 01" in the "resource groups" region
-    And I should see "Group 02" in the "resource groups" region
 
   @noworkflow
   Scenario: Remove one dataset with group from resource with multiple datasets
@@ -181,9 +181,6 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I click "Edit"
-    Then I should see "Group 01" in the "resource groups" region
-    And I should not see "Group 02" in the "resource groups" region
 
   @noworkflow
   Scenario: Remove all datasets with groups from resource
@@ -199,9 +196,7 @@ Feature: Resource
     And I select "- None -" from "Dataset"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
-    When I click "Edit"
-    Then I should not see "Group 01" in the "resource groups" region
-    And I should not see "Group 02" in the "resource groups" region
+    And I should see "Groups were updated on 1 resource(s)"
 
   @dkanBug @noworkflow
     # TODO: Managing own datastore not currently supported for authenticated users
@@ -219,7 +214,7 @@ Feature: Resource
     And I am on "Resource 05" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     And I am on "Resource 05" page
     When I click "Manage Datastore"
@@ -234,7 +229,7 @@ Feature: Resource
     And I am on "Resource 03" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -254,7 +249,7 @@ Feature: Resource
     And I am on "Resource 03" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -279,7 +274,55 @@ Feature: Resource
     When I click "Revisions"
     Then I should see "by Katie"
 
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"
+  # @todo Add test for URL w/o .csv
+  # We need to edit and save to trigger auto type discover
+  @javascript
+  Scenario: Remote CSV preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 11" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a recline preview
+
+  Scenario: Image preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 12" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a image preview
+
+  Scenario: ZIP preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 13" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a zip preview
+
+  Scenario: XML preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 14" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a xml preview
+
+  Scenario: JSON preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 15" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a json preview
+
+  Scenario: GEOJSON preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 16" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a geojson preview
+
+  @javascript
+  Scenario: Generated CSV preview
+    Given I am logged in as "Katie"
+    And I am on "Resource 17" page
+    When I click "Edit"
+    And I press "Save"
+    Then I should see a recline preview

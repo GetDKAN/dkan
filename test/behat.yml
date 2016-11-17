@@ -7,13 +7,16 @@ default:
           - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MessageContext
           - Drupal\DrupalExtension\Context\MarkupContext
+          - Drupal\DrupalExtension\Context\BatchContext
           - Drupal\DKANExtension\Context\DKANContext
           - Drupal\DKANExtension\Context\MailContext
           - Drupal\DKANExtension\Context\PageContext
           - Drupal\DKANExtension\Context\GroupContext
+          - Drupal\DKANExtension\Context\HarvestSourceContext
           - Drupal\DKANExtension\Context\WorkflowContext
           - Drupal\DKANExtension\Context\DatasetContext
           - Drupal\DKANExtension\Context\DataDashboardContext
+          - Drupal\DKANExtension\Context\PODContext
           - Drupal\DKANExtension\Context\SearchAPIContext:
               search_forms:
                 default:
@@ -22,8 +25,14 @@ default:
                   form_button: 'edit-submit'
                   results_css: '.view-dkan-datasets'
                   result_item_css: '.views-row'
+                harvest_source:
+                  results_css: '.view-dkan-harvest-source-search'
+                  result_item_css: '.views-row'
           - Drupal\DKANExtension\Context\ResourceContext
+          - Drupal\DKANExtension\Context\ServicesContext
+          - Drupal\DKANExtension\Context\PODContext
           - Drupal\DKANExtension\Context\DatastoreContext
+          - Drupal\DrupalExtension\Context\DrushContext
           - Devinci\DevinciExtension\Context\DebugContext:
               asset_dump_path: %paths.base%/assets
           - Devinci\DevinciExtension\Context\JavascriptContext:
@@ -86,7 +95,8 @@ default:
         social: '.pane-dkan-sitewide-dkan-sitewide-social'
         other access: '.pane-dkan-sitewide-dkan-sitewide-other-access'
         datasets: '.view-dkan-datasets'
-        user profile: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
+        user profile: '.pane-dkan-sitewide-panels-dkan-user-summary'
+        results: '.view-header'
         user page: '.main'
         user command center: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
         tabs: '.field-group-htabs-wrapper'
@@ -96,6 +106,8 @@ default:
         user content: '.view-user-profile-search'
         content search: '.form-item-query'
         user block: '.pane-views-user-profile-fields-block'
+        admin menu: '#admin-menu'
+        harvest datasets: '.view-dkan-harvest-datasets'
       text:
         log_out: "Log out"
         log_in: "Log in"

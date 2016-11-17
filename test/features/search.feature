@@ -1,3 +1,4 @@
+# time:0m13.96s
 @api
 # features/search.feature
 Feature: Search
@@ -8,16 +9,16 @@ Feature: Search
   Background:
     Given I am on the homepage
     And pages:
-    | name                      | url                                                |
-    | Dataset Search            | /search/type/dataset                               |
-    | Dataset Results           | /search/type/dataset?query=Dataset%2001            |
-    | Topics Search             | /search/field_topics                               |
-    | Topics Redirect           | /topics                                            |
-    | Not valid type search     | /search/type/notvalid                              |
-    | Not valid tags search     | /search/field_tags/notvalid                        |
-    | Not valid topics search   | /search/field_topic/notvalid                       |
-    | Not valid resource search | /search/field_resources%253Afield_format/notvalid  |
-    | Not valid license search  | /search/field_license/notvalid                     |
+      | name                      | url                                                |
+      | Dataset Search            | /search/type/dataset                               |
+      | Dataset Results           | /search/type/dataset?query=Dataset%2001            |
+      | Topics Search             | /search/field_topics                               |
+      | Topics Redirect           | /topics                                            |
+      | Not valid type search     | /search/type/notvalid                              |
+      | Not valid tags search     | /search/field_tags/notvalid                        |
+      | Not valid topics search   | /search/field_topic/notvalid                       |
+      | Not valid resource search | /search/field_resources%253Afield_format/notvalid  |
+      | Not valid license search  | /search/field_license/notvalid                     |
     Given users:
       | name    | mail                | roles                |
       | Badmin  | admin@example.com   | site manager         |
@@ -42,26 +43,29 @@ Feature: Search
       | Test Dataset 02 | Group 01  | Gabriel | Yes       | politics01   | dazzling    | Test 02     |
 
   Scenario: Searching datasets
+    Given I am on the "Dataset Search" page
     When I search for "Dataset 01"
     Then I should be on the "Dataset Results" page
     And I should see "Dataset 01"
 
   Scenario: See number of datasets on search page
     Given I am on the "Dataset Search" page
-    Given I search for "Test"
+    When I search for "Test"
     Then I should see "2" search results shown on the page
     And I should see "2 results"
 
   Scenario: Filter by facet tag
-    Given I search for "Test"
-    When I click "politics01"
-    Then I should not see "Dataset 01"
+    Given I am on the "Dataset Search" page
+    When I search for "Test"
+    Then I click "politics01"
+    And I should not see "Dataset 01"
     But I should see "Dataset 02"
 
   Scenario: Filter by facet group
-    Given I search for "Test"
-    When I click "Group 01"
-    Then I should not see "Dataset 01"
+    Given I am on the "Dataset Search" page
+    When I search for "Test"
+    Then I click "Group 01"
+    And I should not see "Dataset 01"
     But I should see "Dataset 02"
 
   Scenario: View Topics Search Page
