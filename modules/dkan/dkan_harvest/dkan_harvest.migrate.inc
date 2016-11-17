@@ -962,7 +962,7 @@ class HarvestMigration extends MigrateDKAN {
     // the last URL.
     // This only works for http requests (right now). So for ftp and other URLs
     // we just skip the check.
-    if (strpos(parse_url($url, PHP_URL_SCHEME), 'http') === 0) {
+    if (strpos(parse_url($url, PHP_URL_SCHEME), 'http') === 0 || strpos(parse_url($url, PHP_URL_SCHEME), 'https') === 0) {
       $ch = curl_init();
       curl_setopt ($ch, CURLOPT_URL, $url);
       // Wait only 30 seconds.
