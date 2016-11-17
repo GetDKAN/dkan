@@ -342,7 +342,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/visualization_entity.git'
-      branch: master
+      branch: 7.x-1.x
     type: module
   workbench:
     version: '1.2'
