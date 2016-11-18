@@ -40,7 +40,7 @@
         },
         {
           "@type": "dcat:Distribution",
-          "downloadURL": "http://www.ars.usda.gov/sp2UserFiles/Place/53424500/DAP/DAPflux/Kendall.zip",
+          "downloadURL": "https://dl.sciencesocieties.org/publications/datasets/jeq/C3.JEQ2013.12.0516.ds1/download",
           "mediaType": "text/csv",
           "format": "csv",
           "description": "<p>The data set contains concentration, load, and daily discharge data for Devils Icebox Cave and Hunters Cave from 1999 to 2002.</p> ",

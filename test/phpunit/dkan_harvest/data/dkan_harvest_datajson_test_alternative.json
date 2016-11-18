@@ -37,6 +37,14 @@
           "format": "csv",
           "description": "<p>This data, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire compared to the percentage of the workforce who actually retired.</p> ",
           "title": "TEST - Retirements: Eligible vs. Actual"
+        },
+        {
+          "@type": "dcat:Distribution",
+          "downloadURL": "https://dl.sciencesocieties.org/publications/datasets/jeq/C3.JEQ2013.12.0516.ds1/download",
+          "mediaType": "text/csv",
+          "format": "csv",
+          "description": "<p>The data set contains concentration, load, and daily discharge data for Devils Icebox Cave and Hunters Cave from 1999 to 2002.</p> ",
+          "title": "TEST - Redirect source"
         }
       ],
       "identifier": "95f8eac4-fd1f-4b35-8472-5c87e9425dfa",

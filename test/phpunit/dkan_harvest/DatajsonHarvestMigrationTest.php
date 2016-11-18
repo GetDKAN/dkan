@@ -106,6 +106,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
       'TEST - Workforce By Generation (2011-2015)' => 'html',
       'TEST - Retirements (2011 - 2015)' => 'html',
       'TEST - Retirements: Eligible vs. Actual' => 'html',
+      'TEST - Redirect source' => 'html',
     );
 
     $dataset_resources = $this->getDatasetResourcesFormat($dataset);
