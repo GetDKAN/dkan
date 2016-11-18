@@ -69,7 +69,7 @@ projects:
   entity_path:
     version: '1.x-dev'
     patch:
-      2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_1.diff'
+      2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff'
   entityreference:
     version: '1.1'
   entityreference_filter:
