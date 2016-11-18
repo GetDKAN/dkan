@@ -15,6 +15,8 @@
  *         A themed table of data and links for harvest source node events.
  */
 function dkan_harvest_page_event_log($node) {
+  // Set page title.
+  drupal_set_title(t('Events'));
   // Set the table header.
   $header = array(
     'mlid' => array('data' => t('Event ID'), 'field' => 'log.mlid'),
@@ -130,6 +132,8 @@ function dkan_harvest_page_event_log($node) {
  *         harvest source node events.
  */
 function dkan_harvest_page_error_log($node) {
+  // Set page title.
+  drupal_set_title(t('Errors'));
   // Set the table header.
   $collapsible_inner_header = array(
     'msgid' => array('data' => t('Message ID'), 'field' => 'msgid'),
