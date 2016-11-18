@@ -1,3 +1,17 @@
+.page-node-datasets .form-item-created-min,
+.page-node-datasets .form-item-created-max,
+.page-node-datasets .form-item-changed-min,
+.page-node-datasets .form-item-changed-max {
+    display: inline-block;
+}
+
+.page-node-datasets .form-item-created-min input,
+.page-node-datasets .form-item-created-max input,
+.page-node-datasets .form-item-changed-min input,
+.page-node-datasets .form-item-changed-max input {
+    width: 100px;
+}
+
 .pane-dkan-harvest-harvest-source-summary .summary-details {
   border-color: #ddd;
   border-width: 0 1px 1px 1px;
