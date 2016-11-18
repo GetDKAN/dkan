@@ -1,7 +1,6 @@
 name = Dkan Harvest Data Json
 description = Provide Data Json endpoints support for Dkan Harvest.
 package = DKAN Harvest
-project = dkan_harvest
 core = 7.x
 
 dependencies[] = dkan_harvest
