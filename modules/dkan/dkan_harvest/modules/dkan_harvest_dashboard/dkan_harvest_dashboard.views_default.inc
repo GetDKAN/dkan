@@ -988,7 +988,7 @@ Off|Non-orphans only',
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['field'] = 'field_harvest_source_ref_target_id';
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['default_action'] = 'not found';
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['title_enable'] = TRUE;
-  $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['title'] = '%1: Manage Harvested Datasets';
+  $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['title'] = 'Manage Harvested Datasets';
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['default_argument_type'] = 'fixed';
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['summary']['format'] = 'default_summary';
