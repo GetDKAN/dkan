@@ -17,7 +17,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/209eb668750297e885cbf772aaf12b87eb3beb2e",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/d9cac87edd73c71c61c185244c44a02ab174c0b8",
                 "reference": "d9cac87edd73c71c61c185244c44a02ab174c0b8",
                 "shasum": ""
             },
@@ -1007,12 +1007,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "777969b8959e46c7d91517660973d4f9a1562cc5"
+                "reference": "d9303281bde4537c6a9fe15ffae4b23fb36b4ace"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/777969b8959e46c7d91517660973d4f9a1562cc5",
-                "reference": "777969b8959e46c7d91517660973d4f9a1562cc5",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/d9303281bde4537c6a9fe15ffae4b23fb36b4ace",
+                "reference": "d9303281bde4537c6a9fe15ffae4b23fb36b4ace",
                 "shasum": ""
             },
             "require": {
@@ -1040,7 +1040,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-10-11 15:31:18"
+            "time": "2016-11-18 14:45:19"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -1909,7 +1909,6 @@
             "version": "1.1.1",
             "source": {
                 "type": "git",
-<<<<<<< HEAD
                 "url": "https://github.com/sebastianbergmann/global-state.git",
                 "reference": "bc37d50fea7d017d3d340f230811c9f1d7280af4"
             },
@@ -1917,15 +1916,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/bc37d50fea7d017d3d340f230811c9f1d7280af4",
                 "reference": "bc37d50fea7d017d3d340f230811c9f1d7280af4",
-=======
-                "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "ddbe97a414053462aaa3db598a702f5d14b724a2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/ddbe97a414053462aaa3db598a702f5d14b724a2",
-                "reference": "ddbe97a414053462aaa3db598a702f5d14b724a2",
->>>>>>> 7c16e29000175d073afed53ea90d159631dcb908
                 "shasum": ""
             },
             "require": {
@@ -1963,11 +1953,7 @@
             "keywords": [
                 "global state"
             ],
-<<<<<<< HEAD
             "time": "2015-10-12 03:26:01"
-=======
-            "time": "2016-11-11 21:05:54"
->>>>>>> 7c16e29000175d073afed53ea90d159631dcb908
         },
         {
             "name": "sebastian/recursion-context",
