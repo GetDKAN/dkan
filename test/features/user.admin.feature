@@ -42,7 +42,7 @@ Feature: User
       | Dataset 03 | Group 01  | Gabriel | Yes              | results  | Test        |
       | Dataset 04 | Group 01  | Katie   | Yes              | world    | Test        |
 
-
+   @javascript
   Scenario: Edit any user account
     Given I am logged in as "John"
     And I am on "Users" page
@@ -115,7 +115,7 @@ Feature: User
     When I am on "Users" page
     Then I should see "site manager" in the "Jaz" row
 
-Scenario: Modify user as editor
+  Scenario: Modify user as editor
     Given I am logged in as "Jaz"
     And I am on "Users" page
     Then I should see "Access denied"

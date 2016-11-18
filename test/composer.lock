@@ -1909,6 +1909,7 @@
             "version": "1.1.1",
             "source": {
                 "type": "git",
+<<<<<<< HEAD
                 "url": "https://github.com/sebastianbergmann/global-state.git",
                 "reference": "bc37d50fea7d017d3d340f230811c9f1d7280af4"
             },
@@ -1916,6 +1917,15 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/bc37d50fea7d017d3d340f230811c9f1d7280af4",
                 "reference": "bc37d50fea7d017d3d340f230811c9f1d7280af4",
+=======
+                "url": "https://github.com/NuCivic/dkanextension.git",
+                "reference": "ddbe97a414053462aaa3db598a702f5d14b724a2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/ddbe97a414053462aaa3db598a702f5d14b724a2",
+                "reference": "ddbe97a414053462aaa3db598a702f5d14b724a2",
+>>>>>>> 7c16e29000175d073afed53ea90d159631dcb908
                 "shasum": ""
             },
             "require": {
@@ -1953,7 +1963,11 @@
             "keywords": [
                 "global state"
             ],
+<<<<<<< HEAD
             "time": "2015-10-12 03:26:01"
+=======
+            "time": "2016-11-11 21:05:54"
+>>>>>>> 7c16e29000175d073afed53ea90d159631dcb908
         },
         {
             "name": "sebastian/recursion-context",
