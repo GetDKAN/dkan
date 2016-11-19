@@ -70,11 +70,12 @@ function theme_dkan_harvest_source_summary(&$vars) {
           'id' => 'harvest_source_summary_uri',
           'class' => array('form-control'),
           'value' => $wrapper->field_dkan_harvest_source_uri->value(),
+          'disabled' => TRUE,
         ),
         '#autocomplete_path' => FALSE,
       ),
     ));
-    $output .= '<div class="form-group">' . t('<label>Source</label> @source', array('@source => $source_filed')) . '</div>';
+    $output .= '<div class="form-group">' . t('<label>Source</label>') . $source_field . '</div>';
     $output .= '<div>' . t('<strong>Datasets</strong> @count', array('@count' => $count)) . '</div>';
     if (!empty($filters) || !empty($excludes) || !empty($overrides) || !empty($defaults)) {
       $output .= '<div class="summary-details">';
