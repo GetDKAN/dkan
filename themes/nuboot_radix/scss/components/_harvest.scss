@@ -1,6 +1,5 @@
-.page-node-datasets {
-  div[class^=form-item-created],
-  div[class^=form-item-changed] {
+#views-exposed-form-dkan-harvest-datasets-harvest-datasets-source-page {
+  .form-group {
     display: inline-block;
     input {
       width: 100px;
@@ -37,4 +36,13 @@ div.datasets-count-preview span {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;  
+}
+
+@media all and (min-width:768px) {
+  #harvest-source-node-form {
+    .double-field-elements input.form-text {
+      width: 50%;
+      display: inline-block;
+    }
+  }
 }

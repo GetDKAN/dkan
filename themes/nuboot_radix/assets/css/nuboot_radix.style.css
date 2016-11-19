@@ -9249,11 +9249,9 @@ div.horizontal-tabs {
 #dkan-dataset-form-settings .help-block {
   margin: 5px 20px 10px; }
 
-.page-node-datasets div[class^=form-item-created],
-.page-node-datasets div[class^=form-item-changed] {
+#views-exposed-form-dkan-harvest-datasets-harvest-datasets-source-page .form-group {
   display: inline-block; }
-  .page-node-datasets div[class^=form-item-created] input,
-  .page-node-datasets div[class^=form-item-changed] input {
+  #views-exposed-form-dkan-harvest-datasets-harvest-datasets-source-page .form-group input {
     width: 100px; }
 
 .pane-dkan-harvest-harvest-source-summary .summary-details {
@@ -9279,6 +9277,11 @@ div.datasets-count-preview span {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap; }
+
+@media all and (min-width: 768px) {
+  #harvest-source-node-form .double-field-elements input.form-text {
+    width: 50%;
+    display: inline-block; } }
 
 #modalContent .modal-header {
   background: #0A77BD; }
