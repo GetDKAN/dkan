@@ -1,0 +1,40 @@
+.page-node-datasets {
+  div[class^=form-item-created],
+  div[class^=form-item-changed] {
+    display: inline-block;
+    input {
+      width: 100px;
+    }
+  }
+}
+
+.pane-dkan-harvest-harvest-source-summary {
+  .summary-details {
+    border-color: $border;
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
+    margin-top: 15px;
+    div {
+      padding: 4px 5px;
+    }
+  }
+  
+  h6 {
+    background: #eee;
+    color: #222;
+    padding: 3px 5px;
+    margin: 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+}
+
+div.datasets-count-preview span {
+  font-weight: bold;
+}
+
+#harvest_source_summary_uri {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;  
+}
