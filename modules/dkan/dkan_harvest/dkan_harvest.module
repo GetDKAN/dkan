@@ -23,16 +23,6 @@ define('DKAN_HARVEST_UNPUBLISH_CONTENT', 1);
 define('DKAN_HARVEST_ORPHAN_CONTENT', 2);
 
 /**
- * Implements hook_preprocess_page().
- */
-function dkan_harvest_preprocess_page(&$vars) {
-  $path = drupal_get_path('module', 'dkan_harvest');
-  if (isset($vars['node']) && $vars['node']->type == 'harvest_source') {
-    drupal_add_js($path . '/js/harvest_source_summary.js');
-  }
-}
-
-/**
  * Implements hook_theme().
  */
 function dkan_harvest_theme() {
