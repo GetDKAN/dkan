@@ -103,6 +103,9 @@ projects:
       url: 'http://git.drupal.org/project/feeds_field_fetcher.git'
       branch: 7.x-1.x
       revision: 6725b86
+    patch:
+      2315425: 'http://www.drupal.org/files/issues/feeds_field_fetcher-typo-error-2315425-1.patch'
+      2829416: 'http://www.drupal.org/files/issues/feeds_field_fetcher_error-validation-config.patch'
   feeds_flatstore_processor:
     download:
       type: git
