@@ -1007,12 +1007,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "d9303281bde4537c6a9fe15ffae4b23fb36b4ace"
+                "reference": "7338b1c84eda16e995e97e5173664b757742c85c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/d9303281bde4537c6a9fe15ffae4b23fb36b4ace",
-                "reference": "d9303281bde4537c6a9fe15ffae4b23fb36b4ace",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/7338b1c84eda16e995e97e5173664b757742c85c",
+                "reference": "7338b1c84eda16e995e97e5173664b757742c85c",
                 "shasum": ""
             },
             "require": {
@@ -1040,7 +1040,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-11-18 14:45:19"
+            "time": "2016-11-21 18:13:47"
         },
         {
             "name": "phpdocumentor/reflection-common",

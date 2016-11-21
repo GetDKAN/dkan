@@ -7,12 +7,12 @@ Feature: Project Open Data + Open Data Federal Extras
   @api @noworkflow
   Scenario: Data.json should be valid
     Given I am on the homepage
-    Then I should see a valid data.json
+    Then I "should" see a valid data.json
 
   @api @noworkflow @add_ODFE @remove_ODFE
-  Scenario: Data.json should remain valid when ODFE is enabled
+  Scenario: Data.json validation should fail if ODFE enabled
     Given I am on the homepage
-    Then I should see a valid data.json
+    Then I "should not" see a valid data.json
 
   @api @noworkflow @add_ODFE @remove_ODFE
   Scenario: See Federal Extras fields on the Dataset form
