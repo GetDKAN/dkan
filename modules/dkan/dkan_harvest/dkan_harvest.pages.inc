@@ -228,11 +228,6 @@ function dkan_harvest_page_error_log($node) {
         ));
 
       $build['collapsible_row_' . $collapsible_item_mlid] = array(
-        '#attached' => array(
-          'css' => array(
-            drupal_get_path('module', 'dkan_harvest') . '/css/dkan_harvest_pages_error_log_collapsible.css',
-          ),
-        ),
         '#theme' => 'ctools_collapsible',
         '#attributes' => array(
           'class' => array(
