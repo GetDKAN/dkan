@@ -18,6 +18,7 @@ Feature: Widgets
       | title          | publisher | format | author | published | dataset                        | description |
       | District Names | Group 01  | csv 2  | admin  | Yes       | 11111AAAAAAafghanistan Election Districts |             |
     And I am logged in as a user with the "site manager" role
+    And I am on the homepage
     And I wait for "Customize this page"
     When I click "Customize this page"
     And I wait for "Add new pane"
