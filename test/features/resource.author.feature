@@ -68,8 +68,7 @@ Feature: Resource
     And I click "Resource"
     ## If you use selenium uncomment this
     # And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
-    When I fill in "Title" with "Resource 06"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"    When I fill in "Title" with "Resource 06"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
 

@@ -82,7 +82,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @noworkflow @javascript
+  @noworkflow @javascript 
   Scenario: Import items on datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -116,7 +116,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @noworkflow @javascript
+  @noworkflow @javascript 
   Scenario: Drop datastore of any resource
     # Backgorund steps to add a file to a resource
     Given I am logged in as "John"

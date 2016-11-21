@@ -135,6 +135,11 @@ Feature: Dataset Features
     When I am on "Group 01" page
     Then I should see "Dataset 03" in the "content" region
 
+  # https://github.com/Behat/Behat/issues/834
+  @dummy
+  Scenario: Dummy test
+    Given I am on "/"
+
   @noworkflow @javascript
   Scenario: Add a resource with no dataset to a dataset with no resource
     Given I am logged in as "Katie"

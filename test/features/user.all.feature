@@ -52,7 +52,7 @@ Feature: User
     When I follow "Log out"
     Then I should see "Log in"
 
-  @javascript @deleteTempUsers @customizable
+  @deleteTempUsers @customizable @javascript
   Scenario: Register
     Given I am on the homepage
     When I follow "Register"
