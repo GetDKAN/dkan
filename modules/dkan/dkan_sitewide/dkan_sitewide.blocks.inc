@@ -98,7 +98,7 @@ function dkan_sitewide_block_view($delta = '') {
 
     case 'dkan_search_front':
       $block['subject'] = t('Search Your Data');
-      $block['content'] = dkan_search_front_block();
+      $block['content'] = dkan_sitewide_search_front_block();
       break;
 
   }
@@ -358,7 +358,7 @@ function dkan_sitewide_other_access() {
 /**
  * Creates search block for front page.
  */
-function dkan_search_front_block() {
+function dkan_sitewide_search_front_block() {
   return dkan_sitewide_search_bar();
 }
 
