@@ -35,6 +35,7 @@
  - Update open data schema module to render a valid output passing validation (dcat and rdf).
  - Added upgrade hook to clean DB after removal of 'conditional_fields', 'entity_rdf', 'rdfui' and 'rdfx'.
  - Added upgrade hook to remove deprecated test and theme directories.
+ - Fixed link to group page on group node teaser when site has clean urls disabled
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
