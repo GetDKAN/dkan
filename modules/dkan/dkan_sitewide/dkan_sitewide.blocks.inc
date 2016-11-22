@@ -186,6 +186,10 @@ function dkan_sitewide_license_block() {
         }
         return $output;
       }
+      elseif ($key) {
+        //Special case when you select other value.
+        return $key;
+      }
     }
     return t('License not specified');
   }
