@@ -285,3 +285,7 @@ li.active .link-badge {
   background-color: #fff;
   color: @top;
 }
+
+.ctools-collapsible-container .ctools-collapsible-handle {
+  background-color: @top;
+}
