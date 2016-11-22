@@ -261,6 +261,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   public function testHarvestSourceAlternative() {
     // Get the current values.
     $migrationOld = dkan_harvest_get_migration(self::getOriginalTestSource());
+    $this->resetMessageTableFromMigration($migrationOld);
     $migrationOldMap = $this->getMapTableFromMigration($migrationOld);
     $migrationOldLog = $this->getLogTableFromMigration($migrationOld);
     $migrationOldMessage = $this->getMessageTableFromMigration($migrationOld);
@@ -279,6 +280,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     dkan_harvest_migrate_sources(array(self::getAlternativeTestSource()));
 
     $migrationAlternative = dkan_harvest_get_migration(self::getAlternativeTestSource());
+    $this->resetMessageTableFromMigration($migrationAlternative);
     $migrationAlternativeMap = $this->getMapTableFromMigration($migrationAlternative);
     $migrationAlternativeLog = $this->getLogTableFromMigration($migrationAlternative);
     $migrationAlternativeMessage = $this->getMessageTableFromMigration($migrationAlternative);
@@ -869,6 +871,19 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
       ->execute();
 
     return $result->fetchAllAssoc('msgid');
+  }
+
+  /**
+   * Helper method to reset a harvest migration map table from the harvest
+   * migration.
+   *
+   * @param HarvestMigration $migration
+   *
+   * @return Bool status after reset message.
+   */
+  private function resetMessageTableFromMigration(HarvestMigration $migration) {
+    $map = $migration->getMap();
+    return db_truncate($map->getMessageTable())->execute();
   }
 
   /**
