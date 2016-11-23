@@ -47,7 +47,7 @@ projects:
   context:
     version: '3.6'
   ctools:
-    version: '1.10'
+    version: '1.11'
   data:
     version: '1.x'
   date:
@@ -69,7 +69,7 @@ projects:
   entity_path:
     version: '1.x-dev'
     patch:
-      2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_1.diff'
+      2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff'
   entityreference:
     version: '1.1'
   entityreference_filter:
@@ -143,6 +143,7 @@ projects:
       1: patches/fontyourface-no-ajax-browse-view.patch
       2: patches/fontyourface-clear-css-cache.patch
       2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
+      2816837: 'https://www.drupal.org/files/issues/font_your_face-remove_div_general_text_option-D7.patch'
   globalredirect:
     version: '1.5'
   gravatar:
@@ -188,6 +189,8 @@ projects:
       2287233: 'https://www.drupal.org/files/issues/link_iframe_formatter-coding-standards.patch'
   manualcrop:
     version: '1.5'
+    patch:
+      2504119: 'https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch'
   markdown:
     version: '1.4'
   markdowneditor:
@@ -397,11 +400,9 @@ libraries:
     directory_name: bgrins-spectrum
   spyc:
     download:
-      type: get
-      url: 'https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php'
-    filename: ../spyc.php
-    directory_name: lib
-    destination: modules/contrib/services/servers/rest_server
+      type: file
+      url: 'https://raw.github.com/mustangostang/spyc/master/Spyc.php'
+    directory_name: spyc
 defaults:
   projects:
     subdir: contrib

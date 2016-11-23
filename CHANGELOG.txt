@@ -37,6 +37,7 @@
  - Added upgrade hook to remove deprecated test and theme directories.
  - Fixed popular tags view.
  - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
+ - Update ctools to 1.11
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
@@ -79,13 +80,16 @@ DKAN Dataset:
  - Fixed text on 'Download All' button to not display HTML.
 
 
-7.x-1.12.11
+7.x-1.12.11 2016-10-20
 --------------------------
+- Fixed a bug in Recline regarding file objects and node forms that caused errors when using the "view changes" button on Dataset or Resource edit form
 - Center group images in "Groups" page and group node page sidebar
 - Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
 - Update the default jquery library setting from 1.7 to 1.10
 - Fix topics menu and facet links if special characters are used in topic terms.
 - Fix form redirect issues on dataset form validation
+- Patch fontyourface to remove <div> from the "standard text" selector, to prevent unpredictable results from this option
+- Fixed issue in open_data_schema_map with "Data Dictionary" field not displaying URL in data.json file
 
 
 7.x-1.12.10 2016-09-07
