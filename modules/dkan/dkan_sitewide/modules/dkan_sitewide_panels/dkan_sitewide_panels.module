@@ -22,11 +22,10 @@ function dkan_sitewide_panels_preprocess_panels_style_collapsible(&$variables) {
     // Find out if the pane matches a facet in the query string; un-collapse if so
     $pane = $variables['pane'];
     if (substr($pane->type, 0, 8)) {
-      foreach (array_keys($adapter->getAllActiveItems()) as $param) {
-        // We match the non digits parts of the param name. Using the first part
-        // will break Composite fields link field_resources:field_format
-        // filters.
-        $param_name = preg_replace("/:\d+/", "", $param);
+      foreach ($adapter->getAllActiveItems() as $param_key => $param_value) {
+        // Use the field alias as the param_name.
+        $param_name = $param_value['field alias'];
+
         // The pane subtype will be something like "facetapi-wsVI1ENUXwf4Rz08n9fg2WvfQ0Gs5h2a"
         $facet_hash = substr($pane->subtype, 9);
         $facet_delta_map = facetapi_get_delta_map();
@@ -38,8 +37,11 @@ function dkan_sitewide_panels_preprocess_panels_style_collapsible(&$variables) {
           // that.
           $facet_name = rawurldecode($facet_name);
 
+          // Un-collapse the facet if it is part of the request.
           if ($facet_name == $param_name) {
             $variables['collapsed'] = 0;
+            // We have a match! no need to continue.
+            break;
           }
         }
       }
