@@ -24,27 +24,37 @@ class GetRemoteFileInfo {
     $info = array();
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_USERAGENT, $agent);
     curl_setopt($ch, CURLOPT_URL, $url);
+    // Spoof the User Agent
+    curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+    // Wait only 5 seconds.
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
     curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+
     curl_setopt($ch, CURLOPT_FRESH_CONNECT, TRUE);
     curl_setopt($ch, CURLOPT_FILETIME, TRUE);
+
+    // This changes the request method to HEAD. No need to "GET" the hole link.
     curl_setopt($ch, CURLOPT_NOBODY, TRUE);
     curl_setopt($ch, CURLOPT_HEADER, TRUE);
 
+    // Cookies
     curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
     curl_setopt($ch, CURLOPT_COOKIE, "");
+
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $followRedirect);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+
     $http_heading = curl_exec($ch);
     if (!$http_heading) {
       return NULL;
     }
     $info['header'] = $this->httpParseHeaders($http_heading);
     $info['info'] = curl_getinfo($ch);
+    $info['effective_url'] = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
     curl_close($ch);
+
     // If the server didn't support HTTP HEAD, use the shim.
     if ((!empty($info['header']['X-Error-Message']) && trim($info['header']['X-Error-Message']) == 'HEAD is not supported')
         || empty($info['header']['Content-Type'])) {
@@ -77,6 +87,7 @@ class GetRemoteFileInfo {
     $http_heading = file_get_contents($header_dir);
     unset($header_dir);
     $info['info'] = curl_getinfo($ch);
+    $info['effective_url'] = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
     curl_close($ch);
     $info['header'] = $this->httpParseHeaders($http_heading);
     return $info;
@@ -108,6 +119,36 @@ class GetRemoteFileInfo {
     else {
       return NULL;
     }
+  }
+
+  /**
+   * Return a canonical file extension from the file type.
+   */
+  public function getExtension() {
+    if (!is_null($this->getType())) {
+      include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+      $mimetype_mappings = file_mimetype_mapping();
+      $mimetypes = $mimetype_mappings['mimetypes'];
+      $extension_key = array_search($this->getType(), $mimetypes);
+      if ($extension_key !== FALSE) {
+        $extensions = $mimetype_mappings['extensions'];
+        return array_search($extension_key, $extensions);
+      }
+    }
+
+    // Nothing to return.
+    return NULL;
+  }
+
+  /**
+   * Return effective_url (last URL after redirects).
+   */
+  public function getEffectiveURL() {
+    $info = $this->getInfo();
+    if(!empty($info)) {
+      return $info['effective_url'];
+    }
+    return FALSE;
   }
 
   /**

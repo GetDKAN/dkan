@@ -10,7 +10,10 @@ include_once __DIR__ . '/includes/HarvestSourceDataJsonStub.php';
  */
 class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
-  // Keep track of nodes created during a test run that are not handled by migrations.
+  /**
+   * Keep track of nodes created during a test run that are not handled by
+   * migrations.
+   */
   private $created_nodes = array();
 
   /**
@@ -90,7 +93,6 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
       'TEST - Workforce By Generation (2011-2015)' => 'http://demo.getdkan.com/sites/default/files/GenChart_0_0.csv',
       'TEST - Retirements (2011 - 2015)' => 'http://demo.getdkan.com/sites/default/files/retirements_0.csv',
       'TEST - Retirements: Eligible vs. Actual' => 'http://demo.getdkan.com/sites/default/files/2015EligibleVsActual.csv',
-      'TEST - Redirect source' => 'https://dl.sciencesocieties.org/publications/datasets/jeq/C3.JEQ2013.12.0516.ds1/download',
     );
 
     $dataset_resources = $this->getDatasetResources($dataset);
@@ -106,7 +108,6 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
       'TEST - Workforce By Generation (2011-2015)' => 'html',
       'TEST - Retirements (2011 - 2015)' => 'html',
       'TEST - Retirements: Eligible vs. Actual' => 'html',
-      'TEST - Redirect source' => 'html',
     );
 
     $dataset_resources = $this->getDatasetResourcesFormat($dataset);
@@ -435,7 +436,6 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
       $errors_level[] = $message->level;
     }
     $this->assertContains(Migration::MESSAGE_ERROR, $errors_level);
-
   }
 
   /**
@@ -663,8 +663,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $dataset_node = entity_load_single('node', array_pop($dataset_nids));
     $dataset = entity_metadata_wrapper('node', $dataset_node);
 
-    // Groups should've changed. Append the dataset groups in the list of content
-    // that was created and need to be deleted after test is completed.
+    // Groups should've changed. Append the dataset groups in the list of
+    // content that was created and need to be deleted after test is completed.
     $this->created_nodes = array_merge($this->created_nodes, array_keys($dataset_groups));
 
     // Check that the dataset got the groups updated.
@@ -683,9 +683,36 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   *
+   */
+   public function testResourceRedirect() {
+    // Clean the harvest migration data from the source.
+    dkan_harvest_rollback_sources(array(self::getOriginalTestSource()));
+    dkan_harvest_deregister_sources(array(self::getOriginalTestSource()));
+
+    dkan_harvest_cache_sources(array(self::getResourceWithRedirects()));
+    dkan_harvest_migrate_sources(array(self::getResourceWithRedirects()));
+
+    // Get updated dataset.
+    $dataset_nids = $this->getTestDatasetNid(self::getGroupUpdatedTestSource());
+    $dataset_node = entity_load_single('node', array_pop($dataset_nids));
+
+    // One resource should exists.
+    $this->assertEquals(count($dataset->field_resources[LANGUAGE_NONE]), 1);
+
+    // Load the resource.
+    $resource = array_pop($dataset->field_resources[LANGUAGE_NONE]);
+    $resource_emw = entity_metadata_wrapper('node', $resource['target_id']);
+
+    $this->assertNotNull($resource_emw->field_link_remote_file);
+   }
+
+  /**
    * https://jira.govdelivery.com/browse/CIVIC-4498
    *
    * Make sure harvest error from the base HarvestMigration class are logged.
+   * This probably should always be the last test in the test suite since it
+   * drops some taxonomies which will make following tests fail.
    */
   public function testHarvestError() {
 
@@ -816,6 +843,13 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test Harvest Source.
+   */
+  public static function getResourceWithRedirects() {
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_redirects.json');
+  }
+
+  /**
    *
    */
   private function getTestDatasetNid($source) {
@@ -909,9 +943,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
     foreach ($dataset->field_resources->getIterator() as $delta => $resource) {
       $remote_file = $resource->field_link_remote_file->value();
-      $remote_api = $resource->field_link_api->value();
-      $file = empty($remote_file['uri']) ? $remote_api['url'] : $remote_file['uri'];
-      $resources[$resource->title->value()] = $file;
+      $resources[$resource->title->value()] = $remote_file['uri'];
     }
 
     return $resources;

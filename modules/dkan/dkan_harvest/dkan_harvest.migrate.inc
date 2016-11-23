@@ -5,6 +5,9 @@
  * Base Harvest Migration classes.
  */
 
+use dkanDataset\getRemoteFileInfo;
+include_once drupal_get_path('module', 'dkan_dataset') . '/includes/getRemoteFileInfo.php';
+
 // This used to exits in file.inc but was removed on Drupal 7 without a
 // replacement.
 define('FILE_STATUS_TEMPORARY', 0);
@@ -950,58 +953,19 @@ class HarvestMigration extends MigrateDKAN {
    */
   public static function prepareResourceHelper($url, $format = NULL, $title = NULL, $created = NULL, $description = NULL) {
     $resource = new stdClass();
-    $filesize = 0;
 
     // Validate the url.
     if (!filter_var($url, FILTER_VALIDATE_URL)) {
-      $message = t('Resource remote url "@url" not valid.',
-        array('@url' => $url,));
+      $message = t('Resource remote url (@url) not valid!',
+        array(
+          '@url' => $url,
+        ));
       self::displayMessage($message, 'error');
       return FALSE;
     }
-
-    // remote_stream_wrapper does not play nice with files link behind
-    // redirects. Try to get the bottom of the redircet chain if any and use
-    // the last URL.
-    // This only works for http requests (right now). So for ftp and other URLs
-    // we just skip the check.
-    if (strpos(parse_url($url, PHP_URL_SCHEME), 'http') === 0 || strpos(parse_url($url, PHP_URL_SCHEME), 'https') === 0) {
-      $ch = curl_init();
-      curl_setopt ($ch, CURLOPT_URL, $url);
-      // Wait only 30 seconds.
-      curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 30);
-      curl_setopt($ch, CURLOPT_HEADER, TRUE);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-      // TODO
-      curl_setopt($ch, CURLOPT_COOKIEFILE, "");
-      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-      // This changes the request method to HEAD. No need to "GET" the hole link.
-      curl_setopt($ch, CURLOPT_NOBODY, true);
-      // Spoof the User Agent
-      curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1');
-
-      if (!curl_exec($ch)) {
-        // Validation check failed. Log and return.
-        $message = t('Resource remote url "@url" connection failed or timedout.',
-          array('@url' => $url,));
-        self::displayMessage($message, 'error');
-        return FALSE;
-      }
-
-      // Get the effective URL.
-      $url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-
-      //Fix a problem with size. If we can't get size
-      // Then says is a api.
-      $filesize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
-
-      curl_close($ch);
+    else {
+      $resource->url = $url;
     }
-
-    $resource = new stdClass();
-
-    // This URL is valid and ready to be processed.
-    $resource->url = $url;
 
     // Detect the url type. If file set field_link_remote_file. If not set
     // field_link_api.
@@ -1016,72 +980,49 @@ class HarvestMigration extends MigrateDKAN {
     $resource->url_type = 'api';
     $format_detected = 'html';
 
-    // Try to get the file extension.
-    $path = parse_url($url, PHP_URL_PATH);
-    $filename = str_replace(array('%20', '_'), array(' ', ' '), pathinfo($path, PATHINFO_FILENAME));
-    $extension = pathinfo($path, PATHINFO_EXTENSION);
-    $extension = strtolower($extension);
+    // Logic to determin if the URL is switable for field_link_remote_file
+    // field (ie without redirects) and get a canonical format This only works
+    // for http requests (right now). So for ftp and other URLs we just skip.
+    if (preg_match("@^https?@i", parse_url($url, PHP_URL_SCHEME))) {
 
-    $html_extensions = array('html', 'shtml', 'htm', 'rhtml', 'phtml', 'pht',
-      'php', 'phps', 'php3', 'php3p', 'php4',
-    );
 
-    include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
-    $mimetype_mappings = file_default_mimetype_mapping();
+      $fake_agent ='Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1';
+      // remote_stream_wrapper does not play nice with files link behind
+      // redirects. Try to get the bottom of the redircet chain if any and use
+      // the last URL.
+      $followRedirect = TRUE;
+      $remoteFileInfo = new GetRemoteFileInfo($resource->url, $fake_agent, $followRedirect, '/tmp');
 
-    // Make sure the extention is not for html page.
-    // TODO improve the $html_extensions list?
-    if (!empty($extension)
-      && !in_array($extension, $html_extensions)
-      && array_key_exists($extension, $mimetype_mappings['extensions'])
-      && $filesize != -1) {
-      // This url have an extension. Consider it a file and default the
-      // format_detected to it!
-      $resource->url_type = 'file';
-      $format_detected = $extension;
-    }
-    else {
-      // Cannot get an extension from the url. Check the Headers with curl.
-      $ch = curl_init($resource->url);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      curl_exec($ch);
-      $req_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-      $mime = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-      curl_close($ch);
+      $html_extensions = array('html', 'shtml', 'htm', 'rhtml', 'phtml', 'pht',
+        'php', 'phps', 'php3', 'php3p', 'php4',
+      );
+      // The parsed remote file should be valid and should not look like a web
+      // page.
+      if (!is_null($remoteFileInfo->getType())
+        && !in_array($remoteFileInfo->getExtension(), $html_extensions)) {
 
-      if ($req_code == 200) {
-        $mime = substr($mime, 0, strpos($mime, ";"));
-        // Check if the content-type header return a valide mime type that is
-        // not in the $html_extensions array (ie. not a web page). If so
-        // acknowledge the url as a file and save the detected extension.
-        $type = recline_get_data_type($mime);
-        if ($type && !in_array($type, $html_extensions) && $filesize != -1) {
-          $resource->url_type = 'file';
-          $format_detected = $type;
+        // Check if this file extension is allowed for field_link_remote_file.
+        $link_field = field_info_instance('node', 'field_link_remote_file', 'resource');
+        // Reduce everything to lowercase to support files with uppercase
+        // extensions.
+        $file_extensions = array_map('strtolower', explode(' ', $link_field['settings']['file_extensions']));
+        // Reject if the extension is not allowed.
+        if (!in_array($remoteFileInfo->getExtension(), $file_extensions)) {
+          $message = t('Resource remote url (@url) extension (@extension) not allowed',
+            array(
+              '@url' => $resource->url,
+              '@extension' => $remoteFileInfo->getExtension(),
+            ));
+          self::displayMessage($message, 'error');
+          return FALSE;
         }
-        elseif ($type && $filesize == -1) {
-        //Special case. If is a redirect url to a file we need
-          $format_detected = $type;
-        }
-      }
-    }
 
-    // If the file.
-    if ($resource->url_type == 'file') {
-      // Check if this file extension is allowed for field_link_remote_file.
-      // Reduce everything to lowercase to support files with uppercase
-      // extensions.
-      $link_field = field_info_instance('node', 'field_link_remote_file', 'resource');
-      $file_extensions = array_map('strtolower', explode(' ', $link_field['settings']['file_extensions']));
-      // Reject if the extension is not allowed.
-      if (!in_array($extension, $file_extensions)) {
-        $message = t('Resource remote url (@url) extension (@extension) not allowed',
-          array(
-            '@url' => $url,
-            '@extension' => $extension,
-          ));
-        self::displayMessage($message, 'error');
-        return FALSE;
+        // Finally this URL is determined to be field_link_remote_file
+        // material.
+        // Make sure to use the effective URL,
+        $resource->url = $remoteFileInfo->getEffectiveURL();
+        $resource->url_type = 'file';
+        $format_detected = $remoteFileInfo->getExtension();
       }
     }
 
