@@ -155,7 +155,7 @@ function dkan_harvest_menu() {
   $items = array();
 
   $items['node/%node/harvest-events'] = array(
-    'title' => t('Events'),
+    'title' => 'Events',
     'page callback' => 'dkan_harvest_page_event_log',
     'page arguments' => array(1),
     'access callback' => 'dkan_harvest_page_tab_access',
@@ -166,7 +166,7 @@ function dkan_harvest_menu() {
   );
 
   $items['node/%node/harvest-errors'] = array(
-    'title' => t('Errors'),
+    'title' => 'Errors',
     'page callback' => 'dkan_harvest_page_error_log',
     'page arguments' => array(1),
     'access callback' => 'dkan_harvest_page_tab_access',
@@ -177,7 +177,7 @@ function dkan_harvest_menu() {
   );
 
   $items['node/%node/harvest-preview'] = array(
-    'title' => t('Preview'),
+    'title' => 'Preview',
     'page callback' => 'dkan_harvest_page_preview',
     'page arguments' => array(1),
     'access callback' => 'dkan_harvest_page_tab_access',

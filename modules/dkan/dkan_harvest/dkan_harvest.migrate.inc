@@ -36,7 +36,6 @@ class HarvestMigration extends MigrateDKAN {
 
   protected $sourceListOptions;
 
-  // MigrateMap init arguments.
   protected $dkanHarvestMigrateSQLMapSourceKey;
   protected $dkanHarvestMigrateSQLMapDestinationKey;
   protected $dkanHarvestMigrateSQLMapConnectionKey;
@@ -432,7 +431,8 @@ class HarvestMigration extends MigrateDKAN {
         if (isset($metadata_source_old_emw)) {
           entity_delete('node', $metadata_source_old_emw->nid);
         }
-      } catch (EntityMetadataWrapperException $emwException) {
+      }
+      catch (EntityMetadataWrapperException $emwException) {
         // Cannot get to the old datasets although the migration states it
         // exists. This should never happen but lets log this to help the next
         // developer debug this problem.
@@ -442,7 +442,7 @@ class HarvestMigration extends MigrateDKAN {
             '@exception_message' => $emwException->getMessage(),
           ));
         $this->saveMessage($message);
-        }
+      }
     }
 
     if (!isset($row->metadata_source) || !$row->metadata_source) {
@@ -506,7 +506,8 @@ class HarvestMigration extends MigrateDKAN {
 
     try {
       $metadata_source_emw->save();
-    } catch (EntityMetadataWrapperException $emwException) {
+    }
+    catch (EntityMetadataWrapperException $emwException) {
       // Saving the metadata source failed. skip.
       $message = t(
         '@message_prefix. @exception_message',
@@ -716,9 +717,10 @@ class HarvestMigration extends MigrateDKAN {
         $dataset_emw = NULL;
         try {
           $dataset_emw = entity_metadata_wrapper('node', $nid);
-        } catch (EntityMetadataWrapperException $exception) {
+        }
+        catch (EntityMetadataWrapperException $exception) {
           $this->saveMessage($exception->getMessage());
-          // Skip this nid
+          // Skip this nid.
           continue;
         }
 
@@ -1198,6 +1200,7 @@ class HarvestMigration extends MigrateDKAN {
   public function getLogId() {
     return $this->logID;
   }
+
 }
 
 /**
