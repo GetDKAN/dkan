@@ -36,6 +36,7 @@
  - Added upgrade hook to clean DB after removal of 'conditional_fields', 'entity_rdf', 'rdfui' and 'rdfx'.
  - Added upgrade hook to remove deprecated test and theme directories.
  - Update ctools to 1.11
+ - Added update hook to disable dkan_default_content on upgrades.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
