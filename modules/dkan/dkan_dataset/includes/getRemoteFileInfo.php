@@ -131,19 +131,27 @@ class GetRemoteFileInfo {
    * Return a canonical file extension from the file type.
    */
   public function getExtension() {
+    $extension = NULL;
+
     if (!is_null($this->getType())) {
       include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
       $mimetype_mappings = file_mimetype_mapping();
       $mimetypes = $mimetype_mappings['mimetypes'];
       $extension_key = array_search($this->getType(), $mimetypes);
       if ($extension_key !== FALSE) {
+        // "canonical" file extension found!
         $extensions = $mimetype_mappings['extensions'];
-        return array_search($extension_key, $extensions);
+        $extension = array_search($extension_key, $extensions);
+      }
+      else {
+        // No "canonical" extension found. Try to parse the url.
+        $path = parse_url($this->getEffectiveURL(), PHP_URL_PATH);
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
       }
     }
 
     // Nothing to return.
-    return NULL;
+    return $extension;
   }
 
   /**
