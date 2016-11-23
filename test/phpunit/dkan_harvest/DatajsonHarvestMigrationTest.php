@@ -683,7 +683,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * https://jira.govdelivery.com/browse/CIVIC-4501
+   * Test remote file support for files behind redirects.
    */
    public function testResourceRedirect() {
     // Clean the harvest migration data from the source.
@@ -694,14 +695,14 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     dkan_harvest_migrate_sources(array(self::getResourceWithRedirects()));
 
     // Get updated dataset.
-    $dataset_nids = $this->getTestDatasetNid(self::getGroupUpdatedTestSource());
+    $dataset_nids = $this->getTestDatasetNid(self::getResourceWithRedirects());
     $dataset_node = entity_load_single('node', array_pop($dataset_nids));
 
     // One resource should exists.
-    $this->assertEquals(count($dataset->field_resources[LANGUAGE_NONE]), 1);
+    $this->assertEquals(count($dataset_node->field_resources[LANGUAGE_NONE]), 1);
 
     // Load the resource.
-    $resource = array_pop($dataset->field_resources[LANGUAGE_NONE]);
+    $resource = array_pop($dataset_node->field_resources[LANGUAGE_NONE]);
     $resource_emw = entity_metadata_wrapper('node', $resource['target_id']);
 
     $this->assertNotNull($resource_emw->field_link_remote_file);
