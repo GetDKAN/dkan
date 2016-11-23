@@ -150,3 +150,13 @@ function dkan_update_7004() {
   drush_delete_dir('profiles/dkan/themes/contrib/nuboot_radix');
   drush_delete_dir('profiles/dkan/themes/contrib/omega');
 }
+
+/**
+ * Disable the dkan_default_content module.
+ */
+function dkan_update_7005() {
+  db_update('system')
+  ->fields(array('status' => '0',))
+  ->condition ('name', 'dkan_default_content')
+  ->execute();
+}
