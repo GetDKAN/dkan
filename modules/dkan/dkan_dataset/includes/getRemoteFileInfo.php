@@ -109,6 +109,12 @@ class GetRemoteFileInfo {
   public function getType() {
     if ($info = $this->getInfo()) {
       $type = $info['header']['Content-Type'];
+      // If the url had redirects, CURL will stack the Content Types from all
+      // the urls. Get the last url.
+      if (is_array($type)) {
+        $type = array_pop($type);
+      }
+
       if ($explode = explode(";", $type)) {
         return $explode[0];
       }
