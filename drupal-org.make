@@ -360,6 +360,7 @@ projects:
     patch:
       2393771: 'https://www.drupal.org/files/issues/specify_change_state_user-2393771-5.patch'
       1838640: 'https://www.drupal.org/files/issues/workbench_moderation-fix_callback_argument-1838640-23.patch'
+      2645622: 'https://www.drupal.org/files/issues/node-deleted-before-shutdown-function-2645622-4.patch'
 libraries:
   chosen:
     download:
