@@ -25,7 +25,7 @@ class GetRemoteFileInfo {
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
-    // Spoof the User Agent
+    // Spoof the User Agent.
     curl_setopt($ch, CURLOPT_USERAGENT, $agent);
     // Wait only 5 seconds.
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
@@ -38,7 +38,7 @@ class GetRemoteFileInfo {
     curl_setopt($ch, CURLOPT_NOBODY, TRUE);
     curl_setopt($ch, CURLOPT_HEADER, TRUE);
 
-    // Cookies
+    // Cookies.
     curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
     curl_setopt($ch, CURLOPT_COOKIE, "");
 
@@ -145,21 +145,20 @@ class GetRemoteFileInfo {
       }
       else {
         // No "canonical" extension found. Try to parse the url.
-        $path = parse_url($this->getEffectiveURL(), PHP_URL_PATH);
+        $path = parse_url($this->getEffectiveUrl(), PHP_URL_PATH);
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
       }
     }
 
-    // Nothing to return.
     return $extension;
   }
 
   /**
    * Return effective_url (last URL after redirects).
    */
-  public function getEffectiveURL() {
+  public function getEffectiveUrl() {
     $info = $this->getInfo();
-    if(!empty($info)) {
+    if (!empty($info)) {
       return $info['effective_url'];
     }
     return FALSE;

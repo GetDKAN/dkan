@@ -1,20 +1,25 @@
 <?php
+
 /**
  * @file
+ * Contains test phpunit class for HarvestMigration.
  */
 
 include_once __DIR__ . '/includes/HarvestSourceDataJsonStub.php';
 
 /**
+ * Test class for the HarvestMigration class.
  *
+ * @class DatajsonHarvestMigrationTest
  */
 class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
   /**
-   * Keep track of nodes created during a test run that are not handled by
-   * migrations.
+   * Track nodes created during a test run that are not handled by migrations.
+   *
+   * @var createdNodes
    */
-  private $created_nodes = array();
+  private $createdNodes = array();
 
   /**
    * {@inheritdoc}
@@ -35,7 +40,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * Test dataset count.
    */
   public function testDatasetCount() {
     $dataset_nids = $this->getTestDatasetNid(self::getOriginalTestSource());
@@ -47,15 +52,17 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test title.
+   *
    * @depends testDatasetCount
    */
   public function testTitle($dataset) {
     $this->assertEquals('TEST - State Workforce by Generation (2011-2015)', $dataset->title->value());
   }
 
-
-
   /**
+   * Test dataset count.
+   *
    * @depends testDatasetCount
    */
   public function testTags($dataset) {
@@ -79,6 +86,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test identifer.
+   *
    * @depends testDatasetCount
    */
   public function testIdentifer($dataset) {
@@ -86,6 +95,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test resources.
+   *
    * @depends testDatasetCount
    */
   public function testResources($dataset) {
@@ -101,6 +112,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test resources body format.
+   *
    * @depends testDatasetCount
    */
   public function testResourcesBodyFormat($dataset) {
@@ -116,18 +129,22 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test Metadata Source.
+   *
    * @depends testDatasetCount
    */
   public function testMetadataSources($dataset) {
     if (!module_exists('dkan_dataset_metadata_source')) {
       $this->markTestSkipped('dkan_dataset_metadata_source module is not available.');
-    } else {
-      // This should never be empty as it is set from the cached file during the harvest.
-      // Title
+    }
+    else {
+      // This should never be empty as it is set from the cached file during the
+      // harvest.
+      // Title.
       $this->assertEquals($dataset->field_metadata_sources->title->value(),
         'ISO-19115 Metadata for Wye_2015-03-18T20-20-53');
 
-      // Schema name
+      // Schema name.
       $this->assertEquals($dataset->field_metadata_sources->field_metadata_schema->name->value(),
         'ISO 19115-2');
 
@@ -138,6 +155,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test related content.
+   *
    * @depends testDatasetCount
    */
   public function testRelatedContent($dataset) {
@@ -145,6 +164,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test Moderation state.
+   *
    * @depends testDatasetCount
    */
   public function testModerationState($dataset) {
@@ -181,7 +202,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $migrationOldLog = $this->getLogTableFromMigration($migrationOld);
     $globalDatasetCountOld = $this->getGlobalNodeCount();
 
-    /**
+    /*
      * Tests for the initial log table status.
      */
     // Since the harvest was run only once. We should have exactly one record
@@ -220,13 +241,13 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($migrationOldMap, $migrationNewMap);
     $this->assertEquals($globalDatasetCountOld, $globalDatasetCountNew);
 
-    /**
+    /*
      * Map table evolution.
      */
     // The log table should have a new recod by now.
     $this->assertEquals(count($migrationNewLog), count($migrationOldLog) + 1);
 
-    /**
+    /*
      * Log table evolution.
      */
     // The log table should have exactly one additional record by now.
@@ -291,8 +312,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
     // The number of managed datasets record should stay the same.
     $this->assertEquals(count($migrationAlternativeMap), '1');
-    // The number of nodes as a hole should be increased by 1 because a new group
-    // should be created.
+    // The number of nodes as a hole should be increased by 1 because a new
+    // group should be created.
     $globalDatasetCountAlternative = $this->getGlobalNodeCount();
     $this->assertEquals($globalDatasetCountOld, $globalDatasetCountAlternative);
 
@@ -307,7 +328,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
         $migrationAlternativeMap[$index]->last_imported);
     }
 
-    /**
+    /*
      * Test Log table evolution.
      */
     // The log table should have exactly one additional record by now.
@@ -331,7 +352,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
         $migrationAlternativeLogLast->{$property});
     }
 
-    /**
+    /*
      * Test message table.
      */
     // We don't expect any new messages from this test. The old and new message
@@ -395,7 +416,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
         $migrationErrorMap[$index]->last_imported);
     }
 
-    /**
+    /*
      * Test Log table evolution.
      */
     // The log table should have exactly one additional record by now.
@@ -419,11 +440,11 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
         $migrationErrorLogLast->{$property});
     }
 
-    /**
+    /*
      * Test message table.
      */
-    // AFter harvesting a erroneous source, it is expected to have an error logged
-    // into the messsage table.
+    // AFter harvesting a erroneous source, it is expected to have an error
+    // logged into the messsage table.
     $this->assertNotEquals($migrationOldMessage, $migrationErrorMessage);
     // We should at least have one more message.
     $this->assertGreaterThan(count($migrationOldMessage),
@@ -495,7 +516,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
         $migrationEmptyMap[$index]->last_imported);
     }
 
-    /**
+    /*
      * Test Log table evolution.
      */
     // The log table should have exactly one additional record by now.
@@ -509,7 +530,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $migrationOldLogLast = end($migrationOldLog);
     $migrationEmptyLogLast = end($migrationEmptyLog);
 
-    $this->assertEquals($migrationEmptyLogLast->orphaned ,
+    $this->assertEquals($migrationEmptyLogLast->orphaned,
       $migrationOldLogLast->orphaned);
     $this->assertEquals($migrationEmptyLogLast->failed,
       $migrationOldLogLast->failed - 1);
@@ -519,7 +540,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
         $migrationEmptyLogLast->{$property});
     }
 
-    /**
+    /*
      * Test message table.
      */
     // We expect one new message from this test when harvesting the empty
@@ -529,6 +550,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test harvest source "Zombi" entries.
+   *
    * Test for a specific case where a dataset from the source is corrupted and
    * fails to import. If the harvest source removes the faulty dataset no
    * record should be left on the map table.
@@ -565,7 +588,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $values = $migrationEmpty->getMap()->lookupMapTable(HarvestMigrateSQLMap::STATUS_FAILED, NULL, NULL, NULL, NULL);
     $this->assertEmpty($migrationEmptyMap);
 
-    /**
+    /*
      * Test message table.
      */
     // Harvesting the empty source will add a new error message.
@@ -574,8 +597,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Make sure that the harvest migration does not remove old log messages after
-   * every harvest.
+   * The harvest migration should not remove old log messages after a harvest.
    */
   public function testHarvestSourceMessagesAppend() {
 
@@ -603,7 +625,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $migrationErrorAfter = dkan_harvest_get_migration(self::getErrorTestSource());
     $migrationErrorAfterMessage = $this->getMessageTableFromMigration($migrationError);
 
-    /**
+    /*
      * Test message table.
      */
     // We don't expect any new messages from this test. The old and new message
@@ -615,6 +637,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test Groups.
+   *
    * @depends testDatasetCount
    */
   public function testGroups($dataset) {
@@ -633,10 +657,12 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
     // Append the dataset groups in the list of content that was created and
     // need to be deleted after test is completed.
-    $this->created_nodes = array_merge($this->created_nodes, array_keys($dataset_groups));
+    $this->createdNodes = array_merge($this->createdNodes, array_keys($dataset_groups));
   }
 
   /**
+   * Test groups update.
+   *
    * @depends testDatasetCount
    *
    * When a dataset group is updated the following should happen:
@@ -646,10 +672,10 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    */
   public function testGroupsUpdate($dataset) {
 
-    // Append the current dataset groups in the list of content that was created and
-    // need to be deleted after test is completed.
+    // Append the current dataset groups in the list of content that was created
+    // and need to be deleted after test is completed.
     $dataset_groups = $this->getNodeGroups($dataset);
-    $this->created_nodes = array_merge($this->created_nodes, array_keys($dataset_groups));
+    $this->createdNodes = array_merge($this->createdNodes, array_keys($dataset_groups));
 
     // Check that the number of groups in the dataset is '1'.
     $this->assertEquals(count($dataset_groups), '1');
@@ -665,7 +691,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
     // Groups should've changed. Append the dataset groups in the list of
     // content that was created and need to be deleted after test is completed.
-    $this->created_nodes = array_merge($this->created_nodes, array_keys($dataset_groups));
+    $this->createdNodes = array_merge($this->createdNodes, array_keys($dataset_groups));
 
     // Check that the dataset got the groups updated.
     $expected_groups = array('TEST - State Economic Council Updated');
@@ -683,10 +709,11 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * https://jira.govdelivery.com/browse/CIVIC-4501
    * Test remote file support for files behind redirects.
+   *
+   * Ticket: https://jira.govdelivery.com/browse/CIVIC-4501
    */
-   public function testResourceRedirect() {
+  public function testResourceRedirect() {
     // Clean the harvest migration data from the source.
     dkan_harvest_rollback_sources(array(self::getOriginalTestSource()));
     dkan_harvest_deregister_sources(array(self::getOriginalTestSource()));
@@ -706,10 +733,12 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $resource_emw = entity_metadata_wrapper('node', $resource['target_id']);
 
     $this->assertNotNull($resource_emw->field_link_remote_file);
-   }
+  }
 
   /**
-   * https://jira.govdelivery.com/browse/CIVIC-4498
+   * Check Error logging for the harvest.
+   *
+   * Ticket: https://jira.govdelivery.com/browse/CIVIC-4498
    *
    * Make sure harvest error from the base HarvestMigration class are logged.
    * This probably should always be the last test in the test suite since it
@@ -782,10 +811,11 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    * {@inheritdoc}
    */
   protected function tearDown() {
-    // Delete all nodes that were created during the test and are not handled by migrations.
-    node_delete_multiple(array_unique($this->created_nodes));
+    // Delete all nodes that were created during the test and are not handled by
+    // migrations.
+    node_delete_multiple(array_unique($this->createdNodes));
     // Empty values.
-    $this->created_nodes = array();
+    $this->createdNodes = array();
   }
 
   /**
@@ -805,11 +835,11 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    * Test Harvest Source.
    */
   public static function getOriginalTestSource() {
-    return new HarvestSourceDataJsonStub( __DIR__ . '/data/dkan_harvest_datajson_test_original.json');
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_original.json');
   }
 
   /**
-   *
+   * Test Harvest Source.
    */
   public static function getAlternativeTestSource() {
     return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_alternative.json');
@@ -851,7 +881,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * Helper function to get the first node id harvested by the source.
    */
   private function getTestDatasetNid($source) {
     $migration = dkan_harvest_get_migration($source);
@@ -864,7 +894,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
       $return = array();
 
-      foreach($result as $record) {
+      foreach ($result as $record) {
         if (isset($record->destid1)) {
           array_push($return, $record->destid1);
         }
@@ -874,13 +904,14 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Helper method to get a harvest migration map table from the harvest
-   * migration.
+   * Helper method to get a harvest migration map table from the migration.
    *
    * @param HarvestMigration $migration
+   *   Harvest Migration object.
    *
-   * @return Array of records of the harvest source migration map table keyed
-   * by destid1.
+   * @return array
+   *   Array of records of the harvest source migration map table keyed
+   *   by destid1.
    */
   private function getMapTableFromMigration(HarvestMigration $migration) {
     $map = $migration->getMap();
@@ -892,13 +923,14 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Helper method to get a harvest migration map table from the harvest
-   * migration.
+   * Helper method to get a harvest migration messages table from the migration.
    *
    * @param HarvestMigration $migration
+   *   Harvest Migration object.
    *
-   * @return Array of records of the harvest source migration map table keyed
-   * by destid1.
+   * @return array
+   *   Array of records of the harvest source migration messages table keyed
+   *   by destid1.
    */
   private function getMessageTableFromMigration(HarvestMigration $migration) {
     $map = $migration->getMap();
@@ -910,13 +942,14 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Helper method to get a harvest migration log table from the harvest
-   * migration.
+   * Helper method to get a harvest migration log table from the migration.
    *
    * @param HarvestMigration $migration
+   *   Harvest Migration object.
    *
-   * @return Array of records of the harvest source migration log table keyed
-   * by destid1.
+   * @return array
+   *   Array of records of the harvest source migration log table keyed
+   *   by destid1.
    */
   private function getLogTableFromMigration(HarvestMigration $migration) {
     $map = $migration->getMap();
@@ -928,7 +961,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * Return the count of all the nodes.
    */
   private function getGlobalNodeCount() {
     $query = "SELECT COUNT(*) amount FROM {node} n";
@@ -951,7 +984,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Returns an array with the list of resources (with format info) associated with the dataset.
+   * Returns array of resources (with format info) associated with the dataset.
    */
   private function getDatasetResourcesFormat($dataset) {
     $resources = array();
@@ -976,4 +1009,5 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
     return $groups;
   }
+
 }

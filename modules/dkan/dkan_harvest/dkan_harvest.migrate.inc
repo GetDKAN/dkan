@@ -1019,8 +1019,8 @@ class HarvestMigration extends MigrateDKAN {
 
         // Finally this URL is determined to be field_link_remote_file
         // material.
-        // Make sure to use the effective URL,
-        $resource->url = $remoteFileInfo->getEffectiveURL();
+        // Make sure to use the effective URL.
+        $resource->url = $remoteFileInfo->getEffectiveUrl();
         $resource->url_type = 'file';
         $format_detected = $remoteFileInfo->getExtension();
       }
