@@ -2,6 +2,7 @@
 -------------------------
 - Update ctools to 1.11
 - Fix "format" facet collapsed even when selected on the search page.
+- Fix resources not synced with datasets when upgrade from 1.11
 
 7.x-1.12.11 2016-10-20
 --------------------------
