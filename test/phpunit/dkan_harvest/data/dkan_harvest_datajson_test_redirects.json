@@ -16,7 +16,7 @@
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "downloadURL": "http://www.ars.usda.gov/sp2UserFiles/Place/53424500/DAP/DAPflux/Kendall.zip",
+          "downloadURL": "http://127.0.0.1/dkan_harvest_test/resources/redirect",
           "mediaType": "application/zip",
           "format": "zip",
           "description": "<p>Test resource with redirects</p> ",

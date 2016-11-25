@@ -31,6 +31,9 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     dkan_harvest_cache_sources(array($source));
     // Harvest Migration of the test data.
     dkan_harvest_migrate_sources(array($source));
+
+    // We need this module for the testResourceRedirect test.
+    module_enable(array('dkan_harvest_test'));
   }
 
   /**
@@ -829,6 +832,9 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $source->getCacheDir(TRUE);
     dkan_harvest_rollback_sources(array($source));
     dkan_harvest_deregister_sources(array($source));
+
+    // Clean enabled modules.
+    module_disable(array('dkan_harvest_test'));
   }
 
   /**
