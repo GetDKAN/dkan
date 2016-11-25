@@ -31,7 +31,8 @@ class GetRemoteFileInfo {
     $http_heading = curl_exec($ch);
 
     if (!$http_heading) {
-      return NULL;
+      // Should set the GetRemoteFileInfo::$info to false.
+      return FALSE;
     }
 
     $info['header'] = $this->httpParseHeaders($http_heading);
@@ -78,7 +79,7 @@ class GetRemoteFileInfo {
   }
 
   /**
-   *
+   * Helper method to construct a base cURL handle.
    */
   private function getBaseCh($url, $agent, $followRedirect) {
     $ch = curl_init();
@@ -144,9 +145,8 @@ class GetRemoteFileInfo {
         return $type;
       }
     }
-    else {
-      return NULL;
-    }
+
+    return NULL;
   }
 
   /**
