@@ -23,33 +23,17 @@ class GetRemoteFileInfo {
   public function curlHeader($url, $agent, $followRedirect, $tmp) {
     $info = array();
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    // Spoof the User Agent.
-    curl_setopt($ch, CURLOPT_USERAGENT, $agent);
-    // Wait only 5 seconds.
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-
-    curl_setopt($ch, CURLOPT_FRESH_CONNECT, TRUE);
-    curl_setopt($ch, CURLOPT_FILETIME, TRUE);
+    $ch = $this->getBaseCh($url, $agent, $followRedirect);
 
     // This changes the request method to HEAD. No need to "GET" the hole link.
     curl_setopt($ch, CURLOPT_NOBODY, TRUE);
-    curl_setopt($ch, CURLOPT_HEADER, TRUE);
-
-    // Cookies.
-    curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
-    curl_setopt($ch, CURLOPT_COOKIE, "");
-
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $followRedirect);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
 
     $http_heading = curl_exec($ch);
+
     if (!$http_heading) {
       return NULL;
     }
+
     $info['header'] = $this->httpParseHeaders($http_heading);
     $info['info'] = curl_getinfo($ch);
     $info['effective_url'] = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
@@ -70,27 +54,65 @@ class GetRemoteFileInfo {
    */
   private function curlHeadShim($url, $agent, $followRedirect, $tmp) {
     $info = array();
-    $ch = curl_init();
+
+    $ch = $this->getBaseCh($url, $agent, $followRedirect);
+
+    curl_setopt($ch, CURLOPT_FILE, $output);
+    curl_setopt($ch, CURLOPT_WRITEHEADER, $headerfile);
+
     $output = fopen('/dev/null', 'w');
     $header_dir = $tmp . '/curl_header';
     $headerfile = fopen($header_dir, 'w+');
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_FILE, $output);
-    curl_setopt($ch, CURLOPT_WRITEHEADER, $headerfile);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-    curl_setopt($ch, CURLOPT_HEADER, TRUE);
-    curl_setopt($ch, CURLOPT_USERAGENT, $agent);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $followRedirect);
-    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+
     curl_exec($ch);
     fclose($headerfile);
     $http_heading = file_get_contents($header_dir);
     unset($header_dir);
+
+    $info['header'] = $this->httpParseHeaders($http_heading);
     $info['info'] = curl_getinfo($ch);
     $info['effective_url'] = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+
     curl_close($ch);
-    $info['header'] = $this->httpParseHeaders($http_heading);
     return $info;
+  }
+
+  /**
+   *
+   */
+  private function getBaseCh($url, $agent, $followRedirect) {
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    // Spoof the User Agent.
+    curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+
+    // Wait only 5 seconds.
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+
+    // Return the transfer as a string of the return value of curl_exec()
+    // instead of outputting it out directly.
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+
+    // Follow redirects.
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $followRedirect);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+
+    // Force the use of a new connection instead of a cached one.
+    curl_setopt($ch, CURLOPT_FRESH_CONNECT, TRUE);
+
+    // Attempt to retrieve the modification date of the remote document.
+    curl_setopt($ch, CURLOPT_FILETIME, TRUE);
+
+    // Cookies.
+    curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
+    curl_setopt($ch, CURLOPT_COOKIE, "");
+
+    // Include the header in the output.
+    curl_setopt($ch, CURLOPT_HEADER, TRUE);
+
+    return $ch;
   }
 
   /**
