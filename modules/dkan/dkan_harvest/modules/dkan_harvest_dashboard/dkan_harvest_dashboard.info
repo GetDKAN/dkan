@@ -9,6 +9,7 @@ dependencies[] = features
 dependencies[] = rules
 dependencies[] = views
 dependencies[] = views_content
+stylesheets[all][] = css/dkan_harvest_dashboard.css
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2
 features[rules_config][] = rules_dkan_harvest_source_cache

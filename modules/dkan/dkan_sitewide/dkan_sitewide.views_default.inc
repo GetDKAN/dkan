@@ -2,13 +2,13 @@
 
 /**
  * @file
- * dkan_sitewide_demo_front.views_default.inc
+ * dkan_sitewide.views_default.inc
  */
 
 /**
  * Implements hook_views_default_views().
  */
-function dkan_sitewide_demo_front_views_default_views() {
+function dkan_sitewide_views_default_views() {
   $export = array();
 
   $view = new view();

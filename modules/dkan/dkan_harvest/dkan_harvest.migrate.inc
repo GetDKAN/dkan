@@ -35,6 +35,7 @@ class HarvestMigration extends MigrateDKAN {
   protected $dkanHarvestSource;
 
   protected $sourceListOptions;
+
   protected $dkanHarvestMigrateSQLMapSourceKey;
   protected $dkanHarvestMigrateSQLMapDestinationKey;
   protected $dkanHarvestMigrateSQLMapConnectionKey;
@@ -348,10 +349,10 @@ class HarvestMigration extends MigrateDKAN {
    * Get the id of a group based on the title.
    *
    * @param string $title
-   *        Title of the group that is being searched.
+   *   Title of the group that is being searched.
    *
    * @return mixed
-   *         The group id or false if the group was not found.
+   *   The group id or false if the group was not found.
    */
   public function getGroupIdByName($title) {
     $result = db_query("SELECT n.nid FROM {node} n WHERE n.title = :title AND n.type = 'group'", array(":title" => $title));
@@ -431,16 +432,16 @@ class HarvestMigration extends MigrateDKAN {
           entity_delete('node', $metadata_source_old_emw->nid);
         }
       }
-      catch (EntityMetadataWrapperException $emw_exception) {
+      catch (EntityMetadataWrapperException $emwException) {
         // Cannot get to the old datasets although the migration states it
         // exists. This should never happen but lets log this to help the next
         // developer debug this problem.
         $message = t(
           'Cannot clean old metadata source. @exception_message',
           array(
-            '@exception_message' => $emw_exception->getMessage(),
+            '@exception_message' => $emwException->getMessage(),
           ));
-        self::displayMessage($message, 'error');
+        $this->saveMessage($message);
       }
     }
 
@@ -467,10 +468,23 @@ class HarvestMigration extends MigrateDKAN {
     }
 
     if (isset($row->metadata_source->metadata_schema)) {
-      // TODO better null check.
-      $metadata_source_emw->field_metadata_schema->set(
-        $this->createTax($row->metadata_source->metadata_schema, 'extended_metadata_schema')->tid
-      );
+      $vocab = 'extended_metadata_schema';
+      $term = $this->createTax($row->metadata_source->metadata_schema, $vocab);
+      if (!$term) {
+        // Something is wrong. Report.
+        $message = t(
+          "Cannot get taxonomy @taxonomy (@vocabulary vocabulary).",
+          array(
+            '@taxonomy' => $row->metadata_source->metadata_schema,
+            '@vocabulary' => $vocab,
+          )
+        );
+        $this->saveMessage($message);
+      }
+      else {
+        // Looks fine.
+        $metadata_source_emw->field_metadata_schema->set($term->tid);
+      }
     }
 
     // File.
@@ -483,23 +497,25 @@ class HarvestMigration extends MigrateDKAN {
 
     if (!$file) {
       $message = t('Cannot create the file for the Metadata Source.');
-      self::displayMessage($message, 'error');
+      $this->saveMessage($message);
       return FALSE;
     }
-    $metadata_source_emw->field_metadata_file->file->set($file);
+    else {
+      $metadata_source_emw->field_metadata_file->file->set($file);
+    }
 
     try {
       $metadata_source_emw->save();
     }
-    catch (EntityMetadataWrapperException $emw_exception) {
+    catch (EntityMetadataWrapperException $emwException) {
       // Saving the metadata source failed. skip.
       $message = t(
         '@message_prefix. @exception_message',
         array(
           '@message_prefix' => 'Adding Metada Source failed',
-          '@exception_message' => $emw_exception->getMessage(),
+          '@exception_message' => $emwException->getMessage(),
         ));
-      self::displayMessage($message, 'error');
+      $this->saveMessage($message);
     }
 
     // Attache the metadata source to the dataset.
@@ -614,15 +630,15 @@ class HarvestMigration extends MigrateDKAN {
       $result = $query->execute();
       migrate_instrument_stop('postImportRestoredSource-SELECTNOSOURCEPROCESSED');
 
-      $row_restored_resource_list = $result->fetchAllAssoc('destid1');
-      if (!empty($row_restored_resource_list)) {
+      $rowRestoredSourceList = $result->fetchAllAssoc('destid1');
+      if (!empty($rowRestoredSourceList)) {
         $message = t(
           '@count item(s) datasets that were previously unpublished are restored by the source and will be republished again.',
-          array('@count' => count($row_restored_resource_list))
+          array('@count' => count($rowRestoredSourceList))
         );
         self::displayMessage($message, 'warning');
 
-        foreach (array_keys($row_restored_resource_list) as $dataset_nid) {
+        foreach (array_keys($rowRestoredSourceList) as $dataset_nid) {
           // TODO cach exceptions.
           $dataset_emw = entity_metadata_wrapper('node', $dataset_nid);
           $related_count = 0;
@@ -690,20 +706,20 @@ class HarvestMigration extends MigrateDKAN {
     $result = $query->execute();
     migrate_instrument_stop('postImportMissingSource-GetNotProcessed');
 
-    $row_no_resource_list = $result->fetchAllAssoc('destid1');
-    if (!empty($row_no_resource_list)) {
+    $rowNoSourceList = $result->fetchAllAssoc('destid1');
+    if (!empty($rowNoSourceList)) {
       $message = t(
         '@count item(s) that were added by this source does not exist anymore and will be unpublished.',
-        array('@count' => count($row_no_resource_list))
+        array('@count' => count($rowNoSourceList))
       );
       self::displayMessage($message, 'warning');
-      foreach (array_keys($row_no_resource_list) as $nid) {
+      foreach (array_keys($rowNoSourceList) as $nid) {
         $dataset_emw = NULL;
         try {
           $dataset_emw = entity_metadata_wrapper('node', $nid);
         }
         catch (EntityMetadataWrapperException $exception) {
-          self::displayMessage($exception->getMessage(), 'error');
+          $this->saveMessage($exception->getMessage());
           // Skip this nid.
           continue;
         }
@@ -887,11 +903,6 @@ class HarvestMigration extends MigrateDKAN {
     // Make sure that the vocabulary exists before adding terms.
     $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
     if (!$vocab) {
-      $message = t('Vocabulary term @vocab_name does not exists!',
-        array(
-          '@vocab_name' => $vocab_name,
-        ));
-      self::displayMessage($message, 'error');
       return NULL;
     }
 
@@ -910,15 +921,9 @@ class HarvestMigration extends MigrateDKAN {
         // properties.
         return $term_new;
       }
-      else {
-        $message = t('New taxonomy term @name in vocabulary @vocab_name creation failed!',
-          array(
-            '@name' => $name,
-            '@vocab_name' => $vocab_name,
-          ));
-        self::displayMessage($message, 'error');
-        return NULL;
-      }
+
+      // If we made it til here then something did not work out as expected.
+      return NULL;
     }
   }
 
@@ -1075,8 +1080,21 @@ class HarvestMigration extends MigrateDKAN {
     $resource_emw->body->value->set($res->description);
 
     if (isset($res->format)) {
-      $term = $this->createTax($res->format, 'format');
-      if ($term) {
+      $vocab = 'format';
+      $term = $this->createTax($res->format, $vocab);
+
+      if (is_null($term)) {
+        // Something went left. Report.
+        $message = t(
+          "Cannot get taxonomy @taxonomy (@vocabulary vocabulary).",
+          array(
+            '@taxonomy' => $res->format,
+            '@vocabulary' => $vocab,
+          )
+        );
+        $this->saveMessage($message);
+      }
+      else {
         $resource_emw->field_format = $term->tid;
       }
     }
@@ -1184,6 +1202,7 @@ class HarvestMigration extends MigrateDKAN {
   }
 
 }
+
 /**
  * XMLHarvestMigration class.
  */
