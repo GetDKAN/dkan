@@ -2,24 +2,6 @@
 
 This creates a feature context for DKAN and NuCivic specific steps.
 
-## Install
-
-1. Create a ``composer.json`` file with the following:
-
-```json
-{
-  "require": {
-    "nucivic/dkanextension": "dev-master"
-  },
-  "config": {
-    "bin-dir": "bin/"
-  },
-}
-```
-
-2. Install dependencies: ``composer install``
-
-3. Initialize: ``behat --init``
 
 ## Contexts
 
