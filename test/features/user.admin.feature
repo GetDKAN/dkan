@@ -1,3 +1,4 @@
+# time:0m45.62s
 @api
 Feature: User
 
@@ -32,16 +33,16 @@ Feature: User
       | Celeste | Group 02 | member               | Active            |
     And "Tags" terms:
       | name    |
-      | Health  |
-      | Gov     |
+      | world   |
+      | results |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Katie   | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Katie   | No               | Health   | Test        |
-      | Dataset 03 | Group 01  | Gabriel | Yes              | Gov      | Test        |
-      | Dataset 04 | Group 01  | Katie   | Yes              | Health   | Test        |
+      | Dataset 01 | Group 01  | Katie   | Yes              | world    | Test        |
+      | Dataset 02 | Group 01  | Katie   | No               | world    | Test        |
+      | Dataset 03 | Group 01  | Gabriel | Yes              | results  | Test        |
+      | Dataset 04 | Group 01  | Katie   | Yes              | world    | Test        |
 
-   @javascript
+
   Scenario: Edit any user account
     Given I am logged in as "John"
     And I am on "Users" page
@@ -50,8 +51,7 @@ Feature: User
     And I press "Save"
     Then I should see "The changes have been saved"
     When I am on "Katie" page
-    And I click "About" in the "tabs" region
-    Then I should see "This is Katie!"
+    Then I should see "This is Katie!" in the "user profile" region
 
   @dkanBug @deleteTempUsers @javascript
     # Site managers trigger honeypot when creating users.
@@ -115,7 +115,7 @@ Feature: User
     When I am on "Users" page
     Then I should see "site manager" in the "Jaz" row
 
-  Scenario: Modify user as editor
+Scenario: Modify user as editor
     Given I am logged in as "Jaz"
     And I am on "Users" page
     Then I should see "Access denied"
