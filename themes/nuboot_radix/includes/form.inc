@@ -94,7 +94,7 @@ function nuboot_radix_form_element($variables) {
   // If #title is not set, we don't display any label or required marker.
   if (!isset($element['#title'])) {
     $element['#title_display'] = 'none';
-    // Add a title on VBO checkboxes to pass WAVE test.
+    // Add a title on VBO checkboxes for screenreaders.
     if ($is_checkbox) {
       $element['#title_display'] = 'after';
       $element['#title'] = '<span class="screenreader">' . t('Select') . '</span>';
