@@ -284,6 +284,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a recline preview
 
+  @javascript
   Scenario: Image preview
     Given I am logged in as "Katie"
     And I am on "Resource 12" page
@@ -298,6 +299,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a zip preview
 
+  @javascript
   Scenario: XML preview
     Given I am logged in as "Katie"
     And I am on "Resource 14" page
