@@ -25,6 +25,7 @@ function dkan_harvest_page_event_log($node) {
       'field' => 'starttime',
       'sort' => 'desc',
     ),
+    'status' => array('data' => t('Status'), 'field' => 'failed'),
     'duration' => array('data' => t('Duration'), 'field' => 'duration'),
     'created' => array('data' => t('Created'), 'field' => 'created'),
     'updated' => array('data' => t('Updated'), 'field' => 'updated'),
@@ -33,6 +34,11 @@ function dkan_harvest_page_event_log($node) {
     'unchanged' => array('data' => t('Unchanged'), 'field' => 'unchanged'),
   );
 
+  $status_text = array(
+    t('OK'),
+    l(t('ERROR'), 'node/' . $node->nid . '/harvest-errors', array('attributes' => array('alt' => 'Error'))),
+  );
+  $status_class = array(0 => 'alert-success', 1 => t('alert-danger'));
   $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
   $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
   $log_table = $harvest_source_migration->getMap()->getLogTable();
