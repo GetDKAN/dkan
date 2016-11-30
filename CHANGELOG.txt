@@ -81,6 +81,7 @@ DKAN Dataset:
  - Replace field notes by field body in harvest source content type.
  - Fixed text on 'Download All' button to not display HTML.
  - Add patch for workbench_moderation to avoid php shutdown function errors.
+ - Removed 'Back to dataset' button on standalone resources.
 
 7.x-1.12.11 2016-10-20
 --------------------------
