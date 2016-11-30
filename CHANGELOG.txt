@@ -39,6 +39,7 @@
  - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
  - Update ctools to 1.11
  - Added update hook to disable dkan_default_content on upgrades.
+ - Updated visualization_entity.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
