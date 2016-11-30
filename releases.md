@@ -1,0 +1,189 @@
+# Releases
+
+## List
+* 7.x-1.13 (draft)
+* 7.x-1.12.11
+* 7.x-1.12.10
+
+## 7.x-1.13 (draft)
+### What's new
+
+Check out major changes that add new functionality to existing features as well as new features in this release that add more functionality to DKAN. 
+
+#### DKAN Harvest
+
+In DKAN 1.13, Administrators and Site Managers have greater access and control in harvesting datasets from other sources for their DKAN site. The Harvest module provides a common harvesting framework for DKAN that streamlines the process of importing datasets from external data catalogues. Built on the widely-used Drupal framework, Migrate, the Harvest module can programmatically fetch data, cache and migrate data, and publish the harvested data onto a DKAN site. Harvest includes several components to efficiently collect and publish datasets from external sources without compromising the quality of the data. 
+
+In addition to a well-contemplated programmatic process, we included a user interface (UI) thoughtful of the user experience of Administrators and Site Managers. The Harvest Dashboard is a visual interface that makes Harvest more accessible for less technical users and improves the overall usability of the feature. With the Harvest Dashboard Site Managers can easily configure the operations for harvesting external data sources and manage ongoing harvesting without diving into code. 
+
+Get more details on [DKAN Harvest](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_harvest). 
+
+#### DKAN Dataset REST API
+
+With other DKAN APIs, DKAN could only be queried statically. The REST API provides an endpoint that allows other applications to interact with DKAN programmatically. This opens the possibility for more sophisticated functionality on DKAN such as publishing and updating data programmatically. 
+
+Get more details on the [REST API](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_dataset/modules/dkan_dataset_rest_api). 
+
+#### DCAT-AP Compliance
+
+While DKAN offered an RDF endpoint to make it compliant with DCAT, the standards have evolved in the last year. In this release, we updated DKAN to be DCAT-AP compliant; data on the site can be published as an RDF/XML file and DCAT-AP specific metadata fields are included on Datasets. Now, DKAN meets US standards (Project Open Data) as well as EU standards (DCAT-AP). 
+
+#### New Default Content
+
+On a basic install of DKAN, the site came with only a few example Datasets and Resources. We added more default content in order to demonstrate the full capabilities on DKAN and give new users a better experience in testing out various DKAN features. The default content module is part of core DKAN, so all new installs of DKAN contain the content.    
+  
+
+### What we've improved
+
+The functionality isn't new, but it's working even better than before. These improvements make DKAN better on the whole including user experience, efficiency, and scale. 
+
+
+#### Site Managers can assign roles 
+
+The Site Manager role is part of a core group of users on DKAN. The Site Managers have the highest-level of permissions but are expected to less technical and so have fewer technical permissions that a full admin. Previously, it wasn't possible to allow Site Managers to assign roles to new users unless they were given a larger set of permissions access. We added a new module, so that Site Managers can manage a user's role without gaining disproportionate access to the Permissions module. 
+
+
+#### Site Managers can add Pages
+
+One of the most basic content types on DKAN is a page. And though the content type is straightforward it can have implications for the structure and appearance of the site. Originally, Site Managers were not able to add or manage Pages; in DKAN 1.13 Site Managers now have this permission. 
+
+#### Even more permissions for Site Managers
+
+A number of functionality on DKAN is now accessible to Site Managers:
+
+- Theme Settings: Includes page elements and ability to add custom logo and favicon. 
+
+- Colorizer: Ability to create custom color schemes for a DKAN site. 
+
+- Open Data Schema Mapper (ODSM): Ability to add, edit, and delete APIs.
+
+- Menus: Permission to manage the main menu links by adding, editing, and deleting links.
+ 
+- Enabling External Previews: Site Managers can enable previews so that site visitors can look at Resource contents with visualization tools, CartoDB and ArcGIS. 
+
+- DCAT and POD validation: Site Managers can select the settings for how Datasets are validated against Project Open Data and DCAT-AP standards. 
+
+- Order of Groups on front page and Groups page: Site Managers can arrange the order in which Groups appear. 
+
+- Recline size configuration: Manage size constraints for Recline, which powers Internal Previews. 
+
+#### Open Data Federal Extras is now part of core DKAN
+
+Project Open Data (POD) sets a standard for the information about datasets (metadata) included when the data is published. DKAN meets collects metadata with fields on the Dataset form when the data is published. For most agencies, the fields reflect basic requirements, however federal agencies are required to provide additional information about the data published. The extra fields appear as part of the Dataset form with our Federal Extras module. 
+
+We've moved this module into core DKAN so that it's part of every install, though not enabled by default. When enabled, the Federal Extras module makes federal agencies compliant with POD standards. 
+
+
+Get more details on [Federal Extras](https://github.com/NuCivic/open_data_federal_extras) on DKAN. 
+
+#### In-place Editor for Site Managers + look and feel 
+
+Previously, the In-place Editor (IPE) for Site Managers included several options that weren't appropriate for their level of permissions. This UI was confusing, so we improved the interface to only include options that are relevant to lower-access user roles. We also improved the overall look and feel of the IPE to be more user-friendly.
+
+
+#### Improved Data Previews
+
+The Data Previews feature is designed to let site visitors take a sneak peek at the content of a Resource before downloading the file. In this release, we've improved Data Previews to support more file formats beyond CSV and XLS. Now previews also support JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, and ZIP data formats. 
+
+Improvements to Data Previews also offer better support for Resources that are hosted remotely. Previously, Resources that were linked to a web source could only be previewed if they were first imported into the DKAN Datastore (which only supported CSV files). In DKAN 1.13, linked Resources can be previewed with the Data Previews feature. 
+
+
+#### Improved Datastore API
+
+The DKAN Datastore API makes it possible to query for contents of Resources uploaded to the Datastore as detailed as a cell within a table. The improved Datastore API is enhanced to open greater possibilities of requesting complex queries from contents within a Datastore on a DKAN site as well as multiple queries in a single request.
+
+Get more details on the [DKAN Datastore](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_datastore)
+
+#### New Dataset fields added
+
+Project Open Data (POD) sets a standard for the information about datasets (metadata) included when the data is published. DKAN meets collects metadata with fields on the Dataset form when the data is published. We added more fields and field options to the Dataset content type to comprehensively capture metadata and meet POD standards. These fields are standard and will automatically appear when adding or editing a Dataset on DKAN 1.13. 
+
+#### NuBoot Radix now in core DKAN
+
+Previously, the NuBoot Radix theme on DKAN was not part of the core build because there were multiple options including the Omega theme. The Omega theme and its tools (the Delta module) have been removed, and NuBoot Radix is now in the core build as the default theme for DKAN. Legacy themes will not be maintained or shipped with DKAN and require manual installation if you want to use the Omega theme. Alternatively, you can make customizations to the default theme.  
+
+Additionally, the admin theme setting is set to use the default theme rather than the NuBoot Radix theme. Because the Colorizer tool requires both the admin and default to be the same, setting the admin theme setting to use the default theme enables Colorizer to work normally for both the NuBoot subtheme and other custom subthemes without admins needing to manually override this setting. 
+
+#### Added support for POD based validation on Datasets
+
+A new option was added on DKAN Dataset Forms in order to enable the Dataset validation based on Project Open Data. If the validation is enabled then all POD required fields will be also required in DKAN.
+
+#### Minor improvements
+
+- We added more frequency update options to the Dataset form to comply with Project Open Data standards: [https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity](https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity)
+
+- Added icons to the Topics drop-down menu.
+
+- Renamed the default HTML text format to from "HTML" to "Markdown HTML" which is also reflected in the UI when adding new content. 
+
+- Made URLs in the _Additional info_ section of Datasets display properly and made them clickable
+
+- Removed the Conditional Fields module from DKAN, which was adding bloat and creating lots of unwanted artifacts in features, and only used by two fields. A few lines of FAPI code was enough to reproduce the functionality.
+
+### What we fixed
+
+Some DKAN features weren't working as expected and causing issues. We fixed those, so you can keep using DKAN as expected. 
+
+- Data proxy for Google spreadsheets was broken meaning that the data in a Resource could not be parsed properly. This meant that these files could not be used to generate Charts with the DKAN Visualization Entity. We fixed this so Resources that are not internal to DKAN can be used to create a Chart on DKAN. 
+
+- The DKAN API endpoints for JSON and RDF outputs did not generate the proper file when called. We fixed this so that the JSON endpoint works normally. With our new DCAT-AP compliance feature, the RDF output will generate an XML file. 
+
+- Corrected the typo in "Add data story" link in command center menu.
+
+- Removed warnings about undefined permissions when visualization_entity_choropleth_bundle module is enabled. 
+
+- Several bugs in the Visualization entity resulted in a frustrating user experience when attempting to create a Chart. A number of fixes were made to result in the expected behavior of the Chart. 
+
+- Only certain roles had permission to edit text formats, which resulted in many users unable to add text to their content. We fixed that so now all roles can add text to a text box regardless of the text format. 
+
+### Upgrading to the latest version
+
+```
+ahoy drush rr
+ahoy drush fr dkan_dataset_content_types -y
+ahoy drush fr dkan_permissions -y
+If ODFE is enabled then: ahoy drush fr open_data_federal_extras -y
+If ODFE is enabled then: rm -rf sites/all/modules/open_data_federal_extras
+ahoy drush fr open_data_schema_map_dkan -y
+ahoy drush updatedb -y
+ahoy drush en dkan_ipe -y
+ahoy drush en dkan_harvest_dashboard -y
+ahoy drush en menu_admin_per_menu -y
+ahoy drush fra -y
+ahoy drush rr
+```
+
+### Special Notes
+- **Removed Modules** - The following modules were removed from the code base and upgrading will remove the files and db tables associated with them.
+  - Conditional Fields 
+  - Entity RDF
+  - RDF UI
+  - RDF Extensions
+- **Consolidation** - External repos have been merged into DKAN core. To remove newly untracked files run: 
+```git clean -f ```
+- **Front Page** - [Upgrade Instructions](https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_fixtures/modules/dkan_default_content/README.md)
+Front page configuration has been removed from features and the dkan_sitewide_demo_front feature has been deprecated. To save existing front page configuration, run the following command ```drush php-eval "dkan_sitewide_convert_panel_page(<page-name>);"``` This will convert the front page to a panelized node.
+
+## 7.x-1.12.11
+This is a "patch" release of DKAN, containing bug fixes and minor updates to DKAN 7.x-1.12, but adding no new functionality. Upgrading should be straightforward.
+
+
+### Improvements in this release
+
+- Fixed a bug in Recline regarding file objects and node forms that caused errors when using the "view changes" button on Dataset or Resource edit form
+- Center group images in "Groups" page and group node page sidebar
+- Add "2x," "3x" etc to Dataset teasers when more than one resource of a particular format present.
+- Update the default jquery library setting from 1.7 to 1.10
+- Fix topics menu and facet links if special characters are used in topic terms.
+- Fix form redirect issues on dataset form validation
+- Patch fontyourface to remove <div> from the "standard text" selector, to prevent unpredictable results from this option
+- Fixed issue in open_data_schema_map with "Data Dictionary" field not displaying URL in data.json file
+
+## 7.x-1.12.10
+This is a "patch" release of DKAN, containing bug fixes and minor updates to DKAN 7.x-1.12, but adding no new functionality. Upgrading should be straightforward.
+
+
+### Improvements in this release
+
+- Fixes an issue causing JavaScript errors in IE browsers, preventing recline previews from displaying. Bug was introduced in 7.x-1.12.7.
+- Provides a better upgrade path for Markdown text format and bueditor improvements added in #1085 
