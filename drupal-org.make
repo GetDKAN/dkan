@@ -276,7 +276,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/recline.git'
-      branch: 7.x-1.x
+      branch: 'zip-preview-undefined-property-error'
   ref_field:
     download:
       type: git
