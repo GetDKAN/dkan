@@ -35,8 +35,13 @@
  - Update open data schema module to render a valid output passing validation (dcat and rdf).
  - Added upgrade hook to clean DB after removal of 'conditional_fields', 'entity_rdf', 'rdfui' and 'rdfx'.
  - Added upgrade hook to remove deprecated test and theme directories.
+ - Fixed popular tags view.
+ - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
  - Update ctools to 1.11
  - Fixed link to group page on group node teaser when site has clean urls disabled
+ - Added update hook to disable dkan_default_content on upgrades.
+ - Updated visualization_entity.
+ - Added fix to display the 'Request membership' link only to users that are logged in.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
@@ -50,6 +55,7 @@ DKAN Harvest:
  - Added Batch API on the 'Preview' page.
  - Added 'Add Source' shortcut on Harvest Dashboard pages.
  - Fixed breadcrumb on harvest sources pages: Preview, Manage Datasets, Events, Errors.
+ - Fixed harvesting of resources with remote files with redirects.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
@@ -77,7 +83,8 @@ DKAN Dataset:
  - Fix ODSM permissions for non-admin roles.
  - Replace field notes by field body in harvest source content type.
  - Fixed text on 'Download All' button to not display HTML.
-
+ - Add patch for workbench_moderation to avoid php shutdown function errors.
+ - Removed 'Back to dataset' button on standalone resources.
 
 7.x-1.12.11 2016-10-20
 --------------------------
