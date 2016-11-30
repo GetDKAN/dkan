@@ -214,7 +214,7 @@ div.autocomplete-deluxe-multiple,
 .panel-region-sidebar .radix-layouts-sidebar .pane-title,
 .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .facetapi-active {
   background: @toolbarbtn;
-  border-color: @toolbarbtn;
+  border-color: @toolbarbtn !important;
   color: @bg;
 }
 
