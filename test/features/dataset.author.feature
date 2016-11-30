@@ -167,8 +167,7 @@ Feature: Dataset Features
     And I should see "Groups were updated on 1 resource(s)"
     And I should not see "Resource 04" in the "resource title" region
     When I am on "Resource 04" page
-    And I click "Back to dataset"
-    Then I should see "There is no dataset associated with this resource"
+    Then I should not see the link "Back to dataset"
 
   @noworkflow @javascript
   Scenario: Add a resource with no group to a dataset with group

@@ -1,7 +1,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta2/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
@@ -47,7 +47,7 @@ projects:
   context:
     version: '3.6'
   ctools:
-    version: '1.10'
+    version: '1.11'
   data:
     version: '1.x'
   date:
@@ -69,7 +69,7 @@ projects:
   entity_path:
     version: '1.x-dev'
     patch:
-      2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_1.diff'
+      2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff'
   entityreference:
     version: '1.1'
   entityreference_filter:
@@ -143,6 +143,7 @@ projects:
       1: patches/fontyourface-no-ajax-browse-view.patch
       2: patches/fontyourface-clear-css-cache.patch
       2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
+      2816837: 'https://www.drupal.org/files/issues/font_your_face-remove_div_general_text_option-D7.patch'
   globalredirect:
     version: '1.5'
   gravatar:
@@ -188,6 +189,8 @@ projects:
       2287233: 'https://www.drupal.org/files/issues/link_iframe_formatter-coding-standards.patch'
   manualcrop:
     version: '1.5'
+    patch:
+      2504119: 'https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch'
   markdown:
     version: '1.4'
   markdowneditor:
@@ -342,7 +345,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0-beta1
+      tag: 7.x-1.0-beta2
     type: module
   workbench:
     version: '1.2'
@@ -357,6 +360,7 @@ projects:
     patch:
       2393771: 'https://www.drupal.org/files/issues/specify_change_state_user-2393771-5.patch'
       1838640: 'https://www.drupal.org/files/issues/workbench_moderation-fix_callback_argument-1838640-23.patch'
+      2645622: 'https://www.drupal.org/files/issues/node-deleted-before-shutdown-function-2645622-4.patch'
 libraries:
   chosen:
     download:
@@ -397,11 +401,9 @@ libraries:
     directory_name: bgrins-spectrum
   spyc:
     download:
-      type: get
-      url: 'https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php'
-    filename: ../spyc.php
-    directory_name: lib
-    destination: modules/contrib/services/servers/rest_server
+      type: file
+      url: 'https://raw.github.com/mustangostang/spyc/master/Spyc.php'
+    directory_name: spyc
 defaults:
   projects:
     subdir: contrib
