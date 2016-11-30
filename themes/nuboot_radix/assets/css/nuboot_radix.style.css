@@ -9278,7 +9278,7 @@ div.datasets-count-preview span {
   overflow: hidden;
   white-space: nowrap; }
 
-.ctools-collapsible-container .ctools-collapsible-handle {
+.node-type-harvest-source .ctools-collapsible-container .ctools-collapsible-handle {
   border-radius: 0;
   color: #fff;
   font-size: 16px;
@@ -9286,7 +9286,7 @@ div.datasets-count-preview span {
   position: relative;
   padding: 9px 21px 9px 12px; }
 
-.ctools-collapsible-container .ctools-collapsible-handle:after {
+.node-type-harvest-source .ctools-collapsible-container .ctools-collapsible-handle:after {
   font-family: "fontawesome";
   content: "\f077";
   color: rgba(255, 255, 255, 0.7);
@@ -9296,10 +9296,10 @@ div.datasets-count-preview span {
   right: 14px;
   top: 10px; }
 
-.ctools-collapsible-container.ctools-collapsed .ctools-collapsible-handle:after {
+.node-type-harvest-source .ctools-collapsible-container.ctools-collapsed .ctools-collapsible-handle:after {
   content: "\f078"; }
 
-.ctools-collapsible-content .harvest-error-log-table {
+.node-type-harvest-source .ctools-collapsible-content .harvest-error-log-table {
   margin: 0;
   margin-bottom: 20px; }
 
@@ -10011,7 +10011,7 @@ h2.pane-title {
 .panels-choose-layout .form-type-radio input {
   width: 15px; }
 
-.radix-layouts-sidebar .pane-title {
+.panel-region-sidebar .radix-layouts-sidebar h2.pane-title {
   border-radius: 3px 3px 0 0;
   border: 1px solid;
   border-bottom: none;
@@ -10019,14 +10019,15 @@ h2.pane-title {
   line-height: 1.3;
   margin: 0;
   padding: 7px 10px;
-  font-weight: normal; }
+  font-weight: normal;
+  margin: 0 !important; }
 
-.radix-layouts-sidebar .pane-block {
+.panel-region-sidebar .radix-layouts-sidebar .pane-block {
   border-radius: 5px;
   border: 1px solid #ddd;
   margin-bottom: 20px;
   padding: 0px; }
-  .radix-layouts-sidebar .pane-block .pane-content {
+  .panel-region-sidebar .radix-layouts-sidebar .pane-block .pane-content {
     background-color: transparent;
     margin: 0;
     padding: 15px; }

@@ -28,14 +28,18 @@ h2.pane-title {
 	width: 15px;
 }
 
-.radix-layouts-sidebar {
-	.pane-title {
-		@include block-title;
-	}
-	.pane-block {
-		@include blockbox;
+.panel-region-sidebar {
+	.radix-layouts-sidebar {
+		h2.pane-title {
+			@include block-title;
+			margin: 0 !important;
+		}
+		.pane-block {
+			@include blockbox;
+		}
 	}
 }
+
 .page-user {
 	.radix-layouts-content .pane-content {
   	padding: 0;
