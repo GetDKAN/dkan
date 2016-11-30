@@ -38,6 +38,7 @@
  - Fixed popular tags view.
  - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
  - Update ctools to 1.11
+ - Fixed link to group page on group node teaser when site has clean urls disabled
  - Added update hook to disable dkan_default_content on upgrades.
  - Updated visualization_entity.
  - Added fix to display the 'Request membership' link only to users that are logged in.
