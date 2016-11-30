@@ -9,7 +9,7 @@
         "maintainer": "DKAN",
         "maintainer_email": "admin@example.com",
         "license_title": "http://opendefinition.org/licenses/cc-by/",
-        "notes": "<p>Statistics on U.S. smoking rates and tobacco taxation rates for all fifty states.</p>\n<p><strong>Source:</strong> Centers for Disease Control and Prevention, 2015<br /><a href=\"http://www.cdc.gov/tobacco/data_statistics/state_data/\">http://www.cdc.gov/tobacco/data_statistics/state_data/</a></p>\n<p><strong>See associated DKAN data story:</strong><br /><a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/state-level-policies-reduce-smoking-rates-nationwide\">http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/state-level-policies-reduce-smoking-rates-nationwide</a></p>\n",
+        "notes": "<p>Statistics on U.S. smoking rates and tobacco taxation rates for all fifty states.</p>\n<p><strong>Source:</strong> Centers for Disease Control and Prevention, 2015<br /><a href=\"http://www.cdc.gov/tobacco/data_statistics/state_data/\">http://www.cdc.gov/tobacco/data_statistics/state_data/</a></p>\n<p><strong>Related Data Story: </strong><a href=\"/story/state-level-policies-reduce-smoking-rates-nationwide\">State-Level Policies Reduce Smoking Rates Nationwide</a></p>\n",
         "url": "http://default/dataset/us-tobacco-usage-statistics",
         "state": "Active",
         "log_message": "Update to resource 'U.S. Adult Smoking Rate'",
