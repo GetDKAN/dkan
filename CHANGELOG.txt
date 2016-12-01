@@ -38,7 +38,11 @@
  - Fixed popular tags view.
  - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
  - Update ctools to 1.11
+ - Fixed link to group page on group node teaser when site has clean urls disabled
  - Added update hook to disable dkan_default_content on upgrades.
+ - Updated visualization_entity.
+ - Added fix to display the 'Request membership' link only to users that are logged in.
+ - Remove content padding on data extent and social blocks. 
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
@@ -81,6 +85,7 @@ DKAN Dataset:
  - Replace field notes by field body in harvest source content type.
  - Fixed text on 'Download All' button to not display HTML.
  - Add patch for workbench_moderation to avoid php shutdown function errors.
+ - Removed 'Back to dataset' button on standalone resources.
 
 7.x-1.12.11 2016-10-20
 --------------------------
