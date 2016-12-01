@@ -10030,6 +10030,9 @@ h2.pane-title {
     background-color: transparent;
     margin: 0;
     padding: 15px; }
+  .radix-layouts-sidebar .pane-block.pane-dkan-sitewide-dkan-sitewide-social .pane-content,
+  .radix-layouts-sidebar .pane-block.pane-dkan-sitewide-dkan-sitewide-data-extent .pane-content {
+    padding: 0; }
 
 .page-user .radix-layouts-content .pane-content {
   padding: 0; }
