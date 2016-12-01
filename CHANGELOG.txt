@@ -42,6 +42,7 @@
  - Added update hook to disable dkan_default_content on upgrades.
  - Updated visualization_entity.
  - Added fix to display the 'Request membership' link only to users that are logged in.
+ - Remove content padding on data extent and social blocks. 
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
