@@ -35,8 +35,16 @@ function dkan_sitewide_panels_preprocess_panels_style_collapsible(&$variables) {
         if (in_array($facet_hash, array_keys($facet_delta_map))) {
           $mapping_parts = explode(':', $facet_delta_map[$facet_hash]);
           $facet_name = $mapping_parts[2];
+
+          // Composite facet names have the colon encoded into RFC 3986. Decode
+          // that.
+          $facet_name = rawurldecode($facet_name);
+
+          // Un-collapse the facet if it is part of the request.
           if ($facet_name == $param_name) {
             $variables['collapsed'] = 0;
+            // We have a match! no need to continue.
+            break;
           }
         }
       }
