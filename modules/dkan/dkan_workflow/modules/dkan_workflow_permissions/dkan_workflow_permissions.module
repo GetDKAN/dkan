@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Drupal needs this blank file.
@@ -11,6 +12,7 @@
  * core role along with it to work.
  */
 function dkan_workflow_permissions_form_alter(&$form, &$form_state, $form_id) {
+
   if ($form_id == 'user_profile_form' || $form_id == 'user_register_form') {
     // Check to see if expected roles even exist. If not, something has been
     // customized and it's safer to just not do this.
@@ -23,7 +25,8 @@ function dkan_workflow_permissions_form_alter(&$form, &$form_state, $form_id) {
       'Workflow Moderator',
       'Workflow Supervisor',
     );
-    foreach($required_roles as $required_role) {
+
+    foreach ($required_roles as $required_role) {
       if (!in_array($required_role, $user_roles)) {
         // @todo: Add some kind of user warning if this happens.
         return;
@@ -37,10 +40,21 @@ function dkan_workflow_permissions_form_alter(&$form, &$form_state, $form_id) {
       $rids['Workflow Moderator']   => $rids['editor'],
       $rids['Workflow Supervisor']  => $rids['site manager'],
     );
-
+    // Use Drupal.settings to pass information
+    // from our PHP code to our JavaScript code.
     drupal_add_js(array('dkan_workflow_permissions' => array('rolePairings' => $pairings)), 'setting');
-    $path = drupal_get_path('module', 'dkan_workflow_permissions');
-    $form['account']['roles']['#attached']['js'][] = "$path/dkan_workflow_permissions.js";
+    global $user;
+    if (in_array('administrator', $user->roles) || $user->uid == 1) {
+      drupal_add_js(array('dkan_workflow_permissions' => array('checkboxClass' => '#edit-roles')), 'setting');
+      $path = drupal_get_path('module', 'dkan_workflow_permissions');
+      $form['account']['roles']['#attached']['js'][] = "$path/dkan_workflow_permissions.js";
+    }
+    else {
+      drupal_add_js(array('dkan_workflow_permissions' => array('checkboxClass' => '#edit-roleassign-roles')), 'setting');
+      $path = drupal_get_path('module', 'dkan_workflow_permissions');
+      $form['#attached']['js'][] = "$path/dkan_workflow_permissions.js";
+    }
+
     $form['account']['roles']['#description'] = t('Workflow roles require certain
       core roles to be enabled. For instance, the "Workflow Contributor" role must
       always be accompanied by the "content creator" role. Users without any

@@ -180,7 +180,6 @@ abstract class Datastore {
     return file_create_url($file->uri);
   }
 
-
   /**
    * Retrieves timestamp for last import.
    */
@@ -209,7 +208,7 @@ abstract class Datastore {
  * Declares interface for forms required for interaction with Datastores through
  * the DKAN user interface.
  */
-interface DatastoreForm {
+interface DatastoreFormInterface {
 
   /**
    * Manage form.

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_data_dashboard.features.field_instance.inc
@@ -19,9 +20,8 @@ function dkan_data_dashboard_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'text',
         'settings' => array(),
-        'type' => 'text_default',
+        'type' => 'hidden',
         'weight' => 1,
       ),
       'search_result' => array(

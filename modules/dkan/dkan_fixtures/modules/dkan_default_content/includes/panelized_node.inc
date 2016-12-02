@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Default Panelized Nodes from fixtures.
+ */
+
+/**
+ * Default content extention of panelized node parent migration class.
  */
 class DefaultContentPanelizedNodesImport extends DkanPanelizedNodesImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
@@ -18,4 +23,5 @@ class DefaultContentPanelizedNodesImport extends DkanPanelizedNodesImport {
 
     parent::__construct($arguments);
   }
+
 }

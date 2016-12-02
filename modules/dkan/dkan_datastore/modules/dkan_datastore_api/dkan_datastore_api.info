@@ -1,7 +1,5 @@
 name = DKAN Datastore API
 description = Access datastore info over json.
 package = DKAN API
-version = 7.x-1.12.2
 core = 7.x
 dependencies[] = services
-files[] = tests/dkan_datastore_api.test

@@ -1,12 +1,17 @@
 <?php
 
 /**
- * Migration class used to import Default Data Stories from fixtures.
+ * @file
+ * Migration class used to import panelized Page nodes from fixtures.
+ */
+
+/**
+ * Default content extention of page fixtures migration class.
  */
 class DefaultContentPagesImport extends DkanPagesImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
@@ -26,7 +31,7 @@ class DefaultContentPagesImport extends DkanPagesImport {
     // Skip import of page if there is another one with the same UUID.
     $page = reset(entity_get_id_by_uuid('node', array($row->uuid)));
     if ($page) {
-      return false;
+      return FALSE;
     }
 
     parent::prepareRow($row);
@@ -42,7 +47,8 @@ class DefaultContentPagesImport extends DkanPagesImport {
     if (isset($row->is_homepage)) {
       // Setup imported page as the homepage.
       variable_set('site_frontpage', 'node/' . $entity->nid);
-    } else {
+    }
+    else {
       // Setup menu item on main menu.
       $this->addMainMenuLink($entity);
     }
@@ -73,4 +79,5 @@ class DefaultContentPagesImport extends DkanPagesImport {
     );
     menu_link_save($item);
   }
+
 }

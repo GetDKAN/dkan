@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_sitewide_user.features.field_base.inc
@@ -10,7 +11,7 @@
 function dkan_sitewide_user_field_default_field_bases() {
   $field_bases = array();
 
-  // Exported field_base: 'field_about'
+  // Exported field_base: 'field_about'.
   $field_bases['field_about'] = array(
     'active' => 1,
     'cardinality' => 1,

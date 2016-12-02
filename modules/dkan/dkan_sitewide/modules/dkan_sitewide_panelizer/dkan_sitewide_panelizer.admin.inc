@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Hooks and functions implementations for administration pages.
@@ -71,9 +72,9 @@ function dkan_sitewide_panelizer_admin() {
   $form['non_panelized_content_types'] = array(
     '#title' => t('Non panelized Content Types'),
     '#type' => 'checkboxes',
-    '#description' => t("This content types don't have their 'default' view panelized or&nbsp;" .
-                        "they don't have a default panel for that view.&nbsp;" .
-                        "You can panelize them <a href='/admin/config/content/panelizer'>here</a>."),
+    '#description' => t("This content types don't have their 'default' view panelized or&nbsp;
+                        they don't have a default panel for that view.&nbsp;
+                        You can panelize them <a href='/admin/config/content/panelizer'>here</a>."),
     '#disabled' => TRUE,
     '#options' => $non_panelized_content_types,
   );
@@ -100,11 +101,4 @@ function dkan_sitewide_panelizer_admin_submit($form, &$form_state) {
       variable_set('dkan_sitewide_panelizer_' . $content_type_name, FALSE);
     }
   }
-}
-
-/**
- *
- */
-function _get_panelized_content_types() {
-
 }

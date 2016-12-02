@@ -1,30 +1,34 @@
 <?php
 
 /**
+ * @file
  * Base MigrateList class for Harvest Migrations.
  *
  * Should be a simpler files retriving impletation then MigrateListFiles.
  */
+
+/**
+ * HarvestList class to hold the list of items to migrate.
+ */
 class HarvestList extends MigrateList {
 
-  protected $source_cache_dir;
+  protected $sourceCacheDir;
   protected $files;
 
   /**
    * Constructor.
    *
-   * @param $source_cache_dir
-   *
-   * This will use the file name as the item id.
+   * @param string $source_cache_dir
+   *        This will use the file name as the item id.
    */
   public function __construct($source_cache_dir) {
     parent::__construct();
-    $this->source_cache_dir = $source_cache_dir;
+    $this->sourceCacheDir = $source_cache_dir;
     $options = array(
       'recurse' => FALSE,
       'key' => 'name',
     );
-    $this->files = file_scan_directory($this->source_cache_dir, '/(.*)/', $options);
+    $this->files = file_scan_directory($this->sourceCacheDir, '/(.*)/', $options);
   }
 
   /**
@@ -40,8 +44,8 @@ class HarvestList extends MigrateList {
    * Implements MigrateList::__toString().
    */
   public function __toString() {
-    // Remove any leading
-    return preg_replace('@[^a-z0-9-]+@', '_', strtolower($this->source_cache_dir));
+    // Remove any leading.
+    return preg_replace('@[^a-z0-9-]+@', '_', strtolower($this->sourceCacheDir));
   }
 
   /**
@@ -50,4 +54,5 @@ class HarvestList extends MigrateList {
   public function computeCount() {
     return count($this->getIdList());
   }
+
 }

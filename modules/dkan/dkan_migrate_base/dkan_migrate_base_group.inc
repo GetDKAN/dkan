@@ -2,15 +2,16 @@
 
 /**
  * @file
- * Migration Class for Groups
+ * Migration Class for Groups.
  */
 
 /**
- * Migrate CKAN group
+ * Migrate CKAN group.
  */
 class MigrateCkanGroupBase extends MigrateCkanBase {
+
   /**
-   * Here we go.
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
     parent::__construct($arguments);
@@ -24,8 +25,9 @@ class MigrateCkanGroupBase extends MigrateCkanBase {
 
     $this->source = new MigrateSourceList(new CKANListJSON(
       $list_url,
-      array('page' => $this->page,
-            'offset' => $this->offset,
+      array(
+        'page' => $this->page,
+        'offset' => $this->offset,
       )
     ),
     new CKANItemJSON($item_url, $fields), $fields);
@@ -61,4 +63,5 @@ class MigrateCkanGroupBase extends MigrateCkanBase {
       "description" => "Description",
     );
   }
+
 }

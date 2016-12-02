@@ -1,15 +1,11 @@
 name = DKAN Sitewide Demo Front
+description = Default front page module. Included for backwards compatibility; depricated. Don't enable if you're not already using.
 core = 7.x
-package = DKAN
-project = dkan
+package = DKAN Deprecated
 dependencies[] = ctools
 dependencies[] = page_manager
-dependencies[] = views
 descriptions = Customizations to DKAN home page.
 features[ctools][] = context:context:3
 features[ctools][] = page_manager:pages_default:1
-features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2
-features[page_manager_pages][] = front_page
-features[views_view][] = popular_tags
 fetures[context][] = front

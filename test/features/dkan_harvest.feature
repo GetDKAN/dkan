@@ -108,7 +108,7 @@ Feature: Dkan Harvest
     And I click "Edit"
     And I press "Delete"
     Then I should see "Are you sure you want to delete Source one?"
-    When I select the radio button "Leave content published but mark as orphan." with the id "edit-dataset-op-2"
+    When I select the radio button "Leave content published." with the id "edit-dataset-op-2"
     And I press "Delete Sources"
     And I wait for the batch job to finish
     Then I should see "Harvest Source Source one has been deleted."
@@ -162,11 +162,12 @@ Feature: Dkan Harvest
     And I am logged in as a "<role>"
     And I am on the "Source one" page
     Given The "source_one" source is harvested
-    Then I should see the link "Event"
+    Then I should see the link "Events"
     When I click "Event"
     Then The page status should be 'ok'
     And I should see a table with a class name "harvest-event-log"
     And the table with the class name "harvest-event-log" should have 1 row
+    And I should see the text "OK"
 
     Examples:
     | role               |

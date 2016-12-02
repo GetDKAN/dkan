@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_topics.entity_path.inc
@@ -37,7 +38,7 @@ function dkan_topics_entity_path_config_default() {
   $entity_path_config->config = array(
     'pathauto_cleanstring' => 0,
     'space_separator' => 1,
-    'space_separator_char' => '_',
+    'space_separator_char' => '-',
     'path_case' => 'lowercase',
   );
   $export['taxonomy_term:tags'] = $entity_path_config;
