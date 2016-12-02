@@ -151,7 +151,7 @@ Feature: Dkan Harvest
     And I should see the text "Harvest now"
     And I should see the text "Florida Bike Lanes Harvest"
 
-  @api @harvest_rollback @javascript
+  @api @harvest_rollback
   Scenario: As a user I should be able to refresh the preview on the Harvest Source.
     Given users:
       | name             | mail                   | roles           |
@@ -166,9 +166,7 @@ Feature: Dkan Harvest
     Then I should see the link "Preview"
     And I click "Preview"
     And I should see the text "Harvest now"
-    And I should see the text "Refresh"
-    When I click "Refresh"
-    And I wait for the batch job to finish
+    When I press "Refresh"
     Then The page status should be 'ok'
     And I should see the text "Preview"
 
