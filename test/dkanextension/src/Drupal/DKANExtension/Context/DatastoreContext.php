@@ -2,11 +2,21 @@
 
 namespace Drupal\DKANExtension\Context;
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 
 /**
  * Defines application features from the specific context.
  */
 class DatastoreContext extends RawDKANContext {
+
+  /**
+   * @BeforeScenario
+   */
+  public function gatherContexts(BeforeScenarioScope $scope){
+    parent::gatherContexts($scope);
+    $environment = $scope->getEnvironment();
+    $this->pageContext = $environment->getContext('Drupal\DKANExtension\Context\PageContext');
+  }
 
   /**
    * @Given I am on the resource :title
@@ -44,6 +54,52 @@ class DatastoreContext extends RawDKANContext {
           $wrapper->save();
           $this->dropTable($table_name);
         }
+      }
+    }
+  }
+
+  /**
+   * @Then I :outcome be able to manage the :resource_title datastore
+   */
+  public function iBeAbleToManageTheDatastore($outcome, $resource_title)
+  {
+    // Throw an exception if the outcome is not a valid value.
+    if (!in_array($outcome, array('should', 'should not'))) {
+      throw new \Exception("$outcome value is not valid.");
+    }
+
+    // Get node ID associated with the specified title.
+    $node_id = $this->getNidByTitle($resource_title);
+    if (empty($node_id)) {
+      throw new \Exception("Resource with the title '$resource_title' doesn't exist.");
+    }
+
+    // Try to visit every datastore page associated with the specified resource.
+    $session = $this->getSession();
+    $base_path = 'node/' . $node_id;
+    $datastore_paths = array(
+            '/datastore',
+            '/datastore/delete-items',
+            '/datastore/unlock',
+            '/datastore/drop',
+            '/datastore/clear'
+    );
+
+    foreach ($datastore_paths as $datastore_path) {
+      $full_path =  $base_path . $datastore_path;
+      $session = $this->visit($full_path, $session);
+      $status_code = $this->getStatusCode();
+      $on_login = $this->pageContext->containsBasePath($session, '/user/login');
+
+      if ($status_code != 403 && $status_code != 200) {
+        throw new \Exception("A $status_code error was thrown when visiting the URL '$full_path'.");
+      }
+      if ($outcome === 'should' && $status_code != 200) {
+        throw new \Exception("The user is not able to access the '$full_path' URL.");
+      }
+
+      if ($outcome === 'should not' && $status_code == 200 && !$on_login) {
+        throw new \Exception("The user is able to access the '$full_path' URL.");
       }
     }
   }

@@ -12,12 +12,14 @@ use Behat\Gherkin\Node\TableNode;
  */
 class ResourceContext extends RawDKANEntityContext{
 
-    public function __construct(){
+    use ModeratorTrait;
+
+    public function __construct() {
         parent::__construct(
-          'node',
-          'resource',
-          // note that this field is called "Groups" not "publisher" in the form, should the field name be updated?
-          array('publisher' => 'og_group_ref', 'published' => 'status')
+            'node',
+            'resource',
+            array('publisher' => 'og_group_ref', 'published' => 'status'),
+            array('moderation', 'moderation_date')
         );
     }
 
@@ -45,4 +47,33 @@ class ResourceContext extends RawDKANEntityContext{
     variable_set("dkan_dataset_format_previews_tid{$format->tid}", $preview_settings);
   }
 
+    /**
+     * Override RawDKANEntityContext::post_save()
+     */
+    public function post_save($wrapper, $fields) {
+        parent::post_save($wrapper, $fields);
+        $this->moderate($wrapper, $fields);
+    }
+
+  /**
+   * @Then I should see a :previewtype preview
+   */
+  public function iShouldSeeAPreview($previewtype)
+  {
+    // XPATH for particualar preview type
+    $previewtype_paths = array(
+      'recline' => '//div[@class="recline-data-explorer"]',
+      'zip' => '//div[@id="recline-zip-list"]',
+      'image' => '//div[@id="recline-image-preview"]',
+      'xml' => '//div[@id="recline-xml-preview"]',
+      'json' => '//div[@id="recline-data-json"]',
+      'geojson' => '//div[@id="map"]',
+      // @todo: Add wms and arcgis tests
+    );
+    $page = $this->getSession()->getPage();
+    $preview = $page->find('xpath', $previewtype_paths[$previewtype]);
+    if ($preview === NULL) {
+      throw new \InvalidArgumentException(sprintf('Preview of type %s not found on page.', $previewtype));
+    }
+  }
 }

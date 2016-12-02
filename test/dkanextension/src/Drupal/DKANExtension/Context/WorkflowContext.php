@@ -1,5 +1,8 @@
 <?php
 namespace Drupal\DKANExtension\Context;
+use Behat\Behat\Hook\Scope\BeforeFeatureScope;
+use Behat\Behat\Hook\Scope\AfterFeatureScope;
+use Drupal\DKANExtension\Hook\Scope\BeforeDKANEntityCreateScope;
 
 use \stdClass;
 
@@ -9,6 +12,62 @@ use \stdClass;
 class WorkflowContext extends RawDKANContext {
 
   protected $old_global_user;
+
+  /**
+   * @BeforeFeature @enableDKAN_Workflow
+   */
+  public static function enableDKAN_Workflow(BeforeFeatureScope $scope)
+  {
+    if (!parent::shouldEnableModule("dkan_workflow")) {
+      return;
+    }
+    // This order matters through drupal_flush_all_caches.
+    module_enable(array(
+      'link_badges',
+      'menu_badges',
+      'views_dkan_workflow_tree',
+      'workbench',
+      'workbench_moderation',
+      'workbench_email',
+    ));
+
+    // Enable 'open_data_federal_extras' module.
+    module_enable(array(
+      'dkan_workflow_permissions',
+    ));
+
+    module_enable(array(
+      'dkan_workflow',
+    ));
+
+    features_revert(array(
+      'dkan_workflow_permissions' => array('roles_permissions'),
+    ));
+
+    drupal_flush_all_caches();
+  }
+
+  /**
+   * @AfterFeature @enableDKAN_Workflow
+   */
+  public static function disableDKAN_Workflow(AfterFeatureScope $event)
+  {
+    if (!parent::shouldEnableModule("dkan_workflow")) {
+      return;
+    }
+
+    // Enable 'open_data_federal_extras' module.
+    module_disable(array(
+      'dkan_workflow',
+      'dkan_workflow_permissions',
+      'views_dkan_workflow_tree',
+      'workbench',
+      'workbench_email',
+      'workbench_moderation',
+    ));
+
+    drupal_flush_all_caches();
+  }
 
   /**
    * @Given I update the moderation state of :named_entity to :state
@@ -63,7 +122,7 @@ class WorkflowContext extends RawDKANContext {
       $user = $current_user;
 
       // This function actually updates the transition.
-      workbench_moderation_moderate($node, $state_key, $current_user->uid);
+      workbench_moderation_moderate($node, $state_key);
 
       // the workbench_moderation_moderate defer some status updates on the
       // node (currently the "Publish" status) to the process shutdown. Which
@@ -75,7 +134,7 @@ class WorkflowContext extends RawDKANContext {
       // execution and run it.
       $callbacks = &drupal_register_shutdown_function();
       while (list($key, $callback) = each($callbacks)) {
-        if ($callback['callback'] == "workbench_moderation_store") {
+        if ($callback['callback'] == 'workbench_moderation_store') {
           call_user_func_array($callback['callback'], $callback['arguments']);
           unset($callbacks[$key]);
         }
@@ -170,42 +229,17 @@ class WorkflowContext extends RawDKANContext {
   }
 
   /**
-   * @beforeDKANEntityCreate
+   * @Then I click the :link next to :title
    */
-  public function setGlobalUserBeforeEntity(\Drupal\DKANExtension\Hook\Scope\BeforeDKANEntityCreateScope $scope) {
-    // Don't do anything if workbench isn't enabled or this isn't a node.
-    $wrapper = $scope->getEntity();
-    if (!function_exists('workbench_moderation_moderate_node_types') || $wrapper->type() !== 'node'){
-      return;
+  public function iClickTheLinkNextToTitle($link, $title) {
+    $items = $this->getSession()->getPage()->findAll('xpath', "//span[contains(@class,'views-dkan-workflow-tree-title')]/a[text()=' " . $title . "']/../../span[contains(@class, 'views-dkan-workflow-tree-action')]/a[text()='" . $link . "']");
+    if (empty($items)) {
+      throw new \Exception("Link '$link' not found on the page.");
     }
-    $types = workbench_moderation_moderate_node_types();
-    $node_type = $wrapper->getBundle();
-
-    // Also don't do anything if this isn't a moderation type.
-    if (!in_array($node_type, $types)) {
-      return;
-    }
-
-    // IF the author is set (there was a logged in user or it was set during creation)
-    // See RawDKANEntity::pre_save()
-    if (isset($wrapper->author)) {
-      // Then set the global user so that stupid workbench is happy.
-      global $user;
-      // Save a backup of the user (should be anonymous)
-      $this->old_global_user = $user;
-      $user = $wrapper->author->value();
-    }
+    $url = reset($items)->getAttribute('href');
+    $session = $this->getSession();
+    $session->visit($this->locatePath($url));
   }
 
-  /**
-   * @afterDKANEntityCreate
-   */
-  public function removeGlobalUserAfterEntity(\Drupal\DKANExtension\Hook\Scope\AfterDKANEntityCreateScope $scope) {
-    // After we've created the entity, set it back the the old global user (anon) so it doesn't pollute other things.
-    if (isset($this->old_global_user)) {
-      global $user;
-      $user = $this->old_global_user;
-    }
-  }
 }
 

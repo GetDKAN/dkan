@@ -50,7 +50,7 @@ class SearchAPIContext extends RawDrupalContext implements SnippetAcceptingConte
     }
 
     foreach ($indexes as $index) {
-      $items = search_api_get_items_to_index($this->search_indexes[$index]);
+      $items = search_api_get_items_to_index($this->search_indexes[$index], 10);
       search_api_index_specific_items($this->search_indexes[$index], $items);
     }
   }

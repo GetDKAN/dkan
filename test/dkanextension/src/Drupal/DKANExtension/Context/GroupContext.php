@@ -30,7 +30,6 @@ class GroupContext extends RawDKANEntityContext {
     $this->dkanContext = $environment->getContext('Drupal\DKANExtension\Context\DKANContext');
   }
 
-
   /**
    * Creates OG Groups from a table.
    *
