@@ -70,6 +70,7 @@ commands:
         echo "Creating theme $ARGS at $THEME_DIR"
       fi
       ORIGINAL_THEME=`ahoy drush vget theme_default --format=string`
+      ahoy drush pm-enable radix -y
       ahoy drush vset theme_default radix
       ahoy cmd-proxy drush cc drush
       KIT_URL="https://github.com/NuCivic/radix-kit-nuboot/archive/master.zip"
@@ -82,6 +83,7 @@ commands:
         ahoy drush en $ARGS -y
         ahoy drush vset theme_default $ARGS -y
         ahoy drush pm-disable $ORIGINAL_THEME -y
+        ahoy drush pm-disable radix -y
       else
         echo "Can't seem to download kit from $KIT_URL, restoring original theme"
         ahoy drush vset theme_default $ORIGINAL_THEME
