@@ -63,7 +63,7 @@ Feature: Dataset Features
       | Resource 05 |           | csv    | Katie  | Yes       | Dataset 08 |             |
       | Resource 06 | Group 02  | csv    | Katie  | Yes       | Dataset 09 |             |
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Add Dataset" page
@@ -124,7 +124,7 @@ Feature: Dataset Features
     And I press "Delete"
     Then I should see "Dataset 03 has been deleted"
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Add a dataset to group that I am a member of
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
@@ -198,7 +198,7 @@ Feature: Dataset Features
     Then I should see "Dataset 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Add group to a dataset with resources
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
@@ -208,7 +208,7 @@ Feature: Dataset Features
     Then I should see "Dataset 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Remove group from dataset with resources
     Given I am logged in as "Katie"
     And I am on "Dataset 09" page
