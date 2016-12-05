@@ -59,3 +59,23 @@ def behat_parse_params args
   {:files => files, :params => params}
 end
 
+def behat_parse_suite file
+  default = "dkan_starter"
+
+  return default if  file.nil? or file.empty?
+
+  key = file.split('/').reverse[3]
+
+  return default if key.nil?
+
+  types = {
+    :dkan => "dkan",
+    :config => "custom",
+  }
+
+  if types[key.to_sym]
+    types[key.to_sym]
+  else
+    default
+  end
+end
