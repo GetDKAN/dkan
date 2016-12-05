@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @file
+ * Class to get content type and name of remote file.
+ *
+ * Socrata shim copied from data.gov.
+ */
+
 namespace dkanDataset;
 
 /**
