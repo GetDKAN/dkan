@@ -28,9 +28,10 @@ files = balance(parsed[:files])
 
 files[CIRCLE_NODE_INDEX].each_index do |i|
   file = Pathname(files[CIRCLE_NODE_INDEX][i]).realpath.to_s
-  puts "RUNNING: ahoy dkan test #{file} --format=pretty --out=std --format=junit --out='#{CIRCLE_ARTIFACTS}/junit' #{params} --colors"
+  suite = behat_parse_suite(file)
+  puts "RUNNING: ahoy dkan test #{file} --suite=#{suite} --format=pretty --out=std --format=junit --out='#{CIRCLE_ARTIFACTS}/junit' #{params} --colors"
   IO.popen(
-  "ahoy dkan test #{file} --format=pretty --out=std --format=junit --out='#{CIRCLE_ARTIFACTS}/junit' #{params} --colors"
+  "ahoy dkan test #{file} --suite=#{suite} --format=pretty --out=std --format=junit --out='#{CIRCLE_ARTIFACTS}/junit' #{params} --colors"
   ) do |io|
     while line = io.gets
       print line
