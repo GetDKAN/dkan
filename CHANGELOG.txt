@@ -57,6 +57,8 @@ DKAN Harvest:
  - Added 'Add Source' shortcut on Harvest Dashboard pages.
  - Fixed breadcrumb on harvest sources pages: Preview, Manage Datasets, Events, Errors.
  - Fixed harvesting of resources with remote files with redirects.
+ - Fix "Manage Datastore" tab leaking to the harvest source node.
+ - Add icons for harvest source tabs.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
@@ -86,6 +88,7 @@ DKAN Dataset:
  - Fixed text on 'Download All' button to not display HTML.
  - Add patch for workbench_moderation to avoid php shutdown function errors.
  - Removed 'Back to dataset' button on standalone resources.
+ - Removed warning when a resource is created without title.
 
 7.x-1.12.11 2016-10-20
 --------------------------
