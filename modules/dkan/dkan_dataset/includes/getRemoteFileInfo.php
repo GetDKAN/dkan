@@ -57,6 +57,9 @@ class GetRemoteFileInfo {
     $info = array();
 
     $ch = $this->getBaseCh($url, $agent, $followRedirect);
+    $output = fopen('/dev/null', 'w');
+    $header_dir = $tmp . '/curl_header';
+    $headerfile = fopen($header_dir, 'w+');
 
     curl_setopt($ch, CURLOPT_FILE, $output);
     curl_setopt($ch, CURLOPT_WRITEHEADER, $headerfile);
