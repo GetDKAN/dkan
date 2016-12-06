@@ -330,10 +330,10 @@ Feature: Resource
   Scenario: Recline embed cache enabled
     Given I am an anonymous user
       And I am on "Resource 16" resource embed page
-      Then I should see a cached page
+      Then I "should" see a cached page
 
   @cacheDisabled
   Scenario: Recline disabled cache embed
     Given I am an anonymous user
       And I am on "Resource 16" resource embed page
-      Then I should not see a cached page
+      Then I "should not" see a cached page
