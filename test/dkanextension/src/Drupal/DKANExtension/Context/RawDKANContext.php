@@ -10,7 +10,7 @@ use Drupal\DKANExtension\ServiceContainer\EntityStore;
 use Drupal\DKANExtension\ServiceContainer\PageStore;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-
+use EntityFieldQuery;
 
 /**
  * Defines application features from the specific context.
