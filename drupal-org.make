@@ -188,7 +188,7 @@ projects:
       type: git
       url: 'http://git.drupal.org/project/link_iframe_formatter.git'
       revision: 228f9f4
-    patch: 
+    patch:
       2287233: 'https://www.drupal.org/files/issues/link_iframe_formatter-coding-standards.patch'
   manualcrop:
     version: '1.5'
@@ -212,7 +212,7 @@ projects:
   media_vimeo:
     version: '2.1'
     patch:
-      2446199: 'https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch' 
+      2446199: 'https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch'
   menu_admin_per_menu:
     version: '1.1'
   menu_badges:
@@ -317,7 +317,7 @@ projects:
   simple_gmap:
     version: '1.3'
   strongarm:
-    version: '2.0'  
+    version: '2.0'
   tablefield:
     version: '2.5'
   taxonomy_menu:
@@ -355,15 +355,9 @@ projects:
   workbench_email:
     version: '3.11'
   workbench_moderation:
-    download:
-      type: git
-      url: http://git.drupal.org/project/workbench_moderation.git
-      branch: 7.x-1.x
-      revision: 2c91211
-    patch:
-      2393771: 'https://www.drupal.org/files/issues/specify_change_state_user-2393771-5.patch'
-      1838640: 'https://www.drupal.org/files/issues/workbench_moderation-fix_callback_argument-1838640-23.patch'
-      2645622: 'https://www.drupal.org/files/issues/node-deleted-before-shutdown-function-2645622-4.patch'
+    version: '3.0'
+  drafty:
+    version: '1.0-beta3'
 libraries:
   chosen:
     download:
@@ -380,7 +374,7 @@ libraries:
       type: git
       url: 'https://github.com/FortAwesome/Font-Awesome.git'
       revision: 13d5dd373cbf3f2bddd8ac2ee8df3a1966a62d09
-    directory_name: font_awesome  
+    directory_name: font_awesome
   jquery.imagesloaded:
     download:
       type: file
