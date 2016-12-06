@@ -283,13 +283,13 @@ Feature: Resource
   Scenario: Recline embed cache enabled
     Given I am an anonymous user
       And I am on "Resource 01" resource embed page
-      Then I should see a cached page
+      Then I "should" see a cached page
 
   @cacheDisabled
   Scenario: Recline disabled cache embed
     Given I am an anonymous user
       And I am on "Resource 01" resource embed page
-      Then I should not see a cached page
+      Then I "should not" see a cached page
 
   # https://github.com/Behat/Behat/issues/834
   @dummy
