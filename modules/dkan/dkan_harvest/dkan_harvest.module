@@ -42,6 +42,16 @@ function dkan_harvest_theme() {
 }
 
 /**
+ * Implements hook_preprocess_page().
+ */
+function dkan_harvest_preprocess_page(&$vars) {
+  $path = drupal_get_path('module', 'dkan_harvest');
+  if (isset($vars['node']) && $vars['node']->type == 'harvest_source') {
+    drupal_add_js($path . '/js/harvest_source_summary.js');
+  }
+}
+
+/**
  * Theme function to create harvest source summary block.
  */
 function theme_dkan_harvest_source_summary(&$vars) {
@@ -60,7 +70,6 @@ function theme_dkan_harvest_source_summary(&$vars) {
           'id' => 'harvest_source_summary_uri',
           'class' => array('form-control'),
           'value' => $wrapper->field_dkan_harvest_source_uri->value(),
-          'disabled' => TRUE,
         ),
         '#autocomplete_path' => FALSE,
       ),
@@ -155,7 +164,7 @@ function dkan_harvest_menu() {
   $items = array();
 
   $items['node/%node/harvest-events'] = array(
-    'title' => t('Events'),
+    'title' => 'Events',
     'page callback' => 'dkan_harvest_page_event_log',
     'page arguments' => array(1),
     'access callback' => 'dkan_harvest_page_tab_access',
@@ -166,7 +175,7 @@ function dkan_harvest_menu() {
   );
 
   $items['node/%node/harvest-errors'] = array(
-    'title' => t('Errors'),
+    'title' => 'Errors',
     'page callback' => 'dkan_harvest_page_error_log',
     'page arguments' => array(1),
     'access callback' => 'dkan_harvest_page_tab_access',
@@ -177,7 +186,7 @@ function dkan_harvest_menu() {
   );
 
   $items['node/%node/harvest-preview'] = array(
-    'title' => t('Preview'),
+    'title' => 'Preview',
     'page callback' => 'dkan_harvest_page_preview',
     'page arguments' => array(1),
     'access callback' => 'dkan_harvest_page_tab_access',
@@ -307,8 +316,26 @@ function dkan_harvest_harvest_now_form($form, &$form_state, $node) {
     '#type' => 'submit',
     '#value' => t('Harvest now'),
   );
+  $form['refresh'] = array(
+    '#type' => 'submit',
+    '#value' => t('Refresh'),
+    '#submit' => array('dkan_harvest_refresh'),
+  );
 
   return $form;
+}
+
+/**
+ * Submit callback for refreshing the harvest source preview.
+ */
+function dkan_harvest_refresh($form, &$form_state) {
+  $node = node_load($form['#node']->nid);
+  // Get harvest source from node.
+  $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
+  // Delete the cache dir in order to force the cache of the content.
+  $harvestSource->deleteCacheDir();
+  // Redirect to Preview page.
+  $form_state['redirect'] = 'node/' . $node->nid . '/harvest-preview';
 }
 
 /**
