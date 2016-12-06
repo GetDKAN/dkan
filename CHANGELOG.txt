@@ -91,7 +91,8 @@ DKAN Dataset:
  - Better support of downloading remote files from the resource view page
    "Download" button.
  - Removed warning when a resource is created without title.
-
+ - Cache recline embeds
+ 
 7.x-1.12.11 2016-10-20
 --------------------------
 - Fixed a bug in Recline regarding file objects and node forms that caused errors when using the "view changes" button on Dataset or Resource edit form
