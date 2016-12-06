@@ -4,7 +4,7 @@ includes:
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta2/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
-  - "https://raw.githubusercontent.com/NuCivic/recline/CIVIC-4089-cache-recline-embeds/recline.make"
+  - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
 projects:
   admin_menu:
     version: '3.0-rc5'
@@ -279,7 +279,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/recline.git'
-      branch: CIVIC-4089-cache-recline-embeds
+      branch: 7.x-1.x
   ref_field:
     download:
       type: git
@@ -355,15 +355,9 @@ projects:
   workbench_email:
     version: '3.11'
   workbench_moderation:
-    download:
-      type: git
-      url: http://git.drupal.org/project/workbench_moderation.git
-      branch: 7.x-1.x
-      revision: 2c91211
-    patch:
-      2393771: 'https://www.drupal.org/files/issues/specify_change_state_user-2393771-5.patch'
-      1838640: 'https://www.drupal.org/files/issues/workbench_moderation-fix_callback_argument-1838640-23.patch'
-      2645622: 'https://www.drupal.org/files/issues/node-deleted-before-shutdown-function-2645622-4.patch'
+    version: '3.0'
+  drafty:
+    version: '1.0-beta3'
 libraries:
   chosen:
     download:
