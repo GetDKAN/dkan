@@ -64,16 +64,13 @@ class GetRemoteFileInfo {
     $info = array();
 
     $ch = $this->getBaseCh($url, $agent, $followRedirect);
+
+    // Setup file and headers destination.
     $output = fopen('/dev/null', 'w');
     $header_dir = $tmp . '/curl_header';
     $headerfile = fopen($header_dir, 'w+');
-
     curl_setopt($ch, CURLOPT_FILE, $output);
     curl_setopt($ch, CURLOPT_WRITEHEADER, $headerfile);
-
-    $output = fopen('/dev/null', 'w');
-    $header_dir = $tmp . '/curl_header';
-    $headerfile = fopen($header_dir, 'w+');
 
     curl_exec($ch);
     fclose($headerfile);
