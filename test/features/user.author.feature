@@ -58,7 +58,7 @@ Feature: User
     And I am on "Katie" page
     Then I should see "2" items in the "user content" region
 
-  @api @fixme @testBug
+  @fixme @testBug
     # TODO: Needs definition.
     #       This would take a long time to test manually, having to wait N minutes each time it's run.
     #       A possible solution to this would be to edit the cookies directly and speed up the waiting time

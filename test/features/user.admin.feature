@@ -42,7 +42,7 @@ Feature: User
       | Dataset 03 | Group 01  | Gabriel | Yes              | results  | Test        |
       | Dataset 04 | Group 01  | Katie   | Yes              | world    | Test        |
 
-
+   @javascript
   Scenario: Edit any user account
     Given I am logged in as "John"
     And I am on "Users" page
