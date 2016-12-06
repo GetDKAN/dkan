@@ -9026,6 +9026,16 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
 p.dkan-profile-page-user-name {
   display: inline-block; }
 
+input[type="submit"],
+.btn-primary,
+body.maintenance-page .form-actions .btn:first-child,
+body.maintenance-page .form-actions .media-widget > a:first-child,
+.btn.btn-primary,
+.media-widget > a.btn-primary,
+body.maintenance-page .form-actions .btn:first-child,
+body.maintenance-page .form-actions .media-widget > a:first-child {
+  margin-right: 1em; }
+
 input.use-ajax-submit {
   margin-right: 10px; }
 
