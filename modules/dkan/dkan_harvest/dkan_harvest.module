@@ -316,8 +316,26 @@ function dkan_harvest_harvest_now_form($form, &$form_state, $node) {
     '#type' => 'submit',
     '#value' => t('Harvest now'),
   );
+  $form['refresh'] = array(
+    '#type' => 'submit',
+    '#value' => t('Refresh'),
+    '#submit' => array('dkan_harvest_refresh'),
+  );
 
   return $form;
+}
+
+/**
+ * Submit callback for refreshing the harvest source preview.
+ */
+function dkan_harvest_refresh($form, &$form_state) {
+  $node = node_load($form['#node']->nid);
+  // Get harvest source from node.
+  $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
+  // Delete the cache dir in order to force the cache of the content.
+  $harvestSource->deleteCacheDir();
+  // Redirect to Preview page.
+  $form_state['redirect'] = 'node/' . $node->nid . '/harvest-preview';
 }
 
 /**
