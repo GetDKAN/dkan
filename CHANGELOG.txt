@@ -88,6 +88,8 @@ DKAN Dataset:
  - Fixed text on 'Download All' button to not display HTML.
  - Add patch for workbench_moderation to avoid php shutdown function errors.
  - Removed 'Back to dataset' button on standalone resources.
+ - Better support of downloading remote files from the resource view page
+   "Download" button.
  - Removed warning when a resource is created without title.
 
 7.x-1.12.11 2016-10-20
