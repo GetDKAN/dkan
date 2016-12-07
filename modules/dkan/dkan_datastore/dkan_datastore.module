@@ -163,7 +163,7 @@ function dkan_datastore_feeds_access($action, $node) {
   }
 
   // All available operations requires the 'manage datastore' permission.
-  if (user_access('manage datastore') && node_access('update', $node)) {
+  if (user_access('manage datastore') && node_access('update', $node) && $node->type == 'resource') {
     return TRUE;
   }
 
