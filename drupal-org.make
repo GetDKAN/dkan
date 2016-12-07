@@ -195,7 +195,7 @@ projects:
     patch:
       2504119: 'https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch'
   markdown:
-    version: '1.4'
+    version: '1.5'
   markdowneditor:
     version: '1.4'
     patch:
