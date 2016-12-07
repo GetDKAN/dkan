@@ -23,28 +23,23 @@ class GetRemoteFileInfo {
   public function curlHeader($url, $agent, $followRedirect, $tmp) {
     $info = array();
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_USERAGENT, $agent);
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_FRESH_CONNECT, TRUE);
-    curl_setopt($ch, CURLOPT_FILETIME, TRUE);
-    curl_setopt($ch, CURLOPT_NOBODY, TRUE);
-    curl_setopt($ch, CURLOPT_HEADER, TRUE);
+    $ch = $this->getBaseCh($url, $agent, $followRedirect);
 
-    curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
-    curl_setopt($ch, CURLOPT_COOKIE, "");
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $followRedirect);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+    // This changes the request method to HEAD. No need to "GET" the hole link.
+    curl_setopt($ch, CURLOPT_NOBODY, TRUE);
+
     $http_heading = curl_exec($ch);
+
     if (!$http_heading) {
-      return NULL;
+      // Should set the GetRemoteFileInfo::$info to false.
+      return FALSE;
     }
+
     $info['header'] = $this->httpParseHeaders($http_heading);
     $info['info'] = curl_getinfo($ch);
+    $info['effective_url'] = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
     curl_close($ch);
+
     // If the server didn't support HTTP HEAD, use the shim.
     if ((!empty($info['header']['X-Error-Message']) && trim($info['header']['X-Error-Message']) == 'HEAD is not supported')
         || empty($info['header']['Content-Type'])) {
@@ -60,26 +55,65 @@ class GetRemoteFileInfo {
    */
   private function curlHeadShim($url, $agent, $followRedirect, $tmp) {
     $info = array();
-    $ch = curl_init();
+
+    $ch = $this->getBaseCh($url, $agent, $followRedirect);
+
+    curl_setopt($ch, CURLOPT_FILE, $output);
+    curl_setopt($ch, CURLOPT_WRITEHEADER, $headerfile);
+
     $output = fopen('/dev/null', 'w');
     $header_dir = $tmp . '/curl_header';
     $headerfile = fopen($header_dir, 'w+');
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_FILE, $output);
-    curl_setopt($ch, CURLOPT_WRITEHEADER, $headerfile);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-    curl_setopt($ch, CURLOPT_HEADER, TRUE);
-    curl_setopt($ch, CURLOPT_USERAGENT, $agent);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $followRedirect);
-    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+
     curl_exec($ch);
     fclose($headerfile);
     $http_heading = file_get_contents($header_dir);
     unset($header_dir);
-    $info['info'] = curl_getinfo($ch);
-    curl_close($ch);
+
     $info['header'] = $this->httpParseHeaders($http_heading);
+    $info['info'] = curl_getinfo($ch);
+    $info['effective_url'] = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+
+    curl_close($ch);
     return $info;
+  }
+
+  /**
+   * Helper method to construct a base cURL handle.
+   */
+  private function getBaseCh($url, $agent, $followRedirect) {
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    // Spoof the User Agent.
+    curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+
+    // Wait only 5 seconds.
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+
+    // Return the transfer as a string of the return value of curl_exec()
+    // instead of outputting it out directly.
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+
+    // Follow redirects.
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $followRedirect);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+
+    // Force the use of a new connection instead of a cached one.
+    curl_setopt($ch, CURLOPT_FRESH_CONNECT, TRUE);
+
+    // Attempt to retrieve the modification date of the remote document.
+    curl_setopt($ch, CURLOPT_FILETIME, TRUE);
+
+    // Cookies.
+    curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
+    curl_setopt($ch, CURLOPT_COOKIE, "");
+
+    // Include the header in the output.
+    curl_setopt($ch, CURLOPT_HEADER, TRUE);
+
+    return $ch;
   }
 
   /**
@@ -98,6 +132,12 @@ class GetRemoteFileInfo {
   public function getType() {
     if ($info = $this->getInfo()) {
       $type = $info['header']['Content-Type'];
+      // If the url had redirects, CURL will stack the Content Types from all
+      // the urls. Get the last url.
+      if (is_array($type)) {
+        $type = array_pop($type);
+      }
+
       if ($explode = explode(";", $type)) {
         return $explode[0];
       }
@@ -105,9 +145,45 @@ class GetRemoteFileInfo {
         return $type;
       }
     }
-    else {
-      return NULL;
+
+    return NULL;
+  }
+
+  /**
+   * Return a canonical file extension from the file type.
+   */
+  public function getExtension() {
+    $extension = NULL;
+
+    if (!is_null($this->getType())) {
+      include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+      $mimetype_mappings = file_mimetype_mapping();
+      $mimetypes = $mimetype_mappings['mimetypes'];
+      $extension_key = array_search($this->getType(), $mimetypes);
+      if ($extension_key !== FALSE) {
+        // "canonical" file extension found!
+        $extensions = $mimetype_mappings['extensions'];
+        $extension = array_search($extension_key, $extensions);
+      }
+      else {
+        // No "canonical" extension found. Try to parse the url.
+        $path = parse_url($this->getEffectiveUrl(), PHP_URL_PATH);
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+      }
     }
+
+    return $extension;
+  }
+
+  /**
+   * Return effective_url (last URL after redirects).
+   */
+  public function getEffectiveUrl() {
+    $info = $this->getInfo();
+    if (!empty($info)) {
+      return $info['effective_url'];
+    }
+    return FALSE;
   }
 
   /**

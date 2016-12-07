@@ -129,10 +129,7 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I click "Back to dataset"
-    Then I should see "There is no dataset associated with this resource"
-    Given I am on "Dataset 04" page
-    Then I should not see "Resource 07" in the "dataset resource list" region
+    And I should not see the link "Back to dataset"
 
   @noworkflow
   Scenario: Add a resource with no group to a dataset with group
@@ -284,6 +281,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a recline preview
 
+  @javascript
   Scenario: Image preview
     Given I am logged in as "Katie"
     And I am on "Resource 12" page
@@ -298,6 +296,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a zip preview
 
+  @javascript
   Scenario: XML preview
     Given I am logged in as "Katie"
     And I am on "Resource 14" page
@@ -326,3 +325,15 @@ Feature: Resource
     When I click "Edit"
     And I press "Save"
     Then I should see a recline preview
+
+  @cacheEnabled
+  Scenario: Recline embed cache enabled
+    Given I am an anonymous user
+      And I am on "Resource 16" resource embed page
+      Then I "should" see a cached page
+
+  @cacheDisabled
+  Scenario: Recline disabled cache embed
+    Given I am an anonymous user
+      And I am on "Resource 16" resource embed page
+      Then I "should not" see a cached page

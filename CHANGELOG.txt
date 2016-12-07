@@ -38,7 +38,12 @@
  - Fixed popular tags view.
  - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
  - Update ctools to 1.11
+ - Fixed link to group page on group node teaser when site has clean urls disabled
  - Added update hook to disable dkan_default_content on upgrades.
+ - Updated visualization_entity.
+ - Added fix to display the 'Request membership' link only to users that are logged in.
+ - Remove content padding on data extent and social blocks. 
+ - Upgrade workbench_moderation to v3.0.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
@@ -52,6 +57,9 @@ DKAN Harvest:
  - Added Batch API on the 'Preview' page.
  - Added 'Add Source' shortcut on Harvest Dashboard pages.
  - Fixed breadcrumb on harvest sources pages: Preview, Manage Datasets, Events, Errors.
+ - Fixed harvesting of resources with remote files with redirects.
+ - Fix "Manage Datastore" tab leaking to the harvest source node.
+ - Add icons for harvest source tabs.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
@@ -80,6 +88,10 @@ DKAN Dataset:
  - Replace field notes by field body in harvest source content type.
  - Fixed text on 'Download All' button to not display HTML.
  - Add patch for workbench_moderation to avoid php shutdown function errors.
+ - Removed 'Back to dataset' button on standalone resources.
+ - Better support of downloading remote files from the resource view page
+   "Download" button.
+ - Removed warning when a resource is created without title.
 
 7.x-1.12.11 2016-10-20
 --------------------------
