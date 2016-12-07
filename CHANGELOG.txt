@@ -44,6 +44,14 @@
  - Added fix to display the 'Request membership' link only to users that are logged in.
  - Remove content padding on data extent and social blocks. 
  - Upgrade workbench_moderation to v3.0.
+ - Upgrade ctools 1.11 > 1.12
+ - Upgrade entityreference 1.1 > 1.2
+ - Upgrade libraries 2.2 > 2.3
+ - Upgrade services 3.16 > 3.17
+ - Upgrade simple_gmap 1.2 > 1.3
+ - Upgrade tablefield 2.4 > 2.5
+ - Upgrade entityreference_filter 1.5 > 1.7
+ - Upgrade fieldable_panels_panes 1.10 > 1.11
  - Upgrade radix from 3.3 to 3.5
  - Upgrade entity 1.7 > 1.8
 DKAN Datastore:
