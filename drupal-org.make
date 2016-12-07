@@ -47,7 +47,7 @@ projects:
   context:
     version: '3.6'
   ctools:
-    version: '1.11'
+    version: '1.12'
   data:
     version: '1.x'
   date:
@@ -71,9 +71,9 @@ projects:
     patch:
       2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff'
   entityreference:
-    version: '1.1'
+    version: '1.2'
   entityreference_filter:
-    version: '1.5'
+    version: '1.7'
   eva:
     version: '1.2'
   facetapi:
@@ -126,7 +126,7 @@ projects:
     download:
       full_version: 7.x-1.0-beta1
   fieldable_panels_panes:
-    version: '1.10'
+    version: '1.11'
   file_entity:
     version: '2.0-beta2'
     patch:
@@ -178,7 +178,7 @@ projects:
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
       branch: master
   libraries:
-    version: '2.2'
+    version: '2.3'
   link:
     version: '1.4'
   link_badges:
@@ -313,13 +313,13 @@ projects:
   select_or_other:
     version: '2.22'
   services:
-    version: '3.16'
+    version: '3.17'
   simple_gmap:
-    version: '1.2'
+    version: '1.3'
   strongarm:
     version: '2.0'
   tablefield:
-    version: '2.4'
+    version: '2.5'
   taxonomy_menu:
     version: '1.5'
   taxonomy_fixtures:
