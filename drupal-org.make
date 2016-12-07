@@ -17,6 +17,8 @@ projects:
     version: '1.1'
   autocomplete_deluxe:
     version: '2.1'
+    patch:
+      2833824: 'https://www.drupal.org/files/issues/autocomplete_deluxe-add_aria_label_for_accesibility.patch'
   beautytips:
     download:
       type: git
