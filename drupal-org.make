@@ -191,9 +191,7 @@ projects:
     patch:
       2287233: 'https://www.drupal.org/files/issues/link_iframe_formatter-coding-standards.patch'
   manualcrop:
-    version: '1.5'
-    patch:
-      2504119: 'https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch'
+    version: '1.6'
   markdown:
     version: '1.5'
   markdowneditor:
