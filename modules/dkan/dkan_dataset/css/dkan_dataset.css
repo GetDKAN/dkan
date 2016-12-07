@@ -183,11 +183,6 @@ Node resource
   position: relative;
   margin: 5px 0 0 5px;
 }
-.field-name-field-temporal-coverage legend,
-.field-widget-leaflet-widget-widget legend {
-  position: absolute;
-  top: 0;
-}
 #field-tags-wrapper .path-form .add-on {
   -webkit-border-radius: 4px 0 0 4px;
   -moz-border-radius: 4px 0 0 4px;

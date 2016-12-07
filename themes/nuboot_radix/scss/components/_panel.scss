@@ -35,6 +35,10 @@ h2.pane-title {
     }
     .pane-block {
       @include blockbox;
+      &.pane-dkan-sitewide-dkan-sitewide-social .pane-content,
+      &.pane-dkan-sitewide-dkan-sitewide-data-extent .pane-content {
+        padding: 0;
+      }
     }
   }
 }
