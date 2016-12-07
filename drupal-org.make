@@ -303,7 +303,7 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.18'
+    version: '1.20'
   search_api_db:
     version: '1.5'
   select_or_other:
