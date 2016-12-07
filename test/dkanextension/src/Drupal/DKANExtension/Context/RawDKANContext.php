@@ -10,7 +10,7 @@ use Drupal\DKANExtension\ServiceContainer\EntityStore;
 use Drupal\DKANExtension\ServiceContainer\PageStore;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-
+use EntityFieldQuery;
 
 /**
  * Defines application features from the specific context.
@@ -48,6 +48,8 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
    */
   protected $fakeSession;
 
+  protected $cacheSettings;
+
   public function setEntityStore(EntityStore $entityStore) {
     $this->entityStore = $entityStore;
   }
@@ -79,6 +81,68 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
 
   }
 
+  /**
+   * Save cache settings in a temporary variable.
+   */
+  protected function saveCacheSettings() {
+    $this->cacheSettings = array(
+      "cache" => variable_get("cache"),
+      "page_cache_maximum_age" => variable_get("page_cache_maximum_age"),
+      "cache_lifetime" => variable_get("cache_lifetime"),
+    );
+  }
+  /**
+   * @BeforeScenario @cacheDisabled
+   */
+  public function pageCacheIsOff()
+  {
+    $this->saveCacheSettings();
+    variable_set("cache", FALSE);
+  }
+
+  /**
+   * @BeforeScenario @cacheEnabled
+   */
+  public function pageCacheIsOn()
+  {
+    $this->saveCacheSettings();
+    variable_set("cache", TRUE);
+    variable_set("page_cache_maximum_age", 300);
+    variable_set("cache_lifetime", 180);
+  }
+
+  /**
+   * @AfterScenario
+   */
+  public function restoreCacheSettings()
+  {
+    if($this->cacheSettings) {
+      variable_set("cache", $this->cacheSettings["cache"]);
+      variable_set("page_cache_maximum_age", $this->cacheSettings["page_cache_maximum_age"]);
+      variable_set("cache_lifetime", $this->cacheSettings["cache_lifetime"]);
+      $this->cacheSettings = null;
+    }
+  }
+
+  /**
+   * Get node by title from Database.
+   *
+   * @param $title: title of the node.
+   *
+   * @return Node or FALSE
+   */
+  public function getNodeByTitle($title) {
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->propertyCondition('title', $title)
+      ->range(0, 1);
+    $result = $query->execute();
+    if (isset($result['node'])) {
+      $nid = array_keys($result['node']);
+      return entity_load('node', $nid);
+    }
+    return false;
+  }
 
   /**
    * Get the currently logged in user.
