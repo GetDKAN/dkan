@@ -252,9 +252,7 @@ projects:
   panelizer:
     version: '3.4'
   panels:
-    version: '3.6'
-    patch:
-      2785915: https://www.drupal.org/files/issues/panels-storage-backcompat-2785915-18.patch
+    version: '3.8'
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
