@@ -28,18 +28,21 @@ h2.pane-title {
   width: 15px;
 }
 
-.radix-layouts-sidebar {
-  .pane-title {
-    @include block-title;
-  }
-  .pane-block {
-    @include blockbox;
-    &.pane-dkan-sitewide-dkan-sitewide-social .pane-content,
-    &.pane-dkan-sitewide-dkan-sitewide-data-extent .pane-content {
-      padding: 0;
+.panel-region-sidebar {
+  .radix-layouts-sidebar {
+    h2.pane-title {
+      @include block-title;
+    }
+    .pane-block {
+      @include blockbox;
+      &.pane-dkan-sitewide-dkan-sitewide-social .pane-content,
+      &.pane-dkan-sitewide-dkan-sitewide-data-extent .pane-content {
+        padding: 0;
+      }
     }
   }
 }
+
 .page-user {
   .radix-layouts-content .pane-content {
     padding: 0;
