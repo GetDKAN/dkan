@@ -44,6 +44,7 @@
  - Added fix to display the 'Request membership' link only to users that are logged in.
  - Remove content padding on data extent and social blocks. 
  - Upgrade workbench_moderation to v3.0.
+ - Upgrade radix from 3.3 to 3.5
  - Upgrade entity 1.7 > 1.8
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
