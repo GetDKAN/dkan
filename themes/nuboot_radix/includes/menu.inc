@@ -92,6 +92,22 @@ function nuboot_radix_menu_local_task($variables) {
         $icon_type = 'eraser';
         break;
 
+      case 'node/%/datasets':
+        $icon_type = 'cubes';
+        break;
+
+      case 'node/%/harvest-preview':
+        $icon_type = 'check-circle';
+        break;
+
+      case 'node/%/harvest-events':
+        $icon_type = 'calendar';
+        break;
+
+      case 'node/%/harvest-errors':
+        $icon_type = 'exclamation-circle';
+        break;
+
       default:
         $icon_type = '';
         break;

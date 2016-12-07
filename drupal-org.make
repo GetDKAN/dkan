@@ -1,7 +1,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta2/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
@@ -47,7 +47,7 @@ projects:
   context:
     version: '3.6'
   ctools:
-    version: '1.10'
+    version: '1.11'
   data:
     version: '1.x'
   date:
@@ -69,7 +69,7 @@ projects:
   entity_path:
     version: '1.x-dev'
     patch:
-      2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_1.diff'
+      2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff'
   entityreference:
     version: '1.1'
   entityreference_filter:
@@ -103,6 +103,9 @@ projects:
       url: 'http://git.drupal.org/project/feeds_field_fetcher.git'
       branch: 7.x-1.x
       revision: 6725b86
+    patch:
+      2315425: 'http://www.drupal.org/files/issues/feeds_field_fetcher-typo-error-2315425-1.patch'
+      2829416: 'http://www.drupal.org/files/issues/feeds_field_fetcher_error-validation-config.patch'
   feeds_flatstore_processor:
     download:
       type: git
@@ -143,6 +146,7 @@ projects:
       1: patches/fontyourface-no-ajax-browse-view.patch
       2: patches/fontyourface-clear-css-cache.patch
       2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
+      2816837: 'https://www.drupal.org/files/issues/font_your_face-remove_div_general_text_option-D7.patch'
   globalredirect:
     version: '1.5'
   gravatar:
@@ -184,10 +188,12 @@ projects:
       type: git
       url: 'http://git.drupal.org/project/link_iframe_formatter.git'
       revision: 228f9f4
-    patch: 
+    patch:
       2287233: 'https://www.drupal.org/files/issues/link_iframe_formatter-coding-standards.patch'
   manualcrop:
     version: '1.5'
+    patch:
+      2504119: 'https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch'
   markdown:
     version: '1.4'
   markdowneditor:
@@ -206,7 +212,7 @@ projects:
   media_vimeo:
     version: '2.1'
     patch:
-      2446199: 'https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch' 
+      2446199: 'https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch'
   menu_admin_per_menu:
     version: '1.1'
   menu_badges:
@@ -311,7 +317,7 @@ projects:
   simple_gmap:
     version: '1.2'
   strongarm:
-    version: '2.0'  
+    version: '2.0'
   tablefield:
     version: '2.4'
   taxonomy_menu:
@@ -342,21 +348,16 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0-beta1
+      tag: 7.x-1.0-beta2
     type: module
   workbench:
     version: '1.2'
   workbench_email:
     version: '3.11'
   workbench_moderation:
-    download:
-      type: git
-      url: http://git.drupal.org/project/workbench_moderation.git
-      branch: 7.x-1.x
-      revision: 2c91211
-    patch:
-      2393771: 'https://www.drupal.org/files/issues/specify_change_state_user-2393771-5.patch'
-      1838640: 'https://www.drupal.org/files/issues/workbench_moderation-fix_callback_argument-1838640-23.patch'
+    version: '3.0'
+  drafty:
+    version: '1.0-beta3'
 libraries:
   chosen:
     download:
@@ -373,7 +374,7 @@ libraries:
       type: git
       url: 'https://github.com/FortAwesome/Font-Awesome.git'
       revision: 13d5dd373cbf3f2bddd8ac2ee8df3a1966a62d09
-    directory_name: font_awesome  
+    directory_name: font_awesome
   jquery.imagesloaded:
     download:
       type: file
@@ -397,11 +398,9 @@ libraries:
     directory_name: bgrins-spectrum
   spyc:
     download:
-      type: get
-      url: 'https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php'
-    filename: ../spyc.php
-    directory_name: lib
-    destination: modules/contrib/services/servers/rest_server
+      type: file
+      url: 'https://raw.github.com/mustangostang/spyc/master/Spyc.php'
+    directory_name: spyc
 defaults:
   projects:
     subdir: contrib

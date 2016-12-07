@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "937c556553d314719c8471f623693dd8",
-    "content-hash": "aeb7a759cbde6698a2ff0918e8ed6bd6",
+    "hash": "fc50c3287221f745783574601824aace",
+    "content-hash": "383246ca48ac687e9cb1ebf7af3d23d3",
     "packages": [
         {
             "name": "behat/behat",
@@ -17,7 +17,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/209eb668750297e885cbf772aaf12b87eb3beb2e",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/d9cac87edd73c71c61c185244c44a02ab174c0b8",
                 "reference": "d9cac87edd73c71c61c185244c44a02ab174c0b8",
                 "shasum": ""
             },
@@ -1007,12 +1007,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "777969b8959e46c7d91517660973d4f9a1562cc5"
+                "reference": "803b0c026ee2ec2da06f1657a966b410ba2d11b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/777969b8959e46c7d91517660973d4f9a1562cc5",
-                "reference": "777969b8959e46c7d91517660973d4f9a1562cc5",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/803b0c026ee2ec2da06f1657a966b410ba2d11b1",
+                "reference": "803b0c026ee2ec2da06f1657a966b410ba2d11b1",
                 "shasum": ""
             },
             "require": {
@@ -1040,7 +1040,7 @@
                 "test",
                 "web"
             ],
-            "time": "2016-10-11 15:31:18"
+            "time": "2016-12-06 19:43:16"
         },
         {
             "name": "phpdocumentor/reflection-common",
