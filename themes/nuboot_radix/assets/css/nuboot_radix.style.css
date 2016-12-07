@@ -9207,6 +9207,9 @@ div.horizontal-tabs {
 
 .filter-wrapper {
   padding: 10px; }
+  .filter-wrapper .input-group-addon {
+    border: none;
+    background: transparent; }
 
 #body-add-more-wrapper .panel-body {
   padding: 0; }
