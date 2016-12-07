@@ -31,6 +31,21 @@ class ResourceContext extends RawDKANEntityContext{
     }
 
   /**
+   * @Given I am on (the) :title resource embed page
+   */
+  public function iAmOnResourceEmbedPage($title) {
+    if (empty($title)) {
+      throw new \Exception("Missing title argument");
+    }
+    if ($nodes = $this->getNodeByTitle($title)) {
+      $nid = array_values($nodes)[0]->nid;
+    } else {
+      throw new \Exception("Resource with the title '$title' doesn't exist.");
+    }
+    $this->visit("/node/" . $nid . "/recline-embed");
+  }
+
+  /**
    * @Given :provider previews are :setting for :format_name resources
    *
    * Changes variables in the database to enable or disable external previews
