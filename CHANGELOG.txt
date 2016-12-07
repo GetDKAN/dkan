@@ -52,6 +52,7 @@
  - Upgrade tablefield 2.4 > 2.5
  - Upgrade entityreference_filter 1.5 > 1.7
  - Upgrade fieldable_panels_panes 1.10 > 1.11
+ - Upgrade entity 1.7 > 1.8
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
