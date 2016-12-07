@@ -10,7 +10,7 @@
  * @see html.tpl.php
  */
 ?>
-<header id="header" class="header" role="header">
+<header id="header" class="header">
   <div class="branding container">
     <?php if ($logo): ?>
       <a class="logo navbar-btn pull-left" href="<?php print url($front_page); ?>" title="<?php print t('Home'); ?>">
@@ -107,7 +107,7 @@
   </div> <!-- /#main -->
 </div> <!-- /#main-wrapper -->
 
-<footer id="footer" class="footer" role="footer">
+<footer id="footer" class="footer">
   <div class="container">
     <?php if ($copyright): ?>
       <small class="copyright pull-left"><?php print $copyright; ?></small>
