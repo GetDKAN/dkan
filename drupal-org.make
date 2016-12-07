@@ -272,7 +272,7 @@ projects:
     version: '1.8'
   radix:
     type: theme
-    version: '3.3'
+    version: '3.5'
   radix_layouts:
     version: '3.4'
   recline:
