@@ -105,6 +105,10 @@
 
   Drupal.behaviors.dkanForms = {
     attach: function (context, settings) {
+      //Add aria label to input upload for accesibility
+      $('.file-resup-wrapper input').attr('aria-label', 'Upload a file');
+      $('.file-widget input').attr('aria-label', 'Upload a file');
+
       // Causes file to be uploaded automatically.
       $('input.form-file').change(function() {
         $(this).next('input[type="submit"]').mousedown();
