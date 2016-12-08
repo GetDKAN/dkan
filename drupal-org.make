@@ -199,12 +199,9 @@ projects:
     patch:
       2045225: 'http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch'
   media:
-    version: '2.0-beta1'
+    version: '2.0-beta13'
     patch:
-      2126697: 'https://www.drupal.org/files/issues/media_wysiwyg_2126697-53.patch'
-      2308487: 'https://www.drupal.org/files/issues/media-alt-title-double-encoded-2308487-2.patch'
-      2084287: 'http://www.drupal.org/files/issues/media-file-name-focus-2084287-2.patch'
-      2534724: 'https://www.drupal.org/files/issues/media-browser_opens_twice-2534724-53.patch'
+      2534724: 'https://www.drupal.org/files/issues/media-fix_rebuild_bug-2534724-105-d7.patch'
   media_youtube:
     version: '3.0'
   media_vimeo:
