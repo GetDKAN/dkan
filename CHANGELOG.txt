@@ -43,6 +43,8 @@
  - Updated visualization_entity.
  - Added fix to display the 'Request membership' link only to users that are logged in.
  - Remove content padding on data extent and social blocks. 
+ - Upgrade workbench_moderation to v3.0.
+ - Upgrade entity 1.7 > 1.8
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
@@ -88,6 +90,8 @@ DKAN Dataset:
  - Fixed text on 'Download All' button to not display HTML.
  - Add patch for workbench_moderation to avoid php shutdown function errors.
  - Removed 'Back to dataset' button on standalone resources.
+ - Better support of downloading remote files from the resource view page
+   "Download" button.
  - Removed warning when a resource is created without title.
 
 7.x-1.12.11 2016-10-20

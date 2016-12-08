@@ -70,6 +70,10 @@ function dkan_datastore_proxy($node) {
     drupal_add_http_header('Content-Disposition', 'attachment; filename=' . $filename);
     print file_get_contents($uri);
   }
+  else {
+    // Not in allowed types, treat the file URI as a normal url.
+    return drupal_goto($uri);
+  }
 }
 
 /**
