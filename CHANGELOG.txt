@@ -59,7 +59,8 @@
  - Upgrade search_api to 1.20
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
- - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
+ - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
+ - Fixed bugs when running the datastore via cron.
 DKAN Harvest:
  - Added DKAN Harvest module into DKAN Core.
  - Added UI to add harvest sources
