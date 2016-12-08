@@ -206,11 +206,18 @@ class GetRemoteFileInfo {
   public function getName() {
     if ($info = $this->getInfo()) {
       // Check Location for proper URL.
-      if (isset($info['header']['Location']) && valid_url($info['header']['Location'])) {
+      // When URL have redirects the ['header']['Location'] will be an array.
+      $location = $info['header']['Location'];
+      if (is_array($location)) {
+        $location = array_shift($location);
+      }
+
+      if (isset($location) && valid_url($location)) {
         if ($name = $this->getNameFromUrl($this->url)) {
           return $name;
         }
       }
+
       // Check content disposition.
       if (isset($info['header']['Content-Disposition'])) {
         return $this->checkDisposition($info['header']['Content-Disposition']);
