@@ -1185,7 +1185,7 @@ function dkan_dataset_remotefile_value($element, &$item) {
     try {
       $file = remote_stream_wrapper_file_create_by_uri($value);
 
-      $file_info = new GetRemoteFileInfo($value, t('!site_name crawler', array('!site_name' => variable_get('site_name'))), TRUE, file_directory_temp());
+      $file_info = new GetRemoteFileInfo($value, t('!site_name crawler', array('!site_name' => variable_get('site_name'))));
       if ($filename = $file_info->getName()) {
         $file->filename = $filename;
       }

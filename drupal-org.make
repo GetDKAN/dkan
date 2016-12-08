@@ -47,7 +47,7 @@ projects:
   context:
     version: '3.6'
   ctools:
-    version: '1.11'
+    version: '1.12'
   data:
     version: '1.x'
   date:
@@ -62,7 +62,7 @@ projects:
     version: '2.1'
   entity:
     download:
-      full_version: '7.x-1.7'
+      full_version: '7.x-1.8'
     patch:
       2341611: 'https://www.drupal.org/files/issues/entity-multivalue-token-replacement-fix-2341611-0.patch'
       2564119: 'https://www.drupal.org/files/issues/Use-array-in-foreach-statement-2564119-1.patch'
@@ -71,9 +71,9 @@ projects:
     patch:
       2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff'
   entityreference:
-    version: '1.1'
+    version: '1.2'
   entityreference_filter:
-    version: '1.5'
+    version: '1.7'
   eva:
     version: '1.2'
   facetapi:
@@ -178,7 +178,7 @@ projects:
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
       branch: master
   libraries:
-    version: '2.2'
+    version: '2.3'
   link:
     version: '1.4'
   link_badges:
@@ -188,14 +188,12 @@ projects:
       type: git
       url: 'http://git.drupal.org/project/link_iframe_formatter.git'
       revision: 228f9f4
-    patch: 
+    patch:
       2287233: 'https://www.drupal.org/files/issues/link_iframe_formatter-coding-standards.patch'
   manualcrop:
-    version: '1.5'
-    patch:
-      2504119: 'https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch'
+    version: '1.6'
   markdown:
-    version: '1.4'
+    version: '1.5'
   markdowneditor:
     version: '1.4'
     patch:
@@ -212,7 +210,7 @@ projects:
   media_vimeo:
     version: '2.1'
     patch:
-      2446199: 'https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch' 
+      2446199: 'https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch'
   menu_admin_per_menu:
     version: '1.1'
   menu_badges:
@@ -252,9 +250,7 @@ projects:
   panelizer:
     version: '3.4'
   panels:
-    version: '3.6'
-    patch:
-      2785915: https://www.drupal.org/files/issues/panels-storage-backcompat-2785915-18.patch
+    version: '3.8'
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
@@ -272,7 +268,7 @@ projects:
     version: '1.8'
   radix:
     type: theme
-    version: '3.3'
+    version: '3.5'
   radix_layouts:
     version: '3.4'
   recline:
@@ -307,19 +303,19 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.18'
+    version: '1.20'
   search_api_db:
     version: '1.5'
   select_or_other:
     version: '2.22'
   services:
-    version: '3.16'
+    version: '3.17'
   simple_gmap:
-    version: '1.2'
+    version: '1.3'
   strongarm:
-    version: '2.0'  
+    version: '2.0'
   tablefield:
-    version: '2.4'
+    version: '2.5'
   taxonomy_menu:
     version: '1.5'
   taxonomy_fixtures:
@@ -355,15 +351,9 @@ projects:
   workbench_email:
     version: '3.11'
   workbench_moderation:
-    download:
-      type: git
-      url: http://git.drupal.org/project/workbench_moderation.git
-      branch: 7.x-1.x
-      revision: 2c91211
-    patch:
-      2393771: 'https://www.drupal.org/files/issues/specify_change_state_user-2393771-5.patch'
-      1838640: 'https://www.drupal.org/files/issues/workbench_moderation-fix_callback_argument-1838640-23.patch'
-      2645622: 'https://www.drupal.org/files/issues/node-deleted-before-shutdown-function-2645622-4.patch'
+    version: '3.0'
+  drafty:
+    version: '1.0-beta3'
 libraries:
   chosen:
     download:
@@ -380,7 +370,7 @@ libraries:
       type: git
       url: 'https://github.com/FortAwesome/Font-Awesome.git'
       revision: 13d5dd373cbf3f2bddd8ac2ee8df3a1966a62d09
-    directory_name: font_awesome  
+    directory_name: font_awesome
   jquery.imagesloaded:
     download:
       type: file
