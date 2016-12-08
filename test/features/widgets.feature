@@ -46,6 +46,7 @@ Feature: Widgets
     When I follow "Add image"
       And I wait for "Configure new Image"
       And I fill in "field_basic_image_caption[und][0][value]" with "dkan logo image test"
+      And I click "Browse"
       And I attach the drupal file "dkan/dkan_logo.png" to "files[field_basic_image_image_und_0]"
       And I press "Finish"
       And I wait and press "Save"
