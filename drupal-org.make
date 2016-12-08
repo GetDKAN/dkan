@@ -47,7 +47,7 @@ projects:
   context:
     version: '3.6'
   ctools:
-    version: '1.11'
+    version: '1.12'
   data:
     version: '1.x'
   date:
@@ -71,9 +71,9 @@ projects:
     patch:
       2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff'
   entityreference:
-    version: '1.1'
+    version: '1.2'
   entityreference_filter:
-    version: '1.5'
+    version: '1.7'
   eva:
     version: '1.2'
   facetapi:
@@ -178,7 +178,7 @@ projects:
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
       branch: master
   libraries:
-    version: '2.2'
+    version: '2.3'
   link:
     version: '1.4'
   link_badges:
@@ -191,11 +191,9 @@ projects:
     patch:
       2287233: 'https://www.drupal.org/files/issues/link_iframe_formatter-coding-standards.patch'
   manualcrop:
-    version: '1.5'
-    patch:
-      2504119: 'https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch'
+    version: '1.6'
   markdown:
-    version: '1.4'
+    version: '1.5'
   markdowneditor:
     version: '1.4'
     patch:
@@ -252,9 +250,7 @@ projects:
   panelizer:
     version: '3.4'
   panels:
-    version: '3.6'
-    patch:
-      2785915: https://www.drupal.org/files/issues/panels-storage-backcompat-2785915-18.patch
+    version: '3.8'
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
@@ -272,7 +268,7 @@ projects:
     version: '1.8'
   radix:
     type: theme
-    version: '3.3'
+    version: '3.5'
   radix_layouts:
     version: '3.4'
   recline:
@@ -307,19 +303,19 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.18'
+    version: '1.20'
   search_api_db:
     version: '1.5'
   select_or_other:
     version: '2.22'
   services:
-    version: '3.16'
+    version: '3.17'
   simple_gmap:
-    version: '1.2'
+    version: '1.3'
   strongarm:
     version: '2.0'
   tablefield:
-    version: '2.4'
+    version: '2.5'
   taxonomy_menu:
     version: '1.5'
   taxonomy_fixtures:
