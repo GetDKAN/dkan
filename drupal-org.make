@@ -126,7 +126,7 @@ projects:
     download:
       full_version: 7.x-1.0-beta1
   fieldable_panels_panes:
-    version: '1.11'
+    version: '1.10'
   file_entity:
     version: '2.0-beta2'
     patch:

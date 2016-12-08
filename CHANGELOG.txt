@@ -55,8 +55,8 @@
  - Upgrade simple_gmap to 1.3
  - Upgrade tablefield to 2.5
  - Upgrade entityreference_filter to 1.7
- - Upgrade fieldable_panels_panes to 1.11
  - Upgrade radix to 3.5
+ - Upgrade search_api to 1.20
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
