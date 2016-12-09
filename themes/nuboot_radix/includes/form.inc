@@ -34,6 +34,8 @@ function nuboot_radix_form_element($variables) {
 
   // Add the default form-item class.
   $attributes['class'][] = 'form-item';
+  // Remove text format guidelines.
+  $element['format']['guidelines']['#access'] = FALSE;
 
   // Add element #id for #type 'item'.
   if (isset($element['#markup']) && !empty($element['#id'])) {
