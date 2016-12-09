@@ -128,9 +128,9 @@ projects:
   fieldable_panels_panes:
     version: '1.10'
   file_entity:
-    version: '2.0-beta2'
+    version: '2.0-beta3'
     patch:
-      2308737: 'https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch'
+      2308737: 'https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9.patch'
   file_resup:
     version: '1.x-dev'
   filefield_sources:
