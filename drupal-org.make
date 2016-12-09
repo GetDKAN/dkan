@@ -202,6 +202,7 @@ projects:
     version: '2.0-beta13'
     patch:
       2534724: 'https://www.drupal.org/files/issues/media-fix_rebuild_bug-2534724-105-d7.patch'
+      2272567: 'https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch'
   media_youtube:
     version: '3.0'
   media_vimeo:
