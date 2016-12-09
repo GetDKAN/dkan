@@ -57,9 +57,14 @@
  - Upgrade entityreference_filter to 1.7
  - Upgrade radix to 3.5
  - Upgrade search_api to 1.20
+ - Upgrade media to 2.0-beta13
+ - Upgrade panopoly_widgets to 1.41
+ - Upgrade panopoly_images to 1.41
+ - Upgrade file_entity to 2.0-beta3
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
- - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
+ - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
+ - Fixed bugs when running the datastore via cron.
 DKAN Harvest:
  - Added DKAN Harvest module into DKAN Core.
  - Added UI to add harvest sources
@@ -105,6 +110,7 @@ DKAN Dataset:
  - Better support of downloading remote files from the resource view page
    "Download" button.
  - Removed warning when a resource is created without title.
+ - Improved download of remote files.
 
 7.x-1.12.11 2016-10-20
 --------------------------
