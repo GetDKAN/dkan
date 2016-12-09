@@ -590,22 +590,18 @@ function dkan_datastore_cron_queue_info() {
 /**
  * Utility function for add a new resource to datastore queue.
  */
-function dkan_datastore_queue_import($uuid, $fid) {
+function dkan_datastore_queue_import($uuid) {
   $item = array(
     'uuid' => $uuid,
-    'fid' => $fid,
   );
   DrupalQueue::get('dkan_datastore_queue')->createItem($item);
-  watchdog('dkan_datastore', 'Added @file to queue for import into datastore', array('%file' => $fid));
+  watchdog('dkan_datastore', 'Added resource %uuid to queue for import into datastore', array('%uuid' => $uuid));
 }
 
 /**
  * Callback used with queue for index content into datastore.
  */
 function dkan_datastore_queue_import_worker($item) {
-  $file = file_load($item['fid']);
-  $uri = $file->uri;
-  $file_path = file_create_url($uri);
   $datastore = dkan_datastore_go($item['uuid']);
-  $datastore->updateByFile($file_path);
+  $datastore->importByCLI();
 }

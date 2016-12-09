@@ -46,8 +46,13 @@ Feature: Widgets
     When I follow "Add image"
       And I wait for "Configure new Image"
       And I fill in "field_basic_image_caption[und][0][value]" with "dkan logo image test"
-      And I attach the drupal file "dkan/dkan_logo.png" to "files[field_basic_image_image_und_0]"
-      And I press "Finish"
+      And I click "Browse"
+      And I wait for "2" seconds
+      And I switch to the frame "mediaBrowser"
+      And I attach the drupal file "dkan/dkan_logo.png" to "files[upload]"
+      And I press "Next"
+      And I wait and press "Save"
+      And I wait and press "Finish"
       And I wait and press "Save"
       Then I should see "dkan logo image test"
 
@@ -147,4 +152,3 @@ Feature: Widgets
     And I press "Finish"
     And I wait for "Visualization embed"
     Then I should see "Visualization embed"
-
