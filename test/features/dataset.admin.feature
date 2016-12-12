@@ -1,4 +1,4 @@
-@javascript @api
+@api
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -73,7 +73,6 @@ Feature: Dataset Features
     Given I am logged in as "John"
     And I am on "Dataset 05" page
     When I click "Edit"
-    When I click "Publishing options"
     And I check the box "Published"
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"

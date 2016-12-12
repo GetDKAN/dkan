@@ -1,8 +1,64 @@
+7.x-1.12.x
+-------------------------
+- Update ctools to 1.11
+- Fixed link to group page on group node teaser when site has clean urls disabled
+- Fix "format" facet collapsed even when selected on the search page.
+- Update media to 2.0-beta13
+
+7.x-1.12.11 2016-10-20
+--------------------------
+- Fixed a bug in Recline regarding file objects and node forms that caused errors when using the "view changes" button on Dataset or Resource edit form
+- Center group images in "Groups" page and group node page sidebar
+- Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
+- Update the default jquery library setting from 1.7 to 1.10
+- Fix topics menu and facet links if special characters are used in topic terms.
+- Fix form redirect issues on dataset form validation
+- Patch fontyourface to remove <div> from the "standard text" selector, to prevent unpredictable results from this option
+- Fixed issue in open_data_schema_map with "Data Dictionary" field not displaying URL in data.json file
+
+7.x-1.12.10 2016-09-07
+--------------------------
+- Fix JS error on IE browsers preventing previews from appearing
+- Provide upgrade paths for older sites upgrading to newer BU editor config
+
+7.x-1-12.9 2016-08-31
+--------------------------
+- Fix data dictionary field to use html input format and improvements to the field's display and help text.
+- Update dkan_workflow content type legend to include all content types with correct icons.
+- Fix to new bug introduced in recline module in 1.12.7; previews would not display if file smaller than max preview size, even if loading from datastore.
+- Fix a problem with paths for image icons for topics. Uploaded image icons will now display correctly in the Topics menu.
+
+7.x-1.12.8 2016-08-19
+--------------------------
+- Patch panelizer module to correct bug introduced in previous release. See release notes for details.
+- Add validation to Group form to prevent duplicate groups from being created
+- Update and patch panels and panelizer to fix critical security issue. See release notes.
+- Patch panelizer module to correct bug introduced in previous release. See release notes.
+
+7.x-1-12.7 2016-08-09
+--------------------------
+- Update contrib modules uuid, services, manualcrop, markdown, panelizer, panopoly_widgets, panopoly_images
+- Fix bug that produced a "Cannot use a scalar value" error when trying to add a content pane to a data story node in panels.
+- Change theming on resource to remove iframe to "API or link URL" if remote file field also populated
+- Update options in Dataset "frequency" field to reflect standards for DCAT and Project Open Data
+- Provide "data proxy" to serve remote CSVs through local domain and resolve cross-origin issues with previews n these resources
+- Some changes to the Resource node form to improve UX of links and file attachments, especially by replacing the label "Link to an API" to "API or Website URL"
+- Fix bug on relative paths for links in theme template files.
+- Fix minor typo in DKAN topics menu link
+
+7.x-1.12.6 2016-07-26
+--------------------------
+- Sanitize theme output for facets to avoid any security issue from search input
+- Fix a potential XSS vulnerability in search facets by adding some validation hooks for facet input
+- Theme updates back ported from dev branch, including topics icons in topics drop-down menu
+- Add RoleAssign module, update DKAN Permissions to give site managers permission to assign roles.
+- Make links and emails in metadata pages clickable
+
 7.x-1.12.5 2016-07-13
 --------------------------
 - Update restws to 7.x-2.6 (critical security update)
 - Update to latest version of recline.js to fix map tiles (Mapquest discontinued open access)
-- Upgrade Drupal core to 7.50 
+- Upgrade Drupal core to 7.50
 
 7.x-1.12.4 2016-07-12
 --------------------------

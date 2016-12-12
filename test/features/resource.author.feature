@@ -1,4 +1,4 @@
-@javascript @api
+@api
 Feature: Resource
 
   Background:
@@ -60,8 +60,8 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on the "Content" page
     And I click "Resource"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     When I fill in "Title" with "Resource 06"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
 
@@ -213,12 +213,13 @@ Feature: Resource
     And I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Import items on datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 05" page
     And I click "Edit"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv"
+    And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     And I am on "Resource 05" page
     When I click "Manage Datastore"
@@ -227,12 +228,13 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Delete items on datastore of own resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
     And I click "Edit"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv"
+    And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -246,12 +248,13 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Drop datastore of own resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
     And I click "Edit"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv"
+    And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -275,6 +278,18 @@ Feature: Resource
     Then I should see "Resource Resource 02 edited has been updated"
     When I click "Revisions"
     Then I should see "by Katie"
+
+  @cacheEnabled
+  Scenario: Recline embed cache enabled
+    Given I am an anonymous user
+      And I am on "Resource 01" resource embed page
+      Then I "should" see a cached page
+
+  @cacheDisabled
+  Scenario: Recline disabled cache embed
+    Given I am an anonymous user
+      And I am on "Resource 01" resource embed page
+      Then I "should not" see a cached page
 
   # https://github.com/Behat/Behat/issues/834
   @dummy

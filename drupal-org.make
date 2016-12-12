@@ -10,11 +10,9 @@ includes:
 - modules/dkan/dkan_topics/dkan_topics.make
 projects:
   manualcrop:
-    version: 1.x-dev
-    download:
-      type: git
-      revision: 1f095cb
-      branch: 7.x-1.x
+    version: '1.5'
+    patch:
+      2504119: 'https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch'
   tablefield:
     version: '2.4'
   simple_gmap:
@@ -26,12 +24,10 @@ projects:
     patch:
       2308737: https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
   media:
-    version: 2.0-beta1
+    version: '2.0-beta13'
     patch:
-      2126697: https://www.drupal.org/files/issues/media_wysiwyg_2126697-53.patch
-      2308487: https://www.drupal.org/files/issues/media-alt-title-double-encoded-2308487-2.patch
-      2084287: http://www.drupal.org/files/issues/media-file-name-focus-2084287-2.patch
-      2534724: https://www.drupal.org/files/issues/media-browser_opens_twice-2534724-53.patch
+      2534724: 'https://www.drupal.org/files/issues/media-fix_rebuild_bug-2534724-105-d7.patch'
+      2272567: 'https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch'
   media_youtube:
     version: '3.0'
   media_vimeo:
@@ -93,11 +89,12 @@ projects:
       1: patches/fontyourface-no-ajax-browse-view.patch
       2: patches/fontyourface-clear-css-cache.patch
       2644694: https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch
+      2816837: 'https://www.drupal.org/files/issues/font_your_face-remove_div_general_text_option-D7.patch'
   imagecache_actions:
     version: '1.7'
     type: module
   markdown:
-    version: '1.2'
+    version: '1.4'
   markdowneditor:
     version: '1.4'
     patch:
@@ -109,21 +106,23 @@ projects:
   defaultconfig:
     version: 1.0-alpha11
   panelizer:
-    version: '3.1'
+    version: '3.4'
   views_autocomplete_filters:
     version: '1.2'
     patch:
       2374709: http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
       2317351: http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
   panopoly_widgets:
-    version: '1.35'
+    version: '1.37'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.35'
+    version: '1.37'
   panels:
-    version: '3.5'
+    version: '3.6'
+    patch:
+      2785915: https://www.drupal.org/files/issues/panels-storage-backcompat-2785915-18.patch
   panels_style_collapsible:
     version: '1.3'
   path_breadcrumbs:
@@ -138,6 +137,8 @@ projects:
     version: '2.9'
   restws:
     version: '2.6'
+  roleassign:
+    version: '1.1'
   schema:
     version: '1.2'
   adminrole:
@@ -191,11 +192,9 @@ libraries:
     directory_name: font_awesome
   spyc:
     download:
-      type: get
-      url: https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php
-    filename: "../spyc.php"
-    directory_name: lib
-    destination: modules/contrib/services/servers/rest_server
+      type: file
+      url: 'https://raw.github.com/mustangostang/spyc/master/Spyc.php'
+    directory_name: spyc
 defaults:
   projects:
     subdir: contrib
