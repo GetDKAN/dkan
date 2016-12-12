@@ -4,6 +4,7 @@
 - Fixed link to group page on group node teaser when site has clean urls disabled
 - Fix "format" facet collapsed even when selected on the search page.
 - Update media to 2.0-beta13
+- Add patch to remote_stream_wrapper to avoid memory exhausted on big files.
 
 7.x-1.12.11 2016-10-20
 --------------------------
