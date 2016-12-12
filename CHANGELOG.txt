@@ -4,6 +4,7 @@
 - Fixed link to group page on group node teaser when site has clean urls disabled
 - Fix "format" facet collapsed even when selected on the search page.
 - Fix resources not synced with datasets when upgrade from 1.11
+- Update media to 2.0-beta13
 
 7.x-1.12.11 2016-10-20
 --------------------------
