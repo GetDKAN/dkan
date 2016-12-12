@@ -24,12 +24,10 @@ projects:
     patch:
       2308737: https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch
   media:
-    version: 2.0-beta1
+    version: '2.0-beta13'
     patch:
-      2126697: https://www.drupal.org/files/issues/media_wysiwyg_2126697-53.patch
-      2308487: https://www.drupal.org/files/issues/media-alt-title-double-encoded-2308487-2.patch
-      2084287: http://www.drupal.org/files/issues/media-file-name-focus-2084287-2.patch
-      2534724: https://www.drupal.org/files/issues/media-browser_opens_twice-2534724-53.patch
+      2534724: 'https://www.drupal.org/files/issues/media-fix_rebuild_bug-2534724-105-d7.patch'
+      2272567: 'https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch'
   media_youtube:
     version: '3.0'
   media_vimeo:
