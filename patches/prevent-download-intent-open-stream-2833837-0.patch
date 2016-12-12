@@ -1,0 +1,121 @@
+diff --git a/remote_stream_wrapper.inc b/remote_stream_wrapper.inc
+index 492272b..759b0c9 100644
+--- a/remote_stream_wrapper.inc
++++ b/remote_stream_wrapper.inc
+@@ -58,6 +58,49 @@ class DrupalRemoteStreamWrapper implements DrupalStreamWrapperInterface {
+   }
+ 
+   /**
++   * Performs a GET request without transfer the content.
++   */
++  function getHeaders() {
++    $ch = curl_init();
++    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
++
++    // CURLOPT_NOBODY switch automatically the request method to HEAD.
++    // however there are servers that not support this method so
++    // we need to use a the GET method with CURLOPT_NOBODY.
++    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET' );
++    curl_setopt($ch, CURLOPT_HEADER, TRUE);
++    curl_setopt($ch, CURLOPT_NOBODY, TRUE);
++    curl_setopt($ch, CURLOPT_URL, $this->getUri());
++    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
++    $response = curl_exec($ch);
++
++    if (curl_errno($ch)) {
++      return FALSE;
++    }
++
++    $response = preg_split('/\r\n|\n|\r/', $response);
++    $headers = array();
++
++    // Parse the response headers.
++    while ($line = trim(array_shift($response))) {
++      if (stripos($line, 'HTTP/1.1') === FALSE) {
++        list($name, $value) = explode(':', $line, 2);
++        $name = strtolower($name);
++        if (isset($headers[$name]) && $name == 'set-cookie') {
++
++          // RFC 2109: the Set-Cookie response header comprises the token Set-
++          // Cookie:, followed by a comma-separated list of one or more cookies.
++          $headers[$name] .= ',' . trim($value);
++        }
++        else {
++          $headers[$name] = trim($value);
++        }
++      }
++    }
++    return $headers;
++  }
++
++  /**
+    * Base implementation of getMimeType().
+    */
+   public static function getMimeType($uri, $mapping = NULL) {
+@@ -89,9 +132,9 @@ class DrupalRemoteStreamWrapper implements DrupalStreamWrapperInterface {
+     }
+ 
+     // Fallback to the 'Content-Type' header.
+-    $request = drupal_http_request($uri, array('method' => 'HEAD'));
+-    if (empty($request->error) && !empty($request->headers['content-type'])) {
+-      return $request->headers['content-type'];
++    $headers = $this->getHeaders();
++    if (!empty($headers) && !empty($headers['content-type'])) {
++      return $headers['content-type'];
+     }
+ 
+     return 'application/octet-stream';
+@@ -137,11 +180,6 @@ class DrupalRemoteStreamWrapper implements DrupalStreamWrapperInterface {
+       return FALSE;
+     }
+ 
+-    // Attempt to fetch the URL's data using drupal_http_request().
+-    if (!$this->getStreamContent()) {
+-      return FALSE;
+-    }
+-
+     // Reset the stream pointer since this is an open.
+     $this->stream_pointer = 0;
+     return TRUE;
+@@ -177,6 +215,9 @@ class DrupalRemoteStreamWrapper implements DrupalStreamWrapperInterface {
+    * @see http://php.net/manual/en/streamwrapper.stream-read.php
+    */
+   public function stream_read($count) {
++    // Attempt to fetch the URL's data using drupal_http_request().
++    if (!isset($this->stream_content)) $this->getStreamContent();
++
+     if (is_string($this->stream_content)) {
+       $remaining_chars = strlen($this->stream_content) - $this->stream_pointer;
+       $number_to_read = min($count, $remaining_chars);
+@@ -212,6 +253,7 @@ class DrupalRemoteStreamWrapper implements DrupalStreamWrapperInterface {
+    * @see http://php.net/manual/en/streamwrapper.stream-eof.php
+    */
+   public function stream_eof() {
++    if (!isset($this->stream_content)) $this->getStreamContent();
+     return $this->stream_pointer == strlen($this->stream_content);
+   }
+ 
+@@ -228,6 +270,8 @@ class DrupalRemoteStreamWrapper implements DrupalStreamWrapperInterface {
+    * @see http://php.net/manual/en/streamwrapper.stream-seek.php
+    */
+   public function stream_seek($offset, $whence) {
++    if (!isset($this->stream_content)) $this->getStreamContent();
++
+     if (strlen($this->stream_content) >= $offset) {
+       $this->stream_pointer = $offset;
+       return TRUE;
+@@ -270,10 +314,10 @@ class DrupalRemoteStreamWrapper implements DrupalStreamWrapperInterface {
+    */
+   public function stream_stat() {
+     $stat = array();
+-    $request = drupal_http_request($this->uri, array('method' => 'HEAD'));
+-    if (empty($request->error)) {
+-      if (isset($request->headers['content-length'])) {
+-        $stat['size'] = $request->headers['content-length'];
++    $headers = $this->getHeaders();
++    if (!empty($headers)) {
++      if (isset($headers['content-length'])) {
++        $stat['size'] = $headers['content-length'];
+       }
+       elseif ($size = strlen($this->getStreamContent())) {
+         // If the HEAD request does not return a Content-Length header, fall
