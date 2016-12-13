@@ -41,16 +41,9 @@ Age: 5730';
    */
   public function testUrls() {
     $url = 'https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD';
-    $fileInfo = new getRemoteFileInfo($url, 'test', TRUE, 'tmp');
-    var_dump($fileInfo);
-    $info = array();
-    $headers = $this->getHeaders($url);
-    $info['header'] = $fileInfo->httpParseHeaders($headers);
-    $fileInfo->info = $info;
-    $type = $fileInfo->getType();
-    $name = $fileInfo->getName();
-    $this->assertEquals($type, 'text/csv');
-    $this->assertEquals($name, 'Hospital_Inpatient_Discharges_by_DRG__Northwest__FY2011.csv');
+    $fileInfo = new getRemoteFileInfo($url, 'test', TRUE);
+    $this->assertEquals($fileInfo->getType(), 'text/csv');
+    $this->assertEquals($fileInfo->getName(), 'Hospital_Inpatient_Discharges_by_DRG__Northwest__FY2011.csv');
   }
 
 }

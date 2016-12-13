@@ -200,6 +200,10 @@ div.horizontal-tabs {
 
 .filter-wrapper {
   padding: 10px;
+  .input-group-addon {
+    border: none;
+    background: transparent;
+  }
 }
 
 #body-add-more-wrapper {
