@@ -207,8 +207,8 @@ class GetRemoteFileInfo {
     if ($info = $this->getInfo()) {
       // Check Location for proper URL.
       // When URL have redirects the ['header']['Location'] will be an array.
-      $location = $info['header']['Location'];
-      if (is_array($location)) {
+      if (isset($info['header']['Location']) && is_array($info['header']['Location'])) {
+        $location = $info['header']['Location'];
         $location = array_shift($location);
       }
 
