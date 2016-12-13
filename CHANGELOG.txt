@@ -1,5 +1,6 @@
 7.x-1.12.x
--------------------------
+----------
+- Upgrade Drupal core to 7.52.
 - Update ctools to 1.11
 - Fixed link to group page on group node teaser when site has clean urls disabled
 - Fix "format" facet collapsed even when selected on the search page.
