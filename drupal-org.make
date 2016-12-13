@@ -47,7 +47,7 @@ projects:
   context:
     version: '3.6'
   ctools:
-    version: '1.11'
+    version: '1.12'
   data:
     version: '1.x'
   date:
@@ -62,7 +62,7 @@ projects:
     version: '2.1'
   entity:
     download:
-      full_version: '7.x-1.7'
+      full_version: '7.x-1.8'
     patch:
       2341611: 'https://www.drupal.org/files/issues/entity-multivalue-token-replacement-fix-2341611-0.patch'
       2564119: 'https://www.drupal.org/files/issues/Use-array-in-foreach-statement-2564119-1.patch'
@@ -71,9 +71,9 @@ projects:
     patch:
       2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff'
   entityreference:
-    version: '1.1'
+    version: '1.2'
   entityreference_filter:
-    version: '1.5'
+    version: '1.7'
   eva:
     version: '1.2'
   facetapi:
@@ -128,9 +128,9 @@ projects:
   fieldable_panels_panes:
     version: '1.10'
   file_entity:
-    version: '2.0-beta2'
+    version: '2.0-beta3'
     patch:
-      2308737: 'https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch'
+      2308737: 'https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9.patch'
   file_resup:
     version: '1.x-dev'
   filefield_sources:
@@ -178,7 +178,7 @@ projects:
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
       branch: master
   libraries:
-    version: '2.2'
+    version: '2.3'
   link:
     version: '1.4'
   link_badges:
@@ -191,22 +191,18 @@ projects:
     patch:
       2287233: 'https://www.drupal.org/files/issues/link_iframe_formatter-coding-standards.patch'
   manualcrop:
-    version: '1.5'
-    patch:
-      2504119: 'https://www.drupal.org/files/issues/multiple_versions-2504119-26.patch'
+    version: '1.6'
   markdown:
-    version: '1.4'
+    version: '1.5'
   markdowneditor:
     version: '1.4'
     patch:
       2045225: 'http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch'
   media:
-    version: '2.0-beta1'
+    version: '2.0-beta13'
     patch:
-      2126697: 'https://www.drupal.org/files/issues/media_wysiwyg_2126697-53.patch'
-      2308487: 'https://www.drupal.org/files/issues/media-alt-title-double-encoded-2308487-2.patch'
-      2084287: 'http://www.drupal.org/files/issues/media-file-name-focus-2084287-2.patch'
-      2534724: 'https://www.drupal.org/files/issues/media-browser_opens_twice-2534724-53.patch'
+      2534724: 'https://www.drupal.org/files/issues/media-fix_rebuild_bug-2534724-105-d7.patch'
+      2272567: 'https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch'
   media_youtube:
     version: '3.0'
   media_vimeo:
@@ -252,18 +248,16 @@ projects:
   panelizer:
     version: '3.4'
   panels:
-    version: '3.6'
-    patch:
-      2785915: https://www.drupal.org/files/issues/panels-storage-backcompat-2785915-18.patch
+    version: '3.8'
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
-    version: '1.37'
+    version: '1.41'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.37'
+    version: '1.41'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
@@ -272,7 +266,7 @@ projects:
     version: '1.8'
   radix:
     type: theme
-    version: '3.3'
+    version: '3.5'
   radix_layouts:
     version: '3.4'
   recline:
@@ -307,19 +301,19 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.18'
+    version: '1.20'
   search_api_db:
     version: '1.5'
   select_or_other:
     version: '2.22'
   services:
-    version: '3.16'
+    version: '3.17'
   simple_gmap:
-    version: '1.2'
+    version: '1.3'
   strongarm:
     version: '2.0'
   tablefield:
-    version: '2.4'
+    version: '2.5'
   taxonomy_menu:
     version: '1.5'
   taxonomy_fixtures:

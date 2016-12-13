@@ -991,7 +991,7 @@ class HarvestMigration extends MigrateDKAN {
       // redirects. Try to get the bottom of the redircet chain if any and use
       // the last URL.
       $followRedirect = TRUE;
-      $remoteFileInfo = new GetRemoteFileInfo($resource->url, $fake_agent, $followRedirect, '/tmp');
+      $remoteFileInfo = new GetRemoteFileInfo($resource->url, $fake_agent, $followRedirect);
 
       $html_extensions = array('html', 'shtml', 'htm', 'rhtml', 'phtml', 'pht',
         'php', 'phps', 'php3', 'php3p', 'php4',

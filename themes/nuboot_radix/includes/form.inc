@@ -20,6 +20,7 @@ function nuboot_radix_form_element($variables) {
   $element = &$variables['element'];
   $is_checkbox = FALSE;
   $is_radio = FALSE;
+  $is_input_group = FALSE;
   $is_topic = FALSE;
 
   // This is also used in the installer, pre-database setup.
@@ -33,6 +34,8 @@ function nuboot_radix_form_element($variables) {
 
   // Add the default form-item class.
   $attributes['class'][] = 'form-item';
+  // Remove text format guidelines.
+  $element['format']['guidelines']['#access'] = FALSE;
 
   // Add element #id for #type 'item'.
   if (isset($element['#markup']) && !empty($element['#id'])) {
@@ -85,6 +88,12 @@ function nuboot_radix_form_element($variables) {
     }
   }
 
+  // Recognize non-standard #input_group key to use a Bootstrap input group.
+  if (!empty($element['#input_group'])) {
+    $attributes['class'][] = 'input-group';
+    $is_input_group = TRUE;
+  }
+
   // Add a class for disabled elements to facilitate cross-browser styling.
   if (!empty($element['#attributes']['disabled'])) {
     $attributes['class'][] = 'form-disabled';
@@ -94,9 +103,38 @@ function nuboot_radix_form_element($variables) {
   // If #title is not set, we don't display any label or required marker.
   if (!isset($element['#title'])) {
     $element['#title_display'] = 'none';
+    // Add a title on VBO checkboxes for screenreaders.
+    if ($is_checkbox) {
+      $element['#title_display'] = 'after';
+      $element['#title'] = '<span class="screenreader">' . t('Select') . '</span>';
+    }
   }
-  $prefix = isset($element['#field_prefix']) ? '<span class="field-prefix">' . $element['#field_prefix'] . '</span> ' : '';
-  $suffix = isset($element['#field_suffix']) ? ' <span class="field-suffix">' . $element['#field_suffix'] . '</span>' : '';
+
+  // Support for non-standard #title_display options.
+  if ($element['#title_display'] == 'prefix') {
+    if (empty($element['#field_prefix'])) {
+      $element['#field_prefix'] = '';
+    }
+    $element['#field_prefix'] = theme('form_element_label', $variables) . $element['#field_prefix'];
+    $element['#title_display'] = 'none';
+  }
+  elseif ($element['#title_display'] == 'suffix') {
+    if (empty($element['#field_suffix'])) {
+      $element['#field_suffix'] = '';
+    }
+    $element['#field_suffix'] .= theme('form_element_label', $variables);
+    $element['#title_display'] = 'none';
+  }
+
+  // Generate the prefix and suffix.
+  if ($is_input_group) {
+    $prefix = isset($element['#field_prefix']) ? theme('radix_input_group_addon', array('content' => $element['#field_prefix'])) . ' ' : '';
+    $suffix = isset($element['#field_suffix']) ? ' ' . theme('radix_input_group_addon', array('content' => $element['#field_suffix'])) : '';
+  }
+  else {
+    $prefix = isset($element['#field_prefix']) ? '<span class="field-prefix">' . $element['#field_prefix'] . '</span> ' : '';
+    $suffix = isset($element['#field_suffix']) ? ' <span class="field-suffix">' . $element['#field_suffix'] . '</span>' : '';
+  }
 
   switch ($element['#title_display']) {
     case 'invisible':

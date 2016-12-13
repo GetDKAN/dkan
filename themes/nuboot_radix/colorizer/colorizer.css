@@ -206,15 +206,15 @@ div.autocomplete-deluxe-multiple,
   background:@bottom;
 }
 
-.radix-layouts-sidebar div[class*="pane-facetapi"] .pane-title,
-.radix-layouts-sidebar .pane-title.ctools-collapsible-handle {
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .pane-title,
+.panel-region-sidebar .radix-layouts-sidebar .pane-title.ctools-collapsible-handle {
   background: @toolbarbtn;
 }
 
-.radix-layouts-sidebar .pane-title,
-.radix-layouts-sidebar div[class*="pane-facetapi"] .facetapi-active {
+.panel-region-sidebar .radix-layouts-sidebar .pane-title,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .facetapi-active {
   background: @toolbarbtn;
-  border-color: @toolbarbtn;
+  border-color: @toolbarbtn !important;
   color: @bg;
 }
 
@@ -286,6 +286,6 @@ li.active .link-badge {
   color: @top;
 }
 
-.ctools-collapsible-container .ctools-collapsible-handle {
+.node-type-harvest-source .ctools-collapsible-container .ctools-collapsible-handle {
   background-color: @top;
 }
