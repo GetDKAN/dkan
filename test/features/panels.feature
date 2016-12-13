@@ -11,7 +11,7 @@ Feature: Panels
       And I wait for "Please select a category from the left"
     When I click "New custom content" in the "modal" region
       And I wait for "5" seconds
-      And I fill in "edit-title" with "New Custom Item"
+      And I fill in "override-title-textfield" with "New Custom Item"
       And I scroll to the top
       And I fill in "edit-body-value" with "Custom item body."
       And I press "Finish"

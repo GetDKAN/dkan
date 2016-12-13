@@ -67,7 +67,7 @@ Feature: User
       | Password          | temp123              |
       | Confirm password  | temp123              |
     And I check "editor"
-    And I wait for 6 seconds
+    And I wait for "6" seconds
     And I press "Create new account"
     Then I should see "Created a new user account for tempuser."
     When I am on "Users" page
