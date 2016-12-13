@@ -20,7 +20,7 @@ function dkan_sitewide_field_default_field_instances() {
       'default' => array(
         'label' => 'hidden',
         'settings' => array(),
-        'type' => 'hidden',
+        'type' => 'text_default',
         'weight' => 0,
       ),
       'search_result' => array(
