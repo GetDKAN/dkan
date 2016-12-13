@@ -6,6 +6,8 @@
 - Fix "format" facet collapsed even when selected on the search page.
 - Update media to 2.0-beta13
 - Fix hidden body field on page content type
+- Improve access check/security on datastore pages - unauthorized users could perform certain datastore functions
+- Use dashes in links to tags to avoid "page not found" errors
 
 7.x-1.12.11 2016-10-20
 --------------------------
