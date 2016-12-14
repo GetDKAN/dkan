@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fc50c3287221f745783574601824aace",
-    "content-hash": "383246ca48ac687e9cb1ebf7af3d23d3",
+    "hash": "264d8b2d61cb3cc533502618eaa63a40",
+    "content-hash": "55a40b79e1e249bc5752ad86d4ad83d7",
     "packages": [
         {
             "name": "behat/behat",
@@ -1000,47 +1000,6 @@
             "description": "Framework that helps mocking functions for unit testing PHP scripts",
             "homepage": "https://github.com/myplanetdigital/function_mock",
             "time": "2014-03-07 18:56:45"
-        },
-        {
-            "name": "nucivic/dkanextension",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "803b0c026ee2ec2da06f1657a966b410ba2d11b1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/803b0c026ee2ec2da06f1657a966b410ba2d11b1",
-                "reference": "803b0c026ee2ec2da06f1657a966b410ba2d11b1",
-                "shasum": ""
-            },
-            "require": {
-                "drupal/drupal-extension": "~3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Drupal\\DKANExtension\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "acouch",
-                    "email": "aaron@nucivic.com"
-                }
-            ],
-            "description": "Provides base DKAN class for Drupal Extension",
-            "keywords": [
-                "drupal",
-                "test",
-                "web"
-            ],
-            "time": "2016-12-06 19:43:16"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -2825,7 +2784,6 @@
     "stability-flags": {
         "behat/behat": 20,
         "devinci/devinci-behat-extension": 20,
-        "nucivic/dkanextension": 20,
         "myplanetdigital/function_mock": 20
     },
     "prefer-stable": false,

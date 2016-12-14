@@ -42,7 +42,8 @@
  - Added update hook to disable dkan_default_content on upgrades.
  - Updated visualization_entity.
  - Added fix to display the 'Request membership' link only to users that are logged in.
- - Remove content padding on data extent and social blocks. 
+ - Remove content padding on data extent and social blocks.
+ - Added DKAN Extension.
  - Upgrade workbench_moderation to v3.0.
  - Upgrade entity to 1.8
  - Upgrade manualcrop to 1.6
@@ -110,6 +111,7 @@ DKAN Dataset:
  - Better support of downloading remote files from the resource view page
    "Download" button.
  - Removed warning when a resource is created without title.
+ - Add limit to proxy resources.
  - Improved download of remote files.
 
 7.x-1.12.11 2016-10-20
