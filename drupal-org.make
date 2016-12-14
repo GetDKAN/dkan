@@ -45,7 +45,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/dkan_datastore.git
-      branch: fix_problem_missing_groups_resources_update_civic_3567
+      branch: release-1-12
   dkan_workflow:
     subdir: dkan
     download:
