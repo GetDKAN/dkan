@@ -23,3 +23,48 @@ function dkan_update_7002() {
   	variable_set('jquery_update_jquery_version', '1.10');
   }
 }
+
+/**
+ * We need to revert field instances.
+ * This is required for the next update in another case
+ * we have problem with new fields added on version 12
+ */
+function dkan_update_7003() {
+  module_enable(array('field_hidden'));
+  features_revert(array('dkan_datastore' => array('field_base', 'field_instance')));
+}
+
+/**
+ * Update resources without groups with the same group from parent dataset.
+ * This is related with version 7.x-1.11. Into 7.x-1.11 we don't sync
+ * groups between dataset and resource. On more recent version this work fine.
+ * but if we are updation from previous version we need to check resource without group
+ * and dataset with group to sync groups between both nodes.
+ */
+function dkan_update_7004(&$sandbox) {
+
+  if (!isset($sandbox['progress'])) {
+    $sandbox['progress'] = 0;
+    $sandbox['max'] = db_query("SELECT COUNT(DISTINCT fdr.field_dataset_ref_target_id) FROM {node} n LEFT JOIN {field_data_field_dataset_ref} fdr ON fdr.entity_id=n.nid LEFT JOIN {og_membership} og ON n.nid=og.etid WHERE n.type='resource' AND og.etid IS NULL AND fdr.field_dataset_ref_target_id IN (SELECT etid FROM {og_membership} WHERE etid IN (SELECT field_dataset_ref_target_id FROM {field_data_field_dataset_ref}))")->fetchField();
+  }
+
+  // Get all resources without group but the parent dataset has groups
+  $result = db_query("SELECT fdr.field_dataset_ref_target_id FROM {node} n LEFT JOIN {field_data_field_dataset_ref fdr} ON fdr.entity_id=n.nid LEFT JOIN {og_membership} og ON n.nid=og.etid WHERE n.type='resource' AND og.etid IS NULL AND fdr.field_dataset_ref_target_id IN (SELECT etid FROM {og_membership} WHERE etid IN (SELECT field_dataset_ref_target_id FROM {field_data_field_dataset_ref})) LIMIT 0,10");
+
+  foreach ($result as $item) {
+    //Simulate a empty original
+    $original = new stdClass();
+    $original->type = 'dataset';
+    $original->og_group_ref = array();
+    $dataset = node_load($item->field_dataset_ref_target_id);
+    $dataset->original = $original;
+    dkan_dataset_sync_groups($dataset);
+    $sandbox['progress']++;
+  }
+
+  $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress'] / $sandbox['max']);
+
+  return t('All resources without group were updated.');
+
+  throw new DrupalUpdateException('Something went wrong; Please check your resources and verify the groups is the same from dataset associated');
+}
