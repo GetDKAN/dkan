@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * Theme functions
+ * Theme functions.
  */
 
 require_once dirname(__FILE__) . '/includes/structure.inc';
@@ -44,7 +45,7 @@ function nuboot_radix_breadcrumb($variables) {
     $breadcrumb = array_filter($breadcrumb);
     $i = 1;
     foreach ($breadcrumb as $value) {
-      //Remove items with tag <none>
+      // Remove items with tag <none>.
       if (!strip_tags($value)) {
         continue;
       }
@@ -60,8 +61,6 @@ function nuboot_radix_breadcrumb($variables) {
     return $crumbs;
   }
 }
-
-
 
 /**
  * Returns HTML for an inactive facet item.
@@ -187,7 +186,7 @@ function nuboot_radix_sitewide_social_block() {
 /**
  * Overrides theme_file_widget().
  *
- * https://drupal.org/files/issues/bootstrap-undefined-index-2177089-1.patch
+ * Https://drupal.org/files/issues/bootstrap-undefined-index-2177089-1.patch.
  */
 function nuboot_radix_file_widget($variables) {
   $element = $variables['element'];
@@ -217,51 +216,14 @@ function nuboot_radix_file_widget($variables) {
 }
 
 /**
- * Overrides theme_user_picture(). --> NOT WORKING
- */
-// function nuboot_radix_user_picture(&$variables) {
-//   $variables['user_picture'] = '';
-
-//   if (variable_get('user_pictures', 0)) {
-//     // Load the full user object since it is not provided with nodes, comments,
-//     // or views displays.
-//     $account = module_exists('gravatar') ? _gravatar_load_account($variables['account']) : $variables['account'];
-//     $filepath = module_exists('gravatar') ? _gravatar_get_account_user_picture($account) : '';
-
-//     if (!empty($filepath)) {
-//       $alt = t("@user's picture", array('@user' => format_username($account)));
-//       if (module_exists('image') && file_valid_uri($filepath) && $style = variable_get('user_picture_style', '')) {
-//         $variables['user_picture'] = theme('image_style', array('style_name' => $style, 'path' => $filepath, 'alt' => $alt, 'title' => $alt));
-//       }
-//       else {
-//         $variables['user_picture'] = theme('image', array('path' => $filepath, 'alt' => $alt, 'title' => $alt));
-//       }
-//       if ($account->uid && user_access('access user profiles')) {
-//         // Create link to the user's profile.
-//         $attributes = array('title' => t('View user profile.'));
-//         $variables['user_picture'] = l($variables['user_picture'], 'user/' . $account->uid, array('attributes' => $attributes, 'html' => TRUE));
-//       }
-//       elseif (!empty($account->homepage)) {
-//         // If user is anonymous, create link to the commenter's homepage.
-//         $attributes = array(
-//           'title' => t('View user website.'),
-//           'rel' => 'external nofollow',
-//         );
-//         $variables['user_picture'] = l($variables['user_picture'], $account->homepage, array('attributes' => $attributes, 'html' => TRUE));
-//       }
-//     }
-//   }
-// }
-
-/**
  * Theme function implementation.
  *
  * Implements main theme function from the facet_icons module. Depends on
- * assets/stylesheets/dkan-topics.css
+ * assets/stylesheets/dkan-topics.css.
  */
 function nuboot_radix_facet_icons($variables) {
-   // Filter for values that are allowed for machine names of content types.
-  $attributes = (isset($variables['attributes']))? $variables['attributes'] : array();
+  // Filter for values that are allowed for machine names of content types.
+  $attributes = (isset($variables['attributes'])) ? $variables['attributes'] : array();
   // Uses same regex for content type validation.
   $variables['type'] = trim(preg_replace("/[^a-zA-Z0-9_]+/", " ", $variables['type']));
   // Reject if original input wasn't valid machine name for a content type.
@@ -269,9 +231,9 @@ function nuboot_radix_facet_icons($variables) {
     $variables['type'] = '';
   }
   // Icon styles variables.
-  $attributes = (isset($variables['attributes']))? $variables['attributes'] : array();
-  $classes = (isset($variables['class']))? $variables['class'] : array();
-  $classes[] = 'icon-dkan-' .  check_plain($variables['type']);
+  $attributes = (isset($variables['attributes'])) ? $variables['attributes'] : array();
+  $classes = (isset($variables['class'])) ? $variables['class'] : array();
+  $classes[] = 'icon-dkan-' . check_plain($variables['type']);
   $classes = implode(' ', $classes);
-  return '<span class="icon-dkan ' . $classes . '" '. drupal_attributes($attributes) .'></span>';
+  return '<span class="icon-dkan ' . $classes . '" ' . drupal_attributes($attributes) . '></span>';
 }
