@@ -49,7 +49,7 @@ function dkan_update_7004(&$sandbox) {
   }
 
   // Get all resources without group but the parent dataset has groups
-  $result = db_query("SELECT fdr.field_dataset_ref_target_id FROM {node} n LEFT JOIN {field_data_field_dataset_ref fdr} ON fdr.entity_id=n.nid LEFT JOIN {og_membership} og ON n.nid=og.etid WHERE n.type='resource' AND og.etid IS NULL AND fdr.field_dataset_ref_target_id IN (SELECT etid FROM {og_membership} WHERE etid IN (SELECT field_dataset_ref_target_id FROM {field_data_field_dataset_ref})) LIMIT 0,10");
+  $result = db_query("SELECT DISTINCT fdr.field_dataset_ref_target_id FROM {node} n LEFT JOIN {field_data_field_dataset_ref fdr} ON fdr.entity_id=n.nid LEFT JOIN {og_membership} og ON n.nid=og.etid WHERE n.type='resource' AND og.etid IS NULL AND fdr.field_dataset_ref_target_id IN (SELECT etid FROM {og_membership} WHERE etid IN (SELECT field_dataset_ref_target_id FROM {field_data_field_dataset_ref})) LIMIT 0,10");
 
   foreach ($result as $item) {
     //Simulate a empty original
