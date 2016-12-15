@@ -412,7 +412,7 @@ function dkan_harvest_field_default_field_instances() {
     'entity_type' => 'node',
     'field_name' => 'field_dkan_harvest_machine_name',
     'label' => 'Machine Name',
-    'required' => 1,
+    'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
     ),
