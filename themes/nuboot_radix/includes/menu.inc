@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * Theme and preprocess functions for menus
+ * Theme and preprocess functions for menus.
  */
 
 /**

@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * Theme and preprocess functions for nodes
+ * Theme and preprocess functions for nodes.
  */
 
 /**
@@ -22,15 +23,15 @@ function nuboot_radix_preprocess_node(&$variables) {
     $variables['group_list'] = NULL;
     $variables['body'] = empty($wrapper->body->value()) ? '' : $wrapper->body->value->value();
     $variables['node_url'] = drupal_lookup_path('alias', "node/" . $wrapper->getIdentifier());
-    if ($variables['type'] == 'resource' && $wrapper->field_dataset_ref->count() > 0) { 
-      foreach ($wrapper->field_dataset_ref as $dataset) { 
+    if ($variables['type'] == 'resource' && $wrapper->field_dataset_ref->count() > 0) {
+      foreach ($wrapper->field_dataset_ref as $dataset) {
         $variables['dataset_list'] .= '<li>' . $dataset->label() . '</li>';
       }
     }
 
     $groups = og_get_entity_groups('node', $wrapper->value());
-    if(!empty($groups['node'])) {
-      $groups = array_map(function($gid){
+    if (!empty($groups['node'])) {
+      $groups = array_map(function($gid) {
         $g_wrapper = entity_metadata_wrapper('node', $gid);
         return $g_wrapper->label();
       }, array_values($groups['node']));
@@ -42,7 +43,7 @@ function nuboot_radix_preprocess_node(&$variables) {
   if ($variables['type'] == 'blog') {
     $node = node_load($variables['nid']);
     $user = user_load($node->uid);
-    if($node->uid > 0) {
+    if ($node->uid > 0) {
       $user_link = drupal_get_path_alias('user/' . $node->uid);
     }
     $variables['blog_author'] = !empty($user->name) ? $user->name : '';

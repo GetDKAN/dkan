@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * bootstrap-panel.tpl.php
@@ -23,7 +24,9 @@
   <div class="panel-collapse collapse fade<?php print (!$collapsed ? ' in' : ''); ?>">
   <?php endif; ?>
   <div class="panel-body">
-    <?php if ($description): ?><div class="help-block"><?php print $description; ?></div><?php endif; ?>
+    <?php if ($description) : ?>
+      <div class="help-block"><?php print $description; ?></div>
+    <?php endif; ?>
     <?php print $content; ?>
   </div>
   <?php if ($collapsible): ?>

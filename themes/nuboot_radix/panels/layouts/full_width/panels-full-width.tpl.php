@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Template for a 4 row panel layout.

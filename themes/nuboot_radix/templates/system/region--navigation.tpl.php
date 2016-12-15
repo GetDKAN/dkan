@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * region--navigation.tpl.php
@@ -27,7 +28,9 @@
 ?>
 <div id="nav-wrapper">
   <header<?php print $attributes; ?>>
-    <?php if ($content_attributes): ?><div<?php print $content_attributes; ?>><?php endif; ?>
+    <?php if ($content_attributes): ?>
+      <div<?php print $content_attributes; ?>>
+    <?php endif; ?>
     <div class="navbar-header">
       <?php if ($page['logo']): ?>
         <a class="logo navbar-btn pull-left" href="<?php print url($page['front_page']); ?>" title="<?php print t('Home'); ?>">
@@ -49,6 +52,8 @@
         <?php print $content; ?>
       </nav>
     </div>
-    <?php if ($content_attributes): ?></div><?php endif; ?>
+    <?php if ($content_attributes): ?>
+    </div>
+    <?php endif; ?>
   </header>
 </div>

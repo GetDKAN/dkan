@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Theme and preprocess functions for panels and panes.
@@ -30,6 +31,7 @@ function nuboot_radix_hero_file_uri() {
 
 /**
  * Implements hook_preprocess().
+ *
  * Set up variables for the front page.
  */
 function nuboot_radix_preprocess(&$variables, $hook) {
@@ -39,24 +41,24 @@ function nuboot_radix_preprocess(&$variables, $hook) {
   // Front page vars.
   if (isset($variables['is_front']) && $variables['is_front']) {
     $theme_path = drupal_get_path('theme', 'nuboot_radix');
-    if ($uri = nuboot_radix_hero_file_uri()):
+    if ($uri = nuboot_radix_hero_file_uri()) :
       $variables['tint'] = 'tint';
       $variables['bg_color'] = 'transparent';
       $variables['path'] = file_create_url($uri);
     else :
-	  	$background_option = theme_get_setting('background_option');
-	  	if (empty($background_option)):
-				$variables['tint'] = 'no-tint';
-				$variables['bg_color'] = '#005e9a';
-				$variables['path'] = '';
-			else :
-				$uri = '';
-				$variables['tint'] = 'no-tint';
-				$variables['bg_color'] = '#' . ltrim($background_option, '#');
-				$variables['path'] = '';
-			endif;
-		endif;
-	}
+      $background_option = theme_get_setting('background_option');
+      if (empty($background_option)) :
+        $variables['tint'] = 'no-tint';
+        $variables['bg_color'] = '#005e9a';
+        $variables['path'] = '';
+      else :
+        $uri = '';
+        $variables['tint'] = 'no-tint';
+        $variables['bg_color'] = '#' . ltrim($background_option, '#');
+        $variables['path'] = '';
+      endif;
+    endif;
+  }
 }
 
 /**
@@ -64,7 +66,7 @@ function nuboot_radix_preprocess(&$variables, $hook) {
  */
 function nuboot_radix_preprocess_panels_pane(&$vars) {
   // Add titles to dataset and resource forms.
-  if($vars['pane']->subtype == 'form' && empty($vars['content']['nid']['#value'])) {
+  if ($vars['pane']->subtype == 'form' && empty($vars['content']['nid']['#value'])) {
     switch ($vars['content']['type']['#value']) {
       case 'dataset':
         $vars['title'] = "Add a Dataset";
@@ -73,7 +75,7 @@ function nuboot_radix_preprocess_panels_pane(&$vars) {
       case 'resource':
         $vars['title'] = "Add a Resource";
         break;
-      
+
       default:
         break;
     }

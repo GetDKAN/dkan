@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Theme and preprocess functions for breadcrumbs, messages, tabs..etc.
@@ -24,15 +25,15 @@ function nuboot_radix_preprocess_page(&$variables) {
   $logo_file = !empty($logo_fid) ? file_load($logo_fid) : FALSE;
   if ($logo) {
     if ($default) {
-      $svg = drupal_get_path('theme', $theme ) . '/logo.svg';
+      $svg = drupal_get_path('theme', $theme) . '/logo.svg';
       if (file_exists($svg)) {
-        $variables['logo'] = '/' . drupal_get_path('theme', $theme ) . '/logo.svg';
+        $variables['logo'] = '/' . drupal_get_path('theme', $theme) . '/logo.svg';
       }
       else {
-        $variables['logo'] = '/' . drupal_get_path('theme', $theme ) . '/logo.png'; 
+        $variables['logo'] = '/' . drupal_get_path('theme', $theme) . '/logo.png';
       }
     }
-    elseif($logo_file) {
+    elseif ($logo_file) {
       $logo_uri = $logo_file->uri;
       $variables['logo'] = file_create_url($logo_uri);
     }
@@ -42,7 +43,7 @@ function nuboot_radix_preprocess_page(&$variables) {
   }
   // Add copyright to theme.
   if ($copyright = theme_get_setting('copyright')) {
-    $variables['copyright'] = isset($copyright['value']) ? check_markup($copyright['value'], $copyright['format']) : t('Powered by <a href="http://nucivic.com/dkan">DKAN</a>, a project of <a href="http://nucivic.com">NuCivic</a>'); 
+    $variables['copyright'] = isset($copyright['value']) ? check_markup($copyright['value'], $copyright['format']) : t('Powered by <a href="http://nucivic.com/dkan">DKAN</a>, a project of <a href="http://nucivic.com">NuCivic</a>');
   }
   // Use front page template for node front page.
   $alias = drupal_get_path_alias($_GET['q']);
@@ -58,7 +59,8 @@ function nuboot_radix_preprocess_page(&$variables) {
     '#attached' => array(
       'css' => array(
         '//fonts.googleapis.com/css?family=Open+Sans::400,300,700' => array(
-          'type' => 'external'),
+          'type' => 'external',
+        ),
       ),
     ),
   );

@@ -1,5 +1,10 @@
 <?php
-// Plugin definition
+
+/**
+ * @file
+ * Plugin definition.
+ */
+
 $plugin = array(
   'title' => t('DKAN Front'),
   'category' => t('Custom'),
@@ -18,4 +23,3 @@ $plugin = array(
     'bottom-second' => t('Bottom Second Column'),
   ),
 );
-

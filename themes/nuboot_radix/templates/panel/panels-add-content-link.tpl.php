@@ -1,14 +1,15 @@
 <?php
+
 /**
  * @file
- * Template to control the add content individual links in the add content modal.
+ * Template to control widget links in the add content modal.
  */
 ?>
 <div class="dkan-type-button clearfix">
-  <?php 
-  if (isset($icon_text_button)): 
-  	$button = preg_replace("/<img[^>]+\>/i", " ", $icon_text_button);
-  	?>
+  <?php
+  if (isset($icon_text_button)):
+    $button = preg_replace("/<img[^>]+\>/i", " ", $icon_text_button);
+    ?>
     <?php print $button; ?>
   <?php else: ?>
     <?php print $image_button; ?>
