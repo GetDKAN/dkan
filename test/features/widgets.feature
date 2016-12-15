@@ -139,10 +139,10 @@ Feature: Widgets
   Scenario: Adds "Existing Content" block to home page using panels ipe editor
     When I follow "Existing content"
     And I wait for "Configure new Existing content"
-    And I fill in "edit-nid" with "Wisconsin Polling Places"
+    And I fill in "edit-nid" with "11111AAAAAAafghanistan Election Districts"
     And I press "Finish"
     And I wait and press "Save"
-    Then I should see "Wisconsin Polling Places"
+    Then I should see "11111AAAAAAafghanistan Election Districts"
       And I should see "csv"
 
   Scenario: Adds "Visualization embed" block to home page using panels ipe editor
