@@ -128,6 +128,7 @@ projects:
   fieldable_panels_panes:
     version: '1.11'
     patch:
+      2825835: 'https://www.drupal.org/files/issues/2825835.patch'
       2826182: 'https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch'
       2826205: 'https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch'
   file_entity:
