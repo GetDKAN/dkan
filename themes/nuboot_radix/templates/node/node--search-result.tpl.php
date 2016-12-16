@@ -1,8 +1,9 @@
 <?php
+
 /**
-* @file
-* Template file for node search results.
-*/
+ * @file
+ * Template file for node search results.
+ */
 ?>
 <article class="node-search-result row" xmlns="http://www.w3.org/1999/html">
   <div class="col-md-2 col-lg-1 col-xs-2 icon-container">
@@ -23,8 +24,8 @@
     <?php print render($content['resources']); ?>
     <?php
       if(isset($node->nid) && $node->type == 'harvest_source' && module_exists('dkan_harvest')) {
-        $changed = format_date($node->changed, 'custom','m/d/Y');
-        $count = dkan_harvest_datasets_count($node) ? dkan_harvest_datasets_count($node): 0;
+        $changed = format_date($node->changed, 'custom', 'm/d/Y');
+        $count = dkan_harvest_datasets_count($node) ? dkan_harvest_datasets_count($node) : 0;
         print '<span>' . t('Number of Datasets:') . '</span> ' . $count;
         print '<br><span>' . t('Last updated:') . '</span> ' . $changed;
       }
