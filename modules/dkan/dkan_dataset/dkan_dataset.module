@@ -510,11 +510,23 @@ function dkan_dataset_discovery_extension($mimetype) {
  * Implements hook_file_mimetype_mapping_alter().
  */
 function dkan_dataset_file_mimetype_mapping_alter(&$mapping) {
-  $mapping['extensions']['json'] = 999;
-  $mapping['mimetypes'][999] = 'application/json';
-  // Text/xml would map to the same extention as application/xml, so we'll
-  // fix trhat in dkan_dataset_discovery_extension()
-  $mapping['mimetypes'][998] = 'text/xml';
+  // Support json file type if it is not done already.
+  $missing_mimetypes = array(
+    // OOB Drupal does not support'application/json' mimetype.
+    'application/json' => 'json',
+    // Text/xml would map to the same extension as application/xml.
+    'text/xml' => 'xml',
+  );
+
+  foreach ($missing_mimetypes as $mimetype => $extension) {
+    $offset = array_search($mimetype, $mapping['mimetypes']);
+    if ($offset === FALSE || array_search($offset, $mapping['extensions']) != $extension) {
+      $mapping['mimetypes'][] = $mimetype;
+      $mimetype_key = array_pop(array_keys($mapping['mimetypes']));
+      $mapping['extensions'][$extension] = $mimetype_key;
+    }
+  }
+
   // 'Htm' and 'html' have the same mapping number but 'htm' is after
   // content types of 'text/html' are alway 'htm' without this.
   unset($mapping['extensions']['htm']);
