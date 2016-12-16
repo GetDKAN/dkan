@@ -487,22 +487,11 @@ function dkan_dataset_discovery_extension($mimetype) {
   $type = '';
   $mapping = file_mimetype_mapping();
   $offset = array_search($mimetype, $mapping['mimetypes']);
-  if ($offset) {
+  // Function array_search can return 0 as index.
+  if ($offset !== FALSE) {
     $type = array_search($offset, $mapping['extensions']);
   }
-  if (!$type) {
-    // Allows custom mappings despite file_mimetype_mapping only allowing one.
-    // mimetype per extension.
-    switch ($offset) {
-      case 998:
-        $type = 'xml';
-        break;
 
-      default:
-        $type = $mimetype;
-        break;
-    }
-  }
   return $type;
 }
 
