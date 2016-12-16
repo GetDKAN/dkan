@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_sitewide_panels.pages_default.inc
@@ -1089,7 +1088,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     'panel_args' => 0,
     'link_to_view' => 0,
     'args' => '',
-    'url' => '',
+    'url' => 'user',
     'display' => 'entity_view_1',
     'context' => array(
       0 => '',
