@@ -72,7 +72,6 @@
 <div id="main-wrapper">
   <div id="main" class="main">
 
-    <?php //if (!empty($breadcrumb)): print $breadcrumb; endif;?>
     <?php print $messages; ?>
     <?php if (!empty($page['help'])): ?>
       <?php print render($page['help']); ?>
