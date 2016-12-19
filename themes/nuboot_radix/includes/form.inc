@@ -144,12 +144,10 @@ function nuboot_radix_form_element($variables) {
   switch ($element['#title_display']) {
     case 'invisible':
       if ($is_radio || $is_checkbox) {
-        // Render the normal invisible label for screen readers.
+        // render the normal invisible label for screen readers
         $output .= ' ' . theme('form_element_label', $variables);
-        // But still ensure checkbox is wrapped in an empty label.
-        $element['#title_display'] = 'before';
-        $element['#title'] = '';
-        $output .= ' ' . $prefix . theme('form_element_label', $variables) . $suffix . "\n";
+        // but still ensure checkbox is wrapped in an empty label
+        $output .= ' ' . $prefix . $element['#children'] . $suffix . "\n";
       }
       else {
         $output .= ' ' . theme('form_element_label', $variables);
