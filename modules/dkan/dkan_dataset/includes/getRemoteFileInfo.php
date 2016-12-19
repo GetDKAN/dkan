@@ -1,12 +1,5 @@
 <?php
 
-/**
- * @file
- * Class to get content type and name of remote file.
- *
- * Socrata shim copied from data.gov.
- */
-
 namespace dkanDataset;
 
 /**
@@ -15,12 +8,24 @@ namespace dkanDataset;
 class GetRemoteFileInfo {
 
   /**
+   * CURL header info of the remote URL.
+   *
+   * @var info
+   */
+  public $info = FALSE;
+  public $url;
+  public $agent;
+  public $followRedirect;
+
+  /**
    * Class constructor.
    */
   public function __construct($url, $agent, $followRedirect = TRUE) {
     $this->url = $url;
     $this->agent = $agent;
     $this->followRedirect = $followRedirect;
+
+    $this->info = $this->curlHeader($this->url, $this->agent, $this->followRedirect);
   }
 
   /**
@@ -82,8 +87,8 @@ class GetRemoteFileInfo {
     curl_setopt($ch, CURLOPT_COOKIE, "");
 
     // Include the header in the output.
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE );
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET' );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
     curl_setopt($ch, CURLOPT_HEADER, TRUE);
 
     return $ch;
@@ -93,9 +98,6 @@ class GetRemoteFileInfo {
    * Gets header info for requested file.
    */
   public function getInfo() {
-    if (!isset($this->info)) {
-      $this->info = $this->curlHeader($this->url, $this->agent, $this->followRedirect);
-    }
     return $this->info;
   }
 
