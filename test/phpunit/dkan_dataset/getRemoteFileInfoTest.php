@@ -54,7 +54,7 @@ Age: 5730';
    * extension.
    */
   public function testUrlExtension() {
-    $url = "http://opendata.comune.bari.it/dataset/a66a3b73-5a39-42b6-84ac-7c8260f3f6d1/resource/c397042b-f530-46f6-8987-210b3a215ff4/download/20121212t163303albo.xls";
+    $url = "https://s3.amazonaws.com/dkan-default-content-files/files/albo.xls";
     $fileInfo = new getRemoteFileInfo($url, 'test', TRUE);
     $this->assertEquals($fileInfo->getType(), 'application/vnd.ms-excel');
     $this->assertEquals($fileInfo->getExtension(), 'xls');
