@@ -77,6 +77,7 @@ Feature: Dataset Features
     And I am on "Dataset 01" page
     When I click "Edit"
     Then I should see all the dataset fields in the form
+    And I wait for "2" seconds
     And I should not see "Rights on Project Open Data"
     Then I select "Restricted" from "edit-field-public-access-level-und"
     And I should see "Rights on Project Open Data"
