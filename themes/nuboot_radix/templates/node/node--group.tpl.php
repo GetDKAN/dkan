@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Custom group node template.
@@ -33,7 +34,7 @@
         ?>
       </p>
     </div>
-    <a href="<?php print url($node_url) ?>" class="btn btn-primary"><?php print count($datasets) ?> datasets</a>
+    <a href="<?php print urldecode($node_url) ?>" class="btn btn-primary"><?php print count($datasets) ?> datasets</a>
   </article>
 
 <?php else: ?>

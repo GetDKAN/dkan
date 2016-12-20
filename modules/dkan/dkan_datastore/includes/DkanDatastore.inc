@@ -412,89 +412,80 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
     $feed = isset($this->feed) ? $this->feed : $this->feed($this->node);
     $feed['source']->startImport();
   }
+  /**
+   * Starts import without invoking batch UI process.
+   */
+  public function importByCLI() {
+    $source = $this->setUpSource();
+    // Import new items.
+    while (FEEDS_BATCH_COMPLETE != $source->import()) {
+      continue;
+    };
+  }
 
   /**
-   * Update datastore with file.
+   * Updates the resource file using the URI.
+   *
+   * @param string $uri
+   *   The URI, ie public://myfile.png, for the file.
+   * @param bool $copy_file
+   *   A boolean indicating whether to copy the file locally.
+   *   If set to TRUE the file is copied locally.
    */
-  public function updateByFile($uri = '', $copy_file = TRUE, $truncate = TRUE) {
+  public function updateFileByURI($uri, $copy_file = TRUE) {
 
-    if (!$uri) {
+    if ($copy_file) {
+      $file = array();
+      $file = file_get_contents($uri);
+      $file = file_save_data($new_file, 'public://' . drupal_basename($uri));
+    }
+    else {
+      // The file exists.
+      $fid = db_query('SELECT fid FROM {file_managed} WHERE uri = :uri', array(':uri' => $uri))->fetchField();;
+      $file = file_load($fid);
+    }
+
+    if ($fid) {
+      $this->updateFile($file);
+    }
+    else {
       return FALSE;
     }
 
-    try {
-      // Get current file.
-      $current_file = $this->file();
+  }
 
-      $new_file = array();
-      if ($copy_file) {
-        // Save new file.
-        $new_file = file_get_contents($uri);
-        $new_file = file_save_data($new_file, 'public://' . drupal_basename($uri));
+  /**
+   * Update resource with file.
+   *
+   * @param bool $use_current_setttings
+   *  If set to TRUE use the current file visibility settings.
+   *
+   */
+  public function updateFile($file, $use_current_setttings = TRUE) {
+    // Get current file.
+    $current_file = $this->file();
+
+    if ($current_file && $use_current_setttings) {
+      // Copy view settings from current file.
+      if (isset($current_file->map)) {
+        $file->map = $current_file->map;
       }
-      else {
-        // The file exists.
-        $fid = db_query('SELECT fid FROM {file_managed} WHERE uri = :uri', array(':uri' => $uri))->fetchField();;
-        $new_file = file_load($fid);
+      if (isset($current_file->grid)) {
+        $file->grid = $current_file->grid;
       }
-
-      if ($new_file) {
-        // Set default settings.
-        $new_file->status = FILE_STATUS_PERMANENT;
-        $new_file->display = 1;
-        $new_file->description = '';
-        $new_file->map = 1;
-        $new_file->grid = 1;
-        $new_file->graph = 1;
-
-        if ($current_file) {
-          // Copy view settings from current file.
-          if (isset($current_file->map)) {
-            $new_file->map = $current_file->map;
-          }
-          if (isset($current_file->grid)) {
-            $new_file->grid = $current_file->grid;
-          }
-          if (isset($current_file->graph)) {
-            $new_file->graph = $current_file->graph;
-          }
-          // Delete current file.
-          $this->deleteFile();
-        }
-
-        // Save new file.
-        file_save($new_file);
-
-        $file_field = dkan_datastore_file_upload_field();
-        $this->node->{$file_field} = array(LANGUAGE_NONE => array((array) $new_file));
-        node_save($this->node);
-
-        // Add importer if not present.
-        if (!$this->importerId) {
-          feeds_node_insert($this->node);
-          $this->importerId = $this->importerId();
-          $this->source = $this->source();
-          $this->importer = $this->importer();
-        }
-
-        // Set up importer.
-        $source = $this->setUpSource();
-        // Import new items.
-        while (FEEDS_BATCH_COMPLETE != $source->import()) {
-          continue;
-        };
-
-        return TRUE;
-
+      if (isset($current_file->graph)) {
+        $file->graph = $current_file->graph;
       }
-      else {
-        return FALSE;
-      }
-
+      // Delete current file.
+      $this->deleteFile();
     }
-    catch (Exception $e) {
-      return FALSE;
-    }
+
+    // Save new file.
+    file_save($file);
+
+    $file_field = dkan_datastore_file_upload_field();
+    $this->node->{$file_field} = array(LANGUAGE_NONE => array((array) $file));
+    node_save($this->node);
   }
 
   /**

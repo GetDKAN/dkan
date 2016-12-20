@@ -9,7 +9,7 @@
         "maintainer": "DKAN",
         "maintainer_email": "admin@example.com",
         "license_title": "http://opendefinition.org/licenses/cc-by-sa/",
-        "notes": "<p>Centers for Disease Control and Prevention data regarding varicella (chickenpox) virus incidence and mortality rates.</p>\n<p><strong>Source:</strong> <a href=\"https://data.cdc.gov/NNDSS/NNDSS-Table-II-Varicella-to-West-Nile-virus-diseas/ig4m-ub43\">https://data.cdc.gov/NNDSS/NNDSS-Table-II-Varicella-to-West-Nile-virus-d...</a></p>\n<p><strong>See associated data story:</strong><br /><a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/end-chickenpox-varicella-vaccines-success-story\">http://dev-stefanies-dkan-demo-site.pantheonsite.io/story/end-chickenpox-varicella-vaccines-success-story</a></p>\n",
+        "notes": "<p>Centers for Disease Control and Prevention data regarding varicella (chickenpox) virus incidence and mortality rates.</p>\n<p><strong>Source:</strong> <a href=\"https://data.cdc.gov/NNDSS/NNDSS-Table-II-Varicella-to-West-Nile-virus-diseas/ig4m-ub43\">https://data.cdc.gov/NNDSS/NNDSS-Table-II-Varicella-to-West-Nile-virus-d...</a></p>\n<p><strong>Related Data Story: </strong><a href=\"/story/end-chickenpox-varicella-vaccines-success-story\">An End to Chickenpox: The Varicella Vaccine's Success Story</a></p>\n",
         "url": "http://default/dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine",
         "state": "Active",
         "log_message": "Update to resource 'Varicella Incidence Rates After Vaccine Introduced in U.S., 1995-2009'",

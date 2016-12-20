@@ -5,6 +5,11 @@
  * Base phpunit tests for dkan_harvest module.
  */
 
+/**
+ * PHPUnit test class for DKAN harvest types.
+ *
+ * @class DkanHarvestSourcesTest
+ */
 class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
 
   static $setUpBeforeClassModuleDisabled = FALSE;
@@ -67,6 +72,8 @@ class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test field_harvest_source_type.
+   *
    * Make sure that the allowed harvest type values the the type machine name
    * as key and the type label as value.
    *
@@ -90,6 +97,8 @@ class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test field_sourec_uri validation.
+   *
    * @covers ::dkan_harvest_field_attach_validate_source_uri()
    */
   public function testDkanHarvestSourcesFieldAttachValidateSourceUri() {
@@ -101,31 +110,31 @@ class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
     $langcode = LANGUAGE_NONE;
     $delta = 0;
 
-    // Invalid Protocol
+    // Invalid Protocol.
     $errors = array();
     $uri = 'wrong://data.mo.gov/data.json';
     dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, $errors);
     $this->assertNotEmpty($errors);
 
-    // Invalid Local URI
+    // Invalid Local URI.
     $errors = array();
     $uri = 'file://test/phpunit/data/harvest_test_source_local_file/data.json';
     dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, $errors);
     $this->assertNotEmpty($errors);
 
-    // Valid local URI
+    // Valid local URI.
     $errors = array();
     $uri = 'file://' . __DIR__ . '/data/harvest_test_source_local_file/data.json';
     dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, $errors);
     $this->assertEmpty($errors);
 
-    // Invalid Remote URI
+    // Invalid Remote URI.
     $errors = array();
     $uri = 'http://this_is_not_correct.wrong/data.json';
     dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, $errors);
     $this->assertNotEmpty($errors);
 
-    // Valid Remote URI
+    // Valid Remote URI.
     $errors = array();
     $uri = 'https://data.mo.gov/data.json';
     dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, $errors);
@@ -156,4 +165,5 @@ class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
       module_enable(array('dkan_harvest_test'));
     }
   }
+
 }

@@ -17,8 +17,8 @@ machine:
     # For xvfb / selenium setup (not sure why)
     #DISPLAY: ':99.0'
     DATABASE_URL: mysql://ubuntu:@127.0.0.1:3306/circle_test
-    # Timeouts issues happen when selenium tries to spawn a new chrome 
-    # instance. I've nail that down to this selenium issue 
+    # Timeouts issues happen when selenium tries to spawn a new chrome
+    # instance. I've nail that down to this selenium issue
     # https://github.com/SeleniumHQ/docker-selenium/issues/87
     DBUS_SESSION_BUS_ADDRESS: /dev/null
 ## Customize checkout
@@ -52,6 +52,7 @@ dependencies:
     - mkdir $CIRCLE_ARTIFACTS/junit
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH bash dkan-init.sh dkan --deps --build=$DATABASE_URL'
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard'
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush cc all'
     # Run a webserver using drush.
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes runserver :8888':
         background: true

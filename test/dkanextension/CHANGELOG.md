@@ -1,0 +1,1 @@
+- 2016-07-31: Added "I wait for :text to disappear" step

@@ -153,46 +153,20 @@ function dkan_datastore_menu_alter(&$items) {
 }
 
 /**
- * Copy of feeds_access.
+ * Access callback for DKAN Datastore operations.
  */
 function dkan_datastore_feeds_access($action, $node) {
+
+  // If $action is not one of the supported actions, return access denied.
   if (!in_array($action, array('import', 'clear', 'unlock', 'drop'))) {
-    // If $action is not one of the supported actions, we return access denied.
     return FALSE;
   }
-  if ($action == 'drop' && user_access('manage datastore')) {
+
+  // All available operations requires the 'manage datastore' permission.
+  if (user_access('manage datastore') && node_access('update', $node) && $node->type == 'resource') {
     return TRUE;
   }
-  if ($action != 'import') {
-    if ($importer_ids = feeds_get_importer_ids($node->type, $node->nid)) {
-      foreach ($importer_ids as $importer_id) {
-        $source_config = feeds_source($importer_id, $node->nid);
-        $fetcher = get_class($source_config->importer->fetcher);
-        $source = isset($source_config->config[$fetcher]['source']) ? $source_config->config[$fetcher]['source'] : '';
-        if ($source) {
-          return TRUE;
-        }
-      }
-      return FALSE;
-    }
-    else {
-      return FALSE;
-    }
-  }
 
-  if (is_string($node)) {
-    $importer_id = $node;
-  }
-  elseif ($node->type) {
-    $importer_id = feeds_get_importer_id($node->type);
-  }
-
-  // Check for permissions if feed id is present, otherwise return FALSE.
-  if ($importer_id) {
-    if (user_access('administer feeds') || user_access("{$action} {$importer_id} feeds")) {
-      return TRUE;
-    }
-  }
   return FALSE;
 }
 
@@ -616,22 +590,18 @@ function dkan_datastore_cron_queue_info() {
 /**
  * Utility function for add a new resource to datastore queue.
  */
-function dkan_datastore_queue_import($uuid, $fid) {
+function dkan_datastore_queue_import($uuid) {
   $item = array(
     'uuid' => $uuid,
-    'fid' => $fid,
   );
   DrupalQueue::get('dkan_datastore_queue')->createItem($item);
-  watchdog('dkan_datastore', 'Added @file to queue for import into datastore', array('%file' => $fid));
+  watchdog('dkan_datastore', 'Added resource %uuid to queue for import into datastore', array('%uuid' => $uuid));
 }
 
 /**
  * Callback used with queue for index content into datastore.
  */
 function dkan_datastore_queue_import_worker($item) {
-  $file = file_load($item['fid']);
-  $uri = $file->uri;
-  $file_path = file_create_url($uri);
   $datastore = dkan_datastore_go($item['uuid']);
-  $datastore->updateByFile($file_path);
+  $datastore->importByCLI();
 }

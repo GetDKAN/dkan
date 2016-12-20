@@ -27,7 +27,8 @@ Feature: Resource
       | Jaz     | Group 01 | member               | Pending           |
       | Admin   | Group 02 | administrator member | Active            |
       | Celeste | Group 02 | member               | Active            |
-      | Celeste | Group 01 | member               | Active            |
+      | Celeste | Group 01 | administrator member | Active            |
+      | John    | Group 01 | member               | Active            |
     And "Tags" terms:
       | name    |
       | world   |
@@ -107,7 +108,7 @@ Feature: Resource
     And I wait for "Delete Items"
     Then I should see "Last import"
     And I should see "imported items total"
-  
+
   @noworkflow @javascript
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"

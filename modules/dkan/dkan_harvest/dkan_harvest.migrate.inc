@@ -5,6 +5,9 @@
  * Base Harvest Migration classes.
  */
 
+use dkanDataset\getRemoteFileInfo;
+include_once drupal_get_path('module', 'dkan_dataset') . '/includes/getRemoteFileInfo.php';
+
 // This used to exits in file.inc but was removed on Drupal 7 without a
 // replacement.
 define('FILE_STATUS_TEMPORARY', 0);
@@ -36,7 +39,6 @@ class HarvestMigration extends MigrateDKAN {
 
   protected $sourceListOptions;
 
-  // MigrateMap init arguments.
   protected $dkanHarvestMigrateSQLMapSourceKey;
   protected $dkanHarvestMigrateSQLMapDestinationKey;
   protected $dkanHarvestMigrateSQLMapConnectionKey;
@@ -432,7 +434,8 @@ class HarvestMigration extends MigrateDKAN {
         if (isset($metadata_source_old_emw)) {
           entity_delete('node', $metadata_source_old_emw->nid);
         }
-      } catch (EntityMetadataWrapperException $emwException) {
+      }
+      catch (EntityMetadataWrapperException $emwException) {
         // Cannot get to the old datasets although the migration states it
         // exists. This should never happen but lets log this to help the next
         // developer debug this problem.
@@ -442,7 +445,7 @@ class HarvestMigration extends MigrateDKAN {
             '@exception_message' => $emwException->getMessage(),
           ));
         $this->saveMessage($message);
-        }
+      }
     }
 
     if (!isset($row->metadata_source) || !$row->metadata_source) {
@@ -506,7 +509,8 @@ class HarvestMigration extends MigrateDKAN {
 
     try {
       $metadata_source_emw->save();
-    } catch (EntityMetadataWrapperException $emwException) {
+    }
+    catch (EntityMetadataWrapperException $emwException) {
       // Saving the metadata source failed. skip.
       $message = t(
         '@message_prefix. @exception_message',
@@ -716,9 +720,10 @@ class HarvestMigration extends MigrateDKAN {
         $dataset_emw = NULL;
         try {
           $dataset_emw = entity_metadata_wrapper('node', $nid);
-        } catch (EntityMetadataWrapperException $exception) {
+        }
+        catch (EntityMetadataWrapperException $exception) {
           $this->saveMessage($exception->getMessage());
-          // Skip this nid
+          // Skip this nid.
           continue;
         }
 
@@ -975,60 +980,49 @@ class HarvestMigration extends MigrateDKAN {
     $resource->url_type = 'api';
     $format_detected = 'html';
 
-    // Try to get the file extension.
-    $path = parse_url($url, PHP_URL_PATH);
-    $filename = str_replace(array('%20', '_'), array(' ', ' '), pathinfo($path, PATHINFO_FILENAME));
-    $extension = pathinfo($path, PATHINFO_EXTENSION);
-    $extension = strtolower($extension);
+    // Logic to determin if the URL is switable for field_link_remote_file
+    // field (ie without redirects) and get a canonical format This only works
+    // for http requests (right now). So for ftp and other URLs we just skip.
+    if (preg_match("@^https?@i", parse_url($url, PHP_URL_SCHEME))) {
 
-    $html_extensions = array('html', 'shtml', 'htm', 'rhtml', 'phtml', 'pht',
-      'php', 'phps', 'php3', 'php3p', 'php4',
-    );
 
-    include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
-    $mimetype_mappings = file_default_mimetype_mapping();
+      $fake_agent ='Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1';
+      // remote_stream_wrapper does not play nice with files link behind
+      // redirects. Try to get the bottom of the redircet chain if any and use
+      // the last URL.
+      $followRedirect = TRUE;
+      $remoteFileInfo = new GetRemoteFileInfo($resource->url, $fake_agent, $followRedirect);
 
-    // Make sure the extention is not for html page.
-    // TODO improve the $html_extensions list?
-    if (!empty($extension)
-      && !in_array($extension, $html_extensions)
-      && array_key_exists($extension, $mimetype_mappings['extensions'])) {
-      // This url have an extension. Consider it a file and default the
-      // format_detected to it!
-      $resource->url_type = 'file';
-      $format_detected = $extension;
-    }
-    else {
-      // Cannot get an extension from the url. Check the Headers.
-      $req = drupal_http_request($res->url, array('timeout' => 5));
-      if ($req->code == 200) {
-        $mime = substr($req->headers['content-type'], 0, strpos($req->headers['content-type'], ";"));
-        // Check if the content-type header return a valide mime type that is
-        // not in the $html_extensions array (ie. not a web page). If so
-        // acknowledge the url as a file and save the detected extension.
-        if ($type = recline_get_data_type($mime) && !in_array($type, $html_extensions)) {
-          $resource->url_type = 'file';
-          $format_detected = $type;
+      $html_extensions = array('html', 'shtml', 'htm', 'rhtml', 'phtml', 'pht',
+        'php', 'phps', 'php3', 'php3p', 'php4',
+      );
+      // The parsed remote file should be valid and should not look like a web
+      // page.
+      if (!is_null($remoteFileInfo->getType())
+        && !in_array($remoteFileInfo->getExtension(), $html_extensions)) {
+
+        // Check if this file extension is allowed for field_link_remote_file.
+        $link_field = field_info_instance('node', 'field_link_remote_file', 'resource');
+        // Reduce everything to lowercase to support files with uppercase
+        // extensions.
+        $file_extensions = array_map('strtolower', explode(' ', $link_field['settings']['file_extensions']));
+        // Reject if the extension is not allowed.
+        if (!in_array($remoteFileInfo->getExtension(), $file_extensions)) {
+          $message = t('Resource remote url (@url) extension (@extension) not allowed',
+            array(
+              '@url' => $resource->url,
+              '@extension' => $remoteFileInfo->getExtension(),
+            ));
+          self::displayMessage($message, 'error');
+          return FALSE;
         }
-      }
-    }
 
-    // If the file.
-    if ($resource->url_type == 'file') {
-      // Check if this file extension is allowed for field_link_remote_file.
-      // Reduce everything to lowercase to support files with uppercase
-      // extensions.
-      $link_field = field_info_instance('node', 'field_link_remote_file', 'resource');
-      $file_extensions = array_map('strtolower', explode(' ', $link_field['settings']['file_extensions']));
-      // Reject if the extension is not allowed.
-      if (!in_array($extension, $file_extensions)) {
-        $message = t('Resource remote url (@url) extension (@extension) not allowed',
-          array(
-            '@url' => $url,
-            '@extension' => $extension,
-          ));
-        self::displayMessage($message, 'error');
-        return FALSE;
+        // Finally this URL is determined to be field_link_remote_file
+        // material.
+        // Make sure to use the effective URL.
+        $resource->url = $remoteFileInfo->getEffectiveUrl();
+        $resource->url_type = 'file';
+        $format_detected = $remoteFileInfo->getExtension();
       }
     }
 
@@ -1198,6 +1192,7 @@ class HarvestMigration extends MigrateDKAN {
   public function getLogId() {
     return $this->logID;
   }
+
 }
 
 /**

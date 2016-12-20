@@ -43,14 +43,28 @@ function dkan_harvest_dashboard_menu() {
  * Dataset list page callback.
  */
 function dkan_harvest_dashboard_sources_page() {
-  return views_embed_view('dkan_harvest_dashboard', 'harvest_sources');
+  $header = dkan_harvest_dashboard_header();
+  $content = views_embed_view('dkan_harvest_dashboard', 'harvest_sources');
+  return $header . $content;
 }
 
 /**
  * Sources list page callback.
  */
 function dkan_harvest_dashboard_datasets_page() {
-  return views_embed_view('dkan_harvest_datasets', 'harvest_datasets');
+  $header = dkan_harvest_dashboard_header();
+  $content = views_embed_view('dkan_harvest_datasets', 'harvest_datasets');
+  return $header . $content;
+}
+
+/**
+ * Builds the header for all the Harvest Dashboard pages.
+ */
+function dkan_harvest_dashboard_header() {
+  // Prepare header.
+  $output = l(t('Add Source'), 'node/add/harvest-source',
+    array('attributes' => array('class' => 'btn btn-primary btn-add-source')));
+  return $output;
 }
 
 /**
@@ -58,11 +72,9 @@ function dkan_harvest_dashboard_datasets_page() {
  */
 function dkan_harvest_dashboard_form_alter(&$form, $form_state, $form_id) {
   if ($form_id == 'views_exposed_form'
-    && $form_state['view']
-    && $form_state['view']->name) {
+    && isset($form_state['view'])
+    && $form_state['view']->name == 'dkan_harvest_datasets') {
 
-    $module_path = drupal_get_path('module', 'dkan_harvest_dashboard');
-    drupal_add_css($module_path . '/dkan_harvest_dashboard.css');
     $form['created']['max']['#title'] = '';
     $form['changed']['max']['#title'] = '';
     $form['created']['min']['#attributes']['placeholder'] = t('From');

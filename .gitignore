@@ -15,3 +15,4 @@ assets/*
 behat.local.yml
 npm-debug.log
 .sublime-workspace
+*.orig

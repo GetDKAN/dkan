@@ -15,6 +15,8 @@
  *         A themed table of data and links for harvest source node events.
  */
 function dkan_harvest_page_event_log($node) {
+  // Set page title.
+  drupal_set_title(t('Events'));
   // Set the table header.
   $header = array(
     'mlid' => array('data' => t('Event ID'), 'field' => 'log.mlid'),
@@ -23,6 +25,7 @@ function dkan_harvest_page_event_log($node) {
       'field' => 'starttime',
       'sort' => 'desc',
     ),
+    'status' => array('data' => t('Status'), 'field' => 'failed'),
     'duration' => array('data' => t('Duration'), 'field' => 'duration'),
     'created' => array('data' => t('Created'), 'field' => 'created'),
     'updated' => array('data' => t('Updated'), 'field' => 'updated'),
@@ -31,6 +34,11 @@ function dkan_harvest_page_event_log($node) {
     'unchanged' => array('data' => t('Unchanged'), 'field' => 'unchanged'),
   );
 
+  $status_text = array(
+    t('OK'),
+    l(t('ERROR'), 'node/' . $node->nid . '/harvest-errors', array('attributes' => array('alt' => 'Error'))),
+  );
+  $status_class = array(0 => 'alert-success', 1 => t('alert-danger'));
   $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
   $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
   $log_table = $harvest_source_migration->getMap()->getLogTable();
@@ -130,6 +138,8 @@ function dkan_harvest_page_event_log($node) {
  *         harvest source node events.
  */
 function dkan_harvest_page_error_log($node) {
+  // Set page title.
+  drupal_set_title(t('Errors'));
   // Set the table header.
   $collapsible_inner_header = array(
     'msgid' => array('data' => t('Message ID'), 'field' => 'msgid'),
@@ -224,11 +234,6 @@ function dkan_harvest_page_error_log($node) {
         ));
 
       $build['collapsible_row_' . $collapsible_item_mlid] = array(
-        '#attached' => array(
-          'css' => array(
-            drupal_get_path('module', 'dkan_harvest') . '/css/dkan_harvest_pages_error_log_collapsible.css',
-          ),
-        ),
         '#theme' => 'ctools_collapsible',
         '#attributes' => array(
           'class' => array(

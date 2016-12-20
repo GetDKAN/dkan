@@ -41,6 +41,10 @@ function dkan_sitewide_block_info() {
     'info' => t('Data Extent'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
   );
+  $blocks['dkan_search_front'] = array(
+    'info' => t('Search Your Data'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
 
   return $blocks;
 }
@@ -90,6 +94,11 @@ function dkan_sitewide_block_view($delta = '') {
     case 'dkan_sitewide_user_menu':
       $block['subject'] = '';
       $block['content'] = dkan_sitewide_user_menu_block();
+      break;
+
+    case 'dkan_search_front':
+      $block['subject'] = t('Search Your Data');
+      $block['content'] = dkan_sitewide_search_front_block();
       break;
 
   }
@@ -185,6 +194,10 @@ function dkan_sitewide_license_block() {
           $output = $license['label'];
         }
         return $output;
+      }
+      elseif ($key) {
+        //Special case when you select other value.
+        return $key;
       }
     }
     return t('License not specified');
@@ -344,6 +357,13 @@ function dkan_sitewide_other_access() {
 
     return $output;
   }
+}
+
+/**
+ * Creates search block for front page.
+ */
+function dkan_sitewide_search_front_block() {
+  return dkan_sitewide_search_bar();
 }
 
 /**

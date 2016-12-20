@@ -16,7 +16,7 @@ Content-disposition: attachment; filename=Hospital_Inpatient_Discharges_by_DRG__
 Cache-Control: public, must-revalidate, max-age=21600
 X-Socrata-Region: production
 Age: 5730';
-$fileInfo =  new dkanDataset\getRemoteFileInfo($url, 'test' , TRUE, 'tmp');
+$fileInfo =  new dkanDataset\getRemoteFileInfo($url, 'test' , TRUE);
 $info = array();
 $info['header'] = $fileInfo->httpParseHeaders($headers);
 //var_dump($info);
