@@ -37,8 +37,6 @@
  - Added upgrade hook to remove deprecated test and theme directories.
  - Fixed popular tags view.
  - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
- - Update ctools to 1.11
- - Fixed link to group page on group node teaser when site has clean urls disabled
  - Added update hook to disable dkan_default_content on upgrades.
  - Updated visualization_entity.
  - Added fix to display the 'Request membership' link only to users that are logged in.
@@ -109,22 +107,37 @@ DKAN Dataset:
  - Fixed text on 'Download All' button to not display HTML.
  - Add patch for workbench_moderation to avoid php shutdown function errors.
  - Removed 'Back to dataset' button on standalone resources.
+ - Removed warning when a resource is created without title.
+ - Improved download of remote files.
+
+
+7.x-1.12.12 2016-12-15
+-------------------------
+ - Start caching recline "embed" pages (previews rendered with no headers/sidebars for iframe) (recline module)
+ - Upgrade Drupal core to 7.52
+ - Update ctools to 1.11
+ - Fix link to group page on group node teaser when site has clean urls disabled
+ - Fix "format" facet collapsed even when selected on the search page.
+ - Fix resources not synced with datasets when upgrade from 1.11
+ - Update media to 2.0-beta13
+ - Fix hidden body field on page content type
+ - Improve access check/security on datastore pages - unauthorized users could perform certain datastore functions
+ - Use dashes in links to tags to avoid "page not found" errors
+DKAN Datastore:
+ - Add limit to proxy resources.
  - Better support of downloading remote files from the resource view page
    "Download" button.
- - Removed warning when a resource is created without title.
- - Add limit to proxy resources.
- - Improved download of remote files.
+
 
 7.x-1.12.11 2016-10-20
 --------------------------
-- Fixed a bug in Recline regarding file objects and node forms that caused errors when using the "view changes" button on Dataset or Resource edit form
-- Center group images in "Groups" page and group node page sidebar
-- Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
-- Update the default jquery library setting from 1.7 to 1.10
-- Fix topics menu and facet links if special characters are used in topic terms.
-- Fix form redirect issues on dataset form validation
-- Patch fontyourface to remove <div> from the "standard text" selector, to prevent unpredictable results from this option
-- Fixed issue in open_data_schema_map with "Data Dictionary" field not displaying URL in data.json file
+ - Fixed a bug in Recline regarding file objects and node forms that caused errors when using the "view changes" button on Dataset or Resource edit form
+ - Center group images in "Groups" page and group node page sidebar
+ - Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
+ - Fix topics menu and facet links if special characters are used in topic terms
+ - Fix form redirect issues on dataset form validation
+ - Patch fontyourface to remove <div> from the "standard text" selector, to prevent unpredictable results from this option
+ - Fixed issue in open_data_schema_map with "Data Dictionary" field not displaying URL in data.json file
 
 
 7.x-1.12.10 2016-09-07

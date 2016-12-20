@@ -24,10 +24,10 @@ function dkan_sitewide_panels_preprocess_panels_style_collapsible(&$variables) {
     // in the query string; un-collapse if so.
     $pane = $variables['pane'];
     if (substr($pane->type, 0, 8)) {
-      foreach (array_keys($adapter->getAllActiveItems()) as $param) {
-        // We match the first part of the param to a mapped facet name.
-        $param_parts = explode(':', $param, 2);
-        $param_name = $param_parts[0];
+      foreach ($adapter->getAllActiveItems() as $param_key => $param_value) {
+        // Use the field alias as the param_name.
+        $param_name = $param_value['field alias'];
+
         // The pane subtype will be something
         // like "facetapi-wsVI1ENUXwf4Rz08n9fg2WvfQ0Gs5h2a".
         $facet_hash = substr($pane->subtype, 9);
@@ -35,8 +35,16 @@ function dkan_sitewide_panels_preprocess_panels_style_collapsible(&$variables) {
         if (in_array($facet_hash, array_keys($facet_delta_map))) {
           $mapping_parts = explode(':', $facet_delta_map[$facet_hash]);
           $facet_name = $mapping_parts[2];
+
+          // Composite facet names have the colon encoded into RFC 3986.
+          // Decode that.
+          $facet_name = rawurldecode($facet_name);
+
+          // Un-collapse the facet if it is part of the request.
           if ($facet_name == $param_name) {
             $variables['collapsed'] = 0;
+            // We have a match! no need to continue.
+            break;
           }
         }
       }
