@@ -26,8 +26,9 @@ function dkan_data_dashboard_field_default_field_instances() {
       ),
       'search_result' => array(
         'label' => 'hidden',
+        'module' => 'text',
         'settings' => array(),
-        'type' => 'hidden',
+        'type' => 'text_default',
         'weight' => 1,
       ),
       'teaser' => array(
