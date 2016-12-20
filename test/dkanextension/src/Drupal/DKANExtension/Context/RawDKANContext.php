@@ -10,6 +10,8 @@ use Drupal\DKANExtension\ServiceContainer\EntityStore;
 use Drupal\DKANExtension\ServiceContainer\PageStore;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
+use Behat\Testwork\Hook\Scope\AfterSuiteScope;
 use EntityFieldQuery;
 
 /**
