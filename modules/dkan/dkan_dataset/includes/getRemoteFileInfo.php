@@ -1,12 +1,5 @@
 <?php
 
-/**
- * @file
- * Class to get content type and name of remote file.
- *
- * Socrata shim copied from data.gov.
- */
-
 namespace dkanDataset;
 
 /**
@@ -15,12 +8,24 @@ namespace dkanDataset;
 class GetRemoteFileInfo {
 
   /**
+   * CURL header info of the remote URL.
+   *
+   * @var info
+   */
+  public $info = FALSE;
+  public $url;
+  public $agent;
+  public $followRedirect;
+
+  /**
    * Class constructor.
    */
   public function __construct($url, $agent, $followRedirect = TRUE) {
     $this->url = $url;
     $this->agent = $agent;
     $this->followRedirect = $followRedirect;
+
+    $this->info = $this->curlHeader($this->url, $this->agent, $this->followRedirect);
   }
 
   /**
@@ -82,8 +87,8 @@ class GetRemoteFileInfo {
     curl_setopt($ch, CURLOPT_COOKIE, "");
 
     // Include the header in the output.
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE );
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET' );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
     curl_setopt($ch, CURLOPT_HEADER, TRUE);
 
     return $ch;
@@ -93,9 +98,6 @@ class GetRemoteFileInfo {
    * Gets header info for requested file.
    */
   public function getInfo() {
-    if (!isset($this->info)) {
-      $this->info = $this->curlHeader($this->url, $this->agent, $this->followRedirect);
-    }
     return $this->info;
   }
 
@@ -123,29 +125,50 @@ class GetRemoteFileInfo {
   }
 
   /**
-   * Return a canonical file extension from the file type.
+   * Return a canonical file extension.
+   *
+   * Try to use the mimetype to return the best possible correct extension. Use
+   * the parsed extension from the URL as backup.
+   *
+   * @return extension
+   *   Content extension.
    */
   public function getExtension() {
-    $extension = NULL;
+    // Parse the extension from the URL.
+    $path = parse_url($this->getEffectiveUrl(), PHP_URL_PATH);
+    $extension_parsed = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
-    if (!is_null($this->getType())) {
-      include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
-      $mimetype_mappings = file_mimetype_mapping();
-      $mimetypes = $mimetype_mappings['mimetypes'];
-      $extension_key = array_search($this->getType(), $mimetypes);
-      if ($extension_key !== FALSE) {
-        // "canonical" file extension found!
-        $extensions = $mimetype_mappings['extensions'];
-        $extension = array_search($extension_key, $extensions);
-      }
-      else {
-        // No "canonical" extension found. Try to parse the url.
-        $path = parse_url($this->getEffectiveUrl(), PHP_URL_PATH);
-        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-      }
+    if (is_null($this->getType())) {
+      return $extension_parsed;
     }
 
-    return $extension;
+    // Use drupal file mimetypes store.
+    include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+    $mimetype_mappings = file_mimetype_mapping();
+    $mimetype_keys = array_keys($mimetype_mappings['mimetypes'], $this->getType());
+
+    // If the destination mimetype in unknown to us then default to the
+    // extension as parsed from the url.
+    if (empty($mimetype_keys)) {
+      return $extension_parsed;
+    }
+
+    // Get the candidate extensions from the mimetype_keys.
+    $extensions_lookup = array();
+    foreach ($mimetype_keys as $mimetype_key) {
+      $extensions_lookup = array_merge($extensions_lookup,
+        array_keys($mimetype_mappings['extensions'], $mimetype_key));
+    }
+
+    // If we couldn't find any potential candidates or the extension from the
+    // url matches one of the candidate extensions then use it.
+    if (empty($extensions_lookup) || in_array($extension_parsed, $extensions_lookup)) {
+      return $extension_parsed;
+    }
+
+    // At this point we may have multiple candidate extensions and we couldn't
+    // find the best one. Default to the first element.
+    return array_pop($extensions_lookup);
   }
 
   /**
