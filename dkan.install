@@ -161,7 +161,7 @@ function dkan_update_7004(&$sandbox) {
  *
  * Conditional Fields, Entity RDF, RDF UI, RDF Extensions.
  */
-function dkan_update_7003() {
+function dkan_update_7005() {
   $modules = array(
     'conditional_fields',
     'entity_rdf',
@@ -190,7 +190,7 @@ function dkan_update_7003() {
 /**
  * Remove deprecated test and theme directories.
  */
-function dkan_update_7004() {
+function dkan_update_7006() {
   drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/fonts');
   drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/tests');
   drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/tests');
@@ -204,7 +204,7 @@ function dkan_update_7004() {
 /**
  * Disable the dkan_default_content module.
  */
-function dkan_update_7005() {
+function dkan_update_7007() {
   db_update('system')
     ->fields(array('status' => '0'))
     ->condition('name', 'dkan_default_content')
