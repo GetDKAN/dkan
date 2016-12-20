@@ -337,7 +337,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: civic-5095-charts-508
+      branch: civic-5095-charts-508
     type: module
   workbench:
     version: '1.2'
