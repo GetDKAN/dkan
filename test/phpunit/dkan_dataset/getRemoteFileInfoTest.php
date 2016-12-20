@@ -46,4 +46,18 @@ Age: 5730';
     $this->assertEquals($fileInfo->getName(), 'Hospital_Inpatient_Discharges_by_DRG__Northwest__FY2011.csv');
   }
 
+  /**
+   * Test URL extension.
+   *
+   * Mimetype can have multiple extensions associated to it. This test make sure
+   * that the returned extension matches both the Mimetype and the actual file
+   * extension.
+   */
+  public function testUrlExtension() {
+    $url = "https://s3.amazonaws.com/dkan-default-content-files/files/albo.xls";
+    $fileInfo = new getRemoteFileInfo($url, 'test', TRUE);
+    $this->assertEquals($fileInfo->getType(), 'application/vnd.ms-excel');
+    $this->assertEquals($fileInfo->getExtension(), 'xls');
+  }
+
 }
