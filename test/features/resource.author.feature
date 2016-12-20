@@ -60,19 +60,18 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on the "Content" page
     And I click "Resource"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
-
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_short_version.csv"
     When I fill in "Title" with "Resource 06"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
 
   @noworkflow @javascript
-  Scenario: Create resource with too many sources. 
+  Scenario: Create resource with too many sources.
     Given I am logged in as "Katie"
     And I am on the "Content" page
     And I click "Resource"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_short_version.csv"
     And I click "API or Website URL"
     And I fill in "edit-field-link-api-und-0-url" with "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02"
     When I fill in "Title" with "Resource 06"
@@ -234,7 +233,7 @@ Feature: Resource
     And I am on "Resource 05" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_short_version.csv"
     And I press "Save"
     And I am on "Resource 05" page
     When I click "Manage Datastore"
@@ -244,12 +243,12 @@ Feature: Resource
     And I should see "imported items total"
 
   @noworkflow @javascript
-  Scenario: Delete items on datastore of own resource
+  Scenario: DEBUG
     Given I am logged in as "John"
     And I am on "Resource 03" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_short_version.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -269,7 +268,7 @@ Feature: Resource
     And I am on "Resource 03" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_short_version.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page

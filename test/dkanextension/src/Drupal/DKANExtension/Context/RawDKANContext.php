@@ -67,6 +67,21 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
   }
 
   /**
+   * @BeforeSuite
+   */
+  public static function disableAdminMenuCache(BeforeSuiteScope $scope) {
+    // Turn off cache so the menu lives in the html.
+    variable_set('admin_menu_cache_client', FALSE);
+  }
+
+  /**
+   * @AfterSuite
+   */
+  public static function enableAdminMenuCache(AfterSuiteScope $scope) {
+    variable_set('admin_menu_cache_client', TRUE);
+  }
+
+  /**
    * @BeforeScenario
    */
   public function gatherContexts(BeforeScenarioScope $scope) {
