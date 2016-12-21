@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Custom group node template.
