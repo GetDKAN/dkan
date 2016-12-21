@@ -184,12 +184,7 @@ projects:
   link_badges:
     version: '1.1'
   link_iframe_formatter:
-    download:
-      type: git
-      url: 'http://git.drupal.org/project/link_iframe_formatter.git'
-      revision: 228f9f4
-    patch:
-      2287233: 'https://www.drupal.org/files/issues/link_iframe_formatter-coding-standards.patch'
+    version: '1.1'
   manualcrop:
     version: '1.6'
   markdown:
