@@ -1,5 +1,6 @@
 7.x-1.12.x
 ----------
+- Fix validation on resource forms when multiple resource type fields are populated
 - Start caching recline "embed" pages (previews rendered with no headers/sidebars for iframe) (recline module)
 - Upgrade Drupal core to 7.52
 - Update ctools to 1.11
