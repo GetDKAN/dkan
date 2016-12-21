@@ -153,7 +153,6 @@ function dkan_update_7004(&$sandbox) {
 
   return t('All resources without group were updated.');
 
-  throw new DrupalUpdateException('Something went wrong; Please check your resources and verify the groups is the same from dataset associated');
 }
 
 /**
