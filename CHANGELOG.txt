@@ -1,6 +1,10 @@
 7.x-1.12.x
-----------
+----------------------
 - Fix validation on resource forms when multiple resource type fields are populated
+- Fix publisher token in open_data_schema_map_dkan - was showing only URL rather than publisher name
+
+7.x-1.12.12 2016-12-15
+----------------------
 - Start caching recline "embed" pages (previews rendered with no headers/sidebars for iframe) (recline module)
 - Upgrade Drupal core to 7.52
 - Update ctools to 1.11
