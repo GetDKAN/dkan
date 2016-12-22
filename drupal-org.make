@@ -17,6 +17,8 @@ projects:
     version: '1.1'
   autocomplete_deluxe:
     version: '2.1'
+    patch:
+      2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-3.patch'
   beautytips:
     download:
       type: git
@@ -33,6 +35,8 @@ projects:
     version: '1.4'
   chosen:
     version: '2.0-beta5'
+    patch:
+      2834096: 'https://www.drupal.org/files/issues/chosen-accesibility_problem_with_input.patch'
   colorizer:
     version: '1.10'
     patch:
