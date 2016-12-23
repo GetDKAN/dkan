@@ -6,6 +6,7 @@
  */
 
 use dkanDataset\getRemoteFileInfo;
+
 include_once drupal_get_path('module', 'dkan_dataset') . '/includes/getRemoteFileInfo.php';
 
 // This used to exits in file.inc but was removed on Drupal 7 without a
@@ -228,6 +229,21 @@ class HarvestMigration extends MigrateDKAN {
   public function prepareRow($row) {
     parent::prepareRow($row);
     $this->idListImported[] = $row->dkan_harvest_object_id;
+
+    // Check the license field.
+    // Convert URI values to license ID values from hook_license_subscribe(),
+    // change the value to match the expected key value.
+    // Clients will need to provide a custom hook_license_subscribe() function if
+    // they are using different urls than dkan: (i.e. opendatacommons.org or
+    // creativecommons.org rather than opendefinition.org)
+    if (isset($row->license) && $row->license != '') {
+      $licenses = dkan_dataset_content_types_license_subscribe();
+      foreach ($licenses as $license_id => $license_data) {
+        if (isset($license_data['uri']) && ($license_data['uri'] === $row->license)) {
+          $row->license = $license_id;
+        }
+      }
+    }
   }
 
   /**
@@ -373,7 +389,7 @@ class HarvestMigration extends MigrateDKAN {
    */
   public static function prepareMetadataSourceHelper($file_uri,
   $title = NULL,
-    $metadata_schema = NULL,
+  $metadata_schema = NULL,
   $metadata_view = NULL,
   $uid = 1) {
 
@@ -985,8 +1001,7 @@ class HarvestMigration extends MigrateDKAN {
     // for http requests (right now). So for ftp and other URLs we just skip.
     if (preg_match("@^https?@i", parse_url($url, PHP_URL_SCHEME))) {
 
-
-      $fake_agent ='Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1';
+      $fake_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1';
       // remote_stream_wrapper does not play nice with files link behind
       // redirects. Try to get the bottom of the redircet chain if any and use
       // the last URL.
