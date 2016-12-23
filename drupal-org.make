@@ -4,7 +4,7 @@ includes:
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta2/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
-  - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
+  - "https://raw.githubusercontent.com/NuCivic/recline/bug_delimiters_settings_with_csv_doesnt_work_civic_5058/recline.make"
 projects:
   admin_menu:
     version: '3.0-rc5'
@@ -276,7 +276,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/recline.git'
-      branch: 7.x-1.x
+      branch: bug_delimiters_settings_with_csv_doesnt_work_civic_5058
   ref_field:
     download:
       type: git

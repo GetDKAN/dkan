@@ -115,6 +115,7 @@ DKAN Dataset:
  - Removed warning when a resource is created without title.
  - Add limit to proxy resources.
  - Improved download of remote files.
+ - Fixes to chart preview with csv and selecting another delimiter
 
 7.x-1.12.11 2016-10-20
 --------------------------
