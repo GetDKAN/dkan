@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Custom button link with color styles in a pane.
@@ -25,7 +26,7 @@ function dkan_plugins_button_link_content_type_edit_form($form, &$form_state) {
   $url = $conf['button_link_url'];
   $color = $conf['button_color'];
   $align = $conf['button_align'];
-  
+
   hide($form['override_title']);
   hide($form['override_title_text']);
   hide($form['override_title_heading']);
@@ -62,7 +63,11 @@ function dkan_plugins_button_link_content_type_edit_form($form, &$form_state) {
   $form['button_align'] = array(
     '#title' => t('Button Alignment'),
     '#type' => 'select',
-    '#options' => array('text-left' => t('Left'), 'text-center' => t('Center'), 'text-right' => t('Right')),
+    '#options' => array(
+      'text-left' => t('Left'),
+      'text-center' => t('Center'),
+      'text-right' => t('Right'),
+    ),
     '#default_value' => isset($align) ? $align : 'text-center',
   );
   return $form;
@@ -84,11 +89,10 @@ function dkan_plugins_button_link_content_type_edit_form_submit($form, &$form_st
       $form_state['conf'][$key] = $form_state['values'][$key];
     }
   }
-
 }
 
 /**
- * Render callback
+ * Render callback.
  */
 function dkan_plugins_button_link_content_type_render($subtype, $conf, $panel_args, $context = NULL) {
 
@@ -105,11 +109,11 @@ function dkan_plugins_button_link_content_type_render($subtype, $conf, $panel_ar
 
   $block = new stdClass();
 
-  // initial content is blank
+  // Initial content is blank.
   $block->title = '';
   $block->content = '';
 
-  // Add in the content
+  // Add in the content.
   $block->content .= $output;
 
   return $block;

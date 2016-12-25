@@ -233,6 +233,7 @@ function _dkan_datastore_api_datastore_index() {
   }
   return $result;
 }
+
 /**
  * Performs a multiple query against the datastore.
  */
@@ -402,7 +403,6 @@ function dkan_datastore_api_add_index_conditions(&$data_select, $filters, $alias
   }
 }
 
-
 /**
  * Adds group by statements to query.
  */
@@ -419,7 +419,6 @@ function dkan_datastore_api_add_index_group_by(&$data_select, $group_by, $alias 
   }
 }
 
-
 /**
  * Adds aggregations to query.
  */
@@ -433,7 +432,6 @@ function dkan_datastore_api_add_index_aggregations(&$data_select, $aggregations,
     }
   }
 }
-
 
 /**
  * Add search terms ("query") to query.
@@ -540,6 +538,7 @@ function dkan_datastore_api_tablename($resource_id) {
     return $tables[$resource_id];
   }
 }
+
 /**
  * Retrieves source_id from feeds_source.
  */
@@ -547,6 +546,7 @@ function dkan_datastore_api_get_feeds_source($nid) {
   $source_id = db_query("SELECT id FROM {feeds_source} WHERE feed_nid = :nid AND source != ''", array(':nid' => $nid))->fetchField();
   return $source_id ? $source_id : NULL;
 }
+
 /**
  * Builds index query.
  */

@@ -152,6 +152,26 @@ Feature: Dkan Harvest
     And I should see the text "Florida Bike Lanes Harvest"
 
   @api @harvest_rollback
+  Scenario: As a user I should be able to refresh the preview on the Harvest Source.
+    Given users:
+      | name             | mail                   | roles           |
+      | Administrator    | admin@fakeemail.com    | administrator   |
+    And harvest sources:
+      | title      | machine name | source uri                                                                 | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
+    And I am logged in as a "Administrator"
+    And I am on the "Source one" page
+    Given The "source_one" source is harvested
+    When I am on the "Source one" page
+    Then I should see the link "Preview"
+    And I click "Preview"
+    And I should see the text "Harvest now"
+    When I press "Refresh"
+    Then The page status should be 'ok'
+    And I should see the text "Preview"
+
+
+  @api @harvest_rollback
   Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
     Given users:
       | name             | mail                   | roles           |
@@ -162,11 +182,12 @@ Feature: Dkan Harvest
     And I am logged in as a "<role>"
     And I am on the "Source one" page
     Given The "source_one" source is harvested
-    Then I should see the link "Event"
+    Then I should see the link "Events"
     When I click "Event"
     Then The page status should be 'ok'
     And I should see a table with a class name "harvest-event-log"
     And the table with the class name "harvest-event-log" should have 1 row
+    And I should see the text "OK"
 
     Examples:
     | role               |

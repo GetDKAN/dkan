@@ -1,0 +1,78 @@
+#views-exposed-form-dkan-harvest-datasets-harvest-datasets-source-page {
+  .form-group {
+    display: inline-block;
+    input {
+      width: 100px;
+    }
+  }
+}
+
+.pane-dkan-harvest-harvest-source-summary {
+  .summary-details {
+    border-color: $border;
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
+    margin-top: 15px;
+    div {
+      padding: 4px 5px;
+    }
+  }
+  
+  h6 {
+    background: #eee;
+    color: #222;
+    padding: 3px 5px;
+    margin: 0;
+    border-top: 1px solid $border;
+    border-bottom: 1px solid $border;
+  }
+}
+
+div.datasets-count-preview span {
+  font-weight: bold;
+}
+
+#harvest_source_summary_uri {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;  
+}
+
+// Harvest Errors Page.
+.node-type-harvest-source {
+  .ctools-collapsible-container .ctools-collapsible-handle {
+    border-radius: 0;
+    color: #fff;
+    font-size: 16px;
+    font-weight: normal;
+    position: relative;
+    padding: 9px 21px 9px 12px;
+  }
+  .ctools-collapsible-container .ctools-collapsible-handle:after {
+    font-family: "fontawesome";
+    content: "\f077";
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    font-weight: bold;
+    position: absolute;
+    right: 14px;
+    top: 10px;
+  }
+  .ctools-collapsible-container.ctools-collapsed .ctools-collapsible-handle:after {
+    content: "\f078";
+  }
+
+  .ctools-collapsible-content .harvest-error-log-table {
+    margin: 0;
+    margin-bottom: 20px;
+  }
+}
+
+@media all and (min-width:768px) {
+  #harvest-source-node-form {
+    .double-field-elements input.form-text {
+      width: 50%;
+      display: inline-block;
+    }
+  }
+}

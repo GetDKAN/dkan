@@ -1,8 +1,7 @@
 name = DKAN
+description = DKAN Open Data Portal
 core = 7.x
 exclusive = TRUE
-version = 7.x-1.x-dev
-project = dkan
 
 ; Core
 dependencies[] = block

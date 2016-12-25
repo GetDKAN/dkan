@@ -75,6 +75,7 @@ function prune_nodes($number = 25) {
   foreach($nodes as $node) {
     $dataset = node_load($node->nid);
     $resources = $dataset->field_resources['und'];
+    $resources = is_array($resources) ? $resources : array();
     try {
       node_delete($node->nid);
     }

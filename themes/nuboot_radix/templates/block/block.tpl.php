@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Default theme implementation to display a block.
@@ -53,7 +54,7 @@
   <?php endif;?>
   <?php print render($title_suffix); ?>
   <div class="content">
-  	<?php print $content ?>
+    <?php print $content ?>
   </div>
 
 </section>

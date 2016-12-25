@@ -54,7 +54,7 @@
 }
 
 // FACET Blocks
-.radix-layouts-sidebar {
+.panel-region-sidebar .radix-layouts-sidebar {
   .ctools-collapsible-container,
   div[class*="pane-facetapi"],
   .block-facetapi {
@@ -337,7 +337,7 @@
 }
 
 // Rounded facet corners.
-.radix-layouts-sidebar {
+.panel-region-sidebar .radix-layouts-sidebar {
   .panel-panel-inner {
     .panels-ipe-portlet-wrapper:first-child,
     > div[class*="pane-facetapi"]:first-child {

@@ -1374,7 +1374,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'array',
       ),
       'publisher' => array(
-        'value' => '[node:og_group_ref:0]',
+        'value' => '[node:og_group_ref]',
         'type' => 'string',
       ),
       'references' => array(
@@ -1465,7 +1465,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'conformsTo' => array(
-        'value' => '[node:field-odfe-conforms-to:url]',
+        'value' => '[node:field-conforms-to:url]',
         'type' => 'string',
       ),
       'dataQuality' => array(
@@ -1552,7 +1552,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'name' => array(
-          'value' => '[node:og_group_ref:0]',
+          'value' => '[node:og_group_ref]',
           'type' => '',
         ),
         'subOrganizationOf' => array(
@@ -1627,7 +1627,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'array',
       ),
       'dcat:theme' => array(
-        'value' => '[node:field_odfe_category]',
+        'value' => '[node:field_pod_theme] || [node:field_topic]',
         'type' => 'string',
       ),
       'dct:identifier' => array(
@@ -1651,11 +1651,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:language' => array(
-        'value' => '[node:field_odfe_language]',
+        'value' => '[node:field_language]',
         'type' => 'array',
       ),
       'dcat:landingPage' => array(
-        'value' => '[node:field_odfe_landing_page:url]',
+        'value' => '[node:field_landing_page:url]',
         'type' => 'string',
       ),
       'dct:accrualPeriodicity' => array(
@@ -1663,11 +1663,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:conformsTo' => array(
-        'value' => '[node:field-odfe-conforms-to:url]',
+        'value' => '[node:field-conforms-to:url]',
         'type' => 'array',
       ),
       'dct:accessRights' => array(
-        'value' => '[node:field_odfe_rights]',
+        'value' => '[node:field_rights]',
         'type' => 'string',
       ),
       'dct:provenance' => array(
@@ -1831,7 +1831,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'array',
       ),
       'dcat:theme' => array(
-        'value' => '[node:field_odfe_category]',
+        'value' => '[node:field_pod_theme] || [node:field_topic]',
         'type' => 'string',
       ),
       'dct:identifier' => array(
@@ -1855,11 +1855,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:language' => array(
-        'value' => '[node:field_odfe_language]',
+        'value' => '[node:field_language]',
         'type' => 'array',
       ),
       'dcat:landingPage' => array(
-        'value' => '[node:field_odfe_landing_page:url]',
+        'value' => '[node:field_landing_page:url]',
         'type' => 'string',
       ),
       'dct:accrualPeriodicity' => array(
@@ -1867,11 +1867,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:conformsTo' => array(
-        'value' => '[node:field-odfe-conforms-to:url]',
+        'value' => '[node:field-conforms-to:url]',
         'type' => 'array',
       ),
       'dct:accessRights' => array(
-        'value' => '[node:field_odfe_rights]',
+        'value' => '[node:field_rights]',
         'type' => 'string',
       ),
       'dct:provenance' => array(
@@ -2026,7 +2026,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'array',
       ),
       'dcat:theme' => array(
-        'value' => '[node:field_odfe_category]',
+        'value' => '[node:field_pod_theme] || [node:field_topic]',
         'type' => 'string',
       ),
       'dct:identifier' => array(
@@ -2050,11 +2050,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:language' => array(
-        'value' => '[node:field_odfe_language]',
+        'value' => '[node:field_language]',
         'type' => 'array',
       ),
       'dcat:landingPage' => array(
-        'value' => '[node:field_odfe_landing_page:url]',
+        'value' => '[node:field_landing_page:url]',
         'type' => 'string',
       ),
       'dct:accrualPeriodicity' => array(
@@ -2062,11 +2062,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:conformsTo' => array(
-        'value' => '[node:field-odfe-conforms-to:url]',
+        'value' => '[node:field-conforms-to:url]',
         'type' => 'array',
       ),
       'dct:accessRights' => array(
-        'value' => '[node:field_odfe_rights]',
+        'value' => '[node:field_rights]',
         'type' => 'string',
       ),
       'dct:provenance' => array(

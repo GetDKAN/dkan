@@ -31,6 +31,8 @@ publisher listed on the source whose datasets you do _not_ want to bring into yo
 * **Overrides** will replace values from the source when you harvest. For instance, if you want to take responsibility for the datasets once harvested and add your agency's name as the publisher, you might add "publisher" with your agency's name as the value.
 * **Defaults**   work the same as overrides, but will only be used if the relevant field is empty in the source
 
+![Add Harvest Source](https://cloud.githubusercontent.com/assets/381224/20218155/ec7b23b0-a801-11e6-9c07-f27159927ca5.png)
+
 Project Open Data (as well as most metadata APIs) includes many fields that are not simple key-value pairs. If you need to access or modify nested array values you can use this dot syntax to specify the path: `key.nested_key.0.other_nested_key`. For example, the Publisher field in Project Open Data is expressed like this:
 
 ```json
@@ -42,16 +44,13 @@ Project Open Data (as well as most metadata APIs) includes many fields that are 
 
 To access the name property for filtering or overriding, you can set `publisher.name` in the first text box and the value you want to use in the second one.
 
-
-![Add Harvest Source](images/node_add_harvest_source.png)
-
 If the Harvest Source type you are looking for is not available, please refer
 to the **Define a new Harvest Source Type** section in the developers docs (coming soon).
 
 Harvest Source nodes are viewable by the public, providing some basic metadata 
 for the source and listing all datasets harvested from that source. 
 
-![Harvest Source Page](images/harvest_source_page.png)
+![Harvest Source Page](https://cloud.githubusercontent.com/assets/381224/20218476/93a6196e-a803-11e6-895f-d82d5228b055.png)
 
 Additional tabs are available to administrators and site managers.
 
@@ -69,7 +68,7 @@ run on this source.
 
 The information is managed by the core `dkan_harvest` via a per-harvest source
 `migrate_log` table that tracks the number of datasets created, updated,
-failed, orphaned, and unchanged.
+failed, orphaned, and unchanged and status. If the value for the field Status is Error then you can click on the text to see the log error and identify the problem.
 
 ### Error Log
 

@@ -1,8 +1,7 @@
 name = DKAN Plugins
-description = Custom plugins
+description = Custom cTools plugins for DKAN
 core = 7.x
 package = DKAN
-version = 7.x-1.0
 dependencies[] = ctools
 dependencies[] = panels
 project path = profiles/dkan/modules/dkan

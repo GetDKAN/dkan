@@ -180,7 +180,6 @@ abstract class Datastore {
     return file_create_url($file->uri);
   }
 
-
   /**
    * Retrieves timestamp for last import.
    */

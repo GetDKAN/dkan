@@ -1,5 +1,5 @@
 <?php
-
+// @codingStandardsIgnoreFile
 /**
  * Handler class implementation for Dkan Harvest Migration date field.
  */
@@ -9,7 +9,7 @@ class views_handler_field_date_harvest_date extends views_handler_field_date {
    * {@inheritdoc}
    */
   function query() {
-    // do nothing -- to override the parent query since we are not using a
+    // Do nothing -- to override the parent query since we are not using a
     // direct database query.
   }
 
@@ -53,7 +53,7 @@ class views_handler_field_date_harvest_date extends views_handler_field_date {
     // Make sure to sort the proccessed views rows if this field is set to be
     // sortable.
     if (property_exists($this, 'order')) {
-      foreach($values as &$value) {
+      foreach ($values as &$value) {
         $value->dkan_harvest_harvest_date = $this->get_value($value);
       }
 
@@ -80,4 +80,5 @@ class views_handler_field_date_harvest_date extends views_handler_field_date {
       }
     }
   }
+
 }

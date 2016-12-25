@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Add install hook to DKAN Workflow to force a Features revert of dkan_sitewide_menu, to make sure Workflow links added correctly
  - Remove Panels IPE from dataset and search pages; in DKAN, we only want to show IPE for panelizer layouts, not templates or other "sitewide" pages.
  - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
  - Fixes typo in "add data story" link in command center menu
@@ -31,22 +32,62 @@
  - Added hook_uninstall to federal extra module for remove fields after uninstall module.
  - Removed redundant definition for CKAN package_list endpoint from open_data_schema_map_dkan, allowing that feature to be in default state after install.
  - Update ctools to version 1.10, which fixes some PHP7 incompatibilities
- - Update open data schema module to render a valid output passing validation (dcat and rdf)
+ - Added links to ODSM page and DCAT validation under Site Configuration in the command center menu
+ - Update open data schema module to render a valid output passing validation (dcat and rdf).
+ - Added upgrade hook to clean DB after removal of 'conditional_fields', 'entity_rdf', 'rdfui' and 'rdfx'.
+ - Added upgrade hook to remove deprecated test and theme directories.
+ - Fixed popular tags view.
+ - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
+ - Update ctools to 1.11
+ - Fixed link to group page on group node teaser when site has clean urls disabled
+ - Added update hook to disable dkan_default_content on upgrades.
+ - Updated visualization_entity.
+ - Added fix to display the 'Request membership' link only to users that are logged in.
+ - Remove content padding on data extent and social blocks.
+ - Added DKAN Extension.
+ - Upgrade workbench_moderation to v3.0.
+ - Upgrade entity to 1.8
+ - Upgrade manualcrop to 1.6
+ - Upgrade markdown to 1.5
+ - Upgrade panels to 3.8
+ - Upgrade ctools to 1.12
+ - Upgrade entityreference to 1.2
+ - Upgrade libraries to 2.3
+ - Upgrade services to 3.17
+ - Upgrade simple_gmap to 1.3
+ - Upgrade tablefield to 2.5
+ - Upgrade entityreference_filter to 1.7
+ - Upgrade radix to 3.5
+ - Upgrade search_api to 1.20
+ - Upgrade media to 2.0-beta13
+ - Upgrade panopoly_widgets to 1.41
+ - Upgrade panopoly_images to 1.41
+ - Upgrade file_entity to 2.0-beta3
+ - Upgrade link_iframe_formatter to 1.1
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
- - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file
+ - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
+ - Fixed bugs when running the datastore via cron.
 DKAN Harvest:
  - Added DKAN Harvest module into DKAN Core.
  - Added UI to add harvest sources
  - Added UI to manage harvest sources and datasets
  - Fix dkan harvest feature overridden after install.
- - Removed row from migration map table when a dataset is deleted.
+ - Add link for site managers to create harvest source in command center menu.
  - Added Batch API on 'Harvest now' action.
  - Added Batch API on the 'Preview' page.
-DKAN Migrate Base
+ - Added 'Add Source' shortcut on Harvest Dashboard pages.
+ - Fixed breadcrumb on harvest sources pages: Preview, Manage Datasets, Events, Errors.
+ - Fixed harvesting of resources with remote files with redirects.
+ - Fix "Manage Datastore" tab leaking to the harvest source node.
+ - Add icons for harvest source tabs.
+DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
+ - Removed row from migration map table when a dataset is deleted.
 DKAN Workflow:
- - Update DKAN workflow vbo customizations to not affect other vbo forms.
+ - Updated DKAN workflow vbo customizations to not affect other vbo forms.
+ - Updated workbench_email from 3.9 to 3.11
+ - Fixed admin menu source when dkan_workflow is enabled
 DKAN Dataset:
  - Added DKAN Dataset module into DKAN Core.
  - Added default image for groups.
@@ -65,15 +106,26 @@ DKAN Dataset:
  - Fix keywords/tags creating broken links when containing spaces, and add missing keywords to default content.
  - Add support "Compound" fields on Filters/Overrides/Excludes/Default in DKAN Harvest.
  - Fix ODSM permissions for non-admin roles.
+ - Replace field notes by field body in harvest source content type.
+ - Fixed text on 'Download All' button to not display HTML.
+ - Add patch for workbench_moderation to avoid php shutdown function errors.
+ - Removed 'Back to dataset' button on standalone resources.
+ - Better support of downloading remote files from the resource view page
+   "Download" button.
+ - Removed warning when a resource is created without title.
+ - Add limit to proxy resources.
+ - Improved download of remote files.
 
-
-7.x-1.12.11
+7.x-1.12.11 2016-10-20
 --------------------------
+- Fixed a bug in Recline regarding file objects and node forms that caused errors when using the "view changes" button on Dataset or Resource edit form
 - Center group images in "Groups" page and group node page sidebar
 - Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
 - Update the default jquery library setting from 1.7 to 1.10
 - Fix topics menu and facet links if special characters are used in topic terms.
 - Fix form redirect issues on dataset form validation
+- Patch fontyourface to remove <div> from the "standard text" selector, to prevent unpredictable results from this option
+- Fixed issue in open_data_schema_map with "Data Dictionary" field not displaying URL in data.json file
 
 
 7.x-1.12.10 2016-09-07

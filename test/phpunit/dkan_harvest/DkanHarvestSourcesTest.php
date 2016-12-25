@@ -5,6 +5,11 @@
  * Base phpunit tests for dkan_harvest module.
  */
 
+/**
+ * PHPUnit test class for DKAN harvest types.
+ *
+ * @class DkanHarvestSourcesTest
+ */
 class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
 
   static $setUpBeforeClassModuleDisabled = FALSE;
@@ -42,31 +47,33 @@ class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
     // Make sure that all the harvest source type entries available right now
     // in the site are cached by 'dkan_harvest_source_types_definition()'.
     dkan_harvest_source_types_definition();
-    $beforeCache = cache_get('dkan_harvest_source_types_definition');
-    $this->assertTrue(is_array($beforeCache->data));
-    $beforeCount = count($beforeCache->data);
+    $before_cache = cache_get('dkan_harvest_source_types_definition');
+    $this->assertTrue(is_array($before_cache->data));
+    $before_count = count($before_cache->data);
 
     // Enabling a module that implements the "harvest_source_types" hook should
     // reset the cached entries.
     module_enable(array("dkan_harvest_test"));
-    $moduleEnableCache = cache_get('dkan_harvest_source_types_definition');
-    $this->assertFalse($moduleEnableCache);
+    $module_enabled_cache = cache_get('dkan_harvest_source_types_definition');
+    $this->assertFalse($module_enabled_cache);
 
     // Running the callback should repopulate the cache entry with the latest
     // harvest source types available in the system.
     dkan_harvest_source_types_definition();
-    $afterCache = cache_get('dkan_harvest_source_types_definition');
-    $this->assertTrue(is_array($afterCache->data));
-    $afterCount = count($afterCache->data);
+    $after_cache = cache_get('dkan_harvest_source_types_definition');
+    $this->assertTrue(is_array($after_cache->data));
+    $after_count = count($after_cache->data);
 
     // Run a before/after comparison. Make sure that the test source types
     // provided by the 'dkan_harvest_test' module are now available.
-    $this->assertGreaterThan($beforeCount, $afterCount);
-    $this->assertArrayHasKey('harvest_test_type', $afterCache->data);
-    $this->assertArrayHasKey('harvest_another_test_type', $afterCache->data);
+    $this->assertGreaterThan($before_count, $after_count);
+    $this->assertArrayHasKey('harvest_test_type', $after_cache->data);
+    $this->assertArrayHasKey('harvest_another_test_type', $after_cache->data);
   }
 
   /**
+   * Test field_harvest_source_type.
+   *
    * Make sure that the allowed harvest type values the the type machine name
    * as key and the type label as value.
    *
@@ -90,6 +97,8 @@ class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test field_sourec_uri validation.
+   *
    * @covers ::dkan_harvest_field_attach_validate_source_uri()
    */
   public function testDkanHarvestSourcesFieldAttachValidateSourceUri() {
@@ -101,31 +110,31 @@ class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
     $langcode = LANGUAGE_NONE;
     $delta = 0;
 
-    // Invalid Protocol
+    // Invalid Protocol.
     $errors = array();
     $uri = 'wrong://data.mo.gov/data.json';
     dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, $errors);
     $this->assertNotEmpty($errors);
 
-    // Invalid Local URI
+    // Invalid Local URI.
     $errors = array();
     $uri = 'file://test/phpunit/data/harvest_test_source_local_file/data.json';
     dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, $errors);
     $this->assertNotEmpty($errors);
 
-    // Valid local URI
+    // Valid local URI.
     $errors = array();
     $uri = 'file://' . __DIR__ . '/data/harvest_test_source_local_file/data.json';
     dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, $errors);
     $this->assertEmpty($errors);
 
-    // Invalid Remote URI
+    // Invalid Remote URI.
     $errors = array();
     $uri = 'http://this_is_not_correct.wrong/data.json';
     dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, $errors);
     $this->assertNotEmpty($errors);
 
-    // Valid Remote URI
+    // Valid Remote URI.
     $errors = array();
     $uri = 'https://data.mo.gov/data.json';
     dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, $errors);
@@ -156,4 +165,5 @@ class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
       module_enable(array('dkan_harvest_test'));
     }
   }
+
 }

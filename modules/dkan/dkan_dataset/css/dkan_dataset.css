@@ -27,7 +27,7 @@ Node resource
 .stages a:link,
 .stages a:visited,
 .stages a {
-  color: #FFF;
+  color: #fff;
   text-decoration: none;
   text-shadow: none;
 }
@@ -52,7 +52,7 @@ Node resource
   padding: 10px;
   position: relative;
   z-index: 0;
-  color: #666
+  color: #666;
 }
 .stages li:before {
   -webkit-border-radius: 14px;
@@ -66,7 +66,7 @@ Node resource
   font-weight: bold;
   text-align: center;
   color: #ffffff;
-  background-color: #D5D5D5;
+  background-color: #d5d5d5;
   z-index: 1;
 }
 .stages li:after {
@@ -153,7 +153,8 @@ Node resource
 .stages li button.highlight {
   background: transparent;
 }
-.stages li.uncomplete:before, .stages li.uncomplete a {
+.stages li.uncomplete:before,
+.stages li.uncomplete a {
   color: #666;
 }
 .stages li.active .highlight {
@@ -182,17 +183,12 @@ Node resource
   position: relative;
   margin: 5px 0 0 5px;
 }
-.field-name-field-temporal-coverage legend,
-.field-widget-leaflet-widget-widget legend {
-  position: absolute;
-  top: 0;
-}
 #field-tags-wrapper .path-form .add-on {
   -webkit-border-radius: 4px 0 0 4px;
   -moz-border-radius: 4px 0 0 4px;
   border-radius: 4px 0 0 4px;
-  background-color: #EEE;
-  border: 1px solid #CCC;
+  background-color: #eee;
+  border: 1px solid #ccc;
   display: inline-block;
   font-weight: normal;
   float: left;
@@ -229,7 +225,7 @@ div.vertical-tabs #edit-path-alias {
 }
 
 #url-slug {
-  background-color: #EBE2BE;
+  background-color: #ebe2be;
   -webkit-border-radius: 0 4px 4px 0;
   -moz-border-radius: 0 4px 4px 0;
   border-radius: 0 4px 4px 0;
@@ -308,17 +304,17 @@ div.vertical-tabs #edit-path-alias {
 }
 
 .data-view-sidebar .form-stacked div {
-  margin:4px 0;
+  margin: 4px 0;
 }
 
 .fa-google-plus-square {
-  color:#BF2D1C;
+  color: #bf2d1c;
 }
 .fa-twitter-square {
-  color:#41B0D3;
+  color: #41b0d3;
 }
 .fa-facebook-square {
-  color:#617AAD;
+  color: #617aad;
 }
 .fa-download span {
   display: none;
@@ -327,10 +323,10 @@ div.vertical-tabs #edit-path-alias {
 li .heading,
 li .heading:hover {
   color: black;
-  font-weight: bold ;
+  font-weight: bold;
 }
 .item-list .list-group li {
-  margin:0;
+  margin: 0;
 }
 .node-type-resource .pane-dkan-dataset-dkan-dataset-resource-nodes .item-list .list-group li {
   margin: -1px;
@@ -420,7 +416,7 @@ li .heading:hover {
   text-decoration: none;
 }
 .resource-list p {
-  padding: 0 ;
+  padding: 0;
   margin: 0;
 }
 .resource-list li span.links {
@@ -506,11 +502,11 @@ li .heading:hover {
 }
 .label[data-format=data],
 .label[data-format*=data] {
-  background-color:olive;
+  background-color: olive;
 }
 .label[data-format=txt],
 .label[data-format*=txt] {
-  background-color:#70C6E5;
+  background-color: #70c6e5;
 }
 
 .format-label {
@@ -586,7 +582,7 @@ li .heading:hover {
 }
 .format-label[data-format=txt]:before {
   content: "\e6a1";
-  color:#70C6E5;
+  color: #70c6e5;
 }
 .format-label[data-format=xls]:before {
   content: "\e6af";
@@ -594,7 +590,7 @@ li .heading:hover {
 }
 .format-label[data-format=xlsx]:before {
   content: "\e6b0";
-  color:#70C6E5;
+  color: #70c6e5;
 }
 .format-label[data-format=xml]:before {
   content: "\e6b1";
@@ -619,7 +615,7 @@ li .heading:hover {
   z-index: 0;
 }
 .node-resource .download .format-label:before {
-  font-family: "dkan-flaticon" ;
+  font-family: "dkan-flaticon";
   font-weight: normal;
   vertical-align: middle;
   height: auto;
@@ -629,10 +625,10 @@ li .heading:hover {
   z-index: 2;
 }
 .node-dataset #data-and-resources ul.resource-list ul.dropdown-menu li {
-width: auto;
-min-height: auto;
-padding: 5px;
-margin: 0;
+  width: auto;
+  min-height: auto;
+  padding: 5px;
+  margin: 0;
 }
 .node-dataset #data-and-resources ul.resource-list .btn-group {
   vertical-align: top;
@@ -675,10 +671,12 @@ body .node-dataset #data-and-resources ul.resource-list li .orig {
   padding: 0 8px 0 0;
 }
 .field-name-field-additional-info table p,
-.field-name-field-additional-info table p:last-child { margin: 0; }
+.field-name-field-additional-info table p:last-child {
+  margin: 0;
+}
 
 .field-name-field-dkan-harvest-source-uri {
-  word-break: break-word; 
+  word-break: break-word;
 }
 .field-name-field-data-dictionary .form-control.form-textarea {
   border-radius: 4px 4px 0 0;
