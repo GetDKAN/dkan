@@ -45,13 +45,6 @@ class HarvestMigration extends MigrateDKAN {
   protected $dkanHarvestMigrateSQLMapSourceOptions;
 
   /**
-   * Store the dataset ids processed to unpublish missing sources later.
-   *
-   * @var array
-   */
-  protected $idListImported = array();
-
-  /**
    * Extra Harvest argument.
    *
    * @var bool
@@ -227,7 +220,6 @@ class HarvestMigration extends MigrateDKAN {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
-    $this->idListImported[] = $row->dkan_harvest_object_id;
   }
 
   /**
@@ -548,7 +540,7 @@ class HarvestMigration extends MigrateDKAN {
     // current harvest they are missing from the source as well.
     // Look for those zombie dataset and clean them.
     $zombies = $this->map->lookupMapTable(HarvestMigrateSQLMap::STATUS_FAILED,
-      $this->idListImported, "NOT IN", NULL, NULL);
+      $this->getIdList(), "NOT IN", NULL, NULL);
 
     if (!empty($zombies)) {
       $zombies_sourceids = array();
@@ -621,15 +613,14 @@ class HarvestMigration extends MigrateDKAN {
     // in a previous harvest migrate.
     // Get rows marked with HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE
     // and part of the imported datasets imported.
-    if (is_array($this->idListImported) && !empty($this->idListImported)) {
-      migrate_instrument_start('postImportRestoredSource-SELECTNOSOURCEPROCESSED');
+    if (is_array($this->getIdList()) && !empty($this->getIdList())) {
       $query = $this->map->getConnection()->select($this->map->getMapTable(), 'map')
         ->fields('map')
         ->condition("needs_update", HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE)
         // This will throw an exception if $this->idListImported is empty. We
         // are doing that check before entring this code but if you are
         // refactoring this code make sure to add the relevent checks.
-        ->condition('sourceid1', $this->idListImported, 'IN');
+        ->condition('sourceid1', $this->getIdList(), 'IN');
       $result = $query->execute();
       migrate_instrument_stop('postImportRestoredSource-SELECTNOSOURCEPROCESSED');
 
@@ -701,9 +692,9 @@ class HarvestMigration extends MigrateDKAN {
     $query = $this->map->getConnection()->select($this->map->getMapTable(), 'map')
       ->fields('map')
       ->condition("needs_update", HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE, '<>');
-    if (is_array($this->idListImported) && !empty($this->idListImported)) {
+    if (is_array($this->getIdList()) && !empty($this->getIdList())) {
       foreach ($this->map->getSourceKeyMap() as $key_name) {
-        $query = $query->condition("map.$key_name", $this->idListImported, 'NOT IN');
+        $query = $query->condition("map.$key_name", $this->getIdList(), 'NOT IN');
       }
     }
     $result = $query->execute();
@@ -1193,6 +1184,13 @@ class HarvestMigration extends MigrateDKAN {
     return $this->logID;
   }
 
+  /**
+   * Return list of source items ids.
+   */
+  public function getIdList() {
+    return $this->source->getIdList();
+  }
+
 }
 
 /**
@@ -1210,7 +1208,7 @@ class XMLHarvestMigration extends HarvestMigration {
     $this->itemUrl = drupal_realpath($this->dkanHarvestSource->getCacheDir()) .
       '/:id.xml';
 
-    $this->source = new MigrateSourceList(
+    $this->source = new HarvestMigrateSourceList(
       new HarvestList($this->dkanHarvestSource->getCacheDir()),
       new MigrateItemXML($this->itemUrl),
       array(),
