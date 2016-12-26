@@ -74,8 +74,6 @@ projects:
     version: '1.2'
   entityreference_filter:
     version: '1.7'
-  eva:
-    version: '1.2'
   facetapi:
     version: '1.5'
     patch:
