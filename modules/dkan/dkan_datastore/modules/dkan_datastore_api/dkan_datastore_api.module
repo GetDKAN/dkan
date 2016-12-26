@@ -392,15 +392,35 @@ function dkan_datastore_api_count($data_select) {
  * Adds conditions, ie WHERE clause, to query.
  */
 function dkan_datastore_api_add_index_conditions(&$data_select, $filters, $alias = 't') {
+  $filters = dkan_datastore_api_qualify_filters($filters);
   if ($filters && is_array($filters)) {
     foreach ($filters as $num => $filter) {
       $num = str_replace(' ', '_', $num);
-
       foreach ($filter as $key => $value) {
-        $data_select->condition($alias . '.' . $key, $filter, 'IN');
+        $data_select->condition($key, $filter, 'IN');
       }
     }
   }
+}
+
+/**
+ * Process filters to use qualified field names.
+ *
+ * @param  Array $filters Unprocesed filters
+ * @return Array          Flat array with qualified names
+ */
+function dkan_datastore_api_qualify_filters($filters) {
+  $result = array();
+  foreach ($filters as $num => $filterValue) {
+    if(is_array($filterValue)) {
+      foreach ($filterValue as $field => $value) {
+        $result[$num . '.' . $field] = $value;
+      }
+    } else {
+      $result[$num] = $filterValue;
+    }
+  }
+  return $result;
 }
 
 /**
