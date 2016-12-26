@@ -370,7 +370,7 @@ function _dkan_datastore_api_query($params) {
  * Performs a multiple query against the datastore.
  */
 function _dkan_datastore_api_multiple_query($queries) {
-  $request_body = $queries ? $queries : json_decode(file_get_contents('php://input'));
+  $request_body = $queries ? $queries : json_decode(file_get_contents('php://input'), true);
   $queries = $request_body;
   foreach ((array) $queries as $name => $query) {
     $params = _dkan_datastore_api_get_params($query);
