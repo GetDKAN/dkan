@@ -394,11 +394,10 @@ function dkan_datastore_api_count($data_select) {
 function dkan_datastore_api_add_index_conditions(&$data_select, $filters, $alias = 't') {
   $filters = dkan_datastore_api_qualify_filters($filters);
   if ($filters && is_array($filters)) {
-    foreach ($filters as $num => $filter) {
-      $num = str_replace(' ', '_', $num);
-      foreach ($filter as $key => $value) {
-        $data_select->condition($key, $filter, 'IN');
-      }
+    foreach ($filters as $field => $value) {
+      $field = str_replace(' ', '_', $field);
+      $value = explode(',', $value);
+      $data_select->condition($field, $value, 'IN');
     }
   }
 }
