@@ -22,6 +22,7 @@ function dkan_harvest_drush_command() {
       'skiphash' => 'Skip hash checking and update all the datasets available in the source.',
       'limit' => 'Limit on the length of each migration. Check migrate doc for more about this option.',
       'instrument' => 'Capture performance information (timer, memory, or all). Check migrate doc for more about this option.',
+      'idlist' => 'A comma delimited list of ids to import or rollback. Check migrate doc for more about this option.',
     ),
     'drupal dependencies' => array('dkan_harvest'),
   );
@@ -50,6 +51,7 @@ function dkan_harvest_drush_command() {
       'skiphash' => 'Skip hash checking and update all the datasets available in the source.',
       'limit' => 'Limit on the length of each migration. Check migrate doc for more about this option.',
       'instrument' => 'Capture performance information (timer, memory, or all). Check migrate doc for more about this option.',
+      'idlist' => 'A comma delimited list of ids to import or rollback. Check migrate doc for more about this option.',
     ),
     'drupal dependencies' => array('dkan_harvest'),
   );
@@ -61,6 +63,11 @@ function dkan_harvest_drush_command() {
     'callback' => 'dkan_harvest_drush_command_rollback',
     'arguments' => array(
       'source_machine_name' => 'The source machine name to run the harvest migration on. If not provided run the harvest ',
+    ),
+    'options' => array(
+      'limit' => 'Limit on the length of each migration. Check migrate doc for more about this option.',
+      'instrument' => 'Capture performance information (timer, memory, or all). Check migrate doc for more about this option.',
+      'idlist' => 'A comma delimited list of ids to import or rollback. Check migrate doc for more about this option.',
     ),
     'drupal dependencies' => array('dkan_harvest'),
   );
@@ -132,7 +139,7 @@ function dkan_harvest_drush_command_cache($source_machine_name) {
  *        Source machine name to migrate.
  */
 function dkan_harvest_drush_command_migrate($source_machine_name) {
-  $supported_options = array('limit', 'skiphash', 'instrument');
+  $supported_options = array('limit', 'skiphash', 'instrument', 'idlist');
   $options = array();
 
   // Gather harvest migration options. If parsing the arguments fails just relay
@@ -179,7 +186,7 @@ function dkan_harvest_drush_command_migrate($source_machine_name) {
  */
 function dkan_harvest_drush_command_rollback($source_machine_name) {
   $options = array();
-  $supported_options = array('limit', 'instrument');
+  $supported_options = array('limit', 'instrument', 'idlist');
 
   // Gather harvest migration options. If parsing the arguments fails just relay
   // on the parsing callback to oouput an appropriate message and stop.
@@ -343,6 +350,18 @@ function dkan_harvest_get_option_instrument($options) {
  */
 function dkan_harvest_get_option_skiphash($options) {
   $options['skiphash'] = drush_get_option('skiphash', FALSE);
+  return $options;
+}
+
+/**
+ * Helper function to parse the 'idlist' option.
+ *
+ * This is taken from migrate.drush.inc.
+ */
+function dkan_harvest_get_option_idlist($options) {
+  if ($idlist = drush_get_option('idlist', FALSE)) {
+    $options['idlist'] = $idlist;
+  }
   return $options;
 }
 
