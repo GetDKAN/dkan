@@ -14,12 +14,12 @@
  * Each dataset id added can have multiple flags.
  */
 class HarvestCache {
-  const DKAN_HARVEST_CACHE_PROCESSED = 0x0;
-  const DKAN_HARVEST_CACHE_FAILED = 0x1;
-  const DKAN_HARVEST_CACHE_FILTERED = 0x2;
-  const DKAN_HARVEST_CACHE_EXCLUDED = 0x4;
-  const DKAN_HARVEST_CACHE_DEFAULTED = 0x8;
-  const DKAN_HARVEST_CACHE_OVERRIDDEN = 0x16;
+  const DKAN_HARVEST_CACHE_PROCESSED = 0;
+  const DKAN_HARVEST_CACHE_FAILED = 1;
+  const DKAN_HARVEST_CACHE_FILTERED = 2;
+  const DKAN_HARVEST_CACHE_EXCLUDED = 4;
+  const DKAN_HARVEST_CACHE_DEFAULTED = 8;
+  const DKAN_HARVEST_CACHE_OVERRIDDEN = 16;
 
   public $harvestSource;
   public $harvestCacheTime;
@@ -190,7 +190,7 @@ class HarvestCache {
         $this->processed[$cache_id]['flag'] &= ~(self::DKAN_HARVEST_CACHE_FAILED);
       }
       else {
-        $this->processed[$cache_id]['flag'] = $this->processed[$cache_id] | $flag;
+        $this->processed[$cache_id]['flag'] = $this->processed[$cache_id]['flag'] | $flag;
       }
     }
   }
