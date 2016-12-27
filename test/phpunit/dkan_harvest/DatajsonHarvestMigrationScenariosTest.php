@@ -554,6 +554,32 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test remote file support for files without scheme.
+   *
+   * Ticket: https://jira.govdelivery.com/browse/CIVIC-4501
+   */
+  public function testResourceSchemeless() {
+    // Harvest a source that have resources behind redirects.
+    dkan_harvest_cache_sources(array(self::getResourceSchemeless()));
+    dkan_harvest_migrate_sources(array(self::getResourceSchemeless()));
+
+    // Get imported dataset.
+    $dataset_nids = $this->getTestDatasetNid(self::getResourceSchemeless());
+    $dataset_node = entity_metadata_wrapper('node', array_pop($dataset_nids));
+
+    // One resource should exists.
+    $this->assertEquals(count($dataset_node->field_resources), 1);
+
+    $migration = dkan_harvest_get_migration(self::getResourceSchemeless());
+    $migrationMap = $this->getMapTableFromMigration($migration);
+    $migrationLog = $this->getLogTableFromMigration($migration);
+    $migrationMessage = $this->getMessageTableFromMigration($migration);
+
+    // No error should be recorded.
+    $this->assertEmpty($migrationMessage);
+  }
+
+  /**
    * {@inheritdoc}
    */
   protected function tearDown() {
