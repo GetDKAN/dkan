@@ -262,6 +262,11 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
       // This will reset the failed flag if previously set.
       $harvest_cache->setCacheEntryProcessed($identifier, $dataset['title']);
     }
+
+    //If we have a override settings then add flag.
+    if (!empty($overrides)) {
+      $harvest_cache->setCacheEntryOverridden($identifier, $dataset['title']);
+    }
   }
 
   return $harvest_cache;
