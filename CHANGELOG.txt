@@ -115,7 +115,8 @@ DKAN Dataset:
  - Removed warning when a resource is created without title.
  - Add limit to proxy resources.
  - Improved download of remote files.
-
+ - Fix 508 compilance issues for leafleat draw widget 
+ 
 7.x-1.12.11 2016-10-20
 --------------------------
 - Fixed a bug in Recline regarding file objects and node forms that caused errors when using the "view changes" button on Dataset or Resource edit form
