@@ -3,7 +3,7 @@ core: 7.x
 includes:
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta2/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
-  - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/civic-4944-leaflet-508/leaflet_widget.make"
+  - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
 projects:
   admin_menu:
@@ -176,7 +176,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
-      branch: civic-4944-leaflet-508
+      branch: master
   libraries:
     version: '2.3'
   link:
