@@ -130,6 +130,7 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
 
     $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
     $messageTable = $harvest_source_migration->getMap()->getMessageTable();
+    $logTable = $harvest_source_migration->getMap()->getLogTable();
 
     // Let's see if we got errors during the last migration.
     $query_message_table = db_query("SELECT COUNT(*) FROM " . $messageTable . " WHERE mlid = :mlid AND level = :error_level",
@@ -139,6 +140,13 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
       ));
     $result_message_table = $query_message_table->fetchAssoc();
 
+    // Let's see if we didn't get errors during the last migration but failed.
+    $query_log_table = db_query("SELECT failed FROM " . $logTable . " WHERE mlid = :mlid",
+      array(
+        ':mlid' => $mlid,
+      ));
+    $result_log_table = $query_log_table->fetchField();
+
     if (empty($result_message_table)) {
       // i'm confused. This should no happen.
       watchdog('dkan_harvest_dashboard', "Result for error message not found.", array(), WATCHDOG_ERROR);
@@ -146,7 +154,7 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
     }
 
     $errors_count = array_pop($result_message_table);
-    return $errors_count > 0 ? TRUE : FALSE;
+    return (($errors_count > 0) || $result_log_table) ? TRUE : FALSE;
   }
 
   /**
