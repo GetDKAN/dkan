@@ -81,6 +81,7 @@ DKAN Harvest:
  - Fixed harvesting of resources with remote files with redirects.
  - Fix "Manage Datastore" tab leaking to the harvest source node.
  - Add icons for harvest source tabs.
+ - Fixed problem managing flags for show message with information.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
