@@ -391,7 +391,7 @@ libraries:
   spectrum:
     download:
       type: git
-      url: 'https://github.com/bgrins/spectrum.git'
+      url: 'https://github.com/ajssd/spectrum.git'
     directory_name: bgrins-spectrum
   spyc:
     download:
