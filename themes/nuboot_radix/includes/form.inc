@@ -65,6 +65,13 @@ function nuboot_radix_form_element($variables) {
     $attributes['class'][] = 'has-error';
   }
 
+  // 508 compliance: fix missing labels on resource fields.
+  if (isset($element['#autocomplete_path']) && isset($element['#field_name'])
+    && $element['#field_name'] == 'field_resources') {
+    $element['#title_display'] = 'after';
+    $element['#title'] = t('Resource');
+  }
+
   // Add radios, checkboxes and form-group classes.
   if (isset($element['#type'])) {
     if ($element['#type'] == "radio") {
