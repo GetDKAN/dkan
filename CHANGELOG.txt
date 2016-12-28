@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Add install hook to DKAN Workflow to force a Features revert of dkan_sitewide_menu, to make sure Workflow links added correctly
  - Remove Panels IPE from dataset and search pages; in DKAN, we only want to show IPE for panelizer layouts, not templates or other "sitewide" pages.
  - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
  - Fixes typo in "add data story" link in command center menu
@@ -109,6 +110,7 @@ DKAN Dataset:
  - Removed 'Back to dataset' button on standalone resources.
  - Removed warning when a resource is created without title.
  - Improved download of remote files.
+ - Fix 508 compilance issues for leafleat draw widget.
 
 
 7.x-1.12.12 2016-12-15
