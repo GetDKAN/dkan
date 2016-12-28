@@ -256,6 +256,7 @@ function _dkan_datastore_api_get_params($params = array()) {
     'max' => '',
     'count' => '',
   );
+
   $params = array_merge($defaults, $params);
   $sort = dkan_datastore_api_sort_clean($params['sort']);
   $fields = _dkan_datastore_api_fields_clean($params['fields']);
@@ -317,10 +318,12 @@ function _dkan_datastore_api_query($params) {
   try {
     // Query for a single resource.
     if (count($resource_ids) < 2) {
+      $alias = end(array_keys((array) $resource_ids));
+      $alias = is_string($alias) ? $alias : 't';
       $ids = array_values((array) $resource_ids);
       $resource_id = array_shift($ids);
       $table = dkan_datastore_api_tablename($resource_id);
-      $data_select = dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, $sort);
+      $data_select = dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, $sort, $alias);
       dkan_datastore_api_add_index_conditions($data_select, $filters);
       dkan_datastore_api_add_index_group_by($data_select, $group_by);
       dkan_datastore_api_add_index_aggregations($data_select, $aggregations);
@@ -348,9 +351,9 @@ function _dkan_datastore_api_query($params) {
           $filters = isset($filters[$alias]) ? $filters[$alias] : '';
           dkan_datastore_api_build_additional_index_query($data_select, $table, $fields, $sort, $alias, $join);
         }
-        dkan_datastore_api_add_index_conditions($data_select, $filters, $alias);
-        dkan_datastore_api_add_index_group_by($data_select, $group_by, $alias);
-        dkan_datastore_api_add_index_aggregations($data_select, $aggregations, $alias);
+        dkan_datastore_api_add_index_conditions($data_select, $filters);
+        dkan_datastore_api_add_index_group_by($data_select, $group_by);
+        dkan_datastore_api_add_index_aggregations($data_select, $aggregations);
         $i++;
       }
     }
@@ -391,35 +394,49 @@ function dkan_datastore_api_count($data_select) {
 /**
  * Adds conditions, ie WHERE clause, to query.
  */
-function dkan_datastore_api_add_index_conditions(&$data_select, $filters, $alias = 't') {
-  $filters = dkan_datastore_api_qualify_filters($filters);
-  if ($filters && is_array($filters)) {
-    foreach ($filters as $field => $value) {
-      $field = str_replace(' ', '_', $field);
-      $value = explode(',', $value);
-      $data_select->condition($field, $value, 'IN');
+function dkan_datastore_api_add_index_conditions(&$data_select, $filters, $alias = NULL) {
+  if($filters) {
+
+    // Fields without table prefix.
+    // e.g.: "filters": [{ "WL_1_County": [1] }]
+    if(!is_assoc($filters)) {
+      foreach ($filters as $field => $value) {
+        $field = str_replace(' ', '_', $field);
+        $value = is_array($value) ? $value : explode(',', $value);
+        $data_select->condition($field, $value, 'IN');
+      }
+    // Fields with table prefix.
+    // e.g. {"counties": {"msa": "N"}},
+    } else if(is_assoc($filters)) {
+      foreach ($filters as $key => $value) {
+
+        // Fields with table prefix again.
+        // {"counties": {"msa": "N"}, "msab": ... }
+        if (is_array($value) && is_assoc($value)) {
+          foreach ($value as $field => $filterValue) {
+            $table = $key;
+            $field = str_replace(' ', '_', $field);
+            $filterValue = is_array($filterValue) ? $filterValue : explode(',', $filterValue);
+            $data_select->condition($table . '.' . $field, $filterValue, 'IN');
+          }
+
+        // Fields without table prefix again.
+        // {"counties": ..., "msab": [1,2] }
+        } else {
+          $key = str_replace(' ', '_', $key);
+          $value = is_array($value) ? $value : explode(',', $value);
+          $data_select->condition($key, $value, 'IN');
+        }
+      }
     }
   }
 }
 
 /**
- * Process filters to use qualified field names.
- *
- * @param  Array $filters Unprocesed filters
- * @return Array          Flat array with qualified names
+ * Returns true if all the keys in a given array are strings.
  */
-function dkan_datastore_api_qualify_filters($filters) {
-  $result = array();
-  foreach ($filters as $num => $filterValue) {
-    if(is_array($filterValue)) {
-      foreach ($filterValue as $field => $value) {
-        $result[$num . '.' . $field] = $value;
-      }
-    } else {
-      $result[$num] = $filterValue;
-    }
-  }
-  return $result;
+function is_assoc($array) {
+  return is_array($array) && count(array_filter(array_keys($array), 'is_string')) > 0;
 }
 
 /**
@@ -429,7 +446,8 @@ function dkan_datastore_api_add_index_group_by(&$data_select, $group_by, $alias 
   if (empty($group_by)) {
     return;
   }
-  $group_by = $alias && isset($group_by[$alias]) ? $group_by[$alias] : $group_by;
+  $alias = is_assoc($group_by) ? end(array_keys($group_by)) : $alias;
+  $group_by = isset($group_by[$alias]) ? $group_by[$alias] : $group_by;
   if ($group_by) {
     $group_by = (is_array($group_by)) ? $group_by : services_str_getcsv($group_by);
     foreach ($group_by as $field) {
@@ -443,11 +461,13 @@ function dkan_datastore_api_add_index_group_by(&$data_select, $group_by, $alias 
  */
 function dkan_datastore_api_add_index_aggregations(&$data_select, $aggregations, $alias = NULL) {
   foreach ($aggregations as $method => $agg) {
-    $field_name = $alias && is_array($agg) && isset($agg[$alias]) ? $agg[$alias] : $agg;
+    $alias = is_assoc($agg) ? array_keys($agg)[0] : NULL;
+    $field_name = $alias ? $agg[$alias] : $agg;
+    $field_name = _dkan_datastore_api_field_safe_name($field_name);
     $field_full = $alias ? $alias . '.' . $field_name : $field_name;
 
     if (!empty($field_name)) {
-      $data_select->addExpression($method . '(' . _dkan_datastore_api_field_safe_name($field_full) . ')', $method . '_' . _dkan_datastore_api_field_safe_name($field_name));
+      $data_select->addExpression($method . '(' . $field_full . ')', $method . '_' . $field_name);
     }
   }
 }
@@ -571,7 +591,6 @@ function dkan_datastore_api_get_feeds_source($nid) {
  */
 function dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, $sort, $alias = 't') {
   $data_select = db_select($table, $alias);
-
   if (!is_array($sort)) {
     $sort = explode(' ', $sort);
     $order = $sort[0];
@@ -582,14 +601,19 @@ function dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, 
   }
 
   if (count($columns) == 1 && array_values($columns)[0] == '') {
-
-    $data_select->orderBy($alias . '.feeds_flatstore_entry_id', 'ASC');
+    $data_select->orderBy( $alias . '.feeds_flatstore_entry_id', 'ASC');
   }
   else {
+    $key = end(array_values($sort));
+    if(!in_array($key, ['desc', 'asc'])) {
+      $columns = $key;
+      $alias = end(array_keys($sort));
+    }
     foreach ($columns as $field => $order) {
       $data_select->orderBy($alias . '.' . $field, $order);
     }
   }
+
   dkan_datastore_api_resource_build_index_query($data_select, $offset, $fields, $limit, $alias, $table);
   return $data_select;
 }
