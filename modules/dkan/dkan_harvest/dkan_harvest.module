@@ -69,6 +69,7 @@ function theme_dkan_harvest_source_summary(&$vars) {
         '#attributes' => array(
           'id' => 'harvest_source_summary_uri',
           'class' => array('form-control'),
+          'aria-label' => t('Source summary url'),
           'value' => $wrapper->field_dkan_harvest_source_uri->value(),
         ),
         '#autocomplete_path' => FALSE,
