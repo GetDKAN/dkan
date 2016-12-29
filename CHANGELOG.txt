@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Add install hook to DKAN Workflow to force a Features revert of dkan_sitewide_menu, to make sure Workflow links added correctly
  - Remove Panels IPE from dataset and search pages; in DKAN, we only want to show IPE for panelizer layouts, not templates or other "sitewide" pages.
  - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
  - Fixes typo in "add data story" link in command center menu
@@ -80,6 +81,7 @@ DKAN Harvest:
  - Fixed harvesting of resources with remote files with redirects.
  - Fix "Manage Datastore" tab leaking to the harvest source node.
  - Add icons for harvest source tabs.
+ - Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
@@ -114,7 +116,8 @@ DKAN Dataset:
  - Removed warning when a resource is created without title.
  - Add limit to proxy resources.
  - Improved download of remote files.
-
+ - Fix 508 compilance issues for leafleat draw widget 
+ 
 7.x-1.12.11 2016-10-20
 --------------------------
 - Fixed a bug in Recline regarding file objects and node forms that caused errors when using the "view changes" button on Dataset or Resource edit form
