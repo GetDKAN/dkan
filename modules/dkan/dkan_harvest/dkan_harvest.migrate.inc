@@ -279,6 +279,7 @@ class HarvestMigration extends MigrateDKAN {
    *        Migration row.
    */
   private function createResources(&$dataset, stdClass &$row) {
+    migrate_instrument_start('HarvestMigration->createResources');
     // Delete all resources from dataset if any.
     // All resources will get imported again.
     $field_resources_ids = array();
@@ -312,6 +313,7 @@ class HarvestMigration extends MigrateDKAN {
         }
       }
     }
+    migrate_instrument_stop('HarvestMigration->createResources');
   }
 
   /**
@@ -1050,6 +1052,7 @@ class HarvestMigration extends MigrateDKAN {
    *         Resource node object.
    */
   public function createResourceNode($res) {
+    migrate_instrument_start('HarvestMigration->createResourceNode');
     // Creates a new resource for every linked file.
     // Linked files contain title, format, and accessURL.
     $values = array(
@@ -1107,6 +1110,7 @@ class HarvestMigration extends MigrateDKAN {
     }
 
     $resource_emw->save();
+    migrate_instrument_stop('HarvestMigration->createResourceNode');
     return $resource_emw->raw();
   }
 
