@@ -96,7 +96,6 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
                                     </div>';
       $form['path']['#suffix'] = '</div>';
       $form['path']['alias']['#prefix'] = '<span class="add-on">/dataset/</span>';
-      $form['path']['alias']['#title'] = 'URL';
     }
     // Adding descriptions.
     $form['title']['#attributes']['placeholder'] = t('eg. A descriptive title');
@@ -107,7 +106,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['body'][$body_langcode][0]['#prefix'] = '<div id="prefix">';
     $form['body'][$body_langcode][0]['#suffix'] = '</div>';
     $form['path']['alias']['#description'] = '';
-    $form['path']['alias']['#title'] = '';
+    $form['path']['alias']['#title'] = t('URL');
 
     // Get langcode for field_tags.
     $field_tags_langcode = dkan_dataset_form_field_language($form, 'field_tags');

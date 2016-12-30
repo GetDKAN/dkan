@@ -620,7 +620,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     // re-harvest an unchanged source we pass the 'dkan_harvest_skip_hash'
     // option.
     $options = array(
-      'dkan_harvest_skip_hash' => TRUE,
+      'skiphash' => TRUE,
     );
     dkan_harvest_cache_sources(array(self::getErrorTestSource()));
     dkan_harvest_migrate_sources(array(self::getErrorTestSource()), $options);
