@@ -90,6 +90,7 @@ DKAN Workflow:
  - Updated workbench_email from 3.9 to 3.11
  - Fixed admin menu source when dkan_workflow is enabled
 DKAN Dataset:
+ - Leaflet draw widget usability improvements
  - Fix validation on resource forms when multiple resource type fields are populated
  - Fix 508 compilance issues for leafleat draw widget 
  - Added DKAN Dataset module into DKAN Core.
