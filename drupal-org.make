@@ -184,7 +184,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
-      branch: master
+      branch: 'master'
   libraries:
     version: '2.3'
   link:
