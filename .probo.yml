@@ -10,8 +10,6 @@ steps:
       # Start in the right folder of our checkout (/src)
       cd $SRC_DIR
 
-      echo "memory_limit = 512M" > /etc/php5/apache2/conf.d/20-general_settings.ini
-
       echo ""
       echo "Build $BUILD_ID "
       echo ""
