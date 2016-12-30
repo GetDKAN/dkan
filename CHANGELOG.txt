@@ -90,6 +90,8 @@ DKAN Workflow:
  - Updated workbench_email from 3.9 to 3.11
  - Fixed admin menu source when dkan_workflow is enabled
 DKAN Dataset:
+ - Fix validation on resource forms when multiple resource type fields are populated
+ - Fix 508 compilance issues for leafleat draw widget 
  - Added DKAN Dataset module into DKAN Core.
  - Added default image for groups.
  - Add preview support for resources of many more formats, outside of recline.js. Support added for JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, ZIP
@@ -116,7 +118,6 @@ DKAN Dataset:
  - Removed warning when a resource is created without title.
  - Add limit to proxy resources.
  - Improved download of remote files.
- - Fix 508 compilance issues for leafleat draw widget 
  
 7.x-1.12.11 2016-10-20
 --------------------------
