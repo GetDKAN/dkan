@@ -6,6 +6,7 @@
  */
 
 use dkanDataset\getRemoteFileInfo;
+
 include_once drupal_get_path('module', 'dkan_dataset') . '/includes/getRemoteFileInfo.php';
 
 // This used to exits in file.inc but was removed on Drupal 7 without a
@@ -278,6 +279,7 @@ class HarvestMigration extends MigrateDKAN {
    *        Migration row.
    */
   private function createResources(&$dataset, stdClass &$row) {
+    migrate_instrument_start('HarvestMigration->createResources');
     // Delete all resources from dataset if any.
     // All resources will get imported again.
     $field_resources_ids = array();
@@ -311,6 +313,7 @@ class HarvestMigration extends MigrateDKAN {
         }
       }
     }
+    migrate_instrument_stop('HarvestMigration->createResources');
   }
 
   /**
@@ -982,8 +985,7 @@ class HarvestMigration extends MigrateDKAN {
     // for http requests (right now). So for ftp and other URLs we just skip.
     if (preg_match("@^https?@i", parse_url($url, PHP_URL_SCHEME))) {
 
-
-      $fake_agent ='Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1';
+      $fake_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1';
       // remote_stream_wrapper does not play nice with files link behind
       // redirects. Try to get the bottom of the redircet chain if any and use
       // the last URL.
@@ -1050,6 +1052,7 @@ class HarvestMigration extends MigrateDKAN {
    *         Resource node object.
    */
   public function createResourceNode($res) {
+    migrate_instrument_start('HarvestMigration->createResourceNode');
     // Creates a new resource for every linked file.
     // Linked files contain title, format, and accessURL.
     $values = array(
@@ -1107,6 +1110,7 @@ class HarvestMigration extends MigrateDKAN {
     }
 
     $resource_emw->save();
+    migrate_instrument_stop('HarvestMigration->createResourceNode');
     return $resource_emw->raw();
   }
 
