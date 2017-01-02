@@ -17,6 +17,8 @@ projects:
     version: '1.1'
   autocomplete_deluxe:
     version: '2.1'
+    patch:
+      2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-3.patch'
   beautytips:
     download:
       type: git
@@ -33,6 +35,8 @@ projects:
     version: '1.4'
   chosen:
     version: '2.0-beta5'
+    patch:
+      2834096: 'https://www.drupal.org/files/issues/chosen-accesibility_problem_with_input.patch'
   colorizer:
     version: '1.10'
     patch:
@@ -126,7 +130,11 @@ projects:
     download:
       full_version: 7.x-1.0-beta1
   fieldable_panels_panes:
-    version: '1.10'
+    version: '1.11'
+    patch:
+      2825835: 'https://www.drupal.org/files/issues/2825835.patch'
+      2826182: 'https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch'
+      2826205: 'https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch'
   file_entity:
     version: '2.0-beta3'
     patch:
@@ -176,7 +184,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
-      branch: master
+      branch: 'master'
   libraries:
     version: '2.3'
   link:

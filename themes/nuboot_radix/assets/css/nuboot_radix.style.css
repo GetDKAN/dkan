@@ -8504,7 +8504,7 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
   padding-left: 10px;
   padding-right: 10px; }
 
-.screenreader, #dkan-sitewide-dataset-search-form label,
+.screenreader, .form-type-textfield.form-group label.option, #dkan-sitewide-dataset-search-form label,
 #dkan-sitewide-dataset-search-form--2 label, #region-branding #block-dkan-sitewide-dkan-sitewide-search-bar label {
   position: absolute;
   top: 0;
