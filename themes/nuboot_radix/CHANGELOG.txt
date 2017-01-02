@@ -5,6 +5,8 @@
 - Make date facets consistant with other facets styling
 - Upgraded to use Radix 3.3. See README.md for updated use instructions
 - Fix node--search-result.tpl.php file to check the $group_list variable before printing markup
+- Fix hero image to only load on the front page
+- Update files to pass coding standards
 
 7.x-1.11 2016-02-02
 --------------------------

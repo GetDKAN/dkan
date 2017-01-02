@@ -1,5 +1,6 @@
 <?php
+
 /**
  * @file
- * Theme and preprocess functions for views
+ * Theme and preprocess functions for views.
  */

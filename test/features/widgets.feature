@@ -27,6 +27,7 @@ Feature: Widgets
     And I wait for "Add content to"
 
   Scenario: Adds "Button Link" to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "Link"
       And I wait for "Configure new Link"
       And I fill in "edit-button-link-title" with "Link example"
@@ -36,6 +37,7 @@ Feature: Widgets
       Then I should see "Link example"
 
   Scenario: Adds "New File Widget" block to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "File"
       And I wait for "Configure new File"
       And I attach the drupal file "dkan/actionplan.pdf" to "files[field_basic_file_file_und_0]"
@@ -44,6 +46,7 @@ Feature: Widgets
       Then I should see "actionplan.pdf"
 
   Scenario: Adds "New Image Widget" block to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "Add image"
       And I wait for "Configure new Image"
       And I fill in "field_basic_image_caption[und][0][value]" with "dkan logo image test"
@@ -58,6 +61,7 @@ Feature: Widgets
       Then I should see "dkan logo image test"
 
   Scenario: Adds "New Text Widget" block to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "Add text"
       And I wait for "Configure new Text"
       And I fill in "field_basic_text_text[und][0][value]" with "text example"
@@ -66,6 +70,7 @@ Feature: Widgets
       Then I should see "text example"
 
   Scenario: Adds "New Map Widget" block to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "Add map"
     And I wait for "Configure new Map"
       And I fill in "field_map_address[und][0][value]" with "175th St, Jamaica, NY 11433, USA"
@@ -75,6 +80,7 @@ Feature: Widgets
       Then I should see "map example"
 
   Scenario: Adds "New Table Widget" block to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "Add table"
     And I wait for "Configure new Table"
       And I fill in "field-basic-table-table-und-0-tablefield-cell-0-0" with "date"
@@ -93,6 +99,7 @@ Feature: Widgets
       Then I should see "9.3"
 
   Scenario: Adds "New Video Widget" block to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "Add video"
     And I wait for "Configure new Video"
     When I fill in "Testing video" for "edit-title"
@@ -108,6 +115,7 @@ Feature: Widgets
     Then I should see "Testing video"
 
   Scenario: Adds "New Spotlight Widget" block to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "Add spotlight"
     And I wait for "Configure new Slideshow"
       And I fill in "field_basic_spotlight_items[und][0][title]" with "First spot"
@@ -119,6 +127,7 @@ Feature: Widgets
       Then I should see "First spot" in the "content"
 
   Scenario: Adds "New Submenu Widget" block to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "Submenu"
     And I wait for "Configure new Submenu"
       And I press "Finish"
@@ -126,6 +135,7 @@ Feature: Widgets
       Then I should see "Datasets" in the "content"
 
   Scenario: Adds "New Content List Widget" block to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "Content List"
     And I wait for "Configure new Content List"
     When I select "Dataset" from "exposed[type]"
@@ -137,15 +147,17 @@ Feature: Widgets
       And I should see "Posted by admin"
 
   Scenario: Adds "Existing Content" block to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "Existing content"
     And I wait for "Configure new Existing content"
-    And I fill in "edit-nid" with "Wisconsin Polling Places"
+    And I fill in "edit-nid" with "11111AAAAAAafghanistan Election Districts"
     And I press "Finish"
     And I wait and press "Save"
-    Then I should see "Wisconsin Polling Places"
+    Then I should see "11111AAAAAAafghanistan Election Districts"
       And I should see "csv"
 
   Scenario: Adds "Visualization embed" block to home page using panels ipe editor
+    Given the cache has been cleared
     When I follow "visualization"
     And I wait for "Configure new Visualization"
     And I select "remote" from "source_origin"

@@ -1,9 +1,14 @@
 <?php
+
+/**
+ * @file
+ * Theme and preprocess functions for forms.
+ */
+
 /**
  * Implements hook_form_alter().
  */
 function nuboot_radix_form_alter(&$form, &$form_state, $form_id) {
-  //drupal_set_message('<pre>' . print_r($form, TRUE) . '</pre>');
   switch ($form_id) {
     case 'colorizer_admin_settings':
       $form['colorizer_global']['colorizer_cssfile']['#default_value'] = 'colorizer/colorizer.css';
@@ -14,6 +19,7 @@ function nuboot_radix_form_alter(&$form, &$form_state, $form_id) {
 
 /**
  * Implements theme_form_element().
+ *
  * Remove label wrapped around font-icon checkbox input.
  */
 function nuboot_radix_form_element($variables) {
@@ -59,6 +65,13 @@ function nuboot_radix_form_element($variables) {
     $attributes['class'][] = 'has-error';
   }
 
+  // 508 compliance: fix missing labels on resource fields.
+  if (isset($element['#autocomplete_path']) && isset($element['#field_name'])
+    && $element['#field_name'] == 'field_resources') {
+    $element['#title_display'] = 'after';
+    $element['#title'] = t('Resource');
+  }
+
   // Add radios, checkboxes and form-group classes.
   if (isset($element['#type'])) {
     if ($element['#type'] == "radio") {
@@ -68,7 +81,7 @@ function nuboot_radix_form_element($variables) {
     elseif ($element['#type'] == "checkbox") {
       $attributes['class'][] = 'checkbox';
       $is_checkbox = TRUE;
-      if(!empty($element['#name'])) {
+      if (!empty($element['#name'])) {
         $name = strtr($element['#name'], array(
           ' ' => '-',
           '_' => '-',
@@ -77,11 +90,10 @@ function nuboot_radix_form_element($variables) {
           'und' => '',
         ));
         // Target font-icon-select fields.
-        if($name == 'field-topic-icon') {
+        if ($name == 'field-topic-icon') {
           $is_topic = TRUE;
         }
       }
-      
     }
     else {
       $attributes['class'][] = 'form-group';
@@ -139,9 +151,9 @@ function nuboot_radix_form_element($variables) {
   switch ($element['#title_display']) {
     case 'invisible':
       if ($is_radio || $is_checkbox) {
-        // render the normal invisible label for screen readers
+        // Render the normal invisible label for screen readers.
         $output .= ' ' . theme('form_element_label', $variables);
-        // but still ensure checkbox is wrapped in an empty label
+        // But still ensure checkbox is wrapped in an empty label.
         $element['#title_display'] = 'before';
         $element['#title'] = '';
         $output .= ' ' . $prefix . theme('form_element_label', $variables) . $suffix . "\n";
@@ -170,7 +182,7 @@ function nuboot_radix_form_element($variables) {
     case 'none':
     case 'attribute':
       if ($is_radio || $is_checkbox && !$is_topic) {
-        // ensure checkboxes still wrapped in a label
+        // Ensure checkboxes still wrapped in a label.
         $element['#title_display'] = 'before';
         $output .= ' ' . $prefix . theme('form_element_label', $variables) . $suffix;
       }
