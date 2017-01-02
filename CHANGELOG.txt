@@ -1,10 +1,20 @@
 7.x-1.12.x
--------------------------
+----------------------
+ - Fix publisher token in open_data_schema_map_dkan - was showing only URL rather than publisher name
+ - Add patch to remote_stream_wrapper to avoid memory exhausted on big files.
+
+7.x-1.12.12 2016-12-15
+----------------------
+- Start caching recline "embed" pages (previews rendered with no headers/sidebars for iframe) (recline module)
+- Upgrade Drupal core to 7.52
 - Update ctools to 1.11
-- Fixed link to group page on group node teaser when site has clean urls disabled
+- Fix link to group page on group node teaser when site has clean urls disabled
 - Fix "format" facet collapsed even when selected on the search page.
+- Fix resources not synced with datasets when upgrade from 1.11
 - Update media to 2.0-beta13
-- Add patch to remote_stream_wrapper to avoid memory exhausted on big files.
+- Fix hidden body field on page content type
+- Improve access check/security on datastore pages - unauthorized users could perform certain datastore functions
+- Use dashes in links to tags to avoid "page not found" errors
 
 7.x-1.12.11 2016-10-20
 --------------------------
@@ -12,7 +22,7 @@
 - Center group images in "Groups" page and group node page sidebar
 - Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
 - Update the default jquery library setting from 1.7 to 1.10
-- Fix topics menu and facet links if special characters are used in topic terms.
+- Fix topics menu and facet links if special characters are used in topic terms
 - Fix form redirect issues on dataset form validation
 - Patch fontyourface to remove <div> from the "standard text" selector, to prevent unpredictable results from this option
 - Fixed issue in open_data_schema_map with "Data Dictionary" field not displaying URL in data.json file

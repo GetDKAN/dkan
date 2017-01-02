@@ -2,6 +2,7 @@ name = DKAN Topics
 description = Categorize your data with topics to help users find what they are looking for.
 core = 7.x
 package = DKAN
+version = 7.x-1.12.x
 dependencies[] = color_field
 dependencies[] = conditional_fields
 dependencies[] = dkan_dataset_content_types

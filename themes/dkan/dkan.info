@@ -1,6 +1,7 @@
 name = 'DKAN'
 description = ''
 core = '7.x'
+version = 7.x-1.0-beta1
 engine = 'phptemplate'
 screenshot = 'screenshot.png'
 base theme = 'omega'
