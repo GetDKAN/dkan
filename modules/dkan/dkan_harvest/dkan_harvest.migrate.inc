@@ -220,7 +220,6 @@ class HarvestMigration extends MigrateDKAN {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
-    $this->idListImported[] = $row->dkan_harvest_object_id;
 
     // Check the license field.
     // Convert URI values to license ID values from hook_license_subscribe(),
