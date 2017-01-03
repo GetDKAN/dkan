@@ -64,6 +64,7 @@
  - Upgrade panopoly_images to 1.41
  - Upgrade file_entity to 2.0-beta3
  - Upgrade link_iframe_formatter to 1.1
+ - Assign role supervisor to site manager users when is enable dkan workflow.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
