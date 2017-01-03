@@ -46,13 +46,6 @@ class HarvestMigration extends MigrateDKAN {
   protected $dkanHarvestMigrateSQLMapSourceOptions;
 
   /**
-   * Store the dataset ids processed to unpublish missing sources later.
-   *
-   * @var array
-   */
-  protected $idListImported = array();
-
-  /**
    * Extra Harvest argument.
    *
    * @var bool
@@ -159,8 +152,7 @@ class HarvestMigration extends MigrateDKAN {
     parent::preImport();
 
     // Skip hash checking if required.
-    if (isset($this->arguments['dkan_harvest_skip_hash']) && $this->arguments['dkan_harvest_skip_hash']) {
-      // TODO add support for overridding the hash mecanisme.
+    if (isset($this->arguments['skiphash']) && $this->arguments['skiphash']) {
       $this->dkanHarvestOptSkipHash = TRUE;
       $this->map->getConnection()->update($this->map->getMapTable())
         ->fields(array('hash' => NULL))
@@ -253,6 +245,8 @@ class HarvestMigration extends MigrateDKAN {
    * Add common DkanHarvest prepare steps.
    */
   public function prepare($dataset_prepare, $row) {
+    migrate_instrument_start('HarvestMigration->prepare');
+
     // XXX copied from pod migration.
     if (isset($row->modified) && $row->modified != '') {
       $dataset_prepare->migration_changed_date = $row->modified;
@@ -263,13 +257,15 @@ class HarvestMigration extends MigrateDKAN {
     if (module_exists('dkan_dataset_metadata_source')) {
       $this->prepareMetadataSource($dataset_prepare, $row);
     }
+
+    migrate_instrument_stop('HarvestMigration->prepare');
   }
 
   /**
    * {@inheritdoc}
    */
   public function complete($dataset, $row) {
-
+    migrate_instrument_start('HarvestMigration->complete');
     // Create resources after the dataset was created.
     // If the creation of the dataset fails resources should not
     // be created. Also, we need the dataset to be created first
@@ -281,6 +277,8 @@ class HarvestMigration extends MigrateDKAN {
 
     // Save dataset.
     node_save($dataset);
+
+    migrate_instrument_stop('HarvestMigration->complete');
   }
 
   /**
@@ -297,6 +295,7 @@ class HarvestMigration extends MigrateDKAN {
    *        Migration row.
    */
   private function createResources(&$dataset, stdClass &$row) {
+    migrate_instrument_start('HarvestMigration->createResources');
     // Delete all resources from dataset if any.
     // All resources will get imported again.
     $field_resources_ids = array();
@@ -330,6 +329,7 @@ class HarvestMigration extends MigrateDKAN {
         }
       }
     }
+    migrate_instrument_stop('HarvestMigration->createResources');
   }
 
   /**
@@ -551,6 +551,8 @@ class HarvestMigration extends MigrateDKAN {
   public function postImport() {
     parent::postImport();
 
+    migrate_instrument_start('HarvestMigration->postImport');
+
     // Check if sourceCount is 0.
     // Show and add an error to the message table.
     if ($this->sourceCount() == 0) {
@@ -564,7 +566,7 @@ class HarvestMigration extends MigrateDKAN {
     // current harvest they are missing from the source as well.
     // Look for those zombie dataset and clean them.
     $zombies = $this->map->lookupMapTable(HarvestMigrateSQLMap::STATUS_FAILED,
-      $this->idListImported, "NOT IN", NULL, NULL);
+      $this->getIdList(), "NOT IN", NULL, NULL);
 
     if (!empty($zombies)) {
       $zombies_sourceids = array();
@@ -623,6 +625,8 @@ class HarvestMigration extends MigrateDKAN {
         ));
       self::displayMessage($message, 'notice');
     }
+
+    migrate_instrument_stop('HarvestMigration->postImport');
   }
 
   /**
@@ -632,22 +636,21 @@ class HarvestMigration extends MigrateDKAN {
    * migrate operation but had the source restored.
    */
   private function postImportRestoredSource() {
+    migrate_instrument_start('HarvestMigration->postImportRestoredSource');
     // Remove HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE flag and publish
     // the datasets (and their related content) that had their source disappear
     // in a previous harvest migrate.
     // Get rows marked with HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE
     // and part of the imported datasets imported.
-    if (is_array($this->idListImported) && !empty($this->idListImported)) {
-      migrate_instrument_start('postImportRestoredSource-SELECTNOSOURCEPROCESSED');
+    if (is_array($this->getIdList()) && !empty($this->getIdList())) {
       $query = $this->map->getConnection()->select($this->map->getMapTable(), 'map')
         ->fields('map')
         ->condition("needs_update", HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE)
         // This will throw an exception if $this->idListImported is empty. We
         // are doing that check before entring this code but if you are
         // refactoring this code make sure to add the relevent checks.
-        ->condition('sourceid1', $this->idListImported, 'IN');
+        ->condition('sourceid1', $this->getIdList(), 'IN');
       $result = $query->execute();
-      migrate_instrument_stop('postImportRestoredSource-SELECTNOSOURCEPROCESSED');
 
       $rowRestoredSourceList = $result->fetchAllAssoc('destid1');
       if (!empty($rowRestoredSourceList)) {
@@ -683,12 +686,10 @@ class HarvestMigration extends MigrateDKAN {
           $dataset_emw->save();
 
           // Update the map table.
-          migrate_instrument_start('postImportRestoredSource-UPDATEPROCESSED');
           $results = $this->map->getConnection()->update($this->map->getMapTable())
             ->fields(array('needs_update' => MigrateMap::STATUS_IMPORTED))
             ->condition('destid1', $dataset_nid)
             ->execute();
-          migrate_instrument_stop('postImportRestoredSource-UPDATEPROCESSED');
 
           $message = t(
             'Dataset "@dataset_title"[@nid] and @related_count related content (Resources, ..) published.',
@@ -702,6 +703,7 @@ class HarvestMigration extends MigrateDKAN {
         }
       }
     }
+    migrate_instrument_stop('HarvestMigration->postImportRestoredSource');
   }
 
   /**
@@ -711,19 +713,18 @@ class HarvestMigration extends MigrateDKAN {
    * but were not processed in this run because the source is not available.
    */
   private function postImportMissingSource() {
+    migrate_instrument_start('HarvestMigration->postImportMissingSource');
     // Get rows NOT marked with HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE
     // and NOT part of the imported datasets imported.
-    migrate_instrument_start('postImportMissingSource-GetNotProcessed');
     $query = $this->map->getConnection()->select($this->map->getMapTable(), 'map')
       ->fields('map')
       ->condition("needs_update", HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE, '<>');
-    if (is_array($this->idListImported) && !empty($this->idListImported)) {
+    if (is_array($this->getIdList()) && !empty($this->getIdList())) {
       foreach ($this->map->getSourceKeyMap() as $key_name) {
-        $query = $query->condition("map.$key_name", $this->idListImported, 'NOT IN');
+        $query = $query->condition("map.$key_name", $this->getIdList(), 'NOT IN');
       }
     }
     $result = $query->execute();
-    migrate_instrument_stop('postImportMissingSource-GetNotProcessed');
 
     $rowNoSourceList = $result->fetchAllAssoc('destid1');
     if (!empty($rowNoSourceList)) {
@@ -767,12 +768,10 @@ class HarvestMigration extends MigrateDKAN {
         $dataset_emw->save();
 
         // Update the map table.
-        migrate_instrument_start('postImportMissingSource-UpdateNoSource');
         $results = $this->map->getConnection()->update($this->map->getMapTable())
           ->fields(array('needs_update' => HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE))
           ->condition('destid1', $nid)
           ->execute();
-        migrate_instrument_stop('postImportMissingSource-UpdateNoSource');
 
         $message = t(
           'Dataset "@dataset_title"[@nid] and @related_count related content (Resources, ..) unpublished.',
@@ -785,6 +784,7 @@ class HarvestMigration extends MigrateDKAN {
         self::displayMessage($message, 'warning');
       }
     }
+    migrate_instrument_stop('HarvestMigration->postImportMissingSource');
   }
 
   /**
@@ -1068,6 +1068,7 @@ class HarvestMigration extends MigrateDKAN {
    *         Resource node object.
    */
   public function createResourceNode($res) {
+    migrate_instrument_start('HarvestMigration->createResourceNode');
     // Creates a new resource for every linked file.
     // Linked files contain title, format, and accessURL.
     $values = array(
@@ -1125,6 +1126,7 @@ class HarvestMigration extends MigrateDKAN {
     }
 
     $resource_emw->save();
+    migrate_instrument_stop('HarvestMigration->createResourceNode');
     return $resource_emw->raw();
   }
 
@@ -1208,6 +1210,13 @@ class HarvestMigration extends MigrateDKAN {
     return $this->logID;
   }
 
+  /**
+   * Return list of source items ids.
+   */
+  public function getIdList() {
+    return $this->source->getIdList();
+  }
+
 }
 
 /**
@@ -1225,7 +1234,7 @@ class XMLHarvestMigration extends HarvestMigration {
     $this->itemUrl = drupal_realpath($this->dkanHarvestSource->getCacheDir()) .
       '/:id.xml';
 
-    $this->source = new MigrateSourceList(
+    $this->source = new HarvestMigrateSourceList(
       new HarvestList($this->dkanHarvestSource->getCacheDir()),
       new MigrateItemXML($this->itemUrl),
       array(),
