@@ -42,4 +42,17 @@ function dkan_workflow_enable() {
 
   //Revert dkan sitewide menu to add links to command center.
   features_revert(array('dkan_sitewide_menu' => array('menu_links')));
+
+  //Assign role supervisor to editor users.
+  $uids = array();
+  $supervisor = user_role_load_by_name("Workflow Supervisor");
+  $site_manager = user_role_load_by_name("site manager");
+  $result = db_query("SELECT uid FROM {users_roles} WHERE rid=:site_manager AND uid NOT IN (SELECT uid FROM {users_roles} WHERE rid=:supervisor)", array(':site_manager' => $site_manager->rid, ':supervisor' => $supervisor->rid));
+
+  if (!empty($result)) {
+    foreach ($result as $user) {
+      $uids[] = $user->uid;
+    }
+    user_multiple_role_edit($uids, 'add_role', $supervisor->rid);
+  }
 }
