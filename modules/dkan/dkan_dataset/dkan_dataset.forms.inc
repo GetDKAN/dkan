@@ -490,7 +490,7 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
   $field_format_langcode = dkan_dataset_form_field_language($form, 'field_format');
 
   // See if file link, api link, or file upload.
-  $link = isset($form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode]) ? $form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_remotefile']['url'] : NULL;
+  $link = isset($form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode]) ? $form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_dkan_remotefile']['url'] : NULL;
   $link_fid = isset($form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode]) ? $form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode][0]['fid'] : NULL;
   $api = isset($form_state['values']['field_link_api']) ? $form_state['values']['field_link_api'][$field_link_api_langcode][0]['url'] : NULL;
   $upload_fid = isset($form_state['values']['field_upload'][$field_upload_langcode][0]['fid']) ? $form_state['values']['field_upload'][$field_upload_langcode][0]['fid'] : NULL;
@@ -635,8 +635,8 @@ function dkan_dataset_resource_form_after_build($form, &$form_state) {
   if (isset($form['field_link_remote_file'])) {
     // Get langcode for field_link_remote_file.
     $field_link_remote_file_langcode = dkan_dataset_form_field_language($form, 'field_link_remote_file');
-    $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_remotefile']['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
-    $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_remotefile']['select']['#suffix'] = '';
+    $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_dkan_remotefile']['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
+    $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_dkan_remotefile']['select']['#suffix'] = '';
   }
   if (isset($form['field_link_api'])) {
     // Get langcode for field_link_api.

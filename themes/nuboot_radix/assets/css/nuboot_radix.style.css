@@ -8591,6 +8591,9 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
   margin: 0 !important;
   position: relative; }
 
+.pane-dkan-sitewide-dkan-sitewide-license .pane-content {
+  word-break: break-word; }
+
 .pane-dkan-sitewide-dkan-sitewide-other-access a.btn, .pane-dkan-sitewide-dkan-sitewide-other-access .media-widget > a,
 #block-dkan-sitewide-dkan-sitewide-other-access a.btn,
 #block-dkan-sitewide-dkan-sitewide-other-access .media-widget > a {
@@ -10551,6 +10554,9 @@ table.group_additional {
   table tr:hover,
   table.group_additional tr:hover {
     background: #FFFEEE; }
+
+.table-responsive {
+  overflow: visible; }
 
 @media screen and (max-width: 1024px) {
   .table-responsive > .table > thead > tr > th,

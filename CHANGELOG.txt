@@ -91,6 +91,7 @@ DKAN Workflow:
  - Updated workbench_email from 3.9 to 3.11
  - Fixed admin menu source when dkan_workflow is enabled
 DKAN Dataset:
+ - Leaflet draw widget usability improvements
  - Fix validation on resource forms when multiple resource type fields are populated
  - Fix 508 compilance issues for leafleat draw widget 
  - Added DKAN Dataset module into DKAN Core.
@@ -119,7 +120,9 @@ DKAN Dataset:
  - Removed warning when a resource is created without title.
  - Add limit to proxy resources.
  - Improved download of remote files.
- 
+ - Add patch to remote_stream_wrapper to fix memory exhausted errors.
+ - Renamed 'filefield_remotefile' as 'filefield_dkan_remotefile'.
+
 7.x-1.12.11 2016-10-20
 --------------------------
 - Fixed a bug in Recline regarding file objects and node forms that caused errors when using the "view changes" button on Dataset or Resource edit form
