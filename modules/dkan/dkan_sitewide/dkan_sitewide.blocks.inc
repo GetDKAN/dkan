@@ -196,8 +196,17 @@ function dkan_sitewide_license_block() {
         return $output;
       }
       elseif ($key) {
-        //Special case when you select other value.
-        return $key;
+        // Harvested datasets may use license urls that do not match
+        // the urls set up in hook_subscribed_values().
+        // Check if the value is a url, if so theme it as a link.
+        $url = parse_url($key);
+        if (isset($url['scheme']) && isset($url['host'])) {
+          $output = l($key, $key);
+          return $output;
+        }
+        else {
+          return $key;
+        }
       }
     }
     return t('License not specified');
