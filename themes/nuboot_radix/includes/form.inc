@@ -27,7 +27,6 @@ function nuboot_radix_form_element($variables) {
   $is_checkbox = FALSE;
   $is_radio = FALSE;
   $is_input_group = FALSE;
-  $is_topic = FALSE;
 
   // This is also used in the installer, pre-database setup.
   $t = get_t();
@@ -91,7 +90,7 @@ function nuboot_radix_form_element($variables) {
         ));
         // Target font-icon-select fields.
         if ($name == 'field-topic-icon') {
-          $is_topic = TRUE;
+          $is_checkbox = FALSE;
         }
       }
     }
@@ -181,7 +180,7 @@ function nuboot_radix_form_element($variables) {
 
     case 'none':
     case 'attribute':
-      if ($is_radio || $is_checkbox && !$is_topic) {
+      if ($is_radio || $is_checkbox) {
         // Ensure checkboxes still wrapped in a label.
         $element['#title_display'] = 'before';
         $output .= ' ' . $prefix . theme('form_element_label', $variables) . $suffix;
