@@ -20,7 +20,8 @@ function nuboot_radix_form_alter(&$form, &$form_state, $form_id) {
 /**
  * Implements theme_form_element().
  *
- * Remove label wrapped around font-icon checkbox input.
+ * Adjust form elements for 508 compliance.
+ * Keep labels from wrapping font-icon checkbox inputs.
  */
 function nuboot_radix_form_element($variables) {
   $element = &$variables['element'];
@@ -88,7 +89,7 @@ function nuboot_radix_form_element($variables) {
           ']' => '',
           'und' => '',
         ));
-        // Target font-icon-select fields.
+        // Skip font-icon-select checkboxes when wrapping labels.
         if ($name == 'field-topic-icon') {
           $is_checkbox = FALSE;
         }
@@ -153,9 +154,7 @@ function nuboot_radix_form_element($variables) {
         // Render the normal invisible label for screen readers.
         $output .= ' ' . theme('form_element_label', $variables);
         // But still ensure checkbox is wrapped in an empty label.
-        $element['#title_display'] = 'before';
-        $element['#title'] = '';
-        $output .= ' ' . $prefix . theme('form_element_label', $variables) . $suffix . "\n";
+        $output .= ' ' . $prefix . $element['#children'] . $suffix . "\n";
       }
       else {
         $output .= ' ' . theme('form_element_label', $variables);
