@@ -91,6 +91,7 @@ function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime)
  *         Modified array.
  */
 function dkan_harvest_datajson_set_value(&$obj, $path, $value, $override = FALSE) {
+  $updated = FALSE;
   $keys = explode('.', $path);
   $branch = &$obj;
 
@@ -105,13 +106,13 @@ function dkan_harvest_datajson_set_value(&$obj, $path, $value, $override = FALSE
     }
   }
 
-  if ($override) {
+  // Update the obj if $override is set or the branch is empty.
+  if ($override || empty($branch)) {
     $branch = $value;
+    $updated = TRUE;
   }
-  else {
-    $branch = empty($branch) ? $value : $branch;
-  }
-  return $obj;
+
+  return $updated;
 }
 
 /**
@@ -233,22 +234,39 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
   // Override field values.
   $overrides = $source->overrides;
   $datasets = array_map(function ($dataset) use ($overrides, &$harvest_cache) {
+    $identifier = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
+    $overridden = FALSE;
+
     foreach ($overrides as $path => $override_value) {
-      dkan_harvest_datajson_set_value($dataset, $path, $override_value[0], TRUE);
+      $overridden = $overridden || dkan_harvest_datajson_set_value($dataset, $path, $override_value[0], TRUE);
     }
+
+    if ($overridden) {
+      $harvest_cache->setCacheEntryOverridden($identifier, $dataset['title']);
+    }
+
     return $dataset;
-  }, $datasets);
+  }, $datasets
+  );
 
   // Set default values for empty fields.
   $defaults = $source->defaults;
   $datasets = array_map(function ($dataset) use ($defaults, &$harvest_cache) {
-    foreach ($defaults as $path => $default_value) {
-      dkan_harvest_datajson_set_value($dataset, $path, $default_value[0]);
-    }
-    return $dataset;
-  }, $datasets);
+    $identifier = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
+    $defaulted = FALSE;
 
-  // TODO add defaults and overriddes?
+    foreach ($defaults as $path => $default_value) {
+      $defaulted = $defaulted || dkan_harvest_datajson_set_value($dataset, $path, $default_value[0]);
+    }
+
+    if ($defaulted) {
+      $harvest_cache->setCacheEntryDefaulted($identifier, $dataset['title']);
+    }
+
+    return $dataset;
+  }, $datasets
+  );
+
   foreach ($datasets as $dataset) {
     $identifier = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
     $dataset_file = implode('/', array($source->getCacheDir(), $identifier));
@@ -261,11 +279,6 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
     else {
       // This will reset the failed flag if previously set.
       $harvest_cache->setCacheEntryProcessed($identifier, $dataset['title']);
-    }
-
-    //If we have a override settings then add flag.
-    if (!empty($overrides)) {
-      $harvest_cache->setCacheEntryOverridden($identifier, $dataset['title']);
     }
   }
 
