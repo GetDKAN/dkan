@@ -20,14 +20,14 @@ function nuboot_radix_form_alter(&$form, &$form_state, $form_id) {
 /**
  * Implements theme_form_element().
  *
- * Remove label wrapped around font-icon checkbox input.
+ * Adjust form elements for 508 compliance.
+ * Keep labels from wrapping font-icon checkbox inputs.
  */
 function nuboot_radix_form_element($variables) {
   $element = &$variables['element'];
   $is_checkbox = FALSE;
   $is_radio = FALSE;
   $is_input_group = FALSE;
-  $is_topic = FALSE;
 
   // This is also used in the installer, pre-database setup.
   $t = get_t();
@@ -89,9 +89,9 @@ function nuboot_radix_form_element($variables) {
           ']' => '',
           'und' => '',
         ));
-        // Target font-icon-select fields.
+        // Skip font-icon-select checkboxes when wrapping labels.
         if ($name == 'field-topic-icon') {
-          $is_topic = TRUE;
+          $is_checkbox = FALSE;
         }
       }
     }
@@ -151,9 +151,9 @@ function nuboot_radix_form_element($variables) {
   switch ($element['#title_display']) {
     case 'invisible':
       if ($is_radio || $is_checkbox) {
-        // render the normal invisible label for screen readers
+        // Render the normal invisible label for screen readers.
         $output .= ' ' . theme('form_element_label', $variables);
-        // but still ensure checkbox is wrapped in an empty label
+        // But still ensure checkbox is wrapped in an empty label.
         $output .= ' ' . $prefix . $element['#children'] . $suffix . "\n";
       }
       else {
@@ -179,7 +179,7 @@ function nuboot_radix_form_element($variables) {
 
     case 'none':
     case 'attribute':
-      if ($is_radio || $is_checkbox && !$is_topic) {
+      if ($is_radio || $is_checkbox) {
         // Ensure checkboxes still wrapped in a label.
         $element['#title_display'] = 'before';
         $output .= ' ' . $prefix . theme('form_element_label', $variables) . $suffix;
@@ -200,6 +200,9 @@ function nuboot_radix_form_element($variables) {
   return $output;
 }
 
+/**
+ * Fix 508 accessibility compliance on tableselect.
+ */
 function nuboot_radix_tableselect($variables) {
   $element = $variables['element'];
   $rows = array();
@@ -236,5 +239,10 @@ function nuboot_radix_tableselect($variables) {
       array_unshift($header, '<span class="element-invisible">Select all rows in this table</span>');
     }
   }
-  return theme('table', array('header' => $header, 'rows' => $rows, 'empty' => $element['#empty'], 'attributes' => $element['#attributes']));
+  return theme('table', array(
+    'header' => $header,
+    'rows' => $rows,
+    'empty' => $element['#empty'],
+    'attributes' => $element['#attributes'],
+  ));
 }

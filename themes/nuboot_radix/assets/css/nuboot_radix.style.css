@@ -9026,7 +9026,7 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
 p.dkan-profile-page-user-name {
   display: inline-block; }
 
-table .checkbox input[type="checkbox"] {
+.table-select-processed .checkbox input[type="checkbox"] {
   margin-left: 0px; }
 
 input[type="submit"],
