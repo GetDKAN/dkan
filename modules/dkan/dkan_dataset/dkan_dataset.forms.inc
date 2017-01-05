@@ -64,6 +64,12 @@ function dkan_dataset_get_group_options() {
  * Implements hook_form_FORM_ID_alter().
  */
 function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'eck__properties__form') {
+    $form['#after_build'][] = 'dkan_dataset_eck_properties_after_build_form';
+  }
+  if ($form_id == 'entity_table_select_visualization_ve_chart') {
+    $form['#after_build'][] = 'dkan_dataset_visualization_after_build_form';
+  }
 
   if ($form_id == 'dataset_node_form') {
 
@@ -391,6 +397,34 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
+ * Process tableselect to pass 508 compliance.
+ */
+function dkan_dataset_eck_properties_after_build_form($form, &$form_state) {
+  $table = $form['new_properties_table'];
+  $children = element_children($table);
+
+  foreach ($children as $key) {
+    $form['new_properties_table'][$key]['#title'] = t('A checkbox for tableselect');
+  }
+
+  return $form;
+}
+
+/**
+ * Process visualization entity table to pass 508 compliance.
+ */
+function dkan_dataset_visualization_after_build_form($form, &$form_state) {
+  $table = $form['entity_table'];
+  $children = element_children($table);
+
+  foreach ($children as $key) {
+    $form['entity_table'][$key]['#title'] = t('A checkbox for tableselect');
+  }
+
+  return $form;
+}
+
+/**
  * Resource node form submit handler.
  */
 function dkan_dataset_resource_form_submit($form, &$form_state) {
@@ -490,7 +524,7 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
   $field_format_langcode = dkan_dataset_form_field_language($form, 'field_format');
 
   // See if file link, api link, or file upload.
-  $link = isset($form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode]) ? $form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_remotefile']['url'] : NULL;
+  $link = isset($form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode]) ? $form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_dkan_remotefile']['url'] : NULL;
   $link_fid = isset($form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode]) ? $form_state['values']['field_link_remote_file'][$field_link_remote_file_langcode][0]['fid'] : NULL;
   $api = isset($form_state['values']['field_link_api']) ? $form_state['values']['field_link_api'][$field_link_api_langcode][0]['url'] : NULL;
   $upload_fid = isset($form_state['values']['field_upload'][$field_upload_langcode][0]['fid']) ? $form_state['values']['field_upload'][$field_upload_langcode][0]['fid'] : NULL;
@@ -635,8 +669,8 @@ function dkan_dataset_resource_form_after_build($form, &$form_state) {
   if (isset($form['field_link_remote_file'])) {
     // Get langcode for field_link_remote_file.
     $field_link_remote_file_langcode = dkan_dataset_form_field_language($form, 'field_link_remote_file');
-    $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_remotefile']['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
-    $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_remotefile']['select']['#suffix'] = '';
+    $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_dkan_remotefile']['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
+    $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_dkan_remotefile']['select']['#suffix'] = '';
   }
   if (isset($form['field_link_api'])) {
     // Get langcode for field_link_api.
