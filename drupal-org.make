@@ -184,7 +184,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
-      branch: master
+      branch: 'master'
   libraries:
     version: '2.3'
   link:
@@ -290,6 +290,8 @@ projects:
       2362487: 'https://www.drupal.org/files/issues/remote_file_source-location-content-dist_1.patch'
   remote_stream_wrapper:
     version: '1.0-rc1'
+    patch:
+      2833837: 'https://www.drupal.org/files/issues/prevent-download-intent-open-stream-2833837-1.patch'
   role_export:
     version: '1.0'
   rules:
@@ -345,7 +347,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0-beta2
+      tag: 7.x-1.0-beta4
     type: module
   workbench:
     version: '1.2'
@@ -391,7 +393,8 @@ libraries:
   spectrum:
     download:
       type: git
-      url: 'https://github.com/bgrins/spectrum.git'
+      url: 'https://github.com/NuCivic/spectrum.git'
+      tag: 1.8.0-civic-4736
     directory_name: bgrins-spectrum
   spyc:
     download:
