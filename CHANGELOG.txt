@@ -120,6 +120,7 @@ DKAN Dataset:
  - Add limit to proxy resources.
  - Improved download of remote files.
  - Add patch to remote_stream_wrapper to fix memory exhausted errors.
+ - Renamed 'filefield_remotefile' as 'filefield_dkan_remotefile'.
 
 7.x-1.12.11 2016-10-20
 --------------------------
