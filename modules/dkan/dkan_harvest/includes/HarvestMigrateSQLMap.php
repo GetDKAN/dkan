@@ -299,7 +299,7 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
    * More generic method to query the map table.
    */
   public function lookupMapTable($needs_update_value = HarvestMigrateSQLMap::STATUS_IMPORTED, $sourceid1_values = array(), $sourceid1_condition = "IN", $destid1_values = array(), $destid1_condition = "IN") {
-    migrate_instrument_stop('lookupMapTable');
+    migrate_instrument_start('HarvestMigrateSQLMap->lookupMapTable');
     $query = $this->connection->select($this->mapTable, 'map');
     $query->fields('map');
 
@@ -317,7 +317,7 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
 
     $result = $query->execute();
     $return = $result->fetchAllAssoc('sourceid1');
-    migrate_instrument_stop('lookupMapTable');
+    migrate_instrument_stop('HarvestMigrateSQLMap->lookupMapTable');
     return $return;
   }
 
