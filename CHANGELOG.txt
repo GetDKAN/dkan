@@ -83,6 +83,7 @@ DKAN Harvest:
  - Fix "Manage Datastore" tab leaking to the harvest source node.
  - Add icons for harvest source tabs.
  - Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
+ - Fix 508 compliance error on admin and node view pages.
  - Removed links to Harvest Source nodes from main menu.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
