@@ -267,7 +267,8 @@ function dkan_topics_form_alter(&$form, &$form_state, $form_id) {
  * If the icon type = font, make the icon field required.
  */
 function dkan_topics_form_validate($form, &$form_state) {
-  if ($form_state['values']['field_icon_type']['und'][0]['value'] == 'font' &&
+  if (isset($form_state['values']['field_icon_type']['und'][0]['value']) &&
+    $form_state['values']['field_icon_type']['und'][0]['value'] == 'font' &&
     !isset($form_state['values']['field_topic_icon']['und'][0]['value'])) {
     form_set_error('field_topic_icon', t('Please select an icon.'));
   }
