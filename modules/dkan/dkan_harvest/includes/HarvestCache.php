@@ -63,8 +63,8 @@ class HarvestCache {
    */
   public function getFailed() {
     return array_filter($this->processed,
-      function ($processed_flag) {
-        return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_FAILED);
+      function ($processed) {
+        return ($processed['flag'] & self::DKAN_HARVEST_CACHE_FAILED);
       });
   }
 
@@ -80,8 +80,8 @@ class HarvestCache {
    */
   public function getFiltered() {
     return array_filter($this->processed,
-      function ($processed_flag) {
-        return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_FILTERED) == self::DKAN_HARVEST_CACHE_FILTERED;
+      function ($processed) {
+        return ($processed['flag'] & self::DKAN_HARVEST_CACHE_FILTERED);
       });
   }
 
@@ -97,8 +97,8 @@ class HarvestCache {
    */
   public function getExcluded() {
     return array_filter($this->processed,
-      function ($processed_flag) {
-        return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_EXCLUDED);
+      function ($processed) {
+        return ($processed['flag'] & self::DKAN_HARVEST_CACHE_EXCLUDED);
       });
   }
 
@@ -114,8 +114,8 @@ class HarvestCache {
    */
   public function getDefaulted() {
     return array_filter($this->getSaved(),
-      function ($processed_flag) {
-        return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_DEFAULTED) == self::DKAN_HARVEST_CACHE_DEFAULTED;
+      function ($processed) {
+        return ($processed['flag'] & self::DKAN_HARVEST_CACHE_DEFAULTED);
       });
   }
 
@@ -131,8 +131,8 @@ class HarvestCache {
    */
   public function getOverridden() {
     return array_filter($this->getSaved(),
-      function ($processed_flag) {
-        return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_OVERRIDDEN) == self::DKAN_HARVEST_CACHE_OVERRIDDEN;
+      function ($processed) {
+        return ($processed['flag'] & self::DKAN_HARVEST_CACHE_OVERRIDDEN);
       });
   }
 
