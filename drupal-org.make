@@ -347,7 +347,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0-beta2
+      tag: 7.x-1.0-beta4
     type: module
   workbench:
     version: '1.2'
@@ -393,7 +393,8 @@ libraries:
   spectrum:
     download:
       type: git
-      url: 'https://github.com/bgrins/spectrum.git'
+      url: 'https://github.com/NuCivic/spectrum.git'
+      tag: 1.8.0-civic-4736
     directory_name: bgrins-spectrum
   spyc:
     download:

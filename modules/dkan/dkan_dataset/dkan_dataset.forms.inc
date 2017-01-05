@@ -64,6 +64,12 @@ function dkan_dataset_get_group_options() {
  * Implements hook_form_FORM_ID_alter().
  */
 function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'eck__properties__form') {
+    $form['#after_build'][] = 'dkan_dataset_eck_properties_after_build_form';
+  }
+  if ($form_id == 'entity_table_select_visualization_ve_chart') {
+    $form['#after_build'][] = 'dkan_dataset_visualization_after_build_form';
+  }
 
   if ($form_id == 'dataset_node_form') {
 
@@ -388,6 +394,34 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     );
     $form['actions']['another']['#submit'] = array('node_form_submit', 'dkan_dataset_resource_form_submit');
   }
+}
+
+/**
+ * Process tableselect to pass 508 compliance.
+ */
+function dkan_dataset_eck_properties_after_build_form($form, &$form_state) {
+  $table = $form['new_properties_table'];
+  $children = element_children($table);
+
+  foreach ($children as $key) {
+    $form['new_properties_table'][$key]['#title'] = t('A checkbox for tableselect');
+  }
+
+  return $form;
+}
+
+/**
+ * Process visualization entity table to pass 508 compliance.
+ */
+function dkan_dataset_visualization_after_build_form($form, &$form_state) {
+  $table = $form['entity_table'];
+  $children = element_children($table);
+
+  foreach ($children as $key) {
+    $form['entity_table'][$key]['#title'] = t('A checkbox for tableselect');
+  }
+
+  return $form;
 }
 
 /**
