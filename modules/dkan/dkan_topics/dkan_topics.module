@@ -237,7 +237,7 @@ function dkan_topics_field_formatter_view($entity_type, $entity, $field, $instan
  */
 function dkan_topics_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id === 'taxonomy_form_term') {
-
+    $form['#validate'][] = 'dkan_topics_form_validate';
     $field_icon_type_langcode = dkan_dataset_form_field_language($form, 'field_icon_type');
 
     // If 'Font Icon Type' is 'Image' then make 'field_image' visible.
@@ -258,5 +258,18 @@ function dkan_topics_form_alter(&$form, &$form_state, $form_id) {
         '[name="field_icon_type[' . $field_icon_type_langcode . ']"]' => array('value' => 'font'),
       ),
     );
+  }
+}
+
+/**
+ * Topic taxonomy term form validation.
+ *
+ * If the icon type = font, make the icon field required.
+ */
+function dkan_topics_form_validate($form, &$form_state) {
+  if (isset($form_state['values']['field_icon_type']['und'][0]['value']) &&
+    $form_state['values']['field_icon_type']['und'][0]['value'] == 'font' &&
+    !isset($form_state['values']['field_topic_icon']['und'][0]['value'])) {
+    form_set_error('field_topic_icon', t('Please select an icon.'));
   }
 }
