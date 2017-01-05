@@ -55,4 +55,67 @@ class FeatureContext extends RawDKANContext
       $this->getSession()->switchToWindow($windowNames[1]);
     }
   }
+
+  /**
+   * @Then the :tag element with id set to :value in the :region( region) exists
+   *
+   * This is a reword of the MarkupContext::assertRegionElementAttribute()
+   * method which only checks for the first matched tag not the matched
+   * attribute. Also added tests for element visibility.
+   */
+  public function assertRegionElementId($tag, $value, $region) {
+    $attribute = 'id';
+
+    $session = $this->getSession();
+    $regionObj = $session->getPage()->find('region', $region);
+    if (!$regionObj) {
+      throw new \Exception(sprintf('No region "%s" found on the page %s.', $region, $session->getCurrentUrl()));
+    }
+
+    $elements = $regionObj->findAll('css', $tag);
+    if (empty($elements)) {
+      throw new \Exception(sprintf('The element "%s" was not found in the "%s" region on the page %s', $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+
+    $found_attr = FALSE;
+    // Loop threw all the matching elements.
+    foreach ($elements as $element) {
+      $attr = $element->getAttribute($attribute);
+      if (!empty($attr)) {
+        $found_attr = TRUE;
+        if (strpos($attr, "$value") !== FALSE) {
+          // Found match.
+          return $element;
+        }
+      }
+    }
+
+    if (!$found_attr) {
+      throw new \Exception(sprintf('The "%s" attribute is not present on the element "%s" in the "%s" region on the page %s', $attribute, $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+    else {
+      throw new \Exception(sprintf('The "%s" attribute does not equal "%s" on the element "%s" in the "%s" region on the page %s', $attribute, $value, $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+  }
+
+  /**
+   * @Then the :tag element with id set to :value in the :region( region) should be visible
+   */
+  public function assertRegionElementIdVisible($tag, $value, $region) {
+    $element = $this->assertRegionElementId($tag, $value, $region);
+    if (!$element->isVisible()) {
+        throw new \Exception(sprintf('The "%s" attribute is not visible on the element "%s" in the "%s" region on the page %s', "id", $value, $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+  }
+
+  /**
+   * @Then the :tag element with id set to :value in the :region( region) should not be visible
+   */
+  public function assertRegionElementIdNotVisible($tag, $value, $region) {
+    $element = $this->assertRegionElementId($tag, $value, $region);
+    if ($element->isVisible()) {
+        throw new \Exception(sprintf('The "%s" attribute is visible on the element "%s" in the "%s" region on the page %s', 'id', $value, $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+  }
+
 }
