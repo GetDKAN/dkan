@@ -84,6 +84,7 @@ DKAN Harvest:
  - Add icons for harvest source tabs.
  - Fixed problem managing flags for show message with information.
  - Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
+ - Fix 508 compliance error on admin and node view pages.
  - Removed links to Harvest Source nodes from main menu.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
@@ -126,6 +127,11 @@ DKAN Dataset:
  - Fix 508 compilance issues for leafleat draw widget 
  - Add patch to remote_stream_wrapper to fix memory exhausted errors.
  - Renamed 'filefield_remotefile' as 'filefield_dkan_remotefile'.
+DKAN Topics:
+ - Added a test for creating a topic term.
+ - Make the icon field required if the icon type is set to 'font'.
+ - Fix topics icon selector functionality.
+
 
 
 7.x-1.12.11 2016-10-20
@@ -135,7 +141,7 @@ DKAN Dataset:
 - Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
 - Update the default jquery library setting from 1.7 to 1.10
 - Fix topics menu and facet links if special characters are used in topic terms.
-- Fix form redirect issues on dataset form validation
+- Fixed dataset form redirect when validation fails, was sending user to node/add/dataset rather than node/%/edit
 - Patch fontyourface to remove <div> from the "standard text" selector, to prevent unpredictable results from this option
 - Fixed issue in open_data_schema_map with "Data Dictionary" field not displaying URL in data.json file
 
