@@ -220,6 +220,21 @@ class HarvestMigration extends MigrateDKAN {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
+
+    // Check the license field.
+    // Convert URI values to license ID values from hook_license_subscribe(),
+    // change the value to match the expected key value.
+    // Clients will need to provide a custom hook_license_subscribe() function if
+    // they are using different urls than dkan: (i.e. opendatacommons.org or
+    // creativecommons.org rather than opendefinition.org)
+    if (isset($row->license) && $row->license != '') {
+      $licenses = dkan_dataset_content_types_license_subscribe();
+      foreach ($licenses as $license_id => $license_data) {
+        if (isset($license_data['uri']) && ($license_data['uri'] === $row->license)) {
+          $row->license = $license_id;
+        }
+      }
+    }
   }
 
   /**
@@ -373,7 +388,7 @@ class HarvestMigration extends MigrateDKAN {
    */
   public static function prepareMetadataSourceHelper($file_uri,
   $title = NULL,
-    $metadata_schema = NULL,
+  $metadata_schema = NULL,
   $metadata_view = NULL,
   $uid = 1) {
 
