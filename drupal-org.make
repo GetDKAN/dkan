@@ -18,7 +18,7 @@ projects:
   autocomplete_deluxe:
     version: '2.1'
     patch:
-      2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-3.patch'
+      2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch'
   beautytips:
     download:
       type: git
