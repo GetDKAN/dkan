@@ -38,6 +38,7 @@
  - Added upgrade hook to remove deprecated test and theme directories.
  - Fixed popular tags view.
  - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
+ - Fixed link to group page on group node teaser when site has clean urls disabled.
  - Added update hook to disable dkan_default_content on upgrades.
  - Updated visualization_entity.
  - Added fix to display the 'Request membership' link only to users that are logged in.
@@ -115,10 +116,12 @@ DKAN Dataset:
  - Fixed text on 'Download All' button to not display HTML.
  - Add patch for workbench_moderation to avoid php shutdown function errors.
  - Removed 'Back to dataset' button on standalone resources.
+ - Better support of downloading remote files from the resource view page "Download" button.
  - Removed warning when a resource is created without title.
+ - Add limit to proxy resources.
  - Improved download of remote files.
- - Fix 508 compilance issues for visualization_entity_charts
- - Fix 508 compilance issues for leafleat draw widget
+ - Fix 508 compilance issues for visualization_entity_charts.
+ - Fix 508 compilance issues for leafleat draw widget.
  - Add patch to remote_stream_wrapper to fix memory exhausted errors.
  - Renamed 'filefield_remotefile' as 'filefield_dkan_remotefile'.
 DKAN Topics:
