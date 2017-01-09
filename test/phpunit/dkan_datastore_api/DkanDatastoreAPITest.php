@@ -321,7 +321,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
         ),
         'limit' => 1000
       );
-      $params[$agg] = 'price';
+      $params[$agg] = array('gold_prices' => 'price');
       $params = _dkan_datastore_api_get_params($params);
       $result = _dkan_datastore_api_query($params);
       $this->assertEquals(floor($result['result']->records[0]->{$agg.'_price'}) , $expect[$agg]);

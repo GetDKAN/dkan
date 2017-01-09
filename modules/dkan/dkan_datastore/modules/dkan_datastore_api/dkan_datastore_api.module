@@ -581,9 +581,8 @@ function dkan_datastore_api_add_index_aggregations(&$data_select, $aggregations,
     $field_name = $alias ? $agg[$alias] : $agg;
     $field_name = normalize_field_name($field_name);
     $field_full = $alias ? $alias . '.' . $field_name : $field_name;
-
     if (!empty($field_name)) {
-      $data_select->addExpression($method . '(' . $field_full . ')', $method . '_' . $field_name);
+      $data_select->addExpression($method . '('. $field_full .')', $method . '_' . $field_name);
     }
   }
 }
@@ -737,7 +736,9 @@ function dkan_datastore_api_resource_build_index_query(&$query, $page, $fields, 
     $page_size = $default_limit;
   }
   $query->range($page, $page_size);
-  $query->fields($alias);
+  foreach (prepare_fields($fields) as $table_alias => $table_fields) {
+    $query->fields($table_alias, $table_fields);
+  }
 }
 
 /**
@@ -767,6 +768,8 @@ function dkan_datastore_api_resource_build_index_list($data_select, $results, $t
       if(!empty($schema_fields[$name])) {
         $new_name = $schema_fields[$name]['label'];
         $new_item->$new_name = $data;
+      } else {
+        $new_item->$name = $data;
       }
     }
     return $new_item;
