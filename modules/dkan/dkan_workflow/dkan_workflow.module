@@ -25,6 +25,73 @@ function dkan_workflow_menu_alter(&$items) {
     $type_url_str = str_replace('_', '-', $type->type);
     unset($items['admin/workbench/create/node/add/' . $type_url_str]);
   }
+  // Move 'My Workbench' link to the command center menu.
+  $items['admin/workbench']['menu_name'] = 'menu-command-center-menu';
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_workflow_menu() {
+  // Add dummy link so administrators can access My Workbench.
+  $items['admin/myworkbench'] = array(
+    'menu_name' => 'management',
+    'title' => 'My Workbench',
+    'description' => 'My Workbench',
+    'page callback' => 'drupal_goto',
+    'page arguments' => array('admin/workbench'),
+    'access arguments' => array('access workbench'),
+    'weight' => -50,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  // Add child links for workbench tasks.
+  $items['admin/workbench/drafts-active'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/drafts-active',
+    'router_path' => 'admin/workbench/drafts-active',
+    'title' => 'My drafts',
+    'description' => 'My drafts',
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 0,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/workbench/needs-review-active'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/needs-review-active',
+    'router_path' => 'admin/workbench/needs-review-active',
+    'title' => 'Needs review',
+    'description' => 'Needs review',
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 1,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/workbench/drafts-stale'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/drafts-stale',
+    'router_path' => 'admin/workbench/drafts-stale',
+    'title' => 'Stale drafts',
+    'description' => 'Stale drafts',
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 2,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/workbench/needs-review-stale'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/needs-review-stale',
+    'router_path' => 'admin/workbench/needs-review-stale',
+    'title' => 'Stale reviews',
+    'description' => 'Stale reviews',
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 3,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
 }
 
 /**
