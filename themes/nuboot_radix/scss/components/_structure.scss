@@ -163,6 +163,9 @@ table.group_additional {
   }
 }
 
+.table-responsive {
+  overflow: visible;
+}
 @media screen and (max-width: 1024px) {
   .table-responsive > .table > thead > tr > th,
   .table-responsive > .table > thead > tr > td,

@@ -64,6 +64,7 @@
  - Upgrade panopoly_images to 1.41
  - Upgrade file_entity to 2.0-beta3
  - Upgrade link_iframe_formatter to 1.1
+ - Switch to forked version of the spectrum library to address accessibility issues.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
@@ -81,6 +82,9 @@ DKAN Harvest:
  - Fixed harvesting of resources with remote files with redirects.
  - Fix "Manage Datastore" tab leaking to the harvest source node.
  - Add icons for harvest source tabs.
+ - Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
+ - Fix 508 compliance error on admin and node view pages.
+ - Removed links to Harvest Source nodes from main menu.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
@@ -89,6 +93,9 @@ DKAN Workflow:
  - Updated workbench_email from 3.9 to 3.11
  - Fixed admin menu source when dkan_workflow is enabled
 DKAN Dataset:
+ - Leaflet draw widget usability improvements
+ - Fix validation on resource forms when multiple resource type fields are populated
+ - Fix 508 compilance issues for leafleat draw widget 
  - Added DKAN Dataset module into DKAN Core.
  - Added default image for groups.
  - Add preview support for resources of many more formats, outside of recline.js. Support added for JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, ZIP
@@ -115,6 +122,16 @@ DKAN Dataset:
  - Removed warning when a resource is created without title.
  - Add limit to proxy resources.
  - Improved download of remote files.
+ - Fix 508 compilance issues for visualization_entity_charts
+ - Fix 508 compilance issues for leafleat draw widget 
+ - Add patch to remote_stream_wrapper to fix memory exhausted errors.
+ - Renamed 'filefield_remotefile' as 'filefield_dkan_remotefile'.
+DKAN Topics:
+ - Added a test for creating a topic term.
+ - Make the icon field required if the icon type is set to 'font'.
+ - Fix topics icon selector functionality.
+
+
 
 7.x-1.12.11 2016-10-20
 --------------------------
@@ -123,7 +140,7 @@ DKAN Dataset:
 - Add "2x" "3x" etc to datset teasers when more than one resource of a particular format present.
 - Update the default jquery library setting from 1.7 to 1.10
 - Fix topics menu and facet links if special characters are used in topic terms.
-- Fix form redirect issues on dataset form validation
+- Fixed dataset form redirect when validation fails, was sending user to node/add/dataset rather than node/%/edit
 - Patch fontyourface to remove <div> from the "standard text" selector, to prevent unpredictable results from this option
 - Fixed issue in open_data_schema_map with "Data Dictionary" field not displaying URL in data.json file
 
