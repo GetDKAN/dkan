@@ -1,5 +1,6 @@
 7.x-1.12.13 2017-01-04
 ----------------------
+- Fix validation on resource forms when multiple resource type fields are populated
 - Fix broken recline (resource CSV) preview embeds caused by how recline module loads bootstrap
 - Fix publisher token in open_data_schema_map_dkan - was showing only URL rather than publisher name
 - Add patch to remote_stream_wrapper to avoid memory exhausted on big files.
