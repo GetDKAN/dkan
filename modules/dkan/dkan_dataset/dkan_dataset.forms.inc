@@ -682,10 +682,12 @@ function dkan_dataset_resource_show_groups_ajax_form($form, $form_state) {
  * After build function for resource and dataset nodes.
  */
 function dkan_dataset_resource_form_after_build($form, &$form_state) {
-  //Add a div tag for show/hide groups field
-  $form['og_group_ref']['#prefix'] = '<div id="edit-og-group-ref-wrapper">';
-  $form['og_group_ref']['#suffix'] = '</div>';
-  $form['og_group_ref'][LANGUAGE_NONE]['#access'] = FALSE;
+  //Add a div tag for show/hide groups field only for resource.
+  if ($form['#node']->type == 'resource') {
+    $form['og_group_ref']['#prefix'] = '<div id="edit-og-group-ref-wrapper">';
+    $form['og_group_ref']['#suffix'] = '</div>';
+    $form['og_group_ref'][LANGUAGE_NONE]['#access'] = FALSE;
+  }
 
   // Hide 'Other' options if strict POD validation is enabled.
   if (isset($form['field_license']) && variable_get('dkan_dataset_form_pod_validation')) {
