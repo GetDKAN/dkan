@@ -130,7 +130,7 @@ DKAN Topics:
  - Added a test for creating a topic term.
  - Make the icon field required if the icon type is set to 'font'.
  - Fix topics icon selector functionality.
-
+ - Fix menu source for dkan workflow roles
 
 
 7.x-1.12.11 2016-10-20

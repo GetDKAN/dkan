@@ -160,3 +160,13 @@ function dkan_update_7005() {
   ->condition ('name', 'dkan_default_content')
   ->execute();
 }
+
+/**
+ * Point source menu to the command menu center in
+ * dkan workflow roles.
+ */
+function dkan_update_7006() {
+  if (module_exists('dkan_workflow')) {
+    dkan_workflow_admin_menu_source();
+  }
+}
