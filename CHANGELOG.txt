@@ -1,3 +1,7 @@
+7.x-1.12.14
+-----------
+- Fix menu source for dkan workflow roles
+
 7.x-1.12.13 2017-01-04
 ----------------------
 - Fix validation on resource forms when multiple resource type fields are populated
