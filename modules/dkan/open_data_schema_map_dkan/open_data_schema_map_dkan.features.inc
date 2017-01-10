@@ -1374,7 +1374,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'array',
       ),
       'publisher' => array(
-        'value' => '[node:og_group_ref:0]',
+        'value' => '[node:og_group_ref]',
         'type' => 'string',
       ),
       'references' => array(
@@ -1552,7 +1552,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'name' => array(
-          'value' => '[node:og_group_ref:0]',
+          'value' => '[node:og_group_ref]',
           'type' => '',
         ),
         'subOrganizationOf' => array(

@@ -39,4 +39,7 @@ function dkan_workflow_enable() {
   dkan_workflow_revert_views();
 
   variable_set('dkan_workflow_content_types', $dkan_workflow_content_types);
+
+  //Revert dkan sitewide menu to add links to command center.
+  features_revert(array('dkan_sitewide_menu' => array('menu_links')));
 }

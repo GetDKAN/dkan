@@ -69,6 +69,7 @@ function theme_dkan_harvest_source_summary(&$vars) {
         '#attributes' => array(
           'id' => 'harvest_source_summary_uri',
           'class' => array('form-control'),
+          'aria-label' => t('Source summary url'),
           'value' => $wrapper->field_dkan_harvest_source_uri->value(),
         ),
         '#autocomplete_path' => FALSE,
@@ -651,9 +652,11 @@ function dkan_harvest_cache_sources(array $sources, $harvest_updatetime = NULL) 
  */
 function dkan_harvest_cache_default(HarvestSource $source, $harvest_updatetime) {
   $harvest_cache = new HarvestCache($source, $harvest_updatetime);
+  // Make sure the cache directory is cleared for all cases.
+  $cache_dir = $source->getCacheDir(TRUE);
 
   if ($source->isRemote()) {
-    $destination = system_retrieve_file($source->uri, $source->getCacheDir(TRUE),
+    $destination = system_retrieve_file($source->uri, $cache_dir,
       FALSE,
       FILE_EXISTS_REPLACE);
     if (!$destination) {
@@ -677,7 +680,7 @@ function dkan_harvest_cache_default(HarvestSource $source, $harvest_updatetime) 
     }
 
     foreach ($files as $file_path) {
-      $copied = file_unmanaged_copy($file_path, $source->getCacheDir() . '/' .
+      $copied = file_unmanaged_copy($file_path, $cache_dir . '/' .
         basename($file_path), FILE_EXISTS_ERROR);
 
       if (!$copied) {
