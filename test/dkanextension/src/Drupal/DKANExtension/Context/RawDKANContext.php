@@ -10,6 +10,8 @@ use Drupal\DKANExtension\ServiceContainer\EntityStore;
 use Drupal\DKANExtension\ServiceContainer\PageStore;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
+use Behat\Testwork\Hook\Scope\AfterSuiteScope;
 use EntityFieldQuery;
 
 /**
@@ -64,6 +66,21 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
 
   public function getPageStore() {
     return $this->pageStore;
+  }
+
+  /**
+   * @BeforeSuite
+   */
+  public static function disableAdminMenuCache(BeforeSuiteScope $scope) {
+    // Turn off cache so the menu lives in the html.
+    variable_set('admin_menu_cache_client', FALSE);
+  }
+
+  /**
+   * @AfterSuite
+   */
+  public static function enableAdminMenuCache(AfterSuiteScope $scope) {
+    variable_set('admin_menu_cache_client', TRUE);
   }
 
   /**
