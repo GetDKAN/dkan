@@ -69,6 +69,7 @@
  - Removed eva module.
  - Fixed CSV column validation on visualization entity.
  - Fixed retrieve of version information on chroma.js.
+ - Update leaflet libratio to v1.0.2 and leaflet markercluster to v1.0.0
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
