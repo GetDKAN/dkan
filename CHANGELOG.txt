@@ -66,6 +66,7 @@
  - Assign workflow supervisor role to site manager users when dkan workflow is enabled.
  - Switch to forked version of the spectrum library to address accessibility issues.
  - Removed eva module.
+ - Update leaflet libratio to v1.0.2 and leaflet markercluster to v1.0.0
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
