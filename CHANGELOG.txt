@@ -38,7 +38,6 @@
  - Added upgrade hook to remove deprecated test and theme directories.
  - Fixed popular tags view.
  - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
- - Update ctools to 1.11
  - Fixed link to group page on group node teaser when site has clean urls disabled
  - Added update hook to disable dkan_default_content on upgrades.
  - Updated visualization_entity.
@@ -65,6 +64,7 @@
  - Upgrade file_entity to 2.0-beta3
  - Upgrade link_iframe_formatter to 1.1
  - Switch to forked version of the spectrum library to address accessibility issues.
+ - Removed eva module.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
