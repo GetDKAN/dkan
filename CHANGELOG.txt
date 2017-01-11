@@ -85,7 +85,7 @@ DKAN Harvest:
  - Add icons for harvest source tabs.
  - Fixed the dataset count displayed on the harvest preview message.
  - Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
- - Fix 508 compliance error on admin and node view pages.
+ - Fix 508 compliance errors on admin and node view pages.
  - Removed links to Harvest Source nodes from main menu.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
