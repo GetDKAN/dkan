@@ -34,9 +34,9 @@ projects:
   bueditor_plus:
     version: '1.4'
   chosen:
-    version: '2.0-beta5'
+    version: '2.0'
     patch:
-      2834096: 'https://www.drupal.org/files/issues/chosen-accesibility_problem_with_input.patch'
+      2834096: 'https://www.drupal.org/files/issues/chosen-accesibility_problem_with_input-0.patch'
   colorizer:
     version: '1.10'
     patch:
@@ -78,8 +78,6 @@ projects:
     version: '1.2'
   entityreference_filter:
     version: '1.7'
-  eva:
-    version: '1.2'
   facetapi:
     version: '1.5'
     patch:
@@ -347,7 +345,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0-beta2
+      tag: 7.x-1.0-beta4
     type: module
   workbench:
     version: '1.2'
@@ -393,7 +391,8 @@ libraries:
   spectrum:
     download:
       type: git
-      url: 'https://github.com/bgrins/spectrum.git'
+      url: 'https://github.com/NuCivic/spectrum.git'
+      tag: 1.8.0-civic-4736
     directory_name: bgrins-spectrum
   spyc:
     download:

@@ -34,7 +34,6 @@ dependencies[] = diff
 dependencies[] = date
 dependencies[] = double_field
 dependencies[] = entity
-dependencies[] = eva
 dependencies[] = entity_token
 dependencies[] = entityreference
 dependencies[] = feeds
