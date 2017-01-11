@@ -38,7 +38,6 @@
  - Added upgrade hook to remove deprecated test and theme directories.
  - Fixed popular tags view.
  - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
- - Update ctools to 1.11
  - Fixed link to group page on group node teaser when site has clean urls disabled
  - Added update hook to disable dkan_default_content on upgrades.
  - Updated visualization_entity.
@@ -64,7 +63,9 @@
  - Upgrade panopoly_images to 1.41
  - Upgrade file_entity to 2.0-beta3
  - Upgrade link_iframe_formatter to 1.1
+ - Assign workflow supervisor role to site manager users when dkan workflow is enabled.
  - Switch to forked version of the spectrum library to address accessibility issues.
+ - Removed eva module.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
@@ -82,6 +83,7 @@ DKAN Harvest:
  - Fixed harvesting of resources with remote files with redirects.
  - Fix "Manage Datastore" tab leaking to the harvest source node.
  - Add icons for harvest source tabs.
+ - Fixed the dataset count displayed on the harvest preview message.
  - Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
  - Fix 508 compliance error on admin and node view pages.
  - Removed links to Harvest Source nodes from main menu.

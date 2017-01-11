@@ -12,6 +12,7 @@
             <file>dkan_harvest/DkanHarvestDataJsonTest.php</file>
             <file>dkan_harvest/DkanHarvestSourcesTest.php</file>
             <file>dkan_harvest/DkanHarvestTest.php</file>
+            <file>dkan_harvest/HarvestCacheTest.php</file>
 <!--             <file>dkan_harvest/HarvestSourceTest.php</file>
             <file>dkan_harvest/HarvestSourceTypeTest.php</file> -->
         </testsuite>
