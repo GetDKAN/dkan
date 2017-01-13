@@ -12,7 +12,11 @@ include_once __DIR__ . '/includes/HarvestSourceTestStub.php';
  */
 class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
 
-  // dkan_harvest_test status.
+  /**
+   * Status of dkan_harvest_test.
+   *
+   * @var dkanHarvestTestBeforClassStatus
+   */
   public static $dkanHarvestTestBeforClassStatus = TRUE;
 
   /**
@@ -33,6 +37,8 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test Null machine name exception.
+   *
    * @expectedException Exception
    * @expectedExceptionMessage machine name is required!
    */
@@ -41,6 +47,8 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test empty harvest source machine name exception.
+   *
    * @expectedException Exception
    * @expectedExceptionMessage machine name is required!
    */
@@ -118,16 +126,6 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
 
     $cache_dir = $source_remote->getCacheDir(TRUE);
     $this->assertEquals($cache_dir, $source_remote_cachedir_path);
-  }
-
-  /**
-   *
-   */
-  public function testGetHarvestSourceFromNode() {
-    // Stop here and mark this test as incomplete.
-    $this->markTestIncomplete(
-      'This test has not been implemented yet.'
-    );
   }
 
   /**
