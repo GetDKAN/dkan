@@ -1,7 +1,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta2/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
@@ -18,7 +18,7 @@ projects:
   autocomplete_deluxe:
     version: '2.1'
     patch:
-      2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-3.patch'
+      2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch'
   beautytips:
     download:
       type: git
@@ -78,8 +78,6 @@ projects:
     version: '1.2'
   entityreference_filter:
     version: '1.7'
-  eva:
-    version: '1.2'
   facetapi:
     version: '1.5'
     patch:
@@ -347,7 +345,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0-beta4
+      tag: 7.x-1.0
     type: module
   workbench:
     version: '1.2'

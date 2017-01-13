@@ -618,7 +618,7 @@ function dkan_harvest_cache_sources(array $sources, $harvest_updatetime = NULL) 
       dkan_harvest_log($message, 'error');
     }
     else {
-      $message = t('Harvest Cache for @source_machine_name completed (processed @cache_processed, failed @cache_failed, saved @cache_saved (filtered @cache_filtered, excluded @cache_excluded), defaulted @cache_defaulted, overridden @cache_overridden).',
+      $message = t('Harvest Cache for @source_machine_name completed (processed @cache_processed, failed @cache_failed, saved @cache_saved : (filtered @cache_filtered, excluded @cache_excluded, defaulted @cache_defaulted, overridden @cache_overridden)).',
         array(
           '@source_machine_name' => $source->machineName,
           '@cache_processed' => $harvest_cache->getProcessedCount(),
