@@ -43,28 +43,14 @@ function dkan_harvest_dashboard_menu() {
  * Dataset list page callback.
  */
 function dkan_harvest_dashboard_sources_page() {
-  $header = dkan_harvest_dashboard_header();
-  $content = views_embed_view('dkan_harvest_dashboard', 'harvest_sources');
-  return $header . $content;
+  return views_embed_view('dkan_harvest_dashboard', 'harvest_sources');
 }
 
 /**
  * Sources list page callback.
  */
 function dkan_harvest_dashboard_datasets_page() {
-  $header = dkan_harvest_dashboard_header();
-  $content = views_embed_view('dkan_harvest_datasets', 'harvest_datasets');
-  return $header . $content;
-}
-
-/**
- * Builds the header for all the Harvest Dashboard pages.
- */
-function dkan_harvest_dashboard_header() {
-  // Prepare header.
-  $output = l(t('Add Source'), 'node/add/harvest-source',
-    array('attributes' => array('class' => 'btn btn-primary btn-add-source')));
-  return $output;
+  return views_embed_view('dkan_harvest_datasets', 'harvest_datasets');
 }
 
 /**
@@ -81,6 +67,23 @@ function dkan_harvest_dashboard_form_alter(&$form, $form_state, $form_id) {
     $form['created']['max']['#attributes']['placeholder'] = t('To');
     $form['changed']['min']['#attributes']['placeholder'] = t('From');
     $form['changed']['max']['#attributes']['placeholder'] = t('To');
+  }
+  switch ($form_id) {
+    // Display an 'Add Source' button on the harvest sources and dataset pages.
+    // The button should not display on the confirmation 'pages'.
+    case 'views_form_dkan_harvest_dashboard_harvest_sources':
+    case 'views_form_dkan_harvest_datasets_harvest_datasets':
+      if (isset($form_state['step']) && $form_state['step'] == 'views_form_views_form') {
+        $form['header'] = array(
+          '#type' => 'item',
+          '#title' => '',
+          '#markup' => l(t('Add Source'), 'node/add/harvest-source',
+          array('attributes' => array('class' => 'btn btn-primary btn-add-source'))),
+          '#weight' => -50,
+        );
+      }
+      break;
+
   }
 }
 
