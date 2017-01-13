@@ -140,12 +140,6 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
    * {@inheritdoc}
    */
   public static function tearDownAfterClass() {
-    // Assuming the test module enabled by now. Restore original status of the
-    // modules.
-    if (!self::$dkanHarvestTestBeforClassStatus) {
-      module_disable(array('dkan_harvest_test'));
-    }
-
     // Clean up after the testHarvestSourceConstruct test.
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node')
@@ -154,6 +148,12 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
     $result = $query->execute();
     if ($result && isset($result['node'])) {
       node_delete_multiple(array_keys($result['node']));
+    }
+
+    // Assuming the test module enabled by now. Restore original status of the
+    // modules.
+    if (!self::$dkanHarvestTestBeforClassStatus) {
+      module_disable(array('dkan_harvest_test'));
     }
   }
 
