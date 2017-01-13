@@ -91,6 +91,7 @@ DKAN Harvest:
  - Fix 508 compliance errors on admin and node view pages.
  - Removed links to Harvest Source nodes from main menu.
  - Prevent harvest source machine name from containing forward slash character.
+ - Improved PHP Unit tests.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
