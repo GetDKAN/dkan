@@ -30,7 +30,7 @@ Feature: Dkan Harvest
     Then I should see the text "Create Harvest Source"
     And I fill in "Title" with "Harvest test 01/17"
     And I wait for "2" seconds
-    Then I should see "harvest_test_01_17
+    Then I should see "harvest_test_01_17"
 
   @api
   Scenario Outline: As a user I should not be able to add a harvest source.
