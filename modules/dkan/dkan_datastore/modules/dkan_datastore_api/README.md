@@ -1,10 +1,10 @@
 DKAN offers a Datastore API as a custom endpoint for the Drupal Services module.
 
-This API is designed to be as compatible as possible with the CKAN Datastore API: http://ckan.readthedocs.org/en/latest/maintaining/datastore.html
+This API is designed to be as compatible as possible with the [CKAN Datastore API] (http://ckan.readthedocs.org/en/latest/maintaining/datastore.html).
 
 ## Parameters
 
--   **resource_id** (*mixed*) – id (string) or ids (array) of the resource to be searched against.
+-   **resource_id** (*mixed*) – id (string) or ids (array) of the resource(s) to be searched against.
 -   **filters** (*mixed*) – array or string of matching conditions to select
 -   **q** (_string_) – full text query
 -   **offset** (*int*) – offset this number of rows
@@ -15,6 +15,7 @@ This API is designed to be as compatible as possible with the CKAN Datastore API
 -   **group_by** (*array*) – array of fields to group by
 
 ## Aggregation functions
+
 - **sum** (*string*) – field to compute the sum
 - **avg** (*string*) – field to compute the average
 - **min** (*string*) – field to compute the maximum
@@ -24,38 +25,35 @@ This API is designed to be as compatible as possible with the CKAN Datastore API
 
 
 ## URL format
-Params passed through URL shares a common shape:
+
+Parameters passed through URL share a common shape:
 
 ```
 param_name<resource_alias>[field*name]=value,value1
 ```
+
 - **param_name**: the param you are using (e.g. offset)
 - **resource_alias(optional)**: an alias to reference an specific resource in further params.
 - **field_name(optional)**: a field name used by the param name.
 - **value**: a list of values divided by commas
 
-Notice resources and fields are optional and depends on what you want to query. For example if you need to limit the number of records then you need to use the limit parameter. However it doesn't make sense to specify an alias or a field in such case. You only need to provide the number of records you need to retrieve:
+Note that `resource_alias` and `field_name` arguments are optional and depend on what you want to query. For example, if you need to limit the number of records, you need to use the limit parameter. However, it doesn't make sense to specify an alias or a field in such a case. You only need to provide the number of records you need to retrieve:
 
 ```
 ...&limit=5
 ```
 
-
-
-However there is one exception: 
-
-Even when the sort param share the previous declared shape it also accepts an alternative format:
+There is one exception: Even when the `sort` parameter shares the above syntax, it also accepts an alternative format:
 
 ```
 ...&sort=field1,field2 desc 
 ```
 
-
 ## Multiple queries
 
-Sometimes you want to do mutiple queries in one request (e.g. feed a data dashboard). If that your case you can post a json object to http://EXAMPLE.COM/api/action/datastore/search.json with all the queries to perform. 
+Sometimes you want to do mutiple datastore queries in one network request (e.g., to feed a data dashboard). In that case you can post a JSON object to http://EXAMPLE.COM/api/action/datastore/search.json with all the queries to perform. 
 
-Request body should have a shape similar to this:
+The request body should have a format similar to this:
 
 ### Request body
 
@@ -151,7 +149,7 @@ Request body should have a shape similar to this:
 ```
 
 ## Response formats
-Requests can be sent over HTTP. Data can be returned as JSON, XML, or JSONP. To retrieve data in a different format search extension in the url. 
+Requests can be sent over HTTP. Data can be returned as JSON, XML, or JSONP. To retrieve data in a different format, change the extension in the url. 
 
 **Instead of using this:**
 
@@ -170,11 +168,13 @@ http://EXAMPLE.COM/api/action/datastore/search.jsonp
 ```
 
 ## Limitations
-- The **q** param doesn't work in combination with the join param.
-- Filters doesn't work with float (decimals) values 
+
+- The `q` parameter doesn't work in combination with the `join` parameter.
+- Filters don't work with float (decimals) values 
 
 ## Examples
-The following is a simple example with two resources that contain 4 records each. Please note that the resource_id would be a UUID not single digit number in real scenario.
+
+The following is a simple example with two resources that contain four records each. Please note that the resource `id` would be a UUID not single digit number in real scenario.
 
 **Resource: 1**
 ```
@@ -201,7 +201,7 @@ The following is a simple example with two resources that contain 4 records each
 ```
 
 
-**Simple query example:**
+### Simple query example
 
 ```
 http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters<country>=AR,US&fields=country,population,timestamp&sort[country]=asc
@@ -209,17 +209,18 @@ http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22
 
 Returns the country, population, and timestamp fields for US and AR from dataset 1 sorting by the country in ascending order.
 
-**Text Search**
-Paths with the 'query' argument will search the listed fields within the dataset.
+### Text Search
 
+Requests with the 'query' argument will search the listed fields within the dataset.
 
 ```
 http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&&fields=country,population&query=US
 ```
 
-Will return the country and population from US
+This will return the country and population from US.
 
-**Joining**
+### Joining
+
 If you wish to query multiple tables, indicate the table as an array key in the following fields:
 
 ```
