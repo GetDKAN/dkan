@@ -91,6 +91,7 @@ DKAN Harvest:
  - Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
  - Fix 508 compliance errors on admin and node view pages.
  - Removed links to Harvest Source nodes from main menu.
+ - Improved PHP Unit tests.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
