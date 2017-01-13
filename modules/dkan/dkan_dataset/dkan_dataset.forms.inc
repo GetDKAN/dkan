@@ -308,10 +308,18 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
       $form['feeds']['#access'] = FALSE;
     }
 
+    //Use ajax method to show groups form when you select none on dataset
+    $field_dataset_ref_langcode = dkan_dataset_form_field_language($form, 'field_dataset_ref');
+    $form['field_dataset_ref'][$field_dataset_ref_langcode]['#ajax'] = array(
+      'callback' => 'dkan_dataset_resource_show_groups_ajax_form',
+      'wrapper' => 'edit-og-group-ref-wrapper',
+      'method' => 'replace',
+      'effect' => 'fade',
+    );
+
+    $form['og_group_ref']['#access'] = FALSE;
     $form['#after_build']['dkan_dataset'] = 'dkan_dataset_resource_form_after_build';
 
-    // Get langcode for field_dataset_ref.
-    $field_dataset_ref_langcode = dkan_dataset_form_field_language($form, 'field_dataset_ref');
     $form['field_dataset_ref'][$field_dataset_ref_langcode]['#description'] = t('Dataset that this resource is attached to.');
     $dataset_options = $form['field_dataset_ref'][$field_dataset_ref_langcode]['#options'];
     $fix_apostrophes = function ($value) {
@@ -345,10 +353,6 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     $form['field_link_api'][$field_link_api_langcode][0]['#title'] = '';
     $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['#title'] = '';
-
-    // Resources inherit groups from parent dataset.
-    // Hide field so users cannot manually modify that information.
-    $form['og_group_ref']['#access'] = FALSE;
 
     if ($query = drupal_get_query_parameters()) {
       if (isset($query['dataset'])) {
@@ -657,10 +661,46 @@ function dkan_dataset_recline_format_alter(&$format, $entity) {
   }
 }
 
+
+/**
+ * Ajax call to show or hide groups field.
+ */
+function dkan_dataset_resource_show_groups_ajax_form($form, $form_state) {
+
+  $field_dataset_ref_langcode = dkan_dataset_form_field_language($form, 'field_dataset_ref');
+  if (!empty($form_state['values']['field_dataset_ref'][$field_dataset_ref_langcode][0]['target_id'])) {
+    return array(
+      '#markup' => '<div id="edit-og-group-ref-wrapper"></div>',
+    );
+  }
+  else {
+    $field_og_group_ref_langcode = dkan_dataset_form_field_language($form, 'og_group_ref');
+    $form['og_group_ref']['#prefix'] = '<div id="edit-og-group-ref-wrapper">';
+    $form['og_group_ref']['#suffix'] = '</div>';
+    $form['og_group_ref']['#access'] = TRUE;
+    $form['og_group_ref'][$field_og_group_ref_langcode]['#access'] = TRUE;
+    $form['og_group_ref'][$field_og_group_ref_langcode][0]['#access'] = TRUE;
+    $form['og_group_ref'][$field_og_group_ref_langcode][0]['#access'] = TRUE;
+    $form['og_group_ref'][$field_og_group_ref_langcode][0]['default']['#access'] = TRUE;
+    $form['og_group_ref'][$field_og_group_ref_langcode][0]['admin']['#access'] = TRUE;
+    $form['og_group_ref'][$field_og_group_ref_langcode][0]['admin'][0]['#access'] = TRUE;
+    $form['og_group_ref'][$field_og_group_ref_langcode][0]['admin'][0]['target_id']['#access'] = TRUE;
+  }
+
+  return $form['og_group_ref'];
+}
+
 /**
  * After build function for resource and dataset nodes.
  */
 function dkan_dataset_resource_form_after_build($form, &$form_state) {
+  //Add a div tag for show/hide groups field only for resource.
+  if ($form['#node']->type == 'resource') {
+    $form['#validate'] = array_diff($form['#validate'], array('og_form_group_reference_validate'));
+    $form['og_group_ref_container']['#markup'] = '<div id="edit-og-group-ref-wrapper"></div>';
+    $form['og_group_ref_container']['#weight'] = $form['og_group_ref']['#weight'];
+  }
+
   // Hide 'Other' options if strict POD validation is enabled.
   if (isset($form['field_license']) && variable_get('dkan_dataset_form_pod_validation')) {
     unset($form['field_license']['und']['select']['#options']['select_or_other']);
