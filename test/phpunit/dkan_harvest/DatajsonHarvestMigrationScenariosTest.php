@@ -486,6 +486,32 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test remote file support for URLs without scheme.
+   *
+   * Ticket: https://jira.govdelivery.com/browse/CIVIC-5161
+   */
+  public function testResourceSchemeless() {
+    // Harvest a source that have resources without scheme.
+    dkan_harvest_cache_sources(array(self::getResourceSchemeless()));
+    dkan_harvest_migrate_sources(array(self::getResourceSchemeless()));
+
+    // Get imported dataset.
+    $dataset_nids = $this->getTestDatasetNid(self::getResourceSchemeless());
+    $dataset_node = entity_metadata_wrapper('node', array_pop($dataset_nids));
+
+    // One resource should exists.
+    $this->assertEquals(count($dataset_node->field_resources), 1);
+
+    $migration = dkan_harvest_get_migration(self::getResourceSchemeless());
+    $migrationMap = $this->getMapTableFromMigration($migration);
+    $migrationLog = $this->getLogTableFromMigration($migration);
+    $migrationMessage = $this->getMessageTableFromMigration($migration);
+
+    // No error should be recorded.
+    $this->assertEmpty($migrationMessage);
+  }
+
+  /**
    * Check Error logging for the harvest.
    *
    * Ticket: https://jira.govdelivery.com/browse/CIVIC-4498
@@ -550,32 +576,6 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
 
       $this->assertContains("Cannot get taxonomy csv (format vocabulary).", $messages);
     }
-  }
-
-  /**
-   * Test remote file support for URLs without scheme.
-   *
-   * Ticket: https://jira.govdelivery.com/browse/CIVIC-5161
-   */
-  public function testResourceSchemeless() {
-    // Harvest a source that have resources without scheme.
-    dkan_harvest_cache_sources(array(self::getResourceSchemeless()));
-    dkan_harvest_migrate_sources(array(self::getResourceSchemeless()));
-
-    // Get imported dataset.
-    $dataset_nids = $this->getTestDatasetNid(self::getResourceSchemeless());
-    $dataset_node = entity_metadata_wrapper('node', array_pop($dataset_nids));
-
-    // One resource should exists.
-    $this->assertEquals(count($dataset_node->field_resources), 1);
-
-    $migration = dkan_harvest_get_migration(self::getResourceSchemeless());
-    $migrationMap = $this->getMapTableFromMigration($migration);
-    $migrationLog = $this->getLogTableFromMigration($migration);
-    $migrationMessage = $this->getMessageTableFromMigration($migration);
-
-    // No error should be recorded.
-    $this->assertEmpty($migrationMessage);
   }
 
   /**
