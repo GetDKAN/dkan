@@ -285,6 +285,7 @@ Feature: Dkan Harvest
     And I fill in "edit-created-min" with "06/01/2016"
     And I fill in "edit-created-max" with "06/30/2016"
     And I press "Apply"
+    And I wait for "3" seconds
     Then I should see "Florida Bike Lanes Harvest"
     And I should see a table with a class name "views-table"
     Then the table with the class name "views-table" should have 1 rows

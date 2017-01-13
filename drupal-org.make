@@ -117,6 +117,7 @@ projects:
     version: '1.5'
     patch:
       2042681: 'http://drupal.org/files/issues/field-group-show-ajax-2042681-8.patch'
+      2831815: 'https://www.drupal.org/files/issues/hash-location-sanitization.diff'
   field_group_table:
     download:
       type: git

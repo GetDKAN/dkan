@@ -134,6 +134,7 @@ DKAN Dataset:
  - Add patch to remote_stream_wrapper to fix memory exhausted errors.
  - Renamed 'filefield_remotefile' as 'filefield_dkan_remotefile'.
  - Added posibility to correct/change groups on standalone resources.
+ - Add patch to field_group to avoid DOM-based cross-site scripting vulnerabilities.
 DKAN Topics:
  - Added a test for creating a topic term.
  - Make the icon field required if the icon type is set to 'font'.
