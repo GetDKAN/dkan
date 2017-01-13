@@ -15,6 +15,7 @@
             <file>dkan_harvest/DkanHarvestTest.php</file>
             <file>dkan_harvest/HarvestSourceTest.php</file>
             <file>dkan_harvest/HarvestSourceTypeTest.php</file>
+            <file>dkan_harvest/HarvestCacheTest.php</file>
         </testsuite>
         <testsuite name="DKAN Workflow Test Suite">
             <!--<file>dkan_workflow/DkanWorkflowEmailTransition.php</file>
