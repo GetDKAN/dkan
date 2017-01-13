@@ -495,7 +495,6 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    * drops some taxonomies which will make following tests fail.
    */
   public function testHarvestError() {
-    return;
     // Delete the format vocabulary.
     $vocab_format = taxonomy_vocabulary_machine_name_load('format');
     if ($vocab_format) {
@@ -554,12 +553,12 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test remote file support for files without scheme.
+   * Test remote file support for URLs without scheme.
    *
-   * Ticket: https://jira.govdelivery.com/browse/CIVIC-4501
+   * Ticket: https://jira.govdelivery.com/browse/CIVIC-5161
    */
   public function testResourceSchemeless() {
-    // Harvest a source that have resources behind redirects.
+    // Harvest a source that have resources without scheme.
     dkan_harvest_cache_sources(array(self::getResourceSchemeless()));
     dkan_harvest_migrate_sources(array(self::getResourceSchemeless()));
 
