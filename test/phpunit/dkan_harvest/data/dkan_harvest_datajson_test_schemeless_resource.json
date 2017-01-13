@@ -16,7 +16,7 @@
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "downloadURL": "https://s3.amazonaws.com/dkan-default-content-files/files/albo.xls",
+          "downloadURL": "s3.amazonaws.com/dkan-default-content-files/files/albo.xls",
           "mediaType": "application/xml",
           "format": "xml",
           "description": "<p>This data, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire compared to the percentage of the workforce who actually retired.</p> ",
