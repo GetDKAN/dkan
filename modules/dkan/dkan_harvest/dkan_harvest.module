@@ -504,18 +504,23 @@ function dkan_harvest_sources_definition() {
 /**
  * Returns harvest source types added via the "harvest_source_types" hook.
  *
- * Those entries are cache via using drupal_static and the 'cache' bin.
+ * The source type entries are cached using drupal_static under the 'cache' bin.
  *
  * @return array
  *         An of HarvestSourceType objects.
  */
 function dkan_harvest_source_types_definition() {
+  // Check if a previous call during the same request did the work for us.
   $source_types_definition = &drupal_static(__FUNCTION__);
+
   if (!isset($source_types_definition)) {
-    if ($cache = cache_get('dkan_harvest_source_types_definition')) {
+    // Nothing found in the static store. Check the cache.
+    if ($cache = cache_get(__FUNCTION__)) {
       $source_types_definition = $cache->data;
     }
     else {
+      // Alright, nothing in the caching we can use. Query the system for source
+      // type definitions.
       $source_types_definition = array();
       $hook = 'harvest_source_types';
       foreach (module_implements($hook) as $module) {
@@ -544,7 +549,7 @@ function dkan_harvest_source_types_definition() {
       }
       // Populate $source_types_definition with the correct stuff. Set to
       // CACHE_TEMPORARY to clear it in the next general cache wipe.
-      cache_set('dkan_harvest_source_types_definition', $source_types_definition, 'cache', CACHE_TEMPORARY);
+      cache_set(__FUNCTION__, $source_types_definition, 'cache', CACHE_TEMPORARY);
     }
   }
 
@@ -618,7 +623,7 @@ function dkan_harvest_cache_sources(array $sources, $harvest_updatetime = NULL) 
       dkan_harvest_log($message, 'error');
     }
     else {
-      $message = t('Harvest Cache for @source_machine_name completed (processed @cache_processed, failed @cache_failed, saved @cache_saved (filtered @cache_filtered, excluded @cache_excluded), defaulted @cache_defaulted, overridden @cache_overridden).',
+      $message = t('Harvest Cache for @source_machine_name completed (processed @cache_processed, failed @cache_failed, saved @cache_saved : (filtered @cache_filtered, excluded @cache_excluded, defaulted @cache_defaulted, overridden @cache_overridden)).',
         array(
           '@source_machine_name' => $source->machineName,
           '@cache_processed' => $harvest_cache->getProcessedCount(),
