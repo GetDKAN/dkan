@@ -214,7 +214,7 @@ function dkan_update_7007(&$sandbox) {
  * Point source menu to the command menu center in
  * dkan workflow roles.
  */
-function dkan_update_7006() {
+function dkan_update_7008() {
   if (module_exists('dkan_workflow')) {
     dkan_workflow_admin_menu_source();
   }
