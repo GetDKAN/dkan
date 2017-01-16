@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_harvest.features.field_base.inc
@@ -146,7 +145,7 @@ function dkan_harvest_field_default_field_bases() {
       'machine_description' => 'A URL-safe version of the text. It may only contain lowercase letters, numbers and underscores. Leave blank to re-generate.',
       'machine_label' => 'Machine Name',
       'max_length' => 255,
-      'replace_pattern' => '(--|<[^<>]+>|[^/a-z0-9-_])+',
+      'replace_pattern' => '(--|<[^<>]+>|[^/a-z0-9-_]|/)+',
       'replace_value' => '_',
       'show_complete_path' => 0,
       'unique' => 1,
