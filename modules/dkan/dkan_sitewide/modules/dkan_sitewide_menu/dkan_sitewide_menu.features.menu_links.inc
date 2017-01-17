@@ -515,62 +515,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
   // Exported menu link:
-  // menu-command-center-menu_my-drafts:admin/workbench/drafts-active.
-  $menu_links['menu-command-center-menu_my-drafts:admin/workbench/drafts-active'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/workbench/drafts-active',
-    'router_path' => 'admin/workbench/drafts-active',
-    'link_title' => 'My drafts',
-    'options' => array(
-      'identifier' => 'menu-command-center-menu_my-drafts:admin/workbench/drafts-active',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 1,
-    'weight' => -60,
-    'customized' => 0,
-    'parent_identifier' => 'menu-command-center-menu_my-workbench:admin/workbench',
-  );
-  // Exported menu link:
-  // menu-command-center-menu_my-workbench:admin/workbench.
-  $menu_links['menu-command-center-menu_my-workbench:admin/workbench'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/workbench',
-    'router_path' => 'admin/workbench',
-    'link_title' => 'My Workbench',
-    'options' => array(
-      'identifier' => 'menu-command-center-menu_my-workbench:admin/workbench',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 1,
-    'expanded' => 1,
-    'weight' => -60,
-    'customized' => 0,
-  );
-  // Exported menu link:
-  // menu-command-center-menu_needs-review:admin/workbench/needs-review-active.
-  $menu_links['menu-command-center-menu_needs-review:admin/workbench/needs-review-active'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/workbench/needs-review-active',
-    'router_path' => 'admin/workbench/needs-review-active',
-    'link_title' => 'Needs review',
-    'options' => array(
-      'identifier' => 'menu-command-center-menu_needs-review:admin/workbench/needs-review-active',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 1,
-    'weight' => 0,
-    'customized' => 0,
-    'parent_identifier' => 'menu-command-center-menu_my-workbench:admin/workbench',
-  );
-  // Exported menu link:
   // menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm.
   $menu_links['menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm'] = array(
     'menu_name' => 'menu-command-center-menu',
@@ -723,44 +667,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'parent_identifier' => 'menu-command-center-menu_site-configuration:admin/config',
   );
   // Exported menu link:
-  // menu-command-center-menu_stale-drafts:admin/workbench/drafts-stale.
-  $menu_links['menu-command-center-menu_stale-drafts:admin/workbench/drafts-stale'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/workbench/drafts-stale',
-    'router_path' => 'admin/workbench/drafts-stale',
-    'link_title' => 'Stale drafts',
-    'options' => array(
-      'identifier' => 'menu-command-center-menu_stale-drafts:admin/workbench/drafts-stale',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 1,
-    'weight' => 0,
-    'customized' => 0,
-    'parent_identifier' => 'menu-command-center-menu_my-workbench:admin/workbench',
-  );
-  // Exported menu link:
-  // menu-command-center-menu_stale-reviews:admin/workbench/needs-review-stale.
-  $menu_links['menu-command-center-menu_stale-reviews:admin/workbench/needs-review-stale'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/workbench/needs-review-stale',
-    'router_path' => 'admin/workbench/needs-review-stale',
-    'link_title' => 'Stale reviews',
-    'options' => array(
-      'identifier' => 'menu-command-center-menu_stale-reviews:admin/workbench/needs-review-stale',
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 1,
-    'weight' => 0,
-    'customized' => 0,
-    'parent_identifier' => 'menu-command-center-menu_my-workbench:admin/workbench',
-  );
-  // Exported menu link:
   // menu-command-center-menu_taxonomy:admin/structure/taxonomy.
   $menu_links['menu-command-center-menu_taxonomy:admin/structure/taxonomy'] = array(
     'menu_name' => 'menu-command-center-menu',
@@ -873,9 +779,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Harvest Source');
   t('Manage Users');
   t('Menus');
-  t('My Workbench');
-  t('My drafts');
-  t('Needs review');
   t('Open Data Schema Mapper');
   t('Page');
   t('People');
@@ -883,8 +786,6 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Resource');
   t('Site Configuration');
   t('Site Information');
-  t('Stale drafts');
-  t('Stale reviews');
   t('Taxonomy');
   t('Theme Settings');
   t('Visualization');
