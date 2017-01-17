@@ -16,10 +16,10 @@ Feature:
       | All Recent Content | /admin/workbench/content/all         |
       | Create User        | /admin/people/create                 |
     Given Users:
-      | name         | mail                | status | roles                             |
-      | Contributor  | WC@fakeemail.com    | 1      | Workflow Contributor, Content Creator            |
-      | Moderator    | WM@fakeemail.com    | 1      | Workflow Moderator, Editor          |
-      | Supervisor   | WS@fakeemail.com    | 1      | Workflow Supervisor, Site Manager|
+      | name        | mail             | status | roles                                 |
+      | Contributor | WC@fakeemail.com | 1      | Workflow Contributor, Content Creator |
+      | Moderator   | WM@fakeemail.com | 1      | Workflow Moderator, Editor            |
+      | Supervisor  | WS@fakeemail.com | 1      | Workflow Supervisor, Site Manager     |
     Given groups:
       | title    | author     | published |
       | Group 01 | Supervisor | Yes       |
@@ -63,10 +63,10 @@ Feature:
     And I should see the link "My Edits"
     And I should see the link "All Recent Content"
     Examples:
-      | workbench roles                       |
+      | workbench roles      |
       | Workflow Contributor |
-      | Workflow Moderator |
-      | Workflow Supervisor |
+      | Workflow Moderator   |
+      | Workflow Supervisor  |
 
   @api @javascript @globalUser
   Scenario Outline: As a user with any Workflow role, I should be able to upgrade my own draft content to needs review.
@@ -167,11 +167,11 @@ Feature:
   Scenario Outline: As a user with Workflow Roles, I should be able to see draft content I authored in 'My Drafts'
     Given I am logged in as "<user>"
     And datasets:
-      | title       | author | moderation |
-      | My Dataset  | <user>  | draft        |
+      | title      | author | moderation |
+      | My Dataset | <user> | draft      |
     And resources:
-      | title        | author | dataset    | format |  moderation |
-      | My Resource  | <user>  | My Dataset | csv    |  draft        |
+      | title       | author | dataset    | format | moderation |
+      | My Resource | <user> | My Dataset | csv    | draft      |
     And I visit the "My Drafts" page
     And I should see "My Resource"
     And I should see "My Dataset"
@@ -185,11 +185,11 @@ Feature:
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Published content I authored in workbench pages
     Given I am logged in as "Contributor"
     And datasets:
-      | title       | author  | published |
-      | My Dataset  | Contributor   | No        |
+      | title      | author      | published |
+      | My Dataset | Contributor | No        |
     And resources:
-      | title        | author | dataset       | format |  published |
-      | My Resource  | Contributor  | My Dataset    | csv    |  Yes       |
+      | title       | author      | dataset    | format | published |
+      | My Resource | Contributor | My Dataset | csv    | Yes       |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And "Moderator" updates the moderation state of "My Dataset" to "Published"
@@ -211,11 +211,11 @@ Feature:
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Needs Review resources I authored in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
-      | title       | author | published |
-      | My Dataset  | Contributor  | No        |
+      | title      | author      | published |
+      | My Dataset | Contributor | No        |
     And resources:
-      | title        | author |  dataset       | format |  published |
-      | My Resource  | Contributor  | My Dataset    | csv    |  no        |
+      | title       | author      | dataset    | format | published |
+      | My Resource | Contributor | My Dataset | csv    | no        |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And I visit the "My Drafts" page
@@ -231,11 +231,11 @@ Feature:
   Scenario: As a user with the Workflow Contributor, I should be able to see Needs Review contents I authored in 'Needs Review'
     Given I am logged in as "Contributor"
     And datasets:
-      | title       | author | moderation |
-      | My Dataset  | Contributor | draft      |
+      | title      | author      | moderation |
+      | My Dataset | Contributor | draft      |
     And resources:
-      | title        | author | dataset       | format |  moderation |
-      | My Resource  | Contributor | My Dataset    | csv    |  draft      |
+      | title       | author      | dataset    | format | moderation |
+      | My Resource | Contributor | My Dataset | csv    | draft      |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And I visit the "Needs Review" page
@@ -249,11 +249,11 @@ Feature:
       | name            | roles                                 |
       | some-other-user | Workflow Contributor, content creator |
     And datasets:
-      | title           | author          | moderation |
-      | Not My Dataset  | some-other-user | draft        |
+      | title          | author          | moderation |
+      | Not My Dataset | some-other-user | draft      |
     And resources:
-      | title            | dataset           | author          | format |  moderation |
-      | Not My Resource  | Not My Dataset    | some-other-user | csv    |  draft         |
+      | title           | dataset        | author          | format | moderation |
+      | Not My Resource | Not My Dataset | some-other-user | csv    | draft      |
 
     And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review"
     And "some-other-user" updates the moderation state of "Not My Resource" to "Needs Review"
@@ -364,7 +364,7 @@ Feature:
     Given users:
       | name             | mail                       | status | roles                                 |
       | Administrator    | admin@test.com             | 1      | administrator                         |
-      | Contributor C1G1 | contributor-c1g1@test.com  | 1      | Workflow Contributor, content creator |
+      | Contributor C0G1 | contributor-c1g1@test.com  | 1      | Workflow Contributor, content creator |
       | Contributor C2G1 | contributor-c2g1@test.com  | 1      | Workflow Contributor, content creator |
       | Moderator M1G1   | moderator-m1g1@test.com    | 1      | Workflow Moderator, editor            |
       | Moderator M2G1   | moderator-m2g1@test.com    | 1      | Workflow Moderator, editor            |
@@ -542,3 +542,22 @@ Feature:
     When I click "Moderator RolePairing"
     And I click "Edit"
     Then the checkbox "editor" should be checked
+
+  @ok
+  # https://jira.govdelivery.com/browse/CIVIC-5348
+  Scenario: "View draft" should display the draft dataset and not the published revision.
+    Given users:
+      | name                 | roles                                 |
+      | workflow_contributor | Workflow Contributor, content creator |
+    And datasets:
+      | title         | author               | published | moderation |
+      | Dataset title | workflow_contributor | Yes       | published  |
+    Given I update the moderation state of "Dataset title" to "Published"
+    Given I am logged in as "workflow_contributor"
+    And I am on "Dataset title" page
+    Then I should see the text "Dataset title"
+    When I click "Edit draft"
+    And for "title" I enter "Dataset draft title"
+    And I press "Finish"
+    And I click "View draft"
+    Then I should see "Dataset draft title"
