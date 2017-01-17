@@ -176,10 +176,10 @@ Feature:
     And I should see "My Resource"
     And I should see "My Dataset"
     Examples:
-      | user |
+      | user        |
       | Contributor |
-      | Moderator  |
-      | Supervisor |
+      | Moderator   |
+      | Supervisor  |
 
   @ok @globalUser
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Published content I authored in workbench pages
