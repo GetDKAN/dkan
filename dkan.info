@@ -124,3 +124,4 @@ dependencies[] = dkan_datastore
 dependencies[] = dkan_datastore_api
 dependencies[] = open_data_schema_map_dkan
 dependencies[] = visualization_entity_charts_dkan
+version = 7.x-1.13-test5
