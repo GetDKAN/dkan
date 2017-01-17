@@ -100,6 +100,7 @@ DKAN Workflow:
  - Updated workbench_email from 3.9 to 3.11
  - Fixed admin menu source when dkan_workflow is enabled.
  - Moved workbench links from dkan_sitewide_menu to dkan_workflow.
+ - Added menu source settings for dkan_workflow roles.
 DKAN Dataset:
  - Leaflet draw widget usability improvements
  - Fix validation on resource forms when multiple resource type fields are populated
@@ -138,7 +139,7 @@ DKAN Topics:
  - Added a test for creating a topic term.
  - Make the icon field required if the icon type is set to 'font'.
  - Fix topics icon selector functionality.
-
+ 
 
 7.x-1.12.13 2017-01-04
 ----------------------
