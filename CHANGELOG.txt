@@ -98,7 +98,8 @@ DKAN Migrate Base:
 DKAN Workflow:
  - Updated DKAN workflow vbo customizations to not affect other vbo forms.
  - Updated workbench_email from 3.9 to 3.11
- - Fixed admin menu source when dkan_workflow is enabled
+ - Fixed admin menu source when dkan_workflow is enabled.
+ - Moved workbench links from dkan_sitewide_menu to dkan_workflow.
 DKAN Dataset:
  - Leaflet draw widget usability improvements
  - Fix validation on resource forms when multiple resource type fields are populated
