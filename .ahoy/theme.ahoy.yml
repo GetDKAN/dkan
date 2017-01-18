@@ -1,0 +1,91 @@
+ahoyapi: v1
+version: 0.0.0
+commands:
+  fetch:
+    usage: Deprecated - Checkout the dkan theme from the NuCivic github repo.
+    hide: true
+    cmd: |
+      echo "[Deprecated] Warning, this command will be removed in the future. Please make sure to use an alternative to this command."
+      ahoy dkan module-fetch nuboot_radix
+
+  link:
+    usage: Deprecated - Link a module folder into dkan/modules/dkan/.
+    hide: true
+    cmd: |
+      echo "[Deprecated] Warning, this command will be removed in the future. Please make sure to use an alternative to this command."
+      if [ -d "docroot/profiles/dkan/themes/nuboot_radix" ]; then
+        echo "Theme already exists at 'docroot/profiles/dkan/themes/nuboot_radix', removing it to make room..."
+        rm -rf "docroot/profiles/dkan/themes/nuboot_radix";
+      fi
+      ln -s ../../nuboot_radix docroot/profiles/dkan/themes/nuboot_radix && echo "Symlink created for nuboot_radix.. "
+
+  install-dependencies:
+    usage: Installs dependencies for theme development
+    cmd: |
+      if [ "$AHOY_CMD_PROXY" != "DOCKER" ]; then
+        echo 'Sorry. We are only mantaining theme development on docker.'
+        exit 1
+      fi
+      ahoy cmd-proxy command -v bower >/dev/null 2>&1 || {
+        echo >&2 "Bower not installed.";
+        ahoy confirm "We need this. Should I proceed?" && ahoy cmd-proxy npm install -g bower || {
+          exit 1;
+        };
+      }
+      ahoy cmd-proxy command -v gulp >/dev/null 2>&1 || {
+        echo >&2 "Gulp not installed.";
+        ahoy confirm "We need this. Should I proceed?" && ahoy cmd-proxy npm install -g gulp-cli || {
+          exit 1;
+        };
+      }
+      THEME=`ahoy drush scr dkan/.ahoy/.scripts/active_theme_path.php`
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && npm install --unsafe-perm"
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && bower install -allow-root"
+
+  setup:
+    usage: Base setup for theme development
+    cmd: |
+      ahoy dkan theme install-dependencies
+
+  watch:
+    usage: 'compile and watch for changes'
+    cmd: |
+      THEME=`ahoy drush scr dkan/.ahoy/.scripts/active_theme_path.php`
+      ahoy cmd-proxy "cd dkan/themes/nuboot_radix && gulp"
+
+
+  new-from-kit:
+    usage: 'creates a new theme based on nuboot-radix'
+    cmd: |
+      ARGS="{{args}}"
+      if [[ -z "$ARGS" ]]; then
+          echo "Please specify the name of the theme you want to create."
+          exit 1
+      fi
+      THEME_DIR="docroot/sites/all/themes/$ARGS"
+      if [[ -d "$THEME_DIR" ]]; then
+        echo "Theme $ARGS found at $THEME_DIR. Please remove it first"
+        exit 1;
+      else
+        echo "Creating theme $ARGS at $THEME_DIR"
+      fi
+      ORIGINAL_THEME=`ahoy drush vget theme_default --format=string`
+      ahoy drush pm-enable radix -y
+      ahoy drush vset theme_default radix
+      ahoy cmd-proxy drush cc drush
+      KIT_URL="https://github.com/NuCivic/radix-kit-nuboot/archive/master.zip"
+      if ahoy cmd-proxy wget -q "$KIT_URL"; then
+        ahoy cmd-proxy unzip master.zip
+        ahoy cmd-proxy rm -rf master.zip
+        ahoy cmd-proxy rm -rf dkan/themes/contrib/radix/kits/nuboot
+        ahoy cmd-proxy mv radix-kit-nuboot-master dkan/themes/contrib/radix/kits/nuboot
+        ahoy drush radix $ARGS --kit='nuboot'
+        ahoy drush en $ARGS -y
+        ahoy drush vset theme_default $ARGS -y
+        ahoy drush pm-disable $ORIGINAL_THEME -y
+        ahoy drush pm-disable radix -y
+      else
+        echo "Can't seem to download kit from $KIT_URL, restoring original theme"
+        ahoy drush vset theme_default $ORIGINAL_THEME
+        exit 1;
+      fi

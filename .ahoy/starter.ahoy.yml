@@ -1,0 +1,45 @@
+ahoyapi: v1
+usage: DKAN cli app for development using ahoy.
+commands:
+
+  drush:
+    usage: Run drush via ahoy (helpful for abstraction)
+    cmd: ahoy cmd-proxy drush --root=docroot "{{args}}"
+
+  dkan:
+    usage: A series of commands for dkan development.
+    import: dkan/.ahoy/dkan.ahoy.yml
+
+# Utility / Experimental commands that are currently hidden
+  confirm:
+    cmd: ahoy -f dkan/.ahoy/utils.ahoy.yml confirm "{{args}}"
+    hide: true
+
+  docker:
+    usage: A series of docker commands for dkan development (experimental)
+    import: dkan/.ahoy/docker.ahoy.yml
+    hide: true
+
+  init:
+    cmd: echo "ahoy.yml file already exists."
+    hide: true
+
+  cmd-proxy:
+    usage: abstraction for commmands.
+    cmd: |
+      if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
+        ahoy docker exec "{{args}}"
+      else
+        {{args}}
+      fi
+    hide: true
+
+  diagnose:
+    usage: A series of maintenance commands to check the docker environment health
+    import: dkan/.ahoy/diagnose.ahoy.yml
+    hide: true
+
+  doctor:
+    usage: A series of maintenance commands to check the docker environment health (Deprecated and moved to diagnose commands)
+    import: dkan/.ahoy/diagnose.ahoy.yml
+    hide: true

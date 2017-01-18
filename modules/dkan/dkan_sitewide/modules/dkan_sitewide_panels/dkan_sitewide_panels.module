@@ -1,7 +1,137 @@
 <?php
+
 /**
  * @file
  * Code for the DKAN panels feature.
  */
 
 include_once 'dkan_sitewide_panels.features.inc';
+
+/**
+ * Implements hook_preprocess_panels_style_collapsible().
+ *
+ * Ensures facets are expanded if in use.
+ */
+function dkan_sitewide_panels_preprocess_panels_style_collapsible(&$variables) {
+
+  // Get the active searchers. For example search_api@datasets.
+  foreach (facetapi_get_active_searchers() as $searcher) {
+
+    // Load the facet adapter to load all the facets later.
+    $adapter = facetapi_adapter_load($searcher);
+
+    // Find out if the pane matches a facet
+    // in the query string; un-collapse if so.
+    $pane = $variables['pane'];
+    if (substr($pane->type, 0, 8)) {
+      foreach ($adapter->getAllActiveItems() as $param_key => $param_value) {
+        // Use the field alias as the param_name.
+        $param_name = $param_value['field alias'];
+
+        // The pane subtype will be something
+        // like "facetapi-wsVI1ENUXwf4Rz08n9fg2WvfQ0Gs5h2a".
+        $facet_hash = substr($pane->subtype, 9);
+        $facet_delta_map = facetapi_get_delta_map();
+        if (in_array($facet_hash, array_keys($facet_delta_map))) {
+          $mapping_parts = explode(':', $facet_delta_map[$facet_hash]);
+          $facet_name = $mapping_parts[2];
+
+          // Composite facet names have the colon encoded into RFC 3986.
+          // Decode that.
+          $facet_name = rawurldecode($facet_name);
+
+          // Un-collapse the facet if it is part of the request.
+          if ($facet_name == $param_name) {
+            $variables['collapsed'] = 0;
+            // We have a match! no need to continue.
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function dkan_sitewide_panels_block_info() {
+  $blocks = array();
+  $blocks['dkan_user_summary'] = array(
+    'info' => t('DKAN User Summary'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function dkan_sitewide_panels_block_view($delta = '') {
+  global $user;
+  $block = array();
+  $query = new EntityFieldQuery();
+
+  switch ($delta) {
+    case 'dkan_user_summary':
+      $output = '';
+      $account = menu_get_object('user');
+
+      // Avoid fatal errors when summary its renderer in a page
+      // other than a profile page (i.e. panel configuration page)
+      if(!empty($account)) {
+        $items = field_get_items('user', $account, 'field_about');
+        $about = field_view_value('user', $account, 'field_about', $items[0]);
+        $path = _gravatar_get_account_user_picture($account) ? _gravatar_get_account_user_picture($account) : gravatar_get_gravatar($account->mail);
+        $profile_picture = theme_image(
+          array(
+            'path' => $path,
+            'width' => 60,
+            'height' => 60,
+            'attributes' => array(),
+          )
+        );
+        $group_list = views_embed_view('list_of_users_groups', 'panel_pane_1');
+
+        $output = '<div class="profile-stats">' . $profile_picture;
+        $output .= '<strong>' . render($account->name) . '</strong>';
+        $output .= '<p>' . dkan_sitewide_panels_user_summary_count_by_type('dataset', $account->uid) . ' Datasets</p>';
+        $output .= '<p>' . dkan_sitewide_panels_user_summary_count_by_type('group', $account->uid) . ' Groups</p>';
+        $output .= '<p>User since ' . format_date($account->created, 'custom', 'm/d/Y') . '</p></div>';
+        if ($about) {
+          $output .= '<p>' . render($about) . '</p>';
+        }
+        $output .= $group_list;
+      }
+
+      $block['subject'] = '';
+      $block['content'] = array(
+        '#markup' => $output,
+        '#attached' => array(
+          'css' => array(
+            drupal_get_path('module', 'dkan_sitewide_panels') . '/dkan_sitewide_panels_user_summary.css',
+          ),
+        ),
+      );
+
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Calculate summary count by type.
+ *
+ * Get number of nodes created by user
+ * of a particular content type.
+ */
+function dkan_sitewide_panels_user_summary_count_by_type($type, $uid) {
+
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $type)
+    ->propertyCondition('uid', $uid)
+    ->count();
+
+  return $query->execute();
+}

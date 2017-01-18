@@ -2,12 +2,11 @@
 machine:
 
   timezone:
-    America/New_York # Set the timezone
+    America/New_York
 
   # Version of ruby to use
   php:
-    version: '5.5.11'
-
+    version: 5.6.22
   # Override /etc/hosts
   #hosts:
     #circlehost: 127.0.0.1
@@ -18,6 +17,10 @@ machine:
     # For xvfb / selenium setup (not sure why)
     #DISPLAY: ':99.0'
     DATABASE_URL: mysql://ubuntu:@127.0.0.1:3306/circle_test
+    # Timeouts issues happen when selenium tries to spawn a new chrome
+    # instance. I've nail that down to this selenium issue
+    # https://github.com/SeleniumHQ/docker-selenium/issues/87
+    DBUS_SESSION_BUS_ADDRESS: /dev/null
 ## Customize checkout
 ## Note: Only post is supported.
 checkout:
@@ -28,116 +31,55 @@ checkout:
 ## Customize dependencies
 dependencies:
 
-  cache_directories:
-     - "test/vendor"
-     - "~/.composer"
-     - "~/.drush"
-     - "~/backups"
-     - "test/sites/default"
-  override:
-    - 'composer install --prefer-source --no-interaction':
-        pwd:
-          test
-    - mkdir $CIRCLE_ARTIFACTS/junit
-    # Install latest Drush 7.
-    #- export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - 'composer global require --prefer-source --no-interaction drush/drush:8.0.0-rc2'
-    - 'drush make --prepare-install drupal-org-core.make drupal --yes'
-    - 'rsync -av . drupal/profiles/dkan --exclude drupal'
-    - 'rsync -av drupal/ test'
-    - 'drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion --concurrency=3':
-        pwd:
-          test/profiles/dkan
-    - drush use $HOME/$CIRCLE_PROJECT_REPONAME/test#dkan
-    - 'bash circle-install.sh':
-        pwd:
-          test
-    - 'drush --yes runserver :8888':
-        background: true
-        pwd: test
-
-    # Setup display for selenium
-    #- sh -e /etc/init.d/xvfb start
-    #- sleep 3
-
-    - wget http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar
-    - java -jar selenium-server-standalone-2.48.2.jar -quiet -p 4444 -log shut_up_selenium :
-        background: true
-  post:
-     - sudo apt-get install -y x11vnc
-     - x11vnc -forever -nopw:
-        background: true
   # we automatically cache and restore many dependencies between
   # builds. If you need to, you can add custom paths to cache:
   #cache_directories:
   #  - "custom_1"   # relative to the build directory
   #  - "~/custom_2" # relative to the user's home directory
-
-## Customize database setup
-database:
+  cache_directories:
+     #- "dkan/test/vendor"
+     #- "~/.composer"
+     - "~/.drush"
+     # Disable caching sql install backups for now.
+     #- "backups"
+     #- "dkan/test/sites/default"
+  pre:
+    - rm /opt/circleci/php/$(phpenv global)/etc/conf.d/xdebug.ini
+    - echo "memory_limit = 256M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
+    - echo "always_populate_raw_post_data = -1" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/deprecated.ini
   override:
-    # replace CircleCI's generated database.yml
-    #- cp config/database.yml.ci config/database.yml
-    #- bundle exec rake db:create db:schema:load
+    - printenv
+    - mkdir $CIRCLE_ARTIFACTS/junit
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH bash dkan-init.sh dkan --deps --build=$DATABASE_URL'
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard'
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush cc all'
+    # Run a webserver using drush.
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes runserver :8888':
+        background: true
+
+    # Setup display for selenium
+    #- sh -e /etc/init.d/xvfb start
+    #- sleep 3
+
+    - wget http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar
+    - java -jar selenium-server-standalone-2.53.1.jar -p 4444 :
+        background: true
+  post:
+     - sudo apt-get install -y x11vnc
+     - x11vnc -forever -nopw:
+        background: true
 
 ## Customize test commands
 test:
   override:
-    - cd test; bash circle-behat.sh:
+    - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
+        timeout: 1200
         parallel: true
-        files:
-          - test/features/administrator.feature
-          - test/features/data_dashboard.feature
-          - test/features/dataset.admin.feature
-          - test/features/dataset.all.feature
-          - test/features/dataset.author.feature
-          - test/features/dataset.editor.feature
-          - test/features/dataset.feature
-          - test/features/datastore.feature
-          - test/features/data_story.feature
-          - test/features/editor.feature
-          # Gravitar tests are broken.
-          #- test/features/gravatar.feature
-          - test/features/group.admin.feature
-          - test/features/group.all.feature
-          - test/features/group.author.feature
-          - test/features/group.editor.feature
-          # - test/features/groups.feature
-          - test/features/home.feature
-          - test/features/panels.feature
-          - test/features/profile.feature
-          - test/features/recline.feature
-          - test/features/resource.admin.feature
-          - test/features/resource.all.feature
-          - test/features/resource.author.feature
-          - test/features/resource.editor.feature
-          - test/features/search.feature
-          - test/features/user.admin.feature
-          - test/features/user.all.feature
-          - test/features/user.author.feature
-          # Visualization Entity tests are all broken.
-          # - test/features/vis_entity_embeds.feature
-          - test/features/widgets.feature
-          # Storyteller was removed as role. Change this to content creator?
-          # - test/features/role_storyteller.feature
-    - cd test; bash features-tests.sh
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_migrate_base_example
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_harvest_test
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush dis --yes dkan_default_content
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush pm-uninstall --yes dkan_default_content
+    - $HOME/dkan/dkan/test/bin/phpunit --configuration $HOME/dkan/dkan/test/phpunit
   post:
-    - echo CIRCLE_ARTIFACTS; cp -av assets $CIRCLE_ARTIFACTS:
+    - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true
-#    - bundle exec rake jasmine:ci: # add an extra test type
-#        environment:
-#          RAILS_ENV: test
-#          RACK_ENV: test
-
-## Customize deployment commands
-#deployment:
-#  staging:
-#    branch: master
-#    heroku:
-#      appname: foo-bar-123
-
-## Custom notifications
-#notify:
-#  webhooks:
-#    # A list of hashes representing hooks. Only the url field is supported.
-#    - url: https://someurl.com/hooks/circle

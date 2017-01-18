@@ -1,0 +1,98 @@
+diff --git a/fontyourface.module b/fontyourface.module
+index ebc6a95..ee5bb50 100644
+--- a/fontyourface.module
++++ b/fontyourface.module
+@@ -354,6 +354,8 @@ function fontyourface_import_fonts($provider) {
+  */
+ function fontyourface_enable_font(&$font) {
+ 
++  $result = TRUE;
++
+   db_update('fontyourface_font')
+     ->fields(array('enabled' => 1))
+     ->condition('fid', $font->fid)
+@@ -363,10 +365,12 @@ function fontyourface_enable_font(&$font) {
+   $enable_function = $font->provider . '_fontyourface_enable';
+ 
+   if (function_exists($enable_function)) {
+-    return $enable_function($font);
++    $result = $enable_function($font);
+   } // if
+ 
+-  return TRUE;
++  fontyourface_clear_cache();
++
++  return $result;
+ 
+ } // fontyourface_enable_font
+ 
+@@ -375,6 +379,8 @@ function fontyourface_enable_font(&$font) {
+  */
+ function fontyourface_disable_font(&$font) {
+ 
++  $result = TRUE;
++
+   db_update('fontyourface_font')
+     ->fields(array('enabled' => 0))
+     ->condition('fid', $font->fid)
+@@ -384,10 +390,12 @@ function fontyourface_disable_font(&$font) {
+   $disable_function = $font->provider . '_fontyourface_disable';
+ 
+   if (function_exists($disable_function)) {
+-    return $disable_function($font);
++    $result = $disable_function($font);
+   } // if
+ 
+-  return TRUE;
++  fontyourface_clear_cache();
++
++  return $result;
+ 
+ } // fontyourface_disable_font
+ 
+@@ -396,6 +404,8 @@ function fontyourface_disable_font(&$font) {
+  */
+ function fontyourface_set_css_selector(&$font, $css_selector) {
+ 
++  $result = TRUE;
++
+   db_update('fontyourface_font')
+     ->fields(array('css_selector' => $css_selector))
+     ->condition('fid', $font->fid)
+@@ -405,9 +415,13 @@ function fontyourface_set_css_selector(&$font, $css_selector) {
+   $selector_function = $font->provider . '_fontyourface_selector_update';
+ 
+   if (function_exists($selector_function)) {
+-    return $selector_function($font);
++    $result = $selector_function($font);
+   } // if
+ 
++  fontyourface_clear_cache();
++
++  return $result;
++
+ } // fontyourface_set_css_selector
+ 
+ /**
+@@ -421,6 +435,8 @@ function fontyourface_set_css_fallbacks(&$font, $css_fallbacks) {
+     ->execute();
+   $font->css_fallbacks = $css_fallbacks;
+ 
++  fontyourface_clear_cache();
++
+ } // fontyourface_set_css_fallbacks
+ 
+ /**
+@@ -752,3 +768,11 @@ function fontyourface_ajax_render_alter(&$commands) {
+ function fontyourface_modernizr_info() {
+   return array('fontface');
+ } // fontyourface_modernizr_info
++
++/**
++ * Clear all CSS cached data.
++ */
++function fontyourface_clear_cache() {
++  _drupal_flush_css_js();
++  drupal_clear_css_cache();
++}
+\ No newline at end of file

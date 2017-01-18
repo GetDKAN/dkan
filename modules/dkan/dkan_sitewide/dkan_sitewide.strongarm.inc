@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_sitewide.strongarm.inc
@@ -13,21 +14,30 @@ function dkan_sitewide_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'admin_theme';
-  $strongarm->value = 'nuboot_radix';
-  $export['admin_theme'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
   $strongarm->name = 'bueditor_roles';
   $strongarm->value = array(
+    4 => array(
+      'weight' => '0',
+      'editor' => '5',
+      'alt' => '0',
+    ),
+    5 => array(
+      'weight' => '0',
+      'editor' => '5',
+      'alt' => '0',
+    ),
+    6 => array(
+      'weight' => '0',
+      'editor' => '5',
+      'alt' => '0',
+    ),
     3 => array(
+      'weight' => '0',
       'editor' => '5',
       'alt' => '0',
     ),
     2 => array(
-      'editor' => '5',
+      'editor' => '0',
       'alt' => '0',
       'weight' => 11,
     ),
@@ -167,6 +177,13 @@ function dkan_sitewide_strongarm() {
   $strongarm->name = 'pathauto_node_pattern';
   $strongarm->value = '[node:title]';
   $export['pathauto_node_pattern'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'user_admin_role';
+  $strongarm->value = '3';
+  $export['user_admin_role'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */

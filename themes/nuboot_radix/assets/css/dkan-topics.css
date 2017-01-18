@@ -1,0 +1,442 @@
+/**
+ * @file
+ * Styles for the facet_icons icons appearing on the search page
+ *
+ * See the facet_icons theme function and the facet_icons module in modules/dkan/dkan_sitewide/modules
+ */
+@font-face {
+    font-family: 'DKAN-Topics';
+    src:    url('../fonts/dkan-topics.eot?fxuk5q');
+    src:    url('../fonts/dkan-topics.eot?fxuk5q#iefix') format('embedded-opentype'),
+        url('../fonts/dkan-topics.ttf?fxuk5q') format('truetype'),
+        url('../fonts/dkan-topics.woff?fxuk5q') format('woff'),
+        url('../fonts/dkan-topics.svg?fxuk5q#dkan-topics') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-dkan-"], [class*=" icon-dkan-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'DKAN-Topics' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+[class^="icon-dkan-"]:hover, [class*=" icon-dkan-"]:hover,
+[class^="icon-dkan-"]:active, [class*=" icon-dkan-"]:active {
+  text-decoration: none;
+}
+[class^="icon-dkan-"]:hover, [class*=" icon-dkan-"]:hover,
+[class^="icon-dkan-"]:active, [class*=" icon-dkan-"]:active {
+    text-decoration: none;
+}
+
+.icon-dkan-harvest_source:before {
+    content:"\e925";
+}
+.icon-dkan-page:before {
+    content: "\e984";
+}
+.icon-dkan-data_dashboard:before {
+    content: "\e97d";
+}
+.icon-dkan-dataset:before {
+    content: "\e97e";
+}
+.icon-dkan-dkan_data_story:before {
+    content: "\e97f";
+}
+.icon-dkan-feedback:before {
+    content: "\e980";
+}
+.icon-dkan-group:before {
+    content: "\e981";
+}
+.icon-dkan-resource:before {
+    content: "\e982";
+}
+.icon-dkan-visualization:before {
+    content: "\e983";
+}
+.icon-dkan-transport:before {
+    content: "\e977";
+}
+.icon-dkan-safety:before {
+    content: "\e978";
+}
+.icon-dkan-planning:before {
+    content: "\e979";
+}
+.icon-dkan-healthcare:before {
+    content: "\e97a";
+}
+.icon-dkan-education:before {
+    content: "\e97b";
+}
+.icon-dkan-budget:before {
+    content: "\e97c";
+}
+.icon-dkan-computer-disk-drive-1:before {
+    content: "\e900";
+}
+.icon-dkan-computer-imac-1:before {
+    content: "\e901";
+}
+.icon-dkan-computer-notebook-2:before {
+    content: "\e902";
+}
+.icon-dkan-sd-card-download:before {
+    content: "\e903";
+}
+.icon-dkan-phone-2:before {
+    content: "\e904";
+}
+.icon-dkan-phone-signal-full:before {
+    content: "\e905";
+}
+.icon-dkan-mobile-phone-portrait:before {
+    content: "\e906";
+}
+.icon-dkan-headphone:before {
+    content: "\e907";
+}
+.icon-dkan-cursor-double-click-2:before {
+    content: "\e908";
+}
+.icon-dkan-book-2:before {
+    content: "\e909";
+}
+.icon-dkan-books-library:before {
+    content: "\e90a";
+}
+.icon-dkan-drawer-2:before {
+    content: "\e90b";
+}
+.icon-dkan-newspaper:before {
+    content: "\e90c";
+}
+.icon-dkan-crown-3:before {
+    content: "\e90d";
+}
+.icon-dkan-google-plus:before {
+    content: "\e90e";
+}
+.icon-dkan-trophy-3:before {
+    content: "\e90f";
+}
+.icon-dkan-lock-close-6:before {
+    content: "\e910";
+}
+.icon-dkan-megaphone-1:before {
+    content: "\e911";
+}
+.icon-dkan-download-3:before {
+    content: "\e912";
+}
+.icon-dkan-cloud:before {
+    content: "\e913";
+}
+.icon-dkan-graph:before {
+    content: "\e914";
+}
+.icon-dkan-network:before {
+    content: "\e915";
+}
+.icon-dkan-design-mug:before {
+    content: "\e916";
+}
+.icon-dkan-picture-2:before {
+    content: "\e917";
+}
+.icon-dkan-television:before {
+    content: "\e918";
+}
+.icon-dkan-day-snow-thunder:before {
+    content: "\e919";
+}
+.icon-dkan-umbrella-open:before {
+    content: "\e91a";
+}
+.icon-dkan-business-bag-cash:before {
+    content: "\e91b";
+}
+.icon-dkan-graph-bar-2:before {
+    content: "\e91c";
+}
+.icon-dkan-graph-bar-3d:before {
+    content: "\e91d";
+}
+.icon-dkan-graph-bar-increase:before {
+    content: "\e91e";
+}
+.icon-dkan-graph-line-2:before {
+    content: "\e91f";
+}
+.icon-dkan-graph-pie-2:before {
+    content: "\e920";
+}
+.icon-dkan-bank-notes-3:before {
+    content: "\e921";
+}
+.icon-dkan-coin-receive:before {
+    content: "\e922";
+}
+.icon-dkan-piggy-bank:before {
+    content: "\e923";
+}
+.icon-dkan-wallet-1:before {
+    content: "\e924";
+}
+.icon-dkan-network-world:before {
+    content: "\e925";
+}
+.icon-dkan-location-pin-8:before {
+    content: "\e926";
+}
+.icon-dkan-location-pin-target-2:before {
+    content: "\e927";
+}
+.icon-dkan-map-1:before {
+    content: "\e928";
+}
+.icon-dkan-map-pin-2:before {
+    content: "\e929";
+}
+.icon-dkan-bank-2:before {
+    content: "\e92a";
+}
+.icon-dkan-building-6:before {
+    content: "\e92b";
+}
+.icon-dkan-building-12:before {
+    content: "\e92c";
+}
+.icon-dkan-home-3:before {
+    content: "\e92d";
+}
+.icon-dkan-home-4:before {
+    content: "\e92e";
+}
+.icon-dkan-water-fountain:before {
+    content: "\e92f";
+}
+.icon-dkan-airplane-departure:before {
+    content: "\e930";
+}
+.icon-dkan-cactus:before {
+    content: "\e931";
+}
+.icon-dkan-eco-globe-1:before {
+    content: "\e932";
+}
+.icon-dkan-eco-lightbulb:before {
+    content: "\e933";
+}
+.icon-dkan-honeycomb:before {
+    content: "\e934";
+}
+.icon-dkan-plant:before {
+    content: "\e935";
+}
+.icon-dkan-sign-recycle:before {
+    content: "\e936";
+}
+.icon-dkan-tree-small-2:before {
+    content: "\e937";
+}
+.icon-dkan-water-drop:before {
+    content: "\e938";
+}
+.icon-dkan-water-faucet:before {
+    content: "\e939";
+}
+.icon-dkan-windmill-paper:before {
+    content: "\e93a";
+}
+.icon-dkan-ball-basketball:before {
+    content: "\e93b";
+}
+.icon-dkan-dumbbell-2:before {
+    content: "\e93c";
+}
+.icon-dkan-weight-lifting:before {
+    content: "\e93d";
+}
+.icon-dkan-bus-2:before {
+    content: "\e93e";
+}
+.icon-dkan-car-4:before {
+    content: "\e93f";
+}
+.icon-dkan-car-battery:before {
+    content: "\e940";
+}
+.icon-dkan-speed-gauge:before {
+    content: "\e941";
+}
+.icon-dkan-traffic-light-1:before {
+    content: "\e942";
+}
+.icon-dkan-truck-2:before {
+    content: "\e943";
+}
+.icon-dkan-planet-ring:before {
+    content: "\e944";
+}
+.icon-dkan-religion-bible:before {
+    content: "\e945";
+}
+.icon-dkan-chair-4:before {
+    content: "\e946";
+}
+.icon-dkan-tools-boox:before {
+    content: "\e947";
+}
+.icon-dkan-tools-wrench-screwdriver:before {
+    content: "\e948";
+}
+.icon-dkan-traffic-cone:before {
+    content: "\e949";
+}
+.icon-dkan-shield-5:before {
+    content: "\e94a";
+}
+.icon-dkan-thread-roll:before {
+    content: "\e94b";
+}
+.icon-dkan-tissue:before {
+    content: "\e94c";
+}
+.icon-dkan-ambulance:before {
+    content: "\e94d";
+}
+.icon-dkan-dentis:before {
+    content: "\e94e";
+}
+.icon-dkan-heart-beat:before {
+    content: "\e94f";
+}
+.icon-dkan-hospital-1:before {
+    content: "\e950";
+}
+.icon-dkan-medical-box:before {
+    content: "\e951";
+}
+.icon-dkan-pulse-signal-2:before {
+    content: "\e952";
+}
+.icon-dkan-coffee-cup-3:before {
+    content: "\e953";
+}
+.icon-dkan-water-mug:before {
+    content: "\e954";
+}
+.icon-dkan-apple-1:before {
+    content: "\e955";
+}
+.icon-dkan-cheeseburger:before {
+    content: "\e956";
+}
+.icon-dkan-balloon:before {
+    content: "\e957";
+}
+.icon-dkan-game-controller-3:before {
+    content: "\e958";
+}
+.icon-dkan-heart-care:before {
+    content: "\e959";
+}
+.icon-dkan-rocking-horse:before {
+    content: "\e95a";
+}
+.icon-dkan-copy-1:before {
+    content: "\e95b";
+}
+.icon-dkan-file-download-1:before {
+    content: "\e95c";
+}
+.icon-dkan-file-share-1:before {
+    content: "\e95d";
+}
+.icon-dkan-compress:before {
+    content: "\e95e";
+}
+.icon-dkan-at-sign-stamp:before {
+    content: "\e95f";
+}
+.icon-dkan-envelope-3:before {
+    content: "\e960";
+}
+.icon-dkan-account-code:before {
+    content: "\e961";
+}
+.icon-dkan-account-favorite:before {
+    content: "\e962";
+}
+.icon-dkan-account-group-1:before {
+    content: "\e963";
+}
+.icon-dkan-account-group-2:before {
+    content: "\e964";
+}
+.icon-dkan-account-group-4:before {
+    content: "\e965";
+}
+.icon-dkan-business-increase:before {
+    content: "\e966";
+}
+.icon-dkan-group-global:before {
+    content: "\e967";
+}
+.icon-dkan-group-wifi:before {
+    content: "\e968";
+}
+.icon-dkan-bubble-chat-2:before {
+    content: "\e969";
+}
+.icon-dkan-bubble-chat-text-2:before {
+    content: "\e96a";
+}
+.icon-dkan-user-chat-4:before {
+    content: "\e96b";
+}
+.icon-dkan-cog-double-1:before {
+    content: "\e96c";
+}
+.icon-dkan-cog-double-2:before {
+    content: "\e96d";
+}
+.icon-dkan-cog-lightbulb:before {
+    content: "\e96e";
+}
+.icon-dkan-cog:before {
+    content: "\e96f";
+}
+.icon-dkan-gauge:before {
+    content: "\e970";
+}
+.icon-dkan-settings-1:before {
+    content: "\e971";
+}
+.icon-dkan-settings-2:before {
+    content: "\e972";
+}
+.icon-dkan-timer-full-2:before {
+    content: "\e973";
+}
+.icon-dkan-watch-2:before {
+    content: "\e974";
+}
+.icon-dkan-flash-1:before {
+    content: "\e975";
+}
+.icon-dkan-typewriter-1:before {
+    content: "\e976";
+}

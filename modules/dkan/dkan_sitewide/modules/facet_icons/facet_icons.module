@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * @file
+ * Facet_icons.module.
+ */
+
+/**
+ * Implements hook_facetapi_widgets().
+ */
+
+/**
+ * Implements hook_facetapi_widget().
+ */
+function facet_icons_facetapi_widgets() {
+  return array(
+    'terms' => array(
+      'handler' => array(
+        'label' => t('Term Icon'),
+        'class' => 'FacetapiTermIcon',
+        'query types' => array('term', 'date'),
+      ),
+    ),
+    'content_types' => array(
+      'handler' => array(
+        'label' => t('Content Type Icon'),
+        'class' => 'FacetapiContentTypeIcon',
+        'query types' => array('term', 'date'),
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * @see https://github.com/NuCivic/nuboot_radix/blob/7.x-1.x/template.php
+ */
+function facet_icons_theme($existing, $type, $theme, $path) {
+  return array(
+    // You will need to implement theme_facet_icons() in your theme or module
+    // to make this work. For an example, see the nuboot_radix theme's
+    // implementation.
+    'facet_icons' => array(
+      'variables' => array('class' => array(), 'type' => NULL),
+    ),
+  );
+}

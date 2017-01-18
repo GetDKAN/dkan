@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * @file
+ * Install file for DKAN base migration.
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function dkan_migrate_base_enable() {
+  dkan_migrate_base_migrations_enable();
+}
+
+/**
+ * Implements hook_disable().
+ */
+function dkan_migrate_base_disable() {
+  dkan_migrate_base_migrations_disable();
+}
+
+/**
+ * Gets migration table name.
+ *
+ * This is used in dkan_harvest.
+ */
+function _dkan_migrate_base_data_json_table($migration) {
+  $map = new MigrateSQLMap(
+    $migration,
+    array(
+      'uuid' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'id',
+      ),
+    ),
+    MigrateDestinationNode::getKeySchema()
+  );
+  return $map->getMapTable();
+}

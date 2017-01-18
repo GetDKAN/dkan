@@ -1,25 +1,75 @@
 <?php
+
 /**
  * @file
  * Code for the dkan_sitewide_search_db feature.
  */
 
 include_once 'dkan_sitewide_search_db.features.inc';
+include_once 'dkan_sitewide_search_db.security.inc';
 
 /**
  * Implements hook_menu_local_tasks_alter().
  */
 function dkan_sitewide_search_db_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   if ($root_path == 'dataset') {
-    // Add "Add Dataset" link to 
+    // Add "Add Dataset" link to.
     $item = menu_get_item('node/add/dataset');
     if ($item['access']) {
-      // Reword link name in case display name was overwritten
+      // Reword link name in case display name was overwritten.
       $item['title'] = t('Add @groupname', array('@groupname' => $item['title']));
       $data['actions']['output'][] = array(
         '#theme' => 'menu_local_action',
         '#link' => $item,
       );
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Dkan_sitewide_search_db_form_alter and _persist_url_params_param_from_array
+ * were pulled from this sandbox
+ * project https://www.drupal.org/sandbox/pl2/1438442
+ * and were added because this issue was happening in the dataset search page
+ * https://www.drupal.org/node/1254156.
+ */
+function dkan_sitewide_search_db_form_alter(&$form, $form_state, $form_id) {
+  // TODO: Generalize with an admin UI that lets you select which forms
+  // will be handled like this.
+  if ($form_id == 'views_exposed_form') {
+    foreach ($form_state['input'] as $input_key => $value) {
+      // If there is an argument in input that is not in the keys of the form
+      // then that argument must be added as a hidden field to the form.
+      if (!isset($form[$input_key])) {
+        _persist_url_params_param_from_array($form, $input_key, $input_key, $value);
+      }
+    }
+  }
+}
+
+/**
+ * Process array data.
+ *
+ * Converts an array that was previously
+ * parsed from the url arguments
+ * to an array of hidden values that will be
+ * added to the form so these arguments
+ * are not lost in form submission.
+ */
+function _persist_url_params_param_from_array(&$form, $root_key, $key, $value, $array_key = '') {
+  if (!is_array($value)) {
+    $form[$key] = array(
+      '#type' => 'hidden',
+      '#value' => $value,
+      '#name' => "$root_key$array_key",
+    );
+  }
+  else {
+    $form[$key] = array();
+    foreach ($value as $val_key => $val_value) {
+      _persist_url_params_param_from_array($form[$key], $root_key, $val_key, $val_value, $array_key . "[$val_key]");
     }
   }
 }

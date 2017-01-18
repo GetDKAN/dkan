@@ -1,0 +1,63 @@
+diff --git a/panels.module b/panels.module
+index cf3a73e..fc11c20 100644
+--- a/panels.module
++++ b/panels.module
+@@ -1813,6 +1813,32 @@ function panels_page_manager_handler_add_validate($form, &$form_state) {
+   }
+ }
+ 
++/**
++ * Implements hook_default_page_manager_handlers_alter().
++ *
++ * If a default Panels display has no storage type, set it.
++ */
++function panels_default_page_manager_handlers_alter(&$handlers) {
++  foreach ($handlers as &$handler) {
++    if ($handler->handler == 'panel_context') {
++      $display =& $handler->conf['display'];
++      if (empty($display->storage_type)) {
++        $display->storage_type = 'page_manager';
++        $display->storage_id = $handler->name;
++      }
++    }
++  }
++}
++
++/**
++ * Implements hook_default_page_manager_pages_alter().
++ */
++function panels_default_page_manager_pages_alter(&$pages) {
++  foreach ($pages as &$page) {
++    panels_default_page_manager_handlers_alter($page->default_handlers);
++  }
++}
++
+ // --------------------------------------------------------------------------
+ // General utility functions
+ 
+diff --git a/panels_mini/panels_mini.module b/panels_mini/panels_mini.module
+index e55c673..4a64de2 100644
+--- a/panels_mini/panels_mini.module
++++ b/panels_mini/panels_mini.module
+@@ -431,6 +431,21 @@ function panels_mini_ctools_plugin_directory($module, $plugin) {
+ }
+ 
+ /**
++ * Implements hook_default_panels_mini_alter().
++ *
++ * If a default Panels display has no storage type, set it.
++ */
++function panels_default_panels_mini_alter(&$mini_panels) {
++  foreach ($mini_panels as &$mini_panel) {
++    $display =& $mini_panel->display;
++    if (empty($display->storage_type)) {
++      $display->storage_type = 'panels_mini';
++      $display->storage_id = $mini_panel->name;
++    }
++  }
++}
++
++/**
+  * Get the display cache for the panels_mini plugin.
+  */
+ function _panels_mini_panels_cache_get($key) {

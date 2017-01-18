@@ -1,0 +1,263 @@
+// Site name and logo
+// -----------------------------------------------------------------------------
+#logo {
+  display: block;
+  float: left;
+  margin-right: $navbar-padding-horizontal;
+
+  // Resize the logo to fit the height of the navbar (which a child theme may
+  // change on the desktop).
+  height: 100%;
+  width: auto;
+}
+#site-name {
+  float: left;
+}
+
+// Page header
+// -----------------------------------------------------------------------------
+.page-header {
+  margin: 0 0 18px;
+  h1 {
+    margin: 0;
+  }
+}
+
+// Hide the .page-header for pages with .page-title-hidden.
+.page-title-hidden {
+  .page-header {
+    display: none;
+  }
+}
+
+// Breadcrumb
+// -----------------------------------------------------------------------------
+.breadcrumb {
+  a {
+    i {
+      display: none;
+    }
+  }
+}
+
+// Tabs
+// -----------------------------------------------------------------------------
+.tabs,
+.nav-tabs {
+  margin: 0 0 18px;
+}
+
+// Action Links
+// -----------------------------------------------------------------------------
+.action-links {
+  list-style: none outside none;
+  margin: 0 0 18px;
+  padding: 0;
+  @include clearfix;
+
+  > li {
+    float: left;
+    margin: 0 10px 0 0;
+  }
+}
+
+// Vertical Tabs
+// -----------------------------------------------------------------------------
+div.vertical-tabs {
+  border: none;
+  border: 1px solid #DDD;
+  outline: none;
+  border-radius: 4px;
+  ul.vertical-tabs-list {
+    border: none;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    outline: none;
+    li {
+      border: none;
+      background: none;
+      outline: none !important;
+      border-radius: 4px 0 0 4px;
+      border: 1px solid;
+      border-color: #fff #ddd #fff #fff;
+      &.selected {
+        border-color: #ddd #fff #ddd #ddd;
+      }
+      a {
+        outline: none !important;
+        border-radius: 4px 0 0 4px;
+        &:hover {
+          color: #fff;
+          background: $link-color;
+          text-decoration: none;
+          strong {
+            text-decoration: none;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+  .vertical-tabs-panes {
+    padding: 20px 10px;
+  }
+  .form-type-textfield input {
+    width: 90%;
+    box-sizing: content-box;
+  }
+}
+
+// Tables
+// --------------------------------------------------
+table {
+  width: 100%;
+  margin-bottom: $line-height-base;
+  // Cells
+  th,
+  td {
+    padding: 8px;
+    line-height: $line-height-base;
+    text-align: left;
+    vertical-align: top;
+    border-top: 1px solid $table-border-color;
+    &.checkbox {
+      text-align: center;
+      display: table-cell;
+      min-height: 0;
+      margin-bottom: 0;
+      padding-left: 0;
+      input {
+        float: none !important;
+        margin-left: 0 !important;
+      }
+      div.checkbox {
+        text-align: center;
+        min-height: 0;
+        margin-bottom: 0;
+        padding-left: 0;
+      }
+    }
+  }
+  th {
+    font-weight: bold;
+  }
+  // Bottom align for column headings
+  thead th {
+    vertical-align: bottom;
+  }
+  // Remove top border from thead by default
+  caption + thead tr:first-child th,
+  caption + thead tr:first-child td,
+  colgroup + thead tr:first-child th,
+  colgroup + thead tr:first-child td,
+  thead:first-child tr:first-child th,
+  thead:first-child tr:first-child td {
+    border-top: 0;
+  }
+  // Account for multiple tbody instances
+  tbody + tbody {
+    border-top: 2px solid $table-border-color;
+  }
+}
+
+// Links
+// --------------------------------------------------
+ul.links {
+  padding: 0;
+  list-style: none outside none;
+  &.inline {
+    margin: 0;
+    li {
+      margin: 0 10px 0 0;
+      padding: 0;
+    }
+  }
+}
+
+// Carousel
+// --------------------------------------------------
+.carousel {
+  .carousel-control {
+    z-index: 100;
+  }
+  .carousel-indicators li {
+    float: none;
+    margin-left: 3px;
+    margin-right: 3px;
+    a {
+      display: none;
+    }
+  }
+  .carousel-caption {
+    h1, h2, h3, h4, h5, h6 {
+      color: white;
+    }
+  }
+}
+
+// Pager
+// --------------------------------------------------
+.item-list {
+  ul.pagination {
+    margin: 20px 0;
+    > li {
+      margin: 0;
+      display: inline-block;
+      padding: 0;
+      position: relative;
+      > a, > span {
+        padding: 6px 12px;
+        border-radius: inherit;
+        &.progress-disabled {
+          float: left;
+        }
+      }
+      .ajax-progress {
+        float: left;
+        padding: 6px 5px 6px 10px;
+      }
+    }
+  }
+}
+
+// Misc Fixes
+// --------------------------------------------------
+.ctools-dropdown-container {
+  hr {
+    margin: 0;
+  }
+}
+
+ul.nav,
+ul.navl li,
+ul.dropdown-menu,
+ul.dropdown-menu li {
+  list-style: none outside none !important;
+}
+
+// Calendar
+// --------------------------------------------------
+.calendar-calendar {
+  @extend .col-md-12;
+  table.mini {
+   @extend .table-bordered;
+    td {
+      border: 1px solid $gray-lighter !important;
+      padding: 5px;
+    }
+  }
+}
+.view-header {
+  .date-nav-wrapper {
+    h3 {
+      margin-top: 5px !important;
+      margin-bottom: 0;
+    }
+  }
+}
+
+// jQuery UI tabs
+// --------------------------------------------------
+.ui-tabs .ui-tabs-nav {
+  padding: 0 5px 5px 5px;
+}

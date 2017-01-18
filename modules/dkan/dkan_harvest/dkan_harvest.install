@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ * Install file for dkan_harvest.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dkan_harvest_install() {
+  dkan_harvest_uuid_length();
+}
+
+/**
+ * Changes length of uuid field to support URLs.
+ */
+function dkan_harvest_update_7001(&$sandbox) {
+  dkan_harvest_uuid_length();
+}
+
+/**
+ * Changes length of uuid field to 144 chars.
+ */
+function dkan_harvest_uuid_length() {
+  $field = uuid_schema_field_definition();
+  $field['length'] = 144;
+  db_change_field('node', 'uuid', 'uuid', $field);
+}

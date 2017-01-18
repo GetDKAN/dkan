@@ -1,0 +1,450 @@
+diff --git a/panelizer.info b/panelizer.info
+index 2cb11a9..b71d583 100644
+--- a/panelizer.info
++++ b/panelizer.info
+@@ -1,8 +1,8 @@
+ name = Panelizer
+ description = Allow any node type to have custom panel displays, similar to the panel node type.
+ package = "Panels"
+-dependencies[] = panels (>= 3.5)
+-dependencies[] = ctools (>= 1.9)
++dependencies[] = panels
++dependencies[] = ctools
+ dependencies[] = page_manager
+ core = 7.x
+ configure = admin/structure/panelizer
+@@ -34,6 +34,9 @@ files[] = tests/panelizer.node_revisions.test
+ ; Tests: Standard node translations.
+ files[] = tests/panelizer.node_content_translation.test
+ 
++; Tests: Exportables.
++files[] = tests/panelizer.exportables.test
++
+ ; Tests: Panels IPE.
+ files[] = tests/panelizer.with_panels_ipe.test
+ 
+diff --git a/panelizer.module b/panelizer.module
+index 9133367..f2d2c36 100644
+--- a/panelizer.module
++++ b/panelizer.module
+@@ -518,6 +518,15 @@ function panelizer_panelizer_defaults_alter(&$items) {
+     $handler->hook_panelizer_defaults($items);
+   }
+ 
++  // If a default Panels display has no storage type, set it.
++  foreach ($items as &$panelizer) {
++    $display =& $panelizer->display;
++    if (empty($display->storage_type)) {
++      $display->storage_type = 'panelizer_default';
++      $display->storage_id = $panelizer->name;
++    }
++  }
++
+   // Allow features_overrides to alter the config.
+   drupal_alter('panelizer_defaults_override', $items);
+ }
+diff --git a/tests/panelizer.exportables.test b/tests/panelizer.exportables.test
+new file mode 100644
+index 0000000..a122e61
+--- /dev/null
++++ b/tests/panelizer.exportables.test
+@@ -0,0 +1,167 @@
++<?php
++
++/**
++ * @file
++ * Test the exportables functionality for Panelizer.
++ */
++
++class PanelizerExportablesTest extends PanelizerTestHelper {
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function getInfo() {
++    return array(
++      'name' => 'Panelizer exportables',
++      'description' => 'Test how exported configurations work.',
++      'group' => 'Panelizer',
++    );
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  function setUp(array $modules = array()) {
++    // Need this extra module for the default it exports.
++    $modules[] = 'panelizer_test_exportables';
++
++    parent::setUp($modules);
++
++    // Enable Panelizer for the 'page' content type.
++    $this->togglePanelizer();
++    // Enable the Panels view mode too.
++    $this->simpleEnablePage('node_view');
++
++    // Reset the static variable used to identify permissions, otherwise the
++    // permissions check in drupalCreateUser will fail because of the new perms
++    // added for the newly Panelizered entity display.
++    $this->checkPermissions(array(), TRUE);
++  }
++
++  /**
++   * Verify that the exported configuration can be edited.
++   */
++  // function testExportablesAreConfigurable() {
++  //   $perms = array(
++  //     // Standard node permissions.
++  //     'administer content types',
++  //     'access administration pages',
++  //
++  //     // Panelizer.
++  //     'administer panelizer',
++  //
++  //     // Permission to manage the 'content', i.e. the display.
++  //     'administer panelizer node page content',
++  //   );
++  //   $web_user = $this->drupalCreateUser($perms);
++  //   $this->drupalLogin($web_user);
++  //
++  //   // Load the Panelizer admin page for the 'page' content type.
++  //   $this->drupalGet('admin/structure/types/manage/page/panelizer/page_manager');
++  //   $this->assertResponse(200);
++  //
++  //   // The two defaults that were exported.
++  //   $defaults = array(
++  //     'node:page:with_storage' => 'Test (with Storage API)',
++  //     'node:page:without_storage' => 'Test (without Storage API)',
++  //   );
++  //
++  //   // Confirm the two exported displays are listed.
++  //   foreach ($defaults as $default => $label) {
++  //     $this->assertText($default);
++  //   }
++  //
++  //   // Try loading the exported displays' configuration pages.
++  //   foreach ($defaults as $default => $label) {
++  //     // $default = urlencode($default);
++  //     $this->drupalGet('admin/structure/types/manage/page/panelizer/page_manager/' . $default . '/settings');
++  //     $this->assertResponse(200);
++  //     $this->assertFieldByName('title', $label);
++  //     $this->assertFieldByName('css_class', str_replace(':', '-', $default));
++  //     $this->drupalGet('admin/structure/types/manage/page/panelizer/page_manager/' . $default . '/context');
++  //     $this->assertResponse(200);
++  //     $this->assertText(t('Built in context'));
++  //     $this->drupalGet('admin/structure/types/manage/page/panelizer/page_manager/' . $default . '/access');
++  //     $this->assertResponse(200);
++  //     $this->assertText(t('No criteria selected, this test will pass.'));
++  //     $this->drupalGet('admin/structure/types/manage/page/panelizer/page_manager/' . $default . '/layout');
++  //     $this->assertResponse(200);
++  //     $this->assertFieldByName('categories');
++  //     $this->drupalGet('admin/structure/types/manage/page/panelizer/page_manager/' . $default . '/content');
++  //     $this->assertResponse(200);
++  //   }
++  // }
++
++  /**
++   * Verify that the exported configuration can be edited when applied to an
++   * individual entity.
++   */
++  function testExportablesChangeablePreEntity() {
++    $perms = array(
++      // Standard node permissions.
++      'create page content',
++      'edit own page content',
++
++      // Allow access to the 'panelizer' tab.
++      'administer panelizer node page overview',
++      // Permission to manage the 'content', i.e. the display.
++      'administer panelizer node page content',
++      // Allow choosing the display that is used.
++      'administer panelizer node page choice',
++    );
++    $web_user = $this->drupalCreateUser($perms);
++    $this->drupalLogin($web_user);
++
++    // Create a node.
++    $edit = array(
++      'panelizer[page_manager][name]' => 'node:page:without_storage',
++    );
++    $node = $this->createNode($edit);
++    $this->assertNotEqual($node->nid, 0);
++
++    // Load the Panelizer main page.
++    $this->drupalGet('node/' . $node->nid . '/panelizer');
++    $this->assertResponse(200);
++
++    // Confirm there's a link to the 'content' page, and load it.
++    $path = url('node/' . $node->nid . '/panelizer/page_manager/content');
++    $this->assertLinkByHref($path);
++    $this->drupalGet($path);
++    $this->assertResponse(200);
++
++    // Confirm the 'Add content' link is on the page.
++    $this->assertLink(t('Add content'));
++    $ajax_path = url('panels/ajax/editor/select-content/panelizer:node:' . $node->nid . ':page_manager:' . $node->vid . '/center');
++    $this->assertLinkByHref($ajax_path);
++
++    // Load the AJAX path to see what it contains.
++    $json = $this->drupalGetAJAX($ajax_path);
++    $this->assertResponse(200);
++
++    // Examine the JSON response from the AJAX API.
++    $this->verbose('<pre>' . print_r($json, TRUE) . '</pre>');
++    // $this->assertEqual(count($json), 2);
++    $this->assertTrue(isset($json[0]['command']));
++    $this->assertEqual($json[0]['command'], 'settings');
++    $this->assertTrue(isset($json[0]['settings']));
++    $this->assertTrue(isset($json[0]['merge']));
++    $this->assertEqual($json[0]['merge'], 'TRUE');
++    $this->assertTrue(isset($json[1]['command']));
++
++    // This is what should happen.
++    $this->assertEqual($json[1]['command'], 'modal_display');
++    $this->assertTrue(isset($json[1]['title']));
++    $this->assertTrue(isset($json[1]['output']));
++    if (isset($json[1]['title'])) {
++      $this->assertEqual($json[1]['title'], t('Add content to Center'));
++    }
++
++    // This is what should not happen.
++    $this->assertNotEqual($json[1]['command'], 'alert');
++    $this->assertFalse(isset($json[1]['text']));
++    if (isset($json[1]['text'])) {
++      $this->assertNotEqual($json[1]['text'], t('You are not authorized to access this page.'), 'Access Denied error in the AJAX response.');
++    }
++  }
++
++}
+diff --git a/tests/panelizer_test_exportables.info b/tests/panelizer_test_exportables.info
+new file mode 100644
+index 0000000..1dfe69c
+--- /dev/null
++++ b/tests/panelizer_test_exportables.info
+@@ -0,0 +1,8 @@
++name = Panelizer Test Exportables
++description = "Helper module for testing Panelizer's exportables."
++core = 7.x
++
++; Don't show this on the modules admin page.
++hidden = TRUE
++
++dependencies[] = panelizer
+diff --git a/tests/panelizer_test_exportables.module b/tests/panelizer_test_exportables.module
+new file mode 100644
+index 0000000..029416f
+--- /dev/null
++++ b/tests/panelizer_test_exportables.module
+@@ -0,0 +1,212 @@
++<?php
++
++/**
++ * @file
++ *
++ */
++
++/**
++ * Implements hook_ctools_plugin_api().
++ */
++function panelizer_test_exportables_ctools_plugin_api($module = NULL, $api = NULL) {
++  if ($module == "panelizer" && $api == "panelizer") {
++    return array("version" => "1");
++  }
++}
++
++/**
++ * Implements hook_panelizer_defaults().
++ */
++function panelizer_test_exportables_panelizer_defaults() {
++  $export = array();
++
++  $panelizer = new stdClass();
++  $panelizer->disabled = FALSE; /* Edit this to true to make a default panelizer disabled initially */
++  $panelizer->api_version = 1;
++  $panelizer->title = 'Test (with Storage API)';
++  $panelizer->panelizer_type = 'node';
++  $panelizer->panelizer_key = 'page';
++  $panelizer->access = array();
++  $panelizer->view_mode = 'page_manager';
++  $panelizer->name = 'node:page:with_storage';
++  $panelizer->css_id = '';
++  $panelizer->css_class = 'node-page-with_storage';
++  $panelizer->css = '';
++  $panelizer->no_blocks = FALSE;
++  $panelizer->title_element = 'H2';
++  $panelizer->link_to_entity = TRUE;
++  $panelizer->extra = array();
++  $panelizer->pipeline = 'standard';
++  $panelizer->contexts = array();
++  $panelizer->relationships = array();
++  $display = new panels_display();
++  $display->layout = 'flexible';
++  $display->layout_settings = array();
++  $display->panel_settings = array(
++    'style_settings' => array(
++      'default' => NULL,
++      'center' => NULL,
++    ),
++  );
++  $display->cache = array();
++  $display->storage_type = 'panelizer_default';
++  $display->storage_id = 'node:page:with_storage';
++  $display->title = '%node:title';
++  $display->uuid = '4c374a0f-7b0b-476a-a0b4-86c8507c9a1d';
++  $display->content = array();
++  $display->panels = array();
++  $pane = new stdClass();
++  $pane->pid = 'new-e469448b-1f59-4eed-9551-00aede8e914d';
++  $pane->panel = 'center';
++  $pane->type = 'entity_field';
++  $pane->subtype = 'node:body';
++  $pane->shown = TRUE;
++  $pane->access = array();
++  $pane->configuration = array(
++    'label' => 'hidden',
++    'formatter' => 'text_default',
++    'delta_limit' => 0,
++    'delta_offset' => '0',
++    'delta_reversed' => FALSE,
++    'formatter_settings' => array(),
++    'context' => 'panelizer',
++  );
++  $pane->cache = array();
++  $pane->style = array(
++    'settings' => NULL,
++  );
++  $pane->css = array();
++  $pane->extras = array();
++  $pane->position = 0;
++  $pane->locks = array();
++  $pane->uuid = 'e469448b-1f59-4eed-9551-00aede8e914d';
++  $display->content['new-e469448b-1f59-4eed-9551-00aede8e914d'] = $pane;
++  $display->panels['center'][] = 'new-e469448b-1f59-4eed-9551-00aede8e914d';
++  $pane = new stdClass();
++  $pane->pid = 'new-59b236d1-4b04-4009-9845-a9a41141658d';
++  $pane->panel = 'center';
++  $pane->type = 'node_links';
++  $pane->subtype = 'node_links';
++  $pane->shown = TRUE;
++  $pane->access = array();
++  $pane->configuration = array(
++    'override_title' => FALSE,
++    'override_title_text' => '',
++    'build_mode' => 'page_manager',
++    'identifier' => '',
++    'link' => TRUE,
++    'context' => 'panelizer',
++  );
++  $pane->cache = array();
++  $pane->style = array(
++    'settings' => NULL,
++  );
++  $pane->css = array(
++    'css_class' => 'link-wrapper',
++  );
++  $pane->extras = array();
++  $pane->position = 3;
++  $pane->locks = array();
++  $pane->uuid = '59b236d1-4b04-4009-9845-a9a41141658d';
++  $display->content['new-59b236d1-4b04-4009-9845-a9a41141658d'] = $pane;
++  $display->panels['center'][] = 'new-59b236d1-4b04-4009-9845-a9a41141658d';
++  $display->hide_title = PANELS_TITLE_FIXED;
++  $display->title_pane = 'new-e469448b-1f59-4eed-9551-00aede8e914d';
++  $panelizer->display = $display;
++  $export[$panelizer->name] = $panelizer;
++
++  $panelizer = new stdClass();
++  $panelizer->disabled = FALSE; /* Edit this to true to make a default panelizer disabled initially */
++  $panelizer->api_version = 1;
++  $panelizer->title = 'Test (without Storage API)';
++  $panelizer->panelizer_type = 'node';
++  $panelizer->panelizer_key = 'page';
++  $panelizer->access = array();
++  $panelizer->view_mode = 'page_manager';
++  $panelizer->name = 'node:page:without_storage';
++  $panelizer->css_id = '';
++  $panelizer->css_class = 'node-page-without_storage';
++  $panelizer->css = '';
++  $panelizer->no_blocks = FALSE;
++  $panelizer->title_element = 'H2';
++  $panelizer->link_to_entity = TRUE;
++  $panelizer->extra = array();
++  $panelizer->pipeline = 'standard';
++  $panelizer->contexts = array();
++  $panelizer->relationships = array();
++  $display = new panels_display();
++  $display->layout = 'flexible';
++  $display->layout_settings = array();
++  $display->panel_settings = array(
++    'style_settings' => array(
++      'default' => NULL,
++      'center' => NULL,
++    ),
++  );
++  $display->cache = array();
++  $display->title = '%node:title';
++  $display->uuid = '4c374a0f-7b0b-476a-a0b4-86c8507c9a1c';
++  $display->content = array();
++  $display->panels = array();
++  $pane = new stdClass();
++  $pane->pid = 'new-e469448b-1f59-4eed-9551-00aede8e914f';
++  $pane->panel = 'center';
++  $pane->type = 'entity_field';
++  $pane->subtype = 'node:body';
++  $pane->shown = TRUE;
++  $pane->access = array();
++  $pane->configuration = array(
++    'label' => 'hidden',
++    'formatter' => 'text_default',
++    'delta_limit' => 0,
++    'delta_offset' => '0',
++    'delta_reversed' => FALSE,
++    'formatter_settings' => array(),
++    'context' => 'panelizer',
++  );
++  $pane->cache = array();
++  $pane->style = array(
++    'settings' => NULL,
++  );
++  $pane->css = array();
++  $pane->extras = array();
++  $pane->position = 0;
++  $pane->locks = array();
++  $pane->uuid = 'e469448b-1f59-4eed-9551-00aede8e914f';
++  $display->content['new-e469448b-1f59-4eed-9551-00aede8e914f'] = $pane;
++  $display->panels['center'][] = 'new-e469448b-1f59-4eed-9551-00aede8e914f';
++  $pane = new stdClass();
++  $pane->pid = 'new-59b236d1-4b04-4009-9845-a9a411416580';
++  $pane->panel = 'center';
++  $pane->type = 'node_links';
++  $pane->subtype = 'node_links';
++  $pane->shown = TRUE;
++  $pane->access = array();
++  $pane->configuration = array(
++    'override_title' => FALSE,
++    'override_title_text' => '',
++    'build_mode' => 'page_manager',
++    'identifier' => '',
++    'link' => TRUE,
++    'context' => 'panelizer',
++  );
++  $pane->cache = array();
++  $pane->style = array(
++    'settings' => NULL,
++  );
++  $pane->css = array(
++    'css_class' => 'link-wrapper',
++  );
++  $pane->extras = array();
++  $pane->position = 3;
++  $pane->locks = array();
++  $pane->uuid = '59b236d1-4b04-4009-9845-a9a411416580';
++  $display->content['new-59b236d1-4b04-4009-9845-a9a411416580'] = $pane;
++  $display->panels['center'][] = 'new-59b236d1-4b04-4009-9845-a9a411416580';
++  $display->hide_title = PANELS_TITLE_FIXED;
++  $display->title_pane = 'new-e469448b-1f59-4eed-9551-00aede8e914f';
++  $panelizer->display = $display;
++  $export[$panelizer->name] = $panelizer;
++
++  return $export;
++}

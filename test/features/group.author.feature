@@ -1,4 +1,4 @@
-@javascript
+# time:0m13.79s
 Feature: Site Manager administer groups
   In order to manage site organization
   As a Site Manager
@@ -11,7 +11,7 @@ Feature: Site Manager administer groups
 
   Background:
     Given pages:
-      | title     | url             |
+      | name      | url             |
       | Groups    | /groups         |
       | Content   | /admin/content/ |
     Given users:
@@ -28,21 +28,33 @@ Feature: Site Manager administer groups
       | Group 01 | Badmin | Yes       |
       | Group 02 | Badmin | Yes       |
       | Group 03 | Badmin | No        |
+    And "Tags" terms:
+      | name    |
+      | world   |
+      | results |
     And group memberships:
       | user    | group    | role on group        | membership status |
       | Gabriel | Group 01 | administrator member | Active            |
       | Katie   | Group 01 | member               | Active            |
       | Jaz     | Group 01 | member               | Pending           |
       | Celeste | Group 02 | member               | Active            |
+    And "Tags" terms:
+      | name     |
+      | price    |
+      | election |
     And datasets:
       | title      | publisher | tags       | author  | published | description                |
-      | Dataset 01 | Group 01  | price      | Katie   | Yes       | Increase of toy prices     |
-      | Dataset 02 | Group 01  | price      | Katie   | No        | Cost of oil in January     |
-      | Dataset 03 | Group 01  | election   | Gabriel | Yes       | Election districts         |
+      | Dataset 01 | Group 01  | world      | Katie   | Yes       | Increase of toy prices     |
+      | Dataset 02 | Group 01  | world      | Katie   | No        | Cost of oil in January     |
+      | Dataset 03 | Group 01  | results    | Gabriel | Yes       | Election results           |
+    And "format" terms:
+      | name |
+      | csv  |
+      | zip |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
 
   @api
   Scenario: Request group membership
@@ -76,10 +88,9 @@ Feature: Site Manager administer groups
     Then I should be on the "Group 01" page
     And I should see "Request group membership" in the "group block" region
 
-  @fixme @api @testBug
-    #TODO: Sees the navbar Group link, not the Group's group link - need to check by region
+  @api
   Scenario: I should not be able to edit groups
     Given I am logged in as "Katie"
     When I am on "Group 01" page
-    Then I should not see the link "Edit" in the "primary tabs" region
-    And I should not see the link "Group" in the "primary tabs" region
+    Then I should not see the link "Edit"
+    And I should not see the link "fa-users"

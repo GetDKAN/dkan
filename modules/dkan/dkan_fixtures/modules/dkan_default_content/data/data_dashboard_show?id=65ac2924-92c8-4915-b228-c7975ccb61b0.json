@@ -1,0 +1,419 @@
+{
+    "result": {
+        "path": "dynamic-transportation-visualizations",
+        "uuid": "65ac2924-92c8-4915-b228-c7975ccb61b0",
+        "id": "37",
+        "type": "data_dashboard",
+        "title": "Dynamic Transportation Visualizations",
+        "created": "1472693478",
+        "changed": "1472709471",
+        "body": {
+            "und": [
+                {
+                    "value": "Transportation systems across the country are adapting to meet the needs of their stakeholders. It's a basic service that many citizens rely on, so it has to work for everyone all of the time. ",
+                    "summary": "",
+                    "format": "html",
+                    "safe_value": "<p>Transportation systems across the country are adapting to meet the needs of their stakeholders. It's a basic service that many citizens rely on, so it has to work for everyone all of the time.</p>\n",
+                    "safe_summary": ""
+                }
+            ]
+        },
+        "field_topic": [
+            {
+                "name": "Transportation",
+                "display_name": "Transportation",
+                "id": "f8112e3b-d62d-433d-9b9b-724e56ef3fd8"
+            },
+            {
+                "name": "City Planning",
+                "display_name": "City Planning",
+                "id": "ed451aa0-f7fc-409a-b3be-30a5b7f26751"
+            }
+        ],
+        "panelizer": {
+            "panels_display": {
+                "args": [],
+                "content": [],
+                "panels": [],
+                "incoming_content": null,
+                "css_id": null,
+                "context": [],
+                "renderer": "standard",
+                "layout": "radix_sutro",
+                "layout_settings": [],
+                "panel_settings": {
+                    "style_settings": {
+                        "default": null,
+                        "header": null,
+                        "sidebar": null,
+                        "contentmain": null,
+                        "column1": null,
+                        "column2": null,
+                        "column3": null,
+                        "secondarycolumn1": null,
+                        "secondarycolumn2": null,
+                        "secondarycolumn3": null,
+                        "footer": null
+                    }
+                },
+                "cache": [],
+                "title": "",
+                "hide_title": "0",
+                "title_pane": "0",
+                "uuid": "53bb618c-8f72-449f-a311-6568322452d6",
+                "storage_type": "panelizer_entity",
+                "storage_id": "node:37:default"
+            },
+            "panels_pane": [
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:135e81d2-23e1-4cd7-9ec3-420c65833911",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "3",
+                    "locks": [],
+                    "uuid": "135e81d2-23e1-4cd7-9ec3-420c65833911",
+                    "fpp_data": {
+                        "title": "Commuter flows within America's regional transit systems",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Re-usable content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "135e81d2-23e1-4cd7-9ec3-420c65833911",
+                        "language": "",
+                        "field_basic_text_text": [
+                            {
+                                "value": "Getting from place to place looks different for every citizen, so transportation comes in many shapes and sizes. Some regions rely on local subways and trolleys while others adopt modern modes like Bus Rapid Transit (BRT) and bikeshare. In many cases, regions use a diverse combination of all transportation types to meet the needs and preferences of an increasingly multi-modal world.   \r\n\r\nThe dynamic map above visualizes the traffic on [Long Island Rail Road](http://www.baruch.cuny.edu/nycdata/travel/lirr-stats.htm), a heavy rail line in New York City, NY. \r\n\r\nThe LIRR makes **124** stops\r\nto serve **85,868,246** commuters annually, \r\n**298,448** of whom are weekday passengers.\r\n\r\nOn the map, each dot lighting up represents a train making a stop. The flashing map shows how many people use these services in the course of just 20 minutes. Looking at the map for only a couple seconds, it's easy to see the role transportation plays in our daily lives. \r\n\r\nThat's why it's important to have a thorough understanding of our systems and how citizens navigate within them. Visualizations provide a better way to understand complex networks, key challenges, and opportunities. Open data helps make it happen. In fact, this map was created by a citizen with open data. \r\n\r\nExplore the map above and other visualizations on this open data dashboard to learn more about commuter flows in different parts of the country. \r\n",
+                                "format": "html",
+                                "safe_value": "<p>Getting from place to place looks different for every citizen, so transportation comes in many shapes and sizes. Some regions rely on local subways and trolleys while others adopt modern modes like Bus Rapid Transit (BRT) and bikeshare. In many cases, regions use a diverse combination of all transportation types to meet the needs and preferences of an increasingly multi-modal world.</p>\n<p>The dynamic map above visualizes the traffic on <a href=\"http://www.baruch.cuny.edu/nycdata/travel/lirr-stats.htm\">Long Island Rail Road</a>, a heavy rail line in New York City, NY.</p>\n<p>The LIRR makes <strong>124</strong> stops<br />\nto serve <strong>85,868,246</strong> commuters annually,<br />\n<strong>298,448</strong> of whom are weekday passengers.</p>\n<p>On the map, each dot lighting up represents a train making a stop. The flashing map shows how many people use these services in the course of just 20 minutes. Looking at the map for only a couple seconds, it's easy to see the role transportation plays in our daily lives.</p>\n<p>That's why it's important to have a thorough understanding of our systems and how citizens navigate within them. Visualizations provide a better way to understand complex networks, key challenges, and opportunities. Open data helps make it happen. In fact, this map was created by a citizen with open data.</p>\n<p>Explore the map above and other visualizations on this open data dashboard to learn more about commuter flows in different parts of the country.</p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "column2",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "",
+                        "remote_source": "https://d9a.cartodb.com/viz/50b4e032-b6e6-11e4-bd09-0e0c41326911/embed_map",
+                        "height": "600",
+                        "width": "100%",
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "a25b32c2-8b21-468c-83cf-3f748ab2a1e1"
+                },
+                {
+                    "panel": "column2",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:fe24605d-6b6a-495e-8bc4-338e633ab43e",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "fe24605d-6b6a-495e-8bc4-338e633ab43e",
+                    "fpp_data": {
+                        "title": "Los Angeles, California (Metro System)",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Re-usable content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "fe24605d-6b6a-495e-8bc4-338e633ab43e",
+                        "language": "",
+                        "field_basic_text_text": [
+                            {
+                                "value": "The movement of transit can be difficult to capture and quantify, let alone make into an engaging visualization. General Transit Feed Specification (GTFS) data creates a common format for agencies to provide data and developers to consume it. The dynamic heat map above [uses open GTFS data](http://developer.metro.net/introduction/gtfs-data/download-metros-gtfs-data/) to highlight the life of a transit network. \r\n\r\nThis map shows where Bus Rapid Transit (BRT) lines are operating in the LA Metro area. BRT is different from a standard bus route that is common to most transportation networks. Standard routes have stops designated, and the bus may make as many stops as needed. In some cases, a stop could mean a single city block. Bus Rapid Transit lines minimize time spent commuting as well as auto congestion by covering more ground and making fewer stops. This map is made with the digital mapping tool CartoDB. You can create your own data visualizations using digital tools and embed them onto your DKAN site. \r\n\r\n\r\n\r\nFrom the spending perspective, BRT is also much more affordable, flexible, and sustainable than any rail options. Especially for newer cities without rail lines and sprawled metropolitan areas, BRT can translate into an important piece of the larger transportation network. In the case of LA, [BRT could triple the size of the network without great expense](http://la.streetsblog.org/2014/06/03/guest-opinion-the-future-of-los-angeles-is-bus-rapid-transit/). \r\n\r\nIn the visualization above, the higher the concentration of BRT lines, the brighter the color. With this map, it's easy to see which areas in LA's metro area are getting the most service (as measured by bus activity) and give agencies insight on how to [best allocate resources](https://losangeles2b.files.wordpress.com/2012/12/web-_ten.pdf). ",
+                                "format": "html",
+                                "safe_value": "<p>The movement of transit can be difficult to capture and quantify, let alone make into an engaging visualization. General Transit Feed Specification (GTFS) data creates a common format for agencies to provide data and developers to consume it. The dynamic heat map above <a href=\"http://developer.metro.net/introduction/gtfs-data/download-metros-gtfs-data/\">uses open GTFS data</a> to highlight the life of a transit network.</p>\n<p>This map shows where Bus Rapid Transit (BRT) lines are operating in the LA Metro area. BRT is different from a standard bus route that is common to most transportation networks. Standard routes have stops designated, and the bus may make as many stops as needed. In some cases, a stop could mean a single city block. Bus Rapid Transit lines minimize time spent commuting as well as auto congestion by covering more ground and making fewer stops. This map is made with the digital mapping tool CartoDB. You can create your own data visualizations using digital tools and embed them onto your DKAN site.</p>\n<p>From the spending perspective, BRT is also much more affordable, flexible, and sustainable than any rail options. Especially for newer cities without rail lines and sprawled metropolitan areas, BRT can translate into an important piece of the larger transportation network. In the case of LA, <a href=\"http://la.streetsblog.org/2014/06/03/guest-opinion-the-future-of-los-angeles-is-bus-rapid-transit/\">BRT could triple the size of the network without great expense</a>.</p>\n<p>In the visualization above, the higher the concentration of BRT lines, the brighter the color. With this map, it's easy to see which areas in LA's metro area are getting the most service (as measured by bus activity) and give agencies insight on how to <a href=\"https://losangeles2b.files.wordpress.com/2012/12/web-_ten.pdf\">best allocate resources</a>.</p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "column1",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:06dadd90-17a0-47a0-a071-3c4e868cb95f",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "06dadd90-17a0-47a0-a071-3c4e868cb95f",
+                    "fpp_data": {
+                        "title": "Miami-Dade County, Florida (Bike Lanes)",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Re-usable content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "06dadd90-17a0-47a0-a071-3c4e868cb95f",
+                        "language": "",
+                        "field_basic_text_text": [
+                            {
+                                "value": "While residents in suburban and rural areas ride bikes primarily as a recreational activity, more and more biking is become a common form of transportation in urban areas. With a greater number of people on bikes, it's clear that infrastructure and resources for bicyclists is increasingly essential. \r\n\r\nThis map made with ArcGIS shows the [existing bike lanes for the larger Miami-Dade County area](http://gis.mdc.opendata.arcgis.com/datasets/5c850d795e17485ebf8a8d179d649d9c_0?%22%20style=%22width:%20800px;%20height:%20600px;) in Florida using open data from the regional Metropolitan Planning Organization (MPO). Bike lanes are a core part of pedestrian, bicyclist, and automotive safety. They show clear right-of-way paths and encourage everyone to follow traffic safety rules. You can create your own data visualizations using digital tools and embed them onto your DKAN site. \r\n\r\nThe data released by the Miami-Dade MPO provide information about the number of bike lanes, the start and stop points, etc. With the visualization above we see the data as more than a list. It's easy to see exactly where bike lanes exist and how much area is covered in relation to the entire county. This data, along with other datasets, inform long-term plans for pedestrian and bicycle safety. The [Miami-Dade MPO 2040 plan for pedestrian bicycle safety](http://miamidadempo.org/library/plans/miami-dade-2040-bicycle-pedestrian-plan.pdf) identifies major improvements that will be achieved over the next few decades.   \r\n\r\n\r\n<center>[Go to Data](../dataset/florida-bike-lanes/resource/960687d8-582c-4f29-b1e4-113781e58e3b)</center>",
+                                "format": "html",
+                                "safe_value": "<p>While residents in suburban and rural areas ride bikes primarily as a recreational activity, more and more biking is become a common form of transportation in urban areas. With a greater number of people on bikes, it's clear that infrastructure and resources for bicyclists is increasingly essential.</p>\n<p>This map made with ArcGIS shows the <a href=\"http://gis.mdc.opendata.arcgis.com/datasets/5c850d795e17485ebf8a8d179d649d9c_0?%22%20style=%22width:%20800px;%20height:%20600px;\">existing bike lanes for the larger Miami-Dade County area</a> in Florida using open data from the regional Metropolitan Planning Organization (MPO). Bike lanes are a core part of pedestrian, bicyclist, and automotive safety. They show clear right-of-way paths and encourage everyone to follow traffic safety rules. You can create your own data visualizations using digital tools and embed them onto your DKAN site.</p>\n<p>The data released by the Miami-Dade MPO provide information about the number of bike lanes, the start and stop points, etc. With the visualization above we see the data as more than a list. It's easy to see exactly where bike lanes exist and how much area is covered in relation to the entire county. This data, along with other datasets, inform long-term plans for pedestrian and bicycle safety. The <a href=\"http://miamidadempo.org/library/plans/miami-dade-2040-bicycle-pedestrian-plan.pdf\">Miami-Dade MPO 2040 plan for pedestrian bicycle safety</a> identifies major improvements that will be achieved over the next few decades.</p>\n</p>\n<p><center><a href=\"../dataset/florida-bike-lanes/resource/960687d8-582c-4f29-b1e4-113781e58e3b\">Go to Data</a></center></p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:9b90511b-dcf8-44f3-b047-fccada93eb00",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "9b90511b-dcf8-44f3-b047-fccada93eb00",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Re-usable content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "9b90511b-dcf8-44f3-b047-fccada93eb00",
+                        "language": "",
+                        "field_basic_text_text": [
+                            {
+                                "value": "*Transportation systems across the country are adapting to meet the needs of their stakeholders. It's a basic service that many citizens rely on, so it has to work for everyone all of the time. Bikeshare, light and heavy rail, bus routes, and automotive come together for a robust network of mobility. Open data helps us see the bigger picture. Explore the dynamic transportation visualizations dashboard to see the big picture.*",
+                                "format": "html",
+                                "safe_value": "<p><em>Transportation systems across the country are adapting to meet the needs of their stakeholders. It's a basic service that many citizens rely on, so it has to work for everyone all of the time. Bikeshare, light and heavy rail, bus routes, and automotive come together for a robust network of mobility. Open data helps us see the bigger picture. Explore the dynamic transportation visualizations dashboard to see the big picture.</em></p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:5863b0b2-26ce-4d59-a636-4e6019c4b36d",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "5863b0b2-26ce-4d59-a636-4e6019c4b36d",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "spotlight",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "5863b0b2-26ce-4d59-a636-4e6019c4b36d",
+                        "language": "",
+                        "field_basic_spotlight_duration": [
+                            {
+                                "value": null
+                            }
+                        ],
+                        "field_basic_spotlight_items": [
+                            {
+                                "alt": "Subway train departing",
+                                "title": "GTFS Data and Commuters",
+                                "height": 996,
+                                "width": 1500,
+                                "description": "GTFS data can tell us a lot about how riders use different systems and how often. ",
+                                "link": "",
+                                "type": "image",
+                                "image_path": "files/data_dashboard/tranist-001.jpg"
+                            },
+                            {
+                                "alt": "Bike Rentals",
+                                "title": "More Bikeshare, More Bike Lanes",
+                                "height": 1366,
+                                "width": 2048,
+                                "description": "Does the infrastructure of bike lanes relate to an increase in bikeshare memberships? ",
+                                "link": "",
+                                "type": "image",
+                                "image_path": "files/data_dashboard/transit-003.jpg"
+                            },
+                            {
+                                "alt": "Heavy Traffic",
+                                "title": "",
+                                "height": 1040,
+                                "width": 1000,
+                                "description": "As cities get denser and transit systems get larger there may soon be fewer cars on the road. ",
+                                "link": "",
+                                "type": "image",
+                                "image_path": "files/data_dashboard/transit-004.jpg"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "column1",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "",
+                        "remote_source": "https://federicca.carto.com/viz/8591dcb4-49cb-11e6-b680-0e05a8b3e3d7/embed_map",
+                        "height": "600",
+                        "width": "100%",
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "c5f8c1bd-fdc9-496c-b5b1-630660860813"
+                },
+                {
+                    "panel": "header",
+                    "type": "entity_field",
+                    "subtype": "node:field_topic",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "label": "title",
+                        "formatter": "dkan_topic_formatter",
+                        "delta_limit": "0",
+                        "delta_offset": "0",
+                        "delta_reversed": 0,
+                        "formatter_settings": [],
+                        "context": "panelizer",
+                        "override_title": 1,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "f4fb31f1-150b-438e-9f65-d216df6a8880"
+                },
+                {
+                    "panel": "footer",
+                    "type": "block",
+                    "subtype": "dkan_sitewide-dkan_sitewide_search_bar",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "override_title": 1,
+                        "override_title_text": "Search Your Data",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "65ad5074-f9ad-4ce6-9ede-ffbb2cee7b23"
+                }
+            ],
+            "panelizer_entity": {
+                "entity_type": "node",
+                "view_mode": "default",
+                "name": null,
+                "css_id": "",
+                "css_class": "",
+                "css": "",
+                "no_blocks": "0",
+                "title_element": "H2",
+                "link_to_entity": "0",
+                "extra": [],
+                "pipeline": "ipe",
+                "relationships": []
+            }
+        }
+    }
+}

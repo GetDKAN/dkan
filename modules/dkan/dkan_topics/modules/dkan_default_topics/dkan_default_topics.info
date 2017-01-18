@@ -1,0 +1,7 @@
+name = DKAN Default Topics
+description = Default topic terms.
+core = 7.x
+package = DKAN Features
+dependencies[] = dkan_topics
+dependencies[] = taxonomy_fixtures
+dependencies[] = taxonomy

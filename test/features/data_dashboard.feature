@@ -1,7 +1,8 @@
+# time:0m23.59s
 Feature: Data Dashboard
 
   Background:
-    Given Data Dashboard:
+    Given data dashboards:
       | title        |
       | Dashboard 01 |
       | Dashboard 02 |
@@ -20,7 +21,7 @@ Feature: Data Dashboard
     And I click "Create Dashboard"
     Then I should see "Create Data Dashboard"
     When I fill in "title" with "My new dashboard"
-    And I select the radio button "Radix Boxton" with the id "edit-layout-radix-boxton"
+    And I select the radio button "Boxton" with the id "edit-layout-radix-boxton"
     And I press "Save"
     Then I should see "Your Data Dashboard 'My new dashboard' has been created"
     And I should see "Start adding content by clicking on the + sign on each panel"

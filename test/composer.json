@@ -1,8 +1,16 @@
 {
     "require": {
-        "behat/behat": "3.0.*@dev",
+        "phpunit/phpunit": "4.6.*",
+        "behat/behat": "3.1.*@dev",
         "devinci/devinci-behat-extension": "dev-master",
-        "nucivic/dkanextension": "master-dev"
+        "myplanetdigital/function_mock": "dev-master",
+        "drupal/drupal-driver": "^1.2",
+        "drupal/drupal-extension": "~3.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Drupal\\DKANExtension\\": "dkanextension/src/"
+        }
     },
     "config": {
         "bin-dir": "bin/"

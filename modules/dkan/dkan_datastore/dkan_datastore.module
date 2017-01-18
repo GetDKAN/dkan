@@ -1,0 +1,607 @@
+<?php
+
+/**
+ * @file
+ * Creates DKAN Datastore.
+ */
+
+// Datastore is created for a given resource.
+define('DKAN_DATASTORE_EMPTY', 0);
+// Datastore is created for a given resource.
+define('DKAN_DATASTORE_EXISTS', 1);
+// File is attached to a resource, but not added to the datastore.
+define('DKAN_DATASTORE_FILE_EXISTS', 2);
+// File is attached to a resource, but cannot be added to the datastore.
+define('DKAN_DATASTORE_WRONG_TYPE', 3);
+
+include_once "dkan_datastore.features.inc";
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_datastore_menu() {
+  $items['node/%dkan_datastore_resource/download'] = array(
+    'title callback' => 'dkan_datastore_download_title',
+    'title arguments' => array(1),
+    'page callback' => 'dkan_datastore_download',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_datastore_download_access',
+    'access arguments' => array('view', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => '20',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['node/%dkan_datastore_resource/data'] = array(
+    'page callback' => 'dkan_datastore_proxy',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_datastore_download_access',
+    'access arguments' => array('view', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['node/%node/api'] = array(
+    'title' => 'Data API',
+    'page callback' => 'dkan_datastore_datastore_api',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_datastore_datastore_api_access',
+    'access arguments' => array(1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => '25',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/datastore'] = array(
+    'title' => 'Manage Datastore',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_datastore_import_tab_form', 1),
+    'access callback' => 'dkan_datastore_feeds_access',
+    'access arguments' => array('import', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => '15',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/datastore/import'] = array(
+    'title' => 'Import',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_datastore_import_tab_form', 1),
+    'access callback' => 'dkan_datastore_feeds_access',
+    'access arguments' => array('import', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => 10,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['node/%node/datastore/delete-items'] = array(
+    'title' => 'Delete items',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_datastore_delete_tab_form', NULL, 1),
+    'access callback' => 'dkan_datastore_feeds_access',
+    'access arguments' => array('clear', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => 11,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/datastore/unlock'] = array(
+    'title' => 'Unlock',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_datastore_unlock_tab_form', NULL, 1),
+    'access callback' => 'dkan_datastore_feeds_access',
+    'access arguments' => array('unlock', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => 11,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%node/datastore/drop'] = array(
+    'title' => 'Drop Datastore',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_datastore_drop_tab_form', 1),
+    'access callback' => 'dkan_datastore_feeds_access',
+    'access arguments' => array('drop', 1),
+    'file' => 'dkan_datastore.pages.inc',
+    'weight' => 12,
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * Retrieves the url and type to the physical resource.
+ */
+function dkan_datastore_resource_link_type($node) {
+  $node_wrapper = entity_metadata_wrapper('node', $node);
+  $file_field = dkan_datastore_file_upload_field();
+  $remote_file_field = dkan_datastore_file_link_field();
+  $api_field = dkan_datastore_api_link_field();
+  $type = dkan_datastore_node_type();
+
+  if ($node->type == $type && $file = $node_wrapper->{$file_field}->value()) {
+    $uri = isset($file->uri) ? $file->uri : $file['uri'];
+    $url = file_create_url($uri);
+    return array('url' => $url, 'type' => 'upload');
+  }
+  elseif ($remote_file = $node_wrapper->{$remote_file_field}->value()) {
+    return array('url' => $remote_file['uri'], 'type' => 'remote');
+  }
+  elseif ($link = $node_wrapper->{$api_field}->value()) {
+    return array('url' => $link['url'], 'type' => 'link');
+  }
+  else {
+    drupal_set_message(t('No download available for this resource'));
+    return array('type' => 'upload');
+  }
+}
+
+/**
+ * Retrive download title for a resource.
+ *
+ * Title callback to change the download link text
+ * based on the type of the resource link.
+ */
+function dkan_datastore_download_title($node) {
+  $resource_link_type = dkan_datastore_resource_link_type($node);
+  return ($resource_link_type['type'] == 'link') ? t('Go to resource') : t('Download');
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_datastore_menu_alter(&$items) {
+  // Removing these here, readding in hook_menu().
+  unset($items['node/%node/delete-items']);
+  unset($items['node/%node/import']);
+  unset($items['node/%node/unlock']);
+}
+
+/**
+ * Access callback for DKAN Datastore operations.
+ */
+function dkan_datastore_feeds_access($action, $node) {
+
+  // If $action is not one of the supported actions, return access denied.
+  if (!in_array($action, array('import', 'clear', 'unlock', 'drop'))) {
+    return FALSE;
+  }
+
+  // All available operations requires the 'manage datastore' permission.
+  if (user_access('manage datastore') && node_access('update', $node) && $node->type == 'resource') {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Access callback for Download.
+ */
+function dkan_datastore_download_access($action, $resource) {
+  $type = dkan_datastore_node_type();
+  $node = is_object($resource) ? $resource : node_load($resource);
+
+  if ($node->type != $type) {
+    return FALSE;
+  }
+
+  return node_access('view', $node);
+}
+
+/**
+ * Access callback for Data API instructions.
+ */
+function dkan_datastore_datastore_api_access($resource) {
+  $status = dkan_datastore_status($resource);
+  if ($status == DKAN_DATASTORE_FILE_EXISTS && !user_access('manage datastore')) {
+    return FALSE;
+  }
+  if ($status != DKAN_DATASTORE_WRONG_TYPE) {
+    $file_field = dkan_datastore_file_upload_field();
+    $link_field = dkan_datastore_file_link_field();
+    $type = dkan_datastore_node_type();
+    $node = is_object($resource) ? $resource : node_load($resource);
+    $upload = '';
+    $link = '';
+    if (isset($node->$file_field) && $node->$file_field) {
+      $upload = isset($node->{$file_field}[$node->language]) ? $node->{$file_field}[$node->language] : $node->{$file_field}['und'];
+    }
+    if (isset($node->{$link_field}) && $node->{$link_field}) {
+      $link = isset($node->{$link_field}[$node->language]) ? $node->{$link_field}[$node->language] : $node->{$link_field}['und'];
+    }
+    if ($node->type == $type && ($upload || $link)) {
+      return node_access('view', $node);
+    }
+    else {
+      return FALSE;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Load node by id or uuid.
+ */
+function dkan_datastore_resource_load($id) {
+  try {
+    // Id is a nid.
+    if (is_numeric($id)) {
+      return node_load($id);
+    }
+    // Id is a uuid and uuid is installed.
+    elseif (function_exists('entity_uuid_load')) {
+      $node = entity_uuid_load('node', array($id));
+      return ($node) ? reset($node) : FALSE;
+    }
+
+  }
+  catch (Exception $e) {
+    return FALSE;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Access callback for back link.
+ */
+function dkan_datastore_back_access($node) {
+  if ($node->type != 'resource') {
+    return FALSE;
+  }
+  else {
+    return node_access('view', $node);
+  }
+}
+
+/**
+ * Access callback for 'Add Resource' tab.
+ */
+function dkan_add_resource($node) {
+  if ($node->type != 'dataset') {
+    return FALSE;
+  }
+  else {
+    return _node_add_access();
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function dkan_datastore_node_insert($node) {
+  $type = dkan_datastore_node_type();
+  if ($node->type == $type) {
+    if (!isset($node->feeds)) {
+      // Feeds only saves if there is a form present. We want this to work
+      // programmatically as well.
+      feeds_node_prepare($node);
+      feeds_node_update($node);
+    }
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function dkan_datastore_node_update($node) {
+  $type = dkan_datastore_node_type();
+  if ($node->type == $type) {
+    $file_field = dkan_datastore_file_upload_field();
+    $link_field = dkan_datastore_file_link_field();
+    // See if we have a file link or upload.
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $file = $wrapper->{$file_field}->value();
+    if (!$file) {
+      $link = $wrapper->{$link_field}->value();
+      if (isset($link) && isset($link['fid'])) {
+        $file = file_load($link['fid']);
+      }
+      elseif (isset($link) && isset($link->fid)) {
+        $file = $link;
+      }
+      else {
+        $file = '';
+      }
+    }
+    if ($file) {
+      if (!isset($node->feeds)) {
+        // Feeds only saves if there is a form present. We want this to work
+        // programmatically as well.
+        feeds_node_prepare($node);
+      }
+      // Remove node from feeds list if not csv.
+      elseif ($file->filemime != 'text/csv') {
+        feeds_node_delete($node);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function dkan_datastore_permission() {
+  return array(
+    'manage datastore' => array(
+      'title' => t('Manage Datastore'),
+    ),
+    'manage datastore settings' => array(
+      'title' => t('Manage Datastore Settings'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function dkan_datastore_node_view($node, $view_mode, $langcode) {
+
+  $type = dkan_datastore_node_type();
+  if ($node->type == $type) {
+    $status = dkan_datastore_status($node);
+    if (user_access('manage datastore') && $status && $view_mode == 'full') {
+      if ($status == DKAN_DATASTORE_FILE_EXISTS) {
+        drupal_set_message(t('Your file for this resource is not added to the datastore. Click "Manage Datastore" to import file into the datastore.'));
+      }
+      elseif ($status == DKAN_DATASTORE_EXISTS) {
+        drupal_set_message(t('Your file for this resource has been added to the datastore.'));
+      }
+    }
+  }
+}
+
+/**
+ * Determines status of datastore attached to resource node.
+ */
+function dkan_datastore_status($node) {
+  if ($file = dkan_datastore_file_field($node)) {
+    if (dkan_datastore_is_importable($file)) {
+      $node = entity_metadata_wrapper('node', $node);
+      if ($status = $node->field_datastore_status->value()) {
+        return $status;
+      }
+      else {
+        return DKAN_DATASTORE_FILE_EXISTS;
+      }
+    }
+    else {
+      return DKAN_DATASTORE_WRONG_TYPE;
+    }
+  }
+  else {
+    return DKAN_DATASTORE_EMPTY;
+  }
+}
+
+/**
+ * Determines if a resource can be imported.
+ */
+function dkan_datastore_is_importable($file) {
+  return (is_object($file) && $file->filemime == 'text/csv') || (is_array($file) && array_key_exists('filemime', $file) && $file['filemime'] == 'text/csv');
+}
+
+/**
+ * Determines if records exist in a datastore.
+ *
+ * @param string $nid
+ *   Node id for resource node.
+ */
+function dkan_datastore_records($nid) {
+  if (function_exists('dkan_datastore_api_get_feeds_source')) {
+    $source_id = dkan_datastore_api_get_feeds_source($nid);
+    if ($table = feeds_flatstore_processor_table_name($source_id, $nid)) {
+      if (db_table_exists($table)) {
+        $query = db_select($table, 't')
+          ->fields('t', array('timestamp'))
+          ->range(0, 1);
+        if ($result = $query->execute()) {
+          return TRUE;
+        }
+      }
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Retrieves loaded file from resource node.
+ */
+function dkan_datastore_file_field($node) {
+  $type = dkan_datastore_node_type();
+  if (isset($node->type) && $node->type == $type) {
+    $file_field = dkan_datastore_file_upload_field();
+    $link_field = dkan_datastore_file_link_field();
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $file = isset($wrapper->{$file_field}) ? $wrapper->{$file_field}->value() : '';
+    $link = isset($wrapper->{$link_field}) ? $wrapper->{$link_field}->value() : '';
+    if (isset($file)) {
+      return $file;
+    }
+    elseif ($link) {
+      return $link;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function dkan_datastore_field_formatter_info() {
+  $formatters = array(
+    'dkan_datastore_status_formatter' => array(
+      'label' => t('Datastore Status'),
+      'field types' => array('recline_field'),
+    ),
+  );
+  return $formatters;
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function dkan_datastore_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+
+  $element = array();
+
+  foreach ($items as $delta => $item) {
+    $item['entity'] = $entity;
+    $element[$delta] = array(
+      '#theme' => 'dkan_datastore_status_formatter',
+      '#item' => $item,
+    );
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function dkan_datastore_theme() {
+  return array(
+    'dkan_datastore_status_formatter' => array(
+      'variables' => array('item' => NULL),
+    ),
+  );
+}
+
+/**
+ * Returns HTML for an recline field formatter.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - item: Associative array of recline field.
+ *
+ * @ingroup themeable
+ */
+function theme_dkan_datastore_status_formatter(array $variables) {
+  $status = dkan_datastore_status($variables['item']['entity']);
+  if ($status === DKAN_DATASTORE_FILE_EXISTS) {
+    $title = t('A file has been uploaded but not added to the datastore');
+    return '<span class="circle false" title="' . $title . '">' . t('Data ready to be added') . '</span>';
+  }
+  elseif ($status === DKAN_DATASTORE_EXISTS) {
+    return '<span class="circle true">' . t('Datastore enabled') . '</span>';
+  }
+  return '<span class="circle na">' . t('Correct file type not attached to resource') . '</span>';
+}
+
+/**
+ * Gets a datastore instance.
+ *
+ * @param string $id
+ *   The unique id of the importer object.
+ *
+ * @return Datastore
+ *   A Datastore object or an object of a class defined by the Drupal
+ *   variable 'dkan_datastore_class'. There is only one importer object
+ *   per $id system-wide.
+ */
+function dkan_datastore_go($id = NULL, $class = NULL) {
+  if (!$class) {
+    $class = variable_get('dkan_datastore_class', 'DkanDatastore');
+  }
+  return Datastore::instance($class, $id);
+}
+
+/**
+ * Returns name of upload field.
+ */
+function dkan_datastore_file_upload_field() {
+  static $field;
+  if (!$field) {
+    $field = 'field_upload';
+    drupal_alter('dkan_datastore_file_upload_field', $field);
+  }
+  return $field;
+}
+
+/**
+ * Returns name of link api field.
+ */
+function dkan_datastore_api_link_field() {
+  static $field;
+  if (!$field) {
+    $field = 'field_link_api';
+    drupal_alter('dkan_datastore_field_link_api', $field);
+  }
+  return $field;
+}
+
+/**
+ * Returns name of remote file field.
+ */
+function dkan_datastore_file_link_field() {
+  static $field;
+  if (!$field) {
+    $field = 'field_link_remote_file';
+    drupal_alter('dkan_datastore_field_link_remote_file', $field);
+  }
+  return $field;
+}
+
+/**
+ * Returns name of node type that the Datastore is attached to.
+ */
+function dkan_datastore_node_type() {
+  static $node_type;
+  if (!$node_type) {
+    $node_type = 'resource';
+    drupal_alter('dkan_datastore_node_type', $node_type);
+  }
+  return $node_type;
+}
+
+/**
+ * Implements hook_feeds_after_import().
+ */
+function dkan_datastore_feeds_after_import(FeedsSource $source) {
+  $importer_id = $source->importer->id;
+  $importers = array('dkan_file', 'dkan_link');
+  if (empty($source->exception) && in_array($importer_id, $importers)) {
+    $node = node_load($source->feed_nid);
+    $node = entity_metadata_wrapper('node', $node);
+    $node->field_datastore_status->set(DKAN_DATASTORE_EXISTS);
+    $node->save();
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function dkan_datastore_node_presave($node) {
+  if (is_object($node) && $node->type == 'resource') {
+    $wrap = entity_metadata_wrapper('node', $node);
+    $wrap->field_datastore_status->set(dkan_datastore_status($node));
+  }
+}
+
+/**
+ * Implements hook_cron_queue_info().
+ */
+function dkan_datastore_cron_queue_info() {
+  $queues['dkan_datastore_queue'] = array(
+    'worker callback' => 'dkan_datastore_queue_import_worker',
+    'time' => 120,
+    'skip on cron' => FALSE,
+  );
+
+  return $queues;
+}
+
+/**
+ * Utility function for add a new resource to datastore queue.
+ */
+function dkan_datastore_queue_import($uuid) {
+  $item = array(
+    'uuid' => $uuid,
+  );
+  DrupalQueue::get('dkan_datastore_queue')->createItem($item);
+  watchdog('dkan_datastore', 'Added resource %uuid to queue for import into datastore', array('%uuid' => $uuid));
+}
+
+/**
+ * Callback used with queue for index content into datastore.
+ */
+function dkan_datastore_queue_import_worker($item) {
+  $datastore = dkan_datastore_go($item['uuid']);
+  $datastore->importByCLI();
+}

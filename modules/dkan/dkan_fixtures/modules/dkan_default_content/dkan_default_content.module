@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * @file
+ * DKAN Default Content module file.
+ */
+
+/**
+ * Implements hook_migrate_api().
+ */
+function dkan_default_content_migrate_api() {
+  $api = array(
+    'api' => 2,
+    'migrations' => array(
+      'dkan_default_content_datasets' => array(
+        'class_name' => 'DefaultContentDatasetImport',
+        'group_name' => 'dkan_default_content',
+        'title' => t('DKAN Default Datasets'),
+      ),
+      'dkan_default_content_resources' => array(
+        'class_name' => 'DefaultContentResourceImport',
+        'group_name' => 'dkan_default_content',
+        'title' => t('DKAN Default Resources'),
+      ),
+      'dkan_default_content_groups' => array(
+        'class_name' => 'DefaultContentGroupImport',
+        'group_name' => 'dkan_default_content',
+        'title' => t('DKAN Default Groups'),
+      ),
+      'dkan_default_content_visualization_entities' => array(
+        'class_name' => 'DefaultContentVisualizationEntityImport',
+        'group_name' => 'dkan_default_content',
+        'title' => t('DKAN Default Visualization Entities'),
+      ),
+      'dkan_default_content_data_stories' => array(
+        'class_name' => 'DefaultContentDataStoriesImport',
+        'group_name' => 'dkan_default_content',
+        'title' => t('DKAN Default Data Stories'),
+      ),
+      'dkan_default_content_data_dashboards' => array(
+        'class_name' => 'DefaultContentDataDashboardsImport',
+        'group_name' => 'dkan_default_content',
+        'title' => t('DKAN Default Data Dashboards'),
+      ),
+      'dkan_default_content_pages' => array(
+        'class_name' => 'DefaultContentPagesImport',
+        'group_name' => 'dkan_default_content',
+        'title' => t('DKAN Default Pages'),
+      ),
+    ),
+  );
+  return $api;
+}
+
+/**
+ * Implements hook_dkan_fixtures_register().
+ */
+function dkan_default_content_dkan_fixtures_register() {
+  return 'dkan_default_content';
+}
+
+/**
+ * Deregisters migrations.
+ */
+function dkan_default_content_migrations_disable() {
+  Migration::deregisterMigration('dkan_default_content_datasets');
+  Migration::deregisterMigration('dkan_default_content_resources');
+  Migration::deregisterMigration('dkan_default_content_groups');
+  Migration::deregisterMigration('dkan_default_content_visualization_entities');
+  Migration::deregisterMigration('dkan_default_content_data_stories');
+  Migration::deregisterMigration('dkan_default_content_data_dashboards');
+}

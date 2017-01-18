@@ -1,9 +1,10 @@
-@javascript @api
+# time:3m12.22s
+@api
 Feature: Resource
 
   Background:
     Given pages:
-      | title         | url   |
+      | name          | url   |
       | Content       | /user       |
     Given users:
       | name    | mail                | roles                |
@@ -26,28 +27,26 @@ Feature: Resource
       | Jaz     | Group 01 | member               | Pending           |
       | Admin   | Group 02 | administrator member | Active            |
       | Celeste | Group 02 | member               | Active            |
+      | Celeste | Group 01 | administrator member | Active            |
+      | John    | Group 01 | member               | Active            |
     And "Tags" terms:
       | name    |
-      | Health  |
-      | Gov     |
+      | world   |
+      | results |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        |
-    And "Format" terms:
-      | name    |
-      | cvs     |
-      | XLS     |
+      | Dataset 01 | Group 01  | Gabriel | Yes              | world    | Test        |
+      | Dataset 02 | Group 02  | Celeste | Yes              | results  | Test        |
     And resources:
       | title       | publisher | format | dataset    | author   | published | description |
-      | Resource 01 | Group 01  | cvs    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 02 | Group 01  | xls    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 03 | Group 01  | xls    | Dataset 02 | Celeste  | No        | Yes         |
-      | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
-      | Resource 05 | Group 02  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
+      | Resource 01 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 02 | Group 01  | zip    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 03 | Group 02  | zip    | Dataset 02 | Celeste  | No        | Yes         |
+      | Resource 04 | Group 01  | csv    | Dataset 01 | Katie    | No        | Yes         |
+      | Resource 05 | Group 02  | zip    | Dataset 02 | Celeste  | Yes       | Yes         |
 
   # TODO: Change to use Workbench instead of /content
-
+  @noworkflow
   Scenario: Edit resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
@@ -58,22 +57,26 @@ Feature: Resource
     When I am on "Dataset 01" page
     Then I should see "Resource 01 edited"
 
+  @noworkflow
   Scenario: I should not be able to edit resources of groups that I am not a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 05" page
     Then I should not see "Edit"
 
-  @fixme @dkanBug
+  @fixme @dkanBug @noworkflow
     # TODO: Permissions are not set so that a group member can publish any resources of their group,
     #       this test will need to wait until that is set
   Scenario: Publish resources associated with groups that I am a member of
-    Given I am logged in as "Gabriel"
+    Given I am logged in as "Celeste"
     And I am on "Resource 04" page
     When I click "Edit"
-    And I select "published" for "publishing options"
+    ## If you use selenium uncomment this
+    # When I click "Publishing options"
+    And I check "Published"
     And I press "Save"
     Then I should see "Resource Resource 04 edited has been updated"
 
+  @noworkflow
   Scenario: Delete resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
@@ -82,80 +85,93 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource Resource 01 has been deleted"
 
+  @noworkflow
   Scenario: Manage datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @fixme @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
+  @noworkflow @javascript
   Scenario: Import items on datastore of resources associated with groups that I am a member of
+    Given I am logged in as "John"
+    And I am on "Resource 01" page
+    And I click "Edit"
+    And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
-    And I click "Import"
-    #And I press "Import"
-    #And I wait
-    #Then I should see "Last import"
-    #And I should see "imported items total"
-    Then I should see "There is nothing to manage!"
+    And I wait for "Import"
+    And I press "Import"
+    And I wait for "Delete Items"
+    Then I should see "Last import"
+    And I should see "imported items total"
 
-  @fixme @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
+  @noworkflow @javascript
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
+    Given I am logged in as "John"
+    And I am on "Resource 01" page
+    And I click "Edit"
+    And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I press "Save"
     Given I am logged in as "Celeste"
-    And I am on "Resource 04" page
+    When I am on "Resource 01" page
     When I click "Manage Datastore"
+    And I press "Import"
+    And I wait for "Delete Items"
     And I click "Delete items"
     And I press "Delete"
-    And I wait
-    #Then I should see "items were deleted"
-    Then I should see "no items to delete"
+    And I wait for "items have been deleted"
+    And I am on "Resource 01" page
+    When I click "Manage Datastore"
+    And I wait for "No imported items."
+
+  @noworkflow @javascript
+  Scenario: Drop datastore of resources associated with groups that I am a member of
+    Given I am logged in as "John"
+    And I am on "Resource 01" page
+    And I click "Edit"
+    And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I press "Save"
+    Given I am logged in as "Celeste"
+    And I am on "Resource 01" page
+    When I click "Manage Datastore"
+    And I press "Import"
+    And I wait for "Delete Items"
+    When I click "Drop Datastore"
+    And I press "Drop"
+    Then I should see "Datastore dropped!"
+    And I should see "Your file for this resource is not added to the datastore"
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @fixme @testBug
-    # TODO: Need to improve dkan extension for datastores, need clarification on what datastores are
-  Scenario: Drop datastore of resources associated with groups that I am a member of
-    Given I am logged in as "Celeste"
-    And I am on "Resource 04" page
-    And I click "Manage Datastore"
-    When I click "Drop Datastore"
-    #And I press "Drop"
-    #Then I should see "Datastore dropped!"
-    #And I should see "Your file for this resource is not added to the datastore"
-    Then I should see "You need to have a file or link imported to the datastore in order to drop it."
-    When I click "Manage Datastore"
-    #Then I should see "No imported items."
-    Then I should see "There is nothing to manage!"
-
-  @fixme @testBug
-    #TODO: Need to add definition for clicking revisions on revision page, click in row
+  @noworkflow
   Scenario: Add revision to resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
     When I click "Edit"
     And I fill in "title" with "Resource 01 edited"
-    And I check "Create new revision"
     And I press "Save"
     Then I should see "Resource Resource 01 edited has been updated"
-    When I press "Revisions"
-    And I click "first" revision
+    When I click "Revisions"
+    And I press "Compare"
     Then I should see "Resource 01 edited"
 
-  @fixme @dkanBug
-    # TODO: Editors do not have access to revert a resource to a previous revision
-    # See NuCivic/dkan#793
+  @fixme @dkanBug @noworkflow
+    #TODO: Currently content creators do not have access to revert any resource
+    #       That they are a group member for. Does this need to be tested then?
   Scenario: Revert resource revision of any resource associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
     When I click "Edit"
     And I fill in "title" with "Resource 01 edited"
-    And I check "Create new revision"
     And I press "Save"
     Then I should see "Resource Resource 01 edited has been updated"
-    When I press "Revisions"
-    And I click "Revert" in the "second" row
-    # TODO: This is NOT working. Throws "You are not authorized to access this page"
-    Then the resource should be reverted
+    When I click "Revisions"
+    And I click "Revert"
+    And I press "Revert"
+    Then I should see "Resource Resource 01 has been reverted"

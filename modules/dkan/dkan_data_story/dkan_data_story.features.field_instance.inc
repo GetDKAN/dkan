@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_data_story.features.field_instance.inc
@@ -10,7 +11,7 @@
 function dkan_data_story_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-dkan_data_story-body'
+  // Exported field_instance: 'node-dkan_data_story-body'.
   $field_instances['node-dkan_data_story-body'] = array(
     'bundle' => 'dkan_data_story',
     'default_value' => NULL,
@@ -19,9 +20,17 @@ function dkan_data_story_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'text',
         'settings' => array(),
-        'type' => 'text_default',
+        'type' => 'hidden',
+        'weight' => 2,
+      ),
+      'search_result' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(
+          'trim_length' => 600,
+        ),
+        'type' => 'text_summary_or_trimmed',
         'weight' => 1,
       ),
       'teaser' => array(
@@ -54,7 +63,7 @@ function dkan_data_story_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dkan_data_story-field_image'
+  // Exported field_instance: 'node-dkan_data_story-field_image'.
   $field_instances['node-dkan_data_story-field_image'] = array(
     'bundle' => 'dkan_data_story',
     'deleted' => 0,
@@ -62,13 +71,14 @@ function dkan_data_story_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'image',
-        'settings' => array(
-          'image_link' => '',
-          'image_style' => 'story_image_full',
-        ),
-        'type' => 'image',
-        'weight' => 0,
+        'type' => 'hidden',
+        'weight' => 1,
+      ),
+      'search_result' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 3,
       ),
       'teaser' => array(
         'label' => 'hidden',
@@ -86,13 +96,16 @@ function dkan_data_story_field_default_field_instances() {
     'label' => 'Image',
     'required' => 0,
     'settings' => array(
-      'alt_field' => 0,
+      'alt_field' => 1,
       'default_image' => 0,
       'file_directory' => 'story',
       'file_extensions' => 'png gif jpg jpeg',
       'max_filesize' => '',
       'max_resolution' => '',
       'min_resolution' => '',
+      'resup' => 0,
+      'resup_autostart' => 0,
+      'resup_max_filesize' => '',
       'title_field' => 0,
       'user_register_form' => FALSE,
     ),
@@ -141,7 +154,7 @@ function dkan_data_story_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dkan_data_story-field_tags'
+  // Exported field_instance: 'node-dkan_data_story-field_tags'.
   $field_instances['node-dkan_data_story-field_tags'] = array(
     'bundle' => 'dkan_data_story',
     'default_value' => NULL,
@@ -150,9 +163,14 @@ function dkan_data_story_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'taxonomy',
         'settings' => array(),
-        'type' => 'taxonomy_term_reference_link',
+        'type' => 'hidden',
+        'weight' => 3,
+      ),
+      'search_result' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
         'weight' => 2,
       ),
       'teaser' => array(

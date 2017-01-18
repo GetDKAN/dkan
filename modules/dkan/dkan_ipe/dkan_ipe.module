@@ -1,0 +1,136 @@
+<?php
+
+/**
+ * @file
+ * Code for the DKAN In-Place Editor feature.
+ */
+
+include_once 'dkan_ipe.features.inc';
+
+/**
+ * Implements hook_panels_ipe_region_links_alter().
+ *
+ * Set the default category to 'custom' in the IPE.
+ */
+function dkan_ipe_panels_ipe_region_links_alter(&$links, $context) {
+  $links['add-pane']['href'] .= '/custom';
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function dkan_ipe_entity_info_alter(&$entity_info) {
+  // Move panopoly widget options into the custom category.
+  // File.
+  $entity_info['fieldable_panels_pane']['bundles']['basic_file']['pane top level'] = FALSE;
+  $entity_info['fieldable_panels_pane']['bundles']['basic_file']['pane category'] = t('Custom');
+  $entity_info['fieldable_panels_pane']['bundles']['basic_file']['label'] = t('File');
+  // Image.
+  $entity_info['fieldable_panels_pane']['bundles']['image']['pane top level'] = FALSE;
+  $entity_info['fieldable_panels_pane']['bundles']['image']['pane category'] = t('Custom');
+  $entity_info['fieldable_panels_pane']['bundles']['image']['label'] = t('Image');
+  // Text.
+  $entity_info['fieldable_panels_pane']['bundles']['text']['label'] = t('Text');
+  $entity_info['fieldable_panels_pane']['bundles']['text']['pane category'] = t('custom');
+  $entity_info['fieldable_panels_pane']['bundles']['text']['pane top level'] = FALSE;
+  // Map.
+  $entity_info['fieldable_panels_pane']['bundles']['map']['label'] = t('Map');
+  $entity_info['fieldable_panels_pane']['bundles']['map']['pane category'] = t('custom');
+  $entity_info['fieldable_panels_pane']['bundles']['map']['pane top level'] = FALSE;
+  // Table.
+  $entity_info['fieldable_panels_pane']['bundles']['table']['label'] = t('Table');
+  $entity_info['fieldable_panels_pane']['bundles']['table']['pane category'] = t('custom');
+  $entity_info['fieldable_panels_pane']['bundles']['table']['pane top level'] = FALSE;
+  // Video.
+  $entity_info['fieldable_panels_pane']['bundles']['video']['label'] = t('Video');
+  $entity_info['fieldable_panels_pane']['bundles']['video']['pane category'] = t('custom');
+  $entity_info['fieldable_panels_pane']['bundles']['video']['pane top level'] = FALSE;
+  // Spotlight.
+  $entity_info['fieldable_panels_pane']['bundles']['spotlight']['label'] = t('Slideshow');
+  $entity_info['fieldable_panels_pane']['bundles']['spotlight']['pane category'] = t('custom');
+  $entity_info['fieldable_panels_pane']['bundles']['spotlight']['pane top level'] = FALSE;
+}
+
+/**
+ * Implements hook_ctools_content_subtype_alter().
+ */
+function dkan_ipe_ctools_content_subtype_alter(&$subtype, &$plugin) {
+  // Move the options we want available to editors to the custom category.
+  $dkan = array('Visualizations', 'Custom');
+  if (in_array($subtype['category'], $dkan)) {
+    $subtype['category'] = 'custom';
+  }
+  // Content list.
+  if ($plugin['module'] == 'views_content' && $subtype['title'] == 'Add content list') {
+    $subtype['pane category'] = t('custom');
+    $subtype['top level'] = FALSE;
+    $subtype['title'] = t('Content List');
+  }
+  // Submenu.
+  if ($plugin['module'] == 'menu_block' && $subtype['menu_title'] == 'Main menu') {
+    $subtype['pane category'] = t('custom');
+    $subtype['top level'] = FALSE;
+    $subtype['title'] = t('Submenu');
+  }
+  // Existing node.
+  if ($plugin['module'] == 'ctools' && $plugin['title'] == 'Existing node') {
+    $subtype['pane category'] = t('custom');
+    $subtype['top level'] = FALSE;
+    $subtype['title'] = t('Existing content');
+  }
+  // New content.
+  if ($plugin['module'] == 'ctools' && $plugin['title'] == 'Custom content') {
+    $subtype['pane category'] = t('custom');
+    $subtype['top level'] = FALSE;
+    $subtype['title'] = t('New custom content');
+  }
+  // Adjust titles.
+  if ($plugin['module'] == 'visualization_entity_embed' && $plugin['title'] == 'Visualization embed') {
+    $subtype['title'] = t('Visualization');
+  }
+  if ($plugin['module'] == 'dkan_plugins' && $plugin['title'] == 'Button link') {
+    $subtype['title'] = t('Link');
+  }
+}
+
+/**
+ * Process the panels add content modal.
+ *
+ * Panels/includes/add-content.inc.
+ */
+function dkan_ipe_process_panels_add_content_modal(&$vars) {
+  if (!$vars['renderer']->admin) {
+    $vars['category'] = 'custom';
+    $vars['header'] = '';
+  }
+  $content = !empty($vars['categories'][$vars['category']]['content']) ? $vars['categories'][$vars['category']]['content'] : array();
+
+  // If no category is selected or the category is empty or our special empty
+  // category render a 'header' that will appear instead of the columns.
+  if (empty($vars['category']) || empty($content) || $vars['category'] == 'root') {
+    $vars['header'] = t('Content options are divided by category. Please select a category from the left to proceed.');
+  }
+  else {
+    $titles = array_keys($content);
+    // natcasesort($titles);
+    arsort($titles);
+
+    // This will default to 2 columns in the theme definition but could be
+    // changed by a preprocess. Ensure there is at least one column.
+    $columns = max(1, $vars['column_count']);
+    $vars['columns'] = array_fill(1, $columns, '');
+
+    $col_size = count($titles) / $columns;
+    $count = 0;
+    foreach ($titles as $title) {
+      $which = floor($count++ / $col_size) + 1;
+      $vars['columns'][$which] .= theme('panels_add_content_link', array(
+        'renderer' => $vars['renderer'],
+        'region' => $vars['region'],
+        'content_type' => $content[$title],
+      ));
+    }
+  }
+
+  $vars['messages'] = theme('status_messages');
+}

@@ -1,0 +1,122 @@
+<?php
+
+/**
+ * @file
+ * Install file for DKAN forms.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dkan_dataset_install() {
+  // Add some weight so other modules editing forms go first.
+  db_update('system')
+    ->fields(array(
+      'weight' => 2,
+    ))
+    ->condition('type', 'module')
+    ->condition('name', 'dkan_dataset')
+    ->execute();
+
+  _dkan_dataset_disable_og_extras_group_members_view();
+}
+
+/**
+ * Disable the og_extras_members view.
+ *
+ * If we do not disable this view, there will be conflicts with the
+ * dkan_og_extras_members view.
+ */
+function _dkan_dataset_disable_og_extras_group_members_view() {
+  $views_status = variable_get('views_defaults', array());
+  $views_status['og_extras_members'] = TRUE;
+  variable_set('views_defaults', $views_status);
+
+  if (function_exists('views_invalidate_cache')) {
+    views_invalidate_cache();
+  }
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function dkan_dataset_update_7001() {
+  _dkan_dataset_disable_og_extras_group_members_view();
+}
+
+/**
+ * Open Data Federal Extras module added to core.
+ *
+ * Some fields were moved from Open Data Federal Extras module to
+ * the DKAN Core so an update is needed in order to rename the fields
+ * if they already exist on the DB.
+ */
+function dkan_dataset_update_7002() {
+  // Rename fields.
+  dkan_rename_field('field_odfe_is_part_of', 'field_is_part_of');
+  dkan_rename_field('field_odfe_data_dictionary_type', 'field_data_dictionary_type');
+  dkan_rename_field('field_odfe_landing_page', 'field_landing_page');
+  dkan_rename_field('field_odfe_conforms_to', 'field_conforms_to');
+  dkan_rename_field('field_odfe_rights', 'field_rights');
+  dkan_rename_field('field_odfe_language', 'field_language');
+
+  // Change callback function on 'field_language'.
+  $field_language_base = field_info_field('field_language');
+  $allowed_values_function = $field_language_base['settings']['allowed_values_function'];
+
+  if ($allowed_values_function != 'dkan_dataset_content_types_allowed_language_values') {
+    $field_language_base['settings']['allowed_values_function'] = 'dkan_dataset_content_types_allowed_language_values';
+    field_update_field($field_language_base);
+  }
+}
+
+/**
+ * Migrate values from old 'field_odfe_category' to 'field_pod_theme'.
+ *
+ * @throws \DrupalUpdateException
+ *   If the 'field_pod_theme' field is not part of the dataset content type.
+ */
+function dkan_dataset_update_7003() {
+
+  // Check if the 'field_odfe_category' field exists.
+  // If the field does not exist then no data needs to be migrated.
+  $field_exists = field_info_instance('node', 'field_odfe_category', 'dataset');
+  if (!$field_exists) {
+    return TRUE;
+  }
+
+  // Check if the 'field_pod_theme' field exists.
+  $field_exists = field_info_instance('node', 'field_pod_theme', 'dataset');
+  if (!$field_exists) {
+    throw new DrupalUpdateException("The 'field_pod_theme' does not exist. The update could not be applied.");
+  }
+
+  // Get all datasets that have some value on the 'field_odfe_category' field.
+  $dataset_ids = db_select('field_data_field_odfe_category', 'odfec')
+    ->fields('odfec', array('entity_id'))
+    ->execute()
+    ->fetchCol();
+  $dataset_ids = array_unique($dataset_ids);
+
+  // Process all datasets.
+  foreach ($dataset_ids as $dataset_id) {
+    // Load dataset.
+    $dataset = node_load($dataset_id);
+    $dataset_wrapper = entity_metadata_wrapper('node', $dataset);
+    // Get all values in 'field_odfe_category' field.
+    $categories = $dataset_wrapper->field_odfe_category;
+    foreach ($categories as $category) {
+      // Save each value on the new 'field_pod_theme' field.
+      $dataset_wrapper->field_pod_theme[] = $category->value()->name;
+    }
+    // Save updated dataset.
+    $dataset_wrapper->save();
+  }
+
+  // The data was migrated. Delete old field.
+  field_delete_field('field_odfe_category');
+
+  // Delete 'odfe_theme' vocabulary since it's not needed anymore.
+  $vocabulary = taxonomy_vocabulary_machine_name_load('odfe_theme');
+  taxonomy_vocabulary_delete($vocabulary->vid);
+}

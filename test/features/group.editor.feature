@@ -1,4 +1,5 @@
-@javascript @api
+# time:0m50.36s
+@api
 Feature: Site Manager administer groups
   In order to manage site organization
   As a Site Manager
@@ -11,7 +12,7 @@ Feature: Site Manager administer groups
 
   Background:
     Given pages:
-      | title     | url             |
+      | name      | url             |
       | Groups    | /groups         |
       | Content   | /admin/content/ |
     Given users:
@@ -28,31 +29,41 @@ Feature: Site Manager administer groups
       | Group 01 | Badmin | Yes       |
       | Group 02 | Badmin | Yes       |
       | Group 03 | Badmin | No        |
+    And "Tags" terms:
+      | name    |
+      | world   |
+      | results |
     And group memberships:
       | user    | group    | role on group        | membership status |
       | Gabriel | Group 01 | administrator member | Active            |
       | Katie   | Group 01 | member               | Active            |
       | Jaz     | Group 01 | member               | Pending           |
       | Celeste | Group 02 | member               | Active            |
+    And "Tags" terms:
+      | name     |
+      | price    |
+      | election |
     And datasets:
       | title      | publisher | tags       | author  | published | description                |
-      | Dataset 01 | Group 01  | price      | Katie   | Yes       | Increase of toy prices     |
-      | Dataset 02 | Group 01  | price      | Katie   | No        | Cost of oil in January     |
-      | Dataset 03 | Group 01  | election   | Gabriel | Yes       | Election districts         |
+      | Dataset 01 | Group 01  | world      | Katie   | Yes       | Increase of toy prices     |
+      | Dataset 02 | Group 01  | world      | Katie   | No        | Cost of oil in January     |
+      | Dataset 03 | Group 01  | results    | Gabriel | Yes       | Election results           |
+    And "format" terms:
+      | name |
+      | csv  |
+      | zip |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
 
-  @fixme
-    # And I should see the "Group 01 edited" detail page - undefined
   Scenario: Edit group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     When I click "Edit"
-    And I fill in "title" with "Goup 01 edited"
+    And I fill in "Description" with "Edited page"
     And I press "Save"
-    Then I should see "Group Goup 01 edited has been updated"
+    Then I should see "Group Group 01 has been updated"
     And I should be on the "Group 01" page
 
   Scenario: Add group member on a group as group administrator
@@ -65,7 +76,7 @@ Feature: Site Manager administer groups
     And I press "Add users"
     Then I should see "Martin has been added to the group Group 01"
     When I am on "Group 01" page
-    And I click "Members" in the "group block" region
+    And I click "Members"
     Then I should see "Martin" in the "group members" region
 
   Scenario: Remove group member from a group as group administrator
@@ -77,16 +88,14 @@ Feature: Site Manager administer groups
     And I press "Remove"
     Then I should see "The membership was removed"
     When I am on "Group 01" page
-    And I click "Members" in the "group block" region
+    And I click "Members"
     Then I should not see "Katie" in the "group members" region
 
-  @fixme @testBug
-    #TODO: Sees the navbar Group link, not the Group's group link - need to check by region
   Scenario: I should not be able to edit a group that I am not a member of
     Given I am logged in as "Gabriel"
     When I am on "Group 02" page
     Then I should not see the link "Edit"
-    And I should not see the link "Group"
+    And I should not see the link "fa-users"
 
   Scenario: Edit membership status of group member as group administrator
     Given I am logged in as "Gabriel"
@@ -115,8 +124,6 @@ Feature: Site Manager administer groups
     When I click "Permissions (read-only)"
     Then I should see the list of permissions for the group
 
-  @fixme
-     # Then I should see the list of roles for the group - undefined
   Scenario: View group roles of group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -124,15 +131,11 @@ Feature: Site Manager administer groups
     When I click "Roles (read-only)"
     Then I should see the list of roles for the group "Group 01"
 
-  @fixme @testBug
-    #TODO: Need to define for getting list of permissions
-     # Then I should see the list of permissions for "<role name>" role - undefined
-  Scenario Outline: View group role permissions of group as group administrator
+  Scenario Outline: View group role permissions of group as administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     And I click "Group"
-    And I click "Roles (read-only)"
-    When I click "view permissions" in the "<role name>" row
+    When I click "Permissions (read-only)"
     Then I should see the list of permissions for "<role name>" role
 
   Examples:
@@ -163,4 +166,4 @@ Feature: Site Manager administer groups
     And I am on "Group 01" page
     And I click "Group"
     When I click "People"
-    Then I should see "Total content: 4"
+    Then I should see "Total content: 5"

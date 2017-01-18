@@ -1,17 +1,22 @@
 default:
   suites:
-     default:
+     dkan:
         contexts:
-          - FeatureContext
+          - FeatureContext #Temporary overrides only!
           - Drupal\DrupalExtension\Context\MinkContext
+          - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MessageContext
+          - Drupal\DrupalExtension\Context\MarkupContext
+          - Drupal\DrupalExtension\Context\BatchContext
           - Drupal\DKANExtension\Context\DKANContext
-          - Drupal\DKANExtension\Context\EntityStore
           - Drupal\DKANExtension\Context\MailContext
           - Drupal\DKANExtension\Context\PageContext
           - Drupal\DKANExtension\Context\GroupContext
+          - Drupal\DKANExtension\Context\HarvestSourceContext
+          - Drupal\DKANExtension\Context\WorkflowContext
           - Drupal\DKANExtension\Context\DatasetContext
           - Drupal\DKANExtension\Context\DataDashboardContext
+          - Drupal\DKANExtension\Context\PODContext
           - Drupal\DKANExtension\Context\SearchAPIContext:
               search_forms:
                 default:
@@ -20,11 +25,18 @@ default:
                   form_button: 'edit-submit'
                   results_css: '.view-dkan-datasets'
                   result_item_css: '.views-row'
+                harvest_source:
+                  results_css: '.view-dkan-harvest-source-search'
+                  result_item_css: '.views-row'
           - Drupal\DKANExtension\Context\ResourceContext
+          - Drupal\DKANExtension\Context\ServicesContext
+          - Drupal\DKANExtension\Context\PODContext
+          - Drupal\DKANExtension\Context\DatastoreContext
+          - Drupal\DrupalExtension\Context\DrushContext
           - Devinci\DevinciExtension\Context\DebugContext:
-              asset_dump_path: %paths.base%/../assets
+              asset_dump_path: %paths.base%/assets
           - Devinci\DevinciExtension\Context\JavascriptContext:
-              maximum_wait: 10
+              maximum_wait: 30
   formatters:
     pretty:
       output_styles:
@@ -36,7 +48,6 @@ default:
     Behat\MinkExtension:
       goutte: ~
       selenium2: ~
-      base_url: http://127.0.0.1:8888
       default_session: 'goutte'
       javascript_session: 'selenium2'
       browser_name: chrome
@@ -44,7 +55,8 @@ default:
     Drupal\DrupalExtension:
       blackbox: ~
       drupal:
-        drupal_root: %paths.base%
+        #TODO Abstract this out.
+        drupal_root: %paths.base%/../../docroot
       api_driver: 'drupal'
       # @todo fixup these regions for use with new theme. Updated navigation only
       region_map:
@@ -60,6 +72,13 @@ default:
         navigation: '.navigation-wrapper'
         breadcrumb: '.breadcrumb'
         left_sidebar: '.panel-col-first'
+        dataset title: '.pane-node .pane-title'
+        dataset resource list: '#data-and-resources'
+        dataset body: '.field-name-body'
+        dataset edit body: '#edit-body'
+        dataset spatial: '#edit-field-spatial'
+        resource title: '.pane-node .pane-title'
+        resource groups: '#edit-groups'
         search_area: '.panel-col-last'
         dropdown_links: '.comment-main .links.inline.dropdown-menu'
         comment: '.comment-main'
@@ -68,13 +87,17 @@ default:
         group subscribe: '.group-subscribe-message'
         group block: '.pane-views-group-block-block'
         group members: '.view-id-dkan_og_extras_group_members'
+        facet container: '.radix-layouts-sidebar'
         filter by resource format: '.facetapi-facet-field-resourcesfield-format'
         filter by author: '.facetapi-facet-author'
+        filter by topics: '.facetapi-facet-field-topic'
         filter by tag: '.facetapi-facet-field-tags'
+        filter by date changed: '.facetapi-facet-changed'
         social: '.pane-dkan-sitewide-dkan-sitewide-social'
         other access: '.pane-dkan-sitewide-dkan-sitewide-other-access'
         datasets: '.view-dkan-datasets'
-        user profile: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
+        user profile: '.pane-dkan-sitewide-panels-dkan-user-summary'
+        results: '.view-header'
         user page: '.main'
         user command center: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
         tabs: '.field-group-htabs-wrapper'
@@ -84,6 +107,8 @@ default:
         user content: '.view-user-profile-search'
         content search: '.form-item-query'
         user block: '.pane-views-user-profile-fields-block'
+        admin menu: '#admin-menu'
+        harvest datasets: '.view-dkan-harvest-datasets'
       text:
         log_out: "Log out"
         log_in: "Log in"
@@ -91,19 +116,5 @@ default:
         message_selector: '.alert'
         error_message_selector: '.alert.alert-error'
         success_message_selector: '.alert.alert-success'
-
-docker:
-  extensions:
-    Behat\MinkExtension:
-      base_url: http://web
-      #base_url: http://data_starter.local
-      selenium2:
-        wd_host: http://browser:4444/wd/hub
-        #wd_host: http://192.168.10.1:4444/wd/hub
-        browser: chrome
-        #browser: firefox
-    Drupal\DrupalExtension:
-      drupal:
-        drupal_root: '/var/www/docroot'
-      drush:
-        root: '/var/www/docroot'
+    Drupal\DKANExtension:
+      some_param: test

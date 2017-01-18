@@ -1,0 +1,96 @@
+// Maintenance page
+// -----------------------------------------------------------------------------
+body.maintenance-page {
+  .container {
+    max-width: 970px !important;
+  }
+
+  .jumbotron {
+    background-color: #000000;
+    color: white;
+    padding: 20px 0;
+    h1 {
+      font-size: 3.0em;
+      margin-top: 0;
+    }
+    @include breakpoint(md) {
+      padding-top: 30px;
+      padding-bottom: 30px;
+    }
+  }
+
+  .main {
+    padding-top: 20px;
+    padding-bottom: 50px;
+  }
+
+  .page-header {
+    h1 {
+      font-size: 24px;
+      @include breakpoint(md) {
+        font-size: 36px;
+      }
+    }
+  }
+
+  // Tasks.
+  // --------------------------------------------------
+  .tasks-list {
+    > div {
+      margin-bottom: 25px;
+      @extend .text-muted;
+      h6 {
+        margin-bottom: 2px;
+        font-size: 14px;
+        font-weight: normal;
+      }
+      h4 {
+        margin-top: 0;
+        font-size: 14px;
+      }
+      &.active,
+      &.done {
+        color: black;
+      }
+    }
+  }
+
+  // Forms.
+  // --------------------------------------------------
+  .form-actions {
+    .btn {
+      &:first-child {
+        @extend .btn-primary;
+        background-color: white;
+        border-color: black;
+        color: black;
+        &:hover, &:focus {
+          background-color: black;
+          border-color: white;
+        }
+      }
+    }
+  }
+
+  // Progress bar
+  .progress {
+    .progress-bar {
+      background-color: black;
+    }
+  }
+
+  // Theme selection form.
+  #panopoly-theme-selection-form {
+    .form-type-radio {
+      margin: 0 0 2em;
+      label {
+        display: block;
+      }
+      .form-radio {
+        margin: 0;
+        left: 0;
+        top: 40%;
+      }
+    }
+  }
+}

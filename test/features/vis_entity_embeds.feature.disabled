@@ -1,0 +1,29 @@
+@api @javascript
+Feature: Visualization entity embed test.
+
+    #TODO: Works up until adding a visualization, where it cannot find the newly added VE Chart contnet.
+    #       Need to ensure that the chart is created by the time the test gets to adding the embed.
+  Scenario: Module visualization entity embed enabled by default
+      Given "dkan_data_story" content:
+          | title                           | author      | status   |
+          | DKAN Data Story Test Story Post | admin       | 0        |
+      And "ve_chart" content:
+          | title                           | author      | status   |
+          | Viz Entity Test Chart           | admin       | 0        |
+      And I am logged in as a user with the "site manager" role
+      When I am on "story/dkan-data-story-test-story-post"
+      And I wait for "Customize this page"
+      And I click "Customize this page"
+      And I wait for "Add new pane"
+      And I click "Add new pane"
+      And I wait for "Please select a category from the left"
+      Then I should see "Visualizations"
+      When I click "Visualizations"
+      Then I wait for "Visualization embed"
+      When I click "Visualization embed"
+      Then I wait for "Configure new Visualization embed"
+#      When I fill in "edit-local-source" with "Viz"
+#      And I wait for "Viz Entity Test Chart"
+#      When I click "Viz Entity Test Chart"
+#      And I press "edit-return"
+#      Then I should see "Visualization embed"

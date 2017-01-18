@@ -1,0 +1,79 @@
+[{
+  "title": "Data Catalog",
+  "description": "Version 1.0",
+  "keyword": ["catalog"],
+  "modified": "2014-06-24",
+  "publisher": "NuData Sandbox",
+  "contactPoint": "NuData Sandbox",
+  "mbox": "federica@nucivic.com",
+  "identifier": "1",
+  "accessLevel": "public",
+  "distribution": [{
+    "accessURL": "http:\/\/nudatasandbox.local\/data.json",
+    "format": "application\/json"
+  }]
+}, {
+  "title": "Gross Rent over time",
+  "description": "",
+  "keyword": ["rent", "housing"],
+  "modified": "2014-06-24",
+  "publisher": "Housing",
+  "contactPoint": "",
+  "mbox": "",
+  "identifier": "b6a4942e-fa73-4cbf-804f-1f9eea6d02df",
+  "accessLevel": "public",
+  "accessURL": "http:\/\/nudatasandbox.local\/dataset\/gross-rent-over-time",
+  "webService": "http:\/\/nudatasandbox.local\/api\/3\/action\/package_show?id=b6a4942e-fa73-4cbf-804f-1f9eea6d02df",
+  "distribution": [{
+    "accessURL": "http:\/\/nudatasandbox.local\/sites\/default\/files\/grossrents_adj.txt",
+    "size": 4356,
+    "format": "text\/plain"
+  }, {
+    "accessURL": "http:\/\/nudatasandbox.local\/sites\/default\/files\/grossrents_adj.csv",
+    "size": 4526,
+    "format": "text\/csv"
+  }],
+  "license": "License Not Specified",
+  "language": ["english"],
+  "granularity": ""
+}, {
+  "title": "Hospital Compare",
+  "description": "The data that is used by the Hospital Compare tool can be downloaded for public use. This functionality is primarily used by health policy researchers and the media. The data provided includes process of care, mortality, and readmission quality measures. The collection period for the measures is generally 12 months. However, some measures may be based upon fewer than 12 months. Generally, the Hospital Compare quality measures are refreshed the third month of each quarter.",
+  "keyword": ["health", "hospitals", "community"],
+  "modified": "2014-06-24",
+  "publisher": "Health",
+  "contactPoint": "",
+  "mbox": "",
+  "identifier": "2be7feb9-150f-4b7b-ac73-c9f337fc9341",
+  "accessLevel": "public",
+  "accessURL": "http:\/\/nudatasandbox.local\/dataset\/hospital-compare",
+  "webService": "http:\/\/nudatasandbox.local\/api\/3\/action\/package_show?id=2be7feb9-150f-4b7b-ac73-c9f337fc9341",
+  "distribution": [{
+    "accessURL": "http:\/\/nudatasandbox.local\/sites\/default\/files\/HQI_HOSP_AHRQ_NATIONAL.csv",
+    "size": 4068,
+    "format": "text\/csv"
+  }],
+  "license": "Open Data Commons Attribution License",
+  "language": ["english"],
+  "granularity": ""
+}, {
+  "title": "NGA Scores",
+  "description": "",
+  "keyword": [],
+  "modified": "2014-06-23",
+  "publisher": "",
+  "contactPoint": "",
+  "mbox": "",
+  "identifier": "765bc983-a4f5-438a-bf3c-6e171c7cc15a",
+  "accessLevel": "public",
+  "accessURL": "http:\/\/nudatasandbox.local\/dataset\/nga-scores",
+  "webService": "http:\/\/nudatasandbox.local\/api\/3\/action\/package_show?id=765bc983-a4f5-438a-bf3c-6e171c7cc15a",
+  "distribution": [{
+    "accessURL": "http:\/\/nudatasandbox.local\/sites\/default\/files\/values.csv",
+    "size": 57836,
+    "format": "text\/csv"
+  }],
+  "license": "Creative Commons Attribution",
+  "language": ["english"],
+  "granularity": ""
+}]

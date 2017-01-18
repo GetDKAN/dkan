@@ -1,0 +1,144 @@
+{
+    "result": {
+        "path": "dataset/afghanistan-election-districts",
+        "id": "c9e2d352-e24c-4051-9158-f48127aa5692",
+        "name": "afghanistan-election-districts",
+        "title": "Afghanistan Election Districts",
+        "author_email": "datademo@nucivic.com",
+        "maintainer": "DKAN",
+        "maintainer_email": "admin@example.com",
+        "license_title": "http://opendefinition.org/licenses/odc-by/",
+        "notes": "<p>This data created by the National Democratic Institute (NDI) in partnership with Development Seed, a Washington, D.C.-based online communications consultancy, is designed to make data from the August 20, 2009, Afghanistan presidential election accessible and transparent. We have provided this csv file as there is no download for the whole dataset. There are many more files on the website.</p>\n",
+        "url": "http://default/dataset/afghanistan-election-districts",
+        "state": "Active",
+        "log_message": "Update to resource 'District Names'",
+        "private": "Published",
+        "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+        "metadata_created": "Tue, 10/30/2012 - 11:52",
+        "metadata_modified": "Thu, 09/01/2016 - 01:31",
+        "creator_user_id": "1ed39316-37af-4fe3-9a0d-9842efb486e3",
+        "type": "Dataset",
+        "resources": [
+            {
+                "id": "ca6ad242-2516-4fb0-b104-4692567f7e03",
+                "revision_id": "",
+                "url": "http://default/sites/default/files/district_centerpoints_0.csv",
+                "description": "<p>You can see this data plotted on a map, by clicking on 'Map' below. Individual data records can be seen by clicking on each point.</p>\n",
+                "format": "csv",
+                "state": "Active",
+                "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+                "name": "District Names",
+                "mimetype": "text/csv",
+                "size": "31.62 KB",
+                "created": "Thu, 09/01/2016 - 01:37",
+                "resource_group_id": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
+                "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
+            }
+        ],
+        "tags": [
+            {
+                "id": "d7b1433a-bdd1-441d-8cfe-347c8e1a2c62",
+                "vocabulary_id": "2",
+                "name": "country-afghanistan"
+            },
+            {
+                "id": "54a23941-1bc4-4739-af8f-48f0e7e99d30",
+                "vocabulary_id": "2",
+                "name": "election"
+            },
+            {
+                "id": "75df8fb9-868f-4069-9a93-b8de440dba1b",
+                "vocabulary_id": "2",
+                "name": "politics"
+            },
+            {
+                "id": "933bc66f-6910-4130-b1bf-7e57ea5fc847",
+                "vocabulary_id": "2",
+                "name": "transparency"
+            }
+        ],
+        "groups": [
+            {
+                "description": "<p>The Committee on International Affairs is a working group to identify opportunities to learn from and collaborate with government and organizations across the globe.</p>\n",
+                "id": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
+                "image_display_url": "http://default/sites/default/files/map.png",
+                "title": "Committee on International Affairs",
+                "name": "group/committee-international-affairs"
+            }
+        ],
+        "dkan_additional_fields": {
+            "field_additional_info": [],
+            "field_contact_email": "datademo@nucivic.com",
+            "field_contact_name": "Gray, Stefanie",
+            "field_data_dictionary": null,
+            "field_frequency": "5",
+            "field_granularity": "District",
+            "field_modified_source_date": null,
+            "field_public_access_level": "public",
+            "field_related_content": [],
+            "field_resources": [
+                {
+                    "uri": "http://default/node/7",
+                    "id": "7",
+                    "resource": "node",
+                    "uuid": "ca6ad242-2516-4fb0-b104-4692567f7e03",
+                    "value": "admin"
+                }
+            ],
+            "field_spatial": {
+                "wkt": "POLYGON ((60.8642578125 29.878755346038, 61.787109375 30.977609093349, 61.7431640625 31.391157522825, 60.7763671875 31.653381399664, 60.8642578125 32.361403315275, 60.556640625 33.137551192346, 60.908203125 33.578014746144, 60.5126953125 33.614619292334, 60.5126953125 34.307143856288, 60.8642578125 34.343436068483, 61.3037109375 35.603718740697, 62.666015625 35.353216101238, 64.5556640625 36.421282443649, 64.86328125 37.195330582801, 65.654296875 37.195330582801, 65.654296875 37.474858084971, 67.9833984375 37.055177106661, 68.7744140625 37.265309955619, 69.345703125 37.125286284967, 69.697265625 37.683820326694, 70.3125 37.683820326694, 70.3125 38.065392351332, 71.0595703125 38.582526159353, 71.279296875 37.78808138412, 71.7626953125 37.926867601481, 71.4990234375 37.405073750177, 71.630859375 36.738884124394, 73.3447265625 37.474858084971, 73.7841796875 37.474858084971, 73.7841796875 37.265309955619, 74.7509765625 37.335224359306, 74.9267578125 37.160316546737, 74.1357421875 36.809284702059, 72.9931640625 36.949891786813, 71.54296875 36.315125147481, 71.2353515625 36.066862132579, 71.5869140625 35.460669951495, 71.54296875 34.813803317113, 71.103515625 34.560859367084, 71.1474609375 34.08906131585, 70.3125 33.979808728725, 69.873046875 33.979808728725, 70.2685546875 33.321348526699, 69.345703125 32.916485347314, 69.2578125 32.324275588877, 69.1259765625 31.802892586707, 68.7744140625 31.578535426473, 68.0712890625 31.802892586707, 67.67578125 31.615965936476, 67.8515625 31.353636941501, 67.4560546875 31.278550858947, 67.0166015625 31.278550858947, 66.4892578125 30.939924331023, 66.2255859375 30.334953881989, 66.357421875 29.91685223307, 65.0390625 29.535229562948, 64.248046875 29.611670115197, 64.2041015625 29.420460341013, 63.4130859375 29.458731185355, 62.6220703125 29.420460341013))",
+                "geo_type": "polygon",
+                "lat": "33.8496",
+                "lon": "66.0433",
+                "left": "60.5127",
+                "top": "38.5825",
+                "right": "74.9268",
+                "bottom": "29.4205",
+                "srid": null,
+                "latlon": "33.8496,66.0433"
+            },
+            "field_spatial_geographical_cover": "Afghanistan",
+            "field_tags": [
+                {
+                    "uri": "http://default/taxonomy_term/15",
+                    "id": "15",
+                    "resource": "taxonomy_term",
+                    "uuid": "d7b1433a-bdd1-441d-8cfe-347c8e1a2c62",
+                    "value": "country-afghanistan"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/9",
+                    "id": "9",
+                    "resource": "taxonomy_term",
+                    "uuid": "54a23941-1bc4-4739-af8f-48f0e7e99d30",
+                    "value": "election"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/11",
+                    "id": "11",
+                    "resource": "taxonomy_term",
+                    "uuid": "75df8fb9-868f-4069-9a93-b8de440dba1b",
+                    "value": "politics"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/10",
+                    "id": "10",
+                    "resource": "taxonomy_term",
+                    "uuid": "933bc66f-6910-4130-b1bf-7e57ea5fc847",
+                    "value": "transparency"
+                }
+            ],
+            "field_temporal_coverage": [],
+            "og_group_ref": [
+                {
+                    "uri": "http://default/node/1",
+                    "id": "1",
+                    "resource": "node",
+                    "uuid": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
+                    "value": "admin"
+                }
+            ],
+            "field_topic": []
+        }
+    }
+}

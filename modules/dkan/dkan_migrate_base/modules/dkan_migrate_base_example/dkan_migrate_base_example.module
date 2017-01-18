@@ -1,0 +1,101 @@
+<?php
+
+/**
+ * @file
+ * DKAN Examples file.
+ */
+
+/**
+ * Implements hook_migrate_api().
+ */
+function dkan_migrate_base_example_migrate_api() {
+  $api = array(
+    // Migrate API, not CKAN's of course.
+    'api' => 2,
+    'groups' => array(
+      'dkan_migrate_base_example' => array(
+        'title' => t('DKAN Examples'),
+      ),
+    ),
+    'migrations' => array(
+      'dkan_migrate_base_example_ckan_dataset' => array(
+        'class_name' => 'MigrateCkanDatasetExample',
+        'group_name' => 'dkan_migrate_base_example',
+        'title' => t('Example CKAN Datasets'),
+      ),
+      'dkan_migrate_base_example_ckan_resources' => array(
+        'class_name' => 'MigrateCkanResourcesExample',
+        'group_name' => 'dkan_migrate_base_example',
+        'title' => t('Example CKAN Resources'),
+      ),
+      'dkan_migrate_base_example_data_json11' => array(
+        'class_name' => 'MigrateDataJsonExample11',
+        'group_name' => 'dkan_migrate_base_example',
+        'title' => t('Example Data JSON V1.1'),
+      ),
+    ),
+  );
+  return $api;
+}
+
+/**
+ * Extends MigrateCkanDatasetBase.
+ */
+class MigrateCkanDatasetExample extends MigrateCkanDatasetBase {
+
+  /**
+   * Add endpoint.
+   */
+  public function __construct($arguments) {
+    // This example uses local files to make testing easier.
+    // An example endpoint URL would be:
+    $arguments['endpoint'] = dirname(__FILE__) . '/data/';
+    parent::__construct($arguments);
+  }
+
+}
+
+/**
+ * Extends MigrateCkanResourceBase.
+ */
+class MigrateCkanResourcesExample extends MigrateCkanResourceBase {
+
+  /**
+   * Add endpoint.
+   */
+  public function __construct($arguments) {
+    // This example uses local files to make testing easier.
+    // An example endpoint URL would be:
+    // $arguments['endpoint'] = 'http://demo.getdkan.com/api/3/action/';
+    $arguments['endpoint'] = dirname(__FILE__) . '/data/';
+    parent::__construct($arguments);
+  }
+
+}
+
+/**
+ * Extends MigrateDataJsonDatasetBase.
+ */
+class MigrateDataJsonExample11 extends MigrateDataJsonDatasetBase {
+
+  /**
+   * Add endpoint.
+   */
+  public function __construct($arguments) {
+    // This example uses local files to make testing easier.
+    // An example endpoint URL would be:
+    // $arguments['endpoint'] = 'http://demo.getdkan.com/api/3/action/';
+    $arguments['endpoint'] = dirname(__FILE__) . '/data/data11.json';
+    $arguments['version'] = '1.1';
+    parent::__construct($arguments);
+  }
+
+}
+
+/**
+ * Deregisters DKAN example migrations.
+ */
+function dkan_migrate_base_example_migrations_disable() {
+  Migration::deregisterMigration('ckan_dataset_migrate_base_example');
+  Migration::deregisterMigration('ckan_dataset_migrate_base_example_resources');
+}

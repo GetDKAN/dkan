@@ -1,0 +1,8 @@
+name = Facet Links with Icons
+package = Search Toolkit
+description = Provides facet widgets with links and icons for taxonomy terms and content types.
+core = 7.x
+dependencies[] = facetapi
+dependencies[] = panels_style_collapsible
+files[] = widget_term_icons.inc
+files[] = widget_content_type_icons.inc

@@ -1,0 +1,81 @@
+// Basic menu blocks
+// -----------------------------------------------------------------------------
+ul.menu > li > ul.menu {
+  margin-left: 1em; /* LTR */
+}
+
+// Nav
+// -----------------------------------------------------------------------------
+ul.nav {
+  > li {
+    &.dropdown {
+      &:after {
+        width: 100%;
+        height: 2px;
+        background: none;
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        content: '';
+      }
+    }
+  }
+}
+
+// Nav expanded
+// -----------------------------------------------------------------------------
+.nav-expanded {
+  .caret {
+    display: none;
+  }
+  > li {
+    > a {
+      font-size: 1.2em;
+      text-align: left;
+      font-weight: 700;
+      color: $text-color;
+      &:hover, &:focus, &.active, &.active-trail {
+        color: $link-hover-color;
+        background: none;
+      }
+    }
+    ul.dropdown-menu {
+      background: none;
+      display: block;
+      border: 0;
+      padding: 0;
+      position: static;
+      float: none;
+      border-radius: 0;
+      box-shadow: none;
+      li {
+        a {
+          padding: 3px 15px;
+          color: $text-color;
+          &:hover, &:focus, &.active, &.active-trail {
+            color: $link-hover-color;
+            background: none;
+          }
+        }
+      }
+      ul {
+        display: none !important;
+      }
+    }
+    @include breakpoint(md) {
+      float: none;
+      margin-bottom: 18px;
+    }
+    &.open {
+      > a {
+        color: $text-color;
+        background: none;
+        &:hover, &:focus, &.active, &.active-trail {
+          color: $link-hover-color;
+          background: none;
+        }
+      }
+    }
+  }
+}

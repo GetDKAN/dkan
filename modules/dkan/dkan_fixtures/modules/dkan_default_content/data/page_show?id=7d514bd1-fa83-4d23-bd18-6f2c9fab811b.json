@@ -1,0 +1,299 @@
+{
+    "result": {
+        "path": "welcome",
+        "uuid": "7d514bd1-fa83-4d23-bd18-6f2c9fab811b",
+        "id": "39",
+        "type": "page",
+        "title": "Welcome",
+        "created": "1472693478",
+        "changed": "1472709417",
+        "body": {
+            "und": [
+                {
+                    "value": "DKAN is an open-source data management platform. It treats data as content so that you can easily publish, manage, and maintain your open data no matter the size of your team or the level of technical expertise.",
+                    "summary": "",
+                    "format": "html",
+                    "safe_value": "<p>DKAN is an open-source data management platform. It treats data as content so that you can easily publish, manage, and maintain your open data no matter the size of your team or the level of technical expertise.</p>\n",
+                    "safe_summary": ""
+                }
+            ]
+        },
+        "panelizer": {
+            "panels_display": {
+                "args": [],
+                "content": [],
+                "panels": [],
+                "incoming_content": null,
+                "css_id": null,
+                "context": [],
+                "renderer": "standard",
+                "layout": "dkan_front",
+                "layout_settings": [],
+                "panel_settings": {
+                    "style_settings": {
+                        "default": null,
+                        "hero-first": null,
+                        "hero-second": null,
+                        "top-full": null,
+                        "triplet-first": null,
+                        "triplet-second": null,
+                        "triplet-third": null,
+                        "bottom-full": null,
+                        "bottom-first": null,
+                        "bottom-second": null
+                    }
+                },
+                "cache": [],
+                "title": "",
+                "hide_title": "0",
+                "title_pane": "258",
+                "uuid": "9bff5eaa-e759-4450-9e3c-12ec708bbfc5",
+                "storage_type": "panelizer_entity",
+                "storage_id": "node:39:default"
+            },
+            "panels_pane": [
+                {
+                    "panel": "hero-second",
+                    "type": "entity_field",
+                    "subtype": "node:body",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "label": "hidden",
+                        "formatter": "text_default",
+                        "delta_limit": 0,
+                        "delta_offset": "0",
+                        "delta_reversed": false,
+                        "formatter_settings": [],
+                        "context": "panelizer",
+                        "override_title": 1,
+                        "override_title_text": "Welcome to DKAN",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "7c352aa7-4c3a-44d6-9063-2b61cfcb4aba"
+                },
+                {
+                    "panel": "hero-first",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:a170851d-bc67-4e75-8d6e-0c8cb461345b",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "a170851d-bc67-4e75-8d6e-0c8cb461345b",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "a170851d-bc67-4e75-8d6e-0c8cb461345b",
+                        "language": "",
+                        "field_basic_text_text": [
+                            {
+                                "value": "<img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/ncd.gif\" class=\"demo\" alt=\"animated gif\" />",
+                                "format": "html",
+                                "safe_value": "<p><img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/ncd.gif\" class=\"demo\" alt=\"animated gif\" /></p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "hero-second",
+                    "type": "dkan_plugins_button_link",
+                    "subtype": "dkan_plugins_button_link",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "button_link_title": "Click Here",
+                        "button_link_url": "about",
+                        "button_color": "#0A77BD",
+                        "button_align": "text-left",
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "26a17296-f7d5-4f11-a243-1b123294b967"
+                },
+                {
+                    "panel": "top-full",
+                    "type": "views",
+                    "subtype": "dkan_topics_featured",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "override_pager_settings": 0,
+                        "use_pager": 0,
+                        "nodes_per_page": "12",
+                        "pager_id": "0",
+                        "offset": "0",
+                        "more_link": 0,
+                        "feed_icons": 0,
+                        "panel_args": 0,
+                        "link_to_view": 0,
+                        "args": "",
+                        "url": "",
+                        "display": "default",
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "33fd88a8-9049-4fca-903f-c77042285ac2"
+                },
+                {
+                    "panel": "top-full",
+                    "type": "views",
+                    "subtype": "dkan_data_stories",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "override_pager_settings": 0,
+                        "use_pager": 0,
+                        "nodes_per_page": "4",
+                        "pager_id": "0",
+                        "offset": "0",
+                        "more_link": 0,
+                        "feed_icons": 0,
+                        "panel_args": 0,
+                        "link_to_view": 0,
+                        "args": "",
+                        "url": "",
+                        "display": "default",
+                        "override_title": 1,
+                        "override_title_text": "Latest Data Stories",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "4c00a6e4-2503-40e8-b227-89ccce65df1e"
+                },
+                {
+                    "panel": "bottom-first",
+                    "type": "views",
+                    "subtype": "front_page_group_list",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "override_pager_settings": 0,
+                        "use_pager": 0,
+                        "nodes_per_page": "4",
+                        "pager_id": "0",
+                        "offset": "0",
+                        "more_link": 0,
+                        "feed_icons": 0,
+                        "panel_args": 0,
+                        "link_to_view": 0,
+                        "args": "",
+                        "url": "",
+                        "display": "block_3",
+                        "override_title": 1,
+                        "override_title_text": "Groups",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "3c7762b7-844a-4f01-afc0-36da301160e6"
+                },
+                {
+                    "panel": "bottom-second",
+                    "type": "views",
+                    "subtype": "front_page_dashboards_list",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "override_pager_settings": 0,
+                        "use_pager": 0,
+                        "nodes_per_page": "4",
+                        "pager_id": "0",
+                        "offset": "0",
+                        "more_link": 0,
+                        "feed_icons": 0,
+                        "panel_args": 0,
+                        "link_to_view": 0,
+                        "args": "",
+                        "url": "",
+                        "display": "block",
+                        "override_title": 1,
+                        "override_title_text": "Dashboards",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "4f78ddf7-f8ca-4e4b-b0b5-a2611cfc4d58"
+                }
+            ],
+            "panelizer_entity": {
+                "entity_type": "node",
+                "view_mode": "default",
+                "name": null,
+                "css_id": "",
+                "css_class": "",
+                "css": "",
+                "no_blocks": "0",
+                "title_element": "H2",
+                "link_to_entity": "1",
+                "extra": [],
+                "pipeline": "ipe",
+                "relationships": []
+            }
+        },
+        "is_homepage": true
+    }
+}

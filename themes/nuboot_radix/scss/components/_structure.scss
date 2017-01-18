@@ -1,0 +1,325 @@
+//
+// Styles for headings, links, lists, tables, general, ..etc
+// --------------------------------------------------
+body {
+  font-family:$font-base;
+  font-size:16px;
+  line-height:1.35em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body.modal-open {
+  overflow: visible !important;
+}
+.branding {
+  position: relative;
+  .logo {
+    margin: 20px  20px 15px 0;
+  }
+}
+@media (max-width: 768px) {
+  .logo img {
+    max-width: 100%;
+  }
+}
+
+.site-name {
+  display: block;
+  font-size: 2em;
+  line-height: 1.15em;
+  margin: 50px 20px 0;
+  @media(max-width:460px) {
+    clear: left;
+    float: none;
+    margin: 10px 20px 5px 0;
+  }
+  &:hover {
+    text-decoration: none;
+  }
+}
+.site-slogan {
+  margin-bottom: 20px;
+}
+h1 {
+  font-size: 36px;
+  line-height: 42px;
+  margin-bottom: 15px;
+}
+h1,h2,h3,h4 {
+  color:$gray-dark;
+  font-weight:300;
+}
+h3.media-heading {
+  margin:.5em 0;
+}
+h4 {
+  margin-top: 2em;
+  margin-bottom: .5em;
+}
+
+a {
+  color:$brand-primary;
+  &:hover {
+    color:$brand-secondary;
+  }
+}
+p,
+p:last-child {
+  margin: 0 0 1.25em 0;
+}
+
+.breadcrumb {
+  background: none;
+  border: none;
+  font-size: 1em;
+  list-style: none;
+  padding: 0;
+  position: relative;
+  li {
+    float:none;
+    a {
+      span {
+        display:none;
+      }
+    }
+    &.home-link a {
+      font-size:1.3em;
+      i {
+        display: block;
+      }
+    }
+  }
+}
+
+.alert {
+  border: none;
+  padding: 15px 35px;
+  position: relative;
+  .close {
+    line-height: 18px;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+  }
+  &.alert-warning {
+    background: #FFE285;//$brand-warning;
+  }
+  &.alert-completed {
+    background: #dff0d8;
+    color: #3c763d;
+  }
+  &:before {
+    font-family: $icon-fa;
+    font-size: 1.5em;
+    position: absolute;
+    top: 15px;
+    left: 10px;
+  }
+  &.alert-danger:before {
+    content: '\f06a';
+    color: $brand-danger;
+  }
+  &.alert-warning:before {
+    content: '\f05a';
+    color: #8a6d3b;
+  }
+  &.alert-completed:before,
+  &.alert-success:before {
+    content: '\f058';
+    color: $brand-success;
+  }
+}
+.page-admin .alert {
+  margin: 10px 0;
+}
+// Tables
+table,
+table.group_additional {
+  border-collapse:collapse;
+  margin:1em 0;
+  width:100%;
+  thead > tr > th {
+    //@include background-image(linear-gradient(#F5F5F5, #F0F0F0));
+    background-color: lighten($border, 4%);
+    border: 1px solid $border !important;
+    padding: 4px 8px;
+    font-weight: bold;
+  }
+  thead th:first-child {
+    //@inlclude border-top-left-radius(4px);
+  }
+  thead th:last-child,
+  thead th:last-child {
+    //@include border-top-right-radius(4px);
+  }
+  tbody th,
+  td {
+    border:1px solid $border;
+    padding:4px 8px;
+    vertical-align:top;
+  }
+  tr:hover {
+    background:#FFFEEE;
+  }
+}
+
+.table-responsive {
+  overflow: visible;
+}
+@media screen and (max-width: 1024px) {
+  .table-responsive > .table > thead > tr > th,
+  .table-responsive > .table > thead > tr > td,
+  .table-responsive > .table > tbody > tr > th,
+  .table-responsive > .table > tbody > tr > td,
+  .table-responsive > .table > tfoot > tr > th,
+  .table-responsive > .table > tfoot > tr > td {
+    white-space: normal;
+  }
+}
+
+.field-name-field-additional-info .field-label {
+  margin-bottom: 1em;
+  @include h4;
+}
+.group_additional,
+.field-name-field-additional-info table,
+.field-name-field-additional-info .table-responsive {
+  margin: 0;
+  td,
+  th {
+    white-space: normal;
+    width: auto;
+  }
+  td:nth-of-type(2n) {
+    @include wrap;
+  }
+  @media all and (min-width:768px) {
+    .form-item {
+      th:nth-of-type(1n),
+      td:nth-of-type(1n),
+      th:nth-of-type(4n),
+      td:nth-of-type(4n) {
+        width: 5%;
+        border-right: 1px solid $border;
+      }
+      th:nth-of-type(2n),
+      td:nth-of-type(2n) {
+        width: 90%;
+        .form-control {
+          min-width: 40%;
+        }
+      }
+    }
+  }
+}
+
+table.group_additional,
+.field-name-field-additional-info table {
+  th,
+  td,
+  th:nth-of-type(1n),
+  td:nth-of-type(1n),
+  th:nth-of-type(2n),
+  td:nth-of-type(2n) {
+    width: auto;
+    .form-control {
+      display: inline-block;
+      width: auto;
+      vertical-align: top
+    }
+  }
+  margin-top: 0;
+}
+.table > thead:first-child > tr:first-child > th,
+table thead:first-child tr:first-child th {
+  border: 1px solid $border;
+}
+.table-bordered > thead > tr > th,
+table thead > tr > th {
+  background-color: lighten($border, 4%);
+  border: 1px solid $border;
+  padding:4px 8px;
+}
+
+// Striped tables.
+.table-striped > tbody > tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+.table tbody tr:hover td, 
+.table tbody tr:hover th,
+.table-striped > tbody > tr:nth-child(odd):hover {
+  background-color: #FFFEEE;
+}
+
+
+dl {
+  margin:0;
+  padding:0;
+  clear:both;
+  overflow:hidden;
+}
+dt {
+  clear: both;
+  margin:0;
+  padding:8px 5px;
+  float:left;
+  width:28%;
+}
+dd {
+  margin:0;
+  padding:8px 5px;
+  float:right;
+  width:72%;
+}
+dt,
+dd {
+  border-top: 1px solid $border;
+}
+
+.item-list .pagination {
+  li:first-child > span,
+  li:first-child > a {
+    @include border-radius(4px 0 0 4px);
+  }
+  li:last-child > span,
+  li:last-child > a {
+    @include border-radius(0 4px 4px 0);
+  }
+}
+
+.radix-layouts-sidebar .item-list ul,
+.nav-simple {
+  margin: 0;
+  list-style: none;
+  padding: 0;
+  li {
+    margin:0;
+    line-height: 1.1666666666666667em;
+    padding: 0;
+    border-bottom: 1px dotted #CCC;
+    position:relative;
+    a {
+      display: block;
+      margin:0;
+    }
+    a:hover {
+      background:#FFFEEE;
+    }
+    &.last {
+      border-bottom: none;
+    }
+  }
+}
+// Keep images inside their containers.
+img {
+  max-width: 100%;
+  height: auto;
+}
+// Bootstrap/Radix Overrides.
+.thumbnail {
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+}

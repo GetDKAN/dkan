@@ -1,0 +1,138 @@
+#modalContent {
+  .modal-header { 
+    background: $brand-primary;
+    h4 {
+      color: #fff;
+    }
+    .close {
+      color: #fff;
+      text-shadow: 0 1px 0 #036;
+      opacity: 1;
+    }
+  }
+  .panels-add-content-modal {
+    margin: 0;
+    position: relative;
+  }
+  .panels-section-column {
+    margin-right: 1em;
+    overflow: visible;
+    @media (max-width: 600px) {
+      width: 100%;
+      float: none;
+      margin-right: 0;
+    }
+  }
+  .panels-section-column-categories .btn {
+    border: 1px solid #ccc !important;
+    margin: 3px;
+  }
+}
+
+.panels-add-content-modal .panels-section-column .inside {
+  padding: 1em 0;
+}
+
+.panels-section-column .dkan-type-button {
+  font-size: 1em;
+  line-height: 1em;
+  a {
+    @include border-radius(4px);
+    border: 1px solid #eee;
+    display: block;
+    padding: 8px 10px;
+    margin: 3px 0;
+    &:focus,
+    &:hover {
+      background: #eee;
+      border-color: #ccc;
+      text-decoration: none;
+    }
+    &:before {
+      font-family: "FontAwesome";
+      font-size: 1.25em;
+      margin-right: 5px;
+    }
+  }
+}
+#field-basic-table-table-und-0-tablefield {
+  border: none;
+  margin: 0;
+  padding: 0;
+  fieldset {
+    padding-top: 0;
+  }
+}
+.form-tablefield input.tablefield-rebuild {
+  background-color: $brand-primary !important;
+  border-color: $brand-primary;
+  &:hover,
+  &:focus,
+  &.active {
+    background-color: $link-hover-color;
+    border-color: $link-hover-color;
+  }
+}
+.add-content-link-basic-file-icon-text-button:before {
+  content:"\f0f6";
+}
+.add-content-link-custom-icon-text-button:before {
+  content:"\f044";
+}
+.add-content-link-node-icon-text-button:before {
+  content:"\f24d";
+}
+.add-content-link-image-icon-text-button:before {
+  content:"\f1c5";
+}
+.add-content-link-map-icon-text-button:before {
+  content:"\f278";
+}
+.add-content-link-quick-links-icon-text-button:before {
+  content:"\f0c1";
+}
+.add-content-link-table-icon-text-button:before {
+  content:"\f0ce";
+}
+.add-content-link-text-icon-text-button:before {
+  content:"\f036";
+}
+.add-content-link-video-icon-text-button:before {
+  content: "\f008";
+}
+.add-content-link-visualization-embed-icon-text-button:before {
+  content:"\f200";
+}
+.add-content-link-spotlight-icon-text-button:before {
+  content:"\f16a";
+}
+.add-content-link-panopoly-widgets-general-content-list-of-content-icon-text-button:before {
+  content:"\f0ca";
+}
+.add-content-link-panopoly-widgets-general-content-piece-of-content-icon-text-button:before {
+  content:"\f0ea";
+}
+.add-content-link-main-menu-icon-text-button:before {
+  content:"\f0c9";
+}
+.add-content-link-dkan-plugins-button-link-icon-text-button:before {
+  content:"\f0c1";
+}
+
+img {
+  &.thumbnail {
+    width: 100px;
+    height: auto;
+  }
+  &.left {
+    float: left;
+    margin: 0 1em 1em 0;
+  }
+  &.right {
+    float: right;
+    margin: 0 0 1em 1em;
+  }
+  &.center {
+    margin: 0 auto;
+  }
+}

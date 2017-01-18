@@ -1,0 +1,25 @@
+ahoyapi: v1
+version: 0.0.0
+commands:
+  up:
+    usage: Start up the dkan site
+    cmd: |
+      if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
+        ahoy docker up
+      fi
+      ahoy utils setup {{args}}
+      ahoy ci setup
+      ahoy ci deploy
+
+  test:
+    usage: Run the tests for the dkan site
+    cmd: |
+      ahoy dkan test
+
+  reinstall:
+    usage: Reinstall the site from scratch (dkan + custom_config + environment).
+    cmd: |
+      ahoy dkan reinstall
+      ahoy drush -y en custom_config environment devinci
+      ahoy drush env-switch --force local
+

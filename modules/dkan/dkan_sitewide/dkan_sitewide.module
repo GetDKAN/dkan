@@ -9,6 +9,31 @@ include_once 'dkan_sitewide.features.inc';
 include_once 'dkan_sitewide.blocks.inc';
 
 /**
+ * Implements hook_menu().
+ */
+function dkan_sitewide_menu() {
+  $items = array();
+
+  $items['dataset'] = array(
+    'title' => 'Dataset',
+    'description' => 'Redirects to search page',
+    'page callback' => 'dkan_sitewide_redirect_to_search',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Callback to make change search path backward compatible.
+ */
+function dkan_sitewide_redirect_to_search() {
+  $params = drupal_get_query_parameters();
+  drupal_goto('/search/type/dataset', array('query' => $params), 301);
+}
+
+/**
  * Adds group block to dataset node.
  */
 function dkan_sitewide_user_menu_block() {
@@ -53,7 +78,7 @@ function dkan_sitewide_preprocess_views_views_json_style_simple(&$vars) {
  */
 function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dataset-page' ||
-    $form['#id'] == 'views-exposed-form-user-profile-search-entity-view-1' ||
+    $form['#id'] == 'views-exposed-form-user-profile-search-user-profile-search-block' ||
     $form['#id'] == 'views-exposed-form-groups-search-entity-view-1' ||
     $form['#id'] == 'dkan-sitewide-dataset-search-form--2' ||
     $form['#id'] == 'views-exposed-form-dkan-datasets-panel-pane-1') {
@@ -65,7 +90,7 @@ function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
   }
 
   if ($form_id == 'colorizer_admin_settings') {
-    //Add clear cache for anonymous after any change.
+    // Add clear cache for anonymous after any change.
     $form['#submit'][] = 'dkan_sitewide_form_colorize_clear_cache';
   }
 }
@@ -97,28 +122,36 @@ function dkan_sitewide_restws_resource_info_alter(&$info) {
  * are checking github.
  */
 function dkan_sitewide_update_status_alter(&$projects) {
-  
-  // Remove update notices.
-  $up_to_date_projects = array('gravatar', 'link_iframe_formatter', 'og_extras');
-  foreach ( $up_to_date_projects as $up_to_date_project ) {
-    
-    if ( isset($projects[$up_to_date_project]) ) {
-      
-      $projects[$up_to_date_project]['status'] = UPDATE_CURRENT; 
 
-      if ( isset($projects[$up_to_date_project]['title']) &&
-           isset($projects[$up_to_date_project]['existing_version']) ) {
-        
+  // Remove update notices.
+  $up_to_date_projects = array(
+    'gravatar',
+    'beautytips',
+    'entity_rdf',
+    'feeds_field_fetcher',
+    'multistep',
+    'link_iframe_formatter',
+    'rdfx',
+  );
+  foreach ($up_to_date_projects as $up_to_date_project) {
+
+    if (isset($projects[$up_to_date_project])) {
+
+      $projects[$up_to_date_project]['status'] = UPDATE_CURRENT;
+
+      if (isset($projects[$up_to_date_project]['title']) &&
+           isset($projects[$up_to_date_project]['existing_version'])) {
+
         $project_name = $projects[$up_to_date_project]['title'];
         $project_revision = $projects[$up_to_date_project]['existing_version'];
 
         if (current_path() == 'admin/reports/updates') {
-          drupal_set_message( $project_name . ' is up to date. We are using ' . $project_revision . ' revision.' );
+          drupal_set_message($project_name . ' is up to date. We are using ' . $project_revision . ' revision.');
         }
       }
     }
-  } 
-  
+  }
+
   $project = 'dkan';
   $org = 'nucivic';
 
@@ -144,7 +177,7 @@ function dkan_sitewide_update_status_alter(&$projects) {
     $projects[$project]['status'] = UPDATE_NOT_CHECKED;
   }
   $minor = str_replace('7.x-1.', '', $dkan_tag);
-    foreach (array($current_version, $dkan_tag) as $version) {
+  foreach (array($current_version, $dkan_tag) as $version) {
     $projects[$project]['releases'][$version]['name'] = $project . ' ' . $version;
     $projects[$project]['releases'][$version]['version'] = $version;
     $projects[$project]['releases'][$version]['tag'] = $version;
@@ -169,11 +202,11 @@ function dkan_sitewide_update_status_alter(&$projects) {
   $projects[$project]['releases']['latest_version'] = $dkan_tag;
   $projects[$project]['releases']['7.x-1.x-dev']['release_link'] = 'http://github.com/nucivic/' . $project;
   $projects[$project]['releases']['7.x-1.x-dev']['reason'] = 'Development Release';
-  $projects[$project]['releases']['7.x-1.x-dev']['download_link'] = 'https://api.github.com/repos/NuCivic/' . $project .  '/zipball/7.x-1.x';
+  $projects[$project]['releases']['7.x-1.x-dev']['download_link'] = 'https://api.github.com/repos/NuCivic/' . $project . '/zipball/7.x-1.x';
 
   $projects[$project]['releases']['7.x-1.x-dev']['date'] = time();
 
-  $projects[$project]['releases'][$dkan_tag]['release_link'] = 'https://api.github.com/repos/NuCivic/' . $project .  '/zipball/' . $dkan_tag;
+  $projects[$project]['releases'][$dkan_tag]['release_link'] = 'https://api.github.com/repos/NuCivic/' . $project . '/zipball/' . $dkan_tag;
 
   // Checks to see if last digit is number which means it is on a tag.
   if (preg_match("/.*?(\d+)$/", $projects[$project]['existing_version'])) {
@@ -190,7 +223,7 @@ function dkan_sitewide_preprocess_page(&$variables) {
   $admin_theme = variable_get('admin_theme');
   $default_theme = variable_get('theme_default');
   if (arg(0) == 'admin' && arg(1) == 'appearance' && $admin_theme !== '0' && $default_theme !== $admin_theme) {
-    drupal_set_message(t('For Colorizer to work you must set the Administration theme to match your <em>Default theme</em> at the bottom of the <a href="' . $base_url . '/admin/appearance">appearance list</a> page.'), 'warning');
+    drupal_set_message(t('For Colorizer to work you must set the Administration theme to match your <em>Default theme</em> at the bottom of the !link  page.', array('!link' => l(t('appearance list'), 'admin/appearance'))), 'warning');
   }
 }
 
@@ -226,4 +259,93 @@ function dkan_sitewide_module_implements_alter(&$implementations, $hook) {
     unset($implementations['dkan_sitewide']);
     $implementations['dkan_sitewide'] = $group;
   }
+}
+
+/**
+ * Converts a panel page into a panelized node page.
+ *
+ * @param string $page_name
+ *   page_name The administrative name of the page.
+ * @param bool $is_homepage
+ *   is_homepage True if the converted page should be set as the homepage.
+ */
+function dkan_sitewide_convert_panel_page($page_name, $is_homepage = FALSE) {
+
+  module_load_include('inc', 'page_manager', 'plugins/tasks/page');
+  $page = page_manager_page_load($page_name);
+
+  if ($page) {
+    // Create new Page node for the homepage.
+    $page_node = new stdClass();
+    $page_node->type = 'page';
+    $page_node->uid = 1;
+    $page_node->status = 1;
+    $page_node->language = LANGUAGE_NONE;
+    $page_node->title = $page->admin_title;
+    node_save($page_node);
+
+    $task = page_manager_get_task($page->task);
+    $task_handler = reset(page_manager_load_task_handlers($task, $page->name));
+
+    $display = dkan_sitewide_clone_panel_display($task_handler);
+
+    // Setup cloned display on the new page node.
+    $page_node = node_load($page_node->nid);
+    $page_node->panelizer['default']->display = $display;
+    $page_node->panelizer['default']->did = $display->did;
+    $page_node->panelizer['default']->entity_id = $page_node->nid;
+    $page_node->panelizer['default']->display_is_modified = TRUE;
+    $page_node->panelizer['default']->entity_type = 'node';
+    $page_node->panelizer['default']->pipeline = 'ipe';
+    $page_node->panelizer['default']->link_to_entity = $page_node->nid;
+    node_save($page_node);
+
+    // Disable old panel page.
+    dkan_sitewide_update_panel_page_status($page->name, TRUE);
+
+    // If the panel page was the homepage
+    // then set up the new node as the new homepage.
+    if ($is_homepage) {
+      // Set new home page node as the new home page.
+      variable_set('site_frontpage', 'node/' . $page_node->nid);
+    }
+  }
+}
+
+/**
+ * Clone panel display.
+ */
+function dkan_sitewide_clone_panel_display($task_handler) {
+
+  $display = array();
+  // Check first if the display was already loaded.
+  if (isset($task_handler->conf['display'])) {
+    $display = $task_handler->conf['display'];
+    // If the display was not loaded then try to load it by the ID.
+  }
+  elseif (isset($task_handler->conf['did'])) {
+    $display = panels_load_display($task_handler->conf['did']);
+  }
+
+  if ($display) {
+    $display_code = panels_export_display($display);
+    eval($display_code);
+    panels_save_display($display);
+  }
+
+  return $display;
+}
+
+/**
+ * Enable disable panel pages.
+ *
+ * Function used to enable/disable panel pages.
+ *   - TRUE: Disable page.
+ *   - FALSE: Enable page.
+ */
+function dkan_sitewide_update_panel_page_status($page_name, $status = FALSE) {
+  $page = page_manager_get_page_cache('page-' . $page_name);
+  $function = ctools_plugin_get_function($page->subtask, "enable callback");
+  $function($page, $status);
+  menu_rebuild();
 }

@@ -1,0 +1,114 @@
+// Styles for CTools Modal
+// --------------------------------------------------
+body.ctools-modal-open {
+  overflow: hidden;
+}
+#modalContent {
+  .modal-content {
+    width: 100%;
+    overflow: hidden;
+    box-shadow: none !important;
+  }
+  #modal-content {
+    overflow: auto;
+    width: 100% !important;
+    background: white;
+  }
+  .panels-add-content-modal {
+    background: none;
+    padding: 0;
+    height: 100%;
+    margin: -20px -20px 0;
+    width: 100%;
+    position: absolute;
+  }
+  .panels-section-columns,
+  .panels-categories-description {
+    border: none;
+  }
+  .panels-section-column-categories {
+    margin-left: 0;
+    border-right: 1px solid #ccc;
+    height: 100%;
+    background: white;
+    overflow: auto;
+    padding-bottom: 20px;
+    .btn {
+      border: 1px solid $gray-light !important;
+      line-height: inherit;
+      margin: 0;
+      text-align: left;
+    }
+  }
+  .panels-categories-box {
+    border: 0;
+    a.btn {
+      padding: 5px 10px;
+    }
+    a.active {
+      background: $gray-lighter;
+      box-shadow: none;
+    }
+  }
+  .panels-root-content-box {
+    a.btn {
+      padding: 5px 10px;
+    }
+  }
+  .panels-categories-description {
+    padding: 20px;
+  }
+  .panels-section-columns {
+    padding-bottom: 20px;
+  }
+  fieldset.widget-preview {
+    margin-top: 18px;
+    margin-bottom: 0;
+    position: static;
+    border: 1px solid #ddd;
+    .panel-heading {
+      position: relative;
+      .btn {
+        position: absolute;
+        right: 10px;
+        top: 5px;
+      }
+    }
+  }
+  .ctools-auto-submit-full-form {
+    fieldset {
+      width: 48%;
+      display: block;
+      fieldset {
+        width: 100%;
+      }
+      &.widget-preview-single {
+        float: right;
+        margin-left: 1em;
+        margin-top: 0;
+        width: 48%;
+        max-width: 48% !important;
+      }
+    }
+    .form-actions {
+      float: right;
+      clear: right;
+      width: 48%;
+      max-width: 48%;
+      text-align: right;
+    }
+  }
+  .form-item-view-settings {
+    display: block;
+  }
+  .form-item-exposed-use-pager {
+    display: block;
+  }
+  #panopoly-form-widget-preview {
+    width: 50%;
+    float: right;
+    .container {
+      width: auto;
+    }
+  }
+}
