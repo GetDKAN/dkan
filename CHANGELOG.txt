@@ -75,6 +75,7 @@ DKAN Datastore:
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
  - Fixed bugs when running the datastore via cron.
 DKAN Harvest:
+ - Harvested content is published even if dkan_workflow is enabled.
  - Added DKAN Harvest module into DKAN Core.
  - Added UI to add harvest sources
  - Added UI to manage harvest sources and datasets
@@ -91,7 +92,6 @@ DKAN Harvest:
  - Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
  - Fix 508 compliance errors on admin and node view pages.
  - Removed links to Harvest Source nodes from main menu.
- - Harvested content is published even if dkan_workflow is enabled.
  - Prevent harvest source machine name from containing forward slash character.
  - Improved PHP Unit tests.
 DKAN Migrate Base:
