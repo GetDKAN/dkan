@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_sitewide_panels.pages_default.inc
@@ -655,21 +654,18 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $display->content = array();
   $display->panels = array();
   $pane = new stdClass();
-  $pane->pid = 'new-5771913e-f897-497d-9d56-f76f6b207b18';
+  $pane->pid = 'new-dbba36e8-a75c-4fec-b189-d8c3cae601e9';
   $pane->panel = 'contentmain';
-  $pane->type = 'node';
+  $pane->type = 'entity_view';
   $pane->subtype = 'node';
   $pane->shown = TRUE;
   $pane->access = array();
   $pane->configuration = array(
-    'nid' => '%1',
-    'links' => 1,
-    'leave_node_title' => 0,
-    'identifier' => '',
-    'build_mode' => 'full',
-    'link_node_title' => 0,
-    'override_title' => 0,
-    'override_title_text' => '',
+    'view_mode' => 'full',
+    'context' => 'argument_entity_id:node_1',
+    'override_title' => 1,
+    'override_title_text' => '%node:title',
+    'override_title_heading' => 'h2',
   );
   $pane->cache = array();
   $pane->style = array(
@@ -679,9 +675,9 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $pane->extras = array();
   $pane->position = 0;
   $pane->locks = array();
-  $pane->uuid = '5771913e-f897-497d-9d56-f76f6b207b18';
-  $display->content['new-5771913e-f897-497d-9d56-f76f6b207b18'] = $pane;
-  $display->panels['contentmain'][0] = 'new-5771913e-f897-497d-9d56-f76f6b207b18';
+  $pane->uuid = 'dbba36e8-a75c-4fec-b189-d8c3cae601e9';
+  $display->content['new-dbba36e8-a75c-4fec-b189-d8c3cae601e9'] = $pane;
+  $display->panels['contentmain'][0] = 'new-dbba36e8-a75c-4fec-b189-d8c3cae601e9';
   $pane = new stdClass();
   $pane->pid = 'new-25ca95bb-18cd-4175-8cbd-5d44b3b08e20';
   $pane->panel = 'sidebar';
@@ -793,7 +789,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $display->content['new-a3d3ba71-c2c5-4eb0-8ac8-77b7709264a8'] = $pane;
   $display->panels['sidebar'][4] = 'new-a3d3ba71-c2c5-4eb0-8ac8-77b7709264a8';
   $display->hide_title = PANELS_TITLE_PANE;
-  $display->title_pane = 'new-5771913e-f897-497d-9d56-f76f6b207b18';
+  $display->title_pane = 'new-dbba36e8-a75c-4fec-b189-d8c3cae601e9';
   $handler->conf['display'] = $display;
   $export['node_view_panel_context'] = $handler;
 
@@ -1047,17 +1043,16 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $display->content = array();
   $display->panels = array();
   $pane = new stdClass();
-  $pane->pid = 'new-303cc0c1-7964-4662-85f4-5ca1c764ce4e';
+  $pane->pid = 'new-3b15fd88-4e94-4c1e-9cd0-603f26518943';
   $pane->panel = 'contentmain';
-  $pane->type = 'entity_field_extra';
-  $pane->subtype = 'user:user_profile_search_entity_view_1_form';
+  $pane->type = 'block';
+  $pane->subtype = 'views-57b778c513d5cc2716ad72eb5897fabe';
   $pane->shown = TRUE;
   $pane->access = array();
   $pane->configuration = array(
-    'view_mode' => 'full',
-    'context' => 'argument_entity_id:user_1',
+    'inherit_path' => 1,
     'override_title' => 1,
-    'override_title_text' => '%user:name\'s Content',
+    'override_title_text' => '%user:name\'s content',
     'override_title_heading' => 'h2',
   );
   $pane->cache = array();
@@ -1068,9 +1063,9 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $pane->extras = array();
   $pane->position = 0;
   $pane->locks = array();
-  $pane->uuid = '303cc0c1-7964-4662-85f4-5ca1c764ce4e';
-  $display->content['new-303cc0c1-7964-4662-85f4-5ca1c764ce4e'] = $pane;
-  $display->panels['contentmain'][0] = 'new-303cc0c1-7964-4662-85f4-5ca1c764ce4e';
+  $pane->uuid = '3b15fd88-4e94-4c1e-9cd0-603f26518943';
+  $display->content['new-3b15fd88-4e94-4c1e-9cd0-603f26518943'] = $pane;
+  $display->panels['contentmain'][0] = 'new-3b15fd88-4e94-4c1e-9cd0-603f26518943';
   $pane = new stdClass();
   $pane->pid = 'new-b7c6a77b-f4e8-4477-83c9-8d97a0ee402d';
   $pane->panel = 'contentmain';
@@ -1090,7 +1085,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     'link_to_view' => 0,
     'args' => '',
     'url' => '',
-    'display' => 'entity_view_1',
+    'display' => 'user_profile_search_block',
     'context' => array(
       0 => '',
     ),

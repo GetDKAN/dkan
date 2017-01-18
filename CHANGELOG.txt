@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Upgraded to new 1.0 release of Visualization Entity module
  - Add install hook to DKAN Workflow to force a Features revert of dkan_sitewide_menu, to make sure Workflow links added correctly
  - Remove Panels IPE from dataset and search pages; in DKAN, we only want to show IPE for panelizer layouts, not templates or other "sitewide" pages.
  - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
@@ -38,8 +39,7 @@
  - Added upgrade hook to remove deprecated test and theme directories.
  - Fixed popular tags view.
  - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
- - Update ctools to 1.11
- - Fixed link to group page on group node teaser when site has clean urls disabled
+ - Fixed link to group page on group node teaser when site has clean urls disabled.
  - Added update hook to disable dkan_default_content on upgrades.
  - Updated visualization_entity.
  - Added fix to display the 'Request membership' link only to users that are logged in.
@@ -64,7 +64,11 @@
  - Upgrade panopoly_images to 1.41
  - Upgrade file_entity to 2.0-beta3
  - Upgrade link_iframe_formatter to 1.1
+ - Assign workflow supervisor role to site manager users when dkan workflow is enabled.
  - Switch to forked version of the spectrum library to address accessibility issues.
+ - Removed eva module.
+ - Fixed CSV column validation on visualization entity.
+ - Fixed retrieve of version information on chroma.js.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
@@ -82,16 +86,22 @@ DKAN Harvest:
  - Fixed harvesting of resources with remote files with redirects.
  - Fix "Manage Datastore" tab leaking to the harvest source node.
  - Add icons for harvest source tabs.
+ - Fixed the dataset count displayed on the harvest preview message.
  - Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
- - Fix 508 compliance error on admin and node view pages.
+ - Fix 508 compliance errors on admin and node view pages.
  - Removed links to Harvest Source nodes from main menu.
+ - Prevent harvest source machine name from containing forward slash character.
+ - Improved PHP Unit tests.
 DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
 DKAN Workflow:
+ - Fixed panels-related bug where, if a dataset had both a "published" and "draft" version, the published would show in the draft tab.
  - Updated DKAN workflow vbo customizations to not affect other vbo forms.
  - Updated workbench_email from 3.9 to 3.11
- - Fixed admin menu source when dkan_workflow is enabled
+ - Fixed admin menu source when dkan_workflow is enabled.
+ - Moved workbench links from dkan_sitewide_menu to dkan_workflow.
+ - Added menu source settings for dkan_workflow roles.
 DKAN Dataset:
  - Leaflet draw widget usability improvements
  - Fix validation on resource forms when multiple resource type fields are populated
@@ -117,20 +127,44 @@ DKAN Dataset:
  - Fixed text on 'Download All' button to not display HTML.
  - Add patch for workbench_moderation to avoid php shutdown function errors.
  - Removed 'Back to dataset' button on standalone resources.
- - Better support of downloading remote files from the resource view page
-   "Download" button.
+ - Better support of downloading remote files from the resource view page "Download" button.
  - Removed warning when a resource is created without title.
  - Add limit to proxy resources.
  - Improved download of remote files.
- - Fix 508 compilance issues for visualization_entity_charts
- - Fix 508 compilance issues for leafleat draw widget 
+ - Fix 508 compilance issues for visualization_entity_charts.
+ - Fix 508 compilance issues for leafleat draw widget.
  - Add patch to remote_stream_wrapper to fix memory exhausted errors.
  - Renamed 'filefield_remotefile' as 'filefield_dkan_remotefile'.
+ - Add patch to field_group to avoid DOM-based cross-site scripting vulnerabilities.
 DKAN Topics:
  - Added a test for creating a topic term.
  - Make the icon field required if the icon type is set to 'font'.
  - Fix topics icon selector functionality.
+ 
 
+7.x-1.12.13 2017-01-04
+----------------------
+- Fix broken recline (resource CSV) preview embeds caused by how recline module loads bootstrap
+- Fix publisher token in open_data_schema_map_dkan - was showing only URL rather than publisher name
+- Add patch to remote_stream_wrapper to avoid memory exhausted on big files.
+
+
+7.x-1.12.12 2016-12-15
+-------------------------
+ - Start caching recline "embed" pages (previews rendered with no headers/sidebars for iframe) (recline module)
+ - Upgrade Drupal core to 7.52
+ - Update ctools to 1.11
+ - Fix link to group page on group node teaser when site has clean urls disabled
+ - Fix "format" facet collapsed even when selected on the search page.
+ - Fix resources not synced with datasets when upgrade from 1.11
+ - Update media to 2.0-beta13
+ - Fix hidden body field on page content type
+ - Improve access check/security on datastore pages - unauthorized users could perform certain datastore functions
+ - Use dashes in links to tags to avoid "page not found" errors
+DKAN Datastore:
+ - Add limit to proxy resources.
+ - Better support of downloading remote files from the resource view page
+   "Download" button.
 
 
 7.x-1.12.11 2016-10-20
