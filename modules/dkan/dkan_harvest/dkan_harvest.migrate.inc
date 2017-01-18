@@ -277,22 +277,23 @@ class HarvestMigration extends MigrateDKAN {
     // Save dataset.
     node_save($dataset);
 
-    //Check if we have enable dkan moderation.
+    // Publish dataset and resources if dkan_workflow is enabled.
     $this->moderatePublish($dataset);
 
     migrate_instrument_stop('HarvestMigration->complete');
   }
 
   /**
-   * Publish dataset and resource associate.
+   * Publish dataset and resources.
    *
-   * If workbench moderate is enable change status tu published
-   * for dataset and all resource related.
+   * Force 'published' status on the dataset and its
+   * associated resources if dkan_workflow is enabled.
    *
    * @param object $dataset
    *        Entity object.
    */
   private function moderatePublish($dataset) {
+    // Publish dataset.
     if (module_exists('dkan_workflow')) {
       workbench_moderation_moderate($dataset, 'needs_review');
       workbench_moderation_moderate($dataset, 'published');
