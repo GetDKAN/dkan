@@ -169,16 +169,17 @@ function dkan_sitewide_data_extent_block() {
  */
 function dkan_sitewide_license_block() {
   $node = menu_get_object();
-  if (!isset($node->type)) {
-    return '';
-  }
-  elseif ($node->type != 'dataset') {
+  if (!isset($node->type) || $node->type != 'dataset') {
     return '';
   }
   else {
-    if (isset($node->field_license) && $node->field_license) {
-      $key = (isset($node->field_license[$node->language][0])) ? $node->field_license[$node->language][0] : $node->field_license[LANGUAGE_NONE][0];
-      $key = $key['value'];
+    // Sometimes the node object returned from the menu_get_object will not be
+    // fully standard with all fields information. This is usually due to the
+    // alteration done by the panels page_manager. A potential workaround is to
+    // re-load the actual node with node_load.
+    $node_emw = entity_metadata_wrapper('node', node_load($node->nid, $node->vid));
+    if (isset($node_emw->field_license)) {
+      $key = $node_emw->field_license->value();
       $subscribed_values = dkan_dataset_content_types_license_subscribed_values();
       if (isset($subscribed_values[$key])) {
         $license = $subscribed_values[$key];
