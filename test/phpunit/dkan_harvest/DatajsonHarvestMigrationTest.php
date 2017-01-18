@@ -1,17 +1,18 @@
 <?php
+
 /**
  * @file
+ * Contains test phpunit class for HarvestMigration.
  */
 
 include_once __DIR__ . '/includes/HarvestSourceDataJsonStub.php';
 
 /**
+ * Test class for the HarvestMigration class.
  *
+ * @class DatajsonHarvestMigrationTest
  */
 class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
-
-  // Keep track of nodes created during a test run that are not handled by migrations.
-  private $created_nodes = array();
 
   /**
    * {@inheritdoc}
@@ -23,6 +24,9 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     dkan_harvest_cache_sources(array($source));
     // Harvest Migration of the test data.
     dkan_harvest_migrate_sources(array($source));
+
+    // We need this module for the testResourceRedirect test.
+    module_enable(array('dkan_harvest_test'));
   }
 
   /**
@@ -32,7 +36,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * Test dataset count.
    */
   public function testDatasetCount() {
     $dataset_nids = $this->getTestDatasetNid(self::getOriginalTestSource());
@@ -44,6 +48,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test title.
+   *
    * @depends testDatasetCount
    */
   public function testTitle($dataset) {
@@ -51,6 +57,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test dataset count.
+   *
    * @depends testDatasetCount
    */
   public function testTags($dataset) {
@@ -74,6 +82,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test identifer.
+   *
    * @depends testDatasetCount
    */
   public function testIdentifer($dataset) {
@@ -81,6 +91,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test resources.
+   *
    * @depends testDatasetCount
    */
   public function testResources($dataset) {
@@ -96,18 +108,39 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test resources body format.
+   *
+   * @depends testDatasetCount
+   */
+  public function testResourcesBodyFormat($dataset) {
+    $expected_resources = array(
+      'TEST - Workforce By Generation (2011-2015)' => 'html',
+      'TEST - Retirements (2011 - 2015)' => 'html',
+      'TEST - Retirements: Eligible vs. Actual' => 'html',
+    );
+
+    $dataset_resources = $this->getDatasetResourcesFormat($dataset);
+
+    $this->assertEquals($expected_resources, $dataset_resources);
+  }
+
+  /**
+   * Test Metadata Source.
+   *
    * @depends testDatasetCount
    */
   public function testMetadataSources($dataset) {
     if (!module_exists('dkan_dataset_metadata_source')) {
       $this->markTestSkipped('dkan_dataset_metadata_source module is not available.');
-    } else {
-      // This should never be empty as it is set from the cached file during the harvest.
-      // Title
+    }
+    else {
+      // This should never be empty as it is set from the cached file during the
+      // harvest.
+      // Title.
       $this->assertEquals($dataset->field_metadata_sources->title->value(),
         'ISO-19115 Metadata for Wye_2015-03-18T20-20-53');
 
-      // Schema name
+      // Schema name.
       $this->assertEquals($dataset->field_metadata_sources->field_metadata_schema->name->value(),
         'ISO 19115-2');
 
@@ -118,6 +151,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test related content.
+   *
    * @depends testDatasetCount
    */
   public function testRelatedContent($dataset) {
@@ -125,6 +160,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test Moderation state.
+   *
    * @depends testDatasetCount
    */
   public function testModerationState($dataset) {
@@ -146,455 +183,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Simulate a harvest of a source with unchanged content.
+   * Test Groups.
    *
-   * Harvest the same source with the same content. Make sure that:
-   * - the dataset record in the migration map is not updated
-   * - The global node count have not changed (No content is leaked).
-   */
-  public function testHarvestSourceUnchanged() {
-    // We want to make sure the dataset record in the migration map did not
-    // change. Collect various harvest migration data before running the
-    // migration again.
-    $migrationOld = dkan_harvest_get_migration(self::getOriginalTestSource());
-    $migrationOldMap = $this->getMapTableFromMigration($migrationOld);
-    $migrationOldLog = $this->getLogTableFromMigration($migrationOld);
-    $globalDatasetCountOld = $this->getGlobalNodeCount();
-
-    /**
-     * Tests for the initial log table status.
-     */
-    // Since the harvest was run only once. We should have exactly one record
-    // in the database.
-    $this->assertEquals(1, count($migrationOldLog));
-
-    // We are interested in comparing only the Nth and the Nth - 1 record from
-    // the log table.
-    // - "created" record should have decreased by 1.
-    // - "unchanged" record should have increased by 1.
-    // - Every other record should be the same.
-    $migrationOldLogLast = end($migrationOldLog);
-    $this->assertEquals(1, $migrationOldLogLast->created);
-
-    // Nothing else should have changed.
-    foreach (array('updated', 'failed', 'orphaned', 'unchanged') as $property) {
-      $this->assertEquals(0, $migrationOldLogLast->{$property});
-    }
-
-    // Rerun the harvest without changing the source data.
-    // Harvest cache the test source.
-    dkan_harvest_cache_sources(array(self::getOriginalTestSource()));
-    // Harvest Migration of the test data.
-    dkan_harvest_migrate_sources(array(self::getOriginalTestSource()));
-
-    $migrationNew = dkan_harvest_get_migration(self::getOriginalTestSource());
-    $migrationNewMap = $this->getMapTableFromMigration($migrationNew);
-    $migrationNewLog = $this->getLogTableFromMigration($migrationNew);
-    $globalDatasetCountNew = $this->getGlobalNodeCount();
-
-    $importedCount = $migrationNew->getMap()->importedCount();
-    $this->assertEquals($importedCount, '1');
-
-    $migrationNewMap = $this->getMapTableFromMigration($migrationNew);
-
-    $this->assertEquals($migrationOldMap, $migrationNewMap);
-    $this->assertEquals($globalDatasetCountOld, $globalDatasetCountNew);
-
-    /**
-     * Map table evolution.
-     */
-    // The log table should have a new recod by now.
-    $this->assertEquals(count($migrationNewLog), count($migrationOldLog) + 1);
-
-    /**
-     * Log table evolution.
-     */
-    // The log table should have exactly one additional record by now.
-    $this->assertEquals(count($migrationNewLog),
-      count($migrationOldLog) + 1);
-
-    // We are interested in comparing only the Nth and the Nth - 1 record from
-    // the log table.
-    // - "created" record should have decreased by 1.
-    // - "unchanged" record should have increased by 1.
-    // - Every other record should be the same.
-    $migrationOldLogLast = end($migrationOldLog);
-    $migrationNewLogLast = end($migrationNewLog);
-    $this->assertEquals($migrationNewLogLast->created + 1,
-      $migrationOldLogLast->created);
-    $this->assertEquals($migrationNewLogLast->unchanged - 1,
-      $migrationOldLogLast->unchanged);
-
-    // Nothing else should have changed.
-    foreach (array('updated', 'failed', 'orphaned') as $property) {
-      $this->assertEquals($migrationNewLogLast->{$property},
-        $migrationOldLogLast->{$property});
-    }
-  }
-
-  /**
-   * Simulate a harvest of a source with updated content.
-   *
-   * Harvest the same source but with different content. Make sure that:
-   * - the dataset record in the harvest source migration map is updated.
-   * - the dataset record in the harvest source migration log table is updated.
-   * - The dataset update time is greated.
-   * - The global node count have not changed (No content is leaked).
-   */
-  public function testHarvestSourceAlternative() {
-    // Get the current values.
-    $migrationOld = dkan_harvest_get_migration(self::getOriginalTestSource());
-    $migrationOldMap = $this->getMapTableFromMigration($migrationOld);
-    $migrationOldLog = $this->getLogTableFromMigration($migrationOld);
-    $migrationOldMessage = $this->getMessageTableFromMigration($migrationOld);
-    $globalDatasetCountOld = $this->getGlobalNodeCount();
-
-    // We track the last time a record (ie. a dataset) is updated by a
-    // timestamp. For less havier harvests like the example used for the test
-    // it can take less then one second to run multiple takes with different
-    // data and that can mess with the tests. To workaround that we introduce a
-    // artificial 1 second delay.
-    sleep(1);
-
-    // Rerun the harvest (cache + migration) with the alternative source. the
-    // source XML docs. Harvest cache the test source.
-    dkan_harvest_cache_sources(array(self::getAlternativeTestSource()));
-    dkan_harvest_migrate_sources(array(self::getAlternativeTestSource()));
-
-    $migrationAlternative = dkan_harvest_get_migration(self::getAlternativeTestSource());
-    $migrationAlternativeMap = $this->getMapTableFromMigration($migrationAlternative);
-    $migrationAlternativeLog = $this->getLogTableFromMigration($migrationAlternative);
-    $migrationAlternativeMessage = $this->getMessageTableFromMigration($migrationAlternative);
-
-    // Get the map table post alternative source harvest.
-    $migrationAlternativeMap = $this->getMapTableFromMigration($migrationAlternative);
-
-    // The number of managed datasets record should stay the same.
-    $this->assertEquals(count($migrationAlternativeMap), '1');
-    // The number of nodes as a hole should be increased by 1 because a new group
-    // should be created.
-    $globalDatasetCountAlternative = $this->getGlobalNodeCount();
-    $this->assertEquals($globalDatasetCountOld, $globalDatasetCountAlternative);
-
-    // The harvest source map table should not be same after harvesting a
-    // different content.
-    $this->assertNotEquals($migrationOldMap, $migrationAlternativeMap);
-
-    // Specifically check that the last_imported in the new alternative dataset
-    // record is greater then the previous old dataset record.
-    foreach (array_keys($migrationAlternativeMap) as $index) {
-      $this->assertGreaterThan($migrationOldMap[$index]->last_imported,
-        $migrationAlternativeMap[$index]->last_imported);
-    }
-
-    /**
-     * Test Log table evolution.
-     */
-    // The log table should have exactly one additional record by now.
-    $this->assertEquals(count($migrationAlternativeLog),
-      count($migrationOldLog) + 1);
-    // We are interested in comparing only the Nth and the Nth - 1 record from
-    // the log table.
-    // - "orphaned" record should have increased by 1.
-    // - "unchanged" record should have decreased by 1.
-    // - Every other record should be the same.
-    $migrationOldLogLast = end($migrationOldLog);
-    $migrationAlternativeLogLast = end($migrationAlternativeLog);
-
-    $this->assertEquals($migrationAlternativeLogLast->updated,
-      $migrationOldLogLast->updated + 1);
-    $this->assertEquals($migrationAlternativeLogLast->unchanged,
-      $migrationOldLogLast->unchanged - 1);
-    // Nothing else should have changed.
-    foreach (array('created', 'failed', 'orphaned') as $property) {
-      $this->assertEquals($migrationOldLogLast->{$property},
-        $migrationAlternativeLogLast->{$property});
-    }
-
-    /**
-     * Test message table.
-     */
-    // We don't expect any new messages from this test. The old and new message
-    // table should be the same.
-    $this->assertEquals($migrationOldMessage, $migrationAlternativeMessage);
-  }
-
-  /**
-   * Simulate a harvest of a source with faulty content.
-   *
-   * Harvest the same source but with different content. Make sure that:
-   * - the dataset record in the harvest source migration map is updated.
-   * - the dataset record in the harvest source migration log table is updated.
-   * - The dataset update time is greated.
-   * - The global node count have not changed (No content is leaked).
-   */
-  public function testHarvestSourceError() {
-    // Get the current values.
-    $migrationOld = dkan_harvest_get_migration(self::getOriginalTestSource());
-    $migrationOldMap = $this->getMapTableFromMigration($migrationOld);
-    $migrationOldLog = $this->getLogTableFromMigration($migrationOld);
-    $migrationOldMessage = $this->getMessageTableFromMigration($migrationOld);
-
-    $globalDatasetCountOld = $this->getGlobalNodeCount();
-
-    // We track the last time a record (ie. a dataset) is updated by a
-    // timestamp. For less havier harvests like the example used for the test
-    // it can take less then one second to run multiple takes with different
-    // data and that can mess with the tests. To workaround that we introduce a
-    // artificial 1 second delay.
-    sleep(1);
-
-    // Rerun the harvest (cache + migration) with the error source. the
-    // source XML docs. Harvest cache the test source.
-    dkan_harvest_cache_sources(array(self::getErrorTestSource()));
-    dkan_harvest_migrate_sources(array(self::getErrorTestSource()));
-
-    $migrationError = dkan_harvest_get_migration(self::getErrorTestSource());
-    $migrationErrorMap = $this->getMapTableFromMigration($migrationError);
-    $migrationErrorLog = $this->getLogTableFromMigration($migrationError);
-    $migrationErrorMessage = $this->getMessageTableFromMigration($migrationError);
-
-    // Get the map table post error source harvest.
-    $migrationErrorMap = $this->getMapTableFromMigration($migrationError);
-
-    // The number of managed datasets record should stay the same.
-    $this->assertEquals(count($migrationErrorMap), count($migrationOldMap));
-
-    // The number of nodes as a hole should not have changed.
-    $globalDatasetCountError = $this->getGlobalNodeCount();
-    $this->assertEquals($globalDatasetCountOld, $globalDatasetCountError);
-
-    // The harvest source map table should not be same after harvesting a
-    // different content.
-    $this->assertNotEquals($migrationOldMap, $migrationErrorMap);
-
-    // Specifically check that the last_imported in the new error dataset
-    // record is greater then the previous old dataset record.
-    foreach (array_keys($migrationErrorMap) as $index) {
-      $this->assertGreaterThan($migrationOldMap[$index]->last_imported,
-        $migrationErrorMap[$index]->last_imported);
-    }
-
-    /**
-     * Test Log table evolution.
-     */
-    // The log table should have exactly one additional record by now.
-    $this->assertEquals(count($migrationErrorLog),
-      count($migrationOldLog) + 1);
-    // We are interested in comparing only the Nth and the Nth - 1 record from
-    // the log table.
-    // - "updated" record should have decreased by 1.
-    // - "failed" record should have increased by 1.
-    // - Every other record should be the same.
-    $migrationOldLogLast = end($migrationOldLog);
-    $migrationErrorLogLast = end($migrationErrorLog);
-
-    $this->assertEquals($migrationErrorLogLast->updated,
-      $migrationOldLogLast->updated - 1);
-    $this->assertEquals($migrationErrorLogLast->failed,
-      $migrationOldLogLast->failed + 1);
-    // Nothing else should have changed.
-    foreach (array('created', 'unchanged', 'orphaned') as $property) {
-      $this->assertEquals($migrationOldLogLast->{$property},
-        $migrationErrorLogLast->{$property});
-    }
-
-    /**
-     * Test message table.
-     */
-    // AFter harvesting a erroneous source, it is expected to have an error logged
-    // into the messsage table.
-    $this->assertNotEquals($migrationOldMessage, $migrationErrorMessage);
-    // We should at least have one more message.
-    $this->assertGreaterThan(count($migrationOldMessage),
-      count($migrationErrorMessage));
-
-    // Get the new messages. One of them should be an error message.
-    $messages_diff = array_diff_key($migrationErrorMessage, $migrationOldMessage);
-    $errors_level = array();
-    foreach ($messages_diff as $msgid => $message) {
-      $errors_level[] = $message->level;
-    }
-    $this->assertContains(Migration::MESSAGE_ERROR, $errors_level);
-  }
-
-  /**
-   * Simulate a harvest of an empty source after harvesting the faulty source.
-   *
-   * Harvest the same source but with emtpy content. Make sure that:
-   * - the dataset record in the harvest source migration map is updated.
-   * - the dataset record in the harvest source migration log table is updated.
-   * - The dataset update time is greated.
-   * - The global node count have not changed (No content is leaked).
-   */
-  public function testHarvestSourceEmpty() {
-    // Get the current values.
-    $migrationOld = dkan_harvest_get_migration(self::getOriginalTestSource());
-    $migrationOldMap = $this->getMapTableFromMigration($migrationOld);
-    $migrationOldLog = $this->getLogTableFromMigration($migrationOld);
-    $migrationOldMessage = $this->getMessageTableFromMigration($migrationOld);
-
-    $globalDatasetCountOld = $this->getGlobalNodeCount();
-
-    // We track the last time a record (ie. a dataset) is updated by a
-    // timestamp. For less havier harvests like the example used for the test
-    // it can take less then one second to run multiple takes with different
-    // data and that can mess with the tests. To workaround that we introduce a
-    // artificial 1 second delay.
-    sleep(1);
-
-    // Rerun the harvest (cache + migration) with the empty source. the
-    // source XML docs. Harvest cache the test source.
-    dkan_harvest_cache_sources(array(self::getEmptyTestSource()));
-    dkan_harvest_migrate_sources(array(self::getEmptyTestSource()));
-
-    $migrationEmpty = dkan_harvest_get_migration(self::getEmptyTestSource());
-    $migrationEmptyMap = $this->getMapTableFromMigration($migrationEmpty);
-    $migrationEmptyLog = $this->getLogTableFromMigration($migrationEmpty);
-    $migrationEmptyMessage = $this->getMessageTableFromMigration($migrationEmpty);
-
-    // Get the map table post empty source harvest.
-    $migrationEmptyMap = $this->getMapTableFromMigration($migrationEmpty);
-
-    // The number of managed datasets record should have decrised by one (the
-    // faulty item part of the previous import should've been cleaned by now).
-    $this->assertEquals(count($migrationEmptyMap), count($migrationOldMap) - 1);
-
-    // The number of nodes as a hole should not have changed.
-    $globalDatasetCountEmpty = $this->getGlobalNodeCount();
-    $this->assertEquals($globalDatasetCountOld, $globalDatasetCountEmpty);
-
-    // The harvest source map table should not be same after harvesting a
-    // different content.
-    $this->assertNotEquals($migrationOldMap, $migrationEmptyMap);
-
-    // For empty source no update happened so the last_imported column should
-    // match.
-    foreach (array_keys($migrationEmptyMap) as $index) {
-      $this->assertEquals($migrationOldMap[$index]->last_imported,
-        $migrationEmptyMap[$index]->last_imported);
-    }
-
-    /**
-     * Test Log table evolution.
-     */
-    // The log table should have exactly one additional record by now.
-    $this->assertEquals(count($migrationEmptyLog),
-      count($migrationOldLog) + 1);
-    // We are interested in comparing only the Nth and the Nth - 1 record from
-    // the log table.
-    // - "orphaned" record should have increased by 1.
-    // - "failed" record should be decreased by 1.
-    // - Every other record should be the same.
-    $migrationOldLogLast = end($migrationOldLog);
-    $migrationEmptyLogLast = end($migrationEmptyLog);
-
-    $this->assertEquals($migrationEmptyLogLast->orphaned ,
-      $migrationOldLogLast->orphaned);
-    $this->assertEquals($migrationEmptyLogLast->failed,
-      $migrationOldLogLast->failed - 1);
-    // Nothing else should have changed.
-    foreach (array('created', 'updated', 'unchanged') as $property) {
-      $this->assertEquals($migrationOldLogLast->{$property},
-        $migrationEmptyLogLast->{$property});
-    }
-
-    /**
-     * Test message table.
-     */
-    // We expect one new message from this test when harvesting the empty
-    // source.
-    $this->assertNotEquals($migrationOldMessage, $migrationEmptyMessage);
-    $this->assertEquals(count($migrationOldMessage) + 1, count($migrationEmptyMessage));
-  }
-
-  /**
-   * Test for a specific case where a dataset from the source is corrupted and
-   * fails to import. If the harvest source removes the faulty dataset no
-   * record should be left on the map table.
-   */
-  public function testHarvestSourceZombi() {
-
-    // Clean the harvest migration data from the source.
-    dkan_harvest_rollback_sources(array(self::getErrorTestSource()));
-    dkan_harvest_deregister_sources(array(self::getErrorTestSource()));
-
-    // Harvest the faulty source.
-    dkan_harvest_cache_sources(array(self::getErrorTestSource()));
-    dkan_harvest_migrate_sources(array(self::getErrorTestSource()));
-
-    $migrationError = dkan_harvest_get_migration(self::getErrorTestSource());
-    $migrationErrorMap = $this->getMapTableFromMigration($migrationError);
-    $migrationErrorLog = $this->getLogTableFromMigration($migrationError);
-    $migrationErrorLog = $this->getLogTableFromMigration($migrationError);
-    $migrationErrorMessage = $this->getMessageTableFromMigration($migrationError);
-
-    // Harvest the faulty source.
-    dkan_harvest_cache_sources(array(self::getErrorTestSource()));
-    dkan_harvest_migrate_sources(array(self::getErrorTestSource()));
-
-    // Harvest the empty source.
-    dkan_harvest_cache_sources(array(self::getEmptyTestSource()));
-    dkan_harvest_migrate_sources(array(self::getEmptyTestSource()));
-
-    $migrationEmpty = dkan_harvest_get_migration(self::getEmptyTestSource());
-    $migrationEmptyMap = $this->getMapTableFromMigration($migrationEmpty);
-    $migrationEmptyLog = $this->getLogTableFromMigration($migrationEmpty);
-    $migrationEmptyMessage = $this->getMessageTableFromMigration($migrationEmpty);
-
-    $values = $migrationEmpty->getMap()->lookupMapTable(HarvestMigrateSQLMap::STATUS_FAILED, NULL, NULL, NULL, NULL);
-    $this->assertEmpty($migrationEmptyMap);
-
-    /**
-     * Test message table.
-     */
-    // Harvesting the empty source will add a new error message.
-    $this->assertNotEquals($migrationErrorMessage, $migrationEmptyMessage);
-    $this->assertEquals(count($migrationErrorMessage) + 1, count($migrationEmptyMessage));
-  }
-
-  /**
-   * Make sure that the harvest migration does not remove old log messages after
-   * every harvest.
-   */
-  public function testHarvestSourceMessagesAppend() {
-
-    // Clean the harvest migration data from the source.
-    dkan_harvest_rollback_sources(array(self::getErrorTestSource()));
-    dkan_harvest_deregister_sources(array(self::getErrorTestSource()));
-
-    // Harvest the faulty source.
-    dkan_harvest_cache_sources(array(self::getErrorTestSource()));
-    dkan_harvest_migrate_sources(array(self::getErrorTestSource()));
-
-    $migrationError = dkan_harvest_get_migration(self::getErrorTestSource());
-    $migrationErrorMessage = $this->getMessageTableFromMigration($migrationError);
-
-    // Now that we have error messages, re-harvest the faulty source to get new
-    // messages for the same dataset sources. To force harvest migration to
-    // re-harvest an unchanged source we pass the 'dkan_harvest_skip_hash'
-    // option.
-    $options = array(
-      'dkan_harvest_skip_hash' => TRUE,
-    );
-    dkan_harvest_cache_sources(array(self::getErrorTestSource()));
-    dkan_harvest_migrate_sources(array(self::getErrorTestSource()), $options);
-
-    $migrationErrorAfter = dkan_harvest_get_migration(self::getErrorTestSource());
-    $migrationErrorAfterMessage = $this->getMessageTableFromMigration($migrationError);
-
-    /**
-     * Test message table.
-     */
-    // We don't expect any new messages from this test. The old and new message
-    // table should be the same.
-    $this->assertNotEquals($migrationErrorMessage, $migrationErrorAfterMessage);
-    // We should record the same errors. So if the first harvest yelded 2
-    // errors the second one should have 4.
-    $this->assertEquals(count($migrationErrorMessage) * 2, count($migrationErrorAfterMessage));
-  }
-
-  /**
    * @depends testDatasetCount
    */
   public function testGroups($dataset) {
@@ -613,63 +203,18 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
     // Append the dataset groups in the list of content that was created and
     // need to be deleted after test is completed.
-    $this->created_nodes = array_merge($this->created_nodes, array_keys($dataset_groups));
-  }
-
-  /**
-   * @depends testDatasetCount
-   *
-   * When a dataset group is updated the following should happen:
-   *   - The dataset should be associated with the new groups.
-   *   - All the resources associated with the dataset should also be modified
-   *     with the new group.
-   */
-  public function testGroupsUpdate($dataset) {
-
-    // Append the current dataset groups in the list of content that was created and
-    // need to be deleted after test is completed.
-    $dataset_groups = $this->getNodeGroups($dataset);
-    $this->created_nodes = array_merge($this->created_nodes, array_keys($dataset_groups));
-
-    // Check that the number of groups in the dataset is '1'.
-    $this->assertEquals(count($dataset_groups), '1');
-
-    // Rerun the harvest (cache + migration) with the group updated source.
-    dkan_harvest_cache_sources(array(self::getGroupUpdatedTestSource()));
-    dkan_harvest_migrate_sources(array(self::getGroupUpdatedTestSource()));
-
-    // Get updated dataset.
-    $dataset_nids = $this->getTestDatasetNid(self::getGroupUpdatedTestSource());
-    $dataset_node = entity_load_single('node', array_pop($dataset_nids));
-    $dataset = entity_metadata_wrapper('node', $dataset_node);
-
-    // Groups should've changed. Append the dataset groups in the list of content
-    // that was created and need to be deleted after test is completed.
-    $this->created_nodes = array_merge($this->created_nodes, array_keys($dataset_groups));
-
-    // Check that the dataset got the groups updated.
-    $expected_groups = array('TEST - State Economic Council Updated');
-    $dataset_groups = $this->getNodeGroups($dataset);
-    $this->assertEquals($expected_groups, array_values($dataset_groups));
-
-    // Check that the number of groups associated with the dataset is still '1'.
-    $this->assertEquals(count($dataset_groups), '1');
-
-    // Check that the group was updated on all resources.
-    foreach ($dataset->field_resources->getIterator() as $delta => $resource) {
-      $resource_groups = $this->getNodeGroups($resource);
-      $this->assertEquals($expected_groups, array_values($resource_groups));
-    }
+    $this->createdNodes = array_merge($this->createdNodes, array_keys($dataset_groups));
   }
 
   /**
    * {@inheritdoc}
    */
   protected function tearDown() {
-    // Delete all nodes that were created during the test and are not handled by migrations.
-    node_delete_multiple(array_unique($this->created_nodes));
+    // Delete all nodes that were created during the test and are not handled by
+    // migrations.
+    node_delete_multiple(array_unique($this->createdNodes));
     // Empty values.
-    $this->created_nodes = array();
+    $this->createdNodes = array();
   }
 
   /**
@@ -683,50 +228,20 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $source->getCacheDir(TRUE);
     dkan_harvest_rollback_sources(array($source));
     dkan_harvest_deregister_sources(array($source));
+
+    // Clean enabled modules.
+    module_disable(array('dkan_harvest_test'));
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getOriginalTestSource() {
-    return new HarvestSourceDataJsonStub(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/dkan_harvest_datajson_test_original.json");
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_original.json');
   }
 
   /**
-   *
-   */
-  public static function getAlternativeTestSource() {
-    return new HarvestSourceDataJsonStub(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/dkan_harvest_datajson_test_alternative.json");
-  }
-
-  /**
-   * Test Harvest Source.
-   */
-  public static function getGroupUpdatedTestSource() {
-    return new HarvestSourceDataJsonStub(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/dkan_harvest_datajson_test_group_updated.json");
-  }
-
-  /**
-   * Test Harvest Source.
-   */
-  public static function getErrorTestSource() {
-    return new HarvestSourceDataJsonStub(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/dkan_harvest_datajson_test_error.json");
-  }
-
-  /**
-   * Test Harvest Source.
-   */
-  public static function getEmptyTestSource() {
-    return new HarvestSourceDataJsonStub(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-      "/test/phpunit/data/dkan_harvest_datajson_test_empty.json");
-  }
-
-  /**
-   *
+   * Helper function to get the first node id harvested by the source.
    */
   private function getTestDatasetNid($source) {
     $migration = dkan_harvest_get_migration($source);
@@ -739,76 +254,13 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
       $return = array();
 
-      foreach($result as $record) {
+      foreach ($result as $record) {
         if (isset($record->destid1)) {
           array_push($return, $record->destid1);
         }
       }
       return $return;
     }
-  }
-
-  /**
-   * Helper method to get a harvest migration map table from the harvest
-   * migration.
-   *
-   * @param HarvestMigration $migration
-   *
-   * @return Array of records of the harvest source migration map table keyed
-   * by destid1.
-   */
-  private function getMapTableFromMigration(HarvestMigration $migration) {
-    $map = $migration->getMap();
-    $result = $map->getConnection()->select($map->getMapTable(), 'map')
-      ->fields('map')
-      ->execute();
-
-    return $result->fetchAllAssoc('sourceid1');
-  }
-
-  /**
-   * Helper method to get a harvest migration map table from the harvest
-   * migration.
-   *
-   * @param HarvestMigration $migration
-   *
-   * @return Array of records of the harvest source migration map table keyed
-   * by destid1.
-   */
-  private function getMessageTableFromMigration(HarvestMigration $migration) {
-    $map = $migration->getMap();
-    $result = $map->getConnection()->select($map->getMessageTable(), 'message')
-      ->fields('message')
-      ->execute();
-
-    return $result->fetchAllAssoc('msgid');
-  }
-
-  /**
-   * Helper method to get a harvest migration log table from the harvest
-   * migration.
-   *
-   * @param HarvestMigration $migration
-   *
-   * @return Array of records of the harvest source migration log table keyed
-   * by destid1.
-   */
-  private function getLogTableFromMigration(HarvestMigration $migration) {
-    $map = $migration->getMap();
-    $result = $map->getConnection()->select($map->getLogTable(), 'log')
-      ->fields('log')
-      ->execute();
-
-    return $result->fetchAllAssoc('mlid');
-  }
-
-  /**
-   *
-   */
-  private function getGlobalNodeCount() {
-    $query = "SELECT COUNT(*) amount FROM {node} n";
-    $result = db_query($query)->fetch();
-    return $result->amount;
   }
 
   /**
@@ -826,6 +278,20 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Returns array of resources (with format info) associated with the dataset.
+   */
+  private function getDatasetResourcesFormat($dataset) {
+    $resources = array();
+
+    foreach ($dataset->field_resources->getIterator() as $delta => $resource) {
+      $body = $resource->body->value();
+      $resources[$resource->title->value()] = $body['format'];
+    }
+
+    return $resources;
+  }
+
+  /**
    * Returns an array with the list of groups associated with the dataset.
    */
   private function getNodeGroups($node) {
@@ -837,4 +303,5 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
 
     return $groups;
   }
+
 }

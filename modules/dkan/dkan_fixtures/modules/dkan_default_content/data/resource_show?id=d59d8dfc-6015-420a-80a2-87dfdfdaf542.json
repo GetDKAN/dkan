@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine/resource/d59d8dfc-6015-420a",
         "id": "d59d8dfc-6015-420a-80a2-87dfdfdaf542",
         "url": "files/resource/varicellaincidencerates_0.csv",
         "description": "<p>Source: \"Impact of Vaccination on the Epidemiology of Varicella: 1995\u20132009\" published in the journal Pediatrics in August 2011.</p>\n",

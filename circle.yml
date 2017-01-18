@@ -1,13 +1,12 @@
 ## Customize the test machine
 machine:
 
-  #timezone:
-  #  America/New_York # Set the timezone
+  timezone:
+    America/New_York
 
   # Version of ruby to use
   php:
-    version: '5.6.22'
-
+    version: 5.6.22
   # Override /etc/hosts
   #hosts:
     #circlehost: 127.0.0.1
@@ -18,8 +17,8 @@ machine:
     # For xvfb / selenium setup (not sure why)
     #DISPLAY: ':99.0'
     DATABASE_URL: mysql://ubuntu:@127.0.0.1:3306/circle_test
-    # Timeouts issues happen when selenium tries to spawn a new chrome 
-    # instance. I've nail that down to this selenium issue 
+    # Timeouts issues happen when selenium tries to spawn a new chrome
+    # instance. I've nail that down to this selenium issue
     # https://github.com/SeleniumHQ/docker-selenium/issues/87
     DBUS_SESSION_BUS_ADDRESS: /dev/null
 ## Customize checkout
@@ -46,13 +45,14 @@ dependencies:
      #- "dkan/test/sites/default"
   pre:
     - rm /opt/circleci/php/$(phpenv global)/etc/conf.d/xdebug.ini
-    - echo "memory_limit = 512M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
+    - echo "memory_limit = 256M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
     - echo "always_populate_raw_post_data = -1" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/deprecated.ini
   override:
     - printenv
     - mkdir $CIRCLE_ARTIFACTS/junit
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH bash dkan-init.sh dkan --deps --build=$DATABASE_URL'
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard'
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush cc all'
     # Run a webserver using drush.
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes runserver :8888':
         background: true
@@ -75,6 +75,11 @@ test:
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         timeout: 1200
         parallel: true
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_migrate_base_example
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_harvest_test
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush dis --yes dkan_default_content
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush pm-uninstall --yes dkan_default_content
+    - $HOME/dkan/dkan/test/bin/phpunit --configuration $HOME/dkan/dkan/test/phpunit
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true

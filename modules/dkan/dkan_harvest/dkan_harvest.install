@@ -2,9 +2,12 @@
 
 /**
  * @file
- * Install file for hhs_ckan_migrate.
+ * Install file for dkan_harvest.
  */
 
+/**
+ * Implements hook_install().
+ */
 function dkan_harvest_install() {
   dkan_harvest_uuid_length();
 }

@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f",
         "id": "49daa44a-efa6-4145-92a9-baedc7202e1f",
         "url": "files/resource/PropertyCrimeRates_1.csv",
         "description": "<p>Source: FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n",

@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/state-workforce-generation-2011-2015/resource/ceb00c8e-a6d4-4dde-b8d8-43a7d714a0ff",
         "id": "ceb00c8e-a6d4-4dde-b8d8-43a7d714a0ff",
         "url": "files/resource/retirements_0.csv",
         "description": "<p>Total number of employees who retired from the state workforce, 2011-2015.</p>\n",

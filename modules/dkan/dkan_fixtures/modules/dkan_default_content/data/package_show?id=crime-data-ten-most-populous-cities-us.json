@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/crime-data-ten-most-populous-cities-us",
         "id": "d460252e-d42c-474a-9ea9-5287b1d595f6",
         "name": "crime-data-ten-most-populous-cities-us",
         "title": "Crime Data for the Ten Most Populous Cities in the U.S.",
@@ -8,7 +9,7 @@
         "maintainer": "DKAN",
         "maintainer_email": "admin@example.com",
         "license_title": "http://opendefinition.org/licenses/odc-odbl/",
-        "notes": "<p><strong>Source:</strong> FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n<p>Data is split into two categories:</p>\n<p><strong>Violent Crime:</strong> Includes aggravated assault, murder, rape and robbery.<br /><strong>Property Crime:</strong> Includes arson, burglary, larceny-theft and motor vehicle theft.</p>\n<p><strong>Top 10 Most Populous U.S. Cities:</strong></p>\n<ol>\n<li>New York, NY</li>\n<li>Los Angeles, CA</li>\n<li>Chicago, IL</li>\n<li>Houston, TX</li>\n<li>Philadelphia, PA</li>\n<li>Las Vegas, NV</li>\n<li>Phoenix, AZ</li>\n<li>San Antonio, TX</li>\n<li>San Diego, TX</li>\n<li>Dallas, TX</li>\n</ol>\n<p><strong>Link to DKAN Data Dashboard:</strong> <a href=\"http://dev-stefanies-dkan-demo-site.pantheonsite.io/crime-americas-top-10-most-populous-cities\">http://dev-stefanies-dkan-demo-site.pantheonsite.io/crime-americas-top-10-most-populous-cities</a></p>\n",
+        "notes": "<p><strong>Source:</strong> FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n<p>Data is split into two categories:</p>\n<p><strong>Violent Crime:</strong> Includes aggravated assault, murder, rape and robbery.<br /><strong>Property Crime:</strong> Includes arson, burglary, larceny-theft and motor vehicle theft.</p>\n<p><strong>Top 10 Most Populous U.S. Cities:</strong></p>\n<ol>\n<li>New York, NY</li>\n<li>Los Angeles, CA</li>\n<li>Chicago, IL</li>\n<li>Houston, TX</li>\n<li>Philadelphia, PA</li>\n<li>Las Vegas, NV</li>\n<li>Phoenix, AZ</li>\n<li>San Antonio, TX</li>\n<li>San Diego, TX</li>\n<li>Dallas, TX</li>\n</ol>\n<p><strong>Related Data Dashboard: </strong><a href=\"/crime-americas-top-10-most-populous-cities\">Crime in America's Top 10 Most Populous Cities</a></p>\n",
         "url": "http://default/dataset/crime-data-ten-most-populous-cities-us",
         "state": "Active",
         "log_message": "Update to resource 'Violent Crime Statistics by City '",

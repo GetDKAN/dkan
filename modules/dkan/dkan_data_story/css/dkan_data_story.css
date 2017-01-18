@@ -1,4 +1,3 @@
-
 .node-type-dkan-data-story img.story-image-full {
   width: 100%;
   width: inherit;  /* This makes the next two lines work in IE8. */
@@ -14,7 +13,7 @@
 Data Story Panels
 ***************************/
 .view-dkan-data-stories .views-row {
-	margin-bottom: 1.75em;
+  margin-bottom: 1.75em;
 }
 .view-dkan-data-stories .views-row:nth-of-type(5n+5) {
   clear: left;
@@ -27,8 +26,8 @@ Data Story Panels
   text-align: right;
 }
 .pane-dkan-data-stories-panel-pane-1 .pane-content {
-	margin-left: -15px;
-	margin-right: -15px;
+  margin-left: -15px;
+  margin-right: -15px;
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .pane-dkan-data-stories-panel-pane-1 .views-row:nth-of-type(3n+3) {
@@ -36,23 +35,23 @@ Data Story Panels
   }
 }
 #main .views-field-field-image img.story-image-teaser {
-	/* To Do: fix this in nuboot_radix */
-	max-width: 100% !important;
+  /* To Do: fix this in nuboot_radix */
+  max-width: 100% !important;
 }
 
 /***************************
 Data Story Page
 ***************************/
 .view-stories .view-header {
-	margin-bottom: 1em;
+  margin-bottom: 1em;
 }
 .view-stories .row img {
-	width: 100%;
-	height: auto;
-	margin-top: 1.5em;
+  width: 100%;
+  height: auto;
+  margin-top: 1.5em;
 }
 .view-stories .views-field-field-tags {
-	margin: 1em 0 2em;
+  margin: 1em 0 2em;
 }
 .view-stories .more-link {
   clear: both;

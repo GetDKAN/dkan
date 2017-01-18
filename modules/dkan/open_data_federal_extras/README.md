@@ -11,7 +11,9 @@ This module extends DKAN Dataset to include selected Project Open Data and other
  * primary IT Investment UII
  * System of Records
 
-### Update Program code list
+Enabling the module will add these fields to your Dataset content type. Note that _disabling_ the module will _not_ remove them. To remove the fields completely (which will permanently delete all data in those fields), _uninstall_ the module from the module administration screen or via `drush pm-uninstall`. 
+
+### Updating the Program Code list
 1. Go to http://project-open-data.github.io/schema/#programCode
 2. Download "Federal Program Inventory"
 3. Export in csv to ``fed_program_code_list``

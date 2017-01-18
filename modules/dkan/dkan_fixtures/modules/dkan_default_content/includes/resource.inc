@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Default Resources from fixtures.
+ */
+
+/**
+ * Default content extention of resource fixtures migration class.
  */
 class DefaultContentResourceImport extends DkanResourceImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
@@ -16,4 +21,5 @@ class DefaultContentResourceImport extends DkanResourceImport {
     }
     parent::__construct($arguments);
   }
+
 }

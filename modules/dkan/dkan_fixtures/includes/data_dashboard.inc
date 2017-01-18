@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Data Dashboards from fixtures.
+ */
+
+/**
+ * Migration class for Dashboards fixtures.
  */
 class DkanDataDashboardsImport extends DkanPanelizedNodesImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
@@ -21,6 +26,15 @@ class DkanDataDashboardsImport extends DkanPanelizedNodesImport {
 
     // Add Field mappings.
     $this->addFieldMapping('field_topic', 'topics');
+    $this->addFieldMapping('path', 'path');
+  }
+
+  /**
+   * Do extra processing before the node is saved.
+   */
+  public function prepare($node, $row) {
+    parent::prepare($node, $row);
+    $node->path['pathauto'] = FALSE;
   }
 
   /**
@@ -39,4 +53,5 @@ class DkanDataDashboardsImport extends DkanPanelizedNodesImport {
     }
     $row->topics = $topics;
   }
+
 }

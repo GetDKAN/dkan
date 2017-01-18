@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/london-deprivation-index/resource/0da191d6-4eb6-4ebe-914f-27a392087d67",
         "id": "0da191d6-4eb6-4ebe-914f-27a392087d67",
         "url": "files/resource/IMD-MAPS.zip",
         "format": "zip",

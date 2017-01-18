@@ -1,13 +1,12 @@
-
-.panel-dkan-front { 
+.panel-dkan-front {
   margin-top: 0;
   padding-top: 0;
 }
 
 .panel-dkan-front .panel-hero,
 .panel-dkan-front .panel-top-full,
-.panel-dkan-front .panel-bottom-full { 
-  width: 100%; 
+.panel-dkan-front .panel-bottom-full {
+  width: 100%;
   clear: both;
 }
 
@@ -19,15 +18,15 @@
 .panel-dkan-front .panel-hero .panel-col-second,
 .panel-dkan-front .panel-bottom .panel-col-first,
 .panel-dkan-front .panel-bottom .panel-col-second {
-  width:50%;
-  float:left;
+  width: 50%;
+  float: left;
 }
 
 .panel-dkan-front .panel-triplet .panel-col-first,
 .panel-dkan-front .panel-triplet .panel-col-second,
 .panel-dkan-front .panel-triplet .panel-col-third {
-  width:33.333%;
-  float:left;
+  width: 33.333%;
+  float: left;
 }
 
 .panel-dkan-front .panel-separator {

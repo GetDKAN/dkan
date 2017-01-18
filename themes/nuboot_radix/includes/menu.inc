@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * Theme and preprocess functions for menus
+ * Theme and preprocess functions for menus.
  */
 
 /**
@@ -90,6 +91,22 @@ function nuboot_radix_menu_local_task($variables) {
 
       case 'node/%/datastore/delete-items':
         $icon_type = 'eraser';
+        break;
+
+      case 'node/%/datasets':
+        $icon_type = 'cubes';
+        break;
+
+      case 'node/%/harvest-preview':
+        $icon_type = 'check-circle';
+        break;
+
+      case 'node/%/harvest-events':
+        $icon_type = 'calendar';
+        break;
+
+      case 'node/%/harvest-errors':
+        $icon_type = 'exclamation-circle';
         break;
 
       default:

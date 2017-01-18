@@ -46,3 +46,6 @@ Please note that some CSS adjustments might be needed in order for the node page
 The function can be found in the dkan_sitewide module and can be used as follows:
 
 ```drush php-eval "dkan_sitewide_convert_panel_page(<page-name>);"```
+
+## About paths
+Pathauto is disabled for content created using dkan_fixtures because performance reasons. Instead, paths should be added to the fixtures using the path key.

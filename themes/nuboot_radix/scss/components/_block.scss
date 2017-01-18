@@ -1,3 +1,8 @@
+// License block.
+.pane-dkan-sitewide-dkan-sitewide-license .pane-content {
+  word-break: break-word;
+}
+
 // OTHER ACCESS
 .pane-dkan-sitewide-dkan-sitewide-other-access,
 #block-dkan-sitewide-dkan-sitewide-other-access {
@@ -54,7 +59,7 @@
 }
 
 // FACET Blocks
-.radix-layouts-sidebar {
+.panel-region-sidebar .radix-layouts-sidebar {
   .ctools-collapsible-container,
   div[class*="pane-facetapi"],
   .block-facetapi {
@@ -337,7 +342,7 @@
 }
 
 // Rounded facet corners.
-.radix-layouts-sidebar {
+.panel-region-sidebar .radix-layouts-sidebar {
   .panel-panel-inner {
     .panels-ipe-portlet-wrapper:first-child,
     > div[class*="pane-facetapi"]:first-child {

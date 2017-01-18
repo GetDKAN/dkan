@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/wisconsin-polling-places/resource/37971f0c-a5e8-4c0c-9dbc-d6fe5fb54607",
         "id": "37971f0c-a5e8-4c0c-9dbc-d6fe5fb54607",
         "url": "files/resource/Polling_Places_Madison_0.csv",
         "description": "<p>This is a list and map of polling places in Madison, WI.</p>\n<p>Original data here:<br /><a href=\"https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr\">https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr</a></p>\n",

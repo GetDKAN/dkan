@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/wisconsin-polling-places",
         "id": "934400f2-a5dc-4abf-bf16-3f17335888d3",
         "name": "wisconsin-polling-places",
         "title": "Wisconsin Polling Places",

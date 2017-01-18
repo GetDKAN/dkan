@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Default Data Dashboards from fixtures.
+ */
+
+/**
+ * Default content extention of Data Dashboards fixtures migration class.
  */
 class DefaultContentDataDashboardsImport extends DkanDataDashboardsImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
@@ -18,4 +23,5 @@ class DefaultContentDataDashboardsImport extends DkanDataDashboardsImport {
 
     parent::__construct($arguments);
   }
+
 }

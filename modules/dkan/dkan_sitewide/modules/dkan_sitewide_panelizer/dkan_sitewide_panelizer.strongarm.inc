@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_sitewide_panelizer.strongarm.inc
@@ -677,8 +678,8 @@ function dkan_sitewide_panelizer_strongarm() {
     'entity_field_extra-node:identifier' => 'entity_field_extra-node:identifier',
     'entity_field_extra-file:file' => 'entity_field_extra-file:file',
     'entity_field_extra-taxonomy_term:description' => 'entity_field_extra-taxonomy_term:description',
-    'entity_field_extra-user:user_profile_search_entity_view_1' => 'entity_field_extra-user:user_profile_search_entity_view_1',
-    'entity_field_extra-user:user_profile_search_entity_view_1_form' => 'entity_field_extra-user:user_profile_search_entity_view_1_form',
+    'entity_field_extra-user:user_profile_search_user_profile_search_block' => 'entity_field_extra-user:user_profile_search_user_profile_search_block',
+    'entity_field_extra-user:user_profile_search_user_profile_search_block_form' => 'entity_field_extra-user:user_profile_search_user_profile_search_block_form',
     'entity_field_extra-user:summary' => 'entity_field_extra-user:summary',
     'custom-custom' => 'custom-custom',
     'block-diff-inline' => 'block-diff-inline',

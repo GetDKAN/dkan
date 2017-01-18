@@ -5,6 +5,7 @@
         "image_display_url": "files/group/map.png",
         "title": "Committee on International Affairs",
         "name": "group/committee-international-affairs",
+        "path": "group/committee-international-affairs",
         "field_image_alt": "Map Icon"
     }
 }

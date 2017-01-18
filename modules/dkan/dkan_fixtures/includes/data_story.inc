@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Data Stories from fixtures.
+ */
+
+/**
+ * Data stories fixtures migration class.
  */
 class DkanDataStoriesImport extends DkanPanelizedNodesImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
@@ -24,6 +29,15 @@ class DkanDataStoriesImport extends DkanPanelizedNodesImport {
     $this->addFieldMapping('field_image:alt', 'field_image_alt');
     $this->addFieldMapping('field_tags', 'tags');
     $this->addFieldMapping('field_topic', 'topics');
+    $this->addFieldMapping('path', 'path');
+  }
+
+  /**
+   * Do extra processing before the node is saved.
+   */
+  public function prepare($node, $row) {
+    parent::prepare($node, $row);
+    $node->path['pathauto'] = FALSE;
   }
 
   /**
@@ -54,4 +68,5 @@ class DkanDataStoriesImport extends DkanPanelizedNodesImport {
     }
     $row->topics = $topics;
   }
+
 }

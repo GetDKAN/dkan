@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_sitewide.features.field_instance.inc
@@ -19,9 +20,8 @@ function dkan_sitewide_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'text',
         'settings' => array(),
-        'type' => 'text_default',
+        'type' => 'hidden',
         'weight' => 0,
       ),
       'search_result' => array(

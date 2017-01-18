@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_harvest_dashboard.views_default.inc
@@ -644,6 +645,166 @@ Off|Non-orphans only',
 
   /* Display: Harvested Datasets */
   $handler = $view->new_display('panel_pane', 'Harvested Datasets', 'harvest_datasets');
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'views_bulk_operations' => 'views_bulk_operations',
+    'nid' => 'nid',
+    'og_group_ref' => 'og_group_ref',
+    'title' => 'title',
+    'created' => 'created',
+    'changed' => 'changed',
+    'field_orphan' => 'field_orphan',
+    'status' => 'status',
+    'field_harvest_source_ref' => 'field_harvest_source_ref',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'views_bulk_operations' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'nid' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'og_group_ref' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'title' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'created' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'changed' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_orphan' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'status' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_harvest_source_ref' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Bulk operations: Content */
+  $handler->display->display_options['fields']['views_bulk_operations']['id'] = 'views_bulk_operations';
+  $handler->display->display_options['fields']['views_bulk_operations']['table'] = 'node';
+  $handler->display->display_options['fields']['views_bulk_operations']['field'] = 'views_bulk_operations';
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['display_type'] = '0';
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['enable_select_all_pages'] = 1;
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['row_clickable'] = 1;
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['force_single'] = 0;
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['entity_load_capacity'] = '10';
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_operations'] = array(
+    'action::views_bulk_operations_delete_item' => array(
+      'selected' => 1,
+      'postpone_processing' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'action::node_unpublish_action' => array(
+      'selected' => 1,
+      'postpone_processing' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+  );
+  /* Field: Content: Nid */
+  $handler->display->display_options['fields']['nid']['id'] = 'nid';
+  $handler->display->display_options['fields']['nid']['table'] = 'node';
+  $handler->display->display_options['fields']['nid']['field'] = 'nid';
+  $handler->display->display_options['fields']['nid']['label'] = '';
+  $handler->display->display_options['fields']['nid']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
+  /* Field: Content: Groups audience */
+  $handler->display->display_options['fields']['og_group_ref']['id'] = 'og_group_ref';
+  $handler->display->display_options['fields']['og_group_ref']['table'] = 'og_membership';
+  $handler->display->display_options['fields']['og_group_ref']['field'] = 'og_group_ref';
+  $handler->display->display_options['fields']['og_group_ref']['label'] = 'Group';
+  $handler->display->display_options['fields']['og_group_ref']['settings'] = array(
+    'link' => 1,
+  );
+  $handler->display->display_options['fields']['og_group_ref']['delta_offset'] = '0';
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  /* Field: Content: Post date */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'node';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['label'] = 'Created';
+  $handler->display->display_options['fields']['created']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['created']['custom_date_format'] = 'Y-m-d';
+  $handler->display->display_options['fields']['created']['second_date_format'] = 'search_api_facetapi_YEAR';
+  /* Field: Content: Updated date */
+  $handler->display->display_options['fields']['changed']['id'] = 'changed';
+  $handler->display->display_options['fields']['changed']['table'] = 'node';
+  $handler->display->display_options['fields']['changed']['field'] = 'changed';
+  $handler->display->display_options['fields']['changed']['label'] = 'Updated';
+  $handler->display->display_options['fields']['changed']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['changed']['custom_date_format'] = 'Y-m-d';
+  $handler->display->display_options['fields']['changed']['second_date_format'] = 'search_api_facetapi_YEAR';
+  /* Field: Content: Orphan */
+  $handler->display->display_options['fields']['field_orphan']['id'] = 'field_orphan';
+  $handler->display->display_options['fields']['field_orphan']['table'] = 'field_data_field_orphan';
+  $handler->display->display_options['fields']['field_orphan']['field'] = 'field_orphan';
+  $handler->display->display_options['fields']['field_orphan']['type'] = 'list_key';
+  /* Field: Content: Published */
+  $handler->display->display_options['fields']['status']['id'] = 'status';
+  $handler->display->display_options['fields']['status']['table'] = 'node';
+  $handler->display->display_options['fields']['status']['field'] = 'status';
+  $handler->display->display_options['fields']['status']['not'] = 0;
+  /* Field: Content: Harvest Source */
+  $handler->display->display_options['fields']['field_harvest_source_ref']['id'] = 'field_harvest_source_ref';
+  $handler->display->display_options['fields']['field_harvest_source_ref']['table'] = 'field_data_field_harvest_source_ref';
+  $handler->display->display_options['fields']['field_harvest_source_ref']['field'] = 'field_harvest_source_ref';
+  $handler->display->display_options['fields']['field_harvest_source_ref']['label'] = 'Source';
+  $handler->display->display_options['fields']['field_harvest_source_ref']['settings'] = array(
+    'link' => 0,
+  );
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Content: Type */
@@ -734,11 +895,6 @@ Off|Non-orphans only',
   $handler->display->display_options['filters']['field_harvest_source_ref_target_id_1']['id'] = 'field_harvest_source_ref_target_id_1';
   $handler->display->display_options['filters']['field_harvest_source_ref_target_id_1']['table'] = 'field_data_field_harvest_source_ref';
   $handler->display->display_options['filters']['field_harvest_source_ref_target_id_1']['field'] = 'field_harvest_source_ref_target_id';
-  $handler->display->display_options['filters']['field_harvest_source_ref_target_id_1']['value'] = array(
-    'all' => 'all',
-    41 => '41',
-    48 => '48',
-  );
   $handler->display->display_options['filters']['field_harvest_source_ref_target_id_1']['exposed'] = TRUE;
   $handler->display->display_options['filters']['field_harvest_source_ref_target_id_1']['expose']['operator_id'] = 'field_harvest_source_ref_target_id_1_op';
   $handler->display->display_options['filters']['field_harvest_source_ref_target_id_1']['expose']['label'] = 'Source';
@@ -752,10 +908,79 @@ Off|Non-orphans only',
     4 => 0,
     6 => 0,
   );
-  $handler->display->display_options['filters']['field_harvest_source_ref_target_id_1']['expose']['reduce'] = TRUE;
 
   /* Display: Source Page */
   $handler = $view->new_display('page', 'Source Page', 'harvest_datasets_source_page');
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'views_bulk_operations' => 'views_bulk_operations',
+    'nid' => 'nid',
+    'og_group_ref' => 'og_group_ref',
+    'title' => 'title',
+    'created' => 'created',
+    'changed' => 'changed',
+    'field_orphan' => 'field_orphan',
+    'status' => 'status',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'views_bulk_operations' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'nid' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'og_group_ref' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'title' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'created' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'changed' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_orphan' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'status' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   /* Contextual filter: Content: Harvest Source (field_harvest_source_ref) */
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['id'] = 'field_harvest_source_ref_target_id';
@@ -763,7 +988,7 @@ Off|Non-orphans only',
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['field'] = 'field_harvest_source_ref_target_id';
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['default_action'] = 'not found';
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['title_enable'] = TRUE;
-  $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['title'] = '%1: Manage Harvested Datasets';
+  $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['title'] = 'Manage Harvested Datasets';
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['default_argument_type'] = 'fixed';
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['field_harvest_source_ref_target_id']['summary']['format'] = 'default_summary';

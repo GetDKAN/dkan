@@ -183,13 +183,10 @@ function dkan_sitewide_user_views_default_views() {
     1 => '1',
   );
 
-  /* Display: EVA Field */
-  $handler = $view->new_display('entity_view', 'EVA Field', 'entity_view_1');
+  /* Display: User Search Result */
+  $handler = $view->new_display('panel_pane', 'User Search Result', 'user_profile_search_block');
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
-  $handler->display->display_options['entity_type'] = 'user';
-  $handler->display->display_options['bundles'] = array(
-    0 => 'user',
-  );
+  $handler->display->display_options['exposed_block'] = TRUE;
   $export['user_profile_search'] = $view;
 
   return $export;

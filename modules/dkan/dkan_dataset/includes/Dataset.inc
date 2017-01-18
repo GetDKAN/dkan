@@ -1,14 +1,14 @@
 <?php
+
 /**
  * @file
  * Contains class definition for Dataset.
  */
 
 /**
- * Manages dataset access and manipulation for a single dataset
+ * Manages dataset access and manipulation for a single dataset.
  */
 class Dataset {
-  // Class variables.
   public $title;
   public $dataset;
   public $resources = array();
@@ -20,7 +20,7 @@ class Dataset {
    * Helper function that slugifies strings.
    *
    * @param string $string
-   *   the string to be slugified.
+   *   The string to be slugified.
    */
   protected static function slugify($string) {
     return strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $string));
@@ -30,7 +30,7 @@ class Dataset {
    * Helper function that cast arrays as objects.
    *
    * @param array $arr
-   *   an array to be cast as an object
+   *   An array to be cast as an object.
    */
   protected static function asobject($arr) {
     if (is_array($arr)) {
@@ -43,16 +43,16 @@ class Dataset {
    * Helper function that checks if group reference is defined.
    *
    * @param array $fields
-   *   an array of dataset fields.
+   *   An array of dataset fields.
    */
   protected static function populateOgReference(&$fields) {
     if (isset($fields['og_group_ref'][LANGUAGE_NONE][0]) && isset($fields['og_group_ref'][LANGUAGE_NONE][0]['title'])) {
       // Query group by title.
       $query = new EntityFieldQuery();
       $query->entityCondition('entity_type', 'node')
-            ->entityCondition('bundle', 'group')
-            ->propertyCondition('title', $fields['og_group_ref'][LANGUAGE_NONE][0]['title'])
-            ->range(0, 1);
+        ->entityCondition('bundle', 'group')
+        ->propertyCondition('title', $fields['og_group_ref'][LANGUAGE_NONE][0]['title'])
+        ->range(0, 1);
       $result = $query->execute();
       if (isset($result['node'])) {
         // If OG exists fix the field array so node_save works.
@@ -70,10 +70,10 @@ class Dataset {
   /**
    * Uploads the file previous to resource saving.
    *
-   * Adapted from defaultcontent/plugins/file.inc
+   * Adapted from defaultcontent/plugins/file.inc.
    *
    * @param object $resource
-   *   an object that represents a file field
+   *   An object that represents a file field.
    */
   protected static function populateResourceFieldUpload($resource) {
     if (isset($resource->field_upload)) {
@@ -112,12 +112,12 @@ class Dataset {
    * Instantiates a Dataset object.
    *
    * Use this function instead of new Dataset($slug)
-   * to ommit instantiating the same dataset twice
+   * to ommit instantiating the same dataset twice.
    *
    * @param string $title_or_nid
    *   A string that represents one of the following:
    *   - the node dataset title
-   *   - the node id
+   *   - the node id.
    */
   public static function instance($title_or_nid) {
     static $datasets;
@@ -145,7 +145,7 @@ class Dataset {
    * Preloads dataset based on dataset nid.
    *
    * @param string $nid
-   *   A string that represents the dataset node id
+   *   A string that represents the dataset node id.
    */
   protected function preload($nid) {
     $node = node_load($nid);
@@ -169,6 +169,7 @@ class Dataset {
       }
     }
   }
+
   /**
    * Constructor.
    *
@@ -177,7 +178,7 @@ class Dataset {
    * @param string $title_or_nid
    *   A string that represents one of the following:
    *   - the node dataset title
-   *   - the node id
+   *   - the node id.
    */
   protected function __construct($title_or_nid) {
     // Set our name after sanitizing it.
@@ -186,9 +187,9 @@ class Dataset {
       // Try to load dataset instance from database.
       $query = new EntityFieldQuery();
       $query->entityCondition('entity_type', 'node')
-            ->entityCondition('bundle', 'dataset')
-            ->propertyCondition('title', $this->title)
-            ->range(0, 1);
+        ->entityCondition('bundle', 'dataset')
+        ->propertyCondition('title', $this->title)
+        ->range(0, 1);
       $result = $query->execute();
       if (isset($result['node'])) {
         $this->preload($result['node']);
@@ -217,7 +218,7 @@ class Dataset {
    * Populates dataset fields.
    *
    * @param array $fields
-   *   An associative array containing the dataset node fields
+   *   An associative array containing the dataset node fields.
    */
   public function attachFields($fields) {
     Dataset::populateOgReference($fields);
@@ -238,7 +239,7 @@ class Dataset {
    * Populates resource fields.
    *
    * @param array $resource
-   *   An associative array containing the resource node fields
+   *   An associative array containing the resource node fields.
    */
   public function attachResource($resource) {
     $resource = Dataset::asobject($resource);
@@ -289,7 +290,8 @@ class Dataset {
 
   /**
    * Delete the populated dataset and resources.
-   * @param boolean $delete_resources
+   *
+   * @param bool $delete_resources
    *   Boolean to indicate if resources should be deleted.
    */
   public function delete($delete_resources = FALSE) {
@@ -305,4 +307,5 @@ class Dataset {
     }
     return count(node_load_multiple($to_delete)) === 0 ? TRUE : FALSE;
   }
+
 }

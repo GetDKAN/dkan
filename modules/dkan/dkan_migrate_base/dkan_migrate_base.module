@@ -5,22 +5,28 @@
  * Required module file.
  */
 
-// We should pull out this from here to another
-// more generic module. Thus we can reuse this
-// function in several places.
+/**
+ * We should pull out this from here to another more generic module.
+ *
+ * Thus we can reuse this function in several places.
+ */
 function remote_mime($url) {
-  $curl = curl_init();
-  curl_setopt($curl, CURLOPT_URL, $url);
-  curl_setopt($curl, CURLOPT_FILETIME, true);
-  curl_setopt($curl, CURLOPT_NOBODY, true);
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl, CURLOPT_HEADER, true);
-  $header = curl_exec($curl);
-  $info = curl_getinfo($curl);
-  curl_close($curl);
-  $mime = explode(";", $info['content_type'])[0];
-  return strtolower($mime);
+  if (!filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_FILETIME, TRUE);
+    curl_setopt($curl, CURLOPT_NOBODY, TRUE);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($curl, CURLOPT_HEADER, TRUE);
+    $header = curl_exec($curl);
+    $info = curl_getinfo($curl);
+    curl_close($curl);
+    $mime = explode(";", $info['content_type'])[0];
+    return strtolower($mime);
+  }
+  return '';
 }
+
 /**
  * Deregisters DKAN migrations.
  */
@@ -101,19 +107,19 @@ function dkan_migrate_base_iso_interval_to_timestamp($date) {
   if ($date) {
     $dateTime = new DateTime($date[0]);
     $dateTime->format(DateTime::ISO8601);
-    $from = $dateTime-> getTimestamp();
-      if (isset($date[1])) {
+    $from = $dateTime->getTimestamp();
+    if (isset($date[1])) {
       if ($to = strtotime($date[1])) {
       }
       else {
         $dateTime->add(new DateInterval($date[1]));
-        $to = $dateTime-> getTimestamp();
+        $to = $dateTime->getTimestamp();
       }
     }
   }
   return array(
     'to' => $to,
-    'from' => $from
+    'from' => $from,
   );
 }
 

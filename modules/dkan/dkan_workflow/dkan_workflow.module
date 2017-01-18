@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Code for the NuCivic workflow feature.
@@ -10,11 +11,87 @@ include_once 'dkan_workflow.features.inc';
  * Implements hook_menu_alter().
  */
 function dkan_workflow_menu_alter(&$items) {
+  // Move workbench link to command center if not administrator or user 1.
+  global $user;
+
   // Hide the default workbench_content screen because it duplicates
   // functionalities.
   $items['admin/workbench']['page callback'] = 'workbench_create';
   $items['admin/workbench/content']['page callback'] = 'workbench_create';
   unset($items['admin/workbench/create']);
+
+  // Remove links created automatically by workbench.
+  foreach (node_type_get_types() as $type) {
+    $type_url_str = str_replace('_', '-', $type->type);
+    unset($items['admin/workbench/create/node/add/' . $type_url_str]);
+  }
+  // Move 'My Workbench' link to the command center menu.
+  $items['admin/workbench']['menu_name'] = 'menu-command-center-menu';
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_workflow_menu() {
+  // Add dummy link so administrators can access My Workbench.
+  $items['admin/myworkbench'] = array(
+    'menu_name' => 'management',
+    'title' => t('My Workbench'),
+    'description' => t('My Workbench'),
+    'page callback' => 'drupal_goto',
+    'page arguments' => array('admin/workbench'),
+    'access arguments' => array('access workbench'),
+    'weight' => -50,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  // Add child links for workbench tasks.
+  $items['admin/workbench/drafts-active'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/drafts-active',
+    'router_path' => 'admin/workbench/drafts-active',
+    'title' => t('My drafts'),
+    'description' => t('My drafts'),
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 0,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/workbench/needs-review-active'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/needs-review-active',
+    'router_path' => 'admin/workbench/needs-review-active',
+    'title' => t('Needs review'),
+    'description' => t('Needs review'),
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 1,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/workbench/drafts-stale'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/drafts-stale',
+    'router_path' => 'admin/workbench/drafts-stale',
+    'title' => t('Stale drafts'),
+    'description' => t('Stale drafts'),
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 2,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/workbench/needs-review-stale'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/needs-review-stale',
+    'router_path' => 'admin/workbench/needs-review-stale',
+    'title' => t('Stale reviews'),
+    'description' => t('Stale reviews'),
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 3,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
 }
 
 /**
@@ -133,9 +210,12 @@ function dkan_workflow_form_alter(&$form, $form_state, $form_id) {
     dkan_workflow_remove_email_errors();
   }
 
-  // NOTE: 'Moderators' should be 'administrator members' on the groups they belong to in
-  // order to be able to Publish content not created by them on groups.
-  // If they are normal members then an 'Access denied' error will be displayed every
+  // NOTE: 'Moderators' should be 'administrator members'
+  // on the groups they belong to in
+  // order to be able to Publish content
+  // not created by them on groups.
+  // If they are normal members then an 'Access denied'
+  // error will be displayed every
   // time they try to Publish content that was not created by them.
   if ($form_id == 'og_ui_add_users') {
     $form['og_user']['roles']['#suffix'] = '<span class="help-block">Workflow Moderators must be "administrator members" in order to manage content within a group.</span>';
@@ -151,7 +231,7 @@ function dkan_workflow_remove_email_errors() {
     $messages['error'] = array_filter($messages['error'], function ($item) {
       return FALSE === strpos($item, 'email notifications');
     });
-    $drupal_set_error = function($error) {
+    $drupal_set_error = function ($error) {
       drupal_set_message($error, 'error');
     };
     array_map($drupal_set_error, $messages['error']);
@@ -163,9 +243,9 @@ function dkan_workflow_remove_email_errors() {
  */
 function dkan_workflow_limit_workflow_exposed_filter_node_types(&$form) {
   $options = $form['type']['#options'];
-  $form['type']['#options'] = array_filter($options, function($option) {
+  $form['type']['#options'] = array_filter($options, function ($option) {
     // This wont work correctly if put outside of the scope of this callback.
-    $dkan_workflow_content_types_names = array_map(function($type){
+    $dkan_workflow_content_types_names = array_map(function ($type) {
       return node_type_get_name($type);
     }, variable_get('dkan_workflow_content_types', array()));
     $allowed_types = array_merge(array('- Any -'), $dkan_workflow_content_types_names);
@@ -179,7 +259,7 @@ function dkan_workflow_limit_workflow_exposed_filter_node_types(&$form) {
 /**
  * Implements hook_strongarm_alter().
  *
- * dkan_dataset_content_types exports node_options_(dataset|resource). For
+ * Dkan_dataset_content_types exports node_options_(dataset|resource). For
  * dkan_workflow to work we need to remove 'status' and make sure 'moderation'
  * and 'revision' from the node_options variable.
  */
@@ -189,7 +269,7 @@ function dkan_workflow_strongarm_alter(&$data) {
     $var_name = 'node_options_' . $type;
     if (isset($data[$var_name])) {
       $node_options = $data[$var_name]->value;
-      // Remove status if set
+      // Remove status if set.
       $node_options = array_diff($node_options, array('status'));
       // Add moderation and revision if needed.
       $node_options = array_values(array_unique(array_merge($node_options, array('moderation', 'revision')), SORT_REGULAR));
@@ -219,7 +299,7 @@ function dkan_workflow_views_pre_view(&$view, &$display_id, &$args) {
     $moderated_ctypes = workbench_moderation_moderate_node_types();
     $moderated_ctypes_defaults = variable_get('dkan_workflow_content_types', array());
 
-    foreach(array_merge($moderated_ctypes, $moderated_ctypes_defaults) as $value) {
+    foreach (array_merge($moderated_ctypes, $moderated_ctypes_defaults) as $value) {
       $filter_content_type_value[$value] = $value;
     }
 
@@ -259,50 +339,50 @@ function dkan_workflow_views_pre_view(&$view, &$display_id, &$args) {
     if (user_has_role($role_workflow_moderator->rid)
       && ($display_id == 'needs_review_page' || $display_id == 'needs_review_badge')) {
 
-        // Contextual filter: Content: Author uid.
-        $author_uid['id'] = 'author';
-        $author_uid['table'] = 'node';
-        $author_uid['field'] = 'uid';
-        $author_uid['relationship'] = 'nid';
-        $author_uid['default_action'] = 'default';
-        $author_uid['default_argument_type'] = 'current_user';
-        $author_uid['summary']['number_of_records'] = '0';
-        $author_uid['summary']['format'] = 'default_summary';
-        $author_uid['summary_options']['items_per_page'] = '25';
+      // Contextual filter: Content: Author uid.
+      $author_uid['id'] = 'author';
+      $author_uid['table'] = 'node';
+      $author_uid['field'] = 'uid';
+      $author_uid['relationship'] = 'nid';
+      $author_uid['default_action'] = 'default';
+      $author_uid['default_argument_type'] = 'current_user';
+      $author_uid['summary']['number_of_records'] = '0';
+      $author_uid['summary']['format'] = 'default_summary';
+      $author_uid['summary_options']['items_per_page'] = '25';
 
-        $view->set_item($display_id, 'argument', 'uid', $author_uid);
+      $view->set_item($display_id, 'argument', 'uid', $author_uid);
 
-        // Contextual filter: OG membership: Group ID.
-        $og_membership = array();
-        $og_membership['id'] = 'og_membership';
-        $og_membership['table'] = 'og_membership';
-        $og_membership['field'] = 'gid';
-        $og_membership['relationship'] = 'nid';
-        $og_membership['default_action'] = 'default';
-        $og_membership['default_argument_type'] = 'og_user_groups';
-        $og_membership['summary']['number_of_records'] = '0';
-        $og_membership['summary']['format'] = 'default_summary';
-        $og_membership['summary_options']['items_per_page'] = '25';
-        $og_membership['break_phrase'] = TRUE;
+      // Contextual filter: OG membership: Group ID.
+      $og_membership = array();
+      $og_membership['id'] = 'og_membership';
+      $og_membership['table'] = 'og_membership';
+      $og_membership['field'] = 'gid';
+      $og_membership['relationship'] = 'nid';
+      $og_membership['default_action'] = 'default';
+      $og_membership['default_argument_type'] = 'og_user_groups';
+      $og_membership['summary']['number_of_records'] = '0';
+      $og_membership['summary']['format'] = 'default_summary';
+      $og_membership['summary_options']['items_per_page'] = '25';
+      $og_membership['break_phrase'] = TRUE;
 
-        $view->set_item($display_id, 'argument', 'gid', $og_membership);
+      $view->set_item($display_id, 'argument', 'gid', $og_membership);
     }
-    // On the Needs Review tab, Workflow Contributor can see only content they have
-    // submitted.
+    // On the Needs Review tab, Workflow Contributor
+    // can see only content they have submitted.
     elseif (user_has_role($role_workflow_contributor->rid)
       && ($display_id == 'needs_review_page' || $display_id == 'needs_review_badge')) {
-        // Contextual filter: Content: Author uid
-        $author_uid['id'] = 'author';
-        $author_uid['table'] = 'node';
-        $author_uid['field'] = 'uid';
-        $author_uid['relationship'] = 'nid';
-        $author_uid['default_action'] = 'default';
-        $author_uid['default_argument_type'] = 'current_user';
-        $author_uid['summary']['number_of_records'] = '0';
-        $author_uid['summary']['format'] = 'default_summary';
-        $author_uid['summary_options']['items_per_page'] = '25';
+      // Contextual filter: Content: Author uid.
+      $author_uid['id'] = 'author';
+      $author_uid['table'] = 'node';
+      $author_uid['field'] = 'uid';
+      $author_uid['relationship'] = 'nid';
+      $author_uid['default_action'] = 'default';
+      $author_uid['default_argument_type'] = 'current_user';
+      $author_uid['summary']['number_of_records'] = '0';
+      $author_uid['summary']['format'] = 'default_summary';
+      $author_uid['summary_options']['items_per_page'] = '25';
 
-        $view->set_item($display_id, 'argument', 'uid', $author_uid);
+      $view->set_item($display_id, 'argument', 'uid', $author_uid);
     }
   }
 }
@@ -326,7 +406,7 @@ function dkan_workflow_revert_views() {
  * Implements hook_views_pre_execute().
  */
 function dkan_workflow_views_pre_execute(&$view) {
-  //dpq($view->build_info['query']);
+  // dpq($view->build_info['query']);.
 }
 
 /**
@@ -339,13 +419,13 @@ function dkan_workflow_views_query_alter(&$view, &$query) {
     $role_workflow_moderator = user_role_load_by_name('Workflow Moderator');
     if (user_has_role($role_workflow_moderator->rid)
       && ($view->current_display == 'needs_review_page' || $view->current_display == 'needs_review_badge')) {
-        $query->where[0]['type'] = 'OR';
-        $orphan_condition = array(
-          'field' => 'ISNULL(node_workbench_moderation_node_history__og_membership.gid)',
-          'value' => array(),
-          'operator' => 'formula',
-        );
-        $query->where[0]['conditions'][] = $orphan_condition;
+      $query->where[0]['type'] = 'OR';
+      $orphan_condition = array(
+        'field' => 'ISNULL(node_workbench_moderation_node_history__og_membership.gid)',
+        'value' => array(),
+        'operator' => 'formula',
+      );
+      $query->where[0]['conditions'][] = $orphan_condition;
     }
   }
 }

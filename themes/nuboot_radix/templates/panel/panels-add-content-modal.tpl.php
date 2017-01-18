@@ -1,11 +1,12 @@
 <?php
+
 /**
  * @file
  * Template to control the add content modal.
  */
 ?>
 <div class="dkan-modal panels-add-content-modal">
-  <?php 
+  <?php
     // Only show categories if not using the IPE.
     if(arg(2) == 'editor'):
   ?>
@@ -19,7 +20,7 @@
         <?php print $root_content; ?>
       </div>
     </div>
-  <?php endif; ?>
+    <?php endif; ?>
 
   <?php print $messages; ?>
 

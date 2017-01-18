@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * dkan_permissions.features.roles_permissions.inc
+ * Dkan_permissions.features.roles_permissions.inc.
  */
 
 /**
@@ -10,7 +11,7 @@
 function dkan_permissions_default_roles_permissions() {
   $roles = array();
 
-  // Exported role: anonymous user
+  // Exported role: anonymous user.
   $roles['anonymous user'] = array(
     'name' => 'anonymous user',
     'weight' => 0,
@@ -23,7 +24,7 @@ function dkan_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: authenticated user
+  // Exported role: authenticated user.
   $roles['authenticated user'] = array(
     'name' => 'authenticated user',
     'weight' => 1,
@@ -40,7 +41,7 @@ function dkan_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: content creator
+  // Exported role: content creator.
   $roles['content creator'] = array(
     'name' => 'content creator',
     'weight' => 11,
@@ -94,7 +95,7 @@ function dkan_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: editor
+  // Exported role: editor.
   $roles['editor'] = array(
     'name' => 'editor',
     'weight' => 2,
@@ -226,7 +227,7 @@ function dkan_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: site manager
+  // Exported role: site manager.
   $roles['site manager'] = array(
     'name' => 'site manager',
     'weight' => 10,
@@ -235,16 +236,21 @@ function dkan_permissions_default_roles_permissions() {
       'access administration pages' => TRUE,
       'access content' => TRUE,
       'access content overview' => TRUE,
+      'access draggableviews' => TRUE,
       'access media browser' => TRUE,
+      'access recline configuration' => TRUE,
       'access site in maintenance mode' => TRUE,
       'access user profiles' => TRUE,
       'admininster harvest' => TRUE,
       'administer @font-your-face' => TRUE,
+      'administer DKAN configuration' => TRUE,
       'administer file types' => TRUE,
       'administer files' => TRUE,
       'administer group' => TRUE,
       'administer icon select settings' => TRUE,
+      'administer main-menu menu items' => TRUE,
       'administer nodes' => TRUE,
+      'administer open data schema mapper' => TRUE,
       'administer panelizer node data_dashboard content' => TRUE,
       'administer panelizer node data_dashboard defaults' => TRUE,
       'administer panelizer node data_dashboard layout' => TRUE,
@@ -260,8 +266,10 @@ function dkan_permissions_default_roles_permissions() {
       'administer panels layouts' => TRUE,
       'administer panels styles' => TRUE,
       'administer taxonomy' => TRUE,
+      'administer themes' => TRUE,
       'administer url aliases' => TRUE,
       'administer users' => TRUE,
+      'administer open data schema mapper' => TRUE,
       'assign roles' => TRUE,
       'bypass file access' => TRUE,
       'bypass node access' => TRUE,

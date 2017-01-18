@@ -1,14 +1,12 @@
 <?php
 
 /**
- * Implements hook_install().
+ * @file
+ * Install functions and update hooks for DKAN profile.
  */
-function dkan_install() {
-}
 
 /**
- * Reverts dkan_sitewide to add Markdown HTML filter.
- * Sets up roleassign feature.
+ * Reverts dkan_sitewide to add Markdown filter. Sets up roleassign feature.
  */
 function dkan_update_7001() {
   module_load_include("profile", "dkan");
@@ -20,9 +18,9 @@ function dkan_update_7001() {
  *
  * Addapted from field_rename_rename_fields() in 'Field Rename' module.
  *
- * @param $old_field_name
+ * @param string $old_field_name
  *   The old name of the field.
- * @param $new_field_name
+ * @param string $new_field_name
  *   The new name of the field.
  */
 function dkan_rename_field($old_field_name, $new_field_name) {
@@ -89,7 +87,8 @@ function dkan_rename_field($old_field_name, $new_field_name) {
       // Rename the table.
       db_rename_table($old_table, $new_table);
     }
-  } catch ( Exception $e ) {
+  }
+  catch (Exception $e) {
     $messages[] = t('The field %old_field_name could not be renamed because there was an error: %error.',
       array('%old_field_name' => $old_field_name, '%error' => $e->getMessage()));
   }
@@ -103,7 +102,120 @@ function dkan_rename_field($old_field_name, $new_field_name) {
  * Update the default jquery library to 1.10.
  */
 function dkan_update_7002() {
-	if(version_compare(variable_get('jquery_update_jquery_version'), '1.10', '<')) {
-  	variable_set('jquery_update_jquery_version', '1.10');
+  if (version_compare(variable_get('jquery_update_jquery_version'), '1.10', '<')) {
+    variable_set('jquery_update_jquery_version', '1.10');
+  }
+}
+
+/**
+ * Remove modules on upgrade to 7.x-1.13.
+ *
+ * Conditional Fields, Entity RDF, RDF UI, RDF Extensions.
+ */
+function dkan_update_7003() {
+  $modules = array(
+    'conditional_fields',
+    'entity_rdf',
+    'rdfui',
+    'rdfx',
+  );
+  db_delete('system')
+    ->condition('name', $modules, 'IN')
+    ->condition('type', 'module')
+    ->execute();
+
+  db_drop_table('conditional_fields');
+  db_drop_table('rdfx_namespaces');
+  db_drop_table('rdfx_term_details');
+  db_drop_table('rdfx_term_domains');
+  db_drop_table('rdfx_term_inverses');
+  db_drop_table('rdfx_term_ranges');
+  db_drop_table('rdfx_term_superclasses');
+  db_drop_table('rdfx_term_superproperties');
+  db_drop_table('rdfx_term_types');
+  db_drop_table('rdfx_terms');
+  db_drop_table('rdfx_vocabulary_details');
+  db_drop_table('rdfx_vocabulary_graphs');
+}
+
+/**
+ * Remove deprecated test and theme directories.
+ */
+function dkan_update_7004() {
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/fonts');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/tests');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/tests');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_api/tests');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_fast_import/test');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_workflow/test');
+  drush_delete_dir('profiles/dkan/themes/contrib/nuboot_radix');
+  drush_delete_dir('profiles/dkan/themes/contrib/omega');
+}
+
+/**
+ * Disable the dkan_default_content module.
+ */
+function dkan_update_7005() {
+  db_update('system')
+    ->fields(array('status' => '0'))
+    ->condition('name', 'dkan_default_content')
+    ->execute();
+}
+
+/**
+ * We need to revert field instances.
+ *
+ * This is required for the next update in another case
+ * we have problem with new fields added on version 12.
+ */
+function dkan_update_7006() {
+  module_enable(array('field_hidden'));
+  features_revert(array('dkan_datastore' => array('field_base', 'field_instance')));
+}
+
+/**
+ * Resource group field.
+ *
+ * Groups cannot be edited manually on resources anymore. Group affiliation
+ * will be inherited from parent datasets. This update hook was added to be sure
+ * that all resources that do not have groups assigned are synchronized and
+ * updated with the groups from the parent datasets.
+ */
+function dkan_update_7007(&$sandbox) {
+
+  if (!isset($sandbox['progress'])) {
+    $sandbox['progress'] = 0;
+    $sandbox['max'] = db_query("SELECT COUNT(DISTINCT fdr.field_dataset_ref_target_id) FROM {node} n LEFT JOIN {field_data_field_dataset_ref} fdr ON fdr.entity_id=n.nid LEFT JOIN {og_membership} og ON n.nid=og.etid WHERE n.type='resource' AND og.etid IS NULL AND fdr.field_dataset_ref_target_id IN (SELECT etid FROM {og_membership} WHERE etid IN (SELECT field_dataset_ref_target_id FROM {field_data_field_dataset_ref}))")->fetchField();
+  }
+
+  // Get all resources without group but the parent dataset has groups.
+  $result = db_query("SELECT DISTINCT fdr.field_dataset_ref_target_id FROM {node} n LEFT JOIN {field_data_field_dataset_ref} fdr ON fdr.entity_id=n.nid LEFT JOIN {og_membership} og ON n.nid=og.etid WHERE n.type='resource' AND og.etid IS NULL AND fdr.field_dataset_ref_target_id IN (SELECT etid FROM {og_membership} WHERE etid IN (SELECT field_dataset_ref_target_id FROM {field_data_field_dataset_ref})) LIMIT 0,10");
+
+  foreach ($result as $item) {
+    // Simulate a empty original.
+    // The 'dkan_dataset_sync_groups' function synchronizes
+    // the groups only when a change on the dataset is detected.
+    $original = new stdClass();
+    $original->type = 'dataset';
+    $original->og_group_ref = array();
+    $dataset = node_load($item->field_dataset_ref_target_id);
+    $dataset->original = $original;
+    dkan_dataset_sync_groups($dataset);
+    $sandbox['progress']++;
+  }
+
+  $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress'] / $sandbox['max']);
+
+  return t('All resources without group were updated.');
+
+}
+
+/**
+ * Point source menu to the command menu center in
+ * dkan workflow roles.
+ */
+function dkan_update_7008() {
+  if (module_exists('dkan_workflow')) {
+    dkan_workflow_admin_menu_source();
   }
 }

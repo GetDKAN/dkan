@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Default Datasets from fixtures.
+ */
+
+/**
+ * Default content extention of the dataset fixtures migration class.
  */
 class DefaultContentDatasetImport extends DkanDatasetImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
     if (!isset($arguments['endpoint'])) {
@@ -17,4 +22,5 @@ class DefaultContentDatasetImport extends DkanDatasetImport {
 
     parent::__construct($arguments);
   }
+
 }

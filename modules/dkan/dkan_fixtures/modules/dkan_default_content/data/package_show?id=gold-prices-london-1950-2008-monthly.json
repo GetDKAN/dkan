@@ -1,5 +1,6 @@
 {
     "result": {
+        "path": "dataset/gold-prices-london-1950-2008-monthly",
         "id": "5dc1cfcf-8028-476c-a020-f58ec6dd621c",
         "name": "gold-prices-london-1950-2008-monthly",
         "title": "Gold Prices in London 1950-2008 (Monthly)",

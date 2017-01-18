@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Default Visualization Entities from fixtures.
+ */
+
+/**
+ * Default content extention of visualization entity fixtures migration class.
  */
 class DefaultContentVisualizationEntityImport extends DkanVisualizationEntityImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
@@ -18,4 +23,5 @@ class DefaultContentVisualizationEntityImport extends DkanVisualizationEntityImp
 
     parent::__construct($arguments);
   }
+
 }

@@ -5919,8 +5919,7 @@ button.close {
 :root .fa-rotate-270,
 :root .fa-flip-horizontal,
 :root .fa-flip-vertical {
-  -webkit-filter: none;
-          filter: none; }
+  filter: none; }
 
 .fa-stack {
   position: relative;
@@ -8505,7 +8504,7 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
   padding-left: 10px;
   padding-right: 10px; }
 
-.screenreader, #dkan-sitewide-dataset-search-form label,
+.screenreader, .form-type-textfield.form-group label.option, #dkan-sitewide-dataset-search-form label,
 #dkan-sitewide-dataset-search-form--2 label, #region-branding #block-dkan-sitewide-dkan-sitewide-search-bar label {
   position: absolute;
   top: 0;
@@ -8592,6 +8591,9 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
   margin: 0 !important;
   position: relative; }
 
+.pane-dkan-sitewide-dkan-sitewide-license .pane-content {
+  word-break: break-word; }
+
 .pane-dkan-sitewide-dkan-sitewide-other-access a.btn, .pane-dkan-sitewide-dkan-sitewide-other-access .media-widget > a,
 #block-dkan-sitewide-dkan-sitewide-other-access a.btn,
 #block-dkan-sitewide-dkan-sitewide-other-access .media-widget > a {
@@ -8649,34 +8651,34 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
   top: 1px;
   margin-right: 0.4em; }
 
-.radix-layouts-sidebar .ctools-collapsible-container.pane-block,
-.radix-layouts-sidebar .ctools-collapsible-container .pane-content,
-.radix-layouts-sidebar div[class*="pane-facetapi"].pane-block,
-.radix-layouts-sidebar div[class*="pane-facetapi"] .pane-content,
-.radix-layouts-sidebar .block-facetapi.pane-block,
-.radix-layouts-sidebar .block-facetapi .pane-content {
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container.pane-block,
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container .pane-content,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"].pane-block,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .pane-content,
+.panel-region-sidebar .radix-layouts-sidebar .block-facetapi.pane-block,
+.panel-region-sidebar .radix-layouts-sidebar .block-facetapi .pane-content {
   border: none;
   margin: 0;
   padding: 0;
   border-radius: 0; }
 
-.radix-layouts-sidebar .ctools-collapsible-container .item-list,
-.radix-layouts-sidebar div[class*="pane-facetapi"] .item-list,
-.radix-layouts-sidebar .block-facetapi .item-list {
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container .item-list,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .item-list,
+.panel-region-sidebar .radix-layouts-sidebar .block-facetapi .item-list {
   border: 1px solid #ddd; }
-  .radix-layouts-sidebar .ctools-collapsible-container .item-list .facetapi-limit-link,
-  .radix-layouts-sidebar div[class*="pane-facetapi"] .item-list .facetapi-limit-link,
-  .radix-layouts-sidebar .block-facetapi .item-list .facetapi-limit-link {
+  .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container .item-list .facetapi-limit-link,
+  .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .item-list .facetapi-limit-link,
+  .panel-region-sidebar .radix-layouts-sidebar .block-facetapi .item-list .facetapi-limit-link {
     padding: 10px 22px; }
-    .radix-layouts-sidebar .ctools-collapsible-container .item-list .facetapi-limit-link:before,
-    .radix-layouts-sidebar div[class*="pane-facetapi"] .item-list .facetapi-limit-link:before,
-    .radix-layouts-sidebar .block-facetapi .item-list .facetapi-limit-link:before {
+    .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container .item-list .facetapi-limit-link:before,
+    .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .item-list .facetapi-limit-link:before,
+    .panel-region-sidebar .radix-layouts-sidebar .block-facetapi .item-list .facetapi-limit-link:before {
       top: 10px;
       right: 22px; }
 
-.radix-layouts-sidebar .ctools-collapsible-container h2.pane-title,
-.radix-layouts-sidebar div[class*="pane-facetapi"] h2.pane-title,
-.radix-layouts-sidebar .block-facetapi h2.pane-title {
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container h2.pane-title,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] h2.pane-title,
+.panel-region-sidebar .radix-layouts-sidebar .block-facetapi h2.pane-title {
   border-radius: 0;
   border: none;
   color: #fff;
@@ -8685,9 +8687,9 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
   position: relative;
   padding: 9px 21px 9px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-  .radix-layouts-sidebar .ctools-collapsible-container h2.pane-title:after,
-  .radix-layouts-sidebar div[class*="pane-facetapi"] h2.pane-title:after,
-  .radix-layouts-sidebar .block-facetapi h2.pane-title:after {
+  .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container h2.pane-title:after,
+  .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] h2.pane-title:after,
+  .panel-region-sidebar .radix-layouts-sidebar .block-facetapi h2.pane-title:after {
     font-family: "fontawesome";
     content: "\f077";
     color: rgba(255, 255, 255, 0.7);
@@ -8697,89 +8699,89 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
     right: 14px;
     top: 10px; }
 
-.radix-layouts-sidebar .ctools-collapsible-container.ctools-collapsed h2.pane-title:after,
-.radix-layouts-sidebar div[class*="pane-facetapi"].ctools-collapsed h2.pane-title:after,
-.radix-layouts-sidebar .block-facetapi.ctools-collapsed h2.pane-title:after {
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container.ctools-collapsed h2.pane-title:after,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"].ctools-collapsed h2.pane-title:after,
+.panel-region-sidebar .radix-layouts-sidebar .block-facetapi.ctools-collapsed h2.pane-title:after {
   content: "\f078"; }
 
-.radix-layouts-sidebar .ctools-collapsible-container .ctools-toggle,
-.radix-layouts-sidebar div[class*="pane-facetapi"] .ctools-toggle,
-.radix-layouts-sidebar .block-facetapi .ctools-toggle {
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container .ctools-toggle,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .ctools-toggle,
+.panel-region-sidebar .radix-layouts-sidebar .block-facetapi .ctools-toggle {
   background: none; }
 
-.radix-layouts-sidebar .ctools-collapsible-container ul,
-.radix-layouts-sidebar div[class*="pane-facetapi"] ul,
-.radix-layouts-sidebar .block-facetapi ul {
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul,
+.panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul {
   margin: 0;
   padding: 0; }
 
-.radix-layouts-sidebar .ctools-collapsible-container ul li.leaf,
-.radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf,
-.radix-layouts-sidebar .block-facetapi ul li.leaf {
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf,
+.panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf {
   list-style-type: none;
   list-style-image: none;
   margin: 0;
   padding: 0; }
-  .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf li,
-  .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf li,
-  .radix-layouts-sidebar .block-facetapi ul li.leaf li {
+  .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf li,
+  .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf li,
+  .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf li {
     position: relative; }
-    .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf li a,
-    .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf li a,
-    .radix-layouts-sidebar .block-facetapi ul li.leaf li a {
+    .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf li a,
+    .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf li a,
+    .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf li a {
       padding-right: 48px; }
-  .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf.last,
-  .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf.last,
-  .radix-layouts-sidebar .block-facetapi ul li.leaf.last {
+  .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf.last,
+  .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf.last,
+  .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf.last {
     border-bottom: none; }
-  .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf li:before,
-  .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf li:before,
-  .radix-layouts-sidebar .block-facetapi ul li.leaf li:before {
+  .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf li:before,
+  .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf li:before,
+  .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf li:before {
     content: "\f178";
     font-family: "FontAwesome";
     position: absolute;
     top: 4px;
     right: 30px; }
-  .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a,
-  .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a,
-  .radix-layouts-sidebar .block-facetapi ul li.leaf a {
+  .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a,
+  .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a,
+  .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf a {
     color: #333333;
     display: block;
     padding: 6px 20px 6px 10px;
     position: relative;
     line-height: 22px; }
-    .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a:focus, .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a:hover,
-    .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a:focus,
-    .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a:hover,
-    .radix-layouts-sidebar .block-facetapi ul li.leaf a:focus,
-    .radix-layouts-sidebar .block-facetapi ul li.leaf a:hover {
+    .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a:focus, .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a:hover,
+    .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a:focus,
+    .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a:hover,
+    .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf a:focus,
+    .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf a:hover {
       color: #1a1a1a;
       background: rgba(0, 0, 0, 0.03);
       text-decoration: none; }
-    .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a:hover:after,
-    .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a:hover:after,
-    .radix-layouts-sidebar .block-facetapi ul li.leaf a:hover:after {
+    .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a:hover:after,
+    .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a:hover:after,
+    .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf a:hover:after {
       content: "\f055";
       color: #5cb85c;
       font-family: "FontAwesome";
       position: absolute;
       top: 6px;
       right: 6px; }
-    .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a img,
-    .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a img,
-    .radix-layouts-sidebar .block-facetapi ul li.leaf a img {
+    .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a img,
+    .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a img,
+    .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf a img {
       height: 25px;
       width: 25px;
       margin: 0 16px 0 0; }
-  .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a.facetapi-active,
-  .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a.facetapi-active,
-  .radix-layouts-sidebar .block-facetapi ul li.leaf a.facetapi-active {
+  .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a.facetapi-active,
+  .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a.facetapi-active,
+  .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf a.facetapi-active {
     background: #ccc;
     color: #333;
     z-index: 0; }
-  .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a.facetapi-active:before,
-  .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a.facetapi-active:before,
-  .radix-layouts-sidebar .block-facetapi ul li.leaf a.facetapi-active:before {
+  .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a.facetapi-active:before,
+  .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a.facetapi-active:before,
+  .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf a.facetapi-active:before {
     content: '';
     position: absolute;
     border-style: solid;
@@ -8790,41 +8792,41 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
     z-index: 1;
     right: -15px;
     top: 0; }
-  .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a.facetapi-active:after,
-  .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a.facetapi-active:after,
-  .radix-layouts-sidebar .block-facetapi ul li.leaf a.facetapi-active:after {
+  .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a.facetapi-active:after,
+  .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a.facetapi-active:after,
+  .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf a.facetapi-active:after {
     content: "\f00d";
     font-family: "FontAwesome";
     position: absolute;
     top: 6px;
     right: 6px; }
-  .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a.facetapi-active:hover:after,
-  .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a.facetapi-active:hover:after,
-  .radix-layouts-sidebar .block-facetapi ul li.leaf a.facetapi-active:hover:after {
+  .panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container ul li.leaf a.facetapi-active:hover:after,
+  .panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] ul li.leaf a.facetapi-active:hover:after,
+  .panel-region-sidebar .radix-layouts-sidebar .block-facetapi ul li.leaf a.facetapi-active:hover:after {
     color: red; }
 
-.radix-layouts-sidebar .ctools-collapsible-container a.facetapi-limit-link,
-.radix-layouts-sidebar div[class*="pane-facetapi"] a.facetapi-limit-link,
-.radix-layouts-sidebar .block-facetapi a.facetapi-limit-link {
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container a.facetapi-limit-link,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] a.facetapi-limit-link,
+.panel-region-sidebar .radix-layouts-sidebar .block-facetapi a.facetapi-limit-link {
   display: block;
   padding: 5px 30px 5px 5px;
   position: relative; }
 
-.radix-layouts-sidebar .ctools-collapsible-container a.facetapi-limit-link:before,
-.radix-layouts-sidebar div[class*="pane-facetapi"] a.facetapi-limit-link:before,
-.radix-layouts-sidebar .block-facetapi a.facetapi-limit-link:before {
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container a.facetapi-limit-link:before,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] a.facetapi-limit-link:before,
+.panel-region-sidebar .radix-layouts-sidebar .block-facetapi a.facetapi-limit-link:before {
   content: "\f150";
   font-family: "FontAwesome";
   position: absolute;
   top: 6px;
   right: 15px; }
 
-.radix-layouts-sidebar .ctools-collapsible-container a.facetapi-limit-link.open:before,
-.radix-layouts-sidebar div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
-.radix-layouts-sidebar .block-facetapi a.facetapi-limit-link.open:before {
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container a.facetapi-limit-link.open:before,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
+.panel-region-sidebar .radix-layouts-sidebar .block-facetapi a.facetapi-limit-link.open:before {
   content: "\f151"; }
 
-.radix-layouts-sidebar .ctools-collapsible-container .ctools-toggle {
+.panel-region-sidebar .radix-layouts-sidebar .ctools-collapsible-container .ctools-toggle {
   width: 12px; }
 
 .facetapi-facet-changed li.expanded a.facetapi-active {
@@ -8964,13 +8966,13 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
 .pane-dkan-sitewide-dkan-sitewide-resource-add table {
   margin-top: 0; }
 
-.radix-layouts-sidebar .panel-panel-inner .panels-ipe-portlet-wrapper:first-child h2.pane-title,
-.radix-layouts-sidebar .panel-panel-inner > div[class*="pane-facetapi"]:first-child h2.pane-title {
+.panel-region-sidebar .radix-layouts-sidebar .panel-panel-inner .panels-ipe-portlet-wrapper:first-child h2.pane-title,
+.panel-region-sidebar .radix-layouts-sidebar .panel-panel-inner > div[class*="pane-facetapi"]:first-child h2.pane-title {
   border-radius: 5px 5px 0 0; }
 
-.radix-layouts-sidebar .panel-panel-inner .panels-ipe-portlet-wrapper:last-child .ctools-collapsed h2.pane-title, .radix-layouts-sidebar .panel-panel-inner .panels-ipe-portlet-wrapper:last-child.ctools-collapsed h2.pane-title,
-.radix-layouts-sidebar .panel-panel-inner > div[class*="pane-facetapi"]:last-child .ctools-collapsed h2.pane-title,
-.radix-layouts-sidebar .panel-panel-inner > div[class*="pane-facetapi"]:last-child.ctools-collapsed h2.pane-title {
+.panel-region-sidebar .radix-layouts-sidebar .panel-panel-inner .panels-ipe-portlet-wrapper:last-child .ctools-collapsed h2.pane-title, .panel-region-sidebar .radix-layouts-sidebar .panel-panel-inner .panels-ipe-portlet-wrapper:last-child.ctools-collapsed h2.pane-title,
+.panel-region-sidebar .radix-layouts-sidebar .panel-panel-inner > div[class*="pane-facetapi"]:last-child .ctools-collapsed h2.pane-title,
+.panel-region-sidebar .radix-layouts-sidebar .panel-panel-inner > div[class*="pane-facetapi"]:last-child.ctools-collapsed h2.pane-title {
   border-radius: 0 0 5px 5px; }
 
 @media all and (max-width: 768px) {
@@ -9026,6 +9028,19 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
 
 p.dkan-profile-page-user-name {
   display: inline-block; }
+
+.table-select-processed .checkbox input[type="checkbox"] {
+  margin-left: 0px; }
+
+input[type="submit"],
+.btn-primary,
+body.maintenance-page .form-actions .btn:first-child,
+body.maintenance-page .form-actions .media-widget > a:first-child,
+.btn.btn-primary,
+.media-widget > a.btn-primary,
+body.maintenance-page .form-actions .btn:first-child,
+body.maintenance-page .form-actions .media-widget > a:first-child {
+  margin-right: 1em; }
 
 input.use-ajax-submit {
   margin-right: 10px; }
@@ -9198,6 +9213,9 @@ div.horizontal-tabs {
 
 .filter-wrapper {
   padding: 10px; }
+  .filter-wrapper .input-group-addon {
+    border: none;
+    background: transparent; }
 
 #body-add-more-wrapper .panel-body {
   padding: 0; }
@@ -9249,6 +9267,65 @@ div.horizontal-tabs {
 
 #dkan-dataset-form-settings .help-block {
   margin: 5px 20px 10px; }
+
+#views-exposed-form-dkan-harvest-datasets-harvest-datasets-source-page .form-group {
+  display: inline-block; }
+  #views-exposed-form-dkan-harvest-datasets-harvest-datasets-source-page .form-group input {
+    width: 100px; }
+
+.pane-dkan-harvest-harvest-source-summary .summary-details {
+  border-color: #ddd;
+  border-width: 0 1px 1px 1px;
+  border-style: solid;
+  margin-top: 15px; }
+  .pane-dkan-harvest-harvest-source-summary .summary-details div {
+    padding: 4px 5px; }
+
+.pane-dkan-harvest-harvest-source-summary h6 {
+  background: #eee;
+  color: #222;
+  padding: 3px 5px;
+  margin: 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd; }
+
+div.datasets-count-preview span {
+  font-weight: bold; }
+
+#harvest_source_summary_uri {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; }
+
+.node-type-harvest-source .ctools-collapsible-container .ctools-collapsible-handle {
+  border-radius: 0;
+  color: #fff;
+  font-size: 16px;
+  font-weight: normal;
+  position: relative;
+  padding: 9px 21px 9px 12px; }
+
+.node-type-harvest-source .ctools-collapsible-container .ctools-collapsible-handle:after {
+  font-family: "fontawesome";
+  content: "\f077";
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: bold;
+  position: absolute;
+  right: 14px;
+  top: 10px; }
+
+.node-type-harvest-source .ctools-collapsible-container.ctools-collapsed .ctools-collapsible-handle:after {
+  content: "\f078"; }
+
+.node-type-harvest-source .ctools-collapsible-content .harvest-error-log-table {
+  margin: 0;
+  margin-bottom: 20px; }
+
+@media all and (min-width: 768px) {
+  #harvest-source-node-form .double-field-elements input.form-text {
+    width: 50%;
+    display: inline-block; } }
 
 #modalContent .modal-header {
   background: #0A77BD; }
@@ -9953,8 +10030,8 @@ h2.pane-title {
 .panels-choose-layout .form-type-radio input {
   width: 15px; }
 
-.radix-layouts-sidebar .pane-title {
-  border-radius: 3px 3px 0 0;
+.panel-region-sidebar .radix-layouts-sidebar h2.pane-title {
+  border-radius: 5px 5px 0 0;
   border: 1px solid;
   border-bottom: none;
   font-size: 16px;
@@ -9963,15 +10040,18 @@ h2.pane-title {
   padding: 7px 10px;
   font-weight: normal; }
 
-.radix-layouts-sidebar .pane-block {
+.panel-region-sidebar .radix-layouts-sidebar .pane-block {
   border-radius: 5px;
   border: 1px solid #ddd;
   margin-bottom: 20px;
   padding: 0px; }
-  .radix-layouts-sidebar .pane-block .pane-content {
+  .panel-region-sidebar .radix-layouts-sidebar .pane-block .pane-content {
     background-color: transparent;
     margin: 0;
     padding: 15px; }
+  .panel-region-sidebar .radix-layouts-sidebar .pane-block.pane-dkan-sitewide-dkan-sitewide-social .pane-content,
+  .panel-region-sidebar .radix-layouts-sidebar .pane-block.pane-dkan-sitewide-dkan-sitewide-data-extent .pane-content {
+    padding: 0; }
 
 .page-user .radix-layouts-content .pane-content {
   padding: 0; }
@@ -10167,8 +10247,7 @@ h2.pane-title {
   padding: 8px;
   margin: 10px 0; }
 
-.recline-filter-editor input,
-.recline-filter-editor select {
+.recline-filter-editor input {
   width: auto; }
 
 #recline-embeded .recline-data-explorer .header,
@@ -10478,6 +10557,9 @@ table.group_additional {
   table tr:hover,
   table.group_additional tr:hover {
     background: #FFFEEE; }
+
+.table-responsive {
+  overflow: visible; }
 
 @media screen and (max-width: 1024px) {
   .table-responsive > .table > thead > tr > th,

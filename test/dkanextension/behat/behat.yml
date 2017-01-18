@@ -1,0 +1,42 @@
+# behat.yml
+
+default:
+  suites:
+     default:
+        contexts:
+          - DKANFeatureContext
+          - Drupal\DrupalExtension\Context\DrupalContext
+          - Drupal\DrupalExtension\Context\MinkContext
+          - Drupal\DrupalExtension\Context\MessageContext
+          - Drupal\DrupalExtension\Context\DrushContext
+          - Drupal\DrupalExtension\Context\DKANContext
+  gherkin:
+    filters:
+      tags: ~@wip
+  formatters:
+    pretty: true
+  extensions:
+    Behat\MinkExtension:
+      base_url: http://127.0.0.1
+      selenium2: ~
+      goutte: ~
+      show_cmd: firefox %s
+    Drupal\DrupalExtension:
+      blackbox: ~
+      drupal:
+        drupal_root: %paths.base%/../docroot
+      drush:
+        alias: @self 
+      api_driver: 'drupal'
+      # @todo fixup these regions for use on hhs
+      region_map:
+        navigation: '.region-navigation'
+        breadcrumb: '.breadcrumb'
+        left_sidebar: '.panel-col-first'
+        search_area: '.panel-col-last'
+        dropdown_links: '.comment-main .links.inline.dropdown-menu'
+        comment: '.comment-main'
+      selectors:
+        message_selector: '.alert'
+        error_message_selector: '.alert.alert-error'
+        success_message_selector: '.alert.alert-success'

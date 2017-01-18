@@ -5,7 +5,6 @@
  * DKAN Default Content module file.
  */
 
-
 /**
  * Implements hook_migrate_api().
  */
@@ -71,8 +70,3 @@ function dkan_default_content_migrations_disable() {
   Migration::deregisterMigration('dkan_default_content_data_stories');
   Migration::deregisterMigration('dkan_default_content_data_dashboards');
 }
-
-
-
-
-

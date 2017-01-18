@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * open_data_schema_map_dkan.features.inc
@@ -10,7 +11,7 @@
 function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
   $open_data_schema_apis = array();
 
-  // Exported Open Data API Map: CKAN Current Package List With Resources
+  // Exported Open Data API Map: CKAN Current Package List With Resources.
   $open_data_schema_apis['ckan_current_package_list_with_resources'] = array(
     'name' => 'CKAN Current Package List With Resources',
     'enabled' => 1,
@@ -301,7 +302,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: CKAN Group List
+  // Exported Open Data API Map: CKAN Group List.
   $open_data_schema_apis['ckan_group_list'] = array(
     'name' => 'CKAN Group List',
     'enabled' => 1,
@@ -582,7 +583,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: CKAN Group Package Show
+  // Exported Open Data API Map: CKAN Group Package Show.
   $open_data_schema_apis['ckan_group_package_show'] = array(
     'name' => 'CKAN Group Package Show',
     'enabled' => 1,
@@ -868,298 +869,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: CKAN Package List
-  $open_data_schema_apis['ckan_package_list'] = array(
-    'name' => 'CKAN Package List',
-    'enabled' => 1,
-    'machine_name' => 'ckan_package_list',
-    'api_schema' => 'ckan_dataset',
-    'description' => NULL,
-    'type' => 'node',
-    'bundle' => 'dataset',
-    'mapping' => array(
-      'id' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'revision_id' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'name' => array(
-        'value' => '[node:url:args:last]',
-        'type' => 'string',
-      ),
-      'title' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'author' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'author_email' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'maintainer' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'maintainer_email' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'license_title' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'license_id' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'notes' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'url' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'version' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'state' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'owner_org' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'log_message' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'private' => array(
-        'value' => '',
-        'type' => 'boolean',
-      ),
-      'relationships_as_object' => array(
-        'value' => '',
-        'type' => 'object',
-      ),
-      'revision_timestamp' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'metadata_created' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'metadata_modified' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'creator_user_id' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'type' => array(
-        'value' => '',
-        'type' => 'string',
-      ),
-      'resources' => array(
-        'odsm_entity_reference' => array(
-          'value' => 'field_resources',
-          'type' => '',
-        ),
-        'id' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'revision_id' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'url' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'description' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'format' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'hash' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'state' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'Position' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'revision_timestamp' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'name' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'resource_type' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'url_type' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'mimetype' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'webstore_url' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'size' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'created' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'resource_group_id' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'cache_last_updated' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'webstore_last_updated' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'datastore_active' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'last_modified' => array(
-          'value' => '',
-          'type' => '',
-        ),
-      ),
-      'tags' => array(
-        'odsm_entity_reference' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'id' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'vocabulary_id' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'name' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'revision_timestamp' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'state' => array(
-          'value' => '',
-          'type' => '',
-        ),
-      ),
-      'groups' => array(
-        'odsm_entity_reference' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'display_name' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'description' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'id' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'image_display_url' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'title' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'name' => array(
-          'value' => '',
-          'type' => '',
-        ),
-      ),
-      'extras' => array(
-        'odsm_entity_reference' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'id' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'key' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'value' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'state' => array(
-          'value' => '',
-          'type' => '',
-        ),
-        'revision_timestamp' => array(
-          'value' => '',
-          'type' => '',
-        ),
-      ),
-    ),
-    'outputformat' => 'json',
-    'endpoint' => 'api/3/action/package_list',
-    'arguments' => array(
-      1 => array(
-        'field' => 'limit',
-        'required' => 0,
-        'value' => '',
-      ),
-      2 => array(
-        'field' => 'offset',
-        'required' => 0,
-      ),
-    ),
-    'xml_root' => 'records',
-    'xml_defaulttag' => 'record',
-  );
-  // Exported Open Data API Map: CKAN Package Show
+  // Exported Open Data API Map: CKAN Package Show.
   $open_data_schema_apis['ckan_package_show'] = array(
     'name' => 'CKAN Package Show',
     'enabled' => 1,
@@ -1449,7 +1159,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: CKAN Resource Show
+  // Exported Open Data API Map: CKAN Resource Show.
   $open_data_schema_apis['ckan_resource_show'] = array(
     'name' => 'CKAN Resource Show',
     'enabled' => 1,
@@ -1559,7 +1269,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: Data.json
+  // Exported Open Data API Map: Data.json.
   $open_data_schema_apis['data_json'] = array(
     'name' => 'Data.json',
     'enabled' => 0,
@@ -1664,7 +1374,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'array',
       ),
       'publisher' => array(
-        'value' => '[node:og_group_ref:0]',
+        'value' => '[node:og_group_ref]',
         'type' => 'string',
       ),
       'references' => array(
@@ -1702,7 +1412,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'xml_root' => 'records',
     'xml_defaulttag' => 'record',
   );
-  // Exported Open Data API Map: Data Json 1.1
+  // Exported Open Data API Map: Data Json 1.1.
   $open_data_schema_apis['data_json_1_1'] = array(
     'name' => 'Data Json 1.1',
     'enabled' => 1,
@@ -1755,7 +1465,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'conformsTo' => array(
-        'value' => '[node:field-odfe-conforms-to:url]',
+        'value' => '[node:field-conforms-to:url]',
         'type' => 'string',
       ),
       'dataQuality' => array(
@@ -1842,7 +1552,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'name' => array(
-          'value' => '[node:og_group_ref:0]',
+          'value' => '[node:og_group_ref]',
           'type' => '',
         ),
         'subOrganizationOf' => array(
@@ -1917,7 +1627,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'array',
       ),
       'dcat:theme' => array(
-        'value' => '[node:field_odfe_category]',
+        'value' => '[node:field_pod_theme] || [node:field_topic]',
         'type' => 'string',
       ),
       'dct:identifier' => array(
@@ -1925,11 +1635,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:issued' => array(
-        'value' => '[node:created:custom:Y-m-d]',
+        'value' => '[node:created:custom:c]',
         'type' => 'string',
       ),
       'dct:modified' => array(
-        'value' => '[node:changed:custom:Y-m-d]',
+        'value' => '[node:changed:custom:c]',
         'type' => 'string',
       ),
       'owl:versionInfo' => array(
@@ -1941,11 +1651,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:language' => array(
-        'value' => '[node:field_odfe_language]',
+        'value' => '[node:field_language]',
         'type' => 'array',
       ),
       'dcat:landingPage' => array(
-        'value' => '[node:field_odfe_landing_page:url]',
+        'value' => '[node:field_landing_page:url]',
         'type' => 'string',
       ),
       'dct:accrualPeriodicity' => array(
@@ -1953,11 +1663,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:conformsTo' => array(
-        'value' => '[node:field-odfe-conforms-to:url]',
+        'value' => '[node:field-conforms-to:url]',
         'type' => 'array',
       ),
       'dct:accessRights' => array(
-        'value' => '[node:field_odfe_rights]',
+        'value' => '[node:field_rights]',
         'type' => 'string',
       ),
       'dct:provenance' => array(
@@ -2042,11 +1752,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dct:issued' => array(
-          'value' => '[node:field-resources:Nth:created:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:created:custom:c]',
           'type' => '',
         ),
         'dct:modified' => array(
-          'value' => '[node:field-resources:Nth:changed:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:changed:custom:c]',
           'type' => '',
         ),
         'dct:license' => array(
@@ -2092,9 +1802,9 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
       ),
     ),
     'xml_root' => 'rdf:RDF',
-    'xml_defaulttag' => 'dcat:dataset',
+    'xml_defaulttag' => 'dcat:Dataset',
   );
-  // Exported Open Data API Map: DCAT-AP v1.1
+  // Exported Open Data API Map: DCAT-AP v1.1.
   $open_data_schema_apis['dcat_v1_1'] = array(
     'name' => 'DCAT-AP v1.1',
     'enabled' => 1,
@@ -2121,7 +1831,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'array',
       ),
       'dcat:theme' => array(
-        'value' => '[node:field_odfe_category]',
+        'value' => '[node:field_pod_theme] || [node:field_topic]',
         'type' => 'string',
       ),
       'dct:identifier' => array(
@@ -2129,11 +1839,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:issued' => array(
-        'value' => '[node:created:custom:Y-m-d]',
+        'value' => '[node:created:custom:c]',
         'type' => 'string',
       ),
       'dct:modified' => array(
-        'value' => '[node:changed:custom:Y-m-d]',
+        'value' => '[node:changed:custom:c]',
         'type' => 'string',
       ),
       'owl:versionInfo' => array(
@@ -2145,11 +1855,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:language' => array(
-        'value' => '[node:field_odfe_language]',
+        'value' => '[node:field_language]',
         'type' => 'array',
       ),
       'dcat:landingPage' => array(
-        'value' => '[node:field_odfe_landing_page:url]',
+        'value' => '[node:field_landing_page:url]',
         'type' => 'string',
       ),
       'dct:accrualPeriodicity' => array(
@@ -2157,11 +1867,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:conformsTo' => array(
-        'value' => '[node:field-odfe-conforms-to:url]',
+        'value' => '[node:field-conforms-to:url]',
         'type' => 'array',
       ),
       'dct:accessRights' => array(
-        'value' => '[node:field_odfe_rights]',
+        'value' => '[node:field_rights]',
         'type' => 'string',
       ),
       'dct:provenance' => array(
@@ -2211,10 +1921,6 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dcat:contactPoint' => array(
-        'odsm_entity_reference' => array(
-          'value' => '',
-          'type' => '',
-        ),
         'vcard:fn' => array(
           'value' => '[node:field-contact-name]',
           'type' => '',
@@ -2246,11 +1952,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dct:issued' => array(
-          'value' => '[node:field-resources:Nth:created:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:created:custom:c]',
           'type' => '',
         ),
         'dct:modified' => array(
-          'value' => '[node:field-resources:Nth:changed:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:changed:custom:c]',
           'type' => '',
         ),
         'dct:license' => array(
@@ -2262,7 +1968,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dcat:accessURL' => array(
-          'value' => '[node:field-resources:Nth:field-link-api:url]',
+          'value' => '[node:field-resources:Nth:url]',
           'type' => '',
         ),
         'dcat:downloadURL' => array(
@@ -2291,7 +1997,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     'endpoint' => 'catalog.xml',
     'arguments' => array(),
     'xml_root' => 'rdf:RDF',
-    'xml_defaulttag' => 'dcat:dataset',
+    'xml_defaulttag' => 'dcat:Dataset',
   );
   // Exported Open Data API Map: DCAT-AP v1.1 (JSON)
   $open_data_schema_apis['dcat_v1_1_json'] = array(
@@ -2320,7 +2026,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'array',
       ),
       'dcat:theme' => array(
-        'value' => '[node:field_odfe_category]',
+        'value' => '[node:field_pod_theme] || [node:field_topic]',
         'type' => 'string',
       ),
       'dct:identifier' => array(
@@ -2328,11 +2034,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:issued' => array(
-        'value' => '[node:created:custom:Y-m-d]',
+        'value' => '[node:created:custom:c]',
         'type' => 'string',
       ),
       'dct:modified' => array(
-        'value' => '[node:changed:custom:Y-m-d]',
+        'value' => '[node:changed:custom:c]',
         'type' => 'string',
       ),
       'owl:versionInfo' => array(
@@ -2344,11 +2050,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:language' => array(
-        'value' => '[node:field_odfe_language]',
+        'value' => '[node:field_language]',
         'type' => 'array',
       ),
       'dcat:landingPage' => array(
-        'value' => '[node:field_odfe_landing_page:url]',
+        'value' => '[node:field_landing_page:url]',
         'type' => 'string',
       ),
       'dct:accrualPeriodicity' => array(
@@ -2356,11 +2062,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:conformsTo' => array(
-        'value' => '[node:field-odfe-conforms-to:url]',
+        'value' => '[node:field-conforms-to:url]',
         'type' => 'array',
       ),
       'dct:accessRights' => array(
-        'value' => '[node:field_odfe_rights]',
+        'value' => '[node:field_rights]',
         'type' => 'string',
       ),
       'dct:provenance' => array(
@@ -2410,10 +2116,6 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dcat:contactPoint' => array(
-        'odsm_entity_reference' => array(
-          'value' => '',
-          'type' => '',
-        ),
         'vcard:fn' => array(
           'value' => '[node:field-contact-name]',
           'type' => '',
@@ -2445,11 +2147,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dct:issued' => array(
-          'value' => '[node:field-resources:Nth:created:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:created:custom:c]',
           'type' => '',
         ),
         'dct:modified' => array(
-          'value' => '[node:field-resources:Nth:changed:custom:Y-m-d]',
+          'value' => '[node:field-resources:Nth:changed:custom:c]',
           'type' => '',
         ),
         'dct:license' => array(
@@ -2461,7 +2163,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dcat:accessURL' => array(
-          'value' => '[node:field-resources:Nth:field-link-api:url]',
+          'value' => '[node:field-resources:Nth:url]',
           'type' => '',
         ),
         'dcat:downloadURL' => array(
