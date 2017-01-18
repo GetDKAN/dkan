@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * @file
+ * Code for the DKAN Sitewide Panelizer feature.
+ */
+
+include_once 'dkan_sitewide_panelizer.features.inc';
 /**
  * @file
  * Module core functions.
@@ -62,9 +69,9 @@ function dkan_sitewide_panelizer_form_alter(&$form, &$form_state, $form_id) {
 
       // Add layout form.
       $form['layout'] = array(
-        '#prefix' => '<div class="panels-choose-layout panels-layouts-checkboxes clearfix">' .
-        '<label>Select layout</label>' .
-        '<div class="form-checkboxes clearfix">',
+        '#prefix' => '<div class="panels-choose-layout panels-layouts-checkboxes clearfix">
+        <label>Select layout</label>
+        <div class="form-checkboxes clearfix">',
         '#suffix' => '</div></div>',
         '#weight' => $form['additional_settings']['#weight'] - 1,
       );

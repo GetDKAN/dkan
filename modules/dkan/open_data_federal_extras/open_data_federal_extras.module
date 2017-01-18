@@ -1,0 +1,132 @@
+<?php
+
+/**
+ * @file
+ * Code for the Open Data Federal Agency Extras feature.
+ */
+
+include_once 'open_data_federal_extras.features.inc';
+
+/**
+ * @file
+ * Extends DKAN Dataset to include Federal level compliance items.
+ */
+
+/**
+ * Implements allowed_values_function for field_odfe_bureau_code.
+ */
+function field_odfe_program_code_allowed_values() {
+  include 'fed_program_code_list/federal_inventory_list.php';
+  return $federal_inventory_small_list;
+}
+
+/**
+ * Implements allowed_values_function for field_odfe_bureau_code.
+ */
+function field_odfe_bureau_code_allowed_values() {
+  include 'fed_bureau_code_list/omb-agency-bureau-treasury-codes.php';
+  return $bureau_codes;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function open_data_federal_extras_menu() {
+  $items = array();
+
+  // Put your menu items here.
+  $items['admin/dkan/bureu_agency'] = array(
+    'title' => 'Selected Agency',
+    'description' => 'Select an agency to limit form choices.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('open_data_federal_extras_agency_form'),
+    'access arguments' => array('administer site configuration'),
+  );
+
+  return $items;
+}
+
+/**
+ * Callback for selected agency form.
+ */
+function open_data_federal_extras_agency_form($form, $form_state) {
+  $form = array();
+  $path = drupal_get_path('module', 'open_data_federal_extras');
+  include $path . '/fed_program_code_list/federal_inventory_agencies.php';
+  $options = array('' => t('All agencies')) + $federal_inventory_agency_list;
+  $form['open_data_federal_extras_agency'] = array(
+    '#type' => 'select',
+    '#title' => t('Select an Agency.'),
+    '#options' => $options,
+    '#description' => t('Select an agency to be used for the Bureau Code field on the Dataset node.'),
+    '#default_value' => variable_get('open_data_federal_extras_agency', ''),
+  );
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function open_data_federal_extras_form_alter(&$form, $form_state, $form_id) {
+  switch ($form_id) {
+    case 'dataset_node_form':
+      if ($agency_code = variable_get('open_data_federal_extras_agency')) {
+        $path = drupal_get_path('module', 'open_data_federal_extras');
+        include $path . '/fed_program_code_list/federal_inventory_agencies.php';
+        $options = $form['field_odfe_bureau_code']['und']['#options'];
+        $concat_options = array('_none' => $options['_none']);
+        foreach ($options as $key => $value) {
+          $pattern = '/^' . $agency_code . '\:[\d]/';
+          if (preg_match($pattern, $key)) {
+            $agency_name = $federal_inventory_agency_list[$agency_code];
+            $value = str_replace($agency_name . ' - ', ' ', $value);
+            $concat_options[$key] = $value;
+          }
+        }
+        $form['field_odfe_bureau_code']['und']['#options'] = $concat_options;
+
+        $options = $form['field_odfe_program_code']['und']['#options'];
+        $concat_options = array();
+        foreach ($options as $key => $value) {
+          $pattern = '/^' . $agency_code . '\:[\d]/';
+          if (preg_match($pattern, $key)) {
+            $agency_name = $federal_inventory_agency_list[$agency_code];
+            $value = str_replace($agency_name . ' - ', ' ', $value);
+            $concat_options[$key] = $value;
+          }
+        }
+        $form['field_odfe_program_code']['und']['#options'] = $concat_options;
+      }
+
+      // Override text displayed for 'true' option on Data Quality field.
+      $form['field_odfe_data_quality']['und']['#options']['true'] = 'Meets agency’s Information Quality Guidelines';
+      // Hide the 'false' option on the Data Quality field.
+      unset($form['field_odfe_data_quality']['und']['#options']['false']);
+
+      $form['#validate'][] = 'open_data_federal_extras_dataset_node_form_validate';
+      break;
+  }
+}
+
+/**
+ * Validation function for dataset node form.
+ */
+function open_data_federal_extras_dataset_node_form_validate($form, &$form_state) {
+  $field_odfe_data_quality_langcode = dkan_dataset_form_field_language($form, 'field_odfe_data_quality');
+  $data_quality_value = $form_state['values']['field_odfe_data_quality'][$field_odfe_data_quality_langcode][0]['value'];
+  // The 'false' option for the 'Data Quality' field was removed from the form
+  // so the common way of setting default values is not going to work.
+  if (!$data_quality_value) {
+    $form_state['values']['field_odfe_data_quality'][$field_odfe_data_quality_langcode][0]['value'] = 'false';
+  }
+}
+
+/**
+ * Implements hook_preprocess_field().
+ */
+function open_data_federal_extras_preprocess_field(&$vars) {
+  if ($vars['element']['#field_name'] == 'field_odfe_data_quality') {
+    // Display 'True/False' instead of 'true/false'.
+    $vars['items'][0]['#markup'] = ucwords($vars['items'][0]['#markup']);
+  }
+}

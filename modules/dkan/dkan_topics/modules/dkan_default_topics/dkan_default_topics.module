@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Default topic taxonomy terms.
+ */
+
+/**
+ * Implements hook_taxonomy_fixtures_vocabulary().
+ */
+function dkan_default_topics_taxonomy_fixtures_vocabulary() {
+  $data_path = drupal_get_path('module', 'dkan_default_topics') . '/data';
+  $vocabularies = array();
+
+  $vocabularies['dkan_topics'] = array(
+    'export_path' => $data_path,
+    'map' => array(
+      'name' => 'name',
+      'field_icon_type' => 'type',
+      'field_topic_icon' => 'icon',
+      'field_topic_icon_color' => 'icon_color',
+      'description' => 'description',
+      'weight' => 'weight',
+      'uuid' => 'uuid',
+    ),
+  );
+
+  return $vocabularies;
+
+}

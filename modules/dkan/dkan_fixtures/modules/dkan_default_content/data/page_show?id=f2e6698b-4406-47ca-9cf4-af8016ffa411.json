@@ -1,0 +1,562 @@
+{
+    "result": {
+        "path": "about",
+        "uuid": "f2e6698b-4406-47ca-9cf4-af8016ffa411",
+        "id": "40",
+        "type": "page",
+        "title": "About",
+        "created": "1472693478",
+        "changed": "1472709424",
+        "body": [],
+        "panelizer": {
+            "panels_display": {
+                "args": [],
+                "content": [],
+                "panels": [],
+                "incoming_content": null,
+                "css_id": null,
+                "context": [],
+                "renderer": "standard",
+                "layout": "radix_sutro_double",
+                "layout_settings": [],
+                "panel_settings": [],
+                "cache": [],
+                "title": "",
+                "hide_title": "0",
+                "title_pane": "267",
+                "uuid": "4380d718-b0d2-4a54-8f2d-cfcf3c4a9daa",
+                "storage_type": "panelizer_entity",
+                "storage_id": "node:40:default"
+            },
+            "panels_pane": [
+                {
+                    "panel": "header",
+                    "type": "entity_field",
+                    "subtype": "node:body",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "label": "hidden",
+                        "formatter": "text_default",
+                        "delta_limit": 0,
+                        "delta_offset": "0",
+                        "delta_reversed": false,
+                        "formatter_settings": [],
+                        "context": "panelizer"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "7c352aa7-4c3a-44d6-9063-2b61cfcb4aba"
+                },
+                {
+                    "panel": "header",
+                    "type": "node_links",
+                    "subtype": "node_links",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "override_title": false,
+                        "override_title_text": "",
+                        "build_mode": "default",
+                        "identifier": "",
+                        "link": true,
+                        "context": "panelizer"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": {
+                        "css_class": "link-wrapper"
+                    },
+                    "extras": [],
+                    "position": "3",
+                    "locks": [],
+                    "uuid": "4a84a380-14b1-444a-b471-2b462c7dc790"
+                },
+                {
+                    "panel": "header",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:6b8529c2-2958-495e-bb67-5596fe1d17ec",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "6b8529c2-2958-495e-bb67-5596fe1d17ec",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "6b8529c2-2958-495e-bb67-5596fe1d17ec",
+                        "language": "",
+                        "field_basic_text_text": [
+                            {
+                                "value": "<iframe width=\"90%\" height=\"400px\" src=\"https://www.youtube.com/embed/lU-TSKEaMKI\" frameborder=\"0\" allowfullscreen></iframe> ",
+                                "format": "html",
+                                "safe_value": "<iframe width=\"90%\" height=\"400px\" src=\"https://www.youtube.com/embed/lU-TSKEaMKI\" frameborder=\"0\" allowfullscreen=\"\"></iframe>"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "header",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "What's in the demo?",
+                        "title": "What's in the demo?",
+                        "body": "The best way to learn about DKAN and what it's capable of is by using it yourself. We created this demo site so that you can get a feel for what a DKAN site looks like and imagine what your DKAN site could be. \n\n\nEverything here was created with DKAN features from a personalized Home page to [Data Stories](/stories) and [Dashboards](/dashboards).\n\n\nThis site shows off our favorite DKAN features, but there's even more behind the scenes. [Set up your own open-source DKAN instance](https://github.com/NuCivic/dkan) or [contact us for our enterprise-level services](mailto:contact@nucivic.com). ",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "ed56ce7e-efd1-40c9-b826-071fbbd30cef"
+                },
+                {
+                    "panel": "column1",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:c2781828-d9d0-46dc-8224-f1efa9846ba1",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "c2781828-d9d0-46dc-8224-f1efa9846ba1",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "c2781828-d9d0-46dc-8224-f1efa9846ba1",
+                        "language": "",
+                        "field_basic_text_text": [
+                            {
+                                "value": "<center><img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/ncd.gif\" alt=\"Computer screen with DKAN installation\"></center>",
+                                "format": "html",
+                                "safe_value": "</p>\n<p><center><img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/ncd.gif\" alt=\"Computer screen with DKAN installation\" /></center></p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "column2",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "What is DKAN, how does it work?",
+                        "title": "What is DKAN, how does it work?",
+                        "body": "DKAN does a lot! It's designed to meet the complex challenges of launching and maintaining an open data program as a government administrator. \n\nDKAN is an open-source data management platform. It treats data as content so that you can easily publish, manage, and maintain your open data no matter the size of your team or the level of technical expertise. \n\nWith DKAN you can feel confident that the data you publish meets federal standards and best practices without losing any of the flexibility and sustainability that comes with an open-source product. ",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "c224948f-eb0d-4533-b934-596029447fce"
+                },
+                {
+                    "panel": "column1",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:c0702ca4-6d3c-4d7c-b9ab-ce66f6d67887",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "c0702ca4-6d3c-4d7c-b9ab-ce66f6d67887",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "image",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "c0702ca4-6d3c-4d7c-b9ab-ce66f6d67887",
+                        "language": "",
+                        "field_basic_image_caption": [
+                            {
+                                "value": null,
+                                "summary": null,
+                                "format": null
+                            }
+                        ],
+                        "field_basic_image_image": [
+                            {
+                                "alt": "",
+                                "title": "",
+                                "height": "120",
+                                "width": "120",
+                                "description": null,
+                                "link": null,
+                                "type": "image",
+                                "image_path": "files/page/LCr5fi0_4.png"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "column1",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "Storytelling and Insights",
+                        "title": "Storytelling and Insights",
+                        "body": "DKAN's data [storytelling](/stories) and [insights](/search/type/data_dashboard) features add value to open data efforts by enabling and empowering content creation in an easy-to-use, streamlined way.\n\nDKAN offers a combination of [signature data visualization tools](/crime-americas-top-10-most-populous-cities), integrations with [external data visualization tools](/dynamic-transportation-visualizations), and story content, to create Data Stories and Dashboards, through a user-friendly interface, that deliver the message behind data. Built on traditional data portal features, DKAN offers a market-standards compliant experience that increases the user value of any open data effort.\n\nExplore the features to see how DKAN uses data to tell stories and highlight insights. ",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "6747719a-d11c-4809-94e7-a3feb44f3e08"
+                },
+                {
+                    "panel": "column1",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:23ec78df-8f73-46b4-b03f-d94da7bda5f5",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "3",
+                    "locks": [],
+                    "uuid": "23ec78df-8f73-46b4-b03f-d94da7bda5f5",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "image",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "23ec78df-8f73-46b4-b03f-d94da7bda5f5",
+                        "language": "",
+                        "field_basic_image_caption": [
+                            {
+                                "value": null,
+                                "summary": null,
+                                "format": null
+                            }
+                        ],
+                        "field_basic_image_image": [
+                            {
+                                "alt": "",
+                                "title": "",
+                                "height": "120",
+                                "width": "120",
+                                "description": null,
+                                "link": null,
+                                "type": "image",
+                                "image_path": "files/page/pjKIPkG_3.png"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "column1",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "Data Publishing and Management",
+                        "title": "Data Publishing and Management",
+                        "body": "As data is released at increasing rate there is a growing need to compile that data in a central location so citizens can engage with and share that information. Managing huge amounts of  data can be a daunting task, especially when it involves several agencies. \n\nOn DKAN, publishing and managing data is made simple with ready-to-use features that serve common Open Data needs. \n \nCheck out the features below to learn more about how DKAN makes data publishing and management simple.   ",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "4",
+                    "locks": [],
+                    "uuid": "fa435b1e-9345-43f5-9d05-9f33d1addbd4"
+                },
+                {
+                    "panel": "column1",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:3fa5cb60-41e5-450d-903a-32fa1646b276",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "5",
+                    "locks": [],
+                    "uuid": "3fa5cb60-41e5-450d-903a-32fa1646b276",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "image",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "3fa5cb60-41e5-450d-903a-32fa1646b276",
+                        "language": "",
+                        "field_basic_image_caption": [
+                            {
+                                "value": null,
+                                "summary": null,
+                                "format": null
+                            }
+                        ],
+                        "field_basic_image_image": [
+                            {
+                                "alt": "",
+                                "title": "",
+                                "height": "120",
+                                "width": "120",
+                                "description": null,
+                                "link": null,
+                                "type": "image",
+                                "image_path": "files/page/jfiHlsa_3.png"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "column1",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "Modular Customization",
+                        "title": "Modular Customization",
+                        "body": "DKAN is ready-to-use to jump-start any open data effort with its suite of tools and standard features. DKAN is both powerful and flexible, and it includes several features to highlight the personality of each unique site. \n\nThese features include customizing user experience, discovery of data, emphasize citizen engagement and connection on the public-facing side. \n\nBehind the scenes, DKAN enables custom user roles and group features to make content quality and management a streamlined process for technical and nontechnical users alike. ",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "6",
+                    "locks": [],
+                    "uuid": "e951bbc0-25dc-4166-8ab0-643f29e9cf23"
+                },
+                {
+                    "panel": "column2",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "Storytelling and Insights Features",
+                        "title": "Storytelling and Insights Features",
+                        "body": "<h3><a href=\"/stories\">Data Stories</a></h3>\nA straightforward format for putting text and visuals together. Use data stories to tell simple, yet moving stories about the impact of opening data. \n\n<h3><a href=\"/search/type/data_dashboard\">Data Dashboards</a></h3>\nDashboards bring content to one place to draw clear connections and meaning--truly unlocking the power of open data. Use Dashboards for flexible content curation. \n\n<h3>Data Previews</h3>\nBuilt-in Data Preview tools show users a basic visual of a resource as a map, chart, or grid. Have more complex data? Use DKAN External Previews to explore data resources with CartoDB, ArcGIS, and Tableau. \n\n<h3>Data Visualizations</h3>\nData visualizations can make data compelling and straightforward. Use DKAN Visualizations to create charts, graphs, and maps to connect your data to citizens. ",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "db6320a3-b990-4a5a-919c-9d55673f9c43"
+                },
+                {
+                    "panel": "column2",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "Data Publishing and Management Features",
+                        "title": "Data Publishing and Management Features",
+                        "body": "<h3>Resources</h3>\nDKAN can host millions of files of data as it is released and regenerated. Files and APIs are uploaded to DKAN as a \"resource\". Use resources for a large range of file formats including csv, html, xls, json, xlsx, doc, docx, rdf, txt, jpg, png, gif, tiff, pdf, odf, ods, odt, tsv, geojson and xml.\n\n<h3><a href=\"/search/type/dataset\">Datasets</a></h3>\nDKAN sites bring disparate data into a single, central location making it easier to find and navigate. Use Datasets as \"containers\" to group related pieces of data.\n\n<h3>Metadata</h3>\nDKAN Metadata fields are designed to be compliant with Open Data Initiatives like Project Open Data. Use Metadata to be compliant and make your data more accessible to developers through robust APIs. \n\n<h3>DKAN Datastore</h3>\nLarge files can be a challenge both to manage and make accessible for a wider audience. Use the DKAN Datastore to support your large files, improve the ability to preview data, and make data accessible through the DKAN Datastore API. ",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "71f9a7ce-d5d4-4f6f-9c8c-2f17606e12dd"
+                },
+                {
+                    "panel": "column2",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "Modular Customization Features",
+                        "title": "Modular Customization Features",
+                        "body": "<h3>User Management</h3>\nIt takes a team of people working together by playing individual roles that contribute to a larger effort to make an open data effort successful. Use DKAN User Management to balance between empowering a team and maintaining quality control. \n\n<h3><a href=\"/groups\">Groups</a></h3>\nGroups are a powerful yet easy-to-use way of organizing site content as well as users contributing data to your DKAN site. Use Groups on DKAN to organize datasets by author.  \n\n<h3>Branding</h3>\nDKAN's default theme is designed with responsive and accessible appearance elements for an optimal user experience. But with just a few clicks, DKAN becomes custom-fit to the unique look and feel of any organization. Use DKAN branding features for greater brand consistency and recognition.\n\n<h3>Site Navigation</h3>\nDKAN Pages, Topics, and Faceted Search all provide a seamless experience for site visitors as they navigate through thousands of resources. Use DKAN site navigation features to connect citizens to the right data in the right time.  ",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "3",
+                    "locks": [],
+                    "uuid": "ce0b4e74-ec33-4347-a132-628e2daac398"
+                },
+                {
+                    "panel": "secondcolumn1",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "What's DKAN for?",
+                        "title": "What's DKAN for?",
+                        "body": "DKAN is about making it easier to make your data open and accessible. We believe that data is one of the most powerful assets an organization can unlock--especially government. Open data has the potential to create economic opportunity, help make better decisions, and improve program outcomes. \n\nIt's quickly becoming the standard practice of all levels of government, but data and content management can present a daunting challenge. DKAN, makes it easy to be compliant with Open Data initiatives, maintain data quality, and create engaging sites for citizens to interact with and connect with data. ",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "e45889c4-5bef-46a6-b7d5-a28b62c8f768"
+                },
+                {
+                    "panel": "secondcolumn2",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "Notes to developers",
+                        "title": "",
+                        "body": "<img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/octo-cat.png\" align=\"left\" alt=\"GitHub Octocat\" width=\"90\" height=\"84\" hspace=\"18\">Are you a developer and want to use and/or contribute to DKAN? DKAN is open source and accepts contributions\u2013check out our <a href=\"https://github.com/NuCivic/dkan\">public GitHub.</a>",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "152429db-26a4-4562-bf28-6d6117c31c8b"
+                },
+                {
+                    "panel": "secondcolumn2",
+                    "type": "custom",
+                    "subtype": "custom",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "admin_title": "Link to demo site",
+                        "title": "",
+                        "body": "<img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/madison-polling.png\" align=\"left\" alt=\"DKAN demo on computer\" width=\"125\" height=\"100\"><br>Want DKAN\u2019s enterprise solution? <a href=\"http://demo.getdkan.com/\">Test drive DKAN</a> and <a href=\"mailto:contact@nucivic.com\">contact our team for more information.</a>",
+                        "format": "html",
+                        "substitute": 1
+                    },
+                    "cache": [],
+                    "style": [],
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "5ba8d84b-b162-4140-9dbd-004bb2e5f47d"
+                }
+            ],
+            "panelizer_entity": {
+                "entity_type": "node",
+                "view_mode": "default",
+                "name": null,
+                "css_id": "",
+                "css_class": "",
+                "css": "",
+                "no_blocks": "0",
+                "title_element": "H2",
+                "link_to_entity": "1",
+                "extra": [],
+                "pipeline": "ipe",
+                "relationships": []
+            }
+        }
+    }
+}

@@ -1,0 +1,17 @@
+.page-admin-dkan-harvest-dashboard .form-item-created-min,
+.page-admin-dkan-harvest-dashboard .form-item-created-max,
+.page-admin-dkan-harvest-dashboard .form-item-changed-min,
+.page-admin-dkan-harvest-dashboard .form-item-changed-max {
+  display: inline-block;
+}
+
+.page-admin-dkan-harvest-dashboard .form-item-created-min input,
+.page-admin-dkan-harvest-dashboard .form-item-created-max input,
+.page-admin-dkan-harvest-dashboard .form-item-changed-min input,
+.page-admin-dkan-harvest-dashboard .form-item-changed-max input {
+  width: 100px;
+}
+
+.page-admin-dkan-harvest-dashboard a.btn-add-source {
+  margin: 0px 0px 10px 0px;
+}

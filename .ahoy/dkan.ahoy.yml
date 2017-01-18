@@ -4,7 +4,12 @@ commands:
   drupal-rebuild:
     usage: 'Builds a drupal site in ./docroot. Requires database url.'
     cmd: |
-      if [[ "{{args}}" != mysql* ]]; then
+      if [ "$AHOY_CMD_PROXY" != "DOCKER" ]; then
+        ARGS="{{args}}"
+      else
+        ARGS=`ahoy docker mysql-url`
+      fi
+      if [[ "$ARGS" != mysql* ]]; then
           echo "You need to specify the drupal db url to use in the form mysql://root:root@localhost/db as an argument."
           exit 1
       fi
@@ -14,37 +19,45 @@ commands:
           ahoy confirm "./docroot folder alredy exists. Delete it and reinstall drupal?" && chmod -R 777 docroot/sites/default && rm -rf docroot ||
           { echo ".. skipping installation"; exit 1;}
       fi
-      ahoy drush make --prepare-install dkan/drupal-org-core.make docroot --yes &&
-      ln -s ../../dkan docroot/profiles/dkan &&
-      ahoy drush "-y --verbose si minimal --sites-subdir=default --account-pass='admin' --db-url={{args}} install_configure_form.update_status_module='''''array\(FALSE,FALSE\)'''''"
+      ahoy cmd-proxy bash dkan/.ahoy/.scripts/drupal-rebuild.sh $ARGS
 
   remake:
     usage: Rebuild all the dkan projects from the drupal-org.make file using drush make.
     # Note that we tried using --overwrite, but that seems to delete the entire modules/dkan folder which includes both checked-in modules and modules from make.
     # So, we delete the specific folders.
     cmd: |
-      rm -rf docroot/profiles/dkan/modules/dkan/dkan_dataset ;
-      rm -rf docroot/profiles/dkan/modules/dkan/dkan_datastore ;
-      rm -rf docroot/profiles/dkan/modules/contrib ;
-      echo "removed dkan/modules folders created by make and running a fresh drush make."
-      ahoy drush -y make --no-core --contrib-destination=./ dkan/drupal-org.make --no-recursion --no-cache --verbose --working-copy docroot/profiles/dkan
+      ARGS="{{args}}"
+      if [ -z "$ARGS" ]; then
+        rm -rf docroot/profiles/dkan/modules/contrib ;
+        ARGS=''
+        echo "removed dkan/modules folders created by make and running a fresh drush make."
+      else
+        ARGS="--projects=$ARGS"
+        echo "Running drush make for the following modules: $ARGS."
+      fi
+      ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkan-make.sh "$ARGS"
 
   reinstall:
     usage: Reinstall the dkan install profile (db only).
     cmd: |
+      set -e
       if [ ! -d backups ]; then
         mkdir backups
       fi
       if [ -f backups/last_install.sql ] && ahoy confirm "An existing installation backup exists at backups/last_install.sql, do you want to use that instead of reinstalling from scratch?"; then
-        ahoy drush sql-drop -y &&
+        ahoy drush sql-drop -y && \
         ahoy dkan sqlc <  backups/last_install.sql && \
         echo "Installed dkan from backup"
       else
-        ahoy drush "si dkan --verbose --account-pass='admin' --site-name='DKAN' install_configure_form.update_status_module='''''array\(FALSE,FALSE\)''''' --yes" && \
-        ahoy drush sql-dump > backups/last_install.sql.tmp && \
-        mv backups/last_install.sql.tmp backups/last_install.sql && \
-        echo "Installed DKAN and created a new backup at backups/last_install.sql"
+        if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
+          MYSQL=`ahoy docker mysql-url`
+          MYSQL="--db-url=$MYSQL"
+        else
+          MYSQL=''
+        fi
+        ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkan-si.sh $MYSQL
       fi
+
   module-fetch:
     usage: Checkout a dkan module from the NuCivic github repo.
     cmd: |
@@ -74,15 +87,29 @@ commands:
         echo "No dkan folder found at ./docroot/profiles/dkan/modules/dkan. Consider running 'ahoy dkan drupal-rebuild'."
         exit 1
       fi
-      if [ -d "docroot/profiles/dkan/modules/dkan/$MODULE" ]; then
-        echo "Module already exists at 'docroot/profiles/dkan/modules/dkan/$MODULE', removing it to make room..."
-        rm -rf "docroot/profiles/dkan/modules/dkan/$MODULE";
+      if [ ! -d docroot/profiles/dkan/modules/contrib ]; then
+        echo "No contrib folder found at ./docroot/profiles/dkan/modules/contrib. Consider running 'ahoy dkan drupal-rebuild'."
+        exit 1
       fi
-      ln -s ../../../$MODULE docroot/profiles/dkan/modules/dkan && echo "Symlink created for $MODULE.. "
+      MODULE_PATH=`find dkan -type d -name "$MODULE" | grep -e 'modules'`
+      if [ -d "$MODULE_PATH" ]; then
+        echo "Module already exists at '$MODULE_PATH', removing it to make room..."
+        rm -rf $MODULE_PATH
+      else
+        MODULE_PATH="dkan/modules/contrib/$MODULE"
+        echo "Module is not part of DKAN core. Placing it at $MODULE_PATH"
+        ALREADY_SYMLINKED=`find -L docroot -type l -name $MODULE`
+        if [ ! -z "$ALREADY_SYMLINKED" ]; then
+          rm $MODULE_PATH
+        fi
+      fi
+      ln -s ../../../$MODULE docroot/profiles/$MODULE_PATH && echo "Symlink created for $MODULE.. "
+
   module-make:
     usage: Run drush make for a module in dkan/modules/dkan/.
     cmd: |
-      if [ -z "{{args}}" ]; then
+      MODULE="{{args}}"
+      if [ -z "$MODULE" ]; then
           echo "Please specify the name of the module you want to link."
           exit 1
       fi
@@ -90,42 +117,47 @@ commands:
         echo "No dkan folder found at dkan/modules/dkan. Consider running 'ahoy dkan drupal-rebuild'."
         exit 1
       fi
-      if [ ! -f dkan/modules/dkan/{{args}}/{{args}}.make ]; then
-        echo "No make file found at dkan/modules/dkan/{{args}}/{{args}}.make. Consider running 'ahoy dkan link-module'."
+      if [ ! -d docroot/profiles/dkan/modules/contrib ]; then
+        echo "No contrib folder found at ./docroot/profiles/dkan/modules/contrib. Consider running 'ahoy dkan drupal-rebuild'."
         exit 1
       fi
-      ahoy drush -y make --no-core --contrib-destination=dkan dkan/modules/dkan/{{args}}/{{args}}.make --no-recursion --no-cache --verbose --working-copy
+      MODULE_PATH=`find dkan -type l -name "$MODULE" | grep -e 'modules'`
+      if [ ! -f "$MODULE_PATH/$MODULE.make" ]; then
+        echo "No make file found at $MODULE_PATH/$MODULE.make. Consider running 'ahoy dkan link-module'."
+        exit 1
+      fi
+      ahoy drush -y make --no-core --contrib-destination=dkan $MODULE_PATH/$MODULE.make --no-recursion --no-cache --verbose --working-copy
+
   test:
     usage: Run the tests for dkan.
     cmd: |
       # Store the arguments as a bash array.
-      ARGS=( "{{args}}" )
-      BEHAT_FOLDER=docroot/profiles/dkan/test
-      ALT_CONFIG_FILE="behat.local.yml"
-      # Crazy bash to get rid of the carriage return. (docker issue)
-      BEHAT_ENV=$(echo $(ahoy cmd-proxy printenv HOSTNAME) | tr -d "\r" )
-      SKIP_COMPOSER_FLAG="--skip-composer"
-      if [[ ! "${ARGS[@]}" == *"$SKIP_COMPOSER_FLAG"* ]]; then
-        echo "Installing behat dependencies.."
-        ahoy cmd-proxy "cd $BEHAT_FOLDER && composer install --prefer-source --no-interaction"
+      input="{{args}}"
+
+      # CicleCI and docker base64 take different params
+      if [ "$(uname -s)" != "Darwin" ]; then
+        wrap="-w"
       else
-        echo "Skipping composer install.."
-        ARGS=( "${ARGS[@]/$SKIP_COMPOSER_FLAG}" )
+        wrap="-b"
       fi
-      if [ -f "$BEHAT_FOLDER/$ALT_CONFIG_FILE" ]; then
-        echo "Using $BEHAT_FOLDER/$ALT_CONFIG_FILE .."
-        CONFIG=" -c $ALT_CONFIG_FILE"
-      elif [ "$BEHAT_ENV" == "cli" ]; then
-        echo "Using behat.docker.yml config .."
-        CONFIG=" -c behat.docker.yml"
-      elif [ "$CI" == "true" ]; then
-        echo "Using behat.circleci.yml config .."
-        CONFIG=" -c behat.circleci.yml"
-      else
-        echo "$BEHAT_ENV"
-        echo "Using behat.yml .."
-      fi
-      ahoy cmd-proxy "cd $BEHAT_FOLDER && bin/behat $CONFIG ${ARGS[@]}"
+
+      b64=`echo "payload: $input" | base64 $wrap 0`
+      ahoy cmd-proxy ruby dkan/.ahoy/.scripts/dkan-test.rb "$b64"
+
+  create-qa-users:
+    usage: Create users for each core role for QA purposes
+    cmd: |
+      ahoy drush "user-create sitemanager --mail=sitemanager@example.com --password=sitemanager"
+      ahoy drush "user-add-role 'site manager' --name=sitemanager"
+      ahoy drush "user-create editor --mail=editor@example.com --password=editor"
+      ahoy drush "user-add-role editor --name=editor"
+      ahoy drush "user-create creator --mail=creator@example.com --password=creator"
+      ahoy drush "user-add-role 'content creator' --name=creator"
+
+  dkanextension-update:
+    usage: Update the nucivic/dkanextension composer package.
+    cmd: ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkanextension-update.sh
+
   sqlc:
     usage: Abstracted way to connect to the mysql database.
     cmd: |
@@ -142,5 +174,25 @@ commands:
       git clone 'git@github.com:nucivic/dkan' --depth=1 dkan-ahoy
       cp -r dkan-ahoy/.ahoy dkan/
       cp dkan-ahoy/dkan-init.sh  dkan/
+      cp dkan-ahoy/test/behat.docker.yml dkan/test/
+      cp dkan-ahoy/test/behat.circleci.yml dkan/test/
       rm -fR dkan-ahoy
     hide: true
+
+  theme:
+    usage: A series of commands for dkan theme development
+    import: dkan/.ahoy/theme.ahoy.yml
+    hide: true
+
+  uli:
+    usage: log into the
+    cmd: |
+      uli=$(ahoy drush uli {{args}} | sed 's/^http.*\/default\/\(.*$\)/\1/g')
+      url="$(ahoy docker url)/$uli"
+      os=$(uname)
+
+      if [ "$os" = "Darwin" ]; then
+        open $url
+      else
+        echo $url
+      fi

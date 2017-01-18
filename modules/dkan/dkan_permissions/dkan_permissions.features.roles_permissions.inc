@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * dkan_permissions.features.roles_permissions.inc
+ * Dkan_permissions.features.roles_permissions.inc.
  */
 
 /**
@@ -10,34 +11,37 @@
 function dkan_permissions_default_roles_permissions() {
   $roles = array();
 
-  // Exported role: anonymous user
+  // Exported role: anonymous user.
   $roles['anonymous user'] = array(
     'name' => 'anonymous user',
     'weight' => 0,
     'permissions' => array(
       'access content' => TRUE,
+      'access resource node' => TRUE,
       'access user profiles' => TRUE,
       'eck view entities' => TRUE,
       'view revisions' => TRUE,
     ),
   );
 
-  // Exported role: authenticated user
+  // Exported role: authenticated user.
   $roles['authenticated user'] = array(
     'name' => 'authenticated user',
     'weight' => 1,
     'permissions' => array(
       'access content' => TRUE,
+      'access resource node' => TRUE,
       'access user profiles' => TRUE,
       'cancel account' => TRUE,
       'change own username' => TRUE,
+      'eck view entities' => TRUE,
       'use gravatar' => TRUE,
       'view own unpublished content' => TRUE,
       'view revisions' => TRUE,
     ),
   );
 
-  // Exported role: content creator
+  // Exported role: content creator.
   $roles['content creator'] = array(
     'name' => 'content creator',
     'weight' => 11,
@@ -51,10 +55,8 @@ function dkan_permissions_default_roles_permissions() {
       'administer media browser' => TRUE,
       'administer panelizer node data_dashboard content' => TRUE,
       'administer panelizer node data_dashboard layout' => TRUE,
-      'administer panelizer node data_dashboard overview' => TRUE,
       'administer panelizer node dkan_data_story content' => TRUE,
       'administer panelizer node dkan_data_story layout' => TRUE,
-      'administer panelizer node dkan_data_story overview' => TRUE,
       'change layouts in place editing' => TRUE,
       'change own username' => TRUE,
       'clear dkan_file feeds' => TRUE,
@@ -70,6 +72,8 @@ function dkan_permissions_default_roles_permissions() {
       'delete own dkan_data_story content' => TRUE,
       'delete own resource content' => TRUE,
       'disable own gravatar' => TRUE,
+      'eck list bundles' => TRUE,
+      'eck list entities' => TRUE,
       'edit own dataset content' => TRUE,
       'edit own data_dashboard content' => TRUE,
       'edit own dkan_data_story content' => TRUE,
@@ -82,8 +86,8 @@ function dkan_permissions_default_roles_permissions() {
       'upload via file_resup' => TRUE,
       'use gravatar' => TRUE,
       'use manualcrop' => TRUE,
-      'use page manager' => TRUE,
       'use panels in place editing' => TRUE,
+      'use text format html' => TRUE,
       'view files' => TRUE,
       'view own files' => TRUE,
       'view own unpublished content' => TRUE,
@@ -91,7 +95,7 @@ function dkan_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: editor
+  // Exported role: editor.
   $roles['editor'] = array(
     'name' => 'editor',
     'weight' => 2,
@@ -106,10 +110,10 @@ function dkan_permissions_default_roles_permissions() {
       'administer files' => TRUE,
       'administer panelizer node data_dashboard content' => TRUE,
       'administer panelizer node data_dashboard layout' => TRUE,
-      'administer panelizer node data_dashboard overview' => TRUE,
       'administer panelizer node dkan_data_story content' => TRUE,
       'administer panelizer node dkan_data_story layout' => TRUE,
-      'administer panelizer node dkan_data_story overview' => TRUE,
+      'administer panelizer node page content' => TRUE,
+      'administer panelizer node page layout' => TRUE,
       'administer panels layouts' => TRUE,
       'administer taxonomy' => TRUE,
       'change layouts in place editing' => TRUE,
@@ -170,15 +174,12 @@ function dkan_permissions_default_roles_permissions() {
       'download own image files' => TRUE,
       'download own video files' => TRUE,
       'eck add entities' => TRUE,
-      'eck add visualization ve_chart entities' => TRUE,
       'eck delete entities' => TRUE,
-      'eck delete visualization ve_chart entities' => TRUE,
       'eck edit entities' => TRUE,
       'eck edit visualization ve_chart entities' => TRUE,
+      'eck list bundles' => TRUE,
       'eck list entities' => TRUE,
-      'eck list visualization ve_chart entities' => TRUE,
       'eck view entities' => TRUE,
-      'eck view visualization ve_chart entities' => TRUE,
       'edit any audio files' => TRUE,
       'edit any dataset content' => TRUE,
       'edit any data_dashboard content' => TRUE,
@@ -217,6 +218,7 @@ function dkan_permissions_default_roles_permissions() {
       'use ipe with page manager' => TRUE,
       'use manualcrop' => TRUE,
       'use panels in place editing' => TRUE,
+      'use text format html' => TRUE,
       'view files' => TRUE,
       'view own files' => TRUE,
       'view own private files' => TRUE,
@@ -225,7 +227,7 @@ function dkan_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: site manager
+  // Exported role: site manager.
   $roles['site manager'] = array(
     'name' => 'site manager',
     'weight' => 10,
@@ -234,28 +236,41 @@ function dkan_permissions_default_roles_permissions() {
       'access administration pages' => TRUE,
       'access content' => TRUE,
       'access content overview' => TRUE,
+      'access draggableviews' => TRUE,
       'access media browser' => TRUE,
+      'access recline configuration' => TRUE,
       'access site in maintenance mode' => TRUE,
       'access user profiles' => TRUE,
+      'admininster harvest' => TRUE,
       'administer @font-your-face' => TRUE,
+      'administer DKAN configuration' => TRUE,
       'administer file types' => TRUE,
       'administer files' => TRUE,
       'administer group' => TRUE,
+      'administer icon select settings' => TRUE,
+      'administer main-menu menu items' => TRUE,
       'administer nodes' => TRUE,
+      'administer open data schema mapper' => TRUE,
       'administer panelizer node data_dashboard content' => TRUE,
       'administer panelizer node data_dashboard defaults' => TRUE,
       'administer panelizer node data_dashboard layout' => TRUE,
       'administer panelizer node data_dashboard overview' => TRUE,
       'administer panelizer node dkan_data_story content' => TRUE,
-      'administer panelizer node dkan_data_story context' => TRUE,
       'administer panelizer node dkan_data_story defaults' => TRUE,
       'administer panelizer node dkan_data_story layout' => TRUE,
       'administer panelizer node dkan_data_story overview' => TRUE,
+      'administer panelizer node page content' => TRUE,
+      'administer panelizer node page defaults' => TRUE,
+      'administer panelizer node page layout' => TRUE,
+      'administer panelizer node page overview' => TRUE,
       'administer panels layouts' => TRUE,
       'administer panels styles' => TRUE,
       'administer taxonomy' => TRUE,
+      'administer themes' => TRUE,
       'administer url aliases' => TRUE,
       'administer users' => TRUE,
+      'administer open data schema mapper' => TRUE,
+      'assign roles' => TRUE,
       'bypass file access' => TRUE,
       'bypass node access' => TRUE,
       'change layouts in place editing' => TRUE,
@@ -276,6 +291,7 @@ function dkan_permissions_default_roles_permissions() {
       'create fieldable video' => TRUE,
       'create files' => TRUE,
       'create group content' => TRUE,
+      'create harvest_source content' => TRUE,
       'create page content' => TRUE,
       'create resource content' => TRUE,
       'create url aliases' => TRUE,
@@ -285,6 +301,7 @@ function dkan_permissions_default_roles_permissions() {
       'delete any dkan_data_story content' => TRUE,
       'delete any document files' => TRUE,
       'delete any group content' => TRUE,
+      'delete any harvest_source content' => TRUE,
       'delete any image files' => TRUE,
       'delete any page content' => TRUE,
       'delete any resource content' => TRUE,
@@ -304,6 +321,7 @@ function dkan_permissions_default_roles_permissions() {
       'delete own dkan_data_story content' => TRUE,
       'delete own document files' => TRUE,
       'delete own group content' => TRUE,
+      'delete own harvest_source content' => TRUE,
       'delete own image files' => TRUE,
       'delete own page content' => TRUE,
       'delete own resource content' => TRUE,
@@ -320,23 +338,22 @@ function dkan_permissions_default_roles_permissions() {
       'download own image files' => TRUE,
       'download own video files' => TRUE,
       'eck add entities' => TRUE,
-      'eck add visualization ve_chart entities' => TRUE,
       'eck administer entities' => TRUE,
-      'eck administer visualization ve_chart entities' => TRUE,
       'eck delete entities' => TRUE,
       'eck delete visualization ve_chart entities' => TRUE,
+      'eck edit entities' => TRUE,
       'eck edit visualization ve_chart entities' => TRUE,
       'eck list bundles' => TRUE,
+      'eck list entities' => TRUE,
       'eck list entity types' => TRUE,
-      'eck list visualization ve_chart entities' => TRUE,
       'eck view entities' => TRUE,
-      'eck view visualization ve_chart entities' => TRUE,
       'edit any audio files' => TRUE,
       'edit any dataset content' => TRUE,
       'edit any data_dashboard content' => TRUE,
       'edit any dkan_data_story content' => TRUE,
       'edit any document files' => TRUE,
       'edit any group content' => TRUE,
+      'edit any harvest_source content' => TRUE,
       'edit any image files' => TRUE,
       'edit any page content' => TRUE,
       'edit any resource content' => TRUE,
@@ -356,6 +373,7 @@ function dkan_permissions_default_roles_permissions() {
       'edit own dkan_data_story content' => TRUE,
       'edit own document files' => TRUE,
       'edit own group content' => TRUE,
+      'edit own harvest_source content' => TRUE,
       'edit own image files' => TRUE,
       'edit own page content' => TRUE,
       'edit own resource content' => TRUE,
@@ -373,7 +391,9 @@ function dkan_permissions_default_roles_permissions() {
       'use gravatar' => TRUE,
       'use ipe with page manager' => TRUE,
       'use manualcrop' => TRUE,
+      'use page manager' => TRUE,
       'use panels in place editing' => TRUE,
+      'use text format html' => TRUE,
       'view files' => TRUE,
       'view own files' => TRUE,
       'view own private files' => TRUE,

@@ -1,0 +1,5 @@
+name = DKAN Harvest Test
+description = Test module for dkan_harvest
+core = 7.x
+
+dependencies[] = 'dkan_harvest'

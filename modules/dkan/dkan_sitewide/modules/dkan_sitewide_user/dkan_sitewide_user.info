@@ -1,4 +1,5 @@
 name = DKAN Sitewide User
+description = Basic configuration for DKAN users.
 core = 7.x
 package = DKAN
 dependencies[] = ctools
@@ -8,6 +9,7 @@ dependencies[] = field_group
 dependencies[] = system
 dependencies[] = text
 dependencies[] = views
+dependencies[] = views_content
 features[ctools][] = field_group:field_group:1
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2

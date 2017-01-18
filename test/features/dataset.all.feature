@@ -1,4 +1,5 @@
-@javascript @api
+# time:0m53.16s
+@api
 
   # TODO: 5 datasets are created in the test but the DKAN site has 4 datasets pre-made,
   #       with 2 of the datasets created are unpublished so the
@@ -39,21 +40,25 @@ Feature: Dataset Features
       | Admin   | Group 02 | administrator member | Active            |
       | Celeste | Group 02 | member               | Active            |
     And "Tags" terms:
-      | name    |
-      | Health  |
-      | Gov     |
+      | name     |
+      | Health 2 |
+      | Gov 2    |
+    And "Format" terms:
+      | name   |
+      | csv 2  |
+      | html 2 |
     And datasets:
-      | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        |
-      | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        |
-      | Dataset 03 | Group 01  | Katie   | Yes              | Health   | Test        |
-      | Dataset 04 | Group 02  | Celeste | No               | Gov      | Test        |
-      | Dataset 05 | Group 01  | Katie   | No               | Gov      | Test        |
+      | title                | publisher | author  | published        | tags     | description |
+      | DKAN Test Dataset 01 | Group 01  | Gabriel | Yes              | Health 2 | Test        |
+      | DKAN Test Dataset 02 | Group 01  | Gabriel | Yes              | Gov 2    | Test        |
+      | DKAN Test Dataset 03 | Group 01  | Katie   | Yes              | Health 2 | Test        |
+      | DKAN Test Dataset 04 | Group 02  | Celeste | No               | Gov 2    | Test        |
+      | DKAN Test Dataset 05 | Group 01  | Katie   | No               | Gov 2    | Test        |
     And resources:
-      | title       | publisher | format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | html    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 03 | Group 01  | html    | Katie  | Yes       | Dataset 02 |             |
+      | title       | publisher | format | author | published | dataset              | description |
+      | Resource 01 | Group 01  | csv 2  | Katie  | Yes       | DKAN Test Dataset 01 |             |
+      | Resource 02 | Group 01  | html 2 | Katie  | Yes       | DKAN Test Dataset 01 |             |
+      | Resource 03 | Group 01  | html 2 | Katie  | Yes       | DKAN Test Dataset 02 |             |
 
    @fixme @dkanBug
     # TODO: Datasets not shown on homepage currently
@@ -66,8 +71,9 @@ Feature: Dataset Features
   Scenario: View list of published datasets
     Given I am on the homepage
     When I click "Datasets"
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
+    And I search for "DKAN Test"
+    Then I should see "3 results"
+    And I should see "3" items in the "datasets" region
 
   Scenario: Order datasets by "Date changed" by oldest first.
     Given datasets:
@@ -76,6 +82,7 @@ Feature: Dataset Features
       | Dataset 2 years ago   |  Yes       | Test        | -2 year      |
       | Dataset 1 year ago    |  Yes       | Test        | -1 year      |
       | Dataset 3 years ago   |  Yes       | Test        | -3 year      |
+    And I search for "Dataset"
     And I am on "Datasets Search" page
     And I select "Date changed" from "Sort by"
     And I select "Asc" from "Order"
@@ -91,6 +98,7 @@ Feature: Dataset Features
       | Dataset 3 years +   |  Yes       | Test        | +3 year      |
       | Dataset 1 year +    |  Yes       | Test        | +1 year      |
     And I am on "Datasets Search" page
+    And I search for "Dataset"
     And I select "Date changed" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
@@ -101,97 +109,113 @@ Feature: Dataset Features
     And I select "Title" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
-    And I should see the first "3" dataset items in "Title" "Asc" order.
+    Then I should see the first "3" dataset items in "Title" "Asc" order.
 
   Scenario: Search datasets by "title" with "Desc" order
     Given I am on "Datasets Search" page
     And I select "Title" from "Sort by"
     And I select "Desc" from "Order"
     And I press "Apply"
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
-    And I should see the first "3" dataset items in "Title" "Desc" order.
+    Then I should see the first "3" dataset items in "Title" "Desc" order.
 
     # TODO : Reseting the search will make all the datasets appear in the results including pre-made
     #        datasets, should be fixed
 
   Scenario: Reset dataset search filters
     Given I am on "Datasets Search" page
-    When I fill in "Test" for "Search" in the "datasets" region
+    When I fill in "DKAN Test" for "Search" in the "datasets" region
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
     When I press "Reset"
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
+    Then I should see all published datasets
+    # Then I should see "7 results"
+    # And I should see "7" items in the "datasets" region
 
+  # TODO: make sure it works when we don't have default content on.
   Scenario: View available tag filters for datasets
     Given I am on "Datasets Search" page
-    Then I click on the text "Tags"
-    Then I should see "Health (2)" in the "filter by tag" region
-    Then I should see "Gov (1)" in the "filter by tag" region
+    ## Uncomment this if you wanna use selenium.
+    # Then I click on the text "Tags"
+    # And I wait for "1" seconds
+    Then I should see "Health 2 (2)" in the "filter by tag" region
+    Then I should see "Gov 2 (1)" in the "filter by tag" region
 
-
+  # TODO: make sure it works when we don't have default content on.
   Scenario: View available resource format filters for datasets
     Given I am on "Datasets Search" page
-    Then I click on the text "Format"
-    Then I should see "csv (5)" in the "filter by resource format" region
-    Then I should see "html (2)" in the "filter by resource format" region
+    ## Uncomment this if you wanna use selenium.
+    # When I click on the text "Format"
+    # And I wait for "1" seconds
+    Then I should see "csv 2 (1)" in the "filter by resource format" region
+    And I should see "html 2 (2)" in the "filter by resource format" region
 
   Scenario: View available author filters for datasets
     Given I am on "Datasets Search" page
-    Then I click on the text "Author"
+    And I wait for "Author"
+    ## Uncomment this if you wanna use selenium.    
+    # When I click on the text "Author"
+    # And I wait for "1" seconds
     Then I should see "Gabriel (2)" in the "filter by author" region
     Then I should see "Katie (1)" in the "filter by author" region
 
-
+  # TODO: make sure it works when we don't have default content on.
   Scenario: Filter dataset search results by tags
     Given I am on "Datasets Search" page
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
-    Then I click on the text "Tags"
-    When I click "Health" in the "filter by tag" region
+    And I search for "DKAN Test"
+    And I press "Apply"
+    Then I should see "3 results"
+    And I should see "3" items in the "datasets" region
+    ## Uncomment this if you wanna use selenium.
+    # Then I click on the text "Tags"
+    When I click "Health 2" in the "filter by tag" region
     Then I should see "2 results"
     And I should see "2" items in the "datasets" region
 
+  # TODO: make sure it works when we don't have default content on.
   Scenario: Filter dataset search results by resource format
     Given I am on "Datasets Search" page
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
-    Then I click on the text "Format"
-    Then I wait for "1" seconds
-    When I click "csv" in the "filter by resource format" region
-    Then I should see "5 results"
-    And I should see "5" items in the "datasets" region
+    And I search for "DKAN Test"
+    And I press "Apply"
+    Then I should see "3 results"
+    And I should see "3" items in the "datasets" region
+    ## Uncomment this if you wanna use selenium.
+    # Then I click on the text "Format"
+    # Then I wait for "1" seconds
+    When I click "csv 2" in the "filter by resource format" region
+    Then I should see "1 results"
+    And I should see "1" items in the "datasets" region
 
+  # TODO: make sure it works when we don't have default content on.
   Scenario: Filter dataset search results by author
     Given I am on "Datasets Search" page
-    Then I should see "7 results"
-    And I should see "7" items in the "datasets" region
-    Then I click on the text "Author"
-    Then I wait for "1" seconds
+    And I search for "DKAN Test"
+    And I press "Apply"
+    Then I should see "3 results"
+    And I should see "3" items in the "datasets" region
+    ## Uncomment this if you wanna use selenium.
+    # Then I click on the text "Author"
+    # Then I wait for "1" seconds
     When I click "Gabriel" in the "filter by author" region
     Then I should see "2 results"
     And I should see "2" items in the "datasets" region
 
   Scenario: View published dataset
     Given I am on "Datasets Search" page
-    When I click "Dataset 01"
+    When I click "DKAN Test Dataset 01"
     # I should see the license information
-    Then I should be on "Dataset 01" page
+    Then I should be on "DKAN Test Dataset 01" page
 
   Scenario: Share published dataset on Google+
-    Given I am on "Dataset 01" page
+    Given I am on "DKAN Test Dataset 01" page
     Then I should see the redirect button for "Google+"
 
   Scenario: Share published dataset on Twitter
-    Given I am on "Dataset 01" page
+    Given I am on "DKAN Test Dataset 01" page
     Then I should see the redirect button for "Twitter"
 
   Scenario: Share published dataset on Facebook
-    Given I am on "Dataset 01" page
+    Given I am on "DKAN Test Dataset 01" page
     Then I should see the redirect button for "Facebook"
 
   @fixme @testBug

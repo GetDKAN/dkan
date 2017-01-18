@@ -1,0 +1,15 @@
+{
+    "result": {
+        "path": "dataset/london-deprivation-index/resource/0da191d6-4eb6-4ebe-914f-27a392087d67",
+        "id": "0da191d6-4eb6-4ebe-914f-27a392087d67",
+        "url": "files/resource/IMD-MAPS.zip",
+        "format": "zip",
+        "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+        "name": "English Indices of Deprivation 2010",
+        "mimetype": "application/zip",
+        "size": "24.45 MB",
+        "created": "Thu, 09/01/2016 - 01:38",
+        "resource_group_id": "26dc023a-a216-4989-98b9-81f92d176dbd",
+        "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
+    }
+}

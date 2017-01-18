@@ -1,0 +1,158 @@
+.views-dkan-workflow-tree > .views-dkan-workflow-tree-item {
+  border-bottom: 1px solid #dddddd;
+  margin: 0 0 0em 0em;
+  padding-left: 1em;
+  padding-top: 10px;
+}
+
+.view-workbench-moderation .views-submit-button,
+.view-workbench-moderation .views-reset-button {
+  padding-top: 13px !important;
+}
+
+.views-dkan-workflow-tree-title.resource {
+  padding-left: 25px;
+}
+
+.vbo-views-form {
+  padding-top: 20px;
+}
+
+.references {
+  margin: 30px 0;
+  color: #666;
+  padding-left: 20px;
+  vertical-align: middle;
+  font-size: .9em;
+}
+.references > span {
+  padding-right: 10px;
+}
+.references .icon-dkan:before {
+  color: #666;
+  padding-right: 0;
+  vertical-align: middle;
+}
+
+.views-dkan-workflow-tree-actions {
+  display: inline-block;
+  width: 21%;
+}
+.vbo-views-form form div > .item-list {
+  border-top: 1px solid #ddd;
+  padding-top: 30px;
+}
+.views-dkan-workflow-tree .item-list ul li {
+  margin: 0px;
+}
+
+.vbo-select-all-markup {
+  display: inline-block !important;
+}
+
+.view-workbench-moderation .vbo-fieldset-select-all {
+  width: auto;
+  vertical-align: middle;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 15px;
+  border: none !important;
+  box-shadow: none !important;
+  text-align: left !important;
+}
+.vbo-views-form .form-submit {
+  vertical-align: top;
+}
+#edit-actionviews-dkan-workflow-tree-set-moderation-state-action-draft,
+#edit-actionviews-dkan-workflow-tree-set-moderation-state-action-needs-review,
+#edit-actionviews-dkan-workflow-tree-set-moderation-state-action-published {
+  margin-right: 10px;
+}
+
+.headers {
+  font-weight: bold;
+  margin-left: 10px;
+  border-bottom: 3px solid #e5e5e5 !important;
+  background: #f5f5f5;
+}
+
+.views-dkan-workflow-tree-item .item-content .views-dkan-workflow-tree-title.header {
+  text-align: left;
+}
+
+..view-workbench-moderation .vbo-fieldset-select-all .form-type-checkbox input {
+  margin: 0;
+  margin-right: 4px;
+  position: relative;
+  vertical-align: middle;
+}
+
+.views-dkan-workflow-tree-item .form-type-checkbox {
+  display: inline;
+}
+
+.views-dkan-workflow-tree-item .form-type-checkbox label {
+  vertical-align: middle;
+}
+
+.views-dkan-workflow-tree-item .item-content {
+  margin-bottom: 10px;
+}
+
+.views-dkan-workflow-tree-item .item-content .views-dkan-workflow-tree-title {
+  display: inline-block;
+  width: 30%;
+  text-align: left;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
+.views-dkan-workflow-tree-item .item-content .views-dkan-workflow-tree-revision-user {
+  display: inline-block;
+  width: 13%;
+  margin-left: 1%;
+  margin-right: 1%;
+  vertical-align: middle;
+}
+
+.views-dkan-workflow-tree-item .item-content .views-dkan-workflow-tree-groups {
+  display: inline-block;
+  width: 13%;
+  margin-left: 1%;
+  margin-right: 1%;
+  vertical-align: middle;
+}
+
+.views-dkan-workflow-tree-item .item-content .views-dkan-workflow-tree-revision-timestamp {
+  display: inline-block;
+  width: 13%;
+  margin-left: 1%;
+  margin-right: 1%;
+  vertical-align: middle;
+}
+
+.views-dkan-workflow-tree-item .item-content .views-dkan-workflow-tree-actions a {
+  margin-right: 10px;
+}
+
+ul.views-dkan-workflow-tree {
+  list-style: none;
+}
+
+ul.views-dkan-workflow-tree-item {
+  list-style: none;
+  margin: 0 0 0em 0;
+}
+
+il.views-dkan-workflow-tree {
+  list-style: none;
+  margin: 0 0 1em 0;
+}
+
+.item-disabled .views-dkan-workflow-tree-title,
+.item-disabled .views-dkan-workflow-tree-title a,
+.item-disabled .views-dkan-workflow-tree-revision-timestamp,
+.item-disabled .views-dkan-workflow-tree-revision-user,
+.item-disabled .views-dkan-workflow-tree-revision-user a {
+  color: #80808b;
+}

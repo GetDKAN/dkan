@@ -1,4 +1,5 @@
-@javascript @api
+# time:0m50.36s
+@api
 Feature: Site Manager administer groups
   In order to manage site organization
   As a Site Manager
@@ -28,27 +29,39 @@ Feature: Site Manager administer groups
       | Group 01 | Badmin | Yes       |
       | Group 02 | Badmin | Yes       |
       | Group 03 | Badmin | No        |
+    And "Tags" terms:
+      | name    |
+      | world   |
+      | results |
     And group memberships:
       | user    | group    | role on group        | membership status |
       | Gabriel | Group 01 | administrator member | Active            |
       | Katie   | Group 01 | member               | Active            |
       | Jaz     | Group 01 | member               | Pending           |
       | Celeste | Group 02 | member               | Active            |
+    And "Tags" terms:
+      | name     |
+      | price    |
+      | election |
     And datasets:
       | title      | publisher | tags       | author  | published | description                |
-      | Dataset 01 | Group 01  | price      | Katie   | Yes       | Increase of toy prices     |
-      | Dataset 02 | Group 01  | price      | Katie   | No        | Cost of oil in January     |
-      | Dataset 03 | Group 01  | election   | Gabriel | Yes       | Election districts         |
+      | Dataset 01 | Group 01  | world      | Katie   | Yes       | Increase of toy prices     |
+      | Dataset 02 | Group 01  | world      | Katie   | No        | Cost of oil in January     |
+      | Dataset 03 | Group 01  | results    | Gabriel | Yes       | Election results           |
+    And "format" terms:
+      | name |
+      | csv  |
+      | zip |
     And resources:
       | title       | publisher | format | author | published | dataset    | description |
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
 
   Scenario: Edit group as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
     When I click "Edit"
-    And I fill in "Body" with "Edited page"
+    And I fill in "Description" with "Edited page"
     And I press "Save"
     Then I should see "Group Group 01 has been updated"
     And I should be on the "Group 01" page

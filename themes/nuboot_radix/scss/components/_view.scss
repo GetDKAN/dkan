@@ -1,0 +1,189 @@
+//
+// Styles for Views
+// --------------------------------------------------
+.front .view-popular-tags {
+  margin-top:20px;
+}
+.view-popular-tags {
+  margin: 15px 0;
+  ul.tag-list {
+    margin: 0;
+    padding: 0;
+    li {
+      display:inline-block;
+      margin-right:2em;
+      a {
+        color:#fff;
+      }
+    }
+  }
+}
+.view-content h2 {
+  font-size: 1.5em;
+  margin:1em 0 0.5em;
+}
+.view-groups-search .views-row {
+  border-bottom:1px dotted $smoke;
+  padding:1em 0;
+}
+
+.views-field-field-image img {
+  // display:block;
+  // height:auto;
+  // margin:0 auto 5px;
+  // max-width:220px;
+  // width:100%;
+}
+.view-front-page-group-list {
+  .views-row {
+    position: relative;
+    padding-left: 120px;
+    min-height: 110px;
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+}
+
+.view-user-profile-fields img {
+  height:auto;
+  margin:0 auto;
+  max-width:190px;
+  width:100%;  
+}
+
+.view-front-page-group-grid {
+  .row {
+    span {
+      display:block;
+      margin:15px 0;
+      .media-content {
+        padding:0 10px 10px 120px;
+      }
+      .media-image {
+        float:left;
+        margin:0;
+        padding:0;
+        img {
+          margin:5px 10px 5px 0;
+        }
+      }
+      h3.media-heading {
+        font-size:1.3em;
+        margin:.5em 0;
+        padding:0;
+      }
+    }
+  }
+  @media(min-width:768px) {
+    .span6,
+    .col-lg-6 {
+      float:left;
+      margin:0;
+      width:50%;
+    }
+  }
+}
+
+.view-dkan-groups {
+  .node-teaser {
+    min-height: 365px;
+    margin-bottom: 20px;
+    h2.node-title {
+      margin: .75em 0;
+    }
+    .btn-primary {
+      margin: 0 auto 1.5em;
+    }
+    .field-name-field-image {
+      text-align: center; 
+    }
+  }
+}
+
+.view-groups-page {
+  .views-column {
+    float:left;
+    margin:0;
+    width:50%;
+  }
+}
+.view-group-block {
+  .views-field-title {
+    font-size:1.2em;
+  }
+  .views-field-nid a {
+    background: $brand-primary;
+    color:#fff;
+    display: block;
+    margin:1em 0 0 0;
+    padding:5px 8px;
+    text-align: center;
+  }
+  .views-field-field-image {
+    text-align: center;
+  }
+}
+.view-dataset {
+  form {
+    margin: 0;
+    position: relative;
+  }
+  .views-row {
+    margin:1.5em 0;
+  }
+}
+.views-exposed-form {
+  position:relative;
+  .views-exposed-widget {
+    display: inline;
+    padding: .5em .5em 0 0;
+    .views-widget-filter-search_api_views_fulltext,
+    .views-widget-sort-by,
+    .views-widget-sort-order,
+    .views-submit-button,
+    .form-submit {
+      display: inline;
+      float:none;
+      margin: 0;
+      position:relative;
+    }
+    &.views-reset-button,
+    &.views-submit-button {
+      margin: 0;
+      padding: 2.1em .5em 0 0;
+    }
+  }
+  .description {
+    @include text-shadow(none);
+    position:absolute;
+    color: #999999;
+    font-size:12px;
+    left: 7px;
+    top: 10px;
+  }
+}
+
+#views-exposed-form-dkan-datasets-panel-pane-1 .views-exposed-form .description { display: none;}
+
+.view-dkan-groups-featured,
+.pane-dkan-groups-featured {
+  .row {
+    text-align: center;
+    div[class*='views-column'] {
+      margin-bottom: 1.25em;
+    }
+  }
+}
+
+.view-admin-content table {
+  margin-top: 0;
+}
+
+.view-blog {
+  .views-row ul.links.inline {
+    margin: -.5em 0 1.75em;
+  }
+}

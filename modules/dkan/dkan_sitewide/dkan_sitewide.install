@@ -7,14 +7,29 @@
 
  /**
   * Enable field_reference_delete.
-  */ 
-function dkan_sitewide_update_7001(){
+  */
+function dkan_sitewide_update_7001() {
   module_enable(array('field_reference_delete'));
 }
 
 /**
  * Enable facet_icons.
  */
-function dkan_sitewide_update_7002(){
+function dkan_sitewide_update_7002() {
   module_enable(array('facet_icons'));
+}
+
+/**
+ * Implements hook_install().
+ */
+function dkan_sitewide_install() {
+  // Create global bueditor profile.
+  db_insert('bueditor_plus_profiles')
+    ->fields(array(
+      'name' => 'Global',
+      'data' => 'a:2:{s:4:"html";a:2:{s:7:"default";s:1:"5";s:11:"alternative";s:1:"0";}s:10:"plain_text";a:2:{s:7:"default";s:1:"0";s:11:"alternative";s:1:"0";}}',
+      'global' => 1,
+    ))
+    ->execute();
+
 }

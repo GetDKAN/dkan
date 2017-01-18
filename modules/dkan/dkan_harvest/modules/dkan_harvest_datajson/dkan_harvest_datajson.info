@@ -1,0 +1,7 @@
+name = Dkan Harvest Data Json
+description = Provide Data Json endpoints support for Dkan Harvest.
+package = DKAN Harvest
+core = 7.x
+
+dependencies[] = dkan_harvest
+files[] = dkan_harvest_datajson.migrate.inc

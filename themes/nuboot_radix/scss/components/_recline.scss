@@ -1,0 +1,94 @@
+// Recline css overrides.
+.recline-pager .pagination {
+  li {
+    vertical-align: middle;
+    a {
+      line-height: 1em;
+      padding: 0 10px;
+      &.btn {
+        line-height: 32px;
+      }
+    }
+  }
+  input {
+	  height: 20px;
+	  font-size: .8em;
+  }
+}
+.recline-data-explorer {
+  .form-control {
+    border-color: #ccc;
+  }
+  .btn {
+  	border:1px solid $smoke;
+  	font-size: 14px;
+  	padding: 0px 12px;
+    line-height: 32px;
+  }
+}
+.dropdown-menu.slick-contextmenu {
+  background: #fff;
+  li {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+.recline-filter-editor {
+  fieldset {
+    @include border-radius(4px);
+    border-color: #ccc;
+    padding: 8px;
+    margin: 10px 0;
+  }
+  input {
+    width: auto;
+  }
+}
+#recline-embeded .recline-data-explorer {
+  .header,
+  .data-view-sidebar {
+    display: none !important;
+  }
+}
+
+@media all and (max-width:991px) {
+  .recline-query-editor {
+    border: none;
+    margin: .5em 0;
+    padding: 0;
+  }
+}
+@media all and (max-width:767px) {
+  .recline-data-explorer {
+    .query-editor-here {
+      clear: both;
+      display: block;
+      .recline-query-editor,
+      .form-group {
+        float: none;
+        display: inline-block;
+      }
+      button.btn {
+        float: none;
+        display: inline-block;
+        max-width: 50px;
+      }
+    }
+    .data-view-sidebar {
+      float: none;
+      margin-left: 0;
+      width: auto;
+    }
+  }
+}
+@media all and (max-width:660px) {
+  .recline-pager {
+    float: none;
+    display: block;
+    margin-left: 0;
+    clear: both;
+  }
+  .recline-data-explorer .header .menu-right {
+    padding-top: 8px;
+  }
+}

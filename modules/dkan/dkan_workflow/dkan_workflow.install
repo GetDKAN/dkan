@@ -1,0 +1,93 @@
+<?php
+
+/**
+ * @file
+ * Installation procedures for dkan_workflow.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dkan_workflow_install() {
+  dkan_workflow_revert_views();
+}
+
+/**
+ * Implements hook_enable().
+ */
+function dkan_workflow_enable() {
+
+  // Enable moderation for dkan_workflow enabled content types upon install.
+  // This config is kept persistant using the hook_strongarm_alter().
+  // Default dkan content types with moderation.
+  $dkan_workflow_content_types = array('dataset', 'resource', 'feedback');
+
+  foreach ($dkan_workflow_content_types as $type) {
+    $var_name = 'node_options_' . $type;
+    $node_options = variable_get($var_name, array());
+    $node_options = (array_key_exists($var_name, $node_options) && is_array($node_options[$var_name]->value)) ?
+      $node_options[$var_name]->value :
+      $node_options;
+
+    // Remove status if set;.
+    $node_options = array_diff($node_options, array('status'));
+
+    // Add moderation and revision if needed.
+    $node_options = array_values(array_unique(array_merge($node_options, array('moderation', 'revision')), SORT_REGULAR));
+    variable_set($var_name, $node_options);
+  }
+  dkan_workflow_revert_views();
+
+  variable_set('dkan_workflow_content_types', $dkan_workflow_content_types);
+
+  //Revert dkan sitewide menu to add links to command center.
+  features_revert(array('dkan_sitewide_menu' => array('menu_links')));
+
+  //Assign role supervisor to editor users.
+  $uids = array();
+  $supervisor = user_role_load_by_name("Workflow Supervisor");
+  $site_manager = user_role_load_by_name("site manager");
+  $result = db_query("SELECT uid FROM {users_roles} WHERE rid=:site_manager AND uid NOT IN (SELECT uid FROM {users_roles} WHERE rid=:supervisor)", array(':site_manager' => $site_manager->rid, ':supervisor' => $supervisor->rid));
+
+  if (!empty($result)) {
+    foreach ($result as $user) {
+      $uids[] = $user->uid;
+    }
+    user_multiple_role_edit($uids, 'add_role', $supervisor->rid);
+  }
+  dkan_workflow_admin_menu_source();
+
+}
+
+
+/**
+ * This helper function sets up the admin_menu_source module's configuration.
+ * We want the content creator and editor roles to have the "command center"
+ * menu rather than the whole admin menu in the top bar. We can't rely on the
+ * rid to be the same on every site so not using features.
+ */
+function dkan_workflow_admin_menu_source() {
+  drupal_flush_all_caches();
+  $roles = array_flip(user_roles());
+
+  $admin_menu_source_settings = array(
+    $roles['Workflow Contributor'] => array(
+      'rid' => $roles['Workflow Contributor'],
+      'source' => 'menu-command-center-menu',
+      'weight' => 4,
+    ),
+    $roles['Workflow Moderator'] => array(
+      'rid' => $roles['Workflow Moderator'],
+      'source' => 'menu-command-center-menu',
+      'weight' => 5,
+    ),
+    $roles['Workflow Supervisor'] => array(
+      'rid' => $roles['Workflow Supervisor'],
+      'source' => 'menu-command-center-menu',
+      'weight' => 6,
+    ),
+  );
+  $previous_settings = variable_get('admin_menu_source_settings');
+  $admin_menu_source_settings = array_replace($previous_settings, $admin_menu_source_settings);
+  variable_set('admin_menu_source_settings', $admin_menu_source_settings);
+}

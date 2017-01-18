@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * Code for the DKAN Dataset Voting feature.
+ */
+
+include_once 'dkan_dataset_voting.features.inc';

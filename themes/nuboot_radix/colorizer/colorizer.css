@@ -1,0 +1,308 @@
+body,
+body.overlay {
+  background-color: @bg;
+  color: @text;
+}
+#header,
+#main-wrapper {
+  background-color: @bg;
+}
+.site-name,
+.site-slogan {
+  color: @titleslogan;
+}
+h1,
+h2,
+h3,
+h4 {
+  color: @title;
+}
+
+.front .panel-top h1.pane-title,
+.front .panel-top h2.pane-title,
+.front .panel-top h3.pane-title,
+.front .panel-top h4.pane-title {
+  color: @herotitle;
+}
+
+.pane-dkan-sitewide-demo-front-dkan-demo-front .pane-content,
+.tint {
+  background-color: @top_rgb;
+}
+
+.form-actions {
+  background-color: @bg;
+}
+
+a {
+  color: @link;
+}
+a:hover,
+a:focus {
+  color: @linkhover;
+}
+a:active {
+  color: @linkactive;
+}
+
+div.vertical-tabs {
+  border-color: @toolbarborder;
+}
+div.vertical-tabs ul.vertical-tabs-list li {
+  border-color: @bg @toolbarborder @bg @bg;
+}
+div.vertical-tabs ul.vertical-tabs-list li.selected {
+  border-color: @toolbarborder @bg @toolbarborder @toolbarborder;
+}
+div.vertical-tabs ul.vertical-tabs-list li a:hover {
+  background: @bottom;
+  color: #ffffff;
+}
+
+.navigation-wrapper {
+  background: @toolbarbtn;
+}
+.navbar-default .navbar-nav li > a,
+.navbar-default .user-menu li > a {
+  color: #ffffff;
+}
+
+.navbar-default .navbar-nav li.open > a,
+.navbar-default .navbar-nav .dropdown-menu {
+  background: @top;
+}
+
+.navbar-default .navbar-nav .open .dropdown-menu li > a:hover,
+.navbar-default .navbar-nav .open .dropdown-menu li > a:focus,
+.navbar-default .navbar-nav .open .dropdown-menu li > a:active {
+  background-color: @bottom;
+}
+
+.navbar-default .navbar-nav li.open > a:hover,
+.navbar-default .navbar-nav li.open > a:focus,
+.navbar-default .navbar-nav li.open > a:active,
+.navbar-default .navbar-nav li > a:hover,
+.navbar-default .navbar-nav li > a:focus,
+.navbar-default .navbar-nav li > a:active,
+.navbar-default .user-menu li > a:hover,
+.navbar-default .user-menu li > a:focus {
+  background-color: @bottom;
+  color: #fff;
+}
+
+.navbar-default .navbar-nav li.active > a,
+.navbar-default .navbar-nav li.active > a:hover,
+.navbar-default .navbar-nav li.active > a:focus,
+.navbar-default .navbar-nav li.active > a:active,
+.navbar-default .user-menu li.active > a,
+.navbar-default .user-menu li.active > a:hover,
+.navbar-default .user-menu li.active > a:focus {
+  background: @linkactive;
+  color: #fff;
+}
+
+#block-dkan-sitewide-dkan-sitewide-user-menu .links a:hover,
+#block-dkan-sitewide-dkan-sitewide-user-menu .links a:focus {
+  background-color: @bottom;
+  color: #fff;
+}
+
+.tabs--primary.nav-pills li a,
+.tabs--primary li a {
+  border: 1px solid @toolbarborder;
+  background: @bg;
+  color: @top;
+}
+
+.tabs--primary.nav-pills li a:hover,
+.tabs--primary li a:hover {
+  border: 1px solid @bottom;
+  background: @bottom;
+  color: #ffffff;
+}
+
+.tabs--primary.nav-pills > li > a.active,
+.tabs--primary.nav-pills > li > a:focus,
+.tabs--primary.nav-pills li.active a:hover,
+.tabs--primary.nav-pills li.active a:focus,
+.tabs--primary li a.active,
+.tabs--primary li a:focus {
+  border: 1px solid @linkactive;
+  background: @linkactive;
+  color: #ffffff;
+}
+
+.pane-views-group-block-block .group-subscribe-message,
+#block-views-group-block-block .block-content .group-subscribe-message {
+  background-color: @top;
+}
+
+.node-blog .links a,
+.view-blog .node-teaser .links a,
+.view-group-block .views-field-nid a,
+.btn-primary,
+.links .btn,
+input.btn {
+  background-color: @top;
+  border: 1px solid @top;
+  color: #ffffff;
+}
+
+.node-blog .links a:hover,
+.view-blog .node-teaser .links a:hover,
+.view-group-block .views-field-nid a:hover,
+.btn-primary:hover,
+.links .btn:hover,
+input.btn:hover,
+input.btn-default:active:hover,
+input[type="submit"]:hover {
+  background: @bottom;
+  border: 1px solid @bottom;
+  color: #ffffff;
+}
+
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.links .btn:focus,
+.links .btn.focus,
+input.btn:active,
+input.btn:active:focus,
+input.btn:focus,
+input[type="submit"]:focus,
+input[type="submit"]:active {
+  background: @linkactive;
+  border-color: @linkactive;
+  color: #ffffff;
+}
+input.form-submit.features-refresh-button {
+  background: @top;
+}
+
+.form-tablefield input.tablefield-rebuild {
+  background-color: @top !important;
+  border-color: @top;
+}
+.form-tablefield input.tablefield-rebuild:hover,
+.form-tablefield input.tablefield-rebuild:focus,
+.form-tablefield input.tablefield-rebuild.active {
+  background-color: @bottom !important;
+  border-color: @bottom;
+}
+
+.region-sidebar-first .block-facetapi ul li.leaf a:hover,
+.block-facetapi ul li.leaf a:hover {
+  color: @top;
+}
+
+a.embed-link {
+  background: @top;
+}
+a.embed-link:hover,
+a.embed-link:focus,
+a.embed-link:active {
+  background: @bottom;
+}
+
+.autocomplete-deluxe-container,
+div.autocomplete-deluxe-multiple,
+.chzn-container-multi .chzn-choices,
+.chzn-container-single .chzn-single,
+.form-control,
+.panel-default {
+  border-color: @toolbarborder;
+}
+
+.panel-default > .panel-heading {
+  color: @title;
+  background-color: @toolbarborder;
+  border-color: @toolbarborder;
+}
+
+.panel-full-width .panel-top {
+  background: @bottom;
+}
+
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .pane-title,
+.panel-region-sidebar .radix-layouts-sidebar .pane-title.ctools-collapsible-handle {
+  background: @toolbarbtn;
+}
+
+.panel-region-sidebar .radix-layouts-sidebar .pane-title,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .facetapi-active {
+  background: @toolbarbtn;
+  border-color: @toolbarbtn !important;
+  color: @bg;
+}
+
+.horizontal-tabs ul.horizontal-tabs-list .selected strong {
+  color: @title;
+}
+
+#url-edit-prefix {
+  background-color: @bg;
+  border-color: @toolbarborder;
+}
+#url-slug,
+#field-tags-wrapper .path-form .add-on {
+  background-color: @linkactive;
+  border-color: @toolbarborder;
+  color: @bg;
+}
+
+ul.resource-list li .heading,
+ul.resource-list li .heading:hover {
+  color: @title;
+}
+
+.footer {
+  background-color: @footer;
+  color: @sidebar;
+}
+.footer a {
+  color: @sidebarborders;
+}
+
+.node-dataset #data-and-resources ul.resource-list .btn-group button:nth-of-type(2) {
+  opacity: 1;
+  background-color: @linkactive;
+  border-color: @linkactive;
+}
+.node-dataset #data-and-resources ul.resource-list .btn-group button:nth-of-type(2):hover,
+.node-dataset #data-and-resources ul.resource-list .btn-group button:nth-of-type(2):focus {
+  opacity: 1;
+  background-color: @bottom;
+  border-color: @bottom;
+}
+.pagination > li > a {
+  color: @top;
+}
+.pagination > li > a:hover {
+  color: @linkactive;
+}
+.pagination > .active > span {
+  background-color: @top;
+  border-color: @top;
+}
+.pagination > .active > span:hover {
+  background-color: @bottom;
+  border-color: @bottom;
+}
+
+.facetapi-terms a span,
+.icon-dkan {
+  color: @top;
+}
+
+.link-badge {
+  background-color: @top;
+  border-color: @top;
+}
+li.active .link-badge {
+  background-color: #fff;
+  color: @top;
+}
+
+.node-type-harvest-source .ctools-collapsible-container .ctools-collapsible-handle {
+  background-color: @top;
+}

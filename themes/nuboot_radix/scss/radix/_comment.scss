@@ -1,0 +1,27 @@
+// Comment
+// --------------------------------------------------
+.comment {
+  margin-top: 15px;
+  .user-picture {
+    float: left;
+    margin-right: 10px;
+    a {
+      display: block;
+    }
+  }
+  .submitted {
+    font-size: 0.90em;
+    .permalink {
+      margin-left: 5px;
+    }
+    .new {
+      color: $brand-danger;
+    }
+  }
+  .content {
+    margin: 10px 0;
+  }
+  .links {
+    font-size: 0.80em;
+  }
+}

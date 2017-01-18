@@ -1,0 +1,310 @@
+<?php
+
+/**
+ * @file
+ * Custom elements for groups.
+ */
+
+include_once 'dkan_dataset_groups.features.inc';
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function dkan_dataset_groups_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if ($root_path == 'groups') {
+    // Add "Add Group" link to.
+    $item = menu_get_item('node/add/group');
+    if ($item['access']) {
+      // Reword link name in case display name was overwritten.
+      $item['title'] = t('Add @groupname', array('@groupname' => $item['title']));
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
+}
+
+/**
+ * Get dataset that belongs to a group.
+ */
+function dkan_dataset_groups_datasets($node) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->propertyCondition('status', 1)
+    ->fieldCondition('og_group_ref', 'target_id', $node->nid)
+    ->propertyCondition('type', 'dataset');
+  $result = $query->execute();
+  return isset($result['node']) ? $result['node'] : array();
+}
+
+/**
+ * Get group members.
+ */
+function dkan_dataset_groups_node_members($node) {
+  // Remove admin user from group.
+  return array_filter(og_get_group_members_properties($node, array(), 'members', 'node'), function ($uid) {
+    return $uid != 1;
+  });
+}
+
+/**
+ * Implements hook_block_view_alter().
+ */
+function dkan_dataset_groups_block_view_alter(&$data, $block) {
+  if ($block->module == 'views' && $block->delta == 'group_block-block') {
+    $node = menu_get_object();
+    if (isset($node->type) && $node->type == 'group') {
+      global $user;
+      $subscribe_link = dkan_dataset_groups_extras_subscribe('node', $node);
+      // Give appropriate pending notice.
+      if (og_is_member('node', $node->nid, 'user', $user, array(OG_STATE_PENDING))) {
+        $subscribe_link = t('Your membership is pending approval.') . ' ' . l(t('Remove pending membership request'), 'group/node/' . $node->nid . '/unsubscribe');
+      }
+
+      // Get the group from the context.
+      $group = og_context();
+
+      $members = dkan_dataset_groups_node_members($node);
+
+      // If the user is logged in then display the 'Request membership' link.
+      if (user_is_logged_in()) {
+        $data['content']['#markup'] .= '<div class="group-owner-message"><strong>' . $subscribe_link . '</strong></div>';
+      }
+
+      // Hide member count if group is empty.
+      if (count($members)) {
+        $data['content']['#markup'] .= '<div class="group-subscribe-message"><a href="/node/' . $group['gid'] . '/members">Members (' . count($members) . ')</a></div>';
+      }
+
+    }
+  }
+}
+
+/**
+ * Create a formatted 'Subscribe' link for this group.
+ *
+ * @TODO
+ * Replace with helper function if http://drupal.org/node/1568858 gets in.
+ */
+function dkan_dataset_groups_extras_subscribe($entity_type, $entity) {
+  $display['type'] = 'og_group_subscribe';
+  $group_type = 'node';
+  $group = entity_load_single($group_type, $entity->nid);
+  list(,, $group_bundle) = entity_extract_ids($group_type, $group);
+  $display['settings']['field_name'] = og_get_best_group_audience_field($entity_type, $entity, $group_type, $group_bundle);
+  $elements = og_ui_field_formatter_view($entity_type, $entity, NULL, NULL, NULL, array(), $display);
+  return drupal_render($elements);
+}
+
+/**
+ * Implements hook_default_search_api_index_alter().
+ *
+ * Add og group ref when is enable dataset groups. In other case we don't need
+ * this field on the index.
+ */
+function dkan_dataset_groups_default_search_api_index_alter(array &$defaults) {
+  foreach ($defaults as &$index) {
+    if ($index->machine_name == 'datasets') {
+      $index->options['fields']['og_group_ref'] = array('type' => 'list<integer>', 'entity_type' => 'node');
+    }
+  }
+}
+
+/**
+ * Implements hook_default_search_api_server_alter().
+ *
+ * Add og group ref when is enable dataset groups. In other case we don't need
+ * this field on the index.
+ */
+function dkan_dataset_groups_default_search_api_server_alter(array &$defaults) {
+  foreach ($defaults as &$server) {
+    if ($server->machine_name == 'datasets') {
+      $server->options['indexes']['datasets']['og_group_ref'] = array(
+        'boost' => '1.0',
+        'column' => 'value',
+        'table' => 'search_api_db_datasets_og_group_ref_2',
+        'type' => 'list<integer>',
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_og_context_negotiation_info().
+ */
+function dkan_dataset_groups_og_context_negotiation_info() {
+  $providers = array();
+
+  $providers['dataset_members_page'] = array(
+    'name' => t('Members page for datasets'),
+    'description' => t('Determine context from the path.'),
+    'callback' => 'dkan_dataset_groups_context_callback',
+    'menu path' => array('node/%/members'),
+  );
+
+  return $providers;
+}
+
+/**
+ * Group context callback. Helps determine the group context.
+ */
+function dkan_dataset_groups_context_callback() {
+  $context = array();
+
+  // We are at node/%/members.
+  $node = node_load(arg(1));
+
+  if ($node->type == 'group') {
+    // Is a node group then use it.
+    $group_node = $node;
+  }
+  else {
+    $group_node = node_load($node->og_group_ref[LANGUAGE_NONE][0]['target_id']);
+  }
+
+  if (!og_is_group('node', $group_node)) {
+    return;
+  }
+
+  $context['node'][] = $group_node->nid;
+
+  return $context;
+}
+
+/**
+ * Implements hook_views_post_build().
+ */
+function dkan_dataset_groups_views_post_build(&$view) {
+  if ($view->name == 'dkan_og_extras_group_members' && $view->current_display == 'page') {
+    $group = node_load($view->args[0]);
+    $view->build_info['title'] = t('!group Members', array('!group' => $group->title));
+    $view->build_info['breadcrumb'] = array();
+  }
+}
+
+/**
+ * Implements hook_menu_breadcrumb_alter().
+ */
+function dkan_dataset_groups_menu_breadcrumb_alter(&$active_trail, $item) {
+  if ($item['path'] === 'node/%/members') {
+
+    // We need to add the groups link to keep navigation consistent.
+    $groups_link = array(
+      'title' => 'Groups',
+      'href' => 'groups',
+      'link_path' => '',
+      'localized_options' => array(),
+      'type' => 0,
+    );
+
+    // Since no array_insert function is present in PHP
+    // and array_splice doesn't accept an array as argument
+    // then we need to handle this manually.
+    $part1 = array_slice($active_trail, 0, 1, TRUE);
+    $part2 = array_slice($active_trail, 1, NULL, TRUE);
+    $active_trail = array_merge($part1, array(1 => $groups_link), $part2);
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function dkan_dataset_groups_node_update($node) {
+  path_breadcrumbs_object_cache_clear("group");
+  cache_clear_all('*', PATH_BREADCRUMBS_CACHE_STORAGE, TRUE);
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_dataset_groups_form_alter(&$form, $form_state, $form_id) {
+  switch ($form_id) {
+    case 'views_exposed_form':
+      // Fixes pager bug.
+      if (isset($form['sort_order']) && isset($form['sort_by']['#options']['changed'])) {
+        $sort_by = 'changed';
+        if (isset($_GET['sort_by'])) {
+          $sort_by = $_GET['sort_by'];
+        }
+        else {
+          $_GET['sort_by'] = $sort_by;
+        }
+        $form_state['view']->set_exposed_input($_GET);
+        $form_state['input']['sort_by'] = $sort_by;
+
+        $form['sort_order']['#options']['ASC'] = t('Ascending');
+        $form['sort_order']['#options']['DESC'] = t('Descending');
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ *
+ * Add a default group image if the group image field is empty.
+ */
+function dkan_dataset_groups_node_presave($node) {
+  if (is_object($node) && $node->type == "group") {
+    $wrap = entity_metadata_wrapper('node', $node);
+    $fid = $wrap->field_image->value();
+    if (!isset($fid)) {
+      $source = drupal_get_path('module', 'dkan_dataset_groups') . '/default_images/group.png';
+      if (file_exists($source)) {
+        $file = new stdClass();
+        $file->filename = 'group.png';
+        $file->timestamp = REQUEST_TIME;
+        $file->uri = $source;
+        $file->filemime = file_get_mimetype($source);
+        $file->uid = 1;
+        $file->status = 1;
+        $file = file_copy($file, 'public://', FILE_EXISTS_REPLACE);
+        $fid = $file->fid;
+
+        // Set group image fid.
+        $node->field_image[$node->language][0]['fid'] = (string) $fid;
+        $node->field_image[$node->language][0]['alt'] = t('Default group image');
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_node_validate().
+ *
+ * Check if we have some group with same title.
+ */
+function dkan_dataset_groups_node_validate($node, $form, &$form_state) {
+  if ($node->type == 'group') {
+    $nid = isset($node->nid) ? $node->nid : 0;
+    $duplicate = db_query("SELECT nid FROM {node} WHERE LOWER(title)=LOWER(:title) AND nid != :nid AND type='group'", array(':title' => $node->title, ':nid' => $nid))->fetchField();
+
+    if ($duplicate) {
+      form_set_error('title', t('A group with title %title exists on the site. Please use another title.', array('%title' => $node->title)));
+    }
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function dkan_dataset_groups_permission() {
+  return array(
+    'administer og ui pages' => array(
+      'title' => t('Administer Organic groups ui pages'),
+      'description' => t('Access admin pages for Organic Groups ui.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_dataset_groups_menu_alter(&$items) {
+  $items['admin/config/group']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/settings']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/permissions']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/roles']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/fields']['access arguments'] = array('administer og ui pages');
+}

@@ -1,0 +1,1182 @@
+<?php
+
+/**
+ * @file
+ * Code for the DKAN Harvest feature.
+ */
+
+include_once 'dkan_harvest.features.inc';
+
+// TODO Probably move this to drupal variables.
+define(
+  'DKAN_HARVEST_CACHE_DIR',
+  'public://dkan-harvest-cache'
+);
+
+define(
+  'DKAN_HARVEST_MIGRATION_PREFIX',
+  'dkan_harvest_migrate_'
+);
+
+define('DKAN_HARVEST_DELETE_CONTENT', 0);
+define('DKAN_HARVEST_UNPUBLISH_CONTENT', 1);
+define('DKAN_HARVEST_ORPHAN_CONTENT', 2);
+
+/**
+ * Implements hook_theme().
+ */
+function dkan_harvest_theme() {
+  return array(
+    'dkan_harvest_source_summary' => array(
+      'variables' => array(
+        'output' => NULL,
+        'filters' => NULL,
+        'excludes' => NULL,
+        'overrides' => NULL,
+        'defaults' => NULL,
+        'count' => NULL,
+        'source_field' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function dkan_harvest_preprocess_page(&$vars) {
+  $path = drupal_get_path('module', 'dkan_harvest');
+  if (isset($vars['node']) && $vars['node']->type == 'harvest_source') {
+    drupal_add_js($path . '/js/harvest_source_summary.js');
+  }
+}
+
+/**
+ * Theme function to create harvest source summary block.
+ */
+function theme_dkan_harvest_source_summary(&$vars) {
+  $output = '';
+  $node = menu_get_object();
+  if (isset($node->nid)) {
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $filters = dkan_harvest_render_field_multiple($wrapper->field_dkan_harvest_filters->value());
+    $excludes = dkan_harvest_render_field_multiple($wrapper->field_dkan_harvest_excludes->value());
+    $overrides = dkan_harvest_render_field_multiple($wrapper->field_dkan_harvest_overrides->value());
+    $defaults = dkan_harvest_render_field_multiple($wrapper->field_dkan_harvest_defaults->value());
+    $count = dkan_harvest_datasets_count($node);
+    $source_field = theme('textfield', array(
+      'element' => array(
+        '#attributes' => array(
+          'id' => 'harvest_source_summary_uri',
+          'class' => array('form-control'),
+          'aria-label' => t('Source summary url'),
+          'value' => $wrapper->field_dkan_harvest_source_uri->value(),
+        ),
+        '#autocomplete_path' => FALSE,
+      ),
+    ));
+    $output .= '<div class="form-group">' . t('<label>Source</label>') . $source_field . '</div>';
+    $output .= '<div>' . t('<strong>Datasets</strong> @count', array('@count' => $count)) . '</div>';
+    if (!empty($filters) || !empty($excludes) || !empty($overrides) || !empty($defaults)) {
+      $output .= '<div class="summary-details">';
+      if (!empty($filters)) {
+        $output .= '<h6>' . t('Filters') . '</h6>';
+        $output .= $filters;
+      }
+      if (!empty($excludes)) {
+        $output .= '<h6>' . t('Excludes') . '</h6>';
+        $output .= $excludes;
+      }
+      if (!empty($overrides)) {
+        $output .= '<h6>' . t('Overrides') . '</h6>';
+        $output .= $overrides;
+      }
+      if (!empty($defaults)) {
+        $output .= '<h6>' . t('Defaults') . '</h6>';
+        $output .= $defaults;
+      }
+      $output .= '</div>';
+    }
+  }
+  return $output;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function dkan_harvest_block_info() {
+  $blocks['harvest_source_summary'] = array(
+    'info' => t('Harvest Source Summary'),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function dkan_harvest_block_view($delta = '') {
+  switch ($delta) {
+    case 'harvest_source_summary':
+      return array(
+        'subject' => t('Harvest Source Summary'),
+        'content' => theme('dkan_harvest_source_summary'),
+      );
+  }
+}
+
+/**
+ * Render field multiple (filters, excludes and overrides).
+ */
+function dkan_harvest_render_field_multiple($field) {
+  $output = '';
+  foreach ($field as $key => $value) {
+    // @codingStandardsIgnoreStart
+    $output .= '<div><strong>' . t($value['first']) . ': </strong>' . $value['second'] . '</div>';
+    // @codingStandardsIgnoreEnd
+  }
+  return $output;
+}
+
+/**
+ * Retrieve datasets given a resource.
+ */
+function dkan_harvest_datasets_count($source) {
+  $source = HarvestSource::getHarvestSourceFromNode($source);
+  $count = HarvestSource::getMigrationCountFromMachineName($source->machineName);
+  return $count;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function dkan_harvest_permission() {
+  return array(
+    'admininster harvest' => array(
+      'title' => t('Administrate harvest sources and datasets'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_harvest_menu() {
+  $items = array();
+
+  $items['node/%node/harvest-events'] = array(
+    'title' => 'Events',
+    'page callback' => 'dkan_harvest_page_event_log',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_harvest_page_tab_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'dkan_harvest.pages.inc',
+    'weight' => 3,
+  );
+
+  $items['node/%node/harvest-errors'] = array(
+    'title' => 'Errors',
+    'page callback' => 'dkan_harvest_page_error_log',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_harvest_page_tab_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'dkan_harvest.pages.inc',
+    'weight' => 4,
+  );
+
+  $items['node/%node/harvest-preview'] = array(
+    'title' => 'Preview',
+    'page callback' => 'dkan_harvest_page_preview',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_harvest_page_tab_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'dkan_harvest.pages.inc',
+    'weight' => 1,
+  );
+
+  return $items;
+}
+
+/**
+ * Check if a user may access the harvest source event page.
+ *
+ * @param object $node
+ *        The harvest source node being acted upon.
+ *
+ * @return bool
+ *         TRUE If access is granted.
+ *         Otherwise FALSE.
+ */
+function dkan_harvest_page_tab_access($node) {
+  // Only available for harves source type nodes.
+  if ($node->type != 'harvest_source') {
+    return FALSE;
+  }
+
+  // If the user have the 'admininster harvest' permission, grant her/him
+  // access to the event log.
+  return user_access('admininster harvest');
+}
+
+/**
+ * Display a node's preview migration.
+ *
+ * @param object $node
+ *        The harvest source node being acted upon.
+ *
+ * @return array
+ *         A themed table with a migration preview.
+ */
+function dkan_harvest_page_preview($node) {
+
+  // Set page title.
+  drupal_set_title(t('Preview'));
+
+  $output = '';
+  $rows = array();
+
+  // Get harvest source from node.
+  $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
+
+  // Get the cache dir.
+  $cache_dir = $harvestSource->getCacheDir(FALSE);
+
+  if (!$cache_dir) {
+    // The cache directory does not exist.
+    // Perform a cache operation.
+    $batch_operations = array();
+    $batch_operations[] = array('dkan_harvest_cache_source_node_batch', array($node));
+
+    // Setup batch process.
+    $batch = array(
+      'operations' => $batch_operations,
+      'title' => t('Caching source and preparing Harvest preview...'),
+      'init_message' => t('Processed 0%.'),
+      'progress_message' => t('Processed @percentage.'),
+      'error_message' => t('An error ocurred while caching the source.'),
+    );
+    batch_set($batch);
+    batch_process();
+
+  }
+  else {
+    // The cache directory exists. Load the table.
+    $harvestCache = call_user_func($harvestSource->type->cacheCallback, $harvestSource, NULL);
+
+    if ($harvestCache) {
+      foreach ($harvestCache->getSaved() as $id => $dataset_item) {
+        $rows[] = array($id, $dataset_item['title']);
+      }
+
+      $form_import = drupal_get_form('dkan_harvest_harvest_now_form', $node);
+      $caption = t('Harvesting from this source as it is currently configured will
+        import the datasets listed below into this data portal. Click "Edit" above to
+        change the source\'s configuration, click the "Harvest now" button at the
+        bottom of the page to run the harvest immediately, or simply continue working
+        and the harvest will be performed on schedule.');
+      $output .= '<div class="datasets-count-preview">' .
+        t('<span>Datasets in source: </span> @count', array('@count' => $harvestCache->getSavedCount())) .
+        '</div>';
+      $header = array(t('Identifier'), t('Title'));
+      $output .= theme('table', array(
+        'rows' => $rows,
+        'header' => $header,
+        'caption' => $caption,
+      ));
+      $output .= drupal_render($form_import);
+    }
+  }
+
+  return $output;
+}
+
+/**
+ * Batch function to cache a source from source.
+ *
+ * @param object $node
+ *   Harvest source node object.
+ * @param array $context
+ *   Batch context.
+ */
+function dkan_harvest_cache_source_node_batch($node, &$context) {
+  $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+  dkan_harvest_cache_sources(array($harvest_source));
+}
+
+/**
+ * Form callback for single-button "Harvest Now" form.
+ */
+function dkan_harvest_harvest_now_form($form, &$form_state, $node) {
+  $form = array();
+  $form['#node'] = $node;
+
+  $form['import'] = array(
+    '#type' => 'submit',
+    '#value' => t('Harvest now'),
+  );
+  $form['refresh'] = array(
+    '#type' => 'submit',
+    '#value' => t('Refresh'),
+    '#submit' => array('dkan_harvest_refresh'),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit callback for refreshing the harvest source preview.
+ */
+function dkan_harvest_refresh($form, &$form_state) {
+  $node = node_load($form['#node']->nid);
+  // Get harvest source from node.
+  $harvestSource = HarvestSource::getHarvestSourceFromNode($node);
+  // Delete the cache dir in order to force the cache of the content.
+  $harvestSource->deleteCacheDir();
+  // Redirect to Preview page.
+  $form_state['redirect'] = 'node/' . $node->nid . '/harvest-preview';
+}
+
+/**
+ * Submit callback for dkan_harvest_harvest_now_form.
+ */
+function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
+
+  // Build array of batch operations.
+  $batch_operations = array();
+  $batch_operations[] = array('dkan_harvest_perform_harvest', array($form['#node']));
+
+  // Setup batch process.
+  $batch_title = t('Migrating content from');
+  $init_message_title = t('Processed 0%.');
+  $init_message_desc = t('A full Harvest may take several minutes, depending on
+      how many items your source contains. If your harvest times out, start it
+      again as needed until it completes successfully. For more reliable harvests,
+      use built-in drush commands in the terminal or set up a cron job.
+      See the DKAN Harvest documentation for more information.');
+
+  $batch = array(
+    'operations' => $batch_operations,
+    'title' => $batch_title . ' ' . $form['#node']->title . '... ',
+    'init_message' => $init_message_title . '<br/><br/>&nbsp;' . $init_message_desc,
+    'progress_message' => t('Processed @percentage.'),
+    'error_message' => t('An error ocurred during the migration.'),
+  );
+  batch_set($batch);
+
+  $form_state['redirect'] = 'admin/dkan/harvest/dashboard';
+}
+
+/**
+ * Given a harvest source performs a harvest.
+ */
+function dkan_harvest_perform_harvest($node, &$context) {
+  $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+  dkan_harvest_cache_sources(array($harvest_source));
+  dkan_harvest_migrate_sources(array($harvest_source));
+  dkan_harvest_message_cleanup();
+}
+
+/**
+ * Hide 'Groups were updated on X resources' while harvesting datasets.
+ */
+function dkan_harvest_message_cleanup() {
+  $orig_messages = drupal_get_messages('status') + array('status' => array());
+  foreach ($orig_messages['status'] as $message) {
+    if (!preg_match('/\bgroups were updated\b/i', $message)) {
+      drupal_set_message($message, 'status');
+    }
+  }
+}
+
+/**
+ * Get the last event log from a harvest source node.
+ *
+ * @param object $node
+ *        The harvest source node being acted upon.
+ *
+ * @return string
+ *         A date.
+ */
+function dkan_harvest_get_last_event_log($node) {
+  $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+  $harvest_source_migration = $harvest_source->getMigration();
+  $log_table = $harvest_source_migration->getMap()->getLogTable();
+
+  $query = db_select('migrate_log', 'log');
+
+  $query->join($log_table, 'harvest_source_log', 'log.mlid = harvest_source_log.mlid');
+
+  $query_result = $query
+    ->fields('log')
+    ->fields('harvest_source_log')
+    ->condition('machine_name', $harvest_source->getMigrationMachineName())
+    ->orderBy('log.starttime', 'DESC');
+
+  $query->addExpression('log.endtime - log.starttime', 'duration');
+
+  $result = $query->execute()->fetchObject();
+  $time = floor($result->starttime / 1000);
+  return format_date($time);
+
+}
+
+/**
+ * Implements hook_modules_enabled().
+ *
+ * Reset the cached harvest source types entries if a new modules implements
+ * the 'harvest_source_types' hook. This is needed to make sure that a the
+ * harvest source types list have all the available types.
+ *
+ * @see dkan_harvest_source_types_definition
+ * @see dkan_harvest_modules_disabled
+ */
+function dkan_harvest_modules_enabled($modules) {
+  $modules_implements = module_implements('harvest_source_types');
+  if (!empty(array_intersect($modules_implements, $modules))) {
+    drupal_static_reset('dkan_harvest_source_types_definition');
+    cache_clear_all('dkan_harvest_source_types_definition', 'cache');
+  }
+}
+
+/**
+ * Implements hook_modules_disabled().
+ *
+ * Reset the cached harvest_source_types if a modules is disabled. We can't
+ * really determine if the disabled module implements the
+ * 'harvest_source_types' hook, so we reset the cached source types definitions
+ * anyway.
+ *
+ * @see dkan_harvest_source_types_definition
+ * @see dkan_harvest_modules_enabled
+ */
+function dkan_harvest_modules_disabled($modules) {
+  drupal_static_reset('dkan_harvest_source_types_definition');
+  cache_clear_all('dkan_harvest_source_types_definition', 'cache');
+}
+
+/**
+ * Load all implementation of the hook_harvest_sources().
+ *
+ * It hookss and collect returned sources.
+ *
+ * @return array
+ *         An array of HarvestSource objects.
+ */
+function dkan_harvest_sources_definition() {
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'harvest_source')
+    ->propertyCondition('status', 1, '=')
+    ->execute();
+
+  if (empty($result['node'])) {
+    $message = t('No harvest source found.');
+    dkan_harvest_log($message, 'warning');
+    return array();
+  }
+
+  $harvest_sources_nodes = entity_load('node', array_keys($result['node']));
+  $harvest_sources = array();
+
+  foreach ($harvest_sources_nodes as $harvest_sources_node) {
+    $harvest_source = HarvestSource::getHarvestSourceFromNode($harvest_sources_node);
+    if (is_null($harvest_source)) {
+      $message = t('Harvest Source \"@title\" (@nid) cannot be imported!',
+        array(
+          '@title' => $harvest_sources_node->title,
+          '@nid' => $harvest_sources_node->nid,
+        )
+      );
+      dkan_harvest_log($message, 'warning');
+    }
+    else {
+      $harvest_sources[$harvest_source->machineName] = $harvest_source;
+    }
+  }
+
+  return $harvest_sources;
+}
+
+/**
+ * Returns harvest source types added via the "harvest_source_types" hook.
+ *
+ * The source type entries are cached using drupal_static under the 'cache' bin.
+ *
+ * @return array
+ *         An of HarvestSourceType objects.
+ */
+function dkan_harvest_source_types_definition() {
+  // Check if a previous call during the same request did the work for us.
+  $source_types_definition = &drupal_static(__FUNCTION__);
+
+  if (!isset($source_types_definition)) {
+    // Nothing found in the static store. Check the cache.
+    if ($cache = cache_get(__FUNCTION__)) {
+      $source_types_definition = $cache->data;
+    }
+    else {
+      // Alright, nothing in the caching we can use. Query the system for source
+      // type definitions.
+      $source_types_definition = array();
+      $hook = 'harvest_source_types';
+      foreach (module_implements($hook) as $module) {
+        $function = $module . '_' . $hook;
+        $source_type_arrays = $function();
+        $source_types = array();
+        // Get source objects from arrays.
+        foreach ($source_type_arrays as $source_type_key => $source_type_value) {
+          try {
+            $source_type_new = new HarvestSourceType($source_type_key,
+              $source_type_value);
+            $source_types[$source_type_new->machineName] = $source_type_new;
+          }
+          catch (Exception $e) {
+            // Log as error.
+            $message = t('Failed to import source with message: @exception_message',
+              array(
+                '@exception_message' => $e->getMessage(),
+              ));
+            dkan_harvest_log($message, 'error');
+          }
+        }
+        // If a source uses a similar key for it will be overridden.
+        $source_types_definition = array_merge($source_types_definition,
+          $source_types);
+      }
+      // Populate $source_types_definition with the correct stuff. Set to
+      // CACHE_TEMPORARY to clear it in the next general cache wipe.
+      cache_set(__FUNCTION__, $source_types_definition, 'cache', CACHE_TEMPORARY);
+    }
+  }
+
+  return $source_types_definition;
+}
+
+/**
+ * Given an array of harvest source performs a migrate action over them.
+ */
+function dkan_harvest_migrate_sources(array $sources, array $options = array()) {
+  foreach ($sources as $source) {
+    $return_code = $source->migrate($options);
+    // Return an error if we couldn't run the migration.
+    if ($return_code === FALSE) {
+      // Log as error.
+      $message = t('Failed to start source harvest migration. Cannot load migration object.');
+      dkan_harvest_log($message, 'error');
+    }
+  }
+}
+
+/**
+ * Rollback the migration for the passed sources.
+ *
+ * @param array $sources
+ *        Array of Harvest Sources to rollback.
+ * @param array $options
+ *        Array extra options to pass to the migration.
+ */
+function dkan_harvest_rollback_sources(array $sources, array $options = array()) {
+  foreach ($sources as $source) {
+    if (!$source->rollback()) {
+      // Log as error.
+      $message = t('Failed to rollback source harvest migration. Cannot load migration object.');
+      dkan_harvest_log($message, 'error');
+    }
+  }
+}
+
+/**
+ * Register and get the migration class for a harvest source.
+ *
+ * @param HarvestSource $source
+ *        A harvest source instance.
+ */
+function dkan_harvest_get_migration(HarvestSource $source) {
+  $harvest_migration = $source->getMigration();
+  if (!$harvest_migration) {
+    dkan_harvest_log(t("Harvest Migration registration failed!"), 'error');
+  }
+  return $harvest_migration;
+}
+
+/**
+ * Cache a set of sources.
+ *
+ * @param array $sources
+ *        Array of HarvestSource object to harvest.
+ * @param int $harvest_updatetime
+ *        Timestamp of the time to use as the update time.
+ */
+function dkan_harvest_cache_sources(array $sources, $harvest_updatetime = NULL) {
+  foreach ($sources as $source) {
+    $harvest_cache = $source->cache($harvest_updatetime);
+
+    if (!$harvest_cache) {
+      $message = t('Harvest Cache for @source_machine_name failed!',
+        array(
+          '@source_machine_name' => $source->machineName,
+        ));
+      dkan_harvest_log($message, 'error');
+    }
+    else {
+      $message = t('Harvest Cache for @source_machine_name completed (processed @cache_processed, failed @cache_failed, saved @cache_saved : (filtered @cache_filtered, excluded @cache_excluded, defaulted @cache_defaulted, overridden @cache_overridden)).',
+        array(
+          '@source_machine_name' => $source->machineName,
+          '@cache_processed' => $harvest_cache->getProcessedCount(),
+          '@cache_failed' => $harvest_cache->getFailedCount(),
+          '@cache_saved' => $harvest_cache->getSavedCount(),
+          '@cache_filtered' => $harvest_cache->getFilteredCount(),
+          '@cache_excluded' => $harvest_cache->getExcludedCount(),
+          '@cache_defaulted' => $harvest_cache->getDefaultedCount(),
+          '@cache_overridden' => $harvest_cache->getOverriddenCount(),
+        )
+      );
+      dkan_harvest_log($message, 'success');
+    }
+  }
+}
+
+/**
+ * Dump and simple cache callback for dkan_harvest source.
+ *
+ * Ideally this will not be used by any source with any
+ * slightly advanced requirements.
+ *
+ * @param HarvestSource $source
+ *        The source to cache.
+ * @param int $harvest_updatetime
+ *        Timestamp of the time to use as the update time.
+ *
+ * @return HarvestCache
+ *         Object with all the needed cache information
+ *         about the processed source.
+ */
+function dkan_harvest_cache_default(HarvestSource $source, $harvest_updatetime) {
+  $harvest_cache = new HarvestCache($source, $harvest_updatetime);
+  // Make sure the cache directory is cleared for all cases.
+  $cache_dir = $source->getCacheDir(TRUE);
+
+  if ($source->isRemote()) {
+    $destination = system_retrieve_file($source->uri, $cache_dir,
+      FALSE,
+      FILE_EXISTS_REPLACE);
+    if (!$destination) {
+      $harvest_cache->setCachEntryFailed('no name');
+    }
+    else {
+      $harvest_cache->setCacheEntryProcessed($destination);
+    }
+  }
+  // Local source.
+  else {
+    $files = array();
+    // If the source is a directory, scan for files. If it is a single file then
+    // just use it.
+    if (is_dir($source->uri)) {
+      $files = file_scan_directory($source->uri, '(.*)');
+      $files = array_keys($files);
+    }
+    else {
+      $files[] = $source->uri;
+    }
+
+    foreach ($files as $file_path) {
+      $copied = file_unmanaged_copy($file_path, $cache_dir . '/' .
+        basename($file_path), FILE_EXISTS_ERROR);
+
+      if (!$copied) {
+        $harvest_cache->setCacheEntryFailed(basename($file_path));
+      }
+      else {
+        $harvest_cache->setCacheEntryProcessed(basename($file_path));
+      }
+    }
+
+    return $harvest_cache;
+  }
+}
+
+/**
+ * Wrapper around migrate deregistration api for dkan harvest sources.
+ *
+ * @param array $sources
+ *   Harvest sources to deregister.
+ */
+function dkan_harvest_deregister_sources(array $sources) {
+  foreach ($sources as $source) {
+    $source->deregister();
+  }
+}
+
+/**
+ * Base function for logging support.
+ *
+ * Inspired from MigrationBase::displayFunction.
+ *
+ * @param string $message
+ *        The message to output.
+ * @param string $type
+ *        Optional message severity as understood by drupal_set_message.
+ */
+function dkan_harvest_log($message, $type = 'error') {
+  if (function_exists('drush_log')) {
+    drush_log($message, $type);
+  }
+  else {
+    drupal_set_message($message, $type);
+  }
+
+  // Report to watchdog by defaut.
+  switch ($type) {
+    case 'status':
+      $type = WATCHDOG_INFO;
+      break;
+
+    case 'warning':
+      $type = WATCHDOG_WARNING;
+      break;
+
+    case 'error':
+      $type = WATCHDOG_ERROR;
+      break;
+
+    default:
+      $type = WATCHDOG_NOTICE;
+      break;
+  }
+  watchdog('dkan_harvest', $message, array(), $type);
+}
+
+/**
+ * Allowed values for field_dkan_harveset_type field.
+ *
+ * Re-wrap the dkan_harvest_source_types_definition function to return only the
+ * needed source types.
+ */
+function dkan_harvest_field_dkan_harveset_type_allowed_values() {
+  // We only need the machine_names for the source types.
+  $allowed_values = array();
+  $source_types_definition = dkan_harvest_source_types_definition();
+  foreach ($source_types_definition as $source_type) {
+    $allowed_values[$source_type->machineName] = $source_type->label;
+  }
+
+  return $allowed_values;
+}
+
+/**
+ * Implements hook_field_attach_validate().
+ */
+function dkan_harvest_field_attach_validate($entity_type, $entity, &$errors) {
+  if ($entity_type == 'node' && $entity->type == 'harvest_source') {
+    // Validation for the field_dkan_harvest_source_uri field.
+    if (isset($entity->field_dkan_harvest_source_uri)) {
+      foreach ($entity->field_dkan_harvest_source_uri as $langcode => $field_value_multiple) {
+        foreach ($field_value_multiple as $delta => $field_value_single) {
+          $uri = $field_value_single['value'];
+          dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, $errors);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Validation for the field_dkan_harvest_source_uri.
+ *
+ * @param string $uri
+ *        URI property for the field value.
+ * @param string $langcode
+ *        Language code for field value.
+ * @param string $delta
+ *        Field delta.
+ * @param array $errors
+ *        Reference errors array pass from the hook_field_attach_validate().
+ */
+function dkan_harvest_field_attach_validate_source_uri($uri, $langcode, $delta, &$errors) {
+  $matches = array();
+
+  $allowed_protocols = array(
+    'http://',
+    'https://',
+    'file://',
+    'public://',
+    'private://',
+  );
+
+  $pattern = '%^(' . implode('|', $allowed_protocols) . ')%';
+  if (preg_match($pattern, $uri, $matches)) {
+    switch (array_pop($matches)) {
+      // Validate local uri.
+      case 'file://':
+      case 'public://':
+      case 'private://':
+        if (!file_exists($uri)) {
+          $errors['field_dkan_harvest_source_uri'][$langcode][$delta][] = array(
+            'error' => 'dkan_harvest_uri_invalid',
+            'message' => t('Source local URI does not exists!'),
+          );
+        }
+        break;
+
+      // Validate remote uri.
+      case 'http://':
+      case 'https://':
+        if (!filter_var($uri, FILTER_VALIDATE_URL)) {
+          $errors['field_dkan_harvest_source_uri'][$langcode][$delta][] = array(
+            'error' => 'dkan_harvest_uri_invalid',
+            'message' => t('Source remote URI invalid!'),
+          );
+        }
+        break;
+
+      default:
+        // In theory this should not happen and we should have all the allowed
+        // protocols specific validation covered. Return a generic error.
+        $errors['field_dkan_harvest_source_uri'][$langcode][$delta][] = array(
+          'error' => 'dkan_harvest_uri_invalid',
+          'message' => t('Source URI invalid!'),
+        );
+    }
+  }
+  else {
+    // URI does not match the allowed protocols regex.
+    $errors['field_dkan_harvest_source_uri'][$langcode][$delta][] = array(
+      'error' => 'dkan_harvest_uri_not_allowed',
+      'message' => t('Source URI protocol not allowed! Allowed protocols are %allowed_protocols',
+      array('%allowed_protocols' => implode(', ', $allowed_protocols))),
+    );
+  }
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function dkan_harvest_node_delete($node) {
+  if ($node->type == 'harvest_source' && $node->status == 1) {
+    // Deregister the harvest migration related to the deleted harvest source
+    // node.
+    $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+    dkan_harvest_deregister_sources(array($harvest_source));
+  }
+
+  if ($node->type == 'dataset') {
+    // Delete the associated row from the migration map table.
+    $dataset_wrapper = entity_metadata_wrapper('node', $node);
+    $harvest_source_node = $dataset_wrapper->field_harvest_source_ref->value();
+    if ($harvest_source_node) {
+      $harvest_source = HarvestSource::getHarvestSourceFromNode($harvest_source_node);
+      $harvest_migration = $harvest_source->getMigration();
+      $migration_map_table = $harvest_migration->getMap();
+      $migration_map_table->deleteDestination(array($dataset_wrapper->getIdentifier()));
+    }
+  }
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function dkan_harvest_node_view($node, $view_mode, $langcode) {
+  if ($node->type == 'dataset' && $view_mode == 'full') {
+    if (isset($node->field_harvest_source_ref) && isset($node->field_harvest_source_ref[LANGUAGE_NONE][0]['target_id'])) {
+      $harvest_node = node_load($node->field_harvest_source_ref[LANGUAGE_NONE][0]['target_id']);
+      $link = '<div class"field">' . t('Source: !link', array('!link' => l($harvest_node->title, 'node/' . $harvest_node->nid))) . '</div>';
+      $node->content['harvest'] = array(
+        '#markup' => $link,
+        '#weight' => 1,
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_harvest_form_alter(&$form, &$form_state, $form_id) {
+
+  // Dataset form.
+  if ($form_id == 'dataset_node_form') {
+    // Hide 'harvest surce' field on dataset form.
+    $form['field_harvest_source_ref']['#access'] = FALSE;
+  }
+
+  // Dataset and resource forms.
+  if ($form_id == 'dataset_node_form' || $form_id == 'resource_node_form') {
+    // Hide 'orphan' field.
+    $form['field_orphan']['#access'] = FALSE;
+    // Show a warning message if is a harvested content.
+    $node = $form['#node'];
+
+    if ($form_id == 'resource_node_form' && isset($node->field_dataset_ref[LANGUAGE_NONE][0]['target_id'])) {
+      $node = node_load($node->field_dataset_ref[LANGUAGE_NONE][0]['target_id']);
+    }
+
+    if (isset($node->field_harvest_source_ref) && isset($node->field_harvest_source_ref[LANGUAGE_NONE][0]['target_id'])) {
+      $message = t('Warning: this node was harvested from another source and should probably not be modified. If you modify it, your changes will be overwritten the next time a harvest is performed');
+      drupal_set_message($message, 'warning');
+    }
+  }
+
+  // Harvest Source form.
+  if ($form_id == 'harvest_source_node_form') {
+    $language = $form['language']['#value'];
+
+    // Move 'field_dkan_harvest_filters' description below field label.
+    $field_desc = $form['field_dkan_harvest_filters'][$language]['#description'];
+    $form['field_dkan_harvest_filters'][$language]['#title'] .= '<div class="description">' . $field_desc . '</div>';
+    $form['field_dkan_harvest_filters'][$language]['#description'] = '';
+
+    // Move 'field_dkan_harvest_excludes' description below field label.
+    $field_desc = $form['field_dkan_harvest_excludes'][$language]['#description'];
+    $form['field_dkan_harvest_excludes'][$language]['#title'] .= '<div class="description">' . $field_desc . '</div>';
+    $form['field_dkan_harvest_excludes'][$language]['#description'] = '';
+
+    // Move 'field_dkan_harvest_overrides' description below field label.
+    $field_desc = $form['field_dkan_harvest_overrides'][$language]['#description'];
+    $form['field_dkan_harvest_overrides'][$language]['#title'] .= '<div class="description">' . $field_desc . '</div>';
+    $form['field_dkan_harvest_overrides'][$language]['#description'] = '';
+
+    // Move 'field_dkan_harvest_defaults' description below field label.
+    $field_desc = $form['field_dkan_harvest_defaults'][$language]['#description'];
+    $form['field_dkan_harvest_defaults'][$language]['#title'] .= '<div class="description">' . $field_desc . '</div>';
+    $form['field_dkan_harvest_defaults'][$language]['#description'] = '';
+
+    // Add redirect to tab preview after save.
+    $form['actions']['submit']['#submit'][] = 'dkan_harvest_node_save_redirect_submit';
+  }
+
+  // Harvest Source delete confirmation.
+  if ($form_id == 'node_delete_confirm' && $form['#node']->type == 'harvest_source') {
+    dkan_harvest_modify_delete_harvest_source_confirmation_form($form, array($form['#node']->nid));
+  }
+}
+
+/**
+ * A function that is called when a node is saved.
+ *
+ * @param array $form
+ *        The node form.
+ * @param array $form_state
+ *        The node form state.
+ */
+function dkan_harvest_node_save_redirect_submit($form, &$form_state) {
+  // Get harvest source from node.
+  $harvestSource = HarvestSource::getHarvestSourceFromNode($form_state['node']);
+  // Delete the cache dir in order to force the cache of the content.
+  $harvestSource->deleteCacheDir();
+
+  // Redirect to Preview page.
+  $form_state['redirect'] = 'node/' . $form_state['nid'] . '/harvest-preview';
+}
+
+/**
+ * Process all the datasets (and its resources) associated with a source.
+ *
+ * @param array $sources
+ *        The ID of the Source.
+ * @param string $dataset_op
+ *        The operation that needs to be executed over the datasets:
+ *        'delete', 'unpublish' and 'orphan'.
+ */
+function dkan_harvest_process_source_datasets($sources, $dataset_op) {
+
+  // Get the list of affected content.
+  $affected_content = dkan_harvest_get_sources_content($sources);
+
+  if (!empty($affected_content)) {
+    // Update or delete nodes based on the specified operation.
+    $batch_operations = array();
+    foreach ($affected_content as $content) {
+      $batch_operations[] = array(
+        'dkan_harvest_process_content',
+        array($content, $dataset_op),
+      );
+    }
+    // Setup batch process.
+    $batch = array(
+      'operations' => $batch_operations,
+      'title' => t('Deleting selected Harvest Sources and updating associated content...'),
+      'progress_message' => t('Processed @current out of @total.'),
+      'error_message' => t('An error ocurred while processing the content.'),
+      'finished' => 'dkan_harvest_process_source_datasets_finished',
+    );
+    batch_set($batch);
+  }
+}
+
+/**
+ * Callback executed when a harvest finishes.
+ */
+function dkan_harvest_process_source_datasets_finished($success, $results, $operations) {
+  drupal_goto('admin/dkan/harvest/dashboard');
+}
+
+/**
+ * Returns content (datasets and resources) associated with specified sources.
+ *
+ * @param array $sources
+ *        An array with the source IDs.
+ */
+function dkan_harvest_get_sources_content($sources) {
+  $datasets = array();
+  $resources = array();
+
+  // Get all the datasets associated with the sources.
+  foreach ($sources as $source) {
+    $datasets = array_merge($datasets, dkan_harvest_get_datasets_from_source($source));
+  }
+
+  // Get all the resources associated with the fatasets.
+  if (!empty($datasets)) {
+    $resources = dkan_harvest_get_resources_from_datasets($datasets);
+  }
+
+  // Return an array with all the content that is related with the source.
+  return array_merge($datasets, $resources);
+}
+
+/**
+ * Performs an operation over content as part of a batch process.
+ */
+function dkan_harvest_process_content($content_id, $operation, &$context) {
+
+  $content = entity_load_single('node', $content_id);
+  $content_wrapper = entity_metadata_wrapper('node', $content);
+
+  if ($operation == DKAN_HARVEST_DELETE_CONTENT) {
+    $content_wrapper->delete();
+  }
+  else {
+    // Set as orphan.
+    $content_wrapper->field_orphan->set(1);
+    if ($operation == DKAN_HARVEST_UNPUBLISH_CONTENT) {
+      // Unpublish.
+      $content_wrapper->status->set(NODE_NOT_PUBLISHED);
+    }
+    // Save.
+    $content_wrapper->save();
+  }
+}
+
+/**
+ * Returns an array of datataset ids associated with a Harvest Source.
+ *
+ * @param string $source_id
+ *        The ID of the Harvest Source.
+ */
+function dkan_harvest_get_datasets_from_source($source_id) {
+  $datasets = array();
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'dataset')
+    ->fieldCondition('field_harvest_source_ref', 'target_id', $source_id, '=');
+  $result = $query->execute();
+
+  if (isset($result['node'])) {
+    $datasets = array_keys($result['node']);
+  }
+
+  return $datasets;
+}
+
+/**
+ * Returns an array with the ID of the resources associated with the datasets.
+ *
+ * @param array $datasets
+ *   An array with the IDs of the datasets.
+ */
+function dkan_harvest_get_resources_from_datasets($datasets) {
+  $resources = array();
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'resource')
+    ->fieldCondition('field_dataset_ref', 'target_id', $datasets, 'IN');
+  $result = $query->execute();
+
+  if (isset($result['node'])) {
+    $resources = array_keys($result['node']);
+  }
+
+  return $resources;
+}
+
+/**
+ * Modifies the confirmation form that is shown when sources are deleted.
+ *
+ * @param array $form
+ *        The form that is going to be modified.
+ * @param array $sources
+ *        An array with the IDs of the sources that are going to be deleted.
+ */
+function dkan_harvest_modify_delete_harvest_source_confirmation_form(&$form, $sources) {
+
+  // Add list of available operations.
+  $options = array(
+    DKAN_HARVEST_DELETE_CONTENT => t('Delete content.'),
+    DKAN_HARVEST_UNPUBLISH_CONTENT => t('Unpublish content.'),
+    DKAN_HARVEST_ORPHAN_CONTENT => t('Leave content published.'),
+  );
+  $form['dataset_op'] = array(
+    '#type' => 'radios',
+    '#options' => $options,
+    '#default_value' => $options[DKAN_HARVEST_DELETE_CONTENT],
+  );
+
+  // Modify description.
+  $form['description']['#markup'] = dkan_harvest_build_delete_confirmation_description($sources);
+
+  // Modify submit button.
+  $form['actions']['submit']['#value'] = t('Delete Sources');
+
+  // Set up custom submit handler.
+  // Be sure that is the first handler that is going to be executed.
+  if (isset($form['actions']['submit']['#submit'])) {
+    array_unshift($form['actions']['submit']['#submit'], 'dkan_harvest_delete_confirmation_submit');
+  }
+  else {
+    array_unshift($form['#submit'], 'dkan_harvest_delete_confirmation_submit');
+  }
+
+  // Save sources for easy access on submit handler.
+  $form['sources']['#type'] = 'hidden';
+  $form['sources']['#value'] = $sources;
+}
+
+/**
+ * Builds description for confirmation form when sources are deleted.
+ *
+ * @param array $sources
+ *        An array with the IDs of the sources that are going to be deleted.
+ */
+function dkan_harvest_build_delete_confirmation_description($sources) {
+
+  $markup = '<p>' . t('The following sources were selected to be deleted:') . '</p>';
+  $markup .= '<ul>';
+  foreach ($sources as $source_id) {
+    $source = entity_load_single('node', $source_id);
+    $source_datasets = dkan_harvest_get_datasets_from_source($source_id);
+    $dataset_string = t('Datasets');
+    $markup .= '<li>' . $source->title . ': ' . count($source_datasets) . ' ' . $dataset_string . '</li>';
+  }
+  $markup .= '</ul>';
+  $markup .= '<p></br>' . t('Plese select the operation you want to perform on the
+    associated content (datasets and resources):') . '</p>';
+
+  return $markup;
+}
+
+/**
+ * Custom submit handler for VBO delete operation on Harvest Sources.
+ */
+function dkan_harvest_delete_confirmation_submit($form, $form_state) {
+
+  $selected_sources = $form_state['values']['sources'];
+  $datasets_op = $form_state['values']['dataset_op'];
+
+  dkan_harvest_process_source_datasets($selected_sources, $datasets_op);
+}

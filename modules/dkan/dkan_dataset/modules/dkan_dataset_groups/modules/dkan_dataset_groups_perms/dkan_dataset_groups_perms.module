@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * Code for the DKAN Dataset Groups Permissions feature.
+ */
+
+include_once 'dkan_dataset_groups_perms.features.inc';

@@ -1,0 +1,398 @@
+<?php
+
+/**
+ * @file
+ * Common functionality for DKAN Dataset tests.
+ */
+
+/**
+ * Test basic Data API functionality.
+ */
+class DkanDatasetWebTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
+  /**
+   * Information about the test.
+   */
+  public static function getInfo() {
+    return array(
+      'name'  => 'DKAN Dataset Test',
+      'description' => 'Test DKAN Dataset functions',
+      'group' => 'DKAN Dataset',
+    );
+  }
+
+  /**
+   * Prepares site for tests.
+   */
+  public function setUp() {
+    $args = func_get_args();
+
+    // Build the list of required modules which can be altered by passing in an
+    // array of module names to setUp().
+    if (isset($args[0])) {
+      if (is_array($args[0])) {
+        $modules = $args[0];
+      }
+      else {
+        $modules = $args;
+      }
+    }
+    else {
+      $modules = array();
+    }
+
+    $modules[] = 'ctools';
+    $modules[] = 'context';
+    $modules[] = 'block';
+    $modules[] = 'file';
+    $modules[] = 'filter';
+    $modules[] = 'image';
+    $modules[] = 'list';
+    $modules[] = 'menu';
+    $modules[] = 'number';
+    $modules[] = 'options';
+    $modules[] = 'path';
+    $modules[] = 'taxonomy';
+    $modules[] = 'text';
+    $modules[] = 'user';
+    $modules[] = 'date';
+    $modules[] = 'date_api';
+    $modules[] = 'date_popup';
+    $modules[] = 'dkan_dataset';
+    $modules[] = 'dkan_dataset_groups';
+    $modules[] = 'dkan_dataset_content_types';
+    $modules[] = 'dkan_default_content';
+    $modules[] = 'features';
+    $modules[] = 'double_field';
+    $modules[] = 'entityreference';
+    $modules[] = 'field_group';
+    $modules[] = 'field_group_table';
+    $modules[] = 'filefield_sources';
+    $modules[] = 'geofield';
+    $modules[] = 'link';
+    $modules[] = 'link_iframe_formatter';
+    $modules[] = 'multistep';
+    $modules[] = 'ref_field_sync';
+    $modules[] = 'select_or_other';
+    $modules[] = 'og';
+    $modules[] = 'og_context';
+    $modules[] = 'og_extras';
+    $modules[] = 'og_ui';
+    $modules[] = 'chosen';
+    $modules[] = 'entity';
+    $modules[] = 'geophp';
+    $modules[] = 'gravatar';
+    $modules[] = 'leaflet_widget';
+    $modules[] = 'libraries';
+    $modules[] = 'recline';
+    $modules[] = 'remote_stream_wrapper';
+    $modules[] = 'strongarm';
+    $modules[] = 'token';
+    $modules[] = 'search_api';
+    $modules[] = 'search_api_db';
+    $modules[] = 'search_api_views';
+    $modules[] = 'facetapi';
+    $modules[] = 'autocomplete_deluxe';
+    $modules[] = 'beautytips';
+    $modules[] = 'jquery_update';
+    $modules[] = 'uuid';
+    $modules[] = 'views';
+    $modules[] = 'views_bulk_operations';
+
+    $modules = array_unique($modules);
+    parent::setUp($modules);
+
+    $obj = features_get_features('dkan_dataset');
+    $this->assertTrue(is_object($obj), 'FEATURES OBJECT: ' . print_r($obj, 1));
+
+    $obj = features_get_features('dkan_dataset_content_types');
+    $this->assertTrue(is_object($obj), 'FEATURES OBJECT: ' . print_r($obj, 1));
+
+    $obj = features_get_features('dkan_dataset_groups');
+    $this->assertTrue(is_object($obj), 'FEATURES OBJECT: ' . print_r($obj, 1));
+
+    // Run a features rebuild to ensure our feature is fully installed.
+    features_rebuild();
+
+    // Add text formats Directly.
+    $filtered_html_format = array(
+      'format' => 'filtered_html',
+      'name' => 'Filtered HTML',
+      'weight' => 0,
+      'filters' => array(
+        // URL filter.
+        'filter_url' => array(
+          'weight' => 0,
+          'status' => 1,
+        ),
+        // HTML filter.
+        'filter_html' => array(
+          'weight' => 1,
+          'status' => 1,
+        ),
+        // Line break filter.
+        'filter_autop' => array(
+          'weight' => 2,
+          'status' => 1,
+        ),
+        // HTML corrector filter.
+        'filter_htmlcorrector' => array(
+          'weight' => 10,
+          'status' => 1,
+        ),
+      ),
+    );
+    $filtered_html_format = (object) $filtered_html_format;
+    filter_format_save($filtered_html_format);
+
+    // Build the list of required administration permissions. Additional
+    // permissions can be passed as an array into setUp()'s second parameter.
+    if (isset($args[1]) && is_array($args[1])) {
+      $permissions = $args[1];
+    }
+    else {
+      $permissions = array();
+    }
+
+    // TODO: wouldn't it be better to create a role?
+    // Admin Permissions.
+    $admin_perms = array(
+      'access content',
+      'administer site configuration',
+      'administer content types',
+      'administer features',
+      'administer nodes',
+      'bypass node access',
+      'create dataset content',
+      'create resource content',
+      'edit any dataset content',
+      'edit any resource content',
+      'administer users',
+    );
+    $this->verbose('Creating admin user with permissions: ' . var_export($admin_perms, TRUE));
+    // Create an admin user and log in.
+    $this->admin_user = $this->drupalCreateUser($admin_perms);
+    $this->drupalLogin($this->admin_user);
+
+  }
+
+  /**
+   * Helper function, retrieves node id from a URL.
+   */
+  public function getNid($url) {
+    $matches = array();
+    preg_match('/node\/(\d+?)$/', $url, $matches);
+    $nid = $matches[1];
+
+    // Test for actual integerness.
+    $this->assertTrue($nid === (string) (int) $nid, 'Node id is an integer.');
+
+    return $nid;
+  }
+
+  /**
+   * Creates a group.
+   */
+  public function createGroup($title, $body = '', $image = '') {
+    $edit = array(
+      'title' => $title,
+    );
+    $this->drupalPost('node/add/group', $edit, 'Save');
+    $this->assertText('has been created.');
+
+    // Removed $nid = $this->getNid($this->getUrl());.
+    return array(
+      'title' => $title,
+      // Removed 'nid' => $nid,.
+    );
+  }
+
+  /**
+   * Create a test dataset node.
+   *
+   * @param string $title
+   *   Node title.
+   * @param array $create
+   *   Args: title, body, field_tags, field_license, path, og_group_ref
+   * @param array $additional
+   *   Args: field_author, field_spatial, field_spatial_geographical_cover,
+   *   field_frequency, field_temporal_coverage, field_granularity,
+   *   field_data_dictionary, field_contact_name, field_contact_email,
+   *   field_public_access_level, field_additional_info, field_resources,
+   *   field_related_content
+   * @param array $resources
+   *   Multi-dimensional array for each resource.
+   *   Args: title, body, field_link_remote_file, field_upload, field_format,
+   *   og_group_ref
+   * @param bool $two_forms
+   *   Wheter or not the dataset form is split across two forms.
+   *
+   * @return string
+   *   The node id of the node created.
+   */
+  public function createDataset($title = '', $create = array(), $additional = array(), $resources = array(), $two_forms = TRUE) {
+    if ($two_forms) {
+      // Create a Dataset node.
+      $edit = array(
+        'title' => $title,
+      );
+      foreach ($create as $key => $value) {
+        $edit[$key] = $value;
+      }
+      if (!$two_forms) {
+        foreach ($additional as $key => $value) {
+          $edit[$key] = $value;
+        }
+      }
+
+      $this->drupalPost('node/add/dataset', $edit, 'Next: Add data');
+      $this->assertText('has been created.');
+      $this->assertText('Create Resource');
+
+      $url = $this->getUrl();
+      // Get the node id from URL.
+      $matches = array();
+      preg_match('/node\/add\/resource\?dataset\=(\d+?)$/', $url, $matches);
+      $nid = $matches[1];
+
+      // Add Resources.
+      if ($resources) {
+        foreach ($resources as $num => $resource) {
+          // Click final "Save" if last resource and using single dataset form.
+          if ($num == count($resources) && !$two_forms) {
+            $this->drupalPost($this->getUrl(), $resource, 'Save');
+            $this->assertText('has been created.');
+            foreach ($resource as $key => $value) {
+              $this->assertText($value);
+            }
+          }
+          else {
+            $this->drupalPost($this->getUrl(), $resource, 'Save and add another');
+            $this->assertText('has been created.');
+            $this->assertText('Create Resource');
+          }
+        }
+      }
+
+      if ($two_forms) {
+        $this->drupalPost('node/' . $nid . '/edit', $additional, 'Save', array('query' => array('additional' => '1')));
+        foreach ($additional as $key => $value) {
+          $this->assertText($value);
+        }
+      }
+    }
+
+    return $nid;
+  }
+
+  /**
+   * Tests creating a dataste.
+   */
+  public function testDkanDatasetResource() {
+    // Add group.
+    $title = $this->randomName(32);
+    $this->createGroup($title);
+    // Prepare dataset.
+    $title = $this->randomName(32);
+    $create = array(
+      'field_tags[und][textfield]' => $this->randomName(8),
+      'field_license[und][select]' => 'cc-by',
+    );
+    // Prepare resources.
+    $resources = array();
+    $resources[] = array(
+      'title' => $this->randomName(32),
+      'body[und][0][value]' => $this->randomName(256),
+      'field_link_api[und][0][url]' => 'http://nuams.com',
+    );
+    $nid = $this->createDataset($title, $create, array(), $resources);
+    $dataset_node = node_load($nid);
+    $this->assertText($dataset_node->title, $title);
+  }
+
+  /**
+   * Tests creating a dataste.
+   */
+  public function testDkanDatasetEdit() {
+    // Make sure Dataset edit form is broken up into two sections.
+    $this->drupalGet('node/add/dataset');
+    // Dataset Information should not be visible.
+    $this->assertNoText('Dataset Information');
+    $title = $this->randomName(32);
+    $desc = $this->randomName(8);
+    $edit = array(
+      'title' => $title,
+      'field_tags[und][textfield]' => $desc,
+      'field_license[und][select]' => 'cc-by',
+    );
+    $this->drupalPost('node/add/dataset', $edit, 'Next: Add data');
+    $this->assertText('has been created.');
+    $this->assertText('Create Resource');
+    $this->clickLink('Edit dataset');
+    // Clicking "edit" should reveal the node edit form.
+    $this->assertText($title);
+    // Dataset Information should now be visible.
+    $this->assertText('Dataset Information');
+    $author = 'Rebecca';
+    $spatial = 'Philadelphia, PA';
+    $temporal_coverate_date1 = '2014-01-24';
+    $temporal_coverate_time1 = '-01:00:00';
+    $data_dictionary = 'http://nuams.com';
+    $contact_name = 'Rebecca';
+    $contact_email = 'rebecca@nuams.com';
+    $access_level = 'public';
+    $additional_first = 'this';
+    $additional_second = 'that';
+    $related_title = 'Nuams';
+    $related_url = $data_dictionary;
+    $edit = array(
+      'title' => $title,
+      'field_tags[und][textfield]' => $desc,
+      'field_license[und][select]' => 'cc-by',
+      // Additional dataset information.
+      // Author.
+      'field_author[und][0][value]' => $author,
+      // Spatial / Geographical Coverage Area.
+      // TODO: add geojson field collection.
+      // Spatial / Geographical Coverage Location.
+      'field_spatial_geographical_cover[und][0][value]' => $spatial,
+      // Frequency.
+      'field_frequency[und]' => 1,
+      // Temporal Coverage.
+      // TODO: get date format to work correctly.
+      // Removed 'field_temporal_coverage[und][0][value][date]' => .
+      // Data Dictionary.
+      'field_data_dictionary[und][0][value]' => $data_dictionary,
+      // Contact Name.
+      'field_contact_name[und][0][value]' => $contact_name,
+      // Contact Email.
+      'field_contact_email[und][0][value]' => $contact_email,
+      // Public Access Level.
+      'field_public_access_level[und]' => $access_level,
+      // Additional Info.
+      'field_additional_info[und][0][first]' => $additional_first,
+      'field_additional_info[und][0][second]' => $additional_second,
+      // Related Content.
+      'field_related_content[und][0][title]' => $related_title,
+      'field_related_content[und][0][url]' => $related_url,
+    );
+
+    $this->drupalPost($this->getUrl(), $edit, 'Finish');
+
+    $this->assertText('Weekly');
+    $this->assertText($author);
+    $this->assertText($spatial);
+    // TODO: get date format to work correctly.
+    // $this->assertText('Thursday, January 30, 2014');
+    // $this->assertText($temporal_coverate_time1);
+    $this->assertText($data_dictionary);
+    $this->assertText($contact_name);
+    $this->assertText($contact_email);
+    $this->assertText('Public');
+    $this->assertText($additional_first);
+    $this->assertText($additional_second);
+    $this->assertText($related_title);
+
+  }
+}

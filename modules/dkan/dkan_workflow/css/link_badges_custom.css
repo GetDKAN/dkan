@@ -1,0 +1,84 @@
+/* Custom link badges style*/
+
+.link-badge {
+  background: #005489;
+  color: #fff;
+  font-weight: bold;
+  -webkit-border-radius: 11px;
+  -moz-border-radius: 11px;
+  border-radius: 11px;
+  font-size: 12px;
+  padding: 0;
+  width: 22px;
+  text-align: center;
+  line-height: 20px;
+  margin-top: -10px;
+  /*font-family: "Lucida Grande","Lucida Sans Unicode", sans-serif;*/
+  border: 1px solid #005489;
+  display: inline-block;
+}
+.link-badge-wrapper {
+  position: relative;
+}
+.link-badge-badge-wrapper {
+  position: absolute;
+  right: -5px;
+  top: -10px;
+}
+@-moz-document url-prefix() {
+  .link-badge {
+    font-size: 12px;
+    padding: 0;
+  }
+}
+
+.page-admin-workbench .nav.nav-pills {
+  overflow: visible;
+}
+.page-admin-workbench .nav-pills li {
+  clear: none;
+  display: inline-block;
+  margin: 12px 10px 0 0;
+}
+.page-admin-workbench .nav-pills li a {
+  padding: 6px 20px 6px 12px;
+}
+.page-admin-workbench  li.active .link-badge {
+  background: #fff;
+}
+.view-workbench-moderation .views-exposed-form {
+  clear: both;
+}
+.view-workbench-moderation .views-exposed-form label {
+  display: inline-block;
+}
+.view-workbench-moderation .views-exposed-form .views-exposed-widget .form-submit {
+  margin-top: 21px;
+}
+.view-workbench-moderation .form-submit {
+  margin-bottom: 1em;
+}
+
+dl dt,
+dl dd {
+  background-color: white;
+  position: relative;
+}
+
+dl dt {
+  z-index: 1;
+}
+
+dl dd {
+  float: left;
+}
+
+dl dd:before {
+  background-color: inherit;
+  content: "";
+  height: 100%;
+  left: -100%;
+  position: absolute;
+  width: 100%;
+  top: 0;
+}

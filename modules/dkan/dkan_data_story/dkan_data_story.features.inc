@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_data_story.features.inc
@@ -71,7 +72,7 @@ function dkan_data_story_image_default_styles() {
 function dkan_data_story_node_info() {
   $items = array(
     'dkan_data_story' => array(
-      'name' => t('DKAN Data Story'),
+      'name' => t('Data Story'),
       'base' => 'node_content',
       'description' => t('Create compelling stories using data to illustrate key points.'),
       'has_title' => '1',
@@ -163,8 +164,7 @@ function dkan_data_story_default_search_api_index() {
       }
     },
     "enabled" : "1",
-    "read_only" : "0",
-    "rdf_mapping" : []
+    "read_only" : "0"
   }');
   return $items;
 }
@@ -246,8 +246,7 @@ function dkan_data_story_default_search_api_server() {
         }
       }
     },
-    "enabled" : "1",
-    "rdf_mapping" : []
+    "enabled" : "1"
   }');
   return $items;
 }

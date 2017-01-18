@@ -1,7 +1,16 @@
 <?php
 
 /**
+ * @file
+ * Facet_icons.module.
+ */
+
+/**
  * Implements hook_facetapi_widgets().
+ */
+
+/**
+ * Implements hook_facetapi_widget().
  */
 function facet_icons_facetapi_widgets() {
   return array(

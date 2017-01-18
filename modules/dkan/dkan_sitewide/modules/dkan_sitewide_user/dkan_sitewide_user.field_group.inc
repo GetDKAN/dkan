@@ -8,7 +8,7 @@
  * Implements hook_field_group_info().
  */
 function dkan_sitewide_user_field_group_info() {
-  $export = array();
+  $field_groups = array();
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -35,7 +35,7 @@ function dkan_sitewide_user_field_group_info() {
       ),
     ),
   );
-  $export['group_user_about|user|user|default'] = $field_group;
+  $field_groups['group_user_about|user|user|default'] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -50,8 +50,8 @@ function dkan_sitewide_user_field_group_info() {
     'label' => 'Datasets',
     'weight' => '1',
     'children' => array(
-      0 => 'user_profile_search_entity_view_1',
-      1 => 'user_profile_search_entity_view_1_form',
+      0 => 'user_profile_search_user_profile_search_block',
+      1 => 'user_profile_search_user_profile_search_block_form',
     ),
     'format_type' => 'htab',
     'format_settings' => array(
@@ -62,7 +62,7 @@ function dkan_sitewide_user_field_group_info() {
       ),
     ),
   );
-  $export['group_user_datasets|user|user|default'] = $field_group;
+  $field_groups['group_user_datasets|user|user|default'] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -89,7 +89,7 @@ function dkan_sitewide_user_field_group_info() {
       'formatter' => 'closed',
     ),
   );
-  $export['group_user_group|user|user|default'] = $field_group;
+  $field_groups['group_user_group|user|user|default'] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -116,7 +116,14 @@ function dkan_sitewide_user_field_group_info() {
       ),
     ),
   );
-  $export['group_user_tabs|user|user|default'] = $field_group;
+  $field_groups['group_user_tabs|user|user|default'] = $field_group;
 
-  return $export;
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('About');
+  t('Datasets');
+  t('Groups');
+  t('Profile');
+
+  return $field_groups;
 }

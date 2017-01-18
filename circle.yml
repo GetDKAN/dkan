@@ -1,13 +1,12 @@
 ## Customize the test machine
 machine:
 
-  #timezone:
-  #  America/New_York # Set the timezone
+  timezone:
+    America/New_York
 
   # Version of ruby to use
   php:
-    version: '5.5.11'
-
+    version: 5.6.22
   # Override /etc/hosts
   #hosts:
     #circlehost: 127.0.0.1
@@ -18,6 +17,10 @@ machine:
     # For xvfb / selenium setup (not sure why)
     #DISPLAY: ':99.0'
     DATABASE_URL: mysql://ubuntu:@127.0.0.1:3306/circle_test
+    # Timeouts issues happen when selenium tries to spawn a new chrome
+    # instance. I've nail that down to this selenium issue
+    # https://github.com/SeleniumHQ/docker-selenium/issues/87
+    DBUS_SESSION_BUS_ADDRESS: /dev/null
 ## Customize checkout
 ## Note: Only post is supported.
 checkout:
@@ -41,11 +44,15 @@ dependencies:
      #- "backups"
      #- "dkan/test/sites/default"
   pre:
-    - echo "memory_limit = 256M" > ~/.phpenv/versions/5.5.11/etc/conf.d/memory.ini
+    - rm /opt/circleci/php/$(phpenv global)/etc/conf.d/xdebug.ini
+    - echo "memory_limit = 256M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
+    - echo "always_populate_raw_post_data = -1" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/deprecated.ini
   override:
     - printenv
     - mkdir $CIRCLE_ARTIFACTS/junit
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH bash dkan-init.sh dkan --deps --build=$DATABASE_URL'
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard'
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush cc all'
     # Run a webserver using drush.
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes runserver :8888':
         background: true
@@ -54,8 +61,8 @@ dependencies:
     #- sh -e /etc/init.d/xvfb start
     #- sleep 3
 
-    - wget http://selenium-release.storage.googleapis.com/2.49/selenium-server-standalone-2.49.1.jar
-    - java -jar selenium-server-standalone-2.49.1.jar -p 4444 :
+    - wget http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar
+    - java -jar selenium-server-standalone-2.53.1.jar -p 4444 :
         background: true
   post:
      - sudo apt-get install -y x11vnc
@@ -65,8 +72,14 @@ dependencies:
 ## Customize test commands
 test:
   override:
-    - bash dkan/test/circle-behat.sh docroot/profiles/dkan/test/features:
+    - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
+        timeout: 1200
         parallel: true
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_migrate_base_example
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_harvest_test
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush dis --yes dkan_default_content
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush pm-uninstall --yes dkan_default_content
+    - $HOME/dkan/dkan/test/bin/phpunit --configuration $HOME/dkan/dkan/test/phpunit
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true

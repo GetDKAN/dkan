@@ -1,0 +1,141 @@
+<?php
+
+/**
+ * @file
+ * Required module file.
+ */
+
+/**
+ * We should pull out this from here to another more generic module.
+ *
+ * Thus we can reuse this function in several places.
+ */
+function remote_mime($url) {
+  if (!filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_FILETIME, TRUE);
+    curl_setopt($curl, CURLOPT_NOBODY, TRUE);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($curl, CURLOPT_HEADER, TRUE);
+    $header = curl_exec($curl);
+    $info = curl_getinfo($curl);
+    curl_close($curl);
+    $mime = explode(";", $info['content_type'])[0];
+    return strtolower($mime);
+  }
+  return '';
+}
+
+/**
+ * Deregisters DKAN migrations.
+ */
+function dkan_migrate_base_migrations_disable() {
+  Migration::deregisterMigration('ckan_dataset_base');
+  Migration::deregisterMigration('ckan_group_base');
+  Migration::deregisterMigration('ckan_resource_base');
+  Migration::deregisterMigration('datajson_dataset_base');
+}
+
+/**
+ * Registers DKAN migrations.
+ */
+function dkan_migrate_base_migrations_enable() {
+  Migration::registerMigration('ckan_dataset_base');
+  Migration::registerMigration('ckan_group_base');
+  Migration::registerMigration('ckan_resource_base');
+  Migration::registerMigration('datajson_dataset_base');
+}
+
+/**
+ * Creates resource list from CKAN site.
+ *
+ * CKAN has no resource_list endpiont. This function creates a file that mimics
+ * that. The file created is the public file name so return not supplied.
+ */
+function dkan_migrate_base_create_resource_list($endpoint, $file_name = 'public://ckan-migrate-resource_list', $update = FALSE) {
+  // Update if requested or the file doesn't exist.
+  if ($update || (!$update && !file_exists($file_name))) {
+    $resource_ids = dkan_migrate_base_create_resource_list_items($endpoint, $file_name);
+    file_unmanaged_save_data(json_encode($resource_ids), $file_name, FILE_EXISTS_REPLACE);
+  }
+}
+
+/**
+ * Restrieves resource list from CKAN site.
+ *
+ * @return array
+ *   List of resource uuids.
+ */
+function dkan_migrate_base_create_resource_list_items($endpoint, $file_name) {
+  $package_list = $endpoint . 'package_list';
+  $resource_ids = array('help' => t('List of resource ids for %endpoint', array('endpoint' => $endpoint)));
+  $item_url = $endpoint . 'package_show?id=:id';
+  if (substr($package_list, 0, 6) !== 'http://') {
+    $json = file_get_contents($package_list);
+  }
+  else {
+    $response = drupal_http_request($package_list);
+    $json = $response->data;
+  }
+  $data = drupal_json_decode($json);
+  foreach ($data['result'] as $id) {
+    $dataset_show = preg_replace(array_fill(0, count($id), '/:id/'), $id, $item_url, 1);
+    if (substr($dataset_show, 0, 6) !== 'http://') {
+      $dataset_json = file_get_contents($dataset_show);
+    }
+    else {
+      $dataset_response = drupal_http_request($dataset_show);
+      $dataset_json = $dataset_response->data;
+    }
+    $dataset_data = drupal_json_decode($dataset_json);
+    $resources = $dataset_data['result']['resources'];
+    foreach ($resources as $key => $resource) {
+      $resource_ids['result'][] = $resource['id'];
+    }
+  }
+  file_unmanaged_save_data(json_encode($resource_ids), $file_name, FILE_EXISTS_REPLACE);
+  return $resource_ids;
+}
+
+/**
+ * Converts ISO 8061 dates with internvals into Unix timestamps.
+ */
+function dkan_migrate_base_iso_interval_to_timestamp($date) {
+  $to = $from = NULL;
+  $date = explode("/", $date);
+  if ($date) {
+    $dateTime = new DateTime($date[0]);
+    $dateTime->format(DateTime::ISO8601);
+    $from = $dateTime->getTimestamp();
+    if (isset($date[1])) {
+      if ($to = strtotime($date[1])) {
+      }
+      else {
+        $dateTime->add(new DateInterval($date[1]));
+        $to = $dateTime->getTimestamp();
+      }
+    }
+  }
+  return array(
+    'to' => $to,
+    'from' => $from,
+  );
+}
+
+/**
+ * Adds a modfied temporal column to a migrate map table.
+ */
+function dkan_migrate_base_add_modified_column($table) {
+  $field = 'modified';
+  $field_schema = array(
+    'type' => 'varchar',
+    'length' => 32,
+    'not null' => TRUE,
+    'default' => '',
+    'description' => 'Field added by dkan_migrate_base',
+  );
+  if (db_table_exists($table) && !db_field_exists($table, $field)) {
+    db_add_field($table, $field, $field_schema);
+  }
+}

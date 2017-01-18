@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @file
+ * Code for the DKAN Dataset REST API.
+ */
+
+include_once 'dkan_dataset_rest_api.features.inc';
+
+/**
+ * Implements hook__rest_services_request_postprocess_alter().
+ */
+function dkan_dataset_rest_api_services_request_postprocess_alter($controller, $args, &$result) {
+  // Could not get og to save passed ids no matter what I tried.
+  // The expected format here is:
+  // "'[og_group_ref']['und']['target_id'] = 4,5,6;"
+  // "og_group_ref": { "und": { "target_id": "4,5,6"}}".
+  if (isset($args[0]['og_group_ref'])
+    && isset($args[0]['og_group_ref']['und']['target_id'])
+    && $gids = $args[0]['og_group_ref']['und']['target_id']) {
+    $entity = node_load($result['nid']);
+    watchdog('dkan-rest-gids', 'results: <pre>@results</pre>', array('@results' => print_r($gids, TRUE)), WATCHDOG_DEBUG);
+    $wrapper = entity_metadata_wrapper('node', $entity);
+    $wrapper->og_group_ref->set(array($gids));
+    $wrapper->save();
+  }
+
+  // Alter service attach file for add automatically the resource to datastore.
+  if ($controller['callback'] == '_node_resource_attach_file') {
+    if (isset($result[0]['uri'])) {
+      $nid = $args[0];
+      $uuid = current(entity_get_uuid_by_id('node', array($nid)));
+
+      dkan_datastore_queue_import($uuid);
+    }
+  }
+}

@@ -1,0 +1,144 @@
+<?php
+
+/**
+ * @file
+ * Install file for DKAN Topics.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dkan_topics_install() {
+
+  $feature = features_get_features('dkan_topics');
+  $components = array_keys($feature->info['features']);
+  features_revert(array('dkan_topics' => $components));
+
+  // Add field_topic instance to dataset, story and dashboard bundles.
+  $content_types = array('dataset', 'dkan_data_story', 'data_dashboard');
+  $available_types = array_keys(node_type_get_types());
+
+  foreach (array_intersect($content_types, $available_types) as $content_type) {
+    if (!field_info_instance('node', 'field_topic', $content_type)) {
+
+      // Exported field_instance: 'node-dataset-field_topic'.
+      $instance = array(
+        'bundle' => $content_type,
+        'default_value' => NULL,
+        'deleted' => 0,
+        'description' => '',
+        'display' => array(
+          'default' => array(
+            'label' => 'above',
+            'module' => 'taxonomy',
+            'settings' => array(),
+            'type' => 'taxonomy_term_reference_link',
+            'weight' => 21,
+          ),
+          'search_result' => array(
+            'label' => 'above',
+            'module' => 'taxonomy',
+            'settings' => array(),
+            'type' => 'taxonomy_term_reference_link',
+            'weight' => 21,
+          ),
+          'teaser' => array(
+            'label' => 'hidden',
+            'module' => 'dkan_topics',
+            'settings' => array(),
+            'type' => 'dkan_topic_formatter',
+            'weight' => 5,
+          ),
+        ),
+        'entity_type' => 'node',
+        'field_name' => 'field_topic',
+        'label' => 'Topics',
+        'required' => 0,
+        'settings' => array(
+          'user_register_form' => FALSE,
+        ),
+        'widget' => array(
+          'active' => 1,
+          'module' => 'options',
+          'settings' => array(
+            'apply_chosen' => '',
+          ),
+          'type' => 'options_select',
+          'weight' => 4,
+        ),
+      );
+      field_create_instance($instance);
+    }
+  }
+  $message = <<<EOF
+'You have just enabled the DKAN Topics module. Most likely you are
+starting with an empty Topics vocabulary. To load sample topics, enable the
+additional DKAN Default Topics module. <a href="@topics_admin">Click here to
+manage the Topics vocabulary yourself.</a>'
+EOF;
+  drupal_set_message(t($message, array('@topics_admin' => 'admin/structure/taxonomy/dkan_topics')));
+
+  // Set up fonts.
+  module_load_include('inc', 'font_icon_select', 'font_icon_select.admin');
+  $new_entity = entity_get_controller('font_icon_select_font_library')->create();
+  $new_entity->font_title = 'DKAN Topics';
+  $font_files = array('eot', 'svg', 'ttf', 'woff');
+
+  // Add the file usage.
+  foreach ($font_files as $ext) {
+    $filename = 'dkan-topics';
+    $theme_path = drupal_get_path('theme', 'nuboot_radix');
+    $handle = fopen($theme_path . '/assets/fonts/' . $filename . '.' . $ext, 'r');
+    $file = file_save_data($handle, 'public://' . $filename . '.' . $ext, FILE_EXISTS_RENAME);
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+    $new_entity->{$ext . '_fid'} = $file->fid;
+    file_usage_add($file, 'font_icon_select', 'font_icon_select_font_library', $new_entity->flid);
+  }
+  entity_get_controller('font_icon_select_font_library')->save($new_entity);
+  _font_icon_select_generate_general_css($new_entity);
+}
+
+/**
+ * Implements hook_disable().
+ */
+function dkan_topics_disable() {
+  if (module_exists('taxonomy_menu')) {
+    db_update('menu_links')
+      ->fields(array('hidden' => 1))
+      ->condition('module', 'taxonomy_menu')
+      ->execute();
+  }
+  // Recommend uninstall.
+  global $base_url;
+  $disable_message_begin = t('DKAN Topics has been disabled. To completely remove the topic terms and fields from the site, uninstall the module here: <a href="');
+  $disable_message_end = t('/admin/modules/uninstall">Uninstall DKAN Featured Topics</a>.');
+  drupal_set_message($disable_message_begin . $base_url . $disable_message_end, 'warning', FALSE);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function dkan_topics_uninstall() {
+  // Remove taxonomy.
+  $vocab = taxonomy_vocabulary_machine_name_load('dkan_topics');
+  taxonomy_vocabulary_delete($vocab->vid);
+
+  $fields = array(
+    'field_icon_type',
+    'field_topic',
+    'field_topic_icon',
+    'field_topic_icon_color',
+  );
+  foreach ($fields as $field) {
+    if (field_info_field($field)) {
+      field_delete_field($field);
+      $message = 'Deleting field = ' . $field;
+      drush_print($message);
+    };
+  }
+  // Purge all field infromation
+  // http://api.drupal.org/api/function/field_purge_batch/7
+  field_purge_batch(1000);
+  menu_rebuild();
+}

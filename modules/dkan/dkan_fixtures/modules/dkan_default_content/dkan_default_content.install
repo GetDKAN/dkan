@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * @file
+ * Install file for DKAN Default Content.
+ */
+
+/**
+ * Implements hook_enable().
+ *
+ * Registers migrations and imports all default content.
+ */
+function dkan_default_content_enable() {
+  // Register migrations.
+  migrate_static_registration();
+
+  // Import Groups.
+  $migration = Migration::getInstance('dkan_default_content_groups');
+  $migration->processImport();
+  // Import Resources.
+  $migration = Migration::getInstance('dkan_default_content_resources');
+  $migration->processImport();
+  // Import Datasets.
+  $migration = Migration::getInstance('dkan_default_content_datasets');
+  $migration->processImport();
+  // Import Visualization Entities.
+  $migration = Migration::getInstance('dkan_default_content_visualization_entities');
+  $migration->processImport();
+  // Import Data Stories.
+  $migration = Migration::getInstance('dkan_default_content_data_stories');
+  $migration->processImport();
+  // Import Data Dashboards.
+  $migration = Migration::getInstance('dkan_default_content_data_dashboards');
+  $migration->processImport();
+  // Import Pages (Homepage + About page).
+  dkan_default_content_import_default_pages();
+
+  // Clear message queue.
+  drupal_get_messages('status', TRUE);
+  drupal_get_messages('warning', TRUE);
+  drupal_set_message('The default content was imported.');
+}
+
+/**
+ * Function that handles the import of default pages.
+ */
+function dkan_default_content_import_default_pages() {
+  // Get migration instance.
+  $migration = Migration::getInstance('dkan_default_content_pages');
+  // Import pages.
+  $migration->processImport();
+  // Deregister migration. We don't want users to accidentally roll back import
+  // of the homepage or about page.
+  Migration::deregisterMigration('dkan_default_content_pages');
+}
+
+/**
+ * Implements hook_default_disable().
+ *
+ * Removes all the generated content and disables all enabled migrations.
+ */
+function dkan_default_content_disable() {
+  // Rollback Data Dashboards.
+  $migration = Migration::getInstance('dkan_default_content_data_dashboards');
+  $migration->processRollback();
+  // Rollback Data Stories.
+  $migration = Migration::getInstance('dkan_default_content_data_stories');
+  $migration->processRollback();
+  // Rollback Visualization Entities.
+  $migration = Migration::getInstance('dkan_default_content_visualization_entities');
+  $migration->processRollback();
+  // Rollback Datasets.
+  $migration = Migration::getInstance('dkan_default_content_datasets');
+  $migration->processRollback();
+  // Rollback Resources.
+  $migration = Migration::getInstance('dkan_default_content_resources');
+  $migration->processRollback();
+  // Rollback Groups.
+  $migration = Migration::getInstance('dkan_default_content_groups');
+  $migration->processRollback();
+  // Disable Mirations.
+  dkan_default_content_migrations_disable();
+
+  // Clear message queue.
+  drupal_get_messages('status', TRUE);
+  drupal_get_messages('warning', TRUE);
+  drupal_set_message('The default content was removed.');
+}

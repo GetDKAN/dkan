@@ -1,0 +1,173 @@
+// Mixins
+// -----------------------------------------------------------------------------
+@mixin blockbox {
+  @include border-radius(5px);
+  border: 1px solid $border;
+  margin-bottom: 20px;
+  padding:0px;
+  .pane-content {
+    background-color: transparent;
+    margin: 0;
+    padding: 15px;
+  }
+}
+
+@mixin block-title {
+  @include border-radius(5px 5px 0 0);
+  border: 1px solid;
+  border-bottom: none;
+  font-size: 16px;
+  line-height: 1.3;
+  margin: 0;
+  padding: 7px 10px;
+  font-weight: normal;
+}
+
+@mixin searchbox {
+  form {
+    display:block;
+    margin:8px 0;
+    position:relative;
+    width: 100%;
+  }
+  input.form-text {
+    padding-right:30px;
+  }
+  button[type="submit"],
+  input[type="submit"] {
+    background:none !important;
+    border:none;
+    content:"\f002";
+    color: $gray;
+    display: inline-block;
+    font-size: 1.3em;
+    font-family: $icon-fa;
+    margin: 0;
+    padding:0;
+    position: absolute;
+    right:10px;
+    width:25px;
+    top: 2px;
+  }
+}
+@mixin h4 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 2em;
+  margin-bottom: .5em;
+}
+
+%button {
+  // background:$brand-primary;
+  // border-color:$brand-primary;
+  color: white;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 5px 12px;
+  line-height: 1.4em;
+  @include border-radius(4px);
+}
+%button:hover, 
+%button:focus, 
+%button:active {
+  // background:$brand-secondary;
+  // border-color:$brand-secondary;
+  color: white;
+  text-decoration: none;
+}
+%button-attached {
+  @include border-radius(0 $border-radius-base $border-radius-base 0);
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+%screenreader {
+  position: absolute;
+  top:0;
+  left:-9999px
+}
+
+// Force wrap content: https://perishablepress.com/wrapping-content/
+@mixin wrap {
+  white-space: pre;           /* CSS 2.0 */
+  white-space: pre-wrap;      /* CSS 2.1 */
+  white-space: pre-line;      /* CSS 3.0 */
+  white-space: -pre-wrap;     /* Opera 4-6 */
+  white-space: -o-pre-wrap;   /* Opera 7 */
+  white-space: -moz-pre-wrap; /* Mozilla */
+  white-space: -hp-pre-wrap;  /* HP Printers */
+  word-wrap: break-word;      /* IE 5+ */    
+  word-break: break-word;
+}
+
+@mixin card {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.16), 0 0 10px 0 rgba(0, 0, 0, 0.12);
+  margin-top: 10px;
+  box-sizing: border-box;
+  border-radius: 2px;
+  background-clip: padding-box;
+  text-align: center;
+
+  img {
+    display: block;
+    margin: 0 auto;
+  }
+
+  h2 {
+    margin:.75em 1em;
+    text-align: center;
+  }
+
+  .content {
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+
+  .btn-primary {
+    margin: 0 auto 1.5em;
+  }
+}
+
+@mixin item-list {
+  a {
+    border: 1px solid $border;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+    &:hover {
+      color: #ffffff;
+      text-decoration: none;
+      background: $brand-primary;
+    }
+  }
+  &:first-of-type a {
+    @include border-radius(4px 4px 0px 0px);
+  }
+  &:last-of-type a {
+    @include border-radius(0px 0px 4px 4px);
+  }
+}
+
+@mixin pointer {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-width: 17px 0 17px 15px;
+  border-color: transparent $smoke;
+  display: block;
+  width: 0;
+  z-index: 1;
+  right: -15px;
+  top: 0;
+}
+
+@mixin submitted {
+  color: #777;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  margin: 0 0 1em 0;
+  padding: .5em 0;
+}

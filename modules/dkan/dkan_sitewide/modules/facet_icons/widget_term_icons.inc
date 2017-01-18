@@ -2,13 +2,17 @@
 
 /**
  * @file
- *
+ * Widget_term_icons.inc.
  */
 
 /**
  * Widget that renders facets as a list of clickable links.
  */
 class FacetapiTermIcon extends FacetapiWidgetLinks {
+
+  /**
+   * Implement execute method.
+   */
   public function execute() {
     $element = &$this->build[$this->facet['field alias']];
 
@@ -21,6 +25,9 @@ class FacetapiTermIcon extends FacetapiWidgetLinks {
     );
   }
 
+  /**
+   * Implement buildListItem method.
+   */
   public function buildListItems($build) {
     $settings = $this->settings->settings;
 
@@ -32,12 +39,23 @@ class FacetapiTermIcon extends FacetapiWidgetLinks {
     $items = array();
     foreach ($build as $value => $item) {
       $row = array('class' => array());
-      $type = '';
-      $icon = theme('facet_icons', array('type'=> $type, 'class' => array('facet-icon')));
-      if (isset($item['#indexed_value']) && $term = taxonomy_term_load($item['#indexed_value'])) {
-        $icon = theme('facet_icons', array('type'=> $term->machine_name, 'class' => array('facet-icon')));
+      $icon = '';
+      $term = taxonomy_term_load($item['#indexed_value']);
+      if (is_object($term)) {
+        if (!empty($term->field_image)) {
+          $uri = $term->field_image['und'][0]['uri'];
+          if ($uri) {
+            $icon = '<img src="' . image_style_url('small_topics_icons', $uri) . '">';
+          }
+        }
+        else {
+          $font_icon = field_get_items('taxonomy_term', $term, 'field_topic_icon');
+          $i = field_view_field('taxonomy_term', $term, 'field_topic_icon', $font_icon, $langcode = NULL);
+          if ($i) {
+            $icon = drupal_render($i);
+          }
+        }
       }
-
       // Initializes variables passed to theme hook.
       $variables = array(
         'text' => $icon . $item['#markup'],
@@ -85,4 +103,5 @@ class FacetapiTermIcon extends FacetapiWidgetLinks {
 
     return $items;
   }
+
 }

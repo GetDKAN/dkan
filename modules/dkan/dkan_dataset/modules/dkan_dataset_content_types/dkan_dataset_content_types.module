@@ -1,0 +1,214 @@
+<?php
+
+/**
+ * @file
+ * Code for the DKAN Content Types feature.
+ */
+
+include_once 'dkan_dataset_content_types.features.inc';
+include_once 'dkan_dataset_content_types.license_field.inc';
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_dataset_content_types_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'dataset_node_form') {
+    // Alterations for dataset/field_license allowed options.
+    $allowed_values = array("_none" => t('- Select a value -'));
+    $allowed_values = array_merge(
+      $allowed_values,
+      dkan_dataset_content_types_license_allowed_values()
+    );
+    $form['field_license'][LANGUAGE_NONE]['#options'] = $allowed_values;
+
+    // Hide fields.
+    $form['field_modified_source_date']['#access'] = FALSE;
+    $form['field_is_part_of']['#access'] = FALSE;
+    $form['field_pod_theme']['#access'] = FALSE;
+
+    $form['field_data_dictionary'][LANGUAGE_NONE]['#after_build'][] = 'data_dictionary_after_build';
+  }
+}
+
+/**
+ * After build for data dictionary field.
+ *
+ * Removes format selector and guidelines.
+ */
+function data_dictionary_after_build(&$form) {
+  unset($form[0]['format']);
+  return $form;
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function dkan_dataset_content_types_field_formatter_info() {
+  return array(
+    'render_license' => array(
+      'label' => t('Render license as a link'),
+      'field types' => array('text'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function dkan_dataset_content_types_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  switch ($display['type']) {
+    case 'render_license':
+      foreach ($items as $delta => $item) {
+        $output = $item['value'];
+        $subscribed_values = dkan_dataset_content_types_license_subscribed_values();
+        if (isset($subscribed_values[$output])) {
+          $license = $subscribed_values[$output];
+          if (isset($license['uri'])) {
+            $output = l($license['label'], $license['uri']);
+          }
+          else {
+            $output = $license['label'];
+          }
+        }
+        // Harvested datasets may use license urls that do not match
+        // the urls set up in hook_subscribed_values().
+        // Check if the value is a url, if so theme it as a link.
+        $url = parse_url($item['value']);
+        if (isset($url['scheme']) && isset($url['host'])) {
+          $output = l($item['value'], $item['value']);
+        }
+
+        $element[$delta] = array('#markup' => $output);
+      }
+      break;
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_facet_items_alter().
+ */
+function dkan_dataset_content_types_facet_items_alter(&$build, &$settings) {
+  if ($settings->facet == 'field_license') {
+    $allowed_values = dkan_dataset_content_types_license_allowed_values();
+    foreach ($build as $key => $item) {
+      if (isset($allowed_values[$key])) {
+        $build[$key]['#markup'] = $allowed_values[$key];
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_open_data_schema_map_results_alter().
+ */
+function dkan_dataset_content_types_open_data_schema_map_results_alter(&$result, $machine_name, $api_schema) {
+  switch ($api_schema) {
+    case 'pod_v1_1':
+      $dataset_row = array();
+      foreach ($result as $key => $dataset) {
+        dkan_dataset_content_types_alter_dataset_license($dataset, 'license');
+        $dataset_row[] = $dataset;
+        unset($result[$key]);
+      }
+      $result = $dataset_row;
+      break;
+
+    case 'ckan_dataset':
+      $dataset_row = array();
+      foreach ($result as $key => $dataset) {
+        dkan_dataset_content_types_alter_dataset_license($dataset, 'license_title');
+        array_push($dataset_row, $dataset);
+        unset($result[$key]);
+      }
+      $result[0] = $dataset_row;
+      break;
+  }
+}
+
+/**
+ * Alter Dataset license.
+ */
+function dkan_dataset_content_types_alter_dataset_license(&$dataset, $key) {
+  if (isset($dataset[$key])) {
+    $subscribed_values = dkan_dataset_content_types_license_subscribed_values();
+    if (isset($subscribed_values[$dataset[$key]])) {
+      $license = $subscribed_values[$dataset[$key]];
+      if (isset($license['uri'])) {
+        $dataset[$key] = $license['uri'];
+      }
+      else {
+        unset($dataset[$key]);
+      }
+    }
+    else {
+      unset($dataset[$key]);
+    }
+  }
+}
+
+/**
+ * Add links to metadata fields.
+ */
+function dkan_dataset_content_types_preprocess_field(&$vars) {
+  switch ($vars['element']['#field_name']) {
+    case 'field_contact_email':
+      $e = $vars['element']['#items'][0]['value'];
+      $vars['items']['0']['#markup'] = '<a href="mailto:' . $e . '">' . $e . '</a>';
+      break;
+
+  }
+}
+
+/**
+ * Map of iso frequency ranges to field frequency allowed values.
+ */
+function dkan_dataset_content_types_iso_frecuency_map() {
+  return array(
+    'R/P10Y' => 6,
+    'R/P4Y' => 7,
+    'R/P1Y' => 3,
+    'R/P2M' => 8,
+    'R/P0.5M' => 8,
+    'R/P3.5D' => 9,
+    'R/P1D' => 0,
+    'R/P2W' => 10,
+    'R/P0.5W' => 10,
+    'R/P6M' => 11,
+    'R/P2Y' => 12,
+    'R/P3Y' => 13,
+    'R/P0.33W' => 14,
+    'R/P0.33M' => 15,
+    'R/PT1S' => 4,
+    'R/P1M' => 2,
+    'R/P3M' => 16,
+    'R/P0.5M' => 18,
+    'R/P4M' => 17,
+    'R/P1W' => 1,
+  );
+}
+
+/**
+ * Convert a frequency from iso to the field value representation.
+ */
+function dkan_dataset_content_types_iso2frequency($accrualPeriodicity) {
+  $map = dkan_dataset_content_types_iso_frecuency_map();
+  return $map[$accrualPeriodicity];
+}
+
+/**
+ * Convert a frequency from a field value to the iso representation.
+ */
+function dkan_dataset_content_types_frequency2iso($frecuencyIndex) {
+  $map = array_flip(dkan_dataset_content_types_iso_frecuency_map());
+  return $map[$accrualPeriodicity];
+}
+
+/**
+ * Implements allowed_values_function for field_language.
+ */
+function dkan_dataset_content_types_allowed_language_values() {
+  module_load_include('php', 'dkan_dataset_content_types', 'includes/language_code_list');
+  return dkan_dataset_content_types_get_language_codes();
+}

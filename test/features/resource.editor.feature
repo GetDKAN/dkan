@@ -1,4 +1,5 @@
-@javascript @api
+# time:3m12.22s
+@api
 Feature: Resource
 
   Background:
@@ -26,26 +27,23 @@ Feature: Resource
       | Jaz     | Group 01 | member               | Pending           |
       | Admin   | Group 02 | administrator member | Active            |
       | Celeste | Group 02 | member               | Active            |
-      | Celeste | Group 01 | member               | Active            |
+      | Celeste | Group 01 | administrator member | Active            |
+      | John    | Group 01 | member               | Active            |
     And "Tags" terms:
       | name    |
-      | Health  |
-      | Gov     |
+      | world   |
+      | results |
     And datasets:
       | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        |
-      | Dataset 02 | Group 02  | Celeste | Yes              | Gov      | Test        |
-    And "Format" terms:
-      | name    |
-      | cvs     |
-      | XLS     |
+      | Dataset 01 | Group 01  | Gabriel | Yes              | world    | Test        |
+      | Dataset 02 | Group 02  | Celeste | Yes              | results  | Test        |
     And resources:
       | title       | publisher | format | dataset    | author   | published | description |
-      | Resource 01 | Group 01  | cvs    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 02 | Group 01  | xls    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 03 | Group 02  | xls    | Dataset 02 | Celeste  | No        | Yes         |
-      | Resource 04 | Group 01  | cvs    | Dataset 01 | Katie    | No        | Yes         |
-      | Resource 05 | Group 02  | xls    | Dataset 02 | Celeste  | Yes       | Yes         |
+      | Resource 01 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 02 | Group 01  | zip    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 03 | Group 02  | zip    | Dataset 02 | Celeste  | No        | Yes         |
+      | Resource 04 | Group 01  | csv    | Dataset 01 | Katie    | No        | Yes         |
+      | Resource 05 | Group 02  | zip    | Dataset 02 | Celeste  | Yes       | Yes         |
 
   # TODO: Change to use Workbench instead of /content
   @noworkflow
@@ -72,7 +70,8 @@ Feature: Resource
     Given I am logged in as "Celeste"
     And I am on "Resource 04" page
     When I click "Edit"
-    And I click "Publishing options"
+    ## If you use selenium uncomment this
+    # When I click "Publishing options"
     And I check "Published"
     And I press "Save"
     Then I should see "Resource Resource 04 edited has been updated"
@@ -93,26 +92,30 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Import items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
     And I click "Edit"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
+    And I wait for "Import"
     And I press "Import"
     And I wait for "Delete Items"
     Then I should see "Last import"
     And I should see "imported items total"
-  @noworkflow
+
+  @noworkflow @javascript
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
     And I click "Edit"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     When I am on "Resource 01" page
@@ -124,14 +127,15 @@ Feature: Resource
     And I wait for "items have been deleted"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
-    Then I should see "No imported items."
+    And I wait for "No imported items."
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Drop datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
     And I click "Edit"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
@@ -171,8 +175,3 @@ Feature: Resource
     And I click "Revert"
     And I press "Revert"
     Then I should see "Resource Resource 01 has been reverted"
-
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"

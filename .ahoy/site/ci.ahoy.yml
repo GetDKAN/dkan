@@ -1,0 +1,34 @@
+ahoyapi: v1
+version: 0.0.0
+commands:
+  setup:
+    usage: switchs between ci setups
+    cmd: |
+      eval $(ahoy parse config/config.yml)
+      name=$(ahoy utils name)
+
+      if [ "$name" = 'datastarter' ]; then
+        echo "Site name datastarter. Going with DKAN base install"
+        ahoy site reinstall
+      else
+        echo "Site name set. Pulling database from s3 bucket"
+        ahoy utils s3-setup
+        # Configure https settings.
+        if [ "$default_stage_file_proxy_origin" != "" ] && [ "$default_stage_file_proxy_origin" != "changeme" ]; then
+          ahoy utils asset-download-db
+        else
+          ahoy utils asset-download
+          ahoy utils files-link
+        fi
+        ahoy utils files-fix-permissions
+        ahoy drush sql-cli < backups/sanitized.sql
+      fi
+
+  deploy:
+    usage: deploys within a ci setup
+    cmd: |
+      name=$(ahoy utils name)
+      eval $(ahoy parse config/config.yml)
+      ahoy utils truncate-watchdog
+      ahoy cmd-proxy bash hooks/common/post-code-deploy/drush-env-switch.sh $name local
+      ahoy drush user-password 1 --password=$private-probo-password

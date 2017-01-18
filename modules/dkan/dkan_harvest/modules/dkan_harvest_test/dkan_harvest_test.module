@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * @file
+ * Module file for dkan_harvest_test.
+ */
+
+/**
+ * Implements hook_harvest_source_types().
+ */
+function dkan_harvest_test_harvest_source_types() {
+  return array(
+    'harvest_test_type' => array(
+      'machine_name' => 'harvest_test_type',
+      'label' => 'Dkan Harvest Test Type',
+      'cache callback' => 'dkan_harvest_cache_default',
+      'migration class' => 'HarvestMigration',
+    ),
+    'harvest_another_test_type' => array(
+      'machine_name' => 'harvest_another_test_type',
+      'label' => 'Dkan Harvest Another Test Type',
+      'cache callback' => 'dkan_harvest_cache_default',
+      'migration class' => 'HarvestMigration',
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_harvest_test_menu() {
+  $items = array();
+
+  $items['dkan_harvest_test/resources/redirect'] = array(
+    'page callback' => 'dkan_harvest_test_resources_redirect',
+    'access callback' => TRUE,
+  );
+
+  return $items;
+}
+
+/**
+ * Page callabck for 'dkan_harvest_test/resources/redirect'.
+ */
+function dkan_harvest_test_resources_redirect() {
+  drupal_goto("https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv");
+}

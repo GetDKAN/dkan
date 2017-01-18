@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * Code for the Open Data Schema Map DKAN feature.
+ */
+
+include_once 'open_data_schema_map_dkan.features.inc';

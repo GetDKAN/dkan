@@ -1,0 +1,84 @@
+<?php
+
+/**
+ * @file
+ * Code for DKAN plugins.
+ */
+
+/**
+ * Implements hook_panels_ipe_region_links_alter().
+ *
+ * Set the default category to 'dkan' in the IPE.
+ */
+function dkan_plugins_panels_ipe_region_links_alter(&$links, $context) {
+  $links['add-pane']['href'] .= '/dkan';
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function dkan_plugins_ctools_plugin_directory($owner, $plugin_type) {
+  // Call the various ctools plugin types.
+  $modules = array('panels', 'ctools');
+  if (in_array($owner, $modules) && !empty($plugin_type) && ($plugin_type == 'content_types' || $plugin_type == 'access' || $plugin_type == 'layouts')) {
+    return 'plugins/' . $plugin_type;
+  }
+}
+
+/**
+ * Implements hook_preprocess_panels_pane().
+ */
+function dkan_plugins_preprocess_panels_pane(&$vars) {
+  if ($vars['pane']->subtype == 'dkan_plugins_button_link') {
+    // Iterate through each button pane to set button alignment and hover color.
+    $panes = array();
+    $panes[] = $vars['pane']->pid;
+    foreach ($panes as $pane) {
+      $align = $vars['pane']->configuration['button_align'];
+      if ($align) {
+        $vars['classes_array'][0] = $align;
+      }
+      $color = $vars['pane']->configuration['button_color'];
+      $hover = adjust_color_lighten_darken($color, 25);
+      if ($color) {
+        $pid = $vars['pane']->pid;
+        $css = '#panels-ipe-paneid-' . $pid . ' .pane-dkan-plugins-button-link a:hover { border-color: ' . $hover . ' !important; background-color: ' . $hover . ' !important; }';
+        drupal_add_css($css, 'inline');
+      }
+    }
+  }
+}
+
+/**
+ * Create hover color for the button.
+ *
+ * @author Jaspreet Chahal
+ */
+function adjust_color_lighten_darken($color_code, $percentage_adjuster = 0) {
+  $percentage_adjuster = round($percentage_adjuster / 100, 2);
+  if (is_array($color_code)) {
+    $r = $color_code["r"] - (round($color_code["r"]) * $percentage_adjuster);
+    $g = $color_code["g"] - (round($color_code["g"]) * $percentage_adjuster);
+    $b = $color_code["b"] - (round($color_code["b"]) * $percentage_adjuster);
+
+    return array(
+      "r" => round(max(0, min(255, $r))),
+      "g" => round(max(0, min(255, $g))),
+      "b" => round(max(0, min(255, $b))),
+    );
+  }
+  elseif (preg_match("/#/", $color_code)) {
+    $hex = str_replace("#", "", $color_code);
+    $r = (strlen($hex) == 3) ? hexdec(substr($hex, 0, 1) . substr($hex, 0, 1)) : hexdec(substr($hex, 0, 2));
+    $g = (strlen($hex) == 3) ? hexdec(substr($hex, 1, 1) . substr($hex, 1, 1)) : hexdec(substr($hex, 2, 2));
+    $b = (strlen($hex) == 3) ? hexdec(substr($hex, 2, 1) . substr($hex, 2, 1)) : hexdec(substr($hex, 4, 2));
+    $r = round($r - ($r * $percentage_adjuster));
+    $g = round($g - ($g * $percentage_adjuster));
+    $b = round($b - ($b * $percentage_adjuster));
+
+    return "#" . str_pad(dechex(max(0, min(255, $r))), 2, "0", STR_PAD_LEFT)
+        . str_pad(dechex(max(0, min(255, $g))), 2, "0", STR_PAD_LEFT)
+        . str_pad(dechex(max(0, min(255, $b))), 2, "0", STR_PAD_LEFT);
+
+  }
+}

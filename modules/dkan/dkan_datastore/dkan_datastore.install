@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * Install file for DKAN Datastore.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dkan_datastore_install() {
+  // Add some weight so other modules editing forms go first.
+  db_update('system')
+    ->fields(array(
+      'weight' => 2,
+    ))
+    ->condition('type', 'module')
+    ->condition('name', 'dkan_datastore')
+    ->execute();
+
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function dkan_datastore_update_7001() {
+  module_enable(array('field_hidden'));
+}

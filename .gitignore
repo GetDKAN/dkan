@@ -2,9 +2,6 @@ docroot
 libraries
 modules/contrib
 modules/nucivic
-modules/dkan/dkan_dataset
-modules/dkan/dkan_datastore
-modules/dkan/dkan_workflow
 themes/contrib
 webroot
 test/vendor
@@ -16,3 +13,6 @@ test/local.yml
 assets/*
 .idea
 behat.local.yml
+npm-debug.log
+.sublime-workspace
+*.orig

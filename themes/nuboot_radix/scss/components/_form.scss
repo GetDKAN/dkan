@@ -1,0 +1,293 @@
+//
+// Styles for Forms
+// --------------------------------------------------
+.table-select-processed .checkbox input[type="checkbox"] {
+  margin-left: 0px;
+}
+
+input[type="submit"],
+.btn-primary,
+.btn.btn-primary {
+  @extend %button;
+  margin-right: 1em;
+}
+input.use-ajax-submit {
+  margin-right: 10px;
+}
+button.btn,
+.btn.btn-default,
+.btn.btn-primary,
+.tabs--primary.nav-pills li a,
+.form-control {
+  line-height: 1.5em;
+}
+.btn, .btn-sm {
+  font-size: 14px;
+}
+
+select.form-control {
+  min-height: 36px;
+  &[multiple="multiple"] {
+    height: auto;
+  }
+}
+.form-control,
+div.autocomplete-deluxe-multiple {
+  padding: 0 12px;
+}
+.ctools-dropbutton {
+  .ctools-content a,
+  input.btn,
+  input[type="submit"] {
+    color: #666;
+    &:hover,
+    &:focus,
+    &:active {
+      border:none;
+      color: $brand-primary;
+    }
+  }
+}
+.field-type-file input[type="submit"],
+.input-group-addon,
+.input-group-btn {
+  width: auto;
+}
+
+// Colorizer.
+.colorizer-form {
+  .form-control {
+    width: 50%;
+  }
+  label {
+    float:none;
+    display: block;
+  }
+  #palette {
+    clear: both;
+    .item-selected {
+      background-color: transparent;
+    }
+  }
+}
+// BuEditor.
+.bue-popup {
+  z-index: 999;
+}
+.bue-ui.editor-container {
+  background-color: #ffffff;
+  padding: 0 4px;
+  border: 1px solid $border;
+  @include border-radius(4px 4px 0 0);
+}
+.form-control.form-textarea {
+  @include border-radius(0);
+}
+// Chosen.
+.form-control.chosen-processed {
+  line-height: 34px;
+  height: auto;
+  padding: 0;
+  border: none;
+  max-width: 100% !important;
+  .chosen-choices {
+    @include border-radius(4px);
+    border-color: #ccc;
+  }
+}
+.chosen-container-multi .chosen-choices li.search-choice .search-choice-close {
+  background-position: -42px 2px;
+}
+.chzn-container-single {
+  max-width: 100%;
+}
+div.autocomplete-deluxe-multiple,
+.chzn-container-multi {
+  width: 100% !important;
+}
+.chzn-container-multi .chzn-choices .search-field input {
+  height: auto;
+}
+#context-blockform td.blocks .label {
+  background-color: $gray;
+}
+.tabledrag-hide .chzn-container-single {
+  width: 20px !important;
+}
+
+div.autocomplete-deluxe-container input.autocomplete-deluxe-form-single {
+  float: left;
+}
+
+fieldset {
+  position: relative;
+}
+
+fieldset.collapsible {
+  padding-top: 0;
+}
+#og-group-ref-add-more-wrapper fieldset,
+fieldset.group-primary {
+  padding-top: 0;
+  legend {
+    display: none;
+  }
+}
+
+.horizontal-tabs fieldset.horizontal-tabs-pane {
+  padding: 0;
+}
+div.horizontal-tabs {
+  border: none;
+}
+
+.form-managed-file {
+  span.file {
+    border: 1px solid $border;
+    padding: 0 15px;
+    line-height: 34px;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 5px 0 0 5px;
+    margin-right: 0;
+  }
+  .file-size {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 0 10px;
+    vertical-align: top;
+    line-height: 34px;
+    display: inline-block;
+    font-size: 12px;
+    margin: 0 -5px;
+    background: #eee;
+  }
+  input {
+    @include border-radius($border-radius-base 0 0 $border-radius-base);
+    border: 1px solid $border;
+    padding: 5px;
+    margin: 0 0 10px 0;
+    height: 36px;
+    vertical-align: top;
+  }
+  input.form-submit {
+    @extend %button-attached;
+    margin: 0 0 10px 0;
+  }
+  .input-group-btn {
+    display: inline-block;
+    vertical-align: top;
+  }
+  .manualcrop-style-button-holder input {
+    @include border-radius(5px);
+  }
+}
+.image-widget-data input.btn {
+  //@extend %button-attached;
+}
+
+.path-form.panel-default {
+  border-color: transparent;
+  .panel-body {
+    padding:0;
+  }
+}
+
+// OG.
+.list-group-item {
+  background-color: transparent;
+  border: none;
+  color: $text-color;
+  padding: 0;
+}
+
+.filter-wrapper {
+  padding: 10px;
+  .input-group-addon {
+    border: none;
+    background: transparent;
+  }
+}
+
+#body-add-more-wrapper {
+  .panel-body {
+    padding: 0;
+  }
+}
+
+.node-dataset-form .group-odfie-pod {
+  .form-item {
+    margin-bottom: 0px;
+  }
+  .field-name-field-odfe-data-quality {
+    margin-bottom: 15px;
+  }
+}
+
+.node-dataset-form .form-item.has-error {
+  div.autocomplete-deluxe-container,
+  div.chosen-container {
+    border: 2px solid red;
+    .chosen-single {
+      border: none;
+    }
+  }
+}
+
+.node-dataset-form .form-item .error .chosen-single {
+  line-height: 24px;
+}
+
+.node-dataset-form,
+.node-resource-form {
+  .field-name-field-format label {
+    vertical-align: top;
+  }
+  @media all and (max-width:599px) {
+    .stages li .highlight {
+      font-size: 12px;
+      line-height: 1.15em;
+    }
+  }
+}
+
+// file_resup tweaks to display on top of recline
+.node-resource-form .field-name-field-upload {
+  .form-type-managed-file {
+    display: table;
+    .file-widget {
+      display: table-footer-group;
+    }
+    .file-resup-wrapper {
+      display: table-header-group;
+    }
+  }
+}
+
+#search-api-admin-index-status-form {
+  input {
+    margin-bottom: 1em;
+  }
+}
+.page-admin form {
+  input[type=submit] {
+    margin-right: 1em;
+  }
+}
+
+#field-dkan-harvest-filters-values,
+#field-dkan-harvest-excludes-values,
+#field-dkan-harvest-overrides-values,
+#field-dkan-harvest-defaults-values {
+  .description {
+    font-weight: normal;
+  }
+}
+
+#dkan-dataset-form-settings .help-block {
+  margin: 5px 20px 10px;
+}
+
+.form-type-textfield.form-group label.option {
+  @extend %screenreader;
+}

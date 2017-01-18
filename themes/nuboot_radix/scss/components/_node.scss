@@ -1,0 +1,272 @@
+//
+// Styles for Nodes
+// --------------------------------------------------
+.node-type-dataset {
+  .field-name-field-tags {
+    margin: 1em 0;
+  }
+  // Dataset field labels.
+  h4 {
+    @include h4;
+  }
+  .field-name-field-related-content,
+  .field-name-field-topic,
+  .field-name-field-tags,
+  .field-name-field-topic,
+  .field-name-field-preview-thumbail {
+    .field-label {
+      @include h4;
+    }
+  }
+}
+
+/** UI Tabs **/
+.node-resource-form .horizontal-tabs {
+  border:none;
+  ul.horizontal-tabs-list {
+    background-color: transparent;
+    border: 0;
+    padding-top: 10px;
+    li,
+    li.selected {
+      border: 0;
+      background-color: transparent;
+      min-width: 4em;
+      a:hover {
+        background:transparent;
+      }
+      #active-horizontal-tab {
+        background: url(../images/sprite-ckan-icons.png) no-repeat -193px 2px;
+        display: block;
+        text-indent: -9999px;
+        width: 16px;
+        height: 16px;
+        left: 50%;
+        clip: auto;
+      }
+      &.horizontal-tab-button-1 .summary,
+      &.horizontal-tab-button-2 .summary {
+        background: url(../images/sprite-ckan-icons.png) no-repeat -160px 0;
+      }
+      .summary{
+        background: url(../images/sprite-ckan-icons.png) no-repeat -144px 0;
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top:5px;
+        left:10px;
+      }
+      a {
+        font-size: 1.1em;
+        position: relative;
+        padding: 5px 15px 5px 30px;
+      }
+    }
+  }
+  .horizontal-tabs-panes {
+    @include border-radius($border-radius-base);
+    border:1px solid $border;
+    padding: 8px;
+    fieldset.htab_link_upload,
+    fieldset.htab_link_api,
+    fieldset.htab_link_file {
+      legend.panel-heading {
+        display: none;
+      }
+      .field-widget-recline-widget legend.panel-heading {
+        border:none;
+        border-bottom: 1px solid $border;
+        display: block;
+        background:transparent;
+        color: $gray;
+        padding: 5px 0;
+        //margin-top:10px;
+      }
+    }
+    .form-type-checkbox label,
+    .form-type-select label {
+      display: block;
+      line-height: 36px;
+      padding-top:2px;
+    }
+    .filefield-source-remotefile {
+      input {
+        margin-right: 0;
+      }
+      input.btn {
+        @include border-radius(0 $border-radius-base $border-radius-base 0);
+        margin-left: -1px;
+      }
+    }
+    .form-item-field-upload-und-0-embed {
+      clear: both;
+    }
+  }
+}
+.page-node-add-resource {
+  .field-group-htabs.group-data div.horizontal-tabs {
+    border: 0;
+  }
+  .form-item {
+    margin: 0;
+  }
+}
+
+#action-info {
+  color: $brand-danger;
+  margin: 1em 0;
+  &:before {
+    color: $brand-danger;
+    content: "\f071";
+    font-family: "FontAwesome";
+    font-size: 1.5em;
+    font-style: normal;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+}
+.field-name-body {
+  a {
+    overflow-wrap: break-word;
+  }
+  ul {
+    list-style-type:disc;
+    margin:10px 20px;
+    li {
+      margin:6px 10px;
+    }
+  }
+}
+.field-group-table-description {
+  color:$gray;
+  display:block;
+  padding:8px 10px 8px 40px;
+  position:relative;
+  .icon-info-sign:before {
+    color:$gray-light;
+    content:"\f05a";
+    font-family:$icon-fa;
+    font-size:2.5em;
+    font-style: normal;
+    height:30px;
+    left:0;
+    margin:10px 15px 0 0;
+    padding:6px 0;
+    position:absolute;
+    top:-6px;
+    width:30px;
+  }
+}
+
+.group-owner-message {
+  margin-bottom:20px;
+}
+
+.field-type-text-with-summary {
+  padding: 0;
+}
+.field-name-field-additional-info {
+  margin-top: 2em;
+}
+.field-name-field-related-content .field-item {
+  @include item-list;
+}
+
+// Blog Teaser.
+.node-teaser {
+  margin-bottom: 2em;
+  .blog-image div {
+    background-size: cover !important;
+    overflow: hidden;
+    position: relative;
+    height: 200px;
+    margin-bottom: 1em;
+    @media all and (max-width:767px) {
+      background-position: 50% 50%;
+    }
+  }
+  h2.blog-title {
+    font-size: 1.5em;
+    margin-top: 0;
+  }
+  .submitted {
+    @include submitted;
+    font-size: .8em;
+  }
+  .fa-clock-o {
+    padding-left: 1em;
+  }
+  .links {
+    margin: -.5em 0 2.5em 0;
+  }
+  .links li {
+    display: inline;
+    a {
+      @extend %button;
+      font-size: .8em;
+      padding: 1px 8px;
+    }
+  }
+  &.no-image {
+    padding-left: 15px;
+    padding-right: 15px;
+  } 
+}
+// Blog Page.
+.node-blog {
+  .submitted {
+    @include submitted;
+  }
+  .blog-image {
+    margin: 1em 0;
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+  .fa-clock-o {
+    padding-left: 1em;
+  }
+  .field-name-field-tags {
+    margin: 1em 0;
+  }
+  .links li {
+    display: inline;
+    a {
+      @extend %button;
+      display: inline-block;
+      margin: 1em 0;
+    }
+  }
+  .field-name-field-tags .field-label {
+    display: none;
+  }
+  @media all and (min-width:768px) {
+    h1 {
+      width: 47%;
+      float: left;
+    }
+    .submitted {
+      width: 47%;
+      float: left;
+      clear: left;
+    }
+    .blog-image {
+      width: 47%;
+      float: right;
+      margin: 0 0 1em 1.5em;
+    }
+    .field-type-text-with-summary {
+      clear: left;
+    }
+    .no-image {
+      h1,
+      .submitted {
+        width: 100%;
+      }
+      .field-type-text-with-summary {
+        clear: both;
+      }
+    }
+  }
+}

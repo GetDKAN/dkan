@@ -1,0 +1,46 @@
+.pane-dkan-sitewide-panels-dkan-user-summary img {
+  float: left;
+  margin-left: -80px;
+  margin-bottom: 10px;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary p {
+  font-size: 14px;
+  margin: 10px 0;
+  line-height: normal;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary .profile-stats {
+  padding-left: 80px;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary .profile-stats p {
+  font-size: 12px;
+  margin: 0px;
+  line-height: normal;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary .view-list-of-users-groups {
+  position: relative;
+  display: block;
+  padding: 0;
+  text-decoration: none;
+  margin: 0 -15px;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary .view .group-membership a {
+  display: block;
+  padding: 6px 10px;
+  position: relative;
+  line-height: 22px;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary .view .group-membership a:before {
+  content: "\e981";
+  font-family: 'DKAN-Topics';
+  font-style: normal;
+  margin-right: .5em;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary .view .group-membership a:hover {
+  background: rgba(0, 0, 0, 0.03);
+  text-decoration: none;
+}
+.pane-dkan-sitewide-panels-dkan-user-summary .view .view-empty p {
+  padding: 0 15px;
+  margin-bottom: 0;
+  clear: both;
+}

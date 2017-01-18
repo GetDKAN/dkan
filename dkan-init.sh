@@ -193,6 +193,9 @@ for i in "$@"; do
     --yes)
             AUTO_CONFIRM="echo -ne 'y\n' | "
             ;;
+    --qa-users)
+            QA_USERS=true
+            ;;
     --no)
             AUTO_CONFIRM="echo -ne 'n\n' | "
             ;;
@@ -253,6 +256,11 @@ fi
 if [ "$DB_URL" ]; then
   alert "Building and installing dkan..."
   install_dkan $DB_URL
+
+  if [ "$QA_USERS" ]; then
+    ahoy dkan create-qa-users
+  fi
+
 
   alert "DKAN should be fully installed. Make sure you add the docroot folder to your apache config."
 else

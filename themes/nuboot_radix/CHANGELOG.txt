@@ -1,0 +1,48 @@
+7.x-1.x
+--------------------------
+- Add managed file support to logo and hero image
+- Add check on filenames to remove spaces and special characters that can break functionality.
+- Make date facets consistant with other facets styling
+- Upgraded to use Radix 3.3. See README.md for updated use instructions
+- Fix node--search-result.tpl.php file to check the $group_list variable before printing markup
+- Fix hero image to only load on the front page
+- Update files to pass coding standards
+
+7.x-1.11 2016-02-02
+--------------------------
+- Theming improvements to support new search page design
+- Fix the Additional Info field in datasets to hide extra-long rows
+- Fix a bug that prevented sub-themes of Nuboot Radix from retrieving their own settings
+- Styling for re-arranging of group links on group pages DKAN Dataset
+- Numerous small styling and code fixes
+
+
+7.x-1.10 2015-11-10
+--------------------------
+- Style improvements for "open with" button
+- Fix default logo path when svg not available
+
+7.x-1.9 2015-09-17
+--------------------------
+- Add support for SVG logos
+- New option to use solid color for background/hero graphic instead of image
+- Improved Colorizer support for different page elements
+- Numerous bug fixes and small styling improvements
+
+7.x-1.2
+------------------
+- Switch to radix subtheme
+- Updates for panels layouts
+- Switch to flat icons for files http://www.flaticon.com/packs/file-formats-icons
+
+7.x-1.1 2014-06-27
+------------------
+- Styles for resource download button
+- Change nuams references to NuCivic to reflect branding changes
+- Left floating resource list
+- Improve colorizer functionality
+
+
+7.x-1.0
+-------
+- Added nuBoot theme as the main out-of-box theme for DKAN distro.

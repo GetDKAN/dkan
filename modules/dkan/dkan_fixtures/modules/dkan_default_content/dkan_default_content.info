@@ -1,0 +1,17 @@
+name = DKAN Default Content
+description = Default Content for DKAN
+core = 7.x
+package = DKAN
+
+dependencies[] = dkan_fixtures
+dependencies[] = migrate_extras
+dependencies[] = dkan_default_topics
+
+files[] = includes/data_dashboard.inc
+files[] = includes/data_story.inc
+files[] = includes/dataset.inc
+files[] = includes/group.inc
+files[] = includes/page.inc
+files[] = includes/panelized_node.inc
+files[] = includes/resource.inc
+files[] = includes/visualization_entity.inc

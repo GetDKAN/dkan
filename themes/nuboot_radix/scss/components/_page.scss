@@ -1,0 +1,26 @@
+//
+// Styles for individual pages
+// --------------------------------------------------
+
+.main {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.front .main {
+  padding: 0;
+}
+.page-admin {
+  .main {
+    padding: 20px 15px;
+  }
+  .region-content {
+    margin: 0;
+  }
+  .breadcrumb,
+  .alert,
+  .tabs--primary,
+  .page-header {
+    margin: 0 0 15px;
+  }
+}
+

@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Fast import install.
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function dkan_datastore_fast_import_enable() {
+  dkan_datastore_check_database();
+}

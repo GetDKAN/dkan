@@ -18,7 +18,7 @@ steps:
       echo "-------> Run 'bash dkan-init.sh':"
       echo ""
       # Create the proper folder structure
-      time bash dkan-init.sh dkan --deps --build=mysql://root:strongpassword@127.0.0.1/dkan
+      time bash dkan-init.sh dkan --deps --qa-users --build=mysql://root:strongpassword@127.0.0.1/dkan
       #Set a symlink so that probo can serve the site.
 
       echo ""

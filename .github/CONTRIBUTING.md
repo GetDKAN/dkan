@@ -60,11 +60,11 @@ Writing everything out as a traditional user story may seem tedious, but it beco
 Pull requests should include sufficient context for a maintainer to open them for the first time and understand clearly what if any action needs to be taken. This means a pull request should contain in its initial description, at minimum:
 
 1. Either:
-  * A link to a clearly-defined issue in either the [main DKAN issue queue]() or a specific DKAN implementation project (preferable), or
-  * A clearly written explanation of the issue the pull request adresses, ideally formatted as a user story, if a ticket does not exist or belongs to a repo that the DKAN maintainers do not have access to
+  * a link to a clearly-defined issue in either the [main DKAN issue queue]() or a specific DKAN implementation project (preferable), or
+  * a clearly written explanation of the issue the pull request adresses, ideally formatted as a user story, if a ticket does not exist or belongs to a repo that the DKAN maintainers do not have access to
 2. An acceptance test with easily-reproducable and verifiable steps formatted as github tasks. In most cases, the issue the pull request references will include acceptance criteria that can be cut and pasted in.
 
-#### Pull Request Template
+### Pull Request Template
 ```
 ## Description
 ref: NuCivic/[repo]/[issue#]
@@ -80,4 +80,6 @@ Please use a reasonably descriptive *title* as well. "Updating drupal-org.make" 
 
 If a pull request is simply being created for QA purposes or should for some other reason NOT be merged, explain this in the description and add a "don't merge" tag.
 
+### Changelog Guidelines
 
+Pull requests must include a new line in CHANGELOG.txt before being merged into the master (7.x-1.x) branch explaining what has changed. Make sure to point out any modules added, modules removed, contrib modules updated, or patches applies.

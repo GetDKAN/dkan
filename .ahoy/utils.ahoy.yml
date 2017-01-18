@@ -4,7 +4,7 @@ commands:
     confirm:
       cmd: |
         read -r -p "{{args}} [y/N] " response
-        if [ $response = y ]
+        if [ "$response" = y ] || [ "$response" = Y ];
         then
           true
         else

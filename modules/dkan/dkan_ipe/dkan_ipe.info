@@ -1,0 +1,10 @@
+name = DKAN In-Place Editor
+description = Customizations to panels IPE
+core = 7.x
+package = DKAN
+dependencies[] = ctools
+dependencies[] = dkan_plugins
+dependencies[] = panels
+dependencies[] = strongarm
+features[features_api][] = api:2
+project path = profiles/dkan/modules/dkan

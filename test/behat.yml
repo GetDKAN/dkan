@@ -1,18 +1,22 @@
 default:
   suites:
-     default:
+     dkan:
         contexts:
           - FeatureContext #Temporary overrides only!
           - Drupal\DrupalExtension\Context\MinkContext
           - Drupal\DrupalExtension\Context\DrupalContext
           - Drupal\DrupalExtension\Context\MessageContext
+          - Drupal\DrupalExtension\Context\MarkupContext
+          - Drupal\DrupalExtension\Context\BatchContext
           - Drupal\DKANExtension\Context\DKANContext
           - Drupal\DKANExtension\Context\MailContext
           - Drupal\DKANExtension\Context\PageContext
           - Drupal\DKANExtension\Context\GroupContext
+          - Drupal\DKANExtension\Context\HarvestSourceContext
           - Drupal\DKANExtension\Context\WorkflowContext
           - Drupal\DKANExtension\Context\DatasetContext
           - Drupal\DKANExtension\Context\DataDashboardContext
+          - Drupal\DKANExtension\Context\PODContext
           - Drupal\DKANExtension\Context\SearchAPIContext:
               search_forms:
                 default:
@@ -21,8 +25,14 @@ default:
                   form_button: 'edit-submit'
                   results_css: '.view-dkan-datasets'
                   result_item_css: '.views-row'
+                harvest_source:
+                  results_css: '.view-dkan-harvest-source-search'
+                  result_item_css: '.views-row'
           - Drupal\DKANExtension\Context\ResourceContext
+          - Drupal\DKANExtension\Context\ServicesContext
+          - Drupal\DKANExtension\Context\PODContext
           - Drupal\DKANExtension\Context\DatastoreContext
+          - Drupal\DrupalExtension\Context\DrushContext
           - Devinci\DevinciExtension\Context\DebugContext:
               asset_dump_path: %paths.base%/assets
           - Devinci\DevinciExtension\Context\JavascriptContext:
@@ -64,6 +74,9 @@ default:
         left_sidebar: '.panel-col-first'
         dataset title: '.pane-node .pane-title'
         dataset resource list: '#data-and-resources'
+        dataset body: '.field-name-body'
+        dataset edit body: '#edit-body'
+        dataset spatial: '#edit-field-spatial'
         resource title: '.pane-node .pane-title'
         resource groups: '#edit-groups'
         search_area: '.panel-col-last'
@@ -77,11 +90,14 @@ default:
         facet container: '.radix-layouts-sidebar'
         filter by resource format: '.facetapi-facet-field-resourcesfield-format'
         filter by author: '.facetapi-facet-author'
+        filter by topics: '.facetapi-facet-field-topic'
         filter by tag: '.facetapi-facet-field-tags'
+        filter by date changed: '.facetapi-facet-changed'
         social: '.pane-dkan-sitewide-dkan-sitewide-social'
         other access: '.pane-dkan-sitewide-dkan-sitewide-other-access'
         datasets: '.view-dkan-datasets'
-        user profile: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
+        user profile: '.pane-dkan-sitewide-panels-dkan-user-summary'
+        results: '.view-header'
         user page: '.main'
         user command center: '.pane-dkan-sitewide-profile-page-dkan-user-summary'
         tabs: '.field-group-htabs-wrapper'
@@ -91,6 +107,8 @@ default:
         user content: '.view-user-profile-search'
         content search: '.form-item-query'
         user block: '.pane-views-user-profile-fields-block'
+        admin menu: '#admin-menu'
+        harvest datasets: '.view-dkan-harvest-datasets'
       text:
         log_out: "Log out"
         log_in: "Log in"

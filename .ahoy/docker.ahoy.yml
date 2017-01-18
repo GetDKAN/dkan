@@ -19,7 +19,7 @@ commands:
       EOF
     usage: Outputs the commands needed to setup a docker environment.
   up:
-    cmd: "ahoy docker compose up -d"
+    cmd: "ahoy docker compose up -d {{args}}"
     usage: Start the docker-compose containers.
   proxy-up:
     cmd: "docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy"
@@ -41,14 +41,35 @@ commands:
     usage: Destroy all the docker compose containers. (use before deleting folder)
   exec:
     cmd: |
+      all_args=$(echo "{{args}}")
+      first_arg=$(echo "{{args}}" | sed  's/\([[:alnum:]]*\ \).*/\1/')
+      rest_args=$(echo "{{args}}" | sed  's/\([[:alnum:]]*\ \)//')
+      case $first_arg in
+        *web*|*db*|*memcached*|*cli*|*browser*|*solr*)
+          container=$first_arg
+          args=" $rest_args"
+          ;;
+        *)
+          container=cli
+          args=" $all_args"
+          ;;
+      esac
+
+      id=$(ahoy docker compose ps -q $container)
       if [ -t 0 ]; then
         # if the input is empty, then use a tty session
-        docker exec -it $(ahoy docker compose ps -q cli) bash -c '{{args}}'
+        docker exec -it $id bash -c "$command $args"
       else
         # if the input is not empty, then don't use tty
-        docker exec -i $(ahoy docker compose ps -q cli) bash -c '{{args}}'
+        docker exec -i $id bash -c "$command $args"
       fi
     usage: run a command in the docker-compose cli service container.
+  mysql-url:
+    cmd: |
+      MYSQL=`docker exec -it $(ahoy docker compose ps -q cli) bash -c 'echo "mysql://$DB_1_ENV_MYSQL_USER:$DB_1_ENV_MYSQL_PASSWORD@$DB_1_PORT_3306_TCP_ADDR/$DB_1_ENV_MYSQL_DATABASE"'`
+      MYSQL="$(echo -e "${MYSQL}" | tr -d '[[:space:]]')"
+      echo "$MYSQL"
+    usage: Outputs a mysql-url
   mysql:
     cmd: "docker exec -it $(ahoy docker compose ps -q cli) bash -c 'mysql -uroot -p$DB_ENV_MYSQL_ROOT_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
     usage: Connect to the default mysql database as the root user.
@@ -73,3 +94,57 @@ commands:
     usage: Prints the project VNC URL
     cmd: |
       echo "`docker-machine ip default`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+
+  cleanup:
+    usage: Clean ups docker unused images and volumes. See http://blog.yohanliyanage.com/2015/05/docker-clean-up-after-yourself/.
+    cmd: |
+      EXITED=`docker ps -a -q -f status=exited`
+      DANGLING=`docker images -f "dangling=true" -q`
+      if [ ! -z "$EXITED" ]
+      then
+        docker rm -v $EXITED
+      fi
+      if [ ! -z "$DANGLING" ]
+      then
+        docker rmi $DANGLING
+      fi
+      docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes
+
+  log:
+    usage: Target spcific logs using tail -f.  targets the error log by default.
+    cmd: |
+      args=$(echo {{args}})
+      case $args in
+        access)
+          ahoy docker exec web tail -f /var/log/apache2/access.log
+          ;;
+        error)
+          ahoy docker exec web tail -f /var/log/apache2/error.log
+          ;;
+        *)
+          ahoy docker exec web tail -f /var/log/apache2/error.log
+          ;;
+      esac
+
+  apache:
+    usage: Interact with the docker apache service Accepts start, stop, restart.
+    cmd: ahoy docker exec web service apache2 {{args}}
+
+  xdebug:
+    usage: Enable or disable xdebug configuration. Accepts stop or start
+    cmd: |
+      args=$(echo {{args}})
+      case $args in
+        start)
+        ahoy docker exec web cp -f /etc/php5/xdebug.ini /etc/php5/mods-available
+        ahoy docker apache restart
+          ;;
+        stop)
+        ahoy docker exec web rm -f /etc/php5/mods-available/xdebug.ini
+        ahoy docker apache restart
+          ;;
+        *)
+          echo "Accepted arguments are 'sart' or 'stop'".
+          exit 1
+          ;;
+      esac

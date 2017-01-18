@@ -83,7 +83,7 @@ Feature: Groups
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I fill in "title" with "Test Resource Link File"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-remotefile-url" with "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv"
     And I press "edit-another"
     Then I wait for "Test Resource Link File has been created"
     And I should see "Add resource"

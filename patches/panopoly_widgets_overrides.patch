@@ -1,5 +1,5 @@
 diff --git a/panopoly_widgets.features.field_instance.inc b/panopoly_widgets.features.field_instance.inc
-index a7d5037..ea59f0f 100644
+index 62685fd..d5c0b5a 100644
 --- a/panopoly_widgets.features.field_instance.inc
 +++ b/panopoly_widgets.features.field_instance.inc
 @@ -40,6 +40,20 @@ function panopoly_widgets_field_default_field_instances() {
@@ -23,10 +23,10 @@ index a7d5037..ea59f0f 100644
          'progress_indicator' => 'throbber',
        ),
        'type' => 'file_generic',
-@@ -156,6 +170,20 @@ function panopoly_widgets_field_default_field_instances() {
-       'active' => 1,
-       'module' => 'image',
-       'settings' => array(
+@@ -187,6 +201,20 @@ function panopoly_widgets_field_default_field_instances() {
+         'manualcrop_styles_list' => array(
+           'panopoly_image_full' => 'panopoly_image_full',
+         ),
 +        'filefield_sources' => array(
 +          'filefield_sources' => array(),
 +          'source_attach' => array(
@@ -41,10 +41,10 @@ index a7d5037..ea59f0f 100644
 +            'autocomplete' => 0,
 +          ),
 +        ),
-         'manualcrop_crop_info' => 1,
-         'manualcrop_default_crop_area' => 1,
-         'manualcrop_enable' => 1,
-@@ -414,7 +442,9 @@ function panopoly_widgets_field_default_field_instances() {
+         'manualcrop_styles_mode' => 'include',
+         'manualcrop_thumblist' => 0,
+       ),
+@@ -486,7 +514,9 @@ function panopoly_widgets_field_default_field_instances() {
      'widget' => array(
        'active' => 1,
        'module' => 'options',

@@ -1,0 +1,442 @@
+<?php
+
+/**
+ * @file
+ * Code for the NuCivic workflow feature.
+ */
+
+include_once 'dkan_workflow.features.inc';
+
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_workflow_menu_alter(&$items) {
+  // Move workbench link to command center if not administrator or user 1.
+  global $user;
+
+  // Hide the default workbench_content screen because it duplicates
+  // functionalities.
+  $items['admin/workbench']['page callback'] = 'workbench_create';
+  $items['admin/workbench/content']['page callback'] = 'workbench_create';
+  unset($items['admin/workbench/create']);
+
+  // Remove links created automatically by workbench.
+  foreach (node_type_get_types() as $type) {
+    $type_url_str = str_replace('_', '-', $type->type);
+    unset($items['admin/workbench/create/node/add/' . $type_url_str]);
+  }
+  // Move 'My Workbench' link to the command center menu.
+  $items['admin/workbench']['menu_name'] = 'menu-command-center-menu';
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_workflow_menu() {
+  // Add dummy link so administrators can access My Workbench.
+  $items['admin/myworkbench'] = array(
+    'menu_name' => 'management',
+    'title' => t('My Workbench'),
+    'description' => t('My Workbench'),
+    'page callback' => 'drupal_goto',
+    'page arguments' => array('admin/workbench'),
+    'access arguments' => array('access workbench'),
+    'weight' => -50,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  // Add child links for workbench tasks.
+  $items['admin/workbench/drafts-active'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/drafts-active',
+    'router_path' => 'admin/workbench/drafts-active',
+    'title' => t('My drafts'),
+    'description' => t('My drafts'),
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 0,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/workbench/needs-review-active'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/needs-review-active',
+    'router_path' => 'admin/workbench/needs-review-active',
+    'title' => t('Needs review'),
+    'description' => t('Needs review'),
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 1,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/workbench/drafts-stale'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/drafts-stale',
+    'router_path' => 'admin/workbench/drafts-stale',
+    'title' => t('Stale drafts'),
+    'description' => t('Stale drafts'),
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 2,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/workbench/needs-review-stale'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/needs-review-stale',
+    'router_path' => 'admin/workbench/needs-review-stale',
+    'title' => t('Stale reviews'),
+    'description' => t('Stale reviews'),
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 3,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_node_grants().
+ */
+function dkan_workflow_node_grants($user, $op) {
+  $grants['dkan_workflow'] = array($user->uid);
+  return $grants;
+}
+
+/**
+ * Implements hook_node_access_records().
+ */
+function dkan_workflow_node_access_records($node) {
+  if ($node->status) {
+    // It's published, default handling is okay.
+    return;
+  }
+  $grants[] = array(
+    'realm' => 'dkan_workflow',
+    'gid' => $node->uid,
+    'grant_view' => 1,
+    'grant_update' => 0,
+    'grant_delete' => 0,
+    'priority' => 0,
+  );
+  return !empty($grants) ? $grants : array();
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_workflow_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  $role_workflow_supervisor = user_role_load_by_name('Workflow Supervisor');
+
+  // Only supervisors has this tabs.
+  if (strpos($root_path, 'admin/workbench') === 0 && user_has_role($role_workflow_supervisor->rid)) {
+    // TODO: might be better to map over #link and do this for every tab.
+    $stale_drafts = $data['tabs'][0]['output'][3]['#link']['description'];
+    $data['tabs'][0]['output'][3]['#link']['localized_options'] = array(
+      'attributes' => array(
+        'title' => $stale_drafts,
+      ),
+    );
+    $stale_reviews  = $data['tabs'][0]['output'][4]['#link']['description'];
+    $data['tabs'][0]['output'][4]['#link']['localized_options'] = array(
+      'attributes' => array(
+        'title' => $stale_reviews,
+      ),
+    );
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function dkan_workflow_permission() {
+  return array(
+    'access stale reviews page' => array(
+      'title' => t('Access Stale Reviews Page'),
+      'description' => t('Grant access to stale reviews page.'),
+    ),
+    'access stale drafts page' => array(
+      'title' => t('Access Stale Drafts Page'),
+      'description' => t('Grant access to stale drafts page.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_css_alter().
+ */
+function dkan_workflow_css_alter(&$css) {
+  // Do not make assemptions about link_badges module localtion.
+  foreach ($css as $css_key => $css_value) {
+    if (preg_match('#/link_badges/link_badges.css$#', $css_key)) {
+      $css[$css_key]['data'] = drupal_get_path('module', 'dkan_workflow') . '/css/link_badges_custom.css';
+      // Only change the first (and most likely unique) occurrence.
+      break;
+    }
+  }
+}
+
+/**
+ * Implements hook_block_list_alter().
+ */
+function dkan_workflow_block_info_alter(&$blocks, $theme, $code_blocks) {
+  // Disabled workbench default moderation block.
+  if ($blocks['workbench']['block']['region'] == 'content') {
+    $blocks['workbench']['block']['status'] = 0;
+  }
+}
+
+/**
+ * Implements hook_views_default_views_alter().
+ *
+ * Load all views from /views folder. Overriding any existing views if any.
+ */
+function dkan_workflow_views_default_views_alter(&$views) {
+  $files = file_scan_directory(drupal_get_path('module', 'dkan_workflow') . '/views', '/.*\.view.inc$/');
+  foreach ($files as $filepath => $file) {
+    require $filepath;
+    if (isset($views[$view->name])) {
+      $views[$view->name] = $view;
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_workflow_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id == 'views_exposed_form' && strpos($form_state['view']->name, 'workbench_') === 0) {
+    $form['submit']['#value'] = 'Filter';
+    dkan_workflow_limit_workflow_exposed_filter_node_types($form);
+    dkan_workflow_remove_email_errors();
+  }
+
+  // NOTE: 'Moderators' should be 'administrator members'
+  // on the groups they belong to in
+  // order to be able to Publish content
+  // not created by them on groups.
+  // If they are normal members then an 'Access denied'
+  // error will be displayed every
+  // time they try to Publish content that was not created by them.
+  if ($form_id == 'og_ui_add_users') {
+    $form['og_user']['roles']['#suffix'] = '<span class="help-block">Workflow Moderators must be "administrator members" in order to manage content within a group.</span>';
+  }
+}
+
+/**
+ * Removes email errors from drupal messages.
+ */
+function dkan_workflow_remove_email_errors() {
+  $messages = drupal_get_messages('error');
+  if (array_key_exists('error', $messages)) {
+    $messages['error'] = array_filter($messages['error'], function ($item) {
+      return FALSE === strpos($item, 'email notifications');
+    });
+    $drupal_set_error = function ($error) {
+      drupal_set_message($error, 'error');
+    };
+    array_map($drupal_set_error, $messages['error']);
+  }
+}
+
+/**
+ * Limits exposed form node options to Dataset and Resource.
+ */
+function dkan_workflow_limit_workflow_exposed_filter_node_types(&$form) {
+  $options = $form['type']['#options'];
+  $form['type']['#options'] = array_filter($options, function ($option) {
+    // This wont work correctly if put outside of the scope of this callback.
+    $dkan_workflow_content_types_names = array_map(function ($type) {
+      return node_type_get_name($type);
+    }, variable_get('dkan_workflow_content_types', array()));
+    $allowed_types = array_merge(array('- Any -'), $dkan_workflow_content_types_names);
+    return in_array($option, $allowed_types);
+  });
+
+  $form['type']['#default_value'] = 'Dataset';
+  $form['type']['#validated'] = TRUE;
+}
+
+/**
+ * Implements hook_strongarm_alter().
+ *
+ * Dkan_dataset_content_types exports node_options_(dataset|resource). For
+ * dkan_workflow to work we need to remove 'status' and make sure 'moderation'
+ * and 'revision' from the node_options variable.
+ */
+function dkan_workflow_strongarm_alter(&$data) {
+  $dkan_workflow_content_types = variable_get('dkan_workflow_content_types', array());
+  foreach ($dkan_workflow_content_types as $type) {
+    $var_name = 'node_options_' . $type;
+    if (isset($data[$var_name])) {
+      $node_options = $data[$var_name]->value;
+      // Remove status if set.
+      $node_options = array_diff($node_options, array('status'));
+      // Add moderation and revision if needed.
+      $node_options = array_values(array_unique(array_merge($node_options, array('moderation', 'revision')), SORT_REGULAR));
+      $data[$var_name]->value = $node_options;
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_view().
+ *
+ * Add contextual filters for workbench_moderation to accomodate some special
+ * cases.
+ *
+ * Ref. NuCivic/healthdata#487
+ */
+function dkan_workflow_views_pre_view(&$view, &$display_id, &$args) {
+
+  // Filter by dkan_workflow enabled content type.
+  if ($view->name == 'workbench_moderation') {
+
+    // Filter by dkan_workflow enabled content types.
+    // A better place for this filter is a function with cache suppor like
+    // hook_views_default_views_alter(). But to make it esiear for dev to add
+    // changes to the code we opted to put it here.
+    $filter_content_type_value = array();
+    $moderated_ctypes = workbench_moderation_moderate_node_types();
+    $moderated_ctypes_defaults = variable_get('dkan_workflow_content_types', array());
+
+    foreach (array_merge($moderated_ctypes, $moderated_ctypes_defaults) as $value) {
+      $filter_content_type_value[$value] = $value;
+    }
+
+    $filter_content_type['id'] = 'type';
+    $filter_content_type['table'] = 'node';
+    $filter_content_type['field'] = 'type';
+    $filter_content_type['relationship'] = 'nid';
+    $filter_content_type['exposed'] = TRUE;
+    $filter_content_type['expose']['operator_id'] = 'type_op';
+    $filter_content_type['expose']['label'] = 'Type';
+    $filter_content_type['expose']['operator'] = 'type_op';
+    $filter_content_type['expose']['identifier'] = 'type';
+    $filter_content_type['expose']['remember'] = TRUE;
+    $filter_content_type['value'] = $filter_content_type_value;;
+    $filter_content_type['expose']['remember_roles'] = array(
+      2 => '2',
+      1 => 0,
+      200153887 => 0,
+      30037204 => 0,
+      210394380 => 0,
+      210770034 => 0,
+      190180509 => 0,
+      169051924 => 0,
+      57821158 => 0,
+    );
+
+    $filter_content_type['expose']['reduce'] = TRUE;
+
+    $item = $view->set_item($display_id, 'filter', 'type', $filter_content_type);
+
+    $role_workflow_contributor  = user_role_load_by_name('Workflow Contributor');
+    $role_workflow_moderator  = user_role_load_by_name('Workflow Moderator');
+
+    // On the Needs Review tab, Workflow Moderator can see:
+    // - the content submitted to their organic group.
+    // - Thier own content.
+    if (user_has_role($role_workflow_moderator->rid)
+      && ($display_id == 'needs_review_page' || $display_id == 'needs_review_badge')) {
+
+      // Contextual filter: Content: Author uid.
+      $author_uid['id'] = 'author';
+      $author_uid['table'] = 'node';
+      $author_uid['field'] = 'uid';
+      $author_uid['relationship'] = 'nid';
+      $author_uid['default_action'] = 'default';
+      $author_uid['default_argument_type'] = 'current_user';
+      $author_uid['summary']['number_of_records'] = '0';
+      $author_uid['summary']['format'] = 'default_summary';
+      $author_uid['summary_options']['items_per_page'] = '25';
+
+      $view->set_item($display_id, 'argument', 'uid', $author_uid);
+
+      // Contextual filter: OG membership: Group ID.
+      $og_membership = array();
+      $og_membership['id'] = 'og_membership';
+      $og_membership['table'] = 'og_membership';
+      $og_membership['field'] = 'gid';
+      $og_membership['relationship'] = 'nid';
+      $og_membership['default_action'] = 'default';
+      $og_membership['default_argument_type'] = 'og_user_groups';
+      $og_membership['summary']['number_of_records'] = '0';
+      $og_membership['summary']['format'] = 'default_summary';
+      $og_membership['summary_options']['items_per_page'] = '25';
+      $og_membership['break_phrase'] = TRUE;
+
+      $view->set_item($display_id, 'argument', 'gid', $og_membership);
+    }
+    // On the Needs Review tab, Workflow Contributor
+    // can see only content they have submitted.
+    elseif (user_has_role($role_workflow_contributor->rid)
+      && ($display_id == 'needs_review_page' || $display_id == 'needs_review_badge')) {
+      // Contextual filter: Content: Author uid.
+      $author_uid['id'] = 'author';
+      $author_uid['table'] = 'node';
+      $author_uid['field'] = 'uid';
+      $author_uid['relationship'] = 'nid';
+      $author_uid['default_action'] = 'default';
+      $author_uid['default_argument_type'] = 'current_user';
+      $author_uid['summary']['number_of_records'] = '0';
+      $author_uid['summary']['format'] = 'default_summary';
+      $author_uid['summary_options']['items_per_page'] = '25';
+
+      $view->set_item($display_id, 'argument', 'uid', $author_uid);
+    }
+  }
+}
+
+/**
+ * Reverts Views.
+ */
+function dkan_workflow_revert_views() {
+  ctools_include('object-cache');
+  $files = file_scan_directory(drupal_get_path('module', 'dkan_workflow') . '/views', '/.*\.view.inc$/');
+  foreach ($files as $filepath => $file) {
+    require $filepath;
+    if (isset($view)) {
+      $view->delete();
+      ctools_object_cache_clear('view', $view->name);
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_execute().
+ */
+function dkan_workflow_views_pre_execute(&$view) {
+  // dpq($view->build_info['query']);.
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function dkan_workflow_views_query_alter(&$view, &$query) {
+  if ($view->name == 'workbench_moderation') {
+
+    // For Workflow Moderator we need to use OR for the contextual filters.
+    $role_workflow_moderator = user_role_load_by_name('Workflow Moderator');
+    if (user_has_role($role_workflow_moderator->rid)
+      && ($view->current_display == 'needs_review_page' || $view->current_display == 'needs_review_badge')) {
+      $query->where[0]['type'] = 'OR';
+      $orphan_condition = array(
+        'field' => 'ISNULL(node_workbench_moderation_node_history__og_membership.gid)',
+        'value' => array(),
+        'operator' => 'formula',
+      );
+      $query->where[0]['conditions'][] = $orphan_condition;
+    }
+  }
+}
+
+/**
+ * Implements hook_mail_alter().
+ */
+function dkan_workflow_mail_alter(&$message) {
+  if (isset($message['id']) && $message['id'] == 'workbench_email_we_transition') {
+    module_load_include('inc', 'dkan_workflow', 'dkan_workflow.email_proxy');
+    $dkan_email_proxy = new DkanWorkflowEmailProxy($message);
+    $message['send'] = $dkan_email_proxy->send();
+  }
+}

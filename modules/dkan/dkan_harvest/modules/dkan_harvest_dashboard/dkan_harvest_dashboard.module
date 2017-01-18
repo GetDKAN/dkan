@@ -1,0 +1,132 @@
+<?php
+
+/**
+ * @file
+ * Code for the DKAN Harvest Dashboard feature.
+ */
+
+include_once 'dkan_harvest_dashboard.features.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_harvest_dashboard_menu() {
+  $items = array();
+  $items['admin/dkan/harvest/dashboard'] = array(
+    'title' => 'DKAN Harvest Dashboard',
+    'access callback' => 'user_access',
+    'access arguments' => array('admininster harvest'),
+    'page callback' => 'dkan_harvest_dashboard_sources_page',
+  );
+
+  $items['admin/dkan/harvest/dashboard/sources'] = array(
+    'title' => 'Sources',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'access callback' => 'user_access',
+    'access arguments' => array('admininster harvest'),
+    'weight' => -10,
+    'page callback' => 'dkan_harvest_dashboard_sources_page',
+  );
+
+  $items['admin/dkan/harvest/dashboard/datasets'] = array(
+    'title' => 'Datasets',
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => 'user_access',
+    'access arguments' => array('admininster harvest'),
+    'weight' => 1,
+    'page callback' => 'dkan_harvest_dashboard_datasets_page',
+  );
+  return $items;
+}
+
+/**
+ * Dataset list page callback.
+ */
+function dkan_harvest_dashboard_sources_page() {
+  return views_embed_view('dkan_harvest_dashboard', 'harvest_sources');
+}
+
+/**
+ * Sources list page callback.
+ */
+function dkan_harvest_dashboard_datasets_page() {
+  return views_embed_view('dkan_harvest_datasets', 'harvest_datasets');
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_harvest_dashboard_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id == 'views_exposed_form'
+    && isset($form_state['view'])
+    && $form_state['view']->name == 'dkan_harvest_datasets') {
+
+    $form['created']['max']['#title'] = '';
+    $form['changed']['max']['#title'] = '';
+    $form['created']['min']['#attributes']['placeholder'] = t('From');
+    $form['created']['max']['#attributes']['placeholder'] = t('To');
+    $form['changed']['min']['#attributes']['placeholder'] = t('From');
+    $form['changed']['max']['#attributes']['placeholder'] = t('To');
+  }
+  switch ($form_id) {
+    // Display an 'Add Source' button on the harvest sources and dataset pages.
+    // The button should not display on the confirmation 'pages'.
+    case 'views_form_dkan_harvest_dashboard_harvest_sources':
+    case 'views_form_dkan_harvest_datasets_harvest_datasets':
+      if (isset($form_state['step']) && $form_state['step'] == 'views_form_views_form') {
+        $form['header'] = array(
+          '#type' => 'item',
+          '#title' => '',
+          '#markup' => l(t('Add Source'), 'node/add/harvest-source',
+          array('attributes' => array('class' => 'btn btn-primary btn-add-source'))),
+          '#weight' => -50,
+        );
+      }
+      break;
+
+  }
+}
+
+/**
+ * Implements hook_preprocess_views_view_table().
+ */
+function dkan_harvest_dashboard_preprocess_views_view_table(&$vars) {
+  // Override the dashboard status table classes.
+  if ($vars['view']->name == 'dkan_harvest_dashboard'
+  && isset($vars['fields']['dkan_harvest_harvest_status'])) {
+    foreach ($vars['rows'] as $index => $row) {
+      switch ($row['dkan_harvest_harvest_status']) {
+        case 'N/A':
+          $vars['field_classes']['dkan_harvest_harvest_status'][$index] .= ' alert-warning';
+          break;
+
+        case 'ERROR':
+          $vars['field_classes']['dkan_harvest_harvest_status'][$index] .= ' alert-danger';
+          break;
+
+        case 'OK':
+          $vars['field_classes']['dkan_harvest_harvest_status'][$index] .= ' alert-success';
+          break;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_views_bulk_operations_form_alter().
+ */
+function dkan_harvest_dashboard_views_bulk_operations_form_alter(&$form, &$form_state, $vbo) {
+  $form_id = $form['#form_id'];
+  $delete_action = 'action::views_bulk_operations_delete_item';
+
+  // If the form is the VBO form on harvest sources dashboard AND.
+  if ($form_id == 'views_form_dkan_harvest_dashboard_harvest_sources' &&
+      // The user is on the confirmation step AND.
+      $form_state['step'] == 'views_bulk_operations_confirm_form' &&
+      // There are any values available AND the VBO operation is 'delete'.
+      isset($form_state['values']) && $form_state['values']['operation'] == $delete_action) {
+
+    $selected_sources = $form_state['selection'];
+    dkan_harvest_modify_delete_harvest_source_confirmation_form($form, $selected_sources);
+  }
+}

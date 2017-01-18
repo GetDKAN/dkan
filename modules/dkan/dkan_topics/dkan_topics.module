@@ -1,0 +1,275 @@
+<?php
+
+/**
+ * @file
+ * Code for the DKAN Featured Topics feature.
+ */
+
+include_once 'dkan_topics.features.inc';
+module_load_include('inc', 'pathauto', 'pathauto');
+
+/**
+ * Implements hook_page_alter().
+ */
+function dkan_topics_page_alter(&$page) {
+  drupal_add_css(drupal_get_path('module', 'dkan_topics') . '/theme/dkan_topics.css');
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * Adds topics link.
+ */
+function dkan_topics_menu() {
+  $items['topics'] = array(
+    'title'           => 'Topics',
+    'menu_name'       => 'main-menu',
+    'weight'          => 8,
+    'access callback' => TRUE,
+    'page callback'   => 'topics_page',
+    'access arguments' => array('view published content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Set up the Topics link as the parent of the terms menu links.
+ */
+function dkan_topics_menu_link_insert($link) {
+  // We need to set the 'taxonomy_menu_vocab_parent_dkan_topics' variable
+  // with the ID of the 'Topics' menu link so all the topics terms can be
+  // added there as sub-links.
+  if (isset($link['page callback']) && ($link['page callback'] == 'topics_page')) {
+    variable_set('taxonomy_menu_vocab_parent_dkan_topics', $link['mlid']);
+  }
+}
+
+/**
+ * Set main menu topics link to null.
+ */
+function topics_page() {
+  drupal_goto('search/field_topics');
+}
+
+/**
+ * Implements hook_preprocess_menu_link().
+ *
+ * Add icons to topics menu.
+ */
+function dkan_topics_preprocess_menu_link(&$variables) {
+  $voc = taxonomy_vocabulary_machine_name_load('dkan_topics');
+  if ($variables['element']['#original_link']['link_title'] == $voc->name) {
+    $submenu = $variables['element']['#below'];
+    $css = '';
+    foreach ($submenu as $child) {
+      if (isset($child['#href'])) {
+        $url  = explode("/", $child['#href']);
+        // Prepare term to match menu class.
+        $term = strtolower($child['#title']);
+        $term = str_replace(array('\\', '/', '[', ' '), '-', $term);
+        $term = str_replace(array(']', '{', '}'), '', $term);
+        $term = preg_replace('/[^\p{L}0-9\-™®]/u', '', $term);
+        $type = db_query('SELECT field_icon_type_value FROM {field_data_field_icon_type} WHERE entity_id = :id', array(':id' => $url[2]))->fetchField();
+        if ($type == 'font') {
+          $icon = db_query('SELECT field_topic_icon_value FROM {field_data_field_topic_icon} WHERE entity_id = :id', array(':id' => $url[2]))->fetchField();
+          $icon = '\\' . substr($icon, 1);
+          $font = db_query('SELECT bundle FROM {field_data_field_topic_icon} WHERE entity_id = :id', array(':id' => $url[2]))->fetchField();
+          $font = str_replace("_", "-", $font);
+          $css .= "li.menu-link-$term a:before {font-size:1.25em; font-family:'$font'; content:'$icon'; margin-right:6px; vertical-align: middle; }";
+        }
+        elseif ($type == 'image') {
+          $obj = taxonomy_term_load($url[2]);
+          $image = field_get_items('taxonomy_term', $obj, 'field_image');
+          $path = image_style_path('small_topics_icons', $image[0]['uri']);
+          $img = image_style_url('small_topics_icons', $path);
+          $css .= "li.menu-link-$term > a, li.menu-link-$term > a:hover, li.menu-link-$term > a:focus, li.menu-link-$term a:active { background-image:url('$img') !important; background-position:12px center !important; background-repeat:no-repeat !important; padding-left:40px !important; }";
+        }
+      }
+    }
+    drupal_add_css($css, 'inline');
+  }
+}
+
+/**
+ * Implements hook_preprocess_field().
+ */
+function dkan_topics_preprocess_field(&$vars) {
+  if ($vars['element']['#field_name'] == 'field_topic_icon') {
+    $vars['label_hidden'] = TRUE;
+  }
+  if ($vars['element']['#field_name'] == 'topic') {
+    $vars['label_hidden'] = TRUE;
+    $color = $vars['field_topic'][1]['taxonomy_term']->field_topic_icon_color['und'][0]['rgb'];
+    $icon = $vars['field_topic'][0]['taxonomy_term']->field_topic_icon['und'][0]['value'];
+    if ($icon && $color) {
+      $vars['field_topic'][0]['taxonomy_term']->field_topic_icon['und'][0]['value'] = '<span style="color:' . $color . '">' . $icon . '</span>';
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function dkan_topics_views_pre_render(&$view) {
+  if (isset($view->name) && $view->name == 'dkan_topics_featured') {
+    foreach ($view->result as $row) {
+      if ($row->_field_data['tid']['entity']->field_icon_type['und'][0]['value'] == 'font') {
+        global $base_url;
+        $term = $row->taxonomy_term_data_name;
+        $term = pathauto_cleanstring($term);
+        $url = $base_url . '/search/field_topic/' . $term . '-' . $row->tid;
+
+        if ($row->field_field_topic_icon) {
+          // Modify icon to add term link and custom color.
+          $prefix_clipped = substr($row->field_field_topic_icon[0]['rendered']['#prefix'], 6);
+          $new_prefix = '<a href="' . $url . '"';
+          if (!empty($row->field_field_topic_icon_color[0]['raw']['rgb'])) {
+            $new_prefix .= ' style="color:' . $row->field_field_topic_icon_color[0]['raw']['rgb'] . '"';
+          }
+          $new_prefix .= $prefix_clipped;
+          $row->field_field_topic_icon[0]['rendered']['#prefix'] = $new_prefix;
+          $row->field_field_topic_icon[0]['rendered']['#suffix'] = '<span class="screenreader">icon</span></a>';
+        }
+      }
+    }
+
+    return $view;
+  }
+}
+
+/**
+ * Rewrite font file paths to work on install.
+ */
+function dkan_topics_file_url_alter(&$uri) {
+  $re = "/public:\\/\\/[^\\/]*\\/?dkan-topics.*\\.(eot|woff|ttf|svg)$/";
+  $match = preg_match($re, $uri);
+
+  if ($match) {
+    $uri = str_replace('public://', '/sites/default/files/', $uri);
+  }
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function dkan_topics_field_formatter_info() {
+  return array(
+    'dkan_topic_formatter' => array(
+      'label' => t('Topic with icon'),
+      'field types' => array('taxonomy_term_reference'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function dkan_topics_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+
+    case 'dkan_topic_formatter':
+      global $base_url;
+      // Custom formatter for topic field.
+      foreach ($items as $delta => $item) {
+        $term = taxonomy_term_load($item['tid']);
+        $url = $base_url . '/search/field_topic/' . pathauto_cleanstring($term->name) . '-' . $term->tid;
+        // Gather icon values if font icon is used.
+        $icons = field_get_items('taxonomy_term', $term, 'field_topic_icon');
+        $icon = field_view_field('taxonomy_term', $term, 'field_topic_icon', $icons, $langcode = NULL);
+        if ($icon) {
+          if (isset($term->field_topic_icon_color['und'][0]['rgb'])) {
+            $color = $term->field_topic_icon_color['und'][0]['rgb'];
+            $prefix_clipped = substr($icon[0]['#prefix'], 6);
+            $new_prefix = '<span style="color:' . $color . '" ' . $prefix_clipped;
+            $icon[0]['#prefix'] = $new_prefix;
+          }
+          // Font Icon formatter.
+          $element[$delta] = array(
+            'image' => array(
+              '#type' => 'markup',
+              '#markup' => drupal_render($icon),
+            ),
+            'name' => array(
+              '#type' => 'markup',
+              '#markup' => check_plain($term->name),
+              '#prefix' => '<a class="name" href="' . $url . '">',
+              '#suffix' => '</a>',
+            ),
+          );
+        }
+        // Set up image values if image is used.
+        else {
+          $images = field_get_items('taxonomy_term', $term, 'field_image');
+          $display = array(
+            'label' => 'hidden',
+            'settings' => array(
+              'image_style' => 'small_topics_icons',
+            ),
+          );
+          $img = field_view_field('taxonomy_term', $term, 'field_image', $display, $langcode = NULL);
+          // Image Icon formatter.
+          $element[$delta] = array(
+            'image' => array(
+              '#type' => 'markup',
+              '#markup' => drupal_render($img),
+            ),
+            'name' => array(
+              '#type' => 'markup',
+              '#markup' => check_plain($term->name),
+              '#prefix' => '<a class="name" href="' . $url . '">',
+              '#suffix' => '</a>',
+            ),
+          );
+        }
+      }
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_topics_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id === 'taxonomy_form_term') {
+    $form['#validate'][] = 'dkan_topics_form_validate';
+    $field_icon_type_langcode = dkan_dataset_form_field_language($form, 'field_icon_type');
+
+    // If 'Font Icon Type' is 'Image' then make 'field_image' visible.
+    $form['field_image']['#states'] = array(
+      'visible' => array(
+        '[name="field_icon_type[' . $field_icon_type_langcode . ']"]' => array('value' => 'image'),
+      ),
+    );
+    // If 'Font Icon Type' is 'Font'
+    // then make 'field_topic_icon' and 'field_topic_icon_color' visible.
+    $form['field_topic_icon']['#states'] = array(
+      'visible' => array(
+        '[name="field_icon_type[' . $field_icon_type_langcode . ']"]' => array('value' => 'font'),
+      ),
+    );
+    $form['field_topic_icon_color']['#states'] = array(
+      'visible' => array(
+        '[name="field_icon_type[' . $field_icon_type_langcode . ']"]' => array('value' => 'font'),
+      ),
+    );
+  }
+}
+
+/**
+ * Topic taxonomy term form validation.
+ *
+ * If the icon type = font, make the icon field required.
+ */
+function dkan_topics_form_validate($form, &$form_state) {
+  if (isset($form_state['values']['field_icon_type']['und'][0]['value']) &&
+    $form_state['values']['field_icon_type']['und'][0]['value'] == 'font' &&
+    !isset($form_state['values']['field_topic_icon']['und'][0]['value'])) {
+    form_set_error('field_topic_icon', t('Please select an icon.'));
+  }
+}

@@ -1,0 +1,179 @@
+<?php
+
+/**
+ * @file
+ * DKAN Dataset Dataset Class Tests.
+ */
+
+/**
+ * Test basic Data API functionality.
+ */
+class DkanDatasetClassWebTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+  /**
+   * Information about the test.
+   */
+  public static function getInfo() {
+    return array(
+      'name'  => 'DKAN Dataset Class Test',
+      'description' => 'Test DKAN Dataset Class functionality',
+      'group' => 'DKAN Dataset',
+    );
+  }
+
+  /**
+   * Setup testcase.
+   */
+  public function setUp() {
+    $args = func_get_args();
+
+    // Build the list of required modules.
+    if (isset($args[0])) {
+      if (is_array($args[0])) {
+        $modules = $args[0];
+      }
+      else {
+        $modules = $args;
+      }
+    }
+    else {
+      $modules = array();
+    }
+
+    $modules[] = 'ctools';
+    $modules[] = 'context';
+    $modules[] = 'block';
+    $modules[] = 'file';
+    $modules[] = 'filter';
+    $modules[] = 'image';
+    $modules[] = 'list';
+    $modules[] = 'menu';
+    $modules[] = 'number';
+    $modules[] = 'options';
+    $modules[] = 'path';
+    $modules[] = 'taxonomy';
+    $modules[] = 'text';
+    $modules[] = 'user';
+    $modules[] = 'date';
+    $modules[] = 'date_api';
+    $modules[] = 'date_popup';
+    $modules[] = 'dkan_dataset';
+    $modules[] = 'dkan_dataset_groups';
+    $modules[] = 'dkan_dataset_content_types';
+    $modules[] = 'dkan_default_content';
+    $modules[] = 'features';
+    $modules[] = 'double_field';
+    $modules[] = 'entityreference';
+    $modules[] = 'field_group';
+    $modules[] = 'field_group_table';
+    $modules[] = 'filefield_sources';
+    $modules[] = 'geofield';
+    $modules[] = 'link';
+    $modules[] = 'link_iframe_formatter';
+    $modules[] = 'multistep';
+    $modules[] = 'ref_field_sync';
+    $modules[] = 'select_or_other';
+    $modules[] = 'og';
+    $modules[] = 'og_context';
+    $modules[] = 'og_extras';
+    $modules[] = 'og_ui';
+    $modules[] = 'chosen';
+    $modules[] = 'entity';
+    $modules[] = 'geophp';
+    $modules[] = 'gravatar';
+    $modules[] = 'leaflet_widget';
+    $modules[] = 'libraries';
+    $modules[] = 'recline';
+    $modules[] = 'remote_stream_wrapper';
+    $modules[] = 'strongarm';
+    $modules[] = 'token';
+    $modules[] = 'search_api';
+    $modules[] = 'search_api_db';
+    $modules[] = 'search_api_views';
+    $modules[] = 'facetapi';
+    $modules[] = 'autocomplete_deluxe';
+    $modules[] = 'beautytips';
+    $modules[] = 'jquery_update';
+    $modules[] = 'uuid';
+    $modules[] = 'views';
+    $modules[] = 'views_bulk_operations';
+
+    $modules = array_unique($modules);
+    parent::setUp($modules);
+
+    // Run a features rebuild to ensure our feature is fully installed.
+    features_rebuild();
+  }
+
+  /**
+   * Test Suite for DKAN Dataset Class.
+   */
+  public function testDkanDatasetClass() {
+    // Getting dkan_default_content data for Dataset Class.
+    ctools_include('groups', 'dkan_default_content');
+    ctools_include('datasets', 'dkan_default_content');
+    ctools_include('Dataset', 'dkan_dataset');
+
+    // Create taxonomies
+    dkan_default_content_taxonomy_create();
+
+    // Create default content groups for datasets.
+    $groups = dkan_default_content_available_groups();
+    foreach ($groups as $key => $loadable) {
+      $group = call_user_func('dkan_default_content_' . $loadable . '_group');
+      unset($group['field_image']);
+      $group = (object) $group;
+      node_save($group);
+      // Test appropiate node creation for every group.
+      $this->assertTrue(isset($group->nid));
+      $groups[$key] = $group;
+    }
+
+    // Save Datasets and Resources
+    $datasets = dkan_default_content_available_datasets();
+    foreach ($datasets as $key => $loadable){
+      $dataset = call_user_func('dkan_default_content_' . $loadable . '_dataset');
+      $resources = call_user_func('dkan_default_content_' . $loadable . '_resources');
+      // Instantiate Dataset
+      $instance = Dataset::instance($dataset['title']);
+      $instance->attachFields($dataset);
+      foreach($resources as $resource){
+        $instance->attachResource($resource);
+      }
+      $instance->save();
+      $datasets[$key] = $instance;
+    }
+
+    // Run tests for dataset and resources.
+    foreach ($datasets as $dataset) {
+      // Test appropiate node creation for every dataset.
+      $this->assertTrue(isset($dataset->dataset->nid));
+      $resources_ref = array();
+      // Get node page and test properties through assertText.
+      $this->drupalGet('node/' . $dataset->dataset->nid);
+      $this->assertText($dataset->dataset->title);
+      // Collecting resources to cross reference with $dataset->dataset->resources.
+      foreach ($dataset->dataset->field_resources[LANGUAGE_NONE] as $resource) {
+        $resources_ref[] = $resource['target_id'];
+      }
+      foreach ($dataset->resources as $resource) {
+        // Test appropiate node creation for every dataset resource.
+        $this->assertTrue($resource->nid);
+        // Test if resource nid is present at dataset->field_resources.
+        $this->assertTrue(in_array($resource->nid, $resources_ref));
+        // Test if the dataset reference is set properly.
+        $this->assertTrue($resource->field_dataset_ref[LANGUAGE_NONE][0]['target_id'] === $dataset->dataset->nid);
+        // Get node page and test properties through assertText.
+        $this->drupalGet('node/' . $resource->nid);
+        $this->assertText($resource->title);
+      }
+      // Test revision increment.
+      $old_vid = $dataset->dataset->vid;
+      $dataset->incrementRevision('Testing increments');
+      $dataset->save();
+      $this->assertTrue($old_vid !== $dataset->dataset->vid);
+      // Test dataset and resources deletion.
+      $this->assertTrue($dataset->delete(TRUE));
+    }
+  }
+}

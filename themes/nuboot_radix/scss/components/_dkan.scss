@@ -1,0 +1,66 @@
+@media all and (max-width:768px) {
+  .node-dataset .resource-list li {
+    padding-right: 0;
+    span.links {
+      position: relative;
+      top: auto;
+      right: auto;
+      margin: 10px 0;
+      display: block;
+      padding: 0;
+    }
+    a.btn {
+      margin: 0 5px 10px 0;
+    }
+  }
+}
+
+.resource-list a.label {
+  display: inline-block;
+  overflow-wrap: break-word;
+}
+.stages {
+  margin: 0 0 20px;
+  li {
+    font-size: 14px;
+    &.first,
+    &.first .highlight {
+      @include border-radius(5px 0 0 5px);
+    }
+    &.last,
+    &.last .highlight {
+      @include border-radius(0 5px 5px 0);
+    }
+  }
+}
+.node-type-resource .item-list .list-group li {
+  margin: 0;
+}
+.node-type-dataset {
+  .field-name-field-tags,
+  .field-name-field-topic,
+  .field-name-field-preview-thumbail {
+    .field-label {
+      @include h4;
+    }
+  }
+}
+.field-name-field-topic .field-item {
+  display: inline-block;
+}
+
+#edit-path-alias {
+  height: 34px;
+}
+
+// Datasets.
+.node-dataset .resource-list li {
+  padding: 0 260px 0 45px;
+  @media all and (max-width:767px) {
+    padding-right: 0;
+  }
+}
+// Move this to dkan_sitewide_profile_page.css.
+p.dkan-profile-page-user-name {
+  display: inline-block;
+}   
