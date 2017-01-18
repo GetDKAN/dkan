@@ -969,6 +969,13 @@ class HarvestMigration extends MigrateDKAN {
   public static function prepareResourceHelper($url, $format = NULL, $title = NULL, $created = NULL, $description = NULL) {
     $resource = new stdClass();
 
+    // Set 'http://' as default scheme if missing.
+    $url_parse_scheme = parse_url($url, PHP_URL_SCHEME);
+    if (!$url_parse_scheme) {
+      $url = "http://" . $url;
+      $url_parse_scheme = "http://";
+    }
+
     // Validate the url.
     if (!filter_var($url, FILTER_VALIDATE_URL)) {
       $message = t('Resource remote url (@url) not valid!',
@@ -998,8 +1005,7 @@ class HarvestMigration extends MigrateDKAN {
     // Logic to determin if the URL is switable for field_link_remote_file
     // field (ie without redirects) and get a canonical format This only works
     // for http requests (right now). So for ftp and other URLs we just skip.
-    if (preg_match("@^https?@i", parse_url($url, PHP_URL_SCHEME))) {
-
+    if (preg_match("@^https?@i", $url_parse_scheme)) {
       $fake_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1';
       // remote_stream_wrapper does not play nice with files link behind
       // redirects. Try to get the bottom of the redircet chain if any and use
