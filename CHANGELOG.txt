@@ -90,7 +90,7 @@ DKAN Harvest:
  - Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
  - Fix 508 compliance errors on admin and node view pages.
  - Removed links to Harvest Source nodes from main menu.
- - Check if dkan workflow is enable and publish content after harvested.
+ - Harvested content is published even if dkan_workflow is enabled.
  - Prevent harvest source machine name from containing forward slash character.
  - Improved PHP Unit tests.
 DKAN Migrate Base:
