@@ -654,21 +654,18 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $display->content = array();
   $display->panels = array();
   $pane = new stdClass();
-  $pane->pid = 'new-5771913e-f897-497d-9d56-f76f6b207b18';
+  $pane->pid = 'new-dbba36e8-a75c-4fec-b189-d8c3cae601e9';
   $pane->panel = 'contentmain';
-  $pane->type = 'node';
+  $pane->type = 'entity_view';
   $pane->subtype = 'node';
   $pane->shown = TRUE;
   $pane->access = array();
   $pane->configuration = array(
-    'nid' => '%1',
-    'links' => 1,
-    'leave_node_title' => 0,
-    'identifier' => '',
-    'build_mode' => 'full',
-    'link_node_title' => 0,
-    'override_title' => 0,
-    'override_title_text' => '',
+    'view_mode' => 'full',
+    'context' => 'argument_entity_id:node_1',
+    'override_title' => 1,
+    'override_title_text' => '%node:title',
+    'override_title_heading' => 'h2',
   );
   $pane->cache = array();
   $pane->style = array(
@@ -678,9 +675,9 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $pane->extras = array();
   $pane->position = 0;
   $pane->locks = array();
-  $pane->uuid = '5771913e-f897-497d-9d56-f76f6b207b18';
-  $display->content['new-5771913e-f897-497d-9d56-f76f6b207b18'] = $pane;
-  $display->panels['contentmain'][0] = 'new-5771913e-f897-497d-9d56-f76f6b207b18';
+  $pane->uuid = 'dbba36e8-a75c-4fec-b189-d8c3cae601e9';
+  $display->content['new-dbba36e8-a75c-4fec-b189-d8c3cae601e9'] = $pane;
+  $display->panels['contentmain'][0] = 'new-dbba36e8-a75c-4fec-b189-d8c3cae601e9';
   $pane = new stdClass();
   $pane->pid = 'new-25ca95bb-18cd-4175-8cbd-5d44b3b08e20';
   $pane->panel = 'sidebar';
@@ -792,7 +789,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $display->content['new-a3d3ba71-c2c5-4eb0-8ac8-77b7709264a8'] = $pane;
   $display->panels['sidebar'][4] = 'new-a3d3ba71-c2c5-4eb0-8ac8-77b7709264a8';
   $display->hide_title = PANELS_TITLE_PANE;
-  $display->title_pane = 'new-5771913e-f897-497d-9d56-f76f6b207b18';
+  $display->title_pane = 'new-dbba36e8-a75c-4fec-b189-d8c3cae601e9';
   $handler->conf['display'] = $display;
   $export['node_view_panel_context'] = $handler;
 
