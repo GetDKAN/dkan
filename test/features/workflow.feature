@@ -364,7 +364,7 @@ Feature:
     Given users:
       | name             | mail                       | status | roles                                 |
       | Administrator    | admin@test.com             | 1      | administrator                         |
-      | Contributor C0G1 | contributor-c1g1@test.com  | 1      | Workflow Contributor, content creator |
+      | Contributor C1G1 | contributor-c1g1@test.com  | 1      | Workflow Contributor, content creator |
       | Contributor C2G1 | contributor-c2g1@test.com  | 1      | Workflow Contributor, content creator |
       | Moderator M1G1   | moderator-m1g1@test.com    | 1      | Workflow Moderator, editor            |
       | Moderator M2G1   | moderator-m2g1@test.com    | 1      | Workflow Moderator, editor            |
