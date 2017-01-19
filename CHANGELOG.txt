@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Update leaflet library to v1.0.2 and leaflet markercluster to v1.0.0. Unift leaflet libraries (was using a separate version for recline module)
  - Upgraded to new 1.0 release of Visualization Entity module
  - Add install hook to DKAN Workflow to force a Features revert of dkan_sitewide_menu, to make sure Workflow links added correctly
  - Remove Panels IPE from dataset and search pages; in DKAN, we only want to show IPE for panelizer layouts, not templates or other "sitewide" pages.
@@ -74,6 +75,7 @@ DKAN Datastore:
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
  - Fixed bugs when running the datastore via cron.
 DKAN Harvest:
+ - Harvested content is published even if dkan_workflow is enabled.
  - Added DKAN Harvest module into DKAN Core.
  - Added UI to add harvest sources
  - Added UI to manage harvest sources and datasets
