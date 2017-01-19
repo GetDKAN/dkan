@@ -277,7 +277,36 @@ class HarvestMigration extends MigrateDKAN {
     // Save dataset.
     node_save($dataset);
 
+    // Publish dataset and resources if dkan_workflow is enabled.
+    $this->moderatePublish($dataset);
+
     migrate_instrument_stop('HarvestMigration->complete');
+  }
+
+  /**
+   * Publish dataset and resources.
+   *
+   * Force 'published' status on the dataset and its
+   * associated resources if dkan_workflow is enabled.
+   *
+   * @param object $dataset
+   *        Entity object.
+   */
+  private function moderatePublish($dataset) {
+    // Publish dataset.
+    if (module_exists('dkan_workflow')) {
+      workbench_moderation_moderate($dataset, 'needs_review');
+      workbench_moderation_moderate($dataset, 'published');
+
+      //Publish resources.
+      if (!empty($dataset->field_resources[LANGUAGE_NONE])) {
+        foreach ($dataset->field_resources[LANGUAGE_NONE] as $data) {
+          $resource = node_load($data['target_id']);
+          workbench_moderation_moderate($resource, 'needs_review');
+          workbench_moderation_moderate($resource, 'published');
+        }
+      }
+    }
   }
 
   /**
