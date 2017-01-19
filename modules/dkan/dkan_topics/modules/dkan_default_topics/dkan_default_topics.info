@@ -5,3 +5,4 @@ package = DKAN Features
 dependencies[] = dkan_topics
 dependencies[] = taxonomy_fixtures
 dependencies[] = taxonomy
+version = 7.x-1.13-beta3

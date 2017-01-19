@@ -17,3 +17,4 @@ features[field_instance][] = comment-comment_node_dataset-field_rating
 features[field_instance][] = node-dataset-field_rating
 features[variable][] = ajax_comments_node_types
 features[variable][] = ajax_comments_notify
+version = 7.x-1.13-beta3
