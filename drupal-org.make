@@ -346,7 +346,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: reset_field_options_graph_CIVIC_5132
+      branch: reset_field_options_graph_CIVIC_5132
     type: module
   workbench:
     version: '1.2'
