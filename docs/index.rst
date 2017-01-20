@@ -12,4 +12,4 @@ Table of Contents
    admin/index
    components/index
    development/index
-   apis/index   styles
+   apis/index
