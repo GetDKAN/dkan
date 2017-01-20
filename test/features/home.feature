@@ -42,5 +42,5 @@ Feature: Homepage
   @api
   Scenario: See "Dataset Form"
     Given I am logged in as a user with the "content creator" role
-    And I am on the "Add dataset"
+    And I am on "Add dataset" page
     Then I should see "Create Dataset"

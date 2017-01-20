@@ -2,7 +2,6 @@ name = DKAN Datastore
 description = Creates a datastore designed to make it easy to share open data.
 core = 7.x
 package = DKAN
-version = 7.x-1.12.2
 dependencies[] = dkan_datastore_api
 dependencies[] = entity
 dependencies[] = feeds

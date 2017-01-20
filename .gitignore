@@ -12,8 +12,8 @@ test/dkan
 test/local.yml
 assets/*
 .idea
-.DS_Store
 behat.local.yml
 npm-debug.log
 .sublime-workspace
 docs/_build
+*.orig

@@ -6,6 +6,8 @@
 
 [![DKAN](https://www.drupal.org/files/2016-02-05_12-09-49.png)](http://nucivic.com/dkan)
 
+[![DKAN](https://www.drupal.org/files/2016-02-05_12-09-49.png)](http://nucivic.com/dkan)
+
 [DKAN](http://nucivic.com/dkan) is a Drupal-based open data tool with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. DKAN is maintained by [GovDelivery](http://https://govdelivery.com/) (formerly NuCivic).
 
 *  [ Live demo » ](http://demo.getdkan.com/)
@@ -39,6 +41,10 @@ For release notes and upgrade instructions specific to particular releases, see 
 ## Releases
 
 Check the [releases page](https://github.com/NuCivic/dkan/releases) for latest DKAN Version. 7.x-1.x is the development branch.
+
+Contact us if you want to get involved!
+
+DKAN development is a sponsored by NuCivic. For more information about hosting and professional support options for DKAN, see http://nucivic.com/data
 
 ### Releases and Release Candidates
 
@@ -84,3 +90,13 @@ While the GovDelivery Open Data team leads the DKAN project, there is a worldwid
 Please file all tickets for DKAN [in this issue queue](https://github.com/NuCivic/dkan/issues). We have several labels in place for you to tag the issue with and identify it with the proper component.
 
 Please follow the [Ticket Template](https://github.com/NuCivic/dkan/blob/7.x-1.x/CONTRIBUTING.md#new-feature-template) when creating new tickets.
+
+Also, please remember to reference the issue across repositories in order for maintainers to pick up commits and pull requests looking at the issue. You can do that for commits like this:
+
+```bash
+git commit -m "Issue NuCivic/dkan#<issue_number>: ..."
+```
+
+Just replace **<issue_number>** with the actual issue number. You can reference pull requests exactly like that if you add the same text **"NuCivic/dkan#&lt;issue_number&gt;"** in a comment. 
+
+This really help us detecting changes and pulling them in in faster.

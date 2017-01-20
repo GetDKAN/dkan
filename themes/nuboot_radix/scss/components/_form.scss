@@ -1,11 +1,15 @@
 //
 // Styles for Forms
 // --------------------------------------------------
+.table-select-processed .checkbox input[type="checkbox"] {
+  margin-left: 0px;
+}
 
 input[type="submit"],
 .btn-primary,
 .btn.btn-primary {
   @extend %button;
+  margin-right: 1em;
 }
 input.use-ajax-submit {
   margin-right: 10px;
@@ -199,6 +203,10 @@ div.horizontal-tabs {
 
 .filter-wrapper {
   padding: 10px;
+  .input-group-addon {
+    border: none;
+    background: transparent;
+  }
 }
 
 #body-add-more-wrapper {
@@ -278,4 +286,8 @@ div.horizontal-tabs {
 
 #dkan-dataset-form-settings .help-block {
   margin: 5px 20px 10px;
+}
+
+.form-type-textfield.form-group label.option {
+  @extend %screenreader;
 }

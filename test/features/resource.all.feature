@@ -152,3 +152,11 @@ Feature: Resource
     When I press "Open With"
     Then I should see the local preview link
     And I should see "CartoDB"
+
+  @api @here
+  Scenario: Hide "Back to dataset" button on resources without dataset
+    Given resources:
+      | title                    | publisher | format | dataset | author | published | description |
+      | Resource Without Dataset | Group 01  | csv    |         | Katie  | Yes       | Old Body    |
+    And I am on "Resource Without Dataset" page
+    Then I should not see the link "Back to dataset"

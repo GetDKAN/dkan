@@ -31,7 +31,9 @@ function dkan_dataset_content_types_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * After build for data dictionary field. Removes format selector and guidelines.
+ * After build for data dictionary field.
+ *
+ * Removes format selector and guidelines.
  */
 function data_dictionary_after_build(&$form) {
   unset($form[0]['format']);
@@ -69,6 +71,14 @@ function dkan_dataset_content_types_field_formatter_view($entity_type, $entity, 
             $output = $license['label'];
           }
         }
+        // Harvested datasets may use license urls that do not match
+        // the urls set up in hook_subscribed_values().
+        // Check if the value is a url, if so theme it as a link.
+        $url = parse_url($item['value']);
+        if (isset($url['scheme']) && isset($url['host'])) {
+          $output = l($item['value'], $item['value']);
+        }
+
         $element[$delta] = array('#markup' => $output);
       }
       break;

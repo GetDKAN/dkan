@@ -11,6 +11,6 @@ include_once 'getRemoteFileInfo.php';
 
 $url = 'http://www.nd.gov/gis/apps/NDHUB.TraumaCenters.csv';
 
-$file_info = new GetRemoteFileInfo($url, 'test', TRUE, '/tmp');
+$file_info = new GetRemoteFileInfo($url, 'test');
 var_dump($file_info->getType());
 var_dump($file_info->getName());

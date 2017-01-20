@@ -1,21 +1,27 @@
 <?php
 
 /**
+ * @file
+ * views_dkan_workflow_tree.module
+ */
+
+/**
  * Generates a list of links to available moderation actions.
- * based on workbench_moderation_get_moderation_links().
  *
- * @param $node
+ * Based on workbench_moderation_get_moderation_links().
+ *
+ * @param object $node
  *   The node being acted upon.
- * @param $url_options
+ * @param array $url_options
  *   An array of options to pass, following the url() function syntax.
  *
- * @return
+ * @return array
  *   A list of links to display with the revision.
  */
 function views_dkan_workflow_tree_get_moderation_links($node, $url_options = array()) {
   // Make sure that this node is moderated.
   if (!workbench_moderation_node_moderated($node)) {
-    return;
+    return array();
   }
 
   // Build links to available moderation states.
@@ -26,16 +32,17 @@ function views_dkan_workflow_tree_get_moderation_links($node, $url_options = arr
       && $states_next = workbench_moderation_states_next($my_revision->state, NULL, $node)) {
     $transitions = workbench_moderation_transitions();
     foreach ($states_next as $state_next => $label) {
-      foreach ($transitions as $transition){
-        if($transition->from_name == $state_current && $transition->to_name == $state_next) {
+      foreach ($transitions as $transition) {
+        if ($transition->from_name == $state_current && $transition->to_name == $state_next) {
           $title = $transition->name;
           $link = array_merge($url_options, array(
-              'title' => $title,
-              'href' => "node/{$node->nid}/moderation/{$node->vid}/change-state/{$state_next}",
+            'title' => $title,
+            'href' => "node/{$node->nid}/moderation/{$node->vid}/change-state/{$state_next}",
           ));
           $link['query']['token'] = drupal_get_token("{$node->nid}:{$node->vid}:{$state_next}");
           $link['query']['destination'] = current_path();
-          $links[] = $link;      }
+          $links[] = $link;
+        }
       }
     }
   }
@@ -44,7 +51,7 @@ function views_dkan_workflow_tree_get_moderation_links($node, $url_options = arr
 }
 
 /**
- * Implements of hook_views_api().
+ * Implements hook_views_api().
  */
 function views_dkan_workflow_tree_views_api() {
   return array(
@@ -59,39 +66,47 @@ function views_dkan_workflow_tree_views_api() {
  */
 function views_dkan_workflow_tree_action_info() {
   $info = array();
-  foreach(workbench_moderation_state_labels() as $key => $label) {
+  foreach (workbench_moderation_state_labels() as $key => $label) {
     $info['views_dkan_workflow_tree_set_moderation_state_action_' . $key] = array(
-        'type' => 'node',
-        'label' => t("Workflow set moderation state " . $label),
-        'triggers' => array('node_presave', 'node_insert', 'node_update', 'workbench_moderation_transition'),
-        'callback' => 'views_dkan_workflow_tree_set_state_action',
-        'parameters' => array('state' => $key),
-        'configurable' => FALSE
+      'type' => 'node',
+      'label' => t("Workflow set moderation state !state", array('!state' => $label)),
+      'triggers' => array(
+        'node_presave',
+        'node_insert',
+        'node_update',
+        'workbench_moderation_transition',
+      ),
+      'callback' => 'views_dkan_workflow_tree_set_state_action',
+      'parameters' => array('state' => $key),
+      'configurable' => FALSE,
     );
   }
   return $info;
 }
 
+/**
+ * Implements hook_form_alter().
+ */
 function views_dkan_workflow_tree_views_bulk_operations_form_alter(&$form, &$form_state, $vbo) {
-  // Workbench Moderation VBO action permissions check
+  // Workbench Moderation VBO action permissions check.
   // @TODO This is temporary and needs to be moved to the front-end.
   if (strpos($form['#form_id'], 'views_form_workbench_moderation') === 0) {
     $account = $GLOBALS['user'];
     // Make sure all the dkan_workflow enabled content types are allowed.
     $types = variable_get('dkan_workflow_content_types', array('dataset', 'resource'));
     $from_states = array(
-        'views_form_workbench_moderation_needs_review_page' => 'needs_review',
-        ' views_form_workbench_moderation_drafts_page' => 'draft',
-        'views_form_workbench_moderation_page_stale_drafts' => 'draft',
-        ' views_form_workbench_moderation_page_stale_reviews' => 'needs_review',
+      'views_form_workbench_moderation_needs_review_page' => 'needs_review',
+      ' views_form_workbench_moderation_drafts_page' => 'draft',
+      'views_form_workbench_moderation_page_stale_drafts' => 'draft',
+      ' views_form_workbench_moderation_page_stale_reviews' => 'needs_review',
     );
-    foreach($form['select'] as $select_key => $select_value) {
+    foreach ($form['select'] as $select_key => $select_value) {
       $matches = array();
       if (preg_match("/^action::views_dkan_workflow_tree_set_moderation_state_action_(\D+)$/", $select_key, $matches)
           && isset($from_states[$form['#form_id']])) {
         $to_state = $matches[1];
-        foreach($types as $node_type){
-          if(!workbench_moderation_state_allowed($account, $from_states[$form['#form_id']], $to_state, $node_type)) {
+        foreach ($types as $node_type) {
+          if (!workbench_moderation_state_allowed($account, $from_states[$form['#form_id']], $to_state, $node_type)) {
             unset($form['select'][$select_key]);
           }
         }
@@ -100,7 +115,7 @@ function views_dkan_workflow_tree_views_bulk_operations_form_alter(&$form, &$for
 
     $form['select']['#type'] = 'div';
 
-    // Change "Select all items" button position
+    // Change "Select all items" button position.
     if ($form_state['step'] == 'views_form_views_form' && isset($form['select_all_markup'])) {
       $select_all = array('select_all_markup' => $form['select_all_markup']);
       $form['select'] = $select_all + $form['select'];
@@ -108,32 +123,32 @@ function views_dkan_workflow_tree_views_bulk_operations_form_alter(&$form, &$for
 
       $dataset_icon = array(
         'type' => 'dataset',
-        'class' => array('icon-dkan')
+        'class' => array('icon-dkan'),
       );
       $resource_icon = array(
         'type' => 'resource',
-        'class' => array('icon-dkan')
+        'class' => array('icon-dkan'),
       );
       $story_icon = array(
         'type' => 'dkan_data_story',
-        'class' => array('icon-dkan')
+        'class' => array('icon-dkan'),
       );
       $dashboard_icon = array(
         'type' => 'data_dashboard',
-        'class' => array('icon-dkan')
+        'class' => array('icon-dkan'),
       );
-      
-      $dataset_legend = '<span>'. theme('facet_icons', $dataset_icon) . ' Dataset</span>';
-      $resource_legend = '<span>'. theme('facet_icons', $resource_icon) . ' Resource</span>';
-      $story_legend = '<span>'. theme('facet_icons', $story_icon) . ' Data Story</span>';
+
+      $dataset_legend = '<span>' . theme('facet_icons', $dataset_icon) . ' Dataset</span>';
+      $resource_legend = '<span>' . theme('facet_icons', $resource_icon) . ' Resource</span>';
+      $story_legend = '<span>' . theme('facet_icons', $story_icon) . ' Data Story</span>';
       $dashboard_legend = '<span>' . theme('facet_icons', $dashboard_icon) . ' Data Dashboard</span>';
 
-      if(module_exists('dkan_feedback')) {
+      if (module_exists('dkan_feedback')) {
         $feedback_icon = array(
           'type' => 'feedback',
-          'class' => array('icon-dkan')
+          'class' => array('icon-dkan'),
         );
-        $feedback_legend = '<span>'. theme('facet_icons', $feedback_icon) . ' Feedback</span>';
+        $feedback_legend = '<span>' . theme('facet_icons', $feedback_icon) . ' Feedback</span>';
         $form['#suffix'] = '<div class="references">' . $dataset_legend . $resource_legend . $story_legend . $dashboard_legend . $feedback_legend . '</div>';
       }
       else {
@@ -151,18 +166,18 @@ function views_dkan_workflow_tree_set_state_action($node, $context) {
 }
 
 /**
- * Implements of hook_theme().
+ * Implements hook_theme().
  */
 function views_dkan_workflow_tree_theme($existing, $type, $theme, $path) {
   return array(
-      'views_dkan_workflow_tree' => array(
-          'variables' => array(
-              'view' => NULL,
-              'options' => array(),
-              'rows' => array(),
-              'title' => NULL,
-          ),
+    'views_dkan_workflow_tree' => array(
+      'variables' => array(
+        'view' => NULL,
+        'options' => array(),
+        'rows' => array(),
+        'title' => NULL,
       ),
+    ),
   );
 }
 
@@ -175,11 +190,11 @@ function theme_views_dkan_workflow_tree($variables) {
 
   $vbo_field = $variables['options']['vbo_field'];
   $vid_field = $variables['options']['vid_field'];
-  foreach(array('VBO' => $vbo_field, 'VID' => $vid_field) as $field_key => $field_value){
-    if(!isset($field_value)){
+  foreach (array('VBO' => $vbo_field, 'VID' => $vid_field) as $field_key => $field_value) {
+    if (!isset($field_value)) {
       // Can't continue without the vid alias. report and skip.
-      watchdog('views_dkan_workflow_tree', t('Missing %field_key field value
-        from the View Format settings.'), array('%field_key' => $field_key),
+      watchdog('views_dkan_workflow_tree', 'Missing %field_key field value
+        from the View Format settings.', array('%field_key' => $field_key),
           WATCHDOG_ERROR);
       return;
     }
@@ -189,14 +204,15 @@ function theme_views_dkan_workflow_tree($variables) {
 
   // Load and prep return nodes.
   $nodes = array();
-  foreach($result as $result_index => $result_item) {
-    if($node = node_load(NULL, $result_item->{$vid_alias})) {
+  foreach ($result as $result_index => $result_item) {
+    if ($node = node_load(NULL, $result_item->{$vid_alias})) {
       $node->row_index = $result_index;
       $nodes[$node->nid] = $node;
-    } else {
+    }
+    else {
       // Vid from result is missing from the db.
-      watchdog('views_dkan_workflow_tree', t('Failed to load Node with Vid
-        %vid'), array('%vid' => $result_item->{$vid_alias}), WATCHDOG_ERROR);
+      watchdog('views_dkan_workflow_tree', 'Failed to load Node with Vid
+        %vid', array('%vid' => $result_item->{$vid_alias}), WATCHDOG_ERROR);
     }
   }
 
@@ -208,19 +224,19 @@ function theme_views_dkan_workflow_tree($variables) {
 
   // Add headers to the rendered output.
   $items[] = array(
-      'data' => theme_dkan_workflow_tree_headers(),
-      'class' => array('views-dkan-workflow-tree-item', 'headers')
+    'data' => theme_dkan_workflow_tree_headers(),
+    'class' => array('views-dkan-workflow-tree-item', 'headers'),
   );
 
   // Separate datasets from resources and render datasets.
-  foreach($nodes as $nid => $node) {
+  foreach ($nodes as $nid => $node) {
     $zebra = ($counter % 2) ? 'odd' : 'even';
-    if($node->type == 'dataset'){
+    if ($node->type == 'dataset') {
       $datasets[$nid] = $node;
       $variables = array(
-          'node' => $node,
-          'view' => $view,
-          'vbo_field' => $vbo_field,
+        'node' => $node,
+        'view' => $view,
+        'vbo_field' => $vbo_field,
       );
       $items[$nid]['data'] = theme_dkan_workflow_tree_item($variables);
 
@@ -232,9 +248,9 @@ function theme_views_dkan_workflow_tree($variables) {
     else {
       // Support other content types allowed by the views filter.
       $variables = array(
-          'node' => $node,
-          'view' => $view,
-          'vbo_field' => $vbo_field,
+        'node' => $node,
+        'view' => $view,
+        'vbo_field' => $vbo_field,
       );
       $items[$nid]['data'] = theme_dkan_workflow_tree_item($variables);
       $items[$nid]['class'] = array('views-dkan-workflow-tree-item', $zebra);
@@ -243,34 +259,36 @@ function theme_views_dkan_workflow_tree($variables) {
   }
 
   foreach ($resources as $nid => $node) {
-    if(!isset($node->field_dataset_ref) || empty($node->field_dataset_ref)) {
+    if (!isset($node->field_dataset_ref) || empty($node->field_dataset_ref)) {
       // If resource does not reference any dataset.
       $variables = array(
-          'node' => $node,
-          'view' => $view,
-          'vbo_field' => $vbo_field,
+        'node' => $node,
+        'view' => $view,
+        'vbo_field' => $vbo_field,
       );
       $resources_without_datasets[] = theme_dkan_workflow_tree_item($variables);
 
-    } else {
+    }
+    else {
       $parents_nid = array();
       $parents_nid = $node->field_dataset_ref[LANGUAGE_NONE];
-      foreach($parents_nid as $parent_nid) {
+      foreach ($parents_nid as $parent_nid) {
         $parent_nid = $parent_nid['target_id'];
-        if(!in_array($parent_nid, array_keys($datasets))) {
+        if (!in_array($parent_nid, array_keys($datasets))) {
           // Resource references a dataset with different moderation state.
           if ($parent_new = node_load($parent_nid)) {
             $datasets[$parent_nid] = $parent_new;
             $items[$parent_nid]['data'] = theme_dkan_workflow_tree_item(
                 array('node' => $parent_new));
             $items[$parent_nid]['class'] = array('views-dkan-workflow-tree-item');
-          } else {
+          }
+          else {
             // Can't load the missing parent dataset node. Add the resource to
             // "Resources without a dataset".
             $variables = array(
-                'node' => $node,
-                'view' => $view,
-                'vbo_field' => $vbo_field,
+              'node' => $node,
+              'view' => $view,
+              'vbo_field' => $vbo_field,
             );
             $resources_without_datasets[] = theme_dkan_workflow_tree_item($variables);
             // TODO: add watchdog entry.
@@ -280,9 +298,9 @@ function theme_views_dkan_workflow_tree($variables) {
 
         // Parent dataset exists or added.
         $variables = array(
-            'node' => $node,
-            'view' => $view,
-            'vbo_field' => $vbo_field,
+          'node' => $node,
+          'view' => $view,
+          'vbo_field' => $vbo_field,
         );
         $items[$parent_nid]['children'][] = theme_dkan_workflow_tree_item($variables);
       }
@@ -298,20 +316,23 @@ function theme_views_dkan_workflow_tree($variables) {
     $items[] = $without_datasets;
   }
 
-  $variables = array('items' => $items,
-      'type' => 'ul',
-      'attributes' => array('class' => array('views-dkan-workflow-tree')));
+  $variables = array(
+    'items' => $items,
+    'type' => 'ul',
+    'attributes' => array('class' => array('views-dkan-workflow-tree')),
+  );
   return theme('item_list', $variables);
 }
 
 /**
  * Add theme function for dataset dkan_workflow items.
  *
- * @param $variables: data required to theme the element:
- *  -$variables['title'] to render a disabled itew with only the title.
- *  - $variables['node'] is the node object.
- *  - $variables['vbo'] VBO checkboxs to use while generating the html
- *  structure.
+ * @param array $variables
+ *   Data required to theme the element
+ *   -$variables['title'] to render a disabled itew with only the title.
+ *   - $variables['node'] is the node object.
+ *   - $variables['vbo'] VBO checkboxs to use while generating the html
+ *   structure.
  */
 function theme_dkan_workflow_tree_item($variables = NULL) {
   $view = isset($variables['view']) ? $variables['view'] : FALSE;
@@ -322,7 +343,7 @@ function theme_dkan_workflow_tree_item($variables = NULL) {
   $output = '';
   if (!$node) {
     // Parentless title type item.
-    // Default to "Others"
+    // Default to "Others".
     $title = t('Others');
     if ($variables['title'] != NULL) {
       $title = $variables['title'];
@@ -339,11 +360,11 @@ function theme_dkan_workflow_tree_item($variables = NULL) {
       // Use the correct class for the disabled item.
       $output = '<div class="item-content item-disabled">';
       $output .=
-          '<div class="form-item form-type-checkbox form-item-views-bulk-operations-null checkbox">' .
-          '<label for="edit-views-bulk-operations-null">' .
-          '<input class="vbo-select form-checkbox" disabled="disabled" type="checkbox">' .
-          '</label>' .
-          '</div>';
+          '<div class="form-item form-type-checkbox form-item-views-bulk-operations-null checkbox">
+          <label for="edit-views-bulk-operations-null">
+          <input class="vbo-select form-checkbox" disabled="disabled" type="checkbox">
+          </label>
+          </div>';
     }
     else {
       $output = '<div class="item-content">';
@@ -357,7 +378,7 @@ function theme_dkan_workflow_tree_item($variables = NULL) {
 }
 
 /**
- * Implement hook_theme();
+ * Implements hook_theme().
  */
 function theme_dkan_workflow_tree_node(stdClass $node, $vbo) {
   // Groups
@@ -386,36 +407,37 @@ function theme_dkan_workflow_tree_node(stdClass $node, $vbo) {
   $author = user_load($node->revision_uid);
   $icon = array(
     'type' => $node->type,
-    'class' => array('facet-icon')
+    'class' => array('facet-icon'),
   );
   $output .=
       '<span class="views-dkan-workflow-tree-title ' . $node->type . '">' .
       $vbo .
-      // Since the 'html' option is set to TRUE we need to sanitize the title with check_plain().
-      theme('link' , array(
-          'text' => theme('facet_icons', $icon) . ' ' . check_plain($node->title),
-          'path' => 'node/' . $node->nid,
-          'options' => array(
-            'html' => true
-          )
+      // Since the 'html' option is set to TRUE
+      // we need to sanitize the title with check_plain().
+      theme('link', array(
+        'text' => theme('facet_icons', $icon) . ' ' . check_plain($node->title),
+        'path' => 'node/' . $node->nid,
+        'options' => array(
+          'html' => TRUE,
+        ),
       )) .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-revision-user">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-revision-user">' .
       theme('username', array('account' => $author)) .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-groups">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-groups">' .
       $groups .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-revision-timestamp">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-revision-timestamp">' .
       format_date($node->revision_timestamp) .
       '</span>';
 
   // Action links.
   $output .= '<span class="views-dkan-workflow-tree-actions">' .
       theme('link', array(
-          'text' => 'Edit',
-          'path' => 'node/' . $node->nid . '/edit',
-          'options' => array('attributes' => array('class' => 'btn btn-default btn-primary views-dkan-workflow-tree-action')),
+        'text' => 'Edit',
+        'path' => 'node/' . $node->nid . '/edit',
+        'options' => array('attributes' => array('class' => 'btn btn-default btn-primary views-dkan-workflow-tree-action')),
       ));
 
   $url_options = array('attributes' => array('class' => 'btn btn-default btn-primary'));
@@ -435,7 +457,7 @@ function theme_dkan_workflow_tree_node(stdClass $node, $vbo) {
 }
 
 /**
- *
+ * Implementation theme function to show headers.
  */
 function theme_dkan_workflow_tree_headers() {
 
@@ -444,17 +466,17 @@ function theme_dkan_workflow_tree_headers() {
   $output .=
       '<span class="views-dkan-workflow-tree-title header">' .
       t('Title') .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-revision-user header">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-revision-user header">' .
       t('Revision Author') .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-groups header">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-groups header">' .
       t('Groups') .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-revision-timestamp header">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-revision-timestamp header">' .
       t('Updated') .
-      '</span>' .
-      '<span class="views-dkan-workflow-tree-actions header">' .
+      '</span>
+      <span class="views-dkan-workflow-tree-actions header">' .
       t('Actions') .
       '</span>';
 

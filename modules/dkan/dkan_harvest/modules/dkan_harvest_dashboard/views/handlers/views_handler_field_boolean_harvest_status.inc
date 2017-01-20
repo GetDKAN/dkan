@@ -1,5 +1,5 @@
 <?php
-
+// @codingStandardsIgnoreFile
 /**
  * Handler class implementation for Dkan Harvest Migration date field.
  */
@@ -9,7 +9,7 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
    * {@inheritdoc}
    */
   function query() {
-    // do nothing -- to override the parent query since we are not using a
+    // Do nothing -- to override the parent query since we are not using a
     // direct database query.
   }
 
@@ -109,12 +109,12 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
     }
 
     $machine_name = array_pop($result_array);
-    $harvestSource = new HarvestSource($machine_name);
+    $harvest_source = new HarvestSource($machine_name);
 
-      // Get the latest mlid from the message table.
+    // Get the latest mlid from the message table.
     $query_migrate_log = db_query("SELECT mlid FROM migrate_log WHERE machine_name = :migration_machine_name ORDER BY mlid DESC LIMIT 1",
       array(
-        ':migration_machine_name' => $harvestSource->getMigrationMachineName(),
+        ':migration_machine_name' => $harvest_source->getMigrationMachineName(),
       ));
 
     $result_migrate_log = $query_migrate_log->fetchAssoc();
@@ -128,8 +128,9 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
     // Get rid of the array.
     $mlid = array_pop($result_migrate_log);
 
-    $harvestSourceMigration = dkan_harvest_get_migration($harvestSource);
-    $messageTable = $harvestSourceMigration->getMap()->getMessageTable();
+    $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
+    $messageTable = $harvest_source_migration->getMap()->getMessageTable();
+    $logTable = $harvest_source_migration->getMap()->getLogTable();
 
     // Let's see if we got errors during the last migration.
     $query_message_table = db_query("SELECT COUNT(*) FROM " . $messageTable . " WHERE mlid = :mlid AND level = :error_level",
@@ -139,6 +140,13 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
       ));
     $result_message_table = $query_message_table->fetchAssoc();
 
+    // Let's see if we didn't get errors during the last migration but failed.
+    $query_log_table = db_query("SELECT failed FROM " . $logTable . " WHERE mlid = :mlid",
+      array(
+        ':mlid' => $mlid,
+      ));
+    $result_log_table = $query_log_table->fetchField();
+
     if (empty($result_message_table)) {
       // i'm confused. This should no happen.
       watchdog('dkan_harvest_dashboard', "Result for error message not found.", array(), WATCHDOG_ERROR);
@@ -146,7 +154,7 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
     }
 
     $errors_count = array_pop($result_message_table);
-    return $errors_count > 0 ? TRUE : FALSE;
+    return (($errors_count > 0) || $result_log_table) ? TRUE : FALSE;
   }
 
   /**
@@ -162,9 +170,10 @@ class views_handler_field_boolean_harvest_status extends views_handler_field_boo
         && !empty(filter_xss_admin($this->options['type_custom_notapplicable']))) {
         return filter_xss_admin($this->options['type_custom_notapplicable']);
       }
-      return "N/A";
+      return 'N/A';
     }
 
     return parent::render($values);
   }
+
 }

@@ -1,5 +1,10 @@
 <?php
-// Plugin definition
+
+/**
+ * @file
+ * Plugin definition.
+ */
+
 $plugin = array(
   'title' => t('Custom Full Width'),
   'category' => t('Custom'),
@@ -16,4 +21,3 @@ $plugin = array(
     'footer' => t('Footer'),
   ),
 );
-

@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * @file
+ * Workbench_moderation.view.inc.
+ */
+
 $view = new view();
 $view->name = 'workbench_moderation';
 $view->description = 'Lists content by moderation state.';

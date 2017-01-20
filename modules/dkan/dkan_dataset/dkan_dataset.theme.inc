@@ -122,8 +122,10 @@ function theme_dkan_dataset_resource_view($vars) {
       ));
     }
     if ($file_count > 1) {
+      $link = t('Download All');
+      $icon = '<i class="fa fa-download"></i>';
       $download_all = '<div property="dcat:Distribution"><span class="links">';
-      $download_all .= l(t('Download All @fa_download', array('@fa_download' => '<i class="fa fa-download"></i>')), 'node/' . $vars['node']->nid . '/dataset/download', array(
+      $download_all .= l($link . ' ' . $icon, 'node/' . $vars['node']->nid . '/dataset/download', array(
         'html' => TRUE,
         'attributes' => array(
           'class' => array('btn', 'btn-primary'),

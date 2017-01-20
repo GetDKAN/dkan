@@ -1,13 +1,26 @@
 <?php
-include '../includes/getRemoteFileInfo.php';
 
-class getRemoteFileInfoTest extends PHPUnit_Framework_TestCase
-{
+/**
+ * @file
+ * PHPUnit test file for the GetRemoteFileInfoTest class.
+ */
 
+use dkanDataset\getRemoteFileInfo;
+
+/**
+ * Tests for GetRemoteFileInfo class.
+ *
+ * @class GetRemoteFileInfoTest
+ */
+class GetRemoteFileInfoTest extends PHPUnit_Framework_TestCase {
+
+  /**
+   * Helper method for the test data.
+   */
   public function getHeaders($url) {
     switch ($url) {
       case 'https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD':
-      return 'HTTP/1.1 200 OK
+        return 'HTTP/1.1 200 OK
 Server: nginx
 Date: Mon, 28 Sep 2015 19:38:32 GMT
 Content-Type: text/csv; charset=utf-8
@@ -20,21 +33,31 @@ Content-disposition: attachment; filename=Hospital_Inpatient_Discharges_by_DRG__
 Cache-Control: public, must-revalidate, max-age=21600
 X-Socrata-Region: production
 Age: 5730';
-        break;
     }
   }
 
-  public function testURLs() {
+  /**
+   * Run test URLs threw the getRemoteFileInfo class.
+   */
+  public function testUrls() {
     $url = 'https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD';
-    $fileInfo =  $file_info = new dkanDataset\getRemoteFileInfo($url, 'test' , TRUE, 'tmp');
-    $info = array();
-    $headers = $this->getHeaders($url);
-    $info['header'] = $fileInfo->httpParseHeaders($headers);
-    $fileInfo->info = $info;
-    $type = $fileInfo->getType();
-    $name = $fileInfo->getName();
-    $this->assertEquals($type, 'text/csv');
-    $this->assertEquals($name, 'Hospital_Inpatient_Discharges_by_DRG__Northwest__FY2011.csv');
+    $fileInfo = new getRemoteFileInfo($url, 'test', TRUE);
+    $this->assertEquals($fileInfo->getType(), 'text/csv');
+    $this->assertEquals($fileInfo->getName(), 'Hospital_Inpatient_Discharges_by_DRG__Northwest__FY2011.csv');
   }
-}
 
+  /**
+   * Test URL extension.
+   *
+   * Mimetype can have multiple extensions associated to it. This test make sure
+   * that the returned extension matches both the Mimetype and the actual file
+   * extension.
+   */
+  public function testUrlExtension() {
+    $url = "https://s3.amazonaws.com/dkan-default-content-files/files/albo.xls";
+    $fileInfo = new getRemoteFileInfo($url, 'test', TRUE);
+    $this->assertEquals($fileInfo->getType(), 'application/vnd.ms-excel');
+    $this->assertEquals($fileInfo->getExtension(), 'xls');
+  }
+
+}

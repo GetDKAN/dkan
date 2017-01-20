@@ -135,7 +135,7 @@ Feature: Dataset Features
   # TODO: make sure it works when we don't have default content on.
   Scenario: View available tag filters for datasets
     Given I am on "Datasets Search" page
-    ## Uncomment this if you wanna use selenium.    
+    ## Uncomment this if you wanna use selenium.
     # Then I click on the text "Tags"
     # And I wait for "1" seconds
     Then I should see "Health 2 (2)" in the "filter by tag" region
@@ -144,7 +144,7 @@ Feature: Dataset Features
   # TODO: make sure it works when we don't have default content on.
   Scenario: View available resource format filters for datasets
     Given I am on "Datasets Search" page
-    ## Uncomment this if you wanna use selenium.    
+    ## Uncomment this if you wanna use selenium.
     # When I click on the text "Format"
     # And I wait for "1" seconds
     Then I should see "csv 2 (1)" in the "filter by resource format" region
@@ -166,7 +166,7 @@ Feature: Dataset Features
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
-    ## Uncomment this if you wanna use selenium.    
+    ## Uncomment this if you wanna use selenium.
     # Then I click on the text "Tags"
     When I click "Health 2" in the "filter by tag" region
     Then I should see "2 results"
@@ -179,7 +179,7 @@ Feature: Dataset Features
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
-    ## Uncomment this if you wanna use selenium.    
+    ## Uncomment this if you wanna use selenium.
     # Then I click on the text "Format"
     # Then I wait for "1" seconds
     When I click "csv 2" in the "filter by resource format" region
@@ -193,7 +193,7 @@ Feature: Dataset Features
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
-    ## Uncomment this if you wanna use selenium.    
+    ## Uncomment this if you wanna use selenium.
     # Then I click on the text "Author"
     # Then I wait for "1" seconds
     When I click "Gabriel" in the "filter by author" region

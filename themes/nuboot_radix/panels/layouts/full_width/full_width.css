@@ -1,5 +1,4 @@
-
-.panel-full-width { 
+.panel-full-width {
 /*  overflow: hidden;  */
   margin-top: 0;
   padding-top: 0;
@@ -7,8 +6,8 @@
 
 .panel-full-width .panel-top,
 .panel-full-width .panel-middle,
-.panel-full-width .panel-bottom { 
-  width: 100%; 
+.panel-full-width .panel-bottom {
+  width: 100%;
   clear: both;
 }
 
@@ -21,15 +20,15 @@
 
 .panel-full-width .panel-top .panel-col-first,
 .panel-full-width .panel-top .panel-col-second {
-  width:50%;
-  float:left;
+  width: 50%;
+  float: left;
 }
 
 .panel-full-width .panel-bottom .panel-col-first,
 .panel-full-width .panel-bottom .panel-col-second,
 .panel-full-width .panel-bottom .panel-col-third {
-  width:33.333%;
-  float:left;
+  width: 33.333%;
+  float: left;
 }
 
 .panel-full-width .panel-separator {

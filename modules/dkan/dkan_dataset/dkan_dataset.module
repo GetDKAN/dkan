@@ -70,7 +70,7 @@ function dkan_dataset_menu() {
     'weight' => -8,
     'position' => 'left',
     'page callback' => 'system_admin_menu_block_page',
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer DKAN configuration'),
     'file' => 'system.admin.inc',
     'file path' => drupal_get_path('module', 'system'),
   );
@@ -79,7 +79,7 @@ function dkan_dataset_menu() {
     'description' => 'Settings for DKAN Dataset local and external previews.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_dataset_preview_settings'),
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('administer DKAN configuration'),
     'file' => 'dkan_dataset.admin.inc',
   );
   $items['admin/dkan/dataset_forms'] = array(
@@ -87,7 +87,7 @@ function dkan_dataset_menu() {
     'description' => 'Form settings for DKAN Datasets.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_dataset_form_settings'),
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('administer DKAN configuration'),
     'file' => 'dkan_dataset.admin.inc',
   );
   if (module_exists('open_data_schema_map_dkan')) {
@@ -95,7 +95,7 @@ function dkan_dataset_menu() {
       'title' => 'DKAN Dataset API',
       'description' => 'Settings for DKAN Dataset APIs.',
       'page callback' => 'dkan_dataset_api_menu_settings',
-      'access arguments' => array('administer site configuration'),
+      'access arguments' => array('administer DKAN configuration'),
       'file' => 'dkan_dataset.admin.inc',
     );
   }
@@ -428,12 +428,12 @@ function dkan_form_create_stages($op, $dataset_nid = NULL, $resource_nid = NULL)
  * Access callback for back link.
  */
 function dkan_dataset_back_access($node) {
-  if ($node->type != 'resource') {
+  if ($node->type != 'resource'
+  || empty($node->field_dataset_ref)) {
     return FALSE;
   }
-  else {
-    return node_access('view', $node);
-  }
+
+  return node_access('view', $node);
 }
 
 /**
@@ -487,22 +487,11 @@ function dkan_dataset_discovery_extension($mimetype) {
   $type = '';
   $mapping = file_mimetype_mapping();
   $offset = array_search($mimetype, $mapping['mimetypes']);
-  if ($offset) {
+  // Function array_search can return 0 as index.
+  if ($offset !== FALSE) {
     $type = array_search($offset, $mapping['extensions']);
   }
-  if (!$type) {
-    // Allows for custom mappings despite file_mimetype_mapping only allowing one
-    // mimetype per extension.
-    switch ($offset) {
-      case 998:
-        $type = 'xml';
-        break;
 
-      default:
-        $type = $mimetype;
-        break;
-    }
-  }
   return $type;
 }
 
@@ -510,11 +499,24 @@ function dkan_dataset_discovery_extension($mimetype) {
  * Implements hook_file_mimetype_mapping_alter().
  */
 function dkan_dataset_file_mimetype_mapping_alter(&$mapping) {
-  $mapping['extensions']['json'] = 999;
-  $mapping['mimetypes'][999] = 'application/json';
-  // Text/xml would map to the same extention as application/xml, so we'll
-  // fix trhat in dkan_dataset_discovery_extension()
-  $mapping['mimetypes'][998] = 'text/xml';
+  // Support json file type if it is not done already.
+  $missing_mimetypes = array(
+    // OOB Drupal does not support'application/json' mimetype.
+    'application/json' => 'json',
+    // Text/xml would map to the same extension as application/xml.
+    'text/xml' => 'xml',
+  );
+
+  foreach ($missing_mimetypes as $mimetype => $extension) {
+    $offset = array_search($mimetype, $mapping['mimetypes']);
+    if ($offset === FALSE || array_search($offset, $mapping['extensions']) != $extension) {
+      $mapping['mimetypes'][] = $mimetype;
+      $mapping_mimetypes_keys = array_keys($mapping['mimetypes']);
+      $mimetype_key = end($mapping_mimetypes_keys);
+      $mapping['extensions'][$extension] = $mimetype_key;
+    }
+  }
+
   // 'Htm' and 'html' have the same mapping number but 'htm' is after
   // content types of 'text/html' are alway 'htm' without this.
   unset($mapping['extensions']['htm']);
@@ -585,24 +587,29 @@ function dkan_dataset_sync_groups($dataset) {
     $groups_changed = ($dataset_groups_old != $dataset_groups_new) ? TRUE : FALSE;
     $resources_changed = ($dataset_resources_old != $dataset_resources_new) ? TRUE : FALSE;
 
-    // If groups changed or resources changed then we need to update the groups on all affected resources.
+    // If groups changed or resources changed then we need to update the groups
+    // on all affected resources.
     if ($groups_changed || $resources_changed) {
 
-      // Process resources and separate them based on 'added', 'removed', 'unmodified' status.
+      // Process resources and separate them based on 'added', 'removed',
+      // 'unmodified' status.
       $resources = dkan_dataset_process_resources($dataset_resources_old, $dataset_resources_new);
 
-      // Update 'added' resources. Append the current dataset's groups to their other groups.
+      // Update 'added' resources. Append the current dataset's groups to their
+      // other groups.
       if (isset($resources['added'])) {
         dkan_dataset_update_resource_groups($resources['added'], $wrapped_dataset_new, $dataset_groups_new);
       }
 
-      // Update 'removed' resources. Don't append the current dataset's groups to their other groups.
+      // Update 'removed' resources. Don't append the current dataset's groups
+      // to their other groups.
       if (isset($resources['removed'])) {
         dkan_dataset_update_resource_groups($resources['removed'], $wrapped_dataset_new, NULL);
       }
 
-      // If the groups changed we need to also update the resources that were already
-      // associated with the dataset. Append the current dataset's groups to their other groups.
+      // If the groups changed we need to also update the resources that were
+      // already associated with the dataset. Append the current dataset's
+      // groups to their other groups.
       if ($groups_changed && isset($resources['unmodified'])) {
         dkan_dataset_update_resource_groups($resources['unmodified'], $wrapped_dataset_new, $dataset_groups_new);
       }
@@ -611,12 +618,12 @@ function dkan_dataset_sync_groups($dataset) {
 }
 
 /**
- * Process resource and group them based on their 'added', 'removed' or 'unmodified' status.
+ * Process resources and group them based on status.
  *
  * @param array $resources_old
- *    The list of old resources associated with the dataset that is being updated.
+ *    The list of old resources associated with the dataset being updated.
  * @param array $resources_new
- *    The list of new resources associated with the dataset that is being updated.
+ *    The list of new resources associated with the dataset being updated.
  */
 function dkan_dataset_process_resources(array $resources_old, array $resources_new) {
   $processed_resources = array();
@@ -627,7 +634,8 @@ function dkan_dataset_process_resources(array $resources_old, array $resources_n
     $all_resources[$resource_new_key] = $resource_new;
   }
 
-  // Organize resources separating them by their 'added', 'removed', 'unmodified' status.
+  // Organize resources separating them by their 'added', 'removed', or
+  // 'unmodified' status.
   foreach ($all_resources as $resource_key => $resource) {
 
     $status = 'added';
@@ -700,8 +708,9 @@ function dkan_dataset_get_dataset_resources($dataset) {
  *    ID of the dataset that is currently being updated.
  *
  * @return array
- *    Array containing the full list of groups associated with all the datasets where the
- *    resource was added except the ones from the dataset that is being updated.
+ *    Array containing the full list of groups associated with all the datasets
+ *    where the resource was added except the ones from the dataset that is
+ *    being updated.
  */
 function dkan_dataset_get_resource_groups(EntityMetadataWrapper $resource, $updated_dataset_id) {
 
@@ -716,15 +725,16 @@ function dkan_dataset_get_resource_groups(EntityMetadataWrapper $resource, $upda
     // A resource can be associated with multiple datasets.
     foreach ($referenced_datasets as $referenced_dataset_key => $referenced_dataset) {
 
-      // Get groups of all the associated datasets except the one that's currently
-      // being edited. Those groups will be added after if needed.
+      // Get groups of all the associated datasets except the one that's
+      // currently being edited. Those groups will be added after if needed.
       if ($referenced_dataset->nid != $updated_dataset_id) {
         // Load the latest version of the referenced dataset.
         $dataset = node_load($referenced_dataset->nid, NULL, TRUE);
         // Wrap node as entity for easy usage.
         $dataset_wrapper = entity_metadata_wrapper('node', $dataset);
 
-        // Get the list of groups associated with the dataset and append those to the result list.
+        // Get the list of groups associated with the dataset and append those
+        // to the result list.
         $dataset_groups = $dataset_wrapper->og_group_ref->value();
         foreach ($dataset_groups as $group_id => $group) {
           $groups[$group->nid] = $group;
@@ -737,7 +747,7 @@ function dkan_dataset_get_resource_groups(EntityMetadataWrapper $resource, $upda
 }
 
 /**
- * Update the associated groups on all the resources that were modified as part of the dataset update.
+ * Update the associated groups on all the resources that were modified.
  *
  * @param array $resources
  *    The list of resources whose resources need to be updated.
@@ -746,7 +756,7 @@ function dkan_dataset_get_resource_groups(EntityMetadataWrapper $resource, $upda
  * @param array $updated_dataset_groups
  *    The current groups associated with the dataset that is being updated.
  * @param int $use_queue_limit
- *    A limit indicating when a Drupal queue should be used to update the resources.
+ *    A limit indicating when a Drupal queue should be used to update resources.
  */
 function dkan_dataset_update_resource_groups($resources, EntityMetadataWrapper $updated_dataset, $updated_dataset_groups, $use_queue_limit = 20) {
 
@@ -768,7 +778,8 @@ function dkan_dataset_update_resource_groups($resources, EntityMetadataWrapper $
     $resource = node_load($resource->nid, NULL, TRUE);
     $wrapper_resource = entity_metadata_wrapper('node', $resource);
 
-    // Get all the resource groups from all the other datasets the resource was associated with.
+    // Get all the resource groups from all the other datasets the resource was
+    // associated with.
     $resource_groups = dkan_dataset_get_resource_groups($wrapper_resource, $updated_dataset->getIdentifier());
     // If present then append the groups of the current dataset.
     if ($updated_dataset_groups) {
@@ -878,7 +889,7 @@ function dkan_dataset_page_alter(&$page) {
  *     - name: Full name of preview type.
  *     - link_callback: Callback function for generating the preview link, given
  *       a node object
- *     - suggested_formats: array of formats suggested for use with this preview.
+ *     - suggested_formats: array of formats suggested for use with this preview
  *       Will populate the format vocabulary and be used in preview definitions.
  *     - description: Full description of the preview type.
  *     - format: Array of the formats this preview is currently enabled for.
@@ -891,7 +902,8 @@ function dkan_dataset_teaser_get_external_previews() {
     'suggested_formats' => array('csv', 'xls'),
     'description' => t('Local preview. Preview tabular data in a grid, basic chart or map. This preview type is not optional and will load only for the suggested formats listed.'),
   );
-  // For DKAN, we don't add the format mannually, so copy the values from suggested_formats.
+  // For DKAN, we don't add the format manually, so copy the values from
+  // suggested_formats.
   $previews['dkan']['format'] = $previews['dkan']['suggested_formats'];
 
   $previews['arcgis'] = array(
@@ -977,7 +989,8 @@ function dkan_dataset_teaser_external_previews_for_resource($node) {
     $format = $resource_wrapper->field_format->value()->name;
   }
   foreach ($previews as $provider => $preview) {
-    // Filter by format and availability of arguments (if any argument is NULL, no dice)
+    // Filter by format and availability of arguments (if any argument is NULL,
+    // no dice)
     // @todo allow individual previews to be disabled in settings
     if (!in_array($format, $preview['format'])) {
       unset($previews[$provider]);
@@ -1174,7 +1187,7 @@ function dkan_dataset_remotefile_value($element, &$item) {
     try {
       $file = remote_stream_wrapper_file_create_by_uri($value);
 
-      $file_info = new GetRemoteFileInfo($value, t('!site_name crawler', array('!site_name' => variable_get('site_name'))), TRUE, file_directory_temp());
+      $file_info = new GetRemoteFileInfo($value, t('!site_name crawler', array('!site_name' => variable_get('site_name'))));
       if ($filename = $file_info->getName()) {
         $file->filename = $filename;
       }
@@ -1271,7 +1284,7 @@ function dkan_dataset_field_formatter_view($entity_type, $entity, $field, $insta
     $harvest_node = node_load($entity->field_harvest_source_ref[LANGUAGE_NONE][0]['target_id']);
     if ($harvest_node) {
       $harvestSource = HarvestSource::getHarvestSourceFromNode($harvest_node);
-      $migrate_table = 'migrate_map_dkan_harvest_migrate_' . $harvestSource->machine_name;
+      $migrate_table = 'migrate_map_dkan_harvest_migrate_' . $harvestSource->machineName;
       $migrate_info = db_query("SELECT * FROM {$migrate_table} WHERE destid1=:destid1", array(':destid1' => $entity->nid))->fetchObject();
       $sourceid = isset($migrate_info->sourceid1) ? $migrate_info->sourceid1 : '';
       $rows[] = array(t('<strong>Harvest Source Title</strong>'), $harvest_node->title);

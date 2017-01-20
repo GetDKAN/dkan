@@ -73,6 +73,20 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
 
+  @noworkflow @javascript
+  Scenario: Create resource with too many sources.
+    Given I am logged in as "Katie"
+    And I am on the "Content" page
+    And I click "Resource"
+    And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I click "API or Website URL"
+    And I fill in "edit-field-link-api-und-0-url" with "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02"
+    When I fill in "Title" with "Resource 06"
+    And I press "Save"
+    Then I should see "Remote file is populated - only one resource type can be used at a time"
+    And I should see "API or Website URL is populated - only one resource type can be used at a time"
+
   @noworkflow
   #TODO: Content creator will be a role added later, but for now we stick with authenticated user
   Scenario: Edit own resource as content creator
@@ -129,10 +143,7 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
-    When I click "Back to dataset"
-    Then I should see "There is no dataset associated with this resource"
-    Given I am on "Dataset 04" page
-    Then I should not see "Resource 07" in the "dataset resource list" region
+    And I should not see the link "Back to dataset"
 
   @noworkflow
   Scenario: Add a resource with no group to a dataset with group
@@ -284,6 +295,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a recline preview
 
+  @javascript
   Scenario: Image preview
     Given I am logged in as "Katie"
     And I am on "Resource 12" page
@@ -298,6 +310,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a zip preview
 
+  @javascript
   Scenario: XML preview
     Given I am logged in as "Katie"
     And I am on "Resource 14" page

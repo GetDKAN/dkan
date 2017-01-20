@@ -15,10 +15,6 @@ function dkan_sitewide_demo_front_block_info() {
     'info' => t('Welcome to the DKAN Demo'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  $blocks['dkan_search_front'] = array(
-    'info' => t('Search Your Data'),
-    'cache' => DRUPAL_NO_CACHE,
-  );
   $blocks['dkan_add_front'] = array(
     'info' => t('Add a Dataset'),
     'cache' => DRUPAL_NO_CACHE,
@@ -38,11 +34,6 @@ function dkan_sitewide_demo_front_block_view($delta = '') {
       $block['subject'] = t('Welcome to the DKAN Demo');
       $default = dkan_demo_front_block();
       $block['content'] = check_markup(variable_get('dkan_sitewide_demo_front_dkan_demo_front_text', $default), variable_get('dkan_sitewide_demo_front_dkan_demo_front_format', 'html'));
-      break;
-
-    case 'dkan_search_front':
-      $block['subject'] = t('Search Your Data');
-      $block['content'] = dkan_search_front_block();
       break;
 
     case 'dkan_add_front':
@@ -121,13 +112,6 @@ function dkan_demo_front_block() {
 }
 
 /**
- * Creates search block for front page.
- */
-function dkan_search_front_block() {
-  return dkan_sitewide_search_bar();
-}
-
-/**
  * Creates "Add a Dataset" block for front page.
  */
 function dkan_add_front_block() {
@@ -135,17 +119,4 @@ function dkan_add_front_block() {
   $output .= t('You can add a !dataset to get a sense of publisher workflow. This form can be customised to require many additional fields. In this demo only the most basic fields are required.', array('!dataset' => l(t('Dataset'), 'node/add/dataset')));
   $output .= '</div>';
   return $output;
-}
-
-/**
- * Implements hook_views_post_execute().
- */
-function dkan_sitewide_demo_front_views_post_execute(&$view) {
-  // This adds the list of datasets to the view of groups. The group nid is used
-  // as an argument for group audience.
-  if ($view->name == 'front_page_group_list' && ($view->current_display == 'block' || $view->current_display == 'block_2') && isset($view->result[0])) {
-    $nid = $view->result[0]->nid;
-    $group_nodes = views_embed_view('front_page_group_list', 'block_1', $nid);
-    $view->attachment_after = $group_nodes;
-  }
 }

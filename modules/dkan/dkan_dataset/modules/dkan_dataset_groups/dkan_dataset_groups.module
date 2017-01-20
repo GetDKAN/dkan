@@ -67,7 +67,10 @@ function dkan_dataset_groups_block_view_alter(&$data, $block) {
 
       $members = dkan_dataset_groups_node_members($node);
 
-      $data['content']['#markup'] .= '<div class="group-owner-message"><strong>' . $subscribe_link . '</strong></div>';
+      // If the user is logged in then display the 'Request membership' link.
+      if (user_is_logged_in()) {
+        $data['content']['#markup'] .= '<div class="group-owner-message"><strong>' . $subscribe_link . '</strong></div>';
+      }
 
       // Hide member count if group is empty.
       if (count($members)) {
@@ -97,7 +100,8 @@ function dkan_dataset_groups_extras_subscribe($entity_type, $entity) {
 /**
  * Implements hook_default_search_api_index_alter().
  *
- * Add og group ref when is enable dataset groups. In other case we don't need this field on the index.
+ * Add og group ref when is enable dataset groups. In other case we don't need
+ * this field on the index.
  */
 function dkan_dataset_groups_default_search_api_index_alter(array &$defaults) {
   foreach ($defaults as &$index) {
@@ -110,7 +114,8 @@ function dkan_dataset_groups_default_search_api_index_alter(array &$defaults) {
 /**
  * Implements hook_default_search_api_server_alter().
  *
- * Add og group ref when is enable dataset groups. In other case we don't need this field on the index.
+ * Add og group ref when is enable dataset groups. In other case we don't need
+ * this field on the index.
  */
 function dkan_dataset_groups_default_search_api_server_alter(array &$defaults) {
   foreach ($defaults as &$server) {

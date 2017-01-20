@@ -81,4 +81,12 @@
     }
   }
 
+  Drupal.behaviors.dkan508Site = {
+    attach: function (context, settings) {
+      $('#edit-operation').attr('aria-label', 'Operation');
+      $('input.bef-datepicker').attr('aria-label', 'Date popup');
+      $('a.tabledrag-handle').html('<div class="handle">&nbsp;</div><span class="element-hidden">Drag and drop"</span>');
+    }
+  }
+
 })(jQuery);

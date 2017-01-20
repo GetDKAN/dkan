@@ -31,6 +31,8 @@ publisher listed on the source whose datasets you do _not_ want to bring into yo
 * **Overrides** will replace values from the source when you harvest. For instance, if you want to take responsibility for the datasets once harvested and add your agency's name as the publisher, you might add "publisher" with your agency's name as the value.
 * **Defaults**   work the same as overrides, but will only be used if the relevant field is empty in the source
 
+![Add Harvest Source](https://cloud.githubusercontent.com/assets/381224/20218155/ec7b23b0-a801-11e6-9c07-f27159927ca5.png)
+
 Project Open Data (as well as most metadata APIs) includes many fields that are not simple key-value pairs. If you need to access or modify nested array values you can use this dot syntax to specify the path: `key.nested_key.0.other_nested_key`. For example, the Publisher field in Project Open Data is expressed like this:
 
 ```json
@@ -42,16 +44,13 @@ Project Open Data (as well as most metadata APIs) includes many fields that are 
 
 To access the name property for filtering or overriding, you can set `publisher.name` in the first text box and the value you want to use in the second one.
 
-
-![Add Harvest Source](images/node_add_harvest_source.png)
-
 If the Harvest Source type you are looking for is not available, please refer
 to the **Define a new Harvest Source Type** section in the developers docs (coming soon).
 
 Harvest Source nodes are viewable by the public, providing some basic metadata 
 for the source and listing all datasets harvested from that source. 
 
-![Harvest Source Page](images/harvest_source_page.png)
+![Harvest Source Page](https://cloud.githubusercontent.com/assets/381224/20218476/93a6196e-a803-11e6-895f-d82d5228b055.png)
 
 Additional tabs are available to administrators and site managers.
 
@@ -69,7 +68,7 @@ run on this source.
 
 The information is managed by the core `dkan_harvest` via a per-harvest source
 `migrate_log` table that tracks the number of datasets created, updated,
-failed, orphaned, and unchanged.
+failed, orphaned, and unchanged and status. If the value for the field Status is Error then you can click on the text to see the log error and identify the problem.
 
 ### Error Log
 
@@ -163,6 +162,71 @@ $ drush --user=1 dkan-hm
 $ drush --user=1 dkan-harvest-migrate test_harvest_source
 # Alias
 $ drush --user=1 dkan-hm test_harvest_source
+```
+
+### Harvest Migration options
+DKAN Harvest drush commands leverage some options that is provided by the base
+migrate contrib module as well as adding some that are Harvest specific.
+
+Following is a listing of the currently supported options by the DKAN Harvest
+drush commands.
+
+#### --skiphash
+This option is useful to bypass the source update check and unconditionally
+re-harvest all the datasets available from the source.
+
+```sh
+$ ahoy drush dkan-hm test  --skiphash
+
+```
+
+#### --limit
+This option is provided by the migrate module and provide the possibilty to
+only harvest a subset of the source datasets.
+
+```sh
+$ ahoy drush dkan-hm test --limit="10"
+[REDACTED]
+Processed 10 (0 created, 10 updated, 0 failed, 0 ignored) in 123.9 sec (5/min) - done with 'dkan_harvest_migrate_test'
+```
+
+#### --idlist
+Upstream migrate drush option that is useful to target a specific datasets for harvest by id.
+```sh
+$ ahoy drush dkan-hm test  --idlist="cedcd327-4e5d-43f9-8eb1-c11850fa7c55,fb3525f2-d32a-451e-8869-906ed41f7695"
+[REDACTED]
+Processed 10 (0 created, 2 updated, 0 failed, 0 ignored) in 123.9 sec (5/min) - done with 'dkan_harvest_migrate_test'
+```
+
+#### --instrument
+Very useful options to gather information about system and memory usage during the harvest.
+```sh
+$ ahoy drush dkan-hm test  --instrument="all"
+
+[REDACTED]
+
+ Name                Cum (bytes)  Count  Avg (bytes)
+ destination import  10905672     10     1090567
+
+ Timer                                              Cum (sec)  Count  Avg (msec)
+ page                                               126.088    1      126087.69
+ destination import                                 123.832    10     12383.227
+ HarvestMigration->complete                         88.241     10     8824.094
+ drupal_http_request                                9.395      100    93.955
+ node_save                                          6.365      10     636.47
+ MigrateFieldsEntityHandler->prepare                0.101      10     10.09
+ MigrateDestinationEntity->prepareFields            0.1        10     10.021
+ HarvestMigration->postImport                       0.055      1      55.41
+ MigrateFieldsEntityHandler->complete               0.034      10     3.448
+ MigrateDestinationEntity->completeFields           0.034      10     3.36
+ saveIDMapping                                      0.032      10     3.238
+ MigrateTaxonomyTermReferenceFieldHandler->prepare  0.02       10     2.007
+ HarvestMigration->postImportMissingSource          0.015      1      15.42
+ HarvestMigrateSQLMap->lookupMapTable               0.014      1      14
+ HarvestMigrateSourceList getNextRow                0.012      10     1.236
+ MigrateTextFieldHandler->prepare                   0.012      110    0.11
+ HarvestMigration->postImportRestoredSource         0.011      1      11.06
+ [REDACTED]
 ```
 
 ## Extending DKAN Harvest
@@ -298,7 +362,7 @@ public function __construct($arguments) {
   $this->itemUrl = drupal_realpath($this->dkanHarvestSource->getCacheDir()) .
     '/:id';
 
-  $this->source = new MigrateSourceList(
+  $this->source = new HarvestMigrateSourceList(
     new HarvestList($this->dkanHarvestSource->getCacheDir()),
     new MigrateItemJSON($this->itemUrl),
     array(),

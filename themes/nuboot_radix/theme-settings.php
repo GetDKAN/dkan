@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Theme settings.
@@ -12,7 +13,7 @@ function nuboot_radix_form_system_theme_settings_alter(&$form, &$form_state) {
   // Ensure this include file is loaded when the form is rebuilt from the cache.
   $form_state['build_info']['files']['form'] = drupal_get_path('theme', 'nuboot_radix') . '/theme-settings.php';
 
-  //Additional theme settings.
+  // Additional theme settings.
   $form['copyright'] = array(
     '#title' => t('Copyright'),
     '#type' => 'fieldset',
@@ -79,7 +80,7 @@ function nuboot_radix_form_system_theme_settings_alter(&$form, &$form_state) {
       'file_validate_extensions' => array('svg'),
     ),
   );
-  
+
   $form['#submit'][] = $theme . '_hero_system_theme_settings_form_submit';
 
   // Return the additional form widgets.
@@ -87,10 +88,10 @@ function nuboot_radix_form_system_theme_settings_alter(&$form, &$form_state) {
 }
 
 /**
- * Helper function to validate background color field
+ * Helper function to validate background color field.
  */
 function _background_option_setting($element, &$form, &$form_state) {
-  if(!empty($element['#value'])) {
+  if (!empty($element['#value'])) {
     $hex = $element['#value'];
     // Must be a string.
     $valid = is_string($hex);
@@ -125,9 +126,10 @@ function nuboot_radix_hero_system_theme_settings_form_submit(&$form, &$form_stat
 }
 
 /**
- *  Sets file to FILE_STATUS_PERMANENT so it won't be erased by cron.
+ * Sets file to FILE_STATUS_PERMANENT so it won't be erased by cron.
  */
 function _nuboot_radix_file_set_permanent($fid) {
+  cache_clear_all('nuboot_radix_hero_file_uri', 'cache');
   $file = file_load($fid);
   $file->status = FILE_STATUS_PERMANENT;
   file_save($file);
