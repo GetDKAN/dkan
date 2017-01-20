@@ -8,4 +8,3 @@ Table of Contents
    
    datapreviews
    creatingvisualizations
-   carto

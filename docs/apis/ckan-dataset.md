@@ -34,6 +34,8 @@ Demo: <http://demo.getdkan.com/api/3/action/current_package_list_with_resources>
 
 See: <http://docs.ckan.org/en/latest/api/index.html#ckan.logic.action.get.package_show>
 
+Demo: <http://demo.getdkan.com/api/3/action/package_show?id=5dc1cfcf-8028-476c-a020-f58ec6dd621c>
+
 ### resource_show
 
 See: <http://docs.ckan.org/en/latest/api/index.html#ckan.logic.action.get.package_show>
