@@ -34,10 +34,10 @@ Feature: Resource
     And resources:
       | title       | publisher | format | dataset    | author   | published | description |
       | Resource 01 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | Old Body    |
-      | Resource 02 | Group 01  | zip    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 03 | Group 01  | zip    | Dataset 02 | Celeste  | No        | Yes         |
+      | Resource 02 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 03 | Group 01  | csv    | Dataset 02 | Celeste  | No        | Yes         |
       | Resource 04 | Group 01  | csv    | Dataset 01 | Katie    | No        | Yes         |
-      | Resource 05 | Group 01  | zip    | Dataset 02 | Celeste  | Yes       | Yes         |
+      | Resource 05 | Group 01  | csv    | Dataset 02 | Celeste  | Yes       | Yes         |
 
   @api
   Scenario: View published resource
