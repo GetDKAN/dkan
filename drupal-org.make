@@ -1,7 +1,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta2/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
@@ -18,7 +18,7 @@ projects:
   autocomplete_deluxe:
     version: '2.1'
     patch:
-      2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-3.patch'
+      2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch'
   beautytips:
     download:
       type: git
@@ -34,9 +34,9 @@ projects:
   bueditor_plus:
     version: '1.4'
   chosen:
-    version: '2.0-beta5'
+    version: '2.0'
     patch:
-      2834096: 'https://www.drupal.org/files/issues/chosen-accesibility_problem_with_input.patch'
+      2834096: 'https://www.drupal.org/files/issues/chosen-accesibility_problem_with_input-0.patch'
   colorizer:
     version: '1.10'
     patch:
@@ -78,8 +78,6 @@ projects:
     version: '1.2'
   entityreference_filter:
     version: '1.7'
-  eva:
-    version: '1.2'
   facetapi:
     version: '1.5'
     patch:
@@ -119,6 +117,7 @@ projects:
     version: '1.5'
     patch:
       2042681: 'http://drupal.org/files/issues/field-group-show-ajax-2042681-8.patch'
+      2831815: 'https://www.drupal.org/files/issues/hash-location-sanitization.diff'
   field_group_table:
     download:
       type: git
@@ -290,6 +289,8 @@ projects:
       2362487: 'https://www.drupal.org/files/issues/remote_file_source-location-content-dist_1.patch'
   remote_stream_wrapper:
     version: '1.0-rc1'
+    patch:
+      2833837: 'https://www.drupal.org/files/issues/prevent-download-intent-open-stream-2833837-1.patch'
   role_export:
     version: '1.0'
   rules:
@@ -345,7 +346,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0-beta2
+      tag: 7.x-1.0
     type: module
   workbench:
     version: '1.2'
@@ -391,7 +392,8 @@ libraries:
   spectrum:
     download:
       type: git
-      url: 'https://github.com/bgrins/spectrum.git'
+      url: 'https://github.com/NuCivic/spectrum.git'
+      tag: 1.8.0-civic-4736
     directory_name: bgrins-spectrum
   spyc:
     download:
