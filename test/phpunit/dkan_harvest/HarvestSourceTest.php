@@ -12,7 +12,11 @@ include_once __DIR__ . '/includes/HarvestSourceTestStub.php';
  */
 class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
 
-  // dkan_harvest_test status.
+  /**
+   * Status of dkan_harvest_test.
+   *
+   * @var dkanHarvestTestBeforClassStatus
+   */
   public static $dkanHarvestTestBeforClassStatus = TRUE;
 
   /**
@@ -33,6 +37,8 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test Null machine name exception.
+   *
    * @expectedException Exception
    * @expectedExceptionMessage machine name is required!
    */
@@ -41,6 +47,8 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test empty harvest source machine name exception.
+   *
    * @expectedException Exception
    * @expectedExceptionMessage machine name is required!
    */
@@ -56,12 +64,17 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
     $node = new stdClass();
     $node->title = 'testHarvestSourceConstructTitle';
     $node->type = "harvest_source";
-    node_object_prepare($node); // Sets some defaults. Invokes hook_prepare() and hook_node_prepare().
-    $node->language = LANGUAGE_NONE; // Or e.g. 'en' if locale is enabled
+    // Sets some defaults. Invokes hook_prepare() and hook_node_prepare().
+    node_object_prepare($node);
+    // Or e.g. 'en' if locale is enabled.
+    $node->language = LANGUAGE_NONE;
     $node->uid = 1;
-    $node->status = 1; //(1 or 0): published or not
-    $node->promote = 0; //(1 or 0): promoted to front page
-    $node->comment = 0; // 0 = comments disabled, 1 = read only, 2 = read/write
+    // (1 or 0): published or not.
+    $node->status = 1;
+    // (1 or 0): promoted to front page.
+    $node->promote = 0;
+    // 0 = comments disabled, 1 = read only, 2 = read/write.
+    $node->comment = 0;
 
     $node->field_dkan_harvest_machine_name[$node->language][]['machine'] = 'test_harvest_source_construct';
 
@@ -70,7 +83,8 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
 
     $node->field_dkan_harveset_type[$node->language][]['value'] = 'harvest_test_type';
 
-    $node = node_submit($node); // Prepare node for saving
+    // Prepare node for saving.
+    $node = node_submit($node);
     node_save($node);
 
     // Get the HarvestSource object.
@@ -85,9 +99,9 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * covers HarvestSource::isRemote
+   * Covers HarvestSource::isRemote.
    */
-  public function  testIsRemote() {
+  public function testIsRemote() {
     $source_remote = $this->getRemoteSource();
     $this->assertTrue($source_remote->isRemote());
 
@@ -96,7 +110,7 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * covers HarvestSource::getCacheDir
+   * Covers HarvestSource::getCacheDir.
    */
   public function testGetCacheDir() {
     $source_remote = $this->getRemoteSource();
@@ -115,16 +129,6 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
-   */
-  public function testGetHarvestSourceFromNode() {
-    // Stop here and mark this test as incomplete.
-    $this->markTestIncomplete(
-      'This test has not been implemented yet.'
-    );
-  }
-
-  /**
    * {@inheritdoc}
    */
   protected function tearDown() {
@@ -134,13 +138,7 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
    * {@inheritdoc}
    */
   public static function tearDownAfterClass() {
-    // Assuming the test module enabled by now. Restore original status of the
-    // modules.
-    if (!self::$dkanHarvestTestBeforClassStatus) {
-      module_disable(array('dkan_harvest_test'));
-    }
-
-    // Clean up after the testHarvestSourceConstruct test
+    // Clean up after the testHarvestSourceConstruct test.
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'harvest_source')
@@ -148,6 +146,12 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
     $result = $query->execute();
     if ($result && isset($result['node'])) {
       node_delete_multiple(array_keys($result['node']));
+    }
+
+    // Assuming the test module enabled by now. Restore original status of the
+    // modules.
+    if (!self::$dkanHarvestTestBeforClassStatus) {
+      module_disable(array('dkan_harvest_test'));
     }
   }
 
@@ -167,4 +171,5 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
       'harvest_test_source_local_file', __DIR__ . '/data/harvest_test_source_local_file/data.json'
     );
   }
+
 }

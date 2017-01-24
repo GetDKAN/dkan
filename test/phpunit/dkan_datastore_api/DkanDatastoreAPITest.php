@@ -82,7 +82,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * {@inheritdoc}
+   * Teardown function.
    */
   public static function tearDownAfterClass() {
     $resources = self::getResources();
@@ -92,7 +92,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * Query test.
    */
   public function test_dkan_datstore_api_query() {
     $params = array(
@@ -108,25 +108,50 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * Filters array format test.
    */
-  public function test_dkan_datstore_api_filters() {
+  public function test_dkan_datstore_api_filters_array_format() {
+    $filters = array('date' => '1950-02-01');
+    $params = self::getFilterParams($filters);
+    $result = _dkan_datastore_api_query($params);
+    $this->assertEquals($result['result']->total, 1);
+  }
+
+  public function test_dkan_dkan_datastore_api_filters_array_multivalue_format() {
+    $filters = array('date' => ['1950-02-01', '1950-03-01']);
+    $params = self::getFilterParams($filters);
+    $result = _dkan_datastore_api_query($params);
+    $this->assertEquals($result['result']->total, 2);
+    $this->assertEquals($result['result']->records[0]->date, '1950-02-01');
+    $this->assertEquals($result['result']->records[1]->date, '1950-03-01');
+  }
+
+  public function test_dkan_datstore_api_filters_prefixed_table() {
+    $filters = array('gold_prices' => array('date' => '1950-02-01'));
+    $params = self::getFilterParams($filters);
+    $result = _dkan_datastore_api_query($params);
+    // print_r($result);
+  }
+
+  public function test_dkan_datstore_api_filters_prefixed_table_mixed() {
+    $filters = array('gold_prices' => array('date' => '1950-02-01'));
+    $params = self::getFilterParams($filters);
+    $result = _dkan_datastore_api_query($params);
+  }
+
+  public static function getFilterParams($filters) {
     $params = array(
       'resource_id' => array(
         'gold_prices' => self::getUUID('gold_prices', self::getResources()),
       ),
       'limit' => 1000,
-      'filters' => array(
-        'date' => '1950-02-01'
-      )
+      'filters' => $filters
     );
-    $params = _dkan_datastore_api_get_params($params);
-    $result = _dkan_datastore_api_query($params);
-    $this->assertEquals($result['result']->total, 1);
+    return _dkan_datastore_api_get_params($params);
   }
 
   /**
-   *
+   * Offset test.
    */
   public function test_dkan_datstore_api_offset() {
     $params = array(
@@ -142,7 +167,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * Limit test.
    */
   public function test_dkan_datstore_api_limit() {
     $params = array(
@@ -157,14 +182,14 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * Fields test.
    */
   public function test_dkan_datstore_api_fields() {
     $params = array(
       'resource_id' => array(
         'gold_prices_states' => self::getUUID('gold_prices_states', self::getResources()),
       ),
-      'fields' => array('nombre'),
+      'fields' => array('name'),
       'limit' => 1,
     );
     $params = _dkan_datastore_api_get_params($params);
@@ -173,14 +198,14 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * Sort test.
    */
   public function test_dkan_datstore_api_sort() {
     $params = array(
       'resource_id' => array(
         'gold_prices_states' => self::getUUID('gold_prices_states', self::getResources()),
       ),
-      'sort' => array('state_id' => 'desc'),
+      'sort' => array('gold_prices_states' => array('state_id' => 'desc')),
       'limit' => 1
     );
     $params = _dkan_datastore_api_get_params($params);
@@ -189,7 +214,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * Group by test.
    */
   public function test_dkan_datstore_api_group_by() {
     $params = array(
@@ -197,7 +222,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
         'gold_prices' => self::getUUID('gold_prices', self::getResources()),
       ),
       'limit' => 1000,
-      'group_by' => array('price')
+      'group_by' => array('gold_prices'=>array('price'))
     );
     $params = _dkan_datastore_api_get_params($params);
     $result = _dkan_datastore_api_query($params);
@@ -205,7 +230,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   *
+   * Join test.
    */
   public function test_dkan_datstore_api_join() {
     $params = array(
@@ -221,13 +246,39 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     );
     $params = _dkan_datastore_api_get_params($params);
     $result = _dkan_datastore_api_query($params);
-    $this->assertObjectHasAttribute('nombre', $result['result']->records[0]);
+    $this->assertObjectHasAttribute('name', $result['result']->records[0]);
     $this->assertObjectHasAttribute('price', $result['result']->records[0]);
   }
 
+  /**
+   * Join with filters test.
+   */
+  public function test_dkan_datstore_api_join_with_filters() {
+    $params = array(
+      'resource_id' => array(
+        'gold_prices_states' => self::getUUID('gold_prices_states', self::getResources()),
+        'gold_prices' => self::getUUID('gold_prices', self::getResources()),
+      ),
+      'join' => array(
+        'gold_prices_states' => 'state_id',
+        'gold_prices' => 'state_id',
+      ),
+      'limit' => 5,
+      'filters' => array(
+        'date' => '1950-02-01'
+      )
+    );
+    $params = _dkan_datastore_api_get_params($params);
+    $result = _dkan_datastore_api_query($params);
+
+    $this->assertObjectHasAttribute('name', $result['result']->records[0]);
+    $this->assertObjectHasAttribute('price', $result['result']->records[0]);
+    $this->assertEquals('Alabama', $result['result']->records[0]->name);
+    $this->assertEquals($result['result']->total, 1);
+  }
 
   /**
-   *
+   * Multiquery test.
    */
   public function test_dkan_datstore_api_multiquery() {
     $queries = array(
@@ -270,7 +321,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
         ),
         'limit' => 1000
       );
-      $params[$agg] = 'price';
+      $params[$agg] = array('gold_prices' => 'price');
       $params = _dkan_datastore_api_get_params($params);
       $result = _dkan_datastore_api_query($params);
       $this->assertEquals(floor($result['result']->records[0]->{$agg.'_price'}) , $expect[$agg]);
