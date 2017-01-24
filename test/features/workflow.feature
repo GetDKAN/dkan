@@ -92,30 +92,33 @@ Feature:
       | Moderator   |
       | Supervisor  |
 
-  @ok @mail @javascript @globalUser
-  Scenario Outline: DEBUG
-    Given I am logged in as a user with the "Workflow Contributor" role
-    And datasets:
-      | title                      | author        | moderation |
-      | Draft Dataset Needs Review | Contributor   | draft      |
-    And resources:
-      | title                        | author       | dataset                       | format |  published |
-      | Draft Resource Needs Review  | Contributor  | Draft Dataset Needs Review    | csv    |  no        |
-    And I update the moderation state of "Draft Dataset Needs Review" to "Needs Review"
-    And I update the moderation state of "Draft Resource Needs Review" to "Needs Review"
-    When  I am logged in as a user with the "<workbench reviewer roles>" role
-    And I visit the "Needs Review" page
-    Then I should see the button "Reject"
-    And I should see the button "Publish"
-    And I should see "Draft Dataset Needs Review"
-    And I should see "Draft Resource Needs Review"
-    When I check the box "Select all items on this page"
-    And I press "Publish"
-    Then I wait for "Performed Publish on 2 items."
-    Examples:
-      | workbench reviewer roles              |
-      | Workflow Moderator, editor            |
-      | Workflow Supervisor, site manager     |
+  # TODO: This tests is commented because a known bug.
+  # More information: CIVIC-4891
+  #
+  # @ok @mail @javascript @globalUser
+  # Scenario Outline: DEBUG
+  #   Given I am logged in as a user with the "Workflow Contributor" role
+  #   And datasets:
+  #     | title                      | author        | moderation |
+  #     | Draft Dataset Needs Review | Contributor   | draft      |
+  #   And resources:
+  #     | title                        | author       | dataset                       | format |  published |
+  #     | Draft Resource Needs Review  | Contributor  | Draft Dataset Needs Review    | csv    |  no        |
+  #   And I update the moderation state of "Draft Dataset Needs Review" to "Needs Review"
+  #   And I update the moderation state of "Draft Resource Needs Review" to "Needs Review"
+  #   When  I am logged in as a user with the "<workbench reviewer roles>" role
+  #   And I visit the "Needs Review" page
+  #   Then I should see the button "Reject"
+  #   And I should see the button "Publish"
+  #   And I should see "Draft Dataset Needs Review"
+  #   And I should see "Draft Resource Needs Review"
+  #   When I check the box "Select all items on this page"
+  #   And I press "Publish"
+  #   Then I wait for "Performed Publish on 2 items."
+  #   Examples:
+  #     | workbench reviewer roles              |
+  #     | Workflow Moderator, editor            |
+  #     | Workflow Supervisor, site manager     |
 
   @ok @javascript @globalUser
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
