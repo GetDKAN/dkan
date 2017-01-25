@@ -14,15 +14,11 @@ If this PR introduces new functionality, include a user story or stories describ
 
 ## QA Steps
 
-- [ ] Add manual QA steps in checklist format for a reviewer to perform to confirm that the feature or fix is working.
-
-## PR dependencies
-
-- [ ] Add a checklist of all PRs that needs to be merged before this one.
+- [ ] Add manual QA steps in checklist format for a reviewer to perform to confirm that the feature or fix is working. Include as much details as possible so that the reviewer doesn't lose time figuring out how to perform steps.
 
 ## Merge process
 
-1. Note if there is a special sequence for merging or other abnormalities to look out for.
+- [ ] Note if there is a special sequence for merging (such as PRs on other repos that need to be merged first) or other abnormalities to look out for.
 
 ## Reminders
 - [ ] There is test for the issue.
