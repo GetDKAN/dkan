@@ -23,7 +23,7 @@ Feature: Theme
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
 
-  @noworkflow
+  @noworkflow @customizable
   Scenario: Add custom hero image
     Given I am logged in as "John"
     And I am on "Settings" page
