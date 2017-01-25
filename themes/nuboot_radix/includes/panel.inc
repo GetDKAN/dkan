@@ -39,7 +39,13 @@ function nuboot_radix_preprocess(&$variables, $hook) {
   $variables['title_heading'] = 'h2';
 
   // Front page vars.
-  if (isset($variables['is_front']) && $variables['is_front']) {
+  $front_url = drupal_get_normal_path(variable_get('site_frontpage', 'node'));
+  $front = explode('/', $front_url);
+  if( $front[0]=='node' && ctype_digit($front[1]) ) {
+    $front_nid = $front[1];
+  }
+
+  if (isset($variables['is_front']) && $variables['is_front'] || arg(1) == $front_nid) {
     $theme_path = drupal_get_path('theme', 'nuboot_radix');
     if ($uri = nuboot_radix_hero_file_uri()) :
       $variables['tint'] = 'tint';
