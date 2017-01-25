@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Improve module and user cleanup inside dkan workflow context after run tests
  - Update leaflet library to v1.0.2 and leaflet markercluster to v1.0.0. Unift leaflet libraries (was using a separate version for recline module)
  - Upgraded to new 1.0 release of Visualization Entity module
  - Add install hook to DKAN Workflow to force a Features revert of dkan_sitewide_menu, to make sure Workflow links added correctly
