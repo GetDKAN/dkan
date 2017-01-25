@@ -38,9 +38,9 @@ Feature: Search
       | edumication  |
       | dazzling     |
     And datasets:
-      | title           | publisher | author  | published | tags         | topics      | description |
-      | Test Dataset 01 |           | Gabriel | Yes       | something01  | edumication | Test 01     |
-      | Test Dataset 02 | Group 01  | Gabriel | Yes       | politics01   | dazzling    | Test 02     |
+      | title              | publisher | author  | published | tags         | topics      | description |
+      | ooftaya Dataset 01 |           | Gabriel | Yes       | something01  | edumication | Test 01     |
+      | ooftaya Dataset 02 | Group 01  | Gabriel | Yes       | politics01   | dazzling    | Test 02     |
 
   Scenario: Searching datasets
     Given I am on the "Dataset Search" page
@@ -50,7 +50,7 @@ Feature: Search
 
   Scenario: See number of datasets on search page
     Given I am on the "Dataset Search" page
-    When I search for "Test"
+    When I search for "ooftaya"
     Then I should see "2" search results shown on the page
     And I should see "2 results"
 
