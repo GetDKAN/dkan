@@ -14,12 +14,12 @@
  * Each dataset id added can have multiple flags.
  */
 class HarvestCache {
-  const DKAN_HARVEST_CACHE_PROCESSED = 0x0;
-  const DKAN_HARVEST_CACHE_FAILED = 0x1;
-  const DKAN_HARVEST_CACHE_FILTERED = 0x2;
-  const DKAN_HARVEST_CACHE_EXCLUDED = 0x4;
-  const DKAN_HARVEST_CACHE_DEFAULTED = 0x8;
-  const DKAN_HARVEST_CACHE_OVERRIDDEN = 0x16;
+  const DKAN_HARVEST_CACHE_PROCESSED = 0;
+  const DKAN_HARVEST_CACHE_FAILED = 1;
+  const DKAN_HARVEST_CACHE_FILTERED = 2;
+  const DKAN_HARVEST_CACHE_EXCLUDED = 4;
+  const DKAN_HARVEST_CACHE_DEFAULTED = 8;
+  const DKAN_HARVEST_CACHE_OVERRIDDEN = 16;
 
   public $harvestSource;
   public $harvestCacheTime;
@@ -63,8 +63,8 @@ class HarvestCache {
    */
   public function getFailed() {
     return array_filter($this->processed,
-      function ($processed_flag) {
-        return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_FAILED);
+      function ($processed) {
+        return ($processed['flag'] & self::DKAN_HARVEST_CACHE_FAILED);
       });
   }
 
@@ -80,8 +80,8 @@ class HarvestCache {
    */
   public function getFiltered() {
     return array_filter($this->processed,
-      function ($processed_flag) {
-        return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_FILTERED);
+      function ($processed) {
+        return ($processed['flag'] & self::DKAN_HARVEST_CACHE_FILTERED);
       });
   }
 
@@ -97,8 +97,8 @@ class HarvestCache {
    */
   public function getExcluded() {
     return array_filter($this->processed,
-      function ($processed_flag) {
-        return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_EXCLUDED);
+      function ($processed) {
+        return ($processed['flag'] & self::DKAN_HARVEST_CACHE_EXCLUDED);
       });
   }
 
@@ -114,8 +114,8 @@ class HarvestCache {
    */
   public function getDefaulted() {
     return array_filter($this->getSaved(),
-      function ($processed_flag) {
-        return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_DEFAULTED);
+      function ($processed) {
+        return ($processed['flag'] & self::DKAN_HARVEST_CACHE_DEFAULTED);
       });
   }
 
@@ -131,8 +131,8 @@ class HarvestCache {
    */
   public function getOverridden() {
     return array_filter($this->getSaved(),
-      function ($processed_flag) {
-        return ($processed_flag['flag'] & self::DKAN_HARVEST_CACHE_OVERRIDDEN);
+      function ($processed) {
+        return ($processed['flag'] & self::DKAN_HARVEST_CACHE_OVERRIDDEN);
       });
   }
 
@@ -190,7 +190,7 @@ class HarvestCache {
         $this->processed[$cache_id]['flag'] &= ~(self::DKAN_HARVEST_CACHE_FAILED);
       }
       else {
-        $this->processed[$cache_id]['flag'] = $this->processed[$cache_id] | $flag;
+        $this->processed[$cache_id]['flag'] = $this->processed[$cache_id]['flag'] | $flag;
       }
     }
   }
