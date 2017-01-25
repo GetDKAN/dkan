@@ -107,7 +107,7 @@ function dkan_sitewide_preprocess_views_views_json_style_simple(&$vars) {
  */
 function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dataset-page' ||
-    $form['#id'] == 'views-exposed-form-user-profile-search-entity-view-1' ||
+    $form['#id'] == 'views-exposed-form-user-profile-search-user-profile-search-block' ||
     $form['#id'] == 'views-exposed-form-groups-search-entity-view-1' ||
     $form['#id'] == 'dkan-sitewide-dataset-search-form--2' ||
     $form['#id'] == 'views-exposed-form-dkan-datasets-panel-pane-1') {
