@@ -496,7 +496,7 @@ function dkan_demo_front_block() {
   $dataset_url = url('dataset');
   $homepage_graphic = url(drupal_get_path('theme', 'nuboot_radix') . '/assets/images/homepage-graphic.jpg');
   $homepage_dataset_url = url('dataset/gold-prices-london-1950-2008-monthly');
-  $content = t('<p>Search for datasets directly from the homepage or by navigating to the !link search page where you can facet by tags, groups and format.</p>', array('!link' => l(t('Datasets'), 'dataset')));
+  $content = t('<p>Search for datasets directly from the homepage or by navigating to the !link search page where you can filter by tags, groups and format.</p>', array('!link' => l(t('Datasets'), 'dataset')));
   $content .= '<p class="featured media-overlay"><strong class="media-heading">DKANs data previewing tool has many powerful features</strong><a class="image" href=" ' . $homepage_dataset_url . ' "><img src="' . $homepage_graphic . '" style="width: 100%" alt="Image of DKANs data previewing tool"></a>
     </p>';
   return $content;
