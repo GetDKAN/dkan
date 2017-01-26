@@ -16,7 +16,7 @@ projects:
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
-    version: '2.1'
+    version: '2.2'
     patch:
       2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch'
   beautytips:
