@@ -378,3 +378,23 @@ function dkan_sitewide_update_panel_page_status($page_name, $status = FALSE) {
   $function($page, $status);
   menu_rebuild();
 }
+
+/**
+ * Check if given page manager page is already the frontpage.
+ *
+ * @param string $page
+ *   page The administrative name of the page.
+ */
+function dkan_sitewide_page_is_frontpage($page) {
+  $frontpage = variable_get('site_frontpage', 'node');
+
+  module_load_include('inc', 'page_manager', 'plugins/tasks/page');
+  $page = page_manager_page_load($page);
+
+  if ($page->path === $frontpage) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
