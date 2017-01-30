@@ -380,7 +380,7 @@ function dkan_sitewide_update_panel_page_status($page_name, $status = FALSE) {
 }
 
 /**
- * Check if the page passed is already the frontpage.
+ * Check if given page manager page is already the frontpage.
  *
  * @param string $page
  *   page The administrative name of the page.
