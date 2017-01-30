@@ -7,7 +7,7 @@ The chapters in this section are all compiled from README files that exist in sp
    :maxdepth: 1
 
    Datasets <dataset/index>
-   Datastore <datastore/index>
+   Datastore <datastore>
    Fixtures <fixtures/index>
    Modules <componentmodules>
    Open Data Schema Map <open-data-schema>
