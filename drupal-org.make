@@ -354,6 +354,8 @@ projects:
     version: '3.11'
   workbench_moderation:
     version: '3.0'
+    patch:
+      2360973: 'https://www.drupal.org/files/issues/workbench_moderation-install-warnings-2360973-3.patch'
   drafty:
     version: '1.0-beta3'
 libraries:
