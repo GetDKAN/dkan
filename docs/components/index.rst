@@ -13,5 +13,6 @@ The chapters in this section are all compiled from README files that exist in sp
    Open Data Schema Map <open-data-schema>
    Project Open Data <project-open-data>
    Storytelling <storytelling/index>
-   Topics <topics>
-   Workflow <workflow>
+   topics
+   workflow
+   harvester
