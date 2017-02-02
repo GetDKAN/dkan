@@ -1,5 +1,9 @@
 7.x-1.x
 --------------------------
+ - Added patch for workbench_moderation: Invalid argument supplied for foreach() 2360973.
+ - Added a function in dkan_sitewide to check if a specific page is the front page.
+ - Improve module and user cleanup inside dkan workflow context after run tests
+ - Update leaflet library to v1.0.2 and leaflet markercluster to v1.0.0. Unift leaflet libraries (was using a separate version for recline module)
  - Upgraded to new 1.0 release of Visualization Entity module
  - Add install hook to DKAN Workflow to force a Features revert of dkan_sitewide_menu, to make sure Workflow links added correctly
  - Remove Panels IPE from dataset and search pages; in DKAN, we only want to show IPE for panelizer layouts, not templates or other "sitewide" pages.
@@ -75,6 +79,7 @@ DKAN Datastore:
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
  - Fixed bugs when running the datastore via cron.
 DKAN Harvest:
+ - Harvested content is published even if dkan_workflow is enabled.
  - Added DKAN Harvest module into DKAN Core.
  - Added UI to add harvest sources
  - Added UI to manage harvest sources and datasets
@@ -97,6 +102,7 @@ DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
 DKAN Workflow:
+ - Fixed panels-related bug where, if a dataset had both a "published" and "draft" version, the published would show in the draft tab.
  - Updated DKAN workflow vbo customizations to not affect other vbo forms.
  - Updated workbench_email from 3.9 to 3.11
  - Fixed admin menu source when dkan_workflow is enabled.
