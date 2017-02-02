@@ -22,9 +22,16 @@ class WorkflowContext extends RawDKANContext {
   {
     self::$modules_before_feature = module_list(TRUE);
     self::$users_before_feature = array_keys(entity_load('user'));
-
+    define('MAINTENANCE_MODE', 'update');
     @module_enable(array(
-      'dkan_workflow'
+      'dkan_workflow',
+      'drafty',
+      'workbench_moderation',
+      'workbench_email', 'workbench',
+      'views_dkan_workflow_tree',
+      'menu_badges',
+      'link_badges',
+      'dkan_workflow_permissions'
     ));
     drupal_flush_all_caches();
   }
@@ -50,6 +57,7 @@ class WorkflowContext extends RawDKANContext {
     // Clean users and disable modules.
     entity_delete_multiple('user', $users_to_delete);
     module_disable(array_values($modules_to_disable));
+    drupal_uninstall_modules(array_values($modules_to_disable));
     drupal_flush_all_caches();
   }
 
