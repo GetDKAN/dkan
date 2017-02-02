@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Upgrade better_exposed_filters to v3.4.
  - Added patch for workbench_moderation: Invalid argument supplied for foreach() 2360973.
  - Added a function in dkan_sitewide to check if a specific page is the front page.
  - Improve module and user cleanup inside dkan workflow context after run tests
