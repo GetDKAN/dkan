@@ -43,6 +43,7 @@ Feature: Widgets
     And I wait for "Configure new File"
     And I attach the drupal file "dkan/actionplan.pdf" to "files[field_basic_file_file_und_0]"
     And I press "Finish"
+    And I wait for "2" seconds 
     And I wait and press "Save"
     And I wait for "Customize this page"
     Then I should see "actionplan.pdf"
@@ -59,6 +60,7 @@ Feature: Widgets
     And I press "Next"
     And I wait and press "Save"
     And I wait and press "Finish"
+    And I wait for "2" seconds
     And I wait and press "Save"
     And I wait for "Customize this page"
     Then I should see "dkan logo image test"
