@@ -237,15 +237,6 @@ function dkan_update_7009() {
 function dkan_update_7010() {
   if (module_exists('dkan_dataset_api')) {
     module_disable(array('dkan_dataset_api'));
-
-    //Clear endpoint cache.
     module_enable(array('open_data_schema_map'));
-    //Clear cache after disable dkan_dataset_api
-    $apis = array('data_json_1_1', 'data_json');
-    foreach($apis as $api) {
-      $api = open_data_schema_map_api_load($api);
-      $filename = open_data_schema_map_file_cache_name_helper($api);
-      file_unmanaged_delete($filename);
-    }
   }
 }
