@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Update resource tests to work on sites without zip in their format terms.
  - Moved functions from FeatureContext to DKANExtension.
  - Added patch for workbench_moderation: Invalid argument supplied for foreach() 2360973.
  - Added a function in dkan_sitewide to check if a specific page is the front page.
