@@ -89,6 +89,7 @@ Feature: User command center links for site manager role.
     And I click "Manage Users"
     Then I should see "Show only users where"
 
+  @customizable
   Scenario: Site manager role can view admin menu links under Site Configuration
     Given I am logged in as "John"
     When I hover over the admin menu item "Site Configuration"
