@@ -225,6 +225,3 @@ Build dkan
     $ rsync -av . webroot/profiles/dkan --exclude webroot
     $ drush -y make --no-core --working-copy --contrib-destination=./ drupal-org.make webroot/profiles/dkan --no-recursion --concurrency=3
     $ cd webroot
-
-Rebuild when you detect changes in make files
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

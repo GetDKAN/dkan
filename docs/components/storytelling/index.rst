@@ -1,7 +1,7 @@
 Storytelling Tools
 ==================
 
-Documentation for...
+Documentation for Data Stories, Data Dashboards and panelized Pages.
 
 .. toctree::
    :maxdepth: 1

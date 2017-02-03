@@ -1,18 +1,16 @@
-############
-DKAN Harvest
-############
+# DKAN Harvest
 
 DKAN Harvest is a module that provides a common harvesting framework and for DKAN.
-To "harvest" data is to use the public feed or API of another data portal to 
+To "harvest" data is to use the public feed or API of another data portal to
 import items from that portal's catalog into your own. To cite a well-known
 example, [Data.gov](https://data.gov) harvests all of its datasets from the
 [data.json](https://project-open-data.cio.gov/v1.1/schema/) files of [hundreds
 of U.S. federal, state and local data portals](http://catalog.data.gov/harvest).
-It supports custom extensions and adds [drush](http://www.drush.org/en/master/) 
+It supports custom extensions and adds [drush](http://www.drush.org/en/master/)
 commands and a web UI to manage harvesting sources and jobs.
 
 DKAN Harvest is built on top of the widely-used
-[Migrate](https://www.drupal.org/project/migrate) framework for Drupal. It 
+[Migrate](https://www.drupal.org/project/migrate) framework for Drupal. It
 follows a two-step process to import datasets:
 
 1. Process a source URI and save resulting data locally to disk as JSON
@@ -20,15 +18,15 @@ follows a two-step process to import datasets:
 
 ## Harvest Sources
 
-Harvest Sources are nodes that store the source's URI and some additional 
+Harvest Sources are nodes that store the source's URI and some additional
 configuration. To create a new source, make sure you have a role with permissions
-to create Harvest Sources (administrators and site managers under default DKAN 
+to create Harvest Sources (administrators and site managers under default DKAN
 Permissions), go to `node/add/harvest-source` and fill out the form.
 
 The Harvest Source form includes four multi-value fields to control the results of your harvest.
 
 * **Filters** restrict the datasets imported by a particular field. For instance, if you are harvesting a data.json source and want only to harvest health-related datasets, you might add a filter with "keyword" in the first text box, and "heatlh" in the second.
-* **Excludes** are the inverse of filters. For example, if you know there is one 
+* **Excludes** are the inverse of filters. For example, if you know there is one
 publisher listed on the source whose datasets you do _not_ want to bring into your data portal, you might add "publisher" with value "Governor's Office of Terrible Data"
 * **Overrides** will replace values from the source when you harvest. For instance, if you want to take responsibility for the datasets once harvested and add your agency's name as the publisher, you might add "publisher" with your agency's name as the value.
 * **Defaults**   work the same as overrides, but will only be used if the relevant field is empty in the source
@@ -49,8 +47,8 @@ To access the name property for filtering or overriding, you can set `publisher.
 If the Harvest Source type you are looking for is not available, please refer
 to the **Define a new Harvest Source Type** section in the developers docs (coming soon).
 
-Harvest Source nodes are viewable by the public, providing some basic metadata 
-for the source and listing all datasets harvested from that source. 
+Harvest Source nodes are viewable by the public, providing some basic metadata
+for the source and listing all datasets harvested from that source.
 
 ![Harvest Source Page](https://cloud.githubusercontent.com/assets/381224/20218476/93a6196e-a803-11e6-895f-d82d5228b055.png)
 
@@ -58,7 +56,7 @@ Additional tabs are available to administrators and site managers.
 
 ### Preview
 
-After you create or edit a source, an initial cache operation will be performed and you will be directed to the preview page. This page shows a list of dataset titles and identifiers now in the harvest cache, allowing you to perform a basic check on 
+After you create or edit a source, an initial cache operation will be performed and you will be directed to the preview page. This page shows a list of dataset titles and identifiers now in the harvest cache, allowing you to perform a basic check on
 your source configuration and make any adjustments before running the migration.
 
 ### Event Log
@@ -215,7 +213,7 @@ Each array item defines a single harvest source type. Each harvest source item c
 
 * `machine_name` _(Unique string identifying the harvest source type.)_
 * `label` _(This label wil be used on the harvest add node form.)_
-* `cache callback` _(Cache function to perform; takes HarvestSource object and timestamp as arguments) and returns a HarvestCache object)_ 
+* `cache callback` _(Cache function to perform; takes HarvestSource object and timestamp as arguments) and returns a HarvestCache object)_
 * `migration class` _(A registered Migrate class to use for this source type)_
 
 ### Cache callbacks
@@ -233,7 +231,7 @@ function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime)
 This callback takes care of downloading/filtering/altering the data from the
 source end-point to the local file directory provided by the
 HarvestSource::getCacheDir() method. The recommended folder structure for
-cached data is to have one dataset per uniqely named file. The actual migration 
+cached data is to have one dataset per uniqely named file. The actual migration
 is then performed on the cached data, not on the remote source itself.
 
 ```sh
@@ -261,8 +259,8 @@ from the HarvestSource object via the `HarvestSource::filters`,
 
 The common harvest migration logic is encapsulated in the [`HarvestMigration`
 class](https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_harvest/dkan_harvest.migrate.inc#L15),
-(which extends the [MigrateDKAN](https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_migrate_base/dkan_migrate_base.migrate.inc#L241) class provided 
-via the [DKAN Migrate Base](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_migrate_base) 
+(which extends the [MigrateDKAN](https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_migrate_base/dkan_migrate_base.migrate.inc#L241) class provided
+via the [DKAN Migrate Base](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_migrate_base)
 module. DKAN Harvest will support only migration classes extended from
 `HarvestMigration`. This class is responsible for consuming the downloaded data
 during the harvest cache step to create the DKAN `dataset` and associated
@@ -336,9 +334,9 @@ Example code snippet:
  */
 public function prepareRow($row) {
   // Redacted code
-  
+
   $row->resources = $this->prepareRowResources($row->xml);
-  
+
   // Redacted code
 }
 ```
