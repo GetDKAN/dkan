@@ -1,5 +1,11 @@
 7.x-1.x
 --------------------------
+ - Disable/uninstall  dkan_dataset_api if is enable because is deprecated in favor open_data_schema_map.
+ - Update resource tests to work on sites without zip in their format terms.
+ - Moved functions from FeatureContext to DKANExtension.
+ - Added patch for workbench_moderation: Invalid argument supplied for foreach() 2360973.
+ - Added a function in dkan_sitewide to check if a specific page is the front page.
+ - Improve module and user cleanup inside dkan workflow context after run tests
  - Update leaflet library to v1.0.2 and leaflet markercluster to v1.0.0. Unift leaflet libraries (was using a separate version for recline module)
  - Upgraded to new 1.0 release of Visualization Entity module
  - Add install hook to DKAN Workflow to force a Features revert of dkan_sitewide_menu, to make sure Workflow links added correctly
@@ -70,6 +76,7 @@
  - Removed eva module.
  - Fixed CSV column validation on visualization entity.
  - Fixed retrieve of version information on chroma.js.
+ - Add patch to fix panopoly_widgets overrides OOB.
 DKAN Datastore:
  - Added DKAN Datastore module into DKAN Core.
  - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.

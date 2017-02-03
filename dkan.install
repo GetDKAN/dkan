@@ -219,3 +219,25 @@ function dkan_update_7008() {
     dkan_workflow_admin_menu_source();
   }
 }
+
+/**
+ * Flush client site colorizer file to grab new updates.
+ */
+function dkan_update_7009() {
+  $theme = $GLOBALS['theme'];
+  $instance = $theme;
+  variable_del('colorizer_' . $instance . '_files');
+  colorizer_clearcache();
+  cache_clear_all();
+}
+
+/**
+ * Disable/uninstall deprecated dkan_dataset_api and enable open_data_schema_map.
+ */
+function dkan_update_7010() {
+  if (module_exists('dkan_dataset_api')) {
+    module_disable(array('dkan_dataset_api'));
+    drupal_uninstall_modules(array('dkan_dataset_api'));
+    module_enable(array('open_data_schema_map'));
+  }
+}
