@@ -1,28 +1,25 @@
-Adding Datasets to DKAN
-=======================
+Usage
+=====
+
+Creating Datasets and Resources
+------------------------------------
+
 
 DKAN’s data publishing model is based on the [concept of datasets and resources](/dkan-documentation/dkan-overview/what-dataset-what-resource).  A dataset is a container for one or more resources; a resource is the actual “data” being published, such as a CSV table, a GeoJSON data file, or a TIFF aerial image.
 
 The dataset and resource content types in DKAN are provided by the `DKAN Dataset module <https://github.com/NuCivic/dkan_dataset>`_.
 
-Adding a New Dataset and Resource(s)
-------------------------------------
-
 In our example, we’ll be adding a dataset with Wisconsin polling places to a DKAN site. The data may look familiar; it's one of the sample datasets provided with DKAN upon installation.
 
 Step 1: Create the Dataset
-``````````````````````````
+**************************
 
-By default, only authenticated (“logged-in”) users can add new Datasets and Resources to a DKAN website.  Once logged in, we can use the "Add Dataset" link in the main navigation bar.  Depending on your user permissions, you may have access to the administration menu; in that case, you may also navigate to Content &gt;&gt; Add Content &gt;&gt; Dataset link to access the “Create Dataset” form.
-
-[IMAGE PLACEHOLDER]
+By default, only authenticated (“logged-in”) users can add new Datasets and Resources to a DKAN website.  Once logged in, we can use the "Add Dataset" link in the main navigation bar.  Depending on your user permissions, you may have access to the administration menu; in that case, you may also navigate to Content » Add Content » Dataset link to access the “Create Dataset” form.
 
 The Dataset is the container for the actual data resource files and contains basic information about the data, such as title, description, category tags, and license.  Once we’ve entered information about the data, we can click the “Next: Add data” button to begin adding data.
 
 Step 2: Add one or more Resources to the Dataset
-````````````````````````````````````````````````
-
-[IMAGE PLACEHOLDER]
+**************************
 
 After creating a dataset, we’re prompted to add one or more data resources to it.  There are three types of Resources that can be added to a Dataset, depending on the type and location of the Resource:
 
@@ -50,11 +47,10 @@ At the bottom of the Add Resource page, we can choose:
 
 In our example, we’re only adding a single resource, so we’ll click “Next: Additional Info” to move onto Step 3. If we had more than one resource to add to this dataset, we would choose the “Save and add another” option. Simply clicking "Save" would end the Dataset creation process and save the dataset, for now, with no additional metadata.
 
-### Step 3: Adding Metadata to a Dataset
+Step 3: Adding Metadata to a Dataset
+**************************
 
-We now come to a third form which allows us to add additional metadata to the dataset. All these fields are optional, but provide valuable information about your dataset to both human visitors to the website and machines discovering your dataset through one of [DKAN's public APIs]. 
-
-[IMAGE PLACEHOLDER]
+We now come to a third form which allows us to add additional metadata to the dataset. All these fields are optional, but provide valuable information about your dataset to both human visitors to the website and machines discovering your dataset through one of [DKAN's public APIs].
 
 Let's take a closer look at some of the metadata fields available on this form:
 
@@ -69,6 +65,3 @@ Let's take a closer look at some of the metadata fields available on this form:
 :Resources: This field is a reference to the resources you have already added. You should generally leave this field alone and use the workflows outlined here and in [Updating Datasets in DKAN](dkan-documentation/dkan-users/updating-datasets-dkan) to add, edit and remove resources from your Dataset.
 
 After you click "Save", the metadata we enter will appear on the page for this Dataset:
-
-[IMAGE PLACEHOLDER]
-
