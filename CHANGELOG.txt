@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Added ReadTheDocs integrations and docs folder for centralized documentation
  - Disable/uninstall  dkan_dataset_api if is enable because is deprecated in favor open_data_schema_map.
  - Update resource tests to work on sites without zip in their format terms.
  - Moved functions from FeatureContext to DKANExtension.
