@@ -1,4 +1,4 @@
-# Customizing DKAN's Appearance
+# Theme
 
 DKAN takes advantage of Drupal’s well-developed and flexible theming system,
 allowing administrators complete graphical control over the entire DKAN site.
@@ -8,6 +8,15 @@ technologies.
 
 ## Default DKAN Theme
 
+NuBoot Radix is the default theme for DKAN and is a subtheme of [Radix](https://www.drupal.org/project/radix) which uses [bootstrap](https://github.com/twbs/bootstrap) styles and is compatible with panelized sites. This theme has some basic customization features built in, for many client sites, these configurations will be all that is necessary to meet the client expectations. The configurable items are:
+
+*   Logo (svg logos will display better on retina displays)
+*   Front page Hero image OR you can set a solid color background for the hero region.
+*   Favicon.
+*   Copyright text.
+*   Color options via the Colorizer screen
+*   Fonts: use font-your-face to use alternate fonts
+
 In Drupal and DKAN, the collection of page templates, fonts, colors, images,
 and other “look and feel” elements are known as a “theme.” The DKAN
 distribution of Drupal includes a default “DKAN Theme” called NuBoot Radix, that visually
@@ -16,8 +25,6 @@ highlights all of the DKAN-specific data elements in the software.
 DKAN administrators have the choice of customizing the existing DKAN Theme through theme settings, implementing an entirely new theme, or creating a [subtheme of nuboot_radix](dkan-documentation/dkan-developers-guide/creating-sub-theme-dkan).
 
 By default, the DKAN Theme is located in: `[SITEROOT]/themes/nuboot_radix`
-
-The default DKAN Theme is a sub-theme of [Radix](https://www.drupal.org/project/radix),  and Radix uses components and plugins from [Bootstrap](https://github.com/twbs/bootstrap).
 
 ## Theme and Appearance Settings
 
@@ -55,41 +62,59 @@ For more information on how to use @fontyourface visit the [project page](https:
 ![Apply fonts](../images/Browse_fonts_DKAN.png)
 ![Select google fonts](../images/Appearance_DKAN_5.png)
 
+## Creating a new subtheme
 
-## Adding styles to text
+To create a Nuboot Radix subtheme, run these commands
 
-DKAN allows you to style the text in the description fields of datasets and resources as well as in the body of data stories. Text can be styled as bold and italic. You can add headline styling and subheads, blockquotes, numbered lists, bulleted lists, hyperlinks and images.
+```drush en radix```
 
-Text styling is added using [markdown syntax](http://daringfireball.net/projects/markdown/syntax). To assist you in adding styling to your text, a markdown toolbar appears at the top of styled text areas with buttons that you can click to add styles:
+```drush vset theme_default radix```
 
-![markdown toolbar](../images/Markdown_examples.png)
+```drush radix "MyThemeName" --kit=https://github.com/NuCivic/radix-kit-nuboot/archive/master.zip```
 
-Markdown syntax is intended to provide limited styling capabilities. It offers fewer styling options and is not as simple to use as the WYSIWYG editors used in modern word processors such as Microsoft Word. This limitation is intentional. DKAN is intended to serve as an open data sharing platform, and it has a powerful API that can be used to retrieve datasets and their content by other computer programs. Limiting DKAN to markdown styles helps ensure that dataset descriptions and other metadata can be shared consistently via the API without breaking.
+```drush vset theme_default MyThemeName```
 
-## Adding Images 
+```drush dis radix```
 
-First you will need to upload an image file to your website, then use the markdown image tool to insert that image into your content.
+OR if using [Ahoy](https://dkan-starter.readthedocs.io):
 
-Users with the role of "administrator" can upload files to a DKAN website. This permission can be added to other DKAN user roles such as the "editor" and "content creator" roles, but these permissions are not enabled by default for security reasons. To upload an image, visit the files administration page at path /admin/content/file and click the "Add file" button:
+```ahoy dkan theme new-from-kit [new-theme-name]```
 
-![add file button](http://docs.getdkan.com/sites/default/files/add%20file.png)
+```ahoy dkan theme setup```
 
-This will bring up an "Add file" page that lets you choose the image file and upload it:
+```ahoy dkan theme watch```
 
-![add image file](http://docs.getdkan.com/sites/default/files/add%20file2.png)
+Your new subtheme will be placed in to the /sites/all/themes/ directory, it will contain only the directory structure, add your overrides where appropriate.
 
-After you have uploaded and saved the image file, you can view it and copy its image address (URL) to be added to the text where you want it to appear. If you are using a Windows computer, visit the image file's page and right click on it to made a copy of the image address. On an OSX computer, control click rather than right click to do the same thing:
+### Theming Tools
+Install Node and npm. You will use [gulp](https://www.npmjs.com/package/gulp) for compiling the sass files. To get your local environment set up, follow these steps:
 
-![cat image](http://docs.getdkan.com/sites/default/files/cat%20pic.png)
+1. Install Node and npm. You can read a guide on how to install node here: [https://docs.npmjs.com/getting-started/installing-node](https://docs.npmjs.com/getting-started/installing-node)
+2. Install bower: `npm install -g bower`.
+3. Go to the root of your theme and run the following commands: `npm run setup`.
+4. Update browserSyncProxy in config.json
+5. Edit the files under the scss and js directory, these will be compiled into the assets directory. Run the following command to compile Sass and watch for changes: `gulp`.
 
-Now visit the text field where you want to insert the image, and position your edit cursor inside the textfield at the spot where you want the image to appear. Click the picture button in the markdown toolbar to insert the image:
+## Icon Fonts
 
+The Nuboot Radix theme [ships with two icon fonts](https://github.com/NuCivic/dkan/tree/rtd/themes/nuboot_radix/assets/fonts).
 
-![insert image button](../images/Add_photo.png)
+### dkan-flaticon
+Used for file types (csv, pdf, xls, etc) [designed by Freepik](http://www.flaticon.com/packs/file-formats-icons)
 
-A popup window will appear where you need to enter alt text describing the image as well as its URL. You should also select the "Inline" checkbox:
+The font files and the css are inside the Nuboot Radix theme `dkan/themes/nuboot_radix`. If you would like to use your own file type icons you can override the dkan-flaticon css by creating a custom theme. OR, if you would like to use the dkan-flaticon icons but NOT use Nuboot Radix as your base theme, you will need to copy the dkan-flaticon fonts and the dkan-flaticon.css into the theme you are using.
 
+```
+dkan/themes/nuboot_radix/assets/fonts
+dkan/themes/nuboot_radix/assets/css/dkan-flaticon.css
+```
 
-This will insert markdown text for the image that you want to insert, like the example below:
+### dkan-topics
+Used for the Content Type icons and [Topics](topics.md) icons [by Streamline Icons](http://www.streamlineicons.com/index.html)
 
-![example markdown image code](../images/Image_markdown.png)
+If you would like to use your own icon font for Topics, you can do that through the user interface.
+
+1. As an administrator user you can navigate to Configuration > Content authoring > Font Icon Select Options `admin/config/content/font_icon_select_options`.
+2. Use the 'Upload New Library' button to upload your icon font files.
+3. Navigate to Structure > Taxonomy > Topics > Manage fields > Icon `admin/structure/taxonomy/dkan_topics/fields/field_topic_icon`
+4. Scroll down to the 'Icon field settings' fieldset and select your font from the drop down options.

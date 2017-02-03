@@ -20,7 +20,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'DKAN'
-copyright = u'2016, Test'
+copyright = u'2017'
 author = u'DKAN Team'
 
 

@@ -13,8 +13,10 @@ The chapters in this section are all compiled from README files that exist in sp
    Topics <topics>
    fixtures
    federal-extras
-   Modules <componentmodules>
+   search
+   theme
+   Roles and Permissions <permissions>
    Open Data Schema Map <open-data-schema>
-   Project Open Data <project-open-data>
+   Visualizations <visualizations>
    Storytelling <storytelling/index>
 

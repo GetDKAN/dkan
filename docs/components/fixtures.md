@@ -60,3 +60,7 @@ The function can be found in the dkan_sitewide module and can be used as follows
 
 ### About paths
 Pathauto is disabled for content created using dkan_fixtures because performance reasons. Instead, paths should be added to the fixtures using the path key.
+
+## Taxonomy Fixtures
+
+A similar system exists for importing and exporting taxonomy terms as default content. The NuCivic-created [Taxonomy Fixtures module](https://github.com/NuCivic/taxonomy_fixtures) ships with DKAN but is available for us in other Drupal projects.
