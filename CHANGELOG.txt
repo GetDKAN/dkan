@@ -352,6 +352,10 @@ $ drush search-api-enable datasets -y
 $ drush sapi-r -y
 $ drush sapi-i -y
 
+[UPDATE] The panels_style_collapsible module was also added for the ability to collapse filters on the dataset page. However, if upgrading from a previous version of DKAN, this module may not be enabled. This will be fixed on a future release. For now, after upgrade please enable the module from admin/modules or run:
+
+$ drush en panels_style_collapsible
+
 == Permissions/roles upgrade ==
 
 As mentioned above, this release includes a new module called DKAN Permissions (dkan_permissions), which is meant to replace the old DKAN Sitewide Roles and Permissions (dkan_sitewide_roles_perms). New installs of DKAN will enable this module and ignore the old one, while existing sites will see no change (but are recommended to upgrade).  See more information in the module's README file.
