@@ -241,3 +241,14 @@ function dkan_update_7010() {
     module_enable(array('open_data_schema_map'));
   }
 }
+
+/**
+ * Update copyright information.
+ */
+function dkan_update_7011() {
+  $copyright = theme_get_setting('copyright', 'nuboot_radix');
+  if ($copyright['value'] == 'Powered by <a href="http://nucivic.com/dkan">DKAN</a>, a project of <a href="http://nucivic.com">NuCivic</a>') {
+    $settings['copyright']['value'] = t('Powered by <a href="http://getdkan.com/">DKAN</a>, a project of <a href="http://granicus.com">Granicus</a>');
+    variable_set('theme_nuboot_radix_settings', $settings);
+  }
+}
