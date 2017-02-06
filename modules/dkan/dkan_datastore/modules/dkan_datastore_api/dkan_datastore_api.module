@@ -360,7 +360,12 @@ function dkan_datastore_api_services_resources() {
 function _dkan_datastore_api_datastore_index() {
   if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $params = _dkan_datastore_api_get_params();
+    $cache_hash = md5(json_encode($params));
+    if($cache = cache_get($cache_hash)) {
+      return $cache->data;
+    }
     $result = _dkan_datastore_api_query($params);
+    cache_set($cache_hash, $result, , CACHE_TEMPORARY);
   }
   elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = _dkan_datastore_api_multiple_query();
@@ -489,12 +494,17 @@ function _dkan_datastore_api_query($params) {
  * Performs a multiple query against the datastore.
  */
 function _dkan_datastore_api_multiple_query($queries) {
+  $cache_hash = md5($queries);
+  if($cache = cache_get($cache_hash)) {
+    return $cache->data;
+  }
   $request_body = $queries ? $queries : json_decode(file_get_contents('php://input'), true);
   $queries = $request_body;
   foreach ((array) $queries as $name => $query) {
     $params = _dkan_datastore_api_get_params($query);
     $result[$name] = _dkan_datastore_api_query($params);
   }
+  cache_set($cache_hash, $result, CACHE_TEMPORARY);
   return $result;
 }
 
@@ -575,15 +585,34 @@ function dkan_datastore_api_add_index_group_by(&$data_select, $group_by, $alias 
 /**
  * Adds aggregations to query.
  */
-function dkan_datastore_api_add_index_aggregations(&$data_select, $aggregations, $alias = NULL) {
+function dkan_datastore_api_add_index_aggregations(&$data_select, $aggregations) {
+
+  // { "sum": {"table_name": {"field_name": "as_field" }}}
   foreach ($aggregations as $method => $agg) {
-    $alias = is_assoc($agg) ? array_keys($agg)[0] : NULL;
-    $field_name = $alias ? $agg[$alias] : $agg;
-    $field_name = normalize_field_name($field_name);
-    $field_full = $alias ? $alias . '.' . $field_name : $field_name;
-    if (!empty($field_name)) {
-      $data_select->addExpression($method . '('. $field_full .')', $method . '_' . $field_name);
+
+    // {"table_name": {"field_name": "as_field" }}
+    if(is_array($agg) && is_assoc($agg)) {
+      foreach ($agg as $table => $field) {
+        $field_full = $table . '.' . normalize_field_name(end(array_keys($field)));
+        $data_select->addExpression($method . '('. $field_full .')', normalize_field_name(end(array_values($field))));
+      }
+
+    // { "sum": ["field_name1", "field_name2"]}
+    } elseif(is_array($agg)) {
+      foreach ($agg as $field) {
+        $field = normalize_field_name($field);
+        $data_select->addExpression($method . '('. $field .')', $method . '_' . $field);
+      }
+
+    // { "sum": "field_name1" }
+    } elseif(is_string($agg)) {
+
+      $field = normalize_field_name($agg);
+      if (!empty($field)) {
+        $data_select->addExpression($method . '('. $field .')', $method . '_' . $field);
+      }
     }
+
   }
 }
 
