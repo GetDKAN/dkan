@@ -211,8 +211,7 @@ function dkan_update_7007(&$sandbox) {
 }
 
 /**
- * Point source menu to the command menu center in
- * dkan workflow roles.
+ * Point source menu to the command menu center in dkan workflow roles.
  */
 function dkan_update_7008() {
   if (module_exists('dkan_workflow')) {
@@ -232,7 +231,7 @@ function dkan_update_7009() {
 }
 
 /**
- * Disable/uninstall deprecated dkan_dataset_api and enable open_data_schema_map.
+ * Disable/uninstall deprecated dkan_dataset_api, enable open_data_schema_map.
  */
 function dkan_update_7010() {
   if (module_exists('dkan_dataset_api')) {
@@ -246,8 +245,8 @@ function dkan_update_7010() {
  * Update copyright information.
  */
 function dkan_update_7011() {
-  $copyright = theme_get_setting('copyright', 'nuboot_radix');
-  if ($copyright['value'] == 'Powered by <a href="http://nucivic.com/dkan">DKAN</a>, a project of <a href="http://nucivic.com">NuCivic</a>') {
+  $settings = variable_get('theme_nuboot_radix_settings', array());
+  if ($settings['copyright']['value'] == 'Powered by <a href="http://nucivic.com/dkan">DKAN</a>, a project of <a href="http://nucivic.com">NuCivic</a>') {
     $settings['copyright']['value'] = t('Powered by <a href="http://getdkan.com/">DKAN</a>, a project of <a href="http://granicus.com">Granicus</a>');
     variable_set('theme_nuboot_radix_settings', $settings);
   }
