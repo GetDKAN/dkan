@@ -592,9 +592,11 @@ function dkan_datastore_api_add_index_aggregations(&$data_select, $aggregations)
 
     // {"table_name": {"field_name": "as_field" }}
     if(is_array($agg) && is_assoc($agg)) {
-      foreach ($agg as $table => $field) {
-        $field_full = $table . '.' . normalize_field_name(end(array_keys($field)));
-        $data_select->addExpression($method . '('. $field_full .')', normalize_field_name(end(array_values($field))));
+      foreach ($agg as $table => $fields) {
+        foreach ($fields as $field => $as) {
+          $field_full = $table . '.' . normalize_field_name($field);
+          $data_select->addExpression($method . '('. $field_full .')', normalize_field_name($as));
+        }
       }
 
     // { "sum": ["field_name1", "field_name2"]}
