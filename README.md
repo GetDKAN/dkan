@@ -4,9 +4,9 @@
 
 [![Join the chat at https://gitter.im/NuCivic/dkan](https://badges.gitter.im/NuCivic/dkan.svg)](https://gitter.im/NuCivic/dkan?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-DKAN is a Drupal-based open data tool with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. It is inspired by the [CKAN project](https://github.com/ckan/ckan) and maintained by [NuCivic](http://nucivic.com).
+DKAN is a Drupal-based open data tool with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. It is inspired by the [CKAN project](https://github.com/ckan/ckan) and maintained by [Granicus Data](http://getdkan.com/contact).
 
-[![DKAN](docs/images/dkan-front-page.png)](http://nucivic.com/dkan)
+[![DKAN](docs/images/dkan-front-page.png)](http://getdkan.com)
 
 ## Data publishers
 
@@ -65,7 +65,7 @@ Check the [releases page](https://github.com/NuCivic/dkan/releases) for latest D
 
 Contact us if you want to get involved!
 
-DKAN development is a sponsored by NuCivic. For more information about hosting and professional support options for DKAN, see http://nucivic.com/data
+DKAN development is a sponsored by NuCivic. For more information about hosting and professional support options for DKAN, see http://getdkan.com/contact
 
 ### Releases and Release Candidates
 
@@ -97,7 +97,7 @@ Please post it to our Github issue queue: https://github.com/nucivic/dkan/issues
 
 ### I would like to purchase DKAN support or hosting
 
-Please contact us at NuCivic http://nucivic.com/contact
+Please contact us at NuCivic http://getdkan.com/contact
 
 ## Community
 
