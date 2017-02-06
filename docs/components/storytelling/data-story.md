@@ -1,1 +1,1 @@
-../../../modules/dkan/dkan_data_story/README.md
+# Data Stories

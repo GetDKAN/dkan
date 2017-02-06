@@ -1,4 +1,4 @@
-# Geocoder Module
+# Geocoding
 
 DKAN's native Datastore offers a geocoder which can add a "lat" and "lon" field to resources that have plain-text address information. This will allow users to provide map coordinates and a map preview for selected resources.
 
@@ -36,5 +36,3 @@ The number of rows that can be geolocated is determined by the service you selec
 ### Adding Service API Keys
 
 The [Geocoder](https://drupal.org/project/geocoder) module supports adding API keys for the Yahoo and Google services. Users can sign up for those services and, in Google's case, geocode up to 100,000 addressees per day.
-
-The Google API key requires the following patch to be added before using: https://drupal.org/comment/8561397#comment-8561397

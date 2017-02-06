@@ -1,8 +1,8 @@
 #####################
-DKAN Dataset REST API
+Dataset REST API
 #####################
 
-DKAN Dataset REST API uses the `Services <https://www.drupal.org/project/services>`_ module to create CRUD endpoint at ``api/dataset/node``. By default, this endpoint provides full CRUD access to a website's content nodes, and limited access to users (to allow authentication). The endpoint can be customized at ``/admin/structure/services/list/dkan_dataset_api/resources``.
+The `DKAN Dataset REST API <https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_dataset/modules/dkan_dataset_rest_api>`_ uses the `Services <https://www.drupal.org/project/services>`_ module to create CRUD endpoint at ``api/dataset/node``. By default, this endpoint provides full CRUD access to a website's content nodes, and limited access to users (to allow authentication). The endpoint can be customized at ``/admin/structure/services/list/dkan_dataset_api/resources``.
 
 **********************
 Services Documentation

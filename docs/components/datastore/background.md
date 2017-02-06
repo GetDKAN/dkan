@@ -1,4 +1,4 @@
-# Background and Periodic Imports with the DKAN Datastore
+# Background and Periodic Imports
 
 By default Resource files are added to the DKAN Datastore manually. This can be changed to:
 

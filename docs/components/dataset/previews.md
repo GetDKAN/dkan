@@ -37,13 +37,15 @@ DKAN offers the ability to preview the files and folders locked in ZIP files. DK
 
 ![zip preview](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202014-09-22%20at%202.58.10%20PM.png)
 
+## Preview Configuration
+By default previews are available for resources with files below 3MB of size. However you can customize this limit in the recline configuration page (/admin/dkan/recline).
+
+![Configuration screenshot](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-05-31%20at%2012.57.41%20PM.png)
+
 ## External Previews
 
 Starting with version 7.x-1.10, DKAN supports previewing/opening resources in external services that offer simple URL-based integrations. For instance, the CartoDB mapping service offers an [Open in CartoDB service](https://cartodb.com/open-in-cartodb). Enabling this for CSV files will result in a dataset display like this:
 
 ![External preview example](http://docs.getdkan.com/sites/default/files/2015-11-11_13-13-34.png)
 
-## Configuration
-By default previews are available for resources with files below 3MB of size. However you can customize this limit in the recline configuration page (/admin/dkan/recline).
-
-![Configuration screenshot](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-05-31%20at%2012.57.41%20PM.png)
+External preview functionality can be enabled and configured in the "DKAN Dataset Previews" administration page (/admin/dkan/dataset_preview).

@@ -6,8 +6,9 @@ DKAN is a Drupal-based open data tool with a full suite of cataloging, publishin
 .. toctree::
    :maxdepth: 1
 
-   styles
+   about
    catalog-basics
    dkan-ckan
    get-dkan
    installation
+   maintaining

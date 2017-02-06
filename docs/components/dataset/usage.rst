@@ -65,3 +65,15 @@ Let's take a closer look at some of the metadata fields available on this form:
 :Resources: This field is a reference to the resources you have already added. You should generally leave this field alone and use the workflows outlined here and in [Updating Datasets in DKAN](dkan-documentation/dkan-users/updating-datasets-dkan) to add, edit and remove resources from your Dataset.
 
 After you click "Save", the metadata we enter will appear on the page for this Dataset:
+
+Configuration
+--------------
+
+Adding or Removing Allowed Resource File Types
+**********************************************
+
+Any type of file can be uploaded to Resources (though only CSV files can be imported to the `Datastore <../datastore/index>`_.
+
+File types are controlled at "/admin/structure/types/manage/resource/fields/field_upload"
+
+To add or remove file types navigate as an 'administrator' and enter extensions into the "Allowed file extensions" field.
