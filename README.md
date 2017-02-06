@@ -26,7 +26,7 @@ DKAN is a Drupal-based open data tool with a full suite of cataloging, publishin
 
 ## Hosting and support
 
-NuCivic' [Data](http://nucivic.com/data/) platform offers 24/7, secure, cloud-based DKAN hosting and support services.
+Granicus [Data](http://getdkan.com/) platform offers 24/7, secure, cloud-based DKAN hosting and support services.
 
 *   [ Live demo » ](http://demo.getdkan.com/)
 *   [ Docs » ](http://docs.getdkan.com/)
