@@ -365,7 +365,7 @@ function _dkan_datastore_api_datastore_index() {
       return $cache->data;
     }
     $result = _dkan_datastore_api_query($params);
-    cache_set($cache_hash, $result, , CACHE_TEMPORARY);
+    cache_set($cache_hash, $result, CACHE_TEMPORARY);
   }
   elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = _dkan_datastore_api_multiple_query();
