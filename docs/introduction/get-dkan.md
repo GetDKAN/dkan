@@ -16,7 +16,7 @@ DKAN is open source and flexible: you can download it for free and run it on you
 
 [Acquia](http://acquia.com) offers a number of [hosting tools](http://www.acquia.com/products-services/acquia-cloud#Overview) built specifically for best maintaining Drupal sites. These include integrations with 3rd party systems like New Relic and Blaze Meter as well as reports on module updates, performance, and security reviews. Most importantly, Acquia offers a dashboard that makes it easy to move code (hosted by git), media files, and the database between development, testing, and production environments:
 
-![Acquia Dashboard screenshot](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202014-09-25%20at%2010.17.47%20AM.png)
+![Acquia Dashboard screenshot](../images/acquia-dashboard.png)
 
 These tools allow a single site builder or team of developers to follow best practices, scale up if needed, and follow a rigorous QA process all without ever touching a server.
 
@@ -36,7 +36,7 @@ Pantheon provides reliable Drupal cloud hosting with a powerful development tool
 
 You can register for a free account [here](https://www.getpantheon.com/). Once you have access, create a new site:
 
-![Pantheon new site form](../images/pantheon-newsite.png)
+![Pantheon new site form](../images/pantheon-new-site.png)
 
 Choose to make a new site from scratch, and to use the DKAN distribution:
 
@@ -65,9 +65,9 @@ An error like the following is often seen at the end of the install process on P
 This will hopefully be fixed on future releases. However, the resulting site should still be fully installed and functional.
 
 
-## NuCivic Data Subscription
+## Granicus Data Subscription
 
-[NuCivic](http://nucivic.com), the company leading DKAN's development, now offers a turn-key software as a service (SaaS) product called [NuCivic Data Enterprise](http://nucivic.com/data/enterprise/). Hosted on Acquia Cloud, NuCivic Data Enterprise meets US government [security standards](https://docs.acquia.com/cloud/arch/compliance-standards-and-regulations), comes pre-configured for out-of-the-box open data standards compliance and advanced data visualization techniques, and includes 24-hour, enterprise-level support. [Contact NuCivic](http://nucivic.com/contact) for more information.
+[Granicus](http://granicus.com), the company leading DKAN's development, now offers a turn-key software as a service (SaaS) product called [Granicus Data Enterprise](https://insights.govdelivery.com/Digital_Services/GovDelivery_Open_Data). Hosted on Acquia Cloud, Granicus Data Enterprise meets US government [security standards](https://docs.acquia.com/cloud/arch/compliance-standards-and-regulations), comes pre-configured for out-of-the-box open data standards compliance and advanced data visualization techniques, and includes 24-hour, enterprise-level support. [Contact Granicus](http://granicus.com/contact) for more information.
 
 ## GovDelivery Open Data
 

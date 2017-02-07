@@ -16,7 +16,7 @@ This is the central site for technical/developer documentation of DKAN. DKAN is 
 Additional resources
 --------------------
 
-- `DKAN Home <https://getdkan.com>`_: Central portal for the DKAN community.
+- `DKAN Home <http://getdkan.com>`_: Central portal for the DKAN community.
 - `DKAN Starter Documentation <https://dkan-starter.readthedocs.io>`_: Implementation and deployment tools
 - `Granicus Open Data Documentation <https://insights.govdelivery.com/OpenData>`_: User documentation for the Granicus turnkey DKAN product.
 - `Drupal Documentation <https://www.drupal.org/documentation>`_
