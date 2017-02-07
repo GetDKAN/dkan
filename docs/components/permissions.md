@@ -23,8 +23,8 @@ A note about the new roles: If you are already operating on an older version of 
 
 #### Anonymous User
 
-* General site visitors that are **not** logged in. 
-* This user type has no profile information, hence it’s anonymous. 
+* General site visitors that are **not** logged in.
+* This user type has no profile information, hence it’s anonymous.
 * Can view and search content on public website.
 
 #### Authenticated User
@@ -43,15 +43,15 @@ Content Creators are focused simply on adding resources to the data catalogue un
 
 Permissions:
 
-* Create most content types and edit **own** content. 
-* View **own** unpublished content and revision history of all published content. 
+* Create most content types and edit **own** content.
+* View **own** unpublished content and revision history of all published content.
 * Add and view files to site library.
 
 #### Editor
 
 This will typically be a person handling the content on a frequent basis. Someone in your organization with expertise on the subject-matter that is expansive as well as in-depth. | An editor role is similar to a content creator role because the focus is content, however an editor will deal with multiple content authors and have the ability to manage and edit. An editor is responsible for managing content from a strategic perspective.  The editor largely handles the quality and timeliness of the content that appears on the site. This role is able to make changes to content and where it appears, but it doesn’t go further into admin functions.
 
-Permissions: 
+Permissions:
 
 * Assign roles to lower-level users.
 * View, edit, delete most content types and manage versions of content.
@@ -59,9 +59,9 @@ Permissions:
 
 #### Site Manager
 
-The highest level for *non-technical* users. A site manager is mostly concerned with admin functions of the site. Typically this will fall to someone in a supervisory role. The site manager takes a high-level view of the site, its content, and the users on the site. This person maintains the site and assigns roles and permissions to new users but doesn’t deal with the technical backend. 
+The highest level for *non-technical* users. A site manager is mostly concerned with admin functions of the site. Typically this will fall to someone in a supervisory role. The site manager takes a high-level view of the site, its content, and the users on the site. This person maintains the site and assigns roles and permissions to new users but doesn’t deal with the technical backend.
 
-Permissions: 
+Permissions:
 
 * Create, edit, delete **all** content types created by **any** user.
 * Change the types of content that lower-access roles can create.
@@ -70,9 +70,9 @@ Permissions:
 
 #### Administrator
 
-The administrator role holds every permission, and it requires high technical competency. This role has the ability to cause serious damage, so it’s generally reserved for a single web professional. The administrator handles the overall structure of the website for lower-access roles to plug content into and make changes as needed. Admins hold the **highest level** of all roles and permissions. 
+The administrator role holds every permission, and it requires high technical competency. This role has the ability to cause serious damage, so it’s generally reserved for a single web professional. The administrator handles the overall structure of the website for lower-access roles to plug content into and make changes as needed. Admins hold the **highest level** of all roles and permissions.
 
-Permissions: 
+Permissions:
 
 * Enable/disable DKAN modules and features.
 * Change the appearance of the site with views and themes.

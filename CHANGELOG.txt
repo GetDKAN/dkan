@@ -1,7 +1,8 @@
 7.x-1.x
 --------------------------
+ - Added ReadTheDocs integrations and docs folder for centralized documentation
+ - Disable/uninstall  dkan_dataset_api if is enable because is deprecated in favor open_data_schema_map.
  - Renamed test files.
- - Disable/uninstall dkan_dataset_api if enabled because it is deprecated in favor open_data_schema_map.
  - Update resource tests to work on sites without zip in their format terms.
  - Moved functions from FeatureContext to DKANExtension.
  - Added patch for workbench_moderation: Invalid argument supplied for foreach() 2360973.
@@ -115,12 +116,12 @@ DKAN Workflow:
 DKAN Dataset:
  - Leaflet draw widget usability improvements
  - Fix validation on resource forms when multiple resource type fields are populated
- - Fix 508 compilance issues for leafleat draw widget 
+ - Fix 508 compilance issues for leafleat draw widget
  - Added DKAN Dataset module into DKAN Core.
  - Added default image for groups.
  - Add preview support for resources of many more formats, outside of recline.js. Support added for JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, ZIP
  - Fix bugs in resource mimetypes and previews.
- - Groups field on Dataset form was modified to be a single select with all group options and it was moved from the tabs section to the main section of the form. 
+ - Groups field on Dataset form was modified to be a single select with all group options and it was moved from the tabs section to the main section of the form.
  - Groups field was hidden on the resource form since groups are assigned automatically based on the parent datasets.
  - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
  - Moved and renamed the following fields from ODFE to DKAN Core: field_is_part_of, field_data_dictionary_type, field_landing_page, field_pod_theme, field_conforms_to, field_rights, field_language.
@@ -150,7 +151,7 @@ DKAN Topics:
  - Added a test for creating a topic term.
  - Make the icon field required if the icon type is set to 'font'.
  - Fix topics icon selector functionality.
- 
+
 
 7.x-1.12.13 2017-01-04
 ----------------------
@@ -299,7 +300,7 @@ DKAN Datastore:
 
 7.x-1.12 2015-04-01
 --------------------------
-DKAN_Datastore: 
+DKAN_Datastore:
  - Add update function enable field_hidden module
 
 
@@ -335,7 +336,7 @@ DKAN Dataset:
  - Improvement in the UX of user pictures, including Gravatar integration
  - Numerous other small improvements and bugfixes
 
-== Notice: Avoiding PHP errors after upgrade ==
+**Notice: Avoiding PHP errors after upgrade**
 
 In some cases, changes to the codebase may cause PHP errors when the Drupal bootstrap process looks for a file that no longer exists. As always, backing up your db before upgrading is recommended. In addition, if you get to a state in which Drupal will not bootstrap successfully due to an issue with views_autocomplete_filters, try some combination of:
 
@@ -343,7 +344,7 @@ $ drush sql-query 'DELETE FROM registry WHERE filename LIKE "%views_autocomplete
 $ drush cc all
 $ drush rr
 
-== Search page redesign ==
+**Search page redesign**
 
 This release of DKAN includes a redesigned search page, which is also the page used to browse datasets. This redesign required some changes to the included search indexes. Use the following drush commands to rebuild your search indexes, or go to admin/config/search/search_api/index/datasets and disable, re-enable and re-index the _datasets_ search index.
 
@@ -352,7 +353,7 @@ $ drush search-api-enable datasets -y
 $ drush sapi-r -y
 $ drush sapi-i -y
 
-== Permissions/roles upgrade ==
+**Permissions/roles upgrade**
 
 As mentioned above, this release includes a new module called DKAN Permissions (dkan_permissions), which is meant to replace the old DKAN Sitewide Roles and Permissions (dkan_sitewide_roles_perms). New installs of DKAN will enable this module and ignore the old one, while existing sites will see no change (but are recommended to upgrade).  See more information in the module's README file.
 
@@ -369,8 +370,8 @@ Group-level permissions have been moved to DKAN Dataset Groups Permissions. To s
 $ drush en dkan_dataset_groups_perms -y
 $ drush fr dkan_dataset_groups_perms -y
 
-== DKAN Dataset ==
-See the DKAN Dataset release notes for 7.x-1.11 for notes specific to the DKAN Dataset module.
+DKAN Dataset:
+- See the DKAN Dataset release notes for 7.x-1.11 for notes specific to the DKAN Dataset module.
 
 
 7.x-1.10 2015-11-10
@@ -419,7 +420,7 @@ DKAN Dataset:
  - New hooks to allow additional license options https://github.com/NuCivic/dkan/issues/447
  - Numerous small improvements and bugfixes
 
-== Search API Database upgrade issue ==
+**Search API Database upgrade issue**
 
 This release updates the Search API DB module, which, if you are using the database backend, may break
 your search indexes, resulting in either a) nothing, or b) all nodes regardless of type on your search/datasets
@@ -429,11 +430,9 @@ To fix, follow these steps after updating your database:
 
 1. Go to /admin/config/search/search_api/index/datasets/edit to edit the database node index
 2. Set the Server to "< No Server >" and Save. Your index will now show as "disabled."
-3. Edit it again (by clicking "Edit" next to "Database Node Index") and set the Server back to "Database Server"
-and Save.
+3. Edit it again (by clicking "Edit" next to "Database Node Index") and set the Server back to "Database Server" and Save.
 4. Click the "enable" link while viewing the resulting page, or edit the index again and check the "Enabled" box.
-5. Once the index is enabled, you should see "0/[total] Indexed" on the index page. Click "Index Now" at the
-bottom of the page to re-index all your datasets.
+5. Once the index is enabled, you should see "0/[total] Indexed" on the index page. Click "Index Now" at the bottom of the page to re-index all your datasets.
 6. Repeat for any other indexes you have running on a database server.
 
 This issue has been identified and documented for other Drupal distributions using Search API. See release notes for
@@ -476,7 +475,7 @@ DKAN Dataset:
  - fix issues with javascript in behat tests
  - freezing behat drupal extension to 1.0.2
  - dkan_sitewide modules now report to github
-DKAN_Datastore: 
+DKAN_Datastore:
  - Fix services module reference at dkan_datastore.make file
 DKAN Dataset:
  - Creating taxonomies during setup test
@@ -497,10 +496,10 @@ DKAN Dataset:
  - Editable dkan blocks
  - Sort on search
  - New rebuild script to keep dkan updated on custom installs
-DKAN_Datastore: 
+DKAN_Datastore:
  - Many warnings fixed with proper isset calls
  - Added dkan_datastore_api_count implementation
- - Optimisations on GET parameters processing 
+ - Optimisations on GET parameters processing
 DKAN Dataset:
  - Many warnings fixed with proper isset calls
  - Changes in make file (fixed versions on some components)
@@ -558,7 +557,7 @@ DKAN Dataset:
  - Issue #111 Fix facetapi_pretty_paths makefile definition #97
  - Update drupal-org.make #84
 DKAN_Datastore:
- - Moved dkan_datastore development to NuCivic: 
+ - Moved dkan_datastore development to NuCivic:
    https://github.com/NuCivic/dkan_datastore
  - DKAN_Datastore: Several bugs fixed.
 DKAN Dataset:
@@ -582,9 +581,9 @@ DKAN Dataset:
  - Added nuboot theme (http://drupal.org/project/nuboot) as default dkan theme
  - Completed 508 compliance on dkan default theme
  - Several bugs fixed.
- - DKAN_Datastore: Moved dkan_datastore development to github: 
+ - DKAN_Datastore: Moved dkan_datastore development to github:
   https://github.com/nuams/dkan_datastore
- - DKAN_Datastore: Added WebTestCase test suite for dkan_datastore and dkan_datastore_api: 
+ - DKAN_Datastore: Added WebTestCase test suite for dkan_datastore and dkan_datastore_api:
    https://github.com/nuams/dkan_datastore/tree/7.x-1.x/tests
  - DKAN_Datastore: Travis + Github integration for all test suites on every commit
  - DKAN_Datastore: Several bugs fixed.
