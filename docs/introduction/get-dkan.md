@@ -50,7 +50,7 @@ Pantheon uses a modified version of Drupal Pressflow, which is [publicly availab
 
 However, Pantheon provides an easy way to update your instance of DKAN (or any Drupal distribution hosted with them). Each time the DKAN's Pantheon build is updated, an alert will appear in your Pantheon dashboard:
 
-![Pulling in upstream changes via UI](../images/pantheon-upates.png)
+![Pulling in upstream changes via UI](../images/pantheon-updates.png)
 
 Usually, you will be able to use the "Apply Updates" button to merge those "upstream" changes directly into your copy of the codebase, alongside any changes you have already made to it. If you are developing locally using git, the next time you pull from your Pantheon repository, you'll receive the DKAN updates locally as well.
 
@@ -67,8 +67,5 @@ This will hopefully be fixed on future releases. However, the resulting site sho
 
 ## Granicus Data Subscription
 
-[Granicus](http://granicus.com), the company leading DKAN's development, now offers a turn-key software as a service (SaaS) product called [Granicus Data Enterprise](https://insights.govdelivery.com/Digital_Services/GovDelivery_Open_Data). Hosted on Acquia Cloud, Granicus Data Enterprise meets US government [security standards](https://docs.acquia.com/cloud/arch/compliance-standards-and-regulations), comes pre-configured for out-of-the-box open data standards compliance and advanced data visualization techniques, and includes 24-hour, enterprise-level support. [Contact Granicus](http://granicus.com/contact) for more information.
+[Granicus](http://granicus.com), the company leading DKAN's development, offers a turn-key software as a service (SaaS) product called [Granicus Data Enterprise](https://insights.govdelivery.com/Digital_Services/GovDelivery_Open_Data). Hosted on Acquia Cloud, Granicus Data Enterprise meets US government [security standards](https://docs.acquia.com/cloud/arch/compliance-standards-and-regulations), comes pre-configured for out-of-the-box open data standards compliance and advanced data visualization techniques, and includes 24-hour, enterprise-level support. [Contact Granicus](http://granicus.com/contact) for more information.
 
-## GovDelivery Open Data
-
-More information coming soon...
