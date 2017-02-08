@@ -587,12 +587,15 @@ function dkan_datastore_api_add_index_group_by(&$data_select, $group_by, $alias 
  */
 function dkan_datastore_api_add_index_aggregations(&$data_select, $aggregations) {
 
+  // Walk all the aggregations (sum, avg, etc.).
   // { "sum": {"table_name": {"field_name": "as_field" }}}
   foreach ($aggregations as $method => $agg) {
 
+    // If aggregation is an object then its using a table prefix.
     // {"table_name": {"field_name": "as_field" }}
     if(is_assoc($agg)) {
 
+      // Walk through all the fields inside that table.
       // {"field_name1": "as_field1", "field_name2": "as_field2"}
       foreach ($agg as $table => $fields) {
         if(is_assoc($fields)) {
@@ -606,6 +609,9 @@ function dkan_datastore_api_add_index_aggregations(&$data_select, $aggregations)
           $data_select->addExpression($method . '('. $field_full .')',  $method . '_' . normalize_field_name($field));
         }
       }
+
+    // If aggregation's value is an array then contains
+    // field names without table prefixes.
     // { "sum": ["field_name1", "field_name2"]}
     } elseif(is_array($agg)) {
       foreach ($agg as $field) {
@@ -613,6 +619,7 @@ function dkan_datastore_api_add_index_aggregations(&$data_select, $aggregations)
         $data_select->addExpression($method . '('. $field .')', $method . '_' . $field);
       }
 
+    // If aggregation's value is an string then contains just a single field name.
     // { "sum": "field_name1" }
     } elseif(is_string($agg)) {
 
