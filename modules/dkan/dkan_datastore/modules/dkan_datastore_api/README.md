@@ -229,3 +229,9 @@ http://example.com/api/dataset/search?resource_id[pop]=d3c099c6-1340-4ee5-b030-8
 
 Returns the country, population, squarekm and id for US and AR from datasets 11 and 13.
 
+### Caching
+GET and POST request are cached by drupal. The params passed through the request are used to create a cache id to store the data to be retrieved in further requests. 
+
+Given Datastore API uses the drupal cache system under the hood, the Datastore API cache its cleared when the drupal cache it's cleared. This is when it's manually wiped or cache lifetime ends.
+
+All this options can be configured at `admin/config/development/performance`
