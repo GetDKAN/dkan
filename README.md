@@ -4,11 +4,9 @@
 
 [![Join the chat at https://gitter.im/NuCivic/dkan](https://badges.gitter.im/NuCivic/dkan.svg)](https://gitter.im/NuCivic/dkan?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![DKAN](https://www.drupal.org/files/2016-02-05_12-09-49.png)](http://nucivic.com/dkan)
+DKAN is a Drupal-based open data tool with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. It is inspired by the [CKAN project](https://github.com/ckan/ckan) and maintained by [Granicus Data](http://getdkan.com/contact).
 
-[![DKAN](https://www.drupal.org/files/2016-02-05_12-09-49.png)](http://nucivic.com/dkan)
-
-[DKAN](http://nucivic.com/dkan) is a Drupal-based open data tool with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. DKAN is maintained by [GovDelivery](http://https://govdelivery.com/) (formerly NuCivic).
+[![DKAN](docs/images/dkan-front-page.png)](http://getdkan.com)
 
 *  [ Live demo » ](http://demo.getdkan.com/)
 *  [ Full Documetation » ](http://docs.getdkan.com/)
@@ -34,9 +32,15 @@
 
 ## Hosting and support
 
-GovDelivery's [Open Data](https://www.govdelivery.com/solutions/open-data/) solution offers 24/7, secure, cloud-based DKAN hosting and support services.
+Granicus [Data](http://getdkan.com/) platform offers 24/7, secure, cloud-based DKAN hosting and support services.
 
-For release notes and upgrade instructions specific to particular releases, see the [releases section of the DKAN Project](https://github.com/NuCivic/dkan/releases) on Github.
+## Installation
+
+Please see the ["Installation" section of the DKAN Documentation](http://docs.getdkan.com/dkan-documentation/dkan-developers-guide/installing-dkan).
+
+### Upgrading DKAN
+
+Please see the ["Updating and Maintaining DKAN" section of the DKAN Documentation](http://docs.getdkan.com/dkan-documentation/dkan-developers-guide/updating-and-maintaining-dkan) for general upgrade information.
 
 ## Releases
 
@@ -44,7 +48,7 @@ Check the [releases page](https://github.com/NuCivic/dkan/releases) for latest D
 
 Contact us if you want to get involved!
 
-DKAN development is a sponsored by NuCivic. For more information about hosting and professional support options for DKAN, see http://nucivic.com/data
+DKAN development is a sponsored by NuCivic. For more information about hosting and professional support options for DKAN, see http://getdkan.com/contact
 
 ### Releases and Release Candidates
 
@@ -74,9 +78,9 @@ Please post a question on our [Developer list](https://groups.google.com/forum/?
 
 Please post it to our [Github issue queue](https://github.com/nucivic/dkan/issues).
 
-### I would like to purchase GovDelivery support or hosting
+### I would like to purchase Granicus support or hosting
 
-[Please contact us for a consultation](https://www.govdelivery.com/company/schedule-a-demo/).
+[Please contact us for a consultation](https://granicus.com/contact-us/).
 
 ## Community
 
