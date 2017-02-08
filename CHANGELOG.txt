@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Added css for chart visualizaitons, fixes issue in IE.
  - Upgrade better_exposed_filters to v3.4.
  - Update branding.
  - Added ReadTheDocs integrations and docs folder for centralized documentation
