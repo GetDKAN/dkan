@@ -2,81 +2,42 @@
 
 DKAN Datastore bundles a number of modules and configuration to allow users to upload CSV files, parse them and save them into the native database as flat tables, and query them through a public API.
 
-DKAN Datastore is part of the DKAN distribution which makes it easy to create an Open Data Portal.
+## Basic Architecture
 
-DKAN Datastore is part of the [DKAN](https://drupal.org/project/dkan "DKAN homepage") project which includes the [DKAN profile](https://drupal.org/project/dkan "DKAN homepage") which creates a standalone Open Data portal, and [DKAN Dataset](https://drupal.org/project/dkan_dataset "DKAN Datastore homepage").
+CSV and XML files uploaded to DKAN through the "Add Resources" form or through the API are parsed and inserted into unique tables in the DKAN database. Because Drupal has a pluggable database layer DKAN's database can MySQL, PostgreSQL, or MS SQL Server.
 
-DKAN Datastore is currently managed in code on Github but is mirrored on Drupal.org.
+### Manual Processing
 
-## INSTALLATION
+Files are parsed and inserted in batches. The user has the option of parsing them upon form submission. If the user chooses to parse the file manually they are able to see the progress of the processing through a batch operations screen similar to the one below. 
 
-This module REQUIRES implementers to use "drush make". If you only use "drush download" you will miss key dependencies for required modules and libraries.
+![Drupal batch operation](http://drupal.org/files/images/computed_field_tools_drupal7_batch.png)
 
-The following will download the required libraries and patched modules:
+### Cron Processing
 
-```bash
-drush dl dkan_datastore
-cd dkan_datastore
-drush make --no-core dkan_datastore.make
-```
+Files that are not processed manually are processed in pieces during cron.
 
-## Managing datastores with Drush
+### Datastore API
 
-The DKAN Datastore API module provides the functionality needed to manage the
-datastores using Drush. The available commands are:
+Once processed, Datastore information is available via the Datastore API. For more information, see the Datastore API page.
 
-### To create a datastore from a local file:
+### User Interface
 
-```bash
-drush dsc (path-to-local-file)
-```
+DKAN provides UI for managing the Datastore. (PICTURE SHOULD GO HERE) Management activities include:
 
-### To update a datastore from a local file:
+*   Importing items
+*   Deleting items
+*   Editing the schema (see below)
+*   Edit Views integration
 
-```bash
-drush dsu (datastore-id) (path-to-local-file)
-```
+(PICTURE OF EDITING SCHEMA BELONGS HERE)
 
-### To delete a datastore file (imported items will be deleted as well):
+### Drupal Architecture
 
-```bash
-drush dsfd (datastore-id)
-```
+The DKAN Datastore is managed by the Feeds module. Custom plugins were created for the Feed fetcher and processor to make the file uploaded to the resource form a feed item.
 
-### To get the URI of the datastore file:
+## Geocoder
 
-```bash
-drush dsfuri (datastore-id)
-```
-
-## Using without DKAN
-
-This module can be used without DKAN. It requires a node and either file or link field to supply a file. By default it looks for a "resource" node with a "field_upload" field.
-
-To change this default, use "hook_dkan_datastore_file_upload_field_alter()" and / or "hook_dkan_datastore_node_type_alter()". For example the following will change the expected node and file field to "article" and "file_myfile":
-
-```
-
-/**
- * Implements  hook_dkan_datastore_file_upload_field_alter().
- */
-function MY_MODULE_dkan_datastore_file_upload_field_alter(&$field) {
-  $field = 'field_myfile';
-}
-
-/**
- * Implements  hook_dkan_datastore_node_type_alter().
- */
-function MY_MODULE_dkan_datastore_node_type_alter(&$node_type) {
-  $node_type = 'article';
-}
-```
-
-Now "article" nodes will have "Manage Datastore" and "Data API" tabs. CSV files uploaded with the "file_myfile" field can be imported into the datastore and queried via the DKAN Datastore API.
-
-## Design
-
-## Adding new Datastores
+DKAN's native Datastore can use the Drupal [geocoder](https://www.drupal.org/project/geocoder) module to add latitude/longitude coordinates to resources that have plain-text address information. This means that datasets containing plain-text addresses can be viewed on a map using the [Data Preview](dkan-documentation/dkan-features/data-preview-features) or more easily used to build map-based data visualizations.
 
 ## Managing datastores with Drush
 
@@ -105,16 +66,4 @@ drush dsfd (datastore-id)
 
 ```bash
 drush dsfuri (datastore-id)
-```
-
-## Contributing
-
-We are accepting issues in the dkan issue thread only -> https://github.com/NuCivic/dkan/issues -> Please label your issue as **"component: dkan_datastore"** after submitting so we can identify problems and feature requests faster.
-
-If you can, please cross reference commits in this repo to the corresponding issue in the dkan issue thread. You can do that easily adding this text:
-
-```
-NuCivic/dkan#issue_id
-```
-
-to any commit message or comment replacing **issue_id** with the corresponding issue id.
+```Z
