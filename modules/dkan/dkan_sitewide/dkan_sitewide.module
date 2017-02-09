@@ -326,7 +326,7 @@ function dkan_sitewide_convert_panel_page($page_name, $is_homepage = FALSE) {
     $page_node->panelizer['default']->display_is_modified = TRUE;
     $page_node->panelizer['default']->entity_type = 'node';
     $page_node->panelizer['default']->pipeline = 'ipe';
-    $page_node->panelizer['default']->link_to_entity = $page_node->nid;
+    $page_node->panelizer['default']->link_to_entity = TRUE;
     node_save($page_node);
 
     // Disable old panel page.
