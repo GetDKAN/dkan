@@ -68,6 +68,22 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
   }
 
   /**
+   * @BeforeSuite
+   */
+  public static function removeAllNodes(BeforeSuiteScope $scope) {
+    $skip = array('page');
+    $nodes = entity_load('node');
+    $nodes_to_delete = array_reduce($nodes, function($accum, $node) use ($skip){
+      if(!in_array($node->type, $skip)) {
+        $accum[] = $node->nid;
+      }
+      return $accum;
+    }, array());
+    $nodes_to_delete = array_values($nodes_to_delete);
+    node_delete_multiple($nodes_to_delete);
+  }
+
+  /**
    * @AfterSuite
    */
   public static function enableAdminMenuCache(AfterSuiteScope $scope) {
