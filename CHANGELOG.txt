@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Added a filter in the workflow.feature to avoid issues for the amount of already existing nodes.
  - Added css for chart visualizaitons, fixes issue in IE.
  - Upgrade better_exposed_filters to v3.4.
  - Update branding.
