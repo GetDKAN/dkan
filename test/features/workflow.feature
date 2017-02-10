@@ -125,21 +125,23 @@ Feature:
     Given I am logged in as "Contributor"
     And datasets:
       | title                       | author       | published | moderation_date   | date created  |
-      | Stale Dataset Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
-      | Fresh Dataset Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
+      | Stale Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
+      | Fresh Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
     And resources:
       | title                        | author       | dataset                    | format |  published |
-      | Stale Resource Needs Review  | Contributor  | Stale Dataset Needs Review | csv    |  no        |
-    And I update the moderation state of "Stale Dataset Needs Review" to "Needs Review" on date "30 days ago"
-    And I update the moderation state of "Stale Resource Needs Review" to "Needs Review" on date "30 days ago"
-    And I update the moderation state of "Fresh Dataset Needs Review" to "Needs Review" on date "20 days ago"
+      | Stale Resource DKAN Test Needs Review  | Contributor  | Stale Dataset DKAN Test Needs Review | csv    |  no        |
+    And I update the moderation state of "Stale Dataset DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
+    And I update the moderation state of "Stale Resource DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
+    And I update the moderation state of "Fresh Dataset DKAN Test Needs Review" to "Needs Review" on date "20 days ago"
     Given I am logged in as "Supervisor"
     And I visit the "Stale Reviews" page
     And I should see the button "Reject"
     And I should see the button "Publish"
-    And I should see "Stale Dataset Needs Review"
-    And I should see "Stale Resource Needs Review"
-    And I should not see "Fresh Resource Needs Review"
+    When I fill in "edit-title" with "DKAN Test"
+    And I press "Filter"
+    Then I should see "Stale Dataset DKAN Test Needs Review"
+    And I should see "Stale Resource DKAN Test Needs Review"
+    And I should not see "Fresh Resource DKAN Test Needs Review"
     And I check the box "Select all items on this page"
     When I press "Publish"
     Then I wait for "Performed Publish on 3 items"
