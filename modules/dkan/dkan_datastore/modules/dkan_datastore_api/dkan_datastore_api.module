@@ -226,9 +226,9 @@ function dkan_datastore_api_services_resources() {
           'name' => 'resources/user_resource',
         ),
         'description' => 'Data API for DKAN datastores',
-        'callback' => '_dkan_datastore_api_datastore_index',
+        'callback' => 'dkan_datastore_api_datastore_index',
         'args' => array(),
-        'access callback' => '_dkan_datastore_api_datastore_access',
+        'access callback' => 'dkan_datastore_api_datastore_access',
         'access arguments' => array('view'),
         'access arguments append' => FALSE,
       ),
@@ -239,9 +239,9 @@ function dkan_datastore_api_services_resources() {
           'name' => 'resources/user_resource',
         ),
         'description' => 'Data API for DKAN datastores',
-        'callback' => '_dkan_datastore_api_datastore_index',
+        'callback' => 'dkan_datastore_api_datastore_index',
         'args' => array(),
-        'access callback' => '_dkan_datastore_api_datastore_access',
+        'access callback' => 'dkan_datastore_api_datastore_access',
         'access arguments' => array('view'),
         'access arguments append' => FALSE,
       ),
@@ -357,10 +357,15 @@ function dkan_datastore_api_services_resources() {
  *
  * For arguments, see: dkan_datastore_api_services_resources().
  */
-function _dkan_datastore_api_datastore_index() {
+function dkan_datastore_api_datastore_index() {
   if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $params = dkan_datastore_api_get_params();
+    $cache_hash = md5(json_encode($params));
+    if($cache = cache_get($cache_hash)) {
+      return $cache->data;
+    }
     $result = dkan_datastore_api_query($params);
+    cache_set($cache_hash, $result, CACHE_TEMPORARY);
   }
   elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = dkan_datastore_api_multiple_query();
@@ -477,12 +482,17 @@ function dkan_datastore_api_query($params) {
  * Performs a multiple query against the datastore.
  */
 function dkan_datastore_api_multiple_query($queries) {
+  $cache_hash = md5($queries);
+  if($cache = cache_get($cache_hash)) {
+    return $cache->data;
+  }
   $request_body = $queries ? $queries : json_decode(file_get_contents('php://input'), true);
   $queries = $request_body;
   foreach ((array) $queries as $name => $query) {
     $params = dkan_datastore_api_get_params($query);
     $result[$name] = dkan_datastore_api_query($params);
   }
+  cache_set($cache_hash, $result, CACHE_TEMPORARY);
   return $result;
 }
 
@@ -568,16 +578,51 @@ function dkan_datastore_api_group_by(&$data_select, $group_by, $alias = DKAN_DAT
  * Adds aggregations to query.
  */
 function dkan_datastore_api_aggregations(&$data_select, $aggregations, $alias = NULL) {
+
+  // Walk all the aggregations (sum, avg, etc.).
+  // { "sum": {"table_name": {"field_name": "as_field" }}}
   foreach ($aggregations as $method => $agg) {
     if(!empty($agg)) {
-      $alias = is_assoc($agg) ? array_keys($agg)[0] : NULL;
-      $fields = $alias ? $agg[$alias] : $agg;
-      $fields = (array) $fields;
-      foreach ($fields as $field_name) {
-        $field_name = normalize_field_name($field_name);
-        $field_full = $alias ? $alias . '.' . $field_name : $field_name;
-        if (!empty($field_name)) {
-          $data_select->addExpression($method . '('. $field_full .')', $method . '_' . $field_name);
+      // If aggregation is an object then its using a table prefix.
+      // {"table_name": {"field_name": "as_field" }}
+      if(is_assoc($agg)) {
+
+        // Walk through all the fields inside that table.
+        // {"field_name1": "as_field1", "field_name2": "as_field2"}
+        foreach ($agg as $table => $fields) {
+          if(is_assoc($fields)) {
+            foreach ($fields as $field => $as) {
+              $field_full = $table . '.' . normalize_field_name($field);
+              $data_select->addExpression($method . '('. $field_full .')', normalize_field_name($as));
+            }
+          } elseif(is_string($fields)) {
+            $field = $fields;
+            $field_full = $table . '.' . normalize_field_name($field);
+            $data_select->addExpression($method . '('. $field_full .')',  $method . '_' . normalize_field_name($field));
+          } elseif(is_array($fields)) {
+            foreach ($fields as $field ) {
+              $field_full = $table . '.' . normalize_field_name($field);
+              $data_select->addExpression($method . '('. $field_full .')', $method . '_' . normalize_field_name($field));
+            }
+          }
+        }
+
+      // If aggregation's value is an array then contains
+      // field names without table prefixes.
+      // { "sum": ["field_name1", "field_name2"]}
+      } elseif(is_array($agg)) {
+        foreach ($agg as $field) {
+          $field = normalize_field_name($field);
+          $data_select->addExpression($method . '('. $field .')', $method . '_' . $field);
+        }
+
+      // If aggregation's value is an string then contains just a single field name.
+      // { "sum": "field_name1" }
+      } elseif(is_string($agg)) {
+
+        $field = normalize_field_name($agg);
+        if (!empty($field)) {
+          $data_select->addExpression($method . '('. $field .')', $method . '_' . $field);
         }
       }
     }
@@ -745,7 +790,7 @@ function dkan_datastore_api_limit(&$data_select, $offset, $limit) {
 /**
  * Access callback.
  */
-function _dkan_datastore_api_datastore_access($op) {
+function dkan_datastore_api_datastore_access($op) {
   return TRUE;
 }
 
@@ -998,5 +1043,15 @@ function process_file_argument($file) {
  * Returns sql statement for debug purposes.
  */
 function dkan_datastore_api_debug($data_select) {
-  return array('sql' => (string) $data_select);
+  if (method_exists($data_select, 'preExecute')) {
+    $data_select->preExecute();
+  }
+  $sql = (string) $data_select;
+  $quoted = array();
+  $connection = Database::getConnection();
+  foreach ((array) $data_select->arguments() as $key => $val) {
+    $quoted[$key] = $connection->quote($val);
+  }
+  $sql = strtr($sql, $quoted);
+  return array('sql' => (string) $sql);
 }
