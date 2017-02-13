@@ -4,7 +4,7 @@ Feature: Project Open Data + Open Data Federal Extras
   As a dataset creator
   I want to create datasets with POD fields and publish them with data.json
 
-  @api @noworkflow
+  @pod_json_valid @api @noworkflow
   Scenario: Data.json should be valid
     Given I am on the homepage
     Then I "should" see a valid data.json
