@@ -77,13 +77,24 @@ function normalize_fields($fields, $resources) {
  * For example: table_name.field_name
  */
 function build_qualified_fields($fields, $alias) {
-  $excludes = array('timestamp', 'feeds_entity_id', 'feeds_flatstore_entry_id');
   return array_reduce($fields, function($memo, $field) use ($alias, $excludes) {
-    if(!in_array($field, $excludes)) {
+    if(!dkan_datastore_api_field_excluded($field)) {
       $memo[] = $alias . '.' . normalize_field_name($field);
     }
     return $memo;
   }, array());
+}
+
+/**
+ * Check if a field should be excluded.
+ *
+ * Some internal fields are not needed in the request
+ * response so it's better to exclude them to don't
+ * confuse users and reveal internal db schemas.
+ */
+function dkan_datastore_api_field_excluded($field) {
+  $excludes = array('timestamp', 'feeds_entity_id', 'feeds_flatstore_entry_id');
+  return in_array($field, $excludes);
 }
 
 /**
@@ -397,7 +408,6 @@ function dkan_datastore_api_get_params($params = array()) {
   );
   $params = array_merge($defaults, $params);
   $sort = dkan_datastore_api_sort_clean($params['sort']);
-  $fields = normalize_fields($params['fields'], $params['resource_ids']);
   $aggregations = array(
     'sum' => $params['sum'],
     'avg' => $params['avg'],
@@ -410,7 +420,6 @@ function dkan_datastore_api_get_params($params = array()) {
   return array_merge($params, array(
     'aggregations' => $aggregations,
     'sort' => $sort,
-    'fields' => $fields,
   ));
 }
 
@@ -444,7 +453,7 @@ function dkan_datastore_api_query($params) {
     $table = dkan_datastore_api_tablename($resource_id);
     $data_select = db_select($table, $alias);
 
-    dkan_datastore_api_select_fields($data_select, $fields);
+
     dkan_datastore_api_limit($data_select, $offset, $limit);
     dkan_datastore_api_group_by($data_select, $group_by);
     dkan_datastore_api_aggregations($data_select, $aggregations);
@@ -464,6 +473,13 @@ function dkan_datastore_api_query($params) {
         dkan_datastore_api_join($data_select, $table, $join);
       }
     }
+
+    // By set up fields a new alias it is being defined
+    // Join method also tries to define an alias so in order to
+    // avoid alias renaming we need to move fields below the
+    // join process otherwise join alias will be renamed using
+    // incremental counters.
+    dkan_datastore_api_select_fields($data_select, $fields, $resource_ids);
 
     if ($query && $query != 'api/3/action/datastore_search') {
       dkan_datastore_api_use_indexes($data_select, $table, $query);
@@ -501,8 +517,8 @@ function dkan_datastore_api_multiple_query($queries) {
  */
 function dkan_datastore_api_count($data_select) {
   $query = clone($data_select);
-  $count = $query->range()->execute()->fetchAll();
-  return count($count);
+  $count = $query->countQuery()->execute()->fetchField();
+  return $count;
 }
 
 /**
@@ -770,9 +786,20 @@ function dkan_datastore_api_sort(&$data_select, $sort, $alias) {
 /**
  * Same as services version but not adding conditions.
  */
-function dkan_datastore_api_select_fields(&$data_select, $fields) {
-  foreach (prepare_fields($fields) as $table_alias => $table_fields) {
-    $data_select->fields($table_alias, $table_fields);
+function dkan_datastore_api_select_fields(&$data_select, $fields, $resource_ids) {
+
+  // Select all the fields using an alias performs better than selecting
+  // specific fields. However if the user specify fields we have to fallback the slowest
+  // approach.
+  if($fields == '*') {
+    foreach ($resource_ids as $table_alias => $resource_id) {
+      $data_select->fields($table_alias);
+    }
+  } else {
+    $fields = normalize_fields($fields, $resource_ids);
+    foreach (prepare_fields($fields) as $table_alias => $table_fields) {
+      $data_select->fields($table_alias, $table_fields);
+    }
   }
 }
 
@@ -798,6 +825,8 @@ function dkan_datastore_api_datastore_access($op) {
  * Builds index link with results of the query.
  */
 function dkan_datastore_api_output($data_select, $results, $table, $fields, $resource_ids, $count, $limit) {
+  $fields = normalize_fields($fields, $resource_ids);
+
   // Put together array of matching items to return.
   $items = array();
   foreach ($results as $result) {
@@ -808,20 +837,25 @@ function dkan_datastore_api_output($data_select, $results, $table, $fields, $res
   $success = count($items) ? array('success' => TRUE) : array('success' => FALSE);
   $schema_fields = schema_fields($resource_ids);
 
+  // Prepare rows.
   $items = array_map(function($item) use ($schema_fields) {
     $new_item = new stdClass();
     foreach ($item as $name => $data) {
-      if(!empty($schema_fields[$name])) {
-        $new_name = $schema_fields[$name]['label'];
-        $new_item->$new_name = $data;
-      } else {
-        $new_item->$name = $data;
+      if(!dkan_datastore_api_field_excluded($name)) {
+        if(!empty($schema_fields[$name])) {
+          $new_name = $schema_fields[$name]['label'];
+          $new_item->$new_name = $data;
+        } else {
+          $new_item->$name = $data;
+        }
       }
     }
     return $new_item;
   }, $items);
 
   $return = new stdClass();
+
+  // Prepare schema.
   foreach (prepare_fields($fields) as $table_alias => $table_fields) {
     foreach ($table_fields as $table_field) {
       $field = $schema_fields[$table_field];
@@ -831,12 +865,12 @@ function dkan_datastore_api_output($data_select, $results, $table, $fields, $res
     }
   }
 
-
+  // Prepare output.
   $return->resource_id = $resource_ids;
   $return->limit = (int) $limit;
   $return->total = (int) $count;
   $return->records = $items;
-  $return->sql = (string) $data_select;
+  $return->sql = dkan_datastore_api_debug($data_select);
   return $help + $success + array('result' => $return);
 }
 
@@ -1053,5 +1087,6 @@ function dkan_datastore_api_debug($data_select) {
     $quoted[$key] = $connection->quote($val);
   }
   $sql = strtr($sql, $quoted);
+  $sql = str_replace('\n', ' ', $sql);
   return array('sql' => (string) $sql);
 }
