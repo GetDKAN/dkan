@@ -517,7 +517,7 @@ function dkan_datastore_api_multiple_query($queries) {
  */
 function dkan_datastore_api_count($data_select) {
   $query = clone($data_select);
-  $count = $query->countQuery()->execute()->fetchField();
+  $count = $query->range()->countQuery()->execute()->fetchField();
   return $count;
 }
 
