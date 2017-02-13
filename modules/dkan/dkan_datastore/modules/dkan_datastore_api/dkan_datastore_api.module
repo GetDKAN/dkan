@@ -498,12 +498,12 @@ function dkan_datastore_api_query($params) {
  * Performs a multiple query against the datastore.
  */
 function dkan_datastore_api_multiple_query($queries) {
+  $request_body = $queries ? $queries : json_decode(file_get_contents('php://input'), true);
+  $queries = $request_body;
   $cache_hash = md5($queries);
   if($cache = cache_get($cache_hash)) {
     return $cache->data;
   }
-  $request_body = $queries ? $queries : json_decode(file_get_contents('php://input'), true);
-  $queries = $request_body;
   foreach ((array) $queries as $name => $query) {
     $params = dkan_datastore_api_get_params($query);
     $result[$name] = dkan_datastore_api_query($params);
@@ -787,6 +787,9 @@ function dkan_datastore_api_sort(&$data_select, $sort, $alias) {
  * Same as services version but not adding conditions.
  */
 function dkan_datastore_api_select_fields(&$data_select, $fields, $resource_ids) {
+  $resource_ids = is_assoc($resource_ids)
+    ? $resource_ids
+    : array( DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS => $resource_ids[0]);
 
   // Select all the fields using an alias performs better than selecting
   // specific fields. However if the user specify fields we have to fallback the slowest
@@ -1088,5 +1091,5 @@ function dkan_datastore_api_debug($data_select) {
   }
   $sql = strtr($sql, $quoted);
   $sql = str_replace('\n', ' ', $sql);
-  return array('sql' => (string) $sql);
+  return (string) $sql;
 }
