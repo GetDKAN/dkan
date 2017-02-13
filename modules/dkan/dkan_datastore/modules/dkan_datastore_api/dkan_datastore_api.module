@@ -376,7 +376,7 @@ function dkan_datastore_api_datastore_index() {
       return $cache->data;
     }
     $result = dkan_datastore_api_query($params);
-    cache_set($cache_hash, $result, CACHE_TEMPORARY);
+    cache_set($cache_hash, $result, 'cache', CACHE_TEMPORARY);
   }
   elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = dkan_datastore_api_multiple_query();
@@ -508,7 +508,7 @@ function dkan_datastore_api_multiple_query($queries) {
     $params = dkan_datastore_api_get_params($query);
     $result[$name] = dkan_datastore_api_query($params);
   }
-  cache_set($cache_hash, $result, CACHE_TEMPORARY);
+  cache_set($cache_hash, $result, 'cache', CACHE_TEMPORARY);
   return $result;
 }
 
