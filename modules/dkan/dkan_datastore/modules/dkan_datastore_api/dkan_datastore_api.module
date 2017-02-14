@@ -497,10 +497,10 @@ function dkan_datastore_api_query($params) {
 /**
  * Performs a multiple query against the datastore.
  */
-function dkan_datastore_api_multiple_query($queries) {
-  $request_body = $queries ? $queries : json_decode(file_get_contents('php://input'), true);
-  $queries = $request_body;
-  $cache_hash = md5($queries);
+function dkan_datastore_api_multiple_query($queries = null) {
+  $post_raw_data = file_get_contents('php://input');
+  $queries = $queries ? $queries : json_decode($post_raw_data, true);
+  $cache_hash = md5($post_raw_data);
   if($cache = cache_get($cache_hash)) {
     return $cache->data;
   }
@@ -642,7 +642,6 @@ function dkan_datastore_api_aggregations(&$data_select, $aggregations, $alias = 
         }
       }
     }
-
   }
 }
 
