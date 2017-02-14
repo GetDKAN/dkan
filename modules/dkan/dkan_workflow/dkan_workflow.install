@@ -40,10 +40,10 @@ function dkan_workflow_enable() {
 
   variable_set('dkan_workflow_content_types', $dkan_workflow_content_types);
 
-  //Revert dkan sitewide menu to add links to command center.
+  // Revert dkan sitewide menu to add links to command center.
   features_revert(array('dkan_sitewide_menu' => array('menu_links')));
 
-  //Assign role supervisor to editor users.
+  // Assign role supervisor to editor users.
   $uids = array();
   $supervisor = user_role_load_by_name("Workflow Supervisor");
   $site_manager = user_role_load_by_name("site manager");
@@ -57,11 +57,29 @@ function dkan_workflow_enable() {
   }
   dkan_workflow_admin_menu_source();
 
+  // Add dkan workflow roles to roleassign config.
+  $roleassign_roles = variable_get('roleassign_roles', array());
+  $roles_rids = array_flip(user_roles());
+
+  $add_roles = array(
+    'Workflow Contributor',
+    'Workflow Moderator',
+    'Workflow Supervisor',
+  );
+
+  foreach ($add_roles as $role) {
+    if (isset($roles_rids[$role])) {
+      $roleassign_roles[$roles_rids[$role]] = (string) $roles_rids[$role];
+    }
+  }
+  variable_set('roleassign_roles', $roleassign_roles);
+
 }
 
-
 /**
- * This helper function sets up the admin_menu_source module's configuration.
+ * Helper function.
+ *
+ * This sets up the admin_menu_source module's configuration.
  * We want the content creator and editor roles to have the "command center"
  * menu rather than the whole admin menu in the top bar. We can't rely on the
  * rid to be the same on every site so not using features.
