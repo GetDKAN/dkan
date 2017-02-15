@@ -112,6 +112,7 @@ DKAN Migrate Base:
  - Added DKAN Migrate Base module into DKAN Core.
  - Removed row from migration map table when a dataset is deleted.
 DKAN Workflow:
+ - Moved the update of the roleassign_roles variable from dkan_workflow_permissions to dkan_workflow.
  - Fixed panels-related bug where, if a dataset had both a "published" and "draft" version, the published would show in the draft tab.
  - Updated DKAN workflow vbo customizations to not affect other vbo forms.
  - Updated workbench_email from 3.9 to 3.11
