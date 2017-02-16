@@ -11,3 +11,5 @@ projects:
       1903010: 'https://www.drupal.org/files/issues/drupal-undefinedindex_fileupload-1903010-4.patch'
       # Warning: filesize(): stat failed
       628094: 'https://www.drupal.org/files/issues/file.remote-file_save.628094.22.patch'
+      #State error with select multiple
+      2844358: 'https://www.drupal.org/files/issues/drupal_bug_multiple_values_select_states.patch'
