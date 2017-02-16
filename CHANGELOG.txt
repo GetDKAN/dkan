@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Added site details to settings nuboot_radix to allow change site name, slogan, e-amail address for site manager.
  - Added a filter in the workflow.feature to avoid issues for the amount of already existing nodes.
  - Added css for chart visualizaitons, fixes issue in IE.
  - Upgrade better_exposed_filters to v3.4.

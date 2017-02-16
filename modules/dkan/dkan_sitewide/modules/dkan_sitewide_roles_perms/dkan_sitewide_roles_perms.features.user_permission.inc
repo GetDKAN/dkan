@@ -402,7 +402,6 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'administer site configuration',
     'roles' => array(
       'administrator' => 'administrator',
-      'site manager' => 'site manager',
     ),
     'module' => 'system',
   );

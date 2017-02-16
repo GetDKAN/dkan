@@ -81,7 +81,32 @@ function nuboot_radix_form_system_theme_settings_alter(&$form, &$form_state) {
     ),
   );
 
+  $form['site_information'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Site details'),
+  );
+  $form['site_information']['site_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Site name'),
+    '#default_value' => variable_get('site_name', 'Drupal'),
+    '#required' => TRUE
+  );
+  $form['site_information']['site_slogan'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Slogan'),
+    '#default_value' => variable_get('site_slogan', ''),
+    '#description' => t("How this is used depends on your site's theme."),
+  );
+  $form['site_information']['site_mail'] = array(
+    '#type' => 'textfield',
+    '#title' => t('E-mail address'),
+    '#default_value' => variable_get('site_mail', ini_get('sendmail_from')),
+    '#description' => t("The <em>From</em> address in automated e-mails sent during registration and new password requests, and other notifications. (Use an address ending in your site's domain to help prevent this e-mail being flagged as spam.)"),
+    '#required' => TRUE,
+  );
+
   $form['#submit'][] = $theme . '_hero_system_theme_settings_form_submit';
+  $form['#submit'][] = $theme . '_site_information_theme_settings_form_submit';
 
   // Return the additional form widgets.
   return $form;
@@ -109,6 +134,15 @@ function _background_option_setting($element, &$form, &$form_state) {
       form_error($element, t('Must be a valid hexadecimal CSS color value.'));
     }
   }
+}
+
+/**
+ * Submit function for theme settings form information.
+ */
+function nuboot_radix_site_information_theme_settings_form_submit(&$form, &$form_state) {
+  variable_set('site_name', $form_state['values']['site_name']);
+  variable_set('site_slogan', $form_state['values']['site_slogan']);
+  variable_set('site_mail', $form_state['values']['site_mail']);
 }
 
 /**
