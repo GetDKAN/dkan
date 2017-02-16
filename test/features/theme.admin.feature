@@ -36,7 +36,7 @@ Feature: Theme
     Then I should see "The configuration options have been saved"
 
   @noworkflow 
-  Scenario: Add custom logo
+  Scenario: Add custom site information
     Given I am logged in as "Site Manager"
     Then I am on "Settings" page
     And I should see "E-mail address"
@@ -46,6 +46,3 @@ Feature: Theme
     When I press "Save configuration"
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
-    Then I should see "sitename test"
-    Then I should see "slogan test"
-    Then I should see "test@example.com"
