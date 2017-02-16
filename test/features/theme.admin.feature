@@ -39,7 +39,7 @@ Feature: Theme
   Scenario: Add custom logo
     Given I am logged in as "Site Manager"
     Then I am on "Settings" page
-    And I should see "E-amil address"
+    And I should see "E-mail address"
     And I fill in "Site name" with "sitename test"
     And I fill in "Slogan" with "slogan test"
     And I fill in "E-mail address" with "test@example.com"
