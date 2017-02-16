@@ -81,6 +81,8 @@ function nuboot_radix_form_system_theme_settings_alter(&$form, &$form_state) {
     ),
   );
 
+  //Allow alter basic site information instead use admin/config/system/site-information
+  //We have a lot information into page site-information we don't want to show site managers
   $form['site_information'] = array(
     '#type' => 'fieldset',
     '#title' => t('Site details'),
