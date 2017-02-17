@@ -52,3 +52,4 @@ features[variable][] = user_picture_path
 features[variable][] = user_picture_style
 features[variable][] = user_pictures
 features[views_view][] = popular_tags
+version = 7.x-1.13
