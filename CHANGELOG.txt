@@ -74,6 +74,7 @@
  - Upgrade entityreference_filter to 1.7
  - Upgrade radix to 3.5
  - Upgrade search_api to 1.20
+ - Fix resources not synced with datasets when upgrade from 1.11
  - Upgrade media to 2.0-beta13
  - Upgrade panopoly_widgets to 1.41
  - Upgrade panopoly_images to 1.41
