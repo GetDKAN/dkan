@@ -5,16 +5,16 @@ Creating Datasets and Resources
 ------------------------------------
 
 
-DKAN’s data publishing model is based on the [concept of datasets and resources](/dkan-documentation/dkan-overview/what-dataset-what-resource).  A dataset is a container for one or more resources; a resource is the actual “data” being published, such as a CSV table, a GeoJSON data file, or a TIFF aerial image.
+DKAN’s data publishing model is based on the [concept of `datasets <../../introduction/catalog-basics.html#dataset>`_ and `resources <../../introduction/catalog-basics.html#resource>`_].  A dataset is a container for one or more resources; a resource is the actual “data” being published, such as a CSV table, a GeoJSON data file, or a TIFF aerial image.
 
-The dataset and resource content types in DKAN are provided by the `DKAN Dataset module <https://github.com/NuCivic/dkan_dataset>`_.
+The dataset and resource content types in DKAN are provided by the `DKAN Dataset module <https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_dataset>`_.
 
 In our example, we’ll be adding a dataset with Wisconsin polling places to a DKAN site. The data may look familiar; it's one of the sample datasets provided with DKAN upon installation.
 
 Step 1: Create the Dataset
 **************************
 
-By default, only authenticated (“logged-in”) users can add new Datasets and Resources to a DKAN website.  Once logged in, we can use the "Add Dataset" link in the main navigation bar.  Depending on your user permissions, you may have access to the administration menu; in that case, you may also navigate to Content » Add Content » Dataset link to access the “Create Dataset” form.
+By default, only authenticated (“logged-in”) users can add new Datasets and Resources to a DKAN website.The default DKAN user permissions allows Site managers, Editors, and Content Creators access to the administration menu. From here a user may navigate to the Content » Add Content » Dataset link to access the “Create Dataset” form.
 
 The Dataset is the container for the actual data resource files and contains basic information about the data, such as title, description, category tags, and license.  Once we’ve entered information about the data, we can click the “Next: Add data” button to begin adding data.
 
@@ -27,19 +27,21 @@ After creating a dataset, we’re prompted to add one or more data resources to 
 :Link to an API: some data resources aren’t standalone files but queryable online databases; the interface to these databases is known as an API.  Adding links to these types of online database interfaces to your DKAN data catalog can be very useful for developers interested in working with your data.
 :Upload a file: this option allows publishers to upload data files to the DKAN site.  As in the “link to a file” option, the data within the file will be imported into your DKAN site’s Datastore for preview and analysis by your users.  See The DKAN Datastore for more information.
 
-To continue with our Wisconsin Polling Places example, we’ll add one resource file to the Dataset we created in Step 1.  Our resource file is a CSVs that is, comma-separated values format; this is a popular file format for exchanging tabular data.  Let’s explore the example resource shown here and the various fields within:
+To continue with our Wisconsin Polling Places example, we’ll add one resource file to the Dataset we created in Step 1.  Our resource file is a CSV, that is, comma-separated values format; this is a popular file format for exchanging tabular data.  Let’s explore the example resource shown here and the various fields within:
 
 :Resource / Choose File: upload a file from your local hard drive.
 :Resource / Recline Views: DKAN’s “Data Preview” feature allows visitors to preview published data in three views:
-  * Map - data with latitude and longitude columns or GeoJSON files can be previewed in a map interface
-  * Graph - tabular (spreadsheet) data can be graphed by users, letting them create their own meaningful visualizations
-  * Grid - by default, tabular data is presented in a spreadsheet view, with filter, sort, and search capabilities
-:Title: this is the title of the individual data file, not the parent dataset container.</li>
+
+  * **Map** - data with latitude and longitude columns or GeoJSON files can be previewed in a map interface
+  * **Graph** - tabular (spreadsheet) data can be graphed by users, letting them create their own meaningful visualizations
+  * **Grid** - by default, tabular data is presented in a spreadsheet view, with filter, sort, and search capabilities
+
+:Title: this is the title of the individual data file, not the parent dataset container.
 :Description: a rich-text editor field is provided so publishers can offer detailed and useful descriptions
 :Format: entering the file format here will allow users the ability to search for data by specific format
 :Dataset: this is the parent dataset container; this field should already be populated if you’re adding a Resource subsequent to adding a Dataset
 
-At the bottom of the Add Resource page, we can choose:
+At the bottom of the *Add Resource* page, we can choose:
 
 :Save: Save progress on this resource and immediately return to it for further editing
 :Save and add another: Save this resource and add another resource to the same dataset
@@ -50,19 +52,19 @@ In our example, we’re only adding a single resource, so we’ll click “Next:
 Step 3: Adding Metadata to a Dataset
 **************************
 
-We now come to a third form which allows us to add additional metadata to the dataset. All these fields are optional, but provide valuable information about your dataset to both human visitors to the website and machines discovering your dataset through one of [DKAN's public APIs].
+We now come to a third form which allows us to add additional metadata to the dataset. All these fields are optional, but provide valuable information about your dataset to both human visitors to the website and machines discovering your dataset through one of `DKAN's public APIs <../../apis/index.html>`_.
 
 Let's take a closer look at some of the metadata fields available on this form:
 
 :Author: The Dataset's author, in plain text.
-:Spatial / Geographical Coverage Area: Lets us define what region the data applies to. In this case, the US State of Wisconsin. You can use the map widget to draw an outline around the state borders, or, click the "Add data manually" button if you already have a [GeoJSON](http://geojson.org/) string you can paste in.
+:Spatial / Geographical Coverage Area: Lets us define what region the data applies to. In this case, the US State of Wisconsin. You can use the map widget to draw an outline around the state borders, or, click the "Add data manually" button if you already have a `GeoJSON <http://geojson.org/>`_ string you can paste in.
 :Spatial / Geographical Coverage Location: The region the data applies to, written in plain text. This can be used instead of or in addition to the **Coverage Area** field.
 :Frequency: How often is this dataset updated? We might expect our list of polling places to be updated every year, so we could select "annually." However, often we don't expect the data to be updated (even in this case, perhaps we plan to post the next version of the data as a _separate_ dataset), in which case we can leave this blank.
 :Temporal Coverage: Like Geographic Coverage, this field lets us give some context to the data, but now for the relevant time period. Here we could enter the year or years for which our polling places data is accurate.
 :Granularity: This is a somewhat open-ended metadata field that lets you describe the granularity or accuracy of your data. For instance: "Year". Note, this field is depreciated in DCAT and Project Open Data, and may be removed from DKAN.
-:Data Dictionary: Another open-ended field, this is a space for almost any kind of explanation for understanding the terminology/units/column names/etc. in our dataset. In most cases, this will be a simple URL to a Data Dictionary resource elsewhere on the web.
-:Additional Info: Lets us arbitrarily define other metadata fields. See [Additional Info field](dkan-documentation/dkan-features/additional-info-field) for more information.
-:Resources: This field is a reference to the resources you have already added. You should generally leave this field alone and use the workflows outlined here and in [Updating Datasets in DKAN](dkan-documentation/dkan-users/updating-datasets-dkan) to add, edit and remove resources from your Dataset.
+:Data Dictionary: Another open-ended field, this is a space for almost any kind of explanation for understanding the terminology/units/column names/etc. in our dataset. Ideally, this will be a simple URL to a Data Dictionary resource elsewhere on the web.
+:Additional Info: Lets us arbitrarily define other metadata fields. See `Additional Info field <datasetfeatures.html#custom-metadata>`_ for more information.
+:Resources: This field is a reference to the resources you have already added.
 
 After you click "Save", the metadata we enter will appear on the page for this Dataset:
 
@@ -72,7 +74,7 @@ Configuration
 Adding or Removing Allowed Resource File Types
 **********************************************
 
-Any type of file can be uploaded to Resources (though only CSV files can be imported to the `Datastore <../datastore/index>`_.
+Any type of file can be uploaded to Resources (though only CSV files can be imported to the `Datastore <../datastore/index.html>`_.
 
 File types are controlled at "/admin/structure/types/manage/resource/fields/field_upload"
 
