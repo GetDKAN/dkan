@@ -163,7 +163,6 @@ DKAN Topics:
  -  #1656 Fix topics icon selector functionality.
 
 
-
 7.x-1.12.13 2017-01-04
 ----------------------
 - Fix broken recline (resource CSV) preview embeds caused by how recline module loads bootstrap
