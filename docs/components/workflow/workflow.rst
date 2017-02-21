@@ -182,14 +182,40 @@ supports adding the suited core role when only a Workflow role is checked.
 
 Organic Groups integration
 ++++++++++++++++++++++++++
-@TODO
+
+Content viewing
+~~~~~~~~~~~~~~~
+
++-------------------------+-------------------------------------+---------------------------------------------+
+| What a user will see    | My drafts                           | Needs review                                |
++=========================+=====================================+=============================================+
+| Workflow Contributor    | - Only content that they submitted. | * Can see only content they have submitted. |
++-------------------------+-------------------------------------+---------------------------------------------+
+| Workflow Moderator      | - The content submitted to their    | - The content submitted to their organic    |
+|                         |   organic group.                    |   group.                                    |
+|                         | - Their own content.                | - Thier own content.                        |
++-------------------------+-------------------------------------+---------------------------------------------+
+| Workflow Supervisor     | - Only content that they submitted. | - All the "Needs review" content.           |
++-------------------------+-------------------------------------+---------------------------------------------+
+
+Emails
+~~~~~~~~~~~~~~~
+
+For each state transition (for example from *Draft* to *Needs Review*, from
+*Needs Review* to *Draft*, etc) a set of users with workflow roles will be
+notifyied by a email notification. The users will be selected following those
+rules:
+
+1. Email original content author.
+2. Email "Workflow Moderators" that are members of a group that the content have
+   been associated to.
+3. Email all "Workflow Supervisors".
+
+Emails will have the context triggering the notification with links to the
+updated content.
 
 Extending Dkan Workflow
 -----------------------
-
-Adding more transitions
-+++++++++++++++++++++++
-@TODO
 
 Tweaking the Email template
 +++++++++++++++++++++++++++
