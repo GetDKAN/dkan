@@ -37,9 +37,9 @@
  - #1297 Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
  - #1358 Removed field mapping warnings during import of default content.
  - #1376 Removed conditional_fields from dkan_topics.
- - Upgrade Features to 7.x-2.9
- - Make date facet use "day" granularity.
- - Remove ARC2 library.
+ - #1387 Upgrade Features to 7.x-2.9
+ - #1387 Make date facet use "day" granularity.
+ - #1387 Remove ARC2 library.
  - #1439 Disable pathauto for content created using dkan_fixtures.
  - #1403 Removed warning message when try edit resource without dataset.
  - #1468 Added PHP Unit tests configurations to make them run on DKAN.
@@ -54,7 +54,7 @@
  - #1685 Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
  - #1562 Fixed link to group page on group node teaser when site has clean urls disabled.
  - #1534 Added update hook to disable dkan_default_content on upgrades.
- - Updated visualization_entity.
+ - #1565 Updated visualization_entity.
  - #1556 Added fix to display the 'Request membership' link only to users that are logged in.
  - #1582 Remove content padding on data extent and social blocks.
  - #1606 Added DKAN Extension.
@@ -86,7 +86,7 @@
  - #1678 Add patch to fix panopoly_widgets overrides OOB.
 DKAN Datastore:
  - #1387 Added DKAN Datastore module into DKAN Core.
- - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
+ - #1599 Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
  - #1599 Fixed bugs when running the datastore via cron.
 DKAN Harvest:
  - #1676 Harvested content is published even if dkan_workflow is enabled.
@@ -127,7 +127,7 @@ DKAN Workflow:
 DKAN Dataset:
  - #1696 Disable/uninstall dkan_dataset_api if enabled because it is deprecated in favor open_data_schema_map.
  - Leaflet draw widget usability improvements
- - Fix validation on resource forms when multiple resource type fields are populated
+ - #1636 Fix validation on resource forms when multiple resource type fields are populated
  - #1626 Fix 508 compliance issues for leafleat draw widget
  - #1387 Added DKAN Dataset module into DKAN Core.
  - #1589 Fix geofield map button toggle function.
@@ -149,8 +149,8 @@ DKAN Dataset:
  - #1532 Fixed text on 'Download All' button to not display HTML.
  - #1570 Removed 'Back to dataset' button on standalone resources.
  - Better support of downloading remote files from the resource view page "Download" button.
- - Removed warning when a resource is created without title.
- - Add limit to proxy resources.
+ - #1553 Removed warning when a resource is created without title.
+ - #1591 Add limit to proxy resources.
  - #1576 Improved download of remote files.
  - #1670 Fix 508 compliance issues for visualization_entity_charts.
  - #1669 Fix 508 compliance issues for leaflet draw widget.
@@ -160,8 +160,7 @@ DKAN Dataset:
 DKAN Topics:
  - #1159 Added a test for creating a topic term.
  - #1486 Make the icon field required if the icon type is set to 'font'.
- -  #1656 Fix topics icon selector functionality.
-
+ - #1656 Fix topics icon selector functionality.
 
 7.x-1.12.13 2017-01-04
 ----------------------
