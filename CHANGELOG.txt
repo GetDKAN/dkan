@@ -1,5 +1,6 @@
 7.x-1.x
 --------------------------
+ - Added a tag @defaultHomepage to a topic test which relies on homepage content.
  - #1719 Added site details to settings nuboot_radix to allow change site name, slogan, e-amail address for site manager.
  - #1717 Upgrading Drupal to 7.54
  - #1712 Added a filter in the workflow.feature to avoid issues for the amount of already existing nodes.
