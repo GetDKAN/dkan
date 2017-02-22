@@ -59,18 +59,18 @@ Metadata Moderation States
 There are three default moderations states available by default in Dkan:
 
 Draft
-  This is the starter state that the metadata (be it dataset or
-  resource) is in when first created by the "Workflow Contributor" ( defined in
-  the `Workflow Roles`_ section) . The node can be updated and have multiple
-  iteration (or revision in the Drupal jargon) without the need to change the
-  state. After the author evalute the content is ready for being reviewed. The
-  node moderation state can be set to "Needs Review".
+  This is the starter state that the metadata (be it dataset or resource) is in
+  when first created by the "Workflow Contributor" ( defined in the `Workflow
+  Roles`_ section). The node can be updated and have multiple iteration (or
+  revision in the Drupal jargon) without the need to change the state. After the
+  author evalute the content is ready for being reviewed. The node moderation
+  state can be set to "Needs Review".
 
 Needs Review
-  When the content author consider the work to be good enough to be reviewed by a
-  Moderator the node(s) can be set to the *Needs Review*. This will signal to
-  available "Workflow Moderator"s (more information in the `Workflow Roles`_
-  section) that the data is ready to be looked at by peers.
+  When the content author consider the work to be good enough to be reviewed by
+  a Moderator, the node(s) can be set to the *Needs Review*. This will signal to
+  available "Workflow Moderator" users that the data is ready to be looked at by
+  peers (more information in the `Workflow Roles`_ section).
 
 Published
   When the content is judged being ready for public consumtion. The qualified
@@ -171,8 +171,8 @@ Workflow Supervisor
 Automatic User Role Assignment
 ++++++++++++++++++++++++++++++
 
-Users with only workflow roles wont be able to do much in Dkan and need to be
-associated to it's equivalent core role. The Roles form on the User edit page
+Users with only workflow roles won't be able to do much in Dkan and need to be
+associated to its equivalent core role. The Roles form on the User edit page
 supports adding the suited core role when only a Workflow role is checked.
 
 .. figure:: /images/workflow/dkan_workflow_autorole.gif
@@ -203,7 +203,7 @@ Emails
 
 For each state transition (for example from *Draft* to *Needs Review*, from
 *Needs Review* to *Draft*, etc) a set of users with workflow roles will be
-notifyied by a email notification. The users will be selected following those
+notifyied by an email notification. The users will be selected following those
 rules:
 
 1. Email original content author.
