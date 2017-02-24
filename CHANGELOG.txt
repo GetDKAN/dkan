@@ -1,6 +1,7 @@
 7.x-1.13.x
 --------------------------
  - #1728 Added a tag @defaultHomepage to a topic test which relies on homepage content.
+ - #5807 Fix panelizer permissions to hide 'Customize Display' button
 
 7.x-1.13
 --------------------------
