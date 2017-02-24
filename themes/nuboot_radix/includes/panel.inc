@@ -40,6 +40,7 @@ function nuboot_radix_preprocess(&$variables, $hook) {
 
   // Front page vars.
   $front_url = drupal_get_normal_path(variable_get('site_frontpage', 'node'));
+  $front_nid = NULL;
   $front = explode('/', $front_url);
   if( $front[0]=='node' && ctype_digit($front[1]) ) {
     $front_nid = $front[1];
