@@ -5,24 +5,26 @@ DKAN Workflow is a Workflow implementation for `DKAN
 <https://github.com/NuCivic/dkan>`_ based on the `Workbench
 <https://www.drupal.org/project/workbench>`_ family of modules.
 
-The goal of this component is help various organisations adhear to an editorial
-workflow for metadata publishing by providing content state tracking and
-revisioning, state oriented management UI, and access control.
+The goal of this component is help various organisations adhere to an editorial
+workflow for metadata publishing by providing:
+  * Content state tracking and revisioning
+  * State oriented management UI
+  * Access control
 
 .. figure:: /images/workflow/dkan_workflow_screenshot.png
 
-  Dkan Workflow main admininstration interface.
+  DKAN Workflow main admininstration interface.
 
 Requirements
 ------------
 
-The Dkan workflow component comes in the form of three modules:
+The DKAN workflow component comes in the form of three modules:
 
-* Dkan Workflow.
-* Dkan Workflow Permissions.
+* DKAN Workflow.
+* DKAN Workflow Permissions.
 * Views Workflow List.
 
-In addition to those core module. Dkan Workflow depend on multiple Drupal
+In addition to these core modules, DKAN Workflow depends on multiple Drupal
 contrib modules
 
 * `Workbench <https://www.drupal.org/project/workbench>`_.
@@ -30,7 +32,7 @@ contrib modules
 * `Workbench Email <https://www.drupal.org/project/workbench_email>`_.
 * `Drafty <https://www.drupal.org/project/drafty>`_.
 
-Outsite of the direct Workbench addons, Dkan Workflow needs additional Drupal
+Outsite of the direct Workbench addons, DKAN Workflow needs additional Drupal
 contrib modules to provide extra functionality (Menu and link badges, etc).
 
 * `Link Badges <https://www.drupal.org/project/link_badges>`_.
@@ -42,21 +44,20 @@ All those dependencies are declared in the `drupal-org.make
 
 Installation
 ------------
-Dkan workflow is included in the core Dkan install but not enabled by default.
-It can be enabled either from the Modules management page or by using drush.
+DKAN workflow is included in the core DKAN install but it's not enabled by default. It can be enabled either from the Modules management page or by using drush.
 
 .. code-block:: bash
 
    drush en dkan_workflow -y
 
-Enabling Dkan workflow should enable all the dependencies modules and update the
+Enabling DKAN workflow should enable all the dependencies modules and update the
 user roles (more information available in the `Workflow Roles`_
 section).
 
 Metadata Moderation States
 --------------------------
 
-There are three default moderations states available by default in Dkan:
+There are three default moderations states available by default in DKAN:
 
 Draft
   This is the starter state that the metadata (be it dataset or resource) is in
@@ -83,7 +84,7 @@ Content Moderation UI
 ----------------------------
 
 Controlling the moderation state of the various core content types provided by
-Dkan can be done from various places.
+DKAN can be done from various places.
 
 My Workbench
 ++++++++++++++++++++++++++++
@@ -143,7 +144,7 @@ text area.
 
 Workflow Roles
 ---------------------------
-Dkan workflow permissions provides 3 Drupal roles:
+DKAN workflow permissions provides 3 Drupal roles:
 
 Workflow Contributor
   This is the lowest level role desgined with "Content Creator" users in mind,
@@ -171,7 +172,7 @@ Workflow Supervisor
 Automatic User Role Assignment
 ++++++++++++++++++++++++++++++
 
-Users with only workflow roles won't be able to do much in Dkan and need to be
+Users with only workflow roles won't be able to do much in DKAN and need to be
 associated to its equivalent core role. The Roles form on the User edit page
 supports adding the suited core role when only a Workflow role is checked.
 
@@ -214,7 +215,7 @@ rules:
 Emails will have the context triggering the notification with links to the
 updated content.
 
-Extending Dkan Workflow
+Extending DKAN Workflow
 -----------------------
 
 Tweaking the Email template
