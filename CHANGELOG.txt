@@ -1,5 +1,6 @@
 7.x-1.13.x
 --------------------------
+ - #1730 Fix logic error for front page in theme causing error messages on homepage
  - #1728 Added a tag @defaultHomepage to a topic test which relies on homepage content.
 
 7.x-1.13
