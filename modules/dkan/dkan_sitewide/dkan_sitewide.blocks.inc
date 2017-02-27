@@ -434,7 +434,7 @@ function dkan_sitewide_other_access() {
       ),
       'dkan_api' => array(
         '#type' => 'markup',
-        '#markup' => '<p><small>' . t('via the  <a href="http://docs.getdkan.com">DKAN API</a>') . '</small></p>',
+        '#markup' => '<p><small>' . t('via the  <a href="http://docs.getdkan.com/en/latest/apis/index.html">DKAN API</a>') . '</small></p>',
       ),
     );
 
