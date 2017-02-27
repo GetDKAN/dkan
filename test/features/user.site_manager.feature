@@ -125,6 +125,17 @@ Feature: User command center links for site manager role.
     And I click "Topics" in the "admin menu" region
     Then I should see "Topics"
 
+  Scenario: Site manager role should not see Customize Display link
+    Given I am logged in as "John"
+    When I hover over the admin menu item "Add content"
+    And I click "Page"
+    Then I should see "Create Page"
+    When I fill in "title" with "My new page"
+    And I select the radio button "Boxton" with the id "edit-layout-radix-boxton"
+    And I press "Save"
+    And I wait for "View"
+    Then I should not see "Customize Display"
+
   @customizable
   Scenario: Site manager role can configure custom fonts
     Given I am logged in as "John"

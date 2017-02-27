@@ -254,6 +254,10 @@ function dkan_sitewide_preprocess_page(&$variables) {
   if (arg(0) == 'admin' && arg(1) == 'appearance' && $admin_theme !== '0' && $default_theme !== $admin_theme) {
     drupal_set_message(t('For Colorizer to work you must set the Administration theme to match your <em>Default theme</em> at the bottom of the !link  page.', array('!link' => l(t('appearance list'), 'admin/appearance'))), 'warning');
   }
+  // Don't set a special page title if it's the front page
+  if (isset($variables['is_front']) && $variables['is_front'] == TRUE) {
+    drupal_set_title('');
+  }
 }
 
 /**

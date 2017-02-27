@@ -4,12 +4,12 @@ Feature: Project Open Data + Open Data Federal Extras
   As a dataset creator
   I want to create datasets with POD fields and publish them with data.json
 
-  @api @noworkflow
+  @pod_json_valid @api @noworkflow
   Scenario: Data.json should be valid
     Given I am on the homepage
     Then I "should" see a valid data.json
 
-  @api @noworkflow @add_ODFE @remove_ODFE
+  @pod_json_odfe @api @noworkflow @add_ODFE @remove_ODFE
   Scenario: Data.json validation should fail if ODFE enabled
     Given I am on the homepage
     Then I "should not" see a valid data.json
