@@ -57,7 +57,5 @@ The font used for Topics can only be changed if there are **NO** default icon va
 
 Known Issues
 ------------------------------------
-
 * This module adds a main menu link for "Topics". If you want a different word in place of "Topics", you can change the name in the main menu configuration but the icons in the dropdown will stop working. If you use `String Overrrides <https://www.drupal.org/project/stringoverrides>`_ you can change the Menu link title and the icons will continue to work, however the facet block title and the dataset form field title will still display as 'Topics'.
 * Adding a new icon font for use with topics **needs work** to keep the icon functionality in facets and menus from breaking.
-
