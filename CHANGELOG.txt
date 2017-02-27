@@ -1,7 +1,10 @@
 7.x-1.13.x
 --------------------------
- - Fix home page HTML <head><title> so that it's just the site name (not the node or panel title)
+ - #1742 Fix home page HTML <head><title> so that it's just the site name (not the node or panel title)
+ - #1747 Update DKAN API link to use the RTD documentation page.
+ - #1730 Fix logic error for front page in theme causing error messages on homepage
  - #1728 Added a tag @defaultHomepage to a topic test which relies on homepage content.
+ - #5807 Fix panelizer permissions to hide 'Customize Display' button
 
 7.x-1.13
 --------------------------
