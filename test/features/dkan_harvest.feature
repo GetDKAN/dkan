@@ -350,3 +350,13 @@ Feature: Dkan Harvest
       | role               |
       | administrator      |
 
+  @api
+  Scenario: Site Manager role have access to the Harvest actions on the Harvest Dashboard.
+    Given pages:
+      | name              | url                           |
+      | Harvest Dashboard | /admin/dkan/harvest/dashboard |
+    And I am logged in as a user with the "Site Manager" role
+    And I am on the "Harvest Dashboard" page
+    And I select "Cache Source(s)" from "operation"
+    And I select "Harvest (Cache and Migrate) Source(s)" from "operation"
+    And I select "Migrate Source(s)" from "operation"
