@@ -73,3 +73,11 @@ Feature: Project Open Data + Open Data Federal Extras
     #Cleanup configuration
     Given I "disable" the "Strict POD validation" on DKAN Dataset Forms
 
+  @api @here
+  Scenario: Site Manager role should have access to the validation page
+    Given pages:
+      | name           | url                                     |
+      | POD Validation | /admin/config/services/odsm/validate/pod |
+    And I am logged in as a user with the "site manager" role
+    When I am on the "POD Validation" page
+    Then I should not see "Access Denied"
