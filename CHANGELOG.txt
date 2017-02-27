@@ -3,6 +3,7 @@
  - #1730 Fix logic error for front page in theme causing error messages on homepage
  - #1728 Added a tag @defaultHomepage to a topic test which relies on homepage content.
  - #5807 Fix panelizer permissions to hide 'Customize Display' button
+ - #1744 Grant Site Manager role Harvest Dashboard actions.
 
 7.x-1.13
 --------------------------
