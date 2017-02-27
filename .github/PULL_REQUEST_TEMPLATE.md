@@ -24,3 +24,4 @@ If this PR introduces new functionality, include a user story or stories describ
 - [ ] There is test for the issue.
 - [ ] CHANGELOG updated.
 - [ ] Coding standards checked.
+- [ ] Review the current documentation at read the docs to see if it still covers the scope of the PR and update it if needed.
