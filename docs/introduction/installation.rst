@@ -25,7 +25,7 @@ Repository <https://github.com/NuCivic/dkan>`__ is a Drupal
 *installation profile*. To set up a working website using DKAN, you will
 need to acquire or build a full DKAN distribution of Drupal.
 
-.. tip:: `DKAN Starter <https://github.com/NuCivic/dkan-starter>`_ is project
+.. tip:: `DKAN Starter <http://dkan-starter.readthedocs.io>`_ is project
   containing a prebuilt version of DKAN and the tools `Granicus
   <https://www.granicus.com/>`_ uses for our own implementations and
   deployments. Learn more advanced workflows in that project's
