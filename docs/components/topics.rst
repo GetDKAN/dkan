@@ -43,11 +43,8 @@ Removing Topics from the main menu
 
 Adding new icons
 ------------------------------------
+The font used for Topics can only be changed if there are **NO** default icon values in use, only one icon font can be used at a time.
 
-**3 Important notes:** 
-  * Only users with the Administrator role can add new icon fonts.
-  * The font can only be changed if there are **NO** default icon values in use. Only one icon font can be used at a time.
-  * The display of the icons in facets and the drop down menu will break.
 1. Navigate to ``Configuration > Content Authoring > Font Icon Select Options``
 2. Click "Upload New Library"
 3. Enter a title for your new font option
@@ -61,9 +58,6 @@ Adding new icons
 Known Issues
 ------------------------------------
 
-* When enabling this module on an existing DKAN site, the default topics may be added to the top-level navigation menu. If this happens, simply use the taxonomy UI to move the new terms under the "Topics" term. New topics you add should then be added under the Topics term in the main menu.
-* The module adds a main menu link for "Topics". If you want a different word in place of "Topics", you will need to modify the term from the taxonomy UI. This will cause the DKAN Topics feature to be overridden and make future upgrades more difficult.
-* To filter by topics on the Datasets/Search page, field_topics needs to be added to the dataset search index. This should happen automatically when you enable this module and revert all DKAN core `features <https://www.drupal.org/project/features>`_. However, in some cases this has been observed not to work. To fix edit the datasets index manually (`admin/config/search/search_api/index/datasets/fields`) and add field_topics.
-* Since this module adds a field to the Dataset content type, your search indexes will need to be rebuilt, whether or not the previous step (manually adding the field to the index) is necessary. After installing, clear your dataset index and re-index all items by doing one of the following:
-  * Visit `admin/config/search/search_api/index/datasets` and perform the steps in the browser
-  * Use drush: ``drush sapi-c datasets && drush sapi-r datasets && drush sapi-i datasets``
+* This module adds a main menu link for "Topics". If you want a different word in place of "Topics", you can change the name in the main menu configuration but the icons in the dropdown will stop working. If you use `String Overrrides <https://www.drupal.org/project/stringoverrides>`_ you can change the Menu link title and the icons will continue to work, however the facet block title and the dataset form field title will still display as 'Topics'.
+* Adding a new icon font for use with topics **needs work** to keep the icon functionality in facets and menus from breaking.
+
