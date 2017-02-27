@@ -73,3 +73,4 @@ features[views_view][] = front_page_group_grid
 features[views_view][] = front_page_group_list
 features[views_view][] = group_block
 features[views_view][] = groups_page
+version = 7.x-1.13.1
