@@ -10,7 +10,8 @@ technologies.
 Default DKAN Theme
 -------------------
 
-NuBoot Radix is the default theme for DKAN and is a subtheme of `Radix <https://www.drupal.org/project/radix>`_ which uses `bootstrap <https://github.com/twbs/bootstrap>`_ styles and is compatible with panelized sites. This theme has some basic customization features built in, for many client sites, these configurations will be all that is necessary to meet the client expectations. The configurable items are:
+In Drupal and DKAN, the collection of page templates, fonts, colors, images,
+and other “look and feel” elements are known as a “theme.” NuBoot Radix is the default theme for DKAN and is a subtheme of `Radix <https://www.drupal.org/project/radix>`_ which uses `bootstrap <https://github.com/twbs/bootstrap>`_ styles and is compatible with panelized sites. This theme has some basic customization features built in, for many client sites, these configurations will be all that is necessary to meet the client expectations. The configurable items are:
 
 *   Logo (svg logos will display better on retina displays)
 *   Front page Hero image OR you can set a solid color background for the hero region.
@@ -19,10 +20,6 @@ NuBoot Radix is the default theme for DKAN and is a subtheme of `Radix <https://
 *   Color options via the Colorizer screen
 *   Fonts: use font-your-face to use alternate fonts
 
-In Drupal and DKAN, the collection of page templates, fonts, colors, images,
-and other “look and feel” elements are known as a “theme.” The DKAN
-distribution of Drupal includes a default “DKAN Theme” called NuBoot Radix, that visually
-highlights all of the DKAN-specific data elements in the software.
 
 DKAN administrators have the choice of customizing the existing DKAN Theme through theme settings, implementing an entirely new theme, or creating a `subtheme of nuboot_radix <#creating-a-new-subtheme>`_.
 
@@ -37,14 +34,15 @@ Site name and slogan
 *********************
 
 From the settings screen, you can toggle on/off the **site name** and **slogan**, simply check the box next to the elements you want to use.
-![Site name and slogan settings](../images/Appearance_DKAN.png)
+
+.. image:: ../images/Appearance_DKAN.png
 
 Logo
 *********************
 
 Uncheck the 'Use the default' checkbox, and upload a new logo file in the logo image settings section.
 
-.. figure:: ../images/Appearance_DKAN_2.png
+.. image:: ../images/Appearance_DKAN_2.png
 
 Shortcut icon
 *********************
@@ -61,7 +59,7 @@ Hero background image/color
 
 The **Hero Unit** is the background image that displays on the front page. To use a different photo than the one supplied, click the 'Choose file' button to upload a new image. This image will expand to cover the full width of the browser so be sure to upload a horizontal/landscape image and not a vertical/portrait image.
 
-.. figure:: ../images/Appearance_DKAN_3.png
+.. image:: ../images/Appearance_DKAN_3.png
 
 Color scheme
 ****************************
@@ -70,7 +68,7 @@ To use the **colorizer** option, you must use the default theme as the admin the
 
 Now navigate to `[SITEROOT]/admin/appearance/colorizer` by clicking on the 'Colorizer' tab. Here you will see the color scheme options. There are a few default options you can select from the drop down, or you can enter hex values to create a custom color scheme, be sure to click 'Save Configuration' when finished. Your new colors are saved to a css file in your files directory. If you do not see your changes you may need to clear the colorizer cache by clicking the 'Clear Colorizer Cache' button. These colors will override all other styles in the theme.
 
-.. figure:: ../images/Appearance_DKAN_4.png
+.. image:: ../images/Appearance_DKAN_4.png
 
 Fonts
 ****************************
