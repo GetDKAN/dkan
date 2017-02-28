@@ -15,11 +15,3 @@ Use the **Data Story** and **Data Dashboard** content types for narrative conten
 
    data-story
    data-dashboard
-
-
-To allow site visitors to provide feedback on your site, you can enable comments.
-
-.. toctree::
-   :maxdepth: 1
-
-   comment
