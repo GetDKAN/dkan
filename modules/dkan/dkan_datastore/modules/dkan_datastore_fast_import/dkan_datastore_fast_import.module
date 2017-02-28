@@ -157,12 +157,19 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config) {
   $fields = implode(',', array_keys($table->meta['fields']));
   $delim = $config['delimiter'];
   $has_headers = ($config['no_headers']) ? '' : 'IGNORE 1 LINES';
+  $use_quote_delimiters = variable_get('use_quote_delimiters', 0);
 
   $load_data_statement = ($load_data_type === 'load_data_local_infile') ? 'LOAD DATA LOCAL' : 'LOAD DATA';
 
   $sql = $load_data_statement . " INFILE '$file_path' IGNORE
    INTO TABLE $table->name
-   COLUMNS TERMINATED BY '$delim' LINES TERMINATED BY '\n' $has_headers ($fields)
+   FIELDS TERMINATED BY '$delim'";
+
+  if ($use_quote_delimiters) {
+    $sql = $sql . " ENCLOSED BY '\"'";
+  }
+
+  $sql = $sql . " LINES TERMINATED BY '\n' $has_headers ($fields)
    SET timestamp=UNIX_TIMESTAMP(), feeds_entity_id=$feeds_entity_id;";
 
   try {
@@ -171,7 +178,7 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config) {
     $node->save();
   }
   catch (Exception $e) {
-    drupal_set_message(t('There was an error trying to import this file: @error', array('@error', $e->getMessage())), 'error', FALSE);
+    drupal_set_message(t('There was an error trying to import this file: @error', array('@error' => $e->getMessage())), 'error', FALSE);
   }
 }
 
@@ -218,6 +225,11 @@ function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id) {
     $form['#attached']['js'][] = array(
       'data' => drupal_get_path('module', 'dkan_datastore_fast_import') . '/dkan_datastore_fast_import.js',
       'type' => 'file',
+    );
+    $form['use_quote_delimiters'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Use quote delimiters'),
+      '#default_value' => variable_get('use_quote_delimiters'),
     );
   }
 }
