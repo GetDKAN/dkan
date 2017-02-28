@@ -35,6 +35,7 @@ features[menu_links][] = menu-command-center-menu_menus:admin/structure/menu
 features[menu_links][] = menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm
 features[menu_links][] = menu-command-center-menu_page:node/add/page
 features[menu_links][] = menu-command-center-menu_people:admin/people
+features[menu_links][] = menu-command-center-menu_project-open-data-validation:admin/config/services/odsm/validate/pod
 features[menu_links][] = menu-command-center-menu_recline-configuration:admin/dkan/recline
 features[menu_links][] = menu-command-center-menu_resource:node/add/resource
 features[menu_links][] = menu-command-center-menu_site-configuration:admin/config
