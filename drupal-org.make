@@ -113,6 +113,9 @@ projects:
       type: git
       url: 'https://github.com/NuCivic/feeds_flatstore_processor.git'
       branch: master
+    patch:
+      9: 'https://patch-diff.githubusercontent.com/raw/NuCivic/feeds_flatstore_processor/pull/9.diff'
+
   field_group:
     version: '1.5'
     patch:
