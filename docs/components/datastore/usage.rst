@@ -51,4 +51,4 @@ Files that are not processed manually are processed in pieces during cron.
 Datastore API
 =============
 
-Once processed, Datastore information is available via the Datastore API. For more information, see the `Datastore API page <../apis/datastore-api.rst>`_.
+BROKEN LINK Once processed, Datastore information is available via the Datastore API. For more information, see the `Datastore API page <../apis/datastore-api.rst>`_.
