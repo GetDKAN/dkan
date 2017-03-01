@@ -226,9 +226,3 @@ information please refer to the workflow modules documentation.
   <https://www.drupal.org/documentation/modules/workbench_moderation>`_.
 * `Workbench Email documentation in drupal.org
   <https://www.drupal.org/node/2253081>`_.
-
-Known Issues
-------------
-
-* Transitions config and Emails templates for “Original Author” could not be
-  exported due to a bug in workbench_email.
