@@ -279,12 +279,12 @@ but a good knowladge on how `migrate works <https://www.drupal.org/node/1006982>
 
 ``HarvestMigration::__construct()``
 **************************************
-Setting the `MigrateSourceList` is the only logic required during the
+Setting the `HarvestMigrateSourceList` is the only logic required during the
 construction of the extended `HarvestMigration`. During the harvest migration
 we can't reliably determin and parse the type of cache file (JSON, XML, etc..)
 so we still need to provide this information to the Migration class via the
-``MigrateItem`` variable. the Migrate module provide different helpful class for
-different input file parsing (``MigrateItemFile``, ``MigrateItemJSON``,
+``MigrateItem`` variable. the Migrate module provide different helpful class
+for different input file parsing (``MigrateItemFile``, ``MigrateItemJSON``,
 ``MigrateItemXML``). For the the POD ``dkan_harvest_datajson`` reference
 implementation we use the ``MigrateItemJSON`` class to read the JSON files
 downloaded from data.json end-points.
@@ -296,7 +296,7 @@ downloaded from data.json end-points.
     $this->itemUrl = drupal_realpath($this->dkanHarvestSource->getCacheDir()) .
       '/:id';
 
-    $this->source = new MigrateSourceList(
+    $this->source = new HarvestMigrateSourceList(
       new HarvestList($this->dkanHarvestSource->getCacheDir()),
       new MigrateItemJSON($this->itemUrl),
       array(),
