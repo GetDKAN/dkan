@@ -1,7 +1,6 @@
 7.x-1.13.x
 --------------------------
  - #1728 Added a tag @defaultHomepage to a topic test which relies on homepage content.
- - Added dkan_workflow documentation to rtd.
 
 7.x-1.13
 --------------------------
