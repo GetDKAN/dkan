@@ -11,9 +11,9 @@ workflow for metadata publishing by providing:
   * State oriented management UI
   * Access control
 
-.. figure:: /images/workflow/dkan_workflow_screenshot.png
-
-  DKAN Workflow main admininstration interface.
+.. figure:: ../../images/workflow/dkan_workflow_screenshot.png
+   
+   DKAN Workflow main admininstration interface.
 
 Requirements
 ------------
@@ -92,7 +92,7 @@ My Workbench
 The main moderation interface is available from the *My Workbench* link from the
 navigation bar, or accessable directly via *admin/workbench*.
 
-.. image:: /images/workflow/dkan_workflow_main_interface.png
+.. image:: ../../images/workflow/dkan_workflow_main_interface.png
 
 1. **Moderation Tabs**.
   :My content:
@@ -140,7 +140,7 @@ under the **Publishing options** sidebar. Authors and reviewers can change the
 moderation state and add a note about the change via the **Moderation notes**
 text area.
 
-.. image:: /images/workflow/workflow_node_edit.png
+.. image:: ../../images/workflow/workflow_node_edit.png
 
 Workflow Roles
 ---------------------------
@@ -176,7 +176,7 @@ Users with only workflow roles won't be able to do much in DKAN and need to be
 associated to its equivalent core role. The Roles form on the User edit page
 supports adding the suited core role when only a Workflow role is checked.
 
-.. figure:: /images/workflow/dkan_workflow_autorole.gif
+.. figure:: ../../images/workflow/dkan_workflow_autorole.gif
    :scale: 75
 
    Automatic core role assignment with workflow roles.
