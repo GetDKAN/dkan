@@ -19,15 +19,15 @@ If you are exploring a resource that is not yet in the datastore, you will see a
 
 Notification to import resource to datastore:
 
-![Manage Datastore: Notification](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202015-04-03%20at%206.19.09%20PM.png)
+FIX URL ![Manage Datastore: Notification](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202015-04-03%20at%206.19.09%20PM.png)
 
 Importing the resource:
 
- ![Manage Datastore: Import](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202015-04-03%20at%206.19.26%20PM.png)
+FIX URL ![Manage Datastore: Import](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202015-04-03%20at%206.19.26%20PM.png)
 
 Notification of a successful import:
 
-![Manage Datastore: Success](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202015-04-03%20at%206.19.53%20PM.png)
+FIX URL ![Manage Datastore: Success](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202015-04-03%20at%206.19.53%20PM.png)
 
 Your data is now ready to use via the API! Click the "Data API" button at the top of the resource screen for specific instructions. DKAN datastores can also be created and updated from files using the following Drush commands:
 
