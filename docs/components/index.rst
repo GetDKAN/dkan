@@ -18,7 +18,7 @@ described inside the Datasets section, all this functionality is provided by the
    Datasets <dataset/index>
    Datastore <datastore/index>
    Harvester <harvest>
-   Workflow <workflow/workflow>
+   Workflow <workflow>
    Topics <topics>
    fixtures
    federal-extras
