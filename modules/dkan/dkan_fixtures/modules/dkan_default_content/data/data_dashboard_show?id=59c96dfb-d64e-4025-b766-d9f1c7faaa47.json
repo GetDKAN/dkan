@@ -100,7 +100,7 @@
                                 "safe_value": "<p>As our state workforce grows older the overall demographics are shifting. Workers over the age of 65 and \"Baby Boomers\" are aging out, while Gen-Xers and Millennials are aging in. The changes in employee makeup have implications for how businesses (including government) adapt to new trends as well as short-term considerations like policy and budgeting for retirement and pension costs. The charts below show how the state workforce has changed over fiscal years 2011-2015, which will inform how we plan for the years ahead.</p>\n</p>\n<p><center><a href=\"dataset/state-workforce-generation-2011-2015\">Go to Dataset</a></center></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -141,7 +141,7 @@
                                 "safe_value": "<p>By comparing the two pie charts shown above, you can see that the demographic makeup of the state workforce in 2011 - directly after the worst of the 2008 recession and the jobs crisis that followed - differed dramatically from the demographic makeup of the state workforce in 2015.</p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -182,7 +182,7 @@
                                 "safe_value": "<ul>\n<li>Baby Boomers dropped from representing 56% of the workforce in 2011 to only 31% in 2015.</li>\n<li>Meanwhile, Generation X (those born between 1961 and 1981) expanded from 31% to 41% of the workforce.</li>\n</ul>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -246,7 +246,7 @@
                                 "safe_value": "<p>These charts and graphs help us understand at a glance how the data are related. It's true that those in the \"Gen-X\" and \"Millenial\" generations compose more of the workforce in 2015 than in 2011, but across the board we're seeing little to no change in the number of retirements--despite the number of eligible candidates. That is, though the overall number of retirements is the same there are fewer people retiring relative to how many could.</p>\n<p>What does this tell us? Looking at just a few datasets won't give us the full picture, but it can lead us down the right path to ask the right questions.</p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -287,7 +287,7 @@
                                 "safe_value": "<p><strong>Note: This dataset has been given a vague name because it is anonymized demo data, not actual state data.</strong></p>\n<p><em>How do changing workforce demographics inform how we budget for a retirement and pension fund or budget and program evaluation? By understanding how and what types of citizens are participating in the workforce, we can make better decisions about how to serve them in our budgeting and finance operations. Learn about how the makeup of the workforce changed in just a few years.</em></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -328,7 +328,7 @@
                                 "safe_value": "<p>With shifts in the workforce, budget and finance must pay attention and adapt to meet changing needs. We look at <strong>actual retirements and eligibility vs actual</strong> to create reliable projections to be efficient with how dollars are allocated.</p>\n<p>The following graphs display the retirement statistics for state employees from 2011 through 2016 as well as comparison of the percentage of state employees who are eligible to retire versus the number of actual retirements during these years.</p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {

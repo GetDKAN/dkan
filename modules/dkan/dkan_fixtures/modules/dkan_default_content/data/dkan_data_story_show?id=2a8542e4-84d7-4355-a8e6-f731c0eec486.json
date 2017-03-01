@@ -176,7 +176,7 @@
                                 "image_path": "files/dkan_data_story/Madison_trees_1.jpg"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -217,7 +217,7 @@
                                 "safe_value": "<p>As part of the Madison's open data effort, the Parks department released an inventory of trees by type and location. The inventory has generated a number of maps that detail locations and varieties of the trees located int the city--some clusters have over 400 trees! It's encouraging to see which areas benefit from a rich urban forest, and we can see which areas need more green space.</p>\n<p>Trees are just one part of a much larger picture of quality of life in Madison. As we make more data open, we can draw better conclusions and make better choices. We encourage you explore the Madison Parks department tree inventory.</p>\n<p>The interactive map below displays the full weight of the number of trees in Madison. It was created with data from Madison Parks department put into the digital mapping tool CartoDB. You can create your own visualizations with digital tools and embed them onto your DKAN site. Click on the different tree varieties to the locations by species.</p>\n<p><strong>Tree varieties</strong>: Norway Maple, Green Ash, Honeylocust, Littleleaf Linden, the \"Skyline\" Honeylocust, White Ash, American Basswood, Redmond Linden, Hackberry, Crab Apple and others.</p>\n<p><strong>Data curation</strong>: Aaron Couch.</p>\n<p><strong>Original source</strong>: <a href=\"https://dkan.cartodb.com/u/dkan-admin/viz/6f588616-d19d-11e4-a931-7054d21a95e5/map\">City of Madison, Parks Department.</a></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -258,7 +258,7 @@
                                 "safe_value": "</p>\n<blockquote><p><em>To provide the ideal system of parks, natural resources and recreational opportunities which will enhance the quality of life for everyone.</em></p>\n</blockquote>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -299,7 +299,7 @@
                                 "safe_value": "<p>This is the <a href=\"http://www.cityofmadison.com/parks/about/mission.cfm\">vision statement</a> that appears on the website of the Madison Parks department.</p>\n<p>Urban forests have been <a href=\"http://www.huffingtonpost.com/cornelius-b-murphy-jr-phd/our-urban-forests-improve_b_5413340.html\">connected to improved quality of life</a> due to the natural ability of trees to intake harmful carbon dioxide and industrial pollutants as well as provide comfort with shade and space for people to congregate in public spaces. They're also a smart investment for government to reduce pressure from rainfall runoff on their sewer systems.</p>\n<p>Madison, Wisconsin is home to <a href=\"https://data.cityofmadison.com/Parks-Recreation/Madison-Wisconsin-Street-Tree-Map-and-Table-View/jyt6-zuz3\">thousands of trees</a>, and urban forestry is a core service provided by the local government.</p>\n<p>Madison Parks provides forestry services to not only maintain natural resources in the urban environment but also increase the diversity of native tree species.<br />\nImproving the overall green space in the city improves the quality of life, enhances public/recreational spaces, and provides opportunities for greater learning about the environment and the heritage of Madison.</p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {

@@ -103,7 +103,7 @@
                                 "safe_value": "<p>Getting from place to place looks different for every citizen, so transportation comes in many shapes and sizes. Some regions rely on local subways and trolleys while others adopt modern modes like Bus Rapid Transit (BRT) and bikeshare. In many cases, regions use a diverse combination of all transportation types to meet the needs and preferences of an increasingly multi-modal world.</p>\n<p>The dynamic map above visualizes the traffic on <a href=\"http://www.baruch.cuny.edu/nycdata/travel/lirr-stats.htm\">Long Island Rail Road</a>, a heavy rail line in New York City, NY.</p>\n<p>The LIRR makes <strong>124</strong> stops<br />\nto serve <strong>85,868,246</strong> commuters annually,<br />\n<strong>298,448</strong> of whom are weekday passengers.</p>\n<p>On the map, each dot lighting up represents a train making a stop. The flashing map shows how many people use these services in the course of just 20 minutes. Looking at the map for only a couple seconds, it's easy to see the role transportation plays in our daily lives.</p>\n<p>That's why it's important to have a thorough understanding of our systems and how citizens navigate within them. Visualizations provide a better way to understand complex networks, key challenges, and opportunities. Open data helps make it happen. In fact, this map was created by a citizen with open data.</p>\n<p>Explore the map above and other visualizations on this open data dashboard to learn more about commuter flows in different parts of the country.</p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -169,7 +169,7 @@
                                 "safe_value": "<p>The movement of transit can be difficult to capture and quantify, let alone make into an engaging visualization. General Transit Feed Specification (GTFS) data creates a common format for agencies to provide data and developers to consume it. The dynamic heat map above <a href=\"http://developer.metro.net/introduction/gtfs-data/download-metros-gtfs-data/\">uses open GTFS data</a> to highlight the life of a transit network.</p>\n<p>This map shows where Bus Rapid Transit (BRT) lines are operating in the LA Metro area. BRT is different from a standard bus route that is common to most transportation networks. Standard routes have stops designated, and the bus may make as many stops as needed. In some cases, a stop could mean a single city block. Bus Rapid Transit lines minimize time spent commuting as well as auto congestion by covering more ground and making fewer stops. This map is made with the digital mapping tool CartoDB. You can create your own data visualizations using digital tools and embed them onto your DKAN site.</p>\n<p>From the spending perspective, BRT is also much more affordable, flexible, and sustainable than any rail options. Especially for newer cities without rail lines and sprawled metropolitan areas, BRT can translate into an important piece of the larger transportation network. In the case of LA, <a href=\"http://la.streetsblog.org/2014/06/03/guest-opinion-the-future-of-los-angeles-is-bus-rapid-transit/\">BRT could triple the size of the network without great expense</a>.</p>\n<p>In the visualization above, the higher the concentration of BRT lines, the brighter the color. With this map, it's easy to see which areas in LA's metro area are getting the most service (as measured by bus activity) and give agencies insight on how to <a href=\"https://losangeles2b.files.wordpress.com/2012/12/web-_ten.pdf\">best allocate resources</a>.</p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -210,7 +210,7 @@
                                 "safe_value": "<p>While residents in suburban and rural areas ride bikes primarily as a recreational activity, more and more biking is become a common form of transportation in urban areas. With a greater number of people on bikes, it's clear that infrastructure and resources for bicyclists is increasingly essential.</p>\n<p>This map made with ArcGIS shows the <a href=\"http://gis.mdc.opendata.arcgis.com/datasets/5c850d795e17485ebf8a8d179d649d9c_0?%22%20style=%22width:%20800px;%20height:%20600px;\">existing bike lanes for the larger Miami-Dade County area</a> in Florida using open data from the regional Metropolitan Planning Organization (MPO). Bike lanes are a core part of pedestrian, bicyclist, and automotive safety. They show clear right-of-way paths and encourage everyone to follow traffic safety rules. You can create your own data visualizations using digital tools and embed them onto your DKAN site.</p>\n<p>The data released by the Miami-Dade MPO provide information about the number of bike lanes, the start and stop points, etc. With the visualization above we see the data as more than a list. It's easy to see exactly where bike lanes exist and how much area is covered in relation to the entire county. This data, along with other datasets, inform long-term plans for pedestrian and bicycle safety. The <a href=\"http://miamidadempo.org/library/plans/miami-dade-2040-bicycle-pedestrian-plan.pdf\">Miami-Dade MPO 2040 plan for pedestrian bicycle safety</a> identifies major improvements that will be achieved over the next few decades.</p>\n</p>\n<p><center><a href=\"../dataset/florida-bike-lanes/resource/960687d8-582c-4f29-b1e4-113781e58e3b\">Go to Data</a></center></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -251,7 +251,7 @@
                                 "safe_value": "<p><em>Transportation systems across the country are adapting to meet the needs of their stakeholders. It's a basic service that many citizens rely on, so it has to work for everyone all of the time. Bikeshare, light and heavy rail, bus routes, and automotive come together for a robust network of mobility. Open data helps us see the bigger picture. Explore the dynamic transportation visualizations dashboard to see the big picture.</em></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -322,7 +322,7 @@
                                 "image_path": "files/data_dashboard/transit-004.jpg"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {

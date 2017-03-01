@@ -116,7 +116,7 @@
                                 "safe_value": "<iframe width=\"90%\" height=\"400px\" src=\"https://www.youtube.com/embed/lU-TSKEaMKI\" frameborder=\"0\" allowfullscreen=\"\"></iframe>"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -176,7 +176,7 @@
                                 "safe_value": "</p>\n<p><center><img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/ncd.gif\" alt=\"Computer screen with DKAN installation\" /></center></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -248,7 +248,7 @@
                                 "image_path": "files/page/LCr5fi0_4.png"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -320,7 +320,7 @@
                                 "image_path": "files/page/pjKIPkG_3.png"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -392,7 +392,7 @@
                                 "image_path": "files/page/jfiHlsa_3.png"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {

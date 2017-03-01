@@ -99,7 +99,7 @@
                                 "safe_value": "<p>How are crime rates and types represented appropriately when comparing major metropolitan cities?</p>\n<p>With the country's biggest cities differing dramatically in geography, housing, transportation and policies, the ability to compare and contrast data from each city allows citizens, academics, journalists and researchers alike to figure out which measures to fight crime and improve public safety have worked and which ones haven't.</p>\n<p>The visualizations below give a high-level view of crime rates and types throughout the most populated cities in the US, sorted into two categories: Violent crime (<a href=\"dataset/crime-data-ten-most-populous-cities-us/resource/23f45c04-9e65-4fdf-be89-01cf15be3d55\">Go to Dataset</a>) and property crime (<a href=\"dataset/crime-data-ten-most-populous-cities-us/resource/49daa44a-efa6-4145-92a9-baedc7202e1f\">Go to Dataset</a>).</p>\n<p>All of the data on this page has sourced from the <a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">FBI's Uniform Crime Report, 2014.</a></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -140,7 +140,7 @@
                                 "safe_value": "<p>America's metropolises can learn from on successful policing tactics and public safety campaigns. Some methods and crime reduction strategies can set best-practices for large cities as a whole. Others will remain unique to the character of the city, the layout, people and culture.</p>\n<p>By comparing and contrasting the proportions of violent crimes and property crimes in each big city, citizens, law enforcement officials and local policy-makers can make better informed decisions about where to allocate resources, funding, staff assistance and community organizing.</p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
