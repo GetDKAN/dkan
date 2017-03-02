@@ -156,11 +156,8 @@ function dkan_sitewide_update_status_alter(&$projects) {
   $up_to_date_projects = array(
     'gravatar',
     'beautytips',
-    'entity_rdf',
     'feeds_field_fetcher',
     'multistep',
-    'link_iframe_formatter',
-    'rdfx',
   );
   foreach ($up_to_date_projects as $up_to_date_project) {
 
