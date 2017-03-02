@@ -149,8 +149,8 @@ Using a Custom Make file
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 DKAN is “built” using a make file and ``drush make``. The
-```drupal-org.make`` <https://github.com/NuCivic/dkan/blob/7.x-1.x/drupal-org.make>`__
-file in DKAN contains a link to most of the modules installed in DKAN.
+`drupal-org.make <https://github.com/NuCivic/dkan/blob/7.x-1.x/drupal-org.make>`_
+file in DKAN contains a list of most of the modules installed in DKAN.
 
 When developing a website for production, it is recommended to keep a
 make file for all custom modules added to DKAN. Instead of using
@@ -159,12 +159,10 @@ to ``sites/all``, a make file is kept that has a list of the sites
 modules. This enforces some best practices about not overwriting
 contributed modules, maintaining patches, and reusability. This make
 file along with DKAN’s makefiles also provide a reusable recipe for your
-site. See our `Data Starter
-template <https://github.com/NuCivic/data_starter/blob/master/build.make>`__
-for DKAN sites for an example.
+site.
 
 More documentation and automation scripts regarding this process are
-under active development and will be published here soon.
+under active development and can be viewed here: `DKAN Starter Documentation <http://dkan-starter.readthedocs.io/>`_.
 
 Adding additional modules or features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
