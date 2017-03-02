@@ -1,7 +1,7 @@
 Groups in DKAN
 ==============
 
-**Groups** allow you to group together datasets under a organization (i.e. Parks and Recreation Department, Department of Education) or category (e.g. Transport Data, Health Data) in order to make it easier for users to browse datasets by theme.
+**Groups** allow you to group together datasets under an organization (i.e. Parks and Recreation Department, Department of Education) or category (e.g. Transport Data, Health Data) in order to make it easier for users to browse datasets by theme.
 
 As a best practice, datasets and resources that are added to a Group should share a common publisher.
 
@@ -20,14 +20,16 @@ When adding a new Group, the form has fields for basic information about the Gro
 
 :Image: The image here acts like the logo for your Group. It appears on the overview Groups page as well as the individual page of the Group itself. It's best to choose a square image to fit the dimensions of the thumbnail. Whether you choose an image, a logo, or an icon you can use any image that meets the size and file type requirements. As a Site Manager, you may want to add generic icons to the Groups you add if a current logo is unavailable.
 
-:Body text: This text is the full description for your Group similar to an "About" page. The description includes details about the agency, its goals, and information about the data it publishes. While you want to include all the relevant information of the Group, the best descriptions are 1-2 paragraphs long and include a link to the agency's main web page for more details.
+:Description: This text is the full description for your Group similar to an "About" page. The description includes details about the agency, its goals, and information about the data it publishes. While you want to include all the relevant information of the Group, the best descriptions are 1-2 paragraphs long and include a link to the agency's main web page for more details.
 
 :Summary text: You can use the Summary to create unique text for your Group. This text appears as a snippet under the Group image on the Group overview page. If left blank the first portion of the body text will be used (about 100 words). Including a summary can be useful in adding more key search terms or using a different tone to intrigue site visitors to learn more.
+
+.. figure:: ../../images/group.png
 
 Managing Groups and Members
 ---------------------------
 
-Once you've added a new Group, you can assign Datasets (and their Resources) to that Group. You can also manage the members of a Group, adding new members and giving certain members different roles. Members of a Group are not bound by the permissions of their role and restricted to the content in their Group. As a Site Manager you have access to all Groups and are limited by the permissions of the Group.
+Once you've added a new Group, you can assign Datasets (and their Resources) to that Group. You can also manage the members of a Group, adding new members and giving certain members different roles. Members of a Group are bound by the permissions of their role and restricted to the content in their Group. As a Site Manager you have access to all Groups and are not limited by the permissions of the Group.
 
 Roles and Permissions
 `````````````````````
@@ -47,7 +49,7 @@ Within Groups there are different levels of access a user can have, which determ
 Adding users
 ````````````
 
-Adding users to a Group is a straightforward process. Begin typing an existing user and select from the list of autocomplete options. A user must already have an account to be added to a Group, so if a person needs to be added you should first create an account for them with the appropriate role. By default a user will only have a Member role in the Group. To give the user an Administrator role and permissions, check the administrator member box.
+Adding users to a Group is a straightforward process. Click on the "Group" tab on the group page and click "Add people". Begin typing the username of an existing user into the "User name" field and select from the list of autocomplete options. A user must already have an account to be added to a Group, so if a person needs to be added you should first create an account for them with the appropriate role. By default a user will only have a Member role in the Group. To give the user an Administrator role and permissions, check the administrator member box.
 
 Users may also request membership in a Group. If you or the Group Administrator directly add a user to the Group, then you don’t need to add any text in the Request message box. If the user requested membership, then their request message will appear here as part of the member profile (only visible to the Site Manager and Administrator).
 
@@ -65,6 +67,7 @@ Users may also request membership in a Group. If you or the Group Administrator 
 
   If you need to change a user’s role you can use the edit link in the far-right column next to the user’s profile details to access and change the details of their profile. Alternatively, you can change a Group member’s role for a group of users in the Group with a bulk action by checking off multiple users and selecting the Modify OG member roles option from the drop-down menu in the Operations box.
 
+.. figure:: ../../images/group-members.png
 
 More on Group Membership
 ------------------------
@@ -74,7 +77,7 @@ Requesting membership and unsubscribing from a Group
 
 In DKAN, “subscribing” to a Group is synonymous with becoming a member of the Group. Nonmembers can submit a membership request to the Group Administrator to become a Group member. Members have privileges to access and edit Datasets associated to the Group, so membership requires moderation. As a Site Manager, you can join any Group without moderation. Any other role must first submit a request to subscribe and then be approved by the Group Administrator.
 
-Active members, both Members and Administrators, can leave the Group by clicking the _Unsubscribe From Group_ link on the Group home page. Once members are removed or leave the Group they no longer have access to the Datasets associated with the Group.
+Active members, both Members and Administrators, can leave the Group by clicking the *Unsubscribe From Group* link on the Group home page. Once members are removed or leave the Group they no longer have access to the Datasets associated with the Group.
 
 Associating Datasets only to your Group
 ***************************************
