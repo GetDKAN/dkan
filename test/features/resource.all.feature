@@ -39,7 +39,7 @@ Feature: Resource
       | Resource 04 | Group 01  | csv    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | csv    | Dataset 02 | Celeste  | Yes       | Yes         |
 
-  @api
+  @api @no-main-menu
   Scenario: View published resource
     Given I am on the homepage
     And I follow "Datasets"
