@@ -39,11 +39,9 @@ Feature: Resource
       | Resource 04 | Group 01  | csv    | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | csv    | Dataset 02 | Celeste  | Yes       | Yes         |
 
-  @api @no-main-menu
+  @api
   Scenario: View published resource
-    Given I am on the homepage
-    And I follow "Datasets"
-    And I click "Dataset 01"
+    Given I am on "Dataset 01" page
     When I click "Resource 01"
     Then I am on the "Resource 01" page
 
