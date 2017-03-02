@@ -12,12 +12,16 @@ The catalog is a wrapper containing information, sorted into datasets. A catalog
 
 `DCAT <http://www.w3.org/TR/vocab-dcat/>`_ - an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web -  recommends providing the following fields: catalog record, dataset, description, homepage, language, license, publisher, release date, rights, spatial, themes, title and update date.
 
+
+.. _datasets:
 Dataset
 --------------------
 
 A dataset contains individual resources as well as metadata. Metadata is the "Who, What, When, Where, Why" of each dataset. There are a number of specifications for dataset metadata and DKAN currently complies with the DCAT and `Project Open Data <https://project-open-data.cio.gov/>`_ schemas.
 
 It is possible to add new fields to DKAN to conform to additional specifications or custom requirements.
+
+.. _resources:
 
 Resource
 --------------------

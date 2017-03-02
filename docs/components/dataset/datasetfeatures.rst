@@ -3,7 +3,7 @@ Advanced Metadata Features
 
 A Dataset is a container for storing files, APIs, or other resources  as well as the `metadata <http://en.wikipedia.org/wiki/Metadata>`_ about those resources.  The metadata in a DKAN Dataset is structured specifically for describing Open Data.
 
-The metadata in a DKAN Dataset is culled from the DCAT standard as well as Project Open Data. For more information on the default Dataset fields view the `Open Data Field Comparison Tables <../../apis/open-data.html#field-comparison>`_.
+The metadata in a DKAN Dataset is culled from the DCAT standard as well as Project Open Data. For more information on the default Dataset fields view the :ref:`Open Data Field Comparison Tables <field_comparison>`.
 
 The Dataset form allows users to create Datasets and add appropriate metadata:
 
@@ -12,6 +12,8 @@ The Dataset form allows users to create Datasets and add appropriate metadata:
 The DKAN Dataset API exposes Dataset metadata for individual datasets as well an entire catalog.
 
 .. figure:: ../../images/data-json.png
+
+.. _custom_metadata:
 
 Custom metadata
 ----------------
@@ -22,7 +24,9 @@ If there is information that only pertains to one or more datasets then it is po
 
 .. figure:: https://cloud.githubusercontent.com/assets/512243/4188796/57b53a52-3776-11e4-97f6-61e18e3cd90d.png
 
-Globally-available custom fields can also be added through `Drupal's Fields UI <https://www.drupal.org/documentation/modules/field-ui>`_ and added to public APIs using the `Open Data Schema Mapper <open-data-schema.html>`_ .
+Globally-available custom fields can also be added through `Drupal's Fields UI <https://www.drupal.org/documentation/modules/field-ui>`_ and added to public APIs using the :doc:`Open Data Schema Mapper <../open-data-schema>`.
+
+.. _data_extent:
 
 Data Extent
 ----------------
@@ -45,7 +49,7 @@ DKAN Datasets and Resources track revisions in order to log and display changes,
 User Interface
 ***************
 
-Revision log entries can be added through the user interface by clicking "Revision information" in the dataset or resource edit form and can be viewed by clicking "Revisions" on a Dataset or Resource page: 
+Revision log entries can be added through the user interface by clicking "Revision information" in the dataset or resource edit form and can be viewed by clicking "Revisions" on a Dataset or Resource page:
 
 .. figure:: ../../images/revision.png
 
@@ -62,4 +66,4 @@ A list of recent revisions are available through the revision_list API at "/api/
 File Revisions
 ***************
 
-Copies are kept of files from previous revisions that can be compared manually by a user. Diffs of individual files are not available by default, but could be implemented with some `custom code using Apache Solr and the Diff module <https://drupal.org/node/2101377>`_, or a similar strategy. 
+Copies are kept of files from previous revisions that can be compared manually by a user. Diffs of individual files are not available by default, but could be implemented with some `custom code using Apache Solr and the Diff module <https://drupal.org/node/2101377>`_, or a similar strategy.

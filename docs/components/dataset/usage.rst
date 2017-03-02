@@ -5,7 +5,7 @@ Creating Datasets and Resources
 ------------------------------------
 
 
-DKAN’s data publishing model is based on the [concept of `datasets <../../introduction/catalog-basics.html#dataset>`_ and `resources <../../introduction/catalog-basics.html#resource>`_].  A dataset is a container for one or more resources; a resource is the actual “data” being published, such as a CSV table, a GeoJSON data file, or a TIFF aerial image.
+DKAN’s data publishing model is based on the concept of :ref:`datasets <datasets>` and :ref:`resources <resources>`.  A dataset is a container for one or more resources; a resource is the actual “data” being published, such as a CSV table, a GeoJSON data file, or a TIFF aerial image.
 
 The dataset and resource content types in DKAN are provided by the `DKAN Dataset module <https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_dataset>`_.
 
@@ -52,7 +52,7 @@ In our example, we’re only adding a single resource, so we’ll click “Next:
 Step 3: Adding Metadata to a Dataset
 **************************
 
-We now come to a third form which allows us to add additional metadata to the dataset. All these fields are optional, but provide valuable information about your dataset to both human visitors to the website and machines discovering your dataset through one of `DKAN's public APIs <../../apis/index.html>`_.
+We now come to a third form which allows us to add additional metadata to the dataset. All these fields are optional, but provide valuable information about your dataset to both human visitors to the website and machines discovering your dataset through one of :doc:`DKAN's public APIs <../../apis/index>`.
 
 Let's take a closer look at some of the metadata fields available on this form:
 
@@ -63,7 +63,7 @@ Let's take a closer look at some of the metadata fields available on this form:
 :Temporal Coverage: Like Geographic Coverage, this field lets us give some context to the data, but now for the relevant time period. Here we could enter the year or years for which our polling places data is accurate.
 :Granularity: This is a somewhat open-ended metadata field that lets you describe the granularity or accuracy of your data. For instance: "Year". Note, this field is depreciated in DCAT and Project Open Data, and may be removed from DKAN.
 :Data Dictionary: Another open-ended field, this is a space for almost any kind of explanation for understanding the terminology/units/column names/etc. in our dataset. Ideally, this will be a simple URL to a Data Dictionary resource elsewhere on the web.
-:Additional Info: Lets us arbitrarily define other metadata fields. See `Additional Info field <datasetfeatures.html#custom-metadata>`_ for more information.
+:Additional Info: Lets us arbitrarily define other metadata fields. See :ref:`Additional Info field <custom_metadata>` for more information.
 :Resources: This field is a reference to the resources you have already added.
 
 After you click "Save", the metadata we enter will appear on the page for this Dataset:
@@ -74,7 +74,7 @@ Configuration
 Adding or Removing Allowed Resource File Types
 **********************************************
 
-Any type of file can be uploaded to Resources (though only CSV files can be imported to the `Datastore <../datastore/index.html>`_.
+Any type of file can be uploaded to Resources (though only CSV files can be imported to the :doc:`Datastore <../datastore/index>`.
 
 File types are controlled at "/admin/structure/types/manage/resource/fields/field_upload"
 
