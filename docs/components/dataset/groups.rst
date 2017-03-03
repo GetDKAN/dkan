@@ -31,6 +31,8 @@ Managing Groups and Members
 
 Once you've added a new Group, you can assign Datasets (and their Resources) to that Group. You can also manage the members of a Group, adding new members and giving certain members different roles. Members of a Group are bound by the permissions of their role and restricted to the content in their Group. As a Site Manager you have access to all Groups and are not limited by the permissions of the Group.
 
+.. _group_roles_permissions:
+
 Roles and Permissions
 `````````````````````
 
