@@ -5,7 +5,7 @@ In order to add options to the existing ones you need to implement `hook_license
 
 .. code-block:: php
 
-  // Let's asume we want to do this as part of the fictitious license_options_extra module
+  // Let's assume we want to do this as part of the fictitious license_options_extra module
   function license_options_extra_license_subscribe() {
     return array(
       'tcl' => array(
@@ -24,7 +24,7 @@ In order to remove options from the existing ones you need to implement `hook_li
 
 .. code-block:: php
 
-  // Let's asume we want to do this as part of the fictitious license_options_extra module
+  // Let's assume we want to do this as part of the fictitious license_options_extra module
   function license_options_extra_license_unsubscribe() {
     return array(
       'notspecified',
