@@ -83,8 +83,8 @@ Feature: Dataset Features
       | Dataset 2 years ago   |  Yes       | Test        | -2 year      |
       | Dataset 1 year ago    |  Yes       | Test        | -1 year      |
       | Dataset 3 years ago   |  Yes       | Test        | -3 year      |
-    And I search for "Dataset"
     And I am on "Datasets Search" page
+    And I search for "Dataset"
     And I select "Date changed" from "Sort by"
     And I select "Asc" from "Order"
     And I press "Apply"
