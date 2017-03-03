@@ -150,7 +150,7 @@
                                 "safe_value": "<p>Let\u2019s examine some of the official data from the 45 years ago and onward to witness the varicella vaccine revolution in action:</p>\n<h3>1970-1994</h3>\n<ul>\n<li>\n<p><strong>2262</strong> death records listed varicella as the underlying cause.</p>\n</li>\n<li>\n<p>Average of <strong>90</strong> deaths per year.</p>\n</li>\n<li>\n<p>The overall death count dropped from <strong>138</strong> in 1973 to <strong>47</strong> deaths in 1986.</p>\n</li>\n</ul>\n<h3>2000</h3>\n<ul>\n<li>\n<p>The Centers for Disease Control and Prevention in Atlanta, Georgia published \u201cVaricella Mortality: Trends before Vaccine Licensure in the United States, 1970\u20131994\u201d in the Journal of Infectious Diseases. [PDF]</p>\n</li>\n<li>\n<p>The data shows how dangerous complications from varicella once were, and demonstrate the decrease after vaccinations are introduced.</p>\n</li>\n</ul>\n</p>\n<p><center><a href=\"../dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine/resource/d59d8dfc-6015-420a\">Go to Data</a></center></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -191,7 +191,7 @@
                                 "safe_value": "<p>After almost 20 years of experience with use of varicella vaccine on a population basis, the World Health Organization [source] writes that it has a \u201cgood safety profile with rare confirmed serious adverse events.\u201d The vaccine \u201cmarkedly decreases the risk and severity of varicella. [...] One dose is ~85% effective in preventing all varicella and ~100% effective in preventing severe varicella.\u201d</p>\n<p>Typically, raw data is too large to grasp by itself. We rely on synthesis to make sense of walls a numbers. Visual synthesis clearly demonstrates patterns and trends. Visualizations can also highlight spikes that imply significant events or interventions. The charts below show how the intervention of the chicken pox vaccine had dramatic impact by showing the change in data over time. Both incident and mortality rates saw a large decrease with the introduction of the vaccine.</p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -232,7 +232,7 @@
                                 "safe_value": "<h3>Who was affected by Varicella?</h3>\n<p>Despite spikes in some age groups, people of all ages saw fewer people getting chicken pox. The most dramatic decrease in incidents were those aged 20-49. That might seem surprising since this age group tends to be among the healthiest. But these are also the age groups most likely to be in contact with more vulnerable groups, like kids and the elderly. They are also less likely to be required to get a vaccination, whereas children may need records of vaccination to attend public school.</p>\n<p>In the modern era, there are few people in the US who don't receive the vaccine.</p>\n</p>\n<p><center><a href=\"../dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine/resource/339a5d0c-ecc9-4492\">Go to Data</a></center></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -273,7 +273,7 @@
                                 "safe_value": "<h3>Countless lives have been saved</h3>\n<p>In <strong>1995</strong> there were <strong>over 100</strong> deaths from chicken pox in kids between the ages of 5 and 9.</p>\n<p>In <strong>5</strong> years that number went down to <strong>less than 20</strong>.</p>\n<p>People of all ages have seen a decrease in death due to chicken pox or its related medical complications. With widespread adoption of the varicella vaccine, tens of thousands of lives have been saved from a preventable virus.</p>\n<p>The Centers for Disease Control and Prevention in Atlanta wrote in the journal Pediatrics in 2011 that there\u2019s been a \"near elimination\" of varicella deaths in the US after implementation of the vaccine program. This is not an exaggeration: As displayed in the chart above and its accompanying dataset, the average mortality rate per 100,000 people has dropped to a grinding halt.</p>\n<p></p>\n</p>\n<p><center><a href=\"../dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine/resource/0536307c-ca88-4190\">Go to Data</a></center></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -326,7 +326,7 @@
                                 "image_path": "files/dkan_data_story/Barack_Obama_against_H1N1.jpg"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {

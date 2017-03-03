@@ -185,7 +185,7 @@
                                 "safe_value": "<h3>Least taxed states, percent of adult smokers:</h3>\n<ol>\n<li>Missouri, <strong>22%</strong></li>\n<li>Virginia, <strong>19%</strong></li>\n<li>Louisiana, <strong>23.5%</strong></li>\n<li>Georgia, <strong>18.8%</strong></li>\n<li>Alabama, <strong>21.5%</strong></li>\n</ol>\n<h3>Most taxed states, percent of adult smokers:</h3>\n<ol>\n<li>New York, <strong>16.6%</strong></li>\n<li>Massachusetts,<strong>16.6%</strong></li>\n<li>Rhode Island, <strong>17.4%</strong></li>\n<li>Connecticut, <strong>15.5%</strong></li>\n<li>Hawaii, <strong>13.3%</strong></li>\n</ol>\n<p><a href=\"../dataset/us-tobacco-usage-statistics/resource/5e23aa2c-c639-49eb-b3e9-652ee22c76cb\">Go to Data</a></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {
@@ -226,7 +226,7 @@
                                 "safe_value": "<h3>Highest adult smoking rates and tax rate, 2015:</h3>\n<ol>\n<li>Kentucky, <strong>$.60</strong></li>\n<li>West Virginia, <strong>$.60</strong></li>\n<li>Oklahoma, <strong>$1.00</strong></li>\n<li>Missouri, <strong>$.20</strong></li>\n<li>Tennessee, <strong>$.60</strong></li>\n</ol>\n<h3>Lowest adult smoking rate and tax rate, 2015:</h3>\n<ol>\n<li>Utah, <strong>$1.70</strong></li>\n<li>California, <strong>$.90</strong></li>\n<li>Connecticut, <strong>$3.60</strong></li>\n<li>Massachusetts, <strong>$3.50</strong></li>\n<li>Minnesota, <strong>$3.00</strong></li>\n</ol>\n<p><a href=\"../dataset/us-tobacco-usage-statistics/resource/02708727-2f2b-4567-a53f-c669c4e3b267\">Go to Data</a></p>\n"
                             }
                         ],
-                        "rdf_mapping": []
+                        
                     }
                 },
                 {

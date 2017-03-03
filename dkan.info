@@ -13,7 +13,6 @@ dependencies[] = list
 dependencies[] = menu
 dependencies[] = number
 dependencies[] = path
-dependencies[] = rdf
 dependencies[] = taxonomy
 
 ; Contrib
