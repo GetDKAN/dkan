@@ -9,7 +9,7 @@ Feature: Project Open Data + Open Data Federal Extras
     Given I am on the homepage
     Then I "should" see a valid data.json
 
-  @api @noworkflow @add_ODFE @remove_ODFE
+  @pod_json_odfe @api @noworkflow @add_ODFE @remove_ODFE
   Scenario: Data.json validation should fail if ODFE enabled
     Given I am on the homepage
     Then I "should not" see a valid data.json
