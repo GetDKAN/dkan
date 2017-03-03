@@ -4,7 +4,7 @@ Roles categorize types of users. Permissions are assigned to these roles and rep
 
 Below is a list of the roles and general permissions included in the **DKAN Permissions** module. The descriptions should help show what different user types are able to do on the site. Whan adding new users, site managers will assign the appropriate role(s) to match the tasks the user is expected to perform.
 
-There will also be cases where you need users to have different permissions in the context of a particular **group** (for instance, to be able to modify content belonging to their agency but not other agencies on the same website). Read more about `group permissions here <dataset/groups.html#roles-and-permissions>`_.
+There will also be cases where you need users to have different permissions in the context of a particular **group** (for instance, to be able to modify content belonging to their agency but not other agencies on the same website). Read more about :ref:`group permissions here <group_roles_permissions>`.
 
 The DKAN Permissions module
 ---------------------------
@@ -80,7 +80,7 @@ The highest level for *non-technical* users. A site manager is mostly concerned 
 
 DKAN Workflow Roles
 --------------------
-If your organizaton needs an editorial workflow for managing content creation and editing, DKAN also includes a feature called DKAN Workflow that adds three more roles to establish a content approval process. `Read more about that here <workflow.html#workflow-roles>`_.
+If your organizaton needs an editorial workflow for managing content creation and editing, DKAN also includes a feature called DKAN Workflow that adds three more roles to establish a content approval process. :ref:`Read more about that here <workflow-roles>`.
 
 Installation/upgrade notes
 --------------------------
