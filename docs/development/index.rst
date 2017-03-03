@@ -1,5 +1,5 @@
 Extending and Customizing DKAN
-==============
+===============================
 
 Much additional functionality can be added simply by installing one of the
 tens of thousands of `contrib  modules <https://www.drupal.org/project/project_module>`_
@@ -31,4 +31,10 @@ After installing DKAN additional functionality should be added to the "sites"
 directory.
 
 In the future, this section will feature more detailed information on developing
-custom extentions to DKAN.
+custom extentions to DKAN. For now, read additional information about:
+
+.. toctree::
+   :maxdepth: 1
+
+   license
+   modules
