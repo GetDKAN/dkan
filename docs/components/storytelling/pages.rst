@@ -3,6 +3,8 @@ Pages
 
 DKAN uses `Panels <https://www.drupal.org/project/panels>`_ to magange the layout and content of pages.
 
+.. _using_ipe:
+
 Using the in-place editor (IPE)
 -------------------------------
 

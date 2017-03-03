@@ -16,5 +16,5 @@ Create a new dashboard
 2. Fill in the data dashboard title.
 3. Choose the desired layout.
 4. Click Save.
-5. Now add content by clicking the + buttons in the regions where you want the new content to display. Learn more about the In-Place Editor (IPE) `here <pages.html#using-the-in-place-editor-ipe>`_
+5. Now add content by clicking the + buttons in the regions where you want the new content to display. Learn more about the In-Place Editor (IPE) :ref:`here <using_ipe>`.
 6. Click Save at the bottom of the page.
