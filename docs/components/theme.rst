@@ -21,7 +21,7 @@ and other “look and feel” elements are known as a “theme.” NuBoot Radix 
 *   Fonts: use font-your-face to use alternate fonts
 
 
-DKAN administrators have the choice of customizing the existing DKAN Theme through theme settings, implementing an entirely new theme, or creating a `subtheme of nuboot_radix <#creating-a-new-subtheme>`_.
+DKAN administrators have the choice of customizing the existing DKAN Theme through theme settings, implementing an entirely new theme, or creating a :ref:`subtheme of nuboot_radix <creating_subtheme>`.
 
 By default, the DKAN Theme is located in: `[SITEROOT]/themes/nuboot_radix`
 
@@ -83,6 +83,8 @@ For more information on how to use @fontyourface visit the `project page <https:
 
 .. image:: ../images/Appearance_DKAN_5.png
    :alt: Select google fonts
+
+.. _creating_subtheme:
 
 Creating a new subtheme
 ****************************
@@ -148,6 +150,6 @@ The font files and the css are inside the Nuboot Radix theme `dkan/themes/nuboot
 dkan-topics
 ***************
 
-This font is used for the Content Type and `Topics <topics.rst>`_ icons, see `Streamline Icons <http://www.streamlineicons.com/index.html>`_
+This font is used for the Content Type and :doc:`Topics <topics>` icons, see `Streamline Icons <http://www.streamlineicons.com/index.html>`_
 
-If you would like to use your own icon font for Topics, use the `steps outlined here <topics.html#adding-new-icons>`_
+If you would like to use your own icon font for Topics, use the :doc:`steps outlined here <adding_new_icons>`.
