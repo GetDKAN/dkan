@@ -6,7 +6,7 @@ In order to add options to the existing ones you need to implement `hook_license
 .. code-block:: php
 
   // Let's asume we want to do this as part of the fictitious license_options_extra module
-  function license_options_extra_subscribe() {
+  function license_options_extra_license_subscribe() {
     return array(
       'tcl' => array(
         'label' => 'Talis Community License (TCL)',
@@ -25,7 +25,7 @@ In order to remove options from the existing ones you need to implement `hook_li
 .. code-block:: php
 
   // Let's asume we want to do this as part of the fictitious license_options_extra module
-  function license_options_extra_unsubscribe() {
+  function license_options_extra_license_unsubscribe() {
     return array(
       'notspecified',
     );
@@ -47,5 +47,5 @@ References to the code
 ----------------------
 
 + Hooks are invoked `here <https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_dataset/modules/dkan_dataset_content_types/dkan_dataset_content_types.license_field.inc#L20>`_
-+ Field formatter implementation for the license field is in `here <https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_dataset/modules/dkan_dataset_content_types/dkan_dataset_content_types.module#L43>`_
++ Field formatter implementation for the license field is in `here <https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_dataset/modules/dkan_dataset_content_types/dkan_dataset_content_types.module#L46>`_
 
