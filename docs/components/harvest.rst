@@ -30,7 +30,7 @@ Create a new harvest source
 :Title: Administrative title for the source.
 :Description: Administrative description or notes about the source.
 :Source URI: The full Uniform Resource Identifier, such as `http://demo.getdkan.com/data.json`.
-:Type: data.json or data.xml - If the harvest source type you are looking for is not available, please refer to the `Define a new Harvest Source Type <#id1>`_ section below.
+:Type: data.json or data.xml - If the harvest source type you are looking for is not available, please refer to the :ref:`Define a new Harvest Source Type <define_type>` section below.
 
 The form includes four multi-value fields to help you fine tune the results of your harvest.
 
@@ -172,6 +172,9 @@ checklist:
 * Implement the Harvest Source Type cache callback.
 * Implement the Harvest Source Type Migration Class.
 * (Optional) Write tests for your source type implementation.
+
+
+.. _define_type:
 
 Define a new Harvest Source Type
 **************************************
