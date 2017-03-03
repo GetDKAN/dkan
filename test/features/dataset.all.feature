@@ -68,6 +68,7 @@ Feature: Dataset Features
     Then I should see "19" items in the "datasets" region
     And I should see the first "3" dataset items in "Date changed" "Desc" order.
 
+  @no-main-menu
   Scenario: View list of published datasets
     Given I am on the homepage
     When I click "Datasets"
