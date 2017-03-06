@@ -40,10 +40,10 @@ Feature: Resource
     And resources:
       | title       | publisher | format | dataset    | author   | published | description |
       | Resource 01 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 02 | Group 01  | zip    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 03 | Group 02  | zip    | Dataset 02 | Celeste  | No        | Yes         |
+      | Resource 02 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 03 | Group 02  | csv    | Dataset 02 | Celeste  | No        | Yes         |
       | Resource 04 | Group 01  | csv    | Dataset 01 | Katie    | No        | Yes         |
-      | Resource 05 | Group 02  | zip    | Dataset 02 | Celeste  | Yes       | Yes         |
+      | Resource 05 | Group 02  | csv    | Dataset 02 | Celeste  | Yes       | Yes         |
 
   # TODO: Change to use Workbench instead of /content
   @noworkflow

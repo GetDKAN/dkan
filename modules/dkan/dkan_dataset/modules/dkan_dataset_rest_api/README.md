@@ -225,7 +225,6 @@ Example response:
 
 ```json
 {
-{
   "vid": "52",
   "uid": "1",
   "title": "Wisconsin Polling Places",

@@ -45,10 +45,10 @@ Background:
     | Dataset 04 | Group 02  | Celeste | No               | Gov      | Test        | 2015-01-02           |  -5 year     |
     | Dataset 05 | Group 01  | Katie   | No               | Gov      | Test        | 2015-01-02           |  -5 year     |
   And resources:
-    | title       | publisher | format | author | published | dataset    | description |
-    | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-    | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
-    | Resource 03 | Group 01  | zip    | Katie  | Yes       | Dataset 02 |             |
+    | title       | publisher | author | published | dataset    | description |
+    | Resource 01 | Group 01  | Katie  | Yes       | Dataset 01 |             |
+    | Resource 02 | Group 01  | Katie  | Yes       | Dataset 01 |             |
+    | Resource 03 | Group 01  | Katie  | Yes       | Dataset 02 |             |
 
   @noworkflow
   Scenario: Replace node changed date with modified source date for harvested datasets

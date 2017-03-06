@@ -1,0 +1,39 @@
+diff --git a/panopoly_widgets.features.field_instance.inc b/panopoly_widgets.features.field_instance.inc
+index c2ee56e..542108d 100644
+--- a/panopoly_widgets.features.field_instance.inc
++++ b/panopoly_widgets.features.field_instance.inc
+@@ -300,6 +300,7 @@ function panopoly_widgets_field_default_field_instances() {
+           'langcode' => 'en',
+           'link_text' => 'View larger map',
+           'map_type' => 'm',
++          'static_scale' => 1,
+           'zoom_level' => 14,
+         ),
+         'type' => 'simple_gmap',
+diff --git a/panopoly_widgets.info b/panopoly_widgets.info
+index 318a039..fc270df 100644
+--- a/panopoly_widgets.info
++++ b/panopoly_widgets.info
+@@ -120,6 +120,5 @@ features[file_display][] = video__link__file_field_file_default
+ features[file_display][] = video__preview__media_youtube_image
+ features[file_display][] = video__teaser__media_youtube_image
+ features[file_display][] = video__teaser__media_youtube_video
+-features[linkit_profiles][] = content_fields
+ features[views_view][] = panopoly_widgets_general_content
+ features_exclude[dependencies][linkit] = linkit
+diff --git a/panopoly_widgets.views_default.inc b/panopoly_widgets.views_default.inc
+index ae5845a..9a20ff4 100644
+--- a/panopoly_widgets.views_default.inc
++++ b/panopoly_widgets.views_default.inc
+@@ -46,11 +46,6 @@ function panopoly_widgets_views_default_views() {
+   $handler->display->display_options['fields']['field_featured_image']['label'] = '';
+   $handler->display->display_options['fields']['field_featured_image']['element_class'] = 'listing-image';
+   $handler->display->display_options['fields']['field_featured_image']['element_label_colon'] = FALSE;
+-  $handler->display->display_options['fields']['field_featured_image']['click_sort_column'] = 'fid';
+-  $handler->display->display_options['fields']['field_featured_image']['settings'] = array(
+-    'image_style' => 'panopoly_image_quarter',
+-    'image_link' => 'content',
+-  );
+   /* Field: Title */
+   $handler->display->display_options['fields']['title']['id'] = 'title';
+   $handler->display->display_options['fields']['title']['table'] = 'node';
