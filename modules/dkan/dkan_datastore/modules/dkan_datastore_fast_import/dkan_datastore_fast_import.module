@@ -198,6 +198,7 @@ function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id) {
     $file = $node->field_upload->value();
     $selection = variable_get('dkan_datastore_fast_import_selection', DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT);
     $use_fast_import = FALSE;
+    variable_set('use_quote_delimiters', 0);
 
     if ($selection == DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_DYNAMIC_IMPORT) {
       $threshold = variable_get('dkan_datastore_fast_import_selection_threshold', DkanDatastoreFastImport::FAST_IMPORT_THRESHOLD_DEFAULT);
@@ -229,7 +230,7 @@ function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id) {
     $form['use_quote_delimiters'] = array(
       '#type' => 'checkbox',
       '#title' => t('Use quote delimiters'),
-      '#default_value' => variable_get('use_quote_delimiters'),
+      '#default_value' => 0,
     );
   }
 }
