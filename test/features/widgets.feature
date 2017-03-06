@@ -135,6 +135,7 @@ Feature: Widgets
     And I wait for "First spot"
     Then I should see "First spot" in the "content"
 
+  @no-main-menu
   Scenario: Adds "New Submenu Widget" block to home page using panels ipe editor
     Given the cache has been cleared
     When I follow "Submenu"
