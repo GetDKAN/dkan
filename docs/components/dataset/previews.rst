@@ -58,6 +58,10 @@ Support has been added for previewing JSON, geojson, XML, ArcGIS REST, WMS, imag
 
 .. figure:: ../../images/png-preview.png
 
+.. figure:: ../../images/arcgis-preview.png
+
+.. figure:: ../../images/wms-preview.png
+
 Preview Configuration
 ---------------------
 By default previews are available for resources with files below 3MB of size. However you can customize this limit in the recline configuration page (/admin/dkan/recline).

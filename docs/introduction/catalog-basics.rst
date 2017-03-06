@@ -12,8 +12,8 @@ The catalog is a wrapper containing information, sorted into datasets. A catalog
 
 `DCAT <http://www.w3.org/TR/vocab-dcat/>`_ - an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web -  recommends providing the following fields: catalog record, dataset, description, homepage, language, license, publisher, release date, rights, spatial, themes, title and update date.
 
-
 .. _datasets:
+
 Dataset
 --------------------
 
