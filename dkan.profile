@@ -504,8 +504,8 @@ function dkan_bueditor_markdown_install() {
     ->fetchField();
 
   $data = array(
-    'html' => ['default' => $eid, 'alternative' => 0],
-    'plain_text' => ['plain_text' => 0, 'alternative' => 0],
+    'html' => array('default' => $eid, 'alternative' => 0),
+    'plain_text' => array('plain_text' => 0, 'alternative' => 0),
   );
 
   db_insert('bueditor_plus_profiles')
