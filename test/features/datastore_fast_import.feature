@@ -1,4 +1,4 @@
-@api
+@api @enableFastImport
 Feature: DKAN Datastore Fast Import
   Background:
   Given pages:
