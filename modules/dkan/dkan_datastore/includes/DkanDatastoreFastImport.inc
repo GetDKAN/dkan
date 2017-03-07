@@ -41,7 +41,9 @@ class DkanDatastoreFastImport extends DkanDatastore implements DatastoreFormInte
     $filesize = filesize(drupal_realpath($file->uri));
     $use_fast_import = $form_state['values']['use_fast_import'];
     $queue_filesize_threshold = parse_size(variable_get('queue_filesize_threshold', self::QUEUE_FILESIZE_THRESHOLD_DEFAULT));
-    variable_set('use_quote_delimiters', $form_state['values']['use_quote_delimiters']);
+    variable_set('quote_delimiters', $form_state['values']['quote_delimiters']);
+    variable_set('lines_terminated_by', $form_state['values']['lines_terminated_by']);
+    variable_set('fields_escaped_by', $form_state['values']['fields_escaped_by']);
 
     // If a remote file is provided we fallback to feeds importer
     // else we perform a fast import.
