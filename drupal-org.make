@@ -161,7 +161,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/nuboot_radix.git
-      branch: release-1-12
+      branch: CIVIC-5955
     type: theme
   radix:
     type: theme
