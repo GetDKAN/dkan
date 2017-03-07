@@ -7,6 +7,7 @@
  - #1730 Fix logic error for front page in theme causing error messages on homepage
  - #1728 Added a tag @defaultHomepage to a topic test which relies on homepage content.
  - #5807 Fix panelizer permissions to hide 'Customize Display' button
+ - #1776 Fix 500 errors when linking or uploading geojson files in resources.
 
 7.x-1.13
 --------------------------
