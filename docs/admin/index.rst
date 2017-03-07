@@ -1,5 +1,5 @@
 DKAN Site Administration
-----------------------
+-------------------------
 
 .. toctree::
    :maxdepth: 1
