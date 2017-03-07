@@ -53,4 +53,4 @@ class FastImportContext extends RawDKANContext {
     drupal_uninstall_modules(array_values($modules_to_disable));
     drupal_flush_all_caches();
   }
-
+}
