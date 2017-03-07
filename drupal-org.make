@@ -291,7 +291,7 @@ projects:
   remote_stream_wrapper:
     version: '1.0-rc1'
     patch:
-      2833837: 'https://www.drupal.org/files/issues/prevent-download-intent-open-stream-2833837-1.patch'
+      2833837: 'https://www.drupal.org/files/issues/prevent-download-intent-open-stream-2833837-4.patch'
   role_export:
     version: '1.0'
   rules:
