@@ -331,7 +331,7 @@ projects:
   uuid:
     version: '1.0-beta2'
   views:
-    version: '3.14'
+    version: '3.15'
     patch:
       1388684: 'https://www.drupal.org/files/views_taxonomy_entity_uri-1388684-15.patch'
   views_autocomplete_filters:
