@@ -3,6 +3,8 @@ DKAN Data Preview Features
 
 DKAN allows users to have a preview of their data when uploaded to or linked to a *resource*. Which preview type is displayed for a particular *resource* depends on the data **format** selected. If no data format is provided, DKAN will attempt to auto-detect the format from the file's metadata; re-editing the *resource* and correcting the format field manually may be necessary if the auto-detection is not successful.
 
+This functionality is provided via the `Recline module <https://github.com/NuCivic/recline>`_, which is not part of the core DKAN repository but is a basic dependency of it (and will be included when building the distribution via ``drush make``).
+
 Recline.js
 -------------
 
@@ -56,7 +58,7 @@ Image files (JPG, PNG or GIF) uploaded as resources will be displayed directly o
 
 Web Map Service (WMS)
 *********************
-DKAN can use Leaflet to display a preview of a `WMS server <https://en.wikipedia.org/wiki/Web_Map_Service>`_, provided endpoint. 
+DKAN can use Leaflet to display a preview of a `WMS server <https://en.wikipedia.org/wiki/Web_Map_Service>`_, provided endpoint.
 
 .. image:: ../../images/wms.png
 
@@ -64,7 +66,7 @@ WMS support in DKAN is still somewhat experimental and your results may vary.
 
 ArcGIS REST
 ****************
-An ESRI/ArcGIS REST endpoint may also be displayed in a Leaflet preview. 
+An ESRI/ArcGIS REST endpoint may also be displayed in a Leaflet preview.
 
 .. image:: ../../images/arcgis.png
 
