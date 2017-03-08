@@ -13,6 +13,8 @@ DCAT-AP
 
 DKAN also provides endpoints and configurable field mappings for `DCAT-AP <https://joinup.ec.europa.eu/asset/dcat_application_profile/description>`_, the application profile for data portals in Europe, developed by the European Commission. DCAT-AP is of course based on the `Data Catalog Vocabulary (DCAT) <https://www.w3.org/TR/vocab-dcat/>`_, but provides stricter definitions of catalogs, datasets, distributions and other objects. Through `Open Data Schema Map`_, DKAN provides both a catalog endpoint (see `demo <http://demo.getdkan.com/catalog.xml>`_) and individual RDF endoints for each dataset (see by going to any dataset on `<http://demo.getdkan.com/>`_ and clicking the "RDF" link on the lefthand sidebar).
 
+.. _field_comparison:
+
 Field Comparison
 ----------------
 
@@ -41,7 +43,7 @@ Dataset
 	"field_contact_name", "dcat:contactPoint.vcard:fn", `contactPoint <http://project-open-data.github.io/schema/#contactPoint>`_
 	"field_contact_email", "dcat:contactPoint.vcard:hasEmail", `mbox <http://project-open-data.github.io/schema/#mbox>`_
 	"field_public_access_level", `dct:accessRights <http://udfr.org/docs/onto/dct_accessRights.html>`_, `accessLevel <http://project-open-data.github.io/schema/#accessLevel>`_
-	"field_additional_info", "", "" 
+	"field_additional_info", "", ""
 	"field_resources", `dcat:distribution <http://www.w3.org/TR/vocab-dcat/#Property:dataset_distribution>`_, `distribution <http://project-open-data.github.io/schema/#distribution>`_
 	"field_related_content", "", `references <http://project-open-data.github.io/schema/#references>`_
 	"uuid", `dct:identifier <http://www.w3.org/TR/vocab-dcat/#Property:dataset_identifier>`_, `identifier <http://project-open-data.github.io/schema/#identifier>`_
@@ -69,7 +71,7 @@ Resource / Distribution
 	"", "dcat:accessURL", "accessURL"
 	"", "dct:conformsTo", "conformsTo"
 	"", "", "describedBy",
-	"", "", "describedByType" 
+	"", "", "describedByType"
 	"body", "dct:description", "description"
 	"field_link_remote_file || field_upload", "dcat:downloadURL", "downloadURL"
 	"field_format", "", "format"

@@ -3,9 +3,9 @@ DKAN Harvest
 
 DKAN Harvest is a module that provides a common harvesting framework for DKAN.
 It supports custom extensions and adds `drush <http://www.drush.org/en/master/>`_
-commands and a web UI to manage harvesting sources and jobs. To "harvest" data is 
-to use the public feed or API of another data portal to import items from that 
-portal's catalog into your own. For example, 
+commands and a web UI to manage harvesting sources and jobs. To "harvest" data is
+to use the public feed or API of another data portal to import items from that
+portal's catalog into your own. For example,
 `Data.gov <https://data.gov>`_ harvests all of its datasets from the
 `data.json <https://project-open-data.cio.gov/v1.1/schema/>`_ files of `hundreds
 of U.S. federal, state and local data portals <http://catalog.data.gov/harvest>`_.
@@ -20,11 +20,13 @@ follows a two-step process to import datasets:
 
 Harvest Sources
 ----------------
+
 Harvest Sources are nodes that store the source's URI and some additional
 configuration. Users with the administrator or site manager role will be able to create and manage harvest sources.
 
 Create a new harvest source
 ***************************
+
 1. Go to ``node/add/harvest-source`` or Content > Add content > Harvest Source, and fill out the form.
 
 :Title: Administrative title for the source.
@@ -51,13 +53,13 @@ Project Open Data (as well as most metadata APIs) includes many fields that are 
 
 To access the name property for filtering or overriding, you can set `publisher.name` in the first text box and the value you want to use in the second one.
 
-.. image:: ../images/harvest-filters.png
+.. figure:: ../images/harvest-filters.png
 
 2. Click **Save**, the datasets from the source will be cached, and you will see a preview of what will be imported. This preview page shows a list of dataset titles and identifiers now in the harvest cache, allowing you to perform a basic check on your source configuration. If it does not look right, click the **Edit** tab to make adjustments.
 
 3. Click **Harvest Now**. The datasets that were cached will now be imported into your site.
 
-.. image:: ../images/harvest-search.png
+.. figure:: ../images/harvest-search.png
 
 Harvest Source nodes are viewable by the public and provide some basic metadata to the user.
 
@@ -70,12 +72,12 @@ From the admin menu, navigate to DKAN > DKAN Harvest Dashboard to view harvest s
 :Migrate source(s): This will migrate the current cache for the selected sources, no matter how old it is.
 
 
-.. image:: ../images/harvest-dashboard.png
+.. figure:: ../images/harvest-dashboard.png
 
 
 Click on the title of a harvest source from the dashboard to see the details of that source. Administrative tasks can be accomplished from the tabs across the top.
 
-.. image:: ../images/harvest-source-node.png
+.. figure:: ../images/harvest-source-node.png
 
 :View: View the harvest source node.
 :Edit: Click to make changes to the configuration of the harvest source.
@@ -97,7 +99,7 @@ entities created have a proper user as author.
 List Harvest sources available
 *******************************
 
-.. code::
+.. code-block::
 
   sh
   # List all available Harvest Sources
@@ -109,7 +111,7 @@ List Harvest sources available
 Run a full harvest (Cache & Migration)
 **************************************
 
-.. code::
+.. code-block::
 
   sh
   # Harvest data and run migration on all the harvest sources available.
@@ -126,7 +128,7 @@ Run a full harvest (Cache & Migration)
 Run a harvest cache
 **************************************
 
-.. code::
+.. code-block::
 
   sh
   # Run a harvest cache operation on all the harvest sources available.
@@ -143,7 +145,7 @@ Run a harvest cache
 Run a harvest migration job
 **************************************
 
-.. code::
+.. code-block::
 
   sh
   # Run a harvest migrate operation on all the harvest sources available.
@@ -182,7 +184,8 @@ Define a new Harvest Source Type
 DKAN Harvest leverages Drupal's hook system to provide a way to extend the Source types that DKAN Harvest supports. To add a new harvest source type the we return their definitions as array items via the
 ``hook_harvest_source_types()`` hook.
 
-.. code:: php
+.. code-block:: php
+
   /**
    * Implements hook_harvest_source_types().
    */
@@ -317,7 +320,7 @@ add/update the new/changed fields.
 
 For example to override the mapping for the ``og_group_ref`` field.
 
-.. code:: php
+.. code-block:: php
 
   public function setFieldMappings() {
     parent::setFieldMappings();
@@ -334,7 +337,7 @@ node(s) associated with the dataset. the helper method
 
 Example code snippet:
 
-.. code:: php
+.. code-block:: php
 
   /**
    * Implements prepareRow.
