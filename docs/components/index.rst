@@ -27,7 +27,7 @@ described inside the Datasets section, all this functionality is provided by the
    Roles and Permissions <permissions>
    Storytelling <storytelling/index>
    Open Data Schema Map <open-data-schema>
-   Visualizations <visualizations>
+   Visualizations <visualizations/index>
 
 .. note:: The three modules mentioned above that are not distributed with DKAN
    continue to be maintained in separate repositories because they work
