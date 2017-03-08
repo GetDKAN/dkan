@@ -1,7 +1,7 @@
 DKAN Datastore
 ===============
 
-DKAN Datastore bundles a number of modules and configuration to allow users to upload CSV and XML files, parse them and save them into the native database as flat tables, allowing users to query them through a public API.
+DKAN Datastore bundles a number of modules and configuration to allow users to upload CSV files, parse them and save them into the native database as flat tables, allowing users to query them through a public API.
 
 **Drupal Architecture**
 
@@ -16,7 +16,7 @@ Getting Started
 
 When you create a dataset with resources, you have data in DKAN which you can display and store in several ways. However, DKAN is still reading this data directly from the file or API you added as a resource.
 
-To get the fullest functionality possible out of your datasets, you should add your CSV and XML resources to the datastore.
+To get the fullest functionality possible out of your datasets, you should add your CSV resources to the datastore.
 
 If you are exploring a resource that is not yet in the datastore, you will see a message advising you of this. 
 
@@ -43,20 +43,20 @@ Default behavior for linked and uploaded files is controlled through the `Feeds 
 
 .. image:: ../images/datastore-feeds-importers.png
 
-Import upon form submission
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Import on submission
+^^^^^^^^^^^^^^^^^^^^^^
 To import a Resource file upon saving the resource, click **Import on submission** in the settings section for each importer: 
 
 .. image:: ../images/datastore-import-submission.png
 
 This is not recommended for large imports as a batch screen will be triggered that will not stop until the entire file is imported.
 
-Import in the background
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Process in background
+^^^^^^^^^^^^^^^^^^^^^^^
 This setting means that once an import has started, it will be processed in 50 row increments in the background. Processing will occur during cron. The queue of imports is managed by the `Job Schedule <http://dgo.to/job_scheduler>`_ module. Each cron run will `process a maximum of 200 jobs in a maximum of 30 seconds <http://cgit.drupalcode.org/job_scheduler/tree/job_scheduler.module?id=7.x-2.0-alpha3#n54>`_. Note that an import won't be started by saving the Resource form. This will only be triggered by clicking "Import" on the "Manage Datastore" page or if triggered programatically. This setting can be used in addition to "Import on submission" option to start imports that will be imported in the background.
 
-Import periodically
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Periodic import
+^^^^^^^^^^^^^^^^^^^^^^^
 Importing items on a periodic basis makes the most sense if you have a file you are linking to that you want to periodically re-import. This setting requires that cron is running on a regular schedule.
 
 Geocoder
@@ -73,7 +73,7 @@ Instructions
 5. In the Geolocate Addressses field enter the field or fields from the file that make up the address to geolocate.
 6. Click the **Import** button
 
-.. image:: images/datastore-geolocate.png
+.. image:: ../images/datastore-geolocate.png
 
 Geolocation Services
 ^^^^^^^^^^^^^^^^^^^^^
@@ -81,10 +81,10 @@ Geolocation services offered are
 
 * `Google <https://developers.google.com/maps/articles/geocodestrat>`_
 * `Yahoo <http://developer.yahoo.com/boss/geo/>`_
-* `Open Geocoding API <href="https://developer.mapquest.com/documentation/open/geocoding-api/>`_
+* `Nominatim <href="https://developer.mapquest.com/documentation/open/geocoding-api/>`_
 * `Yandex <http://api.yandex.com/maps/doc/geocoder/desc/concepts/input_params.xml>`_
 
-Note that Open Geocoding API is a driven by `Open Street Map <http://www.openstreetmap.org/>`_ data, which is the most open of the options offered.
+Note that Nominatim is a driven by `Open Street Map <http://www.openstreetmap.org/>`_ data, which is the most open of the options offered.
 
 Geolocation Limits
 ^^^^^^^^^^^^^^^^^^^
@@ -219,7 +219,7 @@ To import a resource using Fast Import:
 
 - Create a resource using a CSV file (**node/add/resource**) or edit an existing one.
 - Click on **Manage Datastore**
-- Make sure **No imported items.** legend shows up.
+- Make sure the status says **No imported items** (You can use the **Drop Datastore** link if needed).
 - Check **Use Fast Import** checkbox
 - Press **import**
 
