@@ -312,7 +312,7 @@ projects:
   select_or_other:
     version: '2.22'
   services:
-    version: '3.17'
+    version: '3.19'
   simple_gmap:
     version: '1.3'
   strongarm:
