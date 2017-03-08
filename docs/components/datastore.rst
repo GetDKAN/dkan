@@ -1,14 +1,9 @@
-##############
 DKAN Datastore
-##############
+===============
 
-DKAN features a Datastore for uploaded files.
+DKAN Datastore bundles a number of modules and configuration to allow users to upload CSV and XML files, parse them and save them into the native database as flat tables, allowing users to query them through a public API.
 
-Any type of file can be uploaded to DKAN through the "Add Resources" form or through the API. CSV and XML files, however, can also parsed and inserted into unique tables in the DKAN database.
-
-===================
-Drupal Architecture
-===================
+**Drupal Architecture**
 
 The DKAN Datastore's importer is a wrapper around the `Feeds <https://www.drupal.org/project/feeds>`_ module. The custom `Feeds Flatstore Processor <https://github.com/NuCivic/feeds_flatstore_processor>`_ and `Feeds Field Fetcher <https://www.drupal.org/project/feeds_field_fetcher>`_ plugins were created  the file uploaded to the resource form a feed item.
 
@@ -16,64 +11,122 @@ The `Data <https://www.drupal.org/project/data>`_ module is used to manage datas
 
 The Datastore API uses the `Services <https://www.drupal.org/project/services>`_ module to provide an endpoint, although nearly all the underlying functionality is overridden and provided directly by the `DKAN Datastore API <https://www.drupal.org/project/services>`_ module.
 
-===========
-Basic Usage
-===========
+Getting Started
+----------------
 
-DKAN provides UI for managing the Datastore. Management activities include:
+When you create a dataset with resources, you have data in DKAN which you can display and store in several ways. However, DKAN is still reading this data directly from the file or API you added as a resource.
 
-* Importing items
-* Deleting items
-* Editing the schema (see below)
-* Edit Views integration
+To get the fullest functionality possible out of your datasets, you should add your CSV and XML resources to the datastore.
 
-Drush commands are also included, described below.
+If you are exploring a resource that is not yet in the datastore, you will see a message advising you of this. 
 
-If you have successfully created a dataset with resources, you now have data in DKAN which you can display and store in several ways. However, DKAN is still reading this data directly from the file or API you added as a resource.
+.. image:: ../images/datastore-message.png
 
-To get the fullest functionality possible out of your datasets, including a public API that can be used to develop 3rd party applications, you must complete the final step of adding your resources to DKAN's own datastore. (At the moment, a DKAN datastore is simply a table in the main database.)
+Click the "Manage Datastore" button at the top of the screen. On the "Manage Datastore" page, confirm that the delimiter and file encoding options are correct, then use the "Import" button at the bottom of the page to import the data from your file or API into DKAN's local datastore.
 
-If you are exploring a resource that is not yet in the datastore, you will see a message advising you of this. Click the "Manage Datastore" button at the top of the screen. On the "Manage Datastore" page, use the "Import" button at the bottom of the page to import the data from your file or API into DKAN's local datastore.
+.. image:: ../images/datastore-resource.png
 
-Notification to import resource to datastore:
+Your data is now ready to use via the API! Click the "Data API" button at the top of the resource screen for specific instructions.
 
-![Manage Datastore: Notification](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202015-04-03%20at%206.19.09%20PM.png)
-
-Importing the resource:
-
- ![Manage Datastore: Import](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202015-04-03%20at%206.19.26%20PM.png)
-
-Notification of a successful import:
-
-![Manage Datastore: Success](http://docs.getdkan.com/sites/default/files/Screen%20Shot%202015-04-03%20at%206.19.53%20PM.png)
-
-Your data is now ready to use via the API! Click the "Data API" button at the top of the resource screen for specific instructions. DKAN datastores can also be created and updated from files using the following Drush commands:
-
-To create a datastore from a local file: ``drush dsc [path-to-local-file]``
-
-To update a datastore from a local file: ``drush dsu [datastore-id] [path-to-local-file]``
-
-To delete a datastore file (imported items will be deleted as well): ``drush dsfd (datastore-id)`` To get the URL of the datastore file: ``drush dsfuri [datastore-id]``
-
-******************
 Processing Options
-******************
+-------------------
 
-Files are parsed and inserted in batches. The user has the option of parsing them upon form submission. If the user chooses to parse the file manually they are able to see the progress of the processing through a batch operations screen similar to the one below.
+By default Resource files are added to the DKAN Datastore manually. This can be changed to:
 
-![Drupal batch operation](http://drupal.org/files/images/computed_field_tools_drupal7_batch.png)
+* Import upon form submission
+* Import in the background
+* Import periodically
 
-Files that are not processed manually are processed in pieces during cron.
+Changing Default Datastore Import Behavior
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Default behavior for linked and uploaded files is controlled through the `Feeds module <http://dgo.to/feeds>`_. To access the Feeds administrative interface, enabled the **Feeds Admin UI** module which is included but not enabled by default in DKAN. Once turned on you can access the Feeds UI at ``/admin/structure/feeds``. You should see two Feeds Importers by default: 
 
---------
+.. image:: ../images/datastore-feeds-importers.png
+
+Import upon form submission
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To import a Resource file upon saving the resource, click **Import on submission** in the settings section for each importer: 
+
+.. image:: ../images/datastore-import-submission.png
+
+This is not recommended for large imports as a batch screen will be triggered that will not stop until the entire file is imported.
+
+Import in the background
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This setting means that once an import has started, it will be processed in 50 row increments in the background. Processing will occur during cron. The queue of imports is managed by the `Job Schedule <http://dgo.to/job_scheduler>`_ module. Each cron run will `process a maximum of 200 jobs in a maximum of 30 seconds <http://cgit.drupalcode.org/job_scheduler/tree/job_scheduler.module?id=7.x-2.0-alpha3#n54>`_. Note that an import won't be started by saving the Resource form. This will only be triggered by clicking "Import" on the "Manage Datastore" page or if triggered programatically. This setting can be used in addition to "Import on submission" option to start imports that will be imported in the background.
+
+Import periodically
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Importing items on a periodic basis makes the most sense if you have a file you are linking to that you want to periodically re-import. This setting requires that cron is running on a regular schedule.
+
 Geocoder
---------
+---------
 
-DKAN's native Datastore can use the Drupal `Geocoder <https://www.drupal.org/project/geocoder>`_ module to add latitude/longitude coordinates to resources that have plain-text address information. This means that datasets containing plain-text addresses can be viewed on a map using the `Data Preview`_ or more easily used to build map-based data visualizations.
+DKAN's native Datastore can use the Drupal Geocoder module to add latitude/longitude coordinates to resources that have plain-text address information. This means that datasets containing plain-text addresses can be viewed on a map using the :doc:`Data Preview <visualizations/datapreviews>` or other map-based data visualizations. It is not included by default with DKAN but can be `downloaded here <https://www.drupal.org/project/geocoder>`_.
 
-============================
+Instructions
+^^^^^^^^^^^^^
+1. Install and enabling the **geocoder** module.
+2. Click the **Manage Datastore** tab on any resource with address information.
+3. Check the "Geolocate" box.
+4. Select the Geolocation Service you will be using.
+5. In the Geolocate Addressses field enter the field or fields from the file that make up the address to geolocate.
+6. Click the **Import** button
+
+.. image:: images/datastore-geolocate.png
+
+Geolocation Services
+^^^^^^^^^^^^^^^^^^^^^
+Geolocation services offered are 
+
+* `Google <https://developers.google.com/maps/articles/geocodestrat>`_
+* `Yahoo <http://developer.yahoo.com/boss/geo/>`_
+* `Open Geocoding API <href="https://developer.mapquest.com/documentation/open/geocoding-api/>`_
+* `Yandex <http://api.yandex.com/maps/doc/geocoder/desc/concepts/input_params.xml>`_
+
+Note that Open Geocoding API is a driven by `Open Street Map <http://www.openstreetmap.org/>`_ data, which is the most open of the options offered.
+
+Geolocation Limits
+^^^^^^^^^^^^^^^^^^^
+The number of rows that can be geolocated is determined by the service you select. Google, for example, allows you to geolocate up to 2500 times per day before paying.
+
+Adding Service API Keys
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+The `Geocoder <https://drupal.org/project/geocoder>`_ module supports adding API keys for the Yahoo and Google services. Users can sign up for those services and, in Google's case, geocode up to 100,000 addressees per day.
+
+
+Managing datastores with Drush
+-------------------------------
+**To create a datastore from a local file:**
+
+.. code-block:: php
+
+  drush dsc (path-to-local-file)
+
+
+**To update a datastore from a local file:**
+
+.. code-block:: php
+
+  drush dsu (datastore-id) (path-to-local-file)
+
+
+**To delete a datastore file (imported items will be deleted as well):**
+
+.. code-block:: php
+
+  drush dsfd (datastore-id)
+
+
+**To get the URI of the datastore file:**
+
+.. code-block:: php
+
+  drush dsfuri (datastore-id)
+
+
 Using the Fast Import Option
-============================
+-----------------------------
 
 DKAN Datastore's "fast import" allows for importing huge CSV files into the datastore at a fraction of the time it would take using the regular import.
 
@@ -93,13 +146,12 @@ The Datastore Fast Import was designed to remove as many steps as possible from 
 
 1. PHP interpreter sends a LOAD DATA query to the database
 2. The database receive the query and parses it
-4. The database reads and imports the whole file in a table
+3. The database reads and imports the whole file into a table
 
-Only one query is executed, so the amount of time required to import a big dataset is drastically reduced. On a several-hundred-megabyte file, this could mean the difference between an import time of hours and about one minute.
+Only one query is executed, so the amount of time required to import a big dataset is drastically reduced. On a multi-megabyte file, this could mean the difference between an import time of hours to minutes.
 
-************
 Requirements
-************
+^^^^^^^^^^^^^^
 
 - A MySQL / MariaDB database
 - MySQL database should support `PDO::MYSQL_ATTR_LOCAL_INFILE` and `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` flags.
@@ -110,9 +162,8 @@ Requirements
 
   Because of the above requirements, which may not be available on all hosting environments, this module is *disabled* by default in DKAN.
 
-************
 Installation
-************
+^^^^^^^^^^^^^^
 
 - Inside your settings.php add a `pdo` element to your database configuration. For example:
 .. code-block:: php
@@ -133,16 +184,17 @@ Installation
   );
 
 - Go to **/admin/modules**, turn on DKAN Datastore Fast Import and press **Save configuration**. Alternatively you can use drush to enable this module: ``drush en dkan_datastore_fast_import``.
-- Make sure this message **did not** show up at the top of the page:
+- Make sure you **do not** see this message at the top of the page:
 .. code-block:: bash
 
   Required PDO flags for dkan_datastore_fast_import were not found. This module requires PDO::MYSQL_ATTR_LOCAL_INFILE and PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
 
-- Set up this command to run periodically using a cronjob or similar: ``drush queue-run dkan_datastore_queue``
+- Set up the following command to run periodically using a cronjob or similar: 
+``drush queue-run dkan_datastore_queue``
 
-*************
+
 Configuration
-*************
+^^^^^^^^^^^^^^
 
 To configure how Fast Import behaves go to **admin/dkan/datastore**.
 
@@ -160,9 +212,8 @@ Either of the two "Use fast import" options will also reveal the following addit
 :Queue Filesize Threshold: If a file is small enough, you can avoid waiting until the drush queue runs by configuring this threshold. Files with a size under this value won't be queued and will rather imported during the request. The time to perform the import should fit into the php request timeout, or your import could be aborted.
 
 
-**********************
 Usage
-**********************
+^^^^^^^^^^^^^^
 
 To import a resource using Fast Import:
 
@@ -172,8 +223,8 @@ To import a resource using Fast Import:
 - Check **Use Fast Import** checkbox
 - Press **import**
 
-=============
-Datastore API
-=============
 
-Once processed, Datastore information is available via the Datastore API. For more information, see the `Datastore API page <../apis/datastore-api.rst>`_.
+Datastore API
+--------------
+
+Once processed, Datastore information is available via the Datastore API. For more information, see the :doc:`Datastore API page <../apis/datastore-api>`.
