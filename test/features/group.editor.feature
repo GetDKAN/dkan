@@ -168,7 +168,7 @@ Feature: Site Manager administer groups
     When I click "People"
     Then I should see "Total content: 5"
 
-  Scenario: DEBUG Edit dataset content created by others on group as editor
+  Scenario: Edit dataset content created by others on group as editor
     Given I am logged in as "Martin"
     And I am on "Dataset 01" page
     Then I should see "Edit"
