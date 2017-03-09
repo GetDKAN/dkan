@@ -49,11 +49,11 @@ Feature: Dataset Features
       | html 2 |
     And datasets:
       | title                | publisher | author  | published        | tags     | description |
-      | DKAN Test Dataset 01 | Group 01  | Gabriel | Yes              | Health 2 | Test        |
-      | DKAN Test Dataset 02 | Group 01  | Gabriel | Yes              | Gov 2    | Test        |
-      | DKAN Test Dataset 03 | Group 01  | Katie   | Yes              | Health 2 | Test        |
-      | DKAN Test Dataset 04 | Group 02  | Celeste | No               | Gov 2    | Test        |
-      | DKAN Test Dataset 05 | Group 01  | Katie   | No               | Gov 2    | Test        |
+      | DKANTest Dataset 01 | Group 01  | Gabriel | Yes              | Health 2 | Test        |
+      | DKANTest Dataset 02 | Group 01  | Gabriel | Yes              | Gov 2    | Test        |
+      | DKANTest Dataset 03 | Group 01  | Katie   | Yes              | Health 2 | Test        |
+      | DKANTest Dataset 04 | Group 02  | Celeste | No               | Gov 2    | Test        |
+      | DKANTest Dataset 05 | Group 01  | Katie   | No               | Gov 2    | Test        |
     And resources:
       | title       | publisher | format | author | published | dataset              | description |
       | Resource 01 | Group 01  | csv 2  | Katie  | Yes       | DKAN Test Dataset 01 |             |
@@ -72,7 +72,7 @@ Feature: Dataset Features
   Scenario: View list of published datasets
     When I am on the homepage
     And I click "Datasets"
-    And I search for "DKAN Test"
+    And I search for "DKANTest"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
 
@@ -163,7 +163,7 @@ Feature: Dataset Features
   # TODO: make sure it works when we don't have default content on.
   Scenario: Filter dataset search results by tags
     When I am on "Datasets Search" page
-    And I search for "DKAN Test"
+    And I search for "DKANTest"
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
@@ -176,7 +176,7 @@ Feature: Dataset Features
   # TODO: make sure it works when we don't have default content on.
   Scenario: Filter dataset search results by resource format
     When I am on "Datasets Search" page
-    And I search for "DKAN Test"
+    And I search for "DKANTest"
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
@@ -190,7 +190,7 @@ Feature: Dataset Features
   # TODO: make sure it works when we don't have default content on.
   Scenario: Filter dataset search results by author
     When I am on "Datasets Search" page
-    And I search for "DKAN Test"
+    And I search for "DKANTest"
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
@@ -203,20 +203,20 @@ Feature: Dataset Features
 
   Scenario: View published dataset
     When I am on "Datasets Search" page
-    And I click "DKAN Test Dataset 01"
+    And I click "DKANTest Dataset 01"
     # I should see the license information
     Then I should be on "DKAN Test Dataset 01" page
 
   Scenario: Share published dataset on Google+
-    When I am on "DKAN Test Dataset 01" page
+    When I am on "DKANTest Dataset 01" page
     Then I should see the redirect button for "Google+"
 
   Scenario: Share published dataset on Twitter
-    When I am on "DKAN Test Dataset 01" page
+    When I am on "DKANTest Dataset 01" page
     Then I should see the redirect button for "Twitter"
 
   Scenario: Share published dataset on Facebook
-    When I am on "DKAN Test Dataset 01" page
+    When I am on "DKANTest Dataset 01" page
     Then I should see the redirect button for "Facebook"
 
   @fixme @testBug
