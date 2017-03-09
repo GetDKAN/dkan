@@ -308,3 +308,45 @@ function dkan_dataset_groups_menu_alter(&$items) {
   $items['admin/config/group/roles']['access arguments'] = array('administer og ui pages');
   $items['admin/config/group/fields']['access arguments'] = array('administer og ui pages');
 }
+
+/**
+ * Implements hook_og_membership_presave().
+ */
+function dkan_dataset_groups_og_membership_presave(OgMembership $og_membership) {
+  $group_type = $og_membership->group_type;
+  $gid = $og_membership->gid;
+  $uid = $og_membership->etid;
+  $rid = 3;
+  // If the user is an editor, assign the og administrator role
+  // when adding the user to a group.
+  $user = user_load($uid);
+  if ($user && in_array('editor', array_values($user->roles))) {
+    // Get the existing user group roles.
+    $user_roles = og_get_user_roles($group_type, $gid, $uid);
+    if (empty($user_roles[$rid])) {
+      $role = new stdClass();
+      $role->uid = $uid;
+      $role->rid = $rid;
+      $role->group_type = $group_type;
+      $role->gid = $gid;
+
+      drupal_write_record('og_users_roles', $role);
+      og_invalidate_cache();
+      module_invoke_all('og_role_grant', $group_type, $gid, $uid, $rid);
+    }
+  }
+}
+
+/**
+ * Implements hook_user_presave().
+ */
+function dkan_dataset_groups_user_presave(&$edit, $account, $category) {
+  // If the user is not an editor or site manager,
+  // remove the og administrator role.
+  if (!in_array('editor, site manager', array_values($account->roles))) {
+    db_delete('og_users_roles')
+      ->condition('uid', $account->uid)
+      ->condition('rid', 3)
+      ->execute();
+  }
+}
