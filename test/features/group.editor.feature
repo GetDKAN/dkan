@@ -144,7 +144,6 @@ Feature: Site Manager administer groups
     | member               |
     | administrator member |
 
-  @javascript
   Scenario: Approve new group members as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
