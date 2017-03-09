@@ -124,7 +124,7 @@ Feature: Dataset Features
 
   Scenario: Reset dataset search filters
     When I am on "Datasets Search" page
-    And I fill in "DKAN Test" for "Search" in the "datasets" region
+    And I fill in "DKANTest" for "Search" in the "datasets" region
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
@@ -205,7 +205,7 @@ Feature: Dataset Features
     When I am on "Datasets Search" page
     And I click "DKANTest Dataset 01"
     # I should see the license information
-    Then I should be on "DKAN Test Dataset 01" page
+    Then I should be on "DKANTest Dataset 01" page
 
   Scenario: Share published dataset on Google+
     When I am on "DKANTest Dataset 01" page
