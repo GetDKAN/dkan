@@ -338,12 +338,14 @@ function dkan_dataset_groups_og_membership_presave(OgMembership $og_membership) 
 }
 
 /**
- * Implements hook_user_presave().
+ * Implements hook_user_update().
  */
-function dkan_dataset_groups_user_presave(&$edit, $account, $category) {
+function dkan_dataset_groups_user_update(&$edit, $account, $category) {
   // If the user is not an editor or site manager,
   // remove the og administrator role.
-  if (!in_array('editor, site manager', array_values($account->roles))) {
+  $rid1 = user_role_load_by_name('editor');
+  $rid2 = user_role_load_by_name('site manager');
+  if (!user_has_role($rid1->rid, $account) && !user_has_role($rid2->rid, $account)) {
     db_delete('og_users_roles')
       ->condition('uid', $account->uid)
       ->condition('rid', 3)
