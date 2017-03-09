@@ -55,10 +55,10 @@ Feature: Dataset Features
       | DKANTest Dataset 04 | Group 02  | Celeste | No               | Gov 2    | Test        |
       | DKANTest Dataset 05 | Group 01  | Katie   | No               | Gov 2    | Test        |
     And resources:
-      | title       | publisher | format | author | published | dataset              | description |
-      | Resource 01 | Group 01  | csv 2  | Katie  | Yes       | DKAN Test Dataset 01 |             |
-      | Resource 02 | Group 01  | html 2 | Katie  | Yes       | DKAN Test Dataset 01 |             |
-      | Resource 03 | Group 01  | html 2 | Katie  | Yes       | DKAN Test Dataset 02 |             |
+      | title       | publisher | format | author | published | dataset             | description |
+      | Resource 01 | Group 01  | csv 2  | Katie  | Yes       | DKANTest Dataset 01 |             |
+      | Resource 02 | Group 01  | html 2 | Katie  | Yes       | DKANTest Dataset 01 |             |
+      | Resource 03 | Group 01  | html 2 | Katie  | Yes       | DKANTest Dataset 02 |             |
 
    @fixme @dkanBug
     # TODO: Datasets not shown on homepage currently
