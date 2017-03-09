@@ -144,6 +144,7 @@ Feature: Site Manager administer groups
     | member               |
     | administrator member |
 
+  @javascript
   Scenario: Approve new group members as group administrator
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
@@ -152,6 +153,7 @@ Feature: Site Manager administer groups
     And I click "edit" in the "Jaz" row
     When I select "Active" from "Status"
     And I press "Update membership"
+    And I wait for "Group overview"
     Then I should see "The membership has been updated"
 
   Scenario: View the number of members on group as group administrator

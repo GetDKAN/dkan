@@ -312,7 +312,7 @@ function dkan_dataset_groups_menu_alter(&$items) {
 /**
  * Implements hook_og_membership_presave().
  */
-function dkan_dataset_groups_og_membership_presave(OgMembership $og_membership) {
+function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
   $group_type = $og_membership->group_type;
   $gid = $og_membership->gid;
   $uid = $og_membership->etid;
@@ -320,7 +320,8 @@ function dkan_dataset_groups_og_membership_presave(OgMembership $og_membership) 
   // If the user is an editor, assign the og administrator role
   // when adding the user to a group.
   $user = user_load($uid);
-  if ($user && in_array('editor', array_values($user->roles))) {
+  $erid = user_role_load_by_name('editor');
+  if (user_has_role($erid->rid, $user)) {
     // Get the existing user group roles.
     $user_roles = og_get_user_roles($group_type, $gid, $uid);
     if (empty($user_roles[$rid])) {
