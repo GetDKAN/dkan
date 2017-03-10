@@ -56,7 +56,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: CIVIC-5964
+      branch: CIVIC-5964
     type: module
   admin_menu:
     version: 3.0-rc5
