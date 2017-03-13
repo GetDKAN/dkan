@@ -18,6 +18,7 @@ dependencies[] = list
 dependencies[] = og
 dependencies[] = og_ui
 dependencies[] = options
+dependencies[] = path_breadcrumbs
 dependencies[] = search_api
 dependencies[] = search_api_db
 dependencies[] = search_api_views
