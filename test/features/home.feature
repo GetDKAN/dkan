@@ -24,7 +24,7 @@ Feature: Homepage
   @customizable
   Scenario: Viewing footer
     Given I am on the homepage
-    Then I should see "Powered by DKAN, a project of NuCivic"
+    Then I should see "Powered by DKAN, a project of Granicus"
 
   @customizable
   Scenario: Viewing tags

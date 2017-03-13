@@ -17,9 +17,6 @@ projects[entity_path][version] = 1.x-dev
 projects[entity_path][patch][2809655] = https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff
 projects[globalredirect][version] = 1.5
 
-; Patches
-projects[views][patch][1388684] = https://www.drupal.org/files/views_taxonomy_entity_uri-1388684-15.patch
-
 ; Libraries
 libraries[spectrum][type] = libraries
 libraries[spectrum][download][type] = git
