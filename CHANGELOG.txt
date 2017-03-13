@@ -1,5 +1,6 @@
 - Added css for chart visualizaitons, fixes issue in IE.
 - Updates drupal core to 7.53
+- Upgrade visualization_entity to 7.x-1.1
 
 7.x-1.12.13 2017-01-04
 ----------------------
