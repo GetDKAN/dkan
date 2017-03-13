@@ -28,6 +28,11 @@ checkout:
     # Remove the extra composer stuff that circleci loads and that is causing conflicts with drush.
     - rm -rf ~/.composer
 
+## Unset secure_file_priv on mysql.
+database:
+  pre:
+    - echo -e '[mysqld]\nsecure_file_priv = ""' | sudo sh -c "cat >> /etc/mysql/my.cnf"
+
 ## Customize dependencies
 dependencies:
 
