@@ -56,7 +56,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.x
+      tag: 7.x-1.1
     type: module
   admin_menu:
     version: 3.0-rc5
