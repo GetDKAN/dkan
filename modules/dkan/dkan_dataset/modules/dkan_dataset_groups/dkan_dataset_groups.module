@@ -310,7 +310,7 @@ function dkan_dataset_groups_menu_alter(&$items) {
 }
 
 /**
- * Implements hook_og_membership_presave().
+ * Implements hook_og_membership_insert().
  */
 function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
   $group_type = $og_membership->group_type;
@@ -336,21 +336,47 @@ function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
       module_invoke_all('og_role_grant', $group_type, $gid, $uid, $rid);
     }
   }
+  $user = user_load($uid);
+  drupal_set_message(t('%user has the editor role, so has also been granted the group administrator role in this group.', array('%user' => $user->name)), 'status');
 }
 
 /**
  * Implements hook_user_update().
  */
 function dkan_dataset_groups_user_update(&$edit, $account, $category) {
-  // If the user is not an editor or site manager,
-  // remove the og administrator role.
-  $rid1 = user_role_load_by_name('editor');
-  $rid2 = user_role_load_by_name('site manager');
-  $rid = db_query("SELECT rid from {og_role} WHERE name = :name", array(":name" => 'administrator member'))->fetchField();
-  if (!user_has_role($rid1->rid, $account) && !user_has_role($rid2->rid, $account)) {
-    db_delete('og_users_roles')
-      ->condition('uid', $account->uid)
-      ->condition('rid', $rid)
-      ->execute();
+  if (module_exists('og')) {
+    // If the user is not an editor or site manager,
+    // remove the og administrator role.
+    $rid1 = user_role_load_by_name('editor');
+    $rid2 = user_role_load_by_name('site manager');
+    if (!user_has_role($rid1->rid, $account) && !user_has_role($rid2->rid, $account)) {
+
+      // Check the og_users_roles table for administrator role.
+      $rid = db_query("SELECT rid from {og_role} WHERE name = :name", array(":name" => 'administrator member'))->fetchField();
+      // Find the groups the user belongs to.
+      $query = db_select('node', 'n');
+      $query->join('og_users_roles', 'o', 'n.nid = o.gid');
+      $query
+        ->fields('n', array('title'))
+        ->condition('o.uid', $account->uid)
+        ->condition('o.rid', $rid);
+      $result = $query->execute();
+
+      if ($result) {
+        $groups = '';
+        foreach ($result as $delta => $row) {
+          $groups .= $row->title;
+          if ($delta < ($result->rowCount() - 1)) {
+            $groups .= ', ';
+          }
+        }
+        drupal_set_message(t('%user no longer has the editor or site manager role so has also been removed as an administrator on the following groups: %groups.', array('%user' => $account->name, '%groups' => $groups)), 'status');
+      }
+
+      db_delete('og_users_roles')
+        ->condition('uid', $account->uid)
+        ->condition('rid', $rid)
+        ->execute();
+    }
   }
 }
