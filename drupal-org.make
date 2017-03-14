@@ -1,7 +1,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.1/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
@@ -312,7 +312,7 @@ projects:
   select_or_other:
     version: '2.22'
   services:
-    version: '3.17'
+    version: '3.19'
   simple_gmap:
     version: '1.3'
   strongarm:
@@ -345,7 +345,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0
+      tag: 7.x-1.1
     type: module
   workbench:
     version: '1.2'

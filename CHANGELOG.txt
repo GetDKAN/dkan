@@ -1,6 +1,10 @@
 7.x-1.13.x
  - Remove horizontal tab field from the group content type, fix margin on group block.
  - #1786 Add hook to auto-assign editors the og administrator role.
+ - #1796 Fix Harvest support for contact name and contact email.
+ - #1795 Update front page test on topics.feature with @customizable.
+ - #1783 Update services to 3.19
+ - #1794 Update visualization_entity to 1.1
  - #1781 Update views to 3.15 and remove patch 1388684.
  - #1751 Add POD validation link to command center menu for site manager access.
  - #1762 Re-number update hooks that were mixed up during release integration.
@@ -10,6 +14,7 @@
  - #1730 Fix logic error for front page in theme causing error messages on homepage
  - #1728 Added a tag @defaultHomepage to a topic test which relies on homepage content.
  - #5807 Fix panelizer permissions to hide 'Customize Display' button
+ - #1767 Better handling of empty values by datastore_api. Also see NuCivic/feeds_flatstore_processor#9
 
 7.x-1.13
 --------------------------
