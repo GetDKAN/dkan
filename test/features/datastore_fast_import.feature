@@ -4,20 +4,9 @@ Feature: DKAN Datastore Fast Import
     Given pages:
       | name                | url                    |
       | Datastore Settings  | /admin/dkan/datastore  |
-      | Content       | /node/add          |
-      | User          | /user              |
     Given users:
       | name    | mail                | roles                |
       | Badmin  | admin@example.com   | site manager         |
-    Given groups:
-      | title    | author  | published |
-      | Group 01 | Badmin  | Yes       |
-    And "Tags" terms:
-      | name    |
-      | world   |
-    And datasets:
-      | title             | publisher | author  | published        | tags     | description |
-      | Dataset Datastore | Group 01  | Gabriel | Yes              | world    | Test        |
     And resources:
       | title              | author   | published | description | link file |
       | Resource Datastore | Badmin   | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv |
