@@ -80,64 +80,6 @@ class DatajsonHarvestMigration extends HarvestMigration {
   }
 
   /**
-   * Creates list of fields for Data.json Dataset.
-   */
-  public function getDataJsonDatasetFields($version = '1.1') {
-    $common_fields = array(
-        // “Common Core” Required Fields.
-      "title" => "Title",
-      "description" => "Description",
-      "keyword" => "Tags",
-      "modified" => "Last Update",
-      "publisher" => "Publisher",
-      "contactPoint" => "Contact Name",
-      "identifier" => "Unique Identifier",
-      "accessLevel" => "Public",
-        // “Common Core” Required-if-Applicable Fields.
-      "bureauCode" => " Bureau Code",
-      "programCode" => "Program Code",
-      "license" => "License",
-      "spatial" => "Spatial",
-      "temporal" => " Temporal",
-        // Beyond Common Core.
-      "dataQuality" => " Data Quality",
-      "distribution" => "Distribution",
-      "issued" => "Release Date",
-      "language" => " Language",
-      "references" => " Related Documents ",
-      "systemOfRecords" => " System of Records",
-    );
-    if ($version == '1.0') {
-      return $common_fields + array(
-        "mbox" => "Contact Email",
-        "accessLevelComment" => " Access Level Comment",
-        "accessURL" => "Download",
-        "webService" => " Endpoint ",
-        "format" => " Format",
-        // Beyond Common Core.
-        "theme" => "Category",
-        "dataDictionary" => "Data Dictionary",
-        "accrualPeriodicity" => "Frequency",
-        "landingPage" => "Homepage",
-        "PrimaryITInvestmentUII" => "Primary IT Investment",
-      );
-    }
-    elseif ($version == '1.1') {
-      return $common_fields + array(
-        "rights" => " Rights",
-        "accrualPeriodicity" => " Frequency",
-        "conformsTo" => " Data Standard URI",
-        "describedBy" => "Data Dictionary",
-        "describedByType" => "Data",
-        "isPartOf" => " Collection",
-        "landingPage" => "Homepage",
-        "primaryITInvestmentUII" => "Primary",
-        "theme" => "Theme",
-      );
-    }
-  }
-
-  /**
    * Implements prepareRow.
    */
   public function prepareRow($row) {
