@@ -1,4 +1,9 @@
 7.x-1.13.x
+ - #1796 Fix Harvest support for contact name and contact email.
+ - #1795 Update front page test on topics.feature with @customizable.
+ - #1783 Update services to 3.19
+ - #1794 Update visualization_entity to 1.1
+ - #1781 Update views to 3.15 and remove patch 1388684.
  - #1751 Add POD validation link to command center menu for site manager access.
  - #1762 Re-number update hooks that were mixed up during release integration.
  - #1709 Changed function dkan sitewide conversion homepage to fix problem with link entity attribute. This attribute need to be a boolean.
@@ -8,6 +13,7 @@
  - #1728 Added a tag @defaultHomepage to a topic test which relies on homepage content.
  - #5807 Fix panelizer permissions to hide 'Customize Display' button
  - #1776 Fix 500 errors when linking or uploading geojson files in resources.
+ - #1767 Better handling of empty values by datastore_api. Also see NuCivic/feeds_flatstore_processor#9
 
 7.x-1.13
 --------------------------
