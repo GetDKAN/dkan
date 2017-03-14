@@ -46,7 +46,7 @@ Feature: Dkan Harvest
       | authenticated user      |
 
   @api
-  Scenario: As an administrator I should see only the published harvest sources listed on the harvest dashboard.
+  Scenario: As a site manager I should see only the published harvest sources listed on the harvest dashboard.
     Given users:
       | name            | mail                   | roles           |
       | Site manager    | admin@fakeemail.com    | site manager    |
