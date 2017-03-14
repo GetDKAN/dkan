@@ -10,6 +10,7 @@ Feature: DKAN Datastore Fast Import
     And resources:
       | title              | author   | published | description |
       | Resource Datastore | Badmin   | Yes       | Test        |
+    Given I am logged in as a user with the "site manager" role
     And I am on "Resource Datastore" page
     When I click "Edit"
     And I click "Upload"
