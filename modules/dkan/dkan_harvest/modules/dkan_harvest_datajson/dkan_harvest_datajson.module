@@ -65,7 +65,6 @@ function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime)
     elseif ($source->type->machineName === 'datajson_v1_1_json') {
       $data = drupal_json_decode($remote);
     }
-
     // Filter and save the data gathered from the endpoint.
     if ($data) {
       $v = dkan_harvest_datajson_cache_pod_v1_1_json($data, $source,
@@ -90,7 +89,7 @@ function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime)
  * @return array
  *   Modified array.
  */
-function dkan_harvest_datajson_set_value(&$obj, $path, $value, $override = FALSE) {
+function dkan_harvest_datajson_set_value(array &$obj, $path, $value, $override = FALSE) {
   $updated = FALSE;
   $keys = explode('.', $path);
   $branch = &$obj;
@@ -128,7 +127,7 @@ function dkan_harvest_datajson_set_value(&$obj, $path, $value, $override = FALSE
  * @return mixed
  *   Modified array
  */
-function dkan_harvest_datajson_get_value($obj, $path) {
+function dkan_harvest_datajson_get_value(array $obj, $path) {
   $keys = explode('.', $path);
   $value = $obj;
 
