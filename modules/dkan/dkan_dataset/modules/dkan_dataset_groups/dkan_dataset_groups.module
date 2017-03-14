@@ -316,7 +316,7 @@ function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
   $group_type = $og_membership->group_type;
   $gid = $og_membership->gid;
   $uid = $og_membership->etid;
-  $rid = 3;
+  $rid = db_query("SELECT rid from {og_role} WHERE name = :name", array(":name" => 'administrator member'))->fetchField();
   // If the user is an editor, assign the og administrator role
   // when adding the user to a group.
   $user = user_load($uid);
@@ -346,10 +346,11 @@ function dkan_dataset_groups_user_update(&$edit, $account, $category) {
   // remove the og administrator role.
   $rid1 = user_role_load_by_name('editor');
   $rid2 = user_role_load_by_name('site manager');
+  $rid = db_query("SELECT rid from {og_role} WHERE name = :name", array(":name" => 'administrator member'))->fetchField();
   if (!user_has_role($rid1->rid, $account) && !user_has_role($rid2->rid, $account)) {
     db_delete('og_users_roles')
       ->condition('uid', $account->uid)
-      ->condition('rid', 3)
+      ->condition('rid', $rid)
       ->execute();
   }
 }
