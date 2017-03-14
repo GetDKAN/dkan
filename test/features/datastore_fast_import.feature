@@ -1,4 +1,4 @@
-@api @enableFastImport
+@api @enableFastImport @javascript
 Feature: DKAN Datastore Fast Import
   Background:
     Given pages:
@@ -18,7 +18,7 @@ Feature: DKAN Datastore Fast Import
     And I wait for the file upload to finish
     And I press "Save"
 
-  @datastore @javascript
+  @datastore
   Scenario: As user I want to import files using batch imports
     Given I am logged in as a user with the "site manager" role
       And I am on "Datastore Settings" page
@@ -57,7 +57,7 @@ Feature: DKAN Datastore Fast Import
       Then I should not see "Importing"
       And I wait for "2 imported items total."
 
-  @datastore @javascript
+  @datastore
   Scenario: As user I want to enqueue all the imports of resource with a size over a threshold
     Given I am logged in as a user with the "site manager" role
       And I am on "Datastore Settings" page
