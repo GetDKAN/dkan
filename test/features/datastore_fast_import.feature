@@ -1,9 +1,26 @@
 @api @enableFastImport
 Feature: DKAN Datastore Fast Import
   Background:
-  Given pages:
-    | name                | url                    |
-    | Datastore Settings  | /admin/dkan/datastore  |
+    Given pages:
+      | name                | url                    |
+      | Datastore Settings  | /admin/dkan/datastore  |
+      | Content       | /node/add          |
+      | User          | /user              |
+    Given users:
+      | name    | mail                | roles                |
+      | Badmin  | admin@example.com   | site manager         |
+    Given groups:
+      | title    | author  | published |
+      | Group 01 | Badmin  | Yes       |
+    And "Tags" terms:
+      | name    |
+      | world   |
+    And datasets:
+      | title             | publisher | author  | published        | tags     | description |
+      | Dataset Datastore | Group 01  | Gabriel | Yes              | world    | Test        |
+    And resources:
+      | title              | author   | published | description | link file |
+      | Resource Datastore | Badmin   | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv |
 
   @datastore @javascript
   Scenario: As user I want to import files using batch imports
@@ -11,7 +28,7 @@ Feature: DKAN Datastore Fast Import
       And I am on "Datastore Settings" page
       And I select the radio button "Use fast import for files with a weight over:"
       And I press "Save configuration"
-    Given I am on the resource "District Names"
+    Given I am on the resource "Resource Datastore"
      When I click "Manage Datastore"
      Then I wait for "DKAN Datastore File: Status"
      When I press "Import"
@@ -21,7 +38,7 @@ Feature: DKAN Datastore Fast Import
   @datastore
   Scenario: As user I want to import files using fast imports
     Given I am logged in as a user with the "site manager" role
-      And I am on the resource "District Names"
+      And I am on the resource "Resource Datastore"
      When I click "Manage Datastore"
      Then I wait for "DKAN Datastore File: Status"
       And I check the box "Use Fast Import"
@@ -36,7 +53,7 @@ Feature: DKAN Datastore Fast Import
       And I select the radio button "Use fast import for files with a weight over:"
       And I fill in "dkan_datastore_fast_import_selection_threshold" with "1KB"
       And I press "Save configuration"
-    Given I am on the resource "District Names"
+    Given I am on the resource "Resource Datastore"
     When I click "Manage Datastore"
       Then I wait for "DKAN Datastore File: Status"
       And the "Use Fast Import" checkbox should be checked
@@ -51,7 +68,7 @@ Feature: DKAN Datastore Fast Import
       And I select the radio button "Use fast import as default (LOAD DATA)"
       And I fill in "queue_filesize_threshold" with "1KB"
       And I press "Save configuration"
-    Given I am on the resource "District Names"
+    Given I am on the resource "Resource Datastore"
      When I click "Manage Datastore"
      Then I wait for "DKAN Datastore File: Status"
       And the "Use Fast Import" checkbox should be checked
@@ -66,7 +83,7 @@ Feature: DKAN Datastore Fast Import
       And I select the radio button "Use fast import as default (LOAD DATA)"
       And I select the radio button "LOAD DATA INFILE"
       And I press "Save configuration"
-    Given I am on the resource "District Names"
+    Given I am on the resource "Resource Datastore"
      When I click "Manage Datastore"
      Then I wait for "DKAN Datastore File: Status"
       And the "Use Fast Import" checkbox should be checked
@@ -81,7 +98,7 @@ Feature: DKAN Datastore Fast Import
       And I select the radio button "Use fast import as default (LOAD DATA)"
       And I select the radio button "LOAD DATA LOCAL INFILE"
       And I press "Save configuration"
-    Given I am on the resource "District Names"
+    Given I am on the resource "Resource Datastore"
      When I click "Manage Datastore"
      Then I wait for "DKAN Datastore File: Status"
       And the "Use Fast Import" checkbox should be checked

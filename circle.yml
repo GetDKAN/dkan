@@ -31,7 +31,7 @@ checkout:
 ## Unset secure_file_priv on mysql.
 database:
   pre:
-    - echo -e '[mysqld]\nsecure_file_priv = ""' | sudo sh -c "cat >> /etc/mysql/my.cnf"
+    - echo -e 'secure_file_priv = ""' | sudo sh -c "cat >> /etc/mysql/my.cnf"
 
 ## Customize dependencies
 dependencies:
