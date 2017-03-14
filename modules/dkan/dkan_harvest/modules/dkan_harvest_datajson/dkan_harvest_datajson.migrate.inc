@@ -41,8 +41,6 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $this->addFieldMapping('changed', 'modified');
     $this->addFieldMapping('created', 'issued');
     $this->addFieldMapping('field_public_access_level', 'accessLevel');
-    $this->addFieldMapping('field_contact_name', 'contactPointName');
-    $this->addFieldMapping('field_contact_email', 'mbox');
     $this->addFieldMapping('uuid', 'identifier');
     $this->addFieldMapping('field_license', 'license');
     $this->addFieldMapping('field_spatial_geographical_cover', 'spatial');
@@ -82,70 +80,22 @@ class DatajsonHarvestMigration extends HarvestMigration {
   }
 
   /**
-   * Creates list of fields for Data.json Dataset.
-   */
-  public function getDataJsonDatasetFields($version = '1.1') {
-    $common_fields = array(
-        // “Common Core” Required Fields.
-      "title" => "Title",
-      "description" => "Description",
-      "keyword" => "Tags",
-      "modified" => "Last Update",
-      "publisher" => "Publisher",
-      "contactPoint" => "Contact Name",
-      "identifier" => "Unique Identifier",
-      "accessLevel" => "Public",
-        // “Common Core” Required-if-Applicable Fields.
-      "bureauCode" => " Bureau Code",
-      "programCode" => "Program Code",
-      "license" => "License",
-      "spatial" => "Spatial",
-      "temporal" => " Temporal",
-        // Beyond Common Core.
-      "dataQuality" => " Data Quality",
-      "distribution" => "Distribution",
-      "issued" => "Release Date",
-      "language" => " Language",
-      "references" => " Related Documents ",
-      "systemOfRecords" => " System of Records",
-    );
-    if ($version == '1.0') {
-      return $common_fields + array(
-        "mbox" => "Contact Email",
-        "accessLevelComment" => " Access Level Comment",
-        "accessURL" => "Download",
-        "webService" => " Endpoint ",
-        "format" => " Format",
-        // Beyond Common Core.
-        "theme" => "Category",
-        "dataDictionary" => "Data Dictionary",
-        "accrualPeriodicity" => "Frequency",
-        "landingPage" => "Homepage",
-        "PrimaryITInvestmentUII" => "Primary IT Investment",
-      );
-    }
-    elseif ($version == '1.1') {
-      return $common_fields + array(
-        "rights" => " Rights",
-        "accrualPeriodicity" => " Frequency",
-        "conformsTo" => " Data Standard URI",
-        "describedBy" => "Data Dictionary",
-        "describedByType" => "Data",
-        "isPartOf" => " Collection",
-        "landingPage" => "Homepage",
-        "primaryITInvestmentUII" => "Primary",
-        "theme" => "Theme",
-      );
-    }
-  }
-
-  /**
    * Implements prepareRow.
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
     if (property_exists($row, 'accrualPeriodicity')) {
       $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
+    }
+
+    // Process contact name and email.
+    if (is_object($row->contactPoint)
+      && $row->contactPoint->hasEmail) {
+      $row->contact_email = str_replace("mailto:", "", $row->contactPoint->hasEmail) ? str_replace("mailto:", "", $row->contactPoint->hasEmail) : $row->contactPoint->hasEmail;
+      $row->contact_name = isset($row->contactPoint->fn) ? $row->contactPoint->fn : '';
+      if (!filter_var($row->contact_email, FILTER_VALIDATE_EMAIL)) {
+        $row->contact_email = '';
+      }
     }
   }
 
