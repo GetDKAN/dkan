@@ -55,6 +55,13 @@ function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime)
   $remote = @file_get_contents($source->uri, 0, $context);
 
   if ($remote) {
+    // Some file begins with 'efbbbf' to mark the beginning of the file (The
+    // byte-order mark). (binary level) here we detect it and we remove it,
+    // basically it's the first 3 characters.
+    if (0 === strpos(bin2hex($remote), 'efbbbf')) {
+      $remote = substr($remote, 3);
+    }
+
     $data = FALSE;
     if ($source->type->machineName === 'datajson_v1_1_xml') {
       // Convert the XML document to JSON.
