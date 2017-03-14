@@ -13,7 +13,7 @@ Feature: Topics
       | name         | url                                        |
       | Add Topic    | /admin/structure/taxonomy/dkan_topics/add  |
 
-  @api @Topics @defaultHomepage
+  @api @Topics @defaultHomepage @customizable
   Scenario: See topics on the homepage as anonymous user
     When I am on the homepage
     Then I should see "Topic1"
