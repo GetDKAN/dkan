@@ -32,6 +32,7 @@ checkout:
 database:
   pre:
     - echo -e 'secure_file_priv = ""' | sudo sh -c "cat >> /etc/mysql/my.cnf"
+    - sudo /usr/sbin/service mysql restart
 
 ## Customize dependencies
 dependencies:

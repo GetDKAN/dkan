@@ -8,8 +8,14 @@ Feature: DKAN Datastore Fast Import
       | name    | mail                | roles                |
       | Badmin  | admin@example.com   | site manager         |
     And resources:
-      | title              | author   | published | description | link file |
-      | Resource Datastore | Badmin   | Yes       | Test        | https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv |
+      | title              | author   | published | description |
+      | Resource Datastore | Badmin   | Yes       | Test        |
+    And I am on "Resource Datastore" page
+    When I click "Edit"
+    And I click "Upload"
+    And I attach the file "dkan/district_centerpoints_0.csv" to "field_upload[und][0][resup]"
+    And I wait for the file upload to finish
+    And I press "Save"
 
   @datastore @javascript
   Scenario: As user I want to import files using batch imports
@@ -22,7 +28,7 @@ Feature: DKAN Datastore Fast Import
      Then I wait for "DKAN Datastore File: Status"
      When I press "Import"
       Then I should see "Importing"
-      And I wait for "399 imported items total."
+      And I wait for "2 imported items total."
 
   @datastore
   Scenario: As user I want to import files using fast imports
@@ -33,7 +39,7 @@ Feature: DKAN Datastore Fast Import
       And I check the box "Use Fast Import"
      When I press "Import"
       Then I should not see "Importing"
-      And I wait for "399 imported items total."
+      And I wait for "2 imported items total."
 
   @datastore
   Scenario: As user I want to set fast imports as default for all the resource with a size over a threshold
@@ -48,7 +54,7 @@ Feature: DKAN Datastore Fast Import
       And the "Use Fast Import" checkbox should be checked
     When I press "Import"
       Then I should not see "Importing"
-      And I wait for "399 imported items total."
+      And I wait for "2 imported items total."
 
   @datastore @javascript
   Scenario: As user I want to enqueue all the imports of resource with a size over a threshold
@@ -78,7 +84,7 @@ Feature: DKAN Datastore Fast Import
       And the "Use Fast Import" checkbox should be checked
      When I press "Import"
      Then I should not see "Importing"
-      And I wait for "399 imported items total."
+      And I wait for "2 imported items total."
 
   @datastore
   Scenario: As user I want to import resources using "LOAD DATA LOCAL INFILE"
@@ -93,4 +99,4 @@ Feature: DKAN Datastore Fast Import
       And the "Use Fast Import" checkbox should be checked
      When I press "Import"
      Then I should not see "Importing"
-      And I wait for "399 imported items total."
+      And I wait for "2 imported items total."
