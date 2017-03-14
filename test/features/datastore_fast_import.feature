@@ -14,7 +14,7 @@ Feature: DKAN Datastore Fast Import
     And I am on "Resource Datastore" page
     When I click "Edit"
     And I click "Upload"
-    And I attach the file "dkan/district_centerpoints_0.csv" to "field_upload[und][0][resup]"
+    And I attach the file "dkan/district_centerpoints_0.csv" to "field_upload[und][0][resup]" using file resup
     And I wait for the file upload to finish
     And I press "Save"
 
