@@ -41,8 +41,6 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $this->addFieldMapping('changed', 'modified');
     $this->addFieldMapping('created', 'issued');
     $this->addFieldMapping('field_public_access_level', 'accessLevel');
-    $this->addFieldMapping('field_contact_name', 'contactPointName');
-    $this->addFieldMapping('field_contact_email', 'mbox');
     $this->addFieldMapping('uuid', 'identifier');
     $this->addFieldMapping('field_license', 'license');
     $this->addFieldMapping('field_spatial_geographical_cover', 'spatial');
@@ -146,6 +144,16 @@ class DatajsonHarvestMigration extends HarvestMigration {
     parent::prepareRow($row);
     if (property_exists($row, 'accrualPeriodicity')) {
       $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
+    }
+
+    // Process contact name and email.
+    if (is_object($row->contactPoint)
+      && $row->contactPoint->hasEmail) {
+      $row->contact_email = str_replace("mailto:", "", $row->contactPoint->hasEmail) ? str_replace("mailto:", "", $row->contactPoint->hasEmail) : $row->contactPoint->hasEmail;
+      $row->contact_name = isset($row->contactPoint->fn) ? $row->contactPoint->fn : '';
+      if (!filter_var($row->contact_email, FILTER_VALIDATE_EMAIL)) {
+        $row->contact_email = '';
+      }
     }
   }
 
