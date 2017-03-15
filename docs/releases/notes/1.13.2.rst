@@ -8,7 +8,7 @@ This is a "patch" release of DKAN, containing bug fixes and minor updates, but a
 
 Improvements in this release
 ----------------------------
- - Added improved group role assignment for the editor role. Previously editors were not able to edit group content created by other users because they did not have the group administrator role. Now when an editor is added to a group they will automatically be assigned the group administrator role. Note that existing editor users will **NOT** be retroactively given the role, and these users' memberships will need to be manually edited.
- - Fixed DKAN Harvest permissions for the site manager role, they now have access to the cache, delete, harvest, and migrate bulk operations from the Harvest Dashboard.
- - DKAN Harvest added support for importing contact name and contact email.
- - Updated contrib modules: services, visualization_entity and views.
+- Added improved group role assignment for the editor role. Previously editors were not able to edit group content created by other users because they did not have the group administrator role. Now when an editor is added to a group they will automatically be assigned the group administrator role. Note that existing editor users will **NOT** be retroactively given the role, and these users' memberships will need to be manually edited.
+- Fixed DKAN Harvest permissions for the site manager role, they now have access to the cache, delete, harvest, and migrate bulk operations from the Harvest Dashboard.
+- DKAN Harvest added support for importing contact name and contact email.
+- Updated contrib modules: services, visualization_entity and views.
