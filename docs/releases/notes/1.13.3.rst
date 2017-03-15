@@ -1,6 +1,10 @@
 DKAN 1.13.3 (future release)
 ============================
 
-Placeholder for good things to come.
+This is a "patch" release of DKAN, containing bug fixes and minor updates, but adding no new functionality.
 
+:doc:`See full 1.13 release notes here <1.13>`.
 
+Improvements in this release
+----------------------------
+- Added improved group role assignment for the editor role. Previously editors were not able to edit group content created by other users because they did not have the group administrator role. Now when an editor is added to a group they will automatically be assigned the group administrator role. Note that existing editor users will **NOT** be retroactively given the role, and these users' memberships will need to be manually edited.
