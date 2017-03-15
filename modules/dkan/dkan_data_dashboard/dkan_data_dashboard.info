@@ -31,3 +31,4 @@ features[variable][] = panelizer_node:data_dashboard_default
 features[views_view][] = data_dashboards
 features_exclude[dependencies][dkan_dataset_content_types] = dkan_dataset_content_types
 features_exclude[dependencies][dkan_topics] = dkan_topics
+version = 7.x-1.12.14

@@ -7,3 +7,4 @@ project = dkan_default_topics
 dependencies[] = dkan_topics
 dependencies[] = taxonomy_fixtures
 dependencies[] = taxonomy
+version = 7.x-1.12.14

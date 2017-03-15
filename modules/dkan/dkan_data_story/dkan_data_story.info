@@ -57,3 +57,4 @@ features_exclude[dependencies][strongarm] = strongarm
 features_exclude[dependencies][taxonomy] = taxonomy
 features_exclude[dependencies][dkan_topics] = dkan_topics
 no autodetect = 1
+version = 7.x-1.12.14

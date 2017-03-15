@@ -7,3 +7,4 @@ project = dkan_sitewide_panelizer
 dependencies[] = panelizer
 dependencies[] = panels
 features[features_api][] = api:2
+version = 7.x-1.12.14
