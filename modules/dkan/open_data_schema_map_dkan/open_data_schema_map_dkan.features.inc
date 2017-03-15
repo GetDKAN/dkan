@@ -98,11 +98,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'metadata_created' => array(
-        'value' => '[node:created]',
+        'value' => '[node:field_harvest_created] || [node:created]',
         'type' => 'string',
       ),
       'metadata_modified' => array(
-        'value' => '[node:changed]',
+        'value' => '[node:field_harvest_modified] || [node:changed]',
         'type' => 'string',
       ),
       'creator_user_id' => array(
@@ -670,11 +670,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'metadata_created' => array(
-        'value' => '[node:created]',
+        'value' => '[node:field_harvest_created] || [node:created]',
         'type' => 'string',
       ),
       'metadata_modified' => array(
-        'value' => '[node:changed]',
+        'value' => '[node:field_harvest_modified] || [node:changed]',
         'type' => 'string',
       ),
       'creator_user_id' => array(
@@ -956,11 +956,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'metadata_created' => array(
-        'value' => '[node:created]',
+        'value' => '[node:field_harvest_created] || [node:created]',
         'type' => 'string',
       ),
       'metadata_modified' => array(
-        'value' => '[node:changed]',
+        'value' => '[node:field_harvest_modified] || [node:changed]',
         'type' => 'string',
       ),
       'creator_user_id' => array(
@@ -1338,7 +1338,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'issued' => array(
-        'value' => '',
+        'value' => '[node:field_harvest_created] || [node:created:custom:Y-m-d]',
         'type' => 'string',
       ),
       'keyword' => array(
@@ -1362,7 +1362,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'modified' => array(
-        'value' => '[node:field_modified_source_date] || [node:changed]',
+        'value' => '[node:field_harvest_modified] || [node:field_modified_source_date] || [node:changed]',
         'type' => 'string',
       ),
       'PrimaryITInvestmentUII' => array(
@@ -1515,7 +1515,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'issued' => array(
-        'value' => '[node:created:custom:Y-m-d]',
+        'value' => '[node:field_harvest_created] || [node:created:custom:Y-m-d]',
         'type' => 'string',
       ),
       'keyword' => array(
@@ -1535,7 +1535,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'modified' => array(
-        'value' => '[node:field_modified_source_date] || [node:changed:custom:Y-m-d]',
+        'value' => '[node:field_harvest_modified] || [node:field_modified_source_date] || [node:changed:custom:Y-m-d]',
         'type' => 'string',
       ),
       'primaryITInvestmentUII' => array(
@@ -1635,11 +1635,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:issued' => array(
-        'value' => '[node:created:custom:c]',
+        'value' => '[node:field_harvest_created] || [node:created:custom:c]',
         'type' => 'string',
       ),
       'dct:modified' => array(
-        'value' => '[node:changed:custom:c]',
+        'value' => '[node:field_harvest_modified] || [node:changed:custom:c]',
         'type' => 'string',
       ),
       'owl:versionInfo' => array(
@@ -1839,11 +1839,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:issued' => array(
-        'value' => '[node:created:custom:c]',
+        'value' => '[node:field_harvest_created] || [node:created:custom:c]',
         'type' => 'string',
       ),
       'dct:modified' => array(
-        'value' => '[node:changed:custom:c]',
+        'value' => '[node:field_harvest_modified] || [node:changed:custom:c]',
         'type' => 'string',
       ),
       'owl:versionInfo' => array(
@@ -2034,11 +2034,11 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:issued' => array(
-        'value' => '[node:created:custom:c]',
+        'value' => '[node:field_harvest_created] || [node:created:custom:c]',
         'type' => 'string',
       ),
       'dct:modified' => array(
-        'value' => '[node:changed:custom:c]',
+        'value' => '[node:field_harvest_modified] || [node:changed:custom:c]',
         'type' => 'string',
       ),
       'owl:versionInfo' => array(
