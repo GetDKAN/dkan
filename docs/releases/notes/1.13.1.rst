@@ -1,0 +1,17 @@
+DKAN 1.13.1 Release Notes
+=========================
+
+This is a "patch" release of DKAN, containing bug fixes and minor updates to DKAN 1.13, but adding no new functionality. It was released very shortly after 1.13 to address bugs that surfaced during deployments and upgrades. If you have not yet upgraded to 1.13, upgrade *directly* to this release and skip 1.13; if you have already upgraded, we recommend updating to 1.13.1 immediately. 
+
+:doc:`See full 1.13 release notes here <1.13>`.
+
+
+## Improvements in this release
+
+ - Fix validation page permission check using wrong permission name `odsm <https://github.com/NuCivic/open_data_schema_map/pull/86>`_.
+ - Fixed a bug in the `home page conversion function <https://github.com/NuCivic/dkan/blob/f6d58c0751e9fe16016cb289c17697f4d44d1059/modules/dkan/dkan_sitewide/dkan_sitewide.module#L297>`_
+ - Fixed the page title (``<head><title>``) so that it's just the site name (not the node or panel title)
+ - Updated the DKAN API link on dataset pages to use the new `documentation site page <http://docs.getdkan.com/en/latest/apis/index.html>`_.
+ - Fixed error messages appearing on homepage after upgrade
+ - Fixed panelizer permissions to hide the "Customize Display" button for Site Managers.
+ - Additional minor bug fixes to code and tests
