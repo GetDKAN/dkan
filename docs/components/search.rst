@@ -11,11 +11,12 @@ The `Search API <http://drupal.org/project/search_api>`_ module provides a frame
 
 Apache Solr
 ------------
-`Apache Solr <http://drupal.org/project/search_api_solr>`_ provides a Solr backend for the Search API module, and delivers enterprise class, high performance search functionality. Apache Solr runs as a separate service from the web server and requires extra resources to integrate into your website. This can increase the price for hosting. Recommended for high traffic sites.
+`Search API Solr Search <http://drupal.org/project/search_api_solr>`_ provides a Solr backend for the Search API module, and delivers enterprise class, high performance search functionality. Apache Solr runs as a separate service from the web server and requires extra resources to integrate into your website. This can increase the price for hosting. Recommended for high traffic sites.
 
 **Requirements:**
 
 - `Search API <http://drupal.org/project/search_api>`_ module
+- `Search API Solr Search <http://drupal.org/project/search_api>`_ module
 - An `Apache Solr <http://lucene.apache.org/solr/>`_ server.
 
 For further details see the `Search API Solr's handbook documentation <https://www.drupal.org/node/1999280>`_.
