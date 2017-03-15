@@ -223,7 +223,6 @@ Feature: Dkan Harvest
 
     Examples:
       | role              |
-      | administrator     |
       | site manager      |
 
   @api
@@ -245,7 +244,6 @@ Feature: Dkan Harvest
 
     Examples:
       | role              |
-      | administrator     |
       | site manager      |
 
   @api @javascript
@@ -268,7 +266,6 @@ Feature: Dkan Harvest
 
     Examples:
       | role              |
-      | administrator     |
       | site manager      |
 
   @api @javascript
@@ -295,7 +292,6 @@ Feature: Dkan Harvest
 
     Examples:
       | role              |
-      | administrator     |
       | site manager      |
 
   @api @javascript
@@ -352,7 +348,6 @@ Feature: Dkan Harvest
 
     Examples:
       | role              |
-      | administrator     |
       | site manager      |
 
   @api
