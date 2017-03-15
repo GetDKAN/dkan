@@ -90,6 +90,23 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("95f8eac4-fd1f-4b35-8472-5c87e9425dfa", $dataset->uuid->value());
   }
 
+  /**
+   * Test identifer.
+   *
+   * @depends testDatasetCount
+   */
+  public function testIssued($dataset) {
+    $this->assertEquals("2016-06-22", $dataset->field_harvest_created->value());
+  }
+
+  /**
+   * Test identifer.
+   *
+   * @depends testDatasetCount
+   */
+  public function testModified($dataset) {
+    $this->assertEquals("2016-07-21", $dataset->field_harvest_modefied->value());
+  }
 
   /**
    * Test Contact.
