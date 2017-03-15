@@ -1,4 +1,4 @@
-7.x-1.12.x
+7.x-1.12.14 2017-03-15
 ----------------------
 - Added css for chart visualizaitons, fixes issue in IE.
 - Updates drupal core to 7.53
