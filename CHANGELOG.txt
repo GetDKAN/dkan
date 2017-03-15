@@ -14,6 +14,7 @@
  - #1730 Fix logic error for front page in theme causing error messages on homepage
  - #1728 Added a tag @defaultHomepage to a topic test which relies on homepage content.
  - #5807 Fix panelizer permissions to hide 'Customize Display' button
+ - #1776 Fix 500 errors when linking or uploading geojson files in resources.
  - #1767 Better handling of empty values by datastore_api. Also see NuCivic/feeds_flatstore_processor#9
 
 7.x-1.13
