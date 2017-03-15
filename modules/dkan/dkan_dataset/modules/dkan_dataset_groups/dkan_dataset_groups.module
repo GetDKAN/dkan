@@ -336,7 +336,9 @@ function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
       module_invoke_all('og_role_grant', $group_type, $gid, $uid, $rid);
     }
   }
-  drupal_set_message(t('%user has the editor role, so has also been granted the group administrator role in this group.', array('%user' => $user->name)), 'status');
+  if (isset($user->name)) {
+    drupal_set_message(t('%user has the editor role, so has also been granted the group administrator role in this group.', array('%user' => $user->name)), 'status');
+  }
 }
 
 /**
@@ -404,7 +406,9 @@ function dkan_dataset_groups_user_update(&$edit, $account, $category) {
                 'group_type' => 'node',
               ))
               ->execute();
-            drupal_set_message(t('%user is an editor so has also been granted the group administrator role for the group: %group.', array('%user' => $account->name, '%group' => $row->title)), 'status');
+            if (isset($row->title)) {
+              drupal_set_message(t('%user is an editor so has also been granted the group administrator role for the group: %group.', array('%user' => $account->name, '%group' => $row->title)), 'status');
+            }
           }
         }
       }
