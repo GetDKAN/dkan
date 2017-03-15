@@ -345,15 +345,12 @@ function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
  */
 function dkan_dataset_groups_user_update(&$edit, $account, $category) {
   if (module_exists('og')) {
-    // If the user is not an editor or site manager,
-    // remove the og administrator role.
+    $rid = db_query("SELECT rid from {og_role} WHERE name = :name", array(":name" => 'administrator member'))->fetchField();
     $rid1 = user_role_load_by_name('editor');
     $rid2 = user_role_load_by_name('site manager');
+    // If the user is not an editor or site manager,
+    // check the og_users_roles table, see if user has the administrator role.
     if (!user_has_role($rid1->rid, $account) && !user_has_role($rid2->rid, $account)) {
-
-      // Check the og_users_roles table for administrator role.
-      $rid = db_query("SELECT rid from {og_role} WHERE name = :name", array(":name" => 'administrator member'))->fetchField();
-      // Find the groups the user belongs to.
       $query = db_select('node', 'n');
       $query->join('og_users_roles', 'o', 'n.nid = o.gid');
       $query
@@ -377,6 +374,41 @@ function dkan_dataset_groups_user_update(&$edit, $account, $category) {
         ->condition('uid', $account->uid)
         ->condition('rid', $rid)
         ->execute();
+    }
+
+    // If the user IS an editor, and belongs to a group or groups,
+    // add the og administrator role if not already set.
+    if (user_has_role($rid1->rid, $account)) {
+      $query = db_select('og_membership', 'm');
+      $query->join('og_users_roles', 'o', 'm.gid = o.gid');
+      $query->join('node', 'n', 'o.gid = n.nid');
+      $query
+        ->fields('n', array('nid', 'title'))
+        ->condition('m.entity_type', 'user')
+        ->condition('m.etid', $account->uid);
+      $users_groups = $query->execute();
+
+      if ($users_groups) {
+        foreach ($users_groups as $row) {
+          $query = db_select('og_users_roles', 'o');
+          $query->fields('o', array('gid'));
+          $query->condition('uid', $account->uid);
+          $query->condition('rid', $rid);
+          $query->condition('gid', $row->nid);
+          $result = $query->execute();
+          if (!$result->rowCount()) {
+            db_insert('og_users_roles')
+              ->fields(array(
+                'uid' => $account->uid,
+                'rid' => $rid,
+                'gid' => $row->nid,
+                'group_type' => 'node',
+              ))
+              ->execute();
+            drupal_set_message(t('%user is an editor so has also been granted the group administrator role for the group: %group.', array('%user' => $account->name, '%group' => $row->title)), 'status');
+          }
+        }
+      }
     }
   }
 }
