@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_dataset_content_types.strongarm.inc
@@ -122,7 +121,7 @@ function dkan_dataset_content_types_strongarm() {
         ),
         'identifier' => array(
           'default' => array(
-            'weight' => '9',
+            'weight' => '11',
             'visible' => TRUE,
           ),
           'teaser' => array(
