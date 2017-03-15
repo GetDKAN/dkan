@@ -336,7 +336,6 @@ function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
       module_invoke_all('og_role_grant', $group_type, $gid, $uid, $rid);
     }
   }
-  $user = user_load($uid);
   drupal_set_message(t('%user has the editor role, so has also been granted the group administrator role in this group.', array('%user' => $user->name)), 'status');
 }
 
