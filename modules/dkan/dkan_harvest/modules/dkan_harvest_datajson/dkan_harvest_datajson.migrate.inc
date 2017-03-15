@@ -38,8 +38,8 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $this->addFieldMapping('field_tags:create_term')
       ->defaultValue(TRUE);
 
-    $this->addFieldMapping('changed', 'modified');
-    $this->addFieldMapping('created', 'issued');
+    $this->addFieldMapping('field_harvest_created', 'issued');
+    $this->addFieldMapping('field_harvest_modified', 'modified');
     $this->addFieldMapping('field_public_access_level', 'accessLevel');
     $this->addFieldMapping('uuid', 'identifier');
     $this->addFieldMapping('field_license', 'license');
