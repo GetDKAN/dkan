@@ -1,4 +1,5 @@
-7.x-1.13.x
+7.x-1.13.2 2017-03-16
+----------------------
  - #1803 Fix broken access to featured groups sort order view. 
  - #1796 Fix Harvest support for contact name and contact email.
  - #1795 Update front page test on topics.feature with @customizable.
