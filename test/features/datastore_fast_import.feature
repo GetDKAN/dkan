@@ -22,8 +22,8 @@ Feature: DKAN Datastore Fast Import
   Scenario: As user I want to import files using batch imports
     Given I am logged in as a user with the "site manager" role
       And I am on "Datastore Settings" page
-      And I select the radio button "LOAD DATA INFILE"
       And I select the radio button "Use fast import for files with a weight over:"
+      And I select the radio button "LOAD DATA INFILE"
       And I press "Save configuration"
     Given I am on the resource "Resource Datastore"
      When I click "Manage Datastore"
