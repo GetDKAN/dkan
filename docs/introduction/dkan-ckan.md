@@ -1,6 +1,6 @@
 # Comparing DKAN and CKAN
 
-[CKAN](http://ckan.org) is an open data catalog that has powered many high-profile portals, including the main open data portals for both the [United Kingdom](http://data.gov.uk) and the [United Statres](http://data.gov), among others. The makers of DKAN have enjoyed contributing to and deploying CKAN. So why DKAN?
+[CKAN](http://ckan.org) is an open data catalog that has powered many high-profile portals, including the main open data portals for both the [United Kingdom](http://data.gov.uk) and the [United States](http://data.gov), among others. The makers of DKAN have enjoyed contributing to and deploying CKAN. So why DKAN?
 
 Ultimately, DKAN is a complimentary offering to CKAN in the effort to make data more open and accessible.
 
