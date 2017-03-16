@@ -105,7 +105,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    * @depends testDatasetCount
    */
   public function testModified($dataset) {
-    $this->assertEquals("2016-07-21", $dataset->field_harvest_modefied->value());
+    $this->assertEquals("2016-07-21", $dataset->field_harvest_modified->value());
   }
 
   /**
