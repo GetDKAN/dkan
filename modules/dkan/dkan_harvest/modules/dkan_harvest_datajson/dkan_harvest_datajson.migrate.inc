@@ -84,6 +84,15 @@ class DatajsonHarvestMigration extends HarvestMigration {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
+    // Convert dataset created and modified dates to timestampts.
+    if (!empty($row->issued)) {
+      $timestamp = strtotime($row->issued);
+    }
+
+    if (!empty($row->modified)) {
+      $timestamp = strtotime($row->modified);
+    }
+
     if (property_exists($row, 'accrualPeriodicity')) {
       $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
     }

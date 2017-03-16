@@ -97,6 +97,8 @@ function dkan_dataset_content_types_field_group_info() {
       18 => 'field_spatial',
       19 => 'field_spatial_geographical_cover',
       20 => 'field_temporal_coverage',
+      21 => 'field_harvest_created',
+      22 => 'field_harvest_modified',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(

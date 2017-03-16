@@ -170,7 +170,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         ),
       ),
       'type' => 'textfield_&_textfield',
-      'weight' => 26,
+      'weight' => 25,
     ),
   );
 
@@ -279,7 +279,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
       'module' => 'link',
       'settings' => array(),
       'type' => 'link_field',
-      'weight' => 24,
+      'weight' => 23,
     ),
   );
 
@@ -326,7 +326,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 20,
+      'weight' => 19,
     ),
   );
 
@@ -373,7 +373,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 19,
+      'weight' => 18,
     ),
   );
 
@@ -421,7 +421,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'rows' => 1,
       ),
       'type' => 'text_textarea',
-      'weight' => 18,
+      'weight' => 17,
     ),
   );
 
@@ -467,7 +467,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 17,
+      'weight' => 16,
     ),
   );
 
@@ -561,22 +561,28 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 16,
+      'weight' => 15,
     ),
   );
 
   // Exported field_instance: 'node-dataset-field_harvest_created'.
   $field_instances['node-dataset-field_harvest_created'] = array(
     'bundle' => 'dataset',
-    'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
+        'module' => 'date',
+        'settings' => array(
+          'format_type' => 'search_api_facetapi_DAY',
+          'fromto' => 'both',
+          'multiple_from' => '',
+          'multiple_number' => '',
+          'multiple_to' => '',
+          'show_remaining_days' => 0,
+        ),
+        'type' => 'date_default',
         'weight' => 27,
       ),
       'search_result' => array(
@@ -597,32 +603,47 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'label' => 'Created by Source',
     'required' => 0,
     'settings' => array(
-      'text_processing' => 0,
+      'default_value' => 'now',
+      'default_value2' => 'same',
+      'default_value_code' => '',
+      'default_value_code2' => '',
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'text',
+      'module' => 'date',
       'settings' => array(
-        'size' => 60,
+        'increment' => 15,
+        'input_format' => 'm/d/Y - H:i:s',
+        'input_format_custom' => '',
+        'label_position' => 'above',
+        'no_fieldset' => 0,
+        'text_parts' => array(),
+        'year_range' => '-3:+3',
       ),
-      'type' => 'text_textfield',
-      'weight' => 32,
+      'type' => 'date_text',
+      'weight' => 31,
     ),
   );
 
   // Exported field_instance: 'node-dataset-field_harvest_modified'.
   $field_instances['node-dataset-field_harvest_modified'] = array(
     'bundle' => 'dataset',
-    'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
+        'module' => 'date',
+        'settings' => array(
+          'format_type' => 'search_api_facetapi_DAY',
+          'fromto' => 'both',
+          'multiple_from' => '',
+          'multiple_number' => '',
+          'multiple_to' => '',
+          'show_remaining_days' => 0,
+        ),
+        'type' => 'date_default',
         'weight' => 28,
       ),
       'search_result' => array(
@@ -643,17 +664,26 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'label' => 'Last Modified by Source',
     'required' => 0,
     'settings' => array(
-      'text_processing' => 0,
+      'default_value' => 'now',
+      'default_value2' => 'same',
+      'default_value_code' => '',
+      'default_value_code2' => '',
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'text',
+      'module' => 'date',
       'settings' => array(
-        'size' => 60,
+        'increment' => 15,
+        'input_format' => 'm/d/Y - H:i:s',
+        'input_format_custom' => '',
+        'label_position' => 'above',
+        'no_fieldset' => 0,
+        'text_parts' => array(),
+        'year_range' => '-3:+3',
       ),
-      'type' => 'text_textfield',
-      'weight' => 33,
+      'type' => 'date_text',
+      'weight' => 32,
     ),
   );
 
@@ -746,7 +776,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 30,
+      'weight' => 29,
     ),
   );
 
@@ -808,7 +838,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
       'module' => 'link',
       'settings' => array(),
       'type' => 'link_field',
-      'weight' => 23,
+      'weight' => 22,
     ),
   );
 
@@ -854,7 +884,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'apply_chosen' => 1,
       ),
       'type' => 'options_select',
-      'weight' => 25,
+      'weight' => 24,
     ),
   );
 
@@ -972,7 +1002,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 29,
+      'weight' => 28,
     ),
   );
 
@@ -1018,7 +1048,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 31,
+      'weight' => 30,
     ),
   );
 
@@ -1068,7 +1098,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 21,
+      'weight' => 20,
     ),
   );
 
@@ -1131,7 +1161,7 @@ uk-ogl|UK Open Government Licence (OGL)',
       'module' => 'link',
       'settings' => array(),
       'type' => 'link_field',
-      'weight' => 28,
+      'weight' => 27,
     ),
   );
 
@@ -1177,7 +1207,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'size' => 60,
       ),
       'type' => 'entityreference_autocomplete',
-      'weight' => 27,
+      'weight' => 26,
     ),
   );
 
@@ -1223,7 +1253,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'size' => 250,
       ),
       'type' => 'text_textfield',
-      'weight' => 22,
+      'weight' => 21,
     ),
   );
 
@@ -1460,7 +1490,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'year_range' => '-10:+10',
       ),
       'type' => 'date_popup',
-      'weight' => 15,
+      'weight' => 14,
     ),
   );
 
