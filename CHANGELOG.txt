@@ -1,5 +1,5 @@
 7.x-1.13.x
- - #1803 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
+ - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
 
 7.x-1.13.2 2017-03-16
 ----------------------
