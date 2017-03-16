@@ -147,6 +147,8 @@ Feature: Dkan Harvest
     And I should see the text "Last Harvest Performed"
     And I should see the text "Harvest Source URI"
     And I should see the text "Harvest Source Title"
+    And I should see "2016-06-22" in the "Created by Source" row
+    And I should see "2016-08-02" in the "Last Modified by Source" row
 
   @api
   Scenario: As a user I should have access to see harvest preview information.
