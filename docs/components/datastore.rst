@@ -39,7 +39,7 @@ By default Resource files are added to the DKAN Datastore manually. This can be 
 
 Changing Default Datastore Import Behavior
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Default behavior for linked and uploaded files is controlled through the `Feeds module <http://dgo.to/feeds>`_. To access the Feeds administrative interface, enabled the **Feeds Admin UI** module which is included but not enabled by default in DKAN. Once turned on you can access the Feeds UI at ``/admin/structure/feeds``. You should see two Feeds Importers by default: 
+Default behavior for linked and uploaded files is controlled through the `Feeds module <http://dgo.to/feeds>`_. To access the Feeds administrative interface, enable the **Feeds Admin UI** module (which is included but not enabled by default in DKAN). Once turned on you can access the Feeds UI at ``/admin/structure/feeds``. You should see two Feeds Importers by default: 
 
 .. image:: ../images/datastore-feeds-importers.png
 
