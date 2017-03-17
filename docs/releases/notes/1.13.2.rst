@@ -8,7 +8,12 @@ This is a "patch" release of DKAN, containing bug fixes and minor updates, but a
 
 Improvements in this release
 ----------------------------
+- Updated documentation.
+- DKAN Datastore: fixed null values being imported as 0.
+- Fixed errors related to the open_data_schema_apis_features_rebuild() function.
+- Fixed errors when users with content creator role are editing or adding resources.
+- Fixed access to the POD validation screen for site managers.
 - Fixed access to the featured groups block for anonymous users.
-- Fixed DKAN Harvest permissions for the site manager role, they now have access to the cache, delete, harvest, and migrate bulk operations from the Harvest Dashboard.
-- DKAN Harvest added support for importing contact name and contact email.
+- DKAN Harvest: fixed permissions for the site manager role, they now have access to the cache, delete, harvest, and migrate bulk operations from the Harvest Dashboard.
+- DKAN Harvest: added support for importing contact name and contact email.
 - Updated contrib modules: services, visualization_entity and views.
