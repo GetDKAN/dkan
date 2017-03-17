@@ -18,7 +18,7 @@ class DefaultContentDataDashboardsImport extends DkanDataDashboardsImport {
     if (!isset($arguments['endpoint'])) {
       $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
       $arguments['list_url'] = 'data_dashboard_list.json';
-      $arguments['item_url'] = 'data_dashboard_show?id=:id.json';
+      $arguments['item_url'] = 'data_dashboard_show%3Fid=:id.json';
     }
 
     parent::__construct($arguments);
