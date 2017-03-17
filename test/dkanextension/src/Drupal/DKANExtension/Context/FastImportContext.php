@@ -26,6 +26,22 @@ class FastImportContext extends RawDKANContext {
     @module_enable(array(
       'dkan_datastore_fast_import',
     ));
+
+    global $databases;
+    $target = Database::getConnection()->getTarget();
+    $key = Database::getConnection()->getKey();
+    $database = $databases[$target][$key];
+
+    $infile_enabled = array_key_exists(PDO::MYSQL_ATTR_LOCAL_INFILE, $database['pdo']) && $database['pdo'][PDO::MYSQL_ATTR_LOCAL_INFILE];
+    if (!$infile_enabled) {
+      $database['pdo'][PDO::MYSQL_ATTR_LOCAL_INFILE] = 1;
+    }
+
+    $buffered_query_enabled = array_key_exists(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $database['pdo']) && $database['pdo'][PDO::MYSQL_ATTR_USE_BUFFERED_QUERY];
+    if (!$buffered_query_enabled) {
+      $database['pdo'][PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = 1;
+    }
+
     drupal_flush_all_caches();
   }
 
