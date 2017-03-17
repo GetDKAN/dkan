@@ -90,8 +90,8 @@ Feature: DKAN Datastore Fast Import
 
   # This test is being skipped as just one of load data infile or loada data local infile
   # works in one environment.
-  @datastore @fixme
-  Scenario: As user I want to import resources using "LOAD DATA LOCAL INFILE"
+  @datastore
+  Scenario: DEBUG As user I want to import resources using "LOAD DATA LOCAL INFILE"
     Given I am logged in as a user with the "site manager" role
       And I am on "Datastore Settings" page
       And I select the radio button "Use fast import as default (LOAD DATA)"
