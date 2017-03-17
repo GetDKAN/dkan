@@ -70,6 +70,7 @@ dependencies:
     - wget http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar
     - java -jar selenium-server-standalone-2.53.1.jar -p 4444 :
         background: true
+    - cp dkan/test/circle.settings.php docroot/sites/default/settings.php
   post:
      - sudo apt-get install -y x11vnc
      - x11vnc -forever -nopw:
