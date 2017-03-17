@@ -1,0 +1,14 @@
+DKAN 1.13.2 Release Notes
+=========================
+
+This is a "patch" release of DKAN, containing bug fixes and minor updates, but adding no new functionality.
+
+:doc:`See full 1.13 release notes here <1.13>`.
+
+
+Improvements in this release
+----------------------------
+- Fixed access to the featured groups block for anonymous users.
+- Fixed DKAN Harvest permissions for the site manager role, they now have access to the cache, delete, harvest, and migrate bulk operations from the Harvest Dashboard.
+- DKAN Harvest added support for importing contact name and contact email.
+- Updated contrib modules: services, visualization_entity and views.
