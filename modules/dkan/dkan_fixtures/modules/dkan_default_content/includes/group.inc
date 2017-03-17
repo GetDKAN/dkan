@@ -6,7 +6,7 @@
  */
 
 /**
- * Default content extention of group fixtures migration class.
+ * Default content extension of group fixtures migration class.
  */
 class DefaultContentGroupImport extends DkanGroupImport {
 

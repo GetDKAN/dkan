@@ -6,7 +6,7 @@
  */
 
 /**
- * Default content extention of resource fixtures migration class.
+ * Default content extension of resource fixtures migration class.
  */
 class DefaultContentResourceImport extends DkanResourceImport {
 

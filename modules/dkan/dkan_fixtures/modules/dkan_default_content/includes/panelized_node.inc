@@ -6,7 +6,7 @@
  */
 
 /**
- * Default content extention of panelized node parent migration class.
+ * Default content extension of panelized node parent migration class.
  */
 class DefaultContentPanelizedNodesImport extends DkanPanelizedNodesImport {
 

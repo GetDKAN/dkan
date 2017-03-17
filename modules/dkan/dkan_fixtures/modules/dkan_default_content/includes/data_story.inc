@@ -6,7 +6,7 @@
  */
 
 /**
- * Default content extention of data stories fixtures migration class.
+ * Default content extension of data stories fixtures migration class.
  */
 class DefaultContentDataStoriesImport extends DkanDataStoriesImport {
 

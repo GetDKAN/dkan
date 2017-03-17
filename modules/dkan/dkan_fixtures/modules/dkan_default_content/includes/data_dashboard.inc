@@ -6,7 +6,7 @@
  */
 
 /**
- * Default content extention of Data Dashboards fixtures migration class.
+ * Default content extension of Data Dashboards fixtures migration class.
  */
 class DefaultContentDataDashboardsImport extends DkanDataDashboardsImport {
 

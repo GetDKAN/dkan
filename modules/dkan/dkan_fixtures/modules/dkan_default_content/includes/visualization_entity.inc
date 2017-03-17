@@ -6,7 +6,7 @@
  */
 
 /**
- * Default content extention of visualization entity fixtures migration class.
+ * Default content extension of visualization entity fixtures migration class.
  */
 class DefaultContentVisualizationEntityImport extends DkanVisualizationEntityImport {
 

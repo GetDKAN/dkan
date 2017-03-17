@@ -6,7 +6,7 @@
  */
 
 /**
- * Default content extention of page fixtures migration class.
+ * Default content extension of page fixtures migration class.
  */
 class DefaultContentPagesImport extends DkanPagesImport {
 

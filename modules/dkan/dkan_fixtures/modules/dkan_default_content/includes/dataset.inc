@@ -6,7 +6,7 @@
  */
 
 /**
- * Default content extention of the dataset fixtures migration class.
+ * Default content extension of the dataset fixtures migration class.
  */
 class DefaultContentDatasetImport extends DkanDatasetImport {
 
