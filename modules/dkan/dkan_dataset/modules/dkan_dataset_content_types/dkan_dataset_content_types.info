@@ -5,6 +5,7 @@ package = DKAN
 dependencies[] = autocomplete_deluxe
 dependencies[] = ctools
 dependencies[] = date
+dependencies[] = date_views
 dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
 dependencies[] = double_field
