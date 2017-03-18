@@ -61,13 +61,26 @@ function dkan_harvest_dashboard_form_alter(&$form, $form_state, $form_id) {
     && isset($form_state['view'])
     && $form_state['view']->name == 'dkan_harvest_datasets') {
 
-    $form['created']['max']['#title'] = '';
-    $form['changed']['max']['#title'] = '';
-    $form['created']['min']['#attributes']['placeholder'] = t('From');
-    $form['created']['max']['#attributes']['placeholder'] = t('To');
-    $form['changed']['min']['#attributes']['placeholder'] = t('From');
-    $form['changed']['max']['#attributes']['placeholder'] = t('To');
+    // Update the way date fields are rendred.
+    $date_fields = array(
+      'field_harvest_source_issued_value',
+      'field_harvest_souce_modified_value',
+    );
+    $date_placeholders = array(
+      'min' => t('From'),
+      'max' => t('To'),
+    );
+
+    foreach ($date_fields as $date_field) {
+      foreach ($date_placeholders as $placeholder_key => $placeholder) {
+        if (isset($form[$date_field][$placeholder_key])) {
+          $form[$date_field][$placeholder_key]['#title'] = '';
+          $form[$date_field][$placeholder_key]['#attributes']['placeholder'] = $placeholder;
+        }
+      }
+    }
   }
+
   switch ($form_id) {
     // Display an 'Add Source' button on the harvest sources and dataset pages.
     // The button should not display on the confirmation 'pages'.
