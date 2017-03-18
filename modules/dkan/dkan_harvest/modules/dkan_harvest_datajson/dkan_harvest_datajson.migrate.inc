@@ -38,8 +38,8 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $this->addFieldMapping('field_tags:create_term')
       ->defaultValue(TRUE);
 
-    $this->addFieldMapping('field_harvest_created', 'issued');
-    $this->addFieldMapping('field_harvest_modified', 'modified');
+    $this->addFieldMapping('field_harvest_source_issued', 'issued');
+    $this->addFieldMapping('field_harvest_souce_modified', 'modified');
     $this->addFieldMapping('field_public_access_level', 'accessLevel');
     $this->addFieldMapping('uuid', 'identifier');
     $this->addFieldMapping('field_license', 'license');
@@ -84,14 +84,6 @@ class DatajsonHarvestMigration extends HarvestMigration {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
-    // Convert dataset created and modified dates to timestampts.
-    if (!empty($row->issued)) {
-      $timestamp = strtotime($row->issued);
-    }
-
-    if (!empty($row->modified)) {
-      $timestamp = strtotime($row->modified);
-    }
 
     if (property_exists($row, 'accrualPeriodicity')) {
       $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
