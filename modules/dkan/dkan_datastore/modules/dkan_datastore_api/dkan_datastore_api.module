@@ -562,6 +562,9 @@ function dkan_datastore_api_where(&$data_select, $filters) {
   }
 }
 
+/**
+ * Check which SQL clause should use for conditions.
+ */
 function dkan_datastore_api_clause_condition($value) {
   return $value == 'NULL' ? 'IS' : 'IN';
 }
