@@ -345,8 +345,8 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       'limit' => 5,
       'query' => ''
     );
-    $params = _dkan_datastore_api_get_params($params);
-    $result = _dkan_datastore_api_query($params);
+    $params = dkan_datastore_api_get_params($params);
+    $result = dkan_datastore_api_query($params);
 
     $this->assertNull(NULL, "NULL is null");
     $this->assertNull($result['result']->records[2]->Ward, "Expect empty value to be saved and returned as NULL.");
