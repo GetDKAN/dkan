@@ -323,6 +323,8 @@ function dkan_misc_variables_set(&$context) {
     'og_extras_groups' => TRUE,
     'og_extras_members' => TRUE,
     'dataset' => TRUE,
+    'admin_views_file' => TRUE,
+    'admin_views_node' => TRUE,
   );
   variable_set('views_defaults', $views_disable);
 }
