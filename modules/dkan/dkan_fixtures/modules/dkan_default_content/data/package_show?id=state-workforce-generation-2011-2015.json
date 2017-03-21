@@ -98,8 +98,8 @@
             "field_data_dictionary": null,
             "field_frequency": "4",
             "field_granularity": "Person",
-            "field_harvest_source_issued": "public",
-            "field_harvest_source_modified": "public",
+            "field_harvest_source_issued": null,
+            "field_harvest_source_modified": null,
             "field_related_content": [],
             "field_resources": [
                 {
