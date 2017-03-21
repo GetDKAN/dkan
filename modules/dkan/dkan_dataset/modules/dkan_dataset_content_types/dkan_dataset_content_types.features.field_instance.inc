@@ -565,67 +565,6 @@ function dkan_dataset_content_types_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataset-field_harvest_source_modified'.
-  $field_instances['node-dataset-field_harvest_source_modified'] = array(
-    'bundle' => 'dataset',
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'hidden',
-        'module' => 'date',
-        'settings' => array(
-          'format_type' => 'iso_8601_date',
-          'fromto' => 'both',
-          'multiple_from' => '',
-          'multiple_number' => '',
-          'multiple_to' => '',
-          'show_remaining_days' => 0,
-        ),
-        'type' => 'date_default',
-        'weight' => 28,
-      ),
-      'search_result' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'field_harvest_source_modified',
-    'label' => 'Harvest Source Modified',
-    'required' => 0,
-    'settings' => array(
-      'default_value' => 'now',
-      'default_value2' => 'same',
-      'default_value_code' => '',
-      'default_value_code2' => '',
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'date',
-      'settings' => array(
-        'increment' => 15,
-        'input_format' => 'm/d/Y - H:i:s',
-        'input_format_custom' => '',
-        'label_position' => 'above',
-        'no_fieldset' => 0,
-        'text_parts' => array(),
-        'year_range' => '-3:+3',
-      ),
-      'type' => 'date_text',
-      'weight' => 32,
-    ),
-  );
-
   // Exported field_instance: 'node-dataset-field_harvest_source_issued'.
   $field_instances['node-dataset-field_harvest_source_issued'] = array(
     'bundle' => 'dataset',
@@ -634,17 +573,9 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'date',
-        'settings' => array(
-          'format_type' => 'iso_8601_date',
-          'fromto' => 'both',
-          'multiple_from' => '',
-          'multiple_number' => '',
-          'multiple_to' => '',
-          'show_remaining_days' => 0,
-        ),
-        'type' => 'date_default',
-        'weight' => 27,
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 8,
       ),
       'search_result' => array(
         'label' => 'above',
@@ -687,6 +618,59 @@ function dkan_dataset_content_types_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-dataset-field_harvest_source_modified'.
+  $field_instances['node-dataset-field_harvest_source_modified'] = array(
+    'bundle' => 'dataset',
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 9,
+      ),
+      'search_result' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_harvest_source_modified',
+    'label' => 'Harvest Source Modified',
+    'required' => 0,
+    'settings' => array(
+      'default_value' => 'now',
+      'default_value2' => 'same',
+      'default_value_code' => '',
+      'default_value_code2' => '',
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'date',
+      'settings' => array(
+        'increment' => 15,
+        'input_format' => 'm/d/Y - H:i:s',
+        'input_format_custom' => '',
+        'label_position' => 'above',
+        'no_fieldset' => 0,
+        'text_parts' => array(),
+        'year_range' => '-3:+3',
+      ),
+      'type' => 'date_text',
+      'weight' => 32,
+    ),
+  );
+
   // Exported field_instance: 'node-dataset-field_harvest_source_ref'.
   $field_instances['node-dataset-field_harvest_source_ref'] = array(
     'bundle' => 'dataset',
@@ -699,7 +683,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'module' => 'dkan_dataset',
         'settings' => array(),
         'type' => 'harvest_info_formatter',
-        'weight' => 20,
+        'weight' => 7,
       ),
       'search_result' => array(
         'label' => 'above',
@@ -1069,7 +1053,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'module' => 'link',
         'settings' => array(),
         'type' => 'link_default',
-        'weight' => 7,
+        'weight' => 6,
       ),
       'search_result' => array(
         'label' => 'above',
@@ -1131,7 +1115,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 8,
+        'weight' => 10,
       ),
       'search_result' => array(
         'label' => 'above',
@@ -1877,8 +1861,6 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>');
   t('Link API');
   t('Link File');
-  t('Modified Date of a harvested resource.');
-  t('Modified Source Date');
   t('POD Theme');
   t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See Project Open Data <a href="http://project-open-data.github.io/schema/#common-core-required-if-applicable-fields">data dictionary</a> for more info.');
   t('Public Access Level');
