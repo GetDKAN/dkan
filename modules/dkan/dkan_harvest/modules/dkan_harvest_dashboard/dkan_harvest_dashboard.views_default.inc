@@ -226,7 +226,7 @@ function dkan_harvest_dashboard_views_default_views() {
         'datepicker_options' => '',
       ),
     ),
-    'field_harvest_souce_modified_value' => array(
+    'field_harvest_source_modified_value' => array(
       'bef_format' => 'default',
       'more_options' => array(
         'autosubmit' => 0,
@@ -412,10 +412,10 @@ Off|Non-orphans only',
     'show_remaining_days' => 0,
   );
   /* Field: Content: Harvest Source Modified */
-  $handler->display->display_options['fields']['field_harvest_souce_modified']['id'] = 'field_harvest_souce_modified';
-  $handler->display->display_options['fields']['field_harvest_souce_modified']['table'] = 'field_data_field_harvest_souce_modified';
-  $handler->display->display_options['fields']['field_harvest_souce_modified']['field'] = 'field_harvest_souce_modified';
-  $handler->display->display_options['fields']['field_harvest_souce_modified']['settings'] = array(
+  $handler->display->display_options['fields']['field_harvest_source_modified']['id'] = 'field_harvest_source_modified';
+  $handler->display->display_options['fields']['field_harvest_source_modified']['table'] = 'field_data_field_harvest_source_modified';
+  $handler->display->display_options['fields']['field_harvest_source_modified']['field'] = 'field_harvest_source_modified';
+  $handler->display->display_options['fields']['field_harvest_source_modified']['settings'] = array(
     'format_type' => 'iso_8601_date',
     'fromto' => 'both',
     'multiple_number' => '',
@@ -477,18 +477,18 @@ Off|Non-orphans only',
     6 => 0,
   );
   $handler->display->display_options['filters']['field_harvest_source_issued_value']['form_type'] = 'date_popup';
-  /* Filter criterion: Content: Harvest Source Modified (field_harvest_souce_modified) */
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['id'] = 'field_harvest_souce_modified_value';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['table'] = 'field_data_field_harvest_souce_modified';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['field'] = 'field_harvest_souce_modified_value';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['operator'] = 'between';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['group'] = 1;
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['expose']['operator_id'] = 'field_harvest_souce_modified_value_op';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['expose']['label'] = 'Harvest Source Modified';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['expose']['operator'] = 'field_harvest_souce_modified_value_op';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['expose']['identifier'] = 'field_harvest_souce_modified_value';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['expose']['remember_roles'] = array(
+  /* Filter criterion: Content: Harvest Source Modified (field_harvest_source_modified) */
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['id'] = 'field_harvest_source_modified_value';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['table'] = 'field_data_field_harvest_source_modified';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['field'] = 'field_harvest_source_modified_value';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['operator'] = 'between';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['group'] = 1;
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['operator_id'] = 'field_harvest_source_modified_value_op';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['label'] = 'Harvest Source Modified';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['operator'] = 'field_harvest_source_modified_value_op';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['identifier'] = 'field_harvest_source_modified_value';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['remember_roles'] = array(
     2 => '2',
     3 => 0,
     1 => 0,
@@ -496,7 +496,7 @@ Off|Non-orphans only',
     4 => 0,
     6 => 0,
   );
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['form_type'] = 'date_popup';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['form_type'] = 'date_popup';
   /* Filter criterion: Content: Orphan (field_orphan) */
   $handler->display->display_options['filters']['field_orphan_value']['id'] = 'field_orphan_value';
   $handler->display->display_options['filters']['field_orphan_value']['table'] = 'field_data_field_orphan';
@@ -532,7 +532,7 @@ Off|Non-orphans only',
     'og_group_ref' => 'og_group_ref',
     'title' => 'title',
     'field_harvest_source_issued' => 'field_harvest_source_issued',
-    'field_harvest_souce_modified' => 'field_harvest_souce_modified',
+    'field_harvest_source_modified' => 'field_harvest_source_modified',
     'field_orphan' => 'field_orphan',
     'status' => 'status',
     'field_harvest_source_ref' => 'field_harvest_source_ref',
@@ -570,7 +570,7 @@ Off|Non-orphans only',
       'separator' => '',
       'empty_column' => 0,
     ),
-    'field_harvest_souce_modified' => array(
+    'field_harvest_source_modified' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
@@ -663,10 +663,10 @@ Off|Non-orphans only',
     'show_remaining_days' => 0,
   );
   /* Field: Content: Harvest Source Modified */
-  $handler->display->display_options['fields']['field_harvest_souce_modified']['id'] = 'field_harvest_souce_modified';
-  $handler->display->display_options['fields']['field_harvest_souce_modified']['table'] = 'field_data_field_harvest_souce_modified';
-  $handler->display->display_options['fields']['field_harvest_souce_modified']['field'] = 'field_harvest_souce_modified';
-  $handler->display->display_options['fields']['field_harvest_souce_modified']['settings'] = array(
+  $handler->display->display_options['fields']['field_harvest_source_modified']['id'] = 'field_harvest_source_modified';
+  $handler->display->display_options['fields']['field_harvest_source_modified']['table'] = 'field_data_field_harvest_source_modified';
+  $handler->display->display_options['fields']['field_harvest_source_modified']['field'] = 'field_harvest_source_modified';
+  $handler->display->display_options['fields']['field_harvest_source_modified']['settings'] = array(
     'format_type' => 'iso_8601_date',
     'fromto' => 'both',
     'multiple_number' => '',
@@ -714,18 +714,18 @@ Off|Non-orphans only',
     6 => 0,
   );
   $handler->display->display_options['filters']['field_harvest_source_issued_value']['form_type'] = 'date_popup';
-  /* Filter criterion: Content: Harvest Source Modified (field_harvest_souce_modified) */
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['id'] = 'field_harvest_souce_modified_value';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['table'] = 'field_data_field_harvest_souce_modified';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['field'] = 'field_harvest_souce_modified_value';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['operator'] = 'between';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['group'] = 1;
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['expose']['operator_id'] = 'field_harvest_souce_modified_value_op';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['expose']['label'] = 'Harvest Source Modified';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['expose']['operator'] = 'field_harvest_souce_modified_value_op';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['expose']['identifier'] = 'field_harvest_souce_modified_value';
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['expose']['remember_roles'] = array(
+  /* Filter criterion: Content: Harvest Source Modified (field_harvest_source_modified) */
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['id'] = 'field_harvest_source_modified_value';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['table'] = 'field_data_field_harvest_source_modified';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['field'] = 'field_harvest_source_modified_value';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['operator'] = 'between';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['group'] = 1;
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['operator_id'] = 'field_harvest_source_modified_value_op';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['label'] = 'Harvest Source Modified';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['operator'] = 'field_harvest_source_modified_value_op';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['identifier'] = 'field_harvest_source_modified_value';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['remember_roles'] = array(
     2 => '2',
     3 => 0,
     1 => 0,
@@ -733,7 +733,7 @@ Off|Non-orphans only',
     4 => 0,
     6 => 0,
   );
-  $handler->display->display_options['filters']['field_harvest_souce_modified_value']['form_type'] = 'date_popup';
+  $handler->display->display_options['filters']['field_harvest_source_modified_value']['form_type'] = 'date_popup';
   /* Filter criterion: Content: Type */
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';

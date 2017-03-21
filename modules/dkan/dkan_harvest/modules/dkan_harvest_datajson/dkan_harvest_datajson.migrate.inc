@@ -39,7 +39,7 @@ class DatajsonHarvestMigration extends HarvestMigration {
       ->defaultValue(TRUE);
 
     $this->addFieldMapping('field_harvest_source_issued', 'issued');
-    $this->addFieldMapping('field_harvest_souce_modified', 'modified');
+    $this->addFieldMapping('field_harvest_source_modified', 'modified');
     $this->addFieldMapping('field_public_access_level', 'accessLevel');
     $this->addFieldMapping('uuid', 'identifier');
     $this->addFieldMapping('field_license', 'license');

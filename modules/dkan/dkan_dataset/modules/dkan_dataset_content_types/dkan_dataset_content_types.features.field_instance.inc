@@ -565,8 +565,8 @@ function dkan_dataset_content_types_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataset-field_harvest_souce_modified'.
-  $field_instances['node-dataset-field_harvest_souce_modified'] = array(
+  // Exported field_instance: 'node-dataset-field_harvest_source_modified'.
+  $field_instances['node-dataset-field_harvest_source_modified'] = array(
     'bundle' => 'dataset',
     'deleted' => 0,
     'description' => '',
@@ -599,7 +599,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'field_harvest_souce_modified',
+    'field_name' => 'field_harvest_source_modified',
     'label' => 'Harvest Source Modified',
     'required' => 0,
     'settings' => array(

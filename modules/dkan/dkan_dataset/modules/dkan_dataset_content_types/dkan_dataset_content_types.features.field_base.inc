@@ -320,13 +320,13 @@ function dkan_dataset_content_types_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_harvest_souce_modified'.
-  $field_bases['field_harvest_souce_modified'] = array(
+  // Exported field_base: 'field_harvest_source_modified'.
+  $field_bases['field_harvest_source_modified'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_harvest_souce_modified',
+    'field_name' => 'field_harvest_source_modified',
     'indexes' => array(),
     'locked' => 0,
     'module' => 'date',

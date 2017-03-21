@@ -43,7 +43,7 @@ function dkan_dataset_content_types_field_group_info() {
       17 => 'field_temporal_coverage',
       18 => 'og_group_ref',
       19 => 'field_harvest_source_issued',
-      20 => 'field_harvest_souce_modified',
+      20 => 'field_harvest_source_modified',
       21 => 'release_date',
       22 => 'modified_date',
       23 => 'identifier',
@@ -98,7 +98,7 @@ function dkan_dataset_content_types_field_group_info() {
       19 => 'field_spatial_geographical_cover',
       20 => 'field_temporal_coverage',
       21 => 'field_harvest_source_issued',
-      22 => 'field_harvest_souce_modified',
+      22 => 'field_harvest_source_modified',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(

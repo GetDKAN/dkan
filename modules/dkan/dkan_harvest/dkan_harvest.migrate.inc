@@ -884,7 +884,7 @@ class HarvestMigration extends MigrateDKAN {
     // Default Dkan Dataset fields.
     // Node property.
     $this->addFieldMapping('field_harvest_source_issued', 'created');
-    $this->addFieldMapping('field_harvest_souce_modified', 'changed');
+    $this->addFieldMapping('field_harvest_source_modified', 'changed');
     // Primary.
     $this->addFieldMapping('title', 'title');
     $this->addFieldMapping('body', 'description');
