@@ -96,7 +96,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    * @depends testDatasetCount
    */
   public function testIssued($dataset) {
-    $this->assertEquals("2016-06-22", $dataset->field_harvest_souce_issued->value());
+    $this->assertEquals(strtotime("2016-06-22"), $dataset->field_harvest_source_issued->value());
   }
 
   /**
@@ -105,7 +105,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    * @depends testDatasetCount
    */
   public function testModified($dataset) {
-    $this->assertEquals("2016-07-21", $dataset->field_harvest_souce_modified->value());
+    $this->assertEquals(strtotime("2016-07-21"), $dataset->field_harvest_source_modified->value());
   }
 
   /**
