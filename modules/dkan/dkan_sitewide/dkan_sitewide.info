@@ -8,6 +8,7 @@ dependencies[] = colorizer
 dependencies[] = conditional_styles
 dependencies[] = ctools
 dependencies[] = defaultconfig
+dependencies[] = date_views
 dependencies[] = dkan_dataset
 dependencies[] = dkan_dataset_content_types
 dependencies[] = facet_icons
