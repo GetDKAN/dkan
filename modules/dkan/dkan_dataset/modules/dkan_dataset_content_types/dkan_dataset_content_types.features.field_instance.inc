@@ -575,7 +575,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'hidden',
         'module' => 'date',
         'settings' => array(
-          'format_type' => 'search_api_facetapi_DAY',
+          'format_type' => 'iso_8601_date',
           'fromto' => 'both',
           'multiple_from' => '',
           'multiple_number' => '',
@@ -636,7 +636,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'hidden',
         'module' => 'date',
         'settings' => array(
-          'format_type' => 'search_api_facetapi_DAY',
+          'format_type' => 'iso_8601_date',
           'fromto' => 'both',
           'multiple_from' => '',
           'multiple_number' => '',

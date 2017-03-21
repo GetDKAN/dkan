@@ -212,3 +212,26 @@ function dkan_dataset_content_types_allowed_language_values() {
   module_load_include('php', 'dkan_dataset_content_types', 'includes/language_code_list');
   return dkan_dataset_content_types_get_language_codes();
 }
+
+/**
+ * Implements hook_date_formats().
+ */
+function dkan_dataset_content_types_date_formats() {
+  return array(
+    // Creates a new format for a new, custom format type.
+    array(
+      'type' => 'iso_8601_date',
+      'format' => 'Y-m-d',
+      'locales' => array(),
+    ),
+  );
+}
+
+/**
+ * Implements hook_date_format_types().
+ */
+function dkan_dataset_content_types_date_format_types() {
+  return array(
+    'iso_8601_date' => t('ISO 8601 Date'),
+  );
+}
