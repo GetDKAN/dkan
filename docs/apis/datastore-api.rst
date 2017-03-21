@@ -1,3 +1,6 @@
+Datastore API
+=============
+
 DKAN offers a Datastore API as a custom endpoint for the Drupal Services
 module.
 
@@ -34,11 +37,11 @@ Aggregation functions
 URL format
 ----------
 
-Parameters passed through URL share a common shape:
+Parameters passed by URL share a common format:
 
 ::
 
-    param_name<resource_alias>[field*name]=value,value1
+   param_name[resource_alias][field_name]=value,value1
 
 -  **param\_name**: the param you are using (e.g. offset)
 -  **resource\_alias(optional)**: an alias to reference an specific
@@ -166,7 +169,7 @@ Response
           ]
         }
       }
-    }
+    }7
 
 Response formats
 ----------------
@@ -175,21 +178,15 @@ Requests can be sent over HTTP. Data can be returned as JSON, XML, or
 JSONP. To retrieve data in a different format, change the extension in
 the url.
 
-**Instead of using this:**
-
-::
+Instead of using this::
 
     http://EXAMPLE.COM/api/action/datastore/search.json
 
-**Use this:**
-
-::
+Use this::
 
     http://EXAMPLE.COM/api/action/datastore/search.xml
 
-**Or this:**
-
-::
+Or this::
 
     http://EXAMPLE.COM/api/action/datastore/search.jsonp
 
@@ -204,41 +201,43 @@ Examples
 --------
 
 The following is a simple example with two resources that contain four
-records each. Please note that the resource ``id`` would be a UUID not
+records each. Note that the resource ``id`` would be a UUID not
 single digit number in real scenario.
 
-**Resource: 1**
+**Resource 1:**
 
-::
++---------+-------------+----+------------+
+| country | population  | id | timestamp  |
++=========+=============+====+============+
+| US      | 315,209,000 |  1 | 1359062329 |
++---------+-------------+----+------------+
+| CA      | 35,002,447  |  2 | 1359062329 |
++---------+-------------+----+------------+
+| AR      | 40,117,096  |  3 | 1359062329 |
++---------+-------------+----+------------+
+| JP      | 127,520,000 |  4 | 1359062329 |
++---------+-------------+----+------------+
 
-    +---------+-------------+----+------------+
-    | country | population  | id | timestamp  |
-    +---------+-------------+----+------------+
-    | US      | 315,209,000 |  1 | 1359062329 |
-    | CA      | 35,002,447  |  2 | 1359062329 |
-    | AR      | 40,117,096  |  3 | 1359062329 |
-    | JP      | 127,520,000 |  4 | 1359062329 |
-    +---------+-------------+----+------------+
+**Resource 2:**
 
-**Resource 2**
-
-::
-
-    +---------+-----------+----+------------+
-    | country | squarekm  | id | timestamp  |
-    +---------+-----------+----+------------+
-    | US      | 9,629,091 |  1 | 1359062713 |
-    | CA      | 9,984,670 |  2 | 1359062713 |
-    | AR      | 2,780,400 |  3 | 1359062713 |
-    | JP      | 377,930   |  4 | 1359062713 |
-    +---------+-----------+----+------------+
++---------+-----------+----+------------+
+| country | squarekm  | id | timestamp  |
++=========+===========+====+============+
+| US      | 9,629,091 |  1 | 1359062713 |
++---------+-----------+----+------------+
+| CA      | 9,984,670 |  2 | 1359062713 |
++---------+-----------+----+------------+
+| AR      | 2,780,400 |  3 | 1359062713 |
++---------+-----------+----+------------+
+| JP      | 377,930   |  4 | 1359062713 |
++---------+-----------+----+------------+
 
 Simple query example
 ~~~~~~~~~~~~~~~~~~~~
 
 ::
 
-    http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters<country>=AR,US&fields=country,population,timestamp&sort[country]=asc
+    http://EXAMPLE.COM/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters[country]=AR,US&fields=country,population,timestamp&sort[country]=asc
 
 Returns the country, population, and timestamp fields for US and AR from
 dataset 1 sorting by the country in ascending order.
@@ -247,37 +246,33 @@ Text Search
 ~~~~~~~~~~~
 
 Requests with the 'query' argument will search the listed fields within
-the dataset.
-
-::
+the dataset::
 
     http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&&fields=country,population&query=US
 
 This will return the country and population from US.
 
-Joining
-~~~~~~~
+Joins
+~~~~~
 
 If you wish to query multiple tables, indicate the table as an array key
-in the following fields:
-
-::
+in the following fields::
 
     http://example.com/api/dataset/search?resource_id[pop]=d3c099c6-1340-4ee5-b030-8faf22b4b424&resource_id[size]=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters[pop][country]=US,AR&join[pop]=country&join[size]=country
 
-Returns the country, population, squarekm and id for US and AR from
+Returns the ``country``, ``population``, ``squarekm`` and ``id`` for "US" and "AR" from
 datasets 11 and 13.
 
 Caching
 ~~~~~~~
 
-GET and POST request are cached by drupal. The params passed through the
+GET and POST request are cached by Drupal. The params passed through the
 request are used to create a cache id to store the data to be retrieved
-in further requests.
+on further requests.
 
-Given Datastore API uses the drupal cache system under the hood, the
-Datastore API cache its cleared when the drupal cache it's cleared. This
-is when it's manually wiped or cache lifetime ends.
+Since Datastore API uses the Drupal cache system under the hood, the
+Datastore API cache will be cleared at the same time as the rest of the Drupal cache. This
+coule be when the cache is wiped manually, or when the cache lifetime ends.
 
 All this options can be configured at
 ``admin/config/development/performance``
