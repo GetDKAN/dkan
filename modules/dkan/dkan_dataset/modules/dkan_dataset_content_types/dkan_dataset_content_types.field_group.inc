@@ -88,7 +88,6 @@ function dkan_dataset_content_types_field_group_info() {
       9 => 'field_is_part_of',
       10 => 'field_landing_page',
       11 => 'field_language',
-      12 => 'field_modified_source_date',
       13 => 'field_pod_theme',
       14 => 'field_public_access_level',
       15 => 'field_related_content',

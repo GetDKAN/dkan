@@ -1253,11 +1253,12 @@ function dkan_dataset_preprocess_node(&$vars) {
  * Return node modified date.
  */
 function dkan_dataset_modified_date($node) {
-  $node = ($node instanceof EntityMetadataWrapper) ? $node : entity_metadata_wrapper('node', $node);
-  $harvested_date = $node->field_modified_source_date->value();
+  $node = ($node instanceof EntityMetadataWrapper) ? $node :
+    entity_metadata_wrapper('node', $node);
 
-  // Harvested times can be dates or periods then we don't format them.
-  return ($harvested_date) ? $harvested_date : format_date($node->changed->value(), 'custom', 'Y-m-d');
+  // Last time a dataset was harvested is supposedly the time of the last
+  // update.
+  return format_date($node->changed->value(), 'custom', 'Y-m-d');
 }
 
 /**

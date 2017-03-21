@@ -1362,7 +1362,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'modified' => array(
-        'value' => '[node:field_harvest_modified] || [node:field_modified_source_date] || [node:changed]',
+        'value' => '[node:field_harvest_modified] || [node:changed]',
         'type' => 'string',
       ),
       'PrimaryITInvestmentUII' => array(
@@ -1535,7 +1535,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'modified' => array(
-        'value' => '[node:field_harvest_modified] || [node:field_modified_source_date] || [node:changed:custom:Y-m-d]',
+        'value' => '[node:field_harvest_modified] || [node:changed:custom:Y-m-d]',
         'type' => 'string',
       ),
       'primaryITInvestmentUII' => array(

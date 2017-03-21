@@ -22,7 +22,8 @@ function dkan_dataset_content_types_form_alter(&$form, &$form_state, $form_id) {
     $form['field_license'][LANGUAGE_NONE]['#options'] = $allowed_values;
 
     // Hide fields.
-    $form['field_modified_source_date']['#access'] = FALSE;
+    $form['field_harvest_source_issued']['#access'] = FALSE;
+    $form['field_harvest_source_modified']['#access'] = FALSE;
     $form['field_is_part_of']['#access'] = FALSE;
     $form['field_pod_theme']['#access'] = FALSE;
 
