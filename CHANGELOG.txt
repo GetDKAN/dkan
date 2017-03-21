@@ -1,160 +1,189 @@
-7.x-1.x
+7.x-1.13.x
+ - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
+
+7.x-1.13.2 2017-03-16
+----------------------
+ - #1803 Fix broken access to featured groups sort order view. 
+ - #1796 Fix Harvest support for contact name and contact email.
+ - #1795 Update front page test on topics.feature with @customizable.
+ - #1783 Update services to 3.19
+ - #1794 Update visualization_entity to 1.1
+ - #1781 Update views to 3.15 and remove patch 1388684.
+ - #1751 Add POD validation link to command center menu for site manager access.
+ - #1762 Re-number update hooks that were mixed up during release integration.
+ - #1709 Changed function dkan sitewide conversion homepage to fix problem with link entity attribute. This attribute need to be a boolean.
+ - #1742 Fix home page HTML <head><title> so that it's just the site name (not the node or panel title)
+ - #1747 Update DKAN API link to use the RTD documentation page.
+ - #1730 Fix logic error for front page in theme causing error messages on homepage
+ - #1728 Added a tag @defaultHomepage to a topic test which relies on homepage content.
+ - #5807 Fix panelizer permissions to hide 'Customize Display' button
+ - #1744 Grant Site Manager role Harvest Dashboard actions.
+ - #1776 Fix 500 errors when linking or uploading geojson files in resources.
+ - #1767 Better handling of empty values by datastore_api. Also see NuCivic/feeds_flatstore_processor#9
+
+7.x-1.13
 --------------------------
- - Added css for chart visualizaitons, fixes issue in IE.
- - Upgrade better_exposed_filters to v3.4.
- - Update branding.
- - Added ReadTheDocs integrations and docs folder for centralized documentation
- - Disable/uninstall dkan_dataset_api if enabled because it is deprecated in favor open_data_schema_map.
- - Renamed test files.
- - Update resource tests to work on sites without zip in their format terms.
- - Moved functions from FeatureContext to DKANExtension.
- - Added patch for workbench_moderation: Invalid argument supplied for foreach() 2360973.
- - Added a function in dkan_sitewide to check if a specific page is the front page.
- - Improve module and user cleanup inside dkan workflow context after run tests
- - Update leaflet library to v1.0.2 and leaflet markercluster to v1.0.0. Unift leaflet libraries (was using a separate version for recline module)
- - Upgraded to new 1.0 release of Visualization Entity module
- - Add install hook to DKAN Workflow to force a Features revert of dkan_sitewide_menu, to make sure Workflow links added correctly
- - Remove Panels IPE from dataset and search pages; in DKAN, we only want to show IPE for panelizer layouts, not templates or other "sitewide" pages.
- - Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
- - Fixes typo in "add data story" link in command center menu
- - Add topic icons to the drop down menu
- - Renamed the default HTML text format to 'Markdown HTML'
- - Improved markdown text editor toolbar
- - URLs on dataset's additional info are now properly displayed as links.
- - Removed warnings about undefined permissions when visualization_entity_choropleth_bundle module is enabled.
- - Removed warnings about undefined permissions when visualization_entity_geojson_bundle module is enabled.
- - Removed specific visualization entity charts permissions from dkan_extension.
- - Added test feature to validate that users with Editor, Content Creator and Site Manager roles are not able to access to admin pages.
- - Default content was improved and now it's generated based on fixtures.
- - Removed omega theme.
- - Removed delta module.
- - Moved Nuboot Radix theme into core build.
- - Change admin theme setting to use default theme rather than nuboot radix
- - Page content type added to panelizer and now defined in features, with in-place editor enabled for page content.
- - Page link added to the command center menu.
- - Added Open Data Federal Extras module into DKAN Core.
- - Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
- - Removed field mapping warnings during import of default content.
- - Removed conditional_fields from dkan_topics.
- - Upgrade Features to 7.x-2.9
- - Make date facet use "day" granularity.
- - Remove ARC2 library.
- - Disable pathauto for content created using dkan_fixtures.
- - Removed warning message when try edit resource without dataset.
- - Added PHP Unit tests configurations to make them run on DKAN.
- - Added hook_uninstall to federal extra module for remove fields after uninstall module.
- - Removed redundant definition for CKAN package_list endpoint from open_data_schema_map_dkan, allowing that feature to be in default state after install.
- - Update ctools to version 1.10, which fixes some PHP7 incompatibilities
- - Added links to ODSM page and DCAT validation under Site Configuration in the command center menu
- - Update open data schema module to render a valid output passing validation (dcat and rdf).
+ - #1719 Added site details to settings nuboot_radix to allow change site name, slogan, e-amail address for site manager.
+ - #1717 Upgrading Drupal to 7.54
+ - #1705 Added css for chart visualizaitons, fixes issue in IE.
+ - #1695 Upgrade better_exposed_filters to v3.4.
+ - #1702 Update branding.
+ - #1369 Added ReadTheDocs integrations and docs folder for centralized documentation
+ - #1701 Renamed test files.
+ - #1691 #1682 Update resource tests to work with client site variations.
+ - #1694 Moved functions from FeatureContext to DKANExtension.
+ - #1687 Added a function in dkan_sitewide to check if a specific page is the front page.
+ - #1693 Improve module and user cleanup inside dkan workflow context after run tests
+ - #1669 Update leaflet library to v1.0.2 and leaflet markercluster to v1.0.0. Unift leaflet libraries (was using a separate version for recline module)
+ - #1684 Security update for autocomplete_deluxe
+ - #1670 Upgraded to new 1.0 release of Visualization Entity module
+ - #1663 Add install hook to DKAN Workflow to force a Features revert of dkan_sitewide_menu, to make sure Workflow links added correctly
+ - #1348 Remove Panels IPE from dataset and search pages; in DKAN, we only want to show IPE for panelizer layouts, not templates or other "sitewide" pages.
+ - #1046 Update user profile page search to be consistant with the rest of the site and moves user info to sidebar block.
+ - #1096 Fixes typo in "add data story" link in command center menu
+ - #1069 Add topic icons to the drop down menu
+ - #1085 Renamed the default HTML text format to 'Markdown HTML'
+ - #1440 Improved markdown text editor toolbar
+ - #1110 URLs on dataset's additional info are now properly displayed as links.
+ - #1130 Removed warnings about undefined permissions when visualization_entity_choropleth_bundle module is enabled.
+ - #1130 Removed warnings about undefined permissions when visualization_entity_geojson_bundle module is enabled.
+ - #1130 Removed specific visualization entity charts permissions from dkan_extension.
+ - #1130 Added test feature to validate that users with Editor, Content Creator and Site Manager roles are not able to access to admin pages.
+ - #1259 Default content was improved and now it's generated based on fixtures.
+ - #1152 Removed omega theme.
+ - #1152 Removed delta module.
+ - #1152 Moved Nuboot Radix theme into core build.
+ - #1152 Change admin theme setting to use default theme rather than nuboot radix
+ - #1221 Page content type added to panelizer and now defined in features, with in-place editor enabled for page content.
+ - #1222 Page link added to the command center menu.
+ - #1301 Added Open Data Federal Extras module into DKAN Core.
+ - #1297 Fix for relative paths to ensure links still work when a site is installed into a subdirectory.
+ - #1358 Removed field mapping warnings during import of default content.
+ - #1376 Removed conditional_fields from dkan_topics.
+ - #1387 Upgrade Features to 7.x-2.9
+ - #1387 Make date facet use "day" granularity.
+ - #1387 Remove ARC2 library.
+ - #1439 Disable pathauto for content created using dkan_fixtures.
+ - #1403 Removed warning message when try edit resource without dataset.
+ - #1468 Added PHP Unit tests configurations to make them run on DKAN.
+ - #1463 Added hook_uninstall to federal extra module for remove fields after uninstall module.
+ - #1459 Removed redundant definition for CKAN package_list endpoint from open_data_schema_map_dkan, allowing that feature to be in default state after install.
+ - #1456 Update ctools to version 1.10, which fixes some PHP7 incompatibilities
+ - #1440 Added links to ODSM page and DCAT validation under Site Configuration in the command center menu
+ - #1367 Update open data schema module to render a valid output passing validation (dcat and rdf).
  - Added upgrade hook to clean DB after removal of 'conditional_fields', 'entity_rdf', 'rdfui' and 'rdfx'.
- - Added upgrade hook to remove deprecated test and theme directories.
- - Fixed popular tags view.
- - Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
- - Fixed link to group page on group node teaser when site has clean urls disabled.
- - Added update hook to disable dkan_default_content on upgrades.
- - Updated visualization_entity.
- - Added fix to display the 'Request membership' link only to users that are logged in.
- - Remove content padding on data extent and social blocks.
- - Added DKAN Extension.
- - Upgrade workbench_moderation to v3.0.
- - Upgrade entity to 1.8
- - Upgrade manualcrop to 1.6
- - Upgrade markdown to 1.5
- - Upgrade panels to 3.8
- - Upgrade ctools to 1.12
- - Upgrade entityreference to 1.2
- - Upgrade libraries to 2.3
- - Upgrade services to 3.17
- - Upgrade simple_gmap to 1.3
- - Upgrade tablefield to 2.5
- - Upgrade entityreference_filter to 1.7
- - Upgrade radix to 3.5
- - Upgrade search_api to 1.20
- - Upgrade media to 2.0-beta13
- - Upgrade panopoly_widgets to 1.41
- - Upgrade panopoly_images to 1.41
- - Upgrade file_entity to 2.0-beta3
- - Upgrade link_iframe_formatter to 1.1
- - Assign workflow supervisor role to site manager users when dkan workflow is enabled.
- - Switch to forked version of the spectrum library to address accessibility issues.
- - Removed eva module.
+ - #1527 Added upgrade hook to remove deprecated test and theme directories.
+ - #1537 Fixed popular tags view.
+ - #1685 Moved front page search block from dkan_sitewide_demo_front to dkan_sitewide.
+ - #1562 Fixed link to group page on group node teaser when site has clean urls disabled.
+ - #1534 Added update hook to disable dkan_default_content on upgrades.
+ - #1565 Updated visualization_entity.
+ - #1556 Added fix to display the 'Request membership' link only to users that are logged in.
+ - #1582 Remove content padding on data extent and social blocks.
+ - #1606 Added DKAN Extension.
+ - #1508 Upgrade workbench_moderation to v3.0.
+ - #1595 Upgrade entity to 1.8
+ - #1598 Upgrade manualcrop to 1.6
+ - #1598 Upgrade markdown to 1.5
+ - #1598 Upgrade panels to 3.8
+ - #1592 Upgrade ctools to 1.12
+ - #1592 Upgrade entityreference to 1.2
+ - #1592 Upgrade libraries to 2.3
+ - #1592 Upgrade services to 3.17
+ - #1592 Upgrade simple_gmap to 1.3
+ - #1592 Upgrade tablefield to 2.5
+ - #1592 Upgrade entityreference_filter to 1.7
+ - #1622 Upgrade fieldable_panels_panes to 1.11
+ - #1596 Upgrade radix to 3.5
+ - #1598 Upgrade search_api to 1.20
+ - #1603 Upgrade media to 2.0-beta13
+ - #1603 Upgrade panopoly_widgets to 1.41
+ - #1603 Upgrade panopoly_images to 1.41
+ - #1604 Upgrade file_entity to 2.0-beta3
+ - #1605 Upgrade link_iframe_formatter to 1.1
+ - #1654 Assign workflow supervisor role to site manager users when dkan workflow is enabled.
+ - #1645 Switch to forked version of the spectrum library to address accessibility issues.
+ - #1642 Removed eva module.
  - Fixed CSV column validation on visualization entity.
  - Fixed retrieve of version information on chroma.js.
- - Add patch to fix panopoly_widgets overrides OOB.
+ - #1678 Add patch to fix panopoly_widgets overrides OOB.
 DKAN Datastore:
- - Added DKAN Datastore module into DKAN Core.
- - Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
- - Fixed bugs when running the datastore via cron.
+ - #1387 Added DKAN Datastore module into DKAN Core.
+ - #1599 Greatly expand the datastore API to support aggregation functions, better joins, multiple queries. See dkan_datastore_api's README file.
+ - #1599 Fixed bugs when running the datastore via cron.
 DKAN Harvest:
- - Harvested content is published even if dkan_workflow is enabled.
- - Added DKAN Harvest module into DKAN Core.
+ - #1676 Harvested content is published even if dkan_workflow is enabled.
+ - #1287 Added DKAN Harvest module into DKAN Core.
  - Added UI to add harvest sources
  - Added UI to manage harvest sources and datasets
- - Fix dkan harvest feature overridden after install.
- - Add link for site managers to create harvest source in command center menu.
- - Added Batch API on 'Harvest now' action.
- - Added Batch API on the 'Preview' page.
- - Added 'Add Source' shortcut on Harvest Dashboard pages.
- - Fixed breadcrumb on harvest sources pages: Preview, Manage Datasets, Events, Errors.
- - Fixed harvesting of resources with remote files with redirects.
- - Fix "Manage Datastore" tab leaking to the harvest source node.
- - Add icons for harvest source tabs.
- - Fixed the dataset count displayed on the harvest preview message.
- - Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
- - Fix 508 compliance errors on admin and node view pages.
- - Removed links to Harvest Source nodes from main menu.
- - Prevent harvest source machine name from containing forward slash character.
+ - #1446 Fix dkan harvest feature overridden after install.
+ - #1440 Add link for site managers to create harvest source in command center menu.
+ - #1472 Added Batch API on 'Harvest now' action.
+ - #1482 Added Batch API on the 'Preview' page.
+ - #1531 Added 'Add Source' shortcut on Harvest Dashboard pages.
+ - #1531 Fixed breadcrumb on harvest sources pages: Preview, Manage Datasets, Events, Errors.
+ - #1434 Fixed harvesting of resources with remote files with redirects.
+ - #1588 Fix "Manage Datastore" tab leaking to the harvest source node.
+ - #1588 Add icons for harvest source tabs.
+ - #1634 Fixed the dataset count displayed on the harvest preview message.
+ - #1640 Added support for --limit, --instruments, --skiphash and --idlist options on drush commands.
+ - #1658 Fix 508 compliance errors on admin and node view pages.
+ - #1650 Removed links to Harvest Source nodes from main menu.
+ - #1672 Prevent harvest source machine name from containing forward slash character.
  - Improved PHP Unit tests.
+ - #1468 Add support "Compound" fields on Filters/Overrides/Excludes/Default in DKAN Harvest.
+ - #1488 Replace field notes by field body in harvest source content type.
 DKAN Migrate Base:
- - Added DKAN Migrate Base module into DKAN Core.
- - Removed row from migration map table when a dataset is deleted.
+ - #1387 Added DKAN Migrate Base module into DKAN Core.
+ - #1462 Removed row from migration map table when a dataset is deleted.
 DKAN Workflow:
- - Fixed panels-related bug where, if a dataset had both a "published" and "draft" version, the published would show in the draft tab.
- - Updated DKAN workflow vbo customizations to not affect other vbo forms.
- - Updated workbench_email from 3.9 to 3.11
- - Fixed admin menu source when dkan_workflow is enabled.
- - Moved workbench links from dkan_sitewide_menu to dkan_workflow.
- - Added menu source settings for dkan_workflow roles.
+ - Add patch for workbench_moderation to avoid php shutdown function errors.
+ - #1690 Added patch for workbench_moderation: Invalid argument supplied for foreach() 2360973.
+ - #1712 Added a filter in the workflow.feature to avoid issues for the amount of already existing nodes.
+ - #1707 Isolate dkan workflow tests related to emails.#1069
+ - #1715 Moved the update of the roleassign_roles variable from dkan_workflow_permissions to dkan_workflow.
+ - #1677 Fixed panels-related bug where, if a dataset had both a "published" and "draft" version, the published would show in the draft tab.
+ - #1438 Updated DKAN workflow vbo customizations to not affect other vbo forms.
+ - #1481 Updated workbench_email from 3.9 to 3.11
+ - #1667 Fixed admin menu source when dkan_workflow is enabled.
+ - #1663 Moved workbench links from dkan_sitewide_menu to dkan_workflow.
 DKAN Dataset:
+ - #1696 Disable/uninstall dkan_dataset_api if enabled because it is deprecated in favor open_data_schema_map.
  - Leaflet draw widget usability improvements
- - Fix validation on resource forms when multiple resource type fields are populated
- - Fix 508 compilance issues for leafleat draw widget
- - Added DKAN Dataset module into DKAN Core.
- - Added default image for groups.
- - Add preview support for resources of many more formats, outside of recline.js. Support added for JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, ZIP
- - Fix bugs in resource mimetypes and previews.
- - Groups field on Dataset form was modified to be a single select with all group options and it was moved from the tabs section to the main section of the form.
- - Groups field was hidden on the resource form since groups are assigned automatically based on the parent datasets.
+ - #1636 Fix validation on resource forms when multiple resource type fields are populated
+ - #1626 Fix 508 compliance issues for leafleat draw widget
+ - #1387 Added DKAN Dataset module into DKAN Core.
+ - #1589 Fix geofield map button toggle function.
+ - #1345 Added default image for groups.
+ - #1377 Add preview support for resources of many more formats, outside of recline.js. Support added for JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, ZIP
+ - #1377 Fix bugs in resource mimetypes and previews.
  - Add more frequency update options to the dataset creation form https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity
- - Moved and renamed the following fields from ODFE to DKAN Core: field_is_part_of, field_data_dictionary_type, field_landing_page, field_pod_theme, field_conforms_to, field_rights, field_language.
- - Added hook updates to handle the renaming of the old ODFE fields removing the 'odfe' namespacing.
- - Added hook update to migrate the content from field_odfe_category to field_pod_theme on Datasets.
- - Added new option on DKAN Dataset Forms to enable POD based validation on Dataset form.
- - Added new option on DKAN Dataset Forms to enable Groups field validation on Dataset form.
- - Fixes to groups UX: Group body field now labeled "Description," longer group descriptions do not get cut off after 200 characters on group page, and extraneous "about" tab on Group node edit form removed
+ - #1301 Groups field on Dataset form was modified to be a single select with all group options and it was moved from the tabs section to the main section of the form.
+ - #1301 Groups field was hidden on the resource form since groups are assigned automatically based on the parent datasets.
+ - #1301 Moved and renamed the following fields from ODFE to DKAN Core: field_is_part_of, field_data_dictionary_type, field_landing_page, field_pod_theme, field_conforms_to, field_rights, field_language.
+ - #1301 Added hook updates to handle the renaming of the old ODFE fields removing the 'odfe' namespacing.
+ - #1301 Added hook update to migrate the content from field_odfe_category to field_pod_theme on Datasets.
+ - #1301 Added new option on DKAN Dataset Forms to enable POD based validation on Dataset form.
+ - #1301 Added new option on DKAN Dataset Forms to enable Groups field validation on Dataset form.
+ - #1280 Fixes to groups UX: Group body field now labeled "Description," longer group descriptions do not get cut off after 200 characters on group page, and extraneous "about" tab on Group node edit form removed
  - Add new "modified date" field, hidden in form, to datasets. This is for dkan_harvest compatibility; saves sources dates into a separate field so they aren't affected by node changes. ODSM mappings also updated.
  - Fix keywords/tags creating broken links when containing spaces, and add missing keywords to default content.
- - Add support "Compound" fields on Filters/Overrides/Excludes/Default in DKAN Harvest.
- - Fix ODSM permissions for non-admin roles.
- - Replace field notes by field body in harvest source content type.
- - Fixed text on 'Download All' button to not display HTML.
- - Add patch for workbench_moderation to avoid php shutdown function errors.
- - Removed 'Back to dataset' button on standalone resources.
+ - #1477 Fix ODSM permissions for non-admin roles.
+ - #1532 Fixed text on 'Download All' button to not display HTML.
+ - #1570 Removed 'Back to dataset' button on standalone resources.
  - Better support of downloading remote files from the resource view page "Download" button.
- - Removed warning when a resource is created without title.
- - Add limit to proxy resources.
- - Improved download of remote files.
- - Fix 508 compilance issues for visualization_entity_charts.
- - Fix 508 compilance issues for leafleat draw widget.
- - Add patch to remote_stream_wrapper to fix memory exhausted errors.
- - Renamed 'filefield_remotefile' as 'filefield_dkan_remotefile'.
- - Add patch to field_group to avoid DOM-based cross-site scripting vulnerabilities.
+ - #1553 Removed warning when a resource is created without title.
+ - #1591 Add limit to proxy resources.
+ - #1576 Improved download of remote files.
+ - #1670 Fix 508 compliance issues for visualization_entity_charts.
+ - #1669 Fix 508 compliance issues for leaflet draw widget.
+ - #1434 Add patch to remote_stream_wrapper to fix memory exhausted errors.
+ - #1652 Renamed 'filefield_remotefile' as 'filefield_dkan_remotefile'.
+ - #1671 Add patch to field_group to avoid DOM-based cross-site scripting vulnerabilities.
 DKAN Topics:
- - Added a test for creating a topic term.
- - Make the icon field required if the icon type is set to 'font'.
- - Fix topics icon selector functionality.
-
+ - #1159 Added a test for creating a topic term.
+ - #1486 Make the icon field required if the icon type is set to 'font'.
+ - #1656 Fix topics icon selector functionality.
 
 7.x-1.12.13 2017-01-04
 ----------------------

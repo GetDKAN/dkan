@@ -753,6 +753,27 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => 4,
     'customized' => 1,
   );
+  // Exported menu link: menu-command-center-menu_project-open-data-validation:admin/config/services/odsm/validate/pod.
+  $menu_links['menu-command-center-menu_project-open-data-validation:admin/config/services/odsm/validate/pod'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/config/services/odsm/validate/pod',
+    'router_path' => 'admin/config/services/odsm/validate/pod',
+    'link_title' => 'Project Open Data Validation',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_project-open-data-validation:admin/config/services/odsm/validate/pod',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => 0,
+    'customized' => 1,
+    'parent_identifier' => 'menu-command-center-menu_open-data-schema-mapper:admin/config/services/odsm',
+  );
 
   // Translatables
   // Included for use with string extractors like potx.
@@ -782,6 +803,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Open Data Schema Mapper');
   t('Page');
   t('People');
+  t('Project Open Data Validation');
   t('Recline Configuration');
   t('Resource');
   t('Site Configuration');

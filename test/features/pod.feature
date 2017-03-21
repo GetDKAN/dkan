@@ -4,12 +4,12 @@ Feature: Project Open Data + Open Data Federal Extras
   As a dataset creator
   I want to create datasets with POD fields and publish them with data.json
 
-  @api @noworkflow
+  @pod_json_valid @api @noworkflow
   Scenario: Data.json should be valid
     Given I am on the homepage
     Then I "should" see a valid data.json
 
-  @api @noworkflow @add_ODFE @remove_ODFE
+  @pod_json_odfe @api @noworkflow @add_ODFE @remove_ODFE
   Scenario: Data.json validation should fail if ODFE enabled
     Given I am on the homepage
     Then I "should not" see a valid data.json
@@ -73,3 +73,12 @@ Feature: Project Open Data + Open Data Federal Extras
     #Cleanup configuration
     Given I "disable" the "Strict POD validation" on DKAN Dataset Forms
 
+  @api
+  Scenario: DEBUG Site Manager role should have access to the validation page
+    Given pages:
+      | name           | url                                     |
+      | POD Validation | /admin/config/services/odsm/validate/pod |
+    And I am logged in as a user with the "site manager" role
+    When I am on the "POD Validation" page
+    Then I should not see "Access Denied"
+    

@@ -36,11 +36,11 @@ Granicus [Data](http://getdkan.com/) platform offers 24/7, secure, cloud-based D
 
 ## Installation
 
-Please see the ["Installation" section of the DKAN Documentation](http://docs.getdkan.com/dkan-documentation/dkan-developers-guide/installing-dkan).
+Please see the ["Installation" section of the DKAN Documentation](http://docs.getdkan.com/en/latest/introduction/installation.html).
 
 ### Upgrading DKAN
 
-Please see the ["Updating and Maintaining DKAN" section of the DKAN Documentation](http://docs.getdkan.com/dkan-documentation/dkan-developers-guide/updating-and-maintaining-dkan) for general upgrade information.
+Please see the ["Updating and Maintaining DKAN" section of the DKAN Documentation](http://docs.getdkan.com/en/latest/introduction/maintaining.html) for general upgrade information.
 
 ## Releases
 

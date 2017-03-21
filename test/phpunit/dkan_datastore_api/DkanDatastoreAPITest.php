@@ -36,6 +36,11 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
         'title' => 'Polling Places',
         'uuid'=>'3a05eb9c-3733-11e6-ac61-9e71128cae79'
       ),
+      'null_check' => array(
+        'filename' => 'null_check.csv',
+        'title' => 'Empy Values Checker',
+        'uuid'=>'3a05eb9c-3733-11e6-ac61-9e71128cae80'
+      ),
     );
     return $resources;
   }
@@ -328,4 +333,26 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     }
 
   }
+
+  /**
+   * Handles empty values as expected.
+   */
+  public function test_dkan_dkan_datastore_api_empty_is_null() {
+    $params = array(
+      'resource_id' => array(
+        'null_check' => self::getUUID('null_check', self::getResources()),
+      ),
+      'limit' => 5,
+      'query' => ''
+    );
+    $params = _dkan_datastore_api_get_params($params);
+    $result = _dkan_datastore_api_query($params);
+
+    $this->assertNull(NULL, "NULL is null");
+    $this->assertNull($result['result']->records[2]->Ward, "Expect empty value to be saved and returned as NULL.");
+    $this->assertNull($result['result']->records[2]->{"Address"}, "Expect empty string to be saved as NULL.");
+    $this->assertEquals(0, $result['result']->records[2]->{"Aldermanic District"}, "Expect 0 to not be interpreted as NULL.");
+  }
+
 }
+
