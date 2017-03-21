@@ -1,5 +1,6 @@
-# DKAN Open Data Portal
+This is an incremental update
 
+# DKAN Open Data Portal
 
 [![DKAN Sitewide Build Status](https://circleci.com/gh/NuCivic/dkan.svg?style=svg)](https://circleci.com/gh/NuCivic/dkan)
 
