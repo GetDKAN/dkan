@@ -18,7 +18,7 @@ When you create a dataset with resources, you have data in DKAN which you can di
 
 To get the fullest functionality possible out of your datasets, you should add your CSV resources to the datastore.
 
-If you are exploring a resource that is not yet in the datastore, you will see a message advising you of this. 
+If you are exploring a resource that is not yet in the datastore, you will see a message advising you of this.
 
 .. image:: ../images/datastore-message.png
 
@@ -39,13 +39,13 @@ By default Resource files are added to the DKAN Datastore manually. This can be 
 
 Changing Default Datastore Import Behavior
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Default behavior for linked and uploaded files is controlled through the `Feeds module <http://dgo.to/feeds>`_. To access the Feeds administrative interface, enable the **Feeds Admin UI** module (which is included but not enabled by default in DKAN). Once turned on you can access the Feeds UI at ``/admin/structure/feeds``. You should see two Feeds Importers by default: 
+Default behavior for linked and uploaded files is controlled through the `Feeds module <http://dgo.to/feeds>`_. To access the Feeds administrative interface, enable the **Feeds Admin UI** module (which is included but not enabled by default in DKAN). Once turned on you can access the Feeds UI at ``/admin/structure/feeds``. You should see two Feeds Importers by default:
 
 .. image:: ../images/datastore-feeds-importers.png
 
 Import on submission
 ^^^^^^^^^^^^^^^^^^^^^^
-To import a Resource file upon saving the resource, click **Import on submission** in the settings section for each importer: 
+To import a Resource file upon saving the resource, click **Import on submission** in the settings section for each importer:
 
 .. image:: ../images/datastore-import-submission.png
 
@@ -77,7 +77,7 @@ Instructions
 
 Geolocation Services
 ^^^^^^^^^^^^^^^^^^^^^
-Geolocation services offered are 
+Geolocation services offered are
 
 * `Google <https://developers.google.com/maps/articles/geocodestrat>`_
 * `Yahoo <http://developer.yahoo.com/boss/geo/>`_
@@ -189,7 +189,7 @@ Installation
 
   Required PDO flags for dkan_datastore_fast_import were not found. This module requires PDO::MYSQL_ATTR_LOCAL_INFILE and PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
 
-- Set up the following command to run periodically using a cronjob or similar: 
+- Set up the following command to run periodically using a cronjob or similar:
 ``drush queue-run dkan_datastore_queue``
 
 
@@ -222,7 +222,15 @@ To import a resource using Fast Import:
 - Make sure the status says **No imported items** (You can use the **Drop Datastore** link if needed).
 - Check **Use Fast Import** checkbox
 - Press **import**
+- If you get an error like ``SQLSTATE[28000]: invalid authorization specification: 1045 access denied for user 'drupal'@'%' (using password: yes)`` you will need to grant FILE permissions to your MYSQL user. To do so use this command: ``GRANT FILE ON *.* TO 'user-name'``
 
+Note: if you're using DKAN with our set of containers, in order to grant the file permission to the 'drupal' user you will need to execute the following commands (take note that admin123 is the password of the admin user in that mysql environment):
+
+.. code-block:: bash
+
+  ahoy docker exec db bash
+  mysql -u root -padmin123
+  GRANT FILE ON *.* TO 'drupal';
 
 Datastore API
 --------------
