@@ -251,6 +251,11 @@ function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id) {
       ),
       '#default_value' => variable_get('quote_delimiters', '"'),
       '#description' => t('The character that will be used to enclose fields in this CSV file.'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="use_fast_import"]' => array('checked' => FALSE),
+        ),
+      ),
     );
     $form['lines_terminated_by'] = array(
       '#type' => 'select',
@@ -261,12 +266,22 @@ function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id) {
         '\n\r' => '\n\r',
       ),
       '#default_value' => variable_get('lines_terminated_by', '\n'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="use_fast_import"]' => array('checked' => FALSE),
+        ),
+      ),
     );
     $form['fields_escaped_by'] = array(
       '#type' => 'textfield',
       '#title' => t('Fields escaped by:'),
       '#default_value' => variable_get('fields_escaped_by', ''),
       '#description' => t('The character used to escape other characters on each fields. Leave empty if it isn\'t needed.'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="use_fast_import"]' => array('checked' => FALSE),
+        ),
+      ),
     );
   }
 }
