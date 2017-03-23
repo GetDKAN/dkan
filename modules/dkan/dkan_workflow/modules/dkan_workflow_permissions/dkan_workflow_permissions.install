@@ -16,6 +16,9 @@ function dkan_workflow_permissions_enable() {
   _dkan_workflow_permissions_setup_admin_menu_source();
   drupal_flush_all_caches();
   features_revert(array('dkan_sitewide_menu' => array('menu_links')));
+
+  // Rebuild node access permissions as a batch process.
+  node_access_rebuild(TRUE);
 }
 
 /**
@@ -86,4 +89,12 @@ function _dkan_workflow_permissions_setup_admin_menu_source() {
     ),
   );
   variable_set('admin_menu_source_settings', $admin_menu_source_settings);
+}
+
+/**
+ * Implements hook_disable().
+ */
+function dkan_workflow_permissions_disable() {
+  // Rebuild node access permissions as a batch process.
+  node_access_rebuild(TRUE);
 }

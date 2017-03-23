@@ -1,5 +1,6 @@
 7.x-1.13.x
 ----------
+ - #1814 Update dkan_workflow_permissions to rebuild permissions on enable/disable.
  - #1703 Refactor Datastore API module, fixing some caching issues and improving joins 
  - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
 
