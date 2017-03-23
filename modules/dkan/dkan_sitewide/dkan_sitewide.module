@@ -156,11 +156,8 @@ function dkan_sitewide_update_status_alter(&$projects) {
   $up_to_date_projects = array(
     'gravatar',
     'beautytips',
-    'entity_rdf',
     'feeds_field_fetcher',
     'multistep',
-    'link_iframe_formatter',
-    'rdfx',
   );
   foreach ($up_to_date_projects as $up_to_date_project) {
 
@@ -254,6 +251,10 @@ function dkan_sitewide_preprocess_page(&$variables) {
   if (arg(0) == 'admin' && arg(1) == 'appearance' && $admin_theme !== '0' && $default_theme !== $admin_theme) {
     drupal_set_message(t('For Colorizer to work you must set the Administration theme to match your <em>Default theme</em> at the bottom of the !link  page.', array('!link' => l(t('appearance list'), 'admin/appearance'))), 'warning');
   }
+  // Don't set a special page title if it's the front page
+  if (isset($variables['is_front']) && $variables['is_front'] == TRUE) {
+    drupal_set_title('');
+  }
 }
 
 /**
@@ -326,7 +327,7 @@ function dkan_sitewide_convert_panel_page($page_name, $is_homepage = FALSE) {
     $page_node->panelizer['default']->display_is_modified = TRUE;
     $page_node->panelizer['default']->entity_type = 'node';
     $page_node->panelizer['default']->pipeline = 'ipe';
-    $page_node->panelizer['default']->link_to_entity = $page_node->nid;
+    $page_node->panelizer['default']->link_to_entity = TRUE;
     node_save($page_node);
 
     // Disable old panel page.

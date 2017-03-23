@@ -25,7 +25,7 @@ Repository <https://github.com/NuCivic/dkan>`__ is a Drupal
 *installation profile*. To set up a working website using DKAN, you will
 need to acquire or build a full DKAN distribution of Drupal.
 
-.. tip:: `DKAN Starter <https://github.com/NuCivic/dkan-starter>`_ is project
+.. tip:: `DKAN Starter <http://dkan-starter.readthedocs.io>`_ is project
   containing a prebuilt version of DKAN and the tools `Granicus
   <https://www.granicus.com/>`_ uses for our own implementations and
   deployments. Learn more advanced workflows in that project's
@@ -152,7 +152,7 @@ With the web installer
 
 -  Open a web browser and visit **http://YOURDKANSITE/install.php**:
 
-.. figure:: http://docs.getdkan.com/sites/default/files/installation_screen01.png
+.. figure:: ../images/install-language.png
    :alt: Installation Screen
 
    Installation Screen
@@ -165,7 +165,7 @@ With the web installer
    corrected before installation can proceed. Instructions for
    correcting each error condition are provided.
 
-.. figure:: http://docs.getdkan.com/sites/default/files/installation_screen02.png
+.. figure:: ../images/install-database.png
    :alt: Installation Screen - database config
 
    Installation Screen
@@ -175,7 +175,7 @@ With the web installer
    database name, database username, and database password, then click
    “Save to Continue” to proceed.
 
-.. figure:: http://docs.getdkan.com/sites/default/files/installation_screen03.png
+.. figure:: ../images/install-progress.png
    :alt: Progress Bar
 
    Progress Bar
@@ -184,7 +184,7 @@ With the web installer
    screen. Depending on your server resources, this may take several
    minutes.
 
-.. figure:: http://docs.getdkan.com/sites/default/files/config_screen.png
+.. figure:: ../images/install-config-screen.png
    :alt: Configuration Screen
 
    Configuration
