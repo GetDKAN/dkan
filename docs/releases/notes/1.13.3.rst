@@ -3,4 +3,7 @@ DKAN 1.13.3 (future release)
 
 Placeholder for good things to come.
 
+Update instructions
+-------------------
 
+This update changes the way the Harvest module reflects the issued and modified dates of harvested datasets. Two new fields are added, and an existing field, ``field_modified_source_date``, is removed. All sources should be re-harvested after updating to this patch release to ensure that all date fields and properties are accurate.
