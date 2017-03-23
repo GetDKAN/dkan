@@ -224,13 +224,15 @@ To import a resource using Fast Import:
 - Press **import**
 - If you get an error like ``SQLSTATE[28000]: invalid authorization specification: 1045 access denied for user 'drupal'@'%' (using password: yes)`` you will need to grant FILE permissions to your MYSQL user. To do so use this command: ``GRANT FILE ON *.* TO 'user-name'``
 
-Note: if you're using DKAN with our set of containers, in order to grant the file permission to the 'drupal' user you will need to execute the following commands (take note that admin123 is the password of the admin user in that mysql environment):
+.. note::
 
-.. code-block:: bash
+  If you are using the docker-based development environment `described in the DKAN Starter documentation <https://dkan-starter.readthedocs.io/en/latest/docker-dev-env/index.html>`_, you will need to execute the following commands (take note that admin123 is the password of the admin user in that mysql environment):
 
-  ahoy docker exec db bash
-  mysql -u root -padmin123
-  GRANT FILE ON *.* TO 'drupal';
+  .. code-block:: bash
+
+    ahoy docker exec db bash
+    mysql -u root -padmin123
+    GRANT FILE ON *.* TO 'drupal';
 
 Datastore API
 --------------
