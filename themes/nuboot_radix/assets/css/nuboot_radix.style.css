@@ -8910,8 +8910,8 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
       color: #fff;
       display: block; }
 
-.radix-layouts-sidebar .pane-block.pane-views-group-block-block .pane-content {
-  padding: 0 15px; }
+.node-type-group .radix-bryant .radix-layouts-sidebar .pane-block.pane-views-group-block-block .pane-content {
+  padding: 15px 15px 0; }
 
 #block-dkan-dataset-dkan-dataset-dataset-help .content {
   padding: 10px; }
