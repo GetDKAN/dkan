@@ -151,10 +151,10 @@ class DatajsonHarvestMigration extends HarvestMigration {
    * Prepare list of resources that need to be imported based on the row data.
    *
    * @param object $resources_row_data
-   *        Resources data present on row.
+   *   Resources data present on row.
    *
    * @return array
-   *         An array with all resources data ready to be imported or empty if
+   *   An array with all resources data ready to be imported or empty if
    *         no resources where found.
    */
   public function prepareRowResources($resources_row_data) {
@@ -179,10 +179,10 @@ class DatajsonHarvestMigration extends HarvestMigration {
    * Prepare group that needs to be imported based on the row data.
    *
    * @param object $group_row_data
-   *        $group_row_data Group data present on row.
+   *   $group_row_data Group data present on row.
    *
    * @return object
-   *         An object value with the group data needed to import the group.
+   *   An object value with the group data needed to import the group.
    */
   public function prepareRowGroup($group_row_data) {
 
