@@ -154,13 +154,25 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config) {
   $file = $node->field_upload->value();
   $file_path = drupal_realpath($file->uri);
   $feeds_entity_id = $source->feed_nid;
-  $fields = implode(',', array_keys($table->meta['fields']));
+  $headers = array_keys($table->meta['fields']);
+  $fields = implode(',', $headers);
   $delim = $config['delimiter'];
   $has_headers = ($config['no_headers']) ? '' : 'IGNORE 1 LINES';
   $quote_delimiters = variable_get('quote_delimiters', '"');
   $lines_terminated_by = variable_get('lines_terminated_by', '\n');
   $fields_escaped_by = variable_get('fields_escaped_by', '');
+  $empty_as_null = variable_get('dkan_datastore_fast_import_load_empty_cells_as_null', 0);
+  $set_null_values = '';
   $params = array();
+
+  if ($empty_as_null) {
+    $vars = dkan_datastore_fast_import_get_fields_as_vars($headers);
+    $fields = implode(',', $vars);
+    $headers_to_vars = array_combine($headers, $vars);
+    foreach ($headers_to_vars as $header => $var) {
+      $set_null_values = $set_null_values . ", $header = nullif($var,'')";
+    }
+  }
 
   $load_data_statement = ($load_data_type === 'load_data_local_infile') ? 'LOAD DATA LOCAL' : 'LOAD DATA';
 
@@ -176,8 +188,9 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config) {
     $sql = $sql . "  ESCAPED BY :fields_escaped_by";
     $params[':fields_escaped_by'] = $fields_escaped_by;
   }
-    $sql = $sql . " LINES TERMINATED BY '$lines_terminated_by' $has_headers ($fields)
-      SET timestamp=UNIX_TIMESTAMP(), feeds_entity_id=$feeds_entity_id;";
+  $sql = $sql . " LINES TERMINATED BY '$lines_terminated_by' $has_headers ($fields)
+    SET timestamp=UNIX_TIMESTAMP(), feeds_entity_id=$feeds_entity_id $set_null_values;";
+
 
   try {
     $result = db_query($sql, $params);
@@ -192,6 +205,17 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config) {
   catch (Exception $e) {
     drupal_set_message(t('There was an error trying to import this file: @error', array('@error' => $e->getMessage())), 'error', FALSE);
   }
+}
+
+/**
+ * Get header names as sql variables.
+ */
+function dkan_datastore_fast_import_get_fields_as_vars($headers) {
+  $vars = array();
+  foreach ($headers as $header) {
+    $vars[] = '@v' . $header;
+  }
+  return $vars;
 }
 
 /**
@@ -213,6 +237,7 @@ function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id) {
     variable_set('quote_delimiters', '"');
     variable_set('lines_terminated_by', '\n');
     variable_set('fields_escaped_by', '');
+    variable_set('dkan_datastore_fast_import_load_empty_cells_as_null', 0);
 
     if ($selection == DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_DYNAMIC_IMPORT) {
       $threshold = variable_get('dkan_datastore_fast_import_selection_threshold', DkanDatastoreFastImport::FAST_IMPORT_THRESHOLD_DEFAULT);
@@ -277,6 +302,16 @@ function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id) {
       '#title' => t('Fields escaped by:'),
       '#default_value' => variable_get('fields_escaped_by', ''),
       '#description' => t('The character used to escape other characters on each fields. Leave empty if it isn\'t needed.'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="use_fast_import"]' => array('checked' => FALSE),
+        ),
+      ),
+    );
+    $form['dkan_datastore_fast_import_load_empty_cells_as_null'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Read empty cells as NULL (if unchecked, empty cells will be read as zeros or empty strings).'),
+      '#default_value' => variable_get('dkan_datastore_fast_import_load_empty_cells_as_null'),
       '#states' => array(
         'invisible' => array(
           ':input[name="use_fast_import"]' => array('checked' => FALSE),
