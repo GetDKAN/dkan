@@ -308,3 +308,148 @@ function dkan_dataset_groups_menu_alter(&$items) {
   $items['admin/config/group/roles']['access arguments'] = array('administer og ui pages');
   $items['admin/config/group/fields']['access arguments'] = array('administer og ui pages');
 }
+
+/**
+ * Returns the $rid of an OG role based on the Role Name.
+ */
+function dkan_dataset_groups_get_og_rid_by_name($name) {
+  return db_query("SELECT rid from {og_role} WHERE name = :name", array(":name" => $name))->fetchField();
+}
+
+/**
+ * Implements hook_og_membership_insert().
+ */
+function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
+  
+  // If the user is an editor, assign the og administrator role
+  // when adding the user to a group.
+  $group_type = $og_membership->group_type;
+  $gid = $og_membership->gid;
+  $uid = $og_membership->etid;
+  $rid = dkan_dataset_groups_get_og_rid_by_name('administrator member');
+
+  // Load user.
+  $user = user_load($uid);
+  // Get 'editor' role ID.
+  $erid = user_role_load_by_name('editor');
+  // If the user is an 'editor' then process it to assign it the 
+  // OG administrator role.
+  if (user_has_role($erid->rid, $user)) {
+    // Get the existing OG roles that the user has on the group.
+    $user_roles = og_get_user_roles($group_type, $gid, $uid);
+    // If the user has not the administrator role, assign it.
+    if (empty($user_roles[$rid])) {
+      // Create new role record and associate it with the user.
+      $role = new stdClass();
+      $role->uid = $uid;
+      $role->rid = $rid;
+      $role->group_type = $group_type;
+      $role->gid = $gid;
+
+      // Assign the administrator role to the user.
+      drupal_write_record('og_users_roles', $role);
+      og_invalidate_cache();
+      module_invoke_all('og_role_grant', $group_type, $gid, $uid, $rid);
+
+      // Display a message to the user.
+      if (isset($user->name)) {
+        drupal_set_message(t('%user has the editor role, so has also been granted the group administrator role in this group.', array('%user' => $user->name)), 'status');
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_user_update().
+ */
+function dkan_dataset_groups_user_update(&$edit, $account, $category) {
+ 
+  // OG roles are checked every time a user is updated. If the user is an 'editor'
+  // then the 'administrator member' OG role is granted. If the user is not an 'editor' and
+  // also not a 'site manager' then the 'administrator member' OG role is removed.
+  // The roles are modified on all the groups the updated user belongs to.
+  if (module_exists('og')) {
+
+    $rid = dkan_dataset_groups_get_og_rid_by_name('administrator member');
+    $rid1 = user_role_load_by_name('editor');
+    $rid2 = user_role_load_by_name('site manager');
+    // If the user is not an 'editor' or 'site manager'.
+    if (!user_has_role($rid1->rid, $account) && !user_has_role($rid2->rid, $account)) {
+      // Get the list of groups where the user has the 'administrator member' role.
+      $query = db_select('node', 'n');
+      $query->join('og_users_roles', 'o', 'n.nid = o.gid');
+      $query
+        ->fields('n', array('title'))
+        ->condition('o.uid', $account->uid)
+        ->condition('o.rid', $rid);
+      $result = $query->execute();
+
+      // If any, display a message to the user letting them know about the role update.
+      if ($result) {
+        $groups = '';
+        foreach ($result as $delta => $row) {
+          $groups .= $row->title;
+          if ($delta < ($result->rowCount() - 1)) {
+            $groups .= ', ';
+          }
+        }
+
+        if ($groups != '') {
+          drupal_set_message(t('%user no longer has the editor or site manager role so has also been removed as an administrator on the following groups: %groups.', array('%user' => $account->name, '%groups' => $groups)), 'status');
+        }
+      }
+
+      // Remove the 'administrator member' role from the user on all the groups.  
+      db_delete('og_users_roles')
+        ->condition('uid', $account->uid)
+        ->condition('rid', $rid)
+        ->execute();
+    }
+
+    // If the user IS an editor, and belongs to a group or groups,
+    // add the og administrator role if not already set.
+    if (user_has_role($rid1->rid, $account)) {
+      // Get the list of groups associated with the user.
+      $query = db_select('og_membership', 'm');
+      $query->join('og_users_roles', 'o', 'm.gid = o.gid');
+      $query->join('node', 'n', 'o.gid = n.nid');
+      $query
+        ->fields('n', array('nid', 'title'))
+        ->condition('m.entity_type', 'user')
+        ->condition('m.etid', $account->uid);
+      $users_groups = $query->execute();
+
+      // If the user belongs to any group then assign the 'administrator member' OG role
+      // on each group.
+      if ($users_groups) {
+        // Process each group.
+        foreach ($users_groups as $row) {
+          // Check if the user has the 'administrator member' role on the group.
+          $query = db_select('og_users_roles', 'o');
+          $query->fields('o', array('gid'));
+          $query->condition('uid', $account->uid);
+          $query->condition('rid', $rid);
+          $query->condition('gid', $row->nid);
+          $result = $query->execute();
+
+          // If the role is not present then add it.
+          if (!$result->rowCount()) {
+            db_insert('og_users_roles')
+              ->fields(array(
+                'uid' => $account->uid,
+                'rid' => $rid,
+                'gid' => $row->nid,
+                'group_type' => 'node',
+              ))
+              ->execute();
+
+            // Display a message to the user.  
+            if (isset($row->title)) {
+              drupal_set_message(t('%user is an editor so has also been granted the group administrator role for the group: %group.', array('%user' => $account->name, '%group' => $row->title)), 'status');
+            }
+          }
+        }
+      }
+    }
+  }
+}
