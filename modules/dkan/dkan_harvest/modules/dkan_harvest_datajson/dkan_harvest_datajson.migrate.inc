@@ -44,8 +44,6 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $this->addFieldMapping('uuid', 'identifier');
     $this->addFieldMapping('field_license', 'license');
     $this->addFieldMapping('field_spatial_geographical_cover', 'spatial');
-    $this->addFieldMapping('field_temporal_coverage', 'temporalBegin');
-    $this->addFieldMapping('field_temporal_coverage:to', 'temporalEnd');
     $this->addFieldMapping('field_frequency', 'accrualPeriodicity');
     $this->addFieldMapping('field_data_dictionary', 'describedBy');
     $this->addFieldMapping('field_landing_page', 'landingPage');
@@ -95,6 +93,41 @@ class DatajsonHarvestMigration extends HarvestMigration {
       $row->contact_name = isset($row->contactPoint->fn) ? $row->contactPoint->fn : '';
       if (!filter_var($row->contact_email, FILTER_VALIDATE_EMAIL)) {
         $row->contact_email = '';
+      }
+    }
+
+    // Process Temporal Coverage. The mapping are defined in the base main
+    // class, we just need to set the properties.
+    if (isset($row->temporal)) {
+      $date = explode("/", $row->temporal);
+
+      foreach ($date as $key => &$value) {
+        // Check if this is a time interval on the second Argument.
+        if ($key == 2
+          && preg_match("/(P\d*)?(Y\d*)?(M\d*)?(D\d*)?(T\d*)?(H\d*)?(M\d*)?/", $value)) {
+          $value_diff = new DateInterval($value);
+          $value_date = new DateTime($date[0]);
+          $value_date->add($value_diff);
+        }
+        // Support 4 digits year time strings.
+        elseif (preg_match("@^\d{4}$@", $value)) {
+          $value_date = new DateTime();
+          $value_date->setDate($value, 1, 1)
+            ->setTime(0, 0);
+        }
+        else {
+          // Fallback to full date/time format.
+          $value_date = new DateTime($value);
+        }
+
+        $value = $value_date->getTimestamp();
+      }
+
+      if (isset($date[0])) {
+        $row->temporal_coverage = $date[0];
+      }
+      if (isset($date[1])) {
+        $row->temporal_coverage_to = $date[1];
       }
     }
   }
