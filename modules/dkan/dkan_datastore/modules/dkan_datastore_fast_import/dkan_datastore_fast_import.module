@@ -157,21 +157,40 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config) {
   $fields = implode(',', array_keys($table->meta['fields']));
   $delim = $config['delimiter'];
   $has_headers = ($config['no_headers']) ? '' : 'IGNORE 1 LINES';
+  $quote_delimiters = variable_get('quote_delimiters', '"');
+  $lines_terminated_by = variable_get('lines_terminated_by', '\n');
+  $fields_escaped_by = variable_get('fields_escaped_by', '');
+  $params = array();
 
   $load_data_statement = ($load_data_type === 'load_data_local_infile') ? 'LOAD DATA LOCAL' : 'LOAD DATA';
 
-  $sql = $load_data_statement . " INFILE '$file_path' IGNORE
-   INTO TABLE $table->name
-   COLUMNS TERMINATED BY '$delim' LINES TERMINATED BY '\n' $has_headers ($fields)
-   SET timestamp=UNIX_TIMESTAMP(), feeds_entity_id=$feeds_entity_id;";
+  $sql = "$load_data_statement INFILE :file_path IGNORE
+      INTO TABLE {$table->name}
+      FIELDS TERMINATED BY :delim
+      ENCLOSED BY :quote_delimiters";
+  $params[':file_path'] = $file_path;
+  $params[':delim'] = $delim;
+  $params[':quote_delimiters'] = $quote_delimiters;
+
+  if ($fields_escaped_by) {
+    $sql = $sql . "  ESCAPED BY :fields_escaped_by";
+    $params[':fields_escaped_by'] = $fields_escaped_by;
+  }
+    $sql = $sql . " LINES TERMINATED BY '$lines_terminated_by' $has_headers ($fields)
+      SET timestamp=UNIX_TIMESTAMP(), feeds_entity_id=$feeds_entity_id;";
 
   try {
-    db_query($sql);
+    $result = db_query($sql, $params);
+    if ($result) {
+      if ($result->rowCount() == 0) {
+        drupal_set_message(t('There were no items imported. It may be due to a misconfiguration related to characters set as quote delimiters, lines terminators or escape characters.'), 'warning', FALSE);
+      }
+    }
     $node->field_datastore_status->set(DKAN_DATASTORE_EXISTS);
     $node->save();
   }
   catch (Exception $e) {
-    drupal_set_message(t('There was an error trying to import this file: @error', array('@error', $e->getMessage())), 'error', FALSE);
+    drupal_set_message(t('There was an error trying to import this file: @error', array('@error' => $e->getMessage())), 'error', FALSE);
   }
 }
 
@@ -191,6 +210,9 @@ function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id) {
     $file = $node->field_upload->value();
     $selection = variable_get('dkan_datastore_fast_import_selection', DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT);
     $use_fast_import = FALSE;
+    variable_set('quote_delimiters', '"');
+    variable_set('lines_terminated_by', '\n');
+    variable_set('fields_escaped_by', '');
 
     if ($selection == DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_DYNAMIC_IMPORT) {
       $threshold = variable_get('dkan_datastore_fast_import_selection_threshold', DkanDatastoreFastImport::FAST_IMPORT_THRESHOLD_DEFAULT);
@@ -218,6 +240,48 @@ function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id) {
     $form['#attached']['js'][] = array(
       'data' => drupal_get_path('module', 'dkan_datastore_fast_import') . '/dkan_datastore_fast_import.js',
       'type' => 'file',
+    );
+    $form['quote_delimiters'] = array(
+      '#type' => 'select',
+      '#title' => t('Quote delimiters'),
+      '#options' => array(
+        '\'' => '\'',
+        '"' => '"',
+        '~' => '~',
+      ),
+      '#default_value' => variable_get('quote_delimiters', '"'),
+      '#description' => t('The character that will be used to enclose fields in this CSV file.'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="use_fast_import"]' => array('checked' => FALSE),
+        ),
+      ),
+    );
+    $form['lines_terminated_by'] = array(
+      '#type' => 'select',
+      '#title' => t('Lines terminated by:'),
+      '#options' => array(
+        '\n' => '\n',
+        '\r' => '\r',
+        '\n\r' => '\n\r',
+      ),
+      '#default_value' => variable_get('lines_terminated_by', '\n'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="use_fast_import"]' => array('checked' => FALSE),
+        ),
+      ),
+    );
+    $form['fields_escaped_by'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Fields escaped by:'),
+      '#default_value' => variable_get('fields_escaped_by', ''),
+      '#description' => t('The character used to escape other characters on each fields. Leave empty if it isn\'t needed.'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="use_fast_import"]' => array('checked' => FALSE),
+        ),
+      ),
     );
   }
 }
