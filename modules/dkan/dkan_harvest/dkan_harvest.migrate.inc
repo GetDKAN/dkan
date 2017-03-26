@@ -899,8 +899,8 @@ class HarvestMigration extends MigrateDKAN {
     $this->addFieldMapping('field_spatial', 'spatial');
     $this->addFieldMapping('field_spatial_geographical_cover', 'spatial_geographical_cover');
     $this->addFieldMapping('field_frequency', 'frequency');
-    $this->addFieldMapping('field_temporal_coverage', 'temporal_coverage');
-    $this->addFieldMapping('field_temporal_coverage:to', 'temporal_coverage_end');
+    $this->addFieldMapping('field_temporal_coverage', 'temporal_coverage_from');
+    $this->addFieldMapping('field_temporal_coverage:to', 'temporal_coverage_to');
     $this->addFieldMapping('field_contact_name', 'contact_name');
     $this->addFieldMapping('field_contact_email', 'contact_email');
     // $this->addFieldMapping('og_group_ref', 'group_ids');.

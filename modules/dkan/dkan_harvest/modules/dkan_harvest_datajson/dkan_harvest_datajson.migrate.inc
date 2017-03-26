@@ -124,7 +124,7 @@ class DatajsonHarvestMigration extends HarvestMigration {
       }
 
       if (isset($date[0])) {
-        $row->temporal_coverage = $date[0];
+        $row->temporal_coverage_from = $date[0];
       }
       if (isset($date[1])) {
         $row->temporal_coverage_to = $date[1];
