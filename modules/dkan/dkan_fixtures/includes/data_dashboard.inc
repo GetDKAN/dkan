@@ -18,7 +18,7 @@ class DkanDataDashboardsImport extends DkanPanelizedNodesImport {
     if (!isset($arguments['endpoint'])) {
       $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures') . '/data/';
       $arguments['list_url'] = 'data_dashboard_list.json';
-      $arguments['item_url'] = 'data_dashboard_show?id=:id.json';
+      $arguments['item_url'] = 'data_dashboard_show%3Fid=:id.json';
     }
     $arguments['content_type'] = 'data_dashboard';
 

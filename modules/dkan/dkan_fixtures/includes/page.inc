@@ -18,7 +18,7 @@ class DkanPagesImport extends DkanPanelizedNodesImport {
     if (!isset($arguments['endpoint'])) {
       $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures') . '/data/';
       $arguments['list_url'] = 'page_list.json';
-      $arguments['item_url'] = 'page_show?id=:id.json';
+      $arguments['item_url'] = 'page_show%3Fid=:id.json';
     }
     $arguments['content_type'] = 'page';
 
