@@ -1,5 +1,6 @@
 7.x-1.13.x
 ----------
+ - #1726 Fixed broken links in search results to nodes without aliases
  - #1792 Remove Windows reserved characters from default content filenames for better Windows support
  - #1815 Support importing Temporal Coverage during POD Harvest.
  - #1785 Fix profile UI install.
