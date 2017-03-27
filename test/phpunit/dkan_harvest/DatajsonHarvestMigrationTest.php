@@ -91,6 +91,28 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test Contact.
+   *
+   * @depends testDatasetCount
+   */
+  public function testContact($dataset) {
+    $this->assertEquals("Stefanie Gray", $dataset->field_contact_name->value());
+    $this->assertEquals("stefanie@nucivic.com", $dataset->field_contact_email->value());
+  }
+
+  /**
+   * Test Temporal Coverage.
+   *
+   * @depends testDatasetCount
+   */
+  public function testTemporal($dataset) {
+    $value = new DateTime("2011-01-01 00:00:00");
+    $value2 = new DateTime("2015-01-01 00:00:00");
+    $this->assertEquals($value->getTimestamp(), $dataset->field_temporal_coverage->value->value());
+    $this->assertEquals($value2->getTimestamp(), $dataset->field_temporal_coverage->value2->value());
+  }
+
+  /**
    * Test resources.
    *
    * @depends testDatasetCount
