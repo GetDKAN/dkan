@@ -103,11 +103,24 @@ class DatajsonHarvestMigration extends HarvestMigration {
 
       foreach ($date as $key => &$value) {
         // Check if this is a time interval on the second Argument.
-        if ($key == 2
-          && preg_match("/(P\d*)?(Y\d*)?(M\d*)?(D\d*)?(T\d*)?(H\d*)?(M\d*)?/", $value)) {
-          $value_diff = new DateInterval($value);
-          $value_date = new DateTime($date[0]);
-          $value_date->add($value_diff);
+        if ($key == 1
+          && preg_match("/P(\d*Y)?(\d*M)?(\d*D)?(\d*W)?T?(\d*H)?(\d*M)?(\d*S)?/", $value)) {
+          try {
+            $value_diff = new DateInterval($value);
+            // Get the date from the first segment. This should be represented
+            // as a timestamp by now.
+            $value_date = new DateTime();
+            $value_date->setTimestamp($date[0]);
+            $value_date->add($value_diff);
+          }
+          catch (Exception $e) {
+            $message = t(
+              'Cannot parse temporal coverage interval @value',
+              array(
+                '@value' => $value,
+              ));
+            $this->saveMessage($message);
+          }
         }
         // Support 4 digits year time strings.
         elseif (preg_match("@^\d{4}$@", $value)) {
@@ -115,9 +128,19 @@ class DatajsonHarvestMigration extends HarvestMigration {
           $value_date->setDate($value, 1, 1)
             ->setTime(0, 0);
         }
+        // Fallback to full date/time format.
         else {
-          // Fallback to full date/time format.
-          $value_date = new DateTime($value);
+          try {
+            $value_date = new DateTime($value);
+          }
+          catch (Exception $e) {
+            $message = t(
+              'Cannot parse temporal coverage value @value',
+              array(
+                '@value' => $value,
+              ));
+            $this->saveMessage($message);
+          }
         }
 
         $value = $value_date->getTimestamp();
