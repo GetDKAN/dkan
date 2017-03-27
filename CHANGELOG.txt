@@ -1,4 +1,6 @@
 7.x-1.13.x
+----------
+ - #1792 Remove Windows reserved characters from default content filenames for better Windows support
  - #1815 Support importing Temporal Coverage during POD Harvest.
  - #1785 Fix profile UI install.
  - #1786 Remove horizontal tab field from the group content type, fix margin on group block.
