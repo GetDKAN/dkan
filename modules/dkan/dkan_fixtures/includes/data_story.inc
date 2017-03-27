@@ -18,7 +18,7 @@ class DkanDataStoriesImport extends DkanPanelizedNodesImport {
     if (!isset($arguments['endpoint'])) {
       $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures') . '/data/';
       $arguments['list_url'] = 'dkan_data_story_list.json';
-      $arguments['item_url'] = 'dkan_data_story_show?id=:id.json';
+      $arguments['item_url'] = 'dkan_data_story_show%3Fid=:id.json';
     }
     $arguments['content_type'] = 'dkan_data_story';
 

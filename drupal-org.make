@@ -1,7 +1,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta2/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.1/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
@@ -16,7 +16,9 @@ projects:
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
-    version: '2.1'
+    version: '2.2'
+    patch:
+      2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch'
   beautytips:
     download:
       type: git
@@ -26,13 +28,15 @@ projects:
     patch:
       849232: 'http://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch'
   better_exposed_filters:
-    version: '3.2'
+    version: '3.4'
   bueditor:
     version: '1.8'
   bueditor_plus:
     version: '1.4'
   chosen:
-    version: '2.0-beta5'
+    version: '2.0'
+    patch:
+      2834096: 'https://www.drupal.org/files/issues/chosen-accesibility_problem_with_input-0.patch'
   colorizer:
     version: '1.10'
     patch:
@@ -74,8 +78,6 @@ projects:
     version: '1.2'
   entityreference_filter:
     version: '1.7'
-  eva:
-    version: '1.2'
   facetapi:
     version: '1.5'
     patch:
@@ -115,6 +117,7 @@ projects:
     version: '1.5'
     patch:
       2042681: 'http://drupal.org/files/issues/field-group-show-ajax-2042681-8.patch'
+      2831815: 'https://www.drupal.org/files/issues/hash-location-sanitization.diff'
   field_group_table:
     download:
       type: git
@@ -126,7 +129,11 @@ projects:
     download:
       full_version: 7.x-1.0-beta1
   fieldable_panels_panes:
-    version: '1.10'
+    version: '1.11'
+    patch:
+      2825835: 'https://www.drupal.org/files/issues/2825835.patch'
+      2826182: 'https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch'
+      2826205: 'https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch'
   file_entity:
     version: '2.0-beta3'
     patch:
@@ -176,7 +183,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
-      branch: master
+      branch: 'master'
   libraries:
     version: '2.3'
   link:
@@ -251,6 +258,7 @@ projects:
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
+      3: patches/panopoly_widgets_overrides_OOB.patch
   panopoly_images:
     version: '1.41'
   path_breadcrumbs:
@@ -282,6 +290,8 @@ projects:
       2362487: 'https://www.drupal.org/files/issues/remote_file_source-location-content-dist_1.patch'
   remote_stream_wrapper:
     version: '1.0-rc1'
+    patch:
+      2833837: 'https://www.drupal.org/files/issues/prevent-download-intent-open-stream-2833837-4.patch'
   role_export:
     version: '1.0'
   rules:
@@ -302,7 +312,7 @@ projects:
   select_or_other:
     version: '2.22'
   services:
-    version: '3.17'
+    version: '3.19'
   simple_gmap:
     version: '1.3'
   strongarm:
@@ -321,9 +331,7 @@ projects:
   uuid:
     version: '1.0-beta2'
   views:
-    version: '3.14'
-    patch:
-      1388684: 'https://www.drupal.org/files/views_taxonomy_entity_uri-1388684-15.patch'
+    version: '3.15'
   views_autocomplete_filters:
     version: '1.2'
     patch:
@@ -337,7 +345,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0-beta2
+      tag: 7.x-1.1
     type: module
   workbench:
     version: '1.2'
@@ -345,6 +353,8 @@ projects:
     version: '3.11'
   workbench_moderation:
     version: '3.0'
+    patch:
+      2360973: 'https://www.drupal.org/files/issues/workbench_moderation-install-warnings-2360973-3.patch'
   drafty:
     version: '1.0-beta3'
 libraries:
@@ -383,7 +393,8 @@ libraries:
   spectrum:
     download:
       type: git
-      url: 'https://github.com/bgrins/spectrum.git'
+      url: 'https://github.com/NuCivic/spectrum.git'
+      tag: 1.8.0-civic-4736
     directory_name: bgrins-spectrum
   spyc:
     download:

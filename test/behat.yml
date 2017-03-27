@@ -17,6 +17,7 @@ default:
           - Drupal\DKANExtension\Context\DatasetContext
           - Drupal\DKANExtension\Context\DataDashboardContext
           - Drupal\DKANExtension\Context\PODContext
+          - Drupal\DKANExtension\Context\FastImportContext
           - Drupal\DKANExtension\Context\SearchAPIContext:
               search_forms:
                 default:
@@ -76,6 +77,7 @@ default:
         dataset resource list: '#data-and-resources'
         dataset body: '.field-name-body'
         dataset edit body: '#edit-body'
+        dataset spatial: '#edit-field-spatial'
         resource title: '.pane-node .pane-title'
         resource groups: '#edit-groups'
         search_area: '.panel-col-last'

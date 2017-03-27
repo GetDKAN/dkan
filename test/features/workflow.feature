@@ -16,10 +16,10 @@ Feature:
       | All Recent Content | /admin/workbench/content/all         |
       | Create User        | /admin/people/create                 |
     Given Users:
-      | name         | mail                | status | roles                             |
-      | Contributor  | WC@fakeemail.com    | 1      | Workflow Contributor, Content Creator            |
-      | Moderator    | WM@fakeemail.com    | 1      | Workflow Moderator, Editor          |
-      | Supervisor   | WS@fakeemail.com    | 1      | Workflow Supervisor, Site Manager|
+      | name        | mail             | status | roles                                 |
+      | Contributor | WC@fakeemail.com | 1      | Workflow Contributor, Content Creator |
+      | Moderator   | WM@fakeemail.com | 1      | Workflow Moderator, Editor            |
+      | Supervisor  | WS@fakeemail.com | 1      | Workflow Supervisor, Site Manager     |
     Given groups:
       | title    | author     | published |
       | Group 01 | Supervisor | Yes       |
@@ -63,10 +63,10 @@ Feature:
     And I should see the link "My Edits"
     And I should see the link "All Recent Content"
     Examples:
-      | workbench roles                       |
+      | workbench roles      |
       | Workflow Contributor |
-      | Workflow Moderator |
-      | Workflow Supervisor |
+      | Workflow Moderator   |
+      | Workflow Supervisor  |
 
   @api @javascript @globalUser
   Scenario Outline: As a user with any Workflow role, I should be able to upgrade my own draft content to needs review.
@@ -92,51 +92,56 @@ Feature:
       | Moderator   |
       | Supervisor  |
 
-  @ok @mail @javascript @globalUser
-  Scenario Outline: DEBUG
-    Given I am logged in as a user with the "Workflow Contributor" role
-    And datasets:
-      | title                      | author        | moderation |
-      | Draft Dataset Needs Review | Contributor   | draft      |
-    And resources:
-      | title                        | author       | dataset                       | format |  published |
-      | Draft Resource Needs Review  | Contributor  | Draft Dataset Needs Review    | csv    |  no        |
-    And I update the moderation state of "Draft Dataset Needs Review" to "Needs Review"
-    And I update the moderation state of "Draft Resource Needs Review" to "Needs Review"
-    When  I am logged in as a user with the "<workbench reviewer roles>" role
-    And I visit the "Needs Review" page
-    Then I should see the button "Reject"
-    And I should see the button "Publish"
-    And I should see "Draft Dataset Needs Review"
-    And I should see "Draft Resource Needs Review"
-    When I check the box "Select all items on this page"
-    And I press "Publish"
-    Then I wait for "Performed Publish on 2 items."
-    Examples:
-      | workbench reviewer roles              |
-      | Workflow Moderator, editor            |
-      | Workflow Supervisor, site manager     |
+  # TODO: This tests is commented because a known bug.
+  # More information: CIVIC-4891
+  #
+  # @ok @mail @javascript @globalUser
+  # Scenario Outline: DEBUG
+  #   Given I am logged in as a user with the "Workflow Contributor" role
+  #   And datasets:
+  #     | title                      | author        | moderation |
+  #     | Draft Dataset Needs Review | Contributor   | draft      |
+  #   And resources:
+  #     | title                        | author       | dataset                       | format |  published |
+  #     | Draft Resource Needs Review  | Contributor  | Draft Dataset Needs Review    | csv    |  no        |
+  #   And I update the moderation state of "Draft Dataset Needs Review" to "Needs Review"
+  #   And I update the moderation state of "Draft Resource Needs Review" to "Needs Review"
+  #   When  I am logged in as a user with the "<workbench reviewer roles>" role
+  #   And I visit the "Needs Review" page
+  #   Then I should see the button "Reject"
+  #   And I should see the button "Publish"
+  #   And I should see "Draft Dataset Needs Review"
+  #   And I should see "Draft Resource Needs Review"
+  #   When I check the box "Select all items on this page"
+  #   And I press "Publish"
+  #   Then I wait for "Performed Publish on 2 items."
+  #   Examples:
+  #     | workbench reviewer roles              |
+  #     | Workflow Moderator, editor            |
+  #     | Workflow Supervisor, site manager     |
 
   @ok @javascript @globalUser
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as "Contributor"
     And datasets:
       | title                       | author       | published | moderation_date   | date created  |
-      | Stale Dataset Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
-      | Fresh Dataset Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
+      | Stale Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
+      | Fresh Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
     And resources:
       | title                        | author       | dataset                    | format |  published |
-      | Stale Resource Needs Review  | Contributor  | Stale Dataset Needs Review | csv    |  no        |
-    And I update the moderation state of "Stale Dataset Needs Review" to "Needs Review" on date "30 days ago"
-    And I update the moderation state of "Stale Resource Needs Review" to "Needs Review" on date "30 days ago"
-    And I update the moderation state of "Fresh Dataset Needs Review" to "Needs Review" on date "20 days ago"
+      | Stale Resource DKAN Test Needs Review  | Contributor  | Stale Dataset DKAN Test Needs Review | csv    |  no        |
+    And I update the moderation state of "Stale Dataset DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
+    And I update the moderation state of "Stale Resource DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
+    And I update the moderation state of "Fresh Dataset DKAN Test Needs Review" to "Needs Review" on date "20 days ago"
     Given I am logged in as "Supervisor"
     And I visit the "Stale Reviews" page
     And I should see the button "Reject"
     And I should see the button "Publish"
-    And I should see "Stale Dataset Needs Review"
-    And I should see "Stale Resource Needs Review"
-    And I should not see "Fresh Resource Needs Review"
+    When I fill in "edit-title" with "DKAN Test"
+    And I press "Filter"
+    Then I should see "Stale Dataset DKAN Test Needs Review"
+    And I should see "Stale Resource DKAN Test Needs Review"
+    And I should not see "Fresh Resource DKAN Test Needs Review"
     And I check the box "Select all items on this page"
     When I press "Publish"
     Then I wait for "Performed Publish on 3 items"
@@ -167,29 +172,29 @@ Feature:
   Scenario Outline: As a user with Workflow Roles, I should be able to see draft content I authored in 'My Drafts'
     Given I am logged in as "<user>"
     And datasets:
-      | title       | author | moderation |
-      | My Dataset  | <user>  | draft        |
+      | title      | author | moderation |
+      | My Dataset | <user> | draft      |
     And resources:
-      | title        | author | dataset    | format |  moderation |
-      | My Resource  | <user>  | My Dataset | csv    |  draft        |
+      | title       | author | dataset    | format | moderation |
+      | My Resource | <user> | My Dataset | csv    | draft      |
     And I visit the "My Drafts" page
     And I should see "My Resource"
     And I should see "My Dataset"
     Examples:
-      | user |
+      | user        |
       | Contributor |
-      | Moderator  |
-      | Supervisor |
+      | Moderator   |
+      | Supervisor  |
 
   @ok @globalUser
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Published content I authored in workbench pages
     Given I am logged in as "Contributor"
     And datasets:
-      | title       | author  | published |
-      | My Dataset  | Contributor   | No        |
+      | title      | author      | published |
+      | My Dataset | Contributor | No        |
     And resources:
-      | title        | author | dataset       | format |  published |
-      | My Resource  | Contributor  | My Dataset    | csv    |  Yes       |
+      | title       | author      | dataset    | format | published |
+      | My Resource | Contributor | My Dataset | csv    | Yes       |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And "Moderator" updates the moderation state of "My Dataset" to "Published"
@@ -211,11 +216,11 @@ Feature:
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Needs Review resources I authored in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
-      | title       | author | published |
-      | My Dataset  | Contributor  | No        |
+      | title      | author      | published |
+      | My Dataset | Contributor | No        |
     And resources:
-      | title        | author |  dataset       | format |  published |
-      | My Resource  | Contributor  | My Dataset    | csv    |  no        |
+      | title       | author      | dataset    | format | published |
+      | My Resource | Contributor | My Dataset | csv    | no        |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And I visit the "My Drafts" page
@@ -231,11 +236,11 @@ Feature:
   Scenario: As a user with the Workflow Contributor, I should be able to see Needs Review contents I authored in 'Needs Review'
     Given I am logged in as "Contributor"
     And datasets:
-      | title       | author | moderation |
-      | My Dataset  | Contributor | draft      |
+      | title      | author      | moderation |
+      | My Dataset | Contributor | draft      |
     And resources:
-      | title        | author | dataset       | format |  moderation |
-      | My Resource  | Contributor | My Dataset    | csv    |  draft      |
+      | title       | author      | dataset    | format | moderation |
+      | My Resource | Contributor | My Dataset | csv    | draft      |
     And I update the moderation state of "My Dataset" to "Needs Review"
     And I update the moderation state of "My Resource" to "Needs Review"
     And I visit the "Needs Review" page
@@ -249,11 +254,11 @@ Feature:
       | name            | roles                                 |
       | some-other-user | Workflow Contributor, content creator |
     And datasets:
-      | title           | author          | moderation |
-      | Not My Dataset  | some-other-user | draft        |
+      | title          | author          | moderation |
+      | Not My Dataset | some-other-user | draft      |
     And resources:
-      | title            | dataset           | author          | format |  moderation |
-      | Not My Resource  | Not My Dataset    | some-other-user | csv    |  draft         |
+      | title           | dataset        | author          | format | moderation |
+      | Not My Resource | Not My Dataset | some-other-user | csv    | draft      |
 
     And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review"
     And "some-other-user" updates the moderation state of "Not My Resource" to "Needs Review"
@@ -358,127 +363,6 @@ Feature:
     Then I should see the text "Still Not My Dataset"
     Then I should see the text "Not My Dataset"
 
-  # EMAIL NOTIFICATIONS: Content WITH group.
-  @api @mail @globalUser
-  Scenario Outline: As a user with a workflow role I should receive an email notification if needed when the moderation status on a content with group is changed
-    Given users:
-      | name             | mail                       | status | roles                                 |
-      | Administrator    | admin@test.com             | 1      | administrator                         |
-      | Contributor C1G1 | contributor-c1g1@test.com  | 1      | Workflow Contributor, content creator |
-      | Contributor C2G1 | contributor-c2g1@test.com  | 1      | Workflow Contributor, content creator |
-      | Moderator M1G1   | moderator-m1g1@test.com    | 1      | Workflow Moderator, editor            |
-      | Moderator M2G1   | moderator-m2g1@test.com    | 1      | Workflow Moderator, editor            |
-      | Supervisor S1G1  | supervisor-s1g1@test.com   | 1      | Workflow Supervisor, site manager     |
-      | Contributor C1G2 | contributor-c1g2@test.com  | 1      | Workflow Contributor, content creator |
-      | Moderator M1G2   | moderator-m1g2@test.com    | 1      | Workflow Moderator, editor            |
-      | Supervisor S1G2  | supervisor-s1g2@test.com   | 1      | Workflow Supervisor, site manager     |
-
-    And group memberships:
-      | user              | group    | role on group        | membership status |
-      | Administrator     | Group 01 | administrator member | Active            |
-      | Contributor C1G1  | Group 01 | member               | Active            |
-      | Contributor C2G1  | Group 01 | member               | Active            |
-      | Moderator M1G1    | Group 01 | member               | Active            |
-      | Moderator M2G1    | Group 01 | member               | Active            |
-      | Supervisor S1G1   | Group 01 | member               | Active            |
-      | Administrator     | Group 02 | administrator member | Active            |
-      | Contributor C1G2  | Group 02 | member               | Active            |
-      | Moderator M1G2    | Group 02 | member               | Active            |
-      | Supervisor S1G2   | Group 02 | member               | Active            |
-    And datasets:
-      | title         | author           | published | publisher |
-      | Dataset 01    | Contributor C1G1 | No        | Group 01  |
-
-    Given I am logged in as "Moderator M1G1"
-    # Transition: Draft -> Needs Review
-    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
-    Then the user "<user>" <outcome> receive an email
-
-    # Transition: Needs Review -> Draft
-    Given "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
-    And the email queue is cleared
-    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Draft"
-    Then the user "<user>" <outcome> receive an email
-
-    # Transition: Needs Review -> Published
-    Given "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
-    And the email queue is cleared
-    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Published"
-    Then the user "<user>" <outcome> receive an email
-
-  Examples:
-    | user             | outcome    |
-    | Contributor C1G1 | should     |
-    | Contributor C2G1 | should not |
-    | Moderator M1G1   | should not |
-    | Moderator M2G1   | should     |
-    | Supervisor S1G1  | should not |
-    | Contributor C1G2 | should not |
-    | Moderator M1G2   | should not |
-    | Supervisor S1G2  | should not |
-
-
-  # EMAIL NOTIFICATIONS: Content WITHOUT group.
-  @api @mail @globalUser
-  Scenario Outline: As a user with a workflow role I should receive an email notification if needed when the moderation status on a content without group is changed
-    Given users:
-      | name             | mail                       | status | roles                                 |
-      | Administrator    | admin@test.com             | 1      | administrator                         |
-      | Contributor C1G1 | contributor-c1g1@test.com  | 1      | Workflow Contributor, content creator |
-      | Contributor C2G1 | contributor-c2g1@test.com  | 1      | Workflow Contributor, content creator |
-      | Moderator M1G1   | moderator-m1g1@test.com    | 1      | Workflow Moderator, editor            |
-      | Moderator M2G1   | moderator-m2g1@test.com    | 1      | Workflow Moderator, editor            |
-      | Supervisor S1G1  | supervisor-s1g1@test.com   | 1      | Workflow Supervisor, site manager     |
-      | Supervisor S2G1  | supervisor-s2g1@test.com   | 1      | Workflow Supervisor, site manager     |
-      | Contributor C1G2 | contributor-c1g2@test.com  | 1      | Workflow Contributor, content creator |
-      | Moderator M1G2   | moderator-m1g2@test.com    | 1      | Workflow Moderator, editor            |
-      | Supervisor S1G2  | supervisor-s1g2@test.com   | 1      | Workflow Supervisor, site manager     |
-    And group memberships:
-      | user              | group    | role on group        | membership status |
-      | Administrator     | Group 01 | administrator member | Active            |
-      | Contributor C1G1  | Group 01 | member               | Active            |
-      | Contributor C2G1  | Group 01 | member               | Active            |
-      | Moderator M1G1    | Group 01 | member               | Active            |
-      | Moderator M2G1    | Group 01 | member               | Active            |
-      | Supervisor S1G1   | Group 01 | member               | Active            |
-      | Administrator     | Group 02 | administrator member | Active            |
-      | Contributor C1G2  | Group 02 | member               | Active            |
-      | Moderator M1G2    | Group 02 | member               | Active            |
-      | Supervisor S1G2   | Group 02 | member               | Active            |
-    And datasets:
-      | title         | author           | published | publisher |
-      | Dataset 01    | Contributor C1G1 | No        |           |
-
-    Given I am logged in as "Moderator M1G1"
-    # Transition: Draft -> Needs Review
-    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
-    Then the user "<user>" <outcome> receive an email
-
-    # Transition: Needs Review -> Draft
-    Given "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
-    And the email queue is cleared
-    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Draft"
-    Then the user "<user>" <outcome> receive an email
-
-    # Transition: Needs Review -> Published
-    Given "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
-    And the email queue is cleared
-    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Published"
-    Then the user "<user>" <outcome> receive an email
-
-  Examples:
-    | user             | outcome    |
-    | Contributor C1G1 | should     |
-    | Contributor C2G1 | should not |
-    | Moderator M1G1   | should not |
-    | Moderator M2G1   | should not |
-    | Supervisor S1G1  | should     |
-    | Supervisor S2G1  | should     |
-    | Contributor C1G2 | should not |
-    | Moderator M1G2   | should not |
-    | Supervisor S1G2  | should     |
-
-
   @api @ahoyRunMe @javascript @globalUser
   Scenario: When administering users, role pairings with core roles should be enforced
     Given I am logged in as a user with the "administrator" role
@@ -542,3 +426,22 @@ Feature:
     When I click "Moderator RolePairing"
     And I click "Edit"
     Then the checkbox "editor" should be checked
+
+  @ok
+  # https://jira.govdelivery.com/browse/CIVIC-5348
+  Scenario: "View draft" should display the draft dataset and not the published revision.
+    Given users:
+      | name                 | roles                                 |
+      | workflow_contributor | Workflow Contributor, content creator |
+    And datasets:
+      | title         | author               | published | moderation |
+      | Dataset title | workflow_contributor | Yes       | published  |
+    Given I update the moderation state of "Dataset title" to "Published"
+    Given I am logged in as "workflow_contributor"
+    And I am on "Dataset title" page
+    Then I should see the text "Dataset title"
+    When I click "Edit draft"
+    And for "title" I enter "Dataset draft title"
+    And I press "Finish"
+    And I click "View draft"
+    Then I should see "Dataset draft title"

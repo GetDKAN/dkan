@@ -1,3 +1,8 @@
+// License block.
+.pane-dkan-sitewide-dkan-sitewide-license .pane-content {
+  word-break: break-word;
+}
+
 // OTHER ACCESS
 .pane-dkan-sitewide-dkan-sitewide-other-access,
 #block-dkan-sitewide-dkan-sitewide-other-access {
@@ -263,8 +268,8 @@
 }
 
 // Dataset page Group block.
-.radix-layouts-sidebar .pane-block.pane-views-group-block-block .pane-content {
-  padding: 0 15px;
+.node-type-group .radix-bryant .radix-layouts-sidebar .pane-block.pane-views-group-block-block .pane-content {
+  padding: 15px 15px 0;
 }
 
 #block-dkan-dataset-dkan-dataset-dataset-help {
@@ -290,7 +295,7 @@
 }
 
 // Front page hero blocks.
-.pane-dkan-sitewide-demo-front-dkan-demo-front,
+.pane-dkan-sitewide-dkan-demo-front,
 #block-dkan-sitewide-demo-front-dkan-demo-front {
   -webkit-box-shadow: 0px 0px 16px 0px rgba(0,0,0,0.5);
   -moz-box-shadow: 0px 0px 16px 0px rgba(0,0,0,0.5);

@@ -20,7 +20,7 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $this->itemUrl = drupal_realpath($this->dkanHarvestSource->getCacheDir()) .
       '/:id';
 
-    $this->source = new MigrateSourceList(
+    $this->source = new HarvestMigrateSourceList(
       new HarvestList($this->dkanHarvestSource->getCacheDir()),
       new MigrateItemJSON($this->itemUrl),
       array(),
@@ -41,13 +41,9 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $this->addFieldMapping('changed', 'modified');
     $this->addFieldMapping('created', 'issued');
     $this->addFieldMapping('field_public_access_level', 'accessLevel');
-    $this->addFieldMapping('field_contact_name', 'contactPointName');
-    $this->addFieldMapping('field_contact_email', 'mbox');
     $this->addFieldMapping('uuid', 'identifier');
     $this->addFieldMapping('field_license', 'license');
     $this->addFieldMapping('field_spatial_geographical_cover', 'spatial');
-    $this->addFieldMapping('field_temporal_coverage', 'temporalBegin');
-    $this->addFieldMapping('field_temporal_coverage:to', 'temporalEnd');
     $this->addFieldMapping('field_frequency', 'accrualPeriodicity');
     $this->addFieldMapping('field_data_dictionary', 'describedBy');
     $this->addFieldMapping('field_landing_page', 'landingPage');
@@ -82,70 +78,80 @@ class DatajsonHarvestMigration extends HarvestMigration {
   }
 
   /**
-   * Creates list of fields for Data.json Dataset.
-   */
-  public function getDataJsonDatasetFields($version = '1.1') {
-    $common_fields = array(
-        // “Common Core” Required Fields.
-      "title" => "Title",
-      "description" => "Description",
-      "keyword" => "Tags",
-      "modified" => "Last Update",
-      "publisher" => "Publisher",
-      "contactPoint" => "Contact Name",
-      "identifier" => "Unique Identifier",
-      "accessLevel" => "Public",
-        // “Common Core” Required-if-Applicable Fields.
-      "bureauCode" => " Bureau Code",
-      "programCode" => "Program Code",
-      "license" => "License",
-      "spatial" => "Spatial",
-      "temporal" => " Temporal",
-        // Beyond Common Core.
-      "dataQuality" => " Data Quality",
-      "distribution" => "Distribution",
-      "issued" => "Release Date",
-      "language" => " Language",
-      "references" => " Related Documents ",
-      "systemOfRecords" => " System of Records",
-    );
-    if ($version == '1.0') {
-      return $common_fields + array(
-        "mbox" => "Contact Email",
-        "accessLevelComment" => " Access Level Comment",
-        "accessURL" => "Download",
-        "webService" => " Endpoint ",
-        "format" => " Format",
-        // Beyond Common Core.
-        "theme" => "Category",
-        "dataDictionary" => "Data Dictionary",
-        "accrualPeriodicity" => "Frequency",
-        "landingPage" => "Homepage",
-        "PrimaryITInvestmentUII" => "Primary IT Investment",
-      );
-    }
-    elseif ($version == '1.1') {
-      return $common_fields + array(
-        "rights" => " Rights",
-        "accrualPeriodicity" => " Frequency",
-        "conformsTo" => " Data Standard URI",
-        "describedBy" => "Data Dictionary",
-        "describedByType" => "Data",
-        "isPartOf" => " Collection",
-        "landingPage" => "Homepage",
-        "primaryITInvestmentUII" => "Primary",
-        "theme" => "Theme",
-      );
-    }
-  }
-
-  /**
    * Implements prepareRow.
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
     if (property_exists($row, 'accrualPeriodicity')) {
       $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
+    }
+
+    // Process contact name and email.
+    if (is_object($row->contactPoint)
+      && $row->contactPoint->hasEmail) {
+      $row->contact_email = str_replace("mailto:", "", $row->contactPoint->hasEmail) ? str_replace("mailto:", "", $row->contactPoint->hasEmail) : $row->contactPoint->hasEmail;
+      $row->contact_name = isset($row->contactPoint->fn) ? $row->contactPoint->fn : '';
+      if (!filter_var($row->contact_email, FILTER_VALIDATE_EMAIL)) {
+        $row->contact_email = '';
+      }
+    }
+
+    // Process Temporal Coverage. The mapping are defined in the base main
+    // class, we just need to set the properties.
+    if (isset($row->temporal)) {
+      $date = explode("/", $row->temporal);
+
+      foreach ($date as $key => &$value) {
+        // Check if this is a time interval on the second Argument.
+        if ($key == 1
+          && preg_match("/P(\d*Y)?(\d*M)?(\d*D)?(\d*W)?T?(\d*H)?(\d*M)?(\d*S)?/", $value)) {
+          try {
+            $value_diff = new DateInterval($value);
+            // Get the date from the first segment. This should be represented
+            // as a timestamp by now.
+            $value_date = new DateTime();
+            $value_date->setTimestamp($date[0]);
+            $value_date->add($value_diff);
+          }
+          catch (Exception $e) {
+            $message = t(
+              'Cannot parse temporal coverage interval @value',
+              array(
+                '@value' => $value,
+              ));
+            $this->saveMessage($message);
+          }
+        }
+        // Support 4 digits year time strings.
+        elseif (preg_match("@^\d{4}$@", $value)) {
+          $value_date = new DateTime();
+          $value_date->setDate($value, 1, 1)
+            ->setTime(0, 0);
+        }
+        // Fallback to full date/time format.
+        else {
+          try {
+            $value_date = new DateTime($value);
+          }
+          catch (Exception $e) {
+            $message = t(
+              'Cannot parse temporal coverage value @value',
+              array(
+                '@value' => $value,
+              ));
+            $this->saveMessage($message);
+          }
+        }
+
+        $value = $value_date->getTimestamp();
+      }
+
+      if (isset($date[0])) {
+        $row->temporal_coverage_from = $date[0];
+      }
+      if (isset($date[1])) {
+        $row->temporal_coverage_to = $date[1];
+      }
     }
   }
 
@@ -168,10 +174,10 @@ class DatajsonHarvestMigration extends HarvestMigration {
    * Prepare list of resources that need to be imported based on the row data.
    *
    * @param object $resources_row_data
-   *        Resources data present on row.
+   *   Resources data present on row.
    *
    * @return array
-   *         An array with all resources data ready to be imported or empty if
+   *   An array with all resources data ready to be imported or empty if
    *         no resources where found.
    */
   public function prepareRowResources($resources_row_data) {
@@ -196,10 +202,10 @@ class DatajsonHarvestMigration extends HarvestMigration {
    * Prepare group that needs to be imported based on the row data.
    *
    * @param object $group_row_data
-   *        $group_row_data Group data present on row.
+   *   $group_row_data Group data present on row.
    *
    * @return object
-   *         An object value with the group data needed to import the group.
+   *   An object value with the group data needed to import the group.
    */
   public function prepareRowGroup($group_row_data) {
 

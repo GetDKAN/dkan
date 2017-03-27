@@ -20,14 +20,14 @@ function nuboot_radix_form_alter(&$form, &$form_state, $form_id) {
 /**
  * Implements theme_form_element().
  *
- * Remove label wrapped around font-icon checkbox input.
+ * Adjust form elements for 508 compliance.
+ * Keep labels from wrapping font-icon checkbox inputs.
  */
 function nuboot_radix_form_element($variables) {
   $element = &$variables['element'];
   $is_checkbox = FALSE;
   $is_radio = FALSE;
   $is_input_group = FALSE;
-  $is_topic = FALSE;
 
   // This is also used in the installer, pre-database setup.
   $t = get_t();
@@ -65,6 +65,13 @@ function nuboot_radix_form_element($variables) {
     $attributes['class'][] = 'has-error';
   }
 
+  // 508 compliance: fix missing labels on resource fields.
+  if (isset($element['#autocomplete_path']) && isset($element['#field_name'])
+    && $element['#field_name'] == 'field_resources') {
+    $element['#title_display'] = 'after';
+    $element['#title'] = t('Resource');
+  }
+
   // Add radios, checkboxes and form-group classes.
   if (isset($element['#type'])) {
     if ($element['#type'] == "radio") {
@@ -82,9 +89,9 @@ function nuboot_radix_form_element($variables) {
           ']' => '',
           'und' => '',
         ));
-        // Target font-icon-select fields.
+        // Skip font-icon-select checkboxes when wrapping labels.
         if ($name == 'field-topic-icon') {
-          $is_topic = TRUE;
+          $is_checkbox = FALSE;
         }
       }
     }
@@ -147,9 +154,7 @@ function nuboot_radix_form_element($variables) {
         // Render the normal invisible label for screen readers.
         $output .= ' ' . theme('form_element_label', $variables);
         // But still ensure checkbox is wrapped in an empty label.
-        $element['#title_display'] = 'before';
-        $element['#title'] = '';
-        $output .= ' ' . $prefix . theme('form_element_label', $variables) . $suffix . "\n";
+        $output .= ' ' . $prefix . $element['#children'] . $suffix . "\n";
       }
       else {
         $output .= ' ' . theme('form_element_label', $variables);
@@ -174,7 +179,7 @@ function nuboot_radix_form_element($variables) {
 
     case 'none':
     case 'attribute':
-      if ($is_radio || $is_checkbox && !$is_topic) {
+      if ($is_radio || $is_checkbox) {
         // Ensure checkboxes still wrapped in a label.
         $element['#title_display'] = 'before';
         $output .= ' ' . $prefix . theme('form_element_label', $variables) . $suffix;
@@ -193,4 +198,51 @@ function nuboot_radix_form_element($variables) {
   $output .= "</div>\n";
 
   return $output;
+}
+
+/**
+ * Fix 508 accessibility compliance on tableselect.
+ */
+function nuboot_radix_tableselect($variables) {
+  $element = $variables['element'];
+  $rows = array();
+  $header = $element['#header'];
+  if (!empty($element['#options'])) {
+    // Generate a table row for each selectable item in #options.
+    foreach (element_children($element) as $key) {
+      $row = array();
+
+      $row['data'] = array();
+      if (isset($element['#options'][$key]['#attributes'])) {
+        $row += $element['#options'][$key]['#attributes'];
+      }
+      // Render the checkbox / radio element.
+      $row['data'][] = drupal_render($element[$key]);
+
+      // As theme_table only maps header and row columns by order, create the
+      // correct order by iterating over the header fields.
+      foreach ($element['#header'] as $fieldname => $title) {
+        $row['data'][] = $element['#options'][$key][$fieldname];
+      }
+      $rows[] = $row;
+    }
+    // Add an empty header or a "Select all" checkbox to provide room for the
+    // checkboxes/radios in the first table column.
+    if ($element['#js_select']) {
+      // Add a "Select all" checkbox.
+      drupal_add_js('misc/tableselect.js');
+      array_unshift($header, array('class' => array('select-all'), 'data' => '<span class="element-invisible">Select all rows in this table</span>'));
+    }
+    else {
+      // Add an empty header when radio buttons are displayed or a "Select all"
+      // checkbox is not desired.
+      array_unshift($header, '<span class="element-invisible">Select all rows in this table</span>');
+    }
+  }
+  return theme('table', array(
+    'header' => $header,
+    'rows' => $rows,
+    'empty' => $element['#empty'],
+    'attributes' => $element['#attributes'],
+  ));
 }

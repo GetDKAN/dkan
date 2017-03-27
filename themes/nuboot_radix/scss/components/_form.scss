@@ -1,6 +1,9 @@
 //
 // Styles for Forms
 // --------------------------------------------------
+.table-select-processed .checkbox input[type="checkbox"] {
+  margin-left: 0px;
+}
 
 input[type="submit"],
 .btn-primary,
@@ -283,4 +286,8 @@ div.horizontal-tabs {
 
 #dkan-dataset-form-settings .help-block {
   margin: 5px 20px 10px;
+}
+
+.form-type-textfield.form-group label.option {
+  @extend %screenreader;
 }
