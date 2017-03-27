@@ -1,0 +1,199 @@
+{
+  "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+  "@id": "http://www.agency.gov/data.json",
+  "@type": "dcat:Catalog",
+  "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+  "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
+  "dataset": [
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "The Ambulance Fee Schedule public use files for calendar years 2004 through December 31, 2016 are located in the Downloads section below.",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "downloadURL": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html",
+          "mediaType": "text/html",
+          "accessURL": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html"
+        }
+      ],
+      "identifier": "156",
+      "keyword": [
+        "Publically Available Data File - for download",
+        "Ambulatory",
+        "Providers",
+        "State",
+        "Claims"
+      ],
+      "landingPage": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html",
+      "modified": "2016-04-07",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "2005/2016",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "Ambulance Fee Schedule Public Use Files"
+    },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "accrualPeriodicity": "R/P1Y",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "Section 3025 of the Affordable Care Act added section 1886(q) to the Social Security Act establishing the Hospital Readmissions Reduction Program, which requires CMS to reduce payments to IPPS hospitals with excess readmissions, effective for discharges beginning on October 1, 2012.",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "downloadURL": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html",
+          "mediaType": "text/html",
+          "accessURL": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html"
+        }
+      ],
+      "identifier": "155",
+      "keyword": [
+        "Statistics",
+        "Hospital",
+        "Inpatient",
+        "Providers",
+        "National",
+        "Quality",
+        "Readmissions",
+        "Admissions",
+        "Claims",
+        "Payments",
+        "Prospective Payment System (PPS)",
+        "Rates",
+        "Publically Available Data File - for download",
+        "Chronic Condition"
+      ],
+      "landingPage": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html",
+      "modified": "2016-04-07",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "2013",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "Acute IPPS - Readmissions Reduction Program"
+    },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "accrualPeriodicity": "R/P1Y",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "There are two methods for a hospital to qualify for the Medicare DSH adjustment. The primary method is for a hospital to qualify based on a statutory formula that results in the DSH patient percentage. The DSH patient percentage is equal to the sum of the percentage of Medicare inpatient days attributable to patients eligible for both Medicare Part A and Supplemental Security Income (SSI), and the percentage of total inpatient days attributable to patients eligible for Medicaid by not Medicare Part A.",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "accessURL": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/dsh.html"
+        }
+      ],
+      "identifier": "154",
+      "keyword": [
+        "Statistics",
+        "Medicare",
+        "Medicare Advantage",
+        "Hospital",
+        "Inpatient",
+        "Part A",
+        "Providers",
+        "National",
+        "Regional",
+        "Research",
+        "Claims",
+        "Eligibility",
+        "Enrollment",
+        "Payments",
+        "Prospective Payment System (PPS)",
+        "Part C",
+        "Disproportionate Share Hospitals (DSH)"
+      ],
+      "landingPage": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/dsh.html",
+      "modified": "2016-01-06",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "1988-01-01/P1W",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "Acute IPPS - Disproportionate Share Hospital - DSH"
+    },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "The Group Unique Physician Identifier Number (UPIN) File is the business entity file that contains the group practice UPIN and descriptive information.  It does NOT associate individual physicians within the practice.  ",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "accessURL": "http://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html"
+        }
+      ],
+      "identifier": "241",
+      "keyword": [
+        "Publically Available Data File - for purchase",
+        "Medicare",
+        "Providers",
+        "State"
+      ],
+      "landingPage": "http://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html",
+      "modified": "2015-12-16",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "2000-01-15T00:45:00Z/2010-01-15T00:06:00Z",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "UPIN Group File"
+    }
+  ]
+}
