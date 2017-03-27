@@ -1,4 +1,5 @@
 7.x-1.13.x
+ - #1815 Support importing Temporal Coverage during POD Harvest.
  - #1786 Remove horizontal tab field from the group content type, fix margin on group block.
  - #1786 Add hook to auto-assign editors the og administrator role.
  - #1752 Added option for using quote delimiters when fast import is enabled for dkan datastore. Fixed error message when an import fails on DKAN Datastore Fast Import.
