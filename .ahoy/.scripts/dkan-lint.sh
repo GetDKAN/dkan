@@ -10,14 +10,20 @@ if [ ! -z "$1" ]; then
 fi
 
 if [ ! -z "$files" ]; then
-  files=`git diff --name-only`
+  files=`git diff --name-only
+  | grep "*\(.php\|.inc\|.module\|.install\|.profile\|.info\)$"`
 fi
 
 if [ $CI ]; then
-  files=`curl -s  $CIRCLE_REPOSITORY_URL/compare/7.x-1.x...$CIRCLE_SHA1.diff | grep +++ | sed 's/+++ b\///g'`
+  files=`curl -s  $CIRCLE_REPOSITORY_URL/compare/7.x-1.x...$CIRCLE_SHA1.diff
+  | grep +++
+  | sed 's/+++ b\///g'
+  | grep "*\(.php\|.inc\|.module\|.install\|.profile\|.info\)$"`
 fi
 
 if [ ! -z "$files" ]; then
   echo "Linting: $files \n"
   test/bin/phpcs --standard=Drupal,DrupalPractice -n $files
+else
+  echo "No Drupal file changes available for linting."
 fi
