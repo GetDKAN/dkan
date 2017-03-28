@@ -27,7 +27,6 @@ function dkan_dataset_preprocess_html(&$vars) {
       $vars['classes_array'][] = $preview;
     }
   }
-  drupal_add_css($path . '/css/dkan-flaticon.css');
 }
 
 /**
