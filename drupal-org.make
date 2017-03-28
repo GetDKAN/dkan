@@ -345,7 +345,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: CIVIC-6001
+      branch: CIVIC-6001
     type: module
   workbench:
     version: '1.2'
