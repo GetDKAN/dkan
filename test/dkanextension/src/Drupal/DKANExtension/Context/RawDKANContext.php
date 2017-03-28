@@ -9,11 +9,17 @@ use Behat\Testwork\Environment\Environment;
 use Drupal\DKANExtension\ServiceContainer\EntityStore;
 use Drupal\DKANExtension\ServiceContainer\PageStore;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
+use Drupal\DrupalExtension\Context\DrupalContext;
+use Behat\Behat\Context\SnippetAcceptingContext;
+use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Exception\DriverException;
+use Behat\Behat\Tester\Exception\PendingException;
+use EntityFieldQuery;
+use \stdClass;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Behat\Hook\Scope\BeforeStepScope;
 use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 use Behat\Testwork\Hook\Scope\AfterSuiteScope;
-use EntityFieldQuery;
-
 /**
  * Defines application features from the specific context.
  */
@@ -50,7 +56,84 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
    */
   protected $fakeSession;
 
+  protected $old_global_user;
+
   protected $cacheSettings;
+  /**
+   * @BeforeSuite
+   */
+  public static function disableAdminMenuCache(BeforeSuiteScope $scope) {
+    // Turn off cache so the menu lives in the html.
+    variable_set('admin_menu_cache_client', FALSE);
+  }
+
+  /**
+   * @AfterSuite
+   */
+  public static function enableAdminMenuCache(AfterSuiteScope $scope) {
+    variable_set('admin_menu_cache_client', TRUE);
+  }
+
+  /**
+   * @BeforeScenario @disablecaptcha
+   */
+  public function beforeCaptcha()
+  {
+    // Nothing to do.
+    if (!module_exists('captcha')) {
+      return;
+    }
+
+    // Need to both disable the validation function for the captcha
+    // AND disable the appearence of the captcha form field
+    module_load_include('inc', 'captcha', 'captcha');
+    variable_set('disable_captcha', TRUE);
+    captcha_set_form_id_setting('user_login', 'none');
+    captcha_set_form_id_setting('feedback_node_form', 'none');
+    captcha_set_form_id_setting('comment_node_feedback_form', 'none');
+  }
+
+  /**
+   * @BeforeStep
+   */
+  public function populateGlobalUser(BeforeStepScope $scope)
+  {
+    if ($this->scenario->hasTag('globalUser')) {
+      if($this->getCurrentUser()) {
+        global $user;
+        $user = $this->getCurrentUser();
+        if(property_exists($user, 'role') && $user->role === 'authenticated user') {
+          $user->roles = array( 2 =>'authenticated user');
+        }
+      }
+    }
+  }
+
+  /**
+   * @BeforeScenario
+   */
+   public function registerScenario(BeforeScenarioScope $scope) {
+     // Scenario not usually available to steps, so we do ourselves.
+     // See issue
+     $this->scenario = $scope->getScenario();
+   }
+
+  /**
+   * @AfterScenario @disablecaptcha
+   */
+  public function afterCaptcha()
+  {
+    // Nothing to do.
+    if (!module_exists('captcha')) {
+      return;
+    }
+
+    module_load_include('inc', 'captcha', 'captcha');
+    variable_set('disable_captcha', FALSE);
+    captcha_set_form_id_setting('user_login', 'default');
+    captcha_set_form_id_setting('feedback_node_form', 'default');
+    captcha_set_form_id_setting('comment_node_feedback_form', 'default');
+  }
 
   public function setEntityStore(EntityStore $entityStore) {
     $this->entityStore = $entityStore;
@@ -69,21 +152,6 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
   }
 
   /**
-   * @BeforeSuite
-   */
-  public static function disableAdminMenuCache(BeforeSuiteScope $scope) {
-    // Turn off cache so the menu lives in the html.
-    variable_set('admin_menu_cache_client', FALSE);
-  }
-
-  /**
-   * @AfterSuite
-   */
-  public static function enableAdminMenuCache(AfterSuiteScope $scope) {
-    variable_set('admin_menu_cache_client', TRUE);
-  }
-
-  /**
    * @BeforeScenario
    */
   public function gatherContexts(BeforeScenarioScope $scope) {
@@ -91,11 +159,8 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
     $environment = $scope->getEnvironment();
     $this->searchContext = $environment->getContext('Drupal\DKANExtension\Context\SearchAPIContext');
     $this->minkContext = $environment->getContext('Drupal\DrupalExtension\Context\MinkContext');
-    // This context needs to be registered and hasn't been up to now. Don't load if we don't need it.
-    //$this->drushContext = $environment->getContext('Drupal\DrupalExtension\Context\DrushContext');
     $this->jsContext = $environment->getContext('Devinci\DevinciExtension\Context\JavascriptContext');
     $this->drupalContext = $environment->getContext('Drupal\DrupalExtension\Context\DrupalContext');
-
   }
 
   /**
@@ -165,8 +230,13 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
    * Get the currently logged in user.
    */
   public function getCurrentUser() {
-    // Rely on DrupalExtension to keep track of the current user.
-    return $this->drupalContext->user;
+    //Rely on DrupalExtension to keep track of the current user.
+    // Disable notice when author is not present
+    try {
+      return @$this->drupalContext->user;
+    } catch (Exception $e) {
+      return FALSE;
+    }
   }
 
   public function visitPage($named_page, $sub_path = null) {
@@ -223,6 +293,9 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
     // Support relative paths when on a "base_url" page. Otherwise assume a full url.
     $current_url = str_replace($this->getMinkParameter("base_url"), "", $current_url);
 
+    // Fix url when https everywhere is enabled
+    $current_url = preg_replace('/https:\/\/\w+/', '', $current_url);
+
     // Remove hash part from url since it's widely used
     // for client side routing and this can make some
     // test fail.
@@ -245,6 +318,35 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
     $this->assertOnUrl($assert_url);
   }
 
+
+  /**
+   * Check if module exists and can be enabled.
+   *
+   * Simply using drupal's module_exists() function will not work here because
+   * we are potentially enabling modules that may not even be in the code base.
+   */
+  protected static function shouldEnableModule($module = "") {
+    $module = (string) $module;
+
+    if (empty($module)) {
+      throw new \Exception("Cannot check if an empty String can be enabled.");
+    }
+
+    $modules = array_keys(system_rebuild_module_data());
+    if (!in_array($module, $modules)) {
+      throw new \Exception("Cannot enable non-existing module.");
+    }
+
+    $behat_module_check_enabled = "behat_{$module}_enabled_by_default";
+    $enabled = variable_get($behat_module_check_enabled, NULL);
+
+    if (is_null($enabled)) {
+      $enabled = module_exists($module);
+      variable_set($behat_module_check_enabled, $enabled);
+    }
+
+    return !$enabled;
+  }
 
   public function assertCanViewPage($named_page, $sub_path = null, $assert_code = null){
     $session = $this->visitPage($named_page, $sub_path);
@@ -286,7 +388,6 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
     $this->fakeSession = $session;
     return $session;
   }
-
 
   public function visit($url, $session = null) {
     if (!$session) {
