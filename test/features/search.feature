@@ -38,8 +38,8 @@ Feature: Search
       | dazzling     |
     And datasets:
       | title           | publisher | author  | published | tags         | topics      | description |
-      | Test Dataset 01 |           | Gabriel | Yes       | something01  | edumication | Test 01     |
-      | Test Dataset 02 | Group 01  | Gabriel | Yes       | politics01   | dazzling    | Test 02     |
+      | TestX Dataset 01 |           | Gabriel | Yes       | something01  | edumication | Test 01     |
+      | TestX Dataset 02 | Group 01  | Gabriel | Yes       | politics01   | dazzling    | Test 02     |
 
   Scenario: Searching datasets
     When I search for "Dataset 01"
@@ -48,7 +48,7 @@ Feature: Search
 
   Scenario: See number of datasets on search page
     Given I am on the "Dataset Search" page
-    Given I search for "Test"
+    Given I search for "TestX"
     Then I should see "2" search results shown on the page
     And I should see "2 results"
 
