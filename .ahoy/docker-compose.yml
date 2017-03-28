@@ -43,7 +43,7 @@ db:
 # Used for all console commands and tools.
 cli:
   hostname: cli
-  image: nuams/drupal-cli:2016-10-16
+  image: nuams/drupal-cli:v0.10.3
   environment:
     - XDEBUG_CONFIG=idekey=cli
     - PHP_IDE_CONFIG=serverName=dkan.docker
