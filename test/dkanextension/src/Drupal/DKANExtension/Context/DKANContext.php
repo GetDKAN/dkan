@@ -8,7 +8,6 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Mink\Exception\UnsupportedDriverActionException as UnsupportedDriverActionException;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\DriverException;
-use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Behat\Tester\Exception\PendingException;
 use EntityFieldQuery;
 use \stdClass;
@@ -56,6 +55,111 @@ class DKANContext extends RawDKANContext {
   /*****************************
    * CUSTOM STEPS
    *****************************/
+
+  /**
+   * @Then the :tag element with id set to :value in the :region( region) should not be visible
+   */
+  public function assertRegionElementIdNotVisible($tag, $value, $region) {
+    $element = $this->assertRegionElementId($tag, $value, $region);
+    if ($element->isVisible()) {
+        throw new \Exception(sprintf('The "%s" attribute is visible on the element "%s" in the "%s" region on the page %s', 'id', $value, $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+  }
+
+  /**
+   * @Then the :tag element with id set to :value in the :region( region) should be visible
+   */
+  public function assertRegionElementIdVisible($tag, $value, $region) {
+    $element = $this->assertRegionElementId($tag, $value, $region);
+    if (!$element->isVisible()) {
+        throw new \Exception(sprintf('The "%s" attribute is not visible on the element "%s" in the "%s" region on the page %s', "id", $value, $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+  }
+
+  /**
+   * @Then the :tag element with id set to :value in the :region( region) exists
+   *
+   * This is a reword of the MarkupContext::assertRegionElementAttribute()
+   * method which only checks for the first matched tag not the matched
+   * attribute. Also added tests for element visibility.
+   */
+  public function assertRegionElementId($tag, $value, $region) {
+    $attribute = 'id';
+
+    $session = $this->getSession();
+    $regionObj = $session->getPage()->find('region', $region);
+    if (!$regionObj) {
+      throw new \Exception(sprintf('No region "%s" found on the page %s.', $region, $session->getCurrentUrl()));
+    }
+
+    $elements = $regionObj->findAll('css', $tag);
+    if (empty($elements)) {
+      throw new \Exception(sprintf('The element "%s" was not found in the "%s" region on the page %s', $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+
+    $found_attr = FALSE;
+    // Loop threw all the matching elements.
+    foreach ($elements as $element) {
+      $attr = $element->getAttribute($attribute);
+      if (!empty($attr)) {
+        $found_attr = TRUE;
+        if (strpos($attr, "$value") !== FALSE) {
+          // Found match.
+          return $element;
+        }
+      }
+    }
+
+    if (!$found_attr) {
+      throw new \Exception(sprintf('The "%s" attribute is not present on the element "%s" in the "%s" region on the page %s', $attribute, $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+    else {
+      throw new \Exception(sprintf('The "%s" attribute does not equal "%s" on the element "%s" in the "%s" region on the page %s', $attribute, $value, $tag, $region, $this->getSession()->getCurrentUrl()));
+    }
+  }
+
+  /**
+   * @When I switch to window
+   */
+  public function iSwitchToPopup() {
+    $windowNames = $this->getSession()->getWindowNames();
+    if (count($windowNames) > 1) {
+      $this->getSession()->switchToWindow($windowNames[1]);
+    }
+  }
+
+  /**
+   * @When I should see the admin menu item :item
+   */
+  public function iShouldSeeTheAdminMenuItem($item) {
+    $session = $this->getSession();
+    $page = $session->getPage();
+    $menu = $page->findById('admin-menu-wrapper');
+    $element = $menu->findLink($item);
+    if (null === $element) {
+        throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
+    }
+  }
+
+  /**
+   * @When I hover over the admin menu item :item
+   */
+  public function iHoverOverTheAdminMenuItem($item) {
+    $session = $this->getSession();
+    $page = $session->getPage();
+
+    $menu = $page->findById('admin-menu-wrapper');
+    if (null === $menu) {
+      throw new \InvalidArgumentException(sprintf('The admin-menu could not be found'));
+    }
+
+    $element = $menu->findLink($item);
+    if (null === $element) {
+        throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
+    }
+
+    $element->mouseOver();
+  }
 
   /**
    * @Then I :outcome see a cached page
@@ -294,6 +398,15 @@ class DKANContext extends RawDKANContext {
     $this->getSession()->wait(2000, "jQuery('#user-login-dialog').children().length > 0");
   }
 
+  /**
+   * @Given /^I wait for "([^"]*)" seconds$/
+   */
+  public function iWaitForSeconds($milliseconds) {
+    $session = $this->getSession();
+    $session->wait($milliseconds * 1000);
+  }
+
+
 
 
   /**
@@ -370,6 +483,24 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * @Then the :selector elements should be sorted in this order :order
+   */
+  public function theElementsShouldBeSortedInThisOrder($selector, $order) {
+    $region = $this->getRegion("content");
+    $items = $region->findAll('css', $selector);
+    $actual_order = array();
+    foreach ($items as $item) {
+      if ($item->getText() !== "") {
+        $actual_order[] = $item->getText();
+      }
+    }
+    $order = explode(" > ", $order);
+    if ($order !== $actual_order) {
+      throw new Exception(sprintf("The elements were not sorted in the order provided."));
+    }
+  }
+
+  /**
    * @Given /^I click the chosen field "([^"]*)" and enter "([^"]*)"$/
    *
    * DEPRECATED: DONT USE. The clicking of the chosen fields to select some values
@@ -388,7 +519,7 @@ class DKANContext extends RawDKANContext {
 
       );
     $field_click->click();
-    $this->iWaitForSeconds(1);
+    $this->iDebugWaitForSeconds(1);
     // Click value that now appears.
     $title = $session->getPage()->find(
       'xpath',
@@ -411,6 +542,25 @@ class DKANContext extends RawDKANContext {
       'xpath',
       $session->getSelectorsHandler()->selectorToXpath('xpath',
         '//*[contains(text(), "' . $text . '")]')
+    );
+    if (NULL === $element) {
+      throw new \InvalidArgumentException(sprintf('Cannot find text: "%s"', $text));
+    }
+    $element->click();
+  }
+
+  /**
+   * Click some exact text.
+   *
+   * @When I click on the exact text :text
+   */
+
+  public function iClickOnTheExactText($text) {
+    $session = $this->getSession();
+    $element = $session->getPage()->find(
+      'xpath',
+      $session->getSelectorsHandler()->selectorToXpath('xpath',
+        '//*[text() = "' . $text . '"]')
     );
     if (NULL === $element) {
       throw new \InvalidArgumentException(sprintf('Cannot find text: "%s"', $text));
@@ -488,9 +638,9 @@ class DKANContext extends RawDKANContext {
   /**
    * Wait for the given number of seconds. ONLY USE FOR DEBUGGING!
    *
-   * @Given I wait for :time second(s)
+   * @Given I debug wait for :time second(s)
    */
-  public function iWaitForSeconds($time) {
+  public function iDebugWaitForSeconds($time) {
     sleep($time);
   }
 
@@ -709,7 +859,7 @@ public function iWaitForTextToDisappear($text)
     foreach ($content_list['result'] as $content_id) {
 
       // Build path for 'show' fixture file.
-      $show_fixture = $default_content_mod_path . '/data/' . $fixture . '_show?id=' . $content_id . '.json';
+      $show_fixture = $default_content_mod_path . '/data/' . $fixture . '_show%3Fid=' . $content_id . '.json';
 
       // Load content data.
       $content_data = file_get_contents($show_fixture);
@@ -775,6 +925,133 @@ public function iWaitForTextToDisappear($text)
     if (count($rows) != $number) {
           throw new \Exception(sprintf('Found %s rows in the table with the class name %s of the expected %s.', count($rows), $class_name, $number));
     }
+  }
+
+  /**
+   * Helper function to get current context.
+   */
+  function getRegion($region) {
+    $session = $this->getSession();
+    $regionObj = $session->getPage()->find('region', $region);
+    if (!$regionObj) {
+      throw new \Exception(sprintf('No region "%s" found on the page %s.', $region, $session->getCurrentUrl()));
+    }
+    return $regionObj;
+  }
+
+  /**
+   * @Given I should see :number items of :item in the :region region
+   */
+  public function iShouldSeeItemsOfInTheRegion($number, $item, $region) {
+    $regionObj = $this->getRegion($region);
+    // Count the number of items in the region
+    $count = count($regionObj->findAll('css', $item));
+    if (!$count) {
+      throw new \Exception(sprintf("No items found in the '%s' region.", $region));
+    }
+    else {
+      if ($count != $number) {
+        if ($count > $number) {
+          throw new \Exception(sprintf("More than %s items were found in the '%s' region (%s).", $number, $region, $count));
+        }
+        else {
+          throw new \Exception(sprintf("Less than %s items were found in the '%s' region (%s).", $number, $region, $count));
+        }
+      }
+    }
+  }
+
+  /**
+   * @Given I should see :number items of :item or more in the :region region
+   */
+  public function iShouldSeeItemsOfOrMoreInTheRegion($number, $item, $region) {
+    $regionObj = $this->getRegion($region);
+    // Count the number of items in the region
+    $count = count($regionObj->findAll('css', $item));
+    if (!$count) {
+      throw new \Exception(sprintf("No items found in the '%s' region.", $region));
+    }
+    else {
+      if ($count < $number) {
+        throw new \Exception(sprintf("Less than %s items were found in the '%s' region (%s).", $number, $region, $count));
+      }
+    }
+  }
+
+  /**
+   * @Then I should see :arg1 field
+   */
+  public function iShouldSeeField($arg1)
+  {
+    $session = $this->getSession();
+    $page = $session->getPage();
+    $field = $page->findField($arg1);
+    if (!isset($field)) {
+      throw new \Exception(sprintf("Field with the text '%s' not found", $arg1));
+    }
+  }
+
+  /**
+   * @Then I should not see :arg1 field
+   */
+  public function iShouldNotSeeField($arg1)
+  {
+    $session = $this->getSession();
+    $page = $session->getPage();
+    $field = $page->findField($arg1);
+    if ($field) {
+      throw new \Exception(sprintf("Field with the text '%s' is found", $arg1));
+    }
+  }
+
+  /**
+   * @Then the text :text should be visible in the element :element
+   */
+  public function theTextShouldBeVisible($text, $selector)
+  {
+    $element = $this->getSession()->getPage();
+    $nodes = $element->findAll('css', $selector . ":contains('" . $text . "')");
+    foreach ($nodes as $node) {
+      if ($node->isVisible() === TRUE) {
+        return;
+      }
+      else {
+        throw new \Exception("Form item \"$selector\" with label \"$text\" is not visible.");
+      }
+    }
+    throw new \Exception("Form item \"$selector\" with label \"$text\" not found.");
+  }
+
+  /**
+   * @Then the text :text should not be visible in the element :element
+   */
+  public function theTextShouldNotBeVisible($text, $selector)
+  {
+    $element = $this->getSession()->getPage();
+    $nodes = $element->findAll('css', $selector . ":contains('" . $text . "')");
+    foreach ($nodes as $node) {
+      if ($node->isVisible() === FALSE) {
+        return;
+      }
+      else {
+        throw new \Exception("Form item \"$selector\" with label \"$text\" is visible.");
+      }
+    }
+    throw new \Exception("Form item \"$selector\" with label \"$text\" not found.");
+  }
+
+  /**
+    * @Then I visit the link :selector
+    */
+  public function iVisitTheLink($selector) {
+    $region = $this->getRegion("content");
+    $items = $region->findAll('css', $selector);
+    if (empty($items)) {
+      throw new \Exception("Link '$selector' not found on the page.");
+    }
+    $url = reset($items)->getAttribute('href');
+    $session = $this->getSession();
+    $session->visit($this->locatePath($url));
   }
 
   /************************************/
