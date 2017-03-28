@@ -345,7 +345,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.1
+      tag: civic-5999-make-goal-vertical
     type: module
   workbench:
     version: '1.2'
