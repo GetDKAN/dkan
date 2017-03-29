@@ -234,6 +234,12 @@ To import a resource using Fast Import:
     mysql -u root -padmin123
     GRANT FILE ON *.* TO 'drupal';
 
+- When the option **Use Fast Import** is checked, some other options will be checked: you'll be able to select:
+    - **Quote delimiters**: the character that encloses the fields in your CSV file.
+    - **Lines terminated by**: the character that works as line terminator in your CSV file.
+    - **Fields escaped by**: the character used to escape other characters in your CSV file.
+    - Also, you will be able to choose if the empty cells will be read as NULL or zeros by checking the box for `Read empty cells as NULL (if unchecked, empty cells will be read as zeros or empty strings)`.
+
 Datastore API
 --------------
 
