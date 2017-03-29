@@ -9,7 +9,7 @@
  * Reverts dkan_sitewide to add Markdown filter. Sets up roleassign feature.
  */
 function dkan_update_7001() {
-    module_load_include("profile", "dkan");
+  module_load_include("profile", "dkan");
   dkan_bueditor_markdown_install();
 }
 
