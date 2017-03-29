@@ -1,24 +1,20 @@
-
 cd dkan
 echo "Installing dependencies.."
 bash .ahoy/.scripts/composer-install.sh test
 
 test/bin/phpcs --config-set installed_paths test/vendor/drupal/coder/coder_sniffer
+DRUPAL_FILES='*\(.php\|.inc\|.module\|.install\|.profile\|.info\|.yml\)$'
 
 if [ ! -z "$1" ]; then
   files="$files $@"
 fi
 
 if [ ! -z "$files" ]; then
-  files=`git diff --name-only
-  | grep "*\(.php\|.inc\|.module\|.install\|.profile\|.info\)$"`
+  files=`git diff --name-only | grep "$DRUPAL_FILES"`
 fi
 
-if [ $CI ]; then
-  files=`curl -s  $CIRCLE_REPOSITORY_URL/compare/7.x-1.x...$CIRCLE_SHA1.diff
-  | grep +++
-  | sed 's/+++ b\///g'
-  | grep "*\(.php\|.inc\|.module\|.install\|.profile\|.info\)$"`
+if [ $CIRCLE_COMPARE_URL ]; then
+  files=`curl -s  $CIRCLE_COMPARE_URL.diff | grep +++ | sed 's/+++ b\///g' | grep "$DRUPAL_FILES"`
 fi
 
 if [ ! -z "$files" ]; then
