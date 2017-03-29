@@ -1,7 +1,7 @@
 7.x-1.13.x
 ----------
  - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
-
+ - #1828 Field Frequency Harvest POD integration is missing support for "irregular" value.
 
 7.x-1.13.3-RC1
 --------------
