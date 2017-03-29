@@ -187,6 +187,7 @@ function dkan_dataset_content_types_iso_frecuency_map() {
     'R/P0.5M' => 18,
     'R/P4M' => 17,
     'R/P1W' => 1,
+    'irregular' => 5,
   );
 }
 
