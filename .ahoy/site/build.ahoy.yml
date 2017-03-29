@@ -143,11 +143,11 @@ commands:
       # Configure https settings.
       if [ "$default_https_everywhere" == "TRUE" ];
       then
-        sed "s/#HOST/$default_hostname/g" config/templates/.htaccess.https.tpl > $tempdir/.htaccess.https
+        sed "s/#HOST/$default_hostname/g" assets/templates/.htaccess.https.tpl > $tempdir/.htaccess.https
         sed -e "/#HTTPS/r $tempdir/.htaccess.https" \
-            -e "/#HTTPS/d" config/templates/.htaccess.tpl > $tempdir/.htaccess
+            -e "/#HTTPS/d" assets/templates/.htaccess.tpl > $tempdir/.htaccess
       else
-        sed -e "s/^#HTTPS$//g" config/templates/.htaccess.tpl > $tempdir/.htaccess
+        sed -e "s/^#HTTPS$//g" assets/templates/.htaccess.tpl > $tempdir/.htaccess
       fi
 
       cp $tempdir/.htaccess config/.htaccess
