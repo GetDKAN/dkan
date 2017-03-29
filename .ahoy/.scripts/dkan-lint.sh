@@ -13,17 +13,14 @@ if [ -z "$files" ]; then
   files=`git diff --name-only | grep "$DRUPAL_FILES"`
 fi
 
-if [ "$CIRCLE_COMPARE_URL" ]; then
-  files=`curl -s "$CIRCLE_COMPARE_URL".diff | grep "^+++" | sed 's/+++ b\///g' | grep "$DRUPAL_FILES"`
+if [ "$CI_PULL_REQUEST" ]; then
+  echo Diff URL: "$CI_PULL_REQUEST".diff
+  files=`curl -sL "$CI_PULL_REQUEST".diff | grep "^+++" | sed 's/+++ b\///g' | grep "$DRUPAL_FILES"`
 fi
 
 if [ ! -z "$files" ]; then
   echo "Linting: $files"
-  # Split up linting.
-  for file in $files
-  do
-    test/bin/phpcs --standard=Drupal,DrupalPractice -n $file
-  done
+  test/bin/phpcs --standard=Drupal,DrupalPractice -n $files
 else
   echo "No Drupal file changes available for linting."
 fi
