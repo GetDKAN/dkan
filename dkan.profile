@@ -265,7 +265,7 @@ function dkan_add_default_menu_links(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_build_menu_links(&$context) {
+function dkan_build_menu_links(array &$context) {
   module_load_include('inc', 'features', 'features.export');
   $context['message'] = t('Building menu links and assigning custom admin menus to roles');
   $menu_links = features_get_default('menu_links', 'dkan_sitewide_menu');
@@ -279,7 +279,7 @@ function dkan_build_menu_links(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_flush_image_styles(&$context) {
+function dkan_flush_image_styles(array &$context) {
   $context['message'] = t('Flushing image styles');
   $image_styles = image_styles();
   foreach ($image_styles as $image_style) {
@@ -293,7 +293,7 @@ function dkan_flush_image_styles(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_colorizer_reset(&$context) {
+function dkan_colorizer_reset(array &$context) {
   $context['message'] = t('Resetting colorizer cache');
   global $theme_key;
   $instance = $theme_key;
