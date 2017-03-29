@@ -1,6 +1,6 @@
 echo "Installing dependencies.."
 cd dkan
-bash .ahoy/.scripts/composer-install.sh dkan/test
+bash .ahoy/.scripts/composer-install.sh test
 
 test/bin/phpcs --config-set installed_paths test/vendor/drupal/coder/coder_sniffer
 DRUPAL_FILES='\.*\(.php\|.inc\|.module\|.install\|.profile\|.info\)$'
