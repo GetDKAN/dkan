@@ -6,7 +6,7 @@
  - #1726 Fixed broken links in search results to nodes without aliases
  - #1792 Remove Windows reserved characters from default content filenames for better Windows support
  - #1815 Support importing Temporal Coverage during POD Harvest.
- - #1785 Fix profile UI install.
+ - #1785 Fix error messages when installing DKAN with the UI.
  - #1786 Remove horizontal tab field from the group content type, fix margin on group block.
  - #1786 Add hook to auto-assign editors the og administrator role.
  - #1752 Added option for using quote delimiters when fast import is enabled for dkan datastore. Fixed error message when an import fails on DKAN Datastore Fast Import.
