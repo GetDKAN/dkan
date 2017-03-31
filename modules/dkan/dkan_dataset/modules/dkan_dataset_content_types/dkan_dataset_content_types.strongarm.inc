@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_dataset_content_types.strongarm.inc
@@ -38,6 +37,13 @@ function dkan_dataset_content_types_strongarm() {
   $strongarm->name = 'chosen_minimum_single';
   $strongarm->value = '0';
   $export['chosen_minimum_single'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'date_format_iso_8601_date';
+  $strongarm->value = 'Y-m-d';
+  $export['date_format_iso_8601_date'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -122,7 +128,7 @@ function dkan_dataset_content_types_strongarm() {
         ),
         'identifier' => array(
           'default' => array(
-            'weight' => '9',
+            'weight' => '11',
             'visible' => TRUE,
           ),
           'teaser' => array(
