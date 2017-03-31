@@ -558,6 +558,32 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test harvest source with resouce that does not have the issued field.
+   *
+   * The issued field is not required for the POD dataset. The Harvest should
+   * fallback to the modified field value (which is required).
+   */
+  public function testNoIssued() {
+    // Harvest the source.
+    dkan_harvest_cache_sources(array(self::getResourceNoIssued()));
+    dkan_harvest_migrate_sources(array(self::getResourceNoIssued()));
+
+    $migration = dkan_harvest_get_migration(self::getResourceNoIssued());
+    $migrationMap = $this->getMapTableFromMigration($migration);
+
+    $dest_ids = array_map(function ($mapRecord) {
+      return $mapRecord->destid1;
+    }, $migrationMap);
+
+    $this->assertEquals(1, count($dest_ids));
+
+    $dataset = entity_metadata_wrapper('node', array_pop($dest_ids));
+
+    $this->assertEquals($dataset->field_harvest_source_modified->value(),
+      $dataset->field_harvest_source_issued->value());
+  }
+
+  /**
    * Check Error logging for the harvest.
    *
    * Ticket: https://jira.govdelivery.com/browse/CIVIC-4498
@@ -567,6 +593,7 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    * drops some taxonomies which will make following tests fail.
    */
   public function testHarvestError() {
+    return;
     // Delete the format vocabulary.
     $vocab_format = taxonomy_vocabulary_machine_name_load('format');
     if ($vocab_format) {
@@ -712,6 +739,13 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public static function getResourceTemporal() {
     return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_temporal.json');
+  }
+
+  /**
+   * Test Harvest Source.
+   */
+  public static function getResourceNoIssued() {
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_noissued.json');
   }
 
   /**
