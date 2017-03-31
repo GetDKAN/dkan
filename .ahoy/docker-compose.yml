@@ -38,6 +38,8 @@ db:
      - "./.docker/etc/mysql/my.cnf:/etc/mysql/conf.d/z_my.cnf"
      # Permanent DB data storage
      - /var/lib/mysql
+     # Project root folder mapping
+     - *project_root
 
 # CLI node
 # Used for all console commands and tools.

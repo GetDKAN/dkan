@@ -126,7 +126,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
       }
 
       // Add dataset fixture to the list of fixtures to be rendered.
-      $fixture_name = 'package_show?id=' . $id . '.json';
+      $fixture_name = 'package_show%3Fid=' . $id . '.json';
       $fdata = dkan_fixtures_build_fixture_data($fixture_name, $package_show['result']);
       $fixtures[] = $fdata;
     }
@@ -181,7 +181,7 @@ function dkan_fixtures_append_group_fixtures($group_ids, $group_data, &$fixtures
         $group_data[$id]['image_display_url'] = 'files/group/' . basename($file);
       }
     }
-    $fixture_name = 'group_show?id=' . $id . '.json';
+    $fixture_name = 'group_show%3Fid=' . $id . '.json';
     $fdata = dkan_fixtures_build_fixture_data($fixture_name, $group_data[$id], $files_to_save, 'group');
     $fixtures[] = $fdata;
   }
@@ -219,7 +219,7 @@ function dkan_fixtures_append_resource_fixtures($resource_ids, &$fixtures) {
     }
 
     // Append resource fixture.
-    $fixture_name = 'resource_show?id=' . $id . '.json';
+    $fixture_name = 'resource_show%3Fid=' . $id . '.json';
     $fdata = dkan_fixtures_build_fixture_data($fixture_name, $resource_show['result'], $files_to_save, 'resource');
     $fixtures[] = $fdata;
   }
@@ -291,7 +291,7 @@ function dkan_fixtures_append_panelized_node_fixtures($content_type, &$fixtures,
       }
 
       // Append 'Item' fixture for content.
-      $fixture_name = $content_type . '_show?id=' . $nuuid . '.json';
+      $fixture_name = $content_type . '_show%3Fid=' . $nuuid . '.json';
       $fdata = dkan_fixtures_build_fixture_data($fixture_name, $panelized_node, $files_to_save, $content_type);
       $fixtures[] = $fdata;
     }
@@ -507,7 +507,7 @@ function dkan_fixtures_append_visualization_entity_fixtures(&$fixtures) {
       }
 
       // Append fixture with visualization entity data.
-      $fixture_name = 'visualization_entity_show?id=' . $visualization_wrapper->uuid->value() . '.json';
+      $fixture_name = 'visualization_entity_show%3Fid=' . $visualization_wrapper->uuid->value() . '.json';
       $fdata = dkan_fixtures_build_fixture_data($fixture_name, $visualization_data, $visualization_entity_files, 'visualization_entity');
       $fixtures[] = $fdata;
     }

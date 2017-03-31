@@ -1,0 +1,174 @@
+{
+    "result": {
+        "path": "dataset/london-deprivation-index",
+        "id": "fb3525f2-d32a-451e-8869-906ed41f7695",
+        "name": "london-deprivation-index",
+        "title": "London Deprivation Index",
+        "author": "Department for Communities and Local Government",
+        "author_email": "datademo@nucivic.com",
+        "maintainer": "DKAN",
+        "maintainer_email": "admin@example.com",
+        "license_title": "http://opendefinition.org/licenses/odc-odbl/",
+        "notes": "<p>Deprivation is measured across seven different areas or domains - income, employment, health, education, living environment, crime and barriers to services using a wide range of indicators, and the methods used show how each area compares with other areas across England using a combination of all these indicators.</p>\n<p>As stated by The Guardian, \"the data is based on a close analysis of the UK government's Indices of Multiple Deprivation - which measures relative poverty across England \u2013 by Alasdair Rae at the University of Sheffield.\" (<a href=\"http://www.theguardian.com/uk/datablog/2012/apr/12/deprivation-poverty-london\">Source</a>)</p>\n<p><strong>Source:</strong> <a href=\"http://data.london.gov.uk/dataset/indices-of-deprivation-2015\">http://data.london.gov.uk/dataset/indices-of-deprivation-2015</a></p>\n<p><strong>Related Data Story: </strong><a href=\"/story/london-income-analysis\">London Income Analysis</a></p>\n",
+        "url": "http://default/dataset/london-deprivation-index",
+        "state": "Active",
+        "log_message": "Update to resource 'English Indices of Deprivation 2010'",
+        "private": "Published",
+        "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+        "metadata_created": "Thu, 04/21/2016 - 10:28",
+        "metadata_modified": "Thu, 09/01/2016 - 01:31",
+        "creator_user_id": "1ed39316-37af-4fe3-9a0d-9842efb486e3",
+        "type": "Dataset",
+        "resources": [
+            {
+                "id": "0da191d6-4eb6-4ebe-914f-27a392087d67",
+                "revision_id": "",
+                "url": "http://default/sites/default/files/IMD-MAPS.zip",
+                "description": "",
+                "format": "zip",
+                "state": "Active",
+                "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+                "name": "English Indices of Deprivation 2010",
+                "mimetype": "application/zip",
+                "size": "24.45 MB",
+                "created": "Thu, 09/01/2016 - 01:38",
+                "resource_group_id": "26dc023a-a216-4989-98b9-81f92d176dbd",
+                "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
+            }
+        ],
+        "tags": [
+            {
+                "id": "012b5bd1-75a2-4845-bcec-e45f550ef5c1",
+                "vocabulary_id": "2",
+                "name": "economy"
+            },
+            {
+                "id": "a84f6b1f-c96b-4066-a2da-3a78fb0f6ed7",
+                "vocabulary_id": "2",
+                "name": "demographics"
+            },
+            {
+                "id": "20af1e26-5317-4f35-afb2-9a709b26996a",
+                "vocabulary_id": "2",
+                "name": "spatial data"
+            },
+            {
+                "id": "0b062f38-f7ce-4545-94f4-8fb6fa59e6cb",
+                "vocabulary_id": "2",
+                "name": "United Kingdom"
+            }
+        ],
+        "groups": [
+            {
+                "description": "<p>The State Economic Council is responsible for increasing economic development of the state by collecting statistics and performing analysis on the labor force, workforce and employer demographics, generational trends, etc.</p>\n",
+                "id": "26dc023a-a216-4989-98b9-81f92d176dbd",
+                "image_display_url": "http://default/sites/default/files/money-saving.png",
+                "title": "State Economic Council",
+                "name": "group/state-economic-council"
+            },
+            {
+                "description": "<p>The Committee on International Affairs is a working group to identify opportunities to learn from and collaborate with government and organizations across the globe.</p>\n",
+                "id": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
+                "image_display_url": "http://default/sites/default/files/map.png",
+                "title": "Committee on International Affairs",
+                "name": "group/committee-international-affairs"
+            }
+        ],
+        "dkan_additional_fields": {
+            "field_additional_info": [],
+            "field_contact_email": "datademo@nucivic.com",
+            "field_contact_name": "Gray, Stefanie",
+            "field_data_dictionary": null,
+            "field_frequency": "3",
+            "field_granularity": null,
+            "field_harvest_source_issued": null,
+            "field_harvest_source_modified": null,
+            "field_public_access_level": "public",
+            "field_related_content": [
+                {
+                    "title": "Expert panel says London's living wage is $15.53/h ",
+                    "url": "http://www.lfpress.com/2016/05/13/expert-panel-says-londons-living-wage-is-1553h-londoners-need-30284-to-meet-basic-needs",
+                    "attributes": []
+                }
+            ],
+            "field_resources": [
+                {
+                    "uri": "http://default/node/20",
+                    "id": "20",
+                    "resource": "node",
+                    "uuid": "0da191d6-4eb6-4ebe-914f-27a392087d67",
+                    "value": "admin"
+                }
+            ],
+            "field_spatial": {
+                "wkt": "POLYGON ((-1.1178588867187 51.08282186161, -1.1178588867187 51.859531509855, 1.1178588867187 51.859531509855, 1.1178588867187 51.08282186161))",
+                "geo_type": "polygon",
+                "lat": "51.4712",
+                "lon": "-0",
+                "left": "-1.11786",
+                "top": "51.8595",
+                "right": "1.11786",
+                "bottom": "51.0828",
+                "srid": null,
+                "latlon": "51.4712,-0"
+            },
+            "field_spatial_geographical_cover": "London, England",
+            "field_tags": [
+                {
+                    "uri": "http://default/taxonomy_term/12",
+                    "id": "12",
+                    "resource": "taxonomy_term",
+                    "uuid": "012b5bd1-75a2-4845-bcec-e45f550ef5c1",
+                    "value": "economy"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/17",
+                    "id": "17",
+                    "resource": "taxonomy_term",
+                    "uuid": "a84f6b1f-c96b-4066-a2da-3a78fb0f6ed7",
+                    "value": "demographics"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/22",
+                    "id": "22",
+                    "resource": "taxonomy_term",
+                    "uuid": "20af1e26-5317-4f35-afb2-9a709b26996a",
+                    "value": "spatial data"
+                },
+                {
+                    "uri": "http://default/taxonomy_term/23",
+                    "id": "23",
+                    "resource": "taxonomy_term",
+                    "uuid": "0b062f38-f7ce-4545-94f4-8fb6fa59e6cb",
+                    "value": "United Kingdom"
+                }
+            ],
+            "field_temporal_coverage": [],
+            "og_group_ref": [
+                {
+                    "uri": "http://default/node/3",
+                    "id": "3",
+                    "resource": "node",
+                    "uuid": "26dc023a-a216-4989-98b9-81f92d176dbd",
+                    "value": "admin"
+                },
+                {
+                    "uri": "http://default/node/1",
+                    "id": "1",
+                    "resource": "node",
+                    "uuid": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
+                    "value": "admin"
+                }
+            ],
+            "field_topic": [
+                {
+                    "uri": "http://default/taxonomy_term/3",
+                    "id": "3",
+                    "resource": "taxonomy_term",
+                    "uuid": "4ac6d362-6898-4ab8-98f6-ce195657ec4c",
+                    "value": "Finance and Budgeting"
+                }
+            ]
+        }
+    }
+}
