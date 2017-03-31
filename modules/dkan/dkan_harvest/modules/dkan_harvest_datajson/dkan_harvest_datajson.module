@@ -32,12 +32,12 @@ function dkan_harvest_datajson_harvest_source_types() {
  * dkan_harvest source types.
  *
  * @param HarvestSource $source
- *        The source object from a datajson endpoint to cache.
+ *   The source object from a datajson endpoint to cache.
  * @param int $harvest_updatetime
- *        Last harvest update time.
+ *   Last harvest update time.
  *
  * @return HarvestCache
- *         A harvest cache object.
+ *   A harvest cache object.
  */
 function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime) {
   // This is needed for remote uri.
@@ -79,16 +79,16 @@ function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime)
  * Set a nested value inside an array.
  *
  * @param array &$obj
- *        Original array.
+ *   Original array.
  * @param string $path
- *        Path to the value (path.to.the.0.value).
+ *   Path to the value (path.to.the.0.value).
  * @param object $value
- *        Value to set.
+ *   Value to set.
  * @param bool $override
- *        If should or shouldn't override an existing value.
+ *   If should or shouldn't override an existing value.
  *
  * @return array
- *         Modified array.
+ *   Modified array.
  */
 function dkan_harvest_datajson_set_value(&$obj, $path, $value, $override = FALSE) {
   $updated = FALSE;
@@ -100,7 +100,9 @@ function dkan_harvest_datajson_set_value(&$obj, $path, $value, $override = FALSE
       $branch = &$branch[$key];
     }
     else {
-      drupal_set_message(t("Key @path was automatically generated because doesn't exists in the dataset @title. Make sure you want to modify the key @path", array('path' => $path, 'title' => $obj['title'])), 'warning');
+      drupal_set_message(t('Key "@path" was automatically generated because doesn\'t exists in the dataset "@title". Make sure you want to modify the key "@path".',
+        array('@path' => $path, '@title' => $obj['title'])),
+      'warning');
       $branch[$key] = array();
       $branch = &$branch[$key];
     }
@@ -124,7 +126,7 @@ function dkan_harvest_datajson_set_value(&$obj, $path, $value, $override = FALSE
  *   Path to the value (path.to.the.0.value).
  *
  * @return mixed
- *         Modified array
+ *   Modified array
  */
 function dkan_harvest_datajson_get_value($obj, $path) {
   $keys = explode('.', $path);
@@ -146,11 +148,11 @@ function dkan_harvest_datajson_get_value($obj, $path) {
  * Cache the datajson_1_1_json datasets.
  *
  * @param array $data
- *        Harvested data.
+ *   Harvested data.
  * @param HarvestSource $source
- *        Harvest source instance.
+ *   Harvest source instance.
  * @param int $harvest_updatetime
- *        Last harvest update time.
+ *   Last harvest update time.
  *
  * @return HarvestCache
  *   HarvestCache object
