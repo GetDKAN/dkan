@@ -593,7 +593,6 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    * drops some taxonomies which will make following tests fail.
    */
   public function testHarvestError() {
-    return;
     // Delete the format vocabulary.
     $vocab_format = taxonomy_vocabulary_machine_name_load('format');
     if ($vocab_format) {
