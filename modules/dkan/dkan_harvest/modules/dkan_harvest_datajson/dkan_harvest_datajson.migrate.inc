@@ -126,8 +126,16 @@ class DatajsonHarvestMigration extends HarvestMigration {
         // Support 4 digits year time strings.
         elseif (preg_match("@^\d{4}$@", $value)) {
           $value_date = new DateTime();
-          $value_date->setDate($value, 1, 1)
-            ->setTime(0, 0);
+
+          // If this is from the second argument set to the end of the year.
+          if ($key == 1) {
+            $value_date->setDate($value, 12, 31);
+          }
+          else {
+            $value_date->setDate($value, 1, 1);
+          }
+
+          $value_date->setTime(0, 0);
         }
         // Fallback to full date/time format.
         else {
