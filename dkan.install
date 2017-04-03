@@ -264,10 +264,14 @@ function dkan_dataset_update_7004() {
 }
 
 /**
- * Update language codes to use dashes rather than underscores.
+ * Update language field values to use dashes rather than underscores.
  */
 function dkan_update_7014() {
   db_update('field_data_field_language')
+    ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', array(':underscore' => '_', ':dash' => '-'))
+    ->execute();
+
+  db_update('field_revision_field_language')
     ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', array(':underscore' => '_', ':dash' => '-'))
     ->execute();
 }
