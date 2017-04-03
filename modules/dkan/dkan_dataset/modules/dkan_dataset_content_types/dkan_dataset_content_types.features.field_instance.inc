@@ -1026,7 +1026,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     'entity_type' => 'node',
     'field_name' => 'field_public_access_level',
     'label' => 'Public Access Level',
-    'required' => 0,
+    'required' => 1,
     'settings' => array(
       'user_register_form' => FALSE,
     ),
