@@ -266,6 +266,7 @@ function dkan_add_default_menu_links(&$context) {
  *   Batch context.
  */
 function dkan_build_menu_links(&$context) {
+  module_load_include('inc', 'features', 'features.export');
   $context['message'] = t('Building menu links and assigning custom admin menus to roles');
   $menu_links = features_get_default('menu_links', 'dkan_sitewide_menu');
   menu_links_features_rebuild_ordered($menu_links, TRUE);

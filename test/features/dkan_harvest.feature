@@ -135,8 +135,8 @@ Feature: Dkan Harvest
       | name            | mail                   | roles           |
       | Site Manager    | admin@fakeemail.com    | site manager    |
     And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site Manager | Yes       |
+      | title      | machine name | source uri                                                                 | type               | author       | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site Manager | Yes       |
     And I am logged in as a "Site Manager"
     And I am on the "Source one" page
     Given The "source_one" source is harvested
@@ -147,6 +147,8 @@ Feature: Dkan Harvest
     And I should see the text "Last Harvest Performed"
     And I should see the text "Harvest Source URI"
     And I should see the text "Harvest Source Title"
+    And I should see "2016-06-22" in the "Release Date" row
+    And I should see "2016-08-02" in the "Modified Date" row
 
   @api
   Scenario: As a user I should have access to see harvest preview information.
@@ -282,8 +284,8 @@ Feature: Dkan Harvest
     And The "source_one" source is harvested
     And I am logged in as a "<role>"
     And I am on the "Harvest Dashboard Datasets" page
-    And I fill in "edit-created-min" with "06/01/2016"
-    And I fill in "edit-created-max" with "06/30/2016"
+    And I fill in "edit-field-harvest-source-issued-value-min-datepicker-popup-0" with "Wednesday, June 1, 2016"
+    And I fill in "edit-field-harvest-source-issued-value-max-datepicker-popup-0" with "Thursday, June 30, 2016"
     And I press "Apply"
     And I wait for "3" seconds
     Then I should see "Florida Bike Lanes Harvest"
@@ -308,12 +310,12 @@ Feature: Dkan Harvest
     And The "source_one" source is harvested
     And I am logged in as a "<role>"
     And I am on the "Harvest Dashboard Datasets" page
-    And I fill in "edit-changed-min" with "06/01/1999"
-    And I fill in "edit-changed-max" with "06/30/1999"
+    And I fill in "edit-field-harvest-source-modified-value-min-datepicker-popup-0" with "Friday, January 1, 1999"
+    And I fill in "edit-field-harvest-source-modified-value-max-datepicker-popup-0" with "Friday, January 1, 1999"
     And I press "Apply"
     Then I wait for "No harvested datasets were found"
-    Then I fill in "edit-changed-min" with "06/01/1990"
-    And I fill in "edit-changed-max" with "06/30/2100"
+    Then I fill in "edit-field-harvest-source-modified-value-min-datepicker-popup-0" with "Friday, January 1, 1999"
+    And I fill in "edit-field-harvest-source-modified-value-max-datepicker-popup-0" with "Friday, December 31, 2100"
     And I press "Apply"
     Then I wait for "3" seconds
     And I should see a table with a class name "views-table"
