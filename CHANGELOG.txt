@@ -1,5 +1,6 @@
 7.x-1.13.x
 ----------
+ - #1813 Update the groups page view to sort alphabetically rather than by post date.
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
  - #1821 Remove css height value for recline-nvd3 to allow custom heights on charts.
