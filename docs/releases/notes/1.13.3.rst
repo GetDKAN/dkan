@@ -1,7 +1,24 @@
-DKAN 1.13.3 (future release)
-============================
+DKAN 1.13.3
+===========
 
-Placeholder for good things to come.
+This is a "patch" release of DKAN, containing bug fixes and minor updates, but adding no new functionality.
+
+Improvements in this release
+----------------------------
+
+- Groups permissions were given better logic. Editors will now become administrators of any group they are added to, giving them permission to edit or moderate any content in that group. Also, Site Manager was given permissions to edit the order of featured groups.
+
+- The order of groups on the front page and groups page was changed to alphabetical.
+
+- We now provide parsing options on the `Datastore Fast Import <http://docs.getdkan.com/en/latest/components/datastore.html#using-the-fast-import-option>`_. This means a user can set what delimiters and line terminators are used when importing a CSV file, avoiding some import errors users were experiencing.
+
+- Some errors were fixed that caused installing DKAN with the browser (using /install.php rather than drush). Also,  special characters were removed from default content filenames, fixing an installation bug on Windows systems.
+
+- Several bugs in the Harvest module were fixed:
+
+  - The Site Manager can now use the main dashboard view to initiate harvest actions in bulk
+  - Inconsistencies in date fields (Harvest source "modified" vs Drupal's "modified" dates) were addressed by adding new fields to the *dataset* content type.
+  - A bug preventing the "temporal coverage" field from being harvested was fixed.
 
 Special Notes
 -------------
