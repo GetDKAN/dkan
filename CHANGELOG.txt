@@ -3,6 +3,7 @@
  - #1813 Update the groups page view to sort alphabetically rather than by post date.
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
+ - #1821 Remove css height value for recline-nvd3 to allow custom heights on charts.
  - #1821 Remove redundant CSS load in dkan_dataset
  - #1726 Fixed broken links in search results to nodes without aliases
  - #1792 Remove Windows reserved characters from default content filenames for better Windows support
@@ -13,6 +14,7 @@
  - #1752 Added option for using quote delimiters when fast import is enabled for dkan datastore. Fixed error message when an import fails on DKAN Datastore Fast Import.
  - #1703 Refactor Datastore API module, fixing some caching issues and improving joins 
  - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
+ - #1811 Apply patches to the rules module that can prevent unnecessary DB lockouts.
 
 7.x-1.13.2 2017-03-16
 ----------------------
