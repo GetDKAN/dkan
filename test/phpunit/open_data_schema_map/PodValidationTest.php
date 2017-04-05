@@ -34,6 +34,7 @@ class PodValidationTest extends PHPUnit_Framework_TestCase {
       'issued' => '2016-06-22',
       'language' => array(
         'English',
+        'Spanish',
       ),
       'license' => 'http://opendefinition.org/licenses/odc-odbl/',
       'modified' => '2017-04-05',
@@ -60,9 +61,9 @@ class PodValidationTest extends PHPUnit_Framework_TestCase {
     $result = array($dataset);
     $machine_name = 'test';
     $api_schema = 'pod_v1_1';
-    $expected = array('en');
+    $expected = array('en', 'es');
     open_data_schema_pod_open_data_schema_map_results_alter($result, $machine_name, $api_schema);
-    $this->assertEquals($expected, $result['dataset'][0]['language'], 'Languages do not match');
+    $this->assertEquals($expected, $result['dataset'][0]['language'], 'Language is not valid');
   }
 
 }
