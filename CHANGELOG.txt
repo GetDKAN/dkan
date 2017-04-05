@@ -1,3 +1,7 @@
+7.x-1.14.x
+----------
+ - #1839 Add help text and improve UI on the chart form for better clarity.
+
 7.x-1.13.x
 ----------
  - #1825 Fix the 'dataQuality' import druing POD harvest.
