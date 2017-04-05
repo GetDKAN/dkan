@@ -10818,6 +10818,19 @@ img {
 .font_icon_select_options .label {
   color: #333; }
 
+.field-group-htabs-wrapper {
+  border: 1px solid #CDCDCD;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0; }
+  .field-group-htabs-wrapper fieldset.field-group-htab {
+    margin-bottom: 0; }
+  .field-group-htabs-wrapper .horizontal-tabs ul.horizontal-tabs-list li a:hover {
+    background-color: #fffece; }
+
+.node-resource-form .field-group-htabs-wrapper {
+  border: none; }
+
 .front .view-popular-tags {
   margin-top: 20px; }
 
