@@ -1,6 +1,7 @@
 7.x-1.13.x
 ----------
  - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
+ - #1834 Use last day of the year for end date during temporal POD field import.
 
 
 7.x-1.13.3-RC1
