@@ -1,6 +1,10 @@
-7.x-1.13.3
+7.x-1.13.x
 ----------
  - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
+
+
+7.x-1.13.3-RC1
+--------------
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
  - #1821 Remove redundant CSS load in dkan_dataset.
