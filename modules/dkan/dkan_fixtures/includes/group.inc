@@ -18,7 +18,7 @@ class DkanGroupImport extends MigrateCkanGroupBase {
     if (!isset($arguments['endpoint'])) {
       $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures') . '/data/';
       $arguments['list_url'] = 'group_list.json';
-      $arguments['item_url'] = 'group_show?id=:id.json';
+      $arguments['item_url'] = 'group_show%3Fid=:id.json';
     }
 
     parent::__construct($arguments);

@@ -2,7 +2,6 @@ name = DKAN Sitewide
 description = Sitewide elements for DKAN.
 core = 7.x
 package = DKAN
-project = dkan
 dependencies[] = admin_views
 dependencies[] = colorizer
 dependencies[] = conditional_styles

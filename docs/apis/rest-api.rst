@@ -346,7 +346,8 @@ Example response:
         }
       ]
     },
-    "field_modified_source_date": [],
+    "field_harvest_source_issued": [],
+    "field_harvest_source_modified": [],
     "field_pod_theme": [],
     "field_public_access_level": {
       "und": [
