@@ -1,5 +1,10 @@
 7.x-1.13.x
 ----------
+ - #1825 Fix the 'dataQuality' import druing POD harvest.
+ - #1829 Fixed missing properties on warning message during datajson harvest cache.
+ - #1802 Better support for Issued and Updated dataset properties from harvested sources.
+ - #1821 Remove css height value for recline-nvd3 to allow custom heights on charts.
+ - #1821 Remove redundant CSS load in dkan_dataset
  - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
  - #1820 Use "accessURL" during resources harvest if "downloadURL" field is not available.
 

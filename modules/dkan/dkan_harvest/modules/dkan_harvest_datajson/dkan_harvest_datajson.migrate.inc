@@ -154,6 +154,16 @@ class DatajsonHarvestMigration extends HarvestMigration {
         $row->temporal_coverage_to = $date[1];
       }
     }
+
+    // field_odfe_data_quality expects "true" or "false" as input values.
+    if (isset($row->dataQuality)) {
+      if ($row->dataQuality === FALSE) {
+        $row->dataQuality = 'false';
+      }
+      elseif ($row->dataQuality === TRUE) {
+        $row->dataQuality = 'true';
+      }
+    }
   }
 
   /**
