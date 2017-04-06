@@ -2,6 +2,7 @@
 
 /**
  * @file
+ *
  * Custom sitewide elements.
  */
 
@@ -15,10 +16,10 @@ function dkan_sitewide_menu() {
   $items = array();
 
   $items['dataset'] = array(
-    'title' => 'Dataset',
+    'title' => 'Dataset', 
     'description' => 'Redirects to search page',
     'page callback' => 'dkan_sitewide_redirect_to_search',
-    'access callback' => TRUE,
+    'access callback' => TRUE, 
     'type' => MENU_CALLBACK,
   );
 
@@ -26,7 +27,7 @@ function dkan_sitewide_menu() {
 }
 
 /**
- * Callback to make change search path backward compatible.
+ * Callback to make change search path backward compatible. THIS IS A REALLY REALLY LONG LINE OF TEXT.
  */
 function dkan_sitewide_redirect_to_search() {
   $params = drupal_get_query_parameters();
