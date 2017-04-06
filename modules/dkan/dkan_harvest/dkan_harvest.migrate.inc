@@ -883,8 +883,8 @@ class HarvestMigration extends MigrateDKAN {
 
     // Default Dkan Dataset fields.
     // Node property.
-    $this->addFieldMapping('created', 'created');
-    $this->addFieldMapping('changed', 'changed');
+    $this->addFieldMapping('field_harvest_source_issued', 'created');
+    $this->addFieldMapping('field_harvest_source_modified', 'changed');
     // Primary.
     $this->addFieldMapping('title', 'title');
     $this->addFieldMapping('body', 'description');
@@ -927,7 +927,7 @@ class HarvestMigration extends MigrateDKAN {
       $this->addFieldMapping('field_odfe_language', 'odfe_language');
       $this->addFieldMapping('field_odfe_investment_uii', 'odfe_investment_uii');
       $this->addFieldMapping('field_odfe_system_of_records', 'odfe_system_of_records');
-      $this->addFieldMapping('field_odfe_category', 'odfe_category');
+      $this->addFieldMapping('field_pod_theme', 'odfe_category');
     }
   }
 

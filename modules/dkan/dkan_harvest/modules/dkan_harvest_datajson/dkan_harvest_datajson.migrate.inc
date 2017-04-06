@@ -38,8 +38,8 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $this->addFieldMapping('field_tags:create_term')
       ->defaultValue(TRUE);
 
-    $this->addFieldMapping('changed', 'modified');
-    $this->addFieldMapping('created', 'issued');
+    $this->addFieldMapping('field_harvest_source_issued', 'issued');
+    $this->addFieldMapping('field_harvest_source_modified', 'modified');
     $this->addFieldMapping('field_public_access_level', 'accessLevel');
     $this->addFieldMapping('uuid', 'identifier');
     $this->addFieldMapping('field_license', 'license');
@@ -82,6 +82,7 @@ class DatajsonHarvestMigration extends HarvestMigration {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
+
     if (property_exists($row, 'accrualPeriodicity')) {
       $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
     }
@@ -151,6 +152,16 @@ class DatajsonHarvestMigration extends HarvestMigration {
       }
       if (isset($date[1])) {
         $row->temporal_coverage_to = $date[1];
+      }
+    }
+
+    // field_odfe_data_quality expects "true" or "false" as input values.
+    if (isset($row->dataQuality)) {
+      if ($row->dataQuality === FALSE) {
+        $row->dataQuality = 'false';
+      }
+      elseif ($row->dataQuality === TRUE) {
+        $row->dataQuality = 'true';
       }
     }
   }

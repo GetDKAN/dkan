@@ -59,7 +59,8 @@
             "field_data_dictionary": null,
             "field_frequency": "5",
             "field_granularity": null,
-            "field_modified_source_date": null,
+            "field_harvest_source_issued": null,
+            "field_harvest_source_modified": null,
             "field_public_access_level": "public",
             "field_related_content": [],
             "field_resources": [
