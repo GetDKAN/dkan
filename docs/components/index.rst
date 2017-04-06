@@ -16,7 +16,7 @@ described inside the Datasets section, all this functionality is provided by the
    :maxdepth: 1
 
    Datasets <dataset/index>
-   Datastore <datastore/index>
+   Datastore <datastore>
    Harvester <harvest>
    Workflow <workflow>
    Topics <topics>

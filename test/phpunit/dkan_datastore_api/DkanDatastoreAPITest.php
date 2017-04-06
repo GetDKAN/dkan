@@ -36,6 +36,11 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
         'title' => 'Polling Places',
         'uuid'=>'3a05eb9c-3733-11e6-ac61-9e71128cae79'
       ),
+      'null_check' => array(
+        'filename' => 'null_check.csv',
+        'title' => 'Empy Values Checker',
+        'uuid'=>'3a05eb9c-3733-11e6-ac61-9e71128cae80'
+      ),
     );
     return $resources;
   }
@@ -102,8 +107,8 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       'limit' => 1000,
       'query' => 'City'
     );
-    $params = _dkan_datastore_api_get_params($params);
-    $result = _dkan_datastore_api_query($params);
+    $params = dkan_datastore_api_get_params($params);
+    $result = dkan_datastore_api_query($params);
     $this->assertEquals($result['result']->total, 3);
   }
 
@@ -113,14 +118,14 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   public function test_dkan_datstore_api_filters_array_format() {
     $filters = array('date' => '1950-02-01');
     $params = self::getFilterParams($filters);
-    $result = _dkan_datastore_api_query($params);
+    $result = dkan_datastore_api_query($params);
     $this->assertEquals($result['result']->total, 1);
   }
 
   public function test_dkan_dkan_datastore_api_filters_array_multivalue_format() {
     $filters = array('date' => ['1950-02-01', '1950-03-01']);
     $params = self::getFilterParams($filters);
-    $result = _dkan_datastore_api_query($params);
+    $result = dkan_datastore_api_query($params);
     $this->assertEquals($result['result']->total, 2);
     $this->assertEquals($result['result']->records[0]->date, '1950-02-01');
     $this->assertEquals($result['result']->records[1]->date, '1950-03-01');
@@ -129,14 +134,14 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   public function test_dkan_datstore_api_filters_prefixed_table() {
     $filters = array('gold_prices' => array('date' => '1950-02-01'));
     $params = self::getFilterParams($filters);
-    $result = _dkan_datastore_api_query($params);
+    $result = dkan_datastore_api_query($params);
     // print_r($result);
   }
 
   public function test_dkan_datstore_api_filters_prefixed_table_mixed() {
     $filters = array('gold_prices' => array('date' => '1950-02-01'));
     $params = self::getFilterParams($filters);
-    $result = _dkan_datastore_api_query($params);
+    $result = dkan_datastore_api_query($params);
   }
 
   public static function getFilterParams($filters) {
@@ -147,7 +152,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       'limit' => 1000,
       'filters' => $filters
     );
-    return _dkan_datastore_api_get_params($params);
+    return dkan_datastore_api_get_params($params);
   }
 
   /**
@@ -161,8 +166,8 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       'limit' => 1,
       'offset' => 1,
     );
-    $params = _dkan_datastore_api_get_params($params);
-    $result = _dkan_datastore_api_query($params);
+    $params = dkan_datastore_api_get_params($params);
+    $result = dkan_datastore_api_query($params);
     $this->assertEquals($result['result']->records[0]->state_id, 2);
   }
 
@@ -176,8 +181,8 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       ),
       'limit' => 1
     );
-    $params = _dkan_datastore_api_get_params($params);
-    $result = _dkan_datastore_api_query($params);
+    $params = dkan_datastore_api_get_params($params);
+    $result = dkan_datastore_api_query($params);
     $this->assertEquals(count($result['result']->records), 1);
   }
 
@@ -192,8 +197,8 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       'fields' => array('name'),
       'limit' => 1,
     );
-    $params = _dkan_datastore_api_get_params($params);
-    $result = _dkan_datastore_api_query($params);
+    $params = dkan_datastore_api_get_params($params);
+    $result = dkan_datastore_api_query($params);
     $this->assertEquals(count((array)$result['result']->records[0]), 1);
   }
 
@@ -208,8 +213,8 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       'sort' => array('gold_prices_states' => array('state_id' => 'desc')),
       'limit' => 1
     );
-    $params = _dkan_datastore_api_get_params($params);
-    $result = _dkan_datastore_api_query($params);
+    $params = dkan_datastore_api_get_params($params);
+    $result = dkan_datastore_api_query($params);
     $this->assertEquals($result['result']->records[0]->state_id, 5);
   }
 
@@ -224,8 +229,8 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       'limit' => 1000,
       'group_by' => array('gold_prices'=>array('price'))
     );
-    $params = _dkan_datastore_api_get_params($params);
-    $result = _dkan_datastore_api_query($params);
+    $params = dkan_datastore_api_get_params($params);
+    $result = dkan_datastore_api_query($params);
     $this->assertEquals($result['result']->total, 582);
   }
 
@@ -244,8 +249,8 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       ),
       'limit' => 5,
     );
-    $params = _dkan_datastore_api_get_params($params);
-    $result = _dkan_datastore_api_query($params);
+    $params = dkan_datastore_api_get_params($params);
+    $result = dkan_datastore_api_query($params);
     $this->assertObjectHasAttribute('name', $result['result']->records[0]);
     $this->assertObjectHasAttribute('price', $result['result']->records[0]);
   }
@@ -268,8 +273,8 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
         'date' => '1950-02-01'
       )
     );
-    $params = _dkan_datastore_api_get_params($params);
-    $result = _dkan_datastore_api_query($params);
+    $params = dkan_datastore_api_get_params($params);
+    $result = dkan_datastore_api_query($params);
 
     $this->assertObjectHasAttribute('name', $result['result']->records[0]);
     $this->assertObjectHasAttribute('price', $result['result']->records[0]);
@@ -295,7 +300,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
         'limit' => 5,
       )
     );
-    $result = _dkan_datastore_api_multiple_query($queries);
+    $result = dkan_datastore_api_multiple_query($queries);
     $this->assertArrayHasKey('my_query', $result);
     $this->assertArrayHasKey('my_query1', $result);
     $this->assertEquals(count($result['my_query']['result']->records), 5);
@@ -322,10 +327,32 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
         'limit' => 1000
       );
       $params[$agg] = array('gold_prices' => 'price');
-      $params = _dkan_datastore_api_get_params($params);
-      $result = _dkan_datastore_api_query($params);
+      $params = dkan_datastore_api_get_params($params);
+      $result = dkan_datastore_api_query($params);
       $this->assertEquals(floor($result['result']->records[0]->{$agg.'_price'}) , $expect[$agg]);
     }
 
   }
+
+  /**
+   * Handles empty values as expected.
+   */
+  public function test_dkan_dkan_datastore_api_empty_is_null() {
+    $params = array(
+      'resource_id' => array(
+        'null_check' => self::getUUID('null_check', self::getResources()),
+      ),
+      'limit' => 5,
+      'query' => ''
+    );
+    $params = dkan_datastore_api_get_params($params);
+    $result = dkan_datastore_api_query($params);
+
+    $this->assertNull(NULL, "NULL is null");
+    $this->assertNull($result['result']->records[2]->Ward, "Expect empty value to be saved and returned as NULL.");
+    $this->assertNull($result['result']->records[2]->{"Address"}, "Expect empty string to be saved as NULL.");
+    $this->assertEquals(0, $result['result']->records[2]->{"Aldermanic District"}, "Expect 0 to not be interpreted as NULL.");
+  }
+
 }
+

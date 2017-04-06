@@ -1,4 +1,28 @@
 7.x-1.13.x
+----------
+ - #1825 Fix the 'dataQuality' import druing POD harvest.
+ - #1829 Fixed missing properties on warning message during datajson harvest cache.
+ - #1802 Better support for Issued and Updated dataset properties from harvested sources.
+ - #1821 Remove css height value for recline-nvd3 to allow custom heights on charts.
+ - #1821 Remove redundant CSS load in dkan_dataset
+ - #1726 Fixed broken links in search results to nodes without aliases
+ - #1792 Remove Windows reserved characters from default content filenames for better Windows support
+ - #1815 Support importing Temporal Coverage during POD Harvest.
+ - #1785 Fix profile UI install.
+ - #1786 Remove horizontal tab field from the group content type, fix margin on group block.
+ - #1786 Add hook to auto-assign editors the og administrator role.
+ - #1752 Added option for using quote delimiters when fast import is enabled for dkan datastore. Fixed error message when an import fails on DKAN Datastore Fast Import.
+ - #1703 Refactor Datastore API module, fixing some caching issues and improving joins 
+ - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
+ - #1811 Apply patches to the rules module that can prevent unnecessary DB lockouts.
+
+7.x-1.13.2 2017-03-16
+----------------------
+ - #1803 Fix broken access to featured groups sort order view. 
+ - #1796 Fix Harvest support for contact name and contact email.
+ - #1795 Update front page test on topics.feature with @customizable.
+ - #1783 Update services to 3.19
+ - #1794 Update visualization_entity to 1.1
  - #1781 Update views to 3.15 and remove patch 1388684.
  - #1751 Add POD validation link to command center menu for site manager access.
  - #1762 Re-number update hooks that were mixed up during release integration.
@@ -8,6 +32,9 @@
  - #1730 Fix logic error for front page in theme causing error messages on homepage
  - #1728 Added a tag @defaultHomepage to a topic test which relies on homepage content.
  - #5807 Fix panelizer permissions to hide 'Customize Display' button
+ - #1744 Grant Site Manager role Harvest Dashboard actions.
+ - #1776 Fix 500 errors when linking or uploading geojson files in resources.
+ - #1767 Better handling of empty values by datastore_api. Also see NuCivic/feeds_flatstore_processor#9
 
 7.x-1.13
 --------------------------

@@ -104,7 +104,7 @@ function dkan_harvest_drush_command() {
  * @param string $source_machine_name
  *        Optional harvest source machine name.
  */
-function dkan_harvest_drush_command_harvest($source_machine_name) {
+function dkan_harvest_drush_command_harvest($source_machine_name=NULL) {
   dkan_harvest_drush_command_cache($source_machine_name);
   dkan_harvest_drush_command_migrate($source_machine_name);
 }
