@@ -558,6 +558,32 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test harvest source with resource with accessURL only.
+   */
+  public function testResourceAccessUrl() {
+    // Harvest the source.
+    dkan_harvest_cache_sources(array(self::getResourceAccessUrl()));
+    dkan_harvest_migrate_sources(array(self::getResourceAccessUrl()));
+
+    $migration = dkan_harvest_get_migration(self::getResourceAccessUrl());
+    $migrationMap = $this->getMapTableFromMigration($migration);
+
+    $dest_ids = array_map(function ($mapRecord) {
+      return $mapRecord->destid1;
+    }, $migrationMap);
+
+    $this->assertEquals(1, count($dest_ids));
+
+    $dataset = entity_metadata_wrapper('node', array_pop($dest_ids));
+
+    $this->assertEquals(1, count($dataset->field_resources));
+    $resource_ids = $dataset->field_resources->value();
+    $resource_emw = entity_metadata_wrapper('node', array_pop($resource_ids));
+    $this->assertEmpty($resource_emw->field_link_remote_file->value());
+    $this->assertEquals("http://demo.getdkan.com/", $resource_emw->field_link_api->url->value());
+  }
+
+  /**
    * Check Error logging for the harvest.
    *
    * Ticket: https://jira.govdelivery.com/browse/CIVIC-4498
@@ -712,6 +738,13 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public static function getResourceTemporal() {
     return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_temporal.json');
+  }
+
+  /**
+   * Test Harvest Source.
+   */
+  public static function getResourceAccessUrl() {
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_resource_accessurl.json');
   }
 
   /**
