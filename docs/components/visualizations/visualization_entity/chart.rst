@@ -35,6 +35,10 @@ You can adjust colors, margins, include a goal, labels, tick values, and more.
 
 .. image:: images/chart-step-4.png
 
+By default the chart will use the first 100 records of your data source. To use all records, click the Dataset tab to reveal the data pager, edit the max range value from 100 to the total number of records present. 
+
+.. image:: images/chart-pager.png
+
 Query Editor
 ****************************
 Click the '+' on the query editor to add a query parameter to specify the data used for the chart.
