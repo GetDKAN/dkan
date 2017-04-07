@@ -83,6 +83,13 @@ class DatajsonHarvestMigration extends HarvestMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
+    // The issued field is not required. When missing, use the modified field to
+    // have consistent dataset display.
+    // https://project-open-data.cio.gov/v1.1/schema#issued
+    if (!isset($row->issued)) {
+      $row->issued = $row->modified;
+    }
+
     if (property_exists($row, 'accrualPeriodicity')) {
       $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
     }
