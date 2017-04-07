@@ -1,5 +1,6 @@
-7.x-1.13.x
+7.x-1.13.4
 ----------
+ - #1813 Update the groups page view to sort alphabetically rather than by post date.
  - NuCivic/recline#89 Only load previews for resources using files; API/website links should always display iframe.
  - #1841 Fixed mis-named function on dkan_dataset_content_types.api.php
  - #1814 Update dkan_workflow_permissions to rebuild permissions on enable/disable.
@@ -10,6 +11,7 @@
 
 7.x-1.13.3-RC1
 --------------
+ - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
  - #1821 Remove redundant CSS load in dkan_dataset.
