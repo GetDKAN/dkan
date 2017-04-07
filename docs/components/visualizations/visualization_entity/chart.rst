@@ -9,13 +9,9 @@ New chart entities can be created by going to ``/admin/structure/entity-type/vis
 
 Step One - Choose a Resource
 *****************************
-Use the form to upload a data file **OR** link to an existing data resource.
-Valid source data include:
-* CSV
-* Google Spreadsheet
-* Data Proxy
+Enter a title for the chart. Then start typing the title of a resource that you would like to use as the data source. A list will appear, select the resource from the list. OR, if the data you want to use is not on your site, click the Upload Data tab to upload a CSV data file.
 
-.. image:: images/chart-step-1.png
+.. image:: images/chart-step-1n.png
 
 Step Two - Define Variables
 ****************************
