@@ -262,3 +262,17 @@ function dkan_dataset_update_7004() {
   $batch_size = 1;
   field_purge_batch($batch_size);
 }
+
+/**
+ * Add data dictionary textarea id to bueditor excludes list.
+ */
+function dkan_update_7014() {
+  db_update('bueditor_editors')
+    ->fields(array(
+      'excludes' => 'edit-log
+edit-menu-description
+*data-dictionary*',
+    ))
+    ->condition('eid', '5')
+    ->execute();
+}

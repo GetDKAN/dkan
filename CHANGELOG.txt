@@ -1,5 +1,6 @@
 7.x-1.13.x
 ----------
+ - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar.
  - #1825 Fix the 'dataQuality' import druing POD harvest.
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
