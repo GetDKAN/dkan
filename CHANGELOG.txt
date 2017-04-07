@@ -1,5 +1,6 @@
 7.x-1.13.x
 ----------
+ - NuCivic/recline#89 Only load previews for resources using files; API/website links should always display iframe.
  - #1841 Fixed mis-named function on dkan_dataset_content_types.api.php
  - #1814 Update dkan_workflow_permissions to rebuild permissions on enable/disable.
  - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.

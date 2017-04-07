@@ -22,9 +22,13 @@ Step 2: Add one or more Resources to the Dataset
 
 After creating a dataset, we’re prompted to add one or more data resources to it.  There are three types of Resources that can be added to a Dataset, depending on the type and location of the Resource:
 
-:Link to a file: this option allows publishers to create a link to a data file published on another Internet website.  Although the file itself will remain on the other site, the data within the file can be imported into your DKAN site’s Datastore for preview and analysis by your users.  See The DKAN Datastore for more information.
-:Link to an API: some data resources aren’t standalone files but queryable online databases; the interface to these databases is known as an API.  Adding links to these types of online database interfaces to your DKAN data catalog can be very useful for developers interested in working with your data.
-:Upload a file: this option allows publishers to upload data files to the DKAN site.  As in the “link to a file” option, the data within the file will be imported into your DKAN site’s Datastore for preview and analysis by your users.  See The DKAN Datastore for more information.
+:Upload: This option allows publishers to upload data files to the DKAN site.  As in the “link to a file” option, the data within the file will be imported into your DKAN site’s Datastore for preview and analysis by your users.  See The DKAN Datastore for more information.
+:API or Website URL: Some data resources aren’t standalone files but queryable online databases; the interface to these databases is known as an API.  Adding links to these types of online database interfaces to your DKAN data catalog can be very useful for developers interested in working with your data.
+:Remote file: This option allows publishers to create a link to a data file published on another Internet website.  Although the file itself will remain on the other site, the data within the file can be imported into your DKAN site’s Datastore for preview and analysis by your users.  See :doc:`../datastore` for more information.
+
+.. note::
+   
+   To provide :doc:`previews <../visualizations/datapreviews>` for your resources, they must contain either a local or remote file (*Link to a file* or *Upload a file*). If you use *API or Website URL* your link will be displayed in an iFrame but not further previewing will be possible. 
 
 To continue with our Wisconsin Polling Places example, we’ll add one resource file to the Dataset we created in Step 1.  Our resource file is a CSV, that is, comma-separated values format; this is a popular file format for exchanging tabular data.  Let’s explore the example resource shown here and the various fields within:
 
