@@ -2,14 +2,15 @@
 
 /**
  * @file
- * Custom sitewide elements.
+ * Custom sitewide elements. 
+ *    Just testing linting again
  */
 
 include_once 'dkan_sitewide.features.inc';
 include_once 'dkan_sitewide.blocks.inc';
 
 /**
- * Implements hook_menu().
+ * Implements hook_menu().  
  */
 function dkan_sitewide_menu() {
   $items = array();
