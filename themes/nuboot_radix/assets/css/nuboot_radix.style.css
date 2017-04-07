@@ -10939,9 +10939,6 @@ img {
     left: 7px;
     top: 10px; }
 
-#views-exposed-form-dkan-datasets-panel-pane-1 .views-exposed-form .description {
-  display: none; }
-
 .view-dkan-groups-featured .row,
 .pane-dkan-groups-featured .row {
   text-align: center; }
@@ -10954,6 +10951,37 @@ img {
 
 .view-blog .views-row ul.links.inline {
   margin: -.5em 0 1.75em; }
+
+#views-exposed-form-dkan-datasets-panel-pane-1 .views-exposed-form .description {
+  display: none; }
+
+#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-uid .help-block,
+#views-exposed-form-dkan-administration-nodes-system-1 .form-item-author .help-block,
+#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-uid .help-block,
+#views-exposed-form-dkan-administration-files-system-1 .form-item-author .help-block {
+  font-size: .85em;
+  margin-top: 0; }
+
+#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-uid input,
+#views-exposed-form-dkan-administration-nodes-system-1 .form-item-author input,
+#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-uid input,
+#views-exposed-form-dkan-administration-files-system-1 .form-item-author input {
+  width: auto; }
+
+#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-date_filter #edit-date-filter-min-wrapper,
+#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-date_filter #edit-date-filter-max-wrapper,
+#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-date_filter #edit-date-filter-min-wrapper,
+#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-date_filter #edit-date-filter-max-wrapper {
+  display: inline-block; }
+
+#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-date_filter input,
+#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-date_filter input {
+  width: 100px;
+  margin-right: 0; }
+
+#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-date_filter .help-block,
+#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-date_filter .help-block {
+  display: none; }
 
 .recline-nvd3 svg {
   height: 480px; }
