@@ -201,9 +201,11 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config) {
     }
     $node->field_datastore_status->set(DKAN_DATASTORE_EXISTS);
     $node->save();
+    return array('total_imported_items' => $result->rowCount());
   }
   catch (Exception $e) {
     drupal_set_message(t('There was an error trying to import this file: @error', array('@error' => $e->getMessage())), 'error', FALSE);
+    return array('error', $e);
   }
 }
 
