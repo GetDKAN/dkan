@@ -253,8 +253,8 @@ function dkan_update_7013() {
 }
 
 /**
-* Drop the 'field_modified_source_date' field.
-*/
+ * Drop the 'field_modified_source_date' field.
+ */
 function dkan_dataset_update_7004() {
   // Mark the field for deletion.
   field_delete_field('field_modified_source_date');
