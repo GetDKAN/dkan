@@ -192,7 +192,13 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $resources = array();
 
     foreach ($resources_row_data as $resource_row_data) {
-      $resource = $this->prepareResourceHelper($resource_row_data->downloadURL,
+      // Fallback to the accessURL if the downloadURL is not available.
+      $url = $resource_row_data->downloadURL;
+      if (empty($url)) {
+        $url = $resource_row_data->accessURL;
+      }
+
+      $resource = $this->prepareResourceHelper($url,
         $resource_row_data->format,
         $resource_row_data->title,
         NULL,
