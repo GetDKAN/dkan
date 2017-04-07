@@ -68,7 +68,7 @@ Feature: User command center links for site manager role.
   Scenario: Site manager role can view admin menu link Content
     Given I am logged in as "John"
     When I click "Content" in the "admin menu" region
-    Then I should see "Update options"
+    Then I should see "Choose an operation"
 
   Scenario: Site manager role can view admin menu links under Visualizations
     Given I am logged in as "John"
@@ -81,13 +81,13 @@ Feature: User command center links for site manager role.
   Scenario: Site manager role can view admin menu links under People
     Given I am logged in as "John"
     When I click "People" in the "admin menu" region
-    Then I should see "Show only users where"
+    Then I should see "Choose an operation"
     When I hover over the admin menu item "People"
     And I click "Create user"
     Then I should see "This web page allows administrators to register new users."
     When I hover over the admin menu item "People"
     And I click "Manage Users"
-    Then I should see "Show only users where"
+    Then I should see "Choose an operation"
 
   Scenario: Site manager role can view admin menu links under Site Configuration
     Given I am logged in as "John"
