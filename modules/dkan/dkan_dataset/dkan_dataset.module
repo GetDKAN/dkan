@@ -1250,13 +1250,48 @@ function dkan_dataset_preprocess_node(&$vars) {
 
 /**
  * Return node modified date.
+ *
+ * For harvested nodes use the value from 'field_harvest_source_issued' as
+ * filled by the dkan_harvest. Fallback to the 'changed' node property
+ * otherwise.
+ */
+function dkan_dataset_release_date($node) {
+  $node = ($node instanceof EntityMetadataWrapper) ? $node :
+    entity_metadata_wrapper('node', $node);
+
+  // Last time a dataset was harvested is supposedly the time of the last
+  // update.
+  if (isset($node->field_harvest_source_issued) &&
+    !empty($node->field_harvest_source_issued->value())) {
+    $date = format_date($node->field_harvest_source_issued->value(), 'iso_8601_date');
+  }
+  else {
+    $date = format_date($node->created->value(), 'iso_8601_date');
+  }
+
+  return $date;
+}
+
+/**
+ * Return node modified date with ISO 8601 format.
+ *
+ * For harvested nodes use the value from 'field_harvest_source_modified' as
+ * filled by the dkan_harvest. Fallback to the 'changed' node property
+ * otherwise.
  */
 function dkan_dataset_modified_date($node) {
-  $node = ($node instanceof EntityMetadataWrapper) ? $node : entity_metadata_wrapper('node', $node);
-  $harvested_date = $node->field_modified_source_date->value();
+  $node = ($node instanceof EntityMetadataWrapper) ? $node :
+    entity_metadata_wrapper('node', $node);
 
-  // Harvested times can be dates or periods then we don't format them.
-  return ($harvested_date) ? $harvested_date : format_date($node->changed->value(), 'custom', 'Y-m-d');
+  if (isset($node->field_harvest_source_modified) &&
+    !empty($node->field_harvest_source_modified->value())) {
+    $date = format_date($node->field_harvest_source_modified->value(), 'iso_8601_date');
+  }
+  else {
+    $date = format_date($node->changed->value(), 'iso_8601_date');
+  }
+
+  return $date;
 }
 
 /**

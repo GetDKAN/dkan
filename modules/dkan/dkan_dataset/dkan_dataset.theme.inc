@@ -67,7 +67,8 @@ function theme_dkan_dataset_modified_date_view($vars) {
  * Outputs the release date content.
  */
 function theme_dkan_dataset_release_date_view($vars) {
-  return '<div property="dcterms:issued" class="field-name-field-release-date">' . date('Y-m-d', $vars['node']->created) . '</div>';
+  $date = dkan_dataset_release_date($vars['node']);
+  return '<div property="dcterms:issued" class="field-name-field-release-date">' . $date . '</div>';
 }
 
 /**
