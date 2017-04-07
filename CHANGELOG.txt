@@ -1,6 +1,14 @@
-7.x-1.13.3
+7.x-1.13.x
 ----------
  - #1841 Fixed mis-named function on dkan_dataset_content_types.api.php
+ - #1814 Update dkan_workflow_permissions to rebuild permissions on enable/disable.
+ - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
+ - #1832 Fallback to modified date for field_harvest_source_issued if not available during POD Harvest.
+ - #1828 Field Frequency Harvest POD integration is missing support for "irregular" value.
+ - #1820 Use "accessURL" during resources harvest if "downloadURL" field is not available.
+
+7.x-1.13.3-RC1
+--------------
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
  - #1821 Remove redundant CSS load in dkan_dataset.
