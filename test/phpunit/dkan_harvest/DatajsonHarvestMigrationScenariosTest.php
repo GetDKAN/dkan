@@ -521,7 +521,7 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     $expected_temporal = array(
       "Ambulance Fee Schedule Public Use Files" => array(
         'value' => "2005-01-01 00:00:00",
-        'value2' => "2016-01-01 00:00:00",
+        'value2' => "2016-12-31 00:00:00",
       ),
       'Acute IPPS - Readmissions Reduction Program' => array(
         'value' => "2013-01-01 00:00:00",
