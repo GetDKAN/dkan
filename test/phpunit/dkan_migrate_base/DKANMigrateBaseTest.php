@@ -38,12 +38,12 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
       drupal_static_reset('open_data_schema_map_api_load_all');
       menu_rebuild();
     }
-    
+
 	public function createDummyGroup() {
       $nodes = $this->getNodeByTitle('Health', TRUE);
       if($nodes) {
         node_delete_multiple(array_keys($nodes));
-      }   
+      }
       $node = new stdClass();
       $node->type = 'group';
       $node->title = 'Health';
@@ -129,10 +129,10 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
 
       $node = $this->getNodeByTitle('Madison Polling Places Test');
       $file = $node->field_upload['und'][0];
-      $body = 
+      $body =
       '<p>This is a list and map of polling places in Madison, WI.</p>
 
-<p>Original data here: 
+<p>Original data here:
   <a href="https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr">https://data.cityofmadison.com/Polling-Places/Polling-Places/rtyh-6ucr</a></p>';
       $format = taxonomy_term_load($node->field_format['und'][0]['tid']);
 
@@ -177,7 +177,7 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
     {
       $this->rollback('dkan_migrate_base_example_ckan_resources');
     }
-    
+
     public function testDataJsonImport()
     {
       $expect = $result = array();
@@ -208,7 +208,7 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
       $expect['group']  = "Housing";
       $result['license']  = $node->field_license['und'][0]['value'];
       $expect['license']  = "notspecified";
-      $result['modified']  = date_format(date_create($node->field_modified_source_date[LANGUAGE_NONE][0]['value']), 'm d y');
+      $result['modified']  = date_format(date_create($node->modified), 'm d y');
       $expect['modified']  = "06 24 14";
       $result['accessLevel']  = $node->field_public_access_level['und'][0]['value'];
       $expect['accessLevel']  = "public";
@@ -284,9 +284,9 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
       $this->nodeAssert($expect, $result);
 
       // Group should be assigned to the Health group
-      // created during test setup instead of create 
+      // created during test setup instead of create
       // new one based in the incoming data.
-      
+
       // Assert node is created and group Health is properly assigned
       $expect = $result = array();
       $result['title'] = $node2->title;

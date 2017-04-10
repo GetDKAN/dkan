@@ -251,3 +251,14 @@ function dkan_update_7013() {
   drush_delete_dir('profiles/dkan/themes/contrib/nuboot_radix');
   drush_delete_dir('profiles/dkan/themes/contrib/omega');
 }
+
+/**
+* Drop the 'field_modified_source_date' field.
+*/
+function dkan_dataset_update_7004() {
+  // Mark the field for deletion.
+  field_delete_field('field_modified_source_date');
+  // Run the batch process to actually delete the field.
+  $batch_size = 1;
+  field_purge_batch($batch_size);
+}

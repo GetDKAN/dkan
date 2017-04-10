@@ -22,7 +22,8 @@ function dkan_dataset_content_types_form_alter(&$form, &$form_state, $form_id) {
     $form['field_license'][LANGUAGE_NONE]['#options'] = $allowed_values;
 
     // Hide fields.
-    $form['field_modified_source_date']['#access'] = FALSE;
+    $form['field_harvest_source_issued']['#access'] = FALSE;
+    $form['field_harvest_source_modified']['#access'] = FALSE;
     $form['field_is_part_of']['#access'] = FALSE;
     $form['field_pod_theme']['#access'] = FALSE;
 
@@ -186,6 +187,7 @@ function dkan_dataset_content_types_iso_frecuency_map() {
     'R/P0.5M' => 18,
     'R/P4M' => 17,
     'R/P1W' => 1,
+    'irregular' => 5,
   );
 }
 
@@ -211,4 +213,27 @@ function dkan_dataset_content_types_frequency2iso($frecuencyIndex) {
 function dkan_dataset_content_types_allowed_language_values() {
   module_load_include('php', 'dkan_dataset_content_types', 'includes/language_code_list');
   return dkan_dataset_content_types_get_language_codes();
+}
+
+/**
+ * Implements hook_date_formats().
+ */
+function dkan_dataset_content_types_date_formats() {
+  return array(
+    // Creates a new format for a new, custom format type.
+    array(
+      'type' => 'iso_8601_date',
+      'format' => 'Y-m-d',
+      'locales' => array(),
+    ),
+  );
+}
+
+/**
+ * Implements hook_date_format_types().
+ */
+function dkan_dataset_content_types_date_format_types() {
+  return array(
+    'iso_8601_date' => t('ISO 8601 Date'),
+  );
 }

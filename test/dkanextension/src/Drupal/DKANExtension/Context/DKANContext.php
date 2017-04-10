@@ -859,7 +859,7 @@ public function iWaitForTextToDisappear($text)
     foreach ($content_list['result'] as $content_id) {
 
       // Build path for 'show' fixture file.
-      $show_fixture = $default_content_mod_path . '/data/' . $fixture . '_show?id=' . $content_id . '.json';
+      $show_fixture = $default_content_mod_path . '/data/' . $fixture . '_show%3Fid=' . $content_id . '.json';
 
       // Load content data.
       $content_data = file_get_contents($show_fixture);
