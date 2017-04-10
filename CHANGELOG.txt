@@ -6,6 +6,7 @@
  - #1841 Fixed mis-named function on dkan_dataset_content_types.api.php
  - #1814 Update dkan_workflow_permissions to rebuild permissions on enable/disable.
  - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
+ - #1834 Use last day of year (December 31) for 4 digits end year during temporal POD field import.
  - #1832 Fallback to modified date for field_harvest_source_issued if not available during POD Harvest.
  - #1828 Field Frequency Harvest POD integration is missing support for "irregular" value.
  - #1820 Use "accessURL" during resources harvest if "downloadURL" field is not available.
