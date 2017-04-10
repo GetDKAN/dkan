@@ -178,7 +178,8 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
         if (isset($form[$importer_id]['settings']['FeedsCSVParser']['help'])) {
           unset($form[$importer_id]['settings']['FeedsCSVParser']['help']);
         }
-        // Tab imports do not currently work with datastore (CIVIC-6065).
+        // For now, removing the TAB option. It is not working and tab-separated
+        // values aren't well supported elsewhere in DKAN.
         if (isset($form[$importer_id]['settings']['FeedsCSVParser']['delimiter']['#options']['TAB'])) {
           unset($form[$importer_id]['settings']['FeedsCSVParser']['delimiter']['#options']['TAB']);
         }
