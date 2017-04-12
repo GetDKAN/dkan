@@ -1,0 +1,19 @@
+DKAN 1.13.3 (future release)
+============================
+
+Placeholder for good things to come.
+
+Special Notes
+-------------
+
+Changes to Harvester's date handling
+************************************
+
+This update changes the way the Harvest module reflects the issued and modified dates of harvested datasets. Project Open Data and most other metadata standards provide an "issued" or "created" date for datasets, as well as a "modified" date. The original release of Harvester simply overwrote Drupal's ``created`` and ``modified`` node properties with the source's dates for these fields, but we've run into two problems with this:
+
+1. A node's modified date is easily overwritten by other actions in Drupal
+2. It can be useful to store both the date that a dataset was issued in its source, and the date it was added to the portal harvesting it.
+
+An existing field, ``field_modified_source_date``, was already handeling some of this but we decided to scrap that and start from scratch. Starting with this release, a source's ``issued`` and ``modified`` dates will be stored in the new fields ``field_harvest_source_issued`` and ``field_harvest_source_modified``. When these two fields are present, those will be the dates shown on a dataset's landing page on DKAN and in the site's data.json and DCAT RDF feeds.
+
+All sources should be re-harvested after updating to this patch release to ensure that all date fields and properties are accurate.

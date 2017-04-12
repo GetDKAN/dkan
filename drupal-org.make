@@ -1,7 +1,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.1/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.x/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
@@ -13,6 +13,10 @@ projects:
     # Allow ordering of roles to handle users w/multiple roles
     patch:
       2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
+  admin_views:
+    version: '1.6'
+    patch:
+      1780004: 'https://www.drupal.org/files/issues/admin_views-duplicate_system_path-1780004-54.patch'
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
@@ -291,11 +295,14 @@ projects:
   remote_stream_wrapper:
     version: '1.0-rc1'
     patch:
-      2833837: 'https://www.drupal.org/files/issues/prevent-download-intent-open-stream-2833837-1.patch'
+      2833837: 'https://www.drupal.org/files/issues/prevent-download-intent-open-stream-2833837-4.patch'
   role_export:
     version: '1.0'
   rules:
     version: '2.9'
+    patch:
+     2406863: 'https://www.drupal.org/files/issues/rules-remove-cache-rebuild-log-2406863-21.patch'
+     2851567: 'https://www.drupal.org/files/issues/rules_init_and_cache-2851567-8.patch'
   restws:
     version: '2.6'
   roleassign:
@@ -345,7 +352,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.1
+      branch: 7.x-1.x
     type: module
   workbench:
     version: '1.2'

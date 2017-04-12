@@ -38,12 +38,12 @@ Background:
     | Health  |
     | Gov     |
   And datasets:
-    | title      | publisher | author  | published        | tags     | description | modified source date | date changed |
-    | Dataset 01 | Group 01  | Gabriel | Yes              | Health   | Test        | 2015-01-02           |  -5 year     |
-    | Dataset 02 | Group 01  | Gabriel | Yes              | Gov      | Test        | 2015-01-02           |  -5 year     |
-    | Dataset 03 | Group 01  | Katie   | Yes              | Health   | Test        | 2015-01-02           |  -5 year     |
-    | Dataset 04 | Group 02  | Celeste | No               | Gov      | Test        | 2015-01-02           |  -5 year     |
-    | Dataset 05 | Group 01  | Katie   | No               | Gov      | Test        | 2015-01-02           |  -5 year     |
+    | title      | publisher | author  | published | tags   | description | harvest source modified | date changed |
+    | Dataset 01 | Group 01  | Gabriel | Yes       | Health | Test        | 2015-01-02              | -5 year      |
+    | Dataset 02 | Group 01  | Gabriel | Yes       | Gov    | Test        | 2015-01-02              | -5 year      |
+    | Dataset 03 | Group 01  | Katie   | Yes       | Health | Test        | 2015-01-02              | -5 year      |
+    | Dataset 04 | Group 02  | Celeste | No        | Gov    | Test        | 2015-01-02              | -5 year      |
+    | Dataset 05 | Group 01  | Katie   | No        | Gov    | Test        | 2015-01-02              | -5 year      |
   And resources:
     | title       | publisher | author | published | dataset    | description |
     | Resource 01 | Group 01  | Katie  | Yes       | Dataset 01 |             |
@@ -51,7 +51,7 @@ Background:
     | Resource 03 | Group 01  | Katie  | Yes       | Dataset 02 |             |
 
   @noworkflow
-  Scenario: Replace node changed date with modified source date for harvested datasets
+  Scenario: Replace node changed date with harvest source modified for harvested datasets
     Given I am logged in as "Gabriel"
     And I am on "Dataset 05" page
     When I click "Edit"
