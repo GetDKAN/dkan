@@ -6,6 +6,7 @@
 
 7.x-1.13.x
 ----------
+ - #1842 Add help text to explain the pager on data previews.
  - #1825 Fix the 'dataQuality' import druing POD harvest.
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
