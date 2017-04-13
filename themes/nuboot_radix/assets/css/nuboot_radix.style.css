@@ -10226,6 +10226,12 @@ h2.pane-title {
   height: 20px;
   font-size: .8em; }
 
+.data-explorer-help {
+  background: #eee;
+  margin: 1em 0;
+  border-radius: 4px;
+  padding: 8px 15px; }
+
 .recline-data-explorer .form-control {
   border-color: #ccc; }
 
@@ -10817,6 +10823,20 @@ img {
 
 .font_icon_select_options .label {
   color: #333; }
+
+.field-group-htabs-wrapper {
+  border: 1px solid #CDCDCD;
+  border-radius: 4px; }
+  .field-group-htabs-wrapper fieldset.field-group-htab {
+    margin-bottom: 0; }
+  .field-group-htabs-wrapper .horizontal-tabs ul.horizontal-tabs-list li.first,
+  .field-group-htabs-wrapper .horizontal-tabs ul.horizontal-tabs-list li.first a:hover {
+    border-radius: 4px 0 0 0; }
+  .field-group-htabs-wrapper .horizontal-tabs ul.horizontal-tabs-list li a:hover {
+    background-color: #fffece; }
+
+.node-resource-form .field-group-htabs-wrapper {
+  border: none; }
 
 .front .view-popular-tags {
   margin-top: 20px; }
