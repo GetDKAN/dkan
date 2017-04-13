@@ -117,6 +117,15 @@ function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
     $form['query']['#attributes'] = array('placeholder' => t('Search'));
     $form['query']['#size'] = 60;
   }
+  // Custom administration views.
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dkan-administration-nodes-system-1' || $form['#id'] == 'views-exposed-form-dkan-administration-files-system-1') {
+    $form['date_filter']['min']['#title'] = '';
+    $form['date_filter']['max']['#title'] = '';
+    $form['date_filter']['min']['#attributes']['placeholder'] = t('From');
+    $form['date_filter']['max']['#attributes']['placeholder'] = t('To');
+    $form['date_filter']['min']['#date_format'] = 'm/d/Y';
+    $form['date_filter']['max']['#date_format'] = 'm/d/Y';
+  }
 
   if ($form_id == 'colorizer_admin_settings') {
     // Add clear cache for anonymous after any change.
@@ -251,7 +260,7 @@ function dkan_sitewide_preprocess_page(&$variables) {
   if (arg(0) == 'admin' && arg(1) == 'appearance' && $admin_theme !== '0' && $default_theme !== $admin_theme) {
     drupal_set_message(t('For Colorizer to work you must set the Administration theme to match your <em>Default theme</em> at the bottom of the !link  page.', array('!link' => l(t('appearance list'), 'admin/appearance'))), 'warning');
   }
-  // Don't set a special page title if it's the front page
+  // Don't set a special page title if it's the front page.
   if (isset($variables['is_front']) && $variables['is_front'] == TRUE) {
     drupal_set_title('');
   }
