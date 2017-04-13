@@ -273,5 +273,19 @@ function dkan_update_7014() {
 
   db_update('field_revision_field_language')
     ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', array(':underscore' => '_', ':dash' => '-'))
+
+}
+
+/*
+ * Add data dictionary textarea id to bueditor excludes list.
+ */
+function dkan_update_7014() {
+  db_update('bueditor_editors')
+    ->fields(array(
+      'excludes' => 'edit-log
+edit-menu-description
+*data-dictionary*',
+    ))
+    ->condition('eid', '5')
     ->execute();
 }
