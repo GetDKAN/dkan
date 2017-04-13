@@ -19,7 +19,7 @@
   ],
   "dependencies": {
     "bootstrap-sass": "~3.3.5",
-    "font-awesome": "fontawesome#~4.4.0",
+    "font-awesome": "fontawesome#~4.7.0",
     "compass-mixins": "~1.0.2"
   }
 }
