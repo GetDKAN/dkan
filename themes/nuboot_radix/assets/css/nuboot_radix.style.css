@@ -10226,6 +10226,12 @@ h2.pane-title {
   height: 20px;
   font-size: .8em; }
 
+.data-explorer-help {
+  background: #eee;
+  margin: 1em 0;
+  border-radius: 4px;
+  padding: 8px 15px; }
+
 .recline-data-explorer .form-control {
   border-color: #ccc; }
 
