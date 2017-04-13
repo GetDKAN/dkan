@@ -273,6 +273,7 @@ function dkan_update_7014() {
 
   db_update('field_revision_field_language')
     ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', array(':underscore' => '_', ':dash' => '-'))
+    ->execute();
 
 }
 
