@@ -280,7 +280,7 @@ function dkan_update_7014() {
 /*
  * Add data dictionary textarea id to bueditor excludes list.
  */
-function dkan_update_7014() {
+function dkan_update_7015() {
   db_update('bueditor_editors')
     ->fields(array(
       'excludes' => 'edit-log
