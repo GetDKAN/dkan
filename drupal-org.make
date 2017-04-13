@@ -13,6 +13,10 @@ projects:
     # Allow ordering of roles to handle users w/multiple roles
     patch:
       2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
+  admin_views:
+    version: '1.6'
+    patch:
+      1780004: 'https://www.drupal.org/files/issues/admin_views-duplicate_system_path-1780004-54.patch'
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
