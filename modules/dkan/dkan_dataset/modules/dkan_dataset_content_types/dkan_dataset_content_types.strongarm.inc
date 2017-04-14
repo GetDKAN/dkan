@@ -15,7 +15,7 @@ function dkan_dataset_content_types_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'chosen_jquery_selector';
-  $strongarm->value = '.page-node select.form-select:not([class*=“delta-order”]), .page-node select.form-select:not(name*=“workbench_moderation”])';
+  $strongarm->value = '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"])';
   $export['chosen_jquery_selector'] = $strongarm;
 
   $strongarm = new stdClass();
