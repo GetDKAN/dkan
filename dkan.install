@@ -276,3 +276,11 @@ edit-menu-description
     ->condition('eid', '5')
     ->execute();
 }
+
+/**
+ * Update chosen_jquery_selector to avoid misuse.
+ */
+function dkan_update_7016() {
+  variable_set('chosen_jquery_selector',
+    '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"])');
+}
