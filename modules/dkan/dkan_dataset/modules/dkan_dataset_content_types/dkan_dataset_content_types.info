@@ -108,7 +108,6 @@ features[variable][] = chosen_jquery_selector
 features[variable][] = chosen_minimum
 features[variable][] = chosen_minimum_multiple
 features[variable][] = chosen_minimum_single
-features[variable][] = chosen_minimum_width
 features[variable][] = date_format_iso_8601_date
 features[variable][] = field_bundle_settings_node__dataset
 features[variable][] = field_bundle_settings_node__resource

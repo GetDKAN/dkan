@@ -15,7 +15,7 @@ function dkan_dataset_content_types_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'chosen_jquery_selector';
-  $strongarm->value = '.node-form  select, .field-name-field-format select, .field-name-field-dataset-ref select';
+  $strongarm->value = '.page-node select.form-select:not([class*=“delta-order”]), .page-node select.form-select:not(name*=“workbench_moderation”])';
   $export['chosen_jquery_selector'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -38,13 +38,6 @@ function dkan_dataset_content_types_strongarm() {
   $strongarm->name = 'chosen_minimum_single';
   $strongarm->value = '0';
   $export['chosen_minimum_single'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'chosen_minimum_width';
-  $strongarm->value = '200';
-  $export['chosen_minimum_width'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
