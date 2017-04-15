@@ -277,7 +277,7 @@ function dkan_update_7014() {
 
 }
 
-/*
+/**
  * Add data dictionary textarea id to bueditor excludes list.
  */
 function dkan_update_7015() {
