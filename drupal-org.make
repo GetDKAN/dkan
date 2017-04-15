@@ -246,7 +246,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/open_data_schema_map.git
-      tag: 7.x-1.13.3-RC1
+      branch: 7.x-1.x
   panelizer:
     version: '3.4'
   panels:
