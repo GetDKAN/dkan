@@ -1,0 +1,62 @@
+<?php
+/**
+ * @file
+ * Code for the HHS Search feature.
+ */
+
+include_once 'dkan_acquia_search_solr.features.inc';
+
+
+/**
+ * Implements hook_default_search_api_index_alter().
+ */
+function dkan_acquia_search_solr_default_search_api_index_alter(array &$defaults) {
+
+  // List of the possible search api indexes.
+  $index_list = array(
+    "stories_index",
+    "datasets",
+    "groups_di",
+  );
+
+  // Check if a custom server has been set in $settings.php or elsewhere.
+  if (!$server_override = variable_get('dkan_acquia_search_solr_override', false)) {
+    // No override is set so set to acquia by default.
+    $server_override = "acquia_solr_server";
+  }
+
+  foreach($index_list as $index) {
+    if (isset($defaults[$index])) {
+      $defaults[$index]->server = $server_override;
+    }
+  }
+}
+
+function dkan_acquia_search_solr_default_search_api_server_alter(array &$defaults) {
+
+
+  // List of the possible search api indexes.
+  $server_list = array(
+    "groups_server",
+    "datasets",
+    "acquia_solr_server",
+    "local_solr_server",
+  );
+
+  // Disable ALL servers by default.
+  foreach($server_list as $server) {
+    if (isset($defaults[$server])) {
+      $defaults[$server]->enabled = false;
+    }
+  }
+
+  // Check if a custom server has been set in $settings.php or elsewhere.
+  if (!$server_override = variable_get('dkan_acquia_search_solr_override', false)) {
+    // No override is set so enable the acquia server.
+    $defaults["acquia_solr_server"]->enabled = true;
+  }
+  else {
+    $defaults[$server_override]->enabled = true;
+  }
+
+}
