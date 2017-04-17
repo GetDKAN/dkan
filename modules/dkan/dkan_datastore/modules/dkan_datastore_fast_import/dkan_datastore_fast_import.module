@@ -191,7 +191,6 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config) {
   $sql = $sql . " LINES TERMINATED BY '$lines_terminated_by' $has_headers ($fields)
     SET timestamp=UNIX_TIMESTAMP(), feeds_entity_id=$feeds_entity_id $set_null_values;";
 
-
   try {
     $result = db_query($sql, $params);
     if ($result) {

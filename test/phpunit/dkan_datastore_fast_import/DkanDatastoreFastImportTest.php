@@ -1,20 +1,30 @@
 <?php
+
 /**
  * @file
  * Base phpunit tests for DkanDatastoreFastImport class.
  */
+
+/**
+ * DkanDatastoreFastImport class.
+ */
 class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
+  /**
+   * Variable for dkan_datastore_fast_import status.
+   *
+   * @var dkanFastImportTestBeforeClassStatus
+   */
   public static $dkanFastImportTestBeforeClassStatus = TRUE;
 
   /**
-   *
+   * Set dkan_datastore_fast_import status.
    */
   public static function setDkanFastImportTestBeforeClassStatus($status) {
     self::$dkanFastImportTestBeforeClassStatus = $status;
   }
 
   /**
-   *
+   * Get dkan_datastore_fast_import status.
    */
   public static function getDkanFastImportTestBeforeClassStatus() {
     return self::$dkanFastImportTestBeforeClassStatus;
@@ -34,7 +44,10 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
     }
   }
 
-  public static function getNodeFromUUID($uuid) {
+  /**
+   * Get the node id from a known uuid.
+   */
+  public static function getNodeFromUuid($uuid) {
     $ids = entity_get_id_by_uuid('node', array($uuid));
     foreach ($ids as $uid => $id) {
       return $id;
@@ -49,12 +62,12 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
       'polling_places' => array(
         'filename' => 'polling_places.csv',
         'title' => 'Polling Places',
-        'uuid'=>'3a05eb9c-3733-11e6-ac61-9e71128cae79'
+        'uuid' => '3a05eb9c-3733-11e6-ac61-9e71128cae79'
       ),
       'null_check' => array(
         'filename' => 'null_check.csv',
         'title' => 'Empy Values Checker',
-        'uuid'=>'3a05eb9c-3733-11e6-ac61-9e71128cae80'
+        'uuid' => '3a05eb9c-3733-11e6-ac61-9e71128cae80'
       ),
     );
     return $resources;
@@ -63,10 +76,11 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
   /**
    * Given a resource key retrieves a uuid.
    */
-  private static function getUUID($key, $resources) {
-    if(array_key_exists($key, $resources)) {
+  private static function getUuid($key, $resources) {
+    if (array_key_exists($key, $resources)) {
       return $resources[$key]['uuid'];
-    } else {
+    }
+    else {
       throw new \Exception('Resource is not defined');
     }
 
@@ -85,9 +99,10 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
     $node->uid = 1;
     $node->uuid = $resource['uuid'];
     $node->language = 'und';
-    $path = join(DIRECTORY_SEPARATOR, array(__DIR__, 'files', $filename));
+    $path = implode(DIRECTORY_SEPARATOR, array(__DIR__, 'files', $filename));
     $file = file_save_data(file_get_contents($path), 'public://' . $filename);
-    $node->field_upload[LANGUAGE_NONE][0] = (array)$file;
+    $node->field_upload[LANGUAGE_NONE][0] = (array) $file;
+
     node_save($node);
   }
 
@@ -106,8 +121,11 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
     }
   }
 
-  public function test_fast_import_with_quote_delimiters() {
-    $nid = self::getNodeFromUUID(self::getUUID('polling_places', self::getResources()));
+  /**
+   * Test dkan_datastore_fast_import functionality.
+   */
+  public function testFastImportWithQuoteDelimiters() {
+    $nid = self::getNodeFromUuid(self::getUuid('polling_places', self::getResources()));
     $importerId = 'dkan_file';
     $node = node_load($nid);
     $node = entity_metadata_wrapper('node', $node);
@@ -131,8 +149,11 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals($result['total_imported_items'], 117);
   }
 
-  public function test_fast_import_load_empty_cells_as_null() {
-    $nid = self::getNodeFromUUID(self::getUUID('null_check', self::getResources()));
+  /**
+   * Test fast_import module with options for reading empty fields as null.
+   */
+  public function testFastImportLoadEmptyCellsAsNull() {
+    $nid = self::getNodeFromUuid(self::getUuid('null_check', self::getResources()));
     $importerId = 'dkan_file';
     $node = node_load($nid);
     $node = entity_metadata_wrapper('node', $node);
@@ -150,7 +171,7 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
     variable_set('quote_delimiters', '"');
     variable_set('lines_terminated_by', '\n');
     variable_set('fields_escaped_by', '');
-    variable_set('dkan_datastore_fast_import_load_empty_cells_as_null', 1); 
+    variable_set('dkan_datastore_fast_import_load_empty_cells_as_null', 1);
 
     $result = dkan_datastore_fast_import_import($source, $node, $table, $config);
     $this->assertEquals($result['total_imported_items'], 2);
@@ -163,4 +184,3 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
   }
 
 }
-
