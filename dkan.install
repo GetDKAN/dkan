@@ -108,51 +108,6 @@ function dkan_update_7002() {
 }
 
 /**
- * Remove modules on upgrade to 7.x-1.13.
- *
- * Conditional Fields, Entity RDF, RDF UI, RDF Extensions.
- */
-function dkan_update_7003() {
-  $modules = array(
-    'conditional_fields',
-    'entity_rdf',
-    'rdfui',
-    'rdfx',
-  );
-  db_delete('system')
-    ->condition('name', $modules, 'IN')
-    ->condition('type', 'module')
-    ->execute();
-
-  db_drop_table('conditional_fields');
-  db_drop_table('rdfx_namespaces');
-  db_drop_table('rdfx_term_details');
-  db_drop_table('rdfx_term_domains');
-  db_drop_table('rdfx_term_inverses');
-  db_drop_table('rdfx_term_ranges');
-  db_drop_table('rdfx_term_superclasses');
-  db_drop_table('rdfx_term_superproperties');
-  db_drop_table('rdfx_term_types');
-  db_drop_table('rdfx_terms');
-  db_drop_table('rdfx_vocabulary_details');
-  db_drop_table('rdfx_vocabulary_graphs');
-}
-
-/**
- * Remove deprecated test and theme directories.
- */
-function dkan_update_7004() {
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/fonts');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/tests');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/tests');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_api/tests');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_fast_import/test');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_workflow/test');
-  drush_delete_dir('profiles/dkan/themes/contrib/nuboot_radix');
-  drush_delete_dir('profiles/dkan/themes/contrib/omega');
-}
-
-/**
  * Disable the dkan_default_content module.
  */
 function dkan_update_7005() {
@@ -211,8 +166,7 @@ function dkan_update_7007(&$sandbox) {
 }
 
 /**
- * Point source menu to the command menu center in
- * dkan workflow roles.
+ * Point source menu to the command menu center in dkan workflow roles.
  */
 function dkan_update_7008() {
   if (module_exists('dkan_workflow')) {
@@ -232,7 +186,7 @@ function dkan_update_7009() {
 }
 
 /**
- * Disable/uninstall deprecated dkan_dataset_api and enable open_data_schema_map.
+ * Disable/uninstall deprecated dkan_dataset_api, enable open_data_schema_map.
  */
 function dkan_update_7010() {
   if (module_exists('dkan_dataset_api')) {
@@ -240,4 +194,71 @@ function dkan_update_7010() {
     drupal_uninstall_modules(array('dkan_dataset_api'));
     module_enable(array('open_data_schema_map'));
   }
+}
+
+/**
+ * Update copyright information.
+ */
+function dkan_update_7011() {
+  $settings = variable_get('theme_nuboot_radix_settings', array());
+  if ($settings['copyright']['value'] == 'Powered by <a href="http://nucivic.com/dkan">DKAN</a>, a project of <a href="http://nucivic.com">NuCivic</a>') {
+    $settings['copyright']['value'] = t('Powered by <a href="http://getdkan.com/">DKAN</a>, a project of <a href="http://granicus.com">Granicus</a>');
+    variable_set('theme_nuboot_radix_settings', $settings);
+  }
+}
+
+/**
+ * Clean up db on upgrade to 7.x-1.13.
+ *
+ * Deprecated modules: Conditional Fields, Entity RDF, RDF UI, RDF Extensions.
+ */
+function dkan_update_7012() {
+  $modules = array(
+    'conditional_fields',
+    'entity_rdf',
+    'rdfui',
+    'rdfx',
+  );
+  db_delete('system')
+    ->condition('name', $modules, 'IN')
+    ->condition('type', 'module')
+    ->execute();
+
+  db_drop_table('conditional_fields');
+  db_drop_table('rdfx_namespaces');
+  db_drop_table('rdfx_term_details');
+  db_drop_table('rdfx_term_domains');
+  db_drop_table('rdfx_term_inverses');
+  db_drop_table('rdfx_term_ranges');
+  db_drop_table('rdfx_term_superclasses');
+  db_drop_table('rdfx_term_superproperties');
+  db_drop_table('rdfx_term_types');
+  db_drop_table('rdfx_terms');
+  db_drop_table('rdfx_vocabulary_details');
+  db_drop_table('rdfx_vocabulary_graphs');
+}
+
+/**
+ * Remove deprecated test and theme directories.
+ */
+function dkan_update_7013() {
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/fonts');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/tests');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/tests');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_api/tests');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_fast_import/test');
+  drush_delete_dir('profiles/dkan/modules/dkan/dkan_workflow/test');
+  drush_delete_dir('profiles/dkan/themes/contrib/nuboot_radix');
+  drush_delete_dir('profiles/dkan/themes/contrib/omega');
+}
+
+/**
+* Drop the 'field_modified_source_date' field.
+*/
+function dkan_dataset_update_7004() {
+  // Mark the field for deletion.
+  field_delete_field('field_modified_source_date');
+  // Run the batch process to actually delete the field.
+  $batch_size = 1;
+  field_purge_batch($batch_size);
 }

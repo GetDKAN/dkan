@@ -266,6 +266,7 @@ function dkan_add_default_menu_links(&$context) {
  *   Batch context.
  */
 function dkan_build_menu_links(&$context) {
+  module_load_include('inc', 'features', 'features.export');
   $context['message'] = t('Building menu links and assigning custom admin menus to roles');
   $menu_links = features_get_default('menu_links', 'dkan_sitewide_menu');
   menu_links_features_rebuild_ordered($menu_links, TRUE);
@@ -323,6 +324,8 @@ function dkan_misc_variables_set(&$context) {
     'og_extras_groups' => TRUE,
     'og_extras_members' => TRUE,
     'dataset' => TRUE,
+    'admin_views_file' => TRUE,
+    'admin_views_node' => TRUE,
   );
   variable_set('views_defaults', $views_disable);
 }
@@ -504,8 +507,8 @@ function dkan_bueditor_markdown_install() {
     ->fetchField();
 
   $data = array(
-    'html' => ['default' => $eid, 'alternative' => 0],
-    'plain_text' => ['plain_text' => 0, 'alternative' => 0],
+    'html' => array('default' => $eid, 'alternative' => 0),
+    'plain_text' => array('plain_text' => 0, 'alternative' => 0),
   );
 
   db_insert('bueditor_plus_profiles')
