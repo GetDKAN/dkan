@@ -504,7 +504,7 @@ function dkan_dataset_dataset_node_form_validate($form, &$form_state) {
     $data_dictionary = $form_state['values']['field_data_dictionary'][$field_data_dictionary_langcode][0]['value'];
 
     //Check three cases (NULL, url, redacted text).
-    if (valid_url($data_dictionary) || valid_url($data_dictionary, TRUE)) {
+    if (valid_url($data_dictionary, TRUE)) {
       return;
     }
     if (!$data_dictionary) {
