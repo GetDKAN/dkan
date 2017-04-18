@@ -572,6 +572,12 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
       form_set_error('field_upload', $upload_error);
     }
   }
+  if (!empty($form_state['values']['field_link_api'][$field_link_api_langcode][0]['url']) &&
+    !valid_url($form_state['values']['field_link_api'][$field_link_api_langcode][0]['url'], TRUE)) {
+    // Require full url if using the API or Website URL option.
+    $api_url_error = t('Please enter a full url (include http:// or https://)');
+    form_set_error('field_link_api', $api_url_error);
+  }
   // Autodetect file type if a new one is not provided.
   if (!$type) {
     if ($upload_fid || $link_fid || $api) {
@@ -628,7 +634,6 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
           }
         }
       }
-
     }
   }
   $vocabs = taxonomy_vocabulary_get_names();
@@ -645,11 +650,6 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
       $form_state['values']['field_format'][$field_format_langcode][0]['tid'] = 'autocreate';
       $form_state['values']['field_format'][$field_format_langcode][0]['name'] = $type;
     }
-  }
-  if (isset($api) && !valid_url($api, TRUE)) {
-    // Require full url if using the API or Website URL option.
-    $api_url_error = t('Please enter a full url (include http:// or https://)');
-    form_set_error('field_link_api', $api_url_error);
   }
 }
 
