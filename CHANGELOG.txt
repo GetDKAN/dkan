@@ -1,6 +1,6 @@
 7.x-1.13.4
 ----------
- - #1861 Add validation check on the API or Website URL field to require a full url.
+ - #1862 Add validation check on the API or Website URL field to require a full url.
  - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar. 
  - #1813 Update the groups page view to sort alphabetically rather than by post date.
  - NuCivic/recline#89 Only load previews for resources using files; API/website links should always display iframe.
