@@ -125,7 +125,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    */
   public function testTemporal($dataset) {
     $value = new DateTime("2011-01-01 00:00:00");
-    $value2 = new DateTime("2015-01-01 00:00:00");
+    $value2 = new DateTime("2015-12-31 00:00:00");
     $this->assertEquals($value->getTimestamp(), $dataset->field_temporal_coverage->value->value());
     $this->assertEquals($value2->getTimestamp(), $dataset->field_temporal_coverage->value2->value());
   }
@@ -142,6 +142,17 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
     else {
       $this->assertEquals('true', array_pop($dataset->field_odfe_data_quality->value()));
     }
+  }
+
+  /**
+   * Test accrualPeriodicity field.
+   *
+   * @depends testDatasetCount
+   */
+  public function testAccrualPeriodicity($dataset) {
+    $optionsList = $dataset->field_frequency->optionsList();
+    $frequency_key = $dataset->field_frequency->value();
+    $this->assertEquals('Irregularly', $optionsList[$frequency_key]);
   }
 
   /**

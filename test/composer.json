@@ -5,12 +5,15 @@
         "devinci/devinci-behat-extension": "dev-master",
         "myplanetdigital/function_mock": "dev-master",
         "drupal/drupal-driver": "^1.2",
-        "drupal/drupal-extension": "~3.0"
+        "drupal/drupal-extension": "~3.0",
+        "squizlabs/php_codesniffer": "*",
+        "drupal/coder": "~8.2"
     },
     "autoload": {
         "psr-0": {
             "Drupal\\DKANExtension\\": "dkanextension/src/"
-        }
+        },
+        "drupal/coder": "~8.2"
     },
     "config": {
         "bin-dir": "bin/"

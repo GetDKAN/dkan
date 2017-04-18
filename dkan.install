@@ -255,10 +255,41 @@ function dkan_update_7013() {
 /**
 * Drop the 'field_modified_source_date' field.
 */
-function dkan_dataset_update_7004() {
+function dkan_update_7014() {
   // Mark the field for deletion.
   field_delete_field('field_modified_source_date');
   // Run the batch process to actually delete the field.
   $batch_size = 1;
   field_purge_batch($batch_size);
+}
+
+/**
+ * Update the default jquery library to 1.10 (again).
+ */
+function dkan_update_7015() {
+  if (version_compare(variable_get('jquery_update_jquery_version'), '1.10', '<')) {
+    variable_set('jquery_update_jquery_version', '1.10');
+  }
+}
+
+/**
+ * Add data dictionary textarea id to bueditor excludes list.
+ */
+function dkan_update_7014() {
+  db_update('bueditor_editors')
+    ->fields(array(
+      'excludes' => 'edit-log
+edit-menu-description
+*data-dictionary*',
+    ))
+    ->condition('eid', '5')
+    ->execute();
+}
+
+/**
+ * Update chosen_jquery_selector to avoid misuse.
+ */
+function dkan_update_7016() {
+  variable_set('chosen_jquery_selector',
+    '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"])');
 }
