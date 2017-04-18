@@ -275,7 +275,7 @@ function dkan_update_7015() {
 /**
  * Add data dictionary textarea id to bueditor excludes list.
  */
-function dkan_update_7014() {
+function dkan_update_7016() {
   db_update('bueditor_editors')
     ->fields(array(
       'excludes' => 'edit-log
@@ -289,7 +289,7 @@ edit-menu-description
 /**
  * Update chosen_jquery_selector to avoid misuse.
  */
-function dkan_update_7016() {
+function dkan_update_7017() {
   variable_set('chosen_jquery_selector',
     '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"])');
 }
