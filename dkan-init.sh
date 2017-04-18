@@ -106,17 +106,18 @@ install_dependencies() {
     echo "> Composer already installed"
   fi
 
-  COMPOSER_PATH=".composer/vendor/bin"
+  COMPOSER_PATH="$HOME/.composer"
 
-  if [[ "$PATH" != *"$COMPOSER_PATH"* ]]; then
+  if [[ "$PATH" != *"${COMPOSER_PATH}/vendor/bin"* ]]; then
     echo "> Composer PATH is not set. Adding temporarily.. (you should add to your .bashrc)"
     echo "PATH (prior) = $PATH"
-    export PATH="$PATH:~/$COMPOSER_PATH"
+    export PATH="$PATH:${COMPOSER_PATH}/vendor/bin"
   fi
 
-  DRUSH_VERSION="8.0.2"
+  DRUSH_VERSION="8.1.0"
   if [ ! "$(which drush)" ]; then
     echo "> Installing Drush";
+    $AUTO_SUDO rm -rf "$COMPOSER_PATH"
     composer global require --prefer-source --no-interaction drush/drush:$DRUSH_VERSION
     if [ ! "$(which drush)" ]; then
       error "Installation of drush failed."
@@ -125,7 +126,7 @@ install_dependencies() {
     old_version=$(drush --version)
     old_drush=$(which drush)
     echo "Drush version is not up to date: $drush_version should be $DRUSH_VERSION. Removing old drush and updating."
-    $AUTO_SUDO mv "$old_drush" "$old_drush-old"
+    $AUTO_SUDO rm -rf "$COMPOSER_PATH"
     composer global require --prefer-source --no-interaction drush/drush:"$DRUSH_VERSION"
     if [[ "$(drush --version)" != *"$DRUSH_VERSION"* ]]; then
       echo "Drush Path: $(which drush)"
@@ -273,4 +274,3 @@ else
 fi
 
 shopt -u dotglob
-
