@@ -1,3 +1,4 @@
+# Dkan setup.
 steps:
   - name: Setup QA site
     # Currently this "Script" is not documented in probo's docs, but it fixes the issue of
