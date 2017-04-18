@@ -1,6 +1,7 @@
 7.x-1.13.3
 ----------
  - #1864 Update media to 2.0 and remove patch 2534724. 
+ - #1859 Fixed update hooks to correctly set jquery version and remove old modified source date field
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
  - #1821 Remove redundant CSS load in dkan_dataset.
