@@ -1,10 +1,13 @@
-7.x-1.14
---------
+7.x-1.14.x
+----------
+ - #1853 Update chart documentation.
+ - #1839 Add help text and improve UI on the chart form for better clarity.
  - #1827 Remove option to import TABed CSV files into datastore. 
- - #1807 Add admin_views module for enhanced content and file filtering.
+ - #1807 Add admin_views module for enhanced content and file filtering. 
 
 7.x-1.13.x
 ----------
+ - #1842 Add help text to explain the pager on data previews.
  - #1825 Fix the 'dataQuality' import druing POD harvest.
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
