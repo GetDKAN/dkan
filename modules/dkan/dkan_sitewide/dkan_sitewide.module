@@ -131,6 +131,24 @@ function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
     // Add clear cache for anonymous after any change.
     $form['#submit'][] = 'dkan_sitewide_form_colorize_clear_cache';
   }
+  if ($form_id == 'views_exposed_form') {
+    // Fixes pager bug.
+    if (isset($form['sort_order']) && isset($form['sort_by']['#options']['changed'])) {
+      $sort_by = 'changed';
+      if(isset($_GET['sort_by'])){
+        $sort_by = $_GET['sort_by'];
+      }
+      else {
+        $_GET['sort_by'] = $sort_by;
+      }
+      $form_state['view']->set_exposed_input($_GET);
+      $form_state['input']['sort_by'] = $sort_by;
+  
+      $form['sort_order']['#options']['ASC'] = t('Ascending');
+      $form['sort_order']['#options']['DESC'] = t('Descending');
+    }
+    break;
+  }
 }
 
 /**
