@@ -20,6 +20,10 @@ Improvements in this release
   - Inconsistencies in date fields (Harvest source "modified" vs Drupal's "modified" dates) were addressed by adding new fields to the *dataset* content type.
   - A bug preventing the "temporal coverage" field from being harvested was fixed.
 
+- The restws and media modules were updated to latest versions
+
+- Several other smaller bug fixes and improvements; see the CHANGELOG for more information.
+
 Special Notes
 -------------
 
