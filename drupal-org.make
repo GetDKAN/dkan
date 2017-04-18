@@ -2,13 +2,13 @@
 api: '2'
 core: 7.x
 includes:
-- https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.1/visualization_entity.make
-- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make
-- https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/cb0d2b0e8c733a5f997038bd0b444ab2b6072542/leaflet_widget.make
-- https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.1/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
+  - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
+  - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
 projects:
   admin_menu:
-    version: 3.0-rc5
+    version: '3.0-rc5'
   admin_menu_source:
     version: '1.1'
     patch:
@@ -111,8 +111,8 @@ projects:
   feeds_flatstore_processor:
     download:
       type: git
-      url: https://github.com/NuCivic/feeds_flatstore_processor.git
-      revision: 60ebdc5a688914b00f2f3ee15849a933acb5d751
+      url: 'https://github.com/NuCivic/feeds_flatstore_processor.git'
+      branch: master
   field_group:
     version: '1.5'
     patch:
@@ -182,8 +182,8 @@ projects:
   leaflet_draw_widget:
     download:
       type: git
-      url: https://github.com/NuCivic/leaflet_draw_widget.git
-      revision: cb0d2b0e8c733a5f997038bd0b444ab2b6072542
+      url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
+      branch: 'master'
   libraries:
     version: '2.3'
   link:
@@ -201,9 +201,8 @@ projects:
     patch:
       2045225: http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.0-beta13
+    version: 2.0
     patch:
-      2534724: https://www.drupal.org/files/issues/media-fix_rebuild_bug-2534724-105-d7.patch
       2272567: https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch
   media_youtube:
     version: '3.0'
@@ -275,8 +274,8 @@ projects:
   recline:
     download:
       type: git
-      url: https://github.com/NuCivic/recline.git
-      tag: 7.x-1.13.3-RC1
+      url: 'https://github.com/NuCivic/recline.git'
+      branch: 7.x-1.x
   ref_field:
     download:
       type: git
@@ -300,7 +299,7 @@ projects:
       2406863: https://www.drupal.org/files/issues/rules-remove-cache-rebuild-log-2406863-21.patch
       2851567: https://www.drupal.org/files/issues/rules_init_and_cache-2851567-8.patch
   restws:
-    version: '2.6'
+    version: '2.7'
   roleassign:
     version: '1.1'
   safeword:
@@ -327,8 +326,8 @@ projects:
   taxonomy_fixtures:
     download:
       type: git
-      url: https://github.com/NuCivic/taxonomy_fixtures.git
-      revision: 485d92019d11a61de585707db8f49d0160bd03b2
+      url: 'https://github.com/NuCivic/taxonomy_fixtures.git'
+      branch: 7.x-1.x
   token:
     version: '1.6'
   uuid:
