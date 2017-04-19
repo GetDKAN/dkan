@@ -18,6 +18,7 @@ dependencies[] = list
 dependencies[] = og
 dependencies[] = og_ui
 dependencies[] = options
+dependencies[] = path_breadcrumbs
 dependencies[] = search_api
 dependencies[] = search_api_db
 dependencies[] = search_api_views
@@ -48,6 +49,9 @@ features[features_api][] = api:2
 features[field_base][] = field_image
 features[field_base][] = group_group
 features[field_base][] = og_group_ref
+features[field_group][] = group_tab_about|node|group|default
+features[field_group][] = group_tab_about|node|group|form
+features[field_group][] = group_tabs|node|group|form
 features[field_instance][] = node-dataset-og_group_ref
 features[field_instance][] = node-group-body
 features[field_instance][] = node-group-field_image
@@ -73,3 +77,7 @@ features[views_view][] = front_page_group_grid
 features[views_view][] = front_page_group_list
 features[views_view][] = group_block
 features[views_view][] = groups_page
+
+; Information added by DKAN release script on 4/4/2017
+version = 7.x-1.13.3-RC1
+project = dkan

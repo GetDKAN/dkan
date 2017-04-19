@@ -16,7 +16,7 @@ described inside the Datasets section, all this functionality is provided by the
    :maxdepth: 1
 
    Datasets <dataset/index>
-   Datastore <datastore/index>
+   Datastore <datastore>
    Harvester <harvest>
    Workflow <workflow>
    Topics <topics>
@@ -25,7 +25,7 @@ described inside the Datasets section, all this functionality is provided by the
    search
    theme
    Roles and Permissions <permissions>
-   Storytelling <storytelling/index>
+   Storytelling <storytelling>
    Open Data Schema Map <open-data-schema>
    Visualizations <visualizations/index>
 

@@ -28,6 +28,12 @@ checkout:
     # Remove the extra composer stuff that circleci loads and that is causing conflicts with drush.
     - rm -rf ~/.composer
 
+## Unset secure_file_priv on mysql.
+database:
+  pre:
+    - echo -e 'secure_file_priv = ""' | sudo sh -c "cat >> /etc/mysql/my.cnf"
+    - sudo /usr/sbin/service mysql restart
+
 ## Customize dependencies
 dependencies:
 
@@ -72,6 +78,7 @@ dependencies:
 ## Customize test commands
 test:
   override:
+    - ahoy dkan lint
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         timeout: 1200
         parallel: true

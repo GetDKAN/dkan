@@ -1,10 +1,40 @@
-DKAN 1.13.3 (future release)
-============================
+DKAN 1.13.3
+===========
 
 This is a "patch" release of DKAN, containing bug fixes and minor updates, but adding no new functionality.
 
-:doc:`See full 1.13 release notes here <1.13>`.
-
 Improvements in this release
 ----------------------------
-- Added improved group role assignment for the editor role. Previously editors were not able to edit group content created by other users because they did not have the group administrator role. Now when an editor is added to a group they will automatically be assigned the group administrator role. Note that existing editor users will **NOT** be retroactively given the role, and these users' memberships will need to be manually edited.
+
+- Groups permissions were given better logic. Editors will now become administrators of any group they are added to, giving them permission to edit or moderate any content in that group. Also, Site Manager was given permissions to edit the order of featured groups.
+
+- We now provide parsing options on the `Datastore Fast Import <http://docs.getdkan.com/en/latest/components/datastore.html#using-the-fast-import-option>`_. This means a user can set what delimiters and line terminators are used when importing a CSV file, avoiding some import errors users were experiencing.
+
+- Some errors were fixed that caused installing DKAN with the browser (using /install.php rather than drush). Also,  special characters were removed from default content filenames, fixing an installation bug on Windows systems.
+
+- The Rules module was patched to prevent a "cache rebuild lock" (see https://www.drupal.org/node/2851567)
+
+- Several bugs in the Harvest module were fixed:
+
+  - The Site Manager can now use the main dashboard view to initiate harvest actions in bulk
+  - Inconsistencies in date fields (Harvest source "modified" vs Drupal's "modified" dates) were addressed by adding new fields to the *dataset* content type.
+  - A bug preventing the "temporal coverage" field from being harvested was fixed.
+
+- The restws and media modules were updated to latest versions
+
+- Several other smaller bug fixes and improvements; see the CHANGELOG for more information.
+
+Special Notes
+-------------
+
+Changes to Harvester's date handling
+************************************
+
+This update changes the way the Harvest module reflects the issued and modified dates of harvested datasets. Project Open Data and most other metadata standards provide an "issued" or "created" date for datasets, as well as a "modified" date. The original release of Harvester simply overwrote Drupal's ``created`` and ``modified`` node properties with the source's dates for these fields, but we've run into two problems with this:
+
+1. A node's modified date is easily overwritten by other actions in Drupal
+2. It can be useful to store both the date that a dataset was issued in its source, and the date it was added to the portal harvesting it.
+
+An existing field, ``field_modified_source_date``, was already handeling some of this but we decided to scrap that and start from scratch. Starting with this release, a source's ``issued`` and ``modified`` dates will be stored in the new fields ``field_harvest_source_issued`` and ``field_harvest_source_modified``. When these two fields are present, those will be the dates shown on a dataset's landing page on DKAN and in the site's data.json and DCAT RDF feeds.
+
+All sources should be re-harvested after updating to this patch release to ensure that all date fields and properties are accurate.

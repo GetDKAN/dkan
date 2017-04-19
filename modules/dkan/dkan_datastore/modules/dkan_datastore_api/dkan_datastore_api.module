@@ -77,13 +77,24 @@ function normalize_fields($fields, $resources) {
  * For example: table_name.field_name
  */
 function build_qualified_fields($fields, $alias) {
-  $excludes = array('timestamp', 'feeds_entity_id', 'feeds_flatstore_entry_id');
   return array_reduce($fields, function($memo, $field) use ($alias, $excludes) {
-    if(!in_array($field, $excludes)) {
+    if(!dkan_datastore_api_field_excluded($field)) {
       $memo[] = $alias . '.' . normalize_field_name($field);
     }
     return $memo;
   }, array());
+}
+
+/**
+ * Check if a field should be excluded.
+ *
+ * Some internal fields are not needed in the request
+ * response so it's better to exclude them to don't
+ * confuse users and reveal internal db schemas.
+ */
+function dkan_datastore_api_field_excluded($field) {
+  $excludes = array('timestamp', 'feeds_entity_id', 'feeds_flatstore_entry_id');
+  return in_array($field, $excludes);
 }
 
 /**
@@ -226,9 +237,9 @@ function dkan_datastore_api_services_resources() {
           'name' => 'resources/user_resource',
         ),
         'description' => 'Data API for DKAN datastores',
-        'callback' => '_dkan_datastore_api_datastore_index',
+        'callback' => 'dkan_datastore_api_datastore_index',
         'args' => array(),
-        'access callback' => '_dkan_datastore_api_datastore_access',
+        'access callback' => 'dkan_datastore_api_datastore_access',
         'access arguments' => array('view'),
         'access arguments append' => FALSE,
       ),
@@ -239,9 +250,9 @@ function dkan_datastore_api_services_resources() {
           'name' => 'resources/user_resource',
         ),
         'description' => 'Data API for DKAN datastores',
-        'callback' => '_dkan_datastore_api_datastore_index',
+        'callback' => 'dkan_datastore_api_datastore_index',
         'args' => array(),
-        'access callback' => '_dkan_datastore_api_datastore_access',
+        'access callback' => 'dkan_datastore_api_datastore_access',
         'access arguments' => array('view'),
         'access arguments append' => FALSE,
       ),
@@ -255,7 +266,7 @@ function dkan_datastore_api_services_resources() {
             'name' => 'dkan_datastore_api',
           ),
           'help' => 'Create a store with a file with base64 encoded data',
-          'callback' => '_dkan_datastore_api_datastore_create',
+          'callback' => 'dkan_datastore_api_datastore_create',
           'access arguments' => array('create ' . $datastore_node_type . ' content'),
           'args' => array(
             array(
@@ -274,7 +285,7 @@ function dkan_datastore_api_services_resources() {
             'name' => 'dkan_datastore_api',
           ),
           'help' => 'Update a store with a file with base64 encoded data',
-          'callback' => '_dkan_datastore_api_datastore_update',
+          'callback' => 'dkan_datastore_api_datastore_update',
           'access arguments' => array('edit any ' . $datastore_node_type . ' content'),
           'args' => array(
             array(
@@ -303,7 +314,7 @@ function dkan_datastore_api_services_resources() {
             'module' => 'dkan_datastore_api',
             'name' => 'dkan_datastore_api',
           ),
-          'callback' => '_dkan_datastore_api_datastore_create_raw',
+          'callback' => 'dkan_datastore_api_datastore_create_raw',
           'access arguments' => array('create ' . $datastore_node_type . ' content'),
         ),
         'update' => array(
@@ -313,7 +324,7 @@ function dkan_datastore_api_services_resources() {
             'module' => 'dkan_datastore_api',
             'name' => 'dkan_datastore_api',
           ),
-          'callback' => '_dkan_datastore_api_datastore_update_raw',
+          'callback' => 'dkan_datastore_api_datastore_update_raw',
           'access arguments' => array('edit any ' . $datastore_node_type . ' content'),
           'args' => array(
             array(
@@ -335,7 +346,7 @@ function dkan_datastore_api_services_resources() {
           'module' => 'dkan_datastore_api',
           'name' => 'dkan_datastore_api',
         ),
-        'callback' => '_dkan_datastore_api_datastore_file_delete',
+        'callback' => 'dkan_datastore_api_datastore_file_delete',
         'access arguments' => array('edit any ' . $datastore_node_type . ' content'),
         'args' => array(
           array(
@@ -357,13 +368,18 @@ function dkan_datastore_api_services_resources() {
  *
  * For arguments, see: dkan_datastore_api_services_resources().
  */
-function _dkan_datastore_api_datastore_index() {
+function dkan_datastore_api_datastore_index() {
   if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $params = _dkan_datastore_api_get_params();
-    $result = _dkan_datastore_api_query($params);
+    $params = dkan_datastore_api_get_params();
+    $cache_hash = md5(json_encode($params));
+    if($cache = cache_get($cache_hash)) {
+      return $cache->data;
+    }
+    $result = dkan_datastore_api_query($params);
+    cache_set($cache_hash, $result, 'cache', CACHE_TEMPORARY);
   }
   elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $result = _dkan_datastore_api_multiple_query();
+    $result = dkan_datastore_api_multiple_query();
   }
   return $result;
 }
@@ -371,7 +387,7 @@ function _dkan_datastore_api_datastore_index() {
 /**
  * Performs a multiple query against the datastore.
  */
-function _dkan_datastore_api_get_params($params = array()) {
+function dkan_datastore_api_get_params($params = array()) {
   $params = !empty($params) ? (array) $params : drupal_get_query_parameters();
   $params['resource_ids'] = $params['resource_id'];
   $defaults = array(
@@ -392,7 +408,6 @@ function _dkan_datastore_api_get_params($params = array()) {
   );
   $params = array_merge($defaults, $params);
   $sort = dkan_datastore_api_sort_clean($params['sort']);
-  $fields = normalize_fields($params['fields'], $params['resource_ids']);
   $aggregations = array(
     'sum' => $params['sum'],
     'avg' => $params['avg'],
@@ -405,7 +420,6 @@ function _dkan_datastore_api_get_params($params = array()) {
   return array_merge($params, array(
     'aggregations' => $aggregations,
     'sort' => $sort,
-    'fields' => $fields,
   ));
 }
 
@@ -422,7 +436,7 @@ function normalize_field_name($field) {
 /**
  * Performs a single query against the datastore.
  */
-function _dkan_datastore_api_query($params) {
+function dkan_datastore_api_query($params) {
   extract($params);
   $data_select = NULL;
   $aggregations = array(
@@ -433,52 +447,47 @@ function _dkan_datastore_api_query($params) {
     'count' => $count,
   );
   try {
+    $resource_ids = (array) $resource_ids;
+    list($alias, $resource_id) = each($resource_ids);
+    $alias = is_string($alias) ? $alias : DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS;
+    $table = dkan_datastore_api_tablename($resource_id);
+    $data_select = db_select($table, $alias);
+
+
+    dkan_datastore_api_limit($data_select, $offset, $limit);
+    dkan_datastore_api_group_by($data_select, $group_by);
+    dkan_datastore_api_aggregations($data_select, $aggregations);
+    dkan_datastore_api_sort($data_select, $sort, $alias);
+    dkan_datastore_api_where($data_select, $filters);
+
     // Query for a single resource.
-    if (count($resource_ids) < 2) {
-      $alias = array_keys((array) $resource_ids);
-      $alias = end($alias);
-      $alias = is_string($alias) ? $alias : DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS;
-      $ids = array_values((array) $resource_ids);
-      $resource_id = array_shift($ids);
-      $table = dkan_datastore_api_tablename($resource_id);
-      $data_select = dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, $sort, $alias);
-      dkan_datastore_api_add_index_conditions($data_select, $filters);
-      dkan_datastore_api_add_index_group_by($data_select, $group_by);
-      dkan_datastore_api_add_index_aggregations($data_select, $aggregations);
-    }
-    // Query for a multiple resources.
-    else {
-      $i = 0;
-      foreach ($resource_ids as $alias => $resource_id) {
-        // We can't have multiple resources if we can't join them.
-        if (!$join) {
-          throw new Exception('Mulitple resources require joins.');
-        }
+    if (count($resource_ids) > 1) {
+
+      // We can't have multiple resources if we can't join them.
+      if (!$join) {
+        throw new Exception('Mulitple resources require joins.');
+      }
+
+      while(list($alias, $resource_id) = each($resource_ids)) {
         $table = dkan_datastore_api_tablename($resource_id);
-        // For the first resource we are creating the base query.
-        if ($i == 0) {
-          $sort = isset($sort[$alias]) ? $sort[$alias] : $sort;
-          $filters = isset($filters[$alias]) ? $filters[$alias] : $filters;
-          $data_select = dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, $sort, $alias);
-        }
-        // For the additional resources we are adding joins, fields, filters.
-        else {
-          $sort = isset($sort[$alias]) ? $sort[$alias] : '';
-          $filters = isset($filters[$alias]) ? $filters[$alias] : '';
-          dkan_datastore_api_build_additional_index_query($data_select, $table, $fields, $sort, $alias, $join);
-        }
-        dkan_datastore_api_add_index_conditions($data_select, $filters);
-        dkan_datastore_api_add_index_group_by($data_select, $group_by);
-        dkan_datastore_api_add_index_aggregations($data_select, $aggregations);
-        $i++;
+        dkan_datastore_api_join($data_select, $table, $join);
       }
     }
+
+    // By set up fields a new alias it is being defined
+    // Join method also tries to define an alias so in order to
+    // avoid alias renaming we need to move fields below the
+    // join process otherwise join alias will be renamed using
+    // incremental counters.
+    dkan_datastore_api_select_fields($data_select, $fields, $resource_ids);
+
     if ($query && $query != 'api/3/action/datastore_search') {
-      dkan_datastore_api_add_index_query($data_select, $table, $query);
+      dkan_datastore_api_use_indexes($data_select, $table, $query);
     }
+
     $count = dkan_datastore_api_count($data_select);
-    $results = services_resource_execute_index_query($data_select);
-    return dkan_datastore_api_resource_build_index_list($data_select, $results, $table, $fields, $resource_ids, $count, $limit);
+    $results = $data_select->execute();
+    return dkan_datastore_api_output($data_select, $results, $table, $fields, $resource_ids, $count, $limit);
   }
   catch (Exception $ex) {
     return array('sql' => dkan_datastore_api_debug($data_select), 'error' => array('message' => 'Caught exception: ' . $ex->getMessage()));
@@ -488,13 +497,18 @@ function _dkan_datastore_api_query($params) {
 /**
  * Performs a multiple query against the datastore.
  */
-function _dkan_datastore_api_multiple_query($queries) {
-  $request_body = $queries ? $queries : json_decode(file_get_contents('php://input'), true);
-  $queries = $request_body;
-  foreach ((array) $queries as $name => $query) {
-    $params = _dkan_datastore_api_get_params($query);
-    $result[$name] = _dkan_datastore_api_query($params);
+function dkan_datastore_api_multiple_query($queries = null) {
+  $post_raw_data = file_get_contents('php://input');
+  $queries = $queries ? $queries : json_decode($post_raw_data, true);
+  $cache_hash = md5($post_raw_data);
+  if($cache = cache_get($cache_hash)) {
+    return $cache->data;
   }
+  foreach ((array) $queries as $name => $query) {
+    $params = dkan_datastore_api_get_params($query);
+    $result[$name] = dkan_datastore_api_query($params);
+  }
+  cache_set($cache_hash, $result, 'cache', CACHE_TEMPORARY);
   return $result;
 }
 
@@ -503,14 +517,14 @@ function _dkan_datastore_api_multiple_query($queries) {
  */
 function dkan_datastore_api_count($data_select) {
   $query = clone($data_select);
-  $count = $query->range()->execute()->fetchAll();
-  return count($count);
+  $count = $query->range()->countQuery()->execute()->fetchField();
+  return $count;
 }
 
 /**
  * Adds conditions, ie WHERE clause, to query.
  */
-function dkan_datastore_api_add_index_conditions(&$data_select, $filters) {
+function dkan_datastore_api_where(&$data_select, $filters) {
   if($filters) {
 
     // Fields without table prefix.
@@ -519,7 +533,7 @@ function dkan_datastore_api_add_index_conditions(&$data_select, $filters) {
       foreach ($filters as $field => $value) {
         $field = str_replace(' ', '_', $field);
         $value = is_array($value) ? $value : explode(',', $value);
-        $data_select->condition($field, $value, 'IN');
+        $data_select->condition($field, $value, dkan_datastore_api_clause_condition($value));
       }
     // Fields with table prefix.
     // e.g. {"counties": {"msa": "N"}},
@@ -533,7 +547,7 @@ function dkan_datastore_api_add_index_conditions(&$data_select, $filters) {
             $table = $key;
             $field = str_replace(' ', '_', $field);
             $filterValue = is_array($filterValue) ? $filterValue : explode(',', $filterValue);
-            $data_select->condition($table . '.' . $field, $filterValue, 'IN');
+            $data_select->condition($table . '.' . $field, $filterValue, dkan_datastore_api_clause_condition($value));
           }
 
         // Fields without table prefix again.
@@ -541,11 +555,18 @@ function dkan_datastore_api_add_index_conditions(&$data_select, $filters) {
         } else {
           $key = str_replace(' ', '_', $key);
           $value = is_array($value) ? $value : explode(',', $value);
-          $data_select->condition($key, $value, 'IN');
+          $data_select->condition($key, $value, dkan_datastore_api_clause_condition($value));
         }
       }
     }
   }
+}
+
+/**
+ * Check which SQL clause should use for conditions.
+ */
+function dkan_datastore_api_clause_condition($value) {
+  return $value == 'NULL' ? 'IS' : 'IN';
 }
 
 /**
@@ -558,7 +579,7 @@ function is_assoc($array) {
 /**
  * Adds group by statements to query.
  */
-function dkan_datastore_api_add_index_group_by(&$data_select, $group_by, $alias = DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS) {
+function dkan_datastore_api_group_by(&$data_select, $group_by, $alias = DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS) {
   if (empty($group_by)) {
     return;
   }
@@ -575,14 +596,54 @@ function dkan_datastore_api_add_index_group_by(&$data_select, $group_by, $alias 
 /**
  * Adds aggregations to query.
  */
-function dkan_datastore_api_add_index_aggregations(&$data_select, $aggregations, $alias = NULL) {
+function dkan_datastore_api_aggregations(&$data_select, $aggregations, $alias = NULL) {
+
+  // Walk all the aggregations (sum, avg, etc.).
+  // { "sum": {"table_name": {"field_name": "as_field" }}}
   foreach ($aggregations as $method => $agg) {
-    $alias = is_assoc($agg) ? array_keys($agg)[0] : NULL;
-    $field_name = $alias ? $agg[$alias] : $agg;
-    $field_name = normalize_field_name($field_name);
-    $field_full = $alias ? $alias . '.' . $field_name : $field_name;
-    if (!empty($field_name)) {
-      $data_select->addExpression($method . '('. $field_full .')', $method . '_' . $field_name);
+    if(!empty($agg)) {
+      // If aggregation is an object then its using a table prefix.
+      // {"table_name": {"field_name": "as_field" }}
+      if(is_assoc($agg)) {
+
+        // Walk through all the fields inside that table.
+        // {"field_name1": "as_field1", "field_name2": "as_field2"}
+        foreach ($agg as $table => $fields) {
+          if(is_assoc($fields)) {
+            foreach ($fields as $field => $as) {
+              $field_full = $table . '.' . normalize_field_name($field);
+              $data_select->addExpression($method . '('. $field_full .')', normalize_field_name($as));
+            }
+          } elseif(is_string($fields)) {
+            $field = $fields;
+            $field_full = $table . '.' . normalize_field_name($field);
+            $data_select->addExpression($method . '('. $field_full .')',  $method . '_' . normalize_field_name($field));
+          } elseif(is_array($fields)) {
+            foreach ($fields as $field ) {
+              $field_full = $table . '.' . normalize_field_name($field);
+              $data_select->addExpression($method . '('. $field_full .')', $method . '_' . normalize_field_name($field));
+            }
+          }
+        }
+
+      // If aggregation's value is an array then contains
+      // field names without table prefixes.
+      // { "sum": ["field_name1", "field_name2"]}
+      } elseif(is_array($agg)) {
+        foreach ($agg as $field) {
+          $field = normalize_field_name($field);
+          $data_select->addExpression($method . '('. $field .')', $method . '_' . $field);
+        }
+
+      // If aggregation's value is an string then contains just a single field name.
+      // { "sum": "field_name1" }
+      } elseif(is_string($agg)) {
+
+        $field = normalize_field_name($agg);
+        if (!empty($field)) {
+          $data_select->addExpression($method . '('. $field .')', $method . '_' . $field);
+        }
+      }
     }
   }
 }
@@ -592,7 +653,7 @@ function dkan_datastore_api_add_index_aggregations(&$data_select, $aggregations,
  *
  * @todo Add SQL server support
  */
-function dkan_datastore_api_add_index_query(&$data_select, $table, $query) {
+function dkan_datastore_api_use_indexes(&$data_select, $table, $query) {
   if (db_driver() == 'mysql') {
     // Get fulltext fields.
     $ft_result = db_query("SHOW INDEX IN {$table} WHERE Index_type = 'FULLTEXT'");
@@ -622,22 +683,15 @@ function dkan_datastore_api_add_index_query(&$data_select, $table, $query) {
       throw new Exception('Text search currently only works with MySQL, PostgresSQL or SQL Server datastore.');
     }
   }
-  else {
-    throw new Exception('No text search compatible fields on this datastore.');
-  }
 }
 
 /**
  * Adds additional fields and join.
  */
-function dkan_datastore_api_build_additional_index_query(&$data_select, $table, $fields, $sort, $alias, $join) {
-  $aliases = array_keys($join);
-  $joint = $aliases[0] . '.' . normalize_field_name($join[$aliases[0]]) . ' = ' . $aliases[1] . '.' . normalize_field_name($join[$aliases[1]]);
-  $data_select->addJoin('INNER', $table, $alias, $joint);
-  foreach (prepare_fields($fields) as $table_alias => $table_fields) {
-    $data_select->fields($table_alias, $table_fields);
-  }
-
+function dkan_datastore_api_join(&$data_select, $table, $join) {
+  list($left, $right) = array_keys($join);
+  $joint = $left . '.' . normalize_field_name($join[$left]) . ' = ' . $right . '.' . normalize_field_name($join[$right]);
+  $data_select->innerjoin($table, $right, $joint);
 }
 
 /**
@@ -698,8 +752,13 @@ function dkan_datastore_api_get_feeds_source($nid) {
 /**
  * Builds index query.
  */
-function dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, $sort, $alias = DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS) {
+function dkan_datastore_api_build_query($table, $fields, $sort, $alias = DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS) {
   $data_select = db_select($table, $alias);
+  return $data_select;
+}
+
+
+function dkan_datastore_api_sort(&$data_select, $sort, $alias) {
   if (!is_array($sort)) {
     $sort = explode(' ', $sort);
     $order = $sort[0];
@@ -722,36 +781,55 @@ function dkan_datastore_api_build_index_query($table, $offset, $limit, $fields, 
       $data_select->orderBy($alias . '.' . $field, $order);
     }
   }
-
-  dkan_datastore_api_resource_build_index_query($data_select, $offset, $fields, $limit, $alias, $table);
-  return $data_select;
 }
 
 /**
  * Same as services version but not adding conditions.
  */
-function dkan_datastore_api_resource_build_index_query(&$query, $page, $fields, $page_size, $alias, $table) {
+function dkan_datastore_api_select_fields(&$data_select, $fields, $resource_ids) {
+  $resource_ids = is_assoc($resource_ids)
+    ? $resource_ids
+    : array( DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS => $resource_ids[0]);
+
+  // Select all the fields using an alias performs better than selecting
+  // specific fields. However if the user specify fields we have to fallback the slowest
+  // approach.
+  if($fields == '*') {
+    foreach ($resource_ids as $table_alias => $resource_id) {
+      $data_select->fields($table_alias);
+    }
+  } else {
+    $fields = normalize_fields($fields, $resource_ids);
+    foreach (prepare_fields($fields) as $table_alias => $table_fields) {
+      $data_select->fields($table_alias, $table_fields);
+    }
+  }
+}
+
+/**
+ * Restrict the result to a range.
+ */
+function dkan_datastore_api_limit(&$data_select, $offset, $limit) {
   $default_limit = variable_get('dkan_datastore_default_page_size', 100);
-  if ((!user_access('perform unlimited index queries') && $page_size > $default_limit) || !$page_size) {
-    $page_size = $default_limit;
+  if ((!user_access('perform unlimited index queries') && $limit > $default_limit) || !$limit) {
+    $limit = $default_limit;
   }
-  $query->range($page, $page_size);
-  foreach (prepare_fields($fields) as $table_alias => $table_fields) {
-    $query->fields($table_alias, $table_fields);
-  }
+  $data_select->range($offset, $limit);
 }
 
 /**
  * Access callback.
  */
-function _dkan_datastore_api_datastore_access($op) {
+function dkan_datastore_api_datastore_access($op) {
   return TRUE;
 }
 
 /**
  * Builds index link with results of the query.
  */
-function dkan_datastore_api_resource_build_index_list($data_select, $results, $table, $fields, $resource_ids, $count, $limit) {
+function dkan_datastore_api_output($data_select, $results, $table, $fields, $resource_ids, $count, $limit) {
+  $fields = normalize_fields($fields, $resource_ids);
+
   // Put together array of matching items to return.
   $items = array();
   foreach ($results as $result) {
@@ -762,20 +840,25 @@ function dkan_datastore_api_resource_build_index_list($data_select, $results, $t
   $success = count($items) ? array('success' => TRUE) : array('success' => FALSE);
   $schema_fields = schema_fields($resource_ids);
 
+  // Prepare rows.
   $items = array_map(function($item) use ($schema_fields) {
     $new_item = new stdClass();
     foreach ($item as $name => $data) {
-      if(!empty($schema_fields[$name])) {
-        $new_name = $schema_fields[$name]['label'];
-        $new_item->$new_name = $data;
-      } else {
-        $new_item->$name = $data;
+      if(!dkan_datastore_api_field_excluded($name)) {
+        if(!empty($schema_fields[$name])) {
+          $new_name = $schema_fields[$name]['label'];
+          $new_item->$new_name = $data;
+        } else {
+          $new_item->$name = $data;
+        }
       }
     }
     return $new_item;
   }, $items);
 
   $return = new stdClass();
+
+  // Prepare schema.
   foreach (prepare_fields($fields) as $table_alias => $table_fields) {
     foreach ($table_fields as $table_field) {
       $field = $schema_fields[$table_field];
@@ -785,12 +868,12 @@ function dkan_datastore_api_resource_build_index_list($data_select, $results, $t
     }
   }
 
-
+  // Prepare output.
   $return->resource_id = $resource_ids;
   $return->limit = (int) $limit;
   $return->total = (int) $count;
   $return->records = $items;
-  $return->sql = (string) $data_select;
+  $return->sql = dkan_datastore_api_debug($data_select);
   return $help + $success + array('result' => $return);
 }
 
@@ -804,7 +887,7 @@ function dkan_datastore_api_resource_help() {
 /**
  * For arguments, see: dkan_datastore_api_services_resources().
  */
-function _dkan_datastore_api_datastore_create($file) {
+function dkan_datastore_api_datastore_create($file) {
 
   $file = _services_arg_value($file, 'file');
 
@@ -836,7 +919,7 @@ function _dkan_datastore_api_datastore_create($file) {
 /**
  * For arguments, see: dkan_datastore_api_services_resources().
  */
-function _dkan_datastore_api_datastore_create_raw() {
+function dkan_datastore_api_datastore_create_raw() {
 
   $validators = array(
     'file_validate_extensions' => array(),
@@ -876,7 +959,7 @@ function _dkan_datastore_api_datastore_create_raw() {
 /**
  * For arguments, see: dkan_datastore_api_services_resources().
  */
-function _dkan_datastore_api_datastore_update($id, $file) {
+function dkan_datastore_api_datastore_update($id, $file) {
 
   $file = _services_arg_value($file, 'file');
 
@@ -907,7 +990,7 @@ function _dkan_datastore_api_datastore_update($id, $file) {
 /**
  * For arguments, see: dkan_datastore_api_services_resources().
  */
-function _dkan_datastore_api_datastore_update_raw($id) {
+function dkan_datastore_api_datastore_update_raw($id) {
 
   $validators = array(
     'file_validate_extensions' => array(),
@@ -946,7 +1029,7 @@ function _dkan_datastore_api_datastore_update_raw($id) {
 /**
  * For arguments, see: dkan_datastore_api_services_resources().
  */
-function _dkan_datastore_api_datastore_file_delete($id) {
+function dkan_datastore_api_datastore_file_delete($id) {
 
   $datastore = dkan_datastore_go($id);
   if ($datastore) {
@@ -997,5 +1080,16 @@ function process_file_argument($file) {
  * Returns sql statement for debug purposes.
  */
 function dkan_datastore_api_debug($data_select) {
-  return array('sql' => (string) $data_select);
+  if (method_exists($data_select, 'preExecute')) {
+    $data_select->preExecute();
+  }
+  $sql = (string) $data_select;
+  $quoted = array();
+  $connection = Database::getConnection();
+  foreach ((array) $data_select->arguments() as $key => $val) {
+    $quoted[$key] = $connection->quote($val);
+  }
+  $sql = strtr($sql, $quoted);
+  $sql = str_replace('\n', ' ', $sql);
+  return (string) $sql;
 }
