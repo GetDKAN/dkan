@@ -143,7 +143,9 @@ function dkan_harvest_datajson_get_value(array $obj, $path) {
       $value = $value[$key];
     }
     else {
-      drupal_set_message(t('Error trying to access to key @path. Please make sure @path exists in the dataset', array('path' => $path, 'title' => $obj['title'])), 'error');
+      drupal_set_message(t('Error trying to access to key "@path". Please make sure "@path" exists in the dataset "@title"',
+        array('@path' => $path, '@title' => $obj['title'])),
+      'error');
       return;
     }
   }
