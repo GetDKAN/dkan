@@ -99,9 +99,8 @@ entities created have a proper user as author.
 List Harvest sources available
 *******************************
 
-.. code-block::
+.. code-block:: sh
 
-  sh
   # List all available Harvest Sources
   $ drush --user=1 dkan-harvest-status
   # Alias
@@ -111,9 +110,8 @@ List Harvest sources available
 Run a full harvest (Cache & Migration)
 **************************************
 
-.. code-block::
+.. code-block:: sh
 
-  sh
   # Harvest data and run migration on all the harvest sources available.
   $ drush --user=1 dkan-harvest
   # Alias
@@ -128,9 +126,8 @@ Run a full harvest (Cache & Migration)
 Run a harvest cache
 **************************************
 
-.. code-block::
+.. code-block:: sh
 
-  sh
   # Run a harvest cache operation on all the harvest sources available.
   $ drush --user=1 dkan-harvest-cache
   # Alias
@@ -145,9 +142,8 @@ Run a harvest cache
 Run a harvest migration job
 **************************************
 
-.. code-block::
+.. code-block:: sh
 
-  sh
   # Run a harvest migrate operation on all the harvest sources available.
   $ drush --user=1 dkan-harvest-migrate
   # Alias
