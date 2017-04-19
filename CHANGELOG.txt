@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1870 Fixed bug on open_data_schema_map for process data dictionary field.
  - #1853 Update chart documentation.
  - #1839 Add help text and improve UI on the chart form for better clarity.
  - #1827 Remove option to import TABed CSV files into datastore. 
