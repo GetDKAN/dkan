@@ -64,14 +64,20 @@ To switch from the native database to Solr simply:
 
 * Re-index your site ``admin/config/search/search_api/index/datasets``.
 
+Extending the Search Functionality
+----------------------------------
+
+If you have the ability to add custom or contrib modules to your DKAN codebase, you can extend the search functionality in several ways. These modules may be added to DKAN core in the future but for now are not officially supported.
+
+
 "Did You Mean?" Spellchecking
------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 To add spellcheck, simply install the `Search API Spellcheck <https://www.drupal.org/project/search_api_spellcheck>`_
 
 Searching within Resource files
---------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 PDFs, CSVs and other files attached to Resources can be searched by using the Tika library. This functionality is made possible with the `Search API Attachments module <http://drupal.org/project/search_api_attachments>`_
 
-Search API Handbook
---------------------
-See the `Search API Handbook <https://www.drupal.org/node/1250878](https://www.drupal.org/node/1250878>`_ for more recipes and information.
+.. tip:: See the `Search API Handbook <https://www.drupal.org/node/1250878](https://www.drupal.org/node/1250878>`_ for more recipes and information.
