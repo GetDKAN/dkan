@@ -17,3 +17,15 @@ function dkan_ipe_install() {
     ->execute();
 
 }
+
+/**
+* Implements hook_update_N().
+* We need these modifications to run after panopoly_widget.
+*/
+function dkan_ipe_update_7001() {
+  db_update('system')
+    ->fields(array('weight' => 10))
+    ->condition('name', 'dkan_ipe', '=')
+    ->execute();
+
+}
