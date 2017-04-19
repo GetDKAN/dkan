@@ -683,9 +683,6 @@ function dkan_datastore_api_use_indexes(&$data_select, $table, $query) {
       throw new Exception('Text search currently only works with MySQL, PostgresSQL or SQL Server datastore.');
     }
   }
-  else {
-    throw new Exception('No text search compatible fields on this datastore.');
-  }
 }
 
 /**

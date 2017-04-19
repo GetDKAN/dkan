@@ -91,7 +91,7 @@ function dkan_additional_setup() {
  * @param array &$context
  *   Batch context.
  */
-function dkan_theme_config(&$context) {
+function dkan_theme_config(array &$context) {
   $context['message'] = t('Setting theme options.');
   theme_enable(array('nuboot_radix'));
   theme_enable(array('seven'));
@@ -119,7 +119,7 @@ function dkan_change_block_titles(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_markdown_setup(&$context) {
+function dkan_markdown_setup(array &$context) {
   $context['message'] = t('Installing Markdown');
   module_load_include('install', 'markdowneditor', 'markdowneditor');
   _markdowneditor_insert_latest();
@@ -140,7 +140,7 @@ function dkan_markdown_setup(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_enable_optional_module($module, &$context) {
+function dkan_enable_optional_module($module, array &$context) {
   module_enable(array($module));
   $module_info = system_get_info('module', $module);
   $context['message'] = t('Enabled %module', array('%module' => $module_info['name']));
@@ -156,7 +156,7 @@ function dkan_enable_optional_module($module, &$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_revert_feature($feature, $components, &$context) {
+function dkan_revert_feature($feature, array $components, array &$context) {
   $context['message'] = t('Reverting feature %feature_name', array('%feature_name' => $feature));
   features_revert(array($feature => $components));
 }
@@ -167,7 +167,7 @@ function dkan_revert_feature($feature, $components, &$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_add_default_menu_links(&$context) {
+function dkan_add_default_menu_links(array &$context) {
   $menu_links = array();
   // Exported menu link: main-menu_dataset:search/type/dataset.
   $menu_links['main-menu_dataset:search/type/dataset'] = array(
@@ -265,7 +265,7 @@ function dkan_add_default_menu_links(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_build_menu_links(&$context) {
+function dkan_build_menu_links(array &$context) {
   module_load_include('inc', 'features', 'features.export');
   $context['message'] = t('Building menu links and assigning custom admin menus to roles');
   $menu_links = features_get_default('menu_links', 'dkan_sitewide_menu');
@@ -279,7 +279,7 @@ function dkan_build_menu_links(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_flush_image_styles(&$context) {
+function dkan_flush_image_styles(array &$context) {
   $context['message'] = t('Flushing image styles');
   $image_styles = image_styles();
   foreach ($image_styles as $image_style) {
@@ -293,7 +293,7 @@ function dkan_flush_image_styles(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_colorizer_reset(&$context) {
+function dkan_colorizer_reset(array &$context) {
   $context['message'] = t('Resetting colorizer cache');
   global $theme_key;
   $instance = $theme_key;
@@ -309,7 +309,7 @@ function dkan_colorizer_reset(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_misc_variables_set(&$context) {
+function dkan_misc_variables_set(array &$context) {
   $context['message'] = t('Setting misc DKAN variables');
   variable_set('honeypot_form_user_register_form', 1);
   variable_set('page_manager_node_view_disabled', FALSE);
@@ -334,7 +334,7 @@ function dkan_misc_variables_set(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_set_adminrole(&$context) {
+function dkan_set_adminrole(array &$context) {
   $context['message'] = t('Setting user admin role');
   if (!variable_get('user_admin_role')) {
     if ($role = user_role_load_by_name('administrator')) {
@@ -356,7 +356,7 @@ function dkan_set_adminrole(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_delete_markdown_buttons(&$context) {
+function dkan_delete_markdown_buttons(array &$context) {
   $context['message'] = t('Removing unsupported Markdown buttons');
   $eid = db_query('SELECT eid FROM {bueditor_editors} WHERE name = :name', array(':name' => 'Markdowneditor'))->fetchField();
   db_delete('bueditor_buttons')
@@ -417,7 +417,7 @@ function dkan_delete_markdown_buttons(&$context) {
  * @param array $context
  *   Batch context.
  */
-function dkan_group_link_delete(&$context) {
+function dkan_group_link_delete(array &$context) {
   $context['message'] = t('Removing og_extra groups link');
   db_query('DELETE FROM {menu_links} WHERE link_path = :link_path LIMIT 1', array(':link_path' => 'groups'));
 }
