@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -165,6 +166,8 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config) {
   $set_null_values = '';
   $params = array();
 
+  // If importing empty values as null, create a local var for each column.
+  // See https://stackoverflow.com/questions/2675323/mysql-load-null-values-from-csv-data
   if ($empty_as_null) {
     $vars = dkan_datastore_fast_import_get_fields_as_vars($headers);
     $fields = implode(',', $vars);
