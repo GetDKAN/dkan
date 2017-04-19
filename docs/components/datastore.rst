@@ -166,39 +166,41 @@ Installation
 ^^^^^^^^^^^^^^
 
 - Inside your settings.php add a `pdo` element to your database configuration. For example:
-.. code-block:: php
+  
+  .. code-block:: php
 
-  <?php
-  $databases['default']['default'] = array (
-    'database' => 'drupal',
-    'username' => 'drupal',
-    'password' => '123',
-    'host' => '172.17.0.11',
-    'port' => '',
-    'driver' => 'mysql',
-    'prefix' => '',
-    'pdo' => array(
-       PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
-       PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => 1,
-     )
-  );
+    <?php
+    $databases['default']['default'] = array (
+      'database' => 'drupal',
+      'username' => 'drupal',
+      'password' => '123',
+      'host' => '172.17.0.11',
+      'port' => '',
+      'driver' => 'mysql',
+      'prefix' => '',
+      'pdo' => array(
+         PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
+         PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => 1,
+       )
+    );
 
 - Go to **/admin/modules**, turn on DKAN Datastore Fast Import and press **Save configuration**. Alternatively you can use drush to enable this module: ``drush en dkan_datastore_fast_import``.
+
 - Make sure you **do not** see this message at the top of the page:
-.. code-block:: bash
 
-  Required PDO flags for dkan_datastore_fast_import were not found. This module requires PDO::MYSQL_ATTR_LOCAL_INFILE and PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
+  .. code-block:: bash
 
-- Set up the following command to run periodically using a cronjob or similar:
-``drush queue-run dkan_datastore_queue``
+    Required PDO flags for dkan_datastore_fast_import were not found. This module requires PDO::MYSQL_ATTR_LOCAL_INFILE and PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
+
+- Set up the following command to run periodically using a cronjob or similar: ``drush queue-run dkan_datastore_queue``
 
 
 Configuration
 ^^^^^^^^^^^^^^
 
-To configure how Fast Import behaves go to **admin/dkan/datastore**.
+To configure how Fast Import behaves go to *admin/dkan/datastore*.
 
-There are 3 basic configurations that controls the **Use fast import** checkbox in the **Manage Datastore** page:
+There are 3 basic configurations that control the Fast Import functionality:
 
 :Use regular import as default: **Use Fast Import** checkbox is uncheked by default on the resource's datastore import form so files are imported using the normal dkan datastore import. However you can still enable fast import for any resource by clicking that checkbox.
 
@@ -234,11 +236,13 @@ To import a resource using Fast Import:
     mysql -u root -padmin123
     GRANT FILE ON *.* TO 'drupal';
 
-- When the option **Use Fast Import** is checked, some other options will be checked: you'll be able to select:
-    - **Quote delimiters**: the character that encloses the fields in your CSV file.
-    - **Lines terminated by**: the character that works as line terminator in your CSV file.
-    - **Fields escaped by**: the character used to escape other characters in your CSV file.
-    - Also, you will be able to choose if the empty cells will be read as NULL or zeros by checking the box for `Read empty cells as NULL (if unchecked, empty cells will be read as zeros or empty strings)`.
+When the option "Use Fast Import" is checked, some other options become visible that affect how MySQL will parse your file:
+
+ - **Quote delimiters**: the character that encloses the fields in your CSV file.
+ - **Lines terminated by**: the character that works as line terminator in your CSV file.
+ - **Fields escaped by**: the character used to escape other characters in your CSV file.
+
+Also, you can choose if the empty cells will be read as NULL or zeros by checking the box for *"Read empty cells as NULL"*.
 
 Datastore API
 --------------
