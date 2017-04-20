@@ -1,6 +1,7 @@
 7.x-1.13.4
 ----------
- - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar.
+ - #1817 Load empty cells as null in fast import.
+ - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar. 
  - #1813 Update the groups page view to sort alphabetically rather than by post date.
  - NuCivic/recline#89 Only load previews for resources using files; API/website links should always display iframe.
  - #1841 Fixed mis-named function on dkan_dataset_content_types.api.php
