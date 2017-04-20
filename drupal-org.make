@@ -404,6 +404,7 @@ libraries:
       tag: 1.8.0-civic-4736
     directory_name: bgrins-spectrum
   spyc:
+    type: library
     download:
       type: file
       url: 'https://raw.github.com/mustangostang/spyc/master/Spyc.php'
