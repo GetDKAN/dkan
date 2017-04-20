@@ -12,6 +12,7 @@
  - #1828 Field Frequency Harvest POD integration is missing support for "irregular" value.
  - #1820 Use "accessURL" during resources harvest if "downloadURL" field is not available.
  - #1857 Fixed publishing options not accessible when dkan_workflow is enabled. 
+ - #1871 Better handling of remote resources with BOM.
 
 7.x-1.13.3-RC1
 --------------
