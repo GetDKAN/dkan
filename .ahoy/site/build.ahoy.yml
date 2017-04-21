@@ -138,7 +138,7 @@ commands:
     usage: ahoy build config - Applies site specific changes stored in config.yml
     cmd: |
       eval $(ahoy parse config/config.yml)
-      tempdir=$(mktemp -dt "$0")
+      tempdir=$(mktemp -d "/tmp/$0.XXXXXXXX")
 
       # Configure https settings.
       if [ "$default_https_everywhere" == "TRUE" ];
