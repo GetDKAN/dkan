@@ -1,6 +1,7 @@
 7.x-1.13.4
 ----------
  - #1865 Fix dkan_workflow_permissions: Allow Workflow Contributors and Workflow Moderators to view stale drafts. Workflow Moderators to view stale reviews.
+ - #1817 Load empty cells as null in fast import.
  - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar. 
  - #1813 Update the groups page view to sort alphabetically rather than by post date.
  - NuCivic/recline#89 Only load previews for resources using files; API/website links should always display iframe.
@@ -16,6 +17,11 @@
 7.x-1.13.3-RC1
 --------------
  - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
+7.x-1.13.3 2017-04-18
+---------------------
+ - #1863 Update restws module to v2.7
+ - #1859 Fixed update hooks to correctly set jquery version and remove old modified source date field
+ - #1864 Update media to 2.0 and remove patch 2534724. 
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
  - #1821 Remove redundant CSS load in dkan_dataset.
