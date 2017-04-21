@@ -104,3 +104,4 @@ git commit -m "Issue NuCivic/dkan#<issue_number>: ..."
 Just replace **<issue_number>** with the actual issue number. You can reference pull requests exactly like that if you add the same text **"NuCivic/dkan#&lt;issue_number&gt;"** in a comment. 
 
 This really help us detecting changes and pulling them in in faster.
+dasda
