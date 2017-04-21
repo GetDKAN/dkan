@@ -50,8 +50,8 @@ function dkan_sitewide_user_field_group_info() {
     'label' => 'Datasets',
     'weight' => '1',
     'children' => array(
-      0 => 'user_profile_search_entity_view_1',
-      1 => 'user_profile_search_entity_view_1_form',
+      0 => 'user_profile_search_user_profile_search_block',
+      1 => 'user_profile_search_user_profile_search_block_form',
     ),
     'format_type' => 'htab',
     'format_settings' => array(
