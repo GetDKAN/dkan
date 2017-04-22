@@ -45,7 +45,7 @@ For other environments, please see our Alternative Environment Support.
 -  MySQL: minimum version 5.0.15+ with PDO
 -  before installation, please create one MySQL database and associated
    user.
--  PHP: minimum version 5.3.x
+-  PHP: minimum version 5.5.x
 -  Apache: minimum version 2.x
 -  Git
 
