@@ -50,7 +50,6 @@
       &:active,
       &:hover,
       &:focus {
-        background: $brand-secondary;
         color: #FFFFFF;
         text-decoration:none;
       }
@@ -58,12 +57,9 @@
       &.dropdown-toggle:active {
         background-color: transparent;
       }
-      &.dropdown-toggle:hover {
-        background: $brand-secondary;
-      }
     }
     .dropdown-menu {
-      background: $brand-primary;
+      border: none;
       padding: 0;
       li {
         display: block;
@@ -72,14 +68,13 @@
           color: #ffffff;
         }
       }
+      li.last a:hover {
+        border-radius: 0 0 4px 4px;
+      }
     }
   }
   .navbar-toggle {
     border-color: #ffffff;
-    &:hover,
-    &:focus {
-      background-color: rgba(0, 0, 0, .25);
-    }
     .icon-bar {
       background-color: #ffffff;
     }
@@ -129,7 +124,6 @@
       &:hover,
       &:focus,
       &:active {
-        background: $brand-secondary;
         color: #ffffff;
         clear: both;
       }
@@ -145,7 +139,6 @@
     padding:15px;
     &:hover,
     &:focus {
-      background: $brand-secondary;
       color: #FFFFFF;
       text-decoration:none;
     }
@@ -185,25 +178,13 @@
     margin:1px;
   }
   li a {
-    background: #fff;
-    border:1px solid #fff;
     padding:6px 15px;
     &:hover {
-      border:1px solid $brand-secondary;
-      background:$brand-secondary;
       color:#fff;
     }
     &.active {
-      border:1px solid $brand-primary;
-      background:$brand-primary;
       color:#fff;
     }
-  }
-}
-
-.nav-tabs {
-  li a {
-    color:$brand-primary;
   }
 }
 
@@ -214,21 +195,8 @@
   .nav-pills li a.active,
   .nav-pills li.active a:hover,
   .nav-pills li.active a:focus {
-    border:1px solid $brand-primary;
-    background: $brand-primary;
     color:#ffffff;
   }
-}
-.btn-primary {
-  background:$brand-primary;
-  border-color:$brand-primary;
-}
-.btn-primary:hover, 
-.btn-primary:focus, 
-.btn-primary:active, 
-.btn-primary.active {
-  background:$brand-secondary;
-  border-color:$brand-secondary;
 }
 
 .form-actions #edit-submit {
@@ -245,7 +213,6 @@
 
 a.embed-link {
   @include border-radius(4px);
-  //background:$brand-primary;
   color: #fff;
   display: inline-block;
   padding:5px 15px 5px 35px;
@@ -256,7 +223,6 @@ a.embed-link {
 a.embed-link:hover, 
 a.embed-link:focus, 
 a.embed-link:active {
-  //background:$brand-secondary;
   color:#fff;
   text-decoration:none;
 }

@@ -9539,7 +9539,6 @@ section.col-sm-9 {
       .navbar-default .user-menu li > a:active,
       .navbar-default .user-menu li > a:hover,
       .navbar-default .user-menu li > a:focus {
-        background: #002245;
         color: #FFFFFF;
         text-decoration: none; }
       .navbar-default .navbar-nav .open > a.dropdown-toggle:focus, .navbar-default .navbar-nav .open > a.dropdown-toggle:active,
@@ -9550,14 +9549,9 @@ section.col-sm-9 {
       .navbar-default .user-menu li > a.dropdown-toggle:focus,
       .navbar-default .user-menu li > a.dropdown-toggle:active {
         background-color: transparent; }
-      .navbar-default .navbar-nav .open > a.dropdown-toggle:hover,
-      .navbar-default .navbar-nav li > a.dropdown-toggle:hover,
-      .navbar-default .user-menu .open > a.dropdown-toggle:hover,
-      .navbar-default .user-menu li > a.dropdown-toggle:hover {
-        background: #002245; }
     .navbar-default .navbar-nav .dropdown-menu,
     .navbar-default .user-menu .dropdown-menu {
-      background: #0A77BD;
+      border: none;
       padding: 0; }
       .navbar-default .navbar-nav .dropdown-menu li,
       .navbar-default .user-menu .dropdown-menu li {
@@ -9566,10 +9560,11 @@ section.col-sm-9 {
         .navbar-default .user-menu .dropdown-menu li a {
           display: block;
           color: #ffffff; }
+      .navbar-default .navbar-nav .dropdown-menu li.last a:hover,
+      .navbar-default .user-menu .dropdown-menu li.last a:hover {
+        border-radius: 0 0 4px 4px; }
   .navbar-default .navbar-toggle {
     border-color: #ffffff; }
-    .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-      background-color: rgba(0, 0, 0, 0.25); }
     .navbar-default .navbar-toggle .icon-bar {
       background-color: #ffffff; }
   @media all and (min-width: 768px) {
@@ -9612,7 +9607,6 @@ section.col-sm-9 {
       .navbar-default .navbar-nav .dropdown-menu li > a:hover,
       .navbar-default .navbar-nav .dropdown-menu li > a:focus,
       .navbar-default .navbar-nav .dropdown-menu li > a:active {
-        background: #002245;
         color: #ffffff;
         clear: both; } }
 
@@ -9622,7 +9616,6 @@ section.col-sm-9 {
   line-height: 20px;
   padding: 15px; }
   #block-dkan-sitewide-dkan-sitewide-user-menu .links a:hover, #block-dkan-sitewide-dkan-sitewide-user-menu .links a:focus {
-    background: #002245;
     color: #FFFFFF;
     text-decoration: none; }
 
@@ -9651,20 +9644,11 @@ section.col-sm-9 {
   .tabs--primary li {
     margin: 1px; }
   .tabs--primary li a {
-    background: #fff;
-    border: 1px solid #fff;
     padding: 6px 15px; }
     .tabs--primary li a:hover {
-      border: 1px solid #002245;
-      background: #002245;
       color: #fff; }
     .tabs--primary li a.active {
-      border: 1px solid #0A77BD;
-      background: #0A77BD;
       color: #fff; }
-
-.nav-tabs li a {
-  color: #0A77BD; }
 
 .front .tabs--primary {
   display: none; }
@@ -9672,26 +9656,7 @@ section.col-sm-9 {
 .tabs--primary .nav-pills li a.active,
 .tabs--primary .nav-pills li.active a:hover,
 .tabs--primary .nav-pills li.active a:focus {
-  border: 1px solid #0A77BD;
-  background: #0A77BD;
   color: #ffffff; }
-
-.btn-primary, body.maintenance-page .form-actions .btn:first-child, body.maintenance-page .form-actions .media-widget > a:first-child {
-  background: #0A77BD;
-  border-color: #0A77BD; }
-
-.btn-primary:hover, body.maintenance-page .form-actions .btn:hover:first-child, body.maintenance-page .form-actions .media-widget > a:hover:first-child,
-.btn-primary:focus,
-body.maintenance-page .form-actions .btn:focus:first-child,
-body.maintenance-page .form-actions .media-widget > a:focus:first-child,
-.btn-primary:active,
-body.maintenance-page .form-actions .btn:active:first-child,
-body.maintenance-page .form-actions .media-widget > a:active:first-child,
-.btn-primary.active,
-body.maintenance-page .form-actions .active.btn:first-child,
-body.maintenance-page .form-actions .media-widget > a.active:first-child {
-  background: #002245;
-  border-color: #002245; }
 
 .form-actions #edit-submit {
   background: #5cb85c;
