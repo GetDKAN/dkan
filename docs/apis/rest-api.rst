@@ -56,7 +56,7 @@ Authentication Modes
 Session Authentication
 ======================
 
-Session authentication is enabled by default. With session authentication an inital request is made to the user login to requet a session cookie. That session cookie is then stored locally and sent with a request in the X-CSRF-Token header to authenticate the request.
+Session authentication is enabled by default. With session authentication an inital request is made to the user login to request a session cookie. That session cookie is then stored locally and sent with a request in the X-CSRF-Token header to authenticate the request.
 
 Token Authentication
 ====================
