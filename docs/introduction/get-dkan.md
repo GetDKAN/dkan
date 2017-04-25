@@ -8,7 +8,7 @@ DKAN is based on the open source </a><a href="http://drupal.org">Drupal</a> cont
 
 ## Hosting Partners
 
-DKAN is open source and flexible: you can download it for free and run it on your own server (see [installation instructions](installation.md)) or choose from one of our hosting partners below.
+DKAN is open source and flexible: you can download it for free and run it on your own server (see [installation instructions](installation.rst)) or choose from one of our hosting partners below.
 
 ### Acquia
 
