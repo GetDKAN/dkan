@@ -521,7 +521,7 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     $expected_temporal = array(
       "Ambulance Fee Schedule Public Use Files" => array(
         'value' => "2005-01-01 00:00:00",
-        'value2' => "2016-01-01 00:00:00",
+        'value2' => "2016-12-31 00:00:00",
       ),
       'Acute IPPS - Readmissions Reduction Program' => array(
         'value' => "2013-01-01 00:00:00",
@@ -555,6 +555,48 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals($value->getTimestamp(), $dataset->field_temporal_coverage->value->value());
       $this->assertEquals($value2->getTimestamp(), $dataset->field_temporal_coverage->value2->value());
     }
+  }
+
+  /**
+   * Test harvest source with resource with accessURL only.
+   */
+  public function testResourceAccessUrl() {
+    // Harvest the source.
+    dkan_harvest_cache_sources(array(self::getResourceAccessUrl()));
+    dkan_harvest_migrate_sources(array(self::getResourceAccessUrl()));
+    $migration = dkan_harvest_get_migration(self::getResourceAccessUrl());
+    $migrationMap = $this->getMapTableFromMigration($migration);
+    $dest_ids = array_map(function ($mapRecord) {
+      return $mapRecord->destid1;
+    }, $migrationMap);
+    $this->assertEquals(1, count($dest_ids));
+    $dataset = entity_metadata_wrapper('node', array_pop($dest_ids));
+    $this->assertEquals(1, count($dataset->field_resources));
+    $resource_ids = $dataset->field_resources->value();
+    $resource_emw = entity_metadata_wrapper('node', array_pop($resource_ids));
+    $this->assertEmpty($resource_emw->field_link_remote_file->value());
+    $this->assertEquals("http://demo.getdkan.com/", $resource_emw->field_link_api->url->value());
+  }
+
+  /**
+   * Test harvest source with resouce that does not have the issued field.
+   *
+   * The issued field is not required for the POD dataset. The Harvest should
+   * fallback to the modified field value (which is required).
+   */
+  public function testNoIssued() {
+    // Harvest the source.
+    dkan_harvest_cache_sources(array(self::getResourceNoIssued()));
+    dkan_harvest_migrate_sources(array(self::getResourceNoIssued()));
+    $migration = dkan_harvest_get_migration(self::getResourceNoIssued());
+    $migrationMap = $this->getMapTableFromMigration($migration);
+    $dest_ids = array_map(function ($mapRecord) {
+      return $mapRecord->destid1;
+    }, $migrationMap);
+    $this->assertEquals(1, count($dest_ids));
+    $dataset = entity_metadata_wrapper('node', array_pop($dest_ids));
+    $this->assertEquals($dataset->field_harvest_source_modified->value(),
+      $dataset->field_harvest_source_issued->value());
   }
 
   /**
@@ -712,6 +754,20 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public static function getResourceTemporal() {
     return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_temporal.json');
+  }
+
+  /**
+   * Test Harvest Source.
+   */
+  public static function getResourceNoIssued() {
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_noissued.json');
+  }
+
+  /**
+   * Test Harvest Source.
+   */
+  public static function getResourceAccessUrl() {
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_resource_accessurl.json');
   }
 
   /**
