@@ -553,7 +553,7 @@ This is a two-step process with the API:
 
 .. note::
 
-  The provided value (`A resource create via the DKAN REST API (45)`) is the value expected from the dataset entry form, with "45" being the resource node id.
+  The provided value (`A resource created via the DKAN REST API (45)`) is the value expected from the dataset entry form, with "45" being the resource node id.
 
 Query for url/values of previous revision of file.
 --------------------------------------------------
