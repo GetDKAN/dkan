@@ -187,7 +187,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
-      branch: 'master'
+      branch: 'fix_export_polygon_to_geojson_civic_6072'
   libraries:
     version: '2.3'
   link:
