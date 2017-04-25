@@ -263,25 +263,6 @@ function dkan_update_7014() {
   field_purge_batch($batch_size);
 }
 
-/*
- * Remove old variables from dkan_dataset_api.
- */
-function dkan_dataset_update_7005() {
-  variable_del('dkan_catalog_desc');
-  variable_del('dkan_catalog_contact');
-  variable_del('dkan_catalog_mbox');
-  variable_del('dkan_dataset_api_site_read');
-  variable_del('dkan_dataset_api_data_json');
-  variable_del('dkan_dataset_api_revision_list');
-  variable_del('dkan_dataset_api_package_list');
-  variable_del('dkan_dataset_api_current_package_list_with_resources');
-  variable_del('dkan_dataset_api_package_show');
-  variable_del('dkan_dataset_api_resource_show');
-  variable_del('dkan_dataset_api_group_package_show');
-  variable_del('dkan_dataset_api_package_revision_list');
-  variable_del('dkan_dataset_api_group_list');
-}
-
 /**
  * Update the default jquery library to 1.10 (again).
  */
@@ -311,4 +292,23 @@ edit-menu-description
 function dkan_update_7017() {
   variable_set('chosen_jquery_selector',
     '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"])');
+}
+
+/*
+ * Remove old variables from dkan_dataset_api.
+ */
+function dkan_dataset_update_7018() {
+  variable_del('dkan_catalog_desc');
+  variable_del('dkan_catalog_contact');
+  variable_del('dkan_catalog_mbox');
+  variable_del('dkan_dataset_api_site_read');
+  variable_del('dkan_dataset_api_data_json');
+  variable_del('dkan_dataset_api_revision_list');
+  variable_del('dkan_dataset_api_package_list');
+  variable_del('dkan_dataset_api_current_package_list_with_resources');
+  variable_del('dkan_dataset_api_package_show');
+  variable_del('dkan_dataset_api_resource_show');
+  variable_del('dkan_dataset_api_group_package_show');
+  variable_del('dkan_dataset_api_package_revision_list');
+  variable_del('dkan_dataset_api_group_list');
 }
