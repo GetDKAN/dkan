@@ -205,7 +205,7 @@ Create a Dataset
       'title' => 'Example dataset',
       'status' => 1,
       'body[und][0][value]' => 'The description',
-      'field_resources[und][0][target_id]' => 'Madison Polling Places (5)' // Resource title plus node id
+      'field_resources[und][0][target_id]' => 'Madison Polling Places (5)', // Resource title plus node id
       'field_author[und][0][value]' => 'Bob Lafollette'
   );
   $dataset_data = http_build_query($dataset_data);
