@@ -1,6 +1,7 @@
 7.x-1.13.4
 ----------
  - #1869 Add validation check on the API or Website URL field to require a full url.
+ - #1876 Removed hard coded colors in the menu.scss file.
  - #1825 Adapt the 'dataQuality' input value druing POD harvest.
  - #1817 Load empty cells as null in fast import.
  - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar. 
