@@ -2,6 +2,7 @@ api: '2'
 core: 7.x
 includes:
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.x/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/dkan_dash/0.6.x/dkan_dash.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
@@ -353,6 +354,12 @@ projects:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
       branch: 7.x-1.x
+    type: module
+  dkan_dash:
+    download:
+      type: git
+      url: https://github.com/NuCivic/dkan_dash.git
+      branch: 0.6.x
     type: module
   workbench:
     version: '1.2'
