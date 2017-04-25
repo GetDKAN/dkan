@@ -1,7 +1,7 @@
 DKAN Topics
 ===========
 
-While DKAN includes a free-tagging tags/keywords field for datasets, many data portals organize datasets into more predefined catagories by subject matter. These are usually a small collection of subjects with logos that are incoporated into the site navigation. Neither DKAN's tags or "groups" (which are designed for grouping user permissions and usually represent organizational divisions) are exactly appropriate for this task.
+While DKAN includes a free-tagging tags/keywords field for datasets, many data portals organize datasets into more predefined categories by subject matter. These are usually a small collection of subjects with logos that are incorporated into the site navigation. Neither DKAN's tags or "groups" (which are designed for grouping user permissions and usually represent organizational divisions) are exactly appropriate for this task.
 
 The DKAN Topics module adds a "topics" vocabulary to DKAN, and corresponding functionality throughout the site. It adds a facet to the search/datasets page, and a pane to the default homepage. Topics can be administered through the standard Drupal taxonomy interface.
 
@@ -18,7 +18,7 @@ Permissions
 Adding a new topic term
 ------------------------------------
 
-From the Administation menu, navigate to ``Site Configuration > Taxonomy > Topics > Add term``
+From the Administration menu, navigate to ``Site Configuration > Taxonomy > Topics > Add term``
 
 :Name: Enter the term for your new topic.
 :Description: This field is not currently displayed publicly.
@@ -29,7 +29,7 @@ From the Administation menu, navigate to ``Site Configuration > Taxonomy > Topic
 Editing topic terms
 ------------------------------------
 
-1. From the Administation menu, navigate to ``Site Configuration > Taxonomy > Topics``
+1. From the Administration menu, navigate to ``Site Configuration > Taxonomy > Topics``
 2. You will see a list of current topic terms, click the 'edit' link under Operations that corresponds to the term you would like to edit. 
 3. Make changes and click "Save".
 

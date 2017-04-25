@@ -46,12 +46,15 @@
         "workforce"
       ],
       "license": "http://opendefinition.org/licenses/gfdl/",
+      "issued": "2016-06-22",
       "modified": "2016-07-21",
+      "temporal": "2011/2015",
       "publisher": {
         "@type": "org:Organization",
         "name": "TEST - State Economic Council"
       },
-      "title": "TEST - State Workforce by Generation (2011-2015)"
+      "title": "TEST - State Workforce by Generation (2011-2015)",
+      "dataQuality": true
     }
   ]
 }
