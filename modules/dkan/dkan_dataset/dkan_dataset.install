@@ -52,21 +52,30 @@ function dkan_dataset_update_7001() {
  * if they already exist on the DB.
  */
 function dkan_dataset_update_7002() {
-  // Rename fields.
-  dkan_rename_field('field_odfe_is_part_of', 'field_is_part_of');
-  dkan_rename_field('field_odfe_data_dictionary_type', 'field_data_dictionary_type');
-  dkan_rename_field('field_odfe_landing_page', 'field_landing_page');
-  dkan_rename_field('field_odfe_conforms_to', 'field_conforms_to');
-  dkan_rename_field('field_odfe_rights', 'field_rights');
-  dkan_rename_field('field_odfe_language', 'field_language');
+  // Rename fields if they exist.
+  $fields = array(
+    'field_odfe_is_part_of' => 'field_is_part_of',
+    'field_odfe_data_dictionary_type' => 'field_data_dictionary_type',
+    'field_odfe_landing_page' => 'field_landing_page',
+    'field_odfe_conforms_to' => 'field_conforms_to',
+    'field_odfe_rights' => 'field_rights',
+    'field_odfe_language' => 'field_language',
+  );
 
-  // Change callback function on 'field_language'.
-  $field_language_base = field_info_field('field_language');
-  $allowed_values_function = $field_language_base['settings']['allowed_values_function'];
+  foreach ($fields as $old => $new) {
+    if (field_info_instance('node', $old, 'dataset')) {
+      dkan_rename_field($old, $new);
+    }
+  }
+  
+  // Change callback function on 'field_language', if it exists.
+  if ($field_language_base = field_info_field('field_language')) {
+    $allowed_values_function = $field_language_base['settings']['allowed_values_function'];
 
-  if ($allowed_values_function != 'dkan_dataset_content_types_allowed_language_values') {
-    $field_language_base['settings']['allowed_values_function'] = 'dkan_dataset_content_types_allowed_language_values';
-    field_update_field($field_language_base);
+    if ($allowed_values_function != 'dkan_dataset_content_types_allowed_language_values') {
+      $field_language_base['settings']['allowed_values_function'] = 'dkan_dataset_content_types_allowed_language_values';
+      field_update_field($field_language_base);
+    }
   }
 }
 
