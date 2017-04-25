@@ -67,7 +67,7 @@ function dkan_dataset_update_7002() {
       dkan_rename_field($old, $new);
     }
   }
-  
+
   // Change callback function on 'field_language', if it exists.
   if ($field_language_base = field_info_field('field_language')) {
     $allowed_values_function = $field_language_base['settings']['allowed_values_function'];
