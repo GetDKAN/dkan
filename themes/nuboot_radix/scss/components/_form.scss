@@ -1,8 +1,11 @@
 //
 // Styles for Forms
 // --------------------------------------------------
-.table-select-processed .checkbox input[type="checkbox"] {
-  margin-left: 0px;
+.table-select-processed,
+.permissions-processed {
+  .checkbox input[type="checkbox"] {
+    margin-left: 0px;
+  }
 }
 
 input[type="submit"],
