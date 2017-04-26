@@ -81,7 +81,7 @@ Feature: User
     And I press "Save"
     Then I should see "The changes have been saved"
     When I am on "Users" page
-    Then I should see "blocked" in the "Katie" row
+    Then I should see "No" in the "Katie" row
 
   @javascript
   Scenario: Disable user

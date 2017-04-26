@@ -6,7 +6,7 @@
  */
 
 /**
- * Default content extention of panelized node parent migration class.
+ * Default content extension of panelized node parent migration class.
  */
 class DefaultContentPanelizedNodesImport extends DkanPanelizedNodesImport {
 
@@ -18,7 +18,7 @@ class DefaultContentPanelizedNodesImport extends DkanPanelizedNodesImport {
     if (!isset($arguments['endpoint'])) {
       $arguments['endpoint'] = drupal_get_path('module', 'dkan_default_content') . '/data/';
       $arguments['list_url'] = 'panelized_node_list.json';
-      $arguments['item_url'] = 'panelized_node_show?id=:id.json';
+      $arguments['item_url'] = 'panelized_node_show%3Fid=:id.json';
     }
 
     parent::__construct($arguments);
