@@ -242,20 +242,27 @@ function dkan_update_7012() {
  * Remove deprecated test and theme directories.
  */
 function dkan_update_7013() {
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/fonts');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/tests');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/tests');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_api/tests');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_fast_import/test');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_workflow/test');
-  drush_delete_dir('profiles/dkan/themes/contrib/nuboot_radix');
-  drush_delete_dir('profiles/dkan/themes/contrib/omega');
+  $deprecated = array(
+    'profiles/dkan/modules/dkan/dkan_dataset/fonts',
+    'profiles/dkan/modules/dkan/dkan_dataset/tests',
+    'profiles/dkan/modules/dkan/dkan_datastore/tests',
+    'profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_api/tests',
+    'profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_fast_import/test',
+    'profiles/dkan/modules/dkan/dkan_workflow/test',
+    'profiles/dkan/themes/contrib/nuboot_radix',
+    'profiles/dkan/themes/contrib/omega',
+  );
+  foreach ($deprecated as $dir) {
+    if (is_dir($dir)) {
+      drupal_rmdir($dir);
+    }
+  }
 }
 
 /**
  * Drop the 'field_modified_source_date' field.
  */
-function dkan_dataset_update_7004() {
+function dkan_update_7014() {
   // Mark the field for deletion.
   field_delete_field('field_modified_source_date');
   // Run the batch process to actually delete the field.
@@ -264,9 +271,18 @@ function dkan_dataset_update_7004() {
 }
 
 /**
+ * Update the default jquery library to 1.10 (again).
+ */
+function dkan_update_7015() {
+  if (version_compare(variable_get('jquery_update_jquery_version'), '1.10', '<')) {
+    variable_set('jquery_update_jquery_version', '1.10');
+  }
+}
+
+/**
  * Add data dictionary textarea id to bueditor excludes list.
  */
-function dkan_update_7014() {
+function dkan_update_7016() {
   db_update('bueditor_editors')
     ->fields(array(
       'excludes' => 'edit-log
@@ -280,7 +296,7 @@ edit-menu-description
 /**
  * Update chosen_jquery_selector to avoid misuse.
  */
-function dkan_update_7016() {
+function dkan_update_7017() {
   variable_set('chosen_jquery_selector',
     '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"])');
 }
