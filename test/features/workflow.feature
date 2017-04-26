@@ -284,7 +284,7 @@ Feature:
     Then I should see the text "Not My Dataset"
 
   @ok @globalUser
-  Scenario: DEBUG As a Workflow Moderator, I should be able to see Stale Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
+  Scenario: As a Workflow Moderator, I should be able to see Stale Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
     Given users:
       | name            | roles                                 |
       | some-other-user | Workflow Contributor, content creator |
