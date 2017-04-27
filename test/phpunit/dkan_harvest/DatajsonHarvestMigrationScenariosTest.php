@@ -512,6 +512,20 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test file with bom handling.
+   */
+  public function testBom() {
+    // Harvest a source that have resources without scheme.
+    dkan_harvest_cache_sources(array(self::getResourceBom()));
+    dkan_harvest_migrate_sources(array(self::getResourceBom()));
+
+    $migration = dkan_harvest_get_migration(self::getResourceBom());
+    $migrationMap = $this->getMapTableFromMigration($migration);
+
+    $this->assertEquals(count($migrationMap), 1);
+  }
+
+  /**
    * Test harvest source Temporal field support entries.
    *
    * The test json file contain multiple temporal field with various edge cases
@@ -768,6 +782,13 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public static function getResourceAccessUrl() {
     return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_resource_accessurl.json');
+  }
+
+  /**
+   * Test Harvest Source.
+   */
+  public static function getResourceBom() {
+    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_bom.json');
   }
 
   /**
