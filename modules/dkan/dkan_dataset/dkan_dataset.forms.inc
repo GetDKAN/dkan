@@ -494,7 +494,7 @@ function dkan_dataset_dataset_node_form_validate($form, &$form_state) {
   $public_access_level = $form_state['values']['field_public_access_level'][$field_public_access_level_langcode][0]['value'];
   $field_rights_langcode = dkan_dataset_form_field_language($form, 'field_rights');
   $rights = $form_state['values']['field_rights'][$field_rights_langcode][0]['value'];
-  if ($public_access_level != 'public' && empty($rights)) {
+  if (isset($public_access_level) && $public_access_level != 'public' && empty($rights)) {
     form_set_error('field_rights', 'Rights field is required.');
   }
 }
@@ -558,7 +558,7 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
     }
   }
   // Ensure that only one type of resource is uploaded or linked to.
-  if(count(array_filter(array($link_fid,$api,$upload_fid))) != 1) {
+  if (count(array_filter(array($link_fid, $api, $upload_fid))) != 1) {
     if ($link_fid) {
       $remote_error = t('<strong>Remote file</strong> is populated - only one resource type can be used at a time.');
       form_set_error('field_link_remote_file', $remote_error);

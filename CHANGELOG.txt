@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1882 Removed required status from the Rights field if the public access level is set to 'none'.
  - #1871 Better handling of remote resources with BOM.
  - #1873 Fix dkan_workflow_permissions: Allow Workflow Contributors and Workflow Moderators to view stale drafts and Workflow Moderators to view stale reviews.
  - #1858 Fixed default panelizer setting for page node title.
