@@ -42,7 +42,7 @@ default:
   formatters:
     pretty:
       output_styles:
-        comment:    [default, default , [conceal]]
+        comment: "[default, default , [conceal]]"
   gherkin:
     filters:
       tags: ~@fixme
