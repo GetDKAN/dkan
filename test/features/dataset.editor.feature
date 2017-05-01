@@ -9,6 +9,7 @@ Feature: Dataset Features
 
 
 Background:
+  Given I set the default timezone to "UTC"
   Given pages:
     | name      | url       |
     | Datasets  | /dataset  |
@@ -51,18 +52,6 @@ Background:
     | Resource 03 | Group 01  | Katie  | Yes       | Dataset 02 |             |
 
   @noworkflow
-  Scenario: Replace node changed date with harvest source modified for harvested datasets
-    Given I am logged in as "Gabriel"
-    And I am on "Dataset 05" page
-    When I click "Edit"
-    ## If you use selenium uncomment this
-    # When I click "Publishing options"
-    And I check the box "Published"
-    And I press "Finish"
-    Then I should see "Dataset Dataset 05 has been updated"
-    And I should see "2015-01-02"
-
-  @noworkflow
   Scenario: Edit any dataset associated with the groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Dataset 03" page
@@ -96,3 +85,17 @@ Background:
     When I press "Delete"
     And I press "Delete"
     Then I should see "Dataset Dataset 03 has been deleted"
+
+  @noworkflow @resetTimezone
+  # @resetTimezone resets the timezone back to the original configuration after the scenario.
+  # This test requires that the timezone be set to UTC.
+  Scenario: Replace node changed date with harvest source modified for harvested datasets
+    Given I am logged in as "Gabriel"
+    And I am on "Dataset 05" page
+    When I click "Edit"
+    ## If you use selenium uncomment this
+    # When I click "Publishing options"
+    And I check the box "Published"
+    And I press "Finish"
+    Then I should see "Dataset Dataset 05 has been updated"
+    And I should see "2015-01-02"
