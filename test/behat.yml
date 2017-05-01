@@ -16,6 +16,7 @@ default:
           - Drupal\DKANExtension\Context\WorkflowContext
           - Drupal\DKANExtension\Context\DatasetContext
           - Drupal\DKANExtension\Context\DataDashboardContext
+          - Drupal\DKANExtension\Context\DkanDashContext
           - Drupal\DKANExtension\Context\PODContext
           - Drupal\DKANExtension\Context\FastImportContext
           - Drupal\DKANExtension\Context\SearchAPIContext:
@@ -41,7 +42,7 @@ default:
   formatters:
     pretty:
       output_styles:
-        comment:    [default, default , [conceal]]
+        comment: "[default, default , [conceal]]"
   gherkin:
     filters:
       tags: ~@fixme
