@@ -2,34 +2,33 @@
 
 namespace Drupal\DKANExtension\Context;
 
-use Behat\Behat\Hook\Scope\AfterScenarioScope;
+use Behat\Behat\Hook\Scope\BeforeFeatureScope;
+use Behat\Behat\Hook\Scope\AfterFeatureScope;
 
 /**
  * Defines application features from the specific context.
  */
 class TimezoneContext extends RawDKANContext {
-  public $currentTimezone = '';
+  public static $originalTimezone = '';
 
   /**
-   * Allow tests to change the timezone setting.
+   * Set the timezone to UTC for tests.
    *
-   * @Given I set the default timezone to :option
+   * @BeforeFeature @timezone
    */
-  public function iSetTheDefaultTimeszoneTo($option) {
-    // Save the original timezone to restore after testing.
-    $this->currentTimezone = variable_get('date_default_timezone', $this->currentTimezone);
-    variable_set('date_default_timezone', $option);
+  public static function setupFeatureTimezone(BeforeFeatureScope $scope) {
+    self::$originalTimezone = variable_get('date_default_timezone');
+    variable_set('date_default_timezone', 'UTC');
     drupal_flush_all_caches();
   }
 
   /**
    * Restore the timezone to the pre-testing configuration.
    *
-   * @AfterScenario @resetTimezone
+   * @AfterFeature @timezone
    */
-  public function afterScenarioTimezone(AfterScenarioScope $scope) {
-    variable_set('date_default_timezone', $this->currentTimezone);
-    drupal_flush_all_caches();
+  public static function teardownFeatureTimezone(AfterFeatureScope $scope) {
+    variable_set('date_default_timezone', self::$originalTimezone);
   }
 
 }
