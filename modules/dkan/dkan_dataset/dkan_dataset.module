@@ -1129,22 +1129,6 @@ function dkan_dataset_remotefile_process($element, &$form_state, $form) {
     '#maxlength' => NULL,
   );
 
-  $element['filefield_dkan_remotefile']['select'] = array(
-    '#name' => implode('_', $element['#array_parents']) . '_select',
-    '#type' => 'submit',
-    '#value' => t('Select'),
-    '#validate' => array(),
-    '#submit' => array('filefield_sources_field_submit'),
-    '#limit_validation_errors' => array($element['#parents']),
-    '#ajax' => array(
-      'path' => 'file/ajax/' . implode('/', $element['#array_parents']) . '/' . $form['form_build_id']['#value'],
-      'wrapper' => $element['#id'] . '-ajax-wrapper',
-      'effect' => 'fade',
-      'method' => 'replace',
-    ),
-    '#suffix' => '<div class="description">' . t('This field will ignore the file size limitation') . '</div>',
-  );
-
   return $element;
 }
 
