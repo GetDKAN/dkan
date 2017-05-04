@@ -597,20 +597,20 @@ function dkan_dataset_sync_groups($dataset) {
       // Update 'added' resources. Append the current dataset's groups to their
       // other groups.
       if (isset($resources['added'])) {
-        dkan_dataset_update_resource_groups($resources['added'], $wrapped_dataset_new, $dataset_groups_new);
+        dkan_dataset_update_resource_groups((array)$resources['added'], $wrapped_dataset_new, (array)$dataset_groups_new);
       }
 
       // Update 'removed' resources. Don't append the current dataset's groups
       // to their other groups.
       if (isset($resources['removed'])) {
-        dkan_dataset_update_resource_groups($resources['removed'], $wrapped_dataset_new, NULL);
+        dkan_dataset_update_resource_groups((array)$resources['removed'], $wrapped_dataset_new, NULL);
       }
 
       // If the groups changed we need to also update the resources that were
       // already associated with the dataset. Append the current dataset's
       // groups to their other groups.
       if ($groups_changed && isset($resources['unmodified'])) {
-        dkan_dataset_update_resource_groups($resources['unmodified'], $wrapped_dataset_new, $dataset_groups_new);
+        dkan_dataset_update_resource_groups((array)$resources['unmodified'], $wrapped_dataset_new, (array)$dataset_groups_new);
       }
     }
   }
@@ -757,7 +757,7 @@ function dkan_dataset_get_resource_groups(EntityMetadataWrapper $resource, $upda
  * @param int $use_queue_limit
  *   A limit indicating when a Drupal queue should be used to update resources.
  */
-function dkan_dataset_update_resource_groups($resources, EntityMetadataWrapper $updated_dataset, $updated_dataset_groups, $use_queue_limit = 20) {
+function dkan_dataset_update_resource_groups(array $resources, EntityMetadataWrapper $updated_dataset, array $updated_dataset_groups, $use_queue_limit = 20) {
 
   $use_queue = FALSE;
   $queue = '';
@@ -843,7 +843,7 @@ function dkan_dataset_update_groups($data) {
  * @param array $item
  *   An associative array containing the dataset nid and a log message.
  */
-function dkan_dataset_dataset_changelog_run($item) {
+function dkan_dataset_dataset_changelog_run(array $item) {
   global $user;
   $original_user = $user;
   drupal_save_session(FALSE);
