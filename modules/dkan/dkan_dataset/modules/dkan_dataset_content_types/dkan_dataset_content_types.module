@@ -29,6 +29,13 @@ function dkan_dataset_content_types_form_alter(&$form, &$form_state, $form_id) {
 
     $form['field_data_dictionary'][LANGUAGE_NONE]['#after_build'][] = 'data_dictionary_after_build';
   }
+  // Disable authoring information fields for content creators.
+  if ($form_id == 'dataset_node_form' || $form_id == 'resource_node_form') {
+    global $user;
+    if (in_array('content creator', $user->roles)) {
+      unset($form['author']);
+    }
+  }
 }
 
 /**
