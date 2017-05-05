@@ -1,6 +1,12 @@
 7.x-1.13.4
 ----------
+<<<<<<< HEAD
  - #1897 Added process to dcat output to show key for languages.
+ - #1883 Removed required status from the Rights field if the public access level is set to 'none'.
+ - #1871 Better handling of remote resources with BOM.
+ - #1873 Fix dkan_workflow_permissions: Allow Workflow Contributors and Workflow Moderators to view stale drafts and Workflow Moderators to view stale reviews.
+ - #1858 Fixed default panelizer setting for page node title.
+ - #1874 Fix dkan_update_7013 to not use drush commands.
  - #1876 Removed hard coded colors in the menu.scss file.
  - #1825 Adapt the 'dataQuality' input value druing POD harvest.
  - #1817 Load empty cells as null in fast import.
