@@ -17,3 +17,6 @@ npm-debug.log
 .sublime-workspace
 docs/_build
 *.orig
+composer.lock
+vendor
+*.log
