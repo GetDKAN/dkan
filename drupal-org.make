@@ -245,7 +245,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/open_data_schema_map.git
-      tag: 7.x-1.13.3-RC1
+      tag: fix_bug_with_text_process_data_dictionary_CIVIC_6155
   panelizer:
     version: '3.4'
   panels:
