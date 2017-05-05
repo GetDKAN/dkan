@@ -494,7 +494,7 @@ function dkan_dataset_dataset_node_form_validate($form, &$form_state) {
   $public_access_level = $form_state['values']['field_public_access_level'][$field_public_access_level_langcode][0]['value'];
   $field_rights_langcode = dkan_dataset_form_field_language($form, 'field_rights');
   $rights = $form_state['values']['field_rights'][$field_rights_langcode][0]['value'];
-  if ($public_access_level != 'public' && empty($rights)) {
+  if (isset($public_access_level) && $public_access_level != 'public' && empty($rights)) {
     form_set_error('field_rights', 'Rights field is required.');
   }
 }
