@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1896 Fixed bug on open_data_schema_map for process data dictionary field.
  - #1876 Removed hard coded colors in the menu.scss file.
  - #1825 Adapt the 'dataQuality' input value druing POD harvest.
  - #1817 Load empty cells as null in fast import.
