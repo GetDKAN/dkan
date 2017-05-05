@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1870 Fixed bug on open_data_schema_map for process data dictionary field.
  - #1725 Fix `ahoy dkan uli` output login link.
  - #1881 Fix yaml syntaxt to make it standard. 
  - #1853 Update chart documentation.
