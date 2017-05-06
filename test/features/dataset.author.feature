@@ -269,3 +269,13 @@ Feature: Dataset Features
     When I visit "node/add/resource"
     Then I should not see "Authoring information"
     Then I should see "Publishing options"
+
+  @noworkflow
+  Scenario: Content Creators who are part of a group should not see authoring information
+    Given I am logged in as "Katie"
+    When I visit "node/add/dataset"
+    Then I should not see "Authoring information"
+    Then I should see "Publishing options"
+    When I visit "node/add/resource"
+    Then I should not see "Authoring information"
+    Then I should see "Publishing options"
