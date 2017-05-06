@@ -261,12 +261,12 @@ function dkan_dataset_content_types_permission() {
     if (isset($type->type)) {
       $perm_types = array(
         'administer status of any ' . check_plain($type->type) . ' content' => array(
-          'title' => t('Administer status of any @type content', '@type' => check_plain($type->type)),
+          'title' => t('Administer status of any @type content', array('@type' => check_plain($type->type))),
           'description' => '',
         ),
 
         'administer status of own ' . check_plain($type->type) . ' content' => array(
-          'title' => t('Administer status of own @type content', '@type' => check_plain($type->type)),
+          'title' => t('Administer status of own @type content', array('@type' => check_plain($type->type))),
           'description' => '',
         ),
       );
