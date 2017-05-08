@@ -347,7 +347,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      branch: 7.x-1.x
+      branch: 1.13.4
     type: module
   workbench:
     version: '1.2'
