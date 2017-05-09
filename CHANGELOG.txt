@@ -1,6 +1,7 @@
 7.x-1.13.4
 ----------
  - #1896 Fixed bug on open_data_schema_map: Multiple urls cause data.json describedBy field to be truncated.
+ - #1887 Removed unnecessary 'Select' button from the remote file input field on the resource form.
  - #1869 Add validation check on the API or Website URL field to require a full url.
  - #1883 Removed required status from the Rights field if the public access level is set to 'none'.
  - #1871 Better handling of remote resources with BOM.
