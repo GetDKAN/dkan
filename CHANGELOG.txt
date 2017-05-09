@@ -1,6 +1,7 @@
 7.x-1.13.4
 ----------
  - #1887 Removed unnecessary 'Select' button from the remote file input field on the resource form.
+ - #1869 Add validation check on the API or Website URL field to require a full url.
  - #1883 Removed required status from the Rights field if the public access level is set to 'none'.
  - #1871 Better handling of remote resources with BOM.
  - #1873 Fix dkan_workflow_permissions: Allow Workflow Contributors and Workflow Moderators to view stale drafts and Workflow Moderators to view stale reviews.
