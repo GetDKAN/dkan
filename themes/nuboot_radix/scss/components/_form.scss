@@ -1,8 +1,11 @@
 //
 // Styles for Forms
 // --------------------------------------------------
-.table-select-processed .checkbox input[type="checkbox"] {
-  margin-left: 0px;
+.table-select-processed,
+.permissions-processed {
+  .checkbox input[type="checkbox"] {
+    margin-left: 0px;
+  }
 }
 
 input[type="submit"],
@@ -173,6 +176,15 @@ div.horizontal-tabs {
   input.form-submit {
     @extend %button-attached;
     margin: 0 0 10px 0;
+  }
+  // Resource remote file.
+  .filefield-source-remotefile input {
+    &.form-control:first-child {
+      @include border-radius($border-radius-base);
+    }
+    &.form-text {
+      width: 100%;
+    }
   }
   .input-group-btn {
     display: inline-block;
