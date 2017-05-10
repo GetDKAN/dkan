@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1901 Upgrade media module to 2.1
  - #1887 Removed unnecessary 'Select' button from the remote file input field on the resource form.
  - #1869 Add validation check on the API or Website URL field to require a full url.
  - #1883 Removed required status from the Rights field if the public access level is set to 'none'.
