@@ -498,12 +498,12 @@ function dkan_dataset_dataset_node_form_validate($form, &$form_state) {
     form_set_error('field_rights', 'Rights field is required.');
   }
 
-  //Validate data dictionary with strict POD.
+  // Validate data dictionary with strict POD.
   if (variable_get('dkan_dataset_form_pod_validation')) {
     $field_data_dictionary_langcode = dkan_dataset_form_field_language($form, 'field_data_dictionary');
     $data_dictionary = $form_state['values']['field_data_dictionary'][$field_data_dictionary_langcode][0]['value'];
 
-    //Check three cases (NULL, url, redacted text).
+    // Check three cases (NULL, url, redacted text).
     if (valid_url($data_dictionary, TRUE)) {
       return;
     }
@@ -514,7 +514,7 @@ function dkan_dataset_dataset_node_form_validate($form, &$form_state) {
       return;
     }
 
-    //If not pass 3 case then show error.
+    // If not pass 3 case then show error.
     form_set_error('field_data_dictionary', t('Data dictionary should be empty, a valid URL or redacted.'));
   }
 }
