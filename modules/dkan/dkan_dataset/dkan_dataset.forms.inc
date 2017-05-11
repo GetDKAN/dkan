@@ -503,19 +503,17 @@ function dkan_dataset_dataset_node_form_validate($form, &$form_state) {
     $field_data_dictionary_langcode = dkan_dataset_form_field_language($form, 'field_data_dictionary');
     $data_dictionary = $form_state['values']['field_data_dictionary'][$field_data_dictionary_langcode][0]['value'];
 
-    // Check three cases (NULL, url, redacted text).
-    if (valid_url($data_dictionary, TRUE)) {
-      return;
-    }
-    if (!$data_dictionary) {
-      return;
-    }
-    if (preg_match('/^(\\[\\[REDACTED).*?(\\]\\])$/', $data_dictionary)) {
-      return;
-    }
+    // In order to pass strict POD validation the 'data dictionary' value must be NULL,
+    // a valid URL or redacted.
+    if (isset($data_dictionary)) {
+      $is_valid_URL = valid_url($data_dictionary, TRUE);
+      $is_redacted = preg_match('/^(\\[\\[REDACTED).*?(\\]\\])$/', $data_dictionary);
 
-    // If not pass 3 case then show error.
-    form_set_error('field_data_dictionary', t('Data dictionary should be empty, a valid URL or redacted.'));
+      // If a value is present (not NULL) then chech if it is a valid URL or redacted.
+      if (!is_valid_URL && !$is_redacted) {
+        form_set_error('field_data_dictionary', t('Data dictionary should be empty, a valid URL or redacted.'));
+      }
+    }
   }
 }
 
