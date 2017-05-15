@@ -298,5 +298,5 @@ edit-menu-description
  */
 function dkan_update_7017() {
   variable_set('chosen_jquery_selector',
-    '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"])');
+    '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"])');
 }
