@@ -1,5 +1,7 @@
 7.x-1.13.4
 ----------
+ - #1891 Expose publishing options for content creators who do not belong to a group.
+ - #1891 Disabled authoring information fields for content creators who do belong to a group.
  - #1901 Upgrade media module to 2.1
  - #1897 Fixed handling of dataset language setting to pass DCAT validation.
  - #1896 Fixed bug on open_data_schema_map: Multiple urls cause data.json describedBy field to be truncated.
