@@ -3,7 +3,7 @@ api: '2'
 core: 7.x
 includes:
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/1.13.4/visualization_entity.make"
-  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/alter_dcat_language_CIVIC-6063/open_data_schema_map.make"
+  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/1.13.4/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/1.13.4/recline.make"
 projects:
@@ -245,7 +245,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/open_data_schema_map.git
-      branch: alter_dcat_language_CIVIC-6063
+      branch: 1.13.4
   panelizer:
     version: '3.4'
   panels:
