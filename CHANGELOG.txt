@@ -1,6 +1,6 @@
 7.x-1.13.4
 ----------
- - #1897 Fixed handling of dataset language setting to pass POD validation.
+ - #1897 Fixed handling of dataset language setting to pass DCAT validation.
  - #1896 Fixed bug on open_data_schema_map: Multiple urls cause data.json describedBy field to be truncated.
  - #1890 Fixed the chosen widget exclusion settings to not apply to group search filters.
  - #1887 Removed unnecessary 'Select' button from the remote file input field on the resource form.
