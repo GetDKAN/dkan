@@ -29,6 +29,13 @@ function dkan_dataset_content_types_form_alter(&$form, &$form_state, $form_id) {
 
     $form['field_data_dictionary'][LANGUAGE_NONE]['#after_build'][] = 'data_dictionary_after_build';
   }
+  // Allow users to publish/unpublish content without giving them
+  // "administer nodes" permission.
+  if (preg_match('/_node_form$/', $form_id) && _dkan_dataset_content_types_access($form['#node']->type)) {
+    if ($form['options']['#access'] == FALSE) {
+      $form['options']['#access'] = TRUE;
+    }
+  }
 }
 
 /**
@@ -236,4 +243,45 @@ function dkan_dataset_content_types_date_format_types() {
   return array(
     'iso_8601_date' => t('ISO 8601 Date'),
   );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function dkan_dataset_content_types_permission() {
+  $perms = array(
+    'administer status of any content' => array(
+      'title' => t('Administer status for all content types'),
+      'description' => '',
+      'restrict access' => TRUE,
+    ),
+  );
+
+  foreach (node_type_get_types() as $type) {
+    if (isset($type->type)) {
+      $perm_types = array(
+        'administer status of any ' . check_plain($type->type) . ' content' => array(
+          'title' => t('Administer status of any @type content', array('@type' => check_plain($type->type))),
+          'description' => '',
+        ),
+
+        'administer status of own ' . check_plain($type->type) . ' content' => array(
+          'title' => t('Administer status of own @type content', array('@type' => check_plain($type->type))),
+          'description' => '',
+        ),
+      );
+      $perms = array_merge($perms, $perm_types);
+    }
+  }
+
+  return $perms;
+}
+
+/**
+ * Check content type publishing options access.
+ */
+function _dkan_dataset_content_types_access($type) {
+  return user_access('administer status of any content')
+      || user_access('administer status of any ' . check_plain($type) . ' content')
+      || user_access('administer status of own ' . check_plain($type) . ' content');
 }
