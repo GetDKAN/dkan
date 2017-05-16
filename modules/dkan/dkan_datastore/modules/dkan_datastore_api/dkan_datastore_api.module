@@ -901,7 +901,7 @@ function dkan_datastore_api_datastore_create($file) {
   if ($file_saved) {
     $datastore = dkan_datastore_go();
     if ($datastore) {
-      if ($datastore->createByFile($file_saved->uri, FALSE)) {
+      if ($datastore->createFromFileUri($file_saved->uri, FALSE)) {
 
         $result = new stdClass();
         $result->result = 'success';
@@ -938,7 +938,7 @@ function dkan_datastore_api_datastore_create_raw() {
 
       $datastore = dkan_datastore_go();
       if ($datastore) {
-        if ($datastore->createByFile($file->uri, FALSE)) {
+        if ($datastore->createFromFileUri($file->uri, FALSE)) {
 
           $result = new stdClass();
           $result->result = 'success';
@@ -972,7 +972,7 @@ function dkan_datastore_api_datastore_update($id, $file) {
   if ($file_saved) {
     $datastore = dkan_datastore_go($id);
     if ($datastore) {
-      if ($datastore->updateByFile($file_saved->uri, FALSE)) {
+      if ($datastore->updateFromFileUri($file_saved->uri, FALSE)) {
 
         $result = new stdClass();
         $result->result = 'success';
@@ -1008,7 +1008,7 @@ function dkan_datastore_api_datastore_update_raw($id) {
 
       $datastore = dkan_datastore_go($id);
       if ($datastore) {
-        if ($datastore->updateByFile($file->uri, FALSE)) {
+        if ($datastore->updateFromFileUri($file->uri, FALSE)) {
 
           $result = new stdClass();
           $result->result = 'success';

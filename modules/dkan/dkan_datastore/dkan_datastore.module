@@ -603,5 +603,5 @@ function dkan_datastore_queue_import($uuid) {
  */
 function dkan_datastore_queue_import_worker($item) {
   $datastore = dkan_datastore_go($item['uuid']);
-  $datastore->importByCLI();
+  $datastore->importByCli();
 }
