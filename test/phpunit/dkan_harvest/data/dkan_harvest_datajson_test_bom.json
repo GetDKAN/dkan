@@ -39,40 +39,6 @@
       "license": "https://creativecommons.org/publicdomain/zero/1.0/",
       "spatial": "United States",
       "temporal": "2002/2003",
-      "distribution": [
-        {
-          "@type": "dcat:Distribution",
-          "description": "2002 Academic Libraries Study data as a zipped TSV file",
-          "downloadURL": "https://nces.ed.gov/pubs2006/data/ALS2002_ASCII.zip",
-          "format": "Zipped TSV",
-          "mediaType": "application/zip",
-          "title": "ALS2002_ASCII.zip"
-        },
-        {
-          "@type": "dcat:Distribution",
-          "description": "2002 Academic Libraries Study data as a zipped Microsoft Office Access database file",
-          "downloadURL": "https://nces.ed.gov/pubs2006/data/ALS2002_Access.zip",
-          "format": "Zipped MDB",
-          "mediaType": "application/zip",
-          "title": "ALS2002_Access.zip"
-        },
-        {
-          "@type": "dcat:Distribution",
-          "description": "2002 Academic Libraries Study data as a SAS txt file",
-          "downloadURL": "https://nces.ed.gov/pubs2006/data/ALS2002_sas.txt",
-          "format": "SAS txt file",
-          "mediaType": "text/plain",
-          "title": "ALS2002_sas.txt"
-        },
-        {
-          "@type": "dcat:Distribution",
-          "description": "2002 Academic Libraries Study data as a SPSS txt file",
-          "downloadURL": "https://nces.ed.gov/pubs2006/data/ALS2002_sps.txt",
-          "format": "SPSS txt file",
-          "mediaType": "text/plain",
-          "title": "ALS2002_sps.txt"
-        }
-      ],
       "accrualPeriodicity": "R/P2Y",
       "dataQuality": true,
       "issued": "2005-12-13",

@@ -9194,6 +9194,12 @@ div.horizontal-tabs {
 .form-managed-file input.form-submit {
   margin: 0 0 10px 0; }
 
+.form-managed-file .filefield-source-remotefile input.form-control:first-child {
+  border-radius: 4px; }
+
+.form-managed-file .filefield-source-remotefile input.form-text {
+  width: 100%; }
+
 .form-managed-file .input-group-btn {
   display: inline-block;
   vertical-align: top; }
