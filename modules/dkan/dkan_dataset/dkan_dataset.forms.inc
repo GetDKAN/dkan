@@ -510,7 +510,7 @@ function dkan_dataset_dataset_node_form_validate($form, &$form_state) {
       $is_redacted = preg_match('/^(\\[\\[REDACTED).*?(\\]\\])$/', $data_dictionary);
 
       // If a value is present (not NULL) then chech if it is a valid URL or redacted.
-      if (!is_valid_URL && !$is_redacted) {
+      if (!$is_valid_URL && !$is_redacted) {
         form_set_error('field_data_dictionary', t('Data dictionary should be empty, a valid URL or redacted.'));
       }
     }
