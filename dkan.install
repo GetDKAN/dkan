@@ -300,3 +300,17 @@ function dkan_update_7017() {
   variable_set('chosen_jquery_selector',
     '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"])');
 }
+
+/**
+ * Update language field values to use dashes rather than underscores.
+ */
+function dkan_update_7018() {
+  db_update('field_data_field_language')
+    ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', array(':underscore' => '_', ':dash' => '-'))
+    ->execute();
+
+  db_update('field_revision_field_language')
+    ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', array(':underscore' => '_', ':dash' => '-'))
+    ->execute();
+
+}
