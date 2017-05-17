@@ -1,6 +1,17 @@
 7.x-1.13.4
 ----------
  - #1899 Override default error message on duplicate path aliases with more information.
+ - NuCivic/visualization_entity#72 Switch to relative path for uploaded resources on visualization entity charts
+ - #1836 Update language codes to use dashes rather than underscores for POD compliance.
+ - #1836 Fix the POD and DCAT language output to use key values rather than label values.
+ - #1891 Expose publishing options for content creators who do not belong to a group.
+ - #1891 Disabled authoring information fields for content creators who do belong to a group.
+ - #1901 Upgrade media module to 2.1
+ - #1897 Fixed handling of dataset language setting to pass DCAT validation.
+ - #1896 Fixed bug on open_data_schema_map: Multiple urls cause data.json describedBy field to be truncated.
+ - #1890 Fixed the chosen widget exclusion settings to not apply to group search filters.
+ - #1887 Removed unnecessary 'Select' button from the remote file input field on the resource form.
+ - #1869 Add validation check on the API or Website URL field to require a full url.
  - #1883 Removed required status from the Rights field if the public access level is set to 'none'.
  - #1871 Better handling of remote resources with BOM.
  - #1873 Fix dkan_workflow_permissions: Allow Workflow Contributors and Workflow Moderators to view stale drafts and Workflow Moderators to view stale reviews.
