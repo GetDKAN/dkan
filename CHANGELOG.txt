@@ -1,5 +1,8 @@
 7.x-1.14.x
 ----------
+ - #1888 Added validation on axis tick settings on visualization_entity.
+ - #1725 Fix `ahoy dkan uli` output login link.
+ - #1881 Fix yaml syntaxt to make it standard. 
  - #1853 Update chart documentation.
  - #1839 Add help text and improve UI on the chart form for better clarity.
  - #1827 Remove option to import TABed CSV files into datastore. 
