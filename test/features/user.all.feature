@@ -37,7 +37,8 @@ Feature: User
       | title      | publisher | author  | published        | tags     | description |
       | Dataset 01 | Group 01  | Katie   | Yes              | world    | Test        |
       | Dataset 02 | Group 01  | Katie   | Yes              | world    | Test        |
-
+  
+  @customizable
   Scenario: Login
     Given I am on the homepage
     When I follow "Log in"
@@ -45,7 +46,7 @@ Feature: User
     And I fill in "Password" with "johnpass"
     And I press "Log in"
     Then I should see the "John" user page
-
+  
   Scenario: Logout
     Given I am logged in as "John"
     And I am on the homepage
