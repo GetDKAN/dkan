@@ -140,7 +140,7 @@ function dkan_datastore_fast_import_cron_queue_info() {
   return array(
     dkan_datastore_fast_import_queue_name() => array(
       'worker callback' => 'dkan_datastore_fast_import_import_queue_worker',
-      'skip on cron' => TRUE,
+      'skip on cron' => FALSE,
       'time' => 600,
     ),
   );
