@@ -144,6 +144,10 @@ commands:
       b64=`echo "payload: $input" | base64 $wrap 0`
       ahoy cmd-proxy ruby dkan/.ahoy/.scripts/dkan-test.rb "$b64"
 
+  unittests:
+    usage: Run phpunit tests
+    cmd: ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkan-unittests.sh "{{args}}"
+
   lint:
     usage: Run linter on code
     hidden: true
