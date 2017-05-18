@@ -162,7 +162,7 @@ function dkan_sitewide_data_extent_block() {
     if ($spatial) {
       drupal_add_library('leaflet_widget', 'leaflet');
       $features = array();
-      foreach($spatial as $spatial_val) {
+      foreach ($spatial as $spatial_val) {
         $features[] = leaflet_widget_geojson_feature($spatial_val['wkt']);
       }
       $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
