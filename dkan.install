@@ -318,7 +318,7 @@ function dkan_update_7018() {
 /**
  * Remove old variables from dkan_dataset_api.
  */
-function dkan_update_7018() {
+function dkan_update_7019() {
   variable_del('dkan_catalog_desc');
   variable_del('dkan_catalog_contact');
   variable_del('dkan_catalog_mbox');
