@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1916 Federal extras: Fix spelling of "Government" in group label.
  - #1865 Removed old dkan_dataset_api module.
  - #1899 Override default error message on duplicate path aliases with more information.
  - NuCivic/visualization_entity#72 Switch to relative path for uploaded resources on visualization entity charts
