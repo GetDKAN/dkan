@@ -300,3 +300,10 @@ function dkan_update_7017() {
   variable_set('chosen_jquery_selector',
     '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"])');
 }
+
+/**
+ * Revert content types dataset to revert og_group_ref on resources.
+ */
+function dkan_update_7018() {
+  features_revert(array('dkan_dataset_content_types' => array('field_base', 'field_instance')));
+}
