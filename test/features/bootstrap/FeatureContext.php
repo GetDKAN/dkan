@@ -20,6 +20,9 @@ class FeatureContext extends RawDKANContext
   public function iShouldSeeExactlyInSelectorInRegion($number, $selector, $region) {
     $session = $this->getSession();
     $region_obj = $session->getPage()->find('region', $region);
+    if ($region_obj == null) {
+      throw new \Exception(sprintf('The region "%s" was not found on the page %s', $region, $this->getSession()->getCurrentUrl()));
+    }
     $elements = $region_obj->findAll('css', $selector);
     $count = count($elements);
     if ($count != $number) {
