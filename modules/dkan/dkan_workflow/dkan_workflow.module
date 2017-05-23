@@ -440,3 +440,27 @@ function dkan_workflow_mail_alter(&$message) {
     $message['send'] = $dkan_email_proxy->send();
   }
 }
+
+/**
+ * Restore original user on node revisions.
+ */
+function dkan_workflow_restore_user($node) {
+  db_update('node_revision')
+    ->fields(array('uid' => $node->uid))
+    ->condition('nid', $node->nid)
+    ->condition('vid', $node->vid)
+    ->execute();
+}
+
+/**
+ * Implements hook_workbench_moderation_transition().
+ */
+function dkan_workflow_workbench_moderation_transition($node, $previous_state, $new_state) {
+  // When a node is updated through moderation the original author of the
+  // node gets replaced by the user that moderated the content.
+  // This code was added in order to fix that and restore the original user.
+  if (isset($node->nid) && isset($node->vid) && isset($node->uid)) {
+    dkan_workflow_restore_user($node);
+  }
+}
+
