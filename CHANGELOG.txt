@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1917 Fixed 'ahoy dkan reinstall' command.
  - NuCivic/visualization_entity#72 Switch to relative path for uploaded resources on visualization entity charts
  - #1836 Update language codes to use dashes rather than underscores for POD compliance.
  - #1836 Fix the POD and DCAT language output to use key values rather than label values.
