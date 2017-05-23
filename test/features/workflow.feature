@@ -475,3 +475,29 @@ Feature:
     And I click "View draft"
     Then I should see "Dataset draft title"
 
+  @api @javascript @globalUser
+  Scenario: As a user I should be able to see my content back on "My Drafts" section if it was rejected
+    # Submit a dataset to Needs Review
+    Given I am logged in as "Contributor"
+    And datasets:
+      | title              | author      | moderation | moderation_date | date created  |
+      | My Draft Dataset   | Contributor | draft      | Jul 21, 2015    | Jul 21, 2015  |
+    When I am on the "My Drafts" page
+    Then I should see the button "Submit for review"
+    And I should see "My Draft Dataset"
+    When I check the box "Select all items on this page"
+    And I press "Submit for review"
+    And I wait for "Performed Submit for review"
+    And I am on the "My Drafts" page
+    Then I should not see "My Draft Dataset"
+    # Reject dataset
+    Given I am logged in as "Supervisor"
+    When I am on the "Needs Review" page
+    Then I should see "My Draft Dataset"
+    When I check the box "Select all items on this page"
+    And I press "Reject"
+    Then I wait for "Performed Reject"
+    # Check that the dataset is back
+    Given I am logged in as "Contributor"
+    When I am on the "My Drafts" page
+    Then I should see "My Draft Dataset"
