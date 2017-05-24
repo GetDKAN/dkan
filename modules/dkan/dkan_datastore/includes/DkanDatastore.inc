@@ -494,8 +494,7 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
    * Update resource with file.
    *
    * @param bool $use_current_setttings
-   *  If set to TRUE use the current file visibility settings.
-   *
+   *   If set to TRUE use the current file visibility settings.
    */
   public function updateFromFile($file, $use_current_setttings = TRUE) {
     // Get current file.
@@ -576,7 +575,6 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
     if ($source instanceof FeedsSource) {
       // IMPROVEMENT: Allow configuration of parser.
       // IMPROVEMENT: Allow configuration of processor.
-
       // Code added to fix this issue: https://www.drupal.org/node/2087091
       // The feeds source does not get cleaned up properly.
       // Ask it for its states so they are all present.
