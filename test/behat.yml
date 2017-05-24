@@ -33,6 +33,7 @@ default:
           - Drupal\DKANExtension\Context\ServicesContext
           - Drupal\DKANExtension\Context\PODContext
           - Drupal\DKANExtension\Context\DatastoreContext
+          - Drupal\DKANExtension\Context\TimezoneContext
           - Drupal\DrupalExtension\Context\DrushContext
           - Devinci\DevinciExtension\Context\DebugContext:
               asset_dump_path: %paths.base%/assets

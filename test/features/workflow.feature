@@ -29,7 +29,7 @@ Feature:
       | user       | group    | role on group        | membership status |
       | Supervisor | Group 01 | administrator member | Active            |
       | Moderator  | Group 01 | member               | Active            |
-      | Contributor| Group 01 | member               | Pending           |
+      | Contributor| Group 01 | member               | Active           |
       | Moderator  | Group 02 | member               | Active            |
 
 
@@ -60,6 +60,7 @@ Feature:
     When I am on "My Workbench" page
     Then I should see the link "My content"
     And I should see the link "My drafts"
+    And I should see the link "Stale drafts"
     And I should see the link "My Edits"
     And I should see the link "All Recent Content"
     Examples:
@@ -124,11 +125,11 @@ Feature:
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as "Contributor"
     And datasets:
-      | title                       | author       | published | moderation_date   | date created  |
+      | title                                 | author       | published | moderation_date   | date created  |
       | Stale Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
       | Fresh Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
     And resources:
-      | title                        | author       | dataset                    | format |  published |
+      | title                                  | author       | dataset                              | format |  published |
       | Stale Resource DKAN Test Needs Review  | Contributor  | Stale Dataset DKAN Test Needs Review | csv    |  no        |
     And I update the moderation state of "Stale Dataset DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
     And I update the moderation state of "Stale Resource DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
@@ -283,6 +284,22 @@ Feature:
     Then I should see the text "Not My Dataset"
 
   @ok @globalUser
+  Scenario: As a Workflow Moderator, I should be able to see Stale Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
+    Given users:
+      | name            | roles                                 |
+      | some-other-user | Workflow Contributor, content creator |
+    And group memberships:
+      | user            | group    | role on group        | membership status |
+      | some-other-user | Group 01 | administrator member | Active            |
+    And datasets:
+      | title           | author          | published | publisher |
+      | Not My Dataset  | some-other-user | No        | Group 01  |
+    And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review" on date "30 days ago"
+    Given I am logged in as "Moderator"
+    And I am on "Stale Reviews" page
+    Then I should see the text "Not My Dataset"
+
+  @ok @globalUser
   Scenario: As a Workflow Moderator, I should not be able to see Needs Review datasets I did not author, and which do not belong to my Group, in 'Needs Review'
     Given users:
       | name            | roles                                 |
@@ -427,6 +444,18 @@ Feature:
     And I click "Edit"
     Then the checkbox "editor" should be checked
 
+  @api @javascript @harvest_rollback
+  Scenario: Check harvested datasets are published by default even when dkan_workflow is enabled.
+    Given users:
+      | name               | mail                     | status | roles             |
+      | Administrator      | admin@fakeemail.com      | 1      | administrator     |
+    And harvest sources:
+      | title      | machine name | source uri                                                                 | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
+
+    And The "source_one" source is harvested
+    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "published"
+
   @ok
   # https://jira.govdelivery.com/browse/CIVIC-5348
   Scenario: "View draft" should display the draft dataset and not the published revision.
@@ -445,3 +474,4 @@ Feature:
     And I press "Finish"
     And I click "View draft"
     Then I should see "Dataset draft title"
+

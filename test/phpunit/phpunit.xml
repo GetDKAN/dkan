@@ -30,9 +30,15 @@
         <testsuite name="DKAN Datastore API Test Suite">
             <file>dkan_datastore_api/DkanDatastoreAPITest.php</file>
         </testsuite>
+        <testsuite name="DKAN Datastore Fast Import Test Suite">
+            <file>dkan_datastore_fast_import/DkanDatastoreFastImportTest.php</file>
+        </testsuite>
         <testsuite name="DKAN Migrate Base Test Suite">
             <!--<file>dkan_migrate_base/DeleteDuplicateDatasetsTest.php</file>
             <file>dkan_migrate_base/DKANMigrateBaseTest.php</file>-->
+        </testsuite>
+        <testsuite name="Open Data Schema Map Test Suite">
+            <file>open_data_schema_map/PodValidationTest.php</file>
         </testsuite>
     </testsuites>
 

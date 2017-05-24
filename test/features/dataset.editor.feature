@@ -1,5 +1,7 @@
 # time:0m18.30s
-@api
+# The first scenario requires that the timezone be set to UTC.
+# @timezone will set the timezone for tests and restore the timezone afterwards.
+@api @timezone
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor

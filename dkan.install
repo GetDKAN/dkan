@@ -242,19 +242,26 @@ function dkan_update_7012() {
  * Remove deprecated test and theme directories.
  */
 function dkan_update_7013() {
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/fonts');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_dataset/tests');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/tests');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_api/tests');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_fast_import/test');
-  drush_delete_dir('profiles/dkan/modules/dkan/dkan_workflow/test');
-  drush_delete_dir('profiles/dkan/themes/contrib/nuboot_radix');
-  drush_delete_dir('profiles/dkan/themes/contrib/omega');
+  $deprecated = array(
+    'profiles/dkan/modules/dkan/dkan_dataset/fonts',
+    'profiles/dkan/modules/dkan/dkan_dataset/tests',
+    'profiles/dkan/modules/dkan/dkan_datastore/tests',
+    'profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_api/tests',
+    'profiles/dkan/modules/dkan/dkan_datastore/modules/dkan_datastore_fast_import/test',
+    'profiles/dkan/modules/dkan/dkan_workflow/test',
+    'profiles/dkan/themes/contrib/nuboot_radix',
+    'profiles/dkan/themes/contrib/omega',
+  );
+  foreach ($deprecated as $dir) {
+    if (is_dir($dir)) {
+      drupal_rmdir($dir);
+    }
+  }
 }
 
 /**
-* Drop the 'field_modified_source_date' field.
-*/
+ * Drop the 'field_modified_source_date' field.
+ */
 function dkan_update_7014() {
   // Mark the field for deletion.
   field_delete_field('field_modified_source_date');
@@ -275,7 +282,7 @@ function dkan_update_7015() {
 /**
  * Add data dictionary textarea id to bueditor excludes list.
  */
-function dkan_update_7014() {
+function dkan_update_7016() {
   db_update('bueditor_editors')
     ->fields(array(
       'excludes' => 'edit-log
@@ -289,7 +296,40 @@ edit-menu-description
 /**
  * Update chosen_jquery_selector to avoid misuse.
  */
-function dkan_update_7016() {
+function dkan_update_7017() {
   variable_set('chosen_jquery_selector',
-    '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"])');
+    '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"])');
+}
+
+/**
+ * Update language field values to use dashes rather than underscores.
+ */
+function dkan_update_7018() {
+  db_update('field_data_field_language')
+    ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', array(':underscore' => '_', ':dash' => '-'))
+    ->execute();
+
+  db_update('field_revision_field_language')
+    ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', array(':underscore' => '_', ':dash' => '-'))
+    ->execute();
+
+}
+
+/**
+ * Remove old variables from dkan_dataset_api.
+ */
+function dkan_update_7019() {
+  variable_del('dkan_catalog_desc');
+  variable_del('dkan_catalog_contact');
+  variable_del('dkan_catalog_mbox');
+  variable_del('dkan_dataset_api_site_read');
+  variable_del('dkan_dataset_api_data_json');
+  variable_del('dkan_dataset_api_revision_list');
+  variable_del('dkan_dataset_api_package_list');
+  variable_del('dkan_dataset_api_current_package_list_with_resources');
+  variable_del('dkan_dataset_api_package_show');
+  variable_del('dkan_dataset_api_resource_show');
+  variable_del('dkan_dataset_api_group_package_show');
+  variable_del('dkan_dataset_api_package_revision_list');
+  variable_del('dkan_dataset_api_group_list');
 }
