@@ -333,3 +333,10 @@ function dkan_update_7019() {
   variable_del('dkan_dataset_api_package_revision_list');
   variable_del('dkan_dataset_api_group_list');
 }
+
+/**
+ * Revert content types dataset to revert og_group_ref on resources.
+ */
+function dkan_update_7020() {
+  features_revert(array('dkan_dataset_content_types' => array('field_base', 'field_instance')));
+}

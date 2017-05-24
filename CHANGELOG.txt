@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1902 Allow users to correct/change group for standalone resources.
  - #1912 Added 'ahoy dkan unittests' command.
  - #1917 Fixed 'ahoy dkan reinstall' command.
  - #1865 Removed old dkan_dataset_api module.
