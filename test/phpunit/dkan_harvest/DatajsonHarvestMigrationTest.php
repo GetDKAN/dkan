@@ -142,6 +142,20 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test Data Quality import.
+   *
+   * @depends testDatasetCount
+   */
+  public function testDataQuality($dataset) {
+    if (!module_exists('open_data_federal_extras')) {
+      $this->markTestSkipped('field_odfe_data_quality is part of the open_data_federal_extras module.');
+    }
+    else {
+      $this->assertEquals('true', array_pop($dataset->field_odfe_data_quality->value()));
+    }
+  }
+
+  /**
    * Test resources.
    *
    * @depends testDatasetCount

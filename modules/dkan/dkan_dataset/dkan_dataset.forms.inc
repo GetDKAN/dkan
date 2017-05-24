@@ -334,7 +334,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     // Get langcode for field_link_api.
     $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_link_api');
-    $form['field_link_api'][$field_link_api_langcode][0]['#description'] = t('Link to a public API or information source.');
+    $form['field_link_api'][$field_link_api_langcode][0]['#description'] = t('Full url to a public API or information source (http://example.com).');
 
     // Get langcode for field_format.
     $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_format');
@@ -494,7 +494,7 @@ function dkan_dataset_dataset_node_form_validate($form, &$form_state) {
   $public_access_level = $form_state['values']['field_public_access_level'][$field_public_access_level_langcode][0]['value'];
   $field_rights_langcode = dkan_dataset_form_field_language($form, 'field_rights');
   $rights = $form_state['values']['field_rights'][$field_rights_langcode][0]['value'];
-  if ($public_access_level != 'public' && empty($rights)) {
+  if (isset($public_access_level) && $public_access_level != 'public' && empty($rights)) {
     form_set_error('field_rights', 'Rights field is required.');
   }
 }
@@ -558,7 +558,7 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
     }
   }
   // Ensure that only one type of resource is uploaded or linked to.
-  if(count(array_filter(array($link_fid,$api,$upload_fid))) != 1) {
+  if (count(array_filter(array($link_fid, $api, $upload_fid))) != 1) {
     if ($link_fid) {
       $remote_error = t('<strong>Remote file</strong> is populated - only one resource type can be used at a time.');
       form_set_error('field_link_remote_file', $remote_error);
@@ -571,6 +571,12 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
       $upload_error = t('<strong>Upload</strong> is populated - only one resource type can be used at a time.');
       form_set_error('field_upload', $upload_error);
     }
+  }
+  if (!empty($form_state['values']['field_link_api'][$field_link_api_langcode][0]['url']) &&
+    !valid_url($form_state['values']['field_link_api'][$field_link_api_langcode][0]['url'], TRUE)) {
+    // Require full url if using the API or Website URL option.
+    $api_url_error = t('Please enter a full url (include http:// or https://)');
+    form_set_error('field_link_api', $api_url_error);
   }
   // Autodetect file type if a new one is not provided.
   if (!$type) {
@@ -628,7 +634,6 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
           }
         }
       }
-
     }
   }
   $vocabs = taxonomy_vocabulary_get_names();
