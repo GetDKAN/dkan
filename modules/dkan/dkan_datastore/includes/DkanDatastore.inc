@@ -493,6 +493,8 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
   /**
    * Update resource with file.
    *
+   * @param object $file
+   *   Drupal file object.
    * @param bool $use_current_setttings
    *   If set to TRUE use the current file visibility settings.
    */
@@ -646,7 +648,7 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
    * @return string
    *   Autoincrement id number for row if successful.
    */
-  public function addRow($row = array()) {
+  public function addRow(array $row = array()) {
     if (is_array($row) && $row) {
       $defaults = array(
         'timestamp' => time(),

@@ -768,7 +768,14 @@ function dkan_datastore_api_build_query($table, $fields, $sort, $alias = DKAN_DA
 }
 
 /**
+ * Sort provided data array.
  *
+ * @param mixed $data_select
+ *   SelectQuery object to sort.
+ * @param mixed $sort
+ *   Sort criteria.
+ * @param string $alias
+ *   Drupal Database alias.
  */
 function dkan_datastore_api_sort(&$data_select, $sort, $alias) {
   if (!is_array($sort)) {
