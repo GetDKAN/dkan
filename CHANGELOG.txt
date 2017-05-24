@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1924 Fixed dkan_update_7012, if a site is still using a deprecated module, the data is not stripped from the db.
  - #1912 Added 'ahoy dkan unittests' command.
  - #1917 Fixed 'ahoy dkan reinstall' command.
  - #1865 Removed old dkan_dataset_api module.
