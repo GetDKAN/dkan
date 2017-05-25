@@ -605,5 +605,13 @@ function dkan_datastore_queue_import($uuid) {
  */
 function dkan_datastore_queue_import_worker($item) {
   $datastore = dkan_datastore_go($item['uuid']);
-  $datastore->importByCli();
+
+  if (empty($datastore)) {
+    watchdog('dkan_datastore', "Failed to instantiate the Datastore for the resource id @uuid",
+      array('@uuid' => $item['uuid']),
+      'error');
+    return FALSE;
+  }
+
+  return $datastore->importByCli();
 }
