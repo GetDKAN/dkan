@@ -499,7 +499,9 @@ function dkan_datastore_go($id = NULL, $class = NULL) {
   if (!$class) {
     $class = variable_get('dkan_datastore_class', 'DkanDatastore');
   }
-  return Datastore::instance($class, $id);
+
+  return class_exists($class) ? Datastore::instance($class, $id) :
+    NULL;
 }
 
 /**
