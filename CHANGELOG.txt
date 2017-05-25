@@ -1,6 +1,7 @@
 7.x-1.13.4
 ----------
  - #1921 Drop the description label from the Harvest Source node view page.
+ - #1912 Added 'ahoy dkan unittests' command.
  - #1917 Fixed 'ahoy dkan reinstall' command.
  - #1865 Removed old dkan_dataset_api module.
  - #1899 Override default error message on duplicate path aliases with more information.
