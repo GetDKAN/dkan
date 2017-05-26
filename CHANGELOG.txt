@@ -35,6 +35,7 @@
  - #1832 Fallback to modified date for field_harvest_source_issued if not available during POD Harvest.
  - #1828 Field Frequency Harvest POD integration is missing support for "irregular" value.
  - #1820 Use "accessURL" during resources harvest if "downloadURL" field is not available.
+ - #1852 Allow the use of multi-polygonal data for Dataset Spatial field.
  - #1857 Fixed publishing options not accessible when dkan_workflow is enabled. 
 
 7.x-1.13.3-RC1
