@@ -114,8 +114,7 @@ function dkan_datastore_api_datastore_update_command($id = NULL, $file_path = NU
   // Sanity check the arguments.
   foreach (array('id', 'file_path') as $argument) {
     if (!$$argument) {
-      drush_log(t('%argument is required.', array('%argument' => $argument)),
-        'error');
+      drush_print(t('%argument is required.', array('%argument' => $argument)));
       return FALSE;
     }
   }

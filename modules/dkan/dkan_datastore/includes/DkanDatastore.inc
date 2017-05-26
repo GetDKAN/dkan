@@ -573,7 +573,6 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
    *   TRUE if the new configuration is applyed to the source. FALSE if not.
    */
   protected function setupSourceBackground(FeedsSource &$source) {
-    var_dump($source instanceof FeedsSource);
     if ($source instanceof FeedsSource) {
       // IMPROVEMENT: Allow configuration of parser.
       // IMPROVEMENT: Allow configuration of processor.

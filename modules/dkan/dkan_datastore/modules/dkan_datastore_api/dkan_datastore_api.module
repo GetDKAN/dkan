@@ -644,7 +644,8 @@ function dkan_datastore_api_aggregations(&$data_select, $aggregations, $alias = 
           $data_select->addExpression($method . '(' . $field . ')', $method . '_' . $field);
         }
 
-        // If aggregation's value is an string then contains just a single field name.
+        // If aggregation's value is an string then contains just a single
+        // field name.
         // { "sum": "field_name1" }.
       }
       elseif (is_string($agg)) {
@@ -811,8 +812,8 @@ function dkan_datastore_api_select_fields(&$data_select, $fields, $resource_ids)
     : array(DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS => $resource_ids[0]);
 
   // Select all the fields using an alias performs better than selecting
-  // specific fields. However if the user specify fields we have to fallback the slowest
-  // approach.
+  // specific fields. However if the user specify fields we have to fallback
+  // the slowest approach.
   if ($fields == '*') {
     foreach ($resource_ids as $table_alias => $resource_id) {
       $data_select->fields($table_alias);
