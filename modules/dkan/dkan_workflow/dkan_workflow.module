@@ -136,7 +136,7 @@ function dkan_workflow_menu_local_tasks_alter(&$data, $router_item, $root_path) 
         'title' => $stale_drafts,
       ),
     );
-    $stale_reviews  = $data['tabs'][0]['output'][4]['#link']['description'];
+    $stale_reviews = $data['tabs'][0]['output'][4]['#link']['description'];
     $data['tabs'][0]['output'][4]['#link']['localized_options'] = array(
       'attributes' => array(
         'title' => $stale_reviews,
@@ -330,8 +330,8 @@ function dkan_workflow_views_pre_view(&$view, &$display_id, &$args) {
 
     $item = $view->set_item($display_id, 'filter', 'type', $filter_content_type);
 
-    $role_workflow_contributor  = user_role_load_by_name('Workflow Contributor');
-    $role_workflow_moderator  = user_role_load_by_name('Workflow Moderator');
+    $role_workflow_contributor = user_role_load_by_name('Workflow Contributor');
+    $role_workflow_moderator = user_role_load_by_name('Workflow Moderator');
 
     // On the Needs Review tab, Workflow Moderator can see:
     // - the content submitted to their organic group.
@@ -463,4 +463,3 @@ function dkan_workflow_workbench_moderation_transition($node, $previous_state, $
     dkan_workflow_restore_user($node);
   }
 }
-
