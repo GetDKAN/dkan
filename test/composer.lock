@@ -1,10 +1,11 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "6ac857f36f0dab1350c23345e62696eb",
+    "content-hash": "bd8a0e197bc0cf70283fc1565dbf5fde",
     "packages": [
         {
             "name": "behat/behat",
@@ -999,7 +1000,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "Fork Maintainer"
+                    "role": "Fork maintainer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",
@@ -1049,6 +1050,7 @@
             ],
             "description": "Framework that helps mocking functions for unit testing PHP scripts",
             "homepage": "https://github.com/myplanetdigital/function_mock",
+            "abandoned": true,
             "time": "2014-03-07 18:56:45"
         },
         {
