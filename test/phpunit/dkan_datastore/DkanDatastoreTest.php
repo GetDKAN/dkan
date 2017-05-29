@@ -17,21 +17,21 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
    */
   public function testUpdateFromFileUri() {
     // Create a stub for the DkanDatastore class.
-    $DkanDatastorestub = $this->getMockBuilder(DkanDatastore::class)
+    $dkanDatastorestub = $this->getMockBuilder(DkanDatastore::class)
       ->setMethods(['updateFromFile'])
       ->disableOriginalConstructor()
       ->disableOriginalClone()
       ->getMock();
 
     // Configure the stub.
-    $DkanDatastorestub->expects($this->once())
+    $dkanDatastorestub->expects($this->once())
       ->method('updateFromFile')
       ->willReturn(TRUE);
 
     $testfileuri = __DIR__ . '/data/countries.csv';
     // Calling $stub->doSomething() will now return
     // 'foo'.
-    $this->assertEquals(TRUE, $DkanDatastorestub->updateFromFileUri($testfileuri));
+    $this->assertEquals(TRUE, $dkanDatastorestub->updateFromFileUri($testfileuri));
   }
 
   /**
@@ -41,18 +41,18 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
    */
   public function testUpdateFromFileUriNoFile() {
     // Create a stub for the DkanDatastore class.
-    $DkanDatastorestub = $this->getMockBuilder(DkanDatastore::class)
+    $dkanDatastorestub = $this->getMockBuilder(DkanDatastore::class)
       ->setMethods(['updateFromFile'])
       ->disableOriginalConstructor()
       ->disableOriginalClone()
       ->getMock();
 
     // Configure the DkanDatastorestub method.
-    $DkanDatastorestub->expects($this->never())
+    $dkanDatastorestub->expects($this->never())
       ->method('updateFromFile')
       ->willReturn(TRUE);
 
-    $this->assertEquals(FALSE, $DkanDatastorestub->updateFromFileUri());
+    $this->assertEquals(FALSE, $dkanDatastorestub->updateFromFileUri());
   }
 
   /**
