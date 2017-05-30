@@ -4,7 +4,7 @@ includes:
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
-  - "https://raw.githubusercontent.com/NuCivic/recline/fixed_warning_messages_on_view_changes_civic_4162/recline.make"
+  - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
 projects:
   admin_menu:
     version: '3.0-rc5'
@@ -271,7 +271,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/recline.git'
-      branch: fixed_warning_messages_on_view_changes_civic_4162
+      branch: 7.x-1.x
   ref_field:
     download:
       type: git
