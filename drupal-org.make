@@ -1,7 +1,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0-beta1/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/6041_chart_axis_range/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
@@ -13,10 +13,16 @@ projects:
     # Allow ordering of roles to handle users w/multiple roles
     patch:
       2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
+  admin_views:
+    version: '1.6'
+    patch:
+      1780004: 'https://www.drupal.org/files/issues/admin_views-duplicate_system_path-1780004-54.patch'
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
-    version: '2.1'
+    version: '2.2'
+    patch:
+      2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch'
   beautytips:
     download:
       type: git
@@ -26,13 +32,15 @@ projects:
     patch:
       849232: 'http://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch'
   better_exposed_filters:
-    version: '3.2'
+    version: '3.4'
   bueditor:
     version: '1.8'
   bueditor_plus:
     version: '1.4'
   chosen:
-    version: '2.0-beta5'
+    version: '2.0'
+    patch:
+      2834096: 'https://www.drupal.org/files/issues/chosen-accesibility_problem_with_input-0.patch'
   colorizer:
     version: '1.10'
     patch:
@@ -47,7 +55,7 @@ projects:
   context:
     version: '3.6'
   ctools:
-    version: '1.9'
+    version: '1.12'
   data:
     version: '1.x'
   date:
@@ -62,20 +70,18 @@ projects:
     version: '2.1'
   entity:
     download:
-      full_version: '7.x-1.7'
+      full_version: '7.x-1.8'
     patch:
       2341611: 'https://www.drupal.org/files/issues/entity-multivalue-token-replacement-fix-2341611-0.patch'
       2564119: 'https://www.drupal.org/files/issues/Use-array-in-foreach-statement-2564119-1.patch'
   entity_path:
     version: '1.x-dev'
     patch:
-      2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_1.diff'
+      2809655: 'https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff'
   entityreference:
-    version: '1.1'
-  entityreference_filter:
-    version: '1.5'
-  eva:
     version: '1.2'
+  entityreference_filter:
+    version: '1.7'
   facetapi:
     version: '1.5'
     patch:
@@ -103,6 +109,9 @@ projects:
       url: 'http://git.drupal.org/project/feeds_field_fetcher.git'
       branch: 7.x-1.x
       revision: 6725b86
+    patch:
+      2315425: 'http://www.drupal.org/files/issues/feeds_field_fetcher-typo-error-2315425-1.patch'
+      2829416: 'http://www.drupal.org/files/issues/feeds_field_fetcher_error-validation-config.patch'
   feeds_flatstore_processor:
     download:
       type: git
@@ -112,6 +121,7 @@ projects:
     version: '1.5'
     patch:
       2042681: 'http://drupal.org/files/issues/field-group-show-ajax-2042681-8.patch'
+      2831815: 'https://www.drupal.org/files/issues/hash-location-sanitization.diff'
   field_group_table:
     download:
       type: git
@@ -123,11 +133,15 @@ projects:
     download:
       full_version: 7.x-1.0-beta1
   fieldable_panels_panes:
-    version: '1.10'
-  file_entity:
-    version: '2.0-beta2'
+    version: '1.11'
     patch:
-      2308737: 'https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9509141.patch'
+      2825835: 'https://www.drupal.org/files/issues/2825835.patch'
+      2826182: 'https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch'
+      2826205: 'https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch'
+  file_entity:
+    version: '2.0-beta3'
+    patch:
+      2308737: 'https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9.patch'
   file_resup:
     version: '1.x-dev'
   filefield_sources:
@@ -143,6 +157,7 @@ projects:
       1: patches/fontyourface-no-ajax-browse-view.patch
       2: patches/fontyourface-clear-css-cache.patch
       2644694: 'https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch'
+      2816837: 'https://www.drupal.org/files/issues/font_your_face-remove_div_general_text_option-D7.patch'
   globalredirect:
     version: '1.5'
   gravatar:
@@ -172,41 +187,36 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
-      branch: master
+      branch: 'master'
   libraries:
-    version: '2.2'
+    version: '2.3'
   link:
     version: '1.4'
   link_badges:
     version: '1.1'
   link_iframe_formatter:
-    download:
-      type: git
-      url: 'http://git.drupal.org/project/link_iframe_formatter.git'
-      revision: 228f9f4
-    patch: 
-      2287233: 'https://www.drupal.org/files/issues/link_iframe_formatter-coding-standards.patch'
+    version: '1.1'
   manualcrop:
-    version: '1.5'
+    version: '1.6'
   markdown:
-    version: '1.4'
+    version: '1.5'
   markdowneditor:
     version: '1.4'
     patch:
       2045225: 'http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch'
   media:
-    version: '2.0-beta1'
+    version: '2.0-beta13'
     patch:
-      2126697: 'https://www.drupal.org/files/issues/media_wysiwyg_2126697-53.patch'
-      2308487: 'https://www.drupal.org/files/issues/media-alt-title-double-encoded-2308487-2.patch'
-      2084287: 'http://www.drupal.org/files/issues/media-file-name-focus-2084287-2.patch'
-      2534724: 'https://www.drupal.org/files/issues/media-browser_opens_twice-2534724-53.patch'
+      2534724: 'https://www.drupal.org/files/issues/media-fix_rebuild_bug-2534724-105-d7.patch'
+      2272567: 'https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch'
   media_youtube:
     version: '3.0'
   media_vimeo:
     version: '2.1'
     patch:
-      2446199: 'https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch' 
+      2446199: 'https://www.drupal.org/files/issues/no_exception_handling-2446199-1.patch'
+  menu_admin_per_menu:
+    version: '1.1'
   menu_badges:
     version: '1.2'
   menu_block:
@@ -244,18 +254,17 @@ projects:
   panelizer:
     version: '3.4'
   panels:
-    version: '3.6'
-    patch:
-      2785915: https://www.drupal.org/files/issues/panels-storage-backcompat-2785915-18.patch
+    version: '3.8'
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
-    version: '1.37'
+    version: '1.41'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
+      3: patches/panopoly_widgets_overrides_OOB.patch
   panopoly_images:
-    version: '1.37'
+    version: '1.41'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
@@ -264,7 +273,7 @@ projects:
     version: '1.8'
   radix:
     type: theme
-    version: '3.3'
+    version: '3.5'
   radix_layouts:
     version: '3.4'
   recline:
@@ -285,10 +294,15 @@ projects:
       2362487: 'https://www.drupal.org/files/issues/remote_file_source-location-content-dist_1.patch'
   remote_stream_wrapper:
     version: '1.0-rc1'
+    patch:
+      2833837: 'https://www.drupal.org/files/issues/prevent-download-intent-open-stream-2833837-4.patch'
   role_export:
     version: '1.0'
   rules:
     version: '2.9'
+    patch:
+     2406863: 'https://www.drupal.org/files/issues/rules-remove-cache-rebuild-log-2406863-21.patch'
+     2851567: 'https://www.drupal.org/files/issues/rules_init_and_cache-2851567-8.patch'
   restws:
     version: '2.6'
   roleassign:
@@ -299,19 +313,19 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.18'
+    version: '1.20'
   search_api_db:
     version: '1.5'
   select_or_other:
     version: '2.22'
   services:
-    version: '3.16'
+    version: '3.19'
   simple_gmap:
-    version: '1.2'
+    version: '1.3'
   strongarm:
-    version: '2.0'  
+    version: '2.0'
   tablefield:
-    version: '2.4'
+    version: '2.5'
   taxonomy_menu:
     version: '1.5'
   taxonomy_fixtures:
@@ -324,9 +338,7 @@ projects:
   uuid:
     version: '1.0-beta2'
   views:
-    version: '3.14'
-    patch:
-      1388684: 'https://www.drupal.org/files/views_taxonomy_entity_uri-1388684-15.patch'
+    version: '3.15'
   views_autocomplete_filters:
     version: '1.2'
     patch:
@@ -340,20 +352,18 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0-beta1
+      branch: 7.x-1.x
     type: module
   workbench:
     version: '1.2'
   workbench_email:
-    version: '3.9'
-    patch:
-      2391233: 'https://www.drupal.org/files/issues/workbench_email-2391233-3.patch'
+    version: '3.11'
   workbench_moderation:
-    branch: 7.x-1.x
-    revision: 2c91211
+    version: '3.0'
     patch:
-      2393771: 'https://www.drupal.org/files/issues/specify_change_state_user-2393771-5.patch'
-      1838640: 'https://www.drupal.org/files/issues/workbench_moderation-fix_callback_argument-1838640-23.patch'
+      2360973: 'https://www.drupal.org/files/issues/workbench_moderation-install-warnings-2360973-3.patch'
+  drafty:
+    version: '1.0-beta3'
 libraries:
   chosen:
     download:
@@ -370,7 +380,7 @@ libraries:
       type: git
       url: 'https://github.com/FortAwesome/Font-Awesome.git'
       revision: 13d5dd373cbf3f2bddd8ac2ee8df3a1966a62d09
-    directory_name: font_awesome  
+    directory_name: font_awesome
   jquery.imagesloaded:
     download:
       type: file
@@ -390,15 +400,14 @@ libraries:
   spectrum:
     download:
       type: git
-      url: 'https://github.com/bgrins/spectrum.git'
+      url: 'https://github.com/NuCivic/spectrum.git'
+      tag: 1.8.0-civic-4736
     directory_name: bgrins-spectrum
   spyc:
     download:
-      type: get
-      url: 'https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php'
-    filename: ../spyc.php
-    directory_name: lib
-    destination: modules/contrib/services/servers/rest_server
+      type: file
+      url: 'https://raw.github.com/mustangostang/spyc/master/Spyc.php'
+    directory_name: spyc
 defaults:
   projects:
     subdir: contrib

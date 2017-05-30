@@ -1,41 +1,43 @@
-<!-- Copy and rename to phpunit.xml. Customize as needed. -->
 <phpunit backupGlobals="false"
-    backupStaticAttributes="false"
-    syntaxCheck="false"
-    bootstrap="boot.php"
-    colors="true">
-  <testsuites>
-    <testsuite name="Dkan Datastore API test suite">
-      <file>DkanDatastoreAPITest.php</file>
-    </testsuite>
-  </testsuites>
+         backupStaticAttributes="false"
+         syntaxCheck="false"
+         bootstrap="boot.php"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         colors="true">
+    <testsuites>
+        <testsuite name="DKAN Harvest Test Suite">
+            <file>dkan_harvest/DatajsonHarvestMigrationTest.php</file>
+            <file>dkan_harvest/DatajsonHarvestMigrationScenariosTest.php</file>
+            <file>dkan_harvest/DkanHarvestDataJsonTest.php</file>
+            <file>dkan_harvest/DkanHarvestSourcesTest.php</file>
+            <file>dkan_harvest/DkanHarvestTest.php</file>
+            <file>dkan_harvest/HarvestSourceTest.php</file>
+            <file>dkan_harvest/HarvestSourceTypeTest.php</file>
+            <file>dkan_harvest/HarvestCacheTest.php</file>
+        </testsuite>
+        <testsuite name="DKAN Workflow Test Suite">
+            <!--<file>dkan_workflow/DkanWorkflowEmailTransition.php</file>
+            <file>dkan_workflow/DkanWorkflowTest.php</file>-->
+        </testsuite>
+        <testsuite name="DKAN Dataset Test Suite">
+            <file>dkan_dataset/getRemoteFileInfoTest.php</file>
+            <file>dkan_dataset/reclineEmbedCacheTest.php</file>
+        </testsuite>
+        <testsuite name="DKAN Datastore Test Suite">
+        </testsuite>
+        <testsuite name="DKAN Datastore API Test Suite">
+            <file>dkan_datastore_api/DkanDatastoreAPITest.php</file>
+        </testsuite>
+        <testsuite name="DKAN Migrate Base Test Suite">
+            <!--<file>dkan_migrate_base/DeleteDuplicateDatasetsTest.php</file>
+            <file>dkan_migrate_base/DKANMigrateBaseTest.php</file>-->
+        </testsuite>
+    </testsuites>
 
-  <php>
-    <ini name="display_errors" value="true"/>
-    <!-- These variables may alternatively be set as bash environment variables. -->
-
-    <!-- Drupal major version to run tests over -->
-    <!-- <var name="UNISH_DRUPAL_MAJOR_VERSION" value="7"/> -->
-
-    <!--Uncomment and edit one of the lines below depending on DB platform.-->
-    <!--DB User must have create/drop permissions-->
-    <!-- <var name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/> -->
-    <!-- <var name="UNISH_DB_URL" value="pgsql://postgres:@localhost"/>-->
-    <!-- <var name="UNISH_DB_URL" value="sqlite://none/of/this/matters"/> -->
-
-    <!--User must have write permissions to this directory.-->
-    <!--If not supplied, defaults to sys_get_tmp_dir().-->
-    <!-- <var name="UNISH_TMP" value="/tmp"/> -->
-
-    <!--Uncomment the line below if your path to drush differs from `which drush`. Use absolute path.-->
-    <!--<var name="UNISH_DRUSH" value="/Users/mw/bin/drush"/>-->
-
-    <!--Uncomment to provide a group the user running the tests belong to. This is needed for some filesystem tests. -->
-    <!--<var name="UNISH_USERGROUP" value="staff"/>-->
-
-    <!-- Uncomment to disable the total runtime and output timeouts for commands run through CommandUnishTestCase::execute().  -->
-    <!-- <env name="UNISH_NO_TIMEOUTS" value="y"/> -->
-
-    <includePath>.</includePath>
-  </php>
+    <php>
+        <ini name="display_errors" value="true"/>
+        <includePath>.</includePath>
+    </php>
 </phpunit>

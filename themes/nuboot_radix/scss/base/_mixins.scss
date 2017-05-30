@@ -13,7 +13,7 @@
 }
 
 @mixin block-title {
-  @include border-radius(3px 3px 0 0);
+  @include border-radius(5px 5px 0 0);
   border: 1px solid;
   border-bottom: none;
   font-size: 16px;

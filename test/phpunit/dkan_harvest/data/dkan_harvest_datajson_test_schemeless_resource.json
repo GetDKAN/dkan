@@ -1,0 +1,41 @@
+{
+  "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+  "@id": "http://demo.getdkan.com/data.json",
+  "@type": "dcat:Catalog",
+  "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+  "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
+  "dataset": [
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "contactPoint": {
+        "fn": "Stefanie Gray",
+        "hasEmail": "mailto:stefanie@nucivic.com"
+      },
+      "description": "<p>Information about the state workforce, broken down into four generational cohorts.</p> <p><strong>Note:</strong> This dataset has been given a vague name because it is anonymized demo data, not actual state data.</p> ",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "downloadURL": "s3.amazonaws.com/dkan-default-content-files/files/albo.xls",
+          "mediaType": "application/xml",
+          "format": "xml",
+          "description": "<p>This data, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire compared to the percentage of the workforce who actually retired.</p> ",
+          "title": "TEST - Retirements: Eligible vs. Actual"
+        }
+      ],
+      "identifier": "95f8eac4-fd1f-4b35-8472-5c87e9425dfa",
+      "keyword": [
+        "demographics",
+        "socioeconomic",
+        "workforce"
+      ],
+      "license": "http://opendefinition.org/licenses/gfdl/",
+      "modified": "2016-07-21",
+      "publisher": {
+        "@type": "org:Organization",
+        "name": "TEST - State Economic Council"
+      },
+      "title": "TEST - State Workforce by Generation (2011-2015)"
+    }
+  ]
+}

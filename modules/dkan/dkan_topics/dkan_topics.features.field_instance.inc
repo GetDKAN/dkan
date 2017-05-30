@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_topics.features.field_instance.inc
@@ -19,9 +20,8 @@ function dkan_topics_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'dkan_topics',
         'settings' => array(),
-        'type' => 'dkan_topic_formatter',
+        'type' => 'hidden',
         'weight' => 0,
       ),
       'search_result' => array(
@@ -113,9 +113,8 @@ function dkan_topics_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'dkan_topics',
         'settings' => array(),
-        'type' => 'dkan_topic_formatter',
+        'type' => 'hidden',
         'weight' => 0,
       ),
       'search_result' => array(

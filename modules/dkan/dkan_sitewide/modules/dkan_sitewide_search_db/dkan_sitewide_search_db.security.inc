@@ -1,11 +1,12 @@
 <?php
+
 /**
  * @file
  * Code for the dkan_sitewide_search_db feature.
  */
 
 /**
- * Helper for array_map to sanitize facet markup
+ * Helper for array_map to sanitize facet markup.
  */
 function _filter_xss(&$facet) {
   $facet['#markup'] = filter_xss($facet['#markup']);
@@ -21,8 +22,12 @@ function dkan_sitewide_search_db_facet_items_alter(&$build, &$settings) {
 
 /**
  * Cross references value with available node types.
- * @param  string $value content type
- * @return boolean
+ *
+ * @param string $value
+ *   Content type.
+ *
+ * @return bool
+ *   Return bool to check if is a content type.
  */
 function _facet_is_content_type($value) {
   $cts = node_type_get_types();
@@ -31,15 +36,21 @@ function _facet_is_content_type($value) {
 }
 
 /**
- * Cross reference value with term data
- * @param  string $value term
- * @return boolean
+ * Cross reference value with term data.
+ *
+ * @param string $name
+ *   Term name.
+ * @param string $tid
+ *   ID term.
+ *
+ * @return bool
+ *   Return a bool to check if facet is a term.
  */
 function _facet_is_term($name, $tid) {
   $query = db_select('taxonomy_term_data', 'terms')
-              ->fields('terms', array('name'))
-              ->condition('tid', $tid)
-              ->execute();
+    ->fields('terms', array('name'))
+    ->condition('tid', $tid)
+    ->execute();
   $result = $query->fetchObject();
   if ($query->rowCount() > 0) {
     $n1 = pathauto_cleanstring($result->name);
@@ -50,13 +61,13 @@ function _facet_is_term($name, $tid) {
 }
 
 /**
- * Cross reference value with user data
+ * Cross reference value with user data.
  */
 function _facet_is_user($uid) {
   $result = db_select('users', 'users')
-              ->fields('users', array('name'))
-              ->condition('uid', $uid)
-              ->execute();
+    ->fields('users', array('name'))
+    ->condition('uid', $uid)
+    ->execute();
   return $result->rowCount() > 0;
 }
 
@@ -78,7 +89,7 @@ function _alter_search_callback($argument) {
   // Validate CT's.
   if (in_array('type', $path)) {
     $n = array_search('type', $path);
-    $type = $path[$n+1];
+    $type = $path[$n + 1];
     if (!_facet_is_content_type($type)) {
       return drupal_not_found();
     }
@@ -87,17 +98,17 @@ function _alter_search_callback($argument) {
   $vocabs_to_validate = array(
     'field_tags' => 'tags',
     'field_topic' => 'dkan_topics',
-    'field_resources%3Afield_format' => 'format'
+    'field_resources%3Afield_format' => 'format',
   );
   foreach ($vocabs_to_validate as $key => $map) {
     $in_array = array_keys($path, $key);
     if (count($in_array)) {
       foreach ($in_array as $i) {
         // Check if a value is provided after the mark.
-        if (!isset($path[$i+1])) {
+        if (!isset($path[$i + 1])) {
           return drupal_not_found();
         }
-        $term = $path[$i+1];
+        $term = $path[$i + 1];
         $term = explode('-', $term);
         $last = array_pop($term);
         // Check if last element is a term id.
@@ -109,7 +120,7 @@ function _alter_search_callback($argument) {
         if (count($term) == 1) {
           return drupal_not_found();
         }
-        // Grab term and validate. 
+        // Grab term and validate.
         if (!_facet_is_term($term[0], $term[1])) {
           return drupal_not_found();
         }
@@ -123,24 +134,24 @@ function _alter_search_callback($argument) {
     $allowed_values = array_keys($allowed_values);
     foreach ($in_array as $i) {
       // Check if a value is provided after the mark.
-      if (!isset($path[$i+1])) {
+      if (!isset($path[$i + 1])) {
         return drupal_not_found();
       }
-      $license = $path[$i+1];
+      $license = $path[$i + 1];
       if (!in_array($license, $allowed_values)) {
         return drupal_not_found();
       }
     }
   }
-  // Validate author
+  // Validate author.
   $in_array = array_keys($path, 'author');
   if (count($in_array)) {
-    foreach($in_array as $i) {
-      if (!isset($path[$i+1])) {
+    foreach ($in_array as $i) {
+      if (!isset($path[$i + 1])) {
         // Check if a value is provided after the mark.
         return drupal_not_found();
       }
-      $uid = $path[$i+1];
+      $uid = $path[$i + 1];
       // Check if uid is numeric.
       if (!is_numeric($uid)) {
         return drupal_not_found();

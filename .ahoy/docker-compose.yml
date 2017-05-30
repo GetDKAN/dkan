@@ -38,12 +38,14 @@ db:
      - "./.docker/etc/mysql/my.cnf:/etc/mysql/conf.d/z_my.cnf"
      # Permanent DB data storage
      - /var/lib/mysql
+     # Project root folder mapping
+     - *project_root
 
 # CLI node
 # Used for all console commands and tools.
 cli:
   hostname: cli
-  image: nuams/drupal-cli:2016-10-14
+  image: nuams/drupal-cli:2016-10-16
   environment:
     - XDEBUG_CONFIG=idekey=cli
     - PHP_IDE_CONFIG=serverName=dkan.docker

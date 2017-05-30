@@ -21,13 +21,11 @@ class DkanHarvestTest extends \PHPUnit_Framework_TestCase {
     return array(
       'harvest_test_source_local_dir' => new HarvestSourceTestStub(
         'harvest_test_source_local_dir',
-        DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-        "/test/phpunit/data/harvest_test_source_local_dir/"
+        __DIR__ . '/data/harvest_test_source_local_dir/'
       ),
       'harvest_test_source_local_file' => new HarvestSourceTestStub(
         'harvest_test_source_local_file',
-        DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_harvest') .
-        "/test/phpunit/data/harvest_test_source_local_file/data.json"
+        __DIR__ . '/data/harvest_test_source_local_file/data.json'
       ),
       'harvest_test_source_remote' => new HarvestSourceTestStub(
         'harvest_test_source_remote',
@@ -36,10 +34,16 @@ class DkanHarvestTest extends \PHPUnit_Framework_TestCase {
     );
   }
 
+  /**
+   *
+   */
   public static function getDkanHarvestTestBeforClassStatus() {
     return self::$dkanHarvestTestBeforClassStatus;
   }
 
+  /**
+   *
+   */
   public static function setDkanHarvestTestBeforClassStatus($status) {
     self::$dkanHarvestTestBeforClassStatus = $status;
   }
@@ -65,14 +69,14 @@ class DkanHarvestTest extends \PHPUnit_Framework_TestCase {
    * @covers ::dkan_harvest_migrate_sources()
    */
   public function test_dkan_harvest_migrate_sources() {
-    $this->markTestSkipped( 'This test should be implemneted by each for each harvest submodule.');
+    $this->markTestSkipped('This test should be implemneted by each for each harvest submodule.');
   }
 
   /**
    *
    */
   public function test_dkan_harvest_rollback_sources() {
-    $this->markTestSkipped( 'This test should be implemneted by each for each harvest submodule.');
+    $this->markTestSkipped('This test should be implemneted by each for each harvest submodule.');
   }
 
   /**
@@ -89,8 +93,7 @@ class DkanHarvestTest extends \PHPUnit_Framework_TestCase {
     // If we change the source (keeping the machine name) the migration should
     // have the updated harvest source.
     $harvest_test_source_local_dir->label = "This is an updated source";
-    $harvest_test_source_local_dir->uri = DRUPAL_ROOT . "/" . drupal_get_path('module',
-      'dkan_harvest') . "/test/phpunit/data/harvest_fictional_test_source/";
+    $harvest_test_source_local_dir->uri = __DIR__ . '/data/harvest_fictional_test_source/';
     $migration_harvest_test_source_second = dkan_harvest_get_migration($harvest_test_source_local_dir);
     $this->assertEquals($harvest_test_source_local_dir, $migration_harvest_test_source_second->getHarvestSource());
   }
@@ -99,7 +102,7 @@ class DkanHarvestTest extends \PHPUnit_Framework_TestCase {
    * @covers ::dkan_harvest_cache_default()
    */
   public function test_dkan_harvest_cache_sources() {
-    $this->markTestSkipped( 'This test should be implemneted by each for each harvest submodule.');
+    $this->markTestSkipped('This test should be implemneted by each for each harvest submodule.');
   }
 
   /**
@@ -164,4 +167,5 @@ class DkanHarvestTest extends \PHPUnit_Framework_TestCase {
       module_disable(array('dkan_harvest_test'));
     }
   }
+
 }

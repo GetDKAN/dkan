@@ -1,0 +1,4 @@
+sphinx>=1.5.2
+sphinx-rtd-theme>=0.2.4
+recommonmark==0.4.0
+# sphinxcontrib-httpdomain==1.5.0

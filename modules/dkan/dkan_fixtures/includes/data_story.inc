@@ -1,19 +1,24 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Data Stories from fixtures.
+ */
+
+/**
+ * Data stories fixtures migration class.
  */
 class DkanDataStoriesImport extends DkanPanelizedNodesImport {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
     if (!isset($arguments['endpoint'])) {
       $arguments['endpoint'] = drupal_get_path('module', 'dkan_fixtures') . '/data/';
       $arguments['list_url'] = 'dkan_data_story_list.json';
-      $arguments['item_url'] = 'dkan_data_story_show?id=:id.json';
+      $arguments['item_url'] = 'dkan_data_story_show%3Fid=:id.json';
     }
     $arguments['content_type'] = 'dkan_data_story';
 
@@ -24,6 +29,15 @@ class DkanDataStoriesImport extends DkanPanelizedNodesImport {
     $this->addFieldMapping('field_image:alt', 'field_image_alt');
     $this->addFieldMapping('field_tags', 'tags');
     $this->addFieldMapping('field_topic', 'topics');
+    $this->addFieldMapping('path', 'path');
+  }
+
+  /**
+   * Do extra processing before the node is saved.
+   */
+  public function prepare($node, $row) {
+    parent::prepare($node, $row);
+    $node->path['pathauto'] = FALSE;
   }
 
   /**
@@ -54,4 +68,5 @@ class DkanDataStoriesImport extends DkanPanelizedNodesImport {
     }
     $row->topics = $topics;
   }
+
 }

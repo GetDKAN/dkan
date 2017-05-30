@@ -2,7 +2,6 @@ name = DKAN Sitewide Search
 description = Adds search component using SQL instead of Solr
 core = 7.x
 package = DKAN
-project = dkan
 dependencies[] = ctools
 dependencies[] = entity
 dependencies[] = facetapi

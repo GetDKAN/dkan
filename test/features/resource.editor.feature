@@ -27,7 +27,8 @@ Feature: Resource
       | Jaz     | Group 01 | member               | Pending           |
       | Admin   | Group 02 | administrator member | Active            |
       | Celeste | Group 02 | member               | Active            |
-      | Celeste | Group 01 | member               | Active            |
+      | Celeste | Group 01 | administrator member | Active            |
+      | John    | Group 01 | member               | Active            |
     And "Tags" terms:
       | name    |
       | world   |
@@ -39,10 +40,10 @@ Feature: Resource
     And resources:
       | title       | publisher | format | dataset    | author   | published | description |
       | Resource 01 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 02 | Group 01  | zip    | Dataset 01 | Katie    | Yes       | No          |
-      | Resource 03 | Group 02  | zip    | Dataset 02 | Celeste  | No        | Yes         |
+      | Resource 02 | Group 01  | csv    | Dataset 01 | Katie    | Yes       | No          |
+      | Resource 03 | Group 02  | csv    | Dataset 02 | Celeste  | No        | Yes         |
       | Resource 04 | Group 01  | csv    | Dataset 01 | Katie    | No        | Yes         |
-      | Resource 05 | Group 02  | zip    | Dataset 02 | Celeste  | Yes       | Yes         |
+      | Resource 05 | Group 02  | csv    | Dataset 02 | Celeste  | Yes       | Yes         |
 
   # TODO: Change to use Workbench instead of /content
   @noworkflow
@@ -107,7 +108,7 @@ Feature: Resource
     And I wait for "Delete Items"
     Then I should see "Last import"
     And I should see "imported items total"
-  
+
   @noworkflow @javascript
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
@@ -174,8 +175,3 @@ Feature: Resource
     And I click "Revert"
     And I press "Revert"
     Then I should see "Resource Resource 01 has been reverted"
-
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"

@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @file
+ * List of language codes.
+ */
+
+/**
+ * Return array of language codes.
+ */
 function dkan_dataset_content_types_get_language_codes() {
 
   return array(
@@ -436,6 +444,6 @@ function dkan_dataset_content_types_get_language_codes() {
     "yo_NG" => "Yoruba (Nigeria)",
     "yo" => "Yoruba",
     "zu_ZA" => "Zulu (South Africa)",
-    "zu" => "Zulu"
+    "zu" => "Zulu",
   );
 }

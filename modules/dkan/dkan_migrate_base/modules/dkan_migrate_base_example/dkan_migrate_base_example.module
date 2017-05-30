@@ -38,7 +38,11 @@ function dkan_migrate_base_example_migrate_api() {
   return $api;
 }
 
+/**
+ * Extends MigrateCkanDatasetBase.
+ */
 class MigrateCkanDatasetExample extends MigrateCkanDatasetBase {
+
   /**
    * Add endpoint.
    */
@@ -48,8 +52,14 @@ class MigrateCkanDatasetExample extends MigrateCkanDatasetBase {
     $arguments['endpoint'] = dirname(__FILE__) . '/data/';
     parent::__construct($arguments);
   }
+
 }
+
+/**
+ * Extends MigrateCkanResourceBase.
+ */
 class MigrateCkanResourcesExample extends MigrateCkanResourceBase {
+
   /**
    * Add endpoint.
    */
@@ -60,8 +70,14 @@ class MigrateCkanResourcesExample extends MigrateCkanResourceBase {
     $arguments['endpoint'] = dirname(__FILE__) . '/data/';
     parent::__construct($arguments);
   }
+
 }
+
+/**
+ * Extends MigrateDataJsonDatasetBase.
+ */
 class MigrateDataJsonExample11 extends MigrateDataJsonDatasetBase {
+
   /**
    * Add endpoint.
    */
@@ -73,7 +89,9 @@ class MigrateDataJsonExample11 extends MigrateDataJsonDatasetBase {
     $arguments['version'] = '1.1';
     parent::__construct($arguments);
   }
+
 }
+
 /**
  * Deregisters DKAN example migrations.
  */

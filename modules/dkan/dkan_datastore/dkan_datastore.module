@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Creates DKAN Datastore.
@@ -30,7 +31,7 @@ function dkan_datastore_menu() {
     'weight' => '20',
     'type' => MENU_LOCAL_TASK,
   );
-  
+
   $items['node/%dkan_datastore_resource/data'] = array(
     'page callback' => 'dkan_datastore_proxy',
     'page arguments' => array(1),
@@ -104,8 +105,7 @@ function dkan_datastore_menu() {
 }
 
 /**
- * Retrieves the url to the physical resource and 
- * the type of it.
+ * Retrieves the url and type to the physical resource.
  */
 function dkan_datastore_resource_link_type($node) {
   $node_wrapper = entity_metadata_wrapper('node', $node);
@@ -114,21 +114,26 @@ function dkan_datastore_resource_link_type($node) {
   $api_field = dkan_datastore_api_link_field();
   $type = dkan_datastore_node_type();
 
-  if($node->type == $type && $file = $node_wrapper->{$file_field}->value()) {
+  if ($node->type == $type && $file = $node_wrapper->{$file_field}->value()) {
     $uri = isset($file->uri) ? $file->uri : $file['uri'];
     $url = file_create_url($uri);
     return array('url' => $url, 'type' => 'upload');
-  } else if($remote_file = $node_wrapper->{$remote_file_field}->value()) {
+  }
+  elseif ($remote_file = $node_wrapper->{$remote_file_field}->value()) {
     return array('url' => $remote_file['uri'], 'type' => 'remote');
-  } else if($link = $node_wrapper->{$api_field}->value()){
+  }
+  elseif ($link = $node_wrapper->{$api_field}->value()) {
     return array('url' => $link['url'], 'type' => 'link');
-  } else {
+  }
+  else {
     drupal_set_message(t('No download available for this resource'));
     return array('type' => 'upload');
-  }  
+  }
 }
 
 /**
+ * Retrive download title for a resource.
+ *
  * Title callback to change the download link text
  * based on the type of the resource link.
  */
@@ -148,46 +153,20 @@ function dkan_datastore_menu_alter(&$items) {
 }
 
 /**
- * Copy of feeds_access.
+ * Access callback for DKAN Datastore operations.
  */
 function dkan_datastore_feeds_access($action, $node) {
+
+  // If $action is not one of the supported actions, return access denied.
   if (!in_array($action, array('import', 'clear', 'unlock', 'drop'))) {
-    // If $action is not one of the supported actions, we return access denied.
     return FALSE;
   }
-  if ($action == 'drop' && user_access('manage datastore')) {
+
+  // All available operations requires the 'manage datastore' permission.
+  if (user_access('manage datastore') && node_access('update', $node) && $node->type == 'resource') {
     return TRUE;
   }
-  if ($action != 'import') {
-    if ($importer_ids = feeds_get_importer_ids($node->type, $node->nid)) {
-      foreach ($importer_ids as $importer_id) {
-        $source_config = feeds_source($importer_id, $node->nid);
-        $fetcher = get_class($source_config->importer->fetcher);
-        $source = isset($source_config->config[$fetcher]['source']) ? $source_config->config[$fetcher]['source'] : '';
-        if ($source) {
-          return TRUE;
-        }
-      }
-      return FALSE;
-    }
-    else {
-      return FALSE;
-    }
-  }
 
-  if (is_string($node)) {
-    $importer_id = $node;
-  }
-  elseif ($node->type) {
-    $importer_id = feeds_get_importer_id($node->type);
-  }
-
-  // Check for permissions if feed id is present, otherwise return FALSE.
-  if ($importer_id) {
-    if (user_access('administer feeds') || user_access("{$action} {$importer_id} feeds")) {
-      return TRUE;
-    }
-  }
   return FALSE;
 }
 
@@ -246,7 +225,7 @@ function dkan_datastore_resource_load($id) {
       return node_load($id);
     }
     // Id is a uuid and uuid is installed.
-    else if (function_exists('entity_uuid_load')) {
+    elseif (function_exists('entity_uuid_load')) {
       $node = entity_uuid_load('node', array($id));
       return ($node) ? reset($node) : FALSE;
     }
@@ -344,8 +323,8 @@ function dkan_datastore_permission() {
       'title' => t('Manage Datastore'),
     ),
     'manage datastore settings' => array(
-      'title' => t('Manage Datastore Settings')
-    )
+      'title' => t('Manage Datastore Settings'),
+    ),
   );
 }
 
@@ -372,24 +351,27 @@ function dkan_datastore_node_view($node, $view_mode, $langcode) {
  * Determines status of datastore attached to resource node.
  */
 function dkan_datastore_status($node) {
-  if($file = dkan_datastore_file_field($node)) {
-    if(dkan_datastore_is_importable($file)){
+  if ($file = dkan_datastore_file_field($node)) {
+    if (dkan_datastore_is_importable($file)) {
       $node = entity_metadata_wrapper('node', $node);
-      if($status = $node->field_datastore_status->value()) {
+      if ($status = $node->field_datastore_status->value()) {
         return $status;
-      } else {
+      }
+      else {
         return DKAN_DATASTORE_FILE_EXISTS;
       }
-    } else {
+    }
+    else {
       return DKAN_DATASTORE_WRONG_TYPE;
     }
-  } else {
+  }
+  else {
     return DKAN_DATASTORE_EMPTY;
   }
 }
 
 /**
- * Determines if a resource can be imported
+ * Determines if a resource can be imported.
  */
 function dkan_datastore_is_importable($file) {
   return (is_object($file) && $file->filemime == 'text/csv') || (is_array($file) && array_key_exists('filemime', $file) && $file['filemime'] == 'text/csv');
@@ -493,7 +475,8 @@ function dkan_datastore_theme() {
 function theme_dkan_datastore_status_formatter(array $variables) {
   $status = dkan_datastore_status($variables['item']['entity']);
   if ($status === DKAN_DATASTORE_FILE_EXISTS) {
-    return '<span class="circle false" title="' . t('A file has been uploaded but not added to the datastore') . '">' . t('Data ready to be added') . '</span>';
+    $title = t('A file has been uploaded but not added to the datastore');
+    return '<span class="circle false" title="' . $title . '">' . t('Data ready to be added') . '</span>';
   }
   elseif ($status === DKAN_DATASTORE_EXISTS) {
     return '<span class="circle true">' . t('Datastore enabled') . '</span>';
@@ -573,7 +556,7 @@ function dkan_datastore_node_type() {
 function dkan_datastore_feeds_after_import(FeedsSource $source) {
   $importer_id = $source->importer->id;
   $importers = array('dkan_file', 'dkan_link');
-  if(empty($source->exception) && in_array($importer_id, $importers)) {
+  if (empty($source->exception) && in_array($importer_id, $importers)) {
     $node = node_load($source->feed_nid);
     $node = entity_metadata_wrapper('node', $node);
     $node->field_datastore_status->set(DKAN_DATASTORE_EXISTS);
@@ -585,7 +568,7 @@ function dkan_datastore_feeds_after_import(FeedsSource $source) {
  * Implements hook_node_presave().
  */
 function dkan_datastore_node_presave($node) {
-  if(is_object($node) && $node->type == 'resource') {
+  if (is_object($node) && $node->type == 'resource') {
     $wrap = entity_metadata_wrapper('node', $node);
     $wrap->field_datastore_status->set(dkan_datastore_status($node));
   }
@@ -596,9 +579,9 @@ function dkan_datastore_node_presave($node) {
  */
 function dkan_datastore_cron_queue_info() {
   $queues['dkan_datastore_queue'] = array(
-     'worker callback' => 'dkan_datastore_queue_import_worker',
-     'time' => 120,
-     'skip on cron' => FALSE,
+    'worker callback' => 'dkan_datastore_queue_import_worker',
+    'time' => 120,
+    'skip on cron' => FALSE,
   );
 
   return $queues;
@@ -607,22 +590,18 @@ function dkan_datastore_cron_queue_info() {
 /**
  * Utility function for add a new resource to datastore queue.
  */
-function dkan_datastore_queue_import($uuid, $fid) {
+function dkan_datastore_queue_import($uuid) {
   $item = array(
     'uuid' => $uuid,
-    'fid' => $fid
   );
   DrupalQueue::get('dkan_datastore_queue')->createItem($item);
-  watchdog('dkan_datastore', t('Added %file to queue for import into datastore', array('%file' => $fid)));
+  watchdog('dkan_datastore', 'Added resource %uuid to queue for import into datastore', array('%uuid' => $uuid));
 }
 
 /**
  * Callback used with queue for index content into datastore.
  */
 function dkan_datastore_queue_import_worker($item) {
-  $file = file_load($item['fid']);
-  $uri = $file->uri;
-  $file_path = file_create_url($uri);
   $datastore = dkan_datastore_go($item['uuid']);
-  $datastore->updateByFile($file_path);
+  $datastore->importByCLI();
 }

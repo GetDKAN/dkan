@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Install file for DKAN Topics.
@@ -13,14 +14,14 @@ function dkan_topics_install() {
   $components = array_keys($feature->info['features']);
   features_revert(array('dkan_topics' => $components));
 
-  // Add the field_topic field instance to the dataset, story and dashboard bundles.
+  // Add field_topic instance to dataset, story and dashboard bundles.
   $content_types = array('dataset', 'dkan_data_story', 'data_dashboard');
   $available_types = array_keys(node_type_get_types());
 
   foreach (array_intersect($content_types, $available_types) as $content_type) {
     if (!field_info_instance('node', 'field_topic', $content_type)) {
 
-      // Exported field_instance: 'node-dataset-field_topic'
+      // Exported field_instance: 'node-dataset-field_topic'.
       $instance = array(
         'bundle' => $content_type,
         'default_value' => NULL,
@@ -70,14 +71,14 @@ function dkan_topics_install() {
     }
   }
   $message = <<<EOF
-You have just enabled the DKAN Topics module. Most likely you are
+'You have just enabled the DKAN Topics module. Most likely you are
 starting with an empty Topics vocabulary. To load sample topics, enable the
 additional DKAN Default Topics module. <a href="@topics_admin">Click here to
-manage the Topics vocabulary yourself.</a>
+manage the Topics vocabulary yourself.</a>'
 EOF;
   drupal_set_message(t($message, array('@topics_admin' => 'admin/structure/taxonomy/dkan_topics')));
 
-  // Set up fonts
+  // Set up fonts.
   module_load_include('inc', 'font_icon_select', 'font_icon_select.admin');
   $new_entity = entity_get_controller('font_icon_select_font_library')->create();
   $new_entity->font_title = 'DKAN Topics';
@@ -110,7 +111,9 @@ function dkan_topics_disable() {
   }
   // Recommend uninstall.
   global $base_url;
-  drupal_set_message(t('DKAN Topics has been disabled. To completely remove the topic terms and fields from the site, uninstall the module here: <a href="'. $base_url . '/admin/modules/uninstall">Uninstall DKAN Featured Topics</a>.'), 'warning', FALSE);
+  $disable_message_begin = t('DKAN Topics has been disabled. To completely remove the topic terms and fields from the site, uninstall the module here: <a href="');
+  $disable_message_end = t('/admin/modules/uninstall">Uninstall DKAN Featured Topics</a>.');
+  drupal_set_message($disable_message_begin . $base_url . $disable_message_end, 'warning', FALSE);
 }
 
 /**
@@ -122,16 +125,15 @@ function dkan_topics_uninstall() {
   taxonomy_vocabulary_delete($vocab->vid);
 
   $fields = array(
-    'field_icon_type', 
-    'field_topic', 
-    'field_topic_icon', 
+    'field_icon_type',
+    'field_topic',
+    'field_topic_icon',
     'field_topic_icon_color',
   );
-  foreach( $fields as $field) {
-    if (field_info_field($field)) { 
-      field_delete_field($field); 
+  foreach ($fields as $field) {
+    if (field_info_field($field)) {
+      field_delete_field($field);
       $message = 'Deleting field = ' . $field;
-      dsm($message); 
       drush_print($message);
     };
   }

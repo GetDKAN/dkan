@@ -10,7 +10,7 @@
 function dkan_sitewide_user_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'user-user-field_about'
+  // Exported field_instance: 'user-user-field_about'.
   $field_instances['user-user-field_about'] = array(
     'bundle' => 'user',
     'default_value' => NULL,

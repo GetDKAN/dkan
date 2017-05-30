@@ -1,0 +1,19 @@
+{
+    "folders":
+    [
+        {
+            "follow_symlinks": true,
+            "path": "."
+        }
+    ],
+    "settings": {
+        "xdebug": {
+            "path_mapping": {
+                "/var/www" : "{{path}}",
+            },
+            "url": "{{url}}",
+            "super_globals": true,
+            "close_on_stop": true
+        }
+    }
+}

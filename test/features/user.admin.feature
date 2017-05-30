@@ -81,7 +81,7 @@ Feature: User
     And I press "Save"
     Then I should see "The changes have been saved"
     When I am on "Users" page
-    Then I should see "blocked" in the "Katie" row
+    Then I should see "No" in the "Katie" row
 
   @javascript
   Scenario: Disable user
@@ -115,7 +115,7 @@ Feature: User
     When I am on "Users" page
     Then I should see "site manager" in the "Jaz" row
 
-Scenario: Modify user as editor
+  Scenario: Modify user as editor
     Given I am logged in as "Jaz"
     And I am on "Users" page
     Then I should see "Access denied"

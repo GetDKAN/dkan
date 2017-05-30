@@ -1,0 +1,16 @@
+{
+    "result": {
+        "path": "dataset/afghanistan-election-districts/resource/ca6ad242-2516-4fb0-b104-4692567f7e03",
+        "id": "ca6ad242-2516-4fb0-b104-4692567f7e03",
+        "url": "files/resource/district_centerpoints_0.csv",
+        "description": "<p>You can see this data plotted on a map, by clicking on 'Map' below. Individual data records can be seen by clicking on each point.</p>\n",
+        "format": "csv",
+        "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+        "name": "District Names",
+        "mimetype": "text/csv",
+        "size": "31.62 KB",
+        "created": "Thu, 09/01/2016 - 01:37",
+        "resource_group_id": "61803702-1d76-4aac-92a1-7a4de4cd26eb",
+        "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
+    }
+}

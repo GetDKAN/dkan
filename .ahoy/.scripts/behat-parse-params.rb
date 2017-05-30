@@ -15,7 +15,7 @@ def behat_join_params args
       "--" + key_value[0].strip + "=" + "'" + "#{key_value[1]}".strip + "'"
     else
       if [
-        "colors", "no-color", "end", "suite", "format",
+        "colors", "no-colors", "end", "suite", "format",
         "out", "format-settings", "init",  "lang", "name",
         "tags", "role", "story-syntax","definitions", "append-snippets",
         "no-snippets", "strict", "order", "rerun", "stop-on-failure",
@@ -33,7 +33,7 @@ end
 
 def behat_parse_params args
   files = []
-  params = [ '--colors' ]
+  params = []
 
   args.each do |param|
 
@@ -52,6 +52,30 @@ def behat_parse_params args
     end
   end
 
+  unless params.include? '--no-colors'
+    params.unshift '--colors'
+  end
+
   {:files => files, :params => params}
 end
 
+def behat_parse_suite file
+  default = "dkan_starter"
+
+  return default if  file.nil? or file.empty?
+
+  key = file.split('/').reverse[3]
+
+  return default if key.nil?
+
+  types = {
+    :dkan => "dkan",
+    :config => "custom",
+  }
+
+  if types[key.to_sym]
+    types[key.to_sym]
+  else
+    default
+  end
+end

@@ -16,7 +16,7 @@
  */
 function dkan_open_data_build_rows($nodes) {
 
-  // First row is the catalog itself
+  // First row is the catalog itself.
   $catalog_dist = new stdClass();
   $catalog_dist->accessURL = url('data.json', array('absolute' => TRUE));
   $catalog_dist->format = 'application/json';
@@ -148,7 +148,7 @@ function dkan_open_data_build_datasets($nodes) {
           $resources[] = $resource['target_id'];
         }
         $resources = node_load_multiple($resources);
-        // check user access
+        // Check user access.
         foreach ($resources as $key => $resource) {
           if (!node_access('view', $resource)) {
             unset($resources[$key]);
@@ -177,7 +177,6 @@ function dkan_open_data_build_datasets($nodes) {
   }
   return $rows;
 }
-
 
 /**
  * Build PHP array and object structure in preparation for JSON output.
@@ -266,10 +265,8 @@ function dkan_open_data_build_distributions($node) {
  *
  * @param object $node
  *   The node containing the field value.
- *
  * @param string $field_name
  *   The machine name of the field.
- *
  * @param string $column_name
  *   The column containing the primary value for a given field.
  */

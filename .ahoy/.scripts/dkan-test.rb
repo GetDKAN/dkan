@@ -44,11 +44,11 @@ def main
     `bash dkan/.ahoy/.scripts/composer-install.sh #{BEHAT_FOLDER}`
   end
 
-  parsed = behat_parse_params(payload)
-  files = parsed[:files].join(" ")
-  params = behat_join_params(parsed[:params])
-
   Dir.chdir(BEHAT_FOLDER) do
+    parsed = behat_parse_params(payload)
+    files = parsed[:files].join(" ")
+    params = behat_join_params(parsed[:params])
+
     puts "RUNNING: bin/behat #{files} #{params} #{CONFIG}"
 
     IO.popen("bin/behat #{files} #{params} #{CONFIG}") do |io|

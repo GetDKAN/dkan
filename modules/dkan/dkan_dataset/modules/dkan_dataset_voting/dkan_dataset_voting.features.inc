@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_dataset_voting.features.inc

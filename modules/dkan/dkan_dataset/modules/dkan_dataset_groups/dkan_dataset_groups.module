@@ -26,24 +26,24 @@ function dkan_dataset_groups_menu_local_tasks_alter(&$data, $router_item, $root_
 }
 
 /**
- * Get dataset that belongs to a group
+ * Get dataset that belongs to a group.
  */
 function dkan_dataset_groups_datasets($node) {
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
-      ->propertyCondition('status', 1)
-      ->fieldCondition('og_group_ref', 'target_id', $node->nid)
-      ->propertyCondition('type', 'dataset');
+    ->propertyCondition('status', 1)
+    ->fieldCondition('og_group_ref', 'target_id', $node->nid)
+    ->propertyCondition('type', 'dataset');
   $result = $query->execute();
   return isset($result['node']) ? $result['node'] : array();
 }
 
 /**
- * Get group members
+ * Get group members.
  */
 function dkan_dataset_groups_node_members($node) {
-  // Remove admin user from group
-  return array_filter(og_get_group_members_properties($node, array(), 'members', 'node'), function($uid){
+  // Remove admin user from group.
+  return array_filter(og_get_group_members_properties($node, array(), 'members', 'node'), function ($uid) {
     return $uid != 1;
   });
 }
@@ -67,11 +67,14 @@ function dkan_dataset_groups_block_view_alter(&$data, $block) {
 
       $members = dkan_dataset_groups_node_members($node);
 
-      $data['content']['#markup'] .= '<div class="group-owner-message"><strong>' . $subscribe_link . '</strong></div>';
+      // If the user is logged in then display the 'Request membership' link.
+      if (user_is_logged_in()) {
+        $data['content']['#markup'] .= '<div class="group-owner-message"><strong>' . $subscribe_link . '</strong></div>';
+      }
 
       // Hide member count if group is empty.
       if (count($members)) {
-        $data['content']['#markup'] .= '<div class="group-subscribe-message"><a href="/node/'.$group['gid'].'/members">Members (' . count($members) . ')</a></div>';
+        $data['content']['#markup'] .= '<div class="group-subscribe-message"><a href="/node/' . $group['gid'] . '/members">Members (' . count($members) . ')</a></div>';
       }
 
     }
@@ -80,6 +83,7 @@ function dkan_dataset_groups_block_view_alter(&$data, $block) {
 
 /**
  * Create a formatted 'Subscribe' link for this group.
+ *
  * @TODO
  * Replace with helper function if http://drupal.org/node/1568858 gets in.
  */
@@ -93,11 +97,11 @@ function dkan_dataset_groups_extras_subscribe($entity_type, $entity) {
   return drupal_render($elements);
 }
 
-
 /**
  * Implements hook_default_search_api_index_alter().
  *
- * Add og group ref when is enable dataset groups. In other case we don't need this field on the index.
+ * Add og group ref when is enable dataset groups. In other case we don't need
+ * this field on the index.
  */
 function dkan_dataset_groups_default_search_api_index_alter(array &$defaults) {
   foreach ($defaults as &$index) {
@@ -110,12 +114,18 @@ function dkan_dataset_groups_default_search_api_index_alter(array &$defaults) {
 /**
  * Implements hook_default_search_api_server_alter().
  *
- * Add og group ref when is enable dataset groups. In other case we don't need this field on the index.
+ * Add og group ref when is enable dataset groups. In other case we don't need
+ * this field on the index.
  */
 function dkan_dataset_groups_default_search_api_server_alter(array &$defaults) {
   foreach ($defaults as &$server) {
     if ($server->machine_name == 'datasets') {
-      $server->options['indexes']['datasets']['og_group_ref'] = array('boost' => '1.0', 'column' => 'value', 'table' => 'search_api_db_datasets_og_group_ref_2', 'type' => 'list<integer>');
+      $server->options['indexes']['datasets']['og_group_ref'] = array(
+        'boost' => '1.0',
+        'column' => 'value',
+        'table' => 'search_api_db_datasets_og_group_ref_2',
+        'type' => 'list<integer>',
+      );
     }
   }
 }
@@ -123,7 +133,7 @@ function dkan_dataset_groups_default_search_api_server_alter(array &$defaults) {
 /**
  * Implements hook_og_context_negotiation_info().
  */
-function  dkan_dataset_groups_og_context_negotiation_info() {
+function dkan_dataset_groups_og_context_negotiation_info() {
   $providers = array();
 
   $providers['dataset_members_page'] = array(
@@ -142,11 +152,11 @@ function  dkan_dataset_groups_og_context_negotiation_info() {
 function dkan_dataset_groups_context_callback() {
   $context = array();
 
-  // We are at node/%/members
+  // We are at node/%/members.
   $node = node_load(arg(1));
 
   if ($node->type == 'group') {
-    //Is a node group then use it.
+    // Is a node group then use it.
     $group_node = $node;
   }
   else {
@@ -177,7 +187,7 @@ function dkan_dataset_groups_views_post_build(&$view) {
  * Implements hook_menu_breadcrumb_alter().
  */
 function dkan_dataset_groups_menu_breadcrumb_alter(&$active_trail, $item) {
-  if($item['path'] === 'node/%/members') {
+  if ($item['path'] === 'node/%/members') {
 
     // We need to add the groups link to keep navigation consistent.
     $groups_link = array(
@@ -191,9 +201,9 @@ function dkan_dataset_groups_menu_breadcrumb_alter(&$active_trail, $item) {
     // Since no array_insert function is present in PHP
     // and array_splice doesn't accept an array as argument
     // then we need to handle this manually.
-    $part1 = array_slice($active_trail, 0, 1, true);
-    $part2 = array_slice($active_trail, 1, null, true);
-    $active_trail = array_merge($part1, array( 1 => $groups_link), $part2);
+    $part1 = array_slice($active_trail, 0, 1, TRUE);
+    $part2 = array_slice($active_trail, 1, NULL, TRUE);
+    $active_trail = array_merge($part1, array(1 => $groups_link), $part2);
   }
 }
 
@@ -214,7 +224,7 @@ function dkan_dataset_groups_form_alter(&$form, $form_state, $form_id) {
       // Fixes pager bug.
       if (isset($form['sort_order']) && isset($form['sort_by']['#options']['changed'])) {
         $sort_by = 'changed';
-        if(isset($_GET['sort_by'])){
+        if (isset($_GET['sort_by'])) {
           $sort_by = $_GET['sort_by'];
         }
         else {
@@ -231,17 +241,18 @@ function dkan_dataset_groups_form_alter(&$form, $form_state, $form_id) {
 }
 
 /**
- * Implements hook_node_presave
+ * Implements hook_node_presave().
+ *
  * Add a default group image if the group image field is empty.
  */
 function dkan_dataset_groups_node_presave($node) {
-  if(is_object($node) && $node->type == "group") {
+  if (is_object($node) && $node->type == "group") {
     $wrap = entity_metadata_wrapper('node', $node);
     $fid = $wrap->field_image->value();
-    if(!isset($fid)) {
+    if (!isset($fid)) {
       $source = drupal_get_path('module', 'dkan_dataset_groups') . '/default_images/group.png';
       if (file_exists($source)) {
-        $file = new stdClass;
+        $file = new stdClass();
         $file->filename = 'group.png';
         $file->timestamp = REQUEST_TIME;
         $file->uri = $source;
@@ -271,6 +282,174 @@ function dkan_dataset_groups_node_validate($node, $form, &$form_state) {
 
     if ($duplicate) {
       form_set_error('title', t('A group with title %title exists on the site. Please use another title.', array('%title' => $node->title)));
+    }
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function dkan_dataset_groups_permission() {
+  return array(
+    'administer og ui pages' => array(
+      'title' => t('Administer Organic groups ui pages'),
+      'description' => t('Access admin pages for Organic Groups ui.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_dataset_groups_menu_alter(&$items) {
+  $items['admin/config/group']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/settings']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/permissions']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/roles']['access arguments'] = array('administer og ui pages');
+  $items['admin/config/group/fields']['access arguments'] = array('administer og ui pages');
+}
+
+/**
+ * Returns the $rid of an OG role based on the Role Name.
+ */
+function dkan_dataset_groups_get_og_rid_by_name($name) {
+  return db_query("SELECT rid from {og_role} WHERE name = :name", array(":name" => $name))->fetchField();
+}
+
+/**
+ * Implements hook_og_membership_insert().
+ */
+function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
+  
+  // If the user is an editor, assign the og administrator role
+  // when adding the user to a group.
+  $group_type = $og_membership->group_type;
+  $gid = $og_membership->gid;
+  $uid = $og_membership->etid;
+  $rid = dkan_dataset_groups_get_og_rid_by_name('administrator member');
+
+  // Load user.
+  $user = user_load($uid);
+  // Get 'editor' role ID.
+  $erid = user_role_load_by_name('editor');
+  // If the user is an 'editor' then process it to assign it the 
+  // OG administrator role.
+  if (user_has_role($erid->rid, $user)) {
+    // Get the existing OG roles that the user has on the group.
+    $user_roles = og_get_user_roles($group_type, $gid, $uid);
+    // If the user has not the administrator role, assign it.
+    if (empty($user_roles[$rid])) {
+      // Create new role record and associate it with the user.
+      $role = new stdClass();
+      $role->uid = $uid;
+      $role->rid = $rid;
+      $role->group_type = $group_type;
+      $role->gid = $gid;
+
+      // Assign the administrator role to the user.
+      drupal_write_record('og_users_roles', $role);
+      og_invalidate_cache();
+      module_invoke_all('og_role_grant', $group_type, $gid, $uid, $rid);
+
+      // Display a message to the user.
+      if (isset($user->name)) {
+        drupal_set_message(t('%user has the editor role, so has also been granted the group administrator role in this group.', array('%user' => $user->name)), 'status');
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_user_update().
+ */
+function dkan_dataset_groups_user_update(&$edit, $account, $category) {
+ 
+  // OG roles are checked every time a user is updated. If the user is an 'editor'
+  // then the 'administrator member' OG role is granted. If the user is not an 'editor' and
+  // also not a 'site manager' then the 'administrator member' OG role is removed.
+  // The roles are modified on all the groups the updated user belongs to.
+  if (module_exists('og')) {
+
+    $rid = dkan_dataset_groups_get_og_rid_by_name('administrator member');
+    $rid1 = user_role_load_by_name('editor');
+    $rid2 = user_role_load_by_name('site manager');
+    // If the user is not an 'editor' or 'site manager'.
+    if (!user_has_role($rid1->rid, $account) && !user_has_role($rid2->rid, $account)) {
+      // Get the list of groups where the user has the 'administrator member' role.
+      $query = db_select('node', 'n');
+      $query->join('og_users_roles', 'o', 'n.nid = o.gid');
+      $query
+        ->fields('n', array('title'))
+        ->condition('o.uid', $account->uid)
+        ->condition('o.rid', $rid);
+      $result = $query->execute();
+
+      // If any, display a message to the user letting them know about the role update.
+      if ($result) {
+        $groups = '';
+        foreach ($result as $delta => $row) {
+          $groups .= $row->title;
+          if ($delta < ($result->rowCount() - 1)) {
+            $groups .= ', ';
+          }
+        }
+
+        if ($groups != '') {
+          drupal_set_message(t('%user no longer has the editor or site manager role so has also been removed as an administrator on the following groups: %groups.', array('%user' => $account->name, '%groups' => $groups)), 'status');
+        }
+      }
+
+      // Remove the 'administrator member' role from the user on all the groups.  
+      db_delete('og_users_roles')
+        ->condition('uid', $account->uid)
+        ->condition('rid', $rid)
+        ->execute();
+    }
+
+    // If the user IS an editor, and belongs to a group or groups,
+    // add the og administrator role if not already set.
+    if (user_has_role($rid1->rid, $account)) {
+      // Get the list of groups associated with the user.
+      $query = db_select('og_membership', 'm');
+      $query->join('og_users_roles', 'o', 'm.gid = o.gid');
+      $query->join('node', 'n', 'o.gid = n.nid');
+      $query
+        ->fields('n', array('nid', 'title'))
+        ->condition('m.entity_type', 'user')
+        ->condition('m.etid', $account->uid);
+      $users_groups = $query->execute();
+
+      // If the user belongs to any group then assign the 'administrator member' OG role
+      // on each group.
+      if ($users_groups) {
+        // Process each group.
+        foreach ($users_groups as $row) {
+          // Check if the user has the 'administrator member' role on the group.
+          $query = db_select('og_users_roles', 'o');
+          $query->fields('o', array('gid'));
+          $query->condition('uid', $account->uid);
+          $query->condition('rid', $rid);
+          $query->condition('gid', $row->nid);
+          $result = $query->execute();
+
+          // If the role is not present then add it.
+          if (!$result->rowCount()) {
+            db_insert('og_users_roles')
+              ->fields(array(
+                'uid' => $account->uid,
+                'rid' => $rid,
+                'gid' => $row->nid,
+                'group_type' => 'node',
+              ))
+              ->execute();
+
+            // Display a message to the user.  
+            if (isset($row->title)) {
+              drupal_set_message(t('%user is an editor so has also been granted the group administrator role for the group: %group.', array('%user' => $account->name, '%group' => $row->title)), 'status');
+            }
+          }
+        }
+      }
     }
   }
 }

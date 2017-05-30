@@ -13,6 +13,7 @@ class DkanDatasetApiWebTestCase extends DrupalWebTestCase {
   protected $group;
   protected $dataset;
   protected $resource;
+
   /**
    * Information about the test.
    */
@@ -159,11 +160,6 @@ class DkanDatasetApiWebTestCase extends DrupalWebTestCase {
     );
     node_save($this->resource);
 
-    // $this->dataset->og_group_ref[LANGUAGE_NONE][] = array(
-    //   'target_id' => $this->group->nid,
-    //   'target_type' => $this->group->type,
-    // );
-
     $this->dataset->field_resources[LANGUAGE_NONE][] = array(
       'target_id' => $this->resource->nid,
       'target_type' => $this->resource->type,
@@ -174,7 +170,7 @@ class DkanDatasetApiWebTestCase extends DrupalWebTestCase {
   /**
    * Test all read api methods with access control.
    */
-  public function testDkanDatasetAPIRead() {
+  public function testDkanDatasetApiRead() {
     // Get all data.json succesful responses.
     $responses = $this->runQuerys('data_json');
 
@@ -298,11 +294,11 @@ class DkanDatasetApiWebTestCase extends DrupalWebTestCase {
    * Runs querys for every hook_menu_item related to $slug.
    *
    * @param string $slug
-   *   identifier for a specific api endpoint
+   *   Identifier for a specific api endpoint.
    * @param string $uuid
-   *   unique identifier for a specific group, resource or dataset query
+   *   Unique identifier for a specific group, resource or dataset query.
    * @param string $prefix
-   *   for access control variable_set
+   *   For access control variable_set.
    */
   protected function runQuerys($slug, $uuid = FALSE, $prefix = 'dkan_dataset_api_') {
     $uris = $this->getHookMenuItems($slug);
@@ -341,9 +337,9 @@ class DkanDatasetApiWebTestCase extends DrupalWebTestCase {
    * Helper that gets defined hook_menu items related to a specific callback.
    *
    * @param string $callback
-   *   a string representing a drupal callback.
+   *   A string representing a drupal callback.
    * @param string $prefix
-   *   prefix to remove from the callback.
+   *   Prefix to remove from the callback.
    *
    * @return array
    *   an array of related callbacks.
@@ -351,7 +347,7 @@ class DkanDatasetApiWebTestCase extends DrupalWebTestCase {
   protected function getHookMenuItems($callback, $prefix = 'dkan_dataset_api_') {
     $items = dkan_dataset_api_menu();
     $r = array();
-    // Match callback variable against $item['page_callback'],
+    // Match callback variable against $item['page_callback'],.
     foreach ($items as $key => $item) {
       $item_callback = $item['page callback'];
       $item_callback = str_replace($prefix, '', $item_callback);
@@ -362,4 +358,5 @@ class DkanDatasetApiWebTestCase extends DrupalWebTestCase {
     }
     return $r;
   }
+
 }

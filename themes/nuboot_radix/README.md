@@ -3,7 +3,7 @@
 This is the default theme for DKAN 1.0 -> https://github.com/NuCivic/dkan
 
 
-## Installation and Use
+## Installation
 
 Your theme will use [Gulp](http://gulpjs.com) to compile Sass. Gulp needs Node.
 
@@ -32,13 +32,25 @@ So you only need to add styles where you want to override the upstream css, and 
 
 To create a Nuboot Radix subtheme, run these command
 
+```drush en radix```
+
 ```drush vset theme_default radix```
 
 ```drush radix "MyThemeName" --kit=https://github.com/NuCivic/radix-kit-nuboot/archive/master.zip```
 
 ```drush vset theme_default MyThemeName```
 
-The new subtheme will be placed in to the /sites/all/themes/ directory, it will contain the proper directory structure to get you started.
+```drush dis radix```
+
+OR if using Ahoy:
+
+```ahoy dkan theme new-from-kit [new-theme-name]```
+
+```ahoy dkan theme setup```
+
+```ahoy dkan theme watch```
+
+The new subtheme will be placed in to the /sites/all/themes/ directory, it will contain the proper directory structure to get you started. 
 
 
 ## Updating subthemes that were based on Radix 7.x-rc4
@@ -47,17 +59,9 @@ To upgrade an older NuBoot Radix subtheme to use the new Radix 7.x-3.3 compiling
 http://www.radixtheme.org/articles/update-rc4-to-3/
 
 
-## Contributing
+## Use
 
-We are accepting issues in the dkan issue thread only -> https://github.com/NuCivic/dkan/issues -> Please label your issue as **"component: nuboot_radix"** after submitting so we can identify problems and feature requests faster.
-
-If you can, please cross reference commits in this repo to the corresponding issue in the dkan issue thread. You can do that easily adding this text:
-
-```
-NuCivic/dkan#issue_id
-```
-
-to any commit message or comment replacing **issue_id** with the corresponding issue id.
+Use the components directory to break out your styles into easy to find partial files. Add as many partial files as needed to theme new or more specific sections of your site. This helps keep the styles organized, allowing for easy customizations and quick to find elements for all team members. Do not add styles directly to the nuboot_radix.style.scss file, this file simply determines the order in which the theme files are compiled.
 
 
 

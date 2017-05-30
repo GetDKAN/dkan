@@ -3,5 +3,6 @@ description = A Views style plugin to display content lists for approval
 package = Views
 core = 7.x
 dependencies[] = views
-files[] = views_dkan_workflow_tree_plugin_style.inc
+dependencies[] = workbench_moderation
+files[] = ViewsDkanWorkflowTreePluginStyle.inc
 stylesheets[all][] = views_dkan_workflow_tree.css

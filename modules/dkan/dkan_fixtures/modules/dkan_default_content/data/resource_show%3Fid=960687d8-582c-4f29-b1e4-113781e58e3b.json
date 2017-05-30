@@ -1,0 +1,14 @@
+{
+    "result": {
+        "path": "dataset/florida-bike-lanes/resource/960687d8-582c-4f29-b1e4-113781e58e3b",
+        "id": "960687d8-582c-4f29-b1e4-113781e58e3b",
+        "url": "files/resource/Bike_Lane.csv",
+        "format": "csv",
+        "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+        "name": "Florida Bike Lanes",
+        "mimetype": "text/csv",
+        "size": "142.85 KB",
+        "created": "Thu, 09/01/2016 - 01:38",
+        "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
+    }
+}

@@ -8,7 +8,6 @@
 include_once 'dkan_sitewide.features.inc';
 include_once 'dkan_sitewide.blocks.inc';
 
-
 /**
  * Implements hook_menu().
  */
@@ -17,7 +16,7 @@ function dkan_sitewide_menu() {
 
   $items['dataset'] = array(
     'title' => 'Dataset',
-    'description' => t('Redirects to search page'),
+    'description' => 'Redirects to search page',
     'page callback' => 'dkan_sitewide_redirect_to_search',
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
@@ -29,7 +28,7 @@ function dkan_sitewide_menu() {
 /**
  * Callback to make change search path backward compatible.
  */
-function dkan_sitewide_redirect_to_search(){
+function dkan_sitewide_redirect_to_search() {
   $params = drupal_get_query_parameters();
   drupal_goto('/search/type/dataset', array('query' => $params), 301);
 }
@@ -108,7 +107,7 @@ function dkan_sitewide_preprocess_views_views_json_style_simple(&$vars) {
  */
 function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dataset-page' ||
-    $form['#id'] == 'views-exposed-form-user-profile-search-entity-view-1' ||
+    $form['#id'] == 'views-exposed-form-user-profile-search-user-profile-search-block' ||
     $form['#id'] == 'views-exposed-form-groups-search-entity-view-1' ||
     $form['#id'] == 'dkan-sitewide-dataset-search-form--2' ||
     $form['#id'] == 'views-exposed-form-dkan-datasets-panel-pane-1') {
@@ -118,9 +117,18 @@ function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
     $form['query']['#attributes'] = array('placeholder' => t('Search'));
     $form['query']['#size'] = 60;
   }
+  // Custom administration views.
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dkan-administration-nodes-system-1' || $form['#id'] == 'views-exposed-form-dkan-administration-files-system-1') {
+    $form['date_filter']['min']['#title'] = '';
+    $form['date_filter']['max']['#title'] = '';
+    $form['date_filter']['min']['#attributes']['placeholder'] = t('From');
+    $form['date_filter']['max']['#attributes']['placeholder'] = t('To');
+    $form['date_filter']['min']['#date_format'] = 'm/d/Y';
+    $form['date_filter']['max']['#date_format'] = 'm/d/Y';
+  }
 
   if ($form_id == 'colorizer_admin_settings') {
-    //Add clear cache for anonymous after any change.
+    // Add clear cache for anonymous after any change.
     $form['#submit'][] = 'dkan_sitewide_form_colorize_clear_cache';
   }
 }
@@ -154,21 +162,26 @@ function dkan_sitewide_restws_resource_info_alter(&$info) {
 function dkan_sitewide_update_status_alter(&$projects) {
 
   // Remove update notices.
-  $up_to_date_projects = array('gravatar', 'beautytips', 'entity_rdf', 'feeds_field_fetcher', 'multistep', 'link_iframe_formatter', 'rdfx');
-  foreach ( $up_to_date_projects as $up_to_date_project ) {
+  $up_to_date_projects = array(
+    'gravatar',
+    'beautytips',
+    'feeds_field_fetcher',
+    'multistep',
+  );
+  foreach ($up_to_date_projects as $up_to_date_project) {
 
-    if ( isset($projects[$up_to_date_project]) ) {
+    if (isset($projects[$up_to_date_project])) {
 
       $projects[$up_to_date_project]['status'] = UPDATE_CURRENT;
 
-      if ( isset($projects[$up_to_date_project]['title']) &&
-           isset($projects[$up_to_date_project]['existing_version']) ) {
+      if (isset($projects[$up_to_date_project]['title']) &&
+           isset($projects[$up_to_date_project]['existing_version'])) {
 
         $project_name = $projects[$up_to_date_project]['title'];
         $project_revision = $projects[$up_to_date_project]['existing_version'];
 
         if (current_path() == 'admin/reports/updates') {
-          drupal_set_message( $project_name . ' is up to date. We are using ' . $project_revision . ' revision.' );
+          drupal_set_message($project_name . ' is up to date. We are using ' . $project_revision . ' revision.');
         }
       }
     }
@@ -199,7 +212,7 @@ function dkan_sitewide_update_status_alter(&$projects) {
     $projects[$project]['status'] = UPDATE_NOT_CHECKED;
   }
   $minor = str_replace('7.x-1.', '', $dkan_tag);
-    foreach (array($current_version, $dkan_tag) as $version) {
+  foreach (array($current_version, $dkan_tag) as $version) {
     $projects[$project]['releases'][$version]['name'] = $project . ' ' . $version;
     $projects[$project]['releases'][$version]['version'] = $version;
     $projects[$project]['releases'][$version]['tag'] = $version;
@@ -224,11 +237,11 @@ function dkan_sitewide_update_status_alter(&$projects) {
   $projects[$project]['releases']['latest_version'] = $dkan_tag;
   $projects[$project]['releases']['7.x-1.x-dev']['release_link'] = 'http://github.com/nucivic/' . $project;
   $projects[$project]['releases']['7.x-1.x-dev']['reason'] = 'Development Release';
-  $projects[$project]['releases']['7.x-1.x-dev']['download_link'] = 'https://api.github.com/repos/NuCivic/' . $project .  '/zipball/7.x-1.x';
+  $projects[$project]['releases']['7.x-1.x-dev']['download_link'] = 'https://api.github.com/repos/NuCivic/' . $project . '/zipball/7.x-1.x';
 
   $projects[$project]['releases']['7.x-1.x-dev']['date'] = time();
 
-  $projects[$project]['releases'][$dkan_tag]['release_link'] = 'https://api.github.com/repos/NuCivic/' . $project .  '/zipball/' . $dkan_tag;
+  $projects[$project]['releases'][$dkan_tag]['release_link'] = 'https://api.github.com/repos/NuCivic/' . $project . '/zipball/' . $dkan_tag;
 
   // Checks to see if last digit is number which means it is on a tag.
   if (preg_match("/.*?(\d+)$/", $projects[$project]['existing_version'])) {
@@ -245,7 +258,11 @@ function dkan_sitewide_preprocess_page(&$variables) {
   $admin_theme = variable_get('admin_theme');
   $default_theme = variable_get('theme_default');
   if (arg(0) == 'admin' && arg(1) == 'appearance' && $admin_theme !== '0' && $default_theme !== $admin_theme) {
-    drupal_set_message(t('For Colorizer to work you must set the Administration theme to match your <em>Default theme</em> at the bottom of the <a href="' . $base_url . '/admin/appearance">appearance list</a> page.'), 'warning');
+    drupal_set_message(t('For Colorizer to work you must set the Administration theme to match your <em>Default theme</em> at the bottom of the !link  page.', array('!link' => l(t('appearance list'), 'admin/appearance'))), 'warning');
+  }
+  // Don't set a special page title if it's the front page.
+  if (isset($variables['is_front']) && $variables['is_front'] == TRUE) {
+    drupal_set_title('');
   }
 }
 
@@ -283,15 +300,15 @@ function dkan_sitewide_module_implements_alter(&$implementations, $hook) {
   }
 }
 
-/*
+/**
  * Converts a panel page into a panelized node page.
  *
- * @param
- *  $page_name The administrative name of the page.
- * @param
- *  $is_homepage True if the converted page should be set as the homepage.
+ * @param string $page_name
+ *   page_name The administrative name of the page.
+ * @param bool $is_homepage
+ *   is_homepage True if the converted page should be set as the homepage.
  */
-function dkan_sitewide_convert_panel_page($page_name, $is_homepage = false) {
+function dkan_sitewide_convert_panel_page($page_name, $is_homepage = FALSE) {
 
   module_load_include('inc', 'page_manager', 'plugins/tasks/page');
   $page = page_manager_page_load($page_name);
@@ -319,20 +336,20 @@ function dkan_sitewide_convert_panel_page($page_name, $is_homepage = false) {
     $page_node->panelizer['default']->display_is_modified = TRUE;
     $page_node->panelizer['default']->entity_type = 'node';
     $page_node->panelizer['default']->pipeline = 'ipe';
-    $page_node->panelizer['default']->link_to_entity = $page_node->nid;
+    $page_node->panelizer['default']->link_to_entity = TRUE;
     node_save($page_node);
 
     // Disable old panel page.
     dkan_sitewide_update_panel_page_status($page->name, TRUE);
 
-    // If the panel page was the homepage then set up the new node as the new homepage.
+    // If the panel page was the homepage
+    // then set up the new node as the new homepage.
     if ($is_homepage) {
       // Set new home page node as the new home page.
       variable_set('site_frontpage', 'node/' . $page_node->nid);
     }
   }
 }
-
 
 /**
  * Clone panel display.
@@ -344,7 +361,8 @@ function dkan_sitewide_clone_panel_display($task_handler) {
   if (isset($task_handler->conf['display'])) {
     $display = $task_handler->conf['display'];
     // If the display was not loaded then try to load it by the ID.
-  } else if (isset($task_handler->conf['did'])) {
+  }
+  elseif (isset($task_handler->conf['did'])) {
     $display = panels_load_display($task_handler->conf['did']);
   }
 
@@ -358,6 +376,8 @@ function dkan_sitewide_clone_panel_display($task_handler) {
 }
 
 /**
+ * Enable disable panel pages.
+ *
  * Function used to enable/disable panel pages.
  *   - TRUE: Disable page.
  *   - FALSE: Enable page.
@@ -369,3 +389,22 @@ function dkan_sitewide_update_panel_page_status($page_name, $status = FALSE) {
   menu_rebuild();
 }
 
+/**
+ * Check if given page manager page is already the frontpage.
+ *
+ * @param string $page
+ *   page The administrative name of the page.
+ */
+function dkan_sitewide_page_is_frontpage($page) {
+  $frontpage = variable_get('site_frontpage', 'node');
+
+  module_load_include('inc', 'page_manager', 'plugins/tasks/page');
+  $page = page_manager_page_load($page);
+
+  if ($page->path === $frontpage) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}

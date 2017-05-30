@@ -1,4 +1,4 @@
-## DKAN Default Content
+# DKAN Default Content
 
 DKAN Default Content is the module that holds all the default content delivered with DKAN. All content is
 imported through the _fixtures_ that can be found inside the /data directory. [DKAN Fixtures](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_fixtures) was used to generate
@@ -46,3 +46,6 @@ Please note that some CSS adjustments might be needed in order for the node page
 The function can be found in the dkan_sitewide module and can be used as follows:
 
 ```drush php-eval "dkan_sitewide_convert_panel_page(<page-name>);"```
+
+## About paths
+Pathauto is disabled for content created using dkan_fixtures because performance reasons. Instead, paths should be added to the fixtures using the path key.

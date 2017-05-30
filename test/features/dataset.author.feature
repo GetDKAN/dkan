@@ -13,6 +13,7 @@ Feature: Dataset Features
       | name                | url                          |
       | Datasets            | /dataset                     |
       | Datasets Search     | /search/type/dataset         |
+      | Add Dataset         | /node/add/dataset            |
       | My Content          | /user                        |
     Given users:
       | name    | mail                | roles                |
@@ -54,32 +55,29 @@ Feature: Dataset Features
       | Dataset 08 |           | Katie   | Yes              | election1 |             |
       | Dataset 09 | Group 02  | Katie   | Yes              | election1 |             |
     And resources:
-      | title       | publisher | format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 03 | Group 01  | zip    | Katie  | Yes       | Dataset 02 |             |
-      | Resource 04 |           | csv    | Katie  | Yes       |            |             |
-      | Resource 05 |           | csv    | Katie  | Yes       | Dataset 08 |             |
-      | Resource 06 | Group 02  | csv    | Katie  | Yes       | Dataset 09 |             |
+      | title       | publisher | author | published | dataset    | description |
+      | Resource 01 | Group 01  | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | Katie  | Yes       | Dataset 01 |             |
+      | Resource 03 | Group 01  | Katie  | Yes       | Dataset 02 |             |
+      | Resource 04 |           | Katie  | Yes       |            |             |
+      | Resource 05 |           | Katie  | Yes       | Dataset 08 |             |
+      | Resource 06 | Group 02  | Katie  | Yes       | Dataset 09 |             |
 
-  @noworkflow  @javascript
+  @noworkflow
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
-    And I am on "Datasets Search" page
-    Then I hover over the admin menu item "Content"
-    Then I hover over the admin menu item "Add content"
-    Then I click "Dataset"
+    And I am on "Add Dataset" page
     And I fill in the following:
       | Title           | Test Dataset      |
       | Description     | Test description  |
-    And I fill in the chosen field "edit_og_group_ref_und_chosen" with "Group 01"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
 
-  @api @noworkflow
-  Scenario: Save using "Additional Info"
+  @noworkflow
+  Scenario: Save using Additional Info
     Given I am logged in as a user with the "content creator" role
-    And I am on "/node/add/dataset"
+    And I am on "Add Dataset" page
     When I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "Test description"
     And I press "Next: Add data"
@@ -88,7 +86,6 @@ Feature: Dataset Features
     And I press "Save"
     Then I should see "Test Dataset"
     And I should see "Test description"
-
 
   @noworkflow
   Scenario: Edit own dataset as a content creator
@@ -101,12 +98,12 @@ Feature: Dataset Features
     When I am on "My Content" page
     Then I should see "Dataset 03 edited"
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Seeing the License
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
     When I click "Edit"
-    Given I select "Creative Commons Attribution" from "edit-field-license-und-select" chosen.js select box
+    Given I select "Creative Commons Attribution" from "edit-field-license-und-select"
     And I press "edit-submit"
     And I click "Log out"
     When I am on "Dataset 03" page
@@ -127,21 +124,16 @@ Feature: Dataset Features
     And I press "Delete"
     Then I should see "Dataset 03 has been deleted"
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Add a dataset to group that I am a member of
     Given I am logged in as "Katie"
     And I am on "Dataset 03" page
     When I click "Edit"
-    And I fill in the chosen field "edit_og_group_ref_und_chosen" with "Group 01"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Finish"
     Then I should see "Dataset Dataset 03 has been updated"
     When I am on "Group 01" page
     Then I should see "Dataset 03" in the "content" region
-
-  # https://github.com/Behat/Behat/issues/834
-  @dummy
-  Scenario: Dummy test
-    Given I am on "/"
 
   @noworkflow @javascript
   Scenario: Add a resource with no dataset to a dataset with no resource
@@ -175,8 +167,7 @@ Feature: Dataset Features
     And I should see "Groups were updated on 1 resource(s)"
     And I should not see "Resource 04" in the "resource title" region
     When I am on "Resource 04" page
-    And I click "Back to dataset"
-    Then I should see "There is no dataset associated with this resource"
+    Then I should not see the link "Back to dataset"
 
   @noworkflow @javascript
   Scenario: Add a resource with no group to a dataset with group
@@ -207,22 +198,22 @@ Feature: Dataset Features
     Then I should see "Dataset 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Add group to a dataset with resources
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
     When I click "Edit"
-    And I fill in the chosen field "edit_og_group_ref_und_chosen" with "Group 02"
+    And I select "Group 02" from "og_group_ref[und][]"
     And I press "Finish"
     Then I should see "Dataset 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Remove group from dataset with resources
     Given I am logged in as "Katie"
     And I am on "Dataset 09" page
     When I click "Edit"
-    And I empty the resources field "edit_og_group_ref_und_chosen"
+    And I select "" from "og_group_ref[und][]"
     And I press "Finish"
     Then I should see "Dataset 09 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -239,21 +230,21 @@ Feature: Dataset Features
     And I should see "Groups were updated on 1 resource(s)"
     And I should see "Resource 04" in the "dataset resource list" region
 
-  @api @noworkflow
+  @noworkflow
   Scenario: Site Managers should see groups they are not member of
     Given I am logged in as "John"
     When I visit "node/add/dataset"
     Then I should see the "Group 01" groups option
     And I should see the "Group 02" groups option
 
-  @api @noworkflow
+  @noworkflow
   Scenario: Content Creators should only see the groups they are member of
     Given I am logged in as "Katie"
     When I visit "node/add/dataset"
     Then I should see the "Group 02" groups option
     And I should not see the "Group 04" groups option
 
-  @api @noworkflow
+  @noworkflow
   Scenario: Editors should only see the groups they are member of
     Given I am logged in as "Daniel"
     When I visit "node/add/dataset"

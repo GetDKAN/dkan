@@ -1,8 +1,15 @@
 <?php
+
 /**
-* Implements hook_install().
-* We need these modifications to run after panopoly_widget.
-*/
+ * @file
+ * Install.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * We need these modifications to run after panopoly_widget.
+ */
 function dkan_ipe_install() {
   db_update('system')
     ->fields(array('weight' => 10))

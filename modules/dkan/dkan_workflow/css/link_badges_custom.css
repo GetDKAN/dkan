@@ -44,7 +44,7 @@
   padding: 6px 20px 6px 12px;
 }
 .page-admin-workbench  li.active .link-badge {
-   background: #fff;
+  background: #fff;
 }
 .view-workbench-moderation .views-exposed-form {
   clear: both;
@@ -59,7 +59,8 @@
   margin-bottom: 1em;
 }
 
-dl dt, dl dd {
+dl dt,
+dl dd {
   background-color: white;
   position: relative;
 }

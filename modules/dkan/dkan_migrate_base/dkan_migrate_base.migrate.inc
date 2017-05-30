@@ -43,7 +43,11 @@ function dkan_migrate_base_migrate_api() {
   return $api;
 }
 
+/**
+ * Extends MigrateListJSON.
+ */
 class CKANListJSON extends MigrateListJSON {
+
   /**
    * Initialiazes.
    */
@@ -58,7 +62,7 @@ class CKANListJSON extends MigrateListJSON {
   /**
    * The default implementation assumes the IDs are top-level array elements.
    */
-  protected function getIDsFromJSON(array $data) {
+  protected function getIdsFromJson(array $data) {
     $ids = array();
     $datasets = 0;
     $total = $this->page + $this->offset;
@@ -99,9 +103,8 @@ class CKANListJSON extends MigrateListJSON {
     else {
       $response = drupal_http_request($this->listUrl, $this->httpOptions);
       if (isset($response->error)) {
-        watchdog(
-          'dkan_migrate_base', 'See ' . __FUNCTION__ . '() Error: ' . check_plain($response->error), NULL, WATCHDOG_ERROR
-        );
+        $response = 'See ' . __FUNCTION__ . '() Error: ' . check_plain($response->error);
+        watchdog('dkan_migrate_base', $response, NULL, WATCHDOG_ERROR);
       }
       else {
         $json = $response->data;
@@ -111,7 +114,7 @@ class CKANListJSON extends MigrateListJSON {
     if (isset($json)) {
       $data = drupal_json_decode($json);
       if ($data) {
-        return $this->getIDsFromJSON($data);
+        return $this->getIdsFromJson($data);
       }
     }
     Migration::displayMessage(t('Loading of !listurl failed:',
@@ -136,9 +139,8 @@ class CKANListJSON extends MigrateListJSON {
     else {
       $response = drupal_http_request($this->listUrl, $this->httpOptions);
       if (isset($response->error)) {
-        watchdog(
-          'dkan_migrate_base', 'See ' . __FUNCTION__ . '() Error: ' . check_plain($response->error), NULL, WATCHDOG_ERROR
-        );
+        $response = 'See ' . __FUNCTION__ . '() Error: ' . check_plain($response->error);
+        watchdog('dkan_migrate_base', $response, NULL, WATCHDOG_ERROR);
       }
       else {
         $json = $response->data;
@@ -156,20 +158,24 @@ class CKANListJSON extends MigrateListJSON {
     }
     return $count;
   }
-}
 
+}
+/**
+ * Extends MigrateItemJSON.
+ */
 class CKANItemJSON extends MigrateItemJSON {
 
   /**
    * Parses for 'results' instead of base.
    */
-  protected function getIDsFromJSON(array $data) {
+  protected function getIdsFromJson(array $data) {
     $ids = array();
     foreach ($data['result'] as $item) {
       $ids[] = $item;
     }
     return $ids;
   }
+
   /**
    * Parses for 'results' instead of base.
    */
@@ -233,12 +239,14 @@ class CKANItemJSON extends MigrateItemJSON {
     $result->name = $id;
     return $result;
   }
+
 }
 
 /**
  * Put our useful functions here.
  */
 abstract class MigrateDKAN extends Migration {
+
   /**
    * Adds default dataset mappings.
    */
@@ -251,12 +259,11 @@ abstract class MigrateDKAN extends Migration {
     $this->addFieldMapping('field_contact_email', 'author_email');
     $this->addFieldMapping('uid', 'uid');
     $this->addFieldMapping('id', 'uuid');
-    $this->addFieldMapping('path', 'name');
     $this->addFieldMapping('body', 'notes');
     $this->addFieldMapping('field_spatial_geographical_cover', 'spatialText');
     $this->addFieldMapping('field_spatial', 'spatial');
     $this->addFieldMapping('field_resources', 'resource_ids');
-    // $this->addFieldMapping('og_group_ref', 'group_ids');
+    // $this->addFieldMapping('og_group_ref', 'group_ids');.
     $this->addFieldMapping('field_tags', 'tag_names');
     $this->addFieldMapping('field_additional_info', 'field_additional_info_key');
     $this->addFieldMapping('field_additional_info:second', 'field_additional_info_value');
@@ -267,9 +274,6 @@ abstract class MigrateDKAN extends Migration {
    */
   public function datasetPrepare($node, $row) {
     $node->uuid = $row->id;
-    // Turn off pathauto for import and set path.
-    $node->path['pathauto'] = FALSE;
-    $node->path['alias'] = $row->name;
     // Converts geojson spatial for saving field.
     if (isset($node->field_spatial[$node->language][0]['wkt']) && $spatial = $node->field_spatial[$node->language][0]['wkt']) {
       $geophp = geophp_load();
@@ -283,7 +287,6 @@ abstract class MigrateDKAN extends Migration {
    */
   public function datasetPrepareRow(&$row) {
     $row->uid = isset($row->creator_user_id) ? $this->getUser($row->creator_user_id) : 1;
-    $row->name = 'dataset/' . $row->name;
     $row->resource_ids = array();
     // If there is no revision timestamp an error is thrown as it is the
     // highwater mark. Put in a low highwater mark instead.
@@ -374,7 +377,6 @@ abstract class MigrateDKAN extends Migration {
    */
   public function createGroupNode($group) {
     // TODO: Check high water mark.
-
     global $user;
     // This is necessary for group permissions. If there is not a properly
     // permissioned user, ie if done from the command line, the group creation
@@ -399,6 +401,9 @@ abstract class MigrateDKAN extends Migration {
     return $node;
   }
 
+  /**
+   * Create the term ID.
+   */
   public function createFormatTid($format) {
     $format_vocab = taxonomy_vocabulary_machine_name_load('format');
     $this->createTax($format, 'format', $format_vocab->vid);
@@ -414,7 +419,6 @@ abstract class MigrateDKAN extends Migration {
 
     // TODO: Check high water mark.
     // TODO: Check if UUID exits.
-
     // Creates a new resource for every linked file.
     // Linked files contain title, format, and accessURL.
     global $user;
@@ -443,7 +447,7 @@ abstract class MigrateDKAN extends Migration {
             $link_field = field_info_instance('node', 'field_link_remote_file', 'resource');
             $ext = explode(' ', $link_field['settings']['file_extensions']);
             if (in_array($type, $ext) && isset($req->headers['content-length'])
-              // html can be listed as a file type for the remote file field but
+              // Html can be listed as a file type for the remote file field but
               // shouldn't be imported.
               && $type != 'html') {
               if ($fid = $this->checkExistingFile($res->url)) {
@@ -471,17 +475,17 @@ abstract class MigrateDKAN extends Migration {
           $node->field_format['und'][0]['tid'] = $this->createFormatTid($type);
           $link_field = field_info_instance('node', 'field_link_remote_file', 'resource');
           $ext = explode(' ', $link_field['settings']['file_extensions']);
-          // html can be listed as a file type for the remote file field but
+          // Html can be listed as a file type for the remote file field but
           // shouldn't be imported.
           if (in_array($type, $ext) && isset($req->headers['content-length']) && $type != 'html') {
             $file = remote_stream_wrapper_file_load_by_uri($res->url);
             if (!$file) {
               $file = remote_stream_wrapper_file_create_by_uri($res->url);
               $file->status = FALSE;
-              if (isset($req->headers['content-disposition']) && $req->headers['content-disposition'] && $cd = explode( '; ', $req->headers['content-disposition'])) {
+              if (isset($req->headers['content-disposition']) && $req->headers['content-disposition'] && $cd = explode('; ', $req->headers['content-disposition'])) {
                 if (is_array($cd)) {
                   foreach ($cd as $item) {
-                    if ($name =  str_replace('filename=', '',$item)) {
+                    if ($name = str_replace('filename=', '', $item)) {
                       $file->filename = $name;
                     }
                   }
@@ -565,6 +569,7 @@ abstract class MigrateDKAN extends Migration {
    * Looks up format if exists, if not creates it.
    *
    * @return object
+   *   Format of the file.
    */
   public function createTax($name, $vocab_name, $vid) {
     if ($term = taxonomy_get_term_by_name($name, $vocab_name, $vid)) {
@@ -575,6 +580,7 @@ abstract class MigrateDKAN extends Migration {
       $new_term = new stdClass();
       $new_term->name = $name;
       $new_term->vid = $vid;
+      $new_term->path['pathauto'] = FALSE;
       $term = taxonomy_term_save($new_term);
       if ($term == SAVED_NEW) {
         $term = taxonomy_get_term_by_name($name, $vocab_name);
@@ -590,7 +596,7 @@ abstract class MigrateDKAN extends Migration {
   /**
    * Converts times with edge cases.
    */
-  public function StringToTime($date) {
+  public function stringToTime($date) {
     if ($date = str_replace('-', '', $date)) {
       return strtotime($date);
     }
@@ -604,7 +610,7 @@ abstract class MigrateDKAN extends Migration {
    */
   public function getGroupNidByTitle($title) {
     $type = 'group';
-    $result = db_query("SELECT n.nid FROM {node} n WHERE n.title = :title AND n.type = :type", array(":title"=> $title, ":type"=> $type));
+    $result = db_query("SELECT n.nid FROM {node} n WHERE n.title = :title AND n.type = :type", array(":title" => $title, ":type" => $type));
     $nid = $result->fetchField();
     if ($nid) {
       return $nid;
@@ -651,7 +657,7 @@ abstract class MigrateDKAN extends Migration {
           'uuid' => $creator_user_id,
         );
         // Get User name from CKAN API.
-        $response = drupal_http_request($this->endpoint . 'user_show?id=' .  $creator_user_id);
+        $response = drupal_http_request($this->endpoint . 'user_show?id=' . $creator_user_id);
         $json = $response->data;
         $data = drupal_json_decode($json);
         if ($name = $data['result']['name']) {
@@ -677,11 +683,11 @@ abstract class MigrateDKAN extends Migration {
    * Saves file locally.
    *
    * @param string $url
-   *   Full url to file to download
+   *   Full url to file to download.
    * @param string $uri
-   *   Drupal uri of where to save file public://archive/test.pdf
+   *   Drupal uri of where to save file public://archive/test.pdf.
    * @param int $save_mode
-   *   File save mode from drupal core, ex FILE_EXISTS_REPLACE
+   *   File save mode from drupal core, ex FILE_EXISTS_REPLACE.
    */
   public function downloadExternalFile($url, $uri, $save_mode = FILE_EXISTS_RENAME, $manage_file = TRUE) {
 
@@ -689,7 +695,7 @@ abstract class MigrateDKAN extends Migration {
     $url_path_info = pathinfo($url_info['path']);
 
     // This helps with filenames with spaces.
-    $url = $url_info['scheme'] . '://' . $url_info['host']  . $url_path_info['dirname'] . '/' . rawurlencode($url_path_info['basename']);
+    $url = $url_info['scheme'] . '://' . $url_info['host'] . $url_path_info['dirname'] . '/' . rawurlencode($url_path_info['basename']);
 
     // Need to remove the filename from the uri.
     $uri_target = file_uri_target($uri);
@@ -721,13 +727,24 @@ abstract class MigrateDKAN extends Migration {
   }
 
 }
-
+/**
+ * Extends MigrateDKAN.
+ */
 abstract class MigrateCkanBase extends MigrateDKAN {
+
   /**
-   * Here we go.
+   * Override MigrateDKAN.
+   */
+  public function prepare($node, $row) {
+    $node->path = is_array($node->path) ? $node->path : array();
+  }
+
+  /**
+   * Construct endpoint.
    */
   public function __construct($arguments) {
     $this->endpoint = isset($arguments['endpoint']) ? $arguments['endpoint'] : 'http://demo.getdkan.com/api/3/action/';
     parent::__construct($arguments);
   }
+
 }

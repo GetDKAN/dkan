@@ -9,8 +9,9 @@
  * Migrate Data.json datasets.
  */
 class MigrateDataJsonDatasetBase extends MigrateDKAN {
+
   /**
-   * Here we go.
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
     parent::__construct($arguments);
@@ -23,8 +24,10 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
     $this->highwaterField = array('name' => 'modified');
     $this->source = new MigrateSourceList(new DataJsonListJSON(
       $this->endpoint,
-      array('page' => $this->page,
-            'offset' => $this->offset),
+      array(
+        'page' => $this->page,
+        'offset' => $this->offset,
+      ),
       $this->version),
       new DataJsonItemJSON($this->endpoint, array(), $this->version), $fields);
 
@@ -46,16 +49,19 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
     $this->destination = new MigrateDestinationNode('dataset', array('text_format' => 'html'));
   }
 
+  /**
+   * Map fields.
+   */
   public function getMapping($version = '1.1') {
     $odfeFields = array();
     $baseFields = array(
-      // These are common to both 1.0 and 1.1
+      // These are common to both 1.0 and 1.1.
       'title' => 'title',
       'body' => 'description',
       'og_group_ref' => 'group_id',
       'field_tags' => 'keyword',
-      'field_modified_source_date' => 'modified',
-      'created' => 'issued',
+      'field_harvest_source_modified' => 'modified',
+      'field_harvest_source_issued' => 'issued',
       'field_public_access_level' => 'accessLevel',
       'field_resources' => 'resources',
       'field_contact_name' => 'contactPointName',
@@ -90,7 +96,7 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
       );
     }
     if (module_exists('open_data_federal_extras')) {
-      $odfeFields =  array(
+      $odfeFields = array(
         'field_odfe_bureau_code' => 'bureauCode',
         'field_odfe_program_code' => 'programCode',
         'field_odfe_data_quality' => 'dataQuality',
@@ -190,11 +196,12 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
   }
 
   /**
-   * Updates custom highwater field "modified" which we've added to the
-   * migrate_map table.
+   * Updates custom highwater field "modified".
    *
-   * @return
-   * Returns TRUE if we should create or update.
+   * Field was added to the migrate_map table.
+   *
+   * @return bool
+   *   Returns TRUE if we should create or update.
    */
   public function prepareCustomHighwater($identifier, $modified) {
     $table = $this->map->getMapTable();
@@ -211,7 +218,6 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
       return TRUE;
     }
   }
-
 
   /**
    * Loads existing nodes for later inspection.
@@ -261,7 +267,7 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
     if (isset($row->publisher->name) && !$row->group_id = $this->getGroupNidByTitle($row->publisher->name)) {
 
       if ($row->publisher->name) {
-        $group = new stdClass;
+        $group = new stdClass();
         $group->title = $row->publisher->name;
         $group = $this->createGroupNode($group);
         $this->map->saveIDMapping($group, array($group->nid), 0, 0, '');
@@ -317,7 +323,7 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
   }
 
   /**
-   *
+   * Delete existing resources.
    */
   public function deleteExistingResources($node) {
     $table = $this->map->getMapTable();
@@ -328,12 +334,15 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
         db_delete($table)
           ->condition('sourceid1', $resource->uuid)
           ->execute();
-        // Remove from database;
+        // Remove from database;.
         node_delete($resource->nid);
       }
     }
   }
 
+  /**
+   * Prepare additional info.
+   */
   public function prepareAdditionalInfo(&$row) {
     $ignore = array(
       '@type',
@@ -402,27 +411,27 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
         $res->format = $resource['format'];
         // Use media type for format if no format provided.
         if (is_null($res->format) && isset($resource['mediaType'])) {
-           include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
-           $mapping = file_mimetype_mapping();
-           foreach ($mapping['mimetypes'] as $type_num => $type) {
-             if ($type == $resource['mediaType']) {
-               foreach ($mapping['extensions'] as $ex_type => $ex_num) {
-                 if ($type_num == $ex_num) {
-                   $res->format = $ex_type;
-                 }
-               }
-             }
-           }
+          include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+          $mapping = file_mimetype_mapping();
+          foreach ($mapping['mimetypes'] as $type_num => $type) {
+            if ($type == $resource['mediaType']) {
+              foreach ($mapping['extensions'] as $ex_type => $ex_num) {
+                if ($type_num == $ex_num) {
+                  $res->format = $ex_type;
+                }
+              }
+            }
+          }
         }
         // If still null try to strip "application".
-        if (is_null($res->format) && isset($resource['mediaType']) && strpos($resource['mediaType'],'application') !== false) {
+        if (is_null($res->format) && isset($resource['mediaType']) && strpos($resource['mediaType'], 'application') !== FALSE) {
           $res->format = str_replace('application/', '', $resource['mediaType']);
         }
         $res->name = isset($resource['title']) ? $resource['title'] : '';
 
         // When no format is provided then we try to guess it from
         // the remote resource.
-        if(empty($res->format) && isset($resource['downloadURL'])) {
+        if (empty($res->format) && isset($resource['downloadURL'])) {
           $url = $resource['downloadURL'];
           $is_valid_url = !empty($url) && filter_var($url, FILTER_VALIDATE_URL);
           $res->format = ($is_valid_url) ? remote_mime($url) : '';
@@ -451,10 +460,19 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
    */
   public function updateCreatedModified($nid, $created, $changed) {
     if (is_numeric($nid) && is_numeric($created) && is_numeric($changed)) {
-      db_query('UPDATE {node} SET created=:created, changed=:changed WHERE nid=:nid', array(':created'=>strtotime($created),':changed'=>strtotime($changed),':nid'=>$nid));
+      db_query('UPDATE {node} SET created=:created, changed=:changed WHERE nid=:nid',
+        array(
+          ':created' => strtotime($created),
+          ':changed' => strtotime($changed),
+          ':nid' => $nid,
+        )
+      );
     }
   }
 
+  /**
+   * Check if the identifier exists before inserting.
+   */
   public function updateHighwater($modified, $identifier, $nid) {
     $table = $this->map->getMapTable();
     $query = 'SELECT destid1 FROM ' . $table . ' WHERE sourceid1 = :identifier';
@@ -465,13 +483,14 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
         ->fields(array(
           'sourceid1' => $identifier,
           'destid1' => $nid,
-          'modified' =>$modified,))
-      ->execute();
+          'modified' => $modified,
+        ))
+        ->execute();
     }
     db_update($table)
       ->condition('sourceid1', $identifier, "=")
       ->fields(array(
-        'modified' => $modified
+        'modified' => $modified,
       ))
       ->execute();
   }
@@ -490,57 +509,60 @@ class MigrateDataJsonDatasetBase extends MigrateDKAN {
     if (module_exists('dkan_workflow')) {
       // Changing the moderation state of all harvested datasets to published.
       db_update('workbench_moderation_node_history')
-      ->fields(array(
-        'state' => "published",
-        'published' => 1,
+        ->fields(array(
+          'state' => "published",
+          'published' => 1,
         ))
-      ->condition('is_current', 1, '=')
-      ->condition('nid', $entity->nid, '=')
-      ->execute();
+        ->condition('is_current', 1, '=')
+        ->condition('nid', $entity->nid, '=')
+        ->execute();
       // Updating associated resources as well.
       if ($entity->field_resources) {
         foreach ($entity->field_resources[LANGUAGE_NONE] as $rid) {
           db_update('workbench_moderation_node_history')
-          ->fields(array(
-            'state' => "published",
-            'published' => 1,
+            ->fields(array(
+              'state' => "published",
+              'published' => 1,
             ))
-          ->condition('is_current', 1, '=')
-          ->condition('nid', $rid['target_id'], '=')
-          ->execute();
+            ->condition('is_current', 1, '=')
+            ->condition('nid', $rid['target_id'], '=')
+            ->execute();
         }
       }
     }
   }
 
   /**
-   * Implements prepareRow.
+   * Implements prepare.
    */
-  public function prepare(&$entity, $row) {
+  public function prepare($node, $row) {
     global $user;
     // Remove empy additional fields.
-    if (isset($entity->field_additional_info['und'][0]) && $entity->field_additional_info['und'][0]['first'] == NULL) {
-      unset($entity->field_additional_info);
+    if (isset($node->field_additional_info['und'][0]) && $node->field_additional_info['und'][0]['first'] == NULL) {
+      unset($node->field_additional_info);
     }
-    if (isset($entity->field_temporal_coverage['und'][0]['value'])) {
-      $entity->field_temporal_coverage['und'][0]['timezone'] = 'UTC';
+    if (isset($node->field_temporal_coverage['und'][0]['value'])) {
+      $node->field_temporal_coverage['und'][0]['timezone'] = 'UTC';
     }
-    $entity->status = 1;
-    $entity->vid = isset($entity->vid) ? $entity->vid : '';
+    $node->status = 1;
+    $node->vid = isset($node->vid) ? $node->vid : '';
 
     // If the migration is running under a user that doesn't belong
     // to a specific group, the same user can't create og references.
-    // This solves it by attaching field_mode admin to the ref field
-    if (isset($entity->nid) && (int) $user->uid == 0) {
-      if (!empty($entity->og_group_ref[LANGUAGE_NONE])) {
-        foreach($entity->og_group_ref[LANGUAGE_NONE] as $delta => $value) {
-          $entity->og_group_ref[LANGUAGE_NONE][$delta]['field_mode'] = 'admin';
+    // This solves it by attaching field_mode admin to the ref field.
+    if (isset($node->nid) && (int) $user->uid == 0) {
+      if (!empty($node->og_group_ref[LANGUAGE_NONE])) {
+        foreach ($node->og_group_ref[LANGUAGE_NONE] as $delta => $value) {
+          $node->og_group_ref[LANGUAGE_NONE][$delta]['field_mode'] = 'admin';
         }
       }
     }
   }
-}
 
+}
+/**
+ * Extends MigrateListJSON.
+ */
 class DataJsonListJSON extends MigrateListJSON {
 
   /**
@@ -605,10 +627,19 @@ class DataJsonListJSON extends MigrateListJSON {
       $dataset_count = $this->page ? $this->page : count($data);
     }
     $resource_count = $count - $dataset_count;
-    drupal_set_message(t("%url contains %datasets datasets and %resources resources.", array('%datasets' => $dataset_count, '%url' => $this->listUrl, '%resources' => $resource_count )));
+    drupal_set_message(t("%url contains %datasets datasets and %resources resources.",
+      array(
+        '%datasets' => $dataset_count,
+        '%url' => $this->listUrl,
+        '%resources' => $resource_count,
+      )
+    ));
     return $count;
   }
 
+  /**
+   * Retrieve list of ids.
+   */
   public function getIdList() {
     migrate_instrument_start("Retrieve $this->listUrl");
     if (!filter_var($this->listUrl, FILTER_VALIDATE_URL)) {
@@ -622,7 +653,7 @@ class DataJsonListJSON extends MigrateListJSON {
     if ($json) {
       $data = drupal_json_decode($json);
       if ($data) {
-        return $this->getIDsFromJSON($data);
+        return $this->getIdsFromJson($data);
       }
     }
     Migration::displayMessage(t('Loading of !listurl failed:',
@@ -633,7 +664,7 @@ class DataJsonListJSON extends MigrateListJSON {
   /**
    * Retrieves ID from list.
    */
-  protected function getIDsFromJSON(array $data) {
+  protected function getIdsFromJson(array $data) {
     $ids = array();
     if ($this->version == '1.0') {
       foreach ($data as $item) {
@@ -658,10 +689,14 @@ class DataJsonListJSON extends MigrateListJSON {
     }
     return $ids;
   }
-}
 
+}
+/**
+ * Extends MigrateItemJSON.
+ */
 class DataJsonItemJSON extends MigrateItemJSON {
   protected $data = array();
+
   /**
    * Adds version to class.
    */
@@ -703,4 +738,5 @@ class DataJsonItemJSON extends MigrateItemJSON {
       return NULL;
     }
   }
+
 }

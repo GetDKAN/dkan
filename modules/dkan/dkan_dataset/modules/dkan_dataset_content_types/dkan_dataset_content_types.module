@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Code for the DKAN Content Types feature.
@@ -21,20 +22,25 @@ function dkan_dataset_content_types_form_alter(&$form, &$form_state, $form_id) {
     $form['field_license'][LANGUAGE_NONE]['#options'] = $allowed_values;
 
     // Hide fields.
-    $form['field_modified_source_date']['#access'] = FALSE;
+    $form['field_harvest_source_issued']['#access'] = FALSE;
+    $form['field_harvest_source_modified']['#access'] = FALSE;
     $form['field_is_part_of']['#access'] = FALSE;
     $form['field_pod_theme']['#access'] = FALSE;
 
     $form['field_data_dictionary'][LANGUAGE_NONE]['#after_build'][] = 'data_dictionary_after_build';
   }
 }
+
 /**
- * After build for data dictionary field. Removes format selector and guidelines.
+ * After build for data dictionary field.
+ *
+ * Removes format selector and guidelines.
  */
 function data_dictionary_after_build(&$form) {
   unset($form[0]['format']);
   return $form;
 }
+
 /**
  * Implements hook_field_formatter_info().
  */
@@ -66,6 +72,14 @@ function dkan_dataset_content_types_field_formatter_view($entity_type, $entity, 
             $output = $license['label'];
           }
         }
+        // Harvested datasets may use license urls that do not match
+        // the urls set up in hook_subscribed_values().
+        // Check if the value is a url, if so theme it as a link.
+        $url = parse_url($item['value']);
+        if (isset($url['scheme']) && isset($url['host'])) {
+          $output = l($item['value'], $item['value']);
+        }
+
         $element[$delta] = array('#markup' => $output);
       }
       break;
@@ -101,6 +115,7 @@ function dkan_dataset_content_types_open_data_schema_map_results_alter(&$result,
       }
       $result = $dataset_row;
       break;
+
     case 'ckan_dataset':
       $dataset_row = array();
       foreach ($result as $key => $dataset) {
@@ -113,6 +128,9 @@ function dkan_dataset_content_types_open_data_schema_map_results_alter(&$result,
   }
 }
 
+/**
+ * Alter Dataset license.
+ */
 function dkan_dataset_content_types_alter_dataset_license(&$dataset, $key) {
   if (isset($dataset[$key])) {
     $subscribed_values = dkan_dataset_content_types_license_subscribed_values();
@@ -142,8 +160,6 @@ function dkan_dataset_content_types_preprocess_field(&$vars) {
       break;
 
   }
-  return;
-
 }
 
 /**
@@ -196,4 +212,27 @@ function dkan_dataset_content_types_frequency2iso($frecuencyIndex) {
 function dkan_dataset_content_types_allowed_language_values() {
   module_load_include('php', 'dkan_dataset_content_types', 'includes/language_code_list');
   return dkan_dataset_content_types_get_language_codes();
+}
+
+/**
+ * Implements hook_date_formats().
+ */
+function dkan_dataset_content_types_date_formats() {
+  return array(
+    // Creates a new format for a new, custom format type.
+    array(
+      'type' => 'iso_8601_date',
+      'format' => 'Y-m-d',
+      'locales' => array(),
+    ),
+  );
+}
+
+/**
+ * Implements hook_date_format_types().
+ */
+function dkan_dataset_content_types_date_format_types() {
+  return array(
+    'iso_8601_date' => t('ISO 8601 Date'),
+  );
 }

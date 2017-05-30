@@ -34,10 +34,10 @@ Feature: DKAN Dataset REST API
     Given I am on "Resource 01" page
     Then I should not see "Polling_Places_Madison"
     Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
-    And I use the "dataset rest api" endpoint to attach the file "Polling_Places_Madison.csv" to "Resource 01"
+    And I use the "dataset rest api" endpoint to attach the file "dkan/Polling_Places_Madison_test.csv" to "Resource 01"
     When I am on "Resource 01" page
     Then I should see "Polling_Places_Madison"
-    Given I use the "dataset rest api" endpoint to attach the file "Afghanistan_Election_Districts.csv" to "Resource 01"
+    Given I use the "dataset rest api" endpoint to attach the file "dkan/Afghanistan_Election_Districts_test.csv" to "Resource 01"
     When I am on "Resource 01" page
     Then I should not see "Polling_Places_Madison"
     And I should see "Afghanistan_Election_Districts"

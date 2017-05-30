@@ -161,7 +161,7 @@ function dkan_dataset_api_settings() {
   $form['dkan_dataset_catalog'] = array(
     '#type' => 'fieldset',
     '#title' => t('Data catalog (data.json) settings'),
-    '#description' => t('Configuration for site\'s public data catalog. See !link for more information.', array('!link' => l(t('Project Open Data'), 'http://project-open-data.github.io/catalog/'))),
+    '#description' => t("Configuration for site\'s public data catalog. See !link for more information.', array('!link' => l(t('Project Open Data'), 'http://project-open-data.github.io/catalog/"),
   );
   $form['dkan_dataset_catalog']['dkan_catalog_desc'] = array(
     '#type' => 'textfield',
@@ -193,7 +193,7 @@ function dkan_dataset_api_settings() {
     '#description' => t(
       'Demo at !demo. More information on !url.',
       array(
-        '!demo' => l('this link', 'api/3/action/site_read'),
+        '!demo' => l(t('this link'), 'api/3/action/site_read'),
         '!url' => l(t('site_read'), 'http://docs.ckan.org/en/latest/api/index.html#ckan.logic.action.get.site_read'),
       )
     ),
@@ -205,7 +205,7 @@ function dkan_dataset_api_settings() {
     '#description' => t(
       'Demo at !demo. More information on !url.',
       array(
-        '!demo' => l('this link', 'data.json'),
+        '!demo' => l(t('this link'), 'data.json'),
         '!url' => l(t('data.json'), 'http://project-open-data.github.io'),
       )
     ),
@@ -217,7 +217,7 @@ function dkan_dataset_api_settings() {
     '#description' => t(
       'Demo at !demo. More information on !url.',
       array(
-        '!demo' => l('this link', 'api/3/action/revision_list'),
+        '!demo' => l(t('this link'), 'api/3/action/revision_list'),
         '!url' => l(t('dkan_dataset_revision_list'), 'http://docs.ckan.org/en/latest/api/index.html#ckan.logic.action.get.revision_list'),
       )
     ),
@@ -229,7 +229,7 @@ function dkan_dataset_api_settings() {
     '#description' => t(
       'Demo at !demo. More information on !url. This also mirrors the deprecated !legacy.',
       array(
-        '!demo' => l('this link', 'api/3/action/package_list'),
+        '!demo' => l(t('this link'), 'api/3/action/package_list'),
         '!url' => l(t('package_list'), 'http://docs.ckan.org/en/latest/api/index.html#ckan.logic.action.get.package_list'),
         '!legacy' => l(t('rest/dataset'), 'http://docs.ckan.org/en/latest/legacy-api.html#model-resources'),
       )
@@ -242,7 +242,7 @@ function dkan_dataset_api_settings() {
     '#description' => t(
       'Demo at !demo. More information on !url.',
       array(
-        '!demo' => l('this link', 'current_package_list_with_resources'),
+        '!demo' => l(t('this link'), 'current_package_list_with_resources'),
         '!url' => l(t('current_package_list_with_resources'), 'http://docs.ckan.org/en/latest/api/index.html#ckan.logic.action.get.current_package_list_with_resources'),
       )
     ),
@@ -299,7 +299,7 @@ function dkan_dataset_api_settings() {
     '#description' => t(
       'Demo at !demo. More information on !url.',
       array(
-        '!demo' => l('this link', 'api/3/action/group_list', array('query' => array('all_fields' => 'TRUE'))),
+        '!demo' => l(t('this link'), 'api/3/action/group_list', array('query' => array('all_fields' => 'TRUE'))),
         '!url' => l(t('group_list'), 'http://docs.ckan.org/en/latest/api/index.html#ckan.logic.action.get.group_list'),
       )
     ),
@@ -336,7 +336,6 @@ function dkan_dataset_api_open_data_json() {
 
   drupal_json_output($rows);
 }
-
 
 /**
  * Returns a list of uuids of published datasts.
@@ -467,7 +466,6 @@ function dkan_dataset_api_current_package_list_with_resources() {
   drupal_json_output($output);
 }
 
-
 /**
  * Returns a list of datasets with resources.
  */
@@ -535,7 +533,6 @@ function dkan_dataset_api_group_package_show() {
   }
   drupal_json_output($output);
 }
-
 
 /**
  * Return the metadata of a dataset (package) and its resources.
@@ -644,7 +641,6 @@ function dkan_dataset_api_resource_show($uuid = NULL) {
 
   drupal_json_output($output);
 }
-
 
 /**
  * Returns a list of objects representing specific dataset's revisions.
@@ -854,13 +850,13 @@ function dkan_dataset_api_get_datasets($limit = 0, $offset = 0, $group_id = NULL
 /**
  * Retrieves node revisions with vuuid.
  *
- * @param stdobject $node
- *   A node object
+ * @param object $node
+ *   A node object.
  *
  * @return array
- *   An array of the node revisions
+ *   An array of the node revisions.
  */
-function dkan_dataset_api_node_revision_list($node) {
+function dkan_dataset_api_node_revision_list(stdClass $node) {
   $revisions = array();
   $result = db_query('SELECT r.vid, r.title, r.log, r.uid, r.vuuid, n.vid AS current_vid, r.timestamp, u.name FROM {node_revision} r LEFT JOIN {node} n ON n.vid = r.vid INNER JOIN {users} u ON u.uid = r.uid WHERE r.nid = :nid ORDER BY r.vid DESC', array(':nid' => $node->nid));
   foreach ($result as $revision) {

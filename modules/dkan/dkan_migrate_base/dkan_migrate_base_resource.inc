@@ -2,15 +2,16 @@
 
 /**
  * @file
- * Migration Class for Resources
+ * Migration Class for Resources.
  */
 
 /**
  * A dynamic migration that is reused for each source CSV file.
  */
 class MigrateCkanResourceBase extends MigrateCkanBase {
+
   /**
-   * Here we go.
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
     parent::__construct($arguments);
@@ -69,9 +70,10 @@ class MigrateCkanResourceBase extends MigrateCkanBase {
 
     $this->source = new MigrateSourceList(new CKANListJSON(
       $list_url,
-      array('page' => $this->page,
-            'offset' => $this->offset,
-            'ids' => $this->ids,
+      array(
+        'page' => $this->page,
+        'offset' => $this->offset,
+        'ids' => $this->ids,
       )
     ),
     new CKANItemJSON($item_url, $fields), $fields);
@@ -149,8 +151,10 @@ class MigrateCkanResourceBase extends MigrateCkanBase {
    * Implements prepare.
    */
   public function prepare($node, $row) {
+    parent::prepare($node, $row);
     // UUID doesn't show up as a field so had to do this.
     $node->uuid = $row->id;
     $row->format = isset($row->format) && $row->format ? $row->format : 'data';
   }
+
 }

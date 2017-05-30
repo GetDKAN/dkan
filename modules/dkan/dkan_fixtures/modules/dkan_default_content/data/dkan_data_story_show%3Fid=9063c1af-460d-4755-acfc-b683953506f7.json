@@ -1,0 +1,302 @@
+{
+    "result": {
+        "path": "story/state-level-policies-reduce-smoking-rates-nationwide",
+        "uuid": "9063c1af-460d-4755-acfc-b683953506f7",
+        "id": "33",
+        "type": "dkan_data_story",
+        "title": "State-Level Policies Reduce Smoking Rates Nationwide",
+        "created": "1472693478",
+        "changed": "1472709440",
+        "body": {
+            "und": [
+                {
+                    "value": "Since the [first studies were published in 1950 linking tobacco use to lung cancer](http://www.cdc.gov/nchs/nhis/tobacco/tobacco_history.htm) there has been exponential attention on the issue of smoking. As new research determines links between tobacco-use and harmful side effects such as cancer, policy and disincentives grow in strictness. \r\n\r\nWhile some efforts have varied in their impact, states have had great success in reducing smoking rates by increasing their tax rates on tobacco. Though the correlation isn't one-to-one, there is a clear trend: states that have a higher tax on tobacco tend to have a lower percentage of adult smokers. \r\n\r\nThe Center for Disease Control (CDC), the National Cancer Institute and several advocacy organizations such as the American Cancer Society have fought for decades to educate Americans about the dangers of smoking, and why it\u2019s best to quit as soon as possible -- or, of course, to never start in the first place.\r\n\r\nThe CDC reported in late 2014 that the US smoking rate is now at its lowest point in 50 years. The 42.1 million count of Americans smoking in 2013 marks the \u201clowest prevalence of adult smoking since the CDC's Nation Health Interview Survey began keeping such records in 1965,\u201d the agency said in a statement to NBC News [[source](http://www.nbcnews.com/health/cancer/calling-it-quits-american-smoking-hits-50-year-low-n256711)].\r\n\r\nThe visualizations below include a chart that breaks down the tax rate on tobacco by state and a map of tobacco-use rates in each state. \r\n\r\nScroll over the DKAN Chart to see which states have the highest and lowest tax rates. The Chart was created using data published on DKAN and visualized with the standard DKAN Chart feature. \r\n\r\nCompare the tax rate Chart with the rate of use map. The statistics further below show an inverse correlation between tax rate and tobacco use. That is, the higher the tax rate, the lower the use of tobacco (and vice versa). The map was made with open data in the digital mapping tool CartoDB. You can create your own data visualizations using digital tools and embed them onto your DKAN site. \r\n\r\n<center>[See the whole Dataset](../dataset/us-tobacco-usage-statistics)</center>\r\n",
+                    "summary": "The Center for Disease Control, the National Cancer Institute and a multitude of advocacy organizations such as the American Cancer Society have fought for decades to educate Americans about the dangers of smoking, and why it\u2019s best to quit as soon as possible -- or of course, to never start in the first place",
+                    "format": "html",
+                    "safe_value": "<p>Since the <a href=\"http://www.cdc.gov/nchs/nhis/tobacco/tobacco_history.htm\">first studies were published in 1950 linking tobacco use to lung cancer</a> there has been exponential attention on the issue of smoking. As new research determines links between tobacco-use and harmful side effects such as cancer, policy and disincentives grow in strictness.</p>\n<p>While some efforts have varied in their impact, states have had great success in reducing smoking rates by increasing their tax rates on tobacco. Though the correlation isn't one-to-one, there is a clear trend: states that have a higher tax on tobacco tend to have a lower percentage of adult smokers.</p>\n<p>The Center for Disease Control (CDC), the National Cancer Institute and several advocacy organizations such as the American Cancer Society have fought for decades to educate Americans about the dangers of smoking, and why it\u2019s best to quit as soon as possible -- or, of course, to never start in the first place.</p>\n<p>The CDC reported in late 2014 that the US smoking rate is now at its lowest point in 50 years. The 42.1 million count of Americans smoking in 2013 marks the \u201clowest prevalence of adult smoking since the CDC's Nation Health Interview Survey began keeping such records in 1965,\u201d the agency said in a statement to NBC News [<a href=\"http://www.nbcnews.com/health/cancer/calling-it-quits-american-smoking-hits-50-year-low-n256711\">source</a>].</p>\n<p>The visualizations below include a chart that breaks down the tax rate on tobacco by state and a map of tobacco-use rates in each state.</p>\n<p>Scroll over the DKAN Chart to see which states have the highest and lowest tax rates. The Chart was created using data published on DKAN and visualized with the standard DKAN Chart feature.</p>\n<p>Compare the tax rate Chart with the rate of use map. The statistics further below show an inverse correlation between tax rate and tobacco use. That is, the higher the tax rate, the lower the use of tobacco (and vice versa). The map was made with open data in the digital mapping tool CartoDB. You can create your own data visualizations using digital tools and embed them onto your DKAN site.</p>\n</p>\n<p><center><a href=\"../dataset/us-tobacco-usage-statistics\">See the whole Dataset</a></center></p>\n",
+                    "safe_summary": "<p>The Center for Disease Control, the National Cancer Institute and a multitude of advocacy organizations such as the American Cancer Society have fought for decades to educate Americans about the dangers of smoking, and why it\u2019s best to quit as soon as possible -- or of course, to never start in the first place</p>\n"
+                }
+            ]
+        },
+        "field_topic": [
+            {
+                "name": "Health Care",
+                "display_name": "Health Care",
+                "id": "80a9cc2b-c817-405e-9591-14565759defc"
+            }
+        ],
+        "field_image": "files/dkan_data_story/nosmoking.jpg",
+        "field_image_alt": "Hand refusing offered cigarettes",
+        "panelizer": {
+            "panels_display": {
+                "args": [],
+                "content": [],
+                "panels": [],
+                "incoming_content": null,
+                "css_id": null,
+                "context": [],
+                "renderer": "standard",
+                "layout": "radix_sutro_double",
+                "layout_settings": [],
+                "panel_settings": {
+                    "style_settings": {
+                        "default": null,
+                        "header": null,
+                        "column1": null,
+                        "column2": null,
+                        "middle": null,
+                        "secondcolumn1": null,
+                        "secondcolumn2": null,
+                        "footer": null
+                    }
+                },
+                "cache": [],
+                "title": "",
+                "hide_title": "0",
+                "title_pane": "31",
+                "uuid": "ebf9cf6e-6f19-4a42-ab6c-b15037e39db0",
+                "storage_type": "panelizer_entity",
+                "storage_id": "node:33:default"
+            },
+            "panels_pane": [
+                {
+                    "panel": "header",
+                    "type": "entity_field",
+                    "subtype": "node:field_image",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "label": "title",
+                        "formatter": "image",
+                        "delta_limit": 0,
+                        "delta_offset": "0",
+                        "delta_reversed": false,
+                        "formatter_settings": {
+                            "image_style": "story_image_full",
+                            "image_link": "",
+                            "file_view_mode": "full"
+                        },
+                        "context": "panelizer",
+                        "override_title": 1,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": {
+                        "css_id": "",
+                        "css_class": "story_image_full_width"
+                    },
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "309fe989-26f8-4c4f-8c6b-54a55738fd5f"
+                },
+                {
+                    "panel": "header",
+                    "type": "entity_field",
+                    "subtype": "node:body",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "label": "hidden",
+                        "formatter": "text_default",
+                        "delta_limit": 0,
+                        "delta_offset": "0",
+                        "delta_reversed": false,
+                        "formatter_settings": [],
+                        "context": "argument_entity_id:node_1",
+                        "override_title": 1,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "2",
+                    "locks": [],
+                    "uuid": "00684646-ba76-48ef-9f1c-d8ffeb33983a"
+                },
+                {
+                    "panel": "column2",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "",
+                        "remote_source": "https://nujiyediin.cartodb.com/viz/bc566364-7910-11e5-830f-0e5db1731f59/embed_map",
+                        "height": "550",
+                        "width": "100%",
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "64e714b0-d06d-4ad7-b438-07890c961b48"
+                },
+                {
+                    "panel": "column1",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:8dd112cb-d090-4e7e-853a-027732b2dc82",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "8dd112cb-d090-4e7e-853a-027732b2dc82",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "8dd112cb-d090-4e7e-853a-027732b2dc82",
+                        "language": "",
+                        "field_basic_text_text": [
+                            {
+                                "value": "### Least taxed states, percent of adult smokers:\r\n\r\n1. Missouri, **22%**\r\n2. Virginia, **19%**\r\n3. Louisiana, **23.5%**\r\n4. Georgia, **18.8%**\r\n5. Alabama, **21.5%**\r\n\r\n### Most taxed states, percent of adult smokers:\r\n\r\n1. New York, **16.6%**\r\n2. Massachusetts,**16.6%**\r\n3. Rhode Island, **17.4%**\r\n4. Connecticut, **15.5%**\r\n5. Hawaii, **13.3%**\r\n\r\n<br>\r\n[Go to Data](../dataset/us-tobacco-usage-statistics/resource/5e23aa2c-c639-49eb-b3e9-652ee22c76cb)",
+                                "format": "html",
+                                "safe_value": "<h3>Least taxed states, percent of adult smokers:</h3>\n<ol>\n<li>Missouri, <strong>22%</strong></li>\n<li>Virginia, <strong>19%</strong></li>\n<li>Louisiana, <strong>23.5%</strong></li>\n<li>Georgia, <strong>18.8%</strong></li>\n<li>Alabama, <strong>21.5%</strong></li>\n</ol>\n<h3>Most taxed states, percent of adult smokers:</h3>\n<ol>\n<li>New York, <strong>16.6%</strong></li>\n<li>Massachusetts,<strong>16.6%</strong></li>\n<li>Rhode Island, <strong>17.4%</strong></li>\n<li>Connecticut, <strong>15.5%</strong></li>\n<li>Hawaii, <strong>13.3%</strong></li>\n</ol>\n<p><a href=\"../dataset/us-tobacco-usage-statistics/resource/5e23aa2c-c639-49eb-b3e9-652ee22c76cb\">Go to Data</a></p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "column2",
+                    "type": "fieldable_panels_pane",
+                    "subtype": "uuid:2ee76a71-e4a7-4cc2-aedc-dfe559474a9a",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "view_mode": "full"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "1",
+                    "locks": [],
+                    "uuid": "2ee76a71-e4a7-4cc2-aedc-dfe559474a9a",
+                    "fpp_data": {
+                        "title": "",
+                        "bundle": "text",
+                        "link": "0",
+                        "path": "",
+                        "reusable": "0",
+                        "admin_title": "",
+                        "admin_description": "",
+                        "category": "Reusable Content",
+                        "view_access": null,
+                        "edit_access": null,
+                        "uuid": "2ee76a71-e4a7-4cc2-aedc-dfe559474a9a",
+                        "language": "",
+                        "field_basic_text_text": [
+                            {
+                                "value": "### Highest adult smoking rates and tax rate, 2015:\r\n\r\n1. Kentucky, **$.60**\r\n2. West Virginia, **$.60**\r\n3. Oklahoma, **$1.00**\r\n4. Missouri, **$.20**\r\n5. Tennessee, **$.60**\r\n\r\n### Lowest adult smoking rate and tax rate, 2015:\r\n\r\n1. Utah, **$1.70**\r\n2. California, **$.90**\r\n3. Connecticut, **$3.60**\r\n4. Massachusetts, **$3.50**\r\n5. Minnesota, **$3.00**\r\n\r\n<br>\r\n[Go to Data](../dataset/us-tobacco-usage-statistics/resource/02708727-2f2b-4567-a53f-c669c4e3b267)",
+                                "format": "html",
+                                "safe_value": "<h3>Highest adult smoking rates and tax rate, 2015:</h3>\n<ol>\n<li>Kentucky, <strong>$.60</strong></li>\n<li>West Virginia, <strong>$.60</strong></li>\n<li>Oklahoma, <strong>$1.00</strong></li>\n<li>Missouri, <strong>$.20</strong></li>\n<li>Tennessee, <strong>$.60</strong></li>\n</ol>\n<h3>Lowest adult smoking rate and tax rate, 2015:</h3>\n<ol>\n<li>Utah, <strong>$1.70</strong></li>\n<li>California, <strong>$.90</strong></li>\n<li>Connecticut, <strong>$3.60</strong></li>\n<li>Massachusetts, <strong>$3.50</strong></li>\n<li>Minnesota, <strong>$3.00</strong></li>\n</ol>\n<p><a href=\"../dataset/us-tobacco-usage-statistics/resource/02708727-2f2b-4567-a53f-c669c4e3b267\">Go to Data</a></p>\n"
+                            }
+                        ],
+                        "rdf_mapping": []
+                    }
+                },
+                {
+                    "panel": "column1",
+                    "type": "visualization_embed",
+                    "subtype": "visualization_embed",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "local_source": "878cbd16-586f-4057-bf87-aa8173421538",
+                        "remote_source": "",
+                        "height": "480",
+                        "width": "100%",
+                        "override_title": 0,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "0b154663-41b8-4848-b12a-f61597497ab1"
+                },
+                {
+                    "panel": "header",
+                    "type": "entity_field",
+                    "subtype": "node:field_topic",
+                    "shown": "1",
+                    "access": [],
+                    "configuration": {
+                        "label": "title",
+                        "formatter": "dkan_topic_formatter",
+                        "delta_limit": "0",
+                        "delta_offset": "0",
+                        "delta_reversed": 0,
+                        "formatter_settings": [],
+                        "context": "panelizer",
+                        "override_title": 1,
+                        "override_title_text": "",
+                        "override_title_heading": "h2"
+                    },
+                    "cache": [],
+                    "style": {
+                        "settings": null
+                    },
+                    "css": [],
+                    "extras": [],
+                    "position": "0",
+                    "locks": [],
+                    "uuid": "76a7ce47-3e00-4449-b747-e99d294288db"
+                }
+            ],
+            "panelizer_entity": {
+                "entity_type": "node",
+                "view_mode": "default",
+                "name": null,
+                "css_id": "",
+                "css_class": "",
+                "css": "",
+                "no_blocks": "0",
+                "title_element": "H2",
+                "link_to_entity": "0",
+                "extra": [],
+                "pipeline": "ipe",
+                "relationships": []
+            }
+        }
+    }
+}

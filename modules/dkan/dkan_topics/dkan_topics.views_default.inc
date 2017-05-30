@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_topics.views_default.inc

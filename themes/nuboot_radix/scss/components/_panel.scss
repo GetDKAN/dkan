@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 .panel-body {
-	overflow: visible;
+  overflow: visible;
 }
 .pane-content {
   .field-name-body {
@@ -11,10 +11,10 @@
   }
 }
 .main {
-	.pane-custom,
-	.pane-node-field-image,
-	.pane-fieldable-panels-pane {
-  	margin-bottom: 3em;
+  .pane-custom,
+  .pane-node-field-image,
+  .pane-fieldable-panels-pane {
+    margin-bottom: 3em;
   }
 }
 
@@ -25,163 +25,170 @@ h2.pane-title {
 
 #panels-choose-layout .form-type-radio input,
 .panels-choose-layout .form-type-radio input {
-	width: 15px;
+  width: 15px;
 }
 
-.radix-layouts-sidebar {
-	.pane-title {
-		@include block-title;
-	}
-	.pane-block {
-		@include blockbox;
-	}
+.panel-region-sidebar {
+  .radix-layouts-sidebar {
+    h2.pane-title {
+      @include block-title;
+    }
+    .pane-block {
+      @include blockbox;
+      &.pane-dkan-sitewide-dkan-sitewide-social .pane-content,
+      &.pane-dkan-sitewide-dkan-sitewide-data-extent .pane-content {
+        padding: 0;
+      }
+    }
+  }
 }
+
 .page-user {
-	.radix-layouts-content .pane-content {
-  	padding: 0;
-	  .profile {
-	  	margin-top: 0;
-	  }
-	}
+  .radix-layouts-content .pane-content {
+    padding: 0;
+    .profile {
+      margin-top: 0;
+    }
+  }
 }
 .radix-layouts-content {
-	.pane-title {
-		font-size: 36px;
-  	line-height: 42px;
-		margin:0 0 15px 0;
-	}
-	.pane-content {
-		margin-bottom: 1em;
-	}
-	.pane-node-field-topic .pane-content {
-		padding: 0
-	}
-	.pane-page-breadcrumb {
-		.breadcrumb {
-			display: block;
-			margin: 0 0 15px 0;
-		}
-	}
+  .pane-title {
+    font-size: 36px;
+    line-height: 42px;
+    margin:0 0 15px 0;
+  }
+  .pane-content {
+    margin-bottom: 1em;
+  }
+  .pane-node-field-topic .pane-content {
+    padding: 0
+  }
+  .pane-page-breadcrumb {
+    .breadcrumb {
+      display: block;
+      margin: 0 0 15px 0;
+    }
+  }
 }
 .node-type-group .radix-layouts-content {
-	@media (max-width: 991px) {
-		.pane-title {
-			margin-top: 2em;
-		}
-	}
-	.pane-content {
-		padding: 20px 0 0;
-		margin-bottom: 0;
-	}
+  @media (max-width: 991px) {
+    .pane-title {
+      margin-top: 2em;
+    }
+  }
+  .pane-content {
+    padding: 20px 0 0;
+    margin-bottom: 0;
+  }
 }
 
 // Panels administration pages.
 .panels-dnd .panel-full-width,
 .panels-dnd .panel-dkan-front {
-	.panel-top,
-	.panel-hero {
-		.tint {
-			display: none;
-		}
-		background-image: none !important;
-	  background-color: transparent !important;
-	  overflow: visible;
-	}
+  .panel-top,
+  .panel-hero {
+    .tint {
+      display: none;
+    }
+    background-image: none !important;
+    background-color: transparent !important;
+    overflow: visible;
+  }
 }
 .page-manager-wrapper .panel-region {
-	.pane-title {
-		background-image: none;
-		border: none;
-		font-size: 1em;
-		line-height: normal;
-	}
-	.panel-pane-collapsible {
-		.pane-content {
-			padding: 10px 15px;
-		}
-	}
+  .pane-title {
+    background-image: none;
+    border: none;
+    font-size: 1em;
+    line-height: normal;
+  }
+  .panel-pane-collapsible {
+    .pane-content {
+      padding: 10px 15px;
+    }
+  }
 }
 
 #panelizer-edit-content-form input {
-	margin-right: 1em;
+  margin-right: 1em;
 }
 
 // Custom block panes.
-.pane-dkan-sitewide-demo-front-dkan-demo-front .pane-title,
+.pane-dkan-sitewide-dkan-demo-front .pane-title,
 .pane-views-popular-tags-block .pane-title,
-.pane-dkan-sitewide-demo-front-dkan-add-front .pane-title {
+.pane-dkan-sitewide-dkan-add-front .pane-title {
   display:none;
 }
 
 // Front page panels.
 .panel-full-width,
 .panel-dkan-front {
-	// Adjust margin for responsive views.
-	.inside {
-		.pane-dkan-data-stories .view {
-			margin-left: -15px;
-			margin-right: -15px;
-		}
-	}
-	.pane-content {
-		margin: 25px 0;
-	}
-	.panel-top,
-	.panel-hero {
-		background-position:50% 50%;
-	  background-size:cover !important;
-	  background-repeat: no-repeat;
-	  position: relative;
-	  z-index: 0;
-		margin-bottom: 15px;
-		overflow: hidden;
-		.tint {
-	    // Let colorizer supply the background color.
-	    //background-color:rgba(10 , 119 , 189, .45);
-	    position:absolute;
-	    height: 900px;
-	    width:100%;
-	    z-index: -1;
-	  }
-	  h2,h3,h4 {
-	  	color: #fff;
-	  }
-	  h2.pane-title {
-		  border-bottom: none;
-		  padding-bottom: 0;
-		}
-	  .pane-content {
-	  	color: #fff;
-	  }
-	  a {
-	  	color: #fff;
-	  }
-	  // Default content animated gif.
-	  img.demo {
-			height: auto;
-			width: 100%;
-	  }
-	  // Default content hero text.
-	  @media(min-width:992px) {
-		  .pane-node-body {
-		  	padding-top: 15%;
-		  }
-		}
-	}
+  // Adjust margin for responsive views.
+  .inside {
+    .pane-dkan-data-stories .view {
+      margin-left: -15px;
+      margin-right: -15px;
+    }
+  }
+  .pane-content {
+    margin: 25px 0;
+  }
+  .panel-top,
+  .panel-hero {
+    background-position:50% 50%;
+    background-size:cover !important;
+    background-repeat: no-repeat;
+    position: relative;
+    z-index: 0;
+    margin-bottom: 15px;
+    overflow: hidden;
+    .tint {
+      // Let colorizer supply the background color.
+      //background-color:rgba(10 , 119 , 189, .45);
+      position:absolute;
+      height: 900px;
+      width:100%;
+      z-index: -1;
+    }
+    h2,h3,h4 {
+      color: #fff;
+    }
+    h2.pane-title {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .pane-content {
+      color: #fff;
+    }
+    a {
+      color: #fff;
+    }
+    // Default content animated gif.
+    img.demo {
+      height: auto;
+      width: 100%;
+    }
+    // Default content hero text.
+    @media(min-width:992px) {
+      .pane-node-body {
+        padding-top: 15%;
+      }
+    }
+  }
 }
 @media (max-width: 768px) {
-	.panel-dkan-front,
-	.panel-full-width {
-		.panel-hero,
-		.panel-triplet,
-		.panel-top,
-		.panel-bottom {
-			.panel-col-first,
-			.panel-col-second,
-			.panel-col-third {
-				float: none;
-				width: 100%;
-			}
-		}
-	}
+  .panel-dkan-front,
+  .panel-full-width {
+    .panel-hero,
+    .panel-triplet,
+    .panel-top,
+    .panel-bottom {
+      .panel-col-first,
+      .panel-col-second,
+      .panel-col-third {
+        float: none;
+        width: 100%;
+      }
+    }
+  }
 }

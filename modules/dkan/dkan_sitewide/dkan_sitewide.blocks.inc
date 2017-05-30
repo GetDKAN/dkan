@@ -11,35 +11,47 @@
 function dkan_sitewide_block_info() {
   $blocks['dkan_sitewide_license'] = array(
     'info' => t('License'),
-    'cache' => DRUPAL_CACHE_PER_PAGE
+    'cache' => DRUPAL_CACHE_PER_PAGE,
   );
   $blocks['dkan_sitewide_social'] = array(
     'info' => t('Social'),
-    'cache' => DRUPAL_CACHE_PER_PAGE
+    'cache' => DRUPAL_CACHE_PER_PAGE,
   );
   $blocks['dkan_sitewide_resource_add'] = array(
     'info' => t('Additional Information'),
-    'cache' => DRUPAL_NO_CACHE
+    'cache' => DRUPAL_NO_CACHE,
   );
   $blocks['dkan_sitewide_footer_author'] = array(
     'info' => t('Powered by DKAN'),
-    'cache' => DRUPAL_CACHE_GLOBAL
+    'cache' => DRUPAL_CACHE_GLOBAL,
   );
   $blocks['dkan_sitewide_search_bar'] = array(
     'info' => t('Search'),
-    'cache' => DRUPAL_CACHE_GLOBAL
+    'cache' => DRUPAL_CACHE_GLOBAL,
   );
   $blocks['dkan_sitewide_other_access'] = array(
     'info' => t('Other Access'),
-    'cache' => DRUPAL_CACHE_PER_PAGE
+    'cache' => DRUPAL_CACHE_PER_PAGE,
   );
   $blocks['dkan_sitewide_user_menu'] = array(
     'info' => t('User menu'),
-    'cache' => DRUPAL_CACHE_GLOBAL
+    'cache' => DRUPAL_CACHE_GLOBAL,
   );
   $blocks['dkan_sitewide_data_extent'] = array(
     'info' => t('Data Extent'),
-    'cache' => DRUPAL_CACHE_PER_PAGE
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+  $blocks['dkan_search_front'] = array(
+    'info' => t('Search Your Data'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['dkan_demo_front'] = array(
+    'info' => t('Welcome to the DKAN Demo'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['dkan_add_front'] = array(
+    'info' => t('Add a Dataset'),
+    'cache' => DRUPAL_NO_CACHE,
   );
 
   return $blocks;
@@ -92,6 +104,23 @@ function dkan_sitewide_block_view($delta = '') {
       $block['content'] = dkan_sitewide_user_menu_block();
       break;
 
+    case 'dkan_search_front':
+      $block['subject'] = t('Search Your Data');
+      $block['content'] = dkan_sitewide_search_front_block();
+      break;
+
+    case 'dkan_demo_front':
+      $block['subject'] = t('Welcome to the DKAN Demo');
+      $default = dkan_demo_front_block();
+      $block['content'] = check_markup(variable_get('dkan_sitewide_dkan_demo_front_text', $default), variable_get('dkan_sitewide_dkan_demo_front_format', 'html'));
+      break;
+
+    case 'dkan_add_front':
+      $block['subject'] = t('Add a Dataset');
+      $default = dkan_add_front_block();
+      $block['content'] = check_markup(variable_get('dkan_sitewide_dkan_add_front_text', $default), variable_get('dkan_sitewide_dkan_add_front_format', 'html'));
+      break;
+
   }
   return $block;
 }
@@ -131,20 +160,23 @@ function dkan_sitewide_data_extent_block() {
     $wrapper = entity_metadata_wrapper('node', $node);
     $spatial = $wrapper->field_spatial->value();
     if ($spatial && $spatial['wkt']) {
-    drupal_add_library('leaflet_widget', 'leaflet_core');
-     $features = array(leaflet_widget_geojson_feature($spatial['wkt']));
-       $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
-       $output = "var dataExtent = " . $geojson;
-       $output .= "; var map = L.map('map');
+      drupal_add_library('leaflet_widget', 'leaflet');
+      $features = array(leaflet_widget_geojson_feature($spatial['wkt']));
+      $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
+      $output = "var dataExtent = " . $geojson;
+      $output .= "; var map = L.map('map');
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a>'
         }).addTo(map);
 
         var geojson = L.geoJson(dataExtent).addTo(map);
         map.fitBounds(geojson.getBounds());";
-       drupal_add_js($output,  array('type' => 'inline', 'scope' => 'footer', 'weight' => 5));
-       return '<div id="map" style="height:250px; width:100%"></div>';
-       return $geojson;
+      drupal_add_js($output, array(
+        'type' => 'inline',
+        'scope' => 'footer',
+        'weight' => 5,
+      ));
+      return '<div id="map" style="height:250px; width:100%"></div>';
     }
   }
   else {
@@ -153,20 +185,74 @@ function dkan_sitewide_data_extent_block() {
 }
 
 /**
+ * Implements hook_block_configure().
+ */
+function dkan_sitewide_block_configure($delta = '') {
+  $form = array();
+  if ($delta == 'dkan_demo_front') {
+    $form['dkan_sitewide_dkan_demo_front_text'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Default'),
+      '#description' => t('Add text here to override the default block content. Leave blank to continue using default.'),
+      '#default_value' => variable_get('dkan_sitewide_dkan_demo_front_text', ''),
+      '#format' => variable_get('dkan_sitewide_dkan_demo_front_format', 'html'),
+    );
+  }
+  if ($delta == 'dkan_add_front') {
+    $form['dkan_sitewide_dkan_add_front_text'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Add a dataset'),
+      '#description' => t('Add text here to override the default block content. Leave blank to continue using default.'),
+      '#default_value' => variable_get('dkan_sitewide_dkan_add_front_text', ''),
+      '#format' => variable_get('dkan_sitewide_dkan_add_front_format', 'html'),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function dkan_sitewide_block_save($delta = '', $edit = array()) {
+  if ($delta == 'dkan_demo_front') {
+    if (empty($edit['dkan_sitewide_dkan_demo_front_text']['value'])) {
+      variable_del('dkan_sitewide_dkan_demo_front_text');
+      drupal_set_message(t('Reset block content to default.'));
+    }
+    else {
+      variable_set('dkan_sitewide_dkan_demo_front_text', $edit['dkan_sitewide_dkan_demo_front_text']['value']);
+      variable_set('dkan_sitewide_dkan_demo_front_format', $edit['dkan_sitewide_dkan_demo_front_text']['format']);
+    }
+  }
+  if ($delta == 'dkan_add_front') {
+    if (empty($edit['dkan_sitewide_dkan_add_front_text']['value'])) {
+      variable_del('dkan_sitewide_dkan_add_front_text');
+      drupal_set_message(t('Reset block content to default.'));
+    }
+    else {
+      variable_set('dkan_sitewide_dkan_add_front_text', $edit['dkan_sitewide_dkan_add_front_text']['value']);
+      variable_set('dkan_sitewide_demo_front_dkan_add_front_format', $edit['dkan_sitewide_demo_front_dkan_add_front_text']['format']);
+    }
+  }
+}
+
+/**
  * Add license info to block for dataset node.
  */
 function dkan_sitewide_license_block() {
   $node = menu_get_object();
-  if (!isset($node->type)) {
-    return '';
-  }
-  elseif ($node->type != 'dataset') {
+  if (!isset($node->type) || $node->type != 'dataset') {
     return '';
   }
   else {
-    if (isset($node->field_license) && $node->field_license) {
-      $key = (isset($node->field_license[$node->language][0])) ? $node->field_license[$node->language][0] : $node->field_license[LANGUAGE_NONE][0];
-      $key = $key['value'];
+    // Sometimes the node object returned from the menu_get_object will not be
+    // fully standard with all fields information. This is usually due to the
+    // alteration done by the panels page_manager. A potential workaround is to
+    // re-load the actual node with node_load.
+    $node_emw = entity_metadata_wrapper('node', node_load($node->nid, $node->vid));
+    if (isset($node_emw->field_license)) {
+      $key = $node_emw->field_license->value();
       $subscribed_values = dkan_dataset_content_types_license_subscribed_values();
       if (isset($subscribed_values[$key])) {
         $license = $subscribed_values[$key];
@@ -182,6 +268,19 @@ function dkan_sitewide_license_block() {
           $output = $license['label'];
         }
         return $output;
+      }
+      elseif ($key) {
+        // Harvested datasets may use license urls that do not match
+        // the urls set up in hook_subscribed_values().
+        // Check if the value is a url, if so theme it as a link.
+        $url = parse_url($key);
+        if (isset($url['scheme']) && isset($url['host'])) {
+          $output = l($key, $key);
+          return $output;
+        }
+        else {
+          return $key;
+        }
       }
     }
     return t('License not specified');
@@ -215,70 +314,70 @@ function dkan_sitewide_social_block() {
       'twitter' => array(
         'data' => l('<i class="ckan-icon ckan-icon-twitter fa fa-lg fa-twitter-square"></i> ' . t('Twitter'),
           'https://twitter.com/share', array(
-          'query' => array(
-            'url' => $link,
-            'text' => $title
-          ),
-          'attributes' => array(
-            'target' => '_blank',
-          ),
-          'html' => TRUE,
-        )),
+            'query' => array(
+              'url' => $link,
+              'text' => $title,
+            ),
+            'attributes' => array(
+              'target' => '_blank',
+            ),
+            'html' => TRUE,
+          )),
         'class' => array('nav-item'),
       ),
       'linkedin' => array(
         'data' => l('<i class="ckan-icon ckan-icon-fb fa fa-lg fa-linkedin-square"></i> ' . t('LinkedIn'),
           'https://www.linkedin.com/shareArticle', array(
-          'query' => array(
-            'url' => $link,
-            'title' => $title
-          ),
-          'attributes' => array(
-            'target' => '_blank',
-          ),
-          'html' => TRUE,
-        )),
+            'query' => array(
+              'url' => $link,
+              'title' => $title,
+            ),
+            'attributes' => array(
+              'target' => '_blank',
+            ),
+            'html' => TRUE,
+          )),
         'class' => array('nav-item'),
-      ),   
+      ),
       'reddit' => array(
         'data' => l('<i class="ckan-icon ckan-icon-fb fa fa-lg fa-reddit-square"></i> ' . t('Reddit'),
           'http://www.reddit.com/submit', array(
-          'query' => array(
-            'url' => $link,
-            'title' => $title
-          ),
-          'attributes' => array(
-            'target' => '_blank',
-          ),
-          'html' => TRUE,
-        )),
+            'query' => array(
+              'url' => $link,
+              'title' => $title,
+            ),
+            'attributes' => array(
+              'target' => '_blank',
+            ),
+            'html' => TRUE,
+          )),
         'class' => array('nav-item'),
       ),
       'googleplus' => array(
         'data' => l('<i class="ckan-icon ckan-icon-gplus fa fa-lg fa-google-plus-square"></i> ' . t('Google+'),
           'https://plus.google.com/share', array(
-          'query' => array(
-            'url' => $link,
-            'title' => $title
-          ),
-          'attributes' => array(
-            'target' => '_blank',
-          ),
-          'html' => TRUE,
-        )),
+            'query' => array(
+              'url' => $link,
+              'title' => $title,
+            ),
+            'attributes' => array(
+              'target' => '_blank',
+            ),
+            'html' => TRUE,
+          )),
         'class' => array('nav-item'),
       ),
       'facebook' => array(
         'data' => l('<i class="ckan-icon ckan-icon-fb fa fa-lg fa-facebook-square"></i> ' . t('Facebook'),
           'https://www.facebook.com/sharer.php', array(
-          'query' => array(
-            'u' => $link
-          ),
-          'attributes' => array(
-            'target' => '_blank',
-          ),
-          'html' => TRUE,
-        )),
+            'query' => array(
+              'u' => $link,
+            ),
+            'attributes' => array(
+              'target' => '_blank',
+            ),
+            'html' => TRUE,
+          )),
         'class' => array('nav-item'),
       ),
     ),
@@ -315,8 +414,9 @@ function dkan_sitewide_other_access() {
                 'html' => TRUE,
                 'attributes' => array(
                   'class' => array('btn'),
-                  'title' => t('json view of content')
-            ))),
+                  'title' => t('json view of content'),
+                ),
+              )),
           ),
           'dcat' => array(
             '#type' => 'markup',
@@ -326,19 +426,27 @@ function dkan_sitewide_other_access() {
                 'html' => TRUE,
                 'attributes' => array(
                   'class' => array('btn'),
-                  'title' => t('rdf view of content')
-            ))),
+                  'title' => t('rdf view of content'),
+                ),
+              )),
           ),
         ),
       ),
       'dkan_api' => array(
         '#type' => 'markup',
-        '#markup' => '<p><small>' . t('via the  <a href="http://docs.getdkan.com">DKAN API</a>') . '</small></p>',
-      )
+        '#markup' => '<p><small>' . t('via the  <a href="http://docs.getdkan.com/en/latest/apis/index.html">DKAN API</a>') . '</small></p>',
+      ),
     );
 
     return $output;
   }
+}
+
+/**
+ * Creates search block for front page.
+ */
+function dkan_sitewide_search_front_block() {
+  return dkan_sitewide_search_bar();
 }
 
 /**
@@ -350,6 +458,7 @@ function dkan_sitewide_search_bar() {
     return drupal_render($output);
   }
 }
+
 /**
  * Form for sitewide search.
  */
@@ -363,12 +472,13 @@ function dkan_sitewide_dataset_search_form($form, $form_state) {
   );
   $form['submit'] = array(
     '#type' => 'submit',
-    //'#value' => t('Apply'),
+    // '#value' => t('Apply'),
     // Use fontawesome icon instead.
-      '#value' => decode_entities('&#xf002;'),
+    '#value' => decode_entities('&#xf002;'),
   );
   return $form;
 }
+
 /**
  * Redirects to search page.
  */
@@ -377,4 +487,27 @@ function dkan_sitewide_dataset_search_form_submit($form, &$form_state) {
     drupal_goto('dataset', array('query' => array('query' => $query)));
 
   }
+}
+
+/**
+ * Creates placeholder front block.
+ */
+function dkan_demo_front_block() {
+  $dataset_url = url('dataset');
+  $homepage_graphic = url(drupal_get_path('theme', 'nuboot_radix') . '/assets/images/homepage-graphic.jpg');
+  $homepage_dataset_url = url('dataset/gold-prices-london-1950-2008-monthly');
+  $content = t('<p>Search for datasets directly from the homepage or by navigating to the !link search page where you can filter by tags, groups and format.</p>', array('!link' => l(t('Datasets'), 'dataset')));
+  $content .= '<p class="featured media-overlay"><strong class="media-heading">DKANs data previewing tool has many powerful features</strong><a class="image" href=" ' . $homepage_dataset_url . ' "><img src="' . $homepage_graphic . '" style="width: 100%" alt="Image of DKANs data previewing tool"></a>
+    </p>';
+  return $content;
+}
+
+/**
+ * Creates "Add a Dataset" block for front page.
+ */
+function dkan_add_front_block() {
+  $output = '<div class="add content">';
+  $output .= t('You can add a !dataset to get a sense of publisher workflow. This form can be customised to require many additional fields. In this demo only the most basic fields are required.', array('!dataset' => l(t('Dataset'), 'node/add/dataset')));
+  $output .= '</div>';
+  return $output;
 }

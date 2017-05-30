@@ -1,12 +1,14 @@
 <?php
+
 /**
  * @file
  * Install file for DKAN Topics.
  */
 
-
+/**
+ * Check if there are already terms and if not import default terms.
+ */
 function dkan_default_topics_install() {
-  // Check if there are already terms and if not import default terms.
   $vocab = taxonomy_vocabulary_machine_name_load('dkan_topics');
   $terms = taxonomy_get_tree($vocab->vid);
   if (empty($terms) && module_exists('taxonomy_fixtures') && module_exists('dkan_default_topics')) {

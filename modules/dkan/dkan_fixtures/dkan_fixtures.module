@@ -44,8 +44,21 @@ function dkan_fixtures_migrate_api() {
 }
 
 /**
- * Returns all the fixtures that need to be exported for: Datasets, Resources, Groups,
- * Visualization Entities, Data Dashboards, Data Stories and Pages.
+ * Returns all the fixtures that need to be exported.
+ *
+ * Supports Datasets, Resources, Groups, Visualization Entities,
+ * Data Dashboards, Data Stories and Pages.
+ *
+ * @todo We are using the information on each dataset to build the list of
+ * resources and groups that are going to be exported later on
+ * dkan_fixtures_append_resource_fixtures() and
+ * dkan_fixtures_append_group_fixtures().
+ * We should be able in the future to export each type of content individually
+ * calling different endpoints.
+ *
+ * @param array $nids
+ *   Optional array of nids to render to fixtures. If not supplied,
+ *   will render all content.
  */
 function dkan_fixtures_render_fixtures($nids = array()) {
 
@@ -68,14 +81,8 @@ function dkan_fixtures_render_fixtures($nids = array()) {
   $fdata = dkan_fixtures_build_fixture_data($fixture_name, $package_list['result']);
   $fixtures[] = $fdata;
 
-  // TODO:
-  // We are using the information on each dataset to build the list of resources and
-  // groups that are going to be exported later on dkan_fixtures_append_resource_fixtures() and
-  // dkan_fixtures_append_group_fixtures().
-  // We should be able in the future to export each type of content individually calling different endpoints.
-
-  // Use ids in package_list to create exports for every dataset.
   $package_show_api = open_data_schema_map_api_load('ckan_package_show');
+  // Use ids in package_list to create exports for every dataset.
   if (isset($package_list['result'])) {
     foreach ($package_list['result'] as $id) {
       $query = array('id' => $id, 'q' => 'api/3/action/package_show');
@@ -84,16 +91,17 @@ function dkan_fixtures_render_fixtures($nids = array()) {
       $package_show = $package_show['result'];
       $package_show['result'] = reset($package_show['result']);
       if (isset($package_show['result']['resources'])) {
-        foreach ($package_show['result']['resources'] as $key => $resource) {
-          // Save resource on the list of resources that are going to be exported.
+        foreach ($package_show['result']['resources'] as $resource) {
+          // Save resource on the list of resources that are to be exported.
           $resource_ids[] = $resource['id'];
         }
       }
 
       // Grab all the information related with Groups to be exported as a
-      // fixture later. This should be improved once a 'group_show' endpoint is implemented.
+      // fixture later. This should be improved once a 'group_show' endpoint
+      // is implemented.
       if (isset($package_show['result']['groups'])) {
-        foreach ($package_show['result']['groups'] as $key => $group) {
+        foreach ($package_show['result']['groups'] as $group) {
           if (!isset($group_data[$group['id']])) {
             // Remove HTML tags from description.
             $group['description'] = strip_tags($group['description']);
@@ -104,7 +112,8 @@ function dkan_fixtures_render_fixtures($nids = array()) {
       }
 
       // Add additional fields.
-      // NOTE: This is a temporary solution since ODSM is not exposing some fields like field_spatial.
+      // NOTE: This is a temporary solution since ODSM is not exposing some
+      // fields like field_spatial.
       // Load dataset.
       $dataset = reset(entity_uuid_load('node', array($package_show['result']['id'])));
       $api = open_data_schema_map_api_load('ckan_package_show');
@@ -117,7 +126,7 @@ function dkan_fixtures_render_fixtures($nids = array()) {
       }
 
       // Add dataset fixture to the list of fixtures to be rendered.
-      $fixture_name = 'package_show?id=' . $id . '.json';
+      $fixture_name = 'package_show%3Fid=' . $id . '.json';
       $fdata = dkan_fixtures_build_fixture_data($fixture_name, $package_show['result']);
       $fixtures[] = $fdata;
     }
@@ -138,22 +147,20 @@ function dkan_fixtures_render_fixtures($nids = array()) {
   // Export Data Stories.
   dkan_fixtures_append_panelized_node_fixtures('dkan_data_story', $fixtures);
 
-  // Export Home Page + About page
+  // Export Home Page + About page.
   dkan_fixtures_append_panelized_node_fixtures('page', $fixtures);
 
   return $fixtures;
 }
 
 /**
- * Appends all Groups fixtures to the list of fixtures that are going to be exported.
+ * Appends all Groups fixtures to the list of fixtures that are to be exported.
  */
 function dkan_fixtures_append_group_fixtures($group_ids, $group_data, &$fixtures) {
   global $base_url;
 
   // Use ids in fake group-list to create exports for every group.
-  $group_show_api = array();
   foreach ($group_ids as $id) {
-
     // Save alt value.
     $query = db_select('node', 'n');
     $query->join('field_data_field_image', 'i', 'n.nid = i.entity_id');
@@ -163,7 +170,7 @@ function dkan_fixtures_append_group_fixtures($group_ids, $group_data, &$fixtures
     foreach ($result as $row) {
       $group_data[$id]['field_image_alt'] = $row->field_image_alt;
     }
-    
+
     $files_to_save = array();
     if (isset($group_data[$id]['image_display_url'])) {
       $file = $group_data[$id]['image_display_url'];
@@ -174,7 +181,7 @@ function dkan_fixtures_append_group_fixtures($group_ids, $group_data, &$fixtures
         $group_data[$id]['image_display_url'] = 'files/group/' . basename($file);
       }
     }
-    $fixture_name = 'group_show?id=' . $id . '.json';
+    $fixture_name = 'group_show%3Fid=' . $id . '.json';
     $fdata = dkan_fixtures_build_fixture_data($fixture_name, $group_data[$id], $files_to_save, 'group');
     $fixtures[] = $fdata;
   }
@@ -184,7 +191,7 @@ function dkan_fixtures_append_group_fixtures($group_ids, $group_data, &$fixtures
 }
 
 /**
- * Appends all Resource fixtures to the list of fixtures that are going to be exported.
+ * Appends all Resource fixtures to list of fixtures that are to be exported.
  */
 function dkan_fixtures_append_resource_fixtures($resource_ids, &$fixtures) {
   global $base_url;
@@ -212,7 +219,7 @@ function dkan_fixtures_append_resource_fixtures($resource_ids, &$fixtures) {
     }
 
     // Append resource fixture.
-    $fixture_name = 'resource_show?id=' . $id . '.json';
+    $fixture_name = 'resource_show%3Fid=' . $id . '.json';
     $fdata = dkan_fixtures_build_fixture_data($fixture_name, $resource_show['result'], $files_to_save, 'resource');
     $fixtures[] = $fdata;
   }
@@ -224,10 +231,9 @@ function dkan_fixtures_append_resource_fixtures($resource_ids, &$fixtures) {
 }
 
 /**
- * Appends all Panelized Nodes fixtures to the list of fixtures that are going to be exported.
+ * Appends all Panelized Nodes fixtures to list of fixtures to be exported.
  */
 function dkan_fixtures_append_panelized_node_fixtures($content_type, &$fixtures, $nids = array()) {
-  global $base_url;
 
   $panelized_nodes = array();
   $files_to_save = array();
@@ -273,7 +279,8 @@ function dkan_fixtures_append_panelized_node_fixtures($content_type, &$fixtures,
         $files_to_save[] = drupal_realpath($file['uri']);
       }
 
-      // Add Panelizer data on export: panelizer_entity, panels_display and panels_pane.
+      // Add Panelizer data on export: panelizer_entity, panels_display
+      // and panels_pane.
       dkan_fixtures_append_panelizer_data($node, $panelized_node, $files_to_save, $content_type);
 
       // If homepage then add flag.
@@ -284,7 +291,7 @@ function dkan_fixtures_append_panelized_node_fixtures($content_type, &$fixtures,
       }
 
       // Append 'Item' fixture for content.
-      $fixture_name = $content_type . '_show?id=' . $nuuid . '.json';
+      $fixture_name = $content_type . '_show%3Fid=' . $nuuid . '.json';
       $fdata = dkan_fixtures_build_fixture_data($fixture_name, $panelized_node, $files_to_save, $content_type);
       $fixtures[] = $fdata;
     }
@@ -296,10 +303,10 @@ function dkan_fixtures_append_panelized_node_fixtures($content_type, &$fixtures,
   }
 }
 
-/*
+/**
  * Returns an array with all terms in field formatted for export.
  */
-function dkan_fixtures_export_terms( $node, $terms_field ) {
+function dkan_fixtures_export_terms($node, $terms_field) {
 
   $node_wrapper = entity_metadata_wrapper('node', $node);
 
@@ -318,14 +325,14 @@ function dkan_fixtures_export_terms( $node, $terms_field ) {
 }
 
 /**
-  * Appends all panelizer related data to the node data that is being exported on a fixture.
-  */
+ * Append  panelizer related to exported node.
+ */
 function dkan_fixtures_append_panelizer_data($node, &$fixture_data, &$files_to_save, $files_dir) {
   $panelizer_data = array();
 
   if (isset($node->panelizer)) {
     ctools_include('export');
-    // Get panelizer_entity information
+    // Get panelizer_entity information.
     $result = db_query("SELECT * FROM {panelizer_entity} WHERE entity_id = :nid", array(':nid' => $node->nid))->fetchObject();
     $panelizer_entity = ctools_export_unpack_object('panelizer_entity', $result);
 
@@ -339,7 +346,7 @@ function dkan_fixtures_append_panelizer_data($node, &$fixture_data, &$files_to_s
     dkan_fixtures_append_panels_pane_data($panelizer_entity->did, $panelizer_data, $files_to_save, $files_dir);
 
     // Unset all information that is not needed.
-    // IDs and timestamps are going to be generated and associated during import.
+    // IDs and timestamps will be generated and associated during import.
     unset($panelizer_entity->entity_id);
     unset($panelizer_entity->revision_id);
     unset($panelizer_entity->contexts);
@@ -362,15 +369,16 @@ function dkan_fixtures_append_panels_pane_data($display_id, &$panelizer_data, &$
   foreach ($result as $obj) {
     $panels_pane = ctools_export_unpack_object('panels_pane', $obj);
     // Unset all information that is not needed.
-    // IDs and timestamps are going to be generated and associated during import.
+    // IDs and timestamps will be generated and associated during import.
     unset($panels_pane->pid);
     unset($panels_pane->did);
 
     if ($panels_pane->type === 'visualization_embed') {
       $embed_config = $panels_pane->configuration;
       if (!empty($embed_config['local_source'])) {
-        // The reference to the local viz is saved with the format "Title [id:XXX]".
-        // We need to get the normal ID in order to be able to find the UUID to export that instead.
+        // The reference to the local viz is saved with the format
+        // "Title [id:XXX]". We need to get the normal ID in order to be able
+        // to find the UUID to export that instead.
         preg_match('~:(.*?)]~', $embed_config['local_source'], $viz_id);
         // Load the visualization entity to get the UUID.
         $visualization = entity_load_single('visualization', end($viz_id));
@@ -389,7 +397,7 @@ function dkan_fixtures_append_panels_pane_data($display_id, &$panelizer_data, &$
 }
 
 /**
- * Appends all fieldable panel panes data to the pane that is being exported on a fixture.
+ * Appends fieldable panel panes data to the pane that is being exported.
  */
 function dkan_fixtures_append_fieldable_panel_pane_data(&$panels_pane, &$files_to_save, $files_dir) {
 
@@ -423,7 +431,7 @@ function dkan_fixtures_append_fieldable_panel_pane_data(&$panels_pane, &$files_t
       if ($field_name === 'field_basic_image_image' || $field_name === 'field_basic_spotlight_items') {
         $field_data = $fpp_data->$field_name;
         $field_items = array();
-        foreach ($field_data as $key => $field_item) {
+        foreach ($field_data as $field_item) {
           $field = array();
           $field['alt'] = $field_item['alt'];
           $field['title'] = $field_item['title'];
@@ -441,7 +449,8 @@ function dkan_fixtures_append_fieldable_panel_pane_data(&$panels_pane, &$files_t
       }
     }
 
-    // Spotlight pager field does not need to be exported since it's generated automatically.
+    // Spotlight pager field does not need to be exported since it's generated
+    // automatically.
     if ($field_name === 'field_basic_spotlight_pager') {
       unset($fpp_data->$field_name);
     }
@@ -452,7 +461,7 @@ function dkan_fixtures_append_fieldable_panel_pane_data(&$panels_pane, &$files_t
 }
 
 /**
- * Append all visualization entity fixtures to the list of fixtures that are going to be exported.
+ * Append visualization entity fixtures to the list of fixtures to be exported.
  */
 function dkan_fixtures_append_visualization_entity_fixtures(&$fixtures) {
 
@@ -468,7 +477,7 @@ function dkan_fixtures_append_visualization_entity_fixtures(&$fixtures) {
   if (isset($results['visualization'])) {
     $visualizations = entity_load('visualization', array_keys($results['visualization']));
 
-    foreach ($visualizations as $id => $visualization) {
+    foreach ($visualizations as $visualization) {
       $visualization_wrapper = entity_metadata_wrapper('visualization', $visualization);
       $visualization_entities[$visualization_wrapper->uuid->value()] = $visualization;
 
@@ -476,8 +485,9 @@ function dkan_fixtures_append_visualization_entity_fixtures(&$fixtures) {
       $source_url = $visualization_settings->source->url;
 
       // Check if the source is an URL.
-      if(filter_var($source_url, FILTER_VALIDATE_URL)) {
-        // Add the file to the list of files that need to be download locally as part of fixtures data.
+      if (filter_var($source_url, FILTER_VALIDATE_URL)) {
+        // Add the file to the list of files to be download locally as part of
+        // fixtures data.
         $visualization_entity_files[] = $source_url;
         // Replace the URL.
         $visualization_settings->source->url = 'files/visualization_entity/' . basename($source_url);
@@ -497,7 +507,7 @@ function dkan_fixtures_append_visualization_entity_fixtures(&$fixtures) {
       }
 
       // Append fixture with visualization entity data.
-      $fixture_name = 'visualization_entity_show?id=' . $visualization_wrapper->uuid->value() . '.json';
+      $fixture_name = 'visualization_entity_show%3Fid=' . $visualization_wrapper->uuid->value() . '.json';
       $fdata = dkan_fixtures_build_fixture_data($fixture_name, $visualization_data, $visualization_entity_files, 'visualization_entity');
       $fixtures[] = $fdata;
     }
@@ -547,7 +557,7 @@ function dkan_fixtures_restws_format_info() {
   $result = array(
     'array' => array(
       'label' => t('Array'),
-      'class' => 'RestWSFormatArray',
+      'class' => 'DkanFixturesRestWSFormatArray',
       'mime type' => '',
     ),
   );
@@ -557,7 +567,8 @@ function dkan_fixtures_restws_format_info() {
 /**
  * Adds array format.
  */
-class RestWSFormatArray extends RestWSBaseFormat {
+class DkanFixturesRestWSFormatArray extends RestWSBaseFormat {
+
   /**
    * Returns array instead of serialized value.
    */
@@ -581,15 +592,19 @@ class RestWSFormatArray extends RestWSBaseFormat {
     }
     return $values;
   }
+
 }
 
+/**
+ * Implements hook_open_data_schema_map_endpoint_query_alter().
+ */
 function dkan_fixtures_open_data_schema_map_endpoint_query_alter(&$query, $machine_name) {
   if (variable_get(DKAN_FIXTURES_IS_EXPORTING, FALSE)) {
     if (isset($query->propertyConditions)) {
-      foreach($query->propertyConditions as $key => $property) {
+      foreach ($query->propertyConditions as $key => $property) {
         if ($property['column'] == 'status') {
           unset($query->propertyConditions[$key]);
-        }  
+        }
       }
     }
   }
@@ -636,10 +651,12 @@ function dkan_fixtures_rrmdir($dir) {
     $objects = scandir($dir);
     foreach ($objects as $object) {
       if ($object != "." && $object != "..") {
-        if (is_dir($dir."/".$object))
-          dkan_fixtures_rrmdir($dir."/".$object);
-        else
-          unlink($dir."/".$object);
+        if (is_dir($dir . "/" . $object)) {
+          dkan_fixtures_rrmdir($dir . "/" . $object);
+        }
+        else {
+          unlink($dir . "/" . $object);
+        }
       }
     }
   }
@@ -660,15 +677,11 @@ function dkan_fixtures_import_file($file_path, $orig_dir) {
     $data = file_get_contents($file_url);
     $name = basename($file_url);
     $uri = 'public://' . $name;
-    try {
-      $file = file_save_data($data, $uri, FILE_EXISTS_RENAME);
+    if ($file = file_save_data($data, $uri, FILE_EXISTS_RENAME)) {
       return $file;
-
-    } catch (Exception $e) {
-      $this->queuedMessages[] = array(
-        'message' => t('The file %file could not be imported.', array('%file' => $uri)),
-        'level' => MigrationBase::MESSAGE_ERROR,
-      );
+    }
+    else {
+      drupal_set_message(t('The file %file could not be imported.', array('%file' => $uri)), 'error');
     }
   }
 }
@@ -685,11 +698,8 @@ function dkan_fixtures_build_fixture_data($filename, $content, $files = array(),
         'result' => $content,
       )),
     'files' => $files,
-    'files_subdir' => $files_dir
+    'files_subdir' => $files_dir,
   );
 
   return $fixtures_data;
 }
-
-
-

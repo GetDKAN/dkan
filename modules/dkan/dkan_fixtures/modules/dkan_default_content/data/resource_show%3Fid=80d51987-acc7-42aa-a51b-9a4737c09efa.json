@@ -1,0 +1,15 @@
+{
+    "result": {
+        "path": "dataset/crime-data-ten-most-populous-cities-us/resource/80d51987-acc7-42aa-a51b-9a4737c09efa",
+        "id": "80d51987-acc7-42aa-a51b-9a4737c09efa",
+        "url": "files/resource/ViolentCrimeRates.csv",
+        "description": "<p>Source: FBI Uniform Crime Report, 2014 (<a href=\"https://www.fbi.gov/about-us/cjis/ucr/ucr\">https://www.fbi.gov/about-us/cjis/ucr/ucr</a>)</p>\n<p>Includes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.</p>\n",
+        "format": "csv",
+        "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+        "name": "Violent Crime Data for the Ten Most Populous Cities in the U.S.",
+        "mimetype": "text/csv",
+        "size": "1.32 KB",
+        "created": "Thu, 09/01/2016 - 01:37",
+        "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
+    }
+}

@@ -11,7 +11,10 @@ body.overlay {
 .site-slogan {
   color: @titleslogan;
 }
-h1,h2,h3,h4 {
+h1,
+h2,
+h3,
+h4 {
   color: @title;
 }
 
@@ -19,10 +22,10 @@ h1,h2,h3,h4 {
 .front .panel-top h2.pane-title,
 .front .panel-top h3.pane-title,
 .front .panel-top h4.pane-title {
-  color: @herotitle
+  color: @herotitle;
 }
 
-.pane-dkan-sitewide-demo-front-dkan-demo-front .pane-content,
+.pane-dkan-sitewide-dkan-demo-front .pane-content,
 .tint {
   background-color: @top_rgb;
 }
@@ -60,14 +63,20 @@ div.vertical-tabs ul.vertical-tabs-list li a:hover {
   background: @toolbarbtn;
 }
 .navbar-default .navbar-nav li > a,
-.navbar-default .user-menu li > a { color: #FFFFFF; }
+.navbar-default .user-menu li > a {
+  color: #ffffff;
+}
 
 .navbar-default .navbar-nav li.open > a,
-.navbar-default .navbar-nav .dropdown-menu { background: @top; }
+.navbar-default .navbar-nav .dropdown-menu {
+  background: @top;
+}
 
 .navbar-default .navbar-nav .open .dropdown-menu li > a:hover,
 .navbar-default .navbar-nav .open .dropdown-menu li > a:focus,
-.navbar-default .navbar-nav .open .dropdown-menu li > a:active { background-color:@bottom; }
+.navbar-default .navbar-nav .open .dropdown-menu li > a:active {
+  background-color: @bottom;
+}
 
 .navbar-default .navbar-nav li.open > a:hover,
 .navbar-default .navbar-nav li.open > a:focus,
@@ -76,7 +85,10 @@ div.vertical-tabs ul.vertical-tabs-list li a:hover {
 .navbar-default .navbar-nav li > a:focus,
 .navbar-default .navbar-nav li > a:active,
 .navbar-default .user-menu li > a:hover,
-.navbar-default .user-menu li > a:focus { background-color:@bottom; color: #fff; }
+.navbar-default .user-menu li > a:focus {
+  background-color: @bottom;
+  color: #fff;
+}
 
 .navbar-default .navbar-nav li.active > a,
 .navbar-default .navbar-nav li.active > a:hover,
@@ -84,35 +96,40 @@ div.vertical-tabs ul.vertical-tabs-list li a:hover {
 .navbar-default .navbar-nav li.active > a:active,
 .navbar-default .user-menu li.active > a,
 .navbar-default .user-menu li.active > a:hover,
-.navbar-default .user-menu li.active > a:focus { background:@linkactive; color: #fff; }
+.navbar-default .user-menu li.active > a:focus {
+  background: @linkactive;
+  color: #fff;
+}
 
 #block-dkan-sitewide-dkan-sitewide-user-menu .links a:hover,
-#block-dkan-sitewide-dkan-sitewide-user-menu .links a:focus { background-color:@bottom; color: #fff; }
-
+#block-dkan-sitewide-dkan-sitewide-user-menu .links a:focus {
+  background-color: @bottom;
+  color: #fff;
+}
 
 .tabs--primary.nav-pills li a,
 .tabs--primary li a {
-  border:1px solid @toolbarborder;
+  border: 1px solid @toolbarborder;
   background: @bg;
-  color:  @top;
+  color: @top;
 }
 
 .tabs--primary.nav-pills li a:hover,
 .tabs--primary li a:hover {
-  border:1px solid @bottom;
+  border: 1px solid @bottom;
   background: @bottom;
   color: #ffffff;
 }
 
 .tabs--primary.nav-pills > li > a.active,
-.tabs--primary.nav-pills > li > a:focus
+.tabs--primary.nav-pills > li > a:focus,
 .tabs--primary.nav-pills li.active a:hover,
 .tabs--primary.nav-pills li.active a:focus,
-.tabs--primary li a.active
+.tabs--primary li a.active,
 .tabs--primary li a:focus {
-  border:1px solid @linkactive;
+  border: 1px solid @linkactive;
   background: @linkactive;
-  color:#ffffff;
+  color: #ffffff;
 }
 
 .pane-views-group-block-block .group-subscribe-message,
@@ -127,8 +144,8 @@ div.vertical-tabs ul.vertical-tabs-list li a:hover {
 .links .btn,
 input.btn {
   background-color: @top;
-  border:1px solid @top;
-  color:#ffffff;
+  border: 1px solid @top;
+  color: #ffffff;
 }
 
 .node-blog .links a:hover,
@@ -139,9 +156,9 @@ input.btn {
 input.btn:hover,
 input.btn-default:active:hover,
 input[type="submit"]:hover {
-  background:@bottom;
-  border:1px solid @bottom;
-  color:#ffffff;
+  background: @bottom;
+  border: 1px solid @bottom;
+  color: #ffffff;
 }
 
 .btn-primary:focus,
@@ -175,7 +192,7 @@ input.form-submit.features-refresh-button {
 
 .region-sidebar-first .block-facetapi ul li.leaf a:hover,
 .block-facetapi ul li.leaf a:hover {
-  color:@top;
+  color: @top;
 }
 
 a.embed-link {
@@ -203,18 +220,18 @@ div.autocomplete-deluxe-multiple,
 }
 
 .panel-full-width .panel-top {
-  background:@bottom;
+  background: @bottom;
 }
 
-.radix-layouts-sidebar div[class*="pane-facetapi"] .pane-title,
-.radix-layouts-sidebar .pane-title.ctools-collapsible-handle {
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .pane-title,
+.panel-region-sidebar .radix-layouts-sidebar .pane-title.ctools-collapsible-handle {
   background: @toolbarbtn;
 }
 
-.radix-layouts-sidebar .pane-title,
-.radix-layouts-sidebar div[class*="pane-facetapi"] .facetapi-active {
+.panel-region-sidebar .radix-layouts-sidebar .pane-title,
+.panel-region-sidebar .radix-layouts-sidebar div[class*="pane-facetapi"] .facetapi-active {
   background: @toolbarbtn;
-  border-color: @toolbarbtn;
+  border-color: @toolbarbtn !important;
   color: @bg;
 }
 
@@ -284,4 +301,8 @@ ul.resource-list li .heading:hover {
 li.active .link-badge {
   background-color: #fff;
   color: @top;
+}
+
+.node-type-harvest-source .ctools-collapsible-container .ctools-collapsible-handle {
+  background-color: @top;
 }

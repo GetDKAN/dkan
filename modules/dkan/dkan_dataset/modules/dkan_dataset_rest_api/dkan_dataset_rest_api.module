@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Code for the DKAN Dataset REST API.
@@ -24,14 +25,13 @@ function dkan_dataset_rest_api_services_request_postprocess_alter($controller, $
     $wrapper->save();
   }
 
-  //Alter service attach file for add automatically the resource to datastore
+  // Alter service attach file for add automatically the resource to datastore.
   if ($controller['callback'] == '_node_resource_attach_file') {
     if (isset($result[0]['uri'])) {
       $nid = $args[0];
       $uuid = current(entity_get_uuid_by_id('node', array($nid)));
-      $fid = $result[0]['fid'];
 
-      dkan_datastore_queue_import($uuid, $fid);
+      dkan_datastore_queue_import($uuid);
     }
   }
 }

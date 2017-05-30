@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Template for dkan front page.

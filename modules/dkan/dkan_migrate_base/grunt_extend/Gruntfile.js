@@ -1,4 +1,8 @@
-module.exports = function(grunt) {
+/**
+ * @file
+ */
+
+module.exports = function (grunt) {
 
   var globalConfig = {
     moduleName: 'slo_esri_migrate',

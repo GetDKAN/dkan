@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @file
  * Migration class used to import Default Panelized Nodes from fixtures.
+ */
+
+/**
+ * Panelized nodes migrate class.
  */
 class DkanPanelizedNodesImport extends Migration {
 
   /**
-   * __construct().
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
 
@@ -28,11 +33,12 @@ class DkanPanelizedNodesImport extends Migration {
       new CKANListJSON($list_url, array('page' => $this->page, 'offset' => $this->offset)),
       new CKANItemJSON($item_url, $fields), $fields);
 
-    // This will receive data that originated from the source and has been mapped
-    // by the Migration class, and create Drupal objects.
+    // This will receive data that originated from the source and has been
+    // mapped by the Migration class, and create Drupal objects.
     $this->destination = new MigrateDestinationNode($arguments['content_type']);
 
-    // This will keep track of which source items have been imported and what destination objects they map to.
+    // This will keep track of which source items have been imported and what
+    // destination objects they map to.
     $this->map = new MigrateSQLMap($this->machineName,
       array(
         'id' => array(
@@ -71,6 +77,7 @@ class DkanPanelizedNodesImport extends Migration {
    * Do extra processing on the node data before its saved.
    */
   public function prepare($entity, $row) {
+    $entity->path['pathauto'] = FALSE;
     // Setup superuser as author.
     $entity->uid = 1;
   }
@@ -102,7 +109,7 @@ class DkanPanelizedNodesImport extends Migration {
 
     // Convert panelizer data into array recursively.
     // Almost all functions on Panels expect arrays.
-    $panelizer_data = json_decode(json_encode($panelizer_data), true);
+    $panelizer_data = json_decode(json_encode($panelizer_data), TRUE);
 
     $panelizer_entity = $panelizer_data['panelizer_entity'];
     $panels_display = $panelizer_data['panels_display'];
@@ -121,7 +128,7 @@ class DkanPanelizedNodesImport extends Migration {
         if (!empty($pane['configuration']['local_source'])) {
           // Get the visualization UUID.
           $viz_uuid = $pane['configuration']['local_source'];
-          // The 'local_source' setting needs to be in the format "Title [id:XXX]".
+          // The 'local_source' setting needs to be in  format "Title [id:XXX]".
           $visualization = reset(entity_uuid_load('visualization', array($viz_uuid)));
           $pane['configuration']['local_source'] = '';
           if ($visualization) {
@@ -153,7 +160,7 @@ class DkanPanelizedNodesImport extends Migration {
         $fpp = fieldable_panels_panes_save($fpp);
 
         // Save fieldable panel pane fields.
-        $this->save_fieldable_panel_pane_field($fpp, $fpp_data);
+        $this->saveFieldablePanelPaneField($fpp, $fpp_data);
       }
 
       drupal_write_record('panels_pane', $pane);
@@ -169,7 +176,7 @@ class DkanPanelizedNodesImport extends Migration {
   /**
    * Import Fieldable Panel Panes.
    */
-  private function save_fieldable_panel_pane_field($fpp, $fpp_data) {
+  private function saveFieldablePanelPaneField($fpp, $fpp_data) {
     $fields = field_info_instances('fieldable_panels_pane', $fpp->bundle);
 
     foreach ($fields as $field_name => $field_spec) {
@@ -192,14 +199,15 @@ class DkanPanelizedNodesImport extends Migration {
             // Save record as it is.
             drupal_write_record('field_data_' . $field_name, $field_record);
             drupal_write_record('field_revision_' . $field_name, $field_record);
-            
-          } catch (Exception $e) {
+
+          }
+          catch (Exception $e) {
             drupal_set_message("There was an error saving the FFP field :field", array('field' => $field_name));
           }
         }
         else {
-          // Add extra field data.
-          // Process all field items. 'Spotlight' FFPs for example have more than one field items.
+          // Add extra field data. 'Spotlight' FFPs for example have more than
+          // one field item.
           foreach ($field_data as $key => $field_item_data) {
             $field_record['delta'] = $key;
             // Process all columns inside field item.
@@ -220,7 +228,8 @@ class DkanPanelizedNodesImport extends Migration {
               drupal_write_record('field_data_' . $field_name, $field_record);
               drupal_write_record('field_revision_' . $field_name, $field_record);
 
-            } catch (Exception $e) {
+            }
+            catch (Exception $e) {
               drupal_set_message("There was an error saving the FFP field :field", array('field' => $field_name));
             }
           }
@@ -228,4 +237,5 @@ class DkanPanelizedNodesImport extends Migration {
       }
     }
   }
+
 }

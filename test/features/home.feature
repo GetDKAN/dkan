@@ -3,7 +3,12 @@ Feature: Homepage
   In order to know the website is running
   As a website user
   I need to be able to view the site title and login
-  
+
+  Background:
+    Given pages:
+      | name             | url                        |
+      | Add dataset      | /node/add/dataset          |
+
   @customizable
   Scenario: Viewing the site title
     Given I am on the homepage
@@ -34,11 +39,8 @@ Feature: Homepage
     Then I hover over the admin menu item "Add content"
     Then I should see the admin menu item "Dataset"
 
-  @api @javascript
+  @api
   Scenario: See "Dataset Form"
     Given I am logged in as a user with the "content creator" role
-    And I am on the homepage
-    Then I hover over the admin menu item "Content"
-    Then I hover over the admin menu item "Add content"
-    Then I click "Dataset"
+    And I am on "Add dataset" page
     Then I should see "Create Dataset"
