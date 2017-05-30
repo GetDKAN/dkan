@@ -49,6 +49,8 @@
 
 7.x-1.13
 --------------------------
+
+ - NuCivic/recline#69 Fix warning messages when you try view changes on resource/dataset nodes
  - #1719 Added site details to settings nuboot_radix to allow change site name, slogan, e-amail address for site manager.
  - #1717 Upgrading Drupal to 7.54
  - #1705 Added css for chart visualizaitons, fixes issue in IE.
