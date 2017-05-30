@@ -1,0 +1,82 @@
+<?php
+/**
+ * @file
+ * Code for the DKAN Sitewide Breadcrumbs feature.
+ */
+
+include_once 'dkan_sitewide_breadcrumbs.features.inc';
+
+/**
+ * Implements hook_theme_registry_alter().
+ */
+function dkan_sitewide_breadcrumbs_theme_registry_alter(&$theme_registry) {
+  $theme_registry['breadcrumb']['function'] = 'dkan_sitewide_breadcrumbs_breadcrumb';
+}
+
+/**
+ * Callback for theme_breadcrumb().
+ */
+function dkan_sitewide_breadcrumbs_breadcrumb($variables) {
+  if (drupal_is_front_page()) {
+    return;
+  }
+  $breadcrumb = $variables['breadcrumb'];
+  $contexts = array();
+
+  if (!empty($breadcrumb)) {
+    $output = '<h2 class="element-invisible">' . t('You are here') . '</h2>';
+
+    $crumbs = '<ul class="breadcrumb">';
+    if (!drupal_is_front_page()) {
+      $crumbs .= '<li class="home-link"><a href="' . url('<front>') . '"><i class="fa fa fa-home"></i><span> Home</span></a></li>';
+    }
+
+    // Remove null values.
+    $breadcrumb = array_filter($breadcrumb);
+    $i = 1;
+    foreach ($breadcrumb as $value) {
+      if ($i == count($breadcrumb)) {
+        $crumbs .= '<li class="active-trail">' . $value . '</li>';
+      }
+      else {
+        $crumbs .= '<li>' . $value . '</li>';
+      }
+      $i++;
+    }
+    $crumbs .= '</ul>';
+    return $crumbs;
+  }
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function dkan_sitewide_breadcrumbs_page_alter(&$page) {
+  $breadcrumbs = drupal_get_breadcrumb();
+
+  // Remove home breadcrumb link.
+  if (is_array($breadcrumbs)) {
+    unset($breadcrumbs[0]);
+  }
+
+  $node = menu_get_object();
+  if ($node && $node->type == 'resource') {
+    $node_wrapper = entity_metadata_wrapper('node', $node);
+    $dataset = $node_wrapper->field_dataset_ref->value();
+    if ($dataset) {
+      $breadcrumbs[] = l($dataset[0]->title, 'node/' . $dataset[0]->nid);
+      if (arg(2) == 'datastore') {
+        $breadcrumbs[] = l(dkan_dataset_text_trim($node->title), 'node/' . $node->nid);
+      }
+    }
+  }
+  elseif (arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'resource' && $query = drupal_get_query_parameters()) {
+    if (isset($query['dataset'])) {
+      $nid = $query['dataset'];
+      $breadcrumbs[] = l(dkan_dataset_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
+    }
+  }
+  $breadcrumbs[] = drupal_get_title();
+  drupal_set_breadcrumb($breadcrumbs);
+}
+

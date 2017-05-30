@@ -59,35 +59,6 @@ function dkan_sitewide_user_menu_block() {
 }
 
 /**
- * Implements hook_page_alter().
- */
-function dkan_sitewide_page_alter(&$page) {
-  // Adding page title to breadcrumb.
-  // Context module does this in hook_page_alter() so we need to as well if
-  // we want to add this.
-  $breadcrumbs = drupal_get_breadcrumb();
-  $node = menu_get_object();
-  if ($node && $node->type == 'resource') {
-    $node_wrapper = entity_metadata_wrapper('node', $node);
-    $dataset = $node_wrapper->field_dataset_ref->value();
-    if ($dataset) {
-      $breadcrumbs[] = l($dataset[0]->title, 'node/' . $dataset[0]->nid);
-      if (arg(2) == 'datastore') {
-        $breadcrumbs[] = l(dkan_dataset_text_trim($node->title), 'node/' . $node->nid);
-      }
-    }
-  }
-  elseif (arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'resource' && $query = drupal_get_query_parameters()) {
-    if (isset($query['dataset'])) {
-      $nid = $query['dataset'];
-      $breadcrumbs[] = l(dkan_dataset_text_trim(dkan_dataset_get_title($nid)), 'node/' . $nid);
-    }
-  }
-  $breadcrumbs[] = drupal_get_title();
-  drupal_set_breadcrumb($breadcrumbs);
-}
-
-/**
  * Implements theme_preprocess_views_views_json_style_simple().
  */
 function dkan_sitewide_preprocess_views_views_json_style_simple(&$vars) {
