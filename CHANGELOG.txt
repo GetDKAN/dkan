@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1920 Update Bureau codes for Open Data Federal Extras.
  - #1927 Fixed adding shapes to the spatial geographic coverage area field.
  - #1924 Fixed dkan_update_7012, if a site is still using a deprecated module, the data is not stripped from the db.
  - #1921 Drop the description label from the Harvest Source node view page.

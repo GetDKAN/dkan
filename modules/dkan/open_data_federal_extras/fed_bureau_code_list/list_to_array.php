@@ -2,7 +2,8 @@
 
 /**
  * @file
- * Script for changing csv file of federal agencies to an array.
+ * Script for changing csv file of federal agencies to an array. Latest version
+ * from https://github.com/batemapf/OMB-Agency-Bureau-and-Treasury-Codes/tree/new-json
  */
 
 const OPFE_CSV_BUREAU_CODES_FILE_NAME = 'omb-agency-bureau-treasury-codes.csv';
@@ -32,8 +33,8 @@ $bureau_codes = ';
   foreach ($records as $key => $record) {
     foreach ($headers as $header_key => $header) {
       // Bureau code is the key.
-      if ($record[3]) {
-        $result["$record[3]:$record[4]"] = "$record[3]:$record[4] - $record[2]";
+      if ($record[2]) {
+        $result["$record[2]:$record[3]"] = "$record[2]:$record[3] - $record[1]";
       }
     }
   }
@@ -59,8 +60,7 @@ function opfe_list_to_array_read_file($csv = OPFE_CSV_BUREAU_CODES_FILE_NAME) {
  * Validates headers for csv file.
  */
 function opfe_list_to_array_validate_file($headers) {
-  if (trim($headers[0]) != 'Branch' ||
-    trim($headers[1]) != 'Department' ||
+  if (trim($headers[1]) != 'Department' ||
     trim($headers[2]) != 'Agency' ||
     trim($headers[3]) != 'OMB Agency Code' ||
     trim($headers[4]) != 'OMB Bureau Code' ||
