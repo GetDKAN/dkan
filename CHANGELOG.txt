@@ -24,6 +24,8 @@
  - #1786 Add hook to auto-assign editors the og administrator role.
  - #1752 Added option for using quote delimiters when fast import is enabled for dkan datastore. Fixed error message when an import fails on DKAN Datastore Fast Import.
  - #1703 Refactor Datastore API module, fixing some caching issues and improving joins 
+ - #1704 Add validation to field data dictionary when POD strict validation is enabled.
+ - #1703 Refactor Datastore API module, fixing some caching issues and improving joins 
  - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
  - #1811 Apply patches to the rules module that can prevent unnecessary DB lockouts.
 
