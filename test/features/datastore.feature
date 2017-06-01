@@ -96,7 +96,7 @@ Feature: Datastore
     Then I "should" be able to manage the "Resource 01" datastore
     And I "should" be able to manage the "Resource 02" datastore
 
-  @api @noworkflow @javascript
+  @api @noworkflow @javascript @datastore
   Scenario: Import a csv tab delimited file.
     Given I am logged in as a user with the "site manager" role
     And I am on "dataset/dataset-02"
