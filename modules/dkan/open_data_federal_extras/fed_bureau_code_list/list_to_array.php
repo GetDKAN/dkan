@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Script for changing csv file of federal agencies to an array. 
+ * Script for changing csv file of federal agencies to an array.
  *
  * Latest version from https://github.com/batemapf/OMB-Agency-Bureau-and-Treasury-Codes/tree/new-json.
  */

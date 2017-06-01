@@ -54,7 +54,7 @@ function normalize_fields($fields, $resources) {
 
         // Fields are not specified so we get all of them
         // from the table schema.
-      } 
+      }
       elseif (is_string($fields) && $fields == '*') {
         $table = dkan_datastore_api_tablename($id);
         $schema = drupal_get_schema($table);
