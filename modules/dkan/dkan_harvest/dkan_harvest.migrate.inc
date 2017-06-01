@@ -824,7 +824,7 @@ class HarvestMigration extends MigrateDKAN {
    * @param array $dataset_nids
    *   An array of nids of datasets imported.
    */
-  public function prepareRollback($dataset_nids) {
+  public function prepareRollback(array $dataset_nids) {
     foreach ($dataset_nids as $dataset_id) {
       $dataset_emw = entity_metadata_wrapper('node', $dataset_id);
       $delete_nids = array();
@@ -944,6 +944,8 @@ class HarvestMigration extends MigrateDKAN {
    *   Taxonomy term name.
    * @param string $vocab_name
    *   Taxonomy vocabulary name.
+   * @param string $vid
+   *   The ID of the vocabulary.
    *
    * @return mixed
    *   An object term. Or null if failed.
@@ -1103,7 +1105,7 @@ class HarvestMigration extends MigrateDKAN {
    * @return object
    *   Resource node object.
    */
-  public function createResourceNode($res) {
+  public function createResourceNode(array $res) {
     migrate_instrument_start('HarvestMigration->createResourceNode');
     // Creates a new resource for every linked file.
     // Linked files contain title, format, and accessURL.
@@ -1213,7 +1215,7 @@ class HarvestMigration extends MigrateDKAN {
    * @return object
    *   Group node object.
    */
-  public function createGroupNode($group) {
+  public function createGroupNode(array $group) {
 
     $values = array(
       "type" => 'group',
