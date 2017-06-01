@@ -505,7 +505,7 @@ function dkan_dataset_dataset_node_form_validate($form, &$form_state) {
 
     // In order to pass strict POD validation the 'data dictionary' value must be NULL,
     // a valid URL or redacted.
-    if (isset($data_dictionary)) {
+    if (isset($data_dictionary) && $data_dictionary != '') {
       $is_valid_URL = valid_url($data_dictionary, TRUE);
       $is_redacted = preg_match('/^(\\[\\[REDACTED).*?(\\]\\])$/', $data_dictionary);
 
