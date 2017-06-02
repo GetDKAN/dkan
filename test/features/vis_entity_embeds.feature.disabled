@@ -1,4 +1,4 @@
-@api @javascript
+@api @javascript @disablecaptcha
 Feature: Visualization entity embed test.
 
     #TODO: Works up until adding a visualization, where it cannot find the newly added VE Chart contnet.

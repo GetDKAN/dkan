@@ -1,4 +1,4 @@
-@api @enableDKAN_Workflow
+@api @enableDKAN_Workflow @disablecaptcha
 Feature:
   Workflow (Workbench) tests for emails related to DKAN Workflow Module
 

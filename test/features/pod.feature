@@ -1,4 +1,5 @@
 # time:1m15.22s
+@disablecaptcha
 Feature: Project Open Data + Open Data Federal Extras
   In order to meet POD
   As a dataset creator
