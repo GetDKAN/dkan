@@ -373,9 +373,15 @@ abstract class MigrateDKAN extends Migration {
   }
 
   /**
-   * Creates resource node.
+   * Create a dkan group node from the values provided.
+   *
+   * @param array $group
+   *   Values for the group node to be created.
+   *
+   * @return object
+   *   Group node object. 
    */
-  public function createGroupNode($group) {
+  public function createGroupNode(array $group) {
     // TODO: Check high water mark.
     global $user;
     // This is necessary for group permissions. If there is not a properly
@@ -413,9 +419,16 @@ abstract class MigrateDKAN extends Migration {
   }
 
   /**
-   * Creates resource node.
+   * Create a dkan resource node from the values provided.
+   *
+   * @param array $res
+   *   Values for the resources node to be created.
+   *        Formated with the self::prepareResourceHelper() method.
+   *
+   * @return object
+   *   Resource node object.
    */
-  public function createResourceNode($res) {
+  public function createResourceNode(array $res) {
 
     // TODO: Check high water mark.
     // TODO: Check if UUID exits.
