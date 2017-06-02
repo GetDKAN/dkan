@@ -1,5 +1,5 @@
 # time:0m23.59s
-@api
+@api @disablecaptcha
 Feature: User
 
   Background:

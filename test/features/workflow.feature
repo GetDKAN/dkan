@@ -1,5 +1,5 @@
 # time:4m22.76s
-@api @enableDKAN_Workflow
+@api @enableDKAN_Workflow @disablecaptcha
 Feature:
   Workflow (Workbench) tests for DKAN Workflow Module
 

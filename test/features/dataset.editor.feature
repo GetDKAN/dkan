@@ -1,5 +1,8 @@
 # time:0m18.30s
-@api
+# The first scenario requires that the timezone be set to UTC.
+# @timezone will set the timezone for tests and restore the timezone afterwards.
+@api @timezone @disablecaptcha
+Get tests ready to run on client site with captcha enabled
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor

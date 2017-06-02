@@ -1,4 +1,5 @@
 # time:0m21.63s
+@disablecaptcha
 Feature: Resource
 
   Background:
