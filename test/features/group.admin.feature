@@ -1,5 +1,5 @@
 # time:1m2.37s
-@api
+@api @disablecaptcha
 Feature: Site managers administer groups
   In order to manage site organization
   As a Site Manager

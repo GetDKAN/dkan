@@ -1,4 +1,5 @@
 # time:0m23.59s
+@disablecaptcha
 Feature: Data Dashboard
 
   Background:
