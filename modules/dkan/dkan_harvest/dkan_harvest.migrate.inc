@@ -1105,7 +1105,7 @@ class HarvestMigration extends MigrateDKAN {
    * @return object
    *   Resource node object.
    */
-  public function createResourceNode($res) {
+  public function createResourceNode(array $res) {
     migrate_instrument_start('HarvestMigration->createResourceNode');
     // Creates a new resource for every linked file.
     // Linked files contain title, format, and accessURL.
@@ -1215,7 +1215,7 @@ class HarvestMigration extends MigrateDKAN {
    * @return object
    *   Group node object.
    */
-  public function createGroupNode($group) {
+  public function createGroupNode(array $group) {
 
     $values = array(
       "type" => 'group',
