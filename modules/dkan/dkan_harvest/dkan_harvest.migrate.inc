@@ -1098,14 +1098,14 @@ class HarvestMigration extends MigrateDKAN {
   /**
    * Create a dkan resource node from the values provided.
    *
-   * @param array $res
+   * @param stdClass $res
    *   Values for the resources node to be created.
    *        Formated with the self::prepareResourceHelper() method.
    *
    * @return object
    *   Resource node object.
    */
-  public function createResourceNode(array $res) {
+  public function createResourceNode(stdClass $res) {
     migrate_instrument_start('HarvestMigration->createResourceNode');
     // Creates a new resource for every linked file.
     // Linked files contain title, format, and accessURL.
@@ -1209,13 +1209,13 @@ class HarvestMigration extends MigrateDKAN {
   /**
    * Create a dkan group node from the values provided.
    *
-   * @param array $group
+   * @param stdClass $group
    *   Values for the group node to be created.
    *
    * @return object
    *   Group node object.
    */
-  public function createGroupNode(array $group) {
+  public function createGroupNode(stdClass $group) {
 
     $values = array(
       "type" => 'group',
