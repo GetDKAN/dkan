@@ -2,8 +2,9 @@
 
 /**
  * @file
- * Script for changing csv file of federal agencies to an array. Latest version
- * from https://github.com/batemapf/OMB-Agency-Bureau-and-Treasury-Codes/tree/new-json
+ * Script for changing csv file of federal agencies to an array.
+ *
+ * Latest version from https://github.com/batemapf/OMB-Agency-Bureau-and-Treasury-Codes/tree/new-json.
  */
 
 const OPFE_CSV_BUREAU_CODES_FILE_NAME = 'omb-agency-bureau-treasury-codes.csv';
