@@ -824,7 +824,7 @@ class HarvestMigration extends MigrateDKAN {
    * @param array $dataset_nids
    *   An array of nids of datasets imported.
    */
-  public function prepareRollback($dataset_nids) {
+  public function prepareRollback(array $dataset_nids) {
     foreach ($dataset_nids as $dataset_id) {
       $dataset_emw = entity_metadata_wrapper('node', $dataset_id);
       $delete_nids = array();
