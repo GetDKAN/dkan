@@ -375,11 +375,11 @@ abstract class MigrateDKAN extends Migration {
   /**
    * Create a dkan group node from the values provided.
    *
-   * @param stdClass $group
+   * @param object $group
    *   Values for the group node to be created.
    *
    * @return object
-   *   Group node object. 
+   *   Group node object.
    */
   public function createGroupNode(stdClass $group) {
     // TODO: Check high water mark.
@@ -421,7 +421,7 @@ abstract class MigrateDKAN extends Migration {
   /**
    * Create a dkan resource node from the values provided.
    *
-   * @param stdClass $res
+   * @param object $res
    *   Values for the resources node to be created.
    *        Formated with the self::prepareResourceHelper() method.
    *
@@ -701,6 +701,8 @@ abstract class MigrateDKAN extends Migration {
    *   Drupal uri of where to save file public://archive/test.pdf.
    * @param int $save_mode
    *   File save mode from drupal core, ex FILE_EXISTS_REPLACE.
+   * @param bool $manage_file
+   *   Set to FALSE to save the file as an unmanaged file.
    */
   public function downloadExternalFile($url, $uri, $save_mode = FILE_EXISTS_RENAME, $manage_file = TRUE) {
 

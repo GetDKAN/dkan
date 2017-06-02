@@ -1098,7 +1098,7 @@ class HarvestMigration extends MigrateDKAN {
   /**
    * Create a dkan resource node from the values provided.
    *
-   * @param stdClass $res
+   * @param object $res
    *   Values for the resources node to be created.
    *        Formated with the self::prepareResourceHelper() method.
    *
@@ -1209,7 +1209,7 @@ class HarvestMigration extends MigrateDKAN {
   /**
    * Create a dkan group node from the values provided.
    *
-   * @param stdClass $group
+   * @param object $group
    *   Values for the group node to be created.
    *
    * @return object
