@@ -1,5 +1,5 @@
 # time:1m5.66s
-@api
+@api @disablecaptcha
 Feature: Recline
   In order to know the recline preview is working
   As a website user
