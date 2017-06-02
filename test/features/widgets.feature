@@ -1,5 +1,5 @@
 # time:4m38.05s
-@api @javascript
+@api @javascript @disablecaptcha
 Feature: Widgets
 
   Background:
