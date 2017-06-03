@@ -40,6 +40,8 @@
  - #1820 Use "accessURL" during resources harvest if "downloadURL" field is not available.
  - #1852 Allow the use of multi-polygonal data for Dataset Spatial field.
  - #1857 Fixed publishing options not accessible when dkan_workflow is enabled. 
+ DKAN Workflow:
+ - #1926 Restored original user on moderated content.
 
 7.x-1.13.3-RC1
 --------------
