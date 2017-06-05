@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1906 Refactor datastore import to restore drush command (dsu).
  - #1898 Add validation to field data dictionary when strict POD validation is enabled.
  - #1920 Update Bureau codes for Open Data Federal Extras.
  - #1927 Fixed adding shapes to the spatial geographic coverage area field.

@@ -644,7 +644,8 @@ function dkan_datastore_api_aggregations(&$data_select, $aggregations, $alias = 
           $data_select->addExpression($method . '(' . $field . ')', $method . '_' . $field);
         }
 
-        // If aggregation's value is an string then contains just a single field name.
+        // If aggregation's value is an string then contains just a single
+        // field name.
         // { "sum": "field_name1" }.
       }
       elseif (is_string($agg)) {
@@ -768,7 +769,14 @@ function dkan_datastore_api_build_query($table, $fields, $sort, $alias = DKAN_DA
 }
 
 /**
- * Sorts query results.
+ * Sort provided data array.
+ *
+ * @param mixed $data_select
+ *   SelectQuery object to sort.
+ * @param mixed $sort
+ *   Sort criteria.
+ * @param string $alias
+ *   Drupal Database alias.
  */
 function dkan_datastore_api_sort(&$data_select, $sort, $alias) {
   if (!is_array($sort)) {
@@ -804,8 +812,8 @@ function dkan_datastore_api_select_fields(&$data_select, $fields, $resource_ids)
     : array(DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS => $resource_ids[0]);
 
   // Select all the fields using an alias performs better than selecting
-  // specific fields. However if the user specify fields we have to fallback the slowest
-  // approach.
+  // specific fields. However if the user specify fields we have to fallback
+  // the slowest approach.
   if ($fields == '*') {
     foreach ($resource_ids as $table_alias => $resource_id) {
       $data_select->fields($table_alias);
@@ -915,7 +923,7 @@ function dkan_datastore_api_datastore_create($file) {
   if ($file_saved) {
     $datastore = dkan_datastore_go();
     if ($datastore) {
-      if ($datastore->createByFile($file_saved->uri, FALSE)) {
+      if ($datastore->createFromFileUri($file_saved->uri, FALSE)) {
 
         $result = new stdClass();
         $result->result = 'success';
@@ -952,7 +960,7 @@ function dkan_datastore_api_datastore_create_raw() {
 
       $datastore = dkan_datastore_go();
       if ($datastore) {
-        if ($datastore->createByFile($file->uri, FALSE)) {
+        if ($datastore->createFromFileUri($file->uri, FALSE)) {
 
           $result = new stdClass();
           $result->result = 'success';
@@ -986,7 +994,7 @@ function dkan_datastore_api_datastore_update($id, $file) {
   if ($file_saved) {
     $datastore = dkan_datastore_go($id);
     if ($datastore) {
-      if ($datastore->updateByFile($file_saved->uri, FALSE)) {
+      if ($datastore->updateFromFileUri($file_saved->uri, FALSE)) {
 
         $result = new stdClass();
         $result->result = 'success';
@@ -1022,7 +1030,7 @@ function dkan_datastore_api_datastore_update_raw($id) {
 
       $datastore = dkan_datastore_go($id);
       if ($datastore) {
-        if ($datastore->updateByFile($file->uri, FALSE)) {
+        if ($datastore->updateFromFileUri($file->uri, FALSE)) {
 
           $result = new stdClass();
           $result->result = 'success';

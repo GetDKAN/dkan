@@ -1,6 +1,6 @@
 {
     "require": {
-        "phpunit/phpunit": "4.6.*",
+        "phpunit/phpunit": " 5.7.*",
         "behat/behat": "3.1.*@dev",
         "devinci/devinci-behat-extension": "dev-master",
         "myplanetdigital/function_mock": "dev-master",
