@@ -1,4 +1,5 @@
 # time:0m21.02s
+@disablecaptcha
 Feature: Panels
 
   @api @javascript

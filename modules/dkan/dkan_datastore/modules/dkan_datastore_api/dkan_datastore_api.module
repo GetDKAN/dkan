@@ -540,7 +540,7 @@ function dkan_datastore_api_where(&$data_select, $filters) {
         $data_select->condition($field, $value, dkan_datastore_api_clause_condition($value));
       }
       // Fields with table prefix.
-      // e.g. {"counties": {"msa": "N"}},.
+      // e.g. {"counties": {"msa": "N"}}.
     }
     elseif (is_assoc($filters)) {
       foreach ($filters as $key => $value) {
