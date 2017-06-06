@@ -1,5 +1,5 @@
 # time:1m5.66s
-@api
+@api @disablecaptcha
 Feature: Recline
   In order to know the recline preview is working
   As a website user
@@ -65,6 +65,19 @@ Feature: Recline
     Then I wait for "3" seconds
     Given I click map icon number "88"
     And I wait for "Alicia Ashman Branch Library"
+
+  @javascript @api @noworkflow
+  Scenario: Viewing a resource with API field should show a iframe
+    Given I am logged in as "John"
+    And I am on "/dataset/dataset-01"
+    Then I should see "Test 01"
+    Given I click "Resource 02"
+    Then I should see "Test R2"
+    When I click "Edit"
+    And I click "API or Website URL"
+    And I fill in "edit-field-link-api-und-0-url" with "https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD"
+    And I press "edit-submit"
+    Then I should not see "File was too large or unavailable for preview."
 
   @javascript @api @noworkflow
   Scenario: Viewing graph preview

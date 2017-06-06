@@ -1,5 +1,13 @@
 7.x-1.13.4
 ----------
+ - #1906 Refactor datastore import to restore drush command (dsu).
+ - #1898 Add validation to field data dictionary when strict POD validation is enabled.
+ - #1920 Update Bureau codes for Open Data Federal Extras.
+ - #1927 Fixed adding shapes to the spatial geographic coverage area field.
+ - #1924 Fixed dkan_update_7012, if a site is still using a deprecated module, the data is not stripped from the db.
+ - #1921 Drop the description label from the Harvest Source node view page.
+ - #1912 Added 'ahoy dkan unittests' command.
+ - #1917 Fixed 'ahoy dkan reinstall' command.
  - #1865 Removed old dkan_dataset_api module.
  - #1899 Override default error message on duplicate path aliases with more information.
  - NuCivic/visualization_entity#72 Switch to relative path for uploaded resources on visualization entity charts
@@ -21,17 +29,18 @@
  - #1876 Removed hard coded colors in the menu.scss file.
  - #1825 Adapt the 'dataQuality' input value druing POD harvest.
  - #1817 Load empty cells as null in fast import.
- - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar.
+ - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar. 
  - #1813 Update the groups page view to sort alphabetically rather than by post date.
  - NuCivic/recline#89 Only load previews for resources using files; API/website links should always display iframe.
  - #1841 Fixed mis-named function on dkan_dataset_content_types.api.php
  - #1814 Update dkan_workflow_permissions to rebuild permissions on enable/disable.
  - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
- - #1834 Use last day of year (December 31) for 4 digits end year during temporary POD field import.
+ - #1834 Use last day of year (December 31) for 4 digits end year during temporal POD field import.
  - #1832 Fallback to modified date for field_harvest_source_issued if not available during POD Harvest.
  - #1828 Field Frequency Harvest POD integration is missing support for "irregular" value.
  - #1820 Use "accessURL" during resources harvest if "downloadURL" field is not available.
- - #1857 Fixed publishing options not accessible when dkan_workflow is enabled.
+ - #1852 Allow the use of multi-polygonal data for Dataset Spatial field.
+ - #1857 Fixed publishing options not accessible when dkan_workflow is enabled. 
 
 7.x-1.13.3-RC1
 --------------
@@ -40,7 +49,7 @@
 ---------------------
  - #1863 Update restws module to v2.7
  - #1859 Fixed update hooks to correctly set jquery version and remove old modified source date field
- - #1864 Update media to 2.0 and remove patch 2534724.
+ - #1864 Update media to 2.0 and remove patch 2534724. 
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
  - #1821 Remove redundant CSS load in dkan_dataset.
