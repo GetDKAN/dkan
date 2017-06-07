@@ -347,3 +347,12 @@ function dkan_update_7019() {
   variable_del('dkan_dataset_api_package_revision_list');
   variable_del('dkan_dataset_api_group_list');
 }
+
+/**
+ * Update chosen_jquery_selector to avoid misuse.
+ */
+function dkan_update_7020() {
+  // REF #1936, #1890.
+  variable_set('chosen_jquery_selector',
+    '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"], [id*="lines-terminated-by"])');
+}
