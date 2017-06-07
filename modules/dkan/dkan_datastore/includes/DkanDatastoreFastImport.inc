@@ -15,13 +15,6 @@ class DkanDatastoreFastImport extends DkanDatastore implements DatastoreFormInte
   const FAST_IMPORT_THRESHOLD_DEFAULT = '30MB';
 
   /**
-   * Sets default items for datastore object.
-   */
-  protected function __construct($uuid) {
-    parent::__construct($uuid);
-  }
-
-  /**
    * Takes values from form submit, saves updated config and starts import.
    */
   public function manageFormSubmit(&$form_state) {
@@ -46,9 +39,16 @@ class DkanDatastoreFastImport extends DkanDatastore implements DatastoreFormInte
     variable_set('fields_escaped_by', $form_state['values']['fields_escaped_by']);
     variable_set('dkan_datastore_fast_import_load_empty_cells_as_null', $form_state['values']['dkan_datastore_fast_import_load_empty_cells_as_null']);
 
-    // If a remote file is provided we fallback to feeds importer
-    // else we perform a fast import.
-    if (!empty($file_remote) || !$use_fast_import) {
+    // The stream_wrapper import is too slow.
+    // We need to force regular upload import for remote_files.
+    if ($file_remote) {
+      $use_fast_import = TRUE;
+      $node = $form_state['build_info']['args'][0];
+      $node->field_upload = $node->field_link_remote_file;
+      $node = entity_metadata_wrapper('node', $node);
+    }
+
+    if (!$use_fast_import) {
       $this->import();
     }
     else {
