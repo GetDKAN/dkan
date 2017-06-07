@@ -1,5 +1,6 @@
-7.x-1.13.4
+7.x-1.13.x
 ----------
+ - #1910 Make fast import queue run during cron.
  - #1906 Refactor datastore import to restore drush command (dsu).
  - #1898 Add validation to field data dictionary when strict POD validation is enabled.
  - #1920 Update Bureau codes for Open Data Federal Extras.
@@ -43,9 +44,6 @@
  - #1857 Fixed publishing options not accessible when dkan_workflow is enabled. 
  - #1932 Fix windows delimiter for datastore_fast_import.
 
-7.x-1.13.3-RC1
---------------
- - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
 7.x-1.13.3 2017-04-18
 ---------------------
  - #1863 Update restws module to v2.7
