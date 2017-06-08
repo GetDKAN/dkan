@@ -3,7 +3,6 @@
 #
 require "base64"
 require "./dkan/.ahoy/.scripts/config.rb"
-require "pp"
 
 def behat_join_params args
   args.join(" ").split("--").map do |arg|
