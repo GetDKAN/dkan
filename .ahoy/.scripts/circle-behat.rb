@@ -25,19 +25,8 @@ parsed = behat_parse_params(ARGV)
 params = behat_join_params parsed[:params]
 files = balance(parsed[:files])
 
-begin
-  config = YAML.load_file("config/config.yml")
-rescue Exception
-  config = {"circle" => {"skip_features" => []}}
-end
-
 files[CIRCLE_NODE_INDEX].each_index do |i|
-  filename = File.basename(files[CIRCLE_NODE_INDEX][i])
-  if config["circle"]["skip_features"].include? filename
-    next
-  end
   file = Pathname(files[CIRCLE_NODE_INDEX][i]).realpath.to_s
-
   suite = behat_parse_suite(file)
   puts "RUNNING: ahoy dkan test #{file} --suite=#{suite} --format=pretty --out=std --format=junit --out='#{CIRCLE_ARTIFACTS}/junit' #{params} --colors"
   IO.popen(
