@@ -291,7 +291,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/remote_stream_wrapper.git
-      branch: 7.x-1.x
+      branch: download_stat
   role_export:
     version: '1.0'
   rules:
