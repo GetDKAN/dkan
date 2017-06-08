@@ -162,9 +162,9 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    */
   public function testResources($dataset) {
     $expected_resources = array(
-      'TEST - Workforce By Generation (2011-2015)' => 'http://demo.getdkan.com/sites/default/files/GenChart_0_0.csv',
-      'TEST - Retirements (2011 - 2015)' => 'http://demo.getdkan.com/sites/default/files/retirements_0.csv',
-      'TEST - Retirements: Eligible vs. Actual' => 'http://demo.getdkan.com/sites/default/files/2015EligibleVsActual.csv',
+      'TEST - Workforce By Generation (2011-2015)' => 'https://s3.amazonaws.com/dkan-default-content-files/phpunit/GenChart_0_0.csv',
+      'TEST - Retirements (2011 - 2015)' => 'https://s3.amazonaws.com/dkan-default-content-files/phpunit/retirements_0.csv',
+      'TEST - Retirements: Eligible vs. Actual' => 'https://s3.amazonaws.com/dkan-default-content-files/phpunit/2015EligibleVsActual.csv',
     );
 
     $dataset_resources = $this->getDatasetResources($dataset);
