@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1940 Fix slow remote_file datastore imports.
  - #1925 Fix issues with remote_stream_wrapper and recline causing Harvest and Search API to fail on certain larger resources
  - #1906 Refactor datastore import to restore drush command (dsu).
  - #1898 Add validation to field data dictionary when strict POD validation is enabled.

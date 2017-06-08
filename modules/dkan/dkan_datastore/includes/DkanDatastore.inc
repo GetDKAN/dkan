@@ -461,7 +461,7 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
    *   A boolean indicating whether to copy the file locally.
    *   If set to TRUE the file is copied locally.
    */
-  public function updateFromFileUri($uri, $copy_file = TRUE) {
+  public function updateFromFileUri($uri = '', $copy_file = TRUE) {
     $file = FALSE;
 
     // Sanity check: make sure the file exits.
