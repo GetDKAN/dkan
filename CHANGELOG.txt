@@ -1,6 +1,6 @@
 7.x-1.13.4
 ----------
- - #1939 Removed references to remote files from PHPUnit tests.
+ - #1939 Removed references to DKAN Demo files on PHPUnit tests.
  - #1906 Refactor datastore import to restore drush command (dsu).
  - #1898 Add validation to field data dictionary when strict POD validation is enabled.
  - #1920 Update Bureau codes for Open Data Federal Extras.
