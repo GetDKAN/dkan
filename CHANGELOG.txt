@@ -1,6 +1,8 @@
 7.x-1.13.4
 ----------
  - #1925 Fix issues with remote_stream_wrapper and recline causing Harvest and Search API to fail on certain larger resources
+ - #1906 Refactor datastore import to restore drush command (dsu).
+ - #1898 Add validation to field data dictionary when strict POD validation is enabled.
  - #1920 Update Bureau codes for Open Data Federal Extras.
  - #1927 Fixed adding shapes to the spatial geographic coverage area field.
  - #1924 Fixed dkan_update_7012, if a site is still using a deprecated module, the data is not stripped from the db.
@@ -40,6 +42,7 @@
  - #1820 Use "accessURL" during resources harvest if "downloadURL" field is not available.
  - #1852 Allow the use of multi-polygonal data for Dataset Spatial field.
  - #1857 Fixed publishing options not accessible when dkan_workflow is enabled. 
+ - #1932 Fix windows delimiter for datastore_fast_import.
 
 7.x-1.13.3-RC1
 --------------

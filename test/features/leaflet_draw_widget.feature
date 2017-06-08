@@ -1,5 +1,5 @@
 # time:0m11.71s
-@api @javascript
+@api @javascript @disablecaptcha
 Feature: Leaflet Map Widget
 
   Scenario: Adds "New Table Widget" block to home page using panels ipe editor

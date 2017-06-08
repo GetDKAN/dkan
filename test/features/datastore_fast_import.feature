@@ -1,4 +1,4 @@
-@api @enableFastImport @javascript
+@api @enableFastImport @javascript @disablecaptcha
 Feature: DKAN Datastore Fast Import
   Background:
     Given pages:

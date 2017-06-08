@@ -4,7 +4,7 @@
 # and visiting them using the visit step.
 # In that way we can remove the javascript part.
 ##
-@api @javascript
+@api @javascript @disablecaptcha
 Feature: User command center links for site manager role.
 
   Background:
