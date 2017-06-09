@@ -7,6 +7,7 @@
  - #1839 Add help text and improve UI on the chart form for better clarity.
  - #1827 Remove option to import TABed CSV files into datastore. 
  - #1807 Add admin_views module for enhanced content and file filtering. 
+ - #1942 DevOps: Restore drush commands to deal with orphaned resources.
 
 7.x-1.13.x
 ----------
