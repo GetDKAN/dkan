@@ -34,10 +34,11 @@ Your tests should run from the VM and use your host machine as a Selenium server
 - **@no-main-menu** used to skip tests that requires a link in the main menu
 - **@noworkflow** no code
 - **@ok** no code
-- **pod_json_valid** no code
-- **pod_json_odfe** no code
+- **@pod_json_valid** no code
+- **@pod_json_odfe** no code
 - **@remove_ODFE** Disables ODFE
 - **@testBug** no code
+- **@timezone** Sets the timezone for tests and restores the timezone afterwards.
 - **@Topics** no code
 
 ## PHPUnit tests
