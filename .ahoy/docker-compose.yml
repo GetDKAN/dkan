@@ -11,6 +11,7 @@ web:
   ports:
     - "80"
     - "443"
+    - "8888"
   volumes:
     # PHP configuration overrides
     - "./.docker/etc/php5/php.ini:/etc/php5/fpm/conf.d/z_php.ini"
@@ -49,21 +50,24 @@ cli:
   environment:
     - XDEBUG_CONFIG=idekey=cli
     - PHP_IDE_CONFIG=serverName=dkan.docker
+    - VIRTUAL_HOST=dkan.docker
   volumes:
     # PHP configuration overrides
     - "./.docker/etc/php5/php-cli.ini:/etc/php5/cli/conf.d/z_php.ini"
     # Project root folder mapping
     - *project_root
+  links:
     # Host SSH keys mapping. Uncomment one of the lines below based on your setup.
     # - /.ssh:/.ssh   # boot2docker-vagrant
     - ~/.ssh:/.ssh  # Linux
-  links:
     - db
     - web
     # Uncomment this and the browser service definition below to start using selenium2.
     - browser
     - memcached
     - solr
+  ports:
+    - "8888"
 
 # Memcached node
 # Uncomment the service definition section below and the link in the web service above to start using memcached.
