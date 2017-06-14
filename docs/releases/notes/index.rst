@@ -3,6 +3,7 @@ Release Notes
 
 Release notes here will be identical to the releases kept in the `Github repository's releases section <https://github.com/NuCivic/dkan/releases>`_.
 
+
 .. toctree::
    :maxdepth: 1
 
