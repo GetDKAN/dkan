@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1916 Federal extras: Fix spelling of "Government" in group label.
  - #1939 Removed references to DKAN Demo files from PHPUnit tests.
  - #1906 Refactor datastore import to restore drush command (dsu).
  - #1898 Add validation to field data dictionary when strict POD validation is enabled.
