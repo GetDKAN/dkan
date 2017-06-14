@@ -213,29 +213,43 @@ function dkan_update_7011() {
  * Deprecated modules: Conditional Fields, Entity RDF, RDF UI, RDF Extensions.
  */
 function dkan_update_7012() {
-  $modules = array(
-    'conditional_fields',
-    'entity_rdf',
-    'rdfui',
-    'rdfx',
-  );
-  db_delete('system')
-    ->condition('name', $modules, 'IN')
-    ->condition('type', 'module')
-    ->execute();
+  if (!module_exists('conditional_fields')) {
+    db_delete('system')
+      ->condition('name', 'conditional_fields')
+      ->condition('type', 'module')
+      ->execute();
+    db_drop_table('conditional_fields');
+  }
+  if (!module_exists('entity_rdf')) {
+    db_delete('system')
+      ->condition('name', 'entity_rdf')
+      ->condition('type', 'module')
+      ->execute();
+  }
+  if (!module_exists('rdfui')) {
+    db_delete('system')
+      ->condition('name', 'rdfui')
+      ->condition('type', 'module')
+      ->execute();
+  }
+  if (!module_exists('rdfx')) {
+    db_delete('system')
+      ->condition('name', 'rdfx')
+      ->condition('type', 'module')
+      ->execute();
 
-  db_drop_table('conditional_fields');
-  db_drop_table('rdfx_namespaces');
-  db_drop_table('rdfx_term_details');
-  db_drop_table('rdfx_term_domains');
-  db_drop_table('rdfx_term_inverses');
-  db_drop_table('rdfx_term_ranges');
-  db_drop_table('rdfx_term_superclasses');
-  db_drop_table('rdfx_term_superproperties');
-  db_drop_table('rdfx_term_types');
-  db_drop_table('rdfx_terms');
-  db_drop_table('rdfx_vocabulary_details');
-  db_drop_table('rdfx_vocabulary_graphs');
+    db_drop_table('rdfx_namespaces');
+    db_drop_table('rdfx_term_details');
+    db_drop_table('rdfx_term_domains');
+    db_drop_table('rdfx_term_inverses');
+    db_drop_table('rdfx_term_ranges');
+    db_drop_table('rdfx_term_superclasses');
+    db_drop_table('rdfx_term_superproperties');
+    db_drop_table('rdfx_term_types');
+    db_drop_table('rdfx_terms');
+    db_drop_table('rdfx_vocabulary_details');
+    db_drop_table('rdfx_vocabulary_graphs');
+  }
 }
 
 /**
@@ -318,7 +332,7 @@ function dkan_update_7018() {
 /**
  * Remove old variables from dkan_dataset_api.
  */
-function dkan_update_7018() {
+function dkan_update_7019() {
   variable_del('dkan_catalog_desc');
   variable_del('dkan_catalog_contact');
   variable_del('dkan_catalog_mbox');
@@ -332,4 +346,13 @@ function dkan_update_7018() {
   variable_del('dkan_dataset_api_group_package_show');
   variable_del('dkan_dataset_api_package_revision_list');
   variable_del('dkan_dataset_api_group_list');
+}
+
+/**
+ * Update chosen_jquery_selector to avoid misuse.
+ */
+function dkan_update_7020() {
+  // REF #1936, #1890.
+  variable_set('chosen_jquery_selector',
+    '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"], [id*="lines-terminated-by"])');
 }

@@ -40,13 +40,13 @@ commands:
   reinstall:
     usage: Reinstall the dkan install profile (db only).
     cmd: |
-      set -e
       if [ ! -d backups ]; then
         mkdir backups
       fi
       if [ -f backups/last_install.sql ] && ahoy confirm "An existing installation backup exists at backups/last_install.sql, do you want to use that instead of reinstalling from scratch?"; then
-        ahoy drush sql-drop -y && \
-        ahoy dkan sqlc <  backups/last_install.sql && \
+        ahoy drush sql-drop -y
+        ahoy drush cc all
+        ahoy drush sql-cli <  backups/last_install.sql
         echo "Installed dkan from backup"
       else
         if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
@@ -143,6 +143,10 @@ commands:
 
       b64=`echo "payload: $input" | base64 $wrap 0`
       ahoy cmd-proxy ruby dkan/.ahoy/.scripts/dkan-test.rb "$b64"
+
+  unittests:
+    usage: Run phpunit tests
+    cmd: ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkan-unittests.sh "{{args}}"
 
   lint:
     usage: Run linter on code

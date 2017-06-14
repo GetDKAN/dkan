@@ -1,6 +1,6 @@
 Feature: Gravatar
 
-  @api @javascript
+  @api @javascript @disablecaptcha
   Scenario: Test gravatar in user pictures.
     Given I am logged in as a user with the "content creator" role
     When I visit "user/"

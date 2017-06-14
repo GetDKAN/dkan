@@ -27,7 +27,7 @@ Feature: Homepage
     # Pages should not get removed when the default content module is disabled.
     And all default content with type "node" and bundle "page" listed in "page" fixture should "be loaded"
 
-  @api
+  @api @disablecaptcha
   Scenario: Enable the default content module back
     Given I am logged in as a user with the "administrator" role
     Then I enable the module "dkan_default_content"
