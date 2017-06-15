@@ -16,27 +16,11 @@
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "downloadURL": "http://demo.getdkan.com/sites/default/files/GenChart_0_0.csv",
+          "accessURL": "http://demo.getdkan.com/",
           "mediaType": "text/csv",
           "format": "csv",
           "description": "<p>Population of state employees broken down into Gen X, Gen Y, Baby Boomers and Over 65+.</p> ",
           "title": "TEST - Workforce By Generation (2011-2015)"
-        },
-        {
-          "@type": "dcat:Distribution",
-          "downloadURL": "http://demo.getdkan.com/sites/default/files/retirements_0.csv",
-          "mediaType": "text/csv",
-          "format": "csv",
-          "description": "<p>Total number of employees who retired from the state workforce, 2011-2015.</p> ",
-          "title": "TEST - Retirements (2011 - 2015)"
-        },
-        {
-          "@type": "dcat:Distribution",
-          "downloadURL": "http://demo.getdkan.com/sites/default/files/2015EligibleVsActual.csv",
-          "mediaType": "text/csv",
-          "format": "csv",
-          "description": "<p>This data, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire compared to the percentage of the workforce who actually retired.</p> ",
-          "title": "TEST - Retirements: Eligible vs. Actual"
         }
       ],
       "identifier": "95f8eac4-fd1f-4b35-8472-5c87e9425dfa",
@@ -46,15 +30,12 @@
         "workforce"
       ],
       "license": "http://opendefinition.org/licenses/gfdl/",
-      "issued": "2016-06-22",
       "modified": "2016-07-21",
       "temporal": "2011/2015",
       "publisher": {
         "@type": "org:Organization",
         "name": "TEST - State Economic Council"
       },
-      "accrualPeriodicity": "irregular",
-      "dataQuality": true,
       "title": "TEST - State Workforce by Generation (2011-2015)"
     }
   ]
