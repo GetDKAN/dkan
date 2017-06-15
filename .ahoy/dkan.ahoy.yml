@@ -4,10 +4,13 @@ commands:
   drupal-rebuild:
     usage: 'Builds a drupal site in ./docroot. Requires database url.'
     cmd: |
-      if [ "$AHOY_CMD_PROXY" != "DOCKER" ]; then
-        ARGS="{{args}}"
-      else
+      if [ "$AHOY_CMD_PROXY" = "DOCKER" ]; then
         ARGS=`ahoy docker mysql-url`
+      fi
+
+      # If no mysql URL from docker, use passed in args.
+      if [ "$ARGS" = "" ];then
+        ARGS="{{args}}"
       fi
       if [[ "$ARGS" != mysql* ]]; then
           echo "You need to specify the drupal db url to use in the form mysql://root:root@localhost/db as an argument."
