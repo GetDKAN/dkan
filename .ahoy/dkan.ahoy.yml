@@ -49,7 +49,8 @@ commands:
       fi
       if [ -f backups/last_install.sql ] && ahoy confirm "An existing installation backup exists at backups/last_install.sql, do you want to use that instead of reinstalling from scratch?"; then
         ahoy drush sql-drop -y && \
-        ahoy dkan sqlc <  backups/last_install.sql && \
+        echo "... Removed tables, restoring DB"
+        ahoy dkan sqlc < backups/last_install.sql
         echo "Installed dkan from backup"
       else
         if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
@@ -187,14 +188,9 @@ commands:
     import: dkan/.ahoy/theme.ahoy.yml
     hide: true
 
+  # Moved to .ahoy.yml
   uli:
-    usage: log into the
+    usage: Log in via drush
     cmd: |
-      url=$(ahoy drush --uri="$(ahoy docker url)" uli {{args}})
-      os=$(uname)
+      ahoy uli
 
-      if [ "$os" = "Darwin" ]; then
-        open $url
-      else
-        echo $url
-      fi
