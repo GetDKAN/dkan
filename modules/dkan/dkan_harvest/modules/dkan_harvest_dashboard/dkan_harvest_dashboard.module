@@ -15,7 +15,7 @@ function dkan_harvest_dashboard_menu() {
   $items['admin/dkan/harvest/dashboard'] = array(
     'title' => 'DKAN Harvest Dashboard',
     'access callback' => 'user_access',
-    'access arguments' => array('admininster harvest'),
+    'access arguments' => array('administer harvest'),
     'page callback' => 'dkan_harvest_dashboard_sources_page',
   );
 
@@ -23,7 +23,7 @@ function dkan_harvest_dashboard_menu() {
     'title' => 'Sources',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'access callback' => 'user_access',
-    'access arguments' => array('admininster harvest'),
+    'access arguments' => array('administer harvest'),
     'weight' => -10,
     'page callback' => 'dkan_harvest_dashboard_sources_page',
   );
@@ -32,7 +32,7 @@ function dkan_harvest_dashboard_menu() {
     'title' => 'Datasets',
     'type' => MENU_LOCAL_TASK,
     'access callback' => 'user_access',
-    'access arguments' => array('admininster harvest'),
+    'access arguments' => array('administer harvest'),
     'weight' => 1,
     'page callback' => 'dkan_harvest_dashboard_datasets_page',
   );
@@ -61,7 +61,7 @@ function dkan_harvest_dashboard_form_alter(&$form, $form_state, $form_id) {
     && isset($form_state['view'])
     && $form_state['view']->name == 'dkan_harvest_datasets') {
 
-    // Update the way date fields are rendred.
+    // Update the way date fields are rendered.
     $date_fields = array(
       'field_harvest_source_issued_value',
       'field_harvest_source_modified_value',
