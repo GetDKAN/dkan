@@ -5,7 +5,7 @@ includes:
   - "https://raw.githubusercontent.com/NuCivic/visualization_entity/1.13.4/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/1.13.4/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
-  - "https://raw.githubusercontent.com/NuCivic/recline/search-api-no-preview/recline.make"
+  - "https://raw.githubusercontent.com/NuCivic/recline/1.13.4/recline.make"
 projects:
   admin_menu:
     version: '3.0-rc5'
@@ -275,7 +275,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/recline.git'
-      branch: search-api-no-preview
+      branch: 1.13.4
   ref_field:
     download:
       type: git
@@ -291,7 +291,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/remote_stream_wrapper.git
-      branch: download_stat
+      branch: 7.x-1.x
   role_export:
     version: '1.0'
   rules:
