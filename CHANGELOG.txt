@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1925 Fix issues with remote_stream_wrapper and recline causing Harvest and Search API to fail on certain larger resources
  - #1916 Federal extras: Fix spelling of "Government" in group label.
  - #1939 Removed references to DKAN Demo files from PHPUnit tests.
  - #1906 Refactor datastore import to restore drush command (dsu).
