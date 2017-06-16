@@ -18,28 +18,33 @@ Your tests should run from the VM and use your host machine as a Selenium server
 
 ### Behat Tags
 - **@add_ODFE** Enables ODFE
-- **@ahoyRunMe** no code
+- **@ahoyRunMe** label only
 - **@api** Enables the Drupal API Driver
 - **@customizable** Exclude scenario on client sites when testing customizable functionality
 - **@datastore** Drops the table after testing
 - **@deleteTempUsers** Delete any tempusers that were created outside of 'Given users'
 - **@disablecaptcha** Disables captcha config if it is enabled, then restores config after the test
-- **@dkanBug** no code
+- **@dkanBug** label only
 - **@enableFastImport** Enables fast import
 - **@enableDKAN_Workflow** Enables dkan_workflow
-- **@fixme** no code
+- **@fixme** label only
 - **@globalUser** Populates the global user with the current user
-- **@javascript** Create screen shots on fails
+- **@javascript** switches the current Mink session to Selenium2
 - **@mail** Setup the testing mail system, then restore original mail system
 - **@no-main-menu** used to skip tests that requires a link in the main menu
-- **@noworkflow** no code
-- **@ok** no code
-- **@pod_json_valid** no code
-- **@pod_json_odfe** no code
+- **@noworkflow** label only
+- **@ok** label only
+- **@pod_json_valid** label only
+- **@pod_json_odfe** label only
 - **@remove_ODFE** Disables ODFE
-- **@testBug** no code
+- **@testBug** label only
 - **@timezone** Sets the timezone for tests and restores the timezone afterwards.
-- **@Topics** no code
+- **@Topics** label only
+
+**Unique tag per scenario pattern**
+
+To allow customized sites to skip specific tests we are adding a unique tag to every scenario. The pattern is the feature name followed by a two digit numerical value. So the pod.feature scenarios are tagged like this: @pod_01, @pod_02, @pod_03, etc.
+
 
 ## PHPUnit tests
 
