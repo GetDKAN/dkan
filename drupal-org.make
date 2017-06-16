@@ -288,9 +288,10 @@ projects:
     patch:
       2362487: https://www.drupal.org/files/issues/remote_file_source-location-content-dist_1.patch
   remote_stream_wrapper:
-    version: 1.0-rc1
-    patch:
-      2833837: https://www.drupal.org/files/issues/prevent-download-intent-open-stream-2833837-4.patch
+    download:
+      type: git
+      url: https://github.com/NuCivic/remote_stream_wrapper.git
+      branch: 7.x-1.x
   role_export:
     version: '1.0'
   rules:
