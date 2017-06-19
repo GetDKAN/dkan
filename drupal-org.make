@@ -135,9 +135,7 @@ projects:
       2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
       2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
   file_entity:
-    version: 2.0-beta3
-    patch:
-      2308737: https://www.drupal.org/files/issues/file_entity-remove-field-status-check-2308737-9.patch
+    version: 2.1
   file_resup:
     version: 1.x-dev
   filefield_sources:
