@@ -199,7 +199,7 @@ projects:
     patch:
       2045225: http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.1
+    version: 2.6
     patch:
       2272567: https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch
   media_youtube:
