@@ -6,6 +6,7 @@
  - #1942 Removed permissions file from dkan_harvest_dashboard (covered by dkan_permissions).
  - #1942 PODContext.php: Remove workaround for period in the data.json url.
  - #1942 PODContext.php: Check license values from all license_subscribe hooks not just dkan default.
+ - #1944 Added ahoy command to serve pages via the PHP server to be able to reproduce issues locally.
  - #1888 Added validation on axis tick settings on visualization_entity.
  - #1725 Fix `ahoy dkan uli` output login link.
  - #1881 Fix yaml syntaxt to make it standard. 
