@@ -317,7 +317,7 @@ projects:
   services:
     version: '3.19'
   simple_gmap:
-    version: '1.3'
+    version: '1.4'
   strongarm:
     version: '2.0'
   tablefield:
