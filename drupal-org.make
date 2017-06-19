@@ -330,7 +330,7 @@ projects:
       url: 'https://github.com/NuCivic/taxonomy_fixtures.git'
       branch: 7.x-1.x
   token:
-    version: '1.6'
+    version: '1.7'
   uuid:
     version: 1.0-beta2
   views:
