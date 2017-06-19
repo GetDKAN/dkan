@@ -259,7 +259,7 @@ projects:
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
       3: patches/panopoly_widgets_overrides_OOB.patch
   panopoly_images:
-    version: '1.41'
+    version: '1.45'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
