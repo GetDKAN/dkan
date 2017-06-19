@@ -55,7 +55,7 @@ projects:
   data:
     version: 1.x
   date:
-    version: '2.9'
+    version: '2.10'
   defaultconfig:
     version: 1.0-alpha11
   diff:
