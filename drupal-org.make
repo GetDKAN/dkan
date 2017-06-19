@@ -34,7 +34,7 @@ projects:
   bueditor_plus:
     version: '1.4'
   chosen:
-    version: '2.0'
+    version: '2.1'
     patch:
       2834096: https://www.drupal.org/files/issues/chosen-accesibility_problem_with_input-0.patch
   colorizer:
