@@ -49,7 +49,7 @@ projects:
   conditional_styles:
     version: '2.2'
   context:
-    version: '3.6'
+    version: '3.7'
   ctools:
     version: '1.12'
   data:
