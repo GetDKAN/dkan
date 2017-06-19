@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1951 Gets # of editor groups from views query in lieu of entity field query
  - #1907 Added back TAB delimiter option for datastore imports.
  - #1955 Update ahoy docker tooling for local environment usecase.
  - #1903 Add support for tab-delimited files (TSV) in resources/recline preview.
@@ -104,7 +105,7 @@
  - #1703 Refactor Datastore API module, fixing some caching issues and improving joins
  - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
  - #1811 Apply patches to the rules module that can prevent unnecessary DB lockouts.
- 
+
 7.x-1.13.2 2017-03-16
 ----------------------
  - #1803 Fix broken access to featured groups sort order view.
