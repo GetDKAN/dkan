@@ -91,11 +91,13 @@ function dkan_sitewide_panels_block_view($delta = '') {
           )
         );
         $group_list = views_embed_view('list_of_users_groups', 'panel_pane_1');
+        $results = views_get_view_result('list_of_users_groups', 'panel_pane_1');
+        $groups = count($results);
 
         $output = '<div class="profile-stats">' . $profile_picture;
         $output .= '<strong>' . render($account->name) . '</strong>';
         $output .= '<p>' . dkan_sitewide_panels_user_summary_count_by_type('dataset', $account->uid) . ' Datasets</p>';
-        $output .= '<p>' . dkan_sitewide_panels_user_summary_count_by_type('group', $account->uid) . ' Groups</p>';
+        $output .= '<p>' . $groups . ' Groups</p>';
         $output .= '<p>User since ' . format_date($account->created, 'custom', 'm/d/Y') . '</p></div>';
         if ($about) {
           $output .= '<p>' . render($about) . '</p>';
