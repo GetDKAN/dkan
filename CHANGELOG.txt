@@ -21,12 +21,13 @@
  - #1950 Update views_bulk_operations to 3.4
  - #1950 Update workbench_email to 3.12
  - #1950 Update drafty to 1.0-beta4
- - #1950 Update file_entity to 2.1
- - #1950 Update media to 2.6
+ - #1950 Update file_entity to 2.2
+ - #1950 Update media to 2.8
  - #1950 Update media_youtube to 3.4
  - #1950 Update menu_token to 1.0-beta7
  - #1950 Update views to 3.16
  - #1950 Update field_group_table to 1.6
+ - #1950 Update radix to 3.6
  - #1950 Update feeds to revision d312f4f66e98cc12b8462cd13874184589017f72.
  - #1950 Update file_resup to revision 6cf030c2c139374c75527221775965ff0242df15.
  - #1925 Fix issues with remote_stream_wrapper and recline causing Harvest and Search API to fail on certain larger resources
