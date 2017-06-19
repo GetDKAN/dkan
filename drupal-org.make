@@ -332,7 +332,7 @@ projects:
   token:
     version: '1.7'
   uuid:
-    version: 1.0-beta2
+    version: '1.0'
   views:
     version: '3.15'
   views_autocomplete_filters:
