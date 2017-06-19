@@ -2,6 +2,7 @@
 # Defines helper function for processing behat parameters.
 #
 require "base64"
+require "./dkan/.ahoy/.scripts/config.rb"
 
 def behat_join_params args
   args.join(" ").split("--").map do |arg|
@@ -40,7 +41,14 @@ def behat_parse_params args
     puts "Seaching #{param} for feature files..."
     # Fetch all of the feature files for each parameter (directories)
     if Dir.exist? param
-      Dir.glob("#{param}/*.feature") {|f| files.push f}
+      Dir.glob("#{param}/*.feature") {
+        |f|
+        filename = File.basename(f)
+        if CONFIG["circle"]["skip_features"].include? filename
+          next
+        end
+        files.push f
+      }
 
       # Add loose features passed in as direct paths
     elsif File.exist? param

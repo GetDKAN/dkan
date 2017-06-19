@@ -152,8 +152,8 @@ function dkan_harvest_datasets_count($source) {
  */
 function dkan_harvest_permission() {
   return array(
-    'admininster harvest' => array(
-      'title' => t('Administrate harvest sources and datasets'),
+    'administer harvest' => array(
+      'title' => t('Administer harvest sources and datasets'),
     ),
   );
 }
@@ -216,9 +216,9 @@ function dkan_harvest_page_tab_access($node) {
     return FALSE;
   }
 
-  // If the user have the 'admininster harvest' permission, grant her/him
+  // If the user have the 'administer harvest' permission, grant her/him
   // access to the event log.
-  return user_access('admininster harvest');
+  return user_access('administer harvest');
 }
 
 /**
