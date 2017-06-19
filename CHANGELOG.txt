@@ -1,5 +1,34 @@
 7.x-1.13.4
 ----------
+ - #1950 Update chosen to 2.1
+ - #1950 Update context to 3.7
+ - #1950 Update date to 2.10
+ - #1950 Update diff to 3.3
+ - #1950 Update double_field to 2.5
+ - #1950 Update entityreference to 1.4
+ - #1950 Update menu_badges to 1.3
+ - #1950 Update module_filter to 2.1
+ - #1950 Update panels to 3.9
+ - #1950 Update panopoly_widgets to 1.45
+ - #1950 Update panopoly_images to 1.45
+ - #1950 Update rules to 2.10
+ - #1950 Update roleassign to 1.2
+ - #1950 Update search_api to 1.21
+ - #1950 Update search_api_db to 1.6
+ - #1950 Update simple_gmap to 1.4
+ - #1950 Update token to 1.7
+ - #1950 Update uuid to 1.0
+ - #1950 Update views_bulk_operations to 3.4
+ - #1950 Update workbench_email to 3.12
+ - #1950 Update drafty to 1.0-beta4
+ - #1950 Update file_entity to 2.1
+ - #1950 Update media to 2.6
+ - #1950 Update media_youtube to 3.4
+ - #1950 Update menu_token to 1.0-beta7
+ - #1950 Update views to 3.16
+ - #1950 Update field_group_table to 1.6
+ - #1950 Update feeds to revision d312f4f66e98cc12b8462cd13874184589017f72.
+ - #1950 Update file_resup to revision 6cf030c2c139374c75527221775965ff0242df15.
  - #1925 Fix issues with remote_stream_wrapper and recline causing Harvest and Search API to fail on certain larger resources
  - #1916 Federal extras: Fix spelling of "Government" in group label.
  - #1939 Removed references to DKAN Demo files from PHPUnit tests.
