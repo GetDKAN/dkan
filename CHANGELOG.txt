@@ -1,6 +1,11 @@
 7.x-1.14.x
 ----------
- - #1942 Update tests to be more compatible with client sites. Document behat tags.
+ - #1942 Update tests to be more compatible with client sites.
+ - #1942 Add documentation for behat tags.
+ - #1942 Update the @disablecaptcha function to apply to user forms.
+ - #1942 Removed permissions file from dkan_harvest_dashboard (covered by dkan_permissions).
+ - #1942 PODContext.php: Remove workaround for period in the data.json url.
+ - #1942 PODContext.php: Check license values from all license_subscribe hooks not just dkan default.
  - #1888 Added validation on axis tick settings on visualization_entity.
  - #1725 Fix `ahoy dkan uli` output login link.
  - #1881 Fix yaml syntaxt to make it standard. 
