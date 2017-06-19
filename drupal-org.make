@@ -341,7 +341,7 @@ projects:
       2374709: http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
       2317351: http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
   views_bulk_operations:
-    version: '3.3'
+    version: '3.4'
   views_responsive_grid:
     version: '1.3'
   visualization_entity:
