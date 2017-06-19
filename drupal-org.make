@@ -353,7 +353,7 @@ projects:
   workbench:
     version: '1.2'
   workbench_email:
-    version: '3.11'
+    version: '3.12'
   workbench_moderation:
     version: '3.0'
     patch:
