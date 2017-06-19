@@ -203,7 +203,7 @@ projects:
     patch:
       2272567: https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch
   media_youtube:
-    version: '3.0'
+    version: '3.4'
   media_vimeo:
     version: '2.1'
     patch:
