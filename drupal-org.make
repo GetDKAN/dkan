@@ -133,7 +133,10 @@ projects:
   file_entity:
     version: 2.1
   file_resup:
-    version: 1.x-dev
+    download:
+      type: git
+      url: https://git.drupal.org/project/file_resup.git
+      revision: 6cf030c2c139374c75527221775965ff0242df15
   filefield_sources:
     version: '1.10'
   font_icon_select:
