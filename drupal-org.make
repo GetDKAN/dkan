@@ -249,7 +249,7 @@ projects:
   panelizer:
     version: '3.4'
   panels:
-    version: '3.8'
+    version: '3.9'
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
