@@ -213,7 +213,7 @@ projects:
   menu_admin_per_menu:
     version: '1.1'
   menu_badges:
-    version: '1.2'
+    version: '1.3'
   menu_block:
     version: '2.7'
   menu_token:
