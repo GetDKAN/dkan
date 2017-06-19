@@ -61,7 +61,7 @@ projects:
   diff:
     version: '3.3'
   double_field:
-    version: '2.4'
+    version: '2.5'
   draggableviews:
     version: '2.1'
   entity:
