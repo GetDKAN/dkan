@@ -302,7 +302,7 @@ projects:
   restws:
     version: '2.7'
   roleassign:
-    version: '1.1'
+    version: '1.2'
   safeword:
     version: '1.13'
   schema:
