@@ -311,7 +311,7 @@ projects:
   search_api:
     version: '1.21'
   search_api_db:
-    version: '1.5'
+    version: '1.6'
   select_or_other:
     version: '2.22'
   services:
