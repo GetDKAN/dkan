@@ -59,7 +59,7 @@ projects:
   defaultconfig:
     version: 1.0-alpha11
   diff:
-    version: '3.2'
+    version: '3.3'
   double_field:
     version: '2.4'
   draggableviews:
