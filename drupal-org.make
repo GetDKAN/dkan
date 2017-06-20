@@ -119,7 +119,10 @@ projects:
       2042681: http://drupal.org/files/issues/field-group-show-ajax-2042681-8.patch
       2831815: https://www.drupal.org/files/issues/hash-location-sanitization.diff
   field_group_table:
-    version: '1.6'
+    download:
+      type: git
+        url: https://github.com/nuams/field_group_table.git
+        revision: 5b0aed9396a8cfd19a5b623a5952b3b8cacd361c
   field_hidden:
     version: '1.7'
   field_reference_delete:
