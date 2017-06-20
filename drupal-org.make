@@ -95,9 +95,10 @@ projects:
       type: git
       url: http://git.drupal.org/project/feeds.git
       branch: 7.x-2.x
-      revision: d312f4f66e98cc12b8462cd13874184589017f72
+      revision: 453dddfa5d8b2bc8c5961466490aa385f57655b2
     patch:
-      1127696: https://www.drupal.org/files/issues/1127696-137.patch
+      1428272: http://drupal.org/files/feeds-encoding_support_CSV-1428272-52.patch
+      1127696: http://drupal.org/files/issues/1127696-97.patch
   feeds_field_fetcher:
     download:
       type: git
