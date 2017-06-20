@@ -1,6 +1,6 @@
 7.x-1.13.4
 ----------
- - #1950 Update modules: chosen to 2.1, context to 3.7, date to 2.10, diff to 3.3, double_field to 2.5, entityreference to 1.4, menu_badges to 1.3, module_filter to 2.1, panels to 3.9, panopoly_widgets to 1.45, panopoly_images to 1.45, rules to 2.10, roleassign to 1.2, search_api to 1.21, search_api_db to 1.6, simple_gmap to 1.4, token to 1.7, uuid to 1.0, views_bulk_operations to 3.4, workbench_email to 3.12, drafty to 1.0-beta4, file_entity to 2.2, media to 2.8, media_youtube to 3.4, menu_token to 1.0-beta7, views to 3.16, field_group_table to 1.6, radix to 3.6 and file_resup to revision 6cf030c2c139374c75527221775965ff0242df15.
+ - #1950 Update modules: chosen to 2.1, context to 3.7, date to 2.10, diff to 3.3, double_field to 2.5, entityreference to 1.4, menu_badges to 1.3, module_filter to 2.1, panels to 3.9, panopoly_widgets to 1.45, panopoly_images to 1.45, rules to 2.10, roleassign to 1.2, search_api to 1.21, search_api_db to 1.6, simple_gmap to 1.4, token to 1.7, uuid to 1.0, views_bulk_operations to 3.4, workbench_email to 3.12, drafty to 1.0-beta4, file_entity to 2.2, media to 2.8, media_youtube to 3.4, menu_token to 1.0-beta7, views to 3.16, field_group_table to 1.6, radix to 3.6 and file_resup to revision 6cf030c.
  - #1956 Update Drupal to 7.55
  - #1925 Fix issues with remote_stream_wrapper and recline causing Harvest and Search API to fail on certain larger resources
  - #1916 Federal extras: Fix spelling of "Government" in group label.
