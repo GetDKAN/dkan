@@ -349,7 +349,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      branch: 6483_update_contrib_mods
+      branch: 1.13.4
     type: module
   workbench:
     version: '1.2'
