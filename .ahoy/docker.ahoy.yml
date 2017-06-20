@@ -76,7 +76,13 @@ commands:
 
   # Alias for web-ip.
   ip:
-    cmd: "ahoy docker web-ip"
+    cmd: |
+      if [ -z "$DOCKER_MACHINE_NAME"  ]; then
+        ahoy docker web-ip
+      else
+        docker-machine ip default
+      fi
+
     usage: Show the ip address of the web container
   reset:
     cmd: |
