@@ -2,7 +2,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/6483_update_contrib_mods/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/1.13.4/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/1.13.4/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/1.13.4/recline.make"
@@ -95,10 +95,9 @@ projects:
       type: git
       url: http://git.drupal.org/project/feeds.git
       branch: 7.x-2.x
-      revision: 453dddfa5d8b2bc8c5961466490aa385f57655b2
+      revision: d312f4f66e98cc12b8462cd13874184589017f72
     patch:
-      1428272: http://drupal.org/files/feeds-encoding_support_CSV-1428272-52.patch
-      1127696: http://drupal.org/files/issues/1127696-97.patch
+      1127696: https://www.drupal.org/files/issues/1127696-137.patch
   feeds_field_fetcher:
     download:
       type: git
@@ -346,7 +345,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      branch: 6483_update_contrib_mods
+      branch: 1.13.4
     type: module
   workbench:
     version: '1.2'
