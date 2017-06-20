@@ -12,6 +12,12 @@ commands:
         which docker-compose || (echo "you don't seem to have docker-compose installed. Exiting."; exit 1)
         echo "Setting up docker environment"
         export AHOY_CMD_PROXY=DOCKER
+        which docker-machine || (echo "you don't seem to have docker-machine installed. Exiting."; exit 1)
+        if [ ! -z "$DOCKER_MACHINE_NAME"  ]; then
+          docker-machine start default
+          $(docker-machine env default)
+        fi
+
         ahoy docker up
       EOF
     usage: Outputs the commands needed to setup a docker environment.
@@ -139,15 +145,27 @@ commands:
   url:
     usage: Prints the project URL
     cmd: |
-      echo "http://`ahoy docker web-host`"
+      if [ -z "$DOCKER_MACHINE_NAME"  ]; then
+        echo "http://`ahoy docker web-host`"
+      else
+        echo "http://`docker-machine ip default`:`ahoy docker compose port web 80|cut -d ':' -f2`"
+      fi
   surl:
     usage: Prints a secure project URL
     cmd: |
-      echo "https://`ahoy docker web-host`:`ahoy docker compose port web 443|cut -d ':' -f2`"
+      if [ -z "$DOCKER_MACHINE_NAME"  ]; then
+        echo "https://`ahoy docker web-host`:`ahoy docker compose port web 443|cut -d ':' -f2`"
+      else
+        echo "https://`docker-machine ip default`:`ahoy docker compose port web 443|cut -d ':' -f2`"
+      fi
   vnc:
     usage: Prints the project VNC URL
     cmd: |
-      echo "https://`ahoy docker web-host`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+      if [ -z "$DOCKER_MACHINE_NAME"  ]; then
+        echo "https://`ahoy docker web-host`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+      else
+        echo "`docker-machine ip default`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+      fi
 
   cleanup:
     usage: Clean ups docker unused images and volumes. See http://blog.yohanliyanage.com/2015/05/docker-clean-up-after-yourself/.
