@@ -119,6 +119,8 @@ projects:
       2831815: https://www.drupal.org/files/issues/hash-location-sanitization.diff
   field_group_table:
     version: '1.6'
+    patch:
+      2887897: https://www.drupal.org/files/issues/added_missing_isset_calls-2887897-2.patch
   field_hidden:
     version: '1.7'
   field_reference_delete:
