@@ -2,7 +2,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/1.13.4/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/6483_update_contrib_mods/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/1.13.4/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/1.13.4/recline.make"
@@ -118,7 +118,10 @@ projects:
       2042681: http://drupal.org/files/issues/field-group-show-ajax-2042681-8.patch
       2831815: https://www.drupal.org/files/issues/hash-location-sanitization.diff
   field_group_table:
-    version: '1.6'
+    download:
+      type: git
+      url: https://github.com/nuams/field_group_table.git
+      revision: 5b0aed9396a8cfd19a5b623a5952b3b8cacd361c
   field_hidden:
     version: '1.7'
   field_reference_delete:
@@ -131,7 +134,7 @@ projects:
       2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
       2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
   file_entity:
-    version: 2.1
+    version: 2.2
   file_resup:
     download:
       type: git
@@ -198,7 +201,7 @@ projects:
     patch:
       2045225: http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.6
+    version: 2.8
     patch:
       2272567: https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch
   media_youtube:
@@ -265,7 +268,7 @@ projects:
     version: '1.8'
   radix:
     type: theme
-    version: '3.5'
+    version: '3.6'
   radix_layouts:
     version: '3.4'
   recline:
@@ -345,7 +348,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      branch: 1.13.4
+      branch: 6483_update_contrib_mods
     type: module
   workbench:
     version: '1.2'
