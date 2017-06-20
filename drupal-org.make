@@ -121,8 +121,8 @@ projects:
   field_group_table:
     download:
       type: git
-        url: https://github.com/nuams/field_group_table.git
-        revision: 5b0aed9396a8cfd19a5b623a5952b3b8cacd361c
+      url: https://github.com/nuams/field_group_table.git
+      revision: 5b0aed9396a8cfd19a5b623a5952b3b8cacd361c
   field_hidden:
     version: '1.7'
   field_reference_delete:
