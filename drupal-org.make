@@ -95,10 +95,9 @@ projects:
       type: git
       url: http://git.drupal.org/project/feeds.git
       branch: 7.x-2.x
-      revision: 453dddfa5d8b2bc8c5961466490aa385f57655b2
+      revision: d312f4f66e98cc12b8462cd13874184589017f72
     patch:
-      1428272: http://drupal.org/files/feeds-encoding_support_CSV-1428272-52.patch
-      1127696: http://drupal.org/files/issues/1127696-97.patch
+      1127696: https://www.drupal.org/files/issues/1127696-137.patch
   feeds_field_fetcher:
     download:
       type: git
@@ -132,7 +131,7 @@ projects:
       2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
       2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
   file_entity:
-    version: 2.1
+    version: 2.2
   file_resup:
     download:
       type: git
@@ -199,7 +198,7 @@ projects:
     patch:
       2045225: http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.6
+    version: 2.8
     patch:
       2272567: https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch
   media_youtube:
@@ -266,7 +265,7 @@ projects:
     version: '1.8'
   radix:
     type: theme
-    version: '3.5'
+    version: '3.6'
   radix_layouts:
     version: '3.4'
   recline:
