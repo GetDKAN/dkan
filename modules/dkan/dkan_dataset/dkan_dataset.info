@@ -33,3 +33,7 @@ features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2
 features[variable][] = pathauto_node_dataset_pattern
 features[variable][] = pathauto_node_resource_pattern
+
+; Information added by DKAN release script on 6/21/2017
+version = 7.x-1.13.4-RC1
+project = dkan
