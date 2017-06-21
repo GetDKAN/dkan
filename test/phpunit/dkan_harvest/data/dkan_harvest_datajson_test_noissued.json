@@ -16,7 +16,7 @@
                 {
                     "@type": "dcat:Distribution",
                     "description": "No description provided",
-                    "downloadURL": "http://demo.getdkan.com/sites/default/files/Polling_Places_Madison_0.csv",
+                    "downloadURL": "https://s3.amazonaws.com/dkan-default-content-files/phpunit/Polling_Places_Madison_0.csv",
                     "format": "csv",
                     "mediaType": "text/csv"
                 }

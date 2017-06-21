@@ -1,4 +1,4 @@
-@api @enableFastImport @javascript
+@api @enableFastImport @javascript @disablecaptcha
 Feature: DKAN Datastore Fast Import
   Background:
     Given pages:
@@ -29,8 +29,7 @@ Feature: DKAN Datastore Fast Import
      When I click "Manage Datastore"
      Then I wait for "DKAN Datastore File: Status"
      When I press "Import"
-      Then I should see "Importing"
-      And I wait for "399 imported items total."
+      Then I wait for "399 imported items total."
 
   @datastore
   Scenario: As user I want to import files using fast imports

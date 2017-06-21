@@ -1,4 +1,5 @@
 # time:0m32.86s
+@disablecaptcha
 Feature: DKAN Dataset REST API
 
   Background:

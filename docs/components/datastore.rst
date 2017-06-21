@@ -192,7 +192,7 @@ Installation
 
     Required PDO flags for dkan_datastore_fast_import were not found. This module requires PDO::MYSQL_ATTR_LOCAL_INFILE and PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
 
-- Set up the following command to run periodically using a cronjob or similar: ``drush queue-run dkan_datastore_queue``
+- Set up the following command to run periodically using a cronjob or similar: ``drush queue-run dkan_datastore_fast_import_queue``
 
 
 Configuration
