@@ -19,20 +19,6 @@ Feature: DKAN Datastore Fast Import
     And I press "Save"
 
   @datastore
-  Scenario: As user I want to import files using batch imports
-    Given I am logged in as a user with the "site manager" role
-      And I am on "Datastore Settings" page
-      And I select the radio button "Use fast import for files with a weight over:"
-      And I select the radio button "LOAD DATA INFILE"
-      And I press "Save configuration"
-    Given I am on the resource "Resource Datastore"
-     When I click "Manage Datastore"
-     Then I wait for "DKAN Datastore File: Status"
-     When I press "Import"
-      Then I should see "Importing"
-      And I wait for "399 imported items total."
-
-  @datastore
   Scenario: As user I want to import files using fast imports
     Given I am logged in as a user with the "site manager" role
       And I am on the resource "Resource Datastore"
