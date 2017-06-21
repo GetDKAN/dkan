@@ -1,5 +1,5 @@
 # time:4m22.76s
-@api @enableDKAN_Workflow
+@api @enableDKAN_Workflow @disablecaptcha
 Feature:
   Workflow (Workbench) tests for DKAN Workflow Module
 
@@ -444,6 +444,18 @@ Feature:
     And I click "Edit"
     Then the checkbox "editor" should be checked
 
+  @api @javascript @harvest_rollback
+  Scenario: Check harvested datasets are published by default even when dkan_workflow is enabled.
+    Given users:
+      | name               | mail                     | status | roles             |
+      | Administrator      | admin@fakeemail.com      | 1      | administrator     |
+    And harvest sources:
+      | title      | machine name | source uri                                                                 | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
+
+    And The "source_one" source is harvested
+    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "published"
+
   @ok
   # https://jira.govdelivery.com/browse/CIVIC-5348
   Scenario: "View draft" should display the draft dataset and not the published revision.
@@ -462,3 +474,4 @@ Feature:
     And I press "Finish"
     And I click "View draft"
     Then I should see "Dataset draft title"
+

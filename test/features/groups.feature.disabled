@@ -1,3 +1,4 @@
+@disablecaptcha
 Feature: Groups
   In order to know the groups are working
   As a website user

@@ -1,5 +1,5 @@
 # time:4m30.30s
-@api
+@api @disablecaptcha
 Feature: Resource
 
   Background:

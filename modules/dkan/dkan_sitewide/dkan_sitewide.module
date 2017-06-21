@@ -359,7 +359,7 @@ function dkan_sitewide_clone_panel_display($task_handler) {
 
   if ($display) {
     $display_code = panels_export_display($display);
-    eval($display_code);
+    php_eval($display_code);
     panels_save_display($display);
   }
 

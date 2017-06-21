@@ -21,7 +21,7 @@ function open_data_federal_extras_field_group_info() {
   $field_group->mode = 'default';
   $field_group->parent_name = '';
   $field_group->data = array(
-    'label' => 'U.S. Federal Goverment Fields',
+    'label' => 'U.S. Federal Government Fields',
     'weight' => '5',
     'children' => array(
       0 => 'field_odfe_bureau_code',
@@ -32,7 +32,7 @@ function open_data_federal_extras_field_group_info() {
     ),
     'format_type' => 'table',
     'format_settings' => array(
-      'label' => 'U.S. Federal Goverment Fields',
+      'label' => 'U.S. Federal Government Fields',
       'instance_settings' => array(
         'label' => 'hide',
         'desc' => 'These fields are compatible with <a href="https://project-open-data.cio.gov/">Project Open Data</a>, an Open Data policy of the US Federal government.',
@@ -54,7 +54,7 @@ function open_data_federal_extras_field_group_info() {
   $field_group->mode = 'form';
   $field_group->parent_name = '';
   $field_group->data = array(
-    'label' => 'U.S. Federal Goverment Fields',
+    'label' => 'U.S. Federal Government Fields',
     'weight' => '3',
     'children' => array(
       0 => 'field_odfe_bureau_code',
@@ -65,7 +65,7 @@ function open_data_federal_extras_field_group_info() {
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
-      'label' => 'U.S. Federal Goverment Fields',
+      'label' => 'U.S. Federal Government Fields',
       'instance_settings' => array(
         'required_fields' => 1,
         'classes' => 'group-odfie-pod field-group-fieldset',
@@ -78,7 +78,7 @@ function open_data_federal_extras_field_group_info() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('U.S. Federal Goverment Fields');
+  t('U.S. Federal Government Fields');
 
   return $field_groups;
 }
