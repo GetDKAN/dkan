@@ -433,7 +433,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       $devel_generate_wrapper = entity_metadata_wrapper('node', $node);
 
       foreach ($this->field_properties as $key => $field) {
-        if ($key == 'type') {
+        if ($key == 'type' || $key == 'author') {
           continue;
         }
         if (isset($field['required']) && $field['required']) {
