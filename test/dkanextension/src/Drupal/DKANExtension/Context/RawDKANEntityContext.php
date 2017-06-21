@@ -41,10 +41,17 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
     $entity_info = entity_get_info($entity_type);
     $this->entity_type = $entity_type;
     $this->field_properties = array();
+    $default_field_map_overrides = array(
+      'published' => 'status',
+    );
 
     if ($field_map_overrides == NULL) {
-      $field_map_overrides = array('published' => 'status');
+      $field_map_overrides = $default_field_map_overrides;
     }
+    else {
+      $field_map_overrides = array_merge($default_field_map_overrides, $field_map_overrides);
+    }
+
     $this->field_map_custom = $field_map_custom;
 
     // Check that the bundle specified actually exists, or if none given,
@@ -236,7 +243,12 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
 
         // Dates - handle strings as best we can. See http://php.net/manual/en/datetime.formats.relative.php
         case 'date':
-          $timestamp = strtotime($value);
+          if (is_numeric($value)) {
+            $timestamp = (int) $value;
+          }
+          else {
+            $timestamp = strtotime($value);
+          }
           if ($timestamp === FALSE) {
             throw new \Exception("Couldn't create a date with '$value'");
           }
@@ -406,7 +418,35 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       }
     }
     $this->dispatchDKANHooks('BeforeDKANEntityCreateScope', $wrapper, $fields);
+    $this->applyMissingRequiredFields($wrapper, $fields);
     $this->apply_fields($wrapper, $fields);
+  }
+
+  public function applyMissingRequiredFields($wrapper, &$fields) {
+    $bundle = $wrapper->type->value();
+    if ($bundle == "dataset") {
+      module_load_include('inc', 'devel_generate', 'devel_generate');
+      module_load_include('inc', 'devel_generate', 'devel_generate.fields');
+      $node = new \stdClass();
+      $node->type = $bundle;
+      devel_generate_fields($node, 'node', $bundle);
+      $devel_generate_wrapper = entity_metadata_wrapper('node', $node);
+
+      foreach ($this->field_properties as $key => $field) {
+        if ($key == 'type') {
+          continue;
+        }
+        if (isset($field['required']) && $field['required']) {
+          $label = array_search($key, $this->field_map);
+          if (!isset($fields[$label])) {
+            $fields[$label] = $devel_generate_wrapper->$key->value();
+            if ($key == 'field_public_access_level') {
+              $fields[$label] = 'public';
+            }
+          }
+        }
+      }
+    }
   }
 
   /**

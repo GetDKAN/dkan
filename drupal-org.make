@@ -62,6 +62,8 @@ projects:
     version: '2.9'
   defaultconfig:
     version: '1.0-alpha11'
+  devel:
+    version: '1.5'
   diff:
     version: '3.2'
   double_field:
