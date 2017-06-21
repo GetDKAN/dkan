@@ -1,5 +1,6 @@
 7.x-1.13.4
 ----------
+ - #1877 Fix broken update that tries to update fields that may not exist (primarily due to Federal Extras upgrade)
  - #1825 Adapt the 'dataQuality' input value druing POD harvest.
  - #1817 Load empty cells as null in fast import.
  - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar. 
