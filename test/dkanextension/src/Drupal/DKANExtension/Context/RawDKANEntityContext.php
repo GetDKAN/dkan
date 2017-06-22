@@ -418,11 +418,20 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       }
     }
     $this->dispatchDKANHooks('BeforeDKANEntityCreateScope', $wrapper, $fields);
-    $this->applyMissingRequiredFields($wrapper, $fields);
+    $this->applyMissingRequiredFields($fields);
     $this->apply_fields($wrapper, $fields);
   }
 
-  public function applyMissingRequiredFields($wrapper, &$fields) {
+  /**
+   * Uses devel generate to produce default data for required missing fields.
+   *
+   * Works on either field or label tables.
+   *
+   * @param array $data
+   *   Array of maps of label or field_name values.
+   * */
+  public function applyMissingRequiredFields(array &$data) {
+    $wrapper = $this->new_wrapper();
     $bundle = $wrapper->type->value();
     if ($bundle == "dataset") {
       module_load_include('inc', 'devel_generate', 'devel_generate');
@@ -436,12 +445,21 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
         if ($key == 'type' || $key == 'author') {
           continue;
         }
+
         if (isset($field['required']) && $field['required']) {
-          $label = array_search($key, $this->field_map);
-          if (!isset($fields[$label])) {
-            $fields[$label] = $devel_generate_wrapper->$key->value();
-            if ($key == 'field_public_access_level') {
-              $fields[$label] = 'public';
+          $k = array_search($key, $this->field_map);
+          if (!isset($data[$k])) {
+            $data[$k] = $devel_generate_wrapper->$key->value();
+            // TODO: use param passed in from behat config for defaults.
+            $defaults = array(
+              'field_public_access_level' => 'public',
+              'field_hhs_attestation_negative' => 1,
+              'field_license' => 'odc-by',
+            );
+            foreach ($defaults as $default => $value) {
+              if ($key == $default) {
+                $data[$k] = $value;
+              }
             }
           }
         }
@@ -567,7 +585,11 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    */
   protected function dispatchDKANHooks($scopeType, \EntityDrupalWrapper $wrapper, &$fields) {
     $fullScopeClass = 'Drupal\\DKANExtension\\Hook\\Scope\\' . $scopeType;
-    $scope = new $fullScopeClass($this->getDrupal()->getEnvironment(), $this, $wrapper, $fields);
+    $drupal = $this->getDrupal();
+    if (!$drupal) {
+      return;
+    }
+    $scope = new $fullScopeClass($drupal->getEnvironment(), $this, $wrapper, $fields);
     $callResults = $this->dispatcher->dispatchScopeHooks($scope);
 
     // The dispatcher suppresses exceptions, throw them here if there are any.
