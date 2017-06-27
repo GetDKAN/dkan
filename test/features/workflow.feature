@@ -72,8 +72,8 @@ Feature:
   Scenario Outline: As a user with any Workflow role, I should be able to upgrade my own draft content to needs review.
     Given I am logged in as "<user>"
     And datasets:
-      | title              | author | moderation | moderation_date | date created  |
-      | My Draft Dataset   | <user> | draft      | Jul 21, 2015    | Jul 21, 2015  |
+      | title              | author | moderation | moderation_date | date created  | description |
+      | My Draft Dataset   | <user> | draft      | Jul 21, 2015    | Jul 21, 2015  | body text   |
     And resources:
       | title              | dataset             | author | format |  moderation |  moderation_date | date created  |
       | My Draft Resource  | My Draft Dataset    | <user> | csv    |  draft      |  Jul 21, 2015    | Jul 21, 2015  |
@@ -99,8 +99,8 @@ Feature:
   # Scenario Outline: DEBUG
   #   Given I am logged in as a user with the "Workflow Contributor" role
   #   And datasets:
-  #     | title                      | author        | moderation |
-  #     | Draft Dataset Needs Review | Contributor   | draft      |
+  #     | title                      | author        | moderation | description |
+  #     | Draft Dataset Needs Review | Contributor   | draft      | body text   |
   #   And resources:
   #     | title                        | author       | dataset                       | format |  published |
   #     | Draft Resource Needs Review  | Contributor  | Draft Dataset Needs Review    | csv    |  no        |
@@ -124,11 +124,11 @@ Feature:
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as "Contributor"
     And datasets:
-      | title                       | author       | published | moderation_date   | date created  |
-      | Stale Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
-      | Fresh Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
+      | title                                 | author       | published | moderation_date   | date created  | description |
+      | Stale Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  | body text   |
+      | Fresh Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  | body text   |
     And resources:
-      | title                        | author       | dataset                    | format |  published |
+      | title                                  | author       | dataset                              | format |  published |
       | Stale Resource DKAN Test Needs Review  | Contributor  | Stale Dataset DKAN Test Needs Review | csv    |  no        |
     And I update the moderation state of "Stale Dataset DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
     And I update the moderation state of "Stale Resource DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
@@ -153,8 +153,8 @@ Feature:
       | name            | roles                |
       | some-other-user | Workflow Contributor |
     And datasets:
-      | title           | author          | published |
-      | Not My Dataset  | some-other-user | No        |
+      | title           | author          | published | description |
+      | Not My Dataset  | some-other-user | No        | body text   |
     And resources:
       | title            | dataset           | author          | format |  published |
       | Not My Resource  | Not My Dataset    | some-other-user | csv    |  no        |
@@ -172,8 +172,8 @@ Feature:
   Scenario Outline: As a user with Workflow Roles, I should be able to see draft content I authored in 'My Drafts'
     Given I am logged in as "<user>"
     And datasets:
-      | title      | author | moderation |
-      | My Dataset | <user> | draft      |
+      | title      | author | moderation | description |
+      | My Dataset | <user> | draft      | body text   |
     And resources:
       | title       | author | dataset    | format | moderation |
       | My Resource | <user> | My Dataset | csv    | draft      |
@@ -190,8 +190,8 @@ Feature:
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Published content I authored in workbench pages
     Given I am logged in as "Contributor"
     And datasets:
-      | title      | author      | published |
-      | My Dataset | Contributor | No        |
+      | title      | author      | published | description |
+      | My Dataset | Contributor | No        | body text   |
     And resources:
       | title       | author      | dataset    | format | published |
       | My Resource | Contributor | My Dataset | csv    | Yes       |
@@ -216,8 +216,8 @@ Feature:
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Needs Review resources I authored in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
-      | title      | author      | published |
-      | My Dataset | Contributor | No        |
+      | title      | author      | published | description |
+      | My Dataset | Contributor | No        | body text   |
     And resources:
       | title       | author      | dataset    | format | published |
       | My Resource | Contributor | My Dataset | csv    | no        |
@@ -236,8 +236,8 @@ Feature:
   Scenario: As a user with the Workflow Contributor, I should be able to see Needs Review contents I authored in 'Needs Review'
     Given I am logged in as "Contributor"
     And datasets:
-      | title      | author      | moderation |
-      | My Dataset | Contributor | draft      |
+      | title      | author      | moderation | description |
+      | My Dataset | Contributor | draft      | body text   |
     And resources:
       | title       | author      | dataset    | format | moderation |
       | My Resource | Contributor | My Dataset | csv    | draft      |
@@ -254,8 +254,8 @@ Feature:
       | name            | roles                                 |
       | some-other-user | Workflow Contributor, content creator |
     And datasets:
-      | title          | author          | moderation |
-      | Not My Dataset | some-other-user | draft      |
+      | title          | author          | moderation | description |
+      | Not My Dataset | some-other-user | draft      | body text   |
     And resources:
       | title           | dataset        | author          | format | moderation |
       | Not My Resource | Not My Dataset | some-other-user | csv    | draft      |
@@ -275,8 +275,8 @@ Feature:
       | user            | group    | role on group        | membership status |
       | some-other-user | Group 01 | administrator member | Active            |
     And datasets:
-      | title           | author          | published | publisher |
-      | Not My Dataset  | some-other-user | No        | Group 01  |
+      | title           | author          | published | publisher | description |
+      | Not My Dataset  | some-other-user | No        | Group 01  | body text   |
     And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review"
     Given I am logged in as "Moderator"
     And I am on "Needs Review" page
@@ -293,8 +293,8 @@ Feature:
       | some-other-user | Group 01 | administrator member | Active            |
       | moderator2      | Group 02 | administrator member | Active            |
     And datasets:
-      | title           | author          | published | publisher |
-      | Not My Dataset  | some-other-user | No        | Group 01  |
+      | title           | author          | published | publisher | description |
+      | Not My Dataset  | some-other-user | No        | Group 01  | body text   |
     And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review"
     Given I am logged in as "moderator2"
     And I am on "Needs Review" page
@@ -311,9 +311,9 @@ Feature:
       | other-user      | Group 02 | administrator member | Active            |
       | some-other-user | Group 01 | administrator member | Active            |
     And datasets:
-      | title                 | author          | published | publisher |
-      | Still Not My Dataset  | other-user      | No        | Group 01  |
-      | Not My Dataset        | some-other-user | No        | Group 02  |
+      | title                 | author          | published | publisher | description |
+      | Still Not My Dataset  | other-user      | No        | Group 01  | body text   |
+      | Not My Dataset        | some-other-user | No        | Group 02  | body text   |
     And "other-user" updates the moderation state of "Still Not My Dataset" to "Needs Review"
     And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review"
     Given I am logged in as "Supervisor"
@@ -332,9 +332,9 @@ Feature:
       | other-user      | Group 02 | administrator member | Active            |
       | some-other-user | Group 01 | administrator member | Active            |
     And datasets:
-      | title                 | author          | published | publisher |
-      | Still Not My Dataset  | other-user      | No        | Group 01  |
-      | Not My Dataset        | some-other-user | No        | Group 02  |
+      | title                 | author          | published | publisher | description |
+      | Still Not My Dataset  | other-user      | No        | Group 01  | body text   |
+      | Not My Dataset        | some-other-user | No        | Group 02  | body text   |
     And "other-user" updates the moderation state of "Still Not My Dataset" to "Needs Review" on date "30 days ago"
     And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review" on date "30 days ago"
     Given I am logged in as "Supervisor"
@@ -353,9 +353,9 @@ Feature:
       | other-user      | Group 02 | administrator member | Active            |
       | some-other-user | Group 01 | administrator member | Active            |
     And datasets:
-      | title                 | author          | published | publisher |
-      | Still Not My Dataset  | other-user      | No        | Group 01  |
-      | Not My Dataset        | some-other-user | No        | Group 02  |
+      | title                 | author          | published | publisher | description |
+      | Still Not My Dataset  | other-user      | No        | Group 01  | body text   |
+      | Not My Dataset        | some-other-user | No        | Group 02  | body text   |
     And "other-user" updates the moderation state of "Still Not My Dataset" to "Draft" on date "30 days ago"
     And "some-other-user" updates the moderation state of "Not My Dataset" to "Draft" on date "30 days ago"
     Given I am logged in as "Supervisor"
@@ -429,15 +429,15 @@ Feature:
     And I click "Edit"
     Then the checkbox "editor" should be checked
 
-  @workflow_19 @ok
+  @workflow_19 @ok @dkanBug @customizable
   # https://jira.govdelivery.com/browse/CIVIC-5348
   Scenario: "View draft" should display the draft dataset and not the published revision.
     Given users:
       | name                 | roles                                 |
       | workflow_contributor | Workflow Contributor, content creator |
     And datasets:
-      | title         | author               | published | moderation |
-      | Dataset title | workflow_contributor | Yes       | published  |
+      | title         | author               | published | moderation | description |
+      | Dataset title | workflow_contributor | Yes       | published  | body text   |
     Given I update the moderation state of "Dataset title" to "Published"
     Given I am logged in as "workflow_contributor"
     And I am on "Dataset title" page
