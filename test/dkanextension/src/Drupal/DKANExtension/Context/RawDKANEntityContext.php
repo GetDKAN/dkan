@@ -266,6 +266,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
 
         // Simple text field.
         case 'text':
+        case "list<text>":
           $wrapper->$property->set($value);
           break;
 
