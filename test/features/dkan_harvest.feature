@@ -1,5 +1,5 @@
 # time:3m30.05s
-@harvest_rollback
+@harvest_rollback @disablecaptcha
 Feature: Dkan Harvest
 
   @api @javascript
