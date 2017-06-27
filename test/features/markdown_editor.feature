@@ -1,5 +1,5 @@
 # time:1m32.15s
-@javascript @api
+@javascript @api @disablecaptcha
 Feature: Markdown Editor
   In order to create content
   As a user with edition permissions

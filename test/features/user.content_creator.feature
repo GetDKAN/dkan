@@ -1,5 +1,5 @@
 # time:0m14.99s
-@api
+@api @disablecaptcha
 Feature: User command center links for content creator role.
 
   Background:

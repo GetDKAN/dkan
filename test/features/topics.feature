@@ -1,4 +1,5 @@
 # time:0m2.37s
+@disablecaptcha
 Feature: Topics
 
   Background:
