@@ -254,13 +254,19 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
 
         // Simple text field.
         case 'text':
+        case 'list<text>'
           $wrapper->$property->set($value);
           break;
 
         // Formatted text like body
         case 'text_formatted':
           // For now just apply the value directly.
-          $wrapper->$property->set(array('value' => $value));
+          if (is_array($value)) {
+            $wrapper->$property->set($value);
+          }
+          else {
+            $wrapper->$property->set(array('value' => $value));
+          }
           break;
 
         case 'taxonomy_term':
