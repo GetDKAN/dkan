@@ -195,3 +195,8 @@ commands:
       else
         echo $url
       fi
+
+  server:
+    usage: Provided as an easy way to setup the php server during testing.
+    cmd:
+      ahoy cmd-proxy bash dkan/.ahoy/.scripts/server.sh
