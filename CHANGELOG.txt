@@ -1,6 +1,6 @@
 7.x-1.14.x
 ----------
- - #1902 Allow users to set Groups on standalone resources.
+ - #1979 Allow users to set Groups on standalone resources.
  - #1962 Recline.view.nvd3.js: Fixed display of data with zero as values.
  - #1888 Added validation on axis tick settings on visualization_entity.
  - #1725 Fix `ahoy dkan uli` output login link.
