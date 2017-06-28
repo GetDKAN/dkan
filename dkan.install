@@ -273,6 +273,14 @@ function dkan_update_7013() {
   }
 }
 
+
+/**
+ * Revert content types dataset to revert og_group_ref on resources.
+ */
+function dkan_update_7014() {
+  features_revert(array('dkan_dataset_content_types' => array('field_base', 'field_instance')));
+}
+
 /**
  * Drop the 'field_modified_source_date' field.
  */
