@@ -64,7 +64,7 @@ your source configuration and make any adjustments before running the migration.
 The events tab on the Harvest Source page provides historical data on all harvests
 run on this source.
 
-![Harvest Source Event Log Page](images/harvest_source_event_log.png)
+![Harvest Source Event Log Page](../images/harvest_source_event_log.png)
 
 The information is managed by the core `dkan_harvest` via a per-harvest source
 `migrate_log` table that tracks the number of datasets created, updated,
@@ -87,12 +87,12 @@ Presenting the event log via some easy to parse charts is in the TODO list.
 
 To run and manage harvest operations from the web interface, navigate to
  `admin/dkan/harvest/dashboard`. This is a view of all
-available (published) Harvest Sources in the system. Apart from the
-title and the source type, additonal columns displaying the last time a harvest
-migration was run for a specific source and the number of daatsets
-imported are available.
+available (published) Harvest Sources in the system. This page will display the
+harvest source title, the source type, the last time a harvest
+migration was run for the specific source, the number of datasets that were
+imported, and the status of the harvest.
 
-![Harvest Dashboard](images/harvest_dashboard.png)
+![Harvest Dashboard](../images/harvest_dashboard.png)
 
 The dashboard allows you to select one or more sources and perform one of the following operations on it:
 
@@ -100,7 +100,9 @@ The dashboard allows you to select one or more sources and perform one of the fo
 * **Cache source(s)** will simply fetch the source data, apply the source configuration (filters, excludes, etc.) and cache the data locally without migrating. You may wish to do this to check for errors, or to refresh the preview available for each specific source (see the section on source pages below).
 * **Migrate source(s)** will migrate the current cache for the selected sources, no matter how old it is.
 
-![Harvest Dashboard Operations](images/harvest_dashboard_operations.png)
+
+## Harvested Resources
+When datasets are harvested, the resources are added as remote files, which means they are links to the original files on the remote server. If you modify the resource in your DKAN site, your changes will be overwritten the next time a harvest is performed. If you add the resource to the [datastore](datastore.rst) be sure to set up periodic importing so that the resource stays in sync with the source. For these reasons, we do not recommend that you create visualizations based on harvested resources as the visualizations could break when changes are made to the files upstream.
 
 ## Harvest Drush Commands
 
@@ -167,7 +169,7 @@ $ drush --user=1 dkan-hm test_harvest_source
 ## Extending DKAN Harvest
 
 DKAN developers can use the api provided by DKAN Harvest to add support for
-additioanl harvest source types. The `dkan_harvest_datajson` module encapsulate
+additional harvest source types. The `dkan_harvest_datajson` module encapsulate
 the reference implementation providing support for POD type sources.
 
 If you need to harvest from an end point type other then POD. You can extend
@@ -231,7 +233,7 @@ function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime)
 This callback takes care of downloading/filtering/altering the data from the
 source end-point to the local file directory provided by the
 HarvestSource::getCacheDir() method. The recommended folder structure for
-cached data is to have one dataset per uniqely named file. The actual migration
+cached data is to have one dataset per uniquely named file. The actual migration
 is then performed on the cached data, not on the remote source itself.
 
 ```sh
