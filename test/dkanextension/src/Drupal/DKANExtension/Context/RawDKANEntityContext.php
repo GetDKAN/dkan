@@ -255,7 +255,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
           $wrapper->$property->set($timestamp);
           break;
 
-        // User reference
+        // User reference.
         case 'user':
           $user = user_load_by_name($value);
           if ($user === FALSE) {
@@ -270,17 +270,22 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
           $wrapper->$property->set($value);
           break;
 
-        // Formatted text like body
+        // Formatted text like body.
         case 'text_formatted':
           // For now just apply the value directly.
-          $wrapper->$property->set(array('value' => $value));
+          if (is_array($value)) {
+            $wrapper->$property->set($value);
+          }
+          else {
+            $wrapper->$property->set(array('value' => $value));
+          }
           break;
 
         case 'taxonomy_term':
           if (!isset($value)) {
             break;
           }
-          if($found_term = $this->tidFromTermName($property, $value)) {
+          if ($found_term = $this->tidFromTermName($property, $value)) {
             $tid = $found_term;
           }
           else {
