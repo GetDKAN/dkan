@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1985 Add documentation for resource behavior on harvested datasets.
  - #1943 Update tests to be more compatible with client sites, multiple testing and devops improvements.
  - #1962 Recline.view.nvd3.js: Fixed display of data with zero as values.
  - #1888 Added validation on axis tick settings on visualization_entity.
