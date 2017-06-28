@@ -342,9 +342,14 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['field_link_api'][$field_link_api_langcode][0]['#title'] = '';
     $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['#title'] = '';
 
-    // Resources inherit groups from parent dataset.
-    // Hide field so users cannot manually modify that information.
-    $form['og_group_ref']['#access'] = FALSE;
+    // Use #states to show or hide field group on standalone resources.
+    $form['og_group_ref']['#states'] = array(
+      'visible' => array(
+        array(':input[name="field_dataset_ref[und][]"]' => array('value' => array('_none'))),
+          '[OR/XOR]',
+        array(':input[name="field_dataset_ref[und][]"]' => array('value' => array())),
+      ),
+    );
 
     if ($query = drupal_get_query_parameters()) {
       if (isset($query['dataset'])) {
