@@ -9260,6 +9260,9 @@ div.horizontal-tabs {
   .node-resource-form .field-name-field-upload .form-type-managed-file .file-resup-wrapper {
     display: table-header-group; }
 
+.node-resource-form .field-name-body textarea {
+  height: auto; }
+
 #search-api-admin-index-status-form input {
   margin-bottom: 1em; }
 
