@@ -36,7 +36,7 @@ class DatasetContext extends RawDKANEntityContext {
       array(
         'moderation', 
         'moderation_date',
-      ),
+      )
     );
   }
 
