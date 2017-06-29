@@ -16,8 +16,27 @@ class DatasetContext extends RawDKANEntityContext {
     parent::__construct(
       'node',
       'dataset',
-      NULL,
-      array('moderation', 'moderation_date')
+      // ToDo: load this from custom context.https://github.com/NuCivic/dkan_starter/issues/332.
+      array(
+        'title' => 'title',
+        'description' => 'body',
+        'published' => 'status',
+        'resource' => 'field_resources',
+        'access level' => 'field_public_access_level',
+        'contact name' => 'field_contact_name',
+        'contact email' => 'field_contact_email',
+        'attest name' => 'field_hhs_attestation_name',
+        'attest date' => 'field_hhs_attestation_date',
+        'verification status' => 'field_hhs_attestation_negative',
+        'attest privacy' => 'field_hhs_attestation_privacy',
+        'attest quality' => 'field_hhs_attestation_quality',
+        'bureau code' => 'field_odfe_bureau_code',
+        'license' => 'field_license',
+      ),
+      array(
+        'moderation', 
+        'moderation_date',
+      ),
     );
   }
 
