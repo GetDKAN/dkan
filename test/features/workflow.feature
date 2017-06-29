@@ -29,7 +29,7 @@ Feature:
       | user       | group    | role on group        | membership status |
       | Supervisor | Group 01 | administrator member | Active            |
       | Moderator  | Group 01 | member               | Active            |
-      | Contributor| Group 01 | member               | Pending           |
+      | Contributor| Group 01 | member               | Active           |
       | Moderator  | Group 02 | member               | Active            |
 
 
@@ -60,6 +60,7 @@ Feature:
     When I am on "My Workbench" page
     Then I should see the link "My content"
     And I should see the link "My drafts"
+    And I should see the link "Stale drafts"
     And I should see the link "My Edits"
     And I should see the link "All Recent Content"
     Examples:
@@ -124,11 +125,11 @@ Feature:
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as "Contributor"
     And datasets:
-      | title                       | author       | published | moderation_date   | date created  |
+      | title                                 | author       | published | moderation_date   | date created  |
       | Stale Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
       | Fresh Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
     And resources:
-      | title                        | author       | dataset                    | format |  published |
+      | title                                  | author       | dataset                              | format |  published |
       | Stale Resource DKAN Test Needs Review  | Contributor  | Stale Dataset DKAN Test Needs Review | csv    |  no        |
     And I update the moderation state of "Stale Dataset DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
     And I update the moderation state of "Stale Resource DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
@@ -283,6 +284,22 @@ Feature:
     Then I should see the text "Not My Dataset"
 
   @workflow_12 @ok @globalUser
+  Scenario: As a Workflow Moderator, I should be able to see Stale Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
+    Given users:
+      | name            | roles                                 |
+      | some-other-user | Workflow Contributor, content creator |
+    And group memberships:
+      | user            | group    | role on group        | membership status |
+      | some-other-user | Group 01 | administrator member | Active            |
+    And datasets:
+      | title           | author          | published | publisher |
+      | Not My Dataset  | some-other-user | No        | Group 01  |
+    And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review" on date "30 days ago"
+    Given I am logged in as "Moderator"
+    And I am on "Stale Reviews" page
+    Then I should see the text "Not My Dataset"
+
+  @workflow_13 @ok @globalUser
   Scenario: As a Workflow Moderator, I should not be able to see Needs Review datasets I did not author, and which do not belong to my Group, in 'Needs Review'
     Given users:
       | name            | roles                                 |
@@ -300,7 +317,7 @@ Feature:
     And I am on "Needs Review" page
     Then I should not see the text "Not My Dataset"
 
-  @workflow_13 @ok @globalUser
+  @workflow_14 @ok @globalUser
   Scenario: As a Workflow Supervisor, I should be able to see Needs Review content I did not author, regardless whether it belongs to my group or not, in 'Needs Review'
     Given users:
       | name            | roles                                 |
@@ -321,7 +338,7 @@ Feature:
     Then I should see the text "Still Not My Dataset"
     Then I should see the text "Not My Dataset"
 
-  @workflow_14 @ok @globalUser
+  @workflow_15 @ok @globalUser
   Scenario: As a Workflow Supervisor I should be able to see content in the 'Needs Review' state I did not author, regardless whether it belongs to my group or not, but which were submitted greater than 72 hours before now, in the 'Stale Reviews'
     Given users:
       | name            | roles                                 |
@@ -342,7 +359,7 @@ Feature:
     Then I should see the text "Still Not My Dataset"
     Then I should see the text "Not My Dataset"
 
-  @workflow_15 @ok @globalUser
+  @workflow_16 @ok @globalUser
   Scenario: As a Workflow Supervisor I should be able to see content in the 'Draft' state I did not author, regardless whether it belongs to my group or not, but which were submitted greater than 72 hours before now, in the 'Stale Drafts'
     Given users:
       | name            | roles                                 |
@@ -363,7 +380,7 @@ Feature:
     Then I should see the text "Still Not My Dataset"
     Then I should see the text "Not My Dataset"
 
-  @workflow_16 @api @ahoyRunMe @javascript @globalUser
+  @workflow_17 @api @ahoyRunMe @javascript @globalUser
   Scenario: When administering users, role pairings with core roles should be enforced
     Given I am logged in as a user with the "administrator" role
     And I visit the "Create User" page
@@ -383,7 +400,7 @@ Feature:
     And I click "Edit"
     Then the checkbox "content creator" should be checked
 
-  @workflow_17 @api @globalUser
+  @workflow_18 @api @globalUser
   Scenario: Modify user workflow roles as site manager
     Given users:
       | name            | roles           | mail           |
@@ -405,7 +422,7 @@ Feature:
     When I am on "Users" page
     Then I should see "Workflow Contributor" in the "content-creator" row
 
-  @workflow_18 @api @ahoyRunMe @javascript @globalUser
+  @workflow_19 @api @ahoyRunMe @javascript @globalUser
   Scenario: Role pairings should also work for site managers.
     Given users:
       | name            | roles                             |
@@ -429,7 +446,19 @@ Feature:
     And I click "Edit"
     Then the checkbox "editor" should be checked
 
-  @workflow_19 @ok
+  @workflow_20 @api @javascript @harvest_rollback
+  Scenario: Check harvested datasets are published by default even when dkan_workflow is enabled.
+    Given users:
+      | name               | mail                     | status | roles             |
+      | Administrator      | admin@fakeemail.com      | 1      | administrator     |
+    And harvest sources:
+      | title      | machine name | source uri                                                                 | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
+
+    And The "source_one" source is harvested
+    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "published"
+
+  @workflow_21 @ok
   # https://jira.govdelivery.com/browse/CIVIC-5348
   Scenario: "View draft" should display the draft dataset and not the published revision.
     Given users:
@@ -447,3 +476,4 @@ Feature:
     And I press "Finish"
     And I click "View draft"
     Then I should see "Dataset draft title"
+
