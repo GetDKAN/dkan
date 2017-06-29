@@ -1161,9 +1161,15 @@ function dkan_harvest_build_delete_confirmation_description($sources) {
     $source = entity_load_single('node', $source_id);
     $source_datasets = dkan_harvest_get_datasets_from_source($source_id);
     $dataset_string = t('Datasets');
-    $markup .= '<li>' . $source->title . ': ' . count($source_datasets) . ' ' . $dataset_string . '</li>';
+    foreach ($source_datasets as $source_dataset) {
+      $source_dataset_array[] = $source_dataset;
+    }
+    $source_resources = dkan_harvest_get_resources_from_datasets($source_dataset_array);
+    $resource_string = t('Resources');
+    $markup .= '<li>' . $source->title . ': ' . count($source_datasets) . ' ' . $dataset_string . ', ' . count($source_resources) . ' ' . $resource_string . '</li>';
   }
   $markup .= '</ul>';
+  $markup .= 'No groups generated during harvest will be affected by this action. They must be manually managed.';
   $markup .= '<p></br>' . t('Plese select the operation you want to perform on the
     associated content (datasets and resources):') . '</p>';
 
