@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\DKANExtension\Context;
 
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
@@ -7,8 +8,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 /**
  * Defines application features from the specific context.
  */
-class ServicesContext extends RawDKANContext
-{
+class ServicesContext extends RawDKANContext {
   private $base_url = '';
   private $cookie_session = '';
   private $csrf_token = '';
@@ -16,13 +16,15 @@ class ServicesContext extends RawDKANContext
 
   // Each node field should be formatted properly before the information is sent on a request.
   // This is a map from 'Field name' -> 'Field format'.
-  //  TODO: Move to configuration passed in to constructor.
+  /**
+   * TODO: Move to configuration passed in to constructor.
+   */
   private $request_fields_map = array(
     'resource' => array(
       'type' => 'type',
       'title' => 'title',
       'body' => 'body[und][0][value]',
-      'status' => 'status'
+      'status' => 'status',
     ),
     'dataset' => array(
       'type' => 'type',
@@ -41,13 +43,13 @@ class ServicesContext extends RawDKANContext
       'attest quality' => 'field_hhs_attestation_quality[und]',
       'bureau code' => 'field_odfe_bureau_code[und]',
       'license' => 'field_license[und][select]',
-    )
+    ),
   );
 
   /**
    * @BeforeScenario
    */
-  public function gatherContexts(BeforeScenarioScope $scope){
+  public function gatherContexts(BeforeScenarioScope $scope) {
     parent::gatherContexts($scope);
     $environment = $scope->getEnvironment();
     $this->dkanContext = $environment->getContext('Drupal\DKANExtension\Context\DKANContext');
@@ -64,8 +66,7 @@ class ServicesContext extends RawDKANContext
   /**
    * @Given endpoints:
    */
-  public function endpoints($data)
-  {
+  public function endpoints($data) {
     foreach ($data->getHash() as $endpoint_data) {
       $this->endpoints[$endpoint_data['name']] = $endpoint_data['path'];
     }
@@ -74,9 +75,8 @@ class ServicesContext extends RawDKANContext
   /**
    * @Given I use the :arg1 endpoint to login with user :arg2 and pass :arg3
    */
-  public function iUseTheEndpointToLoginWithUserAndPass($endpoint, $username, $password)
-  {
-    // Build request URL
+  public function iUseTheEndpointToLoginWithUserAndPass($endpoint, $username, $password) {
+    // Build request URL.
     $request_url = $this->base_url . $this->getEndpointPath($endpoint) . '/user/login';
     // Get cookie_session and csrf_token.
     $user_login = $this->services_request_user_login($request_url, $username, $password);
@@ -87,10 +87,9 @@ class ServicesContext extends RawDKANContext
   /**
    * @Given I use the :arg1 endpoint to create the nodes:
    */
-  public function iUseTheEndpointToCreateTheNodes($endpoint, $nodes)
-  {
+  public function iUseTheEndpointToCreateTheNodes($endpoint, $nodes) {
     $request_url = $this->base_url . $this->getEndpointPath($endpoint) . '/node';
-    // Create nodes
+    // Create nodes.
     foreach ($nodes->getHash() as $node_data) {
       // Get node data.
       $processed_data = $this->build_node_data($node_data);
@@ -101,14 +100,13 @@ class ServicesContext extends RawDKANContext
       $wrapper = entity_metadata_wrapper('node', $node);
       $this->dkanContext->entityStore->store('node', $processed_data['type'], $node->nid, $wrapper, $wrapper->label());
     }
-    return true;
+    return TRUE;
   }
 
   /**
    * @Given I use the :arg1 endpoint to attach the file :arg2 to :arg3
    */
-  public function iUseTheEndpointToAttachTheFileTo($endpoint, $file_name, $node_name)
-  {
+  public function iUseTheEndpointToAttachTheFileTo($endpoint, $file_name, $node_name) {
     // Get node.
     $node = $this->dkanContext->entityStore->retrieve_by_name($node_name);
     if ($node) {
@@ -121,59 +119,61 @@ class ServicesContext extends RawDKANContext
       $file_data = array(
         "files[1]" => curl_file_create($file_path),
         "field_name" => "field_upload",
-        "attach" => 0 // 0 -> replace 1 -> append.
+      // 0 -> replace 1 -> append.
+        "attach" => 0,
       );
-      // Build request URL
+      // Build request URL.
       $request_url = $this->base_url . $this->getEndpointPath($endpoint) . '/node/' . $node->getIdentifier() . '/attach_file';
       // Attach file.
       $this->services_request_attach_file($file_data, $this->csrf_token, $this->cookie_session, $request_url);
-    } else {
+    }
+    else {
       throw new Exception(sprintf('The resource could not be found.'));
     }
 
-    return true;
+    return TRUE;
   }
 
   /**
    * @Given I use the :arg1 endpoint to update the node :arg2 with:
    */
-  public function iUseTheEndpointToUpdateTheNodeWith($endpoint, $node_name, $data)
-  {
+  public function iUseTheEndpointToUpdateTheNodeWith($endpoint, $node_name, $data) {
     // Get node.
     $node = $this->dkanContext->entityStore->retrieve_by_name($node_name);
     if ($node) {
-      // Update nodes
+      // Update nodes.
       foreach ($data->getHash() as $node_data) {
         // Get node data.
         $processed_data = $this->build_node_data($node_data, $node);
-        // Build request URL
+        // Build request URL.
         $request_url = $this->base_url . $this->getEndpointPath($endpoint) . '/node/' . $node->getIdentifier();
         // Update node.
         $this->services_request_update_node($processed_data, $this->csrf_token, $this->cookie_session, $request_url);
       }
-    } else {
+    }
+    else {
       throw new Exception(sprintf('The node could not be found.'));
     }
-    return true;
+    return TRUE;
 
   }
 
   /**
    * @Given I use the :arg1 endpoint to delete the node :arg2
    */
-  public function iUseTheEndpointToDeleteTheNode($endpoint, $node_name)
-  {
+  public function iUseTheEndpointToDeleteTheNode($endpoint, $node_name) {
     // Get node.
     $node = $this->dkanContext->entityStore->retrieve_by_name($node_name);
     if ($node) {
-      // Build request URL
+      // Build request URL.
       $request_url = $this->base_url . $this->getEndpointPath($endpoint) . '/node/' . $node->getIdentifier();
       // Delete node.
       $this->services_request_delete_node($this->csrf_token, $this->cookie_session, $request_url);
-    } else {
+    }
+    else {
       throw new Exception(sprintf('The node could not be found.'));
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -182,7 +182,8 @@ class ServicesContext extends RawDKANContext
   private function getEndpointPath($endpoint_name) {
     if (isset($this->endpoints[$endpoint_name])) {
       return $this->endpoints[$endpoint_name];
-    } else {
+    }
+    else {
       throw new Exception(sprintf('The %s endpoint could not be found.', $endpoint_name));
     }
   }
@@ -196,7 +197,7 @@ class ServicesContext extends RawDKANContext
     if ($csrf_token) {
       curl_setopt($curl, CURLOPT_HTTPHEADER, array(
         'Accept: application/json',
-        'X-CSRF-Token: ' . $csrf_token
+        'X-CSRF-Token: ' . $csrf_token,
       ));
     }
     else {
@@ -222,11 +223,11 @@ class ServicesContext extends RawDKANContext
     $response['http_code'] = $http_code;
 
     if ($http_code == 200) {
-      $response['success'] = true;
+      $response['success'] = TRUE;
       $response['response'] = json_decode($result);
     }
     else {
-      $response['success'] = false;
+      $response['success'] = FALSE;
       $response['response'] = curl_error($curl);
     }
 
@@ -256,7 +257,8 @@ class ServicesContext extends RawDKANContext
       // Define cookie session.
       $cookie_session = $response['response']->session_name . '=' . $response['response']->sessid;
       return array('cookie_session' => $cookie_session, 'curl' => $curl);
-    } else {
+    }
+    else {
       throw new \Exception(sprintf('Error: %s', $response['response']));
     }
   }
@@ -301,7 +303,8 @@ class ServicesContext extends RawDKANContext
 
     if ($response['success']) {
       return $response['response'];
-    } else {
+    }
+    else {
       throw new \Exception(sprintf('Error: %s', $response['response']));
     }
   }
@@ -325,7 +328,8 @@ class ServicesContext extends RawDKANContext
 
     if ($response['success']) {
       return $response['response'];
-    } else {
+    }
+    else {
       throw new \Exception(sprintf('Error: %s', $response['response']));
     }
   }
@@ -340,7 +344,7 @@ class ServicesContext extends RawDKANContext
     curl_setopt($curl, CURLOPT_HTTPHEADER, array(
       'Content-Type: multipart/form-data',
       'Accept: application/json',
-      'X-CSRF-Token: ' . $csrf_token
+      'X-CSRF-Token: ' . $csrf_token,
     ));
     // Do a regular HTTP POST.
     curl_setopt($curl, CURLOPT_POST, 1);
@@ -353,12 +357,13 @@ class ServicesContext extends RawDKANContext
 
     if ($response['success']) {
       return $response['response'];
-    } else {
+    }
+    else {
       throw new \Exception(sprintf('Error: %s', $response['response']));
     }
   }
 
-  /*
+  /**
    * Delete node.
    */
   private function services_request_delete_node($csrf_token, $cookie_session, $request_url) {
@@ -382,7 +387,7 @@ class ServicesContext extends RawDKANContext
   /**
    * Build node data as needed by endpoint.
    */
-  private function build_node_data($data, $node = null) {
+  private function build_node_data($data, $node = NULL) {
     $node_data = array();
 
     if (!$node && !isset($data['type'])) {
@@ -435,4 +440,5 @@ class ServicesContext extends RawDKANContext
 
     return $field_value;
   }
+
 }
