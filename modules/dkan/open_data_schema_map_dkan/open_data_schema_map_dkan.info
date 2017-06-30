@@ -21,3 +21,7 @@ features[open_data_schema_apis][] = data_json_1_1
 features[open_data_schema_apis][] = dcat_ap_v1_1_dataset
 features[open_data_schema_apis][] = dcat_v1_1
 features[open_data_schema_apis][] = dcat_v1_1_json
+
+; Information added by DKAN release script on 6/30/2017
+version = 7.x-1.13.4
+project = dkan
