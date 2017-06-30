@@ -117,6 +117,15 @@ function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
     $form['query']['#attributes'] = array('placeholder' => t('Search'));
     $form['query']['#size'] = 60;
   }
+  // Custom administration views.
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dkan-administration-nodes-system-1' || $form['#id'] == 'views-exposed-form-dkan-administration-files-system-1') {
+    $form['date_filter']['min']['#title'] = '';
+    $form['date_filter']['max']['#title'] = '';
+    $form['date_filter']['min']['#attributes']['placeholder'] = t('From');
+    $form['date_filter']['max']['#attributes']['placeholder'] = t('To');
+    $form['date_filter']['min']['#date_format'] = 'm/d/Y';
+    $form['date_filter']['max']['#date_format'] = 'm/d/Y';
+  }
 
   if ($form_id == 'colorizer_admin_settings') {
     // Add clear cache for anonymous after any change.
@@ -156,11 +165,8 @@ function dkan_sitewide_update_status_alter(&$projects) {
   $up_to_date_projects = array(
     'gravatar',
     'beautytips',
-    'entity_rdf',
     'feeds_field_fetcher',
     'multistep',
-    'link_iframe_formatter',
-    'rdfx',
   );
   foreach ($up_to_date_projects as $up_to_date_project) {
 
@@ -254,6 +260,10 @@ function dkan_sitewide_preprocess_page(&$variables) {
   if (arg(0) == 'admin' && arg(1) == 'appearance' && $admin_theme !== '0' && $default_theme !== $admin_theme) {
     drupal_set_message(t('For Colorizer to work you must set the Administration theme to match your <em>Default theme</em> at the bottom of the !link  page.', array('!link' => l(t('appearance list'), 'admin/appearance'))), 'warning');
   }
+  // Don't set a special page title if it's the front page.
+  if (isset($variables['is_front']) && $variables['is_front'] == TRUE) {
+    drupal_set_title('');
+  }
 }
 
 /**
@@ -326,7 +336,7 @@ function dkan_sitewide_convert_panel_page($page_name, $is_homepage = FALSE) {
     $page_node->panelizer['default']->display_is_modified = TRUE;
     $page_node->panelizer['default']->entity_type = 'node';
     $page_node->panelizer['default']->pipeline = 'ipe';
-    $page_node->panelizer['default']->link_to_entity = $page_node->nid;
+    $page_node->panelizer['default']->link_to_entity = TRUE;
     node_save($page_node);
 
     // Disable old panel page.
@@ -377,4 +387,24 @@ function dkan_sitewide_update_panel_page_status($page_name, $status = FALSE) {
   $function = ctools_plugin_get_function($page->subtask, "enable callback");
   $function($page, $status);
   menu_rebuild();
+}
+
+/**
+ * Check if given page manager page is already the frontpage.
+ *
+ * @param string $page
+ *   page The administrative name of the page.
+ */
+function dkan_sitewide_page_is_frontpage($page) {
+  $frontpage = variable_get('site_frontpage', 'node');
+
+  module_load_include('inc', 'page_manager', 'plugins/tasks/page');
+  $page = page_manager_page_load($page);
+
+  if ($page->path === $frontpage) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
 }

@@ -12,38 +12,27 @@ use \stdClass;
 class WorkflowContext extends RawDKANContext {
 
   protected $old_global_user;
+  public static $modules_before_feature = array();
+  public static $users_before_feature = array();
 
   /**
    * @BeforeFeature @enableDKAN_Workflow
    */
   public static function enableDKAN_Workflow(BeforeFeatureScope $scope)
   {
-    if (!parent::shouldEnableModule("dkan_workflow")) {
-      return;
-    }
-    // This order matters through drupal_flush_all_caches.
-    module_enable(array(
-      'link_badges',
-      'menu_badges',
-      'views_dkan_workflow_tree',
-      'workbench',
-      'workbench_moderation',
-      'workbench_email',
-    ));
-
-    // Enable 'open_data_federal_extras' module.
-    module_enable(array(
-      'dkan_workflow_permissions',
-    ));
-
-    module_enable(array(
+    self::$modules_before_feature = module_list(TRUE);
+    self::$users_before_feature = array_keys(entity_load('user'));
+    define('MAINTENANCE_MODE', 'update');
+    @module_enable(array(
       'dkan_workflow',
+      'drafty',
+      'workbench_moderation',
+      'workbench_email', 'workbench',
+      'views_dkan_workflow_tree',
+      'menu_badges',
+      'link_badges',
+      'dkan_workflow_permissions'
     ));
-
-    features_revert(array(
-      'dkan_workflow_permissions' => array('roles_permissions'),
-    ));
-
     drupal_flush_all_caches();
   }
 
@@ -52,20 +41,23 @@ class WorkflowContext extends RawDKANContext {
    */
   public static function disableDKAN_Workflow(AfterFeatureScope $event)
   {
-    if (!parent::shouldEnableModule("dkan_workflow")) {
-      return;
-    }
+    $modules_after_feature = module_list(TRUE);
+    $users_after_feature = array_keys(entity_load('user'));
 
-    // Enable 'open_data_federal_extras' module.
-    module_disable(array(
-      'dkan_workflow',
-      'dkan_workflow_permissions',
-      'views_dkan_workflow_tree',
-      'workbench',
-      'workbench_email',
-      'workbench_moderation',
-    ));
+    $modules_to_disable = array_diff_assoc(
+      $modules_after_feature,
+      self::$modules_before_feature
+    );
 
+    $users_to_delete = array_diff_assoc(
+      $users_after_feature,
+      self::$users_before_feature
+    );
+
+    // Clean users and disable modules.
+    entity_delete_multiple('user', $users_to_delete);
+    module_disable(array_values($modules_to_disable));
+    drupal_uninstall_modules(array_values($modules_to_disable));
     drupal_flush_all_caches();
   }
 

@@ -1,0 +1,162 @@
+{
+    "result": {
+        "path": "dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine",
+        "id": "e1f2ebcd-ee23-454f-87b5-df0306658418",
+        "name": "varicella-chickenpox-incidence-and-mortality-and-after-vaccine",
+        "title": "Varicella (Chickenpox) Incidence and Mortality, Before and After the Vaccine",
+        "author": "Centers for Disease Control and Prevention",
+        "author_email": "cdcinfo@cdc.gov",
+        "maintainer": "DKAN",
+        "maintainer_email": "admin@example.com",
+        "license_title": "http://opendefinition.org/licenses/cc-by-sa/",
+        "notes": "<p>Centers for Disease Control and Prevention data regarding varicella (chickenpox) virus incidence and mortality rates.</p>\n<p><strong>Source:</strong> <a href=\"https://data.cdc.gov/NNDSS/NNDSS-Table-II-Varicella-to-West-Nile-virus-diseas/ig4m-ub43\">https://data.cdc.gov/NNDSS/NNDSS-Table-II-Varicella-to-West-Nile-virus-d...</a></p>\n<p><strong>Related Data Story: </strong><a href=\"/story/end-chickenpox-varicella-vaccines-success-story\">An End to Chickenpox: The Varicella Vaccine's Success Story</a></p>\n",
+        "url": "http://default/dataset/varicella-chickenpox-incidence-and-mortality-and-after-vaccine",
+        "state": "Active",
+        "log_message": "Update to resource 'Varicella Incidence Rates After Vaccine Introduced in U.S., 1995-2009'",
+        "private": "Published",
+        "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+        "metadata_created": "Wed, 04/06/2016 - 13:18",
+        "metadata_modified": "Thu, 09/01/2016 - 01:31",
+        "creator_user_id": "1ed39316-37af-4fe3-9a0d-9842efb486e3",
+        "type": "Dataset",
+        "resources": [
+            {
+                "id": "0536307c-ca88-4190-a6d2-473ad08a6188",
+                "revision_id": "",
+                "url": "http://default/sites/default/files/postvaccinedeaths_0_0.csv",
+                "description": "<p>Source: \"Near elimination of varicella deaths in the US after implementation of the vaccination program.\" published in the American Journal of Pediatrics in August 2011.</p>\n",
+                "format": "csv",
+                "state": "Active",
+                "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+                "name": " Varicella Mortality by Age Group, 1995-2009",
+                "mimetype": "text/csv",
+                "size": "288 bytes",
+                "created": "Thu, 09/01/2016 - 01:37",
+                "resource_group_id": "55261028-f4b2-4402-9a30-640781ad1b59",
+                "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
+            },
+            {
+                "id": "339a5d0c-ecc9-4492-8de6-30f17e91bf47",
+                "revision_id": "",
+                "url": "http://default/sites/default/files/varicelladeaths1970_1994.csv",
+                "description": "<p>Source: Centers for Disease Control and Prevention in Atlanta, Georgia. \u201cVaricella Mortality: Trends before Vaccine Licensure in the United States, 1970\u20131994\u201d published August 2000 in the Journal of Infectious Diseases.</p>\n",
+                "format": "csv",
+                "state": "Active",
+                "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+                "name": "Varicella Mortality by Age Group, 1970-1994",
+                "mimetype": "text/csv",
+                "size": "263 bytes",
+                "created": "Thu, 09/01/2016 - 01:37",
+                "resource_group_id": "55261028-f4b2-4402-9a30-640781ad1b59",
+                "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
+            },
+            {
+                "id": "d59d8dfc-6015-420a-80a2-87dfdfdaf542",
+                "revision_id": "",
+                "url": "http://default/sites/default/files/varicellaincidencerates_0.csv",
+                "description": "<p>Source: \"Impact of Vaccination on the Epidemiology of Varicella: 1995\u20132009\" published in the journal Pediatrics in August 2011.</p>\n",
+                "format": "csv",
+                "state": "Active",
+                "revision_timestamp": "Thu, 09/01/2016 - 01:31",
+                "name": "Varicella Incidence Rates After Vaccine Introduced in U.S., 1995-2009",
+                "mimetype": "text/csv",
+                "size": "155 bytes",
+                "created": "Thu, 09/01/2016 - 01:37",
+                "resource_group_id": "55261028-f4b2-4402-9a30-640781ad1b59",
+                "last_modified": "Date changed  Thu, 09/01/2016 - 01:31"
+            }
+        ],
+        "tags": [
+            {
+                "id": "67b48938-77cb-434a-a351-d66fde86ead6",
+                "vocabulary_id": "2",
+                "name": "health"
+            }
+        ],
+        "groups": [
+            {
+                "description": "<p>Advisory Council for Infectious Disease is a working group that performs research and prepares reports to inform treatment and prevention programs nationally.</p>\n",
+                "id": "55261028-f4b2-4402-9a30-640781ad1b59",
+                "image_display_url": "http://default/sites/default/files/clipboard.png",
+                "title": "Advisory Council for Infectious Disease",
+                "name": "group/advisory-council-infectious-disease"
+            }
+        ],
+        "dkan_additional_fields": {
+            "field_additional_info": [],
+            "field_contact_email": "cdcinfo@cdc.gov",
+            "field_contact_name": "CDC INFO",
+            "field_data_dictionary": null,
+            "field_frequency": "4",
+            "field_granularity": "Age bracket",
+            "field_harvest_source_issued": null,
+            "field_harvest_source_modified": null,
+            "field_public_access_level": "public",
+            "field_related_content": [],
+            "field_resources": [
+                {
+                    "uri": "http://default/node/8",
+                    "id": "8",
+                    "resource": "node",
+                    "uuid": "0536307c-ca88-4190-a6d2-473ad08a6188",
+                    "value": "admin"
+                },
+                {
+                    "uri": "http://default/node/9",
+                    "id": "9",
+                    "resource": "node",
+                    "uuid": "339a5d0c-ecc9-4492-8de6-30f17e91bf47",
+                    "value": "admin"
+                },
+                {
+                    "uri": "http://default/node/10",
+                    "id": "10",
+                    "resource": "node",
+                    "uuid": "d59d8dfc-6015-420a-80a2-87dfdfdaf542",
+                    "value": "admin"
+                }
+            ],
+            "field_spatial": {
+                "wkt": "POLYGON ((-128.056640625 24.206889622398, -128.056640625 50.176898122001, -64.775390625 50.176898122001, -64.775390625 24.206889622398))",
+                "geo_type": "polygon",
+                "lat": "37.1919",
+                "lon": "-96.416",
+                "left": "-128.057",
+                "top": "50.1769",
+                "right": "-64.7754",
+                "bottom": "24.2069",
+                "srid": null,
+                "latlon": "37.1919,-96.416"
+            },
+            "field_spatial_geographical_cover": "United States of America",
+            "field_tags": [
+                {
+                    "uri": "http://default/taxonomy_term/16",
+                    "id": "16",
+                    "resource": "taxonomy_term",
+                    "uuid": "67b48938-77cb-434a-a351-d66fde86ead6",
+                    "value": "health"
+                }
+            ],
+            "field_temporal_coverage": [],
+            "og_group_ref": [
+                {
+                    "uri": "http://default/node/2",
+                    "id": "2",
+                    "resource": "node",
+                    "uuid": "55261028-f4b2-4402-9a30-640781ad1b59",
+                    "value": "admin"
+                }
+            ],
+            "field_topic": [
+                {
+                    "uri": "http://default/taxonomy_term/4",
+                    "id": "4",
+                    "resource": "taxonomy_term",
+                    "uuid": "80a9cc2b-c817-405e-9591-14565759defc",
+                    "value": "Health Care"
+                }
+            ]
+        }
+    }
+}

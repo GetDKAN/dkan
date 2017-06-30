@@ -1,7 +1,7 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.0/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.x/visualization_entity.make"
   - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
   - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
@@ -13,10 +13,14 @@ projects:
     # Allow ordering of roles to handle users w/multiple roles
     patch:
       2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
+  admin_views:
+    version: '1.6'
+    patch:
+      1780004: 'https://www.drupal.org/files/issues/admin_views-duplicate_system_path-1780004-54.patch'
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
-    version: '2.1'
+    version: '2.2'
     patch:
       2833824: 'https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch'
   beautytips:
@@ -28,7 +32,7 @@ projects:
     patch:
       849232: 'http://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch'
   better_exposed_filters:
-    version: '3.2'
+    version: '3.4'
   bueditor:
     version: '1.8'
   bueditor_plus:
@@ -258,6 +262,7 @@ projects:
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
+      3: patches/panopoly_widgets_overrides_OOB.patch
   panopoly_images:
     version: '1.41'
   path_breadcrumbs:
@@ -290,11 +295,14 @@ projects:
   remote_stream_wrapper:
     version: '1.0-rc1'
     patch:
-      2833837: 'https://www.drupal.org/files/issues/prevent-download-intent-open-stream-2833837-1.patch'
+      2833837: 'https://www.drupal.org/files/issues/prevent-download-intent-open-stream-2833837-4.patch'
   role_export:
     version: '1.0'
   rules:
     version: '2.9'
+    patch:
+     2406863: 'https://www.drupal.org/files/issues/rules-remove-cache-rebuild-log-2406863-21.patch'
+     2851567: 'https://www.drupal.org/files/issues/rules_init_and_cache-2851567-8.patch'
   restws:
     version: '2.6'
   roleassign:
@@ -311,7 +319,7 @@ projects:
   select_or_other:
     version: '2.22'
   services:
-    version: '3.17'
+    version: '3.19'
   simple_gmap:
     version: '1.3'
   strongarm:
@@ -330,9 +338,7 @@ projects:
   uuid:
     version: '1.0-beta2'
   views:
-    version: '3.14'
-    patch:
-      1388684: 'https://www.drupal.org/files/views_taxonomy_entity_uri-1388684-15.patch'
+    version: '3.15'
   views_autocomplete_filters:
     version: '1.2'
     patch:
@@ -346,7 +352,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.0
+      branch: 7.x-1.x
     type: module
   workbench:
     version: '1.2'
@@ -354,6 +360,8 @@ projects:
     version: '3.11'
   workbench_moderation:
     version: '3.0'
+    patch:
+      2360973: 'https://www.drupal.org/files/issues/workbench_moderation-install-warnings-2360973-3.patch'
   drafty:
     version: '1.0-beta3'
 libraries:

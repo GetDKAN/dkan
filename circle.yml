@@ -28,6 +28,12 @@ checkout:
     # Remove the extra composer stuff that circleci loads and that is causing conflicts with drush.
     - rm -rf ~/.composer
 
+## Unset secure_file_priv on mysql.
+database:
+  pre:
+    - echo -e 'secure_file_priv = ""' | sudo sh -c "cat >> /etc/mysql/my.cnf"
+    - sudo /usr/sbin/service mysql restart
+
 ## Customize dependencies
 dependencies:
 
@@ -54,7 +60,7 @@ dependencies:
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard'
     - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush cc all'
     # Run a webserver using drush.
-    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush --yes runserver :8888':
+    - 'PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy dkan server':
         background: true
 
     # Setup display for selenium

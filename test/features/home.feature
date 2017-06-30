@@ -1,4 +1,5 @@
 # time:0m11.86s
+@disablecaptcha
 Feature: Homepage
   In order to know the website is running
   As a website user

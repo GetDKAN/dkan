@@ -45,6 +45,14 @@ function dkan_sitewide_block_info() {
     'info' => t('Search Your Data'),
     'cache' => DRUPAL_NO_CACHE,
   );
+  $blocks['dkan_demo_front'] = array(
+    'info' => t('Welcome to the DKAN Demo'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['dkan_add_front'] = array(
+    'info' => t('Add a Dataset'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
 
   return $blocks;
 }
@@ -101,6 +109,18 @@ function dkan_sitewide_block_view($delta = '') {
       $block['content'] = dkan_sitewide_search_front_block();
       break;
 
+    case 'dkan_demo_front':
+      $block['subject'] = t('Welcome to the DKAN Demo');
+      $default = dkan_demo_front_block();
+      $block['content'] = check_markup(variable_get('dkan_sitewide_dkan_demo_front_text', $default), variable_get('dkan_sitewide_dkan_demo_front_format', 'html'));
+      break;
+
+    case 'dkan_add_front':
+      $block['subject'] = t('Add a Dataset');
+      $default = dkan_add_front_block();
+      $block['content'] = check_markup(variable_get('dkan_sitewide_dkan_add_front_text', $default), variable_get('dkan_sitewide_dkan_add_front_format', 'html'));
+      break;
+
   }
   return $block;
 }
@@ -151,7 +171,7 @@ function dkan_sitewide_data_extent_block() {
     }
 
     if ($spatial && $spatial['wkt']) {
-      drupal_add_library('leaflet_widget', 'leaflet_core');
+      drupal_add_library('leaflet_widget', 'leaflet');
       $features = array(leaflet_widget_geojson_feature($spatial['wkt']));
       $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
       $output = "var dataExtent = " . $geojson;
@@ -172,6 +192,59 @@ function dkan_sitewide_data_extent_block() {
   }
   else {
     return FALSE;
+  }
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function dkan_sitewide_block_configure($delta = '') {
+  $form = array();
+  if ($delta == 'dkan_demo_front') {
+    $form['dkan_sitewide_dkan_demo_front_text'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Default'),
+      '#description' => t('Add text here to override the default block content. Leave blank to continue using default.'),
+      '#default_value' => variable_get('dkan_sitewide_dkan_demo_front_text', ''),
+      '#format' => variable_get('dkan_sitewide_dkan_demo_front_format', 'html'),
+    );
+  }
+  if ($delta == 'dkan_add_front') {
+    $form['dkan_sitewide_dkan_add_front_text'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Add a dataset'),
+      '#description' => t('Add text here to override the default block content. Leave blank to continue using default.'),
+      '#default_value' => variable_get('dkan_sitewide_dkan_add_front_text', ''),
+      '#format' => variable_get('dkan_sitewide_dkan_add_front_format', 'html'),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function dkan_sitewide_block_save($delta = '', $edit = array()) {
+  if ($delta == 'dkan_demo_front') {
+    if (empty($edit['dkan_sitewide_dkan_demo_front_text']['value'])) {
+      variable_del('dkan_sitewide_dkan_demo_front_text');
+      drupal_set_message(t('Reset block content to default.'));
+    }
+    else {
+      variable_set('dkan_sitewide_dkan_demo_front_text', $edit['dkan_sitewide_dkan_demo_front_text']['value']);
+      variable_set('dkan_sitewide_dkan_demo_front_format', $edit['dkan_sitewide_dkan_demo_front_text']['format']);
+    }
+  }
+  if ($delta == 'dkan_add_front') {
+    if (empty($edit['dkan_sitewide_dkan_add_front_text']['value'])) {
+      variable_del('dkan_sitewide_dkan_add_front_text');
+      drupal_set_message(t('Reset block content to default.'));
+    }
+    else {
+      variable_set('dkan_sitewide_dkan_add_front_text', $edit['dkan_sitewide_dkan_add_front_text']['value']);
+      variable_set('dkan_sitewide_demo_front_dkan_add_front_format', $edit['dkan_sitewide_demo_front_dkan_add_front_text']['format']);
+    }
   }
 }
 
@@ -372,7 +445,7 @@ function dkan_sitewide_other_access() {
       ),
       'dkan_api' => array(
         '#type' => 'markup',
-        '#markup' => '<p><small>' . t('via the  <a href="http://docs.getdkan.com">DKAN API</a>') . '</small></p>',
+        '#markup' => '<p><small>' . t('via the  <a href="http://docs.getdkan.com/en/latest/apis/index.html">DKAN API</a>') . '</small></p>',
       ),
     );
 
@@ -425,4 +498,27 @@ function dkan_sitewide_dataset_search_form_submit($form, &$form_state) {
     drupal_goto('dataset', array('query' => array('query' => $query)));
 
   }
+}
+
+/**
+ * Creates placeholder front block.
+ */
+function dkan_demo_front_block() {
+  $dataset_url = url('dataset');
+  $homepage_graphic = url(drupal_get_path('theme', 'nuboot_radix') . '/assets/images/homepage-graphic.jpg');
+  $homepage_dataset_url = url('dataset/gold-prices-london-1950-2008-monthly');
+  $content = t('<p>Search for datasets directly from the homepage or by navigating to the !link search page where you can filter by tags, groups and format.</p>', array('!link' => l(t('Datasets'), 'dataset')));
+  $content .= '<p class="featured media-overlay"><strong class="media-heading">DKANs data previewing tool has many powerful features</strong><a class="image" href=" ' . $homepage_dataset_url . ' "><img src="' . $homepage_graphic . '" style="width: 100%" alt="Image of DKANs data previewing tool"></a>
+    </p>';
+  return $content;
+}
+
+/**
+ * Creates "Add a Dataset" block for front page.
+ */
+function dkan_add_front_block() {
+  $output = '<div class="add content">';
+  $output .= t('You can add a !dataset to get a sense of publisher workflow. This form can be customised to require many additional fields. In this demo only the most basic fields are required.', array('!dataset' => l(t('Dataset'), 'node/add/dataset')));
+  $output .= '</div>';
+  return $output;
 }

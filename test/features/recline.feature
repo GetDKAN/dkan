@@ -1,5 +1,5 @@
 # time:1m5.66s
-@api
+@api @disablecaptcha
 Feature: Recline
   In order to know the recline preview is working
   As a website user
@@ -78,6 +78,7 @@ Feature: Recline
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "http://s3.amazonaws.com/dkan-default-content-files/files/data_0.csv"
     And I press "edit-submit"
     Then I should see "data_0.csv"
+    Then I wait for "3" seconds
     And I should see "748 records"
     And I wait for "Graph"
     Given I press "Graph"
@@ -97,6 +98,7 @@ Feature: Recline
     And I wait for "Loading" to disappear
     And I wait for "1" seconds
     Then I should see "Polling_Places_Madison_0.csv"
+    And I wait for "1" seconds
     When I click "»"
     And I wait for "Our"
     And I wait for "1" seconds

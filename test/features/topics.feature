@@ -1,4 +1,5 @@
 # time:0m2.37s
+@disablecaptcha
 Feature: Topics
 
   Background:
@@ -13,20 +14,20 @@ Feature: Topics
       | name         | url                                        |
       | Add Topic    | /admin/structure/taxonomy/dkan_topics/add  |
 
-  @api @Topics
+  @api @Topics @defaultHomepage @customizable
   Scenario: See topics on the homepage as anonymous user
     When I am on the homepage
     Then I should see "Topic1"
     And I should see "Topic2 & $p@"
     And I should see "icon" in the ".font-icon-select-1-e904" element
 
-  @api @Topics
+  @api @Topics @no-main-menu
   Scenario: See topic in the main menu
     When I am on the homepage
     Then I click on the text "Topics"
     Then I should see "Topic1"
 
-  @api @Topics
+  @api @Topics @no-main-menu
   Scenario: Check topic facet link
     When I am on the homepage
     Then I click on the text "Topics"

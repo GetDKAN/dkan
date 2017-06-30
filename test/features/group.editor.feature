@@ -1,5 +1,5 @@
 # time:0m50.36s
-@api
+@api @disablecaptcha
 Feature: Site Manager administer groups
   In order to manage site organization
   As a Site Manager
@@ -152,6 +152,7 @@ Feature: Site Manager administer groups
     And I click "edit" in the "Jaz" row
     When I select "Active" from "Status"
     And I press "Update membership"
+    And I wait for "Group overview"
     Then I should see "The membership has been updated"
 
   Scenario: View the number of members on group as group administrator
@@ -167,3 +168,8 @@ Feature: Site Manager administer groups
     And I click "Group"
     When I click "People"
     Then I should see "Total content: 5"
+
+  Scenario: Edit dataset content created by others on group as editor
+    Given I am logged in as "Martin"
+    And I am on "Dataset 01" page
+    Then I should see "Edit"

@@ -1,5 +1,5 @@
 # time:2m56.53s
-@api
+@api @disablecaptcha
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -55,13 +55,13 @@ Feature: Dataset Features
       | Dataset 08 |           | Katie   | Yes              | election1 |             |
       | Dataset 09 | Group 02  | Katie   | Yes              | election1 |             |
     And resources:
-      | title       | publisher | format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 03 | Group 01  | zip    | Katie  | Yes       | Dataset 02 |             |
-      | Resource 04 |           | csv    | Katie  | Yes       |            |             |
-      | Resource 05 |           | csv    | Katie  | Yes       | Dataset 08 |             |
-      | Resource 06 | Group 02  | csv    | Katie  | Yes       | Dataset 09 |             |
+      | title       | publisher | author | published | dataset    | description |
+      | Resource 01 | Group 01  | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | Katie  | Yes       | Dataset 01 |             |
+      | Resource 03 | Group 01  | Katie  | Yes       | Dataset 02 |             |
+      | Resource 04 |           | Katie  | Yes       |            |             |
+      | Resource 05 |           | Katie  | Yes       | Dataset 08 |             |
+      | Resource 06 | Group 02  | Katie  | Yes       | Dataset 09 |             |
 
   @noworkflow
   Scenario: Create dataset as content creator
