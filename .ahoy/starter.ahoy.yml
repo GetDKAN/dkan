@@ -6,18 +6,6 @@ commands:
     usage: Run drush via ahoy (helpful for abstraction)
     cmd: ahoy cmd-proxy drush --root=docroot "{{args}}"
 
-  uli:
-    usage: Log in via drush with ahoy
-    cmd: |
-      url=$(ahoy drush uli --uri="$(ahoy docker url)" {{args}})
-      os=$(uname)
-
-      if [ "$os" = "Darwin" ]; then
-        open $url
-      else
-        echo $url
-      fi
-
   dkan:
     usage: A series of commands for dkan development.
     import: dkan/.ahoy/dkan.ahoy.yml

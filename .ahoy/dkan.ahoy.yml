@@ -196,18 +196,9 @@ commands:
   uli:
     usage: Log in via drush
     cmd: |
-      ahoy uli
-
-<<<<<<< HEAD
-=======
-      if [ "$os" = "Darwin" ]; then
-        open $url
-      else
-        echo $url
-      fi
+      ruby dkan/.ahoy/.scripts/dkan-uli.rb {{args}}
 
   server:
     usage: Provided as an easy way to setup the php server during testing.
     cmd:
       ahoy cmd-proxy bash dkan/.ahoy/.scripts/server.sh
->>>>>>> 7.x-1.x
