@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1955 Update ahoy docker tooling for local environment usecase.
  - #1943 Update tests to be more compatible with client sites, multiple testing and devops improvements.
  - #1962 Recline.view.nvd3.js: Fixed display of data with zero as values.
  - #1888 Added validation on axis tick settings on visualization_entity.
