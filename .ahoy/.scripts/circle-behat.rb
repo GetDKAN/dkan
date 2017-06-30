@@ -20,6 +20,7 @@ TOKENS = {
 puts "CIRCLE_NODE_TOTAL = #{CIRCLE_NODE_TOTAL}"
 puts "CIRCLE_NODE_INDEX = #{CIRCLE_NODE_INDEX}"
 
+
 error = 0
 parsed = behat_parse_params(ARGV)
 params = behat_join_params parsed[:params]

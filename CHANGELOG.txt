@@ -1,7 +1,5 @@
 7.x-1.13.4
 ----------
- - #1970 DevOps: Automatically populate required fields when running behat tests.
- - #1938 DevOps: Allow behat tests to be skipped in circle.
  - #1983 Apply services security update 3.20 for DRUPAL-SA-CONTRIB-2017-054
  - #1877 Fix broken update that tries to migrate fields that may not exist (primarily due to Federal Extras upgrade)
  - #1960 Update field_group_table to 1.6
