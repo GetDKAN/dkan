@@ -17,7 +17,11 @@ commands:
       if [ -d docroot ]
         then
           ahoy confirm "./docroot folder alredy exists. Delete it and reinstall drupal?" && chmod -R 777 docroot/sites/default && rm -rf docroot ||
-          { echo ".. skipping installation"; exit 1;}
+          {
+            echo ".. skipping installation";
+            ahoy cmd-proxy bash dkan/.ahoy/.scripts/mysql-reconnect.sh $ARGS
+            exit 1;
+          }
       fi
       ahoy cmd-proxy bash dkan/.ahoy/.scripts/drupal-rebuild.sh $ARGS
 
