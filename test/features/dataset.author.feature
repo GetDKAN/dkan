@@ -1,5 +1,5 @@
 # time:2m56.53s
-@api
+@api @disablecaptcha
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
