@@ -250,7 +250,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/open_data_schema_map.git'
-      branch: 7.x-1.x
+      branch: features_reversion
   panelizer:
     version: '3.4'
   panels:
