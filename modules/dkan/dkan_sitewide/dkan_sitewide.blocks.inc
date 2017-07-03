@@ -159,6 +159,17 @@ function dkan_sitewide_data_extent_block() {
   if ($node && isset($node->type) && $node->type == 'dataset') {
     $wrapper = entity_metadata_wrapper('node', $node);
     $spatial = $wrapper->field_spatial->value();
+
+    // Allow for multiple layers.
+    if ($spatial && is_array($spatial[0]) && isset($spatial[0]['wkt'])) {
+      $spatial['wkt'] = array();
+      foreach ($spatial as $layer) {
+        if (isset($layer['wkt'])) {
+          array_push($spatial['wkt'], $layer['wkt']);
+        }
+      }
+    }
+
     if ($spatial && $spatial['wkt']) {
       drupal_add_library('leaflet_widget', 'leaflet');
       $features = array(leaflet_widget_geojson_feature($spatial['wkt']));
