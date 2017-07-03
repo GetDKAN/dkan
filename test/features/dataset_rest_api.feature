@@ -101,5 +101,3 @@ Feature: DKAN Dataset REST API
     And I use the "dataset rest api" endpoint to delete the node "Dataset 01"
     When I am on "Search Datasets" page
     Then I should not see "Dataset 01"
-
-

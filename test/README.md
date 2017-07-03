@@ -30,6 +30,7 @@ Your tests should run from the VM and use your host machine as a Selenium server
 - **@fixme** label only
 - **@globalUser** Populates the global user with the current user
 - **@javascript** switches the current Mink session to Selenium2
+- **@login** labels the tests that require a "log in" link in the toolbar
 - **@mail** Setup the testing mail system, then restore original mail system
 - **@no-main-menu** used to skip tests that requires a link in the main menu
 - **@noworkflow** label only

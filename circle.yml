@@ -78,6 +78,7 @@ dependencies:
 ## Customize test commands
 test:
   override:
+    - ahoy dkan lint
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         timeout: 1200
         parallel: true
@@ -85,7 +86,7 @@ test:
     - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_harvest_test
     - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush dis --yes dkan_default_content
     - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush pm-uninstall --yes dkan_default_content
-    - $HOME/dkan/dkan/test/bin/phpunit --configuration $HOME/dkan/dkan/test/phpunit
+    - ahoy dkan unittests
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true
