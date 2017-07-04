@@ -1,5 +1,20 @@
-7.x-1.13.4
+
+7.x-1.14.x
 ----------
+ - #1943 Update tests to be more compatible with client sites, multiple testing and devops improvements.
+ - #1962 Recline.view.nvd3.js: Fixed display of data with zero as values.
+ - #1888 Added validation on axis tick settings on visualization_entity.
+ - #1725 Fix `ahoy dkan uli` output login link.
+ - #1881 Fix yaml syntaxt to make it standard. 
+ - #1853 Update chart documentation.
+ - #1839 Add help text and improve UI on the chart form for better clarity.
+ - #1827 Remove option to import TABed CSV files into datastore. 
+ - #1807 Add admin_views module for enhanced content and file filtering. 
+ - #1938 DevOps: Allow behat tests to be skipped in circle.
+ - #1842 Add help text to explain the pager on data previews.
+
+7.x-1.13.4 2017-06-30
+---------------------
  - #1983 Apply services security update 3.20 for DRUPAL-SA-CONTRIB-2017-054
  - #1877 Fix broken update that tries to migrate fields that may not exist (primarily due to Federal Extras upgrade)
  - #1960 Update field_group_table to 1.6
@@ -54,6 +69,7 @@
 7.x-1.13.3-RC1
 --------------
  - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
+
 7.x-1.13.3 2017-04-18
 ---------------------
  - #1863 Update restws module to v2.7
@@ -61,7 +77,8 @@
  - #1864 Update media to 2.0 and remove patch 2534724.
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
- - #1821 Remove redundant CSS load in dkan_dataset.
+ - #1821 Remove css height value for recline-nvd3 to allow custom heights on charts.
+ - #1821 Remove redundant CSS load in dkan_dataset
  - #1726 Fixed broken links in search results to nodes without aliases
  - #1792 Remove Windows reserved characters from default content filenames for better Windows support
  - #1815 Support importing Temporal Coverage during POD Harvest.
@@ -72,7 +89,7 @@
  - #1703 Refactor Datastore API module, fixing some caching issues and improving joins
  - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
  - #1811 Apply patches to the rules module that can prevent unnecessary DB lockouts.
-
+ 
 7.x-1.13.2 2017-03-16
 ----------------------
  - #1803 Fix broken access to featured groups sort order view.
@@ -95,6 +112,8 @@
 
 7.x-1.13
 --------------------------
+
+ - NuCivic/recline#69 Fix warning messages when you try view changes on resource/dataset nodes
  - #1719 Added site details to settings nuboot_radix to allow change site name, slogan, e-amail address for site manager.
  - #1717 Upgrading Drupal to 7.54
  - #1705 Added css for chart visualizaitons, fixes issue in IE.
