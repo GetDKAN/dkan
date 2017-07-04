@@ -46,6 +46,8 @@ Feature: User
   Scenario: Edit any user account
     Given I am logged in as "John"
     And I am on "Users" page
+    And I fill in "edit-name" with "Katie"
+    And I press "Apply"
     When I click "edit" in the "Katie" row
     And I fill in "About" with "This is Katie!"
     And I press "Save"
@@ -71,22 +73,32 @@ Feature: User
     And I press "Create new account"
     Then I should see "Created a new user account for tempuser."
     When I am on "Users" page
+    And I fill in "edit-name" with "tempuser"
+    And I press "Apply"
+    And I wait for "tempuser"
     Then I should see "editor" in the "tempuser" row
 
   Scenario: Block user
     Given I am logged in as "John"
     And I am on "Users" page
+    And I fill in "edit-name" with "Katie"
+    And I press "Apply"
     When I click "edit" in the "Katie" row
     And I select the radio button "Blocked"
     And I press "Save"
     Then I should see "The changes have been saved"
     When I am on "Users" page
-    Then I should see "blocked" in the "Katie" row
+    And I fill in "edit-name" with "Katie"
+    And I press "Apply"
+    Then I should see "No" in the "Katie" row
 
   @javascript
   Scenario: Disable user
     Given I am logged in as "John"
     And I am on "Users" page
+    And I fill in "edit-name" with "Katie"
+    And I press "Apply"
+    And I wait for "edit"
     When I click "edit" in the "Katie" row
     And I press "Cancel account"
     And I select the radio button "Disable the account and keep its content."
@@ -96,6 +108,8 @@ Feature: User
   Scenario: Modify user roles as administrator
     Given I am logged in as "aadmin"
     And I am on "Users" page
+    And I fill in "edit-name" with "Jaz"
+    And I press "Apply"
     When I click "edit" in the "Jaz" row
     And I uncheck "editor"
     And I check "content creator"
@@ -107,12 +121,16 @@ Feature: User
   Scenario: Modify user roles as site manager
     Given I am logged in as "John"
     And I am on "Users" page
+    And I fill in "edit-name" with "Jaz"
+    And I press "Apply"
     When I click "edit" in the "Jaz" row
     And I uncheck "content creator"
     And I check "site manager"
     And I press "Save"
     Then I should see "The changes have been saved"
     When I am on "Users" page
+    And I fill in "edit-name" with "Jaz"
+    And I press "Apply"
     Then I should see "site manager" in the "Jaz" row
 
   Scenario: Modify user as editor
