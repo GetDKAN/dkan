@@ -183,6 +183,11 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
         if (isset($form[$importer_id]['settings']['FeedsCSVParser']['help'])) {
           unset($form[$importer_id]['settings']['FeedsCSVParser']['help']);
         }
+        // For now, removing the TAB option. It is not working and tab-separated
+        // values aren't well supported elsewhere in DKAN.
+        if (isset($form[$importer_id]['settings']['FeedsCSVParser']['delimiter']['#options']['TAB'])) {
+          unset($form[$importer_id]['settings']['FeedsCSVParser']['delimiter']['#options']['TAB']);
+        }
         $form['importer_id'] = array(
           '#type' => 'value',
           '#value' => $importer_id,

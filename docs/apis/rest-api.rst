@@ -56,7 +56,7 @@ Authentication Modes
 Session Authentication
 ======================
 
-Session authentication is enabled by default. With session authentication an inital request is made to the user login to requet a session cookie. That session cookie is then stored locally and sent with a request in the X-CSRF-Token header to authenticate the request.
+Session authentication is enabled by default. With session authentication an inital request is made to the user login to request a session cookie. That session cookie is then stored locally and sent with a request in the X-CSRF-Token header to authenticate the request.
 
 Token Authentication
 ====================
@@ -205,7 +205,7 @@ Create a Dataset
       'title' => 'Example dataset',
       'status' => 1,
       'body[und][0][value]' => 'The description',
-      'field_resources[und][0][target_id]' => 'Madison Polling Places (5)' // Resource title plus node id
+      'field_resources[und][0][target_id]' => 'Madison Polling Places (5)', // Resource title plus node id
       'field_author[und][0][value]' => 'Bob Lafollette'
   );
   $dataset_data = http_build_query($dataset_data);
@@ -553,7 +553,7 @@ This is a two-step process with the API:
 
 .. note::
 
-  The provided value (`A resource create via the DKAN REST API (45)`) is the value expected from the dataset entry form, with "45" being the resource node id.
+  The provided value (`A resource created via the DKAN REST API (45)`) is the value expected from the dataset entry form, with "45" being the resource node id.
 
 Query for url/values of previous revision of file.
 --------------------------------------------------
