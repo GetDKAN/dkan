@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_dataset_content_types.features.field_instance.inc
@@ -1519,11 +1518,14 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'options',
+      'module' => 'entityreference',
       'settings' => array(
         'apply_chosen' => 0,
+        'match_operator' => 'CONTAINS',
+        'path' => '',
+        'size' => 60,
       ),
-      'type' => 'options_select',
+      'type' => 'entityreference_autocomplete',
       'weight' => 8,
     ),
   );
