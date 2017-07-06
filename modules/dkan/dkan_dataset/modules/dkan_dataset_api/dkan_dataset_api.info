@@ -1,8 +1,0 @@
-name = DKAN Dataset API
-description = Adds package, group, and tag APIs based on the CKAN API.
-package = DKAN API
-core = 7.x
-php = 5.2.4
-dependencies[] = dkan_dataset
-dependencies[] = dkan_dataset_content_types
-files[] = tests/dkan_dataset_api.test

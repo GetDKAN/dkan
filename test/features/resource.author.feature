@@ -1,5 +1,5 @@
 # time:4m30.30s
-@api
+@api @disablecaptcha
 Feature: Resource
 
   Background:
@@ -72,6 +72,16 @@ Feature: Resource
     When I fill in "Title" with "Resource 06"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
+
+  @noworkflow
+  Scenario: See warning if full url not given when using the api/url option.
+    Given I am logged in as "Katie"
+    And I am on the "Content" page
+    And I click "Resource"
+    And I fill in "edit-field-link-api-und-0-url" with "api.tiles.mapbox.com/v3/tmcw.map-gdv4cswo/markers.geojson"
+    When I fill in "Title" with "Resource api"
+    And I press "Save"
+    Then I should see "Please enter a full url"
 
   @noworkflow @javascript
   Scenario: Create resource with too many sources.
