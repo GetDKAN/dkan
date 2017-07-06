@@ -1,4 +1,5 @@
 # time:0m11s
+@disablecaptcha
 Feature: Page
 
   Background:

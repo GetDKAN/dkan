@@ -1,5 +1,5 @@
 # time:0m28.91s
-@api
+@api @disablecaptcha
 Feature: Datastore
   In order to know the datastore is working
   As a website user
@@ -53,7 +53,7 @@ Feature: Datastore
     Then I wait for "DKAN Datastore Link Importer: Status"
     When I press "Import"
     And I wait for "2 imported items total."
-    When I click "Data API"
+    When I click "Data API" in the "primary tabs" region
     Then I wait for "Example Query"
     When I click "Manage Datastore"
     Then I wait for "DKAN Datastore Link Importer: Status"

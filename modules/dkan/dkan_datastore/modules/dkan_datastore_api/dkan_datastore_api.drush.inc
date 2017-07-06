@@ -40,7 +40,7 @@ function dkan_datastore_api_drush_command() {
     'callback' => 'dkan_datastore_api_datastore_update_command',
     'arguments' => array(
       'id' => 'Datastore (or resource) id.',
-      'file' => 'The path to the file.',
+      'file_path' => 'The path to the file.',
     ),
   );
 
@@ -110,23 +110,43 @@ function dkan_datastore_api_datastore_rows_command($id = NULL) {
 /**
  * Callback for the datastore-update command.
  */
-function dkan_datastore_api_datastore_update_command($id = NULL, $file = NULL) {
-
-  if (!$file) {
-    drush_print('No file was provided.');
-    return;
+function dkan_datastore_api_datastore_update_command($id = NULL, $file_path = NULL) {
+  // Sanity check the arguments.
+  foreach (array('id', 'file_path') as $argument) {
+    if (!$$argument) {
+      drush_print(t('%argument is required.', array('%argument' => $argument)));
+      return FALSE;
+    }
   }
 
-  if ($datastore = get_datastore($id)) {
-    // IMPROVEMENT: Add option truncate.
-    $result = $datastore->updateByFile($file, TRUE);
+  $datastore = get_datastore($id);
 
-    if ($result) {
-      drush_print('The new file has been saved and the items were imported.');
-    }
-    else {
-      drush_print('The file could not be loaded.');
-    }
+  if (!$datastore) {
+    $message = t('Failed to load Datastore with id "%id"', array('%id' => $id));
+    drush_print($message);
+    return FALSE;
+  }
+  else {
+    $message = t('Datastore loaded.');
+    drush_print($message);
+  }
+
+  if (!$datastore->updateFromFileUri($file_path, TRUE)) {
+    drush_print(t('Failed to upload the file.'));
+    return FALSE;
+  }
+  else {
+    drush_print(t('File copied and uploaded.'));
+  }
+
+  if (!$datastore->importByCli()) {
+    $message = t('Failed to import the file to the datastore.');
+    drush_print($message);
+    return FALSE;
+  }
+  else {
+    $message = t('File imported to the datastore.');
+    drush_print($message);
   }
 }
 
@@ -137,7 +157,7 @@ function dkan_datastore_api_datastore_create_command($file = NULL) {
 
   if ($datastore = dkan_datastore_go()) {
 
-    $result = $datastore->createByFile($file, TRUE);
+    $result = $datastore->createFromFileUri($file->uri, TRUE);
 
     if ($result) {
       drush_print('The new file has been saved and the items were imported.');

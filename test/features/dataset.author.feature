@@ -1,5 +1,5 @@
 # time:2m56.53s
-@api
+@api @disablecaptcha
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -23,6 +23,7 @@ Feature: Dataset Features
       | Jaz     | jaz@example.com     | editor               |
       | Daniel  | daniel@example.com  | editor               |
       | Katie   | katie@example.com   | content creator      |
+      | Keith   | keith@example.com   | content creator      |
       | Martin  | martin@example.com  | authenticated user   |
       | Celeste | celeste@example.com | authenticated user   |
     Given groups:
@@ -67,6 +68,7 @@ Feature: Dataset Features
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Add Dataset" page
+    Then I should not see "Authoring information"
     And I fill in the following:
       | Title           | Test Dataset      |
       | Description     | Test description  |
@@ -250,3 +252,30 @@ Feature: Dataset Features
     When I visit "node/add/dataset"
     Then I should see the "Group 02" groups option
     And I should not see the "Group 04" groups option
+
+  @noworkflow
+  Scenario: Site Managers should see authoring information and publishing options
+    Given I am logged in as "John"
+    When I visit "node/add/dataset"
+    Then I should see "Authoring information"
+    And I should see "Publishing options"
+
+  @noworkflow
+  Scenario: Content Creators not part of a group should see publishing options
+    Given I am logged in as "Keith"
+    When I visit "node/add/dataset"
+    Then I should not see "Authoring information"
+    Then I should see "Publishing options"
+    When I visit "node/add/resource"
+    Then I should not see "Authoring information"
+    Then I should see "Publishing options"
+
+  @noworkflow
+  Scenario: Content Creators who are part of a group should not see authoring information
+    Given I am logged in as "Katie"
+    When I visit "node/add/dataset"
+    Then I should not see "Authoring information"
+    Then I should see "Publishing options"
+    When I visit "node/add/resource"
+    Then I should not see "Authoring information"
+    Then I should see "Publishing options"
