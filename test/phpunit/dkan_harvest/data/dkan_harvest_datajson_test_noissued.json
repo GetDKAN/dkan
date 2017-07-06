@@ -1,0 +1,41 @@
+{
+    "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+    "@id": "http://demo.getdkan.com/data.json",
+    "@type": "dcat:Catalog",
+    "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+    "dataset": [
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "fn": "admin",
+                "hasEmail": "mailto:admin@example.com"
+            },
+            "description": "<p>Polling places in the state of Wisconsin</p>",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "description": "No description provided",
+                    "downloadURL": "https://s3.amazonaws.com/dkan-default-content-files/phpunit/Polling_Places_Madison_0.csv",
+                    "format": "csv",
+                    "mediaType": "text/csv"
+                }
+            ],
+            "identifier": "90a2b708-7fea-4b92-8aee-43c4cfdd5f48",
+            "keyword": [
+                "election"
+            ],
+            "language": [
+                "en"
+            ],
+            "license": "http://opendefinition.org/licenses/cc-by/",
+            "modified": "2015-07-11",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "Geospatial Data Explorer Examples"
+            },
+            "title": "Wisconsin Polling Places TEST"
+        }
+    ],
+    "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json"
+}

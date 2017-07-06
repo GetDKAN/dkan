@@ -408,3 +408,18 @@ function dkan_sitewide_page_is_frontpage($page) {
     return FALSE;
   }
 }
+
+/**
+ * Implements hook_preprocess_status_messages().
+ */
+function dkan_sitewide_preprocess_status_messages(&$variables) {
+  if (isset($_SESSION['messages']['error'])) {
+    foreach ($_SESSION['messages']['error'] as $key => $msg) {
+      if (strpos($msg, 'The alias is already in use.') !== FALSE) {
+        // Add a more informative error message on duplicate path aliases.
+        $_SESSION['messages']['error'][$key] = t(
+          'The specified URL alias is already being used. Please modify the URL with some differentiation such as adding a -0 or -1 to the end.');
+      }
+    }
+  }
+}
