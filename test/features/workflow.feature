@@ -1,5 +1,5 @@
 # time:4m22.76s
-@api @enableDKAN_Workflow
+@api @enableDKAN_Workflow @disablecaptcha
 Feature:
   Workflow (Workbench) tests for DKAN Workflow Module
 
@@ -29,13 +29,13 @@ Feature:
       | user       | group    | role on group        | membership status |
       | Supervisor | Group 01 | administrator member | Active            |
       | Moderator  | Group 01 | member               | Active            |
-      | Contributor| Group 01 | member               | Pending           |
+      | Contributor| Group 01 | member               | Active           |
       | Moderator  | Group 02 | member               | Active            |
 
 
   #Non workbench roles can see the menu item My Workflow. However
   #they can't access to the page.
-  @globalUser
+  @workflow_01 @globalUser
   Scenario Outline: As a user without a Workbench role, I should not be able to access My Workbench or the My Workbench tabs
     Given I am logged in as a user with the "<non-workbench roles>" role
     Then I should not see the link "My Workbench"
@@ -54,12 +54,13 @@ Feature:
       | editor              |
       | site manager        |
 
-  @ok @globalUser
+  @workflow_02 @ok @globalUser
   Scenario Outline: As a user with any Workflow role, I should be able to access My Workbench.
     Given I am logged in as a user with the "<workbench roles>" role
     When I am on "My Workbench" page
     Then I should see the link "My content"
     And I should see the link "My drafts"
+    And I should see the link "Stale drafts"
     And I should see the link "My Edits"
     And I should see the link "All Recent Content"
     Examples:
@@ -68,7 +69,7 @@ Feature:
       | Workflow Moderator   |
       | Workflow Supervisor  |
 
-  @api @javascript @globalUser
+  @workflow_03 @api @javascript @globalUser
   Scenario Outline: As a user with any Workflow role, I should be able to upgrade my own draft content to needs review.
     Given I am logged in as "<user>"
     And datasets:
@@ -120,15 +121,15 @@ Feature:
   #     | Workflow Moderator, editor            |
   #     | Workflow Supervisor, site manager     |
 
-  @ok @javascript @globalUser
+  @workflow_04 @ok @javascript @globalUser
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as "Contributor"
     And datasets:
-      | title                       | author       | published | moderation_date   | date created  |
+      | title                                 | author       | published | moderation_date   | date created  |
       | Stale Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
       | Fresh Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
     And resources:
-      | title                        | author       | dataset                    | format |  published |
+      | title                                  | author       | dataset                              | format |  published |
       | Stale Resource DKAN Test Needs Review  | Contributor  | Stale Dataset DKAN Test Needs Review | csv    |  no        |
     And I update the moderation state of "Stale Dataset DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
     And I update the moderation state of "Stale Resource DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
@@ -146,7 +147,7 @@ Feature:
     When I press "Publish"
     Then I wait for "Performed Publish on 3 items"
 
-  @ok @globalUser
+  @workflow_05 @ok @globalUser
   Scenario Outline: As a user with Workflow Roles, I should not be able to see draft contents I did not author in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     Given users:
@@ -168,7 +169,7 @@ Feature:
       | Workflow Moderator, editor            |
       | Workflow Supervisor, site manager     |
 
-  @ok @globalUser
+  @workflow_06 @ok @globalUser
   Scenario Outline: As a user with Workflow Roles, I should be able to see draft content I authored in 'My Drafts'
     Given I am logged in as "<user>"
     And datasets:
@@ -186,7 +187,7 @@ Feature:
       | Moderator   |
       | Supervisor  |
 
-  @ok @globalUser
+  @workflow_07 @ok @globalUser
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Published content I authored in workbench pages
     Given I am logged in as "Contributor"
     And datasets:
@@ -212,7 +213,7 @@ Feature:
       | My Drafts     | Workflow Supervisor, site manager     |
       | Needs Review  | Workflow Supervisor, site manager     |
 
-  @ok @globalUser
+  @workflow_08 @ok @globalUser
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Needs Review resources I authored in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
@@ -232,7 +233,7 @@ Feature:
       | Workflow Moderator, editor            |
       | Workflow Supervisor, site manager     |
 
-  @ok @globalUser
+  @workflow_09 @ok @globalUser
   Scenario: As a user with the Workflow Contributor, I should be able to see Needs Review contents I authored in 'Needs Review'
     Given I am logged in as "Contributor"
     And datasets:
@@ -247,7 +248,7 @@ Feature:
     And I should see "My Resource"
     And I should see "My Dataset"
 
-  @ok @globalUser
+  @workflow_10 @ok @globalUser
   Scenario: As a user with the Workflow Contributor, I should not be able to see Needs Review contents I did not author in 'Needs Review'
     Given I am logged in as a user with the "Workflow Contributor" role
     Given users:
@@ -266,7 +267,7 @@ Feature:
     Then I should not see "Not My Resource"
     Then I should not see "Not My Dataset"
 
-  @ok @globalUser
+  @workflow_11 @ok @globalUser
   Scenario: As a Workflow Moderator, I should be able to see Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
     Given users:
       | name            | roles                                 |
@@ -282,7 +283,7 @@ Feature:
     And I am on "Needs Review" page
     Then I should see the text "Not My Dataset"
 
-  @ok @globalUser
+  @workflow_12 @ok @globalUser
   Scenario: As a Workflow Moderator, I should not be able to see Needs Review datasets I did not author, and which do not belong to my Group, in 'Needs Review'
     Given users:
       | name            | roles                                 |
@@ -300,7 +301,7 @@ Feature:
     And I am on "Needs Review" page
     Then I should not see the text "Not My Dataset"
 
-  @ok @globalUser
+  @workflow_13 @ok @globalUser
   Scenario: As a Workflow Supervisor, I should be able to see Needs Review content I did not author, regardless whether it belongs to my group or not, in 'Needs Review'
     Given users:
       | name            | roles                                 |
@@ -321,7 +322,7 @@ Feature:
     Then I should see the text "Still Not My Dataset"
     Then I should see the text "Not My Dataset"
 
-  @ok @globalUser
+  @workflow_14 @ok @globalUser
   Scenario: As a Workflow Supervisor I should be able to see content in the 'Needs Review' state I did not author, regardless whether it belongs to my group or not, but which were submitted greater than 72 hours before now, in the 'Stale Reviews'
     Given users:
       | name            | roles                                 |
@@ -342,7 +343,7 @@ Feature:
     Then I should see the text "Still Not My Dataset"
     Then I should see the text "Not My Dataset"
 
-  @ok @globalUser
+  @workflow_15 @ok @globalUser
   Scenario: As a Workflow Supervisor I should be able to see content in the 'Draft' state I did not author, regardless whether it belongs to my group or not, but which were submitted greater than 72 hours before now, in the 'Stale Drafts'
     Given users:
       | name            | roles                                 |
@@ -363,7 +364,7 @@ Feature:
     Then I should see the text "Still Not My Dataset"
     Then I should see the text "Not My Dataset"
 
-  @api @ahoyRunMe @javascript @globalUser
+  @workflow_16 @api @ahoyRunMe @javascript @globalUser
   Scenario: When administering users, role pairings with core roles should be enforced
     Given I am logged in as a user with the "administrator" role
     And I visit the "Create User" page
@@ -383,7 +384,7 @@ Feature:
     And I click "Edit"
     Then the checkbox "content creator" should be checked
 
-  @api @globalUser
+  @workflow_17 @api @globalUser
   Scenario: Modify user workflow roles as site manager
     Given users:
       | name            | roles           | mail           |
@@ -395,6 +396,8 @@ Feature:
 
     Given I am logged in as "site-manager"
     And I am on "Users" page
+    And I fill in "edit-name" with "content-creator"
+    And I press "Apply"
     When I click "edit" in the "content-creator" row
     And I check "Workflow Contributor"
     And I press "Save"
@@ -403,7 +406,7 @@ Feature:
     When I am on "Users" page
     Then I should see "Workflow Contributor" in the "content-creator" row
 
-  @api @ahoyRunMe @javascript @globalUser
+  @workflow_18 @api @ahoyRunMe @javascript @globalUser
   Scenario: Role pairings should also work for site managers.
     Given users:
       | name            | roles                             |
@@ -427,7 +430,7 @@ Feature:
     And I click "Edit"
     Then the checkbox "editor" should be checked
 
-  @ok
+  @workflow_19 @ok
   # https://jira.govdelivery.com/browse/CIVIC-5348
   Scenario: "View draft" should display the draft dataset and not the published revision.
     Given users:
@@ -445,3 +448,14 @@ Feature:
     And I press "Finish"
     And I click "View draft"
     Then I should see "Dataset draft title"
+
+  @workflow_20 @api @javascript @harvest_rollback
+  Scenario: Check harvested datasets are published by default even when dkan_workflow is enabled.
+    Given users:
+      | name               | mail                     | status | roles             |
+      | Administrator      | admin@fakeemail.com      | 1      | administrator     |
+    And harvest sources:
+      | title      | machine name | source uri                                                                 | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
+    And The "source_one" source is harvested
+    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "published"

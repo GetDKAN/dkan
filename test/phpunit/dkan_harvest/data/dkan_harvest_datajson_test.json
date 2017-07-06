@@ -16,7 +16,7 @@
                 {
                     "@type": "dcat:Distribution",
                     "description": "No description provided",
-                    "downloadURL": "http://demo.getdkan.com/sites/default/files/Polling_Places_Madison_0.csv",
+                    "downloadURL": "https://s3.amazonaws.com/dkan-default-content-files/phpunit/Polling_Places_Madison_0.csv",
                     "format": "csv",
                     "mediaType": "text/csv"
                 }
@@ -49,7 +49,7 @@
                 {
                     "@type": "dcat:Distribution",
                     "description": "No description provided",
-                    "downloadURL": "http://demo.getdkan.com/sites/default/files/us_foreclosures_jan_2012_by_state_0.csv",
+                    "downloadURL": "https://s3.amazonaws.com/dkan-default-content-files/phpunit/us_foreclosures_jan_2012_by_state_0.csv",
                     "format": "csv",
                     "mediaType": "text/csv"
                 }
@@ -81,7 +81,7 @@
                 {
                     "@type": "dcat:Distribution",
                     "description": "No description provided",
-                    "downloadURL": "http://demo.getdkan.com/sites/default/files/data_0.csv",
+                    "downloadURL": "https://s3.amazonaws.com/dkan-default-content-files/phpunit/data_0.csv",
                     "format": "csv",
                     "mediaType": "text/csv"
                 }
@@ -114,7 +114,7 @@
                 {
                     "@type": "dcat:Distribution",
                     "description": "No description provided",
-                    "downloadURL": "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv",
+                    "downloadURL": "https://s3.amazonaws.com/dkan-default-content-files/phpunit/district_centerpoints_0.csv",
                     "format": "csv",
                     "mediaType": "text/csv"
                 }
