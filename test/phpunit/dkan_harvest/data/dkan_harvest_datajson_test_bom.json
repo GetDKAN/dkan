@@ -1,0 +1,51 @@
+﻿{
+  "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+  "@id": "https://www2.ed.gov/data.json",
+  "@type": "dcat:Catalog",
+  "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+  "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
+  "dataset": [
+    {
+      "@type": "dcat:Dataset",
+      "title": "Academic Libraries Survey, 2002",
+      "description": "The Academic Libraries Survey, 2002 (ALS:2002), is a study that is part of the Academic Libraries Survey (ALS) program. ALS:2002 (https://nces.ed.gov/surveys/libraries/academic.asp) is a cross-sectional survey that summarizes services, staff, collections, and expenditures of academic libraries in degree-granting postsecondary institutions in the 50 states and the District of Columbia. This study provides information pertinent to libraries at degree-granting postsecondary educational institutions.",
+      "keyword": [ "Research libraries", "Research librarians", "University libraries", "College libraries", "University librarians", "College librarians" ],
+      "modified": "2007-07-26",
+      "publisher": {
+        "@type": "org:Organization",
+        "name": "National Center for Education Statistics",
+        "subOrganizationOf": {
+          "@type": "org:Organization",
+          "name": "Institute of Education Sciences",
+          "subOrganizationOf": {
+            "@type": "org:Organization",
+            "name": "U.S. Department of Education",
+            "subOrganizationOf": {
+              "@type": "org:Organization",
+              "name": "U.S. Government"
+            }
+          }
+        }
+      },
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Tai Phan",
+        "hasEmail": "mailto:tai.phan@ed.gov"
+      },
+      "identifier": "NCES_2006308",
+      "accessLevel": "public",
+      "bureauCode": [ "018:50" ],
+      "programCode": [ "018:000" ],
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "spatial": "United States",
+      "temporal": "2002/2003",
+      "accrualPeriodicity": "R/P2Y",
+      "dataQuality": true,
+      "issued": "2005-12-13",
+      "language": [ "en-US" ],
+      "landingPage": "https://nces.ed.gov/surveys/libraries/academic.asp",
+      "references": [ "https://nces.ed.gov/pubs2006/2006308.pdf" ],
+      "systemOfRecords": "https://www2.ed.gov/notices/pai/pai-18-13-01.pdf"
+    }
+  ]
+}
