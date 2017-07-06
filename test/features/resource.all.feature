@@ -97,7 +97,7 @@ Feature: Resource
     And I am an anonymous user
     Given I am on "Resource 01" page
     When I click "Revisions"
-    Then I should see "current revision"
+    Then I should see "This is the published revision"
 
   @api @noworkflow
   Scenario: Compare revisions of published resource

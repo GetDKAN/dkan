@@ -44,6 +44,7 @@ class DkanDatastoreFastImport extends DkanDatastore implements DatastoreFormInte
     variable_set('quote_delimiters', $form_state['values']['quote_delimiters']);
     variable_set('lines_terminated_by', $form_state['values']['lines_terminated_by']);
     variable_set('fields_escaped_by', $form_state['values']['fields_escaped_by']);
+    variable_set('dkan_datastore_fast_import_load_empty_cells_as_null', $form_state['values']['dkan_datastore_fast_import_load_empty_cells_as_null']);
 
     // If a remote file is provided we fallback to feeds importer
     // else we perform a fast import.
