@@ -273,14 +273,6 @@ function dkan_update_7013() {
   }
 }
 
-
-/**
- * Revert content types dataset to revert og_group_ref on resources.
- */
-function dkan_update_7014() {
-  features_revert(array('dkan_dataset_content_types' => array('field_base', 'field_instance')));
-}
-
 /**
  * Drop the 'field_modified_source_date' field.
  */
@@ -363,4 +355,11 @@ function dkan_update_7020() {
   // REF #1936, #1890.
   variable_set('chosen_jquery_selector',
     '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"], [id*="lines-terminated-by"])');
+}
+
+/**
+ * Revert content types dataset to revert og_group_ref on resources.
+ */
+function dkan_update_7021() {
+  features_revert(array('dkan_dataset_content_types' => array('field_base', 'field_instance')));
 }
