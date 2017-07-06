@@ -9563,6 +9563,9 @@ div.horizontal-tabs {
     font-size: 12px;
     line-height: 1.15em; } }
 
+.node-resource-form #edit_og_group_ref_und_chosen {
+  width: 100% !important; }
+
 .node-resource-form .field-name-field-upload .form-type-managed-file {
   display: table; }
   .node-resource-form .field-name-field-upload .form-type-managed-file .file-widget {
@@ -10131,9 +10134,8 @@ ul.action-links {
 
 .page-node-add-resource .field-group-htabs.group-data div.horizontal-tabs {
   border: 0; }
-
-.page-node-add-resource .form-item {
-  margin: 0; }
+  .page-node-add-resource .field-group-htabs.group-data div.horizontal-tabs .form-item {
+    margin: 0; }
 
 #action-info {
   color: #d9534f;
