@@ -29,7 +29,7 @@ Feature:
       | user       | group    | role on group        | membership status |
       | Supervisor | Group 01 | administrator member | Active            |
       | Moderator  | Group 01 | member               | Active            |
-      | Contributor| Group 01 | member               | Pending           |
+      | Contributor| Group 01 | member               | Active           |
       | Moderator  | Group 02 | member               | Active            |
 
 
@@ -60,6 +60,7 @@ Feature:
     When I am on "My Workbench" page
     Then I should see the link "My content"
     And I should see the link "My drafts"
+    And I should see the link "Stale drafts"
     And I should see the link "My Edits"
     And I should see the link "All Recent Content"
     Examples:
@@ -124,11 +125,11 @@ Feature:
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as "Contributor"
     And datasets:
-      | title                       | author       | published | moderation_date   | date created  |
+      | title                                 | author       | published | moderation_date   | date created  |
       | Stale Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
       | Fresh Dataset DKAN Test Needs Review  | Contributor  | No        | Jul 21, 2015      | Jul 21, 2015  |
     And resources:
-      | title                        | author       | dataset                    | format |  published |
+      | title                                  | author       | dataset                              | format |  published |
       | Stale Resource DKAN Test Needs Review  | Contributor  | Stale Dataset DKAN Test Needs Review | csv    |  no        |
     And I update the moderation state of "Stale Dataset DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
     And I update the moderation state of "Stale Resource DKAN Test Needs Review" to "Needs Review" on date "30 days ago"
@@ -447,3 +448,14 @@ Feature:
     And I press "Finish"
     And I click "View draft"
     Then I should see "Dataset draft title"
+
+  @workflow_20 @api @javascript @harvest_rollback
+  Scenario: Check harvested datasets are published by default even when dkan_workflow is enabled.
+    Given users:
+      | name               | mail                     | status | roles             |
+      | Administrator      | admin@fakeemail.com      | 1      | administrator     |
+    And harvest sources:
+      | title      | machine name | source uri                                                                 | type               | author        | published |
+      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Administrator | Yes       |
+    And The "source_one" source is harvested
+    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "published"

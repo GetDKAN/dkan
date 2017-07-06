@@ -146,7 +146,7 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 02 edited has been updated"
     When I click "Revisions"
-    Then I should see "current revision"
+    Then I should see "This is the published revision"
 
   @fixme @dkanBug @noworkflow
     #TODO: There is an issue where an admin, when clicking revert, gets a access unauthorized response.
