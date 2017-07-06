@@ -68,7 +68,9 @@ div.vertical-tabs ul.vertical-tabs-list li a:hover {
 }
 
 .navbar-default .navbar-nav li.open > a,
-.navbar-default .navbar-nav .dropdown-menu {
+.navbar-default .navbar-nav .dropdown-menu,
+.navbar-default .navbar-nav .dropdown.open,
+.navbar-default .navbar-nav .dropdown.open:hover {
   background: @top;
 }
 
