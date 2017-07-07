@@ -31,9 +31,10 @@ Appearance
    :maxdepth: 1
    
    account_access_and_setup
-   adding_new_content
    appearance
+   adding_new_content
    data_and_content
+   data_management
    people
    structure
    using_the_admin_menu
