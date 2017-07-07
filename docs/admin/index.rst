@@ -31,6 +31,7 @@ As a Site Manager, you build the framework that other roles operate within and b
    :maxdepth: 1
    
    account_access_and_setup
+   adding_new_content
    appearance
    data_and_content
    people
