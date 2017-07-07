@@ -127,3 +127,19 @@ Importing and removing files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Uploading files to the Datastore has major benefits including enhancing the Datastore API and improved user experience of previewing data. The Datastore API makes the Resources more usable and accessible to technical users. Previews display resources as graphs, grids, or maps for geospatial data. In some cases files contain thousands (or millions) of rows. For data on such high order, users can only properly preview the data if the Resource has been imported into the Granicus Open Data Datastore.
+
+.. figure:: ../images/site_manager_playbook/data_management/resource_page_with_datastore_message.png
+   :alt: Your file for this resource is not added to the datastore.
+   
+   Above is what you should see on a resource page if your Resource file has not yet been added to the datastore.
+
+.. figure:: ../images/site_manager_playbook/data_management/manage_datastore_page.png
+   :alt: manage datastore page
+   
+   Above is what you should see when you select Manage Datastore.
+   
+When to import:
+
+- The file is formatted as a CSV.
+- The file is very large (and formatted as a CSV).
+- To include the file in the Datastore API.
