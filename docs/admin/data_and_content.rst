@@ -1,3 +1,13 @@
+.. toctree::
+   :maxdepth: 1
+   
+   account_access_and_setup
+   appearance
+   data_and_content
+   people
+   structure
+   using_the_admin_menu
+
 ================
 Data and Content
 ================
