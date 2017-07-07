@@ -30,6 +30,5 @@ As a Site Manager, you build the framework that other roles operate within and b
    data_and_content
    people
    structure
-   users
    using_the_admin_menu
 
