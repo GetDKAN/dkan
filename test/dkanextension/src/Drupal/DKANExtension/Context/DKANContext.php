@@ -190,7 +190,7 @@ class DKANContext extends RawDKANContext {
   public function iShouldSeeTheAdministrationMenu() {
     $xpath = "//div[@id='admin-menu']";
     // Grab the element.
-    $element = $this->getXPathElement($xpath);
+    $element = $this->getXpathElement($xpath);
     if (!isset($element)) {
       throw new \Exception('The admin menu could not be found.');
     }
@@ -204,7 +204,7 @@ class DKANContext extends RawDKANContext {
   public function iShouldHaveAnTextFormatOption($option) {
     $xpath = "//select[@name='body[und][0][format]']//option[@value='" . $option . "']";
     // Grab the element.
-    $element = $this->getXPathElement($xpath);
+    $element = $this->getXpathElement($xpath);
     if (!isset($element)) {
       throw new \Exception("The $option format option could not be found.");
     }
@@ -219,7 +219,7 @@ class DKANContext extends RawDKANContext {
    * @return object
    *   A mink html element
    */
-  protected function getXPathElement($xpath) {
+  protected function getXpathElement($xpath) {
     // Get the mink session.
     $session = $this->getSession();
     // Runs the actual query and returns the element.
@@ -243,7 +243,7 @@ class DKANContext extends RawDKANContext {
     $context = $this->minkContext;
     $region = $context->getRegion($arg2);
     $items = $region->findAll('css', '.views-row');
-    $num = sizeof($items);
+    $num = count($items);
     if ($num === 0) {
       $items = $region->find('css', '.views-row-last');
       if (!empty($items)) {
@@ -257,7 +257,7 @@ class DKANContext extends RawDKANContext {
       }
     }
     if ($num !== intval($arg1)) {
-      throw new \Exception(sprintf("Did not find %d %s items, found %d instead.", $arg1, $arg2, sizeof($num)));
+      throw new \Exception(sprintf("Did not find %d %s items, found %d instead.", $arg1, $arg2, count($num)));
     }
   }
 
@@ -266,7 +266,7 @@ class DKANContext extends RawDKANContext {
    *
    * @Then /^I should see a gravatar image in the "([^"]*)" region$/
    */
-  public function iShouldSeeAGravatarImageInTheRegion($region) {
+  public function iShouldSeeGravatarImageInTheRegion($region) {
     $regionObj = $this->minkContext->getRegion($region);
     $elements = $regionObj->findAll('css', 'img');
     if (!empty($elements)) {
@@ -288,7 +288,7 @@ class DKANContext extends RawDKANContext {
    *
    * @Then /^I should not see a gravatar image in the "([^"]*)" region$/
    */
-  public function iShouldNotSeeAGravatarImageInTheRegion($region) {
+  public function iShouldNotSeeGravatarImageInTheRegion($region) {
     $regionObj = $this->minkContext->getRegion($region);
     $elements = $regionObj->findAll('css', 'img');
     $match = FALSE;
@@ -334,6 +334,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirms that the command center is visible.
+   *
    * @Then I should see (the|a) user command center
    * @Then I should see the :user user command center
    */
@@ -347,9 +349,9 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
-   * @AfterScenario
-   *
    * Delete any tempusers that were created outside of 'Given users'.
+   *
+   * @AfterScenario
    */
   public function deleteTempUsers(AfterScenarioScope $scope) {
     if ($scope->getScenario()->hasTag('deleteTempUsers')) {
@@ -362,7 +364,10 @@ class DKANContext extends RawDKANContext {
   }
 
   // ------------- Junk from previous FeatureContext ------------------- //.
+
   /**
+   * Confirms that the administrator role has all permissions.
+   *
    * @Then /^the administrator role should have all permissions$/
    */
   public function theAdministratorRoleShouldHaveAllPermissions() {
@@ -386,6 +391,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Step used to scroll to the top of the current page.
+   *
    * @Given /^I scroll to the top$/
    */
   public function iScrollToTheTop() {
@@ -397,6 +404,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Switch to an iframe.
+   *
    * @When /^I switch to the frame "([^"]*)"$/
    */
   public function iSwitchToTheFrame($frame) {
@@ -404,6 +413,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Switch out of all iframes.
+   *
    * @Given /^I switch out of all frames$/
    */
   public function iSwitchOutOfAllFrames() {
@@ -411,6 +422,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Wait for a dialog box to appear.
+   *
    * @Then /^I wait for the dialog box to appear$/
    */
   public function iWaitForTheDialogBoxToAppear() {
@@ -418,6 +431,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Wait for seconds.
+   *
    * @Given /^I wait for "([^"]*)" seconds$/
    */
   public function iWaitForSeconds($milliseconds) {
@@ -452,8 +467,10 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Select an option from a Chosen select box.
+   *
    * @Given /^I select "([^"]*)" from "([^"]*)" chosen\.js select box$/
-   **/
+   */
   public function iSelectFromChosenJsSelectBox($option, $select) {
     $select = $this->fixStepArgument($select);
     $option = $this->fixStepArgument($option);
@@ -482,6 +499,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that the elements are sorted on a certain order.
+   *
    * @Then the :selector elements should be sorted in this order :order
    */
   public function theElementsShouldBeSortedInThisOrder($selector, $order) {
@@ -498,37 +517,6 @@ class DKANContext extends RawDKANContext {
       throw new Exception(sprintf("The elements were not sorted in the order provided."));
     }
   }
-
-  /**
-   * @Given /^I click the chosen field "([^"]*)" and enter "([^"]*)"$/
-   *
-   * DEPRECATED: DONT USE. The clicking of the chosen fields to select some values
-   * didn't work well (selenium errors about the value not being visible). Commenting
-   * this out for now in case someone wants to replace it later with something that works.
-   */
-  /*public function iClickTheChosenFieldAndEnter($field, $value) {
-  $session = $this->getSession();
-  $page = $session->getPage();
-  $field = $this->fixStepArgument($field);
-  $value = $this->fixStepArgument($value);
-  // Click chosen field.
-  $field_click = $session->getPage()->find(
-  'xpath',
-  $session->getSelectorsHandler()->selectorToXpath('xpath', '//span[.="' . $field . '"]')
-
-  );
-  $field_click->click();
-  $this->iDebugWaitForSeconds(1);
-  // Click value that now appears.
-  $title = $session->getPage()->find(
-  'xpath',
-  $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
-  );
-  if(!isset($title)){
-  throw new Exception(sprintf('"' . $value . '" option was not found in the chosen field.'));
-  }
-  $title->click();
-  }*/
 
   /**
    * Click some text.
@@ -591,6 +579,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Empty field.
+   *
    * @Given /^I empty the field "([^"]*)"$/
    */
   public function iEmptyTheField($locator) {
@@ -638,6 +628,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Wait for a text to dissapear.
+   *
    * @When I wait for :text to disappear
    * @param $text
    * @throws \Exception
@@ -651,6 +643,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Attach a file on a field.
+   *
    * @When I attach the drupal file :arg1 to :arg2
    *
    * Overrides attachFileToField() in Mink context to fix but with relative
@@ -663,6 +657,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Attach a file on a field using file resup.
+   *
    * @When I attach the file :path to :field using file resup
    */
   public function iAttachTheDrupalFileUsingFileResup($path, $field) {
@@ -688,6 +684,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that the list of permissions for the role is visible.
+   *
    * @Then I should see the list of permissions for :role role
    */
   public function iShouldSeePermissionsForRole($role) {
@@ -707,6 +705,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that returned content is formatted as expected.
+   *
    * @Then I should get :format content from the :button button
    */
   public function assertButtonReturnsFormat($format, $button) {
@@ -731,6 +731,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that redirect button is not visible.
+   *
    * @Then I should see the redirect button for :site
    */
   public function assertRedirectButton($site) {
@@ -765,6 +767,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Disable a module.
+   *
    * @When I disable the module :module
    */
   public function iDisableTheModule($module) {
@@ -772,6 +776,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Enable a module.
+   *
    * @When I enable the module :module
    */
   public function iEnableTheModule($module) {
@@ -782,8 +788,10 @@ class DKANContext extends RawDKANContext {
    * Returns fixed step argument (with \\" replaced back to ").
    *
    * @param string $argument
+   *   Step that needs to be fixed.
    *
    * @return string
+   *   Fixed step argument.
    */
   public function fixStepArgument($argument) {
     return str_replace('\\"', '"', $argument);
@@ -795,10 +803,10 @@ class DKANContext extends RawDKANContext {
    * @Then I should not see the button :button in the :region( region)
    * @Then I should not see the :button button in the :region( region)
    *
-   * @param $button
-   *   string The id|name|title|alt|value of the button
-   * @param $region
-   *   string The region in which the button should not be found
+   * @param string $button
+   *   The id|name|title|alt|value of the button
+   * @param string $region
+   *   The region in which the button should not be found
    *
    * @throws \Exception
    *   If region cannot be found or the button is present on region.
@@ -812,6 +820,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that the default content of the specified type is on a specific status.
+   *
    * @Then all default content with type :type and bundle :bundle listed in :fixture fixture should :status
    */
   public function allDefaultContentWithTypeAndBundleListedInFixtureShould($type, $bundle, $fixture, $status) {
@@ -861,6 +871,7 @@ class DKANContext extends RawDKANContext {
    * @Given I should see a table with a class name :class_name
    *
    * @return \Behat\Mink\Element\NodeElement
+   *  Returns the table object.
    *
    * @throws \Exception
    */
@@ -909,6 +920,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that a number of items is visible on the region.
+   *
    * @Given I should see :number items of :item in the :region region
    */
   public function iShouldSeeItemsOfInTheRegion($number, $item, $region) {
@@ -931,6 +944,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that at least a number of items is visible on a region.
+   *
    * @Given I should see :number items of :item or more in the :region region
    */
   public function iShouldSeeItemsOfOrMoreInTheRegion($number, $item, $region) {
@@ -948,6 +963,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that a field is visible.
+   *
    * @Then I should see :arg1 field
    */
   public function iShouldSeeField($arg1) {
@@ -960,6 +977,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that a field is not visible.
+   *
    * @Then I should not see :arg1 field
    */
   public function iShouldNotSeeField($arg1) {
@@ -972,6 +991,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that a text is visible on a element.
+   *
    * @Then the text :text should be visible in the element :element
    */
   public function theTextShouldBeVisible($text, $selector) {
@@ -989,6 +1010,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that a text is not visible on an element.
+   *
    * @Then the text :text should not be visible in the element :element
    */
   public function theTextShouldNotBeVisible($text, $selector) {
@@ -1006,6 +1029,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Visit a link.
+   *
    * @Then I visit the link :selector
    */
   public function iVisitTheLink($selector) {
@@ -1020,9 +1045,9 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
-   * @Given /^I fill in the autocomplete field "([^"]*)" with "([^"]*)"$/
-   *
    * Fill in the 'Autocomplete' field on a form.
+   *
+   * @Given /^I fill in the autocomplete field "([^"]*)" with "([^"]*)"$/
    */
   public function iFillInTheAutocompleteFieldWith($field, $value) {
     $session = $this->getSession();
@@ -1053,5 +1078,4 @@ class DKANContext extends RawDKANContext {
     );
     $title->click();
   }
-
 }
