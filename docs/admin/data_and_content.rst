@@ -20,7 +20,7 @@ Resources
 
 Resources are the most basic content type on Granicus Open Data. They represent the actual file that can be viewed and downloaded by site visitors. Granicus Open Data supports a large range of file formats including csv, html, xls, json, xlsx, doc, docx, rdf, txt, jpg, png, gif, tiff, pdf, odf, ods, odt, tsv, geojson and xml. Resources may be uploaded alone, but in order to include metadata you must add the Resource to a Dataset. 
 
-.. figure:: ../images/site_manager_playbook/resources_list_on_dataset_page.png
+.. figure:: ../images/site_manager_playbook/data_and_content/resources_list_on_dataset_page.png
 
 Add a Resource when you're trying to:
 
