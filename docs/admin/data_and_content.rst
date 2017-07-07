@@ -37,3 +37,23 @@ Datasets
 Datasets are often described as "containers" because they group related pieces of data (Resources). Grouping Resources together in Datasets gives the data a common summary description, licensing information, and a unique URL to easily share the dataset directly. The image above shows the Resources, which are the actual files that can be previewed and downloaded by site visitors.
 
 In the image below everything surrounding the Resources is the "container", or Dataset. It includes a name for the Dataset, a description of the collection of Resources, tags, license information, the data author, and other metadata about the Resources. Resources may be uploaded alone, but metadata is associated with the dataset and cannot be individually attributed to a Resource.
+
+.. figure:: ../images/site_manager_playbook/data_and_content/dataset_page.png.png
+   :alt: dataset page
+   
+   Example of a dataset page.
+   
+Add a Dataset when you're trying to:
+
+- Collect Resources with common metadata (such as author, open data license information, tags, etc.)  
+- Create a unique URL to link site visitors directly to a Dataset. 
+
+Narrative content types
+-----------------------
+
+Narrative content is designed to tell the story and reveal insights of data. Narrative content allows you to add context and bring the personal elements of data out to the front. These include Data Stories and Visualizations. 
+
+Data Stories
+~~~~~~~~~~~~
+
+Data Stories show the people in data. It's not always obvious how rows and columns can make a difference in the world of citizens. Data Stories help show the impact data can make in our everyday lives by adding context and synthesis through a narrative form. This content type is easy to use and similar to writing a blog post. Use Data Stories to combine narrative, media, and data for a compelling way to connect to data.
