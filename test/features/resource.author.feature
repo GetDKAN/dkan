@@ -149,7 +149,7 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on "Resource 07" page
     When I click "Edit"
-    And I select "- None -" from "Dataset"
+    And I fill in "edit-field-dataset-ref-und-0-target-id" with ""
     And I press "Save"
     Then I should see "Resource 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -170,7 +170,7 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on "Resource 08" page
     When I click "Edit"
-    And I select "- None -" from "Dataset"
+    And I fill in "edit-field-dataset-ref-und-0-target-id" with ""
     And I press "Save"
     Then I should see "Resource 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -217,7 +217,8 @@ Feature: Resource
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
     When I click "Edit"
-    And I select "- None -" from "Dataset"
+    And I fill in "edit-field-dataset-ref-und-0-target-id" with ""
+    And I fill in "edit-field-dataset-ref-und-1-target-id" with ""
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
