@@ -16,9 +16,6 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingContext {
 
   // Store entities as EntityMetadataWrappers for easy property inspection.
-  /**
-   * Protected $entities = array();.
-   */
   protected $entity_type = '';
   protected $bundle = '';
   protected $bundleKey = FALSE;
@@ -26,17 +23,13 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
   protected $fieldProperties = array();
   protected $fieldMapCustom = array();
 
-  /**
-   * @var \Drupal\DKANExtension\Context\PageContext
-   */
+  // \Drupal\DKANExtension\Context\PageContext.
   protected $pageContext;
-  /**
-   * @var \Drupal\DKANExtension\Context\SearchAPIContext
-   */
+  // \Drupal\DKANExtension\Context\SearchAPIContext.
   protected $searchContext;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct($entity_type, $bundle, $field_map_overrides = array('published' => 'status'), $field_map_custom = array()) {
     $entity_info = entity_get_info($entity_type);
@@ -87,6 +80,8 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
   }
 
   /**
+   * Gather needed contexts.
+   *
    * @BeforeScenario
    */
   public function gatherContexts(BeforeScenarioScope $scope) {
@@ -96,10 +91,12 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
   }
 
   /**
-   * @AfterScenario
+   * Delete all created content after each scenario.
    *
    * @param \Behat\Behat\Hook\Scope\AfterScenarioScope $scope
    *   The afterscenario scope.
+   *
+   * @AfterScenario
    */
   public function deleteAll(AfterScenarioScope $scope) {
     $wrappers = $this->entityStore->retrieve($this->entity_type, $this->bundle);
@@ -181,7 +178,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
   }
 
   /**
-   *
+   *  Apply field values to entity.
    */
   public function applyFields($wrapper, $fields) {
     foreach ($fields as $label => $value) {
@@ -197,7 +194,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
   }
 
   /**
-   *
+   * Set field on entity.
    */
   public function setField($wrapper, $label, $value) {
     $property = NULL;
@@ -363,11 +360,6 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    * then cycles through each array to start the entity build routine for each
    * corresponding array. This function will be called by sub-contexts to generate
    * their entities.
-   *
-   * @param \Behat\Gherkin\Node\TableNode $entityTable
-   *   - provided.
-   *
-   * @throws \Exception
    */
   public function addMultipleFromTable(TableNode $entityTable) {
     foreach ($this->arrayFromTableNode($entityTable) as $entity) {
@@ -460,7 +452,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
   }
 
   /**
-   *
+   * Get the term ID from term name.
    */
   public function tidFromTermName($field_name, $term) {
     $info = field_info_field($field_name);

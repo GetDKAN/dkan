@@ -12,7 +12,7 @@ class ResourceContext extends RawDKANEntityContext {
   use ModeratorTrait;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct() {
     parent::__construct(
@@ -33,9 +33,9 @@ class ResourceContext extends RawDKANEntityContext {
   }
 
   /**
-   * @Given :provider previews are :setting for :format_name resources
+   * Changes variables in the database to enable or disable external previews.
    *
-   * Changes variables in the database to enable or disable external previews
+   * @Given :provider previews are :setting for :format_name resources.
    */
   public function externalPreviewsAreEnabledForFormat($provider, $setting, $format_name) {
     $format = current(taxonomy_get_term_by_name($format_name, 'format'));
@@ -47,7 +47,7 @@ class ResourceContext extends RawDKANEntityContext {
   }
 
   /**
-   * Override RawDKANEntityContext::postSave()
+   * Override RawDKANEntityContext::postSave().
    */
   public function postSave($wrapper, $fields) {
     parent::postSave($wrapper, $fields);
@@ -55,6 +55,8 @@ class ResourceContext extends RawDKANEntityContext {
   }
 
   /**
+   * Confirms that the user is on the resource embed page.
+   *
    * @Given I am on (the) :title resource embed page
    */
   public function iAmOnResourceEmbedPage($title) {
@@ -71,9 +73,11 @@ class ResourceContext extends RawDKANEntityContext {
   }
 
   /**
+   * Confirms that a preview type is available.
+   *
    * @Then I should see a :previewtype preview
    */
-  public function iShouldSeeAPreview($previewtype) {
+  public function iShouldSeePreview($previewtype) {
     // XPATH for particualar preview type.
     $previewtype_paths = array(
       'recline' => '//div[@class="recline-data-explorer"]',
