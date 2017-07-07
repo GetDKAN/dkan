@@ -31,14 +31,14 @@ class DKANContext extends RawDKANContext {
   /**
    * Explode a comma separated string in a standard way.
    */
-  public function explode_list($string) {
+  public function explodeList($string) {
     $array = explode(',', $string);
     $array = array_map('trim', $array);
     return is_array($array) ? $array : array();
   }
 
   /**
-   *
+   * Get Mink context.
    */
   public function getMink() {
     return $this->minkContext;
@@ -49,6 +49,8 @@ class DKANContext extends RawDKANContext {
    *****************************/
 
   /**
+   * Confirm that an element is not visible.
+   *
    * @Then the :tag element with id set to :value in the :region( region) should not be visible
    */
   public function assertRegionElementIdNotVisible($tag, $value, $region) {
@@ -59,6 +61,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that an element is visible.
+   *
    * @Then the :tag element with id set to :value in the :region( region) should be visible
    */
   public function assertRegionElementIdVisible($tag, $value, $region) {
@@ -69,6 +73,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that an element exists on a region.
+   *
    * @Then the :tag element with id set to :value in the :region( region) exists
    *
    * This is a reword of the MarkupContext::assertRegionElementAttribute()
@@ -111,6 +117,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Custom step to switch to a different window/popup.
+   *
    * @When I switch to window
    */
   public function iSwitchToPopup() {
@@ -121,6 +129,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm if an admin menu item is visible.
+   *
    * @When I should see the admin menu item :item
    */
   public function iShouldSeeTheAdminMenuItem($item) {
@@ -134,6 +144,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Custom step to hover over an admin menu item.
+   *
    * @When I hover over the admin menu item :item
    */
   public function iHoverOverTheAdminMenuItem($item) {
@@ -154,9 +166,11 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that a cached page is present.
+   *
    * @Then I :outcome see a cached page
    */
-  public function iShouldSeeACachedPage($outcome) {
+  public function iShouldSeeCachedPage($outcome) {
     $session = $this->getSession();
     $headers = $session->getResponseHeaders();
     $cacheControl = $headers['Cache-Control'][0];
@@ -169,6 +183,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that the administration menu is visible.
+   *
    * @Then /^I should see the administration menu$/
    */
   public function iShouldSeeTheAdministrationMenu() {
@@ -181,6 +197,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that a text format option is available.
+   *
    * @Then /^I should have an "([^"]*)" text format option$/
    */
   public function iShouldHaveAnTextFormatOption($option) {
@@ -217,6 +235,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that a number of items are visible on the region.
+   *
    * @Then I should see :arg1 items in the :arg2 region
    */
   public function iShouldSeeItemsInTheRegion($arg1, $arg2) {
@@ -242,6 +262,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that a Gravatar image is visible on the region.
+   *
    * @Then /^I should see a gravatar image in the "([^"]*)" region$/
    */
   public function iShouldSeeAGravatarImageInTheRegion($region) {
@@ -262,6 +284,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that a Gravatar image is not visible in the region.
+   *
    * @Then /^I should not see a gravatar image in the "([^"]*)" region$/
    */
   public function iShouldNotSeeAGravatarImageInTheRegion($region) {
@@ -287,6 +311,8 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
+   * Confirm that a user page is visible.
+   *
    * @Then I should see (the|a) user page
    * @Then I should see the :user user page
    */
