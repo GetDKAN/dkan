@@ -4,7 +4,14 @@ namespace Drupal\DKANExtension\Context;
 
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
 use Behat\Mink\Driver\Selenium2Driver;
+use Drupal\DrupalExtension\Context\DrupalContext;
+use Behat\Behat\Context\SnippetAcceptingContext;
+use Behat\Mink\Exception\UnsupportedDriverActionException as UnsupportedDriverActionException;
+use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Exception\DriverException;
+use Behat\Behat\Tester\Exception\PendingException;
 use EntityFieldQuery;
+use \stdClass;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 /**
