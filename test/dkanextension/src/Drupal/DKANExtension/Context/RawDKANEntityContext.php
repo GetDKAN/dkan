@@ -144,7 +144,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    * Explode a comma separated string in a standard way.
    *
    */
-  function explode_list($string) {
+  function explodeList($string) {
     $array = explode(',', $string);
     $array = array_map('trim', $array);
     return is_array($array) ? $array : array();
@@ -280,7 +280,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
         case "list<taxonomy_term>":
           // Convert the tags to tids.
           $tids = array();
-          foreach ($this->explode_list($value) as $term) {
+          foreach ($this->explodeList($value) as $term) {
             if ($found_term = $this->tidFromTermName($property, $term)) {
               $tids[] = $found_term;
             }
@@ -297,7 +297,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
         case 'node':
         case 'list<node>':
           $nids = array();
-          foreach ($this->explode_list($value) as $name) {
+          foreach ($this->explodeList($value) as $name) {
             if (empty($name)) {
               continue;
             }

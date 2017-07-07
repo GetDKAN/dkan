@@ -1,25 +1,16 @@
 <?php
+
 namespace Drupal\DKANExtension\Context;
 
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
 use Behat\Mink\Driver\Selenium2Driver;
-use Drupal\DrupalExtension\Context\DrupalContext;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Mink\Exception\UnsupportedDriverActionException as UnsupportedDriverActionException;
-use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Exception\DriverException;
-use Behat\Behat\Tester\Exception\PendingException;
 use EntityFieldQuery;
-use \stdClass;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 /**
  * Defines application features from the specific context.
  */
 class DKANContext extends RawDKANContext {
-
-
-
 
   /**
    * Initializes context.
@@ -29,10 +20,9 @@ class DKANContext extends RawDKANContext {
    * context constructor through behat.yml.
    */
   public function __construct() {
-    // Set the default timezone to NY
+    // Set the default timezone to NY.
     date_default_timezone_set('America/New_York');
   }
-
 
   /****************************
    * HELPER FUNCTIONS
@@ -40,21 +30,19 @@ class DKANContext extends RawDKANContext {
 
   /**
    * Explode a comma separated string in a standard way.
-   *
    */
-  function explode_list($string) {
+  public function explodeList($string) {
     $array = explode(',', $string);
     $array = array_map('trim', $array);
     return is_array($array) ? $array : array();
   }
 
+  /**
+   * Get Mink parameters.
+   */
   public function getMink() {
     return $this->minkContext;
   }
-
-  /*****************************
-   * CUSTOM STEPS
-   *****************************/
 
   /**
    * @Then the :tag element with id set to :value in the :region( region) should not be visible
@@ -62,7 +50,7 @@ class DKANContext extends RawDKANContext {
   public function assertRegionElementIdNotVisible($tag, $value, $region) {
     $element = $this->assertRegionElementId($tag, $value, $region);
     if ($element->isVisible()) {
-        throw new \Exception(sprintf('The "%s" attribute is visible on the element "%s" in the "%s" region on the page %s', 'id', $value, $tag, $region, $this->getSession()->getCurrentUrl()));
+      throw new \Exception(sprintf('The "%s" attribute is visible on the element "%s" in the "%s" region on the page %s', 'id', $value, $tag, $region, $this->getSession()->getCurrentUrl()));
     }
   }
 
@@ -72,7 +60,7 @@ class DKANContext extends RawDKANContext {
   public function assertRegionElementIdVisible($tag, $value, $region) {
     $element = $this->assertRegionElementId($tag, $value, $region);
     if (!$element->isVisible()) {
-        throw new \Exception(sprintf('The "%s" attribute is not visible on the element "%s" in the "%s" region on the page %s', "id", $value, $tag, $region, $this->getSession()->getCurrentUrl()));
+      throw new \Exception(sprintf('The "%s" attribute is not visible on the element "%s" in the "%s" region on the page %s', "id", $value, $tag, $region, $this->getSession()->getCurrentUrl()));
     }
   }
 
@@ -136,8 +124,8 @@ class DKANContext extends RawDKANContext {
     $page = $session->getPage();
     $menu = $page->findById('admin-menu-wrapper');
     $element = $menu->findLink($item);
-    if (null === $element) {
-        throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
+    if (NULL === $element) {
+      throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
     }
   }
 
@@ -149,13 +137,13 @@ class DKANContext extends RawDKANContext {
     $page = $session->getPage();
 
     $menu = $page->findById('admin-menu-wrapper');
-    if (null === $menu) {
+    if (NULL === $menu) {
       throw new \InvalidArgumentException(sprintf('The admin-menu could not be found'));
     }
 
     $element = $menu->findLink($item);
-    if (null === $element) {
-        throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
+    if (NULL === $element) {
+      throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $item));
     }
 
     $element->mouseOver();
@@ -164,14 +152,14 @@ class DKANContext extends RawDKANContext {
   /**
    * @Then I :outcome see a cached page
    */
-  public function iShouldSeeACachedPage($outcome){
+  public function iShouldSeeAcachedPage($outcome) {
     $session = $this->getSession();
     $headers = $session->getResponseHeaders();
     $cacheControl = $headers['Cache-Control'][0];
-    if(strpos($cacheControl, 'public') === false && $outcome === 'should') {
+    if (strpos($cacheControl, 'public') === FALSE && $outcome === 'should') {
       throw new \Exception(sprintf("Page should be cached"));
     }
-    if(strpos($cacheControl, 'no-cache') === false && $outcome === 'should not') {
+    if (strpos($cacheControl, 'no-cache') === FALSE && $outcome === 'should not') {
       throw new \Exception(sprintf("Page should not be cached"));
     }
   }
@@ -181,8 +169,8 @@ class DKANContext extends RawDKANContext {
    */
   public function iShouldSeeTheAdministrationMenu() {
     $xpath = "//div[@id='admin-menu']";
-    // grab the element
-    $element = $this->getXPathElement($xpath);
+    // Grab the element.
+    $element = $this->getXpathElement($xpath);
     if (!isset($element)) {
       throw new \Exception('The admin menu could not be found.');
     }
@@ -193,30 +181,32 @@ class DKANContext extends RawDKANContext {
    */
   public function iShouldHaveAnTextFormatOption($option) {
     $xpath = "//select[@name='body[und][0][format]']//option[@value='" . $option . "']";
-    // grab the element
-    $element = $this->getXPathElement($xpath);
+    // Grab the element.
+    $element = $this->getXpathElement($xpath);
     if (!isset($element)) {
       throw new \Exception("The $option format option could not be found.");
     }
   }
 
   /**
-   * Returns an element from an xpath string
-   * @param  string $xpath
-   *   String representing the xpath
+   * Returns an element from an xpath string.
+   *
+   * @param string $xpath
+   *   String representing the xpath.
+   *
    * @return object
    *   A mink html element
    */
-  protected function getXPathElement($xpath) {
-    // get the mink session
+  protected function getXpathElement($xpath) {
+    // Get the mink session.
     $session = $this->getSession();
-    // runs the actual query and returns the element
+    // Runs the actual query and returns the element.
     $element = $session->getPage()->find(
         'xpath',
         $session->getSelectorsHandler()->selectorToXpath('xpath', $xpath)
     );
-    // errors must not pass silently
-    if (null === $element) {
+    // Errors must not pass silently.
+    if (NULL === $element) {
       throw new \InvalidArgumentException(sprintf('Could not evaluate XPath: "%s"', $xpath));
     }
     return $element;
@@ -225,38 +215,40 @@ class DKANContext extends RawDKANContext {
   /**
    * @Then I should see :arg1 items in the :arg2 region
    */
-  public function iShouldSeeItemsInTheRegion($arg1, $arg2)
-  {
+  public function iShouldSeeItemsInTheRegion($arg1, $arg2) {
     $context = $this->minkContext;
     $region = $context->getRegion($arg2);
     $items = $region->findAll('css', '.views-row');
-    $num = sizeof($items);
-    if($num === 0){
+    $num = count($items);
+    if ($num === 0) {
       $items = $region->find('css', '.views-row-last');
-      if(!empty($items)) $num = 2;
-      else{
+      if (!empty($items)) {
+        $num = 2;
+      }
+      else {
         $items = $region->find('css', '.views-row-first');
-        if(!empty($items)) $num = 1;
+        if (!empty($items)) {
+          $num = 1;
+        }
       }
     }
-    if($num !== intval($arg1)){
-      throw new \Exception(sprintf("Did not find %d %s items, found %d instead.", $arg1, $arg2, sizeof($num)));
+    if ($num !== intval($arg1)) {
+      throw new \Exception(sprintf("Did not find %d %s items, found %d instead.", $arg1, $arg2, count($num)));
     }
   }
 
   /**
    * @Then /^I should see a gravatar image in the "([^"]*)" region$/
    */
-  public function iShouldSeeAGravatarImageInTheRegion($region)
-  {
-      $regionObj = $this->minkContext->getRegion($region);
-      $elements = $regionObj->findAll('css', 'img');
-      if (!empty($elements)) {
-          foreach ($elements as $element) {
-              if ($element->hasAttribute('src')) {
-                  $value = $element->getAttribute('src');
-                  if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
-                      return;
+  public function iShouldSeeAgravatarImageInTheRegion($region) {
+    $regionObj = $this->minkContext->getRegion($region);
+    $elements = $regionObj->findAll('css', 'img');
+    if (!empty($elements)) {
+      foreach ($elements as $element) {
+        if ($element->hasAttribute('src')) {
+          $value = $element->getAttribute('src');
+          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
+            return;
           }
         }
       }
@@ -268,26 +260,25 @@ class DKANContext extends RawDKANContext {
   /**
    * @Then /^I should not see a gravatar image in the "([^"]*)" region$/
    */
-  public function iShouldNotSeeAGravatarImageInTheRegion($region)
-  {
-      $regionObj = $this->minkContext->getRegion($region);
-      $elements = $regionObj->findAll('css', 'img');
-      $match = FALSE;
-      if (!empty($elements)) {
-          foreach ($elements as $element) {
-              if ($element->hasAttribute('src')) {
-                  $value = $element->getAttribute('src');
-                  if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
-                      $match = TRUE;
-                    }
+  public function iShouldNotSeeAgravatarImageInTheRegion($region) {
+    $regionObj = $this->minkContext->getRegion($region);
+    $elements = $regionObj->findAll('css', 'img');
+    $match = FALSE;
+    if (!empty($elements)) {
+      foreach ($elements as $element) {
+        if ($element->hasAttribute('src')) {
+          $value = $element->getAttribute('src');
+          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
+            $match = TRUE;
+          }
         }
       }
     }
     if ($match) {
-          throw new \Exception(sprintf('The element gravatar link was found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
+      throw new \Exception(sprintf('The element gravatar link was found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
     }
     else {
-          return;
+      return;
     }
   }
 
@@ -295,19 +286,19 @@ class DKANContext extends RawDKANContext {
    * @Then I should see (the|a) user page
    * @Then I should see the :user user page
    */
-  public function assertSeeTheUserPage($user = false){
+  public function assertSeeTheUserPage($user = FALSE) {
 
-    //TODO: This relies on the breadcrumb, can it be made better?
+    // @TODO: This relies on the breadcrumb, can it be made better?
     $regionObj = $this->minkContext->getRegion('breadcrumb');
     $val = $regionObj->find('css', '.active-trail');
     $html = $val->getHtml();
-    if($html !== $user){
+    if ($html !== $user) {
       throw new \Exception('Could not find user name in breadcrumb. Text found:' . $val);
     }
 
     $regionObj = $this->minkContext->getRegion('user page');
     $val = $regionObj->getText();
-    if($user !== false && strpos($val, $user) === false){
+    if ($user !== FALSE && strpos($val, $user) === FALSE) {
       throw new \Exception('Could not find username in the user page region. Text found:' . $val);
     }
   }
@@ -316,13 +307,13 @@ class DKANContext extends RawDKANContext {
    * @Then I should see (the|a) user command center
    * @Then I should see the :user user command center
    */
-  public function assertSeeUserCommandCenter($user = false){
+  public function assertSeeUserCommandCenter($user = FALSE) {
     $regionObj = $this->minkContext->getRegion('user command center');
     $val = $regionObj->getText();
-    if($user !== false && strpos($val, $user) === FALSE){
+    if ($user !== FALSE && strpos($val, $user) === FALSE) {
       throw new \Exception('Could not find username in the user command center region. Text found:' . $val);
     }
-    //TODO: Consider checking for the elements that should be in the command center.
+    // @TODO: Consider checking for the elements that should be in the command center.
   }
 
   /**
@@ -332,7 +323,7 @@ class DKANContext extends RawDKANContext {
    */
   public function deleteTempUsers(AfterScenarioScope $scope) {
     if ($scope->getScenario()->hasTag('deleteTempUsers')) {
-      // Get all users that start with tempUser*
+      // Get all users that start with tempUser*.
       $results = db_query("SELECT uid from users where name like 'tempuser%%'");
       foreach ($results as $user) {
         user_delete($user->uid);
@@ -340,16 +331,13 @@ class DKANContext extends RawDKANContext {
     }
   }
 
-
-  // ------------- Junk from previous FeatureContext ------------------- //
   /**
    * @Then /^the administrator role should have all permissions$/
    */
   public function theAdministratorRoleShouldHaveAllPermissions() {
-    // Get list of all permissions
+    // Get list of all permissions.
     $permissions = array();
     foreach (module_list(FALSE, FALSE, TRUE) as $module) {
-      // Drupal 7
       if (module_invoke($module, 'permission')) {
         $permissions = array_merge($permissions, array_keys(module_invoke($module, 'permission')));
       }
@@ -357,7 +345,7 @@ class DKANContext extends RawDKANContext {
     $administrator_role = user_role_load_by_name('administrator');
     $administrator_perms = db_query("SELECT permission FROM {role_permission} WHERE rid = :admin_rid", array(':admin_rid' => $administrator_role->rid))
       ->fetchCol();
-    foreach($permissions as $perm) {
+    foreach ($permissions as $perm) {
       if (!in_array($perm, $administrator_perms)) {
         echo $perm;
         throw new Exception(sprintf("Administrator role missing permission %s", $perm));
@@ -393,8 +381,7 @@ class DKANContext extends RawDKANContext {
   /**
    * @Then /^I wait for the dialog box to appear$/
    */
-  public function iWaitForTheDialogBoxToAppear()
-  {
+  public function iWaitForTheDialogBoxToAppear() {
     $this->getSession()->wait(2000, "jQuery('#user-login-dialog').children().length > 0");
   }
 
@@ -406,27 +393,8 @@ class DKANContext extends RawDKANContext {
     $session->wait($milliseconds * 1000);
   }
 
-
-
-
-  /**
-   * Selects option in select field with specified by node title.
-   *
-   * @When /^(?:|I )select node named "(?P<option>(?:[^"]|\\")*)" from "(?P<select>(?:[^"]|\\")*)"$/
-   */
-//  public function selectNodeOption($select, $option)
-//  {
-//    $this->drushContext->assertDrushCommandWithArgument('php-eval', "\"return db_query('SELECT nid FROM node WHERE title = \'$option\'')->fetchField();\"");
-//    $option = $this->drushContext->readDrushOutput();
-//    $option = trim(str_replace(array("'"), "", $option));
-//    $select = $this->fixStepArgument($select);
-//    $option = $this->fixStepArgument($option);
-//    $this->getSession()->getPage()->selectFieldOption($select, $option);
-//  }
-
   /**
    * Properly inputs item in field rendered by Chosen.js.
-   *
    *
    * @Given /^I fill in the chosen field "([^"]*)" with "([^"]*)"$/
    */
@@ -435,9 +403,8 @@ class DKANContext extends RawDKANContext {
     $field = $this->fixStepArgument($field);
     $value = $this->fixStepArgument($value);
     // Focus means autocoplete will actually show up.
-    $xpath = '//div[@id="'. $field . '"]//input';
+    $xpath = '//div[@id="' . $field . '"]//input';
     $this->getSession()->getDriver()->focus($xpath);
-    //$page->fillField($field, $value);
     $this->iWaitForSeconds(1);
     // Selects the first dropdown since there is no id or other way to
     // reference the desired entry.
@@ -446,7 +413,7 @@ class DKANContext extends RawDKANContext {
       $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
 
     );
-    if(!isset($title)){
+    if (!isset($title)) {
       throw new \Exception(sprintf('"' . $value . '" option was not found in the chosen field.'));
     }
     $title->click();
@@ -454,22 +421,22 @@ class DKANContext extends RawDKANContext {
 
   /**
    * @Given /^I select "([^"]*)" from "([^"]*)" chosen\.js select box$/
-   **/
+   */
   public function iSelectFromChosenJsSelectBox($option, $select) {
     $select = $this->fixStepArgument($select);
     $option = $this->fixStepArgument($option);
 
     $page = $this->getSession()->getPage();
-    $field = $page->findField($select, true);
+    $field = $page->findField($select, TRUE);
 
-    if (null === $field) {
+    if (NULL === $field) {
       throw new \Exception(sprintf('"' . $select . '" field was not found in the form.'));
     }
 
     $id = $field->getAttribute('id');
     $opt = $field->find('named', array('option', $option));
 
-    if ($opt === null) {
+    if ($opt === NULL) {
       throw new \Exception(sprintf('"' . $option . '" option was not found in the chosen field.'));
     }
 
@@ -501,37 +468,6 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
-   * @Given /^I click the chosen field "([^"]*)" and enter "([^"]*)"$/
-   *
-   * DEPRECATED: DONT USE. The clicking of the chosen fields to select some values
-   * didn't work well (selenium errors about the value not being visible). Commenting
-   * this out for now in case someone wants to replace it later with something that works.
-   */
-  /*public function iClickTheChosenFieldAndEnter($field, $value) {
-    $session = $this->getSession();
-    $page = $session->getPage();
-    $field = $this->fixStepArgument($field);
-    $value = $this->fixStepArgument($value);
-    // Click chosen field.
-    $field_click = $session->getPage()->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', '//span[.="' . $field . '"]')
-
-      );
-    $field_click->click();
-    $this->iDebugWaitForSeconds(1);
-    // Click value that now appears.
-    $title = $session->getPage()->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
-      );
-    if(!isset($title)){
-      throw new Exception(sprintf('"' . $value . '" option was not found in the chosen field.'));
-    }
-    $title->click();
-  }*/
-
-  /**
    * Click some text.
    *
    * @When /^I click on the text "([^"]*)"$/
@@ -554,7 +490,6 @@ class DKANContext extends RawDKANContext {
    *
    * @When I click on the exact text :text
    */
-
   public function iClickOnTheExactText($text) {
     $session = $this->getSession();
     $element = $session->getPage()->find(
@@ -582,7 +517,7 @@ class DKANContext extends RawDKANContext {
         '//div[contains(@class, "leaflet-marker-pane")]//img[' . $num . ']'
       )
     );
-    if (null === $element) {
+    if (NULL === $element) {
       throw new \InvalidArgumentException(sprintf('Cannot find map icon: "%s"', $num));
     }
     $element->click();
@@ -626,7 +561,7 @@ class DKANContext extends RawDKANContext {
     $page = $session->getPage();
     $field = $page->findField($locator);
 
-    if (null === $field) {
+    if (NULL === $field) {
       throw new ElementNotFoundException(
         $this->getSession(), 'form field', 'id|name|label|value', $locator
       );
@@ -644,9 +579,8 @@ class DKANContext extends RawDKANContext {
     sleep($time);
   }
 
-
   /**
-   * Wait to click on something in case it does not appear immediately (javascript)
+   * Wait to click on something in case it does not appear immediately.
    *
    * @Given I wait and press :text
    */
@@ -659,23 +593,23 @@ class DKANContext extends RawDKANContext {
       }, $wait);
       return $found;
     }
-    catch(\Exception $e) {
-      throw new \Exception( "Couldn't find button $text within $wait seconds");
+    catch (\Exception $e) {
+      throw new \Exception("Couldn't find button $text within $wait seconds");
     }
   }
 
   /**
- * @When I wait for :text to disappear
- * @param $text
- * @throws \Exception
- */
-public function iWaitForTextToDisappear($text)
-{
-    $this->jsContext->spin(function($context) use ($text) {
+   * @When I wait for :text to disappear
+   *
+   * @param string $text
+   *   Text to wait for.
+   * @throws \Exception
+   */
+  public function iWaitForTextToDisappear($text) {
+    $this->jsContext->spin(function ($context) use ($text) {
       return !$context->getSession()->getPage()->hasContent($text);
     }, 10);
-}
-
+  }
 
   /**
    * @When I attach the drupal file :arg1 to :arg2
@@ -683,8 +617,7 @@ public function iWaitForTextToDisappear($text)
    * Overrides attachFileToField() in Mink context to fix but with relative
    * path.
    */
-  public function iAttachTheDrupalFileTo($path, $field)
-  {
+  public function iAttachTheDrupalFileTo($path, $field) {
     $field = $this->fixStepArgument($field);
     $path = $this->getMinkParameter('files_path') . '/' . $path;
     $this->getSession()->getPage()->attachFileToField($field, $path);
@@ -693,8 +626,7 @@ public function iWaitForTextToDisappear($text)
   /**
    * @When I attach the file :path to :field using file resup
    */
-  public function iAttachTheDrupalFileUsingFileResup($path, $field)
-  {
+  public function iAttachTheDrupalFileUsingFileResup($path, $field) {
     $path = $this->getMinkParameter('files_path') . '/' . $path;
     $field = $this->fixStepArgument($field);
     $session = $this->getSession();
@@ -705,7 +637,7 @@ public function iWaitForTextToDisappear($text)
   }
 
   /**
-   * Wait for upload file to finish
+   * Wait for upload file to finish.
    *
    * Wait until the class="progress-bar" element is gone,
    * or timeout after 30 seconds (30,000 ms).
@@ -719,17 +651,18 @@ public function iWaitForTextToDisappear($text)
   /**
    * @Then I should see the list of permissions for :role role
    */
-  public function iShouldSeePermissionsForRole($role)
-  {
+  public function iShouldSeePermissionsForRole($role) {
 
     $role_names = og_get_user_roles_name();
     if ($rid = array_search($role, $role_names)) {
       $permissions = og_role_permissions(array($rid => ''));
-      foreach(reset($permissions) as $machine_name => $perm) {
-        // Currently the permissions returned by og for a role are only the machine name and its true value,
-        // need to find a way to find the checkbox of a permission and see if it is checked
-        $search = "edit-".$rid."-".strtr($machine_name, " ", "-");
-        if(!$this->getSession()->getPage()->hasCheckedField($search)){
+      foreach (reset($permissions) as $machine_name => $perm) {
+        // Currently the permissions returned by og for a role are only the
+        // machine name and its true value.
+        // Need to find a way to find the checkbox of a permission and see if
+        // it is checked.
+        $search = "edit-" . $rid . "-" . strtr($machine_name, " ", "-");
+        if (!$this->getSession()->getPage()->hasCheckedField($search)) {
           throw new \Exception("Permission $machine_name is not set for $role.");
         }
       }
@@ -739,19 +672,20 @@ public function iWaitForTextToDisappear($text)
   /**
    * @Then I should get :format content from the :button button
    */
-  public function assertButtonReturnsFormat($format, $button){
+  public function assertButtonReturnsFormat($format, $button) {
 
-    if($button === "JSON"){
+    if ($button === "JSON") {
       $button = "json view of content";
     }
 
     $content = $this->getSession()->getPage()->findLink($button);
     try {
       $file = file_get_contents($content->getAttribute("href"));
-    }catch(\Exception $e){
+    }
+    catch (\Exception $e) {
       throw $e;
     }
-    if($format === "JSON") {
+    if ($format === "JSON") {
       json_decode($file);
       if (!json_last_error() == JSON_ERROR_NONE) {
         throw new \Exception("Not JSON format.");
@@ -762,30 +696,33 @@ public function iWaitForTextToDisappear($text)
   /**
    * @Then I should see the redirect button for :site
    */
-  public function assertRedirectButton($site){
+  public function assertRedirectButton($site) {
     $page = $this->getSession()->getPage();
 
-    switch($site){
+    switch ($site) {
       case 'Google+':
         $element = $page->find('css', '.fa-google-plus-square');
         $link = $element->getParent()->getAttribute("href");
         $return = preg_match('#https:\/\/plus\.google\.com\/share\?url=.*dataset\/.*#', $link);
         break;
+
       case 'Twitter':
         $element = $page->find('css', '.fa-twitter-square');
         $link = $element->getParent()->getAttribute("href");
         $return = preg_match('#https:\/\/twitter\.com\/share\?url=.*dataset\/.*#', $link);
         break;
+
       case 'Facebook':
         $element = $page->find('css', '.fa-facebook-square');
         $link = $element->getParent()->getAttribute("href");
         $return = preg_match('#https:\/\/www\.facebook\.com\/sharer\.php.*dataset\/.*#', $link);
         break;
+
       default:
         throw new \Exception("Not a valid site for DKAN sharing.");
     }
 
-    if(!$return){
+    if (!$return) {
       throw new \Exception("The $site redirect button is not properly configured.");
     }
   }
@@ -793,16 +730,14 @@ public function iWaitForTextToDisappear($text)
   /**
    * @When I disable the module :module
    */
-  public function iDisableTheModule($module)
-  {
+  public function iDisableTheModule($module) {
     module_disable(array($module));
   }
 
   /**
    * @When I enable the module :module
    */
-  public function iEnableTheModule($module)
-  {
+  public function iEnableTheModule($module) {
     module_enable(array($module));
   }
 
@@ -810,25 +745,25 @@ public function iWaitForTextToDisappear($text)
    * Returns fixed step argument (with \\" replaced back to ").
    *
    * @param string $argument
+   *   Argument to fix.
    *
    * @return string
+   *   Fixed argument.
    */
-  public function fixStepArgument($argument)
-  {
+  public function fixStepArgument($argument) {
     return str_replace('\\"', '"', $argument);
   }
 
-
   /**
-   * Checks if a button with id|name|title|alt|value exists in a region
+   * Checks if a button with id|name|title|alt|value exists in a region.
    *
    * @Then I should not see the button :button in the :region( region)
    * @Then I should not see the :button button in the :region( region)
    *
-   * @param $button
-   *   string The id|name|title|alt|value of the button
-   * @param $region
-   *   string The region in which the button should not be found
+   * @param string $button
+   *   The id|name|title|alt|value of the button.
+   * @param string $region
+   *   The region in which the button should not be found.
    *
    * @throws \Exception
    *   If region cannot be found or the button is present on region.
@@ -844,8 +779,7 @@ public function iWaitForTextToDisappear($text)
   /**
    * @Then all default content with type :type and bundle :bundle listed in :fixture fixture should :status
    */
-  public function allDefaultContentWithTypeAndBundleListedInFixtureShould($type, $bundle, $fixture, $status)
-  {
+  public function allDefaultContentWithTypeAndBundleListedInFixtureShould($type, $bundle, $fixture, $status) {
     // Prepare data.
     $default_content_mod_path = drupal_get_path('module', 'dkan_default_content');
 
@@ -854,7 +788,7 @@ public function iWaitForTextToDisappear($text)
 
     // Load the list of content.
     $content_list = file_get_contents($list_fixture);
-    $content_list = json_decode($content_list, true);
+    $content_list = json_decode($content_list, TRUE);
 
     foreach ($content_list['result'] as $content_id) {
 
@@ -863,9 +797,10 @@ public function iWaitForTextToDisappear($text)
 
       // Load content data.
       $content_data = file_get_contents($show_fixture);
-      $content_data = json_decode($content_data, true);
+      $content_data = json_decode($content_data, TRUE);
 
-      // Get content UUID. Some content like datasets export the UUID in the ID field.
+      // Get content UUID. Some content like datasets export the UUID in the ID
+      // field.
       $content_uuid = (isset($content_data['result']['uuid'])) ? $content_data['result']['uuid'] : $content_data['result']['id'];
 
       // Try to load the content based on the UUID.
@@ -887,17 +822,18 @@ public function iWaitForTextToDisappear($text)
   }
 
   /**
-   * Check a table with the given class name exists in the page
+   * Check a table with the given class name exists in the page.
    *
    * @Given I should see a table with a class name :class_name
    *
    * @return \Behat\Mink\Element\NodeElement
+   *   The return value.
    *
    * @throws \Exception
    */
   public function assertTableByClassName($class_name) {
     $page = $this->getSession()->getPage();
-    $table = $page->findAll('css', 'table.'.$class_name);
+    $table = $page->findAll('css', 'table.' . $class_name);
     if (empty($table)) {
       throw new \Exception(sprintf('No table found on the page %s', $this->getSession()->getCurrentUrl()));
     }
@@ -923,14 +859,14 @@ public function iWaitForTextToDisappear($text)
     array_pop($rows);
 
     if (count($rows) != $number) {
-          throw new \Exception(sprintf('Found %s rows in the table with the class name %s of the expected %s.', count($rows), $class_name, $number));
+      throw new \Exception(sprintf('Found %s rows in the table with the class name %s of the expected %s.', count($rows), $class_name, $number));
     }
   }
 
   /**
    * Helper function to get current context.
    */
-  function getRegion($region) {
+  public function getRegion($region) {
     $session = $this->getSession();
     $regionObj = $session->getPage()->find('region', $region);
     if (!$regionObj) {
@@ -944,7 +880,7 @@ public function iWaitForTextToDisappear($text)
    */
   public function iShouldSeeItemsOfInTheRegion($number, $item, $region) {
     $regionObj = $this->getRegion($region);
-    // Count the number of items in the region
+    // Count the number of items in the region.
     $count = count($regionObj->findAll('css', $item));
     if (!$count) {
       throw new \Exception(sprintf("No items found in the '%s' region.", $region));
@@ -966,7 +902,7 @@ public function iWaitForTextToDisappear($text)
    */
   public function iShouldSeeItemsOfOrMoreInTheRegion($number, $item, $region) {
     $regionObj = $this->getRegion($region);
-    // Count the number of items in the region
+    // Count the number of items in the region.
     $count = count($regionObj->findAll('css', $item));
     if (!$count) {
       throw new \Exception(sprintf("No items found in the '%s' region.", $region));
@@ -981,8 +917,7 @@ public function iWaitForTextToDisappear($text)
   /**
    * @Then I should see :arg1 field
    */
-  public function iShouldSeeField($arg1)
-  {
+  public function iShouldSeeField($arg1) {
     $session = $this->getSession();
     $page = $session->getPage();
     $field = $page->findField($arg1);
@@ -994,8 +929,7 @@ public function iWaitForTextToDisappear($text)
   /**
    * @Then I should not see :arg1 field
    */
-  public function iShouldNotSeeField($arg1)
-  {
+  public function iShouldNotSeeField($arg1) {
     $session = $this->getSession();
     $page = $session->getPage();
     $field = $page->findField($arg1);
@@ -1007,8 +941,7 @@ public function iWaitForTextToDisappear($text)
   /**
    * @Then the text :text should be visible in the element :element
    */
-  public function theTextShouldBeVisible($text, $selector)
-  {
+  public function theTextShouldBeVisible($text, $selector) {
     $element = $this->getSession()->getPage();
     $nodes = $element->findAll('css', $selector . ":contains('" . $text . "')");
     foreach ($nodes as $node) {
@@ -1025,8 +958,7 @@ public function iWaitForTextToDisappear($text)
   /**
    * @Then the text :text should not be visible in the element :element
    */
-  public function theTextShouldNotBeVisible($text, $selector)
-  {
+  public function theTextShouldNotBeVisible($text, $selector) {
     $element = $this->getSession()->getPage();
     $nodes = $element->findAll('css', $selector . ":contains('" . $text . "')");
     foreach ($nodes as $node) {
@@ -1041,8 +973,8 @@ public function iWaitForTextToDisappear($text)
   }
 
   /**
-    * @Then I visit the link :selector
-    */
+   * @Then I visit the link :selector
+   */
   public function iVisitTheLink($selector) {
     $region = $this->getRegion("content");
     $items = $region->findAll('css', $selector);
@@ -1053,58 +985,5 @@ public function iWaitForTextToDisappear($text)
     $session = $this->getSession();
     $session->visit($this->locatePath($url));
   }
-
-  /************************************/
-  /* Gravatar                         */
-  /************************************/
-
-//  /**
-//   * @Then /^I should see a gravatar link in the "([^"]*)" region$/
-//   */
-//  public function iShouldSeeAGravatarLinkInTheRegion($region)
-//  {
-////   $regionObj = $this->getMainContext()->getRegion($region);
-////    $elements = $regionObj->findAll('css', 'img');
-////    if (!empty($elements)) {
-////      foreach ($elements as $element) {
-////        if ($element->hasAttribute('src')) {
-////          $value = $element->getAttribute('src');
-////          //if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
-////            return;
-////          }
-////        }
-////      }
-////    }
-////    throw new \Exception(sprintf('The element gravatar link was not found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
-//
-//  }
-//
-//  /**
-//   * @Then /^I should not see a gravatar link in the "([^"]*)" region$/
-//   */
-//  public function iShouldNotSeeAGravatarLinkInTheRegion($region)
-//  {
-////    $regionObj = $this->getMainContext()->getRegion($region);
-////    $elements = $regionObj->findAll('css', 'img');
-////    $match = FALSE;
-////    if (!empty($elements)) {
-////      foreach ($elements as $element) {
-////        if ($element->hasAttribute('src')) {
-////          $value = $element->getAttribute('src');
-////          if (preg_match('/\/\/www\.gravatar\.com\/avatar\/.*/', $value)) {
-////            $match = TRUE;
-////          }
-////        }
-////      }
-////    }
-////    if ($match) {
-////      throw new \Exception(sprintf('The element gravatar link was found in the "%s" region on the page %s', $region, $this->getSession()->getCurrentUrl()));
-////    }
-////    else {
-////      return;
-////    }
-//  }
-
-
 
 }
