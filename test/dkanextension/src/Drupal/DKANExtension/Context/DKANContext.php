@@ -1005,4 +1005,39 @@ public function iWaitForTextToDisappear($text)
     $session = $this->getSession();
     $session->visit($this->locatePath($url));
   }
+
+  /**
+   * @Given /^I fill in the autocomplete field "([^"]*)" with "([^"]*)"$/
+   *
+   * Fill in the 'Autocomplete' field on a form.
+   */
+  public function iFillInTheAutocompleteFieldWith($field, $value) {
+    $session = $this->getSession();
+    $page = $session->getPage();
+
+    $element = $page->findField($field);
+    if (!$element) {
+      throw new ElementNotFoundException($session, NULL, 'named', $field);
+    }
+    $page->fillField($field, $value);
+
+    // Trigger all needed key events in order for the autocomplete to be triggered.
+    // Just filling the field with a value is not enough.
+    // TODO: Is there a better way to do this?
+    $chars = str_split($value);
+    $last_char = array_pop($chars);
+    // Delete last char.
+    $session->getDriver()->keyDown($element->getXpath(), 8);
+    $session->getDriver()->keyUp($element->getXpath(), 8);
+    // Re-add last char.
+    $session->getDriver()->keyDown($element->getXpath(), $last_char);
+    $session->getDriver()->keyUp($element->getXpath(), $last_char);
+    $this->iWaitForSeconds(5);
+
+    $title = $page->find(
+      'xpath',
+      $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
+    );
+    $title->click();
+  }
 }
