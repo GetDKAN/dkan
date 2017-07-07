@@ -37,6 +37,8 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
+   * Confirm that the feedback is on an specific moderation state.
+   *
    * @Then The feedback :title is in :state moderation state
    */
   public function theFeedbackIsInModerationState($title, $state) {
@@ -48,6 +50,8 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
+   * Vote up the feedback.
+   *
    * @Then I vote up the feedback :title
    */
   public function iVoteUpTheFeedback($title) {
@@ -59,6 +63,8 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
+   * Vote down the feedback.
+   *
    * @Then I vote down the feedback :title
    */
   public function iVoteDownTheFeedback($title) {
@@ -70,7 +76,7 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
-   *
+   * Get the voting link.
    */
   private function getVotingLink($title, $link_class) {
     $links = $this->getSession()->getPage()->findAll('xpath', "//td[contains(@class,'views-field-title')]/a[text()='" . $title . "']/../../td/div/a[contains(@class, '" . $link_class . "')]");
@@ -78,6 +84,8 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
+   * Confirms that a feedback is rated with a value.
+   *
    * @Then The feedback :title should be rated :rating
    */
   public function theFeedbackIsRated($title, $rating) {
@@ -90,9 +98,11 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
+   * Confirm that a badge is next to the feedback.
+   *
    * @Then I should see a badge next to feedback :title
    */
-  public function iShouldSeeABadgeNextToFeedback($title) {
+  public function iShouldSeeBadgeNextToFeedback($title) {
     $badged_imgs = $this->getSession()->getPage()->findAll('xpath', "//td[contains(@class,'views-field-title')]/a[text()='" . $title . "']/../../td[contains(@class, 'authenticated-user')]");
     if (empty($badged_imgs)) {
       throw new \Exception("Feedback '$title' has no badge on the author picture.");
@@ -100,9 +110,11 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
+   * Confirm that there is no badge next to the feedback.
+   *
    * @Then I should not see a badge next to feedback :title
    */
-  public function iShouldNotSeeABadgeNextToFeedback($title) {
+  public function iShouldNotSeeBadgeNextToFeedback($title) {
     $badged_imgs = $this->getSession()->getPage()->findAll('xpath', "//td[contains(@class,'views-field-title')]/a[text()='" . $title . "']/../../td[contains(@class, 'authenticated-user')]");
     if (!empty($badged_imgs)) {
       throw new \Exception("Feedback '$title' has a badge on the author picture.");
@@ -110,7 +122,7 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
-   * Override RawDKANEntityContext::save()
+   * Override RawDKANEntityContext::save().
    */
   public function save($fields) {
     global $user;
@@ -131,7 +143,7 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
-   * Override RawDKANEntityContext::postSave()
+   * Override RawDKANEntityContext::postSave().
    */
   public function postSave($wrapper, $fields) {
     parent::postSave($wrapper, $fields);
