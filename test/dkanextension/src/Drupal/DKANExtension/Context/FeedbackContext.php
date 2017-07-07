@@ -1,13 +1,8 @@
 <?php
+
 namespace Drupal\DKANExtension\Context;
 
-use Drupal\DKANExtension\Context\RawDKANEntityContext;
-use Drupal\DKANExtension\Context\ModeratorTrait;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Symfony\Component\Console\Helper\Table;
 
 /**
  * Defines application features from the specific context.
@@ -46,7 +41,7 @@ class FeedbackContext extends RawDKANEntityContext {
    */
   public function theFeedbackIsInModerationState($title, $state) {
     $node = reset($this->getNodeByTitle($title));
-    if(!$node) {
+    if (!$node) {
       throw new \Exception(sprintf($title . " node not found."));
     }
     $this->isNodeInModerationState($node, $state);
@@ -74,6 +69,9 @@ class FeedbackContext extends RawDKANEntityContext {
     $link->click();
   }
 
+  /**
+   *
+   */
   private function getVotingLink($title, $link_class) {
     $links = $this->getSession()->getPage()->findAll('xpath', "//td[contains(@class,'views-field-title')]/a[text()='" . $title . "']/../../td/div/a[contains(@class, '" . $link_class . "')]");
     return array_pop($links);
@@ -127,7 +125,7 @@ class FeedbackContext extends RawDKANEntityContext {
     parent::save($fields);
 
     if ($author) {
-    // Restore the current behat user.
+      // Restore the current behat user.
       $user = $current_user;
     }
   }
@@ -146,9 +144,10 @@ class FeedbackContext extends RawDKANEntityContext {
         'value_type' => 'points',
         'value' => $fields['rating'],
         'tag' => 'feedback',
-        );
+      );
       $criteria = NULL;
       votingapi_set_votes($votes, $criteria);
     }
   }
+
 }

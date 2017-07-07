@@ -630,12 +630,12 @@ class DKANContext extends RawDKANContext {
   /**
    * Wait for a text to dissapear.
    *
-   * @When I wait for :text to disappear
-   *
    * @param string $text
-   *  The text that should dissapear.
+   *   The text that should dissapear.
    *
    * @throws \Exception
+   *
+   * @When I wait for :text to disappear
    */
   public function iWaitForTextToDisappear($text) {
     $this->jsContext->spin(
@@ -803,17 +803,16 @@ class DKANContext extends RawDKANContext {
   /**
    * Checks if a button with id|name|title|alt|value exists in a region.
    *
-   * @Then I should not see the button :button in the :region( region)
-   * @Then I should not see the :button button in the :region( region)
-   *
    * @param string $button
    *   The id|name|title|alt|value of the button.
-   *
    * @param string $region
    *   The region in which the button should not be found.
    *
    * @throws \Exception
    *   If region cannot be found or the button is present on region.
+   *
+   * @Then I should not see the button :button in the :region( region)
+   * @Then I should not see the :button button in the :region( region)
    */
   public function iShouldNotSeeTheButtonInThe($button, $region) {
     $regionObj = $this->getMink()->getRegion($region);
@@ -1082,5 +1081,5 @@ class DKANContext extends RawDKANContext {
     );
     $title->click();
   }
-  
+
 }
