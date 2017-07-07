@@ -571,36 +571,6 @@ class DKANContext extends RawDKANContext {
   }
 
   /**
-   * Copy of "I fill in" but doesn't escape "(".
-   *
-   * When using "I fill in" it escaped autocomplete fields node id. Just using
-   * the title wouldn't work. The following focuses on the field and selects
-   * the first dropdown.
-   *
-   * @Given /^I fill in the autocomplete field "([^"]*)" with "([^"]*)"$/
-   */
-  public function iFillInTheAutoFieldWith($field, $value) {
-    $session = $this->getSession();
-    $field = $this->fixStepArgument($field);
-    $value = $this->fixStepArgument($value);
-    $input_title = $session->getPage()->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', '//input[@value="' . $field . '"]')
-
-    );
-    $input_title->click();
-    $this->iWaitForSeconds(2);
-    // Selects the first dropdown since there is no id or other way to
-    // reference the desired entry.
-    $title = $session->getPage()->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
-
-    );
-    $title->click();
-  }
-
-  /**
    * @Given /^I empty the field "([^"]*)"$/
    */
   public function iEmptyTheField($locator) {
