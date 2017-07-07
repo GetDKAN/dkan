@@ -30,7 +30,7 @@ As a Site Manager, you might be involved in adding content in earlier stages and
 
 **Using the Add content menu.** The most direct path for creating content is through the **Add content** menu item on the Admin Menu bar. If you're ready to jump right into creating content select the content type and begin completing the fields in the form.
 
-.. image:: ../images/site_manager_playbook/adding_new_content/adding_new_content_01.png
+![add content menu](/images/site_manager_playbook/adding_new_content/adding_new_content_01.png)
 
 Using the Content menu. In some cases you may want to see what content exists before creating something from scratch. As a Site Manager you're able to view and edit all the content that has been authored on your Granicus Open Data site. It's not uncommon that content is added but never completed, is complete but outdated, or simply has an unpublished status. As your site matures and contains more content, it's helpful to check what already exists before starting a new piece of content.
 
