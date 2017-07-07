@@ -631,7 +631,10 @@ class DKANContext extends RawDKANContext {
    * Wait for a text to dissapear.
    *
    * @When I wait for :text to disappear
-   * @param $text
+   *
+   * @param string $text
+   *  The text that should dissapear.
+   *
    * @throws \Exception
    */
   public function iWaitForTextToDisappear($text) {
@@ -804,9 +807,10 @@ class DKANContext extends RawDKANContext {
    * @Then I should not see the :button button in the :region( region)
    *
    * @param string $button
-   *   The id|name|title|alt|value of the button
+   *   The id|name|title|alt|value of the button.
+   *
    * @param string $region
-   *   The region in which the button should not be found
+   *   The region in which the button should not be found.
    *
    * @throws \Exception
    *   If region cannot be found or the button is present on region.
@@ -871,7 +875,7 @@ class DKANContext extends RawDKANContext {
    * @Given I should see a table with a class name :class_name
    *
    * @return \Behat\Mink\Element\NodeElement
-   *  Returns the table object.
+   *   Returns the table object.
    *
    * @throws \Exception
    */
@@ -1078,4 +1082,5 @@ class DKANContext extends RawDKANContext {
     );
     $title->click();
   }
+  
 }

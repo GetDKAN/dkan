@@ -48,10 +48,10 @@ class ResourceContext extends RawDKANEntityContext{
   }
 
     /**
-     * Override RawDKANEntityContext::post_save()
+     * Override RawDKANEntityContext::postSave()
      */
-    public function post_save($wrapper, $fields) {
-        parent::post_save($wrapper, $fields);
+    public function postSave($wrapper, $fields) {
+        parent::postSave($wrapper, $fields);
         $this->moderate($wrapper, $fields);
     }
 

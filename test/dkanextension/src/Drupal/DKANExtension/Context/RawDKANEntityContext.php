@@ -381,9 +381,9 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
   public function save($fields) {
     /** @var EntityDrupalWrapper $wrapper */
     $wrapper = $this->new_wrapper();
-    $this->pre_save($wrapper, $fields);
+    $this->preSave($wrapper, $fields);
     $wrapper->save();
-    $this->post_save($wrapper, $fields);
+    $this->postSave($wrapper, $fields);
     return $wrapper;
   }
 
@@ -393,7 +393,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
     * @param EntityDrupalWrapper $wrapper
     * @param $fields
     */
-  public function pre_save($wrapper, $fields) {
+  public function preSave($wrapper, $fields) {
     // Update the changed date after the entity has been saved.
     if (isset($fields['date changed'])) {
       unset($fields['date changed']);
@@ -415,7 +415,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    * @param EntityDrupalWrapper $wrapper
    * @param array $fields
    */
-  public function post_save($wrapper, $fields) {
+  public function postSave($wrapper, $fields) {
     $this->dispatchDKANHooks('AfterDKANEntityCreateScope', $wrapper, $fields);
     // Remove the base url from the url and add it
     // to the page array for easy navigation.
