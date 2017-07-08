@@ -16,16 +16,13 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingContext {
 
   // Store entities as EntityMetadataWrappers for easy property inspection.
-  protected $entity_type = '';
+  protected $entityType = '';
   protected $bundle = '';
   protected $bundleKey = FALSE;
   protected $fieldMap = array();
   protected $fieldProperties = array();
   protected $fieldMapCustom = array();
-
-  // \Drupal\DKANExtension\Context\PageContext.
   protected $pageContext;
-  // \Drupal\DKANExtension\Context\SearchAPIContext.
   protected $searchContext;
 
   /**
@@ -33,7 +30,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    */
   public function __construct($entity_type, $bundle, $field_map_overrides = array('published' => 'status'), $field_map_custom = array()) {
     $entity_info = entity_get_info($entity_type);
-    $this->entity_type = $entity_type;
+    $this->entityType = $entity_type;
     $this->fieldProperties = array();
 
     if ($field_map_overrides == NULL) {
@@ -44,12 +41,12 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
     // Check that the bundle specified actually exists, or if none given,
     // that this is an entity with no bundles (single bundle w/ name of entity)
     $entity_bundles = array_keys($entity_info['bundles']);
-    if (!in_array($bundle, $entity_bundles) && !in_array($this->entity_type, $entity_bundles)) {
-      throw new \Exception("Bundle $bundle doesn't exist for entity type $this->entity_type.");
+    if (!in_array($bundle, $entity_bundles) && !in_array($this->entityType, $entity_bundles)) {
+      throw new \Exception("Bundle $bundle doesn't exist for entity type $this->entityType.");
     }
     // Handle entities without bundles and identify the bundle key name (i.e. 'type')
-    if ($bundle == '' && in_array($this->entity_type, $entity_info['bundles'])) {
-      $this->bundle = $this->entity_type;
+    if ($bundle == '' && in_array($this->entityType, $entity_info['bundles'])) {
+      $this->bundle = $this->entityType;
       $this->bundleKey = FALSE;
     }
     else {
@@ -58,7 +55,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
     }
 
     // Store the field properties for later.
-    $property_info = entity_get_property_info($this->entity_type);
+    $property_info = entity_get_property_info($this->entityType);
     // Store the fields for this bundle, but only if the bundle has fields.
     if (isset($property_info['bundles'][$this->bundle])) {
       $this->fieldProperties += $property_info['bundles'][$this->bundle]['properties'];
@@ -99,7 +96,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    * @AfterScenario
    */
   public function deleteAll(AfterScenarioScope $scope) {
-    $wrappers = $this->entityStore->retrieve($this->entity_type, $this->bundle);
+    $wrappers = $this->entityStore->retrieve($this->entityType, $this->bundle);
     if ($wrappers === FALSE) {
       return;
     }
@@ -107,12 +104,12 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       // The behat user teardown deletes all the content of a user automatically,
       // so we want to get a fresh entity instead of relying on the wrapper
       // (or a bool that confirms it's deleted)
-      $entities_to_delete = entity_load($this->entity_type, array($wrapper->getIdentifier()));
+      $entities_to_delete = entity_load($this->entityType, array($wrapper->getIdentifier()));
 
       if (!empty($entities_to_delete)) {
         foreach ($entities_to_delete as $entity_to_delete) {
-          $entity_to_delete = entity_metadata_wrapper($this->entity_type, $entity_to_delete);
-          entity_delete($this->entity_type, $entity_to_delete->getIdentifier());
+          $entity_to_delete = entity_metadata_wrapper($this->entityType, $entity_to_delete);
+          entity_delete($this->entityType, $entity_to_delete->getIdentifier());
         }
       }
       $wrapper->clear();
@@ -121,7 +118,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
     // For Scenarios Outlines, EntityContext is not deleted and recreated
     // and thus the entities array is not deleted and houses stale entities
     // from previous examples, so we clear it here.
-    $this->entityStore->delete($this->entity_type, $this->bundle);
+    $this->entityStore->delete($this->entityType, $this->bundle);
     $this->entityStore->names_flush();
 
     // Make sure that we process any index items if they were deleted.
@@ -132,7 +129,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    * Get Entity by name.
    *
    * @param string $name
-   *   The name of the entity. 
+   *   The name of the entity.
    *
    * @return \EntityDrupalWrapper
    *   Returns the wrapped entity or FALSE.
@@ -156,7 +153,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    * Takes a array of key-mapped values and creates a fresh entity
    * using the data provided. The array should correspond to the context's field_map.
    *
-   * @return \stdClass 
+   * @return \stdClass
    *   Returns the entity or FALSE if fails.
    */
   public function newWrapper() {
@@ -164,21 +161,21 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
     if ($this->bundleKey) {
       $entity[$this->bundleKey] = $this->bundle;
     }
-    $entity = entity_create($this->entity_type, $entity);
+    $entity = entity_create($this->entityType, $entity);
 
     // Entity API doesn't automatically apply node settings like revision,
     // status, promote, etc.
     // See http://drupal.stackexchange.com/questions/115710/why-entity-metadata-wrapper-save-doesnt-update-nodes-revision
-    if ($this->entity_type == 'node') {
+    if ($this->entityType == 'node') {
       node_object_prepare($entity);
     }
-    $wrapper = entity_metadata_wrapper($this->entity_type, $entity);
+    $wrapper = entity_metadata_wrapper($this->entityType, $entity);
 
     return $wrapper;
   }
 
   /**
-   *  Apply field values to entity.
+   * Apply field values to entity.
    */
   public function applyFields($wrapper, $fields) {
     foreach ($fields as $label => $value) {
@@ -425,7 +422,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
 
     // Add the created entity to the array so it can be deleted later.
     $id = $wrapper->getIdentifier();
-    $this->entityStore->store($this->entity_type, $this->bundle, $id, $wrapper, $wrapper->label());
+    $this->entityStore->store($this->entityType, $this->bundle, $id, $wrapper, $wrapper->label());
   }
 
   /**
