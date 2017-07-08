@@ -15,7 +15,6 @@ use Symfony\Component\Config\Definition\Exception\Exception;
  */
 class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingContext {
 
-  // Store entities as EntityMetadataWrappers for easy property inspection.
   protected $entityType = '';
   protected $bundle = '';
   protected $bundleKey = FALSE;
@@ -391,7 +390,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
         $wrapper->$field->set($user);
       }
     }
-    $this->dispatchDKANHooks('BeforeDKANEntityCreateScope', $wrapper, $fields);
+    $this->dispatchDkanHooks('BeforeDKANEntityCreateScope', $wrapper, $fields);
     $this->applyFields($wrapper, $fields);
   }
 
@@ -399,7 +398,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    * Do further processing after saving.
    */
   public function postSave($wrapper, $fields) {
-    $this->dispatchDKANHooks('AfterDKANEntityCreateScope', $wrapper, $fields);
+    $this->dispatchDkanHooks('AfterDKANEntityCreateScope', $wrapper, $fields);
     // Remove the base url from the url and add it
     // to the page array for easy navigation.
     $url = parse_url($wrapper->url->value());
@@ -503,7 +502,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    *
    * Based on RawDrupalContext::dispatchHooks().
    */
-  protected function dispatchDKANHooks($scopeType, \EntityDrupalWrapper $wrapper, &$fields) {
+  protected function dispatchDkanHooks($scopeType, \EntityDrupalWrapper $wrapper, &$fields) {
     $fullScopeClass = 'Drupal\\DKANExtension\\Hook\\Scope\\' . $scopeType;
     $scope = new $fullScopeClass($this->getDrupal()->getEnvironment(), $this, $wrapper, $fields);
     $callResults = $this->dispatcher->dispatchScopeHooks($scope);
