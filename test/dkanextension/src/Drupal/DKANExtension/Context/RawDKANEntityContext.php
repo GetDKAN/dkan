@@ -468,12 +468,12 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    * Note that this is only supported for nodes currently. TODO Support all entities.
    * Also, there is no guarantee that another action won't cause the updated date to change.
    *
-   * @param \EntityDrupalWrapper $saved_wrapper
+   * @param EntityDrupalWrapper $saved_wrapper
    *   The saved wrapper.
    * @param string $time_str
    *   See time formats supported by strtotime().
    */
-  public function setChangedDate($saved_wrapper, $time_str) {
+  public function setChangedDate(EntityDrupalWrapper $saved_wrapper, $time_str) {
     if (!($saved_wrapper->type() == 'node')) {
       throw new Exception("Specifying the 'changed' date is only supported for nodes currently.");
     }
