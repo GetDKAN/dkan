@@ -1,3 +1,4 @@
+.. _`Dataset REST API`:
 #####################
 Dataset REST API
 #####################
