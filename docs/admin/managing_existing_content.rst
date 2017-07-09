@@ -99,3 +99,56 @@ Once a piece of content has been published, you can go back and make changes to 
 Click the **Edit** button to open the content form and go to the bottom of the page. In the Revision information tab, click the option labeled **Create new revision**. This is all you need to create a new version for the piece of content.
 
 Notice there's another field below the new revision option labeled Revision log message. This is a space to explain the changes you're making and why. This is particularly useful for content that goes between multiple authors. Giving an explanation for changes can help clarify reasons that might not be obvious which helps reduces confusion and mistakes that can be easily avoided. 
+
+.. image:: ../images/site_manager_playbook/managing_existing_content/content_revision_information.png
+   :alt: revision information options
+
+
+.. figure:: ../images/site_manager_playbook/managing_existing_content/content_revision_information_animation.gif
+   :alt: animation of adding revision information
+   
+   In this example, the Site Manager is creating a new revision and includes an overview for what was changed in the Revision log message field. The Site Manager saves the changes, and then finds the new revision on the Revisions page.
+
+Where to find revisions
+~~~~~~~~~~~~~~~~~~~~~~~
+
+You can access all the revisions of a piece of content by going directly to the page of the published content in View mode. Click the Revisions button to get to the Revisions page to see all the existing revisions and the revision options. The Revisions page gives an overview of all the existing revisions including when the revision was created, by which user, and the revision log message. Here, you can also compare revisions and go back to an old revision (reverting).
+
+.. image:: ../images/site_manager_playbook/managing_existing_content/content_revisions_tab.png
+   :alt: highlighted button for viewing revisions
+
+Revision options
+~~~~~~~~~~~~~~~~
+
+From the Revisions page, there are additional options for what you can do with the different revisions for the piece of content. The most important options are Compare and Revert.
+
+.. image:: ../images/site_manager_playbook/managing_existing_content/content_revisions_tab.png
+   :alt: content revisions view
+
+Compare
+   Some content may have several revisions that are difficult to visually scan what the differences are. To get a clear sense of the distinction between two revisions, you can select revisions to compare on after the other. Click on the selection circle and then click the Compare button at the top of the columns. You'll see more details of each revision in comparison with one another. 
+Revert
+   As changes are made, you may not create a new revision each time. Revisions typically reflect significant changes to your published content, so lots of small changes can be made in between the previous and current version. You can go back to an older version of a piece content by clicking the Revert link under the Operations column in the row of the revision. Before reverting, it's best to create a new revision of the content with the most recent changes. The most recent revision will still exist in the list of revisions, but you can revert to an older revision, which is what will appear on your Granicus Open Data site.
+   
+Managing content on Granicus Open Data
+--------------------------------------
+
+After you add a piece of content you may want to make changes or updates or you may want to replace a piece of content all together. As a Site Manager, you can make changes to any piece of content regardless of the author, type of content, or state of the content. Creating and editing content on Granicus Open Data are critical functions of management, and there are even more ways to manage your content.
+
+Content visibility
+------------------
+
+In general, most content is published at the same time it's added. Once content is published it appears on your live Granicus Open Data site meaning that it can be searched and discovered by the general public. But if you want to work with content without making it public or if you just want to keep a piece of content rather than delete it but don't want it visible on your Granicus Open Data site, you can change the visibility. 
+
+There are two states that content can be in that determines its visibility to the public, published and unpublished. 
+
+Published content
+   Published content is live on your Granicus Open Data site and visible to the public. In some cases, you may want to access and change content that was not created recently. You can visit published content on your Granicus Open Data site and edit directly from the page for quick changes (spelling, typos, titles). For bigger changes, it's best to not edit live content. First unpublish the Granicus Open Data, make changes, and then publish again.   
+Unpublished content
+   If content is unpublished that means that it doesn't appear on your live Granicus Open Data site, but it still exists behind the scenes. Users can leave content unpublished if they have significant changes or if they want to come back to a piece of content later to finish editing.
+   As a Site Manager, you can access all the existing content on your Granicus Open Data site through through the Content menu item on the Admin Menu bar. Once you unpublish a piece of content, that content is no longer visible to users with lower permissions (even if they are the author). 
+ 
+
+When content is added, by any user, the content defaults to a published state. Users with fewer permissions can edit the content or delete it, but they can't unpublish content or view unpublished content, even if they authored the content. That means that the content is left visible on your Granicus Open Data site until the author makes changes.
+
+In some cases the changes may be minor revisions, but other scenarios could require heavy editing before the content is ready to be made public. Some content is simply time-sensitive; the information is authored ahead of time but shouldn't be made public until a certain date. Publishing states let you manage the visibility of your content to give Site Managers greater control over the content that appears on your Granicus Open Data site. 
