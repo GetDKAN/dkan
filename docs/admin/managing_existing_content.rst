@@ -157,9 +157,11 @@ In some cases the changes may be minor revisions, but other scenarios could requ
 Bulk actions
 ------------
 
-Some changes are general and can be applied to multiple pieces of content at the same time. You can use the Update options menu to make changes to content by checking all the pieces of content you want to make updates, selecting an update option, and clicking the Update button. The most frequently used actions for bulk actions on content are unpublishing content and deleting content. 
+Some changes are general and can be applied to multiple pieces of content at the same time. You can use the Update options menu to make changes to content by checking all the pieces of content you want to make updates, selecting an update option, and clicking the Update button. The most frequently used actions for bulk actions on content are unpublishing content and deleting content.
+
 .. figure:: ../images/site_manager_playbook/managing_existing_content/editing_bulk_content_animation.gif
    :alt: animation of content bulk edits
+   
    In this example, a Site Manager is selecting multiple pieces of content to have a common action taken on all the content—a bulk action. The Site Manager then chooses the unpublish option from the drop-down Update options menu and clicks the Update button to finalize the action.
 
 Deleting content
