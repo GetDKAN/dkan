@@ -24,9 +24,7 @@ Using the API
 
 For any Resource imported to the Datastore, click Manage the Datastore. Then click the Data API button to get information about the Resource.
 
-You won't perform API queries from here, but you can get linked to a sample query and find :ref:`documentation for more instruction<datastore API>` on how to use the Datastore API. The image below is the information returned on a sample query of the Granicus Open Data Datastore using the Datastore API.  
-
-The query below shows the results in a "raw" form. This is generally more difficult to read, but it is what appears with a standard query. 
+You won't perform API queries from here, but you can get linked to a sample query and find :ref:`documentation for more instruction<datastore API>` on how to use the Datastore API. The image below is the information returned on a sample query of the Granicus Open Data Datastore using the Datastore API.   
 
 .. figure:: ../images/site_manager_playbook/DKAN_APIs/datastore_api_output_unformatted.png
    :alt: unformatted datastore API query
