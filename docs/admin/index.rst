@@ -35,6 +35,7 @@ Appearance
    adding_new_content
    data_and_content
    data_management
+   dkan_apis
    people
    structure
    using_the_admin_menu
