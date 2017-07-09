@@ -32,9 +32,10 @@ Appearance
    
    account_access_and_setup
    appearance
-   adding_new_content
    data_and_content
+   adding_new_content
    data_management
+   managing_existing_content
    dkan_apis
    people
    structure
