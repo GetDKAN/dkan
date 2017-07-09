@@ -27,3 +27,41 @@ For any Resource imported to the Datastore, click Manage the Datastore. Then cli
 You won't perform API queries from here, but you can get linked to a sample query and find :ref:`documentation for more instruction<datastore API>` on how to use the Datastore API. The image below is the information returned on a sample query of the Granicus Open Data Datastore using the Datastore API.  
 
 The query below shows the results in a "raw" form. This is generally more difficult to read, but it is what appears with a standard query. 
+
+.. figure:: ../images/site_manager_playbook/DKAN_APIs/datastore_api_output_unformatted.png
+   :alt: unformatted datastore API query
+   
+   This query shows the results in a "raw" form. This is generally more difficult to read, but it is what appears with a standard query. 
+   
+.. figure:: ../images/site_manager_playbook/DKAN_APIs/datastore_api_output_formatted.png
+   :alt: formatted datastore API query
+   
+   This image shows a formatted view of another API query using a web extension to make the results easier to read.
+
+Dataset API
+-----------
+
+The Dataset API works by combining a number of public, supported APIs. Each API is different in what level of detail it pulls out from the information available on a Granicus Open Data site. Together, the suite of APIs makes it possible to pull out information with varying specificity. When data is uploaded to Granicus Open Data as a Resource or Dataset, it is automatically included in the Dataset API. With the Dataset API, a public data.json file is also automatically published to follow Project Open Data standards.
+
+As a Site Manager, you don’t have to worry about managing the Dataset API because all the work happens in the background. At any point you can access the data.json file by simply typing /data.json in the URL after the homepage URL. You’ll get a page with all the information from the Datasets and Resources on your Granicus Open Data site.
+
+.. figure:: ../images/site_manager_playbook/DKAN_APIs/dataset_api_output_unformatted.png
+   :alt: formatted data.json
+   
+   This shows the results in a "raw" form. This is generally more difficult to read, but it is what appears with a standard query.
+   
+.. figure:: ../images/site_manager_playbook/DKAN_APIs/dataset_api_output_formatted.png
+   :alt: formatted data.json
+   
+   This shows a formatted view using a web extension to make the results easier to read.  
+
+Dataset REST API
+----------------
+
+REST continues to be one of the most popular API styles in web development, and it’s quickly becoming the standard for API design. In large part, that’s because REST is designed to be light-weight, fast, portable, and simple to implement.
+
+With REST APIs, external web applications and services can supplement platforms without significant investment or complexity in programmatic communication. The Dataset REST API leverages the opportunities of REST to open greater possibilities on Granicus Open Data.
+
+With the Dataset REST API, you can take action on your Granicus Open Data site programmatically. For example, adding a Dataset through the API. For one or two Datasets it might not seem like a drastic difference; but imagine automating the action of adding dozens, or even hundreds, of Datasets. Or imagine you have an application built in-house that you want to integrate with Granicus Open Data. The Dataset REST API makes these actions (and many more) possible.
+
+We have :ref:`technical documentation on the Dataset REST API<dataset REST API>` that provides more information on how to use it.
