@@ -148,6 +148,16 @@ The generic context that holds some helper steps
 
   (Deprecated)
 
+**Handling required fields from custom deployments or when enabling ODFE**
+We use profile and suite level controls to combine our default and custom behat configuration as described here: [Behat Setup](https://github.com/NuCivic/dkan_starter/blob/master/docs/docker-dev-env/behat-setup.rst)
+
+Although this technique allows for some level of composition it does not actually allow for custom parameter configurations to be passed into the default context configuration. This state is problematic because we cannot easily adjust the behavior of a dkan test against custom context configurations.
+
+So we need a way to pass custom parameters into the default context. Currently we are adding required fields directly to [DatasetContext.php](https://github.com/NuCivic/dkan/pull/1963/files#diff-c2f41d7be2fa9d3ff5ed50a75faabb1eR19)
+
+In the near future, we want to introduce a build step that can merge our custom parameters into the the default behat.yml file in a similar fashion to the way we now merge the upstream config/config.yml to the site specific config/cofig.yml file. So running `ahoy build config` should now apply any custom parameters set in the `config/cofig.yml` into the `dkan/test/behat.yml` context configuration.
+
+
 #### GroupContext.php
 [Extends RawDKANEntityContext](#about-rawdkanentitycontext)
 
