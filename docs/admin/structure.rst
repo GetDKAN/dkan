@@ -109,11 +109,11 @@ You'll find Topics in the **Taxonomy** drop-down menu item under the **Site Conf
    :alt: location of topics in the admin menu
    
    Click on the **Topics** link to get to the main page where Topics are managed.
-   
- Adding and managing terms
- ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Adding and managing terms
+~~~~~~~~~~~~~~~~~~~~~~~~~
  
- Granicus Open Data comes with six preset Topics: Transportation, Education, Finance and Budgeting, Health Care, Public Safety, and City Planning. You can add to the existing terms or replace them with different terms. The Topics for your Granicus Open Data site depend largely on the data on the site and the areas of interest you believe your site visitors are most interested in.  
+Granicus Open Data comes with six preset Topics: Transportation, Education, Finance and Budgeting, Health Care, Public Safety, and City Planning. You can add to the existing terms or replace them with different terms. The Topics for your Granicus Open Data site depend largely on the data on the site and the areas of interest you believe your site visitors are most interested in.  
 
 Add a term
   On the Topics page, click on the Add term button to open the options for adding a new term (a single Topic) to be included in the collection of Topics. The only fields that are important for adding a new Topic are the Title field and icon selection. The title is the name of your Topic that will appear on the front page of your Granicus Open Data site under the icon you select.
