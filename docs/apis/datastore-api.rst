@@ -14,7 +14,7 @@ Parameters
    resource(s) to be searched against.
 -  **filters** (*mixed*) – array or string of matching conditions to
    select
--  **q** (*string*) – full text query
+-  **q** (*string*) – fulltext search
 -  **offset** (*int*) – offset this number of rows
 -  **limit** (*int*) – maximum number of rows to return (default: 100)
 -  **fields** (*array or comma separated string*) – fields to return
