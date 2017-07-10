@@ -1155,7 +1155,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'If you set your dataset to a public access level other than "public", you must provide an explanation for why this dataset cannot be made fully public. Include any useful information regarding access or restrictions based on privacy, security, or other policies. See <a href="https://project-open-data.cio.gov/v1.1/schema/#rights">Rights on Project Open Data</a>.',
+    'description' => 'If you set your dataset to a public access level other than "public" or "none", you must provide an explanation for why this dataset cannot be made fully public. Include any useful information regarding access or restrictions based on privacy, security, or other policies. See <a href="https://project-open-data.cio.gov/v1.1/schema/#rights">Rights on Project Open Data</a>.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -1854,7 +1854,7 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('Harvest Source Issued');
   t('Harvest Source Modified');
   t('Homepage URL');
-  t('If you set your dataset to a public access level other than "public", you must provide an explanation for why this dataset cannot be made fully public. Include any useful information regarding access or restrictions based on privacy, security, or other policies. See <a href="https://project-open-data.cio.gov/v1.1/schema/#rights">Rights on Project Open Data</a>.');
+  t('If you set your dataset to a public access level other than "public" or "none", you must provide an explanation for why this dataset cannot be made fully public. Include any useful information regarding access or restrictions based on privacy, security, or other policies. See <a href="https://project-open-data.cio.gov/v1.1/schema/#rights">Rights on Project Open Data</a>.');
   t('Is Part Of');
   t('Language');
   t('License');

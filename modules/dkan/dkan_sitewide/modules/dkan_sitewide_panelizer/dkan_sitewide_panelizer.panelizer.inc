@@ -101,7 +101,7 @@ function dkan_sitewide_panelizer_panelizer_defaults() {
   $pane->uuid = '4a84a380-14b1-444a-b471-2b462c7dc790';
   $display->content['new-4a84a380-14b1-444a-b471-2b462c7dc790'] = $pane;
   $display->panels['contentmain'][1] = 'new-4a84a380-14b1-444a-b471-2b462c7dc790';
-  $display->hide_title = PANELS_TITLE_FIXED;
+  $display->hide_title = PANELS_TITLE_NONE;
   $display->title_pane = 'new-7c352aa7-4c3a-44d6-9063-2b61cfcb4aba';
   $panelizer->display = $display;
   $export['node:page:default:default'] = $panelizer;
