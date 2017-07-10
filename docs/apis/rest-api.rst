@@ -601,38 +601,38 @@ Get the CSRF Token
   // Execute request and save CSRF Token.
   $csrf_token = curl_exec($curl);
 
-  Create a Dataset
-  ----------------
+Create a Dataset
+----------------
 
-  .. code-block:: php
+.. code-block:: php
 
-    // Set up request URL.
-    $request_url = 'http://example.com/api/dataset/node';
+   // Set up request URL.
+   $request_url = 'http://example.com/api/dataset/node';
 
-    // Set up dataset data.
-    // A great explanation on how to target each node field can be found on the 'Identifying field names' article linked on the 'Documentation' section.
-    $dataset_data = array(
-        'type' => 'dataset',
-        'title' => 'Example dataset',
-        'status' => 1,
-        'body[und][0][value]' => 'The description',
-        'field_resources[und][0][target_id]' => 'Madison Polling Places (5)', // Resource title plus node id
-        'field_author[und][0][value]' => 'Bob Lafollette'
-    );
-    $dataset_data = http_build_query($dataset_data);
+   // Set up dataset data.
+   // A great explanation on how to target each node field can be found on the 'Identifying field names' article linked on the 'Documentation' section.
+   $dataset_data = array(
+       'type' => 'dataset',
+       'title' => 'Example dataset',
+       'status' => 1,
+       'body[und][0][value]' => 'The description',
+       'field_resources[und][0][target_id]' => 'Madison Polling Places (5)', // Resource title plus node id
+       'field_author[und][0][value]' => 'Bob Lafollette'
+   );
+   $dataset_data = http_build_query($dataset_data);
 
-    // Set up request.
-    $curl = curl_init($request_url);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json', 'X-CSRF-Token: ' . $csrf_token));
-    curl_setopt($curl, CURLOPT_POST, 1); // Do a regular HTTP POST.
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $dataset_data); // Set POST data.
-    curl_setopt($curl, CURLOPT_COOKIE, "$cookie_session");
-    curl_setopt($curl, CURLOPT_HEADER, FALSE);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($curl, CURLOPT_FAILONERROR, TRUE);
+   // Set up request.
+   $curl = curl_init($request_url);
+   curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json', 'X-CSRF-Token: ' . $csrf_token));
+   curl_setopt($curl, CURLOPT_POST, 1); // Do a regular HTTP POST.
+   curl_setopt($curl, CURLOPT_POSTFIELDS, $dataset_data); // Set POST data.
+   curl_setopt($curl, CURLOPT_COOKIE, "$cookie_session");
+   curl_setopt($curl, CURLOPT_HEADER, FALSE);
+   curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+   curl_setopt($curl, CURLOPT_FAILONERROR, TRUE);
 
-    // Execute request and get response.
-    $response = curl_exec($curl);
+   // Execute request and get response.
+   $response = curl_exec($curl);
 
 Python client
 =============
