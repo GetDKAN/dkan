@@ -133,6 +133,7 @@ Icon Color
    :alt: font icon options
 
 Icon Type: Image
+++++++++++++++++
 
 If you have an image that you prefer to use for the Topic icon, select the Image selection instead of font icon. Click the **Choose File** button to find the image on your computer and then click the Upload button to finalize the selection.
 
