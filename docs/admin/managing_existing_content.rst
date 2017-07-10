@@ -146,9 +146,27 @@ Published content
    Published content is live on your Granicus Open Data site and visible to the public. In some cases, you may want to access and change content that was not created recently. You can visit published content on your Granicus Open Data site and edit directly from the page for quick changes (spelling, typos, titles). For bigger changes, it's best to not edit live content. First unpublish the Granicus Open Data, make changes, and then publish again.   
 Unpublished content
    If content is unpublished that means that it doesn't appear on your live Granicus Open Data site, but it still exists behind the scenes. Users can leave content unpublished if they have significant changes or if they want to come back to a piece of content later to finish editing.
+   
    As a Site Manager, you can access all the existing content on your Granicus Open Data site through through the Content menu item on the Admin Menu bar. Once you unpublish a piece of content, that content is no longer visible to users with lower permissions (even if they are the author). 
  
 
 When content is added, by any user, the content defaults to a published state. Users with fewer permissions can edit the content or delete it, but they can't unpublish content or view unpublished content, even if they authored the content. That means that the content is left visible on your Granicus Open Data site until the author makes changes.
 
 In some cases the changes may be minor revisions, but other scenarios could require heavy editing before the content is ready to be made public. Some content is simply time-sensitive; the information is authored ahead of time but shouldn't be made public until a certain date. Publishing states let you manage the visibility of your content to give Site Managers greater control over the content that appears on your Granicus Open Data site. 
+
+Bulk actions
+------------
+
+Some changes are general and can be applied to multiple pieces of content at the same time. You can use the Update options menu to make changes to content by checking all the pieces of content you want to make updates, selecting an update option, and clicking the Update button. The most frequently used actions for bulk actions on content are unpublishing content and deleting content.
+
+.. figure:: ../images/site_manager_playbook/managing_existing_content/editing_bulk_content_animation.gif
+   :alt: animation of content bulk edits
+   
+   In this example, a Site Manager is selecting multiple pieces of content to have a common action taken on all the content—a bulk action. The Site Manager then chooses the unpublish option from the drop-down Update options menu and clicks the Update button to finalize the action.
+
+Deleting content
+----------------
+
+In general, we don't recommend deleting content. On Granicus Open Data, once content is deleted there is no way to recover it. You want to be completely sure of your decision before making it permanent.
+
+A better practice is to unpublish content, which keeps the content on the site but doesn't appear to the general public. If you decide that deleting a piece of content is the best action, you can delete a single piece of content from the Content main page using the delete link in the Operations column or directly from the page while in Edit mode using the Delete button at the bottom of the page. You can also delete multiple pieces of content using bulk actions. 
