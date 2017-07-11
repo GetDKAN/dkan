@@ -1,5 +1,5 @@
 # time:0m15.83s
-@api
+@api @disablecaptcha
 Feature: Dataset Features
   In order to realize a named business value
   As an explicit system actor
@@ -42,7 +42,7 @@ Feature: Dataset Features
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 | Test R1     |
       | Resource 02 | Group 01  | html   | Katie  | Yes       | Dataset 01 | Test R2     |
 
-  @noworkflow
+  @dataset_admin_01 @noworkflow
   Scenario: Edit any dataset
     Given I am logged in as "John"
     And I am on "Dataset 03" page
@@ -51,7 +51,7 @@ Feature: Dataset Features
     And I press "Finish"
     Then I should see "Dataset Dataset 03 edited has been updated"
 
-  @noworkflow
+  @dataset_admin_02 @noworkflow
   Scenario: Delete any dataset
     Given I am logged in as "John"
     And I am on "Dataset 03" page
@@ -60,7 +60,7 @@ Feature: Dataset Features
     And I press "Delete"
     Then I should see "Dataset Dataset 03 has been deleted"
 
-  @noworkflow
+  @dataset_admin_03 @noworkflow
   Scenario: Publish any dataset
     Given I am logged in as "John"
     And I am on "Dataset 05" page
@@ -71,7 +71,7 @@ Feature: Dataset Features
     And I press "Finish"
     Then I should see "Dataset Dataset 05 has been updated"
 
-  @javascript
+  @dataset_admin_04 @javascript
   Scenario: See all dataset fields
     Given I am logged in as "Gabriel"
     And I am on "Dataset 01" page
@@ -80,3 +80,11 @@ Feature: Dataset Features
     And I should not see "Rights on Project Open Data"
     Then I select "Restricted" from "edit-field-public-access-level-und"
     And I should see "Rights on Project Open Data"
+
+  @javascript
+  Scenario: Should not see Rights field if public access level = none
+    Given I am logged in as "Gabriel"
+    And I am on "Dataset 01" page
+    When I click "Edit"
+    Then I select "- None -" from "edit-field-public-access-level-und"
+    And I should not see "Rights on Project Open Data"

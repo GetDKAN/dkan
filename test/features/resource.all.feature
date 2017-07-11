@@ -1,4 +1,5 @@
 # time:0m21.63s
+@disablecaptcha
 Feature: Resource
 
   Background:
@@ -96,7 +97,7 @@ Feature: Resource
     And I am an anonymous user
     Given I am on "Resource 01" page
     When I click "Revisions"
-    Then I should see "current revision"
+    Then I should see "This is the published revision"
 
   @api @noworkflow
   Scenario: Compare revisions of published resource
@@ -151,7 +152,7 @@ Feature: Resource
     Then I should see the local preview link
     And I should see "CartoDB"
 
-  @api @here
+  @api
   Scenario: Hide "Back to dataset" button on resources without dataset
     Given resources:
       | title                    | publisher | format | dataset | author | published | description |
