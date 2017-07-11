@@ -1,5 +1,5 @@
 # time:0m22s
-@api @javascript
+@api @javascript @disablecaptcha
 Feature: Theme
 
   Background:

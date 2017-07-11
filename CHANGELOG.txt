@@ -1,6 +1,12 @@
+
 7.x-1.14.x
 ----------
  - #1907 Added back TAB delimiter option for datastore imports.
+ - #2001 Improve REST API documentation.
+ - #1991 Fix host IP replacement on script used to recconect the MySQL container. 
+ - #1942 DevOps: Restore drush commands to deal with orphaned resources.
+ - #1943 Update tests to be more compatible with client sites, multiple testing and devops improvements.
+ - #1962 Recline.view.nvd3.js: Fixed display of data with zero as values.
  - #1888 Added validation on axis tick settings on visualization_entity.
  - #1725 Fix `ahoy dkan uli` output login link.
  - #1881 Fix yaml syntaxt to make it standard. 
@@ -8,11 +14,68 @@
  - #1839 Add help text and improve UI on the chart form for better clarity.
  - #1827 Remove option to import TABed CSV files into datastore. 
  - #1807 Add admin_views module for enhanced content and file filtering. 
-
-7.x-1.13.x
-----------
+ - #1938 DevOps: Allow behat tests to be skipped in circle.
  - #1842 Add help text to explain the pager on data previews.
- - #1825 Fix the 'dataQuality' import druing POD harvest.
+
+7.x-1.13.4 2017-06-30
+---------------------
+ - #1983 Apply services security update 3.20 for DRUPAL-SA-CONTRIB-2017-054
+ - #1877 Fix broken update that tries to migrate fields that may not exist (primarily due to Federal Extras upgrade)
+ - #1960 Update field_group_table to 1.6
+ - #1950 Update modules: chosen to 2.1, context to 3.7, date to 2.10, diff to 3.3, double_field to 2.5, entityreference to 1.4, menu_badges to 1.3, module_filter to 2.1, panels to 3.9, panopoly_widgets to 1.45, panopoly_images to 1.45, rules to 2.10, roleassign to 1.2, search_api to 1.21, search_api_db to 1.6, simple_gmap to 1.4, token to 1.7, uuid to 1.0, views_bulk_operations to 3.4, workbench_email to 3.12, drafty to 1.0-beta4, file_entity to 2.2, media to 2.8, media_youtube to 3.4, menu_token to 1.0-beta7, views to 3.16, field_group_table to 1.6, radix to 3.6 and file_resup to revision 6cf030c.
+ - #1965 Update Drupal to 7.56.
+ - #1925 Fix issues with remote_stream_wrapper and recline causing Harvest and Search API to fail on certain larger resources
+ - #1916 Federal extras: Fix spelling of "Government" in group label.
+ - #1939 Removed references to DKAN Demo files from PHPUnit tests.
+ - #1932 Fix windows delimiter for datastore_fast_import.
+ - #1906 Refactor datastore import to restore drush command (dsu).
+ - #1898 Add validation to field data dictionary when strict POD validation is enabled.
+ - #1920 Update Bureau codes for Open Data Federal Extras.
+ - #1927 Fixed adding shapes to the spatial geographic coverage area field.
+ - #1924 Fixed dkan_update_7012, if a site is still using a deprecated module, the data is not stripped from the db.
+ - #1921 Drop the description label from the Harvest Source node view page.
+ - #1912 Added 'ahoy dkan unittests' command.
+ - #1917 Fixed 'ahoy dkan reinstall' command.
+ - #1865 Removed old dkan_dataset_api module.
+ - #1899 Override default error message on duplicate path aliases with more information.
+ - NuCivic/visualization_entity#72 Switch to relative path for uploaded resources on visualization entity charts
+ - #1836 Update language codes to use dashes rather than underscores for POD compliance.
+ - #1836 Fix the POD and DCAT language output to use key values rather than label values.
+ - #1891 Expose publishing options for content creators who do not belong to a group.
+ - #1891 Disabled authoring information fields for content creators who do belong to a group.
+ - #1901 Upgrade media module to 2.1
+ - #1897 Fixed handling of dataset language setting to pass DCAT validation.
+ - #1896 Fixed bug on open_data_schema_map: Multiple urls cause data.json describedBy field to be truncated.
+ - #1890 Fixed the chosen widget exclusion settings to not apply to group search filters.
+ - #1887 Removed unnecessary 'Select' button from the remote file input field on the resource form.
+ - #1869 Add validation check on the API or Website URL field to require a full url.
+ - #1883 Removed required status from the Rights field if the public access level is set to 'none'.
+ - #1871 Better handling of remote resources with BOM.
+ - #1873 Fix dkan_workflow_permissions: Allow Workflow Contributors and Workflow Moderators to view stale drafts and Workflow Moderators to view stale reviews.
+ - #1858 Fixed default panelizer setting for page node title.
+ - #1874 Fix dkan_update_7013 to not use drush commands.
+ - #1876 Removed hard coded colors in the menu.scss file.
+ - #1825 Adapt the 'dataQuality' input value druing POD harvest.
+ - #1817 Load empty cells as null in fast import.
+ - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar.
+ - #1813 Update the groups page view to sort alphabetically rather than by post date.
+ - NuCivic/recline#89 Only load previews for resources using files; API/website links should always display iframe.
+ - #1841 Fixed mis-named function on dkan_dataset_content_types.api.php
+ - #1814 Update dkan_workflow_permissions to rebuild permissions on enable/disable.
+ - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
+ - #1834 Use last day of year (December 31) for 4 digits end year during temporal POD field import.
+ - #1832 Fallback to modified date for field_harvest_source_issued if not available during POD Harvest.
+ - #1828 Field Frequency Harvest POD integration is missing support for "irregular" value.
+ - #1820 Use "accessURL" during resources harvest if "downloadURL" field is not available.
+ - #1852 Allow the use of multi-polygonal data for Dataset Spatial field.
+ - #1857 Fixed publishing options not accessible when dkan_workflow is enabled.
+
+7.x-1.13.3 2017-04-18
+---------------------
+ - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
+ - #1863 Update restws module to v2.7
+ - #1859 Fixed update hooks to correctly set jquery version and remove old modified source date field
+ - #1864 Update media to 2.0 and remove patch 2534724.
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
  - #1821 Remove css height value for recline-nvd3 to allow custom heights on charts.
@@ -20,17 +83,17 @@
  - #1726 Fixed broken links in search results to nodes without aliases
  - #1792 Remove Windows reserved characters from default content filenames for better Windows support
  - #1815 Support importing Temporal Coverage during POD Harvest.
- - #1785 Fix profile UI install.
+ - #1785 Fix error messages when installing DKAN with the UI.
  - #1786 Remove horizontal tab field from the group content type, fix margin on group block.
  - #1786 Add hook to auto-assign editors the og administrator role.
  - #1752 Added option for using quote delimiters when fast import is enabled for dkan datastore. Fixed error message when an import fails on DKAN Datastore Fast Import.
- - #1703 Refactor Datastore API module, fixing some caching issues and improving joins 
+ - #1703 Refactor Datastore API module, fixing some caching issues and improving joins
  - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
  - #1811 Apply patches to the rules module that can prevent unnecessary DB lockouts.
-
+ 
 7.x-1.13.2 2017-03-16
 ----------------------
- - #1803 Fix broken access to featured groups sort order view. 
+ - #1803 Fix broken access to featured groups sort order view.
  - #1796 Fix Harvest support for contact name and contact email.
  - #1795 Update front page test on topics.feature with @customizable.
  - #1783 Update services to 3.19
@@ -50,6 +113,8 @@
 
 7.x-1.13
 --------------------------
+
+ - NuCivic/recline#69 Fix warning messages when you try view changes on resource/dataset nodes
  - #1719 Added site details to settings nuboot_radix to allow change site name, slogan, e-amail address for site manager.
  - #1717 Upgrading Drupal to 7.54
  - #1705 Added css for chart visualizaitons, fixes issue in IE.

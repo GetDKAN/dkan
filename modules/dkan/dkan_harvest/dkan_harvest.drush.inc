@@ -92,6 +92,18 @@ function dkan_harvest_drush_command() {
     'drupal dependencies' => array('dkan_harvest'),
   );
 
+  $items['orphaned-resources-count'] = array(
+    'description' => "Count resources that are not linked to datasets.",
+    'drupal dependencies' => array('dkan_dataset'),
+    'aliases' => array('dkan-or-count', 'orphaned-resources'),
+  );
+
+  $items['orphaned-resources-delete'] = array(
+    'description' => "Count resources that are not linked to datasets.",
+    'drupal dependencies' => array('dkan_dataset'),
+    'aliases' => array('dkan-or-delete', 'orphaned-resources-delete'),
+  );
+
   return $items;
 }
 
@@ -102,9 +114,10 @@ function dkan_harvest_drush_command() {
  * available or the source passed as arguments.
  *
  * @param string $source_machine_name
- *        Optional harvest source machine name.
+ *
+ *   Optional harvest source machine name.
  */
-function dkan_harvest_drush_command_harvest($source_machine_name=NULL) {
+function dkan_harvest_drush_command_harvest($source_machine_name = '') {
   dkan_harvest_drush_command_cache($source_machine_name);
   dkan_harvest_drush_command_migrate($source_machine_name);
 }
@@ -113,7 +126,8 @@ function dkan_harvest_drush_command_harvest($source_machine_name=NULL) {
  * Run harvest cache operation on the source passed as argument.
  *
  * @param string $source_machine_name
- *        Source machine name to cache.
+ *
+ *   Source machine name to cache.
  */
 function dkan_harvest_drush_command_cache($source_machine_name) {
   if (isset($source_machine_name)) {
@@ -136,7 +150,8 @@ function dkan_harvest_drush_command_cache($source_machine_name) {
  * Run harvest migrate operation on the source passed as argument.
  *
  * @param string $source_machine_name
- *        Source machine name to migrate.
+ *
+ *   Source machine name to migrate.
  */
 function dkan_harvest_drush_command_migrate($source_machine_name) {
   $supported_options = array('limit', 'skiphash', 'instrument', 'idlist');
@@ -182,7 +197,8 @@ function dkan_harvest_drush_command_migrate($source_machine_name) {
  * Run harvest migrate operation on the source passed as argument.
  *
  * @param string $source_machine_name
- *        Source machine name to migrate.
+ *
+ *   Source machine name to migrate.
  */
 function dkan_harvest_drush_command_rollback($source_machine_name) {
   $options = array();
@@ -250,7 +266,8 @@ function dkan_harvest_drush_command_status() {
  * Drop the harvest migrate information about a harvest source.
  *
  * @param string $source_machine_name
- *        Source machine name to migrate.
+ *
+ *   Source machine name to migrate.
  */
 function dkan_harvest_drush_command_deregister($source_machine_name) {
   // Gather harvest migration options.
@@ -383,4 +400,33 @@ function dkan_harvest_get_harvestsource($source_machine_name) {
   }
 
   return $source;
+}
+
+/**
+ * Get a count of orphaned resources.
+ */
+function drush_dkan_harvest_orphaned_resources_count() {
+  $result = db_query("SELECT count(node.nid) AS nid FROM
+  {node} node
+  LEFT JOIN {field_data_field_dataset_ref} field_data_field_dataset_ref ON node.nid = field_data_field_dataset_ref.entity_id AND (field_data_field_dataset_ref.entity_type = 'node' AND field_data_field_dataset_ref.deleted = '0')
+  WHERE (( (node.status = '1') AND (node.type IN  ('resource')) AND (field_data_field_dataset_ref.field_dataset_ref_target_id IS NULL ) ))
+  ")->fetchAll();
+  drush_print(dt('There are !count orphaned resources', array('!count' => $result[0]->nid)));
+  return TRUE;
+}
+
+/**
+ * Delete orphaned resources.
+ */
+function drush_dkan_harvest_orphaned_resources_delete() {
+  $results = db_query("SELECT node.nid AS nid FROM
+  {node} node
+  LEFT JOIN {field_data_field_dataset_ref} field_data_field_dataset_ref ON node.nid = field_data_field_dataset_ref.entity_id AND (field_data_field_dataset_ref.entity_type = 'node' AND field_data_field_dataset_ref.deleted = '0')
+  WHERE (( (node.status = '1') AND (node.type IN  ('resource')) AND (field_data_field_dataset_ref.field_dataset_ref_target_id IS NULL ) ))
+  ")->fetchAll();
+  foreach ($results as $result) {
+    drush_print(dt('Deleting nid !nid', array('!nid' => $result->nid)));
+    node_delete($result->nid);
+  }
+  return TRUE;
 }
