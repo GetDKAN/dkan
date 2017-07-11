@@ -175,7 +175,7 @@ Notice the compass arrow to the left of each Topic name. You can change the orde
    
    Administrative view of the re-ordered Topics.
 
-
+..
 .. figure:: ../images/site_manager_playbook/structure/ordered_topic_display.png
    :alt: re-ordered view of topics on the front page
    
