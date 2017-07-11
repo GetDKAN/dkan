@@ -99,7 +99,7 @@ Topics typically reflect broad categories like transportation or education. Thes
    The default DKAN frontpage with highlighted Topics section.
 
 Where Topics are managed
-++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Topics are included in the Structure section of this guide because they're considered a taxonomy. Taxonomies are a high-level way of collecting and organizing information. The smaller pieces of information that make up taxonomies are called terms. So for example, you could have a taxonomy of fruit and individual terms might be "apple" or "banana".
 
@@ -111,7 +111,7 @@ You'll find Topics in the **Taxonomy** drop-down menu item under the **Site Conf
    Click on the **Topics** link to get to the main page where Topics are managed.
 
 Adding and managing terms
-+++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~~
  
 Granicus Open Data comes with six preset Topics: Transportation, Education, Finance and Budgeting, Health Care, Public Safety, and City Planning. You can add to the existing terms or replace them with different terms. The Topics for your Granicus Open Data site depend largely on the data on the site and the areas of interest you believe your site visitors are most interested in.  
 
@@ -122,7 +122,7 @@ Add a term
    :alt: default list of topics
 
 Icon Type: Font
-###############
++++++++++++++++
 
 Icon
   Choose an icon from your font icon library. Whichever you choose, you want something the is both eye-catching and expressive. Site visitors should know exactly what kind of content the Topic includes from the graphic without relying on the text.
@@ -133,7 +133,7 @@ Icon Color
    :alt: font icon options
 
 Icon Type: Image
-################
+++++++++++++++++
 
 If you have an image that you prefer to use for the Topic icon, select the Image selection instead of font icon. Click the **Choose File** button to find the image on your computer and then click the Upload button to finalize the selection.
 
@@ -157,14 +157,14 @@ Additionally, the number of Topics pushes down to a second line and appears unev
    :alt: seven topics in two rows
 
 Manage terms
-++++++++++++
+~~~~~~~~~~~~
 
 As the appearance of your Granicus Open Data site evolves, you may need to also change the appearance and even titles of your existing Topics. It's best to edit existing Topics rather than create completely new ones. If you delete a Topic then all the content that was before associated with the Topic will no longer have any association because the Topic doesn't exist. But if you update a Topic, then the content will still be associated with the Topic with the updated title and icon. 
 
 You can change the title, icon, and icon color of existing terms by clicking the edit link under the Operations column on the row of the Topic you want to edit. The only fields that are important for adding a new Topic are the Title field and icon selection. The title is the name of your Topic that will appear on the front page of your Granicus Open Data site under the icon you select.
 
 Re-order Topics
-+++++++++++++++
+~~~~~~~~~~~~~~~
 
 While many site visitors will be attracted to a Topic based on its visual element (the icon) many site visitors will read Topics from left to right like with text. You might have some Topics that you want to promote to ensure that site visitors don't miss them. You can re-order Topics to follow the rank of importance to the site visitor. 
 
@@ -175,19 +175,20 @@ Notice the compass arrow to the left of each Topic name. You can change the orde
    
    Administrative view of the re-ordered Topics.
 
-..
+temp
+
 .. figure:: ../images/site_manager_playbook/structure/ordered_topic_display.png
    :alt: re-ordered view of topics on the front page
    
    Front page view of the re-ordered Topics.
 
 Customizing icon options
-++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 A consistent appearance on your Granicus Open Data site that aligns with the image of your overall organization is important. While your Granicus Open Data site is dedicated to data publishing, getting your data into a central location, and increasing transparency to engage with the broader public, it should be clear to site visitors that the effort is part of the larger organizational priorities. If you do use the default font icon library, you can also manage how the library is used.  
 
 Uploading new font icon libraries
-+++++++++++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To add greater flexibility in the appearance of Topics to align with your organizational image, you can add your own font icon libraries to choose from for your Topics. By default, Granicus Open Data comes with a font icon library called DKAN Topics. It includes over 100 icons to choose from for your Topics. Alternatively, you can also upload your own font icon library if you have one that you prefer.
 
@@ -200,12 +201,12 @@ You’ll need to name your library with the Title field to manage it among all t
    :alt: upload font library fields
 
 Editing existing font icon libraries
-++++++++++++++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once a font icon library is uploaded, you can go back and make edits to an individual library under the Uploaded Font Libraries tab.
 
 Edit Font Options
-#################
++++++++++++++++++
 
 Click the edit font link to change the details of the font icon library like the title and the files containing the visual elements of the library.
 
@@ -213,7 +214,7 @@ Click the edit font link to change the details of the font icon library like the
    :alt: font icon select options highlighted second tier options
 
 Edit Font Blacklist
-###################
++++++++++++++++++++
 
 Your font icon library may contain hundreds of icons, but there might be some icons that you don’t want users to assign to Topics. You can add unwanted icons to a blacklist to block those icons from appearing as an option. Edit the font library blacklist to choose which icons cannot be assigned to Topics. Click on an icon or remove an icon from the blacklist by click a red icon.
 
@@ -221,7 +222,7 @@ Your font icon library may contain hundreds of icons, but there might be some ic
    :alt: global blacklist selection view
 
 Delete a library
-################
+++++++++++++++++
 
 You can delete an entire library from your site with one click. If a font icon library is in use it can’t be deleted, so you’ll need to change the active library before deleting a library. Once a library is deleted, the action cannot be undone so be careful when removing font icon libraries.
 
