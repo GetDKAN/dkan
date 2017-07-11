@@ -1,4 +1,4 @@
-At NuCivic we use [Behat](http://behat.org) for behavioral testing, both locally and in a [continuous integration using CircleCI](https://circleci.com/gh/NuCivic/dkan). PHPUnit is also used for functional  Tests are run on [CircleCI](https://circleci.com/gh/NuCivic/dkan) on every push and merge, but can also be run locally.
+DKAN uses [Behat](http://behat.org) for behavioral testing, both locally and in a [continuous integration using CircleCI](https://circleci.com/gh/NuCivic/dkan). PHPUnit is also used for functional  Tests are run on [CircleCI](https://circleci.com/gh/NuCivic/dkan) on every push and merge, but can also be run locally.
 
 ## Behat tests
 
@@ -29,6 +29,7 @@ Your tests should run from the VM and use your host machine as a Selenium server
 - **@enableDKAN_Workflow** Enables dkan_workflow
 - **@fixme** label only
 - **@globalUser** Populates the global user with the current user
+- **@harvest_rollback** Removes harvested content that was created by a test
 - **@javascript** switches the current Mink session to Selenium2
 - **@mail** Setup the testing mail system, then restore original mail system
 - **@no-main-menu** used to skip tests that requires a link in the main menu
@@ -45,13 +46,28 @@ Your tests should run from the VM and use your host machine as a Selenium server
 
 To allow customized sites to skip specific tests we are adding a unique tag to every scenario. The pattern is the feature name followed by a two digit numerical value. So the pod.feature scenarios are tagged like this: @pod_01, @pod_02, @pod_03, etc.
 
+To learn more about adding custom tests, check out [DKAN Starter - Add a custom behat test](http://dkan-starter.readthedocs.io/en/latest/common_tasks/add-custom-behat-test.html)
+
+### DKANExtension
+To learn more about the feature contexts that exist for DKAN, check out [DKANExtension](dkanextension/README.md)
+
 
 ## PHPUnit tests
 
 Starting from 1.13 PHPUnit tests were added into DKAN core. All tests can be found inside the `/phpunit` directory separated in different test suites, one per DKAN module.
   
-Follows the steps that are needed for running PHPUnit tests locally:
-  
+*Running PHPUnit tests locally:*
+
+Using Ahoy:
+```sh
+# To run all the tests:
+ahoy dkan unittests
+ 
+# To run an individual test:
+ahoy dkan unittests dkan_harvest/HarvestCacheTest.php
+```
+
+Manually:  
 1. Edit the configuration on `boot.php` if needed. The `$dir` variable needs to point to the actual DKAN working directory.
 2. If you are using the [DKAN Starter docker/ahoy environment](http://dkan-starter.readthedocs.io/en/latest/docker-dev-env/installation.html), get to the Docker cli prompt: `ahoy docker exec bash`.
 3. Go to `/test` folder.

@@ -60,7 +60,9 @@ projects:
   date:
     version: '2.10'
   defaultconfig:
-    version: 1.0-alpha11
+    version: '1.0-alpha11'
+  devel:
+    version: '1.5'
   diff:
     version: '3.3'
   double_field:
