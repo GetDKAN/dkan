@@ -176,6 +176,12 @@ function dkan_topics_field_formatter_view($entity_type, $entity, $field, $instan
       // Custom formatter for topic field.
       foreach ($items as $delta => $item) {
         $term = taxonomy_term_load($item['tid']);
+        if (!$term) {
+          watchdog('dkan_topis', "Attempt to load missing taxonomy term id: %tid", array(
+            '%tid' => $item['tid'],
+          ), WATCHDOG_NOTICE);
+          continue;
+        }
         $url = $base_url . '/search/field_topic/' . pathauto_cleanstring($term->name) . '-' . $term->tid;
         // Gather icon values if font icon is used.
         $icons = field_get_items('taxonomy_term', $term, 'field_topic_icon');

@@ -60,29 +60,28 @@ function dkan_default_content_import_default_pages() {
  * Removes all the generated content and disables all enabled migrations.
  */
 function dkan_default_content_disable() {
-  // Rollback Data Dashboards.
-  $migration = Migration::getInstance('dkan_default_content_data_dashboards');
-  $migration->processRollback();
-  // Rollback Data Stories.
-  $migration = Migration::getInstance('dkan_default_content_data_stories');
-  $migration->processRollback();
-  // Rollback Visualization Entities.
-  $migration = Migration::getInstance('dkan_default_content_visualization_entities');
-  $migration->processRollback();
-  // Rollback Datasets.
-  $migration = Migration::getInstance('dkan_default_content_datasets');
-  $migration->processRollback();
-  // Rollback Resources.
-  $migration = Migration::getInstance('dkan_default_content_resources');
-  $migration->processRollback();
-  // Rollback Groups.
-  $migration = Migration::getInstance('dkan_default_content_groups');
-  $migration->processRollback();
-  // Disable Mirations.
-  dkan_default_content_migrations_disable();
+  // Rollback Default Content Migrations.
+  $migrations = array(
+    'dkan_default_content_data_dashboards',
+    'dkan_default_content_data_stories',
+    'dkan_default_content_visualization_entities',
+    'dkan_default_content_datasets',
+    'dkan_default_content_resources',
+    'dkan_default_content_groups',
+  );
 
-  // Clear message queue.
-  drupal_get_messages('status', TRUE);
-  drupal_get_messages('warning', TRUE);
-  drupal_set_message('The default content was removed.');
+  foreach ($migrations as $migration) {
+    if ($migration) {
+      $migration = Migration::getInstance('dkan_default_content_data_dashboards');
+      $migration->processRollback();
+      Migration::deregisterMigration($migration);
+    }
+    else {
+      drupal_watchdog(
+        'dkan_default_content',
+        "You are attempting to disable a non existent migration: %migration", array(
+          '%migration' => $migration,
+        ));
+    }
+  }
 }
