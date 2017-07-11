@@ -1,6 +1,11 @@
 # time:3m30.05s
 @harvest_rollback @disablecaptcha
 Feature: Dkan Harvest
+  Background:
+    Given pages:
+      | name       | url                        |
+      | Source one | /harvest_source/source-one |
+      | Source two | /harvest_source/source-two |
 
   @api @javascript
   Scenario: As a site manager I should be able to add a harvest source.
@@ -45,15 +50,11 @@ Feature: Dkan Harvest
       | role                    |
       | authenticated user      |
 
-  @api
+  @api @harvest
   Scenario: As a site manager I should see only the published harvest sources listed on the harvest dashboard.
     Given users:
       | name            | mail                   | roles           |
       | Site manager    | admin@fakeemail.com    | site manager    |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site manager | Yes       |
-      | Source two | source_two   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site manager | No        |
     And pages:
       | name               | url                            |
       | Harvest Dashboard  | /admin/dkan/harvest/dashboard  |
@@ -62,15 +63,11 @@ Feature: Dkan Harvest
     Then I should see the text "Source one"
     And I should not see the text "Source two"
 
-  @api @javascript
+  @api @javascript @harvest
   Scenario: Delete all associated content when a Source is deleted
     Given users:
       | name              | mail                     | status | roles             |
       | Site manager      | admin@fakeemail.com      | 1      | site manager      |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site manager | Yes       |
-
     And The "source_one" source is harvested
     And I am logged in as "Site manager"
     When I am on "admin/content"
@@ -83,17 +80,14 @@ Feature: Dkan Harvest
     And I press "Delete Sources"
     And I wait for the batch job to finish
     Then I should see "Harvest Source Source one has been deleted."
+    And I wait for "3" seconds
     And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "deleted"
 
-  @api @javascript
+  @api @javascript @harvest
   Scenario: Unpublish and mark as orphan all associated content when a Source is deleted
     Given users:
       | name              | mail                     | status | roles             |
       | Site manager      | admin@fakeemail.com      | 1      | site manager     |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site Manager | Yes       |
-
     And The "source_one" source is harvested
     And I am logged in as "Site manager"
     When I am on the "Source one" page
@@ -107,15 +101,11 @@ Feature: Dkan Harvest
     And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "unpublished"
     And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "orphaned"
 
-  @api @javascript
+  @api @javascript @harvest
   Scenario: Keep published but mark as orphan all associated content when a Source is deleted
     Given users:
       | name              | mail                     | status | roles             |
       | Site Manager      | admin@fakeemail.com      | 1      | site manager      |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site Manager | Yes       |
-
     And The "source_one" source is harvested
     And I am logged in as "Site Manager"
     When I am on the "Source one" page
@@ -129,14 +119,11 @@ Feature: Dkan Harvest
     And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "published"
     And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "orphaned"
 
-  @api
+  @api @harvest
   Scenario: As a user I should have access to see harvest information into dataset node.
     Given users:
       | name            | mail                   | roles           |
       | Site Manager    | admin@fakeemail.com    | site manager    |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author       | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site Manager | Yes       |
     And I am logged in as a "Site Manager"
     And I am on the "Source one" page
     Given The "source_one" source is harvested
@@ -150,14 +137,11 @@ Feature: Dkan Harvest
     And I should see "2016-06-22" in the "Release Date" row
     And I should see "2016-08-02" in the "Modified Date" row
 
-  @api
+  @api @harvest
   Scenario: As a user I should have access to see harvest preview information.
     Given users:
       | name            | mail                   | roles           |
       | Site Manager    | admin@fakeemail.com    | site manager    |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site Manager | Yes       |
     And I am logged in as a "Site Manager"
     And I am on the "Source one" page
     Given The "source_one" source is harvested
@@ -167,14 +151,11 @@ Feature: Dkan Harvest
     And I should see the text "Harvest now"
     And I should see the text "Florida Bike Lanes Harvest"
 
-  @api
+  @api @harvest
   Scenario: As a user I should be able to refresh the preview on the Harvest Source.
     Given users:
       | name            | mail                   | roles           |
       | Site Manager    | admin@fakeemail.com    | site manager    |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site Manager | Yes       |
     And I am logged in as a "Site Manager"
     And I am on the "Source one" page
     Given The "source_one" source is harvested
@@ -187,14 +168,11 @@ Feature: Dkan Harvest
     And I should see the text "Preview"
 
 
-  @api
+  @api @harvest
   Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
     Given users:
       | name            | mail                   | roles           |
       | Site Manager    | admin@fakeemail.com    | site manager    |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site Manager | Yes       |
     And I am logged in as a "<role>"
     And I am on the "Source one" page
     Given The "source_one" source is harvested
@@ -209,14 +187,11 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api
+  @api @harvest
   Scenario Outline: As a user I should see a list of imported datasets on the Harvest Source page.
     Given users:
       | name            | mail                   | roles           |
       | Site manager    | admin@fakeemail.com    | site manager    |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site manager | Yes       |
     And The "source_one" source is harvested
     And I am logged in as a "<role>"
     And I am on the "Source one" page
@@ -227,14 +202,11 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api
+  @api @harvest
   Scenario Outline: As user I should see a list of imported datasets in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
       | Site manager    | admin@fakeemail.com    | site manager    |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site manager | Yes       |
     And pages:
       | name                       | url                                     |
       | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -248,14 +220,11 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api @javascript
+  @api @javascript @harvest
   Scenario Outline: As user I want to filter harvested datasets by orphan status in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
       | Site manager    | admin@fakeemail.com    | site manager    |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site manager | Yes       |
     And pages:
       | name                       | url                                     |
       | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -270,14 +239,11 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api @javascript
+  @api @javascript @harvest
   Scenario Outline: As user I want to filter harvested datasets by post date in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
       | Site manager    | admin@fakeemail.com    | site manager    |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site manager | Yes       |
     And pages:
       | name                       | url                                     |
       | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -296,14 +262,11 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api @javascript
+  @api @javascript @harvest
   Scenario Outline: As user I want to filter harvested datasets by updated date in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
       | Site manager    | admin@fakeemail.com    | site manager    |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site manager | Yes       |
     And pages:
       | name                       | url                                     |
       | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
@@ -325,14 +288,11 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api @javascript
+  @api @javascript @harvest
   Scenario Outline: As user I want to delete harvested datasets in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
       | Site manager    | admin@fakeemail.com    | site manager    |
-    And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site manager | Yes       |
     And pages:
       | name                       | url                                     |
       | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
