@@ -280,7 +280,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/recline.git'
-      branch: CIVIC-6059
+      branch: 7.x-1.x
   ref_field:
     download:
       type: git
