@@ -1,6 +1,7 @@
 
 7.x-1.14.x
 ----------
+ - #1903 Add support for tab-delimited files (TSV) in resources/recline preview.
  - #2001 Improve REST API documentation.
  - #1991 Fix host IP replacement on script used to recconect the MySQL container. 
  - #1942 DevOps: Restore drush commands to deal with orphaned resources.
