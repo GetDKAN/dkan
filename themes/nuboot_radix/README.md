@@ -70,3 +70,5 @@ Use the components directory to break out your styles into easy to find partial 
 **Streamline Icons** http://www.streamlineicons.com/index.html
 
 **Flaticons** designed by Freepik http://www.flaticon.com/packs/file-formats-icons
+
+**Font Awesome** http://fontawesome.io/
