@@ -114,7 +114,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/feeds_flatstore_processor.git'
-      branch: civic-6058
+      branch: master
   field_group:
     version: '1.5'
     patch:
