@@ -297,13 +297,19 @@ function dkan_update_7015() {
  * Add data dictionary textarea id to bueditor excludes list.
  */
 function dkan_update_7016() {
+  $eid = db_select("bueditor_editors", "bue")
+    ->fields("bue", array("eid"))
+    ->condition("name", "Markdowneditor")
+    ->execute()
+    ->fetchField();
+
   db_update('bueditor_editors')
     ->fields(array(
       'excludes' => 'edit-log
 edit-menu-description
 *data-dictionary*',
     ))
-    ->condition('eid', '5')
+    ->condition('eid', $eid)
     ->execute();
 }
 
