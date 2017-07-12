@@ -58,4 +58,3 @@ function dkan_default_content_migrate_api() {
 function dkan_default_content_dkan_fixtures_register() {
   return 'dkan_default_content';
 }
-
