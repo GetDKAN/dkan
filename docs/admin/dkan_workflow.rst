@@ -106,13 +106,60 @@ Overview of workflow permissions:
 +---------------+-------------------------------------+---------------------------------------------------------------------------------------------------+
 | My Drafts     | All Workflow Roles                  | All of the user's own drafts.                                                                     |
 +---------------+-------------------------------------+---------------------------------------------------------------------------------------------------+
-| Needs Review  | All Workflow Roles                  | | For Workflow Contributors, this will be content that they have moved to the Needs Review state. |
-|               |                                     | |                                                                                                 |
-|               |                                     | | Workflow Moderators see Needs Review content for their specific Group.                          |
-|               |                                     | |                                                                                                 |
-|               |                                     | | Workflow Supervisors see Needs Review content for the entire site.                              |
+| Needs Review  | All Workflow Roles                  | For Workflow Contributors, this will be content that they have moved to the Needs Review state.   |
+|               |                                     |                                                                                                   |
+|               |                                     | Workflow Moderators see Needs Review content for their specific Group.                            |
+|               |                                     |                                                                                                   |
+|               |                                     | Workflow Supervisors see Needs Review content for the entire site.                                |
 +---------------+-------------------------------------+---------------------------------------------------------------------------------------------------+
 | Stale Drafts  | Workflow Moderators and Supervisors | All drafts that are more than 72 hours old.                                                       |
 +---------------+-------------------------------------+---------------------------------------------------------------------------------------------------+
 | Stale Reviews | Workflow Moderators and Supervisors | All Needs Review content that has been in that state for more than 72 hours.                      |
 +---------------+-------------------------------------+---------------------------------------------------------------------------------------------------+
+
+Using Workflow
+--------------
+
+Add Content
+~~~~~~~~~~~
+
+Adding content with Workflow enabled is similar to the general process for adding content. 
+
+1. From the **Admin Menu** hover over the **Add Content** menu link. 
+2. From the drop-down menu, select the content type to add. By default, only Resources and Datasets may be moderated as part of Workflow. 
+3. Fill out the details of the content type. 
+4. At the bottom of the page, click the **Publishing options** menu item. 
+5. In this menu, users can change the state of the content. Workflow Supervisors and Moderators can directly publish content, but Contributors may only save content in the Draft or Needs Review states. 
+6. Choose the state of the Content and click the **Save** button. 
+
+If the content was saved in a Draft state or moved to the Needs Review state, it will appear in the user's My Workbench. Users can draft content to come back to or move it to the review phase by changing the moderation state at any time.
+
+Content may cycle back and forth between draft and review as it goes through the revision process.
+
+Moderate Content
+~~~~~~~~~~~~~~~~
+
+All users moderate content in some capacity. Workflow Contributors moderate their content between the Draft state and the Needs Review state. Workflow Moderators are responsible for publishing their own content as well as content created by Workflow Contributors. 
+
+All content in the Workflow pipeline is accessed in My Workbench. From My Workbench users can see at-a-glance a summary of content and the state it's in. 
+
+1. From the Admin Menu click the My Workbench link. 
+2. Click on one of the tabs to see all the content in that publishing state. 
+3. Workflow Contributors can moderate from this page by clicking the Submit for Review button to send a draft to a Workflow Moderator to review.
+4. Workflow Moderators can moderate content from this page by clicking the Reject or Publish buttons on a piece of content.
+
+.. image:: ../images/site_manager_playbook/workflow/my_drafts.png
+   :alt: my drafts view
+
+Review content and make changes:
+
+1. From My Workbench, navigate to tab with publishing state of the content. 
+2. Click on the title link of the piece of content. 
+3. Click the **Edit Draft** button to make changes directly to the content. 
+4. At the bottom of the page, moderate the publishing state. 
+5. Workflow Moderators may change the state to draft for revisions or directly publish the content.
+
+Click the **Moderate** button to see the full revision history and change the publishing state.
+
+.. image:: ../images/site_manager_playbook/workflow/moderate.png
+   :alt: moderate view
