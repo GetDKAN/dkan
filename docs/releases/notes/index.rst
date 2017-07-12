@@ -3,10 +3,12 @@ Release Notes
 
 Release notes here will be identical to the releases kept in the `Github repository's releases section <https://github.com/NuCivic/dkan/releases>`_.
 
+
 .. toctree::
    :maxdepth: 1
 
-   1.13.3 (Future release) <1.13.3>
+   1.13.4 (Future release) <1.13.4>
+   1.13.3 <1.13.3>
    1.13.2 <1.13.2>
    1.13.1 <1.13.1>
    1.13 <1.13>
@@ -29,3 +31,6 @@ Release notes here will be identical to the releases kept in the `Github reposit
    1.10 <1.10>
    1.9 <1.9>
    1.8 <1.8>
+
+.. note:: The files in this section should use the Markdown syntax rather than
+   RST, for better compatibility with Github.

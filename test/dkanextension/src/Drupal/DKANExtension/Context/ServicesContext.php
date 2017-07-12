@@ -16,6 +16,7 @@ class ServicesContext extends RawDKANContext
 
   // Each node field should be formatted properly before the information is sent on a request.
   // This is a map from 'Field name' -> 'Field format'.
+  //  TODO: Move to configuration passed in to constructor.
   private $request_fields_map = array(
     'resource' => array(
       'type' => 'type',
@@ -26,9 +27,20 @@ class ServicesContext extends RawDKANContext
     'dataset' => array(
       'type' => 'type',
       'title' => 'title',
-      'body' => 'body[und][0][value]',
       'status' => 'status',
-      'resource' => 'field_resources[und][0][target_id]'
+      'published' => 'status',
+      'body' => 'body[und][0][value]',
+      'resource' => 'field_resources[und][0][target_id]',
+      'access level' => 'field_public_access_level[und]',
+      'contact name' => 'field_contact_name[und][0][value]',
+      'contact email' => 'field_contact_email[und][0][value]',
+      'attest name' => 'field_hhs_attestation_name[und][0][value]',
+      'attest date' => 'field_hhs_attestation_date[und][0][value][date]',
+      'verification status' => 'field_hhs_attestation_negative[und]',
+      'attest privacy' => 'field_hhs_attestation_privacy[und]',
+      'attest quality' => 'field_hhs_attestation_quality[und]',
+      'bureau code' => 'field_odfe_bureau_code[und]',
+      'license' => 'field_license[und][select]',
     )
   );
 
@@ -382,6 +394,12 @@ class ServicesContext extends RawDKANContext
 
     // Get the rest api field map for the content type.
     $rest_api_fields = $this->request_fields_map[$node_type];
+
+    if ($node_type == "dataset") {
+      $rawDkanEntityContext = new DatasetContext();
+      $rawDkanEntityContext->applyMissingRequiredFields($data);
+    }
+
     foreach ($data as $field => $field_value) {
       if (isset($rest_api_fields[$field])) {
         $node_data[$rest_api_fields[$field]] = $this->process_field($field, $field_value);
@@ -401,17 +419,20 @@ class ServicesContext extends RawDKANContext
    */
   private function process_field($field, $field_value) {
     switch ($field) {
-      case 'resource': {
+      case 'resource':
         $resource = $this->dkanContext->entityStore->retrieve_by_name($field_value);
         if ($resource) {
-          return $resource->entityKey('title') . ' (' . $resource->getIdentifier() . ')';
+          $field_value = $resource->entityKey('title') . ' (' . $resource->getIdentifier() . ')';
         }
         break;
-      }
-      default:
-        return $field_value;
+
+      case "attest date":
+        if (is_numeric($field_value)) {
+          $field_value = date('m/d/Y', (int) $field_value);
+        }
+        break;
     }
 
-    return false;
+    return $field_value;
   }
 }
