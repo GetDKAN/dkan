@@ -39,5 +39,6 @@ Appearance
    managing_existing_content
    dkan_apis
    people
+   dkan_workflow
    structure
    using_the_admin_menu
