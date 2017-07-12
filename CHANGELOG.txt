@@ -1,6 +1,7 @@
 
 7.x-1.14.x
 ----------
+ - #1955 Update ahoy docker tooling for local environment usecase.
  - #1903 Add support for tab-delimited files (TSV) in resources/recline preview.
  - #2001 Improve REST API documentation.
  - #1991 Fix host IP replacement on script used to recconect the MySQL container. 
