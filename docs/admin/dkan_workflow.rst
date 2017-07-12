@@ -86,7 +86,7 @@ Workflow Roles and Permissions At-a-Glance
 Users assigned a DKAN Workflow role are automatically assigned the corresponding level of core DKAN role. The following is the relationship between the roles.
 
 .. list-table:: 
-   :header-rows: 1
+   :stub-columns: 1
    
    * - Core Role
      - Content Creator
