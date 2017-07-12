@@ -65,7 +65,7 @@ function dkan_topics_preprocess_menu_link(&$variables) {
     $css = '';
     foreach ($submenu as $child) {
       if (isset($child['#href'])) {
-        $url  = explode("/", $child['#href']);
+        $url = explode("/", $child['#href']);
         // Prepare term to match menu class.
         $term = strtolower($child['#title']);
         $term = str_replace(array('\\', '/', '[', ' '), '-', $term);
