@@ -99,20 +99,20 @@ Users assigned a DKAN Workflow role are automatically assigned the corresponding
 
 Overview of workflow permissions:
 
-+--------------+------------------------------------+------------------------------------------------------------------------+
-| Tab Name     | Role (Users that can view the tab) | Tab Function                                                           |
-+==============+====================================+========================================================================+
-| My Content   | All Workflow Roles                 | All of the content that a user has authored, in any publishing stage.  |
-+--------------+------------------------------------+------------------------------------------------------------------------+
-| My Drafts    | All Workflow Roles                 | All of the user's own drafts.                                          |
-+--------------+------------------------------------+------------------------------------------------------------------------+
-| Needs Review | All Workflow Roles                 | | For Workflow Contributors, this will be content that they have moved to the Needs Review state. |
-|              |                                    | |                                                                      |
-|              |                                    | | Workflow Moderators see Needs Review content for their specific Group. |
-|              |                                    | |                                                                      |
-|              |                                    | | Workflow Supervisors see Needs Review content for the entire site.     |
-+--------------+------------------------------------+------------------------------------------------------------------------+
-| Stale Drafts | Workflow Moderators and Supervisors | All drafts that are more than 72 hours old.                           |
-+--------------+------------------------------------+------------------------------------------------------------------------+
-| Stale Reviews | Workflow Moderators and Supervisors | All Needs Review content that has been in that state for more than 72 hours. |
-+--------------+------------------------------------+------------------------------------------------------------------------+
++---------------+-------------------------------------+---------------------------------------------------------------------------------------------------+
+| Tab Name      | Role (Users that can view the tab)  | Tab Function                                                                                      |
++===============+=====================================+===================================================================================================+
+| My Content    | All Workflow Roles                  | All of the content that a user has authored, in any publishing stage.                             |
++---------------+-------------------------------------+---------------------------------------------------------------------------------------------------+
+| My Drafts     | All Workflow Roles                  | All of the user's own drafts.                                                                     |
++---------------+-------------------------------------+---------------------------------------------------------------------------------------------------+
+| Needs Review  | All Workflow Roles                  | | For Workflow Contributors, this will be content that they have moved to the Needs Review state. |
+|               |                                     | |                                                                                                 |
+|               |                                     | | Workflow Moderators see Needs Review content for their specific Group.                          |
+|               |                                     | |                                                                                                 |
+|               |                                     | | Workflow Supervisors see Needs Review content for the entire site.                              |
++---------------+-------------------------------------+---------------------------------------------------------------------------------------------------+
+| Stale Drafts  | Workflow Moderators and Supervisors | All drafts that are more than 72 hours old.                                                       |
++---------------+-------------------------------------+---------------------------------------------------------------------------------------------------+
+| Stale Reviews | Workflow Moderators and Supervisors | All Needs Review content that has been in that state for more than 72 hours.                      |
++---------------+-------------------------------------+---------------------------------------------------------------------------------------------------+
