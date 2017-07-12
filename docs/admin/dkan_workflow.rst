@@ -106,11 +106,11 @@ Overview of workflow permissions:
 +--------------+------------------------------------+------------------------------------------------------------------------+
 | My Drafts    | All Workflow Roles                 | All of the user's own drafts.                                          |
 +--------------+------------------------------------+------------------------------------------------------------------------+
-| Needs Review | All Workflow Roles                 | For Workflow Contributors, this will be content that they have moved to the Needs Review state. |
-|              |                                    |                                                                        |
-|              |                                    | Workflow Moderators see Needs Review content for their specific Group. |
-|              |                                    |                                                                        |
-|              |                                    | Workflow Supervisors see Needs Review content for the entire site.     |
+| Needs Review | All Workflow Roles                 | | For Workflow Contributors, this will be content that they have moved to the Needs Review state. |
+|              |                                    | |                                                                      |
+|              |                                    | | Workflow Moderators see Needs Review content for their specific Group. |
+|              |                                    | |                                                                      |
+|              |                                    | | Workflow Supervisors see Needs Review content for the entire site.     |
 +--------------+------------------------------------+------------------------------------------------------------------------+
 | Stale Drafts | Workflow Moderators and Supervisors | All drafts that are more than 72 hours old.                           |
 +--------------+------------------------------------+------------------------------------------------------------------------+
