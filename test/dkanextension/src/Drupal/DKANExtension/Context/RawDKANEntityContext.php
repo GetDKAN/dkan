@@ -31,10 +31,18 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
     $entity_info = entity_get_info($entity_type);
     $this->entityType = $entity_type;
     $this->fieldProperties = array();
+    
+    $default_field_map_overrides = array(
+      'published' => 'status',
+    );
 
     if ($field_map_overrides == NULL) {
-      $field_map_overrides = array('published' => 'status');
+      $field_map_overrides = $default_field_map_overrides;
     }
+    else {
+      $field_map_overrides = array_merge($default_field_map_overrides, $field_map_overrides);
+    }
+
     $this->fieldMapCustom = $field_map_custom;
 
     // Check that the bundle specified actually exists, or if none given,
@@ -226,7 +234,12 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
 
         // Dates - handle strings as best we can. See http://php.net/manual/en/datetime.formats.relative.php
         case 'date':
-          $timestamp = strtotime($value);
+          if (is_numeric($value)) {
+            $timestamp = (int) $value;
+          }
+          else {
+            $timestamp = strtotime($value);
+          }
           if ($timestamp === FALSE) {
             throw new \Exception("Couldn't create a date with '$value'");
           }
@@ -244,13 +257,19 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
 
         // Simple text field.
         case 'text':
+        case "list<text>":
           $wrapper->$property->set($value);
           break;
 
         // Formatted text like body.
         case 'text_formatted':
           // For now just apply the value directly.
-          $wrapper->$property->set(array('value' => $value));
+          if (is_array($value)) {
+            $wrapper->$property->set($value);
+          }
+          else {
+            $wrapper->$property->set(array('value' => $value));
+          }
           break;
 
         case 'taxonomy_term':
@@ -391,7 +410,53 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       }
     }
     $this->dispatchDkanHooks('BeforeDKANEntityCreateScope', $wrapper, $fields);
+    $this->applyMissingRequiredFields($fields);
     $this->applyFields($wrapper, $fields);
+  }
+
+  /**
+   * Uses devel generate to produce default data for required missing fields.
+   *
+   * Works on either field or label tables.
+   *
+   * @param array $data
+   *   Array of maps of label or field_name values.
+   * */
+  public function applyMissingRequiredFields(array &$data) {
+    $wrapper = $this->new_wrapper();
+    $bundle = $wrapper->type->value();
+    if ($bundle == "dataset") {
+      module_load_include('inc', 'devel_generate', 'devel_generate');
+      module_load_include('inc', 'devel_generate', 'devel_generate.fields');
+      $node = new \stdClass();
+      $node->type = $bundle;
+      devel_generate_fields($node, 'node', $bundle);
+      $devel_generate_wrapper = entity_metadata_wrapper('node', $node);
+
+      foreach ($this->field_properties as $key => $field) {
+        if ($key == 'type' || $key == 'author') {
+          continue;
+        }
+
+        if (isset($field['required']) && $field['required']) {
+          $k = array_search($key, $this->field_map);
+          if (!isset($data[$k])) {
+            $data[$k] = $devel_generate_wrapper->$key->value();
+            // TODO: use param passed in from behat config for defaults.
+            $defaults = array(
+              'field_public_access_level' => 'public',
+              'field_hhs_attestation_negative' => 1,
+              'field_license' => 'odc-by',
+            );
+            foreach ($defaults as $default => $value) {
+              if ($key == $default) {
+                $data[$k] = $value;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -500,7 +565,11 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    */
   protected function dispatchDkanHooks($scopeType, \EntityDrupalWrapper $wrapper, &$fields) {
     $fullScopeClass = 'Drupal\\DKANExtension\\Hook\\Scope\\' . $scopeType;
-    $scope = new $fullScopeClass($this->getDrupal()->getEnvironment(), $this, $wrapper, $fields);
+    $drupal = $this->getDrupal();
+    if (!$drupal) {
+      return;
+    }
+    $scope = new $fullScopeClass($drupal->getEnvironment(), $this, $wrapper, $fields);
     $callResults = $this->dispatcher->dispatchScopeHooks($scope);
 
     // The dispatcher suppresses exceptions, throw them here if there are any.
