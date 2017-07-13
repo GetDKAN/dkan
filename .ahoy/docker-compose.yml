@@ -5,8 +5,12 @@
 web:
   hostname: web
   image: nuams/drupal-apache-php:1.0-5.6
+  # Fix for docker for mac container not starting selenium
+  # https://forums.docker.com/t/space-in-new-no-proxy-env-var-breaking-old-containers/14075
+
   environment:
     - VIRTUAL_HOST=dkan.docker
+    - no_proxy=localhost
     #- VIRTUAL_PROTO=https
   ports:
     - "80"
@@ -100,16 +104,21 @@ browser:
     - /dev/shm:/dev/shm
     # Project root folder mapping
     - *project_root
+
   links:
     - web
   ports:
-  #  - "4444:4444"
     - "5900"
+
+  # Fix for docker for mac container not starting selenium
+  # https://forums.docker.com/t/space-in-new-no-proxy-env-var-breaking-old-containers/14075
+  environment:
+    - no_proxy=localhost
 
 solr:
   hostname: solr
   image: devinci/drupal-solr:3.x
-  #ports:
-  #  - "8983:8983"
+  ports:
+    - "8983"
   volumes:
     - "./.docker/etc/solr/3.x:/var/lib/solr/conf"
