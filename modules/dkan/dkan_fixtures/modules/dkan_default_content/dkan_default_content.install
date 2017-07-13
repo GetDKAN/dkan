@@ -61,20 +61,14 @@ function dkan_default_content_import_default_pages() {
  */
 function dkan_default_content_disable() {
   // Rollback Default Content Migrations.
-  $migrations = array(
-    'dkan_default_content_data_dashboards',
-    'dkan_default_content_data_stories',
-    'dkan_default_content_visualization_entities',
-    'dkan_default_content_datasets',
-    'dkan_default_content_resources',
-    'dkan_default_content_groups',
-  );
+  $migrations = migrate_migrations();
 
-  foreach ($migrations as $migration) {
+  foreach ($migrations as $name => $migration) {
+    if (strpos($name, 'dkan_default_content_') !== 0) {
+      continue;
+    }
     if ($migration) {
-      $migration = Migration::getInstance('dkan_default_content_data_dashboards');
       $migration->processRollback();
-      Migration::deregisterMigration($migration);
     }
     else {
       drupal_watchdog(
