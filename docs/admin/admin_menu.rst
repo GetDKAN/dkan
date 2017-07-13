@@ -1,5 +1,5 @@
 ================
-The Admin Menu
+Admin Menu
 ================
 
 The Admin Menu on your site is the main tool for navigating data and content management. Get familiar with the Admin Menu as a first step to mastering your DKAN site.

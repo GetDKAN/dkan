@@ -37,8 +37,9 @@ Appearance
    appearance
    data_and_content
    data_management
-   managing_existing_content
    dkan_apis
-   people
    dkan_workflow
+   group_roles_and_permissions
+   managing_existing_content
+   people
    structure
