@@ -79,3 +79,28 @@ function dkan_default_content_disable() {
     }
   }
 }
+
+/**
+ * Implements hook_uninstall().
+ *
+ * De-register the dkan_default_content migrations on uninstall.
+ */
+function dkan_default_content_uninstall() {
+  $migrations = migrate_migrations();
+
+  foreach ($migrations as $name => $migration) {
+    if (strpos($name, 'dkan_default_content_') !== 0) {
+      continue;
+    }
+    if ($migration) {
+      Migration::deregisterMigration($name);
+    }
+    else {
+      drupal_watchdog(
+        'dkan_default_content',
+        "You are attempting to deregister a non existent migration: %migration", array(
+          '%migration' => $migration,
+        ));
+    }
+  }
+}

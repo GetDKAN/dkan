@@ -8,6 +8,7 @@
  - #1963 Allow dkanextension to handle custom fields
  - #1938 Allow skipping of features test via config
  - #2003 Do not deregister default content migrations on disable.
+ - #2003 Deregister default content migrations on uninstall.
  - #2003 Fix dkan_migrate_base warning wrong type supplied to foreach.
 
 7.x-1.13.4
