@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\DKANExtension\Context;
 
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
@@ -12,6 +13,9 @@ class DatasetContext extends RawDKANEntityContext {
 
   use ModeratorTrait;
 
+  /**
+   * Constructor.
+   */
   public function __construct() {
     parent::__construct(
       'node',
@@ -41,9 +45,11 @@ class DatasetContext extends RawDKANEntityContext {
   }
 
   /**
+   * Gather all needed contexts.
+   *
    * @BeforeScenario
    */
-  public function gatherContexts(BeforeScenarioScope $scope){
+  public function gatherContexts(BeforeScenarioScope $scope) {
     parent::gatherContexts($scope);
     $environment = $scope->getEnvironment();
     $this->groupContext = $environment->getContext('Drupal\DKANExtension\Context\GroupContext');
@@ -67,16 +73,16 @@ class DatasetContext extends RawDKANEntityContext {
    * @throws \Exception
    *   If region or text within it cannot be found.
    */
-  public function iShouldSeeADatasetCalled($text) {
+  public function iShouldSeeDatasetCalled($text) {
     $session = $this->getSession();
     $page = $session->getPage();
     $search_region = $page->find('css', '.view-dkan-datasets');
     $search_results = $search_region->findAll('css', '.views-row');
-    $found = false;
-    foreach( $search_results as $search_result ) {
+    $found = FALSE;
+    foreach ($search_results as $search_result) {
       $title = $search_result->find('css', 'h2');
       if ($title->getText() === $text) {
-        $found = true;
+        $found = TRUE;
       }
     }
     if (!$found) {
@@ -85,43 +91,54 @@ class DatasetContext extends RawDKANEntityContext {
   }
 
   /**
+   * Confirm that a dataset is on the specified moderation state.
+   *
    * @Then The dataset :title is in :state moderation state
    */
   public function theDatasetIsInModerationState($title, $state) {
     $node = reset($this->getNodeByTitle($title));
-    if(!$node) {
+    if (!$node) {
       throw new \Exception(sprintf($title . " node not found."));
     }
     $this->isNodeInModerationState($node, $state);
   }
 
-  public function pre_save($wrapper, $fields) {
+  /**
+   * Function executed before the node is saved.
+   */
+  public function preSave($wrapper, $fields) {
     $this->preSaveModerate($wrapper, $fields);
-    parent::pre_save($wrapper, $fields);
+    parent::preSave($wrapper, $fields);
   }
 
-  public function post_save($wrapper, $fields) {
-    parent::post_save($wrapper, $fields);
+  /**
+   * Function executed after the node is saved.
+   */
+  public function postSave($wrapper, $fields) {
+    parent::postSave($wrapper, $fields);
     $this->moderate($wrapper, $fields);
   }
 
   /**
+   * Confirm that the local preview link is visible.
+   *
    * @Then I should see the local preview link
    */
-  public function iShouldSeeTheLocalPreviewLink()
-  {
+  public function iShouldSeeTheLocalPreviewLink() {
     $this->assertSession()->pageTextContains(variable_get('dkan_dataset_teaser_preview_label', '') . ' ' . t('Preview'));
   }
 
   /**
+   * Confirm that the first number of datasets is on the specified order.
+   *
    * @Given I should see the first :number dataset items in :orderby :sortdirection order.
    */
-  public function iShouldSeeTheFirstDatasetListInOrder($number, $orderby, $sortdirection){
+  public function iShouldSeeTheFirstDatasetListInOrder($number, $orderby, $sortdirection) {
     $number = (int) $number;
     // Search the list of datasets actually on the page (up to $number items)
     $dataset_list = array();
     $count = 0;
-    while(($count < $number ) && ($row = $this->getSession()->getPage()->find('css', '.views-row-'.($count+1))) !== null ){
+    while (($count < $number) && ($row = $this->getSession()->getPage()->find('css', '.views-row-' . ($count + 1))) !== NULL) {
       $row = $row->find('css', 'h2');
       $dataset_list[] = $row->getText();
       $count++;
@@ -131,13 +148,15 @@ class DatasetContext extends RawDKANEntityContext {
       throw new \Exception("Couldn't find $number datasets on the page. Found $count.");
     }
 
-    switch($orderby){
+    switch ($orderby) {
       case 'Date changed':
         $orderby = 'changed';
         break;
+
       case 'Title':
         $orderby = 'title';
         break;
+
       default:
         throw new \Exception("Ordering by '$orderby' is not supported by this step.");
     }
@@ -155,7 +174,7 @@ class DatasetContext extends RawDKANEntityContext {
       throw new \Exception("Couldn't find $number datasets in the database. Found $count.");
     }
 
-    foreach($results['results'] as $nid => $result) {
+    foreach ($results['results'] as $nid => $result) {
       $dataset = node_load($nid);
       $found_title = array_shift($dataset_list);
       // Drupal removes extra spacing on titles somehow so reproducing here.
@@ -167,17 +186,19 @@ class DatasetContext extends RawDKANEntityContext {
   }
 
   /**
+   * Add a dataset filtered list panel.
+   *
    * @Given /^I add a Dataset Filtered List$/
    */
-  public function iAddADatasetFilteredList() {
+  public function iAddDatasetFilteredList() {
     $add_button = $this->getXPathElement("//fieldset[@class='widget-preview panel panel-default'][3]//a");
     $add_button->click();
   }
 
   /**
-   * @When I empty the resources field :locator
-   *
    * Empty the 'Resources' autocomplete field on a Dataset form.
+   *
+   * @When I empty the resources field :locator
    */
   public function iEmptyTheResourcesField($locator) {
     $session = $this->getSession();
@@ -189,7 +210,7 @@ class DatasetContext extends RawDKANEntityContext {
     }
 
     $field_choices = $field->findAll('css', '.chosen-choices .search-choice');
-    foreach($field_choices as $field_choice) {
+    foreach ($field_choices as $field_choice) {
       $remove_button = $field_choice->find('css', '.search-choice-close');
       if ($remove_button) {
         $remove_button->click();
@@ -198,44 +219,11 @@ class DatasetContext extends RawDKANEntityContext {
   }
 
   /**
-   * @Given /^I fill in the resources field "([^"]*)" with "([^"]*)"$/
+   * Confirm that all published datasets are visible.
    *
-   * Fill in the 'Resources' field on a Dataset form.
-   */
-  public function iFillInTheResourcesFieldWith($field, $value) {
-    $session = $this->getSession();
-    $page = $session->getPage();
-
-    $element = $page->findField($field);
-    if (!$element) {
-      throw new ElementNotFoundException($session, NULL, 'named', $field);
-    }
-    $page->fillField($field, $value);
-
-    // Trigger all needed key events in order for the autocomplete to be triggered.
-    // Just filling the field with a value is not enough.
-    // TODO: Is there a better way to do this?
-    $chars = str_split($value);
-    $last_char = array_pop($chars);
-    // Delete last char.
-    $session->getDriver()->keyDown($element->getXpath(), 8);
-    $session->getDriver()->keyUp($element->getXpath(), 8);
-    // Re-add last char.
-    $session->getDriver()->keyDown($element->getXpath(), $last_char);
-    $session->getDriver()->keyUp($element->getXpath(), $last_char);
-    $this->dkanContext->iWaitForSeconds(5);
-
-    $title = $page->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
-    );
-    $title->click();
-  }
-
-  /**
    * @Then I should see all published datasets
    */
-  public function iShouldSeeAllPublishedDatasets(){
+  public function iShouldSeeAllPublishedDatasets() {
     $session = $this->getSession();
     $page = $session->getPage();
     $search_region = $page->find('css', '.view-dkan-datasets');
@@ -260,10 +248,11 @@ class DatasetContext extends RawDKANEntityContext {
   }
 
   /**
+   * Confirm that all dataset form fields are visible.
+   *
    * @Then I should see all the dataset fields in the form
    */
-  public function iShouldSeeAllTheDatasetFieldsInTheForm()
-  {
+  public function iShouldSeeAllTheDatasetFieldsInTheForm() {
     $form_css_selector = '.node-dataset-form';
 
     // We could use field_info_instances() to get the list of fields for the 'dataset' content
@@ -289,7 +278,7 @@ class DatasetContext extends RawDKANEntityContext {
       'field_landing_page' => 'Homepage URL',
       'field_conforms_to' => 'Data Standard',
       'field_language' => 'Language',
-      'og_group_ref' => 'Groups'
+      'og_group_ref' => 'Groups',
     );
 
     $dataset_fieldsets = array(
@@ -322,14 +311,14 @@ class DatasetContext extends RawDKANEntityContext {
       }
     }
 
-    // Check that all form fiels are present
+    // Check that all form fiels are present.
     foreach ($dataset_fields as $key => $field_name) {
       if (!in_array($field_name, $available_form_fields)) {
         throw new \Exception("$field_name was not found in the form with CSS selector '$form_css_selector'");
       }
     }
 
-    // Check that all form fielsets are present
+    // Check that all form fielsets are present.
     foreach ($dataset_fieldsets as $key => $fieldset_name) {
       if (!in_array($fieldset_name, $available_form_fieldsets)) {
         throw new \Exception("$fieldset_name was not found in the form with CSS selector '$form_css_selector'");
@@ -338,10 +327,11 @@ class DatasetContext extends RawDKANEntityContext {
   }
 
   /**
+   * Choose an option on DKAN dataset forms section.
+   *
    * @Given I :operation the :option on DKAN Dataset Forms
    */
-  public function iTheOnDkanDatasetForms($operation, $option)
-  {
+  public function iTheOnDkanDatasetForms($operation, $option) {
     $enabled = 0;
     if ($operation === "enable") {
       $enabled = 1;
@@ -351,31 +341,35 @@ class DatasetContext extends RawDKANEntityContext {
       case 'Strict POD validation':
         variable_set('dkan_dataset_form_pod_validation', $enabled);
         break;
+
       case 'Groups validation':
         variable_set('dkan_dataset_form_group_validation', $enabled);
         break;
+
       default:
         break;
     }
   }
 
   /**
+   * Confirm that a group option is visible.
+   *
    * @Then I should see the :option groups option
    */
-  public function iShouldSeeTheGroupsOption($option)
-  {
-    $element = $this->find_select_option('og_group_ref[und][]', $option);
+  public function iShouldSeeTheGroupsOption($option) {
+    $element = $this->findSelectOption('og_group_ref[und][]', $option);
     if (!$element) {
       throw new \Exception(sprintf('The %s option could not be found.', $option));
     }
   }
 
   /**
+   * Confirm that a group option is not visible.
+   *
    * @Then I should not see the :option groups option
    */
-  public function iShouldNotSeeTheGroupsOption($option)
-  {
-    $element = $this->find_select_option('og_group_ref[und][]', $option);
+  public function iShouldNotSeeTheGroupsOption($option) {
+    $element = $this->findSelectOption('og_group_ref[und][]', $option);
     if ($element) {
       throw new \Exception(sprintf('The %s option was found.', $option));
     }
@@ -384,9 +378,10 @@ class DatasetContext extends RawDKANEntityContext {
   /**
    * Helper function to search for an option element inside a select element.
    */
-  private function find_select_option($select_name, $option) {
+  private function findSelectOption($select_name, $option) {
     $session = $this->getSession();
     $xpath = "//select[@name='" . $select_name . "']//option[text()='" . $option . "']";
     return $session->getPage()->find('xpath', $session->getSelectorsHandler()->selectorToXpath('xpath', $xpath));
   }
+
 }

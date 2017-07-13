@@ -1,13 +1,8 @@
 <?php
+
 namespace Drupal\DKANExtension\Context;
 
-use Drupal\DKANExtension\Context\RawDKANEntityContext;
-use Drupal\DKANExtension\Context\ModeratorTrait;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Symfony\Component\Console\Helper\Table;
 
 /**
  * Defines application features from the specific context.
@@ -42,17 +37,21 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
+   * Confirm that the feedback is on an specific moderation state.
+   *
    * @Then The feedback :title is in :state moderation state
    */
   public function theFeedbackIsInModerationState($title, $state) {
     $node = reset($this->getNodeByTitle($title));
-    if(!$node) {
+    if (!$node) {
       throw new \Exception(sprintf($title . " node not found."));
     }
     $this->isNodeInModerationState($node, $state);
   }
 
   /**
+   * Vote up the feedback.
+   *
    * @Then I vote up the feedback :title
    */
   public function iVoteUpTheFeedback($title) {
@@ -64,6 +63,8 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
+   * Vote down the feedback.
+   *
    * @Then I vote down the feedback :title
    */
   public function iVoteDownTheFeedback($title) {
@@ -74,12 +75,17 @@ class FeedbackContext extends RawDKANEntityContext {
     $link->click();
   }
 
+  /**
+   * Get the voting link.
+   */
   private function getVotingLink($title, $link_class) {
     $links = $this->getSession()->getPage()->findAll('xpath', "//td[contains(@class,'views-field-title')]/a[text()='" . $title . "']/../../td/div/a[contains(@class, '" . $link_class . "')]");
     return array_pop($links);
   }
 
   /**
+   * Confirms that a feedback is rated with a value.
+   *
    * @Then The feedback :title should be rated :rating
    */
   public function theFeedbackIsRated($title, $rating) {
@@ -92,9 +98,11 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
+   * Confirm that a badge is next to the feedback.
+   *
    * @Then I should see a badge next to feedback :title
    */
-  public function iShouldSeeABadgeNextToFeedback($title) {
+  public function iShouldSeeBadgeNextToFeedback($title) {
     $badged_imgs = $this->getSession()->getPage()->findAll('xpath', "//td[contains(@class,'views-field-title')]/a[text()='" . $title . "']/../../td[contains(@class, 'authenticated-user')]");
     if (empty($badged_imgs)) {
       throw new \Exception("Feedback '$title' has no badge on the author picture.");
@@ -102,9 +110,11 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
+   * Confirm that there is no badge next to the feedback.
+   *
    * @Then I should not see a badge next to feedback :title
    */
-  public function iShouldNotSeeABadgeNextToFeedback($title) {
+  public function iShouldNotSeeBadgeNextToFeedback($title) {
     $badged_imgs = $this->getSession()->getPage()->findAll('xpath', "//td[contains(@class,'views-field-title')]/a[text()='" . $title . "']/../../td[contains(@class, 'authenticated-user')]");
     if (!empty($badged_imgs)) {
       throw new \Exception("Feedback '$title' has a badge on the author picture.");
@@ -112,7 +122,7 @@ class FeedbackContext extends RawDKANEntityContext {
   }
 
   /**
-   * Override RawDKANEntityContext::save()
+   * Override RawDKANEntityContext::save().
    */
   public function save($fields) {
     global $user;
@@ -127,16 +137,16 @@ class FeedbackContext extends RawDKANEntityContext {
     parent::save($fields);
 
     if ($author) {
-    // Restore the current behat user.
+      // Restore the current behat user.
       $user = $current_user;
     }
   }
 
   /**
-   * Override RawDKANEntityContext::post_save()
+   * Override RawDKANEntityContext::postSave().
    */
-  public function post_save($wrapper, $fields) {
-    parent::post_save($wrapper, $fields);
+  public function postSave($wrapper, $fields) {
+    parent::postSave($wrapper, $fields);
     $this->moderate($wrapper, $fields);
 
     if (isset($fields['rating'])) {
@@ -146,9 +156,10 @@ class FeedbackContext extends RawDKANEntityContext {
         'value_type' => 'points',
         'value' => $fields['rating'],
         'tag' => 'feedback',
-        );
+      );
       $criteria = NULL;
       votingapi_set_votes($votes, $criteria);
     }
   }
+
 }

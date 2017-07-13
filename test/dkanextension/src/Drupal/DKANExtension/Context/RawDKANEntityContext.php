@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\DKANExtension\Context;
 
 use Behat\Behat\Context\SnippetAcceptingContext;
@@ -6,41 +7,31 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Drupal\DKANExtension\ServiceContainer\Page;
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
-use EntityDrupalWrapper;
 use EntityMetadataWrapperException;
-use EntityFieldQuery;
 use Symfony\Component\Config\Definition\Exception\Exception;
-
 
 /**
  * Defines application features from the specific context.
  */
 class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingContext {
 
-  // Store entities as EntityMetadataWrappers for easy property inspection.
-  //protected $entities = array();
-
-  protected $entity_type = '';
+  protected $entityType = '';
   protected $bundle = '';
-  protected $bundle_key = FALSE;
-  protected $field_map = array();
-  protected $field_properties = array();
-  protected $field_map_custom = array();
-
-  /**
-   * @var \Drupal\DKANExtension\Context\PageContext
-   */
+  protected $bundleKey = FALSE;
+  protected $fieldMap = array();
+  protected $fieldProperties = array();
+  protected $fieldMapCustom = array();
   protected $pageContext;
-  /**
-   * @var \Drupal\DKANExtension\Context\SearchAPIContext
-   */
   protected $searchContext;
 
-
+  /**
+   * Constructor.
+   */
   public function __construct($entity_type, $bundle, $field_map_overrides = array('published' => 'status'), $field_map_custom = array()) {
     $entity_info = entity_get_info($entity_type);
-    $this->entity_type = $entity_type;
-    $this->field_properties = array();
+    $this->entityType = $entity_type;
+    $this->fieldProperties = array();
+    
     $default_field_map_overrides = array(
       'published' => 'status',
     );
@@ -52,47 +43,49 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       $field_map_overrides = array_merge($default_field_map_overrides, $field_map_overrides);
     }
 
-    $this->field_map_custom = $field_map_custom;
+    $this->fieldMapCustom = $field_map_custom;
 
     // Check that the bundle specified actually exists, or if none given,
     // that this is an entity with no bundles (single bundle w/ name of entity)
     $entity_bundles = array_keys($entity_info['bundles']);
-    if (!in_array($bundle, $entity_bundles) && !in_array($this->entity_type, $entity_bundles)) {
-      throw new \Exception("Bundle $bundle doesn't exist for entity type $this->entity_type.");
+    if (!in_array($bundle, $entity_bundles) && !in_array($this->entityType, $entity_bundles)) {
+      throw new \Exception("Bundle $bundle doesn't exist for entity type $this->entityType.");
     }
     // Handle entities without bundles and identify the bundle key name (i.e. 'type')
-    if ($bundle == '' && in_array($this->entity_type, $entity_info['bundles'])) {
-      $this->bundle = $this->entity_type;
-      $this->bundle_key = FALSE;
+    if ($bundle == '' && in_array($this->entityType, $entity_info['bundles'])) {
+      $this->bundle = $this->entityType;
+      $this->bundleKey = FALSE;
     }
     else {
       $this->bundle = $bundle;
-      $this->bundle_key = $entity_info['entity keys']['bundle'];
+      $this->bundleKey = $entity_info['entity keys']['bundle'];
     }
 
     // Store the field properties for later.
-    $property_info = entity_get_property_info($this->entity_type);
-    // Store the fields for this bundle, but only if the bundle has fields
-    if (isset( $property_info['bundles'][$this->bundle])) {
-      $this->field_properties += $property_info['bundles'][$this->bundle]['properties'];
+    $property_info = entity_get_property_info($this->entityType);
+    // Store the fields for this bundle, but only if the bundle has fields.
+    if (isset($property_info['bundles'][$this->bundle])) {
+      $this->fieldProperties += $property_info['bundles'][$this->bundle]['properties'];
     }
     // Store the properties shared by all entities of this type.
-    $this->field_properties +=  $property_info['properties'];
+    $this->fieldProperties += $property_info['properties'];
 
     // Collect the default and overridden field mappings.
-    foreach ($this->field_properties as $field => $info) {
+    foreach ($this->fieldProperties as $field => $info) {
       // First check if this field mapping is overridden.
       if ($label = array_search($field, $field_map_overrides)) {
-        $this->field_map[$label] = $field;
+        $this->fieldMap[$label] = $field;
       }
-      // Use the default label from field_properties;
+      // Use the default label from fieldProperties;.
       else {
-        $this->field_map[strtolower($info['label'])] = $field;
+        $this->fieldMap[strtolower($info['label'])] = $field;
       }
     }
   }
 
   /**
+   * Gather needed contexts.
+   *
    * @BeforeScenario
    */
   public function gatherContexts(BeforeScenarioScope $scope) {
@@ -102,26 +95,28 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
   }
 
   /**
-   * @AfterScenario
+   * Delete all created content after each scenario.
    *
-   * @param AfterScenarioScope $scope
+   * @param \Behat\Behat\Hook\Scope\AfterScenarioScope $scope
+   *   The afterscenario scope.
+   *
+   * @AfterScenario
    */
   public function deleteAll(AfterScenarioScope $scope) {
-    $wrappers = $this->entityStore->retrieve($this->entity_type, $this->bundle);
-    if ($wrappers === false) {
+    $wrappers = $this->entityStore->retrieve($this->entityType, $this->bundle);
+    if ($wrappers === FALSE) {
       return;
     }
     foreach ($wrappers as $wrapper) {
       // The behat user teardown deletes all the content of a user automatically,
       // so we want to get a fresh entity instead of relying on the wrapper
       // (or a bool that confirms it's deleted)
+      $entities_to_delete = entity_load($this->entityType, array($wrapper->getIdentifier()));
 
-      $entities_to_delete = entity_load($this->entity_type, array($wrapper->getIdentifier()));
-
-      if (!empty($entities_to_delete)){
+      if (!empty($entities_to_delete)) {
         foreach ($entities_to_delete as $entity_to_delete) {
-          $entity_to_delete = entity_metadata_wrapper($this->entity_type, $entity_to_delete);
-          entity_delete($this->entity_type, $entity_to_delete->getIdentifier());
+          $entity_to_delete = entity_metadata_wrapper($this->entityType, $entity_to_delete);
+          entity_delete($this->entityType, $entity_to_delete->getIdentifier());
         }
       }
       $wrapper->clear();
@@ -129,8 +124,8 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
 
     // For Scenarios Outlines, EntityContext is not deleted and recreated
     // and thus the entities array is not deleted and houses stale entities
-    // from previous examples, so we clear it here
-    $this->entityStore->delete($this->entity_type, $this->bundle);
+    // from previous examples, so we clear it here.
+    $this->entityStore->delete($this->entityType, $this->bundle);
     $this->entityStore->names_flush();
 
     // Make sure that we process any index items if they were deleted.
@@ -138,10 +133,13 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
   }
 
   /**
-   * Get Entity by name
+   * Get Entity by name.
    *
-   * @param $name
-   * @return EntityDrupalWrapper or FALSE
+   * @param string $name
+   *   The name of the entity.
+   *
+   * @return \EntityDrupalWrapper
+   *   Returns the wrapped entity or FALSE.
    */
   public function getByName($name) {
     return $this->entityStore->retrieve_by_name($name);
@@ -149,91 +147,84 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
 
   /**
    * Explode a comma separated string in a standard way.
-   *
    */
-  function explode_list($string) {
+  public function explodeList($string) {
     $array = explode(',', $string);
     $array = array_map('trim', $array);
     return is_array($array) ? $array : array();
   }
 
   /**
-   *
    * Helper function to create an entity as an EntityMetadataWrapper.
    *
    * Takes a array of key-mapped values and creates a fresh entity
-   * using the data provided. The array should correspond to the context's field_map
+   * using the data provided. The array should correspond to the context's field_map.
    *
-   * @return \stdClass entity, or FALSE if failed
+   * @return \stdClass
+   *   Returns the entity or FALSE if fails.
    */
-  public function new_wrapper() {
+  public function newWrapper() {
     $entity = array();
-    if ($this->bundle_key) {
-      $entity[$this->bundle_key] = $this->bundle;
+    if ($this->bundleKey) {
+      $entity[$this->bundleKey] = $this->bundle;
     }
-    $entity = entity_create($this->entity_type, $entity);
+    $entity = entity_create($this->entityType, $entity);
 
     // Entity API doesn't automatically apply node settings like revision,
     // status, promote, etc.
     // See http://drupal.stackexchange.com/questions/115710/why-entity-metadata-wrapper-save-doesnt-update-nodes-revision
-    if ($this->entity_type == 'node') {
+    if ($this->entityType == 'node') {
       node_object_prepare($entity);
     }
-    $wrapper = entity_metadata_wrapper($this->entity_type, $entity);
+    $wrapper = entity_metadata_wrapper($this->entityType, $entity);
 
     return $wrapper;
   }
 
   /**
-   * @param EntityDrupalWrapper $wrapper
-   * @param array $field
-   * @return mixed
-   * @throws \Exception
+   * Apply field values to entity.
    */
-  public function apply_fields($wrapper, $fields) {
-    foreach ($fields as $label => $value ) {
-      if (in_array($label, $this->field_map_custom)) {
+  public function applyFields($wrapper, $fields) {
+    foreach ($fields as $label => $value) {
+      if (in_array($label, $this->fieldMapCustom)) {
         continue;
       }
-      if(isset($this->field_map[$label]) && $this->field_map[$label] === 'status'){
+      if (isset($this->fieldMap[$label]) && $this->fieldMap[$label] === 'status') {
         $value = $this->convertStringToBool($value);
       }
-      $this->set_field($wrapper, $label, $value);
+      $this->setField($wrapper, $label, $value);
     }
     return $wrapper;
   }
 
   /**
-   * @param EntityDrupalWrapper $wrapper
-   * @param $label
-   * @param $value
-   * @throws \Exception
+   * Set field on entity.
    */
-  public function set_field($wrapper, $label, $value) {
-    $property = null;
+  public function setField($wrapper, $label, $value) {
+    $property = NULL;
     try {
       // Make sure there is a mapping to an actual property.
-      if (!isset($this->field_map[$label])) {
-        $all_fields = implode(", \n", array_keys($this->field_map));
+      if (!isset($this->fieldMap[$label])) {
+        $all_fields = implode(", \n", array_keys($this->fieldMap));
         throw new \Exception("There is no field mapped to label '$label'. Available fields are: $all_fields");
       }
-      $property = $this->field_map[$label];
+      $property = $this->fieldMap[$label];
 
       // If no type is set for this property, then try to just output as-is.
-      if (!isset($this->field_properties[$property]['type'])) {
+      if (!isset($this->fieldProperties[$property]['type'])) {
         $wrapper->$property = $value;
         return;
       }
 
-      $field_type = $this->field_properties[$property]['type'];
+      $field_type = $this->fieldProperties[$property]['type'];
 
       switch ($field_type) {
-        // Can be NID
+        // Can be NID.
         case 'integer':
-          $wrapper->$property->set((int)$value);
+          $wrapper->$property->set((int) $value);
           break;
 
-        // Do our best to handle 0, false, "false", or "No"
+        // Do our best to handle 0, false, "false", or "No".
         case 'boolean':
           if (gettype($value) == 'string') {
             $value = $this->convertStringToBool($value);
@@ -294,11 +285,10 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
           $wrapper->$property->set($tid);
           break;
 
-
         case "list<taxonomy_term>":
           // Convert the tags to tids.
           $tids = array();
-          foreach ($this->explode_list($value) as $term) {
+          foreach ($this->explodeList($value) as $term) {
             if ($found_term = $this->tidFromTermName($property, $term)) {
               $tids[] = $found_term;
             }
@@ -315,7 +305,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
         case 'node':
         case 'list<node>':
           $nids = array();
-          foreach ($this->explode_list($value) as $name) {
+          foreach ($this->explodeList($value) as $name) {
             if (empty($name)) {
               continue;
             }
@@ -332,19 +322,22 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
             // If the field type is node only one nid is expected.
             // Default to the first element.
             $wrapper->$property->set(reset($nids));
-          } else {
+          }
+          else {
             $wrapper->$property->set($nids);
           }
           break;
+
         // Not sure (something more complex)
         case 'struct':
-          // Images
+          // Images.
         case 'field_item_image':
-          // Links
+          // Links.
         case 'field_item_link':
           $wrapper->$property->set(array("url" => $value));
           break;
-        // Files
+
+        // Files.
         case 'field_item_file':
           $file = (object) array(
             'uri' => $value,
@@ -356,19 +349,21 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
           file_save($file);
           $wrapper->$property->file->set($file);
           break;
+
         case 'token':
-          // References to nodes
+          // References to nodes.
         case 'safeword_field':
           $wrapper->$property->set(array("machine" => $value));
           break;
+
         default:
           // For now, just error out as we can't handle it yet.
           throw new \Exception("Not sure how to handle field '$label' with type '$field_type'");
-          break;
+        break;
       }
     }
-    catch (EntityMetadataWrapperException $e ) {
-      $print_val = print_r($value, true);
+    catch (EntityMetadataWrapperException $e) {
+      $print_val = print_r($value, TRUE);
       throw new \Exception("Error when setting field '$property' with value '$print_val': Error Message => {$e->getMessage()}");
     }
   }
@@ -380,52 +375,43 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    * then cycles through each array to start the entity build routine for each
    * corresponding array. This function will be called by sub-contexts to generate
    * their entities.
-   *
-   * @param TableNode $entityTable - provided
-   * @throws \Exception
    */
   public function addMultipleFromTable(TableNode $entityTable) {
-    foreach($this->arrayFromTableNode($entityTable) as $entity) {
+    foreach ($this->arrayFromTableNode($entityTable) as $entity) {
       $this->save($entity);
     }
   }
 
   /**
    * Build routine for an entity.
-   *
-   * @param $fields - the array of key-mapped values
-   * @return EntityDrupalWrapper $wrapper - EntityMetadataWrapper
    */
   public function save($fields) {
-    /** @var EntityDrupalWrapper $wrapper */
-    $wrapper = $this->new_wrapper();
-    $this->pre_save($wrapper, $fields);
+    /** @var \EntityDrupalWrapper $wrapper */
+    $wrapper = $this->newWrapper();
+    $this->preSave($wrapper, $fields);
     $wrapper->save();
-    $this->post_save($wrapper, $fields);
+    $this->postSave($wrapper, $fields);
     return $wrapper;
   }
 
-   /**
-    * Do further processing after saving.
-    *
-    * @param EntityDrupalWrapper $wrapper
-    * @param $fields
-    */
-  public function pre_save($wrapper, $fields) {
+  /**
+   * Do further processing after saving.
+   */
+  public function preSave($wrapper, $fields) {
     // Update the changed date after the entity has been saved.
     if (isset($fields['date changed'])) {
       unset($fields['date changed']);
     }
-    if (!isset($fields['author']) && isset($this->field_map['author'])) {
-      $field = $this->field_map['author'];
+    if (!isset($fields['author']) && isset($this->fieldMap['author'])) {
+      $field = $this->fieldMap['author'];
       $user = $this->getCurrentUser();
       if ($user) {
         $wrapper->$field->set($user);
       }
     }
-    $this->dispatchDKANHooks('BeforeDKANEntityCreateScope', $wrapper, $fields);
+    $this->dispatchDkanHooks('BeforeDKANEntityCreateScope', $wrapper, $fields);
     $this->applyMissingRequiredFields($fields);
-    $this->apply_fields($wrapper, $fields);
+    $this->applyFields($wrapper, $fields);
   }
 
   /**
@@ -437,7 +423,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    *   Array of maps of label or field_name values.
    * */
   public function applyMissingRequiredFields(array &$data) {
-    $wrapper = $this->new_wrapper();
+    $wrapper = $this->newWrapper();
     $bundle = $wrapper->type->value();
     if ($bundle == "dataset") {
       module_load_include('inc', 'devel_generate', 'devel_generate');
@@ -447,13 +433,13 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       devel_generate_fields($node, 'node', $bundle);
       $devel_generate_wrapper = entity_metadata_wrapper('node', $node);
 
-      foreach ($this->field_properties as $key => $field) {
+      foreach ($this->fieldProperties as $key => $field) {
         if ($key == 'type' || $key == 'author') {
           continue;
         }
 
         if (isset($field['required']) && $field['required']) {
-          $k = array_search($key, $this->field_map);
+          $k = array_search($key, $this->fieldMap);
           if (!isset($data[$k])) {
             $data[$k] = $devel_generate_wrapper->$key->value();
             // TODO: use param passed in from behat config for defaults.
@@ -475,12 +461,9 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
 
   /**
    * Do further processing after saving.
-   *
-   * @param EntityDrupalWrapper $wrapper
-   * @param array $fields
    */
-  public function post_save($wrapper, $fields) {
-    $this->dispatchDKANHooks('AfterDKANEntityCreateScope', $wrapper, $fields);
+  public function postSave($wrapper, $fields) {
+    $this->dispatchDkanHooks('AfterDKANEntityCreateScope', $wrapper, $fields);
     // Remove the base url from the url and add it
     // to the page array for easy navigation.
     $url = parse_url($wrapper->url->value());
@@ -493,7 +476,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
     }
 
     if (isset($fields["dataset"])) {
-      if($fields["dataset"]) {
+      if ($fields["dataset"]) {
         node_save($wrapper->value());
       }
     }
@@ -503,19 +486,15 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
 
     // Add the created entity to the array so it can be deleted later.
     $id = $wrapper->getIdentifier();
-    $this->entityStore->store($this->entity_type, $this->bundle, $id, $wrapper, $wrapper->label());
+    $this->entityStore->store($this->entityType, $this->bundle, $id, $wrapper, $wrapper->label());
   }
 
   /**
    * Converts a TableNode into an array.
    *
    * Takes an TableNode and builds a multi-dimensional array,
-   *
-   * @param TableNode
-   * @throws \Exception
-   * @returns array()
    */
-  function arrayFromTableNode(TableNode $itemsTable) {
+  public function arrayFromTableNode(TableNode $itemsTable) {
     $items = array();
     foreach ($itemsTable as $itemHash) {
       $items[] = $itemHash;
@@ -524,18 +503,19 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
   }
 
   /**
-   * Converts a string value to a boolean value
-   *
-   * @param $value String
+   * Converts a string value to a boolean value.
    */
-  function convertStringToBool($value){
+  public function convertStringToBool($value) {
     $value = strtolower($value);
     $value = ($value === 'yes') ? TRUE : $value;
     $value = ($value === 'no') ? FALSE : $value;
     return $value;
   }
 
-  function tidFromTermName($field_name, $term) {
+  /**
+   * Get the term ID from term name.
+   */
+  public function tidFromTermName($field_name, $term) {
     $info = field_info_field($field_name);
     $vocab_machine_name = $info['settings']['allowed_values'][0]['vocabulary'];
     if ($found_terms = taxonomy_get_term_by_name($term, $vocab_machine_name)) {
@@ -543,7 +523,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       return $found_term->tid;
     }
     else {
-      return false;
+      return FALSE;
     }
   }
 
@@ -552,18 +532,16 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    *
    * Note that this is only supported for nodes currently. TODO Support all entities.
    * Also, there is no guarantee that another action won't cause the updated date to change.
-   *
-   * @param EntityDrupalWrapper $saved_wrapper
-   * @param String $time_str See time formats supported by strtotime().
    */
-  function setChangedDate($saved_wrapper, $time_str) {
-    if (! ($saved_wrapper->type() == 'node')) {
+  public function setChangedDate($saved_wrapper, $time_str) {
+    if (!($saved_wrapper->type() == 'node')) {
       throw new Exception("Specifying the 'changed' date is only supported for nodes currently.");
     }
     if (!$nid = $saved_wrapper->getIdentifier()) {
       throw new Exception("Node ID could not be found. A node must be saved first before the changed date can be updated.");
     }
     // Use REQUEST_TIME, because that will remain consistent across all tests.
+    // See time formats supported by strtotime().
     if (!$timestamp = strtotime($time_str, REQUEST_TIME)) {
       throw new Exception("Could not create a timestamp from $time_str.");
     }
@@ -584,12 +562,8 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    * Fire off a DKAN hook.
    *
    * Based on RawDrupalContext::dispatchHooks().
-   *
-   * @param $scopeType
-   * @param \stdClass $entity
-   * @throws
    */
-  protected function dispatchDKANHooks($scopeType, \EntityDrupalWrapper $wrapper, &$fields) {
+  protected function dispatchDkanHooks($scopeType, \EntityDrupalWrapper $wrapper, &$fields) {
     $fullScopeClass = 'Drupal\\DKANExtension\\Hook\\Scope\\' . $scopeType;
     $drupal = $this->getDrupal();
     if (!$drupal) {
@@ -606,4 +580,5 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       }
     }
   }
+
 }
