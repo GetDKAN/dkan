@@ -297,19 +297,13 @@ function dkan_update_7015() {
  * Add data dictionary textarea id to bueditor excludes list.
  */
 function dkan_update_7016() {
-  $eid = db_select("bueditor_editors", "bue")
-    ->fields("bue", array("eid"))
-    ->condition("name", "Markdowneditor")
-    ->execute()
-    ->fetchField();
-
   db_update('bueditor_editors')
     ->fields(array(
       'excludes' => 'edit-log
 edit-menu-description
 *data-dictionary*',
     ))
-    ->condition('eid', $eid)
+    ->condition('eid', '5')
     ->execute();
 }
 
@@ -361,4 +355,25 @@ function dkan_update_7020() {
   // REF #1936, #1890.
   variable_set('chosen_jquery_selector',
     '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"], [id*="lines-terminated-by"])');
+}
+
+/**
+ * Add data dictionary textarea id to bueditor excludes list.
+ * Similar to 'dkan_update_7016' but loading the ID from the DB first.
+ */
+function dkan_update_7021() {
+  $eid = db_select("bueditor_editors", "bue")
+    ->fields("bue", array("eid"))
+    ->condition("name", "Markdowneditor")
+    ->execute()
+    ->fetchField();
+
+  db_update('bueditor_editors')
+    ->fields(array(
+      'excludes' => 'edit-log
+        edit-menu-description
+        *data-dictionary*',
+    ))
+    ->condition('eid', $eid)
+    ->execute();
 }
