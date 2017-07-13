@@ -10743,7 +10743,7 @@ body.modal-open {
   display: block;
   font-size: 2em;
   line-height: 1.15em;
-  margin: 50px 20px 0; }
+  margin: 50px 20px 0 0; }
   @media (max-width: 460px) {
     .site-name {
       clear: left;
