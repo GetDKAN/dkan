@@ -423,7 +423,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
    *   Array of maps of label or field_name values.
    * */
   public function applyMissingRequiredFields(array &$data) {
-    $wrapper = $this->new_wrapper();
+    $wrapper = $this->newWrapper();
     $bundle = $wrapper->type->value();
     if ($bundle == "dataset") {
       module_load_include('inc', 'devel_generate', 'devel_generate');
@@ -433,13 +433,13 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       devel_generate_fields($node, 'node', $bundle);
       $devel_generate_wrapper = entity_metadata_wrapper('node', $node);
 
-      foreach ($this->field_properties as $key => $field) {
+      foreach ($this->fieldProperties as $key => $field) {
         if ($key == 'type' || $key == 'author') {
           continue;
         }
 
         if (isset($field['required']) && $field['required']) {
-          $k = array_search($key, $this->field_map);
+          $k = array_search($key, $this->fieldMap);
           if (!isset($data[$k])) {
             $data[$k] = $devel_generate_wrapper->$key->value();
             // TODO: use param passed in from behat config for defaults.
