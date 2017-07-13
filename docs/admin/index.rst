@@ -15,16 +15,16 @@ As a Site Manager, you build the framework that other roles operate within and b
 **What does a Site Manager handle?**
 
 Data and Content
-   One of the biggest pieces of a Granicus Open Data site is of course the data itself. A Site Manager can decide how users can add data and create content, and use special visual tools to showcase the stories and insights gained from datasets.
+   One of the biggest pieces of a DKAN site is of course the data itself. A Site Manager can decide how users can add data and create content, and use special visual tools to showcase the stories and insights gained from datasets.
 
 People
    Data and content management can't be done alone. Site Managers handle all the users on the site and decide who has access to what. They can also create Groups for organizations, which have even more possibilities for roles and permissions. Build your team to build your site.
 
 Structure
-   Creating new Pages, Granicus Open Data Topics, creating Groups, etc. are all forms of structure on a Granicus Open Data site. Use these structure types to create a framework for other users to operate within and build upon.
+   Creating new Pages, DKAN Topics, creating Groups, etc. are all forms of structure on a DKAN site. Use these structure types to create a framework for other users to operate within and build upon.
 
 Appearance
-   You can make your Granicus Open Data site look and feel completely aligned with your organization to give site visitors the best possible experience while going through the site. Add your logo, change page layouts, customize the Home page, or pick out the right fonts to match your brand.
+   You can make your DKAN site look and feel completely aligned with your organization to give site visitors the best possible experience while going through the site. Add your logo, change page layouts, customize the Home page, or pick out the right fonts to match your brand.
 
 
 .. toctree::
@@ -33,6 +33,7 @@ Appearance
    account_access_and_setup
    adding_new_content
    adding_new_users
+   admin_menu
    appearance
    data_and_content
    data_management
@@ -41,4 +42,3 @@ Appearance
    people
    dkan_workflow
    structure
-   using_the_admin_menu

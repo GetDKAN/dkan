@@ -209,7 +209,7 @@ Directly under the title of the Dataset, you can change the URL path for your da
 .. figure:: ../images/site_manager_playbook/adding_new_content/adding_new_content_10.gif
    :alt: This animated screencap shows the process of changing a Resource URL.
 
-Adding metadata
+Adding Metadata
 ~~~~~~~~~~~~~~~
 
 Metadata is often described as the "Who, what, when, where, and why" of a Dataset. Metadata gives a high-level view by providing additional information about the files in the Dataset. Without metadata, site visitors could download the contents of a file but they wouldn't have any information about who provided the file, when it was published, how often it is published, the time range and geographic area that the file represents, and so on.
