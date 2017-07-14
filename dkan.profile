@@ -130,6 +130,8 @@ function dkan_markdown_setup(array &$context) {
   drupal_write_record('bueditor_editors', $data, array('eid'));
   // Remove unsupported markdown options.
   dkan_delete_markdown_buttons($context);
+
+  return $context;
 }
 
 /**
@@ -495,14 +497,14 @@ function dkan_bueditor_markdown_install() {
     }
   }
 
-  variable_set('bueditor_roles', $bueditor_roles);
-  variable_set('bueditor_user1', $eid);
-
   $eid = db_select("bueditor_editors", "bue")
     ->fields("bue", array("eid"))
     ->condition("name", "Markdowneditor")
     ->execute()
     ->fetchField();
+
+  variable_set('bueditor_roles', $bueditor_roles);
+  variable_set('bueditor_user1', $eid);
 
   $data = array(
     'html' => array('default' => $eid, 'alternative' => 0),
