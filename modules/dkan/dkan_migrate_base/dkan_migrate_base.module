@@ -89,7 +89,7 @@ function dkan_migrate_base_create_resource_list_items($endpoint, $file_name) {
       $dataset_json = $dataset_response->data;
     }
     $dataset_data = drupal_json_decode($dataset_json);
-    $resources = $dataset_data['result']['resources'];
+    $resources = (array) $dataset_data['result']['resources'];
     foreach ($resources as $key => $resource) {
       $resource_ids['result'][] = $resource['id'];
     }
