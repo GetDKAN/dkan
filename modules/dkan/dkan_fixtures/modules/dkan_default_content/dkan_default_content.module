@@ -58,15 +58,3 @@ function dkan_default_content_migrate_api() {
 function dkan_default_content_dkan_fixtures_register() {
   return 'dkan_default_content';
 }
-
-/**
- * Deregisters migrations.
- */
-function dkan_default_content_migrations_disable() {
-  Migration::deregisterMigration('dkan_default_content_datasets');
-  Migration::deregisterMigration('dkan_default_content_resources');
-  Migration::deregisterMigration('dkan_default_content_groups');
-  Migration::deregisterMigration('dkan_default_content_visualization_entities');
-  Migration::deregisterMigration('dkan_default_content_data_stories');
-  Migration::deregisterMigration('dkan_default_content_data_dashboards');
-}
