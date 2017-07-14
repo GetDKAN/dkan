@@ -177,7 +177,7 @@ function dkan_topics_field_formatter_view($entity_type, $entity, $field, $instan
       foreach ($items as $delta => $item) {
         $term = taxonomy_term_load($item['tid']);
         if (!$term) {
-          watchdog('dkan_topis', "Attempt to load missing taxonomy term id: %tid", array(
+          watchdog('dkan_topics', "Attempt to load missing taxonomy term id: %tid", array(
             '%tid' => $item['tid'],
           ), WATCHDOG_NOTICE);
           continue;
