@@ -359,7 +359,8 @@ function dkan_update_7020() {
 
 /**
  * Add data dictionary textarea id to bueditor excludes list.
- * Similar to 'dkan_update_7016' but loading the ID from the DB first.
+ *
+ * This is similar to 'dkan_update_7016' but loading the ID from the DB first.
  */
 function dkan_update_7021() {
   $eid = db_select("bueditor_editors", "bue")
