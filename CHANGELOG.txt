@@ -1,16 +1,14 @@
 7.x-1.13.5
 ----------
- - #2003 Fix dkan_bueditor_markdown_install() uses variable before it is initialized.
- - #2003 Fix dkan_update_7016 assumes bueditor id is '5' (not always true).
- - #2003 Fix dkan_topics_field_formatter_view() does not check if term exists causing drupal to throw.
- - #2003 Fix dkan_default_content_disable() call to processRollback() on null.
- - #2003 Fix harvest tests do not clean up.
- - #1963 Allow dkanextension to handle custom fields
+ - #2003 Fix dkan_bueditor_markdown_install(), which was using variable before it was initialized.
+ - #2003 Fix to dkan_update_7016, which assumed the bueditor ID was always '5' and failed when it was not.
+ - #2003 Fix dkan_topics_field_formatter_view(), wich did not check if term exists causing drupal to throw.
+ - #2003 Make Harvest tests clean up after them selves more completely (resources, other nodes were not being cleared).
+ - #2003 Fix issues with registering/deregistering and rolling back default content migrations on install/uninstall.
+ - #2003 Fix dkan_migrate_base warning: wrong type supplied to foreach.
+ - #1963 Allow Behat dkanExtension to handle custom fields via devel generate
  - #1938 Allow skipping of features test via config
- - #2003 Do not deregister default content migrations on disable.
- - #2003 Deregister default content migrations on uninstall.
- - #2003 Fix dkan_migrate_base warning wrong type supplied to foreach.
- - #1970 DevOps: Automatically populate required fields when running behat tests.
+ - #1970 Automatically populate required fields when running behat tests.
 
 7.x-1.13.4
 ----------
