@@ -52,3 +52,7 @@ features[variable][] = user_picture_path
 features[variable][] = user_picture_style
 features[variable][] = user_pictures
 features[views_view][] = popular_tags
+
+; Information added by DKAN release script on 7/14/2017
+version = 7.x-1.13.5-RC1
+project = dkan
