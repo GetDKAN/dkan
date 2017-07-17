@@ -187,9 +187,9 @@ Feature: Site managers administer groups
   Scenario: View list of unpublished groups
     Given I am logged in as "John"
     And I am on "Content" page
-    When I select "not published" from "status"
+    When I select "No" from "status"
     And I select "group" from "type"
-    And I press "Filter"
+    And I press "Apply"
     Then I should see "Group 03"
 
   Scenario: View the details of an unpublished group

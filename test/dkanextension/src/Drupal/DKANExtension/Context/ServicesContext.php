@@ -43,7 +43,7 @@ class ServicesContext extends RawDKANContext {
       'attest quality' => 'field_hhs_attestation_quality[und]',
       'bureau code' => 'field_odfe_bureau_code[und]',
       'license' => 'field_license[und][select]',
-    ),
+    )
   );
 
   /**

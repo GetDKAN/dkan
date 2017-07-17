@@ -5,6 +5,8 @@
  * Required module file.
  */
 
+include_once 'dkan_migrate_base.migrate.inc';
+
 /**
  * We should pull out this from here to another more generic module.
  *

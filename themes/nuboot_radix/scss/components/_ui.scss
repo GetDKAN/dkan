@@ -1,0 +1,20 @@
+// Horizontal Tabs on all but resource nodes.
+.field-group-htabs-wrapper {
+	border: 1px solid #CDCDCD;
+	border-radius: 4px;
+	fieldset.field-group-htab {
+		margin-bottom: 0;
+	}
+	.horizontal-tabs ul.horizontal-tabs-list li {
+		&.first,
+		&.first a:hover {
+			border-radius: 4px 0 0 0;
+		}
+		a:hover {
+    	background-color: #fffece;
+    }
+  }
+}
+.node-resource-form .field-group-htabs-wrapper {
+	border: none;
+}
