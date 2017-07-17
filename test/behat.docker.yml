@@ -1,12 +1,12 @@
 imports:
-  -  behat.yml
+  - behat.yml
 
 default:
   extensions:
     Behat\MinkExtension:
-      base_url: http://web
+      base_url: "http://web"
       selenium2:
-        wd_host: http://browser:4444/wd/hub
+        wd_host: "http://browser:4444/wd/hub"
     Drupal\DrupalExtension:
       drupal:
-        drupal_root: %paths.base%/../../docroot
+        drupal_root: "%paths.base%/../../docroot"
