@@ -5,12 +5,17 @@
 web:
   hostname: web
   image: nuams/drupal-apache-php:1.0-5.6
+  # Fix for docker for mac container not starting selenium
+  # https://forums.docker.com/t/space-in-new-no-proxy-env-var-breaking-old-containers/14075
+
   environment:
     - VIRTUAL_HOST=dkan.docker
+    - no_proxy=localhost
     #- VIRTUAL_PROTO=https
   ports:
     - "80"
     - "443"
+    - "8888"
   volumes:
     # PHP configuration overrides
     - "./.docker/etc/php5/php.ini:/etc/php5/fpm/conf.d/z_php.ini"
@@ -49,6 +54,7 @@ cli:
   environment:
     - XDEBUG_CONFIG=idekey=cli
     - PHP_IDE_CONFIG=serverName=dkan.docker
+    - VIRTUAL_HOST=dkan.docker
   volumes:
     # PHP configuration overrides
     - "./.docker/etc/php5/php-cli.ini:/etc/php5/cli/conf.d/z_php.ini"
@@ -64,6 +70,8 @@ cli:
     - browser
     - memcached
     - solr
+  ports:
+    - "8888"
 
 # Memcached node
 # Uncomment the service definition section below and the link in the web service above to start using memcached.
@@ -96,16 +104,21 @@ browser:
     - /dev/shm:/dev/shm
     # Project root folder mapping
     - *project_root
+
   links:
     - web
   ports:
-  #  - "4444:4444"
     - "5900"
+
+  # Fix for docker for mac container not starting selenium
+  # https://forums.docker.com/t/space-in-new-no-proxy-env-var-breaking-old-containers/14075
+  environment:
+    - no_proxy=localhost
 
 solr:
   hostname: solr
   image: devinci/drupal-solr:3.x
-  #ports:
-  #  - "8983:8983"
+  ports:
+    - "8983"
   volumes:
     - "./.docker/etc/solr/3.x:/var/lib/solr/conf"
