@@ -1,3 +1,4 @@
+.. _`user-docs group roles and permissions`:
 ===========================
 Group Roles and Permissions
 ===========================
