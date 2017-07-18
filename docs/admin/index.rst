@@ -31,15 +31,15 @@ Appearance
    :maxdepth: 1
 
    account_access_and_setup
-   adding_new_content
-   adding_new_users
-   admin_menu
    appearance
    data_and_content
+   adding_new_content
    data_management
    dkan_apis
-   dkan_workflow
-   group_roles_and_permissions
    managing_existing_content
    people
+   adding_new_users
+   group_roles_and_permissions
+   dkan_workflow
    structure
+   admin_menu
