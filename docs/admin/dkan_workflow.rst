@@ -38,7 +38,7 @@ Workflow Contributors will be assigned the core role of Content Creator.
 Workflow Moderator
 ~~~~~~~~~~~~~~~~~~
 
-The Workflow Moderator reviews the bulk of content that has been added by Workflow Contributors for a single Group and moves it through the publishing pipeline. This role reviews and publishes content--including what they have created themselves--for their Group, rather than the entire site. Read more about how Groups work in the `Group Roles and Permissions section<EDIT LATER>`. 
+The Workflow Moderator reviews the bulk of content that has been added by Workflow Contributors for a single Group and moves it through the publishing pipeline. This role reviews and publishes content--including what they have created themselves--for their Group, rather than the entire site. Read more about how Groups work in the `Group Roles and Permissions section<user-docs people>`. 
 
 Moderators can also unpublish content, leaving it in a Needs Review or Draft state and removing it from public view, or delete content altogether. Workflow Moderators will be assigned the core role of Editor. 
 
