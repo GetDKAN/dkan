@@ -22,7 +22,7 @@ Granicus Open Data Workflow introduces an editorial process to ensure quality co
 Workflow Roles and Permissions
 ------------------------------
 
-Each user on a Granicus Open Data site will have a role (or multiple roles) and have certain permissions for moving content through Workflow. These roles allow users to interact differently with My Workbench, but they do not negate the need for core user roles. This means that every user must be assigned a core role granting a certain level of access to the site, independent of the user's Workflow role. Read about `user management in the Site Manager Playbook<EDIT LATER>` for additional details. 
+Each user on a Granicus Open Data site will have a role (or multiple roles) and have certain permissions for moving content through Workflow. These roles allow users to interact differently with My Workbench, but they do not negate the need for core user roles. This means that every user must be assigned a core role granting a certain level of access to the site, independent of the user's Workflow role. Read about `user management in the Site Manager Playbook<user-docs people>` for additional details. 
 
 Core roles/permissions and Workflow roles/permissions serve different purposes but complement one another. Each set of roles has different permissions that enable the user to interact with certain functions on Granicus Open Data. As Workflow roles are assigned, the core role equivalent is automatically selected so that there are no gaps in a user’s permissions.
 
