@@ -31,9 +31,9 @@ Group roles and permissions at-a-glance
 +---------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
 | Role          | Description                                                                                             | Permissions                                                                     |
 +===============+=========================================================================================================+=================================================================================+
-| Nonmember	    | A user on the site who does not belong to the Group.                                                    | Request membership in the Group. View Group members and content.                |
+| Nonmember     | A user on the site who does not belong to the Group.                                                    | Request membership in the Group. View Group members and content.                |
 +---------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| Member	       | A basic user within the Group who is mostly adding and editing content and associating it with a Group. | Create and edit content they have created and associated to their Group.        |
+| Member        | A basic user within the Group who is mostly adding and editing content and associating it with a Group. | Create and edit content they have created and associated to their Group.        |
 +---------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
 | Administrator | One or two people managing content associated with the Group.                                           | Add and remove Group members.                                                   |
 |               |                                                                                                         |                                                                                 |
