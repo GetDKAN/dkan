@@ -36,9 +36,9 @@ Group roles and permissions at-a-glance
 | Member        | A basic user within the Group who is mostly adding and editing content and associating it with a Group. | Create and edit content they have created and associated to their Group.        |
 +---------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
 | Administrator | One or two people managing content associated with the Group.                                           | Add and remove Group members.                                                   |
-|               |                                                                                                         |                                                                                 |
+|               +---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
 |               | This higher level of permissions is restricted to the user’s Group.                                     | Manage permissions of Group members.                                            |
-|               |                                                                                                         |                                                                                 |
+|               +---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
 |               | Groups can be administered independently, without affecting content on the rest of the site.            | Create and edit all content associated with the Group regardless of the author. |
 +---------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
 
