@@ -2,7 +2,7 @@
 Site Manager Guide
 ==================
 
-**We are in the process of migrating our legacy, user oriented documentation to this site. There are some new changes to DKAN that have not yet been updated in this documentation, so there may be some inconsistencies with how DKAN works in the latest version. There may also be some formatting issues that still need to be corrected as we transer the documentation from the previous system. Thanks for your patience!**
+⚠️ **We are in the process of migrating our legacy, user oriented documentation to this site. There are some new changes to DKAN that have not yet been updated in this documentation, so there may be some inconsistencies with how DKAN works in the latest version. There may also be some formatting issues that still need to be corrected as we transer the documentation from the previous system. Thanks for your patience!**
 
 The Site Manager role is the highest non-technical role available on DKAN sites. Users assigned to this role need a good understanding of how DKAN works, and what administrative actions may be necessary to support the site and its users.
 
