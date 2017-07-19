@@ -187,7 +187,7 @@ With the Fast Import option, the time to upload a large file is dramatically red
 
 For smaller files, we recommend using the standard processor and import. When large files must be imported, check the Use Fast Import checkbox to skip the processing and directly import.  
 
-Special note: This capability is not enabled by default. Talk with your Granicus implementation consultant for more details on set up.
+Special Note: This capability is not enabled by default and requires the DKAN Datastore Fast Import module to be enabled. Please contact your site administrator or developer for assistance.
 
 .. image:: ../images/site_manager_playbook/data_management/datastore_fast_import_option.png
    :alt: datastore import options close up

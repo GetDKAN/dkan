@@ -7,7 +7,7 @@ DKAN Workflow is an advanced feature that opens up additional functions to manag
 
 While there are usually only one or two Site Managers maintaining the entire site, content can be added by dozens of different users. In some cases the amount of content that needs review and management may be on an order that cannot be done by just one or two people. DKAN Workflow helps ensure quality content by introducing a review process, and it distributes the workload with unique Workflow roles and permissions.
 
-Special note: This feature is not enabled by default. If you are interested in getting DKAN Workflow, talk with your Granicus implementation consultant. 
+Special Note: This feature is not enabled by default and requires the DKAN Workflow module to be enabled. If you are interested in getting DKAN Workflow, please talk to your site administrator or developer. 
 
 Workflow and the Editorial Process
 ----------------------------------
