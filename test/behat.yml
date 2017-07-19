@@ -111,6 +111,7 @@ default:
         user block: ".pane-views-user-profile-fields-block"
         admin menu: "#admin-menu"
         harvest datasets: ".view-dkan-harvest-datasets"
+        recline preview: ".recline-data-explorer"
       text:
         log_out: "Log out"
         log_in: "Log in"
