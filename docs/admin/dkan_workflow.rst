@@ -3,11 +3,11 @@
 DKAN Workflow
 =============
 
-Granicus Open Data Workflow is an advanced feature that opens up additional functions to manage an editorial review process for the content on a Granicus Open Data site. It also adds a new set of user roles and permissions to distribute the work associated with a review process.
+DKAN Workflow is an advanced feature that opens up additional functions to manage an editorial review process for the content on a DKAN site. It also adds a new set of user roles and permissions to distribute the work associated with a review process.
 
-While there are usually only one or two Site Managers maintaining the entire site, content can be added by dozens of different users. In some cases the amount of content that needs review and management may be on an order that cannot be done by just one or two people. Granicus Open Data Workflow helps ensure quality content by introducing a review process, and it distributes the workload with unique Workflow roles and permissions.
+While there are usually only one or two Site Managers maintaining the entire site, content can be added by dozens of different users. In some cases the amount of content that needs review and management may be on an order that cannot be done by just one or two people. DKAN Workflow helps ensure quality content by introducing a review process, and it distributes the workload with unique Workflow roles and permissions.
 
-Special note: This feature is not enabled by default. If you are interested in getting Granicus Open Data Workflow, talk with your Granicus implementation consultant. 
+Special note: This feature is not enabled by default. If you are interested in getting DKAN Workflow, talk with your Granicus implementation consultant. 
 
 Workflow and the Editorial Process
 ----------------------------------
@@ -16,15 +16,15 @@ Data portals can house thousands of files in the form of Resources organized int
 
 On the other hand, broad contributions add a complicating factor for Site Managers. Contributors from different Groups can add data to the site, but these users may be unfamiliar with open data standards and less knowledgeable about handling data in general.
 
-Granicus Open Data Workflow introduces an editorial process to ensure quality control at any scale. Workflow creates a moderation queue so that content is published only after a designated supervisor has reviewed and approved it. Contributors can still add content to the data catalog, but it is up to a supervisor to act as the gatekeeper in making the content public on the live site.
+DKAN Workflow introduces an editorial process to ensure quality control at any scale. Workflow creates a moderation queue so that content is published only after a designated supervisor has reviewed and approved it. Contributors can still add content to the data catalog, but it is up to a supervisor to act as the gatekeeper in making the content public on the live site.
 
 
 Workflow Roles and Permissions
 ------------------------------
 
-Each user on a Granicus Open Data site will have a role (or multiple roles) and have certain permissions for moving content through Workflow. These roles allow users to interact differently with My Workbench, but they do not negate the need for core user roles. This means that every user must be assigned a core role granting a certain level of access to the site, independent of the user's Workflow role. Read about :ref:`user management in the Site Manager Playbook<user-docs people>` for additional details. 
+Each user on a DKAN site will have a role (or multiple roles) and have certain permissions for moving content through Workflow. These roles allow users to interact differently with My Workbench, but they do not negate the need for core user roles. This means that every user must be assigned a core role granting a certain level of access to the site, independent of the user's Workflow role. Read about :ref:`user management in the Site Manager Playbook<user-docs people>` for additional details. 
 
-Core roles/permissions and Workflow roles/permissions serve different purposes but complement one another. Each set of roles has different permissions that enable the user to interact with certain functions on Granicus Open Data. As Workflow roles are assigned, the core role equivalent is automatically selected so that there are no gaps in a user’s permissions.
+Core roles/permissions and Workflow roles/permissions serve different purposes but complement one another. Each set of roles has different permissions that enable the user to interact with certain functions on DKAN. As Workflow roles are assigned, the core role equivalent is automatically selected so that there are no gaps in a user’s permissions.
 
 There are three roles with Workflow-specific permissions: Workflow Contributor, Workflow Moderator, Workflow Supervisor.
 
@@ -69,7 +69,7 @@ Published
 
 My Workbench stores unpublished content in the Draft and Needs Review states, while Workflow roles give certain users the ability to moderate content through the editorial workflow. Users can view the state of the content as well as its age. 
 
-Granicus Open Data Workflow organizes content into five different tabs: My Content, My Drafts, Needs Review, Stale Drafts, and Stale Reviews.
+DKAN Workflow organizes content into five different tabs: My Content, My Drafts, Needs Review, Stale Drafts, and Stale Reviews.
 
 The Stale Drafts and Stale Reviews tabs contain content that has gone untouched for too long. The default time limit is 72 hours before drafts become stale.
 

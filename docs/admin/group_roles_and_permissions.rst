@@ -4,7 +4,7 @@ Group Roles and Permissions
 ===========================
 
 Group roles and permissions
-Granicus Open Data standard roles and permissions apply across the entire site, but there are also special permissions that apply to only some parts of the site. That includes Group roles and permissions. You can learn more about Groups and how they work in the Data and Content section.
+DKAN standard roles and permissions apply across the entire site, but there are also special permissions that apply to only some parts of the site. That includes Group roles and permissions. You can learn more about Groups and how they work in the Data and Content section.
 
 With large sites there is often a need to have special permissions for a group of users to handle a specific set of content. Think of a large agency or department with sub-departments or programs that produce content. On the one hand these users shouldn’t have the ability to manage or edit content for the entire site or other Groups. On the other hand it would be impractical for Editors or Site Managers to handle content for a large number of users.
 

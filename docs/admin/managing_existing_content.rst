@@ -15,7 +15,7 @@ Edit from the Content menu
 
 The main Content page is the most comprehensive place to find and access content to edit an individual piece. Though the menu is comprehensive, editing the details of a piece of content can only happen one at a time. From the Admin Menu, click on the **Content** link to access all the content that exists on the site.
 
-As the Site Manager, you have access to create all content types possible as well as edit, unpublish, and delete all existing content regardless of who the author is. You can create new content from this page as well as manage all the existing content and files on your Granicus Open Data site from here. Files include things like images, videos, font files for icons, other graphics, etc.  
+As the Site Manager, you have access to create all content types possible as well as edit, unpublish, and delete all existing content regardless of who the author is. You can create new content from this page as well as manage all the existing content and files on your DKAN site from here. Files include things like images, videos, font files for icons, other graphics, etc.  
 
 In any scenario, as a Site Manager you can use this page to look at the content on the site to see who created a particular piece of content, when it was last updated, its status (published or unpublished) and take action on existing content. 
 
@@ -25,9 +25,9 @@ In any scenario, as a Site Manager you can use this page to look at the content 
 Which content, when?
 --------------------
 
-Oversight over the details of content typically falls to the Editor role, but depending on the size of your team the Site Manager may play multiple roles and handle more content review and revision. Ultimately the quality of the content on your Granicus Open Data site falls to you as the Site Manager. 
+Oversight over the details of content typically falls to the Editor role, but depending on the size of your team the Site Manager may play multiple roles and handle more content review and revision. Ultimately the quality of the content on your DKAN site falls to you as the Site Manager. 
 
-When any user creates a new piece of content it defaults to a published state. That means the content automatically appears on the live site, visible to the general public. Because there isn't a technical review process on Granicus Open Data, you'll need a system for reviewing content before it is published as well as system for checking content that is published. 
+When any user creates a new piece of content it defaults to a published state. That means the content automatically appears on the live site, visible to the general public. Because there isn't a technical review process on DKAN, you'll need a system for reviewing content before it is published as well as system for checking content that is published. 
 
 Though you might not edit every piece of content, you'll generally review all the content that is visible to the public (in a published state) and make edits whenever necessary. Only Site Managers have the ability to edit or delete any piece of content regardless of the author, so use your best judgment when reviewing and editing content. If you're ever unsure, you can unpublish the content and go back to the author before making changes or removing the content.
 
@@ -37,12 +37,12 @@ Though you might not edit every piece of content, you'll generally review all th
 Find content
 ---------------
 
-Your Granicus Open Data site may have hundreds, or even thousands, of pieces of content from Resources to Data Stories; and as a Site Manager you'll have access to every piece of content. You can sift through the content and use filters on the Content main page to find content effectively. Filters help narrow your search by a set of criteria. On the Content main page, there are two types of filters to narrow the results: status and type. 
+Your DKAN site may have hundreds, or even thousands, of pieces of content from Resources to Data Stories; and as a Site Manager you'll have access to every piece of content. You can sift through the content and use filters on the Content main page to find content effectively. Filters help narrow your search by a set of criteria. On the Content main page, there are two types of filters to narrow the results: status and type. 
 
 Status
   Choose from the status drop-down menu to show content that fits a specific status, like published or unpublished. The other options on this list, like promoted and sticky, are not typically used.
 Type
-  The type of content includes all the content types that may be added to your Granicus Open Data site. Choose from the type drop-down menu to select the content type to show only content that fits the specific type, like Resource or Data Story.
+  The type of content includes all the content types that may be added to your DKAN site. Choose from the type drop-down menu to select the content type to show only content that fits the specific type, like Resource or Data Story.
 
 .. image:: ../images/site_manager_playbook/managing_existing_content/content_status_dropdown.png
    :alt: content search by status dropdown options
@@ -52,7 +52,7 @@ Type
 Edit from the page
 ------------------
 
-As you navigate through your Granicus Open Data site, you have more options available to you as a Site Manager than other users. You'll see these options on every page including an option to edit while on the page of a piece of content. You can edit directly from the page by clicking the **Edit** button. The options for editing content are the same as when adding new content, and the form appears the same. 
+As you navigate through your DKAN site, you have more options available to you as a Site Manager than other users. You'll see these options on every page including an option to edit while on the page of a piece of content. You can edit directly from the page by clicking the **Edit** button. The options for editing content are the same as when adding new content, and the form appears the same. 
 
 In general, it's okay to make small changes to content while it's published. Small changes include adding Tags and Topics, adding or removing the content from a Group, spelling and grammar corrections, styling, and other minor updates.
 
@@ -128,31 +128,31 @@ From the Revisions page, there are additional options for what you can do with t
 Compare
    Some content may have several revisions that are difficult to visually scan what the differences are. To get a clear sense of the distinction between two revisions, you can select revisions to compare on after the other. Click on the selection circle and then click the Compare button at the top of the columns. You'll see more details of each revision in comparison with one another. 
 Revert
-   As changes are made, you may not create a new revision each time. Revisions typically reflect significant changes to your published content, so lots of small changes can be made in between the previous and current version. You can go back to an older version of a piece content by clicking the Revert link under the Operations column in the row of the revision. Before reverting, it's best to create a new revision of the content with the most recent changes. The most recent revision will still exist in the list of revisions, but you can revert to an older revision, which is what will appear on your Granicus Open Data site.
+   As changes are made, you may not create a new revision each time. Revisions typically reflect significant changes to your published content, so lots of small changes can be made in between the previous and current version. You can go back to an older version of a piece content by clicking the Revert link under the Operations column in the row of the revision. Before reverting, it's best to create a new revision of the content with the most recent changes. The most recent revision will still exist in the list of revisions, but you can revert to an older revision, which is what will appear on your DKAN site.
    
-Managing content on Granicus Open Data
+Managing content on DKAN
 --------------------------------------
 
-After you add a piece of content you may want to make changes or updates or you may want to replace a piece of content all together. As a Site Manager, you can make changes to any piece of content regardless of the author, type of content, or state of the content. Creating and editing content on Granicus Open Data are critical functions of management, and there are even more ways to manage your content.
+After you add a piece of content you may want to make changes or updates or you may want to replace a piece of content all together. As a Site Manager, you can make changes to any piece of content regardless of the author, type of content, or state of the content. Creating and editing content on DKAN are critical functions of management, and there are even more ways to manage your content.
 
 Content visibility
 ------------------
 
-In general, most content is published at the same time it's added. Once content is published it appears on your live Granicus Open Data site meaning that it can be searched and discovered by the general public. But if you want to work with content without making it public or if you just want to keep a piece of content rather than delete it but don't want it visible on your Granicus Open Data site, you can change the visibility. 
+In general, most content is published at the same time it's added. Once content is published it appears on your live DKAN site meaning that it can be searched and discovered by the general public. But if you want to work with content without making it public or if you just want to keep a piece of content rather than delete it but don't want it visible on your DKAN site, you can change the visibility. 
 
 There are two states that content can be in that determines its visibility to the public, published and unpublished. 
 
 Published content
-   Published content is live on your Granicus Open Data site and visible to the public. In some cases, you may want to access and change content that was not created recently. You can visit published content on your Granicus Open Data site and edit directly from the page for quick changes (spelling, typos, titles). For bigger changes, it's best to not edit live content. First unpublish the Granicus Open Data, make changes, and then publish again.   
+   Published content is live on your DKAN site and visible to the public. In some cases, you may want to access and change content that was not created recently. You can visit published content on your DKAN site and edit directly from the page for quick changes (spelling, typos, titles). For bigger changes, it's best to not edit live content. First unpublish the DKAN, make changes, and then publish again.   
 Unpublished content
-   If content is unpublished that means that it doesn't appear on your live Granicus Open Data site, but it still exists behind the scenes. Users can leave content unpublished if they have significant changes or if they want to come back to a piece of content later to finish editing.
+   If content is unpublished that means that it doesn't appear on your live DKAN site, but it still exists behind the scenes. Users can leave content unpublished if they have significant changes or if they want to come back to a piece of content later to finish editing.
    
-   As a Site Manager, you can access all the existing content on your Granicus Open Data site through through the Content menu item on the Admin Menu bar. Once you unpublish a piece of content, that content is no longer visible to users with lower permissions (even if they are the author). 
+   As a Site Manager, you can access all the existing content on your DKAN site through through the Content menu item on the Admin Menu bar. Once you unpublish a piece of content, that content is no longer visible to users with lower permissions (even if they are the author). 
  
 
-When content is added, by any user, the content defaults to a published state. Users with fewer permissions can edit the content or delete it, but they can't unpublish content or view unpublished content, even if they authored the content. That means that the content is left visible on your Granicus Open Data site until the author makes changes.
+When content is added, by any user, the content defaults to a published state. Users with fewer permissions can edit the content or delete it, but they can't unpublish content or view unpublished content, even if they authored the content. That means that the content is left visible on your DKAN site until the author makes changes.
 
-In some cases the changes may be minor revisions, but other scenarios could require heavy editing before the content is ready to be made public. Some content is simply time-sensitive; the information is authored ahead of time but shouldn't be made public until a certain date. Publishing states let you manage the visibility of your content to give Site Managers greater control over the content that appears on your Granicus Open Data site. 
+In some cases the changes may be minor revisions, but other scenarios could require heavy editing before the content is ready to be made public. Some content is simply time-sensitive; the information is authored ahead of time but shouldn't be made public until a certain date. Publishing states let you manage the visibility of your content to give Site Managers greater control over the content that appears on your DKAN site. 
 
 Bulk actions
 ------------
@@ -167,6 +167,6 @@ Some changes are general and can be applied to multiple pieces of content at the
 Deleting content
 ----------------
 
-In general, we don't recommend deleting content. On Granicus Open Data, once content is deleted there is no way to recover it. You want to be completely sure of your decision before making it permanent.
+In general, we don't recommend deleting content. On DKAN, once content is deleted there is no way to recover it. You want to be completely sure of your decision before making it permanent.
 
 A better practice is to unpublish content, which keeps the content on the site but doesn't appear to the general public. If you decide that deleting a piece of content is the best action, you can delete a single piece of content from the Content main page using the delete link in the Operations column or directly from the page while in Edit mode using the Delete button at the bottom of the page. You can also delete multiple pieces of content using bulk actions. 
