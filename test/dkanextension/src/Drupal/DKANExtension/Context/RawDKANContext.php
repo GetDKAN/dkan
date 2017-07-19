@@ -89,6 +89,8 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
     module_load_include('inc', 'captcha', 'captcha');
     variable_set('disable_captcha', TRUE);
     captcha_set_form_id_setting('user_login', 'none');
+    captcha_set_form_id_setting('user_pass', 'none');
+    captcha_set_form_id_setting('user_register_form', 'none');
     captcha_set_form_id_setting('feedback_node_form', 'none');
     captcha_set_form_id_setting('comment_node_feedback_form', 'none');
   }
@@ -131,6 +133,8 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
     module_load_include('inc', 'captcha', 'captcha');
     variable_set('disable_captcha', FALSE);
     captcha_set_form_id_setting('user_login', 'default');
+    captcha_set_form_id_setting('user_pass', 'none');
+    captcha_set_form_id_setting('user_register_form', 'none');
     captcha_set_form_id_setting('feedback_node_form', 'default');
     captcha_set_form_id_setting('comment_node_feedback_form', 'default');
   }
