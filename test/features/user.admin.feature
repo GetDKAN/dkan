@@ -103,7 +103,7 @@ Feature: User
     And I check "content creator"
     And I press "Save"
     Then I should see "The changes have been saved"
-    When I am on "Users" 
+    When I am on "Users" page
     Then I should see "content creator" in the "Jaz" row
 
   Scenario: Modify user roles as site manager
