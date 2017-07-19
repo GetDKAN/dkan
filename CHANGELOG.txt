@@ -1,6 +1,7 @@
 
 7.x-1.14.x
 ----------
+ - #1907 Added back TAB delimiter option for datastore imports.
  - #1955 Update ahoy docker tooling for local environment usecase.
  - #1903 Add support for tab-delimited files (TSV) in resources/recline preview.
  - #2001 Improve REST API documentation.
@@ -72,12 +73,9 @@
  - #1852 Allow the use of multi-polygonal data for Dataset Spatial field.
  - #1857 Fixed publishing options not accessible when dkan_workflow is enabled.
 
-7.x-1.13.3-RC1
---------------
- - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
-
 7.x-1.13.3 2017-04-18
 ---------------------
+ - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
  - #1863 Update restws module to v2.7
  - #1859 Fixed update hooks to correctly set jquery version and remove old modified source date field
  - #1864 Update media to 2.0 and remove patch 2534724.
