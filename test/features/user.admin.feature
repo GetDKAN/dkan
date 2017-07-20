@@ -71,6 +71,7 @@ Feature: User
     And I press "Create new account"
     Then I should see "Created a new user account for tempuser."
     When I am on "Users" page
+    And I wait for "tempuser"
     Then I should see "editor" in the "tempuser" row
 
   Scenario: Block user
@@ -87,6 +88,7 @@ Feature: User
   Scenario: Disable user
     Given I am logged in as "John"
     And I am on "Users" page
+    And I wait for "edit"
     When I click "edit" in the "Katie" row
     And I press "Cancel account"
     And I select the radio button "Disable the account and keep its content."

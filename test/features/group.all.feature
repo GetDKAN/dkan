@@ -75,6 +75,7 @@ Feature: Site Manager administer groups
     When I follow "Groups"
     And I should not see "Group 03"
 
+  @customizable
   Scenario: View the details of a published group
     Given I am on "Groups" page
     When I follow "Group 01"
@@ -85,6 +86,7 @@ Feature: Site Manager administer groups
     Given I am on "Group 01" page
     Then I should see "2 datasets" in the "content" region
 
+  @customizable
   Scenario: View the correct count of datasets
     Given I am on "Groups" page
     Then I should see "11 datasets"
@@ -92,7 +94,8 @@ Feature: Site Manager administer groups
     Then I should see "Displaying 1 - 10 of 11 datasets"
 
   Scenario: View the list of group members
-    Given I am on "Group 01" page
+    Given I am logged in as "Gabriel"
+    And I am on "Group 01" page
     When I click "Members" in the "group block" region
     Then I should see "Gabriel" in the "group members" region
     And I should see "Katie" in the "group members" region
