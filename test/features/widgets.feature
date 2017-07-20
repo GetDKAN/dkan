@@ -43,7 +43,7 @@ Feature: Widgets
     And I wait for "Configure new File"
     And I attach the drupal file "dkan/actionplan.pdf" to "files[field_basic_file_file_und_0]"
     And I press "Finish"
-    And I wait for "2" seconds 
+    And I wait for "2" seconds
     And I wait and press "Save"
     And I wait for "Customize this page"
     Then I should see "actionplan.pdf"
@@ -129,7 +129,10 @@ Feature: Widgets
     And I wait for "Configure new Slideshow"
     And I fill in "field_basic_spotlight_items[und][0][title]" with "First spot"
     And I fill in "field_basic_spotlight_items[und][0][link]" with "http://demo.getdkan.com"
-    And I attach the drupal file "dkan/dkan_logo.png" to "files[field_basic_spotlight_items_und_0_fid]"
+    And I click "Browse"
+    And I attach the drupal file "dkan/dkan_logo.png" to "files[upload]"
+    And I press "Next"
+    And I press "Save"
     And I press "Finish"
     And I wait and press "Save"
     And I wait for "First spot"
