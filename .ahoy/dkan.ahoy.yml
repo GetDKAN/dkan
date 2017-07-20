@@ -4,10 +4,13 @@ commands:
   drupal-rebuild:
     usage: 'Builds a drupal site in ./docroot. Requires database url.'
     cmd: |
-      if [ "$AHOY_CMD_PROXY" != "DOCKER" ]; then
-        ARGS="{{args}}"
-      else
+      if [ "$AHOY_CMD_PROXY" = "DOCKER" ]; then
         ARGS=`ahoy docker mysql-url`
+      fi
+
+      # If no mysql URL from docker, use passed in args.
+      if [ "$ARGS" = "" ];then
+        ARGS="{{args}}"
       fi
       if [[ "$ARGS" != mysql* ]]; then
           echo "You need to specify the drupal db url to use in the form mysql://root:root@localhost/db as an argument."
@@ -44,9 +47,11 @@ commands:
         mkdir backups
       fi
       if [ -f backups/last_install.sql ] && ahoy confirm "An existing installation backup exists at backups/last_install.sql, do you want to use that instead of reinstalling from scratch?"; then
-        ahoy drush sql-drop -y
-        ahoy drush cc all
-        ahoy drush sql-cli <  backups/last_install.sql
+
+        ahoy drush sql-drop -y && \
+        echo "... Removed tables, restoring DB"
+        ahoy dkan sqlc < backups/last_install.sql
+
         echo "Installed dkan from backup"
       else
         if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
@@ -193,15 +198,13 @@ commands:
     import: dkan/.ahoy/theme.ahoy.yml
     hide: true
 
+  # Moved to .ahoy.yml
   uli:
-    usage: log into the
+    usage: Log in via drush
     cmd: |
-      uli=$(ahoy drush uli {{args}} | sed 's/^http.*\/default\/\(.*$\)/\1/g')
-      url="$(ahoy docker url)/$uli"
-      os=$(uname)
+      ruby dkan/.ahoy/.scripts/dkan-uli.rb {{args}}
 
-      if [ "$os" = "Darwin" ]; then
-        open $url
-      else
-        echo $url
-      fi
+  server:
+    usage: Provided as an easy way to setup the php server during testing.
+    cmd:
+      ahoy cmd-proxy bash dkan/.ahoy/.scripts/server.sh
