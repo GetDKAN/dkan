@@ -64,7 +64,7 @@ Feature: Dataset Features
       | Resource 05 |           | Katie  | Yes       | Dataset 08 |             |
       | Resource 06 | Group 02  | Katie  | Yes       | Dataset 09 |             |
 
-  @noworkflow
+  @noworkflow @dataset_author_1
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Add Dataset" page
@@ -76,7 +76,7 @@ Feature: Dataset Features
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
 
-  @noworkflow
+  @noworkflow @dataset_author_2
   Scenario: Save using Additional Info
     Given I am logged in as a user with the "content creator" role
     And I am on "Add Dataset" page

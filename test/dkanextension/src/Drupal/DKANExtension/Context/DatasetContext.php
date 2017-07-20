@@ -36,6 +36,8 @@ class DatasetContext extends RawDKANEntityContext {
         'attest quality' => 'field_hhs_attestation_quality',
         'bureau code' => 'field_odfe_bureau_code',
         'license' => 'field_license',
+        'doi' => 'field_doi',
+        'citation' => 'field_citation',
       ),
       array(
         'moderation',
