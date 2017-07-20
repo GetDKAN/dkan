@@ -6,10 +6,7 @@ This is a "patch" release of DKAN, containing bug fixes and minor updates, but a
 Improvements in this release
 ----------------------------
 
-- Some logic concerning when previews were rendered for resources has been simplified. DKAN will now attempt 
-to render a preview for any resource that contains an *uploaded* or *remote* file. No *API or Website URL* 
-links in resources will be previewed other than with an iframe to the URL. Note that in some cases, resources
-that previously did have Recline previews may now simply display an iframe to the remote resource.
+- Some logic concerning when previews were rendered for resources has been simplified. DKAN will now attempt to render a preview for any resource that contains an *uploaded* or *remote* file. No *API or Website URL* links in resources will be previewed other than with an iframe to the URL. Note that in some cases, resources that previously did have Recline previews may now simply display an iframe to the remote resource.
 
 Special Notes
 -------------

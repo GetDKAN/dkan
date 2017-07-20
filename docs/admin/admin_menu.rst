@@ -52,6 +52,7 @@ Charts are a powerful tool for taking data and making it meaningful to the avera
 
 .. figure:: ../images/site_manager_playbook/admin_menu/admin_menu_07.png
    :alt: A sample listing of Charts from the DKAN Demo site.
+   
    A sample listing of Charts from the DKAN Demo site.
 
 People

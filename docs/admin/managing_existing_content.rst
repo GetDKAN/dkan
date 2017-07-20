@@ -1,9 +1,10 @@
 .. _`user-docs managing existing content`:
+
 =========================
 Managing Existing Content
 =========================
 
-In smaller organizations, Site Managers may both be writing and editing their own content to then directly publish the content to the live site. Larger organizations may have people in other roles like Editors and Content Creators to help with handling a large mass of content on the site. Depending on the scale of your organization and volume of content, you may spend more or less time directly handling content. Learn more about user roles in the :ref:`People<user-docs people` section of this guide. 
+In smaller organizations, Site Managers may both be writing and editing their own content to then directly publish the content to the live site. Larger organizations may have people in other roles like Editors and Content Creators to help with handling a large mass of content on the site. Depending on the scale of your organization and volume of content, you may spend more or less time directly handling content. Learn more about user roles in the :ref:`People<user-docs people>` section of this guide. 
 
 Where do I edit existing content?
 ---------------------------------

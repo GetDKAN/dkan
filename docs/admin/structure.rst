@@ -1,4 +1,5 @@
 .. `user-docs structure`:
+
 =========
 Structure
 =========

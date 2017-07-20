@@ -1,4 +1,5 @@
 .. _`user-docs group roles and permissions`:
+
 ===========================
 Group Roles and Permissions
 ===========================
@@ -6,11 +7,13 @@ Group Roles and Permissions
 Group roles and permissions
 DKAN standard roles and permissions apply across the entire site, but there are also special permissions that apply to only some parts of the site. That includes Group roles and permissions. You can learn more about Groups and how they work in the Data and Content section.
 
-With large sites there is often a need to have special permissions for a group of users to handle a specific set of content. Think of a large agency or department with sub-departments or programs that produce content. On the one hand these users shouldn’t have the ability to manage or edit content for the entire site or other Groups. On the other hand it would be impractical for Editors or Site Managers to handle content for a large number of users.
+With large sites there is often a need to have a subset of the content managed by a specific list of users. Think of a large agency or department with sub-departments or programs that produce content. With Groups, you can silo content and users so that the different departments can easily manage and control only the content they are producing.
 
-To keep content organized and in the hands of its owners without introducing the risk of inadvertent (and sometimes irreversible) actions, Group-level permissions give users the ability to do things they couldn’t necessarily do on the site outside of the Group.
+To keep content organized and in the hands of its owners, and without introducing the risk of inadvertent (and sometimes irreversible) actions, Group-level permissions give users the ability to do things they couldn’t necessarily do on the site outside of the Group.
 
 About Group roles and permissions
+---------------------------------
+
 After adding a new Group, Site Managers can assign Datasets (and their Resources) to that Group. You can also manage the members of a Group, adding new members and giving certain members different roles.
 
 Members of a Group are bound by the permissions of their role and restricted to the content in their Group. As a Site Manager you have access to all Groups and are not limited by the permissions of the Group.
@@ -20,31 +23,35 @@ Members of a Group are bound by the permissions of their role and restricted to 
 
 Within Groups there are different levels of access a user can have, which determines another level of permissions. Any user who belongs to a group falls into one of two types: Member or Administrator. Users not in the group are considered Nonmembers.
 
-Nonmember. A Nonmember is any user on the site who does not belong to the Group. This role can request membership in the Group and view Group members and content.
+Nonmember
+~~~~~~~~~
 
-Member. A Member is a basic user within the Group who is mostly adding and editing their own content for the Group. As Datasets are added they can be assigned to a Group. Members of a Group can add Datasets to their Group and edit those Datasets from the Group page. Content within a Group can only be edited by members of that Group, so it’s important to only associate Datasets with Groups that the user belongs to.
+A Nonmember is any user on the site who does not belong to the Group. 
 
-Administrator. An Administrator of a Group plays a similar role to that of an Editor but for their particular Group rather than for the entire site. Conversely, Editors outside of a Group are not able to manage content published within a Group. Administrators of Groups are able to add and remove Group members and manage (create/edit/delete) all content within the Group. It’s good practice to have only 1 or 2 users in this role for any given Group.
+**Permissions:**
+  - Request membership in the Group
+  - View Group members and content.
 
-Group roles and permissions at-a-glance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Member
+~~~~~~
 
-+---------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| Role          | Description                                                                                             | Permissions                                                                     |
-+===============+=========================================================================================================+=================================================================================+
-| Nonmember     | A user on the site who does not belong to the Group.                                                    | Request membership in the Group. View Group members and content.                |
-+---------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| Member        | A basic user within the Group who is mostly adding and editing content and associating it with a Group. | Create and edit content they have created and associated to their Group.        |
-+---------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| Administrator | One or two people managing content associated with the Group.                                           | Add and remove Group members.                                                   |
-|               +---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-|               | This higher level of permissions is restricted to the user’s Group.                                     | Manage permissions of Group members.                                            |
-|               +---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-|               | Groups can be administered independently, without affecting content on the rest of the site.            | Create and edit all content associated with the Group regardless of the author. |
-+---------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
+A Member is a basic user within the Group who is mostly adding and editing their own content for the Group. 
+
+**Permissions:**
+  - Add content to the Group
+  - Edit own content within a Group (Content assigned to a Group can only be edited by members of that Group)
+
+Administrator
+~~~~~~~~~~~~~
+
+An Administrator of a Group plays a similar role to that of an editor. They manage the team of users associated with the Group, and can edit any of the content. It's good practice to have only 1 or 2 users in this role for any given Group.
+
+**Permissions:**
+  - Edit all content assigned to the Group (Cannot modify content in other Groups)
+  - Add Group members and assign group roles
 
 Add Group Members
-~~~~~~~~~~~~~~~~~
+-----------------
 
 For basic members of a Group, there are two ways that you can add a user to a Group: from the user profile and from the Group page.
 
@@ -73,7 +80,7 @@ In the example below, the Site Manager goes to the Group, "Committee on Internat
    :alt: An animated screencap showing the process of adding a new user to a Group.
 
 Manage Group members
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 You can manage Group members directly from the main Group page by clicking the **Group** button. From this page you can manage existing members by clicking the **People** link. The Group overview page lists all the members of a Group including pending members. From this page you can see how many members are in the group overall, the number of Datasets associated with the Group, access and edit individual member profiles, perform bulk actions and manage membership requests.
 

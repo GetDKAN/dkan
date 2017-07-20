@@ -1,6 +1,10 @@
 DKAN User Management
 ====================
 
+.. warning::
+
+  This was a document that existed before we did the migration from Insights. This should be reviewed and merged into the People section.
+
 DKAN uses Drupal's build-in, powerful user account system, with some customizations captured in the DKAN Sitewide User module. Flexible combinations of permissions, restrictions, and authorization schema mean that you can design an open data system that meets the needs of all of your users -- from visitors to data publishers to developers -- securely and easily.
 
 .. figure:: ../images/site_manager_playbook/managing_users/managing_users_01.png

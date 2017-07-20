@@ -125,7 +125,7 @@ Groups
 
 Groups are both a way to collect common Datasets and enable an additional workflow on DKAN. On the outward-facing side, site visitors are able to browse Datasets published by a specific Group, which is the common publisher of a number of Datasets. 
 
-Behind the scenes, Groups add an additional set of roles and permissions that ensure quality and security when publishing data. Group roles and permissions ensure that Content Creators can add new data but only to their assigned Group. This is especially important for large sites that may have several working groups publishing data to the site. Read more about `Group roles and permissions`_ **¡EDIT LATER WHEN DOCUMENT EXISTS!** .
+Behind the scenes, Groups add an additional set of roles and permissions that ensure quality and security when publishing data. Group roles and permissions ensure that Content Creators can add new data but only to their assigned Group. This is especially important for large sites that may have several working groups publishing data to the site. Read more about :ref:`Group roles and permissions <user-docs group roles and permissions>` .
 
 .. _`Group roles and permissions`: ./people.rst
 

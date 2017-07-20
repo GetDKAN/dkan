@@ -1,4 +1,5 @@
 .. _`user-docs people`:
+
 ======
 People
 ======
@@ -7,78 +8,77 @@ Data and content management can't be done alone. Site Managers handle all the us
 
 On DKAN, what you can do on the site depends on the permissions given to the role assigned to you. These roles can range from general site visitors to trusted Editors working behind the scenes. User roles and permissions maintain the security of your site, distribute workload without compromising quality, and lead to overall better content on your DKAN site.
 
-About roles and permissions
----------------------------
+Roles and Permissions Overview
+------------------------------
 
-There are 6 standard roles with set permissions:
+There are 6 standard roles with set permissions. The following is a list of each role with a description of its purpose and a general description of what the role is able to do. Multiple roles can be assigned to a user, but generally they are in a hierarchy where any higher level role has equal and greater permissions of a lower level role.
 
-- **Anonymous:** This is any site visitor accessing the site who is not logged in. Anyone who is not authenticated is an anonymous user. What’s important is that they can find the site and view its content.
+Anonymous User
+~~~~~~~~~~~~~~
 
-- **Authenticated user:** This user has the lowest level of permissions; all users with login credentials have this role. This user type is utilized for a general site visitor who has created an account. They can create a profile, and if enabled, add or edit comments, but they cannot upload or edit site content.
+This is any site visitor accessing the site who is not logged in. Anyone who is not authenticated is an anonymous user. It is sometimes useful to log out of your account to view pages as an anonymous user will see them.
 
-- **Content Creator:** Content Creators are able to work with the actual content of your DKAN site. They can add Datasets, Resources, Dashboards, and Data Stories, and edit their own content. However, they cannot edit content created by other users or view unpublished content. This role is good for a user to add their data to your DKAN site, but who doesn’t need to access more sensitive capabilities.
+**Permissions:**
+  - View and search published content
 
-- **Editor:** An Editor is responsible for managing content from a strategic perspective. This role is fit for a user who will create, edit, revise and delete content on a frequent basis, and should be given to a colleague with expertise on the subject matter at hand. Editors can add, edit and delete most content types, but they cannot create, modify, or delete Groups or modify the roles of other users. This role is able to make changes to content and where it appears, but it doesn’t go further into admin functions.
+Authenticated user
+~~~~~~~~~~~~~~~~~~
 
-- **Site Manager:** This role is the highest level possible for non-technical users. A Site Manager performs administrative functions, and is a role best suited for a supervisor, manager, or other trusted upper-level employee. The Site Manager is provided with a sweeping overview of the site as well as its content and users. However, they do not deal with the technical back-end. A user with this role can create, edit, and delete all content types created by any user. Site Managers handle the infrastructure of the site that other users operate within.
+All users with login credentials have this role, but the additional functionality is limited. This role is used for a general site visitor who has created an account, but hasn't been given permission to add or edit content on the site. 
 
-- **Administrator:** Admins hold the highest level of all roles and permissions. This role is for a web professional with high technical competency. Administrators are the middle piece between the users using the site daily and the core functions built within the technical back-end. Based on an organization’s requirements, the administrator can adapt the site to meet daily needs of users. The administrator can also modify themes and layouts, and enable or disable modules.
+**Permissions:**
+  - Create a profile
 
-Roles that are higher level automatically have all the permissions of a lower-level role. 
+Content Creator
+~~~~~~~~~~~~~~~
 
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| Role                                                                                                     | Description                                                                                                                                                                          | Permissions                                                                         |
-+==========================================================================================================+======================================================================================================================================================================================+=====================================================================================+
-|**Anonymous User:**                                                                                                                                                                                                                                                                                                                                                                    |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| General site visitors that are not logged in.                                                            | This user type has no profile information.                                                                                                                                           | View and search content on public website.                                          |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| **Authenticated User:**                                                                                                                                                                                                                                                                                                                                                               |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| These users are logged on and have profile information that can be verified (and authenticated).         | This type has the lowest level of permissions; all users with login credentials have this role.                                                                                      | Have a profile and add/edit that profile.                                           |
-|                                                                                                          |                                                                                                                                                                                      |                                                                                     |
-|                                                                                                          | This user type is a general site visitor but he or she has created an account.                                                                                                       | Can leave comments on the data catalog (if commenting is enabled).                  |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| **Content Creator:**                                                                                                                                                                                                                                                                                                                                                                  |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| Content Creators are focused on adding Resources and Datasets to the site.                               | At this level, the role must be assigned by a higher role; this role has access to the production side of the site.                                                                  | Create most content types and edit own content.                                     |
-|                                                                                                          |                                                                                                                                                                                      |                                                                                     |
-|                                                                                                          |                                                                                                                                                                                      | View own unpublished content and revision history of all published content.         |
-|                                                                                                          |                                                                                                                                                                                      |                                                                                     |
-|                                                                                                          |                                                                                                                                                                                      | Add Resources to the Datastore and enable Internal Previews.                        |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| **Editor:**                                                                                                                                                                                                                                                                                                                                                                           |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| Typically a person handling content frequently.                                                          | An Editor role is similar to a Content Creator role because the focus is content, however an Editor will deal with multiple content authors and have the ability to manage and edit. | View, edit, delete most content types and manage versions of content.               |
-|                                                                                                          |                                                                                                                                                                                      |                                                                                     |
-| Someone in your organization with expertise on the subject-matter that is expansive as well as in-depth. | An Editor is responsible for managing content from a strategic perspective.                                                                                                          | Add Tags and Topics.                                                                |
-|                                                                                                          |                                                                                                                                                                                      |                                                                                     |
-|                                                                                                          |                                                                                                                                                                                      | Add Pages and Charts.                                                               |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| **Site Manager:**                                                                                                                                                                                                                                                                                                                                                                     |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| The highest-level for non-technical users. A Site Manager is concerned with admin functions of the site. | The Site Manager takes a high-level view of the site, its content, and the users on the site.                                                                                        | Create, edit, delete all content types created by any user.                         |
-|                                                                                                          |                                                                                                                                                                                      |                                                                                     |
-| Typically this will fall to someone in a supervisory role.                                               | This person maintains the site and assigns roles and permissions to new users but doesn’t deal with the technical back-end.                                                          | Create and assign roles to new users, change the status of users, and delete users. |
-|                                                                                                          |                                                                                                                                                                                      |                                                                                     |
-|                                                                                                          |                                                                                                                                                                                      | Create and manage Groups.                                                           |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| **Administrator:**                                                                                                                                                                                                                                                                                                                                                                    |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-| The Administrator role holds every permission, and it requires high technical competency.                | The Administrator handles the overall structure of the website for lower-access roles to plug content into and make changes as needed.                                               | Enable/disable {{data}} modules and features.                                       |
-|                                                                                                          |                                                                                                                                                                                      |                                                                                     |
-| This role is generally reserved for a single web professional.                                           | Admins hold the highest level of all roles and permissions.                                                                                                                          | Change the appearance of the site with views and themes.                            |
-|                                                                                                          |                                                                                                                                                                                      |                                                                                     |
-|                                                                                                          |                                                                                                                                                                                      | Create and edit user roles and permissions.                                         |
-+----------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
+Content Creators are able to work with the actual content of your DKAN site. This role is good for a user to add their data to your DKAN site, but who doesn’t need to access more sensitive functionality.
+
+**Permissions:**
+  - Create most content (Datasets, Resources, Datastories, ...)
+  - Edit their own content (cannot edit content created by other users or view unpublished content)
+  - Add Resources to the Datastore
+
+Editor
+~~~~~~
+
+An Editor is responsible for managing content from a strategic perspective. This role is fit for a user who will create, edit, revise and delete content on a frequent basis, and should be given to a colleague with expertise on the subject matter at hand. This role is able to make changes to content and where it appears, but it doesn't go further into amidninistrative functions.
+
+**Permissions:**
+  - Add, edit and delete most content types
+  - Cannot create, modify, or delete Groups
+  - Cannot modify the roles of other users
+
+
+Site Manager
+~~~~~~~~~~~~
+
+This role is the highest level possible for non-technical users. A Site Manager performs administrative functions, and is a role best suited for a supervisor, manager, or other trusted upper-level employee. The Site Manager is provided with a sweeping overview of the site as well as its content and users. However, they do not deal with the technical back-end.
+
+**Permissions:**
+  - Create, edit, and delete all content types created by any user
+  - Create and manage groups
+  - Change menu structure
+  - Administer users
+  - Configure Harvests
+  - Modify DKAN specific settings
+
+Administrator
+~~~~~~~~~~~~~
+
+Admins hold the highest level of all roles and permissions and have no restrictions. Administrators are able to modify settings of the underlying Drupal platform, and can modify most things of the site to meet user needs. This role is for a web professional with high technical competency and a good understanding of how Drupal works.
+
+**Permissions:**
+  - Modify themes and layouts, and enable or disable modules.
+  - Modify Drupal settings
 
 Account settings
-~~~~~~~~~~~~~~~~
+----------------
 
 Some settings in user management are automated to streamline the process of adding new accounts. From the Site Configuration menu, you can change default behaviors for users on the Account settings page. Default behaviors act for all accounts, so you want to make selections that should apply generally to most users.
 
 Where to change the account settings
-------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 From the Admin Menu, click the Site Configuration menu link (not an item on the drop-down menu). This link will take you to the main Configuration page. Of the options on this page, find the People section and click on the Account Settings link.
 

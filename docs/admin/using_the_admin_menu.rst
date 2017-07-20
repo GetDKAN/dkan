@@ -1,2 +1,0 @@
-Using the Admin Menu
-====================

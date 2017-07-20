@@ -1,4 +1,5 @@
-.. _`user-docs DKAN APIs`
+.. _`user-docs DKAN APIs`:
+
 =========
 DKAN APIs
 =========

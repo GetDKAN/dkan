@@ -14,33 +14,40 @@ As a Site Manager, you might be involved in adding content in earlier stages and
 
 **Here's the breakdown of content by most frequently added:**
 
-1. **Resource**. The most basic piece of content as well as the most abundant. Resources are the actual files that represent your open data.
-
-2. **Dataset**. "Containers" that hold Resources. Datasets are given metadata such as author, open data license type, frequency of publication, and they can be assigned to Groups.
-
-3. **Visualizations.** Visualizations take Resources on your DKAN site and generate visual representations to make data understandable and accessible.
-
-4. **Data Story.** Similar to a blog post, Data Stories provide a narrative that adds the depth of impact. Stories focus on how data changes real lives every day.
-
-5. **Dashboard.** A piece of content that curates all kinds of content on your DKAN site. Dashboards make it easy to put data, media, and narrative into meaningful conversation.
-
-6. **Group.** Groups both collect content with a common data publisher as well as provide a workflow for a group of users on your DKAN site.
-
-7. **Page.** One of the most basic content types on DKAN is a Page. Though the content type is straightforward it has implications for the structure, appearance, and experience of your DKAN site.
+Resource
+  The most basic piece of content as well as the most abundant. Resources are the actual files that represent your open data.
+Dataset
+  "Containers" that hold Resources. Datasets are given metadata such as author, open data license type, frequency of publication, and they can be assigned to Groups.
+Visualizations
+  Visualizations take Resources on your DKAN site and generate visual representations to make data understandable and accessible.
+Data Story
+  Similar to a blog post, Data Stories provide a narrative that adds the depth of impact. Stories focus on how data changes real lives every day.
+Dashboard
+  A piece of content that curates all kinds of content on your DKAN site. Dashboards make it easy to put data, media, and narrative into meaningful conversation.
+Group
+  Groups both collect content with a common data publisher as well as provide a workflow for a group of users on your DKAN site.
+Page
+  One of the most basic content types on DKAN is a Page. Though the content type is straightforward it has implications for the structure, appearance, and experience of your DKAN site.
 
 Where do I add new content?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Using the Add content menu.** The most direct path for creating content is through the **Add content** menu item on the Admin Menu bar. If you're ready to jump right into creating content select the content type and begin completing the fields in the form.
+Using the Add content menu
+--------------------------
 
-.. figure:: ../images/site_manager_playbook/adding_new_content/adding_new_content_01.png
+The most direct path for creating content is through the **Add content** menu item on the Admin Menu bar. If you're ready to jump right into creating content select the content type and begin completing the fields in the form.
+
+.. image:: ../images/site_manager_playbook/adding_new_content/adding_new_content_01.png
    :alt: An image displaying the location of the "Add content" menu on the DKAN navigation bar.
 
-**Using the Content menu.** In some cases you may want to see what content exists before creating something from scratch. As a Site Manager you're able to view and edit all the content that has been authored on your DKAN site. It's not uncommon that content is added but never completed, is complete but outdated, or simply has an unpublished status. As your site matures and contains more content, it's helpful to check what already exists before starting a new piece of content.
+Using the Content menu
+----------------------
+
+In some cases you may want to see what content exists before creating something from scratch. As a Site Manager you're able to view and edit all the content that has been authored on your DKAN site. It's not uncommon that content is added but never completed, is complete but outdated, or simply has an unpublished status. As your site matures and contains more content, it's helpful to check what already exists before starting a new piece of content.
 
 You can use the **Content** menu item to get to the Content screen where you can see all existing content, filter and search, and add new content.
 
-.. figure:: ../images/site_manager_playbook/adding_new_content/adding_new_content_02.png
+.. image:: ../images/site_manager_playbook/adding_new_content/adding_new_content_02.png
    :alt: A screenshot of the DKAN "Content" page.
 
 The Content page
@@ -50,31 +57,36 @@ Select the content type that meets your needs to start adding new content. Most 
 
 In the example below, the Site Manager is adding a new Dataset with Tags, Topics, and other metadata associated with Datasets. Though not all the fields in the form are required, it's best to include as much information as possible. Complete content gives your site visitors confidence that your content is professional, current, and polished.
 
-.. figure:: ../images/site_manager_playbook/adding_new_content/adding_new_content_03.gif
+.. image:: ../images/site_manager_playbook/adding_new_content/adding_new_content_03.gif
    :alt: An animated screenshot showing the process of creating a new dataset.
 
 General site visitors typically won't have the context or topical expertise to understand the information on its own, so it's important to be mindful of your audience when deciding what details to include.
 
-.. figure:: ../images/site_manager_playbook/adding_new_content/adding_new_content_04.gif
+.. image:: ../images/site_manager_playbook/adding_new_content/adding_new_content_04.gif
    :alt: An animated screenshot showing the process of inputting metadata when creating a new dataset.
 
 The final step in creating a piece of content is using the submenu at the bottom of the form to add the final administrative information to the content. Administrative info is kept behind the scenes, and it helps with content management. Keep in mind that your role gives you more permissions than other users on the site; other users with lower-access roles won't see most of these options.
 
 **Use this menu to add information about:**
 
-- **URL path settings:** By default, the Generate automatic URL alias option is selected because DKAN is designed to provide the most intuitive and SEO-optimized URL path. To create your own path, simply uncheck the box and type in your own alias. As a reminder, the URL path is how site visitors access and find your content. You want to use terms that are likely to be searched by a general site visitor.
+URL path settings
+  By default, the Generate automatic URL alias option is selected because DKAN is designed to provide the most intuitive and SEO-optimized URL path. To create your own path, simply uncheck the box and type in your own alias. As a reminder, the URL path is how site visitors access and find your content. You want to use terms that are likely to be searched by a general site visitor.
+Revision information
+  This information is important for content that has been added and then edited. By checking the Create new revision checkbox, DKAN will create a revision of the content. You can think of this like a new version where the changes are tracked and recorded. Revisions can be incredibly helpful if a change is made and published and later you want revert to an old revision. Include notes about the changes in the Revision log message text box to give other users context for changes made to the content.
+Authoring information
+  In DKAN, content must be assigned to an author and given an authoring date so that it can be managed later even if the author is the Anonymous user. An author must be a user on your DKAN site, and this is helpful in knowing which users have added what content. By default, DKAN assigns the author to the user who is logged in when the content is added. Though the author and publishing date is mostly only important for content management behind the scenes, there are some cases when you might want to change the author information on a piece of content.
 
-- **Revision information:** This information is important for content that has been added and then edited. By checking the Create new revision checkbox, DKAN will create a revision of the content. You can think of this like a new version where the changes are tracked and recorded. Revisions can be incredibly helpful if a change is made and published and later you want revert to an old revision. Include notes about the changes in the Revision log message text box to give other users context for changes made to the content.
+  To change the author you can begin typing a user and the field will autocomplete. Leave the field blank to assign the author to Anonymous. You can change the Authored on information by simply typing a new date into the field. If you leave the field blank, DKAN will use the date and time of when the content was originally saved.
+Publishing options
+  As a Site Manager you can publish and unpublish content. Published content is saved and visible on your DKAN site. Unpublished content is saved, but it is not visible on your DKAN site.
+  
+  As a Site Manager you can publish and unpublish directly from the piece of content. When adding new content, the status will automatically default to published. By unchecking the Published checkbox, you can save the work without publishing it to your live DKAN site. If the content already exists and appears on your DKAN site, you can unpublish the content by unchecking the box and it will no longer be visible or searchable to general site visitors.
+Groups
+  When creating a Dataset, you'll have an additional submenu item to consider. The Groups menu item is unique to Datasets because it's the only content that can be added to a Group. Resources cannot be added themselves to a Group, they must be in a Dataset. When adding a Dataset to a Group, users can add a Dataset to as many Groups as there are on the site. Your groups are Groups that the user authoring the content belongs to, and Other groups are all the Groups of which a user is not a member.
 
-- **Authoring information:** In DKAN, content must be assigned to an author and given an authoring date so that it can be managed later even if the author is the Anonymous user. An author must be a user on your DKAN site, and this is helpful in knowing which users have added what content. By default, DKAN assigns the author to the user who is logged in when the content is added. Though the author and publishing date is mostly only important for content management behind the scenes, there are some cases when you might want to change the author information on a piece of content.
-  - To change the author you can begin typing a user and the field will autocomplete. Leave the field blank to assign the author to Anonymous. You can change the Authored on information by simply typing a new date into the field. If you leave the field blank, DKAN will use the date and time of when the content was originally saved.
-
-- **Publishing options.** As a Site Manager you can publish and unpublish content. Published content is saved and visible on your DKAN site. Unpublished content is saved, but it is not visible on your DKAN site.
-  - As a Site Manager you can publish and unpublish directly from the piece of content. When adding new content, the status will automatically default to published. By unchecking the Published checkbox, you can save the work without publishing it to your live DKAN site. If the content already exists and appears on your DKAN site, you can unpublish the content by unchecking the box and it will no longer be visible or searchable to general site visitors.
-
-- **Groups.** When creating a Dataset, you'll have an additional submenu item to consider. The Groups menu item is unique to Datasets because it's the only content that can be added to a Group. Resources cannot be added themselves to a Group, they must be in a Dataset. When adding a Dataset to a Group, users can add a Dataset to as many Groups as there are on the site. Your groups are Groups that the user authoring the content belongs to, and Other groups are all the Groups of which a user is not a member.
-  - All users must belong to at least one Group to have the Groups menu item available to them.
-  - When a Dataset is added to a Group, it will be included on the Group's home page and may be edited by the Administrator members of a Group. As a best practice, users should only add Datasets to Groups that they are a member. Certain users won't be able to access their own content if they assign it to a Group that they do not belong to.
+  All users must belong to at least one Group to have the Groups menu item available to them.
+  
+  When a Dataset is added to a Group, it will be included on the Group's home page and may be edited by the Administrator members of a Group. As a best practice, users should only add Datasets to Groups that they are a member. Certain users won't be able to access their own content if they assign it to a Group that they do not belong to.
 
 Adding a Resource
 ~~~~~~~~~~~~~~~~~
@@ -112,6 +124,7 @@ It's possible to add a Resource as a stand alone piece of content, but it isn't 
 
 .. figure:: ../images/site_manager_playbook/adding_new_content/adding_new_content_05.png
    :alt: An example of a list of Datasets provided that a Resource could then be assigned to.
+   
    Example of a list of Datasets that a Resource may belong to.
 
 When adding a new Resource, DKAN provides a list of existing Datasets and you can select the appropriate one. If none of the existing Datasets seem correct, then consider first adding a new Dataset. You can also add a Resource and then later assign it to a Dataset.
@@ -136,6 +149,7 @@ Internal Data Previews can be enabled for **grids, graphs, and/or maps** dependi
 
 .. figure:: ../images/site_manager_playbook/adding_new_content/adding_new_content_06.png
    :alt: The "Add a Resource" screen, showing the options to enable grid, graph or map previews.
+   
    This image displays where you can enable grid, graph and/or map previews for a Resource.
 
 **Grids and Graphs:** This type of Data Preview works well with tabular data like CSV or XLS files. Grids appear most similar to a spreadsheet and reflect the greatest precision of the file contents of a Resource. Graphs are more visual and provide quick synthesis of the contents of a Resource.
@@ -200,6 +214,7 @@ In the example below, you can see all the fields included when adding a Dataset.
 
 .. figure:: ../images/site_manager_playbook/adding_new_content/adding_new_content_09.gif
    :alt: This animated screencap shows the process of editing and saving a dataset.
+   
    This animated screencap displays the process of editing and saving a dataset.
 
 **Change the Resource URL:** When adding or editing a Dataset, you can change the URL path so that it's easier to read as well as more likely to appear in a site visitor's search. An important consideration when creating titles and labels is to keep in mind how site visitors look for information. It's safe to assume that most site visitors won't start by looking for your DKAN site. More likely is that they'll first do a general search on the web. A random Dataset might be the first and only interaction a person has with your DKAN site. That's why it's best to include lots of contextual information, make it easy to read and scan, and use terms that site visitors are likely to search for.
@@ -451,12 +466,13 @@ One of the most basic content types on DKAN is a Page. Though the content type i
 
 **Key Information when adding a Page:**
 
-- **Choosing a layout:** Layouts are like templates for the design of a page. In most cases, you would need to have technical experience with code to change the way that content appears on a page and what content is allowed.
-With layouts you can choose from a set of layouts pre-made to beautifully combine different content in the same place without needing to touch any code. Choose the layout for your Page and add data, media, text, etc. in the different panels.
-By default the most basic layout (Boxton) is selected, but choose the layout best fits the types of content you want to include for your Page. Keep in mind, you can change your layout anytime.
-
-- **Creating a menu link. The most important piece of creating a page is adding the navigation for it. In order for site visitors to find your page and benefit from its content, add a menu link and decide the parent menu item. For high-priority content, like a Contact page, put the link on the main menu bar. Otherwise, decide which parent page the new page belongs to.
-Special note: we recommend that you do not add menu links to the Datasets, Groups, Stories, Dashboards, or Topics pages.
+Choosing a layout
+  Layouts are like templates for the design of a page. In most cases, you would need to have technical experience with code to change the way that content appears on a page and what content is allowed.
+  With layouts you can choose from a set of layouts pre-made to beautifully combine different content in the same place without needing to touch any code. Choose the layout for your Page and add data, media, text, etc. in the different panels.
+  By default the most basic layout (Boxton) is selected, but choose the layout best fits the types of content you want to include for your Page. Keep in mind, you can change your layout anytime.
+Creating a menu link
+  The most important piece of creating a page is adding the navigation for it. In order for site visitors to find your page and benefit from its content, add a menu link and decide the parent menu item. For high-priority content, like a Contact page, put the link on the main menu bar. Otherwise, decide which parent page the new page belongs to.
+  Special note: we recommend that you do not add menu links to the Datasets, Groups, Stories, Dashboards, or Topics pages.
 
 Adding a Group
 ~~~~~~~~~~~~~~
