@@ -135,7 +135,7 @@ projects:
       2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
       2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
   file_entity:
-    version: 2.2
+    version: 2.3
   file_resup:
     download:
       type: git
@@ -202,7 +202,7 @@ projects:
     patch:
       2045225: http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.8
+    version: 2.9
     patch:
       2272567: https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch
   media_youtube:
@@ -254,13 +254,13 @@ projects:
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
-    version: '1.45'
+    version: '1.46'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
       3: patches/panopoly_widgets_overrides_OOB.patch
   panopoly_images:
-    version: '1.45'
+    version: '1.46'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
@@ -310,7 +310,7 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.21'
+    version: '1.22'
   search_api_db:
     version: '1.6'
   select_or_other:
