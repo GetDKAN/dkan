@@ -1,5 +1,6 @@
 7.x-1.13.5
 ----------
+ - #1955 Update ahoy docker tooling for local environment usecase.
  - #2003 Fix dkan_bueditor_markdown_install(), which was using a variable before it was initialized.
  - #2003 Fix to dkan_update_7016, which assumed the bueditor ID was always '5' and failed when it was not.
  - #2003 Fix dkan_topics_field_formatter_view(), which does not check if a term exists before calling it by tid.
