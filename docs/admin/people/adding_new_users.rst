@@ -7,12 +7,12 @@ Adding a user
 
 As a Site Manager, a core piece of your role involves adding users to the site. On your DKAN site you may have generic roles like Authenticated User register for an account that simply needs approval from the Site Manager. But trusted roles with access to content like Content Creators and Editors must be created by a Site Manager. The user can change most of the information on their profile once they access the site, but you’ll need to initially provide basic information like a username and password.
 
-.. figure:: ../images/site_manager_playbook/adding_a_user/adding_a_user_01.png
+.. figure:: ../../images/site_manager_playbook/adding_a_user/adding_a_user_01.png
    :alt: Image displaying the location of the People button at the top of the screen.
 
 You can add new users by clicking on the **People** link and choosing the Create user menu item for quick access or the main People page.
 
-.. figure:: ../images/site_manager_playbook/adding_a_user/adding_a_user_02.png
+.. figure:: ../../images/site_manager_playbook/adding_a_user/adding_a_user_02.png
    :alt: Image displaying the "Create User" screen on DKAN.
 
 Key information when adding a new user

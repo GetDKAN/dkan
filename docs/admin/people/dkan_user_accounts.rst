@@ -1,10 +1,6 @@
-.. _`user-docs people`:
-
-======
-People
-======
-
-Data and content management can't be done alone. Site Managers handle all the users on the site and decide who has access to what. They can also create Groups for organizations, which have even more possibilities for roles and permissions. Build your team to build your site.
+==================
+DKAN User Accounts
+==================
 
 On DKAN, what you can do on the site depends on the permissions given to the role assigned to you. These roles can range from general site visitors to trusted Editors working behind the scenes. User roles and permissions maintain the security of your site, distribute workload without compromising quality, and lead to overall better content on your DKAN site.
 
@@ -82,7 +78,7 @@ Where to change the account settings
 
 From the Admin Menu, click the Site Configuration menu link (not an item on the drop-down menu). This link will take you to the main Configuration page. Of the options on this page, find the People section and click on the Account Settings link.
 
-.. figure:: ../images/site_manager_playbook/people/people_01.png
+.. figure:: ../../images/site_manager_playbook/people/people_01.png
    :alt: The "Account Settings" link under Site Configuration.
 
 Account registration
@@ -104,5 +100,5 @@ By default, DKAN comes with template responses for certain actions. You can cust
 
 You can also manage notifications of messages in this menu. You can optionally send a notification when certain actions are taken, but not all of these templates are automatically sent. You’ll want to review the email options to make sure the settings meet your needs.
 
-.. figure:: ../images/site_manager_playbook/people/people_02.png
+.. figure:: ../../images/site_manager_playbook/people/people_02.png
    :alt: Screenshot of the Account Settings screen where you can modify emails sent to users.

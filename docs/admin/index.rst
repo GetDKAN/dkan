@@ -35,14 +35,7 @@ Appearance
 
    account_access_and_setup
    appearance
-   data_and_content
-   adding_new_content
-   data_management
-   dkan_apis
-   managing_existing_content
-   people
-   adding_new_users
-   group_roles_and_permissions
-   dkan_workflow
+   data_and_content/index
+   people/index.rst
    structure
    admin_menu

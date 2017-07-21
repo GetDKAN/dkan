@@ -128,12 +128,12 @@ Importing and removing files
 
 Uploading files to the Datastore has major benefits including enhancing the Datastore API and improved user experience of previewing data. The Datastore API makes the Resources more usable and accessible to technical users. Previews display resources as graphs, grids, or maps for geospatial data. In some cases files contain thousands (or millions) of rows. For data on such high order, users can only properly preview the data if the Resource has been imported into the DKAN Datastore.
 
-.. figure:: ../images/site_manager_playbook/data_management/resource_page_with_datastore_message.png
+.. figure:: ../../images/site_manager_playbook/data_management/resource_page_with_datastore_message.png
    :alt: Your file for this resource is not added to the datastore.
    
    Above is what you should see on a resource page if your Resource file has not yet been added to the datastore.
 
-.. figure:: ../images/site_manager_playbook/data_management/manage_datastore_page.png
+.. figure:: ../../images/site_manager_playbook/data_management/manage_datastore_page.png
    :alt: manage datastore page
    
    Above is what you should see when you select Manage Datastore.
@@ -151,7 +151,7 @@ Once a Resource is added, you can import the file into the Datastore. Click the 
 
 In the example below, the Site Manager is importing a Resource into the Datastore from the Manage Datastore page. From the Import tab, the Site Manager selects the delimeter and leaves the rest of the default settings for import. After clicking the Import button at the bottom of the page, the contents of the Resource are now included in the DKAN Datastore as well as the Datastore API.
 
-.. image:: ../images/site_manager_playbook/data_management/datastore_import_animation.gif
+.. image:: ../../images/site_manager_playbook/data_management/datastore_import_animation.gif
    :alt: animation of datastore import
 
 Removing
@@ -165,7 +165,7 @@ Delete items
 Drop Datastore
   This option removes both the values in the file as well as the table generated upon import. In this sense, the file is not imported. If you don’t want the contents of a file in the Datastore, we recommend this option.
   
-.. image:: ../images/site_manager_playbook/data_management/datastore_actions.png
+.. image:: ../../images/site_manager_playbook/data_management/datastore_actions.png
    :alt: delete and drop options
   
 Updating
@@ -180,7 +180,7 @@ For datasets with thousands (or millions) of rows, the size of the file increase
 
 Large file sizes can delay the time it takes to import a file into the Datastore as more information needs to be processed before it can be imported.
 
-.. image:: ../images/site_manager_playbook/data_management/datastore_import_options.png
+.. image:: ../../images/site_manager_playbook/data_management/datastore_import_options.png
    :alt: datastore options with fast import
 
 With the Fast Import option, the time to upload a large file is dramatically reduced. The contents of a file are not processed and directly imported to the Datastore, so files that otherwise might take hours to import only take minutes. 
@@ -189,5 +189,5 @@ For smaller files, we recommend using the standard processor and import. When la
 
 Special Note: This capability is not enabled by default and requires the DKAN Datastore Fast Import module to be enabled. Please contact your site administrator or developer for assistance.
 
-.. image:: ../images/site_manager_playbook/data_management/datastore_fast_import_option.png
+.. image:: ../../images/site_manager_playbook/data_management/datastore_fast_import_option.png
    :alt: datastore import options close up

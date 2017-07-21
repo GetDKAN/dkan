@@ -74,7 +74,7 @@ DKAN Workflow organizes content into five different tabs: My Content, My Drafts,
 
 The Stale Drafts and Stale Reviews tabs contain content that has gone untouched for too long. The default time limit is 72 hours before drafts become stale.
 
-.. image:: ../images/site_manager_playbook/workflow/my_workbench.png
+.. image:: ../../images/site_manager_playbook/workflow/my_workbench.png
    :alt: my workbench view
 
 For Workflow Moderators reviewing a steady stream of content it’s helpful to know how many pieces of content need to be moderated. In the picture above, note that each tab has a bubble with a number located in the top right corner. This number reflects the total pieces of content within that tab. 
@@ -149,7 +149,7 @@ All content in the Workflow pipeline is accessed in My Workbench. From My Workbe
 3. Workflow Contributors can moderate from this page by clicking the Submit for Review button to send a draft to a Workflow Moderator to review.
 4. Workflow Moderators can moderate content from this page by clicking the Reject or Publish buttons on a piece of content.
 
-.. image:: ../images/site_manager_playbook/workflow/my_drafts.png
+.. image:: ../../images/site_manager_playbook/workflow/my_drafts.png
    :alt: my drafts view
 
 Review content and make changes:
@@ -162,5 +162,5 @@ Review content and make changes:
 
 Click the **Moderate** button to see the full revision history and change the publishing state.
 
-.. image:: ../images/site_manager_playbook/workflow/moderate.png
+.. image:: ../../images/site_manager_playbook/workflow/moderate.png
    :alt: moderate view

@@ -15,7 +15,7 @@ The Datastore API enables interactions with specific Resources in the DKAN Datas
 
 With the Datastore API, technical users can write programs to interact with the information held within the API. This means that the data in the DKAN Datastore can be accurately and efficiently queried (searched) and the data then used in other contexts and applications. The Datastore API is another way to show how open data can be used to provide a tangible return for citizens.
 
-.. figure:: ../images/site_manager_playbook/DKAN_APIs/datastore_tab_view.png
+.. figure:: ../../images/site_manager_playbook/DKAN_APIs/datastore_tab_view.png
    :alt: datastore api view
    
    Datastore API view on a Resource page.
@@ -27,12 +27,12 @@ For any Resource imported to the Datastore, click Manage the Datastore. Then cli
 
 You won't perform API queries from here, but you can get linked to a sample query and find :ref:`documentation for more instruction<datastore API>` on how to use the Datastore API. The image below is the information returned on a sample query of the DKAN Datastore using the Datastore API.   
 
-.. figure:: ../images/site_manager_playbook/DKAN_APIs/datastore_api_output_unformatted.png
+.. figure:: ../../images/site_manager_playbook/DKAN_APIs/datastore_api_output_unformatted.png
    :alt: unformatted datastore API query
    
    This query shows the results in a "raw" form. This is generally more difficult to read, but it is what appears with a standard query. 
    
-.. figure:: ../images/site_manager_playbook/DKAN_APIs/datastore_api_output_formatted.png
+.. figure:: ../../images/site_manager_playbook/DKAN_APIs/datastore_api_output_formatted.png
    :alt: formatted datastore API query
    
    This image shows a formatted view of another API query using a web extension to make the results easier to read.
@@ -44,12 +44,12 @@ The Dataset API works by combining a number of public, supported APIs. Each API 
 
 As a Site Manager, you don’t have to worry about managing the Dataset API because all the work happens in the background. At any point you can access the data.json file by simply typing /data.json in the URL after the homepage URL. You’ll get a page with all the information from the Datasets and Resources on your DKAN site.
 
-.. figure:: ../images/site_manager_playbook/DKAN_APIs/dataset_api_output_unformatted.png
+.. figure:: ../../images/site_manager_playbook/DKAN_APIs/dataset_api_output_unformatted.png
    :alt: formatted data.json
    
    This shows the results in a "raw" form. This is generally more difficult to read, but it is what appears with a standard query.
    
-.. figure:: ../images/site_manager_playbook/DKAN_APIs/dataset_api_output_formatted.png
+.. figure:: ../../images/site_manager_playbook/DKAN_APIs/dataset_api_output_formatted.png
    :alt: formatted data.json
    
    This shows a formatted view using a web extension to make the results easier to read.  

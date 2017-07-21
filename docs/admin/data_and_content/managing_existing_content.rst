@@ -20,7 +20,7 @@ As the Site Manager, you have access to create all content types possible as wel
 
 In any scenario, as a Site Manager you can use this page to look at the content on the site to see who created a particular piece of content, when it was last updated, its status (published or unpublished) and take action on existing content. 
 
-.. image:: ../images/site_manager_playbook/managing_existing_content/content_admin_menu.png
+.. image:: ../../images/site_manager_playbook/managing_existing_content/content_admin_menu.png
    :alt: highlighted content option in admin menu
    
 Which content, when?
@@ -32,7 +32,7 @@ When any user creates a new piece of content it defaults to a published state. T
 
 Though you might not edit every piece of content, you'll generally review all the content that is visible to the public (in a published state) and make edits whenever necessary. Only Site Managers have the ability to edit or delete any piece of content regardless of the author, so use your best judgment when reviewing and editing content. If you're ever unsure, you can unpublish the content and go back to the author before making changes or removing the content.
 
-.. image:: ../images/site_manager_playbook/managing_existing_content/content_admin_page.png
+.. image:: ../../images/site_manager_playbook/managing_existing_content/content_admin_page.png
    :alt: content administration page highlighting admin menu option, add content button, search, and content list
    
 Find content
@@ -45,9 +45,9 @@ Status
 Type
   The type of content includes all the content types that may be added to your DKAN site. Choose from the type drop-down menu to select the content type to show only content that fits the specific type, like Resource or Data Story.
 
-.. image:: ../images/site_manager_playbook/managing_existing_content/content_status_dropdown.png
+.. image:: ../../images/site_manager_playbook/managing_existing_content/content_status_dropdown.png
    :alt: content search by status dropdown options
-.. image:: ../images/site_manager_playbook/managing_existing_content/content_type_dropdown.png
+.. image:: ../../images/site_manager_playbook/managing_existing_content/content_type_dropdown.png
    :alt: content search by type dropdown options
 
 Edit from the page
@@ -59,7 +59,7 @@ In general, it's okay to make small changes to content while it's published. Sma
 
 For major changes to any piece of content, it's best to first unpublish the content and continue to make changes behind the scenes. You can change the status of the content by unchecking the **Published** box in the administrative submenu at the bottom of the form. Major changes include changing the title, changing the layout, adding new information that needs review, adding or changing images, and any other changes that aren't ready to be published immediately. 
 
-.. figure:: ../images/site_manager_playbook/managing_existing_content/edit_dataset_animation.gif
+.. figure:: ../../images/site_manager_playbook/managing_existing_content/edit_dataset_animation.gif
    :alt: animation of editing a dataset
    
    In this example, a Site Manager visits a Dataset page and decides to edit the content. The Site Manager clicks on the **Edit** button to open the form and make changes to the Dataset.
@@ -71,7 +71,7 @@ When editing content, a user is making changes to something that is published an
 
 The changes are organized into two columns and sectioned off further by the different parts of the content for a side-by-side comparison of what has changed in the piece of content. On the right side, there is the column with the original version (called Original). On the left side, new additions are added to the Changes column.
 
-.. image:: ../images/site_manager_playbook/managing_existing_content/dataset_changes_view.png
+.. image:: ../../images/site_manager_playbook/managing_existing_content/dataset_changes_view.png
    :alt: example of viewing dataset changes
 
 Original
@@ -79,7 +79,7 @@ Original
 Changes
   The column titled Changes shows what information will appear in the new version once changes are saved. It contains information that has been added or, alternatively, what remains if information is removed.
 
-.. figure:: ../images/site_manager_playbook/managing_existing_content/dataset_changes_view_with_additional_edits.png
+.. figure:: ../../images/site_manager_playbook/managing_existing_content/dataset_changes_view_with_additional_edits.png
    :alt: example of viewing dataset changes with changes to topics
    
    In this example, a Topic has been removed and a new Topic added. In the Changes to Tags section, you can see that the "trees" Tag was removed. The Changes column shows the information that will be included in the new version (everything that wasn't removed).
@@ -101,11 +101,11 @@ Click the **Edit** button to open the content form and go to the bottom of the p
 
 Notice there's another field below the new revision option labeled Revision log message. This is a space to explain the changes you're making and why. This is particularly useful for content that goes between multiple authors. Giving an explanation for changes can help clarify reasons that might not be obvious which helps reduces confusion and mistakes that can be easily avoided. 
 
-.. image:: ../images/site_manager_playbook/managing_existing_content/content_revision_information.png
+.. image:: ../../images/site_manager_playbook/managing_existing_content/content_revision_information.png
    :alt: revision information options
 
 
-.. figure:: ../images/site_manager_playbook/managing_existing_content/content_revision_information_animation.gif
+.. figure:: ../../images/site_manager_playbook/managing_existing_content/content_revision_information_animation.gif
    :alt: animation of adding revision information
    
    In this example, the Site Manager is creating a new revision and includes an overview for what was changed in the Revision log message field. The Site Manager saves the changes, and then finds the new revision on the Revisions page.
@@ -115,7 +115,7 @@ Where to find revisions
 
 You can access all the revisions of a piece of content by going directly to the page of the published content in View mode. Click the Revisions button to get to the Revisions page to see all the existing revisions and the revision options. The Revisions page gives an overview of all the existing revisions including when the revision was created, by which user, and the revision log message. Here, you can also compare revisions and go back to an old revision (reverting).
 
-.. image:: ../images/site_manager_playbook/managing_existing_content/content_revisions_tab.png
+.. image:: ../../images/site_manager_playbook/managing_existing_content/content_revisions_tab.png
    :alt: highlighted button for viewing revisions
 
 Revision options
@@ -123,7 +123,7 @@ Revision options
 
 From the Revisions page, there are additional options for what you can do with the different revisions for the piece of content. The most important options are Compare and Revert.
 
-.. image:: ../images/site_manager_playbook/managing_existing_content/content_revisions_tab.png
+.. image:: ../../images/site_manager_playbook/managing_existing_content/content_revisions_tab.png
    :alt: content revisions view
 
 Compare
@@ -160,7 +160,7 @@ Bulk actions
 
 Some changes are general and can be applied to multiple pieces of content at the same time. You can use the Update options menu to make changes to content by checking all the pieces of content you want to make updates, selecting an update option, and clicking the Update button. The most frequently used actions for bulk actions on content are unpublishing content and deleting content.
 
-.. figure:: ../images/site_manager_playbook/managing_existing_content/editing_bulk_content_animation.gif
+.. figure:: ../../images/site_manager_playbook/managing_existing_content/editing_bulk_content_animation.gif
    :alt: animation of content bulk edits
    
    In this example, a Site Manager is selecting multiple pieces of content to have a common action taken on all the content—a bulk action. The Site Manager then chooses the unpublish option from the drop-down Update options menu and clicks the Update button to finalize the action.
