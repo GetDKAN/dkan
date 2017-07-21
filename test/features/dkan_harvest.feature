@@ -329,19 +329,12 @@ Feature: Dkan Harvest
       | name              | mail                     | status | roles             |
       | Site manager      | admin@fakeemail.com      | 1      | site manager      |
     And harvest sources:
-      | title      | machine name | source uri                                                                 | type               | author        | published | topics                 |
-      | Source one | source_one   | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json |  datajson_v1_1_json | Site manager | Yes       | Health Care, Education |
+      | title         | machine name  | source uri                                                                 | type               | author       | published | topics                 |
+      | Topics source | topics_source | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site manager | Yes       | Health Care, Education |
 
-    And The "source_one" source is harvested
+    And The "topics_source" source is harvested
     And I am logged in as "Site manager"
-    When I am on "admin/content"
-    Then I should see "Gold Prices in London 1950-2008 (Monthly) Harvest"
-    Given I am on the "Source one" page
-    And I click "Edit"
-    Then the "Health Care" option from "Topics" should be selected
-    And the "Education" option from "Topics" should be selected
-    Given I am on the "Source one" page
-    And I click "Florida Bike Lanes Harvest"
+    Given I am on the "Topics source" page
     And I click "Edit"
     Then the "Health Care" option from "Topics" should be selected
     And the "Education" option from "Topics" should be selected

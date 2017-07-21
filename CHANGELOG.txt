@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1970 Adds topics to harvested datasets on migration.
  - #1907 Added back TAB delimiter option for datastore imports.
  - #1955 Update ahoy docker tooling for local environment usecase.
  - #1903 Add support for tab-delimited files (TSV) in resources/recline preview.
