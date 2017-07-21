@@ -1,3 +1,8 @@
+7.x-1.13.x
+----------
+
+ - #2022 added Site Manager Guide to documentation with additional fixes to developer docs and changelog format
+
 7.x-1.13.4 2017-06-30
 ---------------------
  - #1916 Federal extras: Fix spelling of "Government" in group label.
