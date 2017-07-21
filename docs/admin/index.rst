@@ -36,6 +36,6 @@ Appearance
    account_access_and_setup
    appearance
    data_and_content/index
-   people/index.rst
+   people/index
    structure
    admin_menu
