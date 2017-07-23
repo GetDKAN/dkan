@@ -108,7 +108,7 @@ default:
           - Drupal\DKANExtension\Context\TimezoneContext
           - Drupal\DrupalExtension\Context\DrushContext
           - Devinci\DevinciExtension\Context\DebugContext:
-              asset_dump_path: %paths.base%/assets
+              asset_dump_path: '%paths.base%/assets'
           - Devinci\DevinciExtension\Context\JavascriptContext:
               maximum_wait: 30
   formatters:
@@ -125,12 +125,12 @@ default:
       default_session: 'goutte'
       javascript_session: 'selenium2'
       browser_name: chrome
-      files_path: %paths.base%/files
+      files_path: '%paths.base%/files'
     Drupal\DrupalExtension:
       blackbox: ~
       drupal:
         #TODO Abstract this out.
-        drupal_root: %paths.base%/../../docroot
+        drupal_root: '%paths.base%/../../docroot'
       api_driver: 'drupal'
       # @todo fixup these regions for use with new theme. Updated navigation only
       region_map:
