@@ -2,10 +2,12 @@ name = DKAN Sitewide
 description = Sitewide elements for DKAN.
 core = 7.x
 package = DKAN
+dependencies[] = admin_views
 dependencies[] = colorizer
 dependencies[] = conditional_styles
 dependencies[] = ctools
 dependencies[] = defaultconfig
+dependencies[] = date_views
 dependencies[] = dkan_dataset
 dependencies[] = dkan_dataset_content_types
 dependencies[] = facet_icons
@@ -51,8 +53,6 @@ features[variable][] = user_picture_guidelines
 features[variable][] = user_picture_path
 features[variable][] = user_picture_style
 features[variable][] = user_pictures
+features[views_view][] = dkan_administration_files
+features[views_view][] = dkan_administration_nodes
 features[views_view][] = popular_tags
-
-; Information added by DKAN release script on 4/4/2017
-version = 7.x-1.13.3-RC1
-project = dkan

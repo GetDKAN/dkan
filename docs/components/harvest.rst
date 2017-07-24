@@ -156,7 +156,7 @@ Run a harvest migration job
 
 
 Extending DKAN Harvest
-**************************************
+----------------------
 
 DKAN developers can use the api provided by DKAN Harvest to add support for
 additioanl harvest source types. The ``dkan_harvest_datajson`` module encapsulate

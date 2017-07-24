@@ -117,6 +117,15 @@ function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
     $form['query']['#attributes'] = array('placeholder' => t('Search'));
     $form['query']['#size'] = 60;
   }
+  // Custom administration views.
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dkan-administration-nodes-system-1' || $form['#id'] == 'views-exposed-form-dkan-administration-files-system-1') {
+    $form['date_filter']['min']['#title'] = '';
+    $form['date_filter']['max']['#title'] = '';
+    $form['date_filter']['min']['#attributes']['placeholder'] = t('From');
+    $form['date_filter']['max']['#attributes']['placeholder'] = t('To');
+    $form['date_filter']['min']['#date_format'] = 'm/d/Y';
+    $form['date_filter']['max']['#date_format'] = 'm/d/Y';
+  }
 
   if ($form_id == 'colorizer_admin_settings') {
     // Add clear cache for anonymous after any change.
@@ -359,7 +368,7 @@ function dkan_sitewide_clone_panel_display($task_handler) {
 
   if ($display) {
     $display_code = panels_export_display($display);
-    php_eval($display_code);
+    eval($display_code);
     panels_save_display($display);
   }
 
