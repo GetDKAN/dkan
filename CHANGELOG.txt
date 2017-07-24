@@ -1,7 +1,11 @@
-
 7.x-1.14.x
 ----------
  - #1979 Allow users to set Groups on standalone resources.
+ - #1907 Added back TAB delimiter option for datastore imports.
+ - #1955 Update ahoy docker tooling for local environment usecase.
+ - #1903 Add support for tab-delimited files (TSV) in resources/recline preview.
+ - #2001 Improve REST API documentation.
+ - #1991 Fix host IP replacement on script used to recconect the MySQL container. 
  - #1942 DevOps: Restore drush commands to deal with orphaned resources.
  - #1943 Update tests to be more compatible with client sites, multiple testing and devops improvements.
  - #1962 Recline.view.nvd3.js: Fixed display of data with zero as values.
@@ -11,9 +15,22 @@
  - #1853 Update chart documentation.
  - #1839 Add help text and improve UI on the chart form for better clarity.
  - #1827 Remove option to import TABed CSV files into datastore. 
- - #1807 Add admin_views module for enhanced content and file filtering. 
+ - #1807 Add admin_views module for enhanced content and file filtering.
+ - #1990 DevOps: Automatically populate required fields when running behat tests. 
  - #1938 DevOps: Allow behat tests to be skipped in circle.
  - #1842 Add help text to explain the pager on data previews.
+
+7.x-1.13.5 2017-07-14
+---------------------
+ - #2003 Fix dkan_bueditor_markdown_install(), which was using a variable before it was initialized.
+ - #2003 Fix to dkan_update_7016, which assumed the bueditor ID was always '5' and failed when it was not.
+ - #2003 Fix dkan_topics_field_formatter_view(), which does not check if a term exists before calling it by tid.
+ - #2003 Make Harvest tests clean up after themselves more completely (resources, other nodes were not being cleared).
+ - #2003 Fix issues with registering/deregistering and rolling back default content migrations on install/uninstall.
+ - #2003 Fix dkan_migrate_base warning: wrong type supplied to foreach.
+ - #1963 Allow Behat dkanExtension to handle custom fields via devel generate
+ - #1938 Allow skipping of features test via config
+ - #1970 Automatically populate required fields when running behat tests.
 
 7.x-1.13.4 2017-06-30
 ---------------------
@@ -68,12 +85,9 @@
  - #1852 Allow the use of multi-polygonal data for Dataset Spatial field.
  - #1857 Fixed publishing options not accessible when dkan_workflow is enabled.
 
-7.x-1.13.3-RC1
---------------
- - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
-
 7.x-1.13.3 2017-04-18
 ---------------------
+ - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
  - #1863 Update restws module to v2.7
  - #1859 Fixed update hooks to correctly set jquery version and remove old modified source date field
  - #1864 Update media to 2.0 and remove patch 2534724.

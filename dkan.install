@@ -357,9 +357,30 @@ function dkan_update_7020() {
     '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"], [id*="lines-terminated-by"])');
 }
 
+ * Add data dictionary textarea id to bueditor excludes list.
+ *
+ * This is similar to 'dkan_update_7016' but loading the ID from the DB first.
+ */
+function dkan_update_7021() {
+  $eid = db_select("bueditor_editors", "bue")
+    ->fields("bue", array("eid"))
+    ->condition("name", "Markdowneditor")
+    ->execute()
+    ->fetchField();
+
+  db_update('bueditor_editors')
+    ->fields(array(
+      'excludes' => 'edit-log
+        edit-menu-description
+        *data-dictionary*',
+    ))
+    ->condition('eid', $eid)
+    ->execute();
+}
+
 /**
  * Revert content types dataset to revert og_group_ref on resources.
  */
-function dkan_update_7021() {
+function dkan_update_7022() {
   features_revert(array('dkan_dataset_content_types' => array('field_base', 'field_instance')));
 }
