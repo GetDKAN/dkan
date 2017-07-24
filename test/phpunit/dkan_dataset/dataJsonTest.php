@@ -11,10 +11,9 @@ class dataJsonTest extends PHPUnit_Framework_TestCase {
     $base_url = 'http://127.0.0.1:8888/';
     $path = 'data.jason';
     $file = $base_url . $path;
-    $contents = file_get_contents($file);
+    $contents = file($file);
     $decoded = json_decode($contents, TRUE);
     // Asserts that landingPage key is in data.json file.
     $this->assertArrayHasKey('landingPage', $decoded['dataset'][0]);
   }
 }
-
