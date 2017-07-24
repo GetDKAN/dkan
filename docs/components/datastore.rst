@@ -31,9 +31,9 @@ Your data is now ready to use via the API! Click the "Data API" button at the to
 TAB delimiter support
 ---------------------
 
-DKAN now supports TAB delimiters for csv files and other file extensions that uses TABs as delimiters. Right now you can add resources with the extensions .tsv, .tab, .txt and .csv separated by TABs. The autodetect format function is available for this file types  (the format detected will be TSV) and the recline previews work fine with them too.
+DKAN supports TAB delimiters for csv files and other file extensions that commonly use TABs as delimiters. The autodetect format function is available for this file types (the format detected will be TSV) and the recline previews will work.
 
-The TAB delimiter support has been introduced to the datastore import functionality, so if your resource contains a csv file separated by TABs and you visit the "Manage Datastore" tab, you'll have an option in the 'Delimiter' dropdown to select TAB. Once you select that option and press the 'Import' button, your resource must be imported correctly and should be shown as expected in the Grid Recline Preview.
+The TAB delimiter support has been introduced to the datastore import functionality, so if your resource contains a csv file separated by TABs and you visit the "Manage Datastore" tab, you'll have an option in the 'Delimiter' dropdown to select TAB. Once you select that option and press the 'Import' button, your resource will be imported and should be shown as expected in the resource preview.
 
 Processing Options
 -------------------
