@@ -407,6 +407,7 @@ Request
 -------
 
 .. code-block:: bash
+
   GET http://docker:32774/api/dataset/node/76
   Accept: application/json
   X-CSRF-Token: XBWI44XD33XBIANLpyK-rtvRa0N5OcaC03qLx0VQsP4
@@ -414,7 +415,7 @@ Request
 
   None
 
-  .. note::
+.. note::
 
     We still use the `/api/dataset` endpoint to retrieve a resource node (or any other type of node) by nid.
 
