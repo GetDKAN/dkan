@@ -9,7 +9,7 @@ class dataJsonTest extends PHPUnit_Framework_TestCase {
   public function testDataJson()
   {
     $base_url = 'http://127.0.0.1:8888/';
-    $path = 'data.jason';
+    $path = 'jason';
     $file = $base_url . $path;
     $contents = file($file);
     $decoded = json_decode($contents, TRUE);
