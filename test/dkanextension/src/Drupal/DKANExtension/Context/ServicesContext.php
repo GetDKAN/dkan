@@ -380,13 +380,8 @@ class ServicesContext extends RawDKANContext {
     $rest_api_fields = $this->request_fields_map[$node_type]['fields'];
 
     if ($node_type == "dataset") {
-      print_r($this->request_fields_map[$node_type]);
-      $rawDkanEntityContext = new DatasetContext(
-        $this->request_fields_map[$node_type],
-        $this->request_fields_map[$node_type],
-        $this->request_fields_map[$node_type],
-        $this->request_fields_map[$node_type]
-      );
+      $environment = $scope->getEnvironment();
+      $rawDkanEntityContext = $environment->getContext('DatasetContext');
       $rawDkanEntityContext->applyMissingRequiredFields($data);
     }
 
