@@ -32,6 +32,7 @@ class ServicesContext extends RawDKANContext {
     parent::gatherContexts($scope);
     $environment = $scope->getEnvironment();
     $this->dkanContext = $environment->getContext('Drupal\DKANExtension\Context\DKANContext');
+    $this->datasetContext = $environment->getContext('Drupal\DKANExtension\Context\DatasetContext');
   }
 
   /**
@@ -377,12 +378,10 @@ class ServicesContext extends RawDKANContext {
     $node_type = ($node) ? $node->getBundle() : $data['type'];
 
     // Get the rest api field map for the content type.
-    $rest_api_fields = $this->request_fields_map[$node_type]['fields'];
+    $rest_api_fields = $this->request_fields_map[$node_type];
 
     if ($node_type == "dataset") {
-      $environment = $scope->getEnvironment();
-      $rawDkanEntityContext = $environment->getContext('DatasetContext');
-      $rawDkanEntityContext->applyMissingRequiredFields($data);
+      $this->datasetContext->applyMissingRequiredFields($data);
     }
 
     foreach ($data as $field => $field_value) {
