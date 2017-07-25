@@ -377,10 +377,16 @@ class ServicesContext extends RawDKANContext {
     $node_type = ($node) ? $node->getBundle() : $data['type'];
 
     // Get the rest api field map for the content type.
-    $rest_api_fields = $this->request_fields_map[$node_type];
+    $rest_api_fields = $this->request_fields_map[$node_type]['fields'];
 
     if ($node_type == "dataset") {
-      $rawDkanEntityContext = new DatasetContext();
+      print_r($this->request_fields_map[$node_type]);
+      $rawDkanEntityContext = new DatasetContext(
+        $this->request_fields_map[$node_type],
+        $this->request_fields_map[$node_type],
+        $this->request_fields_map[$node_type],
+        $this->request_fields_map[$node_type]
+      );
       $rawDkanEntityContext->applyMissingRequiredFields($data);
     }
 
