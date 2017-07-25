@@ -79,58 +79,29 @@ default:
           - Drupal\DKANExtension\Context\ServicesContext:
             - request_fields_map:
                 resource:
-                  fields:
-                    type: type
-                    title: title
-                    body: body[und][0][value]
-                    status: status
+                  type: type
+                  title: title
+                  body: body[und][0][value]
+                  status: status
                 dataset:
-                  fields:
-                    title: title
-                    description: body
-                    published: status
-                    resource: field_resources
-                    access level: field_public_access_level
-                    contact name: field_contact_name
-                    contact email: field_contact_email
-                    attest name: field_hhs_attestation_name
-                    attest date: field_hhs_attestation_date
-                    verification status: field_hhs_attestation_negative
-                    attest privacy: field_hhs_attestation_privacy
-                    attest quality: field_hhs_attestation_quality
-                    bureau code: field_odfe_bureau_code
-                    license: field_license
-                    doi: field_doi
-                    citation: field_citation
-                  labels:
-                    title: Title
-                    body: Description
-                    field_tags: Tags
-                    field_topics: Topics
-                    field_license: License
-                    field_author: Author
-                    field_spatial_geographical_cover: Spatial / Geographical Coverage Location
-                    field_frequency: Frequency
-                    field_granularity: Granularity
-                    field_data_dictionary_type: Data Dictionary Type
-                    field_data_dictionary: Data Dictionary
-                    field_contact_name: Contact Name
-                    field_contact_email: Contact Email
-                    field_public_access_level: Public Access Level
-                    field_additional_info: Additional Info
-                    field_resources: Resources
-                    field_related_content: Related Content
-                    field_landing_page: Homepage URL
-                    field_conforms_to: Data Standard
-                    field_language: Language
-                    og_group_ref: Groups
-                  sets:
-                    field_spatial: Spatial / Geographical Coverage Area
-                    field_temporal_coverage: Temporal Coverage
-                  defaults:
-                    field_public_access_level: public
-                    field_hhs_attestation_negative: 1
-                    field_license: odc-by
+                  type: type
+                  title: title
+                  status: status
+                  published: status
+                  body: body[und][0][value]
+                  resource: field_resources[und][0][target_id]
+                  access level: field_public_access_level[und]
+                  contact name: field_contact_name[und][0][value]
+                  contact email: field_contact_email[und][0][value]
+                  attest name: field_hhs_attestation_name[und][0][value]
+                  attest date: field_hhs_attestation_date[und][0][value][date]
+                  verification status: field_hhs_attestation_negative[und]
+                  attest privacy: field_hhs_attestation_privacy[und]
+                  attest quality: field_hhs_attestation_quality[und]
+                  bureau code: field_odfe_bureau_code[und]
+                  license: field_license[und][select]
+                  doi: field_doi[und][0][value]
+                  citation: field_citation[und][0][value]
           - Drupal\DKANExtension\Context\PODContext
           - Drupal\DKANExtension\Context\DatastoreContext
           - Drupal\DKANExtension\Context\TimezoneContext
