@@ -67,9 +67,6 @@
  - #1852 Allow the use of multi-polygonal data for Dataset Spatial field.
  - #1857 Fixed publishing options not accessible when dkan_workflow is enabled.
 
-7.x-1.13.3-RC1
---------------
- - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
 7.x-1.13.3 2017-04-18
 ---------------------
  - #1863 Update restws module to v2.7
