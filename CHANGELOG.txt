@@ -87,7 +87,6 @@
 
 7.x-1.13.3 2017-04-18
 ---------------------
- - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
  - #1863 Update restws module to v2.7
  - #1859 Fixed update hooks to correctly set jquery version and remove old modified source date field
  - #1864 Update media to 2.0 and remove patch 2534724. 
