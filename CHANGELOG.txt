@@ -1,5 +1,6 @@
 7.x-1.13.6
 ----------
+ - #2034 Added upgrade hook to include language selectors on 'chosen_jquery_selector' configuration.
  - #2018 Additional test/devops improvements needed for deployment. See #2012, #2014, #2015 and #2016 for specifics.
 
 7.x-1.13.5
