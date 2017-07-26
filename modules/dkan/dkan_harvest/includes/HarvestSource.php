@@ -61,6 +61,13 @@ class HarvestSource {
       ->entityCondition('bundle', 'harvest_source')
       ->propertyCondition('status', NODE_PUBLISHED)
       ->fieldCondition('field_dkan_harvest_machine_name', 'machine', $machineName);
+    // If HarvestSource is constructed from CLI, assume that it is user 1 
+    // calling the function. This is to prevent user permission get in the way
+    // for some drush command like `drush dkan-hs`.
+    // See https://github.com/NuCivic/dkan/issues/2030
+    if (drupal_is_cli()) {
+      $query->addMetaData('account', user_load(1));
+    }
     $result = $query->execute();
 
     if (!isset($result['node'])) {
