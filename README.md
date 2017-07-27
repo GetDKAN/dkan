@@ -93,7 +93,7 @@ While the GovDelivery Open Data team leads the DKAN project, there is a worldwid
 
 Please file all tickets for DKAN [in this issue queue](https://github.com/NuCivic/dkan/issues). We have several labels in place for you to tag the issue with and identify it with the proper component.
 
-Please follow the [Ticket Template](https://github.com/NuCivic/dkan/blob/7.x-1.x/CONTRIBUTING.md#new-feature-template) when creating new tickets.
+Please follow the [Ticket Template](https://github.com/NuCivic/dkan/blob/7.x-1.x/.github/CONTRIBUTING.md#new-feature-template) when creating new tickets.
 
 Also, please remember to reference the issue across repositories in order for maintainers to pick up commits and pull requests looking at the issue. You can do that for commits like this:
 

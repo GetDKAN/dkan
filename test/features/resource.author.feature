@@ -1,5 +1,5 @@
 # time:4m30.30s
-@api
+@api @disablecaptcha
 Feature: Resource
 
   Background:
@@ -72,6 +72,16 @@ Feature: Resource
     When I fill in "Title" with "Resource 06"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
+
+  @noworkflow
+  Scenario: See warning if full url not given when using the api/url option.
+    Given I am logged in as "Katie"
+    And I am on the "Content" page
+    And I click "Resource"
+    And I fill in "edit-field-link-api-und-0-url" with "api.tiles.mapbox.com/v3/tmcw.map-gdv4cswo/markers.geojson"
+    When I fill in "Title" with "Resource api"
+    And I press "Save"
+    Then I should see "Please enter a full url"
 
   @noworkflow @javascript
   Scenario: Create resource with too many sources.
@@ -339,3 +349,33 @@ Feature: Resource
     When I click "Edit"
     And I press "Save"
     Then I should see a recline preview
+
+  @noworkflow
+  Scenario: Create resource with a tsv file
+    Given I am logged in as "John"
+    And I am on the "Content" page
+    And I click "Resource"
+    And I attach the drupal file "dkan/TAB_delimiter_large_raw_number.tsv" to "files[field_upload_und_0]"
+    When I fill in "Title" with "Resource TSV"
+    # See if tab is an option in the delimiter dropdown.
+    And I select "tab" from "Delimiter"
+    And I press "Save"
+    Then I should see "Resource Resource TSV has been created"
+    # Make sure it autodetects the format.
+    When I click "Edit"
+    Then the "field_format[und][textfield]" field should contain "tsv"
+
+  @noworkflow
+  Scenario: Create resource with a tab file
+    Given I am logged in as "John"
+    And I am on the "Content" page
+    And I click "Resource"
+    And I attach the drupal file "dkan/TAB_delimiter_large_raw_number.tab" to "files[field_upload_und_0]"
+    When I fill in "Title" with "Resource TAB"
+    # See if tab is an option in the delimiter dropdown.
+    And I select "tab" from "Delimiter"
+    And I press "Save"
+    Then I should see "Resource Resource TAB has been created"
+    # Make sure it autodetects the format.
+    When I click "Edit"
+    Then the "field_format[und][textfield]" field should contain "tsv"

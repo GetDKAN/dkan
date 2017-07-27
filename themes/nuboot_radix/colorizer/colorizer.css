@@ -68,7 +68,9 @@ div.vertical-tabs ul.vertical-tabs-list li a:hover {
 }
 
 .navbar-default .navbar-nav li.open > a,
-.navbar-default .navbar-nav .dropdown-menu {
+.navbar-default .navbar-nav .dropdown-menu,
+.navbar-default .navbar-nav .dropdown.open,
+.navbar-default .navbar-nav .dropdown.open:hover {
   background: @top;
 }
 
@@ -121,6 +123,8 @@ div.vertical-tabs ul.vertical-tabs-list li a:hover {
   color: #ffffff;
 }
 
+.pagination > .active > a,
+.pagination > .active > a:hover,
 .tabs--primary.nav-pills > li > a.active,
 .tabs--primary.nav-pills > li > a:focus,
 .tabs--primary.nav-pills li.active a:hover,

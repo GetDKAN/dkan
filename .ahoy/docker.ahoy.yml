@@ -5,39 +5,98 @@ commands:
     cmd: |
       cat << EOF
         # To initialize your environment to use docker.
-        # Run: eval \$(ahoy docker env)
+        # Run: eval "\$(ahoy docker env)"
         #   OR
         # Add the following to your ~/.bashrc
         which docker || (echo "you don't seem to have docker installed. Exiting."; exit 1)
-        which docker-machine || (echo "you don't seem to have docker-machine installed. Exiting."; exit 1)
         which docker-compose || (echo "you don't seem to have docker-compose installed. Exiting."; exit 1)
         echo "Setting up docker environment"
         export AHOY_CMD_PROXY=DOCKER
-        docker-machine start default
-        $(docker-machine env default)
+        which docker-machine || (echo "you don't seem to have docker-machine installed. Exiting."; exit 1)
+        if [ ! -z "$DOCKER_MACHINE_NAME"  ]; then
+          docker-machine start default
+          $(docker-machine env default)
+        fi
+
         ahoy docker up
       EOF
     usage: Outputs the commands needed to setup a docker environment.
+  hostfile:
+    cmd: |
+      ip_address="127.0.0.1"
+      host_name="dkan.docker"
+      # find existing instances in the host file and save the line numbers
+      matches_in_hosts="$(grep -n $host_name /etc/hosts | cut -f1 -d:)"
+      host_entry="${ip_address}    ${host_name}"
+
+      if [ -z "$matches_in_hosts" ];then
+        echo "Adding new hosts entry."
+        echo "$host_entry" | sudo tee -a /etc/hosts > /dev/null
+      fi
   up:
-    cmd: "ahoy docker compose up -d {{args}}"
+    cmd: |
+      if [ -z $AHOY_CMD_PROXY ]; then
+        echo "AHOY_CMD_PROXY is not set. Run 'ahoy docker env' and follow instructions."
+        exit 0
+      fi
+      ahoy docker compose up -d {{args}}
+      ahoy docker proxy-up
+      ahoy docker hostfile
     usage: Start the docker-compose containers.
   proxy-up:
-    cmd: "docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy"
+    cmd: |
+      proxy_image=jwilder/nginx-proxy
+      # Check if the proxy container is running.
+      if [ ! "$(docker ps -f name=dkan_proxy -f ancestor=$proxy_image -q)" ];then
+        # Check if the proxy container stopped.
+        if [ "$(docker ps -f name=dkan_proxy -f ancestor=$proxy_image -qa)" ];then
+          echo "Restarting dkan_proxy container"
+          docker start dkan_proxy
+        else
+          echo "Starting dkan_proxy container"
+          docker run -d --privileged \
+            -p 80:80 -p 443:443 -p 5959:5900 \
+            -v /var/run/docker.sock:/tmp/docker.sock:ro \
+            --name=dkan_proxy jwilder/nginx-proxy
+        fi
+      fi
     usage: Run the nginx-proxy container
   stop:
-    cmd: "ahoy docker compose stop"
+    cmd: |
+      ahoy docker compose stop
+      proxy_image=jwilder/nginx-proxy
+      if [ ! -z "$(docker ps -f name=dkan_proxy -f ancestor=$proxy_image -q)" ];then
+        echo "Stopping dkan_proxy container"
+        docker stop dkan_proxy
+      fi
     usage: Stop the docker-compose containers (non-destructive).
   ps:
     cmd: "ahoy docker compose ps"
     usage: List the running docker-compose containers.
+
+  # Alias for web-ip.
   ip:
-    cmd: "docker-machine ip default"
-    usage: Show the ip address f the default docker machine VM
+    cmd: |
+      if [ -z "$DOCKER_MACHINE_NAME"  ]; then
+        ahoy docker web-ip
+      else
+        docker-machine ip default
+      fi
+
+    usage: Show the ip address of the web container
   reset:
-    cmd: "ahoy docker compose stop && ahoy docker compose rm && ahoy docker compose up -d"
+    cmd: |
+      ahoy docker destroy
+      ahoy docker up
     usage: Destroy and then restart the docker compose containers.
   destroy:
-    cmd: "ahoy docker compose stop && ahoy docker compose rm"
+    cmd: |
+      ahoy docker stop
+      ahoy docker compose rm
+      proxy_image=jwilder/nginx-proxy
+      if [ ! -z "$(docker ps -f name=dkan_proxy -f ancestor=$proxy_image -all -q)" ];then
+        docker rm dkan_proxy
+      fi
     usage: Destroy all the docker compose containers. (use before deleting folder)
   exec:
     cmd: |
@@ -82,18 +141,37 @@ commands:
   compose:
     cmd: docker-compose -f dkan/.ahoy/docker-compose.yml -p "${PWD##*/}" {{args}}
     usage: Abstraction for docker-compose
+  web-host:
+    cmd: |
+      echo `ahoy docker exec web printenv VIRTUAL_HOST | tr -d '\r'`
+  web-ip:
+    usage: Prints the web container IP address
+    cmd: |
+      echo `docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(ahoy docker compose ps -q web)`
   url:
     usage: Prints the project URL
     cmd: |
-      echo "http://`docker-machine ip default`:`ahoy docker compose port web 80|cut -d ':' -f2`"
+      if [ -z "$DOCKER_MACHINE_NAME"  ]; then
+        echo "http://`ahoy docker web-host`"
+      else
+        echo "http://`docker-machine ip default`:`ahoy docker compose port web 80|cut -d ':' -f2`"
+      fi
   surl:
     usage: Prints a secure project URL
     cmd: |
-      echo "https://`docker-machine ip default`:`ahoy docker compose port web 443|cut -d ':' -f2`"
+      if [ -z "$DOCKER_MACHINE_NAME"  ]; then
+        echo "https://`ahoy docker web-host`:`ahoy docker compose port web 443|cut -d ':' -f2`"
+      else
+        echo "https://`docker-machine ip default`:`ahoy docker compose port web 443|cut -d ':' -f2`"
+      fi
   vnc:
     usage: Prints the project VNC URL
     cmd: |
-      echo "`docker-machine ip default`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+      if [ -z "$DOCKER_MACHINE_NAME"  ]; then
+        echo "https://`ahoy docker web-host`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+      else
+        echo "`docker-machine ip default`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+      fi
 
   cleanup:
     usage: Clean ups docker unused images and volumes. See http://blog.yohanliyanage.com/2015/05/docker-clean-up-after-yourself/.
