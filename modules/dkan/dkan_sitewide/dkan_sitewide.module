@@ -158,6 +158,7 @@ function dkan_sitewide_update_status_alter(&$projects) {
     'beautytips',
     'feeds_field_fetcher',
     'multistep',
+    'file_resup'
   );
   foreach ($up_to_date_projects as $up_to_date_project) {
 
