@@ -602,6 +602,11 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
       if ($upload_fid) {
         $file = file_load($upload_fid);
         $type = isset($file->filemime) ? dkan_dataset_discovery_extension($file->filemime) : '';
+
+        $ext = pathinfo($file->uri, PATHINFO_EXTENSION);
+        if ($ext == 'tab' || $ext == 'tsv') {
+          $type = 'tsv';
+        }
       }
       elseif ($link_fid) {
         $file = file_load($link_fid);
