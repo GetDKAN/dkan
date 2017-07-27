@@ -407,23 +407,6 @@ class DKANContext extends RawDKANContext {
   }
 
 
-
-
-  /**
-   * Selects option in select field with specified by node title.
-   *
-   * @When /^(?:|I )select node named "(?P<option>(?:[^"]|\\")*)" from "(?P<select>(?:[^"]|\\")*)"$/
-   */
-//  public function selectNodeOption($select, $option)
-//  {
-//    $this->drushContext->assertDrushCommandWithArgument('php-eval', "\"return db_query('SELECT nid FROM node WHERE title = \'$option\'')->fetchField();\"");
-//    $option = $this->drushContext->readDrushOutput();
-//    $option = trim(str_replace(array("'"), "", $option));
-//    $select = $this->fixStepArgument($select);
-//    $option = $this->fixStepArgument($option);
-//    $this->getSession()->getPage()->selectFieldOption($select, $option);
-//  }
-
   /**
    * Properly inputs item in field rendered by Chosen.js.
    *
@@ -586,36 +569,6 @@ class DKANContext extends RawDKANContext {
       throw new \InvalidArgumentException(sprintf('Cannot find map icon: "%s"', $num));
     }
     $element->click();
-  }
-
-  /**
-   * Copy of "I fill in" but doesn't escape "(".
-   *
-   * When using "I fill in" it escaped autocomplete fields node id. Just using
-   * the title wouldn't work. The following focuses on the field and selects
-   * the first dropdown.
-   *
-   * @Given /^I fill in the autocomplete field "([^"]*)" with "([^"]*)"$/
-   */
-  public function iFillInTheAutoFieldWith($field, $value) {
-    $session = $this->getSession();
-    $field = $this->fixStepArgument($field);
-    $value = $this->fixStepArgument($value);
-    $input_title = $session->getPage()->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', '//input[@value="' . $field . '"]')
-
-    );
-    $input_title->click();
-    $this->iWaitForSeconds(2);
-    // Selects the first dropdown since there is no id or other way to
-    // reference the desired entry.
-    $title = $session->getPage()->find(
-      'xpath',
-      $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
-
-    );
-    $title->click();
   }
 
   /**
@@ -1052,6 +1005,39 @@ public function iWaitForTextToDisappear($text)
     $url = reset($items)->getAttribute('href');
     $session = $this->getSession();
     $session->visit($this->locatePath($url));
+  }
+
+
+ /**
+   * @Given /^I fill in the autocomplete field "([^"]*)" with "([^"]*)"$/
+   *
+   * Fill in the 'Autocomplete' field on a form.
+   */
+  public function iFillInTheAutocompleteFieldWith($field, $value) {
+    $session = $this->getSession();
+    $page = $session->getPage();
+    $element = $page->findField($field);
+    if (!$element) {
+      throw new ElementNotFoundException($session, NULL, 'named', $field);
+    }
+    $page->fillField($field, $value);
+    // Trigger all needed key events in order for the autocomplete to be triggered.
+    // Just filling the field with a value is not enough.
+    // TODO: Is there a better way to do this?
+    $chars = str_split($value);
+    $last_char = array_pop($chars);
+    // Delete last char.
+    $session->getDriver()->keyDown($element->getXpath(), 8);
+    $session->getDriver()->keyUp($element->getXpath(), 8);
+    // Re-add last char.
+    $session->getDriver()->keyDown($element->getXpath(), $last_char);
+    $session->getDriver()->keyUp($element->getXpath(), $last_char);
+    $this->iWaitForSeconds(5);
+    $title = $page->find(
+      'xpath',
+      $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
+    );
+    $title->click();
   }
 
   /************************************/
