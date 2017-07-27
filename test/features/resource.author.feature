@@ -119,7 +119,7 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
 
-  @dkanBug @noworkflow
+  @dkanBug @noworkflow @javascript
   Scenario: Change dataset on resource
     Given I am logged in as "Katie"
     And I am on "Resource 01" page
@@ -131,7 +131,7 @@ Feature: Resource
     Then I should see "Dataset 02" in the "dataset title" region
     And I should see "Resource 01" in the "dataset resource list" region
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource with no datasets to a dataset with no resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
@@ -155,7 +155,7 @@ Feature: Resource
     And I should see "Groups were updated on 1 resource(s)"
     And I should not see the link "Back to dataset"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource with no group to a dataset with group
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
@@ -177,7 +177,7 @@ Feature: Resource
     When I am on "Dataset 05" page
     Then I should not see "Resource 08" in the "dataset resource list" region
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource to multiple datasets with groups
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
@@ -189,7 +189,7 @@ Feature: Resource
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove one dataset with group from resource with multiple datasets
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
@@ -205,7 +205,7 @@ Feature: Resource
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove all datasets with groups from resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
