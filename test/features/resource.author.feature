@@ -200,7 +200,7 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     When I click "Edit"
-    And I select "Dataset 05" from "Dataset"
+    And I fill in "edit-field-dataset-ref-und-0-target-id" with ""
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
