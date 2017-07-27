@@ -98,7 +98,7 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
       foreach ($proxy_files as $file) {
         $source = $conf['default']['stage_file_proxy_origin'] . '/' . $file;
         $destination = 'public://' . $file;
-        $copy($source, $destination);
+        copy($source, $destination);
       }
     }
     variable_set('stage_file_proxy_setup', TRUE);

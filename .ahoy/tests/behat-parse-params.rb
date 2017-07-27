@@ -1,5 +1,5 @@
 require "minitest/autorun"
-require "./.scripts/behat-parse-params.rb"
+require "./dkan/.ahoy/.scripts/behat-parse-params.rb"
 
 class TestBehatParseParams < MiniTest::Unit::TestCase
 
