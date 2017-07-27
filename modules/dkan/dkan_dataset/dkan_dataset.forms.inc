@@ -355,14 +355,6 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
         $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $query['dataset']);
       }
     }
-    elseif (isset($form['#node']->field_dataset_ref['nid'])) {
-      $selected_dataset_nid = $form['#node']->field_dataset_ref['nid'];
-      $selected_dataset = node_load($selected_dataset_nid);
-      $form['field_dataset_ref'][$field_dataset_ref_langcode][0]['target_id']['#default_value'] = $selected_dataset->title . ' (' . $selected_dataset_nid . ')';
-      $form['prefix']['#type'] = 'item';
-      $form['prefix']['#weight'] = '-20';
-      $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $form['#node']->field_dataset_ref['nid']);
-    }
     $form['#validate'][] = 'dkan_dataset_resource_node_form_validate';
     // This saves us on the ajax reloading.
     if (isset($query['dataset'])) {
