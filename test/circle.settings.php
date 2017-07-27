@@ -1,10 +1,14 @@
 <?php
+/**
+ * @file
+ * Circle-specific settings.
+ */
 
-$databases = array (
+$databases = array(
   'default' =>
-  array (
+  array(
     'default' =>
-    array (
+    array(
       'database' => 'circle_test',
       'username' => 'ubuntu',
       'password' => '',
@@ -15,7 +19,7 @@ $databases = array (
       'pdo' => array(
         PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
         PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => 1,
-      )
+      ),
     ),
   ),
 );
