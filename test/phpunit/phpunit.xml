@@ -22,7 +22,7 @@
             <file>dkan_workflow/DkanWorkflowTest.php</file>-->
         </testsuite>
         <testsuite name="DKAN Dataset Test Suite">
-            <file>dkan_dataset/dataJsonTest.php</file>
+            <file>dkan_dataset/DataJsonTest.php</file>
             <file>dkan_dataset/getRemoteFileInfoTest.php</file>
             <file>dkan_dataset/reclineEmbedCacheTest.php</file>
         </testsuite>

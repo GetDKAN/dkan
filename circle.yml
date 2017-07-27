@@ -83,7 +83,7 @@ test:
     - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_harvest_test
     - ahoy dkan unittests:
         parallel: false
-    - ahoy dkan reinstall:
+    - ahoy dkan reinstall --yes
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         timeout: 1200
         parallel: true
