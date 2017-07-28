@@ -1,5 +1,5 @@
-7.x-1.13.6
-----------
+7.x-1.13.6 2017-07-28
+---------------------
  - #2036 Add file_resup to the list of up to date projects.
  - #2035 Change the 'Datasets' field on the Resource form to use autocomplete.
  - #2034 Add language selectors to the 'chosen_jquery_selector' configuration.
@@ -8,8 +8,8 @@
  - #2025 Add configurable arguments via Behat Contexts.
  - #2021 Add unique tags to more test scenarios.
 
-7.x-1.13.5
-----------
+7.x-1.13.5 2017-07-14
+---------------------
  - #2003 Fix dkan_bueditor_markdown_install(), which was using a variable before it was initialized.
  - #2003 Fix to dkan_update_7016, which assumed the bueditor ID was always '5' and failed when it was not.
  - #2003 Fix dkan_topics_field_formatter_view(), which does not check if a term exists before calling it by tid.
@@ -20,8 +20,8 @@
  - #1938 Allow skipping of features test via config
  - #1970 DevOps: Automatically populate required fields when running behat tests.
 
-7.x-1.13.4
-----------
+7.x-1.13.4 2017-06-30
+---------------------
  - #1983 Apply services security update 3.20 for DRUPAL-SA-CONTRIB-2017-054
  - #1877 Fix broken update that tries to migrate fields that may not exist (primarily due to Federal Extras upgrade)
  - #1960 Update field_group_table to 1.6
