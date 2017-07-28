@@ -57,3 +57,7 @@ features_exclude[dependencies][dkan_dataset_groups] = dkan_dataset_groups
 features_exclude[dependencies][dkan_topics] = dkan_topics
 no autodetect = 1
 project path = profiles/dkan/modules/dkan
+
+; Information added by DKAN release script on 7/28/2017
+version = 7.x-1.13.6
+project = dkan
