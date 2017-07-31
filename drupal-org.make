@@ -331,8 +331,8 @@ projects:
   taxonomy_fixtures:
     download:
       type: git
-      url: 'https://github.com/NuCivic/taxonomy_fixtures.git'
-      branch: 7.x-1.x
+      url: 'https://github.com/rahulseth/taxonomy_fixtures.git'
+      branch: patch-1
   token:
     version: '1.7'
   uuid:
