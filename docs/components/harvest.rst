@@ -1,5 +1,5 @@
 DKAN Harvest
-==============
+============
 
 DKAN Harvest is a module that provides a common harvesting framework for DKAN.
 It supports custom extensions and adds `drush <http://www.drush.org/en/master/>`_
@@ -16,10 +16,10 @@ DKAN Harvest is built on top of the widely-used
 follows a two-step process to import datasets:
 
 1. Process a source URI and save resulting data locally to disk as JSON
-2. Perform migrations into DKAN with the locally cached JSON files, using mappings provided by the `DKAN Migrate Base <https://github.com/NuCivic/dkan_migrate_base>`_ module.
+2. Perform migrations into DKAN with the locally cached JSON files, using mappings provided by the `DKAN Migrate Base module <https://github.com/NuCivic/dkan_migrate_base>`_ .
 
 Harvest Sources
-----------------
+---------------
 
 Harvest Sources are nodes that store the source's URI and some additional
 configuration. Users with the administrator or site manager role will be able to create and manage harvest sources.
@@ -43,7 +43,7 @@ The form includes four multi-value fields to help you fine tune the results of y
 
 Project Open Data (as well as most metadata APIs) includes many fields that are not simple key-value pairs. If you need to access or modify nested array values you can use this dot syntax to specify the path: `key.nested_key.0.other_nested_key`. For example, the Publisher field in Project Open Data is expressed like this:
 
-.. code-block:: json
+.. code-block:: JavaScript
 
     "publisher": {
       "@type": "org:Organization",
