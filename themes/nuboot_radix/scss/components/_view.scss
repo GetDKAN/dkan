@@ -166,8 +166,6 @@
   }
 }
 
-#views-exposed-form-dkan-datasets-panel-pane-1 .views-exposed-form .description { display: none;}
-
 .view-dkan-groups-featured,
 .pane-dkan-groups-featured {
   .row {
@@ -185,5 +183,34 @@
 .view-blog {
   .views-row ul.links.inline {
     margin: -.5em 0 1.75em;
+  }
+}
+
+#views-exposed-form-dkan-datasets-panel-pane-1 .views-exposed-form .description { display: none;}
+
+#views-exposed-form-dkan-administration-nodes-system-1,
+#views-exposed-form-dkan-administration-files-system-1 {
+  .views-widget-filter-uid,
+  .form-item-author {
+    .help-block {
+      font-size: .85em;
+      margin-top: 0;
+    }
+    input {
+      width: auto;
+    }
+  }
+  .views-widget-filter-date_filter {
+    #edit-date-filter-min-wrapper,
+    #edit-date-filter-max-wrapper {
+      display: inline-block;
+    }
+    input {
+      width: 100px;
+      margin-right: 0;
+    }
+    .help-block {
+      display: none;
+    }
   }
 }

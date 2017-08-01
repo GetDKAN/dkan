@@ -38,7 +38,11 @@ Feature: User
       | Dataset 01 | Group 01  | Katie   | Yes              | world    | Test        |
       | Dataset 02 | Group 01  | Katie   | Yes              | world    | Test        |
 
+<<<<<<< HEAD
   @user_all_01 @login
+=======
+  @user_all_01
+>>>>>>> ece82a11a1c47bf6f4af2373165034ba0455717a
   Scenario: Login
     Given I am on the homepage
     When I follow "Log in"

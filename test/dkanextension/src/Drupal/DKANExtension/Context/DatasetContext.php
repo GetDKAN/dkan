@@ -157,7 +157,9 @@ class DatasetContext extends RawDKANEntityContext {
     foreach ($results['results'] as $nid => $result) {
       $dataset = node_load($nid);
       $found_title = array_shift($dataset_list);
-      if ($found_title !== $dataset->title) {
+      // Drupal removes extra spacing on titles somehow so reproducing here.
+      $title = preg_replace('/\s+/', ' ', $dataset->title);
+      if ($found_title !== $title) {
         throw new \Exception("Does not match order of list, $found_title was next on page but expected $dataset->title");
       }
     }

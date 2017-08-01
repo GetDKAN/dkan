@@ -93,6 +93,7 @@ Feature: Site Manager administer groups
     When I click "11 datasets"
     Then I should see "Displaying 1 - 10 of 11 datasets"
 
+  @disablecaptcha
   Scenario: View the list of group members
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
