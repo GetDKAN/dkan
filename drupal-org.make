@@ -316,6 +316,8 @@ projects:
     version: '1.21'
   search_api_db:
     version: '1.6'
+  seckit:
+    version: '1.9'
   select_or_other:
     version: '2.22'
   services:
