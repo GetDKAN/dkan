@@ -96,6 +96,8 @@ Feature: User
   Scenario: Disable user
     Given I am logged in as "John"
     And I am on "Users" page
+    And I fill in "edit-name" with "Katie"
+    And I press "Apply"
     And I wait for "edit"
     When I click "edit" in the "Katie" row
     And I press "Cancel account"
