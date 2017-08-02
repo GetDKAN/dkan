@@ -73,6 +73,8 @@ Feature: User
     And I press "Create new account"
     Then I should see "Created a new user account for tempuser."
     When I am on "Users" page
+    And I fill in "edit-name" with "tempuser"
+    And I press "Apply"
     And I wait for "tempuser"
     Then I should see "editor" in the "tempuser" row
 
