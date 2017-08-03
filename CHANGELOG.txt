@@ -39,11 +39,7 @@
  - #2003 Fix dkan_migrate_base warning: wrong type supplied to foreach.
  - #1963 Allow Behat dkanExtension to handle custom fields via devel generate
  - #1938 Allow skipping of features test via config
-<<<<<<< HEAD
- - #1970 DevOps: Automatically populate required fields when running behat tests.
-=======
  - #1970 Automatically populate required fields when running behat tests.
->>>>>>> ece82a11a1c47bf6f4af2373165034ba0455717a
 
 7.x-1.13.4 2017-06-30
 ---------------------
