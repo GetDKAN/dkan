@@ -1,5 +1,5 @@
 Choropleth
-===========
+==========
 .. warning::
 
 	Under Development. Do not use on production.
@@ -66,4 +66,5 @@ Create Visualization
 .. image:: images/choropleth-step-07.png
 
 + Click **Save** & Enjoy!
+
 .. image:: images/choropleth-step-08.png

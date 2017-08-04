@@ -28,6 +28,13 @@ Click the "Manage Datastore" button at the top of the screen. On the "Manage Dat
 
 Your data is now ready to use via the API! Click the "Data API" button at the top of the resource screen for specific instructions.
 
+TAB delimiter support
+---------------------
+
+DKAN supports TAB delimiters for csv files and other file extensions that commonly use TABs as delimiters. The autodetect format function is available for this file types (the format detected will be TSV) and the recline previews will work.
+
+The TAB delimiter support has been introduced to the datastore import functionality, so if your resource contains a csv file separated by TABs and you visit the "Manage Datastore" tab, you'll have an option in the 'Delimiter' dropdown to select TAB. Once you select that option and press the 'Import' button, your resource will be imported and should be shown as expected in the resource preview.
+
 Processing Options
 -------------------
 

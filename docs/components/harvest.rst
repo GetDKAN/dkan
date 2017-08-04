@@ -1,5 +1,5 @@
 DKAN Harvest
-==============
+============
 
 DKAN Harvest is a module that provides a common harvesting framework for DKAN.
 It supports custom extensions and adds `drush <http://www.drush.org/en/master/>`_
@@ -16,10 +16,10 @@ DKAN Harvest is built on top of the widely-used
 follows a two-step process to import datasets:
 
 1. Process a source URI and save resulting data locally to disk as JSON
-2. Perform migrations into DKAN with the locally cached JSON files, using mappings provided by the `DKAN Migrate Base <https://github.com/NuCivic/dkan_migrate_base>`_ module.
+2. Perform migrations into DKAN with the locally cached JSON files, using mappings provided by the `DKAN Migrate Base module <https://github.com/NuCivic/dkan_migrate_base>`_ .
 
 Harvest Sources
-----------------
+---------------
 
 Harvest Sources are nodes that store the source's URI and some additional
 configuration. Users with the administrator or site manager role will be able to create and manage harvest sources.
@@ -43,7 +43,7 @@ The form includes four multi-value fields to help you fine tune the results of y
 
 Project Open Data (as well as most metadata APIs) includes many fields that are not simple key-value pairs. If you need to access or modify nested array values you can use this dot syntax to specify the path: `key.nested_key.0.other_nested_key`. For example, the Publisher field in Project Open Data is expressed like this:
 
-.. code-block:: json
+.. code-block:: JavaScript
 
     "publisher": {
       "@type": "org:Organization",
@@ -86,7 +86,9 @@ Click on the title of a harvest source from the dashboard to see the details of 
 :Events: Event Log that provides historical data on all harvests run on this source. The information is managed by the core ``dkan_harvest`` via a per-harvest source ``migrate_log`` table that tracks the number of datasets created, updated, failed, orphaned, and unchanged and status. If the value for the field Status is Error then you can click on the text to see the log error and identify the problem.
 :Errors: Error log that shows a list of all errors recorded during harvesting on the source.
 
-
+Harvested Resources
+**************************
+When datasets are harvested, the resources are added as remote files, which means they are links to the original files on the remote server. If you modify the resource in your DKAN site, your changes will be overwritten the next time a harvest is performed. If you add a harvested resource to the :doc:`datastore <datastore>` be sure to set up periodic importing so that the resource stays in sync with the source. For these reasons, we do not recommend that you create visualizations based on harvested resources as the visualizations could break when changes are made to the files upstream.
 
 Harvest Drush Commands
 -----------------------

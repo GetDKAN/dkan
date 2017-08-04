@@ -903,7 +903,7 @@ function dkan_dataset_teaser_get_external_previews() {
   $previews['dkan'] = array(
     'name' => variable_get('dkan_dataset_teaser_preview_label', '') . ' ' . t('Preview'),
     'link_callback' => 'dkan_dataset_preview_url_local',
-    'suggested_formats' => array('csv', 'xls'),
+    'suggested_formats' => array('csv', 'xls', 'tsv'),
     'description' => t('Local preview. Preview tabular data in a grid, basic chart or map. This preview type is not optional and will load only for the suggested formats listed.'),
   );
   // For DKAN, we don't add the format manually, so copy the values from
