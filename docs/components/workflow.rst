@@ -141,6 +141,8 @@ text area.
 
 .. image:: ../images/workflow/workflow_node_edit.png
 
+.. _`workflow-roles`:
+
 Workflow Roles
 ---------------------------
 DKAN workflow permissions provides 3 Drupal roles:
