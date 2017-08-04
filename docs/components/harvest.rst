@@ -86,7 +86,9 @@ Click on the title of a harvest source from the dashboard to see the details of 
 :Events: Event Log that provides historical data on all harvests run on this source. The information is managed by the core ``dkan_harvest`` via a per-harvest source ``migrate_log`` table that tracks the number of datasets created, updated, failed, orphaned, and unchanged and status. If the value for the field Status is Error then you can click on the text to see the log error and identify the problem.
 :Errors: Error log that shows a list of all errors recorded during harvesting on the source.
 
-
+Harvested Resources
+**************************
+When datasets are harvested, the resources are added as remote files, which means they are links to the original files on the remote server. If you modify the resource in your DKAN site, your changes will be overwritten the next time a harvest is performed. If you add a harvested resource to the :doc:`datastore <datastore>` be sure to set up periodic importing so that the resource stays in sync with the source. For these reasons, we do not recommend that you create visualizations based on harvested resources as the visualizations could break when changes are made to the files upstream.
 
 Harvest Drush Commands
 -----------------------
