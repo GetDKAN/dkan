@@ -1,5 +1,5 @@
 Community Contributions
-----------------------
+-----------------------
 
 What follows is a list of modules from the community that extend DKAN's
 functionality. Many are developed by the DKAN team themselves but are still in

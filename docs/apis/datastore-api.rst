@@ -1,3 +1,5 @@
+.. _`datastore API`:
+
 Datastore API
 =============
 
