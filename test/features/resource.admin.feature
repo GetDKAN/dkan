@@ -1,5 +1,5 @@
 # time:2m54.08s
-@api
+@api @disablecaptcha
 # in the resource tests, when it uses "Given resources:" it defines a property called 'datastore created' with either a 'yes' or 'no', which is used in some tests -  should I try to map that when creating the resource in resourceContext? @Frank
 Feature: Resource
 
@@ -146,7 +146,7 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 02 edited has been updated"
     When I click "Revisions"
-    Then I should see "current revision"
+    Then I should see "This is the published revision"
 
   @fixme @dkanBug @noworkflow
     #TODO: There is an issue where an admin, when clicking revert, gets a access unauthorized response.

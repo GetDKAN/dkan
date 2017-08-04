@@ -4,10 +4,13 @@ commands:
   drupal-rebuild:
     usage: 'Builds a drupal site in ./docroot. Requires database url.'
     cmd: |
-      if [ "$AHOY_CMD_PROXY" != "DOCKER" ]; then
-        ARGS="{{args}}"
-      else
+      if [ "$AHOY_CMD_PROXY" = "DOCKER" ]; then
         ARGS=`ahoy docker mysql-url`
+      fi
+
+      # If no mysql URL from docker, use passed in args.
+      if [ "$ARGS" = "" ];then
+        ARGS="{{args}}"
       fi
       if [[ "$ARGS" != mysql* ]]; then
           echo "You need to specify the drupal db url to use in the form mysql://root:root@localhost/db as an argument."
@@ -17,7 +20,11 @@ commands:
       if [ -d docroot ]
         then
           ahoy confirm "./docroot folder alredy exists. Delete it and reinstall drupal?" && chmod -R 777 docroot/sites/default && rm -rf docroot ||
-          { echo ".. skipping installation"; exit 1;}
+          {
+            echo ".. skipping installation";
+            ahoy cmd-proxy bash dkan/.ahoy/.scripts/mysql-reconnect.sh $ARGS
+            exit 1;
+          }
       fi
       ahoy cmd-proxy bash dkan/.ahoy/.scripts/drupal-rebuild.sh $ARGS
 
@@ -40,13 +47,15 @@ commands:
   reinstall:
     usage: Reinstall the dkan install profile (db only).
     cmd: |
-      set -e
       if [ ! -d backups ]; then
         mkdir backups
       fi
       if [ -f backups/last_install.sql ] && ahoy confirm "An existing installation backup exists at backups/last_install.sql, do you want to use that instead of reinstalling from scratch?"; then
+
         ahoy drush sql-drop -y && \
-        ahoy dkan sqlc <  backups/last_install.sql && \
+        echo "... Removed tables, restoring DB"
+        ahoy dkan sqlc < backups/last_install.sql
+
         echo "Installed dkan from backup"
       else
         if [ "$AHOY_CMD_PROXY" == "DOCKER" ]; then
@@ -144,6 +153,15 @@ commands:
       b64=`echo "payload: $input" | base64 $wrap 0`
       ahoy cmd-proxy ruby dkan/.ahoy/.scripts/dkan-test.rb "$b64"
 
+  unittests:
+    usage: Run phpunit tests
+    cmd: ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkan-unittests.sh "{{args}}"
+
+  lint:
+    usage: Run linter on code
+    hidden: true
+    cmd: ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkan-lint.sh "{{args}}"
+
   create-qa-users:
     usage: Create users for each core role for QA purposes
     cmd: |
@@ -184,14 +202,13 @@ commands:
     import: dkan/.ahoy/theme.ahoy.yml
     hide: true
 
+  # Moved to .ahoy.yml
   uli:
-    usage: log into the
+    usage: Log in via drush
     cmd: |
-      url=$(ahoy drush --uri="$(ahoy docker url)" uli {{args}})
-      os=$(uname)
+      ruby dkan/.ahoy/.scripts/dkan-uli.rb {{args}}
 
-      if [ "$os" = "Darwin" ]; then
-        open $url
-      else
-        echo $url
-      fi
+  server:
+    usage: Provided as an easy way to setup the php server during testing.
+    cmd:
+      ahoy cmd-proxy bash dkan/.ahoy/.scripts/server.sh
