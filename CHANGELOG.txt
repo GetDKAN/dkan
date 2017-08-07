@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1988 Count and delete resources on Harvest source deletion.
  - #1951 Fixed display of number of Groups a user belongs to on the user profile page.
  - #1968 Fixed "Reset" button on search page to also resets facets.
  - #1985 Add documentation for resource behavior on harvested datasets.
