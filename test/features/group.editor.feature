@@ -174,7 +174,7 @@ Feature: Site Manager administer groups
     And I am on "Dataset 01" page
     Then I should see "Edit"
 
-  Scenario: Show correct number of groups to which editor belongs
+  Scenario: Show correct number of groups to which user belongs
     Given I am logged in as "Celeste"
     When I am on "user"
     Then I should see "1 Groups" in the "content" region
