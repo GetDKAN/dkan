@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1951 Fixed display of number of Groups a user belongs to on the user profile page.
  - #1968 Fixed "Reset" button on search page to also resets facets.
  - #1985 Add documentation for resource behavior on harvested datasets.
  - #1907 Added back TAB delimiter option for datastore imports.
@@ -105,7 +106,7 @@
  - #1703 Refactor Datastore API module, fixing some caching issues and improving joins
  - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
  - #1811 Apply patches to the rules module that can prevent unnecessary DB lockouts.
- 
+
 7.x-1.13.2 2017-03-16
 ---------------------
  - #1803 Fix broken access to featured groups sort order view.
