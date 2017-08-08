@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_harvest.features.field_base.inc

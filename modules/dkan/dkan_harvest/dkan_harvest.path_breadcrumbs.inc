@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_harvest.path_breadcrumbs.inc

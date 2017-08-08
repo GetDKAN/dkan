@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_harvest.features.field_instance.inc
@@ -617,7 +616,7 @@ function dkan_harvest_field_default_field_instances() {
     'bundle' => 'harvest_source',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => '',
+    'description' => 'Chose topics to be associated with this harvest source. Topics chosen here will be applied to <em>all</em> datasets harvested from this source.',
     'display' => array(
       'default' => array(
         'label' => 'above',
@@ -708,6 +707,7 @@ function dkan_harvest_field_default_field_instances() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Add one or more filters to narrow a harvest to a specific subset of fields and values.');
+  t('Chose topics to be associated with this harvest source. Topics chosen here will be applied to <em>all</em> datasets harvested from this source.');
   t('Defaults');
   t('Description');
   t('Determine replacement field values that will be overwritten when you harvest.');

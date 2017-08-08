@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_harvest.strongarm.inc
