@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1967 Added search title to /search panels.
  - #1997 Recline.view.nvd3.js: Fixed tooltips that were not being displayed when using some percentage formats.
  - #1988 Count and delete resources on Harvest source deletion.
  - #1951 Fixed display of number of Groups a user belongs to on the user profile page.
