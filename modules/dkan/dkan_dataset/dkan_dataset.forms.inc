@@ -348,7 +348,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     // Get langcode for og_group_ref.
     $og_group_ref_langcode = dkan_dataset_form_field_language($form, 'og_group_ref');
- 
+
     // Modify title of Publisher field.
     $form['og_group_ref'][$og_group_ref_langcode]['#title'] = t('Groups');
 
