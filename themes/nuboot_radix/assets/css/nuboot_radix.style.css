@@ -9563,7 +9563,7 @@ div.horizontal-tabs {
     font-size: 12px;
     line-height: 1.15em; } }
 
-.node-dataset-form #edit_og_group_ref_und_chosen {
+.node-resource-form #edit_og_group_ref_und_chosen {
   width: 100% !important; }
 
 .node-resource-form .field-name-field-upload .form-type-managed-file {
