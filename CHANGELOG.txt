@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1997 Recline.view.nvd3.js: Fixed tooltips that were not being displayed when using some percentage formats.
  - #1985 Add documentation for resource behavior on harvested datasets.
  - #1907 Added back TAB delimiter option for datastore imports.
  - #1955 Update ahoy docker tooling for local environment usecase.
