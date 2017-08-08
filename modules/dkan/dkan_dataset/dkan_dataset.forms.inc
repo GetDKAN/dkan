@@ -363,7 +363,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
           array(':input[name="field_dataset_ref[und][]"]' => array('value' => array())),
         ),
       );
-    } 
+    }
     else {
       // If the user is not assigned to any groups then hide the fields.
       $form['og_group_ref']['#access'] = FALSE;
