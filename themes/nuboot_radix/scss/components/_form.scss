@@ -263,6 +263,11 @@ div.horizontal-tabs {
   }
 }
 
+// This was added to fix the Groups field that sometimes looks broken with width 0px.
+.node-dataset-form #edit_og_group_ref_und_chosen {
+  width: 100% !important;
+}
+
 // file_resup tweaks to display on top of recline
 .node-resource-form .field-name-field-upload {
   .form-type-managed-file {
