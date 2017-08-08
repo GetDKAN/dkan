@@ -129,7 +129,7 @@ Feature: Dataset Features
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
     When I press "Reset"
-    Then I should see all published datasets
+    Then I should see all published search content
     # Then I should see "7 results"
     # And I should see "7" items in the "datasets" region
 
