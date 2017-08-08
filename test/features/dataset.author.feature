@@ -220,7 +220,7 @@ Feature: Dataset Features
     Then I should see "Dataset 09 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @dataset_author_14 @noworkflow
+  @dataset_author_14 @noworkflow @javascript
   Scenario: Add group and resource to a dataset on the same edition
     Given I am logged in as "Katie"
     And I am on "Dataset 08" page
