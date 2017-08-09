@@ -41,6 +41,8 @@ Removing Topics from the main menu
 3. Uncheck the box under "Enabled" for Topics
 4. Click "Save configuration"
 
+.. _`adding_new_icons`:
+
 Adding new icons
 ------------------------------------
 The font used for Topics can only be changed if there are **NO** default icon values in use, only one icon font can be used at a time.

@@ -1,28 +1,28 @@
 Search
-=======
+======
 
 DKAN offers a faceted search similar to CKAN. This functionality is provided by the `Search API <http://drupal.org/project/search_api>`_ and `Search API DB <http://drupal.org/project/search_api_db>`_ modules. DKAN can easily be updated to use Apache Solr to power the search using the `Search API Solr <http://drupal.org/project/search_api_solr>`_ module.
 
 
 Search API
-------------
+----------
 The `Search API <http://drupal.org/project/search_api>`_ module provides a framework for easily creating searches on any entity known to Drupal, using any kind of search engine. It incorporates facet support and the ability to use the Views module for displaying search results.
 
 
 Apache Solr
-------------
+-----------
 `Search API Solr Search <http://drupal.org/project/search_api_solr>`_ provides a Solr backend for the Search API module, and delivers enterprise class, high performance search functionality. Apache Solr runs as a separate service from the web server and requires extra resources to integrate into your website. This can increase the price for hosting. Recommended for high traffic sites.
 
 **Requirements:**
 
-- `Search API <http://drupal.org/project/search_api>`_ module
-- `Search API Solr Search <http://drupal.org/project/search_api>`_ module
-- An `Apache Solr <http://lucene.apache.org/solr/>`_ server.
+- `Search API module <http://drupal.org/project/search_api>`_
+- `Search API Solr Search module <http://drupal.org/project/search_api>`_
+- An `Apache Solr server <http://lucene.apache.org/solr/>`_
 
 For further details see the `Search API Solr's handbook documentation <https://www.drupal.org/node/1999280>`_.
 
 DB vs Solr Search
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 Solr:
  * PRO: Increased performance and scalability for complex queries.
  * PRO: Reduce database size.
@@ -37,7 +37,7 @@ DB:
 
 
 Switching to Solr
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 To switch from the native database to Solr simply:
 
 * Create or purchase a Solr instance

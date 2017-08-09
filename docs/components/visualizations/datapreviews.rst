@@ -6,12 +6,16 @@ DKAN allows users to have a preview of their data when uploaded to or linked to 
 This functionality is provided via the `Recline module <https://github.com/NuCivic/recline>`_, which is not part of the core DKAN repository but is a basic dependency of it (and will be included when building the distribution via ``drush make``).
 
 Recline.js
--------------
+----------
 
 DKAN, like CKAN, offers an integration with the `Recline <http://reclinejs.com>`_ Javascript library. Recline allows site visitors to preview tabular data visually. The preview works for CSV and XLS [*]_ files that are uploaded to the DKAN site or hosted remotely and linked to, as well as for data stored in DKAN's local SQL-based :doc:`datastore <../datastore>`.
 
+**Record limit:** The previews will display up to 100 records by default. You can use the pager to preview additional results based on the range given. If you want to preview more than 100 records at a time, adjust the max range value to the desired range. 
+
+.. figure:: ../../images/pager.png
+
 Grid View
-*************
+*********
 All tabular data can be rendered as spreadsheet-style rows and columns:
 
 .. figure:: ../../images/csv-preview.png
@@ -21,13 +25,13 @@ All tabular data can be rendered as spreadsheet-style rows and columns:
 .. figure:: ../../images/xls-format.png
 
 Map View
-*************
+********
 Visitors can preview data that contains either coordinates or GeoJSON on a `Leaflet.js <http://leafletjs.com/>`_ -based map:
 
 .. image:: ../../images/map-preview.png
 
 Graph View
-*************
+**********
 If enabled, visitors can chose one column of your data as an X-axis, one or more as Y-axis data, and preview your data as a bar, point or line graph.
 
 .. image:: ../../images/graph-preview.png
@@ -38,20 +42,20 @@ Files can only be previewed if they are well formatted and small enough to rende
 
 If files are too large to preview within 1 second you will get the following message *"File was too large or unavailable for preview."*
 
-Files that are too large to preview in the browser can be previewed by :doc:`adding them to the datastore <../datastore/index>`. Once a file is in the datastore the preview is only asking for the first 25 rows of the data. Thus large datasets can be previewed.
+Files that are too large to preview in the browser can be previewed by :doc:`adding them to the datastore <../datastore>`. Once a file is in the datastore the preview is only asking for the first 25 rows of the data. Thus large datasets can be previewed.
 
 Additional Preview Types
-----------------------------
-DKAN provides preview formats for several additional file types beyond what is supported by Recline.js, these include: JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, and ZIP files. These additional preview formatters are defined in a forked version of `Recline <https://github.com/NuCivic/recline>`_
+------------------------
+DKAN provides preview formats for several additional file types beyond what is supported by Recline.js, these include: JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, and ZIP files. These additional preview formatters are defined in a `forked version of Recline <https://github.com/NuCivic/recline>`_
 
 Zip files
-****************
+*********
 DKAN offers the ability to preview the files and folders locked in ZIP files. DKAN will display a list of contents for ZIP files uploaded as resources on datasets.
 
 .. image:: ../../images/zip-preview.png
 
 Image files
-****************
+***********
 Image files (JPG, PNG or GIF) uploaded as resources will be displayed directly on the resource page.
 
 .. image:: ../../images/image-preview.png
@@ -65,13 +69,13 @@ DKAN can use Leaflet to display a preview of a `WMS server <https://en.wikipedia
 WMS support in DKAN is still somewhat experimental and your results may vary.
 
 ArcGIS REST
-****************
+***********
 An ESRI/ArcGIS REST endpoint may also be displayed in a Leaflet preview.
 
 .. image:: ../../images/arcgis.png
 
 JSON files
-****************
+**********
 .. image:: ../../images/json-preview.png
 
 GeoJSON files

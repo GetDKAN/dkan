@@ -396,6 +396,8 @@ Feature:
 
     Given I am logged in as "site-manager"
     And I am on "Users" page
+    And I fill in "edit-name" with "content-creator"
+    And I press "Apply"
     When I click "edit" in the "content-creator" row
     And I check "Workflow Contributor"
     And I press "Save"
