@@ -50,7 +50,7 @@ commands:
       if [ ! -d backups ]; then
         mkdir backups
       fi
-      if [ -f backups/last_install.sql ] && ahoy confirm "An existing installation backup exists at backups/last_install.sql, do you want to use that instead of reinstalling from scratch?"; then
+      if [ -f backups/last_install.sql ] && ahoy confirm "{{args}} An existing installation backup exists at backups/last_install.sql, do you want to use that instead of reinstalling from scratch?"; then
 
         ahoy drush sql-drop -y && \
         echo "... Removed tables, restoring DB"
