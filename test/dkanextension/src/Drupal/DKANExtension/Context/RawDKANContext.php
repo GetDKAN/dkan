@@ -68,6 +68,43 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
   }
 
   /**
+   * @BeforeSuite
+   */
+  public static function moveStageFileProxyFiles(BeforeSuiteScope $scope) {
+    // Only need to run this once.
+    if (variable_get('stage_file_proxy_setup', FALSE)) {
+      return;
+    }
+
+    global $conf;
+    if (!isset($conf['default']['stage_file_proxy_origin']) || $conf['default']['stage_file_proxy_origin'] == 'changeme') {
+      return;
+    }
+
+    // Fix missing font files.
+    $font_files = array('eot', 'svg', 'ttf', 'woff');
+
+    // Add the file usage.
+    foreach ($font_files as $ext) {
+      $filename = 'dkan-topics';
+      $theme_path = drupal_get_path('theme', 'nuboot_radix');
+      $source = $theme_path . '/assets/fonts/' . $filename . '.' . $ext;
+      $destination = 'public://' . $filename . '.' . $ext;
+      copy($source, $destination);
+    }
+
+    if (isset($conf['default']['stage_file_proxy_files'])) {
+      $proxy_files = (array) $conf['default']['stage_file_proxy_files'];
+      foreach ($proxy_files as $file) {
+        $source = $conf['default']['stage_file_proxy_origin'] . '/' . $file;
+        $destination = 'public://' . $file;
+        copy($source, $destination);
+      }
+    }
+    variable_set('stage_file_proxy_setup', TRUE);
+  }
+
+  /**
    * @AfterSuite
    */
   public static function enableAdminMenuCache(AfterSuiteScope $scope) {
@@ -133,8 +170,8 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
     module_load_include('inc', 'captcha', 'captcha');
     variable_set('disable_captcha', FALSE);
     captcha_set_form_id_setting('user_login', 'default');
-    captcha_set_form_id_setting('user_pass', 'default');
-    captcha_set_form_id_setting('user_register_form', 'default');
+    captcha_set_form_id_setting('user_pass', 'none');
+    captcha_set_form_id_setting('user_register_form', 'none');
     captcha_set_form_id_setting('feedback_node_form', 'default');
     captcha_set_form_id_setting('comment_node_feedback_form', 'default');
   }
