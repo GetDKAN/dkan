@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_harvest_dashboard.views_default.inc
@@ -191,7 +192,7 @@ function dkan_harvest_dashboard_views_default_views() {
   $handler->display->display_options['use_ajax'] = TRUE;
   $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'perm';
-  $handler->display->display_options['access']['perm'] = 'admininster harvest';
+  $handler->display->display_options['access']['perm'] = 'administer harvest';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'better_exposed_filters';

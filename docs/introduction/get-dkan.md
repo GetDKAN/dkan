@@ -44,6 +44,16 @@ Choose to make a new site from scratch, and to use the DKAN distribution:
 
 Pantheon will then build your new based site on the latest DKAN release. You will go through a normal Drupal install process, explained in detail in the [installation instructions](../installation.md).
 
+#### Using Terminus
+
+Pantheon provides a command-line tool called [Terminus](https://pantheon.io/docs/terminus/) for interacting with all aspects of site management on their platform. Once you have [installed Terminus](https://pantheon.io/docs/terminus/install/), you can spin up a new instance of DKAN with the command:
+
+```
+$ terminus site:create dkan-example-site "DKAN Example Site" d7370d7e-46fb-4b10-b79f-942b5abf51de
+```
+
+Replace "DKAN Example Site" with the name of your new DKAN site. The last argument, `d7370d7e-46fb-4b10-b79f-942b5abf51de`, is Pantheon's internal ID for the DKAN upstream. After the command completes, you will see your new site on your dashboard.
+
 #### Managing updates
 
 Pantheon uses a modified version of Drupal Pressflow, which is [publicly available on GitHub](https://github.com/pantheon-systems/drops-7). Whenever a new version of the DKAN distribution is released, the changes are merged into a version of DKAN special-built for Pantheon, [also available on GitHub](https://github.com/NuCivic/dkan-drops-7).

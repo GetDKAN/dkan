@@ -1,12 +1,13 @@
+.. _`datastore API`:
+
 Datastore API
 =============
 
 DKAN offers a Datastore API as a custom endpoint for the Drupal Services
 module.
 
-This API is designed to be as compatible as possible with the [CKAN
-Datastore API]
-(http://ckan.readthedocs.org/en/latest/maintaining/datastore.html).
+This API is designed to be as compatible as possible with the `CKAN
+Datastore API <http://ckan.readthedocs.org/en/latest/maintaining/datastore.html>`_.
 
 Parameters
 ----------
@@ -15,7 +16,7 @@ Parameters
    resource(s) to be searched against.
 -  **filters** (*mixed*) – array or string of matching conditions to
    select
--  **q** (*string*) – full text query
+-  **q** (*string*) – fulltext search
 -  **offset** (*int*) – offset this number of rows
 -  **limit** (*int*) – maximum number of rows to return (default: 100)
 -  **fields** (*array or comma separated string*) – fields to return

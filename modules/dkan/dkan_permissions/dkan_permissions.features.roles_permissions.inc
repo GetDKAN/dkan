@@ -246,7 +246,7 @@ function dkan_permissions_default_roles_permissions() {
       'access recline configuration' => TRUE,
       'access site in maintenance mode' => TRUE,
       'access user profiles' => TRUE,
-      'admininster harvest' => TRUE,
+      'administer harvest' => TRUE,
       'administer @font-your-face' => TRUE,
       'administer DKAN configuration' => TRUE,
       'administer file types' => TRUE,

@@ -266,7 +266,7 @@ Feature: Resource
     And I wait for "items have been deleted"
     And I am on "Resource 03" page
     When I click "Manage Datastore"
-    Then I should see "No imported items."
+    Then I wait for "No imported items."
 
   @noworkflow @javascript
   Scenario: Drop datastore of own resource
@@ -353,3 +353,33 @@ Feature: Resource
     When I click "Edit"
     And I press "Save"
     Then I should see a recline preview
+
+  @noworkflow
+  Scenario: Create resource with a tsv file
+    Given I am logged in as "John"
+    And I am on the "Content" page
+    And I click "Resource"
+    And I attach the drupal file "dkan/TAB_delimiter_large_raw_number.tsv" to "files[field_upload_und_0]"
+    When I fill in "Title" with "Resource TSV"
+    # See if tab is an option in the delimiter dropdown.
+    And I select "tab" from "Delimiter"
+    And I press "Save"
+    Then I should see "Resource Resource TSV has been created"
+    # Make sure it autodetects the format.
+    When I click "Edit"
+    Then the "field_format[und][textfield]" field should contain "tsv"
+
+  @noworkflow
+  Scenario: Create resource with a tab file
+    Given I am logged in as "John"
+    And I am on the "Content" page
+    And I click "Resource"
+    And I attach the drupal file "dkan/TAB_delimiter_large_raw_number.tab" to "files[field_upload_und_0]"
+    When I fill in "Title" with "Resource TAB"
+    # See if tab is an option in the delimiter dropdown.
+    And I select "tab" from "Delimiter"
+    And I press "Save"
+    Then I should see "Resource Resource TAB has been created"
+    # Make sure it autodetects the format.
+    When I click "Edit"
+    Then the "field_format[und][textfield]" field should contain "tsv"
