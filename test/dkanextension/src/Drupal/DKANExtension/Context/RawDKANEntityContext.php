@@ -469,7 +469,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
         $defaults = $this->datasetFieldDefaults;
 
         $lang = dkan_dataset_form_field_language($form, $key);
-        $form_field = $form[$key][$lang];
+        $form_field = (isset($form[$key]) ? $form[$key][$lang] : array());
         $field_required = $this->fieldRequired($field, $form_field);
         if ($field_required) {
           $k = array_search($key, $this->field_map);
