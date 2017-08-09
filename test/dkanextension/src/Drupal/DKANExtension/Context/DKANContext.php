@@ -1072,6 +1072,34 @@ public function iWaitForTextToDisappear($text)
     }
   }
 
+  /**
+   * Checks, that option from select with specified id|name|label|value is selected.
+   *
+   * @Then /^the "(?P<option>(?:[^"]|\\")*)" option from "(?P<select>(?:[^"]|\\")*)" (?:is|should be) selected/
+   * @Then /^the option "(?P<option>(?:[^"]|\\")*)" from "(?P<select>(?:[^"]|\\")*)" (?:is|should be) selected$/
+   * @Then /^"(?P<option>(?:[^"]|\\")*)" from "(?P<select>(?:[^"]|\\")*)" (?:is|should be) selected$/
+   */
+  public function theOptionFromShouldBeSelected($option, $select)
+  {
+    $selectField = $this->getSession()->getPage()->findField($select);
+    if (null === $selectField) {
+      throw new \Exception("Select field '$select' could not be found");
+    }
+
+    $optionField = $selectField->find('named', array(
+      'option',
+      $option,
+    ));
+
+    if (null === $optionField) {
+      throw new \Exception("Option field '$option' could not be found");
+    }
+
+    if (!$optionField->isSelected()) {
+      throw new \Exception('Select option field with value|text "' . $option . '" is not selected in the select "' . $select . '"', $this->getSession());
+    }
+  }
+
   /************************************/
   /* Gravatar                         */
   /************************************/

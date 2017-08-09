@@ -325,3 +325,19 @@ Feature: Dkan Harvest
     And I select "Cache Source(s)" from "operation"
     And I select "Harvest (Cache and Migrate) Source(s)" from "operation"
     And I select "Migrate Source(s)" from "operation"
+
+  @api @javascript
+  Scenario: Topics set in harvest should set topic field in harvested datasources.
+    Given users:
+      | name              | mail                     | status | roles             |
+      | Site manager      | admin@fakeemail.com      | 1      | site manager      |
+    And harvest sources:
+      | title         | machine name  | source uri                                                                 | type               | author       | published | topics                 |
+      | Topics source | topics_source | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site manager | Yes       | Health Care, Education |
+
+    And The "topics_source" source is harvested
+    And I am logged in as "Site manager"
+    Given I am on the "Topics source" page
+    And I click "Edit"
+    Then the "Health Care" option from "Topics" should be selected
+    And the "Education" option from "Topics" should be selected
