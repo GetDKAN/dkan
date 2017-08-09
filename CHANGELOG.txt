@@ -1,6 +1,12 @@
 7.x-1.14.x
 ----------
  - #1975 Add landingPage to data.json feed.
+ - #1967 Added search title to /search panels.
+ - #1997 Recline.view.nvd3.js: Fixed tooltips that were not being displayed when using some percentage formats.
+ - #1988 Count and delete resources on Harvest source deletion.
+ - #1951 Fixed display of number of Groups a user belongs to on the user profile page.
+ - #1968 Fixed "Reset" button on search page to also resets facets.
+ - #1985 Add documentation for resource behavior on harvested datasets.
  - #1907 Added back TAB delimiter option for datastore imports.
  - #1955 Update ahoy docker tooling for local environment usecase.
  - #1903 Add support for tab-delimited files (TSV) in resources/recline preview.
@@ -104,7 +110,7 @@
  - #1703 Refactor Datastore API module, fixing some caching issues and improving joins
  - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
  - #1811 Apply patches to the rules module that can prevent unnecessary DB lockouts.
- 
+
 7.x-1.13.2 2017-03-16
 ---------------------
  - #1803 Fix broken access to featured groups sort order view.
