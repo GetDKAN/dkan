@@ -10,6 +10,7 @@
  */
 function dkan_harvest_install() {
   dkan_harvest_uuid_length();
+  dkan_harvest_admin_role_permissions();
 }
 
 /**
@@ -20,10 +21,26 @@ function dkan_harvest_update_7001(&$sandbox) {
 }
 
 /**
+ * Grant all dkan harvest permissions to admin role.
+ */
+function dkan_harvest_update_7002(&$sandbox) {
+  dkan_harvest_admin_role_permissions();
+}
+
+/**
  * Changes length of uuid field to 144 chars.
  */
 function dkan_harvest_uuid_length() {
   $field = uuid_schema_field_definition();
   $field['length'] = 144;
   db_change_field('node', 'uuid', 'uuid', $field);
+}
+
+/**
+ * Grant all dkan harvest permissions to admin role.
+ */
+function dkan_harvest_admin_role_permissions() {
+  $role = user_role_load_by_name('administrator');
+  $permissions = array_keys(dkan_harvest_permission());
+  user_role_grant_permissions($role->rid, $permissions);
 }
