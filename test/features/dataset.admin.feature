@@ -81,7 +81,7 @@ Feature: Dataset Features
     Then I select "Restricted" from "edit-field-public-access-level-und"
     And I should see "Rights on Project Open Data"
 
-  @javascript
+  @dataset_admin_05 @javascript
   Scenario: Should not see Rights field if public access level = none
     Given I am logged in as "Gabriel"
     And I am on "Dataset 01" page

@@ -34,10 +34,9 @@ class PODContext extends RawDKANContext {
    */
   public function iSeeAValidDataJson($should)
   {
-    // Change /data.json path to /json during tests. The '.' on the filename breaks tests on CircleCI's server.
     $data_json = open_data_schema_map_api_load('data_json_1_1');
     // Get base URL.
-    $url = $this->getMinkParameter('base_url') ? $this->getMinkParameter('base_url') : "http://127.0.0.1::8888";
+    $url = $this->getMinkParameter('base_url') ? $this->getMinkParameter('base_url') : "http://127.0.0.1:8888";
 
     // Validate POD.
     $results = open_data_schema_pod_process_validate($url . '/data.json', TRUE);
