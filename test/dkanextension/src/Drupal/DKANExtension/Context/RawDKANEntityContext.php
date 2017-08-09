@@ -458,16 +458,13 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
           continue;
         }
 
+        $defaults = $this->datasetFieldDefaults;
+
         if (isset($field['required']) && $field['required']) {
           $k = array_search($key, $this->field_map);
           if (!isset($data[$k])) {
             $data[$k] = $devel_generate_wrapper->$key->value();
-            // TODO: use param passed in from behat config for defaults.
-            $defaults = array(
-              'field_public_access_level' => 'public',
-              'field_hhs_attestation_negative' => 1,
-              'field_license' => 'odc-by',
-            );
+            $defaults = $this->datasetFieldDefaults;
             foreach ($defaults as $default => $value) {
               if ($key == $default) {
                 $data[$k] = $value;
