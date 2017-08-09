@@ -110,7 +110,7 @@ Feature: Dataset Features
     And I click "Log out"
     When I am on "Dataset 03" page
     And I click "Creative Commons Attribution"
-    Then I should see "The Creative Commons Attribution license allows re-distribution and re-use of a licensed work"
+    Then I should see "Attribution — You must give appropriate credit, provide a link to the license"
 
   @dataset_author_5 @fixme @noworkflow
   # TODO: Needs definition. How can a data contributor unpublish content?
