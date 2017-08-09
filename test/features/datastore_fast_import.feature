@@ -29,7 +29,7 @@ Feature: DKAN Datastore Fast Import
      When I click "Manage Datastore"
      Then I wait for "DKAN Datastore File: Status"
      When I press "Import"
-      Then I wait for "399 imported items total."
+      And I wait for "399 imported items total."
 
   @datastore
   Scenario: As user I want to import files using fast imports

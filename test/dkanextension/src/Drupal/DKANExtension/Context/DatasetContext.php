@@ -157,7 +157,9 @@ class DatasetContext extends RawDKANEntityContext {
     foreach ($results['results'] as $nid => $result) {
       $dataset = node_load($nid);
       $found_title = array_shift($dataset_list);
-      if ($found_title !== $dataset->title) {
+      // Drupal removes extra spacing on titles somehow so reproducing here.
+      $title = preg_replace('/\s+/', ' ', $dataset->title);
+      if ($found_title !== $title) {
         throw new \Exception("Does not match order of list, $found_title was next on page but expected $dataset->title");
       }
     }
@@ -210,6 +212,40 @@ class DatasetContext extends RawDKANEntityContext {
       ->condition('status', '1')
       ->execute();
     $total = count($results['results']);
+    $text = $total . " results";
+
+    foreach ($search_results as $search_result) {
+      $found = $search_result->getText();
+    }
+
+    if ($found !== $text) {
+      throw new \Exception("Found $found in the page but total is $total.");
+    }
+  }
+
+
+  /**
+   * @Then I should see all published search content
+   */
+  public function iShouldSeeAllPublishedSearchContent(){
+    $session = $this->getSession();
+    $page = $session->getPage();
+    $search_region = $page->find('css', '.view-dkan-datasets');
+    $search_results = $search_region->findAll('css', '.view-header');
+    $indices = array('datasets');
+    $indexes = search_api_index_load_multiple($indices);
+    $results = array();
+    foreach ($indexes as $index) {
+      $query = new SearchApiQuery($index);
+
+      $result = $query->condition('status', '1')
+        ->execute();
+      $results[] = $result;
+    }
+    $total = 0;
+    foreach ($results as $result) {
+      $total = $total + count($result['results']);
+    }
     $text = $total . " results";
 
     foreach ($search_results as $search_result) {

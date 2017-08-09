@@ -20,7 +20,11 @@ commands:
       if [ -d docroot ]
         then
           ahoy confirm "./docroot folder alredy exists. Delete it and reinstall drupal?" && chmod -R 777 docroot/sites/default && rm -rf docroot ||
-          { echo ".. skipping installation"; exit 1;}
+          {
+            echo ".. skipping installation";
+            ahoy cmd-proxy bash dkan/.ahoy/.scripts/mysql-reconnect.sh $ARGS
+            exit 1;
+          }
       fi
       ahoy cmd-proxy bash dkan/.ahoy/.scripts/drupal-rebuild.sh $ARGS
 
@@ -46,7 +50,7 @@ commands:
       if [ ! -d backups ]; then
         mkdir backups
       fi
-      if [ -f backups/last_install.sql ] && ahoy confirm "An existing installation backup exists at backups/last_install.sql, do you want to use that instead of reinstalling from scratch?"; then
+      if [ -f backups/last_install.sql ] && ahoy confirm "{{args}} An existing installation backup exists at backups/last_install.sql, do you want to use that instead of reinstalling from scratch?"; then
 
         ahoy drush sql-drop -y && \
         echo "... Removed tables, restoring DB"
