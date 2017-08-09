@@ -11,6 +11,54 @@
 function dkan_harvest_field_default_field_instances() {
   $field_instances = array();
 
+  // Exported field_instance: 'node-dataset-field_orphan'.
+  $field_instances['node-dataset-field_orphan'] = array(
+    'bundle' => 'dataset',
+    'default_value' => array(
+      0 => array(
+        'value' => 0,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 21,
+      ),
+      'search_result' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_orphan',
+    'label' => 'Orphan',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'display_label' => 0,
+      ),
+      'type' => 'options_onoff',
+      'weight' => 25,
+    ),
+  );
+
   // Exported field_instance: 'node-harvest_source-body'.
   $field_instances['node-harvest_source-body'] = array(
     'bueditor_profile' => -1,
@@ -564,22 +612,19 @@ function dkan_harvest_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataset-field_orphan'.
-  $field_instances['node-dataset-field_orphan'] = array(
-    'bundle' => 'dataset',
-    'default_value' => array(
-      0 => array(
-        'value' => 0,
-      ),
-    ),
+  // Exported field_instance: 'node-harvest_source-field_dkan_harvest_topic'.
+  $field_instances['node-harvest_source-field_dkan_harvest_topic'] = array(
+    'bundle' => 'harvest_source',
+    'default_value' => NULL,
     'deleted' => 0,
-    'description' => '',
+    'description' => 'Chose topics to be associated with this harvest source. Topics chosen here will be applied to <em>all</em> datasets harvested from this source.',
     'display' => array(
       'default' => array(
-        'label' => 'hidden',
+        'label' => 'above',
+        'module' => 'taxonomy',
         'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 21,
+        'type' => 'taxonomy_term_reference_link',
+        'weight' => 9,
       ),
       'search_result' => array(
         'label' => 'above',
@@ -595,8 +640,8 @@ function dkan_harvest_field_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'field_orphan',
-    'label' => 'Orphan',
+    'field_name' => 'field_dkan_harvest_topic',
+    'label' => 'Topics',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -605,14 +650,14 @@ function dkan_harvest_field_default_field_instances() {
       'active' => 1,
       'module' => 'options',
       'settings' => array(
-        'display_label' => 0,
+        'apply_chosen' => '',
       ),
-      'type' => 'options_onoff',
-      'weight' => 25,
+      'type' => 'options_select',
+      'weight' => 10,
     ),
   );
 
-  // Exported field_instance: 'node-dataset-field_orphan'.
+  // Exported field_instance: 'node-resource-field_orphan'.
   $field_instances['node-resource-field_orphan'] = array(
     'bundle' => 'resource',
     'default_value' => array(
@@ -663,6 +708,7 @@ function dkan_harvest_field_default_field_instances() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Add one or more filters to narrow a harvest to a specific subset of fields and values.');
+  t('Chose topics to be associated with this harvest source. Topics chosen here will be applied to <em>all</em> datasets harvested from this source.');
   t('Defaults');
   t('Description');
   t('Determine replacement field values that will be overwritten when you harvest.');
@@ -670,11 +716,11 @@ function dkan_harvest_field_default_field_instances() {
   t('Excludes');
   t('Filters');
   t('Machine Name');
-  t('Notes');
   t('Orphan');
   t('Overrides');
   t('Set a default value to be used when the specified field is empty.');
   t('Source URI');
+  t('Topics');
   t('Type');
   t('Type of source we are harvesting.');
 

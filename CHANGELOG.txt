@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1970 Adds topics to harvested datasets on migration.
  - #1975 Add landingPage to data.json feed.
  - #1967 Added search title to /search panels.
  - #1997 Recline.view.nvd3.js: Fixed tooltips that were not being displayed when using some percentage formats.
