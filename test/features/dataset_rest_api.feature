@@ -31,7 +31,7 @@ Feature: DKAN Dataset REST API
     When I am on "Search Resources" page
     Then I should see "Resource 02"
 
-  @dataset_rest_api_02
+  @dataset_rest_api_02 @api
   Scenario: Attach files to Resources using the 'Dataset REST API' endpoint
     Given I am on "Resource 01" page
     Then I should not see "Polling_Places_Madison"
@@ -101,5 +101,3 @@ Feature: DKAN Dataset REST API
     And I use the "dataset rest api" endpoint to delete the node "Dataset 01"
     When I am on "Search Datasets" page
     Then I should not see "Dataset 01"
-
-
