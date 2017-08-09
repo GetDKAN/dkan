@@ -65,19 +65,19 @@ function dkan_dataset_content_types_license_subscribe() {
   return array(
     "cc-by" => array(
       "label" => "Creative Commons Attribution",
-      "uri" => "http://opendefinition.org/licenses/cc-by/",
+      "uri" => "https://creativecommons.org/licenses/by/4.0/",
     ),
     "cc-by-sa" => array(
       "label" => "Creative Commons Attribution Share-Alike",
-      "uri" => "http://opendefinition.org/licenses/cc-by-sa/",
+      "uri" => "https://creativecommons.org/licenses/by-sa/4.0/",
     ),
     "cc-zero" => array(
       "label" => "Creative Commons CCZero",
-      "uri" => "http://opendefinition.org/licenses/cc-zero/",
+      "uri" => "https://creativecommons.org/publicdomain/zero/1.0/",
     ),
     "cc-nc"  => array(
-      "label" => "Creative Commons Non-Commercial (Any)",
-      "uri" => "http://opendefinition.org/licenses/cc-nc/",
+      "label" => "Creative Commons Non-Commercial (2.5)",
+      "uri" => "https://creativecommons.org/licenses/by-nc/2.5/",
     ),
     "cc-by-nc-nd" => array(
       "label" => "Attribution NonCommercial NoDerivatives 4.0 International",
@@ -85,15 +85,15 @@ function dkan_dataset_content_types_license_subscribe() {
     ),
     "gfdl" => array(
       "label" => "GNU Free Documentation License",
-      "uri" => "http://opendefinition.org/licenses/gfdl/",
+      "uri" => "https://www.gnu.org/licenses/fdl.html",
     ),
     "odc-by" => array(
       "label" => "Open Data Commons Attribution License",
-      "uri" => "http://opendefinition.org/licenses/odc-by/",
+      "uri" => "https://opendatacommons.org/licenses/by/1.0/",
     ),
     "odc-odbl" => array(
       "label" => "Open Data Commons Open Database License (ODbL)",
-      "uri" => "http://opendefinition.org/licenses/odc-odbl/",
+      "uri" => "https://opendatacommons.org/licenses/odbl/1.0/",
     ),
     "odc-pddl" => array(
       "label" => "Open Data Commons Public Domain Dedication and Licence (PDDL)",
