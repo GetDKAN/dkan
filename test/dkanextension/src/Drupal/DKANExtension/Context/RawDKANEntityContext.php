@@ -470,11 +470,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
 
         $lang = dkan_dataset_form_field_language($form, $key);
         $form_field = $form[$key][$lang];
-        $field_required = $field['required'] ||
-          $form_field['#required'] ||
-          $form_field[0]['#required'] ||
-          $form_field[0]['value']['#required'];
-
+        $field_required = $this->fieldRequired($field, $form_field);
         if ($field_required) {
           $k = array_search($key, $this->field_map);
           if (!isset($data[$k]) || empty($data[$k])) {
@@ -489,6 +485,16 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
         }
       }
     }
+  }
+
+  /**
+   * Check if field is required.
+   */
+  public function fieldRequired($field, $form_field = array()) {
+    return (isset($field['required']) && $field['required']) ||
+      (isset($form_field['#required']) && $form_field['#required']) ||
+      (isset($form_field[0]['#required']) && $form_field[0]['#required']) ||
+      (isset($form_field[0]['value']) && isset($form_field[0]['value']['#required']) && $form_field[0]['value']['#required']);
   }
 
   /**
