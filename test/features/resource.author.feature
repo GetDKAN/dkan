@@ -239,7 +239,7 @@ Feature: Resource
     And I am on "Resource 05" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_small.csv"
     And I press "Save"
     And I am on "Resource 05" page
     When I click "Manage Datastore"
@@ -254,7 +254,7 @@ Feature: Resource
     And I am on "Resource 03" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_small.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page

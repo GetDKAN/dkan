@@ -48,12 +48,12 @@ Feature: Dataset Features
       | title      | publisher | author  | published        | tags     | description |
       | Dataset 01 | Group 01  | Gabriel | Yes              | price1    |             |
       | Dataset 02 | Group 01  | Gabriel | Yes              | election1 |             |
-      | Dataset 03 |           | Katie   | Yes              | price1    |             |
+      | Dataset 03 | Group 02  | Katie   | Yes              | price1    |             |
       | Dataset 04 | Group 02  | Celeste | No               | election1 |             |
       | Dataset 05 | Group 01  | Katie   | No               | election1 |             |
-      | Dataset 06 |           | Katie   | Yes              | election1 |             |
+      | Dataset 06 | Group 01  | Katie   | Yes              | election1 |             |
       | Dataset 07 | Group 01  | Katie   | Yes              | election1 |             |
-      | Dataset 08 |           | Katie   | Yes              | election1 |             |
+      | Dataset 08 | Group 01  | Katie   | Yes              | election1 |             |
       | Dataset 09 | Group 02  | Katie   | Yes              | election1 |             |
     And resources:
       | title       | publisher | author | published | dataset    | description |
@@ -78,10 +78,11 @@ Feature: Dataset Features
 
   @dataset_author_2 @noworkflow
   Scenario: Save using Additional Info
-    Given I am logged in as a user with the "content creator" role
+    Given I am logged in as "Katie"
     And I am on "Add Dataset" page
     When I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "Test description"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     And I fill in "title" with "Test Resource Link File"
     And I press "Next: Additional Info"
