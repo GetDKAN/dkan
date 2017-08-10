@@ -1,5 +1,13 @@
 7.x-1.14.x
 ----------
+ - #1970 Adds topics to harvested datasets on migration.
+ - #1975 Add landingPage to data.json feed.
+ - #1967 Added search title to /search panels.
+ - #1997 Recline.view.nvd3.js: Fixed tooltips that were not being displayed when using some percentage formats.
+ - #1988 Count and delete resources on Harvest source deletion.
+ - #1951 Fixed display of number of Groups a user belongs to on the user profile page.
+ - #1968 Fixed "Reset" button on search page to also resets facets.
+ - #1985 Add documentation for resource behavior on harvested datasets.
  - #1907 Added back TAB delimiter option for datastore imports.
  - #1955 Update ahoy docker tooling for local environment usecase.
  - #1903 Add support for tab-delimited files (TSV) in resources/recline preview.
@@ -18,6 +26,16 @@
  - #1990 DevOps: Automatically populate required fields when running behat tests. 
  - #1938 DevOps: Allow behat tests to be skipped in circle.
  - #1842 Add help text to explain the pager on data previews.
+
+7.x-1.13.6 2017-07-28
+---------------------
+ - #2036 Add file_resup to the list of up to date projects.
+ - #2035 Change the 'Datasets' field on the Resource form to use autocomplete.
+ - #2034 Add language selectors to the 'chosen_jquery_selector' configuration.
+ - #2020 Module upgrades: fieldable_panels_panes, media, and search_api.
+ - #2018 Additional test/devops improvements needed for deployment. See #2012, #2014, #2015 and #2016 for specifics.
+ - #2025 Add configurable arguments via Behat Contexts.
+ - #2021 Add unique tags to more test scenarios.
 
 7.x-1.13.5 2017-07-14
 ---------------------
@@ -87,7 +105,6 @@
 
 7.x-1.13.3 2017-04-18
 ---------------------
- - #1810 Stop throwing exception on tables with only numeric columns, to prevent preview breaking.
  - #1863 Update restws module to v2.7
  - #1859 Fixed update hooks to correctly set jquery version and remove old modified source date field
  - #1864 Update media to 2.0 and remove patch 2534724. 
@@ -104,7 +121,7 @@
  - #1703 Refactor Datastore API module, fixing some caching issues and improving joins
  - #1804 Add project = dkan to dkan_sitewide.info to fix errors on update screen.
  - #1811 Apply patches to the rules module that can prevent unnecessary DB lockouts.
- 
+
 7.x-1.13.2 2017-03-16
 ---------------------
  - #1803 Fix broken access to featured groups sort order view.

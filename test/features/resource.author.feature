@@ -119,24 +119,24 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
 
-  @dkanBug @noworkflow
+  @dkanBug @noworkflow @javascript
   Scenario: Change dataset on resource
     Given I am logged in as "Katie"
     And I am on "Resource 01" page
     When I click "Edit"
-    And I select "Dataset 02" from "Dataset"
+    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 02"
     And I press "Save"
     Then I should see "Resource 01 has been updated"
     When I click "Back to dataset"
     Then I should see "Dataset 02" in the "dataset title" region
     And I should see "Resource 01" in the "dataset resource list" region
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource with no datasets to a dataset with no resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I select "Dataset 03" from "Dataset"
+    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 03"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -149,18 +149,18 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on "Resource 07" page
     When I click "Edit"
-    And I select "- None -" from "Dataset"
+    And I fill in "edit-field-dataset-ref-und-0-target-id" with ""
     And I press "Save"
     Then I should see "Resource 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
     And I should not see the link "Back to dataset"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource with no group to a dataset with group
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I select "Dataset 05" from "Dataset"
+    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 05"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -170,51 +170,55 @@ Feature: Resource
     Given I am logged in as "Katie"
     And I am on "Resource 08" page
     When I click "Edit"
-    And I select "- None -" from "Dataset"
+    And I fill in "edit-field-dataset-ref-und-0-target-id" with ""
     And I press "Save"
     Then I should see "Resource 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
     When I am on "Dataset 05" page
     Then I should not see "Resource 08" in the "dataset resource list" region
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Add a resource to multiple datasets with groups
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I select "Dataset 05" from "Dataset"
-    And I additionally select "Dataset 06" from "Dataset"
+    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 05"
+    And I press "Add another item"
+    And I fill in the autocomplete field "edit-field-dataset-ref-und-1-target-id" with "Dataset 06"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove one dataset with group from resource with multiple datasets
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I select "Dataset 05" from "Dataset"
-    And I additionally select "Dataset 06" from "Dataset"
+    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 05"
+    And I press "Add another item"
+    And I fill in the autocomplete field "edit-field-dataset-ref-und-1-target-id" with "Dataset 06"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     When I click "Edit"
-    And I select "Dataset 05" from "Dataset"
+    And I fill in "edit-field-dataset-ref-und-0-target-id" with ""
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Remove all datasets with groups from resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I select "Dataset 05" from "Dataset"
-    And I additionally select "Dataset 06" from "Dataset"
+    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 05"
+    And I press "Add another item"
+    And I fill in the autocomplete field "edit-field-dataset-ref-und-1-target-id" with "Dataset 06"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
     When I click "Edit"
-    And I select "- None -" from "Dataset"
+    And I fill in "edit-field-dataset-ref-und-0-target-id" with ""
+    And I fill in "edit-field-dataset-ref-und-1-target-id" with ""
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -262,7 +266,7 @@ Feature: Resource
     And I wait for "items have been deleted"
     And I am on "Resource 03" page
     When I click "Manage Datastore"
-    Then I should see "No imported items."
+    Then I wait for "No imported items."
 
   @noworkflow @javascript
   Scenario: Drop datastore of own resource

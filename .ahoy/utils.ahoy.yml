@@ -3,10 +3,14 @@ version: 0.0.0
 commands:
     confirm:
       cmd: |
-        read -r -p "{{args}} [y/N] " response
-        if [ "$response" = y ] || [ "$response" = Y ];
-        then
+        if [[ "{{args}}" == *--yes* ]]; then
           true
         else
-          false
+          read -r -p "{{args}} [y/N] " response
+          if [ "$response" = y ] || [ "$response" = Y ];
+          then
+            true
+          else
+            false
+          fi
         fi
