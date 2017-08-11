@@ -1,5 +1,5 @@
 # time:1m32.15s
-@javascript @api @disablecaptcha
+@api @disablecaptcha
 Feature: Markdown Editor
   In order to create content
   As a user with edition permissions
@@ -14,7 +14,15 @@ Feature: Markdown Editor
     | John    | john@example.com    | site manager         |
     | Jaz     | jaz@example.com     | editor               |
     | Gabriel | gabriel@example.com | content creator      |
+    Given groups:
+    | title    | author | published |
+    | Group 01 | Admin  | Yes       |
+    And group memberships:
+    | user    | group    | role on group     | membership status |
+    | Gabriel | Group 01 | member            | Active            |
+    | Jaz     | Group 01 | member            | Active            |
 
+  @javascript
   Scenario: Seeing 'Markdown' text format and toolbar as a Content Creator
     Given I am logged in as "Gabriel"
     When I am on "Add Dataset" page
@@ -43,6 +51,7 @@ Feature: Markdown Editor
     And I should not see the button "Format selected text as code" in the "dataset edit body"
     And I should not see the button "Format selected text as a code block" in the "dataset edit body"
 
+  @javascript
   Scenario: Seeing 'Markdown' text format and toolbar as an Editor
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
@@ -54,6 +63,7 @@ Feature: Markdown Editor
     # Buttons that the user should not see on the toolbar
     And I should not see the button "Insert a table" in the "dataset edit body"
 
+  @javascript
   Scenario: Seeing 'Markdown' text format and toolbar as a Site Manager
     Given I am logged in as "John"
     When I am on "Add Dataset" page
@@ -70,6 +80,7 @@ Feature: Markdown Editor
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "<h2>First subtitle</h2><h3>Second subtitle</h3>"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
@@ -81,6 +92,7 @@ Feature: Markdown Editor
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "*Some text*"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
@@ -91,6 +103,7 @@ Feature: Markdown Editor
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "**Some text**"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
@@ -101,6 +114,7 @@ Feature: Markdown Editor
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "`Some code`"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
@@ -111,6 +125,7 @@ Feature: Markdown Editor
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "> Some quote"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
@@ -121,6 +136,7 @@ Feature: Markdown Editor
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "1. Some item"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
@@ -131,6 +147,7 @@ Feature: Markdown Editor
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "* Some item"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
@@ -141,6 +158,7 @@ Feature: Markdown Editor
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "[Link](http://www.google.com)"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
@@ -151,6 +169,7 @@ Feature: Markdown Editor
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "![alt text]('/the/url' 'Image Title')"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
@@ -161,6 +180,7 @@ Feature: Markdown Editor
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "This<br>that"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
@@ -171,11 +191,13 @@ Feature: Markdown Editor
     When I am on "Add Dataset" page
     And I fill in "title" with "Test Dataset"
     And I fill in "body[und][0][value]" with "<iframe src=\"http://www.w3schools.com\"></iframe>"
+    And I select "Group 01" from "og_group_ref[und][]"
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "iframe" element in the "dataset body" region
 
+  @javascript
   Scenario: Don't see markdown toolbar when using 'Plain text' text format
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
