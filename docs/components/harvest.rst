@@ -1,5 +1,5 @@
 DKAN Harvest
-==============
+============
 
 DKAN Harvest is a module that provides a common harvesting framework for DKAN.
 It supports custom extensions and adds `drush <http://www.drush.org/en/master/>`_
@@ -16,10 +16,10 @@ DKAN Harvest is built on top of the widely-used
 follows a two-step process to import datasets:
 
 1. Process a source URI and save resulting data locally to disk as JSON
-2. Perform migrations into DKAN with the locally cached JSON files, using mappings provided by the `DKAN Migrate Base <https://github.com/NuCivic/dkan_migrate_base>`_ module.
+2. Perform migrations into DKAN with the locally cached JSON files, using mappings provided by the `DKAN Migrate Base module <https://github.com/NuCivic/dkan_migrate_base>`_ .
 
 Harvest Sources
-----------------
+---------------
 
 Harvest Sources are nodes that store the source's URI and some additional
 configuration. Users with the administrator or site manager role will be able to create and manage harvest sources.
@@ -27,7 +27,7 @@ configuration. Users with the administrator or site manager role will be able to
 Create a new harvest source
 ***************************
 
-1. Go to ``node/add/harvest-source`` or Content > Add content > Harvest Source, and fill out the form.
+Go to ``node/add/harvest-source`` or Content > Add content > Harvest Source, and fill out the form.
 
 :Title: Administrative title for the source.
 :Description: Administrative description or notes about the source.
@@ -43,7 +43,7 @@ The form includes four multi-value fields to help you fine tune the results of y
 
 Project Open Data (as well as most metadata APIs) includes many fields that are not simple key-value pairs. If you need to access or modify nested array values you can use this dot syntax to specify the path: `key.nested_key.0.other_nested_key`. For example, the Publisher field in Project Open Data is expressed like this:
 
-.. code-block:: json
+.. code-block:: JavaScript
 
     "publisher": {
       "@type": "org:Organization",
@@ -55,17 +55,26 @@ To access the name property for filtering or overriding, you can set `publisher.
 
 .. figure:: ../images/harvest-filters.png
 
-2. Click **Save**, the datasets from the source will be cached, and you will see a preview of what will be imported. This preview page shows a list of dataset titles and identifiers now in the harvest cache, allowing you to perform a basic check on your source configuration. If it does not look right, click the **Edit** tab to make adjustments.
+Harvest sources also include a :ref:`Topics <topics>` field. Chose one or more topics to apply them to *every* dataset harvested from that source.
 
-3. Click **Harvest Now**. The datasets that were cached will now be imported into your site.
+Now click **Save**. The datasets from the source will be cached, and you will see a preview of what will be imported. This preview page shows a list of dataset titles and identifiers now in the harvest cache, allowing you to perform a basic check on your source configuration. If it does not look right, click the **Edit** tab to make adjustments.
+
+Click **Harvest Now**. The datasets that were cached will now be imported into your site.
 
 .. figure:: ../images/harvest-search.png
 
 Harvest Source nodes are viewable by the public and provide some basic metadata to the user.
 
+.. note::
+  Some behaviors of the Topics field on *harvest sources* to be aware of:
+
+    - Changing the Topic on the source and re-harvesting will not update the Topic on harvested datasets if nothing else has changed. The Harvester will only re-import a dataset if it detects changes from the source.
+    - If you manually add additional topics to a harvested dataset, and there *is* a change at the source, the next time the dataset is harvested your topics will be overwritten.
+
 Managing Harvest Sources
-**************************
-From the admin menu, navigate to DKAN > DKAN Harvest Dashboard to view harvest sources. The DKAN Harvest Dashboard provides site managers a quick overview of harvest sources, when they were last updated, number of datasets, and status of the source. The dashboard also allows site managers to perform manual harvest operations:
+************************
+
+From the admin menu, navigate to DKAN > DKAN Harvest Dashboard to view *harvest sources*. The DKAN Harvest Dashboard provides site managers a quick overview of *harvest sources*, when they were last updated, number of *datasets*, and status of the source. The dashboard also allows site managers to perform manual harvest operations:
 
 :Harvest (cache and migrate): This will cache the source data locally and migrate that source data into your site content.
 :Cache source(s): This will fetch the source data, apply the source configuration (filters, excludes, etc.) and cache the data locally without migrating. You may wish to do this to check for errors, or to refresh the preview.
@@ -79,25 +88,27 @@ Click on the title of a harvest source from the dashboard to see the details of 
 
 .. figure:: ../images/harvest-source-node.png
 
-:View: View the harvest source node.
-:Edit: Click to make changes to the configuration of the harvest source.
+:View: View the *harvest source* node.
+:Edit: Click to make changes to the configuration of the *harvest source*.
 :Preview: Click to pull the latest data from the source endpoint into the cache.
 :Manage Datasets: An administrative view that lets you sort and filter the datasets from this source. The most powerful function on this page is to filter by **orphan** status. When a dataset that was harvested into your system previously is no longer provided in the source, it is considered "orphaned" on your site and unpublished. From the Manage Datasets screen, you can either permanently delete or re-publish orphan datasets.
-:Events: Event Log that provides historical data on all harvests run on this source. The information is managed by the core ``dkan_harvest`` via a per-harvest source ``migrate_log`` table that tracks the number of datasets created, updated, failed, orphaned, and unchanged and status. If the value for the field Status is Error then you can click on the text to see the log error and identify the problem.
+:Events: Event Log that provides historical data on all harvests run on this source. The information is managed by the core ``dkan_harvest`` via a per-harvest source ``migrate_log`` table that tracks the number of *datasets* created, updated, failed, orphaned, and unchanged and status. If the value for the field Status is Error then you can click on the text to see the log error and identify the problem.
 :Errors: Error log that shows a list of all errors recorded during harvesting on the source.
 
+Harvested Resources
+*******************
 
+When datasets are harvested, the resources are added as remote files, which means they are links to the original files on the remote server. If you modify the *resource* node in your DKAN site, your changes will be overwritten the next time a harvest is performed. If you add a harvested resource to the :doc:`datastore <datastore>` be sure to set up periodic importing so that the resource stays in sync with the source. For these reasons, we do not recommend that you create visualizations based on harvested resources as the visualizations could break when changes are made to the files upstream.
 
 Harvest Drush Commands
------------------------
-DKAN Harvest provides multiple drush commands to manage harvest sources and control harvest jobs. In fact, once your sources are properly configured, running harvests from Drush on a cron job or other scheduling system like `Jenkins <https://jenkins.io/>`_ is highly reccomended.
+----------------------
 
-It is recommanded to pass the ``--user=1`` drush option to
-harvest operation (especially harvest migration jobs) to make sure that the
-entities created have a proper user as author.
+DKAN Harvest provides multiple drush commands to manage *harvest sources* and control harvest jobs. In fact, once your sources are properly configured, running harvests from Drush on a cron job or other scheduling system like `Jenkins <https://jenkins.io/>`_ is highly reccomended.
+
+It is recommanded to pass the ``--user=1`` option to harvest drush operations (especially harvest migration jobs) to make sure that the entities created have a proper user as author.
 
 List Harvest sources available
-*******************************
+******************************
 
 .. code-block:: sh
 
@@ -177,7 +188,7 @@ checklist:
 Define a new Harvest Source Type
 **************************************
 
-DKAN Harvest leverages Drupal's hook system to provide a way to extend the Source types that DKAN Harvest supports. To add a new harvest source type the we return their definitions as array items via the
+DKAN Harvest leverages Drupal's hook system to provide a way to extend the source types that DKAN Harvest supports. To add a new harvest source type the we return their definitions as array items via the
 ``hook_harvest_source_types()`` hook.
 
 .. code-block:: php
@@ -228,7 +239,7 @@ Cache callbacks
 
 This callback takes care of downloading/filtering/altering the data from the
 source end-point to the local file directory provided by the
-HarvestSource::getCacheDir() method. The recommended folder structure for
+``HarvestSource::getCacheDir()`` method. The recommended folder structure for
 cached data is to have one dataset per uniqely named file. The actual migration
 is then performed on the cached data, not on the remote source itself.
 
@@ -249,9 +260,9 @@ is then performed on the cached data, not on the remote source itself.
 
 
 The harvest cache function needs to support the modifications to the source
-available from the harvest source via the Filter, Excludes, Overrides and Default
+available from the *harvest source* via the Filter, Excludes, Overrides and Default
 fields. Each of these configurations is available
-from the HarvestSource object via the ``HarvestSource::filters``,
+from the ``HarvestSource`` object via the ``HarvestSource::filters``,
 ``HarvestSource::excludes``, ``HarvestSource::overrides``,
 ``HarvestSource::defaults`` methods.
 
@@ -267,7 +278,7 @@ module. DKAN Harvest will support only migration classes extended from
 during the harvest cache step to create the DKAN `dataset` and associated
 nodes.
 
-Implementing a Harvest Source Type Migration class is the matter of checking
+Implementing a Harvest Source Type migration class is the matter of checking
 couple of boxes:
 
 * Wire the cached files on the ``HarvestMigration::__construct()`` method.
@@ -276,12 +287,12 @@ couple of boxes:
   custom fields on the ``HarvestMigration::prepareRow()`` and the
   ``HarvestMigration::prepare()``.
 
-Working on the Migration Class for Harvest Source Type should be straitforward,
-but a good knowladge on how `migrate works <https://www.drupal.org/node/1006982>`_ is a big help.
+Working on the migration class for Harvest Source Type should be straightforward,
+but a good knowladge of how `Migrate module works <https://www.drupal.org/node/1006982>`_ is a big help.
 
 ``HarvestMigration::__construct()``
 **************************************
-Setting the `HarvestMigrateSourceList` is the only logic required during the
+Setting the ```HarvestMigrateSourceList`` is the only logic required during the
 construction of the extended `HarvestMigration`. During the harvest migration
 we can't reliably determin and parse the type of cache file (JSON, XML, etc..)
 so we still need to provide this information to the Migration class via the
@@ -349,7 +360,7 @@ Example code snippet:
 
 Harvest and `DKAN Workflow <https://github.com/NuCivic/dkan_workflow>`_ support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-By default, DKAN Harvest will make sure that the harvested dataset node will be
+By default, DKAN Harvest will make sure that the harvested *dataset* node will be
 set to the ``published`` moderation state if the DKAN Workflow module is enabled
 on the DKAN site. This can be changed at the fields mapping level by overriding
 the ``workbench_moderation_state_new`` field.

@@ -38,7 +38,7 @@ Feature: User
       | Dataset 01 | Group 01  | Katie   | Yes              | world    | Test        |
       | Dataset 02 | Group 01  | Katie   | Yes              | world    | Test        |
 
-  @user_all_01
+  @user_all_01 @login
   Scenario: Login
     Given I am on the homepage
     When I follow "Log in"
@@ -47,14 +47,14 @@ Feature: User
     And I press "Log in"
     Then I should see the "John" user page
 
-  @user_all_02
+  @user_all_02 @login
   Scenario: Logout
     Given I am logged in as "John"
     And I am on the homepage
     When I follow "Log out"
     Then I should see "Log in"
 
-  @user_all_03 @javascript @deleteTempUsers
+  @user_all_03 @javascript @deleteTempUsers @customizable
   Scenario: Register
     Given I am on the homepage
     When I follow "Register"
@@ -67,7 +67,7 @@ Feature: User
     Then I should see "Thank you for applying for an account."
     And I should see "Your account is currently pending approval by the site administrator."
 
-  @user_all_04 @mail
+  @user_all_04 @mail @login
   Scenario: Request new password
     Given I am on the homepage
     When I follow "Log in"
