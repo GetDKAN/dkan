@@ -1,6 +1,6 @@
 7.x-1.14.x
 ----------
- - #2054 Improve messages displayed when creating a harvest source.
+ - #2055 Improve messages displayed when creating a harvest source.
  - #1970 Adds topics to harvested datasets on migration.
  - #1975 Add landingPage to data.json feed.
  - #1967 Added search title to /search panels.
