@@ -239,7 +239,7 @@ Feature: Resource
     And I am on "Resource 05" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I press "Save"
     And I am on "Resource 05" page
     When I click "Manage Datastore"
@@ -254,7 +254,7 @@ Feature: Resource
     And I am on "Resource 03" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -266,7 +266,7 @@ Feature: Resource
     And I wait for "items have been deleted"
     And I am on "Resource 03" page
     When I click "Manage Datastore"
-    Then I should see "No imported items."
+    Then I wait for "No imported items."
 
   @noworkflow @javascript
   Scenario: Drop datastore of own resource
@@ -274,7 +274,7 @@ Feature: Resource
     And I am on "Resource 03" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -286,7 +286,7 @@ Feature: Resource
     Then I should see "Datastore dropped!"
     And I should see "Your file for this resource is not added to the datastore"
     When I click "Manage Datastore"
-    Then I should see "No imported items."
+    Then I wait for "No imported items."
 
   @noworkflow
   Scenario: Add revision to own resource
