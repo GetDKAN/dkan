@@ -268,7 +268,6 @@ class ServicesContext extends RawDKANContext {
    * Create node.
    */
   private function services_request_create_node($node_data, $csrf_token, $cookie_session, $request_url) {
-
     $node_data = http_build_query($node_data);
 
     $curl = $this->services_request_curl_init($request_url, $csrf_token);
@@ -367,7 +366,7 @@ class ServicesContext extends RawDKANContext {
   /**
    * Build node data as needed by endpoint.
    */
-  private function build_node_data($data, $node = NULL) {
+  public function build_node_data($data, $node = NULL) {
     $node_data = array();
 
     if (!$node && !isset($data['type'])) {
@@ -403,6 +402,34 @@ class ServicesContext extends RawDKANContext {
    */
   private function process_field($field, $field_value) {
     switch ($field) {
+      case 'publisher':
+      case 'groups':
+        if (is_array($field_value)) {
+          $field_value = $field_value[0]->nid;
+        }
+
+        if (!is_numeric($field_value)) {
+          $field_value = (int) db_select('node', 'n')
+            ->fields('n', array('nid'))
+            ->condition('type', 'group')
+            ->condition('title', $field_value)
+            ->execute()
+            ->fetchField();
+        }
+        break;
+
+      case 'tags':
+        if (is_array($field_value)) {
+          $field_value = $field_value[0]->name;
+        }
+        break;
+
+      case 'program code':
+        if (is_array($field_value)) {
+          $field_value = $field_value[0];
+        }
+        break;
+
       case 'resource':
         $resource = $this->dkanContext->entityStore->retrieve_by_name($field_value);
         if ($resource) {
