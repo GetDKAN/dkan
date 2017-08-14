@@ -1,122 +1,197 @@
-default:
-  suites:
-     dkan:
-        contexts:
-          - FeatureContext #Temporary overrides only!
-          - Drupal\DrupalExtension\Context\MinkContext
-          - Drupal\DrupalExtension\Context\DrupalContext
-          - Drupal\DrupalExtension\Context\MessageContext
-          - Drupal\DrupalExtension\Context\MarkupContext
-          - Drupal\DrupalExtension\Context\BatchContext
-          - Drupal\DKANExtension\Context\DKANContext
-          - Drupal\DKANExtension\Context\MailContext
-          - Drupal\DKANExtension\Context\PageContext
-          - Drupal\DKANExtension\Context\GroupContext
-          - Drupal\DKANExtension\Context\HarvestSourceContext
-          - Drupal\DKANExtension\Context\WorkflowContext
-          - Drupal\DKANExtension\Context\DatasetContext
-          - Drupal\DKANExtension\Context\DataDashboardContext
-          - Drupal\DKANExtension\Context\PODContext
-          - Drupal\DKANExtension\Context\FastImportContext
-          - Drupal\DKANExtension\Context\SearchAPIContext:
-              search_forms:
-                default:
-                  form_css: "#dkan-sitewide-dataset-search-form"
-                  form_field: "edit-search"
-                  form_button: "edit-submit"
-                  results_css: ".view-dkan-datasets"
-                  result_item_css: ".views-row"
-                harvest_source:
-                  results_css: ".view-dkan-harvest-source-search"
-                  result_item_css: ".views-row"
-          - Drupal\DKANExtension\Context\ResourceContext
-          - Drupal\DKANExtension\Context\ServicesContext
-          - Drupal\DKANExtension\Context\PODContext
-          - Drupal\DKANExtension\Context\DatastoreContext
-          - Drupal\DKANExtension\Context\TimezoneContext
-          - Drupal\DrupalExtension\Context\DrushContext
-          - Devinci\DevinciExtension\Context\DebugContext:
-              asset_dump_path: "%paths.base%/assets"
-          - Devinci\DevinciExtension\Context\JavascriptContext:
-              maximum_wait: 30
-  formatters:
-    pretty:
-      output_styles:
-        comment:    [default, default , [conceal]]
-  gherkin:
-    filters:
+--- 
+default: 
+  suites: 
+    dkan: 
+      contexts: 
+      - FeatureContext
+      - Drupal\DrupalExtension\Context\MinkContext
+      - Drupal\DrupalExtension\Context\DrupalContext
+      - Drupal\DrupalExtension\Context\MessageContext
+      - Drupal\DrupalExtension\Context\MarkupContext
+      - Drupal\DrupalExtension\Context\BatchContext
+      - Drupal\DKANExtension\Context\DKANContext
+      - Drupal\DKANExtension\Context\MailContext
+      - Drupal\DKANExtension\Context\PageContext
+      - Drupal\DKANExtension\Context\GroupContext
+      - Drupal\DKANExtension\Context\HarvestSourceContext
+      - Drupal\DKANExtension\Context\WorkflowContext
+      - Drupal\DKANExtension\Context\DatasetContext: 
+        - fields: 
+            title: title
+            description: body
+            published: status
+            resource: field_resources
+            access level: field_public_access_level
+            contact name: field_contact_name
+            contact email: field_contact_email
+            attest name: field_hhs_attestation_name
+            attest date: field_hhs_attestation_date
+            verification status: field_hhs_attestation_negative
+            attest privacy: field_hhs_attestation_privacy
+            attest quality: field_hhs_attestation_quality
+            bureau code: field_odfe_bureau_code
+            license: field_license
+            doi: field_doi
+            citation: field_citation
+        - labels: 
+            title: Title
+            body: Description
+            field_tags: Tags
+            field_topics: Topics
+            field_license: License
+            field_author: Author
+            field_spatial_geographical_cover: Spatial / Geographical Coverage Location
+            field_frequency: Frequency
+            field_granularity: Granularity
+            field_data_dictionary_type: Data Dictionary Type
+            field_data_dictionary: Data Dictionary
+            field_contact_name: Contact Name
+            field_contact_email: Contact Email
+            field_public_access_level: Public Access Level
+            field_additional_info: Additional Info
+            field_resources: Resources
+            field_related_content: Related Content
+            field_landing_page: Homepage URL
+            field_conforms_to: Data Standard
+            field_language: Language
+            og_group_ref: Groups
+        - sets: 
+            field_spatial: Spatial / Geographical Coverage Area
+            field_temporal_coverage: Temporal Coverage
+        - defaults: 
+            field_public_access_level: public
+            field_hhs_attestation_negative: 1
+            field_license: odc-by
+      - Drupal\DKANExtension\Context\DataDashboardContext
+      - Drupal\DKANExtension\Context\PODContext
+      - Drupal\DKANExtension\Context\FastImportContext
+      - Drupal\DKANExtension\Context\SearchAPIContext: 
+          search_forms: 
+            default: 
+              form_css: "#dkan-sitewide-dataset-search-form"
+              form_field: "edit-search"
+              form_button: "edit-submit"
+              results_css: ".view-dkan-datasets"
+              result_item_css: ".views-row"
+            harvest_source: 
+              results_css: ".view-dkan-harvest-source-search"
+              result_item_css: ".views-row"
+      - Drupal\DKANExtension\Context\ResourceContext
+      - Drupal\DKANExtension\Context\ServicesContext: 
+        - request_fields_map: 
+            resource: 
+              type: type
+              title: title
+              body: body[und][0][value]
+              status: status
+            dataset: 
+              type: type
+              title: title
+              status: status
+              published: status
+              body: body[und][0][value]
+              resource: field_resources[und][0][target_id]
+              access level: field_public_access_level[und]
+              contact name: field_contact_name[und][0][value]
+              contact email: field_contact_email[und][0][value]
+              attest name: field_hhs_attestation_name[und][0][value]
+              attest date: field_hhs_attestation_date[und][0][value][date]
+              verification status: field_hhs_attestation_negative[und]
+              attest privacy: field_hhs_attestation_privacy[und]
+              attest quality: field_hhs_attestation_quality[und]
+              bureau code: field_odfe_bureau_code[und]
+              license: field_license[und][select]
+              doi: field_doi[und][0][value]
+              citation: field_citation[und][0][value]
+      - Drupal\DKANExtension\Context\PODContext
+      - Drupal\DKANExtension\Context\DatastoreContext
+      - Drupal\DKANExtension\Context\TimezoneContext
+      - Drupal\DrupalExtension\Context\DrushContext
+      - Devinci\DevinciExtension\Context\DebugContext: 
+          asset_dump_path: "%paths.base%/assets"
+      - Devinci\DevinciExtension\Context\JavascriptContext: 
+          maximum_wait: 30
+  formatters: 
+    pretty: 
+      output_styles: 
+        comment: 
+        - default
+        - default
+        - [conceal]
+  gherkin: 
+    filters: 
       tags: ~@fixme
-  extensions:
-    Behat\MinkExtension:
-      goutte: ~
-      selenium2: ~
+  extensions: 
+    Behat\MinkExtension: 
+      goutte: []
+
+      selenium2: []
+
       default_session: "goutte"
       javascript_session: "selenium2"
       browser_name: chrome
       files_path: "%paths.base%/files"
-    Drupal\DrupalExtension:
-      blackbox: ~
-      drupal:
-        #TODO Abstract this out.
+    Drupal\DrupalExtension: 
+      blackbox: 
+      drupal: 
         drupal_root: "%paths.base%/../../docroot"
       api_driver: "drupal"
-      # @todo fixup these regions for use with new theme. Updated navigation only
-      region_map:
-        content: ".region-content"
-        toolbar: ".tabs--primary"
-        footer: "#footer"
-        header: "#header"
-        modal: "#modalContent"
-        left header: "#header-left"
-        right header: "#header-right"
-        right sidebar: "#column-right"
-        dashboards: ".view-data-dashboards table tbody"
-        navigation: ".navigation-wrapper"
+      region_map: 
+        admin menu: "#admin-menu"
         breadcrumb: ".breadcrumb"
-        left_sidebar: ".panel-col-first"
-        dataset title: ".pane-node .pane-title"
-        dataset resource list: "#data-and-resources"
+        comment: ".comment-main"
+        content search: ".form-item-query"
+        content: ".region-content"
+        dashboards: ".view-data-dashboards table tbody"
         dataset body: ".field-name-body"
         dataset edit body: "#edit-body"
+        dataset resource list: "#data-and-resources"
         dataset spatial: "#edit-field-spatial"
-        resource title: ".pane-node .pane-title"
-        resource groups: "#edit-groups"
-        search_area: ".panel-col-last"
+        dataset title: ".pane-node .pane-title"
+        datasets: ".view-dkan-datasets"
         dropdown_links: ".comment-main .links.inline.dropdown-menu"
-        comment: ".comment-main"
-        navigation: ".navigation-wrapper"
-        primary tabs: ".tabs--primary"
-        group subscribe: ".group-subscribe-message"
+        facet container: ".radix-layouts-sidebar"
+        filter by author: ".facetapi-facet-author"
+        filter by date changed: ".facetapi-facet-changed"
+        filter by resource format: ".facetapi-facet-field-resourcesfield-format"
+        filter by tag: ".facetapi-facet-field-tags"
+        filter by topics: ".facetapi-facet-field-topic"
+        footer: "#footer"
         group block: ".pane-views-group-block-block"
         group members: ".view-id-dkan_og_extras_group_members"
-        facet container: ".radix-layouts-sidebar"
-        filter by resource format: ".facetapi-facet-field-resourcesfield-format"
-        filter by author: ".facetapi-facet-author"
-        filter by topics: ".facetapi-facet-field-topic"
-        filter by tag: ".facetapi-facet-field-tags"
-        filter by date changed: ".facetapi-facet-changed"
-        social: ".pane-dkan-sitewide-dkan-sitewide-social"
-        other access: ".pane-dkan-sitewide-dkan-sitewide-other-access"
-        datasets: ".view-dkan-datasets"
-        user profile: ".pane-dkan-sitewide-panels-dkan-user-summary"
-        results: ".view-header"
-        user page: ".main"
-        user command center: ".pane-dkan-sitewide-profile-page-dkan-user-summary"
-        tabs: ".field-group-htabs-wrapper"
-        content: ".view-content"
+        group subscribe: ".group-subscribe-message"
         groups: ".view-content"
-        search content results: ".content"
-        user content: ".view-user-profile-search"
-        content search: ".form-item-query"
-        user block: ".pane-views-user-profile-fields-block"
-        admin menu: "#admin-menu"
         harvest datasets: ".view-dkan-harvest-datasets"
-      text:
+        header: "#header"
+        left header: "#header-left"
+        left_sidebar: ".panel-col-first"
+        modal: "#modalContent"
+        navigation: ".navigation-wrapper"
+        other access: ".pane-dkan-sitewide-dkan-sitewide-other-access"
+        primary tabs: ".tabs--primary"
+        recline preview: ".recline-data-explorer"
+        resource groups: "#edit-groups"
+        resource title: ".pane-node .pane-title"
+        results: ".view-header"
+        right header: "#header-right"
+        right sidebar: "#column-right"
+        search content results: ".content"
+        search_area: ".panel-col-last"
+        social: ".pane-dkan-sitewide-dkan-sitewide-social"
+        tabs: ".field-group-htabs-wrapper"
+        toolbar: ".tabs--primary"
+        user block: ".pane-views-user-profile-fields-block"
+        user command center: ".pane-dkan-sitewide-profile-page-dkan-user-summary"
+        user content: ".view-user-profile-search"
+        user page: ".main"
+        user profile: ".pane-dkan-sitewide-panels-dkan-user-summary"
+      text: 
         log_out: "Log out"
         log_in: "Log in"
-      selectors:
+      selectors: 
         message_selector: ".alert"
         error_message_selector: ".alert.alert-error"
         success_message_selector: ".alert.alert-success"
-    Drupal\DKANExtension:
+    Drupal\DKANExtension: 
       some_param: "test"
+

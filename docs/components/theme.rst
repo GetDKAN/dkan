@@ -152,4 +152,4 @@ dkan-topics
 
 This font is used for the Content Type and :doc:`Topics <topics>` icons, see `Streamline Icons <http://www.streamlineicons.com/index.html>`_
 
-If you would like to use your own icon font for Topics, use the :doc:`steps outlined here <adding_new_icons>`.
+If you would like to use your own icon font for Topics, use the :ref:`steps outlined here <adding_new_icons>`.
