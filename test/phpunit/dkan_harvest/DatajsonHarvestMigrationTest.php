@@ -91,6 +91,24 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test identifer.
+   *
+   * @depends testDatasetCount
+   */
+  public function testIssued($dataset) {
+    $this->assertEquals(strtotime("2016-06-22"), $dataset->field_harvest_source_issued->value());
+  }
+
+  /**
+   * Test identifer.
+   *
+   * @depends testDatasetCount
+   */
+  public function testModified($dataset) {
+    $this->assertEquals(strtotime("2016-07-21"), $dataset->field_harvest_source_modified->value());
+  }
+
+  /**
    * Test Contact.
    *
    * @depends testDatasetCount
@@ -107,9 +125,34 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    */
   public function testTemporal($dataset) {
     $value = new DateTime("2011-01-01 00:00:00");
-    $value2 = new DateTime("2015-01-01 00:00:00");
+    $value2 = new DateTime("2015-12-31 00:00:00");
     $this->assertEquals($value->getTimestamp(), $dataset->field_temporal_coverage->value->value());
     $this->assertEquals($value2->getTimestamp(), $dataset->field_temporal_coverage->value2->value());
+  }
+
+  /**
+   * Test accrualPeriodicity field.
+   *
+   * @depends testDatasetCount
+   */
+  public function testAccrualPeriodicity($dataset) {
+    $optionsList = $dataset->field_frequency->optionsList();
+    $frequency_key = $dataset->field_frequency->value();
+    $this->assertEquals('Irregularly', $optionsList[$frequency_key]);
+  }
+
+  /**
+   * Test Data Quality import.
+   *
+   * @depends testDatasetCount
+   */
+  public function testDataQuality($dataset) {
+    if (!module_exists('open_data_federal_extras')) {
+      $this->markTestSkipped('field_odfe_data_quality is part of the open_data_federal_extras module.');
+    }
+    else {
+      $this->assertEquals('true', array_pop($dataset->field_odfe_data_quality->value()));
+    }
   }
 
   /**
@@ -119,9 +162,9 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    */
   public function testResources($dataset) {
     $expected_resources = array(
-      'TEST - Workforce By Generation (2011-2015)' => 'http://demo.getdkan.com/sites/default/files/GenChart_0_0.csv',
-      'TEST - Retirements (2011 - 2015)' => 'http://demo.getdkan.com/sites/default/files/retirements_0.csv',
-      'TEST - Retirements: Eligible vs. Actual' => 'http://demo.getdkan.com/sites/default/files/2015EligibleVsActual.csv',
+      'TEST - Workforce By Generation (2011-2015)' => 'https://s3.amazonaws.com/dkan-default-content-files/phpunit/GenChart_0_0.csv',
+      'TEST - Retirements (2011 - 2015)' => 'https://s3.amazonaws.com/dkan-default-content-files/phpunit/retirements_0.csv',
+      'TEST - Retirements: Eligible vs. Actual' => 'https://s3.amazonaws.com/dkan-default-content-files/phpunit/2015EligibleVsActual.csv',
     );
 
     $dataset_resources = $this->getDatasetResources($dataset);

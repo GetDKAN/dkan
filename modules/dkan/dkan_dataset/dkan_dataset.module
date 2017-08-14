@@ -27,7 +27,6 @@ function dkan_dataset_preprocess_html(&$vars) {
       $vars['classes_array'][] = $preview;
     }
   }
-  drupal_add_css($path . '/css/dkan-flaticon.css');
 }
 
 /**
@@ -621,9 +620,9 @@ function dkan_dataset_sync_groups($dataset) {
  * Process resources and group them based on status.
  *
  * @param array $resources_old
- *    The list of old resources associated with the dataset being updated.
+ *   The list of old resources associated with the dataset being updated.
  * @param array $resources_new
- *    The list of new resources associated with the dataset being updated.
+ *   The list of new resources associated with the dataset being updated.
  */
 function dkan_dataset_process_resources(array $resources_old, array $resources_new) {
   $processed_resources = array();
@@ -658,10 +657,10 @@ function dkan_dataset_process_resources(array $resources_old, array $resources_n
  * Get the list of groups associated with the dataset.
  *
  * @param EntityMetadataWrapper $dataset
- *    Entity wrapped version of the dataset node.
+ *   Entity wrapped version of the dataset node.
  *
  * @return array
- *    An array containing the list of groups associated with the dataset.
+ *   An array containing the list of groups associated with the dataset.
  */
 function dkan_dataset_get_dataset_groups(EntityMetadataWrapper $dataset) {
 
@@ -679,10 +678,10 @@ function dkan_dataset_get_dataset_groups(EntityMetadataWrapper $dataset) {
  * Get the list of resources associated with the dataset.
  *
  * @param object $dataset
- *    Entity wrapped version of the dataset node.
+ *   Entity wrapped version of the dataset node.
  *
  * @return array
- *    An array containing the list of resources associated with the dataset.
+ *   An array containing the list of resources associated with the dataset.
  */
 function dkan_dataset_get_dataset_resources($dataset) {
 
@@ -703,14 +702,14 @@ function dkan_dataset_get_dataset_resources($dataset) {
  * resource was added except the ones from the dataset that is being updated.
  *
  * @param EntityMetadataWrapper $resource
- *    Entity wrapped version of the resource node.
+ *   Entity wrapped version of the resource node.
  * @param int $updated_dataset_id
- *    ID of the dataset that is currently being updated.
+ *   ID of the dataset that is currently being updated.
  *
  * @return array
- *    Array containing the full list of groups associated with all the datasets
- *    where the resource was added except the ones from the dataset that is
- *    being updated.
+ *   Array containing the full list of groups associated with all the datasets
+ *   where the resource was added except the ones from the dataset that is
+ *   being updated.
  */
 function dkan_dataset_get_resource_groups(EntityMetadataWrapper $resource, $updated_dataset_id) {
 
@@ -750,16 +749,18 @@ function dkan_dataset_get_resource_groups(EntityMetadataWrapper $resource, $upda
  * Update the associated groups on all the resources that were modified.
  *
  * @param array $resources
- *    The list of resources whose resources need to be updated.
+ *   The list of resources whose resources need to be updated.
  * @param EntityMetadataWrapper $updated_dataset
- *    Entity wrapped version of the dataset that was updated.
+ *   Entity wrapped version of the dataset that was updated.
  * @param array $updated_dataset_groups
- *    The current groups associated with the dataset that is being updated.
+ *   The current groups associated with the dataset that is being updated.
  * @param int $use_queue_limit
- *    A limit indicating when a Drupal queue should be used to update resources.
+ *   A limit indicating when a Drupal queue should be used to update resources.
  */
+// Avoid Type hint "array" problems. https://www.drupal.org/node/1158720.
+// @codingStandardsIgnoreStart
 function dkan_dataset_update_resource_groups($resources, EntityMetadataWrapper $updated_dataset, $updated_dataset_groups, $use_queue_limit = 20) {
-
+// @codingStandardsIgnoreEnd
   $use_queue = FALSE;
   $queue = '';
 
@@ -844,7 +845,10 @@ function dkan_dataset_update_groups($data) {
  * @param array $item
  *   An associative array containing the dataset nid and a log message.
  */
+// Avoid Type hint "array" problems. https://www.drupal.org/node/1158720.
+// @codingStandardsIgnoreStart
 function dkan_dataset_dataset_changelog_run($item) {
+// @codingStandardsIgnoreEnd
   global $user;
   $original_user = $user;
   drupal_save_session(FALSE);
@@ -899,7 +903,7 @@ function dkan_dataset_teaser_get_external_previews() {
   $previews['dkan'] = array(
     'name' => variable_get('dkan_dataset_teaser_preview_label', '') . ' ' . t('Preview'),
     'link_callback' => 'dkan_dataset_preview_url_local',
-    'suggested_formats' => array('csv', 'xls'),
+    'suggested_formats' => array('csv', 'xls', 'tsv'),
     'description' => t('Local preview. Preview tabular data in a grid, basic chart or map. This preview type is not optional and will load only for the suggested formats listed.'),
   );
   // For DKAN, we don't add the format manually, so copy the values from
@@ -1130,22 +1134,6 @@ function dkan_dataset_remotefile_process($element, &$form_state, $form) {
     '#maxlength' => NULL,
   );
 
-  $element['filefield_dkan_remotefile']['select'] = array(
-    '#name' => implode('_', $element['#array_parents']) . '_select',
-    '#type' => 'submit',
-    '#value' => t('Select'),
-    '#validate' => array(),
-    '#submit' => array('filefield_sources_field_submit'),
-    '#limit_validation_errors' => array($element['#parents']),
-    '#ajax' => array(
-      'path' => 'file/ajax/' . implode('/', $element['#array_parents']) . '/' . $form['form_build_id']['#value'],
-      'wrapper' => $element['#id'] . '-ajax-wrapper',
-      'effect' => 'fade',
-      'method' => 'replace',
-    ),
-    '#suffix' => '<div class="description">' . t('This field will ignore the file size limitation') . '</div>',
-  );
-
   return $element;
 }
 
@@ -1251,13 +1239,48 @@ function dkan_dataset_preprocess_node(&$vars) {
 
 /**
  * Return node modified date.
+ *
+ * For harvested nodes use the value from 'field_harvest_source_issued' as
+ * filled by the dkan_harvest. Fallback to the 'changed' node property
+ * otherwise.
+ */
+function dkan_dataset_release_date($node) {
+  $node = ($node instanceof EntityMetadataWrapper) ? $node :
+    entity_metadata_wrapper('node', $node);
+
+  // Last time a dataset was harvested is supposedly the time of the last
+  // update.
+  if (isset($node->field_harvest_source_issued) &&
+    !empty($node->field_harvest_source_issued->value())) {
+    $date = format_date($node->field_harvest_source_issued->value(), 'iso_8601_date');
+  }
+  else {
+    $date = format_date($node->created->value(), 'iso_8601_date');
+  }
+
+  return $date;
+}
+
+/**
+ * Return node modified date with ISO 8601 format.
+ *
+ * For harvested nodes use the value from 'field_harvest_source_modified' as
+ * filled by the dkan_harvest. Fallback to the 'changed' node property
+ * otherwise.
  */
 function dkan_dataset_modified_date($node) {
-  $node = ($node instanceof EntityMetadataWrapper) ? $node : entity_metadata_wrapper('node', $node);
-  $harvested_date = $node->field_modified_source_date->value();
+  $node = ($node instanceof EntityMetadataWrapper) ? $node :
+    entity_metadata_wrapper('node', $node);
 
-  // Harvested times can be dates or periods then we don't format them.
-  return ($harvested_date) ? $harvested_date : format_date($node->changed->value(), 'custom', 'Y-m-d');
+  if (isset($node->field_harvest_source_modified) &&
+    !empty($node->field_harvest_source_modified->value())) {
+    $date = format_date($node->field_harvest_source_modified->value(), 'iso_8601_date');
+  }
+  else {
+    $date = format_date($node->changed->value(), 'iso_8601_date');
+  }
+
+  return $date;
 }
 
 /**

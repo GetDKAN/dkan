@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_sitewide_panels.pages_default.inc
@@ -303,7 +304,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $pane->shown = TRUE;
   $pane->access = array();
   $pane->configuration = array(
-    'label' => 'above',
+    'label' => 'hidden',
     'formatter' => 'text_default',
     'delta_limit' => 0,
     'delta_offset' => '0',
@@ -1346,7 +1347,7 @@ return TRUE;
     ),
   );
   $display->cache = array();
-  $display->title = '';
+  $display->title = 'Search';
   $display->uuid = 'b1ebec5e-aed7-4ebc-82de-7e9eac72c35a';
   $display->storage_type = 'page_manager';
   $display->storage_id = 'page_datasets_panel_context';

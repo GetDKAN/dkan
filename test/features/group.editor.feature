@@ -1,5 +1,5 @@
 # time:0m50.36s
-@api
+@api @disablecaptcha
 Feature: Site Manager administer groups
   In order to manage site organization
   As a Site Manager
@@ -173,3 +173,9 @@ Feature: Site Manager administer groups
     Given I am logged in as "Martin"
     And I am on "Dataset 01" page
     Then I should see "Edit"
+
+  Scenario: Show correct number of groups to which user belongs
+    Given I am logged in as "Celeste"
+    When I am on "user"
+    Then I should see "1 Groups" in the "content" region
+

@@ -299,6 +299,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     $form['#validate'][] = 'dkan_dataset_dataset_node_form_validate';
   }
+
   if ($form_id == 'resource_node_form') {
     drupal_add_library('system', 'jquery.bbq');
     $form['#attached']['css'][] = drupal_get_path('module', 'dkan_dataset') . '/css/dkan_dataset.css';
@@ -313,11 +314,6 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     // Get langcode for field_dataset_ref.
     $field_dataset_ref_langcode = dkan_dataset_form_field_language($form, 'field_dataset_ref');
     $form['field_dataset_ref'][$field_dataset_ref_langcode]['#description'] = t('Dataset that this resource is attached to.');
-    $dataset_options = $form['field_dataset_ref'][$field_dataset_ref_langcode]['#options'];
-    $fix_apostrophes = function ($value) {
-      return html_entity_decode($value, ENT_QUOTES, "UTF-8");
-    };
-    $form['field_dataset_ref'][$field_dataset_ref_langcode]['#options'] = array_map($fix_apostrophes, $dataset_options);
 
     // Get langcode for field_upload.
     $field_upload_langcode = dkan_dataset_form_field_language($form, 'field_upload');
@@ -334,7 +330,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     // Get langcode for field_link_api.
     $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_link_api');
-    $form['field_link_api'][$field_link_api_langcode][0]['#description'] = t('Link to a public API or information source.');
+    $form['field_link_api'][$field_link_api_langcode][0]['#description'] = t('Full url to a public API or information source (http://example.com).');
 
     // Get langcode for field_format.
     $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_format');
@@ -352,17 +348,12 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     if ($query = drupal_get_query_parameters()) {
       if (isset($query['dataset'])) {
-        $form['field_dataset_ref'][$field_dataset_ref_langcode]['#default_value'] = $query['dataset'];
+        $selected_dataset = node_load($query['dataset']);
+        $form['field_dataset_ref'][$field_dataset_ref_langcode][0]['target_id']['#default_value'] = $selected_dataset->title . ' (' . $query['dataset'] . ')';
         $form['prefix']['#type'] = 'item';
         $form['prefix']['#weight'] = '-20';
         $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $query['dataset']);
       }
-    }
-    elseif (isset($form['#node']->field_dataset_ref['nid'])) {
-      $form['field_dataset_ref'][$field_dataset_ref_langcode]['#default_value'] = $form['#node']->field_dataset_ref['nid'];
-      $form['prefix']['#type'] = 'item';
-      $form['prefix']['#weight'] = '-20';
-      $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $form['#node']->field_dataset_ref['nid']);
     }
     $form['#validate'][] = 'dkan_dataset_resource_node_form_validate';
     // This saves us on the ajax reloading.
@@ -494,8 +485,26 @@ function dkan_dataset_dataset_node_form_validate($form, &$form_state) {
   $public_access_level = $form_state['values']['field_public_access_level'][$field_public_access_level_langcode][0]['value'];
   $field_rights_langcode = dkan_dataset_form_field_language($form, 'field_rights');
   $rights = $form_state['values']['field_rights'][$field_rights_langcode][0]['value'];
-  if ($public_access_level != 'public' && empty($rights)) {
+  if (isset($public_access_level) && $public_access_level != 'public' && empty($rights)) {
     form_set_error('field_rights', 'Rights field is required.');
+  }
+
+  // Validate data dictionary with strict POD.
+  if (variable_get('dkan_dataset_form_pod_validation')) {
+    $field_data_dictionary_langcode = dkan_dataset_form_field_language($form, 'field_data_dictionary');
+    $data_dictionary = $form_state['values']['field_data_dictionary'][$field_data_dictionary_langcode][0]['value'];
+
+    // In order to pass strict POD validation the 'data dictionary' value must be NULL,
+    // a valid URL or redacted.
+    if (isset($data_dictionary) && $data_dictionary != '') {
+      $is_valid_URL = valid_url($data_dictionary, TRUE);
+      $is_redacted = preg_match('/^(\\[\\[REDACTED).*?(\\]\\])$/', $data_dictionary);
+
+      // If a value is present (not NULL) then chech if it is a valid URL or redacted.
+      if (!$is_valid_URL && !$is_redacted) {
+        form_set_error('field_data_dictionary', t('Data dictionary should be empty, a valid URL or redacted.'));
+      }
+    }
   }
 }
 
@@ -558,7 +567,7 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
     }
   }
   // Ensure that only one type of resource is uploaded or linked to.
-  if(count(array_filter(array($link_fid,$api,$upload_fid))) != 1) {
+  if (count(array_filter(array($link_fid, $api, $upload_fid))) != 1) {
     if ($link_fid) {
       $remote_error = t('<strong>Remote file</strong> is populated - only one resource type can be used at a time.');
       form_set_error('field_link_remote_file', $remote_error);
@@ -572,12 +581,23 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
       form_set_error('field_upload', $upload_error);
     }
   }
+  if (!empty($form_state['values']['field_link_api'][$field_link_api_langcode][0]['url']) &&
+    !valid_url($form_state['values']['field_link_api'][$field_link_api_langcode][0]['url'], TRUE)) {
+    // Require full url if using the API or Website URL option.
+    $api_url_error = t('Please enter a full url (include http:// or https://)');
+    form_set_error('field_link_api', $api_url_error);
+  }
   // Autodetect file type if a new one is not provided.
   if (!$type) {
     if ($upload_fid || $link_fid || $api) {
       if ($upload_fid) {
         $file = file_load($upload_fid);
         $type = isset($file->filemime) ? dkan_dataset_discovery_extension($file->filemime) : '';
+
+        $ext = pathinfo($file->uri, PATHINFO_EXTENSION);
+        if ($ext == 'tab' || $ext == 'tsv') {
+          $type = 'tsv';
+        }
       }
       elseif ($link_fid) {
         $file = file_load($link_fid);
@@ -604,7 +624,6 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
       // Check for geojson.
       if ($type == 'json' && isset($file)) {
         $response = drupal_http_request($file->uri, array('timeout' => 5));
-        // dpm($response);
         if ($response->code == '200') {
           $data = $response->data;
           $decoded = drupal_json_decode($data);
@@ -628,7 +647,6 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
           }
         }
       }
-
     }
   }
   $vocabs = taxonomy_vocabulary_get_names();

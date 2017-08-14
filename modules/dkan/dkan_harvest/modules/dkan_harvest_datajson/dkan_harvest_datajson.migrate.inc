@@ -38,8 +38,8 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $this->addFieldMapping('field_tags:create_term')
       ->defaultValue(TRUE);
 
-    $this->addFieldMapping('changed', 'modified');
-    $this->addFieldMapping('created', 'issued');
+    $this->addFieldMapping('field_harvest_source_issued', 'issued');
+    $this->addFieldMapping('field_harvest_source_modified', 'modified');
     $this->addFieldMapping('field_public_access_level', 'accessLevel');
     $this->addFieldMapping('uuid', 'identifier');
     $this->addFieldMapping('field_license', 'license');
@@ -82,6 +82,14 @@ class DatajsonHarvestMigration extends HarvestMigration {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
+
+    // The issued field is not required. When missing, use the modified field to
+    // have consistent dataset display.
+    // https://project-open-data.cio.gov/v1.1/schema#issued
+    if (!isset($row->issued)) {
+      $row->issued = $row->modified;
+    }
+
     if (property_exists($row, 'accrualPeriodicity')) {
       $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
     }
@@ -100,7 +108,8 @@ class DatajsonHarvestMigration extends HarvestMigration {
     // class, we just need to set the properties.
     if (isset($row->temporal)) {
       $date = explode("/", $row->temporal);
-
+      // The first key is the start date of the 'temporal coverage' and the second key is the
+      // end date of the 'temporal coverage'.
       foreach ($date as $key => &$value) {
         // Check if this is a time interval on the second Argument.
         if ($key == 1
@@ -125,8 +134,17 @@ class DatajsonHarvestMigration extends HarvestMigration {
         // Support 4 digits year time strings.
         elseif (preg_match("@^\d{4}$@", $value)) {
           $value_date = new DateTime();
-          $value_date->setDate($value, 1, 1)
-            ->setTime(0, 0);
+
+          // If this is the end date then set it to the last day of the year.
+          if ($key == 1) {
+            $value_date->setDate($value, 12, 31);
+          }
+          // If this is the start date then set it to the first day of the year.
+          else {
+            $value_date->setDate($value, 1, 1);
+          }
+
+          $value_date->setTime(0, 0);
         }
         // Fallback to full date/time format.
         else {
@@ -151,6 +169,16 @@ class DatajsonHarvestMigration extends HarvestMigration {
       }
       if (isset($date[1])) {
         $row->temporal_coverage_to = $date[1];
+      }
+    }
+
+    // field_odfe_data_quality expects "true" or "false" as input values.
+    if (isset($row->dataQuality)) {
+      if ($row->dataQuality === FALSE) {
+        $row->dataQuality = 'false';
+      }
+      elseif ($row->dataQuality === TRUE) {
+        $row->dataQuality = 'true';
       }
     }
   }
@@ -184,7 +212,13 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $resources = array();
 
     foreach ($resources_row_data as $resource_row_data) {
-      $resource = $this->prepareResourceHelper($resource_row_data->downloadURL,
+      // Fallback to the accessURL if the downloadURL is not available.
+      $url = $resource_row_data->downloadURL;
+      if (empty($url)) {
+        $url = $resource_row_data->accessURL;
+      }
+
+      $resource = $this->prepareResourceHelper($url,
         $resource_row_data->format,
         $resource_row_data->title,
         NULL,

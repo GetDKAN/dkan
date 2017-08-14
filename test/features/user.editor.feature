@@ -1,5 +1,5 @@
 # time:0m25.25s
-@api
+@api @disablecaptcha
 Feature: User command center links for editor role.
 
   Background:
@@ -35,7 +35,13 @@ Feature: User command center links for editor role.
   Scenario: Editor role can view admin menu link Content
     Given I am logged in as "Jaz"
     When I click "Content" in the "admin menu" region
-    Then I should see "Show only items where"
+    Then I should see "Operations"
+
+  Scenario: Editor role can view the file list
+    Given I am logged in as "Jaz"
+    When I click "Content" in the "admin menu" region
+    And I click "Files"
+    Then I should see "Thumbnails"
 
   @javascript
   Scenario: Editor role can view admin menu links under Visualizations
