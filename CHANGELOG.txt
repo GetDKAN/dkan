@@ -1,6 +1,6 @@
 7.x-1.13.7
 ---------------------
-
+ - #2055 Improve messages displayed when creating a harvest source.
 
 7.x-1.13.6 2017-07-28
 ---------------------
