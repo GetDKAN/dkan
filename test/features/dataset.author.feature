@@ -139,12 +139,12 @@ Feature: Dataset Features
     When I am on "Group 01" page
     Then I should see "Dataset 03" in the "content" region
 
-  @dataset_author_8 @noworkflow @javascript
+  @dataset_author_8 @noworkflow
   Scenario: Add a resource with no dataset to a dataset with no resource
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I fill in "field_resources[und][0][target_id]" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -155,12 +155,12 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
-  @dataset_author_9 @noworkflow @javascript
+  @dataset_author_9 @noworkflow
   Scenario: Remove a resource with only one dataset from the dataset
     Given I am logged in as "Katie"
     And I am on "Dataset 06" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I fill in "field_resources[und][0][target_id]" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 06 has been updated"
     And I should see "Resource 04" in the "dataset resource list" region
@@ -173,12 +173,12 @@ Feature: Dataset Features
     When I am on "Resource 04" page
     Then I should not see the link "Back to dataset"
 
-  @dataset_author_10 @noworkflow @javascript
+  @dataset_author_10 @noworkflow
   Scenario: Add a resource with no group to a dataset with group
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I fill in "field_resources[und][0][target_id]" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -186,12 +186,12 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
-  @dataset_author_11 @noworkflow @javascript
+  @dataset_author_11 @noworkflow
   Scenario: Remove a resource from a dataset with group
     Given I am logged in as "Katie"
     And I am on "Dataset 07" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I fill in "field_resources[und][0][target_id]" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 07 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -228,7 +228,7 @@ Feature: Dataset Features
     And I am on "Dataset 08" page
     When I click "Edit"
     And I fill in the chosen field "edit_og_group_ref_und_chosen" with "Group 02"
-    And I fill in the autocomplete field "edit-field-resources-und-0-target-id" with "Resource 04"
+    And I fill in "field_resources[und][0][target_id]" with "Resource 04"
     And I press "Finish"
     Then I should see "Dataset 08 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
