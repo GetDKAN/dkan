@@ -90,6 +90,7 @@ default:
               status: status
               published: status
               body: body[und][0][value]
+              tags: field_tags[und][value_field]
               resource: field_resources[und][0][target_id]
               access level: field_public_access_level[und]
               contact name: field_contact_name[und][0][value]
@@ -103,6 +104,8 @@ default:
               license: field_license[und][select]
               doi: field_doi[und][0][value]
               citation: field_citation[und][0][value]
+              program code: field_odfe_program_code[und][]
+              publisher: og_group_ref[und][]
       - Drupal\DKANExtension\Context\PODContext
       - Drupal\DKANExtension\Context\DatastoreContext
       - Drupal\DKANExtension\Context\TimezoneContext
