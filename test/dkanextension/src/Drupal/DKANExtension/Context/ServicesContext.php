@@ -416,6 +416,10 @@ class ServicesContext extends RawDKANContext {
             ->execute()
             ->fetchField();
         }
+
+        if (is_array($field_value)) {
+          $field_value = $field_value[0]->nid;
+        }
         break;
 
       case 'tags':
