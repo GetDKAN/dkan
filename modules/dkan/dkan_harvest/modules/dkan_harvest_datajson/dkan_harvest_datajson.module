@@ -106,7 +106,7 @@ function dkan_harvest_datajson_set_value(array &$obj, $path, $value, $override =
       $branch = &$branch[$key];
     }
     else {
-      drupal_set_message(t('A @path of "@value" was added to the <b>@title</b> dataset.',
+      drupal_set_message(t('A @path of "@value" was added to the <em>@title</em> dataset.',
         array('@path' => $path, '@value' => $value, '@title' => $obj['title'])), 'warning');
       $branch[$key] = array();
       $branch = &$branch[$key];
