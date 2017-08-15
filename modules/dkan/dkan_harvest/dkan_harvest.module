@@ -897,8 +897,8 @@ function dkan_harvest_node_view($node, $view_mode, $langcode) {
  * Implements hook_node_insert().
  */
 function dkan_harvest_node_insert($node) {
-  if($node->type == 'harvest_source'){
-    // Create the migration
+  if ($node->type == 'harvest_source') {
+    // Create the migration.
     $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
     dkan_harvest_get_migration($harvest_source);
   }
