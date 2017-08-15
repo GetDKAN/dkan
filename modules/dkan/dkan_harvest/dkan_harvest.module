@@ -894,6 +894,22 @@ function dkan_harvest_node_view($node, $view_mode, $langcode) {
 }
 
 /**
+ * Implements hook_node_insert().
+ */
+function dkan_harvest_node_insert($node) {
+  if ($node->type == 'harvest_source') {
+    // Create the migration.
+    try {
+      $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+      dkan_harvest_get_migration($harvest_source);
+    }
+    catch (\Exception $e) {
+      watchdog('dkan_harvest', $e->getMessage(), WATCHDOG_WARNING);
+    }
+  }
+}
+
+/**
  * Implements hook_form_alter().
  */
 function dkan_harvest_form_alter(&$form, &$form_state, $form_id) {
