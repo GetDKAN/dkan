@@ -899,8 +899,13 @@ function dkan_harvest_node_view($node, $view_mode, $langcode) {
 function dkan_harvest_node_insert($node) {
   if ($node->type == 'harvest_source') {
     // Create the migration.
-    $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
-    dkan_harvest_get_migration($harvest_source);
+    try {
+      $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+      dkan_harvest_get_migration($harvest_source);
+    }
+    catch (\Exception $e) {
+      watchdog('dkan_harvest', $e->getMessage(), WATCHDOG_WARNING);
+    }
   }
 }
 
