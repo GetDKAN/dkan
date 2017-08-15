@@ -15,6 +15,7 @@ default:
       - Drupal\DKANExtension\Context\GroupContext
       - Drupal\DKANExtension\Context\HarvestSourceContext
       - Drupal\DKANExtension\Context\WorkflowContext
+      - Drupal\DKANExtension\Context\DatasetAutoFillContext
       - Drupal\DKANExtension\Context\DatasetContext: 
         - fields: 
             title: title
@@ -33,6 +34,7 @@ default:
             license: field_license
             doi: field_doi
             citation: field_citation
+            publisher: og_group_ref
         - labels: 
             title: Title
             body: Description
@@ -90,6 +92,7 @@ default:
               status: status
               published: status
               body: body[und][0][value]
+              description: body[und][0][value]
               tags: field_tags[und][value_field]
               resource: field_resources[und][0][target_id]
               access level: field_public_access_level[und]
@@ -105,6 +108,7 @@ default:
               doi: field_doi[und][0][value]
               citation: field_citation[und][0][value]
               program code: field_odfe_program_code[und][]
+              groups: og_group_ref[und][]
               publisher: og_group_ref[und][]
       - Drupal\DKANExtension\Context\PODContext
       - Drupal\DKANExtension\Context\DatastoreContext
