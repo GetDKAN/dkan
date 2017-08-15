@@ -366,7 +366,7 @@ class ServicesContext extends RawDKANContext {
   /**
    * Build node data as needed by endpoint.
    */
-  private function build_node_data($data, $node = NULL) {
+  public function build_node_data($data, $node = NULL) {
     $node_data = array();
 
     if (!$node && !isset($data['type'])) {
@@ -403,6 +403,20 @@ class ServicesContext extends RawDKANContext {
   private function process_field($field, $field_value) {
     switch ($field) {
       case 'publisher':
+      case 'groups':
+        if (is_array($field_value)) {
+          $field_value = $field_value[0]->nid;
+        }
+
+        if (!is_numeric($field_value)) {
+          $field_value = (int) db_select('node', 'n')
+            ->fields('n', array('nid'))
+            ->condition('type', 'group')
+            ->condition('title', $field_value)
+            ->execute()
+            ->fetchField();
+        }
+
         if (is_array($field_value)) {
           $field_value = $field_value[0]->nid;
         }

@@ -45,7 +45,7 @@ Feature: Dataset Features
       | price1 |
       | election1 |
     And datasets:
-      | title      | publisher | author  | published        | tags     | description |
+      | title      | publisher | author  | published        | tags      | description |
       | Dataset 01 | Group 01  | Gabriel | Yes              | price1    |             |
       | Dataset 02 | Group 01  | Gabriel | Yes              | election1 |             |
       | Dataset 03 | Group 02  | Katie   | Yes              | price1    |             |
@@ -69,19 +69,21 @@ Feature: Dataset Features
     Given I am logged in as "Katie"
     And I am on "Add Dataset" page
     Then I should not see "Authoring information"
-    And I fill in the following:
-      | Title           | Test Dataset      |
-      | Description     | Test description  |
-    And I select "Group 01" from "og_group_ref[und][]"
+    And I fill-in the following:
+      | title           | Test Dataset      |
+      | description     | Test description  |
+      | publisher       | Group 01          |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
 
   @dataset_author_2 @noworkflow
   Scenario: Save using Additional Info
-    Given I am logged in as a user with the "content creator" role
+    Given I am logged in as "Katie"
     And I am on "Add Dataset" page
-    When I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "Test description"
+    And I fill-in the following:
+      | title           | Test Dataset      |
+      | description     | Test description  |
+      | publisher       | Group 01          |
     And I press "Next: Add data"
     And I fill in "title" with "Test Resource Link File"
     And I press "Next: Additional Info"
