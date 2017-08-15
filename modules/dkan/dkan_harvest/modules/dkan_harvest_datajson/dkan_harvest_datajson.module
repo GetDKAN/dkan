@@ -106,8 +106,49 @@ function dkan_harvest_datajson_set_value(array &$obj, $path, $value, $override =
       $branch = &$branch[$key];
     }
     else {
-      drupal_set_message(t('A @path of "@value" was added to the <em>@title</em> dataset.',
-        array('@path' => $path, '@value' => $value, '@title' => $obj['title'])), 'warning');
+      drupal_set_message(t('The @path field was set to "@value" on the harvested datasets.',
+        array('@path' => $path, '@value' => $value, '@title' => $obj['title'])), 'warning', FALSE);
+      $branch[$key] = array();
+      $branch = &$branch[$key];
+    }
+  }
+
+  // Update the obj if $override is set or the branch is empty.
+  if ($override || empty($branch)) {
+    $branch = $value;
+    $updated = TRUE;
+  }
+
+  return $updated;
+}
+
+/**
+ * Set a nested value inside an array.
+ *
+ * @param array &$obj
+ *   Original array.
+ * @param string $path
+ *   Path to the value (path.to.the.0.value).
+ * @param object $value
+ *   Value to set.
+ * @param bool $override
+ *   If should or shouldn't override an existing value.
+ *
+ * @return array
+ *   Modified array.
+ */
+function dkan_harvest_datajson_set_default_value(array &$obj, $path, $value, $override = FALSE) {
+  $updated = FALSE;
+  $keys = explode('.', $path);
+  $branch = &$obj;
+
+  foreach ($keys as $key) {
+    if (isset($branch[$key])) {
+      $branch = &$branch[$key];
+    }
+    else {
+      drupal_set_message(t('A @path value of "@value" was added to datasets where the @path field was empty.',
+        array('@path' => $path, '@value' => $value, '@title' => $obj['title'])), 'warning', FALSE);
       $branch[$key] = array();
       $branch = &$branch[$key];
     }
@@ -263,7 +304,7 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
     $defaulted = FALSE;
 
     foreach ($defaults as $path => $default_value) {
-      $defaulted = $defaulted || dkan_harvest_datajson_set_value($dataset, $path, $default_value[0]);
+      $defaulted = $defaulted || dkan_harvest_datajson_set_default_value($dataset, $path, $default_value[0]);
     }
 
     if ($defaulted) {
