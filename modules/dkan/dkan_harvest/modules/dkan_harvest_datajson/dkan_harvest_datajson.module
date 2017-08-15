@@ -106,7 +106,7 @@ function dkan_harvest_datajson_set_value(array &$obj, $path, $value, $override =
       $branch = &$branch[$key];
     }
     else {
-      drupal_set_message(t('The @path field was set to "@value" on the harvested datasets.',
+      drupal_set_message(t('The @path field was set to "@value" on all harvested datasets.',
         array('@path' => $path, '@value' => $value, '@title' => $obj['title'])), 'warning', FALSE);
       $branch[$key] = array();
       $branch = &$branch[$key];
