@@ -106,19 +106,27 @@ class PODContext extends RawDKANContext {
   }
 
   /**
+   * Step to validate license values.
+   *
    * @Then I should see :option license values
    */
-  public function iShouldSeeLicenseValues($option)
-  {
+  public function iShouldSeeLicenseValues($option) {
     // Get the list of licenses provided by DKAN.
-    $licenses = dkan_dataset_content_types_license_subscribe();
+    $licenses = dkan_dataset_content_types_license_allowed_values();
 
     // Clean the array values and remove all non POD valid licenses if required.
     foreach ($licenses as $key => $value) {
       if (($option != 'all') && !isset($value['uri'])) {
         unset($licenses[$key]);
-      } else {
-        $licenses[$key] = $value['label'];
+      }
+      else {
+        if (is_string($value)) {
+          $licenses[$key] = $value;
+        }
+
+        if (is_array($value) && isset($value['label'])) {
+          $licenses[$key] = $value['label'];
+        }
       }
     }
 
@@ -137,7 +145,6 @@ class PODContext extends RawDKANContext {
       $available_licenses[] = $element->getText();
     }
 
-    // Compare the list of expected licenses with the list of available licenses.
     $result = array_diff($available_licenses, $licenses);
     if (!empty($result)) {
       throw new \Exception(sprintf('The list of available licenses differs from the
