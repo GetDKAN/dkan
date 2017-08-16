@@ -116,14 +116,10 @@ class PODContext extends RawDKANContext {
 
     // Clean the array values and remove all non POD valid licenses if required.
     foreach ($licenses as $key => $value) {
-      if (($option != 'all') && !isset($value['uri'])) {
+      if (($option != 'all') && (is_array($value) && !isset($value['uri']))) {
         unset($licenses[$key]);
       }
       else {
-        if (is_string($value)) {
-          $licenses[$key] = $value;
-        }
-
         if (is_array($value) && isset($value['label'])) {
           $licenses[$key] = $value['label'];
         }
