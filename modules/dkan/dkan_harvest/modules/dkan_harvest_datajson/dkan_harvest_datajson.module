@@ -245,7 +245,12 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
       $accept = FALSE;
       foreach ($filters as $key => $filter_values) {
         $filter_values = array_map('trim', $filter_values);
-        $key_values = array_map('trim', dkan_harvest_datajson_get_value($dataset, $key));
+        if (is_array($key)) {
+          $key_values = array_map('trim', dkan_harvest_datajson_get_filter_value($dataset, $key));
+        }
+        else {
+          $key_values = dkan_harvest_datajson_get_filter_value($dataset, $key);
+        }
 
         if ($key_values == array(t("No keyword provided"))) {
           break;
@@ -333,7 +338,7 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
 
     foreach ($defaults as $path => $default_values) {
       $defaults_values = array_map('trim', $default_values);
-      $defaulted = $defaulted || dkan_harvest_datajson_set_value($dataset, $path, $default_values[0]);
+      $defaulted = $defaulted || dkan_harvest_datajson_set_default_value($dataset, $path, $default_values[0]);
     }
 
     if ($defaulted) {
