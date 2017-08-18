@@ -396,16 +396,12 @@ Feature:
 
     Given I am logged in as "site-manager"
     And I am on "Users" page
-    And I fill in "edit-name" with "content-creator"
-    And I press "Apply"
     When I click "edit" in the "content-creator" row
     And I check "Workflow Contributor"
     And I press "Save"
     And I wait for "People"
     Then I should see "The changes have been saved"
     When I am on "Users" page
-    And I fill in "edit-name" with "content-creator"
-    And I press "Apply"
     Then I should see "Workflow Contributor" in the "content-creator" row
 
   @workflow_18 @api @ahoyRunMe @javascript @globalUser
