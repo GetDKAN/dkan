@@ -52,6 +52,7 @@ Starting from 1.13 PHPUnit tests were added into DKAN core. All tests can be fou
 *Running PHPUnit tests locally:*
 
 Using Ahoy:
+
 ```sh
 # To run all the tests:
 ahoy dkan unittests
@@ -84,3 +85,76 @@ bin/phpunit --configuration phpunit --filter testMethod
 
 For additional options or more detailed information on how to use PHPUnit please check the [PHPUnit Documentation]( https://phpunit.de/manual/current/en/textui.html)
  
+## Tips
+
+Failing builds or tests can be very frustrating and occasionally make small improvements or bugfixes take much longer to complete than expected. This section is a collection of techniques that have proved useful in debugging and solving stubborn test issues in both DKAN core and individual projects.
+
+### CircleCI Screenshots
+
+Click on the Artifacts tab, go to the container where the error happened and then click on the html/png file to see what Behat saw during the run of that step.
+
+### Running tests locally
+Running tests in circleCI is a time consuming task. Every time you run a test in circleCI a whole new build process is triggered. Also, there is a limited number of container that can run at the same time so if your team is doing a heavy use of them you might experience several delays until your container runs.
+
+It's highly recommend to avoid delays run test in the local environment. For example: 
+
+```
+ahoy dkan test features/resource.author.feature
+```
+
+### Test isolation
+To speed up the debug process it would be useful to isolate the failing tests so you are not running working tests all the time.
+
+In order to target an specific step you pass its name from the command line:
+
+```
+ahoy dkan test features/resource.author.feature --name="Edit own resource as content creator"
+```
+
+If your tests are passing locally but failing in circleCI then you would want to take an screenshoot of the page during the step.
+
+### Enabling screenshoots
+By default Behat uses the guzzle driver so if the failing step doesn't have the @javascript just a html file will be captured. Sometimes this is enough to figure out the issue but since javascript plays a big role within drupal, enabling screenshoot could provide meaningful information about the bug.
+
+To enable screenshoots in a given step the @javascript tag needs to be added to the problematic step.
+
+```
+@javascript
+Scenario: As a site manager I should be able to add a harvest source.
+....
+```
+
+### Test is working locally but fails in CircleCI
+
+To troubleshoot this it is advisable to build the site from scratch and run the test right after the build. Some tests fails just after the build but passes in a second intent.
+
+### Proxy CircleCI built site
+
+So your tests are failing just in CircleCI but passing locally. Screenshots weren't helpful and you don't have any clue what's happening. 
+
+Because UI tests are intended to mimic the behavior of a real user, you can do the oposite, try to mimic the UI test as a real user.
+
+In order to do that you will need to access to the same Dkan instance where tests are run (i.e CircleCI webserver instance).
+
+**How to**
+
+- Rebuild tests with ssh support
+- Wait until the build finishes
+- Create a ssh tunnel `ssh -p 64640 ubuntu@52.14.31.200 -L 8888:localhost:8888`
+- Open in your browser http://127.0.0.1:8888
+
+At this point http://127.0.0.1:8888 is pointing to the CircleCI server instance so you can troubleshoot using the same instance against which tests are run.
+
+### Watch tests running in CircleCI
+Most of times you won't need to do this but there are some cases where the above procedures are not enough. 
+
+Configure this is very similar to configure the proxy site.
+
+**How to**
+- Rebuild tests with ssh support
+- Wait until the build finishes
+- Create a ssh tunnel `ssh -p 64640 ubuntu@52.14.31.200 -L 5000:localhost:5900`
+- Install RealVNC viewer. It's free and it's more performant.
+- Connect using the local ip and port http://127.0.0.1:5000
+
+The local port is the 5000 and the remote port is 5900. Notice you can pick and free local port but remote port always will be 5900.
