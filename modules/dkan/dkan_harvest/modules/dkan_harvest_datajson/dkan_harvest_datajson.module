@@ -82,7 +82,7 @@ function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime)
 }
 
 /**
- * Set a nested value inside an array.
+ * Set a nested value inside an array (Override).
  *
  * @param array &$obj
  *   Original array.
@@ -123,7 +123,7 @@ function dkan_harvest_datajson_set_value(array &$obj, $path, $value, $override =
 }
 
 /**
- * Set a nested value inside an array.
+ * Set a nested value inside an array (Default).
  *
  * @param array &$obj
  *   Original array.
@@ -164,7 +164,34 @@ function dkan_harvest_datajson_set_default_value(array &$obj, $path, $value, $ov
 }
 
 /**
- * Get a nested value from an array.
+ * Get a nested value from an array (Filter).
+ *
+ * @param array $obj
+ *   Array.
+ * @param string $path
+ *   Path to the value (path.to.the.0.value).
+ *
+ * @return mixed
+ *   Modified array
+ */
+function dkan_harvest_datajson_get_filter_value(array $obj, $path) {
+  $keys = explode('.', $path);
+  $value = $obj;
+
+  foreach ($keys as $key) {
+    if (isset($value[$key])) {
+      $value = $value[$key];
+    }
+    else {
+      drupal_set_message(t('Datasets that do not have a value for @path will not be included in the harvest.', array('@path' => $path, 'title' => $obj['title'])), 'warning', FALSE);
+      return;
+    }
+  }
+  return $value;
+}
+
+/**
+ * Get a nested value from an array (Exclude).
  *
  * @param array $obj
  *   Array.
@@ -183,7 +210,7 @@ function dkan_harvest_datajson_get_value(array $obj, $path) {
       $value = $value[$key];
     }
     else {
-      drupal_set_message(t('Notice not all datasets have a value for @path.', array('@path' => $path, 'title' => $obj['title'])), 'warning', FALSE);
+      drupal_set_message(t('Datasets that do not have a value for @path will be included in the harvest.', array('@path' => $path, 'title' => $obj['title'])), 'warning', FALSE);
       return;
     }
   }
@@ -261,7 +288,7 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
         }
 
         if (!$accept) {
-          // Dataset have at least one exclude criterion that matchs.
+          // Dataset have at least one exclude criterion that matches.
           // No need for more proccecing.
           break;
         }
