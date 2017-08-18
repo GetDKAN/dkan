@@ -335,7 +335,7 @@ projects:
   uuid:
     version: '1.0'
   views:
-    version: '3.16'
+    version: '3.17'
   views_autocomplete_filters:
     version: '1.2'
     patch:
