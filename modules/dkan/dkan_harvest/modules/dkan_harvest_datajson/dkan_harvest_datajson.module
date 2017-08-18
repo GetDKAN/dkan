@@ -243,9 +243,15 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
       // Default action is to DROP the dataset if it does not meet the
       // filtering criteria.
       $accept = FALSE;
-      foreach ($filters as $path => $filter_value) {
-        $value = dkan_harvest_datajson_get_value($dataset, $path);
-        if (!empty($value) && !empty($filter_value) && count(array_intersect((array) $filter_value, (array) $value)) > 0) {
+      foreach ($filters as $key => $filter_values) {
+        $filter_values = array_map('trim', $filter_values);
+        $key_values = array_map('trim', dkan_harvest_datajson_get_value($dataset, $key));
+
+        if ($key_values == array(t("No keyword provided"))) {
+          break;
+        }
+        // cache_resource_definition_value.
+        if (!empty($key_values) && !empty($filter_values) && count(array_intersect((array) $filter_values, (array) $key_values)) > 0) {
           // The value to filter is an array and does intersect with the
           // dataset value. ACCEPT.
           $accept = TRUE;
@@ -261,12 +267,6 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
         // Update the cache result object.
         $harvest_cache->setCacheEntryFiltered($dataset_key, $dataset['title']);
       }
-      else {
-        // This dataset will be dropped from here on.
-        // Add to the processed count.
-        $harvest_cache->setCacheEntryProcessed($dataset_key, $dataset['title']);
-      }
-      // Drop the dataset if excluded.
       return $accept;
     });
   }
@@ -312,8 +312,9 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
     $identifier = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
     $overridden = FALSE;
 
-    foreach ($overrides as $path => $override_value) {
-      $overridden = $overridden || dkan_harvest_datajson_set_value($dataset, $path, $override_value[0], TRUE);
+    foreach ($overrides as $path => $override_values) {
+      $override_values = array_map('trim', $override_values);
+      $overridden = $overridden || dkan_harvest_datajson_set_value($dataset, $path, $override_values[0], TRUE);
     }
 
     if ($overridden) {
@@ -330,8 +331,9 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
     $identifier = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
     $defaulted = FALSE;
 
-    foreach ($defaults as $path => $default_value) {
-      $defaulted = $defaulted || dkan_harvest_datajson_set_default_value($dataset, $path, $default_value[0]);
+    foreach ($defaults as $path => $default_values) {
+      $defaults_values = array_map('trim', $default_values);
+      $defaulted = $defaulted || dkan_harvest_datajson_set_value($dataset, $path, $default_values[0]);
     }
 
     if ($defaulted) {
