@@ -263,7 +263,7 @@ class DatasetContext extends RawDKANEntityContext {
       }
     }
 
-    // Check that all form fielsets are present.
+    // Check that all form fieldsets are present.
     foreach ($dataset_fieldsets as $key => $fieldset_name) {
       if (empty($fieldset_name)) {
         continue;

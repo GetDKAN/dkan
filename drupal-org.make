@@ -217,8 +217,6 @@ projects:
     version: '1.3'
   menu_block:
     version: '2.7'
-  menu_token:
-    version: 1.0-beta7
   migrate:
     version: '2.8'
     patch:
