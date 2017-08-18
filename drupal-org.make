@@ -282,10 +282,6 @@ projects:
       revision: 9dbf7cf
     patch:
       2360019: https://www.drupal.org/files/issues/ref_field-delete-insert-warning-2360019-5.patch
-  remote_file_source:
-    version: 1.x
-    patch:
-      2362487: https://www.drupal.org/files/issues/remote_file_source-location-content-dist_1.patch
   remote_stream_wrapper:
     download:
       type: git

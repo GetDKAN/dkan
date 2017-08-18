@@ -35,7 +35,7 @@ Feature: User command center links for editor role.
   Scenario: Editor role can view admin menu link Content
     Given I am logged in as "Jaz"
     When I click "Content" in the "admin menu" region
-    Then I should see "Show only items where"
+    Then I should see "Operations"
 
   @javascript
   Scenario: Editor role can view admin menu links under Visualizations
