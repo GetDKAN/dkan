@@ -46,7 +46,7 @@ Feature: Resource
       | Resource 05 | Group 02  | csv    | Dataset 02 | Celeste  | Yes       | Yes         |
 
   # TODO: Change to use Workbench instead of /content
-  @noworkflow
+  @resource_editor_1 @noworkflow
   Scenario: Edit resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
@@ -57,13 +57,13 @@ Feature: Resource
     When I am on "Dataset 01" page
     Then I should see "Resource 01 edited"
 
-  @noworkflow
+  @resource_editor_2 @noworkflow
   Scenario: I should not be able to edit resources of groups that I am not a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 05" page
     Then I should not see "Edit"
 
-  @fixme @dkanBug @noworkflow
+  @resource_editor_3 @fixme @dkanBug @noworkflow
     # TODO: Permissions are not set so that a group member can publish any resources of their group,
     #       this test will need to wait until that is set
   Scenario: Publish resources associated with groups that I am a member of
@@ -76,7 +76,7 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 04 edited has been updated"
 
-  @noworkflow
+  @resource_editor_4 @noworkflow
   Scenario: Delete resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
@@ -85,14 +85,14 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource Resource 01 has been deleted"
 
-  @noworkflow
+  @resource_editor_5 @noworkflow
   Scenario: Manage datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @noworkflow @javascript
+  @resource_editor_6 @noworkflow @javascript
   Scenario: Import items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
@@ -109,7 +109,7 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @noworkflow @javascript
+  @resource_editor_7 @db @noworkflow @javascript
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
@@ -129,7 +129,7 @@ Feature: Resource
     When I click "Manage Datastore"
     And I wait for "No imported items."
 
-  @noworkflow @javascript
+  @resource_editor_8 @noworkflow @javascript
   Scenario: Drop datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
@@ -149,7 +149,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "No imported items."
 
-  @noworkflow
+  @resource_editor_9 @noworkflow
   Scenario: Add revision to resources associated with groups that I am a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 01" page
@@ -161,7 +161,7 @@ Feature: Resource
     And I press "Compare"
     Then I should see "Resource 01 edited"
 
-  @fixme @dkanBug @noworkflow
+  @resource_editor_10 @fixme @dkanBug @noworkflow
     #TODO: Currently content creators do not have access to revert any resource
     #       That they are a group member for. Does this need to be tested then?
   Scenario: Revert resource revision of any resource associated with groups that I am a member of
