@@ -225,7 +225,7 @@ class DatasetContext extends RawDKANEntityContext {
    * @Then I should see all the dataset fields in the form
    */
   public function iShouldSeeAllTheDatasetFieldsInTheForm() {
-    $form_css_selector = '.node-dataset-form';
+    $form_css_selector = 'form#dataset-node-form';
 
     // We could use field_info_instances() to get the list of fields for the 'dataset' content
     // type but that would not cover the case where a field is removed accidentally.
@@ -237,36 +237,39 @@ class DatasetContext extends RawDKANEntityContext {
     $session = $this->getSession();
     $page = $session->getPage();
     $form_region = $page->find('css', $form_css_selector);
-    $form_field_elements = $form_region->findAll('css', '.form-item label');
     $form_fieldset_elements = $form_region->findAll('css', 'fieldset div.fieldset-legend');
-
-    // Clean found fields. Some of them are empty values.
-    $available_form_fields = array();
-    foreach ($form_field_elements as $form_field_element) {
-      if (!empty($form_field_element)) {
-        $available_form_fields[] = $form_field_element->getText();
-      }
-    }
 
     // Clean found fieldsets. Some of them are empty values.
     $available_form_fieldsets = array();
     foreach ($form_fieldset_elements as $form_fieldset_element) {
-      if (!empty($form_fieldset_element)) {
-        $available_form_fieldsets[] = $form_fieldset_element->getText();
+      $label = $form_fieldset_element->getText();
+      if (!empty($label)) {
+        $available_form_fieldsets[] = $label;
       }
     }
 
-    // Check that all form fiels are present.
+    $query_script = "jQuery('.form-item label', jQuery('$form_css_selector'))
+      .map(function(){ return jQuery(this).text().trim(); })";
+
+    $available_form_fields = $session->evaluateScript($query_script);
+
     foreach ($dataset_fields as $key => $field_name) {
+      // Add way for sites to skip specific fields.
+      if (empty($field_name)) {
+        continue;
+      }
       if (!in_array($field_name, $available_form_fields)) {
-        throw new \Exception("$field_name was not found in the form with CSS selector '$form_css_selector'");
+        throw new \Exception("Field $field_name was not found in the form with CSS selector '$form_css_selector'");
       }
     }
 
-    // Check that all form fielsets are present.
+    // Check that all form fieldsets are present.
     foreach ($dataset_fieldsets as $key => $fieldset_name) {
+      if (empty($fieldset_name)) {
+        continue;
+      }
       if (!in_array($fieldset_name, $available_form_fieldsets)) {
-        throw new \Exception("$fieldset_name was not found in the form with CSS selector '$form_css_selector'");
+        throw new \Exception("Field set $fieldset_name was not found in the form with CSS selector '$form_css_selector'");
       }
     }
   }

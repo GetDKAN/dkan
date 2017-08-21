@@ -402,6 +402,13 @@ class ServicesContext extends RawDKANContext {
    */
   private function process_field($field, $field_value) {
     switch ($field) {
+      case 'body':
+      case 'description':
+        if (is_array($field_value)) {
+          $field_value = $field_value['value'];
+        }
+        break;
+
       case 'publisher':
       case 'groups':
         if (is_array($field_value)) {
