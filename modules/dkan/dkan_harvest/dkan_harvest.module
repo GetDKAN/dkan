@@ -1019,7 +1019,7 @@ function dkan_harvest_process_source_datasets_finished($success, $results, $oper
  * Returns content (datasets and resources) associated with specified sources.
  *
  * @param array $sources
- *    An array with the source IDs.
+ *   An array with the source IDs.
  */
 function dkan_harvest_get_sources_content(array $sources) {
   $datasets = array();
