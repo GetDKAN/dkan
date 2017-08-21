@@ -217,8 +217,6 @@ projects:
     version: '1.3'
   menu_block:
     version: '2.7'
-  menu_token:
-    version: 1.0-beta7
   migrate:
     version: '2.8'
     patch:
@@ -284,10 +282,6 @@ projects:
       revision: 9dbf7cf
     patch:
       2360019: https://www.drupal.org/files/issues/ref_field-delete-insert-warning-2360019-5.patch
-  remote_file_source:
-    version: 1.x
-    patch:
-      2362487: https://www.drupal.org/files/issues/remote_file_source-location-content-dist_1.patch
   remote_stream_wrapper:
     download:
       type: git
@@ -335,7 +329,7 @@ projects:
   uuid:
     version: '1.0'
   views:
-    version: '3.16'
+    version: '3.17'
   views_autocomplete_filters:
     version: '1.2'
     patch:
