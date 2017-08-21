@@ -68,7 +68,7 @@ Feature: Resource
     And I click "Resource"
     ## If you use selenium uncomment this
     # And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     When I fill in "Title" with "Resource 06"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
@@ -89,7 +89,7 @@ Feature: Resource
     And I am on the "Content" page
     And I click "Resource"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I click "API or Website URL"
     And I fill in "edit-field-link-api-und-0-url" with "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02"
     When I fill in "Title" with "Resource 06"
@@ -246,7 +246,7 @@ Feature: Resource
     And I press "Import"
     And I wait for "Delete items"
     Then I should see "Last import"
-    And I should see "imported items total"
+    And I wait for "imported items total"
 
   @noworkflow @javascript
   Scenario: Delete items on datastore of own resource
