@@ -22,3 +22,7 @@ features[views_view][] = datasets
 files[] = includes/Datastore.inc
 files[] = includes/DkanDatastore.inc
 files[] = includes/DkanDatastoreFastImport.inc
+
+; Information added by DKAN release script on 8/22/2017
+version = 7.x-1.13.7-RC1
+project = dkan

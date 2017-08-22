@@ -10,3 +10,7 @@ features[ctools][] = services:services:3
 features[features_api][] = api:2
 features[services_endpoint][] = dkan_dataset_api
 mtime = 1417998121
+
+; Information added by DKAN release script on 8/22/2017
+version = 7.x-1.13.7-RC1
+project = dkan
