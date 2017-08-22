@@ -77,7 +77,7 @@ projects:
     patch:
       2809655: https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff
   entityreference:
-    version: '1.4'
+    version: '1.5'
   entityreference_filter:
     version: '1.7'
   facetapi:

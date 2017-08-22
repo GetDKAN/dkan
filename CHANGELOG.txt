@@ -1,5 +1,7 @@
 7.x-1.13.7
 ---------------------
+ - #2064 Updaet entityreference to 1.15
+ - #2061 Update views to 3.17
  - #2060 Update tests to adjust to client customizations.
  - #2060 Removed unused modules menu_token and remote_file_source from drupal-org.make
 
