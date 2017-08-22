@@ -1,5 +1,5 @@
-7.x-1.13.7
----------------------
+7.x-1.13.7 2017-08-2
+--------------------
  - #2064 Updaet entityreference to 1.15
  - #2061 Update views to 3.17
  - #2060 Update tests to adjust to client customizations.
