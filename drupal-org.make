@@ -1,18 +1,21 @@
----
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.2/visualization_entity.make"
-  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/1.13.6/open_data_schema_map.make"
+  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.x/visualization_entity.make"
+  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
   - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
-  - "https://raw.githubusercontent.com/NuCivic/recline/1.13.6/recline.make"
+  - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
 projects:
   admin_menu:
     version: '3.0-rc5'
   admin_menu_source:
     version: '1.1'
     patch:
-      2441283: https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch
+      2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
+  admin_views:
+    version: '1.6'
+    patch:
+      1780004: 'https://www.drupal.org/files/issues/admin_views-duplicate_system_path-1780004-54.patch'
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
@@ -57,7 +60,7 @@ projects:
   date:
     version: '2.10'
   defaultconfig:
-    version: 1.0-alpha11
+    version: '1.0-alpha11'
   devel:
     version: '1.5'
   diff:
@@ -244,7 +247,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/open_data_schema_map.git
-      branch: 1.13.6
+      branch: 7.x-1.x
   panelizer:
     version: '3.4'
   panels:
@@ -274,7 +277,7 @@ projects:
     download:
       type: git
       url: 'https://github.com/NuCivic/recline.git'
-      branch: 1.13.6
+      branch: 7.x-1.x
   ref_field:
     download:
       type: git
@@ -343,7 +346,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      tag: 7.x-1.2
+      branch: 7.x-1.x
     type: module
   workbench:
     version: '1.2'

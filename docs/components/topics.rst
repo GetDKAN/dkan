@@ -1,3 +1,5 @@
+.. _topics:
+
 DKAN Topics
 ===========
 
@@ -30,7 +32,7 @@ Editing topic terms
 ------------------------------------
 
 1. From the Administration menu, navigate to ``Site Configuration > Taxonomy > Topics``
-2. You will see a list of current topic terms, click the 'edit' link under Operations that corresponds to the term you would like to edit. 
+2. You will see a list of current topic terms, click the 'edit' link under Operations that corresponds to the term you would like to edit.
 3. Make changes and click "Save".
 
 Removing Topics from the main menu
@@ -40,6 +42,8 @@ Removing Topics from the main menu
 2. On the Menus screen, click "list links"
 3. Uncheck the box under "Enabled" for Topics
 4. Click "Save configuration"
+
+.. _`adding_new_icons`:
 
 Adding new icons
 ------------------------------------
