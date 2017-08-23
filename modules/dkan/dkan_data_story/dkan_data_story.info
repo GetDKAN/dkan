@@ -55,3 +55,7 @@ features_exclude[dependencies][image] = image
 features_exclude[dependencies][strongarm] = strongarm
 features_exclude[dependencies][taxonomy] = taxonomy
 no autodetect = 1
+
+; Information added by DKAN release script on 8/23/2017
+version = 7.x-1.13.7
+project = dkan

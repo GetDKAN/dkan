@@ -3,3 +3,7 @@ description = Enable fast import for resources
 core = 7.x
 package = DKAN
 dependencies[] = dkan_datastore
+
+; Information added by DKAN release script on 8/23/2017
+version = 7.x-1.13.7
+project = dkan

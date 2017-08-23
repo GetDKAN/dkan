@@ -45,3 +45,7 @@ features[workbench_moderation_transitions][] = needs_review:published
 features[workbench_moderation_transitions][] = published:needs_review
 features_exclude[dependencies][ctools] = ctools
 features_exclude[dependencies][dkan_dataset_content_types] = dkan_dataset_content_types
+
+; Information added by DKAN release script on 8/23/2017
+version = 7.x-1.13.7
+project = dkan

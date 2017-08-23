@@ -2,13 +2,13 @@
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.2/visualization_entity.make"
-  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/1.13.6/open_data_schema_map.make"
-  - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
-  - "https://raw.githubusercontent.com/NuCivic/recline/1.13.6/recline.make"
+- https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.2/visualization_entity.make
+- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/1.13.6/open_data_schema_map.make
+- https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
+- https://raw.githubusercontent.com/NuCivic/recline/1.13.6/recline.make
 projects:
   admin_menu:
-    version: '3.0-rc5'
+    version: 3.0-rc5
   admin_menu_source:
     version: '1.1'
     patch:
@@ -112,8 +112,8 @@ projects:
   feeds_flatstore_processor:
     download:
       type: git
-      url: 'https://github.com/NuCivic/feeds_flatstore_processor.git'
-      branch: master
+      url: https://github.com/NuCivic/feeds_flatstore_processor.git
+      revision: 82b2a05bd133dbf870bdf09f1c0a45711f1432e3
   field_group:
     version: '1.5'
     patch:
@@ -183,8 +183,8 @@ projects:
   leaflet_draw_widget:
     download:
       type: git
-      url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
-      branch: 'master'
+      url: https://github.com/NuCivic/leaflet_draw_widget.git
+      revision: 5a5f8faf664aeca02371f6692307580d9fab9116
   libraries:
     version: '2.3'
   link:
@@ -244,7 +244,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/open_data_schema_map.git
-      branch: 1.13.6
+      tag: 7.x-1.13.7
   panelizer:
     version: '3.4'
   panels:
@@ -273,8 +273,8 @@ projects:
   recline:
     download:
       type: git
-      url: 'https://github.com/NuCivic/recline.git'
-      branch: 1.13.6
+      url: https://github.com/NuCivic/recline.git
+      tag: 7.x-1.13.7
   ref_field:
     download:
       type: git
@@ -286,7 +286,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/remote_stream_wrapper.git
-      branch: 7.x-1.x
+      revision: 20311eee8f0ba87cbb7e48788b176c34e0313a78
   role_export:
     version: '1.0'
   rules:
@@ -322,8 +322,8 @@ projects:
   taxonomy_fixtures:
     download:
       type: git
-      url: 'https://github.com/NuCivic/taxonomy_fixtures.git'
-      branch: 7.x-1.x
+      url: https://github.com/NuCivic/taxonomy_fixtures.git
+      revision: b2f092c963f4a24afe1e6443eb9ff01c959079ed
   token:
     version: '1.7'
   uuid:
