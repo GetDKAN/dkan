@@ -352,7 +352,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/visualization_entity.git
-      branch: 7.x-1.x
+      branch: civic-6637-fix-height-regression
     type: module
   workbench:
     version: '1.2'
