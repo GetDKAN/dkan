@@ -92,7 +92,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @resource_editor_6 @noworkflow @javascript
+  @resource_editor_6 @noworkflow @javascript @datastore
   Scenario: Import items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
@@ -109,7 +109,7 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @resource_editor_7 @db @noworkflow @javascript
+  @resource_editor_7 @db @noworkflow @javascript @datastore
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
@@ -129,7 +129,7 @@ Feature: Resource
     When I click "Manage Datastore"
     And I wait for "No imported items."
 
-  @resource_editor_8 @noworkflow @javascript
+  @resource_editor_8 @noworkflow @javascript @datastore
   Scenario: Drop datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 01" page
@@ -147,7 +147,7 @@ Feature: Resource
     Then I should see "Datastore dropped!"
     And I should see "Your file for this resource is not added to the datastore"
     When I click "Manage Datastore"
-    Then I should see "No imported items."
+    Then I wait for "No imported items."
 
   @resource_editor_9 @noworkflow
   Scenario: Add revision to resources associated with groups that I am a member of
