@@ -233,7 +233,7 @@ Feature: Resource
     And I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @noworkflow @javascript
+  @noworkflow @javascript @datastore
   Scenario: Import items on datastore of own resource
     Given I am logged in as "Celeste"
     And I am on "Resource 05" page
@@ -248,7 +248,7 @@ Feature: Resource
     Then I should see "Last import"
     And I wait for "imported items total"
 
-  @noworkflow @javascript
+  @noworkflow @javascript @datastore
   Scenario: Delete items on datastore of own resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
@@ -268,7 +268,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I wait for "No imported items."
 
-  @noworkflow @javascript
+  @noworkflow @javascript @datastore
   Scenario: Drop datastore of own resource
     Given I am logged in as "John"
     And I am on "Resource 03" page
