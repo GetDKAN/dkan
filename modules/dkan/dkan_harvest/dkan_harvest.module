@@ -22,6 +22,8 @@ define('DKAN_HARVEST_DELETE_CONTENT', 0);
 define('DKAN_HARVEST_UNPUBLISH_CONTENT', 1);
 define('DKAN_HARVEST_ORPHAN_CONTENT', 2);
 
+define('DKAN_HARVEST_DEFAULT_BATCH_LENGTH', 10);
+
 /**
  * Implements hook_theme().
  */
@@ -413,7 +415,7 @@ function dkan_harvest_harvest_source($harvest_source, $options = array(), &$cont
 function dkan_harvest_harvest_sources(array $source_nodes = array(), $perform_cache = FALSE) {
 
   // Load chunk length.
-  $batch_length = variable_get('dkan_harvest_batch_length', 2);
+  $batch_length = variable_get('dkan_harvest_batch_length', DKAN_HARVEST_DEFAULT_BATCH_LENGTH);
 
   // Process all source nodes.
   foreach($source_nodes as $source_node) {
@@ -463,7 +465,7 @@ function dkan_harvest_generate_harvest_batch($source_node, $perform_cache = FALS
 
   $batch = array();
   $batch_operations = array();
-  $batch_length = variable_get('dkan_harvest_batch_length', 2);
+  $batch_length = variable_get('dkan_harvest_batch_length', DKAN_HARVEST_DEFAULT_BATCH_LENGTH);
 
   // Get Harvest Source object for Harvest node.
   $harvest_source = HarvestSource::getHarvestSourceFromNode($source_node);
