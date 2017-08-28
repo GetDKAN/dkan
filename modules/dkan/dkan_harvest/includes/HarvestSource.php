@@ -338,7 +338,7 @@ class HarvestSource {
    *         status after completion.
    */
   public function migrate($options = array()) {
-    $migration = $this->getMigration();
+    $migration = $this->getMigration($options);
     // Make sure the migration instantiation worked.
     if ($migration) {
       return $migration->processImport($options);
@@ -349,20 +349,15 @@ class HarvestSource {
   }
 
   /**
-   * Run a full harvest on this source.
-   */
-  public function harvest() {
-    $this->cache();
-    $this->migrate();
-  }
-
-  /**
    * Register and get the migration class for a harvest source.
+   *
+   * @param array $options
+   *        Array extra options to pass to the migration.   
    *
    * @return HarvestMigration
    *         Object related to the source. Or FALSE if failed.
    */
-  public function getMigration() {
+  public function getMigration($options = array()) {
     $harvest_migration_machineName = $this->getMigrationMachineName();
 
     // Prepare $arguments to pass to the migration.
@@ -373,17 +368,20 @@ class HarvestSource {
       'dkan_harvest_source' => $this,
     );
 
+    // Append extra arguments.
+    $extended_arguments = array_merge($arguments, $options);
+
     // Register the migration if it does not exist yet or
     // update the arguments if not.
     HarvestMigration::registerMigration(
       $this->type->migrationClass,
       $harvest_migration_machineName,
-      $arguments
+      $extended_arguments
     );
 
     // This will make sure the Migration have the latest arguments.
     $migration = HarvestMigration::getInstance($harvest_migration_machineName,
-      $this->type->migrationClass, $arguments);
+      $this->type->migrationClass, $extended_arguments);
 
     // Probably we should not trust migrations not subclassed from our
     // HarvestMigration. Altheugh this check should've have happened in the
@@ -407,7 +405,7 @@ class HarvestSource {
     $this->getCacheDir(TRUE);
 
     // Rollback harvest migration.
-    $migration = $this->getMigration();
+    $migration = $this->getMigration($options);
     // Make sure the migration instantiation worked.
     if ($migration) {
       return $migration->processRollback($options);

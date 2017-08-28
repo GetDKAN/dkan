@@ -19,7 +19,7 @@ function dkan_harvest_page_event_log($node) {
   drupal_set_title(t('Events'));
   // Set the table header.
   $header = array(
-    'mlid' => array('data' => t('Event ID'), 'field' => 'log.mlid'),
+    'event_id' => array('data' => t('Event ID'), 'field' => 'event_id'),
     'starttime' => array(
       'data' => t('Date'),
       'field' => 'starttime',
@@ -34,11 +34,6 @@ function dkan_harvest_page_event_log($node) {
     'unchanged' => array('data' => t('Unchanged'), 'field' => 'unchanged'),
   );
 
-  $status_text = array(
-    t('OK'),
-    l(t('ERROR'), 'node/' . $node->nid . '/harvest-errors', array('attributes' => array('alt' => 'Error'))),
-  );
-  $status_class = array(0 => 'alert-success', 1 => t('alert-danger'));
   $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
   $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
   $log_table = $harvest_source_migration->getMap()->getLogTable();
@@ -81,21 +76,18 @@ function dkan_harvest_page_event_log($node) {
   );
 
   if (count($results)) {
+    // Cleanup data
+    $event_data = dkan_harvest_prepare_event_rows($node, $results);
+
     // Build the table rows.
     $rows = array();
-    foreach ($results as $result) {
+    foreach ($event_data as $data) {
+      // Format 'date' and 'duration' values.
+      $data['date'] = format_date(timefloor($data['date']));
+      $data['duration'] = format_interval(timefloor($data['duration']), 2);
+      // Setup row data.
       $row = array(
-        'data' => array(
-          'mlid' => $result->mlid,
-          'date' => format_date(timefloor($result->starttime)),
-          'status' => array('data' => $status_text[$result->failed], 'class' => array($status_class[$result->failed])),
-          'duration' => format_interval(timefloor($result->duration), 2),
-          'created' => $result->created,
-          'updated' => $result->updated,
-          'failed' => $result->failed,
-          'orphaned' => $result->orphaned,
-          'unchanged' => $result->unchanged,
-        ),
+        'data' => $data,
         'class' => array('harvest-event'),
       );
 
@@ -125,6 +117,56 @@ function dkan_harvest_page_event_log($node) {
   }
 
   return $build;
+}
+
+/**
+ *
+ */
+function dkan_harvest_prepare_event_rows($node, $results = array()) {
+
+  $status_text = array(
+    t('OK'),
+    l(t('ERROR'), 'node/' . $node->nid . '/harvest-errors', array('attributes' => array('alt' => 'Error'))),
+  );
+  $status_class = array(0 => 'alert-success', 1 => t('alert-danger'));
+
+  $event_rows = array();
+  if (!empty($results)) {
+    foreach ($results as $result) {
+      $muuid = $result->muuid;
+      // Check if there is already a row with the same migration process id.
+      if (isset($event_rows[$muuid])) {
+        // Add up all values.
+        if ($result->starttime < $event_rows[$muuid]['date']) {
+          $event_rows[$muuid]['date'] = $result->starttime;
+        }
+        if ($result->failed) {     
+          $event_rows[$muuid]['status'] = $result->failed; 
+        }
+        $event_rows[$muuid]['duration'] += $result->duration;    
+        $event_rows[$muuid]['created'] += $result->created;
+        $event_rows[$muuid]['updated'] += $result->updated;
+        $event_rows[$muuid]['failed'] += $result->failed;
+        $event_rows[$muuid]['orphaned'] += $result->orphaned;
+        $event_rows[$muuid]['unchanged'] += $result->unchanged;
+      }
+      else {
+        $event_rows[$muuid] = array(
+          'event_id' => $result->muuid,
+          'date' => $result->starttime,
+          'status' => array('data' => $status_text[$result->failed], 'class' => array($status_class[$result->failed])),
+          'duration' => $result->duration,
+          'created' => $result->created,
+          'updated' => $result->updated,
+          'failed' => $result->failed,
+          'orphaned' => $result->orphaned,
+          'unchanged' => $result->unchanged
+        ); 
+      }
+    }  
+  }
+
+  return $event_rows;
 }
 
 /**

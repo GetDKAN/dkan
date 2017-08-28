@@ -189,6 +189,12 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
           'not null' => TRUE,
           'description' => 'Primary key for migrate_log table',
         );
+        $fields['muuid'] = array(
+          'type' => 'varchar',
+          'length' => '36',
+          'not null' => FALSE,
+          'description' => 'An UUID that identifies a full migration process (all chunks have the same muuid)',
+        );
         $fields['created'] = array(
           'type' => 'int',
           'unsigned' => TRUE,
@@ -261,6 +267,16 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
             'length' => '32',
             'not null' => FALSE,
             'description' => 'Hash of source row data, for detecting changes',
+          ));
+        }
+
+        // Add any missing columns to the log table.
+        if (!$this->connection->schema()->fieldExists($this->logTable, 'muuid')) {
+          $this->connection->schema()->addField($this->logTable, 'muuid', array(
+            'type' => 'varchar',
+            'length' => '36',
+            'not null' => FALSE,
+            'description' => 'An UUID that identifies a full migration process (all chunks have the same muuid)',
           ));
         }
       }

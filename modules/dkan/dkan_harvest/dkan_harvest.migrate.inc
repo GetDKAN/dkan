@@ -39,6 +39,7 @@ class HarvestMigration extends MigrateDKAN {
   protected $dkanHarvestSource;
 
   protected $sourceListOptions;
+  protected $listOptions;
 
   protected $dkanHarvestMigrateSQLMapSourceKey;
   protected $dkanHarvestMigrateSQLMapDestinationKey;
@@ -60,6 +61,17 @@ class HarvestMigration extends MigrateDKAN {
   protected $dkanHarvestDisabledRules = array();
 
   /**
+   * An UUID that identifies a migration process.
+   *
+   * A migration process can be done in chunks through partial migrations. The 'muuid'
+   * property is used to identify a migration process as a whole, no mather how many 
+   * migration calls are done in order to import all the elements.
+   *
+   * @var string
+   */
+  protected $muuid;
+
+  /**
    * General initialization of a HarvestMigration object.
    */
   public function __construct(array $arguments) {
@@ -71,12 +83,20 @@ class HarvestMigration extends MigrateDKAN {
 
     parent::__construct($arguments);
 
+    // Set the migration process ID. Generate one if none is provided.
+    $this->muuid = isset($arguments['muuid']) ? $arguments['muuid'] : uuid_generate();
+
     $this->dkanHarvestSource = $arguments['dkan_harvest_source'];
 
     // SourceList options.
     $this->sourceListOptions = array(
       'track_changes' => TRUE,
     );
+    // List options.
+    $this->listOptions = array(
+      'offset' => isset($arguments['offset']) ? $arguments['offset'] : 0,
+      'length' => isset($arguments['length']) ? $arguments['length'] : 0
+    );    
 
     // Keep MigrateMap construct arguments around to make overrides available.
     $this->dkanHarvestMigrateSQLMapSourceKey = array(
@@ -200,16 +220,32 @@ class HarvestMigration extends MigrateDKAN {
    */
   public function processImport(array $options = array()) {
     if ($this->getStatus() == MigrationBase::STATUS_IDLE) {
-      // Add any extra Harvest Migration Arguments. The arguments array should
-      // already exist.
-      $this->arguments = array_merge($this->arguments, $options);
-
       parent::processImport($options);
     }
     else {
       $this->resetStatus();
       $this->processImport($options);
     }
+
+    return $this->getResults();
+  }
+
+  /**
+   *
+   */
+  public function getResults() {
+    return array(
+      'status' => $this->getStatus(),
+      'logID' => $this->logID,
+      'muuid' => $this->muuid,
+      'created' => $this->destination->getCreated(),
+      'updated' => $this->destination->getUpdated(),
+      // Number of source datasets mines the number of processed
+      // datasets.
+      'unchanged' => $this->sourceCount() - $this->total_processed,
+      'failed' => $this->errorCount(),
+      'orphaned' => $this->map->orphanedCount()
+    );    
   }
 
   /**
@@ -594,7 +630,7 @@ class HarvestMigration extends MigrateDKAN {
     // current harvest they are missing from the source as well.
     // Look for those zombie dataset and clean them.
     $zombies = $this->map->lookupMapTable(HarvestMigrateSQLMap::STATUS_FAILED,
-      $this->getIdList(), "NOT IN", NULL, NULL);
+      $this->getAllIds(), "NOT IN", NULL, NULL);
 
     if (!empty($zombies)) {
       $zombies_sourceids = array();
@@ -621,6 +657,7 @@ class HarvestMigration extends MigrateDKAN {
         db_merge($this->map->getLogTable())
           ->key(array('mlid' => $this->logID))
           ->fields(array(
+            'muuid' => $this->muuid,
             'created' => $this->destination->getCreated(),
             'updated' => $this->destination->getUpdated(),
             // Number of source datasets mines the number of processed
@@ -636,6 +673,7 @@ class HarvestMigration extends MigrateDKAN {
           array('!name' => $this->machineName)));
       }
     }
+
 
     // Restore any rule disabled in the preImport call. This is restored last
     // in the postImport call to make sure any processing done is done while
@@ -670,14 +708,14 @@ class HarvestMigration extends MigrateDKAN {
     // in a previous harvest migrate.
     // Get rows marked with HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE
     // and part of the imported datasets imported.
-    if (is_array($this->getIdList()) && !empty($this->getIdList())) {
+    if (is_array($this->getAllIds()) && !empty($this->getAllIds())) {
       $query = $this->map->getConnection()->select($this->map->getMapTable(), 'map')
         ->fields('map')
         ->condition("needs_update", HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE)
         // This will throw an exception if $this->idListImported is empty. We
         // are doing that check before entring this code but if you are
         // refactoring this code make sure to add the relevent checks.
-        ->condition('sourceid1', $this->getIdList(), 'IN');
+        ->condition('sourceid1', $this->getAllIds(), 'IN');
       $result = $query->execute();
 
       $rowRestoredSourceList = $result->fetchAllAssoc('destid1');
@@ -747,9 +785,9 @@ class HarvestMigration extends MigrateDKAN {
     $query = $this->map->getConnection()->select($this->map->getMapTable(), 'map')
       ->fields('map')
       ->condition("needs_update", HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE, '<>');
-    if (is_array($this->getIdList()) && !empty($this->getIdList())) {
+    if (is_array($this->getAllIds()) && !empty($this->getAllIds())) {
       foreach ($this->map->getSourceKeyMap() as $key_name) {
-        $query = $query->condition("map.$key_name", $this->getIdList(), 'NOT IN');
+        $query = $query->condition("map.$key_name", $this->getAllIds(), 'NOT IN');
       }
     }
     $result = $query->execute();
@@ -1255,6 +1293,12 @@ class HarvestMigration extends MigrateDKAN {
     return $this->source->getIdList();
   }
 
+  /**
+   * Return list of source items ids.
+   */
+  public function getAllIds() {
+    return $this->source->getAllIds();
+  }
 }
 
 /**
@@ -1273,7 +1317,7 @@ class XMLHarvestMigration extends HarvestMigration {
       '/:id.xml';
 
     $this->source = new HarvestMigrateSourceList(
-      new HarvestList($this->dkanHarvestSource->getCacheDir()),
+      new HarvestList($this->dkanHarvestSource->getCacheDir(), $this->listOptions),
       new MigrateItemXML($this->itemUrl),
       array(),
       $this->sourceListOptions

@@ -21,7 +21,7 @@ class DatajsonHarvestMigration extends HarvestMigration {
       '/:id';
 
     $this->source = new HarvestMigrateSourceList(
-      new HarvestList($this->dkanHarvestSource->getCacheDir()),
+      new HarvestList($this->dkanHarvestSource->getCacheDir(), $this->listOptions),
       new MigrateItemJSON($this->itemUrl),
       array(),
       $this->sourceListOptions

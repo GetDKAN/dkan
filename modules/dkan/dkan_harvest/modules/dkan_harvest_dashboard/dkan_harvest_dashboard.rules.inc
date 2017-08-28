@@ -38,8 +38,7 @@ function dkan_harvest_dashboard_rules_action_info() {
  *        The Harvest Source to be cached.
  */
 function dkan_harvest_dashboard_harvest_cache_action($harvest_source_node) {
-  $harvest_source = HarvestSource::getHarvestSourceFromNode($harvest_source_node);
-  dkan_harvest_cache_sources(array($harvest_source));
+  dkan_harvest_cache_sources_in_batch(array($harvest_source_node));
 }
 
 /**
@@ -49,8 +48,7 @@ function dkan_harvest_dashboard_harvest_cache_action($harvest_source_node) {
  *        The Harvest Source to be migrated.
  */
 function dkan_harvest_dashboard_harvest_migrate_action($harvest_source_node) {
-  $harvest_source = HarvestSource::getHarvestSourceFromNode($harvest_source_node);
-  dkan_harvest_migrate_sources(array($harvest_source));
+  dkan_harvest_harvest_sources_in_batch(array($harvest_source_node));
 }
 
 /**
@@ -60,7 +58,6 @@ function dkan_harvest_dashboard_harvest_migrate_action($harvest_source_node) {
  *        The Harvest Source to be cached and migrated.
  */
 function dkan_harvest_dashboard_harvest_cache_migrate_action($harvest_source_node) {
-  $harvest_source = HarvestSource::getHarvestSourceFromNode($harvest_source_node);
-  dkan_harvest_cache_sources(array($harvest_source));
-  dkan_harvest_migrate_sources(array($harvest_source));
+  dkan_harvest_cache_sources_in_batch(array($harvest_source_node));
+  dkan_harvest_harvest_sources_in_batch(array($harvest_source_node));
 }
