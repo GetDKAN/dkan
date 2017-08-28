@@ -81,10 +81,17 @@ Feature: Dataset Features
     Then I select "Restricted" from "edit-field-public-access-level-und"
     And I should see "Rights on Project Open Data"
 
-  @javascript
+  @dataset_admin_05 @javascript
   Scenario: Should not see Rights field if public access level = none
     Given I am logged in as "Gabriel"
     And I am on "Dataset 01" page
     When I click "Edit"
     Then I select "- None -" from "edit-field-public-access-level-und"
     And I should not see "Rights on Project Open Data"
+
+  @api
+  Scenario: ODSM data.json 1.1 mapping
+    Given I am logged in as a user with the "administrator" role
+    And I go to "admin/config/services/odsm/edit/data_json_1_1"
+    Then the "Homepage URL (landingPage)" field should contain "[node:field_landing_page:url] || [node:url]"
+

@@ -153,9 +153,11 @@ class HarvestMigration extends MigrateDKAN {
     if (isset($result['node'])) {
       $harvest_source_nids = array_keys($result['node']);
       $this->dkanHarvestSourceNid = array_pop($harvest_source_nids);
+      $this->dkanHarvestSourceNode = node_load($this->dkanHarvestSourceNid);
     }
     else {
       $this->dkanHarvestSourceNid = FALSE;
+      $this->dkanHarvestSourceNode = NULL;
     }
 
     // Add Field mappings.
@@ -309,6 +311,11 @@ class HarvestMigration extends MigrateDKAN {
 
     // Add group.
     $this->prepareGroup($dataset, $row);
+
+    // Set topics in dataset to same as Harvest node.
+    if ($this->dkanHarvestSourceNode) {
+      $dataset->field_topic = $this->dkanHarvestSourceNode->field_dkan_harvest_topic;
+    }
 
     // Save dataset.
     node_save($dataset);

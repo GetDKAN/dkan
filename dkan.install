@@ -380,9 +380,18 @@ function dkan_update_7021() {
 }
 
 /**
- *
+ * Update chosen_jquery_selector to include language selectors.
  */
 function dkan_update_7022() {
+  // REF #1936, #1890.
+  variable_set('chosen_jquery_selector',
+    '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"], [id*="lines-terminated-by"], [id*="lang-dropdown-select-language"])');
+}  
+
+/*
+ *
+ */
+function dkan_update_7023() {
 
   // Get all harvest sources.
   $harvest_source_nodes = node_load_multiple(array(), array('type' => 'harvest_source'));
