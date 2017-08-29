@@ -13,10 +13,10 @@ class DkanHarvestDataJsonTest extends PHPUnit_Framework_TestCase {
    */
   public static function setUpBeforeClass() {
     // Harvest cache the test source.
-    dkan_harvest_cache_sources(array(self::getTestSource()));
+    dkan_harvest_cache_source(self::getTestSource());
 
     // Harvest Migration of the test data.
-    dkan_harvest_migrate_sources(array(self::getTestSource()));
+    dkan_harvest_migrate_source(self::getTestSource());
   }
 
   /**

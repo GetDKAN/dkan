@@ -44,12 +44,8 @@ class HarvestSource {
 
   /**
    * Constructor for HarvestSource class.
-   *
-   * @param array $machineName
-   *   Source array containing atleast all the required source
-   *        elements (As documented above) and any other optional proprety.
    */
-  public function __construct(array $machineName) {
+  public function __construct($machineName) {
     // $machineName is really needed to construct this object.
     if (empty($machineName) || is_null($machineName)) {
       throw new Exception(t('machine name is required!'));
