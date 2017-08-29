@@ -22,7 +22,7 @@ define('DKAN_HARVEST_DELETE_CONTENT', 0);
 define('DKAN_HARVEST_UNPUBLISH_CONTENT', 1);
 define('DKAN_HARVEST_ORPHAN_CONTENT', 2);
 
-define('DKAN_HARVEST_DEFAULT_BATCH_LENGTH', 10);
+define('DKAN_HARVEST_DEFAULT_BATCH_LENGTH', 2);
 
 /**
  * Implements hook_theme().
@@ -297,7 +297,7 @@ function dkan_harvest_page_preview($node) {
 /**
  *
  */
-function dkan_harvest_cache_source($harvest_source, $harvest_updatetime = NULL, &$context) {
+function dkan_harvest_cache_source($harvest_source, $harvest_updatetime = NULL, &$context = array()) {
 
   $harvest_cache = $harvest_source->cache($harvest_updatetime);
 
@@ -330,7 +330,7 @@ function dkan_harvest_cache_source($harvest_source, $harvest_updatetime = NULL, 
  */
 function dkan_harvest_cache_sources(array $harvest_sources = array(), $harvest_updatetime = NULL) {
   foreach ($harvest_sources as $harvest_source) {
-    dkan_harvest_cache_source($harvest_source);
+    dkan_harvest_cache_source($harvest_source, $harvest_updatetime);
   }
 }
 
@@ -372,7 +372,7 @@ function dkan_harvest_cache_sources_in_batch(array $harvest_sources = array(), $
 /**
  *
  */
-function dkan_harvest_migrate_source($harvest_source, $options = array(), &$context) {
+function dkan_harvest_migrate_source($harvest_source, $options = array(), &$context = array()) {
   // Migrate and get result.
   $result = $harvest_source->migrate($options);
 
@@ -410,7 +410,7 @@ function dkan_harvest_migrate_source($harvest_source, $options = array(), &$cont
 /**
  *
  */
-function dkan_harvest_migrate_sources(array $harvest_sources = array(), $perform_cache = FALSE) {
+function dkan_harvest_migrate_sources(array $harvest_sources = array(), $options = array(), $perform_cache = FALSE) {
 
   // Load chunk length.
   $batch_length = variable_get('dkan_harvest_batch_length', DKAN_HARVEST_DEFAULT_BATCH_LENGTH);
@@ -434,11 +434,10 @@ function dkan_harvest_migrate_sources(array $harvest_sources = array(), $perform
       $items_count = $harvest_cache->getSavedCount();
       // Split source harvesting into chunks based on number of items + chunk length.
       for($offset = 0; $offset < $items_count; $offset += $batch_length) {
-        $options = array(
-          'length' => $batch_length, 
-          'offset' => $offset, 
-          'muuid' => $migration_process_uuid
-        );  
+        // Add extra options for the migration.
+        $options['length'] = $batch_length;
+        $options['offset'] = $offset;
+        $options['muuid'] = $migration_process_uuid;
         // Migrate source.
         dkan_harvest_migrate_source($harvest_source, $options);
       }
@@ -457,7 +456,7 @@ function dkan_harvest_migrate_sources(array $harvest_sources = array(), $perform
 /**
  *
  */
-function dkan_harvest_generate_migrate_batch($harvest_source, $perform_cache = FALSE) {
+function dkan_harvest_generate_migrate_batch($harvest_source, $options = array(), $perform_cache = FALSE) {
 
   $batch = array();
   $batch_operations = array();
@@ -477,11 +476,10 @@ function dkan_harvest_generate_migrate_batch($harvest_source, $perform_cache = F
     $items_count = $harvest_cache->getSavedCount();
     // Split harvest operation into several based on the number of items + chunk length.      
     for($offset = 0; $offset < $items_count; $offset += $batch_length) {
-      $options = array(
-        'length' => $batch_length, 
-        'offset' => $offset, 
-        'muuid' => $migration_process_uuid
-      );
+      // Add extra options for the migration.
+      $options['length'] = $batch_length;
+      $options['offset'] = $offset;
+      $options['muuid'] = $migration_process_uuid;
       // Add one operation per chunk.
       $batch_operations[] = array('dkan_harvest_migrate_source', 
           array($harvest_source, $options));
@@ -520,11 +518,11 @@ function dkan_harvest_generate_migrate_batch($harvest_source, $perform_cache = F
 /**
  *
  */
-function dkan_harvest_migrate_sources_in_batch(array $harvest_sources = array(), $perform_cache = FALSE) {
+function dkan_harvest_migrate_sources_in_batch(array $harvest_sources = array(), $options = array(), $perform_cache = FALSE) {
 
   foreach($harvest_sources as $harvest_source) {
     // Config batch process.
-    $batch = dkan_harvest_generate_migrate_batch($harvest_source, $perform_cache);
+    $batch = dkan_harvest_generate_migrate_batch($harvest_source, $options, $perform_cache);
     // Setup batch process.
     batch_set($batch);
   }
@@ -570,7 +568,7 @@ function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
 
   // Get harvest source object for the node.
   $harvest_source = HarvestSource::getHarvestSourceFromNode($form['#node']);
-  dkan_harvest_migrate_sources_in_batch(array($harvest_source), TRUE);
+  dkan_harvest_migrate_sources_in_batch(array($harvest_source), array(), TRUE);
 
   $form_state['redirect'] = 'admin/dkan/harvest/dashboard';
 }
@@ -578,7 +576,7 @@ function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
 /**
  * Hide 'Groups were updated on X resources' while harvesting datasets.
  */
-function dkan_harvest_message_cleanup($source_node, &$context) {
+function dkan_harvest_message_cleanup($source_node, &$context = array()) {
   // Cleanup status messages to hide the ones like 'Groups were updated on X resources'.
   $status_messages = drupal_get_messages('status') + array('status' => array());
   foreach ($status_messages['status'] as $message) {
