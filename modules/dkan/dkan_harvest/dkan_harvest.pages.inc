@@ -9,10 +9,10 @@
  * Display a harvest source node's event log history.
  *
  * @param object $node
- *        The harvest source node being acted upon.
+ *   The harvest source node being acted upon.
  *
  * @return array
- *         A themed table of data and links for harvest source node events.
+ *   A themed table of data and links for harvest source node events.
  */
 function dkan_harvest_page_event_log($node) {
   // Set page title.
@@ -76,7 +76,7 @@ function dkan_harvest_page_event_log($node) {
   );
 
   if (count($results)) {
-    // Cleanup data
+    // Cleanup data.
     $event_data = dkan_harvest_prepare_event_rows($node, $results);
 
     // Build the table rows.
@@ -120,9 +120,9 @@ function dkan_harvest_page_event_log($node) {
 }
 
 /**
- *
+ * Process event information to be displayed on the rows of the 'Events' table.
  */
-function dkan_harvest_prepare_event_rows($node, $results = array()) {
+function dkan_harvest_prepare_event_rows($node, array $results = array()) {
 
   $status_text = array(
     t('OK'),
@@ -140,10 +140,10 @@ function dkan_harvest_prepare_event_rows($node, $results = array()) {
         if ($result->starttime < $event_rows[$muuid]['date']) {
           $event_rows[$muuid]['date'] = $result->starttime;
         }
-        if ($result->failed) {     
-          $event_rows[$muuid]['status'] = $result->failed; 
+        if ($result->failed) {
+          $event_rows[$muuid]['status'] = $result->failed;
         }
-        $event_rows[$muuid]['duration'] += $result->duration;    
+        $event_rows[$muuid]['duration'] += $result->duration;
         $event_rows[$muuid]['created'] += $result->created;
         $event_rows[$muuid]['updated'] += $result->updated;
         $event_rows[$muuid]['failed'] += $result->failed;
@@ -161,9 +161,9 @@ function dkan_harvest_prepare_event_rows($node, $results = array()) {
           'failed' => $result->failed,
           'orphaned' => $result->orphaned,
           'unchanged' => $result->unchanged
-        ); 
+        );
       }
-    }  
+    }
   }
 
   return $event_rows;
@@ -173,10 +173,10 @@ function dkan_harvest_prepare_event_rows($node, $results = array()) {
  * Display a harvest source node's error log history.
  *
  * @param object $node
- *        The harvest source node being acted upon.
+ *   The harvest source node being acted upon.
  *
  * @return array
- *         A themed table of data and links for
+ *   A themed table of data and links for
  *         harvest source node events.
  */
 function dkan_harvest_page_error_log($node) {

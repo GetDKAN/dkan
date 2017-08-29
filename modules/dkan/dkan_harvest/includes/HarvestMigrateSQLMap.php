@@ -43,7 +43,7 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
    * query is in an external database.
    *
    * @return string
-   *         Returns the log table name.
+   *   Returns the log table name.
    *
    * @see self::getQualifiedMapTable()
    */
@@ -301,7 +301,7 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
    * but not available from the source anymore.
    *
    * @return int
-   *         Number of records errored out.
+   *   Number of records errored out.
    */
   public function orphanedCount() {
     $query = $this->connection->select($this->mapTable);

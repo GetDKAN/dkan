@@ -144,10 +144,10 @@ function dkan_harvest_drush_command_cache($source_machine_name = NULL) {
   }
   else {
     drush_log("Running the harvest caching on all the available sources.", 'notice');
-    $sources = dkan_harvest_sources_definition();    
+    $sources = dkan_harvest_sources_definition();
   }
 
-  foreach($sources as $source) {
+  foreach ($sources as $source) {
     // Config batch process.
     $batch = dkan_harvest_generate_cache_batch($source);
     // Setup batch process.
@@ -191,7 +191,7 @@ function dkan_harvest_drush_command_migrate($source_machine_name = NULL, $perfor
     $sources = dkan_harvest_sources_definition();
   }
 
-  foreach($sources as $source) {
+  foreach ($sources as $source) {
     // Config batch process.
     $batch = dkan_harvest_generate_migrate_batch($source, $options, $perform_cache);
     // Setup batch process.

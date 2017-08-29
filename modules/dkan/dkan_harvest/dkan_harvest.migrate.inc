@@ -64,7 +64,7 @@ class HarvestMigration extends MigrateDKAN {
    * An UUID that identifies a migration process.
    *
    * A migration process can be done in chunks through partial migrations. The 'muuid'
-   * property is used to identify a migration process as a whole, no mather how many 
+   * property is used to identify a migration process as a whole, no mather how many
    * migration calls are done in order to import all the elements.
    *
    * @var string
@@ -96,7 +96,7 @@ class HarvestMigration extends MigrateDKAN {
     $this->listOptions = array(
       'offset' => isset($arguments['offset']) ? $arguments['offset'] : 0,
       'length' => isset($arguments['length']) ? $arguments['length'] : 0
-    );    
+    );
 
     // Keep MigrateMap construct arguments around to make overrides available.
     $this->dkanHarvestMigrateSQLMapSourceKey = array(
@@ -233,7 +233,7 @@ class HarvestMigration extends MigrateDKAN {
   }
 
   /**
-   *
+   * Returns an array with results information.
    */
   public function getResults() {
     return array(
@@ -247,7 +247,7 @@ class HarvestMigration extends MigrateDKAN {
       'unchanged' => $this->sourceCount() - $this->total_processed,
       'failed' => $this->errorCount(),
       'orphaned' => $this->map->orphanedCount()
-    );    
+    );
   }
 
   /**
@@ -680,7 +680,6 @@ class HarvestMigration extends MigrateDKAN {
           array('!name' => $this->machineName)));
       }
     }
-
 
     // Restore any rule disabled in the preImport call. This is restored last
     // in the postImport call to make sure any processing done is done while
@@ -1306,6 +1305,7 @@ class HarvestMigration extends MigrateDKAN {
   public function getAllIds() {
     return $this->source->getAllIds();
   }
+
 }
 
 /**

@@ -35,7 +35,7 @@ function dkan_harvest_dashboard_rules_action_info() {
  * Cache the Harvest Source.
  *
  * @param object $harvest_source_node
- *        The Harvest Source to be cached.
+ *   The Harvest Source to be cached.
  */
 function dkan_harvest_dashboard_harvest_cache_action($harvest_source_node) {
   // Get harvest source object for the node.
@@ -47,7 +47,7 @@ function dkan_harvest_dashboard_harvest_cache_action($harvest_source_node) {
  * Migrate the Harvest Source.
  *
  * @param object $harvest_source_node
- *        The Harvest Source to be migrated.
+ *   The Harvest Source to be migrated.
  */
 function dkan_harvest_dashboard_harvest_migrate_action($harvest_source_node) {
   // Get harvest source object for the node.
@@ -59,10 +59,10 @@ function dkan_harvest_dashboard_harvest_migrate_action($harvest_source_node) {
  * Cache and migrate the Harvest Source.
  *
  * @param object $harvest_source_node
- *        The Harvest Source to be cached and migrated.
+ *   The Harvest Source to be cached and migrated.
  */
 function dkan_harvest_dashboard_harvest_cache_migrate_action($harvest_source_node) {
   // Get harvest source object for the node.
-  $harvest_source = HarvestSource::getHarvestSourceFromNode($harvest_source_node);  
+  $harvest_source = HarvestSource::getHarvestSourceFromNode($harvest_source_node);
   dkan_harvest_migrate_sources_in_batch(array($harvest_source), array(), TRUE);
 }

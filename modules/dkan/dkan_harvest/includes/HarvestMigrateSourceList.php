@@ -12,12 +12,13 @@ class HarvestMigrateSourceList extends MigrateSourceList {
    */
   public function getIdList() {
     return $this->listClass->getIdList();
-  }  
+  }
 
   /**
    * Return List of IDs of the source items.
    */
   public function getAllIds() {
     return $this->listClass->getAllCachedFiles();
-  }  
+  }
+
 }
