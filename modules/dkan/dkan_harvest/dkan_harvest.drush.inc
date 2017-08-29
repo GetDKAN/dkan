@@ -131,19 +131,29 @@ function dkan_harvest_drush_command_harvest($source_machine_name = NULL) {
  *   Source machine name to cache.
  */
 function dkan_harvest_drush_command_cache($source_machine_name = NULL) {
+
+  $sources = array();
+
   if (isset($source_machine_name)) {
-    if ($source = new HarvestSource($source_machine_name)) {
-      drush_log("Running the harvest migration on " . $source_machine_name, 'notice');
-      return dkan_harvest_cache_sources(array($source), microtime());
-    }
-    else {
+    $source = new HarvestSource($source_machine_name);
+    if (!$source) {
       drush_log("No source with machine name " . $source_machine_name . " found.", 'error');
+      return FALSE;
     }
+    $sources[] = $source;
   }
   else {
     drush_log("Running the harvest caching on all the available sources.", 'notice');
-    $sources = dkan_harvest_sources_definition();
-    dkan_harvest_cache_sources($sources);
+    $sources = dkan_harvest_sources_definition();    
+  }
+
+  foreach($sources as $source) {
+    // Config batch process.
+    $batch = dkan_harvest_generate_cache_batch($source);
+    // Setup batch process.
+    $batch['progressive'] = FALSE;
+    batch_set($batch);
+    drush_backend_batch_process();
   }
 }
 
@@ -181,7 +191,14 @@ function dkan_harvest_drush_command_migrate($source_machine_name = NULL, $perfor
     $sources = dkan_harvest_sources_definition();
   }
 
-  dkan_harvest_migrate_sources($sources, $options, $perform_cache);
+  foreach($sources as $source) {
+    // Config batch process.
+    $batch = dkan_harvest_generate_migrate_batch($source, $options, $perform_cache);
+    // Setup batch process.
+    $batch['progressive'] = FALSE;
+    batch_set($batch);
+    drush_backend_batch_process();
+  }
 
   // Print instrument info if set.
   global $_migrate_track_memory, $_migrate_track_timer;

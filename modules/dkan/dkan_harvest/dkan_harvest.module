@@ -326,15 +326,6 @@ function dkan_harvest_cache_source($harvest_source, $harvest_updatetime = NULL, 
 }
 
 /**
- * Cache all sources.
- */
-function dkan_harvest_cache_sources(array $harvest_sources = array(), $harvest_updatetime = NULL) {
-  foreach ($harvest_sources as $harvest_source) {
-    dkan_harvest_cache_source($harvest_source, $harvest_updatetime);
-  }
-}
-
-/**
  *
  */
 function dkan_harvest_generate_cache_batch($harvest_source, $harvest_updatetime = NULL) {
@@ -405,52 +396,6 @@ function dkan_harvest_migrate_source($harvest_source, $options = array(), &$cont
     dkan_harvest_log($message, 'error');
     return FALSE;
   }  
-}
-
-/**
- *
- */
-function dkan_harvest_migrate_sources(array $harvest_sources = array(), $options = array(), $perform_cache = FALSE) {
-
-  // Load chunk length.
-  $batch_length = variable_get('dkan_harvest_batch_length', DKAN_HARVEST_DEFAULT_BATCH_LENGTH);
-
-  // Process all source nodes.
-  foreach($harvest_sources as $harvest_source) {
-
-    // Cache source if required.
-    if ($perform_cache) {
-      dkan_harvest_cache_source($harvest_source);
-    }  
-
-    // Get cache associated with the harvest source.
-    $harvest_cache = call_user_func($harvest_source->type->cacheCallback, $harvest_source, NULL);
-
-    // Check if the cache was loaded successfully.
-    if ($harvest_cache) {
-            // Generate a migration process ID.
-      $migration_process_uuid = uuid_generate();
-      // Get the number of cached items.
-      $items_count = $harvest_cache->getSavedCount();
-      // Split source harvesting into chunks based on number of items + chunk length.
-      for($offset = 0; $offset < $items_count; $offset += $batch_length) {
-        // Add extra options for the migration.
-        $options['length'] = $batch_length;
-        $options['offset'] = $offset;
-        $options['muuid'] = $migration_process_uuid;
-        // Migrate source.
-        dkan_harvest_migrate_source($harvest_source, $options);
-      }
-    }
-    else {
-      // Display an eror.
-      $message = t('Failed to load the cache for source @source_name.', array('@source_name' => $harvest_source->machineName));
-      dkan_harvest_log($message, 'error');
-    }
-
-    // Cleanup messages.
-    dkan_harvest_message_cleanup($harvest_source);
-  }
 }
 
 /**
