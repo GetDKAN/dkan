@@ -135,12 +135,11 @@ function dkan_harvest_drush_command_cache($source_machine_name = NULL) {
   $sources = array();
 
   if (isset($source_machine_name)) {
-    $source = new HarvestSource($source_machine_name);
-    if (!$source) {
-      drush_log("No source with machine name " . $source_machine_name . " found.", 'error');
-      return FALSE;
-    }
-    $sources[] = $source;
+      $source = dkan_harvest_get_harvestsource($source_machine_name);
+      if (!$source) {
+        return FALSE;
+      }
+      $sources[] = $source;
   }
   else {
     drush_log("Running the harvest caching on all the available sources.", 'notice');
@@ -151,7 +150,6 @@ function dkan_harvest_drush_command_cache($source_machine_name = NULL) {
     // Config batch process.
     $batch = dkan_harvest_generate_cache_batch($source);
     // Setup batch process.
-    $batch['progressive'] = FALSE;
     batch_set($batch);
     drush_backend_batch_process();
   }
@@ -195,7 +193,6 @@ function dkan_harvest_drush_command_migrate($source_machine_name = NULL, $perfor
     // Config batch process.
     $batch = dkan_harvest_generate_migrate_batch($source, $options, $perform_cache);
     // Setup batch process.
-    $batch['progressive'] = FALSE;
     batch_set($batch);
     drush_backend_batch_process();
   }
@@ -410,10 +407,7 @@ function dkan_harvest_get_harvestsource($source_machine_name) {
     $source = new HarvestSource($source_machine_name);
   }
   catch (Exception $exception) {
-    $message = dt("No source with machine name %source_machine_name found.",
-      array(
-        '%source_machine_name' => $source_machine_name,
-      ));
+    $message = t("No source with machine name ") . $source_machine_name . t(" found.");
     return drush_set_error(NULL, $message);
   }
 

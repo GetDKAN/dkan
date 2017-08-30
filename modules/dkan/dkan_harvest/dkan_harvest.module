@@ -22,7 +22,7 @@ define('DKAN_HARVEST_DELETE_CONTENT', 0);
 define('DKAN_HARVEST_UNPUBLISH_CONTENT', 1);
 define('DKAN_HARVEST_ORPHAN_CONTENT', 2);
 
-define('DKAN_HARVEST_DEFAULT_BATCH_LENGTH', 10);
+define('DKAN_HARVEST_DEFAULT_BATCH_LENGTH', 5);
 
 /**
  * Implements hook_theme().
@@ -309,16 +309,16 @@ function dkan_harvest_cache_source($harvest_source, $harvest_updatetime = NULL, 
   $harvest_cache = $harvest_source->cache($harvest_updatetime);
 
   if (!$harvest_cache) {
-    $message = t('Harvest Cache for @source_machine_name failed!',
+    $message = t('Harvest cache for source "@source_name" failed!',
       array(
-        '@source_machine_name' => $source->machineName,
+        '@source_name' => $harvest_source->label,
       ));
     dkan_harvest_log($message, 'error');
   }
   else {
-    $message = t('Harvest Cache for @source_machine_name completed (processed @cache_processed, failed @cache_failed, saved @cache_saved : (filtered @cache_filtered, excluded @cache_excluded, defaulted @cache_defaulted, overridden @cache_overridden)).',
+    $message = t('Harvest cache for source "@source_name" completed (processed @cache_processed, failed @cache_failed, saved @cache_saved : (filtered @cache_filtered, excluded @cache_excluded, defaulted @cache_defaulted, overridden @cache_overridden)).',
       array(
-        '@source_machine_name' => $source->machineName,
+        '@source_name' => $harvest_source->label,
         '@cache_processed' => $harvest_cache->getProcessedCount(),
         '@cache_failed' => $harvest_cache->getFailedCount(),
         '@cache_saved' => $harvest_cache->getSavedCount(),
@@ -387,10 +387,11 @@ function dkan_harvest_cache_sources_in_batch(array $harvest_sources = array(), $
  *   The HarvestSource object to be migrated.
  * @param array $options
  *   An array with the options to be passed to the migration process.
- * @param array $context
+ * @codingStandardsIgnoreLine
+ * @param $context
  *   The context associated with the batch process.
  */
-function dkan_harvest_migrate_source($harvest_source, array $options = array(), array &$context = array()) {
+function dkan_harvest_migrate_source($harvest_source, array $options = array(), &$context = array()) {
   // Migrate and get result.
   $result = $harvest_source->migrate($options);
 
@@ -464,7 +465,7 @@ function dkan_harvest_generate_migrate_batch($harvest_source, array $options = a
       $options['muuid'] = $migration_process_uuid;
       // Add one operation per chunk.
       $batch_operations[] = array('dkan_harvest_migrate_source',
-          array($harvest_source, $options)
+        array($harvest_source, $options)
 );
     }
   }
@@ -563,9 +564,9 @@ function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
 }
 
 /**
- * Hide 'Groups were updated on X resources' while harvesting datasets.
+ * Cleanup messages displayed to the user after harvest migration is completed.
  */
-function dkan_harvest_message_cleanup($source_node, &$context = array()) {
+function dkan_harvest_message_cleanup($harvest_source, &$context = array()) {
   // Cleanup status messages to hide the ones like 'Groups were updated on X resources'.
   $status_messages = drupal_get_messages('status') + array('status' => array());
   foreach ($status_messages['status'] as $message) {
@@ -579,9 +580,9 @@ function dkan_harvest_message_cleanup($source_node, &$context = array()) {
   drupal_get_messages('success');
 
   // Add status message for the migration.
-  $message = t('Harvest process completed for source "@source_title" (@created created, @updated updated, @failed failed, @unchanged unchanged)',
+  $message = t('Harvest migration completed for source "@source_title" (@created created, @updated updated, @failed failed, @unchanged unchanged)',
     array(
-      '@source_title' => $source_node->title,
+      '@source_title' => $harvest_source->label,
       '@created' => (isset($context['results']['created']) ? $context['results']['created'] : 0),
       '@updated' => (isset($context['results']['updated']) ? $context['results']['updated'] : 0),
       '@failed' => (isset($context['results']['failed']) ? $context['results']['failed'] : 0),
