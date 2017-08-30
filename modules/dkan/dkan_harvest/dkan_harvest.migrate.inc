@@ -226,6 +226,8 @@ class HarvestMigration extends MigrateDKAN {
    * Add support for harvest migration specific checks and options.
    */
   public function processImport(array $options = array()) {
+    // Add any extra Harvest Migration Arguments.
+    $this->arguments = array_merge($this->arguments, $options);
     return parent::processImport($options);
   }
 
