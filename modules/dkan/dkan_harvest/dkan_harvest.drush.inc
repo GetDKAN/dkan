@@ -135,11 +135,11 @@ function dkan_harvest_drush_command_cache($source_machine_name = NULL) {
   $sources = array();
 
   if (isset($source_machine_name)) {
-      $source = dkan_harvest_get_harvestsource($source_machine_name);
-      if (!$source) {
-        return FALSE;
-      }
-      $sources[] = $source;
+    $source = dkan_harvest_get_harvestsource($source_machine_name);
+    if (!$source) {
+      return FALSE;
+    }
+    $sources[] = $source;
   }
   else {
     drush_log("Running the harvest caching on all the available sources.", 'notice');
