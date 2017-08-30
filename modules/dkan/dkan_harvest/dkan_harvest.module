@@ -1319,17 +1319,24 @@ function dkan_harvest_modify_delete_harvest_source_confirmation_form(array &$for
  */
 function dkan_harvest_build_delete_confirmation_description(array $sources) {
 
+  $source_datasets = array();
+  $source_resources = array();
+
+  $dataset_string = t('Datasets');
+  $resource_string = t('Resources');
+
   $markup = '<p>' . t('The following sources were selected to be deleted:') . '</p>';
   $markup .= '<ul>';
   foreach ($sources as $source_id) {
     $source = entity_load_single('node', $source_id);
     $source_datasets = dkan_harvest_get_datasets_from_source($source_id);
-    $dataset_string = t('Datasets');
-    foreach ($source_datasets as $source_dataset) {
-      $source_dataset_array[] = $source_dataset;
+    if (!empty($source_datasets)) {
+      foreach ($source_datasets as $source_dataset) {
+        $source_dataset_array[] = $source_dataset;
+      }
+      $source_resources = dkan_harvest_get_resources_from_datasets($source_dataset_array);
     }
-    $source_resources = dkan_harvest_get_resources_from_datasets($source_dataset_array);
-    $resource_string = t('Resources');
+
     $markup .= '<li>' . $source->title . ': ' . count($source_datasets) . ' ' . $dataset_string . ', ' . count($source_resources) . ' ' . $resource_string . '</li>';
   }
   $markup .= '</ul>';
