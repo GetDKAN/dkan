@@ -22,6 +22,8 @@ define('DKAN_HARVEST_DELETE_CONTENT', 0);
 define('DKAN_HARVEST_UNPUBLISH_CONTENT', 1);
 define('DKAN_HARVEST_ORPHAN_CONTENT', 2);
 
+define('DKAN_HARVEST_DEFAULT_BATCH_LENGTH', 2);
+
 /**
  * Implements hook_theme().
  */
@@ -248,7 +250,7 @@ function dkan_harvest_page_preview($node) {
     // The cache directory does not exist.
     // Perform a cache operation.
     $batch_operations = array();
-    $batch_operations[] = array('dkan_harvest_cache_source_node_batch', array($node));
+    $batch_operations[] = array('dkan_harvest_cache_source', array($harvestSource));
 
     // Setup batch process.
     $batch = array(
@@ -260,7 +262,6 @@ function dkan_harvest_page_preview($node) {
     );
     batch_set($batch);
     batch_process();
-
   }
   else {
     // The cache directory exists. Load the table.
@@ -294,16 +295,227 @@ function dkan_harvest_page_preview($node) {
 }
 
 /**
- * Batch function to cache a source from source.
+ * Run a cache operation on the specified harvest source.
  *
- * @param object $node
- *   Harvest source node object.
+ * @param object $harvest_source
+ *   The HarvestSource object to cache.
+ * @param int $harvest_updatetime
+ *   Timestamp of the time to use as the update time.
  * @param array $context
- *   Batch context.
+ *   The context associated with the batch process.
  */
-function dkan_harvest_cache_source_node_batch($node, array &$context) {
-  $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
-  dkan_harvest_cache_sources(array($harvest_source));
+function dkan_harvest_cache_source($harvest_source, $harvest_updatetime = NULL, array &$context = array()) {
+  $harvest_cache = $harvest_source->cache($harvest_updatetime);
+
+  if (!$harvest_cache) {
+    $message = t('Harvest cache for source "@source_name" failed!',
+      array(
+        '@source_name' => $harvest_source->label,
+      ));
+    dkan_harvest_log($message, 'error');
+  }
+  else {
+    $message = t('Harvest cache for source "@source_name" completed (processed @cache_processed, failed @cache_failed, saved @cache_saved : (filtered @cache_filtered, excluded @cache_excluded, defaulted @cache_defaulted, overridden @cache_overridden)).',
+      array(
+        '@source_name' => $harvest_source->label,
+        '@cache_processed' => $harvest_cache->getProcessedCount(),
+        '@cache_failed' => $harvest_cache->getFailedCount(),
+        '@cache_saved' => $harvest_cache->getSavedCount(),
+        '@cache_filtered' => $harvest_cache->getFilteredCount(),
+        '@cache_excluded' => $harvest_cache->getExcludedCount(),
+        '@cache_defaulted' => $harvest_cache->getDefaultedCount(),
+        '@cache_overridden' => $harvest_cache->getOverriddenCount(),
+      )
+    );
+    dkan_harvest_log($message, 'success');
+  }
+}
+
+/**
+ * Generates a Batch to cache a harvest source.
+ *
+ * @param object $harvest_source
+ *   The HarvestSource object to cache.
+ * @param int $harvest_updatetime
+ *   Timestamp of the time to use as the update time.
+ *
+ * @return array
+ *   An array with the generated batch configurations.
+ */
+function dkan_harvest_generate_cache_batch($harvest_source, $harvest_updatetime = NULL) {
+
+  $batch = array();
+  $batch_operations = array();
+
+  $batch_operations[] = array('dkan_harvest_cache_source', array($harvest_source));
+
+  $progress_message = t('Caching source ') . $harvest_source->label;
+
+  // Setup batch process.
+  $batch = array(
+    'operations' => $batch_operations,
+    'title' => t('Caching source ') . $harvest_source->label,
+    'init_message' => $progress_message . ' ...',
+    'progress_message' => $progress_message . ' ...',
+    'error_message' => t('An error ocurred while caching the sources.'),
+  );
+
+  return $batch;
+}
+
+/**
+ * Cache all sources using a batch process.
+ *
+ * @param array $harvest_sources
+ *   An array with the Harvest Sources to be cached.
+ * @param int $harvest_updatetime
+ *   Timestamp of the time to use as the update time.
+ */
+function dkan_harvest_cache_sources_in_batch(array $harvest_sources = array(), $harvest_updatetime = NULL) {
+
+  foreach ($harvest_sources as $harvest_source) {
+    // Generate batch process.
+    $batch = dkan_harvest_generate_cache_batch($harvest_source, $harvest_updatetime);
+    // Set up batch.
+    batch_set($batch);
+  }
+}
+
+/**
+ * Run a migrate operation on the specified harvest source.
+ *
+ * @param object $harvest_source
+ *   The HarvestSource object to be migrated.
+ * @param array $options
+ *   An array with the options to be passed to the migration process.
+ * @codingStandardsIgnoreLine
+ * @param $context
+ *   The context associated with the batch process.
+ */
+function dkan_harvest_migrate_source($harvest_source, array $options = array(), &$context = array()) {
+
+  if (!isset($context['results']['source_name'])) {
+    // This is the first time the operation gets executed.
+    $context['results']['source_name'] = $harvest_source->label;
+    $context['results']['num_datasets'] = 0;
+  }
+  
+  // Load migration.
+  $migration = $harvest_source->getMigration();
+  if (!$migration) {
+    $context['finished'] = 1;
+    return;
+  }
+
+  $options['limit'] = array(
+    'value' => variable_get('dkan_harvest_batch_length', DKAN_HARVEST_DEFAULT_BATCH_LENGTH),
+    'unit' => 'items'
+  );
+
+  $result = $migration->processImport($options);
+
+  switch ($result) {
+    case Migration::RESULT_INCOMPLETE:
+      $processed_datasets = $migration->processedCount();
+      $message = t('Processed @num_datasets datasets for source @source_name.',
+        array(
+          '@source_name' => $harvest_source->label,
+          '@num_datasets' => $processed_datasets
+        ));
+      $context['message'] = $message;
+      $context['finished'] = .5;
+      $total = $migration->sourceCount();
+      if ($total > 0) {
+        $to_update = $migration->updateCount();
+        $context['finished'] = ($processed_datasets-$to_update)/$total;
+      }
+      $context['results']['num_datasets'] = $processed_datasets;
+      break;
+    case MigrationBase::RESULT_SKIPPED:
+      $_migrate_messages[] = array(
+        'message' => t("Skipped !name due to unfulfilled dependencies: !depends",
+          array(
+            '!name' => $machine_name,
+            '!depends' => implode(", ", $migration->incompleteDependencies()),
+          ))
+        );
+      $context['finished'] = 1;
+      break;
+    case MigrationBase::RESULT_STOPPED:
+      $context['finished'] = 1;
+      break;
+    default:
+      $context['finished'] = 1;
+      break;
+  }  
+}
+
+/**
+ * Generates a Batch to migrate a harvest source.
+ *
+ * @param object $harvest_source
+ *   The HarvestSource object to cache.
+ * @param array $options
+ *   An array with the options to be passed to the migration process.
+ *
+ * @return array
+ *   An array with the generated batch configurations.
+ */
+function dkan_harvest_generate_migrate_batch($harvest_source, array $options = array()) {
+
+  $batch = array();
+  $batch_operations = array();
+
+  // Get cache associated with the harvest source.
+  $harvest_cache = call_user_func($harvest_source->type->cacheCallback, $harvest_source, NULL);
+  if ($harvest_cache) {
+    // Add migration operation.
+    $batch_operations[] = array('dkan_harvest_migrate_source', 
+      array($harvest_source, $options));
+  }
+  else {
+    // Display an eror.
+    $message = t('Failed to load the cache for source @source_name.', array('@source_name' => $harvest_source->machineName));
+    dkan_harvest_log($message, 'error');
+  }
+
+  // Configure batch process.
+  $batch_title = t('Migrating content for source ') . $harvest_source->label;
+  $init_message_title = t('Starting migration process for source ') . $harvest_source->label . '...';
+  $init_message_desc = t('A full Harvest may take several minutes, depending on
+      how many items your source contains. If your harvest times out, start it
+      again as needed until it completes successfully. For more reliable harvests,
+      use built-in drush commands in the terminal or set up a cron job.
+      See the DKAN Harvest documentation for more information.');
+
+  $batch = array(
+    'operations' => $batch_operations,
+    'title' => $batch_title,
+    'init_message' => $init_message_title . '<br/><br/>&nbsp;' . $init_message_desc,
+    'progress_message' => '',
+    'finished' => 'dkan_harvest_message_cleanup',
+    'error_message' => t('An error ocurred during the migration.'),
+  );
+
+  return $batch;
+}
+
+/**
+ * Migrate all sources using a batch process.
+ *
+ * @param array $harvest_sources
+ *   An array with the Harvest Sources to be migrated.
+ * @param array $options
+ *   An array with the options to be passed to the migration process.
+ */
+function dkan_harvest_migrate_sources_in_batch(array $harvest_sources = array(), array $options = array()) {
+
+  foreach ($harvest_sources as $harvest_source) {
+    // Config batch process.
+    $batch = dkan_harvest_generate_migrate_batch($harvest_source, $options);
+    // Setup batch process.
+    batch_set($batch);
+  }
 }
 
 /**
@@ -344,51 +556,29 @@ function dkan_harvest_refresh($form, &$form_state) {
  */
 function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
 
-  // Build array of batch operations.
-  $batch_operations = array();
-  $batch_operations[] = array('dkan_harvest_perform_harvest', array($form['#node']));
-
-  // Setup batch process.
-  $batch_title = t('Migrating content from');
-  $init_message_title = t('Processed 0%.');
-  $init_message_desc = t('A full Harvest may take several minutes, depending on
-      how many items your source contains. If your harvest times out, start it
-      again as needed until it completes successfully. For more reliable harvests,
-      use built-in drush commands in the terminal or set up a cron job.
-      See the DKAN Harvest documentation for more information.');
-
-  $batch = array(
-    'operations' => $batch_operations,
-    'title' => $batch_title . ' ' . $form['#node']->title . '... ',
-    'init_message' => $init_message_title . '<br/><br/>&nbsp;' . $init_message_desc,
-    'progress_message' => t('Processed @percentage.'),
-    'error_message' => t('An error ocurred during the migration.'),
-  );
-  batch_set($batch);
+  // Get harvest source object for the node.
+  $harvest_source = HarvestSource::getHarvestSourceFromNode($form['#node']);
+  dkan_harvest_migrate_sources_in_batch(array($harvest_source), array(), TRUE);
 
   $form_state['redirect'] = 'admin/dkan/harvest/dashboard';
 }
 
 /**
- * Given a harvest source performs a harvest.
+ * Cleanup messages displayed to the user after harvest migration is completed.
  */
-function dkan_harvest_perform_harvest($node, &$context) {
-  $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
-  dkan_harvest_cache_sources(array($harvest_source));
-  dkan_harvest_migrate_sources(array($harvest_source));
-  dkan_harvest_message_cleanup();
-}
+function dkan_harvest_message_cleanup($success, $results, $operations) {
 
-/**
- * Hide 'Groups were updated on X resources' while harvesting datasets.
- */
-function dkan_harvest_message_cleanup() {
-  $orig_messages = drupal_get_messages('status') + array('status' => array());
-  foreach ($orig_messages['status'] as $message) {
-    if (!preg_match('/\bgroups were updated\b/i', $message)) {
+  // Cleanup status messages to hide the ones like 'Groups were updated on X resources'.
+  $status_messages = drupal_get_messages('status') + array('status' => array());
+  foreach ($status_messages['status'] as $message) {
+    if (!preg_match('/\bgroups were updated\b/i', $message) && !preg_match('/\bProcessed\b/i', $message)) {
       drupal_set_message($message, 'status');
     }
   }
+
+  $message = t('Harvest migration completed for source "@source_name" (@num_datasets datasets where processed)',
+    array('@source_name' => $results['source_name'], '@num_datasets' => $results['num_datasets']));
+  drupal_set_message($message, 'status');
 }
 
 /**
@@ -420,7 +610,6 @@ function dkan_harvest_get_last_event_log($node) {
   $result = $query->execute()->fetchObject();
   $time = floor($result->starttime / 1000);
   return format_date($time);
-
 }
 
 /**
@@ -557,21 +746,6 @@ function dkan_harvest_source_types_definition() {
 }
 
 /**
- * Given an array of harvest source performs a migrate action over them.
- */
-function dkan_harvest_migrate_sources(array $sources, array $options = array()) {
-  foreach ($sources as $source) {
-    $return_code = $source->migrate($options);
-    // Return an error if we couldn't run the migration.
-    if ($return_code === FALSE) {
-      // Log as error.
-      $message = t('Failed to start source harvest migration. Cannot load migration object.');
-      dkan_harvest_log($message, 'error');
-    }
-  }
-}
-
-/**
  * Rollback the migration for the passed sources.
  *
  * @param array $sources
@@ -601,43 +775,6 @@ function dkan_harvest_get_migration(HarvestSource $source) {
     dkan_harvest_log(t("Harvest Migration registration failed!"), 'error');
   }
   return $harvest_migration;
-}
-
-/**
- * Cache a set of sources.
- *
- * @param array $sources
- *   Array of HarvestSource object to harvest.
- * @param int $harvest_updatetime
- *   Timestamp of the time to use as the update time.
- */
-function dkan_harvest_cache_sources(array $sources, $harvest_updatetime = NULL) {
-  foreach ($sources as $source) {
-    $harvest_cache = $source->cache($harvest_updatetime);
-
-    if (!$harvest_cache) {
-      $message = t('Harvest Cache for @source_machine_name failed!',
-        array(
-          '@source_machine_name' => $source->machineName,
-        ));
-      dkan_harvest_log($message, 'error');
-    }
-    else {
-      $message = t('Harvest Cache for @source_machine_name completed (processed @cache_processed, failed @cache_failed, saved @cache_saved : (filtered @cache_filtered, excluded @cache_excluded, defaulted @cache_defaulted, overridden @cache_overridden)).',
-        array(
-          '@source_machine_name' => $source->machineName,
-          '@cache_processed' => $harvest_cache->getProcessedCount(),
-          '@cache_failed' => $harvest_cache->getFailedCount(),
-          '@cache_saved' => $harvest_cache->getSavedCount(),
-          '@cache_filtered' => $harvest_cache->getFilteredCount(),
-          '@cache_excluded' => $harvest_cache->getExcludedCount(),
-          '@cache_defaulted' => $harvest_cache->getDefaultedCount(),
-          '@cache_overridden' => $harvest_cache->getOverriddenCount(),
-        )
-      );
-      dkan_harvest_log($message, 'success');
-    }
-  }
 }
 
 /**
@@ -1171,17 +1308,24 @@ function dkan_harvest_modify_delete_harvest_source_confirmation_form(array &$for
  */
 function dkan_harvest_build_delete_confirmation_description(array $sources) {
 
+  $source_datasets = array();
+  $source_resources = array();
+
+  $dataset_string = t('Datasets');
+  $resource_string = t('Resources');
+
   $markup = '<p>' . t('The following sources were selected to be deleted:') . '</p>';
   $markup .= '<ul>';
   foreach ($sources as $source_id) {
     $source = entity_load_single('node', $source_id);
     $source_datasets = dkan_harvest_get_datasets_from_source($source_id);
-    $dataset_string = t('Datasets');
-    foreach ($source_datasets as $source_dataset) {
-      $source_dataset_array[] = $source_dataset;
+    if (!empty($source_datasets)) {
+      foreach ($source_datasets as $source_dataset) {
+        $source_dataset_array[] = $source_dataset;
+      }
+      $source_resources = dkan_harvest_get_resources_from_datasets($source_dataset_array);
     }
-    $source_resources = dkan_harvest_get_resources_from_datasets($source_dataset_array);
-    $resource_string = t('Resources');
+
     $markup .= '<li>' . $source->title . ': ' . count($source_datasets) . ' ' . $dataset_string . ', ' . count($source_resources) . ' ' . $resource_string . '</li>';
   }
   $markup .= '</ul>';

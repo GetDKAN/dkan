@@ -145,6 +145,31 @@ class HarvestMigration extends MigrateDKAN {
   }
 
   /**
+   * Added check for itemOptionExceeded();.
+   */
+  protected function checkStatus() {
+    if ($this->itemOptionExceeded()) {
+      return MigrationBase::RESULT_INCOMPLETE;
+    }
+
+    return parent::checkStatus();
+  }
+
+  /**
+   * Returns the number of items that were created.
+   */
+  public function getCreated() {
+    return $this->destination->getCreated();
+  }
+
+  /**
+   * Returns the number of items that were updated.
+   */
+  public function getUpdated() {
+    return $this->destination->getUpdated();
+  }
+
+  /**
    * Runs before an import starts.
    *
    * Used to disable any rules which could cause problems during
@@ -201,17 +226,7 @@ class HarvestMigration extends MigrateDKAN {
    * Add support for harvest migration specific checks and options.
    */
   public function processImport(array $options = array()) {
-    if ($this->getStatus() == MigrationBase::STATUS_IDLE) {
-      // Add any extra Harvest Migration Arguments. The arguments array should
-      // already exist.
-      $this->arguments = array_merge($this->arguments, $options);
-
-      parent::processImport($options);
-    }
-    else {
-      $this->resetStatus();
-      $this->processImport($options);
-    }
+    return parent::processImport($options);
   }
 
   /**
