@@ -353,7 +353,7 @@ function dkan_harvest_generate_cache_batch($harvest_source, $harvest_updatetime 
   // Setup batch process.
   $batch = array(
     'operations' => $batch_operations,
-    'title' => t('Caching source ') . $harvest_source->machineName,
+    'title' => t('Caching source ') . $harvest_source->label,
     'init_message' => t('Processed 0%.'),
     'progress_message' => t('Processed @percentage.'),
     'error_message' => t('An error ocurred while caching the sources.'),
@@ -479,7 +479,7 @@ function dkan_harvest_generate_migrate_batch($harvest_source, array $options = a
   $batch_operations[] = array('dkan_harvest_message_cleanup', array($harvest_source));
 
   // Configure batch process.
-  $batch_title = t('Migrating content for source ') . $harvest_source->machineName;
+  $batch_title = t('Migrating content for source ') . $harvest_source->label;
   $init_message_title = t('Processed 0%.');
   $init_message_desc = t('A full Harvest may take several minutes, depending on
       how many items your source contains. If your harvest times out, start it
