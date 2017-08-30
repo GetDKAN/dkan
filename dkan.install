@@ -387,3 +387,54 @@ function dkan_update_7022() {
   variable_set('chosen_jquery_selector',
     '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"], [id*="lines-terminated-by"], [id*="lang-dropdown-select-language"])');
 }
+
+/**
+ * Adds and populates a 'muuid' column on harvest migrate log tables.
+ *
+ * A new 'muuid' column was added as part of Dkan PR#2072 in order to identify each
+ * migreation process. Before that change each harvest was done using a single harvest
+ * operation but now it can be splitted into chunks. This update hook adds the 'muuid'
+ * column on all migration_log tables associated with old harvest sources and it populates
+ * it associating an ID to all migration processes that were already done.
+ */
+function dkan_update_7023() {
+
+  // Get all harvest sources.
+  $harvest_source_nodes = node_load_multiple(array(), array('type' => 'harvest_source'));
+  // Process Log tables on all harvest sources.
+  foreach ($harvest_source_nodes as $harvest_source_node) {
+    // Get harvest source object.
+    $harvest_source = HarvestSource::getHarvestSourceFromNode($harvest_source_node);
+    // Get log table name.
+    $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
+    $log_table = $harvest_source_migration->getMap()->getLogTable();
+    // Check if the 'muuid' field exists.
+    if (!db_field_exists($log_table, 'muuid')) {
+      // Add the field.
+      $field_spec = array(
+        'type' => 'varchar',
+        'length' => '36',
+        'not null' => FALSE,
+        'description' => 'An UUID that identifies a full migration process (all chunks have the same muuid)',
+      );
+      db_add_field($log_table, 'uuid', $field_spec);
+    }
+
+    // Populate all existent rows with a default value.
+    // Get all rows on log table.
+    $result = db_select($log_table, 'l')
+      ->fields('l', array('mlid', 'muuid'))
+      ->isNull('l.muuid')
+      ->execute()
+      ->fetchAll();
+
+    foreach ($result as $row) {
+      db_update($log_table)
+        ->fields(array('muuid' => uuid_generate()))
+        ->condition('mlid', $row->mlid)
+        ->execute();
+    }
+  }
+
+  return $messages;
+}

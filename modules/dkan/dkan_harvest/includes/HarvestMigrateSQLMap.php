@@ -43,7 +43,7 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
    * query is in an external database.
    *
    * @return string
-   *         Returns the log table name.
+   *   Returns the log table name.
    *
    * @see self::getQualifiedMapTable()
    */
@@ -189,6 +189,12 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
           'not null' => TRUE,
           'description' => 'Primary key for migrate_log table',
         );
+        $fields['muuid'] = array(
+          'type' => 'varchar',
+          'length' => '36',
+          'not null' => FALSE,
+          'description' => 'An UUID that identifies a full migration process (all chunks have the same muuid)',
+        );
         $fields['created'] = array(
           'type' => 'int',
           'unsigned' => TRUE,
@@ -263,6 +269,16 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
             'description' => 'Hash of source row data, for detecting changes',
           ));
         }
+
+        // Add any missing columns to the log table.
+        if (!$this->connection->schema()->fieldExists($this->logTable, 'muuid')) {
+          $this->connection->schema()->addField($this->logTable, 'muuid', array(
+            'type' => 'varchar',
+            'length' => '36',
+            'not null' => FALSE,
+            'description' => 'An UUID that identifies a full migration process (all chunks have the same muuid)',
+          ));
+        }
       }
       $this->ensured = TRUE;
     }
@@ -285,7 +301,7 @@ class HarvestMigrateSQLMap extends MigrateSQLMap {
    * but not available from the source anymore.
    *
    * @return int
-   *         Number of records errored out.
+   *   Number of records errored out.
    */
   public function orphanedCount() {
     $query = $this->connection->select($this->mapTable);

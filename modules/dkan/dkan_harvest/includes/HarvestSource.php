@@ -44,10 +44,6 @@ class HarvestSource {
 
   /**
    * Constructor for HarvestSource class.
-   *
-   * @param array $machineName
-   *        Source array containing atleast all the required source
-   *        elements (As documented above) and any other optional proprety.
    */
   public function __construct($machineName) {
     // $machineName is really needed to construct this object.
@@ -123,10 +119,10 @@ class HarvestSource {
    * Get the cache directory for a specific source.
    *
    * @param bool $create_or_clear
-   *        Create the cache diretory if it does not exist.
+   *   Create the cache diretory if it does not exist.
    *
    * @return string
-   *         PHP filesteream location.
+   *   PHP filesteream location.
    *         Or FALSE if the cache directory does not exist.
    */
   public function getCacheDir($create_or_clear = FALSE) {
@@ -175,10 +171,10 @@ class HarvestSource {
    * Generic function to convert a string to a Drupal machine name.
    *
    * @param string $human_name
-   *        String to convert to machine name.
+   *   String to convert to machine name.
    *
    * @return string
-   *         String after replacements.
+   *   String after replacements.
    */
   public static function getMachineNameFromName($human_name) {
     return preg_replace('@[^a-z0-9-]+@', '_', strtolower($human_name));
@@ -188,10 +184,10 @@ class HarvestSource {
    * Get a HarvestSource object from a harvest_source node.
    *
    * @param object $harvest_source_node
-   *        Harvest Source content type node.
+   *   Harvest Source content type node.
    *
    * @return HarvestSource
-   *         HarvestSource object.
+   *   HarvestSource object.
    *
    * @throws Exception
    *         If HarvestSource creation fail.
@@ -205,10 +201,10 @@ class HarvestSource {
    * Get last time migration run from migration log table by machineName.
    *
    * @param string $machineName
-   *        Harvest Source machine name.
+   *   Harvest Source machine name.
    *
    * @return int
-   *         Timestamp of the last Harvest Migration run.
+   *   Timestamp of the last Harvest Migration run.
    *         Or NULL if source not found or not run yet.
    */
   public static function getMigrationTimestampFromMachineName($machineName) {
@@ -235,10 +231,10 @@ class HarvestSource {
    * Get last time migration run from migration log table by mild.
    *
    * @param string $mlid
-   *        Harvest Source Migration event ID.
+   *   Harvest Source Migration event ID.
    *
    * @return int
-   *         Timestamp of the last Harvest Migration run.
+   *   Timestamp of the last Harvest Migration run.
    *         Or NULL if source not found or not run yet.
    */
   public static function getMigrationTimestampFromMlid($mlid) {
@@ -264,10 +260,10 @@ class HarvestSource {
    * Get number of dataset imported.
    *
    * @param string $machineName
-   *        Harvest Source machine name.
+   *   Harvest Source machine name.
    *
    * @return int
-   *         Number of datasets imported by the Harvest Source.
+   *   Number of datasets imported by the Harvest Source.
    */
   public static function getMigrationCountFromMachineName($machineName) {
     // Construct the migrate map table name.
@@ -293,10 +289,10 @@ class HarvestSource {
    * Cache harvest source.
    *
    * @param int $timestamp
-   *        Timestamp to use when store the cache.
+   *   Timestamp to use when store the cache.
    *
    * @return HarvestCache
-   *         HarvestCache bject or FALSE in case of error.
+   *   HarvestCache bject or FALSE in case of error.
    */
   public function cache($timestamp = FALSE) {
 
@@ -331,14 +327,14 @@ class HarvestSource {
    * Run the migration for the sources.
    *
    * @param array $options
-   *        Array extra options to pass to the migration.
+   *   Array extra options to pass to the migration.
    *
    * @return mixed
-   *         FALSE in case of a problem. Or a Migrate::RESULT_*
+   *   FALSE in case of a problem. Or a Migrate::RESULT_*
    *         status after completion.
    */
-  public function migrate($options = array()) {
-    $migration = $this->getMigration();
+  public function migrate(array $options = array()) {
+    $migration = $this->getMigration($options);
     // Make sure the migration instantiation worked.
     if ($migration) {
       return $migration->processImport($options);
@@ -349,20 +345,15 @@ class HarvestSource {
   }
 
   /**
-   * Run a full harvest on this source.
-   */
-  public function harvest() {
-    $this->cache();
-    $this->migrate();
-  }
-
-  /**
    * Register and get the migration class for a harvest source.
    *
+   * @param array $options
+   *   Array extra options to pass to the migration.
+   *
    * @return HarvestMigration
-   *         Object related to the source. Or FALSE if failed.
+   *   Object related to the source. Or FALSE if failed.
    */
-  public function getMigration() {
+  public function getMigration(array $options = array()) {
     $harvest_migration_machineName = $this->getMigrationMachineName();
 
     // Prepare $arguments to pass to the migration.
@@ -373,17 +364,20 @@ class HarvestSource {
       'dkan_harvest_source' => $this,
     );
 
+    // Append extra arguments.
+    $extended_arguments = array_merge($arguments, $options);
+
     // Register the migration if it does not exist yet or
     // update the arguments if not.
     HarvestMigration::registerMigration(
       $this->type->migrationClass,
       $harvest_migration_machineName,
-      $arguments
+      $extended_arguments
     );
 
     // This will make sure the Migration have the latest arguments.
     $migration = HarvestMigration::getInstance($harvest_migration_machineName,
-      $this->type->migrationClass, $arguments);
+      $this->type->migrationClass, $extended_arguments);
 
     // Probably we should not trust migrations not subclassed from our
     // HarvestMigration. Altheugh this check should've have happened in the
@@ -399,7 +393,7 @@ class HarvestSource {
    * Remove any cached or imported content.
    *
    * @return mixed
-   *         HarvestSource::RESULT_* status code
+   *   HarvestSource::RESULT_* status code
    *         FALSE if something is gone wrong.
    */
   public function rollback($options = array()) {
@@ -407,7 +401,7 @@ class HarvestSource {
     $this->getCacheDir(TRUE);
 
     // Rollback harvest migration.
-    $migration = $this->getMigration();
+    $migration = $this->getMigration($options);
     // Make sure the migration instantiation worked.
     if ($migration) {
       return $migration->processRollback($options);
