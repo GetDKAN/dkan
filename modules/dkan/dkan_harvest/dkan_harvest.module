@@ -399,7 +399,7 @@ function dkan_harvest_migrate_source($harvest_source, array $options = array(), 
     $context['results']['source_name'] = $harvest_source->label;
     $context['results']['num_datasets'] = 0;
   }
-  
+
   // Load migration.
   $migration = $harvest_source->getMigration();
   if (!$migration) {
@@ -427,10 +427,11 @@ function dkan_harvest_migrate_source($harvest_source, array $options = array(), 
       $total = $migration->sourceCount();
       if ($total > 0) {
         $to_update = $migration->updateCount();
-        $context['finished'] = ($processed_datasets-$to_update)/$total;
+        $context['finished'] = ($processed_datasets - $to_update) / $total;
       }
       $context['results']['num_datasets'] = $processed_datasets;
       break;
+
     case MigrationBase::RESULT_SKIPPED:
       $_migrate_messages[] = array(
         'message' => t("Skipped !name due to unfulfilled dependencies: !depends",
@@ -441,13 +442,15 @@ function dkan_harvest_migrate_source($harvest_source, array $options = array(), 
         );
       $context['finished'] = 1;
       break;
+
     case MigrationBase::RESULT_STOPPED:
       $context['finished'] = 1;
       break;
+
     default:
       $context['finished'] = 1;
       break;
-  }  
+  }
 }
 
 /**
@@ -470,8 +473,9 @@ function dkan_harvest_generate_migrate_batch($harvest_source, array $options = a
   $harvest_cache = call_user_func($harvest_source->type->cacheCallback, $harvest_source, NULL);
   if ($harvest_cache) {
     // Add migration operation.
-    $batch_operations[] = array('dkan_harvest_migrate_source', 
-      array($harvest_source, $options));
+    $batch_operations[] = array('dkan_harvest_migrate_source',
+      array($harvest_source, $options)
+);
   }
   else {
     // Display an eror.
