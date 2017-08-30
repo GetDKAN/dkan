@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1966 Fix broken Google Speadseet functionality in Visualization Entity charts
  - #2019 DKAN Workflow: Fix 'My Drafts' view to restore content to original user after rejection.
  - #1970 Adds topics to harvested datasets on migration.
  - #1975 Add landingPage to data.json feed.
