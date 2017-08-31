@@ -44,6 +44,10 @@ class HarvestSource {
 
   /**
    * Constructor for HarvestSource class.
+   *
+   * @param string $machineName
+   *   The machine name for the Harvest Source. It will work as the
+   *   unique id of the object.
    */
   public function __construct($machineName) {
     // $machineName is really needed to construct this object.

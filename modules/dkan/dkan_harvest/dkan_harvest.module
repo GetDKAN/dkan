@@ -22,7 +22,7 @@ define('DKAN_HARVEST_DELETE_CONTENT', 0);
 define('DKAN_HARVEST_UNPUBLISH_CONTENT', 1);
 define('DKAN_HARVEST_ORPHAN_CONTENT', 2);
 
-define('DKAN_HARVEST_DEFAULT_BATCH_LENGTH', 5);
+define('DKAN_HARVEST_BATCH_ITEMS_PER_CHUNK', 2);
 
 /**
  * Implements hook_theme().
@@ -355,8 +355,8 @@ function dkan_harvest_generate_cache_batch($harvest_source, $harvest_updatetime 
   $batch = array(
     'operations' => $batch_operations,
     'title' => t('Caching source ') . $harvest_source->label,
-    'init_message' => $progress_message . ' ...',
-    'progress_message' => $progress_message . ' ...',
+    'init_message' => 'Caching source...',
+    'progress_message' => '',
     'error_message' => t('An error ocurred while caching the sources.'),
   );
 
@@ -394,63 +394,104 @@ function dkan_harvest_cache_sources_in_batch(array $harvest_sources = array(), $
  */
 function dkan_harvest_migrate_source($harvest_source, array $options = array(), &$context = array()) {
 
-  if (!isset($context['results']['source_name'])) {
-    // This is the first time the operation gets executed.
-    $context['results']['source_name'] = $harvest_source->label;
-    $context['results']['num_datasets'] = 0;
-  }
-
   // Load migration.
   $migration = $harvest_source->getMigration();
   if (!$migration) {
+    // The migration could not be loaded. Display a message and
+    // mark the batch operation as finished.
+    drupal_set_message('No migration was found for the selected source.');
     $context['finished'] = 1;
     return;
   }
 
-  $options['limit'] = array(
-    'value' => variable_get('dkan_harvest_batch_length', DKAN_HARVEST_DEFAULT_BATCH_LENGTH),
-    'unit' => 'items'
-  );
+  // Process migration.
+  $migration_status = $migration->processImport($options);
+  // Grab the migration results from the previous pass on this batch operation (if any).
+  $old_migration_results = isset($context['results']) ? $context['results'] : array();
+  // Get the results from the current migration.
+  $new_migration_results = $migration->getResults();
+  // Process the results.
+  $updated_results = dkan_harvest_update_migration_results($old_migration_results, $new_migration_results);
+  // Save results on context so they are available if this batch operation is run again.
+  $context['results'] = $updated_results;
 
-  $result = $migration->processImport($options);
+  // Mark the batch operation finished as default.
+  $context['finished'] = 1;
 
-  switch ($result) {
-    case Migration::RESULT_INCOMPLETE:
-      $processed_datasets = $migration->processedCount();
-      $message = t('Processed @num_datasets datasets for source @source_name.',
+  // Check if the harvest process is completed or if we need to continue with more
+  // migrations.
+  if (($migration_status == Migration::RESULT_INCOMPLETE) ||
+      ($migration_status == Migration::RESULT_COMPLETED)) {
+
+    // Calculate the number of pending datasets.
+    $datasets_count = $updated_results['datasets_on_source'];
+    $datasets_processed_total = $updated_results['datasets_processed'];
+    $pending_datasets = $datasets_count - $datasets_processed_total;
+
+    // Keep processing until there are no more pending datasets or
+    // until the migration says that it did not process any datasets (like when no datasets
+    // needed to be updated).
+    if (($pending_datasets > 0) && ($datasets_processed_total != 0)) {
+      $message = t('Processed @datasets_processed datasets for source @source_name.',
         array(
           '@source_name' => $harvest_source->label,
-          '@num_datasets' => $processed_datasets
+          '@datasets_processed' => $datasets_processed_total,
         ));
       $context['message'] = $message;
-      $context['finished'] = .5;
-      $total = $migration->sourceCount();
-      if ($total > 0) {
-        $to_update = $migration->updateCount();
-        $context['finished'] = ($processed_datasets - $to_update) / $total;
+
+      // Calculate the progress value.
+      if ($datasets_count > 0) {
+        $context['finished'] = $datasets_processed_total / $datasets_count;
       }
-      $context['results']['num_datasets'] = $processed_datasets;
-      break;
-
-    case MigrationBase::RESULT_SKIPPED:
-      $_migrate_messages[] = array(
-        'message' => t("Skipped !name due to unfulfilled dependencies: !depends",
-          array(
-            '!name' => $machine_name,
-            '!depends' => implode(", ", $migration->incompleteDependencies()),
-          ))
-        );
-      $context['finished'] = 1;
-      break;
-
-    case MigrationBase::RESULT_STOPPED:
-      $context['finished'] = 1;
-      break;
-
-    default:
-      $context['finished'] = 1;
-      break;
+    }
   }
+
+  if (isset($context['finished']) && ($context['finished'] == 1)) {
+    // Cleanup messages displayed to the user.
+    dkan_harvest_message_cleanup($harvest_source, $context['results']);
+    // Log migration event on log tables.
+    $migration->logEvent($context['results']);
+  }
+}
+
+/**
+ * Update migration results.
+ *
+ * Migrations can be split into chunks if needed. This function updates
+ * the total values for the migration results.
+ */
+function dkan_harvest_update_migration_results($old_results, $new_results) {
+
+  $updated_results = array();
+
+  if (empty($old_results)) {
+    // There were no old results so start with the new ones.
+    $updated_results = $new_results;
+  }
+  else {
+    // Start with old results.
+    $updated_results = $old_results;
+    // Save values that do not need to be updated (they remain the same during all migration).
+    $updated_results['start_time'] = $old_results['start_time'];
+    $updated_results['initial_highwater'] = $old_results['initial_highwater'];
+    $updated_results['datasets_on_source'] = $old_results['datasets_on_source'];
+    $updated_results['process_type'] = $old_results['process_type'];
+    // Update the rest of the data.
+    $updated_results['end_time'] = $new_results['end_time'];
+    $updated_results['final_highwater'] = $new_results['final_highwater'];
+    $updated_results['datasets_processed'] += $new_results['datasets_processed'];
+    $updated_results['datasets_created'] += $new_results['datasets_created'];
+    $updated_results['datasets_updated'] += $new_results['datasets_updated'];
+    $updated_results['datasets_failed'] += $new_results['datasets_failed'];
+    $updated_results['datasets_orphaned'] += $new_results['datasets_failed'];
+  }
+
+  // Update the number of datasets that were unmodified.
+  $datasets_count = $updated_results['datasets_on_source'];
+  $datasets_processed = $updated_results['datasets_processed'];
+  $updated_results['datasets_unchanged'] = $datasets_count - $datasets_processed;
+
+  return $updated_results;
 }
 
 /**
@@ -472,6 +513,21 @@ function dkan_harvest_generate_migrate_batch($harvest_source, array $options = a
   // Get cache associated with the harvest source.
   $harvest_cache = call_user_func($harvest_source->type->cacheCallback, $harvest_source, NULL);
   if ($harvest_cache) {
+
+    // Load the number of items per batch chunk.
+    $items_per_chunk = variable_get('dkan_harvest_batch_length', DKAN_HARVEST_BATCH_ITEMS_PER_CHUNK);
+    // If a value was specified through a drush command then use that.
+    if (isset($options['chunk'])) {
+      $items_per_chunk = $options['chunk'];
+    }
+    // Setup 'limit' values unless 'skiphash' or 'idlist' options are set.
+    $skiphash = isset($options['skiphash']) ? $options['skiphash'] : FALSE;
+    if ($items_per_chunk && !$skiphash && !isset($options['idlist'])) {
+      $options['limit'] = array(
+        'value' => $items_per_chunk,
+        'unit' => 'items'
+      );
+    }
     // Add migration operation.
     $batch_operations[] = array('dkan_harvest_migrate_source',
       array($harvest_source, $options)
@@ -485,7 +541,7 @@ function dkan_harvest_generate_migrate_batch($harvest_source, array $options = a
 
   // Configure batch process.
   $batch_title = t('Migrating content for source ') . $harvest_source->label;
-  $init_message_title = t('Starting migration process for source ') . $harvest_source->label . '...';
+  $init_message_title = t('Starting migration process... ');
   $init_message_desc = t('A full Harvest may take several minutes, depending on
       how many items your source contains. If your harvest times out, start it
       again as needed until it completes successfully. For more reliable harvests,
@@ -497,7 +553,6 @@ function dkan_harvest_generate_migrate_batch($harvest_source, array $options = a
     'title' => $batch_title,
     'init_message' => $init_message_title . '<br/><br/>&nbsp;' . $init_message_desc,
     'progress_message' => '',
-    'finished' => 'dkan_harvest_message_cleanup',
     'error_message' => t('An error ocurred during the migration.'),
   );
 
@@ -570,18 +625,29 @@ function dkan_harvest_harvest_now_form_submit($form, &$form_state) {
 /**
  * Cleanup messages displayed to the user after harvest migration is completed.
  */
-function dkan_harvest_message_cleanup($success, $results, $operations) {
-
+function dkan_harvest_message_cleanup($harvest_source, $results) {
   // Cleanup status messages to hide the ones like 'Groups were updated on X resources'.
   $status_messages = drupal_get_messages('status') + array('status' => array());
   foreach ($status_messages['status'] as $message) {
-    if (!preg_match('/\bgroups were updated\b/i', $message) && !preg_match('/\bProcessed\b/i', $message)) {
+    if (!preg_match('/\bgroups were updated\b/i', $message)) {
       drupal_set_message($message, 'status');
     }
   }
 
-  $message = t('Harvest migration completed for source "@source_name" (@num_datasets datasets where processed)',
-    array('@source_name' => $results['source_name'], '@num_datasets' => $results['num_datasets']));
+  // Remove all messages with 'completed' and 'success' types that are generated by the migrate module.
+  drupal_get_messages('completed');
+  drupal_get_messages('success');
+
+  // Add final status message for the migration.
+  $message = t('Harvest migration completed for source "@source_name" (@created datasets created, @updated datasets updated, @failed datasets failed, @unchanged datasets unchanged).',
+    array(
+      '@source_name' => $harvest_source->label,
+      '@created' => $results['datasets_created'],
+      '@updated' => $results['datasets_updated'],
+      '@failed' => $results['datasets_failed'],
+      '@unchanged' => $results['datasets_unchanged']
+    )
+  );
   drupal_set_message($message, 'status');
 }
 
@@ -612,8 +678,12 @@ function dkan_harvest_get_last_event_log($node) {
   $query->addExpression('log.endtime - log.starttime', 'duration');
 
   $result = $query->execute()->fetchObject();
-  $time = floor($result->starttime / 1000);
-  return format_date($time);
+  if ($result) {
+    $time = floor($result->starttime / 1000);
+    return format_date($time);
+  }
+
+  return FALSE;
 }
 
 /**

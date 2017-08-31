@@ -19,8 +19,8 @@ function dkan_harvest_drush_command() {
       'The source machine name to run the harvest operation on',
     ),
     'options' => array(
+      'chunk' => 'The amount of items to be processed on a batch chunk. If 0 is provided then all items are going to be migrated in the same migration operation. This setting is ignored if skiphash or idlist options are present.',
       'skiphash' => 'Skip hash checking and update all the datasets available in the source.',
-      'limit' => 'Limit on the length of each migration. Check migrate doc for more about this option.',
       'instrument' => 'Capture performance information (timer, memory, or all). Check migrate doc for more about this option.',
       'idlist' => 'A comma delimited list of ids to import or rollback. Check migrate doc for more about this option.',
     ),
@@ -48,8 +48,8 @@ function dkan_harvest_drush_command() {
       'source_machine_name' => 'The source machine name to run the migration on',
     ),
     'options' => array(
+      'chunk' => 'The amount of items to be processed on a batch chunk. If 0 is provided then all items are going to be migrated in the same migration operation. This setting is ignored if skiphash or idlist options are present.',
       'skiphash' => 'Skip hash checking and update all the datasets available in the source.',
-      'limit' => 'Limit on the length of each migration. Check migrate doc for more about this option.',
       'instrument' => 'Capture performance information (timer, memory, or all). Check migrate doc for more about this option.',
       'idlist' => 'A comma delimited list of ids to import or rollback. Check migrate doc for more about this option.',
     ),
@@ -120,8 +120,38 @@ function dkan_harvest_drush_command() {
  *   Optional harvest source machine name.
  */
 function dkan_harvest_drush_command_harvest($source_machine_name = NULL) {
-  dkan_harvest_drush_command_cache($source_machine_name);
-  dkan_harvest_drush_command_migrate($source_machine_name);
+  $supported_options = array('chunk', 'skiphash', 'instrument', 'idlist');
+  $options = array();
+
+  // Gather harvest migration options. If parsing the arguments fails just relay
+  // on the parsing callback to oouput an appropriate message and stop.
+  $option_parsed = dkan_harvest_get_options($options, $supported_options);
+  if (!$option_parsed) {
+    return;
+  }
+
+  $sources = array();
+  if (isset($source_machine_name)) {
+    $source = dkan_harvest_get_harvestsource($source_machine_name);
+    if (!$source) {
+      return FALSE;
+    }
+    $sources[] = $source;
+  }
+  else {
+    drush_log("Running the harvest process on all the available sources.", 'notice');
+    $sources = dkan_harvest_sources_definition();
+  }
+
+  foreach ($sources as $source) {
+    // Setup batch process for cache.
+    batch_set(dkan_harvest_generate_cache_batch($source));
+    // Setup batch process for migration.
+    batch_set(dkan_harvest_generate_migrate_batch($source));
+  }
+
+  // Execute batch process.
+  drush_backend_batch_process();
 }
 
 /**
@@ -132,9 +162,7 @@ function dkan_harvest_drush_command_harvest($source_machine_name = NULL) {
  *   Source machine name to cache.
  */
 function dkan_harvest_drush_command_cache($source_machine_name = NULL) {
-
   $sources = array();
-
   if (isset($source_machine_name)) {
     $source = dkan_harvest_get_harvestsource($source_machine_name);
     if (!$source) {
@@ -148,12 +176,12 @@ function dkan_harvest_drush_command_cache($source_machine_name = NULL) {
   }
 
   foreach ($sources as $source) {
-    // Config batch process.
-    $batch = dkan_harvest_generate_cache_batch($source);
     // Setup batch process.
-    batch_set($batch);
-    drush_backend_batch_process();
+    batch_set(dkan_harvest_generate_cache_batch($source));
   }
+
+  // Execute batches.
+  drush_backend_batch_process();
 }
 
 /**
@@ -164,7 +192,7 @@ function dkan_harvest_drush_command_cache($source_machine_name = NULL) {
  *   Source machine name to migrate.
  */
 function dkan_harvest_drush_command_migrate($source_machine_name = NULL) {
-  $supported_options = array('limit', 'skiphash', 'instrument', 'idlist');
+  $supported_options = array('chunk', 'skiphash', 'instrument', 'idlist');
   $options = array();
 
   // Gather harvest migration options. If parsing the arguments fails just relay
@@ -191,12 +219,12 @@ function dkan_harvest_drush_command_migrate($source_machine_name = NULL) {
   }
 
   foreach ($sources as $source) {
-    // Config batch process.
-    $batch = dkan_harvest_generate_migrate_batch($source, $options);
     // Setup batch process.
-    batch_set($batch);
-    drush_backend_batch_process();
+    batch_set(dkan_harvest_generate_migrate_batch($source, $options));
   }
+
+  // Execute batches.
+  drush_backend_batch_process();
 
   // Print instrument info if set.
   global $_migrate_track_memory, $_migrate_track_timer;
@@ -350,6 +378,19 @@ function dkan_harvest_get_option_limit($options) {
       array('!unit' => $options['limit']['unit'])));
     }
   }
+  return $options;
+}
+
+/**
+ * Helper function to parse the 'chunk' option.
+ */
+function dkan_harvest_get_option_chunk($options) {
+  $chunk = drush_get_option('chunk');
+
+  if ($chunk && $chunk > 0) {
+    $options['chunk'] = $chunk;
+  }
+
   return $options;
 }
 
