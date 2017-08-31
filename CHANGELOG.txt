@@ -1,3 +1,8 @@
+7.x-1.13.8
+----------
+ - #2058 Improve messages displayed when creating a harvest source.
+ - #2058 Fix harvest bug when filtering by a key that has 0 matches.
+
 7.x-1.13.7 2017-08-22
 ---------------------
  - #2064 Update entityreference to 1.15
