@@ -51,9 +51,11 @@
   }
 }
 #recline-embeded .recline-data-explorer {
-  .header,
-  .data-view-sidebar {
-    display: none !important;
+  .header {
+    margin-bottom: 8px;
+    .navigation {
+      display: none !important;
+    }
   }
 }
 
