@@ -485,7 +485,7 @@ function dkan_harvest_update_migration_results($old_results, $new_results) {
     $updated_results['datasets_created'] += $new_results['datasets_created'];
     $updated_results['datasets_updated'] += $new_results['datasets_updated'];
     $updated_results['datasets_failed'] += $new_results['datasets_failed'];
-    $updated_results['datasets_orphaned'] += $new_results['datasets_failed'];
+    $updated_results['datasets_orphaned'] += $new_results['datasets_orphaned'];
   }
 
   // Update the number of datasets that were unmodified.
@@ -641,12 +641,13 @@ function dkan_harvest_message_cleanup($harvest_source, $results) {
   drupal_get_messages('success');
 
   // Add final status message for the migration.
-  $message = t('Harvest migration completed for source "@source_name" (@created datasets created, @updated datasets updated, @failed datasets failed, @unchanged datasets unchanged).',
+  $message = t('Harvest migration completed for source "@source_name" (@created datasets created, @updated datasets updated, @failed datasets failed, @orphaned datasets orphaned, @unchanged datasets unchanged).',
     array(
       '@source_name' => $harvest_source->label,
       '@created' => $results['datasets_created'],
       '@updated' => $results['datasets_updated'],
       '@failed' => $results['datasets_failed'],
+      '@orphaned' => $results['datasets_orphaned'],
       '@unchanged' => $results['datasets_unchanged']
     )
   );
