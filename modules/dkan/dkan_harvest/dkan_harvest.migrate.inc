@@ -732,7 +732,7 @@ class HarvestMigration extends MigrateDKAN {
       $this->migrationResults['datasets_updated'] = $this->destination->getUpdated();
       $this->migrationResults['datasets_failed'] = $this->errorCount();
       $this->migrationResults['datasets_orphaned'] = $this->map->orphanedCount();
-    }    
+    }
 
     migrate_instrument_stop('HarvestMigration->postImport');
   }
