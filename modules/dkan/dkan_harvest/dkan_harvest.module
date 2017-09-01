@@ -425,23 +425,25 @@ function dkan_harvest_migrate_source($harvest_source, array $options = array(), 
 
     // Calculate the number of pending datasets.
     $datasets_count = $updated_results['datasets_on_source'];
-    $datasets_processed_total = $updated_results['datasets_processed'];
-    $pending_datasets = $datasets_count - $datasets_processed_total;
+    $datasets_processed_in_total = $updated_results['datasets_processed'];
+    $pending_datasets = $datasets_count - $datasets_processed_in_total;
+    // Get the number of datasets processed on this migration.
+    $datasets_processed = $new_migration_results['datasets_processed'];
 
     // Keep processing until there are no more pending datasets or
     // until the migration says that it did not process any datasets (like when no datasets
     // needed to be updated).
-    if (($pending_datasets > 0) && ($datasets_processed_total != 0)) {
+    if (($pending_datasets > 0) && ($datasets_processed != 0)) {
       $message = t('Processed @datasets_processed datasets for source @source_name.',
         array(
           '@source_name' => $harvest_source->label,
-          '@datasets_processed' => $datasets_processed_total,
+          '@datasets_processed' => $datasets_processed_in_total,
         ));
       $context['message'] = $message;
 
       // Calculate the progress value.
       if ($datasets_count > 0) {
-        $context['finished'] = $datasets_processed_total / $datasets_count;
+        $context['finished'] = $datasets_processed_in_total / $datasets_count;
       }
     }
   }
