@@ -22,7 +22,7 @@ define('DKAN_HARVEST_DELETE_CONTENT', 0);
 define('DKAN_HARVEST_UNPUBLISH_CONTENT', 1);
 define('DKAN_HARVEST_ORPHAN_CONTENT', 2);
 
-define('DKAN_HARVEST_BATCH_ITEMS_PER_CHUNK', 2);
+define('DKAN_HARVEST_BATCH_ITEMS_PER_CHUNK', 5);
 
 /**
  * Implements hook_theme().
@@ -515,7 +515,7 @@ function dkan_harvest_generate_migrate_batch($harvest_source, array $options = a
   if ($harvest_cache) {
 
     // Load the number of items per batch chunk.
-    $items_per_chunk = variable_get('dkan_harvest_batch_length', DKAN_HARVEST_BATCH_ITEMS_PER_CHUNK);
+    $items_per_chunk = variable_get('dkan_harvest_batch_items_per_chunk', DKAN_HARVEST_BATCH_ITEMS_PER_CHUNK);
     // If a value was specified through a drush command then use that.
     if (isset($options['chunk'])) {
       $items_per_chunk = $options['chunk'];
