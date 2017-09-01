@@ -184,14 +184,16 @@ class HarvestMigration extends MigrateDKAN {
    */
   protected function beginProcess($newStatus) {
 
-    // Update results.
-    $this->migrationResults['process_type'] = $newStatus;
-    $this->migrationResults['start_time'] = round(microtime(TRUE) * 1000);
-    $this->migrationResults['initial_highwater'] = $this->getHighwater();
-    $this->migrationResults['datasets_on_source'] = $this->sourceCount();
-
     // Begin process.
     parent::beginProcess($newStatus);
+
+    // If an import if being run then update the results.
+    if ($this->processing) {
+      $this->migrationResults['process_type'] = $newStatus;
+      $this->migrationResults['start_time'] = round(microtime(TRUE) * 1000);
+      $this->migrationResults['initial_highwater'] = $this->getHighwater();
+      $this->migrationResults['datasets_on_source'] = $this->sourceCount();
+    }
   }
 
   /**
@@ -199,14 +201,16 @@ class HarvestMigration extends MigrateDKAN {
    */
   public function endProcess() {
 
-    // Update results.
-    $this->migrationResults['end_time'] = round(microtime(TRUE) * 1000);
-    $this->migrationResults['final_highwater'] = $this->getHighwater();
-    $this->migrationResults['datasets_processed'] = $this->total_processed;
-    $this->migrationResults['datasets_created'] = $this->destination->getCreated();
-    $this->migrationResults['datasets_updated'] = $this->destination->getUpdated();
-    $this->migrationResults['datasets_failed'] = $this->errorCount();
-    $this->migrationResults['datasets_orphaned'] = $this->map->orphanedCount();
+    // If an import if being run then update the results.
+    if ($this->processing) {
+      $this->migrationResults['end_time'] = round(microtime(TRUE) * 1000);
+      $this->migrationResults['final_highwater'] = $this->getHighwater();
+      $this->migrationResults['datasets_processed'] = $this->total_processed;
+      $this->migrationResults['datasets_created'] = $this->destination->getCreated();
+      $this->migrationResults['datasets_updated'] = $this->destination->getUpdated();
+      $this->migrationResults['datasets_failed'] = $this->errorCount();
+      $this->migrationResults['datasets_orphaned'] = $this->map->orphanedCount();
+    }
 
     // End process.
     parent::endProcess();
