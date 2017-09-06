@@ -74,6 +74,36 @@ The permissions with which a user is granted depend on the user role. User roles
 Request Examples
 ****************
 
+URL Query Parameters
+====================
+
+* (string) fields - A comma separated list of fields to get.
+* (array) parameters - Filter parameters array such as parameters[title]="test"
+* (int) page - The zero-based index of the page to get, defaults to 0.
+* (int) pagesize - Number of records to get per page (max = 20).
+
+The output from a url is paginated and displays 20 items per page by default. You can specify which page to view by adding a `page` value. And you can change the number of items per page by including a `pagesize` value. For example, the following query will display items 11 - 20:
+
+.. code-block:: bash
+  
+  http://demo.getdkan.com/api/dataset/node.json?page=2&pagesize=10
+
+
+To return only a specific node type, include a `type` parameter:
+
+.. code-block:: bash
+  
+  http://demo.getdkan.com/api/dataset/node.json?parameters[type]=dataset
+
+
+To return only the title and node id of published resources:
+
+.. code-block:: bash
+
+  http://demo.getdkan.com/api/dataset/node.json?fields=title,nid&parameter[type]=resource&parameter[status]=1
+
+
+
 Below you can find examples in PHP for a basic set of CRUD operations on datasets and resources. This documentation is a work in progress. The examples are raw HTTP requests, with a short example of how to execute a query in PHP as well.
 
 For an example of a fully-functional python-based client to the DKAN REST API, see the `pydkan <https://github.com/NuCivic/pydkan>`_ project.
