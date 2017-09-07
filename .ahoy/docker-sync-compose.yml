@@ -1,0 +1,145 @@
+# Docker and Docker Compose based environment for Drupal.
+# See https://github.com/blinkreaction/docker-fig-drupal for more information and documentation.
+version: "2"
+services:
+  # Web node
+  web:
+    hostname: web
+    image: nuams/drupal-apache-php:1.0-5.6
+    # Fix for docker for mac container not starting selenium
+    # https://forums.docker.com/t/space-in-new-no-proxy-env-var-breaking-old-containers/14075
+
+    environment:
+      - VIRTUAL_HOST=dkan.docker
+      - no_proxy=localhost
+      - DB_1_ENV_MYSQL_ROOT_PASSWORD=admin123
+      - DB_1_ENV_MYSQL_USER=drupal
+      - DB_1_ENV_MYSQL_PASSWORD=123
+      - DB_1_ENV_MYSQL_DATABASE=drupal
+      - DB_1_PORT_3306_TCP_ADDR=db
+      #- VIRTUAL_PROTO=https
+    ports:
+      - "80"
+      - "443"
+      - "8888"
+    volumes:
+      # PHP configuration overrides
+      - "./.docker/etc/php5/php.ini:/etc/php5/fpm/conf.d/z_php.ini"
+      # Project root folder mapping
+      #- &project_root "../../:/var/www/"
+      - filesync:/var/www:nocopy
+
+    links:
+      - db
+      # Uncomment this and the memcached service definition below to start using memcached.
+      - memcached
+      - solr
+
+  # DB node
+  db:
+    hostname: db
+    image: blinkreaction/mysql:5.5
+    ports:
+      - "3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+      - MYSQL_USER=drupal
+      - MYSQL_PASSWORD=123
+      - MYSQL_DATABASE=drupal
+    volumes:
+       # MySQL configuration overrides
+       - "./.docker/etc/mysql/my.cnf:/etc/mysql/conf.d/z_my.cnf"
+       # Permanent DB data storage
+       #- /var/lib/mysql
+       # Project root folder mapping
+       #- *project_root
+       - filesync:/var/www:nocopy
+
+  # CLI node
+  # Used for all console commands and tools.
+  cli:
+    hostname: cli
+    image: nuams/drupal-cli:2016-10-16
+    environment:
+      - XDEBUG_CONFIG=idekey=cli
+      - PHP_IDE_CONFIG=serverName=dkan.docker
+      - VIRTUAL_HOST=dkan.docker
+      - DB_1_ENV_MYSQL_ROOT_PASSWORD=admin123
+      - DB_1_ENV_MYSQL_USER=drupal
+      - DB_1_ENV_MYSQL_PASSWORD=123
+      - DB_1_ENV_MYSQL_DATABASE=drupal
+      - DB_1_PORT_3306_TCP_ADDR=db
+    volumes:
+      # PHP configuration overrides
+      - "./.docker/etc/php5/php-cli.ini:/etc/php5/cli/conf.d/z_php.ini"
+      # Project root folder mapping
+      #- *project_root
+      - filesync:/var/www:nocopy
+      # Host SSH keys mapping. Uncomment one of the lines below based on your setup.
+      # - /.ssh:/.ssh   # boot2docker-vagrant
+      - ~/.ssh:/.ssh  # Linux
+    links:
+      - db
+      - web
+      # Uncomment this and the browser service definition below to start using selenium2.
+      - browser
+      - memcached
+      - solr
+    ports:
+      - "8888"
+
+  # Memcached node
+  # Uncomment the service definition section below and the link in the web service above to start using memcached.
+  memcached:
+    hostname: memcached
+    image: memcached
+    environment:
+      # Memcached memory limit in megabytes
+      - MEMCACHED_MEMORY_LIMIT=128
+
+  # ngrok node
+  # Uncomment the service definition section below to start using ngrok for sharing your local web server with the world.
+  # share:
+  #   hostname: share
+  #   image: fnichol/ngrok
+  #   ports:
+  #     - "4040:4040"
+  #     # Use IP based mapping when working with multiple projects. See docs (^^) for more details.
+  #     #- 192.168.10.10:4040:4040
+  #   links:
+  #     - web:http
+
+  # selenium2 node
+  # Uncomment the service definition section below and the link in the web service above to start using selenium2 driver for Behat tests requiring JS support.
+  browser:
+    hostname: browser
+    image: selenium/standalone-chrome-debug:2.53.1
+    # This helps keep selenium-chrome from crashing because it uses shared memory.
+    volumes:
+      - /dev/shm:/dev/shm
+      # Project root folder mapping
+      - filesync:/var/www:nocopy
+  #    - *project_root
+
+    links:
+      - web
+    ports:
+      - "5900"
+
+    # Fix for docker for mac container not starting selenium
+    # https://forums.docker.com/t/space-in-new-no-proxy-env-var-breaking-old-containers/14075
+    environment:
+      - no_proxy=localhost
+
+  solr:
+    hostname: solr
+    image: devinci/drupal-solr:3.x
+    ports:
+      - "8983"
+    volumes:
+      - "./.docker/etc/solr/3.x:/var/lib/solr/conf"
+
+volumes:
+  filesync:
+    external:
+      name: "${SLUG}_filesync"

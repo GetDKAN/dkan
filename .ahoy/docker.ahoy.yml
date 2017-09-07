@@ -8,16 +8,25 @@ commands:
         # Run: eval "\$(ahoy docker env)"
         #   OR
         # Add the following to your ~/.bashrc
+        #
+        # To use docker-sync for improved performance on Mac OS, run:
+        #   export AHOY_DOCKER_SYNC=true
+        # which will use Docker For Mac instead of docker-machine
+        #
         which docker || (echo "you don't seem to have docker installed. Exiting."; exit 1)
         which docker-compose || (echo "you don't seem to have docker-compose installed. Exiting."; exit 1)
         echo "Setting up docker environment"
         export AHOY_CMD_PROXY=DOCKER
-        which docker-machine || (echo "you don't seem to have docker-machine installed. Exiting."; exit 1)
-        if [ ! -z "$DOCKER_MACHINE_NAME"  ]; then
-          docker-machine start default
-          $(docker-machine env default)
+        if [ ! -z "$AHOY_DOCKER_SYNC" ]; then
+          which docker-sync || (echo "you don't seem to have docker-sync installed. Run 'sudo gem install docker-sync' to install. Exiting."; exit 1)
+          export HOST_UID=$(id -u)
+        else
+          which docker-machine || (echo "you don't seem to have docker-machine installed. Exiting."; exit 1)
+          if [ ! -z "$DOCKER_MACHINE_NAME"  ]; then
+            docker-machine start default
+            $(docker-machine env default)
+          fi
         fi
-
         ahoy docker up
       EOF
     usage: Outputs the commands needed to setup a docker environment.
@@ -39,10 +48,27 @@ commands:
         echo "AHOY_CMD_PROXY is not set. Run 'ahoy docker env' and follow instructions."
         exit 0
       fi
+      if [ ! -z "$AHOY_DOCKER_SYNC" ]; then
+        ahoy docker docker-sync-init
+        docker-sync start -c dkan/.ahoy/docker-sync.yml
+      fi
       ahoy docker compose up -d {{args}}
       ahoy docker proxy-up
       ahoy docker hostfile
     usage: Start the docker-compose containers.
+
+  docker-sync-init:
+    cmd: |
+      SLUG=$(ahoy docker get-slug)
+      sed "s/%%syncname%%/${SLUG}_filesync/" dkan/.ahoy/docker-sync.template.yml > dkan/.ahoy/docker-sync.yml
+  get-slug:
+    cmd: |
+      GIT_ROOT=$(git -C ./dkan rev-parse --show-toplevel)
+      SLUG=${GIT_ROOT##*/}
+      SLUG=${SLUG//-/}
+      SLUG=${SLUG//_/}
+      SLUG=$(echo ${SLUG} | tr "[A-Z]" "[a-z]") # Mixed case dirs cause issue with docker image names
+      echo ${SLUG}
   proxy-up:
     cmd: |
       proxy_image=jwilder/nginx-proxy
@@ -69,6 +95,10 @@ commands:
         echo "Stopping dkan_proxy container"
         docker stop dkan_proxy
       fi
+      if [ ! -z "$AHOY_DOCKER_SYNC" ]; then
+        docker-sync stop -c dkan/.ahoy/docker-sync.yml
+      fi
+
     usage: Stop the docker-compose containers (non-destructive).
   ps:
     cmd: "ahoy docker compose ps"
@@ -97,6 +127,11 @@ commands:
       if [ ! -z "$(docker ps -f name=dkan_proxy -f ancestor=$proxy_image -all -q)" ];then
         docker rm dkan_proxy
       fi
+      if [ ! -z "$AHOY_DOCKER_SYNC" ]; then
+        docker-sync stop -c dkan/.ahoy/docker-sync.yml
+        docker-sync clean -c dkan/.ahoy/docker-sync.yml
+      fi
+
     usage: Destroy all the docker compose containers. (use before deleting folder)
   exec:
     cmd: |
@@ -139,7 +174,13 @@ commands:
     cmd: "docker exec -it $(ahoy docker compose ps -q cli) bash -c 'mysqldump -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
     usage: Dump data out into a file. `ahoy docker mysql-dump > backups/local.sql`
   compose:
-    cmd: docker-compose -f dkan/.ahoy/docker-compose.yml -p "${PWD##*/}" {{args}}
+    cmd: |
+      if [ ! -z "$AHOY_DOCKER_SYNC" ]; then
+        export SLUG=$(ahoy docker docker-sync-init)
+        docker-compose -f dkan/.ahoy/docker-sync-compose.yml -p "${PWD##*/}" {{args}}
+      else
+        docker-compose -f dkan/.ahoy/docker-compose.yml -p "${PWD##*/}" {{args}}
+      fi
     usage: Abstraction for docker-compose
   web-host:
     cmd: |

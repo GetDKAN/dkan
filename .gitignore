@@ -17,3 +17,6 @@ npm-debug.log
 .sublime-workspace
 docs/_build
 *.orig
+.ahoy/docker-sync.yml
+.docker-sync
+.ahoy/docker-compose.proxyconf.yml
