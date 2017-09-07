@@ -1233,11 +1233,19 @@ function dkan_dataset_entity_info_alter(&$entity_info) {
  */
 function dkan_dataset_preprocess_node(&$vars) {
   if ($vars['view_mode'] == 'search_result') {
-    if (!empty($vars['body'][0]['summary'])) {
-      $body_summary = $vars['body'][0]['summary'];
+    if (isset($vars['body'][0])) {
+      if (!empty($vars['body'][0]['summary'])) {
+        $body_summary = $vars['body'][0]['summary'];
+      }
+      elseif (isset($vars['body'][0]['value'])) {
+        $body_summary = $vars['body'][0]['value'];
+      }
+      else {
+        $body_summary = '';
+      }
     }
     else {
-      $body_summary = $vars['body'][0]['value'];
+      $body_summary = '';
     }
 
     $vars['theme_hook_suggestions'][] = 'node__search_result';
