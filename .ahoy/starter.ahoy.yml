@@ -4,7 +4,11 @@ commands:
 
   drush:
     usage: Run drush via ahoy (helpful for abstraction)
-    cmd: ahoy cmd-proxy drush --root=docroot "{{args}}"
+    cmd: |
+      if [ "$AHOY_CMD_PROXY" = "DOCKER" ]; then
+        URI="--uri=\"$(ahoy docker surl)\""
+      fi
+      ahoy cmd-proxy drush ${URI} --root=docroot "{{args}}"
 
   dkan:
     usage: A series of commands for dkan development.
