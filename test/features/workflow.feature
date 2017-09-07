@@ -433,14 +433,11 @@ Feature:
   @workflow_19 @ok
   # https://jira.govdelivery.com/browse/CIVIC-5348
   Scenario: "View draft" should display the draft dataset and not the published revision.
-    Given users:
-      | name                 | roles                                 |
-      | workflow_contributor | Workflow Contributor, content creator |
     And datasets:
-      | title         | author               | published | moderation |
-      | Dataset title | workflow_contributor | Yes       | published  |
+      | title         | author      | published | moderation | publisher |
+      | Dataset title | Contributor | Yes       | published  | Group 01  |
     Given I update the moderation state of "Dataset title" to "Published"
-    Given I am logged in as "workflow_contributor"
+    Given I am logged in as "Contributor"
     And I am on "Dataset title" page
     Then I should see the text "Dataset title"
     When I click "Edit draft"
