@@ -39,7 +39,7 @@ Feature: Datastore
   Scenario: Dumb test
         Given I am on the homepage
 
-  @api @javascript @noworkflow
+  @api @javascript @noworkflow @datastore
   Scenario: Adding and Removing items from the datastore
     Given I am logged in as a user with the "site manager" role
     And I am on "dataset/dataset-01"
