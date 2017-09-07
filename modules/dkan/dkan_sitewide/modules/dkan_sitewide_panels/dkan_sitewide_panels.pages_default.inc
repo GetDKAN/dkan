@@ -1347,7 +1347,7 @@ return TRUE;
     ),
   );
   $display->cache = array();
-  $display->title = '';
+  $display->title = 'Search';
   $display->uuid = 'b1ebec5e-aed7-4ebc-82de-7e9eac72c35a';
   $display->storage_type = 'page_manager';
   $display->storage_id = 'page_datasets_panel_context';

@@ -20,6 +20,13 @@ function dkan_harvest_update_7001(&$sandbox) {
 }
 
 /**
+ * Revert dkan_harvest feature to add field_dkan_harvest_topic field.
+ */
+function dkan_harvest_update_7002(&$sandbox) {
+  features_revert('dkan_harvest');
+}
+
+/**
  * Changes length of uuid field to 144 chars.
  */
 function dkan_harvest_uuid_length() {

@@ -55,7 +55,7 @@ $handler->display->display_options['relationships']['uid']['table'] = 'node_revi
 $handler->display->display_options['relationships']['uid']['field'] = 'uid';
 /* Field: Bulk operations: Content */
 $handler->display->display_options['fields']['views_bulk_operations_1']['id'] = 'views_bulk_operations_1';
-$handler->display->display_options['fields']['views_bulk_operations_1']['table'] = 'node';
+$handler->display->display_options['fields']['views_bulk_operations_1']['table'] = 'views_entity_node';
 $handler->display->display_options['fields']['views_bulk_operations_1']['field'] = 'views_bulk_operations';
 $handler->display->display_options['fields']['views_bulk_operations_1']['relationship'] = 'nid';
 $handler->display->display_options['fields']['views_bulk_operations_1']['label'] = '';
@@ -140,10 +140,21 @@ $handler->display->display_options['empty']['area']['table'] = 'views';
 $handler->display->display_options['empty']['area']['field'] = 'area';
 $handler->display->display_options['empty']['area']['content'] = 'This list displays content you have created that is not published. Currently there is no such content.';
 $handler->display->display_options['empty']['area']['format'] = 'plain_text';
+$handler->display->display_options['defaults']['relationships'] = FALSE;
+/* Relationship: Workbench Moderation: Node */
+$handler->display->display_options['relationships']['nid']['id'] = 'nid';
+$handler->display->display_options['relationships']['nid']['table'] = 'workbench_moderation_node_history';
+$handler->display->display_options['relationships']['nid']['field'] = 'nid';
+$handler->display->display_options['relationships']['nid']['required'] = TRUE;
+/* Relationship: Content: Author */
+$handler->display->display_options['relationships']['uid_1']['id'] = 'uid_1';
+$handler->display->display_options['relationships']['uid_1']['table'] = 'node';
+$handler->display->display_options['relationships']['uid_1']['field'] = 'uid';
+$handler->display->display_options['relationships']['uid_1']['relationship'] = 'nid';
 $handler->display->display_options['defaults']['fields'] = FALSE;
 /* Field: Bulk operations: Content */
 $handler->display->display_options['fields']['views_bulk_operations_1']['id'] = 'views_bulk_operations_1';
-$handler->display->display_options['fields']['views_bulk_operations_1']['table'] = 'node';
+$handler->display->display_options['fields']['views_bulk_operations_1']['table'] = 'views_entity_node';
 $handler->display->display_options['fields']['views_bulk_operations_1']['field'] = 'views_bulk_operations';
 $handler->display->display_options['fields']['views_bulk_operations_1']['relationship'] = 'nid';
 $handler->display->display_options['fields']['views_bulk_operations_1']['label'] = '';
@@ -176,7 +187,7 @@ $handler->display->display_options['defaults']['filters'] = FALSE;
 $handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
 $handler->display->display_options['filters']['uid_current']['table'] = 'users';
 $handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
-$handler->display->display_options['filters']['uid_current']['relationship'] = 'uid';
+$handler->display->display_options['filters']['uid_current']['relationship'] = 'uid_1';
 $handler->display->display_options['filters']['uid_current']['value'] = '1';
 $handler->display->display_options['filters']['uid_current']['group'] = 1;
 /* Filter criterion: Workbench Moderation: Current */
@@ -253,7 +264,7 @@ $handler->display->display_options['filters']['type']['expose']['remember_roles'
   190180509 => 0,
   169051924 => 0,
 );
-/* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
+/* Filter criterion: Content: Publisher (og_group_ref) (reference filter) */
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
@@ -301,7 +312,7 @@ $handler->display->display_options['empty']['area']['format'] = 'plain_text';
 $handler->display->display_options['defaults']['fields'] = FALSE;
 /* Field: Bulk operations: Content */
 $handler->display->display_options['fields']['views_bulk_operations_1']['id'] = 'views_bulk_operations_1';
-$handler->display->display_options['fields']['views_bulk_operations_1']['table'] = 'node';
+$handler->display->display_options['fields']['views_bulk_operations_1']['table'] = 'views_entity_node';
 $handler->display->display_options['fields']['views_bulk_operations_1']['field'] = 'views_bulk_operations';
 $handler->display->display_options['fields']['views_bulk_operations_1']['relationship'] = 'nid';
 $handler->display->display_options['fields']['views_bulk_operations_1']['label'] = '';
@@ -413,7 +424,7 @@ $handler->display->display_options['filters']['type']['expose']['remember_roles'
   190180509 => 0,
   169051924 => 0,
 );
-/* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
+/* Filter criterion: Content: Publisher (og_group_ref) (reference filter) */
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
@@ -462,7 +473,7 @@ $handler->display->display_options['empty']['area']['format'] = 'plain_text';
 $handler->display->display_options['defaults']['fields'] = FALSE;
 /* Field: Bulk operations: Content */
 $handler->display->display_options['fields']['views_bulk_operations_1']['id'] = 'views_bulk_operations_1';
-$handler->display->display_options['fields']['views_bulk_operations_1']['table'] = 'node';
+$handler->display->display_options['fields']['views_bulk_operations_1']['table'] = 'views_entity_node';
 $handler->display->display_options['fields']['views_bulk_operations_1']['field'] = 'views_bulk_operations';
 $handler->display->display_options['fields']['views_bulk_operations_1']['relationship'] = 'nid';
 $handler->display->display_options['fields']['views_bulk_operations_1']['label'] = '';
@@ -581,7 +592,7 @@ $handler->display->display_options['filters']['type']['expose']['remember_roles'
   190180509 => 0,
   169051924 => 0,
 );
-/* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
+/* Filter criterion: Content: Publisher (og_group_ref) (reference filter) */
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
@@ -631,7 +642,7 @@ $handler->display->display_options['empty']['area']['format'] = 'plain_text';
 $handler->display->display_options['defaults']['fields'] = FALSE;
 /* Field: Bulk operations: Content */
 $handler->display->display_options['fields']['views_bulk_operations_1']['id'] = 'views_bulk_operations_1';
-$handler->display->display_options['fields']['views_bulk_operations_1']['table'] = 'node';
+$handler->display->display_options['fields']['views_bulk_operations_1']['table'] = 'views_entity_node';
 $handler->display->display_options['fields']['views_bulk_operations_1']['field'] = 'views_bulk_operations';
 $handler->display->display_options['fields']['views_bulk_operations_1']['relationship'] = 'nid';
 $handler->display->display_options['fields']['views_bulk_operations_1']['label'] = '';
@@ -750,7 +761,7 @@ $handler->display->display_options['filters']['type']['expose']['remember_roles'
   190180509 => 0,
   169051924 => 0,
 );
-/* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
+/* Filter criterion: Content: Publisher (og_group_ref) (reference filter) */
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
@@ -797,10 +808,11 @@ $handler->display->display_options['relationships']['nid']['id'] = 'nid';
 $handler->display->display_options['relationships']['nid']['table'] = 'workbench_moderation_node_history';
 $handler->display->display_options['relationships']['nid']['field'] = 'nid';
 $handler->display->display_options['relationships']['nid']['required'] = TRUE;
-/* Relationship: Content revision: User */
+/* Relationship: Content: Author */
 $handler->display->display_options['relationships']['uid']['id'] = 'uid';
-$handler->display->display_options['relationships']['uid']['table'] = 'node_revision';
+$handler->display->display_options['relationships']['uid']['table'] = 'node';
 $handler->display->display_options['relationships']['uid']['field'] = 'uid';
+$handler->display->display_options['relationships']['uid']['relationship'] = 'nid';
 /* Field: Content revision: Vid */
 $handler->display->display_options['fields']['vid']['id'] = 'vid';
 $handler->display->display_options['fields']['vid']['table'] = 'node_revision';

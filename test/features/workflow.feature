@@ -433,14 +433,11 @@ Feature:
   @workflow_19 @ok
   # https://jira.govdelivery.com/browse/CIVIC-5348
   Scenario: "View draft" should display the draft dataset and not the published revision.
-    Given users:
-      | name                 | roles                                 |
-      | workflow_contributor | Workflow Contributor, content creator |
     And datasets:
-      | title         | author               | published | moderation |
-      | Dataset title | workflow_contributor | Yes       | published  |
+      | title         | author      | published | moderation | publisher |
+      | Dataset title | Contributor | Yes       | published  | Group 01  |
     Given I update the moderation state of "Dataset title" to "Published"
-    Given I am logged in as "workflow_contributor"
+    Given I am logged in as "Contributor"
     And I am on "Dataset title" page
     Then I should see the text "Dataset title"
     When I click "Edit draft"
@@ -456,4 +453,46 @@ Feature:
       | Administrator      | admin@fakeemail.com      | 1      | administrator     |
     And The "source_one" source is harvested
     And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "published"
-  
+    
+  @workflow_21 @ok @globalUser
+  Scenario: As a Workflow Moderator, I should be able to see Stale Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
+    Given users:
+      | name            | roles                                 |
+      | some-other-user | Workflow Contributor, content creator |
+    And group memberships:
+      | user            | group    | role on group        | membership status |
+      | some-other-user | Group 01 | administrator member | Active            |
+    And datasets:
+      | title           | author          | published | publisher |
+      | Not My Dataset  | some-other-user | No        | Group 01  |
+    And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review" on date "30 days ago"
+    Given I am logged in as "Moderator"
+    And I am on "Stale Reviews" page
+    Then I should see the text "Not My Dataset"
+    
+  @workflow_22 @api @javascript @globalUser
+  Scenario: As a user I should be able to see my content back on "My Drafts" section if it was rejected
+    # Submit a dataset to Needs Review
+    Given I am logged in as "Contributor"
+    And datasets:
+      | title              | author      | moderation | moderation_date | date created  |
+      | My Draft Dataset   | Contributor | draft      | Jul 21, 2015    | Jul 21, 2015  |
+    When I am on the "My Drafts" page
+    Then I should see the button "Submit for review"
+    And I should see "My Draft Dataset"
+    When I check the box "Select all items on this page"
+    And I press "Submit for review"
+    And I wait for "Performed Submit for review"
+    And I am on the "My Drafts" page
+    Then I should not see "My Draft Dataset"
+    # Reject dataset
+    Given I am logged in as "Supervisor"
+    When I am on the "Needs Review" page
+    Then I should see "My Draft Dataset"
+    When I check the box "Select all items on this page"
+    And I press "Reject"
+    Then I wait for "Performed Reject"
+    # Check that the dataset is back
+    Given I am logged in as "Contributor"
+    When I am on the "My Drafts" page
+    Then I should see "My Draft Dataset"
