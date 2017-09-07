@@ -68,7 +68,7 @@ Feature: Resource
     And I click "Resource"
     ## If you use selenium uncomment this
     # And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     When I fill in "Title" with "Resource 06"
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
@@ -89,7 +89,7 @@ Feature: Resource
     And I am on the "Content" page
     And I click "Resource"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I click "API or Website URL"
     And I fill in "edit-field-link-api-und-0-url" with "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02"
     When I fill in "Title" with "Resource 06"
@@ -119,24 +119,24 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
 
-  @dkanBug @noworkflow @javascript
+  @dkanBug @noworkflow
   Scenario: Change dataset on resource
     Given I am logged in as "Katie"
     And I am on "Resource 01" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 02"
+    And I fill in "field_dataset_ref[und][0][target_id]" with "Dataset 02"
     And I press "Save"
     Then I should see "Resource 01 has been updated"
     When I click "Back to dataset"
     Then I should see "Dataset 02" in the "dataset title" region
     And I should see "Resource 01" in the "dataset resource list" region
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Add a resource with no datasets to a dataset with no resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 03"
+    And I fill in "field_dataset_ref[und][0][target_id]" with "Dataset 03"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -155,12 +155,12 @@ Feature: Resource
     And I should see "Groups were updated on 1 resource(s)"
     And I should not see the link "Back to dataset"
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Add a resource with no group to a dataset with group
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 05"
+    And I fill in "field_dataset_ref[und][0][target_id]" with "Dataset 05"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -177,26 +177,26 @@ Feature: Resource
     When I am on "Dataset 05" page
     Then I should not see "Resource 08" in the "dataset resource list" region
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Add a resource to multiple datasets with groups
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 05"
+    And I fill in "field_dataset_ref[und][0][target_id]" with "Dataset 05"
     And I press "Add another item"
-    And I fill in the autocomplete field "edit-field-dataset-ref-und-1-target-id" with "Dataset 06"
+    And I fill in "field_dataset_ref[und][0][target_id]" with "Dataset 06"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Remove one dataset with group from resource with multiple datasets
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 05"
+    And I fill in "field_dataset_ref[und][0][target_id]" with "Dataset 05"
     And I press "Add another item"
-    And I fill in the autocomplete field "edit-field-dataset-ref-und-1-target-id" with "Dataset 06"
+    And I fill in "field_dataset_ref[und][0][target_id]" with "Dataset 06"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     When I click "Edit"
@@ -205,14 +205,14 @@ Feature: Resource
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @noworkflow @javascript
+  @noworkflow
   Scenario: Remove all datasets with groups from resource
     Given I am logged in as "Katie"
     And I am on "Resource 06" page
     When I click "Edit"
-    And I fill in the autocomplete field "edit-field-dataset-ref-und-0-target-id" with "Dataset 05"
+    And I fill in "field_dataset_ref[und][0][target_id]" with "Dataset 05"
     And I press "Add another item"
-    And I fill in the autocomplete field "edit-field-dataset-ref-und-1-target-id" with "Dataset 06"
+    And I fill in "field_dataset_ref[und][0][target_id]" with "Dataset 06"
     And I press "Save"
     Then I should see "Resource 06 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
@@ -239,14 +239,14 @@ Feature: Resource
     And I am on "Resource 05" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I press "Save"
     And I am on "Resource 05" page
     When I click "Manage Datastore"
     And I press "Import"
     And I wait for "Delete items"
     Then I should see "Last import"
-    And I should see "imported items total"
+    And I wait for "imported items total"
 
   @noworkflow @javascript
   Scenario: Delete items on datastore of own resource
@@ -254,7 +254,7 @@ Feature: Resource
     And I am on "Resource 03" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -274,7 +274,7 @@ Feature: Resource
     And I am on "Resource 03" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 03" page
@@ -286,7 +286,7 @@ Feature: Resource
     Then I should see "Datastore dropped!"
     And I should see "Your file for this resource is not added to the datastore"
     When I click "Manage Datastore"
-    Then I should see "No imported items."
+    Then I wait for "No imported items."
 
   @noworkflow
   Scenario: Add revision to own resource

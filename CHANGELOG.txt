@@ -29,6 +29,13 @@
  - #1842 Add help text to explain the pager on data previews.
  - #1542 Creates migration on harvest source import.
 
+7.x-1.13.7 2017-08-22
+---------------------
+ - #2064 Update entityreference to 1.15
+ - #2061 Update views to 3.17
+ - #2060 Update tests to adjust to client customizations.
+ - #2060 Removed unused modules menu_token and remote_file_source from drupal-org.make
+
 7.x-1.13.6 2017-07-28
 ---------------------
  - #2036 Add file_resup to the list of up to date projects.
@@ -461,10 +468,17 @@ DKAN Datastore:
  - Upgrade of Panopoly Widgets, Panopoly Images and Fieldable Panels Panes.
 
 
-7.x-1.12 2015-04-01
+7.x-1.12 2016-04-01
 -------------------
 DKAN_Datastore:
  - Add update function enable field_hidden module
+
+NuBoot Radix Theme:
+ - Add managed file support to logo and hero image
+ - Add check on filenames to remove spaces and special characters that can break functionality.
+ - Make date facets consistent with other facets styling
+ - Upgraded to use Radix 3.3.
+ - Fix node--search-result.tpl.php file to check the $group_list variable before printing markup
 
 
 7.x-1.11 2016-02-02
@@ -478,6 +492,13 @@ DKAN Dataset:
  - Fixed counting of datasets, broken when a dataset belongs to more than one group
  - Hide "add resource" button on datasets from users who do not have permission to do so
  - Numerous small improvements and bug fixes
+
+NuBoot Radix Theme:
+ - Theming improvements to support new search page design
+ - Fix the Additional Info field in datasets to hide extra-long rows
+ - Fix a bug that prevented sub-themes of Nuboot Radix from retrieving their own settings
+ - Styling for re-arranging of group links on group pages DKAN Dataset
+ - Numerous small styling and code fixes
 
 
 7.x-1.11 2016-02-01
@@ -534,7 +555,7 @@ $ drush en dkan_dataset_groups_perms -y
 $ drush fr dkan_dataset_groups_perms -y
 
 DKAN Dataset:
-- See the DKAN Dataset release notes for 7.x-1.11 for notes specific to the DKAN Dataset module.
+ - See the DKAN Dataset release notes for 7.x-1.11 for notes specific to the DKAN Dataset module.
 
 
 7.x-1.10 2015-11-10
@@ -576,6 +597,12 @@ NuBoot Radix Theme:
  - Drupal now on version 7.39.
  - Many bug fixes and code cleanups
  - See release notes for nuboot_radix theme and individual DKAN modules for additional release notes
+
+NuBoot Radix Theme:
+ - Add support for SVG logos
+ - New option to use solid color for background/hero graphic instead of image
+ - Improved Colorizer support for different page elements
+ - Numerous bug fixes and small styling improvements
 
 DKAN Datastore:
  - Better UX/behavior for the "add to datastore" button: https://github.com/NuCivic/dkan_datastore/pull/39
@@ -712,6 +739,10 @@ DKAN Dataset:
  - adding slack integration for travis
  - Update to make files
 
+NuBoot Radix Theme:
+ - Switch to radix as a base theme
+ - Updates for panels layouts
+ - Switch to flat icons for files http://www.flaticon.com/packs/file-formats-icons
 
 7.x-1.1 2013-06-27
 ------------------
@@ -741,6 +772,12 @@ DKAN Dataset:
  - Several bug fixes
  - Some changes for Project Open Data compliance, including data.json self-reference
 
+nüBoot Theme:
+ - Styles for resource download button
+ - Change nuams references to NuCivic to reflect branding changes
+ - Left floating resource list
+ - Improve colorizer functionality
+
 
 7.x-1.0 2014-04-29
 ------------------
@@ -761,6 +798,7 @@ DKAN Dataset:
  - DKAN_Datastore: Added WebTestCase test suite for dkan_datastore and dkan_datastore_api: https://github.com/nuams/dkan_datastore/tree/7.x-1.x/tests
  - DKAN_Datastore: Travis + Github integration for all test suites on every commit
  - DKAN_Datastore: Several bugs fixed.
+ - Added nüBoot theme as the main out-of-box theme for DKAN distro.
 
 
 7.x-1.0-beta 2013-09-30
