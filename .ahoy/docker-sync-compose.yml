@@ -6,12 +6,9 @@ services:
   web:
     hostname: web
     image: nuams/drupal-apache-php:1.0-5.6
-    # Fix for docker for mac container not starting selenium
-    # https://forums.docker.com/t/space-in-new-no-proxy-env-var-breaking-old-containers/14075
 
     environment:
       - VIRTUAL_HOST=dkan.docker
-      - no_proxy=localhost
       - DB_1_ENV_MYSQL_ROOT_PASSWORD=admin123
       - DB_1_ENV_MYSQL_USER=drupal
       - DB_1_ENV_MYSQL_PASSWORD=123

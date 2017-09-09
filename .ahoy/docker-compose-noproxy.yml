@@ -1,0 +1,10 @@
+version: "2"
+services:
+  web:
+    labels:
+      - traefik.backend=dkan
+      - traefik.frontend.rule=Host:dkan.docker
+  browser:
+    labels:
+      - traefik.backend=browser
+      - traefik.frontend.rule=Host:browser.dkan.docker
