@@ -308,19 +308,27 @@ commands:
 
   apache:
     usage: Interact with the docker apache service Accepts start, stop, restart.
-    cmd: ahoy docker exec web service apache2 {{args}}
+    cmd: ahoy docker exec web apache2ctl {{args}}
 
   xdebug:
     usage: Enable or disable xdebug configuration. Accepts stop or start
     cmd: |
+      os=$(uname)
+      if [ "$os" = "Darwin" ]; then
+        XDEBUG_FILE=/etc/php5/xdebug-macos.ini
+      else
+        XDEBUG_FILE=/etc/php5/xdebug-linux.ini
+      fi
       args=$(echo {{args}})
       case $args in
         start)
-        ahoy docker exec web cp -f /etc/php5/xdebug.ini /etc/php5/mods-available
+        ahoy docker exec web cp -f ${XDEBUG_FILE} /etc/php5/mods-available/xdebug.ini
+        ahoy docker exec cli cp -f ${XDEBUG_FILE} /etc/php5/mods-available/xdebug.ini
         ahoy docker apache restart
           ;;
         stop)
         ahoy docker exec web rm -f /etc/php5/mods-available/xdebug.ini
+        ahoy docker exec cli rm -f /etc/php5/mods-available/xdebug.ini
         ahoy docker apache restart
           ;;
         *)
