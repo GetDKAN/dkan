@@ -10,8 +10,8 @@ Drupal.behaviors.autoSelectURIField = {
       $(this).select();
     });
     var arrows = [37,38,39,40];
-    $('#harvest_source_summary_uri').on('keydown', function(e){
-      if(arrows.indexOf(e.keyCode) === -1) {
+    $('#harvest_source_summary_uri').on('keydown', function (e) {
+      if (arrows.indexOf(e.keyCode) === -1) {
         e.preventDefault();
       }
     });

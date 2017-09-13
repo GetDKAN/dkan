@@ -1,5 +1,5 @@
 # time:1m32.15s
-@javascript @api
+@api @disablecaptcha
 Feature: Markdown Editor
   In order to create content
   As a user with edition permissions
@@ -14,7 +14,16 @@ Feature: Markdown Editor
     | John    | john@example.com    | site manager         |
     | Jaz     | jaz@example.com     | editor               |
     | Gabriel | gabriel@example.com | content creator      |
+    Given groups:
+    | title    | author | published |
+    | Group 01 | Admin  | Yes       |
+    And group memberships:
+    | user    | group    | role on group     | membership status |
+    | Gabriel | Group 01 | member            | Active            |
+    | Jaz     | Group 01 | member            | Active            |
 
+
+  @markdown_editor_1 @javascript
   Scenario: Seeing 'Markdown' text format and toolbar as a Content Creator
     Given I am logged in as "Gabriel"
     When I am on "Add Dataset" page
@@ -43,6 +52,7 @@ Feature: Markdown Editor
     And I should not see the button "Format selected text as code" in the "dataset edit body"
     And I should not see the button "Format selected text as a code block" in the "dataset edit body"
 
+  @markdown_editor_2 @javascript 
   Scenario: Seeing 'Markdown' text format and toolbar as an Editor
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
@@ -54,6 +64,8 @@ Feature: Markdown Editor
     # Buttons that the user should not see on the toolbar
     And I should not see the button "Insert a table" in the "dataset edit body"
 
+  
+  @markdown_editor_3 @javascript
   Scenario: Seeing 'Markdown' text format and toolbar as a Site Manager
     Given I am logged in as "John"
     When I am on "Add Dataset" page
@@ -65,117 +77,151 @@ Feature: Markdown Editor
     # Buttons that the user should not see on the toolbar
     And I should not see the button "Insert a table" in the "dataset edit body"
 
+  @markdown_editor_4
   Scenario: Add headers using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
-    And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "<h2>First subtitle</h2><h3>Second subtitle</h3>"
+    And I fill-in the following:
+      | title | Test Dataset |
+      | description | <h2>First subtitle</h2><h3>Second subtitle</h3> |
+      | publisher | Group 01 |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "h2" element in the "dataset body" region
     And I should see the "h3" element in the "dataset body" region
 
+  @markdown_editor_5
   Scenario: Add italic text using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
-    And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "*Some text*"
+    And I fill-in the following:
+      | title | Test Dataset |
+      | description | *Some text* |
+      | publisher | Group 01 |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "em" element in the "dataset body" region
 
+  @markdown_editor_6
   Scenario: Add bold text using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
-    And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "**Some text**"
+    And I fill-in the following:
+      | title | Test Dataset |
+      | description | **Some text** |
+      | publisher | Group 01 |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "strong" element in the "dataset body" region
 
+  @markdown_editor_7
   Scenario: Add code block using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
-    And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "`Some code`"
+    And I fill-in the following:
+      | title | Test Dataset |
+      | description | `Some code` |
+      | publisher | Group 01 |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "code" element in the "dataset body" region
 
+  @markdown_editor_8
   Scenario: Add quote block using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
-    And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "> Some quote"
+    And I fill-in the following:
+      | title | Test Dataset |
+      | description | > Some quote |
+      | publisher | Group 01 |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "blockquote" element in the "dataset body" region
 
+  @markdown_editor_9
   Scenario: Add ordered list using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
-    And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "1. Some item"
+    And I fill-in the following:
+      | title | Test Dataset |
+      | description | 1. Some item |
+      | publisher | Group 01 |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "ol" element in the "dataset body" region
 
+  @markdown_editor_10
   Scenario: Add unordered list using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
-    And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "* Some item"
+    And I fill-in the following:
+      | title | Test Dataset |
+      | description | * Some item |
+      | publisher | Group 01 |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "ul" element in the "dataset body" region
 
+  @markdown_editor_11
   Scenario: Add link using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
-    And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "[Link](http://www.google.com)"
+    And I fill-in the following:
+      | title | Test Dataset |
+      | description | [Link](http://www.google.com) |
+      | publisher | Group 01 |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "a" element in the "dataset body" region
 
+  @markdown_editor_12
   Scenario: Add image using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
-    And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "![alt text]('/the/url' 'Image Title')"
+    And I fill-in the following:
+      | title | Test Dataset |
+      | description | ![alt text]('/the/url' 'Image Title') |
+      | publisher | Group 01 |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "img" element in the "dataset body" region
 
+  @markdown_editor_13
   Scenario: Add line break using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
-    And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "This<br>that"
+    And I fill-in the following:
+      | title | Test Dataset |
+      | description | This<br>that |
+      | publisher | Group 01 |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "br" element in the "dataset body" region
 
+  @markdown_editor_14
   Scenario: Add iframe break using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
-    And I fill in "title" with "Test Dataset"
-    And I fill in "body[und][0][value]" with "<iframe src=\"http://www.w3schools.com\"></iframe>"
+    And I fill-in the following:
+      | title | Test Dataset |
+      | description | <iframe src=\"http://www.w3schools.com\"></iframe> |
+      | publisher | Group 01 |
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
     When I am on "dataset/test-dataset"
     Then I should see the "iframe" element in the "dataset body" region
 
+  @markdown_editor_15 @javascript
   Scenario: Don't see markdown toolbar when using 'Plain text' text format
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page

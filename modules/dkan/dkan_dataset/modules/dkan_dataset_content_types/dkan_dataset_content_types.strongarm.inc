@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_dataset_content_types.strongarm.inc
@@ -14,7 +15,7 @@ function dkan_dataset_content_types_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'chosen_jquery_selector';
-  $strongarm->value = '.node-form  select, .field-name-field-format select, .field-name-field-dataset-ref select';
+  $strongarm->value = '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"], [id*="lines-terminated-by"], [id*="lang-dropdown-select-language"])';
   $export['chosen_jquery_selector'] = $strongarm;
 
   $strongarm = new stdClass();

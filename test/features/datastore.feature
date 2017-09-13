@@ -1,5 +1,5 @@
 # time:0m28.91s
-@api
+@api @disablecaptcha
 Feature: Datastore
   In order to know the datastore is working
   As a website user
@@ -28,16 +28,18 @@ Feature: Datastore
     And "Format" terms:
       | name    |
       | cvs     |
+      | csv     |
     And resources:
       | title       | publisher | format | dataset    | author  | published | description               |
       | Resource 01 | Group 01  | cvs    | Dataset 01 | Gabriel | Yes       | The resource description. |
       | Resource 02 | Group 02  | cvs    | Dataset 02 | Daniel  | Yes       | The resource description. |
+      | Resource 03 | Group 02  | csv    | Dataset 02 | Katie   | Yes       | The resource description. |
 
   # Don't remove! This is for avoiding issues when other scenarios are disabled (because of @noworkflow tag).
   Scenario: Dumb test
         Given I am on the homepage
 
-  @api @javascript @noworkflow
+  @api @javascript @noworkflow @datastore
   Scenario: Adding and Removing items from the datastore
     Given I am logged in as a user with the "site manager" role
     And I am on "dataset/dataset-01"
@@ -53,7 +55,7 @@ Feature: Datastore
     Then I wait for "DKAN Datastore Link Importer: Status"
     When I press "Import"
     And I wait for "2 imported items total."
-    When I click "Data API"
+    When I click "Data API" in the "primary tabs" region
     Then I wait for "Example Query"
     When I click "Manage Datastore"
     Then I wait for "DKAN Datastore Link Importer: Status"
@@ -93,3 +95,23 @@ Feature: Datastore
     Given I am logged in as "Katie"
     Then I "should" be able to manage the "Resource 01" datastore
     And I "should" be able to manage the "Resource 02" datastore
+
+  @api @noworkflow @javascript @datastore
+  Scenario: Import a csv tab delimited file.
+    Given I am logged in as a user with the "site manager" role
+    And I am on "dataset/dataset-02"
+    When I click "Resource 03"
+    And I click "Edit"
+    And I attach the drupal file "dkan/TAB_delimiter_large_raw_number.csv" to "files[field_upload_und_0]"
+    #And I select "tab" from "Delimiter"
+    And I press "Save"
+    Then I should see "Resource Resource 03 has been updated"
+    When I click "Manage Datastore"
+    Then I wait for "DKAN Datastore File: Status"
+    When I select "TAB" from "edit-feedscsvparser-delimiter"
+    And I press "Import"
+    And I wait for "5" seconds
+    Then I wait for "5 imported items total."
+    When I click "View"
+    And I wait for "5" seconds
+    Then I should see exactly "30" ".slick-cell" in region "recline preview"

@@ -1,7 +1,7 @@
 name = DKAN Dataset Groups Permissions
 description = Defines permissions for groups.
 core = 7.x
-package = DKAN Deprecated
+package = DKAN
 dependencies[] = dkan_dataset_groups
 features[features_api][] = api:2
 features[og_features_permission][] = node:group:access authoring options of dataset content

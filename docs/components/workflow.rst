@@ -55,6 +55,11 @@ Enabling DKAN workflow should enable all the dependencies modules and update the
 user roles (more information available in the `Workflow Roles`_
 section).
 
+You may see a message instructing you to rebuild permissions, click the "Rebuild permissions" link to update the node access settings.
+
+.. image:: ../images/rebuild-permissions-message.png
+
+
 Metadata Moderation States
 --------------------------
 
@@ -135,6 +140,8 @@ moderation state and add a note about the change via the **Moderation notes**
 text area.
 
 .. image:: ../images/workflow/workflow_node_edit.png
+
+.. _`workflow-roles`:
 
 Workflow Roles
 ---------------------------
