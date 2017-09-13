@@ -296,6 +296,10 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
         case "list<taxonomy_term>":
           // Convert the tags to tids.
           $tids = array();
+          if (is_array($value)) {
+            $wrapper->$property->set($value);
+            break;
+          }
           foreach ($this->explode_list($value) as $term) {
             if ($found_term = $this->tidFromTermName($property, $term)) {
               $tids[] = $found_term;
@@ -313,6 +317,10 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
         case 'node':
         case 'list<node>':
           $nids = array();
+          if (is_array($value)) {
+            $wrapper->$property->set($value);
+            break;
+          }
           foreach ($this->explode_list($value) as $name) {
             if (empty($name)) {
               continue;
@@ -452,22 +460,22 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       $node->type = $bundle;
       devel_generate_fields($node, 'node', $bundle);
       $devel_generate_wrapper = entity_metadata_wrapper('node', $node);
-
+      $form = node_add($bundle);
       foreach ($this->field_properties as $key => $field) {
         if ($key == 'type' || $key == 'author') {
           continue;
         }
 
-        if (isset($field['required']) && $field['required']) {
+        $defaults = $this->datasetFieldDefaults;
+
+        $lang = dkan_dataset_form_field_language($form, $key);
+        $form_field = (isset($form[$key]) && isset($form[$key][$lang])) ? $form[$key][$lang] : array();
+        $field_required = $this->fieldRequired($field, $form_field);
+        if ($field_required) {
           $k = array_search($key, $this->field_map);
-          if (!isset($data[$k])) {
+          if (!isset($data[$k]) || empty($data[$k])) {
             $data[$k] = $devel_generate_wrapper->$key->value();
-            // TODO: use param passed in from behat config for defaults.
-            $defaults = array(
-              'field_public_access_level' => 'public',
-              'field_hhs_attestation_negative' => 1,
-              'field_license' => 'odc-by',
-            );
+            $defaults = $this->datasetFieldDefaults;
             foreach ($defaults as $default => $value) {
               if ($key == $default) {
                 $data[$k] = $value;
@@ -477,6 +485,16 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
         }
       }
     }
+  }
+
+  /**
+   * Check if field is required.
+   */
+  public function fieldRequired($field, $form_field = array()) {
+    return (isset($field['required']) && $field['required']) ||
+      (isset($form_field['#required']) && $form_field['#required']) ||
+      (isset($form_field[0]['#required']) && $form_field[0]['#required']) ||
+      (isset($form_field[0]['value']) && isset($form_field[0]['value']['#required']) && $form_field[0]['value']['#required']);
   }
 
   /**

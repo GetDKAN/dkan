@@ -57,6 +57,7 @@ Feature: Site managers administer groups
       | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
       | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
 
+  @group_admin_01
   Scenario: Create group
     Given I am logged in as "John"
     And I am on "Groups" page
@@ -70,6 +71,7 @@ Feature: Site managers administer groups
     And I should see "This is a body"
     And I should see the "img" element in the "group block" region
 
+  @group_admin_02
   Scenario: Create group with previous same title
     Given I am logged in as "John"
     And I am on "Groups" page
@@ -80,6 +82,7 @@ Feature: Site managers administer groups
     And I press "Save"
     Then I should see "A group with title Group 01 exists on the site. Please use another title."
 
+  @group_admin_03
   Scenario: Add a group member on any group
     Given I am logged in as "John"
     And I am on "Group 02" page
@@ -92,6 +95,7 @@ Feature: Site managers administer groups
     And I click "Members"
     Then I should see "Katie" in the "group members" region
 
+  @group_admin_04
   Scenario: Remove a group member from any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -104,6 +108,7 @@ Feature: Site managers administer groups
     And I click "Members"
     And I should not see "Katie" in the "group members" region
 
+  @group_admin_05
   Scenario: Delete any group
     Given I am logged in as "John"
     And I am on "Group 02" page
@@ -114,6 +119,7 @@ Feature: Site managers administer groups
     When I press "Delete"
     Then I should see "Group Group 02 has been deleted"
 
+  @group_admin_06
   Scenario: Edit any group
     Given I am logged in as "John"
     And I am on "Group 02" page
@@ -123,6 +129,7 @@ Feature: Site managers administer groups
     Then I should see "Group Group 02 has been updated"
     And I should be on the "Group 02" page
 
+  @group_admin_07
   Scenario: Edit membership status of group member on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -133,6 +140,7 @@ Feature: Site managers administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
+  @group_admin_08
   Scenario: Edit group roles of group member on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -143,6 +151,7 @@ Feature: Site managers administer groups
     And I press "Update membership"
     Then I should see "The membership has been updated"
 
+  @group_admin_09
   Scenario: View permissions of any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -150,6 +159,7 @@ Feature: Site managers administer groups
     When I click "Permissions (read-only)"
     Then I should see the list of permissions for the group
 
+  @group_admin_10
   Scenario: View group roles of any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -157,6 +167,7 @@ Feature: Site managers administer groups
     When I click "Roles (read-only)"
     Then I should see the list of roles for the group "Group 01"
 
+  @group_admin_11
   Scenario Outline: View group role permissions of any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -170,6 +181,7 @@ Feature: Site managers administer groups
       | member               |
       | administrator member |
 
+  @group_admin_12
   Scenario: View the number of members on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -177,6 +189,7 @@ Feature: Site managers administer groups
     When I click "People"
     Then I should see "Total members: 4"
 
+  @group_admin_13
   Scenario: View the number of content on any group
     Given I am logged in as "John"
     And I am on "Group 01" page
@@ -184,6 +197,7 @@ Feature: Site managers administer groups
     When I click "People"
     Then I should see "Total content: 5"
 
+  @group_admin_14
   Scenario: View list of unpublished groups
     Given I am logged in as "John"
     And I am on "Content" page
@@ -192,10 +206,10 @@ Feature: Site managers administer groups
     And I press "Apply"
     Then I should see "Group 03"
 
+  @group_admin_15
   Scenario: View the details of an unpublished group
     Given I am logged in as "John"
     When I am on "Group 03" page
     #TODO: What should actually be tested as far as details?
     Then I should be on the "Group 03" page
-
 

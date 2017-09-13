@@ -19,32 +19,11 @@ class ServicesContext extends RawDKANContext {
   /**
    * TODO: Move to configuration passed in to constructor.
    */
-  private $request_fields_map = array(
-    'resource' => array(
-      'type' => 'type',
-      'title' => 'title',
-      'body' => 'body[und][0][value]',
-      'status' => 'status',
-    ),
-    'dataset' => array(
-      'type' => 'type',
-      'title' => 'title',
-      'status' => 'status',
-      'published' => 'status',
-      'body' => 'body[und][0][value]',
-      'resource' => 'field_resources[und][0][target_id]',
-      'access level' => 'field_public_access_level[und]',
-      'contact name' => 'field_contact_name[und][0][value]',
-      'contact email' => 'field_contact_email[und][0][value]',
-      'attest name' => 'field_hhs_attestation_name[und][0][value]',
-      'attest date' => 'field_hhs_attestation_date[und][0][value][date]',
-      'verification status' => 'field_hhs_attestation_negative[und]',
-      'attest privacy' => 'field_hhs_attestation_privacy[und]',
-      'attest quality' => 'field_hhs_attestation_quality[und]',
-      'bureau code' => 'field_odfe_bureau_code[und]',
-      'license' => 'field_license[und][select]',
-    )
-  );
+  private $request_fields_map;
+
+  public function __construct($request_fields_map = array()) {
+    $this->request_fields_map = $request_fields_map['request_fields_map'];
+  }
 
   /**
    * @BeforeScenario
@@ -53,6 +32,7 @@ class ServicesContext extends RawDKANContext {
     parent::gatherContexts($scope);
     $environment = $scope->getEnvironment();
     $this->dkanContext = $environment->getContext('Drupal\DKANExtension\Context\DKANContext');
+    $this->datasetContext = $environment->getContext('Drupal\DKANExtension\Context\DatasetContext');
   }
 
   /**
@@ -288,7 +268,6 @@ class ServicesContext extends RawDKANContext {
    * Create node.
    */
   private function services_request_create_node($node_data, $csrf_token, $cookie_session, $request_url) {
-
     $node_data = http_build_query($node_data);
 
     $curl = $this->services_request_curl_init($request_url, $csrf_token);
@@ -387,7 +366,7 @@ class ServicesContext extends RawDKANContext {
   /**
    * Build node data as needed by endpoint.
    */
-  private function build_node_data($data, $node = NULL) {
+  public function build_node_data($data, $node = NULL) {
     $node_data = array();
 
     if (!$node && !isset($data['type'])) {
@@ -401,8 +380,7 @@ class ServicesContext extends RawDKANContext {
     $rest_api_fields = $this->request_fields_map[$node_type];
 
     if ($node_type == "dataset") {
-      $rawDkanEntityContext = new DatasetContext();
-      $rawDkanEntityContext->applyMissingRequiredFields($data);
+      $this->datasetContext->applyMissingRequiredFields($data);
     }
 
     foreach ($data as $field => $field_value) {
@@ -424,6 +402,45 @@ class ServicesContext extends RawDKANContext {
    */
   private function process_field($field, $field_value) {
     switch ($field) {
+      case 'body':
+      case 'description':
+        if (is_array($field_value)) {
+          $field_value = $field_value['value'];
+        }
+        break;
+
+      case 'publisher':
+      case 'groups':
+        if (is_array($field_value)) {
+          $field_value = $field_value[0]->nid;
+        }
+
+        if (!is_numeric($field_value)) {
+          $field_value = (int) db_select('node', 'n')
+            ->fields('n', array('nid'))
+            ->condition('type', 'group')
+            ->condition('title', $field_value)
+            ->execute()
+            ->fetchField();
+        }
+
+        if (is_array($field_value)) {
+          $field_value = $field_value[0]->nid;
+        }
+        break;
+
+      case 'tags':
+        if (is_array($field_value)) {
+          $field_value = $field_value[0]->name;
+        }
+        break;
+
+      case 'program code':
+        if (is_array($field_value)) {
+          $field_value = $field_value[0];
+        }
+        break;
+
       case 'resource':
         $resource = $this->dkanContext->entityStore->retrieve_by_name($field_value);
         if ($resource) {
