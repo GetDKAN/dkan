@@ -1146,7 +1146,7 @@ function dkan_dataset_remotefile_value($element, &$item) {
     && drupal_strlen($item['filefield_dkan_remotefile']['url']) > 0
     && $item['filefield_dkan_remotefile']['url'] != DKAN_DATASET_REMOTE_FILE_SOURCE_HINT_TEXT) {
 
-    $value = $item['filefield_dkan_remotefile']['url'];
+    $value = trim($item['filefield_dkan_remotefile']['url']);
 
     if (!valid_url($value, TRUE)) {
       form_error($element, t('Invalid Remote File URL.'));
