@@ -25,8 +25,8 @@
                 "id": "80a9cc2b-c817-405e-9591-14565759defc"
             }
         ],
-        "field_image": "files/dkan_data_story/A_nurse_vaccinates_Barack_Obama_against_H1N1_0.jpg",
-        "field_image_alt": "Nurse vaccinates Pres. Obama",
+        "field_image": "files/dkan_data_story/immunization-of-children-in-doctors-office-725x479.jpg",
+        "field_image_alt": "Nurse vaccinates smiling baby.",
         "panelizer": {
             "panels_display": {
                 "args": [],
@@ -323,7 +323,7 @@
                                 "description": null,
                                 "link": null,
                                 "type": "image",
-                                "image_path": "files/dkan_data_story/Barack_Obama_against_H1N1.jpg"
+                                "image_path": "files/dkan_data_story/immunization-of-children-in-doctors-office-725x479.jpg"
                             }
                         ],
                         "rdf_mapping": []

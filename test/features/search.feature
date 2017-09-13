@@ -26,6 +26,7 @@ Feature: Search
     Given groups:
       | title    | author  | published |
       | Group 01 | Badmin  | Yes       |
+      | Group 02 | Gabriel | Yes       |
     And group memberships:
       | user    | group    | role on group        | membership status |
       | Gabriel | Group 01 | administrator member | Active            |
@@ -39,7 +40,7 @@ Feature: Search
       | dazzling     |
     And datasets:
       | title              | publisher | author  | published | tags         | topics      | description |
-      | ooftaya Dataset 01 |           | Gabriel | Yes       | something01  | edumication | Test 01     |
+      | ooftaya Dataset 01 | Group 02  | Gabriel | Yes       | something01  | edumication | Test 01     |
       | ooftaya Dataset 02 | Group 01  | Gabriel | Yes       | politics01   | dazzling    | Test 02     |
 
   Scenario: Searching datasets
