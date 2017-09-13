@@ -1350,7 +1350,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'language' => array(
-        'value' => 'en',
+        'value' => '[node:field_language]',
         'type' => 'array',
       ),
       'license' => array(
