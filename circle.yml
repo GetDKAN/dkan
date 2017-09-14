@@ -32,6 +32,8 @@ checkout:
 database:
   pre:
     - echo -e 'secure_file_priv = ""' | sudo sh -c "cat >> /etc/mysql/my.cnf"
+    - echo -e 'max_allowed_packet = 128M' | sudo sh -c "cat >> /etc/mysql/my.cnf"
+    - echo -e 'innodb_buffer_pool_size=256M ' | sudo sh -c "cat >> /etc/mysql/my.cnf"
     - sudo /usr/sbin/service mysql restart
 
 ## Customize dependencies
@@ -79,14 +81,13 @@ dependencies:
 test:
   override:
     - ahoy dkan lint
+    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_harvest_test
+    - ahoy dkan unittests:
+        parallel: false
+    - ahoy dkan reinstall --yes
     - ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features:
         timeout: 1200
         parallel: true
-    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_migrate_base_example
-    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush en --yes dkan_harvest_test
-    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush dis --yes dkan_default_content
-    - PATH=/home/ubuntu/.config/composer/vendor/bin:$PATH ahoy drush pm-uninstall --yes dkan_default_content
-    - ahoy dkan unittests
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true

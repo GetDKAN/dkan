@@ -80,7 +80,7 @@ projects:
     patch:
       2809655: https://www.drupal.org/files/issues/entity-path-mysql-5-7_3.diff
   entityreference:
-    version: '1.4'
+    version: '1.5'
   entityreference_filter:
     version: '1.7'
   facetapi:
@@ -138,7 +138,7 @@ projects:
       2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
       2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
   file_entity:
-    version: 2.2
+    version: 2.3
   file_resup:
     download:
       type: git
@@ -205,7 +205,7 @@ projects:
     patch:
       2045225: http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.8
+    version: 2.9
     patch:
       2272567: https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch
   media_youtube:
@@ -220,8 +220,6 @@ projects:
     version: '1.3'
   menu_block:
     version: '2.7'
-  menu_token:
-    version: 1.0-beta7
   migrate:
     version: '2.8'
     patch:
@@ -287,10 +285,6 @@ projects:
       revision: 9dbf7cf
     patch:
       2360019: https://www.drupal.org/files/issues/ref_field-delete-insert-warning-2360019-5.patch
-  remote_file_source:
-    version: 1.x
-    patch:
-      2362487: https://www.drupal.org/files/issues/remote_file_source-location-content-dist_1.patch
   remote_stream_wrapper:
     download:
       type: git
@@ -313,7 +307,7 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.21'
+    version: '1.22'
   search_api_db:
     version: '1.6'
   select_or_other:
@@ -338,7 +332,7 @@ projects:
   uuid:
     version: '1.0'
   views:
-    version: '3.16'
+    version: '3.17'
   views_autocomplete_filters:
     version: '1.2'
     patch:
