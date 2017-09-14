@@ -16,7 +16,7 @@
  * @param array $excludes
  *   List of fields to exclude.
  */
-function hook_dkan_datastore_api_field_excluded_alter(&$excludes) {
+function hook_dkan_datastore_api_field_excluded_alter(array &$excludes) {
   $excludes[] = 'exclude_this_field';
 }
 
