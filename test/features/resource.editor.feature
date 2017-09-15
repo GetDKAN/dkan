@@ -98,7 +98,7 @@ Feature: Resource
     And I am on "Resource 01" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple-7.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple7.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
@@ -115,7 +115,7 @@ Feature: Resource
     And I am on "Resource 01" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple-8.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple8.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     When I am on "Resource 01" page
@@ -135,7 +135,7 @@ Feature: Resource
     And I am on "Resource 01" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple-9.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple9.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
