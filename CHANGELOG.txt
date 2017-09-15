@@ -2,6 +2,7 @@
 ----------
  - #2058 Improve messages displayed when creating a harvest source.
  - #2058 Fix harvest bug when filtering by a key that has 0 matches.
+ - #2102 Hide toggle buttons inside preview embeds.
 
 7.x-1.13.7 2017-08-22
 ---------------------
