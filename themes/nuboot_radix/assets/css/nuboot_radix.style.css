@@ -10513,6 +10513,9 @@ h2.pane-title {
   height: 20px;
   font-size: .8em; }
 
+#recline-embeded .data-explorer-help {
+  display: none; }
+
 .data-explorer-help {
   background: #eee;
   margin: 1em 0;
