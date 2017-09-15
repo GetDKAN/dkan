@@ -15,6 +15,15 @@
 	  font-size: .8em;
   }
 }
+#recline-embeded .data-explorer-help {
+  display: none;
+}
+.data-explorer-help {
+  background: #eee;
+  margin: 1em 0;
+  border-radius: 4px;
+  padding: 8px 15px;
+}
 .recline-data-explorer {
   .form-control {
     border-color: #ccc;

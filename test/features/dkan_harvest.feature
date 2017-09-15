@@ -76,12 +76,15 @@ Feature: Dkan Harvest
     And I click "Edit"
     And I press "Delete"
     Then I should see "Are you sure you want to delete Source one?"
+    And I should see "Source one: 10 Datasets, 18 Resources"
+    And I should see "No groups generated during harvest will be affected by this action. They must be manually managed"
     When I select the radio button "Delete content." with the id "edit-dataset-op-0"
     And I press "Delete Sources"
     And I wait for the batch job to finish
     Then I should see "Harvest Source Source one has been deleted."
     And I wait for "3" seconds
     And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "deleted"
+    And the content "Table of Gold Prices Harvest" should be "deleted"
 
   @api @javascript @harvest
   Scenario: Unpublish and mark as orphan all associated content when a Source is deleted
@@ -322,3 +325,19 @@ Feature: Dkan Harvest
     And I select "Cache Source(s)" from "operation"
     And I select "Harvest (Cache and Migrate) Source(s)" from "operation"
     And I select "Migrate Source(s)" from "operation"
+
+  @api @javascript
+  Scenario: Topics set in harvest should set topic field in harvested datasources.
+    Given users:
+      | name              | mail                     | status | roles             |
+      | Site manager      | admin@fakeemail.com      | 1      | site manager      |
+    And harvest sources:
+      | title         | machine name  | source uri                                                                 | type               | author       | published | topics                 |
+      | Topics source | topics_source | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site manager | Yes       | Health Care, Education |
+
+    And The "topics_source" source is harvested
+    And I am logged in as "Site manager"
+    Given I am on the "Topics source" page
+    And I click "Edit"
+    Then the "Health Care" option from "Topics" should be selected
+    And the "Education" option from "Topics" should be selected

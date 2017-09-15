@@ -152,8 +152,8 @@ function dkan_harvest_datasets_count($source) {
  */
 function dkan_harvest_permission() {
   return array(
-    'admininster harvest' => array(
-      'title' => t('Administrate harvest sources and datasets'),
+    'administer harvest' => array(
+      'title' => t('Administer harvest sources and datasets'),
     ),
   );
 }
@@ -216,9 +216,9 @@ function dkan_harvest_page_tab_access($node) {
     return FALSE;
   }
 
-  // If the user have the 'admininster harvest' permission, grant her/him
+  // If the user have the 'administer harvest' permission, grant her/him
   // access to the event log.
-  return user_access('admininster harvest');
+  return user_access('administer harvest');
 }
 
 /**
@@ -894,6 +894,22 @@ function dkan_harvest_node_view($node, $view_mode, $langcode) {
 }
 
 /**
+ * Implements hook_node_insert().
+ */
+function dkan_harvest_node_insert($node) {
+  if ($node->type == 'harvest_source') {
+    // Create the migration.
+    try {
+      $harvest_source = HarvestSource::getHarvestSourceFromNode($node);
+      dkan_harvest_get_migration($harvest_source);
+    }
+    catch (\Exception $e) {
+      watchdog('dkan_harvest', $e->getMessage(), WATCHDOG_WARNING);
+    }
+  }
+}
+
+/**
  * Implements hook_form_alter().
  */
 function dkan_harvest_form_alter(&$form, &$form_state, $form_id) {
@@ -1161,9 +1177,15 @@ function dkan_harvest_build_delete_confirmation_description(array $sources) {
     $source = entity_load_single('node', $source_id);
     $source_datasets = dkan_harvest_get_datasets_from_source($source_id);
     $dataset_string = t('Datasets');
-    $markup .= '<li>' . $source->title . ': ' . count($source_datasets) . ' ' . $dataset_string . '</li>';
+    foreach ($source_datasets as $source_dataset) {
+      $source_dataset_array[] = $source_dataset;
+    }
+    $source_resources = dkan_harvest_get_resources_from_datasets($source_dataset_array);
+    $resource_string = t('Resources');
+    $markup .= '<li>' . $source->title . ': ' . count($source_datasets) . ' ' . $dataset_string . ', ' . count($source_resources) . ' ' . $resource_string . '</li>';
   }
   $markup .= '</ul>';
+  $markup .= 'No groups generated during harvest will be affected by this action. They must be manually managed.';
   $markup .= '<p></br>' . t('Plese select the operation you want to perform on the
     associated content (datasets and resources):') . '</p>';
 
