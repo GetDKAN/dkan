@@ -1007,7 +1007,6 @@ public function iWaitForTextToDisappear($text)
     $session->visit($this->locatePath($url));
   }
 
-
  /**
    * @Given /^I fill in the autocomplete field "([^"]*)" with "([^"]*)"$/
    *
@@ -1038,6 +1037,52 @@ public function iWaitForTextToDisappear($text)
       $session->getSelectorsHandler()->selectorToXpath('xpath', '//li[.="' . $value . '"]')
     );
     $title->click();
+  }
+    
+  /**
+   * Assert selector count in given region.
+   *
+   * @Then I should see exactly :number :selector in region :region
+   */
+  public function iShouldSeeExactlyInSelectorInRegion($number, $selector, $region) {
+    $session = $this->getSession();
+    $region_obj = $session->getPage()->find('region', $region);
+    if ($region_obj == null) {
+      throw new \Exception(sprintf('The region "%s" was not found on the page %s', $region, $this->getSession()->getCurrentUrl()));
+    }
+    $elements = $region_obj->findAll('css', $selector);
+    $count = count($elements);
+    if ($count != $number) {
+      throw new \Exception(sprintf('The selector "%s" was found %d times in the %s region on the page %s', $selector, $count, $region, $this->getSession()->getCurrentUrl()));
+    }
+  }
+
+  /**
+   * Checks, that option from select with specified id|name|label|value is selected.
+   *
+   * @Then /^the "(?P<option>(?:[^"]|\\")*)" option from "(?P<select>(?:[^"]|\\")*)" (?:is|should be) selected/
+   * @Then /^the option "(?P<option>(?:[^"]|\\")*)" from "(?P<select>(?:[^"]|\\")*)" (?:is|should be) selected$/
+   * @Then /^"(?P<option>(?:[^"]|\\")*)" from "(?P<select>(?:[^"]|\\")*)" (?:is|should be) selected$/
+   */
+  public function theOptionFromShouldBeSelected($option, $select)
+  {
+    $selectField = $this->getSession()->getPage()->findField($select);
+    if (null === $selectField) {
+      throw new \Exception("Select field '$select' could not be found");
+    }
+
+    $optionField = $selectField->find('named', array(
+      'option',
+      $option,
+    ));
+
+    if (null === $optionField) {
+      throw new \Exception("Option field '$option' could not be found");
+    }
+
+    if (!$optionField->isSelected()) {
+      throw new \Exception('Select option field with value|text "' . $option . '" is not selected in the select "' . $select . '"', $this->getSession());
+    }
   }
 
   /************************************/

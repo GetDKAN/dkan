@@ -615,3 +615,20 @@ function dkan_datastore_queue_import_worker($item) {
 
   return $datastore->importByCli();
 }
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_datastore_form_alter(&$form, &$form_state, $form_id) {
+  if ($form['#form_id'] == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dkan-datasets-panel-pane-1') {
+    // Redirect reset button to  main search page.
+    $form['reset']['#submit'] = array('_dkan_datastore_search_redirect');
+  }
+}
+
+/**
+ * Callback to redirect to search url.
+ */
+function _dkan_datastore_search_redirect() {
+  drupal_goto('/search');
+}

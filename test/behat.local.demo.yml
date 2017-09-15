@@ -4,11 +4,11 @@ imports:
 default:
   extensions:
     Behat\MinkExtension:
-      files_path: '/Users/Username/path/to/vagrant/machine/www/dkan/test/files/'
-      base_url: http://dkan.local
-      browser_name: chrome
+      files_path: "/Users/Username/path/to/vagrant/machine/www/dkan/test/files/"
+      base_url: "http://dkan.local"
+      browser_name: "chrome"
       selenium2:
-        wd_host: http://33.33.33.1:4444/wd/hub
+        wd_host: "http://33.33.33.1:4444/wd/hub"
         capabilities:
           extra_capabilities:
             chromeOptions:
@@ -16,6 +16,6 @@ default:
                 - "--disable-web-security"
     Drupal\DrupalExtension:
       drupal:
-        drupal_root: '/var/www/dkan/webroot'
+        drupal_root: "/var/www/dkan/webroot"
       drush:
-        root: '/var/www/dkan/webroot'
+        root: "/var/www/dkan/webroot"
