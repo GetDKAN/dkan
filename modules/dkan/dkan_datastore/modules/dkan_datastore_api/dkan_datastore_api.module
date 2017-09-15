@@ -376,7 +376,9 @@ function dkan_datastore_api_services_resources() {
 function dkan_datastore_api_datastore_index() {
   if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $params = dkan_datastore_api_get_params();
-    $cache_hash = md5(json_encode($params));
+    // Add anonoymous user to hash so refresh after login relaxes query limits.
+    $cache_hash = md5(json_encode($params)) . user_is_anonymous();
+
     if ($cache = cache_get($cache_hash)) {
       return $cache->data;
     }
@@ -504,7 +506,9 @@ function dkan_datastore_api_query($params) {
 function dkan_datastore_api_multiple_query($queries = NULL) {
   $post_raw_data = file_get_contents('php://input');
   $queries = $queries ? $queries : json_decode($post_raw_data, TRUE);
-  $cache_hash = md5($post_raw_data);
+
+  // Add anonoymous user to hash so refresh after login relaxes query limits.
+  $cache_hash = md5($post_raw_data) . user_is_anonymous();
   if ($cache = cache_get($cache_hash)) {
     return $cache->data;
   }
