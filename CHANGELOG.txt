@@ -1,5 +1,6 @@
 7.x-1.14.x
 ----------
+ - #1946 Fix Datastore API limit not applying consistently.
  - #2109 Fix ODSM language token to solve validation errors.
  - #2019 DKAN Workflow: Fix 'My Drafts' view to restore content to original user after rejection.
  - #1970 Adds topics to harvested datasets on migration.
