@@ -17,3 +17,4 @@ npm-debug.log
 .sublime-workspace
 docs/_build
 *.orig
+package-lock.json
