@@ -1350,7 +1350,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'language' => array(
-        'value' => 'en',
+        'value' => '[node:field_language]',
         'type' => 'array',
       ),
       'license' => array(
@@ -1523,7 +1523,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'array',
       ),
       'landingPage' => array(
-        'value' => '[node:field_landing_page:url]',
+        'value' => '[node:field_landing_page:url] || [node:url]',
         'type' => 'string',
       ),
       'language' => array(

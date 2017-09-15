@@ -13,7 +13,7 @@ How to use Groups
 -----------------
 
 Adding a new Group
-```````````````````
+******************
 When adding a new Group, the form has fields for basic information about the Group itself that should tell site visitors what to expect from the Datasets in the Group.
 
 :Title: Name your Group to reflect the agency or whoever the common data publisher is for the datasets that will belong to the Group.
@@ -34,7 +34,7 @@ Once you've added a new Group, you can assign Datasets (and their Resources) to 
 .. _group_roles_permissions:
 
 Roles and Permissions
-`````````````````````
+*********************
 
 With large sites there is often a need to have special permissions for a group of users to handle a specific set of content. Think of a large agency or department with sub-departments or programs that produce content. On the one hand these users shouldn’t have the ability to manage or edit content for the entire site or other Groups. On the other hand it would be impractical for Editors or Site Managers to handle content for a large number of users. To keep content organized and in the hands of its owners without introducing the risk of inadvertent (and sometimes irreversible) actions, Group-level permissions give users the ability to do things they couldn’t necessarily do on the site outside of the Group.
 
@@ -49,7 +49,7 @@ Within Groups there are different levels of access a user can have, which determ
   Administrators of Groups are able to add and remove Group members and manage (create/edit/delete) all content within the Group. It’s good practice to have only 1 or 2 users in this role for any given Group.
 
 Adding users
-````````````
+************
 
 Adding users to a Group is a straightforward process. Click on the "Group" tab on the group page and click "Add people". Begin typing the username of an existing user into the "User name" field and select from the list of autocomplete options. A user must already have an account to be added to a Group, so if a person needs to be added you should first create an account for them with the appropriate role. By default a user will only have a Member role in the Group. To give the user an Administrator role and permissions, check the administrator member box.
 

@@ -7,11 +7,11 @@ The metadata in a DKAN Dataset is culled from the DCAT standard as well as Proje
 
 The Dataset form allows users to create Datasets and add appropriate metadata:
 
-.. figure:: ../../images/add-dataset-screen-1.png
+.. image:: ../../images/add-dataset-screen-1.png
 
 The DKAN Dataset API exposes Dataset metadata for individual datasets as well an entire catalog.
 
-.. figure:: ../../images/data-json.png
+.. image:: ../../images/data-json.png
 
 .. _custom_metadata:
 
@@ -22,7 +22,7 @@ It is easy to add new fields to DKAN which will show up on the Dataset form, mak
 
 If there is information that only pertains to one or more datasets then it is possible to use the "Additional Info" field. This allows content editors to add unique field / value entries that exist only on a single dataset:
 
-.. figure:: https://cloud.githubusercontent.com/assets/512243/4188796/57b53a52-3776-11e4-97f6-61e18e3cd90d.png
+.. image:: ../../images/dataset_metadata_additional_info.png
 
 Globally-available custom fields can also be added through `Drupal's Fields UI <https://www.drupal.org/documentation/modules/field-ui>`_ and added to public APIs using the :doc:`Open Data Schema Mapper <../open-data-schema>`.
 
