@@ -1,5 +1,5 @@
 # time:0m28.91s
-@api @disablecaptcha
+@api @disablecaptcha @datastore
 Feature: Datastore
   In order to know the datastore is working
   As a website user

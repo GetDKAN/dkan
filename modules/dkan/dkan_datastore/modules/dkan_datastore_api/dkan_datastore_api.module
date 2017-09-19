@@ -98,6 +98,10 @@ function build_qualified_fields($fields, $alias) {
  */
 function dkan_datastore_api_field_excluded($field) {
   $excludes = array('timestamp', 'feeds_entity_id', 'feeds_flatstore_entry_id');
+  foreach (module_implements('dkan_datastore_api_field_excluded_alter') as $module) {
+    $function = $module . '_dkan_datastore_api_field_excluded_alter';
+    $function($excludes);
+  }
   return in_array($field, $excludes);
 }
 
