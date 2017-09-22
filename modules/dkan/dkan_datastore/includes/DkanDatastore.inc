@@ -211,6 +211,7 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
    * Takes values from form submit, saves updated config and starts import.
    */
   public function manageFormSubmit(&$form_state) {
+    $this->dropDataStore();
     $importer_id = $form_state['values']['importer_id'];
     $source = feeds_source($importer_id, $this->node->nid);
     $parser = $source->importer->config['parser']['plugin_key'];
@@ -243,77 +244,16 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
   }
 
   /**
-   * Provides delete form.
-   */
-  public function deleteForm(&$form_state) {
-    module_load_include('inc', 'feeds', 'feeds.pages');
-    $total_progress = 0;
-    $node = $this->node;
-
-    $form = array();
-    $importer_id = $this->importerId;
-    $form['#redirect'] = 'node/' . $node->nid;
-
-    if ($importer_id) {
-      // Form cannot pass on source object.
-      $form['#feed_nid'] = $node->nid;
-      $source = feeds_source($importer_id, $node->nid);
-      $form[$importer_id]['source_status'] = array(
-        '#type' => 'item',
-        '#title' => t('@source_name: Status', array('@source_name' => $source->importer->config['name'])),
-        '#tree' => TRUE,
-        '#markup' => $this->statusMessage(),
-      );
-      $progress = $source->progressClearing();
-      $form['importer_ids'] = array(
-        '#type' => 'value',
-        '#value' => array($importer_id),
-      );
-
-      $form = confirm_form($form, t('Delete all items from source?'), $form['#redirect'], '', t('Delete'), t('Cancel'), 'confirm feeds update');
-
-      if ($progress !== FEEDS_BATCH_COMPLETE) {
-        $form['actions']['submit']['#disabled'] = TRUE;
-        $form['actions']['submit']['#value'] = t('Deleting (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
-      }
-    }
-    else {
-      $form['no_source'] = array(
-        '#markup' => t('No feeds sources added to node.'),
-      );
-    }
-    return $form;
-  }
-
-  /**
-   * Feeds does the magic on this.
-   *
-   * TODO: undo feeds magic.
-   */
-  public function deleteFormSubmit(&$form_submit) {}
-
-  /**
    * Provides form to drop datastore.
    */
   public function dropForm(&$form_state) {
-    module_load_include('module', 'data', 'data');
-    module_load_include('inc', 'feeds', 'feeds.pages');
     $node = $this->node;
     $form = array();
     $form['#redirect'] = 'node/' . $node->nid;
     $form = confirm_form($form, t('Drop this datastore?'), $form['#redirect'], '', t('Drop'), t('Cancel'), 'confirm drop');
 
-    $importer_ids = feeds_get_importer_ids($node->type);
-    $tables_to_drop = array();
+    $tables_to_drop = $this->getDataStoreTables();
 
-    foreach ($importer_ids as $importer_id) {
-      $source = feeds_source($importer_id, $node->nid);
-      $table_name = feeds_flatstore_processor_table_name($source->id, $source->feed_nid);
-      $table = data_get_table($table_name) ? data_get_table($table_name) : db_table_exists($table_name);
-      if ($table) {
-        array_push($tables_to_drop, $table_name);
-      }
-    }
     if (!count($tables_to_drop)) {
       $form['tables_absent'] = array(
         '#type' => 'markup',
@@ -331,7 +271,6 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
         '#tree' => TRUE,
         '#markup' => t('Are you sure you want to drop the datastore?'),
       );
-      $form['#tables_to_drop'] = $tables_to_drop;
       $form['actions']['submit']['#value'] = t('Drop');
     }
     return $form;
@@ -341,10 +280,20 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
    * Drop form submision.
    */
   public function dropFormSubmit(&$form_state) {
+    $this->dropDataStore();
+    drupal_set_message(t('Datastore dropped!'));
+  }
+
+  /**
+   * Drops datastore tables associated with the current resource node.
+   */
+  public function dropDataStore() {
     module_load_include('module', 'data', 'data');
     module_load_include('module', 'dkan_datastore', 'dkan_datastore');
-    foreach ($form_state['#tables_to_drop'] as $table_name) {
-      $node = node_load($form_state['build_info']['args']['0']->nid);
+
+    $tables_to_drop = $this->getDataStoreTables();
+    foreach ($tables_to_drop as $table_name) {
+      $node = $this->node->nid;
       $has_file = dkan_datastore_file_field($node);
       $node = entity_metadata_wrapper('node', $node);
       $status = ($has_file) ? DKAN_DATASTORE_FILE_EXISTS : DKAN_DATASTORE_EMPTY;
@@ -352,7 +301,28 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
       $node->save();
       $this->dropTable($table_name);
     }
-    drupal_set_message(t('Datastore dropped!'));
+  }
+
+  /**
+   * Gets datastore tables associated with the current resource node.
+   */
+  public function getDataStoreTables() {
+    module_load_include('module', 'data', 'data');
+    module_load_include('inc', 'feeds', 'feeds.pages');
+    $node = $this->node;
+    $importer_ids = feeds_get_importer_ids($node->type);
+    $tables_to_drop = array();
+
+    foreach ($importer_ids as $importer_id) {
+      $source = feeds_source($importer_id, $node->nid);
+      $table_name = feeds_flatstore_processor_table_name($source->id, $source->feed_nid);
+      $table = data_get_table($table_name) ? data_get_table($table_name) : db_table_exists($table_name);
+      if ($table) {
+        array_push($tables_to_drop, $table_name);
+      }
+    }
+
+    return $tables_to_drop;
   }
 
   /**
@@ -425,6 +395,7 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
    *   Status of the import operation. TRUE if successful, FALSE if failed.
    */
   public function importByCli() {
+    $this->dropDataStore();
     $source = $this->source();
 
     // Prepare for background process.

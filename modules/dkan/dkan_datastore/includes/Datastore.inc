@@ -221,16 +221,6 @@ interface DatastoreFormInterface {
   public function manageFormSubmit(&$form_state);
 
   /**
-   * Delete form.
-   */
-  public function deleteForm(&$form_state);
-
-  /**
-   * Delete form submit.
-   */
-  public function deleteFormSubmit(&$form_state);
-
-  /**
    * Drop form.
    */
   public function dropForm(&$form_state);

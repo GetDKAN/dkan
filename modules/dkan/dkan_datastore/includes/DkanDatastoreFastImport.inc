@@ -15,16 +15,10 @@ class DkanDatastoreFastImport extends DkanDatastore implements DatastoreFormInte
   const FAST_IMPORT_THRESHOLD_DEFAULT = '30MB';
 
   /**
-   * Sets default items for datastore object.
-   */
-  protected function __construct($uuid) {
-    parent::__construct($uuid);
-  }
-
-  /**
    * Takes values from form submit, saves updated config and starts import.
    */
   public function manageFormSubmit(&$form_state) {
+    $this->dropDataStore();
     $importer_id = $form_state['values']['importer_id'];
     $source = feeds_source($importer_id, $this->node->nid);
     $parser = $source->importer->config['parser']['plugin_key'];

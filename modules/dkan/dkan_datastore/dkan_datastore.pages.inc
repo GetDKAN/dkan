@@ -47,7 +47,8 @@ function dkan_datastore_download($node) {
   elseif ($type == 'remote') {
     $size = isset($node_wrapper->field_link_remote_file->value()['filesize']) ? (int) $node_wrapper->field_link_remote_file->value()['filesize'] : 0;
 
-    // dkan_datastore_proxy() loads the file locally which has a big memory footprint.
+    // dkan_datastore_proxy() loads the file locally,
+    // which has a big memory footprint.
     // If the file is too large we don't want to proxy.
     $max = (int) variable_get('dkan_datastore_max_file_remote_proxy_size', MAX_FILE_REMOTE_PROXY_DEFAULT);
     if ($size > $max) {
@@ -127,19 +128,6 @@ function dkan_datastore_import_tab_form_submit($form, &$form_state) {
 }
 
 /**
- * Render a datastore delete form.
- *
- * Used on both node pages and configuration pages.
- * Therefore $node may be missing.
- */
-function dkan_datastore_delete_tab_form($form, &$form_state, $importer_id, $node = NULL) {
-  $datastore = dkan_datastore_go($node->uuid);
-  $form = $datastore->deleteForm($form_state);
-  $form['#submit'] = array('feeds_delete_tab_form_submit');
-  return $form;
-}
-
-/**
  * Render a datastore unlock form.
  *
  * Used on both node pages and configuration pages.
@@ -198,7 +186,6 @@ function dkan_datastore_drop_tab_form($form, &$form_state, $node) {
  */
 function dkan_datastore_drop_tab_form_submit($form, &$form_state) {
   $datastore = $form['#datastore'];
-  $form_state['#tables_to_drop'] = $form['#tables_to_drop'];
   $datastore->dropFormSubmit($form_state);
   $form_state['redirect'] = $form['#redirect'];
 }
