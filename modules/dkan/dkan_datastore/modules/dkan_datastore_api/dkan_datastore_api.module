@@ -81,7 +81,7 @@ function normalize_fields($fields, $resources) {
  * For example: table_name.field_name.
  */
 function build_qualified_fields($fields, $alias) {
-  return array_reduce($fields, function ($memo, $field) use ($alias, $excludes) {
+  return array_reduce($fields, function ($memo, $field) use ($alias) {
     if (!dkan_datastore_api_field_excluded($field)) {
       $memo[] = $alias . '.' . normalize_field_name($field);
     }
