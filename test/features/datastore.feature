@@ -58,12 +58,6 @@ Feature: Datastore
     When I click "Data API" in the "primary tabs" region
     Then I wait for "Example Query"
     When I click "Manage Datastore"
-    Then I wait for "DKAN Datastore Link Importer: Status"
-    When I click "Delete items"
-    Then I wait for "DKAN Datastore Link Importer: Status"
-    When I press "Delete"
-    And I wait for "2 items have been deleted."
-    When I click "Manage Datastore"
     And I wait for "Drop Datastore"
     And I click "Drop Datastore"
     And I wait and press "Drop"

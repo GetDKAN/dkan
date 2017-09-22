@@ -244,29 +244,9 @@ Feature: Resource
     And I am on "Resource 05" page
     When I click "Manage Datastore"
     And I press "Import"
-    And I wait for "Delete items"
+    And I wait for "Drop Datastore"
     Then I should see "Last import"
     And I wait for "imported items total"
-
-  @resource_author_16 @datastore @noworkflow @javascript
-  Scenario: Delete items on datastore of own resource
-    Given I am logged in as "John"
-    And I am on "Resource 03" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple5.csv"
-    And I press "Save"
-    Given I am logged in as "Celeste"
-    And I am on "Resource 03" page
-    When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Delete Items"
-    And I click "Delete items"
-    And I press "Delete"
-    And I wait for "items have been deleted"
-    And I am on "Resource 03" page
-    When I click "Manage Datastore"
-    Then I wait for "No imported items."
 
   @resource_author_17 @datastore @noworkflow @javascript
   Scenario: Drop datastore of own resource
@@ -280,7 +260,7 @@ Feature: Resource
     And I am on "Resource 03" page
     When I click "Manage Datastore"
     And I press "Import"
-    And I wait for "Delete Items"
+    And I wait for "Drop Datastore"
     When I click "Drop Datastore"
     And I press "Drop"
     Then I should see "Datastore dropped!"
