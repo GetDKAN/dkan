@@ -1146,7 +1146,7 @@ function dkan_dataset_remotefile_value($element, &$item) {
     && drupal_strlen($item['filefield_dkan_remotefile']['url']) > 0
     && $item['filefield_dkan_remotefile']['url'] != DKAN_DATASET_REMOTE_FILE_SOURCE_HINT_TEXT) {
 
-    $value = $item['filefield_dkan_remotefile']['url'];
+    $value = trim($item['filefield_dkan_remotefile']['url']);
 
     if (!valid_url($value, TRUE)) {
       form_error($element, t('Invalid Remote File URL.'));
@@ -1233,8 +1233,37 @@ function dkan_dataset_entity_info_alter(&$entity_info) {
  */
 function dkan_dataset_preprocess_node(&$vars) {
   if ($vars['view_mode'] == 'search_result') {
+    if (isset($vars['body'][0])) {
+      if (!empty($vars['body'][0]['summary'])) {
+        $body_summary = $vars['body'][0]['summary'];
+      }
+      elseif (isset($vars['body'][0]['value'])) {
+        $body_summary = $vars['body'][0]['value'];
+      }
+      else {
+        $body_summary = '';
+      }
+    }
+    else {
+      $body_summary = '';
+    }
+
     $vars['theme_hook_suggestions'][] = 'node__search_result';
+    $vars['body_summary'] = _dkan_dataset_format($body_summary);
   }
+}
+
+/**
+ * Reformat dataset search result descriptions.
+ */
+function _dkan_dataset_format($text) {
+  $text = drupal_html_to_text($text);
+  $summary_options = variable_get('dkan_dataset_summary_options', array(
+    "max_length" => 250,
+    "word_boundary" => TRUE,
+    "ellipsis" => TRUE,
+  ));
+  return views_trim_text($summary_options, $text);
 }
 
 /**

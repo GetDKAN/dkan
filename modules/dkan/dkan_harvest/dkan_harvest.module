@@ -279,7 +279,7 @@ function dkan_harvest_page_preview($node) {
         bottom of the page to run the harvest immediately, or simply continue working
         and the harvest will be performed on schedule.');
       $output .= '<div class="datasets-count-preview">' .
-        t('<span>Datasets in source: </span> @count', array('@count' => $harvestCache->getSavedCount())) .
+        t('<span>Datasets to be harvested: </span> @count', array('@count' => $harvestCache->getSavedCount())) .
         '</div>';
       $header = array(t('Identifier'), t('Title'));
       $output .= theme('table', array(

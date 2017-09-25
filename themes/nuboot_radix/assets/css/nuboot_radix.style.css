@@ -10513,6 +10513,9 @@ h2.pane-title {
   height: 20px;
   font-size: .8em; }
 
+#recline-embeded .data-explorer-help {
+  display: none; }
+
 .data-explorer-help {
   background: #eee;
   margin: 1em 0;
@@ -10543,9 +10546,10 @@ h2.pane-title {
 .recline-filter-editor input {
   width: auto; }
 
-#recline-embeded .recline-data-explorer .header,
-#recline-embeded .recline-data-explorer .data-view-sidebar {
-  display: none !important; }
+#recline-embeded .recline-data-explorer .header {
+  margin-bottom: 8px; }
+  #recline-embeded .recline-data-explorer .header .navigation {
+    display: none !important; }
 
 @media all and (max-width: 991px) {
   .recline-query-editor {
