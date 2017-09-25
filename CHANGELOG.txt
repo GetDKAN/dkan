@@ -1,5 +1,6 @@
-7.x-1.14.x
-----------
+7.x-1.14
+--------
+ - #2082 Add UI for generating ODSM file caches.
  - #1946 Fix Datastore API limit not applying consistently.
  - #2109 Fix ODSM language token to solve validation errors.
  - #2019 DKAN Workflow: Fix 'My Drafts' view to restore content to original user after rejection.
