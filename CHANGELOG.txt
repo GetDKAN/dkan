@@ -1,6 +1,7 @@
-7.x-1.14.x
-----------
+7.x-1.14
+--------
  - #2082 Add UI for generating ODSM file caches.
+ - #1946 Fix Datastore API limit not applying consistently.
  - #2109 Fix ODSM language token to solve validation errors.
  - #2019 DKAN Workflow: Fix 'My Drafts' view to restore content to original user after rejection.
  - #1970 Adds topics to harvested datasets on migration.
@@ -30,6 +31,19 @@
  - #1938 DevOps: Allow behat tests to be skipped in circle.
  - #1842 Add help text to explain the pager on data previews.
  - #1542 Creates migration on harvest source import.
+
+7.x-1.13.7 2017-08-22
+---------------------
+ - #2064 Update entityreference to 1.15
+ - #2061 Update views to 3.17
+ - #2060 Update tests to adjust to client customizations.
+ - #2060 Removed unused modules menu_token and remote_file_source from drupal-org.make
+
+7.x-1.13.8
+----------
+ - #2058 Improve messages displayed when creating a harvest source.
+ - #2058 Fix harvest bug when filtering by a key that has 0 matches.
+ - #2102 Hide toggle buttons inside preview embeds.
 
 7.x-1.13.7 2017-08-22
 ---------------------
