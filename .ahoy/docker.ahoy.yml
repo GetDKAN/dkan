@@ -71,8 +71,8 @@ commands:
       sed "s/%%syncname%%/${SLUG}_filesync/" dkan/.ahoy/docker-sync.template.yml > dkan/.ahoy/docker-sync.yml
   get-slug:
     cmd: |
-      GIT_ROOT=$(git -C ./dkan rev-parse --show-toplevel)
-      SLUG=${GIT_ROOT##*/}
+      #Use current dir name as basis for slug. Ahoy uses the root folder regardless of being deeper when executed.
+      SLUG=${PWD##*/}
       SLUG=${SLUG//-/}
       SLUG=${SLUG//_/}
       SLUG=$(echo ${SLUG} | tr "[A-Z]" "[a-z]") # Mixed case dirs cause issue with docker image names
