@@ -247,7 +247,7 @@ projects:
     download:
       type: git
       url: https://github.com/NuCivic/open_data_schema_map.git
-      branch: 2082_odsm_cache_ui
+      branch: 7.x-1.x
   panelizer:
     version: '3.4'
   panels:
