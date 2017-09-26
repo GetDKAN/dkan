@@ -1,5 +1,6 @@
 7.x-1.14
 --------
+ - #2124 Add results count and increase results per page on the harvest dashboard view. 
  - #2082 Add UI for generating ODSM file caches.
  - #1946 Fix Datastore API limit not applying consistently.
  - #2109 Fix ODSM language token to solve validation errors.
