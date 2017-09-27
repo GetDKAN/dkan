@@ -8,7 +8,7 @@
 /**
  * Class for DKAN Datastores.
  */
-class DkanDatastoreFastImport extends DkanDatastore implements DatastoreFormInterface {
+class DkanDatastoreFastImport extends DkanDatastore {
 
   public $endpoint = 'api/action/datastore/search.json';
   const QUEUE_FILESIZE_THRESHOLD_DEFAULT = '30MB';

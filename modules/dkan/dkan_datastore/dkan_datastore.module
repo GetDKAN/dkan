@@ -81,7 +81,8 @@ function dkan_datastore_menu() {
     'weight' => 11,
     'type' => MENU_LOCAL_TASK,
   );
-  $items['node/%node/datastore/unlock'] = array(
+
+  /*$items['node/%node/datastore/unlock'] = array(
     'title' => 'Unlock',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_datastore_unlock_tab_form', NULL, 1),
@@ -90,7 +91,8 @@ function dkan_datastore_menu() {
     'file' => 'dkan_datastore.pages.inc',
     'weight' => 11,
     'type' => MENU_LOCAL_TASK,
-  );
+  );*/
+
   $items['node/%node/datastore/drop'] = array(
     'title' => 'Drop Datastore',
     'page callback' => 'drupal_get_form',
@@ -500,8 +502,15 @@ function dkan_datastore_go($id = NULL, $class = NULL) {
     $class = variable_get('dkan_datastore_class', 'DkanDatastore');
   }
 
-  return class_exists($class) ? Datastore::instance($class, $id) :
-    NULL;
+  if (class_exists($class)) {
+    static $instances = array();
+    if (!isset($instances[$class][$id])) {
+      $instances[$class][$id] = new $class($id);
+    }
+    return $instances[$class][$id];
+  }
+
+  throw new \Exception("Incorrect Datastore class provided.");
 }
 
 /**
