@@ -281,6 +281,7 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
    */
   public function dropFormSubmit(&$form_state) {
     $this->dropDataStore();
+    $this->recreateTable();
     $title = $this->node->title;
     drupal_set_message(t("Datastore dropped! for resource %title", array('%title' => $title)));
   }
@@ -301,6 +302,25 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
       $node->field_datastore_status->set($status);
       $node->save();
       $this->dropTable($table_name);
+    }
+  }
+
+  /**
+   * Truncates datastore tables associated with the current resource node.
+   */
+  public function truncateDataStore() {
+    module_load_include('module', 'data', 'data');
+    module_load_include('module', 'dkan_datastore', 'dkan_datastore');
+
+    $tables_to_drop = $this->getDataStoreTables();
+    foreach ($tables_to_drop as $table_name) {
+      $node = $this->node->nid;
+      $has_file = dkan_datastore_file_field($node);
+      $node = entity_metadata_wrapper('node', $node);
+      $status = ($has_file) ? DKAN_DATASTORE_FILE_EXISTS : DKAN_DATASTORE_EMPTY;
+      $node->field_datastore_status->set($status);
+      $node->save();
+      $this->truncateTable($table_name);
     }
   }
 
@@ -336,6 +356,19 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
     }
     elseif (db_table_exists($table_name)) {
       db_drop_table($table_name);
+    }
+  }
+
+  /**
+   * Truncate a datastore table.
+   */
+  private function truncateTable($table_name) {
+    $table = data_get_table($table_name);
+    if ($table) {
+      $table->truncate();
+    }
+    elseif (db_table_exists($table_name)) {
+      db_truncate_table($table_name);
     }
   }
 
