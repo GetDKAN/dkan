@@ -358,7 +358,7 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
   private function truncateTable($table_name) {
     $table = data_get_table($table_name);
     if (db_table_exists($table_name)) {
-      db_truncate_table($table_name);
+      db_truncate($table_name);
     }
   }
 
