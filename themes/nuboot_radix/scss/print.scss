@@ -1,5 +1,11 @@
 // @file
 // Print Styles
 // --------------------------------------------------
-  
 
+
+@media print {
+  #block-dkan-sitewide-dkan-sitewide-search-bar {
+    display: none;
+  }
+}
+    
