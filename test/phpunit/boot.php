@@ -10,10 +10,10 @@ use Drupal\Driver\Cores\Drupal7;
 require __DIR__ . '/../vendor/autoload.php';
 
 // Path to Drupal.
-$dir = '/var/www/docroot';
+$dir = implode('/', array(__DIR__, '..', '..', '..', 'docroot'));
 
 // Host.
-$uri = 'http://web';
+$uri = getenv('DKAN_WEB_1_PORT_80_TCP_ADDR') ? 'http://' . getenv('DKAN_WEB_1_PORT_80_TCP_ADDR') : 'http://127.0.0.1:8888';
 
 $driver = new DrupalDriver($dir, $uri);
 $driver->setCoreFromVersion();

@@ -406,3 +406,10 @@ function dkan_update_7023() {
       ->execute();
   }
 }
+
+/**
+ * Update default variables.
+ */
+function dkan_update_7024(&$context) {
+  dkan_misc_variables_set($context);
+}
