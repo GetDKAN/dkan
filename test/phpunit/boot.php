@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Bootstraps Drupal 7 site.
