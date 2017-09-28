@@ -26,6 +26,7 @@ Feature: Widgets
     And I click "Add new pane"
     And I wait for "Add content to"
 
+    @db
   Scenario: Adds "Button Link" to home page using panels ipe editor
     Given the cache has been cleared
     When I follow "Link"
