@@ -313,12 +313,6 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
 
     $tables_to_drop = $this->getDataStoreTables();
     foreach ($tables_to_drop as $table_name) {
-      $node = $this->node->nid;
-      $has_file = dkan_datastore_file_field($node);
-      $node = entity_metadata_wrapper('node', $node);
-      $status = ($has_file) ? DKAN_DATASTORE_FILE_EXISTS : DKAN_DATASTORE_EMPTY;
-      $node->field_datastore_status->set($status);
-      $node->save();
       $this->truncateTable($table_name);
     }
   }
@@ -363,10 +357,7 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
    */
   private function truncateTable($table_name) {
     $table = data_get_table($table_name);
-    if ($table) {
-      $table->truncate();
-    }
-    elseif (db_table_exists($table_name)) {
+    if (db_table_exists($table_name)) {
       db_truncate_table($table_name);
     }
   }
