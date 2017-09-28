@@ -39,7 +39,6 @@ class DatastoreContext extends RawDKANContext {
    * @param AfterScenarioScope $scope
    */
   public function dropDatastores($scope) {
-    return;
     $result = db_query("SELECT n.nid FROM {node} n WHERE n.type = :type",array(":type" => "resource"));
     foreach ($result as $n) {
       if (!empty($n->nid)) {

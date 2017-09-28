@@ -94,14 +94,12 @@ class DkanDatastoreFastImport extends DkanDatastore implements DatastoreFormInte
    * Import using fast import SQL.
    */
   public function fastImport() {
-    $this->dropDataStore();
     $table = $this->table;
     $node = entity_metadata_wrapper('node', $this->node);
     $file = $node->field_upload->value();
     $file_path = drupal_realpath($file->uri);
     $feeds_entity_id = $this->source->feed_nid;
     $headers = array_keys($table->meta['fields']);
-    var_dump($headers);
     $fields = implode(',', $headers);
     $delim = $this->config['delimiter'];
     $has_headers = ($this->config['no_headers']) ? '' : 'IGNORE 1 LINES';
