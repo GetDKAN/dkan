@@ -1,10 +1,14 @@
 <?php
+
 /**
  * @file
+ * Tests for dkan_harvest module.
  */
 
 /**
+ * Test class for Data Json migration tests.
  *
+ * @class DkanHarvestDataJsonTest *
  */
 class DkanHarvestDataJsonTest extends PHPUnit_Framework_TestCase {
 
@@ -13,10 +17,10 @@ class DkanHarvestDataJsonTest extends PHPUnit_Framework_TestCase {
    */
   public static function setUpBeforeClass() {
     // Harvest cache the test source.
-    dkan_harvest_cache_sources(array(self::getTestSource()));
+    dkan_harvest_cache_source(self::getTestSource());
 
     // Harvest Migration of the test data.
-    dkan_harvest_migrate_sources(array(self::getTestSource()));
+    dkan_harvest_migrate_source(self::getTestSource());
   }
 
   /**
@@ -25,7 +29,10 @@ class DkanHarvestDataJsonTest extends PHPUnit_Framework_TestCase {
   protected function setUp() {
   }
 
-  public function testDKANHarvestDataJsonModifiers() {
+  /**
+   * Test harvest filters on data.json source.
+   */
+  public function testDkanHarvestDataJsonModifiers() {
     $source = self::getTestSource();
     $data = drupal_json_decode(file_get_contents(__DIR__ . '/data/dkan_harvest_datajson_test_filters.json'));
     $cache = dkan_harvest_datajson_cache_pod_v1_1_json($data, $source, microtime());
@@ -38,15 +45,14 @@ class DkanHarvestDataJsonTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($node['title'], 'Wisconsin Polling Places TEST');
     $this->assertEquals($dataset['awesomekey'], 'politics');
     $this->assertEquals($dataset['publisher']['name'], 'nucivic');
-    // With filters and excludes, only one dataset should be cached from source
+    // With filters and excludes, only one dataset should be cached from source.
     $this->assertEquals($count, 1);
   }
 
   /**
    * @covers dkan_harvest_datajson_prepare_item_id().
    */
-  public function testDKANHarvestDataJsonPrepareItemId()
-  {
+  public function testDkanHarvestDataJsonPrepareItemId() {
     $url = 'http://example.com/what';
     $dir = dkan_harvest_datajson_prepare_item_id($url);
     $this->assertEquals($dir, 'what');
@@ -59,7 +65,6 @@ class DkanHarvestDataJsonTest extends PHPUnit_Framework_TestCase {
     $dir = dkan_harvest_datajson_prepare_item_id($url);
     $this->assertEquals($dir, '');
   }
-
 
   /**
    * {@inheritdoc}
@@ -86,4 +91,5 @@ class DkanHarvestDataJsonTest extends PHPUnit_Framework_TestCase {
     $source->overrides = array('publisher.name' => array('nucivic'));
     return $source;
   }
+
 }
