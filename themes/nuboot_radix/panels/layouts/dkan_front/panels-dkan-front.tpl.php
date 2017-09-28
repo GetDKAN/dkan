@@ -5,10 +5,13 @@
  * Template for dkan front page.
  */
 ?>
-<div class="panel-display panel-dkan-front clearfix" <?php if (!empty($css_id)) { print "id=\"$css_id\""; } ?>>
+<div class="panel-display panel-dkan-front clearfix"
+  <?php if (!empty($css_id)) {
+    print "id=\"$css_id\"";
+  } ?>>
 
   <?php if($content['hero-first'] || $content['hero-second']): ?>
-    <div class="panel-hero panel-row" <?php print 'style="background-image:url(' . $path . ');background-color:' . $bg_color . '"'; ?>>
+    <div class="panel-hero panel-row" <?php print 'style="background-image:' . $path . ';background-color:' . $bg_color . '"'; ?>>
       <div class="<?php print $tint; ?>"></div>
       <div class="container">
         <div class="panel-col-first">
