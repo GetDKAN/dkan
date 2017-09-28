@@ -281,7 +281,6 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
    */
   public function dropFormSubmit(&$form_state) {
     $this->dropDataStore();
-    $this->recreateTable();
     $title = $this->node->title;
     drupal_set_message(t("Datastore dropped! for resource %title", array('%title' => $title)));
   }
