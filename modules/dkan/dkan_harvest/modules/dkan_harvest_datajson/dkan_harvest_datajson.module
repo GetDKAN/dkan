@@ -342,6 +342,7 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
       $defaulted = $defaulted || dkan_harvest_datajson_set_default_value($dataset, $path, $default_values[0]);
       if ($defaulted) {
         $harvest_cache->setCacheEntryDefaulted($identifier, $dataset['title']);
+        $defaulted = FALSE;
       }
     }
 
