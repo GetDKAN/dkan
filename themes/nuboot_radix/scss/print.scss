@@ -7,5 +7,11 @@
   #block-dkan-sitewide-dkan-sitewide-search-bar {
     display: none;
   }
+
+  @media print {
+    tr, img, .card-chart {
+      page-break-inside: avoid;
+    }
+  }
 }
     
