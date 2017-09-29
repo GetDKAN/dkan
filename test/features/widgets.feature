@@ -23,3 +23,5 @@ Feature: Widgets
     And I should see "Content List"
     And I should see "Existing content"
     And I should see "Visualization"
+    Then I press "Close Window"
+    Then I press "Cancel"
