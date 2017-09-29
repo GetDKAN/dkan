@@ -1,6 +1,11 @@
 7.x-1.14
 --------
+ - #2075 DKAN Harvest: Modified batch process to split harvest migrations in chunks.
+ - #2145 Front page hero image no longer requests empty URL if variable empty.
  - #2082 Add UI for generating ODSM file caches.
+ - #2058 Improve messages displayed when creating a harvest source.
+ - #2058 Fix harvest bug when filtering by a key that has 0 matches.
+ - #2102 Hide toggle buttons inside preview embeds.
  - #1946 Fix Datastore API limit not applying consistently.
  - #2109 Fix ODSM language token to solve validation errors.
  - #2019 DKAN Workflow: Fix 'My Drafts' view to restore content to original user after rejection.
@@ -38,12 +43,6 @@
  - #2061 Update views to 3.17
  - #2060 Update tests to adjust to client customizations.
  - #2060 Removed unused modules menu_token and remote_file_source from drupal-org.make
-
-7.x-1.13.8
-----------
- - #2058 Improve messages displayed when creating a harvest source.
- - #2058 Fix harvest bug when filtering by a key that has 0 matches.
- - #2102 Hide toggle buttons inside preview embeds.
 
 7.x-1.13.7 2017-08-22
 ---------------------
