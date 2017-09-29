@@ -1,0 +1,6 @@
+{
+    "name": "dkan/dkan_datastore",
+    "require": {
+        "league/csv": "8.0"
+    }
+}
