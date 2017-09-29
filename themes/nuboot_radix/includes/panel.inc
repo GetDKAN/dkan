@@ -42,7 +42,7 @@ function nuboot_radix_preprocess(&$variables, $hook) {
   $front_url = drupal_get_normal_path(variable_get('site_frontpage', 'node'));
   $front_nid = NULL;
   $front = explode('/', $front_url);
-  if( $front[0]=='node' && ctype_digit($front[1]) ) {
+  if ($front[0] == 'node' && ctype_digit($front[1])) {
     $front_nid = $front[1];
   }
 
@@ -51,18 +51,18 @@ function nuboot_radix_preprocess(&$variables, $hook) {
     if ($uri = nuboot_radix_hero_file_uri()) :
       $variables['tint'] = 'tint';
       $variables['bg_color'] = 'transparent';
-      $variables['path'] = file_create_url($uri);
+      $variables['path'] = 'url(' . file_create_url($uri) . ')';
     else :
       $background_option = theme_get_setting('background_option');
       if (empty($background_option)) :
         $variables['tint'] = 'no-tint';
         $variables['bg_color'] = '#005e9a';
-        $variables['path'] = '';
+        $variables['path'] = 'none';
       else :
         $uri = '';
         $variables['tint'] = 'no-tint';
         $variables['bg_color'] = '#' . ltrim($background_option, '#');
-        $variables['path'] = '';
+        $variables['path'] = 'none';
       endif;
     endif;
   }
