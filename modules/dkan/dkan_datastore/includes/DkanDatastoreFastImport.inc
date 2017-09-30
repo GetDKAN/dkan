@@ -73,7 +73,10 @@ class DkanDatastoreFastImport extends DkanDatastore implements DatastoreFormInte
     else {
       // Avoid the queueing the resource if it's small.
       if ($filesize > $queue_filesize_threshold) {
-        $item = array('config' => $form_state['values'][$parser]);
+        $item = array(
+          'uuid' => $this->node->uuid,
+          'config' => $form_state['values'][$parser],
+        );
         DrupalQueue::get(dkan_datastore_fast_import_queue_name())->createItem($item);
         drupal_set_message(t('File was succesfully enqueued to be imported and will be available in the datastore in a few minutes'), 'status');
       }

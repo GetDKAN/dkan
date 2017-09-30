@@ -149,8 +149,11 @@ function dkan_datastore_fast_import_cron_queue_info() {
 /**
  * Import csv using the most performant way.
  */
-function dkan_datastore_fast_import_import($config) {
-  $datastore = Datastore::instance("DkanDatastoreFastImport", $node->uuid, $config);
+function dkan_datastore_fast_import_import($item) {
+  $uuid = $item['uuid'];
+  $config = $item['config'];
+
+  $datastore = Datastore::instance("DkanDatastoreFastImport", $uuid, $config);
   $datastore->fastImport();
 }
 

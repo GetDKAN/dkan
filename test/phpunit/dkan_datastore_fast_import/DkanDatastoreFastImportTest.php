@@ -126,13 +126,7 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
    */
   public function testFastImportWithQuoteDelimiters() {
     $nid = self::getNodeFromUuid(self::getUuid('polling_places', self::getResources()));
-    $importerId = 'dkan_file';
     $node = node_load($nid);
-    $node = entity_metadata_wrapper('node', $node);
-
-    $source = feeds_source($importerId, $nid);
-
-    $table = feeds_flatstore_processor_table($source, array());
     $config = array(
       'delimiter' => ',',
       'no_headers' => 0,
@@ -145,7 +139,10 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
     variable_set('fields_escaped_by', '');
     variable_set('dkan_datastore_fast_import_load_empty_cells_as_null', 0);
 
-    $result = dkan_datastore_fast_import_import($source, $node, $table, $config);
+    $item = array();
+    $item['config'] = $config;
+    $item['uuid'] = $node->uuid;
+    $result = dkan_datastore_fast_import_import($item);
     $this->assertEquals($result['total_imported_items'], 117);
   }
 
@@ -154,13 +151,7 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
    */
   public function testFastImportLoadEmptyCellsAsNull() {
     $nid = self::getNodeFromUuid(self::getUuid('null_check', self::getResources()));
-    $importerId = 'dkan_file';
     $node = node_load($nid);
-    $node = entity_metadata_wrapper('node', $node);
-
-    $source = feeds_source($importerId, $nid);
-
-    $table = feeds_flatstore_processor_table($source, array());
     $config = array(
       'delimiter' => ',',
       'no_headers' => 0,
@@ -173,10 +164,14 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
     variable_set('fields_escaped_by', '');
     variable_set('dkan_datastore_fast_import_load_empty_cells_as_null', 1);
 
-    $result = dkan_datastore_fast_import_import($source, $node, $table, $config);
+    $item = array();
+    $item['config'] = $config;
+    $item['uuid'] = $node->uuid;
+
+    $result = dkan_datastore_fast_import_import($item);
     $this->assertEquals($result['total_imported_items'], 2);
 
-    $source = feeds_source($importerId, $nid);
+    $source = feeds_source('dkan_file', $nid);
     $preview = $source->preview();
 
     $this->assertEquals($preview->items[1]['ward'], '');

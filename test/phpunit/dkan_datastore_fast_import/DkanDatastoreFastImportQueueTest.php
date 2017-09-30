@@ -21,7 +21,11 @@ class DkanDatastoreFastImportQueueTest extends \PHPUnit_Framework_TestCase {
       'no_headers' => 0,
       'encoding' => 'UTF-8',
     );
-    $item = array('config' => $config);
+
+    $item = array(
+      'uuid' => $uuid,
+      'config' => $config,
+    );
 
     // Queue and run import three times.
     DrupalQueue::get(dkan_datastore_fast_import_queue_name())->createItem($item);
@@ -38,6 +42,7 @@ class DkanDatastoreFastImportQueueTest extends \PHPUnit_Framework_TestCase {
 
     $expected = 2969;
     $actual = $result->rowCount();
+    $this->assertEquals($actual, $expected);
 
     $datastore->dropDataStore();
   }
