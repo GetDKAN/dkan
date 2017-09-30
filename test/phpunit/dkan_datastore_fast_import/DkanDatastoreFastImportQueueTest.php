@@ -11,6 +11,15 @@
 class DkanDatastoreFastImportQueueTest extends \PHPUnit_Framework_TestCase {
 
   /**
+   * {@inheritdoc}
+   */
+  public static function setUpBeforeClass() {
+    if (!module_exists('dkan_datastore_fast_import')) {
+      module_enable(array('dkan_datastore_fast_import'));
+    }
+  }
+
+  /**
    * Test that new rows aren't just tacked to end of data store.
    */
   public function testMultipleQueueImportSingleDatastore() {
