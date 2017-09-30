@@ -150,6 +150,7 @@ function dkan_datastore_fast_import_cron_queue_info() {
  * Import csv using the most performant way.
  */
 function dkan_datastore_fast_import_import($source, $node, $table, $config) {
+  dkan_datastore_db_truncate($table->name);
   $load_data_type = variable_get('dkan_datastore_load_data_type', 'load_data_local_infile');
   $file = $node->field_upload->value();
   $file_path = drupal_realpath($file->uri);

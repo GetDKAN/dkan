@@ -632,3 +632,12 @@ function dkan_datastore_form_alter(&$form, &$form_state, $form_id) {
 function _dkan_datastore_search_redirect() {
   drupal_goto('/search');
 }
+
+/**
+ * Utility function for safely dropping a table.
+ */
+function dkan_datastore_db_truncate($table_name) {
+  if (db_table_exists($table_name)) {
+    db_truncate($table_name)->execute();
+  }
+}

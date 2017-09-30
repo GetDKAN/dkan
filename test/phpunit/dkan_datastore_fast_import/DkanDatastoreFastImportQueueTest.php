@@ -60,14 +60,11 @@ class DkanDatastoreFastImportQueueTest extends \PHPUnit_Framework_TestCase {
     DrupalQueue::get(dkan_datastore_fast_import_queue_name())->createItem($item);
     drupal_cron_run();
 
-    $datastore = Datastore::instance("DkanDatastoreFastImport", $uuid);
-    $result = db_select($datastore->tableName, 'ds')->fields('ds')->execute();
+    $result = db_select($table->name, 'ds')->fields('ds')->execute();
 
     $expected = 2969;
     $actual = $result->rowCount();
     $this->assertEquals($actual, $expected);
-
-    $datastore->dropDataStore();
   }
 
   /**
