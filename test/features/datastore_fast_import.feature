@@ -78,7 +78,7 @@ Feature: DKAN Datastore Fast Import
      Then I should not see "Importing"
       And I wait for "File was succesfully enqueued to be imported and will be available in the datastore in a few minutes"
 
-  @datastore
+  @db @datastore
   Scenario: As user I want to import resources using "LOAD DATA INFILE"
     Given I am logged in as a user with the "site manager" role
       And I am on "Datastore Settings" page

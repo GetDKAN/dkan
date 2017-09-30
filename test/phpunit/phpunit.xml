@@ -34,6 +34,7 @@
         </testsuite>
         <testsuite name="DKAN Datastore Fast Import Test Suite">
             <file>dkan_datastore_fast_import/DkanDatastoreFastImportTest.php</file>
+            <file>dkan_datastore_fast_import/DkanDatastoreFastImportQueueTest.php</file>
         </testsuite>
         <testsuite name="DKAN Migrate Base Test Suite">
             <!--<file>dkan_migrate_base/DeleteDuplicateDatasetsTest.php</file>
