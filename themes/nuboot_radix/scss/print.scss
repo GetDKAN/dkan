@@ -8,10 +8,10 @@
     display: none;
   }
 
-  @media print {
-    tr, img, .card-chart {
-      page-break-inside: avoid;
-    }
+  img, tr, svg, .card-chart {
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 }
     
