@@ -9593,6 +9593,9 @@ div.horizontal-tabs {
   #views-exposed-form-dkan-harvest-datasets-harvest-datasets-source-page .form-group input {
     width: 100px; }
 
+.view-dkan-harvest-dashboard .view-header {
+  margin-bottom: 10px; }
+
 .pane-dkan-harvest-harvest-source-summary .summary-details {
   border-color: #ddd;
   border-width: 0 1px 1px 1px;
