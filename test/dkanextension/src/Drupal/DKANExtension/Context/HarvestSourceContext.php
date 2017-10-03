@@ -84,9 +84,9 @@ class HarvestSourceContext extends RawDKANEntityContext {
     $user = user_load(1);
 
     // Harvest Cache
-    dkan_harvest_cache_sources(array($harvest_source));
+    dkan_harvest_cache_source($harvest_source);
     // Harvest Migration of the test data.
-    dkan_harvest_migrate_sources(array($harvest_source));
+    dkan_harvest_migrate_source($harvest_source);
 
     // Make sure that we process any index items added after the harvest.
     $this->searchContext->process();

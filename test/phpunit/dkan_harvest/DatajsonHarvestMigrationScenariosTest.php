@@ -45,9 +45,9 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
   public function testHarvestSourceUnchanged() {
     $source = self::getOriginalTestSource();
     // Harvest cache the test source.
-    dkan_harvest_cache_sources(array($source));
+    dkan_harvest_cache_source($source);
     // Harvest Migration of the test data.
-    dkan_harvest_migrate_sources(array($source));
+    dkan_harvest_migrate_source($source);
 
     // We want to make sure the dataset record in the migration map did not
     // change. Collect various harvest migration data before running the
@@ -79,9 +79,9 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
 
     // Rerun the harvest without changing the source data.
     // Harvest cache the test source.
-    dkan_harvest_cache_sources(array(self::getOriginalTestSource()));
+    dkan_harvest_cache_source(self::getOriginalTestSource());
     // Harvest Migration of the test data.
-    dkan_harvest_migrate_sources(array(self::getOriginalTestSource()));
+    dkan_harvest_migrate_source(self::getOriginalTestSource());
 
     $migrationNew = dkan_harvest_get_migration(self::getOriginalTestSource());
     $migrationNewMap = $this->getMapTableFromMigration($migrationNew);
@@ -140,9 +140,9 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
   public function testHarvestSourceAlternative() {
     $source = self::getOriginalTestSource();
     // Harvest cache the test source.
-    dkan_harvest_cache_sources(array($source));
+    dkan_harvest_cache_source($source);
     // Harvest Migration of the test data.
-    dkan_harvest_migrate_sources(array($source));
+    dkan_harvest_migrate_source($source);
 
     // Get the current values.
     $migrationOld = dkan_harvest_get_migration(self::getOriginalTestSource());
@@ -160,8 +160,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
 
     // Rerun the harvest (cache + migration) with the alternative source. the
     // source XML docs. Harvest cache the test source.
-    dkan_harvest_cache_sources(array(self::getAlternativeTestSource()));
-    dkan_harvest_migrate_sources(array(self::getAlternativeTestSource()));
+    dkan_harvest_cache_source(self::getAlternativeTestSource());
+    dkan_harvest_migrate_source(self::getAlternativeTestSource());
 
     $migrationAlternative = dkan_harvest_get_migration(self::getAlternativeTestSource());
     $migrationAlternativeMap = $this->getMapTableFromMigration($migrationAlternative);
@@ -232,8 +232,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
   public function testHarvestSourceError() {
     // Run the harvest (cache + migration) with the error source. the
     // source XML docs. Harvest cache the test source.
-    dkan_harvest_cache_sources(array(self::getErrorTestSource()));
-    dkan_harvest_migrate_sources(array(self::getErrorTestSource()));
+    dkan_harvest_cache_source(self::getErrorTestSource());
+    dkan_harvest_migrate_source(self::getErrorTestSource());
 
     $migrationError = dkan_harvest_get_migration(self::getErrorTestSource());
     $migrationErrorMap = $this->getMapTableFromMigration($migrationError);
@@ -294,8 +294,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
 
     // Rerun the harvest (cache + migration) with the empty source. the
     // source XML docs. Harvest cache the test source.
-    dkan_harvest_cache_sources(array(self::getEmptyTestSource()));
-    dkan_harvest_migrate_sources(array(self::getEmptyTestSource()));
+    dkan_harvest_cache_source(self::getEmptyTestSource());
+    dkan_harvest_migrate_source(self::getEmptyTestSource());
 
     $migrationEmpty = dkan_harvest_get_migration(self::getEmptyTestSource());
     $migrationEmptyMap = $this->getMapTableFromMigration($migrationEmpty);
@@ -341,8 +341,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public function testHarvestSourceZombi() {
     // Harvest the faulty source.
-    dkan_harvest_cache_sources(array(self::getErrorTestSource()));
-    dkan_harvest_migrate_sources(array(self::getErrorTestSource()));
+    dkan_harvest_cache_source(self::getErrorTestSource());
+    dkan_harvest_migrate_source(self::getErrorTestSource());
 
     $migrationError = dkan_harvest_get_migration(self::getErrorTestSource());
     $migrationErrorMap = $this->getMapTableFromMigration($migrationError);
@@ -351,12 +351,12 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     $migrationErrorMessage = $this->getMessageTableFromMigration($migrationError);
 
     // Harvest the faulty source.
-    dkan_harvest_cache_sources(array(self::getErrorTestSource()));
-    dkan_harvest_migrate_sources(array(self::getErrorTestSource()));
+    dkan_harvest_cache_source(self::getErrorTestSource());
+    dkan_harvest_migrate_source(self::getErrorTestSource());
 
     // Harvest the empty source.
-    dkan_harvest_cache_sources(array(self::getEmptyTestSource()));
-    dkan_harvest_migrate_sources(array(self::getEmptyTestSource()));
+    dkan_harvest_cache_source(self::getEmptyTestSource());
+    dkan_harvest_migrate_source(self::getEmptyTestSource());
 
     $migrationEmpty = dkan_harvest_get_migration(self::getEmptyTestSource());
     $migrationEmptyMap = $this->getMapTableFromMigration($migrationEmpty);
@@ -379,8 +379,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public function testHarvestSourceMessagesAppend() {
     // Harvest the faulty source.
-    dkan_harvest_cache_sources(array(self::getErrorTestSource()));
-    dkan_harvest_migrate_sources(array(self::getErrorTestSource()));
+    dkan_harvest_cache_source(self::getErrorTestSource());
+    dkan_harvest_migrate_source(self::getErrorTestSource());
 
     $migrationError = dkan_harvest_get_migration(self::getErrorTestSource());
     $migrationErrorMessage = $this->getMessageTableFromMigration($migrationError);
@@ -392,8 +392,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     $options = array(
       'skiphash' => TRUE,
     );
-    dkan_harvest_cache_sources(array(self::getErrorTestSource()));
-    dkan_harvest_migrate_sources(array(self::getErrorTestSource()), $options);
+    dkan_harvest_cache_source(self::getErrorTestSource());
+    dkan_harvest_migrate_source(self::getErrorTestSource(), $options);
 
     $migrationErrorAfter = dkan_harvest_get_migration(self::getErrorTestSource());
     $migrationErrorAfterMessage = $this->getMessageTableFromMigration($migrationError);
@@ -419,9 +419,9 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     // Harvest the test source.
     $source = self::getOriginalTestSource();
     // Harvest cache the test source.
-    dkan_harvest_cache_sources(array($source));
+    dkan_harvest_cache_source($source);
     // Harvest Migration of the test data.
-    dkan_harvest_migrate_sources(array($source));
+    dkan_harvest_migrate_source($source);
     $dataset_nid = end($this->getTestDatasetNid($source));
     $dataset = entity_metadata_wrapper('node', $dataset_nid);
 
@@ -434,8 +434,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(count($dataset_groups), '1');
 
     // Rerun the harvest (cache + migration) with the group updated source.
-    dkan_harvest_cache_sources(array(self::getGroupUpdatedTestSource()));
-    dkan_harvest_migrate_sources(array(self::getGroupUpdatedTestSource()));
+    dkan_harvest_cache_source(self::getGroupUpdatedTestSource());
+    dkan_harvest_migrate_source(self::getGroupUpdatedTestSource());
 
     // Get updated dataset.
     $dataset_nids = $this->getTestDatasetNid(self::getGroupUpdatedTestSource());
@@ -468,8 +468,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public function testResourceRedirect() {
     // Harvest a source that have resources behind redirects.
-    dkan_harvest_cache_sources(array(self::getResourceWithRedirects()));
-    dkan_harvest_migrate_sources(array(self::getResourceWithRedirects()));
+    dkan_harvest_cache_source(self::getResourceWithRedirects());
+    dkan_harvest_migrate_source(self::getResourceWithRedirects());
 
     // Get updated dataset.
     $dataset_nids = $this->getTestDatasetNid(self::getResourceWithRedirects());
@@ -492,8 +492,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public function testResourceSchemeless() {
     // Harvest a source that have resources without scheme.
-    dkan_harvest_cache_sources(array(self::getResourceSchemeless()));
-    dkan_harvest_migrate_sources(array(self::getResourceSchemeless()));
+    dkan_harvest_cache_source(self::getResourceSchemeless());
+    dkan_harvest_migrate_source(self::getResourceSchemeless());
 
     // Get imported dataset.
     $dataset_nids = $this->getTestDatasetNid(self::getResourceSchemeless());
@@ -516,8 +516,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public function testBom() {
     // Harvest a source that have resources without scheme.
-    dkan_harvest_cache_sources(array(self::getResourceBom()));
-    dkan_harvest_migrate_sources(array(self::getResourceBom()));
+    dkan_harvest_cache_source(self::getResourceBom());
+    dkan_harvest_migrate_source(self::getResourceBom());
 
     $migration = dkan_harvest_get_migration(self::getResourceBom());
     $migrationMap = $this->getMapTableFromMigration($migration);
@@ -552,8 +552,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     );
 
     // Harvest the faulty source.
-    dkan_harvest_cache_sources(array(self::getResourceTemporal()));
-    dkan_harvest_migrate_sources(array(self::getResourceTemporal()));
+    dkan_harvest_cache_source(self::getResourceTemporal());
+    dkan_harvest_migrate_source(self::getResourceTemporal());
 
     $migration = dkan_harvest_get_migration(self::getResourceTemporal());
     $migrationMap = $this->getMapTableFromMigration($migration);
@@ -576,8 +576,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public function testResourceAccessUrl() {
     // Harvest the source.
-    dkan_harvest_cache_sources(array(self::getResourceAccessUrl()));
-    dkan_harvest_migrate_sources(array(self::getResourceAccessUrl()));
+    dkan_harvest_cache_source(self::getResourceAccessUrl());
+    dkan_harvest_migrate_source(self::getResourceAccessUrl());
     $migration = dkan_harvest_get_migration(self::getResourceAccessUrl());
     $migrationMap = $this->getMapTableFromMigration($migration);
     $dest_ids = array_map(function ($mapRecord) {
@@ -600,8 +600,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public function testNoIssued() {
     // Harvest the source.
-    dkan_harvest_cache_sources(array(self::getResourceNoIssued()));
-    dkan_harvest_migrate_sources(array(self::getResourceNoIssued()));
+    dkan_harvest_cache_source(self::getResourceNoIssued());
+    dkan_harvest_migrate_source(self::getResourceNoIssued());
     $migration = dkan_harvest_get_migration(self::getResourceNoIssued());
     $migrationMap = $this->getMapTableFromMigration($migration);
     $dest_ids = array_map(function ($mapRecord) {
@@ -630,8 +630,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     }
 
     // Running the harvest should generate an error.
-    dkan_harvest_cache_sources(array(self::getOriginalTestSource()));
-    dkan_harvest_migrate_sources(array(self::getOriginalTestSource()));
+    dkan_harvest_cache_source(self::getOriginalTestSource());
+    dkan_harvest_migrate_source(self::getOriginalTestSource());
 
     $migrationError = dkan_harvest_get_migration(self::getOriginalTestSource());
     $migrationErrorMessages = $this->getMessageTableFromMigration($migrationError);
@@ -662,8 +662,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
       }
 
       // Running the harvest should generate an error.
-      dkan_harvest_cache_sources(array(self::getOriginalTestSource()));
-      dkan_harvest_migrate_sources(array(self::getOriginalTestSource()));
+      dkan_harvest_cache_source(self::getOriginalTestSource());
+      dkan_harvest_migrate_source(self::getOriginalTestSource());
 
       $migrationError = dkan_harvest_get_migration(self::getOriginalTestSource());
       $migrationErrorMessages = $this->getMessageTableFromMigration($migrationError);
