@@ -15,6 +15,7 @@ Feature:
       | My Edits           | /admin/workbench/content/edited      |
       | All Recent Content | /admin/workbench/content/all         |
       | Create User        | /admin/people/create                 |
+      | Datasets           | /search/type/dataset                 |
     Given Users:
       | name        | mail             | status | roles                                 |
       | Contributor | WC@fakeemail.com | 1      | Workflow Contributor, Content Creator |
@@ -29,8 +30,11 @@ Feature:
       | user       | group    | role on group        | membership status |
       | Supervisor | Group 01 | administrator member | Active            |
       | Moderator  | Group 01 | member               | Active            |
-      | Contributor| Group 01 | member               | Active           |
+      | Contributor| Group 01 | member               | Active            |
       | Moderator  | Group 02 | member               | Active            |
+    And datasets:
+      | title                 | publisher | author    | published   | description |
+      | Dataset Revision Test | Group 01  | Moderator | Yes         | Test        |
 
 
   #Non workbench roles can see the menu item My Workflow. However
@@ -496,3 +500,17 @@ Feature:
     Given I am logged in as "Contributor"
     When I am on the "My Drafts" page
     Then I should see "My Draft Dataset"
+
+  @workflow_23 @javascript
+  Scenario: As an anonymous user I should see a revisions link when dkan_workflow is enabled.
+    Given I am logged in as "Supervisor"
+    And I am on the "Dataset Revision Test" page
+    When I click "New draft"
+    And I fill in "edit-title" with "Dataset Revision Test NEW"
+    And I click "Publishing options"
+    Then I select "Published" from "edit-workbench-moderation-state-new"
+    And I press "Finish"
+    And I click "Log out"
+    And I am on the "Datasets" page
+    And I click "Dataset Revision Test"
+    Then I should see "Revisions"
