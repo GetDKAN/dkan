@@ -15,7 +15,6 @@ Feature:
       | My Edits           | /admin/workbench/content/edited      |
       | All Recent Content | /admin/workbench/content/all         |
       | Create User        | /admin/people/create                 |
-      | Datasets           | /search/type/dataset                 |
     Given Users:
       | name        | mail             | status | roles                                 |
       | Contributor | WC@fakeemail.com | 1      | Workflow Contributor, Content Creator |
@@ -32,10 +31,6 @@ Feature:
       | Moderator  | Group 01 | member               | Active            |
       | Contributor| Group 01 | member               | Active            |
       | Moderator  | Group 02 | member               | Active            |
-    And datasets:
-      | title                 | publisher | author    | published   | description |
-      | Dataset Revision Test | Group 01  | Moderator | Yes         | Test        |
-
 
   #Non workbench roles can see the menu item My Workflow. However
   #they can't access to the page.
@@ -503,16 +498,26 @@ Feature:
 
   @workflow_23 @javascript
   Scenario: As an anonymous user I should see a revisions link when dkan_workflow is enabled.
-    Given I am on the "Datasets" page
+    Given pages:
+      | name               | url                                  |
+      | Datasets           | /search/type/dataset                 |
+      | Rebuild perms      | /admin/reports/status/rebuild        |
+    And datasets:
+      | title                 | publisher | author    | published   | description |
+      | Dataset Revision Test | Group 01  | Moderator | Yes         | Test        |
+    When I am on the "Datasets" page
     And I click "Dataset Revision Test"
     Then I should not see "Revisions"
-    Given I am logged in as "Supervisor"
+    Given I am logged in as a user with the "administrator" role
     And I am on the "Dataset Revision Test" page
     When I click "New draft"
     And I fill in "edit-title" with "Dataset Revision Test NEW"
     And I click "Publishing options"
     Then I select "Published" from "edit-workbench-moderation-state-new"
     And I press "Finish"
+    Given I am on the "Rebuild perms" page
+    And I press "Rebuild permissions"
+    And I wait for "Status report"
     And I click "Log out"
     And I am on the "Datasets" page
     And I click "Dataset Revision Test"
