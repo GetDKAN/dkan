@@ -26,8 +26,8 @@ Repository <https://github.com/NuCivic/dkan>`__ is a Drupal
 need to acquire or build a full DKAN distribution of Drupal.
 
 .. tip:: `DKAN Starter <http://dkan-starter.readthedocs.io>`_ is project
-  containing a prebuilt version of DKAN and the tools `Granicus
-  <https://www.granicus.com/>`_ uses for our own implementations and
+  containing a prebuilt version of DKAN and the tools `CivicActions
+  <https://civicactions.com/dkan/>`_ uses for our own implementations and
   deployments. Learn more advanced workflows in that project's
   `documentation <https://dkan-starter.readthedocs.io>`_.
 
