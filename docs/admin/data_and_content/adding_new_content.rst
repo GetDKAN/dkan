@@ -2,7 +2,9 @@
 Adding New Content
 ==================
 
-Your DKAN site is an access point for citizens to connect with your open data, but data isn't the only content you can add. DKAN is designed to showcase your open data in a number of ways to best engage site visitors and demonstrate tangible value.
+Your DKAN site is an access point for users to connect with open data, but data isn't the only content that you can add. 
+
+DKAN is designed to showcase your open data in a number of ways to best engage site visitors and demonstrate tangible value.
 
 There are a variety of content types at your disposal, and it's up to you to choose which best suits your needs. What are you aiming for? What kind of experience do you want your site visitors to have? The answers to these questions will help you decide which content type is right.
 
@@ -12,22 +14,24 @@ The early stages of creating your DKAN site will involve adding more new content
 
 As a Site Manager, you might be involved in adding content in earlier stages and gradually become less involved, or you might never directly generate content. In any case, it's important to understand what content can be added, how it is used and how often, and the overall process so that you can effectively manage your DKAN site and support your team.
 
-**Here's the breakdown of content by most frequently added:**
+**Here's the breakdown of content types:**
 
-Resource
-  The most basic piece of content as well as the most abundant. Resources are the actual files that represent your open data.
 Dataset
   "Containers" that hold Resources. Datasets are given metadata such as author, open data license type, frequency of publication, and they can be assigned to Groups.
-Visualizations
-  Visualizations take Resources on your DKAN site and generate visual representations to make data understandable and accessible.
-Data Story
-  Similar to a blog post, Data Stories provide a narrative that adds the depth of impact. Stories focus on how data changes real lives every day.
-Dashboard
-  A piece of content that curates all kinds of content on your DKAN site. Dashboards make it easy to put data, media, and narrative into meaningful conversation.
+Resource
+  The most basic piece of content as well as the most abundant. Resources are the actual files that represent your open data.
 Group
   Groups both collect content with a common data publisher as well as provide a workflow for a group of users on your DKAN site.
 Page
   One of the most basic content types on DKAN is a Page. Though the content type is straightforward it has implications for the structure, appearance, and experience of your DKAN site.
+Data Story
+  Similar to a blog post, Data Stories provide a narrative that adds the depth of impact. Stories focus on how data changes real lives every day.
+Data Dashboard
+  A piece of content that curates all kinds of content on your DKAN site. Dashboards make it easy to put data, media, and narrative into meaningful conversation.
+Visualizations
+  Visualizations take Resources on your DKAN site and generate visual representations to make data understandable and accessible.
+Harvest Source
+  A Harvest Source is a content type that allows administrators or Site Managers to "harvest" data from outside sources. To “harvest” data is to use the public feed or API of another data portal to import items from that portal’s catalog into your own.
 
 Where do I add new content?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,7 +39,7 @@ Where do I add new content?
 Using the Add content menu
 --------------------------
 
-The most direct path for creating content is through the **Add content** menu item on the Admin Menu bar. If you're ready to jump right into creating content select the content type and begin completing the fields in the form.
+The most direct path for creating content is through the **Add content** menu item on the Admin Menu bar. Select the content type you'd like to add and then complete the fields shown in the following form.
 
 .. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_01.png
    :alt: An image displaying the location of the "Add content" menu on the DKAN navigation bar.
@@ -43,17 +47,19 @@ The most direct path for creating content is through the **Add content** menu it
 Using the Content menu
 ----------------------
 
-In some cases you may want to see what content exists before creating something from scratch. As a Site Manager you're able to view and edit all the content that has been authored on your DKAN site. It's not uncommon that content is added but never completed, is complete but outdated, or simply has an unpublished status. As your site matures and contains more content, it's helpful to check what already exists before starting a new piece of content.
+In some cases, you may want to see what content exists before creating something new from scratch. 
+
+As a Site Manager, you're able to view and edit all the content that has been authored on your DKAN site. It's not uncommon that content is added but never completed, is complete but outdated, or simply has an unpublished status. As your site matures and contains more content, it's helpful to check what already exists before starting a new piece of content.
 
 You can use the **Content** menu item to get to the Content screen where you can see all existing content, filter and search, and add new content.
 
 .. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_02.png
-   :alt: A screenshot of the DKAN "Content" page.
+   :alt: A screenshot of the DKAN "Content" page, as seen by a Site Manager.
 
 The Content page
 ----------------
 
-Select the content type that meets your needs to start adding new content. Most of the time, adding a new piece of content is as straightforward as filling out all the fields in a form where some fields are required and others are optional fields for additional information that provide context.
+Most of the time, adding a new piece of content is as straightforward as filling out all the fields in a form where some fields are required and others are optional fields for additional information that provide context.
 
 In the example below, the Site Manager is adding a new Dataset with Tags, Topics, and other metadata associated with Datasets. Though not all the fields in the form are required, it's best to include as much information as possible. Complete content gives your site visitors confidence that your content is professional, current, and polished.
 
@@ -87,6 +93,27 @@ Groups
   All users must belong to at least one Group to have the Groups menu item available to them.
   
   When a Dataset is added to a Group, it will be included on the Group's home page and may be edited by the Administrator members of a Group. As a best practice, users should only add Datasets to Groups that they are a member. Certain users won't be able to access their own content if they assign it to a Group that they do not belong to.
+  
+Viewing content you've already uploaded
+----------------
+
+To see a list of content that you've already uploaded, you can navigate to your user profile page by clicking on your username on the right-hand side of the screen.
+
+.. image:: ../../images/site_manager_playbook/adding_new_content/Site_Manager_Logged_In.png
+   :alt: Click your username on the right side of the navigation bar in order to go to your profile page.
+   
+Once you're on your user profile page, you'll see a list of datasets, resources and other content types that were uploaded by your account.
+
+.. image:: ../../images/site_manager_playbook/adding_new_content/User_Profile_Page.png
+   :alt: An example user profile page showing a dataset and resource uploaded by this user.
+   
+Viewing a listing of the site's files
+----------------
+
+From the admin menu, click "Content." Once you're on the Content page, the "Files" button will take you to the files listing.
+
+.. image:: ../../images/site_manager_playbook/adding_new_content/Files_Page.png
+   :alt: This is the "Files" listing, found within the "Content" page on a DKAN site.
 
 Adding a Resource
 ~~~~~~~~~~~~~~~~~
