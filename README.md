@@ -32,7 +32,7 @@ DKAN is a Drupal-based open data tool with a full suite of cataloging, publishin
 
 ## Support
 
-DKAN development is sponsored by CivicActions. For more information about hosting and professional support options for DKAN, see http://getdkan.com/contact
+DKAN development is sponsored by CivicActions. For more information about hosting and professional support options for DKAN, see https://civicactions.com/dkan/
 
 Contact us if you want to get involved!
 
