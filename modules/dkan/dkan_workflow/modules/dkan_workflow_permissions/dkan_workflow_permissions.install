@@ -18,6 +18,9 @@ function dkan_workflow_permissions_enable() {
   features_revert(array('dkan_sitewide_menu' => array('menu_links')));
 
   // Assign view moderation history perm to anonymous users.
+  if (!module_exists('workbench_moderation')) {
+    module_enable(array('workbench_moderation'));
+  }
   $anon = user_role_load_by_name('anonymous user');
   user_role_grant_permissions($anon->rid, array('view moderation history'));
 
