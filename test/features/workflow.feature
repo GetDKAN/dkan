@@ -503,6 +503,9 @@ Feature:
 
   @workflow_23 @javascript
   Scenario: As an anonymous user I should see a revisions link when dkan_workflow is enabled.
+    Given I am on the "Datasets" page
+    And I click "Dataset Revision Test"
+    Then I should not see "Revisions"
     Given I am logged in as "Supervisor"
     And I am on the "Dataset Revision Test" page
     When I click "New draft"
