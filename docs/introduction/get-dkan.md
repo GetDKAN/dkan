@@ -74,8 +74,3 @@ An error like the following is often seen at the end of the install process on P
 
 This will hopefully be fixed on future releases. However, the resulting site should still be fully installed and functional.
 
-
-## Granicus Data Subscription
-
-[Granicus](http://granicus.com), the company leading DKAN's development, offers a turn-key software as a service (SaaS) product called [Granicus Data Enterprise](https://insights.govdelivery.com/Digital_Services/GovDelivery_Open_Data). Hosted on Acquia Cloud, Granicus Data Enterprise meets US government [security standards](https://docs.acquia.com/cloud/arch/compliance-standards-and-regulations), comes pre-configured for out-of-the-box open data standards compliance and advanced data visualization techniques, and includes 24-hour, enterprise-level support. [Contact Granicus](http://granicus.com/contact) for more information.
-
