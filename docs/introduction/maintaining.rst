@@ -13,8 +13,8 @@ that are added to Drupal sites. They are packaged together in the
 ``profiles`` directory to make it easier to install and maintain.
 
 .. tip:: `DKAN Starter <https://github.com/NuCivic/dkan-starter>`_ is project
-  containing a prebuilt version of DKAN and the tools `Granicus
-  <https://www.granicus.com/>`_ uses for our own implementations and
+  containing a prebuilt version of DKAN and the tools `CivicActions
+  <https://civicactions.com/dkan/>`_ uses for our own implementations and
   deployments. Learn more advanced workflows in that project's
   `documentation <https://dkan-starter.readthedocs.io>`_.
 
