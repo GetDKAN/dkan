@@ -50,4 +50,8 @@ interface DatastoreInterface {
    */
   public function exists();
 
+  public function getConfigForm(&$form_state);
+
+  public function configFormSubmitHandler(&$form_state);
+
 }

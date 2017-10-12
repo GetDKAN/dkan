@@ -24,12 +24,14 @@ class Import {
 
       $form = confirm_form($form, t('Import all content from source?'), 'node/' . $node->nid, '', t('Import'), t('Cancel'), 'confirm feeds update');
 
-      $form[$id]['source_status'] = array(
+      $form['source_status'] = array(
         '#type' => 'item',
         '#title' => t('@datastore_name: Status', array('@datastore_name' => $name)),
         '#markup' => $this->datastore->getStatusMessage(),
       );
 
+      // Custom configuration for this specific datastore.
+      $form[$this->datastore->getId()] = $this->datastore->getConfigForm($form_state);
 
       $form['#redirect'] = 'node/' . $node->nid;
 
@@ -53,6 +55,7 @@ class Import {
   }
 
   public function submitHandler(&$form_state) {
+    $this->datastore->configFormSubmitHandler($form_state);
     $this->datastore->import();
   }
 

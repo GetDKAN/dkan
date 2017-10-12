@@ -23,4 +23,3 @@ features[views_view][] = datasets
 files[] = includes/DkanDatastore.inc
 files[] = includes/NullDatastore.inc
 files[] = includes/SimpleDatastore.inc
-files[] = includes/DkanDatastoreFastImport.inc

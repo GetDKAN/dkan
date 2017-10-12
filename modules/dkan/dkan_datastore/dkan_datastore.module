@@ -507,6 +507,7 @@ function dkan_datastore_go($id = NULL, $class = NULL) {
     if (!isset($instances[$class][$id])) {
       $instances[$class][$id] = new $class($id);
     }
+
     return $instances[$class][$id];
   }
 
@@ -613,6 +614,8 @@ function dkan_datastore_queue_import($uuid) {
  * Callback used with queue for index content into datastore.
  */
 function dkan_datastore_queue_import_worker($item) {
+
+  /* @var $datastore \Dkan\Datastore\DatastoreInterface */
   $datastore = dkan_datastore_go($item['uuid']);
 
   if (empty($datastore)) {
@@ -622,7 +625,7 @@ function dkan_datastore_queue_import_worker($item) {
     return FALSE;
   }
 
-  return $datastore->importByCli();
+  return $datastore->import();
 }
 
 /**

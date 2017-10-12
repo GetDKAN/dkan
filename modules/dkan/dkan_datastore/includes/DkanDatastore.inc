@@ -12,6 +12,10 @@ module_load_include("php", "dkan_datastore", "src/DatastoreInterface");
 class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
   private $node;
 
+  private $feedsConfig = [];
+
+  private $feedsSource;
+
   /**
    * Sets default items for datastore object.
    */
@@ -58,6 +62,9 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
    */
   public function import() {
     $source = $this->getFeedsSource();
+    $source->addConfig($this->feedsConfig['parser']);
+    $source->addConfig($this->feedsConfig['processor']);
+    $source->save();
     $source->startImport();
   }
 
@@ -88,6 +95,33 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
       return TRUE;
     }
     return FALSE;
+  }
+
+  public function getConfigForm(&$form_state) {
+    $form['settings'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Settings'),
+    );
+    $form['settings'] = $this->getFeedsSource()->configForm($form_state);
+    $form['#count'] = $this->getFeedsSource()->itemCount();
+
+    $form['description']['#weight'] = '-10';
+    $form['source_status']['#weight'] = '-9';
+
+    if (isset($form['settings']['FeedsCSVParser']['help'])) {
+      unset($form['settings']['FeedsCSVParser']['help']);
+    }
+    return $form;
+  }
+
+  public function configFormSubmitHandler(&$form_state) {
+    $source = $this->getFeedsSource();
+
+    $parser = $source->importer->config['parser']['plugin_key'];
+    $processor = $source->importer->config['processor']['plugin_key'];
+
+    $this->feedsConfig['parser'] = array($parser => $form_state['values'][$parser]);
+    $this->feedsConfig['processor'] = array($processor => $form_state['values'][$processor]);
   }
 
   private function getTables() {
@@ -127,8 +161,11 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
    * @return FeedsSource
    *   The feed source.
    */
-  private function getFeedsSource() {
-    return feeds_source($this->getImporterId(), $this->node->nid);
+  protected function getFeedsSource() {
+    if (!$this->feedsSource) {
+      $this->feedsSource = feeds_source($this->getImporterId(), $this->node->nid);
+    }
+    return $this->feedsSource;
   }
 
   private function getImporterName() {
@@ -139,6 +176,11 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
 
   private function getImporterId() {
     $id = db_query("SELECT id FROM {feeds_source} WHERE feed_nid = :nid", array(':nid' => $this->node->nid))->fetchField();
+
+    if (!$id) {
+      $id = feeds_get_importer_id($this->getNode()->type);
+    }
+
     if (!$id) {
       throw new \Exception("No Feeds Importer setup.");
     }
