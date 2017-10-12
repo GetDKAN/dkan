@@ -82,17 +82,6 @@ function dkan_datastore_menu() {
     'type' => MENU_LOCAL_TASK,
   );
 
-  /*$items['node/%node/datastore/unlock'] = array(
-    'title' => 'Unlock',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('dkan_datastore_unlock_tab_form', NULL, 1),
-    'access callback' => 'dkan_datastore_feeds_access',
-    'access arguments' => array('unlock', 1),
-    'file' => 'dkan_datastore.pages.inc',
-    'weight' => 11,
-    'type' => MENU_LOCAL_TASK,
-  );*/
-
   $items['node/%node/datastore/drop'] = array(
     'title' => 'Drop Datastore',
     'page callback' => 'drupal_get_form',

@@ -5,6 +5,10 @@
  * Callbacks for datastore pages.
  */
 
+use Dkan\Datastore\Form\Drop;
+use Dkan\Datastore\Form\Import;
+use Dkan\Datastore\Form\Delete;
+
 // Default to 50MB.
 define('MAX_FILE_REMOTE_PROXY_DEFAULT', 1024 * 1024 * 50);
 
@@ -160,7 +164,7 @@ function dkan_datastore_import_tab_form($form, &$form_state, $node) {
 
   /* @var $datastore DkanDatastore */
   $datastore = dkan_datastore_go($node->uuid);
-  $dkan_form = new \Dkan\Datastore\Form\Import($datastore);
+  $dkan_form = new Import($datastore);
   $form = $dkan_form->toArray($form_state);
   $form['#datastore'] = $datastore;
   return $form;
@@ -173,7 +177,7 @@ function dkan_datastore_import_tab_form_submit($form, &$form_state) {
   module_load_include("php", "dkan_datastore", "src/Form/Import");
 
   $datastore = $form['#datastore'];
-  $dkan_form = new \Dkan\Datastore\Form\Import($datastore);
+  $dkan_form = new Import($datastore);
   $dkan_form->submitHandler($form_state);
 }
 
@@ -187,7 +191,7 @@ function dkan_datastore_delete_tab_form($form, &$form_state, $importer_id, $node
   module_load_include("php", "dkan_datastore", "src/Form/Delete");
 
   $datastore = dkan_datastore_go($node->uuid);
-  $dkan_form = new \Dkan\Datastore\Form\Delete($datastore);
+  $dkan_form = new Delete($datastore);
   $form = $dkan_form->toArray($form_state);
   $form['#datastore'] = $datastore;
   return $form;
@@ -200,54 +204,10 @@ function dkan_datastore_delete_tab_form_submit($form, &$form_state) {
   module_load_include("php", "dkan_datastore", "src/Form/Import");
 
   $datastore = $form['#datastore'];
-  $dkan_form = new \Dkan\Datastore\Form\Delete($datastore);
+  $dkan_form = new Delete($datastore);
   $form_state['redirect'] = $form['#redirect'];
   $dkan_form->submitHandler($form_state);
 }
-
-/**
- * Render a datastore unlock form.
- *
- * Used on both node pages and configuration pages.
- * Therefore $node may be missing.
- */
-/*function dkan_datastore_unlock_tab_form($form, &$form_state, $importer_id, $node = NULL) {
-  module_load_include('inc', 'feeds', 'feeds.pages');
-  if (empty($node)) {
-    $source = feeds_source($importer_id);
-    $form['#redirect'] = 'import/' . $source->id;
-  }
-  else {
-    $importer_id = feeds_get_importer_id($node->type);
-    $source = feeds_source($importer_id, $node->nid);
-    $form['#redirect'] = 'node/' . $source->feed_nid;
-  }
-  // Form cannot pass on source object.
-  $form['#importer_id'] = $source->id;
-  $form['#feed_nid'] = $source->feed_nid;
-  $form['source_status'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Status'),
-    '#tree' => TRUE,
-    '#value' => feeds_source_status($source),
-  );
-  $form = confirm_form($form, t('Unlock this importer?'), $form['#redirect'], '', t('Delete'), t('Cancel'), 'confirm feeds update');
-  if ($source->progressImporting() == FEEDS_BATCH_COMPLETE && $source->progressClearing() == FEEDS_BATCH_COMPLETE) {
-    $form['source_locked'] = array(
-      '#type' => 'markup',
-      '#title' => t('Not Locked'),
-      '#tree' => TRUE,
-      '#markup' => t('This importer is not locked, therefore it cannot be unlocked.'),
-    );
-    $form['actions']['submit']['#disabled'] = TRUE;
-    $form['actions']['submit']['#value'] = t('Unlock (disabled)');
-  }
-  else {
-    $form['actions']['submit']['#value'] = t('Unlock');
-  }
-  $form['#submit'] = array('feeds_unlock_tab_form_submit');
-  return $form;
-}*/
 
 /**
  * Render a datastore drop form on node/id/drop pages.
@@ -257,7 +217,7 @@ function dkan_datastore_drop_tab_form($form, &$form_state, $node) {
 
   /* @var $datastore DkanDatastore */
   $datastore = dkan_datastore_go($node->uuid);
-  $dkan_form = new \Dkan\Datastore\Form\Drop($datastore);
+  $dkan_form = new Drop($datastore);
   $form = $dkan_form->toArray($form_state);
   $form['#datastore'] = $datastore;
   return $form;
@@ -271,7 +231,7 @@ function dkan_datastore_drop_tab_form_submit($form, &$form_state) {
 
   /* @var $datastore DkanDatastore */
   $datastore = $form['#datastore'];
-  $dkan_form = new \Dkan\Datastore\Form\Drop($datastore);
+  $dkan_form = new Drop($datastore);
   $dkan_form->submitHandler($form_state);
   $form_state['redirect'] = $form['#redirect'];
 }
