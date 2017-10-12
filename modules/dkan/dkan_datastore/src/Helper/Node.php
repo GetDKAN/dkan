@@ -1,7 +1,12 @@
 <?php
+
 namespace Dkan\Datastore\Helper;
 
+/**
+ * Class Node.
+ */
 class Node {
+
   /**
    * Gets nid using uuid.
    */

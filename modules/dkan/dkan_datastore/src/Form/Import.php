@@ -1,19 +1,28 @@
 <?php
+
 namespace Dkan\Datastore\Form;
 
 use Dkan\Datastore\DatastoreInterface;
 
 module_load_include("php", "dkan_datastore", "src/DatastoreInterface");
 
-
+/**
+ * Class Import.
+ */
 class Import {
 
   private $datastore;
 
+  /**
+   * Import constructor.
+   */
   public function __construct(DatastoreInterface $datastore) {
     $this->datastore = $datastore;
   }
 
+  /**
+   * Array version of the form.
+   */
   public function toArray(&$form_state) {
     $id = $this->datastore->getId();
 
@@ -54,6 +63,9 @@ class Import {
     return $form;
   }
 
+  /**
+   * Submit Handler.
+   */
   public function submitHandler(&$form_state) {
     $this->datastore->configFormSubmitHandler($form_state);
     $this->datastore->import();

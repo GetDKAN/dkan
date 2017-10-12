@@ -1,18 +1,28 @@
 <?php
+
 namespace Dkan\Datastore\Form;
 
 use Dkan\Datastore\DatastoreInterface;
 
 module_load_include("php", "dkan_datastore", "src/DatastoreInterface");
 
+/**
+ * Class Drop.
+ */
 class Drop {
 
   private $datastore;
 
+  /**
+   * Drop constructor.
+   */
   public function __construct(DatastoreInterface $datastore) {
     $this->datastore = $datastore;
   }
 
+  /**
+   * Array version of the form.
+   */
   public function toArray(&$form_state) {
     $node = $this->datastore->getNode();
 
@@ -43,6 +53,9 @@ class Drop {
     return $form;
   }
 
+  /**
+   * Submit handler.
+   */
   public function submitHandler(&$form_state) {
     $this->datastore->drop();
     drupal_set_message(t('Datastore dropped!'));

@@ -1,15 +1,15 @@
 <?php
+
 module_load_include("php", "dkan_datastore", "src/DatastoreInterface");
 
-/**
- * @file
- * DKAN Datatore.
- */
+use Dkan\Datastore\Helper\Node;
+use Dkan\Datastore\DatastoreInterface;
 
 /**
  * Class for DKAN Datastores.
  */
-class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
+class DkanDatastore implements DatastoreInterface {
+
   private $node;
 
   private $feedsConfig = [];
@@ -21,7 +21,7 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
    */
   public function __construct($uuid) {
     module_load_include("php", "dkan_datastore", "src/Helper/Node");
-    $this->node = \Dkan\Datastore\Helper\Node::getNodeFromUuid($uuid);
+    $this->node = Node::getNodeFromUuid($uuid);
   }
 
   /**
@@ -38,6 +38,9 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
     return $this->getImporterName();
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getNode() {
     return $this->node;
   }
@@ -68,6 +71,9 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
     $source->startImport();
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function drop() {
     module_load_include('module', 'data', 'data');
     module_load_include('module', 'dkan_datastore', 'dkan_datastore');
@@ -82,12 +88,18 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function delete() {
     $source = $this->getFeedsSource();
     $source->startClear();
     $source->ensureSchedule();
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function exists() {
     $tables_to_drop = $this->getTables();
 
@@ -97,6 +109,9 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
     return FALSE;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getConfigForm(&$form_state) {
     $form['settings'] = array(
       '#type' => 'fieldset',
@@ -114,6 +129,9 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
     return $form;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function configFormSubmitHandler(&$form_state) {
     $source = $this->getFeedsSource();
 
@@ -124,6 +142,9 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
     $this->feedsConfig['processor'] = array($processor => $form_state['values'][$processor]);
   }
 
+  /**
+   * Get tables.
+   */
   private function getTables() {
     module_load_include('module', 'data', 'data');
     module_load_include('inc', 'feeds', 'feeds.pages');
@@ -168,12 +189,18 @@ class DkanDatastore implements \Dkan\Datastore\DatastoreInterface {
     return $this->feedsSource;
   }
 
+  /**
+   * Get importer name.
+   */
   private function getImporterName() {
     /* @var $importer FeedsImporter */
     $importer = $this->getFeedsImporter();
     return $importer->getConfig()['name'];
   }
 
+  /**
+   * Get importer id.
+   */
   private function getImporterId() {
     $id = db_query("SELECT id FROM {feeds_source} WHERE feed_nid = :nid", array(':nid' => $this->node->nid))->fetchField();
 

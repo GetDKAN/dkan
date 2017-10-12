@@ -1,19 +1,28 @@
 <?php
+
 namespace Dkan\Datastore\Form;
 
 use Dkan\Datastore\DatastoreInterface;
 
 module_load_include("php", "dkan_datastore", "src/DatastoreInterface");
 
-
+/**
+ * Class Delete.
+ */
 class Delete {
 
   private $datastore;
 
+  /**
+   * Delete constructor.
+   */
   public function __construct(DatastoreInterface $datastore) {
     $this->datastore = $datastore;
   }
 
+  /**
+   * Array version of the form.
+   */
   public function toArray(&$form_state) {
     module_load_include('inc', 'feeds', 'feeds.pages');
 
@@ -47,6 +56,9 @@ class Delete {
     return $form;
   }
 
+  /**
+   * Submit handler.
+   */
   public function submitHandler(&$form_state) {
     $this->datastore->delete();
   }

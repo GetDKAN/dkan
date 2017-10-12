@@ -1,11 +1,6 @@
 <?php
 
 /**
- * @file
- * DKAN Datastore fast import.
- */
-
-/**
  * Class DkanDatastoreFastImport.
  */
 class DkanDatastoreFastImport extends DkanDatastore {
@@ -13,6 +8,9 @@ class DkanDatastoreFastImport extends DkanDatastore {
   const QUEUE_FILESIZE_THRESHOLD_DEFAULT = '30MB';
   const FAST_IMPORT_THRESHOLD_DEFAULT = '30MB';
 
+  /**
+   * {@inheritdoc}
+   */
   public function getConfigForm(&$form_state) {
     $form = parent::getConfigForm($form_state);
 
@@ -61,6 +59,9 @@ class DkanDatastoreFastImport extends DkanDatastore {
     return $form;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function configFormSubmitHandler(&$form_state) {
     variable_set('quote_delimiters', $form_state['values']['quote_delimiters']);
     variable_set('lines_terminated_by', $form_state['values']['lines_terminated_by']);
@@ -68,11 +69,13 @@ class DkanDatastoreFastImport extends DkanDatastore {
     variable_set('dkan_datastore_fast_import_load_empty_cells_as_null', $form_state['values']['dkan_datastore_fast_import_load_empty_cells_as_null']);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function import() {
     $source = $this->getFeedsSource();
 
     $table = feeds_flatstore_processor_table($source, array());
-
 
     $node = entity_metadata_wrapper('node', $this->getNode());
     $file = $node->field_upload->value();
@@ -91,7 +94,7 @@ class DkanDatastoreFastImport extends DkanDatastore {
           'source' => $source,
           'node' => $node,
           'table' => $table,
-          'config' => [] //$form_state['values'][$parser],
+          'config' => [],
         );
         DrupalQueue::get(dkan_datastore_fast_import_queue_name())->createItem($item);
         drupal_set_message(t('File was succesfully enqueued to be imported and will be available in the datastore in a few minutes'), 'status');
@@ -108,6 +111,9 @@ class DkanDatastoreFastImport extends DkanDatastore {
     }
   }
 
+  /**
+   * Fast import.
+   */
   private function fastImport($source, $node, $table, $file, $config = []) {
     $load_data_type = variable_get('dkan_datastore_load_data_type', 'load_data_local_infile');
 
