@@ -21,3 +21,4 @@ features[field_instance][] = node-resource-field_datastore_status
 features[views_view][] = datasets
 
 files[] = includes/DkanDatastore.inc
+files[] = includes/DkanDatastoreCliWrapper.inc
