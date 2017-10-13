@@ -1,5 +1,6 @@
 7.x-1.14
 --------
+ - #2161 Fix Datastore Fast Import does not truncate old data on multiple imports.
  - #2075 DKAN Harvest: Modified batch process to split harvest migrations in chunks.
  - #2145 Front page hero image no longer requests empty URL if variable empty.
  - #2124 Add results count and increase results per page on the harvest dashboard view. 

@@ -30,7 +30,7 @@ web:
 # DB node
 db:
   hostname: db
-  image: blinkreaction/mysql:5.5
+  image: blinkreaction/mysql:5.6
   ports:
     - "3306"
   environment:
