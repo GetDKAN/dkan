@@ -4,17 +4,14 @@
  * Class DkanDatastoreCliWrapper.
  */
 class DkanDatastoreCliWrapper {
-
-  /**
-   * @var \Dkan\Datastore\DatastoreInterface
-   */
+  
   private $datastore;
   private $node;
 
   /**
    * DkanDatastoreCliWrapper constructor.
    */
-  public function __construct($uuid){
+  public function __construct($uuid) {
     $this->datastore = dkan_datastore_go($uuid);
     $this->node = $this->datastore->getNode();
   }
