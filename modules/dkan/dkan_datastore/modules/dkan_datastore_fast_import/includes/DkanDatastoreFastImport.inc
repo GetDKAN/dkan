@@ -133,18 +133,14 @@ class DkanDatastoreFastImport extends DkanDatastore {
     $queue_filesize_threshold = parse_size(variable_get('queue_filesize_threshold', self::FAST_IMPORT_THRESHOLD_DEFAULT));
 
     if (!$this->enabled) {
-      watchdog('fast', "SLOW IMPORT!!!");
       parent::import();
     }
     else {
-      watchdog('fast', "FAST IMPORT!!!");
       if ($filesize >= $queue_filesize_threshold) {
-        watchdog('fast', "FAST QUEUED IMPORT!!!");
         $this->queuedImport($source, $node, $table);
         drupal_set_message(t('File was succesfully enqueued to be imported and will be available in the datastore in a few minutes'), 'status');
       }
       else {
-        watchdog('fast', "FAST NOW IMPORT!!!");
         try {
           $this->fastImport($source, $node, $table, $file, []);
           drupal_set_message(t('File was succesfully imported into the datastore'), 'status');
