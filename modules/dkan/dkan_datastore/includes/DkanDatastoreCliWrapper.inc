@@ -4,7 +4,7 @@
  * Class DkanDatastoreCliWrapper.
  */
 class DkanDatastoreCliWrapper {
-  
+
   private $datastore;
   private $node;
 
