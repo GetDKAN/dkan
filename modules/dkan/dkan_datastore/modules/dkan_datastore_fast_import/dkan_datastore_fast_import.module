@@ -122,7 +122,7 @@ function dkan_datastore_fast_import_settings() {
  */
 function dkan_datastore_fast_import_settings_submit($form, &$form_state) {
   $fast_import_selection = $form_state['values']['dkan_datastore_fast_import_selection'];
-  $class = ($fast_import_selection != DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT) ? 'DkanDatastoreFastImport' : 'DkanDatastore';
+  $class = ($fast_import_selection != DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT) ? 'DkanDatastoreFastImport' : 'DkanDatastoreFastImport';
   variable_set('dkan_datastore_class', $class);
 }
 

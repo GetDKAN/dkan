@@ -5,8 +5,10 @@
  */
 class DkanDatastoreFastImport extends DkanDatastore {
 
-  const QUEUE_FILESIZE_THRESHOLD_DEFAULT = '30MB';
   const FAST_IMPORT_THRESHOLD_DEFAULT = '30MB';
+  const QUEUE_FILESIZE_THRESHOLD_DEFAULT = '30MB';
+
+  private $enabled = FALSE;
 
   /**
    * {@inheritdoc}
@@ -19,10 +21,31 @@ class DkanDatastoreFastImport extends DkanDatastore {
     variable_set('fields_escaped_by', '');
     variable_set('dkan_datastore_fast_import_load_empty_cells_as_null', 0);
 
+    $use_fast_import = FALSE;
+
+    // Use global fast import setting to inform the state of
+    // the configuration form.
+    $selection = (int) variable_get('dkan_datastore_fast_import_selection', DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT);
+    if ($selection != DKAN_DATASTORE_FAST_IMPORT_DKAN_DATASTORE_BATCH_IMPORT) {
+      $use_fast_import = TRUE;
+    }
+
     $form['#attached']['js'][] = array(
       'data' => drupal_get_path('module', 'dkan_datastore_fast_import') . '/dkan_datastore_fast_import.js',
       'type' => 'file',
     );
+
+    $form['use_fast_import'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Use Fast Import'),
+      '#default_value' => $use_fast_import,
+      '#states' => array(
+        'disabled' => array(
+          ':input[name="FeedsFlatstoreProcessor[geolocate]"]' => array('checked' => TRUE),
+        ),
+      ),
+    );
+
     $form['quote_delimiters'] = array(
       '#type' => 'select',
       '#title' => t('Quote delimiters'),
@@ -33,7 +56,13 @@ class DkanDatastoreFastImport extends DkanDatastore {
       ),
       '#default_value' => variable_get('quote_delimiters', '"'),
       '#description' => t('The character that will be used to enclose fields in this CSV file.'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="use_fast_import"]' => array('checked' => FALSE),
+        ),
+      ),
     );
+
     $form['lines_terminated_by'] = array(
       '#type' => 'select',
       '#title' => t('Lines terminated by:'),
@@ -43,17 +72,34 @@ class DkanDatastoreFastImport extends DkanDatastore {
         '\r' => '\r (Legacy Mac)',
       ),
       '#default_value' => variable_get('lines_terminated_by', '\n'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="use_fast_import"]' => array('checked' => FALSE),
+        ),
+      ),
     );
+
     $form['fields_escaped_by'] = array(
       '#type' => 'textfield',
       '#title' => t('Fields escaped by:'),
       '#default_value' => variable_get('fields_escaped_by', ''),
       '#description' => t('The character used to escape other characters on each fields. Leave empty if it isn\'t needed.'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="use_fast_import"]' => array('checked' => FALSE),
+        ),
+      ),
     );
+
     $form['dkan_datastore_fast_import_load_empty_cells_as_null'] = array(
       '#type' => 'checkbox',
       '#title' => t('Read empty cells as NULL (if unchecked, empty cells will be read as zeros or empty strings).'),
       '#default_value' => variable_get('dkan_datastore_fast_import_load_empty_cells_as_null'),
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="use_fast_import"]' => array('checked' => FALSE),
+        ),
+      ),
     );
 
     return $form;
@@ -63,6 +109,9 @@ class DkanDatastoreFastImport extends DkanDatastore {
    * {@inheritdoc}
    */
   public function configFormSubmitHandler(&$form_state) {
+    if ($form_state['values']['use_fast_import']) {
+      $this->enabled = TRUE;
+    }
     variable_set('quote_delimiters', $form_state['values']['quote_delimiters']);
     variable_set('lines_terminated_by', $form_state['values']['lines_terminated_by']);
     variable_set('fields_escaped_by', $form_state['values']['fields_escaped_by']);
@@ -79,27 +128,23 @@ class DkanDatastoreFastImport extends DkanDatastore {
 
     $node = entity_metadata_wrapper('node', $this->getNode());
     $file = $node->field_upload->value();
-    $file_remote = $node->field_link_remote_file->value();
     $filesize = filesize(drupal_realpath($file->uri));
 
-    $queue_filesize_threshold = parse_size(variable_get('queue_filesize_threshold', self::QUEUE_FILESIZE_THRESHOLD_DEFAULT));
+    $queue_filesize_threshold = parse_size(variable_get('queue_filesize_threshold', self::FAST_IMPORT_THRESHOLD_DEFAULT));
 
-    if (!empty($file_remote)) {
+    if (!$this->enabled) {
+      watchdog('fast', "SLOW IMPORT!!!");
       parent::import();
     }
     else {
-      // Avoid the queueing the resource if it's small.
-      if ($filesize > $queue_filesize_threshold) {
-        $item = array(
-          'source' => $source,
-          'node' => $node,
-          'table' => $table,
-          'config' => [],
-        );
-        DrupalQueue::get(dkan_datastore_fast_import_queue_name())->createItem($item);
+      watchdog('fast', "FAST IMPORT!!!");
+      if ($filesize >= $queue_filesize_threshold) {
+        watchdog('fast', "FAST QUEUED IMPORT!!!");
+        $this->queuedImport($source, $node, $table);
         drupal_set_message(t('File was succesfully enqueued to be imported and will be available in the datastore in a few minutes'), 'status');
       }
       else {
+        watchdog('fast', "FAST NOW IMPORT!!!");
         try {
           $this->fastImport($source, $node, $table, $file, []);
           drupal_set_message(t('File was succesfully imported into the datastore'), 'status');
@@ -109,6 +154,19 @@ class DkanDatastoreFastImport extends DkanDatastore {
         }
       }
     }
+  }
+
+  /**
+   * Queued import.
+   */
+  private function queuedImport($source, $node, $table) {
+    $item = array(
+      'source' => $source,
+      'node' => $node,
+      'table' => $table,
+      'config' => [],
+    );
+    DrupalQueue::get(dkan_datastore_fast_import_queue_name())->createItem($item);
   }
 
   /**
