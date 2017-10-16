@@ -48,18 +48,7 @@ Feature: Site Manager administer groups
       | title      | publisher | tags         | author  | published | description                | date changed      | topics           |
       | Dataset 01 | Group 01  | Health 2     | Katie   | Yes       | Increase of toy prices     | 10 September 2015 | Education02      |
       | Dataset 02 | Group 01  | Health 2     | Katie   | No        | Cost of oil in January     | 10 September 2015 | Education02      |
-      | Dataset 03 | Group 01  | Gov 2        | Gabriel | Yes       | Election districts         | 17 October 2015   | Education02      |
-      | Dataset 04 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Education02      |
-      | Dataset 05 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 21 September 2015 | Education02      |
-      | Dataset 06 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 13 March 2015     | Transportation02 |
-      | Dataset 07 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation02 |
-      | Dataset 08 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 25 February 2014  | Transportation02 |
-      | Dataset 09 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 13 September 2014 | Education02      |
-      | Dataset 10 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 October 2013   | Education02      |
-      | Dataset 11 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation02 |
-      | Dataset 12 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation02 |
-      | Dataset 13 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 23 October 2013   | Transportation02 |
-      | Dataset 14 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation02 |
+      | Dataset 03 | Group 01  | Gov 2        | Gabriel | Yes       | Election districts         | 17 October 2014   | Education02      |
     And "format" terms:
       | name   |
       | csv 2  |
@@ -89,7 +78,20 @@ Feature: Site Manager administer groups
 
   @group_all_04 @customizable
   Scenario: View the correct count of datasets
-    Given I am on "Groups" page
+    Given Datasets:
+      | title      | publisher | tags         | author  | published | description                | date changed      | topics           |
+      | Dataset 04 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Education02      |
+      | Dataset 05 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 21 September 2015 | Education02      |
+      | Dataset 06 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 13 March 2015     | Transportation02 |
+      | Dataset 07 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation02 |
+      | Dataset 08 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 25 February 2014  | Transportation02 |
+      | Dataset 09 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 13 September 2014 | Education02      |
+      | Dataset 10 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 October 2013   | Education02      |
+      | Dataset 11 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation02 |
+      | Dataset 12 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 19 October 2013   | Transportation02 |
+      | Dataset 13 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 23 October 2013   | Transportation02 |
+      | Dataset 14 | Group 02  | Count 2      | Celeste | Yes       | Test dataset counts        | 10 September 2015 | Transportation02 |
+    And I am on "Groups" page
     Then I should see "11 datasets"
     When I click "11 datasets"
     Then I should see "Displaying 1 - 10 of 11 datasets"
@@ -137,10 +139,14 @@ Feature: Site Manager administer groups
 
   @group_all_10
   Scenario: View available "date changed" filters after search
+    Given Datasets:
+      | title     | publisher | author  | published | description | date changed      |
+      | Dataset a | Group 02  | Celeste | Yes       | Test        | 10 September 2013 |
+      | Dataset b | Group 02  | Celeste | Yes       | Test        | 21 September 2013 |
+      | Dataset c | Group 02  | Celeste | Yes       | Test        | 14 October 2014   |
     Given I am on "Group 02" page
-    Then I should see "2015 (5)" in the "filter by date changed" region
-    And I should see "2013 (4)" in the "filter by date changed" region
-    And I should see "2014 (2)" in the "filter by date changed" region
+    Then I should see "2014 (1)" in the "filter by date changed" region
+    And I should see "2013 (2)" in the "filter by date changed" region
 
   @group_all_11
   Scenario: Filter datasets on group by resource format
