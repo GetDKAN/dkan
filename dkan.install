@@ -389,8 +389,34 @@ function dkan_update_7022() {
 }
 
 /**
- * Revert content types dataset to revert og_group_ref on resources.
+ * Remove deprecated modules from the db: menu_token and remote_file_source.
  */
 function dkan_update_7023() {
+  if (!module_exists('menu_token')) {
+    db_delete('system')
+      ->condition('name', 'menu_token')
+      ->condition('type', 'module')
+      ->execute();
+    db_drop_table('menu_token');
+  }
+  if (!module_exists('remote_file_source')) {
+    db_delete('system')
+      ->condition('name', 'remote_file_source')
+      ->condition('type', 'module')
+      ->execute();
+  }
+}
+
+/**
+ * Update default variables.
+ */
+function dkan_update_7024(&$context) {
+  dkan_misc_variables_set($context);
+}
+
+/**
+ * Revert content types dataset to revert og_group_ref on resources.
+ */
+function dkan_update_7025() {
   features_revert(array('dkan_dataset_content_types' => array('field_base', 'field_instance')));
 }

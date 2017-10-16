@@ -74,7 +74,6 @@ class DkanDatastoreWebTestCase extends DrupalWebTestCase {
     $modules[] = 'link_iframe_formatter';
     $modules[] = 'multistep';
     $modules[] = 'ref_field_sync';
-    $modules[] = 'remote_file_source';
     $modules[] = 'select_or_other';
     $modules[] = 'chosen';
     $modules[] = 'entity';
@@ -271,9 +270,9 @@ class DkanDatastoreWebTestCase extends DrupalWebTestCase {
   protected function assertDatastoreTableData($resource, $id, $expected_result) {
     // We're actually going to see if we get a hit for a particular country id.
     $result = db_select('feeds_datastore_dkan_file_' . $resource->nid, 'f')
-              ->fields('f', array('country'))
-              ->condition('id', $id)
-              ->execute();
+      ->fields('f', array('country'))
+      ->condition('id', $id)
+      ->execute();
     $result = $result->fetchField();
     $r = $this->assertEqual(
       $result,
@@ -294,7 +293,7 @@ class DkanDatastoreWebTestCase extends DrupalWebTestCase {
    * @return object
    *   An object containing the json response.
    */
-  protected function queryDatastoreApi($resource, $options = array()) {
+  protected function queryDatastoreApi($resource, array $options = array()) {
     $query = array('resource_id' => $resource->uuid);
     foreach ($options as $key => $value) {
       switch ($key) {

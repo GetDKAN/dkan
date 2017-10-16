@@ -1,5 +1,5 @@
 # time:0m28.91s
-@api @disablecaptcha
+@api @disablecaptcha @datastore
 Feature: Datastore
   In order to know the datastore is working
   As a website user
@@ -39,7 +39,7 @@ Feature: Datastore
   Scenario: Dumb test
         Given I am on the homepage
 
-  @api @javascript @noworkflow
+  @api @javascript @noworkflow @datastore
   Scenario: Adding and Removing items from the datastore
     Given I am logged in as a user with the "site manager" role
     And I am on "dataset/dataset-01"
