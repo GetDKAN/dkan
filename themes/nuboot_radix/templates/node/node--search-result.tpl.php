@@ -19,7 +19,7 @@
     <?php print render($content['field_topic']); ?>
     <ul class="dataset-list"><?php print $dataset_list ?></ul>
     <?php if(!empty($body)): ?>
-      <div class="node-description"><?php print text_summary($body, 'plain_text', 250) ?></div>
+      <div class="node-description"> <p><?php print $body_summary; ?> </p></div>
     <?php endif; ?>
     <?php print render($content['resources']); ?>
     <?php

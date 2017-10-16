@@ -57,3 +57,60 @@ When referring to **`$variables`**, **`function_names()`** and **`classNames`** 
 ```
 **`This text`** will be code-styled and bold
 ```
+
+## Building this documentation
+
+If you contribute significantly to this documentation, at some point you will want to be able to build them locally to preview your formatting and other markup. This will require some degree of comfort with command-line tools but is otherwise fairly straightforward.
+
+### Sphinx
+
+`Sphinx <http://www.sphinx-doc.org/en/1.5.1/>`_ is the Python application that generates the HTML from the documentation markup.
+
+To work on sphinx documentation locally, install the Sphinx Python tools. This requires having the `easy_install` tool in your environment.
+
+Install pip (the python package manager):
+
+```bash
+$ sudo easy_install pip
+```
+
+Then install sphinx
+
+```bash
+$ sudo pip install sphinx
+```
+
+Install the dependencies for this project. Make sure you are in the `/docs` directory:
+
+```bash
+$ cd docs
+$ sudo pip install -r requirements.txt
+```
+
+Now you should be able to build the Sphinx site by typing
+
+```bash
+$ make html
+```
+
+The site will build in `_build/html`
+
+### Auto-build server
+
+If you install the `sphinx-autobuild package` with pip, you can run a server that will build automatically when it senses a file change, and refresh your browser. Run
+
+```bash
+$ sudo pip install sphinx-autobuild
+```
+
+...then, from the /docs directory, run:
+
+```bash
+$ sphinx-autobuild ./ _build/html
+```
+
+The autobuild tool sometimes does not pick up changes to indexes very well. If you see issues with the sidebar table of contents, stop the server, delete the `/_build` directory and then re-start the server:
+
+```bash
+$ rm -rf _build && sphinx-autobuild ./ _build/html
+```

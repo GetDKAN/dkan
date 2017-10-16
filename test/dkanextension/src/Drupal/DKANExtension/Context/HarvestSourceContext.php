@@ -7,6 +7,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Behat\Hook\Scope\BeforeFeatureScope;
 use Behat\Behat\Hook\Scope\AfterFeatureScope;
 
@@ -83,9 +84,9 @@ class HarvestSourceContext extends RawDKANEntityContext {
     $user = user_load(1);
 
     // Harvest Cache
-    dkan_harvest_cache_sources(array($harvest_source));
+    dkan_harvest_cache_source($harvest_source);
     // Harvest Migration of the test data.
-    dkan_harvest_migrate_sources(array($harvest_source));
+    dkan_harvest_migrate_source($harvest_source);
 
     // Make sure that we process any index items added after the harvest.
     $this->searchContext->process();
@@ -95,25 +96,61 @@ class HarvestSourceContext extends RawDKANEntityContext {
   }
 
   /**
-  * @AfterScenario @harvest_rollback
-  */
-  public function harvestRollback(AfterScenarioScope $event)
-  {
+   * @BeforeScenario @harvest
+   */
+  public function harvestSetup(BeforeScenarioScope $event) {
+    $user = user_load_by_name("sitemanager");
+    $sources = array(
+      "source_one" => "Source one",
+      "source_two" => "Source two",
+    );
+
+    foreach ($sources as $machine_name => $title) {
+      $user = user_load_by_name("sitemanager");
+      $entity = array('type' => 'harvest_source');
+      $entity = entity_create('node', $entity);
+      $wrapper = entity_metadata_wrapper('node', $entity);
+      $wrapper->title = $title;
+      $wrapper->status = 1;
+      $wrapper->field_dkan_harveset_type = 'datajson_v1_1_json';
+      $wrapper->field_dkan_harvest_source_uri = 'http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json';
+      $wrapper->field_dkan_harvest_machine_name = array(
+        'human' => $title,
+        'machine' => $machine_name,
+      );
+      if ($user) {
+        $wrapper->author = $user->uid;
+      }
+      if ($machine_name == 'source_two') {
+        $wrapper->status = 0;
+      }
+      $wrapper->save();
+    }
+  }
+
+  /**
+   * @AfterScenario @harvest
+   */
+  public function harvestTeardown(AfterScenarioScope $event) {
     $migrations = migrate_migrations();
-    $harvest_migrations = array();
+
     foreach ($migrations as $name => $migration) {
-      if(strpos($name , 'dkan_harvest') === 0) {
+      if (strpos($name, 'dkan_harvest') === 0) {
         $migration = \Migration::getInstance($name);
-        $migration->processRollback();
+        if ($migration) {
+          $migration->processRollback();
+        }
       }
     }
+
+    module_load_include('inc', 'devel_generate', 'devel_generate');
+    devel_generate_content_kill(array('node_types' => array('harvest_source')));
   }
 
   /**
    * @Then the content :content_title should be :status
    */
-  public function theContentShouldBe($content_title, $status)
-  {
+  public function theContentShouldBe($content_title, $status) {
     // Get content by title.
     $query = new \EntityFieldQuery();
     $result = $query->entityCondition('entity_type', 'node')
@@ -130,7 +167,8 @@ class HarvestSourceContext extends RawDKANEntityContext {
       $content_id = current($content_ids);
       $content = node_load($content_id, NULL, TRUE);
       $content_wrapper = entity_metadata_wrapper('node', $content);
-    } else {
+    }
+    else {
       if ($status != 'deleted') {
         throw new \Exception("Content with title '$content_title' was not found.");
       }
@@ -144,18 +182,22 @@ class HarvestSourceContext extends RawDKANEntityContext {
           throw new \Exception("The status of the content is not '$status'");
         }
         break;
+
       case 'unpublished':
         if ($content_wrapper->status->value() != NODE_NOT_PUBLISHED) {
           throw new \Exception("The status of the content is not '$status'");
         }
         break;
+
       case 'orphaned':
         if (!$content_wrapper->field_orphan->value()) {
           throw new \Exception("The status of the content is not '$status'");
         }
         break;
+
       default:
         break;
     }
   }
+
 }

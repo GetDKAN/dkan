@@ -63,12 +63,13 @@ Feature: Dataset Features
    @fixme @dkanBug
     # TODO: Datasets not shown on homepage currently
      #      Will they be added to the homepage later?
+  @dataset_all_1
   Scenario: View list of most recent published datasets (on homepage)
     When I am on the homepage
     Then I should see "19" items in the "datasets" region
     And I should see the first "3" dataset items in "Date changed" "Desc" order.
 
-  @no-main-menu
+  @dataset_all_2  @no-main-menu
   Scenario: View list of published datasets
     When I am on the homepage
     And I click "Datasets"
@@ -76,6 +77,7 @@ Feature: Dataset Features
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
 
+  @dataset_all_3
   Scenario: Order datasets by "Date changed" by oldest first.
     Given datasets:
       | title                 |  published | description | date changed |
@@ -91,6 +93,7 @@ Feature: Dataset Features
     And I should see the first "4" dataset items in "Date changed" "Asc" order.
 
 
+  @dataset_all_4
   Scenario: Order datasets by "Date changed" with newest first.
     Given datasets:
       | title               |  published | description | date changed |
@@ -105,6 +108,7 @@ Feature: Dataset Features
     And I press "Apply"
     And I should see the first "4" dataset items in "Date changed" "Desc" order.
 
+  @dataset_all_5
   Scenario: Search datasets by "title" with "Asc" order
     When I am on "Datasets Search" page
     And I select "Title" from "Sort by"
@@ -112,6 +116,7 @@ Feature: Dataset Features
     And I press "Apply"
     Then I should see the first "3" dataset items in "Title" "Asc" order.
 
+  @dataset_all_6
   Scenario: Search datasets by "title" with "Desc" order
     When I am on "Datasets Search" page
     And I select "Title" from "Sort by"
@@ -122,6 +127,7 @@ Feature: Dataset Features
     # TODO : Reseting the search will make all the datasets appear in the results including pre-made
     #        datasets, should be fixed
 
+  @dataset_all_7
   Scenario: Reset dataset search filters
     When I am on "Datasets Search" page
     And I fill in "DKANTest" for "Search" in the "datasets" region
@@ -129,11 +135,12 @@ Feature: Dataset Features
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
     When I press "Reset"
-    Then I should see all published datasets
+    Then I should see all published search content
     # Then I should see "7 results"
     # And I should see "7" items in the "datasets" region
 
   # TODO: make sure it works when we don't have default content on.
+  @dataset_all_8
   Scenario: View available tag filters for datasets
     When I am on "Datasets Search" page
     ## Uncomment this if you wanna use selenium.
@@ -143,6 +150,7 @@ Feature: Dataset Features
     Then I should see "Gov 2 (1)" in the "filter by tag" region
 
   # TODO: make sure it works when we don't have default content on.
+  @dataset_all_9
   Scenario: View available resource format filters for datasets
     When I am on "Datasets Search" page
     ## Uncomment this if you wanna use selenium.
@@ -151,6 +159,7 @@ Feature: Dataset Features
     Then I should see "csv 2 (1)" in the "filter by resource format" region
     And I should see "html 2 (2)" in the "filter by resource format" region
 
+  @dataset_all_10
   Scenario: View available author filters for datasets
     When I am on "Datasets Search" page
     And I wait for "Author"
@@ -161,6 +170,7 @@ Feature: Dataset Features
     Then I should see "Katie (1)" in the "filter by author" region
 
   # TODO: make sure it works when we don't have default content on.
+  @dataset_all_11
   Scenario: Filter dataset search results by tags
     When I am on "Datasets Search" page
     And I search for "DKANTest"
@@ -174,6 +184,7 @@ Feature: Dataset Features
     And I should see "2" items in the "datasets" region
 
   # TODO: make sure it works when we don't have default content on.
+  @dataset_all_12
   Scenario: Filter dataset search results by resource format
     When I am on "Datasets Search" page
     And I search for "DKANTest"
@@ -188,6 +199,7 @@ Feature: Dataset Features
     And I should see "1" items in the "datasets" region
 
   # TODO: make sure it works when we don't have default content on.
+  @dataset_all_13
   Scenario: Filter dataset search results by author
     When I am on "Datasets Search" page
     And I search for "DKANTest"
@@ -201,25 +213,29 @@ Feature: Dataset Features
     Then I should see "2 results"
     And I should see "2" items in the "datasets" region
 
+  @dataset_all_14
   Scenario: View published dataset
     When I am on "Datasets Search" page
     And I click "DKANTest Dataset 01"
     # I should see the license information
     Then I should be on "DKANTest Dataset 01" page
 
+  @dataset_all_15
   Scenario: Share published dataset on Google+
     When I am on "DKANTest Dataset 01" page
     Then I should see the redirect button for "Google+"
 
+  @dataset_all_16
   Scenario: Share published dataset on Twitter
     When I am on "DKANTest Dataset 01" page
     Then I should see the redirect button for "Twitter"
 
+  @dataset_all_17
   Scenario: Share published dataset on Facebook
     When I am on "DKANTest Dataset 01" page
     Then I should see the redirect button for "Facebook"
 
-  @fixme @testBug
+  @dataset_all_18 @fixme @testBug
     #TODO: This is currently not working on CircleCI due to a memory issue
     #      but is passing locally
     #      The default PHP limits are not enough on CI, and thus
@@ -228,7 +244,7 @@ Feature: Dataset Features
     When I am on "Dataset 01" page
     Then I should get "JSON" content from the "JSON" button
 
-  @fixme @testBug
+  @dataset_all_19 @fixme @testBug
     #TODO: Need to know how to check and confirm RDF format with PHP
     #      Currently there is a step for checking JSON format (scenario above this one)
     #      When you click the JSON button on a dataset
@@ -238,7 +254,7 @@ Feature: Dataset Features
     When I click "RDF" in the "other access" region
     Then I should see the content in "RDF" format
 
-  @fixme @testBug
+  @dataset_all_20 @fixme @testBug
     #TODO: There is an issue where downloaded files in the browser container
     #       Are not seen by other containers, and thus can't be tested to see if they exist.
     #       A solution is to try to have files shared across containers.
@@ -247,7 +263,7 @@ Feature: Dataset Features
     When I press "Download" in the "Resource 01" row
     Then A file should be downloaded
 
-  @fixme @testBug
+  @dataset_all_21 @fixme @testBug
     # TODO: Get feedback if this is still needed, since suggested datasets are not currently viewable
     #       Will that be added later?
     # TODO: Needs definition

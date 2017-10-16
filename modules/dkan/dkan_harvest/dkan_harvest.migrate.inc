@@ -60,6 +60,13 @@ class HarvestMigration extends MigrateDKAN {
   protected $dkanHarvestDisabledRules = array();
 
   /**
+   * Save migration results to be used on logs later.
+   *
+   * @var array
+   */
+  protected $migrationResults = array();
+
+  /**
    * General initialization of a HarvestMigration object.
    */
   public function __construct(array $arguments) {
@@ -133,13 +140,103 @@ class HarvestMigration extends MigrateDKAN {
     if (isset($result['node'])) {
       $harvest_source_nids = array_keys($result['node']);
       $this->dkanHarvestSourceNid = array_pop($harvest_source_nids);
+      $this->dkanHarvestSourceNode = node_load($this->dkanHarvestSourceNid);
     }
     else {
       $this->dkanHarvestSourceNid = FALSE;
+      $this->dkanHarvestSourceNode = NULL;
     }
+
+    // Disable the logging system of the migration module.
+    // The module logs every time the processImport() method is called but we
+    // want to log only once, when the full migration event finishes. If we don't
+    // do that then we are going to get one log record per batch chunk.
+    $this->logHistory = FALSE;
+
+    // Initialize results.
+    $this->migrationResults = array(
+      'process_type' => 0,
+      'start_time' => 0,
+      'end_time' => 0,
+      'initial_highwater' => 0,
+      'final_highwater' => 0,
+      'datasets_on_source' => 0,
+      'datasets_processed' => 0,
+      'datasets_created' => 0,
+      'datasets_updated' => 0,
+      'datasets_failed' => 0,
+      'datasets_orphaned' => 0
+    );
 
     // Add Field mappings.
     $this->setFieldMappings();
+  }
+
+  /**
+   * Returns migration results.
+   */
+  public function getResults() {
+    return $this->migrationResults;
+  }
+
+  /**
+   * Implementation of MigrationBase::beginProcess().
+   */
+  protected function beginProcess($newStatus) {
+
+    // Begin process.
+    parent::beginProcess($newStatus);
+
+    // If an import if being run then update the results.
+    if ($this->processing) {
+      $this->migrationResults['process_type'] = $newStatus;
+      $this->migrationResults['start_time'] = round(microtime(TRUE) * 1000);
+      $this->migrationResults['initial_highwater'] = $this->getHighwater();
+      $this->migrationResults['datasets_on_source'] = $this->sourceCount();
+    }
+  }
+
+  /**
+   * Logs a migration event.
+   */
+  public function logEvent($event_data) {
+    // First add record on the 'migrate_log' table.
+    try {
+      $this->logID = db_insert('migrate_log')
+        ->fields(array(
+            'machine_name' => $this->machineName,
+            'process_type' => $event_data['process_type'],
+            'starttime' => $event_data['start_time'],
+            'endtime' => $event_data['end_time'],
+            'initialHighwater' => $event_data['initial_highwater'],
+            'finalHighwater' => $event_data['final_highwater'],
+            'numprocessed' => $event_data['datasets_processed']
+          ))
+        ->execute();
+    }
+    catch (PDOException $e) {
+      Migration::displayMessage(t('Could not log event for migration !name',
+        array('!name' => $this->machineName)));
+    }
+
+    // Then add a record on the log table that's specific for this migration.
+    // Use the same migration log ID that was used on the 'migrate_log' table.
+    try {
+      db_merge($this->map->getLogTable())
+        ->key(array('mlid' => $this->logID))
+        ->fields(array(
+          'created' => $event_data['datasets_created'],
+          'updated' => $event_data['datasets_updated'],
+          'unchanged' => $event_data['datasets_unchanged'],
+          'failed' => $event_data['datasets_failed'],
+          'orphaned' => $event_data['datasets_orphaned'],
+        ))
+        ->execute();
+    }
+    catch (PDOException $e) {
+      Migration::displayMessage(t('Could not log event for migration !name',
+        array('!name' => $this->machineName)));
+    }
   }
 
   /**
@@ -199,17 +296,9 @@ class HarvestMigration extends MigrateDKAN {
    * Add support for harvest migration specific checks and options.
    */
   public function processImport(array $options = array()) {
-    if ($this->getStatus() == MigrationBase::STATUS_IDLE) {
-      // Add any extra Harvest Migration Arguments. The arguments array should
-      // already exist.
-      $this->arguments = array_merge($this->arguments, $options);
-
-      parent::processImport($options);
-    }
-    else {
-      $this->resetStatus();
-      $this->processImport($options);
-    }
+    // Add any extra Harvest Migration Arguments.
+    $this->arguments = array_merge($this->arguments, $options);
+    return parent::processImport($options);
   }
 
   /**
@@ -273,6 +362,11 @@ class HarvestMigration extends MigrateDKAN {
 
     // Add group.
     $this->prepareGroup($dataset, $row);
+
+    // Set topics in dataset to same as Harvest node.
+    if ($this->dkanHarvestSourceNode) {
+      $dataset->field_topic = $this->dkanHarvestSourceNode->field_dkan_harvest_topic;
+    }
 
     // Save dataset.
     node_save($dataset);
@@ -612,31 +706,6 @@ class HarvestMigration extends MigrateDKAN {
     $this->postImportRestoredSource();
     $this->postImportMissingSource();
 
-    // Update the migratino log table with the status of the import. This needs
-    // to happen after self::postImportMissingSource() and
-    // self::postImportRestoredSource() methodes.
-    // Check the logHistory flag to make sure we do have the logID key.
-    if ($this->logHistory) {
-      try {
-        db_merge($this->map->getLogTable())
-          ->key(array('mlid' => $this->logID))
-          ->fields(array(
-            'created' => $this->destination->getCreated(),
-            'updated' => $this->destination->getUpdated(),
-            // Number of source datasets mines the number of processed
-            // datasets.
-            'unchanged' => $this->sourceCount() - $this->total_processed,
-            'failed' => $this->errorCount(),
-            'orphaned' => $this->map->orphanedCount(),
-          ))
-          ->execute();
-      }
-      catch (PDOException $e) {
-        Migration::displayMessage(t('Could not log items status on migration !name',
-          array('!name' => $this->machineName)));
-      }
-    }
-
     // Restore any rule disabled in the preImport call. This is restored last
     // in the postImport call to make sure any processing done is done while
     // the rules are disabled as well.
@@ -652,6 +721,17 @@ class HarvestMigration extends MigrateDKAN {
           '@rules_list' => implode(', ', $this->dkanHarvestDisabledRules),
         ));
       self::displayMessage($message, 'notice');
+    }
+
+    // If an import if being run then update the results.
+    if ($this->processing) {
+      $this->migrationResults['end_time'] = round(microtime(TRUE) * 1000);
+      $this->migrationResults['final_highwater'] = $this->getHighwater();
+      $this->migrationResults['datasets_processed'] = $this->total_processed;
+      $this->migrationResults['datasets_created'] = $this->destination->getCreated();
+      $this->migrationResults['datasets_updated'] = $this->destination->getUpdated();
+      $this->migrationResults['datasets_failed'] = $this->errorCount();
+      $this->migrationResults['datasets_orphaned'] = $this->map->orphanedCount();
     }
 
     migrate_instrument_stop('HarvestMigration->postImport');

@@ -299,6 +299,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     $form['#validate'][] = 'dkan_dataset_dataset_node_form_validate';
   }
+
   if ($form_id == 'resource_node_form') {
     drupal_add_library('system', 'jquery.bbq');
     $form['#attached']['css'][] = drupal_get_path('module', 'dkan_dataset') . '/css/dkan_dataset.css';
@@ -313,11 +314,6 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     // Get langcode for field_dataset_ref.
     $field_dataset_ref_langcode = dkan_dataset_form_field_language($form, 'field_dataset_ref');
     $form['field_dataset_ref'][$field_dataset_ref_langcode]['#description'] = t('Dataset that this resource is attached to.');
-    $dataset_options = $form['field_dataset_ref'][$field_dataset_ref_langcode]['#options'];
-    $fix_apostrophes = function ($value) {
-      return html_entity_decode($value, ENT_QUOTES, "UTF-8");
-    };
-    $form['field_dataset_ref'][$field_dataset_ref_langcode]['#options'] = array_map($fix_apostrophes, $dataset_options);
 
     // Get langcode for field_upload.
     $field_upload_langcode = dkan_dataset_form_field_language($form, 'field_upload');
@@ -352,17 +348,12 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     if ($query = drupal_get_query_parameters()) {
       if (isset($query['dataset'])) {
-        $form['field_dataset_ref'][$field_dataset_ref_langcode]['#default_value'] = $query['dataset'];
+        $selected_dataset = node_load($query['dataset']);
+        $form['field_dataset_ref'][$field_dataset_ref_langcode][0]['target_id']['#default_value'] = $selected_dataset->title . ' (' . $query['dataset'] . ')';
         $form['prefix']['#type'] = 'item';
         $form['prefix']['#weight'] = '-20';
         $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $query['dataset']);
       }
-    }
-    elseif (isset($form['#node']->field_dataset_ref['nid'])) {
-      $form['field_dataset_ref'][$field_dataset_ref_langcode]['#default_value'] = $form['#node']->field_dataset_ref['nid'];
-      $form['prefix']['#type'] = 'item';
-      $form['prefix']['#weight'] = '-20';
-      $form['prefix']['#markup'] = dkan_form_create_stages('resource-create', $form['#node']->field_dataset_ref['nid']);
     }
     $form['#validate'][] = 'dkan_dataset_resource_node_form_validate';
     // This saves us on the ajax reloading.
@@ -602,6 +593,11 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
       if ($upload_fid) {
         $file = file_load($upload_fid);
         $type = isset($file->filemime) ? dkan_dataset_discovery_extension($file->filemime) : '';
+
+        $ext = pathinfo($file->uri, PATHINFO_EXTENSION);
+        if ($ext == 'tab' || $ext == 'tsv') {
+          $type = 'tsv';
+        }
       }
       elseif ($link_fid) {
         $file = file_load($link_fid);
@@ -628,7 +624,6 @@ function dkan_dataset_resource_node_form_validate($form, &$form_state) {
       // Check for geojson.
       if ($type == 'json' && isset($file)) {
         $response = drupal_http_request($file->uri, array('timeout' => 5));
-        // dpm($response);
         if ($response->code == '200') {
           $data = $response->data;
           $decoded = drupal_json_decode($data);

@@ -43,7 +43,7 @@ function nuboot_radix_preprocess_page(&$variables) {
   }
   // Add copyright to theme.
   if ($copyright = theme_get_setting('copyright')) {
-    $variables['copyright'] = isset($copyright['value']) ? check_markup($copyright['value'], 'html') : t('Powered by <a href="http://getdkan.com/">DKAN</a>, a project of <a href="http://granicus.com">Granicus</a>');
+    $variables['copyright'] = isset($copyright['value']) ? check_markup($copyright['value'], 'html') : t('Powered by <a href="http://getdkan.com/">DKAN</a>');
   }
   // Use front page template for node front page.
   $alias = drupal_get_path_alias($_GET['q']);

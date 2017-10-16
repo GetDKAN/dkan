@@ -508,6 +508,10 @@ li .heading:hover {
 .label[data-format*=txt] {
   background-color: #70c6e5;
 }
+.label[data-format=tsv],
+.label[data-format*=tsv] {
+  background-color: #6f5191;
+}
 
 .format-label {
   color: transparent;
@@ -599,6 +603,10 @@ li .heading:hover {
 .format-label[data-format=zip]:before {
   content: "\e6b3";
   color: #686868;
+}
+.format-label[data-format=tsv]:before {
+  content: "\e900";
+  color: #6f5191;
 }
 
 .node-resource .download .format-label {
