@@ -1,5 +1,6 @@
 7.x-1.14
 --------
+ - #2174 Fix access to revisions for anonymous users when dkan_workflow is enabled.
  - #2175 Removed video content from the About page. Removed or replaced references to Granicus.
  - #2075 DKAN Harvest: Modified batch process to split harvest migrations in chunks.
  - #2145 Front page hero image no longer requests empty URL if variable empty.
