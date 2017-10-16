@@ -82,45 +82,6 @@
                 },
                 {
                     "panel": "header",
-                    "type": "fieldable_panels_pane",
-                    "subtype": "uuid:6b8529c2-2958-495e-bb67-5596fe1d17ec",
-                    "shown": "1",
-                    "access": [],
-                    "configuration": {
-                        "view_mode": "full"
-                    },
-                    "cache": [],
-                    "style": [],
-                    "css": [],
-                    "extras": [],
-                    "position": "0",
-                    "locks": [],
-                    "uuid": "6b8529c2-2958-495e-bb67-5596fe1d17ec",
-                    "fpp_data": {
-                        "title": "",
-                        "bundle": "text",
-                        "link": "0",
-                        "path": "",
-                        "reusable": "0",
-                        "admin_title": "",
-                        "admin_description": "",
-                        "category": "Reusable Content",
-                        "view_access": null,
-                        "edit_access": null,
-                        "uuid": "6b8529c2-2958-495e-bb67-5596fe1d17ec",
-                        "language": "",
-                        "field_basic_text_text": [
-                            {
-                                "value": "<iframe width=\"90%\" height=\"400px\" src=\"https://www.youtube.com/embed/lU-TSKEaMKI\" frameborder=\"0\" allowfullscreen></iframe> ",
-                                "format": "html",
-                                "safe_value": "<iframe width=\"90%\" height=\"400px\" src=\"https://www.youtube.com/embed/lU-TSKEaMKI\" frameborder=\"0\" allowfullscreen=\"\"></iframe>"
-                            }
-                        ],
-                        "rdf_mapping": []
-                    }
-                },
-                {
-                    "panel": "header",
                     "type": "custom",
                     "subtype": "custom",
                     "shown": "1",
