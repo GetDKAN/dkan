@@ -11,3 +11,4 @@ projects:
       1903010: 'https://www.drupal.org/files/issues/drupal-undefinedindex_fileupload-1903010-4.patch'
       # Warning: filesize(): stat failed
       628094: 'https://www.drupal.org/files/issues/file.remote-file_save.628094.22.patch'
+      1551132: 'https://www.drupal.org/files/issues/1551132-drupal-reinstall-schema-empty-tables-87-D7.patch'
