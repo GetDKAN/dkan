@@ -1,3 +1,7 @@
+7.x-1.14.x
+----------
+ - #1979 Allow users to set Groups on standalone resources.
+
 7.x-1.14
 --------
  - #2174 Fix access to revisions for anonymous users when dkan_workflow is enabled.
