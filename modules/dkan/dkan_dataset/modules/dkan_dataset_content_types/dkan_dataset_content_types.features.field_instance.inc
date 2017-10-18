@@ -1830,7 +1830,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     'widget' => array(
       'module' => 'og',
       'settings' => array(),
-      'type' => 'og_complex',
+      'type' => 'options_select',
       'weight' => 6,
     ),
   );
