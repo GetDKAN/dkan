@@ -263,7 +263,7 @@ Feature: Resource
     And I wait for "Delete Items"
     And I click "Delete items"
     And I press "Delete"
-    Then I should see "items have been deleted"
+    Then I wait for "items have been deleted"
     # This test is not really sufficient, but we are going to consolidate the
     # "drop" and "delete" datastore functions and do other refactoring, so will
     # revisit then.
