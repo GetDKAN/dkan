@@ -40,6 +40,8 @@
  - #1853 Update chart documentation.
  - #1839 Add help text and improve UI on the chart form for better clarity.
  - #1827 Remove option to import TABed CSV files into datastore. 
+ - #1807 Add admin_views module for enhanced content and file filtering. 
+ - #1936 Fix slow remote_file datastore imports.
  - #1807 Add admin_views module for enhanced content and file filtering.
  - #1990 DevOps: Automatically populate required fields when running behat tests. 
  - #1938 DevOps: Allow behat tests to be skipped in circle.

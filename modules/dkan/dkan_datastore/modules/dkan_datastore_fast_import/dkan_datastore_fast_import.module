@@ -191,6 +191,7 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config) {
     $params[':fields_escaped_by'] = $fields_escaped_by;
   }
   $sql = $sql . " LINES TERMINATED BY '$lines_terminated_by' $has_headers ($fields)
+
     SET timestamp=UNIX_TIMESTAMP(), feeds_entity_id=$feeds_entity_id $set_null_values;";
 
   try {
@@ -201,6 +202,9 @@ function dkan_datastore_fast_import_import($source, $node, $table, $config) {
       }
     }
     $node->field_datastore_status->set(DKAN_DATASTORE_EXISTS);
+    if ($node->field_link_remote_file->value()) {
+      $node->field_upload->set(NULL);
+    }
     $node->save();
     return array('total_imported_items' => $result->rowCount());
   }
@@ -304,7 +308,7 @@ function dkan_datastore_fast_import_form_alter(&$form, &$form_state, $form_id) {
       '#type' => 'textfield',
       '#title' => t('Fields escaped by:'),
       '#default_value' => variable_get('fields_escaped_by', ''),
-      '#description' => t('The character used to escape other characters on each fields. Leave empty if it isn\'t needed.'),
+      '#description' => t("The character used to escape other characters on each fields. Leave empty if it isn't needed."),
       '#states' => array(
         'invisible' => array(
           ':input[name="use_fast_import"]' => array('checked' => FALSE),
