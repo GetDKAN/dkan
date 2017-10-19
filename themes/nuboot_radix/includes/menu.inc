@@ -86,6 +86,7 @@ function nuboot_radix_menu_local_task($variables) {
         break;
 
       case 'node/%/revisions':
+      case 'node/%/moderation':
         $icon_type = 'folder-open-o';
         break;
 

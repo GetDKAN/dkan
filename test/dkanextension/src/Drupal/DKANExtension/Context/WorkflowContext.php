@@ -37,6 +37,7 @@ class WorkflowContext extends RawDKANContext {
       features_revert(array('dkan_feedback'));
     }
     drupal_flush_all_caches();
+    node_access_rebuild(TRUE);
   }
 
   /**
@@ -61,6 +62,7 @@ class WorkflowContext extends RawDKANContext {
     entity_delete_multiple('user', $users_to_delete);
     module_disable(array_values($modules_to_disable));
     drupal_flush_all_caches();
+    node_access_rebuild(TRUE);
   }
 
   /**

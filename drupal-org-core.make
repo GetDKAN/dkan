@@ -11,3 +11,7 @@ projects:
       1903010: 'https://www.drupal.org/files/issues/drupal-undefinedindex_fileupload-1903010-4.patch'
       # Warning: filesize(): stat failed
       628094: 'https://www.drupal.org/files/issues/file.remote-file_save.628094.22.patch'
+      # Fix PDOException when running user_role_grant_permissions() on module enable.
+      737816: 'https://www.drupal.org/files/drupal-permission-pdoexception-737816-41.patch'
+      # State error with select multiple
+      2844358: 'https://www.drupal.org/files/issues/drupal_bug_multiple_values_select_states.patch'

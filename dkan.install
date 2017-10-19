@@ -413,3 +413,21 @@ function dkan_update_7023() {
 function dkan_update_7024(&$context) {
   dkan_misc_variables_set($context);
 }
+
+/**
+ * Update copyright information.
+ */
+function dkan_update_7025() {
+  $settings = variable_get('theme_nuboot_radix_settings', array());
+  if ($settings['copyright']['value'] == 'Powered by <a href="http://getdkan.com/">DKAN</a>, a project of <a href="http://granicus.com">Granicus</a>') {
+    $settings['copyright']['value'] = t('Powered by <a href="http://getdkan.org/">DKAN</a>');
+    variable_set('theme_nuboot_radix_settings', $settings);
+  }
+}
+
+/**
+ * Revert content types dataset to revert og_group_ref on resources.
+ */
+function dkan_update_7026() {
+  features_revert(array('dkan_dataset_content_types' => array('field_base', 'field_instance')));
+}
