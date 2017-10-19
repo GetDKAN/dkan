@@ -345,7 +345,7 @@
                     "configuration": {
                         "local_source": "61c94ff5-93f6-46d2-a3ec-4241012370e8",
                         "remote_source": "",
-                        "height": "600",
+                        "height": "400",
                         "width": "100%",
                         "override_title": 1,
                         "override_title_text": "Property Crime Data for the Ten Most Populous Cities in the U.S.",
@@ -490,7 +490,7 @@
                     "configuration": {
                         "local_source": "98970a10-64f9-4854-8fcd-1a590dea8073",
                         "remote_source": "",
-                        "height": "600",
+                        "height": "400",
                         "width": "100%",
                         "override_title": 1,
                         "override_title_text": "Violent Crime Data for the Ten Most Populous Cities in the U.S.",
