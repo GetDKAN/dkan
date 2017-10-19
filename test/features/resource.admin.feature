@@ -111,10 +111,7 @@ Feature: Resource
     And I wait for "Delete Items"
     And I click "Delete items"
     And I press "Delete"
-    And I wait for "items have been deleted"
-    And I am on "Resource 04" page
-    When I click "Manage Datastore"
-    Then I wait for "No imported items."
+    Then I wait for "items have been deleted"
 
   @noworkflow @datastore @javascript
   Scenario: Drop datastore of any resource
