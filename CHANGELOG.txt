@@ -4,6 +4,8 @@
 
 7.x-1.14
 --------
+ - #2151 Adding print styling so that images, table rows, and charts work with page breaks.
+ - #2141 Exclude header search form from printed output
  - #2174 Fix access to revisions for anonymous users when dkan_workflow is enabled.
  - #2175 Removed video content from the About page. Removed or replaced references to Granicus.
  - #2075 DKAN Harvest: Modified batch process to split harvest migrations in chunks.
