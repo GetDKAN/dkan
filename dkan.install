@@ -424,3 +424,10 @@ function dkan_update_7025() {
     variable_set('theme_nuboot_radix_settings', $settings);
   }
 }
+
+/**
+ * Revert content types dataset to revert og_group_ref on resources.
+ */
+function dkan_update_7026() {
+  features_revert(array('dkan_dataset_content_types' => array('field_base', 'field_instance')));
+}
