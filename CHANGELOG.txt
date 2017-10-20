@@ -1,10 +1,7 @@
-7.x-1.14.x
-----------
- - #2186 Move the 'back to dataset' local task position so that the 'revisions' link position matches the standard location.
- - #1979 Allow users to set Groups on standalone resources.
-
 7.x-1.14
 --------
+ - #2186 Move the 'back to dataset' local task position so that the 'revisions' link position matches the standard location.
+ - #1979 Allow users to set Groups on standalone resources.
  - #2151 Adding print styling so that images, table rows, and charts work with page breaks.
  - #2141 Exclude header search form from printed output
  - #2174 Fix access to revisions for anonymous users when dkan_workflow is enabled.
