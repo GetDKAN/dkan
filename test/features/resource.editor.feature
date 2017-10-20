@@ -109,25 +109,22 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @resource_editor_7 @datastore @db @noworkflow @javascript 
+  @resource_editor_7 @datastore @db @noworkflow @javascript
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
-    Given I am logged in as "John"
-    And I am on "Resource 01" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple8.csv"
-    And I press "Save"
-    Given I am logged in as "Celeste"
-    When I am on "Resource 01" page
-    When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Delete Items"
-    And I click "Delete items"
-    And I press "Delete"
-    And I wait for "items have been deleted"
-    And I am on "Resource 01" page
-    When I click "Manage Datastore"
-    And I wait for "No imported items."
+      Given I am logged in as "John"
+      And I am on "Resource 01" page
+      And I click "Edit"
+      And I click "Remote file"
+      And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple8.csv"
+      And I press "Save"
+      Given I am logged in as "Celeste"
+      When I am on "Resource 01" page
+      When I click "Manage Datastore"
+      And I press "Import"
+      And I wait for "Delete Items"
+      And I click "Delete items"
+      And I press "Delete"
+      Then I wait for "items have been deleted"
 
   @resource_editor_8 @datastore @noworkflow @javascript
   Scenario: Drop datastore of resources associated with groups that I am a member of

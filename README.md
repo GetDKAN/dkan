@@ -4,7 +4,7 @@
 
 [![Join the chat at https://gitter.im/NuCivic/dkan](https://badges.gitter.im/NuCivic/dkan.svg)](https://gitter.im/NuCivic/dkan?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-DKAN is a Drupal-based open data tool with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. It is inspired by the [CKAN project](https://github.com/ckan/ckan) and maintained by [Granicus Data](http://getdkan.com/contact).
+DKAN is a Drupal-based open data tool with a full suite of cataloging, publishing and visualization features that allows governments, nonprofits and universities to easily publish data to the public. It is inspired by the [CKAN project](https://github.com/ckan/ckan) and maintained by [CivicActions](https://civicactions.com/dkan/).
 
 [![DKAN](docs/images/dkan-front-page.png)](http://getdkan.com)
 
@@ -30,9 +30,11 @@ DKAN is a Drupal-based open data tool with a full suite of cataloging, publishin
 *   Manage access control, version history with rollback, INSPIRE/RDF support, user analytics
 *   Extend and leverage the full universe of more than 18,000 freely available Drupal modules
 
-## Hosting and support
+## Support
 
-Granicus [Data](http://getdkan.com/) platform offers 24/7, secure, cloud-based DKAN hosting and support services.
+DKAN development is sponsored by CivicActions. For more information about hosting and professional support options for DKAN, see https://civicactions.com/dkan/
+
+Contact us if you want to get involved!
 
 ## Installation
 
@@ -45,10 +47,6 @@ Please see the ["Updating and Maintaining DKAN" section of the DKAN Documentatio
 ## Releases
 
 Check the [releases page](https://github.com/NuCivic/dkan/releases) for latest DKAN Version. 7.x-1.x is the development branch.
-
-Contact us if you want to get involved!
-
-DKAN development is a sponsored by NuCivic. For more information about hosting and professional support options for DKAN, see http://getdkan.com/contact
 
 ### Releases and Release Candidates
 
@@ -78,9 +76,9 @@ Please post a question on our [Developer list](https://groups.google.com/forum/?
 
 Please post it to our [Github issue queue](https://github.com/nucivic/dkan/issues).
 
-### I would like to purchase Granicus support or hosting
+### I would like information on DKAN open data services and support.
 
-[Please contact us for a consultation](https://granicus.com/contact-us/).
+[Please contact us for a consultation](https://civicactions.com/contact/).
 
 ## Community
 

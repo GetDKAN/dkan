@@ -53,6 +53,7 @@ function dkan_dataset_menu() {
     'type' => MENU_LOCAL_TASK,
     'file' => 'dkan_dataset.pages.inc',
     'file path' => $path,
+    'weight' => 3,
   );
   $items['node/%node/dataset/download'] = array(
     'title' => 'Download Dataset',
