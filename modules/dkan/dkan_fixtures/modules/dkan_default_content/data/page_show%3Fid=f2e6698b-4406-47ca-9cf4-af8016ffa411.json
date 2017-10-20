@@ -89,7 +89,7 @@
                     "configuration": {
                         "admin_title": "What's in the demo?",
                         "title": "What's in the demo?",
-                        "body": "The best way to learn about DKAN and what it's capable of is by using it yourself. We created this demo site so that you can get a feel for what a DKAN site looks like and imagine what your DKAN site could be. \n\n\nEverything here was created with DKAN features from a personalized Home page to [Data Stories](/stories) and [Dashboards](/dashboards).\n\n\nThis site shows off our favorite DKAN features, but there's even more behind the scenes. [Set up your own open-source DKAN instance](https://github.com/NuCivic/dkan) or [contact us for our enterprise-level services](mailto:contact@nucivic.com). ",
+                        "body": "The best way to learn about DKAN and what it's capable of is by using it yourself. We created this demo site so that you can get a feel for what a DKAN site looks like and imagine what your DKAN site could be. \n\n\nEverything here was created with DKAN features from a personalized Home page to [Data Stories](/stories) and [Dashboards](/dashboards).\n\n\nThis site shows off our favorite DKAN features, but there's even more behind the scenes. [Set up your own open-source DKAN instance](https://github.com/NuCivic/dkan) or [contact us for our enterprise-level services](mailto:contact@example.com). ",
                         "format": "html",
                         "substitute": 1
                     },
@@ -491,7 +491,7 @@
                     "configuration": {
                         "admin_title": "Link to demo site",
                         "title": "",
-                        "body": "<img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/madison-polling.png\" align=\"left\" alt=\"DKAN demo on computer\" width=\"125\" height=\"100\"><br>Want DKAN\u2019s enterprise solution? <a href=\"http://demo.getdkan.com/\">Test drive DKAN</a> and <a href=\"mailto:contact@nucivic.com\">contact our team for more information.</a>",
+                        "body": "<img src=\"/profiles/dkan/themes/nuboot_radix/assets/images/madison-polling.png\" align=\"left\" alt=\"DKAN demo on computer\" width=\"125\" height=\"100\"><br>Want DKAN\u2019s enterprise solution? <a href=\"http://demo.getdkan.com/\">Test drive DKAN</a> and <a href=\"mailto:contact@example.com\">contact our team for more information.</a>",
                         "format": "html",
                         "substitute": 1
                     },

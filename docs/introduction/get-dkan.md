@@ -34,13 +34,9 @@ Updates to DKAN are released frequently. Acquia will not push these updates to y
 
 Pantheon provides reliable Drupal cloud hosting with a powerful development tools and web-based user interface designed to facilitate and encourage best development practices. With essentially a single click, you can spin up a new DKAN instance on Pantheon and log in to your new site in just a few minutes.
 
-You can register for a free account [here](https://www.getpantheon.com/). Once you have access, create a new site:
+You can register for a free account [here](https://www.getpantheon.com/). Once you have access, create a new [dkan site](https://dashboard.getpantheon.com/products/dkan/spinup):
 
-![Pantheon new site form](../images/pantheon-new-site.png)
-
-Choose to make a new site from scratch, and to use the DKAN distribution:
-
-![DKAN distribution link](../images/pantheon-install-button.png)
+![Pantheon new site form](../images/Pantheon_Dashboard.png)
 
 Pantheon will then build your new based site on the latest DKAN release. You will go through a normal Drupal install process, explained in detail in the [installation instructions](../installation.md).
 

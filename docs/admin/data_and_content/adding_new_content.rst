@@ -2,7 +2,7 @@
 Adding New Content
 ==================
 
-Your DKAN site is an access point for users to connect with open data, but data isn't the only content that you can add. 
+Your DKAN site is an access point for users to connect with open data, but data isn't the only content that you can add.
 
 DKAN is designed to showcase your open data in a number of ways to best engage site visitors and demonstrate tangible value.
 
@@ -47,7 +47,7 @@ The most direct path for creating content is through the **Add content** menu it
 Using the Content menu
 ----------------------
 
-In some cases, you may want to see what content exists before creating something new from scratch. 
+In some cases, you may want to see what content exists before creating something new from scratch.
 
 As a Site Manager, you're able to view and edit all the content that has been authored on your DKAN site. It's not uncommon that content is added but never completed, is complete but outdated, or simply has an unpublished status. As your site matures and contains more content, it's helpful to check what already exists before starting a new piece of content.
 
@@ -85,30 +85,30 @@ Authoring information
   To change the author you can begin typing a user and the field will autocomplete. Leave the field blank to assign the author to Anonymous. You can change the Authored on information by simply typing a new date into the field. If you leave the field blank, DKAN will use the date and time of when the content was originally saved.
 Publishing options
   As a Site Manager you can publish and unpublish content. Published content is saved and visible on your DKAN site. Unpublished content is saved, but it is not visible on your DKAN site.
-  
+
   As a Site Manager you can publish and unpublish directly from the piece of content. When adding new content, the status will automatically default to published. By unchecking the Published checkbox, you can save the work without publishing it to your live DKAN site. If the content already exists and appears on your DKAN site, you can unpublish the content by unchecking the box and it will no longer be visible or searchable to general site visitors.
 Groups
   When creating a Dataset, you'll have an additional submenu item to consider. The Groups menu item is unique to Datasets because it's the only content that can be added to a Group. Resources cannot be added themselves to a Group, they must be in a Dataset. When adding a Dataset to a Group, users can add a Dataset to as many Groups as there are on the site. Your groups are Groups that the user authoring the content belongs to, and Other groups are all the Groups of which a user is not a member.
 
   All users must belong to at least one Group to have the Groups menu item available to them.
-  
+
   When a Dataset is added to a Group, it will be included on the Group's home page and may be edited by the Administrator members of a Group. As a best practice, users should only add Datasets to Groups that they are a member. Certain users won't be able to access their own content if they assign it to a Group that they do not belong to.
-  
+
 Viewing content you've already uploaded
-----------------
+---------------------------------------
 
 To see a list of content that you've already uploaded, you can navigate to your user profile page by clicking on your username on the right-hand side of the screen.
 
 .. image:: ../../images/site_manager_playbook/adding_new_content/Site_Manager_Logged_In.png
    :alt: Click your username on the right side of the navigation bar in order to go to your profile page.
-   
+
 Once you're on your user profile page, you'll see a list of datasets, resources and other content types that were uploaded by your account.
 
 .. image:: ../../images/site_manager_playbook/adding_new_content/User_Profile_Page.png
    :alt: An example user profile page showing a dataset and resource uploaded by this user.
-   
+
 Viewing a listing of the site's files
-----------------
+-------------------------------------
 
 From the admin menu, click "Content." Once you're on the Content page, the "Files" button will take you to the files listing.
 
@@ -151,7 +151,7 @@ It's possible to add a Resource as a stand alone piece of content, but it isn't 
 
 .. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_05.png
    :alt: An example of a list of Datasets provided that a Resource could then be assigned to.
-   
+
    Example of a list of Datasets that a Resource may belong to.
 
 When adding a new Resource, DKAN provides a list of existing Datasets and you can select the appropriate one. If none of the existing Datasets seem correct, then consider first adding a new Dataset. You can also add a Resource and then later assign it to a Dataset.
@@ -176,7 +176,7 @@ Internal Data Previews can be enabled for **grids, graphs, and/or maps** dependi
 
 .. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_06.png
    :alt: The "Add a Resource" screen, showing the options to enable grid, graph or map previews.
-   
+
    This image displays where you can enable grid, graph and/or map previews for a Resource.
 
 **Grids and Graphs:** This type of Data Preview works well with tabular data like CSV or XLS files. Grids appear most similar to a spreadsheet and reflect the greatest precision of the file contents of a Resource. Graphs are more visual and provide quick synthesis of the contents of a Resource.
@@ -241,7 +241,7 @@ In the example below, you can see all the fields included when adding a Dataset.
 
 .. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_09.gif
    :alt: This animated screencap shows the process of editing and saving a dataset.
-   
+
    This animated screencap displays the process of editing and saving a dataset.
 
 **Change the Resource URL:** When adding or editing a Dataset, you can change the URL path so that it's easier to read as well as more likely to appear in a site visitor's search. An important consideration when creating titles and labels is to keep in mind how site visitors look for information. It's safe to assume that most site visitors won't start by looking for your DKAN site. More likely is that they'll first do a general search on the web. A random Dataset might be the first and only interaction a person has with your DKAN site. That's why it's best to include lots of contextual information, make it easy to read and scan, and use terms that site visitors are likely to search for.
