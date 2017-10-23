@@ -13,7 +13,7 @@ Join the [DKAN Slack community](https://dkansignup.herokuapp.com/).
 ## Connect
 
 * [ Subscribe ](http://eepurl.com/c01YS1)
-* [ Slack ]([DKAN Slack community](https://dkansignup.herokuapp.com/))
+* [ Slack ](https://dkan.slack.com/)
 * [ Blog ](https://medium.com/dkan-blog)
 * [ Twitter ](https://twitter.com/getdkan)
 * [ GitHub ](https://github.com/getdkan)
@@ -47,11 +47,11 @@ Join the [DKAN Slack community](https://dkansignup.herokuapp.com/).
 
 ## Installation
 
-Please see the ["Installation" section of the DKAN Documentation](http://docs.getdkan.com/en/latest/introduction/installation.html).
+Please see the [Installation](http://docs.getdkan.com/en/latest/introduction/installation.html) section of the DKAN Documentation.
 
 ### Upgrading DKAN
 
-Please see the ["Updating and Maintaining DKAN" section of the DKAN Documentation](http://docs.getdkan.com/en/latest/introduction/maintaining.html) for general upgrade information.
+Please see the [Updating and Maintaining DKAN](http://docs.getdkan.com/en/latest/introduction/maintaining.html) section of the DKAN Documentation for general upgrade information.
 
 ## Releases
 
